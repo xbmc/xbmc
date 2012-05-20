@@ -1,16 +1,17 @@
 # XBMC Media Center language file
+# Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-08 11:57+0000\n"
+"Last-Translator: CutSickAss <cutsickass@yahoo.com>\n"
+"Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: el\n"
+"Language: el_GR\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: id:31000
@@ -43,7 +44,7 @@ msgstr "Προβολή Επιλογών"
 
 #: id:31007
 msgid "Plugins"
-msgstr "Plugin"
+msgstr "Plugins"
 
 #: id:31008
 msgid "Fullscreen"
@@ -51,7 +52,7 @@ msgstr "Πλήρης Οθόνη"
 
 #: id:31009
 msgid "Total Duration"
-msgstr ""
+msgstr "Συνολική Διάρκεια"
 
 #: id:31020
 msgctxt "Auto context with id 31020"
@@ -240,7 +241,7 @@ msgstr "Προσαρμογή"
 
 #: id:31116
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "Εμφάνιση των πρόσφατα προστιθέμενων άλμπουμ"
 
 #: id:31117
 msgid "Show Recently added Videos"
@@ -340,15 +341,15 @@ msgstr "Προέλευση στίχων"
 
 #: id:31206
 msgid "Found"
-msgstr ""
+msgstr "Βρέθηκαν"
 
 #: id:31207
 msgid "Find More Items"
-msgstr ""
+msgstr "Εύρεση περισσότερων"
 
 #: id:31208
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "Επερχόμενα Επεισόδια"
 
 #: id:31300
 msgid "Current Temp"
@@ -541,11 +542,11 @@ msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΚΕΛΥΦΟΥΣ[/B][CR][CR]Ρύθμιση του 
 
 #: id:31408
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΠΡΟΣΘΕΤΩΝ[/B][CR][CR]Διαχείριση εγκατεστημένων Πρόσθετων · Αναζήτηση και εγκατάσταση Πρόσθετων από το xbmc.org[CR]Τροποποίηση ρυθμίσεων των Πρόσθετων"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΠΡΟΣΘΕΤΩΝ[/B][CR][CR]Διαχείριση εγκατεστημένων πρόσθετων · Αναζήτηση και εγκατάσταση πρόσθετων από το xbmc.org[CR]Τροποποίηση ρυθμίσεων των πρόσθετων"
 
 #: id:31409
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr ""
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΥΠΗΡΕΣΙΑΣ[/B][CR][CR]Χειρισμός του XBMC μέσω UPnP και HTTP · Ρύθμιση κοινής χρήσης αρχείων[CR]Ενεργοποίηση Zeroconf · Ρύθμιση AirPlay"
 
 #: id:31421
 msgid "Select your XBMC user Profile[CR]to login and continue"

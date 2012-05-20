@@ -1,12 +1,14 @@
 # XBMC Media Center language file
+# Translators:
+# Gunnar Norin <blittan@xbmc.org>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-08 16:16+0000\n"
+"Last-Translator: Gunnar Norin <blittan@xbmc.org>\n"
+"Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,7 +53,7 @@ msgstr "Helskärm"
 
 #: id:31009
 msgid "Total Duration"
-msgstr ""
+msgstr "Total längd"
 
 #: id:31020
 msgctxt "Auto context with id 31020"
@@ -240,7 +242,7 @@ msgstr "Anpassare"
 
 #: id:31116
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "Visa nyligen tillagda album"
 
 #: id:31117
 msgid "Show Recently added Videos"
@@ -340,15 +342,15 @@ msgstr "Sångtextkälla"
 
 #: id:31206
 msgid "Found"
-msgstr ""
+msgstr "Hittade"
 
 #: id:31207
 msgid "Find More Items"
-msgstr ""
+msgstr "Hitta fler objekt"
 
 #: id:31208
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "Kommande avsnitt"
 
 #: id:31300
 msgid "Current Temp"
@@ -545,7 +547,7 @@ msgstr "[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade tillägg - Visa 
 
 #: id:31409
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr ""
+msgstr "[B]KONFIGURERA SERVICEINSTÄLLNINGAR[/B][CR][CR]Ställ in kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Aktivera Zeroconf · Konfigurera AirPlay"
 
 #: id:31421
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -1,12 +1,14 @@
 # XBMC Media Center language file
+# Translators:
+# Tadej Novak <tadej@tano.si>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-14 15:00+0000\n"
+"Last-Translator: Tadej Novak <tadej@tano.si>\n"
+"Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1000,6 +1002,14 @@ msgstr "Rezultati iskanja"
 msgid "No results found"
 msgstr "Ni rezultatov"
 
+#: id:285
+msgid "Preferred audio language"
+msgstr "Privzet jezik zvoka"
+
+#: id:286
+msgid "Preferred subtitle language"
+msgstr "Privzet jezik podnapisov"
+
 #: id:287
 msgctxt "Auto context with id 287"
 msgid "Subtitles"
@@ -1082,6 +1092,14 @@ msgstr "Vključeno"
 #: id:306
 msgid "Non-interleaved"
 msgstr "Brez prepletanja"
+
+#: id:308
+msgid "Original stream's language"
+msgstr "Originalen jezik vira"
+
+#: id:309
+msgid "User Interface language"
+msgstr "Jezik uporabniškega vmesnika"
 
 #: id:312
 msgid "(0=auto)"
@@ -1225,6 +1243,18 @@ msgstr "Leto"
 #: id:346
 msgid "Boost volume level on downmix"
 msgstr "Ojačaj zvok pri združevanju kanalov"
+
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD sprejemnik"
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Večkanalni LPCM sprejemnik"
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD sprejemnik"
 
 #: id:350
 msgctxt "Auto context with id 350"
@@ -2712,7 +2742,7 @@ msgstr "Ime brezžičnega omrežja (ESSID)"
 
 #: id:790
 msgid "Remote control"
-msgstr ""
+msgstr "Daljinski upravljalec"
 
 #: id:791
 msgid "Allow programs on this system to control XBMC"
@@ -2932,11 +2962,11 @@ msgstr "Nalagam mapo"
 
 #: id:1041
 msgid "Retrieved %i items"
-msgstr "Prenešenih %i elementov"
+msgstr "Prenešenih %i predmetov"
 
 #: id:1042
 msgid "Retrieved %i of %i items"
-msgstr "Prenešenih %i od %i elementov"
+msgstr "Prenešenih %i od %i predmetov"
 
 #: id:1043
 msgid "Program Add-ons"
@@ -3130,7 +3160,7 @@ msgstr "Povežem z samodejno zaznanim sistemom?"
 
 #: id:1259
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 #: id:1260
 msgid "Announce these services to other systems via Zeroconf"
@@ -3150,7 +3180,7 @@ msgstr "- Zaščiti z geslom"
 
 #: id:1273
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 #: id:1300
 msgid "Custom audio device"
@@ -5145,20 +5175,20 @@ msgstr "Varčevanje energije"
 
 #: id:14096
 msgid "Rip"
-msgstr ""
+msgstr "Pretvori"
 
 #: id:14097
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Dejanje ob vstavitvi zvočnega CD-ja"
 
 #: id:14098
 msgctxt "Auto context with id 14098"
 msgid "Play"
-msgstr ""
+msgstr "Predvajaj"
 
 #: id:14099
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Izvrzi CD, ko je pretvarjanje zaključeno"
 
 #: id:15015
 msgctxt "Auto context with id 15015"
@@ -6533,7 +6563,7 @@ msgstr "Prosim počakajte"
 
 #: id:20187
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 #: id:20189
 msgid "Enable auto scrolling for plot & review"
@@ -6747,7 +6777,7 @@ msgstr "Director"
 
 #: id:20340
 msgid "Do you want to remove all items within"
-msgstr "Želite odstraniti vse elemente"
+msgstr "Želite odstraniti vse predmete"
 
 #: id:20341
 msgid "this path from the XBMC library?"
@@ -7159,7 +7189,7 @@ msgstr "Želite osvežiti informacije"
 
 #: id:20444
 msgid "items within this path?"
-msgstr "vseh elementov s to potjo?"
+msgstr "vseh predmetov s to potjo?"
 
 #: id:20445
 msgid "Fanart"
@@ -7493,7 +7523,7 @@ msgstr "Pravilo pametnega predvajalnega seznama"
 
 #: id:21422
 msgid "Match items where"
-msgstr "Označi elemente kjer"
+msgstr "Označi predmete kjer"
 
 #: id:21423
 msgid "New rule..."
@@ -7501,7 +7531,7 @@ msgstr "Novo pravilo..."
 
 #: id:21424
 msgid "Items must match"
-msgstr "Elementi morajo ustrezati"
+msgstr "Predmeti morajo ustrezati"
 
 #: id:21425
 msgid "all of the rules"
@@ -7549,7 +7579,7 @@ msgstr "Uredi"
 
 #: id:21436
 msgid "%i items"
-msgstr "%i elementov"
+msgstr "%i predmetov"
 
 #: id:21437
 msgid "New smart playlist..."
@@ -8488,27 +8518,27 @@ msgstr "Obvestila"
 
 #: id:25001
 msgid "Hide foreign"
-msgstr ""
+msgstr "Skrij tuje"
 
 #: id:25002
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Izberi med vsemi naslovi ..."
 
 #: id:25003
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Prikaži menije bluraya"
 
 #: id:25004
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Predvajaj glavni naslov: %d"
 
 #: id:25005
 msgid "Title: %d"
-msgstr ""
+msgstr "Naslov: %d"
 
 #: id:25006
 msgid "Select playback item"
-msgstr ""
+msgstr "Izberi predmet predvajanja"
 
 #: id:29800
 msgid "Library Mode"
@@ -8900,6 +8930,25 @@ msgstr "7.0"
 msgid "7.1"
 msgstr "7.1"
 
+#: id:34120
+msgid "Play GUI sounds"
+msgstr "Predvajaj zvoke GUI"
+
+#: id:34121
+msgctxt "Play GUI sounds"
+msgid "Only when playback stopped"
+msgstr "Samo, ko se ne predvaja"
+
+#: id:34122
+msgctxt "Play GUI sounds"
+msgid "Always"
+msgstr "Vedno"
+
+#: id:34123
+msgctxt "Play GUI sounds"
+msgid "Never"
+msgstr "Nikoli"
+
 #: id:34201
 msgid "Can't find a next item to play"
 msgstr "Ni mogoče najti naslednjega predmeta za predvajanje"
@@ -8910,47 +8959,47 @@ msgstr "Ni mogoče najti prejšnjega predmeta za predvajanje"
 
 #: id:34300
 msgid "Failed to start zeroconf"
-msgstr ""
+msgstr "Ni mogoče zagnati zeroconf"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
+msgstr "Je Applova storitev Bonjour nameščena? V zapisniku najdete več informacij."
 
 #: id:34400
 msgid "Video Rendering"
-msgstr ""
+msgstr "Izris videa"
 
 #: id:34401
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
+msgstr "Ni mogoče zagnati filtrov/spreminjanja velikosti slike, prehajam nazaj na bilinearno spreminjanje velikosti"
 
 #: id:34402
 msgid "Failed to initialize audio device"
-msgstr ""
+msgstr "Ni mogoče zagnati zvočne naprave"
 
 #: id:34403
 msgid "Check your audiosettings"
-msgstr ""
+msgstr "Preverite vaše nastavitve zvoka"
 
 #: id:34404
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Uporabi geste za navigacijo:"
 
 #: id:34405
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "Potegnite 1 prst levo,desno,gor,dol za kurzorje"
 
 #: id:34406
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Potegnite 2 prsta levo za brisalko"
 
 #: id:34407
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "Udarite z 1 prstom za enter"
 
 #: id:34408
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Udarite z 2 prstoma ali dolgo pritisnite z 1 za vsebinski meni"
 
 #: id:35000
 msgid "Peripherals"
@@ -8990,7 +9039,7 @@ msgstr "Vključene bližnjice"
 
 #: id:35009
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Ne uporabi spremenjenih nastavitev ukazov za to napravo"
 
 #: id:35500
 msgid "Location"
@@ -9088,29 +9137,29 @@ msgstr "Uporabi jezikovne nastavitve TV"
 
 #: id:36019
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Povezan z napravo HDMI"
 
 #: id:36020
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Nastavi XBMC kot aktivni vir ob zagonu"
 
 #: id:36021
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Fizični naslov (prevlada nad vrati HDMI)"
 
 #: id:36022
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "COM vrata (pustite prazno, če ne potrebujete)"
 
 #: id:36023
 msgid "Configuration updated"
-msgstr ""
+msgstr "Nastavitve so podosobljene"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Ni mogoče uveljaviti novih nastavitev. Preverite svoje možnosti."
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Pošlji ukaz 'neaktiven vir' ob izhodu iz XBMC"
 

@@ -1,12 +1,14 @@
 # XBMC Media Center language file
+# Translators:
+# Roman Miroshnychenko <romanvm@yandex.ru>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-12 23:25+0000\n"
+"Last-Translator: Roman Miroshnychenko <romanvm@yandex.ru>\n"
+"Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,7 +23,7 @@ msgstr "Программы"
 #: id:1
 msgctxt "Auto context with id 1"
 msgid "Pictures"
-msgstr "Фотографии"
+msgstr "Фото"
 
 #: id:2
 msgctxt "Auto context with id 2"
@@ -1000,6 +1002,14 @@ msgstr "Результаты поиска"
 msgid "No results found"
 msgstr "Ничего не найдено"
 
+#: id:285
+msgid "Preferred audio language"
+msgstr "Предпочтительный язык аудио"
+
+#: id:286
+msgid "Preferred subtitle language"
+msgstr "Предпочтительный язык субтитров"
+
 #: id:287
 msgctxt "Auto context with id 287"
 msgid "Subtitles"
@@ -1082,6 +1092,14 @@ msgstr "Вкл."
 #: id:306
 msgid "Non-interleaved"
 msgstr "Без чередования"
+
+#: id:308
+msgid "Original stream's language"
+msgstr "Язык потока по умолчанию"
+
+#: id:309
+msgid "User Interface language"
+msgstr "Язык интерфейса"
 
 #: id:312
 msgid "(0=auto)"
@@ -1226,6 +1244,18 @@ msgstr "Год"
 msgid "Boost volume level on downmix"
 msgstr "Повышать громкость при смешивании"
 
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr "- Выводить звук в формате DTS-HD"
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Выводить звук в многоканальном формате LPCM"
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr "- Выводить звук в формате TrueHD"
+
 #: id:350
 msgctxt "Auto context with id 350"
 msgid "Programs"
@@ -1353,7 +1383,7 @@ msgstr "Днем"
 
 #: id:380
 msgid "Showers"
-msgstr ""
+msgstr "ливни"
 
 #: id:381
 msgid "Few"
@@ -2712,7 +2742,7 @@ msgstr "Имя беспроводной сети (ESSID)"
 
 #: id:790
 msgid "Remote control"
-msgstr ""
+msgstr "Удаленное[CR]управление"
 
 #: id:791
 msgid "Allow programs on this system to control XBMC"
@@ -3016,7 +3046,7 @@ msgstr "Видео"
 #: id:1213
 msgctxt "Auto context with id 1213"
 msgid "Pictures"
-msgstr "Фотографии"
+msgstr "Фото"
 
 #: id:1214
 msgctxt "Auto context with id 1214"
@@ -3130,7 +3160,7 @@ msgstr "Подключиться к найденной системе?"
 
 #: id:1259
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 #: id:1260
 msgid "Announce these services to other systems via Zeroconf"
@@ -3150,7 +3180,7 @@ msgstr "- Использовать пароль"
 
 #: id:1273
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 #: id:1300
 msgid "Custom audio device"
@@ -3203,7 +3233,7 @@ msgstr "в"
 
 #: id:1406
 msgid "the"
-msgstr ""
+msgstr " "
 
 #: id:1407
 msgid "Vicinity"
@@ -3305,7 +3335,7 @@ msgstr "Программы"
 #: id:10002
 msgctxt "Auto context with id 10002"
 msgid "Pictures"
-msgstr "Фотографии"
+msgstr "Фото"
 
 #: id:10003
 msgctxt "Auto context with id 10003"
@@ -3349,7 +3379,7 @@ msgstr "Настройки - Видео - Калибровка дисплея"
 
 #: id:10012
 msgid "Settings - Pictures"
-msgstr "Настройки - Фотографии"
+msgstr "Настройки - Фото"
 
 #: id:10013
 msgid "Settings - Programs"
@@ -4581,7 +4611,7 @@ msgstr "Эскиз"
 
 #: id:13406
 msgid "Picture information"
-msgstr "Сведения о фотографии"
+msgstr "Сведения о фото"
 
 #: id:13407
 msgid "%s presets"
@@ -5121,7 +5151,7 @@ msgstr "Шрифт текстовых субтитров"
 
 #: id:14090
 msgid "International"
-msgstr "Язык[CR]и стандарты"
+msgstr "Языковые[CR]настройки"
 
 #: id:14091
 msgid "Character set"
@@ -5145,20 +5175,20 @@ msgstr "Экономия[CR]энергии"
 
 #: id:14096
 msgid "Rip"
-msgstr ""
+msgstr "Оцифровать"
 
 #: id:14097
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Действие при вставке CD"
 
 #: id:14098
 msgctxt "Auto context with id 14098"
 msgid "Play"
-msgstr ""
+msgstr "Проиграть"
 
 #: id:14099
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Извлекать CD по окончании оцифровки"
 
 #: id:15015
 msgctxt "Auto context with id 15015"
@@ -5693,11 +5723,11 @@ msgstr "Просмотрено"
 
 #: id:16103
 msgid "Mark as watched"
-msgstr "В просмотренные"
+msgstr "Отмет. как просмотренное"
 
 #: id:16104
 msgid "Mark as unwatched"
-msgstr "В непросмотренные"
+msgstr "Отмет. как непросмотренное"
 
 #: id:16105
 msgid "Edit title"
@@ -5947,7 +5977,7 @@ msgstr "Заблокировать раздел \"Видео\""
 
 #: id:20040
 msgid "Lock pictures window"
-msgstr "Заблокировать раздел \"Фотографии\""
+msgstr "Заблокировать раздел \"Фото\""
 
 #: id:20041
 msgid "Lock programs & scripts windows"
@@ -6396,7 +6426,7 @@ msgstr "Заблокировать предпочтения для %s"
 
 #: id:20153
 msgid "Browse..."
-msgstr "Просмотр…"
+msgstr "Обзор…"
 
 #: id:20154
 msgid "Summary information"
@@ -6509,7 +6539,7 @@ msgstr "Символы"
 
 #: id:20181
 msgid "Backspace"
-msgstr "<- Backspace"
+msgstr "<---"
 
 #: id:20182
 msgid "Space"
@@ -6533,7 +6563,7 @@ msgstr "Подождите…"
 
 #: id:20187
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 #: id:20189
 msgid "Enable auto scrolling for plot & review"
@@ -6702,7 +6732,7 @@ msgstr "Укажите назначение"
 
 #: id:20329
 msgid "Movies are in separate folders that match the movie title"
-msgstr "Файлы в отдельных папках с названием фильма"
+msgstr "Файлы в отдельных папках с названиями фильмов"
 
 #: id:20330
 msgid "Use folder names for lookups"
@@ -8488,27 +8518,27 @@ msgstr "Уведомления"
 
 #: id:25001
 msgid "Hide foreign"
-msgstr ""
+msgstr "Скрывать дополнения на других языках"
 
 #: id:25002
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Выбрать тайтл…"
 
 #: id:25003
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Показать меню BluRay"
 
 #: id:25004
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Воспроизвести главный тайтл: %d"
 
 #: id:25005
 msgid "Title: %d"
-msgstr ""
+msgstr "Тайтл: %d"
 
 #: id:25006
 msgid "Select playback item"
-msgstr ""
+msgstr "Выбрать объект для воспроизведения"
 
 #: id:29800
 msgid "Library Mode"
@@ -8900,6 +8930,25 @@ msgstr "7.0"
 msgid "7.1"
 msgstr "7.1"
 
+#: id:34120
+msgid "Play GUI sounds"
+msgstr "Звуки интерфейса"
+
+#: id:34121
+msgctxt "Play GUI sounds"
+msgid "Only when playback stopped"
+msgstr "Только при остановленном проигрывании"
+
+#: id:34122
+msgctxt "Play GUI sounds"
+msgid "Always"
+msgstr "Всегда"
+
+#: id:34123
+msgctxt "Play GUI sounds"
+msgid "Never"
+msgstr "Никогда"
+
 #: id:34201
 msgid "Can't find a next item to play"
 msgstr "Не удается найти следующий файл"
@@ -8934,23 +8983,23 @@ msgstr "Проверьте настройки аудио"
 
 #: id:34404
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Использовать жесты для навигации"
 
 #: id:34405
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "Проводка одним пальцем вверх/вниз/вправо/влево — движение курсора"
 
 #: id:34406
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Проводка двумя пальцами влево — Backspace"
 
 #: id:34407
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "Однократное нажатие одним пальцем — ввод"
 
 #: id:34408
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Однократное нажатие двумя пальцами — контекстное меню"
 
 #: id:35000
 msgid "Peripherals"
@@ -8990,7 +9039,7 @@ msgstr "Раскладка включена"
 
 #: id:35009
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Не использовать пользовательскую раскладку для этого устройства"
 
 #: id:35500
 msgid "Location"
@@ -9043,11 +9092,11 @@ msgstr "Не удалось открыть адаптер"
 
 #: id:36007
 msgid "Devices to power on when starting XBMC"
-msgstr "Включать ТВ при старте XBMC"
+msgstr "Включать следующие устройства при старте XBMC"
 
 #: id:36008
 msgid "Devices to power off when stopping XBMC"
-msgstr "Выключать устройства при выходе из XBMC"
+msgstr "Выключать следующие устройства при выходе из XBMC"
 
 #: id:36009
 msgid "Put devices in standby mode when activating screensaver"
@@ -9059,11 +9108,11 @@ msgstr "Не удалось обнаружить порт CEC. Настройт�
 
 #: id:36012
 msgid "Could not initialise the CEC adapter. Check your settings."
-msgstr "Не удалось обнаружить адаптер CEC."
+msgstr "Не удалось инициализировать адаптер CEC. Проверьте настройки."
 
 #: id:36013
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Неподдерживаемая версия интерфейса libcec. %d выше, чем версия, поддерживаемая XBMC (%d)"
+msgstr "Неподдерживаемая версия интерфейса libCEC. %d выше, чем версия, поддерживаемая XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"
@@ -9080,7 +9129,7 @@ msgstr "Подключено"
 
 #: id:36017
 msgid "Adapter found, but libCEC is not available"
-msgstr "Адаптер найден, но libcec недоступен"
+msgstr "Адаптер найден, но libCEC недоступен"
 
 #: id:36018
 msgid "Use the TV's language setting"
@@ -9088,29 +9137,29 @@ msgstr "Использовать языковые настройки ТВ"
 
 #: id:36019
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Подключено к устройству HDMI"
 
 #: id:36020
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Сделать XBMC активным источником при старте"
 
 #: id:36021
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Физический адрес (игнорировать № порта HDMI)"
 
 #: id:36022
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "COM-порт (вводите только при необходимости)"
 
 #: id:36023
 msgid "Configuration updated"
-msgstr ""
+msgstr "Конфигурация обновлена"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Не удалось задать новую конфигурацию. Проверьте настройки."
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Посылать команду \"источник неактивен\" при выходе из XBMC"
 

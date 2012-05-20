@@ -1,12 +1,14 @@
 # XBMC Media Center language file
+# Translators:
+#   <machine.sanctum@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-12 22:12+0000\n"
+"Last-Translator: Martijn <machine.sanctum@gmail.com>\n"
+"Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1000,6 +1002,14 @@ msgstr "Zoekresultaten"
 msgid "No results found"
 msgstr "Niets gevonden"
 
+#: id:285
+msgid "Preferred audio language"
+msgstr "Audiotaal voorkeur"
+
+#: id:286
+msgid "Preferred subtitle language"
+msgstr "Ondertitelingstaal voorkeur"
+
 #: id:287
 msgctxt "Auto context with id 287"
 msgid "Subtitles"
@@ -1082,6 +1092,14 @@ msgstr "Ingeschakeld"
 #: id:306
 msgid "Non-interleaved"
 msgstr "Non-Interleaved"
+
+#: id:308
+msgid "Original stream's language"
+msgstr ""
+
+#: id:309
+msgid "User Interface language"
+msgstr "Gebruikersinterface taal"
 
 #: id:312
 msgid "(0=auto)"
@@ -1225,6 +1243,18 @@ msgstr "Jaar"
 #: id:346
 msgid "Boost volume level on downmix"
 msgstr "Volume verhogen bij downmixen"
+
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr "- Versterker ondersteunt DTS-HD"
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Versterker ondersteunt Mutikanaals LPCM"
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr "- Versterker ondersteunt TrueHD"
 
 #: id:350
 msgctxt "Auto context with id 350"
@@ -2712,7 +2742,7 @@ msgstr "Naam draadloos netwerk (ESSID)"
 
 #: id:790
 msgid "Remote control"
-msgstr ""
+msgstr "Afstandbediening"
 
 #: id:791
 msgid "Allow programs on this system to control XBMC"
@@ -2948,7 +2978,7 @@ msgstr "Plugin-afbeelding instellen"
 
 #: id:1045
 msgid "Add-on settings"
-msgstr "Addon-instelingen"
+msgstr "Add-on instellingen"
 
 #: id:1046
 msgid "Access points"
@@ -3130,7 +3160,7 @@ msgstr "Verbinding maken met de gevonden systeem?"
 
 #: id:1259
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 #: id:1260
 msgid "Announce these services to other systems via Zeroconf"
@@ -3150,7 +3180,7 @@ msgstr "- Beveiliging met wachtwoord"
 
 #: id:1273
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 #: id:1300
 msgid "Custom audio device"
@@ -5145,7 +5175,7 @@ msgstr "Energiebeheer"
 
 #: id:14096
 msgid "Rip"
-msgstr ""
+msgstr "Rip"
 
 #: id:14097
 msgid "Audio CD Insert Action"
@@ -5154,7 +5184,7 @@ msgstr ""
 #: id:14098
 msgctxt "Auto context with id 14098"
 msgid "Play"
-msgstr ""
+msgstr "Afspelen"
 
 #: id:14099
 msgid "Eject disc when CD ripping is complete"
@@ -6533,7 +6563,7 @@ msgstr "Even geduld..."
 
 #: id:20187
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 #: id:20189
 msgid "Enable auto scrolling for plot & review"
@@ -8496,19 +8526,19 @@ msgstr ""
 
 #: id:25003
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Toon bluray menu's"
 
 #: id:25004
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Speel hoofdfilm: %d"
 
 #: id:25005
 msgid "Title: %d"
-msgstr ""
+msgstr "Titel\"%d"
 
 #: id:25006
 msgid "Select playback item"
-msgstr ""
+msgstr "Selecteer afspeel item"
 
 #: id:29800
 msgid "Library Mode"
@@ -8899,6 +8929,25 @@ msgstr "7.0"
 #: id:34110
 msgid "7.1"
 msgstr "7.1"
+
+#: id:34120
+msgid "Play GUI sounds"
+msgstr ""
+
+#: id:34121
+msgctxt "Play GUI sounds"
+msgid "Only when playback stopped"
+msgstr ""
+
+#: id:34122
+msgctxt "Play GUI sounds"
+msgid "Always"
+msgstr "Altijd"
+
+#: id:34123
+msgctxt "Play GUI sounds"
+msgid "Never"
+msgstr "Nooit"
 
 #: id:34201
 msgid "Can't find a next item to play"

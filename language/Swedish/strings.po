@@ -1,12 +1,14 @@
 # XBMC Media Center language file
+# Translators:
+# Gunnar Norin <blittan@xbmc.org>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-13 16:08+0000\n"
+"Last-Translator: Gunnar Norin <blittan@xbmc.org>\n"
+"Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,7 +37,7 @@ msgstr "Videor"
 
 #: id:4
 msgid "TV-Guide"
-msgstr "TV-guide"
+msgstr "TV-Guide"
 
 #: id:5
 msgctxt "Auto context with id 5"
@@ -44,7 +46,7 @@ msgstr "Inställningar"
 
 #: id:6
 msgid "XBMC SVN"
-msgstr ""
+msgstr "XBMC SVN"
 
 #: id:7
 msgctxt "Auto context with id 7"
@@ -58,7 +60,7 @@ msgstr "Väder"
 
 #: id:9
 msgid "xbmc media center"
-msgstr ""
+msgstr "xbmc media center"
 
 #: id:11
 msgid "Monday"
@@ -586,7 +588,7 @@ msgstr "Utgivningsdatum"
 
 #: id:173
 msgid "Display 4:3 videos as"
-msgstr "Visa 4:3 filmer som"
+msgstr "Visa 4:3 Videor som"
 
 #: id:175
 msgid "Moods"
@@ -1000,6 +1002,14 @@ msgstr "Sökresultat"
 msgid "No results found"
 msgstr "Inga resultat hittades"
 
+#: id:285
+msgid "Preferred audio language"
+msgstr "Föredraget ljudspråk"
+
+#: id:286
+msgid "Preferred subtitle language"
+msgstr "Föredraget undertextspråk"
+
 #: id:287
 msgctxt "Auto context with id 287"
 msgid "Subtitles"
@@ -1082,6 +1092,14 @@ msgstr "Aktiverad"
 #: id:306
 msgid "Non-interleaved"
 msgstr "Icke-interfolierad"
+
+#: id:308
+msgid "Original stream's language"
+msgstr "Originalströmmens språk"
+
+#: id:309
+msgid "User Interface language"
+msgstr "Användargränssnittetspråk"
 
 #: id:312
 msgid "(0=auto)"
@@ -1225,6 +1243,18 @@ msgstr "År"
 #: id:346
 msgid "Boost volume level on downmix"
 msgstr "Öka volymen vid nedmixning"
+
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr "DHT-HD kapabel förstärkare"
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr "Multikanal-LPCM kapabel förstärkare"
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr "TrueHD kapabel förstärkare"
 
 #: id:350
 msgctxt "Auto context with id 350"
@@ -2712,7 +2742,7 @@ msgstr "Trådlöst nätverksnamn (ESSID)"
 
 #: id:790
 msgid "Remote control"
-msgstr ""
+msgstr "Fjärrkontroll"
 
 #: id:791
 msgid "Allow programs on this system to control XBMC"
@@ -3130,7 +3160,7 @@ msgstr "Vill du ansluta till det autodetekterade systemet?"
 
 #: id:1259
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 #: id:1260
 msgid "Announce these services to other systems via Zeroconf"
@@ -3150,7 +3180,7 @@ msgstr "- Använd lösenordsskydd"
 
 #: id:1273
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 #: id:1300
 msgid "Custom audio device"
@@ -3203,7 +3233,7 @@ msgstr "i"
 
 #: id:1406
 msgid "the"
-msgstr ""
+msgstr " "
 
 #: id:1407
 msgid "Vicinity"
@@ -3325,7 +3355,7 @@ msgstr "Musik"
 #: id:10006
 msgctxt "Auto context with id 10006"
 msgid "Videos"
-msgstr "Filmer"
+msgstr "Videor"
 
 #: id:10007
 msgid "System information"
@@ -3345,7 +3375,7 @@ msgstr "Inställningar - Utseende - GUI-kalibrering"
 
 #: id:10011
 msgid "Settings - Videos - Screen Calibration"
-msgstr "Inställningar - Filmer - Skärmkalibrering"
+msgstr "Inställningar - Videor - Skärmkalibrering"
 
 #: id:10012
 msgid "Settings - Pictures"
@@ -3369,7 +3399,7 @@ msgstr "Inställningar - System"
 
 #: id:10017
 msgid "Settings - Videos"
-msgstr "Inställningar - Filmer"
+msgstr "Inställningar - Videor"
 
 #: id:10018
 msgid "Settings - Network"
@@ -3391,16 +3421,16 @@ msgstr "Webbläsare"
 #: id:10025
 msgctxt "Auto context with id 10025"
 msgid "Videos"
-msgstr ""
+msgstr "Videor"
 
 #: id:10028
 msgid "Videos/Playlist"
-msgstr "Filmer/Spellista"
+msgstr "Videor/Spellista"
 
 #: id:10029
 msgctxt "Auto context with id 10029"
 msgid "Login screen"
-msgstr ""
+msgstr "Inloggningsskärm"
 
 #: id:10034
 msgid "Settings - Profiles"
@@ -3408,7 +3438,7 @@ msgstr "Inställningar - Profiler"
 
 #: id:10040
 msgid "Addon browser"
-msgstr ""
+msgstr "Tilläggsutforskare"
 
 #: id:10100
 msgid "Yes/No dialog"
@@ -3498,7 +3528,7 @@ msgstr "Nu spelas - Musik"
 
 #: id:10522
 msgid "Now Playing - Videos"
-msgstr "Nu spelas - Filmer"
+msgstr "Nu spelas - Videor"
 
 #: id:10523
 msgid "Album info"
@@ -3522,7 +3552,7 @@ msgstr "Dialog OK"
 
 #: id:12003
 msgid "Videos/Info"
-msgstr "Filmer/Info"
+msgstr "Videor/Info"
 
 #: id:12004
 msgid "Scripts/Info"
@@ -3550,7 +3580,7 @@ msgstr "Återgå till Musik"
 
 #: id:12011
 msgid "Return to videos window"
-msgstr "Återgå till Filmer"
+msgstr "Återgå till Videor"
 
 #: id:12021
 msgid "Start from beginning"
@@ -5145,20 +5175,20 @@ msgstr "Strömbesparing"
 
 #: id:14096
 msgid "Rip"
-msgstr ""
+msgstr "Rippa"
 
 #: id:14097
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Åtgärd vid insättning av ljud-CD"
 
 #: id:14098
 msgctxt "Auto context with id 14098"
 msgid "Play"
-msgstr ""
+msgstr "Spela"
 
 #: id:14099
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Mata ut CD när rippningen är färdig"
 
 #: id:15015
 msgctxt "Auto context with id 15015"
@@ -5681,7 +5711,7 @@ msgstr "På"
 
 #: id:16100
 msgid "All Videos"
-msgstr "Alla filmer"
+msgstr "Alla videor"
 
 #: id:16101
 msgid "Unwatched"
@@ -6533,7 +6563,7 @@ msgstr "Var god vänta"
 
 #: id:20187
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 #: id:20189
 msgid "Enable auto scrolling for plot & review"
@@ -6582,15 +6612,15 @@ msgstr "Nedladdning av artistinfo misslyckades"
 
 #: id:20250
 msgid "Party on! (videos)"
-msgstr "Festa på! (filmer)"
+msgstr "Festa på! (videor)"
 
 #: id:20251
 msgid "Mixing drinks (videos)"
-msgstr "Blandar drinkar (filmer)"
+msgstr "Blandar drinkar (videor)"
 
 #: id:20252
 msgid "Filling glasses (videos)"
-msgstr "Fyller glasen (filmer)"
+msgstr "Fyller glasen (videor)"
 
 #: id:20253
 msgid "WebDAV server (HTTP)"
@@ -6702,7 +6732,7 @@ msgstr "Bläddra efter destination"
 
 #: id:20329
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
+msgstr "Filmer är i separata mappar som matchar filmtiteln"
 
 #: id:20330
 msgid "Use folder names for lookups"
@@ -7215,7 +7245,7 @@ msgstr "Filmset"
 
 #: id:20458
 msgid "Group movies in sets"
-msgstr ""
+msgstr "Gruppera filmer i samlingar"
 
 #: id:21330
 msgid "Show hidden files and directories"
@@ -7621,11 +7651,11 @@ msgstr "Rotfilsystem"
 
 #: id:21454
 msgid "Cache full"
-msgstr ""
+msgstr "Buffert full"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
+msgstr "Buffert fylldes innan tillräcklig mängd som krävs för kontinuerlig uppspelning"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8112,7 +8142,7 @@ msgstr "svart/vit"
 
 #: id:22079
 msgid "Default select action"
-msgstr "Standardaktion för val"
+msgstr "Standardåtgärd för val"
 
 #: id:22080
 msgid "Choose"
@@ -8488,27 +8518,27 @@ msgstr "Notifieringar"
 
 #: id:25001
 msgid "Hide foreign"
-msgstr ""
+msgstr "Dölj utländska"
 
 #: id:25002
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Välj från alla titlar ..."
 
 #: id:25003
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Visa Bluray-menyer"
 
 #: id:25004
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Spela huvudtitel: %d"
 
 #: id:25005
 msgid "Title: %d"
-msgstr ""
+msgstr "Titel: %d"
 
 #: id:25006
 msgid "Select playback item"
-msgstr ""
+msgstr "Välj uppspelningsobjekt"
 
 #: id:29800
 msgid "Library Mode"
@@ -8830,7 +8860,7 @@ msgstr "Fjärrkommunikationsserver"
 
 #: id:33200
 msgid "Detected New Connection"
-msgstr ""
+msgstr "Upptäckte ny anslutning"
 
 #: id:34000
 msgid "Lame"
@@ -8900,6 +8930,25 @@ msgstr "7.0"
 msgid "7.1"
 msgstr "7.1"
 
+#: id:34120
+msgid "Play GUI sounds"
+msgstr "Spela GUI-ljud"
+
+#: id:34121
+msgctxt "Play GUI sounds"
+msgid "Only when playback stopped"
+msgstr "Endast när uppspelning stoppas"
+
+#: id:34122
+msgctxt "Play GUI sounds"
+msgid "Always"
+msgstr "Alltid"
+
+#: id:34123
+msgctxt "Play GUI sounds"
+msgid "Never"
+msgstr "Aldrig"
+
 #: id:34201
 msgid "Can't find a next item to play"
 msgstr "Kan inte hitta nästa objekt att spela"
@@ -8910,47 +8959,47 @@ msgstr "Kan inte hitta föregående objekt att spela"
 
 #: id:34300
 msgid "Failed to start zeroconf"
-msgstr ""
+msgstr "Kunde inte starta zeroconf"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
+msgstr "Är Apples Bonjour-service installerad? Se loggen för mer info."
 
 #: id:34400
 msgid "Video Rendering"
-msgstr ""
+msgstr "Videorendering"
 
 #: id:34401
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
+msgstr "Misslyckades initiera videofilter/skalare, återgår till bilinear skala"
 
 #: id:34402
 msgid "Failed to initialize audio device"
-msgstr ""
+msgstr "Misslyckades initiera ljudenhet"
 
 #: id:34403
 msgid "Check your audiosettings"
-msgstr ""
+msgstr "Kontrollera dina ljudinställningar"
 
 #: id:34404
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Använd gester för navigering:"
 
 #: id:34405
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "Enfingersvep åt vänster, höger, upp, ner för markör"
 
 #: id:34406
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Tvåfingersvep åt vänster för backsteg"
 
 #: id:34407
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "Enfingerklick för enter"
 
 #: id:34408
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Tvåfingerslag eller långtryck med ett finger för undermeny"
 
 #: id:35000
 msgid "Peripherals"
@@ -8990,7 +9039,7 @@ msgstr "Tangentmappning aktiverad"
 
 #: id:35009
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Använd inte egen keymap för denna enhet"
 
 #: id:35500
 msgid "Location"
@@ -9088,29 +9137,29 @@ msgstr "Använd TV'ns språkinställning"
 
 #: id:36019
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Ansluten till HDMI-enhet"
 
 #: id:36020
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Gör XBMC den aktiva källan vid start"
 
 #: id:36021
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Fysisk adress (åsidosätter HDMI-port)"
 
 #: id:36022
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "COM-port (lämna tom om den inte behövs)"
 
 #: id:36023
 msgid "Configuration updated"
-msgstr ""
+msgstr "Konfiguration uppdaterad"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Misslyckads att ange den nya konfigurationen. Var god kontrollera dina inställningar."
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Skicka 'inaktiv källa' kommandot när XBMC stoppas"
 

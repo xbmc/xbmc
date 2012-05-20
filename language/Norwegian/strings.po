@@ -1,12 +1,14 @@
 # XBMC Media Center language file
+# Translators:
+#   <thomas.amland@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-16 10:16+0000\n"
+"Last-Translator: takoi <thomas.amland@gmail.com>\n"
+"Language-Team: Norwegian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -139,81 +141,81 @@ msgstr "desember"
 
 #: id:41
 msgid "Mon"
-msgstr "Man"
+msgstr "ma."
 
 #: id:42
 msgid "Tue"
-msgstr "Tir"
+msgstr "ti."
 
 #: id:43
 msgid "Wed"
-msgstr "Ons"
+msgstr "on."
 
 #: id:44
 msgid "Thu"
-msgstr "Tor"
+msgstr "to."
 
 #: id:45
 msgid "Fri"
-msgstr "Fre"
+msgstr "fr."
 
 #: id:46
 msgid "Sat"
-msgstr "Lør"
+msgstr "lø."
 
 #: id:47
 msgctxt "Auto context with id 47"
 msgid "Sun"
-msgstr "Søn"
+msgstr "sø."
 
 #: id:51
 msgid "Jan"
-msgstr "Jan"
+msgstr "jan."
 
 #: id:52
 msgid "Feb"
-msgstr "Feb"
+msgstr "feb."
 
 #: id:53
 msgid "Mar"
-msgstr "Mar"
+msgstr "mars"
 
 #: id:54
 msgid "Apr"
-msgstr "Apr"
+msgstr "april"
 
 #: id:55
 msgctxt "Auto context with id 55"
 msgid "May"
-msgstr "Mai"
+msgstr "mai"
 
 #: id:56
 msgid "Jun"
-msgstr "Jun"
+msgstr "juni"
 
 #: id:57
 msgid "Jul"
-msgstr "Jul"
+msgstr "juli"
 
 #: id:58
 msgid "Aug"
-msgstr "Aug"
+msgstr "aug."
 
 #: id:59
 msgid "Sep"
-msgstr "Sep"
+msgstr "sep."
 
 #: id:60
 msgid "Oct"
-msgstr "Okt"
+msgstr "okt."
 
 #: id:61
 msgid "Nov"
-msgstr "Nov"
+msgstr "nov."
 
 #: id:62
 msgid "Dec"
-msgstr "Des"
+msgstr "des."
 
 #: id:71
 msgid "N"
@@ -405,7 +407,7 @@ msgstr "Status"
 
 #: id:127
 msgid "Objects"
-msgstr "objekter"
+msgstr "elementer"
 
 #: id:128
 msgctxt "Auto context with id 128"
@@ -569,7 +571,7 @@ msgstr "Disk tilstede"
 
 #: id:166
 msgid "Skin"
-msgstr "Skinn"
+msgstr "Skall"
 
 #: id:169
 msgctxt "Auto context with id 169"
@@ -684,7 +686,7 @@ msgstr "Webgrensesnitt"
 
 #: id:202
 msgid "Tagline"
-msgstr "Slagord"
+msgstr "Beskrivelse"
 
 #: id:203
 msgid "Plot outline"
@@ -700,7 +702,7 @@ msgstr "Skuesp."
 
 #: id:207
 msgid "Plot"
-msgstr "Plott"
+msgstr "Handling"
 
 #: id:208
 msgctxt "Auto context with id 208"
@@ -1000,6 +1002,14 @@ msgstr "Søkeresultater"
 msgid "No results found"
 msgstr "Ingen resultater funnet"
 
+#: id:285
+msgid "Preferred audio language"
+msgstr ""
+
+#: id:286
+msgid "Preferred subtitle language"
+msgstr ""
+
 #: id:287
 msgctxt "Auto context with id 287"
 msgid "Subtitles"
@@ -1082,6 +1092,14 @@ msgstr "Aktivert"
 #: id:306
 msgid "Non-interleaved"
 msgstr "Ikke-innfelt"
+
+#: id:308
+msgid "Original stream's language"
+msgstr ""
+
+#: id:309
+msgid "User Interface language"
+msgstr ""
 
 #: id:312
 msgid "(0=auto)"
@@ -1225,6 +1243,18 @@ msgstr "År"
 #: id:346
 msgid "Boost volume level on downmix"
 msgstr "Øk volumet ved nedmiks"
+
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr ""
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr ""
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr ""
 
 #: id:350
 msgctxt "Auto context with id 350"
@@ -1488,7 +1518,7 @@ msgstr "Manuelt"
 
 #: id:414
 msgid "No review for this album"
-msgstr "Ingen anmeldelse av dette albumet"
+msgstr "Ingen anmeldelser av dette albumet"
 
 #: id:415
 msgid "Downloading thumbnail..."
@@ -1732,7 +1762,7 @@ msgstr "OSD"
 
 #: id:479
 msgid "Skin & language"
-msgstr "Skinn og språk"
+msgstr "Skall og språk"
 
 #: id:480
 msgid "Appearance"
@@ -2569,7 +2599,7 @@ msgstr "Endre sti"
 
 #: id:749
 msgid "Mirror image"
-msgstr "Speil bilde"
+msgstr "Speilvend bilde"
 
 #: id:750
 msgid "Are you sure?"
@@ -3150,7 +3180,7 @@ msgstr ""
 
 #: id:1273
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 #: id:1300
 msgid "Custom audio device"
@@ -3742,7 +3772,7 @@ msgstr "Innstillinger & filbehandler"
 
 #: id:12376
 msgid "Set as default for all movies"
-msgstr "Sett som standard for alle filmer"
+msgstr "Sett som standard for alle videoer"
 
 #: id:12377
 msgid "This will reset any previously saved values"
@@ -3778,7 +3808,7 @@ msgstr "Systemets oppetid"
 
 #: id:12391
 msgid "Minutes"
-msgstr "Minutter"
+msgstr "minutter"
 
 #: id:12392
 msgid "Hours"
@@ -4406,7 +4436,7 @@ msgstr "Søk etter nytt innhold"
 
 #: id:13350
 msgid "Now playing..."
-msgstr "Nå spilles..."
+msgstr "Spilles nå..."
 
 #: id:13351
 msgctxt "Auto context with id 13351"
@@ -4536,7 +4566,7 @@ msgstr "Kalkulerer mappestørrelse"
 
 #: id:13395
 msgid "Video settings"
-msgstr "Filminnstillinger"
+msgstr "Videoinnstillinger"
 
 #: id:13396
 msgid "Audio and subtitle settings"
@@ -5068,7 +5098,7 @@ msgstr "Bruk sommertid"
 
 #: id:14076
 msgid "Add to favourites"
-msgstr "Legg til favoritter"
+msgstr "Legg til i favoritter"
 
 #: id:14077
 msgid "Remove from favourites"
@@ -5081,7 +5111,7 @@ msgstr "- Farger"
 
 #: id:14079
 msgid "Timezone country"
-msgstr "Tidssone land"
+msgstr "Tidssone, land"
 
 #: id:14080
 msgid "Timezone"
@@ -5121,7 +5151,7 @@ msgstr "Skrifttype for undertekster"
 
 #: id:14090
 msgid "International"
-msgstr "Språk og lokalisering"
+msgstr "Språk"
 
 #: id:14091
 msgid "Character set"
@@ -5697,7 +5727,7 @@ msgstr "Merk som sett"
 
 #: id:16104
 msgid "Mark as unwatched"
-msgstr "Merk som usett"
+msgstr "Merk som «ikke sett»"
 
 #: id:16105
 msgid "Edit title"
@@ -5733,7 +5763,7 @@ msgstr "Kunne ikke slette en eller flere filer"
 
 #: id:16300
 msgid "Video scaling method"
-msgstr "Videoskaleringsmetode"
+msgstr "Skaleringsmetode"
 
 #: id:16301
 msgid "Nearest neighbour"
@@ -6093,7 +6123,7 @@ msgstr "Spør etter masterlåskode ved oppstart"
 
 #: id:20077
 msgid "Skin settings"
-msgstr "Skinn-innstillinger"
+msgstr "Skallinnstillinger"
 
 #: id:20078
 msgid "- no link set -"
@@ -6533,7 +6563,7 @@ msgstr "Vennligst vent"
 
 #: id:20187
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 #: id:20189
 msgid "Enable auto scrolling for plot & review"
@@ -6924,11 +6954,11 @@ msgstr "Valgt mappe inneholder kun én film"
 
 #: id:20384
 msgid "Link to TV show"
-msgstr "Linke til TV-serie"
+msgstr "Koble med TV-serie"
 
 #: id:20385
 msgid "Remove link to TV show"
-msgstr "Fjern link til TV-serie"
+msgstr "Fjern kobling til TV-serie"
 
 #: id:20386
 msgid "Recently added movies"
@@ -7029,11 +7059,11 @@ msgstr "Trailer"
 
 #: id:20411
 msgid "Flatten"
-msgstr "Flate ut"
+msgstr "Slå sammen"
 
 #: id:20412
 msgid "Flatten TV shows"
-msgstr "Flat ut TV-serier"
+msgstr "Slå sammen TV-serier"
 
 #: id:20413
 msgid "Get fanart"
@@ -7119,11 +7149,11 @@ msgstr "Ekstraher miniatyrer og videoinformasjon"
 
 #: id:20434
 msgid "Sets"
-msgstr "Sett"
+msgstr "Samlinger"
 
 #: id:20435
 msgid "Set movieset thumb"
-msgstr "Sett filmsettminiatyr"
+msgstr "Endre miniatyr"
 
 #: id:20436
 msgid "Export actor thumbs?"
@@ -7605,7 +7635,7 @@ msgstr "Fjernkontroll sender tastetrykk (tastatur)"
 
 #: id:21450
 msgid "- Edit"
-msgstr "- Editer"
+msgstr "- Rediger"
 
 #: id:21451
 msgid "Internet connection required."
@@ -8472,7 +8502,7 @@ msgstr "Ødelagt"
 
 #: id:24099
 msgid "Would you like to switch to this skin?"
-msgstr "Ønsker du å bytte til dette skinnet nå?"
+msgstr "Ønsker du å bytte til dette skallet nå?"
 
 #: id:24100
 msgid "To use this feature you must download an Add-on:"
@@ -8899,6 +8929,25 @@ msgstr "7,0"
 #: id:34110
 msgid "7.1"
 msgstr "7.1"
+
+#: id:34120
+msgid "Play GUI sounds"
+msgstr ""
+
+#: id:34121
+msgctxt "Play GUI sounds"
+msgid "Only when playback stopped"
+msgstr ""
+
+#: id:34122
+msgctxt "Play GUI sounds"
+msgid "Always"
+msgstr ""
+
+#: id:34123
+msgctxt "Play GUI sounds"
+msgid "Never"
+msgstr ""
 
 #: id:34201
 msgid "Can't find a next item to play"

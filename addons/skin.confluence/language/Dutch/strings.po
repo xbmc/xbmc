@@ -1,12 +1,14 @@
 # XBMC Media Center language file
+# Translators:
+#   <machine.sanctum@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-10 16:07+0000\n"
+"Last-Translator: Martijn <machine.sanctum@gmail.com>\n"
+"Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,7 +53,7 @@ msgstr "Volledig scherm"
 
 #: id:31009
 msgid "Total Duration"
-msgstr ""
+msgstr "Totale duur"
 
 #: id:31020
 msgctxt "Auto context with id 31020"
@@ -240,7 +242,7 @@ msgstr "Aanpassen"
 
 #: id:31116
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "Toon recent toegevoegde albums"
 
 #: id:31117
 msgid "Show Recently added Videos"
@@ -280,7 +282,7 @@ msgstr ""
 
 #: id:31127
 msgid "TvTunes"
-msgstr ""
+msgstr "TvTunes"
 
 #: id:31128
 msgid "Lyrics"
@@ -340,15 +342,15 @@ msgstr "Liedtekst bron"
 
 #: id:31206
 msgid "Found"
-msgstr ""
+msgstr "Gevonden"
 
 #: id:31207
 msgid "Find More Items"
-msgstr ""
+msgstr "Vind meer items"
 
 #: id:31208
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "Aankomende afleveringen"
 
 #: id:31300
 msgid "Current Temp"
@@ -364,7 +366,7 @@ msgstr "Menu"
 
 #: id:31303
 msgid "Data provider"
-msgstr ""
+msgstr "Data provider"
 
 #: id:31304
 msgid "Picture"
