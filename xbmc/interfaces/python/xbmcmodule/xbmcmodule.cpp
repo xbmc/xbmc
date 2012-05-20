@@ -970,56 +970,6 @@ namespace PYXBMC
     return Py_BuildValue((char*)"ss",strSize.c_str(), strHash.c_str());
   } 
 
-  // getcleanmovietitle function
-  PyDoc_STRVAR(setLanguage__doc__,
-    "setLanguage(language)\n"
-    "\n"
-    "language       : string or unicode - Language string\n"
-    "\n"
-    "example:\n"
-    "  xbmc.setLanguage('English')");
-
-  PyObject* XBMC_SetLanguage(PyObject *self, PyObject *args)
-  {
-    char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
-    CStdString strLanguage = cLine;
-    CFileItemList items;
-    CDirectory::GetDirectory("special://xbmc/language/", items);
-    for (int i = 0; i < items.Size(); ++i)
-    {	
-      CFileItemPtr pItem = items[i];
-      if (pItem->m_bIsFolder && (strcmpi(pItem->GetLabel().c_str(), strLanguage.c_str()) == 0))
-      {
-        CStdString strLangInfoPath;
-        strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-        g_langInfo.Load(strLangInfoPath);
-				
-        if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
-        {
-          CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
-          CStdString strFontSet;
-          if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-            strLanguage = strFontSet;
-          else
-            CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
-        }
-        g_guiSettings.SetString("locale.language", strLanguage);
-				
-        g_charsetConverter.reset();
-				
-        CStdString strLanguagePath;
-        strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
-        g_localizeStrings.Load(strLanguagePath);
-        g_weatherManager.Refresh();
-
-        g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
-      }
-    }
-		Py_INCREF(Py_None);
-    return Py_None;
-	}	
-	
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS|METH_KEYWORDS, output__doc__},
@@ -1067,8 +1017,6 @@ namespace PYXBMC
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
     {(char*)"subHashAndFileSize", (PyCFunction)XBMC_subHashAndFileSize, METH_VARARGS, subHashAndFileSize__doc__},
 
-    {(char*)"setLanguage", (PyCFunction)XBMC_SetLanguage, METH_VARARGS, setLanguage__doc__},	  
-	  
     {NULL, NULL, 0, NULL}
   };
 
