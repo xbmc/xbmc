@@ -5046,7 +5046,15 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
         setsWhere += ")";
       }
       GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, setsWhere);
-      CStdString movieSetsWhere = "movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)";
+      CStdString movieSetsWhere = "movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie";
+      if (!filter.where.empty())
+      {
+        movieSetsWhere += " JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile WHERE (movie.idMovie in (SELECT movieview.idMovie FROM movieview ";
+        if (!filter.join.empty())
+          movieSetsWhere += filter.join;
+        movieSetsWhere += " WHERE " + filter.where + "))";
+      }
+      movieSetsWhere += " GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)";
       if (!filter.join.empty())
         strSQL += filter.join;
       if (!filter.where.empty())
