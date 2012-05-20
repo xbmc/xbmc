@@ -95,7 +95,7 @@ bool CPODocument::GetNextEntry()
 
     if (FindLineStart ("\nmsgid ", m_Entry.msgID.Pos))
     {
-      if (FindLineStart ("\n#: id:", m_Entry.xIDPos) && ParseNumID())
+      if (FindLineStart ("\nmsgctxt \"#", m_Entry.xIDPos) && ParseNumID())
       {
         m_Entry.Type = ID_FOUND; // we found an entry with a valid numeric id
         return true;
