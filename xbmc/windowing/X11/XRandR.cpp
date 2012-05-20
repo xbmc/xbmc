@@ -99,6 +99,13 @@ bool CXRandR::Query(bool force)
     xoutput.y = (output->Attribute("y") != NULL ? atoi(output->Attribute("y")) : 0);
     xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
     xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
+    if (output->Attribute("rotation") != NULL
+        && (strcasecmp(output->Attribute("rotation"), "left") == 0 || strcasecmp(output->Attribute("rotation"), "right") == 0))
+    {
+      xoutput.isRotated = true;
+    }
+    else
+      xoutput.isRotated = false;
 
     if (!xoutput.isConnected)
        continue;

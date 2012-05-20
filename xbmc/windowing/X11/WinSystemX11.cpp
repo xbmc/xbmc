@@ -170,15 +170,24 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 void CWinSystemX11::RefreshWindow()
 {
-  g_xrandr.Query(true);
+  if (!g_xrandr.Query(true))
+  {
+    CLog::Log(LOGERROR, "WinSystemX11::RefreshWindow - failed to query xrandr");
+    return;
+  }
   XOutput out  = g_xrandr.GetCurrentOutput();
   XMode   mode = g_xrandr.GetCurrentMode(out.name);
+
+  RotateResolutions();
 
   // only overwrite desktop resolution, if we are not in fullscreen mode
   if (!g_graphicsContext.IsFullScreenVideo())
   {
     CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshWindow - store desktop resolution, width: %d, height: %d, hz: %2.2f", mode.w, mode.h, mode.hz);
-    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+    if (!out.isRotated)
+      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+    else
+      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.h, mode.w, mode.hz);
     g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
     g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
   }
@@ -234,6 +243,14 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   XOutput currout  = g_xrandr.GetCurrentOutput();
   XMode   currmode = g_xrandr.GetCurrentMode(currout.name);
 
+  // flip h/w when rotated
+  if (m_bIsRotated)
+  {
+    int w = mode.w;
+    mode.w = mode.h;
+    mode.h = w;
+  }
+
   // only call xrandr if mode changes
   if (currout.name != out.name || currmode.w != mode.w || currmode.h != mode.h ||
       currmode.hz != mode.hz || currmode.id != mode.id)
@@ -266,7 +283,11 @@ void CWinSystemX11::UpdateResolutions()
   {
     XOutput out  = g_xrandr.GetCurrentOutput();
     XMode   mode = g_xrandr.GetCurrentMode(out.name);
-    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+    m_bIsRotated = out.isRotated;
+    if (!m_bIsRotated)
+      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+    else
+      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.h, mode.w, mode.hz);
     g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
     g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
   }
@@ -301,8 +322,16 @@ void CWinSystemX11::UpdateResolutions()
       CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
                 mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
       RESOLUTION_INFO res;
-      res.iWidth  = mode.w;
-      res.iHeight = mode.h;
+      if (!m_bIsRotated)
+      {
+        res.iWidth  = mode.w;
+        res.iHeight = mode.h;
+      }
+      else
+      {
+        res.iWidth  = mode.h;
+        res.iHeight = mode.w;
+      }
       if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
         res.fPixelRatio = ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
       else
@@ -328,6 +357,30 @@ void CWinSystemX11::UpdateResolutions()
   }
 #endif
 
+}
+
+void CWinSystemX11::RotateResolutions()
+{
+#if defined(HAS_XRANDR)
+  XOutput out  = g_xrandr.GetCurrentOutput();
+  if (out.isRotated == m_bIsRotated)
+    return;
+
+  for (unsigned int i = 0; i < g_settings.m_ResInfo.size(); ++i)
+  {
+    int width = g_settings.m_ResInfo[i].iWidth;
+    g_settings.m_ResInfo[i].iWidth = g_settings.m_ResInfo[i].iHeight;
+    g_settings.m_ResInfo[i].iHeight = width;
+  }
+  // update desktop resolution
+//  int h = g_settings.m_ResInfo[RES_DESKTOP].iHeight;
+//  int w = g_settings.m_ResInfo[RES_DESKTOP].iWidth;
+//  float hz = g_settings.m_ResInfo[RES_DESKTOP].fRefreshRate;
+//  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, hz);
+
+  m_bIsRotated = out.isRotated;
+
+#endif
 }
 
 bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
