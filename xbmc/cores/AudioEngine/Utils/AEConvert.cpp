@@ -837,7 +837,8 @@ unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, u
     0;
 #endif
 
-  #ifdef __SSE__
+  /* disabled as it does not currently work */
+  #if 0 && defined(__SSE__)
   int32_t *dst = (int32_t*)dest;
 
   const __m128 mul = _mm_set_ps1((float)INT24_MAX+.5f);
