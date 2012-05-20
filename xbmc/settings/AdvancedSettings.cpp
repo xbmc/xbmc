@@ -956,6 +956,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
   }
 
+  pDatabase = pRootElement->FirstChildElement("texturedatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseTexture.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseTexture.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseTexture.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseTexture.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseTexture.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseTexture.name);
+  }
+
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
   if (pElement)
   {
