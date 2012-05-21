@@ -210,7 +210,8 @@
 		<control type="group">
 			<visible>Player.HasMedia + !SubString(Window(videolibrary).Property(TvTunesIsAlive),TRUE)</visible>
 			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>
+			<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
 			<control type="button">
 				<description>push button</description>
 				<posx>30</posx>
