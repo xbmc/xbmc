@@ -22,8 +22,7 @@
 #include "threads/ThreadLocal.h"
 
 #include "threads/Event.h"
-#include <boost/test/unit_test.hpp>
-#include <boost/thread/thread.hpp>
+#include "TestHelpers.h"
 
 using namespace XbmcThreads;
 
@@ -91,80 +90,80 @@ public:
 };
 
 
-BOOST_AUTO_TEST_CASE(TestSimpleThreadLocal)
+TEST(TestSimpleThreadLocal)
 {
   GlobalThreadLocal runnable;
-  boost::thread(boost::ref(runnable));
+  thread t(ref(runnable));
 
   gate.Wait();
-  BOOST_CHECK(runnable.waiting);
-  BOOST_CHECK(staticThinggy != NULL);
-  BOOST_CHECK(staticThreadLocal.get() == NULL);
+  CHECK(runnable.waiting);
+  CHECK(staticThinggy != NULL);
+  CHECK(staticThreadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
-  BOOST_CHECK(runnable.threadLocalHadValue);
-  BOOST_CHECK(!destructorCalled);
+  CHECK(runnable.threadLocalHadValue);
+  CHECK(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  CHECK(destructorCalled);
   cleanup();
 }
 
-BOOST_AUTO_TEST_CASE(TestStackThreadLocal)
+TEST(TestStackThreadLocal)
 {
   StackThreadLocal runnable;
-  boost::thread(boost::ref(runnable));
+  thread t(ref(runnable));
 
   gate.Wait();
-  BOOST_CHECK(runnable.waiting);
-  BOOST_CHECK(staticThinggy != NULL);
-  BOOST_CHECK(runnable.threadLocal.get() == NULL);
+  CHECK(runnable.waiting);
+  CHECK(staticThinggy != NULL);
+  CHECK(runnable.threadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
-  BOOST_CHECK(runnable.threadLocalHadValue);
-  BOOST_CHECK(!destructorCalled);
+  CHECK(runnable.threadLocalHadValue);
+  CHECK(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  CHECK(destructorCalled);
   cleanup();
 }
 
-BOOST_AUTO_TEST_CASE(TestHeapThreadLocal)
+TEST(TestHeapThreadLocal)
 {
   HeapThreadLocal runnable;
-  boost::thread(boost::ref(runnable));
+  thread t(ref(runnable));
 
   gate.Wait();
-  BOOST_CHECK(runnable.waiting);
-  BOOST_CHECK(staticThinggy != NULL);
-  BOOST_CHECK(runnable.threadLocal.get() == NULL);
+  CHECK(runnable.waiting);
+  CHECK(staticThinggy != NULL);
+  CHECK(runnable.threadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
-  BOOST_CHECK(runnable.threadLocalHadValue);
-  BOOST_CHECK(!destructorCalled);
+  CHECK(runnable.threadLocalHadValue);
+  CHECK(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  CHECK(destructorCalled);
   cleanup();
 }
 
-BOOST_AUTO_TEST_CASE(TestHeapThreadLocalDestroyed)
+TEST(TestHeapThreadLocalDestroyed)
 {
   {
     HeapThreadLocal runnable;
-    boost::thread(boost::ref(runnable));
+    thread t(ref(runnable));
 
     gate.Wait();
-    BOOST_CHECK(runnable.waiting);
-    BOOST_CHECK(staticThinggy != NULL);
-    BOOST_CHECK(runnable.threadLocal.get() == NULL);
+    CHECK(runnable.waiting);
+    CHECK(staticThinggy != NULL);
+    CHECK(runnable.threadLocal.get() == NULL);
     waiter.Set();
     gate.Wait();
-    BOOST_CHECK(runnable.threadLocalHadValue);
-    BOOST_CHECK(!destructorCalled);
+    CHECK(runnable.threadLocalHadValue);
+    CHECK(!destructorCalled);
   } // runnable goes out of scope
 
   // even though the threadlocal is gone ...
-  BOOST_CHECK(!destructorCalled);
+  CHECK(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  CHECK(destructorCalled);
   cleanup();
 }
 

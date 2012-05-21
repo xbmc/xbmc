@@ -29,9 +29,14 @@
 {
   int padding[16];  // credit is due here to SapphireCompatibilityClasses!!
         
-  int m_screensaverTimeout;
-  
   BRController *m_controller;
+
+  NSTimer      *m_keyTimer;
+  IOSEAGLView  *m_glView;
+
+  int           m_screensaverTimeout;
+  int           m_systemsleepTimeout;
+
 }
 // message from which our instance is obtained
 //+ (XBMCController*) sharedInstance;

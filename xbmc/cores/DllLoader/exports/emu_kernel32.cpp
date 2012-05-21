@@ -240,15 +240,6 @@ extern "C" DWORD WINAPI dllGetCurrentProcessId(void)
 #endif
 }
 
-extern "C" BOOL WINAPI dllGetProcessTimes(HANDLE hProcess, LPFILETIME lpCreationTime, LPFILETIME lpExitTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime)
-{
-  // since the xbox has only one process, we just take the current thread
-  HANDLE h = GetCurrentThread();
-  BOOL res = GetThreadTimes(h, lpCreationTime, lpExitTime, lpKernelTime, lpUserTime);
-
-  return res;
-}
-
 extern "C" int WINAPI dllDuplicateHandle(HANDLE hSourceProcessHandle,   // handle to source process
       HANDLE hSourceHandle,          // handle to duplicate
       HANDLE hTargetProcessHandle,   // handle to target process

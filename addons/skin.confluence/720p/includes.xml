@@ -33,40 +33,16 @@
 		</control>
 	</include>
 	<include name="WindowTitleCommons">
+		<posx>0</posx>
 		<posy>0</posy>
-		<width>1060</width>
-		<height>28</height>
-		<font>font12caps</font>
+		<width min="0" max="800">auto</width>
+		<height>30</height>
+		<font>font14</font>
 		<textcolor>white</textcolor>
+		<shadowcolor>black</shadowcolor>
 		<scroll>false</scroll>
-		<align>right</align>
+		<align>left</align>
 		<aligny>center</aligny>
-	</include>
-	<include name="WindowTitleHomeButton">
-		<control type="group">
-			<posx>0</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home)">WindowClose</animation>
-			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home)">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>80</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="button">
-				<hitrect x="0" y="0" w="60" h="30" />
-				<posx>20</posx>
-				<posy>5</posy>
-				<width>25</width>
-				<height>20</height>
-				<texturenofocus>HomeIcon.png</texturenofocus>
-				<texturefocus>HomeIcon-Focus.png</texturefocus>
-				<label>-</label>
-				<onclick>ActivateWindow(Home)</onclick>
-			</control>
-		</control>
 	</include>
 	<include name="ButtonCommonValues">
 		<height>40</height>
@@ -170,18 +146,97 @@
 			<texture>Confluence_Logo.png</texture>
 		</control>
 	</include>
+	<include name="MainWindowMouseButtons">
+		<control type="group">
+			<posx>120r</posx>
+			<posy>55r</posy>
+			<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
+			<visible>system.getbool(input.enablemouse)</visible>
+			<control type="button">
+				<description>Back push button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>1036</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>back</onclick>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+			</control>
+			<control type="image">
+				<description>Back Icon</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_back.png</texture>
+			</control>
+			<control type="button">
+				<description>Home push button</description>
+				<posx>55</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(home)</onclick>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+			</control>
+			<control type="image">
+				<description>Home Icon</description>
+				<posx>60</posx>
+				<posy>5</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_home.png</texture>
+			</control>
+		</control>
+	</include>
 	<include name="CommonNowPlaying">
 		<control type="group">
 			<visible>Player.HasMedia + !SubString(Window(videolibrary).Property(TvTunesIsAlive),TRUE)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
-			<control type="image">
-				<description>Icon</description>
+			<control type="button">
+				<description>push button</description>
 				<posx>30</posx>
-				<posy>56r</posy>
-				<width>50</width>
-				<height>50</height>
-				<texture>NowPlayingIcon.png</texture>
+				<posy>55r</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(PlayerControls)</onclick>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+			</control>
+			<control type="image">
+				<description>Player Icon</description>
+				<posx>35</posx>
+				<posy>50r</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_player.png</texture>
 			</control>
 			<control type="label">
 				<posx>85</posx>
@@ -197,7 +252,7 @@
 			</control>
 			<control type="label">
 				<posx>85</posx>
-				<posy>30r</posy>
+				<posy>32r</posy>
 				<width>700</width>
 				<height>20</height>
 				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</label>
@@ -263,33 +318,36 @@
 		</control>
 	</include>
 	<include name="CommonPageCount">
-		<control type="label">
-			<description>Page Count Label</description>
-			<posx>40r</posx>
-			<posy>53r</posy>
-			<width>500</width>
-			<height>20</height>
-			<font>font12</font>
-			<textcolor>grey</textcolor>
-			<scroll>false</scroll>
-			<align>right</align>
-			<aligny>center</aligny>
-			<label>$INFO[Window.Property(filter),$LOCALIZE[587] ([COLOR=blue],[/COLOR]) - ]$INFO[Container.NumItems,([COLOR=blue],[/COLOR]) $LOCALIZE[31025]]$INFO[Container.CurrentPage, - $LOCALIZE[31024] ([COLOR=blue]]$INFO[Container.NumPages,/,[/COLOR])]</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>Container Duration Label</description>
-			<posx>40r</posx>
-			<posy>30r</posy>
-			<width>500</width>
-			<height>20</height>
-			<font>font12</font>
-			<textcolor>grey</textcolor>
-			<scroll>false</scroll>
-			<align>right</align>
-			<aligny>center</aligny>
-			<label>$INFO[Container.TotalTime,$LOCALIZE[180] ([COLOR=blue],[/COLOR])]</label>
-			<include>Window_OpenClose_Animation</include>
+		<control type="group">
+			<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
+			<control type="label">
+				<description>Page Count Label</description>
+				<posx>40r</posx>
+				<posy>53r</posy>
+				<width>500</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[Window.Property(filter),$LOCALIZE[587] ([COLOR=blue],[/COLOR]) - ]$INFO[Container.NumItems,([COLOR=blue],[/COLOR]) $LOCALIZE[31025]]$INFO[Container.CurrentPage, - $LOCALIZE[31024] ([COLOR=blue]]$INFO[Container.NumPages,/,[/COLOR])]</label>
+				<include>Window_OpenClose_Animation</include>
+			</control>
+			<control type="label">
+				<description>Container Duration Label</description>
+				<posx>40r</posx>
+				<posy>32r</posy>
+				<width>500</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[Container.TotalTime,$LOCALIZE[31009] ([COLOR=blue],[/COLOR])]</label>
+				<include>Window_OpenClose_Animation</include>
+			</control>
 		</control>
 	</include>
 	<include name="SmallMusicInfo">
@@ -515,7 +573,7 @@
 		<control type="label" id="202">
 			<width>250</width>
 			<height>35</height>
-			<font>font12caps</font>
+			<font>font12</font>
 			<label>31023</label>
 			<textcolor>blue</textcolor>
 			<align>center</align>
@@ -878,33 +936,296 @@
 		</control>
 	</include>
 	<include name="Clock">
-		<control type="group">
-			<posx>140r</posx>
-			<posy>0</posy>
-			<animation effect="slide" start="0,0" end="-60,0" delay="0" time="300" condition="Window.IsVisible(MuteBug)">conditional</animation>
-			<animation effect="slide" start="0,0" end="210,0" delay="0" time="300" condition="Window.Next(Home) + ![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
-			<animation effect="slide" start="210,0" end="0,0" delay="0" time="300" condition="Window.Previous(Home) + ![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
+		<control type="label">
+			<description>time label</description>
+			<posx>20r</posx>
+			<posy>5</posy>
+			<width>200</width>
+			<height>30</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>font28_title</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>$INFO[System.Time]</label>
+			<animation effect="slide" start="0,0" end="-40,0" time="100" condition="Window.IsVisible(Mutebug)">conditional</animation>
+		</control>
+	</include>
+	<include name="HomeAddonsCommonLayout">
+		<include>Window_OpenClose_Animation</include>
+		<animation type="Visible">
+			<effect type="slide" start="0,30" end="0,0" delay="200" easing="out" tween="quadratic" time="200" />
+			<effect type="fade" start="0" end="100" delay="200" time="200" />
+		</animation>
+		<animation type="Hidden">
+			<effect type="zoom" start="100" end="70" center="auto" easing="in" tween="quadratic" time="300" />
+			<effect type="fade" start="100" end="0" time="300" />
+		</animation>
+		<hitrect x="0" y="530" w="1280" h="120" />
+		<posx>0</posx>
+		<posy>190r</posy>
+		<width>1280</width>
+		<height>200</height>
+		<pagecontrol>-</pagecontrol>
+		<scrolltime>300</scrolltime>
+		<focusposition>3</focusposition>
+		<movement>2</movement>
+		<orientation>Horizontal</orientation>
+		<itemlayout height="200" width="182">
 			<control type="image">
-				<description>time background</description>
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>150</width>
-				<height>35</height>
-				<texture flipx="true" border="32,0,0,0">header.png</texture>
+				<width>180</width>
+				<height>120</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="5">button-nofocus.png</bordertexture>
+				<bordersize>3</bordersize>
+				<texture background="true">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="image">
+				<posx>5</posx>
+				<posy>120</posy>
+				<width>170</width>
+				<height>110</height>
+				<aspectratio aligny="top">keep</aspectratio>
+				<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="label">
-				<description>time label</description>
-				<posx>30</posx>
-				<posy>0</posy>
-				<width>400</width>
-				<height>28</height>
-				<align>left</align>
+				<posx>91</posx>
+				<posy>125</posy>
+				<width>180</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<align>center</align>
 				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+		</itemlayout>
+		<focusedlayout height="200" width="182">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>120</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="5">button-nofocus.png</bordertexture>
+				<bordersize>3</bordersize>
+				<texture background="true">$INFO[ListItem.Icon]</texture>
+				<visible>!ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>120</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="5">folder-focus.png</bordertexture>
+				<bordersize>3</bordersize>
+				<texture background="true">$INFO[ListItem.Icon]</texture>
+				<visible>ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="image">
+				<posx>5</posx>
+				<posy>120</posy>
+				<width>170</width>
+				<height>110</height>
+				<aspectratio aligny="top">keep</aspectratio>
+				<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<posx>91</posx>
+				<posy>125</posy>
+				<width>180</width>
+				<height>20</height>
 				<font>font12</font>
 				<textcolor>white</textcolor>
-				<label>$INFO[System.Time]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>Control.HasFocus(9002)</visible>
 			</control>
-		</control>
+			<control type="label">
+				<posx>91</posx>
+				<posy>125</posy>
+				<width>180</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>!Control.HasFocus(9002)</visible>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="TVNextAiredListCommonLayout">
+		<itemlayout height="150" width="280">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>280</width>
+				<height>145</height>
+				<texture border="10">button-nofocus.png</texture>
+			</control>
+			<control type="image">
+				<description>Thumb</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>270</width>
+				<height>55</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Thumb]</texture>
+				<visible>StringCompare(Window(Home).Property(TVGuide.ThumbType),0)</visible>
+			</control>
+			<control type="image">
+				<description>Banner</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>270</width>
+				<height>55</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Property(Path),,banner.jpg]</texture>
+				<visible>StringCompare(Window(Home).Property(TVGuide.ThumbType),1)</visible>
+			</control>
+			<control type="image">
+				<description>Logo</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>270</width>
+				<height>55</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Property(Path),,logo.png]</texture>
+				<visible>StringCompare(Window(Home).Property(TVGuide.ThumbType),2)</visible>
+			</control>
+			<control type="label">
+				<description>Episode Number</description>
+				<posx>140</posx>
+				<posy>60</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(NextNumber),$LOCALIZE[20359] [COLOR=blue]-[/COLOR] ]</label>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>Episode Name</description>
+				<posx>140</posx>
+				<posy>80</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(NextTitle)]</label>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>Next air date/time</description>
+				<posx>140</posx>
+				<posy>100</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(ShortTime)]$INFO[ListItem.Property(NextDate), [COLOR=blue]-[/COLOR] ]</label>
+				<textcolor>grey2</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>Duration</description>
+				<posx>140</posx>
+				<posy>120</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(Runtime),, $LOCALIZE[12391]]$INFO[ListItem.Property(Network), [COLOR=blue]-[/COLOR] (,)]</label>
+				<textcolor>grey2</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+		</itemlayout>
+		<focusedlayout height="150" width="280">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>280</width>
+				<height>145</height>
+				<texture border="10">button-focus2.png</texture>
+			</control>
+			<control type="image">
+				<description>Thumb</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>270</width>
+				<height>55</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Thumb]</texture>
+				<visible>StringCompare(Window(Home).Property(TVGuide.ThumbType),0)</visible>
+			</control>
+			<control type="image">
+				<description>Banner</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>270</width>
+				<height>55</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Property(Path),,banner.jpg]</texture>
+				<visible>StringCompare(Window(Home).Property(TVGuide.ThumbType),1)</visible>
+			</control>
+			<control type="image">
+				<description>Logo</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>270</width>
+				<height>55</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[ListItem.Property(Path),,logo.png]</texture>
+				<visible>StringCompare(Window(Home).Property(TVGuide.ThumbType),2)</visible>
+			</control>
+			<control type="label">
+				<description>Episode Number</description>
+				<posx>140</posx>
+				<posy>60</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(NextNumber),$LOCALIZE[20359] [COLOR=blue]-[/COLOR] ]</label>
+				<textcolor>selected</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>Episode Name</description>
+				<posx>140</posx>
+				<posy>80</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(NextTitle)]</label>
+				<textcolor>selected</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>Next air date/time</description>
+				<posx>140</posx>
+				<posy>100</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(ShortTime)]$INFO[ListItem.Property(NextDate), [COLOR=blue]-[/COLOR] ]</label>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+			<control type="label">
+				<description>Duration</description>
+				<posx>140</posx>
+				<posy>120</posy>
+				<width>260</width>
+				<height>15</height>
+				<label>$INFO[ListItem.Property(Runtime),, $LOCALIZE[12391]]$INFO[ListItem.Property(Network), [COLOR=blue]-[/COLOR] (,)]</label>
+				<textcolor>white</textcolor>
+				<font>font12</font>
+				<align>center</align>
+			</control>
+		</focusedlayout>
 	</include>
 	<include name="backgroundfade">
 		 <animation effect="fade" time="600">Visible</animation>

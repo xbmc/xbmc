@@ -22,6 +22,7 @@
 #pragma once
 
 #include "dbwrappers/Database.h"
+#include "TextureCacheJob.h"
 
 class CTextureDatabase : public CDatabase
 {
@@ -30,9 +31,18 @@ public:
   virtual ~CTextureDatabase();
   virtual bool Open();
 
-  bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile, CStdString &imageHash);
-  bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "");
+  bool GetCachedTexture(const CStdString &originalURL, CTextureDetails &details);
+  bool AddCachedTexture(const CStdString &originalURL, const CTextureDetails &details);
+  bool SetCachedTextureValid(const CStdString &originalURL, bool updateable);
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
+  bool IncrementUseCount(const CTextureDetails &details);
+
+  /*! \brief Invalidate a previously cached texture
+   Invalidates the texture hash, and sets the texture update time to the current time so that
+   next texture load it will be re-cached.
+   \param url texture path
+   */
+  bool InvalidateCachedTexture(const CStdString &originalURL);
 
   /*! \brief Get a texture associated with the given path
    Used for retrieval of previously discovered images to save
@@ -72,6 +82,6 @@ protected:
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 11; };
+  virtual int GetMinVersion() const { return 12; };
   const char *GetBaseDBName() const { return "Textures"; };
 };

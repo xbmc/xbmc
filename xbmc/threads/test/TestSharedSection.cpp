@@ -19,8 +19,6 @@
  *
  */
 
-#include <boost/test/unit_test.hpp>
-
 #include "threads/SharedSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Event.h"
@@ -62,7 +60,7 @@ public:
   }
 };
 
-BOOST_AUTO_TEST_CASE(TestCritSectionCase)
+TEST(TestCritSectionCase)
 {
   CCriticalSection sec;
 
@@ -70,7 +68,7 @@ BOOST_AUTO_TEST_CASE(TestCritSectionCase)
   CSingleLock l2(sec);
 }
 
-BOOST_AUTO_TEST_CASE(TestSharedSectionCase)
+TEST(TestSharedSectionCase)
 {
   CSharedSection sec;
 
@@ -78,7 +76,7 @@ BOOST_AUTO_TEST_CASE(TestSharedSectionCase)
   CSharedLock l2(sec);
 }
 
-BOOST_AUTO_TEST_CASE(TestGetSharedLockWhileTryingExclusiveLock)
+TEST(TestGetSharedLockWhileTryingExclusiveLock)
 {
   volatile long mutex = 0;
   CEvent event;
@@ -88,41 +86,41 @@ BOOST_AUTO_TEST_CASE(TestGetSharedLockWhileTryingExclusiveLock)
   CSharedLock l1(sec); // get a shared lock
 
   locker<CExclusiveLock> l2(sec,&mutex);
-  boost::thread waitThread1(boost::ref(l2)); // try to get an exclusive lock
+  thread waitThread1(ref(l2)); // try to get an exclusive lock
 
-  BOOST_CHECK(waitForThread(mutex,1,10000));
-  Sleep(10);  // still need to give it a chance to move ahead
+  CHECK(waitForThread(mutex,1,10000));
+  SleepMillis(10);  // still need to give it a chance to move ahead
 
-  BOOST_CHECK(!l2.haslock);  // this thread is waiting ...
-  BOOST_CHECK(!l2.obtainedlock);  // this thread is waiting ...
+  CHECK(!l2.haslock);  // this thread is waiting ...
+  CHECK(!l2.obtainedlock);  // this thread is waiting ...
 
   // now try and get a SharedLock
   locker<CSharedLock> l3(sec,&mutex,&event);
-  boost::thread waitThread3(boost::ref(l3)); // try to get a shared lock
-  BOOST_CHECK(waitForThread(mutex,2,10000));
-  Sleep(10);
-  BOOST_CHECK(l3.haslock);
+  thread waitThread3(ref(l3)); // try to get a shared lock
+  CHECK(waitForThread(mutex,2,10000));
+  SleepMillis(10);
+  CHECK(l3.haslock);
 
   event.Set();
-  BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
+  CHECK(waitThread3.timed_join(MILLIS(10000)));
 
   // l3 should have released.
-  BOOST_CHECK(!l3.haslock);
+  CHECK(!l3.haslock);
 
   // but the exclusive lock should still not have happened
-  BOOST_CHECK(!l2.haslock);  // this thread is waiting ...
-  BOOST_CHECK(!l2.obtainedlock);  // this thread is waiting ...
+  CHECK(!l2.haslock);  // this thread is waiting ...
+  CHECK(!l2.obtainedlock);  // this thread is waiting ...
 
   // let it go
   l1.Leave(); // the last shared lock leaves.
 
-  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+  CHECK(waitThread1.timed_join(MILLIS(10000)));
 
-  BOOST_CHECK(l2.obtainedlock);  // the exclusive lock was captured
-  BOOST_CHECK(!l2.haslock);  // ... but it doesn't have it anymore
+  CHECK(l2.obtainedlock);  // the exclusive lock was captured
+  CHECK(!l2.haslock);  // ... but it doesn't have it anymore
 }
 
-BOOST_AUTO_TEST_CASE(TestSharedSection2Case)
+TEST(TestSharedSection2Case)
 {
   CSharedSection sec;
 
@@ -133,39 +131,39 @@ BOOST_AUTO_TEST_CASE(TestSharedSection2Case)
 
   {
     CSharedLock lock(sec);
-    boost::thread waitThread1(boost::ref(l1));
+    thread waitThread1(ref(l1));
 
-    BOOST_CHECK(waitForWaiters(event,1,10000));
-    BOOST_CHECK(l1.haslock);
+    CHECK(waitForWaiters(event,1,10000));
+    CHECK(l1.haslock);
 
     event.Set();
 
-    BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+    CHECK(waitThread1.timed_join(MILLIS(10000)));
   }
 
   locker<CSharedLock> l2(sec,&mutex,&event);
   {
     CExclusiveLock lock(sec); // get exclusive lock
-    boost::thread waitThread2(boost::ref(l2)); // thread should block
+    thread waitThread2(ref(l2)); // thread should block
 
-    BOOST_CHECK(waitForThread(mutex,1,10000));
-    Sleep(10);
+    CHECK(waitForThread(mutex,1,10000));
+    SleepMillis(10);
 
-    BOOST_CHECK(!l2.haslock);
+    CHECK(!l2.haslock);
 
     lock.Leave();
 
-    BOOST_CHECK(waitForWaiters(event,1,10000));
-    Sleep(10);
-    BOOST_CHECK(l2.haslock);
+    CHECK(waitForWaiters(event,1,10000));
+    SleepMillis(10);
+    CHECK(l2.haslock);
 
     event.Set();
     
-    BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
+    CHECK(waitThread2.timed_join(MILLIS(10000)));
   }
 }
 
-BOOST_AUTO_TEST_CASE(TestMultipleSharedSectionCase)
+TEST(TestMultipleSharedSectionCase)
 {
   CSharedSection sec;
 
@@ -176,16 +174,16 @@ BOOST_AUTO_TEST_CASE(TestMultipleSharedSectionCase)
 
   {
     CSharedLock lock(sec);
-    boost::thread waitThread1(boost::ref(l1));
+    thread waitThread1(ref(l1));
 
-    BOOST_CHECK(waitForThread(mutex,1,10000));
-    Sleep(10);
+    CHECK(waitForThread(mutex,1,10000));
+    SleepMillis(10);
 
-    BOOST_CHECK(l1.haslock);
+    CHECK(l1.haslock);
 
     event.Set();
 
-    BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+    CHECK(waitThread1.timed_join(MILLIS(10000)));
   }
 
   locker<CSharedLock> l2(sec,&mutex,&event);
@@ -194,34 +192,34 @@ BOOST_AUTO_TEST_CASE(TestMultipleSharedSectionCase)
   locker<CSharedLock> l5(sec,&mutex,&event);
   {
     CExclusiveLock lock(sec);
-    boost::thread waitThread1(boost::ref(l2));
-    boost::thread waitThread2(boost::ref(l3));
-    boost::thread waitThread3(boost::ref(l4));
-    boost::thread waitThread4(boost::ref(l5));
+    thread waitThread1(ref(l2));
+    thread waitThread2(ref(l3));
+    thread waitThread3(ref(l4));
+    thread waitThread4(ref(l5));
 
-    BOOST_CHECK(waitForThread(mutex,4,10000));
-    Sleep(10);
+    CHECK(waitForThread(mutex,4,10000));
+    SleepMillis(10);
 
-    BOOST_CHECK(!l2.haslock);
-    BOOST_CHECK(!l3.haslock);
-    BOOST_CHECK(!l4.haslock);
-    BOOST_CHECK(!l5.haslock);
+    CHECK(!l2.haslock);
+    CHECK(!l3.haslock);
+    CHECK(!l4.haslock);
+    CHECK(!l5.haslock);
 
     lock.Leave();
 
-    BOOST_CHECK(waitForWaiters(event,4,10000));
+    CHECK(waitForWaiters(event,4,10000));
 
-    BOOST_CHECK(l2.haslock);
-    BOOST_CHECK(l3.haslock);
-    BOOST_CHECK(l4.haslock);
-    BOOST_CHECK(l5.haslock);
+    CHECK(l2.haslock);
+    CHECK(l3.haslock);
+    CHECK(l4.haslock);
+    CHECK(l5.haslock);
 
     event.Set();
     
-    BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
-    BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
-    BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
-    BOOST_CHECK(waitThread4.timed_join(BOOST_MILLIS(10000)));
+    CHECK(waitThread1.timed_join(MILLIS(10000)));
+    CHECK(waitThread2.timed_join(MILLIS(10000)));
+    CHECK(waitThread3.timed_join(MILLIS(10000)));
+    CHECK(waitThread4.timed_join(MILLIS(10000)));
   }
 }
 

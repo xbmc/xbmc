@@ -21,6 +21,7 @@
 
 #include "DVDPerformanceCounter.h"
 #include "DVDMessageQueue.h"
+#include "utils/TimeUtils.h"
 
 #include "dvd_config.h"
 
@@ -66,27 +67,21 @@ HRESULT __stdcall DVDPerformanceCounterVideoQueue(PLARGE_INTEGER numerator, PLAR
   return S_OK;
 }
 
-inline __int64 get_thread_cpu_usage(ProcessPerformance* p)
+inline int64_t get_thread_cpu_usage(ProcessPerformance* p)
 {
-  if (p->hThread)
+  if (p->thread)
   {
-    FILETIME dummy;
-    FILETIME current_time_thread;
-    FILETIME current_time_system;
     ULARGE_INTEGER old_time_thread;
     ULARGE_INTEGER old_time_system;
 
     old_time_thread.QuadPart = p->timer_thread.QuadPart;
     old_time_system.QuadPart = p->timer_system.QuadPart;
 
-    GetThreadTimes(p->hThread, &dummy, &dummy, &current_time_thread, &dummy);
-    GetSystemTimeAsFileTime(&current_time_system);
+    p->timer_thread.QuadPart = p->thread->GetAbsoluteUsage();
+    p->timer_system.QuadPart = CurrentHostCounter();
 
-    FILETIME_TO_ULARGE_INTEGER(p->timer_thread, current_time_thread);
-    FILETIME_TO_ULARGE_INTEGER(p->timer_system, current_time_system);
-
-    __int64 threadTime = (p->timer_thread.QuadPart - old_time_thread.QuadPart);
-    __int64 systemTime = (p->timer_system.QuadPart - old_time_system.QuadPart);
+    int64_t threadTime = (p->timer_thread.QuadPart - old_time_thread.QuadPart);
+    int64_t systemTime = (p->timer_system.QuadPart - old_time_system.QuadPart);
 
     if (systemTime > 0 && threadTime > 0) return ((threadTime * 100) / systemTime);
   }

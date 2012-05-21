@@ -21,7 +21,7 @@
  
 #if defined (TARGET_DARWIN)
 // defined in PlatformDefs.h but I don't want to include that here
-typedef unsigned char   BYTE;
+typedef unsigned char BYTE;
 
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
@@ -29,20 +29,50 @@ typedef unsigned char   BYTE;
 #include "powermanagement/PowerManager.h"
 #include "windowing/WindowingFactory.h"
 #include "CocoaPowerSyscall.h"
-#if !defined(TARGET_DARWIN_IOS)
-#include <IOKit/pwr_mgt/IOPMLib.h>
-#include <IOKit/ps/IOPowerSources.h>
-#include <IOKit/ps/IOPSKeys.h>
+
+#if defined(TARGET_DARWIN_OSX)
+  #include <IOKit/pwr_mgt/IOPMLib.h>
+  #include <IOKit/ps/IOPowerSources.h>
+  #include <IOKit/ps/IOPSKeys.h>
+  #include <ApplicationServices/ApplicationServices.h>
 #endif
 
 #include "osx/DarwinUtils.h"
 
-// missing in 10.4/10.5 SDKs.
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
-#define kIOPSNotifyLowBattery   "com.apple.system.powersources.lowbattery"
-#endif
-
 #include "CocoaInterface.h"
+
+#if defined(TARGET_DARWIN_OSX)
+OSStatus SendAppleEventToSystemProcess(AEEventID eventToSendID)
+{
+  AEAddressDesc targetDesc;
+  static const  ProcessSerialNumber kPSNOfSystemProcess = {0, kSystemProcess };
+  AppleEvent    eventReply  = {typeNull, NULL};
+  AppleEvent    eventToSend = {typeNull, NULL};
+
+  OSStatus status = AECreateDesc(typeProcessSerialNumber,
+    &kPSNOfSystemProcess, sizeof(kPSNOfSystemProcess), &targetDesc);
+
+  if (status != noErr)
+    return status;
+
+  status = AECreateAppleEvent(kCoreEventClass, eventToSendID,
+    &targetDesc, kAutoGenerateReturnID, kAnyTransactionID, &eventToSend);
+  AEDisposeDesc(&targetDesc);
+
+  if (status != noErr)
+    return status;
+
+  status = AESendMessage(&eventToSend, &eventReply, kAENormalPriority, kAEDefaultTimeout);
+  AEDisposeDesc(&eventToSend);
+
+  if (status != noErr)
+    return status;
+
+  AEDisposeDesc(&eventReply);
+
+  return status;
+}
+#endif
 
 CCocoaPowerSyscall::CCocoaPowerSyscall()
 {

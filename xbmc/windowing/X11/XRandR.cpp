@@ -27,8 +27,13 @@
 #include <sys/wait.h>
 #include "system.h"
 #include "PlatformInclude.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "../xbmc/utils/log.h"
+
+#if defined(__FreeBSD__)
+#include <sys/types.h>
+#include <sys/wait.h>
+#endif
 
 using namespace std;
 
@@ -65,7 +70,7 @@ bool CXRandR::Query(bool force)
   }
 
 
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(file, TIXML_DEFAULT_ENCODING))
   {
     CLog::Log(LOGERROR, "CXRandR::Query - unable to open xrandr xml");
@@ -292,7 +297,7 @@ XMode CXRandR::GetCurrentMode(CStdString outputName)
 void CXRandR::LoadCustomModeLinesToAllOutputs(void)
 {
   Query();
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   if (!xmlDoc.LoadFile("special://xbmc/userdata/ModeLines.xml"))
   {

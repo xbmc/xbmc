@@ -67,6 +67,7 @@ void CDVDStreamInfo::Clear()
   bitspersample = 0;
 
   identifier = 0;
+  orientation = 0;
 }
 
 bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)

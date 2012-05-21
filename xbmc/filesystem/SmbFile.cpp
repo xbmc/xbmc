@@ -167,6 +167,7 @@ void CSMB::Init()
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+    smbc_setUser(m_context, strdup("guest"));
 #else
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
@@ -175,6 +176,7 @@ void CSMB::Init()
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+    m_context->user = strdup("guest");
 #endif
 
     // initialize samba and do some hacking into the settings
@@ -479,39 +481,6 @@ int CSmbFile::OpenFile(const CURL &url, CStdString& strAuth)
   {
     CSingleLock lock(smb);
     fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-  }
-
-  // file open failed, try to open the directory to force authentication
-#ifdef TARGET_WINDOWS
-  if (fd < 0 && smb.ConvertUnixToNT(errno) == NT_STATUS_ACCESS_DENIED)
-#else
-  if (fd < 0 && errno == EACCES)
-#endif
-  {
-    CURL urlshare(url);
-
-    /* just replace the filename with the sharename */
-    urlshare.SetFileName(url.GetShareName());
-
-    CSMBDirectory smbDir;
-    // TODO: Currently we always allow prompting on files.  This may need to
-    // change in the future as background scanners are more prolific.
-    smbDir.SetFlags(DIR_FLAG_ALLOW_PROMPT);
-    fd = smbDir.Open(urlshare);
-
-    // directory open worked, try opening the file again
-    if (fd >= 0)
-    {
-      CSingleLock lock(smb);
-      // close current directory filehandle
-      // dont need to purge since its the same server and share
-      smbc_closedir(fd);
-
-      // set up new filehandle (as CSmbFile::Open does)
-      strPath = GetAuthenticatedPath(url);
-
-      fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-    }
   }
 
   if (fd >= 0)

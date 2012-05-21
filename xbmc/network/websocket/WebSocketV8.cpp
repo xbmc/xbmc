@@ -174,7 +174,7 @@ const CWebSocketFrame* CWebSocketV8::close(WebSocketCloseReason reason /* = WebS
   size_t length = 2 + message.size();
 
   char* data = new char[length + 1];
-  memset(data, 0, sizeof(data));
+  memset(data, 0, length + 1);
   unsigned short iReason = Endian_SwapBE16((uint16_t)reason);
   data[0] = ((char *)&iReason)[0];
   data[1] = ((char *)&iReason)[1];

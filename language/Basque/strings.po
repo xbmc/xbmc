@@ -1,0 +1,9116 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: eu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Programak"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Irudiak"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Musika"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Bideoak"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "TB-Gida"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Ezarpenak"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Fitxategi kudeatzailea"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Eguraldia"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "xbmc media zentroa"
+
+#: id:11
+msgid "Monday"
+msgstr "Astelehena"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Asteartea"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Asteazkena"
+
+#: id:14
+msgid "Thursday"
+msgstr "Osteguna"
+
+#: id:15
+msgid "Friday"
+msgstr "Ostirala"
+
+#: id:16
+msgid "Saturday"
+msgstr "Larunbata"
+
+#: id:17
+msgid "Sunday"
+msgstr "Igandea"
+
+#: id:21
+msgid "January"
+msgstr "Urtarrila"
+
+#: id:22
+msgid "February"
+msgstr "Otsaila"
+
+#: id:23
+msgid "March"
+msgstr "Martxoa"
+
+#: id:24
+msgid "April"
+msgstr "Apirila"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "Maiatza"
+
+#: id:26
+msgid "June"
+msgstr "Ekaina"
+
+#: id:27
+msgid "July"
+msgstr "Uztaila"
+
+#: id:28
+msgid "August"
+msgstr "Abuztua"
+
+#: id:29
+msgid "September"
+msgstr "Iraila"
+
+#: id:30
+msgid "October"
+msgstr "Urria"
+
+#: id:31
+msgid "November"
+msgstr "Azaroa"
+
+#: id:32
+msgid "December"
+msgstr "Abendua"
+
+#: id:41
+msgid "Mon"
+msgstr "Al"
+
+#: id:42
+msgid "Tue"
+msgstr "As"
+
+#: id:43
+msgid "Wed"
+msgstr "Az"
+
+#: id:44
+msgid "Thu"
+msgstr "Os"
+
+#: id:45
+msgid "Fri"
+msgstr "Ol"
+
+#: id:46
+msgid "Sat"
+msgstr "La"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "Ig"
+
+#: id:51
+msgid "Jan"
+msgstr "Urt"
+
+#: id:52
+msgid "Feb"
+msgstr "Ots"
+
+#: id:53
+msgid "Mar"
+msgstr "Mar"
+
+#: id:54
+msgid "Apr"
+msgstr "Api"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "Mai"
+
+#: id:56
+msgid "Jun"
+msgstr "Eka"
+
+#: id:57
+msgid "Jul"
+msgstr "Uzt"
+
+#: id:58
+msgid "Aug"
+msgstr "Abu"
+
+#: id:59
+msgid "Sep"
+msgstr "Ira"
+
+#: id:60
+msgid "Oct"
+msgstr "Urr"
+
+#: id:61
+msgid "Nov"
+msgstr "Aza"
+
+#: id:62
+msgid "Dec"
+msgstr "Abe"
+
+#: id:71
+msgid "N"
+msgstr "I"
+
+#: id:72
+msgid "NNE"
+msgstr "IIE"
+
+#: id:73
+msgid "NE"
+msgstr "IE"
+
+#: id:74
+msgid "ENE"
+msgstr "EIE"
+
+#: id:75
+msgid "E"
+msgstr "E"
+
+#: id:76
+msgid "ESE"
+msgstr "EHE"
+
+#: id:77
+msgid "SE"
+msgstr "HE"
+
+#: id:78
+msgid "SSE"
+msgstr "HHE"
+
+#: id:79
+msgid "S"
+msgstr "H"
+
+#: id:80
+msgid "SSW"
+msgstr "HHM"
+
+#: id:81
+msgid "SW"
+msgstr "HM"
+
+#: id:82
+msgid "WSW"
+msgstr "MHM"
+
+#: id:83
+msgid "W"
+msgstr "M"
+
+#: id:84
+msgid "WNW"
+msgstr "MIM"
+
+#: id:85
+msgid "NW"
+msgstr "IM"
+
+#: id:86
+msgid "NNW"
+msgstr "IIM"
+
+#: id:87
+msgid "VAR"
+msgstr "BAR"
+
+#: id:98
+msgid "View: Auto"
+msgstr "Ikusi: Auto"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Ikusi: Auto handia"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Ikusi: Ikonoak"
+
+#: id:101
+msgid "View: List"
+msgstr "Ikusi: Zerrenda"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Eskaneatu"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Ordenatu: Izena"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Ordenatu: Data"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Ordenatu: Tamaina"
+
+#: id:106
+msgid "No"
+msgstr "Ez"
+
+#: id:107
+msgid "Yes"
+msgstr "Bai"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Aurkezpena"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Sortu iruditxoa"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Sortu iruditxoak"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Lasterbideak"
+
+#: id:112
+msgid "Paused"
+msgstr "Pausatuta"
+
+#: id:113
+msgid "Update failed"
+msgstr "Eguneraketak huts egin du"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Instalazioak huts egin du"
+
+#: id:115
+msgid "Copy"
+msgstr "Kopiatu"
+
+#: id:116
+msgid "Move"
+msgstr "Mugitu"
+
+#: id:117
+msgid "Delete"
+msgstr "Ezabatu"
+
+#: id:118
+msgid "Rename"
+msgstr "Berrizendatu"
+
+#: id:119
+msgid "New folder"
+msgstr "Karpeta berria"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Baieztatu fitxategiaren kopia"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Baieztatu fitxategia mugitzea"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Baieztatu fitxategia ezabatzea?"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Kopiatu fitxategi hauek?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Fitxategi hauek mugitu?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Ezabatu fitxategi hauek? - fitxategien ezabatzea ezin da desegin!"
+
+#: id:126
+msgid "Status"
+msgstr "Egoera"
+
+#: id:127
+msgid "Objects"
+msgstr "Objektuak"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Orokorra"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Aurkezpena"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Sistemaren info"
+
+#: id:131
+msgid "Display"
+msgstr "Erakutsi"
+
+#: id:132
+msgid "Albums"
+msgstr "Albumak"
+
+#: id:133
+msgid "Artists"
+msgstr "Artistak"
+
+#: id:134
+msgid "Songs"
+msgstr "Abestiak"
+
+#: id:135
+msgid "Genres"
+msgstr "Generoak"
+
+#: id:136
+msgid "Playlists"
+msgstr "Erre. zerrendak"
+
+#: id:137
+msgid "Search"
+msgstr "Bilatu"
+
+#: id:138
+msgid "System Information"
+msgstr "Sistemaren Informazioa"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Temperaturak:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Ordua:"
+
+#: id:143
+msgid "Current:"
+msgstr "Unekoa:"
+
+#: id:144
+msgid "Build:"
+msgstr "Build-a:"
+
+#: id:145
+msgid "Network:"
+msgstr "Sarea:"
+
+#: id:146
+msgid "Type:"
+msgstr "Mota:"
+
+#: id:147
+msgid "Static"
+msgstr "Estatikoa"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC helbidea"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP helbidea"
+
+#: id:151
+msgid "Link:"
+msgstr "Lotura:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Half duplex"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Full duplex"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Biltegiratzea"
+
+#: id:155
+msgid "Drive"
+msgstr "Unitatea"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Libre"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Bideoa"
+
+#: id:158
+msgid "Free memory"
+msgstr "Memoria librea"
+
+#: id:159
+msgid "No link"
+msgstr "Loturarik ez"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Libre"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Ez erabilgarri"
+
+#: id:162
+msgid "Tray open"
+msgstr "Ireki bandeja"
+
+#: id:163
+msgid "Reading"
+msgstr "Irakurtzen"
+
+#: id:164
+msgid "No disc"
+msgstr "Diskorik ez"
+
+#: id:165
+msgid "Disc present"
+msgstr "Diskoa aurkeztuta"
+
+#: id:166
+msgid "Skin"
+msgstr "Skin-a"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Bereizmena"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Egokitu erakutsi freskatze tasa bideoarekin bat etortzeko"
+
+#: id:172
+msgid "Release date"
+msgstr "Argitaratze data"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Erakutsi 4:3 bideoak"
+
+#: id:175
+msgid "Moods"
+msgstr "Mood-ak"
+
+#: id:176
+msgid "Styles"
+msgstr "Estiloak"
+
+#: id:179
+msgid "Song"
+msgstr "Abestia"
+
+#: id:180
+msgid "Duration"
+msgstr "Iraupena"
+
+#: id:181
+msgid "Select album"
+msgstr "Hautatu albuma"
+
+#: id:182
+msgid "Tracks"
+msgstr "Pistak"
+
+#: id:183
+msgid "Review"
+msgstr "Berrikusi"
+
+#: id:184
+msgid "Refresh"
+msgstr "Freskatu"
+
+#: id:185
+msgid "Searching album"
+msgstr "Albuma bilatzen"
+
+#: id:186
+msgid "OK"
+msgstr "Ados"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Ez da albumik aurkitu!"
+
+#: id:188
+msgid "Select all"
+msgstr "Hautatu dena"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Eskaneatzen mediaren informazioa"
+
+#: id:190
+msgid "Save"
+msgstr "Gorde"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Nahastu"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Garbitu"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Eskaneatu"
+
+#: id:194
+msgid "Searching..."
+msgstr "Bilatzen..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Ez da inforik aurkitu!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Hautatu filma:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "%sren informazioa kontsultatzen"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Filmaren xehetasunak kargatzen"
+
+#: id:199
+msgid "Web interface"
+msgstr "Web interfazea"
+
+#: id:202
+msgid "Tagline"
+msgstr "Tagline"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Sipnosia"
+
+#: id:205
+msgid "Votes"
+msgstr "Botoak"
+
+#: id:206
+msgid "Cast"
+msgstr "Antzezleak"
+
+#: id:207
+msgid "Plot"
+msgstr "Argumentua"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Play"
+
+#: id:209
+msgid "Next"
+msgstr "Hurrengoa"
+
+#: id:210
+msgid "Previous"
+msgstr "Aurrekoa"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Kalibratu erabiltzailearen interfazea..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Bideoaren kalibrazioa..."
+
+#: id:215
+msgid "Soften"
+msgstr "Bigundu"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Zoom kopurua"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Pixel erlazioa"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD unitatea"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Mesedez sar ezazu disko bat"
+
+#: id:220
+msgid "Remote share"
+msgstr "Urruneko partekatzea"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Sarea ez dago konektaturik"
+
+#: id:222
+msgid "Cancel"
+msgstr "Utzi"
+
+#: id:224
+msgid "Speed"
+msgstr "Abiadura"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr ""
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Probatu ereduak..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Bilatu audio CDaren pisten izenak freedb.org-en"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Nahastu erreprodukzio zerrenda kargatzean"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "HDDa itzaltzeko denbora"
+
+#: id:230
+msgid "Video filters"
+msgstr "Bideoaren iragazkiak"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Bat ere ez"
+
+#: id:232
+msgid "Point"
+msgstr "Puntua"
+
+#: id:233
+msgid "Linear"
+msgstr "Linearra"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anisotropikoa"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Kubo Gaussiarra"
+
+#: id:237
+msgid "Minification"
+msgstr "Txikitzea"
+
+#: id:238
+msgid "Magnification"
+msgstr "Handitzea"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Garbitu zerrenda Amaitzean"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Bistaratze modua"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "Pantaila osoa #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "Leihoan"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Freskatze-tasa"
+
+#: id:244
+msgid "Full screen"
+msgstr "Pantaila osoa"
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Tamaina: (%i,%i)->(%i,%i) (Zoom-a x%2.2f) AR:%2.2f:1 (Pixelak: %2.2f:1)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Script-ak"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Hizkuntza"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Musika"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Bisualizazioa"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Hautatu helburuko direktorioa"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Stereo bozgoragailu guztietara"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Kanal kopurua"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- DTS gaitasuna duen hartzailea"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "CDaren informazioa eskuratzen"
+
+#: id:257
+msgid "Error"
+msgstr "Errorea"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Gaitu etiketa irakurketa"
+
+#: id:259
+msgid "Opening"
+msgstr "Irekitzen"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Hasteko zain..."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Script-en irteera"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Onartu XBMC kontrolatzea HTTP bidez"
+
+#: id:264
+msgid "Record"
+msgstr "Grabatu"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Gelditu gra."
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Ordenatu: Pista"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Ordenatu: Ordua"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Ordenatu: Titulua"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Ordenatu: Artista"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Ordenatu: Albuma"
+
+#: id:271
+msgid "Top 100"
+msgstr "Top 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Goi Ezkerreko overscan konpentsazioa"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Behe Eskumako overscan konpentsazioa"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Azpitituluen posizionamendua"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Pixel erlazioa egokitu"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Egokitu gezia aldatzeko overscan kopurua"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Egokitu barra azpitituluen posizioa aldatzeko"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Egokitu laukizuzena erabat karratua izateko"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Ezin izan dira ezarpenak kargatu"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Ezarpen lehenetsiak erabiltzen"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Egiaztatu XML fitxategiak"
+
+#: id:282
+msgid "Found %i items"
+msgstr "%i item aurkitu dira"
+
+#: id:283
+msgid "Search results"
+msgstr "Bilaketaren emaitzak"
+
+#: id:284
+msgid "No results found"
+msgstr "Ez da emaitzarik aurkitu"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Azpitituluak"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Letra"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Tamaina"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Sorta konpresio dinamikoa"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Bideoa"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Audioa"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Azpitituluak aurkitzeko arakatu"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Sortu lasterbideak"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Garbitu lasterbideak"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Audio desplazamendua"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Lastermarkak"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- AAC gai den hartzailea"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- MP1 gai den hartzailea"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- MP2 gai den hartzailea"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- MP3 gai den hartzailea"
+
+#: id:303
+msgid "Delay"
+msgstr "Atzerapena"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Hizkuntza"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Gaituta"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Ez-interleaved"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Datu basea garbitzen"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Prestatzen..."
+
+#: id:315
+msgid "Database error"
+msgstr "Datu-base errorea"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Abestiak bilatzen..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Datubasearen garbiketa arrakastatxua"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Abestiak garbitzen..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Errorea abestiak garbitzean"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Artistak garbitzen..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Errorea artistak garbitzean"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Generoak garbitzen..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Errorea generoak garbitzean"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Bideak garbitzen..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Errorea bideak garbitzean"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Albumak garbitzen..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Errorea albumak garbitzean"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Aldaketak idazten..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Error writing changes"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Honek denbora piska bat beharko du..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Datubasea konprimitzen..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Errorea datubasea konprimitzen"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Liburutegia garbitu nahi duzu?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Garbitu liburutegia..."
+
+#: id:335
+msgid "Start"
+msgstr "Hasi"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Fotograma-tasa bihurketa"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Audio irteera"
+
+#: id:338
+msgid "Analog"
+msgstr "Analogikoa"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Optikoa/Coax"
+
+#: id:340
+msgid "Various artists"
+msgstr "Hainbat artista"
+
+#: id:341
+msgid "Play disc"
+msgstr "Diskoa erreproduzitu"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Filmak"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Egokitu fotograma-tasa"
+
+#: id:344
+msgid "Actors"
+msgstr "Aktoreak"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Urtea"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Bultzatu bolumena downmix mailara"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Programak"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Off"
+
+#: id:352
+msgid "Dim"
+msgstr "Dim"
+
+#: id:353
+msgid "Black"
+msgstr "Beltza"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrize ibilbidea"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Babeslearen denbora"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Babeslearen modua"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Itzaltzeko funtzioaren tenporizadorea"
+
+#: id:358
+msgid "All albums"
+msgstr "Album guztiak"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Orain dela gutxi gehitutako albuma"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Babeslea"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "Diapositiba errekurtsiboa"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Babeslea iluntzeko maila"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Ordenatu: Fitxategia"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Dolby Digital (AC3) gai den hartzailea"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Ordenatu: Izena"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Ordenatu: Urtea"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Ordenatu: Balorazioa"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Titulua"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "Thunderstorms"
+
+#: id:371
+msgid "Partly"
+msgstr "Partzialki"
+
+#: id:372
+msgid "Mostly"
+msgstr "Gehienbat"
+
+#: id:373
+msgid "Sunny"
+msgstr "Eguzkitsu"
+
+#: id:374
+msgid "Cloudy"
+msgstr "Lainotuta"
+
+#: id:375
+msgid "Snow"
+msgstr "Elurra"
+
+#: id:376
+msgid "Rain"
+msgstr "Euria"
+
+#: id:377
+msgid "Light"
+msgstr "Argia"
+
+#: id:378
+msgid "AM"
+msgstr "AM"
+
+#: id:379
+msgid "PM"
+msgstr "PM"
+
+#: id:380
+msgid "Showers"
+msgstr "Zaparradak"
+
+#: id:381
+msgid "Few"
+msgstr "Gutxi batzuk"
+
+#: id:382
+msgid "Scattered"
+msgstr "Sakabanatuak"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "Haizea"
+
+#: id:384
+msgid "Strong"
+msgstr "Indartsua"
+
+#: id:385
+msgid "Fair"
+msgstr "Egokia"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "Oskarbi"
+
+#: id:387
+msgid "Clouds"
+msgstr "Lainoak"
+
+#: id:388
+msgid "Early"
+msgstr "Goiz"
+
+#: id:389
+msgid "Shower"
+msgstr "Zaparrada"
+
+#: id:390
+msgid "Flurries"
+msgstr "Elur gutxi"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "Baxua"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "Tartekoa"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "Altua"
+
+#: id:394
+msgid "Fog"
+msgstr "Behe lainoa"
+
+#: id:395
+msgid "Haze"
+msgstr "Lanbroa"
+
+#: id:396
+msgid "Select location"
+msgstr "Hautatu kokalekua"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Freskatze denbora"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Tenperaturaren unitatea"
+
+#: id:399
+msgid "Speed units"
+msgstr "Abiadura unitateak"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Eguraldia"
+
+#: id:401
+msgid "Temp"
+msgstr "Temp"
+
+#: id:402
+msgid "Feels like"
+msgstr "Sentsazio ter."
+
+#: id:403
+msgid "UV index"
+msgstr "UV indizea"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Haizea"
+
+#: id:405
+msgid "Dew point"
+msgstr "Kondentsazioa"
+
+#: id:406
+msgid "Humidity"
+msgstr "Hezetasuna"
+
+#: id:409
+msgid "Defaults"
+msgstr "Lehenetsiak"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Eguraldi zerbitzura sartzen"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Eguraldia lortzen:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Unable to get weather data"
+
+#: id:413
+msgid "Manual"
+msgstr "Eskuz"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Album honek ez du berrikuspenik"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Iruditxoa deskargatzen..."
+
+#: id:416
+msgid "Not available"
+msgstr "Ez dago eskuragarri"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Ikusi: ikono handiak"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Min"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Max"
+
+#: id:420
+msgid "HDMI"
+msgstr "HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Ezabatu album info"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Ezabatu CDaren informazioa"
+
+#: id:424
+msgid "Select"
+msgstr "Hautatu"
+
+#: id:425
+msgid "No album information found"
+msgstr "Albumaren informazioa ez da aurkitu"
+
+#: id:426
+msgid "No CD information found"
+msgstr "CDaren informazioa ez da aurkitu"
+
+#: id:427
+msgid "Disc"
+msgstr "Diskoa"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Sartu CD/DVD zuzena"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Mesedez, sartu honako CD/DVD hau"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Ordenatu: DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Ez dago katxerik"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Ezabatu filma liburutegitik"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Benetan kendu '%s'?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "%s-tik %i %s-ko abiaduraz"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Disko aldagarria"
+
+#: id:438
+msgid "Opening file"
+msgstr "Fitxategia irekitzen"
+
+#: id:439
+msgid "Cache"
+msgstr "Katxea"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Disko gogorra"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "Sare lokala"
+
+#: id:443
+msgid "Internet"
+msgstr "Internet"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Bideoa"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Audioa"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Autorun media"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Gaituta"
+
+#: id:450
+msgid "Columns"
+msgstr "Zutabeak"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "1.errenkadaren helbidea"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "2.errenkadaren helbidea"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "3.errenkadaren helbidea"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "4.errenkadaren helbidea"
+
+#: id:455
+msgid "Rows"
+msgstr "Errenkadak"
+
+#: id:456
+msgid "Mode"
+msgstr "Modua"
+
+#: id:457
+msgid "Switch view"
+msgstr "Aldatu ikuspegia"
+
+#: id:459
+msgid "Subs"
+msgstr "Azpitituluak"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Audio stream-a"
+
+#: id:461
+msgid "[active]"
+msgstr "[aktiboa]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Azpititulua"
+
+#: id:463
+msgid "Backlight"
+msgstr "Atzeko argitasuna"
+
+#: id:464
+msgid "Brightness"
+msgstr "Distira"
+
+#: id:465
+msgid "Contrast"
+msgstr "Kontrastea"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Mota"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Eraman barra OSD posizioa aldatzeko"
+
+#: id:469
+msgid "OSD position"
+msgstr "OSDaren posizioa"
+
+#: id:470
+msgid "Credits"
+msgstr "Kredituak"
+
+#: id:471
+msgid "Modchip"
+msgstr "Modchip-a"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Off"
+
+#: id:475
+msgid "Music only"
+msgstr "Musika bakarrik"
+
+#: id:476
+msgid "Music & video"
+msgstr "Musika eta bideoa"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Ezin da zerrenda kargatu"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Skin-a eta hizkuntza"
+
+#: id:480
+msgid "Appearance"
+msgstr "Itxura"
+
+#: id:481
+msgid "Audio options"
+msgstr "Audioaren aukerak"
+
+#: id:482
+msgid "About XBMC"
+msgstr "XBMCri buruz"
+
+#: id:485
+msgid "Delete album"
+msgstr "Ezabatu albuma"
+
+#: id:486
+msgid "Repeat"
+msgstr "Errepikatu"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Errepikatu bat"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Errepikatu karpeta"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Erreproduzitu hurrengo abestia automatikoki"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Erabili ikono handiak"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Tamaina aldatu VobSubs-i"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Aukera aurreratuak (Adituentzako bakarrik!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Orokorrean audio distortsiorik gabeko bolumena"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Bideoen tamaina aldatu interfazearen bereizmeneraino"
+
+#: id:496
+msgid "Calibration"
+msgstr "Kalibrazioa"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Erakutsi fitxategi-luzapenak"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Ordenatu: Mota"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Ezin da lineako bilaketak zerbitzuarekin harremanetan jarri"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Albumaren informazioaren deskargak huts egin du"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Albumen izenak bilatzen ..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Ireki"
+
+#: id:503
+msgid "Busy"
+msgstr "Okupatuta"
+
+#: id:504
+msgid "Empty"
+msgstr "Hutsik"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Kargatzen media fitxategien info..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Ordenatu: Erabilera"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Gaitu bisualizazioak"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Gaitu bideo modua aldatzea"
+
+#: id:512
+msgid "Startup window"
+msgstr "Abioko leihoa"
+
+#: id:513
+msgid "Home window"
+msgstr "Hasiera leihoa"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Eskuzko ezarpenak"
+
+#: id:515
+msgid "Genre"
+msgstr "Generoa"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Duela gutxi erreproduzitutako albumak"
+
+#: id:518
+msgid "Launch"
+msgstr "Abiarazi"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Abiarazi..."
+
+#: id:521
+msgid "Compilations"
+msgstr "Konpilazioak"
+
+#: id:522
+msgid "Remove source"
+msgstr "Kendu Iturria"
+
+#: id:523
+msgid "Switch media"
+msgstr "Aldatu media"
+
+#: id:524
+msgid "Select playlist"
+msgstr "Hautatu zerrenda"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Zerrenda berria..."
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Gehitu zerrendara"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Eskuz gehitu liburutegia"
+
+#: id:528
+msgid "Enter title"
+msgstr "Izenburua idatzi"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Errorea: Bikoiztutako izenburua"
+
+#: id:530
+msgid "Select genre"
+msgstr "Hautatu generoa"
+
+#: id:531
+msgid "New genre"
+msgstr "Genero berria"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Eskuz gehitu"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Idatzi generoa"
+
+#: id:534
+msgid "View: %s"
+msgstr "Ikusi: %s"
+
+#: id:535
+msgid "List"
+msgstr "Zerrenda"
+
+#: id:536
+msgid "Icons"
+msgstr "Ikonoak"
+
+#: id:537
+msgid "Big list"
+msgstr "Zerrenda handia"
+
+#: id:538
+msgid "Big icons"
+msgstr "Ikono handiak"
+
+#: id:539
+msgid "Wide"
+msgstr "Zabala"
+
+#: id:540
+msgid "Big wide"
+msgstr "Oso zabala"
+
+#: id:541
+msgid "Album icons"
+msgstr "Albumaren ikonoak"
+
+#: id:542
+msgid "DVD icons"
+msgstr "DVDaren ikonoak"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Mediaren info"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Audio irteera gailua"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Irteerako iragazki gailua"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "Ez dago artista honen biografia"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Kanal anitzeko downmix-a edo estereo audioa"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Ordenatu: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Izena"
+
+#: id:552
+msgid "Date"
+msgstr "Data"
+
+#: id:553
+msgid "Size"
+msgstr "Tamaina"
+
+#: id:554
+msgid "Track"
+msgstr "Pista"
+
+#: id:555
+msgid "Time"
+msgstr "Denbora"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Titulua"
+
+#: id:557
+msgid "Artist"
+msgstr "Artista"
+
+#: id:558
+msgid "Album"
+msgstr "Albuma"
+
+#: id:559
+msgid "Playlist"
+msgstr "Zerrenda"
+
+#: id:560
+msgid "ID"
+msgstr "ID"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Fitxategia"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "Urtea"
+
+#: id:563
+msgid "Rating"
+msgstr "Balorazioa"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Mota"
+
+#: id:565
+msgid "Usage"
+msgstr "Erabilera"
+
+#: id:566
+msgid "Album artist"
+msgstr "Albumaren artista"
+
+#: id:567
+msgid "Play count"
+msgstr "Erreproduzitze kopurua"
+
+#: id:568
+msgid "Last played"
+msgstr "Azken erre."
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Iruzkina"
+
+#: id:570
+msgid "Date added"
+msgstr "Gehitutako data"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "Lehenetsia"
+
+#: id:572
+msgid "Studio"
+msgstr "Estudioa"
+
+#: id:573
+msgid "Path"
+msgstr "Bidea"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "Herrialdea"
+
+#: id:575
+msgid "In progress"
+msgstr "Prozesuan"
+
+#: id:576
+msgid "Times played"
+msgstr ""
+
+#: id:580
+msgid "Sort direction"
+msgstr "Ordenatu norabidea"
+
+#: id:581
+msgid "Sort method"
+msgstr "Ordenatzeko metodoa"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "Ikusteko modua"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Gogoratu karpeta ezberdinen ikuspegiak"
+
+#: id:584
+msgid "Ascending"
+msgstr "Gorakorra"
+
+#: id:585
+msgid "Descending"
+msgstr "Beherakorra"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Aldatu zerrenda"
+
+#: id:587
+msgid "Filter"
+msgstr "Iragazi"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Bertan behera utzi festa modua"
+
+#: id:589
+msgid "Party mode"
+msgstr "Festa modua"
+
+#: id:590
+msgid "Random"
+msgstr "Ausazkoa"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Off"
+
+#: id:592
+msgid "One"
+msgstr "Bat"
+
+#: id:593
+msgid "All"
+msgstr "Denak"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Off"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Errepikatu: Off"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Errepikatu: Bat"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Errepikatu: Dena"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Erauzi audioa CDa"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Ertaina"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Estandarra"
+
+#: id:603
+msgid "Extreme"
+msgstr "Extremoa"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Bitrate konstantea"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Erauzten..."
+
+#: id:607
+msgid "To:"
+msgstr "Hona:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Ezin izan da erauzi CDa edo pista"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDA Erauzteko bidea ez da ezarri."
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Erauzi audio pista"
+
+#: id:611
+msgid "Enter number"
+msgstr "Zenbakia idatzi"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Bitak/Sample"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "Sample maiztasuna"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Audio CDak"
+
+#: id:621
+msgid "Encoder"
+msgstr "Kodetzailea"
+
+#: id:622
+msgid "Quality"
+msgstr "Kalitatea"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Bitrate-a"
+
+#: id:624
+msgid "Include track number"
+msgstr "Txertatu pistaren zenbakia"
+
+#: id:625
+msgid "All songs of"
+msgstr "Abesti guztiak"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Ikusteko modua"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Arrunta"
+
+#: id:631
+msgid "Zoom"
+msgstr "Zoom-a"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Egokitu 4:3 formatura"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Zoom zabala"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Egokitu 16:9 formatura"
+
+#: id:635
+msgid "Original Size"
+msgstr "Jatorrizko tamaina"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Pertsonalizatua"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Replay gain-a"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Replaygainen bolumenaren doiketa"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Erabili pistaren maila"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Erabili albumaren maila"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "PreAmp Level - Replay gain egindako fitxategiak"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "PreAmp Level -  Replay gain egin gabeko fitxategiak"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Saihestu mozketa replay gain egindako fitxategietan"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Kendu barra beltzak"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Fitxategi handi bat deskonprimatu behar da. Jarraitu?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Liburutegitik kendu"
+
+#: id:647
+msgid "Export video library"
+msgstr "Esportatu bideotekara"
+
+#: id:648
+msgid "Import video library"
+msgstr "Inportatu bideotekara"
+
+#: id:649
+msgid "Importing"
+msgstr "Inportatzen"
+
+#: id:650
+msgid "Exporting"
+msgstr "Esportatzen"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Arakatu liburutegia"
+
+#: id:652
+msgid "Years"
+msgstr "Urteak"
+
+#: id:653
+msgid "Update library"
+msgstr "Eguneratu liburutegia"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Erakutsi arazketaren info"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Arakatu exekutagarria"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Zerrenda Arakatu"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Arakatu karpeta"
+
+#: id:658
+msgid "Song information"
+msgstr "Abestiei buruzko informazioa"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Zati ez-lineala"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Bolumenaren anplifikazioa"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Hautatu esportatzeko karpeta"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Fitxategi hau ez dago eskuragarri."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Liburutegitik kentzea nahi duzu?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Scripta Arakatu"
+
+#: id:665
+msgid "Compression level"
+msgstr "Konpresio maila"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Liburutegia garbitzen"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Kanta zaharrak liburutegitik kentzen"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Bide hau eskaneatua izan da aurretik"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Sarea"
+
+#: id:706
+msgid "- Server"
+msgstr "- Zerbitzaria"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Erabili HTTP proxy zerbitzaria internetera sartzeko"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Interneteko Protocoloal (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Ataka baliogabea zehaztu da. Balio hau 1 eta 65535 artekoa izan behar da."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP proxy-a"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- Zeregina"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Automatikoa (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Eskuzkoal (Static)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP helbidea"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Sare-maskara"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Lehenetsitako pasabidea"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS zerbitzaria"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Gorde eta berrabiarazi"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Helbide baliogabea zehaztu da. Balioa AAA.BBB.CCC.DDD izan behar da"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "0 eta 255 arteko zenbakiekin."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Aldaketak ez dira gorde. Gorde gabe jarraitu nahi duzu?"
+
+#: id:727
+msgid "Web server"
+msgstr "Web zerbitzaria"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP zerbitzaria"
+
+#: id:730
+msgid "- Port"
+msgstr "- Portua"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Gorde eta aplikatu"
+
+#: id:733
+msgid "- Password"
+msgstr "- Pasahitza"
+
+#: id:734
+msgid "No pass"
+msgstr "Pasahitzik ez"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Karaktere multzoa"
+
+#: id:736
+msgid "- Style"
+msgstr "- Estiloa"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Kolorea"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Arrunta"
+
+#: id:739
+msgid "Bold"
+msgstr "Beltzituta"
+
+#: id:740
+msgid "Italics"
+msgstr "Kurtsibaz"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Beltzituta eta kurtsibaz"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Zuria"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Horia"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Fitxategiak"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Ez dago eskaneaturiko informaziorik ikuspegi honetarako"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Mesedez itzali liburutegia modua"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Errorea irudia kargatzean"
+
+#: id:748
+msgid "Edit path"
+msgstr "Aldatu bidea"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Ispilu irudia"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Ziur al zaude?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Iturria kentzen"
+
+#: id:754
+msgid "Add program link"
+msgstr "Gehitu programaren lotura"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Aldatu programaren bidea"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Aldatu programaren izena"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Aldatu bide sakonera"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Ikusi: Zerrenda handia"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Horia"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Zuria"
+
+#: id:762
+msgid "Blue"
+msgstr "Urdina"
+
+#: id:763
+msgid "Bright green"
+msgstr "Berde argia"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Hori berdea"
+
+#: id:765
+msgid "Cyan"
+msgstr "Ziana"
+
+#: id:766
+msgid "Light grey"
+msgstr "Gris argia"
+
+#: id:767
+msgid "Grey"
+msgstr "Grisa"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Errorea %i: partekatzea ez dago erabilgarri"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Audio irteera"
+
+#: id:773
+msgid "Seeking"
+msgstr "Bila"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Aurkezpenaren karpeta"
+
+#: id:775
+msgid "Network interface"
+msgstr "Sareko interfazea"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Haririki gabeko sarearen izena (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- WLAN pasahitza"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- WLAN segurtasuna"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Gorde eta aplikatu sareko interfazearen ezarpenak"
+
+#: id:780
+msgid "No encryption"
+msgstr "Enkriptatzerik ez"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "Sareko interfaze ezarpenak aplikatzen. Itxaron mesedez."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "Sareko interfazea berrabiarazi egin da."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "Sareko interfazea ez da zuzen hasi."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Interfazea desgaituta"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "Sareko interfazea desgaitu da."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Haririk gabeko sarearen izena (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Onartu sistema honetako programak XBMC kontrolatzea"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Portua"
+
+#: id:793
+msgid "Port range"
+msgstr "Portu sorta"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Baimendu beste sistema bateko programak XBMC kontrolatzea"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Hasierako atzerapena errepikapena (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Etengabeko errepikapenaren atzerapena (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Gehienezko bezero kopurua"
+
+#: id:798
+msgid "Internet access"
+msgstr "Interneterako sarbidea"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "Baliogabeko portu zenbakia sartu duzu"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "Baliozko portu sorta 1-65535 da"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "Baliozko portu sorta 1024-65535 da"
+
+#: id:998
+msgid "Add Music..."
+msgstr ""
+
+#: id:999
+msgid "Add Videos..."
+msgstr ""
+
+#: id:1000
+msgid "- Preview"
+msgstr "- Aurrebista"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Ezin da konektatu"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC-ek ezin izan du sareko kokapenera konektatu."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Hau sarea konektatu gabe dagoelako izan daiteke."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Hala ere gehitzea nahi al duzu?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP helbidea"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Gehitu sareko kokalekua"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Protokoloa"
+
+#: id:1009
+msgid "Server address"
+msgstr "Zerbitzariaren helbidea"
+
+#: id:1010
+msgid "Server name"
+msgstr "Zerbitzariaren izena"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Urruneko bidea"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Partekatutako karpeta"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Portua"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Erabiltzailea"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Arakatu sareko zerbitzaria"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Sartu zerbitzariaren sareko helbidea"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Sartu bidea zerbitzarian"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Sartu portuaren zenbakia"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Sartu erabiltzaile izena"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Gehitu %s iturria"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Sartu bideak edo arakatu media kokapenak aurkitzeko."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Sartu media iturburu honentzat izen bat."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Arakatu partekatu berrirako"
+
+#: id:1024
+msgid "Browse"
+msgstr "Arakatu"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Ezin da berreskuratu direktorioko informazioa."
+
+#: id:1026
+msgid "Add source"
+msgstr "Gehitu iturria"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Aldatu iturria"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Aldatu %s iturria"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Sartu etiketa berria"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Arakatu irudiak"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Arakatu irudi karpeta"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Gehitu sareko kokalekua..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Arakatu fitxategia"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Azpimenua"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Gaitu azpimenuan botoiak"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Gogokoak"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "Bideo gehigarriak"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "Musika gehigarriak"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "Irudi gehigarriak"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "Direktorioa kargatzen"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "%i elementuak berreskuratuta"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "%i elementu berreskuratuta %i elementutatik"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "Programa gehigarriak"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Ezarri pluginaren iruditxoa"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Gehigarrien ezarpenak"
+
+#: id:1046
+msgid "Access points"
+msgstr "Sarguneak"
+
+#: id:1047
+msgid "Other..."
+msgstr "Besteak..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Erabiltzaile izena"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Script settings"
+
+#: id:1050
+msgid "Singles"
+msgstr "Banakakoak"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Idatzi web helbidea"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB bezeroa"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Lantaldea"
+
+#: id:1203
+msgid "Default username"
+msgstr "Erabiltzaile izen lehenetsia"
+
+#: id:1204
+msgid "Default password"
+msgstr "Pasahitz lehenetsia"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS zerbitzaria"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Muntatu SMB partekatzea"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Kendu"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Musika"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Bideoa"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Irudiak"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Fitxategiak"
+
+#: id:1215
+msgid "Music & video "
+msgstr "Musika eta bideoa"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Musika eta irudiak"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Musika eta fitxategiak"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Bideoa eta irudiak"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Bideoa eta fitxategiak"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Irudiak eta fitxategiak"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Musika, bideoa eta irudiak"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Musika, bideoa, irudiak eta fitxategiak"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Ezgaituta"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Fitxategiak, musika eta bideoa"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Fitxategia, irudiak eta musika"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Fitxategiak, irudiak eta bideoa"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Musika eta programak"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Bideoa eta programak"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Irudiak eta programak"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Musika, bideoa, irudiak eta programak"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Programak, bideoa eta musika"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Programak, irudiak eta musika"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Programak, irudiak eta bideoa"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Auto-detekzioa"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Auto-detektatu sistema"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Ezizena"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Galdetu konektatzeko"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Bidali FTP erabiltzaile eta pasahitza"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Ping tartea"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Gustatuko litzaizuke auto-detektatutako sistemara konektatzea?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Iragarri zerbitzu hauek beste sistema Zeroconf-en bidez"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr ""
+
+#: id:1271
+msgid "Device name"
+msgstr ""
+
+#: id:1272
+msgid "- Use password protection"
+msgstr ""
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "Pertsonalizatutako audio gailua"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "Passthrough gailu pertsonalizatua"
+
+#: id:1396
+msgid "Drifting"
+msgstr "Noraezean"
+
+#: id:1397
+msgid "and"
+msgstr "eta"
+
+#: id:1398
+msgid "Freezing"
+msgstr "Izozten"
+
+#: id:1399
+msgid "Late"
+msgstr "Berandu"
+
+#: id:1400
+msgid "Isolated"
+msgstr "Isolatuta"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "Ekaitzak"
+
+#: id:1402
+msgid "Thunder"
+msgstr "Trumoiak"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "Eguzkia"
+
+#: id:1404
+msgid "Heavy"
+msgstr "Indartsuak"
+
+#: id:1405
+msgid "in"
+msgstr ""
+
+#: id:1406
+msgid "the"
+msgstr ""
+
+#: id:1407
+msgid "Vicinity"
+msgstr "Inguruan"
+
+#: id:1408
+msgid "Ice"
+msgstr "Izotza"
+
+#: id:1409
+msgid "Crystals"
+msgstr "Kristalak"
+
+#: id:1410
+msgid "Calm"
+msgstr "Bare"
+
+#: id:1411
+msgid "with"
+msgstr ""
+
+#: id:1412
+msgid "windy"
+msgstr "haizetsu"
+
+#: id:1413
+msgid "drizzle"
+msgstr "zirimiri"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "Tximistak"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "Zirimiri"
+
+#: id:1416
+msgid "Foggy"
+msgstr "Lambroa"
+
+#: id:1417
+msgid "Grains"
+msgstr "Aleak"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "Ekaitzak"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "Zaparradak"
+
+#: id:1420
+msgid "Moderate"
+msgstr "Moderatuak"
+
+#: id:1421
+msgid "Very High"
+msgstr "Oso altua"
+
+#: id:1422
+msgid "Windy"
+msgstr "Haizetsua"
+
+#: id:1423
+msgid "Mist"
+msgstr "Lanbroa"
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Jarri pantaila lotan inaktibo dagoenean"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Runtime"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "Scriptak huts egin du! : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "Bertsio berriagoa behar da - Ikusi log-a"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Gaitu LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Etxea"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Programak"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Irudiak"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Fitxategi kudeatzailea"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Ezarpenak"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Musika"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Bideoak"
+
+#: id:10007
+msgid "System information"
+msgstr "Sistemaren informazioa"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Ezarpenak - Orokorra"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Ezarpenak - Pantaila"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Ezarpenak - Itxura - Interfazeren kalibrazioa"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Ezarpenak - Bideoak - Pantailaren kalibrazioa"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Ezarpenak - Irudiak"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Ezarpenak - Programak"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Ezarpenak - Eguraldia"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Ezarpenak - Musika"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Ezarpenak - Sistema"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Ezarpenak - Bideoak"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Ezarpenak - Sarea"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Ezarpenak - Itxura"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Script-ak"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Web Nabigatzailea"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr ""
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Bideoak/Zerrendak"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Ezarpenak - Profilak"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Bai/Ez elkarrizketa"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Aurrerapen elkarrizketa"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "Azpitituluak bilatzen..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "Katxean azpiltituluak bilatzen..."
+
+#: id:10212
+msgid "terminating"
+msgstr "amaitzen"
+
+#: id:10213
+msgid "buffering"
+msgstr "bufferreratzen"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "Stream-a irekitzen"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Musika/Zerrenda"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Musika/Fitxategiak"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Musika/Liburutegia"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Zerrenda editorea"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Top 100 abestiak"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Top 100 albumak"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Programak"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Konfigurazioa"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Eguraldiaren iragarpena"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Sareko jokoak"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Gehigarriak"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Sistemaren info"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Musika - Liburutegia"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Orain Erreproduzitzen - Musika"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Orain Erreproduzitzen - Bideoak"
+
+#: id:10523
+msgid "Album info"
+msgstr "Albumaren info"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Filmaren info"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Hautatu elkarrizketa"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Musika/Info"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Elkarrizketa Ados"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Bideoak/Info"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Script-ak/Info"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Pantaila osoko bideoa"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Audioaren bisualizazioa"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Fitxategi lotzearen elkarrizketa"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Berreraiki indizea..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Itzuli musikaren leihora"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Itzuli bideoen leihora"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Hasi hasieratik"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "%s-tik hasi"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "Ados"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Blokeatuta! Sartu kodea..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Sartu pasahitza"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Sartu master kodea"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Sartu desblokeatzeko kodea"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "edo sakatu C uzteko"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Sartu gamepad botoi konbinazioa eta"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "ados sakatu, edo atzera uzteko"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Ezarri blokeoa"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Desblokeatu"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Berrezarri blokeatzea"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Kendu blokeoa"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Zenbakizko pasahitza"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Gamepad-eko botoi konbinazioa"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Testu pasahitza"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Idatzi pasahitz berria"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Berriro idatzi pasahitz berria"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Pasahitz okerra,"
+
+#: id:12343
+msgid "retries left "
+msgstr "saiakera dituzu"
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Sartutako pasahitzak ez datoz bat."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Sarbidea ukatuta"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Pasahitza saiatzeko muga gainditu da."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "Sistema orain itzaliko da."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Elementua blokeatuta"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Berraktibatu blokeoa"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Aldatu Blokeoa"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Iturria blokeoa"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Pasahitza hutsik sartu duzu. Saiatu berriro."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Master blokeoa"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Itzali sitema if Master Blokearen saiakerak gainditzean"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Master kodea ez da baliozkoa"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Please enter a valid master code"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Ezarpenak eta fitxategi kudeatzaileak"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Ezarri film guztientzako lehenetsi bezala"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Honek aurrez gordetako edozein balio berrezarriko du"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Denbora kopurua irudi bakoitza erakusteko"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Erabili pan eta zoom efektuak"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12 orduko erlojua"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24 orduko erlojua"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Eguna/Hilabetea"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Hilabetea/Eguna"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Sistema piztu denetik pasa den denbora"
+
+#: id:12391
+msgid "Minutes"
+msgstr "Minutuak"
+
+#: id:12392
+msgid "Hours"
+msgstr "Orduak"
+
+#: id:12393
+msgid "Days"
+msgstr "Egunak"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Piztutako denbora totala"
+
+#: id:12395
+msgid "Battery level"
+msgstr ""
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Eguraldia"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Pantaila Babeslea"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "Pantaila osoko OSD-a"
+
+#: id:13000
+msgid "System"
+msgstr "Sistema"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Berehalako HD gelditzea"
+
+#: id:13002
+msgid "Video only"
+msgstr "Bideoa bakarrik"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Atzerapena"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Gutxieneko fitxategiaren iraupena"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Itzali"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Itzaltzeko funtzioa"
+
+#: id:13009
+msgid "Quit"
+msgstr "Irten"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Hibernatu"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Eseki"
+
+#: id:13012
+msgid "Exit"
+msgstr "Irten"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Berrabiarazi"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Minimizatu"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Power botoiaren ekintza"
+
+#: id:13016
+msgid "Power off System"
+msgstr ""
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Beste saio bata aktibo dago, beharbada shh bidez?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "Muntatutako disko aldagarriak"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "Segurtasunik gabe gailua kentzea"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "Gailua ongi kendu da"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "Joystick-a konektatuta"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "Joystick-a deskonektatuta"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "Bateria gutxirekin"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Flicker iragazkia"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "Utzi unitatearei hautatzen (berriabiarazi behar da)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Zuri bertikalen sinkronia"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Ezgaituta"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Gaituta bideoa erreproduzitzean"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Beti gaituta"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Probatu eta bereizmena aplikatu"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Gorde bereizmena?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Nahi al duzu, ebazpen hau mantentzea?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Kalitate handiko upscaling-a"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Ezgaituta"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Gaituta SD edukientzako"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Beti gaituta"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Upscaling modua"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bikubikoa"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinkronia"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ Upscaling maila"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU Estudioare mailaren kolore konbertsioa"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Zuritu beste pantailak"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Ezgaituta"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Pantaila zuriak"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "Konexio aktiboak detektatuta!"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Aurrera jarraitzen baduzu, agian ezingo duzu XBMC kontrolatu"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "hemendik aurrera. Ziur zaude gertaera zerbitzari gelditu nahi duzula?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Aldatu Apple Remote modua?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Orain Apple Remote kontrola erabiltzen baldin bazaude"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC, ezarpen hau aldatzeak zure kontrolatzeko gaitasunean"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "eragina izan dezake. Jarraitzea nahi duzu?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Azpisareko maskara"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Atebidea"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "DNS Primarioa"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Abiarazteak huts egin du"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Inoiz ez"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Orain"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "%i segundu ondoren"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "HDDa instalatutako data:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "HDDaren energia ziklo kopurua:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Profilak"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Ezabatu  '%s' profila?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Azkenengoan kargatutako profila"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Ezezaguna"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Gainidatzi"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Iratzargailua"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Alarma tartea (minututan)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Hasi da, alarma %im minututan"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Alarma!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Utzita %im%is falta zirela"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+#: id:13214
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Bilatu Azpitituluak RARs en"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Azpitituluak arakatu..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Mugitu itema"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Mugitu itema hona"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Utzi mugitzea"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Hardwarea:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "CPUaren erabilera:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Konektatuta baina ez dago DNSrik"
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Disko Gogorra"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Biltegiratzea"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Lehenetsia"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Sarea"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Bideoa"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Hardwarea"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Sistema eragilea:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "CPUaren abiadura:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Bideo kodetzailea:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Pantailaren bereizmena:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "A/V kablea:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD eskualdea:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Interneta:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Konektatuta"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Konektatu gabe. Egiaztatu sareko ezarpenak."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Helburuko tenperatura"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Haizgailuaren abiadura"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Tenperaturaren kontrol automatikokia"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Haizgailuaren abiadura gainidatzi"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Letrak"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Gaitu bi norabideko kateak iraultzea"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Erakutsi RSS jarioa"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Erakutsi karpeta gurasoaren elementuak"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Pistak izendatzeko txantiloia"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Zure sistema berrabiarazi nahi duzu"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "XBMCren ordez?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Zoom efektua"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Flotatu efektua"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Barra beltzen murrizketa"
+
+#: id:13313
+msgid "Restart"
+msgstr "Berrabiarazi"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Kanten arteko nahaste gurutzatua landu"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Birsortu argazkitxoak"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Argazkitxo errekurtsiboak"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Ikusi aurkezpena"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Aurkezpen errekurtsiboa"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Ausaz"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Stereo"
+
+#: id:13321
+msgid "Left only"
+msgstr "Ezkerra bakarrik"
+
+#: id:13322
+msgid "Right only"
+msgstr "Eskuma bakarrik"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Gaitu karaoke modua"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Atzeko planoko gardentasuna"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Aurreko planoaren gardentasuna"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "A/V atzerapena"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaokea"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s ez da aurkitu"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Errorea %s irekitzen"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "%s ezin izan da kargatu"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Errorea: Memoria gabe"
+
+#: id:13332
+msgid "Move up"
+msgstr "Mugitu gora"
+
+#: id:13333
+msgid "Move down"
+msgstr "Mugitu behera"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Editatu etiketa"
+
+#: id:13335
+msgid "Make default"
+msgstr "Lehenetsi"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Kendu botoia"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Utzi"
+
+#: id:13341
+msgid "Green"
+msgstr "Berdea"
+
+#: id:13342
+msgid "Orange"
+msgstr "Laranja"
+
+#: id:13343
+msgid "Red"
+msgstr "Gorria"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Zikloa"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Itzali LED erreprodukzioan"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Filmaren informazioa"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Ilaratu elementua"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Bilatu IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Eduki berriak eskaneatu"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Orain erreproduzitzen..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Albumaren informazioa"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Eskaneatu elementua liburutegira"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Gelditu eskaneatzen"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Errendatzeko metodoa"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Kalitate txikiko pixel shader-a"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Hardware gainjartzea"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Kalitate handiko pixel shader-a"
+
+#: id:13358
+msgid "Play item"
+msgstr "Erreproduzitu elementua"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Ezarri artistaren argazkitxoa"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Automatikoki sortu argazkitxoak"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Gaitu ahotsa"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Gaitu gailua"
+
+#: id:13376
+msgid "Volume"
+msgstr "Bolumena"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Ikuspegi lehenetsi modua"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Lehenetsiriko distira"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Lehenetsiriko kontrastea"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Lehenetsiriko gamma"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Berrekin bideoa"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Ahots maskara - 1 Portua"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Ahots maskara - 2 Portua"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Ahots maskara - 3 Portua"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Ahots maskara - 4 Portua"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Erabilera denboran oinarritutako bilaketa"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Pistak izendatzeko txantiloia - eskubidea"
+
+#: id:13388
+msgid "Preset"
+msgstr "Aurrezarritakoa"
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr "Ez dago aurrezarpenik eskuragarri \nbisualizazio honetarako"
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr "Ez dago ezarpenik eskuragarri \nbisualizazio honetarako"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Egotzi/Kargatu"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Erabili bisualizazioa audioa erreproduzitzen badago"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Kalkulatu tamaina"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Karpetaren tamaina kalkulatzea"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Bideoaren ezarpenak"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Audioa eta azpititulu ezarpenak"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Gaitu azpitituluak"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Lasterbideak"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Ezikusi artikuluak ordenatzean (adibidez \"the\")"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Kanten arteko nahaste gurutzatua landu album berean"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Arakatu %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Erakutsi pistaren posizioa"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Garbitu lehenetsia"
+
+#: id:13404
+msgid "Resume"
+msgstr "Jarraitu"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Eskuratu argazkitxoa"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Irudiaren informazioa"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s aurrezarpenak"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(IMDb erabiltzaile puntuaketa)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "Top 250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Sintonizatu Last.fm-en"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Gutxieneko haizagailuaren abiadura"
+
+#: id:13412
+msgid "Play from here"
+msgstr ""
+
+#: id:13413
+msgid "Downloading"
+msgstr "Deskargatzen"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Txertatu konpilazioetan bakarrik agertzen diren artistak"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Errendatzeko metodoa"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Automatikoki detektatzeko"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Oinarrizko shader-ak (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Shader aurreratuak (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Softwarea"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Kendu segurtasunez"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Hasi aurkezpena hemen"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Gogoratu bide hau"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Erabili pixel buffer objektuak"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Onartu hardware azelerazioa (VDPAU)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Onartu hardware azelerazioa (VAAPI)"
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Onartu hardware azelerazioa (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Allow hardware acceleration (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Onartu hardware azelerazioa (VDADekodeatzailea)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Onartu hardware azelerazioa (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Pixel Shaders"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr ""
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "A/V sinkronia metodoa"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "Audio erlojua"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Bideoaren erlojua (Drop/Dupe audio)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "Bideoaren erlojua (Berriz lagindu audioa)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Berriz lagindu gehienezko kopurua (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Berriz lagintzeko kalitatea"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Txikia (azkarra)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Ertaina"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Handia"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Oso handia(motela!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Sinkronizatu erreprodukzioa erakusteko"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr ""
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr ""
+
+#: id:13552
+msgid "%.1f Second"
+msgstr ""
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr ""
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Apple remote"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Onartu XBMC hastea urrutiko agintearekin"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Sekuentzia atzerapen denbora"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Ezgaituta"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Estandarra"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Aginte Unibertsala"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Hainbat Urruneko Aginte (Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Apple Remote Errorea"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Apple Remote ezin izan da gaitu"
+
+#: id:14000
+msgid "Stack"
+msgstr "Pilatu"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Banatu"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Zerrenda fitxategia deskargatzen..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Streams zerrenda deskargatzen..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Stream zerrenda analizatzen..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Stream zerrendaren deskargak huts egin du"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Zerrendaren deskargak huts egin du"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Joko direktorioa"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Automatikoki aldatu argazkitxoan honen arabera"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Gaitu automatikoki argazkitxoen ikuspegira aldatzea"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Erabili ikono handiak"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Aldatu oinarrtua"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Ehunekoa"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Ez dago fitxategirik eta gutxienez argazkitxo bat"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Gutxienez fitxategi bat eta argazkitxoa"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Argazkitxoen ehunekoa"
+
+#: id:14018
+msgid "View options"
+msgstr "Ikusteko aukerak"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Aldatu 1 area kodea"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Aldatu 2 area kodea"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Aldatu 3 area kodea"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Liburutegia"
+
+#: id:14023
+msgid "No TV"
+msgstr "TBrik ez"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Sartu herri handi hurbilena"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Bideoa/Audioa/DVD katxea - Disko gogorra"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Bideoaren katxea - DVD-ROM"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Sare Lokala"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Audio katxea - DVD-ROM"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Sare Lokala"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD katxea - DVD-ROM"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Sare Lokala"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Zerbitzuak"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Sare ezarpenak aldatu"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC berrabiarazi behar da aldatzeko zure"
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr "sare ezarpenak. Orain berrabiaraztea nahi duzu?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr ""
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Itzali erreproduzitzean"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i min"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i seg"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i ms"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Ordu formatua"
+
+#: id:14052
+msgid "Date format"
+msgstr "Data formatua"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "GUI iragazkiak"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Erabili atzeko planoko eskaneatzea"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Gelditu eskaneatzea"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Ez da posible eskaneatzen dagoen bitartean"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Film ale eragina"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Bilatu argazkitxoak urruneko partekatuetan"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Mota ezezaguneko katxea - Internet"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Automatikoa"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Sartu erabiltzaile izena"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Data eta ordua"
+
+#: id:14064
+msgid "Set date"
+msgstr "Ezarri data"
+
+#: id:14065
+msgid "Set time"
+msgstr "Ezarri ordua"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Idatzi ordua 24 orduko HH:MM formatuan"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Idatzi data EE/HH/UUUU formatuan"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Idatzi IP helbidea"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Aplikatu ezarpen hauek orain?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Aplikatu aldaketak orain"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Onartu fitxategiak berrizendatzea eta ezabatzea"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Ezarri ordu zonaldea"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Erabili eguneko argiko denbora aurreztea"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Gehitu gogokoetara"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Gogokoetatik kendu"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Koloreak"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "Herrialdeko ordu eremua"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Ordu eremua"
+
+#: id:14081
+msgid "File lists"
+msgstr "Fitxategi zerrenda"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Erakutsi irudiaren EXIF infromazioa"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Erabili pantaila osoko leihoa benetako pantaila osoaren ordez"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Ilaratu abestiak hautatzean"
+
+#: id:14086
+msgid "Playback"
+msgstr "Erreprodukzioa"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVDak"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "Erreproduzitu DVDak automatikoki"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Azpitituluekin erabiltzeko letra"
+
+#: id:14090
+msgid "International"
+msgstr "Nazioartekoa"
+
+#: id:14091
+msgid "Character set"
+msgstr "Karaktere multzoa"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Arazketa"
+
+#: id:14093
+msgid "Security"
+msgstr "Sekuritatea"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Sarrerako gailuak"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Energia aurreztea"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Kendu"
+
+#: id:15016
+msgid "Games"
+msgstr "Jokoak"
+
+#: id:15019
+msgid "Add"
+msgstr "Gehitu"
+
+#: id:15052
+msgid "Password"
+msgstr "Pasahitza"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Liburutegia"
+
+#: id:15101
+msgid "Database"
+msgstr "Datu basea"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Album guztiak"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Artista guztiak"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Abesti guztiak"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Genero guztiak"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Bufferreratzen..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Nabigazio soinuak"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Skin lehenetsia"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Tema"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Tema lehenetsia"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Bidali kantuak Last.fm-ra"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.fm-ko erabiltzaile izena"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.fm-ko pasahitza"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Ez da ondo konektatu: lokartzen..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Mesedez eguneratu XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Autorizazio okerra: Egiaztatu erabiltzaile izena eta pasahitza"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Konektatuta"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Konektatu gabe"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Bidali %i tartea"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Katxean %i abesti"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Bidaltzen..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Bidaltzen %i segundutan"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Erreproduzitu erabiliz..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Erabili leundutako A/V sinkronizazioa"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Ezkutatu fitxategi izenak argazkitxo ikuspegian"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Erreproduzitu festa moduan"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Bidali abestiak Libre.fm-ra"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm erabiltzaile izena"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm pasahitza"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "Abestien bidalketa"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Bidali Last.fm irratia Last.fm-ra"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Last.fm-ra konektatzen..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Estazioa hautatzen..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Bilatu antzeko artistak..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Bilatu antzeko etiketak..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Zure profila (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Goiko etiketa orokorrak"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Top artistak %name% etiketarentzako"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Top albumak %name% etiketarentzako"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Top pistak %name% etiketarentzako"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Entzun %name% etiketa Last.fm irratian"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "%name%-en antzeko artistak"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Top %name% albumak"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Top %name% pistak"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Top %name% etiketak"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "%name%-ren fan handienak"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Entzun %name%-ko fanei Last.fm irratian"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Entzun %name%-ren antzeko artistak Last.fm-ko irratian"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Top artistak %name%-tzako"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Top albumak %name%-entzako"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Top pistak %name% erabiltzailearentzako"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "%name% erabiltzailearen lagunak"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "%name% erabiltzailearen bizilagunak"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Asteko artista taula %name%-rentzat"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Asteko album taula %name%-rentzat"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Asteko pista taula %name%-rentzat"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Entzun %name%-ren bizilagunak Last.fm irratian"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Entzun %name%-ren pertsonala Last.fm irratian"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Entzun %name%-ren abesti gogokoenak Last.fm irratian"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Zerrenda eskuratzen Last.fm-tik..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Ezin da berreskuratu zerrenda Last.fm-tik..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Sartu izen bat antzeko artista batzuk aurkitzeko"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Sartu etiketa izena antzeko batzuk aurkitzeko"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Orain dela gutxi entzundako pistak %name%-ren arabera"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Entzun %name%-ren gomendioak Last.fm irratian"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "%name% erabiltzailearen top etiketak"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Gehitu pista hau zure gogoke pistetara?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Uneko pista debekatu nahi duzu?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Zure gogoko pistetara gehituta: '%s'."
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "'%s'ezin izan da zure gogokoetara gehitu."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Debekatuta: '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Ezin izan da '%s' debekatu. "
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Orain dela gutxi gogokoak diren pistak %name%-ren arabera"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Orain dela gutxi debekatutako pistak %name%-ren arabera"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Kendu gogokoetatik"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Debekua kendu"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Nahi duzu zure gogokoetatik pista hau kentzea?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Pista honen debekua kendu nahi duzu?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Bidea ez da aurkitu edo baliogabea da"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Ezin izan da sareko zerbitzariarekin konektatu"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Ez da zerbitzaririk aurkitu"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Lantaldea ez da aurkitu"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Bide anitzeko iturria irekitzen"
+
+#: id:15311
+msgid "Path:"
+msgstr "Bidea:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Orokorra"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Interneteko bilaketa"
+
+#: id:16003
+msgid "Player"
+msgstr "Erreproduktorea"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Erreproduzitu diskotik"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Sartu titulu berria"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Sartu filmaren izena"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Sartu profilaren izena"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Sartu albumaren izena"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Sartu zerrendaren izena"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Sartu fitxategiaren izen berria"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Sartu karpetaren izena"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Sartu direktorioa"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Aukera eskuragarriak: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Sartu bilaketa katea"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Bat ere ez"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Auto aukeratu"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "De-interlace"
+
+#: id:16021
+msgid "Bob"
+msgstr "Bob"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Bob (alderantziz)"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Uzten..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Sartu artistaren izena"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Erreprodukzioak huts egin du"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Elemntu bat edo gehiagok huts egin du(te) erreproduzitzean"
+
+#: id:16028
+msgid "Enter value"
+msgstr "Idatzi balioa"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Egiaztatu log fitxategia xehetasunetarako"
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Festa modua kenduta."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Ez da liburutegian bat datorren abestirik aurkitu"
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Ezin izan da datu-basea hasi."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Ezin izan da datu-basea ireki."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Ezin izan da abestirik lortu datu basetik."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Festa moduko zerrenda"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr ""
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr ""
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr ""
+
+#: id:16041
+msgid "On"
+msgstr ""
+
+#: id:16100
+msgid "All Videos"
+msgstr "Bideo guztiak"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "Ikusi gabe"
+
+#: id:16102
+msgid "Watched"
+msgstr "Ikusita"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Markatu ikusita"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Markatu ikusi gabe"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Aldatu titulua"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Eragiketa bertan behera utzi da"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Kopiak huts egin du"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Huts egin du gutxienez fitxategi bat kopiatzeak"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Mugitzeak huts egin du"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Huts egin du gutxienez fitxategi bat mugitzeak"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Ezabatzeak huts egin du"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Huts egin du gutxienez fitxategi bat ezabatzeak"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Bideoa eskalatzeko metodoa"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Gertueneko bizilaguna"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Bilinearra"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Bikubikoa"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bikubikoa (software)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (software)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (software)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "Tenporala"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "Tenporala/Espaziala"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU)Zarata Murrizketa"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU)Fokatzea"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Alderantzizko Telezinea"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3 optimizatua"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "Tenporala (Erdia)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "Tenporala/Espaziala (Erdia)"
+
+#: id:16319
+msgid "DXVA"
+msgstr "DXVA"
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr ""
+
+#: id:16321
+msgid "DXVA Best"
+msgstr ""
+
+#: id:16322
+msgid "Spline36"
+msgstr ""
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr ""
+
+#: id:16324
+msgid "Software Blend"
+msgstr ""
+
+#: id:16400
+msgid "Post-processing"
+msgstr "Bideoaren osteko-tratamendua"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Erakutsi lo egiteko denbora-muga"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Aldatu kanala"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Gordetako musikaren karpeta"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Erabili kanpoko DVD erreproduzitzailea"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Kanpoko DVD erreproduzitzailea"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Entrenatzaile karpeta"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Pantaila irudien karpeta"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Zerrenden karpeta"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Grabazioak"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Pantaila irudiak"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Erabili XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Musika zerrendak"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Bideo zerrendak"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Jokoa abiaraztea nahi duzu?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Ordenatu: Zerrenda"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Urruneko iruditxoa"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Oraingo iruditxoa"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Iruditxo lokala"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Iruditxorik ez"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Itxi iruditxoa"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Gatazkak"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Eskaneatu berria"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Eskaneatu dena"
+
+#: id:20026
+msgid "Region"
+msgstr "Eskualdea"
+
+#: id:20037
+msgid "Summary"
+msgstr "Laburpena"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Blokeatu musikaren leihoa"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Blokeatu bideoaren leihoa"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Blokeatu irudien leihoa"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Blokeatu programak eta script leihoak"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Blokeatu fitxategi kudeatzailea"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Blokeatu ezarpenak"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Hasiera freskoa"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Sartu master modura"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Utzi master modua"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Sortu '%s' profila?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Hasi ezarpen freskoekin"
+
+#: id:20049
+msgid "Best available"
+msgstr "Eskuragarri dagoen onena"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "16x9 eta 4x3 artean auto aldatu"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Pilatutako fitxategiak bat bezala erabili"
+
+#: id:20052
+msgid "Caution"
+msgstr "Kontuz"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Ezker master modua"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Master modura sartuta"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Allmusic.com-eko iruditxoa"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Kendu iruditxoa"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Gehitu profila..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Kontsultatu informazioa album guztientzat"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Mediaren info"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Banatuta"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Partekatzeak lehenetsita"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Partekatzeak lehenetsita (irakurri bakarrik)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Kopiatu lehenetsia"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Profileko irudia"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Blokeatu lehentasunak"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Aldatu profila"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Profila blokeatu"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Ezin izan da karpeta sortu"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Profilaren direktorioa"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Hasi media iturri freskoekin"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Ziurtatu aukeratutako karpeta idazgarria den"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "eta karpeta berriaren izena baliozkoa dela"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "MPAA balorazioa"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Idatzi master blokeo kodea"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Master blokeo kodea eskatu abioan"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Skin-aren ezarpenak"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- ez dago link ezarririk -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Gaitu animazioak"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Ezgaitu RSS musikarekin"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Gaitu lasterbide botoiak"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Erakutsi programak menu nagusian"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Erakutsi musikaren info"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Erakutsi eguraldiaren info"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Erakutsi sistemaren info"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Erakutsi diskoko espazio erabilgarria C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Erakutsi diskoko espazio erabilgarria E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Eguraldiaren info"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "unitateko espazio librea"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Idatzi existitzen den partekatze baten izena"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Blokeatzeko kodea"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Kargatu profila"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Profilaren izena"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Media iturriak"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Sartu profileko blokeo kodea"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Sartzeko pantaila"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Eskuratzen albumaren info"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Eskuratzen info albumerako"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "Ezin da erauzi CD edo pista CDa erreproduzitzean"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Master blokeo kodea eta ezarpenak"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Master blokeo kodea sartzeak beti maisu modua gaitzen du"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "edo lehenetsitik kopiatu?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Gorde profileko aldaketak?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Ezarpen zaharrak aurkitu dira."
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Erabiltzea nahi duzu?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Media iturri zaharrak aurkitu dira."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Banatuta (blokeatuta)"
+
+#: id:20108
+msgid "Root"
+msgstr "Erroa"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Zoom-a"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP ezarpenak"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Automatikoki hasi UPnP bezeroa"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Azkenego sartuta: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Inoiz sartu gabe"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Profila %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Erabiltzaile sarrera / Aukeratu profil bat"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Erabili blokeoa sartzeko pantailan"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Blokeatzeko kode baliogabezkoa."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Horretarako, ezinbestekoa da master blokeoa ezartzea."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Gustatuko litzaizuke orain ezartzea?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Programaren informazioa kargatzen"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Festa gaituta!"
+
+#: id:20122
+msgid "True"
+msgstr "Egia"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Edariak nahasten"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Edalontziak betetzen"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Sartuta"
+
+#: id:20126
+msgid "Log off"
+msgstr "Irten"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Joan errora"
+
+#: id:20129
+msgid "Weave"
+msgstr "Weave"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Weave (alderantziz)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Blend"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Berrabiarazi bideoa"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Editatu sareko kokalekua"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Kendu sareko kokalekua"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Karpeta eskaneatzea nahi duzu?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Memoria unitatea"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Memoria unitatea muntatuta"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Ezin da memoria unitatea muntatu"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "%i portuan, %i slot-a"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Blokeo pantaila babeslea"
+
+#: id:20141
+msgid "Set"
+msgstr "Ezarri"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Erabiltzaile izena"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Sartu pasahitza"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Itzaltze tenporizadorea"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Itzaltze bitartea (minututan)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Hasita, %im ondoren itzaliko da"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "30 minuturen ondoren itzaliko da"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "60 minuturen ondoren itzaliko da"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "120 minuturen ondoren itzaliko da"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Itzaltze tenporizadore pertsonalizatua"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Utzi itzaltzeko tenporizadorea"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Blokeatu ezarpenak %s-ri"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Arakatu..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Laburpen informazioa"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Biltegiratze informazioa"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Disko gogorraren informazioa"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "DVD-ROM informazioa"
+
+#: id:20158
+msgid "Network information"
+msgstr "Sarearen informazioa"
+
+#: id:20159
+msgid "Video information"
+msgstr "Bideoaren informazioa"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Hardwarearen informazioa"
+
+#: id:20161
+msgid "Total"
+msgstr "Guztira"
+
+#: id:20162
+msgid "Used"
+msgstr "Erabilita"
+
+#: id:20163
+msgid "of"
+msgstr "/"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Ez da blokeoa onartzen"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Ez blokeatuta"
+
+#: id:20166
+msgid "Locked"
+msgstr "Blokeatuta"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Izoztuta"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Beharrezkoa berrezartzea"
+
+#: id:20169
+msgid "Week"
+msgstr "Astea"
+
+#: id:20170
+msgid "Line"
+msgstr "Lerroa"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Windows sarea (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "XBMSP zerbitzaria"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "FTP zerbitzaria"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes musika partekatzea (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "UPnP zerbitzaria"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Erakutsi bideoaren info"
+
+#: id:20177
+msgid "Done"
+msgstr "Eginda"
+
+#: id:20178
+msgid "Shift"
+msgstr "Shift"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Bloq Mayús"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Sinboloak"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Ezabatze tekla"
+
+#: id:20182
+msgid "Space"
+msgstr "Espazioa"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Skin-a berriz kargatu"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Biratu argazkiak EXIF informazioa erabiliz"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Erabili posterrak ikusteko estiloa TB saioetarako"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Mesedez itxaron"
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Gaitu auto korritze gidoi eta berrikuspenarentzat"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Pertsonalizatua"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Gaitu debug saioa"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Deskargatu informazio gehigarria eguneratzeetan"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Lehenetsitako zerbitzua albumaren informaziorako"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Lehenetsitako zerbitzua artistaren informaziorako"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Aldatu scraper-a"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Esportatu musikaren liburutegia"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Inportatu musikaren liburutegia"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Ez da artistarik aurkitu!"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Artistaren info deskargatzeak huts egin du"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Festa gaituta! (bideoak)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Edariak nahasten (bideoak)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Edalontziak betetzen (bideoak)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV zerbitzaria (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV zerbitzaria (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "Leheneno sarrera, aldatu zure profila"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend bezeroa"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev bezeroa"
+
+#: id:20258
+msgid "MythTV client"
+msgstr ""
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr ""
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr ""
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Web zerbitzariaren direktorioa (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Web zerbitzariaren direktorioa (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Ezin da karpetan idatzi:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Saltatu eta jarraitzea nahi duzu?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS Jarioak"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Bigarren DNSa"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "DHCP zerbitzaria:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Sortu karpeta berria"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Dim erreprodukzioa LCDan"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Ezezaguna edo barrukoa (babestua)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Dim erreprodukzioa LCDan pausatuta"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Bideoak - Liburutegia"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Ordenatu: ID"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Erreproduzitu zatia..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Kalibrazioa berrezarri"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "Honek %s-ren balioak berrezarriko ditu"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "lehenetsitako balioetara."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "Arakatu helbururako"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Erabili karpeten izenak bilaketetarako"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Fitxategia"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Erabili fitxategi edo karpeten izenak bilaketetan?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Ezarri edukia"
+
+#: id:20334
+msgid "Folder"
+msgstr "Karpeta"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Bilatu errekurtsiboki edukia?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Desblokeatu iturriak"
+
+#: id:20337
+msgid "Actor"
+msgstr "Aktorea"
+
+#: id:20338
+msgid "Movie"
+msgstr "Filma"
+
+#: id:20339
+msgid "Director"
+msgstr "Zuzendaria"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Bide honetakoelementu guztiak kendu"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr " nahi dituzu XBMC-ko liburutegitik?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Filmak"
+
+#: id:20343
+msgid "TV shows"
+msgstr "TB saioak"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Direktorio honek du"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Exekutatu eskaneatze automatizatua"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Eskaneatu errekurtsiboki"
+
+#: id:20347
+msgid "as"
+msgstr "bezala"
+
+#: id:20348
+msgid "Directors"
+msgstr "Zuzendariak"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "Ez da bideo fitxategirik aurkitu bide honetan!"
+
+#: id:20350
+msgid "votes"
+msgstr "botoak"
+
+#: id:20351
+msgid "TV show information"
+msgstr "TB saio infromazioa"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Pasartearen informazioa"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Kargatzen TB saioen xehetasunak"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Fetching episode guide"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Kargatzen info direktorioko pasarteetan"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Aukeratu TB saioa:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Sartu TB saioaren izena"
+
+#: id:20358
+msgid "Season %i"
+msgstr "%i denboraldia"
+
+#: id:20359
+msgid "Episode"
+msgstr "Pasartea"
+
+#: id:20360
+msgid "Episodes"
+msgstr "Pasarteak"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Kargatzen pasartearen xehetasunak"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Kendu pasartea liburutegitik"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Kendu TB saioaren liburutegia"
+
+#: id:20364
+msgid "TV show"
+msgstr "TB saioa"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Pasartearen gidoia"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Denboraldi guztiak"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Ezkutatu ikusita"
+
+#: id:20368
+msgid "Prod code"
+msgstr "Prod kodea"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Erakutsi gidoia ikusi gabeko elementuetan"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Ezkutatuta spoiler-ak sahiesteko *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "Ezarri denboraldiaren iruditxoa"
+
+#: id:20372
+msgid "Season image"
+msgstr "Denboraldiaren irudia"
+
+#: id:20373
+msgid "Season"
+msgstr "Denboraldia"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "Filmaren informazioa deskargatzen"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Esleitu gabeko edukia"
+
+#: id:20376
+msgid "Original title"
+msgstr "Titulu originala"
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Freskatu TB saioaren informazioa"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Freskatu pasarte guztien info?"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Aukeratutako karpetak TB saio bakar bat du"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Baztertu hautatutako karpeta bilaketetan"
+
+#: id:20381
+msgid "Specials"
+msgstr "Bereziak"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Automatikoki Kapturatu denboraldiaren iruditxoa"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Aukeratutako karpetak bideo bakar bat du"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Lotura TB saiora"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Kendu lotura TB saioari"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Orain dela gutxi gehitutako filmak"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Orain dela gutxi gehitutako pasarteak"
+
+#: id:20388
+msgid "Studios"
+msgstr "Estudioak"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Musika bideoak"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Orain dela gutxi gehitutako musika bideoak"
+
+#: id:20391
+msgid "Music video"
+msgstr "Musika bideoa"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Kendu musika bideoa liburutegitik"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Musika bideoaren informazioa"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Kargatzen musika bideoaren informazioa"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Nahastua"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Joan albumetara artisten arabera"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Joan albumera"
+
+#: id:20398
+msgid "Play song"
+msgstr "Abestia Errepro"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Joan musika bideotara albumetik"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Joan musika bideoetara artsiten arabera"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Errepro musika bideoa"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Deskargatu aktorearen iruditxoa liburutegira gehitzean"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Ezarri aktorearen iruditxoa"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Kendu pasarteko lastermarkak"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Ezarri pasarteko lastermarkak"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Scraper-en ezarpenak"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "Deskargatzen musika bideoaren info"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "Deskargatzen TB saioaren info"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Trailerra"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Berdindu"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Berdindu TB saioak"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "Lortu Fanart-a"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Erakutsi Fanart-a bideo eta musika liburutegian"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "Eskaneatzen eduki berriarentzat"
+
+#: id:20416
+msgid "First aired"
+msgstr "Lehengo emisioa"
+
+#: id:20417
+msgid "Writer"
+msgstr "Idazlea"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr ""
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Inoiz ez"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Denboradi baten bakarrik"
+
+#: id:20422
+msgid "Always"
+msgstr "Beti"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Trailerra du"
+
+#: id:20424
+msgid "False"
+msgstr "Gezurra"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Fanart aurkezpena"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Esportatu fitxategi bakar batera edo aparteko"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "fitxategira bakoitzeko?"
+
+#: id:20428
+msgid "Single file"
+msgstr "Fitxategi bakarra"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Apartekoa"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Esportatu iruditxoak eta fanart-a?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Berridatzi fitxategi zaharrak?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Baztertu bidea liburutegiaren eguneraketetan"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Erauzi iruditxoak eta bideoaren informazioa"
+
+#: id:20434
+msgid "Sets"
+msgstr "Multzoa"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "Ezarri film multzoaren iruditxoa"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "Esportaut aktorearen iruditxoak?"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "Aukeratu fanart-a"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "Fanart lokala"
+
+#: id:20439
+msgid "No fanart"
+msgstr "Fanart-ik ez"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "Oraingo fanart-a"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "Urruneko fanart"
+
+#: id:20442
+msgid "Change content"
+msgstr "Edukia aldatu"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Eguneratzea nhi duzu guztientzat"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "elementu bide honekin?"
+
+#: id:20445
+msgid "Fanart"
+msgstr "Fanart-a"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "Lokalki bildutako informazioa aurkitu da."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Ez ikusi eta internetetik eguneratu?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "Ezin da informazioa deskargatu"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "Ezin izan da urruneko zerbitzarira konektatu"
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Eskaneatzen jarraitu nahi duzu?"
+
+#: id:20451
+msgid "Countries"
+msgstr "Herrialdeak"
+
+#: id:20452
+msgid "episode"
+msgstr "pasartea"
+
+#: id:20453
+msgid "episodes"
+msgstr "pasarteak"
+
+#: id:20454
+msgid "Listener"
+msgstr ""
+
+#: id:20455
+msgid "Listeners"
+msgstr ""
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr ""
+
+#: id:20457
+msgid "Movie set"
+msgstr ""
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Erakutsi ezkutatutako fitxategiak eta direktorioak"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "TuxBox bezeroa"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "KONTUZ: TuxBox gailu hartzailea grabazio moduan dago!"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "Stream-a gelditu egingo da!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Katez aldatzea: %s huts egin du!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Stream-a hastea nahi duzu?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "Konektatzen: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "TuxBox gailua"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Gehitu media partekatzea..."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "Partekatu bideo eta musika liburutegiak UPnP bidez"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Aldatu media partekatzea"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Kendu media partekatzea"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Azpitituluen karpeta"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Filmak eta txandakatu azpitituluen direktorioa"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr ""
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Gaitu xagua"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Erreproduzitu nabigazio soinuak multimedia erreproduzitzean"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Iruditxoa"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "Derrigortu DVD erreproduktorearen eskualdea"
+
+#: id:21373
+msgid "Video output"
+msgstr "Bideo irteera"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Bideo aspektua"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Arrunta"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Letterbox"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Pantaila zabala"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "Gaitu 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "Gaitu 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "Gaitu 1080i"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Sartu zerrenda berriaren izena"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Erakutsi \"Gehitu iturria\" botoia fitxategi zerrendan"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Gaitu korritze-barrak"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "Egin ikusitako iragazketa bideo liburutegian"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Ireki"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Maila akustikoaren kudeatzailea"
+
+#: id:21387
+msgid "Fast"
+msgstr "Azkarra"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Ixila"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Gaitu atzeko irudi pertsonalizatua"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Potentzia kudeaketa maila"
+
+#: id:21391
+msgid "High power"
+msgstr "Potentzia handia"
+
+#: id:21392
+msgid "Low power"
+msgstr "Potentzia txikia"
+
+#: id:21393
+msgid "High standby"
+msgstr "Standby handia"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Standby baxua"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Ezgaituta 4GB baino fitxategi handiagoak katxeatzea"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Pasartea"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "Kalitate handiko pixel shader-a v2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Gaitu zerrenda hastean"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Erabili tween animazioak"
+
+#: id:21400
+msgid "contains"
+msgstr "du"
+
+#: id:21401
+msgid "does not contain"
+msgstr "ez du"
+
+#: id:21402
+msgid "is"
+msgstr "da"
+
+#: id:21403
+msgid "is not"
+msgstr "ez da"
+
+#: id:21404
+msgid "starts with"
+msgstr "hasten da"
+
+#: id:21405
+msgid "ends with"
+msgstr "bukatzen da"
+
+#: id:21406
+msgid "greater than"
+msgstr "gehiago"
+
+#: id:21407
+msgid "less than"
+msgstr "gutxiago"
+
+#: id:21408
+msgid "after"
+msgstr "ondoren"
+
+#: id:21409
+msgid "before"
+msgstr "aurretik"
+
+#: id:21410
+msgid "in the last"
+msgstr "azkenengoan"
+
+#: id:21411
+msgid "not in the last"
+msgstr "ez azkenengoan"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Scraper-ak"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Lehenetsitako film scraper-a"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Lehenetsitako tb saio scraper-a"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Lehenetsitako musika bideo scraper-a"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Gaitu fallback-a scraper hizkuntzan basatuta"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Ezarpenak"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Hizkuntza anitz"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "Ez dago scraper-ik"
+
+#: id:21420
+msgid "Value to match"
+msgstr "Balioa bat etortzeko"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Adimendun zerrendaren araua"
+
+#: id:21422
+msgid "Match items where"
+msgstr "Elementuak bat egin"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Arau berria..."
+
+#: id:21424
+msgid "Items must match"
+msgstr "Elementuak bat egin behar dute"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "arau guztiak"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "arau bat edo gehiago"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Mugatu"
+
+#: id:21428
+msgid "No limit"
+msgstr "Mugarik ez"
+
+#: id:21429
+msgid "Order by"
+msgstr "Ordenatu"
+
+#: id:21430
+msgid "ascending"
+msgstr "gorakorra"
+
+#: id:21431
+msgid "descending"
+msgstr "beherakorra"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Aldatu adimendutako zerrenda"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Zerrendaren izena"
+
+#: id:21434
+msgid "Find items where"
+msgstr "Bilatu itemak hemen"
+
+#: id:21435
+msgid "Edit"
+msgstr "Aldatu"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i item"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Adimendun zerrenda berria..."
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c Unitatea"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Aldati festa moduko arauak"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Etxeko karpeta"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Ikusitako aldiak"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Pasartearen titulua"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Bideoaren erresoluzioa"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Audio kanalak"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Bideo codec-a"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Audio codec-a"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Audioaren hizkuntza"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Azpitituluen hizkuntza"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "Urruneko kontrilak teklatu presioak bidaltzen ditu"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- Aldatu"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "Internetera konektauta egon behar da."
+
+#: id:21452
+msgid "Get More..."
+msgstr "Lortu gehiago..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "Erroko fitxategi-sistema"
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr ""
+
+#: id:21461
+msgid "Fixed"
+msgstr ""
+
+#: id:21462
+msgid "Bottom of video"
+msgstr ""
+
+#: id:21463
+msgid "Below video"
+msgstr ""
+
+#: id:21464
+msgid "Top of video"
+msgstr ""
+
+#: id:21465
+msgid "Above video"
+msgstr ""
+
+#: id:21800
+msgid "File name"
+msgstr "Fitxategiaren izena"
+
+#: id:21801
+msgid "File path"
+msgstr "Fitxategiaren bidea"
+
+#: id:21802
+msgid "File size"
+msgstr "Fitxategi tamaina"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Fitxategi data/ordua"
+
+#: id:21804
+msgid "Slide index"
+msgstr "Diapositibaren indizea"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Erresoluzioa"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Oharra"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Kolorea/Z&B"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "JPEG prozesua"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Data/Ordua"
+
+#: id:21821
+msgid "Description"
+msgstr "Deskribapena"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Kamera egin"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Kamera modeloa"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "EXIF oharra"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Firmware-a"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Irekiera"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Luzeera fokala"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Foku distantzia"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Esposizio"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Esposizio denbora"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Esposizio bias-a"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Esposizio modua"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Erabilitako flash-a"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Zuri balantzea"
+
+#: id:21835
+msgid "Light source"
+msgstr "Argi iturria"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Neurketa modua"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Zoom digitala"
+
+#: id:21839
+msgid "CCD width"
+msgstr "CCD zabalera"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "GPS latitudea"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "GPS ongitudea"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "GPS altuera"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Orientazioa"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Kategoria gehigarriak"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Hitz gakoak"
+
+#: id:21862
+msgid "Caption"
+msgstr "Oharra"
+
+#: id:21863
+msgid "Author"
+msgstr "Autorea"
+
+#: id:21864
+msgid "Headline"
+msgstr "Titulua"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Instrukzio bereziak"
+
+#: id:21866
+msgid "Category"
+msgstr "Kategoria"
+
+#: id:21867
+msgid "Byline"
+msgstr "Byline-a"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Byline titulua"
+
+#: id:21869
+msgid "Credit"
+msgstr "Kreditua"
+
+#: id:21870
+msgid "Source"
+msgstr "Iturria"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Copyright oharra"
+
+#: id:21872
+msgid "Object name"
+msgstr "Objektuaren izena"
+
+#: id:21873
+msgid "City"
+msgstr "Herria"
+
+#: id:21874
+msgid "State"
+msgstr "Estatua"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "Herrialdea"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "Tx erreferentzia originala"
+
+#: id:21877
+msgid "Date created"
+msgstr "Sortutako dat"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Copyright bandera"
+
+#: id:21879
+msgid "Country code"
+msgstr "Herrialdeko kodea"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Erreferentzia-zerbitzua"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "Gaitu XBMC kontrola UPnP bidez"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Saiatu DVDaren menuaren aurreko sarrera saltatzen"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Gorde musika"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Kontsultatu info artista guztientzat"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "Albumaren informazioa deskargatzen"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "Artistaren informazioa deskargatzen"
+
+#: id:21887
+msgid "Biography"
+msgstr "Biografia"
+
+#: id:21888
+msgid "Discography"
+msgstr "Diskografia"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "Artista bilatzen"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Aukeratu artista"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Artistaren informazioa"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Instrumentuak"
+
+#: id:21893
+msgid "Born"
+msgstr "Sortuta"
+
+#: id:21894
+msgid "Formed"
+msgstr "Formatuta"
+
+#: id:21895
+msgid "Themes"
+msgstr "Temak"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Deseginda"
+
+#: id:21897
+msgid "Died"
+msgstr "Hilda"
+
+#: id:21898
+msgid "Years active"
+msgstr "Urteak gaituta"
+
+#: id:21899
+msgid "Label"
+msgstr "Etiketa"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Sorta/Osatua"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Eguneratu liburutegia hasieran"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Ezkutatu liburutegiaren eguneraketaren bilakaera"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS atzizkia"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Atzeratua: %2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Aurretik: %2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Azpitituluen atzerapena"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "OpenGL saltzailea:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "OpenGL renderer:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "OpenGL bertsioa:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "GPUaren tenperatura:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "CPUaren tenperatura:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Memoria guztia"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Profilaren data"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Erabili dim bideoa pausatzean erreproduzitzean"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Grabazio guztiak"
+
+#: id:22016
+msgid "By title"
+msgstr "Tituluaren arabera"
+
+#: id:22017
+msgid "By group"
+msgstr "Taldearen arabera"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Zuzeneko kateak"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Grabazioak tituluaren arabera"
+
+#: id:22020
+msgid "Guide"
+msgstr "Gida"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Onartutako aspektu erlazioaren errorea barra beltzetarako"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Erakutsi bideo fitxategiak zerrendetan"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "DirectX saltzailea:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Direct3D bertsioa:"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Letra"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Tamaina"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Koloreak"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Charset-a"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Esportatu karaokea HTML gisa"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Esportatu karaokea CSV gisa"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Inportatu karaoke tituluak..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Erakutsi abesti hautatzailea automatikoki"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Esportatu karaoke tituluak..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Sartu abestiaren zenbakia"
+
+#: id:22040
+msgid "white/green"
+msgstr "zuria/berdea"
+
+#: id:22041
+msgid "white/red"
+msgstr "zuria/gorria"
+
+#: id:22042
+msgid "white/blue"
+msgstr "zuria/urdina"
+
+#: id:22043
+msgid "black/white"
+msgstr "beltza/zuria"
+
+#: id:22079
+msgid "Default select action"
+msgstr "Lehenetsitako akzioa"
+
+#: id:22080
+msgid "Choose"
+msgstr "Aukeratu"
+
+#: id:22081
+msgid "Show Information"
+msgstr "Erakutsi informazioa"
+
+#: id:22082
+msgid "More..."
+msgstr "Gehiago..."
+
+#: id:22083
+msgid "Play all"
+msgstr "Dena errepr"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Teletestua ez dago eskuragarri"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Gaitu Teletestua"
+
+#: id:23051
+msgid "Part %i"
+msgstr "%i zatia"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "%i byte bufereratzen"
+
+#: id:23053
+msgid "Stopping"
+msgstr "Gelditzen"
+
+#: id:23054
+msgid "Running"
+msgstr "Exekutatzen"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Kanpoko erreproduktorea gaituta"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Klikatu Ados errproduktorea kentzeko"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Klikatu Ados erreproduzioa amaitzean"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Gehigarria"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Gehigarriak"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Gehiarrien aukerak"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "Gehigarrien informazioa"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Media iturriak"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Filmaren informazioa"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Pantaila babeslea"
+
+#: id:24009
+msgid "Script"
+msgstr "Script"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "Bisualizazioa"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Gehigarrien errepositoria"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "Azpitituluak"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "Letrak"
+
+#: id:24014
+msgid "TV information"
+msgstr "TBren informazioa"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "Musika bideoaren infor"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "Albumaren info"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "Artistaren info"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr ""
+
+#: id:24020
+msgid "Configure"
+msgstr "Konfiguratu"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Ezgaitu"
+
+#: id:24022
+msgid "Enable"
+msgstr "Gaitu"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Gehigarria ezgaituta"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "Eguraldia"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (arrunta)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Gehigarri hau ezin da konfiguratu"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "Errorea ezarpenak kargatzean"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "Gehigarri denak"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "Lortu gehigarriak"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "Eguneraketak bilatu"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "Behartu freskatzea"
+
+#: id:24036
+msgid "Change log"
+msgstr "Aldaketa log-a"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "Desinstalatu"
+
+#: id:24038
+msgid "Install"
+msgstr "Instalatu"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "Ezgaitu gehigarriak"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "(Garbitu uneko ezarpenak)"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "Instalatu zip fitxategitik"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "Deskargatzen %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "Eguneraketa eskuragarriak"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr ""
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr ""
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr ""
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr ""
+
+#: id:24048
+msgid "Rollback"
+msgstr ""
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Gehigarri eskuragarriak"
+
+#: id:24051
+msgid "Version:"
+msgstr "Bertsioa:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "Legezko oharra"
+
+#: id:24053
+msgid "License:"
+msgstr "Lizentzia:"
+
+#: id:24054
+msgid "Changelog"
+msgstr "Aldaketa log-a"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Gehigarri hau gaitu nahi duzu?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Gehigarri hau ezgaitu nahi duzu?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Gehigarriaren eguneraketa eskuragarri!"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Gaitu gehigarriak"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Auto eguneraketa"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Gehigarria gaituta"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Gehigarria eguneratuta"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Uttzi gehigarrien deskarga?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "Orain gehigarriak deskargatzen"
+
+#: id:24068
+msgid "Update available"
+msgstr "Eguneraketa eskuragarri"
+
+#: id:24069
+msgid "Update"
+msgstr "Eguneratu"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "Gehigarria ezin izan da kargatu"
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "Akats ezezagun bat gertatu da."
+
+#: id:24072
+msgid "Settings required"
+msgstr "Beharrezko ezarpenak"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "Ezin izan da konektatu"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "Berrabiarazi behar da"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "Ezgaitu"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr ""
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Berriz konektatzen saiatu?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "Gehigarriak berrabiaraztean"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Blokeatu gehigarri kudeatzailea"
+
+#: id:24094
+msgid "(current)"
+msgstr ""
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr ""
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "Gehigarria apurtuta bezala markatu da errepositorioan."
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "Gustatuko litzaizuke zure sisteman desgaitzea?"
+
+#: id:24098
+msgid "Broken"
+msgstr "Apurtuta"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr "Gustatuko litzaizuke skin honetara aldatzea?"
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr ""
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr ""
+
+#: id:25000
+msgid "Notifications"
+msgstr "Jakinarazpenak"
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:25002
+msgid "Select from all titles ..."
+msgstr ""
+
+#: id:25003
+msgid "Show bluray menus"
+msgstr ""
+
+#: id:25004
+msgid "Play main title: %d"
+msgstr ""
+
+#: id:25005
+msgid "Title: %d"
+msgstr ""
+
+#: id:25006
+msgid "Select playback item"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Liburutegi Modua"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "QWERTY teklatua"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "Passthrough Audioa erabiltzen"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Trailerraren kalitatea"
+
+#: id:33002
+msgid "Stream"
+msgstr "Stream"
+
+#: id:33003
+msgid "Download"
+msgstr "Deskargatu"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Deskargatu eta erreproduzitu"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Deskargatu eta gorde"
+
+#: id:33006
+msgid "Today"
+msgstr "Gaur"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "Bihar"
+
+#: id:33008
+msgid "Saving"
+msgstr "Gordetzen"
+
+#: id:33009
+msgid "Copying"
+msgstr "Kopiatzen"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Ezarri deskargen direktorioa"
+
+#: id:33011
+msgid "Search duration"
+msgstr "Bilatu iraupena"
+
+#: id:33012
+msgid "Short"
+msgstr "Motza"
+
+#: id:33013
+msgid "Long"
+msgstr "Luzea"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "Erabili DVD erreproduzitzailea ohiko erreproduzitzailearen ordez"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Galdetu deskargatzeko bideoa erreproduzitu aurretik"
+
+#: id:33016
+msgid "Clips"
+msgstr "Klipak"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Berrabiarazi plugin-a gaitzeko"
+
+#: id:33018
+msgid "Tonight"
+msgstr "Gaur gauean"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "Bihar Gauean"
+
+#: id:33020
+msgid "Condition"
+msgstr "Baldintzak"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "Prezipitazioak"
+
+#: id:33022
+msgid "Precip"
+msgstr "Prezi"
+
+#: id:33023
+msgid "Humid"
+msgstr "Hezea"
+
+#: id:33024
+msgid "Feels"
+msgstr "Sentitzen"
+
+#: id:33025
+msgid "Observed"
+msgstr "Behatuta"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "Ohiko irteera"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Egunsentia"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Ilunabarra"
+
+#: id:33029
+msgid "Details"
+msgstr "Xehetasunak"
+
+#: id:33030
+msgid "Outlook"
+msgstr "Outlook"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "Coverflow"
+
+#: id:33032
+msgid "Translate text"
+msgstr "Itzuli testua"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "Mapa zerrenden %s kategoria"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 Ordu"
+
+#: id:33035
+msgid "Maps"
+msgstr "Mapak"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Orduro"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Asteburua"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s egun"
+
+#: id:33049
+msgid "Alert"
+msgstr "Alerta"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Alertak"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "Aukeratu Zure"
+
+#: id:33052
+msgid "Check"
+msgstr "Egiaztatu"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Konfiguratu"
+
+#: id:33054
+msgid "Seasons"
+msgstr "Denboraldiak"
+
+#: id:33055
+msgid "Use your"
+msgstr "Erabili zure"
+
+#: id:33056
+msgid "Watch your"
+msgstr "Ikusi"
+
+#: id:33057
+msgid "Listen to"
+msgstr "Entzun"
+
+#: id:33058
+msgid "View your"
+msgstr "Ikusi zure"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Konfiguratu"
+
+#: id:33060
+msgid "Power"
+msgstr "Piztu"
+
+#: id:33061
+msgid "Menu"
+msgstr "Menua"
+
+#: id:33062
+msgid "Play the"
+msgstr "Erreproduzitu"
+
+#: id:33063
+msgid "Options"
+msgstr "Aukera"
+
+#: id:33065
+msgid "Editor"
+msgstr "Editorea"
+
+#: id:33066
+msgid "About your"
+msgstr "Zuri buruz"
+
+#: id:33067
+msgid "Star rating"
+msgstr "Izar balorazioa"
+
+#: id:33068
+msgid "Background"
+msgstr "Atzeko irudia"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Atzeko irudiak"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Atzeko irudi pertsonalizatua"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Atzeko irudi pertsonalizatuak"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Ikusi Readme-a"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Ikusi Changelog-a"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "%s-ren bertsio honek behar du"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "XBMC-ren %s rebisioa edo handiagoa behar da."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Mesedez eguneratu XBMC."
+
+#: id:33077
+msgid "No data found!"
+msgstr "Ez da datarik aurkitu!"
+
+#: id:33078
+msgid "Next page"
+msgstr "Hurrengo orria"
+
+#: id:33079
+msgid "Love"
+msgstr "Maitatu"
+
+#: id:33080
+msgid "Hate"
+msgstr "Gorrotatu"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Fitxategi hau pilatuta dago, hautatu erreproduzitzea nahi duzun zatia."
+
+#: id:33082
+msgid "Path to script"
+msgstr "Script-era bidea"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Gaitu script pertsonalizatuaren botoia"
+
+#: id:33100
+msgid "Failed to start"
+msgstr ""
+
+#: id:33101
+msgid "Webserver"
+msgstr ""
+
+#: id:33102
+msgid "Event Server"
+msgstr ""
+
+#: id:33103
+msgid "Remote communication server"
+msgstr ""
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA2"
+
+#: id:34004
+msgid "VAAPI"
+msgstr "VAAPI"
+
+#: id:34005
+msgid "Flac"
+msgstr "Flac"
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Bozgorailuaren konfigurazioa"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7.0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr ""
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr ""
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap or 1 finger long press for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr ""
+
+#: id:35001
+msgid "Generic HID device"
+msgstr ""
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr ""
+
+#: id:35003
+msgid "Generic disk"
+msgstr ""
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr ""
+
+#: id:35005
+msgid "New device configured"
+msgstr ""
+
+#: id:35006
+msgid "Device removed"
+msgstr ""
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr ""
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr ""
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr ""
+
+#: id:35501
+msgid "Class"
+msgstr ""
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr ""
+
+#: id:35503
+msgid "Vendor"
+msgstr ""
+
+#: id:35504
+msgid "Product ID"
+msgstr ""
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr ""
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr ""
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr ""
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr ""
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr ""
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr ""
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr ""
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr ""
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr ""
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr ""
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr ""
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr ""
+
+#: id:36015
+msgid "HDMI port number"
+msgstr ""
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr ""
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr ""
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr ""
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

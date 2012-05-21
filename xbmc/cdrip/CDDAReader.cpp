@@ -29,7 +29,7 @@
 
 #define SECTOR_COUNT 52
 
-CCDDAReader::CCDDAReader()
+CCDDAReader::CCDDAReader() : CThread("CCDDAReader")
 {
   m_sRipBuffer[0].pbtStream = NULL;
   m_sRipBuffer[1].pbtStream = NULL;

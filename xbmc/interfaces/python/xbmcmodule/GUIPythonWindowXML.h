@@ -40,7 +40,7 @@ public:
   virtual void      AllocResources(bool forceLoad = false);
   virtual void      FreeResources(bool forceUnLoad = false);
   void              Process(unsigned int currentTime, CDirtyRegionList &regions);
-  void              WaitForActionEvent(unsigned int timeout);
+  void              WaitForActionEvent();
   void              PulseActionEvent();
   void              AddItem(CFileItemPtr fileItem,int itemPosition);
   void              RemoveItem(int itemPosition);

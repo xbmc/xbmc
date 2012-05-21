@@ -238,7 +238,7 @@ public: \
 //  entry as required by gcc compiled dlls, it is abit abfuscated
 //  to allow for different sized variables
 //
-//  __int64 test(__int64 p1, char p2, char p3)
+//  int64_t test(int64_t p1, char p2, char p3)
 //  {
 //    int o,s = ((sizeof(p1)+3)&~3)+((sizeof(p2)+3)&~3)+((sizeof(p3)+3)&~3);
 //    __asm mov [o],esp;

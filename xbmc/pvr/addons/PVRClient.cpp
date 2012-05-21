@@ -141,6 +141,8 @@ void CPVRClient::ReCreate(void)
 {
   int clientID = m_pInfo->iClientId;
   Destroy();
+  if (!m_pInfo)
+    m_pInfo               = new PVR_PROPERTIES;
   Create(clientID);
 }
 

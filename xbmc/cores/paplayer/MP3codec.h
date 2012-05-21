@@ -59,19 +59,19 @@ public:
   virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual bool CanSeek();
-  virtual __int64 Seek(__int64 iSeekTime);
+  virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
-  virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples);
   virtual bool CanInit();
   virtual bool SkipNext();
-  virtual bool HasFloatData() const { return m_BitsPerSampleInternal == 32; };
+  virtual CAEChannelInfo GetChannelInfo();
+
 private:
 
   /* TODO decoder functions */
   virtual int Decode(int *out_len);
   virtual void Flush();
   int madx_init(madx_house* mxhouse);
-  madx_sig madx_read(madx_house *mxhouse, madx_stat* mxstat, int maxwrite, bool discard = false);
+  madx_sig madx_read(madx_house *mxhouse, madx_stat* mxstat, int maxwrite);
   void madx_deinit(madx_house* mxhouse);
   /* END decoder functions */
 
@@ -91,7 +91,7 @@ private:
   /* END decoder vars */
 
   // Decoding variables
-  __int64 m_lastByteOffset;
+  int64_t m_lastByteOffset;
   bool    m_eof;
   bool    m_Decoding;
   bool    m_CallAgainWithSameBuffer;
@@ -117,8 +117,6 @@ private:
   bool m_IgnoreFirst;     // Ignore first samples if this is true (for gapless playback)
   bool m_IgnoreLast;      // Ignore first samples if this is true (for gapless playback)
   int m_IgnoredBytes;     // amount of samples ignored thus far
-
-  int m_BitsPerSampleInternal;
 
   DllLibMad m_dll;
 };

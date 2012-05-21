@@ -428,10 +428,10 @@ void CMusicInfoTag::Serialize(CVariant& value)
      JSON-RPC v4 can be broken */
   value["url"] = m_strURL;
   value["title"] = m_strTitle;
-  value["artist"] = StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
+  value["artist"] = StringUtils::Join(m_artist, " / ");
   value["album"] = m_strAlbum;
-  value["albumartist"] = StringUtils::Join(m_albumArtist, g_advancedSettings.m_musicItemSeparator);
-  value["genre"] = StringUtils::Join(m_genre, g_advancedSettings.m_musicItemSeparator);
+  value["albumartist"] = StringUtils::Join(m_albumArtist, " / ");
+  value["genre"] = StringUtils::Join(m_genre, " / ");
   value["duration"] = m_iDuration;
   value["track"] = m_iTrack;
   value["loaded"] = m_bLoaded;
@@ -444,6 +444,7 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["comment"] = m_strComment;
   value["rating"] = m_rating;
   value["playcount"] = m_iTimesPlayed;
+  value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
   value["lyrics"] = m_strLyrics;
   value["artistid"] = m_iArtistId;
   value["albumid"] = m_iAlbumId;

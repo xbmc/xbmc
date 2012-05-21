@@ -50,7 +50,6 @@ DEFINES+= \
 	@DEFS@ \
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-	export MACOSX_DEPLOYMENT_TARGET=10.4
 	INCLUDES+=-I@abs_top_srcdir@/xbmc/osx
 endif
 

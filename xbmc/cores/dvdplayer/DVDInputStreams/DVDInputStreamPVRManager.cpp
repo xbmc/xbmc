@@ -162,7 +162,7 @@ int CDVDInputStreamPVRManager::Read(BYTE* buf, int buf_size)
   }
 }
 
-__int64 CDVDInputStreamPVRManager::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamPVRManager::Seek(int64_t offset, int whence)
 {
   if (!m_pFile)
     return -1;
@@ -176,7 +176,7 @@ __int64 CDVDInputStreamPVRManager::Seek(__int64 offset, int whence)
   }
   else
   {
-    __int64 ret = m_pFile->Seek(offset, whence);
+    int64_t ret = m_pFile->Seek(offset, whence);
 
     /* if we succeed, we are not eof anymore */
     if( ret >= 0 ) m_eof = false;
@@ -185,7 +185,7 @@ __int64 CDVDInputStreamPVRManager::Seek(__int64 offset, int whence)
   }
 }
 
-__int64 CDVDInputStreamPVRManager::GetLength()
+int64_t CDVDInputStreamPVRManager::GetLength()
 {
   if(!m_pFile) return -1;
 

@@ -153,7 +153,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_NOTIFY_ALL:
-    if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
+    if (message.GetParam1() == GUI_MSG_WINDOW_RESET || message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
     {
       if (IsActive())
         AddRecentlyAddedJobs(Video | Audio | Totals);

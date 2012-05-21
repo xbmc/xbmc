@@ -69,44 +69,64 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
   return false;
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &url)
+bool CTextureCache::HasCachedImage(const CStdString &url)
 {
   CStdString cachedHash;
-  return GetCachedImage(url, cachedHash);
+  return !GetCachedImage(url, cachedHash).IsEmpty();
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &url, CStdString &cachedHash)
+CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash)
 {
   cachedHash.clear();
-  if (url.compare(0, 8, "image://") == 0)
-  {
-    CStdString image = CURL(url).GetHostName();
-    CURL::Decode(image);
-    if (IsCachedImage(image))
-      return image; // no point generating thumbs of already cached images
-  }
+  CStdString url = UnwrapImageURL(image);
+
   if (IsCachedImage(url))
     return url;
 
   // lookup the item in the database
-  CStdString cacheFile;
-  if (GetCachedTexture(url, cacheFile, cachedHash))
-    return GetCachedPath(cacheFile);
+  CTextureDetails details;
+  if (GetCachedTexture(url, details))
+  {
+    IncrementUseCount(details);
+    return GetCachedPath(details.file);
+  }
   return "";
 }
 
-CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type)
+CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type, const CStdString &options)
 {
-  CStdString url(image);
-  CURL::Encode(url);
-  return "image://" + type + "@" + url;
+  if (image.compare(0, 8, "image://") == 0)
+    return image; // already wrapped
+
+  CStdString encoded(image);
+  CURL::Encode(encoded);
+  CStdString url = "image://";
+  if (!type.IsEmpty())
+    url += type + "@";
+  url += encoded;
+  if (!options.IsEmpty())
+    url += "/transform?" + options;
+  return url;
 }
 
 CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
 {
-  CStdString url(image);
-  CURL::Encode(url);
-  return "image://" + url + "/transform?size=thumb";
+  return GetWrappedImageURL(image, "", "size=thumb");
+}
+
+CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
+{
+  if (image.compare(0, 8, "image://") == 0)
+  {
+    CURL url(image);
+    if (url.GetUserName().IsEmpty() && url.GetOptions().IsEmpty())
+    {
+      CStdString file(url.GetHostName());
+      CURL::Decode(file);
+      return file;
+    }
+  }
+  return image;
 }
 
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
@@ -129,17 +149,6 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
   return "";
 }
 
-CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
-{
-  bool needsRecaching = false;
-  CStdString path(CheckCachedImage(url, returnDDS, needsRecaching));
-  if (!path.IsEmpty())
-  {
-    return path;
-  }
-  return CacheImageFile(url);
-}
-
 void CTextureCache::BackgroundCacheImage(const CStdString &url)
 {
   CStdString cacheHash;
@@ -148,65 +157,37 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
     return; // image is already cached and doesn't need to be checked further
 
   // needs (re)caching
-  AddJob(new CTextureCacheJob(url, cacheHash));
+  AddJob(new CTextureCacheJob(UnwrapImageURL(url), cacheHash));
 }
 
-void CTextureCache::BackgroundCacheTexture(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height)
+CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture)
 {
-  AddJob(new CTextureCacheJob(url, texture, max_width, max_height));
-}
-
-CStdString CTextureCache::CacheImageFile(const CStdString &url)
-{
-  // Cache image so that the texture manager can load it.
-  CTextureCacheJob job(url, "");
-  if (job.DoWork() && !job.m_hash.IsEmpty())
+  CStdString url = UnwrapImageURL(image);
+  CSingleLock lock(m_processingSection);
+  if (m_processing.find(url) == m_processing.end())
   {
-    AddCachedTexture(url, job.m_cacheFile, job.m_hash);
-    if (g_advancedSettings.m_useDDSFanart && !job.m_cacheFile.IsEmpty())
-      AddJob(new CTextureDDSJob(GetCachedPath(job.m_cacheFile)));
-    return GetCachedPath(job.m_cacheFile);
+    m_processing.insert(url);
+    lock.Leave();
+    // cache the texture directly
+    CTextureCacheJob job(url);
+    bool success = job.CacheTexture(texture);
+    OnJobComplete(0, success, &job);
+    return success ? GetCachedPath(job.m_details.file) : "";
   }
-  return "";
+  lock.Leave();
 
-  // TODO: In the future we need a cache job to callback when the image is loaded
-  //       thus automatically updating the images.  We'd also need fallback code inside
-  //       the CGUITexture class to display something from this point on.
-
-  // Have this caching stuff be a lifo stack, and bump things up the stack when we should (check whether
-  // CJobQueue does this...)  That way we can have a bunch of "cache thumb kthxpls" run from a background
-  // thread, and all we do here is cache from the size we've already been given.  If we haven't been
-  // given a size, we must assume that the user wants fullsize.  We could, in fact, add the sizing of it
-  // into the URL scheme using options... i.e. http://my.thumb/file|width=blah|height=foo
-  // that gives us sizing goodness, plus pre-caching goodness where we know shit should be cached
-  // all with the fandangled jobmanager....
-
-  // We almost need a better interface on the loading side of things - i.e. we need the textures to
-  // request a particular image and to get some (immediate?) recognition as to whether it's cached
-  // so that a fallback image can be specified.  Perhaps the texture updating routines (i.e.
-  // UpdateInfo and/or SetFileName) might handle this?  The procedure would be to hit the db
-  // to see if this image is available or not.  If it isn't, then we simply load the fallback or
-  // "loading..." image, but keep testing to see if the image has been cached or not.  Hmm,
-  // that's inefficient as well - at the very least a string compare or 12 per frame as it tests
-  // a list of caching jobs, or (more inefficiently) a db query every frame.
-
-  // The "best" method is the callback technique - this can be done quite easily though if the texture
-  // is the one that makes the request I think?  At least when one texture is involved - we pass in our
-  // pointer to the callback list.  In fact, we could generalize this somewhat with the texture
-  // manager handling those pointers - after all, it already handles reference counting, so why not
-  // count using the callback pointers instead?  We then wouldn't have to call AllocResources() all
-  // the time.  When the texture is loaded it's moved from the queued to the allocated list, and at
-  // that point we could have an interim list (loaded) that we then run the callbacks on once a frame.
-  // There'd be a "LOADING" enum for allocation of the image and the texture could then show a fallback?
-  // Main problem with this is CGUITexture doesn't have any concept of a fallback: CGUIImage does instead.
-  // The main fallback mechanism we use is LISTITEM_ICON vs LISTITEM_THUMB - with the former we actually
-  // use the thumb if it's available, and drop back to the icon if it's not.  In either case, having
-  // a "loading" fallback would be useful even if it wasn't the icon.  I guess this could be a property
-  // of CGUITexture similar to how background="true" is?  The loading texture would be displayed if
-  // and only if there is an image being loaded.  Need to talk to Jezz_X about this - eg if you have
-  // a current image and a new one is loading we currently hold on to the current one and render
-  // the current one faded out - we'd need to change this so that the fading only happened once it
-  // was ready to render.
+  // wait for currently processing job to end.
+  while (true)
+  {
+    m_completeEvent.WaitMSec(1000);
+    {
+      CSingleLock lock(m_processingSection);
+      if (m_processing.find(url) == m_processing.end())
+        break;
+    }
+  }
+  CStdString cachedHash;
+  return GetCachedImage(url, cachedHash);
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)
@@ -223,16 +204,28 @@ void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*
     CFile::Delete(path);
 }
 
-bool CTextureCache::GetCachedTexture(const CStdString &url, CStdString &cachedURL, CStdString &cachedHash)
+bool CTextureCache::GetCachedTexture(const CStdString &url, CTextureDetails &details)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.GetCachedTexture(url, cachedURL, cachedHash);
+  return m_database.GetCachedTexture(url, details);
 }
 
-bool CTextureCache::AddCachedTexture(const CStdString &url, const CStdString &cachedURL, const CStdString &hash)
+bool CTextureCache::AddCachedTexture(const CStdString &url, const CTextureDetails &details)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.AddCachedTexture(url, cachedURL, hash);
+  return m_database.AddCachedTexture(url, details);
+}
+
+bool CTextureCache::IncrementUseCount(const CTextureDetails &details)
+{
+  CSingleLock lock(m_databaseSection);
+  return m_database.IncrementUseCount(details);
+}
+
+bool CTextureCache::SetCachedTextureValid(const CStdString &url, bool updateable)
+{
+  CSingleLock lock(m_databaseSection);
+  return m_database.SetCachedTextureValid(url, updateable);
 }
 
 bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cachedURL)
@@ -259,31 +252,57 @@ CStdString CTextureCache::GetCachedPath(const CStdString &file)
 
 void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  if (strcmp(job->GetType(), "cacheimage") == 0 && success)
+  if (strcmp(job->GetType(), "cacheimage") == 0)
   {
     CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-    AddCachedTexture(cacheJob->m_url, cacheJob->m_cacheFile, cacheJob->m_hash);
+    if (success)
+    {
+      if (cacheJob->m_oldHash == cacheJob->m_details.hash)
+        SetCachedTextureValid(cacheJob->m_url, cacheJob->m_details.updateable);
+      else
+        AddCachedTexture(cacheJob->m_url, cacheJob->m_details);
+    }
+
+    { // remove from our processing list
+      CSingleLock lock(m_processingSection);
+      std::set<CStdString>::iterator i = m_processing.find(cacheJob->m_url);
+      if (i != m_processing.end())
+        m_processing.erase(i);
+    }
+
+    m_completeEvent.Set();
+
     // TODO: call back to the UI indicating that it can update it's image...
-    if (g_advancedSettings.m_useDDSFanart && !cacheJob->m_cacheFile.IsEmpty())
-      AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_cacheFile)));
+    if (success && g_advancedSettings.m_useDDSFanart && !cacheJob->m_details.file.empty())
+      AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_details.file)));
   }
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
 
-CStdString CTextureCache::GetUniqueImage(const CStdString &url, const CStdString &extension)
+void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase(url);
-  CStdString hex;
-  hex.Format("%08x", (unsigned int)crc);
-  CStdString hash;
-  hash.Format("generated/%c/%s%s", hex[0], hex.c_str(), extension.c_str());
-  return GetCachedPath(hash);
+  if (strcmp(job->GetType(), "cacheimage") == 0 && !progress)
+  { // check our processing list
+    {
+      CSingleLock lock(m_processingSection);
+      const CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
+      std::set<CStdString>::iterator i = m_processing.find(cacheJob->m_url);
+      if (i == m_processing.end())
+      {
+        m_processing.insert(cacheJob->m_url);
+        return;
+      }
+    }
+    CancelJob(job);
+  }
+  else
+    CJobQueue::OnJobProgress(jobID, progress, total, job);
 }
 
 bool CTextureCache::Export(const CStdString &image, const CStdString &destination)
 {
-  CStdString cachedImage(GetCachedImage(image));
+  CStdString cachedHash;
+  CStdString cachedImage(GetCachedImage(image, cachedHash));
   if (!cachedImage.IsEmpty())
   {
     if (CFile::Cache(cachedImage, destination))

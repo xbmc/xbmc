@@ -32,6 +32,7 @@ OGGCodec::OGGCodec() : m_callback(m_file)
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_DataFormat = AE_FMT_INVALID;
   m_Bitrate = 0;
   m_CodecName = "OGG";
   m_TimeOffset = 0.0;
@@ -115,17 +116,18 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_SampleRate = pInfo->rate;
   m_Channels = pInfo->channels;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   if (item.IsInternetStream())
     m_TotalTime = -1;
   else
-    m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
+    m_TotalTime = (int64_t)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
   m_Bitrate = pInfo->bitrate_nominal;
   if (m_Bitrate == 0 && m_TotalTime > 0 && !item.IsInternetStream())
     m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {
-    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu", strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
+    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%"PRIu64, strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
     return false;
   }
 
@@ -163,7 +165,7 @@ void OGGCodec::DeInit()
   m_inited = false;
 }
 
-__int64 OGGCodec::Seek(__int64 iSeekTime)
+int64_t OGGCodec::Seek(int64_t iSeekTime)
 {
   if (m_dll.ov_time_seek(&m_VorbisFile, m_TimeOffset+(double)(iSeekTime/1000.0f))!=0)
     return 0;
@@ -196,9 +198,6 @@ int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   else
     *actualsize=lRead;
 
-  if (m_Channels==6)  // Only 6 channel files need remapping
-    RemapChannels((short*)pBuffer, size/2);  // size/2 = 16 bit samples
-
   return READ_SUCCESS;
 }
 
@@ -207,25 +206,21 @@ bool OGGCodec::CanInit()
   return m_dll.CanLoad();
 }
 
-// OGG order    : L, C, R, L", R", LFE
-// Output order : L, R, L", R", C, LFE
-void OGGCodec::RemapChannels(short *SampleBuffer, int samples)
+CAEChannelInfo OGGCodec::GetChannelInfo()
 {
-  short r1, r2, r3, r4, r5, r6;
-  for (int i = 0; i < samples; i += 6)
-  {
-    r1 = SampleBuffer[i];
-    r2 = SampleBuffer[i+1];
-    r3 = SampleBuffer[i+2];
-    r4 = SampleBuffer[i+3];
-    r5 = SampleBuffer[i+4];
-    r6 = SampleBuffer[i+5];
-    SampleBuffer[i] = r1;
-    SampleBuffer[i+1] = r3;
-    SampleBuffer[i+2] = r4;
-    SampleBuffer[i+3] = r5;
-    SampleBuffer[i+4] = r2;
-    SampleBuffer[i+5] = r6;
-  }
-}
+  static enum AEChannel map[8][9] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FC, AE_CH_FR, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FC, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FC, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_LFE, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FC, AE_CH_FR, AE_CH_SL, AE_CH_SR, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FC, AE_CH_FR, AE_CH_SL, AE_CH_SR, AE_CH_BL, AE_CH_BR, AE_CH_LFE, AE_CH_NULL}
+  };
 
+  if (m_Channels > 8)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
+}

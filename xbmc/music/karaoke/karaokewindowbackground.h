@@ -49,7 +49,7 @@ public:
   virtual void StartImage( const CStdString& path );
 
   // Start with song-specific video background
-  virtual void StartVideo( const CStdString& path, __int64 offset = 0 );
+  virtual void StartVideo( const CStdString& path, int64_t offset = 0 );
 
   // Start with default (setting-specific) background
   virtual void StartDefault();
@@ -106,7 +106,7 @@ private:
   // For default visualisation mode
   BackgroundMode             m_defaultMode;
   CStdString                 m_path; // image or video
-  __int64                    m_videoLastTime; // video only
+  int64_t                    m_videoLastTime; // video only
   bool                       m_playingDefaultVideo; // whether to store the time
 };
 

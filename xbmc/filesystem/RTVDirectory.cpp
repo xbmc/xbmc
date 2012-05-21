@@ -25,9 +25,8 @@
 
 #include "RTVDirectory.h"
 #include "utils/URIUtils.h"
-#include "SectionLoader.h"
 #include "URL.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "FileItem.h"
 
 using namespace XFILE;
@@ -43,12 +42,10 @@ extern "C"
 
 CRTVDirectory::CRTVDirectory(void)
 {
-  CSectionLoader::Load("LIBRTV");
 }
 
 CRTVDirectory::~CRTVDirectory(void)
 {
-  CSectionLoader::Unload("LIBRTV");
 }
 
 //*********************************************************************************************
@@ -136,7 +133,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     rtv_get_guide_xml(&data, strHostAndPort.c_str());
 
     // Begin parsing the XML data
-    TiXmlDocument xmlDoc;
+    CXBMCTinyXML xmlDoc;
     xmlDoc.Parse( (const char *) data );
     if ( xmlDoc.Error() )
     {

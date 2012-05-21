@@ -6,9 +6,9 @@
 #
 
 #LIBS_LIVE555 = lib/live555/BasicUsageEnvironment/libBasicUsageEnvironment.a lib/live555/UsageEnvironment/libUsageEnvironment.a lib/live555/libgroupsock.a lib/live555/liveMedia/libliveMedia.a
-LIBS   = lib/tinyxml2/tinyxml2.a lib/tsreader/tsreader.a -ldl -lpthread
-LIBDIR = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver
-LIB    = $(LIBDIR)/XBMC_MPTV.pvr
+LIBS     = lib/tinyxml2/tinyxml2.a lib/tsreader/tsreader.a -ldl -lpthread
+LIBDIR   = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver
+PVRADDON = $(LIBDIR)/XBMC_MPTV.pvr
 
 SRCS   = channels.cpp \
 	client.cpp \
@@ -22,19 +22,21 @@ SRCS   = channels.cpp \
 	Cards.cpp \
 	GenreTable.cpp
 
+$(PVRADDON): buildpvrdeps $(OBJS)
+	$(SILENT_CPP) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(PVRADDON)
+
 include ../Makefile.include
 
 DEFINES+=-DLIVE555
 INCLUDES += -I@abs_top_srcdir@/xbmc/filesystem
 
-clean:
-	-rm -f $(OBJS) $(LIB) *.P *~
+clean: cleanpvrdeps
+
+cleanpvrdeps:
+	-rm -f $(PVRADDON)
 	$(MAKE) -C lib/tinyxml2 clean
-	#$(MAKE) -C lib/live555 clean
 	$(MAKE) -C lib/tsreader clean
 
-$(LIB): $(OBJS)
+buildpvrdeps: $(OBJS)
 	$(MAKE) -C lib/tinyxml2
-	#$(MAKE) -C lib/live555
 	$(MAKE) -C lib/tsreader
-	$(SILENT_CPP) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)

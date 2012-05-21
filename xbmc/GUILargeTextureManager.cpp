@@ -57,19 +57,11 @@ bool CImageLoader::DoWork()
   if (loadPath.IsEmpty())
   {
     // not in our texture cache, so try and load directly and then cache the result
-    bool flipped;
-    unsigned int width, height;
-    CStdString image = CTextureCacheJob::DecodeImageURL(texturePath, width, height, flipped);
-
-    if (image.IsEmpty())
-      return false; // nothing to load
-
-    m_texture = CTextureCacheJob::LoadImage(image, width, height, flipped);
-
+    loadPath = CTextureCache::Get().CacheImage(texturePath, &m_texture);
     if (m_texture)
-      CTextureCache::Get().BackgroundCacheTexture(texturePath, m_texture, width, height);
+      return true; // we're done
   }
-  else
+  if (!loadPath.IsEmpty())
   {
     // direct route - load the image
     m_texture = new CTexture();
@@ -166,7 +158,6 @@ void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 // else, add to the queue list if appropriate.
 bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest)
 {
-  // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
@@ -199,6 +190,12 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
       return;
     }
   }
+  assert(false);
+}
+
+void CGUILargeTextureManager::ReleaseQueuedImage(const CStdString &path)
+{
+  CSingleLock lock(m_listSection);
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
     unsigned int id = it->first;

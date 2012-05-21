@@ -1,0 +1,9116 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Programy"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Obrázky"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Hudba"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Videá"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "TV program"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Správca súborov"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Počasie"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "xbmc media center"
+
+#: id:11
+msgid "Monday"
+msgstr "Pondelok"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Utorok"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Streda"
+
+#: id:14
+msgid "Thursday"
+msgstr "Štvrtok"
+
+#: id:15
+msgid "Friday"
+msgstr "Piatok"
+
+#: id:16
+msgid "Saturday"
+msgstr "Sobota"
+
+#: id:17
+msgid "Sunday"
+msgstr "Nedeľa"
+
+#: id:21
+msgid "January"
+msgstr "Január"
+
+#: id:22
+msgid "February"
+msgstr "Február"
+
+#: id:23
+msgid "March"
+msgstr "Marec"
+
+#: id:24
+msgid "April"
+msgstr "Apríl"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "Máj"
+
+#: id:26
+msgid "June"
+msgstr "Jún"
+
+#: id:27
+msgid "July"
+msgstr "Júl"
+
+#: id:28
+msgid "August"
+msgstr "August"
+
+#: id:29
+msgid "September"
+msgstr "September"
+
+#: id:30
+msgid "October"
+msgstr "Október"
+
+#: id:31
+msgid "November"
+msgstr "November"
+
+#: id:32
+msgid "December"
+msgstr "December"
+
+#: id:41
+msgid "Mon"
+msgstr "Po"
+
+#: id:42
+msgid "Tue"
+msgstr "Ut"
+
+#: id:43
+msgid "Wed"
+msgstr "St"
+
+#: id:44
+msgid "Thu"
+msgstr "Št"
+
+#: id:45
+msgid "Fri"
+msgstr "Pi"
+
+#: id:46
+msgid "Sat"
+msgstr "So"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "Ne"
+
+#: id:51
+msgid "Jan"
+msgstr "Jan"
+
+#: id:52
+msgid "Feb"
+msgstr "Feb"
+
+#: id:53
+msgid "Mar"
+msgstr "Mar"
+
+#: id:54
+msgid "Apr"
+msgstr "Apr"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "Máj"
+
+#: id:56
+msgid "Jun"
+msgstr "Jún"
+
+#: id:57
+msgid "Jul"
+msgstr "Júl"
+
+#: id:58
+msgid "Aug"
+msgstr "Aug"
+
+#: id:59
+msgid "Sep"
+msgstr "Sep"
+
+#: id:60
+msgid "Oct"
+msgstr "Okt"
+
+#: id:61
+msgid "Nov"
+msgstr "Nov"
+
+#: id:62
+msgid "Dec"
+msgstr "Dec"
+
+#: id:71
+msgid "N"
+msgstr "S"
+
+#: id:72
+msgid "NNE"
+msgstr "SSV"
+
+#: id:73
+msgid "NE"
+msgstr "SV"
+
+#: id:74
+msgid "ENE"
+msgstr "VSV"
+
+#: id:75
+msgid "E"
+msgstr "V"
+
+#: id:76
+msgid "ESE"
+msgstr "VJV"
+
+#: id:77
+msgid "SE"
+msgstr "JV"
+
+#: id:78
+msgid "SSE"
+msgstr "JJV"
+
+#: id:79
+msgid "S"
+msgstr "J"
+
+#: id:80
+msgid "SSW"
+msgstr "JJZ"
+
+#: id:81
+msgid "SW"
+msgstr "JZ"
+
+#: id:82
+msgid "WSW"
+msgstr "ZJZ"
+
+#: id:83
+msgid "W"
+msgstr "Z"
+
+#: id:84
+msgid "WNW"
+msgstr "ZSZ"
+
+#: id:85
+msgid "NW"
+msgstr "SZ"
+
+#: id:86
+msgid "NNW"
+msgstr "SSZ"
+
+#: id:87
+msgid "VAR"
+msgstr "premenlivé"
+
+#: id:98
+msgid "View: Auto"
+msgstr "Zobrazenie: Auto"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Zobrazenie: Auto veľké"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Zobrazenie: Ikony"
+
+#: id:101
+msgid "View: List"
+msgstr "Zobrazenie: Zoznam"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Prezrieť"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Usporiadať: Názov"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Usporiadať: Dátum"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Usporiadať: Veľkosť"
+
+#: id:106
+msgid "No"
+msgstr "Nie"
+
+#: id:107
+msgid "Yes"
+msgstr "Áno"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Prezentácia"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Vytvoriť náhľady"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Vytvoriť náhľady"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Skratky"
+
+#: id:112
+msgid "Paused"
+msgstr "PAUZA"
+
+#: id:113
+msgid "Update failed"
+msgstr "Akualizácia sa nepodarila"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Inštalácia sa nepodarila"
+
+#: id:115
+msgid "Copy"
+msgstr "Kopírovať"
+
+#: id:116
+msgid "Move"
+msgstr "Presunúť"
+
+#: id:117
+msgid "Delete"
+msgstr "Vymazať"
+
+#: id:118
+msgid "Rename"
+msgstr "Premenovať"
+
+#: id:119
+msgid "New folder"
+msgstr "Nový priečinok"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Potvrdenie kopírovania"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Potvrdenie presunutia"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Potvrdenie vymazania"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Kopírovať tieto súbory?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Presunúť tieto súbory?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Vymazať tieto súbory?"
+
+#: id:126
+msgid "Status"
+msgstr "Priebeh"
+
+#: id:127
+msgid "Objects"
+msgstr "Objekt(ov)"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Všeobecné"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Prezentácia"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Systémové informácie"
+
+#: id:131
+msgid "Display"
+msgstr "Obrazovka"
+
+#: id:132
+msgid "Albums"
+msgstr "Albumy"
+
+#: id:133
+msgid "Artists"
+msgstr "Interpréti"
+
+#: id:134
+msgid "Songs"
+msgstr "Skladby"
+
+#: id:135
+msgid "Genres"
+msgstr "Žánre"
+
+#: id:136
+msgid "Playlists"
+msgstr "Playlisty"
+
+#: id:137
+msgid "Search"
+msgstr "Hľadať"
+
+#: id:138
+msgid "System Information"
+msgstr "SYSTÉMOVÉ INFORMÁCIE"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Teploty:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Čas:"
+
+#: id:143
+msgid "Current:"
+msgstr "Aktuálne:"
+
+#: id:144
+msgid "Build:"
+msgstr "Build:"
+
+#: id:145
+msgid "Network:"
+msgstr "Sieť:"
+
+#: id:146
+msgid "Type:"
+msgstr "Typ:"
+
+#: id:147
+msgid "Static"
+msgstr "Statická"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP"
+
+#: id:151
+msgid "Link:"
+msgstr "Stav: "
+
+#: id:152
+msgid "Half duplex"
+msgstr "Polovičný duplex"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Plný duplex"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Kapacita"
+
+#: id:155
+msgid "Drive"
+msgstr "Disk"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Voľné miesto"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Video"
+
+#: id:158
+msgid "Free memory"
+msgstr "Voľná pamäť"
+
+#: id:159
+msgid "No link"
+msgstr "Žiadne prepojenie"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Voľné"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Nedostupné"
+
+#: id:162
+msgid "Tray open"
+msgstr "Vysunúť disk"
+
+#: id:163
+msgid "Reading"
+msgstr "Čítam"
+
+#: id:164
+msgid "No disc"
+msgstr "Žiadny disk"
+
+#: id:165
+msgid "Disc present"
+msgstr "Disk vložený"
+
+#: id:166
+msgid "Skin"
+msgstr "Vzhľad"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Rozlíšenie"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Prispôsobovať obnovovaciu frekvenciu obrazovky podľa videa"
+
+#: id:172
+msgid "Release date"
+msgstr "Dátum vydania"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Zobrazovať 4:3 videa"
+
+#: id:175
+msgid "Moods"
+msgstr "Charakter:"
+
+#: id:176
+msgid "Styles"
+msgstr "Štýly"
+
+#: id:179
+msgid "Song"
+msgstr "Skladba"
+
+#: id:180
+msgid "Duration"
+msgstr "Dĺžka"
+
+#: id:181
+msgid "Select album"
+msgstr "Vyberte albumu"
+
+#: id:182
+msgid "Tracks"
+msgstr "Skladby"
+
+#: id:183
+msgid "Review"
+msgstr "Recenzia"
+
+#: id:184
+msgid "Refresh"
+msgstr "Obnoviť"
+
+#: id:185
+msgid "Searching album"
+msgstr "Vyhľadávanie albumu"
+
+#: id:186
+msgid "OK"
+msgstr "OK"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Albumy nenájdené!"
+
+#: id:188
+msgid "Select all"
+msgstr "Vybrať všetko"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Získavanie informácií o médiu"
+
+#: id:190
+msgid "Save"
+msgstr "Uložiť"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Náhodné"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Vyčistiť"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Prehľadať"
+
+#: id:194
+msgid "Searching..."
+msgstr "Vyhľadávam..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Informácie nenájdené!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Vyberte film:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "Zisťujem informácie o %s"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Načítanie detailov o filme"
+
+#: id:199
+msgid "Web interface"
+msgstr "Webové rozhranie"
+
+#: id:202
+msgid "Tagline"
+msgstr "Stručné info"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Obsah filmu"
+
+#: id:205
+msgid "Votes"
+msgstr "Hlasov"
+
+#: id:206
+msgid "Cast"
+msgstr "Obsadenie"
+
+#: id:207
+msgid "Plot"
+msgstr "Obsah"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Prehrať"
+
+#: id:209
+msgid "Next"
+msgstr "Násl."
+
+#: id:210
+msgid "Previous"
+msgstr "Pred."
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Kalibrácia používateľského rozhrania..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Kalibrácia obrazu..."
+
+#: id:215
+msgid "Soften"
+msgstr "Zmäkčenie"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Priblíženie"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Pomer strán"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD disk"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Prosím vložte disk"
+
+#: id:220
+msgid "Remote share"
+msgstr "Vzdialené zdieľanie"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Sieť nie je pripojená"
+
+#: id:222
+msgid "Cancel"
+msgstr "Zrušiť"
+
+#: id:224
+msgid "Speed"
+msgstr "Rýchlosť"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "Vertikálne posunutie"
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Testovací obraz..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Vyhľadávať názvy skladieb z CD na freedb.org"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Náhodne prehrávať skladby po načítaní playlist-u"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "Uspávať disk"
+
+#: id:230
+msgid "Video filters"
+msgstr "Video filtre"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Žiadne"
+
+#: id:232
+msgid "Point"
+msgstr "Bodový"
+
+#: id:233
+msgid "Linear"
+msgstr "Lineárny"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anizotropický"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussovsko kubický"
+
+#: id:237
+msgid "Minification"
+msgstr "Zmenšenie"
+
+#: id:238
+msgid "Magnification"
+msgstr "Zväčšenie"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Odstrániť playlist po skončení prehrávania"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Možnosti zobrazenia"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "Celá obrazovka #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "V Okne"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Obnovovacia frekvencia"
+
+#: id:244
+msgid "Full screen"
+msgstr "Celá obrazovka"
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Zmena veľkosti: (%i,%i)->(%i,%i) (Priblíženie x%2.2f) AR:%2.2f:1 (Pixelov: %2.2f:1) (VShift: %2.2f)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Skripty"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Jazyk"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Hudba"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Vizualizácia"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Vyberte cieľový priečinok"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Stereo výstup do všetkých reproduktorov"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Počet kanálov"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- DTS kompatibilný receiver"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "Získavnie informácií o CD"
+
+#: id:257
+msgid "Error"
+msgstr "Chyba"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Povoliť čítanie tagov"
+
+#: id:259
+msgid "Opening"
+msgstr "Otváranie"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Prebieha príprava spustenia..."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Výstup skript"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Povoliť ovládanie XBMC cez HTTP"
+
+#: id:264
+msgid "Record"
+msgstr "Nahrávať"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Ukončiť nahrávanie"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Zoradiť podľa: Stopy"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Zoradiť podľa: Času"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Zoradiť podľa: Názvu"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Zoradiť podľa: Interpréta"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Zoradiť podľa: Albumu"
+
+#: id:271
+msgid "Top 100"
+msgstr "Naj 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Nastavenie ľavého horného okraja"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Nastavenie pravého spodného okraja"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Pozícia titulkov"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Nastavenie pomeru strán"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Šípkami nastavíte okraj"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Posunutím čiari zmeníte pozíciu titulkov"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Upravte obdĺžnik tak, aby vznikol perfektný štvorec"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Nepodarilo sa otvoriť nastavenia"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Použitie predvolených nastavení"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Prosím skontrolujte .xml súbory"
+
+#: id:282
+msgid "Found %i items"
+msgstr "nájdených %i položiek"
+
+#: id:283
+msgid "Search results"
+msgstr "Výsledky hľadania"
+
+#: id:284
+msgid "No results found"
+msgstr "Žiadny výsledok"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Titulky"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Písmo"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Veľkosť"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Kompresia dynamického rozsahu"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Video"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Zvuk"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Vyberte titulky"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Vytvoriť záložku"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Vymazať záložku"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Posunutie zvuku"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Záložky"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- AAC kompatibilný receiver"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- MP1 kompatibilný receiver"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- MP2 kompatibilný receiver"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- MP3 kompatibilný receiver"
+
+#: id:303
+msgid "Delay"
+msgstr "Oneskorenie"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Jazyk"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Aktivované"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Neprekladané video"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Čistenie databázy"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Pripravujem..."
+
+#: id:315
+msgid "Database error"
+msgstr "Chyba databázy"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Vyhľadávam skladby..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Vyčistenie databázy úspešné"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Čistenie skladieb..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Chyba pri čistení skladieb"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Čistenie interprétov..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Chyba pri čistení interprétov"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Čistenie žánrov..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Chyba pri čistení žánrov"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Čistenie ciest..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Chyba pri čistení ciest"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Čistenie albumov..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Chyba pri čistení albumov"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Zapisujem zmeny..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Chyba pri zapisovaní zmien"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Toto môže chvíľku trvať..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Komprimujem databázu..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Chyba pri komprimácii databázy"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Naozaj chcete vyčistiť knižnicu?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Vyčistiť knižnicu..."
+
+#: id:335
+msgid "Start"
+msgstr "Spustiť"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Konverzia snímkovania"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Audio výstup"
+
+#: id:338
+msgid "Analog"
+msgstr "Analógový"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Digitálny"
+
+#: id:340
+msgid "Various artists"
+msgstr "Rôzny interpréti"
+
+#: id:341
+msgid "Play disc"
+msgstr "CD/DVD"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Filmy"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Prispôsobenie snímkovania"
+
+#: id:344
+msgid "Actors"
+msgstr "Herec"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Rok"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Zvyšovať hlasitosť pri downmixe"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Programy"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Vypnuté"
+
+#: id:352
+msgid "Dim"
+msgstr "Zahmliť"
+
+#: id:353
+msgid "Black"
+msgstr "Čierna"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix Trails"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Čas nečinnosti potrebný pre aktiváciu šetriča obrazovky"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Šetrič obrazovky"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Čas nečinnosti potrebný pre vypnutie systému"
+
+#: id:358
+msgid "All albums"
+msgstr "Všetky albumy"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Naposledy pridané albumy"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Šetrič obrazovky"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "Rekurzívna prezentácia"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Hladina blednutia šetriča obrazovky"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Usporiadať: Súbor"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Dolby Digital (AC3) kompatibilný reciever"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Zoradiť podľa: Názvu"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Zoradiť podľa: Roku"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Zoradiť podľa: Hodnotenia"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Názov"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "búrky"
+
+#: id:371
+msgid "Partly"
+msgstr "čiastočne"
+
+#: id:372
+msgid "Mostly"
+msgstr "prevažne"
+
+#: id:373
+msgid "Sunny"
+msgstr "slnečno"
+
+#: id:374
+msgid "Cloudy"
+msgstr "zamračené"
+
+#: id:375
+msgid "Snow"
+msgstr "sneženie"
+
+#: id:376
+msgid "Rain"
+msgstr "dážď"
+
+#: id:377
+msgid "Light"
+msgstr "slabý(é)"
+
+#: id:378
+msgid "AM"
+msgstr "AM"
+
+#: id:379
+msgid "PM"
+msgstr "PM"
+
+#: id:380
+msgid "Showers"
+msgstr "prehánky"
+
+#: id:381
+msgid "Few"
+msgstr "občas"
+
+#: id:382
+msgid "Scattered"
+msgstr "miestami"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "veterno"
+
+#: id:384
+msgid "Strong"
+msgstr "silný"
+
+#: id:385
+msgid "Fair"
+msgstr "pekne"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "jasno"
+
+#: id:387
+msgid "Clouds"
+msgstr "oblačno"
+
+#: id:388
+msgid "Early"
+msgstr "ranné"
+
+#: id:389
+msgid "Shower"
+msgstr "prehánky"
+
+#: id:390
+msgid "Flurries"
+msgstr "snehové prehánky"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "min."
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "stred"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "max."
+
+#: id:394
+msgid "Fog"
+msgstr "hmla"
+
+#: id:395
+msgid "Haze"
+msgstr "mrholenie"
+
+#: id:396
+msgid "Select location"
+msgstr "Vyberte mesto"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Obnovovať po"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Jednotky teploty"
+
+#: id:399
+msgid "Speed units"
+msgstr "Jednotky rýchlosti"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Počasie"
+
+#: id:401
+msgid "Temp"
+msgstr "Teplota"
+
+#: id:402
+msgid "Feels like"
+msgstr "Zobrazenie"
+
+#: id:403
+msgid "UV index"
+msgstr "UV Index"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Vietor"
+
+#: id:405
+msgid "Dew point"
+msgstr "Rosný bod"
+
+#: id:406
+msgid "Humidity"
+msgstr "Vlhkosť"
+
+#: id:409
+msgid "Defaults"
+msgstr "Predvolené"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Pristupujem k weather.com"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Získavam počasie pre:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "nepodarilo sa načítať dáta o počasí"
+
+#: id:413
+msgid "Manual"
+msgstr "Manuálne"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Pre tento album nie je žiadna recenzia"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Sťahujem náhľad..."
+
+#: id:416
+msgid "Not available"
+msgstr "Nedostupné"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Zobrazenie: Veľké ikony"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Noc"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Deň"
+
+#: id:420
+msgid "HDMI"
+msgstr "HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Odstrániť informácie o albume"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Odstrániť CD info"
+
+#: id:424
+msgid "Select"
+msgstr "Vybrať"
+
+#: id:425
+msgid "No album information found"
+msgstr "Informácie pre album neboli nájdené."
+
+#: id:426
+msgid "No CD information found"
+msgstr "CD informácie neboli nájdené"
+
+#: id:427
+msgid "Disc"
+msgstr "Disk"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Vložte CD/DVD"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Prosím vložte disk s označením:"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Zoradiť podľa: DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Žiadna medzipamäť"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Odstrániť film z knižnice"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Naozaj chcete odstrániť '%s'?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "%s %i %s"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Vymeniteľný disk"
+
+#: id:438
+msgid "Opening file"
+msgstr "Otváranie súboru"
+
+#: id:439
+msgid "Cache"
+msgstr "Medzipamäť"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Harddisk"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "Lokálna sieť"
+
+#: id:443
+msgid "Internet"
+msgstr "Internet"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Video"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Audio"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Automaticky prehrávať médiá"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Aktívne"
+
+#: id:450
+msgid "Columns"
+msgstr "Stĺpcov"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Adresa 1 riadku"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Adresa 2 riadku"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Adresa 3 riadku"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Adresa 4 riadku"
+
+#: id:455
+msgid "Rows"
+msgstr "Riadky"
+
+#: id:456
+msgid "Mode"
+msgstr "režim"
+
+#: id:457
+msgid "Switch view"
+msgstr "Prepnúť zobrazenie"
+
+#: id:459
+msgid "Subs"
+msgstr "Titulky"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Zvuková stopa"
+
+#: id:461
+msgid "[active]"
+msgstr "[aktívny]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Titulky"
+
+#: id:463
+msgid "Backlight"
+msgstr "Podsvietenie"
+
+#: id:464
+msgid "Brightness"
+msgstr "Jas"
+
+#: id:465
+msgid "Contrast"
+msgstr "Kontrast"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Typ"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Pozíciu OSD zmeníte posunom čiary"
+
+#: id:469
+msgid "OSD position"
+msgstr "Pozícia OSD"
+
+#: id:470
+msgid "Credits"
+msgstr "Autori"
+
+#: id:471
+msgid "Modchip"
+msgstr "Modčip"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Vypnúť"
+
+#: id:475
+msgid "Music only"
+msgstr "Iba hudba"
+
+#: id:476
+msgid "Music & video"
+msgstr "Hudba a Video"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Nedá sa otvoriť playlist"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Vzhľad a jazyk"
+
+#: id:480
+msgid "Appearance"
+msgstr "Prostredie"
+
+#: id:481
+msgid "Audio options"
+msgstr "Nastavenia zvuk"
+
+#: id:482
+msgid "About XBMC"
+msgstr "O XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Odstrániť album"
+
+#: id:486
+msgid "Repeat"
+msgstr "Opakovať"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Opakovať jeden"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Opakovať priečinok"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Automaticky prehrávať ďalšiu skladbu"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Používať veľké ikony"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Velkosť vobsubs"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Pokročilé nastavenia (iba expert!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Celková hlasitosť"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Prepočítavať videa do GUI rozlíšenia"
+
+#: id:496
+msgid "Calibration"
+msgstr "Kalibrácia"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Zobrazovať prípony médií"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Zoradiť podľa: Typu"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Nedá sa pripojiť k www.allmusic.com"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Sťahovanie informácií o albume zlyhalo"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Hľadanie názvu albumov..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Otvoriť"
+
+#: id:503
+msgid "Busy"
+msgstr "Pracujem"
+
+#: id:504
+msgid "Empty"
+msgstr "Prázdny"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Prebieha načítanie informácií zo súborov..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Zoradiť podľa: Použitia"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Zobrazovať vizualizácie"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Povoliť zmenu video režimu"
+
+#: id:512
+msgid "Startup window"
+msgstr "Úvodné okno"
+
+#: id:513
+msgid "Home window"
+msgstr "Domovská stránka"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Manuálne nastavenia"
+
+#: id:515
+msgid "Genre"
+msgstr "Žáner"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Naposledy prehrávané albumy"
+
+#: id:518
+msgid "Launch"
+msgstr "Spustiť"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Spustiť..."
+
+#: id:521
+msgid "Compilations"
+msgstr "Kompilácie"
+
+#: id:522
+msgid "Remove source"
+msgstr "Odstrániť zdroj"
+
+#: id:523
+msgid "Switch media"
+msgstr "Prejsť do inej sekcie"
+
+#: id:524
+msgid "Select playlist"
+msgstr "Vyberte playlist"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Nový playlist..."
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Pridať do playlist-u"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Manuálne pridať do knižnice"
+
+#: id:528
+msgid "Enter title"
+msgstr "Zadajte názov"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Chyba: Duplicitný názov"
+
+#: id:530
+msgid "Select genre"
+msgstr "Vyberte žáner"
+
+#: id:531
+msgid "New genre"
+msgstr "Nový žáner"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Manuálne pridanie"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Vložiť žáner"
+
+#: id:534
+msgid "View: %s"
+msgstr "Zobrazenie: %s"
+
+#: id:535
+msgid "List"
+msgstr "Zoznam"
+
+#: id:536
+msgid "Icons"
+msgstr "Ikony"
+
+#: id:537
+msgid "Big list"
+msgstr "Zoznam II"
+
+#: id:538
+msgid "Big icons"
+msgstr "Ikony II"
+
+#: id:539
+msgid "Wide"
+msgstr "Stĺpce"
+
+#: id:540
+msgid "Big wide"
+msgstr "Stĺpce II"
+
+#: id:541
+msgid "Album icons"
+msgstr "Náhľady albumov"
+
+#: id:542
+msgid "DVD icons"
+msgstr "Náhľady DVD"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Informácie o médiu"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Zariadenie pre výstup zvuku"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Zariadenie pre prestup zvuku"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "Životopis pre tohoto interpréta nie je dostupný"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Prevádzať viackanálový zvuk na stereo"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Zoradiť: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Názov"
+
+#: id:552
+msgid "Date"
+msgstr "Dátum"
+
+#: id:553
+msgid "Size"
+msgstr "Veľkosť"
+
+#: id:554
+msgid "Track"
+msgstr "Stopa"
+
+#: id:555
+msgid "Time"
+msgstr "Čas"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Názov"
+
+#: id:557
+msgid "Artist"
+msgstr "Interprét"
+
+#: id:558
+msgid "Album"
+msgstr "Album"
+
+#: id:559
+msgid "Playlist"
+msgstr "Playlist"
+
+#: id:560
+msgid "ID"
+msgstr "ID"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Súbor"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "Rok"
+
+#: id:563
+msgid "Rating"
+msgstr "Hodnotenie"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Typ"
+
+#: id:565
+msgid "Usage"
+msgstr "Použitie"
+
+#: id:566
+msgid "Album artist"
+msgstr "Autor albumu"
+
+#: id:567
+msgid "Play count"
+msgstr "Počet prehratí"
+
+#: id:568
+msgid "Last played"
+msgstr "Naposledy prehrané"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Komentár"
+
+#: id:570
+msgid "Date added"
+msgstr "Dátum pridania"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "Predvolené"
+
+#: id:572
+msgid "Studio"
+msgstr "Štúdio"
+
+#: id:573
+msgid "Path"
+msgstr "Umiestnenie"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "Krajina"
+
+#: id:575
+msgid "In progress"
+msgstr "Práve prebieha"
+
+#: id:576
+msgid "Times played"
+msgstr "Počet prehratí"
+
+#: id:580
+msgid "Sort direction"
+msgstr "Smer usporiadania"
+
+#: id:581
+msgid "Sort method"
+msgstr "Spôsob usporiadania"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "režim zobrazenia"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Pamätať si zobrazenie pre každý priečinok"
+
+#: id:584
+msgid "Ascending"
+msgstr "Stúpajúci"
+
+#: id:585
+msgid "Descending"
+msgstr "Klesajúci"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Upraviť playlist"
+
+#: id:587
+msgid "Filter"
+msgstr "Filter"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Zrušiť párty režim"
+
+#: id:589
+msgid "Party mode"
+msgstr "Párty režim"
+
+#: id:590
+msgid "Random"
+msgstr "Náhodné"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Vypnuté"
+
+#: id:592
+msgid "One"
+msgstr "Jeden"
+
+#: id:593
+msgid "All"
+msgstr "Všetky"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Vypnuté"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Opakovať: Vypnuté"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Opakovať: 1"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Opakovať: Všetko"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Skopírovať CD"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Stredná"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Štandardná"
+
+#: id:603
+msgid "Extreme"
+msgstr "Extrémna"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Konštantný datový tok"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Sťahujem..."
+
+#: id:607
+msgid "To:"
+msgstr "Do:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Nepodarilo sa skopírovať CD alebo stopu"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDA cesta nie je nastavená."
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Skopírovať audio stopu"
+
+#: id:611
+msgid "Enter number"
+msgstr "Zadaj číslo"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Bitov/Vzorka"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "Vzorkovacia frekvencia"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Audio CD"
+
+#: id:621
+msgid "Encoder"
+msgstr "Enkodér"
+
+#: id:622
+msgid "Quality"
+msgstr "Kvalita"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Datový tok"
+
+#: id:624
+msgid "Include track number"
+msgstr "Zahrnúť číslo stopy"
+
+#: id:625
+msgid "All songs of"
+msgstr "Všetky skladby od"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Režim zobrazenia"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Normálne"
+
+#: id:631
+msgid "Zoom"
+msgstr "Zväčšiť"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Natiahnuť 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Široké priblíženie"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Natiahnuť 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Originálna veľkosť"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Vlastné"
+
+#: id:637
+msgid "Replay gain"
+msgstr "ReplayGain / stará sa o minimálny rozdiel hlasitosti v rôznych skladbách"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "ReplayGain úprava hlasitosti"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Použiť úroveň stopy"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Použiť úroveň albumu"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "Úroveň - ReplayGain súbory"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "Úroveň - Súbory bez ReplayGain"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Zabrániť predimenzovaniu pri súboroch s ReplayGain"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Orezávať čierne okraje"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Treba rozbaliť veľký súbor. Pokračovať?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Odstrániť z knižnice"
+
+#: id:647
+msgid "Export video library"
+msgstr "Exportovať video knižnicu"
+
+#: id:648
+msgid "Import video library"
+msgstr "Importovať video knižnicu"
+
+#: id:649
+msgid "Importing"
+msgstr "Prebieha import"
+
+#: id:650
+msgid "Exporting"
+msgstr "Prebieha export"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Vyberte knižnicu"
+
+#: id:652
+msgid "Years"
+msgstr "Roky"
+
+#: id:653
+msgid "Update library"
+msgstr "Aktualizovať knižnicu"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Zobrazovať ladiace informácie"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Vyberte spúšťací súbor"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Vyberte playlist"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Vyberte priečinok"
+
+#: id:658
+msgid "Song information"
+msgstr "Informácie o skladbe"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Nelineárne roztiahnutie"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Zosilnenie hlasitosti"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Vyberte priečinok pre export"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Súbor už nieje dostupný."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Prajete si ho odstrániť z knižnice?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Vyberte Skript"
+
+#: id:665
+msgid "Compression level"
+msgstr "Úroveň kompresie"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Vyčistiť knižnicu"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Odstraňujem staré skladby z knižnice"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Táto cesta bola už prehľadaná"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Sieť"
+
+#: id:706
+msgid "- Server"
+msgstr "- Server"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Použiť HTTP proxy server pre prístup na internet"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Internet protokol (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Nesprávny port. Hodnota musí byť medzi 1 a 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP Proxy"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- Priradenie"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Automatický (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Manuálne (Statický)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP Adresa"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Sieťová maska"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Predvolená brána"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS server"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Uložiť a reštartovať"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Nesprávna adresa. Hodnota musí byť AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "s číslami v rozsahu 0 a 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Zmeny neboli uložené. Pokračovať bez uloženia?"
+
+#: id:727
+msgid "Web server"
+msgstr "Web server"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP server"
+
+#: id:730
+msgid "- Port"
+msgstr "- Port"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Uložiť a použiť"
+
+#: id:733
+msgid "- Password"
+msgstr "- Heslo"
+
+#: id:734
+msgid "No pass"
+msgstr "Žiadne heslo"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Písmo"
+
+#: id:736
+msgid "- Style"
+msgstr "- Štýl"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Farba"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Obyčajné"
+
+#: id:739
+msgid "Bold"
+msgstr "Tučné"
+
+#: id:740
+msgid "Italics"
+msgstr "Kurzíva"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Tučné kurzíva"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Biele"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Žlté"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Súbory"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Pre toto zobrazenie neodpovedajú žiadne položky"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Vypnite prosím režim knižnice"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Chyba pri načítaní obrázku"
+
+#: id:748
+msgid "Edit path"
+msgstr "Upraviť cestu"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Otočiť"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Ste si istý?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Odstránenie zdroju"
+
+#: id:754
+msgid "Add program link"
+msgstr "Pridať zástupcu programu"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Upraviť cestu programu"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Upraviť názov programu"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Upraviť hĺbku cesty"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Zobrazenie: Veľký zoznam"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Žltá"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Biela"
+
+#: id:762
+msgid "Blue"
+msgstr "Modrá"
+
+#: id:763
+msgid "Bright green"
+msgstr "Svetlozelená"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Žltozelená"
+
+#: id:765
+msgid "Cyan"
+msgstr "Ružová"
+
+#: id:766
+msgid "Light grey"
+msgstr "Svetlošedá"
+
+#: id:767
+msgid "Grey"
+msgstr "Šedá"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Chyba %i: zdieľanie nie je prístupné"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Audio výstup"
+
+#: id:773
+msgid "Seeking"
+msgstr "Prebieha hľadanie"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Priečinok s prezentáciami"
+
+#: id:775
+msgid "Network interface"
+msgstr "Sieťové rozhranie"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Názov bezdrôtovej siete (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- Heslo bezdrôtovej siete"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- Bezpečnost bezdrôtovej siete"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Uložiť a použiť nastavenie siete"
+
+#: id:780
+msgid "No encryption"
+msgstr "Bez šifrovania"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "Prebieha použitie zmien nastavenia siete. Počkajte prosím."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "Reštart sieťového rozhrania bol úspešný."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "Štart sieťového rozhrania bol neúspešný."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Rozhranie zakázané"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "Sieťové rozhranie bolo zakázané."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Názov bezdrôtovej siete (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Povoliť ovládanie XBMC aplikáciami na tomto systéme"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Port"
+
+#: id:793
+msgid "Port range"
+msgstr "Rozsah portov"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Povoliť ovládanie XBMC aplikáciami z iného systému"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Úvodné oneskorenie opakovania (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Následujúce oneskorenie opakovania (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Maximálny počet klientov"
+
+#: id:798
+msgid "Internet access"
+msgstr "Internetový prístup"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "Bolo zadané nesprávne číslo portu"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "Povolený rozsah portu je 1-65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "Povolený rozsah portu je 1024-65535"
+
+#: id:998
+msgid "Add Music..."
+msgstr "Pridať hudbu..."
+
+#: id:999
+msgid "Add Videos..."
+msgstr "Pridať videá..."
+
+#: id:1000
+msgid "- Preview"
+msgstr "- Náhľad"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Nedá sa pripojiť"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC sa nemohol pripojiť na sieťové umiestnenie."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Toto môže byť kvôli nedostupnosti siete."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Radi by ste to aj tak pridali?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP adresa"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Pridať sieťové umiestnenie"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Protokol"
+
+#: id:1009
+msgid "Server address"
+msgstr "Adresa servera"
+
+#: id:1010
+msgid "Server name"
+msgstr "Názov servera"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Vzdialená cesta"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Zdieľaný priečinok"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Port"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Užívateľské meno"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Vyberte sieťový server"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Zadajte sieťovú adresu servera"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Zadajte cestu na server"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Zadajte číslo portu"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Zadajte užívateľské meno"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Pridajte cestu pre: %s"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Zadajte cestu, alebo vyberte umiestnenie médií."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Zadajte názov pre tento zdroj médií."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Vyberte umiestnenie"
+
+#: id:1024
+msgid "Browse"
+msgstr "Prechádzať"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Nepodarilo sa načítať informácie priečinku."
+
+#: id:1026
+msgid "Add source"
+msgstr "Pridať zdroj"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Upraviť zdroj"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Upraviť %s zdroj"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Zadajte nový názov"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Vyberte obrázok"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Vyberte priečinok s obrázkami"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Pridať sieťové umiestnenie..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Vyberte súbor"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Podmenu"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Aktivovať tlačítka podmenu"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Obľúbené"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "-Video (doplnky)"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "-Hudba (doplnky)"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "-Obrázky (doplnky)"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "Prebieha načítanie priečinku"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "Načítaných %i položiek"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "Načítaných %i z %i položiek"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "-Programy (doplnky)"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Nastavenie náhľadu doplnku"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Nastavenie doplnku"
+
+#: id:1046
+msgid "Access points"
+msgstr "Prístupové body (AP)"
+
+#: id:1047
+msgid "Other..."
+msgstr "Ostatné ..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Užívateľské meno"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Nastavenia skriptu"
+
+#: id:1050
+msgid "Singles"
+msgstr "Single"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Zadajte webovú adresu"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB klient"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Pracovná skupina"
+
+#: id:1203
+msgid "Default username"
+msgstr "Predvolené meno"
+
+#: id:1204
+msgid "Default password"
+msgstr "Predvolené heslo"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS server"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Pripojiť SMB zdieľané priečinky"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Odstrániť"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Hudba"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Video"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Obrázky"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Súbory"
+
+#: id:1215
+msgid "Music & video "
+msgstr "Hudba & Video "
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Hudba & Obrázky"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Hudba & Súbory"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Video & Obrázky"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Video & Súbory"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Obrázky & Súbory"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Hudba & Video & Obrázky"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Hudba & Video & Obrázky & Súbory"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Vypnuté"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Súbory & Hudba & Video"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Súbory & Obrázky & Hudba"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Súbory & Obrázky & Video"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Hudba & Programy"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Video & Programy"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Obrázky & Programy"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Hudba & Video & Obrázky & Programy"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Programy & Video & Hudba"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Programy & Obrázky & Hudba"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Programy & Obrázky & Video"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Autodetekcia"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Autodetekcia systému"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Prezývka"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Opýtať sa na pripojenie"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Poslať FTP meno a heslo"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Ping interval"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Chcete sa pripojiť na autodetekovaný systém?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Oznamovať tieto služby ďalším počítačom cez Zeroconf"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Povoliť XBMC príjem AirPlay obsahu"
+
+#: id:1271
+msgid "Device name"
+msgstr "Názov zariadenia"
+
+#: id:1272
+msgid "- Use password protection"
+msgstr "- Použiť ochranu heslom"
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "Vlastné zariadenie pre výstup audia"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "Vlastné zariadenie pre passthrough zvuku"
+
+#: id:1396
+msgid "Drifting"
+msgstr "ustupujúci"
+
+#: id:1397
+msgid "and"
+msgstr "a"
+
+#: id:1398
+msgid "Freezing"
+msgstr "mrznúci"
+
+#: id:1399
+msgid "Late"
+msgstr "neskôr"
+
+#: id:1400
+msgid "Isolated"
+msgstr "ojedinele"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "prehánky"
+
+#: id:1402
+msgid "Thunder"
+msgstr "búrky"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "slnečno"
+
+#: id:1404
+msgid "Heavy"
+msgstr "zatiahnuté"
+
+#: id:1405
+msgid "in"
+msgstr "v"
+
+#: id:1406
+msgid "the"
+msgstr "blízkom"
+
+#: id:1407
+msgid "Vicinity"
+msgstr "okolí"
+
+#: id:1408
+msgid "Ice"
+msgstr "ľadové"
+
+#: id:1409
+msgid "Crystals"
+msgstr "krištáliky"
+
+#: id:1410
+msgid "Calm"
+msgstr "bezvetrie"
+
+#: id:1411
+msgid "with"
+msgstr "s"
+
+#: id:1412
+msgid "windy"
+msgstr "veterno"
+
+#: id:1413
+msgid "drizzle"
+msgstr "mrholenie"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "silná búrka"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "mrholenie"
+
+#: id:1416
+msgid "Foggy"
+msgstr "zahmlené"
+
+#: id:1417
+msgid "Grains"
+msgstr "krupy"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "búrky"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "búrky s prehánkami"
+
+#: id:1420
+msgid "Moderate"
+msgstr "Stredné"
+
+#: id:1421
+msgid "Very High"
+msgstr "Velmi vysoké"
+
+#: id:1422
+msgid "Windy"
+msgstr "Veterno"
+
+#: id:1423
+msgid "Mist"
+msgstr "Hmla"
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Aktivovať úsporný režim obrazovky pri nečinnosti"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Dĺžka"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "Chyba skriptu! : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "Je vyžadovaná novšia verzia - Viac informácií v logu"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Aktivovať LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Domov"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Programy"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Obrázky"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Správca súborov"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Nastavenie"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Hudba"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Video"
+
+#: id:10007
+msgid "System information"
+msgstr "Systémové informácie"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Nastavenia - Hlavné"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Nastavenia - Obrazovky"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Nastavenia - Zobrazenie - Kalibrácia GUI"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Nastavenia - Video - Kalibrácia obrazovky"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Nastavenia - Obrázky"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Nastavenia - Programy"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Nastavenia - Počasie"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Nastavenia - Hudba"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Nastavenia - Systém"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Nastavenia - Videá"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Nastavenia - Sieť"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Nastavenia - Zobrazenie"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Skripty"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Webový prehliadač"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr "Videá"
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Videá/Playlist"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr "Úvodná obrazovka"
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Nastavenia - Profily"
+
+#: id:10040
+msgid "Addon browser"
+msgstr "Doplnok-prehliadač"
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Áno/Nie dialog"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Dialóg spracovania"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "Prebieha vyhľadávanie titulkov..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "Prebieha načítavanie titulkov..."
+
+#: id:10212
+msgid "terminating"
+msgstr "prerušenie"
+
+#: id:10213
+msgid "buffering"
+msgstr "načítanie do medzipamäte"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "Otváranie streamu"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Hudba/Playlist"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Hudba/Súbory"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Hudba/Knižnica"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Playlist editor"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Naj 100 skladieb"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Naj 100 albumov"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Programy"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Konfigurácia"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Predpoveď počasia"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Hranie po sieti"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Rozšírenia"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Systémové informácie"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Hudba - Knižnica"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Práve hrá - Hudba"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Práve hrá - Video"
+
+#: id:10523
+msgid "Album info"
+msgstr "Informácie o albume"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Informácie o filme"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Výberový dialóg"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Hudba/Info"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Dialóg OK"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Video/Info"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Skripty/Info"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Video na celú obrazovku"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Vizualizácie hudby"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Dialóg pri spojovaní súborov"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Prerábam index..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Vrátiť sa do sekcie 'Hudba'"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Vrátiť sa do sekcie 'Videá'"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Začať od začiatku"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Pokračovať od %s"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "Ok"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Zamknuté! Vložte heslo..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Zadajte heslo"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Zadajte hlavné heslo"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Zadajte heslo pre odomknutie"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "alebo stlačte C pre zrušenie"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Vložte kombináciu tlačidiel a"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "stlačte OK, alebo Späť pre zrušenie"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Nastaviť zámok"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Odomknúť"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Resetnúť zámok"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Odstrániť zámok"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Číselné Heslo"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Kombinácia tlačidiel na Gamepad-e"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Textové Heslo"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Zadajte nové heslo"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Znovu zadajte nové heslo"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Nesprávne heslo,"
+
+#: id:12343
+msgid "retries left "
+msgstr "možnosí ostáva "
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Zadané heslá nie sú totožné."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Vstup Nepovolený"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Limit pre opakovanie bol prekročený."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "Systém sa teraz vypne."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Položka zamknutá"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Reaktivovať zámok"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Zmeniť zámok"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Uzamknúť zdroj"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Žiadne heslo, skúste znova."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Hlavný zámok"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Vypnúť systém ak boli prekročené pokusy na hlavný zámok"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Hlavný kľúč nie je správny!"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Prosím vložte správny hlavný kľúč!"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Nastavenia & Správca súborov"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Nastaviť ako predvolené pre všetky filmy"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Toto vymaže všetky uložené hodnoty"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Doba zobrazenia každého obrázku"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Používať efekty priblíženia a posunutia obrázku"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12 hodinový formát"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24 hodinový formát"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Deň/Mesiac"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Mesiac/Deň"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Doba používania"
+
+#: id:12391
+msgid "Minutes"
+msgstr "Minút"
+
+#: id:12392
+msgid "Hours"
+msgstr "Hodiny"
+
+#: id:12393
+msgid "Days"
+msgstr "Dni"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Celková doba používania"
+
+#: id:12395
+msgid "Battery level"
+msgstr "Stav batérie"
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Počasie"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Šetrič obrazovky"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "OSD na celú obrazovku"
+
+#: id:13000
+msgid "System"
+msgstr "Systém"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Okamžitý HD Spindown"
+
+#: id:13002
+msgid "Video only"
+msgstr "Iba Video"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Oneskorenie"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Minimálna dĺžka súboru"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Vypnúť"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Predvolený spôsob vypnutia"
+
+#: id:13009
+msgid "Quit"
+msgstr "Ukončiť"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Dlhodobý spánok"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Úsporný režim"
+
+#: id:13012
+msgid "Exit"
+msgstr "Ukončiť"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Reštartovať"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Minimalizovať"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Funkcia tlačítka pre vypnutie"
+
+#: id:13016
+msgid "Power off System"
+msgstr "Vypnúť systém"
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Existuje nejaké aktívne pripojenie, (napr. cez SSH) ?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "Vymeniteľný pevný disk pripojený"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "Nebezpečné vybratie zariadenia"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "Zariadenie bolo úspšne odobrané"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "Joystick bol pripojený"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "Joystick bol odpojený"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "Nízka úroveň batérie"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Blikací filter"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "Nastavené ovládačom (vyžaduje reštart)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Vertikálna synchronizácia obrazovky (V-Sync)"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Zakázané"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Povolené počas prehrávania videa"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Vždy povolené"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Test rozlíšenia"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Uložiť rozlíšenie?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Chcete ponechať toto rozlíšenie?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Vysoko kvalitný prepočet (upscaling)"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Zakázané"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Povolené pre SD obsah"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Vždy povolené"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Spôsob prepočtu"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinc"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ prepočet (upscaling)"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU farebná konverzia - Studio level"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Stmavovať ostatné obrazovky"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Zakázané"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Povolené"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "Zistené aktívne spojenie!"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Ak budete pokračovať, môžeťe stratiť ovládanie XBMC"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "natrvalo. Určiťe chcete zastaviť event server?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Zmeniť režim diaľkového ovládania Apple?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Ak práve používate diaľkové ovládanie Apple na ovládanie"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC, zmenou nastavenia možete ovplyvniť Vašu"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "schopnosť ovládať ho. Chcete pokračovať?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Maska podsiete"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Brána"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "Primárny DNS"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Inicializácia zlyhala"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Nikdy"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Ihneď"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "Po %i sekundách"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "Dátum inštalácie disku:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "Počet zapnutí disku:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Profily"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Vymazať profil '%s'?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Posledný otvorený profil:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Neznámy"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Prepísať"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Budík"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Interval budíku (v minútach)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Budík nastavený, budenie o %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Budík!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Zrušené (zostávalo %im%is)"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+#: id:13214
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Hľadať titulky v RARoch"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Hľadať titulky..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Presunúť položku"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Presunúť položku sem"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Zrušiť presunutie"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Hardware:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "Zaťaženie CPU:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Pripojený, ale DNS je nedostupný"
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Hard Disk"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Voľné miesto"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Predvolené"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Sieť"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Video"
+
+#: id:13281
+msgid "Hardware"
+msgstr "CPU a RAM"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Operačný systém:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "Rýchlosť CPU:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Video enkodér:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Rozlíšenie obrazovky:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "A/V Kábel:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD Región:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Internet:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Pripojený"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Nie je Pripojený. Skontrolujte sieťové nastavenia."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Cieľová teplota"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Otáčky ventilátora"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Automatické regulovanie teploty"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Nastavenie otáčok ventilátora"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Písmo"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Aktivovať opačné titulky (arabčina, hebrejčina, ...)"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Aktivovať RSS spravodajstvo"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Zobrazovať položku pre návrat do nadradeného priečinku"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Šablona názvu stopy"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Naozaj chcete reštartovať systém"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "alebo iba XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Efekt zväčšenia"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Efekt splynutia"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Redukcia čiernych okrajov"
+
+#: id:13313
+msgid "Restart"
+msgstr "Reštart"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Prelínanie zvuku medzi skladbami"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Aktualizovať náhľady"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Rekurzívne náhľady"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Prezentácia"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Rekurzívna prezentácia"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Náhodné poradie"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Stereo"
+
+#: id:13321
+msgid "Left only"
+msgstr "Iba ľavý"
+
+#: id:13322
+msgid "Right only"
+msgstr "Iba pravý"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Aktivovať podporu karaoke"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Priehľadnosť pozadia"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Priehľadnosť popredia"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "A/V oneskorenie"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s nebolo nájdené"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Chyba pri otváraní %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "Nepodarilo sa otvoriť %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Chyba: nedostatok pamäte"
+
+#: id:13332
+msgid "Move up"
+msgstr "Premiestniť hore"
+
+#: id:13333
+msgid "Move down"
+msgstr "Premiestniť dole"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Upraviť názov"
+
+#: id:13335
+msgid "Make default"
+msgstr "Nastaviť ako predvolené"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Odstrániť tlačidlo"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Nechať tak ako je"
+
+#: id:13341
+msgid "Green"
+msgstr "Zelená"
+
+#: id:13342
+msgid "Orange"
+msgstr "Oranžová"
+
+#: id:13343
+msgid "Red"
+msgstr "Červená"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Cyklovať"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Vypnúť LED pri prehrávaní"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Detailné informácie"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Pridať do fronty"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Hľadať v IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Hľadať nový obsah"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Práve hrá..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Informácie o albume"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Pridať do knižnice"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Zastaviť vyhľadávanie"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Vykresľovacia metóda"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Nízkokvalitný Pixel Shader"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Hardvérové prekrývanie"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Vysokokvalitný Pixel Shader"
+
+#: id:13358
+msgid "Play item"
+msgstr "Prehrať položku"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Nastaviť náhľad pre interpréta"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Automaticky vytvárať náhľady"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Povoliť hlas"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Povoliť zariadenie"
+
+#: id:13376
+msgid "Volume"
+msgstr "Hlasitosť"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Predvolený zobrazovací režim"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Predvolený jas"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Predvolený kontrast"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Predvolená gamma"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Pokračovať v prehrávaní videa"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Maska hlasu - port 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Maska hlasu - port 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Maska hlasu - port 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Maska hlasu - port 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Pretáčať video na základe časového intervalu"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Šablona názvu stopy - vpravo"
+
+#: id:13388
+msgid "Preset"
+msgstr "Predvoľby"
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr "Pre túto vizualizáciu\nnie sú k dispozícii žiadne predvoľby"
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr "Pre túto vizualizáciu\nnie sú k dispozícii žiadne nastavenia"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Vysunúť/Zasunúť"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Zobrazovať vizualizáciu počas prehrávania hudby"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Vypočítať veľkosť"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Počítanie veľkosti priečinka"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Nastavenia videa"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Nastavenie zvuku a titulkov"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Zobrazovať titulky"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Záložky"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Ignorovať 'The' pri usporiadaní"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Plynulé prelínanie skladieb na albume"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Hľadať %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Zobrazovať pozíciu stopy"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Zrušiť ako predvolené"
+
+#: id:13404
+msgid "Resume"
+msgstr "Pokračovať"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Náhľady"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Informácie o obrázku"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s predvolieb"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(Hodnotenie užívateľov IMDb)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "Naj 250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Naladiť na Last.FM"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Minimálna rýchlosť ventilátora"
+
+#: id:13412
+msgid "Play from here"
+msgstr "Prehrať odtiaľto"
+
+#: id:13413
+msgid "Downloading"
+msgstr "Sťahujem"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Zobrazovať aj tých interprétov, ktorí sú iba na kompiláciach"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Vykresľovacia metóda"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Zistiť automaticky"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Jednoduchý shader (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Pokročilý shader (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Softvér"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Bezpečne odobrať"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Začať prezentáciu tu"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Zapamätať pre túto cestu"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Použiť objekty vyrovnávacej pamäte pixelu"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Aktivovať hardwarovú akceleráciu (VAAPI)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Aktivovať hardwarovú akceleráciu (VAAPI) "
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Aktivovať hardwarovú akceleráciu (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Aktivovať hardwarovú akceleráciu (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Aktivovať hardwarovú akceleráciu (VDADecoder)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Aktivovať hardwarovú akceleráciu (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Pixel Shadery"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Aktivovať hardwarovú akceleráciu (Video Toolbox)"
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "Spôsob synchronizácie A/V"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "Podľa audia"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Podľa videa (vynechať/duplikovať audio)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "Podľa videa (prispôsobiť rýchlosť audia)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Maximálna zmena rýchlosti (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Kvalita zmeny rýchlosti"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Nízka (rýchla)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Stredná"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Vysoká"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Veľmi vysoká (pomalé!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Synchronizovať prehrávanie videa k obrazovke"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr "Pozastaviť prehrávanie pri zmene obnovovacej frekvencie"
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr "Vypnuté"
+
+#: id:13552
+msgid "%.1f Second"
+msgstr "%.1f Sekunda"
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr "%.1f Sekúnd"
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Diaľkové ovládanie Apple"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Povoliť spustenie XBMC diaľkovým ovládaním"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Čas oneskorenia sekvencie"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Zakázaný"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Štandardný"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Univerzálne diaľkové ovládanie"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Multifunkčné diaľkové ovládanie (Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Diaľkové ovládanie Apple Chyba"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Podpora diaľkového ovládania Apple by mohla byť zapnutá."
+
+#: id:14000
+msgid "Stack"
+msgstr "Zlučovať"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Nezlučovať"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Sťahujem playlist súbor..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Sťahujem zoznam streamov..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Parsujem zoznam streamov..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Sťahovanie zoznamu streamov zlyhalo"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Sťahovanie súboru playlist-u zlyhalo"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Priečinok s hrami"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Prepínať na režim náhľadov"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Automaticky prepínať náhľady"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- ak sú veľké ikony"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- podľa pravidla"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- podľa percent"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Žiadne súbory a najmenej jeden náhľad"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Aspoň jeden súbor a jeden náhľad"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Podiel náhľadov"
+
+#: id:14018
+msgid "View options"
+msgstr "Zobrazenie"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Zmeniť kód oblasti 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Zmeniť kód oblasti 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Zmeniť kód oblasti 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Knižnica"
+
+#: id:14023
+msgid "No TV"
+msgstr "Žiadna TV"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Zadajte najbližšie veľké mesto"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Medzipamäť - Video/Audio/DVD - HDD"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Medzipamäť - Video - DVDRom"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Lokálna sieť"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Medzipamäť - Audio - DVDRom"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Lokálna sieť"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "Medzipamäť - DVD - DVDRom"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Lokálna sieť"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Servery"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Sieťové nastavenia boli zmenené"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC vyžaduje reštart pre zmenu"
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr "sieťových nastavení. Reštartovať?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Limitovať rýchlosť internetového pripojenia"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Vypnúť pri hraní"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i min"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i sek"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i ms"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Formát Času"
+
+#: id:14052
+msgid "Date format"
+msgstr "Formát Dátumu"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "GUI Filtre"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Použiť vyhľadávanie na pozadí"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Zastaviť vyhľadávanie"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Nie je možné vykonať, počas hľadania informácií o médiu"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Krupicový efekt na film"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Hľadať náhľady na sieťových jednotkách"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Medzipamäť - Ostatné - Internet"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Automatický"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Zadajte užívateľské meno pre"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Dátum a čas"
+
+#: id:14064
+msgid "Set date"
+msgstr "Nastaviť Dátum"
+
+#: id:14065
+msgid "Set time"
+msgstr "Nastaviť Čas"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Zadajte čas v 24 hodinovom formáte HH:MM"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Zadajte dátum v DD/MM/YYYY formáte"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Zadajte IP adresu"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Použiť tieto nastavenia teraz?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Použiť zmeny teraz"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Povoliť premenovanie a mazanie súborov"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Nastaviť časové pásmo"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Automaticky upraviť hodiny na letný čas"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Pridať medzi obľúbené"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Odstrániť z obľúbených"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Farby"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "Časové pásmo krajiny"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Časové pásmo"
+
+#: id:14081
+msgid "File lists"
+msgstr "Možnosti súborov"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Zobrazovať informácie o obrázku (EXIF)"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Uprednostniť režim okna celej obrazovky pred skutočnou celou obrazovkou"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Pridávať skladby do fronty pri ich výbere"
+
+#: id:14086
+msgid "Playback"
+msgstr "Prehrávanie"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVD"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "Automaticky prehrávať DVD"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Font pre textové titulky"
+
+#: id:14090
+msgid "International"
+msgstr "Oblasť a jazyk"
+
+#: id:14091
+msgid "Character set"
+msgstr "Znaková sada"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Ladenie / Debug"
+
+#: id:14093
+msgid "Security"
+msgstr "Bezpečnosť"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Vstupné zariadenia"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Napájanie"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Odstrániť"
+
+#: id:15016
+msgid "Games"
+msgstr "Hry"
+
+#: id:15019
+msgid "Add"
+msgstr "Pridať"
+
+#: id:15052
+msgid "Password"
+msgstr "Heslo"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Knižnica"
+
+#: id:15101
+msgid "Database"
+msgstr "Databáza"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Všetky albumy"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Všetci interpréti"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Všetky skladby"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Všetky žánre"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Buferujem..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Zvuky navigácie"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Predvolené"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Téma"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Predvolená téma"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.FM"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Last.FM - Odosielať informácie o skladbách"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.FM - Užívateľské meno"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.FM - Heslo"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Nedá sa nadviazať spojenie: spím..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Prosím aktualizujte XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Zlá autorizácia: Skontrolujte meno a heslo"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Pripojený"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Odpojený"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Interval pre posielanie %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Načítaných %i skladieb"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Posielam..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Pošlem za %i sekund"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Prehrať použitím..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Používať hladkú A/V synchornizáciu"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Skryť názvy súborov v náhľadoch"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Prehrať v párty režime"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Libre.fm - Odosielať informácie o skladbách"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm - Užívateľské meno"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm - Heslo"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "Služby"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Last.fm - Odosielať informácie o rádiách"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Spájam sa s Last.FM..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Nastavujem stanicu..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Hľadať podobných interprétov..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Hľadať podobné slová..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Váš profil (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Najpoužívanejšie slová"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Najlepší interpréti pre slovo %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Najlepšie albumy pre slovo %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Najlepšie skladby pre slovo %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Počúvať slovo %name% na Last.FM radiu"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Podobní interpréti ako %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Najlepšie albumy %name%"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Najlepšie skladby %name%"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Najpoužívanejšie slová %name%"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Najväčší fanúškovia %name%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Počúvať %name% fanúškov Last.FM radiu"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Počúvať %name% podobných interprétov na Last.FM radiu"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Najlepší interpréti pre užívateľa %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Najlepšie albumy pre užívateľa %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Najlepšie skladby pre užívateľa %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Kamaráti užívateľa %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Susedia užívateľa %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Týždenné rebríčky interprétov pre %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Týždenné rebríčky albumov pre %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Týždenné rebríčky skladieb pre %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Počúvať %name% susedov Last.FM radiu"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Počúvať %name% osobný Last.FM radiu"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Počúvať %name% obľúbene skladby Last.FM radiu"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Sťahujem zoznam z Last.FM..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Nepodarilo sa stiahnuť zoznam z Last.FM..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Zadajte meno interpréta pre hľadanie podobných"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Zadajte slovo pre hľadanie podobných"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Naposledy počúvané skladby užívateľom %name%"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Počúvať %name% odporúčania Last.FM"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "Obľúbené tagy užívateľa %name%"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Chcete pridať túto skladbu k Vaším obľúbeným?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Chcete zakázať túto skladbu?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Skladba pridaná k Vaším obľúbeným: '%s'."
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Skladbu '%s' sa nepodarilo pridať k Vaším obľúbeným."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Zakázané: '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Nepodarilo sa zakázať '%s'."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Ostatné obľúbené skladby užívateľa %name%"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Ostatné zakázané skladby užívateľa %name%"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Odstrániť z obľúbených skladieb"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Povoliť zakázanú"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Chcete odstrániť túto skladbu z Vašich obľúbených?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Chcete opäť povoliť túto zakázanú skladbu?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Cesta nenájdená"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Nepodarilo sa spojenie zo sieťovým serverom"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Servery neboli nájdené"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Skupina nebola nájdená"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Otváranie priečinku s viacerými cestami"
+
+#: id:15311
+msgid "Path:"
+msgstr "Umiestnenie:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Hlavné"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Vyhľadávanie na internete"
+
+#: id:16003
+msgid "Player"
+msgstr "Prehrávač"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Prehrávať médiá z disku (CD/DVD/BluRay)"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Zadajte nový názov"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Zadajte názov filmu"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Zadajte názov profilu"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Zadajte názov albumu"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Zadajte názov playlist-u"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Zadajte názov súboru"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Zadajte názov priečinka"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Prejdite do priečinka"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Dostupné možnosti: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Zadajte hľadaný výraz"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Žiadne"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Automaticky"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "Deinterlácia"
+
+#: id:16021
+msgid "Bob"
+msgstr "Bob"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Bob (Opačný)"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Prerušujem..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Zadajte meno interpréta"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Prehrávanie zlyhalo"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Prehrávanie jednej, alebo viacerých položiek zlyhalo"
+
+#: id:16028
+msgid "Enter value"
+msgstr "Zadajte hodnotu"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Skontrolujte Log súbor pre viac informácií."
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Párty režim prerušený."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "V knižnici nie sú žiadne odpovedajúce skladby."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Nedá sa inicializovať databáza."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Databáza sa nedá otvoriť."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Skladby sa nedajú načítať z databázy."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Párty režim playlist"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr "De-interlácia (Polovičná)"
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr "Deinterlácia videa"
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr "Spôsob deinterlácie"
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr "Vypnuté"
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr "Automaticky"
+
+#: id:16041
+msgid "On"
+msgstr "Zapnuté"
+
+#: id:16100
+msgid "All Videos"
+msgstr "Všetky Videá"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "Nevidené"
+
+#: id:16102
+msgid "Watched"
+msgstr "Videné"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Označiť ako videné"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Označiť ako nevidené"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Upraviť titul"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Operácia bola prerušená"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Kopírovanie zlyhalo"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Zlyhalo kopírovanie najmenej jedného súboru"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Presunutie zlyhalo"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Zlyhal presun najmenej jedného súboru"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Mazanie zlyhalo"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Zlyhalo zmazanie najmenej jedného súboru"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Spôsob úpravy videa"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Najbližší sused"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Bilineárny"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Bikubický"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bikubický (software)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (software)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (software)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "Dočasný"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "Dočasný/Spatial"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU) Redukcia šumu"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU) Ostrosť"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Inverzný Telecine"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3 optimalizovaný"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Automaticky"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "Dočasný (Polovičný)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "Dočasný/Spatial (polovičný)"
+
+#: id:16319
+msgid "DXVA"
+msgstr "DXVA"
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+#: id:16321
+msgid "DXVA Best"
+msgstr "DXVA Best"
+
+#: id:16322
+msgid "Spline36"
+msgstr "Spline36"
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr "Spline36 optimalizovaná"
+
+#: id:16324
+msgid "Software Blend"
+msgstr "Software Blend"
+
+#: id:16400
+msgid "Post-processing"
+msgstr "Post-processing"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Zobraziť čas do vypnutia"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Prepnúť na kanál"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Priečinok pre ukladanie hudby"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Použiť externý DVD prehrávač"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Externý DVD prehrávač"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Priečinok s trainermi"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Priečinok pre ukladanie obrázkov (screenshotov)"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Priečinok playlist-ov"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Nahrávky"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Screenshoty"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Použiť XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Hudobné playlist-y"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Video playlist-y"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Chcete spustiť túto hru?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Zoradiť podľa: Playlistu"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Internetový náhľad"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Aktuálny náhľad"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Lokálny náhľad"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Bez náhľadu"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Zvoliť náhľad"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Konflikt"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Prehľadať nové"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Prehľadať všetko"
+
+#: id:20026
+msgid "Region"
+msgstr "Región"
+
+#: id:20037
+msgid "Summary"
+msgstr "Sumár"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Zamknúť sekciu Hudba"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Zamknúť sekciu Video"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Zamknúť sekciu Obrázky"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Zamknúť Programy & skripty"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Zamknúť správcu súborov"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Zamknúť nastavenia"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Načisto naštartovať"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Vstúpiť do hlavného režimu"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Opustiť hlavný režim"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Vytvoriť profil '%s' ?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Spustiť s čistými nastaveniami"
+
+#: id:20049
+msgid "Best available"
+msgstr "Najlepšie dostupné"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Automaticky prepínať 16:9 a 4:3 režimy"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Považovať zlúčené súbory za jeden súbor"
+
+#: id:20052
+msgid "Caution"
+msgstr "Výstraha"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Hlavný režim deaktivovaný"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Hlavný režim aktivovaný"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Allmusic.com náhľad"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Odstrániť náhľad"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Pridať profil..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Získať informácie pre všetky albumy"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Informácie o médiách"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Oddelený"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Zdieľať s predvoleným"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Zdieľať s predvoleným (len čítanie)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Kopírovať predvolené"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Obrázok profilu"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Nastavenia zámku"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Upraviť profil"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Zamknutie profilu"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Priečinok sa nepodarilo vytvoriť"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Priečinok profilu"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Štartovať s čistými zdrojmi médií"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Ubezpečte sa, že zvolený priečinok je zapisovateľný"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "a nový názov priečinku je správny"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "Prístupnosť"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Zadajte hlavné heslo"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Pýtať sa na hlavné heslo pri štarte"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Nastavenie vzhľadu"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- žiadny link -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Zobrazovať animácie"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Zakázať RSS počas prehrávania hudby"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Aktivovať záložky"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Zobrazovať programy v hlavnom menu"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Zobrazovať informácie o hudbe"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Zobrazovať informácie o počasí"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Zobrazovať systémové informácie"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Zobrazovať voľné miesto na C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Zobrazovať voľné miesto na E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Informácie o počasí"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Voľné miesto"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Zadajte názov existujúceho zdieľania"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Uzamykacie heslo"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Načítať profil"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Názov profilu"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Zdroje médií"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Zadajte heslo pre uzamknutie profilu"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Úvodná obrazovka"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Získavanie informácií o albume"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Ukladanie informácií o albume"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "CD, alebo stopu nie je možné uložiť počas prehrávania CD"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Hlavné heslo a nastavenia"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Vložením hlavného hesla vždy aktivovať hlavný režim"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "alebo kopírovať z predvoleného?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Uložiť zmeny do profilu?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Staré nastavenia nájdené."
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Chcete ich použiť?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Staré zdroje médií nájdené."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Oddelený (zamknuté)"
+
+#: id:20108
+msgid "Root"
+msgstr "Hlavný priečinok"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Zväčšenie"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP nastavenia"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Autoštart UPnP klienta"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Posledné prihlásenie: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Nikdy neprihlásený"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Profil %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Prihlásenie / Výber profilu"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Aktivovať zámok na úvodnej obrazovke"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Nesprávne uzamykacie heslo."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Vyžaduje sa nastavenie hlavného zámku."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Chcete ho nastaviť teraz?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Načítanie informácie o programe"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Párty sa začala!"
+
+#: id:20122
+msgid "True"
+msgstr "Pravdivé"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Miešam nápoje"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Plním poháre"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Prihlásený ako"
+
+#: id:20126
+msgid "Log off"
+msgstr "Odhlásiť"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Prejsť do hl. priečinku"
+
+#: id:20129
+msgid "Weave"
+msgstr "Weave"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Weave (naopak)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Miešať"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Reštartovať video"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Upraviť sieťové umiestnenie"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Odstrániť sieťové umiestnenie"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Chcete prehľadať priečinok?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Pamäťová jednotka"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Pamäťová jednotka nainštalovaná"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Nepodarilo sa nainštalovať pamäťovú jednotku"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "V porte %i, slote %i"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Zamknúť šetrič obrazovky"
+
+#: id:20141
+msgid "Set"
+msgstr "Nastaviť"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Užívateľské meno"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Zadajte heslo pre"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Automatické vypnutie"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Vypnúť za (v minútach)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Vypnutie je nastavené. Vypnutie za %im"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Vypnutie za 30 minút"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Vypnutie za 60 minút"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Vypnutie za 120 minút"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Časovač vypnutia"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Zrušiť časovač vypnutia"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Zamknúť nastavenia pre %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Prechádzať..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Informácie základné"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Informácie o hdd"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Informácie o harddisku"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "Informácie o DVD-ROM"
+
+#: id:20158
+msgid "Network information"
+msgstr "Informácie o sieti"
+
+#: id:20159
+msgid "Video information"
+msgstr "Informácie o videu"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Informácie o CPU a RAM"
+
+#: id:20161
+msgid "Total"
+msgstr "Celkom"
+
+#: id:20162
+msgid "Used"
+msgstr "Použité"
+
+#: id:20163
+msgid "of"
+msgstr "z"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Zamknutie nie je podporované"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Nezamknutý"
+
+#: id:20166
+msgid "Locked"
+msgstr "Zamknutý"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Zamrznutý"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Vyžaduje reštart"
+
+#: id:20169
+msgid "Week"
+msgstr "Týždeň"
+
+#: id:20170
+msgid "Line"
+msgstr "Linka"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Sieť Windows (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "XBMSP server"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "FTP server"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes zdieľanie (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "UPnP Server"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Zobrazovať informácie o videu"
+
+#: id:20177
+msgid "Done"
+msgstr "Hotovo"
+
+#: id:20178
+msgid "Shift"
+msgstr "Shift"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Caps Lock"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Symboly"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Vymazať"
+
+#: id:20182
+msgid "Space"
+msgstr "Medzera"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Obnoviť vzhľad"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Otáčať obrázky podľa EXIF informácií"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Použiť zobrazenie 'Plagáty' pre TV seriály"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Prosím čakajte"
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Aktivovať automatické skrolovanie obsahu & recenzie"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Vlastné"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Začať ukladať informácie / debug log"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Sťahovať dodatočné informácie počas aktualizácie"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Predvolená služba pre získavanie informácií o albume"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Predvolená služba pre získavanie informácií o interprétovy"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Zmeniť sťahovač"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Exportovať hudbonú knižnicu"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Importovať hudbonú knižnicu"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Interprét nenájdený!"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Sťahovanie informácií o interprétovy zlyhalo"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Párty sa začala! (videa)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Miešam nápoje (videa)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Plním poháre (videa)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV server (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV server (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "Prvé prihlásenie, editujte svoj profil"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend klient"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev klient"
+
+#: id:20258
+msgid "MythTV client"
+msgstr "MythTV klient"
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr "Sieťový Systém Súborov (NFS)"
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Protokol súboru Apple (AFP)"
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Web server priečinok (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Web server priečinok (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Nepodarilo sa zapísať do priečinka:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Prajete si preskočiť a prejsť ďalej?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS Spravodajstvo"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Sekundárny DNS"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "DHCP Server:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Vytvoriť nový priečinok"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Stmaviť LCD pri prehrávaní"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Neznáme alebo obsiahnuté (chránené)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Stmaviť LCD pri pozastavení"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Video - Knižnica"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Zoradiť podľa: ID"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Hrať časť..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Vyčistenie kalibrácie"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "Tímto zmažete uložené hodnoty kalibrácie pre %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "na predvolené hodnoty."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "Vybrať umiestnenie"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr "Filmy sú v jednotlivých priečinkoch, ktoré zodpovedajú názvu filmu"
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Vyhľadávať podľa názvu priečinku"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Súbor"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Chcete vyhľadávať podľa názvu súboru alebo priečinku?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Pridať obsah"
+
+#: id:20334
+msgid "Folder"
+msgstr "Priečinok"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Vyhľadávať v podpriečinkoch?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Odomknúť zdroje"
+
+#: id:20337
+msgid "Actor"
+msgstr "Herec"
+
+#: id:20338
+msgid "Movie"
+msgstr "Film"
+
+#: id:20339
+msgid "Director"
+msgstr "Réžia"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Chcete odstrániť všetky položky v"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "tejto ceste z knižnice XBMC?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Filmy"
+
+#: id:20343
+msgid "TV shows"
+msgstr "Seriály"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Tento priečinok obsahuje"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Spustiť automatické prehľadávanie"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Vyhľadávať v podpriečinkoch"
+
+#: id:20347
+msgid "as"
+msgstr "ako"
+
+#: id:20348
+msgid "Directors"
+msgstr "Réžia"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "Na tejto ceste nebol nájdený žiadny video súbor!"
+
+#: id:20350
+msgid "votes"
+msgstr "hlasov"
+
+#: id:20351
+msgid "TV show information"
+msgstr "Informácie o seriáli"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Informácie o epizóde"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Načítanie detailov o seriáli"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Získavanie informácií o epizódach"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Načítanie informácií o epizódach v priečinku"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Vyberte seriál:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Zadajte názov seriálu"
+
+#: id:20358
+msgid "Season %i"
+msgstr "Sezóna %i"
+
+#: id:20359
+msgid "Episode"
+msgstr "Epizóda"
+
+#: id:20360
+msgid "Episodes"
+msgstr "Epizódy"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Načítanie detailov o epizóde"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Odstrániť epizódu z knižnice"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Odstrániť seriál z knižnice"
+
+#: id:20364
+msgid "TV show"
+msgstr "Seriál"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Obsah epizódy"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Všetky sezóny"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Skryť videné"
+
+#: id:20368
+msgid "Prod code"
+msgstr "Kód produkcie"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Zobrazovať obsah pre nevidené videá"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* nezobrazené pre spoilery *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "Priradiť náhľad k sezóne"
+
+#: id:20372
+msgid "Season image"
+msgstr "Obrázok sezóny"
+
+#: id:20373
+msgid "Season"
+msgstr "Sezóna"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "Sťahovanie informácií o filme"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Odobrať obsah"
+
+#: id:20376
+msgid "Original title"
+msgstr "Pôvodný názov"
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Aktualizovať informácie o seriáli"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Aktualizovať informácie pre všetky epizódy?"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Priečinok obsahuje jeden seriál"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Vylúčiť priečinok z prehľadávania"
+
+#: id:20381
+msgid "Specials"
+msgstr "Špeciálne"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Automaticky sťiahnúť náhľad k sezónam"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Priečinok obsahuje jedno video"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Priradiť k TV seriálu"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Odstrániť z TV seriálu"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Naposledy pridané filmy"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Naposledy pridané epizódy"
+
+#: id:20388
+msgid "Studios"
+msgstr "Štúdiá"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Videoklipy"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Naposledy pridané videoklipy"
+
+#: id:20391
+msgid "Music video"
+msgstr "Videoklip"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Odstrániť videoklip z knižnice"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Informácie o videoklipe"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Načítanie informácií o videoklipe"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Zmiešané"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Prejsť na albumy podľa interpréta"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Prejsť na album"
+
+#: id:20398
+msgid "Play song"
+msgstr "Prehrať skladbu"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Prejsť na videoklipy z albumu"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Prejsť na videoklipy od interpréta"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Prehrať videoklip"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Sťahovať náhľady hercov počas pridávania do knižnice"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Nastaviť náhľad hercov"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Odstrániť záložku epizódy"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Nastaviť záložku epizódy"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Nastavenie Sťahovača"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "Sťahujem informácie o videoklipe"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "Sťahujem informácie o seriáli"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Ukážka"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Zúžený režim"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Zobrazovať TV seriály v zúženom režime"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "FanArt-y"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Zobrazovať FanArt v knižnici videí a hudby"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "Hľadá sa nový obsah"
+
+#: id:20416
+msgid "First aired"
+msgstr "Premiéra"
+
+#: id:20417
+msgid "Writer"
+msgstr "Napísal"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr "Nahradiť názvy súborov s názvami knižníc"
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Nikdy"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Iba ak jedna sezóna"
+
+#: id:20422
+msgid "Always"
+msgstr "Vždy"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Má ukážku"
+
+#: id:20424
+msgid "False"
+msgstr "Nepravdivé"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Fanart prezentácia"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Exportovať všetko do jedného súboru alebo"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "každú položku oddelene do samostatného súboru?"
+
+#: id:20428
+msgid "Single file"
+msgstr "1 súbor"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Oddelene"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Exportovať náhľady a FanArt?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Prepísať staré súbory?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Vynechať položky v tomto umiestnení pri aktualizácii knižnice"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Získavať náhľady a informácie o videu zo súboru"
+
+#: id:20434
+msgid "Sets"
+msgstr "Sady"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "Priradiť náhľad sade filmov"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "Exportovať náhľady hercov?"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "Vyberte FanArt"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "Lokálny FanArt"
+
+#: id:20439
+msgid "No fanart"
+msgstr "Bez FanArt-u"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "Aktuálny FanArt"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "Internetový FanArt"
+
+#: id:20442
+msgid "Change content"
+msgstr "Zmeniť obsah"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Aktualizovať informácie pre"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "všetky položky v tomto umiestnení?"
+
+#: id:20445
+msgid "Fanart"
+msgstr "FanArt"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "Lokálne uložené informácie nájdené."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Ignorovať a aktualizovať z internetu?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "Nepodarilo sa stiahnuť informácie"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "Server je pravdepodobne nedostupný"
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Chcete pokračovať v aktualizácii?"
+
+#: id:20451
+msgid "Countries"
+msgstr "Krajina"
+
+#: id:20452
+msgid "episode"
+msgstr "epizóda"
+
+#: id:20453
+msgid "episodes"
+msgstr "epizódy"
+
+#: id:20454
+msgid "Listener"
+msgstr "Poslucháč"
+
+#: id:20455
+msgid "Listeners"
+msgstr "Poslucháči"
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr "Nastaviť fanart kolekcii filmov"
+
+#: id:20457
+msgid "Movie set"
+msgstr "Kolekcia filmov"
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr "Zoskupovať filmy do kolekcií"
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Zobrazovať skryté súbory a priečinky"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "TuxBox klient"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "POZOR: Cieľové TuxBox zariadenie je v nahrávacom režime!"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "Stream bude zastavený!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Prepnutie na kanál: %s zlyhalo!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Chcete spustiť stream?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "Prebieha pripojenie k: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "TuxBox zariadenie"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Pridať zdieľané médiá..."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "Zdielať video a hudobné knižnice pomocou UPnP"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Upraviť zdieľanie média"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Odstrániť zdieľanie média"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Priečinok s titulkami"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Film a alternatívny priečinok s titulkami"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr "Prepisovať ASS/SSA písmo titulkov"
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Aktivovať ovládanie myšou a podporu dotykových displejov"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Hrať zvuky navigácie počas prehrávania média"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Náhľady"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "Vnútiť prehrávaču DVD región"
+
+#: id:21373
+msgid "Video output"
+msgstr "Video výstup"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Video aspekt"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Normálny"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Letterbox"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Širokouhlý"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "Aktivovať 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "Aktivovať 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "Aktivovať 1080i"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Zadaj názov nového playlist-u"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Zobrazovať položku 'Pridať zdroj' v sekciách"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Aktivovať Scrollbar"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "Aktivovať filter videných videí v knižnici"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Otvoriť"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Správa akustickej úrovne"
+
+#: id:21387
+msgid "Fast"
+msgstr "Rýchly"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Tichý"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Aktivovať vlastné pozadie"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Správa napájania"
+
+#: id:21391
+msgid "High power"
+msgstr "Vysoký výkon / Vyššia spotreba"
+
+#: id:21392
+msgid "Low power"
+msgstr "Nízky výkon / Nízka spotreba"
+
+#: id:21393
+msgid "High standby"
+msgstr "Spánok / Vyššia spotreba"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Spánok / Nízka spotreba"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Súbory väčšie ako 4GB sa nedajú načítať do vyrovnávacej pamäte"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Kapitola"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "Vysoko kvalitý Pixel Shader V2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Načítať playlist pri štarte"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Použiť 'trasúce' animácie"
+
+#: id:21400
+msgid "contains"
+msgstr "obsahuje"
+
+#: id:21401
+msgid "does not contain"
+msgstr "neobsahuje"
+
+#: id:21402
+msgid "is"
+msgstr "je"
+
+#: id:21403
+msgid "is not"
+msgstr "nie je"
+
+#: id:21404
+msgid "starts with"
+msgstr "začína na"
+
+#: id:21405
+msgid "ends with"
+msgstr "končí na"
+
+#: id:21406
+msgid "greater than"
+msgstr "viac ako"
+
+#: id:21407
+msgid "less than"
+msgstr "menej ako"
+
+#: id:21408
+msgid "after"
+msgstr "násl."
+
+#: id:21409
+msgid "before"
+msgstr "pred."
+
+#: id:21410
+msgid "in the last"
+msgstr "je posledný"
+
+#: id:21411
+msgid "not in the last"
+msgstr "nie je posledný"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Sťahovače"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Predvolený sťahovač pre filmy"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Predvolený sťahovač pre TV seriály"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Predvolený sťahovač pre klipy"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Aktivovať odpoveď na základe jazyka sťahovača"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Nastavenie"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Viacjazyčný"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "Žiadne sťahovače nie sú k dispozícii"
+
+#: id:21420
+msgid "Value to match"
+msgstr "Nájsť hodnotu"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Pravidlá inteligentného playlist-u"
+
+#: id:21422
+msgid "Match items where"
+msgstr "Položky, kde"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Nové pravidlo..."
+
+#: id:21424
+msgid "Items must match"
+msgstr "Položky sa musia zhodovať"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "vo všetkých pravidlách"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "v minimálne jednom pravidle"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Limit"
+
+#: id:21428
+msgid "No limit"
+msgstr "Bez limitu"
+
+#: id:21429
+msgid "Order by"
+msgstr "Usporiadať podľa"
+
+#: id:21430
+msgid "ascending"
+msgstr "vzostupne"
+
+#: id:21431
+msgid "descending"
+msgstr "zostupne"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Upraviť inteligentný playlist"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Názov playlist-u"
+
+#: id:21434
+msgid "Find items where"
+msgstr "Nájsť položky, kde"
+
+#: id:21435
+msgid "Edit"
+msgstr "Upraviť"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i položiek"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Nový inteligentný playlist..."
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c disk"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Upraviť pravidlá párty režimu"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Domovský priečinok"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Počet zhliadnutí"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Názov epizódy"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Rozlíšenie videa"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Počet audio kanálov"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Kodek videa"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Koded audia"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Jazyk audia"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Jazyk titulkov"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "Emulovať klávesnicu diaľkovým ovládaním"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- Upraviť"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "Vyžadované internetové pripojenie."
+
+#: id:21452
+msgid "Get More..."
+msgstr "Získať viac..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "Hlavný priečinok súborového systému"
+
+#: id:21454
+msgid "Cache full"
+msgstr "Medzipamäť plná"
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr "Medzipamäť plná pred dosiahnutím potrebného množstva pre nepretržité prehrávanie"
+
+#: id:21460
+msgid "Subtitle location"
+msgstr "Umiestnenie titulkov"
+
+#: id:21461
+msgid "Fixed"
+msgstr "Pevné"
+
+#: id:21462
+msgid "Bottom of video"
+msgstr "V spodnej časti videa"
+
+#: id:21463
+msgid "Below video"
+msgstr "Pod videom"
+
+#: id:21464
+msgid "Top of video"
+msgstr "V hornej časti videa"
+
+#: id:21465
+msgid "Above video"
+msgstr "Nad videom"
+
+#: id:21800
+msgid "File name"
+msgstr "Názov súboru"
+
+#: id:21801
+msgid "File path"
+msgstr "Umiestnenie súboru"
+
+#: id:21802
+msgid "File size"
+msgstr "Veľkosť súboru"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Dátum/čas súboru"
+
+#: id:21804
+msgid "Slide index"
+msgstr "Číslo stránky"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Rozlíšenie"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Komentár"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Farba/Č&B"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "JPEG spracovanie"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Dátum/čas"
+
+#: id:21821
+msgid "Description"
+msgstr "Popis"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Značka fotoaparátu"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Typ fotoaparátu"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "EXIF poznámka"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Firmware"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Clona"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Ohnisková vzdialenosť"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Zaostrenie"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Expozícia"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Čas expozície"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Expozícia / bias"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Spôsob expozície"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Použitý blesk"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Vyváženie bielej"
+
+#: id:21835
+msgid "Light source"
+msgstr "Zdroj svetla"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Metering režim"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Digitálne priblíženie"
+
+#: id:21839
+msgid "CCD width"
+msgstr "CCD šírka"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "GPS šírka"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "GPS dĺžka"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "GPS výška"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Orientácia"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Doplnkové kategórie"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Kľučové slová"
+
+#: id:21862
+msgid "Caption"
+msgstr "Titul"
+
+#: id:21863
+msgid "Author"
+msgstr "Autor"
+
+#: id:21864
+msgid "Headline"
+msgstr "Nadpis"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Špeciálne inštrukcie"
+
+#: id:21866
+msgid "Category"
+msgstr "Kategória"
+
+#: id:21867
+msgid "Byline"
+msgstr "Podtitul"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Názov podtitulu"
+
+#: id:21869
+msgid "Credit"
+msgstr "Hodnotenie"
+
+#: id:21870
+msgid "Source"
+msgstr "Zdroj"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Upozornenie o autorských právach"
+
+#: id:21872
+msgid "Object name"
+msgstr "Názov objektu"
+
+#: id:21873
+msgid "City"
+msgstr "Mesto"
+
+#: id:21874
+msgid "State"
+msgstr "Štát"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "Krajina"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "Pôvodná Tx Referencia"
+
+#: id:21877
+msgid "Date created"
+msgstr "Dátum vytvorenia"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Označenie autorských práv"
+
+#: id:21879
+msgid "Country code"
+msgstr "Kód krajiny"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Referenčná služba"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "Povoliť ovládanie XBMC cez UPnP"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Pokus o preskočenie úvodu pred DVD menu"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Uložená hudba"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Akualizovať informácie všetkých interprétov"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "Sťahujem informácie o albume"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "Sťahujem informácie o interprétovy"
+
+#: id:21887
+msgid "Biography"
+msgstr "Životopis"
+
+#: id:21888
+msgid "Discography"
+msgstr "Diskografia"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "Hľadanie interpréta"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Vyberte interpréta"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Informácie o interprétovy"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Nástroje"
+
+#: id:21893
+msgid "Born"
+msgstr "Dátum narodenia"
+
+#: id:21894
+msgid "Formed"
+msgstr "Dátum založenia"
+
+#: id:21895
+msgid "Themes"
+msgstr "Zameranie"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Dátum rozpadu"
+
+#: id:21897
+msgid "Died"
+msgstr "Dátum smrti"
+
+#: id:21898
+msgid "Years active"
+msgstr "Aktívne roky"
+
+#: id:21899
+msgid "Label"
+msgstr "Label"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Dátum Narodenia/Založenia"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Aktualizovať knižnicu pri štarte"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Aktualizovať knižnicu na pozadí / Skryť proces aktualizácie"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS suffix"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Oneskorené o %2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Vpredu o %2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Posunutie titulkov"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "OpenGL vendor:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "OpenGL renderer:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "OpenGL verzia:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "Teplota GPU:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "Teplota CPU:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Celková Pamäť"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Údaje profilu"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Aktivovať stlmenie obrazovky počas pozastaveného videa"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Všetky nahrávky"
+
+#: id:22016
+msgid "By title"
+msgstr "Podľa názvu"
+
+#: id:22017
+msgid "By group"
+msgstr "Podľa skupiny"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Živé kanály"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Nahrávky podľa názvu"
+
+#: id:22020
+msgid "Guide"
+msgstr "Návod"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Odchylka pomeru strán k minimalizácii čiernych okrajov"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Zobrazovať videá v zozname súborov"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "DirectX:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Direct3D verzia:"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Font"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Veľkosť"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Farba"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Znaková sada"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Exportovať karaoke tituly do HTML"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Exportovať karaoke tituly do CSV"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Importovať karaoke tituly..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Automaticky zobrazovať okno výberu skladby"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Exportovať karaoke tituly..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Zadajte číslo skladby"
+
+#: id:22040
+msgid "white/green"
+msgstr "biela/zelená"
+
+#: id:22041
+msgid "white/red"
+msgstr "biela/červená"
+
+#: id:22042
+msgid "white/blue"
+msgstr "biela/modrá"
+
+#: id:22043
+msgid "black/white"
+msgstr "čierna/biela"
+
+#: id:22079
+msgid "Default select action"
+msgstr "Predvolená akcia pri výbere položky"
+
+#: id:22080
+msgid "Choose"
+msgstr "Vybrať"
+
+#: id:22081
+msgid "Show Information"
+msgstr "Zobraziť informácie"
+
+#: id:22082
+msgid "More..."
+msgstr "Viac..."
+
+#: id:22083
+msgid "Play all"
+msgstr "Prehrať všetko"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Teletext nie je k dispozícii"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Povoliť teletext"
+
+#: id:23051
+msgid "Part %i"
+msgstr "Časť %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "Prebieha načítanie %i bajtov"
+
+#: id:23053
+msgid "Stopping"
+msgstr "Prebieheha ukončovanie"
+
+#: id:23054
+msgid "Running"
+msgstr "Prebieha spustenie"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Externý Prehrávač Aktívny"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Kliknite OK pre zatvorenie prehrávača"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Kliknite OK po ukončení prehrávania"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Doplnok"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Doplnky"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Nastavenia doplnku"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "Informácie o doplnku"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Zdroje médií"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Informácie o filme"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Šetrič obrazovky"
+
+#: id:24009
+msgid "Script"
+msgstr "Skript"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "Vizualizácia"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Repozitár doplnkov"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "Titulky"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "Texty skladieb"
+
+#: id:24014
+msgid "TV information"
+msgstr "Informácie o TV"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "Informácie o klipe"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "Informácie o albume"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "Informácie o interprétovy"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr "Služby"
+
+#: id:24020
+msgid "Configure"
+msgstr "Nastaviť"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Deaktivovať"
+
+#: id:24022
+msgid "Enable"
+msgstr "Aktivovať"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Doplnok je deaktivovaný"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "Počasie"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (štandardný)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Tento doplnok sa nedá nastaviť"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "Chyba pri načítaní konfigurácie nastavenia"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "Všetky doplnky"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "Získať doplnky"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "Skontrolovať aktualizácie"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "Vynútiť obnovu"
+
+#: id:24036
+msgid "Change log"
+msgstr "Zmeny"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "Odinštalovať"
+
+#: id:24038
+msgid "Install"
+msgstr "Inštalovať"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "Deaktivované Doplnky"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "(Vyčistiť aktuálne nastavenia)"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "Inštalovať doplnky zo zip archívu"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "Stiahnuté %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "Dostupné aktualizácie"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr "Závislosti sa nestretli"
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr "Doplnok nemá správnu štruktúru"
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr "%s je použitá následovným nainštalovaným doplnkom"
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr "Tento doplnok sa nedá odinštalovať"
+
+#: id:24048
+msgid "Rollback"
+msgstr "Obnoviť zmeny"
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Dostupné doplnky"
+
+#: id:24051
+msgid "Version:"
+msgstr "Verzia:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "Upozornenie"
+
+#: id:24053
+msgid "License:"
+msgstr "Licencia:"
+
+#: id:24054
+msgid "Changelog"
+msgstr "Zmeny"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Prajete si aktivovať tento doplnok?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Prajete si deaktivovať tento doplnok?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Aktualizácia doplnku je k dispozícii!"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Aktivované Doplnky"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Auto. aktualizácie"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Doplnok bol aktivovaný"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Doplnok bol aktualizovaný"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Naozaj chcete zrušiť sťahovanie doplnku?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "Momentálne sťahované doplnky"
+
+#: id:24068
+msgid "Update available"
+msgstr "Aktualizácia k dispozícii"
+
+#: id:24069
+msgid "Update"
+msgstr "Aktualizovať"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "Načítanie doplnku sa nepodarilo."
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "Objavila sa neznáma chyba."
+
+#: id:24072
+msgid "Settings required"
+msgstr "Vyžadovaná zmena nastavení"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "Nedá sa pripojiť"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "Je vyžadovaný reštart"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "Deaktivovať"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr "Potrebný doplnok"
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Pokúsiť sa o opätovné pripojenie?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "Doplnok sa reštartuje"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Zamknúť správcu doplnkov"
+
+#: id:24094
+msgid "(current)"
+msgstr "(aktuálny)"
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr "(na čiernej listine)"
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "Doplnok bol v repozitáry označený ako nefunkčný."
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "Chcete ho deaktivovať?"
+
+#: id:24098
+msgid "Broken"
+msgstr "Nefunkčný"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr "Prajete si použiť tento vzhľad?"
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr "Pre používanie tejto funkcie je potrebné stiahnuť doplnok:"
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr "Prajete si stiahnuť tento doplnok?"
+
+#: id:25000
+msgid "Notifications"
+msgstr "Notifikácie"
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:25002
+msgid "Select from all titles ..."
+msgstr ""
+
+#: id:25003
+msgid "Show bluray menus"
+msgstr ""
+
+#: id:25004
+msgid "Play main title: %d"
+msgstr ""
+
+#: id:25005
+msgid "Title: %d"
+msgstr ""
+
+#: id:25006
+msgid "Select playback item"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Režim knižnice"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "QWERTY klávesnica"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "Preposielané audio"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Kvalita ukážky"
+
+#: id:33002
+msgid "Stream"
+msgstr "Streamovať"
+
+#: id:33003
+msgid "Download"
+msgstr "Stiahnuť"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Stiahnuť a prehrať"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Stiahnuť a uložiť"
+
+#: id:33006
+msgid "Today"
+msgstr "Dnes"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "Zajtra"
+
+#: id:33008
+msgid "Saving"
+msgstr "Prebieha ukladanie"
+
+#: id:33009
+msgid "Copying"
+msgstr "Prebieha kopírovanie"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Nastaviť priečinok pre sťahovanie"
+
+#: id:33011
+msgid "Search duration"
+msgstr "Doba vyhľadávania"
+
+#: id:33012
+msgid "Short"
+msgstr "Krátky"
+
+#: id:33013
+msgid "Long"
+msgstr "Dlhý"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "Používať DVD prehrávač namiesto bežného prehrávača"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Pred prehrávaním videa sa spýtať na jeho stiahnutie"
+
+#: id:33016
+msgid "Clips"
+msgstr "Klipy"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Pre aktiváciu reštartujte doplnok"
+
+#: id:33018
+msgid "Tonight"
+msgstr "Dnes večer"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "Zajtra večer"
+
+#: id:33020
+msgid "Condition"
+msgstr "Stav"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "Zrážky"
+
+#: id:33022
+msgid "Precip"
+msgstr "Zrážky"
+
+#: id:33023
+msgid "Humid"
+msgstr "Vlhkosť"
+
+#: id:33024
+msgid "Feels"
+msgstr "Zdá sa ako"
+
+#: id:33025
+msgid "Observed"
+msgstr "Pozorované"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "Odchylka od normálu"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Východ slnka"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Západ slnka"
+
+#: id:33029
+msgid "Details"
+msgstr "Detaily"
+
+#: id:33030
+msgid "Outlook"
+msgstr "Výhľad"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "Coverflow"
+
+#: id:33032
+msgid "Translate text"
+msgstr "Preložiť text"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "Namapovať zoznam %s kategórie"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 Hodín"
+
+#: id:33035
+msgid "Maps"
+msgstr "Mapy"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Hodinu"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Víkend"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s deň"
+
+#: id:33049
+msgid "Alert"
+msgstr "Upozornenie"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Upozornenia"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "Vyberte Vašu"
+
+#: id:33052
+msgid "Check"
+msgstr "Zkontrolovať"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Nastaviť"
+
+#: id:33054
+msgid "Seasons"
+msgstr "Sezóny"
+
+#: id:33055
+msgid "Use your"
+msgstr "Použiť"
+
+#: id:33056
+msgid "Watch your"
+msgstr "Pozerať"
+
+#: id:33057
+msgid "Listen to"
+msgstr "Počúvať"
+
+#: id:33058
+msgid "View your"
+msgstr "Prezerať"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Nastaviť"
+
+#: id:33060
+msgid "Power"
+msgstr "Vypnutie"
+
+#: id:33061
+msgid "Menu"
+msgstr "Menu"
+
+#: id:33062
+msgid "Play the"
+msgstr "Prehrať"
+
+#: id:33063
+msgid "Options"
+msgstr "Nastavenia"
+
+#: id:33065
+msgid "Editor"
+msgstr "Editor"
+
+#: id:33066
+msgid "About your"
+msgstr "O. . ."
+
+#: id:33067
+msgid "Star rating"
+msgstr "Hodnotenie"
+
+#: id:33068
+msgid "Background"
+msgstr "Pozadie"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Pozadia"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Vlastné pozadie"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Vlastné pozadia"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Zobraziť Readme"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Zobraziť Históriu zmien"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "Pre spustenie tejto verzie %s je potrebná"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "XBMC revízia %s alebo vyššia."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Prosím aktualizujte XBMC."
+
+#: id:33077
+msgid "No data found!"
+msgstr "Žiadne dáta neboly nájdené!"
+
+#: id:33078
+msgid "Next page"
+msgstr "Ďalšia strana"
+
+#: id:33079
+msgid "Love"
+msgstr "Milovať"
+
+#: id:33080
+msgid "Hate"
+msgstr "Nenávidieť"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Tento súbor sa skladá z viacero častí. Vyberte tú, od ktorej chcete spustiť prehrávanie."
+
+#: id:33082
+msgid "Path to script"
+msgstr "Umiestnenie skriptu"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Povoliť vlastné tlačítko skriptu"
+
+#: id:33100
+msgid "Failed to start"
+msgstr "Nepodarilo sa začať"
+
+#: id:33101
+msgid "Webserver"
+msgstr "Webserver"
+
+#: id:33102
+msgid "Event Server"
+msgstr "Server udalostí"
+
+#: id:33103
+msgid "Remote communication server"
+msgstr "Vzdialený komunikačný server"
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr "Zistené nové pripojenie"
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA2"
+
+#: id:34004
+msgid "VAAPI"
+msgstr "VAAPI"
+
+#: id:34005
+msgid "Flac"
+msgstr "Flac"
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Nastavenie reproduktorov"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7.0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr "Nepodarilo sa nájsť ďalšiu položku"
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr "Nepodarilo sa nájsť predošlú položku"
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr "Spustenie zeroconf zlyhalo"
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr "Je Apple Bonjour služba nainštalovaná? Pozri log pre viac informácií."
+
+#: id:34400
+msgid "Video Rendering"
+msgstr "Vykreslovanie videa"
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Video filtrovanie/škálovanie zlyhalo, použitie bilineárneho škálovania."
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr "Nepodarilo sa inicializovať audio zariadenia"
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr "Skontrolujte Vaše audio nastavenia"
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap or 1 finger long press for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr "Periférne zariadenia"
+
+#: id:35001
+msgid "Generic HID device"
+msgstr "HID zariadenie"
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr "Sieťová karta"
+
+#: id:35003
+msgid "Generic disk"
+msgstr "Pevný disk"
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Pre toto periférne zariadenie nie sú žiadne nastavenia dostupné."
+
+#: id:35005
+msgid "New device configured"
+msgstr "Nové zariadenie nakonfigurované"
+
+#: id:35006
+msgid "Device removed"
+msgstr "Zariadenie odstránené"
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr "Rozloženie kláves pre toto zariadenie"
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr "Rozloženie kláves povolené"
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr "Umiestnenie"
+
+#: id:35501
+msgid "Class"
+msgstr "Trieda"
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr "Meno"
+
+#: id:35503
+msgid "Vendor"
+msgstr "Výrobca"
+
+#: id:35504
+msgid "Product ID"
+msgstr "ID produktu"
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr "Pulse-Eight CEC adaptér"
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr "Pulse-Eight Nyxboard"
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr "Prepnúť na príkazy klávesnice"
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr "Prepnúť na príkazy diaľkového ovládania"
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr "Stlačte tlačidlo príkazu 'užívateľ' (USER)"
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr "Aktivovať prepnutie strán príkazov"
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr "Adaptér sa nedá otvoriť"
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr "Zapnúť TV pri spúšťaní XBMC"
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr "Vypnúť zariadenia pri ukončení XBMC"
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr "Aktivovať pohotovostný režim zariadení pri spustení šetriča obrazovky"
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr "Nepodarilo sa zistiť CEC port. Nastavte ho manuálne."
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr "Nepodarilo sa zistiť CEC adaptér."
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Nepodporovaná verzia libcec rozhrania. %d je vyššia ako XBMC podporuje (%d)"
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr "Aktivovať pohotovstný režim PC pri vypnutí TV"
+
+#: id:36015
+msgid "HDMI port number"
+msgstr "HDMI portu"
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr "Pripojené"
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr "Adaptér nájdený, libcec nie je dostupný"
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr "Použiť nastavenia jazyku TV"
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

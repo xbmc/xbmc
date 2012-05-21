@@ -422,7 +422,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
           strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
           strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
           strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
+          strcmpi(type, "file") == 0 || strcmpi(type, "fileenum") == 0)
         {
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
         }

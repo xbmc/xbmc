@@ -28,6 +28,7 @@ VGMCodec::VGMCodec()
   m_CodecName = "VGM";
   m_vgm = 0;
   m_iDataPos = -1;
+  m_DataFormat = AE_FMT_INVALID;
 }
 
 VGMCodec::~VGMCodec()
@@ -53,7 +54,14 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-  m_TotalTime = (__int64)m_dll.GetLength(m_vgm);
+  switch (m_BitsPerSample)
+  {
+    case  8: m_DataFormat = AE_FMT_U8   ; break;
+    case 16: m_DataFormat = AE_FMT_S16NE; break;
+    case 32: m_DataFormat = AE_FMT_FLOAT; break;
+  }
+
+  m_TotalTime = (int64_t)m_dll.GetLength(m_vgm);
 
   return true;
 }
@@ -65,9 +73,9 @@ void VGMCodec::DeInit()
   m_vgm = 0;
 }
 
-__int64 VGMCodec::Seek(__int64 iSeekTime)
+int64_t VGMCodec::Seek(int64_t iSeekTime)
 {
-  __int64 result = (__int64)m_dll.Seek(m_vgm,(unsigned long)iSeekTime);
+  int64_t result = (int64_t)m_dll.Seek(m_vgm,(unsigned long)iSeekTime);
   m_iDataPos = result/1000*m_SampleRate*m_BitsPerSample*m_Channels/8;
 
   return result;

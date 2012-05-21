@@ -33,7 +33,7 @@
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
-      CThread()
+      CThread("CDummyVideoPlayer")
 {
   m_paused = false;
   m_clock = 0;
@@ -52,7 +52,7 @@ bool CDummyVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &op
   {
     Create();
     if( options.starttime > 0 )
-      SeekTime( (__int64)(options.starttime * 1000) );
+      SeekTime( (int64_t)(options.starttime * 1000) );
     return true;
   }
   catch(...)
@@ -191,14 +191,14 @@ void CDummyVideoPlayer::SwitchToNextAudioLanguage()
 
 void CDummyVideoPlayer::SeekPercentage(float iPercent)
 {
-  __int64 iTotalMsec = GetTotalTime() * 1000;
-  __int64 iTime = (__int64)(iTotalMsec * iPercent / 100);
+  int64_t iTotalMsec = GetTotalTime() * 1000;
+  int64_t iTime = (int64_t)(iTotalMsec * iPercent / 100);
   SeekTime(iTime);
 }
 
 float CDummyVideoPlayer::GetPercentage()
 {
-  __int64 iTotalTime = GetTotalTime() * 1000;
+  int64_t iTotalTime = GetTotalTime() * 1000;
 
   if (iTotalTime != 0)
   {
@@ -227,7 +227,7 @@ float CDummyVideoPlayer::GetSubTitleDelay()
   return 0.0;
 }
 
-void CDummyVideoPlayer::SeekTime(__int64 iTime)
+void CDummyVideoPlayer::SeekTime(int64_t iTime)
 {
   int seekOffset = (int)(iTime - m_clock);
   m_clock = iTime;
@@ -235,7 +235,7 @@ void CDummyVideoPlayer::SeekTime(__int64 iTime)
 }
 
 // return the time in milliseconds
-__int64 CDummyVideoPlayer::GetTime()
+int64_t CDummyVideoPlayer::GetTime()
 {
   return m_clock;
 }

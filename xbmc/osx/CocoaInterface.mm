@@ -28,7 +28,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
-#import <Carbon/Carbon.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
 #import <AudioUnit/AudioUnit.h>
@@ -40,7 +39,6 @@
 
 #import "AutoPool.h"
 
-#import "CoreAudio.h"
 
 // hack for Cocoa_GL_ResizeWindow
 //extern "C" void SDL_SetWidthHeight(int w, int h);
@@ -79,34 +77,6 @@ int Cocoa_GL_GetCurrentDisplayID(void)
   
   return((int)display_id);
 }
-
-/* 10.5 only
-void Cocoa_SetSystemSleep(bool enable)
-{
-  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
-  IOPMAssertionID assertionID;
-  IOReturn success;
-  
-  if (enable) {
-    success= IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &assertionID); 
-  } else {
-    success = IOPMAssertionRelease(assertionID);
-  }
-}
-
-void Cocoa_SetDisplaySleep(bool enable)
-{
-  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
-  IOPMAssertionID assertionID;
-  IOReturn success;
-  
-  if (enable) {
-    success= IOPMAssertionCreate(kIOPMAssertionTypeNoIdleSleep, kIOPMAssertionLevelOn, &assertionID); 
-  } else {
-    success = IOPMAssertionRelease(assertionID);
-  }
-}
-*/
 
 bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
 {
@@ -182,18 +152,12 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
   }
   else
   {
-    // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
-    CGDirectDisplayID display_id;
-    CFDictionaryRef mode;
-  
-    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
-    mode = CGDisplayCurrentMode(display_id);
-    if (mode)
-    {
-      CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayRefreshRate), kCFNumberDoubleType, &fps);
-      if (fps <= 0.0)
-        fps = 60.0;
-    }
+    CGDisplayModeRef display_mode;
+    display_mode = (CGDisplayModeRef)Cocoa_GL_GetCurrentDisplayID();
+    fps = CGDisplayModeGetRefreshRate(display_mode);
+    CGDisplayModeRelease(display_mode);
+    if (fps <= 0.0)
+      fps = 60.0;
   }
   
   return(fps);
@@ -441,62 +405,6 @@ void Cocoa_HideDock()
     }
   }
 }
-void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void* userData, void* userData2, const char* path), void* userData, void* userData2)
-{
-  NSString*     filePath = [[NSString alloc] initWithUTF8String:strFile];
-  NSDictionary* doc = [[NSDictionary alloc] initWithContentsOfFile:filePath];
-  NSString*     raw = [doc objectForKey:@"RawQuery"];
-  NSArray*      searchPaths = [[doc objectForKey:@"SearchCriteria"] objectForKey:@"FXScopeArrayOfPaths"];
-
-  if (raw == 0)
-    return;
-
-  // Ugh, Carbon from now on...
-  MDQueryRef query = MDQueryCreate(kCFAllocatorDefault, (CFStringRef)raw, NULL, NULL);
-  if (query)
-  {
-  	if (searchPaths)
-  	  MDQuerySetSearchScope(query, (CFArrayRef)searchPaths, 0);
-  	  
-    MDQueryExecute(query, 0);
-
-	// Keep track of when we started.
-	CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent(); 
-    for (;;)
-    {
-      CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, YES);
-    
-      // If we're done or we timed out.
-      if (MDQueryIsGatheringComplete(query) == true ||
-      	  CFAbsoluteTimeGetCurrent() - startTime >= 5)
-      {
-        // Stop the query.
-        MDQueryStop(query);
-      
-    	CFIndex count = MDQueryGetResultCount(query);
-    	char title[BUFSIZ];
-    	int i;
-  
-    	for (i = 0; i < count; ++i) 
-   		{
-      	  MDItemRef resultItem = (MDItemRef)MDQueryGetResultAtIndex(query, i);
-      	  CFStringRef titleRef = (CFStringRef)MDItemCopyAttribute(resultItem, kMDItemPath);
-      
-      	  CFStringGetCString(titleRef, title, BUFSIZ, kCFStringEncodingUTF8);
-      	  CallbackFunc(userData, userData2, title);
-      	  CFRelease(titleRef);
-    	}  
-    
-        CFRelease(query);
-    	break;
-      }
-    }
-  }
-  
-  // Freeing these causes a crash when scanning for new content.
-  CFRelease(filePath);
-  CFRelease(doc);
-}
 
 static char strVersion[32];
 
@@ -624,92 +532,6 @@ const char *Cocoa_Paste()
   }
   
   return NULL;
-}
-
-OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
-{
-  AEAddressDesc targetDesc;
-  static const ProcessSerialNumber kPSNOfSystemProcess = { 0, kSystemProcess };
-  AppleEvent eventReply = {typeNull, NULL};
-  AppleEvent appleEventToSend = {typeNull, NULL};
-
-  OSStatus error = noErr;
-
-  error = AECreateDesc(typeProcessSerialNumber, &kPSNOfSystemProcess, 
-                       sizeof(kPSNOfSystemProcess), &targetDesc);
-
-  if (error != noErr)
-  {
-    return(error);
-  }
-
-  error = AECreateAppleEvent(kCoreEventClass, EventToSend, &targetDesc, 
-                             kAutoGenerateReturnID, kAnyTransactionID, &appleEventToSend);
-
-  AEDisposeDesc(&targetDesc);
-  if (error != noErr)
-  {
-    return(error);
-  }
-
-  error = AESend(&appleEventToSend, &eventReply, kAENoReply, 
-                 kAENormalPriority, kAEDefaultTimeout, NULL, NULL);
-
-  AEDisposeDesc(&appleEventToSend);
-  if (error != noErr)
-  {
-    return(error);
-  }
-
-  AEDisposeDesc(&eventReply);
-
-  return(error); 
-}
-
-void Cocoa_ResetAudioDevices()
-{
-  // Reset any devices with an AC3/DTS/SPDIF stream back to a Linear PCM
-  // so that they can become a default output device
-  CoreAudioDeviceList deviceList;
-  CCoreAudioHardware::GetOutputDevices(&deviceList);
-  for (CoreAudioDeviceList::iterator d = deviceList.begin(); d != deviceList.end(); d++)
-  {
-    CCoreAudioDevice device(*d);
-    AudioStreamIdList streamList;
-    if (device.GetStreams(&streamList))
-    {
-      for (AudioStreamIdList::iterator s = streamList.begin(); s != streamList.end(); s++)
-      {
-        CCoreAudioStream stream;
-        if (stream.Open(*s))
-        {
-          AudioStreamBasicDescription currentFormat;
-          if (stream.GetPhysicalFormat(&currentFormat))
-          {
-            if (currentFormat.mFormatID == 'IAC3' || currentFormat.mFormatID == kAudioFormat60958AC3)
-            {
-              StreamFormatList formatList;
-              if (stream.GetAvailablePhysicalFormats(&formatList))
-              {
-                for (StreamFormatList::iterator f = formatList.begin(); f != formatList.end(); f++)
-                {
-                  if ((*f).mFormat.mFormatID == kAudioFormatLinearPCM)
-                  {
-                    if (stream.SetPhysicalFormat(&(*f).mFormat))
-                    {
-                      sleep(1);
-                      break;
-                    }
-                  }
-                }
-              }
-            }              
-          }
-          stream.Close();
-        }
-      }
-    }
-  }  
 }
 
 #endif

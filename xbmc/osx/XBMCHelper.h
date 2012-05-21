@@ -41,10 +41,6 @@ class XBMCHelper
 
   bool ErrorStarting() { return m_errorStarting; }
 
-  //global helpers
-  static void CaptureAllInput();
-  static void ReleaseAllInput();
-
 private:
   XBMCHelper();
   XBMCHelper(XBMCHelper const& );

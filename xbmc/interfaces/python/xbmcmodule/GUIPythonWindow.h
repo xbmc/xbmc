@@ -51,7 +51,7 @@ public:
   virtual bool    OnAction(const CAction &action);
   virtual bool    OnBack(int actionID);
   void             SetCallbackWindow(void* state, void *object);
-  void             WaitForActionEvent(unsigned int timeout);
+  void             WaitForActionEvent();
   void             PulseActionEvent();
   void             SetDestroyAfterDeinit(bool destroy = true);
 protected:

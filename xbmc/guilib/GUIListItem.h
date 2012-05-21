@@ -79,6 +79,20 @@ public:
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
 
+  /*! \brief set artwork for an item
+   Sets thumb and fanart image
+   \param map a type:url map for artwork
+   \sa GetArt
+   */
+  void SetArt(const std::map<std::string, std::string> &art);
+
+  /*! \brief get artwork for an item
+   Retrieves artwork in a type:url map
+   \return a type:url map for artwork
+   \sa SetArt
+   */
+  std::map<std::string, std::string> GetArt() const;
+
   void SetSortLabel(const CStdString &label);
   const CStdStringW &GetSortLabel() const;
 

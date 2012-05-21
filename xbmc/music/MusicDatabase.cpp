@@ -28,7 +28,6 @@
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "music/dialogs/GUIDialogMusicScan.h"
 #include "GUIInfoManager.h"
 #include "music/tags/MusicInfoTag.h"
 #include "addons/AddonManager.h"
@@ -236,14 +235,21 @@ void CMusicDatabase::CreateViews()
 
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("DROP VIEW IF EXISTS albumview");
-  m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
-              "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
-              "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
-              "strReview, strLabel, strType, strImage, iRating from album "
-              "left outer join artist on album.idArtist=artist.idArtist "
-              "left outer join genre on album.idGenre=genre.idGenre "
-              "left outer join thumb on album.idThumb=thumb.idThumb "
-              "left outer join albuminfo on album.idAlbum=albuminfo.idAlbum");
+  m_pDS->exec("CREATE VIEW albumview AS SELECT"
+              "  album.idAlbum AS idAlbum, strAlbum, strExtraArtists,"
+              "  album.idArtist AS idArtist, album.strExtraGenres AS strExtraGenres,"
+              "  album.idGenre AS idGenre, strArtist, strGenre, album.iYear AS iYear,"
+              "  strThumb, idAlbumInfo, strMoods, strStyles, strThemes,"
+              "  strReview, strLabel, strType, strImage, iRating "
+              "FROM album "
+              "  LEFT OUTER JOIN artist ON"
+              "    album.idArtist=artist.idArtist"
+              "  LEFT OUTER JOIN genre ON"
+              "    album.idGenre=genre.idGenre"
+              "  LEFT OUTER JOIN thumb ON"
+              "    album.idThumb=thumb.idThumb"
+              "  LEFT OUTER JOIN albuminfo ON"
+              "    album.idAlbum=albuminfo.idAlbum");
 }
 
 void CMusicDatabase::AddSong(CSong& song, bool bCheck)
@@ -332,7 +338,16 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     {
       CStdString strSQL1;
 
-      strSQL=PrepareSQL("insert into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (NULL,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
+      CStdString strIdSong;
+      if (song.idSong < 0)
+        strIdSong = "NULL";
+      else
+        strIdSong.Format("%d", song.idSong);
+
+      // we use replace because it can handle both inserting a new song
+      // and replacing an existing song's record if the given idSong already exists
+      strSQL=PrepareSQL("replace into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (%s,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
+                    strIdSong.c_str(),
                     idAlbum, idPath, idArtist, strExtraArtists.c_str(), idGenre, strExtraGenres.c_str(),
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
@@ -352,7 +367,11 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
       strSQL+=strSQL1;
 
       m_pDS->exec(strSQL.c_str());
-      idSong = (int)m_pDS->lastinsertid();
+
+      if (song.idSong < 0)
+        idSong = (int)m_pDS->lastinsertid();
+      else
+        idSong = song.idSong;
     }
 
     // add extra artists and genres
@@ -375,6 +394,36 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
   {
     CLog::Log(LOGERROR, "musicdatabase:unable to addsong (%s)", strSQL.c_str());
   }
+}
+
+int CMusicDatabase::UpdateSong(const CSong& song, int idSong /* = -1 */)
+{
+  CStdString sql;
+  if (idSong < 0)
+    idSong = song.idSong;
+
+  if (idSong < 0)
+    return -1;
+
+  // delete exartistsongs and exgenresongs and karaoke
+  // we don't delete from the song table here because
+  // AddSong will update the existing record
+  sql.Format("delete from exartistsong where idSong=%d", idSong);
+  ExecuteQuery(sql);
+  sql.Format("delete from exgenresong where idSong=%d", idSong);
+  ExecuteQuery(sql);
+  sql.Format("delete from karaokedata where idSong=%d", idSong);
+  ExecuteQuery(sql);
+
+  CSong newSong = song;
+  // Make sure newSong.idSong has a valid value (> 0)
+  newSong.idSong = idSong;
+  // re-add the song
+  AddSong(newSong, false);
+  if (newSong.idSong < 0)
+    return -1;
+
+  return newSong.idSong;
 }
 
 int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist, int idThumb, int idGenre, const CStdString &extraGenres, int year)
@@ -2326,8 +2375,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
@@ -2577,8 +2625,7 @@ void CMusicDatabase::Clean()
 {
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
@@ -2720,12 +2767,9 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
   if (NULL == m_pDS.get()) return false;
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
     unsigned int time = XbmcThreads::SystemClockMillis();
 
-    CStdString strSQL = "select * from artist where (idArtist IN ";
+    CStdString strSQL = "(idArtist IN ";
 
     if (idGenre==-1)
     {
@@ -2818,6 +2862,30 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       strSQL+=PrepareSQL(" and artist.idArtist<>%i", idVariousArtists);
     }
 
+    bool result = GetArtistsByWhere(strBaseDir, strSQL, items);
+    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
+
+    return result;
+  }
+  catch (...)
+  {
+    m_pDS->close();
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items)
+{
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
+  try
+  {
+    CStdString strSQL = "select * from artist";
+    if (!where.empty())
+       strSQL += " WHERE " + where;
+
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -2853,7 +2921,6 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
       m_pDS->next();
     }
-    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
 
     // cleanup
     m_pDS->close();
@@ -4227,7 +4294,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     int current = 0;
 
     // create our xml document
-    TiXmlDocument xmlDoc;
+    CXBMCTinyXML xmlDoc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
     TiXmlNode *pMain = NULL;
@@ -4381,7 +4448,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    TiXmlDocument xmlDoc;
+    CXBMCTinyXML xmlDoc;
     if (!xmlDoc.LoadFile(xmlFile))
       return;
 

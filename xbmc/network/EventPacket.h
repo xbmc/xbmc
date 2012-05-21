@@ -22,6 +22,8 @@
  *
  */
 
+#include <stdlib.h>
+
 namespace EVENTPACKET
 {
   const int PACKET_SIZE       = 1024;

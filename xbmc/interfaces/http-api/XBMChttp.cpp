@@ -52,6 +52,7 @@
 #include "utils/log.h"
 #include "TextureCache.h"
 #include "ThumbnailCache.h"
+#include "ThumbLoader.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -1024,7 +1025,7 @@ int CXbmcHttp::xbmcAddToPlayListFromDB(int numParas, CStdString paras[])
   // Perform open query if empty where clause
   if (paras[1] == "")
     paras[1] = "1 = 1";
-  CStdString where = "where " + paras[1];
+  CStdString where = paras[1];
 
   int playList;
   CFileItemList filelist;
@@ -1049,7 +1050,7 @@ int CXbmcHttp::xbmcAddToPlayListFromDB(int numParas, CStdString paras[])
       return SetResponse(openTag+"Error: Could not open video database");
 
     if (type.Equals("movies"))
-      videodatabase.GetMoviesByWhere("", where, "", filelist);
+      videodatabase.GetMoviesByWhere("", where, filelist);
     else if (type.Equals("episodes"))
       videodatabase.GetEpisodesByWhere("", where, filelist);
     else if (type.Equals("musicvideos"))
@@ -1255,11 +1256,10 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
           cast += character;
         }*/
         output += closeTag+openTag+"Cast:" + cast;
-        item->SetVideoThumb();
-        if (!item->HasThumbnail())
+        if (!CVideoThumbLoader::FillThumb(*item))
           thumb = "[None]";
         else
-          thumb = item->GetCachedVideoThumb();
+          thumb = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
         output += closeTag+openTag+"Thumb:" + thumb;
         m_database.Close();
         delete item;
@@ -1322,9 +1322,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         resolution = slide->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
       slideOutput+=closeTag+openTag+prefix+"Resolution:" + resolution;
       CFileItem item(*slide);
-      thumb = CTextureCache::Get().GetCachedImage(CTextureCache::GetWrappedThumbURL(item.GetPath()));
-      if (autoGetPictureThumbs && thumb.IsEmpty())
-        thumb = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(item.GetPath()), false);
+      CStdString thumbURL = CTextureCache::GetWrappedThumbURL(item.GetPath());
+      if (autoGetPictureThumbs || CTextureCache::Get().HasCachedImage(thumbURL))
+        thumb = thumbURL;
       if (thumb.IsEmpty())
       {
         thumb = "[None]";
@@ -1597,7 +1597,7 @@ int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
   else
   {
     int iPercent = atoi(paras[0].c_str());
-    g_application.SetVolume(iPercent);
+    g_application.SetVolume((float)iPercent, true);
     return SetResponse(openTag+"OK");
   }
 }
@@ -2612,11 +2612,7 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
       else if (paras[i]=="httpapibroadcastlevel")
         tmp.Format("%i",g_settings.m_HttpApiBroadcastLevel);
       else if (paras[i]=="volumelevel")
-        tmp.Format("%i",g_settings.m_nVolumeLevel);
-      else if (paras[i]=="dynamicrangecompressionlevel")
-        tmp.Format("%i",g_settings.m_dynamicRangeCompressionLevel);
-      else if (paras[i]=="premutevolumelevel")
-        tmp.Format("%i",g_settings.m_iPreMuteVolumeLevel);
+        tmp.Format("%i",g_application.GetVolume());
       else if (paras[i]=="systemtimetotalup")
         tmp.Format("%i",g_settings.m_iSystemTimeTotalUp);
       else if (paras[i]=="mute")

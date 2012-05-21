@@ -22,7 +22,10 @@
  *
  */
 
+#include "system.h"
+
 #ifdef HAS_GL
+#include "system_gl.h"
 
 #include "guilib/FrameBufferObject.h"
 #include "guilib/Shader.h"
@@ -30,6 +33,7 @@
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
+#include "RenderFormats.h"
 
 #include "threads/Event.h"
 
@@ -65,13 +69,6 @@ struct DRAWRECT
   float bottom;
 };
 
-enum EFIELDSYNC
-{
-  FS_NONE,
-  FS_TOP,
-  FS_BOT
-};
-
 struct YUVRANGE
 {
   int y_min, y_max;
@@ -94,6 +91,7 @@ enum RenderMethod
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
   RENDER_VAAPI=0x20,
+  RENDER_CVREF = 0x40,
 };
 
 enum RenderQuality
@@ -132,7 +130,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -148,6 +146,9 @@ public:
 #ifdef HAVE_LIBVA
   virtual void         AddProcessor(VAAPI::CHolder& holder);
 #endif
+#ifdef TARGET_DARWIN
+  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
+#endif
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -159,6 +160,8 @@ public:
   virtual bool Supports(ESCALINGMETHOD method);
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
+
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
@@ -194,6 +197,10 @@ protected:
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
+  void UploadCVRefTexture(int index);
+  void DeleteCVRefTexture(int index);
+  bool CreateCVRefTexture(int index);
+
   void UploadYUV422PackedTexture(int index);
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
@@ -220,8 +227,10 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
   unsigned m_iFlags;
+  ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
@@ -270,6 +279,9 @@ protected:
 #ifdef HAVE_LIBVA
     VAAPI::CHolder& vaapi;
 #endif
+#ifdef TARGET_DARWIN_OSX
+    struct __CVBuffer *cvBufferRef;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -280,7 +292,7 @@ protected:
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
-                , int stride, void* data, GLuint* pbo = NULL );
+                , int stride, int bpp, void* data, GLuint* pbo = NULL );
 
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;

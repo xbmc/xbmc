@@ -24,11 +24,15 @@ ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_LIB=libsquish-native.so
 CLEAN_FILES+=$(NATIVE_LIB)
 
+ifeq ($(findstring osx,$(ARCH)),osx)
+NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
+endif
+
 all: $(LIB) $(NATIVE_LIB)
 # TexturePacker links to libsquish and needs to run on build system, so make a native flavor.
 $(NATIVE_LIB): $(SRCS)
 ifeq ($(findstring osx,$(ARCH)),osx)
-	g++ -m32 -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
+	g++ $(NATIVE_ARCH) -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
 else
 	g++ -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
 endif

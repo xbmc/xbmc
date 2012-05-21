@@ -15,6 +15,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
     Log(Arc.FileName,St(MDataBadCRC),hd->FileName,Arc.FileName);
   }
 
+  Int64 PrevFullUnpSize = hd->FullUnpSize;
   Int64 PosBeforeClose=Arc.Tell();
   Arc.Close();
 
@@ -144,6 +145,13 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
     }
   }
 #endif
+
+  if (hd->FullUnpSize == 0)
+  {
+    // some archives only have correct UnpSize in the first volume
+    hd->FullUnpSize = PrevFullUnpSize;
+  }
+
   if (DataIO!=NULL)
   {
     if (HeaderType==ENDARC_HEAD)

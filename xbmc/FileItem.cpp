@@ -151,7 +151,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   *GetVideoInfoTag() = movie;
   if (movie.m_iSeason == 0) SetProperty("isspecial", "true");
   FillInDefaultIcon();
-  SetCachedVideoThumb();
 }
 
 CFileItem::CFileItem(const CEpgInfoTag& tag)
@@ -1282,16 +1281,6 @@ CStdString CFileItem::GetCachedArtistThumb() const
   return CThumbnailCache::GetArtistThumb(*this);
 }
 
-CStdString CFileItem::GetCachedSeasonThumb() const
-{
-  return CThumbnailCache::GetSeasonThumb(*this);
-}
-
-CStdString CFileItem::GetCachedActorThumb() const
-{
-  return CThumbnailCache::GetActorThumb(*this);
-}
-
 void CFileItem::SetCachedArtistThumb()
 {
   CStdString thumb(GetCachedArtistThumb());
@@ -1310,16 +1299,6 @@ void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
-}
-
-void CFileItem::SetCachedSeasonThumb()
-{
-  CStdString thumb(GetCachedSeasonThumb());
-  if (CFile::Exists(thumb))
-  {
-    // found it, we are finished.
-    SetThumbnailImage(thumb);
-  }
 }
 
 void CFileItem::RemoveExtension()
@@ -2619,7 +2598,7 @@ void CFileItemList::StackFiles()
 bool CFileItemList::Load(int windowID)
 {
   CFile file;
-  if (file.Open(GetDisCFileCache(windowID)))
+  if (file.Open(GetDiscFileCache(windowID)))
   {
     CLog::Log(LOGDEBUG,"Loading fileitems [%s]",GetPath().c_str());
     CArchive ar(&file, CArchive::load);
@@ -2642,7 +2621,7 @@ bool CFileItemList::Save(int windowID)
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",GetPath().c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDisCFileCache(windowID), true)) // overwrite always
+  if (file.OpenForWrite(GetDiscFileCache(windowID), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2657,7 +2636,7 @@ bool CFileItemList::Save(int windowID)
 
 void CFileItemList::RemoveDiscCache(int windowID) const
 {
-  CStdString cacheFile(GetDisCFileCache(windowID));
+  CStdString cacheFile(GetDiscFileCache(windowID));
   if (CFile::Exists(cacheFile))
   {
     CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",GetPath().c_str());
@@ -2665,7 +2644,7 @@ void CFileItemList::RemoveDiscCache(int windowID) const
   }
 }
 
-CStdString CFileItemList::GetDisCFileCache(int windowID) const
+CStdString CFileItemList::GetDiscFileCache(int windowID) const
 {
   CStdString strPath(GetPath());
   URIUtils::RemoveSlashAtEnd(strPath);
@@ -2699,17 +2678,6 @@ bool CFileItemList::AlwaysCache() const
   if (IsEPG())
     return true; // always cache
   return false;
-}
-
-void CFileItemList::SetCachedVideoThumbs()
-{
-  CSingleLock lock(m_lock);
-  // TODO: Investigate caching time to see if it speeds things up
-  for (unsigned int i = 0; i < m_items.size(); ++i)
-  {
-    CFileItemPtr pItem = m_items[i];
-    pItem->SetCachedVideoThumb();
-  }
 }
 
 void CFileItemList::SetCachedMusicThumbs()
@@ -2851,31 +2819,6 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   }
 
   SetCachedMusicThumb();
-}
-
-CStdString CFileItem::GetCachedVideoThumb() const
-{
-  return CThumbnailCache::GetVideoThumb(*this);
-}
-
-CStdString CFileItem::GetCachedEpisodeThumb() const
-{
-  return CThumbnailCache::GetEpisodeThumb(*this);
-}
-
-void CFileItem::SetCachedVideoThumb()
-{
-  if (IsParentFolder()) return;
-  if (HasThumbnail()) return;
-  CStdString cachedThumb(GetCachedVideoThumb());
-  if (HasVideoInfoTag() && !m_bIsFolder  &&
-      GetVideoInfoTag()->m_iEpisode > -1 &&
-      CFile::Exists(GetCachedEpisodeThumb()))
-  {
-    SetThumbnailImage(GetCachedEpisodeThumb());
-  }
-  else if (CFile::Exists(cachedThumb))
-    SetThumbnailImage(cachedThumb);
 }
 
 // Gets the .tbn filename from a file or folder name.
@@ -3091,29 +3034,6 @@ bool CFileItem::testGetBaseMoviePath()
 }
 #endif
 
-void CFileItem::SetVideoThumb()
-{
-  if (HasThumbnail()) return;
-  SetCachedVideoThumb();
-  if (!HasThumbnail())
-    SetUserVideoThumb();
-}
-
-void CFileItem::SetUserVideoThumb()
-{
-  if (m_bIsShareOrDrive) return;
-  if (IsParentFolder()) return;
-
-  // caches as the local thumb
-  CStdString thumb(GetUserVideoThumb());
-  if (!thumb.IsEmpty())
-  {
-    CStdString cachedThumb(GetCachedVideoThumb());
-    CPicture::CreateThumbnail(thumb, cachedThumb);
-  }
-  SetCachedVideoThumb();
-}
-
 bool CFileItem::CacheLocalFanart() const
 {
   // first check for an already cached fanart image
@@ -3163,6 +3083,7 @@ CStdString CFileItem::GetLocalFanart() const
   // no local fanart available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
+   || URIUtils::IsBluray(strFile)
    || IsLiveTV()
    || IsPlugin()
    || IsAddonsPath()
@@ -3455,6 +3376,7 @@ CStdString CFileItem::FindTrailer() const
   // no local trailer available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
+   || URIUtils::IsBluray(strFile)
    || IsLiveTV()
    || IsPlugin()
    || IsDVD())
@@ -3522,7 +3444,7 @@ int CFileItem::GetVideoContentType() const
     type = VIDEODB_CONTENT_TVSHOWS;
   if (HasVideoInfoTag() && GetVideoInfoTag()->m_iSeason > -1 && !m_bIsFolder) // episode
     type = VIDEODB_CONTENT_EPISODES;
-  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strArtist.IsEmpty())
+  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_artist.empty())
     type = VIDEODB_CONTENT_MUSICVIDEOS;
   return type;
 }

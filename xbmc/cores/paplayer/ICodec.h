@@ -25,6 +25,9 @@
 #include "utils/StdString.h"
 #include "filesystem/File.h"
 
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+
 #define READ_EOF      -1
 #define READ_SUCCESS   0
 #define READ_ERROR     1
@@ -66,21 +69,13 @@ public:
   // Should seek to the appropriate time (in ms) in the file, and return the
   // time to which we managed to seek (in the case where seeking is problematic)
   // This is used in FFwd/Rewd so can be called very often.
-  virtual __int64 Seek(__int64 iSeekTime)=0;
+  virtual int64_t Seek(int64_t iSeekTime)=0;
 
   // ReadPCM()
   // Decodes audio into pBuffer up to size bytes.  The actual amount of returned data
   // is given in actualsize.  Returns READ_SUCCESS on success.  Returns READ_EOF when
   // the data has been exhausted, and READ_ERROR on error.
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize)=0;
-
-  // ReadSamples()
-  // Decodes audio into floats (normalized to 1) into pBuffer up to numsamples samples.
-  // The actual amount of returned samples is given in actualsamples.  Samples are
-  // total samples (ie distributed over channels).
-  // Returns READ_SUCCESS on success.  Returns READ_EOF when the data has been exhausted,
-  // and READ_ERROR on error.
-  virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples) { return READ_ERROR; };
 
   // CanInit()
   // Should return true if the codec can be initialized
@@ -92,21 +87,27 @@ public:
   virtual bool SkipNext(){return false;}
 
   // set the total time - useful when info comes from a preset tag
-  virtual void SetTotalTime(__int64 totaltime) {}
+  virtual void SetTotalTime(int64_t totaltime) {}
 
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
-  // true if we can retrieve normalized float data immediately
-  virtual bool HasFloatData() const { return false; }
+  // GetChannelInfo()
+  // Return the channel layout and count information in an CAEChannelInfo object
+  virtual CAEChannelInfo GetChannelInfo() {return CAEUtil::GuessChLayout(m_Channels);}
 
-  __int64 m_TotalTime;  // time in ms
+  int64_t m_TotalTime;  // time in ms
   int m_SampleRate;
+  int m_EncodedSampleRate;
   int m_BitsPerSample;
-  int m_Channels;
+  enum AEDataFormat m_DataFormat;
   int m_Bitrate;
   CStdString m_CodecName;
   CReplayGain m_replayGain;
   XFILE::CFile m_file;
+
+protected:
+  int m_Channels; /* remove this soon, its being deprecated */
+
 };
 

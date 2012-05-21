@@ -31,7 +31,7 @@
 
 using namespace XFILE;
 
-CSplash::CSplash(const CStdString& imageName)
+CSplash::CSplash(const CStdString& imageName) : CThread("CSplash")
 {
   m_ImageName = imageName;
   fade = 0.5;
@@ -135,9 +135,4 @@ bool CSplash::Start()
 void CSplash::Stop()
 {
   StopThread();
-}
-
-bool CSplash::IsRunning()
-{
-  return (m_ThreadHandle != NULL);
 }

@@ -2,8 +2,7 @@
 	<defaultcontrol>3</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<include>CommonSettingsBackground</include>
-		<include>CommonMediaPlayingBackground</include>
+		<include>CommonBackground</include>
 		<control type="image">
 			<posx>0</posx>
 			<posy>100r</posy>
@@ -53,6 +52,7 @@
 				<onup>1</onup>
 				<ondown>1</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
+				<include>VisibleFadeEffect</include>
 			</control>
 			<control type="image">
 				<description>LOGO</description>
@@ -96,7 +96,7 @@
 				<posy>20</posy>
 				<width>740</width>
 				<height>30</height>
-				<font>font16caps</font>
+				<font>font16</font>
 				<label>$INFO[Control.GetLabel(2)] - $LOCALIZE[5]</label>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -198,25 +198,33 @@
 			<visible>false</visible>
 		</control>
 		<include>CommonNowPlaying</include>
-		<control type="group">
-			<posx>60</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out" condition="!Window.Next(Settings)">WindowClose</animation>
-			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out" condition="!Window.Previous(Settings)">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
+		<include>MainWindowMouseButtons</include>
+		<control type="image">
+			<description>Section header image</description>
+			<posx>20</posx>
+			<posy>3</posy>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_system.png</texture>
+		</control>
+		<control type="grouplist">
+			<posx>65</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$LOCALIZE[5]</label>
 			</control>
 			<control type="label">
 				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[5]</label>
+				<label>[COLOR=blue] - [/COLOR]$INFO[Control.GetLabel(2)]</label>
 			</control>
 		</control>
-		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

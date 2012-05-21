@@ -25,6 +25,7 @@
 #include "threads/CriticalSection.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "system.h"
 
 class CUdpClient : CThread
 {

@@ -399,7 +399,7 @@ char* RTSPClient::describeURL(char const* url, Authenticator* authenticator,
 	    currentPos += strlen(currentWord) + 1;
 	    sscanf(currentPos, "%s", currentWord);
 	    currentPos += strlen(currentWord) + 1;
-	    sscanf(currentPos, "%llu", &mh_duration);
+	    sscanf(currentPos, "%llu", (long long unsigned int*) &mh_duration);
 	    currentPos += 3;
           }
 

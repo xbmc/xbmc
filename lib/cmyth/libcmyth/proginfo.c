@@ -116,6 +116,9 @@ cmyth_proginfo_destroy(cmyth_proginfo_t p)
 	if (p->proginfo_programid) {
 		ref_release(p->proginfo_programid);
 	}
+	if (p->proginfo_inetref) {
+		ref_release(p->proginfo_inetref);
+	}
 	if (p->proginfo_stars) {
 		ref_release(p->proginfo_stars);
 	}
@@ -217,6 +220,8 @@ cmyth_proginfo_create(void)
 	ret->proginfo_title = NULL;
 	ret->proginfo_subtitle = NULL;
 	ret->proginfo_description = NULL;
+	ret->proginfo_season = 0;
+	ret->proginfo_episode = 0;
 	ret->proginfo_category = NULL;
 	ret->proginfo_chanId = 0;
 	ret->proginfo_chanstr = NULL;
@@ -250,6 +255,7 @@ cmyth_proginfo_create(void)
 	ret->proginfo_chan_output_filters = NULL;
 	ret->proginfo_seriesid = NULL;
 	ret->proginfo_programid = NULL;
+	ret->proginfo_inetref = NULL;
 	ret->proginfo_stars = NULL;
 	ret->proginfo_version = 12;
 	ret->proginfo_hasairdate = 0;
@@ -307,6 +313,8 @@ cmyth_proginfo_dup(cmyth_proginfo_t p)
 	ret->proginfo_title = ref_hold(p->proginfo_title);
 	ret->proginfo_subtitle = ref_hold(p->proginfo_subtitle);
 	ret->proginfo_description = ref_hold(p->proginfo_description);
+	ret->proginfo_season = p->proginfo_season;
+	ret->proginfo_episode = p->proginfo_episode;
 	ret->proginfo_category = ref_hold(p->proginfo_category);
 	ret->proginfo_chanId = p->proginfo_chanId;
 	ret->proginfo_chanstr = ref_hold(p->proginfo_chanstr);
@@ -340,6 +348,7 @@ cmyth_proginfo_dup(cmyth_proginfo_t p)
 	ret->proginfo_chan_output_filters = ref_hold(p->proginfo_chan_output_filters);
 	ret->proginfo_seriesid = ref_hold(p->proginfo_seriesid);
 	ret->proginfo_programid = ref_hold(p->proginfo_programid);
+	ret->proginfo_inetref = ref_hold(p->proginfo_inetref);
 	ret->proginfo_stars = ref_hold(p->proginfo_stars);
 	ret->proginfo_version = p->proginfo_version;
 	ret->proginfo_hasairdate = p->proginfo_hasairdate;
@@ -386,7 +395,7 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	char *buf;
 	unsigned int len = ((2 * CMYTH_LONGLONG_LEN) + 
 			    (6 * CMYTH_TIMESTAMP_LEN) +
-			    (14 * CMYTH_LONG_LEN));
+			    (16 * CMYTH_LONG_LEN));
 	char start_ts[CMYTH_TIMESTAMP_LEN + 1];
 	char end_ts[CMYTH_TIMESTAMP_LEN + 1];
 	char rec_start_ts[CMYTH_TIMESTAMP_LEN + 1];
@@ -415,8 +424,12 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	len += strlen(S(prog->proginfo_url));
 	len += strlen(S(prog->proginfo_hostname));
 	len += strlen(S(prog->proginfo_playgroup));
+	len += strlen(S(prog->proginfo_seriesid));
+	len += strlen(S(prog->proginfo_programid));
+	len += strlen(S(prog->proginfo_inetref));
 	len += strlen(S(prog->proginfo_recpriority_2));
 	len += strlen(S(prog->proginfo_storagegroup));
+	len += strlen(S(prog->proginfo_prodyear));
 
 	buf = alloca(len + 1+2048);
 	if (!buf) {
@@ -462,6 +475,10 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_title));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_subtitle));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_description));
+		if (control->conn_version >= 67) {
+			sprintf(buf + strlen(buf), "%u[]:[]", prog->proginfo_season);
+			sprintf(buf + strlen(buf), "%u[]:[]", prog->proginfo_episode);
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_category));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_chanId);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chanstr));
@@ -504,6 +521,9 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chan_output_filters));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_seriesid));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_programid));
+		if (control->conn_version >= 67) {
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_inetref));
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  lastmodified);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_stars));
 		sprintf(buf + strlen(buf), "%s[]:[]",  originalairdate);
@@ -773,6 +793,24 @@ cmyth_proginfo_description(cmyth_proginfo_t prog)
 	return ref_hold(prog->proginfo_description);
 }
 
+unsigned short
+cmyth_proginfo_season(cmyth_proginfo_t prog)
+{
+	if (!prog) {
+		return 0;
+	}
+	return prog->proginfo_season;
+}
+
+unsigned short
+cmyth_proginfo_episode(cmyth_proginfo_t prog)
+{
+	if (!prog) {
+		return 0;
+	}
+	return prog->proginfo_episode;
+}
+
 /*
  * cmyth_proginfo_category(cmyth_proginfo_t prog)
  *
@@ -824,6 +862,17 @@ cmyth_proginfo_programid(cmyth_proginfo_t prog)
 		return NULL;
 	}
 	return ref_hold(prog->proginfo_programid);
+}
+
+char *
+cmyth_proginfo_inetref(cmyth_proginfo_t prog)
+{
+	if (!prog) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: NULL inetref\n",
+			  __FUNCTION__);
+		return NULL;
+	}
+	return ref_hold(prog->proginfo_inetref);
 }
 
 char *
@@ -1260,7 +1309,7 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	char *buf;
 	unsigned int len = ((2 * CMYTH_LONGLONG_LEN) + 
 			    (6 * CMYTH_TIMESTAMP_LEN) +
-			    (14 * CMYTH_LONG_LEN));
+			    (16 * CMYTH_LONG_LEN));
 	char start_ts[CMYTH_TIMESTAMP_LEN + 1];
 	char end_ts[CMYTH_TIMESTAMP_LEN + 1];
 	char rec_start_ts[CMYTH_TIMESTAMP_LEN + 1];
@@ -1288,6 +1337,9 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	len += strlen(S(prog->proginfo_url));
 	len += strlen(S(prog->proginfo_hostname));
 	len += strlen(S(prog->proginfo_playgroup));
+	len += strlen(S(prog->proginfo_seriesid));
+	len += strlen(S(prog->proginfo_programid));
+	len += strlen(S(prog->proginfo_inetref));
 	len += strlen(S(prog->proginfo_recpriority_2));
 	len += strlen(S(prog->proginfo_storagegroup));
 	len += strlen(S(prog->proginfo_prodyear));
@@ -1336,6 +1388,10 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_title));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_subtitle));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_description));
+		if (control->conn_version >= 67) {
+			sprintf(buf + strlen(buf), "%u[]:[]", prog->proginfo_season);
+			sprintf(buf + strlen(buf), "%u[]:[]", prog->proginfo_episode);
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_category));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_chanId);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chanstr));
@@ -1378,6 +1434,9 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chan_output_filters));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_seriesid));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_programid));
+		if (control->conn_version >= 67) {
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_inetref));
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  lastmodified);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_stars));
 		sprintf(buf + strlen(buf), "%s[]:[]",  originalairdate);

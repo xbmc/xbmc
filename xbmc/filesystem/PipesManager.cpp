@@ -186,7 +186,7 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
       for (size_t l=0; l<m_listeners.size(); l++)
         m_listeners[l]->OnPipeOverFlow();
 
-      bool bClear = m_writeEvent.WaitMSec(nWaitMillis);
+      bool bClear = nWaitMillis < 0 ? m_writeEvent.Wait() : m_writeEvent.WaitMSec(nWaitMillis);
       lock.Enter();
       if (bClear && (int)m_buffer.getMaxWriteSize() >= nSize)
       {
@@ -194,8 +194,9 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
         bOk = true;
         break;
       }
-      
-      if ((unsigned int) nWaitMillis != INFINITE)
+
+      // FIXME: is this right? Shouldn't we see if the time limit has been reached?
+      if (nWaitMillis > 0)
         break;
     }
   }

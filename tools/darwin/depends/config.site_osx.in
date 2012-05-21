@@ -5,41 +5,60 @@ if test "@use_sdk@" = "10.4" ; then
   else
     host_alias=i386-apple-darwin8
   fi
+  platform_gnu=gnu89
+  platform_cc=gcc-4.0
+  platform_cpp=cpp-4.0
+  platform_cxx=g++-4.0
   platform_gcc_version=4.0
   platform_sdk_version=@use_sdk@u
+  export MACOSX_DEPLOYMENT_TARGET=10.4
+  platform_min_version=macosx-version-min=10.4
 else
-  host_alias=i686-apple-darwin
+  case @use_xcode@ in
+    3.*.*)
+      platform_cc=gcc-4.2
+      platform_cpp=cpp-4.2
+      platform_cxx=g++-4.2
+      ;;
+    *)
+      platform_cc=llvm-gcc-4.2
+      platform_cpp="llvm-gcc-4.2 -E"
+      platform_cxx=llvm-g++-4.2
+      ;;
+  esac
+  platform_gnu=gnu99
   platform_gcc_version=4.2
   platform_sdk_version=@use_sdk@
+  host_alias=@use_arch@-apple-darwin
+  export MACOSX_DEPLOYMENT_TARGET=10.6
+  platform_min_version=macosx-version-min=10.6
 fi
 
-platform_min_version=macosx-version-min=10.4
-platform_path="/Developer"
+platform_path=@use_xcodepath@
 platform_os_cflags="-arch @use_arch@ -no_compact_linkedit"
 platform_os_ldflags="-arch @use_arch@ -Wl,-arch,@use_arch@ -no_compact_linkedit"
-platform_sdk_path="${platform_path}/SDKs/MacOSX${platform_sdk_version}.sdk"
+platform_sdk_path=@use_sdk_path@
 
 export NM=${platform_path}/usr/bin/nm
-export CPP=${platform_path}/usr/bin/cpp-${platform_gcc_version}
+export CPP=${platform_path}/usr/bin/${platform_cpp}
 export CXXCPP=${CPP}
 export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
-export CC=/usr/bin/gcc-${platform_gcc_version}
-export CFLAGS="${CFLAGS} -std=gnu89 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
+export CC=/usr/bin/${platform_cc}
+export CFLAGS="${CFLAGS} -std=${platform_gnu} -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export LD=${platform_path}/usr/bin/ld
 export LDFLAGS="${LDFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_ldflags} -L${prefix}/lib"
-export CXX=/usr/bin/g++-${platform_gcc_version}
+export CXX=/usr/bin/${platform_cxx}
 export CXXFLAGS="${CXXFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export AR=${platform_path}/usr/bin/ar
 export AS=${platform_path}/usr/bin/as
 export M4=@use_toolchain@/bin/m4
 export STRIP=${platform_path}/usr/bin/strip
 export RANLIB=${platform_path}/usr/bin/ranlib
-export ACLOCAL="@use_toolchain@/bin/aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal -I /Developer/usr/share/aclocal"
+export ACLOCAL="@use_toolchain@/bin/aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal"
 export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
 export PATH="@use_toolchain@/bin:${prefix}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}"
-export MACOSX_DEPLOYMENT_TARGET=10.4
 
 # tweaks for samba
 if test "${PACKAGE_NAME}" = "Samba" ; then
@@ -58,6 +77,11 @@ fi
 # tweaks for python
 if test "${PACKAGE_NAME}" = "python" ; then
   export OPT="${CFLAGS}"
+fi
+
+# tweaks for libogg / libvorbis
+if test "${PACKAGE_NAME}" = "libogg" || test "${PACKAGE_NAME}" = "libvorbis" ; then
+  export CFLAGS="${CFLAGS} -O"
 fi
 
 # tweaks for libjpeg-turbo
