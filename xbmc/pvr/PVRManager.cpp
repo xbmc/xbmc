@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -639,6 +640,74 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   }
 
   return bReturn;
+}
+
+bool CPVRManager::CheckParentalLock(const CPVRChannel *channel) 
+{
+  bool bReturn = true;
+
+  if (!channel)
+    return bReturn;
+
+  if (!CheckParentalOverride(channel)) 
+  {
+    bool bValidPIN = CheckParentalPIN();
+    if (!bValidPIN)
+    {
+      CLog::Log(LOGERROR, "PVRManager - %s - parental lock verification failed '%s'. Wrong PIN entered.",
+      __FUNCTION__, channel->ChannelName().c_str());
+      bReturn = false;
+    }
+    else 
+    {
+      m_parentalTimer.StartZero();
+    }
+  }
+
+  return bReturn;
+}
+
+bool CPVRManager::CheckParentalOverride(const CPVRChannel *channel)
+{
+  bool bReturn = true;
+
+  bool bParentalEnabled = g_guiSettings.GetBool("pvrparental.enabled");
+
+  if (!bParentalEnabled)
+    return bReturn;
+
+  float parentalDurationMs = g_guiSettings.GetInt("pvrparental.duration") * 1000.0f;
+
+  CPVRChannel currentChannel = NULL;
+  bool bIsDifferentChannel = true;
+  if (GetCurrentChannel(currentChannel) && channel->UniqueID() == currentChannel.UniqueID()) 
+  {
+    bIsDifferentChannel = false;
+  }
+
+  if (channel && channel->IsLocked() && bIsDifferentChannel) 
+  {
+    bReturn = m_parentalTimer.IsRunning() && m_parentalTimer.GetElapsedMilliseconds() < parentalDurationMs;
+  }
+
+  return bReturn;
+}
+
+bool CPVRManager::CheckParentalPIN(bool bSettings /* = false */)
+{
+  bool bParentalEnabled = g_guiSettings.GetBool("pvrparental.enabled");
+  CStdString pinCode = g_guiSettings.GetString("pvrparental.pin");
+
+  if (!bParentalEnabled || pinCode.GetLength() == 0)
+    return true;
+
+  CStdString pinTitle = bSettings ? g_localizeStrings.Get(19262) : g_localizeStrings.Get(19263);
+  bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, pinTitle, true);
+
+  if (!bValidPIN)
+    CGUIDialogOK::ShowAndGetInput(19264,0,19265,0);
+
+  return bValidPIN;
 }
 
 void CPVRManager::SaveCurrentChannelSettings(void)

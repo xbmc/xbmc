@@ -26,6 +26,11 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 
+namespace PVR
+{
+  class CGUIWindowPVRGuide;
+}
+
 namespace EPG
 {
   #define MAXCHANNELS 20
@@ -40,6 +45,8 @@ namespace EPG
 
   class CGUIEPGGridContainer : public CGUIControl
   {
+  friend class PVR::CGUIWindowPVRGuide;
+
   public:
     CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
                          ORIENTATION orientation, int scrollTime, int preloadItems, int minutesPerPage,

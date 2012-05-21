@@ -957,6 +957,12 @@ void CGUISettings::Initialize()
   AddSeparator(pvrpwr, "pvrpowermanagement.sep2");
   AddBool(pvrpwr, "pvrpowermanagement.dailywakeup", 19247, false);
   AddString(pvrpwr, "pvrpowermanagement.dailywakeuptime", 19248, "00:00:00", EDIT_CONTROL_INPUT);
+
+  CSettingsCategory* pvrpa = AddCategory(8, "pvrparental", 19259);
+  AddBool(pvrpa, "pvrparental.enabled", 449  , false);
+  AddSeparator(pvrpa, "pvrparental.sep1");
+  AddString(pvrpa, "pvrparental.pin", 19261, "", EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW, true);
+  AddInt(pvrpa, "pvrparental.duration", 19260, 300, 5, 5, 1200, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 }
 
 CGUISettings::~CGUISettings(void)

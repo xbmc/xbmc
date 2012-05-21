@@ -21,9 +21,15 @@
 
 #include "GUIDialogVideoOSD.h"
 #include "Application.h"
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+
+using namespace PVR;
 
 CGUIDialogVideoOSD::CGUIDialogVideoOSD(void)
     : CGUIDialog(WINDOW_DIALOG_VIDEO_OSD, "VideoOSD.xml")
@@ -57,6 +63,21 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
   if (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM)
   {
     // these could indicate next chapter if video supports it
+    if (g_application.CurrentFileItem().IsLiveTV())
+    {
+      CPVRChannel playingChannel, *nextChannel;
+      g_PVRManager.GetCurrentChannel(playingChannel);
+  
+      CPVRChannelGroup *selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel.IsRadio());
+  
+      if (action.GetID() == ACTION_NEXT_ITEM)
+        nextChannel = selectedGroup->GetByChannelUp(playingChannel);
+      else
+        nextChannel = selectedGroup->GetByChannelDown(playingChannel);
+
+      if (!g_PVRManager.CheckParentalLock(nextChannel))
+        return true;
+    }
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
       return true;
   }

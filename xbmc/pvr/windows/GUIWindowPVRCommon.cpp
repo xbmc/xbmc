@@ -517,6 +517,9 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
   if (!channel || channel->ChannelNumber() > 0)
     return bReturn;
 
+  if (!g_PVRManager.CheckParentalLock(channel))
+    return bReturn;
+
   bReturn = g_application.PlayFile(CFileItem(*channel));
 
   if (!bReturn)
@@ -672,11 +675,14 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
   {
     bool bSwitchSuccessful(false);
 
+    CPVRChannel* channel = item->GetPVRChannelInfoTag();
+    if (!g_PVRManager.CheckParentalLock(channel))
+      return false;
+    
     /* try a fast switch */
     if (item->IsPVRChannel() && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
         (item->GetPVRChannelInfoTag()->IsRadio() == g_PVRManager.IsPlayingRadio()) && g_application.m_pPlayer)
     {
-      CPVRChannel* channel = item->GetPVRChannelInfoTag();
       if (channel->StreamURL().IsEmpty())
         bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*channel);
     }
@@ -750,13 +756,16 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
 void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
 {
   CFileItem *tag = NULL;
+  const CPVRChannel *channel = NULL;
   if (item->IsEPG())
   {
     tag = new CFileItem(*item);
+    channel = item->GetEPGInfoTag()->ChannelTag();
   }
   else if (item->IsPVRChannel())
   {
     CEpgInfoTag epgnow;
+    channel = item->GetPVRChannelInfoTag();
     if (!item->GetPVRChannelInfoTag()->GetEPGNow(epgnow))
     {
       CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
@@ -767,12 +776,20 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
 
   if (tag)
   {
+    if (!g_PVRManager.CheckParentalLock(channel)) 
+    {
+      delete tag;
+      return;
+    }
+
     CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
     if (!pDlgInfo)
       return;
 
     pDlgInfo->SetProgInfo(tag);
     pDlgInfo->DoModal();
+
+    UpdateData();
 
     delete tag;
   }

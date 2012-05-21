@@ -26,6 +26,7 @@
 #include "threads/Event.h"
 #include "windows/GUIWindowPVRCommon.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "utils/Stopwatch.h"
 
 class CGUIDialogExtendedProgressBar;
 
@@ -423,6 +424,27 @@ namespace PVR
      */
     void LoadCurrentChannelSettings(void);
 
+    /*!
+     * @brief Check if channel is parental locked. Ask for PIN if neccessary.
+     * @param channel The channel to open.
+     * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
+     */
+    bool CheckParentalLock(const CPVRChannel *channel);
+
+    /*!
+     * @brief Check if parental lock is overriden at the given moment.
+     * @param channel The channel to open.
+     * @return True if parental lock is overriden, false otherwise.
+     */
+    bool CheckParentalOverride(const CPVRChannel *channel);
+
+    /*!
+     * @brief Open Numeric dialog to check for parental PIN.
+     * @param bool bSettings is true if this is called from settins, false otherwise.
+     * @return True if entered PIN was correct, false otherwise.
+     */
+    bool CheckParentalPIN(bool bSettings = false);
+
   protected:
     /*!
      * @brief PVR update and control thread.
@@ -541,6 +563,7 @@ namespace PVR
 
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
+    CStopWatch                      m_parentalTimer;
   };
 
   class CPVRRecordingsUpdateJob : public CJob

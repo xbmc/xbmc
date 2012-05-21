@@ -56,6 +56,7 @@ namespace PVR
     virtual bool OnClickButtonCancel(CGUIMessage &message);
     virtual bool OnClickButtonRadioTV(CGUIMessage &message);
     virtual bool OnClickButtonRadioActive(CGUIMessage &message);
+    virtual bool OnClickButtonRadioParentalLocked(CGUIMessage &message);
     virtual bool OnClickButtonEditName(CGUIMessage &message);
     virtual bool OnClickButtonChannelLogo(CGUIMessage &message);
     virtual bool OnClickButtonUseEPG(CGUIMessage &message);

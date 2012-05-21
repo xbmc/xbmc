@@ -219,7 +219,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
 
   m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
-  m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
+  m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE, true);
   SelectPlayingFile();
 }
 
@@ -395,6 +395,9 @@ bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
   const CPVRChannel *channel = !item || !item->HasEPGInfoTag() || !item->GetEPGInfoTag()->HasPVRChannel() ?
       NULL : item->GetEPGInfoTag()->ChannelTag();
   if (!channel)
+    return false;
+
+  if (!g_PVRManager.CheckParentalLock(channel))
     return false;
 
   CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());
