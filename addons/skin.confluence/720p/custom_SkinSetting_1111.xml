@@ -618,6 +618,18 @@
 						<width>750</width>
 						<height>40</height>
 						<font>font13</font>
+						<label>31129</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(HideVisualizationFanart)</onclick>
+						<selected>Skin.HasSetting(HideVisualizationFanart)</selected>
+					</control>
+					<control type="radiobutton" id="303">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
 						<label>31124</label>
 						<textcolor>grey2</textcolor>
 						<focusedcolor>white</focusedcolor>
@@ -626,7 +638,7 @@
 						<onclick>Skin.ToggleSetting(ShowBackgroundVideo)</onclick>
 						<selected>!Skin.HasSetting(ShowBackgroundVideo)</selected>
 					</control>
-					<control type="radiobutton" id="303">
+					<control type="radiobutton" id="304">
 						<width>750</width>
 						<height>40</height>
 						<font>font13</font>
@@ -638,7 +650,7 @@
 						<onclick>Skin.ToggleSetting(ShowBackgroundVis)</onclick>
 						<selected>!Skin.HasSetting(ShowBackgroundVis)</selected>
 					</control>
-					<control type="label" id="304">
+					<control type="label" id="310">
 						<width>750</width>
 						<height>45</height>
 						<font>font13_title</font>
@@ -648,7 +660,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 					</control>
-					<control type="radiobutton" id="305">
+					<control type="radiobutton" id="311">
 						<width>750</width>
 						<height>40</height>
 						<font>font13</font>
@@ -660,7 +672,7 @@
 						<onclick>Skin.ToggleSetting(UseCustomBackground)</onclick>
 						<selected>Skin.HasSetting(UseCustomBackground)</selected>
 					</control>
-					<control type="button" id="306">
+					<control type="button" id="312">
 						<width>750</width>
 						<height>40</height>
 						<font>font13</font>

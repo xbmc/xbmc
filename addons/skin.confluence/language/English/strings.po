@@ -274,7 +274,11 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr ""
 
-#empty strings from id 31129 to 31131
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
+
+#empty strings from id 31130 to 31131
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
