@@ -36,7 +36,7 @@ public:
   void AddView(const CGUIControl *control);
   void SetViewControlID(int control);
 
-  void SetCurrentView(int viewMode);
+  void SetCurrentView(int viewMode, bool bRefresh = false);
 
   void SetItems(CFileItemList &items);
 
