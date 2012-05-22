@@ -208,7 +208,9 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", self->pAddon->GetSetting(id).c_str());
+    CStdString label = self->pAddon->GetSetting(id);
+
+    return PyUnicode_DecodeUTF8(label.c_str(), label.size(), "replace");
   }
 
   PyDoc_STRVAR(setSetting__doc__,
