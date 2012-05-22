@@ -307,7 +307,7 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities)
 {
   XBMC->Log(LOG_DEBUG, "->GetProperties()");
 
-  pCapabilities->bSupportsTimeshift          = false;
+  pCapabilities->bSupportsTimeshift          = true;
   pCapabilities->bSupportsEPG                = true;
   pCapabilities->bSupportsRecordings         = true;
   pCapabilities->bSupportsTimers             = true;
@@ -508,6 +508,12 @@ int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
   return g_client->ReadLiveStream(pBuffer, iBufferSize);
 }
 
+long long SeekLiveStream(long long pos, int whence)
+{
+  return g_client->SeekLiveStream(pos, whence);
+}
+
+
 long long PositionLiveStream(void)
 {
   return g_client->PositionLiveStream();
@@ -577,7 +583,5 @@ DemuxPacket* DemuxRead(void) { return NULL; }
 void DemuxAbort(void) {}
 void DemuxReset(void) {}
 void DemuxFlush(void) {}
-
-long long SeekLiveStream(long long pos, int whence) { return -1; }
 
 } //end extern "C"
