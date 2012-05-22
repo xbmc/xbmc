@@ -4021,7 +4021,7 @@ void CApplication::OnQueueNextItem()
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
-  g_pythonParser.OnQueueNextItem(); // currently unimplemented
+  g_pythonParser.OnQueueNextItem();
 #endif
 
 #ifdef HAS_HTTPAPI
