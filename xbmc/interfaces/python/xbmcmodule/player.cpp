@@ -270,7 +270,7 @@ namespace PYXBMC
   PyDoc_STRVAR(onPlayBackStarted__doc__,
     "onPlayBackStarted() -- onPlayBackStarted method.\n"
     "\n"
-    "Will be called when xbmc starts playing a file");
+    "Will be called when player starts playing a new item");
 
   PyObject* Player_OnPlayBackStarted(PyObject *self, PyObject *args)
   {
@@ -282,7 +282,7 @@ namespace PYXBMC
   PyDoc_STRVAR(onPlayBackEnded__doc__,
     "onPlayBackEnded() -- onPlayBackEnded method.\n"
     "\n"
-    "Will be called when xbmc stops playing a file");
+    "Will be called when player ends normally (ie. last item played)");
 
   PyObject* Player_OnPlayBackEnded(PyObject *self, PyObject *args)
   {
@@ -294,7 +294,7 @@ namespace PYXBMC
   PyDoc_STRVAR(onPlayBackStopped__doc__,
     "onPlayBackStopped() -- onPlayBackStopped method.\n"
     "\n"
-    "Will be called when user stops xbmc playing a file");
+    "Will be called when user stops the player");
 
   PyObject* Player_OnPlayBackStopped(PyObject *self, PyObject *args)
   {
@@ -306,7 +306,7 @@ namespace PYXBMC
   PyDoc_STRVAR(onPlayBackPaused__doc__,
     "onPlayBackPaused() -- onPlayBackPaused method.\n"
     "\n"
-    "Will be called when user pauses a playing file");
+    "Will be called when user pauses the player");
 
   PyObject* Player_OnPlayBackPaused(PyObject *self, PyObject *args)
   {
@@ -318,7 +318,7 @@ namespace PYXBMC
   PyDoc_STRVAR(onPlayBackResumed__doc__,
     "onPlayBackResumed() -- onPlayBackResumed method.\n"
     "\n"
-    "Will be called when user resumes a paused file");
+    "Will be called when user unpauses the player");
 
   PyObject* Player_OnPlayBackResumed(PyObject *self, PyObject *args)
   {
@@ -326,9 +326,66 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // Player_OnPlayBackSpeedChanged(speed)
+  PyDoc_STRVAR(onPlayBackSpeedChanged__doc__,
+    "onPlayBackSpeedChanged(speed) -- onPlayBackSpeedChanged method.\n"
+    "\n"
+    "speed          : integer - current speed of player.\n"
+    "\n"
+    "*Note, negative speed means player is rewinding, 1 is normal playback speed.\n"
+    "\n"
+    "Will be called when players speed changes. (eg. user FF/RW)");
+
+  PyObject* Player_OnPlayBackSpeedChanged(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // Player_OnPlayBackSeek(time, seekOffset)
+  PyDoc_STRVAR(onPlayBackSeek__doc__,
+    "onPlayBackSeek(time, seekOffset) -- onPlayBackSeek method.\n"
+    "\n"
+    "time           : integer - time to seek to.\n"
+    "seekOffset     : integer - ?.\n"
+    "\n"
+    "Will be called when user seeks to a time");
+
+  PyObject* Player_OnPlayBackSeek(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // Player_OnPlayBackSeekChapter(chapter)
+  PyDoc_STRVAR(onPlayBackSeekChapter__doc__,
+    "onPlayBackSeekChapter(chapter) -- onPlayBackSeekChapter method.\n"
+    "\n"
+    "chapter        : integer - chapter to seek to.\n"
+    "\n"
+    "Will be called when user performs a chapter seek");
+
+  PyObject* Player_OnPlayBackSeekChapter(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // Player_OnQueueNextItem()
+  PyDoc_STRVAR(onQueueNextItem__doc__,
+    "onQueueNextItem() -- onQueueNextItem method.\n"
+    "\n"
+    "Will be called when player requests next item");
+
+  PyObject* Player_OnQueueNextItem(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // Player_IsPlaying
   PyDoc_STRVAR(isPlaying__doc__,
-    "isPlaying() -- returns True is xbmc is playing a file.");
+    "isPlaying() -- returns True if xbmc is playing a file.");
 
   PyObject* Player_IsPlaying(PyObject *self, PyObject *args)
   {
@@ -337,7 +394,7 @@ namespace PYXBMC
 
   // Player_IsPlayingAudio
   PyDoc_STRVAR(isPlayingAudio__doc__,
-    "isPlayingAudio() -- returns True is xbmc is playing an audio file.");
+    "isPlayingAudio() -- returns True if xbmc is playing an audio file.");
 
   PyObject* Player_IsPlayingAudio(PyObject *self, PyObject *args)
   {
@@ -694,6 +751,10 @@ namespace PYXBMC
     {(char*)"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
     {(char*)"onPlayBackPaused", (PyCFunction)Player_OnPlayBackPaused, METH_VARARGS, onPlayBackPaused__doc__},
     {(char*)"onPlayBackResumed", (PyCFunction)Player_OnPlayBackResumed, METH_VARARGS, onPlayBackResumed__doc__},
+    {(char*)"onPlayBackSpeedChanged", (PyCFunction)Player_OnPlayBackSpeedChanged, METH_VARARGS, onPlayBackSpeedChanged__doc__},
+    {(char*)"onPlayBackSeek", (PyCFunction)Player_OnPlayBackSeek, METH_VARARGS, onPlayBackSeek__doc__},
+    {(char*)"onPlayBackSeekChapter", (PyCFunction)Player_OnPlayBackSeekChapter, METH_VARARGS, onPlayBackSeekChapter__doc__},
+    {(char*)"onQueueNextItem", (PyCFunction)Player_OnQueueNextItem, METH_VARARGS, onQueueNextItem__doc__},
     {(char*)"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
     {(char*)"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
     {(char*)"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},
