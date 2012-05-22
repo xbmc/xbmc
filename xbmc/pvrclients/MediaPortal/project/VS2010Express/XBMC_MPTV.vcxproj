@@ -132,6 +132,7 @@
     <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp" />
     <ClCompile Include="..\..\lib\tsreader\RTSPClient.cpp" />
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\windows\File.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="..\..\FileUtils.h" />
     <ClInclude Include="..\..\GenreTable.h" />
     <ClInclude Include="..\..\lib\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="..\..\lib\tsreader\File.h" />
     <ClInclude Include="..\..\lib\tsreader\FileReader.h" />
     <ClInclude Include="..\..\lib\tsreader\MemoryBuffer.h" />
     <ClInclude Include="..\..\lib\tsreader\MemoryReader.h" />

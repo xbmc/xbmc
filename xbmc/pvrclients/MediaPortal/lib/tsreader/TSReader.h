@@ -41,7 +41,7 @@ public:
   long Open(const char* pszFileName);
   long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes);
   void Close();
-  unsigned long SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
+  int64_t SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
   int64_t GetFileSize();
   int64_t GetFilePointer();
   bool OnZap(const char* pszFileName, int64_t timeShiftBufferPos, long timeshiftBufferID);

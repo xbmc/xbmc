@@ -296,7 +296,7 @@ bool CTsReader::OnZap(const char* pszFileName, int64_t timeShiftBufferPos, long 
 {
 #ifdef TARGET_WINDOWS
   string newFileName;
-  long result;
+  long result = S_FALSE;
 
   XBMC->Log(LOG_NOTICE, "CTsReader::OnZap(%s)", pszFileName);
 
@@ -315,14 +315,12 @@ bool CTsReader::OnZap(const char* pszFileName, int64_t timeShiftBufferPos, long 
     {
       int64_t pos_before, pos_after;
       pos_before = m_fileReader->GetFilePointer();
-      result = m_fileReader->SetFilePointer(0LL, FILE_END);
-      pos_after = m_fileReader->GetFilePointer();
+      pos_after = m_fileReader->SetFilePointer(0LL, FILE_END);
 
       if ((timeShiftBufferPos > 0) && (pos_after > timeShiftBufferPos))
       {
         /* Move backward */
-        result = m_fileReader->SetFilePointer((timeShiftBufferPos-pos_after), FILE_CURRENT);
-        pos_after = m_fileReader->GetFilePointer();
+        pos_after = m_fileReader->SetFilePointer((timeShiftBufferPos-pos_after), FILE_CURRENT);
       }
 
       XBMC->Log(LOG_DEBUG,"OnZap: move from %I64d to %I64d tsbufpos  %I64d", pos_before, pos_after, timeShiftBufferPos);
@@ -418,7 +416,7 @@ int64_t CTsReader::GetFilePointer()
   return m_fileReader->GetFilePointer();
 }
 
-unsigned long CTsReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
+int64_t CTsReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
 {
   return m_fileReader->SetFilePointer(llDistanceToMove, dwMoveMethod);
 }

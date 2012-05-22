@@ -66,7 +66,7 @@ class MultiFileReader : public FileReader
 
     virtual bool IsFileInvalid();
 
-    virtual unsigned long SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
+    virtual int64_t SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
     virtual int64_t GetFilePointer();
     virtual int64_t GetFileSize();
 

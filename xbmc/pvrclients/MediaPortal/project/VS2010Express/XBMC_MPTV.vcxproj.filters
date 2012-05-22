@@ -21,6 +21,9 @@
     <Filter Include="Source Files\tinyXML2">
       <UniqueIdentifier>{a365b5cd-6962-4e53-9c35-55934619a180}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\tsreader\windows">
+      <UniqueIdentifier>{b0c925ea-4335-4e2a-8f8a-b63d393f81fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\channels.cpp">
@@ -91,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="..\..\lib\tinyxml2\tinyxml2.cpp">
       <Filter>Source Files\tinyXML2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\windows\File.cpp">
+      <Filter>Source Files\tsreader\windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +171,9 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\tinyxml2\tinyxml2.h">
       <Filter>Header Files\tinyXML2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\File.h">
+      <Filter>Header Files\tsreader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
