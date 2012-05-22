@@ -546,7 +546,7 @@ void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
       return;
   }
 
-  m_artist.push_back(albumArtist);
+  m_albumArtist.push_back(albumArtist);
 }
 
 void CMusicInfoTag::AppendGenre(const CStdString &genre)
