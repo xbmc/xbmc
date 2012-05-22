@@ -345,7 +345,7 @@ public:
   {
   public:
     CStdString name;
-    int playcount;
+    VECMOVIES movies;
   };
 
   CVideoDatabase(void);

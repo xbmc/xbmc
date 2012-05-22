@@ -4253,96 +4253,110 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // get primary sets for movies
-    CStdString strSQL;
-    if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-    {
-      strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,path.strPath,files.playCount FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=sets.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath ");
-      if (!filter.where.empty())
-        strSQL += " WHERE (" + filter.where + ")";
-    }
-    else
-    {
-      CStdString group;
-      strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,COUNT(1) AS c,count(files.playCount) FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile ");
-      group = " GROUP BY sets.idSet HAVING c>1";
-      if (!filter.where.empty())
-        strSQL += " WHERE (" + filter.where + ")";
-      strSQL += group;
-    }
+    CStdString strSQL = "SELECT movieview.*, sets.idSet, sets.strSet FROM movieview"
+                       " JOIN setlinkmovie ON movieview.idMovie = setlinkmovie.idMovie"
+                       " JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet = sets.idSet"
+                       " JOIN sets ON setlinkmovie.idSet = sets.idSet ";
+    if (!filter.join.empty())
+      strSQL += filter.join;
+    if (!filter.where.empty())
+      strSQL += " WHERE (" + filter.where + ")";
+    strSQL += " ORDER BY sets.idSet";
+    if (!filter.order.empty())
+      strSQL += "," + filter.order;
+    if (!filter.limit.empty())
+      strSQL += " LIMIT " + filter.limit;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
 
-    if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+    map<int, CSetInfo> mapSets;
+    map<int, CSetInfo>::iterator it;
+    while (!m_pDS->eof())
     {
-      map<int, CSetInfo > mapSets;
-      map<int, CSetInfo >::iterator it;
-      while (!m_pDS->eof())
+      if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser &&
+          !g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("movieview.strPath").get_asString()),g_settings.m_videoSources))
+        continue;
+
+      // get the setid and check if we already have this set
+      int idSet = m_pDS->fv("sets.idSet").get_asInt();
+      if ((it = mapSets.find(idSet)) == mapSets.end())
       {
-        int idSet = m_pDS->fv(0).get_asInt();
+        // add the set to the list of sets
         CSetInfo set;
-        set.name = m_pDS->fv(1).get_asString();
-        set.playcount = m_pDS->fv(3).get_asInt();
-        it = mapSets.find(idSet);
-        // was this set already found?
-        if (it == mapSets.end())
-        {
-          // check path
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv(2).get_asString()),g_settings.m_videoSources))
-            mapSets.insert(make_pair(idSet, set));
-        }
-        m_pDS->next();
-      }
-      m_pDS->close();
+        set.name = m_pDS->fv("sets.strSet").get_asString();
 
-      for (it=mapSets.begin();it != mapSets.end();++it)
-      {
-        CFileItemPtr pItem(new CFileItem(it->second.name));
-        pItem->GetVideoInfoTag()->m_iDbId = it->first;
-        pItem->GetVideoInfoTag()->m_type = "set";
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->SetPath(strBaseDir + strDir);
-        pItem->m_bIsFolder=true;
-        pItem->GetVideoInfoTag()->m_strPath = pItem->GetPath();
-        pItem->GetVideoInfoTag()->m_playCount = it->second.playcount;
-        pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
-
-        if (!items.Contains(pItem->GetPath()))
-        {
-          pItem->SetLabelPreformated(true);
-          items.Add(pItem);
-        }
+        pair<map<int, CSetInfo>::iterator, bool> insertIt = mapSets.insert(make_pair(idSet, set));
+        it = insertIt.first;
       }
+
+      // add the movie's details to the set
+      it->second.movies.push_back(GetDetailsForMovie(m_pDS));
+
+      m_pDS->next();
     }
-    else
+    m_pDS->close();
+    
+    for (it = mapSets.begin(); it != mapSets.end(); it++)
     {
-      while (!m_pDS->eof())
+      // we only handle sets with at least 2 movies
+      if (it->second.movies.size() <= 1)
+        continue;
+
+      CFileItemPtr pItem(new CFileItem(it->second.name));
+      pItem->GetVideoInfoTag()->m_iDbId = it->first;
+      pItem->GetVideoInfoTag()->m_type = "set";
+      CStdString strDir;
+      strDir.Format("%s%ld/", strBaseDir.c_str(), it->first);
+      pItem->SetPath(strDir);
+      pItem->m_bIsFolder = true;
+      pItem->GetVideoInfoTag()->m_strPath = pItem->GetPath();
+      pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
+
+      // calculate the remaining metadata from the movies
+      int ratings = 0;
+      bool iWatched = 0; // have all the movies been played at least once?
+      for (VECMOVIES::const_iterator movie = it->second.movies.begin(); movie != it->second.movies.end(); movie++)
       {
-        CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
-        pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(0).get_asInt();
-        pItem->GetVideoInfoTag()->m_type = "set";
-        CStdString strDir;
-        strDir.Format("%ld/", m_pDS->fv(0).get_asInt());
-        pItem->SetPath(strBaseDir + strDir);
-        pItem->m_bIsFolder=true;
-        pItem->GetVideoInfoTag()->m_strPath = pItem->GetPath();
-        pItem->SetLabelPreformated(true);
+        // handle rating
+        if (movie->m_fRating > 0.0f)
+        {
+          ratings++;
+          pItem->GetVideoInfoTag()->m_fRating += movie->m_fRating;
+        }
         
-        // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
-        // only if the number of videos watched is equal to the total number (i.e. every video watched)
-        pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(3).get_asInt() == m_pDS->fv(2).get_asInt()) ? 1 : 0;
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
-        pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
-        items.Add(pItem);
-        m_pDS->next();
+        // handle year
+        if (movie->m_iYear > pItem->GetVideoInfoTag()->m_iYear)
+          pItem->GetVideoInfoTag()->m_iYear = movie->m_iYear;
+        
+        // handle lastplayed
+        if (movie->m_lastPlayed.IsValid() && movie->m_lastPlayed > pItem->GetVideoInfoTag()->m_lastPlayed)
+          pItem->GetVideoInfoTag()->m_lastPlayed = movie->m_lastPlayed;
+        
+        // handle dateadded
+        if (movie->m_dateAdded.IsValid() && movie->m_dateAdded > pItem->GetVideoInfoTag()->m_dateAdded)
+          pItem->GetVideoInfoTag()->m_dateAdded = movie->m_dateAdded;
+        
+        // handle playcount/watched
+        pItem->GetVideoInfoTag()->m_playCount += movie->m_playCount;
+        if (movie->m_playCount > 0)
+          iWatched++;
       }
-      m_pDS->close();
+      
+      if (ratings > 1)
+        pItem->GetVideoInfoTag()->m_fRating /= ratings;
+        
+      pItem->GetVideoInfoTag()->m_playCount = iWatched >= it->second.movies.size() ? (pItem->GetVideoInfoTag()->m_playCount / it->second.movies.size()) : 0;
+      pItem->SetProperty("total", it->second.movies.size());
+      pItem->SetProperty("watched", iWatched);
+      pItem->SetProperty("unwatched", it->second.movies.size() - iWatched);      
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+
+      if (!items.Contains(pItem->GetPath()))
+        items.Add(pItem);
     }
 
-//    CLog::Log(LOGDEBUG, "%s Time: %d ms", XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
@@ -5040,7 +5054,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
       Filter setsFilter;
       if (!filter.where.empty() || !filter.join.empty())
       {
-        setsFilter.where = "movie.idMovie in (select movieview.idMovie from movieview ";
+        setsFilter.where = "movieview.idMovie in (select movieview.idMovie from movieview ";
         if (!filter.join.empty())
           setsFilter.where += filter.join;
         if (!filter.where.empty())
