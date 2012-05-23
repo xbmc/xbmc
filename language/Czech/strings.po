@@ -2623,7 +2623,7 @@ msgstr "Název bezdrátové sítě (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "Vzdálené ovládání"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -3031,7 +3031,7 @@ msgstr "Chcete se připojit k nalezenému systému?"
 
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3051,7 +3051,7 @@ msgstr "- Použít ochranu heslem"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3283,7 +3283,7 @@ msgstr "Webový prohlížeč"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
+msgstr "Videa"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3291,7 +3291,7 @@ msgstr "Videa/Seznam stop"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr ""
+msgstr "Přihlašovací obrazovka"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3299,7 +3299,7 @@ msgstr "Nastavení - Profily"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr ""
+msgstr "Prohlížeč doplňků"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -4999,19 +4999,19 @@ msgstr "Napájení"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Získat"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Činnost při vložení audio CD"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "Přehrát"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Vysunout disk po dokončení získávání CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -6371,7 +6371,7 @@ msgstr "Vyčkejte"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6539,7 +6539,7 @@ msgstr "Vybrat umístění"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
+msgstr "Filmy jsou v oddělených složkách, které odpovídají názvu filmu"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -7047,7 +7047,7 @@ msgstr "Filmová série"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr ""
+msgstr "Setřídí filmy do sad"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7451,11 +7451,11 @@ msgstr "Kořenový adresář souborového systému"
 
 msgctxt "#21454"
 msgid "Cache full"
-msgstr ""
+msgstr "Vyrovnávací paměť plna"
 
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
+msgstr "Potřebná vyrovnávací paměť pro dosažení hodnoty pro přehrávání"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -8299,27 +8299,27 @@ msgstr "Upozorňování"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Skrýt cizí"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Vybrat ze všech názvů..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Zobrazit menu bluray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Přehrát hlavní titul: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Titul: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Vyberte položku k přehrání"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8639,7 +8639,7 @@ msgstr "Remote communication server"
 
 msgctxt "#33200"
 msgid "Detected New Connection"
-msgstr ""
+msgstr "Zjištěno nové spojení"
 
 msgctxt "#34000"
 msgid "Lame"
@@ -8719,31 +8719,31 @@ msgstr "Nelze nalézt předchozí položku pro přehrávání"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
-msgstr ""
+msgstr "Spouštění zeroconf selhalo"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
+msgstr "Je nainstalována služba Apple Bonjour? Pro více informací konzultujte soubor se záznamem."
 
 msgctxt "#34400"
 msgid "Video Rendering"
-msgstr ""
+msgstr "Renderování videa"
 
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
+msgstr "Selhala inicializace filtrů/škálování videa, používám bilineární škálování"
 
 msgctxt "#34402"
 msgid "Failed to initialize audio device"
-msgstr ""
+msgstr "Selhala inicializace zvukového zařízení"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
-msgstr ""
+msgstr "Zkontrolujte svá nastavení zvuku"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Použít gesta pro navigaci:"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
@@ -8799,7 +8799,7 @@ msgstr "Rozložení kláves povoleno"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Nepoužívat upravené klávesové mapy pro zařízení"
 
 msgctxt "#35500"
 msgid "Location"
@@ -8895,29 +8895,29 @@ msgstr "Použít nastavení jazyka v TV"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Připojeno k HDMI zařízení"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Nastavit XBMC aktivním zdrojem při spuštění"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Fyzická adresa (přepíše port HDMI)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "Port COM (ponechte prázdné pokud jej nepotřebujete)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Nastavení aktualizováno"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Načtení nového nastavení selhalo. Prosím zkontrolujte Vaše nastavení."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Poslat příkaz 'neaktivní zdroj' při vypnutí XMBC"
 
