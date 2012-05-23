@@ -84,21 +84,6 @@ XBPython::~XBPython()
   CAnnouncementManager::RemoveAnnouncer(this);
 }
 
-// message all registered callbacks that xbmc stopped playing
-void XBPython::OnPlayBackEnded()
-{
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackEnded();
-      it++;
-    }
-  }
-}
-
 void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   if (flag & VideoLibrary)
@@ -120,7 +105,22 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
   }
 }
 
-// message all registered callbacks that we started playing
+// message all registered callbacks that playback has ended (last item played)
+void XBPython::OnPlayBackEnded()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
+    {
+      ((IPlayerCallback*)(*it))->OnPlayBackEnded();
+      it++;
+    }
+  }
+}
+
+// message all registered callbacks that playback has started
 void XBPython::OnPlayBackStarted()
 {
   CSingleLock lock(m_critSection);
@@ -135,7 +135,7 @@ void XBPython::OnPlayBackStarted()
   }
 }
 
-// message all registered callbacks that we paused playing
+// message all registered callbacks that playback was paused
 void XBPython::OnPlayBackPaused()
 {
   CSingleLock lock(m_critSection);
@@ -150,7 +150,7 @@ void XBPython::OnPlayBackPaused()
   }
 }
 
-// message all registered callbacks that we resumed playing
+// message all registered callbacks that playback was resumed
 void XBPython::OnPlayBackResumed()
 {
   CSingleLock lock(m_critSection);
@@ -165,7 +165,7 @@ void XBPython::OnPlayBackResumed()
   }
 }
 
-// message all registered callbacks that user stopped playing
+// message all registered callbacks that playback was stopped
 void XBPython::OnPlayBackStopped()
 {
   CSingleLock lock(m_critSection);
@@ -175,6 +175,66 @@ void XBPython::OnPlayBackStopped()
     while (it != m_vecPlayerCallbackList.end())
     {
       ((IPlayerCallback*)(*it))->OnPlayBackStopped();
+      it++;
+    }
+  }
+}
+
+// message all registered callbacks that playback speed changed (FF/RW)
+void XBPython::OnPlayBackSpeedChanged(int iSpeed)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
+    {
+      ((IPlayerCallback*)(*it))->OnPlayBackSpeedChanged(iSpeed);
+      it++;
+    }
+  }
+}
+
+// message all registered callbacks that player is seeking
+void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
+    {
+      ((IPlayerCallback*)(*it))->OnPlayBackSeek(iTime, seekOffset);
+      it++;
+    }
+  }
+}
+
+// message all registered callbacks that player chapter seeked
+void XBPython::OnPlayBackSeekChapter(int iChapter)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
+    {
+      ((IPlayerCallback*)(*it))->OnPlayBackSeekChapter(iChapter);
+      it++;
+    }
+  }
+}
+
+// message all registered callbacks that next item has been queued
+void XBPython::OnQueueNextItem()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
+    {
+      ((IPlayerCallback*)(*it))->OnQueueNextItem();
       it++;
     }
   }

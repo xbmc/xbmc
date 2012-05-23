@@ -30,18 +30,26 @@ int Py_XBMC_Event_OnPlayBackEnded(void* arg);
 int Py_XBMC_Event_OnPlayBackStopped(void* arg);
 int Py_XBMC_Event_OnPlayBackPaused(void* arg);
 int Py_XBMC_Event_OnPlayBackResumed(void* arg);
+int Py_XBMC_Event_OnPlayBackSpeedChanged(int iSpeed);
+int Py_XBMC_Event_OnPlayBackSeek(int iTime, int seekOffset);
+int Py_XBMC_Event_OnPlayBackSeekChapter(int iChapter);
+int Py_XBMC_Event_OnQueueNextItem(void* arg);
 
 class CPythonPlayer : public IPlayerCallback
 {
 public:
   CPythonPlayer();
   void    SetCallback(PyThreadState *state, PyObject *object);
+
   void    OnPlayBackEnded();
   void    OnPlayBackStarted();
   void    OnPlayBackPaused();
   void    OnPlayBackResumed();
   void    OnPlayBackStopped();
-  void    OnQueueNextItem() {}; // unimplemented
+  void    OnPlayBackSpeedChanged(int iSpeed);
+  void    OnPlayBackSeek(int iTime, int seekOffset);
+  void    OnPlayBackSeekChapter(int iChapter);
+  void    OnQueueNextItem();
 
   void    Acquire();
   void    Release();
