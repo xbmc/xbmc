@@ -643,6 +643,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int compareString = ConditionalStringParameter(label);
       return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
     }
+    else if (cat.name == "istrue" && cat.num_params() == 1)
+      return AddMultiInfo(GUIInfo(VALUE_IS_TRUE, TranslateSingleString(cat.param())));
     else if (cat.name == "integergreaterthan" && cat.num_params() == 2)
     {
       int info = TranslateSingleString(cat.param(0));
@@ -1816,8 +1818,8 @@ bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWind
  TODO: what to do with item-based infobools...
  these crop up:
  1. if condition is between LISTITEM_START and LISTITEM_END
- 2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
-    corresponding label is between LISTITEM_START and LISTITEM_END
+ 2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN, VALUE_IS_TRUE
+    and the corresponding label is between LISTITEM_START and LISTITEM_END
 
  In both cases they shouldn't be in our cache as they depend on items outside of our control atm.
 
@@ -2622,6 +2624,18 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (index >= 0 && index < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size())
             return true;
           return false;
+        }
+        break;
+      case VALUE_IS_TRUE:
+        {
+          // note: Get*Image() falls back to Get*Label(), so this should cover all of them
+          CStdString value;
+          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            value = GetItemImage((const CFileItem *)item, info.GetData1());
+          else
+            value = GetImage(info.GetData1(), contextWindow);
+
+          bReturn = (value.Equals("true") || value.Equals("yes") || value.Equals("on") || value.Equals("1"));
         }
         break;
     }
