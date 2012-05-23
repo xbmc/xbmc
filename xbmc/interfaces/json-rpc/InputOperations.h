@@ -21,6 +21,7 @@
  */
 
 #include "JSONRPC.h"
+#include "guilib/Key.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 
@@ -29,7 +30,9 @@ namespace JSONRPC
   class CInputOperations
   {
   public:
-    static uint32_t GetKey();
+    static CKey GetKey();
+
+    static JSONRPC_STATUS SendText(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
     static JSONRPC_STATUS Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Right(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
@@ -42,7 +45,7 @@ namespace JSONRPC
     static JSONRPC_STATUS Info(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static JSONRPC_STATUS SendKey(uint32_t keyCode);
+    static JSONRPC_STATUS SendKey(uint32_t keyCode, bool unicode = false);
     static JSONRPC_STATUS SendAction(int actionID, bool wakeScreensaver = true, bool waitResult = false);
 
   private:
@@ -50,6 +53,6 @@ namespace JSONRPC
     static bool        handleScreenSaver();
 
     static CCriticalSection m_critSection;
-    static uint32_t m_key;
+    static CKey m_key;
   };
 }

@@ -2328,6 +2328,17 @@ namespace JSONRPC
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
+    "\"Input.SendText\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Send a generic (unicode) text\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": ["
+        "{ \"name\": \"text\", \"type\": \"string\", \"minLength\": 1, \"required\": true, \"description\": \"Unicode text\" },"
+        "{ \"name\": \"done\", \"type\": \"boolean\", \"default\": true, \"description\": \"Whether this is the whole input or not (closes an open input dialog if true).\" }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
     "\"Input.Left\": {"
       "\"type\": \"method\","
       "\"description\": \"Navigate left in GUI\","
