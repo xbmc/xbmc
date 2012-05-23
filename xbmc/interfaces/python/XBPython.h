@@ -56,7 +56,10 @@ public:
   virtual void OnPlayBackPaused();
   virtual void OnPlayBackResumed();
   virtual void OnPlayBackStopped();
-  virtual void OnQueueNextItem() {};
+  virtual void OnPlayBackSpeedChanged(int iSpeed);
+  virtual void OnPlayBackSeek(int iTime, int seekOffset);
+  virtual void OnPlayBackSeekChapter(int iChapter);
+  virtual void OnQueueNextItem();
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
   void RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
