@@ -27,7 +27,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
 
 namespace PYXBMC
 {
@@ -306,7 +305,7 @@ namespace PYXBMC
     "\n"
     // Handle all props available
     "*Note, choices are (author, changelog, description, disclaimer, fanart, icon, id,\n"
-    "                    library, name, path, profile, stars, summary, type, version)\n"
+    "                    name, path, profile, stars, summary, type, version)\n"
     "\n"
     "       Strings are returned as unicode strings.\n"
     "\n"
@@ -346,8 +345,6 @@ namespace PYXBMC
       label = self->pAddon->Icon();
     else if (strcmpi(id, "id") == 0)
       label = self->pAddon->ID();
-    else if (strcmpi(id, "library") == 0)
-      label = URIUtils::GetFileName(self->pAddon->LibPath());
     else if (strcmpi(id, "name") == 0)
       label = self->pAddon->Name();
     else if (strcmpi(id, "path") == 0)
