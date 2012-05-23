@@ -369,6 +369,15 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
   return false;
 }
 
+bool CMediaManager::HasOpticalDrive()
+{
+#ifdef HAS_DVD_DRIVE
+  if (!strFirstAvailDrive.IsEmpty())
+    return true;
+#endif
+  return false;
+}
+
 DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
 #ifdef HAS_DVD_DRIVE

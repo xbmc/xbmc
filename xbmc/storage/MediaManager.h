@@ -66,6 +66,7 @@ public:
   void RemoveAutoSource(const CMediaSource &share);
   bool IsDiscInDrive(const CStdString& devicePath="");
   bool IsAudio(const CStdString& devicePath="");
+  bool HasOpticalDrive();
   CStdString TranslateDevicePath(const CStdString& devicePath, bool bReturnAsDevice=false);
   DWORD GetDriveStatus(const CStdString& devicePath="");
 #ifdef HAS_DVD_DRIVE
