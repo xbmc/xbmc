@@ -44,6 +44,8 @@ CGUIControl::CGUIControl()
   m_enableCondition = 0;
   m_enabled = true;
   m_diffuseColor = 0xffffffff;
+  m_enabledDiffuseColor = 0xffffffff;
+  m_disabledDiffuseColor = 0x60ffffff;
   m_posX = 0;
   m_posY = 0;
   m_width = 0;
@@ -71,6 +73,8 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
   m_diffuseColor = 0xffffffff;
+  m_enabledDiffuseColor = 0xffffffff;
+  m_disabledDiffuseColor = 0x60ffffff;
   m_forceHidden = false;
   m_visibleCondition = 0;
   m_enableCondition = 0;
@@ -419,6 +423,16 @@ bool CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
   bool changed = m_diffuseColor != color;
   m_diffuseColor = color;
   return changed;
+}
+
+void CGUIControl::SetEnabledColorDiffuse(const CGUIInfoColor &color)
+{
+  m_enabledDiffuseColor = color;
+}
+
+void CGUIControl::SetDisabledColorDiffuse(const CGUIInfoColor &color)
+{
+  m_disabledDiffuseColor = color;
 }
 
 float CGUIControl::GetXPosition() const

@@ -436,12 +436,13 @@ void CGUISelectButtonControl::SetPosition(float posX, float posY)
 
 bool CGUISelectButtonControl::UpdateColors()
 {
+  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
   bool changed = CGUIButtonControl::UpdateColors();
-  changed |= m_imgLeft.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgLeftFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgRight.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgRightFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgBackground.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgLeft.SetDiffuseColor(color);
+  changed |= m_imgLeftFocus.SetDiffuseColor(color);
+  changed |= m_imgRight.SetDiffuseColor(color);
+  changed |= m_imgRightFocus.SetDiffuseColor(color);
+  changed |= m_imgBackground.SetDiffuseColor(color);
 
   return changed;
 }

@@ -580,6 +580,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
+  CGUIInfoColor disabledColorDiffuse(0x60FFFFFF);
   int defaultControl = 0;
   bool  defaultAlways = false;
   CStdString strTmp;
@@ -738,6 +739,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse, parentID);
+  GetInfoColor(pControlNode, "disabledcolordiffuse", disabledColorDiffuse, parentID);
 
   GetConditionalVisibility(pControlNode, visibleCondition, allowHiddenFocus);
   XMLUtils::GetString(pControlNode, "enable", enableCondition);
@@ -1318,7 +1320,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control->SetVisibleCondition(visibleCondition, allowHiddenFocus);
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
-    control->SetColorDiffuse(colorDiffuse);
+    CGUIInfoColor color = control->IsDisabled() ? disabledColorDiffuse : colorDiffuse;
+    control->SetColorDiffuse(color);
+    control->SetEnabledColorDiffuse(colorDiffuse);
+    control->SetDisabledColorDiffuse(disabledColorDiffuse);
     control->SetNavigationActions(upActions, downActions, leftActions, rightActions, backActions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)

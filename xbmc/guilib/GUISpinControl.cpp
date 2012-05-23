@@ -942,12 +942,13 @@ void CGUISpinControl::ChangePage(int amount)
 
 bool CGUISpinControl::UpdateColors()
 {
+  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
   bool changed = CGUIControl::UpdateColors();
   changed |= m_label.UpdateColors();
-  changed |= m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgspinDown.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgspinUp.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgspinUpFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgspinDownFocus.SetDiffuseColor(color);
+  changed |= m_imgspinDown.SetDiffuseColor(color);
+  changed |= m_imgspinUp.SetDiffuseColor(color);
+  changed |= m_imgspinUpFocus.SetDiffuseColor(color);
 
   return changed;
 }

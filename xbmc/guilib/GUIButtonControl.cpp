@@ -239,10 +239,11 @@ void CGUIButtonControl::SetAlpha(unsigned char alpha)
 
 bool CGUIButtonControl::UpdateColors()
 {
+  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
   bool changed = CGUIControl::UpdateColors();
   changed |= m_label.UpdateColors();
-  changed |= m_imgFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgFocus.SetDiffuseColor(color);
+  changed |= m_imgNoFocus.SetDiffuseColor(color);
 
   return changed;
 }

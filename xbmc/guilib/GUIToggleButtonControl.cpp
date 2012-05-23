@@ -130,8 +130,9 @@ void CGUIToggleButtonControl::SetHeight(float height)
 
 bool CGUIToggleButtonControl::UpdateColors()
 {
+  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
   bool changed = CGUIButtonControl::UpdateColors();
-  changed |= m_selectButton.SetColorDiffuse(m_diffuseColor);
+  changed |= m_selectButton.SetColorDiffuse(color);
   changed |= m_selectButton.UpdateColors();
 
   return changed;

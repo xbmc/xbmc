@@ -189,12 +189,13 @@ void CGUIProgressControl::SetInfo(int iInfo)
 
 bool CGUIProgressControl::UpdateColors()
 {
+  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
   bool changed = CGUIControl::UpdateColors();
-  changed |= m_guiBackground.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiRight.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiLeft.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiMid.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiOverlay.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiBackground.SetDiffuseColor(color);
+  changed |= m_guiRight.SetDiffuseColor(color);
+  changed |= m_guiLeft.SetDiffuseColor(color);
+  changed |= m_guiMid.SetDiffuseColor(color);
+  changed |= m_guiOverlay.SetDiffuseColor(color);
 
   return changed;
 }

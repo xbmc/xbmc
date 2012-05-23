@@ -369,12 +369,13 @@ CStdString CGUIScrollBar::GetDescription() const
 
 bool CGUIScrollBar::UpdateColors()
 {
+  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
   bool changed = CGUIControl::UpdateColors();
-  changed |= m_guiBackground.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiBarFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiNibNoFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiNibFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiBackground.SetDiffuseColor(color);
+  changed |= m_guiBarNoFocus.SetDiffuseColor(color);
+  changed |= m_guiBarFocus.SetDiffuseColor(color);
+  changed |= m_guiNibNoFocus.SetDiffuseColor(color);
+  changed |= m_guiNibFocus.SetDiffuseColor(color);
 
   return changed;
 }
