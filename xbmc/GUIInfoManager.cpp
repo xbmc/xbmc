@@ -2785,7 +2785,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(atoi(m_stringParameters[info.GetData1()].c_str())).m_fPct);
     return strCpu;
   }
-  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
+  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_FILEPATH)
     return GetMusicPlaylistInfo(info);
   else if (info.m_info == CONTAINER_PROPERTY)
   {
@@ -3281,7 +3281,8 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
     break;
   case MUSICPLAYER_FILEPATH:
-    if (tag.GetURL().size()) { return tag.GetURL(); }
+    if (!tag.GetURL().IsEmpty())
+      return tag.GetURL();
     break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
