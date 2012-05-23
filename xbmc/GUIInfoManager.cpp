@@ -3581,12 +3581,8 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   // Find a thumb for this file.
   if (!item.HasThumbnail())
   {
-    if (!CVideoThumbLoader::FillThumb(item))
-    {
-      CStdString thumb = CVideoThumbLoader::GetEmbeddedThumbURL(item);
-      if (CTextureCache::Get().HasCachedImage(thumb))
-        item.SetThumbnailImage(thumb);
-    }
+    CVideoThumbLoader loader;
+    loader.LoadItem(m_currentFile);
   }
 
   // find a thumb for this stream
