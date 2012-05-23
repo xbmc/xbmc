@@ -5062,15 +5062,23 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
         setsFilter.where += ")";
       }
       GetSetsByWhere("videodb://1/7/", setsFilter, items);
-      CStdString movieSetsWhere = "movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)";
+      CStdString movieSetsWhere;
+      if (items.Size() > 0)
+      {
+        movieSetsWhere = "movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet WHERE s1.idSet IN (";
+        for (int index = 0; index < items.Size(); index++)
+          movieSetsWhere.AppendFormat("%s%d", index > 0 ? "," : "", items[index]->GetVideoInfoTag()->m_iDbId);
+        movieSetsWhere += "))";
+      }
       if (!filter.join.empty())
         strSQL += filter.join;
       if (!filter.where.empty())
       {
         strSQL += " WHERE (" + filter.where + ")";
-        strSQL += " AND " + movieSetsWhere;
+        if (!movieSetsWhere.empty())
+          strSQL += " AND " + movieSetsWhere;
       }
-      else
+      else if (!movieSetsWhere.empty())
         strSQL += " WHERE " + movieSetsWhere;
     }
     else
@@ -5093,7 +5101,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
       return iRowsFound == 0;
 
     // get data from returned rows
-    items.Reserve(iRowsFound);
+    items.Reserve(items.Size() + iRowsFound);
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
