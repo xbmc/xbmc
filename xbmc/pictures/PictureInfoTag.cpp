@@ -249,6 +249,11 @@ void CPictureInfoTag::Serialize(CVariant& value)
   value["transmissionreference"] = CStdString(m_iptcInfo.TransmissionReference);
 }
 
+void CPictureInfoTag::ToSortable(SortItem& sortable)
+{
+  
+}
+
 void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t length)
 {
   CStdString temp;
