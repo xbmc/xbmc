@@ -60,7 +60,9 @@ namespace XFILE
     IFile *GetFileImp();
 
     virtual CStdString GetContent();
-
+    
+    virtual void SetFlags(unsigned int flags);
+      
   private:
     CCacheStrategy *m_pCache;
     bool      m_bDeleteCache;
@@ -78,6 +80,7 @@ namespace XFILE
     unsigned     m_writeRateActual;
     bool         m_cacheFull;
     CCriticalSection m_sync;
+    unsigned int m_flags;
   };
 
 }

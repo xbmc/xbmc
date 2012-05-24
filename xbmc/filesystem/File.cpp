@@ -233,10 +233,13 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     if (m_flags & READ_CACHED)
     {
       m_pFile = new CFileCache();
+      m_pFile->SetFlags(m_flags);
       return m_pFile->Open(url);
     }
 
     m_pFile = CFileFactory::CreateLoader(url);
+    m_pFile->SetFlags(m_flags);
+    
     if (!m_pFile)
       return false;
 
