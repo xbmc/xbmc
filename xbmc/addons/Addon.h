@@ -132,6 +132,14 @@ public:
    */
   virtual CStdString GetSetting(const CStdString& key);
 
+  /*! \brief Retrieve a particular settings type
+   If a previously configured user setting is available, we return it's type, else we return TYPE_UNKNOWN
+   \param key the id of the setting to retrieve
+   \return the current value of the setting, or the default if the setting has yet to be configured.
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  virtual SETTINGS_TYPE GetSettingType(const CStdString &key);
+
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 
