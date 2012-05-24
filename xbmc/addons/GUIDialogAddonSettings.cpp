@@ -135,6 +135,7 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       CStdString      id = message.GetStringParam(0);
       CStdString value   = message.GetStringParam(1);
       m_settings[id] = CleanString(value);
+      SetProperty(id, m_settings[id]);
       if (GetFocusedControl())
       {
         int iControl = GetFocusedControl()->GetID();
@@ -161,6 +162,7 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
       {
         const char* id = setting->Attribute("id");
         m_settings[id] = CleanString(setting->Attribute("default"));
+        SetProperty(id, m_settings[id]);
         CreateControls();
         CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
         OnMessage(msg);
@@ -485,6 +487,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
       }
       m_settings[id] = value;
+      SetProperty(id, m_settings[id]);
       break;
     }
     setting = setting->NextSiblingElement("setting");
@@ -562,6 +565,8 @@ void CGUIDialogAddonSettings::CreateSections()
       button->SetID(buttonID++);
       button->SetLabel(label);
       button->SetVisible(true);
+      button->SetEnableCondition(GetCondition(category->Attribute("enable")));
+      button->SetVisibleCondition(GetCondition(category->Attribute("visible")));
       group->AddControl(button);
     }
 
@@ -571,7 +576,10 @@ void CGUIDialogAddonSettings::CreateSections()
     {
       const char *id = setting->Attribute("id");
       if (id)
+      {
         m_settings[id] = CleanString(m_addon->GetSetting(id));
+        SetProperty(id, m_settings[id]);
+      }
       setting = setting->NextSiblingElement("setting");
     }
     category = category->NextSiblingElement("category");
@@ -911,16 +919,21 @@ void CGUIDialogAddonSettings::EnableControls()
     const CGUIControl* control = GetControl(controlId);
     if (control)
     {
-      // set enable status
-      if (setting->Attribute("enable"))
-        ((CGUIControl*) control)->SetEnabled(GetBoolCondition(setting->Attribute("enable"), controlId));
+      // set enable condition
+      CStdString condition = GetCondition(setting->Attribute("enable"));
+      if (condition.Find("eq(") == -1 && condition.Find("gt(") == -1 && condition.Find("lt(") == -1)
+        ((CGUIControl*) control)->SetEnableCondition(condition);
       else
-        ((CGUIControl*) control)->SetEnabled(true);
-      // set visible status
-      if (setting->Attribute("visible"))
-        ((CGUIControl*) control)->SetVisible(GetBoolCondition(setting->Attribute("visible"), controlId));
+        ((CGUIControl*) control)->SetEnabled(GetBoolCondition(condition, controlId));
+      // set visible condition
+      condition = GetCondition(setting->Attribute("visible"));
+      if (condition.Find("eq(") == -1 && condition.Find("gt(") == -1 && condition.Find("lt(") == -1)
+      {
+        CStdString allowHiddenFocus = GetCondition(setting->Attribute("allowHiddenFocus"), true);
+        ((CGUIControl*) control)->SetVisibleCondition(condition, allowHiddenFocus);
+      }
       else
-        ((CGUIControl*) control)->SetVisible(true);
+        ((CGUIControl*) control)->SetVisible(GetBoolCondition(condition, controlId));
     }
     setting = setting->NextSiblingElement("setting");
     controlId++;
@@ -933,7 +946,6 @@ bool CGUIDialogAddonSettings::GetBoolCondition(const CStdString &condition, cons
 
   bool bCondition = true;
   bool bCompare = true;
-  bool bControlDependend = false;//flag if the condition depends on another control
   vector<CStdString> conditionVec;
 
   if (condition.Find("+") >= 0)
@@ -954,8 +966,6 @@ bool CGUIDialogAddonSettings::GetBoolCondition(const CStdString &condition, cons
     if (!control2)
       continue;
       
-    bControlDependend = true; //once we are here - this condition depends on another control
-
     CStdString value;
     switch (control2->GetControlType())
     {
@@ -1007,12 +1017,7 @@ bool CGUIDialogAddonSettings::GetBoolCondition(const CStdString &condition, cons
         bCondition |= (atoi(value) < atoi(condVec[2]));
     }
   }
-  
-  if (!bControlDependend)//if condition doesn't depend on another control - try if its an infobool expression
-  {
-    bCondition = g_infoManager.EvaluateBool(condition);
-  }
-  
+
   return bCondition;
 }
 
@@ -1084,6 +1089,8 @@ void CGUIDialogAddonSettings::SetDefaults()
           m_settings[id] = "0";
         else if (type && 0 != strcmpi(type, "action"))
           m_settings[id] = "";
+
+        SetProperty(id, m_settings[id]);
       }
       setting = setting->NextSiblingElement("setting");
     }
@@ -1147,6 +1154,8 @@ CStdString CGUIDialogAddonSettings::CleanString(const char *value) const
   // localize values
   CStdString strValue = CGUIInfoLabel::ReplaceLocalize(TranslateTokens(value));
   strValue = CGUIInfoLabel::ReplaceAddonStrings(strValue);
+  // replace "Addon.Setting(" with "Window.Property" as a convenience for saner skinning.
+  strValue.Replace("Addon.Setting(", "Window.Property(");
 
   return strValue;
 }
