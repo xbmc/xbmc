@@ -110,6 +110,9 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
           m_bConfirmed = true;
           SaveSettings();
         }
+        if (iControl == ID_BUTTON_OK && !m_closeAction.IsEmpty())
+          g_application.getApplicationMessenger().ExecBuiltIn(m_closeAction);
+
         Close();
         return true;
       }
@@ -178,6 +181,7 @@ void CGUIDialogAddonSettings::OnInitWindow()
 {
   m_currentSection = 0;
   m_totalSections = 1;
+  m_closeAction.Empty();
   CreateSections();
   CreateControls();
   CGUIDialogBoxBase::OnInitWindow();
@@ -573,14 +577,18 @@ void CGUIDialogAddonSettings::CreateSections()
   if (originalButton)
     originalButton->SetVisible(false);
 
+  // grab any onclose action
+  const TiXmlElement *settings = m_addon->GetSettingsXML();
+  m_closeAction = CleanString(settings->Attribute("onclose"));
+
   // clear the category group
   FreeSections();
 
   // grab our categories
-  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
+  const TiXmlElement *category = settings->FirstChildElement("category");
   if (!category) // add a default one...
     category = m_addon->GetSettingsXML();
- 
+
   int buttonID = CONTROL_START_SECTION;
   while (category)
   { // add a category
