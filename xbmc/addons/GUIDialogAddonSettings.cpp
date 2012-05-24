@@ -1073,9 +1073,18 @@ CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting
   if (!value)
     return "";
   CStdString prefix(subSetting ? "- " : "");
+  CStdString strValue = value;
+
   if (StringUtils::IsNaturalNumber(value))
-    return prefix + m_addon->GetString(atoi(value));
-  return prefix + value;
+  {
+    // first we try the addon's strings, then we try XBMC strings.
+    if (!m_addon->GetString(atoi(value)).IsEmpty())
+      strValue = m_addon->GetString(atoi(value));
+    else if (!g_localizeStrings.Get(atoi(value)).IsEmpty())
+      strValue = g_localizeStrings.Get(atoi(value));
+  }
+
+  return prefix + strValue;
 }
 
 // Go over all the settings and set their default values
