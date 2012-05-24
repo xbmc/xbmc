@@ -130,7 +130,7 @@ const char *CXBMCTinyXML::Parse(CStdString &data, TiXmlParsingData *prevData, Ti
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
   size_t pos = 0;
   CRegExp re(true);
-  re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4});.*");
+  re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
   while ((pos = data.find("&", pos)) != CStdString::npos)
   {
     CStdString tmp = data.substr(pos, pos + MAX_ENTITY_LENGTH);
