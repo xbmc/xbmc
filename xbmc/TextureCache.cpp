@@ -75,7 +75,7 @@ bool CTextureCache::HasCachedImage(const CStdString &url)
   return !GetCachedImage(url, cachedHash).IsEmpty();
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash)
+CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash, bool trackUsage)
 {
   cachedHash.clear();
   CStdString url = UnwrapImageURL(image);
@@ -87,7 +87,8 @@ CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &ca
   CTextureDetails details;
   if (GetCachedTexture(url, details))
   {
-    IncrementUseCount(details);
+    if (trackUsage)
+      IncrementUseCount(details);
     return GetCachedPath(details.file);
   }
   return "";
@@ -132,7 +133,7 @@ CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
 {
   CStdString cachedHash;
-  CStdString path(GetCachedImage(url, cachedHash));
+  CStdString path(GetCachedImage(url, cachedHash, true));
   needsRecaching = !cachedHash.IsEmpty();
   if (!path.IsEmpty())
   {
@@ -187,7 +188,7 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
     }
   }
   CStdString cachedHash;
-  return GetCachedImage(url, cachedHash);
+  return GetCachedImage(url, cachedHash, true);
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)
