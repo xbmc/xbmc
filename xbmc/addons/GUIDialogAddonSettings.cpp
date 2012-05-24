@@ -231,14 +231,14 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
   {
     if (controlId == iControl)
     {
+      const char *id = setting->Attribute("id");
+      const char *type = setting->Attribute("type");
+      CStdString value = m_buttonValues[id];
       const CGUIControl* control = GetControl(controlId);
       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
-        const char *id = setting->Attribute("id");
-        const char *type = setting->Attribute("type");
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
-        CStdString value = m_buttonValues[id];
         CStdString label = GetString(CleanString(setting->Attribute("label")));
 
         if (strcmp(type, "text") == 0)
@@ -478,6 +478,24 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         m_buttonValues[id] = value;
         break;
       }
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_RADIO)
+      {
+        value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
+      }
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_SPINEX)
+      {
+        if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
+          value = ((CGUISpinControlEx*) control)->GetLabel();
+        else
+          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+      }
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_SETTINGS_SLIDER)
+      {
+        SetSliderTextValue(control, setting->Attribute("format"));
+        value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+      }
+      m_settings[id] = value;
+      break;
     }
     setting = setting->NextSiblingElement("setting");
     controlId++;
@@ -814,8 +832,8 @@ void CGUIDialogAddonSettings::CreateControls()
         }
         ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings[id]));
       }
-      // Sample: <setting id="mysettingname" type="slider" label="30000" range="5,5,60" option="int" default="5"/>
-      // to make ints from 5-60 with 5 steps
+      // Sample: <setting id="mysettingname" type="slider" label="30000" range="5,5,60" format="%1f. msec,min,max" option="int" default="5"/>
+      // to make ints from 5-60 with 5 steps formatted as min when==5, max when==60 or 25 msec
       else if (strcmpi(type, "slider") == 0)
       {
         pControl = new CGUISettingsSliderControl(*pOriginalSlider);
@@ -853,6 +871,8 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISettingsSliderControl *)pControl)->SetFloatRange(fMin, fMax);
         ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(fInc);
         ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_settings[id]));
+      
+        SetSliderTextValue(pControl, setting->Attribute("format"));
       }
       else if (strcmpi(type, "lsep") == 0)
       {
