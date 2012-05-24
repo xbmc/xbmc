@@ -88,3 +88,8 @@ bool IFile::ReadString(char *szLine, int iLineLength)
   }
   return true;
 }
+
+void IFile::SetFlags(unsigned int flags)
+{
+    m_flags = flags;
+}
