@@ -33,6 +33,7 @@
 #endif
 
 #include "URL.h"
+#include "FileFlags.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -99,6 +100,11 @@ public:
   virtual int IoControl(EIoControl request, void* param) { return -1; }
 
   virtual CStdString GetContent()                            { return "application/octet-stream"; }
+
+  virtual void SetFlags(unsigned int flags);
+    
+private:
+    unsigned int m_flags;
 };
 
 class CRedirectException

@@ -154,8 +154,20 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
+  // Set default sane flags if no flags were set
+    if (m_flags == 0) {
+    // Set sane flags, and ensure that the cache flag gets cleared.
+    unsigned int flags = 0;
+    flags |= READ_NO_CACHE ;
+    flags |= READ_TRUNCATED ;
+    flags |= READ_CHUNKED ;
+    flags &= ~READ_CACHED ;
+    m_flags = flags ; 
+    };
+    
+    
   // opening the source file.
-  if (!m_source.Open(m_sourcePath, READ_NO_CACHE | READ_TRUNCATED | READ_CHUNKED))
+  if (!m_source.Open(m_sourcePath, m_flags))
   {
     CLog::Log(LOGERROR,"%s - failed to open source <%s>", __FUNCTION__, m_sourcePath.c_str());
     Close();
@@ -481,4 +493,14 @@ int CFileCache::IoControl(EIoControl request, void* param)
     return m_seekPossible;
 
   return -1;
+}
+
+void CFileCache::SetFlags(unsigned int flags)
+{
+    // Set sane flags, and ensure that the cache flag gets cleared.
+    flags |= READ_NO_CACHE ;
+    flags |= READ_TRUNCATED ;
+    flags |= READ_CHUNKED ;
+    flags &= ~READ_CACHED ;
+    m_flags = flags;
 }
