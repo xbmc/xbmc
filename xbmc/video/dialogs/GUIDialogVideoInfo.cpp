@@ -231,6 +231,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   // content type to determine visibility, so we'll set the wrong label)
   ClearCastList();
   VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
+  m_movieItem->SetProperty("videodbid", m_movieItem->GetVideoInfoTag()->m_iDbId);
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
   { // music video
     const std::vector<std::string> &artists = m_movieItem->GetVideoInfoTag()->m_artist;
