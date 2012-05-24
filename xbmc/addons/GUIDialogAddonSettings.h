@@ -76,6 +76,7 @@ private:
   CStdString CleanString(const char *value) const;
   CStdString TranslateTokens(const char *value) const;
   void SetSliderTextValue(const CGUIControl *control, const char *format);
+  CStdString GetCondition(const char *condition, bool allowHiddenFocus = false) const;
 
   void SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);

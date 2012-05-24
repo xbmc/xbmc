@@ -1218,3 +1218,13 @@ void CGUIDialogAddonSettings::SetSliderTextValue(const CGUIControl *control, con
 
   ((CGUISettingsSliderControl *)control)->SetTextValue(strValue);
 }
+
+CStdString CGUIDialogAddonSettings::GetCondition(const char *condition, bool allowHiddenFocus /* = false */) const
+{
+  if (!condition && allowHiddenFocus)
+    return "false";
+  else if (!condition)
+    return "true";
+
+  return CleanString(condition);
+}
