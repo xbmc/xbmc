@@ -70,7 +70,7 @@ using XFILE::CDirectory;
 #define CONTROL_HEADING_LABEL           20
 
 #define CONTROL_START_SETTING           100
-#define CONTROL_START_SECTION           200
+#define CONTROL_START_SECTION           300
 
 CGUIDialogAddonSettings::CGUIDialogAddonSettings()
    : CGUIDialogBoxBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")
