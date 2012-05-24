@@ -135,7 +135,7 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
     {
       CStdString      id = message.GetStringParam(0);
       CStdString value   = message.GetStringParam(1);
-      m_settings[id] = value;
+      m_settings[id] = CleanString(value);
       if (GetFocusedControl())
       {
         int iControl = GetFocusedControl()->GetID();
@@ -163,7 +163,7 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
       {
         const char* id = setting->Attribute("id");
         const char* value = setting->Attribute("default");
-        m_settings[id] = value;
+        m_settings[id] = CleanString(value);
         CreateControls();
         CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
         OnMessage(msg);
@@ -239,7 +239,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
         CStdString value = m_buttonValues[id];
-        CStdString label = GetString(setting->Attribute("label"));
+        CStdString label = GetString(CleanString(setting->Attribute("label")));
 
         if (strcmp(type, "text") == 0)
         {
@@ -292,12 +292,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             { // localize
               CUtil::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
               for (unsigned int i = 0; i < valuesVec.size(); i++)
-              {
-                CStdString value = m_addon->GetString(atoi(valuesVec[i]));
-                if (value.IsEmpty())
-                  value = g_localizeStrings.Get(atoi(valuesVec[i]));
-                valuesVec[i] = value;
-              }
+                valuesVec[i] = GetString(value);
             }
             else if (source)
             {
@@ -405,7 +400,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         }
         else if (strcmpi(type, "action") == 0)
         {
-          CStdString action = setting->Attribute("action");
+          CStdString action = CleanString(setting->Attribute("action"));
           if (!action.IsEmpty())
           {
             // replace $CWD with the url of plugin/script
@@ -594,7 +589,7 @@ void CGUIDialogAddonSettings::CreateSections()
   { // add a category
     CGUIButtonControl *button = originalButton ? originalButton->Clone() : NULL;
 
-    CStdString label = GetString(category->Attribute("label"));
+    CStdString label = GetString(CleanString(category->Attribute("label")));
     if (label.IsEmpty())
       label = g_localizeStrings.Get(128);
 
@@ -613,7 +608,7 @@ void CGUIDialogAddonSettings::CreateSections()
     {
       const char *id = setting->Attribute("id");
       if (id)
-        m_settings[id] = m_addon->GetSetting(id);
+        m_settings[id] = CleanString(m_addon->GetSetting(id));
       setting = setting->NextSiblingElement("setting");
     }
     category = category->NextSiblingElement("category");
@@ -669,9 +664,9 @@ void CGUIDialogAddonSettings::CreateControls()
       entries = setting->Attribute("entries");
     CStdString defaultValue;
     if (setting->Attribute("default"))
-      defaultValue= setting->Attribute("default");
+      defaultValue= CleanString(setting->Attribute("default"));
     const char *subsetting = setting->Attribute("subsetting");
-    CStdString label = GetString(setting->Attribute("label"), subsetting && 0 == strcmpi(subsetting, "true"));
+    CStdString label = GetString(CleanString(setting->Attribute("label")), subsetting && 0 == strcmpi(subsetting, "true"));
 
     bool bSort=false;
     const char *sort = setting->Attribute("sort");
@@ -758,12 +753,7 @@ void CGUIDialogAddonSettings::CreateControls()
           if (entryVec.size() > i)
             iAdd = atoi(entryVec[i]);
           if (!lvalues.IsEmpty())
-          {
-            CStdString replace = m_addon->GetString(atoi(valuesVec[i]));
-            if (replace.IsEmpty())
-              replace = g_localizeStrings.Get(atoi(valuesVec[i]));
-            ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
-          }
+            ((CGUISpinControlEx *)pControl)->AddLabel(GetString(valuesVec[i]), iAdd);
           else
             ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
         }
@@ -812,7 +802,7 @@ void CGUIDialogAddonSettings::CreateControls()
           elements = atoi(setting->Attribute("elements"));
         CStdString valueformat;
         if (setting->Attribute("valueformat"))
-          valueformat = m_addon->GetString(atoi(setting->Attribute("valueformat")));
+          valueformat = GetString(setting->Attribute("valueformat"));
         for (int i = 0; i < elements; i++)
         {
           CStdString valuestring;
@@ -916,12 +906,12 @@ CStdString CGUIDialogAddonSettings::GetAddonNames(const CStdString& addonIDslist
 vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const
 {
   // Create our base path, used for type "fileenum" settings
-  // replace $PROFILE with the profile path of the plugin/script
-  CStdString fullPath = path;
-  if (fullPath.Find("$PROFILE") >= 0)
-    fullPath.Replace("$PROFILE", m_addon->Profile());
+  CStdString fullPath;
+  // replace $CWD with the path and $PROFILE with the profile path of the addon
+  if (path.Find("$CWD") >= 0 || path.Find("$PROFILE") >= 0)
+    fullPath = TranslateTokens(path);
   else
-    fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
+    fullPath = CUtil::ValidatePath(URIUtils::AddFileToFolder(m_addon->Path(), TranslateTokens(path)));
 
   bool hideExtensions = (options.CompareNoCase("hideext") == 0 || options.CompareNoCase("hideext|empty") == 0 ||
                           options.CompareNoCase("empty|hideext") == 0);
@@ -1120,7 +1110,7 @@ void CGUIDialogAddonSettings::SetDefaults()
     {
       const char *id = setting->Attribute("id");
       const char *type = setting->Attribute("type");
-      const char *value = setting->Attribute("default");
+      const char *value = CleanString(setting->Attribute("default"));
       if (id)
       {
         if (value)
