@@ -125,7 +125,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       if (focusedControl >= CONTROL_START_SECTION && focusedControl < (int)(CONTROL_START_SECTION + m_totalSections) &&
           focusedControl - CONTROL_START_SECTION != (int)m_currentSection)
       { // changing section
-        UpdateFromControls();
         m_currentSection = focusedControl - CONTROL_START_SECTION;
         CreateControls();
       }
@@ -156,7 +155,6 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
     int iControl = GetFocusedControl()->GetID();
     int controlId = CONTROL_START_SETTING;
     const TiXmlElement* setting = GetFirstSetting();
-    UpdateFromControls();
     while (setting)
     {
       if (controlId == iControl)
@@ -233,7 +231,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
     {
       const char *id = setting->Attribute("id");
       const char *type = setting->Attribute("type");
-      CStdString value = m_buttonValues[id];
+      CStdString value = m_settings[id];
       const CGUIControl* control = GetControl(controlId);
       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
@@ -475,8 +473,6 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             }
           }
         }
-        m_buttonValues[id] = value;
-        break;
       }
       else if (control->GetControlType() == CGUIControl::GUICONTROL_RADIO)
       {
@@ -504,50 +500,8 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
   return bCloseDialog;
 }
 
-void CGUIDialogAddonSettings::UpdateFromControls()
-{
-  int controlID = CONTROL_START_SETTING;
-  const TiXmlElement *setting = GetFirstSetting();
-  while (setting)
-  {
-    CStdString id = setting->Attribute("id");
-    const char *type = setting->Attribute("type");
-    const CGUIControl* control = GetControl(controlID++);
-
-    if (control)
-    {
-      CStdString value;
-      switch (control->GetControlType())
-      {
-        case CGUIControl::GUICONTROL_BUTTON:
-          value = m_buttonValues[id];
-          break;
-        case CGUIControl::GUICONTROL_RADIO:
-          value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
-          break;
-        case CGUIControl::GUICONTROL_SPINEX:
-          if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
-            value = ((CGUISpinControlEx*) control)->GetLabel();
-          else
-            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
-          break;
-        case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
-          value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
-          break;
-        default:
-          break;
-      }
-      m_settings[id] = value;
-    }
-
-    setting = setting->NextSiblingElement("setting");
-  }
-}
-
 void CGUIDialogAddonSettings::SaveSettings(void)
 {
-  UpdateFromControls();
-
   for (map<CStdString, CStdString>::iterator i = m_settings.begin(); i != m_settings.end(); ++i)
     m_addon->UpdateSetting(i->first, i->second);
 
@@ -566,7 +520,6 @@ void CGUIDialogAddonSettings::FreeSections()
     group->ClearAll();
   }
   m_settings.clear();
-  m_buttonValues.clear();
 }
 
 void CGUIDialogAddonSettings::FreeControls()
@@ -709,7 +662,6 @@ void CGUIDialogAddonSettings::CreateControls()
         if (id)
         {
           CStdString value = m_settings[id];
-          m_buttonValues[id] = value;
           // get any option to test for hidden
           const char *option = setting->Attribute("option");
           if (option && (strstr(option, "urlencoded")))
@@ -1130,7 +1082,7 @@ void CGUIDialogAddonSettings::SetDefaults()
     {
       const char *id = setting->Attribute("id");
       const char *type = setting->Attribute("type");
-      const char *value = CleanString(setting->Attribute("default"));
+      CStdString value = CleanString(setting->Attribute("default"));
       if (id)
       {
         if (value)
@@ -1139,7 +1091,7 @@ void CGUIDialogAddonSettings::SetDefaults()
           m_settings[id] = "false";
         else if (type && (0 == strcmpi(type, "slider") || 0 == strcmpi(type, "enum")))
           m_settings[id] = "0";
-        else
+        else if (type && 0 != strcmpi(type, "action"))
           m_settings[id] = "";
       }
       setting = setting->NextSiblingElement("setting");
