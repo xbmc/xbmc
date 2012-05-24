@@ -949,12 +949,12 @@ void CGUIDialogAddonSettings::EnableControls()
     {
       // set enable status
       if (setting->Attribute("enable"))
-        ((CGUIControl*) control)->SetEnabled(GetCondition(setting->Attribute("enable"), controlId));
+        ((CGUIControl*) control)->SetEnabled(GetBoolCondition(setting->Attribute("enable"), controlId));
       else
         ((CGUIControl*) control)->SetEnabled(true);
       // set visible status
       if (setting->Attribute("visible"))
-        ((CGUIControl*) control)->SetVisible(GetCondition(setting->Attribute("visible"), controlId));
+        ((CGUIControl*) control)->SetVisible(GetBoolCondition(setting->Attribute("visible"), controlId));
       else
         ((CGUIControl*) control)->SetVisible(true);
     }
@@ -963,7 +963,7 @@ void CGUIDialogAddonSettings::EnableControls()
   }
 }
 
-bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const int controlId)
+bool CGUIDialogAddonSettings::GetBoolCondition(const CStdString &condition, const int controlId)
 {
   if (condition.IsEmpty()) return true;
 

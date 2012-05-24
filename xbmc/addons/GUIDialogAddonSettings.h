@@ -71,7 +71,7 @@ private:
   void UpdateFromControls();
   void EnableControls();
   void SetDefaults();
-  bool GetCondition(const CStdString &condition, const int controlId);
+  bool GetBoolCondition(const CStdString &condition, const int controlId);
 
   CStdString CleanString(const char *value) const;
   CStdString TranslateTokens(const char *value) const;
