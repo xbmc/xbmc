@@ -184,7 +184,7 @@ namespace PYXBMC
   }
 
     PyDoc_STRVAR(getSetting__doc__,
-    "getSetting(id) -- Returns the value of a setting as a unicode string.\n"
+    "getSetting(id) -- Returns the value of a setting as a boolean, integer, float or string.\n"
     "\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "\n"
@@ -208,7 +208,20 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", self->pAddon->GetSetting(id).c_str());
+    std::string value = self->pAddon->GetSetting(id);
+    ADDON::SETTINGS_TYPE type = self->pAddon->GetSettingType(id);
+    switch (type)
+    {
+    case ADDON::SETTINGS_BOOL:
+      return Py_BuildValue((char*)"b", value == "true");
+    case ADDON::SETTINGS_INT:
+      return Py_BuildValue((char*)"i", strtol(value.c_str(), NULL, 10));
+    case ADDON::SETTINGS_FLOAT:
+      return Py_BuildValue((char*)"f", strtod(value.c_str(), NULL));
+    case ADDON::SETTINGS_STRING:
+    default:
+      return Py_BuildValue((char*)"s", value.c_str());
+    }
   }
 
   PyDoc_STRVAR(setSetting__doc__,
