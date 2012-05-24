@@ -75,6 +75,7 @@ private:
 
   CStdString CleanString(const char *value) const;
   CStdString TranslateTokens(const char *value) const;
+  void SetSliderTextValue(const CGUIControl *control, const char *format);
 
   void SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);

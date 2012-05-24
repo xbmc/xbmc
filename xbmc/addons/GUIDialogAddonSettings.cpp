@@ -1199,3 +1199,22 @@ CStdString CGUIDialogAddonSettings::TranslateTokens(const char *value) const
 
   return CUtil::ValidatePath(strValue, true);
 }
+
+void CGUIDialogAddonSettings::SetSliderTextValue(const CGUIControl *control, const char *format)
+{
+  if (!format)
+    return;
+
+  CStdString strValue;
+  vector<CStdString> formats;
+  StringUtils::SplitString(format, ",", formats);
+
+  if (formats.size() == 3 && !formats[2].IsEmpty() && ((CGUISettingsSliderControl *)control)->GetProportion() == 1.0f)
+    strValue.Format(GetString(CleanString(formats[2])).c_str(), ((CGUISettingsSliderControl *)control)->GetFloatValue());
+  else if (formats.size() >= 2 && !formats[1].IsEmpty() && ((CGUISettingsSliderControl *)control)->GetProportion() == 0.0f)
+    strValue.Format(GetString(CleanString(formats[1])).c_str(), ((CGUISettingsSliderControl *)control)->GetFloatValue());
+  else
+    strValue.Format(GetString(CleanString(formats[0])).c_str(), ((CGUISettingsSliderControl *)control)->GetFloatValue());
+
+  ((CGUISettingsSliderControl *)control)->SetTextValue(strValue);
+}
