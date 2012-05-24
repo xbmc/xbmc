@@ -48,6 +48,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
+#include "filesystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace ADDON;
@@ -1171,4 +1172,30 @@ CStdString CGUIDialogAddonSettings::GetCurrentID() const
   if (m_addon)
     return m_addon->ID();
   return "";
+}
+
+CStdString CGUIDialogAddonSettings::CleanString(const char *value) const
+{
+  // localize values
+  CStdString strValue = CGUIInfoLabel::ReplaceLocalize(TranslateTokens(value));
+  strValue = CGUIInfoLabel::ReplaceAddonStrings(strValue);
+
+  return strValue;
+}
+
+CStdString CGUIDialogAddonSettings::TranslateTokens(const char *value) const
+{
+  CStdString strValue = value;
+  // replace $AUTHOR with the addon's author
+  strValue.Replace("$AUTHOR", m_addon->Author());
+  // replace $CWD with the addon's path
+  strValue.Replace("$CWD", m_addon->Path());
+  // replace $ID with the addon's id
+  strValue.Replace("$ID", m_addon->ID());
+  // replace $PROFILE with the profile path of the addon
+  strValue.Replace("$PROFILE", CSpecialProtocol::TranslatePath(m_addon->Profile()));
+  // replace $VERSION with the addon's version
+  strValue.Replace("$VERSION", m_addon->Version().c_str());
+
+  return CUtil::ValidatePath(strValue, true);
 }

@@ -73,6 +73,9 @@ private:
   void SetDefaults();
   bool GetCondition(const CStdString &condition, const int controlId);
 
+  CStdString CleanString(const char *value) const;
+  CStdString TranslateTokens(const char *value) const;
+
   void SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
