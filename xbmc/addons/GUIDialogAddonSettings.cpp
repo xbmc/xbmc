@@ -915,7 +915,11 @@ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &
   else
     fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
 
-  bool hideExtensions = (options.CompareNoCase("hideext") == 0);
+  bool hideExtensions = (options.CompareNoCase("hideext") == 0 || options.CompareNoCase("hideext|empty") == 0 ||
+                          options.CompareNoCase("empty|hideext") == 0);
+  bool addEmpty = (options.CompareNoCase("empty") == 0 || options.CompareNoCase("hideext|empty") == 0 ||
+                    options.CompareNoCase("empty|hideext") == 0);
+
   // fetch directory
   CFileItemList items;
   if (!mask.IsEmpty())
@@ -924,6 +928,9 @@ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &
     CDirectory::GetDirectory(fullPath, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
 
   vector<CStdString> values;
+  if (addEmpty)
+      values.push_back("");
+
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
