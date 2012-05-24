@@ -515,14 +515,14 @@ void CGUIMediaWindow::UpdateButtons()
   if (m_guiState.get())
   {
     // Update sorting controls
-    if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_NONE)
+    if (m_guiState->GetDisplaySortOrder() == SortOrderNone)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTASC);
     }
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
+      if (m_guiState->GetDisplaySortOrder() == SortOrderAscending)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
         g_windowManager.SendMessage(msg);
@@ -770,7 +770,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(SORT_ON_BOTTOM);
+    pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems->Add(pItem);
   }
   m_iLastControl = GetFocusedControlID();

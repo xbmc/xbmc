@@ -331,12 +331,12 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
   return (list.Size() > 0);
 }
 
-bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
+bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SortOrder &sortorder)
 {
   if (order.Equals("ascending"))
-    sortorder = SORT_ORDER_ASC;
+    sortorder = SortOrderAscending;
   else if (order.Equals("descending"))
-    sortorder = SORT_ORDER_DESC;
+    sortorder = SortOrderDescending;
   else
     return false;
 
@@ -419,7 +419,7 @@ void CFileItemHandler::Sort(CFileItemList &items, const CVariant &parameterObjec
   order  = order.ToLower();
 
   SORT_METHOD sortmethod = SORT_METHOD_NONE;
-  SORT_ORDER  sortorder  = SORT_ORDER_ASC;
+  SortOrder   sortorder  = SortOrderAscending;
 
   if (ParseSortMethods(method, parameterObject["ignorearticle"].asBoolean(), order, sortmethod, sortorder))
     items.Sort(sortmethod, sortorder);

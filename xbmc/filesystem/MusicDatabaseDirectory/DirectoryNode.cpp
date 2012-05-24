@@ -333,7 +333,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   if (pItem)
   {
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(g_advancedSettings.m_bMusicLibraryAllItemsOnBottom ? SORT_ON_BOTTOM : SORT_ON_TOP);
+    pItem->SetSpecialSort(g_advancedSettings.m_bMusicLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformated(true);
     if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)

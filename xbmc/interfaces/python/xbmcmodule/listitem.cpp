@@ -801,9 +801,9 @@ namespace PYXBMC
     else if (lowerKey.CompareNoCase("specialsort") == 0)
     {
       if (uText == "bottom")
-        self->item->SetSpecialSort(SORT_ON_BOTTOM);
+        self->item->SetSpecialSort(SortSpecialOnBottom);
       else if (uText == "top")
-        self->item->SetSpecialSort(SORT_ON_TOP);
+        self->item->SetSpecialSort(SortSpecialOnTop);
     }
     else
       self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
