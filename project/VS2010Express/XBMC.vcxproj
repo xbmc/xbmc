@@ -886,7 +886,6 @@
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingsControls.cpp" />
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp" />
-    <ClCompile Include="..\..\xbmc\SortFileItem.cpp" />
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp" />
     <ClCompile Include="..\..\xbmc\storage\cdioSupport.cpp" />
     <ClCompile Include="..\..\xbmc\storage\IoSupport.cpp" />
@@ -1069,6 +1068,7 @@
     <ClCompile Include="..\..\xbmc\utils\CharsetConverter.cpp" />
     <ClCompile Include="..\..\xbmc\utils\CPUInfo.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Crc32.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\DownloadQueue.cpp" />
     <ClCompile Include="..\..\xbmc\utils\DownloadQueueManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Fanart.cpp" />
@@ -1110,6 +1110,7 @@
     <ClCompile Include="..\..\xbmc\utils\RssReader.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ScraperParser.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ScraperUrl.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\SortUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Splash.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ssrc.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Stopwatch.cpp" />
@@ -1863,6 +1864,7 @@
     <ClInclude Include="..\..\xbmc\utils\CharsetConverter.h" />
     <ClInclude Include="..\..\xbmc\utils\CPUInfo.h" />
     <ClInclude Include="..\..\xbmc\utils\Crc32.h" />
+    <ClInclude Include="..\..\xbmc\utils\DatabaseUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\DownloadQueue.h" />
     <ClInclude Include="..\..\xbmc\utils\DownloadQueueManager.h" />
     <ClInclude Include="..\..\xbmc\utils\EndianSwap.h" />
@@ -1883,6 +1885,7 @@
     <ClInclude Include="..\..\xbmc\utils\HttpResponse.h" />
     <ClInclude Include="..\..\xbmc\utils\InfoLoader.h" />
     <ClInclude Include="..\..\xbmc\utils\ISerializable.h" />
+    <ClInclude Include="..\..\xbmc\utils\ISortable.h" />
     <ClInclude Include="..\..\xbmc\utils\Job.h" />
     <ClInclude Include="..\..\xbmc\utils\JobManager.h" />
     <ClInclude Include="..\..\xbmc\utils\JSONVariantParser.h" />
@@ -1904,6 +1907,7 @@
     <ClInclude Include="..\..\xbmc\utils\SaveFileStateJob.h" />
     <ClInclude Include="..\..\xbmc\utils\ScraperParser.h" />
     <ClInclude Include="..\..\xbmc\utils\ScraperUrl.h" />
+    <ClInclude Include="..\..\xbmc\utils\SortUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\Splash.h" />
     <ClInclude Include="..\..\xbmc\utils\ssrc.h" />
     <ClInclude Include="..\..\xbmc\utils\StdString.h" />

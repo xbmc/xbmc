@@ -2535,7 +2535,6 @@
     <ClCompile Include="..\..\xbmc\PartyModeManager.cpp" />
     <ClCompile Include="..\..\xbmc\PasswordManager.cpp" />
     <ClCompile Include="..\..\xbmc\SectionLoader.cpp" />
-    <ClCompile Include="..\..\xbmc\SortFileItem.cpp" />
     <ClCompile Include="..\..\xbmc\Temperature.cpp" />
     <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
     <ClCompile Include="..\..\xbmc\TextureCacheJob.cpp" />
@@ -2586,6 +2585,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\AirTunesServer.cpp">
       <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\SortUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5213,6 +5218,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h">
       <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\SortUtils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\DatabaseUtils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\ISortable.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
