@@ -1,0 +1,1236 @@
+# global patterns
+testMain
+
+# commonly used editors
+# vim
+*.swp
+# Eclipse
+*.project
+*.cproject
+
+# generated files etc
+config.cache
+config.status
+config.log
+*.d
+*.depend
+*.pc
+*.P
+*.mode1v3
+*.pbxuser
+*.[oa]
+*.l[oa]
+*.so
+*.so.*
+*.dylib
+*.lineno
+*.py[co]
+*.ver
+*.rej
+*.orig
+*.bak
+
+# Windows specific generated files
+*.exp
+*.ilk
+*.ncb
+*.pdb
+*.suo
+*.sdf
+*.opensdf
+*.vcproj.*.user
+*.vcxproj.*.user
+*.vcxproj.user
+*.obj
+*ReSharper*
+*.idb
+
+# osx specifics
+/build/
+.DS_Store
+*.dSYM
+._*
+/tools/darwin/depends/config.site
+/tools/darwin/depends/config.site.mk
+/tools/darwin/depends/Makefile
+/tools/darwin/depends/Makefile.include
+/tools/darwin/depends/configure
+/tools/darwin/depends/python26/Makefile
+/tools/darwin/depends/**/.gitignore
+/tools/darwin/depends/**/.installed
+
+.libs/
+.deps/
+
+# /
+/.dummy
+/.dummy.in
+/Makefile
+/Makefile.include
+/aclocal.m4
+/autom4te.cache/
+/build-aux/config.guess
+/build-aux/config.sub
+/build-aux/install-sh
+/build-aux/missing
+/build-aux/ltmain.sh
+/autotools
+/BUILD
+/xbmc.log
+/xbmc.old.log
+/Makefile.depend
+/config.status
+/xbmc/config.h
+/xbmc/config.h.in
+/xbmc/config.h.in~
+/configure
+/xbmc/stamp-h1
+/xbmc.bin
+/xbmc-xrandr
+/git_revision.h
+/libtool
+/*.patch
+
+# /addons/
+/addons/com.nullsoft.milkdrop.xbmc/*.vis
+/addons/org.xbmc.addons.dxspectrum/*.vis
+/addons/packages
+/addons/screensaver.rsxs.euphoria/Euphoria.xbs
+/addons/screensaver.rsxs.plasma/Plasma.xbs
+/addons/screensaver.rsxs.solarwinds/Solarwinds.xbs
+/addons/skin.confluence/media/Makefile
+/addons/skin.confluence/media/Textures.xbt
+/addons/skin.pm3-hd/media/Textures.xbt
+/addons/visualization.dxspectrum/Spectrum_win32dx.vis
+/addons/visualization.glspectrum/opengl_spectrum.vis
+/addons/visualization.milkdrop/MilkDrop_win32dx.vis
+/addons/visualization.projectm/projectM.vis
+/addons/visualization.projectm/resources/presets.zip
+/addons/visualization.waveform/Waveform.vis
+/addons/visualization.waveform/Waveform_win32.vis
+/addons/visualization.itunes/iTunes.mvis
+/addons/script.module.pil/
+
+# /xbmc/guilib/
+/xbmc/guilib/Makefile
+/xbmc/guilib/*.obj
+/xbmc/guilib/*.idb
+/xbmc/guilib/*.pdb
+/xbmc/guilib/*.bak
+/xbmc/guilib/Debug (Win32)
+/xbmc/guilib/Release (Win32)
+/xbmc/guilib/Release
+/xbmc/guilib/Release_LTCG
+/xbmc/guilib/Debug
+/xbmc/guilib/Profile
+/xbmc/guilib/Profile_FastCap
+
+# /xbmc/peripherals/
+/xbmc/peripherals/bus/Makefile
+/xbmc/peripherals/devices/Makefile
+
+# /lib/
+/lib/Makefile
+
+# /lib/addons/
+/lib/addons/script.module.pil/
+!/lib/addons/script.module.pil/Makefile
+
+# /lib/asap/
+/lib/asap/Makefile
+/lib/asap/players.h
+/lib/asap/players/*.obx
+/lib/asap/win32/xbmc_asap.dll
+/lib/asap/win32/xbmc_asap.lib
+/lib/asap/xbmc/xbmc_asap.res
+
+
+# /lib/cmyth/
+lib/cmyth/Makefile
+
+# /lib/cpluff/
+/lib/cpluff/ABOUT-NLS
+/lib/cpluff/aclocal.m4
+/lib/cpluff/autom4te.cache
+/lib/cpluff/auxliary
+/lib/cpluff/config.h
+/lib/cpluff/config.h.in
+/lib/cpluff/config.h.in~
+/lib/cpluff/configure
+/lib/cpluff/console
+/lib/cpluff/doc*
+/lib/cpluff/examples
+/lib/cpluff/libcpluff/docsrc
+/lib/cpluff/libcpluff/Makefile.in
+/lib/cpluff/libtool
+/lib/cpluff/loader
+/lib/cpluff/m4
+/lib/cpluff/Makefile.in
+/lib/cpluff/po
+/lib/cpluff/stamp-h1
+/lib/cpluff/test
+/lib/cpluff/Makefile
+/lib/cpluff/libcpluff/Makefile
+/lib/cpluff/libcpluff/cpluffdef.h
+/lib/cpluff/libcpluff/win32/Debug
+/lib/cpluff/libcpluff/win32/Release
+
+# /lib/libcec
+/lib/libcec/libcec
+
+# /lib/enca
+/lib/enca/libenca_win32/Debug
+/lib/enca/libenca_win32/Release
+
+# /lib/freetype
+/lib/freetype/objs/debug_mt
+/lib/freetype/objs/release_mt
+/lib/freetype/objs/win32
+
+# /lib/fribidi
+/lib/fribidi/libfridibidi/Debug
+/lib/fribidi/libfridibidi/Release
+
+# /lib/jsoncpp
+/lib/jsoncpp/src/lib_json/Makefile
+
+# /lib/libass
+/lib/libass/config.guess
+/lib/libass/config.h
+/lib/libass/config.sub
+/lib/libass/depcomp
+/lib/libass/Makefile
+/lib/libass/Makefile.in
+/lib/libass/aclocal.m4
+/lib/libass/autom4te.cache/
+/lib/libass/compile
+/lib/libass/config.h.in
+/lib/libass/config.h.in~
+/lib/libass/configure
+/lib/libass/install-sh
+/lib/libass/libass/Makefile
+/lib/libass/libass/Makefile.in
+/lib/libass/libtool
+/lib/libass/ltmain.sh
+/lib/libass/missing
+/lib/libass/shave/libtool.m4
+/lib/libass/shave/ltoptions.m4
+/lib/libass/shave/ltsugar.m4
+/lib/libass/shave/ltversion.m4
+/lib/libass/shave/lt~obsolete.m4
+/lib/libass/shave/shave
+/lib/libass/shave/shave-libtool
+/lib/libass/stamp-h1
+/lib/libass/test/Makefile
+/lib/libass/test/Makefile.in
+/lib/libass/test/test
+/lib/libass/xbmc/Makefile
+/lib/libass/xbmc/libass_win32/Debug
+/lib/libass/xbmc/libass_win32/Release
+/lib/libass/m4/libtool.m4
+/lib/libass/m4/ltoptions.m4
+/lib/libass/m4/ltsugar.m4
+/lib/libass/m4/ltversion.m4
+/lib/libass/m4/lt~obsolete.m4
+
+# /lib/libiconv
+/lib/libiconv/libiconv_win32/Debug
+/lib/libiconv/libiconv_win32/Release
+
+# /lib/liblame
+/lib/liblame/config.h
+/lib/liblame/obj
+
+
+# /lib/libmicrohttpd
+/lib/libmicrohttpd/MHD_config.h
+/lib/libmicrohttpd/Makefile
+/lib/libmicrohttpd/contrib/Makefile
+/lib/libmicrohttpd/doc/Makefile
+/lib/libmicrohttpd/doc/microhttpd.info
+/lib/libmicrohttpd/doc/stamp-vti
+/lib/libmicrohttpd/doc/version.texi
+/lib/libmicrohttpd/libtool
+/lib/libmicrohttpd/m4/Makefile
+/lib/libmicrohttpd/src/Makefile
+/lib/libmicrohttpd/src/daemon/Makefile
+/lib/libmicrohttpd/src/daemon/https/Makefile
+/lib/libmicrohttpd/src/daemon/https/lgl/Makefile
+/lib/libmicrohttpd/src/daemon/https/minitasn1/Makefile
+/lib/libmicrohttpd/src/daemon/https/tls/Makefile
+/lib/libmicrohttpd/src/daemon/https/x509/Makefile
+/lib/libmicrohttpd/src/examples/Makefile
+/lib/libmicrohttpd/src/examples/authorization_example
+/lib/libmicrohttpd/src/examples/fileserver_example
+/lib/libmicrohttpd/src/examples/fileserver_example_dirs
+/lib/libmicrohttpd/src/examples/fileserver_example_external_select
+/lib/libmicrohttpd/src/examples/https_fileserver_example
+/lib/libmicrohttpd/src/examples/minimal_example
+/lib/libmicrohttpd/src/examples/minimal_example_comet
+/lib/libmicrohttpd/src/examples/querystring_example
+/lib/libmicrohttpd/src/examples/refuse_post_example
+/lib/libmicrohttpd/src/testcurl/daemon_options_test
+/lib/libmicrohttpd/src/testcurl/Makefile
+/lib/libmicrohttpd/src/testcurl/https/Makefile
+/lib/libmicrohttpd/src/include/Makefile
+/lib/libmicrohttpd/src/testzzuf/Makefile
+/lib/libmicrohttpd/stamp-h1
+/lib/libmicrohttpd/autom4te.cache/
+
+# /lib/libmodplug/
+/lib/libmodplug/libtool
+/lib/libmodplug/src/stamp-h1
+/lib/libmodplug/Makefile
+/lib/libmodplug/src/Makefile
+/lib/libmodplug/src/config.h
+/lib/libmodplug/Debug
+/lib/libmodplug/Release
+
+# /lib/pcre
+/lib/pcre/libpcre/Debug
+/lib/pcre/libpcre/Release
+
+# /lib/libapetag
+/lib/libapetag/Makefile
+/lib/libapetag/config.h
+/lib/libapetag/install-sh
+/lib/libapetag/libtool
+/lib/libapetag/stamp-h1
+
+# /project
+/project/obj
+/project/output
+
+# /project/Win32BuildSetup/
+/project/Win32BuildSetup/XBMC.log
+/project/Win32BuildSetup/XBMCSetup*.exe
+/project/Win32BuildSetup/languages.nsi
+/project/Win32BuildSetup/BUILD_WIN32/
+/project/Win32BuildSetup/dependencies
+
+# /project/BuildDependencies
+/project/BuildDependencies/downloads
+/project/BuildDependencies/downloads2
+/project/BuildDependencies/include
+/project/BuildDependencies/lib
+/project/BuildDependencies/msys
+/project/BuildDependencies/scripts/tmp
+
+# /project/VS2008Express
+/project/VS2008Express/Debug
+/project/VS2008Express/Release
+/project/VS2008Express/XBMC
+/project/VS2008Express/glib
+/project/VS2008Express/guilib
+/project/VS2008Express/libPlatinum
+/project/VS2008Express/libs
+/project/VS2008Express/objs
+/project/VS2008Express/UnrarXLib
+
+# /project/VS2010Express
+/project/VS2010Express/Debug
+/project/VS2010Express/Release
+/project/VS2010Express/XBMC
+/project/VS2010Express/glib
+/project/VS2010Express/guilib
+/project/VS2010Express/libPlatinum
+/project/VS2010Express/UnrarXLib
+/project/VS2010Express/test-XbmcThreads
+/project/VS2010Express/libs
+/project/VS2010Express/objs
+/project/VS2010Express/ipch
+/project/VS2010Express/*.vsp
+
+# /skin/
+/skin/Confluence/media/Textures.xbt
+/skin/PM3.HD/media/Textures.xbt
+
+# /system
+/system/cpluff.dll
+/system/ImageLib.dll
+/system/libcmyth.dll
+/system/libcurl.dll
+/system/libeay32.dll
+/system/librtmp.dll
+/system/libexif.dll
+/system/libexpat.dll
+/system/libid3tag.dll
+/system/libidn-11.dll
+/system/libssh2.dll
+/system/libssl32.dll
+/system/hdhomerun.dll
+/system/ssh.dll
+/system/sqlite3.dll
+/system/libsamplerate-0.dll
+/system/libnfs.dll
+/system/dnssd.dll
+/system/libcec.dll
+/system/pthreadVC2.dll
+
+# /system/cdrip
+/system/cdrip/lame_enc.dll
+/system/cdrip/ogg.dll
+/system/cdrip/vorbis.dll
+/system/cdrip/vorbisenc.dll
+
+# /system/players/dvdplayer
+/system/players/dvdplayer/avcodec-53.dll
+/system/players/dvdplayer/avfilter-2.dll
+/system/players/dvdplayer/avformat-53.dll
+/system/players/dvdplayer/avutil-51.dll
+/system/players/dvdplayer/freetype6.dll
+/system/players/dvdplayer/libass.dll
+/system/players/dvdplayer/libdvdcss-2.dll
+/system/players/dvdplayer/libdvdnav.dll
+/system/players/dvdplayer/libexpat-1.dll
+/system/players/dvdplayer/libfontconfig-1.dll
+/system/players/dvdplayer/librtmp.dll
+/system/players/dvdplayer/postproc-52.dll
+/system/players/dvdplayer/swresample-0.dll
+/system/players/dvdplayer/swscale-2.dll
+/system/players/dvdplayer/libbluray.dll
+/system/players/dvdplayer/libmpeg2-0.dll
+/system/players/dvdplayer/libmad.dll
+
+# /system/players/paplayer
+/system/players/paplayer/libmodplug.dll
+/system/players/paplayer/StSoundLibrary.dll
+/system/players/paplayer/vorbisfile.dll
+/system/players/paplayer/vgmstream.dll
+/system/players/paplayer/NoseFart.dll
+/system/players/paplayer/libsidplay2.dll
+/system/players/paplayer/adpcm.dll
+/system/players/paplayer/timidity.dll
+/system/players/paplayer/libFLAC.dll
+/system/players/paplayer/xbmc_asap.dll
+
+# /system/players/dsplayer
+/system/players/dsplayer/libsubs.dll
+
+# /system
+/system/profiles.xml
+
+# /system/python
+/system/python/
+
+# /system/webserver
+/system/webserver
+
+/system/airplay
+
+# /system
+/system/zlib1.dll
+
+
+# /screensavers/
+/screensavers/Solarwinds.xbs
+/screensavers/Euphoria.xbs
+/screensavers/Plasma.xbs
+
+# /skin/Confluence/
+/skin/Confluence/BUILD
+
+# /skin/PM3.HD/
+/skin/PM3.HD/BUILD
+
+# /skin/PM3.HD/media/
+/skin/PM3.HD/media/*.db
+
+# /skin/PM3.HD/media/Apple Movie Trailers/
+/skin/PM3.HD/media/Apple Movie Trailers/*.db
+
+# /skin/PM3.HD/media/busy/
+/skin/PM3.HD/media/busy/*.db
+
+# /skin/PM3.HD/media/flagging/aspectratio/
+/skin/PM3.HD/media/flagging/aspectratio/Thumbs.db
+
+# /skin/PM3.HD/media/flagging/audio/
+/skin/PM3.HD/media/flagging/audio/Thumbs.db
+
+# /skin/PM3.HD/media/flagging/video/
+/skin/PM3.HD/media/flagging/video/Thumbs.db
+
+# /tools/Changelog/
+/tools/Changelog/Changelog.txt
+/tools/Changelog/svn_log.xml
+/tools/Changelog/Release
+/tools/Changelog/Debug
+
+# /tools/EventClients/
+/tools/EventClients/*.pyc
+/tools/EventClients/Clients/OSXRemote/Makefile
+/tools/EventClients/Clients/OSXRemote/build/
+/tools/EventClients/Clients/WiiRemote/WiiRemote
+
+# /tools/Linux/
+/tools/Linux/xbmc.sh
+/tools/Linux/xbmc-standalone.sh
+
+# /tools/osx
+/tools/osx/XBMCHelper
+
+# /tools/TexturePacker
+/tools/TexturePacker/TexturePacker
+/tools/TexturePacker/Makefile
+/tools/TexturePacker/*.dll
+
+# /tools/XBMCTex/
+/tools/XBMCTex/Makefile
+
+# /userdata/
+/userdata/Database
+/userdata/playlists
+/userdata/Thumbnails
+/userdata/cache
+/userdata/guisettings.xml
+/userdata/avpacksettings.xml
+
+# /visualisations/
+/visualisations/Goom.vis
+/visualisations/ProjectM.vis
+/visualisations/Waveform.vis
+/visualisations/opengl_spectrum.vis
+/visualisations/projectM/
+
+# /xbmc/
+/xbmc/DllPaths_generated.h
+/xbmc/Makefile
+
+# /xbmc/addons/
+/xbmc/addons/Makefile
+/xbmc/addons/visualization.waveform
+
+# /xbmc/osx/
+/xbmc/osx/Makefile
+
+# /xbmc/linux/
+/xbmc/linux/Makefile
+
+# /xbmc/freebsd/
+/xbmc/freebsd/Makefile
+
+# /xbmc/cdrip/
+/xbmc/cdrip/Makefile
+
+# /xbmc/cores/AudioEngine/
+/xbmc/cores/AudioEngine/Makefile
+
+# /xbmc/cores/DllLoader/exports/
+/xbmc/cores/DllLoader/exports/build_wrapper.sh
+/xbmc/cores/DllLoader/exports/wrapper.def
+/xbmc/cores/DllLoader/Makefile
+
+/xbmc/cores/Makefile
+
+/xbmc/cores/VideoRenderers/Makefile
+
+/xbmc/cores/dvdplayer/Makefile
+
+# /lib/ffmpeg/
+/lib/ffmpeg/config.h
+/lib/ffmpeg/config.err
+/lib/ffmpeg/config.mak
+/lib/ffmpeg/ffprobe
+/lib/ffmpeg/ffprobe_g
+/lib/ffmpeg/.version
+/lib/ffmpeg/version.h
+/lib/ffmpeg/libavutil/avconfig.h
+/lib/ffmpeg/doc/ffmpeg.pod
+/lib/ffmpeg/doc/ffplay.pod
+
+# /lib/ffmpeg/doc/
+/lib/ffmpeg/doc/*.html
+/lib/ffmpeg/doc/*.1
+
+# /lib/libdvd/
+/lib/libdvd/Makefile
+
+# /lib/libdvd/includes/
+/lib/libdvd/includes/dv
+/lib/libdvd/includes/dvdcss/dvdcss.h
+
+# /lib/libdvd/includes/dvdread/
+/lib/libdvd/includes/dvdread/ifo_print.h
+/lib/libdvd/includes/dvdread/dvd_udf.h
+/lib/libdvd/includes/dvdread/dvd_input.h
+/lib/libdvd/includes/dvdread/bswap.h
+/lib/libdvd/includes/dvdread/nav_read.h
+/lib/libdvd/includes/dvdread/dvd_reader.h
+/lib/libdvd/includes/dvdread/nav_print.h
+/lib/libdvd/includes/dvdread/ifo_types.h
+/lib/libdvd/includes/dvdread/bitreader.h
+/lib/libdvd/includes/dvdread/md5.h
+/lib/libdvd/includes/dvdread/dvdread
+/lib/libdvd/includes/dvdread/dvdread_internal.h
+/lib/libdvd/includes/dvdread/ifo_read.h
+/lib/libdvd/includes/dvdread/nav_types.h
+
+# /lib/libdvd/libdvdcss/
+/lib/libdvd/libdvdcss/.auto/
+/lib/libdvd/libdvdcss/Makefile.in
+/lib/libdvd/libdvdcss/aclocal.m4
+/lib/libdvd/libdvdcss/autom4te.cache/
+/lib/libdvd/libdvdcss/config.h.in~
+/lib/libdvd/libdvdcss/configure
+/lib/libdvd/libdvdcss/doc/Makefile.in
+/lib/libdvd/libdvdcss/src/Makefile.in
+/lib/libdvd/libdvdcss/src/dvdcss/Makefile.in
+/lib/libdvd/libdvdcss/test/Makefile.in
+/lib/libdvd/libdvdcss/config.log
+/lib/libdvd/libdvdcss/config.st
+/lib/libdvd/libdvdcss/stamp-h1
+/lib/libdvd/libdvdcss/config.h
+/lib/libdvd/libdvdcss/libtool
+/lib/libdvd/libdvdcss/configure.lineno
+/lib/libdvd/libdvdcss/Makefile
+/lib/libdvd/libdvdcss/config.status
+/lib/libdvd/libdvdcss/config.h.in
+/lib/libdvd/libdvdcss/doc/Makefile
+/lib/libdvd/libdvdcss/src/d
+/lib/libdvd/libdvdcss/src/Makefile
+/lib/libdvd/libdvdcss/src/dvdcss/Makefile
+/lib/libdvd/libdvdcss/test/Makefile
+/lib/libdvd/libdvdcss/doc/doxygen.cfg
+/lib/libdvd/libdvdcss/test/csstest
+/lib/libdvd/libdvdcss/test/csstest.exe
+
+# /lib/libdvd/libdvdnav/
+/lib/libdvd/libdvdnav/conf
+/lib/libdvd/libdvdnav/obj
+/lib/libdvd/libdvdnav/config.mak
+/lib/libdvd/libdvdnav/config.h
+/lib/libdvd/libdvdnav/config.status
+/lib/libdvd/libdvdnav/Makefile.in
+/lib/libdvd/libdvdnav/aclocal.m4
+/lib/libdvd/libdvdnav/config.guess
+/lib/libdvd/libdvdnav/config.h.in
+/lib/libdvd/libdvdnav/config.sub
+/lib/libdvd/libdvdnav/configure
+/lib/libdvd/libdvdnav/depcomp
+/lib/libdvd/libdvdnav/doc/Makefile.in
+/lib/libdvd/libdvdnav/examples/Makefile.in
+/lib/libdvd/libdvdnav/install-sh
+/lib/libdvd/libdvdnav/ltmain.sh
+/lib/libdvd/libdvdnav/m4/Makefile.in
+/lib/libdvd/libdvdnav/misc/Makefile.in
+/lib/libdvd/libdvdnav/missing
+/lib/libdvd/libdvdnav/src/Makefile.in
+/lib/libdvd/libdvdnav/src/vm/Makefile.in
+/lib/libdvd/libdvdnav/INSTALL
+/lib/libdvd/libdvdnav/autom4te.cache
+/lib/libdvd/libdvdnav/config.h.in~
+
+# /lib/libdvd/libdvdread/
+/lib/libdvd/libdvdread/config.h
+/lib/libdvd/libdvdread/obj
+/lib/libdvd/libdvdread/config.mak
+/lib/libdvd/libdvdread/Makefile.in
+/lib/libdvd/libdvdread/aclocal.m4
+/lib/libdvd/libdvdread/config.guess
+/lib/libdvd/libdvdread/config.h.in
+/lib/libdvd/libdvdread/config.sub
+/lib/libdvd/libdvdread/configure
+/lib/libdvd/libdvdread/depcomp
+/lib/libdvd/libdvdread/install-sh
+/lib/libdvd/libdvdread/ltmain.sh
+/lib/libdvd/libdvdread/m4/Makefile.in
+/lib/libdvd/libdvdread/misc/Makefile.in
+/lib/libdvd/libdvdread/missing
+/lib/libdvd/libdvdread/src/Makefile.in
+/lib/libdvd/libdvdread/INSTALL
+/lib/libdvd/libdvdread/autom4te.cache
+/lib/libdvd/libdvdread/config.h.in~
+
+# /lib/libmad/
+/lib/libmad/config.h
+/lib/libmad/Makefile
+/lib/libmad/config.status
+/lib/libmad/libmad.list
+/lib/libmad/libtool
+/lib/libmad/config.log
+/lib/libmad/stamp-h1
+/lib/libmad/configure.lineno
+/lib/libmad/mad.h
+
+# /lib/libmad/msvc++/
+/lib/libmad/msvc++/Makefile
+/lib/libmad/msvc++/libmad.lib
+/lib/libmad/msvc++/Debug
+/lib/libmad/msvc++/Release
+
+# /lib/libmpeg2/
+/lib/libmpeg2/config.log
+/lib/libmpeg2/config.status
+/lib/libmpeg2/libtool
+/lib/libmpeg2/configure.lineno
+/lib/libmpeg2/Makefile
+/lib/libmpeg2/src/*.exe
+
+# /lib/libmpeg2/doc/
+/lib/libmpeg2/doc/Makefile
+
+# /lib/libmpeg2/include/
+/lib/libmpeg2/include/stamp-h1
+/lib/libmpeg2/include/config.h
+/lib/libmpeg2/include/Makefile
+
+# /lib/libmpeg2/libmpeg2/
+/lib/libmpeg2/libmpeg2/Makefile
+
+# /lib/libmpeg2/libmpeg2/convert/
+/lib/libmpeg2/libmpeg2/convert/Makefile
+
+# /lib/libmpeg2/libvo/
+/lib/libmpeg2/libvo/Makefile
+
+# /lib/libmpeg2/src/
+/lib/libmpeg2/src/Makefile
+/lib/libmpeg2/src/corrupt_mpeg2
+/lib/libmpeg2/src/extract_mpeg2
+/lib/libmpeg2/src/mpeg2dec
+
+# /lib/libmpeg2/test/
+/lib/libmpeg2/test/Makefile
+
+# /lib/libmpeg2/vc++/
+/lib/libmpeg2/vc++/Makefile
+
+# /xbmc/cores/dvdplayer/DVDCodecs
+/xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
+
+/xbmc/cores/dvdplayer/DVDDemuxers/Makefile
+
+/xbmc/cores/dvdplayer/DVDSubtitles/Makefile
+
+# /xbmc/cores/paplayer/
+/xbmc/cores/paplayer/Makefile
+
+# /lib/xbadpcm/
+/lib/xbadpcm/Makefile
+/lib/xbadpcm/adpcm.lib
+
+# /lib/libflac/flac-1.2.1/
+/lib/libflac/flac-1.2.1/Makefilee
+/lib/libflac/flac-1.2.1/config.log
+/lib/libflac/flac-1.2.1/config.h
+/lib/libflac/flac-1.2.1/config.status
+/lib/libflac/flac-1.2.1/libtool-disable-static
+/lib/libflac/flac-1.2.1/stamp-h1
+/lib/libflac/flac-1.2.1/configure.lineno
+/lib/libflac/flac-1.2.1/config.cache
+/lib/libflac/flac-1.2.1/Makefile
+/lib/libflac/flac-1.2.1/libtool
+
+/lib/libflac/Makefile
+/lib/libflac/flac-1.2.1/include/test_libs_common/Makefile
+/lib/libflac/flac-1.2.1/src/libFLAC/ppc/Makefile
+/lib/libflac/flac-1.2.1/src/libFLAC/ppc/as/Makefile
+/lib/libflac/flac-1.2.1/src/libFLAC/ppc/gas/Makefile
+/lib/libflac/flac-1.2.1/src/flac/flac
+/lib/libflac/flac-1.2.1/src/metaflac/metaflac
+
+# /lib/libflac/flac-1.2.1/build/
+/lib/libflac/flac-1.2.1/build/Makefile
+
+# /lib/libflac/flac-1.2.1/include/
+/lib/libflac/flac-1.2.1/include/Makefile
+
+# /lib/libflac/flac-1.2.1/include/FLAC/
+/lib/libflac/flac-1.2.1/include/FLAC/Makefile
+
+# /lib/libflac/flac-1.2.1/include/FLAC++/
+/lib/libflac/flac-1.2.1/include/FLAC++/Makefile
+
+# /lib/libflac/flac-1.2.1/include/share/
+/lib/libflac/flac-1.2.1/include/share/Makefile
+
+# /lib/libflac/flac-1.2.1/include/share/grabbag/
+/lib/libflac/flac-1.2.1/include/share/grabbag/Makefile
+
+
+# /lib/libflac/flac-1.2.1/m4/
+/lib/libflac/flac-1.2.1/m4/Makefile
+
+# /lib/libflac/flac-1.2.1/obj/
+/lib/libflac/flac-1.2.1/obj/Makefile
+
+# /lib/libflac/flac-1.2.1/obj/debug/
+/lib/libflac/flac-1.2.1/obj/debug/Makefile
+
+# /lib/libflac/flac-1.2.1/obj/debug/bin/
+/lib/libflac/flac-1.2.1/obj/debug/bin/Makefile
+
+# /lib/libflac/flac-1.2.1/obj/debug/lib/
+/lib/libflac/flac-1.2.1/obj/debug/lib/Makefile
+
+# /lib/libflac/flac-1.2.1/obj/release/
+/lib/libflac/flac-1.2.1/obj/release/Makefile
+
+# /lib/libflac/flac-1.2.1/obj/release/bin/
+/lib/libflac/flac-1.2.1/obj/release/bin/Makefile
+
+# /lib/libflac/flac-1.2.1/obj/release/lib/
+/lib/libflac/flac-1.2.1/obj/release/lib/Makefile
+
+# /lib/libflac/flac-1.2.1/src/
+/lib/libflac/flac-1.2.1/src/Makefile
+
+# /lib/libflac/flac-1.2.1/src/flac/
+/lib/libflac/flac-1.2.1/src/flac/Makefile
+
+# /lib/libflac/flac-1.2.1/src/libFLAC/
+/lib/libflac/flac-1.2.1/src/libFLAC/Makefile
+
+# /lib/libflac/flac-1.2.1/src/libFLAC/ia32/
+/lib/libflac/flac-1.2.1/src/libFLAC/ia32/Makefile
+
+# /lib/libflac/flac-1.2.1/src/libFLAC/include/
+/lib/libflac/flac-1.2.1/src/libFLAC/include/Makefile
+
+# /lib/libflac/flac-1.2.1/src/libFLAC/include/private/
+/lib/libflac/flac-1.2.1/src/libFLAC/include/private/Makefile
+
+# /lib/libflac/flac-1.2.1/src/libFLAC/include/protected/
+/lib/libflac/flac-1.2.1/src/libFLAC/include/protected/Makefile
+
+# /lib/libflac/flac-1.2.1/src/libFLAC++/
+/lib/libflac/flac-1.2.1/src/libFLAC++/Makefile
+
+# /lib/libflac/flac-1.2.1/src/metaflac/
+/lib/libflac/flac-1.2.1/src/metaflac/Makefile
+
+# /lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/
+/lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/Makefile
+
+# /lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_mac/
+/lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_mac/Makefile
+
+# /lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_ren/
+/lib/libflac/flac-1.2.1/src/monkeys_audio_utilities/flac_ren/Makefile
+
+# /lib/libflac/flac-1.2.1/src/plugin_common/
+/lib/libflac/flac-1.2.1/src/plugin_common/Makefile
+
+# /lib/libflac/flac-1.2.1/src/plugin_winamp2/
+/lib/libflac/flac-1.2.1/src/plugin_winamp2/Makefile
+
+# /lib/libflac/flac-1.2.1/src/plugin_winamp2/include/
+/lib/libflac/flac-1.2.1/src/plugin_winamp2/include/Makefile
+
+# /lib/libflac/flac-1.2.1/src/plugin_winamp2/include/winamp2/
+/lib/libflac/flac-1.2.1/src/plugin_winamp2/include/winamp2/Makefile
+
+# /lib/libflac/flac-1.2.1/src/plugin_xmms/
+/lib/libflac/flac-1.2.1/src/plugin_xmms/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/
+/lib/libflac/flac-1.2.1/src/share/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/getopt/
+/lib/libflac/flac-1.2.1/src/share/getopt/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/grabbag/
+/lib/libflac/flac-1.2.1/src/share/grabbag/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/replaygain_analysis/
+/lib/libflac/flac-1.2.1/src/share/replaygain_analysis/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/
+/lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/
+/lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/private/
+/lib/libflac/flac-1.2.1/src/share/replaygain_synthesis/include/private/Makefile
+
+# /lib/libflac/flac-1.2.1/src/share/utf8/
+/lib/libflac/flac-1.2.1/src/share/utf8/Makefile
+
+# /lib/nosefart/
+/lib/nosefart/Makefile
+/lib/nosefart/NoseFart.lib
+/lib/nosefart/Debug
+/lib/nosefart/Release
+
+# /lib/libsidplay2/
+/lib/libsidplay2/Makefile
+
+# /lib/libsidplay2/libsidplay/win/VC
+/lib/libsidplay2/libsidplay/win/VC/Debug
+/lib/libsidplay2/libsidplay/win/VC/Release
+
+# /lib/snesapu/SNES/SNESAPU/
+/lib/snesapu/SNES/SNESAPU/Makefile
+
+# /lib/stsound/StSoundLibrary/
+/lib/stsound/StSoundLibrary/Makefile
+/lib/stsound/StSoundLibrary/StSoundLibrary.lib
+/lib/stsound/StSoundLibrary/Debug
+/lib/stsound/StSoundLibrary/Release
+
+# /lib/timidity/
+/lib/timidity/Makefile
+
+# /lib/vgmstream/
+/lib/vgmstream/Makefile
+
+# /lib/vgmstream/win32/
+/lib/vgmstream/win32/Debug
+/lib/vgmstream/win32/Release
+/lib/vgmstream/win32/win32.ncb
+/lib/vgmstream/win32/win32.suo
+/lib/vgmstream/win32/win32.lib
+
+# /lib/win32/libmms_win32/
+/lib/win32/libmms_win32/msvc++/Debug
+/lib/win32/libmms_win32/msvc++/Release
+
+# /lib/win32/libsamplerate
+/lib/win32/libsamplerate/libsamplerate_win32/Debug
+/lib/win32/libsamplerate/libsamplerate_win32/Release
+
+# /lib/win32/sqlite
+/lib/win32/sqlite/libsqlite_win32/Debug
+/lib/win32/sqlite/libsqlite_win32/Release
+
+# /lib/win32/vorbisfile/libvorbis/
+/lib/win32/vorbisfile/libvorbis/config.log
+/lib/win32/vorbisfile/libvorbis/config.h
+/lib/win32/vorbisfile/libvorbis/Makefile
+/lib/win32/vorbisfile/libvorbis/libvorbis.spec
+/lib/win32/vorbisfile/libvorbis/config.status
+/lib/win32/vorbisfile/libvorbis/stamp-h1
+/lib/win32/vorbisfile/libvorbis/configure.lineno
+/lib/win32/vorbisfile/libvorbis/libtool
+
+# /lib/win32/vorbisfile/libvorbis/doc/
+/lib/win32/vorbisfile/libvorbis/doc/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/doc/vorbisenc/
+/lib/win32/vorbisfile/libvorbis/doc/vorbisenc/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/doc/vorbisfile/
+/lib/win32/vorbisfile/libvorbis/doc/vorbisfile/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/examples/
+/lib/win32/vorbisfile/libvorbis/examples/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/include/
+/lib/win32/vorbisfile/libvorbis/include/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/include/vorbis/
+/lib/win32/vorbisfile/libvorbis/include/vorbis/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/lib/
+/lib/win32/vorbisfile/libvorbis/lib/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/lib/books/
+/lib/win32/vorbisfile/libvorbis/lib/books/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/lib/books/coupled/
+/lib/win32/vorbisfile/libvorbis/lib/books/coupled/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/lib/books/floor/
+/lib/win32/vorbisfile/libvorbis/lib/books/floor/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/lib/books/uncoupled/
+/lib/win32/vorbisfile/libvorbis/lib/books/uncoupled/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/lib/modes/
+/lib/win32/vorbisfile/libvorbis/lib/modes/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/vq/
+/lib/win32/vorbisfile/libvorbis/vq/Makefile
+
+# /lib/win32/vorbisfile/libvorbis/win32/
+/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbis/Debug
+/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbis/Release
+/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbisfile/Debug
+/lib/win32/vorbisfile/libvorbis/win32/VS2008/libvorbisfile/Release
+
+# /lib/win32/vorbisfile/ogg/
+/lib/win32/vorbisfile/ogg/config.log
+/lib/win32/vorbisfile/ogg/config.h
+/lib/win32/vorbisfile/ogg/Makefile
+/lib/win32/vorbisfile/ogg/config.status
+/lib/win32/vorbisfile/ogg/stamp-h1
+/lib/win32/vorbisfile/ogg/libogg.spec
+/lib/win32/vorbisfile/ogg/configure.lineno
+/lib/win32/vorbisfile/ogg/libtool
+/lib/win32/vorbisfile/ogg/win32/Static_Debug/
+
+# /lib/win32/vorbisfile/ogg/doc/
+/lib/win32/vorbisfile/ogg/doc/Makefile
+
+# /lib/win32/vorbisfile/ogg/doc/libogg/
+/lib/win32/vorbisfile/ogg/doc/libogg/Makefile
+
+# /lib/win32/vorbisfile/ogg/include/
+/lib/win32/vorbisfile/ogg/include/Makefile
+
+# /lib/win32/vorbisfile/ogg/include/ogg/
+/lib/win32/vorbisfile/ogg/include/ogg/config_types.h
+/lib/win32/vorbisfile/ogg/include/ogg/Makefile
+
+# /lib/win32/vorbisfile/ogg/src/
+/lib/win32/vorbisfile/ogg/src/Makefile
+/lib/win32/vorbisfile/ogg/src/test_bitwise
+/lib/win32/vorbisfile/ogg/src/test_framing
+
+# /lib/win32/vorbisfile/ogg/win32/
+/lib/win32/vorbisfile/ogg/win32/Makefile
+/lib/win32/vorbisfile/ogg/win32/Static_Debug
+/lib/win32/vorbisfile/ogg/win32/Static_Release
+
+/xbmc/cores/playercorefactory/Makefile
+
+/xbmc/filesystem/Makefile
+
+# /xbmc/music/karaoke/
+/xbmc/music/karaoke/Makefile
+
+# /lib/libapetag/
+/lib/libapetag/Makefile
+/lib/libapetag/libtool
+/lib/libapetag/stamp-h1
+/lib/libapetag/config.h
+/lib/libapetag/Debug
+/lib/libapetag/Release
+/lib/libapetag/aclocal.m4
+/lib/libapetag/config.guess
+/lib/libapetag/config.h.in
+/lib/libapetag/config.h.in~
+/lib/libapetag/config.sub
+/lib/libapetag/configure
+/lib/libapetag/depcomp
+/lib/libapetag/INSTALL
+/lib/libapetag/ltmain.sh
+/lib/libapetag/m4/libtool.m4
+/lib/libapetag/m4/ltoptions.m4
+/lib/libapetag/m4/ltsugar.m4
+/lib/libapetag/m4/ltversion.m4
+/lib/libapetag/m4/lt~obsolete.m4
+/lib/libapetag/Makefile.in
+/lib/libapetag/missing
+
+# /lib/cmyth/
+/lib/cmyth/Makefile.depend
+/lib/cmyth/Win32/libcmyth.lib
+
+# /lib/cmyth/Win32
+/lib/cmyth/Win32/Debug
+/lib/cmyth/Win32/Release
+
+# lib/cximage-6.0/
+/lib/cximage-6.0/Makefile
+/lib/cximage-6.0/Debug
+/lib/cximage-6.0/Release
+/lib/cximage-6.0/*/Debug
+/lib/cximage-6.0/*/Release
+
+# /lib/cximage-6.0/zlib/
+/lib/cximage-6.0/zlib/zconf.h
+/lib/cximage-6.0/zlib/Makefile
+
+# /lib/libexif
+/lib/libexif/Makefile
+/lib/libexif/Debug (DLL)
+/lib/libexif/Release (DLL)
+/lib/libexif/libexif.lib
+
+/lib/libhdhomerun/Makefile
+
+# /lib/libhts/Win32
+/lib/libhts/Win32/Debug
+/lib/libhts/Win32/Release
+
+# /lib/libid3tag/
+/lib/libid3tag/Makefile
+/lib/libid3tag/libid3tag/autom4te.cache
+/lib/libid3tag/libid3tag/configure
+/lib/libid3tag/libid3tag/Makefile
+/lib/libid3tag/libid3tag/compat.c
+/lib/libid3tag/libid3tag/config.h
+/lib/libid3tag/libid3tag/frametype.c
+/lib/libid3tag/libid3tag/libid3tag.list
+/lib/libid3tag/libid3tag/libtool
+/lib/libid3tag/libid3tag/stamp-h1
+/lib/libid3tag/libid3tag/msvc++/Makefile
+/lib/libid3tag/libid3tag/msvc++/libid3tag.lib
+/lib/libid3tag/libid3tag/msvc++/Debug
+/lib/libid3tag/libid3tag/msvc++/Release
+/lib/libid3tag/libid3tag/aclocal.m4
+/lib/libid3tag/libid3tag/config.guess
+/lib/libid3tag/libid3tag/config.h.in
+/lib/libid3tag/libid3tag/config.h.in~
+/lib/libid3tag/libid3tag/config.sub
+/lib/libid3tag/libid3tag/depcomp
+/lib/libid3tag/libid3tag/INSTALL
+/lib/libid3tag/libid3tag/install-sh
+/lib/libid3tag/libid3tag/ltmain.sh
+/lib/libid3tag/libid3tag/Makefile.in
+/lib/libid3tag/libid3tag/missing
+/lib/libid3tag/libid3tag/mkinstalldirs
+/lib/libid3tag/libid3tag/msvc++/Makefile.in
+
+
+# /xbmc/interfaces/
+/xbmc/interfaces/Makefile
+/xbmc/interfaces/python/Makefile
+/xbmc/interfaces/python/xbmcmodule/Makefile
+/xbmc/interfaces/python/linux/Makefile
+/xbmc/interfaces/python/linux/wrapper_python.def
+
+# /xbmc/network/
+/xbmc/network/Makefile
+
+/lib/python/Makefile
+/lib/python/Include/pyconfig.h
+/lib/python/Makefile.pre
+/lib/python/Modules/Setup
+/lib/python/Modules/Setup.config
+/lib/python/Modules/Setup.local
+/lib/python/Modules/config.c
+/lib/python/Parser/pgen
+/lib/python/Parser/pgen.exe
+/lib/python/PC/pythonnt_rc.h
+/lib/python/build/
+/lib/python/buildno
+/lib/python/pyconfig.h
+/lib/python/pyconfig.hbak
+/lib/python/python
+/lib/python/python.exe
+/lib/python/Mac/Python/
+/lib/python/PC/pythonnt_rc_d.h
+
+# /lib/libRTV/
+/lib/libRTV/Makefile
+/lib/libRTV/Debug
+/lib/libRTV/Release
+
+/lib/libsquish/Makefile
+/lib/libsquish/lib/squishd.lib
+/lib/libsquish/lib/squish.lib
+/lib/libsquish/vs7/squish/Debug
+/lib/libsquish/vs7/squish/Release
+
+/lib/libUPnP/Makefile
+
+# /lib/libXDAAP
+/lib/libXDAAP/Makefile
+/lib/libXDAAP/libXDAAP_win32/Debug
+/lib/libXDAAP/libXDAAP_win32/Release
+
+/xbmc/screensavers/Makefile
+
+/xbmc/screensavers/rsxs-0.9/Makefile
+/xbmc/screensavers/rsxs-0.9/configure
+/xbmc/screensavers/rsxs-0.9/config.h
+/xbmc/screensavers/rsxs-0.9/config.log
+/xbmc/screensavers/rsxs-0.9/config/Makefile
+/xbmc/screensavers/rsxs-0.9/lib/Makefile
+/xbmc/screensavers/rsxs-0.9/libltdl/Makefile
+/xbmc/screensavers/rsxs-0.9/src/Makefile
+/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile
+/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile
+/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile
+/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile
+/xbmc/screensavers/rsxs-0.9/src/flux/Makefile
+/xbmc/screensavers/rsxs-0.9/src/helios/Makefile
+/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile
+/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile
+/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile
+/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile
+/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile
+/xbmc/screensavers/rsxs-0.9/xbmc/Makefile
+/xbmc/screensavers/rsxs-0.9/autom4te.cache/
+/xbmc/screensavers/rsxs-0.9/lib/alloca.h
+/xbmc/screensavers/rsxs-0.9/lib/argz.h
+/xbmc/screensavers/rsxs-0.9/lib/getopt.h
+/xbmc/screensavers/rsxs-0.9/rsxs.spec
+/xbmc/screensavers/rsxs-0.9/src/.dirstamp
+/xbmc/screensavers/rsxs-0.9/src/euphoria/rs-euphoria
+/xbmc/screensavers/rsxs-0.9/src/plasma/rs-plasma
+/xbmc/screensavers/rsxs-0.9/src/solarwinds/rs-solarwinds
+/xbmc/screensavers/rsxs-0.9/stamp-h1
+/xbmc/screensavers/rsxs-0.9/aclocal.m4
+/xbmc/screensavers/rsxs-0.9/compile
+/xbmc/screensavers/rsxs-0.9/config.guess
+/xbmc/screensavers/rsxs-0.9/config.h.in
+/xbmc/screensavers/rsxs-0.9/config.h.in~
+/xbmc/screensavers/rsxs-0.9/config.sub
+/xbmc/screensavers/rsxs-0.9/config/Makefile.in
+/xbmc/screensavers/rsxs-0.9/depcomp
+/xbmc/screensavers/rsxs-0.9/INSTALL
+/xbmc/screensavers/rsxs-0.9/install-sh
+/xbmc/screensavers/rsxs-0.9/lib/Makefile.in
+/xbmc/screensavers/rsxs-0.9/libltdl/Makefile.in
+/xbmc/screensavers/rsxs-0.9/Makefile.in
+/xbmc/screensavers/rsxs-0.9/missing
+/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/flux/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/helios/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile.in
+
+/xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
+/xbmc/visualizations/DirectXSpectrum/Release (DirectX)
+
+/xbmc/visualizations/Goom/Makefile
+/xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
+/xbmc/visualizations/Goom/goom2k4-0/configure
+/xbmc/visualizations/Goom/goom2k4-0/INSTALL
+/xbmc/visualizations/Goom/goom2k4-0/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/config.guess
+/xbmc/visualizations/Goom/goom2k4-0/config.sub
+/xbmc/visualizations/Goom/goom2k4-0/depcomp
+/xbmc/visualizations/Goom/goom2k4-0/install-sh
+/xbmc/visualizations/Goom/goom2k4-0/ltmain.sh
+/xbmc/visualizations/Goom/goom2k4-0/missing
+/xbmc/visualizations/Goom/goom2k4-0/sdl-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/src/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/xmms-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/ylwrap
+
+/xbmc/visualizations/Milkdrop/Debug
+/xbmc/visualizations/Milkdrop/Release
+
+/xbmc/visualizations/OpenGLSpectrum/Makefile
+
+/xbmc/visualizations/WaveForm/Makefile
+/xbmc/visualizations/WaveForm/Debug (DirectX)
+/xbmc/visualizations/WaveForm/Release (DirectX)
+
+/xbmc/visualizations/iTunes/Makefile
+
+/xbmc/visualizations/XBMCProjectM/Makefile
+/xbmc/visualizations/XBMCProjectM/libprojectM/Makefile
+/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeCache.txt
+/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeFiles/
+/xbmc/visualizations/XBMCProjectM/libprojectM/cmake_install.cmake
+/xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
+
+/xbmc/win32/git_rev.h
+
+XBMC.xcodeproj/project.xcworkspace/xcuserdata/barberio.xcuserdatad/UserInterfaceState.xcuserstate
+
+XBMC.xcodeproj/xcuserdata/barberio.xcuserdatad/xcschemes/XBMC.app.xcscheme
+
+XBMC.xcodeproj/xcuserdata/barberio.xcuserdatad/xcschemes/XBMC.xcscheme
+
+XBMC.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+
+XBMC.xcodeproj/xcuserdata/barberio.xcuserdatad/xcschemes/xcschememanagement.plist
