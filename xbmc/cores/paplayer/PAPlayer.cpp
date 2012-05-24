@@ -636,8 +636,6 @@ bool PAPlayer::QueueData(StreamInfo *si)
   unsigned int added = si->m_stream->AddData(data, samples * si->m_bytesPerSample);
   si->m_framesSent += added / si->m_bytesPerFrame;
 
-  CLog::Log(LOGDEBUG, "PAPlayer::QueueData - m_frame_set %d - %d", si->m_framesSent, si->m_prepareNextAtFrame);
-
   return true;
 }
 
@@ -695,12 +693,10 @@ void PAPlayer::Pause()
 
 void PAPlayer::SetVolume(float volume)
 {
-
 }
 
 void PAPlayer::SetDynamicRangeCompression(long drc)
 {
-
 }
 
 void PAPlayer::ToFFRW(int iSpeed)

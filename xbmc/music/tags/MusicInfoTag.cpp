@@ -24,7 +24,7 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
-#include "filesystem\File.h"
+#include "filesystem/File.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 
 using namespace MUSIC_INFO;

@@ -250,6 +250,11 @@
 		43BF09A21080D1E900E25290 /* AVTransportSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099E1080D1E900E25290 /* AVTransportSCPD.cpp */; };
 		43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */; };
 		43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
+		5E75DD96156CDAA300EC8F54 /* CueParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD8A156CDAA300EC8F54 /* CueParser.cpp */; };
+		5E75DD97156CDAA300EC8F54 /* CueSheetIndexList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD8E156CDAA300EC8F54 /* CueSheetIndexList.cpp */; };
+		5E75DD98156CDAA300EC8F54 /* CueSongsCollector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD90156CDAA300EC8F54 /* CueSongsCollector.cpp */; };
+		5E75DD99156CDAA300EC8F54 /* FileCueReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD92156CDAA300EC8F54 /* FileCueReader.cpp */; };
+		5E75DD9A156CDAA300EC8F54 /* TagCueReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */; };
 		7C0A7EC013A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */; };
 		7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
@@ -1506,6 +1511,18 @@
 		43BF09A91080D2ED00E25290 /* RenderingControlSCPD_Full.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RenderingControlSCPD_Full.xml; sourceTree = "<group>"; };
 		43BF09DD1080D39300E25290 /* fastmemcpy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fastmemcpy.h; sourceTree = "<group>"; };
 		43FAC87112D6349400F67914 /* IStorageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IStorageProvider.h; sourceTree = "<group>"; };
+		5E75DD8A156CDAA300EC8F54 /* CueParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueParser.cpp; sourceTree = "<group>"; };
+		5E75DD8B156CDAA300EC8F54 /* CueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueParser.h; sourceTree = "<group>"; };
+		5E75DD8C156CDAA300EC8F54 /* CueParserCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueParserCallback.h; sourceTree = "<group>"; };
+		5E75DD8D156CDAA300EC8F54 /* CueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueReader.h; sourceTree = "<group>"; };
+		5E75DD8E156CDAA300EC8F54 /* CueSheetIndexList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueSheetIndexList.cpp; sourceTree = "<group>"; };
+		5E75DD8F156CDAA300EC8F54 /* CueSheetIndexList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueSheetIndexList.h; sourceTree = "<group>"; };
+		5E75DD90156CDAA300EC8F54 /* CueSongsCollector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueSongsCollector.cpp; sourceTree = "<group>"; };
+		5E75DD91156CDAA300EC8F54 /* CueSongsCollector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueSongsCollector.h; sourceTree = "<group>"; };
+		5E75DD92156CDAA300EC8F54 /* FileCueReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileCueReader.cpp; sourceTree = "<group>"; };
+		5E75DD93156CDAA300EC8F54 /* FileCueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileCueReader.h; sourceTree = "<group>"; };
+		5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagCueReader.cpp; sourceTree = "<group>"; };
+		5E75DD95156CDAA300EC8F54 /* TagCueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCueReader.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -3427,6 +3444,7 @@
 		18B7C853129423A7009E7A26 /* music */ = {
 			isa = PBXGroup;
 			children = (
+				5E75DD89156CDAA300EC8F54 /* cue */,
 				431376A812D640B500680C15 /* dialogs */,
 				431376CC12D6421A00680C15 /* infoscanner */,
 				431376D412D6427900680C15 /* karaoke */,
@@ -4109,6 +4127,25 @@
 				7C779E2D104A57E500F444C4 /* WinSystemOSXGL.mm */,
 			);
 			path = osx;
+			sourceTree = "<group>";
+		};
+		5E75DD89156CDAA300EC8F54 /* cue */ = {
+			isa = PBXGroup;
+			children = (
+				5E75DD8A156CDAA300EC8F54 /* CueParser.cpp */,
+				5E75DD8B156CDAA300EC8F54 /* CueParser.h */,
+				5E75DD8C156CDAA300EC8F54 /* CueParserCallback.h */,
+				5E75DD8D156CDAA300EC8F54 /* CueReader.h */,
+				5E75DD8E156CDAA300EC8F54 /* CueSheetIndexList.cpp */,
+				5E75DD8F156CDAA300EC8F54 /* CueSheetIndexList.h */,
+				5E75DD90156CDAA300EC8F54 /* CueSongsCollector.cpp */,
+				5E75DD91156CDAA300EC8F54 /* CueSongsCollector.h */,
+				5E75DD92156CDAA300EC8F54 /* FileCueReader.cpp */,
+				5E75DD93156CDAA300EC8F54 /* FileCueReader.h */,
+				5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */,
+				5E75DD95156CDAA300EC8F54 /* TagCueReader.h */,
+			);
+			path = cue;
 			sourceTree = "<group>";
 		};
 		7C5608C30F1754930056433A /* ExternalPlayer */ = {
@@ -7267,6 +7304,11 @@
 				F5ED9509155D855200842059 /* CoreAudioGraph.cpp in Sources */,
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
 				7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */,
+				5E75DD96156CDAA300EC8F54 /* CueParser.cpp in Sources */,
+				5E75DD97156CDAA300EC8F54 /* CueSheetIndexList.cpp in Sources */,
+				5E75DD98156CDAA300EC8F54 /* CueSongsCollector.cpp in Sources */,
+				5E75DD99156CDAA300EC8F54 /* FileCueReader.cpp in Sources */,
+				5E75DD9A156CDAA300EC8F54 /* TagCueReader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7388,6 +7430,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
+				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(ARCHS)";
 				ZERO_LINK = NO;
@@ -7504,6 +7547,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
+				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(ARCHS)";
 				ZERO_LINK = NO;
@@ -7513,10 +7557,7 @@
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";
@@ -7527,7 +7568,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = .;
 				VALID_ARCHS = "i386 x86_64";
 			};
@@ -7536,10 +7577,7 @@
 		1DEB924D08733DCA0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -7549,7 +7587,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = .;
 				VALID_ARCHS = "i386 x86_64";
 			};
