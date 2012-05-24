@@ -160,8 +160,7 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
       if (controlId == iControl)
       {
         const char* id = setting->Attribute("id");
-        const char* value = setting->Attribute("default");
-        m_settings[id] = CleanString(value);
+        m_settings[id] = CleanString(setting->Attribute("default"));
         CreateControls();
         CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
         OnMessage(msg);
@@ -290,12 +289,10 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             { // localize
               CUtil::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
               for (unsigned int i = 0; i < valuesVec.size(); i++)
-                valuesVec[i] = GetString(value);
+                valuesVec[i] = GetString(valuesVec[i]);
             }
             else if (source)
-            {
               valuesVec = GetFileEnumValues(source, setting->Attribute("mask"), setting->Attribute("option"));
-            }
 
             for (unsigned int i = 0; i < valuesVec.size(); i++)
             {
@@ -401,9 +398,6 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           CStdString action = CleanString(setting->Attribute("action"));
           if (!action.IsEmpty())
           {
-            // replace $CWD with the url of plugin/script
-            action.Replace("$CWD", m_addon->Path());
-            action.Replace("$ID", m_addon->ID());
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
             g_application.getApplicationMessenger().ExecBuiltIn(action);
@@ -506,9 +500,7 @@ void CGUIDialogAddonSettings::SaveSettings(void)
     m_addon->UpdateSetting(i->first, i->second);
 
   if (m_saveToDisk)
-  { 
     m_addon->SaveSettings();
-  } 
 }
 
 void CGUIDialogAddonSettings::FreeSections()
@@ -535,11 +527,11 @@ void CGUIDialogAddonSettings::FreeControls()
 
 void CGUIDialogAddonSettings::CreateSections()
 {
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
-  CGUIButtonControl *originalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_SECTION_BUTTON);
   if (!m_addon)
     return;
 
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
+  CGUIButtonControl *originalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_SECTION_BUTTON);
   if (originalButton)
     originalButton->SetVisible(false);
 
@@ -624,20 +616,13 @@ void CGUIDialogAddonSettings::CreateControls()
   {
     const char *type = setting->Attribute("type");
     const char *id = setting->Attribute("id");
-    CStdString values;
-    if (setting->Attribute("values"))
-      values = setting->Attribute("values");
-    CStdString lvalues;
-    if (setting->Attribute("lvalues"))
-      lvalues = setting->Attribute("lvalues");
-    CStdString entries;
-    if (setting->Attribute("entries"))
-      entries = setting->Attribute("entries");
-    CStdString defaultValue;
-    if (setting->Attribute("default"))
-      defaultValue= CleanString(setting->Attribute("default"));
+    CStdString values = setting->Attribute("values");
+    CStdString lvalues = setting->Attribute("lvalues");
+    CStdString entries = setting->Attribute("entries");
+    CStdString defaultValue = CleanString(setting->Attribute("default"));
     const char *subsetting = setting->Attribute("subsetting");
     CStdString label = GetString(CleanString(setting->Attribute("label")), subsetting && 0 == strcmpi(subsetting, "true"));
+    CStdString option = setting->Attribute("option");
 
     bool bSort=false;
     const char *sort = setting->Attribute("sort");
@@ -662,11 +647,14 @@ void CGUIDialogAddonSettings::CreateControls()
         if (id)
         {
           CStdString value = m_settings[id];
-          // get any option to test for hidden
-          const char *option = setting->Attribute("option");
-          if (option && (strstr(option, "urlencoded")))
+          // test for hidden or urlencoded
+          if (option.CompareNoCase("urlencoded") || option.CompareNoCase("urlencoded|hidden") ||
+              option.CompareNoCase("hidden|urlencoded"))
+          {
             CURL::Decode(value);
-          if (option && (strstr(option, "hidden")))
+          }
+          if (option.CompareNoCase("hidden") || option.CompareNoCase("urlencoded|hidden") ||
+              option.CompareNoCase("hidden|urlencoded"))
           {
             CStdString hiddenText;
             hiddenText.append(value.size(), L'*');
@@ -742,7 +730,7 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISpinControlEx *)pControl)->SetText(label);
         ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
 
-        vector<CStdString> items = GetFileEnumValues(values, setting->Attribute("mask"), setting->Attribute("option"));
+        vector<CStdString> items = GetFileEnumValues(values, setting->Attribute("mask"), option);
         for (unsigned int i = 0; i < items.size(); ++i)
         {
           ((CGUISpinControlEx *)pControl)->AddLabel(items[i], i);
@@ -809,10 +797,9 @@ void CGUIDialogAddonSettings::CreateControls()
             fMax = (float)atof(range[1]);
         }
 
-        CStdString option = setting->Attribute("option");
         int iType=0;
 
-        if (option.size() == 0 || option.CompareNoCase("float") == 0)
+        if (option.IsEmpty() || option.CompareNoCase("float") == 0)
           iType = SPIN_CONTROL_TYPE_FLOAT;
         else if (option.CompareNoCase("int") == 0)
           iType = SPIN_CONTROL_TYPE_INT;
@@ -984,6 +971,9 @@ bool CGUIDialogAddonSettings::GetBoolCondition(const CStdString &condition, cons
         else
           value.Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
         break;
+      case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
+        value.Format("%f", (float)((CGUISettingsSliderControl *)control2)->GetFloatValue());
+        break;
       default:
         break;
     }
@@ -1081,11 +1071,12 @@ void CGUIDialogAddonSettings::SetDefaults()
     while (setting)
     {
       const char *id = setting->Attribute("id");
-      const char *type = setting->Attribute("type");
-      CStdString value = CleanString(setting->Attribute("default"));
       if (id)
       {
-        if (value)
+        const char *type = setting->Attribute("type");
+        CStdString value = CleanString(setting->Attribute("default"));
+
+        if (!value.IsEmpty())
           m_settings[id] = value;
         else if (type && 0 == strcmpi(type, "bool"))
           m_settings[id] = "false";
