@@ -192,7 +192,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
       }
 
       // cache the directory, if necessary
-      if (hints.flags & DIR_FLAG_BYPASS_CACHE)
+      if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
         g_directoryCache.SetDirectory(strPath, items, pDirectory->GetCacheType(strPath));
     }
 
