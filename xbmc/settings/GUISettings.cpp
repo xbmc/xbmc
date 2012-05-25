@@ -51,6 +51,7 @@
 #if defined(TARGET_DARWIN)
   #include "osx/DarwinUtils.h"
 #endif
+#include "Util.h"
 
 using namespace std;
 using namespace ADDON;
@@ -792,11 +793,7 @@ void CGUISettings::Initialize()
 #ifdef HAS_WEB_SERVER
   CSettingsCategory* srvWeb = AddCategory(6, "webserver", 33101);
   AddBool(srvWeb,  "services.webserver",        263, false);
-#ifdef _LINUX
-  AddString(srvWeb,"services.webserverport",    730, (geteuid()==0)?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-#else
-  AddString(srvWeb,"services.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-#endif
+  AddString(srvWeb,"services.webserverport",    730, CUtil::CanBindPrivileged()?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
   AddString(srvWeb,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(srvWeb,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
   AddDefaultAddon(srvWeb, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
