@@ -1101,17 +1101,19 @@ unsigned int CSoftAE::RunRawStreamStage(unsigned int channelCount, void *out, bo
 
 unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
 {
-  StreamList resumeStreams;
-  static StreamList::iterator itt;
-
   float *dst = (float*)out;
   unsigned int mixed = 0;
 
   /* identify the master stream */
   CSingleLock streamLock(m_streamLock);
 
+  /* no point doing anything if we have no streams */
+  if (m_playingStreams.empty())
+    return mixed;
+
   /* mix in any running streams */
-  for (itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
+  StreamList resumeStreams;
+  for (StreamList::iterator itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
   {
     CSoftAEStream *stream = *itt;
 

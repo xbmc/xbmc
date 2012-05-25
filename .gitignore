@@ -16,8 +16,6 @@ config.log
 *.depend
 *.pc
 *.P
-*.mode1v3
-*.pbxuser
 *.[oa]
 *.l[oa]
 *.so
@@ -50,6 +48,10 @@ config.log
 .DS_Store
 *.dSYM
 ._*
+*.mode1v3
+*.pbxuser
+*project.xcworkspace
+*xcuserdata
 /tools/darwin/depends/config.site
 /tools/darwin/depends/config.site.mk
 /tools/darwin/depends/Makefile
