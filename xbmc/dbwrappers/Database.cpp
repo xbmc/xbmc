@@ -135,9 +135,9 @@ CStdString CDatabase::GetSingleValue(const CStdString &strTable, const CStdStrin
 {
   CStdString query = PrepareSQL("SELECT %s FROM %s", strColumn.c_str(), strTable.c_str());
   if (!strWhereClause.empty())
-    query += " WHERE %s" + strWhereClause;
+    query += " WHERE " + strWhereClause;
   if (!strOrderBy.empty())
-    query += " ORDER BY %s" + strOrderBy;
+    query += " ORDER BY " + strOrderBy;
   query += " LIMIT 1";
   return GetSingleValue(query, m_pDS);
 }
