@@ -1305,7 +1305,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
 long long cPVRClientForTheRecord::SeekLiveStream(long long pos, int whence)
 {
   static std::string zz[] = { "Begin", "Current", "End" };
-  XBMC->Log(LOG_INFO, "SeekLiveStream (%lld, %s).", pos, zz[whence].c_str());
+  XBMC->Log(LOG_DEBUG, "SeekLiveStream (%lld, %s).", pos, zz[whence].c_str());
   if (!m_tsreader)
   {
     return -1;
