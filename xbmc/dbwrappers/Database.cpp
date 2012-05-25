@@ -111,41 +111,35 @@ CStdString CDatabase::PrepareSQL(CStdString strStmt, ...) const
   return strResult;
 }
 
-CStdString CDatabase::GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause /* = CStdString() */, const CStdString &strOrderBy /* = CStdString() */)
+std::string CDatabase::GetSingleValue(const std::string &query, std::auto_ptr<Dataset> &ds)
 {
-  CStdString strReturn;
-
+  std::string ret;
   try
   {
-    if (NULL == m_pDB.get()) return strReturn;
-    if (NULL == m_pDS.get()) return strReturn;
+    if (!m_pDB.get() || !ds.get())
+      return ret;
 
-    CStdString strQueryBase = "SELECT %s FROM %s";
-    if (!strWhereClause.IsEmpty())
-      strQueryBase.AppendFormat(" WHERE %s", strWhereClause.c_str());
-    if (!strOrderBy.IsEmpty())
-      strQueryBase.AppendFormat(" ORDER BY %s", strOrderBy.c_str());
-    strQueryBase.append(" LIMIT 1");
+    if (ds->query(query.c_str()) && ds->num_rows() > 0)
+      ret = ds->fv(0).get_asString();
 
-    CStdString strQuery = PrepareSQL(strQueryBase,
-        strColumn.c_str(), strTable.c_str());
-
-    if (!m_pDS->query(strQuery.c_str())) return strReturn;
-
-    if (m_pDS->num_rows() > 0)
-    {
-      strReturn = m_pDS->fv(0).get_asString();
-    }
-
-    m_pDS->close();
+    ds->close();
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - failed to get value '%s' from table '%s'",
-        __FUNCTION__, strColumn.c_str(), strTable.c_str());
+    CLog::Log(LOGERROR, "%s - failed on query '%s'", __FUNCTION__, query.c_str());
   }
+  return ret;
+}
 
-  return strReturn;
+CStdString CDatabase::GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause /* = CStdString() */, const CStdString &strOrderBy /* = CStdString() */)
+{
+  CStdString query = PrepareSQL("SELECT %s FROM %s", strColumn.c_str(), strTable.c_str());
+  if (!strWhereClause.empty())
+    query += " WHERE %s" + strWhereClause;
+  if (!strOrderBy.empty())
+    query += " ORDER BY %s" + strOrderBy;
+  query += " LIMIT 1";
+  return GetSingleValue(query, m_pDS);
 }
 
 bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWhereClause /* = CStdString() */)
