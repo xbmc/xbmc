@@ -58,6 +58,9 @@ config.log
 /tools/darwin/depends/python26/Makefile
 /tools/darwin/depends/**/.gitignore
 /tools/darwin/depends/**/.installed
+/*.xcodeproj/
+!/*.xcodeproj/project.pbxproj
+
 
 .libs/
 .deps/
