@@ -656,13 +656,13 @@ void CGUIDialogAddonSettings::CreateControls()
         {
           CStdString value = m_settings[id];
           // test for hidden or urlencoded
-          if (option.CompareNoCase("urlencoded") || option.CompareNoCase("urlencoded|hidden") ||
-              option.CompareNoCase("hidden|urlencoded"))
+          if (option.CompareNoCase("urlencoded") == 0 || option.CompareNoCase("urlencoded|hidden") == 0 ||
+              option.CompareNoCase("hidden|urlencoded") == 0)
           {
             CURL::Decode(value);
           }
-          if (option.CompareNoCase("hidden") || option.CompareNoCase("urlencoded|hidden") ||
-              option.CompareNoCase("hidden|urlencoded"))
+          if (option.CompareNoCase("hidden") == 0 || option.CompareNoCase("urlencoded|hidden") == 0 ||
+              option.CompareNoCase("hidden|urlencoded") == 0)
           {
             CStdString hiddenText;
             hiddenText.append(value.size(), L'*');
