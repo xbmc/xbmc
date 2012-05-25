@@ -217,10 +217,17 @@ bool CTextureCache::AddCachedTexture(const CStdString &url, const CTextureDetail
   return m_database.AddCachedTexture(url, details);
 }
 
-bool CTextureCache::IncrementUseCount(const CTextureDetails &details)
+void CTextureCache::IncrementUseCount(const CTextureDetails &details)
 {
-  CSingleLock lock(m_databaseSection);
-  return m_database.IncrementUseCount(details);
+  static const size_t count_before_update = 100;
+  CSingleLock lock(m_useCountSection);
+  m_useCounts.reserve(count_before_update);
+  m_useCounts.push_back(details);
+  if (m_useCounts.size() >= count_before_update)
+  {
+    AddJob(new CTextureUseCountJob(m_useCounts));
+    m_useCounts.clear();
+  }
 }
 
 bool CTextureCache::SetCachedTextureValid(const CStdString &url, bool updateable)
