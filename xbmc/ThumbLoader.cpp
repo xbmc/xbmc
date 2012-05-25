@@ -305,7 +305,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
           CFileItem item(*pItem);
           item.SetPath(tag.GetPath());
           CVideoInfoScanner scanner;
-          scanner.GetArtwork(&item, info->Content(), settings.parent_name_root, true);
+          scanner.GetArtwork(&item, info->Content(), tag.m_type != "episode" && settings.parent_name_root, true);
           pItem->SetArt(item.GetArt());
         }
       }
