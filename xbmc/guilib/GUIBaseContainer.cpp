@@ -866,6 +866,7 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
     {
       Reset();
       m_items = items;
+      SetPageControlRange();
       if (reselect >= 0 && reselect < (int)m_items.size())
         SelectItem(reselect);
       MarkDirtyRegion();
