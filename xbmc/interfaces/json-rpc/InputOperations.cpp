@@ -163,3 +163,13 @@ JSONRPC_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer 
 {
   return activateWindow(WINDOW_HOME);
 }
+
+JSONRPC_STATUS CInputOperations::ShowCodec(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_SHOW_CODEC);
+}
+
+JSONRPC_STATUS CInputOperations::ShowOSD(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_SHOW_OSD);
+}

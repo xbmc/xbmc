@@ -2421,6 +2421,22 @@ namespace JSONRPC
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
+    "\"Input.ShowCodec\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Show codec information of the playing item\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
+    "\"Input.ShowOSD\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Show the on-screen display for the current player\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
     "\"Application.GetProperties\": {"
       "\"type\": \"method\","
       "\"description\": \"Retrieves the values of the given properties\","
