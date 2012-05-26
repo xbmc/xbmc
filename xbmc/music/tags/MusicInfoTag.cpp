@@ -27,6 +27,46 @@
 
 using namespace MUSIC_INFO;
 
+EmbeddedArtInfo::EmbeddedArtInfo(size_t siz, const std::string &mim)
+{
+  set(siz, mim);
+}
+
+void EmbeddedArtInfo::set(size_t siz, const std::string &mim)
+{
+  size = siz;
+  mime = mim;
+}
+
+void EmbeddedArtInfo::clear()
+{
+  mime.clear();
+  size = 0;
+}
+
+bool EmbeddedArtInfo::empty() const
+{
+  return size == 0;
+}
+
+bool EmbeddedArtInfo::matches(const EmbeddedArtInfo &right) const
+{
+  return (size == right.size &&
+          mime == right.mime);
+}
+
+EmbeddedArt::EmbeddedArt(const uint8_t *dat, size_t siz, const std::string &mim)
+{
+  set(dat, siz, mim);
+}
+
+void EmbeddedArt::set(const uint8_t *dat, size_t siz, const std::string &mim)
+{
+  EmbeddedArtInfo::set(siz, mim);
+  data.resize(siz);
+  memcpy(&data[0], dat, siz);
+}
+
 CMusicInfoTag::CMusicInfoTag(void)
 {
   Clear();
@@ -70,6 +110,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_iArtistId = tag.m_iArtistId;
   m_iAlbumId = tag.m_iAlbumId;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
+  m_coverArt = tag.m_coverArt;
   return *this;
 }
 
@@ -207,6 +248,11 @@ const CDateTime &CMusicInfoTag::GetLastPlayed() const
 bool CMusicInfoTag::GetCompilation() const
 {
   return m_bCompilation;
+}
+
+const EmbeddedArtInfo &CMusicInfoTag::GetCoverArtInfo() const
+{
+  return m_coverArt;
 }
 
 void CMusicInfoTag::SetURL(const CStdString& strURL)
@@ -401,6 +447,11 @@ void CMusicInfoTag::SetMusicBrainzTRMID(const CStdString& strTRMID)
   m_strMusicBrainzTRMID=strTRMID;
 }
 
+void CMusicInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
+{
+  m_coverArt.set(size, mimeType);
+}
+
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   SetArtist(album.artist);
@@ -574,6 +625,7 @@ void CMusicInfoTag::Clear()
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
   m_iArtistId = -1;
   m_iAlbumId = -1;
+  m_coverArt.clear();
 }
 
 void CMusicInfoTag::AppendArtist(const CStdString &artist)

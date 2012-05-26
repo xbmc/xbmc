@@ -24,6 +24,10 @@
 class CSong;
 class CAlbum;
 
+#include <vector>
+#include <string>
+#include <stdint.h>
+
 #include "utils/Archive.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -31,6 +35,27 @@ class CAlbum;
 
 namespace MUSIC_INFO
 {
+  class EmbeddedArtInfo
+  {
+  public:
+    EmbeddedArtInfo() {};
+    EmbeddedArtInfo(size_t size, const std::string &mime);
+    void set(size_t size, const std::string &mime);
+    void clear();
+    bool empty() const;
+    bool matches(const EmbeddedArtInfo &right) const;
+    size_t      size;
+    std::string mime;
+  };
+
+  class EmbeddedArt : public EmbeddedArtInfo
+  {
+  public:
+    EmbeddedArt() {};
+    EmbeddedArt(const uint8_t *data, size_t size, const std::string &mime);
+    void set(const uint8_t *data, size_t size, const std::string &mime);
+    std::vector<uint8_t> data;
+  };
 
 class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 {
@@ -70,6 +95,7 @@ public:
   char  GetRating() const;
   int  GetListeners() const;
   int  GetPlayCount() const;
+  const EmbeddedArtInfo &GetCoverArtInfo() const;
 
   void SetURL(const CStdString& strURL);
   void SetTitle(const CStdString& strTitle);
@@ -105,6 +131,7 @@ public:
   void SetLastPlayed(const CStdString& strLastPlayed);
   void SetLastPlayed(const CDateTime& strLastPlayed);
   void SetCompilation(bool compilation);
+  void SetCoverArtInfo(size_t size, const std::string &mimeType);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -162,5 +189,7 @@ protected:
   int m_iArtistId;
   int m_iAlbumId;
   SYSTEMTIME m_dwReleaseDate;
+
+  EmbeddedArtInfo m_coverArt; ///< art information
 };
 }
