@@ -142,7 +142,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
     {
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
-      if (hints.flags & DIR_FLAG_BYPASS_CACHE)
+      if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
         g_directoryCache.ClearDirectory(strPath);
 
       pDirectory->SetFlags(hints.flags);
