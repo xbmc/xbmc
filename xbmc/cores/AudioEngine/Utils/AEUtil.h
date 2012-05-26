@@ -53,12 +53,28 @@ public:
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
 
-  /* convert a linear value between 0.0 and 1.0 to a logrithmic value  */
-  static inline const float LinToLog(const float dbrange, const float value)
+  /*! \brief convert a volume percentage (as a proportion) to a dB gain
+   We assume a dB range of 60dB, i.e. assume that 0% volume corresponds
+   to a reduction of 60dB.
+   \param value the volume from 0..1
+   \return the corresponding gain in dB from -60dB .. 0dB.
+   \sa GainToScale
+   */
+  static inline const float PercentToGain(const float value)
   {
-    float b = log(pow(10.0f, dbrange * 0.05f));
-    float a = 1.0f / exp(b);
-    return a * exp(b * value);
+    static const float db_range = 60.0f;
+    return (value - 1)*db_range;
+  }
+
+  /*! \brief convert a dB gain to a scale factor for audio manipulation
+   Inverts gain = 20 log_10(scale)
+   \param dB the gain in decibels.
+   \return the scale factor (equivalent to a voltage multiplier).
+   \sa PercentToGain
+   */
+  static inline const float GainToScale(const float dB)
+  {
+    return pow(10.0f, dB/20);
   }
 
   #ifdef __SSE__
