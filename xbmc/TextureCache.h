@@ -203,6 +203,14 @@ private:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
+  /*! \brief Called when a caching job has completed.
+   Removes the job from our processing list, updates the database
+   and fires a DDS job if appropriate.
+   \param success whether the job was successful.
+   \param job the caching job.
+   */
+  void OnCachingComplete(bool success, CTextureCacheJob *job);
+
   CCriticalSection m_databaseSection;
   CTextureDatabase m_database;
   std::set<CStdString> m_processing; ///< currently processing list to avoid 2 jobs being processed at once
