@@ -43,6 +43,22 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
+bool SysctlMatches(std::string key, std::string searchValue)
+{
+  int result = -1;
+#if defined(TARGET_DARWIN_IOS)
+  char        buffer[512];
+  size_t      len = 512;
+  result = 0;
+
+  if (sysctlbyname(key.c_str(), &buffer, &len, NULL, 0) == 0)
+    key = buffer;
+  
+  if (key.find(searchValue) != std::string::npos)
+    result = 1;   
+#endif
+  return result;
+}
 
 bool DarwinIsAppleTV2(void)
 {
@@ -50,20 +66,26 @@ bool DarwinIsAppleTV2(void)
 #if defined(TARGET_DARWIN_IOS)
   if( result == -1 )
   {
-    char        buffer[512];
-    size_t      len = 512;
-    result = 0;    
-    std::string hw_machine = "unknown";
-
-    if (sysctlbyname("hw.machine", &buffer, &len, NULL, 0) == 0)
-      hw_machine = buffer;
-
-    if (hw_machine.find("AppleTV2,1") != std::string::npos)
-      result = 1;   
+    result = SysctlMatches("hw.machine", "AppleTV2,1");
   }
 #endif
   return (result == 1);
 }
+
+bool DarwinIsIPad3(void)
+{
+  static int result = -1;
+#if defined(TARGET_DARWIN_IOS)
+  if( result == -1 )
+  {
+    //valid ipad3 identifiers - iPad3,1 iPad3,2 and iPad3,3
+    //taken from http://stackoverflow.com/questions/9638970/ios-the-new-ipad-uidevicehardware-hw-machine-codename
+    result = SysctlMatches("hw.machine", "iPad3");
+  }
+#endif
+  return (result == 1);
+}
+
 
 const char *GetDarwinVersionString(void)
 {
