@@ -86,6 +86,13 @@ WalkDir(const char* path, unsigned int indent)
                  printf(" LINK");
          }
          printf("\n");
+         NPT_String cre_time = NPT_DateTime(info.m_CreationTime, true).ToString(NPT_DateTime::FORMAT_RFC_1123);
+         for (unsigned int i=0; i<indent; i++) { printf("  "); }
+         printf("created: %s\n", cre_time.GetChars());
+         NPT_String mod_time = NPT_DateTime(info.m_ModificationTime, true).ToString(NPT_DateTime::FORMAT_RFC_1123);
+         for (unsigned int i=0; i<indent; i++) { printf("  "); }
+         printf("modified: %s\n", mod_time.GetChars());
+         
          if (info.m_Type == NPT_FileInfo::FILE_TYPE_DIRECTORY) {
              result = WalkDir(child, indent+1);
              if (NPT_FAILED(result)) return result;

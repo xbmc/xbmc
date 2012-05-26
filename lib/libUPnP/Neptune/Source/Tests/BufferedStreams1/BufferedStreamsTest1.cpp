@@ -17,6 +17,13 @@
 #include <crtdbg.h>
 #endif
 
+#define CHECK(x) {                                  \
+    if (!(x)) {                                     \
+        printf("TEST FAILED line %d\n", __LINE__);  \
+        return 1;                                   \
+    }                                               \
+}
+
 /*----------------------------------------------------------------------
 |       main
 +---------------------------------------------------------------------*/
@@ -53,5 +60,11 @@ main(int /*argc*/, char** /*argv*/)
     printf("BufferedInputStream test1 passed\n");
 #endif
 
+    NPT_InputStreamReference isr1(new NPT_MemoryStream("0123456789", 10));
+    NPT_BufferedInputStream bis(isr1, 3);
+    char buffer[256];
+    NPT_Result result = bis.ReadLine(buffer, 2);
+    CHECK(result == NPT_ERROR_NOT_ENOUGH_SPACE);
+    
     return 0;
 }

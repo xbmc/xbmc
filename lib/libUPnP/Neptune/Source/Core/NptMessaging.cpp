@@ -39,7 +39,7 @@
 |   globals
 +---------------------------------------------------------------------*/
 NPT_DEFINE_DYNAMIC_CAST_ANCHOR(NPT_MessageHandler)
-NPT_Message::Type NPT_Message::MessageType = "Generic Message";
+const NPT_Message::Type NPT_Message::MessageType = "Generic Message";
 
 /*----------------------------------------------------------------------
 |   NPT_MessageHandler::HandleMessage
@@ -48,4 +48,80 @@ NPT_Result
 NPT_MessageHandler::HandleMessage(NPT_Message* message)
 {
     return message->Dispatch(this);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_MessageHandlerProxy::NPT_MessageHandlerProxy
++---------------------------------------------------------------------*/
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(NPT_MessageHandlerProxy)
+NPT_MessageHandlerProxy::NPT_MessageHandlerProxy(NPT_MessageHandler* handler) :
+    m_Handler(handler),
+    m_ReferenceCount(1)
+{}
+    
+/*----------------------------------------------------------------------
+|   NPT_MessageHandlerProxy::NPT_MessageHandlerProxy
++---------------------------------------------------------------------*/
+NPT_MessageHandlerProxy::~NPT_MessageHandlerProxy()
+{
+}
+
+/*----------------------------------------------------------------------
+|   NPT_MessageHandlerProxy::OnMessage
++---------------------------------------------------------------------*/
+void
+NPT_MessageHandlerProxy::OnMessage(NPT_Message* message)
+{
+    m_Lock.Lock();
+    if (m_Handler) m_Handler->OnMessage(message);
+    m_Lock.Unlock();
+}
+
+/*----------------------------------------------------------------------
+|   NPT_MessageHandlerProxy::HandleMessage
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_MessageHandlerProxy::HandleMessage(NPT_Message* message)
+{
+    NPT_Result result = NPT_SUCCESS;
+    m_Lock.Lock();
+    if (m_Handler) result = m_Handler->HandleMessage(message);
+    m_Lock.Unlock();
+    
+    return result;
+}
+    
+/*----------------------------------------------------------------------
+|   NPT_MessageHandlerProxy::DetachHandler
++---------------------------------------------------------------------*/
+void 
+NPT_MessageHandlerProxy::DetachHandler()
+{
+    m_Lock.Lock();
+    m_Handler = NULL;
+    m_Lock.Unlock();
+}
+
+/*----------------------------------------------------------------------
+|   NPT_MessageHandlerProxy::AddReference
++---------------------------------------------------------------------*/
+void 
+NPT_MessageHandlerProxy::AddReference()
+{
+    m_Lock.Lock();
+    ++m_ReferenceCount;
+    m_Lock.Unlock();
+}
+
+/*----------------------------------------------------------------------
+|   NPT_MessageHandlerProxy::Release
++---------------------------------------------------------------------*/
+void 
+NPT_MessageHandlerProxy::Release()
+{
+    m_Lock.Lock();
+    bool must_delete = (--m_ReferenceCount == 0);
+    m_Lock.Unlock();
+    
+    if (must_delete) delete this;
 }

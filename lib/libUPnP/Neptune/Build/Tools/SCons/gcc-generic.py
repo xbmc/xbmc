@@ -30,4 +30,5 @@ def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=No
         env['CXX']    = gcc_cross_prefix+'-g++'
         env['LINK']   = gcc_cross_prefix+'-g++'
 
-    
+    if gcc_cross_prefix:
+        env['ENV']['PATH'] = os.environ['PATH'] + ':' + env['ENV']['PATH']

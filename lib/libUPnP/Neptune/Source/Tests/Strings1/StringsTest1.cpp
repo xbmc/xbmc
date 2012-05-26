@@ -213,11 +213,11 @@ main(int /*argc*/, char** /*argv*/)
     d2 = *d1;
     delete d1;
     d1 = NULL;
-    printf(d2);
+    printf("%s", d2.GetChars());
     d3 = d2;
     d3 = "d3";
-    printf(d2);
-    printf(d3);
+    printf("%s", d2.GetChars());
+    printf("%s", d3.GetChars());
 
     printf("::testing Append\n");
     NPT_String l = "blabla";
@@ -489,7 +489,17 @@ main(int /*argc*/, char** /*argv*/)
     NPT_String r1 = r0;
     r1.Replace('@', '#');
     StringTest("Replace(char, char)", r1, "abcd#fghij#f#");
-
+    r2 = "blablabla";
+    r2.Replace("bla", "blu");
+    StringTest("Replace(str, str)", r2, "blublublu");
+    r2 = "abcdefxxxxijxxxx0";
+    r2.Replace("xxxx", "y");
+    StringTest("Replace(str, str)", r2, "abcdefyijy0");
+    r2 = "abcdefxijx0";
+    r2.Replace("x", "yyyyyy");
+    StringTest("Replace(str, str)", r2, "abcdefyyyyyyijyyyyyy0");
+    
+    
     printf(":: testing Insert\n");
     NPT_String in0;
     in0.Insert("hello", 1);
@@ -610,6 +620,11 @@ main(int /*argc*/, char** /*argv*/)
     IntTest("", sf.GetLength(), (1<<10)*7);
     
     
+    NPT_LargeSize lu1=2000000;
+    NPT_LargeSize lu2=2000002;
+    NPT_String range = NPT_String::Format("bytes=%lu-%lu", (long)lu1, (long)lu2);
+    StringTest("", "bytes=2000000-2000002", range.GetChars());
+    
     char s_buf[7];
     s_buf[5] = 'a';
     NPT_CopyString(s_buf, "hello");
@@ -624,7 +639,24 @@ main(int /*argc*/, char** /*argv*/)
     NPT_CopyStringN(s_buf, "hello", 4);
     StringTest("", s_buf, "hell");
     
+    NPT_String hs1 = "curds and whey";
+    IntTest("", hs1.GetHash32(), 0x22d5344e);
     
+    
+    char buffer[6] = "abcde";
+    NPT_String tr0(buffer, 5);
+    IntTest("", tr0.GetLength(), 5);
+    buffer[1] = 0;
+    NPT_String tr1(buffer, 5);
+    IntTest("", tr1.GetLength(), 1);
+    buffer[0] = 0;
+    NPT_String tr2(buffer, 5);
+    IntTest("", tr2.GetLength(), 0);
+    tr0.Assign(buffer, 5);
+    IntTest("", tr0.GetLength(), 0);
+    buffer[0] = 'a';
+    tr0.Assign(buffer, 5);
+    IntTest("", tr0.GetLength(), 1);
     
     printf("------------------------- done -----\n");
     return 0;

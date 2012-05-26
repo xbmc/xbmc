@@ -221,7 +221,7 @@ NPT_StdcFileInputStream::Read(void*     buffer,
         return NPT_ERROR_EOS;
     } else {
         if (bytes_read) *bytes_read = 0;
-        return NPT_ERROR_READ_FAILED;
+        return MapErrno(errno);
     }
 }
 
@@ -372,17 +372,14 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
         // compute mode
         const char* fmode = "";
         if (mode & NPT_FILE_OPEN_MODE_WRITE) {
-            if (mode & NPT_FILE_OPEN_MODE_CREATE) {
-                if (mode & NPT_FILE_OPEN_MODE_TRUNCATE) {
-                    /* write, read, create, truncate */
-                    fmode = "w+b";
-                } else {
-                    /* write, read, create */
-                    fmode = "a+b";
-                }
+            if (mode & NPT_FILE_OPEN_MODE_APPEND) {
+                /* write, read, create, append */
+                /* (append implies create)     */
+                fmode = "a+b";
             } else {
-                if (mode & NPT_FILE_OPEN_MODE_TRUNCATE) {
-                    /* write, read, truncate */
+                if ((mode & NPT_FILE_OPEN_MODE_CREATE) || (mode & NPT_FILE_OPEN_MODE_TRUNCATE)) {
+                    /* write, read, create, truncate                      */
+                    /* (truncate implies create, create implies truncate) */
                     fmode = "w+b";
                 } else {
                     /* write, read */
@@ -396,7 +393,7 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
 
         // open the file
 #if defined(NPT_CONFIG_HAVE_FSOPEN)
-        file = _fsopen(name, fmode, _SH_DENYWR);
+        file = _fsopen(name, fmode, _SH_DENYNO);
         int open_result = file == NULL ? ENOENT : 0; 
 #else
         int open_result = fopen_s(&file, name, fmode);

@@ -25,6 +25,7 @@
 #include "NptSystem.h"
 #include "NptResults.h"
 #include "NptDebug.h"
+#include "NptUtils.h"
 
 /*----------------------------------------------------------------------
 |   NPT_System::GetProcessId
@@ -35,6 +36,15 @@ NPT_System::GetProcessId(NPT_UInt32& id)
     //id = getpid();
     id = 0;
     return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_System::GetMachineName
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_System::GetMachineName(NPT_String& name)
+{
+    return NPT_GetEnvironment("COMPUTERNAME", name);
 }
 
 #if defined(_WIN32_WCE)
@@ -74,8 +84,8 @@ NPT_System::GetCurrentTimeStamp(NPT_TimeStamp& now)
 #else
     _ftime(&time_stamp);
 #endif
-    now.m_Seconds     = (long)time_stamp.time;
-    now.m_NanoSeconds = (long)time_stamp.millitm*1000000;
+    now.SetNanos(((NPT_UInt64)time_stamp.time)     * 1000000000UL +
+                  ((NPT_UInt64)time_stamp.millitm) * 1000000);
 
     return NPT_SUCCESS;
 }
@@ -87,8 +97,7 @@ NPT_System::GetCurrentTimeStamp(NPT_TimeStamp& now)
 NPT_Result
 NPT_System::Sleep(const NPT_TimeInterval& duration)
 {
-    DWORD milliseconds = 1000*duration.m_Seconds + duration.m_NanoSeconds/1000000;
-    ::Sleep(milliseconds);
+    ::Sleep((NPT_UInt32)duration.ToMillis());
 
     return NPT_SUCCESS;
 }
@@ -129,7 +138,7 @@ NPT_System::GetRandomInteger()
     if (seeded == false) {
         NPT_TimeStamp now;
         GetCurrentTimeStamp(now);
-        srand(now.m_NanoSeconds);
+        srand((NPT_UInt32)now.ToNanos());
         seeded = true;
     }
 

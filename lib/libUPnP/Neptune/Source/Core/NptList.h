@@ -129,7 +129,8 @@ public:
     // list manipulation
     NPT_Result   Add(NPT_List<T>& list);
     NPT_Result   Remove(const NPT_List<T>& list, bool all=false);
-
+    NPT_Result   Cut(NPT_Cardinal keep, NPT_List<T>& cut);
+    
     // item manipulation
     NPT_Result   Add(Item& item);
     NPT_Result   Detach(Item& item);
@@ -182,6 +183,69 @@ public:
         }
 
         return Iterator(NULL);
+    }
+
+    // Merge sort algorithm
+    // http://en.wikipedia.org/wiki/Mergesort
+    template <typename X> 
+    NPT_Result Sort(const X& function)
+    {   
+        if (GetItemCount() <= 1) return NPT_SUCCESS;
+        
+        NPT_List<T> right;
+        NPT_CHECK(Cut(GetItemCount() >> 1, right));
+        
+        // Sort ourselves again
+        Sort(function);
+        
+        // sort the right side
+        right.Sort(function);
+        
+        // merge the two back inline
+        if (function(m_Tail->m_Data, right.m_Head->m_Data) > 0) {
+            Merge(right, function);
+        } else {
+            // append right
+            right.m_Head->m_Prev = m_Tail;
+            if (m_Tail) m_Tail->m_Next = right.m_Head;
+            if (!m_Head) m_Head = right.m_Head;
+            m_Tail = right.m_Tail;
+            m_ItemCount += right.m_ItemCount;
+            
+            right.m_ItemCount = 0;
+            right.m_Head = right.m_Tail = NULL;
+        }
+        
+        return NPT_SUCCESS;
+    }
+
+    template <typename X> 
+    NPT_Result Merge(NPT_List<T>& other, const X& function) 
+    {
+        Iterator left = GetFirstItem();
+        Iterator right;
+        while (left && other.m_Head) {
+            if (function(*left, other.m_Head->m_Data) <= 0) {
+                ++left;
+            } else {
+                // remove head and insert it
+                Item* head = other.m_Head;
+                other.Detach(*head);
+                Insert(left, *head);
+            }
+        }
+        
+        // add what's left of other if any
+        if (other.m_Head) {
+            other.m_Head->m_Prev = m_Tail;
+            if (m_Tail) m_Tail->m_Next = other.m_Head;
+            m_Tail = other.m_Tail;
+            if (!m_Head) m_Head = other.m_Head;
+            other.m_Head = other.m_Tail = NULL;
+        }
+        m_ItemCount += other.m_ItemCount;
+        other.m_ItemCount = 0;
+        return NPT_SUCCESS;
     }
 
     // operators
@@ -391,7 +455,8 @@ NPT_List<T>::GetItem(NPT_Ordinal n) const
 |   NPT_List<T>::Insert
 +---------------------------------------------------------------------*/
 template <typename T>
-inline NPT_Result
+inline 
+NPT_Result
 NPT_List<T>::Insert(Iterator where, const T&data)
 {
     return Insert(where, *new Item(data));
@@ -600,6 +665,41 @@ NPT_List<T>::Contains(const T& data) const
     }
 
     return false;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_List<T>::Cut
++---------------------------------------------------------------------*/
+template <typename T> 
+NPT_Result 
+NPT_List<T>::Cut(NPT_Cardinal keep, NPT_List<T>& cut) 
+{
+    cut.Clear();
+    
+    // shortcut
+    if (keep >= GetItemCount()) return NPT_SUCCESS;
+    
+    // update new counts first
+    cut.m_ItemCount = m_ItemCount-keep;
+    m_ItemCount = keep;
+    
+    // look for the cut-point item
+    Item* item = m_Head;
+    while (keep--) { item = item->m_Next;}
+    
+    // the cut list goes from the cut-point item to the tail
+    cut.m_Head = item;
+    cut.m_Tail = m_Tail;
+    
+    // update the portion of the list we keep
+    if (item == m_Head) m_Head = NULL;
+    m_Tail = item->m_Prev;
+    
+    // update the cut list
+    if (item->m_Prev) item->m_Prev->m_Next = NULL;
+    item->m_Prev = NULL;
+    
+    return NPT_SUCCESS;
 }
 
 #endif // _NPT_LIST_H_

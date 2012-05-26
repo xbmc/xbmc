@@ -2,7 +2,7 @@
 |
 |      Platinum - Frame Streamer
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,6 +17,7 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
+| licensing@plutinosoft.com
 | 
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -51,13 +52,38 @@ struct Options {
 } Options;
 
 /*----------------------------------------------------------------------
-|   FrameWriter::FrameWriter
+|   StreamValidator:
++---------------------------------------------------------------------*/
+class StreamValidator : public PLT_StreamValidator
+{
+public:
+    StreamValidator(NPT_Reference<PLT_FrameBuffer>& buffer) : m_Buffer(buffer) {}
+    virtual ~StreamValidator() {}
+    
+    // PLT_StreamValidator methods
+    bool OnNewRequestAccept(const NPT_HttpRequest&          request, 
+                            const NPT_HttpRequestContext&   context,
+                            NPT_HttpResponse&               response, 
+                            NPT_Reference<PLT_FrameBuffer>& buffer) {
+        NPT_COMPILER_UNUSED(request);
+        NPT_COMPILER_UNUSED(response);
+        NPT_COMPILER_UNUSED(context);
+        // TODO: should compare HTTP Header Accept and buffer mimetype
+        buffer = m_Buffer;
+        return true;
+    }
+    
+    NPT_Reference<PLT_FrameBuffer> m_Buffer;
+};
+
+/*----------------------------------------------------------------------
+|   FrameWriter
 +---------------------------------------------------------------------*/
 class FrameWriter : public NPT_Thread
 {
 public:
-    FrameWriter(PLT_FrameBuffer& frame_buffer,
-                const char*      frame_folder) : 
+    FrameWriter(NPT_Reference<PLT_FrameBuffer>& frame_buffer,
+                const char*                     frame_folder) : 
         m_FrameBuffer(frame_buffer),
         m_Aborted(false),
         m_Folder(frame_folder)
@@ -81,8 +107,8 @@ public:
         
         while (!m_Aborted) {
             // has number of images changed since last time?
-            NPT_Cardinal count = entries.GetItemCount();
-            NPT_File::GetCount(m_Folder, count);
+            NPT_LargeSize count;
+            NPT_File::GetSize(m_Folder, count);
             
             if (entries.GetItemCount() == 0 || entries.GetItemCount() != count) {
                 NPT_File::ListDir(m_Folder, entries);
@@ -111,7 +137,8 @@ public:
                 continue;
             }
 
-            if (NPT_FAILED(m_FrameBuffer.SetNextFrame(frame.GetData(), frame.GetDataSize()))) {
+            if (NPT_FAILED(m_FrameBuffer->SetNextFrame(frame.GetData(), 
+                                                       frame.GetDataSize()))) {
                 NPT_LOG_SEVERE_1("Failed to set next frame %s", frame_path);
                 goto failure;
             }
@@ -125,13 +152,13 @@ public:
 
 failure:
         // one more time to unblock any pending readers
-        m_FrameBuffer.SetNextFrame(NULL, 0);
+        m_FrameBuffer->Abort();
     }
 
-    PLT_FrameBuffer& m_FrameBuffer;
-    bool             m_Aborted;
-    NPT_String       m_Folder;
-    NPT_TimeInterval m_Delay;
+    NPT_Reference<PLT_FrameBuffer> m_FrameBuffer;
+    bool                           m_Aborted;
+    NPT_String                     m_Folder;
+    NPT_TimeInterval               m_Delay;
 };
 
 /*----------------------------------------------------------------------
@@ -184,16 +211,24 @@ main(int argc, char** argv)
     /* parse command line */
     ParseCommandLine(argv);
     
-    PLT_FrameBuffer frame_buffer;
+    // frame buffer 
+    NPT_Reference<PLT_FrameBuffer> frame_buffer(new PLT_FrameBuffer("image/jpeg"));
+    
+    // A Framewriter reading images from a folder and writing them
+    // into frame buffer in a loop
     FrameWriter writer(frame_buffer, Options.path);
     writer.Start();
 
+    // stream request validation
+    StreamValidator validator(frame_buffer);
+    
+    // frame server receiving requests and serving frames 
+    // read from frame buffer
     NPT_Reference<PLT_FrameServer> device( 
         new PLT_FrameServer(
-            frame_buffer, 
-            "FrameServer",
-            Options.path,
             "frame",
+            validator,
+            NPT_IpAddress::Any,
             8099));
 
     if (NPT_FAILED(device->Start()))
