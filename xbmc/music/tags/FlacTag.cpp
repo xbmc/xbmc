@@ -26,7 +26,6 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
-#include "ThumbnailCache.h"
 
 
 #define BYTES_TO_CHECK_FOR_BAD_TAGS 16384
@@ -112,13 +111,7 @@ bool CFlacTag::Read(const CStdString& strFile)
   if (!cover)
     cover = third_cover;
 
-  CStdString strCoverArt;
-  if (!m_musicInfoTag.GetAlbum().IsEmpty() && (!m_musicInfoTag.GetAlbumArtist().empty() || !m_musicInfoTag.GetArtist().empty()))
-    strCoverArt = CThumbnailCache::GetAlbumThumb(&m_musicInfoTag);
-  else
-    strCoverArt = CThumbnailCache::GetMusicThumb(m_musicInfoTag.GetURL());
-
-  if (cover && !CUtil::ThumbExists(strCoverArt))
+  if (cover)
   {
     char info[1024];
     m_file->Seek(cover, SEEK_SET);
@@ -138,29 +131,21 @@ bool CFlacTag::Read(const CStdString& strFile)
     if (size > 1023)
       m_file->Seek(size - 1023, SEEK_CUR);
 
-    int nPos = mimeType.Find('/');
-    if (nPos > -1)
-      mimeType.Delete(0, nPos + 1);
-
     // and now our actual image info
     unsigned int picInfo[4];
     m_file->Read(picInfo, 16);
 
     unsigned int picSize = ReadUnsigned();
-    BYTE *picData = new BYTE[picSize];
-    if (picData)
+    m_musicInfoTag.SetCoverArtInfo(picSize, mimeType);
+    if (m_art)
     {
-      m_file->Read(picData, picSize);
-      if (CPicture::CreateThumbnailFromMemory(picData, picSize, mimeType, strCoverArt))
+      uint8_t *picData = new uint8_t[picSize];
+      if (picData)
       {
-        CUtil::ThumbCacheAdd(strCoverArt, true);
+        m_file->Read(picData, picSize);
+        m_art->set(picData, picSize, mimeType);
+        delete[] picData;
       }
-      else
-      {
-        CUtil::ThumbCacheAdd(strCoverArt, false);
-        CLog::Log(LOGERROR, "%s Unable to create album art for %s (extension=%s, size=%d)", __FUNCTION__, m_musicInfoTag.GetURL().c_str(), mimeType.c_str(), picSize);
-      }
-      delete[] picData;
     }
   }
   return foundTag;

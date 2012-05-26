@@ -28,7 +28,6 @@
 #include "utils/AutoPtrHandle.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "ThumbnailCache.h"
 #include "utils/StringUtils.h"
 
 using namespace AUTOPTR;
@@ -514,36 +513,11 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
     // Cover Front (3) or Other (0) as the cover.
     if (picture.bPictureType == 3 || picture.bPictureType == 0) // Cover Front
     {
-      CStdString strExtension(picture.pwszMIMEType);
-      // if we don't have an album tag, cache with the full file path so that
-      // other non-tagged files don't get this album image
-      CStdString strCoverArt;
-      if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().empty() || !tag.GetArtist().empty()))
-        strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
-      else
-        strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
-      if (!CUtil::ThumbExists(strCoverArt))
+      if (picture.pbData != NULL && picture.dwDataLen > 0)
       {
-        int nPos = strExtension.Find('/');
-        if (nPos > -1)
-          strExtension.Delete(0, nPos + 1);
-
-        if (picture.pbData != NULL && picture.dwDataLen > 0)
-        {
-          if (CPicture::CreateThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
-          {
-            CUtil::ThumbCacheAdd(strCoverArt, true);
-          }
-          else
-          {
-            CUtil::ThumbCacheAdd(strCoverArt, false);
-            CLog::Log(LOGERROR, "Tag loader wma: "
-                                "Unable to create album art for %s "
-                                "(extension=%s, size=%u)",
-                      tag.GetURL().c_str(), strExtension.c_str(),
-                      picture.dwDataLen);
-          }
-        }
+        tag.SetCoverArtInfo(picture.dwDataLen, picture.pwszMIMEType);
+        if (art)
+          art->set(picture.pbData, picture.dwDataLen, picture.pwszMIMEType);
       }
     }
   }
