@@ -1108,7 +1108,8 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item, const CStdString
 
     if(item_new->m_bIsFolder == false)
     {
-      item = item_new;
+      item.reset(new CFileItem(*item));
+      item->SetPath(item_new->GetPath());
       return true;
     }
 
