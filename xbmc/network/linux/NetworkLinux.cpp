@@ -28,6 +28,9 @@
   #include <linux/wireless.h>
   #include <linux/sockios.h>
 #endif
+#ifdef TARGET_ANDROID
+#include "linux/getdelim.h"
+#endif
 #include <errno.h>
 #include <resolv.h>
 #if defined(TARGET_DARWIN)
@@ -457,7 +460,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 {
    std::vector<CStdString> result;
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(__ANDROID__)
   //only finds the primary dns (0 :)
   FILE* pipe = popen("scutil --dns | grep \"nameserver\\[0\\]\" | tail -n1", "r");
   if (pipe)
@@ -489,6 +492,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 
 void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 {
+#if !defined(__ANDROID__)
    FILE* fp = fopen("/etc/resolv.conf", "w");
    if (fp != NULL)
    {
@@ -502,6 +506,7 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
    {
       // TODO:
    }
+#endif
 }
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)

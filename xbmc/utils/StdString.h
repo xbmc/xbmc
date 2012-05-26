@@ -864,7 +864,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       PWSTR pNextDstW      = pDstW;
       SSCodeCvt::result res  = SSCodeCvt::ok;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(TARGET_ANDROID)
       SSCodeCvt::state_type st= { { 0 } };
 #else
       SSCodeCvt::state_type st= { 0 };
@@ -911,7 +911,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       PCWSTR pNextSrcW    = pSrcW;
       SSCodeCvt::result res  = SSCodeCvt::ok;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(TARGET_ANDROID)
       SSCodeCvt::state_type st= { { 0 } };
 #else
       SSCodeCvt::state_type st= { 0 };

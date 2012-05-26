@@ -496,6 +496,9 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 #if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 CStdString CSysInfo::GetLinuxDistro()
 {
+#if defined(TARGET_ANDROID)
+  return "Android";
+#endif
   static const char* release_file[] = { "/etc/debian_version",
                                         "/etc/SuSE-release",
                                         "/etc/mandrake-release",
@@ -544,6 +547,9 @@ CStdString CSysInfo::GetLinuxDistro()
 #ifdef _LINUX
 CStdString CSysInfo::GetUnameVersion()
 {
+#if defined(TARGET_ANDROID)
+  return "Android";
+#endif
   CStdString result = "";
 
   FILE* pipe = popen("uname -rm", "r");

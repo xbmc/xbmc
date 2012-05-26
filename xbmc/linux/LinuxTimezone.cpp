@@ -21,6 +21,9 @@
 
 #include <time.h>
 #include "system.h"
+#ifdef TARGET_ANDROID
+#include "linux/getdelim.h"
+#endif
 #include "PlatformInclude.h"
 #include "LinuxTimezone.h"
 #include "utils/SystemInfo.h"
