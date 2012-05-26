@@ -43,6 +43,8 @@ public:
   {
     return m_texture.Get();
   };
+private:
+  CD3DTexture m_texture;
 };
 
 #endif

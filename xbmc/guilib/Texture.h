@@ -94,11 +94,7 @@ protected:
   unsigned int m_imageHeight;
   unsigned int m_textureWidth;
   unsigned int m_textureHeight;
-#ifdef HAS_DX
-  CD3DTexture m_texture;
-#else
-  GLuint m_texture;
-#endif
+
   unsigned char* m_pixels;
   bool m_loadedToGPU;
   unsigned int m_format;

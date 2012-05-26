@@ -38,6 +38,9 @@ public:
   virtual void DestroyTextureObject();
   void LoadToGPU();
   void BindToUnit(unsigned int unit);
+
+private:
+  GLuint m_texture;
 };
 
 #endif
