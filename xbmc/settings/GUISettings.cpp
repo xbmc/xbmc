@@ -292,9 +292,10 @@ void CGUISettings::Initialize()
   gain.insert(make_pair(640,REPLAY_GAIN_ALBUM));
 
   AddInt(mp, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, gain, SPIN_CONTROL_TEXT);
-  AddInt(NULL, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddInt(NULL, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddBool(NULL, "musicplayer.replaygainavoidclipping", 643, false);
+  AddInt(mp, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(mp, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(mp, "musicplayer.replaygainavoidclipping", 643, false);
+  AddSeparator(mp, "musicplayer.sep2");
   AddInt(mp, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(mp, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(mp, "musicplayer.sep3");
