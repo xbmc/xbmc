@@ -19,13 +19,8 @@
  *
  */
 
-/*!
-\file Texture.h
-\brief
-*/
+#pragma once
 
-#ifndef GUILIB_TEXTURE_H
-#define GUILIB_TEXTURE_H
 #include "system.h"
 #if defined(HAS_GL) || HAS_GLES == 2
 #include "system_gl.h"
@@ -46,8 +41,6 @@ struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 class CTexture;
 class CGLTexture;
 class CDXTexture;
-
-#pragma once
 
 /*!
 \ingroup textures
@@ -130,6 +123,4 @@ protected:
 #elif defined(HAS_DX)
 #include "TextureDX.h"
 #define CTexture CDXTexture
-#endif
-
 #endif

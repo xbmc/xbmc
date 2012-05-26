@@ -19,17 +19,9 @@
 *
 */
 
-/*!
-\file TextureManager.h
-\brief
-*/
-
-#ifndef GUILIB_TEXTUREGL_H
-#define GUILIB_TEXTUREGL_H
+#pragma once
 
 #include "Texture.h"
-
-#pragma once
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 
@@ -46,7 +38,5 @@ public:
   virtual void DestroyTextureObject();
   void LoadToGPU();
 };
-
-#endif
 
 #endif

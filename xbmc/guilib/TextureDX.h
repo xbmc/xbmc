@@ -19,17 +19,9 @@
 *
 */
 
-/*!
-\file TextureDX.h
-\brief
-*/
-
-#ifndef GUILIB_TEXTUREDX_H
-#define GUILIB_TEXTUREDX_H
+#pragma once
 
 #include "Texture.h"
-
-#pragma once
 
 #ifdef HAS_DX
 
@@ -46,7 +38,5 @@ public:
   void DestroyTextureObject();
   virtual void LoadToGPU();
 };
-
-#endif
 
 #endif
