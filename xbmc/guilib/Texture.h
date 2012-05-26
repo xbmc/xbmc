@@ -22,10 +22,6 @@
 #pragma once
 
 #include "system.h"
-#if defined(HAS_GL) || HAS_GLES == 2
-#include "system_gl.h"
-#endif
-
 #include "gui3d.h"
 #include "utils/StdString.h"
 #include "XBTF.h"
@@ -33,10 +29,6 @@
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #pragma pack()
-
-#ifdef HAS_DX
-#include "D3DResource.h"
-#endif
 
 class CTexture;
 class CGLTexture;
