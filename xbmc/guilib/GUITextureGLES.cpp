@@ -41,12 +41,11 @@ CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float heig
 void CGUITextureGLES::Begin(color_t color)
 {
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
-  glActiveTexture(GL_TEXTURE0);
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
 
-  glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
+  texture->BindToUnit(0);
 
   // Setup Colors
   for (int i = 0; i < 4; i++)
@@ -72,8 +71,7 @@ void CGUITextureGLES::Begin(color_t color)
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
+    m_diffuse.m_textures[0]->BindToUnit(1);
 
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
@@ -217,9 +215,8 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
 {
   if (texture)
   {
-    glActiveTexture(GL_TEXTURE0);
     texture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
+    texture->BindToUnit(0);
   }
 
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
