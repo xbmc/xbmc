@@ -293,7 +293,7 @@ int MysqlDatabase::query_with_reconnect(const char* query) {
 
   // try to reconnect if server is gone
   while ( ((result = mysql_real_query(conn, query, strlen(query))) != MYSQL_OK) &&
-          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR) && 
+          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR || result == CR_SERVER_LOST) &&
           (attempts-- > 0) )
   {
     CLog::Log(LOGINFO,"MYSQL server has gone. Will try %d more attempt(s) to reconnect.", attempts);
