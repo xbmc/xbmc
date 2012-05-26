@@ -67,18 +67,6 @@ public:
   virtual void LoadToGPU() = 0;
   virtual void BindToUnit(unsigned int unit) = 0;
 
-#ifdef HAS_DX
-  LPDIRECT3DTEXTURE9 GetTextureObject() const
-  {
-    return m_texture.Get();
-  }
-#else
-  GLuint GetTextureObject() const
-  {
-    return m_texture;
-  }
-#endif
-
   unsigned char* GetPixels() const { return m_pixels; }
   unsigned int GetPitch() const { return GetPitch(m_textureWidth); }
   unsigned int GetRows() const { return GetRows(m_textureHeight); }

@@ -38,6 +38,11 @@ public:
   void DestroyTextureObject();
   virtual void LoadToGPU();
   void BindToUnit(unsigned int unit);
+
+  LPDIRECT3DTEXTURE9 GetTextureObject()
+  {
+    return m_texture.Get();
+  };
 };
 
 #endif
