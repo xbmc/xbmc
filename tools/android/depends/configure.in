@@ -1,0 +1,151 @@
+AC_PREREQ(2.59)
+AC_INIT([android-depends], [2.00], [http://trac.xbmc.org])
+AC_CONFIG_FILES([Makefile Makefile.include])
+
+AC_ARG_VAR(XBMC_ANDROID_NDK, path to android ndk)
+AC_ARG_VAR(XBMC_ANDROID_SDK, path to android sdk)
+AC_ARG_VAR(XBMC_ANDROID_TARBALLS, path where tarballs will be saved)
+
+use_ndk=$XBMC_ANDROID_NDK
+use_sdk=$XBMC_ANDROID_SDK
+use_staging=$XBMC_ANDROID_STAGING
+use_tarballs=$XBMC_ANDROID_TARBALLS
+
+AC_ARG_WITH([toolchain],
+  [AS_HELP_STRING([--with-toolchain],
+  [specify path to android toolchain])],
+  [use_toolchain=$withval],AC_MSG_ERROR([No toolchain defined]))
+
+AC_ARG_WITH([sdk],
+  [AS_HELP_STRING([--with-sdk],
+  [specify path to android sdk])],
+  [use_sdk=$withval],[if test -z $use_sdk; then AC_MSG_ERROR([No SDK path defined]); fi])
+
+AC_ARG_WITH([ndk],
+  [AS_HELP_STRING([--with-ndk],
+  [specify path to android ndk])],
+  [use_ndk=$withval],[if test -z $use_ndk; then AC_MSG_ERROR([No NDK path defined]); fi])
+
+AC_ARG_WITH([tarballs],
+  [AS_HELP_STRING([--with-tarballs],
+  [path where tarballs will be saved])],
+  [use_tarballs=$withval], [if test -z $use_tarballs; then AC_MSG_ERROR([No tarballs path defined]); fi])
+
+AC_ARG_WITH([staging],
+  [AS_HELP_STRING([--with-staging],
+  [optional. path for staging sysroot. defaults to $toolchain/staging])],
+  [use_staging=$withval],[use_staging=$use_toolchain/staging])
+
+AC_ARG_WITH([cpu],
+  [AS_HELP_STRING([--with-cpu],
+  [optional. specify target cpu. guessed if not specified])],
+  [use_cpu=$withval],use_cpu=no)
+
+AC_ARG_WITH([sdk-platform],
+  [AS_HELP_STRING([--with-sdk-platform],
+  [optional. spcify sdk platform version (for android headers). default is android-10])],
+  [use_sdk_platform=$withval],use_sdk_platform=android-10)
+
+AC_PROG_CXX
+AC_PROG_CC
+AC_CHECK_LIB([z],   [main],, AC_MSG_ERROR("Missing libz development files"))
+
+AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
+if test "x$HAVE_UNZIP" = "xno" ; then
+  AC_MSG_ERROR("Missing program: unzip")
+fi
+
+AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
+if test "x$HAVE_ZIP" = "xno" ; then
+  AC_MSG_ERROR("Missing program: zip")
+fi
+
+AC_PATH_PROG(CURL,curl,"no")
+if test "x$CURL" = "xno" ; then
+  AC_MSG_ERROR("Missing program: curl")
+fi
+
+AC_PATH_PROG(TAR,tar,"no")
+if test "x$TAR" = "xno" ; then
+  AC_MSG_ERROR("Missing program: tar")
+fi
+
+#find host toolchain
+AC_CHECK_PROG(host_gcc,$host-gcc,yes,no,$use_toolchain/bin)
+if test "$host_gcc" = "no"; then
+  AC_MSG_WARN(host was not specified. guessing.)
+  AC_PATH_PROG(host_gcc,gcc,no,[$use_toolchain/*/bin])
+  if test "$host_gcc" = "no"; then
+    AC_MSG_ERROR([Arm toolchain not found at specified path])
+  fi
+  use_host=`$host_gcc -dumpmachine 2>/dev/null`
+else
+  use_host=$host
+fi
+
+#guess host cpu
+if test "$use_cpu" = "no"; then
+  case $use_host in
+    arm*)
+      use_cpu="armeabi-v7a"
+    ;;     
+    *i686*)
+      use_cpu="x86"
+    ;;
+    *)
+      AC_MSG_ERROR(unsupported host ($host))
+  esac
+fi
+
+
+# Some dumb checks to see if paths might be correct.
+
+if [ ! `mkdir -p $use_staging/$use_cpu/include` ]; then
+  AC_MSG_ERROR(unable to create $use_staging/$use_cpu/include. verify that the path and permissions are correct.)
+fi
+
+if [ ! `mkdir -p $use_staging/$use_cpu/lib` ]; then
+  AC_MSG_ERROR(unable to create $use_staging/$use_cpu/lib. verify that the path and permissions are correct.)
+fi
+
+if [ ! `mkdir -p $use_staging/$use_cpu-native/include` ]; then
+  AC_MSG_ERROR(unable to create $use_staging/$use_cpu-native/include. verify that the path and permissions are correct.)
+fi
+
+if [ ! `mkdir -p $use_staging/$use_cpu-native/lib` ]; then
+  AC_MSG_ERROR(unable to create $use_staging/$use_cpu-native/lib. verify that the path and permissions are correct.)
+fi
+
+if [ ! `mkdir -p $use_staging/$use_cpu/include/$use_sdk_platform` ]; then
+  AC_MSG_ERROR(unable to create $use_staging/$use_cpu/include/$use_sdk_platform. verify that the path and permissions are correct.)
+fi
+
+if [ ! `mkdir -p $use_staging/$use_cpu/lib/$use_sdk_platform` ]; then
+  AC_MSG_ERROR(unable to create $use_staging/$use_cpu/lib/$use_sdk_platform. verify that the path and permissions are correct.)
+fi
+
+if [ ! `mkdir -p $use_tarballs` ]; then
+  AC_MSG_ERROR(unable to create tarballs dir. verify that the path and permissions are correct.)
+fi
+
+if [ ! test -f $use_sdk/tools/zipalign ]; then
+  AC_MSG_ERROR(verify sdk path)
+fi
+
+if [ ! test -f $use_ndk/sources/android/native_app_glue/android_native_app_glue.h ]; then
+  AC_MSG_ERROR(verify ndk path)
+fi
+
+AC_SUBST(use_sdk)
+AC_SUBST(use_ndk)
+AC_SUBST(use_arch)
+AC_SUBST(use_host)
+AC_SUBST(use_cpu)
+AC_SUBST(use_staging)
+AC_SUBST(use_toolchain)
+AC_SUBST(use_tarballs)
+AC_SUBST(use_sdk_platform)
+
+echo -e "  \ttoolchain:\t $use_toolchain\n  \tcpu:\t\t $use_cpu\n  \thost:\t\t $use_host\n  \tsdk-platform:\t $use_sdk_platform"
+
+AC_OUTPUT
