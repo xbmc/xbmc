@@ -37,6 +37,7 @@ public:
   void CreateTextureObject();
   void DestroyTextureObject();
   virtual void LoadToGPU();
+  void BindToUnit(unsigned int unit);
 };
 
 #endif

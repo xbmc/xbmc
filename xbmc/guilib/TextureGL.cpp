@@ -182,4 +182,18 @@ void CGLTexture::LoadToGPU()
 
   m_loadedToGPU = true;
 }
+
+void CGLTexture::BindToUnit(unsigned int unit)
+{
+  // we support only 2 texture units at present
+#ifndef HAS_GLES
+  glActiveTexture((unit == 1) ? GL_TEXTURE1_ARB : GL_TEXTURE0_ARB);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+  glEnable(GL_TEXTURE_2D);
+#else // GLES
+  glActiveTexture((unit == 1) ? GL_TEXTURE1 : GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+#endif
+}
+
 #endif // HAS_GL

@@ -65,6 +65,7 @@ public:
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
+  virtual void BindToUnit(unsigned int unit) = 0;
 
 #ifdef HAS_DX
   LPDIRECT3DTEXTURE9 GetTextureObject() const
