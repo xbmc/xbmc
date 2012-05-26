@@ -24,6 +24,7 @@
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/ButtonTranslator.h"
 #include "input/XBMC_keyboard.h"
 #include "input/XBMC_vkeys.h"
 #include "threads/SingleLock.h"
@@ -107,6 +108,15 @@ JSONRPC_STATUS CInputOperations::SendText(const CStdString &method, ITransportLa
   msg.SetParam1(parameterObject["done"].asBoolean() ? 1 : 0);
   g_application.getApplicationMessenger().SendGUIMessage(msg, window->GetID());
   return ACK;
+}
+
+JSONRPC_STATUS CInputOperations::ExecuteAction(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int action;
+  if (!CButtonTranslator::TranslateActionString(parameterObject["action"].asString().c_str(), action))
+    return InvalidParams;
+
+  return SendAction(action);
 }
 
 JSONRPC_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

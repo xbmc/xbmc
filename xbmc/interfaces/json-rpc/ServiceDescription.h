@@ -2339,6 +2339,16 @@ namespace JSONRPC
       "],"
       "\"returns\": \"string\""
     "}",
+    "\"Input.ExecuteAction\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Execute a specific action\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": ["
+        "{ \"name\": \"action\", \"$ref\": \"Input.Action\", \"required\": true }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
     "\"Input.Left\": {"
       "\"type\": \"method\","
       "\"description\": \"Navigate left in GUI\","
