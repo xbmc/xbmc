@@ -172,6 +172,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         g_settings.CycleWatchMode(m_vecItems->GetContent());
         g_settings.Save();
 
+        // We need to clear any cached listing because a new filter is being applied
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
@@ -195,6 +198,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         else
           g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_ALL);
         g_settings.Save();
+
+        // We need to clear any cached listing because a new filter is being applied
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
