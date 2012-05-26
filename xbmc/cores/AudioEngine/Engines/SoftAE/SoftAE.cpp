@@ -992,6 +992,15 @@ void CSoftAE::RunOutputStage()
   }
 
   wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames);
+
+  /* Return value of INT_MAX signals error in sink - restart */
+  if (wroteFrames == INT_MAX)
+  {
+    CLog::Log(LOGERROR, "CSoftAE::RunOutputStage - sink error - reinit flagged");
+    wroteFrames = 0;
+    m_reOpen = true;
+  }
+
   m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
 }
 
@@ -1001,6 +1010,15 @@ void CSoftAE::RunRawOutputStage()
     return;
 
   int wroteFrames = m_sink->AddPackets((uint8_t*)m_buffer.Raw(m_sinkBlockSize), m_sinkFormat.m_frames);
+
+  /* Return value of INT_MAX signals error in sink - restart */
+  if (wroteFrames == INT_MAX)
+  {
+    CLog::Log(LOGERROR, "CSoftAE::RunRawOutputStage - sink error - reinit flagged");
+    wroteFrames = 0;
+    m_reOpen = true;
+  }
+
   m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
 }
 
@@ -1051,6 +1069,15 @@ void CSoftAE::RunTranscodeStage()
   if (m_encodedBuffer.Used() >= sinkBlock)
   {
     int wroteFrames = m_sink->AddPackets((uint8_t*)m_encodedBuffer.Raw(sinkBlock), m_sinkFormat.m_frames);
+    
+    /* Return value of INT_MAX signals error in sink - restart */
+    if (wroteFrames == INT_MAX)
+    {
+      CLog::Log(LOGERROR, "CSoftAE::RunTranscodeStage - sink error - reinit flagged");
+      wroteFrames = 0;
+      m_reOpen = true;
+    }
+
     m_encodedBuffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
   }
 }
