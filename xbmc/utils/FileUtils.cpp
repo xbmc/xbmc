@@ -13,6 +13,15 @@
 using namespace XFILE;
 using namespace std;
 
+bool CFileUtils::DeleteItem(const CStdString &strPath, bool force)
+{
+  CFileItemPtr item(new CFileItem(strPath));
+  item->SetPath(strPath);
+  item->m_bIsFolder = URIUtils::HasSlashAtEnd(strPath);
+  item->Select(true);
+  return DeleteItem(item, force);
+}
+
 bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
 {
   if (!item || item->IsParentFolder())
