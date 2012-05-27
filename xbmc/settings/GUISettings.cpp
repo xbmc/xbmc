@@ -254,6 +254,7 @@ void CGUISettings::Initialize()
   CSettingsCategory* cat = AddCategory(0, "slideshow", 108);
   AddInt(cat, "slideshow.staytime", 12378, 5, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(cat, "slideshow.displayeffects", 12379, true);
+  AddBool(cat, "slideshow.showdate", 36026, false);
   AddBool(NULL, "slideshow.shuffle", 13319, false);
 
   // Programs settings

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"POT-Creation-Date: 2012-05-15 00:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -9419,5 +9419,9 @@ msgstr ""
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
+msgctxt "#36026"
+msgid "Show date from EXIF data"
 msgstr ""
 

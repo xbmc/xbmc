@@ -29,6 +29,9 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "guilib/GUIFont.h"
+#include "guilib/GUITextLayout.h"
+#include "guilib/GUIFontManager.h"
 
 using namespace std;
 
@@ -50,11 +53,14 @@ CSlideShowPic::CSlideShowPic()
   m_bIsFinished = false;
   m_bDrawNextImage = false;
   m_bTransistionImmediately = false;
+  m_pDateTextLayout = NULL;
 }
 
 CSlideShowPic::~CSlideShowPic()
 {
   Close();
+  if(m_pDateTextLayout)
+      delete m_pDateTextLayout;
 }
 
 void CSlideShowPic::Close()
@@ -70,6 +76,37 @@ void CSlideShowPic::Close()
   m_bDrawNextImage = false;
   m_bTransistionImmediately = false;
   m_bIsDirty = true;
+}
+
+void CSlideShowPic::SetDate(CStdString &dateString)
+{
+  bool updateText = true;
+
+  if(!dateString.IsEmpty())
+  {
+    if(!m_pDateTextLayout)
+    {
+      m_pDateFont = g_fontManager.GetFont("font30");
+      m_pDateTextLayout = new CGUITextLayout(m_pDateFont, false,
+                                             m_pDateFont->GetLineHeight(), NULL);
+    }
+
+    if(!m_pDateStr.IsEmpty())
+      updateText = (!m_pDateStr.Equals(dateString));
+
+    m_pDateStr = dateString;
+
+    if(updateText)
+    {
+      if(!m_pDateTextLayout->Update(m_pDateStr, 0, false, false))
+      {
+        CLog::Log(LOGDEBUG,"Error updating picture date with %s",
+                  m_pDateStr.c_str());
+      }
+    }
+  }
+  else
+      m_pDateStr.Empty();
 }
 
 void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
@@ -461,6 +498,17 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   UpdateVertices(m_ax, m_ay, x, y, dirtyregions);
 
+  if(!m_pDateStr.IsEmpty())
+  {
+    // Figure out where to draw date
+    float dateWidth, dateHeight;
+    m_pDateTextLayout->GetTextExtent(dateWidth, dateHeight);
+    m_fDateX = ((m_ax[1] - m_ax[0]) / 2) + m_ax[0] - dateWidth / 2;
+    m_fDateX *= g_graphicsContext.GetGUIScaleX();
+    m_fDateY = fOffsetY + fScreenHeight - dateHeight;
+    m_fDateY *= g_graphicsContext.GetGUIScaleY();
+  }
+
   // now render the image in the top right corner if we're zooming
   if (m_fZoomAmount == 1 || m_bIsComic)
   {
@@ -641,6 +689,12 @@ void CSlideShowPic::Render()
   CSingleLock lock(m_textureAccess);
 
   Render(m_ax, m_ay, m_pImage, (m_alpha << 24) | 0xFFFFFF);
+
+  if(!m_pDateStr.IsEmpty())
+  {
+    CGUITextLayout::DrawText(m_pDateFont, m_fDateX, m_fDateY, 0xff000000,
+                             0xffffffff, m_pDateStr, 0);
+  }
 
   // now render the image in the top right corner if we're zooming
   if (m_fZoomAmount == 1 || m_bIsComic) return ;
