@@ -28,7 +28,12 @@
  */
 
 #include "os-dependent.h"
+
+#ifdef TARGET_WINDOWS
 #include "File.h"
+#else
+#include "FileSMB.h"
+#endif
 
 class FileReader
 {

@@ -19,7 +19,7 @@
 #pragma once
 
 #include <iostream>
-#include "IFile.h"
+#include "platform/util/StdString.h"
 
 namespace PLATFORM
 {
@@ -38,31 +38,22 @@ namespace PLATFORM
 /* calcuate bitrate for file while reading */
 #define READ_BITRATE   0x10
 
-class CFile: public IFile
+class IFile
 {
 public:
-  CFile();
-  virtual ~CFile();
+  IFile();
+  virtual ~IFile();
 
-  bool Open(const CStdString& strFileName, unsigned int flags = 0);
-  bool IsInvalid()
-  {
-    return (m_hFile == INVALID_HANDLE_VALUE);
-  };
+  virtual bool Open(const CStdString& strFileName, unsigned int flags = 0);
+  virtual bool IsInvalid();
 
-  unsigned long Read(void* lpBuf, int64_t uiBufSize);
-  int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  int64_t GetPosition();
-  int64_t GetLength();
-  void Close();
+  virtual unsigned long Read(void* lpBuf, int64_t uiBufSize);
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
+  virtual int64_t GetPosition();
+  virtual int64_t GetLength();
+  virtual void Close();
   static bool Exists(const CStdString& strFileName, bool bUseCache = true);
-  int Stat(struct __stat64 *buffer);
-
-private:
-  unsigned int m_flags;
-  HANDLE       m_hFile;
-  int64_t      m_fileSize;
-  bool         m_bReadOnly;
+  virtual int Stat(struct __stat64 *buffer);
 };
 
 } // namespace PLATFORM

@@ -20,49 +20,69 @@
 
 #include <iostream>
 #include "IFile.h"
+#include "platform/threads/mutex.h"
+#include "os-dependent.h"
+
+struct _SMBCCTX;
+typedef _SMBCCTX SMBCCTX;
 
 namespace PLATFORM
 {
-/* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
-#define READ_TRUNCATED 0x01
 
-/* indicate that that caller support read in the minimum defined chunk size, this disables internal cache then */
-#define READ_CHUNKED   0x02
+class CSMB: public CMutex
+{
+public:
+  CSMB();
+  ~CSMB();
+  void Init();
+  void Deinit();
+  void Purge();
+  //void PurgeEx(const CURL& url);
+#ifdef TARGET_LINUX
+  void CheckIfIdle();
+  void SetActivityTime();
+  void AddActiveConnection();
+  void AddIdleConnection();
+#endif
+  CStdString URLEncode(const CStdString &value);
+  //CStdString URLEncode(const CURL &url);
 
-/* use cache to access this file */
-#define READ_CACHED     0x04
+  //DWORD ConvertUnixToNT(int error);
+private:
+  SMBCCTX *m_context;
+  CStdString m_strLastHost;
+  CStdString m_strLastShare;
+#ifdef TARGET_LINUX
+  int m_OpenConnections;
+  unsigned int m_IdleTimeout;
+#endif
+};
 
-/* open without caching. regardless to file type. */
-#define READ_NO_CACHE  0x08
-
-/* calcuate bitrate for file while reading */
-#define READ_BITRATE   0x10
-
+extern CSMB smb;
+  
 class CFile: public IFile
 {
 public:
   CFile();
-  virtual ~CFile();
+  ~CFile();
 
   bool Open(const CStdString& strFileName, unsigned int flags = 0);
-  bool IsInvalid()
-  {
-    return (m_hFile == INVALID_HANDLE_VALUE);
-  };
-
+  bool IsInvalid();
   unsigned long Read(void* lpBuf, int64_t uiBufSize);
   int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   int64_t GetPosition();
   int64_t GetLength();
   void Close();
-  static bool Exists(const CStdString& strFileName, bool bUseCache = true);
   int Stat(struct __stat64 *buffer);
+  static bool Exists(const CStdString& strFileName, bool bUseCache = true);
 
 private:
-  unsigned int m_flags;
-  HANDLE       m_hFile;
-  int64_t      m_fileSize;
-  bool         m_bReadOnly;
+  int OpenFile();
+  
+  int64_t m_fileSize;
+  int m_fd;
+  CStdString m_fileName;
+
 };
 
 } // namespace PLATFORM

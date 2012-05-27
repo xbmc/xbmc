@@ -93,7 +93,7 @@ long FileReader::OpenFile()
   if (!IsFileInvalid())
   {
     XBMC->Log(LOG_NOTICE, "FileReader::OpenFile() file already open");
-    return NOERROR;
+    return S_OK;
   }
 
   // Has a filename been set yet
@@ -108,7 +108,7 @@ long FileReader::OpenFile()
   do
   {
     XBMC->Log(LOG_INFO, "FileReader::OpenFile() %s %s.", m_pFileName, CFile::Exists(m_pFileName) ? "exists" : "not found");
-    m_bReadOnly = TRUE;
+    m_bReadOnly = true;
     // Open in readonly mode with this filename
     if ( m_hFile.Open(m_pFileName, READ_CHUNKED) )
       break;
@@ -128,7 +128,7 @@ long FileReader::OpenFile()
     return S_FALSE;
   }
 
-  XBMC->Log(LOG_DEBUG, "%s: OpenFile succeeded as %s", __FUNCTION__, m_bReadOnly ? "read-only" : "read/write", m_hFile, m_pFileName );
+  XBMC->Log(LOG_DEBUG, "%s: OpenFile succeeded as %s", __FUNCTION__, m_bReadOnly ? "read-only" : "read/write", m_pFileName );
 
   SetFilePointer(0, SEEK_SET);
   m_llBufferPointer = 0;
@@ -152,7 +152,7 @@ long FileReader::CloseFile()
   m_hFile.Close();
 
   m_llBufferPointer = 0;
-  return NOERROR;
+  return S_OK;
 } // CloseFile
 
 
@@ -186,7 +186,7 @@ int64_t FileReader::GetFilePointer()
 
 long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes)
 {
-  *dwReadBytes = m_hFile.Read((void*)pbData, (DWORD)lDataLength);//Read file data into buffer
+  *dwReadBytes = m_hFile.Read((void*)pbData, lDataLength);//Read file data into buffer
   //XBMC->Log(LOG_DEBUG, "%s: requested read length %d actually read %d.", __FUNCTION__, lDataLength, *dwReadBytes);
 
   if (*dwReadBytes < lDataLength)

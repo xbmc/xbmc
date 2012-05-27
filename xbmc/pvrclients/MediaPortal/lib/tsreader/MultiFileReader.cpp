@@ -34,6 +34,7 @@
 #include "platform/util/timeutils.h"
 
 using namespace ADDON;
+using namespace PLATFORM;
 
 //Maximum time in msec to wait for the buffer file to become available - Needed for DVB radio (this sometimes takes some time)
 #define MAX_BUFFER_TIMEOUT 1500
@@ -602,7 +603,7 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
 
   // Try to open the file
   CFile hFile;
-  struct stat64 filestatus;
+  struct __stat64 filestatus;
   if (hFile.Open(pFilename) && hFile.Stat(&filestatus) >= 0)
   {
     length = filestatus.st_size;

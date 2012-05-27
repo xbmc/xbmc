@@ -21,19 +21,28 @@
 #ifndef PVRCLIENT_MEDIAPORTAL_OS_POSIX_H
 #define PVRCLIENT_MEDIAPORTAL_OS_POSIX_H
 
+#include <inttypes.h>
 #include <stdint.h>
+#include <sys/stat.h>
+
+typedef long        LONG;
+typedef LONG        HRESULT;
 
 #define _FILE_OFFSET_BITS 64
-#define FILE_END 2
+#define FILE_BEGIN              0
+#define FILE_CURRENT            1
+#define FILE_END                2
 
 // Success codes
-//#define S_OK                             0L
+#define S_OK                             0L
 #define S_FALSE                          1L
 //
+#define FAILED(Status)            ((HRESULT)(Status)<0)
+
 // Error codes
 #define ERROR_FILENAME_EXCED_RANGE       206L
-//#define E_OUTOFMEMORY                    0x8007000EL
-//#define E_FAIL                           0x8004005EL
+#define E_OUTOFMEMORY                    0x8007000EL
+#define E_FAIL                           0x8004005EL
 #define ERROR_INVALID_NAME               123L
 
 #define THREAD_FUNC_PREFIX void *
@@ -47,7 +56,7 @@
 #define THREAD_PRIORITY_TIME_CRITICAL   THREAD_BASE_PRIORITY_LOWRT
 #define THREAD_PRIORITY_IDLE            THREAD_BASE_PRIORITY_IDLE
 
-#include "File.h"
+//#include "File.h"
 
 #ifdef TARGET_LINUX
 #include <limits.h>
@@ -56,12 +65,14 @@
 #define MAX_PATH 256
 #endif
 
+#define __stat64 stat64
+
 #include <string.h>
-//#define strnicmp(X,Y,N) strncasecmp(X,Y,N)
+#define strnicmp(X,Y,N) strncasecmp(X,Y,N)
 
 typedef pthread_mutex_t criticalsection_t;
 typedef sem_t wait_event_t;
-//typedef unsigned char byte;
+typedef unsigned char byte;
 typedef pid_t tThreadId;
 
 // Various Windows typedefs
@@ -101,7 +112,7 @@ inline unsigned long GetTickCount(void)
 //#include <sys/time.h>
 #define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
 
-using namespace XFILE;
+//using namespace XFILE;
 
 typedef uint16_t Wchar_t; /* sizeof(wchar_t) = 4 bytes on Linux, but the MediaPortal buffer files have 2-byte wchars */
 
