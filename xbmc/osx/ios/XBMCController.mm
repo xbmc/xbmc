@@ -59,8 +59,7 @@ extern NSString* kBRScreenSaverDismissed;
 //
 
 @interface XBMCController ()
-UIWindow *m_window;
-IOSEAGLView  *m_glView;
+
 @end
 
 @interface UIApplication (extended)
