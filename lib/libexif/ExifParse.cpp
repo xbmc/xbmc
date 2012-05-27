@@ -33,6 +33,7 @@
 #include <windows.h>
 #else
 #include <memory.h>
+#include <cstring>
 #define min(a,b) (a)>(b)?(b):(a)
 #define max(a,b) (a)<(b)?(b):(a)
 #endif
