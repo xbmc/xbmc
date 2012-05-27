@@ -245,14 +245,15 @@ void CSoftAE::InternalOpenSink()
   /*
     try to use 48000hz if we are going to transcode, this prevents the sink
     from being re-opened repeatedly when switching sources, which locks up
-    some receivers & crappy integrated sound drivers.
+    some receivers & crappy integrated sound drivers. Check for as.xml override
   */
   if (m_transcode && !m_rawPassthrough)
   {
     enum AEChannel ac3Layout[3] = {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL};
-    newFormat.m_sampleRate    = 48000;
     newFormat.m_channelLayout = ac3Layout;
     m_outputStageFn = &CSoftAE::RunTranscodeStage;
+    if (!g_advancedSettings.m_allowTranscode44100)
+      newFormat.m_sampleRate    = 48000;
   }
 
   /*
