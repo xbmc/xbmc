@@ -1287,7 +1287,7 @@ CStdString CDateTime::GetAsRFC1123DateTime() const
   else if (weekDay > 6)
     weekDay = 6;
   if (weekDay != time.GetDayOfWeek())
-    CLog::Log(LOGWARNING, "Invalid day of week %d in %s", time.GetDayOfWeek(), time.GetAsDBDateTime());
+    CLog::Log(LOGWARNING, "Invalid day of week %d in %s", time.GetDayOfWeek(), time.GetAsDBDateTime().c_str());
 
   int month = time.GetMonth();
   if (month < 1)
@@ -1295,7 +1295,7 @@ CStdString CDateTime::GetAsRFC1123DateTime() const
   else if (month > 12)
     month = 12;
   if (month != time.GetMonth())
-    CLog::Log(LOGWARNING, "Invalid month %d in %s", time.GetMonth(), time.GetAsDBDateTime());
+    CLog::Log(LOGWARNING, "Invalid month %d in %s", time.GetMonth(), time.GetAsDBDateTime().c_str());
 
   CStdString result;
   result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
