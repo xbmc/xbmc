@@ -4900,6 +4900,7 @@ void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& art
   item.SetProperty("artist_disbanded", artist.strDisbanded);
   item.SetProperty("artist_yearsactive", StringUtils::Join(artist.yearsActive, g_advancedSettings.m_musicItemSeparator));
   item.SetProperty("artist_yearsactive_array", artist.yearsActive);
+  item.SetProperty("artist_id", (int)artist.idArtist);
 }
 
 void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
@@ -4918,6 +4919,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_genre", StringUtils::Join(album.genre, g_advancedSettings.m_musicItemSeparator));
   item.SetProperty("album_genre_array", album.genre);
   item.SetProperty("album_title", album.strAlbum);
+  item.SetProperty("album_id", (int)album.idAlbum);
   if (album.iRating > 0)
     item.SetProperty("album_rating", album.iRating);
 }
