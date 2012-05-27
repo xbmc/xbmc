@@ -28,6 +28,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUISettingsSliderControl.h"
+#include "guilib/GUIEditControl.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
@@ -62,6 +63,8 @@ using XFILE::CDirectory;
 #define CONTROL_DEFAULT_LABEL_SEPARATOR 7
 #define CONTROL_DEFAULT_SLIDER          8
 #define CONTROL_SECTION_AREA            9
+#define CONTROL_DEFAULT_EDIT            14
+
 #define CONTROL_DEFAULT_SECTION_BUTTON  13
 
 #define ID_BUTTON_OK                    10
@@ -486,6 +489,10 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         SetSliderTextValue(control, setting->Attribute("format"));
         value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
       }
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+      {
+        value = ((CGUIEditControl*) control)->GetLabel2();
+      }
       m_settings[id] = value;
       SetProperty(id, m_settings[id]);
       break;
@@ -597,9 +604,10 @@ void CGUIDialogAddonSettings::CreateControls()
   CGUIImage *pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
   CGUILabelControl *pOriginalLabel = (CGUILabelControl *)GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR);
   CGUISettingsSliderControl *pOriginalSlider = (CGUISettingsSliderControl *)GetControl(CONTROL_DEFAULT_SLIDER);
+  CGUIEditControl *pOriginalEdit = (CGUIEditControl *)GetControl(CONTROL_DEFAULT_EDIT);
 
   if (!m_addon || !pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage
-               || !pOriginalLabel || !pOriginalSlider)
+               || !pOriginalLabel || !pOriginalSlider || !pOriginalEdit)
     return;
 
   pOriginalSpin->SetVisible(false);
@@ -608,6 +616,7 @@ void CGUIDialogAddonSettings::CreateControls()
   pOriginalImage->SetVisible(false);
   pOriginalLabel->SetVisible(false);
   pOriginalSlider->SetVisible(false);
+  pOriginalEdit->SetVisible(false);
 
   // clear the category group
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
@@ -829,6 +838,13 @@ void CGUIDialogAddonSettings::CreateControls()
       }
       else if (strcmpi(type, "sep") == 0)
         pControl = new CGUIImage(*pOriginalImage);
+      else if (strcmpi(type, "edit") == 0)
+      {
+        pControl = new CGUIEditControl(*pOriginalEdit);
+        if (!pControl) return;
+        ((CGUIEditControl *)pControl)->SetLabel(label);
+        ((CGUIEditControl *)pControl)->SetLabel2(m_settings[id]);
+      }
     }
 
     if (pControl)
@@ -983,6 +999,9 @@ bool CGUIDialogAddonSettings::GetBoolCondition(const CStdString &condition, cons
         break;
       case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
         value.Format("%f", (float)((CGUISettingsSliderControl *)control2)->GetFloatValue());
+        break;
+      case CGUIControl::GUICONTROL_EDIT:
+        value = ((CGUIEditControl*) control2)->GetLabel2();
         break;
       default:
         break;
