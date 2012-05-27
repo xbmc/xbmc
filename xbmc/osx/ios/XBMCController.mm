@@ -286,6 +286,26 @@ extern NSString* kBRScreenSaverDismissed;
   }
 }
 //--------------------------------------------------------------
+- (void)postMouseMotionEvent:(CGPoint)point
+{
+  XBMC_Event newEvent;
+
+  point.x *= screenScale;
+  point.y *= screenScale;
+
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_MOUSEMOTION;
+  newEvent.motion.type = XBMC_MOUSEMOTION;
+  newEvent.motion.which = 0;
+  newEvent.motion.state = 0;
+  newEvent.motion.x = point.x;
+  newEvent.motion.y = point.y;
+  newEvent.motion.xrel = 0;
+  newEvent.motion.yrel = 0;
+  CWinEventsIOS::MessagePush(&newEvent);
+}
+//--------------------------------------------------------------
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
@@ -294,7 +314,9 @@ extern NSString* kBRScreenSaverDismissed;
     point.x *= screenScale;
     point.y *= screenScale;
     //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
-    
+
+    [self postMouseMotionEvent:point];
+
     XBMC_Event newEvent;
     memset(&newEvent, 0, sizeof(newEvent));
     
@@ -312,26 +334,6 @@ extern NSString* kBRScreenSaverDismissed;
     
     memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
   }
-}
-//--------------------------------------------------------------
-- (void)postMouseMotionEvent:(CGPoint)point
-{
-  XBMC_Event newEvent;
-
-  point.x *= screenScale;
-  point.y *= screenScale;
-
-  memset(&newEvent, 0, sizeof(newEvent));
-
-  newEvent.type = XBMC_MOUSEMOTION;
-  newEvent.motion.type = XBMC_MOUSEMOTION;
-  newEvent.motion.which = 0;
-  newEvent.motion.state = 0;      
-  newEvent.motion.x = point.x;
-  newEvent.motion.y = point.y;
-  newEvent.motion.xrel = 0;
-  newEvent.motion.yrel = 0;
-  CWinEventsIOS::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
