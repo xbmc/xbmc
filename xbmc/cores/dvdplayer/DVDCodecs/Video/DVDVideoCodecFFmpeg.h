@@ -50,6 +50,7 @@ public:
     virtual int  Check     (AVCodecContext* avctx) = 0;
     virtual void Reset     () {}
     virtual unsigned GetAllowedReferences() { return 0; }
+    virtual bool CanSkipDeint() {return false; }
     virtual const std::string Name() = 0;
     virtual CCriticalSection* Section() { return NULL; }
   };
@@ -67,6 +68,8 @@ public:
   virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount();
   virtual unsigned GetAllowedReferences();
+  virtual bool GetCodecStats(double &pts, int &droppedPics);
+  virtual void SetCodecControl(int flags);
 
   bool               IsHardwareAllowed()                     { return !m_bSoftware; }
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
@@ -122,4 +125,8 @@ protected:
   double m_dts;
   bool   m_started;
   std::vector<PixelFormat> m_formats;
+  double m_decoderPts, m_decoderInterval;
+  int    m_skippedDeint;
+  bool   m_requestSkipDeint;
+  int    m_codecControlFlags;
 };

@@ -173,6 +173,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_iLastKeyframe = 0;
   m_dts = DVD_NOPTS_VALUE;
   m_started = false;
+  m_decoderPts = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -342,6 +343,14 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 {
   if( m_pCodecContext )
   {
+    if (bDrop && m_pHardware && m_pHardware->CanSkipDeint())
+    {
+      m_requestSkipDeint = true;
+      bDrop = false;
+    }
+    else
+      m_requestSkipDeint = false;
+
     // i don't know exactly how high this should be set
     // couldn't find any good docs on it. think it varies
     // from codec to codec on what it does
@@ -543,6 +552,7 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 void CDVDVideoCodecFFmpeg::Reset()
 {
   m_started = false;
+  m_decoderPts = DVD_NOPTS_VALUE;
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
   avcodec_flush_buffers(m_pCodecContext);
 
@@ -639,6 +649,22 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->pts = pts_itod(m_pFrame->reordered_opaque);
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
+  if (pDvdVideoPicture->pts != DVD_NOPTS_VALUE)
+    m_decoderPts = pDvdVideoPicture->pts;
+  else
+    m_decoderPts = m_dts;
+
+  if (m_requestSkipDeint)
+  {
+    pDvdVideoPicture->iFlags |= DVD_CODEC_CTRL_SKIPDEINT;
+    m_skippedDeint = 1;
+  }
+  else
+    m_skippedDeint = 0;
+
+  m_requestSkipDeint = false;
+  pDvdVideoPicture->iFlags |= m_codecControlFlags;
 
   if(!m_started)
     pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
@@ -820,4 +846,19 @@ unsigned CDVDVideoCodecFFmpeg::GetAllowedReferences()
     return m_pHardware->GetAllowedReferences();
   else
     return 0;
+}
+
+bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &droppedPics)
+{
+  pts = m_decoderPts;
+  if (m_skippedDeint)
+    droppedPics = m_skippedDeint;
+  else
+    droppedPics = -1;
+  return true;
+}
+
+void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
+{
+  m_codecControlFlags = flags;
 }
