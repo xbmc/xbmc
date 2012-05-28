@@ -94,10 +94,11 @@ public:
    *
    * @param bStop reference to stop flag of calling thread
    * @param timestamp of frame delivered with AddVideoPicture
+   * @param pts used for lateness detection
    * @param source depreciated
    * @param sync signals frame, top, or bottom field
    */
-  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+  void FlipPage(volatile bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
   bool Flush();
@@ -179,6 +180,12 @@ public:
    * Called by application (main thread) to query if there is any frame to render
    */
   bool HasFrame();
+
+  /**
+   * Can be called by player for lateness detection. This is done best by
+   * looking at the end of the queue.
+   */
+  bool GetStats(double &sleeptime, double &pts, int &bufferLevel);
 
   /**
    * Video player can dynamically enable/disable buffering. In situations like
@@ -263,12 +270,14 @@ protected:
 
   struct
   {
+    double pts;
     double timestamp;
     EFIELDSYNC presentfield;
     EPRESENTMETHOD presentmethod;
   }m_renderBuffers[5];
 
   double     m_sleeptime;
+  double     m_presentPts;
 
   double     m_presenttime;
   double     m_presentcorr;

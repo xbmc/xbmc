@@ -45,6 +45,7 @@ public:
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
     virtual void Reset     () {}
+    virtual bool CanSkipDeint() {return false; }
     virtual const std::string Name() = 0;
     virtual CCriticalSection* Section() { return NULL; }
   };
@@ -61,6 +62,8 @@ public:
   virtual unsigned int SetFilters(unsigned int filters);
   virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount();
+  virtual bool GetPts(double &pts, int &skippedDeint, int &interlaced) {pts=m_decoderPts; skippedDeint=m_skippedDeint; if (m_pFrame) interlaced = m_pFrame->interlaced_frame; return true;}
+  virtual void SetCodecControl(int flags);
 
   bool               IsHardwareAllowed()                     { return !m_bSoftware; }
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
@@ -122,4 +125,8 @@ protected:
   double m_dts;
   bool   m_started;
   std::vector<PixelFormat> m_formats;
+  double m_decoderPts, m_decoderInterval;
+  int    m_skippedDeint;
+  bool   m_requestSkipDeint;
+  int    m_codecControlFlags;
 };
