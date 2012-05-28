@@ -1018,6 +1018,10 @@ namespace VIDEO
       return -1;
 
     GetArtwork(pItem, content, videoFolder, useLocal);
+    // ensure the art map isn't completely empty by specifying an empty thumb
+    map<string, string> art = pItem->GetArt();
+    if (art.empty())
+      art["thumb"] = "";
 
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     if (movieDetails.m_basePath.IsEmpty())
@@ -1050,7 +1054,7 @@ namespace VIDEO
       if (!strTrailer.IsEmpty())
         movieDetails.m_strTrailer = strTrailer;
 
-      lResult = m_database.SetDetailsForMovie(pItem->GetPath(), movieDetails, pItem->GetArt());
+      lResult = m_database.SetDetailsForMovie(pItem->GetPath(), movieDetails, art);
       movieDetails.m_iDbId = lResult;
 
       // setup links to shows if the linked shows are in the db
@@ -1071,7 +1075,7 @@ namespace VIDEO
         // get season thumbs
         map<int, string> seasonArt;
         GetSeasonThumbs(movieDetails, seasonArt);
-        lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, pItem->GetArt(), seasonArt);
+        lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
       }
       else
@@ -1079,7 +1083,7 @@ namespace VIDEO
         // we add episode then set details, as otherwise set details will delete the
         // episode then add, which breaks multi-episode files.
         int idEpisode = m_database.AddEpisode(idShow, pItem->GetPath());
-        lResult = m_database.SetDetailsForEpisode(pItem->GetPath(), movieDetails, pItem->GetArt(), idShow, idEpisode);
+        lResult = m_database.SetDetailsForEpisode(pItem->GetPath(), movieDetails, art, idShow, idEpisode);
         movieDetails.m_iDbId = lResult;
         if (movieDetails.m_fEpBookmark > 0)
         {
@@ -1094,7 +1098,7 @@ namespace VIDEO
     }
     else if (content == CONTENT_MUSICVIDEOS)
     {
-      lResult = m_database.SetDetailsForMusicVideo(pItem->GetPath(), movieDetails, pItem->GetArt());
+      lResult = m_database.SetDetailsForMusicVideo(pItem->GetPath(), movieDetails, art);
       movieDetails.m_iDbId = lResult;
     }
 

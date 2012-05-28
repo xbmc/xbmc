@@ -32,7 +32,6 @@
 #include "Application.h"
 #include "MouseStat.h"
 #include "WindowingFactory.h"
-#include "guilib/GUIWindowManager.h"
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -59,8 +58,7 @@ extern NSString* kBRScreenSaverDismissed;
 //
 
 @interface XBMCController ()
-UIWindow *m_window;
-IOSEAGLView  *m_glView;
+
 @end
 
 @interface UIApplication (extended)
@@ -151,7 +149,8 @@ IOSEAGLView  *m_glView;
   //single finger double tab delays single finger single tab - so we
   //go for 2 fingers here - so single finger single tap is instant
   UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
-                                                    initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+    initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+
   doubleFingerSingleTap.delaysTouchesBegan = YES;
   doubleFingerSingleTap.numberOfTapsRequired = 1;
   doubleFingerSingleTap.numberOfTouchesRequired = 2;
@@ -159,34 +158,37 @@ IOSEAGLView  *m_glView;
   [doubleFingerSingleTap release];
 
   //1 finger single long tab - right mouse - alernative
-  UITapGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
-                                                        initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
+  UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
+    initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
+
   singleFingerSingleLongTap.delaysTouchesBegan = YES;
   singleFingerSingleLongTap.delaysTouchesEnded = YES;
   [self.view addGestureRecognizer:singleFingerSingleLongTap];
   [singleFingerSingleLongTap release];
 
-  
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-                                          initWithTarget:self action:@selector(handleSwipeLeft:)];
+    initWithTarget:self action:@selector(handleSwipeLeft:)];
+
   swipeLeft.delaysTouchesBegan = YES;
   swipeLeft.numberOfTouchesRequired = 2;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   [self.view addGestureRecognizer:swipeLeft];
   [swipeLeft release];
-  
+
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
-                                  initWithTarget:self action:@selector(handlePan:)];
+    initWithTarget:self action:@selector(handlePan:)];
+
   pan.delaysTouchesBegan = YES;
   pan.maximumNumberOfTouches = 1;
   [self.view addGestureRecognizer:pan];
   [pan release];
-  
+
   //for zoom gesture
   UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc]
-                                      initWithTarget:self action:@selector(handlePinch:)];
+    initWithTarget:self action:@selector(handlePinch:)];
+
   pinch.delaysTouchesBegan = YES;
   [self.view addGestureRecognizer:pinch];
   [pinch release];
@@ -210,7 +212,7 @@ IOSEAGLView  *m_glView;
       break;
       case UIGestureRecognizerStateChanged:
         g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_ZOOM, 0, (float)point.x, (float)point.y, 
-                                                           currentPinchScale, 0), WINDOW_INVALID,false);    
+          currentPinchScale, 0), WINDOW_INVALID,false);    
       break;
       case UIGestureRecognizerStateEnded:
       break;
@@ -283,6 +285,26 @@ IOSEAGLView  *m_glView;
   }
 }
 //--------------------------------------------------------------
+- (void)postMouseMotionEvent:(CGPoint)point
+{
+  XBMC_Event newEvent;
+
+  point.x *= screenScale;
+  point.y *= screenScale;
+
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_MOUSEMOTION;
+  newEvent.motion.type = XBMC_MOUSEMOTION;
+  newEvent.motion.which = 0;
+  newEvent.motion.state = 0;
+  newEvent.motion.x = point.x;
+  newEvent.motion.y = point.y;
+  newEvent.motion.xrel = 0;
+  newEvent.motion.yrel = 0;
+  CWinEventsIOS::MessagePush(&newEvent);
+}
+//--------------------------------------------------------------
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
@@ -291,7 +313,9 @@ IOSEAGLView  *m_glView;
     point.x *= screenScale;
     point.y *= screenScale;
     //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
-    
+
+    [self postMouseMotionEvent:point];
+
     XBMC_Event newEvent;
     memset(&newEvent, 0, sizeof(newEvent));
     
@@ -309,26 +333,6 @@ IOSEAGLView  *m_glView;
     
     memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
   }
-}
-//--------------------------------------------------------------
-- (void)postMouseMotionEvent:(CGPoint)point
-{
-  XBMC_Event newEvent;
-
-  point.x *= screenScale;
-  point.y *= screenScale;
-
-  memset(&newEvent, 0, sizeof(newEvent));
-
-  newEvent.type = XBMC_MOUSEMOTION;
-  newEvent.motion.type = XBMC_MOUSEMOTION;
-  newEvent.motion.which = 0;
-  newEvent.motion.state = 0;      
-  newEvent.motion.x = point.x;
-  newEvent.motion.y = point.y;
-  newEvent.motion.xrel = 0;
-  newEvent.motion.yrel = 0;
-  CWinEventsIOS::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
@@ -398,8 +402,6 @@ IOSEAGLView  *m_glView;
       newEvent.button.x = lastGesturePoint.x;
       newEvent.button.y = lastGesturePoint.y;
       CWinEventsIOS::MessagePush(&newEvent);
-
-      //[self postMouseMotionEvent:CGPointMake(-1,-1)];//deselects control
       
       memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
     }

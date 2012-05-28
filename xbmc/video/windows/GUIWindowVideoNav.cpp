@@ -172,6 +172,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         g_settings.CycleWatchMode(m_vecItems->GetContent());
         g_settings.Save();
 
+        // We need to clear any cached listing because a new filter is being applied
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
@@ -195,6 +198,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         else
           g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_ALL);
         g_settings.Save();
+
+        // We need to clear any cached listing because a new filter is being applied
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
@@ -265,15 +272,6 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     CLog::Log(LOGERROR, "  CGUIWindowVideoNav::GetQuickpathName: Unknown parameter (%s)", strPath.c_str());
     return strPath;
   }
-}
-
-void CGUIWindowVideoNav::OnItemLoaded(CFileItem* pItem)
-{
-  /* even though the background loader is running multiple threads and we could,
-     be acting on someone else's flag, we don't care who invalidates the cache
-     only that it is done.  We also don't care if it is done multiple times due
-     to a race between multiple threads here at the same time */
-  CUtil::DeleteVideoDatabaseDirectoryCache();
 }
 
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)

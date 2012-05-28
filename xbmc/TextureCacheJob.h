@@ -39,6 +39,12 @@ public:
     width = height = 0;
     updateable = false;
   };
+  bool operator==(const CTextureDetails &right) const
+  {
+    return (id    == right.id    &&
+            file  == right.file  &&
+            width == right.width );
+  };
   int          id;
   std::string  file;
   std::string  hash;
@@ -127,4 +133,19 @@ public:
   virtual bool DoWork();
 
   CStdString m_original;
+};
+
+/* \brief Job class for storing the use count of textures
+ */
+class CTextureUseCountJob : public CJob
+{
+public:
+  CTextureUseCountJob(const std::vector<CTextureDetails> &textures);
+
+  virtual const char* GetType() const { return "usecount"; };
+  virtual bool operator==(const CJob *job) const;
+  virtual bool DoWork();
+
+private:
+  std::vector<CTextureDetails> m_textures;
 };

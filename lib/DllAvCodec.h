@@ -146,8 +146,8 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     return ::avcodec_open2(avctx, codec, options);
   }
-  virtual int avcodec_open2_dont_call(AVCodecContext *avctx, AVCodec *codec, AVDictionary **options) { *(int *)0x0 = 0; return 0; }
-  virtual int avcodec_close_dont_call(AVCodecContext *avctx) { *(int *)0x0 = 0; return 0; }
+  virtual int avcodec_open2_dont_call(AVCodecContext *avctx, AVCodec *codec, AVDictionary **options) { *(volatile int *)0x0 = 0; return 0; }
+  virtual int avcodec_close_dont_call(AVCodecContext *avctx) { *(volatile int *)0x0 = 0; return 0; }
   virtual AVCodec *avcodec_find_decoder(enum CodecID id) { return ::avcodec_find_decoder(id); }
   virtual AVCodec *avcodec_find_encoder(enum CodecID id) { return ::avcodec_find_encoder(id); }
   virtual int avcodec_close(AVCodecContext *avctx)

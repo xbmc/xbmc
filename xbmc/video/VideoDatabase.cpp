@@ -3326,7 +3326,8 @@ bool CVideoDatabase::GetArtForItem(int mediaId, const string &mediaType, map<str
 
 string CVideoDatabase::GetArtForItem(int mediaId, const string &mediaType, const string &artType)
 {
-  return GetSingleValue("art", "url", PrepareSQL("media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str()));
+  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+  return GetSingleValue(query, m_pDS2);
 }
 
 bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, string> &seasonArt)

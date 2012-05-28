@@ -78,7 +78,7 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
   return NSUIntegerMax;
 }
  
-- (void)release
+- (oneway void)release
 {
   //do nothing
 }

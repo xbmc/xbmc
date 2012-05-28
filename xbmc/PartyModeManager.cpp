@@ -113,7 +113,11 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     {
       set<CStdString> playlists;
       if ( playlistLoaded )
+      {
         m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
+        if (!m_strCurrentFilterMusic.empty())
+          m_strCurrentFilterMusic = "WHERE " + m_strCurrentFilterMusic;
+      }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
       m_iMatchingSongs = (int)db.GetSongIDs(m_strCurrentFilterMusic, songIDs);
@@ -142,7 +146,11 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     {
       set<CStdString> playlists;
       if ( playlistLoaded )
+      {
         m_strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
+        if (!m_strCurrentFilterVideo.empty())
+          m_strCurrentFilterVideo = "WHERE " + m_strCurrentFilterVideo;
+      }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterVideo.c_str());
       m_iMatchingSongs += (int)db.GetMusicVideoIDs(m_strCurrentFilterVideo, songIDs2);
