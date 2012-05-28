@@ -26,7 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 
 #include <sys/mount.h>
-#if !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
 #include <DiskArbitration/DiskArbitration.h>
 #endif
 #include "CocoaInterface.h"
@@ -48,7 +48,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.m_ignore = true;
   localDrives.push_back(share);
 
-#if !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   // User desktop folder
   share.strPath = getenv("HOME");
   share.strPath += "/Desktop";
@@ -104,7 +104,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-#if !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   DASessionRef session = DASessionCreate(kCFAllocatorDefault);
   if (session)
   {

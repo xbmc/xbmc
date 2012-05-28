@@ -222,7 +222,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
 }
 
-#elif defined(__APPLE__) && !defined(__arm__)
+#elif defined(TARGET_DARWIN_OSX)
 #include <IOKit/IOKitLib.h>
 #include <CoreFoundation/CFNumber.h>
 

@@ -341,7 +341,7 @@ protected:
   bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
 
   friend class CApplicationMessenger;
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
 #endif
   // screensaver

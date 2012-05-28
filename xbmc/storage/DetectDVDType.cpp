@@ -34,7 +34,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 #include <linux/cdrom.h>
 #endif
 #endif
@@ -42,7 +42,7 @@
 #include "GUIUserMessages.h"
 #include "utils/URIUtils.h"
 #include "pictures/Picture.h"
-#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (__APPLE__)
+#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (TARGET_DARWIN)
 #define USING_CDIO78
 #endif
 #include "guilib/GUIWindowManager.h"
@@ -88,7 +88,7 @@ void CDetectDVDMedia::OnStartup()
 void CDetectDVDMedia::Process()
 {
 // for apple - currently disable this check since cdio will return null if no media is loaded
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
   //Before entering loop make sure we actually have a CDrom drive
   CdIo_t *p_cdio = m_cdio->cdio_open(NULL, DRIVER_DEVICE);
   if (p_cdio == NULL)
@@ -185,7 +185,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         }
         break;
       case DRIVE_READY:
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
         return ;
 #endif
       case DRIVE_CLOSED_MEDIA_PRESENT:

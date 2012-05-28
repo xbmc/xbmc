@@ -586,12 +586,12 @@ void XBPython::Finalize()
     Py_Finalize();
     PyEval_ReleaseLock();
 
-#if !(defined(__APPLE__) || defined(_WIN32))
+#if !(defined(TARGET_DARWIN) || defined(_WIN32))
     UnloadExtensionLibs();
 #endif
 
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
-#if !(defined(__APPLE__) || defined(_WIN32))
+#if !(defined(TARGET_DARWIN) || defined(_WIN32))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
 #if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)

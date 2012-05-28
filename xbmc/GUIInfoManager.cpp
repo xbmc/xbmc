@@ -1877,7 +1877,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_application.IsMusicScanning();
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
     bReturn = true;
 #else
     bReturn = false;
@@ -3632,7 +3632,7 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(TARGET_DARWIN) || defined(_WIN32)
       text.Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
       text.Format("%s", g_cpuInfo.GetCoresUsageString());

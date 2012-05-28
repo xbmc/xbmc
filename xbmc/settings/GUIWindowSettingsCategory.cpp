@@ -573,7 +573,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
         pControl->SetEnabled(g_guiSettings.GetInt("videoscreen.screen") != DM_WINDOWED);
     }
-#if (defined(__APPLE__) && !defined(__arm__)) || defined(_WIN32)
+#if defined(TARGET_DARWIN_OSX) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.blankdisplays"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -586,7 +586,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
     else if (strSetting.Equals("input.appleremotemode"))
     {
       int remoteMode = g_guiSettings.GetInt("input.appleremotemode");
@@ -1662,7 +1662,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       if (!g_application.StartEventServer())
         CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
     }
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
     //reconfigure XBMCHelper for port changes
     XBMCHelper::GetInstance().Configure();
 #endif

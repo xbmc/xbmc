@@ -27,7 +27,7 @@
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
 #include "JpegIO.h"
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
 #include "osx/DarwinUtils.h"

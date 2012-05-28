@@ -37,7 +37,7 @@
 #include "utils/LCDFactory.h"
 #endif
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
@@ -66,7 +66,7 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleUPowerSyscall::HasDeviceConsoleKit())

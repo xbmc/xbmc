@@ -170,7 +170,7 @@
 #define CALLBACK    __stdcall
 #define WINAPI      __stdcall
 #define WINAPIV     __cdecl
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 #define APIENTRY    WINAPI
 #else
 #define APIENTRY
@@ -354,7 +354,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   #include <sched.h>
   #include <AvailabilityMacros.h>
   typedef int64_t   off64_t;
