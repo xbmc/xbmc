@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "WindowingFactory.h"
 #include "threads/CriticalSection.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
 static CCriticalSection g_inputCond;
@@ -83,6 +84,14 @@ bool CWinEventsIOS::MessagePump()
     }
     else
       ret |= g_application.OnEvent(pumpEvent);
+
+//on ios touch devices - unfocus controls on finger lift
+#if !defined(TARGET_DARWIN_IOS_ATV2)
+    if (pumpEvent.type == XBMC_MOUSEBUTTONUP)
+    {
+      g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
+    }
+#endif
   }
 
   return ret;

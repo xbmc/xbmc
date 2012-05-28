@@ -32,7 +32,6 @@
 #include "Application.h"
 #include "MouseStat.h"
 #include "WindowingFactory.h"
-#include "guilib/GUIWindowManager.h"
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -403,8 +402,6 @@ extern NSString* kBRScreenSaverDismissed;
       newEvent.button.x = lastGesturePoint.x;
       newEvent.button.y = lastGesturePoint.y;
       CWinEventsIOS::MessagePush(&newEvent);
-
-      //[self postMouseMotionEvent:CGPointMake(-1,-1)];//deselects control
       
       memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
     }
