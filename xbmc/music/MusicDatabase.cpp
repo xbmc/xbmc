@@ -560,13 +560,7 @@ int CMusicDatabase::AddGenre(const CStdString& strGenre1)
   return -1;
 }
 
-int CMusicDatabase::AddArtist(const CStdString& strArtist1) {
-  CStdString strMusicBrainzArtistID;
-  strMusicBrainzArtistID.Empty();
-  return AddArtist(strArtist1, strMusicBrainzArtistID);
-}
-
-int CMusicDatabase::AddArtist(const CStdString& strArtist1, const CStdString& strMusicBrainzArtistID)
+int CMusicDatabase::AddArtist(const CStdString& strArtist1, const CStdString& strMusicBrainzArtistID /* = "" */)
 {
   CStdString strSQL;
   try

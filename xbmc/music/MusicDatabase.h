@@ -225,8 +225,7 @@ protected:
   int AddAlbum(const CStdString& strAlbum1, const CStdString& strMusicBrainzAlbumID, int idArtist, const CStdString& strMusicBrainzAlbumArtistID, const CStdString &extraArtists, const CStdString &strArtist, int idThumb, int idGenre, const CStdString &extraGenres, int year);
   int AddGenre(const CStdString& strGenre);
   // night199uk: kludge as we don't have a MusicBrainzArtistID for extra artists
-  int AddArtist(const CStdString& strArtist1);
-  int AddArtist(const CStdString& strArtist1, const CStdString& strMusicBrainzArtistID);
+  int AddArtist(const CStdString& strArtist1, const CStdString& strMusicBrainzArtistID = "");
   int AddPath(const CStdString& strPath);
   int AddThumb(const CStdString& strThumb1);
   void AddExtraAlbumArtists(const std::vector<std::string>& vecArtists, int idAlbum);
