@@ -20,7 +20,7 @@
 
 #include "os-dependent.h"
 #include "platform/util/timeutils.h"
-#include "RTSPClient.h"
+#include "MepoRTSPClient.h"
 #include "MemorySink.h"
 #include "client.h"
 

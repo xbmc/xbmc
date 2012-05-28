@@ -41,19 +41,18 @@ namespace PLATFORM
 class IFile
 {
 public:
-  IFile();
-  virtual ~IFile();
+  //virtual ~IFile();
 
-  virtual bool Open(const CStdString& strFileName, unsigned int flags = 0);
-  virtual bool IsInvalid();
+  virtual bool Open(const CStdString& strFileName, unsigned int flags = 0) = 0;
+  virtual bool IsInvalid() = 0;
 
-  virtual unsigned long Read(void* lpBuf, int64_t uiBufSize);
-  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  virtual int64_t GetPosition();
-  virtual int64_t GetLength();
-  virtual void Close();
-  static bool Exists(const CStdString& strFileName, bool bUseCache = true);
-  virtual int Stat(struct __stat64 *buffer);
+  virtual unsigned long Read(void* lpBuf, int64_t uiBufSize) = 0;
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) = 0;
+  virtual int64_t GetPosition() = 0;
+  virtual int64_t GetLength() = 0;
+  virtual void Close() = 0;
+//  static bool Exists(const CStdString& strFileName, bool bUseCache = true);
+  virtual int Stat(struct __stat64 *buffer) = 0;
 };
 
 } // namespace PLATFORM

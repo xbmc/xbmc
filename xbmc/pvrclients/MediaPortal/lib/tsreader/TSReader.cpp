@@ -34,7 +34,7 @@
 #include "utils.h"
 #include "MemoryReader.h"
 #include "platform/util/timeutils.h"
-#include "RTSPClient.h"
+#include "MepoRTSPClient.h"
 #include "MemoryBuffer.h"
 #include "FileUtils.h"
 

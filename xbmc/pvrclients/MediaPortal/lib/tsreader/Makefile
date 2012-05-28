@@ -1,5 +1,5 @@
 SRCS=TSReader.cpp \
-    RTSPClient.cpp \
+    MepoRTSPClient.cpp \
     MemoryBuffer.cpp \
     MemoryReader.cpp \
     MemorySink.cpp \
