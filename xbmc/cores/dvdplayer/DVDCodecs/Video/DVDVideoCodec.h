@@ -134,6 +134,10 @@ struct DVDVideoUserData
 #define DVP_FLAG_NOSKIP             0x00000010 // indicate this picture should never be dropped
 #define DVP_FLAG_DROPPED            0x00000020 // indicate that this picture has been dropped in decoder stage, will have no data
 
+#define DVP_FLAG_DROPDEINT          0x00000040 // indicate that this picture was requested to have been dropped in deint stage
+#define DVP_FLAG_NO_POSTPROC        0x00000100
+#define DVP_FLAG_DRAIN              0x00000200
+
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 
 #define DVP_QSCALE_UNKNOWN          0
@@ -151,6 +155,9 @@ class CDVDCodecOptions;
 #define VC_PICTURE  0x00000004  // the decoder got a picture, call Decode(NULL, 0) again to parse the rest of the data
 #define VC_USERDATA 0x00000008  // the decoder found some userdata,  call Decode(NULL, 0) again to parse the rest of the data
 #define VC_FLUSHED  0x00000010  // the decoder lost it's state, we need to restart decoding again
+#define VC_DROPPED  0x00000020  // needed to identify if a picture was dropped
+#define VC_HURRY    0x00000040
+
 class CDVDVideoCodec
 {
 public:
@@ -268,7 +275,6 @@ public:
     return 0;
   }
 
-
   /**
    * Number of references to old pictures that are allowed to
    * be retained when calling decode on the next demux packet
@@ -285,4 +291,11 @@ public:
   * Interact with user settings so that user disabled codecs are disabled
   */
   static bool IsCodecDisabled(DVDCodecAvailableType* map, unsigned int size, AVCodecID id);
+
+  virtual bool GetPts(double &pts, int &skippedDeint, int &interlaced)
+  {
+    return false;
+  }
+
+  virtual void SetCodecControl(int flags) {}
 };
