@@ -261,12 +261,12 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture)
+bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture, int index)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
-    int source = NextYV12Texture();
-    if(source < 0)
+    int source = index;
+    if(source < 0 || NextYV12Texture() < 0)
       return false;
 
     DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
@@ -282,7 +282,7 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
     source = NextYV12Texture();
 
-  if( source < 0 )
+  if( source < 0 || NextYV12Texture() < 0)
     return -1;
 
   YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];

@@ -93,33 +93,32 @@ long COverlayMainThread::Release()
 CRenderer::CRenderer()
 {
   m_render = 0;
-  m_decode = (m_render + 1) % 2;
 }
 
 CRenderer::~CRenderer()
 {
-  for(int i = 0; i < 2; i++)
+  for(int i = 0; i < 10; i++)
     Release(m_buffers[i]);
 }
 
-void CRenderer::AddOverlay(CDVDOverlay* o, double pts)
+void CRenderer::AddOverlay(CDVDOverlay* o, double pts, int index)
 {
   CSingleLock lock(m_section);
 
   SElement   e;
   e.pts = pts;
   e.overlay_dvd = o->Acquire();
-  m_buffers[m_decode].push_back(e);
+  m_buffers[index].push_back(e);
 }
 
-void CRenderer::AddOverlay(COverlay* o, double pts)
+void CRenderer::AddOverlay(COverlay* o, double pts, int index)
 {
   CSingleLock lock(m_section);
 
   SElement   e;
   e.pts = pts;
   e.overlay = o->Acquire();
-  m_buffers[m_decode].push_back(e);
+  m_buffers[index].push_back(e);
 }
 
 void CRenderer::AddCleanup(COverlay* o)
@@ -155,20 +154,23 @@ void CRenderer::Flush()
 {
   CSingleLock lock(m_section);
 
-  for(int i = 0; i < 2; i++)
+  for(int i = 0; i < m_iNumBuffers; i++)
     Release(m_buffers[i]);
 
+  m_render = 0;
   Release(m_cleanup);
 }
 
 void CRenderer::Flip()
 {
   CSingleLock lock(m_section);
+  m_render = (m_render + 1) % m_iNumBuffers;
+}
 
-  m_render = m_decode;
-  m_decode =(m_decode + 1) % 2;
-
-  Release(m_buffers[m_decode]);
+void CRenderer::ReleaseBuffer(int idx)
+{
+  CSingleLock lock(m_section);
+  Release(m_buffers[idx]);
 }
 
 void CRenderer::Render()

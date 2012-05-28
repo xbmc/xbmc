@@ -262,6 +262,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_started = false;
   m_codecname = m_pVideoCodec->GetName();
+  g_renderManager.EnableBuffering(false);
 }
 
 void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
@@ -437,6 +438,7 @@ void CDVDPlayerVideo::Process()
       picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
       m_started = false;
+      g_renderManager.EnableBuffering(false);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
@@ -449,6 +451,7 @@ void CDVDPlayerVideo::Process()
       //we need to recalculate the framerate
       //TODO: this needs to be set on a streamchange instead
       ResetFrameRateCalc();
+      g_renderManager.EnableBuffering(false);
 
       m_stalled = true;
       m_started = false;
@@ -600,6 +603,8 @@ void CDVDPlayerVideo::Process()
 
           m_pVideoCodec->Reset();
           m_packets.clear();
+          picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+          g_renderManager.DiscardBuffer();
           break;
         }
 
@@ -714,6 +719,7 @@ void CDVDPlayerVideo::Process()
               m_codecname = m_pVideoCodec->GetName();
               m_started = true;
               m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+              g_renderManager.EnableBuffering(true);
             }
 
             // guess next frame pts. iDuration is always valid
@@ -1102,47 +1108,61 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CStdString formatstr;
+    bool buffering = false;
 
     switch(pPicture->format)
     {
       case RENDER_FMT_YUV420P:
         formatstr = "YV12";
+        buffering = true;
         break;
       case RENDER_FMT_YUV420P16:
         formatstr = "YV12P16";
+        buffering = true;
         break;
       case RENDER_FMT_YUV420P10:
         formatstr = "YV12P10";
+        buffering = true;
         break;
       case RENDER_FMT_NV12:
         formatstr = "NV12";
+        buffering = true;
         break;
       case RENDER_FMT_UYVY422:
         formatstr = "UYVY";
+        buffering = true;
         break;
       case RENDER_FMT_YUYV422:
         formatstr = "YUY2";
+        buffering = true;
         break;
       case RENDER_FMT_VDPAU:
         formatstr = "VDPAU";
+        buffering = true;
         break;
       case RENDER_FMT_DXVA:
         formatstr = "DXVA";
+        buffering = false;
         break;
       case RENDER_FMT_VAAPI:
         formatstr = "VAAPI";
+        buffering = false;
         break;
       case RENDER_FMT_OMXEGL:
         formatstr = "OMXEGL";
+        buffering = false;
         break;
       case RENDER_FMT_CVBREF:
         formatstr = "BGRA";
+        buffering = false;
         break;
       case RENDER_FMT_BYPASS:
         formatstr = "BYPASS";
+        buffering = false;
         break;
       case RENDER_FMT_NONE:
         formatstr = "NONE";
+        buffering = false;
         break;
     }
 
@@ -1153,7 +1173,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format, m_hints.orientation))
+    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format, m_hints.orientation, buffering))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
@@ -1331,6 +1351,16 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       mDisplayField = FS_BOT;
   }
 
+  int buffer = g_renderManager.WaitForBuffer(m_bStop);
+  while (buffer < 0 && !CThread::m_bStop &&
+         CDVDClock::GetAbsoluteClock(false) < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
+  {
+    Sleep(1);
+    buffer = g_renderManager.WaitForBuffer(m_bStop);
+  }
+  if (buffer < 0)
+    return EOS_DROPPED;
+
   ProcessOverlays(pPicture, pts);
   AutoCrop(pPicture);
 
@@ -1347,7 +1377,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if (index < 0)
     return EOS_DROPPED;
 
-  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+  g_renderManager.FlipPage(CThread::m_bStop, pts, -1, mDisplayField, m_speed);
 
   return result;
 #else

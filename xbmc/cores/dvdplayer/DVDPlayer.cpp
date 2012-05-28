@@ -4159,3 +4159,8 @@ bool CDVDPlayer::CachePVRStream(void) const
       !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }
+
+double CDVDPlayer::GetClock(double& absolute, bool interpolated)
+{
+  return m_clock.GetClock(absolute, interpolated);
+}

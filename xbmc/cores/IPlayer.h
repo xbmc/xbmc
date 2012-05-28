@@ -244,6 +244,8 @@ public:
    */
   virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
 
+  virtual double GetClock(double& absolute, bool interpolated = true) {return 0; };
+
 protected:
   IPlayerCallback& m_callback;
 };

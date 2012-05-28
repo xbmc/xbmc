@@ -153,10 +153,10 @@ public:
   virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
 #ifdef HAVE_LIBOPENMAX
-  virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
+  virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture, int index);
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
+  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef, int index);
 #endif
 
 protected:
