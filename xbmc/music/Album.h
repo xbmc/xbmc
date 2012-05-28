@@ -52,6 +52,8 @@ public:
     strReview.Empty();
     strLabel.Empty();
     strType.Empty();
+    strMusicBrainzAlbumID.Empty();
+    strMusicBrainzAlbumArtistID.Empty();
     m_strDateOfRelease.Empty();
     iRating=-1;
     iYear=-1;
@@ -80,6 +82,8 @@ public:
   CStdString strReview;
   CStdString strLabel;
   CStdString strType;
+  CStdString strMusicBrainzAlbumID;
+  CStdString strMusicBrainzAlbumArtistID;
   CStdString m_strDateOfRelease;
   int iRating;
   int iYear;

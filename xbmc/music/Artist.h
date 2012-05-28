@@ -41,6 +41,7 @@ public:
   void Reset()
   {
     strArtist.Empty();
+    strMusicBrainzArtistID.Empty();
     genre.clear();
     strBiography.Empty();
     styles.clear();
@@ -67,6 +68,7 @@ public:
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   CStdString strArtist;
+  CStdString strMusicBrainzArtistID;
   std::vector<std::string> genre;
   CStdString strBiography;
   std::vector<std::string> styles;
