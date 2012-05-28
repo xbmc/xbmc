@@ -125,6 +125,11 @@
  */
 #define GUI_MSG_REMOVE_CONTROL  40
 
+/*!
+ \brief A request to unfocus all currently focused controls
+ */
+#define GUI_MSG_UNFOCUS_ALL 41
+
 #define GUI_MSG_USER         1000
 
 /*!

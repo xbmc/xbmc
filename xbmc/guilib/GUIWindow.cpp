@@ -531,6 +531,21 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       }
       break;
     }
+  
+  case GUI_MSG_UNFOCUS_ALL:
+    {
+      //unfocus the current focused control in this window
+      CGUIControl *control = GetFocusedControl();
+      if(control)
+      {
+        //tell focused control that it has lost the focus
+        CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), control->GetID());
+        control->OnMessage(msgLostFocus);
+        CLog::Log(LOGDEBUG, "Unfocus WindowID: %i, ControlID: %i",GetID(), control->GetID());
+      }
+      return true;
+    break;
+    }
 
   case GUI_MSG_SELCHANGED:
     {
