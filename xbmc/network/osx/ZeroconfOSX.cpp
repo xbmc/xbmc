@@ -19,22 +19,19 @@
  *
  */
 
+#include "system.h"
+
 #include "ZeroconfOSX.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 
 #include <string>
 #include <sstream>
-#include <threads/SingleLock.h>
-#include <utils/log.h>
 
 CZeroconfOSX::CZeroconfOSX():m_runloop(0)
 {
   //aquire the main threads event loop
-#if !defined(__arm__)
-  EventLoopRef ref = GetMainEventLoop();
-  m_runloop = (CFRunLoopRef)GetCFRunLoopFromEventLoop(ref);
-#else
   m_runloop = CFRunLoopGetMain();
-#endif
 }
 
 CZeroconfOSX::~CZeroconfOSX()
@@ -107,7 +104,8 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
     CFNetServiceSetClient(netService, NULL, NULL);
     CFRelease(netService);
     netService = NULL;
-    CLog::Log(LOGERROR, "CZeroconfOSX::doPublishService CFNetServiceRegister returned (domain = %d, error = %ld)\n", (int)error.domain, error.error);
+    CLog::Log(LOGERROR, "CZeroconfOSX::doPublishService CFNetServiceRegister returned "
+      "(domain = %d, error = %"PRId64")", (int)error.domain, (int64_t)error.error);
   } else
   {
     CSingleLock lock(m_data_guard);
@@ -149,7 +147,8 @@ void CZeroconfOSX::registerCallback(CFNetServiceRef theService, CFStreamError* e
         CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback name collision occured");
         break;
       default:
-        CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback returned (domain = %d, error = %ld)\n", (int)error->domain, error->error);
+        CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback returned "
+          "(domain = %d, error = %"PRId64")", (int)error->domain, (int64_t)error->error);
         break;
     }
     p_this->cancelRegistration(theService);

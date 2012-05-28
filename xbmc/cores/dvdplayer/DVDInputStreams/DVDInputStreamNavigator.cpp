@@ -252,7 +252,7 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 }
 
 // not working yet, but it is the recommanded way for seeking
-__int64 CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamNavigator::Seek(int64_t offset, int whence)
 {
   if(whence == SEEK_POSSIBLE)
     return 0;
@@ -483,7 +483,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // Calculate current time
         //unsigned int pos, len;
         //m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
-        //m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
+        //m_iTime = (int)(((int64_t)m_iTotalTime * pos) / len);
 
         pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
         m_dll.dvdnav_get_current_nav_dsi(m_dvdnav);
@@ -498,7 +498,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_bInMenu = pci->hli.hl_gi.hli_ss || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
 
         /* check for any gap in the stream, this is likely a discontinuity */
-        __int64 gap = (__int64)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;
+        int64_t gap = (int64_t)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;
         if(gap)
         {
           /* make sure demuxer is flushed before we change any correction */
@@ -511,7 +511,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           }
           m_iVobUnitCorrection += gap;
 
-          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%"PRId64" TO:%"PRId64" DIFF:%"PRId64, (m_iVobUnitStop * 1000)/90, ((__int64)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
+          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%"PRId64" TO:%"PRId64" DIFF:%"PRId64, (m_iVobUnitStop * 1000)/90, ((int64_t)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
         }
 
         m_iVobUnitStart = pci->pci_gi.vobu_s_ptm;

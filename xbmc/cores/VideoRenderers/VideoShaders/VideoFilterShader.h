@@ -22,12 +22,14 @@
  *
  */
 
+#include "system.h"
+
 #if defined(HAS_GL) || HAS_GLES == 2
+#include "system_gl.h"
+
 
 #include "guilib/Shader.h"
-#include "../../../settings/VideoSettings.h"
-
-using namespace Shaders;
+#include "settings/VideoSettings.h"
 
 namespace Shaders {
 

@@ -28,6 +28,27 @@ class CBaseTexture;
 
 /*!
  \ingroup textures
+ \brief Simple class for passing texture detail around
+ */
+class CTextureDetails
+{
+public:
+  CTextureDetails()
+  {
+    id = -1;
+    width = height = 0;
+    updateable = false;
+  };
+  int          id;
+  std::string  file;
+  std::string  hash;
+  unsigned int width;
+  unsigned int height;
+  bool         updateable;
+};
+
+/*!
+ \ingroup textures
  \brief Job class for caching textures
  
  Handles loading and caching of textures.
@@ -35,13 +56,39 @@ class CBaseTexture;
 class CTextureCacheJob : public CJob
 {
 public:
-  CTextureCacheJob(const CStdString &url, const CStdString &oldHash);
-  CTextureCacheJob(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height);
+  CTextureCacheJob(const CStdString &url, const CStdString &oldHash = "");
   virtual ~CTextureCacheJob();
 
   virtual const char* GetType() const { return "cacheimage"; };
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
+
+  /*! \brief retrieve a hash for the given image
+   Combines the size, ctime and mtime of the image file into a "unique" hash
+   \param url location of the image
+   \return a hash string for this image
+   */
+  bool CacheTexture(CBaseTexture **texture = NULL);
+
+  CStdString m_url;
+  CStdString m_oldHash;
+  CTextureDetails m_details;
+private:
+  /*! \brief retrieve a hash for the given image
+   Combines the size, ctime and mtime of the image file into a "unique" hash
+   \param url location of the image
+   \return a hash string for this image
+   */
+  static CStdString GetImageHash(const CStdString &url);
+
+  /*! \brief Check whether a given URL represents an image that can be updated
+   We currently don't check http:// and https:// URLs for updates, under the assumption that
+   a image URL is much more likely to be static and the actual image at the URL is unlikely
+   to change, so no point checking all the time.
+   \param url the url to check
+   \return true if the image given by the URL should be checked for updates, false otehrwise
+   */
+  bool UpdateableURL(const CStdString &url) const;
 
   /*! \brief Decode an image URL to the underlying image, width, height and orientation
    \param url wrapped URL of the image
@@ -65,21 +112,6 @@ public:
    */
   static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped);
 
-  CStdString m_url;
-  CStdString m_cacheFile;
-  CStdString m_hash;
-  CStdString m_oldHash;
-private:
-  /*! \brief retrieve a hash for the given image
-   Combines the size, ctime and mtime of the image file into a "unique" hash
-   \param url location of the image
-   \return a hash string for this image
-   */
-  static CStdString GetImageHash(const CStdString &url);
-
-  unsigned int  m_maxWidth;
-  unsigned int  m_maxHeight;
-  CBaseTexture *m_texture;
   CStdString    m_cachePath;
 };
 

@@ -21,7 +21,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #define False false
 #define True true
 #else
-typedef unsigned Boolean;
+typedef unsigned char Boolean;
+#ifndef __MSHTML_LIBRARY_DEFINED__
 #ifndef False
 const Boolean False = 0;
 #endif
@@ -29,6 +30,7 @@ const Boolean False = 0;
 const Boolean True = 1;
 #endif
 
+#endif
 #endif
 
 #endif

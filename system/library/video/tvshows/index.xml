@@ -1,0 +1,4 @@
+<node order="2" visible="Library.HasContent(TVShows)">
+  <label>20343</label>
+  <icon>DefaultTVShows.png</icon>
+</node>

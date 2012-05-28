@@ -25,6 +25,7 @@
 #pragma once
 
 #include "system.h"
+#include "system_gl.h"
 #include "rendering/RenderSystem.h"
 
 class CRenderSystemGL : public CRenderSystemBase
@@ -86,11 +87,9 @@ protected:
   int        m_glslMajor;
   int        m_glslMinor;
   
-#ifdef HAS_GL
   GLdouble   m_view[16];
   GLdouble   m_projection[16];
   GLint      m_viewPort[4];
-#endif
 };
 
 #endif // RENDER_SYSTEM_H

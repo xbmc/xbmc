@@ -24,7 +24,6 @@
 #include "Application.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
-#include "guilib/AudioContext.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/AlarmClock.h"
@@ -47,7 +46,6 @@
   CSettings          g_settings;
 
   CXBMCRenderManager g_renderManager;
-  CAudioContext      g_audioContext;
   CLangInfo          g_langInfo;
   CLangCodeExpander  g_LangCodeExpander;
   CLocalizeStrings   g_localizeStrings;

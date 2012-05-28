@@ -11,13 +11,15 @@ ifeq ($(findstring osx,@ARCH@),osx)
 # until we get an additional extension point in addon.xml we can't create
 # versions for osx and ios with different names
 #ifeq ($(findstring x86-osx,@ARCH@),x86-osx)
-LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_osx.pvr
+PVR    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_osx.pvr
 #else
-#LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_ios.pvr
+#PVR    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_ios.pvr
 #endif
 else
-LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_linux.pvr
+PVR    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_linux.pvr
 endif
+
+pvr: $(PVR)
 
 SRCS   = utils.cpp \
         activerecording.cpp \
@@ -52,9 +54,8 @@ else
 CXXFLAGS += -DTARGET_LINUX
 endif
 
-clean:
-	-rm -f $(OBJS) $(LIB) *.P *~
+CLEAN_FILES = *.P *~ $(PVR)
 
-$(LIB): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
+$(PVR): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(PVR)
 

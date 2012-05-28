@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "cores/VideoRenderers/RenderFlags.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
@@ -177,19 +178,22 @@ double CDVDPlayerVideo::GetOutputDelay()
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
   unsigned int surfaces = 0;
+  std::vector<ERenderFormat> formats;
 #ifdef HAS_VIDEO_PLAYBACK
   surfaces = g_renderManager.GetProcessorSize();
+  formats  = g_renderManager.SupportedFormats();
 #endif
 
+
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces);
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces, formats);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported video codec");
     return false;
   }
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
   {
     g_VideoReferenceClock.Create();
     //we have to wait for the clock to start otherwise alsa can cause trouble
@@ -291,7 +295,7 @@ void CDVDPlayerVideo::OnStartup()
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
 
-  g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
+  g_dvdPerformanceCounter.EnableVideoDecodePerformance(this);
 }
 
 void CDVDPlayerVideo::Process()
@@ -666,8 +670,8 @@ void CDVDPlayerVideo::Process()
             // testing YUY2 or UYVY rendering functions
             // WARNING: since this scales a full YV12 frame, weaving artifacts will show on interlaced content
             // even with the deinterlacer on
-            DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_UYVY);
-            //DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_YUY2);
+            DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, RENDER_FMT_UYVY422);
+            //DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, RENDER_FMT_YUYV422);
             int iResult = OutputPicture(pTempYUVPackedPicture, pts);
             CDVDCodecUtils::FreePicture(pTempYUVPackedPicture);
 #endif
@@ -872,7 +876,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
   , OVERLAY_BUF  // render osd on buffer
   } render = OVERLAY_AUTO;
 
-  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+  if(pSource->format == RENDER_FMT_YUV420P)
   {
     if(g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_MAJORMEMLEAK_OVERLAYRENDERER)
     {
@@ -1063,40 +1067,44 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
     switch(pPicture->format)
     {
-      case DVDVideoPicture::FMT_YUV420P:
-        flags |= CONF_FLAGS_FORMAT_YV12;
+      case RENDER_FMT_YUV420P:
         formatstr = "YV12";
         break;
-      case DVDVideoPicture::FMT_NV12:
-        flags |= CONF_FLAGS_FORMAT_NV12;
+      case RENDER_FMT_YUV420P16:
+        formatstr = "YV12P16";
+        break;
+      case RENDER_FMT_YUV420P10:
+        formatstr = "YV12P10";
+        break;
+      case RENDER_FMT_NV12:
         formatstr = "NV12";
         break;
-      case DVDVideoPicture::FMT_UYVY:
-        flags |= CONF_FLAGS_FORMAT_UYVY;
+      case RENDER_FMT_UYVY422:
         formatstr = "UYVY";
         break;
-      case DVDVideoPicture::FMT_YUY2:
-        flags |= CONF_FLAGS_FORMAT_YUY2;
+      case RENDER_FMT_YUYV422:
         formatstr = "YUY2";
         break;
-      case DVDVideoPicture::FMT_VDPAU:
-        flags |= CONF_FLAGS_FORMAT_VDPAU;
+      case RENDER_FMT_VDPAU:
         formatstr = "VDPAU";
         break;
-      case DVDVideoPicture::FMT_DXVA:
-        flags |= CONF_FLAGS_FORMAT_DXVA;
+      case RENDER_FMT_DXVA:
         formatstr = "DXVA";
         break;
-      case DVDVideoPicture::FMT_VAAPI:
-        flags |= CONF_FLAGS_FORMAT_VAAPI;
+      case RENDER_FMT_VAAPI:
         formatstr = "VAAPI";
         break;
-      case DVDVideoPicture::FMT_OMXEGL:
-        flags |= CONF_FLAGS_FORMAT_OMXEGL;
+      case RENDER_FMT_OMXEGL:
+        formatstr = "OMXEGL";
         break;
-      case DVDVideoPicture::FMT_CVBREF:
-        flags |= CONF_FLAGS_FORMAT_CVBREF;
+      case RENDER_FMT_CVBREF:
         formatstr = "BGRA";
+        break;
+      case RENDER_FMT_BYPASS:
+        formatstr = "BYPASS";
+        break;
+      case RENDER_FMT_NONE:
+        formatstr = "NONE";
         break;
     }
 
@@ -1107,7 +1115,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->extended_format))
+    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
@@ -1312,10 +1320,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
-  if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
-     (pPicture->format == DVDVideoPicture::FMT_NV12) ||
-     (pPicture->format == DVDVideoPicture::FMT_YUY2) ||
-     (pPicture->format == DVDVideoPicture::FMT_UYVY))
+  if ((pPicture->format == RENDER_FMT_YUV420P) ||
+     (pPicture->format == RENDER_FMT_NV12) ||
+     (pPicture->format == RENDER_FMT_YUYV422) ||
+     (pPicture->format == RENDER_FMT_UYVY422))
   {
     RECT crop;
 
@@ -1377,9 +1385,9 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   //YUY2 and UYVY have Y packed with U and V
   int xspacing = 1;
   int xstart   = 0;
-  if (pPicture->format == DVDVideoPicture::FMT_YUY2)
+  if (pPicture->format == RENDER_FMT_YUYV422)
     xspacing = 2;
-  else if (pPicture->format == DVDVideoPicture::FMT_UYVY)
+  else if (pPicture->format == RENDER_FMT_UYVY422)
   {
     xspacing = 2;
     xstart   = 1;

@@ -1,0 +1,9116 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Programes"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Imatges"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Música"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Vídeos"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "Guia TV"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Configuració"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Gestor de fitxers"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "El Temps"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "xbmc media center"
+
+#: id:11
+msgid "Monday"
+msgstr "Dilluns"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Dimarts"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Dimecres"
+
+#: id:14
+msgid "Thursday"
+msgstr "Dijous"
+
+#: id:15
+msgid "Friday"
+msgstr "Divendres"
+
+#: id:16
+msgid "Saturday"
+msgstr "Dissabte"
+
+#: id:17
+msgid "Sunday"
+msgstr "Diumenge"
+
+#: id:21
+msgid "January"
+msgstr "Gener"
+
+#: id:22
+msgid "February"
+msgstr "Febrer"
+
+#: id:23
+msgid "March"
+msgstr "Març"
+
+#: id:24
+msgid "April"
+msgstr "Abril"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "Maig"
+
+#: id:26
+msgid "June"
+msgstr "Juny"
+
+#: id:27
+msgid "July"
+msgstr "Juliol"
+
+#: id:28
+msgid "August"
+msgstr "Agost"
+
+#: id:29
+msgid "September"
+msgstr "Setembre"
+
+#: id:30
+msgid "October"
+msgstr "Octubre"
+
+#: id:31
+msgid "November"
+msgstr "Novembre"
+
+#: id:32
+msgid "December"
+msgstr "Desembre"
+
+#: id:41
+msgid "Mon"
+msgstr "dl."
+
+#: id:42
+msgid "Tue"
+msgstr "dt."
+
+#: id:43
+msgid "Wed"
+msgstr "dc."
+
+#: id:44
+msgid "Thu"
+msgstr "dj."
+
+#: id:45
+msgid "Fri"
+msgstr "dv."
+
+#: id:46
+msgid "Sat"
+msgstr "ds."
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "dg."
+
+#: id:51
+msgid "Jan"
+msgstr "gen."
+
+#: id:52
+msgid "Feb"
+msgstr "febr."
+
+#: id:53
+msgid "Mar"
+msgstr "març"
+
+#: id:54
+msgid "Apr"
+msgstr "abr."
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "maig"
+
+#: id:56
+msgid "Jun"
+msgstr "juny"
+
+#: id:57
+msgid "Jul"
+msgstr "jul."
+
+#: id:58
+msgid "Aug"
+msgstr "ag."
+
+#: id:59
+msgid "Sep"
+msgstr "set."
+
+#: id:60
+msgid "Oct"
+msgstr "oct."
+
+#: id:61
+msgid "Nov"
+msgstr "nov."
+
+#: id:62
+msgid "Dec"
+msgstr "des."
+
+#: id:71
+msgid "N"
+msgstr "N"
+
+#: id:72
+msgid "NNE"
+msgstr "NNE"
+
+#: id:73
+msgid "NE"
+msgstr "NE"
+
+#: id:74
+msgid "ENE"
+msgstr "ENE"
+
+#: id:75
+msgid "E"
+msgstr "E"
+
+#: id:76
+msgid "ESE"
+msgstr "ESE"
+
+#: id:77
+msgid "SE"
+msgstr "SE"
+
+#: id:78
+msgid "SSE"
+msgstr "SSE"
+
+#: id:79
+msgid "S"
+msgstr "S"
+
+#: id:80
+msgid "SSW"
+msgstr "SSW"
+
+#: id:81
+msgid "SW"
+msgstr "SW"
+
+#: id:82
+msgid "WSW"
+msgstr "WSW"
+
+#: id:83
+msgid "W"
+msgstr "W"
+
+#: id:84
+msgid "WNW"
+msgstr "WNW"
+
+#: id:85
+msgid "NW"
+msgstr "NW"
+
+#: id:86
+msgid "NNW"
+msgstr "NNW"
+
+#: id:87
+msgid "VAR"
+msgstr "VAR"
+
+#: id:98
+msgid "View: Auto"
+msgstr "Vista: Auto"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Vista: Auto gran"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Vista: Icones"
+
+#: id:101
+msgid "View: List"
+msgstr "Vista: Llista"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Escaneja"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Ordena per: Nom"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Ordena per: Data"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Ordena per: Mida"
+
+#: id:106
+msgid "No"
+msgstr "No"
+
+#: id:107
+msgid "Yes"
+msgstr "Sí"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Presentació amb diapositives"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Crea miniatures"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Crea miniatures"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Dreceres"
+
+#: id:112
+msgid "Paused"
+msgstr "En pausa"
+
+#: id:113
+msgid "Update failed"
+msgstr "Ha fallat l'actualització"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Ha fallat la instal·lació"
+
+#: id:115
+msgid "Copy"
+msgstr "Copia"
+
+#: id:116
+msgid "Move"
+msgstr "Mou"
+
+#: id:117
+msgid "Delete"
+msgstr "Elimina"
+
+#: id:118
+msgid "Rename"
+msgstr "Canvia el nom"
+
+#: id:119
+msgid "New folder"
+msgstr "Carpeta nova"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Confirma copiar el fitxer"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Confirma moure el fitxer"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Confirma eliminar el fitxer"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Voleu copiar els fitxers?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Voleu moure els fitxers?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Voleu eliminar els fitxers? - L'eliminació dels fitxers no es pot desfer."
+
+#: id:126
+msgid "Status"
+msgstr "Estat"
+
+#: id:127
+msgid "Objects"
+msgstr "Objectes"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "General"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Presentació amb diapositives"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Informació del sistema"
+
+#: id:131
+msgid "Display"
+msgstr "Pantalla"
+
+#: id:132
+msgid "Albums"
+msgstr "Àlbums"
+
+#: id:133
+msgid "Artists"
+msgstr "Artistes"
+
+#: id:134
+msgid "Songs"
+msgstr "Cançons"
+
+#: id:135
+msgid "Genres"
+msgstr "Gèneres"
+
+#: id:136
+msgid "Playlists"
+msgstr "Llistes de reproducció"
+
+#: id:137
+msgid "Search"
+msgstr "Cerca"
+
+#: id:138
+msgid "System Information"
+msgstr "Informació del sistema"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Temperatures:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Hora:"
+
+#: id:143
+msgid "Current:"
+msgstr "Actual:"
+
+#: id:144
+msgid "Build:"
+msgstr "Muntatge:"
+
+#: id:145
+msgid "Network:"
+msgstr "Xarxa:"
+
+#: id:146
+msgid "Type:"
+msgstr "Tipus:"
+
+#: id:147
+msgid "Static"
+msgstr "Estàtica"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "Adreça MAC"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "Adreça IP"
+
+#: id:151
+msgid "Link:"
+msgstr "Enllaç:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Half duplex"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Full duplex"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Emmagatzematge"
+
+#: id:155
+msgid "Drive"
+msgstr "Unitat"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Lliure"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Vídeo"
+
+#: id:158
+msgid "Free memory"
+msgstr "Memòria Lliure"
+
+#: id:159
+msgid "No link"
+msgstr "Sense enllaç"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Lliure"
+
+#: id:161
+msgid "Unavailable"
+msgstr "No disponible"
+
+#: id:162
+msgid "Tray open"
+msgstr "Safata oberta"
+
+#: id:163
+msgid "Reading"
+msgstr "S'està llegint"
+
+#: id:164
+msgid "No disc"
+msgstr "Sense Disc"
+
+#: id:165
+msgid "Disc present"
+msgstr "Disc present"
+
+#: id:166
+msgid "Skin"
+msgstr "Pell"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Resolució"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Ajusta la pantalla per que coincideixi amb la freqüència d'actualització del vídeo"
+
+#: id:172
+msgid "Release date"
+msgstr "Data de llançament"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Mostra vídeos 4:3 com"
+
+#: id:175
+msgid "Moods"
+msgstr "Estats d'ànim"
+
+#: id:176
+msgid "Styles"
+msgstr "Estils"
+
+#: id:179
+msgid "Song"
+msgstr "Cançó"
+
+#: id:180
+msgid "Duration"
+msgstr "Duració"
+
+#: id:181
+msgid "Select album"
+msgstr "Seleciona un àlbum"
+
+#: id:182
+msgid "Tracks"
+msgstr "Pistes"
+
+#: id:183
+msgid "Review"
+msgstr "Ressenya"
+
+#: id:184
+msgid "Refresh"
+msgstr "Refresca"
+
+#: id:185
+msgid "Searching album"
+msgstr "S'està cercant l'àlbum"
+
+#: id:186
+msgid "OK"
+msgstr "D'acord"
+
+#: id:187
+msgid "No albums found!"
+msgstr "No s'han trobat àlbums"
+
+#: id:188
+msgid "Select all"
+msgstr "Selecciona-ho tot"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "S'està escanejant la informació dels suports"
+
+#: id:190
+msgid "Save"
+msgstr "Desa"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Ordre aleatori"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Neteja"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Cerca"
+
+#: id:194
+msgid "Searching..."
+msgstr "S'està cercant..."
+
+#: id:195
+msgid "No info found!"
+msgstr "No s'ha trobat la informació"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Seleccioneu la pel·lícula:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "S'està consultant la informació %s"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "S'estan carregant els detalls de la pel·lícula"
+
+#: id:199
+msgid "Web interface"
+msgstr "Interfície web"
+
+#: id:202
+msgid "Tagline"
+msgstr "Lema"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Argument"
+
+#: id:205
+msgid "Votes"
+msgstr "Vots"
+
+#: id:206
+msgid "Cast"
+msgstr "Repartiment"
+
+#: id:207
+msgid "Plot"
+msgstr "Trama"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Reprodueix"
+
+#: id:209
+msgid "Next"
+msgstr "Següent"
+
+#: id:210
+msgid "Previous"
+msgstr "Anterior"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Calibrar la interfície d'usuari..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Calibració del vídeo..."
+
+#: id:215
+msgid "Soften"
+msgstr "Suavitzar"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Quantitat de zoom"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Relació d'aspecte"
+
+#: id:218
+msgid "DVD drive"
+msgstr "Unitat de DVD"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Inseriu un disc"
+
+#: id:220
+msgid "Remote share"
+msgstr "Recurs compartit remot"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "La xarxa no està connectada"
+
+#: id:222
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: id:224
+msgid "Speed"
+msgstr "Velocitat"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "Desplaçament vertical"
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Prova de patrons..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Cerca els noms de les pistes dels CD d'àudio a freedb.org"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Llista de reproducció aleatòria al carregar"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "Temps d'aturada del disc dur"
+
+#: id:230
+msgid "Video filters"
+msgstr "Filtres de vídeo"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Cap"
+
+#: id:232
+msgid "Point"
+msgstr "Punt"
+
+#: id:233
+msgid "Linear"
+msgstr "Lineal"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anisotròpic"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussià cúbic"
+
+#: id:237
+msgid "Minification"
+msgstr "Minificació"
+
+#: id:238
+msgid "Magnification"
+msgstr "Magnificació"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Buida la llista de reproducció al finalitzar"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Mode de visualització"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "Pantalla completa #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "Finestra"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Velocitat de refresc"
+
+#: id:244
+msgid "Full screen"
+msgstr "Pantalla completa"
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Dimensionant: (%i,%i)->(%i,%i) (Escala x%2.2f) AR:%2.2f:1 (Píxels: %2.2f:1) (VShift: %2.2f)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Scripts"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Idioma"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Música"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Visualització"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Seleccioneu el directori de destí"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Sortida estèreo a tots els altaveus"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Número de canals"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- Descodificador compatible DTS"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "S'està obtenint la informació del CD"
+
+#: id:257
+msgid "Error"
+msgstr "S'ha produït un error"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Activa la lectura d'etiquetes"
+
+#: id:259
+msgid "Opening"
+msgstr "S'està obrint"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "S'està esperant per començar..."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Sortida dels scripts"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Permet el control de l'XBMC a través d'HTTP"
+
+#: id:264
+msgid "Record"
+msgstr "Grava"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Atura la gravació"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Ordena per: Pista"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Ordena per: Temps"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Ordena per: Títol"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Ordena per: Artista"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Ordena per: Àlbum"
+
+#: id:271
+msgid "Top 100"
+msgstr "100 millors"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Compensació cantonada superior esquerra"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Compensació cantonada inferior dreta"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Posició dels subtítols"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Ajust de la relació del pixel"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Ajusteu la fletxa per canviar la quantitat d'overscan"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Ajusteu la barra per canviar la posició dels subtítols"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Ajusteu el rectangle fins que sigui un rectangle perfecte"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "No es pot carregar la configuració"
+
+#: id:280
+msgid "Using default settings"
+msgstr "S'està utilitzant la configuració per defecte"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Comproveu els fitxers XML"
+
+#: id:282
+msgid "Found %i items"
+msgstr "S'han trobat %i elements"
+
+#: id:283
+msgid "Search results"
+msgstr "Resultats de la cerca"
+
+#: id:284
+msgid "No results found"
+msgstr "No hi ha resultats"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Subtítols"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Font"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Mida"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Compressió del rang dinàmic"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Vídeo"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Àudio"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Cerca subtítols"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Crea marcador"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Esborra marcadors"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Desplaçament d'àudio"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Marcadors"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- Receptor compatible AAC"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- Receptor compatible MP1"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- Receptor compatible MP2"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- Receptor compatible MP3"
+
+#: id:303
+msgid "Delay"
+msgstr "Retard"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Idioma"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Activat"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "No entrellaçat"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "S'està netejant la base de dades"
+
+#: id:314
+msgid "Preparing..."
+msgstr "S'està preparant..."
+
+#: id:315
+msgid "Database error"
+msgstr "S'ha produït un error a la base de dades"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "S'estan cercant cançons..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "S'ha netejat la base de dades correctament"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "S'estan netejant les cançons..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "S'ha produït un error netejant les cançons"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "S'estan netejant els artistes..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "S'ha produït un error esborrant els artistes"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "S'estan netejant els gèneres..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "S'ha produït un error netejant els gèneres"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "S'estan netejant els directoris..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "S'ha produït un error netejant els camins"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "S'estan netejant els àlbums..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "S'ha produït un error netejant els àlbums"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "S'estan escrivint els canvis..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "S'ha produït un error escrivint els canvis"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Es possible que trigui una estona..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "S'està comprimint la base de dades..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "S'ha produït un error comprimint la base de dades"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Voleu netejar la biblioteca?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Neteja la biblioteca..."
+
+#: id:335
+msgid "Start"
+msgstr "Inicia"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Conversió de les imatges per segon"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Sortida d'àudio"
+
+#: id:338
+msgid "Analog"
+msgstr "Analògic"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Òptica/Coaxial"
+
+#: id:340
+msgid "Various artists"
+msgstr "Diversos artistes"
+
+#: id:341
+msgid "Play disc"
+msgstr "Reprodueix el disc"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Pel·lícules"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Ajusteu les imatges per segon"
+
+#: id:344
+msgid "Actors"
+msgstr "Actors"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Any"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Augmenta el volum al fer un downmix"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Programes"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Inactiu"
+
+#: id:352
+msgid "Dim"
+msgstr "Atenua"
+
+#: id:353
+msgid "Black"
+msgstr "Negre"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix trails"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Temps per al salvapantalles"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Mode de l'estalvi de pantalla"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Shutdown function timer"
+
+#: id:358
+msgid "All albums"
+msgstr "Tots els àlbums"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Àlbums afegits recentment"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Estalvi de pantalla"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "R. Slideshow"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Nivell d'atenuació de l'estalvi de pantalla"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Ordena per: Fitxer"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Receptor compatible amb Dolby Digital (AC3)"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Ordena per: Nom"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Ordena per: Any"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Ordena per: Valoració"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Títol"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "Tempestes"
+
+#: id:371
+msgid "Partly"
+msgstr "Parcialment"
+
+#: id:372
+msgid "Mostly"
+msgstr "Principalment"
+
+#: id:373
+msgid "Sunny"
+msgstr "Assolellat"
+
+#: id:374
+msgid "Cloudy"
+msgstr "Ennuvolat"
+
+#: id:375
+msgid "Snow"
+msgstr "Neu"
+
+#: id:376
+msgid "Rain"
+msgstr "Pluja"
+
+#: id:377
+msgid "Light"
+msgstr "Clar"
+
+#: id:378
+msgid "AM"
+msgstr "AM"
+
+#: id:379
+msgid "PM"
+msgstr "PM"
+
+#: id:380
+msgid "Showers"
+msgstr "Pluges"
+
+#: id:381
+msgid "Few"
+msgstr "Poc"
+
+#: id:382
+msgid "Scattered"
+msgstr "Dispersos"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "Vent"
+
+#: id:384
+msgid "Strong"
+msgstr "Fort"
+
+#: id:385
+msgid "Fair"
+msgstr "Serè"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "Clar"
+
+#: id:387
+msgid "Clouds"
+msgstr "Núvols"
+
+#: id:388
+msgid "Early"
+msgstr "d'hora"
+
+#: id:389
+msgid "Shower"
+msgstr "Ruixat"
+
+#: id:390
+msgid "Flurries"
+msgstr "Ruixats"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "Baix"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "Mitjà"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "Alt"
+
+#: id:394
+msgid "Fog"
+msgstr "Boira"
+
+#: id:395
+msgid "Haze"
+msgstr "Boirina"
+
+#: id:396
+msgid "Select location"
+msgstr "Seleccioneu un lloc"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Temps d'actualització"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Unitats de temperatura"
+
+#: id:399
+msgid "Speed units"
+msgstr "Unitats de velocitat"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "El temps"
+
+#: id:401
+msgid "Temp"
+msgstr "Temperatura"
+
+#: id:402
+msgid "Feels like"
+msgstr "Sen. tèrmica"
+
+#: id:403
+msgid "UV index"
+msgstr "Índex UV"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Vent"
+
+#: id:405
+msgid "Dew point"
+msgstr "Rosada"
+
+#: id:406
+msgid "Humidity"
+msgstr "Humitat"
+
+#: id:409
+msgid "Defaults"
+msgstr "Per defecte"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "S'està accedint al servei meteorològic"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "S'està obtenint el temps per:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "No es poden obtenir les dades meteorològiques"
+
+#: id:413
+msgid "Manual"
+msgstr "Manual"
+
+#: id:414
+msgid "No review for this album"
+msgstr "No hi ha ressenya per aquest àlbum"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "S'està baixant la miniatura..."
+
+#: id:416
+msgid "Not available"
+msgstr "No disponible"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Vista: Icones grans"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Mín"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Màx"
+
+#: id:420
+msgid "HDMI"
+msgstr "HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Esborra la informació de l'àlbum"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Esborra la informació del CD"
+
+#: id:424
+msgid "Select"
+msgstr "Seleccioneu"
+
+#: id:425
+msgid "No album information found"
+msgstr "No s'ha trobat la informació de l'àlbum."
+
+#: id:426
+msgid "No CD information found"
+msgstr "No s'ha trobat la informació del CD."
+
+#: id:427
+msgid "Disc"
+msgstr "Disc"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Inseriu un CD/DVD vàlid"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Inseriu el següent disc"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Ordena per: DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Sense memòria cau"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Elimina la pel·lícula de la biblioteca"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Esteu segur que voleu eliminar '%s'?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "De %s a %i %s"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Disc extraïble"
+
+#: id:438
+msgid "Opening file"
+msgstr "S'està obrint el fitxer"
+
+#: id:439
+msgid "Cache"
+msgstr "Memòria cau"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Disc dur"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "Xarxa local"
+
+#: id:443
+msgid "Internet"
+msgstr "Internet"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Vídeo"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Àudio"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Executa automàticament els suports"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Activat"
+
+#: id:450
+msgid "Columns"
+msgstr "Columnes"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Adreça fila 1"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Adreça fila 2"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Adreça fila 3"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Adreça fila 4"
+
+#: id:455
+msgid "Rows"
+msgstr "Fitxers"
+
+#: id:456
+msgid "Mode"
+msgstr "Mode"
+
+#: id:457
+msgid "Switch view"
+msgstr "Canviar vista"
+
+#: id:459
+msgid "Subs"
+msgstr "Subtítols"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Flux d'àudio"
+
+#: id:461
+msgid "[active]"
+msgstr "[actiu]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Subtítol"
+
+#: id:463
+msgid "Backlight"
+msgstr "Retroil·luminació"
+
+#: id:464
+msgid "Brightness"
+msgstr "Brillantor"
+
+#: id:465
+msgid "Contrast"
+msgstr "Contrast"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Tipus"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Moveu la barra per a canviar la posició del OSD"
+
+#: id:469
+msgid "OSD position"
+msgstr "Posició de l'OSD"
+
+#: id:470
+msgid "Credits"
+msgstr "Crèdits"
+
+#: id:471
+msgid "Modchip"
+msgstr "Modchip"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Inactiu"
+
+#: id:475
+msgid "Music only"
+msgstr "Només música"
+
+#: id:476
+msgid "Music & video"
+msgstr "Música i vídeo"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "No es pot carregar la llista de reproducció"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Aparença i idioma"
+
+#: id:480
+msgid "Appearance"
+msgstr "Aparença"
+
+#: id:481
+msgid "Audio options"
+msgstr "Opcions d'àudio"
+
+#: id:482
+msgid "About XBMC"
+msgstr "Quant a XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Elimina l'àlbum"
+
+#: id:486
+msgid "Repeat"
+msgstr "Repeteix"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Repeteix una"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Repeteix la carpeta"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Reprodueix la cançó següent de forma automàtica"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Utilitza icones grans"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Redimensiona els subtítols VOB"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Opcions avançades (Només experts!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Overall audio headroom"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Reescala els vídeos a la resolució de l'entorn (GUI)"
+
+#: id:496
+msgid "Calibration"
+msgstr "Calibratge"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Mostra les extensions de fitxer"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Ordena per: Tipus"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "No es pot connectar al servei de cerca en línia"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Descarrega de la informació de l'àlbum fallida"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "S'està cercant el nom dels àlbums..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Obre"
+
+#: id:503
+msgid "Busy"
+msgstr "Ocupat"
+
+#: id:504
+msgid "Empty"
+msgstr "Buit"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "S'està carregant la informació multimèdia des de els fitxers"
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Ordena per: Ús"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Activa les visualitzacions"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Activa el canvi de mode de vídeo"
+
+#: id:512
+msgid "Startup window"
+msgstr "Pantalla d'inici"
+
+#: id:513
+msgid "Home window"
+msgstr "Pantalla principal"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Manual de configuració"
+
+#: id:515
+msgid "Genre"
+msgstr "Gènere"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Àlbums reproduïts recentment"
+
+#: id:518
+msgid "Launch"
+msgstr "Executa"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Executa en..."
+
+#: id:521
+msgid "Compilations"
+msgstr "Recopilacions"
+
+#: id:522
+msgid "Remove source"
+msgstr "Elimina la font"
+
+#: id:523
+msgid "Switch media"
+msgstr "Canvia el suport"
+
+#: id:524
+msgid "Select playlist"
+msgstr "Seleccioneu la llista de reproducció"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Nova llista de reproducció..."
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Afegeix a la llista de reproducció"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Afegeix manualment a la biblioteca"
+
+#: id:528
+msgid "Enter title"
+msgstr "Inseriu el títol"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Error: títol duplicat"
+
+#: id:530
+msgid "Select genre"
+msgstr "Seleccioneu gènere"
+
+#: id:531
+msgid "New genre"
+msgstr "Nou gènere"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Addició manual"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Inseriu el gènere"
+
+#: id:534
+msgid "View: %s"
+msgstr "Vista: %s"
+
+#: id:535
+msgid "List"
+msgstr "Llista"
+
+#: id:536
+msgid "Icons"
+msgstr "Icones"
+
+#: id:537
+msgid "Big list"
+msgstr "Llista gran"
+
+#: id:538
+msgid "Big icons"
+msgstr "Icones grans"
+
+#: id:539
+msgid "Wide"
+msgstr "Ample"
+
+#: id:540
+msgid "Big wide"
+msgstr "Ample gran"
+
+#: id:541
+msgid "Album icons"
+msgstr "Icones d'àlbum"
+
+#: id:542
+msgid "DVD icons"
+msgstr "Icones de DVD"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Informació del suport"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Dispositiu de sortida d'àudio"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Passthrough output device"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "No hi ha biografia d'aquest artista"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Mescla l'àudio multicanal a estèreo"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Ordena per: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Nom"
+
+#: id:552
+msgid "Date"
+msgstr "Data"
+
+#: id:553
+msgid "Size"
+msgstr "Mida"
+
+#: id:554
+msgid "Track"
+msgstr "Pista"
+
+#: id:555
+msgid "Time"
+msgstr "Temps"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Títol"
+
+#: id:557
+msgid "Artist"
+msgstr "Artista"
+
+#: id:558
+msgid "Album"
+msgstr "Àlbum"
+
+#: id:559
+msgid "Playlist"
+msgstr "Llista de reproducció"
+
+#: id:560
+msgid "ID"
+msgstr "ID"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Arxiu"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "Any"
+
+#: id:563
+msgid "Rating"
+msgstr "Valoració"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Tipus"
+
+#: id:565
+msgid "Usage"
+msgstr "Ús"
+
+#: id:566
+msgid "Album artist"
+msgstr "Artista de l'àlbum"
+
+#: id:567
+msgid "Play count"
+msgstr "Núm. reproduccions"
+
+#: id:568
+msgid "Last played"
+msgstr "Darrera reproducció"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Comentari"
+
+#: id:570
+msgid "Date added"
+msgstr "Data d'addició"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "Per defecte"
+
+#: id:572
+msgid "Studio"
+msgstr "Estudi"
+
+#: id:573
+msgid "Path"
+msgstr "Camí"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "País"
+
+#: id:575
+msgid "In progress"
+msgstr "En curs"
+
+#: id:576
+msgid "Times played"
+msgstr "Times played"
+
+#: id:580
+msgid "Sort direction"
+msgstr "Direcció d'ordenació"
+
+#: id:581
+msgid "Sort method"
+msgstr "Mètode d'ordenació"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "Mode de visualització"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Recorda les vistes per les diferents carpetes"
+
+#: id:584
+msgid "Ascending"
+msgstr "Ascendent"
+
+#: id:585
+msgid "Descending"
+msgstr "Descendent"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Edita la llista de reproducció"
+
+#: id:587
+msgid "Filter"
+msgstr "Filtre"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Cancel·la el mode festa"
+
+#: id:589
+msgid "Party mode"
+msgstr "Mode de festa"
+
+#: id:590
+msgid "Random"
+msgstr "Aleatori"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Inactiu"
+
+#: id:592
+msgid "One"
+msgstr "Una"
+
+#: id:593
+msgid "All"
+msgstr "Totes"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Inactiu"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Repetir: Inactiu"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Repetir: Una"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Repetir: Totes"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Extreu el CD d'àudio"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Mitjà"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Estàndard"
+
+#: id:603
+msgid "Extreme"
+msgstr "Extrem"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Taxa de bits constant"
+
+#: id:605
+msgid "Ripping..."
+msgstr "S'està extraient..."
+
+#: id:607
+msgid "To:"
+msgstr "A:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "No es pot extreure el CD o la pista"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath no està definit."
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Extreu la pista d'àudio"
+
+#: id:611
+msgid "Enter number"
+msgstr "Introduïu el número"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Bits/Mostra"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "Freqüència de mostreig"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Els CD d'àudio"
+
+#: id:621
+msgid "Encoder"
+msgstr "Codificador"
+
+#: id:622
+msgid "Quality"
+msgstr "Qualitat"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Taxa de bits"
+
+#: id:624
+msgid "Include track number"
+msgstr "Inclou el número de pista"
+
+#: id:625
+msgid "All songs of"
+msgstr "Totes les cançons de"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Mode de visualització"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:631
+msgid "Zoom"
+msgstr "Zoom"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Adaptar a 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Zoom angular"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Adaptar a 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Mida original"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Personalitzat"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Replay gain"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Replaygain volume adjustments"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Utilitza el volum de la pista"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Utilitza el volum de l'àlbum"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "Nivell del preamplificador - Replay gained files"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "Nivell del preamplificador - Non replay gained files"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Avoid clipping on replay gained files"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Elimina les vores negres"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Es necessita descomprimir un fitxer gran. Voleu continuar?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Elimina de la biblioteca"
+
+#: id:647
+msgid "Export video library"
+msgstr "Exporta la biblioteca de vídeo"
+
+#: id:648
+msgid "Import video library"
+msgstr "Importa la biblioteca de vídeo"
+
+#: id:649
+msgid "Importing"
+msgstr "S'està important"
+
+#: id:650
+msgid "Exporting"
+msgstr "S'està exportant"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Cerca la biblioteca"
+
+#: id:652
+msgid "Years"
+msgstr "Anys"
+
+#: id:653
+msgid "Update library"
+msgstr "Actualitza la biblioteca"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Mostra la informació de depuració"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Cerca l'executable"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Cerca la llista de reproducció"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Cerca la carpeta"
+
+#: id:658
+msgid "Song information"
+msgstr "Informació de la cançó"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Estirament no lineal"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Amplificació del volum"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Seleccioneu la carpeta d'exportació"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Aquest fitxer ja no està disponible."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Voleu eliminar-lo de la biblioteca?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Cerca l'script"
+
+#: id:665
+msgid "Compression level"
+msgstr "Nivell de compressió"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "S'està netejant la biblioteca"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "S'estan eliminant les cançons velles de la biblioteca"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Aquest camí ja ha estat explorat."
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Xarxa"
+
+#: id:706
+msgid "- Server"
+msgstr "- Servidor"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Utilitza un servidor proxy HTTP per accedir a internet"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Protocol d'Internet (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "El port especificat no és vàlid. El valor ha d'estar entre 1 i 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "Proxy HTTP"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- Assignació"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Automàtica (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Manual (Estàtica)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- Adreça IP"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Màscara de xarxa"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Porta d'enllaç per defecte"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- Servidor DNS"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Desa i reinicia"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "La direcció especificada no és vàlida. El valor ha de ser AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "amb números entre 0 i 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Els canvis no s'han desat. Voleu continuar sense desar-los?"
+
+#: id:727
+msgid "Web server"
+msgstr "Servidor Web"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "Servidor FTP"
+
+#: id:730
+msgid "- Port"
+msgstr "- Port"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Desa i aplica"
+
+#: id:733
+msgid "- Password"
+msgstr "- Contrasenya"
+
+#: id:734
+msgid "No pass"
+msgstr "Sense contrasenya"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Joc de caràcters"
+
+#: id:736
+msgid "- Style"
+msgstr "- Estil"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Color"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:739
+msgid "Bold"
+msgstr "Negreta"
+
+#: id:740
+msgid "Italics"
+msgstr "Cursiva"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Negreta Cursiva"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Blanc"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Groc"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Arxius"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "No hi ha informació per aquesta vista"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Desactiveu el mode biblioteca"
+
+#: id:747
+msgid "Error loading image"
+msgstr "S'ha produït un error al carregar la imatge"
+
+#: id:748
+msgid "Edit path"
+msgstr "Edita el camí"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Imatge del mirall"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Esteu segur?"
+
+#: id:751
+msgid "Removing source"
+msgstr "S'està eliminant la font"
+
+#: id:754
+msgid "Add program link"
+msgstr "Afegeix un enllaç del programa"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Edita el camí del programa"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Edita el nom del programa"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Edita la profunditat del camí"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Vista: Llista gran"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Groc"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Blanc"
+
+#: id:762
+msgid "Blue"
+msgstr "Blau"
+
+#: id:763
+msgid "Bright green"
+msgstr "Verd brillant"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Groc verd"
+
+#: id:765
+msgid "Cyan"
+msgstr "Cian"
+
+#: id:766
+msgid "Light grey"
+msgstr "Gris clar"
+
+#: id:767
+msgid "Grey"
+msgstr "Gris"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Error %i: recurs compartit no disponible"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Sortida d'àudio"
+
+#: id:773
+msgid "Seeking"
+msgstr "S'està cercant"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Carpeta de les diapositives"
+
+#: id:775
+msgid "Network interface"
+msgstr "Interfície de xarxa"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Nom de la xarxa sense fils (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- Contrasenya de la xarxa sense fils"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- Seguretat de la xarxa sense fils"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Desa i aplica la configuració de la interfície de xarxa"
+
+#: id:780
+msgid "No encryption"
+msgstr "Sense xifrat"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "S'està aplicant la configuració de la interfície de xarxa. Si us plau, espereu."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "La interfície de xarxa s'ha reiniciat correctament."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "La interfície de xarxa no s'ha iniciar correctament."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Interfície desactivada"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "La interfície de xarxa s'ha desactivat correctament."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Nom de la xarxa sense fils (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Permet que els programes d'aquest equip controlin l'XBMC"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Port"
+
+#: id:793
+msgid "Port range"
+msgstr "Rang de ports"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Permet que els programes d'altres equips controlin l'XBMC"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Retard de repetició inicial (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Retard de repetició continu (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Número màxim de clients"
+
+#: id:798
+msgid "Internet access"
+msgstr "Accés a internet"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "El número de port introduït no és vàlid"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "El rang de ports vàlid és 1-65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "El rang de ports vàlid és 1024-65535"
+
+#: id:998
+msgid "Add Music..."
+msgstr "Afegeix música..."
+
+#: id:999
+msgid "Add Videos..."
+msgstr "Afegeix vídeos..."
+
+#: id:1000
+msgid "- Preview"
+msgstr "- Previsualització"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "No es pot connectar"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "L'XBMC no ha pogut connectar amb la ubicació de xarxa."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Podria ser degut a que la xarxa no estigui connectada."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Voleu afegir-lo de totes maneres?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "Adreça IP"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Afegeix una ubicació de xarxa"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Protocol"
+
+#: id:1009
+msgid "Server address"
+msgstr "Adreça del servidor"
+
+#: id:1010
+msgid "Server name"
+msgstr "Nom del servidor"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Camí d'accés remot"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Carpeta compartida"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Port"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Nom d'usuari"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Cerca un servidor de xarxa"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Introduïu l'adreça de xarxa del servidor"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Introduïu el camí al servidor"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Introduïu el número de port"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Introduïu el nom d'usuari"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Afegeix la font %s"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Introduïu els camins o cerqueu les ubicacions dels medis."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Introduïu un nom per la font."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Cerca un recurs compartit nou"
+
+#: id:1024
+msgid "Browse"
+msgstr "Navega"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "No s'ha pogut recuperar la informació del directori."
+
+#: id:1026
+msgid "Add source"
+msgstr "Afegeix una font"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Edita la font"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Edita la font %s"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Introduïu la nova etiqueta"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Cerca una imatge"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Cerca la carpeta d'imatges"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Afegeix una ubicació de xarxa..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Cerca un fitxer"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Submenú"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Activa els botons del submenú"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Preferits"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "Complements de vídeo"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "Complements de música"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "Complements d'imatge"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "S'està carregant el directori"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "S'han obtingut %i elements"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "S'han obtingut %i de %i elements"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "Complements de programes"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Establiu la miniatura del connector"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Configuració del complement"
+
+#: id:1046
+msgid "Access points"
+msgstr "Punts d'accés"
+
+#: id:1047
+msgid "Other..."
+msgstr "Altres..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Nom d'usuari"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Cofiguració de l'script"
+
+#: id:1050
+msgid "Singles"
+msgstr "Individual"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Introduïu l'adreça web"
+
+#: id:1200
+msgid "SMB client"
+msgstr "Client SMB"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Grup de treball"
+
+#: id:1203
+msgid "Default username"
+msgstr "Nom d'usuari per defecte"
+
+#: id:1204
+msgid "Default password"
+msgstr "Contrasenya per defecte"
+
+#: id:1207
+msgid "WINS server"
+msgstr "Servidor WINS"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Munta els recursos compartits per SMB"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Elimina"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Música"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Vídeo"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Imatges"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Fitxers"
+
+#: id:1215
+msgid "Music & video "
+msgstr "Música i vídeo"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Música i imatges"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Música i fitxers"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Vídeo i imatges"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Vídeo i fitxers"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Imatges i fitxers"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Música, vídeo i imatges"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Música, vídeo, imatges i fitxers"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Desactivat"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Fitxers, música i vídeo"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Fitxers, imatges i música"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Fitxers, imatges i vídeo"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Música i programes"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Vídeo i programes"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Imatges i programes"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Música, vídeo, imatges i programes"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Programes, vídeo i música"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Programes, imatges i música"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Programes, imatges i vídeo"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Autodetecció"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Autodetecta el sistema"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Sobrenom"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Pregunta abans de connectar"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Envieu l'usuari i la contrasenya del FTP"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Interval de ping"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Voleu connectar amb el sistema autodetectat?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Anuncia aquests serveis a altres sistemes a través de Zeroconf"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Permet que l'XBMC rebi contingut de l'AirPlay"
+
+#: id:1271
+msgid "Device name"
+msgstr "Nom del dispositiu"
+
+#: id:1272
+msgid "- Use password protection"
+msgstr "- Utilitza protecció amb contrasenya"
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "Dispositiu d'àudio personalitzat"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "Custom passthrough device"
+
+#: id:1396
+msgid "Drifting"
+msgstr "Neu acumulada"
+
+#: id:1397
+msgid "and"
+msgstr "i"
+
+#: id:1398
+msgid "Freezing"
+msgstr "Gelant"
+
+#: id:1399
+msgid "Late"
+msgstr "Tard"
+
+#: id:1400
+msgid "Isolated"
+msgstr "Aïllat"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "Tempesta amb trons"
+
+#: id:1402
+msgid "Thunder"
+msgstr "Trons"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "Sol"
+
+#: id:1404
+msgid "Heavy"
+msgstr "Forta"
+
+#: id:1405
+msgid "in"
+msgstr "a/en"
+
+#: id:1406
+msgid "the"
+msgstr "el/la"
+
+#: id:1407
+msgid "Vicinity"
+msgstr "Proximitats"
+
+#: id:1408
+msgid "Ice"
+msgstr "Gel"
+
+#: id:1409
+msgid "Crystals"
+msgstr "Cristalls"
+
+#: id:1410
+msgid "Calm"
+msgstr "Calma"
+
+#: id:1411
+msgid "with"
+msgstr "amb"
+
+#: id:1412
+msgid "windy"
+msgstr "ventós"
+
+#: id:1413
+msgid "drizzle"
+msgstr "plugim"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "Tempesta elèctrica"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "Plugim"
+
+#: id:1416
+msgid "Foggy"
+msgstr "Boirós"
+
+#: id:1417
+msgid "Grains"
+msgstr "Grans"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "Tempestes elèctriques aïllades"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "Tempestes amb trons aïllades"
+
+#: id:1420
+msgid "Moderate"
+msgstr "Moderada"
+
+#: id:1421
+msgid "Very High"
+msgstr "Molt forta"
+
+#: id:1422
+msgid "Windy"
+msgstr "Ventós"
+
+#: id:1423
+msgid "Mist"
+msgstr "Boira"
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Activa l'estalvi d'energia de la pantalla quan estigui inactiu"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Temps d'execució"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "L'script ha fallat : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "Es necessita un versió més recent - Veure el registre"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Activa l'LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Inici"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Programes"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Imatges"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Gestor de fitxers"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Configuració"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Música"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Vídeos"
+
+#: id:10007
+msgid "System information"
+msgstr "Informació del sistema"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Configuració - General"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Configuració - Pantalla"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Configuració - Aparença - Calibració de la interfície gràfica d'usuari"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Configuració - Vídeos - Calibració de la pantalla"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Configuració - Imatges"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Configuració - Programes"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Configuració - El temps"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Configuració - Música"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Configuració - Sistema"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Configuració - Vídeos"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Configuració - Xarxa"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Configuració - Aparença"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Scripts"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Navegador web"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr ""
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Vídeos/Llista de reproducció"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Configuració - Perfils"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Diàleg Sí/No"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Diàleg de progrés"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "S'estan cercant els subtítols..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "S'estan cercant o posant a la memòria cau els subtítols..."
+
+#: id:10212
+msgid "terminating"
+msgstr "s'està finalitzant"
+
+#: id:10213
+msgid "buffering"
+msgstr "S'està emplenant la memòria intermèdia"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "S'està obrint el flux de dades"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Música/Llista de reproducció"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Música/Fitxers"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Música/Biblioteca"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Editor de la llista de reproducció"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Les 100 millors cançons"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Els 100 millors àlbums"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Programes"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Configuració"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Predicció del temps"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Joc en xarxa"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Extensions"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Informació del sistema"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Música - Biblioteca"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Música - Reproduïnt"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Vídeo - Reproduïnt"
+
+#: id:10523
+msgid "Album info"
+msgstr "Informació de l'àlbum"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Informació de la pel·lícula"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Diàleg de selecció"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Música/Informació"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Diàleg «D'acord»"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Vídeos/Informació"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Scripts/Informació"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Vídeo en pantalla completa"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Visualització d'àudio"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Diàleg d'agrupar fitxers"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Reconstruir l'índex..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Torna a la finestra de música"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Torna a la finestra de vídeos"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Comença des del principi"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Reprèn des de %s"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "D'acord"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Bloquejat! Introduïu el codi..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Introduïu la contrasenya"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Introduïu el codi mestre"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Introduïu el codi de desbloqueig"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "o premeu C per cancel·lar"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Introduïu la combinació de botons del gamepad i"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "premeu D'acord, or enree per cancel·lar"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Establiu el bloqueig"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Desbloca"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Reinicieu el bloqueig"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Treieu el bloqueig"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Contrasenya numèrica"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Combinació de botons del gamepad"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Contrasenya alfanumèrica"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Introduïu la nova contrasenya"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Confirmeu la nova contrasenya"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Contrasenya incorrecta,"
+
+#: id:12343
+msgid "retries left "
+msgstr "re-intents restants "
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Les contrasenyes introduïdes no coincideixen."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Accés denegat"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "S'ha excedit el límit d'intents."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "El sistema s'aturarà."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Element bloquejat"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Reactiva el bloqueig"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Canvia el bloqueig"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Source lock"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "La contrasenya intorduïda està en blanc. Intenteu-ho de nou."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Bloqueig mestre"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Apaga el sistema si s'excedeix el màxim d'intents del bloqueig mestre"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Codi mestre no vàlid"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Introduïu un codi mestre vàlid"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Configuració i gestor de fitxers"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Estableix com a predeterminat per a totes les pel·lícules"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Això restablirà tots els valors guardats prèviament"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Mostra cada imatge durant"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Utilitza els efectes pan i zoom"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "Rellotge de 12 hores"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "Rellotge de 24 hores"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Dia/Mes"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Mes/Dia"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Activitat del sistema des de"
+
+#: id:12391
+msgid "Minutes"
+msgstr "Minuts"
+
+#: id:12392
+msgid "Hours"
+msgstr "Hores"
+
+#: id:12393
+msgid "Days"
+msgstr "Dies"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Temps total d'activitat"
+
+#: id:12395
+msgid "Battery level"
+msgstr "Nivell de la bateria"
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "El temps"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Estalvi de pantalla"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "OSD a pantalla completa"
+
+#: id:13000
+msgid "System"
+msgstr "Sistema"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Atura el disc dur immediatament"
+
+#: id:13002
+msgid "Video only"
+msgstr "Només vídeo"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Retard"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Durada mínima del fitxer"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Atura"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Funció d'aturada"
+
+#: id:13009
+msgid "Quit"
+msgstr "Surt"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Hiberna"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Atura temporalment"
+
+#: id:13012
+msgid "Exit"
+msgstr "Surt"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Reinicia"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Minimitza"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Acció del botó d'arrencada"
+
+#: id:13016
+msgid "Power off System"
+msgstr "Atura el sistema"
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Hi ha una altra sessió activa, potser a través de ssh?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "S'ha muntat un disc dur extraïble"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "La extracció del dispositiu no és segura"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "El dispositiu s'ha extret amb èxit"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "S'ha connectat un joystick"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "S'ha desconnectat el joystick"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "La càrrega de la bateria és baixa"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Filtre de parpelleig"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "Permet triar al dispositiu (requereix reiniciar)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Vertical blank sync"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Desactivat"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Activat durant la reproducció de vídeo"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Sempre activat"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Prova i aplica la resolució"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Voleu desar la resolució?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Voleu mantenir aquesta resolució?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Reescalat d'alta qualitat"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Desactivat"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Activat per a contingut SD"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Sempre activat"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Mètode de reescalat"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bicúbic"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinc"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "Nivell d'escalat de VDPAU HQ"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU Studio level color conversion"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Enfosqueix les altres pantalles"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Desactivat"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Enfosqueix les pantalles"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "S'han detectat les connexions actives"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Si continueu, pot ser que no sigueu capaç de controlar l'XBMC"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "Esteu segur que voleu aturar el servidor d'esdeveniments?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Canviar el mode de l'Apple Remote?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Si actualment està utilitzant l'Apple Remote per controlar"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "l'XBMC, el canvi d'aquesta configuració pot afectar la seva capacitat"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "per continuar el seu control. Voleu continuar?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Màscara de subxarxa"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Passarel·la"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "DNS primari"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "No s'ha pogut inicialitzar"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Mai"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Immediatament"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "Després de %i segons"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "Data d'instal·lació del disc dur:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "Comptador de cicles d'energia del disc dur:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Perfils"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Voleu suprimir el perfil '%s'?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Últim perfil carregat:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Sobreescriure"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Alarma de rellotge"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Interval de l'alarma de rellotge (en minuts)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Iniciada, alarma en %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Alarma!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Cancel·lat quan quedava %im%is"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+#: id:13214
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Cerqueu els subtítols en els fitxers RAR"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Cerqueu els subtítols..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Mou l'element"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Mou l'element aquí"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Cancel·la moure"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Maquinari:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "Ús de la CPU:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Connectat, però les DNS no estan disponibles."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Disc dur"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Emmagatzematge"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Per defecte"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Xarxa"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Vídeo"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Maquinari"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Sistema operatiu:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "Velocitat de la CPU:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Codificador de vídeo:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Resolució de la pantalla:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "Cable A/V:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "Regió del DVD:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Internet:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Connectat"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "No està connectat. Comproveu la configuració de xarxa."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Temperatura màxima"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Velocitat del ventilador"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Control automàtic de temperatura"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Fan speed override"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Fonts"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Activa invertir cadenes bidireccionals"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Mostra les notíces dels canals RSS"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Show parent folder items"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Track naming template"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Voleu reiniciar els sistema"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "en lloc de l'XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Efecte de zoom"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Efecte flotant"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Reducció de les bandes negres"
+
+#: id:13313
+msgid "Restart"
+msgstr "Reinicieu"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Fon entre cançons"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Regenera les miniatures"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Miniatures recursives"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Veure la presentació de diapositives"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Presentació de diapositives recursiva"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Genera aleatòriament"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Estèreo"
+
+#: id:13321
+msgid "Left only"
+msgstr "Només esquerra"
+
+#: id:13322
+msgid "Right only"
+msgstr "Només dreta"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Activa el suport de karaoke"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Transparència del fons"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Transparència del primer pla"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "Retard A/V"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s no s'ha trobat"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Hi ha un error obrint %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "No es pot carregar %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Error: Sense memòria"
+
+#: id:13332
+msgid "Move up"
+msgstr "Mou amunt"
+
+#: id:13333
+msgid "Move down"
+msgstr "Mou avall"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Edita l'etiqueta"
+
+#: id:13335
+msgid "Make default"
+msgstr "Marca com a predeterminat"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Suprimeix el botó"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Deixa com està"
+
+#: id:13341
+msgid "Green"
+msgstr "Verd"
+
+#: id:13342
+msgid "Orange"
+msgstr "Taronja"
+
+#: id:13343
+msgid "Red"
+msgstr "Vermell"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Cicle"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Apaga el LED en reproduir"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Informació de la pel·lícula"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Afegeix l'element a la cua"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Cerca a IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Cerca continguts nous"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "S'està reproduïnt..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Informació de l'àlbum"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Scan item to library"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Atura la cerca"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Mètode de renderitzat"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Ombrejat de píxels de baixa qualitat"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Superposicions per maquinari"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Ombrejat de píxels d'alta qualitat"
+
+#: id:13358
+msgid "Play item"
+msgstr "Reprodueix l'element"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Estableix la miniatura de l'artista"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Genera les miniatures automàticament"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Activa la veu"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Activa el dispositiu"
+
+#: id:13376
+msgid "Volume"
+msgstr "Volum"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Mode de visualització per defecte"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Brillantor per defecte"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Contrast per defecte"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Gamma per defecte"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Reprèn el vídeo"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Màscara de veu - Port 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Màscara de veu - Port 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Màscara de veu - Port 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Màscara de veu - Port 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Utilitza cerca basada en temps"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Track naming template - right"
+
+#: id:13388
+msgid "Preset"
+msgstr "Predefinit"
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr "There are no presets available\nfor this visualization"
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr "There are no settings available\nfor this visualization"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Expulsa/Carrega"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Utilitzeu la visualització si es reprodueix àudio"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Calcula la mida"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "S'està calculant la mida de la carpeta"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Configuracions de vídeo"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Configuracions de l'àudio i dels subtítols"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Activa els subtítols"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Dreceres"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Ignora els articles quan s'estigui ordenant (p.e. \"the\")"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Fon entre cançons en el mateix àlbum"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Cerca %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Mostra la posició de la pista"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Clear default"
+
+#: id:13404
+msgid "Resume"
+msgstr "Reprèn"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Obtén la miniatura"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Informació de la imatge"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s predefinits"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(Valoració d'usuaris d'IMDb)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "250 millors"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Connecta't a Last.fm"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Velocitat mínima del ventilador"
+
+#: id:13412
+msgid "Play from here"
+msgstr "Reprodueix des d'aquí"
+
+#: id:13413
+msgid "Downloading"
+msgstr "S'està baixant"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Inclou els artistes que només apareixen en les compilacions"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Mètode de renderitzat"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Detecció automàtica"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Ombrejats bàsics (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Ombrejats avançats (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Programari"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Treu de forma segura"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Comença la presentació aquí"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Recorda aquest camí"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Utilitza objectes de memòria intermèdia de píxels"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Permet l'acceleració per maquinari (VDPAU)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Permet l'acceleració per maquinari (VAAPI)"
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Permet l'acceleració per maquinari (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Permet l'acceleració per maquinari (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Permet l'acceleració per maquinari (VDADecoder)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Permet l'acceleració per maquinari (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Ombrejadors de píxels"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Permet l'acceleració per maquinari (VideoToolbox)"
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "Mètode de sincronització d'A/V"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "Rellotge d'àudio"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Rellotge del vídeo (Drop/Dupe àudio)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "Rellotge del vídeo (Remostreja l'àudio)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Quantitat màxima de remostreig (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Qualitat del remostreig"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Baix (ràpid)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Mitja"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Alt"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Molt alt (lent)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Sync playback to display"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr "Pause during refresh rate change"
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr "Inactiu"
+
+#: id:13552
+msgid "%.1f Second"
+msgstr "%.1f Segon"
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr "%.1f Segons"
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Apple remote"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Permet l'inici de l'XBMC amb el control remot"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Temps de retard de la seqüència"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Desactivat"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Estàndard"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Comandament a distància universal"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Multi Remote (Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Error del'Apple Remote"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "No es pot activar el suport per l'Apple Remote."
+
+#: id:14000
+msgid "Stack"
+msgstr "Agrupa"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Desagrupa"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "S'està baixant el fitxer de la llista de reproducció..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "S'està baixant el llistat de fluxos..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "S'està analitzant el llistat de fluxos..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "La descarrega de la llista de streams ha fallat"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "La descarrega del fitxer de llistes ha fallat"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Directori dels jocs"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Canvia automàticament a les miniatures segons"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Activar Autoconmutació en les vistes de caràtules"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Utilitza icones grans"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Canvi segons"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Percentatge"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Sense fitxers i almenys una miniatura"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Almenys un fitxer i una miniatura"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Percentatge de les miniatures"
+
+#: id:14018
+msgid "View options"
+msgstr "Mostra les opcions"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Canvia el codi d'àrea 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Canvia el codi d'àrea 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Canvia el codi d'àrea 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Biblioteca"
+
+#: id:14023
+msgid "No TV"
+msgstr "Sense TV"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Introduïu la ciutat propera més gran"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Memòria cau del Vídeo/Àudio/DVD - Dis dur"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Memòria cau del vídeo - DVD-ROM"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Xarxa local"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Memòria cau de l'àudio - DVD-ROM"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Xarxa local"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "Memòria cau del DVD - DVD-ROM"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Xarxa local"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Serveis"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "La configuració de xarxa ha canviat"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "és necessari reiniciar l'XBMC per canviar la seva"
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr "configuració de xarxa. Voleu reiniciar ara?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Internet connection bandwidth limitation"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Apaga mentre s'està reproduïnt"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i min"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i seg"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i ms"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Format de l'hora"
+
+#: id:14052
+msgid "Date format"
+msgstr "Format de la data"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "Filtres GUI"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Utilitza la exploració en segon plà"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Atura l'exploració"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "No es possible mentre s'explora la informació dels medis"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Efecte Gra"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Cerca miniatures en recursos remots"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Tipus de memòria cau desconeguda - Internet"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Introduïu el nom d'usuari per"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Data i hora"
+
+#: id:14064
+msgid "Set date"
+msgstr "Establiu la data"
+
+#: id:14065
+msgid "Set time"
+msgstr "Establiu l'hora"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Introduïu l'hora en format 24 hores HH:MM"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Introduïu la data en format DD/MM/YYYY"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Introduïu la adreça IP"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Voleu aplicar aquesta configuració ara?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Aplica els canvis ara"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Permet canviar el nom i esborrar fitxers"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Establiu la zona horària"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Utilitza l'horari d'estiu"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Afegeix a preferits"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Elimina de preferits"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Colors"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "País de la zona horària"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Zona horària"
+
+#: id:14081
+msgid "File lists"
+msgstr "Llistes de fitxers"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Mostra la informació EXIF de la imatge"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Use a fullscreen window rather than true fullscreen"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Posa les cançons a la cua al seleccionar-les"
+
+#: id:14086
+msgid "Playback"
+msgstr "Reprodueix"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVDs"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "Reprodueix els DVD de forma automàtica"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Font to use for text subtitles"
+
+#: id:14090
+msgid "International"
+msgstr "Internacional"
+
+#: id:14091
+msgid "Character set"
+msgstr "Joc de caràcters"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Depuració"
+
+#: id:14093
+msgid "Security"
+msgstr "Seguretat"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Dispositius d'entrada"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Estalvi d'energia"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Suprimeix"
+
+#: id:15016
+msgid "Games"
+msgstr "Jocs"
+
+#: id:15019
+msgid "Add"
+msgstr "Afegeix"
+
+#: id:15052
+msgid "Password"
+msgstr "Contrasenya"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Biblioteca"
+
+#: id:15101
+msgid "Database"
+msgstr "Base de dades"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Tots els àlbums"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Tots els artistes"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Totes les cançons"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Tots els gèneres"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "S'està omplint la memòria intermèdia..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Sons de navegació"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Aparença per defecte"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Tema"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Tema per defecte"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Envia les cançons a Last.fm"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Nom d'usuari de Last.fm"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Contrasenya de Last.fm"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "No s'ha pogut negociar: dormint..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Actualitzeu l'XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Autorització incorrecta: comprovi l'usuari i la contrasenya"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Connectat"
+
+#: id:15208
+msgid "Not connected"
+msgstr "No està connectat"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Envia l'interval %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Cached %i cançons"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "S'està enviant..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "S'està enviant en %i segons"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Reprodueix utilitzant..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Utilitza la sincronització A/V suau"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Oculta els noms dels fitxers en la vista de miniatures"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Reprodueix en mode festa"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Envia les cançons a Libre.fm"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Nom d'usuari de Libre.fm"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Contrasenya de Libre.fm"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "Enviament de cançó"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Envia la ràdio de Last.fm a Last.fm"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "S'està connectant a Last.fm..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "S'està seleccionant emisora..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Cerca artistes semblants..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Cerca etiquetes semblants..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "El vostre perfil (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Etiquetes globals"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Artistes més populars amb l'etiqueta %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Àlbums més populars amb l'etiqueta %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Pistes més populars amb l'etiqueta %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Escolta la ràdio de Last.fm amb l'etiqueta %name%"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Artistes semblants com %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Top %name% àlbums"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Top %name% pistes"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Top %name% etiquetes"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Majors fans de %name%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Escolta els %name% fans"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Escolta artistes similars de %name% "
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Artistes preferits de l'usuari %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Àlbums preferits de l'usuari %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Pistes preferides de l'usuari %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Amics de l'usuari %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Veïns de l'usuari %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Taula d'artistes setmanals per %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Taula d'àlbums setmanals per %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Taula de pistes setmanals per %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Escolta  veïns de %name%"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Escolta  personal %name%"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Escolta  les més estimades de %name%"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "S'està obtenint la llista desde Last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "No s'ha pogut obtenir la llista desde Last.fm..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Introduïu un nom d'artista per trobar-ne de similars"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Introduïu un nom d'etiqueta per trobar-ne de similars"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Pistes escoltades recentment per %name%"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Listen to %name%'s recommendations Last.fm radio"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "Etiquetes preferides per l'usuari %name%"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Do you want to add the current track to your loved tracks?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Do you want to ban the current track?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Added to your loved tracks: '%s'."
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Could not add '%s' to your loved tracks."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Vetada: '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Could not ban '%s'."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Tracks recently loved by %name%"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Tracks recently banned by %name%"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Elimina de la llista de preferides"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Desbloca"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Do you want to remove this track from your loved tracks?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Do you want to un-ban this track?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Path not found or invalid"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "No s'ha pogut connectar al servidor de xarxa"
+
+#: id:15302
+msgid "No servers found"
+msgstr "No s'han trobat servidors"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "No s'ha trobat el grup de treball"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "S'està obrint una font multi-camí"
+
+#: id:15311
+msgid "Path:"
+msgstr "Camí:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "General"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Cerca a internet"
+
+#: id:16003
+msgid "Player"
+msgstr "Reproductor"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Reprodueix el contingut multimèdia desde el disc"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Introduïu el nou títol"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Introduïu el nom de la pel·lícula"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Introduïu el nom del perfil"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Introduïu el nom de l'àlbum"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Introduïu el nom de la llista de reproducció"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Introduïu el nou nom de fitxer"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Introduïu nom de la carpeta"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Introduïu el directori"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Opcions disponibles: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Introduïu la cadena de cerca"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Cap"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Selecció automàtica"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "Desentrellaçat"
+
+#: id:16021
+msgid "Bob"
+msgstr "Bob"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Bob (invertit)"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "S'està cancel·lant..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Introduïu el nom de l'artista"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "La reproducció ha fallat"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Un o més ítems no s'han pogut reproduir."
+
+#: id:16028
+msgid "Enter value"
+msgstr "Introduïu el valor"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Comproveu el fitxer de registre per obtenir més detalls."
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Mode festa abortat."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Sense cançons coincidents a la biblioteca"
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "No s'ha pogut inicialitzar la base de dades."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "No s'ha pogut obrir la base de dades."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "No s'han pogut obtenir les cançons de la base de dades."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Llista de reproducció del mode festa"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr "Desentrellaçat (Half)"
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr "Deinterlace video"
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr "Mètode de desentrellaçat"
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr "Off"
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:16041
+msgid "On"
+msgstr "On"
+
+#: id:16100
+msgid "All Videos"
+msgstr "Tots els vídeos"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "No visualitzats"
+
+#: id:16102
+msgid "Watched"
+msgstr "Visualitzats"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Marca com a visualitzat"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Marca com a no visualitzat"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Edita el títol"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Operation was aborted"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Copy failed"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Failed to copy at least one file"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Move failed"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Failed to move at least one file"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Delete failed"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Failed to delete at least one file"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Mètode d'escalat de vídeo"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Veí més proper"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Bilineal"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bicubic (programari)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (programari)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (programari)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "Temporal"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "Temporal/Espacial"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU) Reducció de soroll"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU) Nitidesa"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Telecine invers"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3 optimitzat"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "Temporal (Half)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "Temporal/Espacial (Half)"
+
+#: id:16319
+msgid "DXVA"
+msgstr "DXVA"
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+#: id:16321
+msgid "DXVA Best"
+msgstr "DXVA Best"
+
+#: id:16322
+msgid "Spline36"
+msgstr "Spline36"
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr "Spline36 optimitzat"
+
+#: id:16324
+msgid "Software Blend"
+msgstr "Software Blend"
+
+#: id:16400
+msgid "Post-processing"
+msgstr "Postprocessament"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Display sleep timeout"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Canvia al canal"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Carpeta de la música desada"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Utilitza un reproductor de DVD extern"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Reproductor de DVD extern"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Carpeta dels trainers"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Carpeta de les captures de pantalla"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Carpeta de les llistes de reproducció"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Enregistraments"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Captures de pantalla"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Utilitza l'XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Llistes de reproducció de música"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Llistes de reproducció de vídeo"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Voleu iniciar el joc?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Ordena per: Llista de reproducció"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Miniatura remota"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Miniatura actual"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Miniatura local"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Sense miniatura"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Trieu una miniatura"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Conflicte"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Escaneja els nous"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Escaneja-ho tot"
+
+#: id:20026
+msgid "Region"
+msgstr "Regió"
+
+#: id:20037
+msgid "Summary"
+msgstr "Resum"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Bloqueja la finestra de música"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Bloqueja la finestra de vídeos"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Bloqueja la finestra d'imatges"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Bloqueja les finestres de programes i scripts"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Bloqueja el gestor de fitxers"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Bloqueja la configuració"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Comença a cero"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Entra en mode mestre"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Surt del mode mestre"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Voleu crear el perfil '%s'?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Comença amb opcions a cero"
+
+#: id:20049
+msgid "Best available"
+msgstr "El millor disponible"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Canvia automàticament entre 16x9 i 4x3"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Tracta els fitxers agrupats com un sol fitxer"
+
+#: id:20052
+msgid "Caution"
+msgstr "Precaució"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Falta el mode mestre"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "S'ha entrat en mode mestre"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Miniatura de Allmusic.com"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Elimina la miniatura"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Afegeix un perfil..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Consulta la informació per tots els àlbums"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Informació del suport"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Separa"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Comparteix per defecte"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Comparteix per defecte (només lectura)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Copia per defecte"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Imatge del perfil"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Bloqueja les preferències"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Edita el perfil"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Perfil de bloqueig"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "No s'ha pogut crear la carpeta"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Directori del perfil"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Comença amb recursos multimedia a cero "
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Assegureu-vos que es pot escriure a la carpeta seleccionada"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "i el nou nom de directori és vàlid"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "Valoració MPAA"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Introduïu el codi mestre de bloqueig"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Pregunta pel codi mestre al iniciar"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Paràmetres de l'aparença"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- sense enllaç establert -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Enable animations"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Desactiva l'RSS durant la música"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Activa els botons d'accés directe"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Mostra els programes al menú principal"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Mosta la informació de la música"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Mostra la informació del temps"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Mostra la informació del temps"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Mostra l'espai disponible C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Mostra l'espai disponible E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Informació del temps"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Espai lliure de la unitat"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Entra el nom de un recurs compartit existent"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Bloqueja el codi"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Carrega el perfil"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Nom del perfil"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Recursos multimedia"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Introduïu el codi de bloqueig del perfil"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Pantalla d'autenticació"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Fetching album info"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Fetching info for album"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "No es pot extreure el CD o la pista mentre s'està reproduïnt desde el CD"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Codi mestre i opcions"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Intorduïnt el codi mestre de bloqueig sempre activa el mode mestre"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "o copia del defecte?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Voleu desar els canvis al perfil?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "S'han trobat opcions velles."
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Voleu utilitzar-les?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "S'han trobat recursos multimedia vells."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Separat (bloquejat)"
+
+#: id:20108
+msgid "Root"
+msgstr "Arrel"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Zoom"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP settings"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Autostart UPnP client"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Última autenticació: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Mai autenticat"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Perfil %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Autenticació d'usuari / Seleccioneu un perfil"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Utilitzeu el bloqueig a la pantalla d'autenticació"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Codi de bloqueig invàlid."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Això requeix entrar un codi mestre."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Voleu entrar-lo ara?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "S'està carregant la informació del programa"
+
+#: id:20121
+msgid "Party on!"
+msgstr "A la Festa!"
+
+#: id:20122
+msgid "True"
+msgstr "Cert"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Barrejant begudes"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Omplint gots"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Autenticat com a"
+
+#: id:20126
+msgid "Log off"
+msgstr "Desconnecta"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Anar a l'arrel"
+
+#: id:20129
+msgid "Weave"
+msgstr "Trama"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Trama (invertida)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Mescla"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Reinicia el vídeo"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Edita la localització de xarxa"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Esborra la localització de xarxa"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Voleu revisar el directori?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Unitat de memòria"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "S'ha muntat la unitat de memòria"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "No es pot muntar la unitat de memòria"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "En el port %i, slot %i"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Bloqueja l'estalvi de pantalla"
+
+#: id:20141
+msgid "Set"
+msgstr "Estableix"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Nom d'usuari"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Introduïu la contrasenya per"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Interval d'apagada"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Interval d'apagada (en minuts)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Iniciat, apaga en %im"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Apaga en 30 minuts"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Apaga en 60 minuts"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Apaga en 120 minuts"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Temps d'apagada personalitzat"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Cancel·la el temps d'apagada"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Bloqueja les preferències per %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Explora..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Resum de la informació"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Informació del emmagatzematge"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Informació del disc dur"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "Informació del DVD-ROM"
+
+#: id:20158
+msgid "Network information"
+msgstr "Informació de la xarxa"
+
+#: id:20159
+msgid "Video information"
+msgstr "Informació del vídeo"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Informació del programari"
+
+#: id:20161
+msgid "Total"
+msgstr "Total"
+
+#: id:20162
+msgid "Used"
+msgstr "Utilitzat"
+
+#: id:20163
+msgid "of"
+msgstr "de"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Locking not supported"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Sense bloqueig"
+
+#: id:20166
+msgid "Locked"
+msgstr "Bloquejat"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Frozen"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Requereix reinici"
+
+#: id:20169
+msgid "Week"
+msgstr "Setmana"
+
+#: id:20170
+msgid "Line"
+msgstr "Línia"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Xarxa de Windows (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "Servidor XBMSP"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "Servidor FTP"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "Música compartida d'iTunes (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "Servidor UPnP"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Mostra la informació del vídeo"
+
+#: id:20177
+msgid "Done"
+msgstr "Fet"
+
+#: id:20178
+msgid "Shift"
+msgstr "Majúscules"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Fixació de majúscules"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Símbols"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Retrocés"
+
+#: id:20182
+msgid "Space"
+msgstr "Espai"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Actualitza l'aparença"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Gira les imatges utilitzant la informació EXIF"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Use poster view styles for TV shows"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Si us plau, espereu"
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Enable auto scrolling for plot & review"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Personalitzat"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Enable debug logging"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Download additional information during updates"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Default service for album information"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Default service for artist information"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Change scraper"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Exporta la biblioteca de música"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Importa la biblioteca de música"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "No s'ha trobat l'artista"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Downloading artist info failed"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Party on! (videos)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Mixing drinks (videos)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Filling glasses (videos)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "Servidor WebDAV (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "Servidor WebDAV (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "First logon, edit your profile"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend client"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev client"
+
+#: id:20258
+msgid "MythTV client"
+msgstr "Client de MythTV"
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr "Network Filesystem (NFS)"
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Apple Filing Protocol (AFP)"
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Directori del servidor web (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Directori dels servidor web (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "No es pot escriure a la carpeta:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Do you want to skip and proceed?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "Canal RSS"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "DNS secundari"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "Servidor DHCP:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Crea una carpeta"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Dim LCD on playback"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Unknown or onboard (protected)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Dim LCD on paused"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Vídeos - Biblioteca"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Ordena per: ID"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Play part..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Calibration reset"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "This will reset the calibration values for %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "to it's default values."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "Browse for destination"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Use folder names for lookups"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Fitxer"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Use file or folder names in lookups?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Set content"
+
+#: id:20334
+msgid "Folder"
+msgstr "Carpeta"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Look for content recursively?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Unlock sources"
+
+#: id:20337
+msgid "Actor"
+msgstr "Actor"
+
+#: id:20338
+msgid "Movie"
+msgstr "Pel·lícula"
+
+#: id:20339
+msgid "Director"
+msgstr "Director"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Do you want to remove all items within"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "this path from the XBMC library?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Pel·lícules"
+
+#: id:20343
+msgid "TV shows"
+msgstr "Sèries de TV"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Aquest directori conté"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Run automated scan"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Scan recursively"
+
+#: id:20347
+msgid "as"
+msgstr "com"
+
+#: id:20348
+msgid "Directors"
+msgstr "Directors"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "No video files found in this path!"
+
+#: id:20350
+msgid "votes"
+msgstr "vots"
+
+#: id:20351
+msgid "TV show information"
+msgstr "TV show information"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Informació de l'episodi"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Loading TV show details"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Fetching episode guide"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Loading info for episodes in directory"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Select TV show:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Enter the TV show name"
+
+#: id:20358
+msgid "Season %i"
+msgstr "Temporada %i"
+
+#: id:20359
+msgid "Episode"
+msgstr "Episodi"
+
+#: id:20360
+msgid "Episodes"
+msgstr "Episodis"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Loading episode details"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Remove episode from library"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Remove TV show from library"
+
+#: id:20364
+msgid "TV show"
+msgstr "Serie de TV"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Episode plot"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Totes les temporades"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Amaga els ja vistos"
+
+#: id:20368
+msgid "Prod code"
+msgstr "Prod code"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Show plot for unwatched items"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Hidden to prevent spoilers *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "Set season thumb"
+
+#: id:20372
+msgid "Season image"
+msgstr "Imatge de la temporada"
+
+#: id:20373
+msgid "Season"
+msgstr "Temporada"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "S'està baixant la informació de la pel·lícula"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Unassign content"
+
+#: id:20376
+msgid "Original title"
+msgstr "Títol original"
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Refresh TV show information"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Refresh info for all episodes?"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Selected folder contains a single TV show"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Exclude selected folder from scans"
+
+#: id:20381
+msgid "Specials"
+msgstr "Especials"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Automatically grab season thumbs"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Selected folder contains a single video"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Link to TV show"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Remove link to TV show"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Recently added movies"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Recently added episodes"
+
+#: id:20388
+msgid "Studios"
+msgstr "Studios"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Music videos"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Recently added music videos"
+
+#: id:20391
+msgid "Music video"
+msgstr "Music video"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Remove music video from library"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Music video information"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Loading music video information S'està carregant"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Mixed"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Go to albums by artist"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Go to album"
+
+#: id:20398
+msgid "Play song"
+msgstr "Reprodueix la cançó"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Go to music videos from album"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Go to music videos by artist"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Play music video"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Download actor thumbnails when adding to library"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Set actor thumb"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Remove episode bookmark"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Set episode bookmark"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Scraper settings"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "S'està baixant la informació del videoclip"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "S'està baixant la informació del programa de televisió"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Trailer"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Flatten"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Flatten TV shows"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "Get fanart"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Show Fanart in video and music libraries"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "S'està cercant nou contingut"
+
+#: id:20416
+msgid "First aired"
+msgstr "Emés per primera vegada"
+
+#: id:20417
+msgid "Writer"
+msgstr "Escriptor"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr "Mostra les metadades en la vista de fitxers"
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Mai"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Si només hi ha una temporada"
+
+#: id:20422
+msgid "Always"
+msgstr "Sempre"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Té trailer"
+
+#: id:20424
+msgid "False"
+msgstr "Fals"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Fanart slideshow"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Export to a single file or separate"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "files per entry?"
+
+#: id:20428
+msgid "Single file"
+msgstr "Un sol fitxer"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Separat"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Export thumbnails and fanart?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Overwrite old files?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Exclude path from library updates"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Extract thumbnails and video information"
+
+#: id:20434
+msgid "Sets"
+msgstr "Sets"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "Set movieset thumb"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "Export actor thumbs?"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "Trieu un fanart"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "Fanart local"
+
+#: id:20439
+msgid "No fanart"
+msgstr "Sense fanart"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "Fanart actual"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "Fanart remot"
+
+#: id:20442
+msgid "Change content"
+msgstr "Canvia el contingut"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Do you want to refresh info for all"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "items within this path?"
+
+#: id:20445
+msgid "Fanart"
+msgstr "Fanart"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "S'ha trobat la informació emmagatzemada localment."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Ignore and refresh from internet?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "No s'ha pogut baixar la informació"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "No es pot connectar al servidor remot"
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Would you like to continue scanning?"
+
+#: id:20451
+msgid "Countries"
+msgstr "Països"
+
+#: id:20452
+msgid "episode"
+msgstr "episodi"
+
+#: id:20453
+msgid "episodes"
+msgstr "episodis"
+
+#: id:20454
+msgid "Listener"
+msgstr "Oient"
+
+#: id:20455
+msgid "Listeners"
+msgstr "Oients"
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr "Set movieset fanart"
+
+#: id:20457
+msgid "Movie set"
+msgstr "Movie set"
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Mostra els fitxers i directoris ocults"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "Client de TuxBox"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "WARNING: Target TuxBox device is in recording-mode!"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "The stream will be stopped!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Zap to channel: %s failed!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Are you sure to start the stream?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "S'està connectant a: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "Unitat de TuxBox"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Afegeix recurs compartit..."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "Comparteix les biblioteques de vídeo i música a través de UPnP"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Edita recurs compartit"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Elimina recurs compartit"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Carpeta del subtítol"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Movie & alternate subtitle directory"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr "Substitueix les fonts dels subtítols ASS/SSA"
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Activa el suport de ratolí i pantalla tàctil"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Reprodueix els sons de navegació durant la reproducció"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Miniatura"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "Força la regió del reproductor DVD"
+
+#: id:21373
+msgid "Video output"
+msgstr "Sortida de vídeo"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Aspecte del vídeo"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Letterbox"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Widescreen"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "Activa 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "Activa 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "Activa 1080i"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Introduïu el nom de la nova llista de reproducció"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Mostra els botons \"Afegeix font\" en les llistes de fitxers"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Activa les barres de desplaçament"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "Make watched filtering a toggle in video library"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Obre"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Acoustic management level"
+
+#: id:21387
+msgid "Fast"
+msgstr "Ràpid"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Silenciós"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Enable custom background"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Power management level"
+
+#: id:21391
+msgid "High power"
+msgstr "High power"
+
+#: id:21392
+msgid "Low power"
+msgstr "Low power"
+
+#: id:21393
+msgid "High standby"
+msgstr "High standby"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Low standby"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Unable to cache files bigger than 4GB"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Capítol"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "High quality pixel shader v2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Enable playlist at startup"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Use tween animations"
+
+#: id:21400
+msgid "contains"
+msgstr "conté"
+
+#: id:21401
+msgid "does not contain"
+msgstr "no conté"
+
+#: id:21402
+msgid "is"
+msgstr "és"
+
+#: id:21403
+msgid "is not"
+msgstr "no és"
+
+#: id:21404
+msgid "starts with"
+msgstr "comença amb"
+
+#: id:21405
+msgid "ends with"
+msgstr "acaba amb"
+
+#: id:21406
+msgid "greater than"
+msgstr "més gran que"
+
+#: id:21407
+msgid "less than"
+msgstr "inferior a"
+
+#: id:21408
+msgid "after"
+msgstr "després"
+
+#: id:21409
+msgid "before"
+msgstr "abans"
+
+#: id:21410
+msgid "in the last"
+msgstr "a la última"
+
+#: id:21411
+msgid "not in the last"
+msgstr "no a la última"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Scrapers"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Default movie scraper"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Default tvshow scraper"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Default music video scraper"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Enable fallback based on scraper language"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Configuració"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Multilingüe"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "No scrapers present"
+
+#: id:21420
+msgid "Value to match"
+msgstr "Value to match"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Regla de llista de reproducció intel·ligent"
+
+#: id:21422
+msgid "Match items where"
+msgstr "Match items where"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Regla nova..."
+
+#: id:21424
+msgid "Items must match"
+msgstr "Els elements han de coincidir"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "totes les regles"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "una o més de les regles"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Limita a"
+
+#: id:21428
+msgid "No limit"
+msgstr "Sense límit"
+
+#: id:21429
+msgid "Order by"
+msgstr "Ordena per"
+
+#: id:21430
+msgid "ascending"
+msgstr "ascendent"
+
+#: id:21431
+msgid "descending"
+msgstr "descendent"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Edita la llista de reproducció intel·ligent"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Nom de la llista de reproducció"
+
+#: id:21434
+msgid "Find items where"
+msgstr "Cerca elements que"
+
+#: id:21435
+msgid "Edit"
+msgstr "Edita"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i elements"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Nova llista de reproducció intel·ligent..."
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c Unitat"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Edita les regles del mode festa"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Carpeta principal"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Visualitzacions"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Títol de l'episodi"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Resolució del vídeo"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Canals d'àudio"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Còdec de vídeo"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Còdec d'àudio"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Idioma de l'àudio"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Idioma dels subtítols"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "El control remot envia pulsacions de teclat"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- Edita"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "Es necessita connexió a Internet."
+
+#: id:21452
+msgid "Get More..."
+msgstr "Aconseguiu-ne més..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "Sistema de fitxers arrel"
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr "Subtitle location"
+
+#: id:21461
+msgid "Fixed"
+msgstr "Fixed"
+
+#: id:21462
+msgid "Bottom of video"
+msgstr "Bottom of video"
+
+#: id:21463
+msgid "Below video"
+msgstr "Below video"
+
+#: id:21464
+msgid "Top of video"
+msgstr "Top of video"
+
+#: id:21465
+msgid "Above video"
+msgstr "Above video"
+
+#: id:21800
+msgid "File name"
+msgstr "Nom del fitxer"
+
+#: id:21801
+msgid "File path"
+msgstr "Cami del fitxer"
+
+#: id:21802
+msgid "File size"
+msgstr "Mida del fitxer"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Data/Hora fitxer"
+
+#: id:21804
+msgid "Slide index"
+msgstr "Índex de diapositives"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Resolució"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Comentari"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Color - B/N"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "Processat JPEG"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Data/Hora"
+
+#: id:21821
+msgid "Description"
+msgstr "Descripció"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Marca càmera"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Model càmera"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "Comentari EXIF"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Microprogramari"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Obertura"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Longitud focal"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Distància focal"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Exposició"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Temps exposició"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Compensació d'exposició"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Mode exposició"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Flaix disparat"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Balanç blancs"
+
+#: id:21835
+msgid "Light source"
+msgstr "Font de llum"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Mode mesura"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Zoom digital"
+
+#: id:21839
+msgid "CCD width"
+msgstr "Amplada del CCD"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "Latitud GPS"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "Longitud GPS"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "Altitud GPS"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Orientació"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Categories suplementaries"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Paraules clau"
+
+#: id:21862
+msgid "Caption"
+msgstr "Títol"
+
+#: id:21863
+msgid "Author"
+msgstr "Autor"
+
+#: id:21864
+msgid "Headline"
+msgstr "Titular"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Instruccions especials"
+
+#: id:21866
+msgid "Category"
+msgstr "Categoria"
+
+#: id:21867
+msgid "Byline"
+msgstr "Línia d'autor"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Títol de la línia d'autor"
+
+#: id:21869
+msgid "Credit"
+msgstr "Crèdit"
+
+#: id:21870
+msgid "Source"
+msgstr "Font"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Avís dels drets d'autor"
+
+#: id:21872
+msgid "Object name"
+msgstr "Nom de l'objecte"
+
+#: id:21873
+msgid "City"
+msgstr "Ciutat"
+
+#: id:21874
+msgid "State"
+msgstr "Estat"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "País"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "Referència Tx original"
+
+#: id:21877
+msgid "Date created"
+msgstr "Data de creació"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Marca dels drets d'autor"
+
+#: id:21879
+msgid "Country code"
+msgstr "Codi del país"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Servei de referència"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "Permet el control de l'XBMC a través de UPnP"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Intenta ometre la introducció d'abans del menú del DVD"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Música desada"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Consulta la informació per a tots els artistes"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "S'està baixant la informació de l'àlbum"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "S'està baixant la informació de l'artista"
+
+#: id:21887
+msgid "Biography"
+msgstr "Biografia"
+
+#: id:21888
+msgid "Discography"
+msgstr "Discografia"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "S'està buscant l'artista"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Seleccioneu artista"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Informació de l'artista"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Instruments"
+
+#: id:21893
+msgid "Born"
+msgstr "Nascut"
+
+#: id:21894
+msgid "Formed"
+msgstr "Format"
+
+#: id:21895
+msgid "Themes"
+msgstr "Temes"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Separat"
+
+#: id:21897
+msgid "Died"
+msgstr "Mort"
+
+#: id:21898
+msgid "Years active"
+msgstr "Anys d'activitat"
+
+#: id:21899
+msgid "Label"
+msgstr "Etiqueta"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Nascut / Formació"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Actualitza la biblioteca a l'arrancada"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Amaga el progrés d'actualització de la biblioteca"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- Sufix del DNS"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Retardat en: %2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Avançat en: %2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Òfset dels subtítols"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "Proveïdor OpenGL:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "Renderitzador OpenGL renderer:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "Versió OpenGL:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "Temperatura de la GPU:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "Temperatura de la CPU:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Memòria total"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Informació del perfil"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Utilitza l'atenuació si està en pausa durant la reproducció de vídeo"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Tots els enregistraments"
+
+#: id:22016
+msgid "By title"
+msgstr "Per títol"
+
+#: id:22017
+msgid "By group"
+msgstr "Per grup"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Canals en directe"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Enregistraments per títol"
+
+#: id:22020
+msgid "Guide"
+msgstr "Guia"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Allowed error in aspect ratio to minimize black bars"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Mostra els arxius de vídeo en llistats"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "Proveïdor de DirectX:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Versió de Direct3D:"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Font"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Mida"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Colors"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Joc de caràcters"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Exporta els títols del karaoke com a HTML"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Exporta els títols del karaoke com a CSV"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Importa els títols del karaoke"
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Mostra el selector de cançons de forma automàtica"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Exporta els títols del karaoke"
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Introduïu el número de cançó"
+
+#: id:22040
+msgid "white/green"
+msgstr "blanc/verd"
+
+#: id:22041
+msgid "white/red"
+msgstr "blanc/vermell"
+
+#: id:22042
+msgid "white/blue"
+msgstr "blanc/blau"
+
+#: id:22043
+msgid "black/white"
+msgstr "negre/blanc"
+
+#: id:22079
+msgid "Default select action"
+msgstr "Acció de selecció per defecte"
+
+#: id:22080
+msgid "Choose"
+msgstr "Trieu"
+
+#: id:22081
+msgid "Show Information"
+msgstr "Mostra la informació"
+
+#: id:22082
+msgid "More..."
+msgstr "Més..."
+
+#: id:22083
+msgid "Play all"
+msgstr "Reproduir totes"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Teletext no disponible"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Activa el teletext"
+
+#: id:23051
+msgid "Part %i"
+msgstr "Part %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "S'està emplenant la memòria intermèdia amb %i bytes"
+
+#: id:23053
+msgid "Stopping"
+msgstr "S'està aturant"
+
+#: id:23054
+msgid "Running"
+msgstr "S'està executant"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Reproductor extern activat"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Feu clic a «D'acord» per finalitzar el reproductor"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Feu clic a «D'acord» quan la reproducció hagi finalitzat"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Complement"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Complements"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Opcions del complement"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "Informació del complement"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Fonts multimèdia"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Informació de la pel·lícula"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Estalvi de pantalla"
+
+#: id:24009
+msgid "Script"
+msgstr "Script"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "Visualització"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Dipòsit de complements"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "Subtítols"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "Lletres"
+
+#: id:24014
+msgid "TV information"
+msgstr "Informació de la televisió"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "Informació del vídeo musical"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "Informació de l'àlbum"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "Informació de l'artista"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr "Serveis"
+
+#: id:24020
+msgid "Configure"
+msgstr "Configura"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Desactiva"
+
+#: id:24022
+msgid "Enable"
+msgstr "Activa"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Complement desactivat"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "El temps"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (estàndard)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Aquest complement no es pot configurar"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "S'ha produït un error en carregar la configuració"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "Tots els complements"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "Aconsegueix complements"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "Comprova si hi ha actualitzacions"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "Força el refresc"
+
+#: id:24036
+msgid "Change log"
+msgstr "Registre de canvis"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "Desinstal·la"
+
+#: id:24038
+msgid "Install"
+msgstr "Instal·la"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "Complements desactivats"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "(Esborra la configuració actual)"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "Instal·la des d'un fitxer zip"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "S'està baixant %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "Actualitzacions disponibles"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr "Les dependències no es compleixen"
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr "El complement no té l'estructura correcta"
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr "%s és utilitzat per la instal·lació dels següents complements"
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr "Aquest complement no es pot desinstal·lar"
+
+#: id:24048
+msgid "Rollback"
+msgstr "Rollback"
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Complements disponibles"
+
+#: id:24051
+msgid "Version:"
+msgstr "Versió:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "Aclaració"
+
+#: id:24053
+msgid "License:"
+msgstr "Llicència:"
+
+#: id:24054
+msgid "Changelog"
+msgstr "Registre de canvis"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Voleu activar aquest complement?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Voleu desactivar aquest complement?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Hi ha una actualització per el complement disponible"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Complements activats"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Actualització automàtica"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Complement activat"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Complement actualitzat"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Voleu cancel·lar la baixada del complement?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "S'estan baixant complements"
+
+#: id:24068
+msgid "Update available"
+msgstr "Actualització disponible"
+
+#: id:24069
+msgid "Update"
+msgstr "Actualitza"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "No s'ha pogut carregar el complement."
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "S'ha produït un error desconegut."
+
+#: id:24072
+msgid "Settings required"
+msgstr "Paràmetres necessaris"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "No s'ha pogut connectar"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "És necessari reiniciar"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "Desactiva"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr "Complement necessari"
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Voleu tornar a provar de connectar?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "Reinicia el complement"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Bloqueja el gestor de complements"
+
+#: id:24094
+msgid "(current)"
+msgstr "(current)"
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr "(blacklisted)"
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "El complement s'ha marcat com trencat al dipòsit."
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "Voleu desactivar-lo en el sistema?"
+
+#: id:24098
+msgid "Broken"
+msgstr "Trencat"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr "Voleu canviar a aquesta aparença?"
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr "Per utilitzar aquesta funció cal descarregar un complement:"
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr "Voleu descarregar aquest complement?"
+
+#: id:25000
+msgid "Notifications"
+msgstr "Notificacions"
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:25002
+msgid "Select from all titles ..."
+msgstr ""
+
+#: id:25003
+msgid "Show bluray menus"
+msgstr ""
+
+#: id:25004
+msgid "Play main title: %d"
+msgstr ""
+
+#: id:25005
+msgid "Title: %d"
+msgstr ""
+
+#: id:25006
+msgid "Select playback item"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Mode biblioteca"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "Teclat QWERTY"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "Passthrough Audio in use"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Qualitat del trailer"
+
+#: id:33002
+msgid "Stream"
+msgstr "Flux"
+
+#: id:33003
+msgid "Download"
+msgstr "Baixar"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Baixar i reproduir"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Baixar i desar"
+
+#: id:33006
+msgid "Today"
+msgstr "Avui"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "Demà"
+
+#: id:33008
+msgid "Saving"
+msgstr "S'està desant"
+
+#: id:33009
+msgid "Copying"
+msgstr "S'està copiant"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Establiu el directori de descàrrega"
+
+#: id:33011
+msgid "Search duration"
+msgstr "Cerca durada"
+
+#: id:33012
+msgid "Short"
+msgstr "Curt"
+
+#: id:33013
+msgid "Long"
+msgstr "Llarg"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "Utilitza el reproductor de DVD en lloc del reproductor per defecte"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Pregunta si es vol baixar el vídeo abans de reproduir-lo"
+
+#: id:33016
+msgid "Clips"
+msgstr "Clips"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Reinicia el plugin per activar-lo"
+
+#: id:33018
+msgid "Tonight"
+msgstr "Aquesta nit"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "Demà a la nit"
+
+#: id:33020
+msgid "Condition"
+msgstr "Condició"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "Precipitació"
+
+#: id:33022
+msgid "Precip"
+msgstr "Precipitació"
+
+#: id:33023
+msgid "Humid"
+msgstr "Humit"
+
+#: id:33024
+msgid "Feels"
+msgstr "Feels"
+
+#: id:33025
+msgid "Observed"
+msgstr "Observed"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "Sortida del normal"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Sortida del sol"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Posta de sol"
+
+#: id:33029
+msgid "Details"
+msgstr "Detalls"
+
+#: id:33030
+msgid "Outlook"
+msgstr "Outlook"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "Coverflow"
+
+#: id:33032
+msgid "Translate text"
+msgstr "Tradueix el text"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "Map list %s category"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 Hores"
+
+#: id:33035
+msgid "Maps"
+msgstr "Mapes"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Cada hora"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Cap de setmana"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s dia"
+
+#: id:33049
+msgid "Alert"
+msgstr "Alerta"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Alertes"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "Choose Your"
+
+#: id:33052
+msgid "Check"
+msgstr "Comprova"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Configureu el"
+
+#: id:33054
+msgid "Seasons"
+msgstr "Estacions"
+
+#: id:33055
+msgid "Use your"
+msgstr "Use your"
+
+#: id:33056
+msgid "Watch your"
+msgstr "Mira"
+
+#: id:33057
+msgid "Listen to"
+msgstr "Escolta"
+
+#: id:33058
+msgid "View your"
+msgstr "View your"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Configureu el"
+
+#: id:33060
+msgid "Power"
+msgstr "Potència"
+
+#: id:33061
+msgid "Menu"
+msgstr "Menú"
+
+#: id:33062
+msgid "Play the"
+msgstr "Reprodueix el"
+
+#: id:33063
+msgid "Options"
+msgstr "Opcions"
+
+#: id:33065
+msgid "Editor"
+msgstr "Editor"
+
+#: id:33066
+msgid "About your"
+msgstr "About your"
+
+#: id:33067
+msgid "Star rating"
+msgstr "Classificació"
+
+#: id:33068
+msgid "Background"
+msgstr "Fons"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Fons"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Fons personalitzat"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Fons personalitzats"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Veure el Lleguiu-me"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Veure el registre de canvis"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "Aquesta versió de %s requereix una"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "revisió de l'XBMC s% o superior per a funcionar."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Actualitzeu l'XBMC."
+
+#: id:33077
+msgid "No data found!"
+msgstr "No s'han trobat dades"
+
+#: id:33078
+msgid "Next page"
+msgstr "Pàgina següent"
+
+#: id:33079
+msgid "Love"
+msgstr "M'agrada"
+
+#: id:33080
+msgid "Hate"
+msgstr "No m'agrada"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Aquest fitxer està agrupat, seleccioneu la part que desitgeu reproduir."
+
+#: id:33082
+msgid "Path to script"
+msgstr "Camí a l'script"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Activa el botó d'scripts personalitzats"
+
+#: id:33100
+msgid "Failed to start"
+msgstr "No s'ha pogut iniciar"
+
+#: id:33101
+msgid "Webserver"
+msgstr "Servidor web"
+
+#: id:33102
+msgid "Event Server"
+msgstr "Servidor d'esdeveniments"
+
+#: id:33103
+msgid "Remote communication server"
+msgstr "Servidor remot de comunicació"
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA2"
+
+#: id:34004
+msgid "VAAPI"
+msgstr "VAAPI"
+
+#: id:34005
+msgid "Flac"
+msgstr "Flac"
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Configuració dels altaveus"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7.0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr "Can't find a next item to play"
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr "Can't find a previous item to play"
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap or 1 finger long press for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr "Perifèrics"
+
+#: id:35001
+msgid "Generic HID device"
+msgstr "Generic HID device"
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr "Adaptador de xarxa genèric"
+
+#: id:35003
+msgid "Generic disk"
+msgstr "Disc genèric"
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr "No hi ha opcions disponibles\nper aquest perifèric."
+
+#: id:35005
+msgid "New device configured"
+msgstr "Nou dispositiu configurat"
+
+#: id:35006
+msgid "Device removed"
+msgstr "Dispositiu eliminat"
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr "Keymap to use for this device"
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr "Mapa de teclat activat"
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr "Ubicació"
+
+#: id:35501
+msgid "Class"
+msgstr "Classe"
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr "Nom"
+
+#: id:35503
+msgid "Vendor"
+msgstr "Venedor"
+
+#: id:35504
+msgid "Product ID"
+msgstr "Product ID"
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr "Pulse-Eight CEC adapter"
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr "Pulse-Eight Nyxboard"
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr "Switch to keyboard side command"
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr "Switch to remote side command"
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr "Press \"user\" button command"
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr "Enable switch side commands"
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr "Could not open the adapter"
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr "Power on the TV when starting XBMC"
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr "Power off devices when stopping XBMC"
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr "Put devices in standby mode when activating screensaver"
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr "Could not detect the CEC port. Set it up manually."
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr "Could not detect the CEC adapter."
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)"
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr "Put this PC in standby mode when the TV is switched off"
+
+#: id:36015
+msgid "HDMI port number"
+msgstr "Número de port HDMI"
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr "Connectat"
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr "S'ha trobat un adaptador, però la libcec no està disponible"
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr "Use the TV's language setting"
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

@@ -34,6 +34,7 @@
 #include "system.h" // for PRId64
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)

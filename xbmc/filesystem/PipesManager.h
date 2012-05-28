@@ -57,8 +57,24 @@ class Pipe
     int  RefCount(); 
     
     bool IsEmpty();
-    int  Read(char *buf, int nMaxSize, int nWaitMillis);
-    bool Write(const char *buf, int nSize, int nWaitMillis);
+
+    /**
+     * Read into the buffer from the Pipe the num of bytes asked for
+     * blocking forever (which happens to be 5 minutes in this case).
+     *
+     * In the case where nWaitMillis is provided block for that number
+     * of milliseconds instead.
+     */
+    int  Read(char *buf, int nMaxSize, int nWaitMillis = -1);
+
+    /**
+     * Write into the Pipe from the buffer the num of bytes asked for
+     * blocking forever.
+     *
+     * In the case where nWaitMillis is provided block for that number
+     * of milliseconds instead.
+     */
+    bool Write(const char *buf, int nSize, int nWaitMillis = -1);
 
     void Flush();
     

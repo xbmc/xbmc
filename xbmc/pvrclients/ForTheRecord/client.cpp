@@ -37,6 +37,7 @@ bool        g_bRadioEnabled        = DEFAULT_RADIO;        ///< Send also Radio 
 std::string g_szUser               = DEFAULT_USER;         ///< Windows user account used to access share
 std::string g_szPass               = DEFAULT_PASS;         ///< Windows user password used to access share
                                                            ///< Leave empty to use current user when running on Windows
+int         g_iTuneDelay           = DEFAULT_TUNEDELAY;    ///< Number of milliseconds to delay after tuning a channel
 
 std::string  g_szBaseURL;
 
@@ -150,6 +151,14 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_szPass = buffer;
   else
     g_szPass = "";
+
+  /* Read setting "tunedelay" from settings.xml */
+  if (!XBMC->GetSetting("tunedelay", &g_iTuneDelay))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'tunedelay' setting, falling back to '200' as default");
+    g_iTuneDelay = DEFAULT_TUNEDELAY;
+  }
 
   /* Connect to ForTheRecord */
   if (!g_client->Connect())
@@ -267,6 +276,11 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   {
     XBMC->Log(LOG_INFO, "Changed Setting 'pass' from %s to %s", g_szPass.c_str(), (const char*) settingValue);
     g_szPass = (const char*) settingValue;
+  }
+  else if (str == "tunedelay")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'tunedelay' from %u to %u", g_iTuneDelay, *(int*) settingValue);
+    g_iTuneDelay = *(int*) settingValue;
   }
 
   return ADDON_STATUS_OK;

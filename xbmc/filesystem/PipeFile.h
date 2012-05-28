@@ -57,7 +57,7 @@ public:
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
   virtual void Flush();
-  virtual __int64	GetAvailableRead();
+  virtual int64_t	GetAvailableRead();
 
   virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
 

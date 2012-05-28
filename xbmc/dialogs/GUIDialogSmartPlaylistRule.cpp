@@ -389,7 +389,7 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdS
   if (!editor) return false;
 
   editor->m_rule = rule;
-  editor->m_type = type;
+  editor->m_type = type == "mixed" ? "songs" : type;
   editor->DoModal(g_windowManager.GetActiveWindow());
   rule = editor->m_rule;
   return !editor->m_cancelled;

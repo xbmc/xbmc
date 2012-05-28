@@ -23,6 +23,7 @@
 
 #include "DVDOverlay.h"
 #include <string.h>
+#include <stdlib.h>
 
 class CDVDOverlayImage : public CDVDOverlay
 {

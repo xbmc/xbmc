@@ -31,6 +31,7 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
+#include "utils/MathUtils.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "OverlayRendererGL.h"
 #elif defined(HAS_DX)
@@ -104,10 +105,7 @@ void CRenderer::AddOverlay(CDVDOverlay* o, double pts)
 
   SElement   e;
   e.pts = pts;
-  if(o->m_overlay)
-    e.overlay     = o->m_overlay->Acquire();
-  else
-    e.overlay_dvd = o->Acquire();
+  e.overlay_dvd = o->Acquire();
   m_buffers[m_decode].push_back(e);
 }
 
@@ -179,15 +177,19 @@ void CRenderer::Render()
   SElementV& list = m_buffers[m_render];
   for(SElementV::iterator it = list.begin(); it != list.end(); it++)
   {
-    COverlay*& o = it->overlay;
+    COverlay* o = NULL;
 
-    if(!o && it->overlay_dvd)
+    if(it->overlay)
+      o = it->overlay->Acquire();
+    else if(it->overlay_dvd)
       o = Convert(it->overlay_dvd, it->pts);
 
     if(!o)
       continue;
 
     Render(o);
+
+    o->Release();
   }
 }
 
@@ -281,29 +283,62 @@ void CRenderer::Render(COverlay* o)
   o->Render(state);
 }
 
+COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
+{
+  CRect src, dst;
+  g_renderManager.GetVideoRect(src, dst);
+
+  int width  = MathUtils::round_int(dst.Width());
+  int height = MathUtils::round_int(dst.Height());
+
+  int changes = 0;
+  ASS_Image* images = o->m_libass->RenderImage(width, height, pts, &changes);
+
+  if(o->m_overlay)
+  {
+    if(changes == 0)
+      return o->m_overlay->Acquire();
+  }
+
+#if defined(HAS_GL) || defined(HAS_GLES)
+  return new COverlayGlyphGL(images, width, height);
+#elif defined(HAS_DX)
+  return new COverlayQuadsDX(images, width, height);
+#endif
+  return NULL;
+}
+
+
 COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
 {
-  COverlay* r = o->m_overlay;
+  COverlay* r = NULL;
+
+  if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
+    r = Convert((CDVDOverlaySSA*)o, pts);
+  else if(o->m_overlay)
+    r = o->m_overlay->Acquire();
+
   if(r)
-    return r->Acquire();
+  {
+    if(o->m_overlay)
+      o->m_overlay->Release();
+    o->m_overlay = r->Acquire();
+    return r;
+  }
 
 #if defined(HAS_GL) || defined(HAS_GLES)
   if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = new COverlayTextureGL((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayTextureGL((CDVDOverlaySpu*)o);
-  else if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
-    r = new COverlayGlyphGL((CDVDOverlaySSA*)o, pts);
 #elif defined(HAS_DX)
   if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = new COverlayImageDX((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayImageDX((CDVDOverlaySpu*)o);
-  else if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
-    r = new COverlayQuadsDX((CDVDOverlaySSA*)o, pts);
 #endif
 
-  if(r && !o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
+  if(r)
     o->m_overlay = r->Acquire();
   return r;
 }

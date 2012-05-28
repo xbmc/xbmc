@@ -51,6 +51,7 @@
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/Variant.h"
+#include "video/VideoDatabase.h"
 
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -320,8 +321,13 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
         pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
         pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
-        if (XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
-          pItem->SetThumbnailImage(pItem->GetCachedSeasonThumb());
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          pItem->GetVideoInfoTag()->m_iDbId = db.GetSeasonId(pItem->GetVideoInfoTag()->m_iIdShow, -1);
+          db.Close();
+        }
+        pItem->GetVideoInfoTag()->m_type = "season";
       }
       break;
     default:

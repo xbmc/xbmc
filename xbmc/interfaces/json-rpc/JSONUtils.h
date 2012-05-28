@@ -374,5 +374,23 @@ namespace JSONRPC
     }
 
     static inline bool HasType(JSONSchemaType typeObject, JSONSchemaType type) { return (typeObject & type) == type; }
+
+    static inline bool ParameterNotNull(const CVariant &parameterObject, std::string key) { return parameterObject.isMember(key) && !parameterObject[key].isNull(); }
+
+    /*!
+     \brief Copies the values from the jsonStringArray to the stringArray.
+     stringArray is cleared.
+     \param jsonStringArray JSON object representing a string array
+     \param stringArray String array where the values are copied into (cleared)
+     */
+    static void CopyStringArray(const CVariant &jsonStringArray, std::vector<std::string> &stringArray)
+    {
+      if (!jsonStringArray.isArray())
+        return;
+
+      stringArray.clear();
+      for (CVariant::const_iterator_array it = jsonStringArray.begin_array(); it != jsonStringArray.end_array(); it++)
+        stringArray.push_back(it->asString());
+    }
   };
 }

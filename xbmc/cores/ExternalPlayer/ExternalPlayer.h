@@ -50,7 +50,7 @@ public:
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
-  virtual void SetVolume(long nVolume) {}
+  virtual void SetVolume(float volume) {}
   virtual void SetDynamicRangeCompression(long drc) {}
   virtual void SetContrast(bool bPlus) {}
   virtual void SetBrightness(bool bPlus) {}
@@ -70,8 +70,8 @@ public:
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
 
-  virtual void SeekTime(__int64 iTime);
-  virtual __int64 GetTime();
+  virtual void SeekTime(int64_t iTime);
+  virtual int64_t GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual void ShowOSD(bool bOnoff);

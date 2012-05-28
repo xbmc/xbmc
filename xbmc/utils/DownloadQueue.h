@@ -26,6 +26,8 @@
 #include "threads/CriticalSection.h"
 #include "StdString.h"
 
+#include "system.h"
+
 struct TICKET
 {
   TICKET(WORD aQueueId, DWORD aItemId)

@@ -50,4 +50,8 @@ ___wrap_fwrite _fwrite$UNIX2003
 ___wrap_close _close$UNIX2003
 #___wrap_fcntl _fcntl$UNIX2003
 ___wrap_open _open$UNIX2003
+___wrap_fopen _fopen$UNIX2003
+___wrap_fputs _fputs$UNIX2003
+___wrap_read _read$UNIX2003
+___wrap_write _write$UNIX2003
 

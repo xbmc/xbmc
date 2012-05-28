@@ -359,7 +359,7 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   return;
 }
 
-CMythSession::CMythSession(const CURL& url)
+CMythSession::CMythSession(const CURL& url) : CThread("CMythSession")
 {
   m_control   = NULL;
   m_event     = NULL;

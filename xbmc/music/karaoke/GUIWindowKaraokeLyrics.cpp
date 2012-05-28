@@ -138,7 +138,7 @@ void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
   if ( m_Lyrics->HasVideo() )
   {
     CStdString path;
-    __int64 offset;
+    int64_t offset;
 
     // Start the required video
     m_Lyrics->GetVideoParameters( path, offset );

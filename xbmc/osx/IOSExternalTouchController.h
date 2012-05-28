@@ -24,7 +24,10 @@
 
 @interface IOSExternalTouchController : UIViewController 
 {
-
+  UIWindow      *_internalWindow;
+  UIView        *_touchView;
+  NSTimer       *_sleepTimer;
+  bool          _startup;
 }
 - (id)init;
 - (void)createGestureRecognizers;

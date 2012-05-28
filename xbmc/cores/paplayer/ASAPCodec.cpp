@@ -58,6 +58,7 @@ bool ASAPCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_TotalTime = duration;
   m_SampleRate = 44100;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   return true;
 }
 
@@ -65,7 +66,7 @@ void ASAPCodec::DeInit()
 {
 }
 
-__int64 ASAPCodec::Seek(__int64 iSeekTime)
+int64_t ASAPCodec::Seek(int64_t iSeekTime)
 {
   m_dll.asapSeek((int) iSeekTime);
   return iSeekTime;

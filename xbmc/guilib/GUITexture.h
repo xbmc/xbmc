@@ -161,7 +161,7 @@ protected:
   CPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
 
   bool m_allocateDynamically;
-  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, NORMAL_FAILED, LARGE_FAILED };
+  enum ALLOCATE_TYPE { NO = 0, NORMAL, IN_PROGRESS, LARGE, NORMAL_FAILED, LARGE_FAILED };
   ALLOCATE_TYPE m_isAllocated;
 
   CTextureInfo m_info;

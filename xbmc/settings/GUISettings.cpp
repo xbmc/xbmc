@@ -34,18 +34,22 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#include "utils/PCMRemap.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#if defined(TARGET_DARWIN_OSX)
+  #include "cores/AudioEngine/Engines/CoreAudio/CoreAudioHardware.h"
+#endif
 #include "guilib/GUIFontManager.h"
 #include "utils/Weather.h"
 #include "LangInfo.h"
 #include "pvr/PVRManager.h"
 #include "utils/XMLUtils.h"
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   #include "osx/DarwinUtils.h"
 #endif
 
@@ -335,8 +339,12 @@ void CGUISettings::Initialize()
   AddPath(acd,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddString(acd, "audiocds.trackpathformat", 13307, "%A - %B/[%N. ][%A - ]%T", EDIT_CONTROL_INPUT, false, 16016);
   map<int,int> encoders;
+#ifdef HAVE_LIBMP3LAME
   encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
+#endif
+#ifdef HAVE_LIBVORBISENC
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
+#endif
   encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
   encoders.insert(make_pair(34005,CDDARIP_ENCODER_FLAC));
   AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_FLAC, encoders, SPIN_CONTROL_TEXT);
@@ -447,31 +455,54 @@ void CGUISettings::Initialize()
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
   map<int,int> channelLayout;
-  for(int layout = 0; layout < PCM_MAX_LAYOUT; ++layout)
-    channelLayout.insert(make_pair(34101+layout, layout));
-  AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+  for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
+    channelLayout.insert(make_pair(34100+layout, layout));
+  AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
+  AddBool(ao, "audiooutput.stereoupmix", 252, false);
 
-  AddBool(ao, "audiooutput.ac3passthrough", 364, true);
-  AddBool(ao, "audiooutput.dtspassthrough", 254, true);
-  AddBool(NULL, "audiooutput.passthroughaac", 299, false);
-  AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
-  AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
-  AddBool(NULL, "audiooutput.passthroughmp3", 302, false);
-
-#ifdef __APPLE__
-  AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-#elif defined(_LINUX)
-  AddSeparator(ao, "audiooutput.sep1");
-  AddString(ao, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
-  AddString(ao, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
-  AddSeparator(ao, "audiooutput.sep2");
-  AddString(ao, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
-  AddString(ao, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
-  AddSeparator(ao, "audiooutput.sep3");
-#elif defined(_WIN32)
-  AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+#if defined(TARGET_DARWIN_IOS)
+  CSettingsCategory* aocat = g_sysinfo.IsAppleTV2() ? ao : NULL;
+#else
+  CSettingsCategory* aocat = ao;
 #endif
+
+  AddBool(aocat, "audiooutput.ac3passthrough"   , 364, true);
+  AddBool(aocat, "audiooutput.dtspassthrough"   , 254, true);
+
+
+#if !defined(TARGET_DARWIN)
+  AddBool(aocat, "audiooutput.passthroughaac"   , 299, false);
+#endif
+#if !defined(TARGET_DARWIN_IOS)
+  AddBool(aocat, "audiooutput.multichannellpcm" , 348, true );
+#endif
+#if !defined(TARGET_DARWIN)
+  AddBool(aocat, "audiooutput.truehdpassthrough", 349, true );
+  AddBool(aocat, "audiooutput.dtshdpassthrough" , 347, true );
+#endif
+
+#if defined(TARGET_DARWIN)
+  #if defined(TARGET_DARWIN_IOS)
+    CStdString defaultDeviceName = "Default";
+  #else
+    CStdString defaultDeviceName;
+    CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
+  #endif
+  AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+  AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+#else
+  AddSeparator(ao, "audiooutput.sep1");
+  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::AE->GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::AE->GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
+  AddSeparator(ao, "audiooutput.sep2");
+#endif
+
+  map<int,int> guimode;
+  guimode.insert(make_pair(34121, AE_SOUND_IDLE  ));
+  guimode.insert(make_pair(34122, AE_SOUND_ALWAYS));
+  guimode.insert(make_pair(34123, AE_SOUND_OFF   ));
+  AddInt(ao, "audiooutput.guisoundmode", 34120, AE_SOUND_IDLE, guimode, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
   AddString(in, "input.peripherals", 35000, "", BUTTON_CONTROL_STANDARD);
@@ -846,6 +877,9 @@ void CGUISettings::Initialize()
   AddBool(loc, "locale.timeserver", 168, false);
   AddString(loc, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
+  AddSeparator(loc, "locale.sep3");
+  AddString(loc, "locale.audiolanguage", 285, "original", SPIN_CONTROL_TEXT);
+  AddString(loc, "locale.subtitlelanguage", 286, "original", SPIN_CONTROL_TEXT);
 
   CSettingsCategory* fl = AddCategory(7, "filelists", 14081);
   AddBool(fl, "filelists.showparentdiritems", 13306, true);
@@ -915,8 +949,8 @@ void CGUISettings::Initialize()
   AddInt(pvrr, "pvrrecord.instantrecordtime", 19172, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(pvrr, "pvrrecord.defaultpriority", 19173, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
   AddInt(pvrr, "pvrrecord.defaultlifetime", 19174, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  AddInt(pvrr, "pvrrecord.marginstart", 19175, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(pvrr, "pvrrecord.marginend", 19176, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(pvrr, "pvrrecord.marginstart", 19175, 2, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(pvrr, "pvrrecord.marginend", 19176, 10, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(pvrr, "pvrrecord.sep1");
   AddBool(pvr, "pvrrecord.timernotifications", 19233, true);
 
@@ -1290,9 +1324,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "AAC pass through is %s", GetBool("audiooutput.passthroughaac") ? "enabled" : "disabled");
-  CLog::Log(LOGINFO, "MP1 pass through is %s", GetBool("audiooutput.passthroughmp1") ? "enabled" : "disabled");
-  CLog::Log(LOGINFO, "MP2 pass through is %s", GetBool("audiooutput.passthroughmp2") ? "enabled" : "disabled");
-  CLog::Log(LOGINFO, "MP3 pass through is %s", GetBool("audiooutput.passthroughmp3") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__
@@ -1336,6 +1367,18 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     g_timezone.SetTimezone(timezone);	
   }
 #endif
+
+  CStdString streamLanguage = GetString("locale.audiolanguage");
+  if (!streamLanguage.Equals("original") && !streamLanguage.Equals("default"))
+    g_langInfo.SetAudioLanguage(streamLanguage);
+  else
+    g_langInfo.SetAudioLanguage("");
+
+  streamLanguage = GetString("locale.subtitlelanguage");
+  if (!streamLanguage.Equals("original") && !streamLanguage.Equals("default"))
+    g_langInfo.SetSubtitleLanguage(streamLanguage);
+  else
+    g_langInfo.SetSubtitleLanguage("");
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
@@ -1506,9 +1549,7 @@ bool CGUISettings::SetLanguage(const CStdString &strLanguage)
 
     g_charsetConverter.reset();
 
-    CStdString strLanguagePath;
-    strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strNewLanguage.c_str());
-    if (!g_localizeStrings.Load(strLanguagePath))
+    if (!g_localizeStrings.Load("special://xbmc/language/", strNewLanguage))
       return false;
 
     // also tell our weather and skin to reload as these are localized

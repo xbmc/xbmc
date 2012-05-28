@@ -125,6 +125,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_SampleRate = 32000;
   m_Channels = 2;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   CMusicInfoTagLoaderSPC tagLoader;
   CMusicInfoTag tag;
   tagLoader.Load(strFile,tag);
@@ -153,7 +154,7 @@ void SPCCodec::DeInit()
   m_pApuRAM = NULL;
 }
 
-__int64 SPCCodec::Seek(__int64 iSeekTime)
+int64_t SPCCodec::Seek(int64_t iSeekTime)
 {
   if (m_iDataPos > iSeekTime/1000*m_SampleRate*4)
   {
@@ -162,7 +163,7 @@ __int64 SPCCodec::Seek(__int64 iSeekTime)
   }
   else
   {
-    __int64 iDataPos2 = m_iDataPos;
+    int64_t iDataPos2 = m_iDataPos;
     m_iDataPos = iSeekTime/1000*m_SampleRate*4;
     iSeekTime -= (iDataPos2*1000)/(m_SampleRate*4);
   }

@@ -27,6 +27,9 @@
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h"
 #endif
+#ifdef __FreeBSD__
+#include "freebsd/FreeBSDGNUReplacements.h"
+#endif
 
 #include "Util.h"
 
@@ -36,6 +39,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
 {
    char* line = NULL;
    size_t linelen = 0;
+   int nameonfourthfield = 0;
    CStdString s;
    vector<CStdString> tokens;
 
@@ -91,6 +95,11 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
 
    // Load countries
    fp = fopen("/usr/share/zoneinfo/iso3166.tab", "r");
+   if (!fp)
+   {
+      fp = fopen("/usr/share/misc/iso3166", "r");
+      nameonfourthfield = 1;
+   }
    if (fp)
    {
       CStdString countryCode;
@@ -110,6 +119,16 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
          // Search for the first non space from the 2nd character and on
          int i = 2;
          while (s[i] == ' ' || s[i] == '\t') i++;
+
+         if (nameonfourthfield)
+         {
+            // skip three letter
+            while (s[i] != ' ' && s[i] != '\t') i++;
+            while (s[i] == ' ' || s[i] == '\t') i++;
+            // skip number
+            while (s[i] != ' ' && s[i] != '\t') i++;
+            while (s[i] == ' ' || s[i] == '\t') i++;
+         }
 
          countryCode = s.Left(2);
          countryName = s.Mid(i);

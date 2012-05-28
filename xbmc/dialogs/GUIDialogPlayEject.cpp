@@ -103,7 +103,7 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
 
   // Figure out Lines 1 and 2 of the dialog
   CStdString strLine1, strLine2;
-  TiXmlDocument discStubXML;
+  CXBMCTinyXML discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {
     TiXmlElement * pRootElement = discStubXML.RootElement();

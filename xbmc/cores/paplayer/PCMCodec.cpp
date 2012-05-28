@@ -63,7 +63,7 @@ void PCMCodec::DeInit()
   m_file.Close();
 }
 
-__int64 PCMCodec::Seek(__int64 iSeekTime)
+int64_t PCMCodec::Seek(int64_t iSeekTime)
 {
   m_file.Seek((iSeekTime / 1000) * (m_Bitrate / 8));
   return iSeekTime;

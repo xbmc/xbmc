@@ -22,7 +22,6 @@
 #include "DAAPDirectory.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
-#include "SectionLoader.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
@@ -37,7 +36,6 @@ const char unknownArtistAlbum[] = "Unknown";
 
 CDAAPDirectory::CDAAPDirectory(void)
 {
-  CSectionLoader::Load("LIBXDAAP");
   // m_currLevel holds where we are in the playlist/artist/album/songs hierarchy (0,1,2,3)
   m_currLevel = -1;
   m_thisHost = NULL;
@@ -55,7 +53,6 @@ CDAAPDirectory::~CDAAPDirectory(void)
   m_artisthead = NULL;
 
   m_currentSongItems = NULL;
-  CSectionLoader::Unload("LIBXDAAP");
 }
 
 bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)

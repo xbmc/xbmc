@@ -28,6 +28,7 @@
 #include "DVDStreamInfo.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/DVDCodecUtils.h"
 #include "../../../../utils/Win32Exception.h"
 #if defined(_LINUX) || defined(_WIN32)
 #include "utils/CPUInfo.h"
@@ -46,6 +47,7 @@
 #endif
 
 #include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderFormats.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
@@ -164,8 +166,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_bSoftware     = hints.software;
   m_iOrientation  = hints.orientation;
 
-  m_formats.push_back(PIX_FMT_YUV420P);
-  m_formats.push_back(PIX_FMT_YUVJ420P);
+  for(std::vector<ERenderFormat>::iterator it = options.m_formats.begin(); it != options.m_formats.end(); ++it)
+  {
+    m_formats.push_back((PixelFormat)CDVDCodecUtils::PixfmtFromEFormat(*it));
+    if(*it == RENDER_FMT_YUV420P)
+      m_formats.push_back(PIX_FMT_YUVJ420P);
+  }
   m_formats.push_back(PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
 
   pCodec = NULL;
@@ -277,7 +283,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // set any special options
-  for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)
+  for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); it++)
   {
     if (it->m_name == "surfaces")
       m_uSurfacesCount = std::atoi(it->m_value.c_str());
@@ -584,6 +590,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pDvdVideoPicture->color_primaries = m_pCodecContext->color_primaries;
   pDvdVideoPicture->color_transfer = m_pCodecContext->color_trc;
+  if(m_pCodecContext->color_range == AVCOL_RANGE_JPEG
+  || m_pCodecContext->pix_fmt     == PIX_FMT_YUVJ420P)
+    pDvdVideoPicture->color_range = 1;
+  else
+    pDvdVideoPicture->color_range = 0;
 
   pDvdVideoPicture->qscale_table = m_pFrame->qscale_table;
   pDvdVideoPicture->qscale_stride = m_pFrame->qstride;
@@ -632,7 +643,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;
   pDvdVideoPicture->extended_format = 0;
-  pDvdVideoPicture->color_range = 0;
 
   PixelFormat pix_fmt;
   if(m_pBufferRef)
@@ -640,17 +650,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pix_fmt = m_pCodecContext->pix_fmt;
 
-  switch(pix_fmt)
-  {
-    case PIX_FMT_YUVJ420P:
-      pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
-      pDvdVideoPicture->color_range = 1;
-      break;
-    default:
-      pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
-      break;
-  }
-
+  pDvdVideoPicture->format = CDVDCodecUtils::EFormatFromPixfmt(pix_fmt);
   return true;
 }
 

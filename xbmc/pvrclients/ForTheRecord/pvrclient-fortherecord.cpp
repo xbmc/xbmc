@@ -29,6 +29,7 @@
 #include "pvrclient-fortherecord.h"
 #include "fortherecordrpc.h"
 #include "platform/util/timeutils.h"
+#include "platform/util/StdString.h"
 
 #ifdef TSREADER
 #include "lib/tsreader/TSReader.h"
@@ -175,7 +176,8 @@ bool cPVRClientForTheRecord::ShareErrorsFound(void)
       std::string accessMsg = "";
 #if defined(TARGET_WINDOWS)
       // Try to open the directory
-      HANDLE hFile = ::CreateFile(sharename.c_str(),      // The filename
+      CStdStringW strWFile = UTF8Util::ConvertUTF8ToUTF16(sharename.c_str());
+      HANDLE hFile = ::CreateFileW(strWFile,      // The filename
         (DWORD) GENERIC_READ,             // File access
         (DWORD) FILE_SHARE_READ,          // Share access
         NULL,                             // Security
@@ -746,15 +748,14 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
               }
               tag.strTitle       = recording.Title();
               tag.strPlotOutline = recording.SubTitle();
-#ifdef _WIN32
-
               std::string emptystring;
               emptystring.clear();
               tag.strStreamURL   = emptystring.c_str();
+//#ifdef _WIN32
               //tag.strStreamURL   = recording.RecordingFileName();
-#else
-              tag.strStreamURL   = recording.CIFSRecordingFileName();
-#endif
+//#else
+//              tag.strStreamURL   = recording.CIFSRecordingFileName();
+//#endif
               PVR->TransferRecordingEntry(handle, &tag);
               iNumRecordings++;
             }
@@ -1136,7 +1137,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       // So stop it and re-try
       CloseLiveStream();
       XBMC->Log(LOG_INFO, "Re-Tune XBMC channel: %i", channelinfo.iUniqueId);
-      int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), channel->Name(), filename);
+      retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), channel->Name(), filename);
     }
 
 #if defined(TARGET_LINUX) || defined(TARGET_OSX)
@@ -1215,17 +1216,15 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       XBMC->Log(LOG_DEBUG, "Close existing and open new TsReader...");
       m_tsreader->Close();
       SAFE_DELETE(m_tsreader);
-      m_tsreader = new CTsReader();
-      m_tsreader->Open(filename.c_str());
-      m_tsreader->OnZap();
-    } else {
-      m_tsreader = new CTsReader();
-      // Open Timeshift buffer
-      // TODO: rtsp support
-      XBMC->Log(LOG_DEBUG, "Open TsReader");
-      m_tsreader->Open(filename.c_str());
-      //usleep(200000);
     }
+    // Open Timeshift buffer
+    // TODO: rtsp support
+    m_tsreader = new CTsReader();
+    XBMC->Log(LOG_DEBUG, "Open TsReader");
+    m_tsreader->Open(filename.c_str());
+    m_tsreader->OnZap();
+    XBMC->Log(LOG_DEBUG, "Delaying %ld milliseconds.", (1000 * g_iTuneDelay));
+    usleep(1000 * g_iTuneDelay);
 
 #endif
     return true;
@@ -1455,6 +1454,12 @@ bool cPVRClientForTheRecord::OpenRecordedStream(const PVR_RECORDING &recinfo)
     return false;
   }
 
+#if TARGET_WINDOWS
+  const char* recordingName = recording.RecordingFileName();
+#else
+  const char* recordingName = recording.CIFSRecordingFileName();
+#endif
+
   if (m_tsreader != NULL)
   {
     XBMC->Log(LOG_DEBUG, "Close existing TsReader...");
@@ -1462,7 +1467,7 @@ bool cPVRClientForTheRecord::OpenRecordedStream(const PVR_RECORDING &recinfo)
     SAFE_DELETE(m_tsreader);
   }
   m_tsreader = new CTsReader();
-  if (m_tsreader->Open(recording.RecordingFileName()) != S_OK)
+  if (m_tsreader->Open(recordingName) != S_OK)
   {
     SAFE_DELETE(m_tsreader);
     return false;

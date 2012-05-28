@@ -56,7 +56,6 @@ int CGUIViewStateWindowVideo::GetPlaylist()
 VECSOURCES& CGUIViewStateWindowVideo::GetSources()
 {
   AddLiveTVSources();
-  AddAddonsSource("video", g_localizeStrings.Get(1037), "DefaultAddonVideo.png");
   return CGUIViewState::GetSources();
 }
 
@@ -275,7 +274,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
         AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
         AddSortMethod(SORT_METHOD_VIDEO_RUNTIME,2050, LABEL_MASKS("%T", "%D"));
-        AddSortMethod(SORT_METHOD_DATEADDED, 570, LABEL_MASKS("%T", "%R"));
+        AddSortMethod(SORT_METHOD_DATEADDED, 570, LABEL_MASKS("%T", "%a"));
 
         if (g_settings.GetWatchMode(items.GetContent()) == VIDEO_SHOW_ALL)
           AddSortMethod(SORT_METHOD_PLAYCOUNT, 576, LABEL_MASKS("%T", "%V"));
@@ -411,9 +410,11 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
 {
   //  Setup shares we want to have
   m_sources.clear();
-  //  Musicdb shares
   CFileItemList items;
-  CDirectory::GetDirectory("videodb://", items, "");
+  if (g_settings.m_bMyVideoNavFlatten)
+    CDirectory::GetDirectory("library://video_flat/", items, "");
+  else
+    CDirectory::GetDirectory("library://video/", items, "");
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];
@@ -421,35 +422,6 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     share.strName=item->GetLabel();
     share.strPath = item->GetPath();
     share.m_strThumbnailImage= item->GetIconImage();
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    m_sources.push_back(share);
-  }
-
-  if (g_settings.GetSourcesFromType("video")->empty())
-  { // no sources - add the "Add Source" item
-    CMediaSource share;
-    share.strName=g_localizeStrings.Get(999); // "Add Videos"
-    share.strPath = "sources://add/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultAddSource.png");
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    m_sources.push_back(share);
-  }
-  else
-  {
-    { // Files share
-      CMediaSource share;
-      share.strName=g_localizeStrings.Get(744); // Files
-      share.strPath = "sources://video/";
-      share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultFolder.png");
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-      m_sources.push_back(share);
-    }
-  }
-  { // Playlists share
-    CMediaSource share;
-    share.strName=g_localizeStrings.Get(136); // Playlists
-    share.strPath = "special://videoplaylists/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlaylists.png");
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
@@ -517,7 +489,7 @@ CGUIViewStateVideoMovies::CGUIViewStateVideoMovies(const CFileItemList& items) :
   AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
   AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
 
-  if (items.IsSmartPlayList())
+  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
   {
     AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%T", "%R"));
     SetSortMethod(SORT_METHOD_PLAYLIST_ORDER);
@@ -556,7 +528,7 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
     AddSortMethod(SORT_METHOD_ALBUM,558, LABEL_MASKS("%B - %T", "%Y"));
   }
 
-  if (items.IsSmartPlayList())
+  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
   {
     AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%A - %T", "%Y"));
     SetSortMethod(SORT_METHOD_PLAYLIST_ORDER);
@@ -586,7 +558,7 @@ CGUIViewStateVideoTVShows::CGUIViewStateVideoTVShows(const CFileItemList& items)
 
   AddSortMethod(SORT_METHOD_YEAR,562,LABEL_MASKS("%L","%Y","%L","%Y"));
 
-  if (items.IsSmartPlayList())
+  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
   {
     AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%L", "%M", "%L", "%M"));
     SetSortMethod(SORT_METHOD_PLAYLIST_ORDER);
@@ -630,7 +602,7 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
     AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%Z - %H. %T","%J"));
   }
 
-  if (items.IsSmartPlayList())
+  if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
   {
     AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%Z - %H. %T", "%R"));
     SetSortMethod(SORT_METHOD_PLAYLIST_ORDER);

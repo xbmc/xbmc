@@ -1,4 +1,5 @@
 include ../Makefile.include
+include ../config.site.mk
 
 # lib name, version
 LIBNAME=libcec
@@ -9,7 +10,7 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
+LIBDYLIB=$(SOURCE)/lib/.libs/$(LIBNAME).dylib
 
 all: $(LIBDYLIB) .installed
 

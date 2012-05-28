@@ -24,13 +24,14 @@
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
 #include "utils/StdString.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
 
 #include <map>
 
 // forward definitions
 class CAction;
-class CGUISound;
 class TiXmlNode;
+class IAESound;
 
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };
 
@@ -39,42 +40,44 @@ class CGUIAudioManager
   class CWindowSounds
   {
   public:
-    CStdString strInitFile;
-    CStdString strDeInitFile;
+    IAESound *initSound;
+    IAESound *deInitSound;
+  };
+
+  class CSoundInfo
+  {
+  public:
+    int usage;
+    IAESound *sound;      
   };
 
 public:
   CGUIAudioManager();
-          ~CGUIAudioManager();
+  ~CGUIAudioManager();
 
-          void        Initialize(int iDevice);
-          void        DeInitialize(int iDevice);
+  void Initialize();
+  void DeInitialize();
 
-          bool        Load();
+  bool Load();
+  void UnLoad();
 
-          void        PlayActionSound(const CAction& action);
-          void        PlayWindowSound(int id, WINDOW_SOUND event);
-          void        PlayPythonSound(const CStdString& strFileName);
 
-          void        FreeUnused();
+  void PlayActionSound(const CAction& action);
+  void PlayWindowSound(int id, WINDOW_SOUND event);
+  void PlayPythonSound(const CStdString& strFileName);
 
-          void        Enable(bool bEnable);
-          void        SetVolume(int iLevel);
-          void        Stop();
+  void Enable(bool bEnable);
+  void SetVolume(float level);
+  void Stop();
 private:
-          bool        LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile);
+  typedef std::map<const CStdString, CSoundInfo> soundCache;
+  typedef std::map<int, IAESound*              > actionSoundMap;
+  typedef std::map<int, CWindowSounds          > windowSoundMap;
+  typedef std::map<const CStdString, IAESound* > pythonSoundsMap;
 
-  typedef std::map<int, CStdString> actionSoundMap;
-  typedef std::map<int, CWindowSounds> windowSoundMap;
-
-  typedef std::map<CStdString, CGUISound*> pythonSoundsMap;
-  typedef std::map<int, CGUISound*> windowSoundsMap;
-
+  soundCache          m_soundCache;
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;
-
-  CGUISound*          m_actionSound;
-  windowSoundsMap     m_windowSounds;
   pythonSoundsMap     m_pythonSounds;
 
   CStdString          m_strMediaDir;
@@ -82,6 +85,10 @@ private:
   bool                m_bEnabled;
 
   CCriticalSection    m_cs;
+
+  IAESound* LoadSound(const CStdString &filename);
+  void      FreeSound(IAESound *sound);
+  IAESound* LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier);
 };
 
 extern CGUIAudioManager g_audioManager;

@@ -33,7 +33,7 @@ CArchive::CArchive(CFile* pFile, int mode)
   m_iMode = mode;
 
   m_pBuffer = new BYTE[BUFFER_MAX];
-  memset(m_pBuffer, 0, sizeof(m_pBuffer));
+  memset(m_pBuffer, 0, BUFFER_MAX);
 
   m_BufferPos = 0;
 }

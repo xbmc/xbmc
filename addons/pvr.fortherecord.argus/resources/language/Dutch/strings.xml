@@ -7,4 +7,5 @@
     <string id="30003">Verbindingstimeout (s)</string>
     <string id="30004">Windows gebruikersaccount</string>
     <string id="30005">Wachtwoord</string>
+    <string id="30006">Wachttijd na afstemmen (ms)</string>
 </strings>

@@ -7,8 +7,6 @@ VERSION=0.5.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-BASE_URL=http://www.libssh.org/files/0.5
-
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
 

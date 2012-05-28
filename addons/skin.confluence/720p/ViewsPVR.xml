@@ -289,6 +289,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -590,6 +591,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -754,6 +756,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -1204,9 +1207,9 @@
 							<visible>!Control.HasFocus(14)</visible>
 						</control>
 						<control type="image">
-							<posx>980</posx>
+							<posx>940</posx>
 							<posy>0</posy>
-							<width>120</width>
+							<width>155</width>
 							<height>40</height>
 							<colordiffuse>33FFFFFF</colordiffuse>
 							<texture border="5">StackFO.png</texture>
@@ -1324,6 +1327,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -1678,6 +1682,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -2001,6 +2006,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -2375,6 +2381,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>

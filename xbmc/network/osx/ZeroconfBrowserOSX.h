@@ -28,11 +28,10 @@
 #include "threads/CriticalSection.h"
 
 #include <CoreFoundation/CoreFoundation.h>
-#if !defined(__arm__)
-#include <Carbon/Carbon.h>
-#include <CoreServices/CoreServices.h>
+#if defined(TARGET_DARWIN_OSX)
+  #include <CoreServices/CoreServices.h>
 #else
-#include <CFNetwork/CFNetServices.h>
+  #include <CFNetwork/CFNetServices.h>
 #endif
 
 //platform specific implementation of  zeroconfbrowser interface using native os x APIs

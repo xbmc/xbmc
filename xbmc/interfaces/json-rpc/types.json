@@ -3,6 +3,18 @@
     "type": [ "null", "boolean" ],
     "default": null
   },
+  "Optional.String": {
+    "type": [ "null", "string" ], 
+    "default": null
+  },
+  "Optional.Integer": {
+    "type": [ "null", "integer" ], 
+    "default": null
+  },
+  "Optional.Number": {
+    "type": [ "null", "number" ], 
+    "default": null
+  },
   "Array.String": {
     "type": "array",
     "items": { "type": "string", "minLength": 1 }
@@ -318,7 +330,7 @@
                 "lyrics", "musicbrainztrackid", "musicbrainzartistid",
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file", "artistid",
-                "albumid" ]
+                "albumid", "lastplayed" ]
     }
   },
   "Audio.Details.Base": {
@@ -383,7 +395,8 @@
       "musicbrainztrackid": { "type": "string" },
       "musicbrainzartistid": { "type": "string" },
       "artistid": { "$ref": "Library.Id" },
-      "albumid": { "$ref": "Library.Id" }
+      "albumid": { "$ref": "Library.Id" },
+      "lastplayed": { "type": "string" }
     }
   },
   "Video.Fields.Movie": {

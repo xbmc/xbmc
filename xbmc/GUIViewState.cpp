@@ -75,7 +75,8 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol()=="musicsearch")
     return new CGUIViewStateMusicSearch(items);
 
-  if (items.IsSmartPlayList() || url.GetProtocol() == "upnp")
+  if (items.IsSmartPlayList() || url.GetProtocol() == "upnp" ||
+      (url.GetProtocol() == "library" && items.GetProperty("library.filter").asBoolean()))
   {
     if (items.GetContent() == "songs")
       return new CGUIViewStateMusicSmartPlaylist(items);
@@ -90,6 +91,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     else if (items.GetContent() == "movies")
       return new CGUIViewStateVideoMovies(items);
   }
+
+  if (url.GetProtocol() == "library")
+    return new CGUIViewStateLibrary(items);
 
   if (items.IsPlayList())
     return new CGUIViewStateMusicPlaylist(items);
@@ -477,4 +481,19 @@ void CGUIViewStateFromItems::SaveViewState()
   SaveViewToDb(m_items.GetPath(), g_windowManager.GetActiveWindow());
 }
 
+CGUIViewStateLibrary::CGUIViewStateLibrary(const CFileItemList &items) : CGUIViewState(items)
+{
+  AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+  SetSortMethod(SORT_METHOD_NONE);
+  SetSortOrder(SORT_ORDER_NONE);
+
+  SetViewAsControl(DEFAULT_VIEW_LIST);
+
+  LoadViewState(items.GetPath(), g_windowManager.GetActiveWindow());
+}
+
+void CGUIViewStateLibrary::SaveViewState()
+{
+  SaveViewToDb(m_items.GetPath(), g_windowManager.GetActiveWindow());
+}
 
