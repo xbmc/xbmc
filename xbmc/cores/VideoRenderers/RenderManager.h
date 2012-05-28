@@ -148,6 +148,7 @@ public:
    * display becomes available for player to deliver a new frame.
    */
   void NotifyDisplayFlip();
+  bool HasFrame();
   void EnableBuffering(bool enable);
   void DiscardBuffer();
 
