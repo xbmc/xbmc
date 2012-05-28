@@ -52,6 +52,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
   m_POfilelength = static_cast<size_t> (fileLength);
 
   m_strBuffer.resize(m_POfilelength+1);
+  m_strBuffer[0] = '\n';
 
   unsigned int readBytes = file.Read(&m_strBuffer[1], m_POfilelength);
   file.Close();
@@ -65,13 +66,13 @@ bool CPODocument::LoadFile(const std::string &pofilename)
 
   ConvertLineEnds(pofilename);
 
-  // we make sure, to have an LF at beginning and at end of buffer
-  m_strBuffer[0] = '\n';
+  // we make sure, to have an LF at the end of buffer
   if (*m_strBuffer.rbegin() != '\n')
   {
     m_strBuffer += "\n";
-    m_POfilelength++;
   }
+
+  m_POfilelength = m_strBuffer.size();
 
   if (GetNextEntry() && m_Entry.Type == MSGID_FOUND)
     return true;
@@ -87,7 +88,7 @@ bool CPODocument::GetNextEntry()
     // if we don't find LFLF, we reached the end of the buffer and the last entry to check
     // we indicate this with setting m_nextEntryPos to the end of the buffer
     if ((m_nextEntryPos = m_strBuffer.find("\n\n", m_CursorPos)) == std::string::npos)
-      m_nextEntryPos = m_POfilelength;
+      m_nextEntryPos = m_POfilelength-1;
 
     // now we read the actual entry into a temp string for further processing
     m_Entry.Content.assign(m_strBuffer, m_CursorPos, m_nextEntryPos - m_CursorPos +1);
@@ -112,7 +113,7 @@ bool CPODocument::GetNextEntry()
       return true;
     }
   }
-  while (m_nextEntryPos != m_POfilelength);
+  while (m_nextEntryPos != m_POfilelength-1);
   // we reached the end of buffer AND we have not found a valid entry
 
   return false;
