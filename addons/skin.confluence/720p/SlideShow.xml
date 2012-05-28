@@ -35,5 +35,18 @@
 			<include>VisibleFadeEffect</include>
 			<include>SmallMusicInfo</include>
 		</control>
+		<control type="label">
+			<description>Date Label</description>
+			<posx>560</posx>
+			<posy>700</posy>
+			<width>auto</width>
+			<visible>!Skin.HasSetting(HideDatesOnSlideshow)</visible>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>$INFO[slideshow.exifdate]</label>
+			<font>font30</font>
+			<textcolor>FF000000</textcolor>
+			<shadowcolor>FFFFFFFF</shadowcolor>
+		</control>
 	</controls>
 </window>
