@@ -34,6 +34,8 @@
 #define SLIDE_COLOUR                907
 #define SLIDE_PROCESS               908
 
+#define SLIDE_EXIF_DATE             919 /* Implementation only to just get
+                                           localized date */
 #define SLIDE_EXIF_DATE_TIME        920
 #define SLIDE_EXIF_DESCRIPTION      921
 #define SLIDE_EXIF_CAMERA_MAKE      922
