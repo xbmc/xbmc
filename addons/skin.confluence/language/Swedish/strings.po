@@ -1,4 +1,8 @@
 # XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
 # Translators:
 # Gunnar Norin <blittan@xbmc.org>, 2012.
 msgid ""
@@ -14,6 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Confluence is the default skin for XBMC, removing it may cause issues"
+msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
@@ -590,4 +606,3 @@ msgstr "Chans till nederbörd"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Hämtar prognosinfo..."
-
