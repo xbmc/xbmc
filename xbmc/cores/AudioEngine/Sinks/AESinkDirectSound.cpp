@@ -104,13 +104,15 @@ static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LP
 }
 
 CAESinkDirectSound::CAESinkDirectSound() :
-  m_initialized  (false),
-  m_pBuffer      (NULL ),
-  m_pDSound      (NULL ),
-  m_BufferOffset (0    ),
-  m_CacheLen     (0    ),
-  m_dwChunkSize  (0    ),
-  m_dwBufferLen  (0    )
+  m_initialized   (false),
+  m_isDirtyDS     (false),
+  m_pBuffer       (NULL ),
+  m_pDSound       (NULL ),
+  m_BufferOffset  (0    ),
+  m_CacheLen      (0    ),
+  m_dwChunkSize   (0    ),
+  m_dwBufferLen   (0    ),
+  m_BufferTimeouts(0    )
 {
   m_channelLayout.Reset();
 }
@@ -262,6 +264,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   m_CacheLen = 0;
   m_LastCacheCheck = XbmcThreads::SystemClockMillis();
   m_initialized = true;
+  m_isDirtyDS = false;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Initializing DirectSound with the following parameters:");
   CLog::Log(LOGDEBUG, "  Audio Device    : %s", ((std::string)deviceFriendlyName).c_str());
@@ -312,7 +315,7 @@ void CAESinkDirectSound::Deinitialize()
 
 bool CAESinkDirectSound::IsCompatible(const AEAudioFormat format, const std::string device)
 {
-  if (!m_initialized)
+  if (!m_initialized || m_isDirtyDS)
     return false;
 
   u_int notCompatible         = 0;
@@ -369,7 +372,11 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames)
   }
 
   while (GetSpace() < total)
+  {
+    if (m_isDirtyDS)
+      return INT_MAX;
     Sleep(total * 1000 / m_AvgBytesPerSec);
+  }
 
   while (len)
   {
@@ -381,7 +388,8 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames)
     if (DS_OK != res)
     {
       CLog::Log(LOGERROR, __FUNCTION__ ": Unable to lock buffer at offset %u. HRESULT: 0x%08x", m_BufferOffset, res);
-      break;
+      m_isDirtyDS = true;
+      return INT_MAX;
     }
 
     memcpy(start, pBuffer, size);
@@ -420,7 +428,8 @@ double CAESinkDirectSound::GetDelay()
     return 0.0;
 
   /* Make sure we know how much data is in the cache */
-  UpdateCacheStatus();
+  if (!UpdateCacheStatus())
+    m_isDirtyDS = true;
 
   /** returns current cached data duration in seconds */
   double delay = (double)m_CacheLen / (double)m_AvgBytesPerSec;
@@ -645,20 +654,21 @@ void CAESinkDirectSound::CheckPlayStatus()
   }
 }
 
-void CAESinkDirectSound::UpdateCacheStatus()
+bool CAESinkDirectSound::UpdateCacheStatus()
 {
   CSingleLock lock (m_runLock);
   // TODO: Check to see if we may have cycled around since last time
   unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
-    return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
+    return true; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
   DWORD playCursor = 0, writeCursor = 0;
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
   if (DS_OK != res)
   {
     CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x", res);
-    return;
+    m_isDirtyDS = true;
+    return false;
   }
 
   m_LastCacheCheck = time;
@@ -685,8 +695,15 @@ void CAESinkDirectSound::UpdateCacheStatus()
   {
     CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun - W:%u, P:%u, O:%u.", writeCursor, playCursor, m_BufferOffset);
     m_BufferOffset = writeCursor; // Catch up
-    m_pBuffer->Stop(); // Wait until someone gives us some data to restart playback (prevents glitches)
+    //m_pBuffer->Stop(); // Wait until someone gives us some data to restart playback (prevents glitches)
+    m_BufferTimeouts++;
+    if (m_BufferTimeouts > 10)
+    {
+      m_isDirtyDS = true;
+      return false;
+    }
   }
+  else m_BufferTimeouts = 0;
 
   // Calculate available space in the ring buffer
   if (playCursor == m_BufferOffset && m_BufferOffset ==  writeCursor) // Playback is stopped and we are all at the same place
@@ -695,12 +712,15 @@ void CAESinkDirectSound::UpdateCacheStatus()
     m_CacheLen = m_BufferOffset - playCursor;
   else
     m_CacheLen = m_dwBufferLen - (playCursor - m_BufferOffset);
+
+  return true;
 }
 
 unsigned int CAESinkDirectSound::GetSpace()
 {
   CSingleLock lock (m_runLock);
-  UpdateCacheStatus();
+  if (!UpdateCacheStatus())
+    m_isDirtyDS = true;
   unsigned int space = m_dwBufferLen - m_CacheLen;
 
   // We can never allow the internal buffers to fill up complete

@@ -50,6 +50,7 @@ void CAdvancedSettings::Initialize()
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
   m_audioResample = 0;
+  m_allowTranscode44100 = false;
   m_audioForceDirectSound = false;
   m_audioAudiophile = false;
   m_allChannelStereo = false;
@@ -377,6 +378,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "percentseekbackwardbig", m_musicPercentSeekBackwardBig, -100, 0);
 
     XMLUtils::GetInt(pElement, "resample", m_audioResample, 0, 192000);
+    XMLUtils::GetBoolean(pElement, "allowtranscode44100", m_allowTranscode44100);
     XMLUtils::GetBoolean(pElement, "forceDirectSound", m_audioForceDirectSound);
     XMLUtils::GetBoolean(pElement, "audiophile", m_audioAudiophile);
     XMLUtils::GetBoolean(pElement, "allchannelstereo", m_allChannelStereo);

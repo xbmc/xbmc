@@ -86,6 +86,13 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   }
   unsigned int blockSize = (m_codec->m_BitsPerSample >> 3) * m_codec->GetChannelInfo().Count();
 
+  if (blockSize == 0)
+  {
+    CLog::Log(LOGERROR, "CAudioDecoder: Codec provided invalid parameters (%d-bit, %u channels)",
+              m_codec->m_BitsPerSample, m_codec->GetChannelInfo().Count());
+    return false;
+  }
+
   /* allocate the pcmBuffer for 2 seconds of audio */
   m_pcmBuffer.Create(2 * blockSize * m_codec->m_SampleRate);
 
@@ -239,12 +246,12 @@ float CAudioDecoder::GetReplayGain()
   {
     if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain / 100.0f;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain * 0.01f;
       peak = m_codec->m_replayGain.fAlbumPeak;
     }
     else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain / 100.0f;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain * 0.01f;
       peak = m_codec->m_replayGain.fTrackPeak;
     }
   }
@@ -252,12 +259,12 @@ float CAudioDecoder::GetReplayGain()
   {
     if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain / 100.0f;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain * 0.01f;
       peak = m_codec->m_replayGain.fTrackPeak;
     }
     else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain / 100.0f;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain * 0.01f;
       peak = m_codec->m_replayGain.fAlbumPeak;
     }
   }
@@ -269,6 +276,8 @@ float CAudioDecoder::GetReplayGain()
     if (fabs(peak * replaygain) > 1.0f)
       replaygain = 1.0f / fabs(peak);
   }
+
+  CLog::Log(LOGDEBUG, "AudioDecoder::GetReplayGain - Final Replaygain applied: %f, Track/Album Gain %f, Peak %f", replaygain, replaydB, peak);
 
   return replaygain;
 }

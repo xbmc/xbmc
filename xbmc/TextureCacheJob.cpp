@@ -247,3 +247,31 @@ bool CTextureDDSJob::DoWork()
   }
   return false;
 }
+
+CTextureUseCountJob::CTextureUseCountJob(const std::vector<CTextureDetails> &textures) : m_textures(textures)
+{
+}
+
+bool CTextureUseCountJob::operator==(const CJob* job) const
+{
+  if (strcmp(job->GetType(),GetType()) == 0)
+  {
+    const CTextureUseCountJob* useJob = dynamic_cast<const CTextureUseCountJob*>(job);
+    if (useJob && useJob->m_textures == m_textures)
+      return true;
+  }
+  return false;
+}
+
+bool CTextureUseCountJob::DoWork()
+{
+  CTextureDatabase db;
+  if (db.Open())
+  {
+    db.BeginTransaction();
+    for (std::vector<CTextureDetails>::const_iterator i = m_textures.begin(); i != m_textures.end(); ++i)
+      db.IncrementUseCount(*i);
+    db.CommitTransaction();
+  }
+  return true;
+}

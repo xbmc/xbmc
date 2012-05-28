@@ -53,6 +53,7 @@ bool CTextureDatabase::CreateTables()
     CLog::Log(LOGINFO, "create sizes table, index,  and trigger");
     m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
     m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
+    m_pDS->exec("CREATE INDEX idxSize2 ON sizes(idtexture, width, height)");
     m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
 
     CLog::Log(LOGINFO, "create path table");
@@ -135,6 +136,10 @@ bool CTextureDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
       m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
       m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
+    }
+    if (version < 13)
+    { // index for updateusecount
+      m_pDS->exec("CREATE INDEX idxSize2 ON sizes(idtexture, width, height)");
     }
   }
   catch (...)

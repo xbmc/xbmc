@@ -112,7 +112,7 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     return ::av_register_all();
   } 
-  virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
+  virtual void av_register_all_dont_call() { *(volatile int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
   virtual int url_feof(AVIOContext *s) { return ::url_feof(s); }
   virtual void avformat_close_input(AVFormatContext **s) { ::avformat_close_input(s); }

@@ -586,8 +586,9 @@ namespace PYXBMC
   {
     if (g_application.m_pPlayer)
     {
-      PyObject *list = PyList_New(0);
-      for (int iStream=0; iStream < g_application.m_pPlayer->GetAudioStreamCount(); iStream++)
+      int i_size = g_application.m_pPlayer->GetAudioStreamCount();
+      PyObject *list = PyList_New(i_size);
+      for (int iStream=0; iStream < i_size; iStream++)
       {  
         CStdString strName;
         CStdString FullLang;
@@ -595,7 +596,8 @@ namespace PYXBMC
         g_LangCodeExpander.Lookup(FullLang, strName);
         if (FullLang.IsEmpty())
           g_application.m_pPlayer->GetAudioStreamName(iStream, FullLang);
-        PyList_Append(list, Py_BuildValue((char*)"s", FullLang.c_str()));
+        PyList_SetItem(list, iStream, Py_BuildValue((char*)"s", FullLang.c_str()));
+        //PyList_SetItem() steals the ref count, so no need to DECREF
       }
       return list;
     }
@@ -637,15 +639,17 @@ namespace PYXBMC
   {
     if (g_application.m_pPlayer)
     {
-      PyObject *list = PyList_New(0);
-      for (int iStream=0; iStream < g_application.m_pPlayer->GetSubtitleCount(); iStream++)
+      int i_size = g_application.m_pPlayer->GetSubtitleCount();
+      PyObject *list = PyList_New(i_size);
+      for (int iStream=0; iStream < i_size; iStream++)
       {
         CStdString strName;
         CStdString FullLang;
         g_application.m_pPlayer->GetSubtitleName(iStream, strName);
         if (!g_LangCodeExpander.Lookup(FullLang, strName))
           FullLang = strName;
-        PyList_Append(list, Py_BuildValue((char*)"s", FullLang.c_str()));
+        PyList_SetItem(list, iStream, Py_BuildValue((char*)"s", FullLang.c_str()));
+        //PyList_SetItem() steals the ref count, so no need to DECREF
       }
       return list;
     }

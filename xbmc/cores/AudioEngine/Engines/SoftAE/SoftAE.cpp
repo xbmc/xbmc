@@ -245,14 +245,15 @@ void CSoftAE::InternalOpenSink()
   /*
     try to use 48000hz if we are going to transcode, this prevents the sink
     from being re-opened repeatedly when switching sources, which locks up
-    some receivers & crappy integrated sound drivers.
+    some receivers & crappy integrated sound drivers. Check for as.xml override
   */
   if (m_transcode && !m_rawPassthrough)
   {
     enum AEChannel ac3Layout[3] = {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL};
-    newFormat.m_sampleRate    = 48000;
     newFormat.m_channelLayout = ac3Layout;
     m_outputStageFn = &CSoftAE::RunTranscodeStage;
+    if (!g_advancedSettings.m_allowTranscode44100)
+      newFormat.m_sampleRate    = 48000;
   }
 
   /*
@@ -992,6 +993,15 @@ void CSoftAE::RunOutputStage()
   }
 
   wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames);
+
+  /* Return value of INT_MAX signals error in sink - restart */
+  if (wroteFrames == INT_MAX)
+  {
+    CLog::Log(LOGERROR, "CSoftAE::RunOutputStage - sink error - reinit flagged");
+    wroteFrames = 0;
+    m_reOpen = true;
+  }
+
   m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
 }
 
@@ -1001,6 +1011,15 @@ void CSoftAE::RunRawOutputStage()
     return;
 
   int wroteFrames = m_sink->AddPackets((uint8_t*)m_buffer.Raw(m_sinkBlockSize), m_sinkFormat.m_frames);
+
+  /* Return value of INT_MAX signals error in sink - restart */
+  if (wroteFrames == INT_MAX)
+  {
+    CLog::Log(LOGERROR, "CSoftAE::RunRawOutputStage - sink error - reinit flagged");
+    wroteFrames = 0;
+    m_reOpen = true;
+  }
+
   m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
 }
 
@@ -1051,6 +1070,15 @@ void CSoftAE::RunTranscodeStage()
   if (m_encodedBuffer.Used() >= sinkBlock)
   {
     int wroteFrames = m_sink->AddPackets((uint8_t*)m_encodedBuffer.Raw(sinkBlock), m_sinkFormat.m_frames);
+    
+    /* Return value of INT_MAX signals error in sink - restart */
+    if (wroteFrames == INT_MAX)
+    {
+      CLog::Log(LOGERROR, "CSoftAE::RunTranscodeStage - sink error - reinit flagged");
+      wroteFrames = 0;
+      m_reOpen = true;
+    }
+
     m_encodedBuffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
   }
 }
@@ -1101,17 +1129,19 @@ unsigned int CSoftAE::RunRawStreamStage(unsigned int channelCount, void *out, bo
 
 unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
 {
-  StreamList resumeStreams;
-  static StreamList::iterator itt;
-
   float *dst = (float*)out;
   unsigned int mixed = 0;
 
   /* identify the master stream */
   CSingleLock streamLock(m_streamLock);
 
+  /* no point doing anything if we have no streams */
+  if (m_playingStreams.empty())
+    return mixed;
+
   /* mix in any running streams */
-  for (itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
+  StreamList resumeStreams;
+  for (StreamList::iterator itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
   {
     CSoftAEStream *stream = *itt;
 
