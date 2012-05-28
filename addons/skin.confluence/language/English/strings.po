@@ -637,3 +637,8 @@ msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr ""
 
+#This is in general options, but no msgctxt near that range available
+msgctxt "#31910"
+msgid "Hide date on slideshow pictures"
+msgstr ""
+
