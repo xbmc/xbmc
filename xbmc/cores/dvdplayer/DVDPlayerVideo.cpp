@@ -708,6 +708,8 @@ void CDVDPlayerVideo::Process()
 
             int iResult = OutputPicture(&picture, pts);
 
+            frametime = (double)DVD_TIME_BASE/m_fFrameRate;
+
             if(m_started == false)
             {
               m_codecname = m_pVideoCodec->GetName();
