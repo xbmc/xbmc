@@ -1657,7 +1657,7 @@ void CDVDPlayer::HandlePlaySpeed()
 
     }
     else if (m_CurrentVideo.id >= 0
-          &&  m_CurrentVideo.inited == true
+          &&  (m_CurrentVideo.inited == true || GetPlaySpeed() < 0) // allow rewind at end of file
           &&  m_SpeedState.lastpts  != m_dvdPlayerVideo.GetCurrentPts()
           &&  m_SpeedState.lasttime != GetTime())
     {
@@ -2316,6 +2316,12 @@ void CDVDPlayer::HandleMessages()
         {
           CDVDInputStreamPVRManager* pvrinputstream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
           pvrinputstream->Pause( speed == 0 );
+        }
+
+        // do a seek after rewind, clock is not in sync with current pts
+        if (m_playSpeed < 0 && speed >= 0)
+        {
+          m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
         }
 
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
