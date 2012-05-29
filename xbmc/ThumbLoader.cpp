@@ -204,11 +204,14 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   // video db items normally have info in the database
   if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
   {
-    if (FillLibraryArt(pItem) &&
-        pItem->GetVideoInfoTag()->m_type != "movie" &&
-        pItem->GetVideoInfoTag()->m_type != "episode" &&
-        pItem->GetVideoInfoTag()->m_type != "tvshow" &&
-        pItem->GetVideoInfoTag()->m_type != "musicvideo")
+    FillLibraryArt(pItem);
+
+    if (pItem->GetVideoInfoTag()->m_type == "set"      ||
+        pItem->GetVideoInfoTag()->m_type == "actor"    ||
+        pItem->GetVideoInfoTag()->m_type == "artist"   ||
+        pItem->GetVideoInfoTag()->m_type == "director" ||
+        pItem->GetVideoInfoTag()->m_type == "writer"   ||
+        pItem->GetVideoInfoTag()->m_type == "season"   )
     {
       m_database->Close();
       return true; // nothing else to be done
