@@ -522,6 +522,7 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 556, LABEL_MASKS("%T", "%Y"));  // Title, Year | empty, empty
   else
     AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%Y"));  // Title, Year | empty, empty
+  AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
   AddSortMethod(SORT_METHOD_YEAR, 562, LABEL_MASKS("%T", "%Y"));  // Title, Year | empty, empty
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
   {
@@ -533,6 +534,12 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
     AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%A - %T", "%Y"));  // Artist - Title, Year | empty, empty
     AddSortMethod(SORT_METHOD_ALBUM, 558, LABEL_MASKS("%B - %T", "%Y"));  // Album - Title, Year | empty, empty
   }
+
+  AddSortMethod(SORT_METHOD_PLAYCOUNT, 576, LABEL_MASKS("%T", "%V"));  // Title, Playcount | empty, empty
+
+  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
+  AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
 
   if (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean())
   {

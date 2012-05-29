@@ -76,12 +76,12 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (items.IsSmartPlayList() || url.GetProtocol() == "upnp" ||
       (url.GetProtocol() == "library" && items.GetProperty("library.filter").asBoolean()))
   {
-    if (items.GetContent() == "songs")
+    if (items.GetContent() == "songs" ||
+        items.GetContent() == "albums" ||
+        items.GetContent() == "mixed")
       return new CGUIViewStateMusicSmartPlaylist(items);
-    else if (items.GetContent() == "albums")
-      return new CGUIViewStateMusicSmartPlaylist(items);
-    else if (items.GetContent() == "musicvideos") // TODO: Update this
-      return new CGUIViewStateMusicSmartPlaylist(items);
+    else if (items.GetContent() == "musicvideos")
+      return new CGUIViewStateVideoMusicVideos(items);
     else if (items.GetContent() == "tvshows")
       return new CGUIViewStateVideoTVShows(items);
     else if (items.GetContent() == "episodes")

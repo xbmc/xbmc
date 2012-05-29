@@ -149,7 +149,12 @@ namespace XFILE
 
         items.Append(items2);
         if (items2.Size())
-          items.SetContent("musicvideos");
+        {
+          if (items.Size() > items2.Size())
+            items.SetContent("mixed");
+          else
+            items.SetContent("musicvideos");
+        }
       }
     }
     items.SetLabel(playlist.GetName());
