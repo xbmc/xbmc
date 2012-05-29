@@ -175,7 +175,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
   }
 }
 
-void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result)
+void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool sortLimit /* = true */)
 {
   int size  = items.Size();
   int start = (int)parameterObject["limits"]["start"].asInteger();
@@ -183,11 +183,18 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   end = (end <= 0 || end > size) ? size : end;
   start = start > end ? end : start;
 
-  Sort(items, parameterObject["sort"]);
+  if (sortLimit)
+    Sort(items, parameterObject["sort"]);
 
   result["limits"]["start"] = start;
   result["limits"]["end"]   = end;
   result["limits"]["total"] = size;
+
+  if (!sortLimit)
+  {
+    start = 0;
+    end = items.Size();
+  }
 
   for (int i = start; i < end; i++)
   {
