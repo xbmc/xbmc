@@ -2227,7 +2227,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
 //        album, artist
 //        album, artist, 1
 {
-  CStdString albums="", album, artist="", tmp;
+  CStdString albums="", tmp;
   double relevance;
   bool rel = false;
   AddonPtr addon;
@@ -2248,11 +2248,12 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
     try
     {
       int cnt=0;
-      album=paras[0];
+      CAlbum album;
+      album.strAlbum = paras[0];
       if (numParas>1)
       {
-        artist = paras[1];
-        scraper.FindAlbumInfo(album, artist);
+        album.artist = StringUtils::Split(paras[1], g_advancedSettings.m_musicItemSeparator);
+        scraper.FindAlbumInfo(album);
         if (numParas>2)
           rel = (paras[2]=="1");
       }
@@ -2273,7 +2274,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
             albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL().m_url[0].m_url;
             if (rel)
             {
-              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), artist);
+              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
               tmp.Format("%f",relevance);
               albums += "<@@@>"+tmp;
             }

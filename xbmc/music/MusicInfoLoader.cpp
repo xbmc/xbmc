@@ -90,9 +90,11 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     // set the artist / album properties
     XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
     XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
-    CArtist artist;
+
     CMusicDatabase database;
     database.Open();
+
+    CArtist artist;
     if (database.GetArtistInfo(param.GetArtistId(),artist,false))
       CMusicDatabase::SetPropertiesFromArtist(*pItem,artist);
 

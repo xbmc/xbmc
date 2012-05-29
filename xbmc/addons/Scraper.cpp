@@ -599,21 +599,27 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
 // find album by artist, using fcurl for web fetches
 // returns a list of albums (empty if no match or failure)
-std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CStdString &sAlbum,
-  const CStdString &sArtist)
+std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CAlbum& album)
 {
+  const CStdString strArtist = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
   CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper "
-    "(path: '%s', content: '%s', version: '%s')", __FUNCTION__, sArtist.c_str(),
-    sAlbum.c_str(), Name().c_str(), Path().c_str(),
+    "(path: '%s', content: '%s', version: '%s')", __FUNCTION__, strArtist.c_str(),
+    album.strAlbum.c_str(), Name().c_str(), Path().c_str(),
     ADDON::TranslateContent(Content()).c_str(), Version().c_str());
 
   // scraper function is given the album and artist as parameters and
   // returns an XML <url> element parseable by CScraperUrl
-  std::vector<CStdString> extras(2);
-  g_charsetConverter.utf8To(SearchStringEncoding(), sAlbum, extras[0]);
-  g_charsetConverter.utf8To(SearchStringEncoding(), sArtist, extras[1]);
+  
+
+  std::vector<CStdString> extras(4);
+  g_charsetConverter.utf8To(SearchStringEncoding(), album.strAlbum, extras[0]);
+  g_charsetConverter.utf8To(SearchStringEncoding(), strArtist, extras[1]);
+  g_charsetConverter.utf8To(SearchStringEncoding(), album.strMusicBrainzAlbumID, extras[2]);
+  g_charsetConverter.utf8To(SearchStringEncoding(), album.strMusicBrainzAlbumArtistID, extras[3]);
   CURL::Encode(extras[0]);
   CURL::Encode(extras[1]);
+  CURL::Encode(extras[2]);
+  CURL::Encode(extras[3]);
   CScraperUrl scurl;
   vector<CStdString> vcsOut = RunNoThrow("CreateAlbumSearchUrl", scurl, fcurl, &extras);
   if (vcsOut.size() > 1)
@@ -693,19 +699,20 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CStdStr
 
 // find artist, using fcurl for web fetches
 // returns a list of artists (empty if no match or failure)
-std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl,
-  const CStdString &sArtist)
+std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const CArtist& artist)
 {
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper "
-    "(file: '%s', content: '%s', version: '%s')", __FUNCTION__, sArtist.c_str(),
+    "(file: '%s', content: '%s', version: '%s')", __FUNCTION__, artist.strArtist.c_str(),
     Name().c_str(), Path().c_str(),
     ADDON::TranslateContent(Content()).c_str(), Version().c_str());
 
   // scraper function is given the artist as parameter and
   // returns an XML <url> element parseable by CScraperUrl
-  std::vector<CStdString> extras(1);
-  g_charsetConverter.utf8To(SearchStringEncoding(), sArtist, extras[0]);
+  std::vector<CStdString> extras(2);
+  g_charsetConverter.utf8To(SearchStringEncoding(), artist.strArtist, extras[0]);
+  g_charsetConverter.utf8To(SearchStringEncoding(), artist.strMusicBrainzArtistID, extras[1]);
   CURL::Encode(extras[0]);
+  CURL::Encode(extras[1]);
   CScraperUrl scurl;
   vector<CStdString> vcsOut = RunNoThrow("CreateArtistSearchUrl", scurl, fcurl, &extras);
 
