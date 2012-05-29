@@ -1,0 +1,28 @@
+#
+# Makefile for the xvdr PVR AddOn
+#
+# See the README for copyright information and
+# how to reach the author.
+#
+
+LIBS     = -ldl -lpthread
+LIBDIR   = @abs_top_srcdir@/addons/pvr.vdr.xvdr
+PVRADDON = $(LIBDIR)/XBMC_VDR_xvdr.pvr
+
+SRCS   = $(wildcard *.cpp) \
+	lib/libPlatform/linux/net_posix.c
+
+$(PVRADDON): buildpvrdeps $(OBJS)
+	$(SILENT_CPP) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(PVRADDON)
+
+include ../Makefile.include
+
+DEFINES+=-DLIVE555
+#INCLUDES += -I@abs_top_srcdir@/xbmc/filesystem
+
+clean: cleanpvrdeps
+
+cleanpvrdeps:
+	-rm -f $(PVRADDON)
+
+buildpvrdeps: $(OBJS)
