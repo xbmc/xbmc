@@ -171,14 +171,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         g_settings.CycleWatchMode(m_vecItems->GetContent());
         g_settings.Save();
-
-        // We need to clear any cached listing because a new filter is being applied
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-
-        // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
-        //       but for those perhaps we can just display them all, and only filter when we get a list
-        //       of actual videos?
-        Update(m_vecItems->GetPath());
+        OnFilterItems(GetProperty("filter").asString());
         return true;
       }
       else if (iControl == CONTROL_BTNFLATTEN)
@@ -198,14 +191,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         else
           g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_ALL);
         g_settings.Save();
-
-        // We need to clear any cached listing because a new filter is being applied
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-
-        // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
-        //       but for those perhaps we can just display them all, and only filter when we get a list
-        //       of actual videos?
-        Update(m_vecItems->GetPath());
+        OnFilterItems(GetProperty("filter").asString());
         return true;
       }
     }
@@ -520,6 +506,13 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_settings.m_bMyVideoNavFlatten);
 }
 
+bool CGUIWindowVideoNav::GetFilteredItems(const CStdString &filter, CFileItemList &items)
+{
+  bool result = CGUIMediaWindow::GetFilteredItems(filter, items);
+  ApplyWatchedFilter(items);
+  return result || g_settings.GetWatchMode(m_vecItems->GetContent()) != VIDEO_SHOW_ALL;
+}
+
 /// \brief Search for names, genres, artists, directors, and plots with search string \e strSearch in the
 /// \brief video databases and return the found \e items
 /// \param strSearch The search string
@@ -795,50 +788,6 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   dir.GetQueryParams(items.GetPath(),params);
   if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
     CGUIWindowMusicNav::SetupFanart(items);
-
-  NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
-
-  // now filter as necessary
-  bool filterWatched=false;
-  if (node == NODE_TYPE_EPISODES
-  ||  node == NODE_TYPE_SEASONS
-  ||  node == NODE_TYPE_SETS
-  ||  node == NODE_TYPE_TITLE_MOVIES
-  ||  node == NODE_TYPE_TITLE_TVSHOWS
-  ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
-  ||  node == NODE_TYPE_RECENTLY_ADDED_EPISODES
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-    filterWatched = true;
-  if (!items.IsVideoDb())
-    filterWatched = true;
-  if (items.IsSmartPlayList() && items.GetContent() == "tvshows")
-    node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
-
-  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
-
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CFileItemPtr item = items.Get(i);
-    if(item->HasVideoInfoTag() && (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS))
-    {
-      if (watchMode == VIDEO_SHOW_UNWATCHED)
-        item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("unwatchedepisodes").asInteger();
-      if (watchMode == VIDEO_SHOW_WATCHED)
-        item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("watchedepisodes").asInteger();
-      item->SetProperty("numepisodes", item->GetVideoInfoTag()->m_iEpisode);
-    }
-
-    if(filterWatched)
-    {
-      if((watchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
-      || (watchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
-      {
-        items.Remove(i);
-        i--;
-      }
-    }
-  }
 }
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -1470,4 +1419,53 @@ CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
   else if (dir.Equals("Files"))
     return "sources://video/";
   return CGUIWindowVideoBase::GetStartFolder(dir);
+}
+
+void CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
+{
+  CVideoDatabaseDirectory dir;
+  NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
+
+  // now filter watched items as necessary
+  bool filterWatched=false;
+  if (node == NODE_TYPE_EPISODES
+  ||  node == NODE_TYPE_SEASONS
+  ||  node == NODE_TYPE_SETS
+  ||  node == NODE_TYPE_TITLE_MOVIES
+  ||  node == NODE_TYPE_TITLE_TVSHOWS
+  ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
+  ||  node == NODE_TYPE_RECENTLY_ADDED_EPISODES
+  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
+  ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
+    filterWatched = true;
+  if (!items.IsVideoDb())
+    filterWatched = true;
+  if (items.IsSmartPlayList() && items.GetContent() == "tvshows")
+    node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
+
+  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr item = items.Get(i);
+
+    if(item->HasVideoInfoTag() && (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS))
+    {
+      if (watchMode == VIDEO_SHOW_UNWATCHED)
+        item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("unwatchedepisodes").asInteger();
+      if (watchMode == VIDEO_SHOW_WATCHED)
+        item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("watchedepisodes").asInteger();
+      item->SetProperty("numepisodes", item->GetVideoInfoTag()->m_iEpisode);
+    }
+
+    if (filterWatched)
+    {
+      if((watchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
+      || (watchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
+      {
+        items.Remove(i);
+        i--;
+      }
+    }
+  }
 }
