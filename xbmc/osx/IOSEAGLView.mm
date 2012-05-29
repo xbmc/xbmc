@@ -83,13 +83,6 @@
     framebufferResizeRequested = TRUE;
     [eaglLayer setFrame:frame];
   }
-  else 
-  {
-    //no framebuffer change needed
-    //fade backf from blackscreen
-    //[XBMCController fadeFromBlack];
-  }
-
 }
 
 - (void)layoutSubviews
@@ -102,10 +95,6 @@
     [self createFramebuffer];
     [self setFramebuffer];  
     [self initDisplayLink];
-
-    //fadein the view after changing framebuffer it was fadeout
-    //before screenchange...
-    //[XBMCController fadeFromBlack];
   }
 }
 
@@ -136,7 +125,7 @@
 
 - (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
 {
-  int scaleFactor = 1;
+  CGFloat scaleFactor = 1.0;
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
 
   currentScreen = screen;
