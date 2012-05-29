@@ -86,7 +86,7 @@ protected:
    \param items CFileItemList to filter
    \sa OnFilterItems
    */
-  void GetFilteredItems(const CStdString &filter, CFileItemList &items);
+  virtual bool GetFilteredItems(const CStdString &filter, CFileItemList &items);
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection(const CStdString& strPath, int iDriveType);
