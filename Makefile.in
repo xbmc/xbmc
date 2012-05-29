@@ -180,6 +180,7 @@ PVR_DIRS=\
 	xbmc/pvrclients/vdr-vnsi \
 	xbmc/pvrclients/tvheadend \
 	xbmc/pvrclients/vuplus \
+	xbmc/pvrclients/xvdr \
 	xbmc/pvrclients/pvr-demo
 
 LIBADDON_DIRS=\
