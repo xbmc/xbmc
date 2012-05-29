@@ -124,9 +124,9 @@
     }
     
     //if no retina display scale detected yet -
-    //ensure retina resolution on ipad3
+    //ensure retina resolution on ipad3's mainScreen
     //even on older iOS SDKs
-    if (ret == 1.0 && DarwinIsIPad3())
+    if (ret == 1.0 && screen == [UIScreen mainScreen] && DarwinIsIPad3())
     {
       ret = 2.0;//iPad3 has scale factor 2 (like iPod 4g, iPhone4 and iPhone4s)
     }
