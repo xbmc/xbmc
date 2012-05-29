@@ -535,6 +535,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   if (!items.HasThumbnail())
     UpdateFolderThumb(songsToAdd, items.GetPath());
 
+  // night199uk: used to return songsToAdd.size() but thats false as we roll back the transaction on cancel
   CommitSongs(songsToAdd);
   if (m_bStop)
     return 0;
@@ -556,21 +557,22 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     CAlbum album;
     VECSONGS songs;
     m_musicDatabase.GetAlbumInfo(iAlbum, album, &songs);
-    
     if (g_guiSettings.GetBool("musiclibrary.downloadinfo")) {
       bCanceled = false;
 
+      // night199uk: Don't bother retrying an individual artist in the same run, it didn't work before anyway -
+      // just wait for the next run
       if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
       {
-        if (DownloadArtistInfo(artist, bCanceled)) // assume we want to retry
-          m_artistsScanned.push_back(iArtist);
+        DownloadArtistInfo(artist, bCanceled);
+        m_artistsScanned.push_back(iArtist);
       }
       
       if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end()) 
       {
         CMusicAlbumInfo albumInfo;
-        if (DownloadAlbumInfo(album, bCanceled, albumInfo))
-          m_albumsScanned.push_back(iAlbum);
+        DownloadAlbumInfo(album, bCanceled, albumInfo);
+        m_albumsScanned.push_back(iAlbum);
       }
     }
     
@@ -851,7 +853,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, bool& bCanceled, 
   CStdString strAlbum(album.strAlbum);
   CStdString strArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
   if (!scraper.GetAlbumCount())
-    scraper.FindAlbumInfo(album.strAlbum, strArtist);
+    scraper.FindAlbumInfo(album);
 
   while (!scraper.Completed())
   {
@@ -1113,7 +1115,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, bool& bCancele
   }
 
   if (!scraper.GetArtistCount())
-    scraper.FindArtistInfo(artist.strArtist);
+    scraper.FindArtistInfo(artist);
 
   while (!scraper.Completed())
   {
