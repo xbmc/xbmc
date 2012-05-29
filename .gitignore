@@ -522,6 +522,7 @@ lib/cmyth/Makefile
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
 /xbmc/cores/DllLoader/Makefile
+/xbmc/cores/DllLoader/exports/Makefile
 
 /xbmc/cores/Makefile
 
