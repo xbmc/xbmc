@@ -352,7 +352,7 @@ bool CGUIPanelContainer::MoveLeft(bool wrapAround)
   { // wrap around
     SetCursor(GetCursor() + m_itemsPerRow - 1);
     if (GetOffset() * m_itemsPerRow + GetCursor() >= (int)m_items.size())
-      SetCursor((int)m_items.size() - GetOffset() * m_itemsPerRow);
+      SetCursor((int)m_items.size() - GetOffset() * m_itemsPerRow - 1);
   }
   else
     return false;
