@@ -70,7 +70,8 @@ const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath,
   /* strip the base or return an empty value if it doesn't fit or match */
   if (!strUseBase.IsEmpty())
   {
-    if (strUsePath.GetLength() <= strUseBase.GetLength() || strUsePath.Left(strUseBase.GetLength()) != strUseBase)
+    /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
+    if (strUsePath.GetLength() <= strUseBase.GetLength() || strUsePath.Left(strUseBase.GetLength() + 1) != strUseBase + "/")
       return strReturn;
     strUsePath.erase(0, strUseBase.GetLength());
   }
