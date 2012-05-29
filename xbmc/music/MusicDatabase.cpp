@@ -623,11 +623,8 @@ void CMusicDatabase::AddExtraSongArtists(const std::vector<std::string> &vecArti
     // add each of the artists in the vector of artists
     for (int i = 1; i < (int)vecArtists.size(); i++)
     {
-      CStdString strMusicBrainzArtistID;
-      strMusicBrainzArtistID.Empty();
-      
-      // night199uk: ergh, kludge because we only have MBIDs at this point for the primary artist.
-      int idArtist = AddArtist(vecArtists[i], strMusicBrainzArtistID);
+      // night199uk: ergh we only have MBIDs at this point for the primary artist.
+      int idArtist = AddArtist(vecArtists[i]);
       if (idArtist >= 0)
       { // added successfully, we must now add entries to the exartistsong table
         CStdString strSQL;
@@ -965,7 +962,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   CArtist artist;
   artist.idArtist = pDS->fv(artist_idArtist).get_asInt();
   artist.strArtist = pDS->fv("artist.strArtist").get_asString();
-  artist.strArtist = pDS->fv("artist.strMusicBrainzArtistID").get_asString();
+  artist.strMusicBrainzArtistID = pDS->fv("artist.strMusicBrainzArtistID").get_asString();
   artist.genre = StringUtils::Split(pDS->fv(artist_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.strBiography = pDS->fv(artist_strBiography).get_asString();
   artist.styles = StringUtils::Split(pDS->fv(artist_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
@@ -1313,6 +1310,28 @@ bool CMusicDatabase::DeleteAlbumInfo(int idAlbum)
   return false;
 }
 
+bool CMusicDatabase::HasArtistInfo(int idArtist)
+{
+  try
+  {
+    if (idArtist == -1)
+      return false; // not in the database
+    
+    CStdString strSQL=PrepareSQL("select * from artistinfo where idArtist = %ld", idArtist);
+    
+    if (!m_pDS2->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS2->num_rows();
+    m_pDS2->close();
+    return iRowsFound > 0;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idArtist);
+  }
+  
+  return false;
+}
+
 bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
 {
   try
@@ -1320,9 +1339,9 @@ bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
     if (idArtist == -1)
       return false; // not in the database
 
-    CStdString strSQL=PrepareSQL("select * from artistinfo "
-                                "join artist on artist.idArtist=artistinfo.idArtist "
-                                "where artistinfo.idArtist = %i"
+    CStdString strSQL=PrepareSQL("select * from artist "
+                                "join artistinfo on artistinfo.idArtist=artist.idArtist "
+                                "where artist.idArtist = %i"
                                 , idArtist);
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
