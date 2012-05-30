@@ -288,16 +288,6 @@ namespace PYXBMC
       new(&((ControlSpinEx*)pControl)->strTextureDown) string();
       new(&((ControlSpinEx*)pControl)->strTextureUpFocus) string();
       new(&((ControlSpinEx*)pControl)->strTextureDownFocus) string();
-      /*
-
-      li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
-
-      // note: conversion from infocolors -> plain colors here
-      ((ControlSpinEx*)pControl)->disabledColor = li.disabledColor;
-      ((ControlSpinEx*)pControl)->textColor  = li.textColor;
-      if (li.font) ((ControlSpinEx*)pControl)->strFont = li.font->GetFontName();
-      ((ControlButton*)pControl)->align = li.align;
-      */
       break;
     default:
       break;

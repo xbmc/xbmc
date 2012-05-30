@@ -249,7 +249,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_UNWATCHED", CGUIListItem::ICON_OVERLAY_UNWATCHED);
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_WATCHED", CGUIListItem::ICON_OVERLAY_WATCHED);
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_HD", CGUIListItem::ICON_OVERLAY_HD);
-  
+
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"SPIN_CONTROL_TYPE_INT", SPIN_CONTROL_TYPE_INT);
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"SPIN_CONTROL_TYPE_FLOAT", SPIN_CONTROL_TYPE_FLOAT);
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"SPIN_CONTROL_TYPE_TEXT", SPIN_CONTROL_TYPE_TEXT);
