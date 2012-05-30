@@ -61,6 +61,7 @@ public:
   bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
 protected:
   virtual void Process();
+  bool CommitSongs(VECSONGS& songs);
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
   void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
   int GetPathHash(const CFileItemList &items, CStdString &hash);

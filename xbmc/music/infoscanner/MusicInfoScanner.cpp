@@ -534,69 +534,72 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   if (!items.HasThumbnail())
     UpdateFolderThumb(songsToAdd, items.GetPath());
 
-  // finally, add these to the database
-  set<CStdString> artistsToScan;
-  set< pair<CStdString, CStdString> > albumsToScan;
+  if (!CommitSongs(songsToAdd))
+    return 0;
+
+  bool bCanceled;
+  for (unsigned int i = 0; i < songsToAdd.size(); ++i) 
+  {
+    if (m_bStop)
+      return songsToAdd.size();
+
+    CSong &song = songsToAdd[i];
+    CStdString strPath;
+    CStdString artistToScan = StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator);
+
+    long iArtist = m_musicDatabase.GetArtistByName(artistToScan);
+    CArtist artist;
+    m_musicDatabase.GetArtistInfo(iArtist, artist);
+    
+    long iAlbum = m_musicDatabase.GetAlbumByName(song.strAlbum, artistToScan);
+    CAlbum album;
+    
+    VECSONGS songs;
+    m_musicDatabase.GetAlbumInfo(iAlbum, album, &songs);
+    if (g_guiSettings.GetBool("musiclibrary.downloadinfo")) {
+      bCanceled = false;
+
+      // Don't bother retrying an individual artist in the same run, it didn't work before anyway -
+      // just wait for the next run
+      if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
+      {
+        strPath.Format("musicdb://2/%u/", iArtist);
+        DownloadArtistInfo(strPath, artistToScan, bCanceled);
+        m_artistsScanned.push_back(iArtist);
+      }
+      
+      if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end()) 
+      {
+        strPath.Format("musicdb://3/%u/", iAlbum);
+        CMusicAlbumInfo albumInfo;
+        DownloadAlbumInfo(strPath, artistToScan, album.strAlbum, bCanceled, albumInfo);
+        m_albumsScanned.push_back(iAlbum);
+      }
+    }
+
+    GetArtistArtwork(iArtist, artistToScan);
+  }
+
+  if (m_pObserver)
+    m_pObserver->OnStateChanged(READING_MUSIC_INFO);
+
+  return songsToAdd.size();
+}
+
+bool CMusicInfoScanner::CommitSongs(VECSONGS &songsToAdd) 
+{
   m_musicDatabase.BeginTransaction();
   for (unsigned int i = 0; i < songsToAdd.size(); ++i)
   {
     if (m_bStop)
     {
       m_musicDatabase.RollbackTransaction();
-      return i;
+      return false;
     }
-    CSong &song = songsToAdd[i];
-    m_musicDatabase.AddSong(song, false);
-
-    artistsToScan.insert(StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator));
-    albumsToScan.insert(make_pair(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator)));
+    m_musicDatabase.AddSong(songsToAdd[i], false);
   }
   m_musicDatabase.CommitTransaction();
-
-  bool bCanceled;
-  for (set<CStdString>::iterator i = artistsToScan.begin(); i != artistsToScan.end(); ++i)
-  {
-    bCanceled = false;
-    long iArtist = m_musicDatabase.GetArtistByName(*i);
-    if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
-    {
-      m_artistsScanned.push_back(iArtist);
-      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.downloadinfo"))
-      {
-        CStdString strPath;
-        strPath.Format("musicdb://2/%u/",iArtist);
-        if (!DownloadArtistInfo(strPath,*i, bCanceled)) // assume we want to retry
-          m_artistsScanned.pop_back();
-      }
-      else
-        GetArtistArtwork(iArtist, *i);
-    }
-  }
-
-  if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
-  {
-    for (set< pair<CStdString, CStdString> >::iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
-    {
-      if (m_bStop)
-        return songsToAdd.size();
-
-      long iAlbum = m_musicDatabase.GetAlbumByName(i->first, i->second);
-      CStdString strPath;
-      strPath.Format("musicdb://3/%u/",iAlbum);
-
-      bCanceled = false;
-      if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
-      {
-        CMusicAlbumInfo albumInfo;
-        if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
-          m_albumsScanned.push_back(iAlbum);
-      }
-    }
-  }
-  if (m_pObserver)
-    m_pObserver->OnStateChanged(READING_MUSIC_INFO);
-
-  return songsToAdd.size();
+  return true;
 }
 
 static bool SortSongsByTrack(CSong *song, CSong *song2)
