@@ -1240,9 +1240,9 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
         songs.push_back(song);
       }
     }
-    CMusicInfoScanner::CheckForVariousArtists(songs);
-    CStdString album, artist;
-    if (CMusicInfoScanner::HasSingleAlbum(songs, album, artist))
+    VECALBUMS albums;
+    CMusicInfoScanner::CategoriseAlbums(songs, albums);
+    if (albums.size() == 1)
     { // can cache as the folder thumb
       CStdString folderThumb(CThumbnailCache::GetMusicThumb(albumPath));
       CFile::Cache(albumThumb, folderThumb);

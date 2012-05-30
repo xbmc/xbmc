@@ -54,6 +54,29 @@ public:
   void Stop();
   void SetObserver(IMusicInfoScannerObserver* pObserver);
 
+  /*! \brief Categorise songs into albums
+   Albums are defined uniquely by the album name and album artist.
+
+   If albumartist is not available in a song, we determine it from the
+   common portion of each song's artist list.
+
+   eg the common artist for
+     Bob Dylan / Tom Petty / Roy Orbison
+     Bob Dylan / Tom Petty
+   would be "Bob Dylan / Tom Petty".
+
+   If all songs that share an album
+    1. have a non-empty album name
+    2. have at least two different primary artists
+    3. have no album artist set
+    4. and no track numbers overlap
+   we assume it is a various artists album, and set the albumartist field accordingly.
+
+   \param songs [in/out] list of songs to categorise - albumartist field may be altered.
+   \param albums [out] albums found within these songs.
+   */
+  static void CategoriseAlbums(VECSONGS &songs, VECALBUMS &albums);
+
   static void CheckForVariousArtists(VECSONGS &songs);
   static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 

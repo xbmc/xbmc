@@ -531,7 +531,9 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     }
   }
 
-  CheckForVariousArtists(songsToAdd);
+  VECALBUMS albums;
+  CategoriseAlbums(songsToAdd, albums);
+
   if (!items.HasThumbnail())
     UpdateFolderThumb(songsToAdd, items.GetPath());
 
@@ -625,6 +627,108 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 static bool SortSongsByTrack(CSong *song, CSong *song2)
 {
   return song->iTrack < song2->iTrack;
+}
+
+void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albums)
+{
+  /* Step 1: categorise on the album name */
+  map<string, vector<CSong *> > albumNames;
+  for (VECSONGS::iterator i = songsToCheck.begin(); i != songsToCheck.end(); ++i)
+    albumNames[i->strAlbum].push_back(&(*i));
+
+  /*
+   Step 2: Split into unique albums based on album name and album artist
+   In the case where the album artist is unknown, we use the primary artist
+   (i.e. first artist from each song).
+   */
+  albums.clear();
+  for (map<string, vector<CSong *> >::iterator i = albumNames.begin(); i != albumNames.end(); ++i)
+  {
+    // sort the songs by tracknumber to identify duplicate track numbers
+    vector<CSong *> &songs = i->second;
+    sort(songs.begin(), songs.end(), SortSongsByTrack);
+
+    // map the songs to their primary artists
+    bool compilation = !i->first.empty();
+    map<string, vector<CSong *> > artists;
+    for (vector<CSong *>::iterator j = songs.begin(); j != songs.end(); ++j)
+    {
+      CSong *song = *j;
+      // test for song overlap
+      if (j != songs.begin() && song->iTrack == (*(j-1))->iTrack)
+        compilation = false;
+
+      // get primary artist
+      string primary;
+      if (!song->albumArtist.empty())
+      {
+        primary = song->albumArtist[0];
+        compilation = false;
+      }
+      else if (!song->artist.empty())
+        primary = song->artist[0];
+
+      // add to the artist map
+      artists[primary].push_back(song);
+    }
+
+    /*
+     We have a compilation if
+     1. album name is non-empty
+     2. no tracks overlap
+     3. no album artist is specified
+     4. we have at least two different primary artists
+     */
+    if (compilation && artists.size() > 1)
+    {
+      artists.clear();
+      std::string various = g_localizeStrings.Get(340); // Various Artists
+      for (vector<CSong *>::iterator j = songs.begin(); j != songs.end(); ++j)
+        (*j)->albumArtist.push_back(various);
+      artists.insert(make_pair(various, songs));
+    }
+
+    /*
+     Step 3: Find the common albumartist for each song and assign
+     albumartist to those tracks that don't have it set.
+     */
+    for (map<string, vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
+    {
+      // find the common artist for these songs
+      vector<CSong *> &artistSongs = j->second;
+      vector<string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
+      for (vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
+      {
+        unsigned int match = 0;
+        vector<string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
+        for (; match < common.size(), match < compare.size(); match++)
+        {
+          if (compare[match] != common[match])
+            break;
+        }
+        common.erase(common.begin() + match, common.end());
+      }
+
+      /*
+       Step 4: Assign the album artist for each song that doesn't have it set
+       and add to the album vector
+       */
+      CAlbum album;
+      album.strAlbum = i->first;
+      album.artist = common;
+      for (vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
+      {
+        if ((*k)->albumArtist.empty())
+          (*k)->albumArtist = common;
+        album.songs.push_back(*(*k));
+        // TODO: in future we may wish to union up the genres, for now we assume they're the same
+        if (album.genre.empty())
+          album.genre = (*k)->genre;
+      }
+
+      albums.push_back(album);
+    }
+  }
 }
 
 void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
