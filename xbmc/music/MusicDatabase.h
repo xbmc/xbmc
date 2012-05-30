@@ -25,6 +25,7 @@
 #pragma once
 #include "dbwrappers/Database.h"
 #include "Album.h"
+#include "Artist.h"
 #include "addons/Scraper.h"
 
 class CArtist;
@@ -79,7 +80,7 @@ class CFileItemList;
  */
 class CMusicDatabase : public CDatabase
 {
-  class CArtistCache
+  class CArtistCache : public CArtist
   {
   public:
     int idArtist;
@@ -210,19 +211,20 @@ public:
   static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
   static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
 protected:
-  std::map<CStdString, int /*CArtistCache*/> m_artistCache;
+  std::map<CStdString, CArtistCache> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
   std::map<CStdString, int /*CPathCache*/> m_pathCache;
   std::map<CStdString, int /*CPathCache*/> m_thumbCache;
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 20; };
+  virtual int GetMinVersion() const { return 21; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
-  int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
+  int AddAlbum(const CStdString& strAlbum1, const CStdString& strMusicBrainzAlbumID, int idArtist, const CStdString& strMusicBrainzAlbumArtistID, const CStdString &extraArtists, const CStdString &strArtist, int idThumb, int idGenre, const CStdString &extraGenres, int year);
   int AddGenre(const CStdString& strGenre);
-  int AddArtist(const CStdString& strArtist);
+  // we don't have a MusicBrainzArtistID for extra artists
+  int AddArtist(const CStdString& strArtist1, const CStdString& strMusicBrainzArtistID = "");
   int AddPath(const CStdString& strPath);
   int AddThumb(const CStdString& strThumb1);
   void AddExtraAlbumArtists(const std::vector<std::string>& vecArtists, int idAlbum);
@@ -297,8 +299,10 @@ private:
   {
     album_idAlbum=0,
     album_strAlbum,
+    album_strMusicBrainzAlbumID,
     album_strExtraArtists,
     album_idArtist,
+    album_strMusicBrainzAlbumArtistID,
     album_strExtraGenres,
     album_idGenre,
     album_strArtist,
