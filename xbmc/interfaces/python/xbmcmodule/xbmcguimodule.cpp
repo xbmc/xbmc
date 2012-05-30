@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIListItem.h"
+#include "guilib/GUISpinControlEx.h"
 
 
 #if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
@@ -138,6 +139,7 @@ namespace PYXBMC
     initAction_Type();
     initControlRadioButton_Type();
     initControlEdit_Type();
+    initControlSpinEx_Type();
 
     if (PyType_Ready(&Window_Type) < 0 ||
         PyType_Ready(&WindowDialog_Type) < 0 ||
@@ -160,6 +162,7 @@ namespace PYXBMC
         PyType_Ready(&ControlSlider_Type) < 0 ||
         PyType_Ready(&ControlRadioButton_Type) < 0 ||
         PyType_Ready(&ControlEdit_Type) < 0 ||
+        PyType_Ready(&ControlSpinEx_Type) < 0 ||
         PyType_Ready(&Action_Type) < 0)
       return;
 
@@ -200,6 +203,7 @@ namespace PYXBMC
     Py_INCREF(&Action_Type);
     Py_INCREF(&ControlRadioButton_Type);
     Py_INCREF(&ControlEdit_Type);
+    Py_INCREF(&ControlSpinEx_Type);
 
     pXbmcGuiModule = Py_InitModule3((char*)"xbmcgui", xbmcGuiMethods, xbmcgui_module_documentation);
 
@@ -227,6 +231,7 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcGuiModule, (char*)"Action", (PyObject *)&Action_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlRadioButton", (PyObject*)&ControlRadioButton_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlEdit", (PyObject*)&ControlEdit_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlSpinEx", (PyObject*)&ControlSpinEx_Type);
 
     PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
     PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__date__", (char*)"16 June 2011");
@@ -244,6 +249,11 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_UNWATCHED", CGUIListItem::ICON_OVERLAY_UNWATCHED);
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_WATCHED", CGUIListItem::ICON_OVERLAY_WATCHED);
     PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_HD", CGUIListItem::ICON_OVERLAY_HD);
+  
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"SPIN_CONTROL_TYPE_INT", SPIN_CONTROL_TYPE_INT);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"SPIN_CONTROL_TYPE_FLOAT", SPIN_CONTROL_TYPE_FLOAT);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"SPIN_CONTROL_TYPE_TEXT", SPIN_CONTROL_TYPE_TEXT);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"SPIN_CONTROL_TYPE_PAGE", SPIN_CONTROL_TYPE_PAGE);
   }
 }
 

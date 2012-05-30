@@ -2584,6 +2584,9 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlspinex.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">

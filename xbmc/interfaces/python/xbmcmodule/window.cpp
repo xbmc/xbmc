@@ -30,6 +30,7 @@
 #include "guilib/GUICheckMarkControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIEditControl.h"
+#include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "Application.h"
@@ -276,6 +277,27 @@ namespace PYXBMC
       ((ControlEdit*)pControl)->textColor  = li.textColor;
       if (li.font) ((ControlEdit*)pControl)->strFont = li.font->GetFontName();
       ((ControlButton*)pControl)->align = li.align;
+      break;
+    case CGUIControl::GUICONTROL_SPINEX:
+      pControl = (Control*)ControlSpinEx_Type.tp_alloc(&ControlSpinEx_Type, 0);
+      new(&((ControlSpinEx*)pControl)->strFont) string();
+      new(&((ControlSpinEx*)pControl)->strText) string();
+      new(&((ControlSpinEx*)pControl)->strTextureFocus) string();
+      new(&((ControlSpinEx*)pControl)->strTextureNoFocus) string();
+      new(&((ControlSpinEx*)pControl)->strTextureUp) string();
+      new(&((ControlSpinEx*)pControl)->strTextureDown) string();
+      new(&((ControlSpinEx*)pControl)->strTextureUpFocus) string();
+      new(&((ControlSpinEx*)pControl)->strTextureDownFocus) string();
+      /*
+
+      li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
+
+      // note: conversion from infocolors -> plain colors here
+      ((ControlSpinEx*)pControl)->disabledColor = li.disabledColor;
+      ((ControlSpinEx*)pControl)->textColor  = li.textColor;
+      if (li.font) ((ControlSpinEx*)pControl)->strFont = li.font->GetFontName();
+      ((ControlButton*)pControl)->align = li.align;
+      */
       break;
     default:
       break;
@@ -682,6 +704,10 @@ namespace PYXBMC
 
     else if (ControlEdit_Check(pControl))
       ControlEdit_Create((ControlEdit*)pControl);
+
+    else if (ControlSpinEx_Check(pControl))
+      ControlSpinEx_Create((ControlSpinEx*)pControl);
+
     //unknown control type to add, should not happen
     else
     {
