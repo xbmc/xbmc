@@ -146,7 +146,6 @@ void CMusicInfoTagLoaderMP4::ParseHyphens(CStdString& mean, CStdString& name, CS
 
 // Given a metadata type, and a pointer to the data (and the size), this function attempts to populate
 // XBMC's CMusicInfoTag object. Tags that we don't support are simply ignored..
-
 void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize, CMusicInfoTag& tag)
 {
   switch ( metaKey )
@@ -298,7 +297,6 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
 
 // Used to locate 'ilst' area within 'meta' atom in a really quick and dirty way. Ideally should
 // parse 'ilst' atom list, but this method seems to be reliable.
-
 int CMusicInfoTagLoaderMP4::GetILSTOffset( const char* pBuffer, int bufferSize )
 {
   for ( int loop = 0; loop < bufferSize; loop++)
@@ -318,7 +316,6 @@ int CMusicInfoTagLoaderMP4::GetILSTOffset( const char* pBuffer, int bufferSize )
 // although it fails to credit them.
 //
 // I hope to make this particular function more readable/structured when time permits.
-
 int CMusicInfoTagLoaderMP4::ParseAtom( int64_t startOffset, int64_t stopOffset, CMusicInfoTag& tag )
 {
   int64_t       currentOffset;
