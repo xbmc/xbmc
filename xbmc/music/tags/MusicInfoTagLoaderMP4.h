@@ -37,6 +37,8 @@ public:
 private:
   unsigned int ReadUnsignedInt( const char* pData );
   void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize, CMusicInfoTag& tag);
+  void ParseHyphens (CStdString& mean, CStdString& name, CStdString& data, CMusicInfoTag& tag);
+  int ParseData( unsigned int metaKey, const char* pMetaData, int metaSize, unsigned int *dataKey, CStdString& strData);
   int GetILSTOffset( const char* pBuffer, int bufferSize );
   int ParseAtom( int64_t startOffset, int64_t stopOffset, CMusicInfoTag& tag );
 

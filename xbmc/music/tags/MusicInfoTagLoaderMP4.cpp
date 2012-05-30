@@ -38,6 +38,10 @@ using namespace MUSIC_INFO;
 
 #define MAKE_ATOM_NAME( a, b, c, d ) ( ( (a) << 24 ) | ( (b) << 16 ) | ( (c) << 8 ) | (d) )
 
+static const unsigned int g_DataAtomName        = MAKE_ATOM_NAME(  'd', 'a', 't', 'a' );  // 'data'
+static const unsigned int g_MeanAtomName        = MAKE_ATOM_NAME(  'm', 'e', 'a', 'n' );  // 'mean'
+static const unsigned int g_NameAtomName        = MAKE_ATOM_NAME(  'n', 'a', 'm', 'e' );  // 'name'
+
 static const unsigned int g_MetaAtomName        = MAKE_ATOM_NAME( 'm', 'e', 't', 'a' );   // 'meta'
 static const unsigned int g_IlstAtomName        = MAKE_ATOM_NAME(  'i', 'l', 's', 't' );  // 'ilst'
 static const unsigned int g_MdhdAtomName        = MAKE_ATOM_NAME(  'm', 'd', 'h', 'd' );  // 'mdhd'
@@ -88,6 +92,56 @@ unsigned int CMusicInfoTagLoaderMP4::ReadUnsignedInt( const char* pData )
   result |= ((unsigned int)pData[2] & 0xff) << 8;
   result |= ((unsigned int)pData[3] & 0xff);
   return result;
+}
+
+// Given a 'data', 'mean', or 'name' tag and a pointer to the data this function will read out the string contained within
+// Return the total amount of bytes consumed from the buffer, not the total number of characters in the string, which is null terminated.
+int CMusicInfoTagLoaderMP4::ParseData( unsigned int metaKey, const char* pMetaData, int metaSize, unsigned int *dataKey, CStdString& strData)
+{
+  int dataSize          = ReadUnsignedInt( pMetaData ); // 24 = 36
+  *dataKey              = ReadUnsignedInt( pMetaData + 4 ); //
+
+  int payloadSize = -1;
+  const char *pPayloadData;
+  
+  if (*dataKey == g_DataAtomName)
+  {
+    // Have 8 bytes of header (size+key) plus 8 bytes of (not useful right now) meta info
+    payloadSize = dataSize - 16;
+    pPayloadData = pMetaData + 16;
+    metaSize -= 8;
+  }
+  else if (*dataKey == g_MeanAtomName || *dataKey == g_NameAtomName)
+  {
+    // Have 8 bytes of header (size+key) plus 4 bytes of (not useful right now) meta info
+    payloadSize = dataSize - 12;
+    pPayloadData = pMetaData + 12;
+    metaSize -= 4;
+  }
+  if (payloadSize <= 0 || payloadSize > metaSize) {
+    return -1;
+  }
+  memcpy(strData.GetBuffer(payloadSize+1), pPayloadData, payloadSize);
+  strData.ReleaseBuffer();
+  
+  return dataSize;
+};
+
+void CMusicInfoTagLoaderMP4::ParseHyphens(CStdString& mean, CStdString& name, CStdString& data, CMusicInfoTag& tag) 
+{
+  if (mean.empty() || name.empty() || data.empty())
+    return;
+  if (mean == "com.apple.iTunes") {
+    if (name == "MusicBrainz Track Id") {
+      tag.SetMusicBrainzTrackID(data);
+    } else if (name == "MusicBrainz Album Id") {
+      tag.SetMusicBrainzAlbumID(data);
+    } else if (name == "MusicBrainz Artist Id") { 
+      tag.SetMusicBrainzArtistID(data);
+    } else if (name == "MusicBrainz Album Artist Id") {
+      tag.SetMusicBrainzAlbumArtistID(data);
+    }
+  }
 }
 
 // Given a metadata type, and a pointer to the data (and the size), this function attempts to populate
