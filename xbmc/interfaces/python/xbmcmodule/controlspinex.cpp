@@ -25,6 +25,7 @@
 #include "guilib/GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 
@@ -334,6 +335,8 @@ namespace PYXBMC
       PyErr_SetString(PyExc_TypeError, "Object should be of type List");
       return NULL;
     }
+
+    CSingleLock lock(g_graphicsContext);
 
     ((CGUISpinControlEx *)self->pGUIControl)->Clear();
 
