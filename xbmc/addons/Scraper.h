@@ -123,10 +123,8 @@ public:
 
   std::vector<CScraperUrl> FindMovie(XFILE::CCurlFile &fcurl,
     const CStdString &sMovie, bool fFirst);
-  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CCurlFile &fcurl,
-    const CStdString &sAlbum, const CStdString &sArtist = "");
-  std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
-    XFILE::CCurlFile &fcurl, const CStdString &sArtist);
+  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CCurlFile &fcurl, const CAlbum& album);
+  std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(XFILE::CCurlFile &fcurl, const CArtist& artist);
   EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
 
   bool GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,

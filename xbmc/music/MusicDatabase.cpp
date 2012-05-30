@@ -1308,6 +1308,28 @@ bool CMusicDatabase::DeleteAlbumInfo(int idAlbum)
   return false;
 }
 
+bool CMusicDatabase::HasArtistInfo(int idArtist)
+{
+  try
+  {
+    if (idArtist == -1)
+      return false; // not in the database
+    
+    CStdString strSQL=PrepareSQL("select * from artistinfo where idArtist = %ld", idArtist);
+    
+    if (!m_pDS2->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS2->num_rows();
+    m_pDS2->close();
+    return iRowsFound > 0;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idArtist);
+  }
+  
+  return false;
+}
+
 bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
 {
   try
@@ -1315,9 +1337,9 @@ bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
     if (idArtist == -1)
       return false; // not in the database
 
-    CStdString strSQL=PrepareSQL("select * from artistinfo "
-                                "join artist on artist.idArtist=artistinfo.idArtist "
-                                "where artistinfo.idArtist = %i"
+    CStdString strSQL=PrepareSQL("select * from artist "
+                                "join artistinfo on artistinfo.idArtist=artist.idArtist "
+                                "where artist.idArtist = %i"
                                 , idArtist);
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
