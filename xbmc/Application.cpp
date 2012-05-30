@@ -3945,15 +3945,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
   }
   m_bPlaybackStarting = false;
-  if(bResult)
-  {
-    // we must have started, otherwise player might send this later
-    if(IsPlaying())
-      OnPlayBackStarted();
-    else
-      OnPlayBackEnded();
-  }
-  else
+
+  if (!bResult)
   {
     // we send this if it isn't playlistplayer that is doing this
     int next = g_playlistPlayer.GetNextSong();
@@ -5329,13 +5322,6 @@ float CApplication::GetPercentage() const
 {
   if (IsPlaying() && m_pPlayer)
   {
-    if (IsPlayingAudio() && m_itemCurrentFile->HasMusicInfoTag())
-    {
-      const CMusicInfoTag& tag = *m_itemCurrentFile->GetMusicInfoTag();
-      if (tag.GetDuration() > 0)
-        return (float)(GetTime() / tag.GetDuration() * 100);
-    }
-
     if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
       return (float)(GetTime() / GetTotalTime() * 100);
     else

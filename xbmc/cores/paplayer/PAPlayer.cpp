@@ -556,10 +556,12 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
   /* see if it is time yet to FF/RW or a direct seek */
   if (!si->m_playNextTriggered && ((m_playbackSpeed != 1 && si->m_framesSent >= si->m_seekNextAtFrame) || si->m_seekFrame > -1))
   {
+    int64_t time = (int64_t)0;
     /* if its a direct seek */
     if (si->m_seekFrame > -1)
     {
-      si->m_framesSent = si->m_seekFrame;
+      time = (int64_t)((float)si->m_seekFrame / (float)si->m_sampleRate * 1000.0f);
+      si->m_framesSent = (int)(si->m_seekFrame - ((float)si->m_startOffset * (float)si->m_sampleRate) / 1000.0f);
       si->m_seekFrame  = -1;
     }
     /* if its FF/RW */
@@ -567,15 +569,14 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
     {
       si->m_framesSent      += si->m_sampleRate * (m_playbackSpeed  - 1);
       si->m_seekNextAtFrame  = si->m_framesSent + si->m_sampleRate / 2;
+      time = (int64_t)(((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f) + (float)si->m_startOffset);
     }
-
-    int64_t time = (int64_t)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f));
 
     /* if we are seeking back before the start of the track start normal playback */
     if (time < si->m_startOffset || si->m_framesSent < 0)
     {
       time = si->m_startOffset;
-      si->m_framesSent	    = 0;
+      si->m_framesSent      = (int)(si->m_startOffset * si->m_sampleRate / 1000);
       si->m_seekNextAtFrame = 0;
       ToFFRW(1);
     }
@@ -586,7 +587,8 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
   int status = si->m_decoder.GetStatus();
   if (status == STATUS_ENDED   ||
       status == STATUS_NO_FILE ||
-      si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+      si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR ||
+      ((si->m_endOffset) && (si->m_framesSent / si->m_sampleRate >= (si->m_endOffset - si->m_startOffset) / 1000)))
   {
     CLog::Log(LOGINFO, "PAPlayer::ProcessStream - Stream Finished");
     return false;
@@ -702,7 +704,8 @@ int64_t PAPlayer::GetTime()
   if (!m_currentStream)
     return 0;
 
-  double time = (double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate;
+  double time = ((double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate)
+                  /*- ((double)m_currentStream->m_startOffset / 1000.0)*/;
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
 
@@ -812,13 +815,13 @@ void PAPlayer::SeekTime(int64_t iTime /*=0*/)
     return;
 
   int seekOffset = (int)(iTime - GetTime());
-  if (m_currentStream->m_startOffset)
-    iTime += m_currentStream->m_startOffset;
+  /*if (m_currentStream->m_startOffset)
+    iTime += m_currentStream->m_startOffset;*/
 
   if (m_playbackSpeed != 1)
     ToFFRW(1);
 
-  m_currentStream->m_seekFrame = (int)(m_currentStream->m_sampleRate * (iTime / 1000));
+  m_currentStream->m_seekFrame = (int)((float)m_currentStream->m_sampleRate * ((float)iTime + (float)m_currentStream->m_startOffset) / 1000.0f);
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
 
