@@ -190,7 +190,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setType__doc__,
     "setType(type) -- Sets the spinner control's type.\n"
     "\n"
-    "type                : integer - Four types available."
+    "type                : integer - Four types available.\n"
     "\n"
     "*Note, SPIN_CONTROL_TYPE_INT (default), SPIN_CONTROL_TYPE_FLOAT, SPIN_CONTROL_TYPE_TEXT, SPIN_CONTROL_TYPE_PAGE\n"
     "\n"
@@ -263,7 +263,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setValue__doc__,
     "setValue(value) -- Sets the spinner control's value.\n"
     "\n"
-    "value               : unicode string or integer - value to set."
+    "value               : unicode string or integer - value to set.\n"
     "\n"
     "*Note, may be an integer for position or a unicode string.\n"
     "\n"
