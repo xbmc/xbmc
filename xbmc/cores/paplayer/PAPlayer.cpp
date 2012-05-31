@@ -241,15 +241,12 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
   if ((m_crossFadeTime = g_guiSettings.GetInt("musicplayer.crossfade") * 1000))
   {
     if (
-        m_streams.size() == 0 ||
-        (
-          file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
-          m_FileItem->HasMusicInfoTag() &&
-          (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
-          (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
-          (m_FileItem->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
-          (m_FileItem->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
-        )
+        file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
+        m_FileItem->HasMusicInfoTag() &&
+        (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
+        (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
+        (m_FileItem->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
+        (m_FileItem->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
     )
     {
       //do not crossfade when playing consecutive albumtracks
@@ -316,16 +313,20 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   si->m_fadeOutTriggered   = false;
   si->m_isSlaved           = false;
 
-  if (si->m_decoder.TotalTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFadeTime)
-    si->m_prepareNextAtFrame = 0;
-  else
-    si->m_prepareNextAtFrame = (int)((si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+  int64_t streamTotalTime = si->m_decoder.TotalTime();
+  if (si->m_endOffset)
+    streamTotalTime = si->m_endOffset - si->m_startOffset;
+
+  if (streamTotalTime >= TIME_TO_CACHE_NEXT_FILE + m_crossFadeTime)
+    si->m_prepareNextAtFrame = (int)((streamTotalTime - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+
   si->m_prepareTriggered = false;
 
-  if (si->m_decoder.TotalTime() < m_crossFadeTime)
-    si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() / 2) * si->m_sampleRate / 1000.0f);
+  if (streamTotalTime < m_crossFadeTime)
+    si->m_playNextAtFrame = (int)((streamTotalTime / 2) * si->m_sampleRate / 1000.0f);
   else
-    si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+    si->m_playNextAtFrame = (int)((streamTotalTime - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+
   si->m_playNextTriggered = false;
 
   PrepareStream(si);
@@ -463,7 +464,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
     if (!m_currentStream && !si->m_started)
       m_currentStream = si;
     /* if the stream is finishing */
-    if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
+    if ((si->m_playNextTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
     {
       if (!si->m_prepareTriggered)
       {
@@ -523,7 +524,10 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
       if (!m_isFinished)
       {
         if (m_crossFadeTime)
+        {
           si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
+          si->m_fadeOutTriggered = true;
+        }
         m_currentStream = NULL;
 
         /* unregister the audio callback */
