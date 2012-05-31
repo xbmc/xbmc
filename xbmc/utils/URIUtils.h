@@ -64,6 +64,7 @@ public:
   static bool IsInArchive(const CStdString& strFile);
   static bool IsInRAR(const CStdString& strFile);
   static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
+  static bool IsInAPK(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsLastFM(const CStdString& strFile);
@@ -87,6 +88,7 @@ public:
   static bool IsURL(const CStdString& strFile);
   static bool IsVideoDb(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
+  static bool IsAPK(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
   static bool IsBluray(const CStdString& strFile);
 

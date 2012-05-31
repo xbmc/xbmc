@@ -77,6 +77,9 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "HTSPDirectory.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "APKDirectory.h"
+#endif
 #include "ZipDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
@@ -135,6 +138,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 #endif
   if (strProtocol == "udf") return new CUDFDirectory();
   if (strProtocol == "plugin") return new CPluginDirectory();
+#if defined(TARGET_ANDROID)
+  if (strProtocol == "apk") return new CAPKDirectory();
+#endif
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") 
   {

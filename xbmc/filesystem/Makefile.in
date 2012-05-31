@@ -92,6 +92,11 @@ SRCS=AddonsDirectory.cpp \
      ZipFile.cpp \
      ZipManager.cpp
 
+ifeq (@USE_ANDROID@,1)
+SRCS+=APKDirectory.cpp
+SRCS+=APKFile.cpp
+endif
+
 ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=RarFile.cpp
 SRCS+=RarDirectory.cpp
