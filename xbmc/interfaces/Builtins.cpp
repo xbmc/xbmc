@@ -487,7 +487,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     CFileItem item(params[0], false);
-    if (URIUtils::HasSlashAtEnd(params[0]))
+    if (!item.IsPlugin() && URIUtils::HasSlashAtEnd(params[0]))
       item.m_bIsFolder = true;
 
     // restore to previous window if needed
