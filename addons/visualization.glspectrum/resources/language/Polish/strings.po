@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:29+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+msgctxt "Addon Summary"
+msgid "Visualisation showing a rotating 3D Spectrum Analyzer"
+msgstr "Wizualizacja pokazująca obracający się analizator widma w 3D (OpenGL)"
+
+msgctxt "Addon Description"
+msgid "Opengl Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in Opengl that moves to the beat of the music creating a wave effect across the spectrum grid.\nIt also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great"
+msgstr "Wizualizacja pokazuje obracający się, trójwymiarowy analizator widma, renderowany przy użyciu OpenGL. Możesz ustawić wysokość słupków, ich prędkość i wygląd."
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Tryb"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Wypełnione"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Siatka"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Punkty"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Wysokość słupków"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Małe"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Domyślne"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Duże"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Bardzo duże"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Szybkość"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Bardzo wolne"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Wolne"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Domyślne"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Szybkie"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Bardzo szybkie"

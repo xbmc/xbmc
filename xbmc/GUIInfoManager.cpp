@@ -75,6 +75,7 @@
 #include "addons/AddonManager.h"
 #include "interfaces/info/InfoBool.h"
 #include "TextureCache.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -1146,7 +1147,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel.Format("%02.2f", m_fps);
     break;
   case PLAYER_VOLUME:
-    strLabel.Format("%2.1f dB", g_settings.m_fVolumeLevel);
+    strLabel.Format("%2.1f dB", CAEUtil::PercentToGain(g_settings.m_fVolumeLevel));
     break;
   case PLAYER_SUBTITLE_DELAY:
     strLabel.Format("%2.3f s", g_settings.m_currentVideoSettings.m_SubtitleDelay);
@@ -3581,12 +3582,8 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   // Find a thumb for this file.
   if (!item.HasThumbnail())
   {
-    if (!CVideoThumbLoader::FillThumb(item))
-    {
-      CStdString thumb = CVideoThumbLoader::GetEmbeddedThumbURL(item);
-      if (CTextureCache::Get().HasCachedImage(thumb))
-        item.SetThumbnailImage(thumb);
-    }
+    CVideoThumbLoader loader;
+    loader.LoadItem(m_currentFile);
   }
 
   // find a thumb for this stream
