@@ -1321,9 +1321,9 @@ bool CApplication::StartWebServer()
     int webPort = atoi(g_guiSettings.GetString("services.webserverport"));
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
 #ifdef _LINUX
-    if (webPort < 1024 && geteuid() != 0)
+    if (webPort < 1024 && !CUtil::CanBindPrivileged())
     {
-        CLog::Log(LOGERROR, "Cannot start Web Server as port is smaller than 1024 and user is not root");
+        CLog::Log(LOGERROR, "Cannot start Web Server on port %i, no permission to bind to ports below 1024", webPort);
         return false;
     }
 #endif

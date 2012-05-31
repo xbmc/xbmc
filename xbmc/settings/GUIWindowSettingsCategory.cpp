@@ -2812,7 +2812,7 @@ void CGUIWindowSettingsCategory::ValidatePortNumber(CBaseSettingControl* pSettin
   // check that it's a valid port
   int port = atoi(pSetting->GetData().c_str());
 #ifdef _LINUX
-  if (listening && geteuid() != 0 && (port < 1024 || port > 65535))
+  if (listening && !CUtil::CanBindPrivileged() && (port < 1024 || port > 65535))
   {
     CGUIDialogOK::ShowAndGetInput(257, 850, 852, -1);
     pSetting->SetData(userPort.c_str());
