@@ -255,6 +255,7 @@
 		5E75DD98156CDAA300EC8F54 /* CueSongsCollector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD90156CDAA300EC8F54 /* CueSongsCollector.cpp */; };
 		5E75DD99156CDAA300EC8F54 /* FileCueReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD92156CDAA300EC8F54 /* FileCueReader.cpp */; };
 		5E75DD9A156CDAA300EC8F54 /* TagCueReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */; };
+		5E80B833157711B00027BF51 /* CueMetaData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E80B831157711B00027BF51 /* CueMetaData.cpp */; };
 		7C0A7EC013A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */; };
 		7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
@@ -498,7 +499,6 @@
 		E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16650D25F9FA00618676 /* RenderManager.cpp */; };
 		E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */; };
 		E38E1FF10D25F9FD00618676 /* YUV2RGBShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */; };
-		E38E1FF70D25F9FD00618676 /* CueDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E167E0D25F9FA00618676 /* CueDocument.cpp */; };
 		E38E1FF80D25F9FD00618676 /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16800D25F9FA00618676 /* Database.cpp */; };
 		E38E1FFA0D25F9FD00618676 /* DetectDVDType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16840D25F9FA00618676 /* DetectDVDType.cpp */; };
 		E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16890D25F9FA00618676 /* DNSNameCache.cpp */; };
@@ -1523,6 +1523,9 @@
 		5E75DD93156CDAA300EC8F54 /* FileCueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileCueReader.h; sourceTree = "<group>"; };
 		5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagCueReader.cpp; sourceTree = "<group>"; };
 		5E75DD95156CDAA300EC8F54 /* TagCueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCueReader.h; sourceTree = "<group>"; };
+		5E80B830157711B00027BF51 /* CStdStringHash.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CStdStringHash.hpp; sourceTree = "<group>"; };
+		5E80B831157711B00027BF51 /* CueMetaData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueMetaData.cpp; sourceTree = "<group>"; };
+		5E80B832157711B00027BF51 /* CueMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueMetaData.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -2072,8 +2075,6 @@
 		E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YUV2RGBShader.cpp; sourceTree = "<group>"; };
 		E38E16720D25F9FA00618676 /* YUV2RGBShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YUV2RGBShader.h; sourceTree = "<group>"; };
 		E38E16740D25F9FA00618676 /* WinRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinRenderer.h; sourceTree = "<group>"; };
-		E38E167E0D25F9FA00618676 /* CueDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueDocument.cpp; sourceTree = "<group>"; };
-		E38E167F0D25F9FA00618676 /* CueDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueDocument.h; sourceTree = "<group>"; };
 		E38E16800D25F9FA00618676 /* Database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Database.cpp; sourceTree = "<group>"; };
 		E38E16810D25F9FA00618676 /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		E38E16840D25F9FA00618676 /* DetectDVDType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DetectDVDType.cpp; sourceTree = "<group>"; };
@@ -4132,6 +4133,9 @@
 		5E75DD89156CDAA300EC8F54 /* cue */ = {
 			isa = PBXGroup;
 			children = (
+				5E80B830157711B00027BF51 /* CStdStringHash.hpp */,
+				5E80B831157711B00027BF51 /* CueMetaData.cpp */,
+				5E80B832157711B00027BF51 /* CueMetaData.h */,
 				5E75DD8A156CDAA300EC8F54 /* CueParser.cpp */,
 				5E75DD8B156CDAA300EC8F54 /* CueParser.h */,
 				5E75DD8C156CDAA300EC8F54 /* CueParserCallback.h */,
@@ -4359,8 +4363,6 @@
 				E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */,
 				E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */,
 				F5B413131065900C0035D105 /* config.h */,
-				E38E167E0D25F9FA00618676 /* CueDocument.cpp */,
-				E38E167F0D25F9FA00618676 /* CueDocument.h */,
 				E38E168C0D25F9FA00618676 /* DynamicDll.cpp */,
 				E38E168D0D25F9FA00618676 /* DynamicDll.h */,
 				E38E16900D25F9FA00618676 /* Favourites.cpp */,
@@ -6442,7 +6444,6 @@
 				E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */,
 				E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */,
 				E38E1FF10D25F9FD00618676 /* YUV2RGBShader.cpp in Sources */,
-				E38E1FF70D25F9FD00618676 /* CueDocument.cpp in Sources */,
 				E38E1FF80D25F9FD00618676 /* Database.cpp in Sources */,
 				E38E1FFA0D25F9FD00618676 /* DetectDVDType.cpp in Sources */,
 				E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */,
@@ -7309,6 +7310,7 @@
 				5E75DD98156CDAA300EC8F54 /* CueSongsCollector.cpp in Sources */,
 				5E75DD99156CDAA300EC8F54 /* FileCueReader.cpp in Sources */,
 				5E75DD9A156CDAA300EC8F54 /* TagCueReader.cpp in Sources */,
+				5E80B833157711B00027BF51 /* CueMetaData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

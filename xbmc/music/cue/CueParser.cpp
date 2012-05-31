@@ -142,11 +142,9 @@ bool CueParser::parse(CueParserCallback& callback)
   {
     if (finalizeTrack())
     {
-      m_globalData.m_meta.debug();
       m_currentTrack.m_trackNumber = 0;
       for (Tracks::iterator iter = m_tracks.begin(); iter != m_tracks.end(); ++iter)
       {
-        iter->m_meta.debug();
         CSong song;
         // set base data
         song.strFileName = iter->m_file;
@@ -218,7 +216,6 @@ bool CueParser::onMeta(const CStdString& name, const CStdString& value)
       if (name == "ARTIST")
         m_albumArtist = value;
       m_globalData.m_meta.insert(name, value);
-      m_globalData.m_meta.debug();
     }
   }
   else
@@ -232,7 +229,6 @@ bool CueParser::onMeta(const CStdString& name, const CStdString& value)
       }
     }
     m_currentTrack.m_meta.insert(name, value);
-    m_currentTrack.m_meta.debug();
   }
   return true;
 }
