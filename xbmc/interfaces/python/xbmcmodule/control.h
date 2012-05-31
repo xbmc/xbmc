@@ -70,6 +70,10 @@ class CGUIControl;
 
 #define ControlEdit_Check(op) PyObject_TypeCheck(op, &ControlEdit_Type)
 #define ControlEdit_CheckExact(op) ((op)->ob_type == &ControlEdit_Type)
+
+#define ControlSpinEx_Check(op) PyObject_TypeCheck(op, &ControlSpinEx_Type)
+#define ControlSpinEx_CheckExact(op) ((op)->ob_type == &ControlSpinEx_Type)
+
 // -----------------
 
 // hardcoded offsets for button controls (and controls that use button controls)
@@ -245,6 +249,24 @@ namespace PYXBMC
     std::string strTextureFoc;    
   } ControlSlider;	
 
+  typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
+    int dwSpinWidth;
+    int dwSpinHeight;
+    std::string strFont;
+    std::string strText;
+    std::string strTextureFocus;
+    std::string strTextureNoFocus;
+    std::string strTextureUp;
+    std::string strTextureDown;
+    std::string strTextureUpFocus;
+    std::string strTextureDownFocus;
+    color_t textColor;
+    color_t disabledColor;
+    uint32_t align;
+    int iType;
+  } ControlSpinEx;
+
   extern void Control_Dealloc(Control* self);
 
   extern PyMethodDef Control_methods[];
@@ -263,6 +285,7 @@ namespace PYXBMC
   extern PyTypeObject ControlRadioButton_Type;
   extern PyTypeObject ControlSlider_Type;
   extern PyTypeObject ControlEdit_Type;
+  extern PyTypeObject ControlSpinEx_Type;
 
   CGUIControl* ControlLabel_Create(ControlLabel* pControl);
   CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl);
@@ -276,6 +299,7 @@ namespace PYXBMC
   CGUIControl* ControlRadioButton_Create(ControlRadioButton* pControl);
   CGUIControl* ControlSlider_Create(ControlSlider* pControl);
   CGUIControl* ControlEdit_Create(ControlEdit* pControl);
+  CGUIControl* ControlSpinEx_Create(ControlSpinEx* pControl);
 
   void initControl_Type();
   void initControlSpin_Type();
@@ -291,6 +315,7 @@ namespace PYXBMC
   void initControlRadioButton_Type();
   void initControlSlider_Type();
   void initControlEdit_Type();
+  void initControlSpinEx_Type();
 }
 
 #ifdef __cplusplus

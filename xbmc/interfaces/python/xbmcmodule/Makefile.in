@@ -12,6 +12,7 @@ SRCS=action.cpp \
      controlradiobutton.cpp \
      controlslider.cpp \
      controlspin.cpp \
+     controlspinex.cpp \
      controltextbox.cpp \
      dialog.cpp \
      GUIPythonWindow.cpp \
