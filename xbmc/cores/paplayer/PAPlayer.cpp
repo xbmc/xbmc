@@ -708,8 +708,7 @@ int64_t PAPlayer::GetTime()
   if (!m_currentStream)
     return 0;
 
-  double time = ((double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate)
-                  /*- ((double)m_currentStream->m_startOffset / 1000.0)*/;
+  double time = ((double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate);
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
 
