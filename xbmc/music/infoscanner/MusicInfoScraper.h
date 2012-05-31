@@ -34,9 +34,9 @@ class CMusicInfoScraper : public CThread
 public:
   CMusicInfoScraper(const ADDON::ScraperPtr &scraper);
   virtual ~CMusicInfoScraper(void);
-  void FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist = "");
+  void FindAlbumInfo(const CAlbum& album);
   void LoadAlbumInfo(int iAlbum);
-  void FindArtistInfo(const CStdString& strArtist);
+  void FindArtistInfo(const CArtist& artist);
   void LoadArtistInfo(int iArtist, const CStdString &strSearch);
   bool Completed();
   bool Succeeded();
@@ -75,8 +75,8 @@ protected:
   virtual void Process();
   std::vector<CMusicAlbumInfo> m_vecAlbums;
   std::vector<CMusicArtistInfo> m_vecArtists;
-  CStdString m_strAlbum;
-  CStdString m_strArtist;
+  CAlbum m_album;
+  CArtist m_artist;
   CStdString m_strSearch;
   int m_iAlbum;
   int m_iArtist;

@@ -32,6 +32,8 @@ CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr &scraper) : CThread
 {
   m_bSucceeded=false;
   m_bCanceled=false;
+  m_album.Reset();
+  m_artist.Reset();
   m_iAlbum=-1;
   m_iArtist=-1;
   m_scraper = scraper;
@@ -62,18 +64,17 @@ CMusicArtistInfo& CMusicInfoScraper::GetArtist(int iArtist)
   return m_vecArtists[iArtist];
 }
 
-void CMusicInfoScraper::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist /* = "" */)
+void CMusicInfoScraper::FindAlbumInfo(const CAlbum& album)
 {
-  m_strAlbum=strAlbum;
-  m_strArtist=strArtist;
+  m_album = album;
   m_bSucceeded=false;
   StopThread();
   Create();
 }
 
-void CMusicInfoScraper::FindArtistInfo(const CStdString& strArtist)
+void CMusicInfoScraper::FindArtistInfo(const CArtist& artist)
 {
-  m_strArtist=strArtist;
+  m_artist = artist;
   m_bSucceeded=false;
   StopThread();
   Create();
@@ -81,13 +82,13 @@ void CMusicInfoScraper::FindArtistInfo(const CStdString& strArtist)
 
 void CMusicInfoScraper::FindAlbumInfo()
 {
-  m_vecAlbums = m_scraper->FindAlbum(m_http, m_strAlbum, m_strArtist);
+  m_vecAlbums = m_scraper->FindAlbum(m_http, m_album);
   m_bSucceeded = !m_vecAlbums.empty();
 }
 
 void CMusicInfoScraper::FindArtistInfo()
 {
-  m_vecArtists = m_scraper->FindArtist(m_http, m_strArtist);
+  m_vecArtists = m_scraper->FindArtist(m_http, m_artist);
   m_bSucceeded = !m_vecArtists.empty();
 }
 
@@ -162,16 +163,17 @@ void CMusicInfoScraper::Process()
 {
   try
   {
-    if (m_strAlbum.size())
+    if (m_album.strAlbum.size() ||
+        m_album.strMusicBrainzAlbumArtistID.size())
     {
       FindAlbumInfo();
-      m_strAlbum.Empty();
-      m_strArtist.Empty();
+      m_album.Reset();
     }
-    else if (m_strArtist.size())
+    else if (m_artist.strArtist.size() ||
+             m_artist.strMusicBrainzArtistID.size())
     {
       FindArtistInfo();
-      m_strArtist.Empty();
+      m_artist.Reset();
     }
     if (m_iAlbum>-1)
     {

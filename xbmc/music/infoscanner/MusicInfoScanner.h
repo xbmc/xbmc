@@ -57,10 +57,11 @@ public:
   static void CheckForVariousArtists(VECSONGS &songs);
   static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 
-  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& album, CGUIDialogProgress* pDialog=NULL);
-  bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
+  bool DownloadAlbumInfo(const CAlbum& album, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, CGUIDialogProgress* pDialog=NULL);
+  bool DownloadArtistInfo(const CArtist& artist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
 protected:
   virtual void Process();
+  bool CommitSongs(VECSONGS& songs);
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
   void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
   int GetPathHash(const CFileItemList &items, CStdString &hash);
