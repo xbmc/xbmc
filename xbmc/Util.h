@@ -188,6 +188,8 @@ public:
 #endif
   static CStdString ResolveExecutablePath();
   static CStdString GetFrameworksPath(bool forPython = false);
+
+  static bool CanBindPrivileged();
 };
 
 
