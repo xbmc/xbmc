@@ -220,6 +220,9 @@ void XLCDproc::SetBackLight(int iLight)
     cmd.append("widget_del xbmc line2\n");
     cmd.append("widget_del xbmc line3\n");
     cmd.append("widget_del xbmc line4\n");
+    
+    for(int i=0; i<4; i++)
+      m_strLine[i] = "";
   }
   else if (iLight > 0)
   {
