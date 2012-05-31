@@ -126,6 +126,11 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
   if ( strTagType == "RATING" && strTagValue.GetLength() == 1 && strTagValue[0] > '0' && strTagValue[0] < '6')
     tag.SetRating(strTagValue[0]);
 
+  if (strTagType=="CUESHEET")
+  {
+    tag.setEmbeddedCue(strTagValue);
+  }
+
   //  Get new style replay gain info
   if (strTagType=="REPLAYGAIN_TRACK_GAIN")
   {

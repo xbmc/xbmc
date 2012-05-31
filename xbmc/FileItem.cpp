@@ -29,13 +29,13 @@
 #include "utils/Crc32.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"
+#include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/DirectoryFactory.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
-#include "CueDocument.h"
 #include "video/VideoDatabase.h"
 #include "music/MusicDatabase.h"
 #include "SortFileItem.h"
@@ -57,6 +57,9 @@
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "ThumbnailCache.h"
 #include "utils/Mime.h"
+
+#include "music/cue/CueParser.h"
+#include "music/cue/CueSongsCollector.h"
 
 using namespace std;
 using namespace XFILE;
@@ -94,7 +97,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   else
     m_strThumbnailImage.clear();
   m_bIsAlbum = true;
-  CMusicDatabase::SetPropertiesFromAlbum(*this,album);
+  CMusicDatabase::SetPropertiesFromAlbum(*this, album);
 }
 
 CFileItem::CFileItem(const CMusicInfoTag& music)
@@ -1837,141 +1840,20 @@ int CFileItemList::GetSelectedCount() const
 void CFileItemList::FilterCueItems()
 {
   CSingleLock lock(m_lock);
-  // Handle .CUE sheet files...
-  VECSONGS itemstoadd;
-  CStdStringArray itemstodelete;
-  for (int i = 0; i < (int)m_items.size(); i++)
+  // Handle .CUE sheet files and media with embedded CUE sheet
+  CueSongsCollector collector(*this); // Parser callback
+  CueParser parser; // parser
+  VECFILEITEMS::iterator it;
+  for (it = m_items.begin(); it != m_items.end(); ++it)
   {
-    CFileItemPtr pItem = m_items[i];
-    if (!pItem->m_bIsFolder)
-    { // see if it's a .CUE sheet
-      if (pItem->IsCUESheet())
-      {
-        CCueDocument cuesheet;
-        if (cuesheet.Parse(pItem->GetPath()))
-        {
-          VECSONGS newitems;
-          cuesheet.GetSongs(newitems);
-
-          std::vector<CStdString> MediaFileVec;
-          cuesheet.GetMediaFiles(MediaFileVec);
-
-          // queue the cue sheet and the underlying media file for deletion
-          for(std::vector<CStdString>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
-          {
-            CStdString strMediaFile = *itMedia;
-            CStdString fileFromCue = strMediaFile; // save the file from the cue we're matching against,
-                                                   // as we're going to search for others here...
-            bool bFoundMediaFile = CFile::Exists(strMediaFile);
-            // queue the cue sheet and the underlying media file for deletion
-            if (!bFoundMediaFile)
-            {
-              // try file in same dir, not matching case...
-              if (Contains(strMediaFile))
-              {
-                bFoundMediaFile = true;
-              }
-              else
-              {
-                // try removing the .cue extension...
-                strMediaFile = pItem->GetPath();
-                URIUtils::RemoveExtension(strMediaFile);
-                CFileItem item(strMediaFile, false);
-                if (item.IsAudio() && Contains(strMediaFile))
-                {
-                  bFoundMediaFile = true;
-                }
-                else
-                { // try replacing the extension with one of our allowed ones.
-                  CStdStringArray extensions;
-                  StringUtils::SplitString(g_settings.m_musicExtensions, "|", extensions);
-                  for (unsigned int i = 0; i < extensions.size(); i++)
-                  {
-                    strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), extensions[i]);
-                    CFileItem item(strMediaFile, false);
-                    if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
-                    {
-                      bFoundMediaFile = true;
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-            if (bFoundMediaFile)
-            {
-              itemstodelete.push_back(pItem->GetPath());
-              itemstodelete.push_back(strMediaFile);
-              // get the additional stuff (year, genre etc.) from the underlying media files tag.
-              CMusicInfoTag tag;
-              auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
-              if (NULL != pLoader.get())
-              {
-                // get id3tag
-                pLoader->Load(strMediaFile, tag);
-              }
-              // fill in any missing entries from underlying media file
-              for (int j = 0; j < (int)newitems.size(); j++)
-              {
-                CSong song = newitems[j];
-                // only for songs that actually match the current media file
-                if (song.strFileName == fileFromCue)
-                {
-                  // we might have a new media file from the above matching code
-                  song.strFileName = strMediaFile;
-                  if (tag.Loaded())
-                  {
-                    if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
-                    if (song.albumArtist.empty() && !tag.GetAlbumArtist().empty()) song.albumArtist = tag.GetAlbumArtist();
-                    if (song.genre.empty() && !tag.GetGenre().empty()) song.genre = tag.GetGenre();
-                    if (song.artist.empty() && !tag.GetArtist().empty()) song.artist = tag.GetArtist();
-                    if (tag.GetDiscNumber()) song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
-                    SYSTEMTIME dateTime;
-                    tag.GetReleaseDate(dateTime);
-                    if (dateTime.wYear) song.iYear = dateTime.wYear;
-                  }
-                  if (!song.iDuration && tag.GetDuration() > 0)
-                  { // must be the last song
-                    song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
-                  }
-                  // add this item to the list
-                  itemstoadd.push_back(song);
-                }
-              }
-            }
-            else
-            { // remove the .cue sheet from the directory
-              itemstodelete.push_back(pItem->GetPath());
-            }
-          }
-        }
-        else
-        { // remove the .cue sheet from the directory (can't parse it - no point listing it)
-          itemstodelete.push_back(pItem->GetPath());
-        }
-      }
-    }
+    CFileItemPtr pItem = (*it);
+    // if item contains CUE-data
+    if (pItem->m_bIsFolder || !collector.load(pItem->GetPath()))
+      continue;
+    parser.parse(collector);
   }
-  // now delete the .CUE files and underlying media files.
-  for (int i = 0; i < (int)itemstodelete.size(); i++)
-  {
-    for (int j = 0; j < (int)m_items.size(); j++)
-    {
-      CFileItemPtr pItem = m_items[j];
-      if (stricmp(pItem->GetPath().c_str(), itemstodelete[i].c_str()) == 0)
-      { // delete this item
-        m_items.erase(m_items.begin() + j);
-        break;
-      }
-    }
-  }
-  // and add the files from the .CUE sheet
-  for (int i = 0; i < (int)itemstoadd.size(); i++)
-  {
-    // now create the file item, and add to the item list.
-    CFileItemPtr pItem(new CFileItem(itemstoadd[i]));
-    m_items.push_back(pItem);
-  }
+  // add all collected songs
+  collector.finalize(m_items);
 }
 
 // Remove the extensions from the filenames
@@ -3010,6 +2892,12 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
   if (!m_musicInfoTag)
     m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
+  if (!m_musicInfoTag->Loaded())
+  { // read the tag from a file
+    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(GetPath()));
+    if (NULL != pLoader.get())
+      pLoader->Load(GetPath(), *m_musicInfoTag);
+  }
   return m_musicInfoTag;
 }
 

@@ -24,12 +24,20 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
+#include "filesystem/File.h"
+#include "music/tags/MusicInfoTagLoaderFactory.h"
 
 using namespace MUSIC_INFO;
 
-CMusicInfoTag::CMusicInfoTag(void)
+CMusicInfoTag::CMusicInfoTag(const CStdString& strMediaFile /*= CStdString()*/)
 {
   Clear();
+  if (XFILE::CFile::Exists(strMediaFile))
+  {
+    std::auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
+    if (NULL != pLoader.get())
+      pLoader->Load(strMediaFile, *this);
+  }
 }
 
 CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
@@ -67,6 +75,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_iDbId = tag.m_iDbId;
   m_iArtistId = tag.m_iArtistId;
   m_iAlbumId = tag.m_iAlbumId;
+  m_strCue = tag.m_strCue;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   return *this;
 }
@@ -421,6 +430,22 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_iAlbumId = song.iAlbumId;
 }
 
+bool CMusicInfoTag::hasEmbeddedCue() const
+{
+  return !GetEmbeddedCue().IsEmpty();
+}
+
+const CStdString& CMusicInfoTag::GetEmbeddedCue() const
+{
+  return m_strCue;
+}
+
+void CMusicInfoTag::setEmbeddedCue(const CStdString& cuesheet)
+{
+  m_strCue = cuesheet;
+}
+
+
 void CMusicInfoTag::Serialize(CVariant& value)
 {
   /* TODO:
@@ -519,6 +544,7 @@ void CMusicInfoTag::Clear()
   m_bLoaded = false;
   m_lastPlayed.Reset();
   m_strComment.Empty();
+  m_strCue.Empty();
   m_rating = '0';
   m_iDbId = -1;
   m_iTimesPlayed = 0;

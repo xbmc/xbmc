@@ -250,6 +250,12 @@
 		43BF09A21080D1E900E25290 /* AVTransportSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099E1080D1E900E25290 /* AVTransportSCPD.cpp */; };
 		43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */; };
 		43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
+		5E75DD96156CDAA300EC8F54 /* CueParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD8A156CDAA300EC8F54 /* CueParser.cpp */; };
+		5E75DD97156CDAA300EC8F54 /* CueSheetIndexList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD8E156CDAA300EC8F54 /* CueSheetIndexList.cpp */; };
+		5E75DD98156CDAA300EC8F54 /* CueSongsCollector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD90156CDAA300EC8F54 /* CueSongsCollector.cpp */; };
+		5E75DD99156CDAA300EC8F54 /* FileCueReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD92156CDAA300EC8F54 /* FileCueReader.cpp */; };
+		5E75DD9A156CDAA300EC8F54 /* TagCueReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */; };
+		5E80B833157711B00027BF51 /* CueMetaData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E80B831157711B00027BF51 /* CueMetaData.cpp */; };
 		7C0A7EC013A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */; };
 		7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
@@ -493,7 +499,6 @@
 		E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16650D25F9FA00618676 /* RenderManager.cpp */; };
 		E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */; };
 		E38E1FF10D25F9FD00618676 /* YUV2RGBShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */; };
-		E38E1FF70D25F9FD00618676 /* CueDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E167E0D25F9FA00618676 /* CueDocument.cpp */; };
 		E38E1FF80D25F9FD00618676 /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16800D25F9FA00618676 /* Database.cpp */; };
 		E38E1FFA0D25F9FD00618676 /* DetectDVDType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16840D25F9FA00618676 /* DetectDVDType.cpp */; };
 		E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16890D25F9FA00618676 /* DNSNameCache.cpp */; };
@@ -1506,6 +1511,21 @@
 		43BF09A91080D2ED00E25290 /* RenderingControlSCPD_Full.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RenderingControlSCPD_Full.xml; sourceTree = "<group>"; };
 		43BF09DD1080D39300E25290 /* fastmemcpy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fastmemcpy.h; sourceTree = "<group>"; };
 		43FAC87112D6349400F67914 /* IStorageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IStorageProvider.h; sourceTree = "<group>"; };
+		5E75DD8A156CDAA300EC8F54 /* CueParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueParser.cpp; sourceTree = "<group>"; };
+		5E75DD8B156CDAA300EC8F54 /* CueParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueParser.h; sourceTree = "<group>"; };
+		5E75DD8C156CDAA300EC8F54 /* CueParserCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueParserCallback.h; sourceTree = "<group>"; };
+		5E75DD8D156CDAA300EC8F54 /* CueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueReader.h; sourceTree = "<group>"; };
+		5E75DD8E156CDAA300EC8F54 /* CueSheetIndexList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueSheetIndexList.cpp; sourceTree = "<group>"; };
+		5E75DD8F156CDAA300EC8F54 /* CueSheetIndexList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueSheetIndexList.h; sourceTree = "<group>"; };
+		5E75DD90156CDAA300EC8F54 /* CueSongsCollector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueSongsCollector.cpp; sourceTree = "<group>"; };
+		5E75DD91156CDAA300EC8F54 /* CueSongsCollector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueSongsCollector.h; sourceTree = "<group>"; };
+		5E75DD92156CDAA300EC8F54 /* FileCueReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileCueReader.cpp; sourceTree = "<group>"; };
+		5E75DD93156CDAA300EC8F54 /* FileCueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileCueReader.h; sourceTree = "<group>"; };
+		5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagCueReader.cpp; sourceTree = "<group>"; };
+		5E75DD95156CDAA300EC8F54 /* TagCueReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCueReader.h; sourceTree = "<group>"; };
+		5E80B830157711B00027BF51 /* CStdStringHash.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CStdStringHash.hpp; sourceTree = "<group>"; };
+		5E80B831157711B00027BF51 /* CueMetaData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueMetaData.cpp; sourceTree = "<group>"; };
+		5E80B832157711B00027BF51 /* CueMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueMetaData.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -2055,8 +2075,6 @@
 		E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YUV2RGBShader.cpp; sourceTree = "<group>"; };
 		E38E16720D25F9FA00618676 /* YUV2RGBShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YUV2RGBShader.h; sourceTree = "<group>"; };
 		E38E16740D25F9FA00618676 /* WinRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinRenderer.h; sourceTree = "<group>"; };
-		E38E167E0D25F9FA00618676 /* CueDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueDocument.cpp; sourceTree = "<group>"; };
-		E38E167F0D25F9FA00618676 /* CueDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueDocument.h; sourceTree = "<group>"; };
 		E38E16800D25F9FA00618676 /* Database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Database.cpp; sourceTree = "<group>"; };
 		E38E16810D25F9FA00618676 /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		E38E16840D25F9FA00618676 /* DetectDVDType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DetectDVDType.cpp; sourceTree = "<group>"; };
@@ -3427,6 +3445,7 @@
 		18B7C853129423A7009E7A26 /* music */ = {
 			isa = PBXGroup;
 			children = (
+				5E75DD89156CDAA300EC8F54 /* cue */,
 				431376A812D640B500680C15 /* dialogs */,
 				431376CC12D6421A00680C15 /* infoscanner */,
 				431376D412D6427900680C15 /* karaoke */,
@@ -4111,6 +4130,28 @@
 			path = osx;
 			sourceTree = "<group>";
 		};
+		5E75DD89156CDAA300EC8F54 /* cue */ = {
+			isa = PBXGroup;
+			children = (
+				5E80B830157711B00027BF51 /* CStdStringHash.hpp */,
+				5E80B831157711B00027BF51 /* CueMetaData.cpp */,
+				5E80B832157711B00027BF51 /* CueMetaData.h */,
+				5E75DD8A156CDAA300EC8F54 /* CueParser.cpp */,
+				5E75DD8B156CDAA300EC8F54 /* CueParser.h */,
+				5E75DD8C156CDAA300EC8F54 /* CueParserCallback.h */,
+				5E75DD8D156CDAA300EC8F54 /* CueReader.h */,
+				5E75DD8E156CDAA300EC8F54 /* CueSheetIndexList.cpp */,
+				5E75DD8F156CDAA300EC8F54 /* CueSheetIndexList.h */,
+				5E75DD90156CDAA300EC8F54 /* CueSongsCollector.cpp */,
+				5E75DD91156CDAA300EC8F54 /* CueSongsCollector.h */,
+				5E75DD92156CDAA300EC8F54 /* FileCueReader.cpp */,
+				5E75DD93156CDAA300EC8F54 /* FileCueReader.h */,
+				5E75DD94156CDAA300EC8F54 /* TagCueReader.cpp */,
+				5E75DD95156CDAA300EC8F54 /* TagCueReader.h */,
+			);
+			path = cue;
+			sourceTree = "<group>";
+		};
 		7C5608C30F1754930056433A /* ExternalPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -4322,8 +4363,6 @@
 				E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */,
 				E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */,
 				F5B413131065900C0035D105 /* config.h */,
-				E38E167E0D25F9FA00618676 /* CueDocument.cpp */,
-				E38E167F0D25F9FA00618676 /* CueDocument.h */,
 				E38E168C0D25F9FA00618676 /* DynamicDll.cpp */,
 				E38E168D0D25F9FA00618676 /* DynamicDll.h */,
 				E38E16900D25F9FA00618676 /* Favourites.cpp */,
@@ -6405,7 +6444,6 @@
 				E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */,
 				E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */,
 				E38E1FF10D25F9FD00618676 /* YUV2RGBShader.cpp in Sources */,
-				E38E1FF70D25F9FD00618676 /* CueDocument.cpp in Sources */,
 				E38E1FF80D25F9FD00618676 /* Database.cpp in Sources */,
 				E38E1FFA0D25F9FD00618676 /* DetectDVDType.cpp in Sources */,
 				E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */,
@@ -7267,6 +7305,12 @@
 				F5ED9509155D855200842059 /* CoreAudioGraph.cpp in Sources */,
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
 				7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */,
+				5E75DD96156CDAA300EC8F54 /* CueParser.cpp in Sources */,
+				5E75DD97156CDAA300EC8F54 /* CueSheetIndexList.cpp in Sources */,
+				5E75DD98156CDAA300EC8F54 /* CueSongsCollector.cpp in Sources */,
+				5E75DD99156CDAA300EC8F54 /* FileCueReader.cpp in Sources */,
+				5E75DD9A156CDAA300EC8F54 /* TagCueReader.cpp in Sources */,
+				5E80B833157711B00027BF51 /* CueMetaData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7388,6 +7432,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
+				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(ARCHS)";
 				ZERO_LINK = NO;
@@ -7504,6 +7549,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
+				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(ARCHS)";
 				ZERO_LINK = NO;
@@ -7513,10 +7559,7 @@
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";
@@ -7527,7 +7570,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = .;
 				VALID_ARCHS = "i386 x86_64";
 			};
@@ -7536,10 +7579,7 @@
 		1DEB924D08733DCA0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -7549,7 +7589,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = .;
 				VALID_ARCHS = "i386 x86_64";
 			};

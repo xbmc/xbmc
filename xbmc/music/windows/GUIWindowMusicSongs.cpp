@@ -24,7 +24,6 @@
 #include "Util.h"
 #include "GUIInfoManager.h"
 #include "Application.h"
-#include "CueDocument.h"
 #include "GUIPassword.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "GUIUserMessages.h"

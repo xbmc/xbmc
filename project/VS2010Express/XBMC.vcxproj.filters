@@ -238,6 +238,9 @@
     <Filter Include="dbwrappers">
       <UniqueIdentifier>{5c7ad2df-b46d-4a29-ae17-3406fe73edde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="music\cue">
+      <UniqueIdentifier>{dc4ab439-3ec7-46a5-9053-adc9ec6c92e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2529,7 +2532,6 @@
     <ClCompile Include="..\..\xbmc\AutoSwitch.cpp" />
     <ClCompile Include="..\..\xbmc\Favourites.cpp" />
     <ClCompile Include="..\..\xbmc\DynamicDll.cpp" />
-    <ClCompile Include="..\..\xbmc\CueDocument.cpp" />
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
     <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIPassword.cpp" />
@@ -2583,6 +2585,24 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\cue\CueSheetIndexList.cpp">
+      <Filter>music\cue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\cue\CueParser.cpp">
+      <Filter>music\cue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\cue\CueSongsCollector.cpp">
+      <Filter>music\cue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\cue\FileCueReader.cpp">
+      <Filter>music\cue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\cue\TagCueReader.cpp">
+      <Filter>music\cue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\cue\CueMetaData.cpp">
+      <Filter>music\cue</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5145,7 +5165,6 @@
     <ClInclude Include="..\..\xbmc\AutoSwitch.h" />
     <ClInclude Include="..\..\xbmc\Favourites.h" />
     <ClInclude Include="..\..\xbmc\DynamicDll.h" />
-    <ClInclude Include="..\..\xbmc\CueDocument.h" />
     <ClInclude Include="..\..\xbmc\FileItem.h" />
     <ClInclude Include="..\..\xbmc\GUIInfoManager.h" />
     <ClInclude Include="..\..\xbmc\GUIPassword.h" />
@@ -5204,6 +5223,33 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h">
       <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\CueSheetIndexList.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\CueParser.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\CueParserCallback.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\CueReader.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\CueSongsCollector.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\FileCueReader.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\TagCueReader.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\CueMetaData.h">
+      <Filter>music\cue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\cue\CStdStringHash.hpp">
+      <Filter>music\cue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

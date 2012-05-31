@@ -63,6 +63,7 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetMusicBrainzArtistID(myTag.GetMusicBrainzArtistID());
       tag.SetMusicBrainzTrackID(myTag.GetMusicBrainzTrackID());
       tag.SetMusicBrainzTRMID(myTag.GetMusicBrainzTRMID());
+      tag.setEmbeddedCue(myTag.GetEmbeddedCue());
       SYSTEMTIME dateTime;
       ZeroMemory(&dateTime, sizeof(SYSTEMTIME));
       dateTime.wYear = atoi(myTag.GetYear());
