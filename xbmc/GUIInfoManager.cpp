@@ -1543,16 +1543,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     break;
 
   case SKIN_THEME:
-    if (g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
-      strLabel = g_localizeStrings.Get(15109);
-    else
-      strLabel = g_guiSettings.GetString("lookandfeel.skintheme");
+    strLabel = g_guiSettings.GetString("lookandfeel.skintheme");
     break;
   case SKIN_COLOUR_THEME:
-    if (g_guiSettings.GetString("lookandfeel.skincolors").Equals("skindefault"))
-      strLabel = g_localizeStrings.Get(15109);
-    else
-      strLabel = g_guiSettings.GetString("lookandfeel.skincolors");
+    strLabel = g_guiSettings.GetString("lookandfeel.skincolors");
     break;
 #ifdef HAS_LCD
   case LCD_PROGRESS_BAR:
