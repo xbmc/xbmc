@@ -109,13 +109,16 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     return;
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
-  buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
-  buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
-  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
-  CStdString resumeString = GetResumeString(*pItem);
-  if (!resumeString.IsEmpty())
+  if (pItem->HasPVRRecordingInfoTag())
   {
-    buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
+    buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
+    buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
+    buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
+    CStdString resumeString = GetResumeString(*pItem);
+    if (!resumeString.IsEmpty())
+    {
+      buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
+    }
   }
   if (pItem->m_bIsFolder)
   {
@@ -129,9 +132,10 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
       buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as UnWatched */
     else
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
+
+    buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
+    buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete this recording */
   }
-  buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
-  buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete this recording */
   buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
   buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
   // Update sort by button
