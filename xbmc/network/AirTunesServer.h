@@ -26,7 +26,11 @@
 
 #ifdef HAS_AIRTUNES
 
+#if defined(TARGET_WINDOWS)
+#include "DllLibShairplay.h"
+#else
 #include "DllLibShairport.h"
+#endif
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -41,11 +45,14 @@
 
 class DllLibShairport;
 
+
 class CAirTunesServer : public CThread
 {
 public:
   static bool StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password="");
   static void StopServer(bool bWait);
+  static void SetMetadataFromBuffer(const char *buffer, unsigned int size);
+  static void SetCoverArtFromBuffer(const char *buffer, unsigned int size);
 
 protected:
   void Process();
@@ -57,13 +64,28 @@ private:
   void Deinitialize();
 
   int m_port;
+#if defined(TARGET_WINDOWS)
+  static DllLibShairplay *m_pLibShairplay;//the lib
+  raop_t *m_pRaop;
+  XFILE::CPipeFile *m_pPipe;
+#else
   static DllLibShairport *m_pLibShairport;//the lib
+#endif
   static CAirTunesServer *ServerInstance;
   static CStdString m_macAddress;
 
   class AudioOutputFunctions
   {
     public:
+#if defined(TARGET_WINDOWS)
+      static void* audio_init(void *cls, int bits, int channels, int samplerate);
+      static void  audio_set_volume(void *cls, void *session, float volume);
+	    static void  audio_set_metadata(void *cls, void *session, const void *buffer, int buflen);
+	    static void  audio_set_coverart(void *cls, void *session, const void *buffer, int buflen);
+      static void  audio_process(void *cls, void *session, const void *buffer, int buflen);
+      static void  audio_flush(void *cls, void *session);
+      static void  audio_destroy(void *cls, void *session);
+#else
       static void ao_initialize(void);
       static int ao_play(ao_device *device, char *output_samples, uint32_t num_bytes);
       static int ao_default_driver_id(void);
@@ -74,6 +96,7 @@ private:
       static int ao_append_option(ao_option **options, const char *key, const char *value);
       static void ao_free_options(ao_option *options);
       static char* ao_get_option(ao_option *options, const char* key);
+#endif
     };
 };
 
