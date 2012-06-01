@@ -49,7 +49,7 @@ private:
   void          AEChannelsFromSpeakerMask(DWORD speakers);
   DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
   void          CheckPlayStatus();
-  void          UpdateCacheStatus();
+  bool          UpdateCacheStatus();
   unsigned int  GetSpace();
   const char    *dserr2str(int err);
 
@@ -72,8 +72,10 @@ private:
   unsigned int        m_BufferOffset;
   unsigned int        m_CacheLen;
   unsigned int        m_LastCacheCheck;
+  unsigned int        m_BufferTimeouts;
 
   bool                m_running;
   bool                m_initialized;
+  bool                m_isDirtyDS;
   CCriticalSection    m_runLock;
 };

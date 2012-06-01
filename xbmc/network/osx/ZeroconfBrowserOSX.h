@@ -44,22 +44,22 @@ public:
 private:
   ///implementation if CZeroconfBrowser interface
   ///@{
-  virtual bool doAddServiceType(const CStdString& fcr_service_type);
-  virtual bool doRemoveServiceType(const CStdString& fcr_service_type);
+  virtual bool doAddServiceType(const CStdString &fcr_service_type);
+  virtual bool doRemoveServiceType(const CStdString &fcr_service_type);
 
   virtual std::vector<CZeroconfBrowser::ZeroconfService> doGetFoundServices();
-  virtual bool doResolveService(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout);
+  virtual bool doResolveService(CZeroconfBrowser::ZeroconfService &fr_service, double f_timeout);
   ///@}
 
   /// browser callback
   static void BrowserCallback(CFNetServiceBrowserRef browser, CFOptionFlags flags, CFTypeRef domainOrService, CFStreamError *error, void *info);
   /// resolve callback
-  static void ResolveCallback(CFNetServiceRef theService, CFStreamError* error, void* info);
+  static void ResolveCallback(CFNetServiceRef theService, CFStreamError *error, void *info);
 
   /// adds the service to list of found services
-  void addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const& fcr_service);
+  void addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const &fcr_service);
   /// removes the service from list of found services
-  void removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const& fcr_service);
+  void removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const &fcr_service);
   
   //CF runloop ref; we're using main-threads runloop
   CFRunLoopRef m_runloop;

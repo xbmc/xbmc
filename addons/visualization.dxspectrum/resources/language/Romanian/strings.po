@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:17+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1))\n"
+
+msgctxt "Addon Summary"
+msgid "Visualisation showing a rotating 3D Spectrum Analyzer"
+msgstr "Vizualizare care afișează un analizator de spectre 3D rotativ"
+
+msgctxt "Addon Description"
+msgid "DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.\nIt also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great"
+msgstr "Spectrul DirectX este o vizualizare care afișează un analizator de spectre 3D rotativ randat în DirectX care se mișcă după bătăile muzicii creând un val dea-lungul grilei spectrale.\nDe asemenea, are setări pentru ajustarea înălțimii bărilor spectrale, a vitezei, și a modului în care bările sunt randate (umplere, puncte, contur). Este o vizualizare cu consum redus al procesorului care arată fantastic de bine."
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Mod"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "umplere"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "contur"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "puncte"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Înălțime bară"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "mică"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "standard"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "mare"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "foarte mare"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Viteză"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "foarte încet"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "încet"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "standard"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "repede"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "foarte repede"

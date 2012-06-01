@@ -22,6 +22,7 @@
 #include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/log.h"
 
 #define SECONDS_PER_DAY 86400UL
 #define SECONDS_PER_HOUR 3600UL
@@ -638,7 +639,8 @@ bool CDateTime::IsValid() const
 
 bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 {
-  return SystemTimeToFileTime(&time, &fileTime)==TRUE;
+  return SystemTimeToFileTime(&time, &fileTime) == TRUE &&
+         (fileTime.dwLowDateTime > 0 || fileTime.dwHighDateTime > 0);
 }
 
 bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
@@ -1316,9 +1318,26 @@ static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "
 
 CStdString CDateTime::GetAsRFC1123DateTime() const
 {
-  CDateTime time(GetAsUTCDateTime()); 
+  CDateTime time(GetAsUTCDateTime());
+
+  int weekDay = time.GetDayOfWeek();
+  if (weekDay < 0)
+    weekDay = 0;
+  else if (weekDay > 6)
+    weekDay = 6;
+  if (weekDay != time.GetDayOfWeek())
+    CLog::Log(LOGWARNING, "Invalid day of week %d in %s", time.GetDayOfWeek(), time.GetAsDBDateTime().c_str());
+
+  int month = time.GetMonth();
+  if (month < 1)
+    month = 1;
+  else if (month > 12)
+    month = 12;
+  if (month != time.GetMonth())
+    CLog::Log(LOGWARNING, "Invalid month %d in %s", time.GetMonth(), time.GetAsDBDateTime().c_str());
+
   CStdString result;
-  result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[time.GetDayOfWeek()], time.GetDay(), MONTH_NAMES[time.GetMonth()-1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
+  result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
   return result;
 }
 

@@ -67,7 +67,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TARGET_WINDOWS;NOMINMAX;WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T;HAS_DX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TARGET_WINDOWS;NOMINMAX;WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T;HAS_DX;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>

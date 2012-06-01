@@ -131,7 +131,8 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_encodedChannels(0),
   m_encodedSampleRate(0),
   m_uiBufferLen(0),
-  m_avgTimeWaiting(50)
+  m_avgTimeWaiting(50),
+  m_isDirty(false)
 {
   m_channelLayout.Reset();
 }
@@ -256,6 +257,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not set the WASAPI event handler.");
 
   m_initialized = true;
+  m_isDirty     = false;
 
   return true;
 
@@ -292,7 +294,7 @@ void CAESinkWASAPI::Deinitialize()
 
 bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string device)
 {
-  if (!m_initialized)
+  if (!m_initialized || m_isDirty)
     return false;
 
   u_int notCompatible         = 0;
@@ -394,7 +396,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
       #ifdef _DEBUG
       CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed due to %s", WASAPIErrToStr(hr));
       #endif
-      return 0;
+      m_isDirty = true; //flag new device or re-init needed
+      return INT_MAX;
     }
     memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer
     hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
@@ -403,7 +406,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
       #ifdef _DEBUG
       CLog::Log(LOGDEBUG, __FUNCTION__": ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
       #endif
-      return 0;
+      m_isDirty = true; //flag new device or re-init needed
+      return INT_MAX;
     }
     hr = m_pAudioClient->Start(); //start the audio driver running
     if FAILED(hr)
@@ -427,7 +431,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
     CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
     m_running = false;
     m_pAudioClient->Stop(); //stop processing - we're done
-    return 0; //need better handling here
+    m_isDirty = true; //flag new device or re-init needed
+    return INT_MAX;
   }
 
 #ifndef _DEBUG

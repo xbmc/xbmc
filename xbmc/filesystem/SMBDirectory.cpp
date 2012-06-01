@@ -318,6 +318,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 
     if (m_flags & DIR_FLAG_ALLOW_PROMPT)
       SetErrorDialog(257, cError.c_str());
+    break;
   }
 
   if (fd < 0)

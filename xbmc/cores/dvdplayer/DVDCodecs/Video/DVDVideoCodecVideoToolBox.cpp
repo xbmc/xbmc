@@ -1504,30 +1504,33 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(__arm__)
-    // decoding, scaling and rendering above 1920 x 800 runs into
-    // some bandwidth limit. detect and scale down to reduce
-    // the bandwidth requirements.
-    int width_clamp = 1280;
-    if ((width * height) > (1920 * 800))
-      width_clamp = 960;
+    if (!DarwinIsIPad3())
+    {
+      // decoding, scaling and rendering above 1920 x 800 runs into
+      // some bandwidth limit. detect and scale down to reduce
+      // the bandwidth requirements.
+      int width_clamp = 1280;
+      if ((width * height) > (1920 * 800))
+        width_clamp = 960;
 
-    int new_width = CheckNP2(width);
-    if (width != new_width)
-    {
-      // force picture width to power of two and scale up height
-      // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
-      // and the CVPixelBufferPixel gets created using some
-      // strange alignment when width is non-standard.
-      double w_scaler = (double)new_width / width;
-      width = new_width;
-      height = height * w_scaler;
-    }
-    // scale output pictures down to 720p size for display
-    if (width > width_clamp)
-    {
-      double w_scaler = (float)width_clamp / width;
-      width = width_clamp;
-      height = height * w_scaler;
+      int new_width = CheckNP2(width);
+      if (width != new_width)
+      {
+        // force picture width to power of two and scale up height
+        // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
+        // and the CVPixelBufferPixel gets created using some
+        // strange alignment when width is non-standard.
+        double w_scaler = (double)new_width / width;
+        width = new_width;
+        height = height * w_scaler;
+      }
+      // scale output pictures down to 720p size for display
+      if (width > width_clamp)
+      {
+        double w_scaler = (float)width_clamp / width;
+        width = width_clamp;
+        height = height * w_scaler;
+      }
     }
   #endif
   destinationPixelBufferAttributes = CFDictionaryCreateMutable(
