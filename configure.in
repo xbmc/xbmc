@@ -1949,6 +1949,12 @@ else
   final_message="$final_message\n  libvorbisenc support:\tNo"
 fi
 
+if test "x$use_libcap" != "xno"; then
+  final_message="$final_message\n  libcap support:\tYes"
+else
+  final_message="$final_message\n  libcap support:\tNo"
+fi
+
 ### External libraries messages
 
 if test "$use_external_ffmpeg" = "yes"; then
