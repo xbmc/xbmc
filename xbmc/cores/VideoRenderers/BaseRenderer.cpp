@@ -33,30 +33,64 @@
 
 CBaseRenderer::CBaseRenderer()
 {
-  m_sourceFrameRatio = 1.0f;
-  m_sourceWidth = 720;
-  m_sourceHeight = 480;
-  m_resolution = RES_DESKTOP;
-  m_fps = 0.0f;
+  m_sourceFrameRatio    = 1.0f;
+  m_sourceWidth         = 720;
+  m_sourceHeight        = 480;
+  m_desiredWidth        = 720;
+  m_desiredHeight       = 480;
+  m_resolution          = RES_DESKTOP;
+  m_fps                 = 0.0f;
+
+  m_iFlags              = 0;
+  m_format              = RENDER_FMT_NONE;
+  m_extended_format     = 0;
+  m_bConfigured         = false;
+
+  m_scalingMethod       = VS_SCALINGMETHOD_LINEAR;
+  m_scalingMethodGui    = (ESCALINGMETHOD)-1;
 }
 
 CBaseRenderer::~CBaseRenderer()
 {
 }
 
-void CBaseRenderer::ChooseBestResolution(float fps)
+bool CBaseRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
 {
-  if (fps == 0.0) return;
+  m_sourceWidth       = width;
+  m_sourceHeight      = height;
+  m_desiredWidth      = d_width;
+  m_desiredHeight     = d_height;
+  m_fps               = fps;
+  m_iFlags            = flags;
+  m_format            = format;
+  m_extended_format   = extended_format;
+
+  m_scalingMethodGui  = (ESCALINGMETHOD)-1;
+
+  // Calculate the input frame aspect ratio.
+  CalculateFrameAspectRatio();
+  ChooseBestResolution();
+  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+  ManageDisplay();
+
+  m_bConfigured = true;
+
+  return true;
+}
+
+void CBaseRenderer::ChooseBestResolution()
+{
+  if (m_fps == 0.0) return;
 
   // Adjust refreshrate to match source fps
 #if !defined(TARGET_DARWIN_IOS)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     float weight;
-    if (!FindResolutionFromOverride(fps, weight, false)) //find a refreshrate from overrides
+    if (!FindResolutionFromOverride(m_fps, weight, false)) //find a refreshrate from overrides
     {
-      if (!FindResolutionFromOverride(fps, weight, true))//if that fails find it from a fallback
-        FindResolutionFromFpsMatch(fps, weight);//if that fails use automatic refreshrate selection
+      if (!FindResolutionFromOverride(m_fps, weight, true))//if that fails find it from a fallback
+        FindResolutionFromFpsMatch(m_fps, weight);//if that fails use automatic refreshrate selection
     }
 
     CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
@@ -320,15 +354,15 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 // defined to be the same ratio as the intended display pixels.
 // These formats are determined by frame size.
 //***************************************************************************************
-void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height)
+void CBaseRenderer::CalculateFrameAspectRatio()
 {
-  m_sourceFrameRatio = (float)desired_width / desired_height;
+  m_sourceFrameRatio = (float)m_desiredWidth / m_desiredHeight;
 
   // Check whether mplayer has decided that the size of the video file should be changed
   // This indicates either a scaling has taken place (which we didn't ask for) or it has
   // found an aspect ratio parameter from the file, and is changing the frame size based
   // on that.
-  if (m_sourceWidth == (unsigned int) desired_width && m_sourceHeight == (unsigned int) desired_height)
+  if (m_sourceWidth == (unsigned int) m_desiredWidth && m_sourceHeight == (unsigned int) m_desiredHeight)
     return ;
 
   // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio

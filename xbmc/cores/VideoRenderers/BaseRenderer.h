@@ -23,7 +23,9 @@
 
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
-#include "RenderFormats.h"
+#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/VideoRenderers/RenderFormats.h"
+#include "settings/VideoSettings.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
@@ -67,6 +69,7 @@ public:
   CBaseRenderer();
   virtual ~CBaseRenderer();
 
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
   void SetViewMode(int viewMode);
   RESOLUTION GetResolution() const;
   void GetVideoRect(CRect &source, CRect &dest);
@@ -78,24 +81,37 @@ public:
   virtual unsigned int GetProcessorSize() { return 0; }
 
   // Supported pixel formats, can be called before configure
-  std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
+  virtual bool IsConfigured() { return m_bConfigured; }
 protected:
-  void       ChooseBestResolution(float fps);
+  void       ChooseBestResolution();
   bool       FindResolutionFromOverride(float fps, float& weight, bool fallback);
   void       FindResolutionFromFpsMatch(float fps, float& weight);
   RESOLUTION FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight);
   float      RefreshWeight(float refresh, float fps);
   void       CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift);
-  void       CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
+  void       CalculateFrameAspectRatio();
   void       ManageDisplay();
 
-  RESOLUTION m_resolution;    // the resolution we're running in
-  unsigned int m_sourceWidth;
-  unsigned int m_sourceHeight;
-  float m_sourceFrameRatio;
-  float m_fps;
+  RESOLUTION                  m_resolution;    // the resolution we're running in
+  unsigned int                m_sourceWidth;
+  unsigned int                m_sourceHeight;
+  unsigned int                m_desiredWidth;
+  unsigned int                m_desiredHeight;
+  float                       m_sourceFrameRatio;
+  float                       m_fps;
 
-  CRect m_destRect;
-  CRect m_sourceRect;
+  CRect                       m_destRect;
+  CRect                       m_sourceRect;
+
+  bool                        m_bConfigured;
+
+  unsigned int                m_iFlags;
+  unsigned int                m_extended_format;
+  ERenderFormat               m_format;
+  std::vector<ERenderFormat>  m_formats;
+
+  ESCALINGMETHOD              m_scalingMethod;
+  ESCALINGMETHOD              m_scalingMethodGui;
 };

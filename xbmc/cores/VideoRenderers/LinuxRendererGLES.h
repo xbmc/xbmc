@@ -28,8 +28,6 @@
 
 #include "xbmc/guilib/FrameBufferObject.h"
 #include "xbmc/guilib/Shader.h"
-#include "settings/VideoSettings.h"
-#include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -129,8 +127,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
-  virtual bool IsConfigured() { return m_bConfigured; }
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags, ERenderFormat format, unsigned int extended_format);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual void         FlipPage(int source);
@@ -148,8 +145,6 @@ public:
   virtual bool Supports(ESCALINGMETHOD method);
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
-
-  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
@@ -199,12 +194,8 @@ protected:
   int m_NumYV12Buffers;
   int m_iLastRenderBuffer;
 
-  bool m_bConfigured;
   bool m_bValidated;
-  std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
-  unsigned m_iFlags;
-  ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
@@ -262,8 +253,6 @@ protected:
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
 
   // clear colour for "black" bars
   float m_clearColour;
