@@ -16,6 +16,7 @@
 		18968DE814155E1D005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DE614155E1D005BA742 /* ApplicationOperations.cpp */; };
 		18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */; };
 		18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */; };
+		18E7CAD11578C671001D4554 /* CDDARipJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18E7CACF1578C671001D4554 /* CDDARipJob.cpp */; };
 		18ECC9AA13CF17EB00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC9A813CF17EB00A9ED6C /* StreamUtils.cpp */; };
 		32D6D47C1423A9D8003641AC /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32D6D47A1423A9D8003641AC /* JpegIO.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
@@ -187,7 +188,6 @@
 		F56C78C1131EC154000AD0F6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C71F8131EC151000AD0F6 /* ScreenSaver.cpp */; };
 		F56C78C2131EC154000AD0F6 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C71FA131EC151000AD0F6 /* Skin.cpp */; };
 		F56C78C3131EC154000AD0F6 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C71FC131EC151000AD0F6 /* Visualisation.cpp */; };
-		F56C78C4131EC154000AD0F6 /* CDDAReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C71FF131EC151000AD0F6 /* CDDAReader.cpp */; };
 		F56C78C5131EC154000AD0F6 /* CDDARipper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7201131EC151000AD0F6 /* CDDARipper.cpp */; };
 		F56C78C6131EC154000AD0F6 /* Encoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7207131EC151000AD0F6 /* Encoder.cpp */; };
 		F56C78C7131EC154000AD0F6 /* EncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7209131EC151000AD0F6 /* EncoderFFmpeg.cpp */; };
@@ -998,6 +998,8 @@
 		18ACF8E213597B0000B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonVersion.cpp; sourceTree = "<group>"; };
 		18B7013B13A6ABBA0009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
+		18E7CACF1578C671001D4554 /* CDDARipJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDARipJob.cpp; sourceTree = "<group>"; };
+		18E7CAD01578C671001D4554 /* CDDARipJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDARipJob.h; sourceTree = "<group>"; };
 		18ECC9A813CF17EB00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC9A913CF17EB00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		32D6D47A1423A9D8003641AC /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
@@ -1415,8 +1417,6 @@
 		F56C71FB131EC151000AD0F6 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skin.h; sourceTree = "<group>"; };
 		F56C71FC131EC151000AD0F6 /* Visualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualisation.cpp; sourceTree = "<group>"; };
 		F56C71FD131EC151000AD0F6 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualisation.h; sourceTree = "<group>"; };
-		F56C71FF131EC151000AD0F6 /* CDDAReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDAReader.cpp; sourceTree = "<group>"; };
-		F56C7200131EC151000AD0F6 /* CDDAReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDAReader.h; sourceTree = "<group>"; };
 		F56C7201131EC151000AD0F6 /* CDDARipper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDARipper.cpp; sourceTree = "<group>"; };
 		F56C7202131EC151000AD0F6 /* CDDARipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDARipper.h; sourceTree = "<group>"; };
 		F56C7203131EC151000AD0F6 /* DllLameenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLameenc.h; sourceTree = "<group>"; };
@@ -3673,8 +3673,8 @@
 		F56C71FE131EC151000AD0F6 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				F56C71FF131EC151000AD0F6 /* CDDAReader.cpp */,
-				F56C7200131EC151000AD0F6 /* CDDAReader.h */,
+				18E7CACF1578C671001D4554 /* CDDARipJob.cpp */,
+				18E7CAD01578C671001D4554 /* CDDARipJob.h */,
 				F56C7201131EC151000AD0F6 /* CDDARipper.cpp */,
 				F56C7202131EC151000AD0F6 /* CDDARipper.h */,
 				F56C7203131EC151000AD0F6 /* DllLameenc.h */,
@@ -6315,7 +6315,6 @@
 				F56C78C1131EC154000AD0F6 /* ScreenSaver.cpp in Sources */,
 				F56C78C2131EC154000AD0F6 /* Skin.cpp in Sources */,
 				F56C78C3131EC154000AD0F6 /* Visualisation.cpp in Sources */,
-				F56C78C4131EC154000AD0F6 /* CDDAReader.cpp in Sources */,
 				F56C78C5131EC154000AD0F6 /* CDDARipper.cpp in Sources */,
 				F56C78C6131EC154000AD0F6 /* Encoder.cpp in Sources */,
 				F56C78C7131EC154000AD0F6 /* EncoderFFmpeg.cpp in Sources */,
@@ -7194,6 +7193,7 @@
 				7C0B990A154B80200065A238 /* AEDeviceInfo.cpp in Sources */,
 				7C6EB586155E3EC80080368A /* ImageFile.cpp in Sources */,
 				7C6EB708155F3B160080368A /* HTTPImageHandler.cpp in Sources */,
+				18E7CAD11578C671001D4554 /* CDDARipJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
