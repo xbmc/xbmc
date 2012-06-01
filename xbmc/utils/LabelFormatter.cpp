@@ -69,32 +69,32 @@ using namespace MUSIC_INFO;
  *
  * Available metadata masks:
  *
- *  %N - Track Number
- *  %S - Disc Number
  *  %A - Artist
- *  %T - Title
  *  %B - Album
- *  %G - Genre
- *  %Y - Year
- *  %F - FileName
- *  %L - existing Label
+ *  %C - Programs count
  *  %D - Duration
+ *  %E - episode number
+ *  %F - FileName
+ *  %G - Genre
+ *  %H - season*100+episode
  *  %I - Size
  *  %J - Date
- *  %R - Movie rating
- *  %C - Programs count
  *  %K - Movie/Game title
+ *  %L - existing Label
  *  %M - number of episodes
- *  %E - episode number
- *  %P - production code
- *  %H - season*100+episode
- *  %Z - tvshow title
+ *  %N - Track Number
  *  %O - mpaa rating
+ *  %P - production code
  *  %Q - file time
+ *  %R - Movie rating
+ *  %S - Disc Number
+ *  %T - Title
  *  %U - studio
  *  %V - Playcount
- *  %X - Bitrate
  *  %W - Listeners
+ *  %X - Bitrate
+ *  %Y - Year
+ *  %Z - tvshow title
  *  %a - Date Added
  */
 
