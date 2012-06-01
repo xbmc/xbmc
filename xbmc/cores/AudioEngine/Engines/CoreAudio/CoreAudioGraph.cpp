@@ -36,15 +36,12 @@ CCoreAudioGraph::CCoreAudioGraph() :
   m_initialized   (false),
   m_deviceId      (NULL ),
   m_allowMixing   (false),
-  m_mixMap        (NULL ),
-  m_ATV1          (false)
+  m_mixMap        (NULL )
 {
   for (int i = 0; i < MAX_CONNECTION_LIMIT; i++)
   {
     m_reservedBusNumber[i] = false;
   }
-
-  m_ATV1 = g_sysinfo.IsAppleTV();
 }
 
 CCoreAudioGraph::~CCoreAudioGraph()
@@ -229,7 +226,7 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
 
   std::string formatString;
   // asume we are in dd-wave mode
-  if (!m_ATV1 && !m_inputUnit)
+  if (!m_inputUnit)
   {
     if (!m_audioUnit->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
     {
