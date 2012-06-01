@@ -47,7 +47,6 @@
 #include <map>
 #include <string>
 
-
 using namespace XFILE;
 
 #if defined(TARGET_WINDOWS)
@@ -390,6 +389,16 @@ int CAirTunesServer::AudioOutputFunctions::ao_close(ao_device *device)
   return 0;
 }
 
+void CAirTunesServer::AudioOutputFunctions::ao_set_metadata(const char *buffer, unsigned int size)
+{
+  CAirTunesServer::SetMetadataFromBuffer(buffer, size);
+}
+
+void CAirTunesServer::AudioOutputFunctions::ao_set_metadata_coverart(const char *buffer, unsigned int size)
+{
+  CAirTunesServer::SetCoverArtFromBuffer(buffer, size);
+}
+
 /* -- Device Setup/Playback/Teardown -- */
 int CAirTunesServer::AudioOutputFunctions::ao_append_option(ao_option **options, const char *key, const char *value)
 {
@@ -658,6 +667,8 @@ bool CAirTunesServer::Initialize(const CStdString &password)
     ao.ao_append_option = AudioOutputFunctions::ao_append_option;
     ao.ao_free_options = AudioOutputFunctions::ao_free_options;
     ao.ao_get_option = AudioOutputFunctions::ao_get_option;
+    ao.ao_set_metadata = AudioOutputFunctions::ao_set_metadata;    
+    ao.ao_set_metadata_coverart = AudioOutputFunctions::ao_set_metadata_coverart;        
     struct printfPtr funcPtr;
     funcPtr.extprintf = shairport_log;
 
