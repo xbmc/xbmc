@@ -4317,7 +4317,7 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
 
       // calculate the remaining metadata from the movies
       int ratings = 0;
-      bool iWatched = 0; // have all the movies been played at least once?
+      int iWatched = 0; // have all the movies been played at least once?
       for (VECMOVIES::const_iterator movie = it->second.movies.begin(); movie != it->second.movies.end(); movie++)
       {
         // handle rating
@@ -4348,10 +4348,10 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
       if (ratings > 1)
         pItem->GetVideoInfoTag()->m_fRating /= ratings;
         
-      pItem->GetVideoInfoTag()->m_playCount = iWatched >= it->second.movies.size() ? (pItem->GetVideoInfoTag()->m_playCount / it->second.movies.size()) : 0;
-      pItem->SetProperty("total", it->second.movies.size());
+      pItem->GetVideoInfoTag()->m_playCount = iWatched >= (int)it->second.movies.size() ? (pItem->GetVideoInfoTag()->m_playCount / it->second.movies.size()) : 0;
+      pItem->SetProperty("total", (int)it->second.movies.size());
       pItem->SetProperty("watched", iWatched);
-      pItem->SetProperty("unwatched", it->second.movies.size() - iWatched);      
+      pItem->SetProperty("unwatched", (int)it->second.movies.size() - iWatched);      
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
 
       if (!items.Contains(pItem->GetPath()))
