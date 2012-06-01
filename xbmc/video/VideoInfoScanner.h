@@ -98,9 +98,10 @@ namespace VIDEO
      \param videoFolder whether the video is represented by a folder (single movie per folder). Defaults to false.
      \param useLocal whether to use local information for artwork etc.
      \param idShow database id of the tvshow if we're adding an episode.  Defaults to -1.
+     \param libraryImport Whether this call belongs to a full library import or not. Defaults to false.
      \return database id of the added item, or -1 on failure.
      */
-    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, bool useLocal = true, int idShow = -1);
+    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, bool useLocal = true, int idShow = -1, bool libraryImport = false);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
