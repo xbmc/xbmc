@@ -4351,7 +4351,7 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
       pItem->GetVideoInfoTag()->m_playCount = iWatched >= (int)it->second.movies.size() ? (pItem->GetVideoInfoTag()->m_playCount / it->second.movies.size()) : 0;
       pItem->SetProperty("total", (int)it->second.movies.size());
       pItem->SetProperty("watched", iWatched);
-      pItem->SetProperty("unwatched", (int)it->second.movies.size() - iWatched);      
+      pItem->SetProperty("unwatched", (int)it->second.movies.size() - iWatched);
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
 
       if (!items.Contains(pItem->GetPath()))
