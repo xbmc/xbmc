@@ -849,9 +849,6 @@
     <ClCompile Include="..\..\xbmc\music\Song.cpp">
       <Filter>music</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cdrip\CDDAReader.cpp">
-      <Filter>cdrip</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cdrip\CDDARipper.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
@@ -3340,9 +3337,6 @@
       <Filter>music</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\EncoderWav.h">
-      <Filter>cdrip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\CDDAReader.h">
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipJob.h">

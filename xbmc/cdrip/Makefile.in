@@ -1,6 +1,5 @@
 SRCS=CDDARipJob.cpp \
      CDDARipper.cpp \
-     CDDAReader.cpp \
      Encoder.cpp \
      EncoderFFmpeg.cpp \
      EncoderFlac.cpp \
