@@ -142,8 +142,8 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
     streams.pop_front(); // We copied it, now we are done with it
 
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
-      "Found %s stream - id: 0x%04X, Terminal Type: 0x%04lX",
-      stream.GetDirection() ? "Input" : "Output", (uint)stream.GetId(), stream.GetTerminalType());
+      "Found %s stream - id: 0x%04X, Terminal Type: 0x%04X",
+      stream.GetDirection() ? "Input" : "Output", (uint)stream.GetId(), (uint)stream.GetTerminalType());
 
     // Probe physical formats
     StreamFormatList physicalFormats;
@@ -201,8 +201,8 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
-    "Selected stream[%u] - id: 0x%04lX, Physical Format: %s", 
-    m_OutputBufferIndex, outputStream, StreamDescriptionToString(outputFormat, formatString));
+    "Selected stream[%u] - id: 0x%04X, Physical Format: %s", 
+    m_OutputBufferIndex, (uint)outputStream, StreamDescriptionToString(outputFormat, formatString));
 
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
   // It appears that leaving this set will aslo restore the previous stream format when the
