@@ -1265,14 +1265,6 @@ else
 fi
 
 # libcap
-if test "$use_libcap" = "auto"; then
-  if echo "$ARCH" | grep -q "linux" ; then
-    use_libcap="yes"
-  else
-    use_libcap="no"
-  fi
-fi
-
 if test "$use_libcap" != "no"; then
   AC_CHECK_HEADERS([sys/capability.h],,
    [if test "$use_libcap" = "yes"; then
