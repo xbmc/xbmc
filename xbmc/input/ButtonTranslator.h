@@ -31,10 +31,6 @@
 #include "network/EventClient.h"
 #endif
 
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "SDLJoystick.h"
-#endif
-
 class CKey;
 class CAction;
 class TiXmlNode;
