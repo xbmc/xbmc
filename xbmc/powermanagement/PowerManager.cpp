@@ -206,7 +206,7 @@ void CPowerManager::OnWake()
   // reset out timers
   g_application.ResetShutdownTimers();
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   if (g_Windowing.IsFullScreen())
   {
 #ifdef _WIN32
