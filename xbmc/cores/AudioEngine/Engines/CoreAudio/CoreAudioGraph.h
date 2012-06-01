@@ -72,8 +72,6 @@ private:
 
   typedef std::list<CAUOutputDevice*> AUUnitList;
   AUUnitList        m_auUnitList;
-
-  bool              m_ATV1;
 };
 
 #endif

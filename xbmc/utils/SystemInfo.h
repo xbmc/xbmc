@@ -100,7 +100,6 @@ public:
 #endif
   CStdString GetUserAgent();
   bool HasInternet();
-  bool IsAppleTV();
   bool IsAppleTV2();
   bool HasVDADecoder();
   bool HasVideoToolBoxDecoder();
