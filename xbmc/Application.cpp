@@ -319,6 +319,12 @@
   #include "input/windows/IRServerSuite.h"
 #endif
 
+#if defined(TARGET_WINDOWS)
+#include "input/windows/WINJoystick.h"
+#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#include "input/SDLJoystick.h"
+#endif
+
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
@@ -652,7 +658,7 @@ bool CApplication::Create()
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
-#ifdef HAS_SDL_JOYSTICK
+#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
@@ -778,9 +784,6 @@ bool CApplication::Create()
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
 #endif
-#ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
-#endif
 
 #if defined(__APPLE__) && !defined(__arm__)
   // Configure and possible manually start the helper.
@@ -856,6 +859,10 @@ bool CApplication::Create()
   g_windowManager.Initialize();
 
   CUtil::InitRandomSeed();
+
+#ifdef HAS_SDL_JOYSTICK
+  g_Joystick.Initialize();
+#endif
 
   g_mediaManager.Initialize();
 

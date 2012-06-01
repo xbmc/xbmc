@@ -1171,9 +1171,6 @@
     <ClCompile Include="..\..\xbmc\input\MouseStat.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\SDLJoystick.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp">
       <Filter>input\windows</Filter>
     </ClCompile>
@@ -2578,6 +2575,9 @@
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp">
+      <Filter>input\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ImageFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -3696,9 +3696,6 @@
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\MouseStat.h">
-      <Filter>input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\SDLJoystick.h">
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\XBIRRemote.h">
@@ -5201,6 +5198,9 @@
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h">
+      <Filter>input\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h">
       <Filter>filesystem</Filter>
