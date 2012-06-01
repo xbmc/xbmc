@@ -1,5 +1,5 @@
-SRCS=CDDARipper.cpp \
-     CDDAReader.cpp \
+SRCS=CDDARipJob.cpp \
+     CDDARipper.cpp \
      Encoder.cpp \
      EncoderFFmpeg.cpp \
      EncoderFlac.cpp \

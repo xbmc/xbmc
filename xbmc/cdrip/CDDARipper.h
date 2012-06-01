@@ -22,8 +22,10 @@
  *
  */
 
-#include "CDDAReader.h"
 #include "Encoder.h"
+#include "utils/JobManager.h"
+
+class CFileItem;
 
 namespace MUSIC_INFO
 {
@@ -40,12 +42,14 @@ namespace MUSIC_INFO
  Format used to encode ripped tracks is defined by the audiocds.encoder user setting, and 
  there are several choices: wav, ogg vorbis and mp3.
  */
-class CCDDARipper
+class CCDDARipper : public CJobQueue
 {
 public:
-  CCDDARipper();
-  virtual ~CCDDARipper();
-
+  /*!
+   \brief The only way through which the global instance of the CDDARipper should be accessed.
+   \return the global instance.
+   */
+  static CCDDARipper& GetInstance();
 
   /*! \brief Rip a single track
    \param[in] pItem CFileItem representing a track to rip
@@ -58,33 +62,14 @@ public:
    */
   bool RipCD();
 
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+
 private:
-  /*! \brief Create and initialize CD reader and encoder objects used for ripping
-   \param[in] source file name of the track to rip
-   \param[in] destination file name used to store ripped and encoded track
-   \param[in] music info tags to store in destination file (album name, track title, track artist, ...)
-   \return true if success, false if failure
-   */
-  bool Init(const CStdString& strTrackFile, const CStdString& strFile, const MUSIC_INFO::CMusicInfoTag& infoTag);
-
-  /*! \brief Delete CD reader and encoder objects
-   \return true if success, false if failure
-   */
-  bool DeInit();
-
-  /*! \brief Rip a chunk of data
-   \param[out] nPercent percentage of the data read so far
-   \return result of the read operation (see CDDARIP_... constants)
-   */
-  int RipChunk(int& nPercent);
-
-  /*! \brief Rip a single track file
-   \param[in] source file name of the track to rip
-   \param[in] destination file name used to store ripped and encoded track
-   \param[in] music info tags to store in destination file (album name, track title, track artist, ...)
-   \return true if success, false if failure
-   */
-  bool Rip(const CStdString& strTrackFile, const CStdString& strFileName, const MUSIC_INFO::CMusicInfoTag& infoTag);
+  // private construction and no assignments
+  CCDDARipper();
+  CCDDARipper(const CCDDARipper&);
+  virtual ~CCDDARipper();
+  CCDDARipper const& operator=(CCDDARipper const&);
   
   /*! \brief Return track file name extension for the given encoder type
    \param[in] iEncoder encoder type (see CDDARIP_ENCODER_... constants)
@@ -111,9 +96,6 @@ private:
    \return track file name
    */
   CStdString GetTrackName(CFileItem *item);
-
-  CEncoder* m_pEncoder;
-  CCDDAReader m_cdReader;
 };
 
 #endif // _CCDDARIPPERMP3_H
