@@ -1011,7 +1011,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString platform = info[2].name;
       if (platform == "linux") return SYSTEM_PLATFORM_LINUX;
       else if (platform == "windows") return SYSTEM_PLATFORM_WINDOWS;
-      else if (platform == "osx")  return SYSTEM_PLATFORM_OSX;
+      else if (platform == "darwin")  return SYSTEM_PLATFORM_DARWIN;
       else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
       else if (platform == "ios")  return SYSTEM_PLATFORM_DARWIN_IOS;
       else if (platform == "atv2") return SYSTEM_PLATFORM_DARWIN_ATV2;
@@ -1886,8 +1886,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #else
     bReturn = false;
 #endif
-  else if (condition == SYSTEM_PLATFORM_OSX)
-  // TODO: rename SYSTEM_PLATFORM_OSX to SYSTEM_PLATFORM_DARWIN after eden release.
+  else if (condition == SYSTEM_PLATFORM_DARWIN)
 #ifdef TARGET_DARWIN
     bReturn = true;
 #else
