@@ -255,7 +255,7 @@ lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
-system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a
+system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a exports
 ifeq ($(findstring osx,@ARCH@), osx)
   ifeq (@ARCH@, arm-osx)
 	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -o $@ $<
@@ -263,7 +263,9 @@ ifeq ($(findstring osx,@ARCH@), osx)
 	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -lexpat $(BUNDLE1_O) -o $@ $<
   endif
 else
-	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
+	$(CXX) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $< \
+		-Wl,--no-whole-archive  \
+		`cat xbmc/cores/DllLoader/exports/wrapper.def` xbmc/cores/DllLoader/exports/wrapper.o -lexpat -ldl
 endif
 
 exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/util/exports_utils.a
