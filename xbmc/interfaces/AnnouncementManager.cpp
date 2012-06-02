@@ -159,7 +159,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       if (musicdatabase.Open())
       {
         CSong song;
-        if (musicdatabase.GetSongByFileName(item->GetPath(), song))
+        if (musicdatabase.GetSongByFileName(item->GetPath(), song, item->m_lStartOffset))
         {
           item->GetMusicInfoTag()->SetSong(song);
           item->SetMusicThumb();
