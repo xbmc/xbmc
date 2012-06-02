@@ -555,7 +555,7 @@
 						<textcolor>grey3</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</itemlayout>
 				<focusedlayout height="60" width="300">
@@ -582,7 +582,7 @@
 						<textcolor>grey3</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
 						<posx>150</posx>
@@ -593,7 +593,7 @@
 						<textcolor>blue</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+						<label>$INFO[ListItem.Label]</label>
 						<visible>Control.HasFocus(9000)</visible>
 						<include>VisibleFadeEffect</include>
 					</control>
