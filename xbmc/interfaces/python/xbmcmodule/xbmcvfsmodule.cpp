@@ -499,10 +499,10 @@ extern "C" {
         return NULL;
       
       CPyThreadState pyState;
-      bool bResult = self->pFile->Seek(seekBytes,iWhence);
+      int64_t bResult = self->pFile->Seek(seekBytes,iWhence);
       pyState.Restore();
       
-      return Py_BuildValue((char*)"b", bResult);
+      return Py_BuildValue((char*)"L", bResult);
     }
     
     PyDoc_STRVAR(close__doc__,
