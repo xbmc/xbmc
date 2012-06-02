@@ -7,7 +7,10 @@
 
 LIBS   = @abs_top_srcdir@/lib/libhts/libhts.a -ldl
 LIBDIR = @abs_top_srcdir@/addons/pvr.hts
-LIB    = @abs_top_srcdir@/addons/pvr.hts/XBMC_Tvheadend.pvr
+PVR    = @abs_top_srcdir@/addons/pvr.hts/XBMC_Tvheadend.pvr
+CLEAN_FILES = *.P *~ $(PVR)
+
+pvr: $(PVR)
 
 SRCS=client.cpp \
      HTSPConnection.cpp \
@@ -16,10 +19,11 @@ SRCS=client.cpp \
 
 include ../Makefile.include
 
-clean:
-	-rm -f $(OBJS) $(LIB) *.P *~
+cleanlibs:
 	$(MAKE) -C @abs_top_srcdir@/lib/libhts clean
+	
+clean: cleanlibs
 
-$(LIB): $(OBJS)
+$(PVR): $(OBJS)
 	${MAKE} -C @abs_top_srcdir@/lib/libhts
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(PVR)
