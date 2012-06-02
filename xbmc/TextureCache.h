@@ -164,10 +164,11 @@ private:
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image
    \param cacheHash [out] set to the hash of the cached image if it needs checking
+   \param trackUsage whether this call should track usage of the image (defaults to false)
    \return cached url of this image, empty if none exists
    \sa ClearCachedImage
    */
-  CStdString GetCachedImage(const CStdString &image, CStdString &cacheHash);
+  CStdString GetCachedImage(const CStdString &image, CStdString &cacheHash, bool trackUsage = false);
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
@@ -185,12 +186,11 @@ private:
    */
   bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
 
-  /*! \brief Increment the use count of a texture in the database
-   Thread-safe wrapper of CTextureDatabase::IncrementUseCount
-   \param details the texture to increment the use count
-   \return true on success, false otherwise
+  /*! \brief Increment the use count of a texture
+   Stores locally before calling CTextureDatabase::IncrementUseCount via a CUseCountJob
+   \sa CUseCountJob, CTextureDatabase::IncrementUseCount
    */
-  bool IncrementUseCount(const CTextureDetails &details);
+  void IncrementUseCount(const CTextureDetails &details);
 
   /*! \brief Set a previously cached texture as valid in the database
    Thread-safe wrapper of CTextureDatabase::SetCachedTextureValid
@@ -203,10 +203,20 @@ private:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
+  /*! \brief Called when a caching job has completed.
+   Removes the job from our processing list, updates the database
+   and fires a DDS job if appropriate.
+   \param success whether the job was successful.
+   \param job the caching job.
+   */
+  void OnCachingComplete(bool success, CTextureCacheJob *job);
+
   CCriticalSection m_databaseSection;
   CTextureDatabase m_database;
   std::set<CStdString> m_processing; ///< currently processing list to avoid 2 jobs being processed at once
   CCriticalSection     m_processingSection;
   CEvent               m_completeEvent; ///< Set whenever a job has finished
+  std::vector<CTextureDetails> m_useCounts; ///< Use count tracking
+  CCriticalSection             m_useCountSection;
 };
 

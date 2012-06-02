@@ -52,14 +52,14 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
   propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
   propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
   if (AudioObjectAddPropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a physical property listener.", m_StreamId);
+    CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a physical property listener.");
 
   // watch for virtual property changes.
   propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
   propertyAOPA.mSelector = kAudioStreamPropertyVirtualFormat;
   if (AudioObjectAddPropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a virtual property listener.", m_StreamId);
+    CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a virtual property listener.");
 
   return true;
 }

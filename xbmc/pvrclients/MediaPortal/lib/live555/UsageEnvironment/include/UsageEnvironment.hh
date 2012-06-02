@@ -28,6 +28,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #include "NetCommon.h"
 #endif
 
+#ifndef _BOOLEAN_HH
+#include "Boolean.hh"
+#endif
+
 #ifndef _STRDUP_HH
 // "strDup()" is used often, so include this here, so everyone gets it:
 #include "strDup.hh"

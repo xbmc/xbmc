@@ -45,6 +45,7 @@
 #import "XBMCController.h"
 #import "IOSScreenManager.h"
 #import "AutoPool.h"
+#import "DarwinUtils.h"
 
 //--------------------------------------------------------------
 @interface IOSEAGLView (PrivateMethods)
@@ -120,6 +121,14 @@
     if([screen scale] > 1.0)
     {
       ret = [screen scale];
+    }
+    
+    //if no retina display scale detected yet -
+    //ensure retina resolution on ipad3
+    //even on older iOS SDKs
+    if (ret == 1.0 && DarwinIsIPad3())
+    {
+      ret = 2.0;//iPad3 has scale factor 2 (like iPod 4g, iPhone4 and iPhone4s)
     }
   }
   return ret;

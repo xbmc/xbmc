@@ -13,581 +13,579 @@ msgstr ""
 "Language: sr_RS\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: id:31000
+msgctxt "#31000"
 msgid "Change Your"
 msgstr "Промените ваше"
 
-#: id:31001
+msgctxt "#31001"
 msgid "Love"
 msgstr "Љубав"
 
-#: id:31002
+msgctxt "#31002"
 msgid "Hate"
 msgstr "Мржња"
 
-#: id:31003
+msgctxt "#31003"
 msgid "Power Options"
 msgstr "Опције напајања"
 
-#: id:31004
+msgctxt "#31004"
 msgid "Working..."
 msgstr "Обрада..."
 
-#: id:31005
+msgctxt "#31005"
 msgid "Hide Information"
 msgstr "Сакриј инфо."
 
-#: id:31006
+msgctxt "#31006"
 msgid "View Options"
 msgstr ""
 
-#: id:31007
+msgctxt "#31007"
 msgid "Plugins"
 msgstr "Додаци"
 
-#: id:31008
+msgctxt "#31008"
 msgid "Fullscreen"
 msgstr ""
 
-#: id:31009
+msgctxt "#31009"
 msgid "Total Duration"
 msgstr ""
 
-#: id:31020
-msgctxt "Auto context with id 31020"
+msgctxt "#31020"
 msgid "Recently Added"
 msgstr "Недавно додато"
 
-#: id:31021
+msgctxt "#31021"
 msgid "Video - Files"
 msgstr "Видео - Датотеке"
 
-#: id:31022
+msgctxt "#31022"
 msgid "Music - Files"
 msgstr "Музика - Датотеке"
 
-#: id:31023
+msgctxt "#31023"
 msgid "Playing"
 msgstr "Репродукција"
 
-#: id:31024
+msgctxt "#31024"
 msgid "Page"
 msgstr "Страна"
 
-#: id:31025
+msgctxt "#31025"
 msgid "Items"
 msgstr "Ставки"
 
-#: id:31026
+msgctxt "#31026"
 msgid "Misc Options"
 msgstr "Остале опције"
 
-#: id:31027
+msgctxt "#31027"
 msgid "Location"
 msgstr "Локација"
 
-#: id:31028
+msgctxt "#31028"
 msgid "Poster Wrap"
 msgstr "Поређано"
 
-#: id:31029
+msgctxt "#31029"
 msgid "Fanart"
 msgstr "Зан. слика"
 
-#: id:31030
+msgctxt "#31030"
 msgid "Full list"
 msgstr "Пуни списак"
 
-#: id:31031
+msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr "Сличице"
 
-#: id:31032
+msgctxt "#31032"
 msgid "Image Wrap"
 msgstr "Поређано"
 
-#: id:31033
+msgctxt "#31033"
 msgid "Info"
 msgstr "Информације"
 
-#: id:31040
+msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Тренутно се репродукује"
 
-#: id:31042
+msgctxt "#31042"
 msgid "PLAYING"
 msgstr "РЕПРОДУКОВАЊЕ"
 
-#: id:31043
+msgctxt "#31043"
 msgid "PAUSED"
 msgstr "ПАУЗИРАНО"
 
-#: id:31044
+msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ПРЕМОТАВАЊЕ УНАПРЕД"
 
-#: id:31045
+msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕМОТАВАЊЕ"
 
-#: id:31046
+msgctxt "#31046"
 msgid "Audio Properties"
 msgstr "Својства звука"
 
-#: id:31047
+msgctxt "#31047"
 msgid "Current Preset"
 msgstr "Тренутна поставка"
 
-#: id:31048
+msgctxt "#31048"
 msgid "Visualization Presets"
 msgstr "Постојеће визуализације"
 
-#: id:31049
+msgctxt "#31049"
 msgid "End Time"
 msgstr "Време завршетка"
 
-#: id:31050
+msgctxt "#31050"
 msgid "Sort: Ascending"
 msgstr ""
 
-#: id:31051
+msgctxt "#31051"
 msgid "Sort: Descending"
 msgstr ""
 
-#: id:31055
+msgctxt "#31055"
 msgid "Open playlist"
 msgstr "Отвори реп. списак"
 
-#: id:31056
+msgctxt "#31056"
 msgid "Save playlist"
 msgstr "Сачувај реп. списак"
 
-#: id:31057
+msgctxt "#31057"
 msgid "Close playlist"
 msgstr "Затвори реп. списак"
 
-#: id:31058
+msgctxt "#31058"
 msgid "System music files"
 msgstr "Системске музичке датотеке"
 
-#: id:31059
+msgctxt "#31059"
 msgid "Current playlist"
 msgstr "Тренутни реп. списак"
 
-#: id:31060
+msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Ова датотека је сложена, изаберите део који желите да репродукујете."
 
-#: id:31061
+msgctxt "#31061"
 msgid "Current Selected"
 msgstr "Тренутно изабрано"
 
-#: id:31101
+msgctxt "#31101"
 msgid "Home screen options"
 msgstr "Опције почетног екрана"
 
-#: id:31102
+msgctxt "#31102"
 msgid "Background"
 msgstr "Позадина"
 
-#: id:31103
+msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Прикажи „Паузирано“ приликом репродукције слика"
 
-#: id:31104
+msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
 msgstr "Репродукуј најаве филмова у прозору [COLOR=grey3](Video Info. Dialog Only)[/COLOR]"
 
-#: id:31106
+msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Разне опције"
 
-#: id:31107
+msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 msgstr ""
 
-#: id:31108
+msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
 msgstr "Сакриј тастере главног менија"
 
-#: id:31109
+msgctxt "#31109"
 msgid "Media backgrounds"
 msgstr "Позадине почетног екрана"
 
-#: id:31110
+msgctxt "#31110"
 msgid "Edit Background for Media Type"
 msgstr "Уредите позадину тастера за почетни екран"
 
-#: id:31111
+msgctxt "#31111"
 msgid "Hide"
 msgstr "Сакриј"
 
-#: id:31112
+msgctxt "#31112"
 msgid "Options"
 msgstr "Опције"
 
-#: id:31113
+msgctxt "#31113"
 msgid "Single Image"
 msgstr "Једна слика"
 
-#: id:31114
+msgctxt "#31114"
 msgid "Multi Image"
 msgstr "Више слика"
 
-#: id:31115
+msgctxt "#31115"
 msgid "Customizer"
 msgstr "Прилагођавач"
 
-#: id:31116
+msgctxt "#31116"
 msgid "Show Recently added Albums"
 msgstr ""
 
-#: id:31117
+msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Прикажи недавно додате филмове"
 
-#: id:31118
+msgctxt "#31118"
 msgid "Home Page Programs Submenu"
 msgstr "Подмени почетне стране"
 
-#: id:31119
+msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr ""
 
-#: id:31120
+msgctxt "#31120"
 msgid "BUTTON LABEL"
 msgstr "НАТПИС ТАСТЕРА"
 
-#: id:31122
+msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Страна временске прогнозе"
 
-#: id:31123
+msgctxt "#31123"
 msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
 msgstr "Прикажи постере уместо банера за TV серије"
 
-#: id:31124
+msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Прикажи тренутни филм у позадини"
 
-#: id:31125
+msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
 msgstr "Прикажи тренутну визуализацију у позадини"
 
-#: id:31126
+msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
 msgstr ""
 
-#: id:31127
+msgctxt "#31127"
 msgid "TvTunes"
 msgstr ""
 
-#: id:31128
+msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Текстови песама"
 
-#: id:31132
+msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr ""
 
-#: id:31133
+msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr ""
 
-#: id:31134
+msgctxt "#31134"
 msgid "Home Page Videos Submenu"
 msgstr ""
 
-#: id:31135
+msgctxt "#31135"
 msgid "Home Page Music Submenu"
 msgstr ""
 
-#: id:31136
+msgctxt "#31136"
 msgid "Home Page Pictures Submenu"
 msgstr ""
 
-#: id:31140
+msgctxt "#31140"
 msgid "Music OSD"
 msgstr "Музички OSD"
 
-#: id:31141
+msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Видео OSD"
 
-#: id:31200
+msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Пречице"
 
-#: id:31201
+msgctxt "#31201"
 msgid "Categories"
 msgstr "Категорије"
 
-#: id:31202
+msgctxt "#31202"
 msgid "Show Cast"
 msgstr "Прикажи улоге"
 
-#: id:31203
+msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "Изаберите вашу песму"
 
-#: id:31204
+msgctxt "#31204"
 msgid "Section Links"
 msgstr "Линкови одељка"
 
-#: id:31205
+msgctxt "#31205"
 msgid "Lyrics Source"
 msgstr "Извор текстова песама"
 
-#: id:31206
+msgctxt "#31206"
 msgid "Found"
 msgstr ""
 
-#: id:31207
+msgctxt "#31207"
 msgid "Find More Items"
 msgstr ""
 
-#: id:31208
+msgctxt "#31208"
 msgid "Upcoming Episodes"
 msgstr ""
 
-#: id:31300
+msgctxt "#31300"
 msgid "Current Temp"
 msgstr "Тренутна температура"
 
-#: id:31301
+msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Последње ажурирање"
 
-#: id:31302
+msgctxt "#31302"
 msgid "Menu"
 msgstr "Мени"
 
-#: id:31303
+msgctxt "#31303"
 msgid "Data provider"
 msgstr ""
 
-#: id:31304
+msgctxt "#31304"
 msgid "Picture"
 msgstr "Фотографија"
 
-#: id:31305
+msgctxt "#31305"
 msgid "No Disc Media Detected"
 msgstr "Није откривен оптички диск"
 
-#: id:31306
+msgctxt "#31306"
 msgid "Eject"
 msgstr "Избаци"
 
-#: id:31307
+msgctxt "#31307"
 msgid "Hide Fanart"
 msgstr "Сакриј слику"
 
-#: id:31308
+msgctxt "#31308"
 msgid "Movie Details"
 msgstr "Подаци о филму"
 
-#: id:31309
+msgctxt "#31309"
 msgid "Memory Used:"
 msgstr "Искоришћеност меморије:"
 
-#: id:31310
+msgctxt "#31310"
 msgid "Track Number"
 msgstr "Број нумере"
 
-#: id:31311
+msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
 msgstr "Занимљива слика[CR]није додељена.[CR][CR]Кликните на дугме да[CR]бисте је доделили."
 
-#: id:31312
+msgctxt "#31312"
 msgid "Current Scraper"
 msgstr "Тренутни добављач"
 
-#: id:31313
+msgctxt "#31313"
 msgid "Choose a Scraper"
 msgstr "Изаберите добављача"
 
-#: id:31314
+msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "Опције анализирања садржаја"
 
-#: id:31315
+msgctxt "#31315"
 msgid "Basic"
 msgstr "Основно"
 
-#: id:31317
+msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "Пост. пут. до слика"
 
-#: id:31318
+msgctxt "#31318"
 msgid "Small Fanart"
 msgstr "Занимљиве слике малих димензија"
 
-#: id:31319
+msgctxt "#31319"
 msgid "Selected Profile"
 msgstr "Изабран профил"
 
-#: id:31320
+msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Последња пријава"
 
-#: id:31321
+msgctxt "#31321"
 msgid "Karaoke Song Selector"
 msgstr "Бирач караоке песме"
 
-#: id:31322
+msgctxt "#31322"
 msgid "Aired"
 msgstr "Емитовано"
 
-#: id:31323
+msgctxt "#31323"
 msgid "Latest Movies"
 msgstr "Новији филмови"
 
-#: id:31324
+msgctxt "#31324"
 msgid "Latest Episodes"
 msgstr "Новије епизоде"
 
-#: id:31325
+msgctxt "#31325"
 msgid "Playlist Options"
 msgstr "Опције списка за репродукцију"
 
-#: id:31326
+msgctxt "#31326"
 msgid "Created"
 msgstr "Направљено"
 
-#: id:31327
+msgctxt "#31327"
 msgid "Resolution"
 msgstr "Резолуција"
 
-#: id:31328
-msgctxt "Auto context with id 31328"
+msgctxt "#31328"
 msgid "Recently Added"
 msgstr "Недавно додато"
 
-#: id:31329
+msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr "[B]Одбројавање је постављено![/B] [COLOR=grey2] - Систем ће се искључити за[/COLOR]"
 
-#: id:31330
+msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
 msgstr "Кликните на тастер за репродукцију[CR][CR]најаве филма"
 
-#: id:31331
+msgctxt "#31331"
 msgid "Album Details"
 msgstr ""
 
-#: id:31351
+msgctxt "#31351"
 msgid "Pause"
 msgstr "Пауза"
 
-#: id:31352
+msgctxt "#31352"
 msgid "Stop"
 msgstr "Заустави"
 
-#: id:31353
+msgctxt "#31353"
 msgid "Fast Forward"
 msgstr "Премотај унапред"
 
-#: id:31354
+msgctxt "#31354"
 msgid "Rewind"
 msgstr "Премотај уназад"
 
-#: id:31355
+msgctxt "#31355"
 msgid "Movie menu"
 msgstr "Филмски мени"
 
-#: id:31356
+msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Преузми титлове"
 
-#: id:31390
+msgctxt "#31390"
 msgid "Skin default"
 msgstr ""
 
-#: id:31391
+msgctxt "#31391"
 msgid "Skin default with no Caps"
 msgstr ""
 
-#: id:31392
+msgctxt "#31392"
 msgid "Arial based"
 msgstr ""
 
-#: id:31400
+msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ ПРИКАЗА[/B][CR][CR]Промените маску · Изаберите језик и област где живите[CR]Промените опције излиставања датотека · Изаберите чувара екрана"
 
-#: id:31401
+msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ ФИЛМОВА[/B][CR][CR]Управљајте вашом библиотеком филмова · Поставите опције репродукције филмова[CR]Промените опције излиставања филмова · Поставите изглед слова у титловима"
 
-#: id:31402
+msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ МУЗИКЕ[/B][CR][CR]Управљајте вашом библиотеком музичких нумера · Поставите опције репрод. музике[CR]Промените опције излиставања музике · Поставите слање песама[CR]Поставите караоке опције"
 
-#: id:31403
+msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ СЛИКА[/B][CR][CR]Поставите опције излиставања слика · Конфигуришите репродукцију слајдова"
 
-#: id:31404
+msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ ВРЕМЕНСКЕ ПРОГНОЗЕ[/B][CR][CR]Поставите три града за прикупљање информација о временским приликама"
 
-#: id:31406
+msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ СИСТЕМА[/B][CR][CR]Подесите и калибришите екране · Конфигуришите звучни излаз[CR]Подесите даљинско управљање · Поставите опције штедње енергије[CR]Омогућите евиденцију грешака · Подесите главну лозинку"
 
-#: id:31407
+msgctxt "#31407"
 msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
 msgstr "[B]КОНФИГУРИСАЊЕ ПОСТАВКИ МАСКЕ[/B][CR][CR]Подесите Confluence маску · Додајте и уклоните ставке почетног екрана[CR]Промените позадине маске"
 
-#: id:31408
+msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]КОНФИГУРИСАЊЕ ДОДАТНИХ ПРОГРАМА[/B][CR][CR]Управљајте вашим инсталираним додатним програмима · Потражите и инсталирајте додатне прог. са xbmc.org[CR]Прилагодите подешавање додатног програма"
 
-#: id:31409
+msgctxt "#31409"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
-#: id:31421
+msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Изаберите ваш XBMC кориснички[CR]профил за пријаву, а потом наставите даље"
 
-#: id:31900
+msgctxt "#31900"
 msgid "Weather Maps"
 msgstr ""
 
-#: id:31901
+msgctxt "#31901"
 msgid "36 Hour Forecast"
 msgstr ""
 
-#: id:31902
+msgctxt "#31902"
 msgid "Hourly Forecast"
 msgstr ""
 
-#: id:31903
+msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr ""
 
-#: id:31904
+msgctxt "#31904"
 msgid "10 Day Forecast"
 msgstr ""
 
-#: id:31905
+msgctxt "#31905"
 msgid "Forecast"
 msgstr ""
 
-#: id:31906
+msgctxt "#31906"
 msgid "Maps & Video"
 msgstr ""
 
-#: id:31907
+msgctxt "#31907"
 msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
 msgstr ""
 
-#: id:31908
+msgctxt "#31908"
 msgid "Chance of Precipitation"
 msgstr ""
 
-#: id:31909
+msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr ""
 

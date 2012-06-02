@@ -144,6 +144,8 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
           if (!fanart.empty())
             result["fanart"] = fanart.c_str();
         }
+        if (!result.isMember("fanart"))
+          result["fanart"] = "";
         continue;
       }
 

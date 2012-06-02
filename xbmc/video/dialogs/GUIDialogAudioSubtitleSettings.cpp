@@ -37,6 +37,7 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "pvr/PVRManager.h"
 
 using namespace std;
@@ -78,7 +79,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   m_settings.clear();
   // create our settings
   m_volume = g_settings.m_fVolumeLevel;
-  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM, FormatDecibel, false);
+  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM, PercentAsDecibel, false);
   AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
   if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
   {
@@ -367,6 +368,13 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
     UpdateSetting(SUBTITLE_SETTINGS_DELAY);
   }
   CGUIDialogSettings::FrameMove();
+}
+
+CStdString CGUIDialogAudioSubtitleSettings::PercentAsDecibel(float value, float interval)
+{
+  CStdString text;
+  text.Format("%2.1f dB", CAEUtil::PercentToGain(value));
+  return text;
 }
 
 CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)
