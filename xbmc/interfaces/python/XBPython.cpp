@@ -63,6 +63,7 @@ extern "C" {
   void InitAddonTypes(void);
   void DeinitAddonModule(void);
   void InitVFSModule(void);
+  void InitVFSTypes(void);
   void DeinitVFSModule(void);
 }
 
@@ -490,6 +491,7 @@ void XBPython::Initialize()
       InitGUITypes();
       InitPluginTypes();
       InitAddonTypes();
+      InitVFSTypes();
 
       if (!(m_mainThreadState = PyThreadState_Get()))
         CLog::Log(LOGERROR, "Python threadstate is NULL.");
