@@ -95,6 +95,7 @@ public:
   int iEndOffset;
   int iArtistId;
   int iAlbumId;
+  bool bIsCueSong;
 
   // Karaoke-specific information
   long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke

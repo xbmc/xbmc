@@ -294,6 +294,8 @@ public:
   bool IsSamePath(const CFileItem *item) const;
 
   bool IsAlbum() const;
+
+  bool IsCUESong() const;
 private:
   // Gets the previously cached thumb file (with existence checks)
   CStdString GetPreviouslyCachedMusicThumb() const;
@@ -327,6 +329,7 @@ private:
   CVideoInfoTag* m_videoInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
+  bool m_bIsCueSong;
 };
 
 /*!

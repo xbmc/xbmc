@@ -55,6 +55,7 @@ CSong::CSong(CMusicInfoTag& tag)
   iKaraokeDelay = 0;         //! Karaoke song lyrics-music delay in 1/10 seconds.
   iArtistId = -1;
   iAlbumId = -1;
+  bIsCueSong = 0;
 }
 
 CSong::CSong()

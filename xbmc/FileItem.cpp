@@ -75,6 +75,7 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = song.strThumb;
+  m_bIsCueSong = song.bIsCueSong;
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -258,6 +259,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
   m_dateTime = item.m_dateTime;
   m_dwSize = item.m_dwSize;
+  m_bIsCueSong = item.m_bIsCueSong;
   if (item.HasMusicInfoTag())
   {
     m_musicInfoTag = GetMusicInfoTag();
@@ -309,6 +311,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
+  m_bIsCueSong = item.m_bIsCueSong;
   return *this;
 }
 
@@ -348,6 +351,7 @@ void CFileItem::Reset()
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   m_specialSort = SORT_NORMALLY;
+  m_bIsCueSong = false;
   SetInvalid();
 }
 
@@ -1154,6 +1158,11 @@ bool CFileItem::IsAlbum() const
   return m_bIsAlbum;
 }
 
+bool CFileItem::IsCUESong() const
+{
+  return m_bIsCueSong;
+}
+
 void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 {
   if (item.HasVideoInfoTag())
@@ -1939,6 +1948,7 @@ void CFileItemList::FilterCueItems()
                   { // must be the last song
                     song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
                   }
+                  song.bIsCueSong = true;
                   // add this item to the list
                   itemstoadd.push_back(song);
                 }

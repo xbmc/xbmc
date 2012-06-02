@@ -153,7 +153,8 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
 
     // TODO: Can be removed once this is properly handled when starting playback of a file
     if (id <= 0 && !item->GetPath().empty() &&
-       (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
+       (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()) &&
+       (!item->IsCUESong())) //Prevent changing song info when it's from cue sheet
     {
       CMusicDatabase musicdatabase;
       if (musicdatabase.Open())
