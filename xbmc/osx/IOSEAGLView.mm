@@ -72,7 +72,9 @@
 {
   CGRect frame = [IOSScreenManager getLandscapeResolution: currentScreen]; 
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];  
-  if(frame.size.width * frame.size.height > 921600)
+  //allow a maximum framebuffer size of 1080p
+  //needed for tvout on iPad3 and maybe AppleTV3
+  if(frame.size.width * frame.size.height > 2073600)
     return;
   //resize the layer - ios will delay this
   //and call layoutSubviews when its done with resizing
