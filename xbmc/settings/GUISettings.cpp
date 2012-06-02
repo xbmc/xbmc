@@ -750,7 +750,7 @@ void CGUISettings::Initialize()
   fontStyles.insert(make_pair(738, FONT_STYLE_NORMAL));
   fontStyles.insert(make_pair(739, FONT_STYLE_BOLD));
   fontStyles.insert(make_pair(740, FONT_STYLE_ITALICS));
-  fontStyles.insert(make_pair(741, FONT_STYLE_BOLD_ITALICS));
+  fontStyles.insert(make_pair(741, FONT_STYLE_BOLD | FONT_STYLE_ITALICS));
 
   AddInt(sub, "subtitles.style", 736, FONT_STYLE_BOLD, fontStyles, SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
