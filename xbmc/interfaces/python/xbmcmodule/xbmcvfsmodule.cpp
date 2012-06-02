@@ -455,7 +455,7 @@ extern "C" {
         return NULL;
 
       CPyThreadState pyState;
-      bool bResult = self->pFile->Write( (void*) pBuffer, std::strlen( pBuffer ) + 1 );
+      bool bResult = self->pFile->Write( (void*) pBuffer, strlen( pBuffer ) + 1 );
       pyState.Restore();
 
       return Py_BuildValue((char*)"b", bResult);
