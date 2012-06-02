@@ -3953,7 +3953,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
   m_bPlaybackStarting = false;
 
-  if (!bResult)
+  if (bResult)
+  {
+    // we must have started, otherwise player might send this later
+    if(IsPlaying())
+      OnPlayBackStarted();
+    else
+      OnPlayBackEnded();
+  }
+  else
   {
     // we send this if it isn't playlistplayer that is doing this
     int next = g_playlistPlayer.GetNextSong();
