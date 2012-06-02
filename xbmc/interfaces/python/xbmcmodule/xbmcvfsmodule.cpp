@@ -20,6 +20,7 @@
  */
 
 #include <Python.h>
+#include <cstring>
 
 
 #include "filesystem/Directory.h"
