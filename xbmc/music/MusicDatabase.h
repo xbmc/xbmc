@@ -137,7 +137,7 @@ public:
   bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs);
   bool HasAlbumInfo(int idAlbum);
   bool GetArtistInfo(int idArtist, CArtist &info, bool needAll=true);
-  bool GetSongByFileName(const CStdString& strFileName, CSong& song);
+  bool GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset = 0);
   int GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(int idSong, CSong& song);
   bool GetSongByKaraokeNumber( int number, CSong& song );

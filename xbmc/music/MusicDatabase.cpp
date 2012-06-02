@@ -971,7 +971,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   return artist;
 }
 
-bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& song)
+bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset)
 {
   try
   {
@@ -998,6 +998,8 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
                                 "where dwFileNameCRC='%ul' and strPath='%s'"
                                 , crc,
                                 strPath.c_str());
+    if (startOffset)
+      strSQL += PrepareSQL(" AND iStartOffset=%i", startOffset);
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
