@@ -66,6 +66,7 @@ extern NSString* kBRScreenSaverDismissed;
 @end
 
 @implementation XBMCController
+@synthesize animating;
 @synthesize lastGesturePoint;
 @synthesize lastPinchScale;
 @synthesize currentPinchScale;
