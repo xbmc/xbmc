@@ -114,7 +114,7 @@ std::string CTsReader::TranslatePath(const char*  pszFileName)
     }
   }
 
-#if defined(TARGET_LINUX) || defined(TARGET_OSX)
+#if defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   CStdString CIFSName = sFileName;
   CIFSName.Replace("\\", "/");
   std::string SMBPrefix = "smb://";

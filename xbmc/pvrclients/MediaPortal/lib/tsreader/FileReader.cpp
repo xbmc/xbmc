@@ -36,7 +36,7 @@ using namespace ADDON;
 FileReader::FileReader() :
 #if defined(TARGET_WINDOWS)
   m_hFile(INVALID_HANDLE_VALUE),
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   m_hFile(),
 #else
 #error Implement initialisation of file for your OS
@@ -143,7 +143,7 @@ long FileReader::OpenFile()
 //              FILE_FLAG_RANDOM_ACCESS,        // More flags
 //              FILE_FLAG_SEQUENTIAL_SCAN,      // More flags
               NULL);                            // Template
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
     // Try to open the file
     XBMC->Log(LOG_INFO, "FileReader::OpenFile() %s %s.", m_pFileName, CFile::Exists(m_pFileName) ? "exists" : "not found");
     m_hFile.Open(m_pFileName, READ_CHUNKED);        // Open in readonly mode with this filename
@@ -177,7 +177,7 @@ long FileReader::OpenFile()
 
 #if defined(TARGET_WINDOWS)
   XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() %s handle %i %s", m_bReadOnly ? "read-only" : "read/write", m_hFile, m_pFileName );
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() %s handle %p %s", m_bReadOnly ? "read-only" : "read/write", m_hFile.GetImplemenation(), m_pFileName );
 #endif
 
@@ -209,7 +209,7 @@ long FileReader::CloseFile()
 #if defined(TARGET_WINDOWS)
   ::CloseHandle(m_hFile);
   m_hFile = INVALID_HANDLE_VALUE; // Invalidate the file
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   m_hFile.Close();
 #else
 #error FIXME: Add a CloseFile() implementation for your OS
@@ -223,7 +223,7 @@ inline bool FileReader::IsFileInvalid()
 {
 #if defined(TARGET_WINDOWS)
   return (m_hFile == INVALID_HANDLE_VALUE);
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   return (m_hFile.GetImplemenation() == NULL);
 #else
 #error FIXME: Add an IsFileInvalid implementation for your OS
@@ -249,7 +249,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
 
   }
   *pLength = m_fileSize;
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   if (m_bReadOnly || !m_fileSize)
   {
     struct stat64 filestatus;
@@ -308,7 +308,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
   li.QuadPart = llDistanceToMove;
 
   return ::SetFilePointer(m_hFile, li.LowPart, &li.HighPart, dwMoveMethod);
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   // Stupid but simple movement transform
   if (dwMoveMethod == FILE_BEGIN) dwMoveMethod = SEEK_SET;
   else if (dwMoveMethod == FILE_CURRENT) dwMoveMethod = SEEK_CUR;
@@ -378,7 +378,7 @@ int64_t FileReader::GetFilePointer()
   }
 
   return li.QuadPart;
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   off64_t myOffset;
   myOffset = m_hFile.Seek(0, SEEK_CUR);
 
@@ -441,7 +441,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
     return S_FALSE;
   }
   return S_OK;
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+#elif defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   *dwReadBytes = m_hFile.Read((void*)pbData, (DWORD)lDataLength);//Read file data into buffer
   //XBMC->Log(LOG_DEBUG, "%s: requested read length %d actually read %d.", __FUNCTION__, lDataLength, *dwReadBytes);
 
