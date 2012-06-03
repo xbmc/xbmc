@@ -33,6 +33,7 @@
 #include <algorithm>
 #include "platform/util/timeutils.h"
 #include "platform/util/StdString.h"
+#include "os-dependent.h"
 
 using namespace ADDON;
 using namespace PLATFORM;
@@ -583,7 +584,7 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
     li.QuadPart = 0;
     li.LowPart = ::SetFilePointer(hFile, 0, &li.HighPart, FILE_END);
     ::CloseHandle(hFile);
-    
+
     length = li.QuadPart;
   }
   else
@@ -604,10 +605,10 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
 
   // Try to open the file
   CFile hFile;
-  struct __stat64 filestatus;
+  struct stat64 filestatus;
   if (hFile.Open(pFilename) && hFile.Stat(&filestatus) >= 0)
   {
-    length = filestatus.st_size;
+    length = (int64_t) filestatus.st_size;
     hFile.Close();
   }
   else

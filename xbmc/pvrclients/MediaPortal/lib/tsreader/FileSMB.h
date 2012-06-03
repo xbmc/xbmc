@@ -37,15 +37,12 @@ public:
   void Init();
   void Deinit();
   void Purge();
-  //void PurgeEx(const CURL& url);
   void CheckIfIdle();
   void SetActivityTime();
   void AddActiveConnection();
   void AddIdleConnection();
   CStdString URLEncode(const CStdString &value);
-  //CStdString URLEncode(const CURL &url);
 
-  //DWORD ConvertUnixToNT(int error);
 private:
   SMBCCTX *m_context;
   CStdString m_strLastHost;
@@ -69,7 +66,7 @@ public:
   int64_t GetPosition();
   int64_t GetLength();
   void Close();
-  int Stat(struct __stat64 *buffer);
+  int Stat(struct stat64 *buffer);
   static bool Exists(const CStdString& strFileName, bool bUseCache = true);
 
 private:
