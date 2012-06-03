@@ -38,12 +38,10 @@ public:
   void Deinit();
   void Purge();
   //void PurgeEx(const CURL& url);
-#ifdef TARGET_LINUX
   void CheckIfIdle();
   void SetActivityTime();
   void AddActiveConnection();
   void AddIdleConnection();
-#endif
   CStdString URLEncode(const CStdString &value);
   //CStdString URLEncode(const CURL &url);
 
@@ -52,10 +50,8 @@ private:
   SMBCCTX *m_context;
   CStdString m_strLastHost;
   CStdString m_strLastShare;
-#ifdef TARGET_LINUX
   int m_OpenConnections;
   unsigned int m_IdleTimeout;
-#endif
 };
 
 extern CSMB smb;
@@ -78,7 +74,7 @@ public:
 
 private:
   int OpenFile();
-  
+
   int64_t m_fileSize;
   int m_fd;
   CStdString m_fileName;
