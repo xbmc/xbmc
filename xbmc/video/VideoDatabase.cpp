@@ -4256,8 +4256,8 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
 
     CStdString strSQL = "SELECT movieview.*, sets.idSet, sets.strSet FROM movieview"
                        " JOIN setlinkmovie ON movieview.idMovie = setlinkmovie.idMovie"
-                       " JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet = sets.idSet"
-                       " JOIN sets ON setlinkmovie.idSet = sets.idSet ";
+                       " JOIN sets ON setlinkmovie.idSet = sets.idSet"
+                       " JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet = sets.idSet ";
     if (!filter.join.empty())
       strSQL += filter.join;
     if (!filter.where.empty())
