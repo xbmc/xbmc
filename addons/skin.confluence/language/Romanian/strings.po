@@ -1,4 +1,8 @@
 # XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
@@ -12,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1))\n"
+
+msgctxt "Addon Summary"
+msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
+msgstr "Costum Confluence de Jezz_X. (costum implicit)"
+
+msgctxt "Addon Description"
+msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
+msgstr "Confluence este costumul implicit pentru XBMC 9.11 și versiunile ulterioare. Este o combinație de concepte împrumutate de la mai multe costume populare, care încearcă să îmbrățișeze și să integreze ideile lor bune într-un costum care să fie ușor de înțeles și folosit de către utilizatorii XBMC începători."
+
+msgctxt "Addon Disclaimer"
+msgid "Confluence is the default skin for XBMC, removing it may cause issues"
+msgstr "Confluence este costumul implicit pentru XBMC, dacă îl eliminați pot apărea probleme!"
 
 msgctxt "#31000"
 msgid "Change Your"
@@ -588,4 +604,3 @@ msgstr "Șansă de precipitații"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Preluare informații previziune..."
-

@@ -6026,6 +6026,8 @@ msgctxt "#16325"
 msgid "Auto - ION Optimized"
 msgstr ""
 
+#empty strings from id 16326 to 16399
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr ""
@@ -6036,7 +6038,7 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr ""
 
-#empty strings from id 17501 to 11996
+#empty strings from id 17501 to 17996
 
 msgctxt "#17997"
 msgid "%i MByte"

@@ -164,7 +164,6 @@ namespace PYXBMC
     "width          : integer - width of control.\n"
     "height         : integer - height of control.\n"
     "filename       : string - image filename.\n"
-    "colorKey       : [opt] hexString - (example, '0xFFFF3300')\n"
     "aspectRatio    : [opt] integer - (values 0 = stretch (default), 1 = scale up (crops), 2 = scale down (black bars)"
     "colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))\n"
     "\n"

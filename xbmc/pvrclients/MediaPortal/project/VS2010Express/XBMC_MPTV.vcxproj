@@ -129,8 +129,8 @@
     <ClCompile Include="..\..\lib\tsreader\MemoryBuffer.cpp" />
     <ClCompile Include="..\..\lib\tsreader\MemoryReader.cpp" />
     <ClCompile Include="..\..\lib\tsreader\MemorySink.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\MepoRTSPClient.cpp" />
     <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp" />
-    <ClCompile Include="..\..\lib\tsreader\RTSPClient.cpp" />
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp" />
     <ClCompile Include="..\..\lib\tsreader\windows\File.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
@@ -156,8 +156,8 @@
     <ClInclude Include="..\..\lib\tsreader\MemoryBuffer.h" />
     <ClInclude Include="..\..\lib\tsreader\MemoryReader.h" />
     <ClInclude Include="..\..\lib\tsreader\MemorySink.h" />
+    <ClInclude Include="..\..\lib\tsreader\MepoRTSPClient.h" />
     <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h" />
-    <ClInclude Include="..\..\lib\tsreader\RTSPClient.h" />
     <ClInclude Include="..\..\lib\tsreader\TSReader.h" />
     <ClInclude Include="..\..\os-dependent.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />

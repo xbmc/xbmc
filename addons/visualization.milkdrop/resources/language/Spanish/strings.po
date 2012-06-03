@@ -1,0 +1,98 @@
+# XBMC Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "MilkDrop takes you flying through the soundwaves you're hearing"
+msgstr "Milkdrop te lleva volando a través de las ondas que estás escuchando"
+
+msgctxt "Addon Description"
+msgid "MilkDrop was originally a music visualizer \"plug-in\" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound."
+msgstr "MilkDrop era originalmente un plug-in visualizador de música para Winamp. Mientras escuchas música, MilkDrop te lleva volando a través de las ondas que estás escuchando, y utiliza la detección del ritmo para activar una gran cantidad de efectos psicodélicos, creando una rica experiencia visual a través del sonido."
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "Tiempo de mezcla automático"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Tiempo entre presets"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Tiempo aleatorio adicional"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "Activar el filtro Anisotrópico"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "Habilitar cortes"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "Umbral de volumen para cortes"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "Tiempo médio entre cortes"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "Frecuencia de actualización máxima"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "Habilitar Stereo 3D"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Conjunto de presets"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "Carpeta de presets del usuario"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Modo aleatorio de presets"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "Presets WA51"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Presets Winamp"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "Carpeta de presets definida por el usuario"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f seg"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

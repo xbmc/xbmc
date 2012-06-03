@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon version: 1.0.1
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgctxt "Addon Summary"
+msgid "projectM takes you flying through the soundwaves you're hearing"
+msgstr "projectM带你与声波一起飞翔"
+
+msgctxt "Addon Description"
+msgid "projectM is an awesome music visualizer. There is nothing better in the world of Unix. projectM's greatness comes from the hard work of the community. Users like you can create presets that connect music with incredible visuals. Try it!\nprojectM Visualization is an LGPL'ed reimplementation of Milkdrop under OpenGL\nAll projectM requires is a video card with 3D acceleration and your favorite music."
+msgstr "projectM是一个音乐可视化效果。它是Unix世界中最好的。它的伟大来自于社区的辛苦工作。使用者可以创建预设参数把音乐和难以置信的可视化效果连接起来。试试吧！\nprojectM可视化效果是用OpenGL按照LGPL协议对Milkdrop的重新实现\nprojectM所要求的仅是一块有3D加速功能的显卡和你喜爱的音乐。"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "渲染质量"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "低"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "中"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "高"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "最大"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "随机播放模式"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "平滑预置时间"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "预置时间"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "节拍灵敏度"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr ""
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr ""
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr ""
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr ""
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr ""

@@ -59,6 +59,7 @@ MultiFileReader::MultiFileReader():
   m_startPosition = 0;
   m_endPosition = 0;
   m_currentReadPosition = 0;
+  m_lastZapPosition = 0;
   m_filesAdded = 0;
   m_filesRemoved = 0;
   m_TSFileId = 0;
@@ -138,7 +139,7 @@ bool MultiFileReader::IsFileInvalid()
 
 unsigned long MultiFileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
 {
-//  RefreshTSBufferFile();
+  RefreshTSBufferFile();
 
   if (dwMoveMethod == FILE_END)
   {
@@ -161,7 +162,7 @@ unsigned long MultiFileReader::SetFilePointer(int64_t llDistanceToMove, unsigned
     m_currentReadPosition = m_endPosition;
   }
 
-  RefreshTSBufferFile();
+//  RefreshTSBufferFile();
   return S_OK;
 }
 
@@ -585,6 +586,13 @@ long MultiFileReader::RefreshTSBufferFile()
   {
     file = m_tsFiles.front();
     m_startPosition = file->startPosition;
+    // Since the buffer file may be re-used when a channel is changed, we
+    // want the start position to reflect the position in the file after the last
+    // channel change, or the real start position, whichever is larger
+    if (m_lastZapPosition > m_startPosition)
+    {
+        m_startPosition = m_lastZapPosition;
+    }
 
     file = m_tsFiles.back();
     file->length = currentPosition;
@@ -649,13 +657,11 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
 
   length = 0;
 
-  // Try to open the file
-  CFile hFile;
+  // Pickup filesize
   struct stat64 filestatus;
-  if (hFile.Open(pFilename) && hFile.Stat(&filestatus) >= 0)
+  if (CFile::Stat(pFilename, &filestatus) >= 0)
   {
     length = filestatus.st_size;
-    hFile.Close();
   }
   else
   {
@@ -663,6 +669,7 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
     XBMC->QueueNotification(QUEUE_ERROR, "Failed to open file %s", pFilename);
     return S_FALSE;
   }
+  XBMC->Log(LOG_DEBUG, "GetFileLength(%s) == %lli.\n", pFilename, length);
   return S_OK;
 #else
 #error FIXME: Add MultiFileReader::GetFileLenght implementation for your OS.
@@ -714,5 +721,6 @@ size_t MultiFileReader::WcsToMbs(char *s, const void *w, size_t n)
 void MultiFileReader::OnZap(void)
 {
   SetFilePointer(0, FILE_END);
+  m_lastZapPosition = m_currentReadPosition;
 }
 #endif //TSREADER

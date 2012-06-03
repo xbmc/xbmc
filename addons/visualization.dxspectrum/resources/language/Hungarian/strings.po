@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:17+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Visualisation showing a rotating 3D Spectrum Analyzer"
+msgstr "Vizualizáció 3D spektrum analizátorral"
+
+msgctxt "Addon Description"
+msgid "DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.\nIt also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great"
+msgstr "A DirectX Spectrum egy olyan vizualizáció ami egy 3D hang spektrum analizátort mutat DirectX segítségével megjelenítve, ami a zene ritmusára mozog egy hullám-effektust képezve a teljes spektrumhálón.\nBeállítható a spektrum oszlopok magassága, mozgási sebessége és hogy az oszlopok hogyan jelenjenek meg (teli, pontok, drótváz). Ez egy kis erőforrásigényű vizualizáció ami nagyon jól mutat."
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Mód"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Kitöltött"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Drótváz"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Pontok"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Oszlopmagasság"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Alacsony"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Alapérték"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Nagy"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Nagyon nagy"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Sebesség"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Nagyon lassú"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Lassú"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Alapérték"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Gyors"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Nagyon gyors"

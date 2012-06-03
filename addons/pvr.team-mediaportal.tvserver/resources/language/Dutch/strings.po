@@ -1,0 +1,193 @@
+# XBMC Media Center language file
+# Addon Name: MediaPortal PVR addon
+# Addon id: pvr.team-mediaportal.tvserver
+# Addon version: 1.2.3.114
+# Addon Provider: Marcel Groothuis
+# Translators:
+#   <margro.xbmc@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC MediaPortal pvr addon\n"
+"Report-Msgid-Bugs-To: margro.xbmc@gmail.com\n"
+"POT-Creation-Date: 2012-06-03 16:35+0000\n"
+"PO-Revision-Date: 2012-06-03 15:41+0000\n"
+"Last-Translator: margro <margro.xbmc@gmail.com>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid ""
+"XBMC frontend for the MediaPortal TV Server (ffmpeg + tsreader version)"
+msgstr "XBMC frontend voor de MediaPortal TV Server (ffmpeg + tsreader versie)"
+
+msgctxt "Addon Description"
+msgid ""
+"MediaPortal TV Server frontend. Supports streaming of Live TV &amp; "
+"Recordings, listening to Radio channels, EPG and Timers. This addon combines"
+" the former ffmpeg and tsreader addons."
+msgstr "MediaPortal TV Server frontend. Ondersteunt het bekijken van Live TV en opnames, het luisteren van radio zenders, het tonen van de EPG en het inplannen/beheren van nieuwe opnames. Deze addon combineert de voorgaande \"ffmpeg\" en \"tsreader\" addons."
+
+msgctxt "Addon Disclaimer"
+msgid ""
+"This is unstable software! The authors are in no way responsible for failed "
+"recordings, incorrect timers, wasted hours, or any other undesirable "
+"effects."
+msgstr "De auteurs zijn niet aansprakelijk voor mislukte opnames, verkeerde opnames of enig ander onwenselijk effect."
+
+# Settings labels
+msgctxt "#30000"
+msgid "Mediaportal Hostname"
+msgstr "Mediaportal hostnaam"
+
+msgctxt "#30001"
+msgid "Mediaportal XBMC plugin Port"
+msgstr "Mediaportal XBMC plugin poort"
+
+msgctxt "#30002"
+msgid "Free-to-air only"
+msgstr "Toon alleen vrij te ontvangen kanalen"
+
+msgctxt "#30003"
+msgid "Include Radio"
+msgstr "Toon radio"
+
+msgctxt "#30004"
+msgid "Fast channel switching (don't stop timeshift)"
+msgstr "Snel zappen (timeshift niet stoppen)"
+
+msgctxt "#30005"
+msgid "Connect timeout (s)"
+msgstr "Verbindingstimeout (s)"
+
+msgctxt "#30006"
+msgid "Import only TV Channels from group"
+msgstr "Importeer alleen TV kanalen uit groep"
+
+msgctxt "#30007"
+msgid "Import only Radio Channels from group"
+msgstr "Importeer alleen radio kanalen uit groep"
+
+msgctxt "#30008"
+msgid "Convert hostname to IP-adress"
+msgstr "Converteer hostnaam naar IP adres"
+
+msgctxt "#30009"
+msgid "EPG: Read genre strings (slow)"
+msgstr "EPG: Genre tekst inlezen (traag)"
+
+msgctxt "#30010"
+msgid "Wait time after tuning a channel (ms)"
+msgstr "Wachttijd na kanaal tunen(ms)"
+
+msgctxt "#30015"
+msgid "Streaming method"
+msgstr "Streaming methode"
+
+msgctxt "#30016"
+msgid "Windows user account (SMB)"
+msgstr "Windows gebruikersnaam (SMB)"
+
+msgctxt "#30017"
+msgid "Windows password (SMB)"
+msgstr "Windows wachtwoord (SMB)"
+
+msgctxt "#30018"
+msgid "Use RTSP streaming"
+msgstr "Gebruik RTSP streaming"
+
+# Category labels
+msgctxt "#30040"
+msgid "Connection"
+msgstr "Verbinding"
+
+msgctxt "#30041"
+msgid "MediaPortal"
+msgstr "MediaPortal"
+
+msgctxt "#30042"
+msgid "Playback"
+msgstr "Afspelen"
+
+# on-screen error messages
+msgctxt "#30050"
+msgid ""
+"Your TVServerXBMC version '%s' is too old. Please upgrade to '%s' or higher!"
+msgstr "Uw TVServerXBMC plugin '%s' is te oud. U heeft minimaal versie '%s' of nieuwer nodig!"
+
+msgctxt "#30051"
+msgid ""
+"Your TVServerXBMC version is too old. Please upgrade to '%s' or higher!"
+msgstr "Uw TVServerXBMC plugin is te oud. U heeft minimaal versie '%s' of nieuwer nodig!"
+
+msgctxt "#30052"
+msgid "Recording playback failed. Empty URL of filename."
+msgstr "Afspelen opname mislukt. Lege URL of bestandsnaam."
+
+# Status message strings corresponding to the MediaPortal TvResult enum
+msgctxt "#30060"
+msgid "All cards are busy"
+msgstr "Alle kaarten zijn bezet"
+
+msgctxt "#30061"
+msgid "Channel is scrambled"
+msgstr "Kanaal is gecodeerd"
+
+msgctxt "#30062"
+msgid "No video or audio detected"
+msgstr "Geen video of audio gedetecteerd"
+
+msgctxt "#30063"
+msgid "No signal detected"
+msgstr "Geen signaal"
+
+msgctxt "#30064"
+msgid "Unknown error"
+msgstr "Onbekende fout"
+
+msgctxt "#30065"
+msgid "Unable to start graph"
+msgstr "Graph starten mislukt"
+
+msgctxt "#30066"
+msgid "Unknown channel"
+msgstr "Onbekend kanaal"
+
+msgctxt "#30067"
+msgid "No tuning details"
+msgstr "Geen tuning details"
+
+msgctxt "#30068"
+msgid "Channel is not mapped to any card"
+msgstr "Kanaal is niet gekoppeld aan een kaart"
+
+msgctxt "#30069"
+msgid "Card is disabled"
+msgstr "Kaart is uitgeschakeld"
+
+msgctxt "#30070"
+msgid "Connection to slave failed"
+msgstr "Verbinding met slave verbroken"
+
+msgctxt "#30071"
+msgid "Not the owner"
+msgstr "Niet de eigenaar"
+
+msgctxt "#30072"
+msgid "Graph building failed"
+msgstr "Aanmaken Graph mislukt"
+
+msgctxt "#30073"
+msgid "SW Encoder missing"
+msgstr "SW Encoder ontbreekt"
+
+msgctxt "#30074"
+msgid "No free disk space"
+msgstr "Geen vrije schijfruimte"
+
+msgctxt "#30075"
+msgid "No PMT found"
+msgstr "Geen PMT gevonden"

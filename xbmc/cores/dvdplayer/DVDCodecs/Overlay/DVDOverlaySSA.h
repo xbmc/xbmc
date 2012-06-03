@@ -33,6 +33,7 @@ public:
 
   CDVDOverlaySSA(CDVDSubtitlesLibass* libass) : CDVDOverlay(DVDOVERLAY_TYPE_SSA)
   {
+    replace = true;
     m_libass = libass;
     libass->Acquire();
   }

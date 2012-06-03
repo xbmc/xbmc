@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon version: 1.0.1
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1))\n"
+
+msgctxt "Addon Summary"
+msgid "projectM takes you flying through the soundwaves you're hearing"
+msgstr "projectM te plimbă printre undele sonore pe care le asculți"
+
+msgctxt "Addon Description"
+msgid "projectM is an awesome music visualizer. There is nothing better in the world of Unix. projectM's greatness comes from the hard work of the community. Users like you can create presets that connect music with incredible visuals. Try it!\nprojectM Visualization is an LGPL'ed reimplementation of Milkdrop under OpenGL\nAll projectM requires is a video card with 3D acceleration and your favorite music."
+msgstr "projectM este o vizualizare de muzică uimitoare. Nu există nimic mai bun în lumea Unix. Măreția projectM vine din munca întregii comunități. Utilizatori ca și tine pot crea presetări care conectează muzica cu vizualizări incredibile. Încearcă și tu!\nVizualizarea projectM este o reimplementare LGPL a lui Milkdrop sub OpenGL.\nTot ceea ce necesită projectM este o placă video cu accelerare 3D și muzica ta favorită."
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Calitate randare"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Mică"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "Medie"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Mare"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maximă"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Mod amestecare"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Durată presetare fină"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Durată presetare"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Senzitivitate bătaie"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Pachet presetări"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Pachet implicit"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "Dosar presetări definite de utilizator"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "Dosar presetări utilizator"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f sec"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

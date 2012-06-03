@@ -77,9 +77,6 @@
     <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\RTSPClient.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
@@ -97,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="..\..\lib\tsreader\windows\File.cpp">
       <Filter>Source Files\tsreader\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\MepoRTSPClient.cpp">
+      <Filter>Source Files\tsreader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +151,6 @@
     <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\tsreader\RTSPClient.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\TSReader.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
@@ -173,6 +170,9 @@
       <Filter>Header Files\tinyXML2</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\File.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\MepoRTSPClient.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
   </ItemGroup>

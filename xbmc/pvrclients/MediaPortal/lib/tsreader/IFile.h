@@ -52,7 +52,7 @@ public:
   virtual int64_t GetLength() = 0;
   virtual void Close() = 0;
 //  static bool Exists(const CStdString& strFileName, bool bUseCache = true);
-  virtual int Stat(struct __stat64 *buffer) = 0;
+//  virtual int Stat(struct __stat64 *buffer) = 0;
 };
 
 } // namespace PLATFORM

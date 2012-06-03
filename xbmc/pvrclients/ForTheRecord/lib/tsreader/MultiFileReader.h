@@ -72,6 +72,7 @@ class MultiFileReader : public FileReader
     int64_t m_currentReadPosition;
     long m_filesAdded;
     long m_filesRemoved;
+    int64_t m_lastZapPosition;
 
     std::vector<MultiFileReaderFile *> m_tsFiles;
 
