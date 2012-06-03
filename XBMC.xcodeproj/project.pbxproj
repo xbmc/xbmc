@@ -14,6 +14,7 @@
 				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
 				6E2FACC70E26E22400DF79EA /* copy frameworks */,
 				81B8FC150E7D927A00354E2E /* update version info */,
+				1D64E5FC157BD76F001ACEBE /* genoutputdirlink */,
 			);
 			dependencies = (
 				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
@@ -6224,6 +6225,7 @@
 			buildPhases = (
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
+				1D64E5FA157BD742001ACEBE /* genoutputdirlink */,
 			);
 			buildRules = (
 			);
@@ -6264,6 +6266,34 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1D64E5FA157BD742001ACEBE /* genoutputdirlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = genoutputdirlink;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${XCODE_VERSION_MAJOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+		};
+		1D64E5FC157BD76F001ACEBE /* genoutputdirlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = genoutputdirlink;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${XCODE_VERSION_MAJOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+		};
 		6E2FACC70E26E22400DF79EA /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -7517,6 +7547,7 @@
 					i386,
 					x86_64,
 				);
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";

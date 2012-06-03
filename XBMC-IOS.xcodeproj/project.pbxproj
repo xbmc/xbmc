@@ -6162,6 +6162,7 @@
 				F589B48B128A696700D8079E /* copy root files */,
 				F589B48D128A697C00D8079E /* copy frameworks */,
 				3234980612AF0B3400657FF1 /* codesign */,
+				1D8C18A9157BBFE9002D0F3B /* genoutputdirlink */,
 			);
 			buildRules = (
 			);
@@ -6211,6 +6212,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1D8C18A9157BBFE9002D0F3B /* genoutputdirlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = genoutputdirlink;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${XCODE_VERSION_MAJOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+		};
 		3234980612AF0B3400657FF1 /* codesign */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
