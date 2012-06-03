@@ -1302,6 +1302,18 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
 #endif //TSREADER
 }
 
+long long cPVRClientForTheRecord::SeekLiveStream(long long pos, int whence)
+{
+  static std::string zz[] = { "Begin", "Current", "End" };
+  XBMC->Log(LOG_DEBUG, "SeekLiveStream (%lld, %s).", pos, zz[whence].c_str());
+  if (!m_tsreader)
+  {
+    return -1;
+  }
+  return m_tsreader->SetFilePointer(pos, whence);
+}
+
+
 long long cPVRClientForTheRecord::PositionLiveStream(void)
 {
   if (!m_tsreader)
