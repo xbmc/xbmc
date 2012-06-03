@@ -35,5 +35,5 @@ public:
   virtual bool isValid() const;
   FileCueReader(const CStdString &strFile);
   virtual bool ReadNextLine(CStdString &szLine);
-  ~FileCueReader();
+  virtual ~FileCueReader();
 };

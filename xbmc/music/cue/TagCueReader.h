@@ -33,5 +33,5 @@ public:
   TagCueReader(const CStdString &cueData);
   virtual bool isValid() const;
   virtual bool ReadNextLine(CStdString &line);
-  ~TagCueReader();
+  virtual ~TagCueReader();
 };
