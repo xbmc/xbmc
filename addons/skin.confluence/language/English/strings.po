@@ -35,14 +35,6 @@ msgctxt "#31000"
 msgid "Change Your"
 msgstr ""
 
-msgctxt "#31001"
-msgid "Love"
-msgstr ""
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr ""
-
 msgctxt "#31003"
 msgid "Power Options"
 msgstr ""
@@ -59,10 +51,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr ""
 
-msgctxt "#31007"
-msgid "Plugins"
-msgstr ""
-
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr ""
@@ -72,14 +60,6 @@ msgid "Total Duration"
 msgstr ""
 
 #empty strings from id 31010 to 31019
-
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr ""
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr ""
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -113,10 +93,6 @@ msgstr ""
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr ""
-
-msgctxt "#31030"
-msgid "Full list"
 msgstr ""
 
 msgctxt "#31031"
@@ -154,14 +130,6 @@ msgstr ""
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr ""
-
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr ""
-
-msgctxt "#31047"
-msgid "Current Preset"
 msgstr ""
 
 msgctxt "#31048"
@@ -260,18 +228,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr ""
 
-msgctxt "#31113"
-msgid "Single Image"
-msgstr ""
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr ""
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr ""
-
 msgctxt "#31116"
 msgid "Show Recently added Albums"
 msgstr ""
@@ -286,10 +242,6 @@ msgstr ""
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr ""
-
-msgctxt "#31120"
-msgid "BUTTON LABEL"
 msgstr ""
 
 #empty string with id 31121
@@ -361,20 +313,8 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr ""
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr ""
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr ""
-
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr ""
-
-msgctxt "#31204"
-msgid "Section Links"
 msgstr ""
 
 msgctxt "#31205"
@@ -404,24 +344,8 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr ""
 
-msgctxt "#31302"
-msgid "Menu"
-msgstr ""
-
 msgctxt "#31303"
 msgid "Data provider"
-msgstr ""
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr ""
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr ""
-
-msgctxt "#31306"
-msgid "Eject"
 msgstr ""
 
 msgctxt "#31307"
@@ -456,18 +380,10 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr ""
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr ""
-
 #empty string with id 31316
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr ""
-
-msgctxt "#31318"
-msgid "Small Fanart"
 msgstr ""
 
 msgctxt "#31319"
@@ -484,14 +400,6 @@ msgstr ""
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr ""
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr ""
-
-msgctxt "#31324"
-msgid "Latest Episodes"
 msgstr ""
 
 msgctxt "#31325"
@@ -613,10 +521,6 @@ msgstr ""
 #Weather plugin
 #empty strings from id 31422 to 31899
 
-msgctxt "#31900"
-msgid "Weather Maps"
-msgstr ""
-
 msgctxt "#31901"
 msgid "36 Hour Forecast"
 msgstr ""
@@ -639,10 +543,6 @@ msgstr ""
 
 msgctxt "#31906"
 msgid "Maps & Video"
-msgstr ""
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
 msgstr ""
 
 msgctxt "#31908"
