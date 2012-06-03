@@ -119,7 +119,7 @@ public:
    */
   void AppendGenre(const CStdString &genre);
 
-  bool hasEmbeddedCue() const;
+  bool HasEmbeddedCue() const;
   const CStdString& GetEmbeddedCue() const;
   void setEmbeddedCue(const CStdString& cuesheet);
 

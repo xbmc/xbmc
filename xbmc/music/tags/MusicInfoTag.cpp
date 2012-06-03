@@ -430,7 +430,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_iAlbumId = song.iAlbumId;
 }
 
-bool CMusicInfoTag::hasEmbeddedCue() const
+bool CMusicInfoTag::HasEmbeddedCue() const
 {
   return !GetEmbeddedCue().IsEmpty();
 }
