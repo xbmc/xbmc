@@ -55,6 +55,7 @@ CProfile::CProfile(const CStdString &directory, const CStdString &name, const in
   m_bSources = true;
   m_bCanWriteSources = true;
   m_bAddons = true;
+  m_hide = false;
 }
 
 CProfile::~CProfile(void)
@@ -82,6 +83,7 @@ void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
   XMLUtils::GetBoolean(node, "canwritedatabases", m_bCanWrite);
   XMLUtils::GetBoolean(node, "hassources", m_bSources);
   XMLUtils::GetBoolean(node, "canwritesources", m_bCanWriteSources);
+  XMLUtils::GetBoolean(node, "hidden", m_hide);
   XMLUtils::GetBoolean(node, "lockaddonmanager", m_locks.addonManager);
   XMLUtils::GetBoolean(node, "locksettings", m_locks.settings);
   XMLUtils::GetBoolean(node, "lockfiles", m_locks.files);
@@ -113,6 +115,7 @@ void CProfile::Save(TiXmlNode *root) const
   XMLUtils::SetBoolean(node, "canwritedatabases", m_bCanWrite);
   XMLUtils::SetBoolean(node, "hassources", m_bSources);
   XMLUtils::SetBoolean(node, "canwritesources", m_bCanWriteSources);
+  XMLUtils::SetBoolean(node, "hidden", m_hide);
   XMLUtils::SetBoolean(node, "lockaddonmanager", m_locks.addonManager);
   XMLUtils::SetBoolean(node, "locksettings", m_locks.settings);
   XMLUtils::SetBoolean(node, "lockfiles", m_locks.files);

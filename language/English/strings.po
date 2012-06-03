@@ -6490,7 +6490,9 @@ msgctxt "#20126"
 msgid "Log off"
 msgstr ""
 
-#empty string with id 20127
+msgctxt "#20127"
+msgid "Hidden on login screen"
+msgstr ""
 
 msgctxt "#20128"
 msgid "Go to root"

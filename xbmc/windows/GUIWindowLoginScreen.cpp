@@ -98,7 +98,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
-          int iItem = m_viewControl.GetSelectedItem();
+          int iItem = m_vecItems->Get(m_viewControl.GetSelectedItem())->GetProperty("profile_index").asInteger();
           bool bCanceled;
           bool bOkay = g_passwordManager.IsProfileLockUnlocked(iItem, bCanceled);
 
@@ -190,6 +190,9 @@ void CGUIWindowLoginScreen::Update()
   for (unsigned int i=0;i<g_settings.GetNumProfiles(); ++i)
   {
     const CProfile *profile = g_settings.GetProfile(i);
+    if (profile->Hidden())
+      continue;
+
     CFileItemPtr item(new CFileItem(profile->getName()));
     CStdString strLabel;
     if (profile->getDate().IsEmpty())
@@ -201,6 +204,7 @@ void CGUIWindowLoginScreen::Update()
     if (profile->getThumb().IsEmpty() || profile->getThumb().Equals("-"))
       item->SetThumbnailImage("unknown-user.png");
     item->SetLabelPreformated(true);
+    item->SetProperty("profile_index",i);
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
@@ -215,11 +219,13 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   // mark the item
   m_vecItems->Get(iItem)->Select(true);
 
+  int item = m_vecItems->Get(iItem)->GetProperty("profile_index").asInteger();
+
   CContextButtons choices;
   choices.Add(1, 20067);
 /*  if (m_viewControl.GetSelectedItem() != 0) // no deleting the default profile
     choices.Add(2, 117); */
-  if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
+  if (item == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
     choices.Add(3, 12334);
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
@@ -237,12 +243,11 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     return false;
 
   if (choice == 1)
-    CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
+    CGUIDialogProfileSettings::ShowForProfile(item);
   if (choice == 2)
   {
-    int iDelete = m_viewControl.GetSelectedItem();
     m_viewControl.Clear();
-    g_settings.DeleteProfile(iDelete);
+    g_settings.DeleteProfile(item);
     Update();
     m_viewControl.SetSelectedItem(0);
   }

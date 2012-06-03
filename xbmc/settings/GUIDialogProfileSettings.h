@@ -57,6 +57,7 @@ protected:
   bool m_bIsDefault;
   bool m_bIsNewUser;
   bool m_bShowDetails;
+  bool m_hide;
 
   CProfile::CLock m_locks;
   CStdString m_strDefaultImage;

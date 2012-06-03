@@ -76,6 +76,7 @@ public:
   bool filesLocked() const { return m_locks.files; }
   bool programsLocked() const { return m_locks.programs; }
   const CLock &GetLocks() const { return m_locks; }
+  bool Hidden() const { return m_hide; }
 
   void setName(const CStdString& name) {m_name = name;}
   void setDirectory(const CStdString& directory) {m_directory = directory;}
@@ -87,6 +88,7 @@ public:
   void setSources(bool bHas) { m_bSources = bHas; }
   void setWriteSources(bool bCan) { m_bCanWriteSources = bCan; }
   void SetLocks(const CLock &locks);
+  void SetHidden(bool hidden) { m_hide = hidden; }
 
 private:
   CStdString m_directory;
@@ -99,5 +101,6 @@ private:
   bool m_bSources;
   bool m_bCanWriteSources;
   bool m_bAddons;
+  bool m_hide;
   CLock m_locks;
 };

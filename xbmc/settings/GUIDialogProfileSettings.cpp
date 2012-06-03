@@ -104,10 +104,13 @@ void CGUIDialogProfileSettings::CreateSettings()
   if (!m_bShowDetails && m_locks.mode == LOCK_MODE_EVERYONE && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     AddButton(4,20066);
 
+  if (m_bShowDetails)
+    AddBool(5,20127,&m_hide);
+
   if (!m_bIsDefault && m_bShowDetails)
   {
     SettingInfo setting;
-    setting.id = 5;
+    setting.id = 6;
     setting.name = g_localizeStrings.Get(20060);
     setting.data = &m_iDbMode;
     setting.type = SettingInfo::SPIN;
@@ -120,7 +123,7 @@ void CGUIDialogProfileSettings::CreateSettings()
     m_settings.push_back(setting);
 
     SettingInfo setting2;
-    setting2.id = 6;
+    setting2.id = 7;
     setting2.name = g_localizeStrings.Get(20094);
     setting2.data = &m_iSourcesMode;
     setting2.type = SettingInfo::SPIN;
@@ -267,6 +270,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_iDbMode = 2;
     dialog->m_iSourcesMode = 2;
     dialog->m_locks = CProfile::CLock();
+    dialog->m_hide = false;
 
     bool bLock = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser;
     dialog->m_locks.addonManager = bLock;
@@ -299,6 +303,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_strDirectory = profile->getDirectory();
     dialog->m_iDbMode = profile->canWriteDatabases()?0:1;
     dialog->m_iSourcesMode = profile->canWriteSources()?0:1;
+    dialog->m_hide = profile->Hidden();
     if (profile->hasDatabases())
       dialog->m_iDbMode += 2;
     if (profile->hasSources())
@@ -385,6 +390,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     profile->setDatabases((dialog->m_iDbMode & 2) == 2);
     profile->setSources((dialog->m_iSourcesMode & 2) == 2);
     profile->SetLocks(dialog->m_locks);
+    profile->SetHidden(dialog->m_hide);
     
     g_settings.SaveProfiles(PROFILES_FILE);
     return true;
