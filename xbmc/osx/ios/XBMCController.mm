@@ -26,13 +26,13 @@
 #include <signal.h>
 
 #include "system.h"
-#include "AdvancedSettings.h"
-#include "Settings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "Application.h"
-#include "MouseStat.h"
-#include "WindowingFactory.h"
-#include "VideoReferenceClock.h"
+#include "input/MouseStat.h"
+#include "windowing/WindowingFactory.h"
+#include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
@@ -216,6 +216,8 @@ extern NSString* kBRScreenSaverDismissed;
           currentPinchScale, 0), WINDOW_INVALID,false);    
       break;
       case UIGestureRecognizerStateEnded:
+      break;
+      default:
       break;
     }
   }
