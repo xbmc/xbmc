@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.team-mediaportal.tvserver"
-  version="1.2.3.114"
+  version="1.2.3.115"
   name="MediaPortal PVR Client"
   provider-name="Marcel Groothuis">
   <requires>

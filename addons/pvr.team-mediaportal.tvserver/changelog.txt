@@ -1,3 +1,6 @@
+v1.2.3.115:
+- Changed: Switch to gettext (PO) files for addon translations
+
 v1.2.3.114:
 - Added: Live555 RTSP support for Linux
 
