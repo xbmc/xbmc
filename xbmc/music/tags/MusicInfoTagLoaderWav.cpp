@@ -32,7 +32,7 @@ CMusicInfoTagLoaderWAV::CMusicInfoTagLoaderWAV(void)
 CMusicInfoTagLoaderWAV::~CMusicInfoTagLoaderWAV()
 {}
 
-bool CMusicInfoTagLoaderWAV::Load(const CStdString& strFileName, CMusicInfoTag& tag)
+bool CMusicInfoTagLoaderWAV::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   try
   {
