@@ -1,4 +1,8 @@
 # XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
@@ -12,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Confluence is the default skin for XBMC, removing it may cause issues"
+msgstr ""
 
 #Misc labels
 
@@ -229,11 +245,11 @@ msgid "Hide Main Menu Buttons"
 msgstr ""
 
 msgctxt "#31109"
-msgid "Media backgrounds"
+msgid "Enable Custom Background"
 msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
+msgid "Background path:"
 msgstr ""
 
 msgctxt "#31111"
@@ -592,7 +608,7 @@ msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
-#empty strings from id 31410 to 31420
+#empty strings from id 31411 to 31420
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -683,4 +699,3 @@ msgstr ""
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr ""
-

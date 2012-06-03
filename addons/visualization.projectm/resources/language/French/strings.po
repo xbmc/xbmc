@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon version: 1.0.1
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+msgctxt "Addon Summary"
+msgid "projectM takes you flying through the soundwaves you're hearing"
+msgstr "projectM vous entraine à travers les ondes sonores que vous écoutez"
+
+msgctxt "Addon Description"
+msgid "projectM is an awesome music visualizer. There is nothing better in the world of Unix. projectM's greatness comes from the hard work of the community. Users like you can create presets that connect music with incredible visuals. Try it!\nprojectM Visualization is an LGPL'ed reimplementation of Milkdrop under OpenGL\nAll projectM requires is a video card with 3D acceleration and your favorite music."
+msgstr "projectM est un fantastique visualiseur musical. Il n'y a rien de meilleur dans l'univers Unix. L'ampleur de projectM vient du travail énorme de la communauté. Des utilisateurs comme vous peuvent créer des préréglages qui connecteront la musique avec des visuels incroyables. Essayez-le!\nLe visualisation projectM est un réalisation sous LGPL de Milkdrop en OpenGL.\nLe seul pré-requis de projectM est une carte graphique avec accélération 3D et votre musique."
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Qualité de Rendu"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Basse"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "Moyenne"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Haute"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maximum"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Mode Aléatoire"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Lisser la durée de la présélection"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Durée de la présélection"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Sensibilité au tempo"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr ""
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr ""
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr ""
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr ""
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr ""

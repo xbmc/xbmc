@@ -9472,7 +9472,8 @@ msgid "PVR clients"
 msgstr "PVR clients"
 
 msgctxt "#24020"
-msgid "Configure"msgstr "Configureren"
+msgid "Configure"
+msgstr "Configureren"
 
 msgctxt "#24021"
 msgid "Disable"

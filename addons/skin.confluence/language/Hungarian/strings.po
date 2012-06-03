@@ -1,4 +1,8 @@
 # XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
@@ -12,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
+msgstr "Confluence arculat. Készítő: Jezz_X"
+
+msgctxt "Addon Description"
+msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
+msgstr "A Confluence az alapértelmezett arculat az XBMC-hez a 9.11-es verziótól kezdődően. Merít sok sok népszerű arculat elképzeléséből, megpróbálva vegyíteni a jó ötleteket úgy, hogy az könnyen kezelhető legyen az XBMC-vel először találkozóknak is."
+
+msgctxt "Addon Disclaimer"
+msgid "Confluence is the default skin for XBMC, removing it may cause issues"
+msgstr "A Confluence az alapértelmezett XBMC arculat. Annak eltávolítása problémákat okozhat."
 
 msgctxt "#31000"
 msgid "Change Your"
@@ -588,4 +604,3 @@ msgstr "Csapadék esélye"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Előrejelzési információ letöltése..."
-

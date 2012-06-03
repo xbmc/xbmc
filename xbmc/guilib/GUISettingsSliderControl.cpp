@@ -135,6 +135,7 @@ CStdString CGUISettingsSliderControl::GetDescription() const
 bool CGUISettingsSliderControl::UpdateColors()
 {
   bool changed = CGUISliderControl::UpdateColors();
+  changed |= m_buttonControl.SetColorDiffuse(m_diffuseColor);
   changed |= m_buttonControl.UpdateColors();
 
   return changed;

@@ -37,8 +37,8 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "pvr/PVRManager.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace std;
 using namespace XFILE;

@@ -83,13 +83,6 @@
     framebufferResizeRequested = TRUE;
     [eaglLayer setFrame:frame];
   }
-  else 
-  {
-    //no framebuffer change needed
-    //fade backf from blackscreen
-    //[XBMCController fadeFromBlack];
-  }
-
 }
 
 - (void)layoutSubviews
@@ -102,10 +95,6 @@
     [self createFramebuffer];
     [self setFramebuffer];  
     [self initDisplayLink];
-
-    //fadein the view after changing framebuffer it was fadeout
-    //before screenchange...
-    //[XBMCController fadeFromBlack];
   }
 }
 
@@ -124,9 +113,9 @@
     }
     
     //if no retina display scale detected yet -
-    //ensure retina resolution on ipad3
+    //ensure retina resolution on ipad3's mainScreen
     //even on older iOS SDKs
-    if (ret == 1.0 && DarwinIsIPad3())
+    if (ret == 1.0 && screen == [UIScreen mainScreen] && DarwinIsIPad3())
     {
       ret = 2.0;//iPad3 has scale factor 2 (like iPod 4g, iPhone4 and iPhone4s)
     }
@@ -136,7 +125,7 @@
 
 - (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
 {
-  int scaleFactor = 1;
+  CGFloat scaleFactor = 1.0;
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
 
   currentScreen = screen;
