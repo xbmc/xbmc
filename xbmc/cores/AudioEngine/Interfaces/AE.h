@@ -33,6 +33,20 @@
 typedef std::pair<std::string, std::string> AEDevice;
 typedef std::vector<AEDevice> AEDeviceList;
 
+typedef struct
+{
+  std::string      m_drDevice;
+  std::string      m_drDevType;
+  std::string      m_drChannels;
+  std::string      m_drSampleRates;
+  std::string      m_drAC3ok;
+  std::string      m_drDTSok;
+  std::string      m_drAACok;
+  std::string      m_drLPCMok;
+  std::string      m_drTRUEHDok;
+  std::string      m_drDTSHDok;
+} AEDeviceReport;
+
 /* forward declarations */
 class IAEStream;
 class IAESound;
@@ -158,5 +172,7 @@ public:
    * @returns true if the AudioEngine is capable of RAW output
    */
   virtual bool SupportsRaw() { return false; }
+
+  virtual AEDeviceReport* GetDeviceReport() { return NULL; }
 };
 

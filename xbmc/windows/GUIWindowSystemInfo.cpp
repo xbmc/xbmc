@@ -34,7 +34,8 @@
 #define CONTROL_BT_DEFAULT  95
 #define CONTROL_BT_NETWORK  96
 #define CONTROL_BT_VIDEO    97
-#define CONTROL_BT_HARDWARE 98
+#define CONTROL_BT_AUDIO    98
+#define CONTROL_BT_HARDWARE 99
 
 #define CONTROL_START       CONTROL_BT_STORAGE
 #define CONTROL_END         CONTROL_BT_HARDWARE
@@ -137,6 +138,26 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
 #endif
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
+  }
+  else if (m_section == CONTROL_BT_AUDIO)
+  {
+    AEDeviceReport* pDeviceReport = g_infoManager.GetAudioDeviceReport();
+    SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drDevice);
+    SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drDevType);
+    SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drChannels);
+    SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drSampleRates);
+    if ((CStdString)pDeviceReport->m_drAC3ok != "")
+      SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drAC3ok);
+    if ((CStdString)pDeviceReport->m_drDTSok != "")
+      SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drDTSok);
+    if ((CStdString)pDeviceReport->m_drAACok != "")
+      SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drAACok);
+    if ((CStdString)pDeviceReport->m_drTRUEHDok != "")
+      SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drTRUEHDok);
+    if ((CStdString)pDeviceReport->m_drDTSHDok != "")
+      SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drDTSHDok);
+    if ((CStdString)pDeviceReport->m_drLPCMok != "")
+      SET_CONTROL_LABEL(i++, (CStdString)pDeviceReport->m_drLPCMok);
   }
   else if (m_section == CONTROL_BT_HARDWARE)
   {

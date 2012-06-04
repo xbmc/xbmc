@@ -331,6 +331,9 @@ void CSoftAE::InternalOpenSink()
                           ((std::string)newFormat.m_channelLayout).c_str(),
                           newFormat.m_sampleRate);
 
+  /* create device report for SystemInfo GUI window */
+  GenerateDeviceReport();
+
   reInit = (reInit || m_chLayout != m_sinkFormat.m_channelLayout);
   m_chLayout = m_sinkFormat.m_channelLayout;
 
@@ -480,6 +483,9 @@ void CSoftAE::OnSettingsChange(std::string setting)
   {
     OpenSink();
   }
+
+  if (setting == "audiooutput.passthroughdevice" || "audiooutput.audiodevice")
+    GenerateDeviceReport();
 
   if (setting == "audiooutput.dontnormalizelevels" || setting == "audiooutput.stereoupmix")
   {
@@ -1183,6 +1189,84 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
 
   ResumeSlaveStreams(resumeStreams);
   return mixed;
+}
+
+AEDeviceReport* CSoftAE::GetDeviceReport()
+{
+  return &m_DeviceReport;
+}
+
+void CSoftAE::GenerateDeviceReport()
+{
+  if (!m_sink)
+    return;
+
+  CAESinkFactory::EnumerateEx(m_sinkInfoList);
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    {
+      std::string strTmpDevice = itt->m_sinkName + ":" + itt2->m_deviceName;
+      if (itt->m_sinkName + ":" + itt2->m_deviceName == m_passthroughDevice)
+      {
+        m_DeviceReport.m_drDevice = itt2->m_displayName;
+        m_DeviceReport.m_drDevType = itt2->DeviceTypeToString(itt2->m_deviceType);
+        switch ((AEDeviceType)itt2->m_deviceType)
+        {
+          case AE_DEVTYPE_PCM:
+            m_DeviceReport.m_drDevType = "Audio Path: " + itt->m_sinkName + " to Analog";
+            break;
+          case AE_DEVTYPE_IEC958:
+            m_DeviceReport.m_drDevType = "Audio Path: " + itt->m_sinkName + " to SPDIF Optical or CoAxial";
+            break;
+          case AE_DEVTYPE_HDMI:
+            m_DeviceReport.m_drDevType = "Audio Path: " + itt->m_sinkName + " to HDMI";
+            break;
+          case AE_DEVTYPE_DP:
+            m_DeviceReport.m_drDevType = "Audio Path: " + itt->m_sinkName + " to Other";
+            break;
+          default:
+            m_DeviceReport.m_drDevType = "Audio Path: " + itt->m_sinkName + " to Unknown";
+        }
+        m_DeviceReport.m_drChannels = "Channels: " + (std::string)itt2->m_channels;
+        std::stringstream ss;
+        for (AESampleRateList::iterator itt3 = itt2->m_sampleRates.begin(); itt3 != itt2->m_sampleRates.end(); ++itt3)
+        {
+          if (itt3 != itt2->m_sampleRates.begin())
+            ss << ',';
+          ss << *itt3;
+        }
+        m_DeviceReport.m_drSampleRates = "Sample Rates: " + (std::string)ss.str();
+        for (AEDataFormatList::iterator itt3 = itt2->m_dataFormats.begin(); itt3 != itt2->m_dataFormats.end(); ++itt3)
+        {
+          switch (*itt3)
+          {
+            case AE_FMT_AC3:
+              m_DeviceReport.m_drAC3ok    = "Dolby Digital  OK";
+              break;
+            case AE_FMT_DTS:
+              m_DeviceReport.m_drDTSok    = "DTS  OK";
+              break;
+              case AE_FMT_AAC:
+              m_DeviceReport.m_drAACok    = "AAC  OK";
+              break;
+              case AE_FMT_TRUEHD:
+              m_DeviceReport.m_drTRUEHDok = "TrueHD OK";
+              break;
+              case AE_FMT_DTSHD:
+              m_DeviceReport.m_drDTSHDok  = "DTS-HD OK";
+              break;
+              case AE_FMT_LPCM:
+              m_DeviceReport.m_drLPCMok   = "MultiChannel LPCM  OK";
+              break;
+          }
+        }
+        return;
+      }
+    }
+  }
+  m_DeviceReport.m_drDevice = "No audio passthrough device selected";
+  return;
 }
 
 inline void CSoftAE::ResumeSlaveStreams(const StreamList &streams)

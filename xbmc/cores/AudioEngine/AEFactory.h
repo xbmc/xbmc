@@ -22,6 +22,7 @@
 
 #include "Interfaces/AE.h"
 #include "threads/Thread.h"
+#include <string.h>
 
 enum AEEngine
 {
@@ -38,6 +39,9 @@ public:
   static IAE *AE;
   static bool LoadEngine();
   static bool StartEngine();
+
+  virtual std::string DeviceReport() {return this->DeviceReport();};
+
 private:
   static bool LoadEngine(enum AEEngine engine);
 };
