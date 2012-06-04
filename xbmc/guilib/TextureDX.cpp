@@ -144,4 +144,14 @@ void CDXTexture::LoadToGPU()
   m_loadedToGPU = true;
 }
 
+void CDXTexture::BindToUnit(unsigned int unit)
+{
+  LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
+  p3DDevice->SetTexture( unit, m_texture.Get() );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+}
+
 #endif
