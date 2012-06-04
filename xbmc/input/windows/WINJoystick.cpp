@@ -274,7 +274,8 @@ void CJoystick::Update()
       }
     }
 
-    // get only first hat position
+    // get hat position
+    m_HatState = SDL_HAT_CENTERED;
     for (int h = 0; h < numhat; h++)
     {
       if((LOWORD(js.rgdwPOV[h]) == 0xFFFF) != true)
