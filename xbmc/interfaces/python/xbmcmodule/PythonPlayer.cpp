@@ -29,12 +29,12 @@ using namespace PYXBMC;
 
 struct SPyEvent
 {
-  SPyEvent(CPythonPlayer* player
-         , const char*    function)
+  SPyEvent(CPythonPlayer *player, const char *function, const std::vector<int> &params=std::vector<int>())
   {
     m_player   = player;
     m_player->Acquire();
     m_function = function;
+    m_params = params;
   }
 
   ~SPyEvent()
@@ -44,6 +44,7 @@ struct SPyEvent
 
   const char*    m_function;
   CPythonPlayer* m_player;
+  std::vector<int> m_params;
 };
 
 /*
@@ -55,7 +56,14 @@ static int SPyEvent_Function(void* e)
   PyObject* ret    = NULL;
 
   if(object->m_player->m_callback)
-    ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, NULL);
+   {
+    if (object->m_params.size() == 2)
+      ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, "ii", object->m_params[0], object->m_params[1]);
+    else if (object->m_params.size() == 1)
+      ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, "i", object->m_params[0]);
+    else
+      ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, NULL);
+   }
 
   if(ret)
   {
@@ -119,6 +127,37 @@ void CPythonPlayer::OnPlayBackPaused()
 void CPythonPlayer::OnPlayBackResumed()
 {
   PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackResumed"));
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnPlayBackSpeedChanged(int iSpeed)
+{
+  std::vector<int> params;
+  params.push_back(iSpeed);
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackSpeedChanged", params));
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnPlayBackSeek(int iTime, int seekOffset)
+{
+  std::vector<int> params;
+  params.push_back(iTime);
+  params.push_back(seekOffset);
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackSeek", params));
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnPlayBackSeekChapter(int iChapter)
+{
+  std::vector<int> params;
+  params.push_back(iChapter);
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackSeekChapter", params));
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnQueueNextItem()
+{
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onQueueNextItem"));
   g_pythonParser.PulseGlobalEvent();
 }
 
