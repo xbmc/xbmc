@@ -543,9 +543,41 @@ NowPlayingManager.prototype = {
             $('#nowPlayingPanel').show();
           }
         } else {
-          this.activePlaylist = null;
-          $('#videoDescription').hide();
-          $('#nowPlayingPanel').hide();
+          jQuery.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: JSON_RPC + '?updateVideoPlayer',
+            data: '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "playerid": ' + this.playlistid + ', "properties": ["title", "season", "episode", "plot", "runtime", "showtitle","thumbnail"] }, "id": 1}',
+            success: jQuery.proxy(function(data) {
+              if (data && data.result && data.result.item) {
+                this.activePlaylistItem = data.result.item;
+                if (!this.updateActiveItemDurationRunOnce) {
+                  this.updateActiveItemDurationRunOnce = true;
+                  this.updatePlayer();
+                }
+                
+                $('#nextText').hide();
+                $('#nowPlayingPlaylist').hide();
+                $('#nextTrack').hide();
+
+                $('#videoDescription').show();
+                $('#audioDescription').hide();
+                $('#nowPlayingPanel').show();
+              }
+              else {
+                this.activePlaylist = null;
+                $('#videoDescription').hide();
+                $('#nowPlayingPanel').hide();
+              }
+            }, this),
+            error: jQuery.proxy(function(data) {
+              displayCommunicationError();
+              if (this.autoRefreshVideoPlaylist) {
+                setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 2000); /* Slow down request period */
+              }
+            }, this),
+            dataType: 'json'
+          });
         }
         if (this.autoRefreshVideoPlaylist) {
           setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 1000);
