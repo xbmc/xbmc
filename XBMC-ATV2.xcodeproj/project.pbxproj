@@ -51,10 +51,6 @@
 		F56B15FD12CD6930009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FC12CD6930009B4C96 /* AudioToolbox.framework */; };
 		F56B15FF12CD695C009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FE12CD695C009B4C96 /* CoreGraphics.framework */; };
 		F56B161B12CD69DB009B4C96 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B161A12CD69DB009B4C96 /* ImageIO.framework */; };
-		F56C7811131EC154000AD0F6 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C705A131EC150000AD0F6 /* tinystr.cpp */; };
-		F56C7812131EC154000AD0F6 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C705C131EC150000AD0F6 /* tinyxml.cpp */; };
-		F56C7813131EC154000AD0F6 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C705E131EC150000AD0F6 /* tinyxmlerror.cpp */; };
-		F56C7814131EC154000AD0F6 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C705F131EC150000AD0F6 /* tinyxmlparser.cpp */; };
 		F56C7815131EC154000AD0F6 /* htsatomic.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C706D131EC150000AD0F6 /* htsatomic.c */; };
 		F56C7816131EC154000AD0F6 /* htsbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C706F131EC150000AD0F6 /* htsbuf.c */; };
 		F56C7817131EC154000AD0F6 /* htsmsg.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C7071131EC150000AD0F6 /* htsmsg.c */; };
@@ -1047,12 +1043,6 @@
 		F56C7055131EC150000AD0F6 /* DllStSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllStSound.h; sourceTree = "<group>"; };
 		F56C7056131EC150000AD0F6 /* DllTimidity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllTimidity.h; sourceTree = "<group>"; };
 		F56C7057131EC150000AD0F6 /* DllVorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVorbisfile.h; sourceTree = "<group>"; };
-		F56C705A131EC150000AD0F6 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
-		F56C705B131EC150000AD0F6 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
-		F56C705C131EC150000AD0F6 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
-		F56C705D131EC150000AD0F6 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
-		F56C705E131EC150000AD0F6 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
-		F56C705F131EC150000AD0F6 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		F56C7061131EC150000AD0F6 /* libexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libexif.h; sourceTree = "<group>"; };
 		F56C7063131EC150000AD0F6 /* hdhomerun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun.h; sourceTree = "<group>"; };
 		F56C7064131EC150000AD0F6 /* hdhomerun_channelscan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channelscan.h; sourceTree = "<group>"; };
@@ -3059,7 +3049,6 @@
 				F56C7088131EC150000AD0F6 /* libsquish */,
 				F56C7CA5131EF8D8000AD0F6 /* libUPnP */,
 				F56C7164131EC151000AD0F6 /* libXDAAP */,
-				F56C7059131EC150000AD0F6 /* tinyXML */,
 				F56C716A131EC151000AD0F6 /* UnrarXLib */,
 				F56C7050131EC150000AD0F6 /* DllAdpcm.h */,
 				F56C7051131EC150000AD0F6 /* DllASAP.h */,
@@ -3071,19 +3060,6 @@
 				F56C7057131EC150000AD0F6 /* DllVorbisfile.h */,
 			);
 			path = lib;
-			sourceTree = "<group>";
-		};
-		F56C7059131EC150000AD0F6 /* tinyXML */ = {
-			isa = PBXGroup;
-			children = (
-				F56C705A131EC150000AD0F6 /* tinystr.cpp */,
-				F56C705B131EC150000AD0F6 /* tinystr.h */,
-				F56C705C131EC150000AD0F6 /* tinyxml.cpp */,
-				F56C705D131EC150000AD0F6 /* tinyxml.h */,
-				F56C705E131EC150000AD0F6 /* tinyxmlerror.cpp */,
-				F56C705F131EC150000AD0F6 /* tinyxmlparser.cpp */,
-			);
-			path = tinyXML;
 			sourceTree = "<group>";
 		};
 		F56C7060131EC150000AD0F6 /* libexif */ = {
@@ -6017,10 +5993,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F56C7811131EC154000AD0F6 /* tinystr.cpp in Sources */,
-				F56C7812131EC154000AD0F6 /* tinyxml.cpp in Sources */,
-				F56C7813131EC154000AD0F6 /* tinyxmlerror.cpp in Sources */,
-				F56C7814131EC154000AD0F6 /* tinyxmlparser.cpp in Sources */,
 				F56C7815131EC154000AD0F6 /* htsatomic.c in Sources */,
 				F56C7816131EC154000AD0F6 /* htsbuf.c in Sources */,
 				F56C7817131EC154000AD0F6 /* htsmsg.c in Sources */,
