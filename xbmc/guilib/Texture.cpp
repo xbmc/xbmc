@@ -39,9 +39,6 @@
 CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
  : m_hasAlpha( true )
 {
-#ifndef HAS_DX 
-  m_texture = 0; 
-#endif
   m_pixels = NULL;
   m_loadedToGPU = false;
   Allocate(width, height, format);
@@ -56,9 +53,6 @@ CBaseTexture::CBaseTexture(const CBaseTexture &copy)
   m_format = copy.m_format;
   m_orientation = copy.m_orientation;
   m_hasAlpha = copy.m_hasAlpha;
-#ifndef HAS_DX
-  m_texture = 0;
-#endif
   m_pixels = NULL;
   m_loadedToGPU = false;
   if (copy.m_pixels)

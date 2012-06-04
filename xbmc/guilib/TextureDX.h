@@ -19,19 +19,13 @@
 *
 */
 
-/*!
-\file TextureDX.h
-\brief
-*/
-
-#ifndef GUILIB_TEXTUREDX_H
-#define GUILIB_TEXTUREDX_H
+#pragma once
 
 #include "Texture.h"
 
-#pragma once
-
 #ifdef HAS_DX
+
+#include "D3DResource.h"
 
 /************************************************************************/
 /*    CDXTexture                                                       */
@@ -45,8 +39,14 @@ public:
   void CreateTextureObject();
   void DestroyTextureObject();
   virtual void LoadToGPU();
-};
+  void BindToUnit(unsigned int unit);
 
-#endif
+  LPDIRECT3DTEXTURE9 GetTextureObject()
+  {
+    return m_texture.Get();
+  };
+private:
+  CD3DTexture m_texture;
+};
 
 #endif
