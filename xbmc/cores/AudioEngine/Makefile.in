@@ -20,6 +20,7 @@ CXXFLAGS += -D__STDC_LIMIT_MACROS
 
 SRCS  = AEFactory.cpp
 SRCS += AESinkFactory.cpp
+SRCS += AEStreamFactory.cpp
 SRCS += Sinks/AESinkALSA.cpp
 SRCS += Sinks/AESinkOSS.cpp
 SRCS += Sinks/AESinkProfiler.cpp

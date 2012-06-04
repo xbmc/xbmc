@@ -93,7 +93,8 @@ public:
   virtual bool      SupportsRaw();
   
   CCoreAudioAEHAL*  GetHAL();
-  
+
+private:
   // returns a new stream for data in the specified format
   virtual IAEStream* MakeStream(enum AEDataFormat dataFormat, 
     unsigned int sampleRate,unsigned int encodedSamplerate,
@@ -101,6 +102,7 @@ public:
   
   virtual IAEStream* FreeStream(IAEStream *stream);
     
+public:
   // returns a new sound object
   virtual IAESound* MakeSound(const std::string& file);
   void              StopAllSounds();

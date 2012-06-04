@@ -34,6 +34,7 @@
 
 #include "threads/SingleLock.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/AEStreamFactory.h"
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
@@ -187,7 +188,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        CAEFactory::AE->FreeStream(si->m_stream);
+        CAEStreamFactory::FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -202,7 +203,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
       if (si->m_stream)
       {
-        CAEFactory::AE->FreeStream(si->m_stream);
+        CAEStreamFactory::FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -347,7 +348,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
     return true;
 
   /* get a paused stream */
-  si->m_stream = CAEFactory::AE->MakeStream(
+  si->m_stream = CAEStreamFactory::MakeStream(
     si->m_dataFormat,
     si->m_sampleRate,
     si->m_encodedSampleRate,
@@ -447,7 +448,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
     if (si->m_stream->IsDrained())
     {      
       itt = m_finishing.erase(itt);
-      CAEFactory::AE->FreeStream(si->m_stream);
+      CAEStreamFactory::FreeStream(si->m_stream);
       delete si;
       CLog::Log(LOGDEBUG, "PAPlayer::ProcessStreams - Stream Freed");
     }
