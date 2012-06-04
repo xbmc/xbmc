@@ -350,11 +350,11 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
-#ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())
   {
-#if defined(__APPLE__) && !defined(__arm__)
-    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript")
+#if defined(TARGET_DARWIN_OSX)
+    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript") ||
+        URIUtils::GetExtension(strParameterCaseIntact) == ".scpt")
     {
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
@@ -362,6 +362,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else
 #endif
     {
+#ifdef HAS_PYTHON
       vector<CStdString> argv = params;
 
       vector<CStdString> path;
@@ -376,9 +377,9 @@ int CBuiltins::Execute(const CStdString& execString)
         scriptpath = script->LibPath();
 
       g_pythonParser.evalFile(scriptpath, argv,script);
+#endif
     }
   }
-#endif
 #if defined(__APPLE__) && !defined(__arm__)
   else if (execute.Equals("runapplescript"))
   {
