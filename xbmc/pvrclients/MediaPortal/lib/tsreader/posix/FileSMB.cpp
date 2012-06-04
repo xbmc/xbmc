@@ -116,24 +116,8 @@ void CSMB::Init()
       fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
       fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
 
-      // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
-      // if no WINS server has been specified the wins method will be ignored.
-//      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
-//      {
-//        fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
-//        fprintf(f, "\tname resolve order = bcast wins host\n");
-//      }
-//      else
-        fprintf(f, "\tname resolve order = bcast host\n");
+      fprintf(f, "\tname resolve order = lmhosts bcast host\n");
 
-      // use user-configured charset. if no charset is specified,
-      // samba tries to use charset 850 but falls back to ASCII in case it is not available
-//      if (g_advancedSettings.m_sambadoscodepage.length() > 0)
-//        fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
-
-      // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
-//      if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
-//        fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
       fclose(f);
     }
 
@@ -143,15 +127,6 @@ void CSMB::Init()
 
     // setup our context
     m_context = smbc_new_context();
-//#ifdef DEPRECATED_SMBC_INTERFACE
-//    smbc_setDebug(m_context, g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0);
-//    smbc_setFunctionAuthData(m_context, xb_smbc_auth);
-//    orig_cache = smbc_getFunctionGetCachedServer(m_context);
-//    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
-//    smbc_setOptionOneSharePerServer(m_context, false);
-//    smbc_setOptionBrowseMaxLmbCount(m_context, 0);
-//    smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
-//#else
     m_context->debug = 10; //g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
@@ -159,7 +134,6 @@ void CSMB::Init()
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = 10000; //g_advancedSettings.m_sambaclienttimeout * 1000;
-//#endif
 
     // initialize samba and do some hacking into the settings
     if (smbc_init_context(m_context))
@@ -271,34 +245,15 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
 {
   Close();
 
-  // we can't open files like smb://file.f or smb://server/file.f
-  // if a file matches the if below return false, it can't exist on a samba share.
-//  if (!IsValidFile(url.GetFileName()))
-//  {
-//      XBMC->Log(LOG_NOTICE,"FileSmb->Open: Bad URL : '%s'",url.GetFileName().c_str());
-//      return false;
-//  }
   m_fileName = strFileName;
 
-  // opening a file to another computer share will create a new session
-  // when opening smb://server xbms will try to find folder.jpg in all shares
-  // listed, which will create lot's of open sessions.
-
-  //CStdString strFileName;
-  //m_fd = OpenFile(url, strFileName);
   m_fd = OpenFile();
 
-  //XBMC->Log(LOG_DEBUG,"CFile::Open - opened %s, fd=%d",url.GetFileName().c_str(), m_fd);
   XBMC->Log(LOG_DEBUG,"CFile::Open - opened %s, fd=%d", m_fileName.c_str(), m_fd);
   if (m_fd == -1)
   {
     // write error to logfile
-//#ifdef TARGET_WINDOWS
-//    int nt_error = smb.ConvertUnixToNT(errno);
-//    XBMC->Log(LOG_INFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
-//#else
     XBMC->Log(LOG_INFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", strFileName.c_str(), errno, strerror(errno));
-//#endif
     return false;
   }
 
@@ -324,40 +279,11 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   return true;
 }
 
-
-/// \brief Checks authentication against SAMBA share. Reads password cache created in CSMBDirectory::OpenDir().
-/// \param strAuth The SMB style path
-/// \return SMB file descriptor
-/*
-int CFile::OpenFile(CStdString& strAuth)
-{
-  int fd = -1;
-
-  CStdString strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
-
-  fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-  // TODO: Run a loop here that prompts for our username/password as appropriate?
-  // We have the ability to run a file (eg from a button action) without browsing to
-  // the directory first.  In the case of a password protected share that we do
-  // not have the authentication information for, the above smbc_open() will have
-  // returned negative, and the file will not be opened.  While this is not a particular
-  // likely scenario, we might want to implement prompting for the password in this case.
-  // The code from SMBDirectory can be used for this.
-  if(fd >= 0)
-    strAuth = strPath;
-
-  return fd;
-}
-*/
-
-//int CFile::OpenFile(const CURL &url, CStdString& strAuth)
 int CFile::OpenFile()
 {
   int fd = -1;
   smb.Init();
 
-  //strAuth = GetAuthenticatedPath(url);
-  //CStdString strPath = strAuth;
   CStdString strPath = m_fileName;
 
   {
@@ -368,43 +294,12 @@ int CFile::OpenFile()
   // file open failed, try to open the directory to force authentication
   if (fd < 0 && errno == EACCES)
   {
-#if 0
-    CURL urlshare(url);
-
-    /* just replace the filename with the sharename */
-    urlshare.SetFileName(url.GetShareName());
-
-    CSMBDirectory smbDir;
-    // TODO: Currently we always allow prompting on files.  This may need to
-    // change in the future as background scanners are more prolific.
-    smbDir.SetFlags(DIR_FLAG_ALLOW_PROMPT);
-    fd = smbDir.Open(urlshare);
-
-    // directory open worked, try opening the file again
-    if (fd >= 0)
-    {
-      CLockObject lock(smb);
-      // close current directory filehandle
-      // dont need to purge since its the same server and share
-      smbc_closedir(fd);
-
-      // set up new filehandle (as CFile::Open does)
-      strPath = GetAuthenticatedPath(url);
-
-      fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-    }
-#else
-  XBMC->Log(LOG_ERROR, "%s: File open on %s failed\n", __FUNCTION__, strPath.c_str());
-#endif
+    XBMC->Log(LOG_ERROR, "%s: File open on %s failed\n", __FUNCTION__, strPath.c_str());
   }
-
-//  if (fd >= 0)
-//    strAuth = strPath;
 
   return fd;
 }
 
-//bool CFile::Exists(const CURL& url)
 bool CFile::Exists(const CStdString& strFileName, bool bUseCache)
 {
   // we can't open files like smb://file.f or smb://server/file.f
@@ -412,14 +307,14 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache)
   //if (!IsValidFile(url.GetFileName())) return false;
 
   smb.Init();
-  //CStdString strFileName = GetAuthenticatedPath(url);
 
   struct stat info;
 
   CLockObject lock(smb);
   int iResult = smbc_stat(strFileName, &info);
 
-  if (iResult < 0) return false;
+  if (iResult < 0)
+    return false;
   return true;
 }
 
@@ -449,47 +344,21 @@ int CFile::Stat(struct stat64* buffer)
   return iResult;
 }
 
-#if 0
-int CFile::Stat(const CURL& url, struct stat64* buffer)
-{
-  smb.Init();
-  CStdString strFileName = GetAuthenticatedPath(url);
-  CLockObject lock(smb);
-
-  struct stat tmpBuffer = {0};
-  int iResult = smbc_stat(strFileName, &tmpBuffer);
-
-  memset(buffer, 0, sizeof(struct stat64));
-  buffer->st_dev = tmpBuffer.st_dev;
-  buffer->st_ino = tmpBuffer.st_ino;
-  buffer->st_mode = tmpBuffer.st_mode;
-  buffer->st_nlink = tmpBuffer.st_nlink;
-  buffer->st_uid = tmpBuffer.st_uid;
-  buffer->st_gid = tmpBuffer.st_gid;
-  buffer->st_rdev = tmpBuffer.st_rdev;
-  buffer->st_size = tmpBuffer.st_size;
-  buffer->st_atime = tmpBuffer.st_atime;
-  buffer->st_mtime = tmpBuffer.st_mtime;
-  buffer->st_ctime = tmpBuffer.st_ctime;
-
-  return iResult;
-}
-#endif
-
-//unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
 unsigned long CFile::Read(void* lpBuf, int64_t uiBufSize)
 {
-  if (m_fd == -1) return 0;
+  if (m_fd == -1)
+    return 0;
+
   CLockObject lock(smb); // Init not called since it has to be "inited" by now
   smb.SetActivityTime();
   /* work around stupid bug in samba */
-  /* some samba servers has a bug in it where the */
+  /* some samba servers hava a bug in it where the */
   /* 17th bit will be ignored in a request of data */
   /* this can lead to a very small return of data */
   /* also worse, a request of exactly 64k will return */
   /* as if eof, client has a workaround for windows */
   /* thou it seems other servers are affected too */
-  if( uiBufSize >= 64*1024-2 )
+  if ( uiBufSize >= 64*1024-2 )
     uiBufSize = 64*1024-2;
 
   int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
@@ -506,12 +375,13 @@ unsigned long CFile::Read(void* lpBuf, int64_t uiBufSize)
     return 0;
   }
 
-  return (unsigned int)bytesRead;
+  return (unsigned int) bytesRead;
 }
 
 int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
 {
-  if (m_fd == -1) return -1;
+  if (m_fd == -1)
+    return -1;
 
   CLockObject lock(smb); // Init not called since it has to be "inited" by now
   smb.SetActivityTime();
@@ -536,102 +406,6 @@ void CFile::Close()
   }
   m_fd = -1;
 }
-
-#if 0
-int CFile::Write(const void* lpBuf, int64_t uiBufSize)
-{
-  if (m_fd == -1) return -1;
-  DWORD dwNumberOfBytesWritten = 0;
-
-  // lpBuf can be safely casted to void* since xmbc_write will only read from it.
-  smb.Init();
-  CLockObject lock(smb);
-  dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
-
-  return (int)dwNumberOfBytesWritten;
-}
-
-bool CFile::Delete(const CURL& url)
-{
-  smb.Init();
-  CStdString strFile = GetAuthenticatedPath(url);
-
-  CLockObject lock(smb);
-
-  int result = smbc_unlink(strFile.c_str());
-
-  if(result != 0)
-    XBMC->Log(LOG_ERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
-
-  return (result == 0);
-}
-
-bool CFile::Rename(const CURL& url, const CURL& urlnew)
-{
-  smb.Init();
-  CStdString strFile = GetAuthenticatedPath(url);
-  CStdString strFileNew = GetAuthenticatedPath(urlnew);
-  CLockObject lock(smb);
-
-  int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
-
-  if(result != 0)
-    XBMC->Log(LOG_ERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
-
-  return (result == 0);
-}
-
-bool CFile::OpenForWrite(const CURL& url, bool bOverWrite)
-{
-  m_fileSize = 0;
-
-  Close();
-  smb.Init();
-  // we can't open files like smb://file.f or smb://server/file.f
-  // if a file matches the if below return false, it can't exist on a samba share.
-  if (!IsValidFile(url.GetFileName())) return false;
-
-  CStdString strFileName = GetAuthenticatedPath(url);
-  CLockObject lock(smb);
-
-  if (bOverWrite)
-  {
-    XBMC->Log(LOG_WARNING, "FileSmb::OpenForWrite() called with overwriting enabled! - %s", strFileName.c_str());
-    m_fd = smbc_creat(strFileName.c_str(), 0);
-  }
-  else
-  {
-    m_fd = smbc_open(strFileName.c_str(), O_RDWR, 0);
-  }
-
-  if (m_fd == -1)
-  {
-    // write error to logfile
-    XBMC->Log(LOG_ERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", strFileName.c_str(), errno, strerror(errno));
-    return false;
-  }
-
-  // We've successfully opened the file!
-  return true;
-}
-
-bool CFile::IsValidFile(const CStdString& strFileName)
-{
-  if (strFileName.Find('/') == -1 || /* doesn't have sharename */
-      strFileName.Right(2) == "/." || /* not current folder */
-      strFileName.Right(3) == "/..")  /* not parent folder */
-      return false;
-  return true;
-}
-
-CStdString CFile::GetAuthenticatedPath(const CURL &url)
-{
-  CURL authURL(url);
-  CPasswordManager::GetInstance().AuthenticateURL(authURL);
-  return smb.URLEncode(authURL);
-}
-
-#endif
 
 bool CFile::IsInvalid()
 {

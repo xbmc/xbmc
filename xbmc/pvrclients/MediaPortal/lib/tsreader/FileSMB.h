@@ -52,7 +52,7 @@ private:
 };
 
 extern CSMB smb;
-  
+
 class CFile: public IFile
 {
 public:
