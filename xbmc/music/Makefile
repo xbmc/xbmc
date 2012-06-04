@@ -1,7 +1,6 @@
 SRCS=Album.cpp \
      Artist.cpp \
      GUIViewStateMusic.cpp \
-     LastFmManager.cpp \
      MusicDatabase.cpp \
      MusicDbUrl.cpp \
      MusicInfoLoader.cpp \

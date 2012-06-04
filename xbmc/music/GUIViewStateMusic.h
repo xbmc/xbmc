@@ -105,13 +105,3 @@ protected:
   virtual bool HideParentDirItems();
   virtual VECSOURCES& GetSources();
 };
-
-class CGUIViewStateMusicLastFM : public CGUIViewStateWindowMusic
-{
-public:
-  CGUIViewStateMusicLastFM(const CFileItemList& items);
-
-protected:
-  virtual bool AutoPlayNextItem();
-  virtual void SaveViewState();
-};

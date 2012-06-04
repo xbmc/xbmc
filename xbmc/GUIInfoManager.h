@@ -269,15 +269,6 @@ namespace INFO
 #define VIDEOPLAYER_PARENTAL_RATING   307
 #define VIDEOPLAYER_HAS_EPG           308
 
-#define AUDIOSCROBBLER_ENABLED      325
-#define AUDIOSCROBBLER_CONN_STATE   326
-#define AUDIOSCROBBLER_SUBMIT_INT   327
-#define AUDIOSCROBBLER_FILES_CACHED 328
-#define AUDIOSCROBBLER_SUBMIT_STATE 329
-#define LASTFM_RADIOPLAYING         330
-#define LASTFM_CANLOVE              331
-#define LASTFM_CANBAN               332
-
 #define CONTAINER_CAN_FILTER         342
 #define CONTAINER_CAN_FILTERADVANCED 343
 #define CONTAINER_FILTERED           344
@@ -846,8 +837,6 @@ protected:
   int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
   int AddMultiInfo(const GUIInfo &info);
   int AddListItemProp(const CStdString &str, int offset=0);
-
-  CStdString GetAudioScrobblerLabel(int item);
 
   /*!
    * @brief Get the EPG tag that is currently active
