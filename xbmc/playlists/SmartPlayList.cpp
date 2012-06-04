@@ -979,19 +979,22 @@ CStdString CSmartPlaylist::GetOrderClause(CDatabase &db) const
   if (m_orderField != CSmartPlaylistRule::FIELD_NONE)
   {
     if (CSmartPlaylistRule::GetFieldType(m_orderField) == CSmartPlaylistRule::NUMERIC_FIELD)
-      order.Format("ORDER BY 1*%s", CSmartPlaylistRule::GetDatabaseField(m_orderField, GetType(), false));
+      order.Format("1*%s", CSmartPlaylistRule::GetDatabaseField(m_orderField, GetType(), false));
     else
-      order = db.PrepareSQL("ORDER BY %s", CSmartPlaylistRule::GetDatabaseField(m_orderField, GetType(), false).c_str());
+      order = db.PrepareSQL("%s", CSmartPlaylistRule::GetDatabaseField(m_orderField, GetType(), false).c_str());
     if (!m_orderAscending)
       order += " DESC";
   }
-  if (m_limit)
-  {
-    CStdString limit;
-    limit.Format(" LIMIT %i", m_limit);
-    order += limit;
-  }
   return order;
+}
+
+CStdString CSmartPlaylist::GetLimitClause() const
+{
+  CStdString limit;
+  if (m_limit > 0)
+    limit.Format("%i", m_limit);
+
+  return limit;
 }
 
 const vector<CSmartPlaylistRule> &CSmartPlaylist::GetRules() const
