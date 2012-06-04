@@ -130,6 +130,37 @@ void CPythonPlayer::OnPlayBackResumed()
   g_pythonParser.PulseGlobalEvent();
 }
 
+void CPythonPlayer::OnPlayBackSpeedChanged(int iSpeed)
+{
+  std::vector<int> params;
+  params.push_back(iSpeed);
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackSpeedChanged", params));
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnPlayBackSeek(int iTime, int seekOffset)
+{
+  std::vector<int> params;
+  params.push_back(iTime);
+  params.push_back(seekOffset);
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackSeek", params));
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnPlayBackSeekChapter(int iChapter)
+{
+  std::vector<int> params;
+  params.push_back(iChapter);
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackSeekChapter", params));
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnQueueNextItem()
+{
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onQueueNextItem"));
+  g_pythonParser.PulseGlobalEvent();
+}
+
 void CPythonPlayer::SetCallback(PyThreadState *state, PyObject *object)
 {
   /* python lock should be held */
