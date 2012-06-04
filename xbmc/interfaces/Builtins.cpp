@@ -353,7 +353,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("runscript") && params.size())
   {
 #if defined(TARGET_DARWIN_OSX)
-    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript") ||
+    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript" ||
         URIUtils::GetExtension(strParameterCaseIntact) == ".scpt")
     {
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
