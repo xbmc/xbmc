@@ -356,7 +356,7 @@ double CAESinkWASAPI::GetCacheTime()
   HRESULT hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
 
   /** returns buffer duration in seconds */
-  return hnsLatency / 1000000.0;
+  return hnsLatency / 10.0;
 }
 
 double CAESinkWASAPI::GetCacheTotal()
@@ -368,7 +368,7 @@ double CAESinkWASAPI::GetCacheTotal()
   HRESULT hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
 
   /** returns buffer duration in seconds */
-  return hnsLatency / 1000000.0;
+  return hnsLatency / 10.0;
 }
 
 unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
