@@ -6,7 +6,7 @@
 #
 
 #LIBS_LIVE555 = lib/live555/BasicUsageEnvironment/libBasicUsageEnvironment.a lib/live555/UsageEnvironment/libUsageEnvironment.a lib/live555/libgroupsock.a lib/live555/liveMedia/libliveMedia.a
-LIBS     = lib/tinyxml2/tinyxml2.a lib/tsreader/tsreader.a -ldl -lpthread -lsmbclient
+LIBS     = lib/tinyxml2/tinyxml2.a lib/tsreader/tsreader.a -ldl -lpthread
 LIBDIR   = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver
 PVRADDON = $(LIBDIR)/XBMC_MPTV.pvr
 
