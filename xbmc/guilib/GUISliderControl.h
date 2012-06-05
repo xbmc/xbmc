@@ -79,16 +79,16 @@ public:
   virtual CStdString GetDescription() const;
   void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
   void SetAction(const CStdString &action);
+  /*! \brief Get the current position of the slider as a proportion
+   \return slider position in the range [0,1]
+   */
+  float GetProportion() const;
 protected:
   virtual bool HitTest(const CPoint &point) const;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
-  /*! \brief Get the current position of the slider as a proportion
-   \return slider position in the range [0,1]
-   */
-  float GetProportion() const;
   
   /*! \brief Send a click message (and/or action) to the app in response to a slider move
    */

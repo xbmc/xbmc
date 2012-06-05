@@ -68,10 +68,14 @@ private:
   void FreeSections();
   void CreateControls();
   void FreeControls();
-  void UpdateFromControls();
   void EnableControls();
   void SetDefaults();
-  bool GetCondition(const CStdString &condition, const int controlId);
+  bool GetBoolCondition(const CStdString &condition, const int controlId);
+
+  CStdString CleanString(const char *value) const;
+  CStdString TranslateTokens(const char *value) const;
+  void SetSliderTextValue(const CGUIControl *control, const char *format);
+  CStdString GetCondition(const char *condition, bool allowHiddenFocus = false) const;
 
   void SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
@@ -81,7 +85,7 @@ private:
 
   ADDON::AddonPtr m_addon;
   CStdString m_strHeading;
-  std::map<CStdString,CStdString> m_buttonValues;
+  CStdString m_closeAction;
   bool m_changed;
   bool m_saveToDisk; // whether the addon settings should be saved to disk or just stored locally in the addon
 
