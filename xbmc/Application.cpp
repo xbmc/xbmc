@@ -2746,18 +2746,18 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     if (processGUI)
     {
-    g_graphicsContext.Lock();
-    // check if there are notifications to display
-    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-    if (toast && toast->DoWork())
-    {
-      if (!toast->IsDialogRunning())
+      g_graphicsContext.Lock();
+      // check if there are notifications to display
+      CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+      if (toast && toast->DoWork())
       {
-        toast->Show();
+        if (!toast->IsDialogRunning())
+        {
+          toast->Show();
+        }
       }
-    }
-    g_graphicsContext.Unlock();
-    CWinEvents::MessagePump();
+      g_graphicsContext.Unlock();
+      CWinEvents::MessagePump();
     }
 
     UpdateLCD();
@@ -2779,9 +2779,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   }
   if (processGUI)
   {
-  if (!m_bStop)
-    g_windowManager.Process(CTimeUtils::GetFrameTime());
-  g_windowManager.FrameMove();
+    if (!m_bStop)
+      g_windowManager.Process(CTimeUtils::GetFrameTime());
+    g_windowManager.FrameMove();
   }
 }
 
