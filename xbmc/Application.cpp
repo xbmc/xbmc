@@ -743,6 +743,11 @@ bool CApplication::Create()
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
   m_lastRenderTime = m_lastFrameTime;
+  return true;
+}
+
+bool CApplication::CreateGUI()
+{
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 
@@ -774,7 +779,6 @@ bool CApplication::Create()
   setenv("__GL_SYNC_TO_VBLANK", "1", 0);
   setenv("__GL_YIELD", "USLEEP", 0);
 #endif
-
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
@@ -868,7 +872,7 @@ bool CApplication::Create()
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
 
-  return Initialize();
+  return true;
 }
 
 bool CApplication::InitDirectoriesLinux()

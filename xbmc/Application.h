@@ -118,6 +118,7 @@ public:
   virtual bool Create();
   virtual bool Cleanup();
 
+  bool CreateGUI();
   void StartServices();
   void StopServices();
   bool StartWebServer();
