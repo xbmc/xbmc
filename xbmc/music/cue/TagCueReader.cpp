@@ -36,7 +36,7 @@ bool TagCueReader::isValid() const
 bool TagCueReader::ReadNextLine(CStdString &line)
 {
   // Read the next line.
-  line = "";
+  line.clear();
   bool stop = false;
   while (m_currentPos < m_data.length())
   {

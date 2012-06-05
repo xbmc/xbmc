@@ -2786,13 +2786,7 @@ bool CFileItem::LoadMusicTag()
   }
   // load tag from file
   CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());
-  CMusicInfoTagLoaderFactory factory;
-  auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
-  if (NULL != pLoader.get())
-  {
-    if (pLoader->Load(m_strPath, *GetMusicInfoTag()))
-      return true;
-  }
+  GetMusicInfoTag()->LoadFromFile(m_strPath);
   // no tag - try some other things
   if (IsCDDA())
   {
@@ -2892,12 +2886,6 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
   if (!m_musicInfoTag)
     m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
-  if (!m_musicInfoTag->Loaded())
-  { // read the tag from a file
-    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(GetPath()));
-    if (NULL != pLoader.get())
-      pLoader->Load(GetPath(), *m_musicInfoTag);
-  }
   return m_musicInfoTag;
 }
 

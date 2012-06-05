@@ -50,9 +50,6 @@ bool CueParser::parse(CueParserCallback& callback)
   {
     if (!callback.onDataNeeded(strLine))
       break;
-    if (strLine.find('\n') != -1)
-      CLog::Log(LOGINFO, "Error!!!");
-
     CStdString cmd = cutFirstWord(strLine);
     if (cmd == "INDEX")
     {
@@ -328,7 +325,7 @@ bool CueParser::extractString(const CStdString &line, CStdString &outStr, bool s
   }
   else
   {
-    if (spaceIsError && line.find(' ') >= 0)
+    if (spaceIsError && line.Find(' ') >= 0)
       return false;
     outStr = line.Mid(0);
   }

@@ -121,7 +121,9 @@ public:
 
   bool HasEmbeddedCue() const;
   const CStdString& GetEmbeddedCue() const;
-  void setEmbeddedCue(const CStdString& cuesheet);
+  void SetEmbeddedCue(const CStdString& cuesheet);
+  
+  void LoadFromFile(const CStdString& strMediaFile);
 
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& ar);

@@ -128,7 +128,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
 
   if (strTagType=="CUESHEET")
   {
-    tag.setEmbeddedCue(strTagValue);
+    tag.SetEmbeddedCue(strTagValue);
   }
 
   //  Get new style replay gain info

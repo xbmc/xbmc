@@ -32,12 +32,8 @@ using namespace MUSIC_INFO;
 CMusicInfoTag::CMusicInfoTag(const CStdString& strMediaFile /*= CStdString()*/)
 {
   Clear();
-  if (XFILE::CFile::Exists(strMediaFile))
-  {
-    std::auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
-    if (NULL != pLoader.get())
-      pLoader->Load(strMediaFile, *this);
-  }
+  if (!strMediaFile.IsEmpty())
+    LoadFromFile(strMediaFile);
 }
 
 CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
@@ -434,13 +430,13 @@ bool CMusicInfoTag::HasEmbeddedCue() const
 {
   return !GetEmbeddedCue().IsEmpty();
 }
-
+	
 const CStdString& CMusicInfoTag::GetEmbeddedCue() const
 {
   return m_strCue;
 }
 
-void CMusicInfoTag::setEmbeddedCue(const CStdString& cuesheet)
+void CMusicInfoTag::SetEmbeddedCue(const CStdString& cuesheet)
 {
   m_strCue = cuesheet;
 }
@@ -592,4 +588,14 @@ CStdString CMusicInfoTag::Trim(const CStdString &value) const
   trimmedValue.TrimLeft(' ');
   trimmedValue.TrimRight(" \n\r");
   return trimmedValue;
+}
+
+void CMusicInfoTag::LoadFromFile(const CStdString& strMediaFile)
+{
+  if (XFILE::CFile::Exists(strMediaFile))
+  {
+    std::auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(strMediaFile));
+    if (NULL != pLoader.get())
+      pLoader->Load(strMediaFile, *this);
+  }
 }

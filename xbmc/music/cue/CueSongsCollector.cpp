@@ -64,7 +64,7 @@ bool CueSongsCollector::load(const CStdString &filePath)
       extension.Equals((char*)".wv"))
     {
       const MUSIC_INFO::CMusicInfoTag& t = tag(filePath);
-      if (t.hasEmbeddedCue())
+      if (t.HasEmbeddedCue())
       {
         m_reader = boost::shared_ptr<CueReader>(new TagCueReader(t.GetEmbeddedCue()));
         m_external = false;
@@ -114,7 +114,7 @@ bool CueSongsCollector::onFile(CStdString& filePath)
     }
     if (bFoundMediaFile)
     { // if file has a cue, we stop parsing.
-      if (tag(filePath).hasEmbeddedCue())
+      if (tag(filePath).HasEmbeddedCue())
       {
         itemstodelete.insert(filePath);
         return false;
