@@ -3979,6 +3979,11 @@ void CApplication::OnPlayBackEnded()
   if(m_bPlaybackStarting)
     return;
 
+#if defined(__arm__)
+  if (CJobManager::GetInstance().IsPaused(kJobTypeMediaFlags))
+    CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
+#endif
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4007,6 +4012,11 @@ void CApplication::OnPlayBackStarted()
 {
   if(m_bPlaybackStarting)
     return;
+
+#if defined(__arm__)
+  if (!CJobManager::GetInstance().IsPaused(kJobTypeMediaFlags))
+    CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
+#endif
 
 #ifdef HAS_PYTHON
   // informs python script currently running playback has started
@@ -4052,6 +4062,11 @@ void CApplication::OnPlayBackStopped()
 {
   if(m_bPlaybackStarting)
     return;
+
+#if defined(__arm__)
+  if (CJobManager::GetInstance().IsPaused(kJobTypeMediaFlags))
+    CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
+#endif
 
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
