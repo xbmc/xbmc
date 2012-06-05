@@ -124,8 +124,8 @@ extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *
 	{
 		for (int i=0; i < iAudioDataLength; i+=2)
 		{
-      waves[0][ipos] = char ((pAudioData[i] / 65535.0f) * 255.0f);
-      waves[1][ipos] = char ((pAudioData[i+1] / 65535.0f) * 255.0f);
+      waves[0][ipos] = char (pAudioData[i] * 255.0f);
+      waves[1][ipos] = char (pAudioData[i+1]  * 255.0f);
 			ipos++;
 			if (ipos >= 576) break;
 		}
