@@ -424,8 +424,7 @@ void PAPlayer::Process()
     double buffer = 100.0;
     ProcessStreams(delay, buffer);
 
-    if (delay < buffer && delay > 0.75 * buffer)
-      CThread::Sleep(MathUtils::round_int((buffer - delay) * 1000.0));
+    Sleep(MathUtils::round_int((delay) * 10.0));
   }
 }
 
@@ -456,13 +455,15 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
   }
 
   sharedLock.Leave();
-  CExclusiveLock lock(m_streamsLock);
 
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
     if (!m_currentStream && !si->m_started)
+    {
+      CExclusiveLock lock(m_streamsLock);
       m_currentStream = si;
+    }
     /* if the stream is finishing */
     if ((si->m_playNextTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
     {
@@ -486,10 +487,12 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
             m_callback.OnQueueNextItem();
             si->m_prepareTriggered = true;
           }
+          CExclusiveLock lock(m_streamsLock);
           m_currentStream = NULL;
         }
         else
         {
+          CExclusiveLock lock(m_streamsLock);
           m_currentStream = *itt;
         }
       }
@@ -528,6 +531,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
           si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
           si->m_fadeOutTriggered = true;
         }
+        CExclusiveLock lock(m_streamsLock);
         m_currentStream = NULL;
 
         /* unregister the audio callback */

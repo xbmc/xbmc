@@ -268,6 +268,7 @@ unsigned int CPulseAEStream::GetSpace()
   if (!m_Initialized)
     return 0;
 
+  usleep(1000);
   pa_threaded_mainloop_lock(m_MainLoop);
   unsigned int size = pa_stream_writable_size(m_Stream);
   pa_threaded_mainloop_unlock(m_MainLoop);

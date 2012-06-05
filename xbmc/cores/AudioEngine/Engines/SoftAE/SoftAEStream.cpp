@@ -234,6 +234,8 @@ unsigned int CSoftAEStream::GetSpace()
   if (m_framesBuffered >= m_waterLevel)
     return 0;
 
+  Sleep(1);
+
   return m_inputBuffer.Free() + (std::max(0U, (m_waterLevel - m_framesBuffered)) * m_format.m_frameSize);
 }
 
