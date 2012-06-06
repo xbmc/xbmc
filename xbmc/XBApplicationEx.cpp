@@ -21,6 +21,7 @@
 #include "system.h"
 #include "XBApplicationEx.h"
 #include "utils/log.h"
+#include "threads/SystemClock.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
@@ -75,6 +76,9 @@ INT CXBApplicationEx::Run(bool renderGUI)
   BYTE processExceptionCount = 0;
   BYTE frameMoveExceptionCount = 0;
   BYTE renderExceptionCount = 0;
+  unsigned int lastFrameTime = 0;
+  unsigned int frameTime = 0;
+  const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
 #ifndef _DEBUG
   const BYTE MAX_EXCEPTION_COUNT = 10;
@@ -93,6 +97,7 @@ INT CXBApplicationEx::Run(bool renderGUI)
     try
     {
 #endif
+      lastFrameTime = XbmcThreads::SystemClockMillis();
       Process();
       //reset exception count
       processExceptionCount = 0;
@@ -143,6 +148,13 @@ INT CXBApplicationEx::Run(bool renderGUI)
     {
 #endif
       if (renderGUI && !m_bStop) Render();
+      else if (!renderGUI)
+      {
+        frameTime = XbmcThreads::SystemClockMillis() - lastFrameTime;
+        if(frameTime < noRenderFrameTime)
+          Sleep(noRenderFrameTime - frameTime);
+      }
+
       //reset exception count
       renderExceptionCount = 0;
 
