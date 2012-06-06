@@ -68,7 +68,7 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
-INT CXBApplicationEx::Run()
+INT CXBApplicationEx::Run(bool renderGUI)
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
 
@@ -117,7 +117,7 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      if (!m_bStop) FrameMove(true);
+      if (!m_bStop) FrameMove(true, renderGUI);
       //reset exception count
       frameMoveExceptionCount = 0;
 
@@ -142,7 +142,7 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      if (!m_bStop) Render();
+      if (renderGUI && !m_bStop) Render();
       //reset exception count
       renderExceptionCount = 0;
 
