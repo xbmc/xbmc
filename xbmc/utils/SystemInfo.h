@@ -89,7 +89,7 @@ public:
   bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
   bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
 
-#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
   CStdString GetLinuxDistro();
 #endif
 #ifdef _LINUX

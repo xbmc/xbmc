@@ -254,7 +254,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #pragma mark -
 #endif
 CPictureBuffer::CPictureBuffer(ERenderFormat format, int width, int height)
@@ -321,7 +321,7 @@ CPictureBuffer::~CPictureBuffer()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #pragma mark -
 #endif
 CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_bcm70015) :
@@ -1073,7 +1073,7 @@ void CMPCOutputThread::Process(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #pragma mark -
 #endif
 CCrystalHD* CCrystalHD::m_pInstance = NULL;

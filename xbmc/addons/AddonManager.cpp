@@ -116,7 +116,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in screensaver
           return AddonPtr(new CAddon(props));
         }
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
           break;
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
@@ -125,7 +125,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #elif defined(_WIN32) && defined(HAS_DX)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_windx")) && value.empty())
           break;
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
           break;
 #endif
@@ -580,7 +580,7 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
     {
       if (platforms[i] == "all")
         return true;
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
       if (platforms[i] == "linux")
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
       if (platforms[i] == "wingl")

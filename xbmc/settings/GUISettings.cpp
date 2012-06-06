@@ -385,7 +385,7 @@ void CGUISettings::Initialize()
 #endif
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains an index to the g_settings.m_ResInfo array. the only meaningful fields are iScreen, iWidth, iHeight.
-#if defined (__APPLE__)
+#if defined(TARGET_DARWIN)
   #if !defined(TARGET_DARWIN_IOS_ATV2)
     AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
   #endif
@@ -394,7 +394,7 @@ void CGUISettings::Initialize()
 #endif
   AddString(g_application.IsStandAlone() ? vs : NULL, "videoscreen.screenmode", 243, "DESKTOP", SPIN_CONTROL_TEXT);
 
-#if defined(_WIN32) || defined (__APPLE__)
+#if defined(_WIN32) || defined(TARGET_DARWIN)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
   // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
@@ -409,7 +409,7 @@ void CGUISettings::Initialize()
   showSetting = false;
 #endif
 
-#if defined (__APPLE__)
+#if defined(TARGET_DARWIN)
   showSetting = false;
 #endif
   AddBool(showSetting ? vs : NULL, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
@@ -422,7 +422,7 @@ void CGUISettings::Initialize()
 #endif
 
   map<int,int> vsync;
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
   vsync.insert(make_pair(13101,VSYNC_DRIVER));
 #endif
   vsync.insert(make_pair(13106,VSYNC_DISABLED));
@@ -499,14 +499,14 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
   AddString(in, "input.peripherals", 35000, "", BUTTON_CONTROL_STANDARD);
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   map<int,int> remotemode;
   remotemode.insert(make_pair(13610,APPLE_REMOTE_DISABLED));
   remotemode.insert(make_pair(13611,APPLE_REMOTE_STANDARD));
   remotemode.insert(make_pair(13612,APPLE_REMOTE_UNIVERSAL));
   remotemode.insert(make_pair(13613,APPLE_REMOTE_MULTIREMOTE));
   AddInt(in, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, remotemode, SPIN_CONTROL_TEXT);
-#if !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   AddBool(in, "input.appleremotealwayson", 13602, false);
 #else
   AddBool(NULL, "input.appleremotealwayson", 13602, false);
@@ -524,7 +524,7 @@ void CGUISettings::Initialize()
   CSettingsCategory* net = AddCategory(4, "network", 798);
   if (g_application.IsStandAlone())
   {
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
     AddString(NULL, "network.interface",775,"", SPIN_CONTROL_TEXT);
 
     map<int, int> networkAssignments;
@@ -680,7 +680,7 @@ void CGUISettings::Initialize()
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
-#if !(defined(__APPLE__) && defined(__arm__))
+#if !defined(TARGET_DARWIN_IOS)
   AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
 #else
@@ -849,7 +849,7 @@ void CGUISettings::Initialize()
   bool use_timezone = false;
   
 #if defined(_LINUX)
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
     use_timezone = true;  
@@ -1243,7 +1243,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AAC pass through is %s", GetBool("audiooutput.passthroughaac") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = GetResolution();
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   // trap any previous vsync by driver setting, does not exist on OSX
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
   {
@@ -1268,7 +1268,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   bool use_timezone = false;
   
 #if defined(_LINUX)
-#if defined(__APPLE__) 
+#if defined(TARGET_DARWIN) 
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
     use_timezone = true;

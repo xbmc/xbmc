@@ -251,7 +251,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
    * during HW accell */
   m_pCodecContext->thread_type = FF_THREAD_SLICE;
 
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
   // ffmpeg with enabled neon will crash and burn if this is enabled
   m_pCodecContext->flags &= CODEC_FLAG_EMU_EDGE;
 #else

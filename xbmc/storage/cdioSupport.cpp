@@ -681,7 +681,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   m_nFirstTrackNum = ::cdio_get_first_track_num(cdio);
   if (m_nFirstTrackNum == CDIO_INVALID_TRACK)
   {
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
     ::cdio_destroy(cdio);
     return NULL;
 #else
@@ -693,7 +693,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   m_nNumTracks = ::cdio_get_num_tracks(cdio);
   if (m_nNumTracks == CDIO_INVALID_TRACK)
   {
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
     ::cdio_destroy(cdio);
     return NULL;
 #else

@@ -112,7 +112,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
    * both to avoid as much dead code as possible.
    * CoreAudio (at least on the cases we've seen) wants IEC 61937 in
    * little-endian format even on big-endian systems. */
-#if defined(WORDS_BIGENDIAN) && !defined(__APPLE__)
+#if defined(WORDS_BIGENDIAN) && !defined(TARGET_DARWIN)
   const char *spdifFlags = "+be";
 #else
   const char *spdifFlags = "-be";

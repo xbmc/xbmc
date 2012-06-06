@@ -76,7 +76,7 @@
 #include "interfaces/python/XBPython.h"
 #endif
 
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"
 #include "CocoaInterface.h"
 #endif
@@ -119,7 +119,7 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   { "RunAppleScript",             true,   "Run the specified AppleScript command" },
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
@@ -331,7 +331,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
       if (params[0].Equals("shutdownmenu"))
         CBuiltins::Execute("Quit");
 #endif     
@@ -380,7 +380,7 @@ int CBuiltins::Execute(const CStdString& execString)
 #endif
     }
   }
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   else if (execute.Equals("runapplescript"))
   {
     Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
