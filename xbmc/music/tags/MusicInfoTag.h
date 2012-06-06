@@ -64,6 +64,7 @@ public:
   const CStdString& GetComment() const;
   const CStdString& GetLyrics() const;
   const CDateTime& GetLastPlayed() const;
+  bool  GetCompilation() const;
   char  GetRating() const;
   int  GetListeners() const;
   int  GetPlayCount() const;
@@ -101,6 +102,7 @@ public:
   void SetPlayCount(int playcount);
   void SetLastPlayed(const CStdString& strLastPlayed);
   void SetLastPlayed(const CDateTime& strLastPlayed);
+  void SetCompilation(bool compilation);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -146,6 +148,7 @@ protected:
   CStdString m_strComment;
   CStdString m_strLyrics;
   CDateTime m_lastPlayed;
+  bool m_bCompilation;
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   long m_iDbId;
