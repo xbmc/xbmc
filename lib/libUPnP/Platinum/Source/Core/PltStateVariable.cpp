@@ -198,12 +198,16 @@ PLT_StateVariable::ValidateValue(const char* value)
             NPT_List<NPT_String>::Iterator val = values.GetFirstItem();
             while (val) {
                 val->Trim(" ");
-				if (!m_AllowedValues.Find(NPT_StringFinder(*val))) {
-					NPT_LOG_WARNING_2("Invalid value of %s for state variable %s", 
-						(const char*)*val,
-						(const char*)m_Name);
+                if (!m_AllowedValues.Find(NPT_StringFinder(*val))) {
+                    NPT_LOG_WARNING_2("Invalid value of %s for state variable %s",
+                        (const char*)*val,
+                        (const char*)m_Name);
+                    for (unsigned long i=0; i < m_AllowedValues.GetItemCount(); i++) {
+                        NPT_String *val = *m_AllowedValues.GetItem(i);
+                        NPT_LOG_WARNING_1("Allowed: %s", (const char*)*val);
+                    }
                     return NPT_ERROR_INVALID_PARAMETERS;
-				}
+                }
                 ++val;
             }
         }
