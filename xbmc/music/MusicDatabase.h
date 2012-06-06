@@ -231,7 +231,7 @@ protected:
   virtual int GetMinVersion() const { return 25; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
-  int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year);
+  int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year, bool bCompilation);
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);
   int AddPath(const CStdString& strPath);

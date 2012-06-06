@@ -99,7 +99,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create artist table");
     m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist varchar(256), strMusicBrainzArtistID text)\n");
     CLog::Log(LOGINFO, "create album table");
-    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum varchar(256), strMusicBrainzAlbumID text, strArtists text, strGenres text, iYear integer, idThumb integer)\n");
+    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum varchar(256), strMusicBrainzAlbumID text, strArtists text, strGenres text, iYear integer, bCompilation integer not null default '0', idThumb integer)\n");
     CLog::Log(LOGINFO, "create album_artist table");
     m_pDS->exec("CREATE TABLE album_artist ( idArtist integer, idAlbum integer, boolFeatured integer, iOrder integer )\n");
     CLog::Log(LOGINFO, "create album_genre table");
@@ -135,6 +135,8 @@ bool CMusicDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create album index");
     m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
+    CLog::Log(LOGINFO, "create album compilation index");
+    m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
 
     CLog::Log(LOGINFO, "create album_artist indexes");
     m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )\n");
@@ -265,9 +267,9 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     int idThumb = AddThumb(song.strThumb);
     int idAlbum;
     if (!song.albumArtist.empty())  // have an album artist
-      idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.albumArtist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear);
+      idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.albumArtist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
     else
-      idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear);
+      idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
 
     DWORD crc = ComputeCRC(song.strFileName);
 
@@ -404,7 +406,7 @@ int CMusicDatabase::UpdateSong(const CSong& song, int idSong /* = -1 */)
   return newSong.idSong;
 }
 
-int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist, int idThumb, const CStdString& strGenre, int year)
+int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist, int idThumb, const CStdString& strGenre, int year, bool bCompilation)
 {
   CStdString strSQL;
   try
@@ -436,7 +438,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strGenres, iYear, idThumb) values( NULL, '%s', '%s', '%s', %i, %i)", strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), year, idThumb);
+      strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strGenres, iYear, bCompilation, idThumb) values( NULL, '%s', '%s', '%s', %i, %i, %i)", strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), year, bCompilation, idThumb);
       m_pDS->exec(strSQL.c_str());
 
       CAlbumCache album;

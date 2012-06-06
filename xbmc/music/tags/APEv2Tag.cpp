@@ -127,6 +127,12 @@ bool CAPEv2Tag::ReadTag(const char* filename)
       if (temp >= '0' && temp < '6')
         m_rating = temp;
   }
+  if (apefrm_getstr(tag, (char*)"Compilation"))
+  {
+    char temp = apefrm_getstr(tag, (char*)"Compilation")[0];
+    if (temp == '1')
+      m_bCompilation = true;
+  }
 
   // Replay gain info
   GetReplayGainFromTag(tag);
