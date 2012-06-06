@@ -436,13 +436,20 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   struct my_error_mgr jerr;
   JSAMPROW row_pointer[1];
   long unsigned int outBufSize = 0;
-  unsigned char* result = new unsigned char [(width * height)]; //Initial buffer. Grows as-needed.
+  unsigned char* result;
   unsigned char* src = buffer;
   unsigned char* rgbbuf, *src2, *dst2;
 
   if(buffer == NULL)
   {
     CLog::Log(LOGERROR, "JpegIO::CreateThumbnailFromSurface no buffer");
+    return false;
+  }
+
+  result = (unsigned char*) malloc(width * height); //Initial buffer. Grows as-needed.
+  if (result == NULL)
+  {
+    CLog::Log(LOGERROR, "JpegIO::CreateThumbnailFromSurface error allocating memory for image buffer");
     return false;
   }
 
@@ -482,7 +489,7 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   if (setjmp(jerr.setjmp_buffer))
   {
     jpeg_destroy_compress(&cinfo);
-    delete [] result;
+    free(result);
     if(format != XB_FMT_RGB8)
       delete [] rgbbuf;
     return false;
@@ -519,10 +526,10 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   {
     file.Write(result, outBufSize);
     file.Close();
-    delete [] result;
+    free(result);
     return true;
   }
-  delete [] result;
+  free(result);
   return false;
 }
 
