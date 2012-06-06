@@ -39,9 +39,7 @@ public:
    * otherwise object will be empty.
    */
   CMusicInfoTag(const CStdString& strMediaFile = CStdString());
-  CMusicInfoTag(const CMusicInfoTag& tag);
   virtual ~CMusicInfoTag();
-  const CMusicInfoTag& operator =(const CMusicInfoTag& tag);
   bool operator !=(const CMusicInfoTag& tag) const;
   bool Loaded() const;
   const CStdString& GetTitle() const;
