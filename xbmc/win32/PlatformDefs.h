@@ -46,12 +46,8 @@ typedef long          __off_t;
 #define strncasecmp strnicmp
 #endif
 
-#ifndef PRIdS
-#define PRIdS "Id"
-#endif
-
 #define popen   _popen
-#define pclose  _pclose 
+#define pclose  _pclose
 
 #if 0
 // big endian
