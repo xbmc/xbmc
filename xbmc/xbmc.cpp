@@ -90,7 +90,6 @@ int main(int argc, char* argv[])
   CAppParamParser appParamParser;
   appParamParser.Parse((const char **)argv, argc);
 #endif
-  g_application.Preflight();
   if (!g_application.Create())
   {
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");

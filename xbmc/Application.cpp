@@ -552,6 +552,7 @@ void CApplication::Preflight()
 
 bool CApplication::Create()
 {
+  Preflight();
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
 #ifdef _LINUX
