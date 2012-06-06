@@ -279,7 +279,7 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
     // get the request entity to set additional headers
     NPT_InputStreamReference body_stream;
     NPT_HttpEntity* entity = response->GetEntity();
-    if (entity && NPT_SUCCEEDED(entity->GetInputStream(body_stream))) {
+    if (entity) {
         // set the content length if known
         if (entity->ContentLengthIsKnown()) {
             headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, 
@@ -341,7 +341,7 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
     NPT_CHECK_WARNING(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
 
     // send response body if any
-    if (!headers_only && !body_stream.IsNull()) {
+    if (!headers_only && NPT_SUCCEEDED(entity->GetInputStream(body_stream)) && !body_stream.IsNull()) {
         NPT_CHECK_WARNING(NPT_StreamToStreamCopy(
             *body_stream.AsPointer(), 
             *output_stream.AsPointer(),
