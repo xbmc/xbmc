@@ -36,6 +36,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "PltSyncMediaBrowser.h"
+#include <algorithm>
 
 NPT_SET_LOCAL_LOGGER("platinum.media.server.syncbrowser")
 
@@ -239,6 +240,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
 {
     NPT_Result res = NPT_FAILURE;
     NPT_Int32  index = start;
+    NPT_UInt32 count = 0;
     
     // only cache metadata or if starting from 0 and asking for maximum
     bool cache = m_UseCache && (metadata || (start == 0 && max_results == 0));
@@ -270,8 +272,14 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
         }
 
         // server returned no more, bail now
-        if (browse_data->info.items->GetItemCount() == 0)
+        if (browse_data->info.nr == 0)
             break;
+
+        if (browse_data->info.nr != browse_data->info.items->GetItemCount()) {
+            NPT_LOG_WARNING_2("Server returned unexpected number of items (%d vs %d)",
+                              browse_data->info.nr, browse_data->info.items->GetItemCount());
+        }
+        count += std::max<NPT_UInt32>(browse_data->info.nr, browse_data->info.items->GetItemCount());
 
         if (list.IsNull()) {
             list = browse_data->info.items;
@@ -290,12 +298,12 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
         // Unless we were told to stop after reaching a certain amount to avoid
         // length delays
         // (some servers may return a total matches out of whack at some point too)
-        if ((browse_data->info.tm && browse_data->info.tm <= list->GetItemCount()) ||
-            (max_results && list->GetItemCount() >= max_results))
+        if ((browse_data->info.tm && browse_data->info.tm <= count) ||
+            (max_results && count >= max_results))
             break;
 
         // ask for the next chunk of entries
-        index = list->GetItemCount();
+        index = count;
     } while(1);
 
 done:
