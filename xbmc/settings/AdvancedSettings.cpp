@@ -712,7 +712,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
