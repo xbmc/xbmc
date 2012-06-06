@@ -42,7 +42,6 @@ public:
   virtual bool      Open(const std::string& hostname, int port, const char *name = NULL);
   virtual bool      Login();
   virtual void      Close();
-  virtual void      Abort();
 
   cResponsePacket*  ReadMessage(int iInitialTimeout = 10000, int iDatapacketTimeout = 10000);
   bool              TransmitMessage(cRequestPacket* vrp);

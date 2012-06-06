@@ -74,7 +74,6 @@ bool cVNSIDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
 void cVNSIDemux::Abort()
 {
   m_Streams.iStreamCount = 0;
-  cVNSISession::Abort();
 }
 
 DemuxPacket* cVNSIDemux::Read()

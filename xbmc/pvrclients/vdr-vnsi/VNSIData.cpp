@@ -29,21 +29,17 @@ using namespace ADDON;
 using namespace PLATFORM;
 
 cVNSIData::cVNSIData()
- : m_aborting(false)
 {
 }
 
 cVNSIData::~cVNSIData()
 {
-  Abort();
   StopThread();
   Close();
 }
 
 bool cVNSIData::Open(const std::string& hostname, int port, const char* name)
 {
-  m_aborting = false;
-
   if(!cVNSISession::Open(hostname, port, name))
     return false;
 
@@ -57,23 +53,6 @@ bool cVNSIData::Login()
 
   CreateThread();
   return true;
-}
-
-void cVNSIData::Abort()
-{
-  CLockObject lock(m_mutex);
-  m_aborting = true;
-  cVNSISession::Abort();
-}
-
-void cVNSIData::SignalConnectionLost()
-{
-  CLockObject lock(m_mutex);
-
-  if(m_aborting)
-    return;
-
-  cVNSISession::SignalConnectionLost();
 }
 
 void cVNSIData::OnDisconnect()

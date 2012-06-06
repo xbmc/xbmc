@@ -38,7 +38,6 @@ public:
 
   bool        Open(const std::string& hostname, int port, const char* name = NULL);
   bool        Login();
-  void        Abort();
 
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
@@ -72,7 +71,6 @@ protected:
   virtual void *Process(void);
   virtual bool OnResponsePacket(cResponsePacket *pkt);
 
-  void SignalConnectionLost();
   void OnDisconnect();
   void OnReconnect();
 
@@ -89,6 +87,5 @@ private:
 
   SMessages        m_queue;
   std::string      m_videodir;
-  bool             m_aborting;
   PLATFORM::CMutex m_mutex;
 };
