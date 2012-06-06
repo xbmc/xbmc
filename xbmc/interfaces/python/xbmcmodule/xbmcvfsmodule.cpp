@@ -64,7 +64,7 @@ extern "C" {
     PyObject* File_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
     {
       PyObject *f_line;
-      char *cLine;
+      char *cLine = NULL;
       if (!PyArg_ParseTuple(
                             args,
                             (char*)"O|s",
@@ -82,7 +82,7 @@ extern "C" {
         return NULL;
 
       self->pFile = new CFile();
-      if (strncmp(cLine, "w", 1) == 0)
+      if (cLine && strncmp(cLine, "w", 1) == 0)
       {
         CPyThreadState pyState;
         self->pFile->OpenForWrite(strSource,true);
