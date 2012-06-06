@@ -991,7 +991,7 @@ namespace PYXBMC
  * initxbmc(void);
  *****************************************************************/
   PyMODINIT_FUNC
-  InitXBMCTypes(bool bInitTypes)
+  InitXBMCTypes()
   {
     initKeyboard_Type();
     initPlayer_Type();
