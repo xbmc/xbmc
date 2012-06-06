@@ -78,7 +78,7 @@ void CJoystick::Initialize()
     {
       SDL_Joystick *joy = SDL_JoystickOpen(i);
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
       // On OS X, the 360 controllers are handled externally, since the SDL code is
       // really buggy and doesn't handle disconnects.
       //

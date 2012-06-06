@@ -58,7 +58,7 @@ int modify_ldt(int func, void *ptr, unsigned long bytecount);
 #include <machine/segments.h>
 #include <machine/sysarch.h>
 #endif
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #include <i386/user_ldt.h>
 #endif
 
@@ -109,7 +109,7 @@ struct modify_ldt_ldt_s {
 #define       LDT_SEL(idx) ((idx) << 3 | 1 << 2 | 3)
 
 /* i got this value from wine sources, it's the first free LDT entry */
-#if (defined(__APPLE__) || defined(__FreeBSD__)) && defined(LDT_AUTO_ALLOC)
+#if (defined(TARGET_DARWIN) || defined(__FreeBSD__)) && defined(LDT_AUTO_ALLOC)
 #define       TEB_SEL_IDX     LDT_AUTO_ALLOC
 #define	      USE_LDT_AA
 #endif
@@ -175,7 +175,7 @@ static int LDT_Modify( int func, struct modify_ldt_ldt_s *ptr,
 #endif
 #endif
 
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(TARGET_DARWIN)
 static void LDT_EntryToBytes( unsigned long *buffer, const struct modify_ldt_ldt_s *content )
 {
     *buffer++ = ((content->base_addr & 0x0000ffff) << 16) |
@@ -202,10 +202,10 @@ ldt_fs_t* Setup_LDT_Keeper(void)
     if (!ldt_fs)
 	return NULL;
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
     if (getenv("DYLD_BIND_AT_LAUNCH") == NULL)
         printf("DYLD_BIND_AT_LAUNCH");
-#endif /* __APPLE__ */
+#endif // TARGET_DARWIN
     
     fs_seg=
     ldt_fs->fs_seg = mmap_anon(NULL, sysconf(_SC_PAGE_SIZE), PROT_READ | PROT_WRITE, MAP_PRIVATE, 0);
@@ -235,7 +235,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
     }
 #endif /*linux*/
 
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(TARGET_DARWIN)
     {
         unsigned long d[2];
 
@@ -257,7 +257,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 #endif
         }
     }
-#endif  /* __NetBSD__ || __FreeBSD__ || __OpenBSD__ || __DragonFly__ || __APPLE__ */
+#endif  // __NetBSD__ || __FreeBSD__ || __OpenBSD__ || __DragonFly__ || TARGET_DARWIN
 
 #if defined(__svr4__)
     {

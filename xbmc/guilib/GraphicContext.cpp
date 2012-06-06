@@ -373,7 +373,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 
   if (g_advancedSettings.m_fullScreen)
   {
-#if defined (__APPLE__) || defined (_WIN32)
+#if defined (TARGET_DARWIN) || defined (_WIN32)
     bool blankOtherDisplays = g_guiSettings.GetBool("videoscreen.blankdisplays");
     g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays);
 #else

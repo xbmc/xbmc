@@ -27,7 +27,7 @@
 #include <direct.h>
 #include <process.h>
 #else
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 #include <mntent.h>
 #endif
 #endif
@@ -40,7 +40,7 @@
 #ifdef HAS_DVD_DRIVE
   #ifdef _LINUX
     #include <sys/ioctl.h>
-    #ifdef __APPLE__
+    #if defined(TARGET_DARWIN)
       #include <IOKit/storage/IODVDMediaBSDClient.h>
     #elif !defined(__FreeBSD__)
       #include <linux/cdrom.h>
@@ -137,7 +137,7 @@ extern "C" void __stdcall init_emu_environ()
     FreeEnvironmentStrings(lpvEnv);
   }
   dll_putenv("OS=win32");
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
   dll_putenv("OS=darwin");
 #elif defined(_LINUX)
   dll_putenv("OS=linux");
@@ -1169,7 +1169,7 @@ extern "C"
   FILE* dll_fopen(const char* filename, const char* mode)
   {
     FILE* file = NULL;
-#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
     if (strcmp(filename, MOUNTED) == 0
     ||  strcmp(filename, MNTTAB) == 0)
     {
@@ -1277,7 +1277,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
       return fseek(stream, offset, origin);
 #else
       return fseeko64(stream, offset, origin);
@@ -1342,7 +1342,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
       return ftello(stream);
 #else
       return ftello64(stream);
@@ -1388,7 +1388,7 @@ extern "C"
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_telli64 called, TODO: add 'int64 -> long' type checking");      //warning
 #ifndef _LINUX
       return (__int64)tell(fd);
-#elif defined(__APPLE__) || defined(__FreeBSD__)
+#elif defined(TARGET_DARWIN) || defined(__FreeBSD__)
       return lseek(fd, 0, SEEK_CUR);
 #else
       return lseek64(fd, 0, SEEK_CUR);
@@ -1565,7 +1565,7 @@ extern "C"
     int ret;
 
     ret = dll_fgetpos64(stream, &tmpPos);
-#if !defined(_LINUX) || defined(__APPLE__) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
     *pos = (fpos_t)tmpPos;
 #else
     pos->__pos = (off_t)tmpPos.__pos;
@@ -1578,7 +1578,7 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-#if !defined(_LINUX) || defined(__APPLE__) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
       *pos = pFile->GetPosition();
 #else
       pos->__pos = pFile->GetPosition();
@@ -1600,7 +1600,7 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-#if !defined(_LINUX) || defined(__APPLE__) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
 #else
       if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
@@ -1617,7 +1617,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if !defined(_LINUX) || defined(__APPLE__) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
       return fsetpos(stream, pos);
 #else
       return fsetpos64(stream, pos);
@@ -1633,7 +1633,7 @@ extern "C"
     if (fd >= 0)
     {
       fpos64_t tmpPos;
-#if !defined(_LINUX) || defined(__APPLE__) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
       tmpPos= *pos;
 #else
       tmpPos.__pos = (off64_t)(pos->__pos);
@@ -2098,7 +2098,7 @@ extern "C"
        return -1;
 
 #if defined(HAS_DVD_DRIVE) && !defined(__FreeBSD__)
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
 #else
     if(request == DKIOCDVDSENDKEY || request == DKIOCDVDREPORTKEY || request == DKIOCDVDREADSTRUCTURE)
@@ -2140,7 +2140,7 @@ extern "C"
       CLog::Log(LOGERROR, "%s - getmntent is not implemented for our virtual filesystem", __FUNCTION__);
       return NULL;
     }
-#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
     return getmntent(fp);
 #else
     CLog::Log(LOGWARNING, "%s - unimplemented function called", __FUNCTION__);

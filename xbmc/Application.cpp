@@ -540,7 +540,7 @@ void CApplication::Preflight()
 #endif
 
   // run any platform preflight scripts.
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   CStdString install_path;
 
   CUtil::GetHomePath(install_path);
@@ -665,7 +665,7 @@ bool CApplication::Create()
   //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
   //this might bring the monitor out of standby, so we have to disable it explicitly
   //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
   setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
 #endif
 
@@ -691,7 +691,7 @@ bool CApplication::Create()
 #endif
 
   // for python scripts that check the OS
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
   setenv("OS","Linux",true);
@@ -785,7 +785,7 @@ bool CApplication::Create()
   g_RemoteControl.Initialize();
 #endif
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   // Configure and possible manually start the helper.
   XBMCHelper::GetInstance().Configure();
 #endif
@@ -892,7 +892,7 @@ bool CApplication::InitDirectoriesLinux()
          might be mixed case.
 */
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -973,7 +973,7 @@ bool CApplication::InitDirectoriesLinux()
 
 bool CApplication::InitDirectoriesOSX()
 {
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -990,7 +990,7 @@ bool CApplication::InitDirectoriesOSX()
   CUtil::GetHomePath(xbmcPath);
   setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
-#if defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
   CStdString fontconfigPath;
   fontconfigPath = xbmcPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
   setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
@@ -1006,7 +1006,7 @@ bool CApplication::InitDirectoriesOSX()
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    #if defined(__arm__)
+    #if defined(TARGET_DARWIN_IOS)
       CSpecialProtocol::SetHomePath(userHome + "/Library/Preferences/XBMC");
       CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/XBMC/userdata");
     #else
@@ -1015,7 +1015,7 @@ bool CApplication::InitDirectoriesOSX()
     #endif
 
     // location for temp files
-    #if defined(__arm__)
+    #if defined(TARGET_DARWIN_IOS)
       CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  "Library/Preferences/XBMC/temp");
     #else
       CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
@@ -1025,7 +1025,7 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetTempPath(strTempPath);
 
     // xbmc.log file location
-    #if defined(__arm__)
+    #if defined(TARGET_DARWIN_IOS)
       strTempPath = userHome + "/Library/Preferences";
     #else
       strTempPath = userHome + "/Library/Logs";
@@ -3427,7 +3427,7 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
     if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
       XBMCHelper::GetInstance().Stop();
 #endif
@@ -3947,7 +3947,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 #endif
 
-#if !defined(__APPLE__) && !defined(_LINUX)
+#if !defined(TARGET_DARWIN) && !defined(_LINUX)
     g_audioManager.Enable(false);
 #endif
   }
@@ -4909,7 +4909,7 @@ void CApplication::ProcessSlow()
 {
   g_powerManager.ProcessEvents();
 
-#if defined(__APPLE__) &&  !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   // There is an issue on OS X that several system services ask the cursor to become visible
   // during their startup routines.  Given that we can't control this, we hack it in by
   // forcing the
@@ -4932,7 +4932,7 @@ void CApplication::ProcessSlow()
   CheckScreenSaverAndDPMS();
 
   // Check if we need to shutdown (if enabled).
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   if (g_guiSettings.GetInt("powermanagement.shutdowntime") && g_advancedSettings.m_fullScreen)
 #else
   if (g_guiSettings.GetInt("powermanagement.shutdowntime"))

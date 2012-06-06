@@ -19,8 +19,8 @@
  *
  */
 
-#if defined(__APPLE__)
-#if defined(__arm__)
+#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
   #import <Foundation/Foundation.h>
 #else
   #import <Cocoa/Cocoa.h>

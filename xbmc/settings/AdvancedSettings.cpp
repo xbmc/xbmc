@@ -270,7 +270,7 @@ void CAdvancedSettings::Initialize()
 
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   // default for osx is fullscreen always on top
   m_alwaysOnTop = true;
 #else

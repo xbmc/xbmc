@@ -135,14 +135,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   //when support for a hardware decoder is not compiled in
   //only print it if it's actually available on the platform
   CStdString hwSupport;
-#if defined(HAVE_LIBVDADECODER) && defined(__APPLE__)
+#if defined(HAVE_LIBVDADECODER) && defined(TARGET_DARWIN)
   hwSupport += "VDADecoder:yes ";
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
   hwSupport += "VDADecoder:no ";
 #endif
-#if defined(HAVE_VIDEOTOOLBOXDECODER) && defined(__APPLE__)
+#if defined(HAVE_VIDEOTOOLBOXDECODER) && defined(TARGET_DARWIN)
   hwSupport += "VideoToolBoxDecoder:yes ";
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
   hwSupport += "VideoToolBoxDecoder:no ";
 #endif
 #ifdef HAVE_LIBCRYSTALHD
@@ -157,7 +157,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(_LINUX)
   hwSupport += "VDPAU:yes ";
-#elif defined(_LINUX) && !defined(__APPLE__)
+#elif defined(_LINUX) && !defined(TARGET_DARWIN)
   hwSupport += "VDPAU:no ";
 #endif
 #if defined(_WIN32) && defined(HAS_DX)
@@ -167,7 +167,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 #if defined(HAVE_LIBVA) && defined(_LINUX)
   hwSupport += "VAAPI:yes ";
-#elif defined(_LINUX) && !defined(__APPLE__)
+#elif defined(_LINUX) && !defined(TARGET_DARWIN)
   hwSupport += "VAAPI:no ";
 #endif
 

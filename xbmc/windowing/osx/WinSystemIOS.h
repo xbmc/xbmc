@@ -24,7 +24,7 @@
 #ifndef WINDOW_SYSTEM_IOSEGL_H
 #define WINDOW_SYSTEM_IOSEGL_H
 
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
 #include "windowing/WinSystem.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
