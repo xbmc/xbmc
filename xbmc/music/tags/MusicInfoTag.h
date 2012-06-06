@@ -34,6 +34,10 @@ namespace MUSIC_INFO
 class CMusicInfoTag : public IArchivable, public ISerializable
 {
 public:
+  /*! \brief Constructor.
+   * Create CMusicInfoTag object. If \b strMediaFile isn't empty try to load tag from file
+   * otherwise object will be empty.
+   */
   CMusicInfoTag(const CStdString& strMediaFile = CStdString());
   CMusicInfoTag(const CMusicInfoTag& tag);
   virtual ~CMusicInfoTag();
@@ -122,7 +126,9 @@ public:
   bool HasEmbeddedCue() const;
   const CStdString& GetEmbeddedCue() const;
   void SetEmbeddedCue(const CStdString& cuesheet);
-  
+
+  /*! \brief Try to load metadata from file
+  */
   void LoadFromFile(const CStdString& strMediaFile);
 
   virtual void Archive(CArchive& ar);

@@ -30,51 +30,23 @@
 using namespace MUSIC_INFO;
 
 CMusicInfoTag::CMusicInfoTag(const CStdString& strMediaFile /*= CStdString()*/)
+  : m_iDuration(0)
+  , m_iTrack(0)
+  , m_iDbId(-1)
+  , m_bLoaded(false)
+  , m_rating('0')
+  , m_listeners(0)
+  , m_iTimesPlayed(0)
+  , m_iArtistId(-1)
+  , m_iAlbumId(-1)
 {
-  Clear();
+  memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
   if (!strMediaFile.IsEmpty())
     LoadFromFile(strMediaFile);
 }
 
-CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
-{
-  *this = tag;
-}
-
 CMusicInfoTag::~CMusicInfoTag()
 {}
-
-const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
-{
-  if (this == &tag) return * this;
-
-  m_strURL = tag.m_strURL;
-  m_artist = tag.m_artist;
-  m_albumArtist = tag.m_albumArtist;
-  m_strAlbum = tag.m_strAlbum;
-  m_genre = tag.m_genre;
-  m_strTitle = tag.m_strTitle;
-  m_strMusicBrainzTrackID = tag.m_strMusicBrainzTrackID;
-  m_strMusicBrainzArtistID = tag.m_strMusicBrainzArtistID;
-  m_strMusicBrainzAlbumID = tag.m_strMusicBrainzAlbumID;
-  m_strMusicBrainzAlbumArtistID = tag.m_strMusicBrainzAlbumArtistID;
-  m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
-  m_strComment = tag.m_strComment;
-  m_strLyrics = tag.m_strLyrics;
-  m_lastPlayed = tag.m_lastPlayed;
-  m_iDuration = tag.m_iDuration;
-  m_iTrack = tag.m_iTrack;
-  m_bLoaded = tag.m_bLoaded;
-  m_rating = tag.m_rating;
-  m_listeners = tag.m_listeners;
-  m_iTimesPlayed = tag.m_iTimesPlayed;
-  m_iDbId = tag.m_iDbId;
-  m_iArtistId = tag.m_iArtistId;
-  m_iAlbumId = tag.m_iAlbumId;
-  m_strCue = tag.m_strCue;
-  memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
-  return *this;
-}
 
 bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
 {
@@ -430,7 +402,7 @@ bool CMusicInfoTag::HasEmbeddedCue() const
 {
   return !GetEmbeddedCue().IsEmpty();
 }
-	
+
 const CStdString& CMusicInfoTag::GetEmbeddedCue() const
 {
   return m_strCue;
@@ -440,7 +412,6 @@ void CMusicInfoTag::SetEmbeddedCue(const CStdString& cuesheet)
 {
   m_strCue = cuesheet;
 }
-
 
 void CMusicInfoTag::Serialize(CVariant& value)
 {
@@ -470,6 +441,7 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["artistid"] = m_iArtistId;
   value["albumid"] = m_iAlbumId;
 }
+
 void CMusicInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
@@ -524,29 +496,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
 
 void CMusicInfoTag::Clear()
 {
-  m_strURL.Empty();
-  m_artist.clear();
-  m_strAlbum.Empty();
-  m_albumArtist.clear();
-  m_genre.clear();
-  m_strTitle.Empty();
-  m_strMusicBrainzTrackID.Empty();
-  m_strMusicBrainzArtistID.Empty();
-  m_strMusicBrainzAlbumID.Empty();
-  m_strMusicBrainzAlbumArtistID.Empty();
-  m_strMusicBrainzTRMID.Empty();
-  m_iDuration = 0;
-  m_iTrack = 0;
-  m_bLoaded = false;
-  m_lastPlayed.Reset();
-  m_strComment.Empty();
-  m_strCue.Empty();
-  m_rating = '0';
-  m_iDbId = -1;
-  m_iTimesPlayed = 0;
-  memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
-  m_iArtistId = -1;
-  m_iAlbumId = -1;
+  *this = CMusicInfoTag();
 }
 
 void CMusicInfoTag::AppendArtist(const CStdString &artist)
