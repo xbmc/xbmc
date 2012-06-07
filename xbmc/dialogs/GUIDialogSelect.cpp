@@ -225,8 +225,51 @@ void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 
 void CGUIDialogSelect::SetSelected(int iSelected)
 {
-  if (iSelected < 0 || iSelected >= (int)m_vecList->Size()) return;
-  m_iSelected = iSelected;
+  if (iSelected < 0 || iSelected >= (int)m_vecList->Size() ||
+      m_vecList->Get(iSelected).get() == NULL) 
+    return;
+
+  // only set m_iSelected if there is no multi-select
+  // or if it doesn't have a valid value yet
+  // or if the current value is bigger than the new one
+  // so that we always focus the item nearest to the beginning of the list
+  if (!m_multiSelection || m_iSelected < 0 || m_iSelected > iSelected)
+    m_iSelected = iSelected;
+  m_vecList->Get(iSelected)->Select(true);
+  m_selectedItems->Add(m_vecList->Get(iSelected));
+}
+
+void CGUIDialogSelect::SetSelected(const CStdString &strSelectedLabel)
+{
+  if (strSelectedLabel.empty())
+    return;
+
+  for (int index = 0; index < m_vecList->Size(); index++)
+  {
+    if (strSelectedLabel.Equals(m_vecList->Get(index)->GetLabel()))
+    {
+      SetSelected(index);
+      return;
+    }
+  }
+}
+
+void CGUIDialogSelect::SetSelected(std::vector<int> selectedIndexes)
+{
+  if (selectedIndexes.empty())
+    return;
+
+  for (std::vector<int>::const_iterator it = selectedIndexes.begin(); it != selectedIndexes.end(); it++)
+    SetSelected(*it);
+}
+
+void CGUIDialogSelect::SetSelected(const std::vector<CStdString> &selectedLabels)
+{
+  if (selectedLabels.empty())
+    return;
+
+  for (std::vector<CStdString>::const_iterator it = selectedLabels.begin(); it != selectedLabels.end(); it++)
+    SetSelected(*it);
 }
 
 void CGUIDialogSelect::SetUseDetails(bool useDetails)
