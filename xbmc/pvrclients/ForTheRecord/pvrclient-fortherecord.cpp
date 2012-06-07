@@ -786,20 +786,26 @@ bool cPVRClientForTheRecord::FetchRecordingDetails(std::string recordingid, cRec
 
 PVR_ERROR cPVRClientForTheRecord::DeleteRecording(const PVR_RECORDING &recinfo)
 {
-  // JSONify the stream_url
-  Json::Value recordingname (recinfo.strStreamURL);
-  Json::StyledWriter writer;
-  std::string jsonval = writer.write(recordingname);
-  if (ForTheRecord::DeleteRecording(jsonval) >= 0) 
+  PVR_ERROR rc = PVR_ERROR_NOT_DELETED;
+
+  XBMC->Log(LOG_DEBUG, "->DeleteRecording(%s)", recinfo.strRecordingId);
+
+  cRecording recording;
+  if (FetchRecordingDetails(recinfo.strRecordingId, recording))
   {
-    // Trigger XBMC to update it's list
-    PVR->TriggerRecordingUpdate();
-    return PVR_ERROR_NO_ERROR;
+    XBMC->Log(LOG_DEBUG, "->DeleteRecording(%s == \"%s\")", recinfo.strRecordingId, recording.RecordingFileName());
+    // JSONify the stream_url
+    Json::Value recordingname (recording.RecordingFileName());
+    Json::StyledWriter writer;
+    std::string jsonval = writer.write(recordingname);
+    if (ForTheRecord::DeleteRecording(jsonval) >= 0)
+    {
+      // Trigger XBMC to update it's list
+      PVR->TriggerRecordingUpdate();
+      rc =  PVR_ERROR_NO_ERROR;
+    }
   }
-  else
-  {
-    return PVR_ERROR_NOT_DELETED;
-  }
+  return rc;
 }
 
 PVR_ERROR cPVRClientForTheRecord::RenameRecording(const PVR_RECORDING &recinfo)
@@ -927,7 +933,7 @@ PVR_ERROR cPVRClientForTheRecord::GetTimerInfo(unsigned int timernumber, PVR_TIM
 
 PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
 {
-  XBMC->Log(LOG_DEBUG, "AddTimer()");
+  XBMC->Log(LOG_DEBUG, "AddTimer(start @ %d, end @ %d)", timerinfo.startTime, timerinfo.endTime);
 
   // re-synthesize the FTR channel GUID
   cChannel* pChannel = FetchChannel(timerinfo.iClientChannelUid);
@@ -962,7 +968,7 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
     ForTheRecord::DeleteSchedule(scheduleid);
 
     // Okay, add a manual schedule (forced recording) but now we need to add pre- and post-recording ourselves
-    time_t manualStartTime = timerinfo.startTime - (timerinfo.iMarginStart * 60);
+    time_t manualStartTime = starttime - (timerinfo.iMarginStart * 60);
     time_t manualEndTime = timerinfo.endTime + (timerinfo.iMarginEnd * 60);
     retval = ForTheRecord::AddManualSchedule(pChannel->Guid(), manualStartTime, manualEndTime - manualStartTime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);
     if (retval < 0)

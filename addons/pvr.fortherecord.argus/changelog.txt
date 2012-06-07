@@ -1,3 +1,6 @@
+v0.0.1.140 (03-06-2012)
+- Fixed deletion of recordings due to api change
+- Fixed instant-record failed due to start time set to 1970 by XBMC
 v0.0.1.138 (02-06-2012)
 - Full support for timeshift implemented in the add-on
 v0.0.1.137 (18-05-2012)
