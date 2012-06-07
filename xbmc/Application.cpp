@@ -736,10 +736,6 @@ bool CApplication::Create()
 
   CUtil::InitRandomSeed();
 
-#ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
-#endif
-
   g_mediaManager.Initialize();
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
@@ -1344,6 +1340,10 @@ bool CApplication::Initialize()
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
+
+#ifdef HAS_SDL_JOYSTICK
+  g_Joystick.Initialize();
+#endif
 
   return true;
 }
