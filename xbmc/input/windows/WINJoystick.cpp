@@ -294,16 +294,18 @@ void CJoystick::Update()
 
         if ( js.rgdwPOV[0] > JOY_POVBACKWARD )
           m_HatState |= SDL_HAT_LEFT;
+        break;
       }
     }
 
     // get axis states
-    m_Amount[0] = js.lX;
-    m_Amount[1] = js.lY;
-    m_Amount[2] = js.lZ;
-    m_Amount[3] = js.lRx;
-    m_Amount[4] = js.lRy;
-    m_Amount[5] = js.lRz;
+    m_Amount[0] = 0;
+    m_Amount[1] = js.lX;
+    m_Amount[2] = js.lY;
+    m_Amount[3] = js.lZ;
+    m_Amount[4] = js.lRx;
+    m_Amount[5] = js.lRy;
+    m_Amount[6] = js.lRz;
 
     m_AxisId = GetAxisWithMaxAmount();
     if (m_AxisId)

@@ -32,7 +32,7 @@
 #define JACTIVE_HAT_DOWN  0x04
 #define JACTIVE_HAT_LEFT  0x08
 
-#define MAX_AXES 6
+#define MAX_AXES 8
 
 // Class to manage all connected joysticks
 
