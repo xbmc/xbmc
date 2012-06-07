@@ -111,7 +111,7 @@ BOOL CALLBACK CJoystick::EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInst
     {
       // Set the cooperative level to let DInput know how this device should
       // interact with the system and with other DInput applications.
-      if( SUCCEEDED( hr = pJoystick->SetCooperativeLevel( g_hWnd, DISCL_EXCLUSIVE | DISCL_FOREGROUND ) ) )
+      if( SUCCEEDED( hr = pJoystick->SetCooperativeLevel( g_hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND ) ) )
       {
         DIDEVCAPS diDevCaps;
         diDevCaps.dwSize = sizeof(DIDEVCAPS);
