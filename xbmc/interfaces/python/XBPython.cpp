@@ -336,6 +336,20 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
  }  
 } 
 
+void XBPython::OnAbortRequested()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    {
+      ((CPythonMonitor*)(*it))->OnAbortRequested();
+      it++;
+    }
+  }  
+} 
+
 /**
 * Check for file and print an error if needed
 */
