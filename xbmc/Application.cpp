@@ -4029,7 +4029,9 @@ void CApplication::OnPlayBackEnded()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "OnStop", m_itemCurrentFile);
+  CVariant data(CVariant::VariantTypeObject);
+  data["end"] = true;
+  CAnnouncementManager::Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
 
   if (IsPlayingAudio())
   {
@@ -4109,7 +4111,9 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "OnStop", m_itemCurrentFile);
+  CVariant data(CVariant::VariantTypeObject);
+  data["end"] = false;
+  CAnnouncementManager::Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
 
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
