@@ -22,6 +22,7 @@
 #include "uri.h"
 
 #ifdef TARGET_WINDOWS
+#include "platform/util/StdString.h"
 #include "windows/WindowsUtils.h"
 #endif
 
@@ -53,3 +54,11 @@ time_t DateTimeToTimeT(const std::string& datetime);
  * @brief Filters forbidden filename characters from channel name and replaces them with _ )
  */
 std::string ToThumbFileName(const char* strChannelName);
+
+#if defined(TARGET_WINDOWS)
+namespace UTF8Util
+{
+  CStdStringW ConvertUTF8ToUTF16(const char* pszTextUTF8);
+  CStdStringA ConvertUTF16ToUTF8(const WCHAR * pszTextUTF16);
+}
+#endif

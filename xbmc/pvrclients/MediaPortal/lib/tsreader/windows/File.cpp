@@ -18,6 +18,7 @@
 
 #include "client.h" // For XBMC->Log
 #include "../File.h"
+#include "utils.h"
 
 using namespace PLATFORM;
 using namespace ADDON;
@@ -77,11 +78,13 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
 {
   m_flags = flags;
 
+  CStdStringW strWFile = UTF8Util::ConvertUTF8ToUTF16(strFileName.c_str());
+
   // Do not try to open a tsbuffer file without SHARE_WRITE so skip this try if we have a buffer file
   if (strstr(strFileName.c_str(), ".ts.tsbuffer") == NULL) 
   {
     // Try to open the file
-    m_hFile = ::CreateFile(strFileName.c_str(), // The filename
+    m_hFile = ::CreateFileW(strWFile, // The filename
             (DWORD) GENERIC_READ,             // File access
             (DWORD) FILE_SHARE_READ,          // Share access
             NULL,                             // Security
@@ -95,7 +98,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   }
 
   //Test incase file is being recorded to
-  m_hFile = ::CreateFile(strFileName.c_str(), // The filename
+  m_hFile = ::CreateFileW(strWFile, // The filename
             (DWORD) GENERIC_READ,             // File access
             (DWORD) (FILE_SHARE_READ |
             FILE_SHARE_WRITE),                // Share access

@@ -1,12 +1,15 @@
 #include "FileUtils.h"
 #include "os_windows.h"
 #include <string>
+#include "platform/util/StdString.h"
+#include "utils.h"
 
 namespace OS
 {
   bool CFile::Exists(const std::string& strFileName)
   {
-    DWORD dwAttr = GetFileAttributes(strFileName.c_str());
+    CStdStringW strWFile = UTF8Util::ConvertUTF8ToUTF16(strFileName.c_str());
+    DWORD dwAttr = GetFileAttributesW(strWFile.c_str());
 
     if(dwAttr == 0xffffffff)
     {

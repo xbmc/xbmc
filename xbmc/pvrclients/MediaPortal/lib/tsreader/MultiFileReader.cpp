@@ -32,6 +32,7 @@
 #include "utils.h"
 #include <algorithm>
 #include "platform/util/timeutils.h"
+#include "platform/util/StdString.h"
 
 using namespace ADDON;
 using namespace PLATFORM;
@@ -566,9 +567,9 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
   //USES_CONVERSION;
 
   length = 0;
-
+  CStdStringW strWFile = UTF8Util::ConvertUTF8ToUTF16(pFilename);
   // Try to open the file
-  HANDLE hFile = ::CreateFile(pFilename,   // The filename
+  HANDLE hFile = ::CreateFileW(strWFile,   // The filename
             (DWORD) GENERIC_READ,          // File access
              (DWORD) (FILE_SHARE_READ |
              FILE_SHARE_WRITE),            // Share access
