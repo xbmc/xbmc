@@ -296,6 +296,20 @@ void Vu::LoadChannelData()
     XBMC->Log(LOG_ERROR, "%s error parsing channeldata!", __FUNCTION__);
     return;
   }
+
+  int iVersion;
+  if (!GetInt(xMainNode, "version", iVersion))
+  {
+    XBMC->Log(LOG_NOTICE, "%s No channeldata version string found, abort loading data from HDD!", __FUNCTION__);
+    return;
+  } 
+
+  XBMC->Log(LOG_DEBUG, "%s Found channeldata version: '%d', current channeldata version: '%d'", __FUNCTION__, iVersion, CHANNELDATAVERSION);
+
+  if (iVersion != CHANNELDATAVERSION) {
+    XBMC->Log(LOG_NOTICE, "%s The channeldata versions do not match, we will abort loading the data from the HDD.", __FUNCTION__);
+    return;
+  }
   
   XMLNode xNode = xMainNode.getChildNode("grouplist");
   int n = xNode.nChildNode("group");
@@ -396,6 +410,8 @@ void Vu::StoreChannelData()
 
 
   stream << "<channeldata>\n";
+  stream << "\t<version>\n" << CHANNELDATAVERSION;
+  stream << "\t</version>\n";
   stream << "\t<grouplist>\n";
   for (unsigned int iGroupPtr = 0; iGroupPtr < m_groups.size(); iGroupPtr++)
   {
@@ -534,7 +550,13 @@ int Vu::VuWebResponseCallback(void *contents, int iLength, int iSize, void *memP
 bool Vu::Open()
 {
   CLockObject lock(m_mutex);
-  m_bIsConnected = false;
+
+  XBMC->Log(LOG_NOTICE, "%s - VU+ Addon Configuration options", __FUNCTION__);
+  XBMC->Log(LOG_NOTICE, "%s - Hostname: '%s'", __FUNCTION__, g_strHostname.c_str());
+  XBMC->Log(LOG_NOTICE, "%s - WebPort: '%d'", __FUNCTION__, g_iPortWeb);
+  XBMC->Log(LOG_NOTICE, "%s - StreamPort: '%d'", __FUNCTION__, g_iPortStream);
+  
+  m_bIsConnected = GetDeviceInfo();
 
   LoadLocations();
 
@@ -556,7 +578,6 @@ bool Vu::Open()
   XBMC->Log(LOG_INFO, "%s Starting separate client update thread...", __FUNCTION__);
   CreateThread(); 
   
-  m_bIsConnected = true;
   return IsRunning(); 
 }
 
@@ -764,21 +785,29 @@ bool Vu::LoadChannels(CStdString strServiceReference, CStdString strGroupName)
     }
     std::string::size_type index = it-strIcon.begin();
 
-    std::replace(strIcon.begin(), strIcon.end(), ':','_');
-
     strIcon = strIcon.substr(0,index);
 
     it = strIcon.end() - 1;
-    if (*it == '_')
+    if (*it == ':')
     {
       strIcon.erase(it);
     }
+    
+    CStdString strTmp2;
 
+    strTmp2.Format("%s", strIcon.c_str());
+
+    std::replace(strIcon.begin(), strIcon.end(), ':','_');
     strIcon = g_strIconPath.c_str() + strIcon + ".png";
 
     newChannel.strIconPath = strIcon;
 
-    strTmp.Format("http://%s:%d/%s", g_strHostname, g_iPortStream, URLEncodeInline(newChannel.strServiceReference));
+    strTmp.Format("");
+
+    if ((g_strUsername.length() > 0) && (g_strPassword.length() > 0))
+      strTmp.Format("%s:%s@", g_strUsername.c_str(), g_strPassword.c_str());
+
+    strTmp.Format("http://%s%s:%d/%s", strTmp.c_str(), g_strHostname, g_iPortStream, strTmp2.c_str());
     newChannel.strStreamURL = strTmp;
 
     m_channels.push_back(newChannel);
@@ -1340,7 +1369,7 @@ bool Vu::GetRecordingFromLocation(PVR_HANDLE handle, CStdString strRecordingFold
       recording.iDuration = 0;
 
     if (GetString(xTmp, "e2filename", strTmp)) {
-      strTmp.Format("http://%s/file?file=%s", g_strHostname, URLEncodeInline(strTmp.c_str()));
+      strTmp.Format("%sfile?file=%s", m_strURL.c_str(), URLEncodeInline(strTmp.c_str()));
       recording.strStreamURL = strTmp;
     }
     
@@ -1651,4 +1680,61 @@ void Vu::SendPowerstate()
 
   CStdString strResult;
   SendSimpleCommand(strTmp, strResult, true); 
+}
+
+bool Vu::GetDeviceInfo()
+{
+  CStdString url; 
+  url.Format("%s%s", m_strURL.c_str(), "web/deviceinfo"); 
+
+  CStdString strXML;
+  strXML = GetHttpXML(url);
+
+  XMLResults xe;
+  XMLNode xMainNode = XMLNode::parseString(strXML.c_str(), NULL, &xe);
+  
+  if(xe.error != 0)  {
+    XBMC->Log(LOG_ERROR, "%s Unable to parse XML. Error: '%s' ", __FUNCTION__, XMLNode::getError(xe.error));
+    return false;
+  }
+
+  XMLNode xNode = xMainNode.getChildNode("e2deviceinfo");
+
+  CStdString strTmp;;
+
+  XBMC->Log(LOG_NOTICE, "%s - DeiveInfo", __FUNCTION__);
+
+  // Get EnigmaVersion
+  if (!GetString(xNode, "e2enigmaversion", strTmp)) {
+    XBMC->Log(LOG_ERROR, "%s Could not parse e2enigmaversion from result!", __FUNCTION__);
+    return false;
+  }
+  m_strEnigmaVersion = strTmp.c_str();
+  XBMC->Log(LOG_NOTICE, "%s - E2EnigmaVersion: %s", __FUNCTION__, m_strEnigmaVersion.c_str());
+
+  // Get ImageVersion
+  if (!GetString(xNode, "e2imageversion", strTmp)) {
+    XBMC->Log(LOG_ERROR, "%s Could not parse e2imageversion from result!", __FUNCTION__);
+    return false;
+  }
+  m_strImageVersion = strTmp.c_str();
+  XBMC->Log(LOG_NOTICE, "%s - E2ImageVersion: %s", __FUNCTION__, m_strImageVersion.c_str());
+
+  // Get WebIfVersion
+  if (!GetString(xNode, "e2webifversion", strTmp)) {
+    XBMC->Log(LOG_ERROR, "%s Could not parse e2webifversion from result!", __FUNCTION__);
+    return false;
+  }
+  m_strWebIfVersion = strTmp.c_str();
+  XBMC->Log(LOG_NOTICE, "%s - E2WebIfVersion: %s", __FUNCTION__, m_strWebIfVersion.c_str());
+
+  // Get DeviceName
+  if (!GetString(xNode, "e2devicename", strTmp)) {
+    XBMC->Log(LOG_ERROR, "%s Could not parse e2devicename from result!", __FUNCTION__);
+    return false;
+  }
+  m_strServerName = strTmp.c_str();
+  XBMC->Log(LOG_NOTICE, "%s - E2DeviceName: %s", __FUNCTION__, m_strServerName.c_str());
+
+  return true;
 }

@@ -1,3 +1,19 @@
+0.2.6:
+- cosmetic: remove unnecessary '/' in recording-stream url
+- cosmetic: inprove log output
+- change: get the proper device info from the reveiver box instead of just setting dummy values
+- change: change the buildzip.bat to include version string in the name of the zip-file
+- change: introduce a version string for the channeldata xml file so that we can invalidate old channeldata files if necessary
+
+0.2.5:
+- fix: cleanup the service reference in the streaming url
+
+0.2.4
+- fix: put username & password into the streaming url
+
+0.2.3
+- fix: put username & password into recording-url
+
 0.2.2:
 - fix: escape xml entities in the stream-url before saving to channeldata.xml
 - fix: fetch the version string from configure.in not the ChangeLog (thanks to 'trans')
