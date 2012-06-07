@@ -358,6 +358,7 @@
 - (void) runAnimation:(id) arg
 {
   CCocoaAutoPool outerpool;
+  bool readyToRun = true;
 
   // signal we are alive
   NSConditionLock* myLock = arg;
@@ -381,7 +382,25 @@
   setlocale(LC_NUMERIC, "C");
  
   g_application.Preflight();
-  if (g_application.Create())
+  if (!g_application.Create())
+  {
+    readyToRun = false;
+    NSLog(@"%sUnable to create application", __PRETTY_FUNCTION__);
+  }
+
+  if (!g_application.CreateGUI())
+  {
+    readyToRun = false;
+    NSLog(@"%sUnable to create GUI", __PRETTY_FUNCTION__);
+  }
+
+  if (!g_application.Initialize())
+  {
+    readyToRun = false;
+    NSLog(@"%sUnable to initialize application", __PRETTY_FUNCTION__);
+  }
+  
+  if (readyToRun)
   {
     g_advancedSettings.m_startFullScreen = true;
     g_advancedSettings.m_canWindowed = false;
@@ -395,10 +414,6 @@
     {
       NSLog(@"%sException caught on main loop. Exiting", __PRETTY_FUNCTION__);
     }
-  }
-  else
-  {
-    NSLog(@"%sUnable to create application", __PRETTY_FUNCTION__);
   }
 
   // signal we are dead
