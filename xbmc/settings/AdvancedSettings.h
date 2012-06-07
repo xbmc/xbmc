@@ -240,6 +240,7 @@ class CAdvancedSettings
     bool m_bVideoLibraryExportAutoThumbs;
     bool m_bVideoLibraryImportWatchedState;
     bool m_bVideoLibraryImportResumePoint;
+    bool m_bVideoLibraryDateAdded;
 
     bool m_bVideoScannerIgnoreErrors;
 
