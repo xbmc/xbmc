@@ -41,6 +41,7 @@ using namespace XFILE;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+  m_initialized = false;
 }
 
 void CAdvancedSettings::Initialize()
@@ -296,6 +297,7 @@ void CAdvancedSettings::Initialize()
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
+  m_initialized = true;
 }
 
 bool CAdvancedSettings::Load()
