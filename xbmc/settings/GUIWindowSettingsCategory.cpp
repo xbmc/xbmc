@@ -721,7 +721,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("audiooutput.guisoundmode"))
     {
-      CAEFactory::AE->SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
+      CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
     }
     else if (strSetting.Equals("musicplayer.crossfade"))
     {
@@ -1852,7 +1852,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
     
-    CAEFactory::AE->OnSettingsChange(strSetting);
+    CAEFactory::OnSettingsChange(strSetting);
   }
 
   UpdateSettings();
@@ -2704,7 +2704,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 
   int selectedValue = -1;
   AEDeviceList sinkList;
-  CAEFactory::AE->EnumerateOutputDevices(sinkList, Passthrough);
+  CAEFactory::EnumerateOutputDevices(sinkList, Passthrough);
 #if !defined(TARGET_DARWIN)
   if (sinkList.size()==0)
   {

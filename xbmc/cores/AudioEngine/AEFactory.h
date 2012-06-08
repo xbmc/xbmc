@@ -37,7 +37,25 @@ class CAEFactory
 public:
   static IAE *AE;
   static bool LoadEngine();
+  static void UnLoadEngine();
   static bool StartEngine();
+  /* wrapp engine interface */
+  static IAESound *MakeSound(const std::string &file);
+  static void FreeSound(IAESound *sound);
+  static void SetSoundMode(const int mode);
+  static void OnSettingsChange(std::string setting);
+  static void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  static std::string GetDefaultDevice(bool passthrough);
+  static bool SupportsRaw();
+  static void SetMute(const bool enabled);
+  static bool IsMuted();
+  static float GetVolume();
+  static void SetVolume(const float volume);
+  static void Shutdown();
+  static IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, 
+    unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
+  static IAEStream *FreeStream(IAEStream *stream);
+  static void GarbageCollect();
 private:
   static bool LoadEngine(enum AEEngine engine);
 };

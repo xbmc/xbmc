@@ -706,8 +706,8 @@ bool CApplication::Create()
 
   // restore AE's previous volume state
   SetHardwareVolume(g_settings.m_fVolumeLevel);
-  CAEFactory::AE->SetMute     (g_settings.m_bMute);
-  CAEFactory::AE->SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
+  CAEFactory::SetMute     (g_settings.m_bMute);
+  CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
@@ -3496,7 +3496,7 @@ void CApplication::Stop(int exitCode)
     g_Windowing.DestroyWindowSystem();
 
     // shutdown the AudioEngine
-    CAEFactory::AE->Shutdown();
+    CAEFactory::Shutdown();
 
     CLog::Log(LOGNOTICE, "stopped");
   }
@@ -5066,7 +5066,7 @@ void CApplication::ProcessSlow()
   if (!IsPlayingVideo())
     CAddonInstaller::Get().UpdateRepos();
 
-  CAEFactory::AE->GarbageCollect();
+  CAEFactory::GarbageCollect();
 }
 
 // Global Idle Time in Seconds
@@ -5168,7 +5168,7 @@ bool CApplication::IsMuted() const
 {
   if (g_peripherals.IsMuted())
     return true;
-  return CAEFactory::AE->IsMuted();
+  return CAEFactory::IsMuted();
 }
 
 void CApplication::ToggleMute(void)
@@ -5184,7 +5184,7 @@ void CApplication::Mute()
   if (g_peripherals.Mute())
     return;
 
-  CAEFactory::AE->SetMute(true);
+  CAEFactory::SetMute(true);
   g_settings.m_bMute = true;
 }
 
@@ -5193,7 +5193,7 @@ void CApplication::UnMute()
   if (g_peripherals.UnMute())
     return;
 
-  CAEFactory::AE->SetMute(false);
+  CAEFactory::SetMute(false);
   g_settings.m_bMute = false;
 }
 
@@ -5226,7 +5226,7 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
   if (value >= 0.99f)
     value = 1.0f;
 
-  CAEFactory::AE->SetVolume(value);
+  CAEFactory::SetVolume(value);
 }
 
 int CApplication::GetVolume() const

@@ -486,8 +486,8 @@ void CGUISettings::Initialize()
   AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
 #else
   AddSeparator(ao, "audiooutput.sep1");
-  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::AE->GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
-  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::AE->GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
   AddSeparator(ao, "audiooutput.sep2");
 #endif
 
