@@ -75,7 +75,7 @@ bool CTextureCache::HasCachedImage(const CStdString &url)
   return !GetCachedImage(url, cachedHash).IsEmpty();
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash)
+CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash, bool trackUsage)
 {
   cachedHash.clear();
   CStdString url = UnwrapImageURL(image);
@@ -87,7 +87,8 @@ CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &ca
   CTextureDetails details;
   if (GetCachedTexture(url, details))
   {
-    IncrementUseCount(details);
+    if (trackUsage)
+      IncrementUseCount(details);
     return GetCachedPath(details.file);
   }
   return "";
@@ -132,7 +133,7 @@ CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
 {
   CStdString cachedHash;
-  CStdString path(GetCachedImage(url, cachedHash));
+  CStdString path(GetCachedImage(url, cachedHash, true));
   needsRecaching = !cachedHash.IsEmpty();
   if (!path.IsEmpty())
   {
@@ -171,7 +172,7 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
     // cache the texture directly
     CTextureCacheJob job(url);
     bool success = job.CacheTexture(texture);
-    OnJobComplete(0, success, &job);
+    OnCachingComplete(success, &job);
     return success ? GetCachedPath(job.m_details.file) : "";
   }
   lock.Leave();
@@ -187,7 +188,7 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
     }
   }
   CStdString cachedHash;
-  return GetCachedImage(url, cachedHash);
+  return GetCachedImage(url, cachedHash, true);
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)
@@ -216,10 +217,17 @@ bool CTextureCache::AddCachedTexture(const CStdString &url, const CTextureDetail
   return m_database.AddCachedTexture(url, details);
 }
 
-bool CTextureCache::IncrementUseCount(const CTextureDetails &details)
+void CTextureCache::IncrementUseCount(const CTextureDetails &details)
 {
-  CSingleLock lock(m_databaseSection);
-  return m_database.IncrementUseCount(details);
+  static const size_t count_before_update = 100;
+  CSingleLock lock(m_useCountSection);
+  m_useCounts.reserve(count_before_update);
+  m_useCounts.push_back(details);
+  if (m_useCounts.size() >= count_before_update)
+  {
+    AddJob(new CTextureUseCountJob(m_useCounts));
+    m_useCounts.clear();
+  }
 }
 
 bool CTextureCache::SetCachedTextureValid(const CStdString &url, bool updateable)
@@ -250,32 +258,34 @@ CStdString CTextureCache::GetCachedPath(const CStdString &file)
   return URIUtils::AddFileToFolder(g_settings.GetThumbnailsFolder(), file);
 }
 
+void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
+{
+  if (success)
+  {
+    if (job->m_oldHash == job->m_details.hash)
+      SetCachedTextureValid(job->m_url, job->m_details.updateable);
+    else
+      AddCachedTexture(job->m_url, job->m_details);
+  }
+
+  { // remove from our processing list
+    CSingleLock lock(m_processingSection);
+    std::set<CStdString>::iterator i = m_processing.find(job->m_url);
+    if (i != m_processing.end())
+      m_processing.erase(i);
+  }
+
+  m_completeEvent.Set();
+
+  // TODO: call back to the UI indicating that it can update it's image...
+  if (success && g_advancedSettings.m_useDDSFanart && !job->m_details.file.empty())
+    AddJob(new CTextureDDSJob(GetCachedPath(job->m_details.file)));
+}
+
 void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   if (strcmp(job->GetType(), "cacheimage") == 0)
-  {
-    CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-    if (success)
-    {
-      if (cacheJob->m_oldHash == cacheJob->m_details.hash)
-        SetCachedTextureValid(cacheJob->m_url, cacheJob->m_details.updateable);
-      else
-        AddCachedTexture(cacheJob->m_url, cacheJob->m_details);
-    }
-
-    { // remove from our processing list
-      CSingleLock lock(m_processingSection);
-      std::set<CStdString>::iterator i = m_processing.find(cacheJob->m_url);
-      if (i != m_processing.end())
-        m_processing.erase(i);
-    }
-
-    m_completeEvent.Set();
-
-    // TODO: call back to the UI indicating that it can update it's image...
-    if (success && g_advancedSettings.m_useDDSFanart && !cacheJob->m_details.file.empty())
-      AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_details.file)));
-  }
+    OnCachingComplete(success, (CTextureCacheJob *)job);
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
 

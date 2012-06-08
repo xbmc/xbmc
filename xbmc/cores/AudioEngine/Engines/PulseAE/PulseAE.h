@@ -64,6 +64,9 @@ public:
   virtual void SetMute(const bool enabled);
   virtual bool IsMuted() { return m_muted; }
   virtual void SetSoundMode(const int mode) {}
+#if PA_CHECK_VERSION(1,0,0)
+  virtual bool SupportsRaw() { return true; }
+#endif
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
 private:

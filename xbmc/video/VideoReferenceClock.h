@@ -72,7 +72,7 @@ class CVideoReferenceClock : public CThread
     void    SetFineAdjust(double fineadjust);
     void    RefreshChanged() { m_RefreshChanged = 1; }
 
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
     void VblankHandler(int64_t nowtime, double fps);
 #endif
 
@@ -140,7 +140,7 @@ class CVideoReferenceClock : public CThread
     unsigned int  m_Height;
     bool          m_Interlaced;
 
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
     bool SetupCocoa();
     void RunCocoa();
     void CleanupCocoa();

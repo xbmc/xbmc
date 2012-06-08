@@ -50,7 +50,7 @@ public:
 public:
   // Functions to create, run, and clean up the application
   virtual bool Create();
-  INT Run();
+  INT Run(bool renderGUI = true);
   VOID Destroy();
 
 private:

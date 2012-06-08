@@ -204,6 +204,7 @@ typedef enum {
   XBMCVK_PRINTSCREEN    = 0xDB,
   XBMCVK_SCROLLLOCK     = 0xDC,
   XBMCVK_PAUSE          = 0XDD,
+  XBMCVK_POWER          = 0XDE,
 
   XBMCVK_LAST           = 0xFF
 } XBMCVKey;

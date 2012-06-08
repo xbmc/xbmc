@@ -1632,6 +1632,11 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
       sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS ||
+      sortMethod == SORT_METHOD_DATEADDED ||
+      sortMethod == SORT_METHOD_VIDEO_RATING ||
+      sortMethod == SORT_METHOD_YEAR ||
+      sortMethod == SORT_METHOD_LASTPLAYED ||
+      sortMethod == SORT_METHOD_PLAYCOUNT ||
       m_sortIgnoreFolders)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
   else if (sortMethod != SORT_METHOD_NONE && sortMethod != SORT_METHOD_UNSORTED)

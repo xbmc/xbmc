@@ -45,6 +45,7 @@
 #import "XBMCController.h"
 #import "IOSScreenManager.h"
 #import "AutoPool.h"
+#import "DarwinUtils.h"
 
 //--------------------------------------------------------------
 @interface IOSEAGLView (PrivateMethods)
@@ -71,7 +72,9 @@
 {
   CGRect frame = [IOSScreenManager getLandscapeResolution: currentScreen]; 
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];  
-  if(frame.size.width * frame.size.height > 921600)
+  //allow a maximum framebuffer size of 1080p
+  //needed for tvout on iPad3 and maybe AppleTV3
+  if(frame.size.width * frame.size.height > 2073600)
     return;
   //resize the layer - ios will delay this
   //and call layoutSubviews when its done with resizing
@@ -82,13 +85,6 @@
     framebufferResizeRequested = TRUE;
     [eaglLayer setFrame:frame];
   }
-  else 
-  {
-    //no framebuffer change needed
-    //fade backf from blackscreen
-    //[XBMCController fadeFromBlack];
-  }
-
 }
 
 - (void)layoutSubviews
@@ -101,10 +97,6 @@
     [self createFramebuffer];
     [self setFramebuffer];  
     [self initDisplayLink];
-
-    //fadein the view after changing framebuffer it was fadeout
-    //before screenchange...
-    //[XBMCController fadeFromBlack];
   }
 }
 
@@ -121,13 +113,21 @@
     {
       ret = [screen scale];
     }
+    
+    //if no retina display scale detected yet -
+    //ensure retina resolution on ipad3's mainScreen
+    //even on older iOS SDKs
+    if (ret == 1.0 && screen == [UIScreen mainScreen] && DarwinIsIPad3())
+    {
+      ret = 2.0;//iPad3 has scale factor 2 (like iPod 4g, iPhone4 and iPhone4s)
+    }
   }
   return ret;
 }
 
 - (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
 {
-  int scaleFactor = 1;
+  CGFloat scaleFactor = 1.0;
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
 
   currentScreen = screen;
@@ -358,6 +358,7 @@
 - (void) runAnimation:(id) arg
 {
   CCocoaAutoPool outerpool;
+  bool readyToRun = true;
 
   // signal we are alive
   NSConditionLock* myLock = arg;
@@ -381,7 +382,25 @@
   setlocale(LC_NUMERIC, "C");
  
   g_application.Preflight();
-  if (g_application.Create())
+  if (!g_application.Create())
+  {
+    readyToRun = false;
+    NSLog(@"%sUnable to create application", __PRETTY_FUNCTION__);
+  }
+
+  if (!g_application.CreateGUI())
+  {
+    readyToRun = false;
+    NSLog(@"%sUnable to create GUI", __PRETTY_FUNCTION__);
+  }
+
+  if (!g_application.Initialize())
+  {
+    readyToRun = false;
+    NSLog(@"%sUnable to initialize application", __PRETTY_FUNCTION__);
+  }
+  
+  if (readyToRun)
   {
     g_advancedSettings.m_startFullScreen = true;
     g_advancedSettings.m_canWindowed = false;
@@ -395,10 +414,6 @@
     {
       NSLog(@"%sException caught on main loop. Exiting", __PRETTY_FUNCTION__);
     }
-  }
-  else
-  {
-    NSLog(@"%sUnable to create application", __PRETTY_FUNCTION__);
   }
 
   // signal we are dead

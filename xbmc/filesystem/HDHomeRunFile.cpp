@@ -44,7 +44,7 @@ public:
     for(vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
     {
       CStdString name, value;
-      unsigned int pos = it->find_first_of('=');
+      size_t pos = it->find_first_of('=');
       if(pos != CStdString::npos)
       {
         name = it->substr(0, pos);

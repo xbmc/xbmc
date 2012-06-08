@@ -849,10 +849,10 @@
     <ClCompile Include="..\..\xbmc\music\Song.cpp">
       <Filter>music</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cdrip\CDDAReader.cpp">
+    <ClCompile Include="..\..\xbmc\cdrip\CDDARipper.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cdrip\CDDARipper.cpp">
+    <ClCompile Include="..\..\xbmc\cdrip\CDDARipJob.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cdrip\Encoder.cpp">
@@ -1169,9 +1169,6 @@
       <Filter>input</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\MouseStat.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\SDLJoystick.cpp">
       <Filter>input</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp">
@@ -2578,11 +2575,17 @@
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp">
+      <Filter>input\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ImageFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\AirTunesServer.cpp">
+      <Filter>network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3339,7 +3342,7 @@
     <ClInclude Include="..\..\xbmc\cdrip\EncoderWav.h">
       <Filter>cdrip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cdrip\CDDAReader.h">
+    <ClInclude Include="..\..\xbmc\cdrip\CDDARipJob.h">
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipper.h">
@@ -3693,9 +3696,6 @@
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\MouseStat.h">
-      <Filter>input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\SDLJoystick.h">
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\XBIRRemote.h">
@@ -5199,11 +5199,20 @@
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h">
+      <Filter>input\windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h">
       <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\AirTunesServer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h">
+      <Filter>network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

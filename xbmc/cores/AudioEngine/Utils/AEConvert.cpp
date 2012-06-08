@@ -828,7 +828,17 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
 
 unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, uint8_t *dest)
 {
-  #ifdef __SSE__
+  /* We do not want to shift for S24LE3, since left-shifting would actually
+   * push the MSB to the 4th byte. */
+  const int leftShift =
+#ifdef __BIG_ENDIAN__
+    8;
+#else
+    0;
+#endif
+
+  /* disabled as it does not currently work */
+  #if 0 && defined(__SSE__)
   int32_t *dst = (int32_t*)dest;
 
   const __m128 mul = _mm_set_ps1((float)INT24_MAX+.5f);
@@ -837,7 +847,7 @@ unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, u
   /* work around invalid alignment */
   while ((((uintptr_t)data & 0xF) || ((uintptr_t)dest & 0xF)) && count > 0)
   {
-    *((uint32_t*)(dest)) = (safeRound(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
+    *((uint32_t*)(dest)) = (safeRound(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << leftShift;
     ++dest;
     --count;
   }
@@ -849,10 +859,10 @@ unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, u
     __m128i con = _mm_cvtps_epi32(in);
     con         = _mm_slli_epi32(con, 8);
     memcpy(dst, &con, sizeof(int32_t) * 4);
-    *((uint32_t*)(dest + 0)) = (dst[0] & 0xFFFFFF) << 8;
-    *((uint32_t*)(dest + 3)) = (dst[1] & 0xFFFFFF) << 8;
-    *((uint32_t*)(dest + 6)) = (dst[2] & 0xFFFFFF) << 8;
-    *((uint32_t*)(dest + 9)) = (dst[3] & 0xFFFFFF) << 8;
+    *((uint32_t*)(dest + 0)) = (dst[0] & 0xFFFFFF) << leftShift;
+    *((uint32_t*)(dest + 3)) = (dst[1] & 0xFFFFFF) << leftShift;
+    *((uint32_t*)(dest + 6)) = (dst[2] & 0xFFFFFF) << leftShift;
+    *((uint32_t*)(dest + 9)) = (dst[3] & 0xFFFFFF) << leftShift;
   }
 
   if (samples != even)
@@ -870,8 +880,8 @@ unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, u
         __m64 con = _mm_cvtps_pi32(in);
         con       = _mm_slli_pi32(con, 8);
         memcpy(dst, &con, sizeof(int32_t) * 2);
-        *((uint32_t*)(dest + 0)) = (dst[0] & 0xFFFFFF) << 8;
-        *((uint32_t*)(dest + 3)) = (dst[1] & 0xFFFFFF) << 8;
+        *((uint32_t*)(dest + 0)) = (dst[0] & 0xFFFFFF) << leftShift;
+        *((uint32_t*)(dest + 3)) = (dst[1] & 0xFFFFFF) << leftShift;
       }
       else
       {
@@ -880,16 +890,16 @@ unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, u
         __m128i con = _mm_cvtps_epi32(in);
         con         = _mm_slli_epi32(con, 8);
         memcpy(dst, &con, sizeof(int32_t) * 3);
-        *((uint32_t*)(dest + 0)) = (dst[0] & 0xFFFFFF) << 8;
-        *((uint32_t*)(dest + 3)) = (dst[1] & 0xFFFFFF) << 8;
-        *((uint32_t*)(dest + 6)) = (dst[2] & 0xFFFFFF) << 8;
+        *((uint32_t*)(dest + 0)) = (dst[0] & 0xFFFFFF) << leftShift;
+        *((uint32_t*)(dest + 3)) = (dst[1] & 0xFFFFFF) << leftShift;
+        *((uint32_t*)(dest + 6)) = (dst[2] & 0xFFFFFF) << leftShift;
       }
     }
   }
   _mm_empty();
   #else /* no SSE */
   for (uint32_t i = 0; i < samples; ++i, ++data, dest += 3)
-    *((uint32_t*)(dest)) = (safeRound(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
+    *((uint32_t*)(dest)) = (safeRound(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << leftShift;
   #endif
 
   return samples * 3;

@@ -38,24 +38,26 @@ You will then need the required libraries. The following is the list of packages
 that are used to build XBMC packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
-Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
- autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
- libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libglew-dev,
- libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev,
- libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
- libsqlite3-dev, libmysqlclient-dev, libasound2-dev, libpng12-dev | libpng-dev,
- libpcre3-dev, liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev,
- libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev,
- libxmu-dev, libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev,
- libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
- libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
- libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev,
- libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
- python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
- libbluetooth-dev, zlib1g-dev, libsmbclient-dev, libboost-thread-dev
- libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl, python-dev, libyajl-dev,
- libplist-dev, libusb-dev, libudev-dev, libltdl-dev, libtinyxml-dev
+Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
+  debhelper (>= 7.0.50~), gawk, gperf, libao-dev, libasound2-dev,
+  libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev,
+  libavcodec-dev, libavfilter-dev, libavformat-dev, libavutil-dev,
+  libbluetooth-dev, libbluray-dev, libboost-dev, libboost-thread-dev,
+  libiso9660-dev, libbz2-dev, libcdio-dev, libcec-dev, libcrystalhd-dev, 
+  libcurl4-gnutls-dev | libcurl-dev, libcwiid1-dev, libdbus-1-dev,
+  libenca-dev, libflac-dev, libfontconfig-dev, libfreetype6-dev,
+  libfribidi-dev, libgl1-mesa-dev | libgl-dev, libglew-dev,
+  libglu1-mesa-dev | libglu-dev, libhal-dev, libhal-storage-dev,
+  libjasper-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmad0-dev,
+  libmicrohttpd-dev, libmodplug-dev, libmpcdec-dev, libmpeg2-4-dev,
+  libmysqlclient-dev, libnfs-dev, libogg-dev, libpcre3-dev, libplist-dev,
+  libpng12-dev | libpng-dev, libpostproc-dev, libpulse-dev, librtmp-dev,
+  libsamplerate-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
+  libshairport-dev, libsmbclient-dev, libsqlite3-dev, libssl-dev,
+  libswscale-dev, libtinyxml-dev, libtool, libudev-dev, libusb-dev, libva-dev,
+  libvdpau-dev, libvorbis-dev, libxinerama-dev, libxmu-dev, libxrandr-dev,
+  libxt-dev, libyajl-dev, lsb-release, nasm [!amd64], python-dev,
+  python-support, unzip, yasm, zip, zlib1g-dev, libcap-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache

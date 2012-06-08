@@ -25,6 +25,8 @@
 #include "utils/JobManager.h"
 #include "FileItem.h"
 
+#define kJobTypeMediaFlags "mediaflags"
+
 class CStreamDetails;
 class IStreamDetailsObserver;
 class CVideoDatabase;
@@ -50,7 +52,7 @@ public:
 
   virtual const char* GetType() const
   {
-    return "mediaflags";
+    return kJobTypeMediaFlags;
   }
 
   virtual bool operator==(const CJob* job) const;

@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:17+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Visualisation showing a rotating 3D Spectrum Analyzer"
+msgstr "Visualización que muestra un analizador de espectro en 3D girando"
+
+msgctxt "Addon Description"
+msgid "DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.\nIt also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great"
+msgstr "DirectX Spectrum es una visualización que muestra un analizador de espectro en 3D girando renderizado con DirectX que se mueve al ritmo de la música creando un efecto de onda en la rejilla del espectro.\nSe puede ajustar la altura de las barras, su velocidad, y como son renderizadas (sólido, puntos, malla). Es una visualización que utiliza poca CPU y muy agradable."
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Modo"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Sólido"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Malla"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Puntos"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Altura de la barra"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Pequeña"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Por defecto"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Grande"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Muy grande"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Velocidad"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Muy despacio"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Despacio"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Por defecto"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Rápido"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Muy rápido"

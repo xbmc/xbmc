@@ -97,7 +97,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_SDL
 #define HAS_SDL_JOYSTICK
 #define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
@@ -115,6 +114,7 @@
 #define HAS_FILESYSTEM_NFS
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
+#define HAS_AIRTUNES
 #define HAVE_LIBCEC
 #define HAVE_LIBMP3LAME
 #define HAVE_LIBVORBISENC

@@ -33,6 +33,7 @@
 #define DLL_PATH_LIBMICROHTTP  "special://xbmcbin/system/webserver/libmicrohttpd-5.dll"
 #define DLL_PATH_LIBNFS        "special://xbmcbin/system/libnfs.dll"
 #define DLL_PATH_LIBPLIST      "special://xbmcbin/system/airplay/libplist.dll"
+#define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/system/airplay/libshairplay-1.dll"
 #define DLL_PATH_LIBCEC        "special://xbmcbin/system/libcec.dll"
 
 /* paplayer */

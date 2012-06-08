@@ -22,6 +22,8 @@
 
 class CJob;
 
+#include <stddef.h>
+
 /*!
  \ingroup jobs
  \brief Callback interface for asynchronous jobs.

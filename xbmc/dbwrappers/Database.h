@@ -63,6 +63,13 @@ public:
    */
   CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
 
+  /*! \brief Get a single value from a query on a dataset.
+   \param query the query in question.
+   \param ds the dataset to use for the query.
+   \return the value from the query, empty on failure.
+   */
+  std::string GetSingleValue(const std::string &query, std::auto_ptr<dbiplus::Dataset> &ds);
+
   /*!
    * @brief Delete values from a table.
    * @remarks The value of the strWhereClause parameter has to be FormatSQL'ed when used.

@@ -241,15 +241,12 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
   if ((m_crossFadeTime = g_guiSettings.GetInt("musicplayer.crossfade") * 1000))
   {
     if (
-        m_streams.size() == 0 ||
-        (
-          file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
-          m_FileItem->HasMusicInfoTag() &&
-          (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
-          (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
-          (m_FileItem->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
-          (m_FileItem->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
-        )
+        file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
+        m_FileItem->HasMusicInfoTag() &&
+        (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
+        (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
+        (m_FileItem->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
+        (m_FileItem->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
     )
     {
       //do not crossfade when playing consecutive albumtracks
@@ -316,16 +313,20 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   si->m_fadeOutTriggered   = false;
   si->m_isSlaved           = false;
 
-  if (si->m_decoder.TotalTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFadeTime)
-    si->m_prepareNextAtFrame = 0;
-  else
-    si->m_prepareNextAtFrame = (int)((si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+  int64_t streamTotalTime = si->m_decoder.TotalTime();
+  if (si->m_endOffset)
+    streamTotalTime = si->m_endOffset - si->m_startOffset;
+
+  if (streamTotalTime >= TIME_TO_CACHE_NEXT_FILE + m_crossFadeTime)
+    si->m_prepareNextAtFrame = (int)((streamTotalTime - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+
   si->m_prepareTriggered = false;
 
-  if (si->m_decoder.TotalTime() < m_crossFadeTime)
-    si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() / 2) * si->m_sampleRate / 1000.0f);
+  if (streamTotalTime < m_crossFadeTime)
+    si->m_playNextAtFrame = (int)((streamTotalTime / 2) * si->m_sampleRate / 1000.0f);
   else
-    si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+    si->m_playNextAtFrame = (int)((streamTotalTime - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+
   si->m_playNextTriggered = false;
 
   PrepareStream(si);
@@ -463,7 +464,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
     if (!m_currentStream && !si->m_started)
       m_currentStream = si;
     /* if the stream is finishing */
-    if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
+    if ((si->m_playNextTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
     {
       if (!si->m_prepareTriggered)
       {
@@ -523,7 +524,10 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
       if (!m_isFinished)
       {
         if (m_crossFadeTime)
+        {
           si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
+          si->m_fadeOutTriggered = true;
+        }
         m_currentStream = NULL;
 
         /* unregister the audio callback */
@@ -556,10 +560,12 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
   /* see if it is time yet to FF/RW or a direct seek */
   if (!si->m_playNextTriggered && ((m_playbackSpeed != 1 && si->m_framesSent >= si->m_seekNextAtFrame) || si->m_seekFrame > -1))
   {
+    int64_t time = (int64_t)0;
     /* if its a direct seek */
     if (si->m_seekFrame > -1)
     {
-      si->m_framesSent = si->m_seekFrame;
+      time = (int64_t)((float)si->m_seekFrame / (float)si->m_sampleRate * 1000.0f);
+      si->m_framesSent = (int)(si->m_seekFrame - ((float)si->m_startOffset * (float)si->m_sampleRate) / 1000.0f);
       si->m_seekFrame  = -1;
     }
     /* if its FF/RW */
@@ -567,15 +573,14 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
     {
       si->m_framesSent      += si->m_sampleRate * (m_playbackSpeed  - 1);
       si->m_seekNextAtFrame  = si->m_framesSent + si->m_sampleRate / 2;
+      time = (int64_t)(((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f) + (float)si->m_startOffset);
     }
-
-    int64_t time = (int64_t)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f));
 
     /* if we are seeking back before the start of the track start normal playback */
     if (time < si->m_startOffset || si->m_framesSent < 0)
     {
       time = si->m_startOffset;
-      si->m_framesSent	    = 0;
+      si->m_framesSent      = (int)(si->m_startOffset * si->m_sampleRate / 1000);
       si->m_seekNextAtFrame = 0;
       ToFFRW(1);
     }
@@ -586,7 +591,8 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
   int status = si->m_decoder.GetStatus();
   if (status == STATUS_ENDED   ||
       status == STATUS_NO_FILE ||
-      si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+      si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR ||
+      ((si->m_endOffset) && (si->m_framesSent / si->m_sampleRate >= (si->m_endOffset - si->m_startOffset) / 1000)))
   {
     CLog::Log(LOGINFO, "PAPlayer::ProcessStream - Stream Finished");
     return false;
@@ -702,7 +708,7 @@ int64_t PAPlayer::GetTime()
   if (!m_currentStream)
     return 0;
 
-  double time = (double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate;
+  double time = ((double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate);
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
 
@@ -812,13 +818,13 @@ void PAPlayer::SeekTime(int64_t iTime /*=0*/)
     return;
 
   int seekOffset = (int)(iTime - GetTime());
-  if (m_currentStream->m_startOffset)
-    iTime += m_currentStream->m_startOffset;
+  /*if (m_currentStream->m_startOffset)
+    iTime += m_currentStream->m_startOffset;*/
 
   if (m_playbackSpeed != 1)
     ToFFRW(1);
 
-  m_currentStream->m_seekFrame = (int)(m_currentStream->m_sampleRate * (iTime / 1000));
+  m_currentStream->m_seekFrame = (int)((float)m_currentStream->m_sampleRate * ((float)iTime + (float)m_currentStream->m_startOffset) / 1000.0f);
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
 

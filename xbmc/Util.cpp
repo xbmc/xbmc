@@ -20,7 +20,7 @@
  */
 #include "threads/SystemClock.h"
 #include "system.h"
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
 #endif
@@ -71,7 +71,7 @@
 #include <shlobj.h>
 #include "WIN32Util.h"
 #endif
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #include "osx/DarwinUtils.h"
 #endif
 #include "GUIUserMessages.h"
@@ -94,6 +94,9 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "windowing/WindowingFactory.h"
 #include "video/VideoInfoTag.h"
+#ifdef HAVE_LIBCAP
+  #include <sys/capability.h>
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -507,7 +510,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
   }
   else
   {
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
     uint32_t path_size =2*MAXPATHLEN;
@@ -519,7 +522,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
         given_path[n] = '\0';
 
-      #if defined(__arm__)
+      #if defined(TARGET_DARWIN_IOS)
         strcat(given_path, "/XBMCData/XBMCHome/");
       #else
         // Assume local path inside application bundle.
@@ -542,7 +545,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       strPath = strHomePath;
   }
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
   /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
    * and BIN_INSTALL_PATH differ
    */
@@ -2182,7 +2185,7 @@ CStdString CUtil::ResolveExecutablePath()
   ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
   CStdStringW strPathW = szAppPathW;
   g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
 
@@ -2222,7 +2225,7 @@ CStdString CUtil::ResolveExecutablePath()
 CStdString CUtil::GetFrameworksPath(bool forPython)
 {
   CStdString strFrameworksPath;
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
   uint32_t path_size =2*MAXPATHLEN;
 
@@ -2560,5 +2563,41 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
     }
   }
   return false;
+}
+
+bool CUtil::CanBindPrivileged()
+{
+#ifdef _LINUX
+
+  if (geteuid() == 0)
+    return true; //root user can always bind to privileged ports
+
+#ifdef HAVE_LIBCAP
+
+  //check if CAP_NET_BIND_SERVICE is enabled, this allows non-root users to bind to privileged ports
+  bool canbind = false;
+  cap_t capabilities = cap_get_proc();
+  if (capabilities)
+  {
+    cap_flag_value_t value;
+    if (cap_get_flag(capabilities, CAP_NET_BIND_SERVICE, CAP_EFFECTIVE, &value) == 0)
+      canbind = value;
+
+    cap_free(capabilities);
+  }
+
+  return canbind;
+
+#else //HAVE_LIBCAP
+
+  return false;
+
+#endif //HAVE_LIBCAP
+
+#else //_LINUX
+
+  return true;
+
+#endif //_LINUX
 }
 

@@ -59,6 +59,7 @@ namespace XFILE
       CVideoDatabase::Filter filter;
       filter.where = playlist.GetWhereClause(db, playlists);
       filter.order = playlist.GetOrderClause(db);
+      filter.limit = playlist.GetLimitClause();
       success = db.GetTvShowsByWhere("videodb://2/2/", filter, items);
       items.SetContent("tvshows");
       db.Close();
@@ -70,6 +71,7 @@ namespace XFILE
       CVideoDatabase::Filter filter;
       filter.where = playlist.GetWhereClause(db, playlists);
       filter.order = playlist.GetOrderClause(db);
+      filter.limit = playlist.GetLimitClause();
       success = db.GetEpisodesByWhere("videodb://2/2/", filter, items);
       items.SetContent("episodes");
       db.Close();
@@ -81,6 +83,7 @@ namespace XFILE
       CVideoDatabase::Filter filter;
       filter.where = playlist.GetWhereClause(db, playlists);
       filter.order = playlist.GetOrderClause(db);
+      filter.limit = playlist.GetLimitClause();
       success = db.GetMoviesByWhere("videodb://1/2/", filter, items, true);
       items.SetContent("movies");
       db.Close();
@@ -89,7 +92,17 @@ namespace XFILE
     {
       CMusicDatabase db;
       db.Open();
-      success = db.GetAlbumsByWhere("musicdb://3/", "WHERE " + playlist.GetWhereClause(db, playlists), playlist.GetOrderClause(db), items);
+      CStdString whereClause = playlist.GetWhereClause(db, playlists);
+      CStdString orderClause = playlist.GetOrderClause(db);
+      CStdString limitClause = playlist.GetLimitClause();
+      if (!whereClause.empty())
+        whereClause = "WHERE " + whereClause;
+      if (!orderClause.empty())
+        orderClause = "ORDER BY " + orderClause;
+      if (!limitClause.empty())
+        orderClause += " LIMIT " + limitClause;
+
+      success = db.GetAlbumsByWhere("musicdb://3/", whereClause, orderClause, items);
       items.SetContent("albums");
       db.Close();
     }
@@ -97,15 +110,28 @@ namespace XFILE
     {
       CMusicDatabase db;
       db.Open();
-      CStdString whereOrder;
+      CStdString whereOrder, whereClause, orderClause, limitClause;
       if (playlist.GetType().IsEmpty() || playlist.GetType().Equals("mixed"))
       {
         CSmartPlaylist songPlaylist(playlist);
         songPlaylist.SetType("songs");
-        whereOrder = "WHERE " + songPlaylist.GetWhereClause(db, playlists) + " " + songPlaylist.GetOrderClause(db);
+        whereClause = songPlaylist.GetWhereClause(db, playlists);
+        orderClause = songPlaylist.GetOrderClause(db);
+        limitClause = songPlaylist.GetLimitClause();
       }
       else
-        whereOrder = "WHERE " + playlist.GetWhereClause(db, playlists) + " " + playlist.GetOrderClause(db);
+      {
+        whereClause = playlist.GetWhereClause(db, playlists);
+        orderClause = playlist.GetOrderClause(db);
+        limitClause = playlist.GetLimitClause();
+      }
+
+      if (!whereClause.empty())
+        whereOrder = "WHERE " + whereClause;
+      if (!orderClause.empty())
+        whereOrder += " ORDER BY " + orderClause;
+      if (!limitClause.empty())
+        whereOrder += " LIMIT " + limitClause;
 
       success = db.GetSongsByWhere("", whereOrder, items);
       items.SetContent("songs");
@@ -122,11 +148,13 @@ namespace XFILE
         mvidPlaylist.SetType("musicvideos");
         filter.where = mvidPlaylist.GetWhereClause(db, playlists);
         filter.order = mvidPlaylist.GetOrderClause(db);
+        filter.limit = mvidPlaylist.GetLimitClause();
       }
       else
       {
         filter.where = playlist.GetWhereClause(db, playlists);
         filter.order = playlist.GetOrderClause(db);
+        filter.limit = playlist.GetLimitClause();
       }
 
       CFileItemList items2;

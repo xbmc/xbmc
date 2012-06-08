@@ -103,7 +103,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
   {
     if (!ReadNextLine(strLine))
       break;
-    if (strLine.Left(7) == "INDEX 0")
+    if (strLine.Left(8) == "INDEX 01")
     {
       if (bCurrentFileChanged)
       {

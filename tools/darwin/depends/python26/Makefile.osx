@@ -8,8 +8,9 @@ ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 export OPT=$(CFLAGS)
-CONFIGURE=./configure --prefix=$(PREFIX) \
-  --enable-shared --disable-toolbox-glue --disable-framework --enable-unicode=ucs4
+CONFIGURE=./configure --prefix=$(PREFIX) --enable-shared \
+  --disable-toolbox-glue --disable-framework --enable-unicode=ucs4 \
+  --with-system-ffi
 
 CONFIGURE_NATIVE= CFLAGS="" CXXFLAGS="" LDFLAGS="" CPPFLAGS="" \
   CPP="gcc -E" \
@@ -35,6 +36,7 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); make -j $(MAKE_JOBS)
 	cd $(SOURCE); make install
 	cd $(SOURCE); make distclean
+	sed -ie "s#/usr/include/ffi#$(PREFIX)/include/ffi#" $(SOURCE)/setup.py
 	cd $(SOURCE); $(CONFIGURE)
 	# python2.6 has an issue detecting and using the same version of openssl in configure and setup.py
 	# this forces python2.6 hashlib to be compatible with osx 10.4 boxes.

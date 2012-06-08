@@ -80,6 +80,7 @@ class CAdvancedSettings
     static CAdvancedSettings* getInstance();
 
     void Initialize();
+    bool Initialized() { return m_initialized; };
     void AddSettingsFile(const CStdString &filename);
     bool Load();
     void Clear();
@@ -95,6 +96,7 @@ class CAdvancedSettings
     float m_audioPlayCountMinimumPercent;
     bool m_dvdplayerIgnoreDTSinWAV;
     int m_audioResample;
+    bool m_allowTranscode44100;
     bool m_audioForceDirectSound;
     bool m_audioAudiophile;
     bool m_allChannelStereo;
@@ -237,6 +239,7 @@ class CAdvancedSettings
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
     bool m_bVideoLibraryImportWatchedState;
+    bool m_bVideoLibraryImportResumePoint;
 
     bool m_bVideoScannerIgnoreErrors;
 
@@ -324,6 +327,7 @@ class CAdvancedSettings
     void ParseSettingsFile(const CStdString &file);
 
     float GetDisplayLatency(float refreshrate);
+    bool m_initialized;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

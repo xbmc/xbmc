@@ -152,9 +152,9 @@
 						<icon>-</icon>
 					</item>
 					<item id="7">
-						<label>705</label>
-						<label2>31405</label2>
-						<onclick>ActivateWindow(NetworkSettings)</onclick>
+						<label>14036</label>
+						<label2>31409</label2>
+						<onclick>ActivateWindow(ServiceSettings)</onclick>
 						<icon>-</icon>
 					</item>
 					<item id="8">

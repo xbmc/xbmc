@@ -180,6 +180,7 @@ public:
    */
   CStdString GetWhereClause(CDatabase &db, std::set<CStdString> &referencedPlaylists) const;
   CStdString GetOrderClause(CDatabase &db) const;
+  CStdString GetLimitClause() const;
 
   const std::vector<CSmartPlaylistRule> &GetRules() const;
 

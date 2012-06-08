@@ -292,18 +292,24 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
         m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
       // retrieve the season thumb.
       // TODO: should we use the thumbloader for this?
-      if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+      CVideoDatabase db;
+      if (db.Open())
       {
-        CVideoDatabase db;
-        if (db.Open())
+        if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
         {
           int seasonID = db.GetSeasonId(m_movieItem->GetVideoInfoTag()->m_iIdShow,
                                         m_movieItem->GetVideoInfoTag()->m_iSeason);
           string thumb = db.GetArtForItem(seasonID, "season", "thumb");
           if (!thumb.empty())
             m_movieItem->SetProperty("seasonthumb", thumb);
-          db.Close();
         }
+        if (m_movieItem->GetVideoInfoTag()->m_iIdShow > -1)
+        {
+          string thumb = db.GetArtForItem(m_movieItem->GetVideoInfoTag()->m_iIdShow, "tvshow", "thumb");
+          if (!thumb.empty())
+            m_movieItem->SetProperty("tvshowthumb", thumb);
+        }
+        db.Close();
       }
     }
     else if (type == VIDEODB_CONTENT_MOVIES)

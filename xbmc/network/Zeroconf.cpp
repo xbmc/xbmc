@@ -24,7 +24,7 @@
 #include "settings/GUISettings.h"
 
 #ifdef _LINUX
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
 #include "linux/ZeroconfAvahi.h"
 #else
 //on osx use the native implementation
@@ -135,7 +135,7 @@ CZeroconf*  CZeroconf::GetInstance()
 #ifndef HAS_ZEROCONF
     smp_instance = new CZeroconfDummy;
 #else
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
     smp_instance = new CZeroconfOSX;
 #elif defined(_LINUX)
     smp_instance  = new CZeroconfAvahi;

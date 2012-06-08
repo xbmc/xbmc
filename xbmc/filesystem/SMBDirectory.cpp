@@ -47,7 +47,7 @@
 
 #include <libsmbclient.h>
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #define XBMC_SMB_MOUNT_PATH "Library/Application Support/XBMC/Mounts/"
 #else
 #define XBMC_SMB_MOUNT_PATH "/media/xbmc/smb/"
@@ -318,6 +318,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 
     if (m_flags & DIR_FLAG_ALLOW_PROMPT)
       SetErrorDialog(257, cError.c_str());
+    break;
   }
 
   if (fd < 0)
@@ -407,7 +408,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
 
   CStdString strMountPoint = GetMountPoint(strType, strName);
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   // Create the directory.
   CURL::Decode(strMountPoint);
   CreateDirectory(strMountPoint, NULL);
@@ -457,7 +458,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
 
 void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &strName)
 {
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   // Decode the path.
   CStdString strMountPoint = GetMountPoint(strType, strName);
   CURL::Decode(strMountPoint);
@@ -480,7 +481,7 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
   CStdString strPath = strType + strName;
   CURL::Encode(strPath);
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   CStdString str = getenv("HOME");
   return str + "/" + XBMC_SMB_MOUNT_PATH + strPath;
 #else

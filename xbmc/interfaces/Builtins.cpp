@@ -76,7 +76,7 @@
 #include "interfaces/python/XBPython.h"
 #endif
 
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"
 #include "CocoaInterface.h"
 #endif
@@ -119,7 +119,7 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   { "RunAppleScript",             true,   "Run the specified AppleScript command" },
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
@@ -331,7 +331,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
       if (params[0].Equals("shutdownmenu"))
         CBuiltins::Execute("Quit");
 #endif     
@@ -350,11 +350,11 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
-#ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())
   {
-#if defined(__APPLE__) && !defined(__arm__)
-    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript")
+#if defined(TARGET_DARWIN_OSX)
+    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript" ||
+        URIUtils::GetExtension(strParameterCaseIntact) == ".scpt")
     {
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
@@ -362,6 +362,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else
 #endif
     {
+#ifdef HAS_PYTHON
       vector<CStdString> argv = params;
 
       vector<CStdString> path;
@@ -376,10 +377,10 @@ int CBuiltins::Execute(const CStdString& execString)
         scriptpath = script->LibPath();
 
       g_pythonParser.evalFile(scriptpath, argv,script);
+#endif
     }
   }
-#endif
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   else if (execute.Equals("runapplescript"))
   {
     Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
@@ -957,8 +958,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("ripcd"))
   {
 #ifdef HAS_CDDA_RIPPER
-    CCDDARipper ripper;
-    ripper.RipCD();
+    CCDDARipper::GetInstance().RipCD();
 #endif
   }
   else if (execute.Equals("skin.togglesetting"))

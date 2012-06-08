@@ -2757,7 +2757,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
   /* we are potentially going to be waiting on this */
   m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
 
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   // Apple thread scheduler works a little different than Linux. It
   // will favor OS GUI side and can cause DVDPlayerVideo to miss frame
   // updates when the OS gets busy. Apple's recomended method is to

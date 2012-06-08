@@ -26,8 +26,13 @@
 
 #import "XBMC_events.h"
 #include "XBMC_keysym.h"
+
+@class IOSEAGLView;
+
 @interface XBMCController : UIViewController
 {
+  UIWindow *m_window;
+  IOSEAGLView  *m_glView;
   int m_screensaverTimeout;
 	
   /* Touch handling */
