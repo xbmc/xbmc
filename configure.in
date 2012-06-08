@@ -1201,7 +1201,7 @@ fi
 # libplist for airplay feature
 USE_AIRPLAY=0
 if test "$use_airplay" != "no"; then
-  AC_CHECK_LIB([plist],[main],,
+  AC_CHECK_HEADER([plist/plist.h],,
    [if test "$use_airplay" = "yes"; then
       AC_MSG_ERROR($libplist_not_found)
     elif test "$use_airplay" != "no"; then
@@ -1219,7 +1219,7 @@ fi
 # libshairport for AirTunes
 USE_AIRTUNES=0
 if test "x$use_airtunes" != "xno"; then
-  AC_CHECK_LIB([shairport], [shairport_set_ao],,
+  AC_CHECK_HEADERS([shairport/shairport.h shairport/ao.h],,
    [if test "x$use_airtunes" = "xyes"; then
       AC_MSG_ERROR($libshairport_not_found)
     elif test "x$use_airtunes" != "xno"; then
