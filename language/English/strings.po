@@ -283,7 +283,43 @@ msgctxt "#87"
 msgid "VAR"
 msgstr ""
 
-#empty strings from id 88 to 97
+msgctxt "#88"
+msgid "North"
+msgstr ""
+
+msgctxt "#89"
+msgid "Northeast"
+msgstr ""
+
+msgctxt "#90"
+msgid "East"
+msgstr ""
+
+msgctxt "#91"
+msgid "Southeast"
+msgstr ""
+
+msgctxt "#92"
+msgid "South"
+msgstr ""
+
+msgctxt "#93"
+msgid "Southwest"
+msgstr ""
+
+msgctxt "#94"
+msgid "West"
+msgstr ""
+
+msgctxt "#95"
+msgid "Northwest"
+msgstr ""
+
+msgctxt "#96"
+msgid "Variable"
+msgstr ""
+
+#empty strings from id 97 to 97
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -1480,7 +1516,13 @@ msgctxt "#406"
 msgid "Humidity"
 msgstr ""
 
-#empty strings from id 407 to 408
+msgctxt "#407"
+msgid "Pressure"
+msgstr ""
+
+msgctxt "#408"
+msgid "Visibility"
+msgstr ""
 
 msgctxt "#409"
 msgid "Defaults"
@@ -1585,7 +1627,15 @@ msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr ""
 
-#empty strings from id 435 to 436
+#. From the <wind dir.> at <speed> <unit>
+msgctxt "#435"
+msgid "From the %s at %i %s"
+msgstr ""
+
+#. Gust to <speed> <unit>
+msgctxt "#436"
+msgid "Gust to %i %s"
+msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -3328,8 +3378,57 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr ""
 
+msgctxt "#1424"
+msgid "Blowing"
+msgstr ""
+
+msgctxt "#1425"
+msgid "Clearing"
+msgstr ""
+
+#empty strings from id 1426 to 1439
+
+msgctxt "#1440"
+msgid "Moon"
+msgstr ""
+
+msgctxt "#1441"
+msgid "Waning"
+msgstr ""
+
+msgctxt "#1442"
+msgid "Waxing"
+msgstr ""
+
+msgctxt "#1443"
+msgid "Full"
+msgstr ""
+
+msgctxt "#1444"
+msgid "New"
+msgstr ""
+
+msgctxt "#1445"
+msgid "First"
+msgstr ""
+
+msgctxt "#1446"
+msgid "Last"
+msgstr ""
+
+msgctxt "#1447"
+msgid "Quarter"
+msgstr ""
+
+msgctxt "#1448"
+msgid "Crescent"
+msgstr ""
+
+msgctxt "#1449"
+msgid "Gibbous"
+msgstr ""
+
 #strings through to 1450 reserved for weather translation
-#empty strings from id 1424 to 1449
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -8928,7 +9027,39 @@ msgctxt "#33038"
 msgid "%s day"
 msgstr ""
 
-#empty strings from id 33039 to 33048
+msgctxt "#33039"
+msgid "Night"
+msgstr ""
+
+msgctxt "#33040"
+msgid "From"
+msgstr ""
+
+msgctxt "#33041"
+msgid "at"
+msgstr ""
+
+msgctxt "#33042"
+msgid "Coordinates"
+msgstr ""
+
+#empty strings from id 33043 to 33044
+
+msgctxt "#33045"
+msgid "mile"
+msgstr ""
+
+msgctxt "#33046"
+msgid "miles"
+msgstr ""
+
+msgctxt "#33047"
+msgid "kilometer"
+msgstr ""
+
+msgctxt "#33048"
+msgid "kilometers"
+msgstr ""
 
 msgctxt "#33049"
 msgid "Alert"
