@@ -1219,12 +1219,14 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
 {
   if (album.thumbURL.m_url.size())
   {
-    CStdString thumb;
-    if (!m_musicDatabase.GetAlbumThumb(id, thumb) || thumb.IsEmpty() || !XFILE::CFile::Exists(thumb))
+    if (!m_musicDatabase.GetArtForItem(id, "album", "thumb").empty())
     {
-      thumb = CThumbnailCache::GetAlbumThumb(album);
-      CScraperUrl::DownloadThumbnail(thumb,album.thumbURL.m_url[0]);
-      m_musicDatabase.SaveAlbumThumb(id, thumb);
+      string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
+      if (!thumb.empty())
+      {
+        CTextureCache::Get().BackgroundCacheImage(thumb);
+        m_musicDatabase.SetArtForItem(id, "album", "thumb", thumb);
+      }
     }
   }
 }

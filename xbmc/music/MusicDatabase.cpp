@@ -271,7 +271,9 @@ void CMusicDatabase::CreateViews()
 int CMusicDatabase::AddAlbum(const CAlbum &album, vector<int> &songIDs)
 {
   // add the album
-  int idAlbum = AddAlbum(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator), -1, StringUtils::Join(album.genre, g_advancedSettings.m_musicItemSeparator), album.iYear, album.bCompilation);
+  int idAlbum = AddAlbum(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator), StringUtils::Join(album.genre, g_advancedSettings.m_musicItemSeparator), album.iYear, album.bCompilation);
+
+  SetArtForItem(idAlbum, "album", album.art);
 
   // add the songs
   for (VECSONGS::const_iterator i = album.songs.begin(); i != album.songs.end(); ++i)
@@ -297,13 +299,12 @@ int CMusicDatabase::AddSong(const CSong& song, bool bCheck, int idAlbum)
     if (NULL == m_pDS.get()) return -1;
 
     int idPath = AddPath(strPath);
-    int idThumb = AddThumb(song.strThumb);
     if (idAlbum < 0)
     {
       if (!song.albumArtist.empty())  // have an album artist
-        idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.albumArtist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
+        idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.albumArtist, g_advancedSettings.m_musicItemSeparator), StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
       else
-        idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
+        idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
     }
 
     DWORD crc = ComputeCRC(song.strFileName);
@@ -341,7 +342,7 @@ int CMusicDatabase::AddSong(const CSong& song, bool bCheck, int idAlbum)
 
       // we use replace because it can handle both inserting a new song
       // and replacing an existing song's record if the given idSong already exists
-      strSQL=PrepareSQL("replace into song (idSong,idAlbum,idPath,strArtists,strGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (%s,%i,%i,'%s','%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
+      strSQL=PrepareSQL("replace into song (idSong,idAlbum,idPath,strArtists,strGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,lastplayed,rating,comment) values (%s,%i,%i,'%s','%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
                     strIdSong.c_str(),
                     idAlbum, idPath, 
                     StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator).c_str(),
@@ -356,11 +357,11 @@ int CMusicDatabase::AddSong(const CSong& song, bool bCheck, int idAlbum)
                     song.strMusicBrainzTRMID.c_str());
 
       if (song.lastPlayed.IsValid())
-        strSQL1=PrepareSQL(",%i,%i,%i,%i,'%s','%c','%s')",
-                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, idThumb, song.lastPlayed.GetAsDBDateTime().c_str(), song.rating, song.strComment.c_str());
+        strSQL1=PrepareSQL(",%i,%i,%i,'%s','%c','%s')",
+                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, song.lastPlayed.GetAsDBDateTime().c_str(), song.rating, song.strComment.c_str());
       else
-        strSQL1=PrepareSQL(",%i,%i,%i,%i,NULL,'%c','%s')",
-                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, idThumb, song.rating, song.strComment.c_str());
+        strSQL1=PrepareSQL(",%i,%i,%i,NULL,'%c','%s')",
+                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, song.rating, song.strComment.c_str());
       strSQL+=strSQL1;
 
       m_pDS->exec(strSQL.c_str());
@@ -370,6 +371,9 @@ int CMusicDatabase::AddSong(const CSong& song, bool bCheck, int idAlbum)
       else
         idSong = song.idSong;
     }
+
+    if (!song.strThumb.empty())
+      SetArtForItem(idSong, "song", "thumb", song.strThumb);
 
     for (unsigned int index = 0; index < song.albumArtist.size(); index++)
     {
@@ -443,7 +447,7 @@ int CMusicDatabase::UpdateSong(const CSong& song, int idSong /* = -1 */)
   return newSong.idSong;
 }
 
-int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist, int idThumb, const CStdString& strGenre, int year, bool bCompilation)
+int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist, const CStdString& strGenre, int year, bool bCompilation)
 {
   CStdString strSQL;
   try
@@ -451,13 +455,6 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
     CStdString strAlbum=strAlbum1;
     strAlbum.TrimLeft(" ");
     strAlbum.TrimRight(" ");
-
-    if (strAlbum.IsEmpty())
-    {
-      // album tag is empty, so we treat this as a single, or a collection of singles,
-      // so we don't specify a thumb
-      idThumb = AddThumb("");
-    }
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
@@ -475,7 +472,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strGenres, iYear, bCompilation, idThumb) values( NULL, '%s', '%s', '%s', %i, %i, %i)", strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), year, bCompilation, idThumb);
+      strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strGenres, iYear, bCompilation) values( NULL, '%s', '%s', '%s', %i, %i)", strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), year, bCompilation);
       m_pDS->exec(strSQL.c_str());
 
       CAlbumCache album;
@@ -495,7 +492,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
       album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
       m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + strArtist, album));
       m_pDS->close();
-      strSQL=PrepareSQL("update album set strGenres='%s', iYear=%i, idThumb=%i where idAlbum=%i", strGenre.c_str(), year, idThumb, album.idAlbum);
+      strSQL=PrepareSQL("update album set strGenres='%s', iYear=%i where idAlbum=%i", strGenre.c_str(), year, album.idAlbum);
       m_pDS->exec(strSQL.c_str());
       // and clear the link tables - these are updated in AddSong()
       strSQL=PrepareSQL("delete from album_artist where idAlbum=%i", album.idAlbum);
