@@ -36,6 +36,11 @@ IAE* CAEFactory::AE = NULL;
 static float  g_fVolume = 1.0f;
 static bool   g_bMute = false;
 
+IAE *CAEFactory::GetEngine()
+{
+  return AE;
+}
+
 bool CAEFactory::LoadEngine()
 {
   bool loaded = false;

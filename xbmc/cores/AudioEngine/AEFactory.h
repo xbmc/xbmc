@@ -36,6 +36,7 @@ class CAEFactory
 {
 public:
   static IAE *AE;
+  static IAE *GetEngine();
   static bool LoadEngine();
   static void UnLoadEngine();
   static bool StartEngine();

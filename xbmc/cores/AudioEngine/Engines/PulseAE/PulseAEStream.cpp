@@ -137,7 +137,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
       default: break;
     }
 
-  m_MaxVolume     = CAEFactory::AE->GetVolume();
+  m_MaxVolume     = CAEFactory::GetEngine()->GetVolume();
   m_Volume        = 1.0f;
   pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
