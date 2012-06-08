@@ -62,9 +62,10 @@ public:
                     TEXTIN_FIELD
                   };
 
-  CStdString GetWhereClause(CDatabase &db, const CStdString& strType) const;
-  void TranslateStrings(const char *field, const char *oper, const char *parameter);
+  bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8");
+  bool Save(TiXmlNode *parent) const;
 
+  CStdString GetWhereClause(CDatabase &db, const CStdString& strType) const;
   static Field                TranslateField(const char *field);
   static CStdString           TranslateField(Field field);
   static SortBy               TranslateOrder(const char *order);
@@ -79,17 +80,16 @@ public:
   static std::vector<SortBy>  GetOrders(const CStdString &type);
   static FIELD_TYPE           GetFieldType(Field field);
 
-  CStdString                  GetLocalizedRule() const;
-
-  TiXmlElement                GetAsElement() const;
+  CStdString                  GetLocalizedRule(const CStdString &type) const;
+  CStdString                  GetLocalizedParameter(const CStdString &type) const;
 
   Field                       m_field;
   SEARCH_OPERATOR             m_operator;
-  CStdString                  m_parameter;
+  std::vector<CStdString>     m_parameter;
 private:
   static SEARCH_OPERATOR TranslateOperator(const char *oper);
 
-  CStdString GetVideoResolutionQuery(void) const;
+  CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
 };
 
 class CSmartPlaylist
