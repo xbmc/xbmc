@@ -731,6 +731,19 @@ AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
 
+# Python
+if test -z "$PYTHON_NOVERSIONCHECK"; then
+  AX_PYTHON_DEVEL([>= 2.4])
+  PYTHON_VERSION=$ac_python_version
+fi
+
+if test -z "$PYTHON_VERSION"; then
+  AC_MSG_ERROR([Can't find a Python version.])
+else
+  LIBS="$LIBS $PYTHON_LDFLAGS"
+  AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
+fi
+
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
   use_gl="no"
@@ -824,7 +837,10 @@ AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitab
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([tinyxml],     [main],, AC_MSG_ERROR($missing_library))
-
+if test "$target_platform" = "target_android" ; then
+  #android hack for static python. Required to maintain correct linking order.
+  AC_CHECK_LIB([python$PYTHON_VERSION],      [main],, AC_MSG_ERROR($missing_library))
+fi
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -837,13 +853,13 @@ PKG_CHECK_MODULES([SQLITE3],    [sqlite3],
 PKG_CHECK_MODULES([PNG],        [libpng],
   [INCLUDES="$INCLUDES $PNG_CFLAGS"; LIBS="$LIBS $PNG_LIBS"],
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([PCRE],       [libpcre],
-  [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
-  AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRECPP],    [libpcrecpp],
   [INCLUDES="$INCLUDES $PCRECPP_CFLAGS"; LIBS="$LIBS $PCRECPP_LIBS"]; \
   AC_DEFINE([HAVE_LIBPCRECPP],[1],["Define to 1 if libpcrecpp is installed"]),
+  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([PCRE],       [libpcre],
+  [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
+  AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CDIO],       [libcdio],
   [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
@@ -1426,18 +1442,6 @@ else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
-fi
-
-# Python
-if test -z "$PYTHON_NOVERSIONCHECK"; then
-  AX_PYTHON_DEVEL([>= 2.4])
-  PYTHON_VERSION=$ac_python_version
-fi
-
-if test -z "$PYTHON_VERSION"; then
-  AC_MSG_ERROR([Can't find a Python version.])
-else
-  AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
 fi
 
 # VDPAU
