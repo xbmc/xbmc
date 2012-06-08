@@ -662,6 +662,9 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* vp = AddCategory(SETTINGS_VIDEOS, "videoplayer", 14086);
 
+  AddBool(vp, "videoplayer.autoplaynextitem", 13433, false);
+  AddSeparator(vp, "videoplayer.sep1");
+
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
