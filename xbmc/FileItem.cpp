@@ -1992,6 +1992,8 @@ void CFileItemList::FilterCueItems()
                     SYSTEMTIME dateTime;
                     tag.GetReleaseDate(dateTime);
                     if (dateTime.wYear) song.iYear = dateTime.wYear;
+                    if (song.embeddedArt.empty() && !tag.GetCoverArtInfo().empty())
+                      song.embeddedArt = tag.GetCoverArtInfo();
                   }
                   if (!song.iDuration && tag.GetDuration() > 0)
                   { // must be the last song
