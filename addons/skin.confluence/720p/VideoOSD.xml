@@ -193,7 +193,7 @@
 				<texturefocus>OSDRewindFO.png</texturefocus>
 				<texturenofocus>OSDRewindNF.png</texturenofocus>
 				<onleft>601</onleft>
-				<onright>608</onright>
+				<onright>609</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>				
@@ -206,7 +206,7 @@
 				<label>-</label>
 				<texturefocus>OSDForwardFO.png</texturefocus>
 				<texturenofocus>OSDForwardNF.png</texturenofocus>
-				<onleft>608</onleft>
+				<onleft>607</onleft>
 				<onright>602</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
