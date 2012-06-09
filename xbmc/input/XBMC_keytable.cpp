@@ -180,6 +180,8 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_LAUNCH_APP2,            0,    0, XBMCVK_LAUNCH_APP2,         "launch_app2_pc_icon" }
 , { XBMCK_LAUNCH_FILE_BROWSER,    0,    0, XBMCVK_LAUNCH_FILE_BROWSER, "launch_file_browser" }
 , { XBMCK_LAUNCH_MEDIA_CENTER,    0,    0, XBMCVK_LAUNCH_MEDIA_CENTER, "launch_media_center" }
+, { XBMCK_PLAY,                   0,    0, XBMCVK_MEDIA_PLAY_PAUSE,    "play_pause" }
+, { XBMCK_STOP,                   0,    0, XBMCVK_MEDIA_STOP,          "stop" }
 
 // Function keys
 , { XBMCK_F1,                     0,    0, XBMCVK_F1,            "f1"}
