@@ -38,10 +38,31 @@ string trimRight(const string &str)
   return tmp;
 }
 
+wstring trimRight(const wstring &str)
+{
+  wstring tmp = str;
+  // find_last_not_of will return string::npos (which is defined as -1)
+  // or a value between 0 and size() - 1 => find_last_not_of() + 1 will
+  // always result in a valid index between 0 and size()
+  tmp.erase(tmp.find_last_not_of(L" \n\r\t") + 1);
+
+  return tmp;
+}
+
 int64_t str2int64(const string &str, int64_t fallback /* = 0 */)
 {
   char *end = NULL;
   int64_t result = strtol(trimRight(str).c_str(), &end, 0);
+  if (end == NULL || *end == '\0')
+    return result;
+
+  return fallback;
+}
+
+int64_t str2int64(const wstring &str, int64_t fallback /* = 0 */)
+{
+  wchar_t *end = NULL;
+  int64_t result = wcstol(trimRight(str).c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -58,10 +79,30 @@ uint64_t str2uint64(const string &str, uint64_t fallback /* = 0 */)
   return fallback;
 }
 
+uint64_t str2uint64(const wstring &str, uint64_t fallback /* = 0 */)
+{
+  wchar_t *end = NULL;
+  uint64_t result = wcstoul(trimRight(str).c_str(), &end, 0);
+  if (end == NULL || *end == '\0')
+    return result;
+
+  return fallback;
+}
+
 double str2double(const string &str, double fallback /* = 0.0 */)
 {
   char *end = NULL;
   double result = strtod(trimRight(str).c_str(), &end);
+  if (end == NULL || *end == '\0')
+    return result;
+
+  return fallback;
+}
+
+double str2double(const wstring &str, double fallback /* = 0.0 */)
+{
+  wchar_t *end = NULL;
+  double result = wcstod(trimRight(str).c_str(), &end);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -89,6 +130,7 @@ CVariant::CVariant(VariantType type)
       m_data.dvalue = 0.0;
       break;
     case VariantTypeString:
+    case VariantTypeWideString:
     case VariantTypeArray:
     case VariantTypeObject:
     default:
@@ -157,6 +199,24 @@ CVariant::CVariant(const string &str)
   m_string = str;
 }
 
+CVariant::CVariant(const wchar_t *str)
+{
+  m_type = VariantTypeWideString;
+  m_wstring = str;
+}
+
+CVariant::CVariant(const wchar_t *str, unsigned int length)
+{
+  m_type = VariantTypeWideString;
+  m_wstring = wstring(str, length);
+}
+
+CVariant::CVariant(const wstring &str)
+{
+  m_type = VariantTypeWideString;
+  m_wstring = str;
+}
+
 CVariant::CVariant(const std::vector<std::string> &strArray)
 {
   m_type = VariantTypeArray;
@@ -196,6 +256,11 @@ bool CVariant::isString() const
   return m_type == VariantTypeString;
 }
 
+bool CVariant::isWideString() const
+{
+  return m_type == VariantTypeWideString;
+}
+
 bool CVariant::isArray() const
 {
   return m_type == VariantTypeArray;
@@ -228,6 +293,8 @@ int64_t CVariant::asInteger(int64_t fallback) const
       return (int64_t)m_data.dvalue;
     case VariantTypeString:
       return str2int64(m_string, fallback);
+    case VariantTypeWideString:
+      return str2int64(m_wstring, fallback);
     default:
       return fallback;
   }
@@ -247,6 +314,8 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
       return (uint64_t)m_data.dvalue;
     case VariantTypeString:
       return str2uint64(m_string, fallback);
+    case VariantTypeWideString:
+      return str2uint64(m_wstring, fallback);
     default:
       return fallback;
   }
@@ -266,6 +335,8 @@ double CVariant::asDouble(double fallback) const
       return (double)m_data.unsignedinteger;
     case VariantTypeString:
       return str2double(m_string, fallback);
+    case VariantTypeWideString:
+      return str2double(m_wstring, fallback);
     default:
       return fallback;
   }
@@ -285,6 +356,8 @@ float CVariant::asFloat(float fallback) const
       return (float)m_data.unsignedinteger;
     case VariantTypeString:
       return (float)str2double(m_string, fallback);
+    case VariantTypeWideString:
+      return (float)str2double(m_wstring, fallback);
     default:
       return fallback;
   }
@@ -306,6 +379,10 @@ bool CVariant::asBoolean(bool fallback) const
       return (m_data.dvalue != 0);
     case VariantTypeString:
       if (m_string.empty() || m_string.compare("0") == 0 || m_string.compare("false") == 0)
+        return false;
+      return true;
+    case VariantTypeWideString:
+      if (m_wstring.empty() || m_wstring.compare(L"0") == 0 || m_wstring.compare(L"false") == 0)
         return false;
       return true;
     default:
@@ -335,6 +412,35 @@ std::string CVariant::asString(const std::string &fallback /* = "" */) const
       else
         strStream << m_data.dvalue;
       return strStream.str();
+    }
+    default:
+      return fallback;
+  }
+  
+  return fallback;
+}
+
+std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) const
+{
+  switch (m_type)
+  {
+    case VariantTypeWideString:
+      return m_wstring;
+    case VariantTypeBoolean:
+      return m_data.boolean ? L"true" : L"false";
+    case VariantTypeInteger:
+    case VariantTypeUnsignedInteger:
+    case VariantTypeDouble:
+    {
+      std::wostringstream strStream;
+      if (m_type == VariantTypeInteger)
+        strStream << m_data.integer;
+      else if (m_type == VariantTypeUnsignedInteger)
+        strStream << m_data.unsignedinteger;
+      else
+        strStream << m_data.dvalue;
+      return strStream.str();
+      break;
     }
     default:
       return fallback;
@@ -406,6 +512,9 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   case VariantTypeString:
     m_string = rhs.m_string;
     break;
+  case VariantTypeWideString:
+    m_wstring = rhs.m_wstring;
+    break;
   case VariantTypeArray:
     m_array.assign(rhs.m_array.begin(), rhs.m_array.end());
     break;
@@ -436,6 +545,8 @@ bool CVariant::operator==(const CVariant &rhs) const
       return m_data.dvalue == rhs.m_data.dvalue;
     case VariantTypeString:
       return m_string == rhs.m_string;
+    case VariantTypeWideString:
+      return m_wstring == rhs.m_wstring;
     case VariantTypeArray:
       return m_array == rhs.m_array;
     case VariantTypeObject:
@@ -478,18 +589,21 @@ void CVariant::swap(CVariant &rhs)
   VariantType  temp_type = m_type;
   VariantUnion temp_data = m_data;
   string       temp_string = m_string;
+  wstring      temp_wstring = m_wstring;
   VariantArray temp_array = m_array;
   VariantMap   temp_map = m_map;
 
   m_type = rhs.m_type;
   m_data = rhs.m_data;
   m_string = rhs.m_string;
+  m_wstring = rhs.m_wstring;
   m_array = rhs.m_array;
   m_map = rhs.m_map;
 
   rhs.m_type = temp_type;
   rhs.m_data = temp_data;
   rhs.m_string = temp_string;
+  rhs.m_wstring = temp_wstring;
   rhs.m_array = temp_array;
   rhs.m_map = temp_map;
 }
@@ -566,6 +680,8 @@ unsigned int CVariant::size() const
     return m_array.size();
   else if (m_type == VariantTypeString)
     return m_string.size();
+  else if (m_type == VariantTypeWideString)
+    return m_wstring.size();
   else
     return 0;
 }
@@ -578,6 +694,8 @@ bool CVariant::empty() const
     return m_array.empty();
   else if (m_type == VariantTypeString)
     return m_string.empty();
+  else if (m_type == VariantTypeWideString)
+    return m_wstring.empty();
   else
     return true;
 }
@@ -590,6 +708,8 @@ void CVariant::clear()
     m_array.clear();
   else if (m_type == VariantTypeString)
     m_string.clear();
+  else if (m_type == VariantTypeWideString)
+    m_wstring.clear();
 }
 
 void CVariant::erase(const std::string &key)

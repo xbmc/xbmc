@@ -19,7 +19,6 @@ SRCS=Application.cpp \
      PlayListPlayer.cpp \
      PartyModeManager.cpp \
      SectionLoader.cpp \
-     SortFileItem.cpp \
      SystemGlobals.cpp \
      Temperature.cpp \
      TextureCache.cpp \

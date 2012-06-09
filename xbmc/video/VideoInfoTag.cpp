@@ -478,6 +478,57 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["type"] = m_type;
 }
 
+void CVideoInfoTag::ToSortable(SortItem& sortable)
+{
+  sortable[FieldDirector] = m_director;
+  sortable[FieldWriter] = m_writingCredits;
+  sortable[FieldGenre] = m_genre;
+  sortable[FieldCountry] = m_country;
+  sortable[FieldTagline] = m_strTagLine;
+  sortable[FieldPlotOutline] = m_strPlotOutline;
+  sortable[FieldPlot] = m_strPlot;
+  sortable[FieldTitle] = m_strTitle;
+  sortable[FieldVotes] = m_strVotes;
+  sortable[FieldStudio] = m_studio;
+  sortable[FieldTrailer] = m_strTrailer;
+  sortable[FieldSet] = m_set;
+  sortable[FieldTime] = m_strRuntime;
+  sortable[FieldFilename] = m_strFile;
+  sortable[FieldMPAA] = m_strMPAARating;
+  sortable[FieldPath] = m_strFileNameAndPath;
+  sortable[FieldSortTitle] = m_strSortTitle;
+  sortable[FieldTvShowStatus] = m_strStatus;
+  sortable[FieldProductionCode] = m_strProductionCode;
+  sortable[FieldAirDate] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : (m_premiered.IsValid() ? m_premiered.GetAsDBDate() : StringUtils::EmptyString);
+  sortable[FieldTvShowTitle] = m_strShowTitle;
+  sortable[FieldAlbum] = m_strAlbum;
+  sortable[FieldArtist] = m_artist;
+  sortable[FieldPlaycount] = m_playCount;
+  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
+  sortable[FieldTop250] = m_iTop250;
+  sortable[FieldYear] = m_iYear;
+  sortable[FieldSeason] = m_iSeason;
+  sortable[FieldEpisodeNumber] = m_iEpisode;
+  sortable[FieldRating] = m_fRating;
+  sortable[FieldId] = m_iDbId;
+  sortable[FieldTrackNumber] = m_iTrack;
+
+  sortable[FieldTime] = m_streamDetails.GetVideoDuration();
+  sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight();
+  sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect();
+  sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec();
+  
+  sortable[FieldAudioChannels] = m_streamDetails.GetAudioChannels();
+  sortable[FieldAudioCodec] = m_streamDetails.GetAudioCodec();
+  sortable[FieldAudioLanguage] = m_streamDetails.GetAudioLanguage();
+  
+  sortable[FieldSubtitleLanguage] = m_streamDetails.GetSubtitleLanguage();
+
+  sortable[FieldInProgress] = m_resumePoint.timeInSeconds > 0 && m_resumePoint.totalTimeInSeconds > 0;
+  sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
+  sortable[FieldMediaType] = DatabaseUtils::MediaTypeFromString(m_type);
+}
+
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
 {
   CStdString strLabel;

@@ -673,7 +673,7 @@ namespace VIDEO
     */
 
     // since we're doing this now anyway, should other items be stacked?
-    items.Sort(SORT_METHOD_FULLPATH, SORT_ORDER_ASC);
+    items.Sort(SORT_METHOD_FULLPATH, SortOrderAscending);
     int x = 0;
     while (x < items.Size())
     {
