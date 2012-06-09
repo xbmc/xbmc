@@ -27,9 +27,7 @@
 #include "Application.h"
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
-#if defined(HAS_SDL_JOYSTICK)
-#include "input/SDLJoystick.h"
-#endif
+#include "input/windows/WINJoystick.h"
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include <dbt.h>
@@ -403,6 +401,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       break;
     case WM_ACTIVATE:
       {
+        if( WA_INACTIVE != wParam )
+          g_Joystick.Acquire();
+
         bool active = g_application.m_AppActive;
         if (HIWORD(wParam))
         {
@@ -694,9 +695,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
             {
               g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
-#if defined(HAS_SDL_JOYSTICK)
               g_Joystick.Reinitialize();
-#endif
             }
         }
         break;
