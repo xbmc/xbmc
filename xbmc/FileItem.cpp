@@ -469,8 +469,8 @@ void CFileItem::Serialize(CVariant& value)
 void CFileItem::ToSortable(SortItem &sortable)
 {
   sortable[FieldPath] = m_strPath;
-  sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsRFC1123DateTime() : "";
-  sortable[FieldSize] = (int) m_dwSize / 1000;
+  sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : "";
+  sortable[FieldSize] = m_dwSize;
   sortable[FieldDriveType] = m_iDriveType;
   sortable[FieldStartOffset] = m_lStartOffset;
   sortable[FieldStartOffset] = m_lEndOffset;
