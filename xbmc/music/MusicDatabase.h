@@ -228,16 +228,17 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 22; };
+  virtual int GetMinVersion() const { return 23; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
-  int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
+  int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year);
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);
   int AddPath(const CStdString& strPath);
   int AddThumb(const CStdString& strThumb1);
   bool AddAlbumArtist(int idArtist, int idAlbum, bool featured, int iOrder);
   bool AddSongArtist(int idArtist, int idSong, bool featured, int iOrder);
+  bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
 
   void AddKaraokeData(const CSong& song);
   void AddExtraGenres(const std::vector<std::string>& vecGenres, int idSong, int idAlbum, bool bCheck = true);
@@ -310,9 +311,7 @@ private:
     album_idAlbum=0,
     album_strAlbum,
     album_strArtists,
-    album_strExtraGenres,
-    album_idGenre,
-    album_strGenre,
+    album_strGenres,
     album_iYear,
     album_strThumb,
     album_idAlbumInfo,

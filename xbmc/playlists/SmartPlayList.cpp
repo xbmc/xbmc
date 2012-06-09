@@ -604,8 +604,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
   else if (strType == "albums")
   {
     if (m_field == FieldGenre)
-      query = negate + " (idAlbum in (select song.idAlbum from song join genre on song.idGenre=genre.idGenre where genre.strGenre" + parameter + ") or "
-              "idAlbum in (select song.idAlbum from song join exgenresong on song.idSong=exgenresong.idSong join genre on exgenresong.idGenre=genre.idGenre where genre.strGenre" + parameter + "))";
+      query = negate + "idAlbum IN (SELECT song.idAlbum FROM song, song_genre, genre WHERE song.idSong = song_genre.idGenre AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
     else if (m_field == FieldArtist)
       query = negate + "idAlbum IN (SELECT song.idAlbum FROM song, song_artist, artists WHERE song.idSong = song_artist.idSong AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldAlbumArtist)

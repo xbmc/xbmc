@@ -267,7 +267,7 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     if (field == FieldId) return CMusicDatabase::album_idAlbum;
     else if (field == FieldAlbum) return CMusicDatabase::album_strAlbum;
     else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::album_strArtists;
-    else if (field == FieldGenre) return CMusicDatabase::album_strGenre;
+    else if (field == FieldGenre) return CMusicDatabase::album_strGenres;
     else if (field == FieldYear) return CMusicDatabase::album_iYear;
     else if (field == FieldMoods) return CMusicDatabase::album_strMoods;
     else if (field == FieldStyles) return CMusicDatabase::album_strStyles;
