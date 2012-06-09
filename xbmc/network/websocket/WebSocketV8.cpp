@@ -175,9 +175,8 @@ const CWebSocketFrame* CWebSocketV8::close(WebSocketCloseReason reason /* = WebS
 
   char* data = new char[length + 1];
   memset(data, 0, length + 1);
-  unsigned short iReason = Endian_SwapBE16((uint16_t)reason);
-  data[0] = ((char *)&iReason)[0];
-  data[1] = ((char *)&iReason)[1];
+  uint16_t iReason = Endian_SwapBE16((uint16_t)reason);
+  memcpy(data, &iReason, 2);
   message.copy(data + 2, message.size());
 
   if (m_state == WebSocketStateConnected)
@@ -185,7 +184,10 @@ const CWebSocketFrame* CWebSocketV8::close(WebSocketCloseReason reason /* = WebS
   else
     m_state = WebSocketStateClosed;
 
-  return new CWebSocketFrame(WebSocketConnectionClose, data, length);
+  CWebSocketFrame* frame = new CWebSocketFrame(WebSocketConnectionClose, data, length);
+  delete data;
+
+  return frame;
 }
 
 std::string CWebSocketV8::calculateKey(const std::string &key)
