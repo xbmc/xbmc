@@ -65,6 +65,7 @@ public:
   CVariant(const std::wstring &str);
   CVariant(const std::vector<std::string> &strArray);
   CVariant(const CVariant &variant);
+  ~CVariant();
 
   bool isInteger() const;
   bool isUnsignedInteger() const;
@@ -133,18 +134,19 @@ public:
   static CVariant ConstNullVariant;
 
 private:
+  void cleanup();
   union VariantUnion
   {
     int64_t integer;
     uint64_t unsignedinteger;
     bool boolean;
     double dvalue;
+    std::string *string;
+    std::wstring *wstring;
+    VariantArray *array;
+    VariantMap *map;
   };
 
   VariantType m_type;
   VariantUnion m_data;
-  std::string m_string;
-  std::wstring m_wstring;
-  VariantArray m_array;
-  VariantMap m_map;
 };
