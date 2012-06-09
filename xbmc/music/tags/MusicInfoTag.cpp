@@ -449,6 +449,25 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["artistid"] = m_iArtistId;
   value["albumid"] = m_iAlbumId;
 }
+
+void CMusicInfoTag::ToSortable(SortItem& sortable)
+{
+  sortable[FieldTitle] = m_strTitle;
+  sortable[FieldArtist] = m_artist;
+  sortable[FieldAlbum] = m_strAlbum;
+  sortable[FieldAlbumArtist] = FieldAlbumArtist;
+  sortable[FieldGenre] = m_genre;
+  sortable[FieldTime] = m_iDuration;
+  sortable[FieldTrackNumber] = m_iTrack;
+  sortable[FieldYear] = m_dwReleaseDate.wYear;
+  sortable[FieldComment] = m_strComment;
+  sortable[FieldRating] = (float)m_rating;
+  sortable[FieldPlaycount] = m_iTimesPlayed;
+  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
+  sortable[FieldListeners] = m_listeners;
+  sortable[FieldId] = (int64_t)m_iDbId;
+}
+
 void CMusicInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())

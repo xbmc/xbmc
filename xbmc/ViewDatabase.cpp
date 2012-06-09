@@ -99,7 +99,7 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
     { // have some information
       state.m_viewMode = m_pDS->fv("viewMode").get_asInt();
       state.m_sortMethod = (SORT_METHOD)m_pDS->fv("sortMethod").get_asInt();
-      state.m_sortOrder = (SORT_ORDER)m_pDS->fv("sortOrder").get_asInt();
+      state.m_sortOrder = (SortOrder)m_pDS->fv("sortOrder").get_asInt();
       m_pDS->close();
       return true;
     }

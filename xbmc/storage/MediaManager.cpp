@@ -541,7 +541,7 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
   Crc32 crc32;
   bool dataRead = false;
 
-  vecItemsTS.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+  vecItemsTS.Sort(SORT_METHOD_FILE, SortOrderAscending);
   for (int i = 0; i < vecItemsTS.Size(); i++)
   {
     CFileItemPtr videoTSItem = vecItemsTS[i];

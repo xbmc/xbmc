@@ -834,105 +834,113 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
 
 void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath)
 {
+  return GetFileItemFromDataset(m_pDS->get_sql_record(), item, strMusicDBbasePath);
+}
+
+void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath)
+{
   // get the full artist string
   vector<string> artist;
-  artist.push_back(m_pDS->fv(song_strArtist).get_asString());
-  if (!m_pDS->fv(song_strExtraArtists).get_asString().empty())
+  artist.push_back(record->at(song_strArtist).get_asString());
+  if (!record->at(song_strExtraArtists).get_asString().empty())
   {
-    vector<string> extraArtists = StringUtils::Split(m_pDS->fv(song_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    vector<string> extraArtists = StringUtils::Split(record->at(song_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
     artist.insert(artist.end(), extraArtists.begin(), extraArtists.end());
   }
   item->GetMusicInfoTag()->SetArtist(artist);
-  item->GetMusicInfoTag()->SetArtistId(m_pDS->fv(song_idArtist).get_asInt());
+  item->GetMusicInfoTag()->SetArtistId(record->at(song_idArtist).get_asInt());
   // and the full genre string
   vector<string> genre;
-  genre.push_back(m_pDS->fv(song_strGenre).get_asString());
-  if (!m_pDS->fv(song_strExtraGenres).get_asString().empty())
+  genre.push_back(record->at(song_strGenre).get_asString());
+  if (!record->at(song_strExtraGenres).get_asString().empty())
   {
-    vector<string> extraGenres = StringUtils::Split(m_pDS->fv(song_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    vector<string> extraGenres = StringUtils::Split(record->at(song_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
     genre.insert(genre.end(), extraGenres.begin(), extraGenres.end());
   }
   item->GetMusicInfoTag()->SetGenre(genre);
   // and the rest...
-  item->GetMusicInfoTag()->SetAlbum(m_pDS->fv(song_strAlbum).get_asString());
-  item->GetMusicInfoTag()->SetAlbumId(m_pDS->fv(song_idAlbum).get_asInt());
-  item->GetMusicInfoTag()->SetTrackAndDiskNumber(m_pDS->fv(song_iTrack).get_asInt());
-  item->GetMusicInfoTag()->SetDuration(m_pDS->fv(song_iDuration).get_asInt());
-  item->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(song_idSong).get_asInt());
+  item->GetMusicInfoTag()->SetAlbum(record->at(song_strAlbum).get_asString());
+  item->GetMusicInfoTag()->SetAlbumId(record->at(song_idAlbum).get_asInt());
+  item->GetMusicInfoTag()->SetTrackAndDiskNumber(record->at(song_iTrack).get_asInt());
+  item->GetMusicInfoTag()->SetDuration(record->at(song_iDuration).get_asInt());
+  item->GetMusicInfoTag()->SetDatabaseId(record->at(song_idSong).get_asInt());
   SYSTEMTIME stTime;
-  stTime.wYear = (WORD)m_pDS->fv(song_iYear).get_asInt();
+  stTime.wYear = (WORD)record->at(song_iYear).get_asInt();
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
-  item->GetMusicInfoTag()->SetTitle(m_pDS->fv(song_strTitle).get_asString());
-  item->SetLabel(m_pDS->fv(song_strTitle).get_asString());
-  item->m_lStartOffset = m_pDS->fv(song_iStartOffset).get_asInt();
-  item->m_lEndOffset = m_pDS->fv(song_iEndOffset).get_asInt();
-  item->GetMusicInfoTag()->SetMusicBrainzTrackID(m_pDS->fv(song_strMusicBrainzTrackID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzArtistID(m_pDS->fv(song_strMusicBrainzArtistID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzAlbumID(m_pDS->fv(song_strMusicBrainzAlbumID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(m_pDS->fv(song_strMusicBrainzAlbumArtistID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzTRMID(m_pDS->fv(song_strMusicBrainzTRMID).get_asString());
-  item->GetMusicInfoTag()->SetRating(m_pDS->fv(song_rating).get_asChar());
-  item->GetMusicInfoTag()->SetComment(m_pDS->fv(song_comment).get_asString());
-  item->GetMusicInfoTag()->SetPlayCount(m_pDS->fv(song_iTimesPlayed).get_asInt());
-  item->GetMusicInfoTag()->SetLastPlayed(m_pDS->fv(song_lastplayed).get_asString());
+  item->GetMusicInfoTag()->SetTitle(record->at(song_strTitle).get_asString());
+  item->SetLabel(record->at(song_strTitle).get_asString());
+  item->m_lStartOffset = record->at(song_iStartOffset).get_asInt();
+  item->m_lEndOffset = record->at(song_iEndOffset).get_asInt();
+  item->GetMusicInfoTag()->SetMusicBrainzTrackID(record->at(song_strMusicBrainzTrackID).get_asString());
+  item->GetMusicInfoTag()->SetMusicBrainzArtistID(record->at(song_strMusicBrainzArtistID).get_asString());
+  item->GetMusicInfoTag()->SetMusicBrainzAlbumID(record->at(song_strMusicBrainzAlbumID).get_asString());
+  item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(record->at(song_strMusicBrainzAlbumArtistID).get_asString());
+  item->GetMusicInfoTag()->SetMusicBrainzTRMID(record->at(song_strMusicBrainzTRMID).get_asString());
+  item->GetMusicInfoTag()->SetRating(record->at(song_rating).get_asChar());
+  item->GetMusicInfoTag()->SetComment(record->at(song_comment).get_asString());
+  item->GetMusicInfoTag()->SetPlayCount(record->at(song_iTimesPlayed).get_asInt());
+  item->GetMusicInfoTag()->SetLastPlayed(record->at(song_lastplayed).get_asString());
   CStdString strRealPath;
-  URIUtils::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString(), strRealPath);
+  URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString(), strRealPath);
   item->GetMusicInfoTag()->SetURL(strRealPath);
   item->GetMusicInfoTag()->SetLoaded(true);
-  CStdString strThumb=m_pDS->fv(song_strThumb).get_asString();
+  CStdString strThumb = record->at(song_strThumb).get_asString();
   if (strThumb != "NONE")
     item->SetThumbnailImage(strThumb);
   // Get filename with full path
   if (strMusicDBbasePath.IsEmpty())
-  {
     item->SetPath(strRealPath);
-  }
   else
   {
-    CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
-    CStdString strExt=URIUtils::GetExtension(strFileName);
-    CStdString path; path.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv(song_idSong).get_asInt(), strExt.c_str());
+    CStdString strFileName = record->at(song_strFileName).get_asString();
+    CStdString strExt = URIUtils::GetExtension(strFileName);
+    CStdString path; path.Format("%s%ld%s", strMusicDBbasePath.c_str(), record->at(song_idSong).get_asInt(), strExt.c_str());
     item->SetPath(path);
   }
 }
 
 CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL /* = false*/)
 {
+  return GetAlbumFromDataset(pDS->get_sql_record(), imageURL);
+}
+
+CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL /* = false*/)
+{
   CAlbum album;
-  album.idAlbum = pDS->fv(album_idAlbum).get_asInt();
-  album.strAlbum = pDS->fv(album_strAlbum).get_asString();
+  album.idAlbum = record->at(album_idAlbum).get_asInt();
+  album.strAlbum = record->at(album_strAlbum).get_asString();
   if (album.strAlbum.IsEmpty())
     album.strAlbum = g_localizeStrings.Get(1050);
-  album.artist.push_back(pDS->fv(album_strArtist).get_asString());
-  if (!pDS->fv(album_strExtraArtists).get_asString().empty())
+  album.artist.push_back(record->at(album_strArtist).get_asString());
+  if (!record->at(album_strExtraArtists).get_asString().empty())
   {
-    std::vector<std::string> extraArtists = StringUtils::Split(pDS->fv(album_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    std::vector<std::string> extraArtists = StringUtils::Split(record->at(album_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
     album.artist.insert(album.artist.end(), extraArtists.begin(), extraArtists.end());
   }
-  album.idArtist = pDS->fv(album_idArtist).get_asInt();
-  album.genre.push_back(pDS->fv(album_strGenre).get_asString());
-  if (!pDS->fv(album_strExtraGenres).get_asString().empty())
+  album.idArtist = record->at(album_idArtist).get_asInt();
+  album.genre.push_back(record->at(album_strGenre).get_asString());
+  if (!record->at(album_strExtraGenres).get_asString().empty())
   {
-    std::vector<std::string> extraGenres = StringUtils::Split(pDS->fv(album_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    std::vector<std::string> extraGenres = StringUtils::Split(record->at(album_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
     album.genre.insert(album.genre.end(), extraGenres.begin(), extraGenres.end());
   }
-  album.iYear = pDS->fv(album_iYear).get_asInt();
+  album.iYear = record->at(album_iYear).get_asInt();
   if (imageURL)
-    album.thumbURL.ParseString(pDS->fv(album_strThumbURL).get_asString());
+    album.thumbURL.ParseString(record->at(album_strThumbURL).get_asString());
   else
   {
-    CStdString strThumb = pDS->fv(album_strThumb).get_asString();
+    CStdString strThumb = record->at(album_strThumb).get_asString();
     if (strThumb != "NONE")
       album.thumbURL.ParseString(strThumb);
   }
-  album.iRating = pDS->fv(album_iRating).get_asInt();
-  album.iYear = pDS->fv(album_iYear).get_asInt();
-  album.strReview = pDS->fv(album_strReview).get_asString();
-  album.styles = StringUtils::Split(pDS->fv(album_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.moods = StringUtils::Split(pDS->fv(album_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.themes = StringUtils::Split(pDS->fv(album_strThemes).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.strLabel = pDS->fv(album_strLabel).get_asString();
-  album.strType = pDS->fv(album_strType).get_asString();
+  album.iRating = record->at(album_iRating).get_asInt();
+  album.iYear = record->at(album_iYear).get_asInt();
+  album.strReview = record->at(album_strReview).get_asString();
+  album.styles = StringUtils::Split(record->at(album_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.moods = StringUtils::Split(record->at(album_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.themes = StringUtils::Split(record->at(album_strThemes).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.strLabel = record->at(album_strLabel).get_asString();
+  album.strType = record->at(album_strType).get_asString();
   return album;
 }
 
@@ -3134,6 +3142,78 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
   return false;
 }
 
+bool CMusicDatabase::GetSortedAlbums(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where /* = "" */)
+{
+  if (m_pDB.get() == NULL || m_pDS.get() == NULL)
+    return false;
+
+  try
+  {
+    CStdString sql = "select * from albumview " + where;
+    // Apply the limiting directly here if there's no special sorting but limiting
+    CStdString whereLower = where;
+    whereLower.ToLower();
+    if (whereLower.find(" limit ") == string::npos &&
+        sortDescription.sortBy == SortByNone &&
+       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      sql += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());
+    // run query
+    unsigned int time = XbmcThreads::SystemClockMillis();
+    if (!m_pDS->query(sql.c_str()))
+      return false;
+    CLog::Log(LOGDEBUG, "%s - query took %i ms",
+              __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
+
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound <= 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    
+    DatabaseResults results;
+    results.reserve(iRowsFound);
+    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeAlbum, m_pDS, results))
+      return false;
+
+    // get data from returned rows
+    items.Reserve(results.size());
+    const dbiplus::query_data &data = m_pDS->get_result_set().records;
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    {
+      unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
+      const dbiplus::sql_record* const record = data.at(targetRow);
+      
+      try
+      {
+        CStdString strDir;
+        int idAlbum = record->at(album_idAlbum).get_asInt();
+        strDir.Format("%s%ld/", strBaseDir.c_str(), idAlbum);
+        CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(record)));
+        pItem->SetIconImage("DefaultAlbumCover.png");
+        items.Add(pItem);
+      }
+      catch (...)
+      {
+        m_pDS->close();
+        CLog::Log(LOGERROR, "%s - out of memory getting listing (got %i)", __FUNCTION__, items.Size());
+      }
+    }
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    m_pDS->close();
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, where.c_str());
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList &items)
 {
   if (NULL == m_pDB.get()) return false;
@@ -3187,6 +3267,79 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     // cleanup
     m_pDS->close();
     CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, whereClause.c_str());
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetSortedSongs(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where /* = "" */)
+{
+  if (m_pDB.get() == NULL || m_pDS.get() == NULL)
+    return false;
+
+  try
+  {
+    unsigned int time = XbmcThreads::SystemClockMillis();
+    // We don't use PrepareSQL here, as the WHERE clause is already formatted.
+    CStdString strSQL = "select * from songview " + where;
+    // Apply the limiting directly here if there's no special sorting but limiting
+    CStdString whereLower = where;
+    whereLower.ToLower();
+    if (whereLower.find(" limit ") == string::npos &&
+        sortDescription.sortBy == SortByNone &&
+       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+
+    CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
+    // run query
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    
+    DatabaseResults results;
+    results.reserve(iRowsFound);
+    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeSong, m_pDS, results))
+      return false;
+
+    // get data from returned rows
+    items.Reserve(results.size());
+    const dbiplus::query_data &data = m_pDS->get_result_set().records;
+    int count = 0;
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    {
+      unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
+      const dbiplus::sql_record* const record = data.at(targetRow);
+      
+      try
+      {
+        CFileItemPtr item(new CFileItem);
+        GetFileItemFromDataset(record, item.get(), strBaseDir);
+        // HACK for sorting by database returned order
+        item->m_iprogramCount = ++count;
+        items.Add(item);
+      }
+      catch (...)
+      {
+        m_pDS->close();
+        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, where.c_str());
+        return (items.Size() > 0);
+      }
+    }
+    // cleanup
+    m_pDS->close();
+    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, where.c_str(), XbmcThreads::SystemClockMillis() - time);
+    return true;
+  }
+  catch (...)
+  {
+    // cleanup
+    m_pDS->close();
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, where.c_str());
   }
   return false;
 }

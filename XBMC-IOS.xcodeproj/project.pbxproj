@@ -20,6 +20,8 @@
 		18ECC99D13CF17D200A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		3291892B1423A9B700E878CD /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329189291423A9B700E878CD /* JpegIO.cpp */; };
+		36A9444E15821F2C00727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9444C15821F2C00727135 /* DatabaseUtils.cpp */; };
+		36A9445215821F5300727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9445015821F5300727135 /* SortUtils.cpp */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C0A7EDE13A5DC2800AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */; };
 		7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7F9B13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp */; };
@@ -913,7 +915,6 @@
 		F56C8B6D131F42ED000AD0F6 /* PartyModeManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E3131F42ED000AD0F6 /* PartyModeManager.cpp */; };
 		F56C8B6E131F42ED000AD0F6 /* PlayListPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E5131F42ED000AD0F6 /* PlayListPlayer.cpp */; };
 		F56C8B6F131F42ED000AD0F6 /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E7131F42ED000AD0F6 /* SectionLoader.cpp */; };
-		F56C8B70131F42ED000AD0F6 /* SortFileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E9131F42ED000AD0F6 /* SortFileItem.cpp */; };
 		F56C8B71131F42ED000AD0F6 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87EB131F42ED000AD0F6 /* Temperature.cpp */; };
 		F56C8B72131F42ED000AD0F6 /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87ED131F42ED000AD0F6 /* TextureCache.cpp */; };
 		F56C8B73131F42ED000AD0F6 /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87EF131F42ED000AD0F6 /* TextureDatabase.cpp */; };
@@ -1004,6 +1005,11 @@
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		329189291423A9B700E878CD /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
 		3291892A1423A9B700E878CD /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
+		36A9444C15821F2C00727135 /* DatabaseUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseUtils.cpp; sourceTree = "<group>"; };
+		36A9444D15821F2C00727135 /* DatabaseUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseUtils.h; sourceTree = "<group>"; };
+		36A9444F15821F3B00727135 /* ISortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISortable.h; sourceTree = "<group>"; };
+		36A9445015821F5300727135 /* SortUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortUtils.cpp; sourceTree = "<group>"; };
+		36A9445115821F5300727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7EDD13A5DC2800AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -2943,7 +2949,6 @@
 		F56C87E6131F42ED000AD0F6 /* PlayListPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListPlayer.h; sourceTree = "<group>"; };
 		F56C87E7131F42ED000AD0F6 /* SectionLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SectionLoader.cpp; sourceTree = "<group>"; };
 		F56C87E8131F42ED000AD0F6 /* SectionLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionLoader.h; sourceTree = "<group>"; };
-		F56C87E9131F42ED000AD0F6 /* SortFileItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortFileItem.cpp; sourceTree = "<group>"; };
 		F56C87EA131F42ED000AD0F6 /* SortFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortFileItem.h; sourceTree = "<group>"; };
 		F56C87EB131F42ED000AD0F6 /* Temperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Temperature.cpp; sourceTree = "<group>"; };
 		F56C87EC131F42ED000AD0F6 /* Temperature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Temperature.h; sourceTree = "<group>"; };
@@ -3950,7 +3955,6 @@
 				F56C87E6131F42ED000AD0F6 /* PlayListPlayer.h */,
 				F56C87E7131F42ED000AD0F6 /* SectionLoader.cpp */,
 				F56C87E8131F42ED000AD0F6 /* SectionLoader.h */,
-				F56C87E9131F42ED000AD0F6 /* SortFileItem.cpp */,
 				F56C87EA131F42ED000AD0F6 /* SortFileItem.h */,
 				F56C87B9131F42ED000AD0F6 /* SystemGlobals.cpp */,
 				F56C87EB131F42ED000AD0F6 /* Temperature.cpp */,
@@ -5728,6 +5732,8 @@
 				F56C8706131F42EB000AD0F6 /* Crc32.h */,
 				F5BD034D148D496A001B5583 /* CryptThreading.cpp */,
 				F5BD034E148D496A001B5583 /* CryptThreading.h */,
+				36A9444C15821F2C00727135 /* DatabaseUtils.cpp */,
+				36A9444D15821F2C00727135 /* DatabaseUtils.h */,
 				F56C871C131F42EC000AD0F6 /* DownloadQueue.cpp */,
 				F56C871D131F42EC000AD0F6 /* DownloadQueue.h */,
 				F56C871E131F42EC000AD0F6 /* DownloadQueueManager.cpp */,
@@ -5760,6 +5766,7 @@
 				DF52775F151BAFA000B5B63B /* HttpResponse.h */,
 				F56C8730131F42EC000AD0F6 /* InfoLoader.cpp */,
 				F56C8731131F42EC000AD0F6 /* InfoLoader.h */,
+				36A9444F15821F3B00727135 /* ISortable.h */,
 				F56C8736131F42EC000AD0F6 /* Job.h */,
 				F56C8734131F42EC000AD0F6 /* JobManager.cpp */,
 				F56C8735131F42EC000AD0F6 /* JobManager.h */,
@@ -5798,6 +5805,8 @@
 				F56C874E131F42EC000AD0F6 /* ScraperParser.h */,
 				F56C874F131F42EC000AD0F6 /* ScraperUrl.cpp */,
 				F56C8750131F42EC000AD0F6 /* ScraperUrl.h */,
+				36A9445015821F5300727135 /* SortUtils.cpp */,
+				36A9445115821F5300727135 /* SortUtils.h */,
 				F56C8751131F42EC000AD0F6 /* Splash.cpp */,
 				F56C8752131F42EC000AD0F6 /* Splash.h */,
 				F56C8766131F42EC000AD0F6 /* ssrc.cpp */,
@@ -7067,7 +7076,6 @@
 				F56C8B6D131F42ED000AD0F6 /* PartyModeManager.cpp in Sources */,
 				F56C8B6E131F42ED000AD0F6 /* PlayListPlayer.cpp in Sources */,
 				F56C8B6F131F42ED000AD0F6 /* SectionLoader.cpp in Sources */,
-				F56C8B70131F42ED000AD0F6 /* SortFileItem.cpp in Sources */,
 				F56C8B71131F42ED000AD0F6 /* Temperature.cpp in Sources */,
 				F56C8B72131F42ED000AD0F6 /* TextureCache.cpp in Sources */,
 				F56C8B73131F42ED000AD0F6 /* TextureDatabase.cpp in Sources */,
@@ -7220,6 +7228,8 @@
 				7C6EB570155E3E680080368A /* ImageFile.cpp in Sources */,
 				7C6EB71A155F3B330080368A /* HTTPImageHandler.cpp in Sources */,
 				18E7CAD71578C691001D4554 /* CDDARipJob.cpp in Sources */,
+				36A9444E15821F2C00727135 /* DatabaseUtils.cpp in Sources */,
+				36A9445215821F5300727135 /* SortUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

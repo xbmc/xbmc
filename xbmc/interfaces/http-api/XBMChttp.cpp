@@ -408,7 +408,7 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
     tmp.Format("%i", dirItems.Size());
     return SetResponse(openTag+tmp);
   }
-  dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  dirItems.Sort(SORT_METHOD_LABEL, SortOrderAscending);
   if (lineStart > dirItems.Size() || lineStart < 0)
     return SetResponse(openTag+"Error:Line start value out of range");
   if (numLines == -1)
@@ -495,7 +495,7 @@ void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int s
     CStdString strDirectory=pItem->GetPath();
     CFileItemList items;
     CDirectory::GetDirectory(pItem->GetPath(), items, mask);
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
     for (int i=0; i < items.Size(); ++i)
       if (!(CFileItem*)items[i]->m_bIsFolder || recursive)
         AddItemToPlayList(items[i], playList, sortMethod, mask, recursive);
@@ -762,7 +762,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     tmp.Format("%i",items.Size());
     return SetResponse(openTag+tmp);
   }    
-  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
   CStdString strLine;
   if (lineStart>items.Size() || lineStart<0)
     return SetResponse(openTag+"Error:Line start value out of range");

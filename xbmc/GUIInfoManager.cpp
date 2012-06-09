@@ -880,11 +880,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       }
       if (prop.name == "sortdirection")
       {
-        SORT_ORDER order = SORT_ORDER_NONE;
+        SortOrder order = SortOrderNone;
         if (prop.param().Equals("ascending"))
-          order = SORT_ORDER_ASC;
+          order = SortOrderAscending;
         else if (prop.param().Equals("descending"))
-          order = SORT_ORDER_DESC;
+          order = SortOrderDescending;
         return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
       }
       else if (prop.name == "sort")

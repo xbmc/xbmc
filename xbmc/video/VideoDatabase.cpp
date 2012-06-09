@@ -2788,31 +2788,36 @@ void CVideoDatabase::DeleteSet(int idSet)
 
 void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset)
 {
+  GetDetailsFromDB(pDS->get_sql_record(), min, max, offsets, details, idxOffset);
+}
+
+void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset)
+{
   for (int i = min + 1; i < max; i++)
   {
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:
-      *(CStdString*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asString();
+      *(CStdString*)(((char*)&details)+offsets[i].offset) = record->at(i+idxOffset).get_asString();
       break;
     case VIDEODB_TYPE_INT:
     case VIDEODB_TYPE_COUNT:
-      *(int*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asInt();
+      *(int*)(((char*)&details)+offsets[i].offset) = record->at(i+idxOffset).get_asInt();
       break;
     case VIDEODB_TYPE_BOOL:
-      *(bool*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asBool();
+      *(bool*)(((char*)&details)+offsets[i].offset) = record->at(i+idxOffset).get_asBool();
       break;
     case VIDEODB_TYPE_FLOAT:
-      *(float*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asFloat();
+      *(float*)(((char*)&details)+offsets[i].offset) = record->at(i+idxOffset).get_asFloat();
       break;
     case VIDEODB_TYPE_STRINGARRAY:
-      *(std::vector<std::string>*)(((char*)&details)+offsets[i].offset) = StringUtils::Split(pDS->fv(i+idxOffset).get_asString(), g_advancedSettings.m_videoItemSeparator);
+      *(std::vector<std::string>*)(((char*)&details)+offsets[i].offset) = StringUtils::Split(record->at(i+idxOffset).get_asString(), g_advancedSettings.m_videoItemSeparator);
       break;
     case VIDEODB_TYPE_DATE:
-      ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDate(pDS->fv(i+idxOffset).get_asString());
+      ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDate(record->at(i+idxOffset).get_asString());
       break;
     case VIDEODB_TYPE_DATETIME:
-      ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDateTime(pDS->fv(i+idxOffset).get_asString());
+      ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDateTime(record->at(i+idxOffset).get_asString());
       break;
     }
   }
@@ -2942,16 +2947,24 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
 
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
+  return GetDetailsForMovie(pDS->get_sql_record(), needsCast);
+}
+
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool needsCast /* = false */)
+{
   CVideoInfoTag details;
 
-  DWORD time = XbmcThreads::SystemClockMillis();
-  int idMovie = pDS->fv(0).get_asInt();
+  if (record == NULL)
+    return details;
 
-  GetDetailsFromDB(pDS, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets, details);
+  DWORD time = XbmcThreads::SystemClockMillis();
+  int idMovie = record->at(0).get_asInt();
+
+  GetDetailsFromDB(record, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets, details);
 
   details.m_iDbId = idMovie;
   details.m_type = "movie";
-  GetCommonDetails(pDS, details);
+  GetCommonDetails(record, details);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   GetStreamDetails(details);
@@ -2993,19 +3006,26 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
 
 CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
+  return GetDetailsForTvShow(pDS->get_sql_record(), needsCast);
+}
+
+CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* const record, bool needsCast /* = false */)
+{
   CVideoInfoTag details;
-  details.Reset();
+
+  if (record == NULL)
+    return details;
 
   DWORD time = XbmcThreads::SystemClockMillis();
-  int idTvShow = pDS->fv(0).get_asInt();
+  int idTvShow = record->at(0).get_asInt();
 
-  GetDetailsFromDB(pDS, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details, 1);
+  GetDetailsFromDB(record, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details, 1);
   details.m_iDbId = idTvShow;
   details.m_type = "tvshow";
-  details.m_strPath = pDS->fv(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
-  details.m_dateAdded.SetFromDBDateTime(pDS->fv(VIDEODB_DETAILS_TVSHOW_DATEADDED).get_asString());
-  details.m_iEpisode = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInt();
-  details.m_playCount = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
+  details.m_strPath = record->at(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
+  details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_DATEADDED).get_asString());
+  details.m_iEpisode = record->at(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInt();
+  details.m_playCount = record->at(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
   details.m_strShowPath = details.m_strPath;
   details.m_strShowTitle = details.m_strTitle;
 
@@ -3023,28 +3043,35 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
 
 CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
+  return GetDetailsForEpisode(pDS->get_sql_record(), needsCast);
+}
+
+CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* const record, bool needsCast /* = false */)
+{
   CVideoInfoTag details;
-  details.Reset();
+
+  if (record == NULL)
+    return details;
 
   DWORD time = XbmcThreads::SystemClockMillis();
-  int idEpisode = pDS->fv(0).get_asInt();
+  int idEpisode = record->at(0).get_asInt();
 
-  GetDetailsFromDB(pDS, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets, details);
+  GetDetailsFromDB(record, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets, details);
   details.m_iDbId = idEpisode;
   details.m_type = "episode";
-  details.m_iFileId = pDS->fv(VIDEODB_DETAILS_FILEID).get_asInt();
-  details.m_strPath = pDS->fv(VIDEODB_DETAILS_EPISODE_PATH).get_asString();
-  CStdString strFileName = pDS->fv(VIDEODB_DETAILS_EPISODE_FILE).get_asString();
+  details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
+  details.m_strPath = record->at(VIDEODB_DETAILS_EPISODE_PATH).get_asString();
+  CStdString strFileName = record->at(VIDEODB_DETAILS_EPISODE_FILE).get_asString();
   ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
-  details.m_playCount = pDS->fv(VIDEODB_DETAILS_EPISODE_PLAYCOUNT).get_asInt();
-  details.m_lastPlayed.SetFromDBDateTime(pDS->fv(VIDEODB_DETAILS_EPISODE_LASTPLAYED).get_asString());
-  details.m_dateAdded.SetFromDBDateTime(pDS->fv(VIDEODB_DETAILS_EPISODE_DATEADDED).get_asString());
-  details.m_strMPAARating = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA).get_asString();
-  details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
-  details.m_studio = StringUtils::Split(pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString(), g_advancedSettings.m_videoItemSeparator);
-  details.m_premiered.SetFromDBDate(pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
-  details.m_iIdShow = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
-  details.m_strShowPath = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_PATH).get_asString();
+  details.m_playCount = record->at(VIDEODB_DETAILS_EPISODE_PLAYCOUNT).get_asInt();
+  details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_EPISODE_LASTPLAYED).get_asString());
+  details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_EPISODE_DATEADDED).get_asString());
+  details.m_strMPAARating = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA).get_asString();
+  details.m_strShowTitle = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
+  details.m_studio = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString(), g_advancedSettings.m_videoItemSeparator);
+  details.m_premiered.SetFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
+  details.m_iIdShow = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
+  details.m_strShowPath = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_PATH).get_asString();
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
@@ -3069,16 +3096,20 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
 
 CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
 {
+  return GetDetailsForMusicVideo(pDS->get_sql_record());
+}
+
+CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record* const record)
+{
   CVideoInfoTag details;
-  details.Reset();
 
   unsigned int time = XbmcThreads::SystemClockMillis();
-  int idMovie = pDS->fv(0).get_asInt();
+  int idMovie = record->at(0).get_asInt();
 
-  GetDetailsFromDB(pDS, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets, details);
+  GetDetailsFromDB(record, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets, details);
   details.m_iDbId = idMovie;
   details.m_type = "musicvideo";
-  GetCommonDetails(pDS, details);
+  GetCommonDetails(record, details);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   GetStreamDetails(details);
@@ -3090,13 +3121,18 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
 
 void CVideoDatabase::GetCommonDetails(auto_ptr<Dataset> &pDS, CVideoInfoTag &details)
 {
-  details.m_iFileId = pDS->fv(VIDEODB_DETAILS_FILEID).get_asInt();
-  details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
-  CStdString strFileName = pDS->fv(VIDEODB_DETAILS_FILE).get_asString();
+  GetCommonDetails(pDS->get_sql_record(), details);
+}
+
+void CVideoDatabase::GetCommonDetails(const dbiplus::sql_record* const record, CVideoInfoTag &details)
+{
+  details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
+  details.m_strPath = record->at(VIDEODB_DETAILS_PATH).get_asString();
+  CStdString strFileName = record->at(VIDEODB_DETAILS_FILE).get_asString();
   ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
-  details.m_playCount = pDS->fv(VIDEODB_DETAILS_PLAYCOUNT).get_asInt();
-  details.m_lastPlayed.SetFromDBDateTime(pDS->fv(VIDEODB_DETAILS_LASTPLAYED).get_asString());
-  details.m_dateAdded.SetFromDBDateTime(pDS->fv(VIDEODB_DETAILS_DATEADDED).get_asString());
+  details.m_playCount = record->at(VIDEODB_DETAILS_PLAYCOUNT).get_asInt();
+  details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_LASTPLAYED).get_asString());
+  details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_DATEADDED).get_asString());
 }
 
 void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id, int type_id, vector<SActorInfo> &cast)
@@ -4999,6 +5035,53 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
+bool CVideoDatabase::GetSortedVideos(MediaType mediaType, const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter /* = Filter() */, bool fetchSets /* = false */)
+{
+  if (NULL == m_pDB.get() || NULL == m_pDS.get())
+    return false;
+
+  if (mediaType != MediaTypeMovie && mediaType != MediaTypeTvShow && mediaType != MediaTypeEpisode && mediaType != MediaTypeMusicVideo)
+    return false;
+
+  SortDescription sorting = sortDescription;
+  if (sortDescription.sortBy == SortByFile ||
+      sortDescription.sortBy == SortByTitle ||
+      sortDescription.sortBy == SortBySortTitle ||
+      sortDescription.sortBy == SortByLabel ||
+      sortDescription.sortBy == SortByDateAdded ||
+      sortDescription.sortBy == SortByRating ||
+      sortDescription.sortBy == SortByYear ||
+      sortDescription.sortBy == SortByLastPlayed ||
+      sortDescription.sortBy == SortByPlaycount)
+    sorting.sortAttributes = (SortAttribute)(sortDescription.sortAttributes | SortAttributeIgnoreFolders);
+
+  bool success = false;
+  switch (mediaType)
+  {
+  case MediaTypeMovie:
+    success = GetSortedMovies(strBaseDir, sorting, items, filter, fetchSets);
+    break;
+      
+  case MediaTypeTvShow:
+    success = GetSortedTvShows(strBaseDir, sorting, items, filter);
+    break;
+      
+  case MediaTypeEpisode:
+    success = GetSortedEpisodes(strBaseDir, sorting, items, filter);
+    break;
+      
+  case MediaTypeMusicVideo:
+    success = GetSortedMusicVideos(strBaseDir, sorting, items, filter);
+    break;
+
+  default:
+    return false;
+  }
+
+  items.SetContent(DatabaseUtils::MediaTypeToString(mediaType) + "s");
+  return success;
+}
+
 bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idStudio, int idCountry, int idSet)
 {
   Filter filter;
@@ -5130,6 +5213,128 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
   return false;
 }
 
+bool CVideoDatabase::GetSortedMovies(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter /* = Filter() */, bool fetchSets /* = false */)
+{
+  try
+  {
+    movieTime = 0;
+    castTime = 0;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = PrepareSQL("select %s from movieview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    CFileItemList setItems;
+    if (fetchSets && g_guiSettings.GetBool("videolibrary.groupmoviesets"))
+    {
+      // user wants sets (and we're not fetching a particular set node), so grab all sets that match this where clause first
+      Filter setsFilter;
+      if (!filter.where.empty() || !filter.join.empty())
+      {
+        setsFilter.where = "movieview.idMovie in (select movieview.idMovie from movieview ";
+        if (!filter.join.empty())
+          setsFilter.where += filter.join;
+        if (!filter.where.empty())
+          setsFilter.where += " WHERE " + filter.where;
+        setsFilter.where += ")";
+      }
+      GetSetsByWhere("videodb://1/7/", setsFilter, setItems);
+      CStdString movieSetsWhere;
+      if (setItems.Size() > 0)
+      {
+        movieSetsWhere = "movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet WHERE s1.idSet IN (";
+        for (int index = 0; index < setItems.Size(); index++)
+          movieSetsWhere.AppendFormat("%s%d", index > 0 ? "," : "", setItems[index]->GetVideoInfoTag()->m_iDbId);
+        movieSetsWhere += "))";
+      }
+      if (!filter.join.empty())
+        strSQL += filter.join;
+      if (!filter.where.empty())
+      {
+        strSQL += " WHERE (" + filter.where + ")";
+        if (!movieSetsWhere.empty())
+          strSQL += " AND " + movieSetsWhere;
+      }
+      else if (!movieSetsWhere.empty())
+        strSQL += " WHERE " + movieSetsWhere;
+    }
+    else
+    {
+      if (!filter.join.empty())
+        strSQL += filter.join;
+      if (!filter.where.empty())
+        strSQL += " WHERE " + filter.where;
+    }
+
+    if (!filter.group.empty())
+      strSQL += " GROUP BY " + filter.group;
+    if (filter.order.size())
+      strSQL += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQL += " LIMIT " + filter.limit;
+    // Apply the limiting directly here if there's no special sorting but limiting
+    else if (sortDescription.sortBy == SortByNone &&
+            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
+    
+    DatabaseResults results;
+    results.reserve(iRowsFound + setItems.Size());
+
+    // Add the previously retrieved sets
+    for (int index = 0; index < setItems.Size(); index++)
+    {
+      DatabaseResult result;
+      setItems[index]->ToSortable(result);
+      result[FieldRow] = (unsigned int)index;
+      results.push_back(result);
+    }
+
+    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMovie, m_pDS, results))
+      return false;
+
+    // get data from returned rows
+    items.Reserve(results.size());
+    const query_data &data = m_pDS->get_result_set().records;
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    {
+      unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
+      if (targetRow < (unsigned int)setItems.Size())
+      {
+        items.Add(setItems[targetRow]);
+        continue;
+      }
+      targetRow -= setItems.Size();
+
+      const dbiplus::sql_record* const record = data.at(targetRow);
+
+      CVideoInfoTag movie = GetDetailsForMovie(record);
+      if (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+          g_passwordManager.bMasterUser                                   ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources))
+      {
+        CFileItemPtr pItem(new CFileItem(movie));
+        CStdString path; path.Format("%s%ld", strBaseDir.c_str(), movie.m_iDbId);
+        pItem->SetPath(path);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
+        items.Add(pItem);
+      }
+    }
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idStudio)
 {
   Filter filter;
@@ -5227,6 +5432,83 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
   return false;
 }
 
+bool CVideoDatabase::GetSortedTvShows(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter /* = Filter() */)
+{
+  try
+  {
+    movieTime = 0;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = PrepareSQL("SELECT %s FROM tvshowview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    if (!filter.join.empty())
+      strSQL += filter.join;
+    if (!filter.where.empty())
+      strSQL += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQL += " GROUP BY " + filter.group;
+    if (!filter.order.empty())
+      strSQL += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQL += " LIMIT " + filter.limit;
+    // Apply the limiting directly here if there's no special sorting but limiting
+    else if (sortDescription.sortBy == SortByNone &&
+            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
+    
+    DatabaseResults results;
+    results.reserve(iRowsFound);
+    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeTvShow, m_pDS, results))
+      return false;
+
+    // get data from returned rows
+    items.Reserve(results.size());
+    const query_data &data = m_pDS->get_result_set().records;
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    {
+      unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
+      const dbiplus::sql_record* const record = data.at(targetRow);
+      
+      CVideoInfoTag movie = GetDetailsForTvShow(record, false);
+      if ((g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+           g_passwordManager.bMasterUser                                     ||
+           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources)) &&
+          (!g_advancedSettings.m_bVideoLibraryHideEmptySeries || movie.m_iEpisode > 0))
+      {
+        CFileItemPtr pItem(new CFileItem(movie));
+        CStdString path; path.Format("%s%ld/", strBaseDir.c_str(), record->at(0).get_asInt());
+        pItem->SetPath(path);
+        pItem->m_dateTime = movie.m_premiered;
+        pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        pItem->SetProperty("totalseasons", record->at(VIDEODB_DETAILS_TVSHOW_NUM_SEASONS).get_asInt());
+        pItem->SetProperty("totalepisodes", movie.m_iEpisode);
+        pItem->SetProperty("numepisodes", movie.m_iEpisode); // will be changed later to reflect watchmode setting
+        pItem->SetProperty("watchedepisodes", movie.m_playCount);
+        pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
+        pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
+        items.Add(pItem);
+      }
+    }
+
+    Stack(items, VIDEODB_CONTENT_TVSHOWS, !filter.order.empty());
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder /* = false */)
 {
   if (maintainSortOrder)
@@ -5241,7 +5523,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
     case VIDEODB_CONTENT_TVSHOWS:
     {
       // sort by Title
-      items.Sort(SORT_METHOD_VIDEO_TITLE, SORT_ORDER_ASC);
+      items.Sort(SORT_METHOD_VIDEO_TITLE, SortOrderAscending);
 
       int i = 0;
       while (i < items.Size())
@@ -5304,7 +5586,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
     case VIDEODB_CONTENT_EPISODES:
     {
       // sort by ShowTitle, Episode, Filename
-      items.Sort(SORT_METHOD_EPISODE, SORT_ORDER_ASC);
+      items.Sort(SORT_METHOD_EPISODE, SortOrderAscending);
 
       int i = 0;
       while (i < items.Size())
@@ -5399,7 +5681,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
   if (maintainSortOrder)
   {
     // restore original sort order - essential for smartplaylists
-    items.Sort(SORT_METHOD_PROGRAM_COUNT, SORT_ORDER_ASC);
+    items.Sort(SORT_METHOD_PROGRAM_COUNT, SortOrderAscending);
   }
 }
 
@@ -5472,7 +5754,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = PrepareSQL("select %s from episodeview ", !filter.fields.empty() ? filter.fields.c_str() : "*");;
+    CStdString strSQL = PrepareSQL("select %s from episodeview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
     if (!filter.join.empty())
       strSQL += filter.join;
     if (!filter.where.empty())
@@ -5527,6 +5809,84 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
   return false;
 }
 
+bool CVideoDatabase::GetSortedEpisodes(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter /* = Filter() */, bool appendFullShowPath /* = true */)
+{
+  try
+  {
+    movieTime = 0;
+    castTime = 0;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = PrepareSQL("select %s from episodeview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    if (!filter.join.empty())
+      strSQL += filter.join;
+    if (!filter.where.empty())
+      strSQL += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQL += " GROUP BY " + filter.group;
+    if (!filter.order.empty())
+      strSQL += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQL += " LIMIT " + filter.limit;
+    // Apply the limiting directly here if there's no special sorting but limiting
+    else if (sortDescription.sortBy == SortByNone &&
+            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
+    
+    DatabaseResults results;
+    results.reserve(iRowsFound);
+    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeEpisode, m_pDS, results))
+      return false;
+    
+    // get data from returned rows
+    items.Reserve(results.size());
+    CLabelFormatter formatter("%H. %T", "");
+
+    const query_data &data = m_pDS->get_result_set().records;
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    {
+      unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
+      const dbiplus::sql_record* const record = data.at(targetRow);
+
+      CVideoInfoTag movie = GetDetailsForEpisode(record);
+      if (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+          g_passwordManager.bMasterUser                                     ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources))
+      {
+        CFileItemPtr pItem(new CFileItem(movie));
+        formatter.FormatLabel(pItem.get());
+      
+        int idEpisode = record->at(0).get_asInt();
+
+        CStdString path;
+        if (appendFullShowPath)
+          path.Format("%s%ld/%ld/%ld", strBaseDir.c_str(), record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt(), movie.m_iSeason, idEpisode);
+        else
+          path.Format("%s%ld", strBaseDir.c_str(), idEpisode);
+        pItem->SetPath(path);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.m_playCount > 0);
+        pItem->m_dateTime = movie.m_firstAired;
+        pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        items.Add(pItem);
+      }
+    }
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
 
 bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum)
 {
@@ -6353,6 +6713,74 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
     }
 
     CLog::Log(LOGDEBUG, "%s time to retrieve from dataset = %d", __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetSortedMusicVideos(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter /* = Filter() */, bool checkLocks /* = true */)
+{
+  try
+  {
+    movieTime = 0;
+    castTime = 0;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // We don't use PrepareSQL here, as the WHERE clause is already formatted.
+    CStdString strSQL = PrepareSQL("select %s from musicvideoview ", !filter.fields.empty() ? filter.fields.c_str() : "*");;
+    if (!filter.join.empty())
+      strSQL += filter.join;
+    if (!filter.where.empty())
+      strSQL += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQL += PrepareSQL(" GROUP BY " + filter.group);
+    if (!filter.order.empty())
+      strSQL += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQL += PrepareSQL(" LIMIT " + filter.limit);
+    // Apply the limiting directly here if there's no special sorting but limiting
+    else if (sortDescription.sortBy == SortByNone &&
+            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
+    
+    DatabaseResults results;
+    results.reserve(iRowsFound);
+    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMusicVideo, m_pDS, results))
+      return false;
+    
+    // get data from returned rows
+    items.Reserve(results.size());
+    // get songs from returned subtable
+    const query_data &data = m_pDS->get_result_set().records;
+    for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
+    {
+      unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
+      const dbiplus::sql_record* const record = data.at(targetRow);
+      
+      CVideoInfoTag musicvideo = GetDetailsForMusicVideo(record);
+      if (!checkLocks || g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
+          g_passwordManager.IsDatabasePathUnlocked(musicvideo.m_strPath, g_settings.m_videoSources))
+      {
+        CFileItemPtr item(new CFileItem(musicvideo));
+        CStdString path; path.Format("%s%ld", strBaseDir, record->at(0).get_asInt());
+        item->SetPath(path);
+        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, musicvideo.m_playCount > 0);
+        items.Add(item);
+      }
+    }
 
     // cleanup
     m_pDS->close();

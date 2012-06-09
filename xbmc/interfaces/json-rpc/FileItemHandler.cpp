@@ -175,7 +175,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
   }
 }
 
-void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result)
+void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool sortLimit /* = true */)
 {
   int size  = items.Size();
   int start = (int)parameterObject["limits"]["start"].asInteger();
@@ -183,11 +183,18 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   end = (end <= 0 || end > size) ? size : end;
   start = start > end ? end : start;
 
-  Sort(items, parameterObject["sort"]);
+  if (sortLimit)
+    Sort(items, parameterObject["sort"]);
 
   result["limits"]["start"] = start;
   result["limits"]["end"]   = end;
   result["limits"]["total"] = size;
+
+  if (!sortLimit)
+  {
+    start = 0;
+    end = items.Size();
+  }
 
   for (int i = start; i < end; i++)
   {
@@ -331,12 +338,12 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
   return (list.Size() > 0);
 }
 
-bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
+bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SortOrder &sortorder)
 {
   if (order.Equals("ascending"))
-    sortorder = SORT_ORDER_ASC;
+    sortorder = SortOrderAscending;
   else if (order.Equals("descending"))
-    sortorder = SORT_ORDER_DESC;
+    sortorder = SortOrderDescending;
   else
     return false;
 
@@ -419,7 +426,7 @@ void CFileItemHandler::Sort(CFileItemList &items, const CVariant &parameterObjec
   order  = order.ToLower();
 
   SORT_METHOD sortmethod = SORT_METHOD_NONE;
-  SORT_ORDER  sortorder  = SORT_ORDER_ASC;
+  SortOrder   sortorder  = SortOrderAscending;
 
   if (ParseSortMethods(method, parameterObject["ignorearticle"].asBoolean(), order, sortmethod, sortorder))
     items.Sort(sortmethod, sortorder);
