@@ -510,13 +510,14 @@ bool DatabaseUtils::GetDatabaseResults(MediaType mediaType, const FieldList &fie
     return true;
 
   const dbiplus::result_set &resultSet = dataset->get_result_set();
+  unsigned int offset = results.size();
 
   if (fields.empty())
   {
     DatabaseResult result;
     for (unsigned int index = 0; index < resultSet.records.size(); index++)
     {
-      result[FieldRow] = index;
+      result[FieldRow] = index + offset;
       results.push_back(result);
     }
 
@@ -531,7 +532,6 @@ bool DatabaseUtils::GetDatabaseResults(MediaType mediaType, const FieldList &fie
   for (FieldList::const_iterator it = fields.begin(); it != fields.end(); it++)
     fieldIndexLookup.push_back(GetFieldIndex(*it, mediaType));
 
-  unsigned int offset = results.size();
   results.reserve(resultSet.records.size() + offset);
   for (unsigned int index = 0; index < resultSet.records.size(); index++)
   {
