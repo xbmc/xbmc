@@ -697,22 +697,39 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
       file = CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
 
     CDateTime dateAdded;
-    // Let's try to get the modification datetime
-    struct __stat64 buffer;
-    if (CFile::Stat(file, &buffer) == 0)
+    // Skip looking at the files ctime/mtime if defined by the user through as.xml
+    if (g_advancedSettings.m_iVideoLibraryDateAdded > 0)
     {
-      time_t now = time(NULL);
-      time_t addedTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
-      // if the newer of the two dates is in the future, we try it with the older one
-      if (addedTime > now)
-        addedTime = min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
-
-      // make sure the datetime does is not in the future
-      if (addedTime <= now)
+      // Let's try to get the modification datetime
+      struct __stat64 buffer;
+      if (CFile::Stat(file, &buffer) == 0)
       {
-        struct tm *time = localtime(&addedTime);
-        if (time)
-          dateAdded = *time;
+        time_t now = time(NULL);
+        time_t addedTime;
+        // Prefer the modification time if it's valid
+        if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
+        {
+          if ((time_t)buffer.st_mtime <= now)
+            addedTime = (time_t)buffer.st_mtime;
+          else
+            addedTime = (time_t)buffer.st_ctime;
+        }
+        // Use the newer of the creation and modification time
+        else
+        {
+          addedTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+          // if the newer of the two dates is in the future, we try it with the older one
+          if (addedTime > now)
+            addedTime = min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+        }
+
+        // make sure the datetime does is not in the future
+        if (addedTime <= now)
+        {
+          struct tm *time = localtime(&addedTime);
+          if (time)
+            dateAdded = *time;
+        }
       }
     }
 
@@ -1105,16 +1122,20 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
 
     // Get the creation datetime of the tvshow directory
     CDateTime dateAdded;
-    struct __stat64 buffer;
-    if (XFILE::CFile::Stat(strPath, &buffer) == 0)
+    // Skip looking at the files ctime/mtime if defined by the user through as.xml
+    if (g_advancedSettings.m_iVideoLibraryDateAdded > 0)
     {
-      time_t now = time(NULL);
-      // Make sure we have a valid date (i.e. not in the future)
-      if ((time_t)buffer.st_ctime <= now)
+      struct __stat64 buffer;
+      if (XFILE::CFile::Stat(strPath, &buffer) == 0)
       {
-        struct tm *time = localtime((const time_t*)&buffer.st_ctime);
-        if (time)
-          dateAdded = *time;
+        time_t now = time(NULL);
+        // Make sure we have a valid date (i.e. not in the future)
+        if ((time_t)buffer.st_ctime <= now)
+        {
+          struct tm *time = localtime((const time_t*)&buffer.st_ctime);
+          if (time)
+            dateAdded = *time;
+        }
       }
     }
 
