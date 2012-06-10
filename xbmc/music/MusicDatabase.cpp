@@ -3918,6 +3918,21 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const CStdStrin
   return false;
 }
 
+bool CMusicDatabase::GetCompilationAlbums(const CStdString& strBaseDir, CFileItemList& items)
+{
+  return GetAlbumsByWhere(strBaseDir, "WHERE bCompilation = 1", "", items);
+}
+
+bool CMusicDatabase::GetCompilationSongs(const CStdString& strBaseDir, CFileItemList& items)
+{
+  return GetSongsByWhere(strBaseDir, "WHERE bCompilation = 1", items);
+}
+
+int CMusicDatabase::GetCompilationAlbumsCount()
+{
+  return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1"), NULL, 10);
+}
+
 bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items)
 {
   try

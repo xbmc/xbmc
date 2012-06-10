@@ -197,6 +197,9 @@ public:
   int GetGenreByName(const CStdString& strGenre);
   int GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
+  bool GetCompilationAlbums(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetCompilationSongs(const CStdString& strBaseDir, CFileItemList& items);
+  int  GetCompilationAlbumsCount();
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
   int GetVariousArtistsAlbumsCount();
