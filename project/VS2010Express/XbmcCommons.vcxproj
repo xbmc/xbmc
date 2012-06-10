@@ -11,9 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\xbmc\commons\Exception.cpp" />
     <ClCompile Include="..\..\xbmc\commons\ilog.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\xbmc\commons\Exception.h" />
     <ClInclude Include="..\..\xbmc\commons\ilog.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

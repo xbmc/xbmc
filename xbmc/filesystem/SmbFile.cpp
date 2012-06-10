@@ -34,6 +34,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "commons/Exception.h"
 
 using namespace XFILE;
 
@@ -80,18 +81,11 @@ void CSMB::Deinit()
       smbc_set_context(NULL);
       smbc_free_context(m_context, 1);
     }
-#ifdef TARGET_WINDOWS
-    catch(win32_exception e)
-    {
-      e.writelog(__FUNCTION__);
-    }
-    m_IdleTimeout = 180;
-#else
+    XBMCCOMMONS_HANDLE_UNCHECKED
     catch(...)
     {
       CLog::Log(LOGERROR,"exception on CSMB::Deinit. errno: %d", errno);
     }
-#endif
     m_context = NULL;
   }
 }

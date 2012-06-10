@@ -9,6 +9,9 @@
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
       <Filter>platform</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\platform\win\Win32Exception.cpp">
+      <Filter>platform\win</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\threads\Atomics.h" />
@@ -55,6 +58,9 @@
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp">
+      <Filter>platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Win32Exception.h">
       <Filter>platform\win</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,9 +20,9 @@
 
 #include "threads/SystemClock.h"
 #include "Thread.h"
-#include "utils/log.h"
 #include "threads/ThreadLocal.h"
 #include "threads/SingleLock.h"
+#include "commons/Exception.h"
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
@@ -36,6 +36,8 @@ XbmcCommons::ILogger* CThread::logger = NULL;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+
+#define LOG if(logger) logger->Log
 
 CThread::CThread(const char* ThreadName)
 : m_StopEvent(true,true), m_TermEvent(true), m_StartEvent(true)
@@ -76,6 +78,25 @@ CThread::~CThread()
   StopThread();
 }
 
+void CThread::Create(bool bAutoDelete, unsigned stacksize)
+{
+  if (m_ThreadId != 0)
+  {
+    LOG(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
+    exit(1);
+  }
+  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
+  m_iLastUsage = 0;
+  m_fLastUsage = 0.0f;
+  m_bAutoDelete = bAutoDelete;
+  m_bStop = false;
+  m_StopEvent.Reset();
+  m_TermEvent.Reset();
+  m_StartEvent.Reset();
+
+  SpawnThread(stacksize);
+}
+
 bool CThread::IsRunning()
 {
   return m_ThreadId ? true : false;
@@ -89,7 +110,7 @@ THREADFUNC CThread::staticThread(void* data)
   bool autodelete;
 
   if (!pThread) {
-    if(logger) logger->Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
+    LOG(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
     return 1;
   }
 
@@ -99,7 +120,7 @@ THREADFUNC CThread::staticThread(void* data)
 
   pThread->SetThreadInfo();
 
-  if(logger) logger->Log(LOGNOTICE,"Thread %s start, auto delete: %s", name.c_str(), (autodelete ? "true" : "false"));
+  LOG(LOGNOTICE,"Thread %s start, auto delete: %s", name.c_str(), (autodelete ? "true" : "false"));
 
   currentThread.set(pThread);
   pThread->m_StartEvent.Set();
@@ -117,12 +138,12 @@ THREADFUNC CThread::staticThread(void* data)
 
   if (autodelete)
   {
-    if(logger) logger->Log(LOGDEBUG,"Thread %s %"PRIu64" terminating (autodelete)", name.c_str(), (uint64_t)id);
+    LOG(LOGDEBUG,"Thread %s %"PRIu64" terminating (autodelete)", name.c_str(), (uint64_t)id);
     delete pThread;
     pThread = NULL;
   }
   else
-    if(logger) logger->Log(LOGDEBUG,"Thread %s %"PRIu64" terminating", name.c_str(), (uint64_t)id);
+    LOG(LOGDEBUG,"Thread %s %"PRIu64" terminating", name.c_str(), (uint64_t)id);
 
   return 0;
 }
@@ -173,4 +194,50 @@ void CThread::Sleep(unsigned int milliseconds)
     XbmcThreads::ThreadSleep(milliseconds);
 }
 
+void CThread::Action()
+{
+
+  try
+  {
+    OnStartup();
+  }
+  catch (const XbmcCommons::UncheckedException &e)
+  {
+    e.LogThrowMessage("OnStartup");
+    if (IsAutoDelete())
+      return;
+  }
+  catch (...)
+  {
+    LOG(LOGERROR, "%s - thread %s, Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+    if (IsAutoDelete())
+      return;
+  }
+
+  try
+  {
+    Process();
+  }
+  catch (const XbmcCommons::UncheckedException &e)
+  {
+    e.LogThrowMessage("Process");
+  }
+  catch (...)
+  {
+    LOG(LOGERROR, "%s - thread %s, Unhandled exception caught in thread process, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+  }
+
+  try
+  {
+    OnExit();
+  }
+  catch (const XbmcCommons::UncheckedException &e)
+  {
+    e.LogThrowMessage("OnExit");
+  }
+  catch (...)
+  {
+    LOG(LOGERROR, "%s - thread %s, Unhandled exception caught in thread process, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+  }
+}
 

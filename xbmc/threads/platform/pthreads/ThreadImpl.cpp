@@ -32,22 +32,10 @@
 #endif
 #endif
 
-void CThread::Create(bool bAutoDelete, unsigned stacksize)
-{
-  if (m_ThreadId != 0)
-  {
-    if (logger) logger->Log(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
-    exit(1);
-  }
-  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
-  m_iLastUsage = 0;
-  m_fLastUsage = 0.0f;
-  m_bAutoDelete = bAutoDelete;
-  m_bStop = false;
-  m_StopEvent.Reset();
-  m_TermEvent.Reset();
-  m_StartEvent.Reset();
+#include <signal.h>
 
+void CThread::SpawnThread(unsigned stacksize)
+{
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   if (stacksize > PTHREAD_STACK_MIN)
@@ -60,10 +48,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   pthread_attr_destroy(&attr);
 }
 
-void CThread::TermHandler()
-{
-
-}
+void CThread::TermHandler() { }
 
 void CThread::SetThreadInfo()
 {
@@ -243,36 +228,29 @@ float CThread::GetRelativeUsage()
   return m_fLastUsage;
 }
 
-void CThread::Action()
+void term_handler (int signum)
 {
-  try
+  XbmcCommons::ILogger* logger = CThread::GetLogger();
+  if (logger)
+    logger->Log(LOGERROR,"thread 0x%lx (%lu) got signal %d. calling OnException and terminating thread abnormally.", (long unsigned int)pthread_self(), (long unsigned int)pthread_self(), signum);
+  CThread* curThread = CThread::GetCurrentThread();
+  if (curThread)
   {
-    OnStartup();
+    curThread->StopThread(false);
+    curThread->OnException();
+    if( curThread->IsAutoDelete() )
+      delete curThread;
   }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
-    if (IsAutoDelete())
-      return;
-  }
-
-  try
-  {
-    Process();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread process, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
-  }
-
-  try
-  {
-    OnExit();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread exit, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
-  }
+  pthread_exit(NULL);
 }
 
+void CThread::SetSignalHandlers()
+{
+  struct sigaction action;
+  action.sa_handler = term_handler;
+  sigemptyset (&action.sa_mask);
+  action.sa_flags = 0;
+  //sigaction (SIGABRT, &action, NULL);
+  //sigaction (SIGSEGV, &action, NULL);
+}
 
