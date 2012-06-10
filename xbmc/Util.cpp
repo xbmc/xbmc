@@ -95,6 +95,9 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "windowing/WindowingFactory.h"
 #include "video/VideoInfoTag.h"
+#ifdef HAVE_LIBCAP
+  #include <sys/capability.h>
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -2596,5 +2599,41 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
     }
   }
   return false;
+}
+
+bool CUtil::CanBindPrivileged()
+{
+#ifdef _LINUX
+
+  if (geteuid() == 0)
+    return true; //root user can always bind to privileged ports
+
+#ifdef HAVE_LIBCAP
+
+  //check if CAP_NET_BIND_SERVICE is enabled, this allows non-root users to bind to privileged ports
+  bool canbind = false;
+  cap_t capabilities = cap_get_proc();
+  if (capabilities)
+  {
+    cap_flag_value_t value;
+    if (cap_get_flag(capabilities, CAP_NET_BIND_SERVICE, CAP_EFFECTIVE, &value) == 0)
+      canbind = value;
+
+    cap_free(capabilities);
+  }
+
+  return canbind;
+
+#else //HAVE_LIBCAP
+
+  return false;
+
+#endif //HAVE_LIBCAP
+
+#else //_LINUX
+
+  return true;
+
+#endif //_LINUX
 }
 

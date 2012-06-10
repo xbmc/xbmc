@@ -125,6 +125,8 @@ libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
 libplist_disabled="== AirPlay support disabled. =="
 alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
+libcap_disabled="== Capabilities detection support disabled. =="
+libcap_not_found="== Could not find libcap. Capabilities detection support disabled. =="
 
 libudev_not_found="== Could not find libudev. Will use polling to check for device changes. =="
 libudev_disabled="== udev support disabled. Will use polling to check for device changes. =="
@@ -434,6 +436,12 @@ AC_ARG_ENABLE([vorbisenc],
   [enable vorbis encoder support (default is auto)])],
   [use_libvorbisenc=$enableval],
   [use_libvorbisenc=auto])
+
+AC_ARG_ENABLE([libcap],
+  [AS_HELP_STRING([--enable-libcap],
+  [enable libcap support (default is auto)])],
+  [use_libcap=$enableval],
+  [use_libcap=auto])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -1254,6 +1262,34 @@ if test "x$use_libcec" != "xno"; then
 else
   use_libcec="no"
   AC_MSG_NOTICE($libcec_disabled)
+fi
+
+# libcap
+if test "$use_libcap" = "auto"; then
+  if echo "$ARCH" | grep -q "linux" ; then
+    use_libcap="yes"
+  else
+    use_libcap="no"
+  fi
+fi
+
+if test "$use_libcap" != "no"; then
+  AC_CHECK_HEADERS([sys/capability.h],,
+   [if test "$use_libcap" = "yes"; then
+      AC_MSG_ERROR($libcap_not_found)
+    elif test "$use_libcap" != "no"; then
+      AC_MSG_NOTICE($libcap_not_found)
+      use_libcap="no"
+    fi
+   ])
+  if test "$use_libcap" != "no"; then
+    AC_CHECK_LIB([cap], main, LIBS="$LIBS -lcap", use_libcap=no)
+  fi
+  if test "$use_libcap" != "no"; then
+    AC_DEFINE([HAVE_LIBCAP], [1], [Whether to use libcap library.])
+  fi
+else
+  AC_MSG_NOTICE($libcap_disabled)
 fi
 
 ### External libraries checks
