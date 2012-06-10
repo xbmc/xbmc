@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include <stdint.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 
 typedef long        LONG;
@@ -51,12 +52,9 @@ typedef LONG        HRESULT;
 #define THREAD_PRIORITY_NORMAL          0
 #define THREAD_PRIORITY_HIGHEST         THREAD_BASE_PRIORITY_MAX
 #define THREAD_PRIORITY_ABOVE_NORMAL    (THREAD_PRIORITY_HIGHEST-1)
-//#define THREAD_PRIORITY_ERROR_RETURN    (MAXLONG)
 
 #define THREAD_PRIORITY_TIME_CRITICAL   THREAD_BASE_PRIORITY_LOWRT
 #define THREAD_PRIORITY_IDLE            THREAD_BASE_PRIORITY_IDLE
-
-//#include "File.h"
 
 #ifdef TARGET_LINUX
 #include <limits.h>
@@ -65,7 +63,31 @@ typedef LONG        HRESULT;
 #define MAX_PATH 256
 #endif
 
-#define __stat64 stat64
+#if defined(__APPLE__)
+  #include <sched.h>
+  #include <AvailabilityMacros.h>
+  typedef int64_t   off64_t;
+  typedef off_t     __off_t;
+  typedef off64_t   __off64_t;
+  typedef fpos_t fpos64_t;
+  #define __stat64 stat
+  #define stat64 stat
+  #if defined(TARGET_DARWIN_IOS)
+    #define statfs64 statfs
+  #endif
+  #define fstat64 fstat
+#elif defined(__FreeBSD__)
+  typedef int64_t   off64_t;
+  typedef off_t     __off_t;
+  typedef off64_t   __off64_t;
+  typedef fpos_t fpos64_t;
+  #define __stat64 stat
+  #define stat64 stat
+  #define statfs64 statfs
+  #define fstat64 fstat
+#else
+  #define __stat64 stat64
+#endif
 
 #include <string.h>
 #define strnicmp(X,Y,N) strncasecmp(X,Y,N)
@@ -74,14 +96,6 @@ typedef pthread_mutex_t criticalsection_t;
 typedef sem_t wait_event_t;
 typedef unsigned char byte;
 typedef pid_t tThreadId;
-
-// Various Windows typedefs
-// Unused for Linux, but needed for compilation at the moment
-//typedef struct _SECURITY_ATTRIBUTES {
-//    unsigned long  nLength;
-//    void*          lpSecurityDescriptor;
-//    int            bInheritHandle;
-//} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
 /* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '/'
