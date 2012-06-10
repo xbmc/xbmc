@@ -2804,11 +2804,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 #ifdef HAS_SDL_JOYSTICK
   if (!m_AppFocused)
     return false;
-  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
-  if (g_windowManager.HasModalDialog())
-  {
-    iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
-  }
+  int iWin = GetActiveWindowID();
   int bid;
   g_Joystick.Update();
   if (g_Joystick.GetButton(bid))
@@ -3168,20 +3164,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 #endif
    g_Mouse.SetActive(false);
 
-   // Figure out what window we're taking the event for.
-   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
-   if (g_windowManager.HasModalDialog())
-       iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
-
-   // This code is copied from the OnKey handler, it should be factored out.
-   if (iWin == WINDOW_FULLSCREEN_VIDEO &&
-       g_application.m_pPlayer &&
-       g_application.m_pPlayer->IsInMenu())
-   {
-     // If player is in some sort of menu, (ie DVDMENU) map buttons differently.
-     iWin = WINDOW_VIDEO_MENU;
-   }
-
+   int iWin = GetActiveWindowID();
    int actionID;
    CStdString actionName;
    bool fullRange = false;
@@ -3200,6 +3183,23 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 #endif
 
    return false;
+}
+
+int CApplication::GetActiveWindowID(void)
+{
+  // Get the currently active window
+  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+
+  // If there is a dialog active get the dialog id instead
+  if (g_windowManager.HasModalDialog())
+    iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+
+  // If the window is FullScreenVideo check if we're in a DVD menu
+  if (iWin == WINDOW_FULLSCREEN_VIDEO && g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+    iWin = WINDOW_VIDEO_MENU;
+
+  // Return the window id
+  return iWin;
 }
 
 bool CApplication::Cleanup()
