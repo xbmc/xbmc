@@ -1686,9 +1686,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
   {
     CFileItemPtr item = m_items[(int)it->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem
-    CStdString sortLabel;
-    g_charsetConverter.wToUTF8(it->at(FieldSort).asWideString(), sortLabel);
-    item->SetSortLabel(sortLabel);
+    item->SetSortLabel(CStdStringW(it->at(FieldSort).asWideString()));
 
     sortedFileItems.push_back(item);
   }

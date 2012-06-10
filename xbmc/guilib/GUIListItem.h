@@ -94,6 +94,7 @@ public:
   std::map<std::string, std::string> GetArt() const;
 
   void SetSortLabel(const CStdString &label);
+  void SetSortLabel(const CStdStringW &label);
   const CStdStringW &GetSortLabel() const;
 
   void Select(bool bOnOff);
