@@ -59,30 +59,37 @@ public:
   CThread(IRunnable* pRunnable, const char* ThreadName);
   virtual ~CThread();
   void Create(bool bAutoDelete = false, unsigned stacksize = 0);
-  bool WaitForThreadExit(unsigned int milliseconds);
   void Sleep(unsigned int milliseconds);
-  bool SetPriority(const int iPriority);
-  int GetPriority(void);
-  int GetMinPriority(void);
-  int GetMaxPriority(void);
-  int GetNormalPriority(void);
   int GetSchedRRPriority(void);
   bool SetPrioritySched_RR(int iPriority);
   bool IsAutoDelete() const;
   virtual void StopThread(bool bWait = true);
+  bool IsRunning();
+
+  // -----------------------------------------------------------------------------------
+  // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
+  // -----------------------------------------------------------------------------------
+  bool IsCurrentThread() const;
+  int GetMinPriority(void);
+  int GetMaxPriority(void);
+  int GetNormalPriority(void);
+  int GetPriority(void);
+  bool SetPriority(const int iPriority);
+  bool WaitForThreadExit(unsigned int milliseconds);
   float GetRelativeUsage();  // returns the relative cpu usage of this thread since last call
   int64_t GetAbsoluteUsage();
-  bool IsCurrentThread() const;
-  bool IsRunning();
+  // -----------------------------------------------------------------------------------
 
   static bool IsCurrentThread(const ThreadIdentifier tid);
   static ThreadIdentifier GetCurrentThreadId();
   static CThread* GetCurrentThread();
   static inline void SetLogger(XbmcCommons::ILogger* logger_) { CThread::logger = logger_; }
+  static inline XbmcCommons::ILogger* GetLogger() { return CThread::logger; }
+
+  virtual void OnException(){} // signal termination handler
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
-  virtual void OnException(){} // signal termination handler
   virtual void Process();
 
   volatile bool m_bStop;
@@ -91,31 +98,30 @@ protected:
 
   /**
    * This call will wait on a CEvent in an interruptible way such that if
-   *  stop is called on the thread the wait will return with a respone
+   *  stop is called on the thread the wait will return with a response
    *  indicating what happened.
    */
-  inline WaitResponse AbortableWait(CEvent& event, int timeoutMillis)
+  inline WaitResponse AbortableWait(CEvent& event, int timeoutMillis = -1 /* indicates wait forever*/)
   {
     XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
-    CEvent* result = group.wait(timeoutMillis);
-    return  result == &event ? WAIT_SIGNALED :
-      (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
-  }
-
-  inline WaitResponse AbortableWait(CEvent& event)
-  {
-    XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
-    CEvent* result = group.wait();
+    CEvent* result = timeoutMillis < 0 ? group.wait() : group.wait(timeoutMillis);
     return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
   }
 
 private:
   static THREADFUNC staticThread(void *data);
+  void Action();
+
+  // -----------------------------------------------------------------------------------
+  // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
+  // -----------------------------------------------------------------------------------
   ThreadIdentifier ThreadId() const;
   void SetThreadInfo();
   void TermHandler();
-  void Action();
+  void SetSignalHandlers();
+  void SpawnThread(unsigned stacksize);
+  // -----------------------------------------------------------------------------------
 
   ThreadIdentifier m_ThreadId;
   ThreadOpaque m_ThreadOpaque;

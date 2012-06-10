@@ -29,7 +29,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/xbmc-dll-symbols/dll-symbols.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
-                   xbmc/commons/commons.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
                    xbmc/cores/DllLoader/exports/exports.a \
@@ -74,7 +73,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/rendering/rendering.a \
                    xbmc/settings/settings.a \
                    xbmc/storage/storage.a \
-                   xbmc/threads/threads.a \
                    xbmc/utils/utils.a \
                    xbmc/video/dialogs/videodialogs.a \
                    xbmc/video/video.a \
@@ -82,6 +80,10 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/windowing/windowing.a \
                    xbmc/windows/windows.a \
                    xbmc/xbmc.a \
+
+
+NWAOBJSXBMC=	xbmc/commons/commons.a \
+		xbmc/threads/threads.a \
 
 
 ifeq (@USE_WEB_SERVER@,1)
@@ -352,9 +354,9 @@ endif
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
