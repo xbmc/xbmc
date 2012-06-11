@@ -638,7 +638,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
            pItem->GetPath().size() > 14 && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    pDialog->SetLine(0, g_localizeStrings.Get(432));
+    pDialog->SetHeading(432);
     CStdString strLabel;
     strLabel.Format(g_localizeStrings.Get(433),pItem->GetLabel());
     pDialog->SetLine(1, strLabel);
