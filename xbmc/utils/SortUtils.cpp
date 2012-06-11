@@ -41,6 +41,8 @@ string ArrayToString(SortAttribute attributes, const CVariant &variant, const st
       else
         strArray.push_back(it->asString());
     }
+
+    return StringUtils::Join(strArray, seperator);
   }
   else if (variant.isString())
   {
@@ -50,56 +52,37 @@ string ArrayToString(SortAttribute attributes, const CVariant &variant, const st
       return variant.asString();
   }
 
-  return StringUtils::Join(strArray, seperator);
+  return "";
 }
 
 string ByLabel(SortAttribute attributes, const SortItem &values)
 {
-  SortItem::const_iterator it;
-  if ((it = values.find(FieldLabel)) == values.end())
-    return "";
-  
   if (attributes & SortAttributeIgnoreArticle)
-    return SortUtils::RemoveArticles(it->second.asString());
+    return SortUtils::RemoveArticles(values.at(FieldLabel).asString());
 
-  return it->second.asString();
+  return values.at(FieldLabel).asString();
 }
 
 string ByFile(SortAttribute attributes, const SortItem &values)
 {
   CURL url(values.at(FieldPath).asString());
-  int64_t startOffset = 0;
-
-  SortItem::const_iterator it;
-  if ((it = values.find(FieldStartOffset)) != values.end())
-    startOffset = it->second.asInteger();
   
   CStdString label;
-  label.Format("%s %d", url.GetFileNameWithoutPath().c_str(), startOffset);
+  label.Format("%s %d", url.GetFileNameWithoutPath().c_str(), values.at(FieldStartOffset).asInteger());
   return label;
 }
 
 string ByPath(SortAttribute attributes, const SortItem &values)
 {
-  int64_t startOffset = 0;
-  SortItem::const_iterator it;
-  if ((it = values.find(FieldStartOffset)) != values.end())
-    startOffset = it->second.asInteger();
-  
   CStdString label;
-  label.Format("%s %d", values.at(FieldPath).asString().c_str(), startOffset);
+  label.Format("%s %d", values.at(FieldPath).asString().c_str(), values.at(FieldStartOffset).asInteger());
   return label;
 }
 
 string ByLastPlayed(SortAttribute attributes, const SortItem &values)
 {
-  CStdString lastPlayed;
-  SortItem::const_iterator it;
-  if ((it = values.find(FieldLastPlayed)) != values.end())
-    lastPlayed = it->second.asString();
-
   CStdString label;
-  label.Format("%s %s", lastPlayed.c_str(), ByLabel(attributes, values).c_str());
+  label.Format("%s %s", values.at(FieldLastPlayed).asString().c_str(), ByLabel(attributes, values).c_str());
   return label;
 }
 
@@ -138,11 +121,10 @@ string ByDriveType(SortAttribute attributes, const SortItem &values)
 
 string ByTitle(SortAttribute attributes, const SortItem &values)
 {
-  string title = values.at(FieldTitle).asString();
   if (attributes & SortAttributeIgnoreArticle)
-    title = SortUtils::RemoveArticles(title);
+    return SortUtils::RemoveArticles(values.at(FieldTitle).asString());
 
-  return title;
+  return values.at(FieldTitle).asString();
 }
 
 string ByAlbum(SortAttribute attributes, const SortItem &values)
@@ -154,9 +136,9 @@ string ByAlbum(SortAttribute attributes, const SortItem &values)
   CStdString label;
   label.Format("%s %s", album, ArrayToString(attributes, values.at(FieldArtist)));
 
-  SortItem::const_iterator it;
-  if ((it = values.find(FieldTrackNumber)) != values.end())
-    label.AppendFormat(" %i", (int)it->second.asInteger());
+  const CVariant &track = values.at(FieldTrackNumber);
+  if (!track.isNull())
+    label.AppendFormat(" %i", (int)track.asInteger());
 
   return label;
 }
@@ -170,16 +152,18 @@ string ByArtist(SortAttribute attributes, const SortItem &values)
 {
   CStdString label = ArrayToString(attributes, values.at(FieldArtist));
 
-  SortItem::const_iterator it;
+  const CVariant &year = values.at(FieldYear);
   if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear &&
-      (it = values.find(FieldYear)) != values.end())
-    label.AppendFormat(" %i", (int)it->second.asInteger());
+      !year.isNull())
+    label.AppendFormat(" %i", (int)year.asInteger());
 
-  if ((it = values.find(FieldAlbum)) != values.end())
-    label += " " + SortUtils::RemoveArticles(it->second.asString());
+  const CVariant &album = values.at(FieldAlbum);
+  if (!album.isNull())
+    label += " " + SortUtils::RemoveArticles(album.asString());
 
-  if ((it = values.find(FieldTrackNumber)) != values.end())
-    label.AppendFormat(" %i", (int)it->second.asInteger());
+  const CVariant &track = values.at(FieldTrackNumber);
+  if (!track.isNull())
+    label.AppendFormat(" %i", (int)track.asInteger());
 
   return label;
 }
@@ -228,9 +212,9 @@ string ByCountry(SortAttribute attributes, const SortItem &values)
 string ByYear(SortAttribute attributes, const SortItem &values)
 {
   CStdString label;
-  SortItem::const_iterator it;
-  if ((it = values.find(FieldAirDate)) != values.end())
-    label = it->second.asString() + " ";
+  const CVariant &airDate = values.at(FieldAirDate);
+  if (!airDate.isNull())
+    label = airDate.asString() + " ";
 
   label.AppendFormat("%i %s", (int)values.at(FieldYear).asInteger(), ByLabel(attributes, values).c_str());
  
@@ -291,11 +275,11 @@ string ByEpisodeNumber(SortAttribute attributes, const SortItem &values)
   // after each other they will sort backwards. if a show has > 2^32-1 seasons
   // or if a season has > 2^16-1 episodes strange things will happen (overflow)
   uint64_t num;
-  SortItem::const_iterator itEpisodeSpecial = values.find(FieldEpisodeNumberSpecialSort);
-  SortItem::const_iterator itSeasonSpecial = values.find(FieldSeasonSpecialSort);
-  if (itEpisodeSpecial != values.end() && itSeasonSpecial != values.end() &&
-      itEpisodeSpecial->second.asInteger() > 0)
-    num = ((uint64_t)itSeasonSpecial->second.asInteger() << 32) + (itEpisodeSpecial->second.asInteger() << 16) - ((2 << 15) - values.at(FieldEpisodeNumber).asInteger());
+  const CVariant &episodeSpecial = values.at(FieldEpisodeNumberSpecialSort);
+  const CVariant &seasonSpecial = values.at(FieldSeasonSpecialSort);
+  if (!episodeSpecial.isNull() && !seasonSpecial.isNull() &&
+      episodeSpecial.asInteger() > 0)
+    num = ((uint64_t)seasonSpecial.asInteger() << 32) + (episodeSpecial.asInteger() << 16) - ((2 << 15) - values.at(FieldEpisodeNumber).asInteger());
   else
     num = ((uint64_t)values.at(FieldSeason).asInteger() << 32) + (values.at(FieldEpisodeNumber).asInteger() << 16);
 
@@ -307,9 +291,9 @@ string ByEpisodeNumber(SortAttribute attributes, const SortItem &values)
 string BySeason(SortAttribute attributes, const SortItem &values)
 {
   int season = (int)values.at(FieldSeason).asInteger();
-  SortItem::const_iterator it;
-  if ((it = values.find(FieldSeasonSpecialSort)) != values.end())
-    season = (int)it->second.asInteger();
+  const CVariant &specialSeason = values.at(FieldSeasonSpecialSort);
+  if (!specialSeason.isNull())
+    season = (int)specialSeason.asInteger();
 
   CStdString label;
   label.Format("%i %s", season, ByLabel(attributes, values).c_str());
@@ -651,9 +635,18 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
     SortPreparator preparator = getPreparator(sortBy);
     if (preparator != NULL)
     {
+      Fields sortingFields = GetFieldsForSorting(sortBy);
+
       // Prepare the string used for sorting and store it under FieldSort
       for (SortItems::iterator item = items.begin(); item != items.end(); item++)
       {
+        // add all fields to the item that are required for sorting if they are currently missing
+        for (Fields::const_iterator field = sortingFields.begin(); field != sortingFields.end(); field++)
+        {
+          if (item->find(*field) == item->end())
+            item->insert(pair<Field, CVariant>(*field, CVariant::ConstNullVariant));
+        }
+
         CStdStringW sortLabel;
         g_charsetConverter.utf8ToW(preparator(attributes, *item), sortLabel, false);
         item->insert(pair<Field, CVariant>(FieldSort, CVariant(sortLabel)));
