@@ -40,6 +40,8 @@ extern "C" {
     #include <libavutil/audioconvert.h>
     #include <libavutil/crc.h>
     #include <libavutil/fifo.h>
+    // for enum AVSampleFormat
+    #include <libavutil/samplefmt.h>
     // for LIBAVCODEC_VERSION_INT:
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVUTIL_H)
@@ -48,6 +50,8 @@ extern "C" {
     #include <ffmpeg/audioconvert.h>
     #include <ffmpeg/crc.h>
     #include <ffmpeg/fifo.h>
+    // for enum AVSampleFormat
+    #include <ffmpeg/samplefmt.h>
     // for LIBAVCODEC_VERSION_INT:
     #include <ffmpeg/avcodec.h>
   #endif
@@ -74,6 +78,7 @@ extern "C" {
   #include "libavutil/opt.h"
   #include "libavutil/mem.h"
   #include "libavutil/fifo.h"
+  // for enum AVSampleFormat
   #include "libavutil/samplefmt.h"
 #endif
 }
