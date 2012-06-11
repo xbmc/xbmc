@@ -390,6 +390,45 @@ extern "C" {
       }
       return Py_BuildValue((char*)"O,O", folderList, fileList);
     }
+    
+    PyDoc_STRVAR(stat__doc__,
+      "stat(path) -- get file or file system status.\n"
+      "\n"
+      "path        : file or folder\n"
+      "\n"
+      "example:\n"
+      " - mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime = xbmcvfs.stat(path)\n");
+    // get file status, mimics Pythons os.stat()
+    PyObject* vfs_stat(File *self, PyObject *args, PyObject *kwds)
+    {
+      PyObject *f_line;
+      if (!PyArg_ParseTuple(
+        args,
+        (char*)"O",
+        &f_line))
+      {
+        return NULL;
+      }
+      CStdString strSource;
+      if (!PyXBMCGetUnicodeString(strSource, f_line, 1))
+        return NULL;
+      
+      int result;
+      struct __stat64 st;
+      
+      CPyThreadState pyState;
+      result = self->pFile->Stat(strSource, &st);
+      pyState.Restore();
+      
+      if (result != 0)
+      {
+        Py_INCREF(Py_None);
+        return Py_None;
+      }
+      
+      return Py_BuildValue((char*)"(LLLLLLLLLL)", st.st_mode, st.st_ino, st.st_dev, st.st_nlink,
+          st.st_uid, st.st_gid, st.st_size, st.st_atime, st.st_mtime, st.st_ctime);
+    }
 
     // define c functions to be used in python here
     PyMethodDef xbmcvfsMethods[] = {
@@ -401,6 +440,7 @@ extern "C" {
       {(char*)"rmdir", (PyCFunction)vfs_rmdir, METH_VARARGS, rmdir__doc__},
       {(char*)"exists", (PyCFunction)vfs_exists, METH_VARARGS, exists__doc__},
       {(char*)"listdir", (PyCFunction)vfs_listdir, METH_VARARGS, listdir__doc__},
+      {(char*)"stat", (PyCFunction)vfs_stat, METH_VARARGS, stat__doc__},
       {NULL, NULL, 0, NULL}
     };
     PyDoc_STRVAR(read__doc__,
