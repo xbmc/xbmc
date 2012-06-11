@@ -336,7 +336,7 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
  }  
 } 
 
-void XBPython::OnAbortRequested()
+void XBPython::OnAbortRequested(const CStdString &ID)
 {
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
@@ -344,7 +344,15 @@ void XBPython::OnAbortRequested()
     MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
     while (it != m_vecMonitorCallbackList.end())
     {
-      ((CPythonMonitor*)(*it))->OnAbortRequested();
+      if (ID.IsEmpty())
+      {    
+        ((CPythonMonitor*)(*it))->OnAbortRequested();
+      }
+      else
+      {
+        if (((CPythonMonitor*)(*it))->Id == ID)
+          ((CPythonMonitor*)(*it))->OnAbortRequested();
+      }
       it++;
     }
   }  

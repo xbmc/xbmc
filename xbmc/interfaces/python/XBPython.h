@@ -70,7 +70,7 @@ public:
   void OnScreensaverActivated();
   void OnScreensaverDeactivated();
   void OnDatabaseUpdated(const std::string &database);
-  void OnAbortRequested();
+  void OnAbortRequested(const CStdString &ID="");
   void Initialize();
   void Finalize();
   void FinalizeScript();
