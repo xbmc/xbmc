@@ -111,6 +111,7 @@ config.log
 /addons/visualization.waveform/Waveform.vis
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
+/addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
 
 # /xbmc/guilib/
