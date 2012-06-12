@@ -662,7 +662,6 @@ cmyth_livetv_chain_switch(cmyth_recorder_t rec, int dir)
 	ret = 0;
 
 	if(dir == LAST) {
-		PRINTF("**SSDEBUG:(cmyth_livetv_chain_switch) dir: %d\n", dir);
 		dir = rec->rec_livetv_chain->chain_ct
 				- rec->rec_livetv_chain->chain_current - 1;
 		ret = 1;
@@ -673,8 +672,6 @@ cmyth_livetv_chain_switch(cmyth_recorder_t rec, int dir)
 			  rec->rec_livetv_chain->chain_ct - dir )) {
 		ref_release(rec->rec_livetv_file);
 		ret = rec->rec_livetv_chain->chain_current += dir;
-		PRINTF("**SSDEBUG:(cmyth_livetv_chain_switch): %s:%d\n",
-		"dooingSwitcheroo",ret);
 		rec->rec_livetv_file = ref_hold(rec->rec_livetv_chain->chain_files[ret]);
 		rec->rec_livetv_chain
 					->prog_update_callback(rec->rec_livetv_chain->progs[ret]);
@@ -708,7 +705,6 @@ cmyth_livetv_chain_switch_last(cmyth_recorder_t rec)
 	pthread_mutex_lock(&mutex);
 	dir = rec->rec_livetv_chain->chain_ct
 			- rec->rec_livetv_chain->chain_current - 1;
-	PRINTF("#@@@@#SSDEBUG: switch file changing adjusted dir: %d\n", dir);
 	if(dir != 0) {
 		cmyth_livetv_chain_switch(rec, dir);
 	}
@@ -756,8 +752,6 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 		ret = cmyth_file_request_block(rec->rec_livetv_file, len);
 		if (ret == 0) { /* We've gotten to the end, need to progress in the chain */
 			/* Switch if there are files left in the chain */
-			PRINTF("**SSDEBUG:(cmyth_livetv_request_block): %s\n",
-			"reached end of stream must dooSwitcheroo");
 			retry = cmyth_livetv_chain_switch(rec, 1);
 		}
 	}
@@ -789,8 +783,6 @@ int cmyth_livetv_chain_read(cmyth_recorder_t rec, char *buf, unsigned long len)
 		ret = cmyth_file_read(rec->rec_livetv_file, buf, len);	
 		if (ret == 0) {
 			/* eof, switch to next file */
-			PRINTF("**SSDEBUG:(cmyth_livetv_chain_read): %s\n",
-			"reached end of stream must dooSwitcheroo");
 			retry = cmyth_livetv_chain_switch(rec, 1);
 		}
 	} while(retry);
@@ -891,8 +883,6 @@ cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 	pthread_mutex_lock(&mutex);
 
 	ret = cmyth_file_seek(fp, offset, whence);
-
-	PRINTF("** SSDEBUG: new pos %lld after seek command\n", ret);
 
 	cur -= rec->rec_livetv_chain->chain_current;
 	if (ret >= 0 && cur) {
@@ -1037,7 +1027,6 @@ cmyth_spawn_live_tv(cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
 	cmyth_recorder_t rtrn = NULL;
 	int i;
 
-	//printf("** SSDEBUG: version is %ld\n", rec->rec_conn->conn_version);
 	if(rec->rec_conn->conn_version >= 26) {
 		if (cmyth_recorder_spawn_chain_livetv(rec, channame) != 0) {
 			*err = "Spawn livetv failed.";
