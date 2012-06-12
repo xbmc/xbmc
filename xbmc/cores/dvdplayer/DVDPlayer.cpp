@@ -1403,8 +1403,6 @@ void CDVDPlayer::HandlePlaySpeed()
       ||  (!m_dvdPlayerVideo.AcceptsData() && !m_CurrentAudio.started))
       {
         caching = CACHESTATE_DONE;
-        SAFE_RELEASE(m_CurrentAudio.startsync);
-        SAFE_RELEASE(m_CurrentVideo.startsync);
       }
     }
   }
@@ -1519,13 +1517,6 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
   {
     CLog::Log(LOGDEBUG, "%s - dropping packet type:%d dts:%f to get to start point at %f", __FUNCTION__, source,  current.dts, current.startpts);
     return true;
-  }
-
-  // send of the sync message if any
-  if(current.startsync)
-  {
-    SendPlayerMessage(current.startsync, source);
-    current.startsync = NULL;
   }
 
   //If this is the first packet after a discontinuity, send it as a resync
@@ -1763,30 +1754,20 @@ void CDVDPlayer::SynchronizeDemuxer(DWORD timeout)
 
 void CDVDPlayer::SynchronizePlayers(DWORD sources)
 {
-  /* if we are awaiting a start sync, we can't sync here or we could deadlock */
-  if(m_CurrentAudio.startsync
-  || m_CurrentVideo.startsync
-  || m_CurrentSubtitle.startsync
-  || m_CurrentTeletext.startsync)
-  {
-    CLog::Log(LOGDEBUG, "%s - can't sync since we are already awaiting a sync", __FUNCTION__);
-    return;
-  }
-
   /* we need a big timeout as audio queue is about 8seconds for 2ch ac3 */
   const int timeout = 10*1000; // in milliseconds
 
   CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, sources);
   if (m_CurrentAudio.id >= 0)
-    m_CurrentAudio.startsync = message->Acquire();
+    m_dvdPlayerAudio.SendMessage(message->Acquire());
 
   if (m_CurrentVideo.id >= 0)
-    m_CurrentVideo.startsync = message->Acquire();
+    m_dvdPlayerVideo.SendMessage(message->Acquire());
 /* TODO - we have to rewrite the sync class, to not require
           all other players waiting for subtitle, should only
           be the oposite way
   if (m_CurrentSubtitle.id >= 0)
-    m_CurrentSubtitle.startsync = message->Acquire();
+    m_dvdPlayerSubtitle.SendMessage(message->Acquire());
 */
   message->Release();
 }
