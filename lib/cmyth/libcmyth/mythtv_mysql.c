@@ -926,6 +926,7 @@ cmyth_mythtv_remove_previos_recorded(cmyth_database_t db,char *query)
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: mysql_query() Failed: %s\n", 
 			__FUNCTION__, mysql_error(db->mysql));
 	}
+	mysql_free_result(res);
 
 	return rows;
 }
