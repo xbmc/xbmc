@@ -22,6 +22,7 @@ fische__audiobuffer_new (struct fische* parent) {
     P->is_locked = 0;
     P->puts = 0;
     P->gets = 0;
+    P->last_get = 0;
 
     retval->sample_count = 0;
     retval->samples = 0;
@@ -115,15 +116,13 @@ fische__audiobuffer_insert (struct fische__audiobuffer* self, const void* data, 
 void
 fische__audiobuffer_get (struct fische__audiobuffer* self)
 {
-    static uint_fast32_t last_get = 0;
-
     struct _fische__audiobuffer_* P = self->priv;
 
     if (P->buffer_size == 0)
         return;
 
-    double* new_start = P->buffer + last_get * 2;
-    P->buffer_size -= last_get * 2;
+    double* new_start = P->buffer + P->last_get * 2;
+    P->buffer_size -= P->last_get * 2;
 
     // pop used data off front
     memmove (P->buffer, new_start, P->buffer_size * sizeof (double));
@@ -150,7 +149,7 @@ fische__audiobuffer_get (struct fische__audiobuffer* self)
 
     // set return data size and remember
     self->sample_count = n_samples;
-    last_get = n_samples;
+    P->last_get = n_samples;
 
     // set export buffer
     self->samples = P->buffer;

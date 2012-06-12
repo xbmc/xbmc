@@ -26,6 +26,7 @@ struct _fische__audiobuffer_ {
     uint_fast8_t    is_locked;
     uint_fast32_t   puts;
     uint_fast32_t   gets;
+    uint_fast32_t	last_get;
 
     struct fische*    fische;
 };
