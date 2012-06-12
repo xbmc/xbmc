@@ -2223,6 +2223,9 @@ void CFileItemList::StackFiles()
     VECCREGEXP::iterator  expr        = stackRegExps.begin();
 
     URIUtils::Split(item1->GetPath(), filePath, file1);
+    if (URIUtils::ProtocolHasEncodedFilename(CURL(filePath).GetProtocol() ) )
+      CURL::Decode(file1);
+
     int j;
     while (expr != stackRegExps.end())
     {
@@ -2253,6 +2256,8 @@ void CFileItemList::StackFiles()
 
           CStdString file2, filePath2;
           URIUtils::Split(item2->GetPath(), filePath2, file2);
+          if (URIUtils::ProtocolHasEncodedFilename(CURL(filePath2).GetProtocol() ) )
+            CURL::Decode(file2);
 
           if (expr->RegFind(file2, offset) != -1)
           {
@@ -2340,7 +2345,7 @@ void CFileItemList::StackFiles()
         // the label is converted from utf8, but the filename is not)
         if (!g_guiSettings.GetBool("filelists.showextensions"))
           URIUtils::RemoveExtension(stackName);
-        CURL::Decode(stackName);
+
         item1->SetLabel(stackName);
         item1->m_dwSize = size;
         break;
