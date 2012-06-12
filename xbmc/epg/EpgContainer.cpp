@@ -281,6 +281,8 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
   {
     /* table does not exist yet, create a new one */
     unsigned int iEpgId = m_bIgnoreDbForClient || entry.EpgID() <= 0 ? NextEpgId() : entry.EpgID();
+    if (m_iNextEpgId < iEpgId)
+      m_iNextEpgId = iEpgId + 1;
     epg = CreateEpg(iEpgId);
     if (epg)
     {
@@ -291,6 +293,16 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
   else
   {
     bReturn = epg->UpdateMetadata(entry, bUpdateDatabase);
+  }
+
+  if (g_PVRManager.IsStarted())
+  {
+    CPVRChannel *channel = g_PVRChannelGroups->GetChannelByEpgId(epg->EpgID());
+    if (epg->EpgID() > 0 && !channel)
+    {
+      DeleteEpg(*epg);
+      bReturn = false;
+    }
   }
 
   m_bPreventUpdates = false;
