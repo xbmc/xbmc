@@ -26,6 +26,7 @@
 
 #include <cmath>
 #include <cstring>
+#include <unistd.h>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -166,7 +167,7 @@ extern "C" void Start (int, int, int, const char*)
 {
     g_errorstate = false;
 
-    g_fische->audio_format = FISCHE_AUDIOFORMAT_S16;
+    g_fische->audio_format = FISCHE_AUDIOFORMAT_FLOAT;
 
     g_fische->height = g_size;
     g_fische->width = 2 * g_size;
@@ -196,9 +197,9 @@ extern "C" void Start (int, int, int, const char*)
     g_angleincrement = 0;
 }
 
-extern "C" void AudioData (const short* pAudioData, int iAudioDataLength, float*, int)
+extern "C" void AudioData (const float* pAudioData, int iAudioDataLength, float*, int)
 {
-    fische_audiodata (g_fische, pAudioData, iAudioDataLength * 4);
+    fische_audiodata (g_fische, pAudioData, iAudioDataLength * 8);
 }
 
 extern "C" void Render()
