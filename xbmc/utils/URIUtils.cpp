@@ -241,6 +241,15 @@ bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
       || prot.Equals("musicsearch");
 }
 
+bool URIUtils::ProtocolHasEncodedFilename(const CStdString& prot)
+{
+  CStdString prot2 = CURL::TranslateProtocol(prot);
+
+  // For now assume only (quasi) http internet streams use URL encoding
+  return prot2 == "http"  ||
+         prot2 == "https";
+}
+
 CStdString URIUtils::GetParentPath(const CStdString& strPath)
 {
   CStdString strReturn;
@@ -661,7 +670,6 @@ bool URIUtils::IsFTP(const CStdString& strFile)
 
 bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
 {
-  
   CStdString strProtocol = url.GetProtocol();
   
   if (strProtocol.IsEmpty())
