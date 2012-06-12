@@ -199,7 +199,7 @@ extern "C" void Start (int, int, int, const char*)
 
 extern "C" void AudioData (const float* pAudioData, int iAudioDataLength, float*, int)
 {
-    fische_audiodata (g_fische, pAudioData, iAudioDataLength * 8);
+    fische_audiodata (g_fische, pAudioData, iAudioDataLength * 4);
 }
 
 extern "C" void Render()

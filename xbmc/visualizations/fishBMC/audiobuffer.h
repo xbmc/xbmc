@@ -33,8 +33,6 @@ struct _fische__audiobuffer_ {
 struct fische__audiobuffer {
     double* samples;
     uint_fast16_t sample_count;
-    double* new_samples;
-    uint_fast16_t new_sample_count;
 
     struct _fische__audiobuffer_* priv;
 };

@@ -202,8 +202,39 @@ fische_render (struct fische* handle)
     // only if init completed
     if (P->init_progress >= 1) {
 
+		// analyse sound data
         fische__audiobuffer_lock (P->audiobuffer);
         fische__audiobuffer_get (P->audiobuffer);
+		int_fast8_t analysis = fische__analyst_analyse (P->analyst, P->audiobuffer->samples, P->audiobuffer->sample_count);
+
+		if (P->init_progress < 1)
+			return;
+
+		// act accordingly
+		if (handle->nervous_mode) {
+			if (analysis >= 2)
+				fische__wavepainter_change_shape (P->wavepainter);
+			if (analysis >= 1)
+				fische__vectorfield_change (P->vectorfield);
+		} else {
+			if (analysis >= 1)
+				fische__wavepainter_change_shape (P->wavepainter);
+			if (analysis >= 2)
+				fische__vectorfield_change (P->vectorfield);
+		}
+
+		if (analysis >= 3) {
+			fische__wavepainter_beat (P->wavepainter, P->analyst->frames_per_beat);
+		}
+		if (analysis >= 4) {
+			if (handle->on_beat)
+				handle->on_beat (P->analyst->frames_per_beat);
+		}
+
+		P->audio_valid = analysis >= 0 ? 1 : 0;
+
+		fische__wavepainter_change_color (P->wavepainter, P->analyst->frames_per_beat, P->analyst->relative_energy);
+
 
         // wait for blurring to be finished
         // and swap buffers
@@ -262,37 +293,5 @@ fische_audiodata (struct fische* handle, const void* data, size_t data_size)
 
     fische__audiobuffer_lock (P->audiobuffer);
     fische__audiobuffer_insert (P->audiobuffer, data, data_size);
-
-    // analyse sound data
-    int_fast8_t analysis = fische__analyst_analyse (P->analyst, P->audiobuffer->new_samples, P->audiobuffer->new_sample_count);
-
     fische__audiobuffer_unlock (P->audiobuffer);
-
-    if (P->init_progress < 1)
-        return;
-
-    // act accordingly
-    if (handle->nervous_mode) {
-        if (analysis >= 2)
-            fische__wavepainter_change_shape (P->wavepainter);
-        if (analysis >= 1)
-            fische__vectorfield_change (P->vectorfield);
-    } else {
-        if (analysis >= 1)
-            fische__wavepainter_change_shape (P->wavepainter);
-        if (analysis >= 2)
-            fische__vectorfield_change (P->vectorfield);
-    }
-
-    if (analysis >= 3) {
-        fische__wavepainter_beat (P->wavepainter, P->analyst->frames_per_beat);
-    }
-    if (analysis >= 4) {
-        if (handle->on_beat)
-            handle->on_beat (P->analyst->frames_per_beat);
-    }
-
-    P->audio_valid = analysis >= 0 ? 1 : 0;
-
-    fische__wavepainter_change_color (P->wavepainter, P->analyst->frames_per_beat, P->analyst->relative_energy);
 }

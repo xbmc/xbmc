@@ -25,8 +25,6 @@ fische__audiobuffer_new (struct fische* parent) {
 
     retval->sample_count = 0;
     retval->samples = 0;
-    retval->new_sample_count = 0;
-    retval->new_samples = 0;
 
     return retval;
 }
@@ -112,9 +110,6 @@ fische__audiobuffer_insert (struct fische__audiobuffer* self, const void* data, 
     }
 
     ++ P->puts;
-
-    self->new_samples = P->buffer + old_bufsize;
-    self->new_sample_count = (P->buffer_size - old_bufsize) / 2;
 }
 
 void
