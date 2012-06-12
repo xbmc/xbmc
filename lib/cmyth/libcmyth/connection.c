@@ -564,6 +564,10 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	if (control->conn_version >= 17) {
 		myth_host = cmyth_conn_get_setting_unlocked(control, prog->proginfo_host,
 		                                   "BackendServerIP");
+		if (myth_host && (strcmp(myth_host, "-1") == 0)) {
+			ref_release(myth_host);
+			myth_host = NULL;
+		}
 	}
 	if (!myth_host) {
 		cmyth_dbg(CMYTH_DBG_PROTO,
