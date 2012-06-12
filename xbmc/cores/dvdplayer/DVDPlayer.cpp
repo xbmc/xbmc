@@ -1612,43 +1612,6 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   if( pPacket->dts == DVD_NOPTS_VALUE || current.dts == DVD_NOPTS_VALUE)
     return;
 
-#if 0
-  // these checks seem to cause more harm, than good
-  // looping stillframes are not common in normal files
-  // and a better fix for this behaviour would be to 
-  // correct the timestamps with some offset
-
-  if (current.type == STREAM_VIDEO
-  && m_CurrentAudio.dts != DVD_NOPTS_VALUE
-  && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
-  {
-    /* check for looping stillframes on non dvd's, dvd's will be detected by long duration check later */
-    if( m_pInputStream && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      /* special case for looping stillframes THX test discs*/
-      /* only affect playback when not from dvd */
-      if( (m_CurrentAudio.dts > m_CurrentVideo.dts + DVD_MSEC_TO_TIME(200))
-      && (m_CurrentVideo.dts == pPacket->dts) )
-      {
-        CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Detected looping stillframe");
-        SynchronizePlayers(SYNCSOURCE_VIDEO);
-        return;
-      }
-    }
-
-    /* if we haven't received video for a while, but we have been */
-    /* getting audio much more recently, make sure video wait's  */
-    /* this occurs especially on thx test disc */
-    if( (pPacket->dts > m_CurrentVideo.dts + DVD_MSEC_TO_TIME(200))
-     && (pPacket->dts < m_CurrentAudio.dts + DVD_MSEC_TO_TIME(50)) )
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Potential long duration frame");
-      SynchronizePlayers(SYNCSOURCE_VIDEO);
-      return;
-    }
-  }
-#endif
-
   double mindts = DVD_NOPTS_VALUE, maxdts = DVD_NOPTS_VALUE;
   UpdateLimits(mindts, maxdts, m_CurrentAudio.dts);
   UpdateLimits(mindts, maxdts, m_CurrentVideo.dts);
