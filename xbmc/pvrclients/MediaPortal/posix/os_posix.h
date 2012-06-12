@@ -25,7 +25,9 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#include <stdio.h> // for fpos_t
+#endif
 typedef long        LONG;
 typedef LONG        HRESULT;
 
