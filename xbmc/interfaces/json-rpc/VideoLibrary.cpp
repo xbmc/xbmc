@@ -370,7 +370,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos);
+  UpdateVideoTag(parameterObject, infos, artwork);
 
   if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
   {
@@ -407,7 +407,7 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos);
+  UpdateVideoTag(parameterObject, infos, artwork);
 
   if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, seasonArt, id) > 0)
   {
@@ -448,7 +448,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos);
+  UpdateVideoTag(parameterObject, infos, artwork);
 
   if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) > 0)
   {
@@ -482,7 +482,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
-  UpdateVideoTag(parameterObject, infos);
+  UpdateVideoTag(parameterObject, infos, artwork);
 
   if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
   {
@@ -708,7 +708,7 @@ JSONRPC_STATUS CVideoLibrary::RemoveVideo(const CVariant &parameterObject)
   return ACK;
 }
 
-void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details)
+void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork)
 {
   if (ParameterNotNull(parameterObject, "title"))
     details.m_strTitle = parameterObject["title"].asString();
@@ -774,4 +774,8 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     CopyStringArray(parameterObject["set"], details.m_set);
   if (ParameterNotNull(parameterObject, "showlink"))
     CopyStringArray(parameterObject["showlink"], details.m_showLink);
+  if (ParameterNotNull(parameterObject, "thumbnail"))
+    artwork["thumb"] = parameterObject["thumbnail"].asString();
+  if (ParameterNotNull(parameterObject, "fanart"))
+    artwork["fanart"] = parameterObject["fanart"].asString();
 }
