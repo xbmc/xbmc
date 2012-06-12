@@ -692,8 +692,11 @@ void CURL::Encode(CStdString& strURLData)
   for (int i = 0; i < (int)strURLData.size(); ++i)
   {
     int kar = (unsigned char)strURLData[i];
-    //if (kar == ' ') strResult += '+';
-    if (isalnum(kar)) strResult += kar;
+    //if (kar == ' ') strResult += '+'; // obsolete
+    if (isalnum(kar) || strchr("-_.!()" , kar) ) // Don't URL encode these according to RFC1738s
+    {
+      strResult += kar;
+    }
     else
     {
       CStdString strTmp;
