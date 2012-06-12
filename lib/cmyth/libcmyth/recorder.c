@@ -509,7 +509,6 @@ cmyth_recorder_pause(cmyth_recorder_t rec)
 
 	pthread_mutex_lock(&mutex);
 
-	PRINTF("** SSDEBUG: trying to pause recorder:%p:%p\n",rec,rec->rec_conn);
 	sprintf(Buffer, "QUERY_RECORDER %ld[]:[]PAUSE", (long) rec->rec_id);
 	if ((ret=cmyth_send_message(rec->rec_conn, Buffer)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
@@ -527,7 +526,6 @@ cmyth_recorder_pause(cmyth_recorder_t rec)
 	ret = 0;
 
     err:
-	PRINTF("** SSDEBUG: recorder paused:\n");
 	pthread_mutex_unlock(&mutex);
 
 	return ret;
