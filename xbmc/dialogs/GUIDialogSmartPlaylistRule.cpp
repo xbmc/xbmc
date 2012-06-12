@@ -154,6 +154,18 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     videodatabase.GetActorsNav("",items,type);
     iLabel = 20337;
   }
+  else if (m_rule.m_field == FieldYear)
+  {
+    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
+      database.GetYearsNav("", items);
+    if (!m_type.Equals("songs") && !m_type.Equals("albums"))
+    {
+      CFileItemList items2;
+      videodatabase.GetYearsNav("", items2, type);
+      items.Append(items2);
+    }
+    iLabel = 562;
+  }
   else if (m_rule.m_field == FieldDirector)
   {
     videodatabase.GetDirectorsNav("",items,type);
