@@ -427,7 +427,6 @@ cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
 {
 	int ret=0;
 	char url[1024];
-	cmyth_conn_t control;
 	cmyth_proginfo_t loc_prog;
 	cmyth_file_t ft;
 
@@ -435,8 +434,6 @@ cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: rec is NULL\n", __FUNCTION__);
 		goto out;
 	}
-
-	control = rec->rec_conn;
 
 	loc_prog = cmyth_recorder_get_cur_proginfo(rec);
 	pthread_mutex_lock(&mutex);
