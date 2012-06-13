@@ -698,11 +698,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       }
       else if (volume >= 0 && volume <= 1)
       {
-        int oldVolume = g_application.GetVolume();
+        int oldVolume = (int)(g_application.GetLinearVolume() * 100.0 + 0.5);
         volume *= 100;
         if(oldVolume != (int)volume)
         {
-          g_application.SetVolume(volume);          
+          g_application.SetLinearVolume(volume/100.0);          
           g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
         }
       }

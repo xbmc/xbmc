@@ -705,8 +705,8 @@ bool CApplication::Create()
   }
 
   // restore AE's previous volume state
-  SetHardwareVolume(g_settings.m_fVolumeLevel);
-  CAEFactory::AE->SetMute     (g_settings.m_bMute);
+  CAEFactory::AE->SetMute(g_settings.m_bMute);
+  CAEFactory::AE->SetVolume(g_settings.m_fVolumeLevel);
   CAEFactory::AE->SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
 
   // start-up Addons Framework
@@ -2674,7 +2674,7 @@ bool CApplication::OnAction(const CAction &action)
     {
       if (g_settings.m_bMute)
         UnMute();
-      float volume = g_settings.m_fVolumeLevel;
+      float volume = GetLinearVolume();
       float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / VOLUME_CONTROL_STEPS;
       if (action.GetRepeat())
         step *= action.GetRepeat() * 50; // 50 fps
@@ -2684,7 +2684,7 @@ bool CApplication::OnAction(const CAction &action)
       else
         volume -= (float)fabs(action.GetAmount()) * action.GetAmount() * step;
 
-      SetHardwareVolume(volume);
+      SetLinearVolume(volume);
     }
     // show visual feedback of volume change...
     ShowVolumeBar(&action);
@@ -5197,42 +5197,22 @@ void CApplication::UnMute()
   g_settings.m_bMute = false;
 }
 
-void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
+void CApplication::SetLinearVolume(float volume)
 {
-  float hardwareVolume = iValue;
-
-  if(isPercentage)
-    hardwareVolume /= 100.0f;
-
-  SetHardwareVolume(hardwareVolume);
+  volume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, volume));
+  g_settings.m_fVolumeLevel = volume;
+  CAEFactory::AE->SetVolume(g_settings.m_fVolumeLevel);
 
   CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = (int)(hardwareVolume * 100.0f + 0.5f);
+  data["volume"] = (int)(volume * 100.0f + 0.5f);
   data["muted"] = g_settings.m_bMute;
   CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 }
 
-void CApplication::SetHardwareVolume(float hardwareVolume)
+float CApplication::GetLinearVolume() const
 {
-  hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
-  g_settings.m_fVolumeLevel = hardwareVolume;
-
-  float value = 0.0f;
-  if (hardwareVolume > VOLUME_MINIMUM)
-  {
-    float dB = CAEUtil::PercentToGain(hardwareVolume);
-    value = CAEUtil::GainToScale(dB);
-  }
-  if (value >= 0.99f)
-    value = 1.0f;
-
-  CAEFactory::AE->SetVolume(value);
-}
-
-int CApplication::GetVolume() const
-{
-  // converts the hardware volume to a percentage
-  return (int)(g_settings.m_fVolumeLevel * 100.0f);
+  g_settings.m_fVolumeLevel = CAEFactory::AE->GetVolume();
+  return (g_settings.m_fVolumeLevel);
 }
 
 int CApplication::GetSubtitleDelay() const

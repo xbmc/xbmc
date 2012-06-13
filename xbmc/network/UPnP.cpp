@@ -59,6 +59,7 @@
 #include "utils/md5.h"
 #include "guilib/Key.h"
 #include "ThumbLoader.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1675,12 +1676,12 @@ CUPnPRenderer::UpdateState()
     } else {
         rct->SetStateVariable("Mute", "0");
     }
-    volume = g_application.GetVolume();
+    volume = (int)(g_application.GetLinearVolume() * 100.0 + 0.5);
 
     buffer.Format("%d", volume);
     rct->SetStateVariable("Volume", buffer.c_str());
 
-    buffer.Format("%d", 256 * (volume * 60 - 60) / 100);
+    buffer.Format("%d", (int)CAEUtil::LinearToDecibel(g_application.GetLinearVolume()));
     rct->SetStateVariable("VolumeDb", buffer.c_str());
 
     if (g_application.IsPlaying() || g_application.IsPaused()) {
@@ -1990,7 +1991,8 @@ CUPnPRenderer::OnSetVolume(PLT_ActionReference& action)
 {
     NPT_String volume;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredVolume", volume));
-    g_application.SetVolume((float)strtod((const char*)volume, NULL));
+    float volume_percent = (float)strtod((const char*)volume, NULL);
+    g_application.SetLinearVolume(volume_percent/100.0);
     return NPT_SUCCESS;
 }
 

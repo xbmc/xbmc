@@ -53,28 +53,30 @@ public:
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
 
-  /*! \brief convert a volume percentage (as a proportion) to a dB gain
-   We assume a dB range of 60dB, i.e. assume that 0% volume corresponds
-   to a reduction of 60dB.
-   \param value the volume from 0..1
-   \return the corresponding gain in dB from -60dB .. 0dB.
-   \sa GainToScale
+  /*! \brief convert a linear factor to a dB gain for audio manipulation
+   Inverts linear = pow(10.0f, dB/20)
+   \param linear factor from 0..1
+   \return the gain in dB from -60dB .. 0dB.
+   \sa DecibelToLinear
    */
-  static inline const float PercentToGain(const float value)
+  static inline const float LinearToDecibel(const float linear)
   {
-    static const float db_range = 60.0f;
-    return (value - 1)*db_range;
+    // clamp to -60dB
+    if (linear < 0.001f) 
+      return -60.0f;
+    else
+      return 20.0f * log10(linear);
   }
 
-  /*! \brief convert a dB gain to a scale factor for audio manipulation
-   Inverts gain = 20 log_10(scale)
+  /*! \brief convert a dB gain to a linear factor for audio manipulation
+   Inverts gain = 20 log_10(linear)
    \param dB the gain in decibels.
-   \return the scale factor (equivalent to a voltage multiplier).
-   \sa PercentToGain
+   \return the linear factor (equivalent to a voltage multiplier).
+   \sa LinearToDecibel
    */
-  static inline const float GainToScale(const float dB)
+  static inline const float DecibelToLinear(const float dB)
   {
-    return pow(10.0f, dB/20);
+    return pow(10.0f, dB/20.0f);
   }
 
   #ifdef __SSE__
