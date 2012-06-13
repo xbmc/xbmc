@@ -38,6 +38,23 @@
 #include <stdint.h>
 #include <sys/stat.h>
 
+
+/* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
+#define READ_TRUNCATED 0x01
+
+/* indicate that that caller support read in the minimum defined chunk size, this disables internal cache then */
+#define READ_CHUNKED   0x02
+
+/* use cache to access this file */
+#define READ_CACHED     0x04
+
+/* open without caching. regardless to file type. */
+#define READ_NO_CACHE  0x08
+
+/* calcuate bitrate for file while reading */
+#define READ_BITRATE   0x10
+
+
 namespace XFILE
 {
 
@@ -99,6 +116,24 @@ public:
   virtual int IoControl(EIoControl request, void* param) { return -1; }
 
   virtual CStdString GetContent()                            { return "application/octet-stream"; }
+
+   
+   //! Sets a bitfield flag on the IFile instance.
+   /*!
+    This function sets the flags. IFile implimentations that need special handling to occur
+    when a particular flag is set, or need to mask/enable certain flags, should overide this
+    function to do so.
+    
+    Flags are defined in IFile.h
+    */
+  virtual void SetFlags(unsigned int flags);
+    
+private:
+   //! Bitfield flag containing special flags required by IFile implimentations
+   /*!
+    Flags are defined in IFile.h
+    */
+    unsigned int m_flags;
 };
 
 class CRedirectException
