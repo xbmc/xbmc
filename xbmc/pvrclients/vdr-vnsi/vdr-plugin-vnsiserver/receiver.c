@@ -54,12 +54,12 @@ protected:
   virtual void Receive(uchar *Data, int Length);
 
 public:
-  cLiveReceiver(cLiveStreamer *Streamer, tChannelID ChannelID, int Priority, const int *Pids);
+  cLiveReceiver(cLiveStreamer *Streamer, const cChannel *Channel, int Priority, const int *Pids);
   virtual ~cLiveReceiver();
 };
 
-cLiveReceiver::cLiveReceiver(cLiveStreamer *Streamer, tChannelID ChannelID, int Priority, const int *Pids)
- : cReceiver(ChannelID, Priority, 0, Pids)
+cLiveReceiver::cLiveReceiver(cLiveStreamer *Streamer, const cChannel *Channel, int Priority, const int *Pids)
+ : cReceiver(Channel, Priority)
  , m_Streamer(Streamer)
 {
   DEBUGLOG("Starting live receiver");
@@ -503,7 +503,7 @@ void cLivePatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Le
         }
       }
 
-      m_Streamer->m_Receiver  = new cLiveReceiver(m_Streamer, m_Channel->GetChannelID(), m_Streamer->m_Priority, m_Streamer->m_Pids);
+      m_Streamer->m_Receiver  = new cLiveReceiver(m_Streamer, m_Channel, m_Streamer->m_Priority, m_Streamer->m_Pids);
       m_Streamer->m_Device->AttachReceiver(m_Streamer->m_Receiver);
       INFOLOG("Currently unknown new streams found, receiver and demuxers reinited\n");
       m_Streamer->RequestStreamChange();
@@ -624,9 +624,10 @@ void cLiveStreamer::Action(void)
   unsigned char *buf    = NULL;
   m_startup             = true;
 
-  cTimeMs last_tick;
   cTimeMs last_info;
   cTimeMs starttime;
+
+  m_last_tick.Set(0);
 
   while (Running())
   {
@@ -640,19 +641,16 @@ void cLiveStreamer::Action(void)
       break;
     }
 
-    // prevent inifinite loop on encrypted channels
-    if(!IsReady() && (starttime.Elapsed() >= (uint64_t)(m_scanTimeout*1000))) {
-      INFOLOG("returning from streamer thread, timeout on starting streaming");
-      break;
-    }
-
     // no data
     if (buf == NULL || size <= TS_SIZE)
     {
       // keep client going
-      if(last_tick.Elapsed() >= 1000 && !IsReady()) {
-        m_Socket->write(m_packetEmpty->getPtr(), m_packetEmpty->getLen());
-        last_tick.Set(0);
+      if(m_last_tick.Elapsed() >= (uint64_t)(m_scanTimeout*1000))
+      {
+        INFOLOG("No Signal");
+        sendStreamStatus();
+        m_last_tick.Set(0);
+        m_SignalLost = true;
       }
       continue;
     }
@@ -690,6 +688,8 @@ void cLiveStreamer::Action(void)
       {
         demuxer->ProcessTSPacket(buf);
       }
+      else
+        INFOLOG("no muxer found");
 
       buf += TS_SIZE;
       size -= TS_SIZE;
@@ -704,6 +704,7 @@ void cLiveStreamer::Action(void)
       sendSignalInfo();
     }
   }
+  INFOLOG("exit streamer thread");
 }
 
 bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocket *Socket, cResponsePacket *resp)
@@ -801,11 +802,6 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
       {
         m_Streams[m_NumStreams] = new cTSDemuxer(this, m_NumStreams, stTELETEXT, m_Channel->Tpid());
         m_Pids[m_NumStreams]    = m_Channel->Tpid();
-        cCamSlot* cam = m_Device->CamSlot();
-        if(cam != NULL) 
-        {
-          cam->AddPid(m_Channel->Sid(), m_Channel->Tpid(), 0x06);
-        }
         m_NumStreams++;
       }
 
@@ -822,7 +818,7 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
       if (m_NumStreams > 0 && m_Socket)
       {
         dsyslog("VNSI: Creating new live Receiver");
-        m_Receiver  = new cLiveReceiver(this, m_Channel->GetChannelID(), m_Priority, m_Pids);
+        m_Receiver  = new cLiveReceiver(this, m_Channel, m_Priority, m_Pids);
         m_PatFilter = new cLivePatFilter(this, m_Channel);
         m_Device->AttachReceiver(m_Receiver);
         m_Device->AttachFilter(m_PatFilter);
@@ -928,6 +924,8 @@ void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
 
   m_Socket->write(pkt->data, pkt->size);
 
+  m_last_tick.Set(0);
+  m_SignalLost = false;
 }
 
 void cLiveStreamer::sendStreamChange()
@@ -1206,6 +1204,21 @@ void cLiveStreamer::sendStreamInfo()
     }
   }
 
+  resp->finaliseStream();
+  m_Socket->write(resp->getPtr(), resp->getLen());
+  delete resp;
+}
+
+void cLiveStreamer::sendStreamStatus()
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initStream(VNSI_STREAM_STATUS, 0, 0, 0, 0))
+  {
+    ERRORLOG("stream response packet init fail");
+    delete resp;
+    return;
+  }
+  resp->add_String("No Signal");
   resp->finaliseStream();
   m_Socket->write(resp->getPtr(), resp->getLen());
   delete resp;

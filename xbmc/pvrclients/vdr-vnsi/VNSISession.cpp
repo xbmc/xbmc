@@ -55,14 +55,6 @@ cVNSISession::~cVNSISession()
   Close();
 }
 
-void cVNSISession::Abort()
-{
-  if (!m_socket)
-    return;
-
-  m_socket->Shutdown();
-}
-
 void cVNSISession::Close()
 {
   if(IsOpen())
@@ -151,9 +143,12 @@ bool cVNSISession::Login()
   catch (const char * str)
   {
     XBMC->Log(LOG_ERROR, "%s - %s", __FUNCTION__,str);
-    m_socket->Close();
-    delete m_socket;
-    m_socket = NULL;
+    if (m_socket)
+    {
+      m_socket->Close();
+      delete m_socket;
+      m_socket = NULL;
+    }
     return false;
   }
 
@@ -345,7 +340,6 @@ void cVNSISession::SignalConnectionLost()
   XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
 
   m_connectionLost = true;
-  Abort();
   Close();
 
   OnDisconnect();
