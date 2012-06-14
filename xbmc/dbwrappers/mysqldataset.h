@@ -108,12 +108,6 @@ private:
 
 class MysqlDataset : public Dataset {
 protected:
-/* query results*/
-  result_set result;
-  result_set exec_res;
-  bool autorefresh;
-  char* errmsg;
-
   MYSQL* handle();
 
 /* Makes direct queries to database */

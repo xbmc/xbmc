@@ -59,7 +59,7 @@
 
 #include <stdio.h>
 #include <algorithm>
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
 
@@ -114,7 +114,7 @@ using namespace PVR;
 //Progressbar used for buffering status and after seeking
 #define CONTROL_PROGRESS                 23
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 static CLinuxResourceCounter m_resourceCounter;
 #endif
 
@@ -936,7 +936,7 @@ void CGUIWindowFullScreen::FrameMove()
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
     {
       CStdString strGeneralFPS;
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
       // We show CPU usage for the entire process, as it's arguably more useful.
       double dCPU = m_resourceCounter.GetCPUUsage();
       CStdString strCores;

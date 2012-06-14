@@ -29,7 +29,7 @@
 #include <errno.h>
 #include <iconv.h>
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #ifdef __POWERPC__
   #define WCHAR_CHARSET "UTF-32BE"
 #else

@@ -429,6 +429,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
         m_audioClock = pMsgGeneralResync->m_timestamp;
 
+      m_ptsInput.Flush();
+      m_ptsOutput.Flush();
       m_ptsOutput.Add(m_audioClock, m_dvdAudio.GetDelay(), 0);
       if (pMsgGeneralResync->m_clock)
       {

@@ -54,7 +54,7 @@
 #include "filesystem/Directory.h"
 #include "utils/Crc32.h"
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "osx/DarwinStorageProvider.h"
 #elif defined(_LINUX)
 #include "linux/LinuxStorageProvider.h"
@@ -87,7 +87,7 @@ void CMediaManager::Initialize()
 {
   if (!m_platformStorage)
   {
-    #ifdef __APPLE__
+    #if defined(TARGET_DARWIN)
       m_platformStorage = new CDarwinStorageProvider();
     #elif defined(_LINUX)
       m_platformStorage = new CLinuxStorageProvider();
@@ -541,7 +541,7 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
   Crc32 crc32;
   bool dataRead = false;
 
-  vecItemsTS.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+  vecItemsTS.Sort(SORT_METHOD_FILE, SortOrderAscending);
   for (int i = 0; i < vecItemsTS.Size(); i++)
   {
     CFileItemPtr videoTSItem = vecItemsTS[i];

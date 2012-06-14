@@ -25,7 +25,7 @@
 #include "utils/log.h"
 
 #ifdef _LINUX
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
 #include "linux/ZeroconfBrowserAvahi.h"
 #else
 //on osx use the native implementation
@@ -158,7 +158,7 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
 #if !defined(HAS_ZEROCONF)
       smp_instance = new CZeroconfBrowserDummy;
 #else
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
       smp_instance = new CZeroconfBrowserOSX;
 #elif defined(_LINUX)
       smp_instance  = new CZeroconfBrowserAvahi;

@@ -477,7 +477,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
 
   g_graphicsContext.EndPaint();
-#if !defined(__APPLE__)
+#if !defined(TARGET_DARWIN)
   glFinish();
 #endif
 }

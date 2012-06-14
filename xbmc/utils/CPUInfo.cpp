@@ -23,7 +23,7 @@
 #include <string>
 #include <string.h>
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #ifdef __ppc__
@@ -93,7 +93,7 @@ CCPUInfo::CCPUInfo(void)
   m_lastUsedPercentage = 0;
   m_cpuFeatures = 0;
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   size_t len = 4;
 
   // The number of cores.
@@ -309,7 +309,7 @@ int CCPUInfo::getUsedPercentage()
 float CCPUInfo::getCPUFrequency()
 {
   // Get CPU frequency, scaled to MHz.
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   long long hz = 0;
   size_t len = sizeof(hz);
   if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
@@ -562,10 +562,10 @@ void CCPUInfo::ReadCPUFeatures()
       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
   }
 
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
   #if defined(__ppc__)
     m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
-  #elif defined(__arm__)
+  #elif defined(TARGET_DARWIN_IOS)
   #else
     size_t len = 512;
     char buffer[512] ={0};

@@ -108,7 +108,7 @@ void CSettings::Initialize()
   // internal video extensions
   m_videoExtensions += "|.pvr";
 
-  #ifdef __APPLE__
+  #if defined(TARGET_DARWIN)
     CStdString logDir = getenv("HOME");
     logDir += "/Library/Logs/";
     m_logFolder = logDir;
@@ -460,8 +460,8 @@ void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString 
   viewState.m_sortMethod = (SORT_METHOD)sortMethod;
 
   int sortOrder;
-  GetInteger(pNode, "sortorder", sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
-  viewState.m_sortOrder = (SORT_ORDER)sortOrder;
+  GetInteger(pNode, "sortorder", sortOrder, SortOrderAscending, SortOrderNone, SortOrderDescending);
+  viewState.m_sortOrder = (SortOrder)sortOrder;
 }
 
 void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName, const CViewState &viewState) const

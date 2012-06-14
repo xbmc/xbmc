@@ -240,17 +240,22 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItem &
     else if (media.Equals("music"))
       status = CAudioLibrary::FillFileItem(strFilename, item);
 
-    if (!status && originalItem->GetLabel().empty())
+    if (!status)
     {
       bool isDir = CDirectory::Exists(strFilename);
-      CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
-      if (!label.empty())
+      if (originalItem->GetLabel().empty())
       {
+        CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
+        if (label.empty())
+          return false;
+
         item = CFileItem(strFilename, isDir);
         item.SetLabel(label);
-
-        status = true;
       }
+      else
+        item = *originalItem.get();
+
+      status = true;
     }
   }
 
@@ -290,7 +295,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       CDirectory directory;
       if (directory.GetDirectory(strPath, items, extensions))
       {
-        items.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+        items.Sort(SORT_METHOD_FILE, SortOrderAscending);
         CFileItemList filteredDirectories;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {

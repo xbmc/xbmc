@@ -125,6 +125,8 @@ libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
 libplist_disabled="== AirPlay support disabled. =="
 alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
+libcap_disabled="== Capabilities detection support disabled. =="
+libcap_not_found="== Could not find libcap. Capabilities detection support disabled. =="
 
 libudev_not_found="== Could not find libudev. Will use polling to check for device changes. =="
 libudev_disabled="== udev support disabled. Will use polling to check for device changes. =="
@@ -145,6 +147,11 @@ dashes="------------------------"
 final_message="\n  XBMC Configuration:"
 final_message="\n$dashes$final_message\n$dashes"
 
+AC_ARG_ENABLE([shared-lib],
+  [AS_HELP_STRING([--enable-shared-lib],
+  [build libxbmc. helpful for tests (default is no)])],
+  [build_shared_lib=$enableval],
+  [build_shared_lib=no])
 
 AC_ARG_ENABLE([debug],
   [AS_HELP_STRING([--enable-debug],
@@ -435,6 +442,12 @@ AC_ARG_ENABLE([vorbisenc],
   [use_libvorbisenc=$enableval],
   [use_libvorbisenc=auto])
 
+AC_ARG_ENABLE([libcap],
+  [AS_HELP_STRING([--enable-libcap],
+  [enable libcap support (default is auto)])],
+  [use_libcap=$enableval],
+  [use_libcap=auto])
+
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
   [AS_HELP_STRING([--enable-external-libraries],
@@ -552,6 +565,11 @@ case $host in
      AC_MSG_ERROR(unsupported host ($host))
 esac
 AC_SUBST([ARCH])
+
+if test "$build_shared_lib" = "yes"; then
+  final_message="$final_message\n Shared lib\tYes"
+  AC_SUBST(USE_LIBXBMC,1)
+fi
 
 # platform debug flags
 if test "$use_debug" = "yes"; then
@@ -1256,6 +1274,26 @@ else
   AC_MSG_NOTICE($libcec_disabled)
 fi
 
+# libcap
+if test "$use_libcap" != "no"; then
+  AC_CHECK_HEADERS([sys/capability.h],,
+   [if test "$use_libcap" = "yes"; then
+      AC_MSG_ERROR($libcap_not_found)
+    elif test "$use_libcap" != "no"; then
+      AC_MSG_NOTICE($libcap_not_found)
+      use_libcap="no"
+    fi
+   ])
+  if test "$use_libcap" != "no"; then
+    AC_CHECK_LIB([cap], main, LIBS="$LIBS -lcap", use_libcap=no)
+  fi
+  if test "$use_libcap" != "no"; then
+    AC_DEFINE([HAVE_LIBCAP], [1], [Whether to use libcap library.])
+  fi
+else
+  AC_MSG_NOTICE($libcap_disabled)
+fi
+
 ### External libraries checks
 
 # External FFmpeg
@@ -1919,6 +1957,12 @@ if test "x$use_libvorbisenc" != "xno"; then
   final_message="$final_message\n  libvorbisenc support:\tYes"
 else
   final_message="$final_message\n  libvorbisenc support:\tNo"
+fi
+
+if test "x$use_libcap" != "xno"; then
+  final_message="$final_message\n  libcap support:\tYes"
+else
+  final_message="$final_message\n  libcap support:\tNo"
 fi
 
 ### External libraries messages

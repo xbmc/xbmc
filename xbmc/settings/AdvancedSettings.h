@@ -80,6 +80,7 @@ class CAdvancedSettings
     static CAdvancedSettings* getInstance();
 
     void Initialize();
+    bool Initialized() { return m_initialized; };
     void AddSettingsFile(const CStdString &filename);
     bool Load();
     void Clear();
@@ -238,8 +239,10 @@ class CAdvancedSettings
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
     bool m_bVideoLibraryImportWatchedState;
+    bool m_bVideoLibraryImportResumePoint;
 
     bool m_bVideoScannerIgnoreErrors;
+    int m_iVideoLibraryDateAdded;
 
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
@@ -343,6 +346,7 @@ class CAdvancedSettings
     void ParseSettingsFile(const CStdString &file);
 
     float GetDisplayLatency(float refreshrate);
+    bool m_initialized;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

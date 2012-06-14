@@ -16,9 +16,12 @@
 		18968DDE14155E01005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DDC14155E01005BA742 /* ApplicationOperations.cpp */; };
 		18ACF8FD13597B5700B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */; };
 		18B700F613A6A7850009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700F413A6A7850009C1AF /* AddonVersion.cpp */; };
+		18E7CAD71578C691001D4554 /* CDDARipJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18E7CAD51578C691001D4554 /* CDDARipJob.cpp */; };
 		18ECC99D13CF17D200A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		3291892B1423A9B700E878CD /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329189291423A9B700E878CD /* JpegIO.cpp */; };
+		36A9444E15821F2C00727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9444C15821F2C00727135 /* DatabaseUtils.cpp */; };
+		36A9445215821F5300727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9445015821F5300727135 /* SortUtils.cpp */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C0A7EDE13A5DC2800AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */; };
 		7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7F9B13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp */; };
@@ -150,6 +153,7 @@
 		DFB6627515376791006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6625215376791006B8FF1 /* AEUtil.cpp */; };
 		DFB6627615376791006B8FF1 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6625415376791006B8FF1 /* AEWAVLoader.cpp */; };
 		DFB6630C1537697E006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6630A1537697E006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
+		DFC3867E158296EC008AE277 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFC3867C158296EC008AE277 /* Exception.cpp */; };
 		DFCA6AEB15224671000BFAAE /* HTTPApiHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ADE15224671000BFAAE /* HTTPApiHandler.cpp */; };
 		DFCA6AEC15224671000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AE015224671000BFAAE /* HTTPJsonRpcHandler.cpp */; };
 		DFCA6AED15224671000BFAAE /* HTTPVfsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AE215224671000BFAAE /* HTTPVfsHandler.cpp */; };
@@ -324,7 +328,6 @@
 		F56C88AC131F42ED000AD0F6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C81DA131F42E6000AD0F6 /* ScreenSaver.cpp */; };
 		F56C88AD131F42ED000AD0F6 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C81DC131F42E6000AD0F6 /* Skin.cpp */; };
 		F56C88AE131F42ED000AD0F6 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C81DE131F42E6000AD0F6 /* Visualisation.cpp */; };
-		F56C88AF131F42ED000AD0F6 /* CDDAReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C81E1131F42E6000AD0F6 /* CDDAReader.cpp */; };
 		F56C88B0131F42ED000AD0F6 /* CDDARipper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C81E3131F42E6000AD0F6 /* CDDARipper.cpp */; };
 		F56C88B1131F42ED000AD0F6 /* Encoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C81E9131F42E6000AD0F6 /* Encoder.cpp */; };
 		F56C88B2131F42ED000AD0F6 /* EncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C81EB131F42E6000AD0F6 /* EncoderFFmpeg.cpp */; };
@@ -903,7 +906,6 @@
 		F56C8B30131F42ED000AD0F6 /* TuxBoxUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C875B131F42EC000AD0F6 /* TuxBoxUtil.cpp */; };
 		F56C8B31131F42ED000AD0F6 /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C875D131F42EC000AD0F6 /* Variant.cpp */; };
 		F56C8B32131F42ED000AD0F6 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C875F131F42EC000AD0F6 /* Weather.cpp */; };
-		F56C8B33131F42ED000AD0F6 /* Win32Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8761131F42EC000AD0F6 /* Win32Exception.cpp */; };
 		F56C8B34131F42ED000AD0F6 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8764131F42EC000AD0F6 /* fft.cpp */; };
 		F56C8B35131F42ED000AD0F6 /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8766131F42EC000AD0F6 /* ssrc.cpp */; };
 		F56C8B36131F42ED000AD0F6 /* GUIDialogAudioSubtitleSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C876A131F42EC000AD0F6 /* GUIDialogAudioSubtitleSettings.cpp */; };
@@ -963,7 +965,6 @@
 		F56C8B6D131F42ED000AD0F6 /* PartyModeManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E3131F42ED000AD0F6 /* PartyModeManager.cpp */; };
 		F56C8B6E131F42ED000AD0F6 /* PlayListPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E5131F42ED000AD0F6 /* PlayListPlayer.cpp */; };
 		F56C8B6F131F42ED000AD0F6 /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E7131F42ED000AD0F6 /* SectionLoader.cpp */; };
-		F56C8B70131F42ED000AD0F6 /* SortFileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87E9131F42ED000AD0F6 /* SortFileItem.cpp */; };
 		F56C8B71131F42ED000AD0F6 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87EB131F42ED000AD0F6 /* Temperature.cpp */; };
 		F56C8B72131F42ED000AD0F6 /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87ED131F42ED000AD0F6 /* TextureCache.cpp */; };
 		F56C8B73131F42ED000AD0F6 /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C87EF131F42ED000AD0F6 /* TextureDatabase.cpp */; };
@@ -1047,11 +1048,18 @@
 		18ACF8FC13597B5700B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		18B700F413A6A7850009C1AF /* AddonVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonVersion.cpp; sourceTree = "<group>"; };
 		18B700F513A6A7850009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
+		18E7CAD51578C691001D4554 /* CDDARipJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDARipJob.cpp; sourceTree = "<group>"; };
+		18E7CAD61578C691001D4554 /* CDDARipJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDARipJob.h; sourceTree = "<group>"; };
 		18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC99C13CF17D200A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		329189291423A9B700E878CD /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
 		3291892A1423A9B700E878CD /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
+		36A9444C15821F2C00727135 /* DatabaseUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseUtils.cpp; sourceTree = "<group>"; };
+		36A9444D15821F2C00727135 /* DatabaseUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseUtils.h; sourceTree = "<group>"; };
+		36A9444F15821F3B00727135 /* ISortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISortable.h; sourceTree = "<group>"; };
+		36A9445015821F5300727135 /* SortUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortUtils.cpp; sourceTree = "<group>"; };
+		36A9445115821F5300727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7EDD13A5DC2800AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -1327,6 +1335,8 @@
 		DFB6625515376791006B8FF1 /* AEWAVLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEWAVLoader.h; sourceTree = "<group>"; };
 		DFB6630A1537697E006B8FF1 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		DFB6630B1537697E006B8FF1 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
+		DFC3867C158296EC008AE277 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Exception.cpp; sourceTree = "<group>"; };
+		DFC3867D158296EC008AE277 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
 		DFCA6ADE15224671000BFAAE /* HTTPApiHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPApiHandler.cpp; sourceTree = "<group>"; };
 		DFCA6ADF15224671000BFAAE /* HTTPApiHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPApiHandler.h; sourceTree = "<group>"; };
 		DFCA6AE015224671000BFAAE /* HTTPJsonRpcHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPJsonRpcHandler.cpp; sourceTree = "<group>"; };
@@ -1755,8 +1765,6 @@
 		F56C81DD131F42E6000AD0F6 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skin.h; sourceTree = "<group>"; };
 		F56C81DE131F42E6000AD0F6 /* Visualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualisation.cpp; sourceTree = "<group>"; };
 		F56C81DF131F42E6000AD0F6 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualisation.h; sourceTree = "<group>"; };
-		F56C81E1131F42E6000AD0F6 /* CDDAReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDAReader.cpp; sourceTree = "<group>"; };
-		F56C81E2131F42E6000AD0F6 /* CDDAReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDAReader.h; sourceTree = "<group>"; };
 		F56C81E3131F42E6000AD0F6 /* CDDARipper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDARipper.cpp; sourceTree = "<group>"; };
 		F56C81E4131F42E6000AD0F6 /* CDDARipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDARipper.h; sourceTree = "<group>"; };
 		F56C81E5131F42E6000AD0F6 /* DllLameenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLameenc.h; sourceTree = "<group>"; };
@@ -2965,8 +2973,6 @@
 		F56C875E131F42EC000AD0F6 /* Variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variant.h; sourceTree = "<group>"; };
 		F56C875F131F42EC000AD0F6 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Weather.cpp; sourceTree = "<group>"; };
 		F56C8760131F42EC000AD0F6 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Weather.h; sourceTree = "<group>"; };
-		F56C8761131F42EC000AD0F6 /* Win32Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32Exception.cpp; sourceTree = "<group>"; };
-		F56C8762131F42EC000AD0F6 /* Win32Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Win32Exception.h; sourceTree = "<group>"; };
 		F56C8763131F42EC000AD0F6 /* WindowsShortcut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowsShortcut.h; sourceTree = "<group>"; };
 		F56C8764131F42EC000AD0F6 /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
 		F56C8765131F42EC000AD0F6 /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
@@ -3093,7 +3099,6 @@
 		F56C87E6131F42ED000AD0F6 /* PlayListPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListPlayer.h; sourceTree = "<group>"; };
 		F56C87E7131F42ED000AD0F6 /* SectionLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SectionLoader.cpp; sourceTree = "<group>"; };
 		F56C87E8131F42ED000AD0F6 /* SectionLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionLoader.h; sourceTree = "<group>"; };
-		F56C87E9131F42ED000AD0F6 /* SortFileItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortFileItem.cpp; sourceTree = "<group>"; };
 		F56C87EA131F42ED000AD0F6 /* SortFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortFileItem.h; sourceTree = "<group>"; };
 		F56C87EB131F42ED000AD0F6 /* Temperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Temperature.cpp; sourceTree = "<group>"; };
 		F56C87EC131F42ED000AD0F6 /* Temperature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Temperature.h; sourceTree = "<group>"; };
@@ -3413,6 +3418,8 @@
 		DF33C29015509BF50046CDCB /* commons */ = {
 			isa = PBXGroup;
 			children = (
+				DFC3867C158296EC008AE277 /* Exception.cpp */,
+				DFC3867D158296EC008AE277 /* Exception.h */,
 				DF33C29115509BF50046CDCB /* ilog.cpp */,
 				DF33C29215509BF50046CDCB /* ilog.h */,
 			);
@@ -4240,7 +4247,6 @@
 				F56C87E6131F42ED000AD0F6 /* PlayListPlayer.h */,
 				F56C87E7131F42ED000AD0F6 /* SectionLoader.cpp */,
 				F56C87E8131F42ED000AD0F6 /* SectionLoader.h */,
-				F56C87E9131F42ED000AD0F6 /* SortFileItem.cpp */,
 				F56C87EA131F42ED000AD0F6 /* SortFileItem.h */,
 				F56C87B9131F42ED000AD0F6 /* SystemGlobals.cpp */,
 				F56C87EB131F42ED000AD0F6 /* Temperature.cpp */,
@@ -4327,8 +4333,8 @@
 		F56C81E0131F42E6000AD0F6 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				F56C81E1131F42E6000AD0F6 /* CDDAReader.cpp */,
-				F56C81E2131F42E6000AD0F6 /* CDDAReader.h */,
+				18E7CAD51578C691001D4554 /* CDDARipJob.cpp */,
+				18E7CAD61578C691001D4554 /* CDDARipJob.h */,
 				F56C81E3131F42E6000AD0F6 /* CDDARipper.cpp */,
 				F56C81E4131F42E6000AD0F6 /* CDDARipper.h */,
 				F56C81E5131F42E6000AD0F6 /* DllLameenc.h */,
@@ -6036,6 +6042,8 @@
 				F56C8706131F42EB000AD0F6 /* Crc32.h */,
 				F5BD034D148D496A001B5583 /* CryptThreading.cpp */,
 				F5BD034E148D496A001B5583 /* CryptThreading.h */,
+				36A9444C15821F2C00727135 /* DatabaseUtils.cpp */,
+				36A9444D15821F2C00727135 /* DatabaseUtils.h */,
 				F56C871C131F42EC000AD0F6 /* DownloadQueue.cpp */,
 				F56C871D131F42EC000AD0F6 /* DownloadQueue.h */,
 				F56C871E131F42EC000AD0F6 /* DownloadQueueManager.cpp */,
@@ -6068,6 +6076,7 @@
 				DF52775F151BAFA000B5B63B /* HttpResponse.h */,
 				F56C8730131F42EC000AD0F6 /* InfoLoader.cpp */,
 				F56C8731131F42EC000AD0F6 /* InfoLoader.h */,
+				36A9444F15821F3B00727135 /* ISortable.h */,
 				F56C8736131F42EC000AD0F6 /* Job.h */,
 				F56C8734131F42EC000AD0F6 /* JobManager.cpp */,
 				F56C8735131F42EC000AD0F6 /* JobManager.h */,
@@ -6108,6 +6117,8 @@
 				F56C874E131F42EC000AD0F6 /* ScraperParser.h */,
 				F56C874F131F42EC000AD0F6 /* ScraperUrl.cpp */,
 				F56C8750131F42EC000AD0F6 /* ScraperUrl.h */,
+				36A9445015821F5300727135 /* SortUtils.cpp */,
+				36A9445115821F5300727135 /* SortUtils.h */,
 				F56C8751131F42EC000AD0F6 /* Splash.cpp */,
 				F56C8752131F42EC000AD0F6 /* Splash.h */,
 				F56C8766131F42EC000AD0F6 /* ssrc.cpp */,
@@ -6136,8 +6147,6 @@
 				F56C875E131F42EC000AD0F6 /* Variant.h */,
 				F56C875F131F42EC000AD0F6 /* Weather.cpp */,
 				F56C8760131F42EC000AD0F6 /* Weather.h */,
-				F56C8761131F42EC000AD0F6 /* Win32Exception.cpp */,
-				F56C8762131F42EC000AD0F6 /* Win32Exception.h */,
 				F56C8763131F42EC000AD0F6 /* WindowsShortcut.h */,
 				F5ED90B9155398CB00842059 /* XBMCTinyXML.cpp */,
 				F5ED90BA155398CB00842059 /* XBMCTinyXML.h */,
@@ -6476,6 +6485,7 @@
 				F589B48B128A696700D8079E /* copy root files */,
 				F589B48D128A697C00D8079E /* copy frameworks */,
 				3234980612AF0B3400657FF1 /* codesign */,
+				1D8C18A9157BBFE9002D0F3B /* genoutputdirlink */,
 			);
 			buildRules = (
 			);
@@ -6525,6 +6535,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1D8C18A9157BBFE9002D0F3B /* genoutputdirlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = genoutputdirlink;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+		};
 		3234980612AF0B3400657FF1 /* codesign */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -6537,7 +6561,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export CODESIGN_ALLOCATE=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Developer/iphoneentitlements401/gen_entitlements.py \"org.xbmc.xbmc-ios\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
+			shellScript = "export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Developer/iphoneentitlements401/gen_entitlements.py \"org.xbmc.xbmc-ios\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
 		};
 		F589B48B128A696700D8079E /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6728,7 +6752,6 @@
 				F56C88AC131F42ED000AD0F6 /* ScreenSaver.cpp in Sources */,
 				F56C88AD131F42ED000AD0F6 /* Skin.cpp in Sources */,
 				F56C88AE131F42ED000AD0F6 /* Visualisation.cpp in Sources */,
-				F56C88AF131F42ED000AD0F6 /* CDDAReader.cpp in Sources */,
 				F56C88B0131F42ED000AD0F6 /* CDDARipper.cpp in Sources */,
 				F56C88B1131F42ED000AD0F6 /* Encoder.cpp in Sources */,
 				F56C88B2131F42ED000AD0F6 /* EncoderFFmpeg.cpp in Sources */,
@@ -7307,7 +7330,6 @@
 				F56C8B30131F42ED000AD0F6 /* TuxBoxUtil.cpp in Sources */,
 				F56C8B31131F42ED000AD0F6 /* Variant.cpp in Sources */,
 				F56C8B32131F42ED000AD0F6 /* Weather.cpp in Sources */,
-				F56C8B33131F42ED000AD0F6 /* Win32Exception.cpp in Sources */,
 				F56C8B34131F42ED000AD0F6 /* fft.cpp in Sources */,
 				F56C8B35131F42ED000AD0F6 /* ssrc.cpp in Sources */,
 				F56C8B36131F42ED000AD0F6 /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
@@ -7367,7 +7389,6 @@
 				F56C8B6D131F42ED000AD0F6 /* PartyModeManager.cpp in Sources */,
 				F56C8B6E131F42ED000AD0F6 /* PlayListPlayer.cpp in Sources */,
 				F56C8B6F131F42ED000AD0F6 /* SectionLoader.cpp in Sources */,
-				F56C8B70131F42ED000AD0F6 /* SortFileItem.cpp in Sources */,
 				F56C8B71131F42ED000AD0F6 /* Temperature.cpp in Sources */,
 				F56C8B72131F42ED000AD0F6 /* TextureCache.cpp in Sources */,
 				F56C8B73131F42ED000AD0F6 /* TextureDatabase.cpp in Sources */,
@@ -7569,6 +7590,10 @@
 				C8B92A6A157357C600284190 /* GUIDialogExtendedProgressBar.cpp in Sources */,
 				C8B92A6D1573580C00284190 /* PVROperations.cpp in Sources */,
 				C8B92A701573586300284190 /* TextSearch.cpp in Sources */,
+				18E7CAD71578C691001D4554 /* CDDARipJob.cpp in Sources */,
+				36A9444E15821F2C00727135 /* DatabaseUtils.cpp in Sources */,
+				36A9445215821F5300727135 /* SortUtils.cpp in Sources */,
+				DFC3867E158296EC008AE277 /* Exception.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

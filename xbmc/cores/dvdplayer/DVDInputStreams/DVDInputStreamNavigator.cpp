@@ -29,7 +29,7 @@
 #include "utils/log.h"
 #include "guilib/Geometry.h"
 #include "filesystem/IFile.h"
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "CocoaInterface.h"
 #endif
 
@@ -92,7 +92,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   && strncasecmp(strDVDFile + len - 8, "VIDEO_TS", 8) == 0)
     strDVDFile[len - 9] = '\0';
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
   strDVDFile = Cocoa_MountPoint2DeviceName(strDVDFile);

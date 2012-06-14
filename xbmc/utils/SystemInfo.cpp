@@ -40,7 +40,7 @@
 #ifdef _WIN32
 #include "dwmapi.h"
 #endif
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "osx/DarwinUtils.h"
 #include "osx/CocoaInterface.h"
 #endif
@@ -493,7 +493,7 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   return strRet;
 }
 
-#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 CStdString CSysInfo::GetLinuxDistro()
 {
   static const char* release_file[] = { "/etc/debian_version",
@@ -610,8 +610,8 @@ CStdString CSysInfo::GetUserAgent()
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
 #if defined(_WIN32)
   result += GetUAWindowsVersion();
-#elif defined(__APPLE__)
-#if defined(__arm__)
+#elif defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
   result += "iOS; ";
 #else
   result += "Mac OS X; ";
@@ -631,26 +631,9 @@ CStdString CSysInfo::GetUserAgent()
   return result;
 }
 
-bool CSysInfo::IsAppleTV()
-{
-  bool        result = false;
-#if defined(__APPLE__)
-  char        buffer[512];
-  size_t      len = 512;
-  std::string hw_model = "unknown";
-
-  if (sysctlbyname("hw.model", &buffer, &len, NULL, 0) == 0)
-    hw_model = buffer;
-
-  if (hw_model.find("AppleTV") != std::string::npos)
-    result = true;
-#endif
-  return result;
-}
-
 bool CSysInfo::IsAppleTV2()
 {
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   return DarwinIsAppleTV2();
 #else
   return false;
@@ -671,7 +654,7 @@ bool CSysInfo::HasVDADecoder()
 {
   bool        result = false;
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   result = Cocoa_HasVDADecoder();
 #endif
   return result;

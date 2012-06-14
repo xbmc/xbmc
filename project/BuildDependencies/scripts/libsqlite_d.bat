@@ -7,8 +7,8 @@ CALL dlextract.bat libsqlite %FILES%
 
 cd %TMP_PATH%
 
-xcopy include "%CUR_PATH%\include" /E /Q /I /Y
-copy lib\sqlite3.lib "%CUR_PATH%\lib\" /Y
-copy bin\sqlite3.dll "%XBMC_PATH%\system\" /Y
+echo readme.txt > sqlite_exclude.txt
+
+xcopy sqlite-3.7.12.1-win32\* "%XBMC_PATH%\" /E /Q /I /Y /EXCLUDE:sqlite_exclude.txt
 
 cd %LOC_PATH%

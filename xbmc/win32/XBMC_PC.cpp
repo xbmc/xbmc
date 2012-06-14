@@ -199,7 +199,23 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 #endif
 
-  g_application.Run();
+  if (!g_application.CreateGUI())
+  {
+    CStdString errorMsg;
+    errorMsg.Format("CApplication::CreateGUI() failed - Check log file for display errors");
+    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 0;
+  }
+
+  if (!g_application.Initialize())
+  {
+    CStdString errorMsg;
+    errorMsg.Format("CApplication::Initialize() failed - Check log file and that it is writable");
+    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 0;
+  }
+
+  g_application.Run(true);
   
   // put everything in CApplication::Cleanup() since this point is never reached
 

@@ -21,29 +21,11 @@
  *
  */
 
-#ifdef _WIN32
 #include <windows.h>
-#endif
 #include <exception>
+#include "commons/Exception.h"
 
-#ifdef _LINUX
-
-class win32_exception: public std::exception
-{
-public:
-    virtual const char* what() const throw() { return mWhat; };
-    void* where() const { return mWhere; };
-    unsigned int code() const { return mCode; };
-    virtual void writelog(const char *prefix) const;
-private:
-    const char* mWhat;
-    void* mWhere;
-    unsigned mCode;
-};
-
-#else
-
-class win32_exception: public std::exception
+class win32_exception: public XbmcCommons::Exception
 {
 public:
     typedef const void* Address; // OK on Win32 platform
@@ -52,9 +34,9 @@ public:
     virtual const char* what() const { return mWhat; };
     Address where() const { return mWhere; };
     unsigned code() const { return mCode; };
-    virtual void writelog(const char *prefix) const;
+    virtual void LogThrowMessage(const char *prefix) const;
 protected:
-    win32_exception(const EXCEPTION_RECORD& info);
+    win32_exception(const EXCEPTION_RECORD& info, const char* classname = NULL);
     static void translate(unsigned code, EXCEPTION_POINTERS* info);
 private:
     const char* mWhat;
@@ -74,7 +56,7 @@ class access_violation: public win32_exception
 
 public:
     Address address() const { return mBadAddress; };
-    virtual void writelog(const char *prefix) const;
+    virtual void LogThrowMessage(const char *prefix) const;
 protected:
     friend void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info);
 private:
@@ -82,4 +64,3 @@ private:
     Address mBadAddress;
     access_violation(const EXCEPTION_RECORD& info);
 };
-#endif

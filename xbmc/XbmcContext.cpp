@@ -22,6 +22,7 @@
 #include "XbmcContext.h"
 
 #include "threads/Thread.h"
+#include "commons/Exception.h"
 #include "utils/log.h"
 
 namespace XBMC
@@ -43,6 +44,7 @@ namespace XBMC
     impl->loggerImpl = new XbmcUtils::LogImplementation;
 
     // set
+    XbmcCommons::Exception::SetLogger(impl->loggerImpl);
     CThread::SetLogger(impl->loggerImpl);
   }
 

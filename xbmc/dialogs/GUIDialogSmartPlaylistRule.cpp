@@ -106,7 +106,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     type = VIDEODB_CONTENT_EPISODES;
 
   int iLabel = 0;
-  if (m_rule.m_field == CSmartPlaylistRule::FIELD_GENRE)
+  if (m_rule.m_field == FieldGenre)
   {
     if (m_type.Equals("tvshows") || m_type.Equals("episodes") || m_type.Equals("movies"))
       videodatabase.GetGenresNav("videodb://2/1/",items,type);
@@ -120,15 +120,15 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 515;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_COUNTRY)
+  else if (m_rule.m_field == FieldCountry)
   {
     videodatabase.GetCountriesNav("videodb://2/1/",items,type);
     iLabel = 574;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_ARTIST || m_rule.m_field == CSmartPlaylistRule::FIELD_ALBUMARTIST)
+  else if (m_rule.m_field == FieldArtist || m_rule.m_field == FieldAlbumArtist)
   {
     if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
-      database.GetArtistsNav("musicdb://5/",items,-1,m_rule.m_field == CSmartPlaylistRule::FIELD_ALBUMARTIST);
+      database.GetArtistsNav("musicdb://5/",items,-1,m_rule.m_field == FieldAlbumArtist);
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
       CFileItemList items2;
@@ -137,7 +137,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 557;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_ALBUM)
+  else if (m_rule.m_field == FieldAlbum)
   {
     if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
       database.GetAlbumsNav("musicdb://6/",items,-1,-1,-1,-1);
@@ -149,32 +149,32 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 558;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_ACTOR)
+  else if (m_rule.m_field == FieldActor)
   {
     videodatabase.GetActorsNav("",items,type);
     iLabel = 20337;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_DIRECTOR)
+  else if (m_rule.m_field == FieldDirector)
   {
     videodatabase.GetDirectorsNav("",items,type);
     iLabel = 20339;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_STUDIO)
+  else if (m_rule.m_field == FieldStudio)
   {
     videodatabase.GetStudiosNav("",items,type);
     iLabel = 572;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_WRITER)
+  else if (m_rule.m_field == FieldWriter)
   {
     videodatabase.GetWritersNav("",items,type);
     iLabel = 20417;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_TVSHOWTITLE)
+  else if (m_rule.m_field == FieldTvShowTitle)
   {
     videodatabase.GetTvShowsNav("",items);
     iLabel = 20343;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PLAYLIST)
+  else if (m_rule.m_field == FieldPlaylist)
   {
     // use filebrowser to grab another smart playlist
 
@@ -194,7 +194,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 559;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PATH)
+  else if (m_rule.m_field == FieldPath)
   {
     VECSOURCES sources;
     if (m_type == "songs" || m_type == "mixed")
@@ -210,7 +210,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     UpdateButtons();
     return;
   }
-  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_SET)
+  else if (m_rule.m_field == FieldSet)
   {
     videodatabase.GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES);
     iLabel = 20434;
@@ -221,7 +221,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
 
   // sort the items
-  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
@@ -248,7 +248,7 @@ void CGUIDialogSmartPlaylistRule::OnField()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
   OnMessage(msg);
-  m_rule.m_field = (CSmartPlaylistRule::DATABASE_FIELD)msg.GetParam1();
+  m_rule.m_field = (Field)msg.GetParam1();
 
   UpdateButtons();
 }
@@ -268,7 +268,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_FIELD, m_rule.m_field);
   CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
   OnMessage(msg2);
-  m_rule.m_field = (CSmartPlaylistRule::DATABASE_FIELD)msg2.GetParam1();
+  m_rule.m_field = (Field)msg2.GetParam1();
 
   // and now update the operator set
   SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
@@ -373,7 +373,7 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
   ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
   CGUIDialog::OnInitWindow();
   // add the fields to the field spincontrol
-  vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_type);
+  vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
   for (unsigned int i = 0; i < fields.size(); i++)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_FIELD, fields[i]);

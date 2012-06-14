@@ -103,7 +103,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     strFileMask = g_settings.m_pictureExtensions;
     strFileMask += "|" + g_settings.m_musicExtensions;
     strFileMask += "|" + g_settings.m_videoExtensions;
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
     strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.applescript|.workflow";
 #else
     strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg";

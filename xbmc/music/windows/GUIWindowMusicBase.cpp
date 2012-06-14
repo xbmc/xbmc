@@ -44,6 +44,7 @@
 #include "GUIInfoManager.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
+#include "addons/GUIDialogAddonInfo.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "music/LastFmManager.h"
 #include "music/tags/MusicInfoTag.h"
@@ -264,6 +265,12 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
   if (item->IsVideoDb())
   { // music video
     OnContextButton(iItem, CONTEXT_BUTTON_INFO);
+    return;
+  }
+
+  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  {
+    CGUIDialogAddonInfo::ShowForItem(item);
     return;
   }
 
@@ -868,6 +875,8 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (item && !item->IsParentFolder())
     {
+      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+        buttons.Add(CONTEXT_BUTTON_INFO,24003); // Add-on info
       if (item->GetExtraInfo().Equals("lastfmloved"))
       {
         buttons.Add(CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM, 15295); //unlove
@@ -1024,8 +1033,7 @@ void CGUIWindowMusicBase::OnRipCD()
     if (!g_application.CurrentFileItem().IsCDDA())
     {
 #ifdef HAS_CDDA_RIPPER
-      CCDDARipper ripper;
-      ripper.RipCD();
+      CCDDARipper::GetInstance().RipCD();
 #endif
     }
     else
@@ -1040,9 +1048,8 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
     if (!g_application.CurrentFileItem().IsCDDA())
     {
 #ifdef HAS_CDDA_RIPPER
-      CCDDARipper ripper;
       CFileItemPtr item = m_vecItems->Get(iItem);
-      ripper.RipTrack(item.get());
+      CCDDARipper::GetInstance().RipTrack(item.get());
 #endif
     }
     else
@@ -1329,14 +1336,14 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist.reset(new CFileItem("newplaylist://", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
-    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);
+    newPlaylist->SetSpecialSort(SortSpecialOnBottom);
     newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
 
     newPlaylist.reset(new CFileItem("newsmartplaylist://music", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
-    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);
+    newPlaylist->SetSpecialSort(SortSpecialOnBottom);
     newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
   }

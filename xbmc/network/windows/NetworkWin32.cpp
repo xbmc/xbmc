@@ -81,6 +81,11 @@ CStdString CNetworkInterfaceWin32::GetMacAddress()
   return result;
 }
 
+void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6])
+{
+  memcpy(rawMac, m_adapter.Address, 6);
+}
+
 CStdString CNetworkInterfaceWin32::GetCurrentIPAddress(void)
 {
   return m_adapter.IpAddressList.IpAddress.String;

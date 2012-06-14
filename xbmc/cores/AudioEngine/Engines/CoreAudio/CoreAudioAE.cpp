@@ -243,8 +243,6 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   CLog::Log(LOGINFO, "  Volume Level  : %f", m_volume);
   CLog::Log(LOGINFO, "  Passthrough   : %d", m_rawPassthrough);
 
-  SetVolume(m_volume);
-
   CSingleLock soundLock(m_soundLock);
   StopAllSounds();
 
@@ -363,6 +361,11 @@ void CCoreAudioAE::SetVolume(float volume)
     return;
 
   m_volume = volume;
+  // track volume if we are not muted
+  // we need this because m_volume is init'ed via
+  // SetVolume and need to also init m_volumeBeforeMute.
+  if (!m_muted)
+    m_volumeBeforeMute = volume;  
 
   HAL->SetVolume(m_volume);
 }

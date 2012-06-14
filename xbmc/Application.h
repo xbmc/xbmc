@@ -111,13 +111,16 @@ public:
   CApplication(void);
   virtual ~CApplication(void);
   virtual bool Initialize();
-  virtual void FrameMove(bool processEvents);
+  virtual void FrameMove(bool processEvents, bool processGUI = true);
   virtual void Render();
   virtual bool RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
   virtual bool Cleanup();
 
+  bool CreateGUI();
+  bool InitWindow();
+  bool DestroyWindow();
   void StartServices();
   void StopServices();
   bool StartWebServer();
@@ -347,7 +350,7 @@ protected:
   bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
 
   friend class CApplicationMessenger;
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
 #endif
   // screensaver
@@ -425,6 +428,7 @@ protected:
   bool ProcessHTTPApiButtons();
   bool ProcessJsonRpcButtons();
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount, unsigned int holdTime = 0);
+  int  GetActiveWindowID(void);
 
   float NavigationIdleTime();
   static bool AlwaysProcess(const CAction& action);

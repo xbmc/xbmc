@@ -21,7 +21,7 @@
 
 #include "threads/SystemClock.h"
 #include "Stopwatch.h"
-#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 #include <sys/sysinfo.h>
 #endif
 #include "utils/TimeUtils.h"
