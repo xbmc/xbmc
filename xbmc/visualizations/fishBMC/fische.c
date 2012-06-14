@@ -202,38 +202,35 @@ fische_render (struct fische* handle)
     // only if init completed
     if (P->init_progress >= 1) {
 
-		// analyse sound data
+        // analyse sound data
         fische__audiobuffer_lock (P->audiobuffer);
         fische__audiobuffer_get (P->audiobuffer);
-		int_fast8_t analysis = fische__analyst_analyse (P->analyst, P->audiobuffer->samples, P->audiobuffer->sample_count);
+        int_fast8_t analysis = fische__analyst_analyse (P->analyst, P->audiobuffer->back_samples, P->audiobuffer->back_sample_count);
 
-		if (P->init_progress < 1)
-			return;
+        // act accordingly
+        if (handle->nervous_mode) {
+            if (analysis >= 2)
+                fische__wavepainter_change_shape (P->wavepainter);
+            if (analysis >= 1)
+                fische__vectorfield_change (P->vectorfield);
+        } else {
+            if (analysis >= 1)
+                fische__wavepainter_change_shape (P->wavepainter);
+            if (analysis >= 2)
+                fische__vectorfield_change (P->vectorfield);
+        }
 
-		// act accordingly
-		if (handle->nervous_mode) {
-			if (analysis >= 2)
-				fische__wavepainter_change_shape (P->wavepainter);
-			if (analysis >= 1)
-				fische__vectorfield_change (P->vectorfield);
-		} else {
-			if (analysis >= 1)
-				fische__wavepainter_change_shape (P->wavepainter);
-			if (analysis >= 2)
-				fische__vectorfield_change (P->vectorfield);
-		}
+        if (analysis >= 3) {
+            fische__wavepainter_beat (P->wavepainter, P->analyst->frames_per_beat);
+        }
+        if (analysis >= 4) {
+            if (handle->on_beat)
+                handle->on_beat (P->analyst->frames_per_beat);
+        }
 
-		if (analysis >= 3) {
-			fische__wavepainter_beat (P->wavepainter, P->analyst->frames_per_beat);
-		}
-		if (analysis >= 4) {
-			if (handle->on_beat)
-				handle->on_beat (P->analyst->frames_per_beat);
-		}
+        P->audio_valid = analysis >= 0 ? 1 : 0;
 
-		P->audio_valid = analysis >= 0 ? 1 : 0;
-
-		fische__wavepainter_change_color (P->wavepainter, P->analyst->frames_per_beat, P->analyst->relative_energy);
+        fische__wavepainter_change_color (P->wavepainter, P->analyst->frames_per_beat, P->analyst->relative_energy);
 
 
         // wait for blurring to be finished
@@ -244,7 +241,7 @@ fische_render (struct fische* handle)
 
         // draw waves
         if (P->audio_valid)
-            fische__wavepainter_paint (P->wavepainter, P->audiobuffer->samples, P->audiobuffer->sample_count);
+            fische__wavepainter_paint (P->wavepainter, P->audiobuffer->front_samples, P->audiobuffer->front_sample_count);
 
         // start blurring for the next frame
         fische__blurengine_blur (P->blurengine, P->vectorfield->field);
@@ -290,6 +287,9 @@ void
 fische_audiodata (struct fische* handle, const void* data, size_t data_size)
 {
     struct _fische__internal_* P = handle->priv;
+
+    if (NULL == P->audiobuffer)
+        return;
 
     fische__audiobuffer_lock (P->audiobuffer);
     fische__audiobuffer_insert (P->audiobuffer, data, data_size);

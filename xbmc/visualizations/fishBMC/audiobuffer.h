@@ -26,14 +26,16 @@ struct _fische__audiobuffer_ {
     uint_fast8_t    is_locked;
     uint_fast32_t   puts;
     uint_fast32_t   gets;
-    uint_fast32_t	last_get;
+    uint_fast32_t   last_get;
 
     struct fische*    fische;
 };
 
 struct fische__audiobuffer {
-    double* samples;
-    uint_fast16_t sample_count;
+    double* front_samples;
+    uint_fast16_t front_sample_count;
+    double* back_samples;
+    uint_fast16_t back_sample_count;
 
     struct _fische__audiobuffer_* priv;
 };
