@@ -825,10 +825,10 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("setvolume"))
   {
-    int oldVolume = g_application.GetVolume();
+    int oldVolume = (int)(g_application.GetLinearVolume() * 100.0 + 0.5);
     int volume = atoi(parameter.c_str());
 
-    g_application.SetVolume((float)volume);
+    g_application.SetLinearVolume((float)volume/100.0);
     if(oldVolume != volume)
     {
       if(params.size() > 1 && params[1].Equals("showVolumeBar"))    

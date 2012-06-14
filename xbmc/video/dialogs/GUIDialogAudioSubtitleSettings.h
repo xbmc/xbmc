@@ -42,7 +42,7 @@ protected:
   void AddAudioStreams(unsigned int id);
   void AddSubtitleStreams(unsigned int id);
 
-  float m_volume;
+  float m_volume_percent;
   int m_audioStream;
   int m_subtitleStream;
   int m_outputmode;

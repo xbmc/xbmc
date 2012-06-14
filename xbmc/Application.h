@@ -191,8 +191,8 @@ public:
   virtual void Process();
   void ProcessSlow();
   void ResetScreenSaver();
-  int GetVolume() const;
-  void SetVolume(float iValue, bool isPercentage = true);
+  float GetLinearVolume() const;
+  void SetLinearVolume(float volume);
   bool IsMuted() const;
   void ToggleMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
@@ -406,7 +406,6 @@ protected:
   void Mute();
   void UnMute();
 
-  void SetHardwareVolume(float hardwareVolume);
   void UpdateLCD();
   void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);
 

@@ -1598,7 +1598,7 @@ int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
   else
   {
     int iPercent = atoi(paras[0].c_str());
-    g_application.SetVolume((float)iPercent, true);
+    g_application.SetLinearVolume((float)iPercent/100.0);
     return SetResponse(openTag+"OK");
   }
 }
@@ -1606,7 +1606,7 @@ int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetVolume()
 {
   CStdString tmp;
-  tmp.Format("%i",g_application.GetVolume());
+  tmp.Format("%i", (int)(g_application.GetLinearVolume() * 100.0 + 0.5));
   return SetResponse(openTag + tmp);
 }
 
@@ -2613,7 +2613,7 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
       else if (paras[i]=="httpapibroadcastlevel")
         tmp.Format("%i",g_settings.m_HttpApiBroadcastLevel);
       else if (paras[i]=="volumelevel")
-        tmp.Format("%i",g_application.GetVolume());
+        tmp.Format("%i",(int)(g_application.GetLinearVolume() * 100.0 + 0.5));
       else if (paras[i]=="systemtimetotalup")
         tmp.Format("%i",g_settings.m_iSystemTimeTotalUp);
       else if (paras[i]=="mute")
