@@ -12,19 +12,22 @@
 			<include>Window_OpenClose_Animation</include>		
 			<control type="image">
 				<posx>0</posx>
-				<posy>0</posy>
+				<posy>100r</posy>
 				<width>1280</width>
-				<height>720</height>
-				<texture border="20">black-back.png</texture>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>128r</posy>
-				<width>1280</width>
-				<height>128</height>
+				<height>100</height>
 				<texture>floor.png</texture>
 				<animation effect="slide" start="0,10" end="0,0" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
 				<animation effect="slide" start="0,0" end="0,10" time="200" condition="Window.Next(Home)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>LOGO</description>
+				<posx>0</posx>
+				<posy>5</posy>
+				<width>170</width>
+				<height>100</height>
+				<aspectratio aligny="top" align="left">keep</aspectratio>
+				<texture>xbmc-logo.png</texture>
+				<include>Window_OpenClose_Animation</include>
 			</control>
 			<control type="image">
 				<posx>265</posx>
@@ -39,23 +42,6 @@
 				<width>750</width>
 				<height>64</height>
 				<texture border="10">ContentPanelMirror.png</texture>
-			</control>
-			<control type="image">
-				<description>LOGO</description>
-				<posx>250r</posx>
-				<posy>80r</posy>
-				<width>220</width>
-				<height>80</height>
-				<aspectratio>keep</aspectratio>
-				<texture>Confluence_Logo.png</texture>
-			</control>
-			<control type="image">
-				<description>LOGO</description>
-				<posx>50</posx>
-				<posy>60r</posy>
-				<width>140</width>
-				<height>40</height>
-				<texture>XBMC_Logo.png</texture>
 			</control>
 			<control type="label">
 				<posx>295</posx>
@@ -85,14 +71,14 @@
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>690</width>
-						<height>101</height>
-						<texture border="0,5,0,5">MenuItemNF.png</texture>
+						<height>95</height>
+						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
 						<posx>10</posx>
 						<posy>10</posy>
 						<width>80</width>
-						<height>80</height>
+						<height>75</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="label">
@@ -111,7 +97,7 @@
 						<posx>110</posx>
 						<posy>50</posy>
 						<width>580</width>
-						<height>40</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>grey2</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -125,8 +111,8 @@
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>690</width>
-						<height>101</height>
-						<texture border="0,5,0,5">MenuItemNF.png</texture>
+						<height>95</height>
+						<texture border="5">button-nofocus.png</texture>
 						<visible>!Control.HasFocus(52)</visible>
 						<include>VisibleFadeEffect</include>
 					</control>
@@ -134,8 +120,8 @@
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>690</width>
-						<height>101</height>
-						<texture border="0,5,0,5">MenuItemFO.png</texture>
+						<height>95</height>
+						<texture border="5">button-focus2.png</texture>
 						<visible>Control.HasFocus(52)</visible>
 						<include>VisibleFadeEffect</include>
 					</control>
@@ -143,7 +129,7 @@
 						<posx>10</posx>
 						<posy>10</posy>
 						<width>80</width>
-						<height>80</height>
+						<height>75</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="label">
@@ -162,7 +148,7 @@
 						<posx>110</posx>
 						<posy>50</posy>
 						<width>580</width>
-						<height>40</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>grey2</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -172,6 +158,15 @@
 					</control>
 				</focusedlayout>
 			</control>
+			<control type="image">
+				<description>LOGO</description>
+				<posx>265</posx>
+				<posy>580</posy>
+				<width>220</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<texture>Confluence_Logo.png</texture>
+			</control>
 			<control type="group">
 				<posx>940</posx>
 				<posy>600</posy>
@@ -179,7 +174,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>580</width>
-					<height>35</height>
+					<height>45</height>
 					<font>font12</font>
 					<textcolor>grey2</textcolor>
 					<align>right</align>
@@ -190,19 +185,28 @@
 					<description>Power push button</description>
 					<posx>10</posx>
 					<posy>0</posy>
-					<width>40</width>
-					<height>40</height>
+					<width>45</width>
+					<height>45</height>
 					<label>-</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(ShutdownMenu)</onclick>
-					<texturefocus>home-power-FO.png</texturefocus>
-					<texturenofocus>home-power.png</texturenofocus>
+					<texturefocus border="5">floor_buttonFO.png</texturefocus>
+					<texturenofocus border="5">floor_button.png</texturenofocus>
 					<onleft>52</onleft>
 					<onright>52</onright>
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<colordiffuse>CCFFFFFF</colordiffuse>
+				</control>
+				<control type="image">
+					<description>Power Icon</description>
+					<posx>15</posx>
+					<posy>5</posy>
+					<width>35</width>
+					<height>35</height>
+					<aspectratio>keep</aspectratio>
+					<texture>icon_power.png</texture>
 				</control>
 				<control type="image">
 					<posx>13</posx>
@@ -215,18 +219,20 @@
 			</control>
 		</control>
 		<include>Clock</include>
-		<control type="grouplist">
-			<posx>10</posx>
-			<posy>5</posy>
-			<width>1000</width>
-			<height>30</height>
-			<orientation>horizontal</orientation>
-			<align>left</align>
-			<itemgap>5</itemgap>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$LOCALIZE[2096]</label>
-			</control>
+		<control type="label">
+			<description>Date label</description>
+			<posx>20r</posx>
+			<posy>35</posy>
+			<width>200</width>
+			<height>15</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>font10</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>$INFO[System.Date]</label>
+			<include>Window_OpenClose_Animation</include>
+			<animation effect="slide" start="0,0" end="-40,0" time="100" condition="Window.IsVisible(Mutebug)">conditional</animation>
 		</control>
 	</controls>
 </window>
