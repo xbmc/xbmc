@@ -134,7 +134,7 @@ namespace PVR
     unsigned int     m_iControlList;
     bool             m_bUpdateRequired;
     int              m_iSelected;
-    SORT_ORDER       m_iSortOrder;
+    SortOrder        m_iSortOrder;
     SORT_METHOD      m_iSortMethod;
     CCriticalSection m_critSection;
   };

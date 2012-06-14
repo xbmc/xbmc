@@ -57,7 +57,7 @@ CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window
   m_iControlList    = iControlList;
   m_bUpdateRequired = false;
   m_iSelected       = 0;
-  m_iSortOrder      = SORT_ORDER_ASC;
+  m_iSortOrder      = SortOrderAscending;
   m_iSortMethod     = SORT_METHOD_DATE;
   if( m_parent->GetViewState() )
   {
@@ -223,13 +223,13 @@ bool CGUIWindowPVRCommon::OnContextButtonSortByDate(CFileItem *item, CONTEXT_BUT
     if (m_iSortMethod != SORT_METHOD_DATE)
     {
       m_iSortMethod = SORT_METHOD_DATE;
-      m_iSortOrder  = SORT_ORDER_ASC;
+      m_iSortOrder  = SortOrderAscending;
       CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_parent->GetID(), 0, m_iSortMethod, 0); 
       m_parent->OnMessage(message);
     }
     else
     {
-      m_iSortOrder = m_iSortOrder == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      m_iSortOrder = m_iSortOrder == SortOrderAscending ? SortOrderDescending : SortOrderAscending;
     }
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_parent->GetID(), 0, m_iSortOrder, 0); 
     m_parent->OnMessage(message);
@@ -250,13 +250,13 @@ bool CGUIWindowPVRCommon::OnContextButtonSortByName(CFileItem *item, CONTEXT_BUT
     if (m_iSortMethod != SORT_METHOD_LABEL)
     {
       m_iSortMethod = SORT_METHOD_LABEL;
-      m_iSortOrder  = SORT_ORDER_ASC;
+      m_iSortOrder  = SortOrderAscending;
       CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_parent->GetID(), 0, m_iSortMethod, 0); 
       m_parent->OnMessage(message);
     }
     else
     {
-      m_iSortOrder = m_iSortOrder == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      m_iSortOrder = m_iSortOrder == SortOrderAscending ? SortOrderDescending : SortOrderAscending;
     }
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_parent->GetID(), 0, m_iSortOrder, 0); 
     m_parent->OnMessage(message);
@@ -277,11 +277,11 @@ bool CGUIWindowPVRCommon::OnContextButtonSortByChannel(CFileItem *item, CONTEXT_
     if (m_iSortMethod != SORT_METHOD_CHANNEL)
     {
       m_iSortMethod = SORT_METHOD_CHANNEL;
-      m_iSortOrder  = SORT_ORDER_ASC;
+      m_iSortOrder  = SortOrderAscending;
     }
     else
     {
-      m_iSortOrder = m_iSortOrder == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      m_iSortOrder = m_iSortOrder == SortOrderAscending ? SortOrderDescending : SortOrderAscending;
     }
 
     UpdateData();
@@ -618,7 +618,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
 
       CFileItemList items;
       CDirectory::GetDirectory(dir, items);
-      items.Sort(SORT_METHOD_FILE ,SORT_ORDER_ASC);
+      items.Sort(SORT_METHOD_FILE, SortOrderAscending);
 
       vector<int> stack;
       for (int i = 0; i < items.Size(); ++i)

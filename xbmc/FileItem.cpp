@@ -734,6 +734,9 @@ void CFileItem::ToSortable(SortItem &sortable)
     
   if (HasPictureInfoTag())
     GetPictureInfoTag()->ToSortable(sortable);
+
+  if (HasPVRChannelInfoTag())
+    GetPVRChannelInfoTag()->ToSortable(sortable);
 }
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
@@ -1939,7 +1942,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
     sortBy = SortByListeners;
     break;    
   case SORT_METHOD_CHANNEL:
-    FillSortFields(SSortFileItem::ByChannel);
+    sortBy = SortByChannel;
     break;
   default:
     CLog::Log(LOGWARNING, "Unknown sort method %d", sortMethod);

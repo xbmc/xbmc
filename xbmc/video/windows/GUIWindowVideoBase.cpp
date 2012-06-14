@@ -1510,7 +1510,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 
           CFileItemList items;
           CDirectory::GetDirectory(dir, items);
-          items.Sort(SORT_METHOD_FILE ,SORT_ORDER_ASC);
+          items.Sort(SORT_METHOD_FILE, SortOrderAscending);
 
           vector<int> stack;
           for (int i = 0; i < items.Size(); ++i)

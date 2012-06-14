@@ -795,3 +795,8 @@ void CPVRChannel::SetCachedChannelNumber(unsigned int iChannelNumber)
   CSingleLock lock(m_critSection);
   m_iCachedChannelNumber = iChannelNumber;
 }
+
+void CPVRChannel::ToSortable(SortItem& sortable)
+{
+  sortable[FieldChannelName] = m_strChannelName;
+}
