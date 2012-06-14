@@ -132,15 +132,6 @@ void CHTSPConnection::Close()
   }
 }
 
-void CHTSPConnection::Abort(void)
-{
-  CLockObject lock(m_mutex);
-  m_bIsConnected = false;
-
-  if(m_socket && m_socket->IsOpen())
-    m_socket->Shutdown();
-}
-
 htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iDatapacketTimeout /* = 10000 */)
 {
   void*    buf;
