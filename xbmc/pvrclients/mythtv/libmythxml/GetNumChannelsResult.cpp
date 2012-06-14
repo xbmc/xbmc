@@ -8,7 +8,7 @@
 #include "GetNumChannelsResult.h"
 #include <stdlib.h>
 
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 GetNumChannelsResult::GetNumChannelsResult() {

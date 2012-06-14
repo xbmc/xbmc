@@ -25,7 +25,7 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/DirtyRegion.h"
-#include "lib/tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "threads/SystemClock.h"

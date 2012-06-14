@@ -1,7 +1,7 @@
 #include "GetChannelListResult.h"
 #include <stdlib.h>
 
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 GetChannelListResult::GetChannelListResult() {
