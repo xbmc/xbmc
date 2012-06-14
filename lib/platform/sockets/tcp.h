@@ -120,6 +120,48 @@ namespace PLATFORM
       uint16_t   m_iPort;
   };
 
+  class CTcpClientSocket : public CCommonSocket<tcp_socket_t>
+  {
+  public:
+    CTcpClientSocket(tcp_socket_t socket) :
+      CCommonSocket<tcp_socket_t>(socket, "tcpclient") {}
+
+    virtual ~CTcpClientSocket(void) {}
+
+    virtual bool Open(uint64_t iTimeoutMs = 0)
+    {
+      (void) iTimeoutMs;
+      return true;
+    }
+
+    virtual void Close(void)
+    {
+      TcpSocketClose(m_socket);
+      m_socket = INVALID_SOCKET_VALUE;
+    }
+
+    virtual void Shutdown(void)
+    {
+      TcpSocketShutdown(m_socket);
+      m_socket = INVALID_SOCKET_VALUE;
+    }
+
+    virtual ssize_t Write(void* data, size_t len)
+    {
+      return TcpSocketWrite(m_socket, &m_iError, data, len);
+    }
+
+    virtual ssize_t Read(void* data, size_t len, uint64_t iTimeoutMs = 0)
+    {
+      return TcpSocketRead(m_socket, &m_iError, data, len, iTimeoutMs);
+    }
+
+    virtual bool IsOpen(void)
+    {
+      return m_socket != INVALID_SOCKET_VALUE;
+    }
+  };
+
   class CTcpConnection : public CProtectedSocket<CTcpSocket>
   {
   public:

@@ -31,28 +31,4 @@
  *     http://www.pulse-eight.net/
  */
 
-#define _FILE_OFFSET_BITS 64
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
-#include <sys/time.h>
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
-#include <sys/prctl.h>
-#endif
-#include <pthread.h>
-#include <poll.h>
-#include <semaphore.h>
-#include <stdint.h>
-
-extern "C" {
-#include <sys/types.h>
-}
-
-#define LIBTYPE
-#define DECLSPEC
-
-typedef int socket_t;
-typedef socket_t tcp_socket_t;
-#define INVALID_SOCKET_VALUE        (-1)
-typedef socket_t serial_socket_t;
-#define INVALID_SERIAL_SOCKET_VALUE (-1)
+#define DELETE_AND_NULL(t) while (t) { delete (t); (t) = NULL; }
