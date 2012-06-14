@@ -25,7 +25,7 @@
 #include <vector>
 #include "addons/Skin.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/CharsetConverter.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
@@ -33,7 +33,7 @@
 
 using namespace std;
 
-static TiXmlDocument pySkinReferences;
+static CXBMCTinyXML pySkinReferences;
 
 
 namespace PYXBMC

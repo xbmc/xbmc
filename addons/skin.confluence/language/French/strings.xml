@@ -3,7 +3,7 @@
   <!-- Misc labels -->
   <string id="31000">Changement des</string>
   <string id="31001">J'aime</string>
-  <string id="31002">Je deteste</string>
+  <string id="31002">Je déteste</string>
   <string id="31003">Options d'alimentation</string>
   <string id="31004">En cours...</string>
   <string id="31005">Cacher INFO</string>
@@ -88,9 +88,9 @@
   <string id="31131"></string>
   <string id="31132">Add-on Lyrics</string>
   <string id="31133">Add-on Sous-titres</string>
-  <string id="31134">Sous-menu Videos de la page d'acceuil</string>
-  <string id="31135">Sous-menu Musique de la page d'acceuil</string>
-  <string id="31136">Sous-menu Images de la page d'acceuil</string>
+  <string id="31134">Sous-menu Videos de la page d'accueil</string>
+  <string id="31135">Sous-menu Musique de la page d'accueil</string>
+  <string id="31136">Sous-menu Images de la page d'accueil</string>
   
   <string id="31140">OSD Musique</string>
   <string id="31141">OSD Vidéo</string>
