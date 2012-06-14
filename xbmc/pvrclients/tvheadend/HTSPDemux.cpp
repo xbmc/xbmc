@@ -28,7 +28,6 @@ using namespace ADDON;
 
 CHTSPDemux::CHTSPDemux() :
     m_bIsRadio(false),
-    m_bAbort(false),
     m_subs(0),
     m_channel(0),
     m_tag(0),
@@ -65,7 +64,6 @@ bool CHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
 
 void CHTSPDemux::Close()
 {
-  m_bAbort = true;
   m_session->Close();
 }
 
@@ -92,59 +90,54 @@ bool CHTSPDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
 void CHTSPDemux::Abort()
 {
   m_Streams.iStreamCount = 0;
-  m_bAbort = true;
-  m_session->Abort();
 }
 
 DemuxPacket* CHTSPDemux::Read()
 {
-  htsmsg_t *  msg;
-  const char* method;
-  while((msg = m_session->ReadMessage(1000)) && !m_bAbort)
+  htsmsg_t *msg = m_session->ReadMessage(1000, 1000);
+  if (!msg)
+    return PVR->AllocateDemuxPacket(0);
+
+  const char *method = htsmsg_get_str(msg, "method");
+  if (!method)
+    return NULL;
+
+  uint32_t subs;
+  if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
   {
-    method = htsmsg_get_str(msg, "method");
-    if(method == NULL)
-      break;
+    htsmsg_destroy(msg);
+    return NULL;
+  }
 
-    uint32_t subs;
-    if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
-    {
-      htsmsg_destroy(msg);
-      continue;
-    }
-
-    if     (strcmp("subscriptionStart",  method) == 0)
-    {
-      ParseSubscriptionStart(msg);
-      DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
-      pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
-      htsmsg_destroy(msg);
-      return pkt;
-    }
-    else if(strcmp("subscriptionStop",   method) == 0)
-      ParseSubscriptionStop (msg);
-    else if(strcmp("subscriptionStatus", method) == 0)
-      ParseSubscriptionStatus(msg);
-    else if(strcmp("queueStatus"       , method) == 0)
-      ParseQueueStatus(msg);
-    else if(strcmp("signalStatus"       , method) == 0)
-      ParseSignalStatus(msg);
-    else if(strcmp("muxpkt"            , method) == 0)
-    {
-      DemuxPacket *pkt = ParseMuxPacket(msg);
-      htsmsg_destroy(msg);
-      return pkt;
-    }
-
-    break;
+  if (strcmp("subscriptionStart",  method) == 0)
+  {
+    ParseSubscriptionStart(msg);
+    DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
+    pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
+    htsmsg_destroy(msg);
+    return pkt;
+  }
+  else if(strcmp("subscriptionStop",   method) == 0)
+    ParseSubscriptionStop(msg);
+  else if(strcmp("subscriptionStatus", method) == 0)
+    ParseSubscriptionStatus(msg);
+  else if(strcmp("queueStatus"       , method) == 0)
+    ParseQueueStatus(msg);
+  else if(strcmp("signalStatus"      , method) == 0)
+    ParseSignalStatus(msg);
+  else if(strcmp("muxpkt"            , method) == 0)
+  {
+    DemuxPacket *pkt = ParseMuxPacket(msg);
+    htsmsg_destroy(msg);
+    return pkt;
   }
 
   if(msg)
   {
     htsmsg_destroy(msg);
-    DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
-    return pkt;
+    return PVR->AllocateDemuxPacket(0);
   }
+
   return NULL;
 }
 

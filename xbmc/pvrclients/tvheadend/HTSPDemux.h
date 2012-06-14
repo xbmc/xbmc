@@ -54,7 +54,6 @@ private:
 
   CHTSPConnection      *m_session;
   bool                  m_bIsRadio;
-  bool                  m_bAbort;
   bool                  m_bResetNeeded;
   unsigned              m_subs;
   int                   m_channel;
