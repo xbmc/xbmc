@@ -362,13 +362,19 @@ void CDVDPlayerVideo::Process()
 
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      ((CDVDMsgGeneralSynchronize*)pMsg)->Wait( &m_bStop, SYNCSOURCE_VIDEO );
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
+      if(((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_VIDEO))
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
+
+        /* we may be very much off correct pts here, but next picture may be a still*/
+        /* make sure it isn't dropped */
+        m_iNrOfPicturesNotToSkip = 5;
+      }
+      else
+        m_messageQueue.Put(pMsg->Acquire(), 1); /* push back as prio message, to process other prio messages */
+
       pMsg->Release();
 
-      /* we may be very much off correct pts here, but next picture may be a still*/
-      /* make sure it isn't dropped */
-      m_iNrOfPicturesNotToSkip = 5;
       continue;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
