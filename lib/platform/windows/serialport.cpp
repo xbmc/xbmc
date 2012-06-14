@@ -48,28 +48,25 @@ void FormatWindowsError(int iErrorCode, CStdString &strMessage)
   }
 }
 
-bool SetTimeouts(serial_socket_t socket, int* iError, bool bBlocking)
+bool CSerialSocket::SetTimeouts(serial_socket_t socket, int* iError, DWORD iTimeoutMs)
 {
   if (socket == INVALID_HANDLE_VALUE)
 	  return false;
 
-  COMMTIMEOUTS cto;
-  if (!GetCommTimeouts(socket, &cto))
-  {
-    *iError = GetLastError();
-    return false;
-  }
+  if (iTimeoutMs == m_iCurrentReadTimeout)
+    return true;
 
-  if (bBlocking)
+  COMMTIMEOUTS cto;
+  if (iTimeoutMs == 0)
   {
-    cto.ReadIntervalTimeout         = 0;
+    cto.ReadIntervalTimeout         = MAXDWORD;
     cto.ReadTotalTimeoutConstant    = 0;
     cto.ReadTotalTimeoutMultiplier  = 0;
   }
   else
   {
-    cto.ReadIntervalTimeout         = MAXDWORD;
-    cto.ReadTotalTimeoutConstant    = 0;
+    cto.ReadIntervalTimeout         = 0;
+    cto.ReadTotalTimeoutConstant    = iTimeoutMs;
     cto.ReadTotalTimeoutMultiplier  = 0;
   }
 
@@ -77,6 +74,10 @@ bool SetTimeouts(serial_socket_t socket, int* iError, bool bBlocking)
   {
     *iError = GetLastError();
     return false;
+  }
+  else
+  {
+    m_iCurrentReadTimeout = iTimeoutMs;
   }
 
   return true;
@@ -103,7 +104,13 @@ ssize_t CSerialSocket::Write(void* data, size_t len)
 
 ssize_t CSerialSocket::Read(void* data, size_t len, uint64_t iTimeoutMs /* = 0 */)
 {
-  return IsOpen() ? SerialSocketRead(m_socket, &m_iError, data, len, iTimeoutMs) : -1;
+  DWORD dwTimeoutMs((DWORD)iTimeoutMs);
+  if (iTimeoutMs != (uint64_t)iTimeoutMs)
+    dwTimeoutMs = MAXDWORD;
+
+  return IsOpen() && SetTimeouts(m_socket, &m_iError, dwTimeoutMs) ?
+    SerialSocketRead(m_socket, &m_iError, data, len, iTimeoutMs) :
+    -1;
 }
 
 bool CSerialSocket::Open(uint64_t iTimeoutMs /* = 0 */)
@@ -153,7 +160,7 @@ bool CSerialSocket::Open(uint64_t iTimeoutMs /* = 0 */)
     return false;
   }
 
-  if (!SetTimeouts(m_socket, &m_iError, false))
+  if (!SetTimeouts(m_socket, &m_iError, 0))
   {
     m_strError = "unable to set timeouts";
     FormatWindowsError(GetLastError(), m_strError);

@@ -47,20 +47,36 @@
 #ifndef IUCLC
 #define IUCLC	0
 #endif
+#else
+#include <lockdev.h>
 #endif
+
 using namespace std;
 using namespace PLATFORM;
+
+inline bool RemoveLock(const char *strDeviceName)
+{
+  #if !defined(__APPLE__) && !defined(__FreeBSD__)
+  return dev_unlock(strDeviceName, 0) == 0;
+  #endif
+}
 
 void CSerialSocket::Close(void)
 {
   if (IsOpen())
+  {
     SocketClose(m_socket);
+    RemoveLock(m_strName.c_str());
+  }
 }
 
 void CSerialSocket::Shutdown(void)
 {
   if (IsOpen())
+  {
     SocketClose(m_socket);
+    RemoveLock(m_strName.c_str());
+  }
 }
 
 ssize_t CSerialSocket::Write(void* data, size_t len)
@@ -78,32 +94,48 @@ bool CSerialSocket::Open(uint64_t iTimeoutMs /* = 0 */)
 {
   iTimeoutMs = 0;
   if (IsOpen())
+  {
+    m_iError = EINVAL;
     return false;
+  }
 
   if (m_iDatabits != SERIAL_DATA_BITS_FIVE && m_iDatabits != SERIAL_DATA_BITS_SIX &&
       m_iDatabits != SERIAL_DATA_BITS_SEVEN && m_iDatabits != SERIAL_DATA_BITS_EIGHT)
   {
     m_strError = "Databits has to be between 5 and 8";
+    m_iError = EINVAL;
     return false;
   }
 
   if (m_iStopbits != SERIAL_STOP_BITS_ONE && m_iStopbits != SERIAL_STOP_BITS_TWO)
   {
     m_strError = "Stopbits has to be 1 or 2";
+    m_iError = EINVAL;
     return false;
   }
 
   if (m_iParity != SERIAL_PARITY_NONE && m_iParity != SERIAL_PARITY_EVEN && m_iParity != SERIAL_PARITY_ODD)
   {
     m_strError = "Parity has to be none, even or odd";
+    m_iError = EINVAL;
     return false;
   }
+
+  #if !defined(__APPLE__) && !defined(__FreeBSD__)
+  if (dev_lock(m_strName.c_str()) != 0)
+  {
+    m_strError = "Couldn't lock the serial port";
+    m_iError = EBUSY;
+    return false;
+  }
+  #endif
 
   m_socket = open(m_strName.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
 
   if (m_socket == INVALID_SERIAL_SOCKET_VALUE)
   {
     m_strError = strerror(errno);
+    RemoveLock(m_strName.c_str());
     return false;
   }
 
@@ -150,6 +182,7 @@ bool CSerialSocket::Open(uint64_t iTimeoutMs /* = 0 */)
   if (tcsetattr(m_socket, TCSANOW, &m_options) != 0)
   {
     m_strError = strerror(errno);
+    RemoveLock(m_strName.c_str());
     return false;
   }
   
