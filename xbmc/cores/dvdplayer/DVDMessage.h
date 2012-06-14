@@ -147,20 +147,23 @@ public:
 #define SYNCSOURCE_AUDIO  0x00000001
 #define SYNCSOURCE_VIDEO  0x00000002
 #define SYNCSOURCE_SUB    0x00000004
-#define SYNCSOURCE_ALL    (SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO | SYNCSOURCE_SUB)
+#define SYNCSOURCE_OWNER  0x80000000 /* only allowed for the constructor of the object */
+#define SYNCSOURCE_ALL    (SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO | SYNCSOURCE_SUB | SYNCSOURCE_OWNER)
 
+class CDVDMsgGeneralSynchronizePriv;
 class CDVDMsgGeneralSynchronize : public CDVDMsg
 {
 public:
   CDVDMsgGeneralSynchronize(DWORD timeout, DWORD sources);
+ ~CDVDMsgGeneralSynchronize();
+  virtual long Release();
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
+  bool Wait(unsigned long  ms   , DWORD source);
   void Wait(volatile bool *abort, DWORD source);
 private:
-  DWORD m_sources;
-  long m_objects;
-  unsigned int m_timeout;
+  class CDVDMsgGeneralSynchronizePriv* m_p;
 };
 
 template <typename T>
