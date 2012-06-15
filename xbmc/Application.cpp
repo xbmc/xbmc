@@ -801,6 +801,15 @@ bool CApplication::CreateGUI()
     return false;
   }
 
+  // Retrieve the matching resolution based on GUI settings
+  g_guiSettings.m_LookAndFeelResolution = g_guiSettings.GetResolution();
+  CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
+  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  {
+    CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
+    g_guiSettings.SetResolution(RES_DESKTOP);
+  }
+
   // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
