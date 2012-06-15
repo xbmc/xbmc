@@ -481,7 +481,7 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
   if (HTSPDemuxer && HTSPDemuxer->GetSignalStatus(signalStatus))
     return PVR_ERROR_NO_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return PVR_ERROR_NOT_POSSIBLE;
 }
 
 void DemuxAbort(void)

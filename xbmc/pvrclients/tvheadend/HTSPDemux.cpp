@@ -100,13 +100,14 @@ DemuxPacket* CHTSPDemux::Read()
 
   const char *method = htsmsg_get_str(msg, "method");
   if (!method)
-    return NULL;
+    return PVR->AllocateDemuxPacket(0);
 
   uint32_t subs;
   if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
   {
+    // switching channels
     htsmsg_destroy(msg);
-    return NULL;
+    return PVR->AllocateDemuxPacket(0);
   }
 
   if (strcmp("subscriptionStart",  method) == 0)
