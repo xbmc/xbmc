@@ -103,6 +103,10 @@ def forecast(city):
 
 def properties(query):
     weathercode = WEATHER_CODES[query['current_observation']['icon_url'][31:-4]]
+    location = __addon__.getSetting('Location%s' % sys.argv[1])
+    if (location == '') and (sys.argv[1] != '1'):
+        location = __addon__.getSetting('Location1')
+    set_property('Current.Location'      , location)
     set_property('Current.Condition'     , query['current_observation']['weather'])
     set_property('Current.Temperature'   , str(query['current_observation']['temp_c']))
     set_property('Current.Wind'          , str(query['current_observation']['wind_kph']))
