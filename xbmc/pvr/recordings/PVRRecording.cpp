@@ -133,7 +133,8 @@ bool CPVRRecording::SetPlayCount(int count)
 {
   PVR_ERROR error;
   m_iRecPlayCount = count;
-  if (!g_PVRClients->SetRecordingPlayCount(*this, count, &error))
+  if (g_PVRClients->GetAddonCapabilities(m_iClientId).bSupportsRecordingPlayCount &&
+      !g_PVRClients->SetRecordingPlayCount(*this, count, &error))
   {
     DisplayError(error);
     return false;

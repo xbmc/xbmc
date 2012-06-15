@@ -4081,8 +4081,11 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateT
     m_pDS->exec(strSQL.c_str());
 
     // PVR: Set recording's play count on the backend (if supported)
-    if (item.HasPVRRecordingInfoTag() && g_PVRManager.IsStarted()) {
-      g_PVRRecordings->GetByPath(item.GetPath())->SetPlayCount(count);
+    if (item.HasPVRRecordingInfoTag() && g_PVRManager.IsStarted())
+    {
+      CPVRRecording *recording = g_PVRRecordings->GetByRecording(*item.GetPVRRecordingInfoTag());
+      if (recording)
+        recording->SetPlayCount(count);
     }
 
     // We only need to announce changes to video items in the library

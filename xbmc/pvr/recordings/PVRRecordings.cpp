@@ -407,6 +407,20 @@ CPVRRecording *CPVRRecordings::GetByPath(const CStdString &path)
   return tag;
 }
 
+CPVRRecording *CPVRRecordings::GetByRecording(const CPVRRecording &recording)
+{
+  CPVRRecording *tag(NULL);
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  {
+    if (*at(iRecordingPtr) == recording)
+    {
+      tag = at(iRecordingPtr);
+      break;
+    }
+  }
+  return tag;
+}
+
 void CPVRRecordings::Clear()
 {
   CSingleLock lock(m_critSection);

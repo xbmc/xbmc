@@ -67,5 +67,6 @@ namespace PVR
 
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     CPVRRecording *GetByPath(const CStdString &path);
+    CPVRRecording *GetByRecording(const CPVRRecording &recording);
   };
 }
