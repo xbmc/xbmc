@@ -731,4 +731,6 @@ long long SeekLiveStream(long long pos, int whence) { return -1; }
 long long PositionLiveStream(void) { return -1; }
 long long LengthLiveStream(void) { return -1 ; }
 
+PVR_ERROR SetRecordingPlayCount(const PVR_RECORDING &recording, int count) { return PVR_ERROR_NOT_IMPLEMENTED; }
+
 } //end extern "C"

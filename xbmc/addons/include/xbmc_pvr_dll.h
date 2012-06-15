@@ -201,6 +201,14 @@ extern "C"
    */
   PVR_ERROR RenameRecording(const PVR_RECORDING &recording);
 
+  /*!
+   * @brief Set the play count of a recording on the backend.
+   * @param recording The recording to change the play count.
+   * @param count Play count.
+   * @return PVR_ERROR_NO_ERROR if the recording's play count has been set successfully.
+   */
+  PVR_ERROR SetRecordingPlayCount(const PVR_RECORDING &recording, int count);
+
   //@}
   /** @name PVR timer methods */
   //@{
@@ -406,6 +414,7 @@ extern "C"
     pClient->GetRecordings           = GetRecordings;
     pClient->DeleteRecording         = DeleteRecording;
     pClient->RenameRecording         = RenameRecording;
+    pClient->SetRecordingPlayCount   = SetRecordingPlayCount;
 
     pClient->GetTimersAmount         = GetTimersAmount;
     pClient->GetTimers               = GetTimers;

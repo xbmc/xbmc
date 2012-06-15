@@ -53,6 +53,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strStreamURL   = recording.strStreamURL;
   m_strChannelName = recording.strChannelName;
   m_genre          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  m_iRecPlayCount  = recording.iPlayCount;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -70,7 +71,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_iLifetime          == right.m_iLifetime &&
        m_strDirectory       == right.m_strDirectory &&
        m_strFileNameAndPath == right.m_strFileNameAndPath &&
-       m_strTitle           == right.m_strTitle);
+       m_strTitle           == right.m_strTitle &&
+       m_iRecPlayCount      == right.m_iRecPlayCount);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -88,6 +90,7 @@ void CPVRRecording::Reset(void)
   m_iPriority          = -1;
   m_iLifetime          = -1;
   m_strFileNameAndPath = StringUtils::EmptyString;
+  m_iRecPlayCount      = 0;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -126,6 +129,19 @@ bool CPVRRecording::Rename(const CStdString &strNewName)
   return true;
 }
 
+bool CPVRRecording::SetPlayCount(int count)
+{
+  PVR_ERROR error;
+  m_iRecPlayCount = count;
+  if (!g_PVRClients->SetRecordingPlayCount(*this, count, &error))
+  {
+    DisplayError(error);
+    return false;
+  }
+
+  return true;
+}
+
 void CPVRRecording::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
@@ -155,6 +171,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strStreamURL   = tag.m_strStreamURL;
   m_strChannelName = tag.m_strChannelName;
   m_genre          = tag.m_genre;
+  m_iRecPlayCount  = tag.m_iRecPlayCount;
 
   CStdString strShow;
   strShow.Format("%s - ", g_localizeStrings.Get(20364).c_str());

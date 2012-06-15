@@ -465,6 +465,15 @@ namespace PVR
     bool DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error);
 
     /*!
+     * @brief Set play count of a recording on the backend.
+     * @param recording The recording to set the play count.
+     * @param count Play count.
+     * @param error An error if it occured.
+     * @return True if the recording's play count was set successfully, false otherwise.
+     */
+    bool SetRecordingPlayCount(const CPVRRecording &recording, int count, PVR_ERROR *error);
+
+    /*!
      * @brief Check whether there is an active recording on the current channel.
      * @return True if there is, false otherwise.
      */
