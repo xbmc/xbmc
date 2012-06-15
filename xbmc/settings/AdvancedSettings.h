@@ -104,6 +104,7 @@ class CAdvancedSettings
     CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
+    float m_navSoundLevel;	// navigation sound volume relative to global system volume
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
