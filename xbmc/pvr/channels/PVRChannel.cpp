@@ -105,7 +105,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_strFileNameAndPath      = StringUtils::EmptyString;
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
-  m_bEPGEnabled             = true;
+  m_bEPGEnabled             = !channel.bIsHidden;
   m_strEPGScraper           = "client";
   m_iEpgId                  = -1;
   m_bEPGCreated             = false;
