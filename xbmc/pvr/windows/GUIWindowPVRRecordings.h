@@ -56,6 +56,7 @@ namespace PVR
     virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
     CStdString m_strSelectedPath;
   };

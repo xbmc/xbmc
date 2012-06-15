@@ -798,6 +798,18 @@ bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *err
   return *error == PVR_ERROR_NO_ERROR;
 }
 
+bool CPVRClients::SetRecordingPlayCount(const CPVRRecording &recording, int count, PVR_ERROR *error)
+{
+  *error = PVR_ERROR_UNKNOWN;
+  boost::shared_ptr<CPVRClient> client;
+  if (GetConnectedClient(recording.m_iClientId, client) && client->GetAddonCapabilities().bSupportsRecordingPlayCount)
+    *error = client->SetRecordingPlayCount(recording, count);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - client %d does not support setting recording's play count",__FUNCTION__, recording.m_iClientId);
+
+  return *error == PVR_ERROR_NO_ERROR;
+}
+
 bool CPVRClients::IsRecordingOnPlayingChannel(void) const
 {
   CPVRChannel currentChannel;

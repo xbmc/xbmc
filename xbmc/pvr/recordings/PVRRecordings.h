@@ -63,8 +63,10 @@ namespace PVR
     int GetRecordings(CFileItemList* results);
     bool DeleteRecording(const CFileItem &item);
     bool RenameRecording(CFileItem &item, CStdString &strNewName);
+    bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
 
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     CPVRRecording *GetByPath(const CStdString &path);
+    CPVRRecording *GetByRecording(const CPVRRecording &recording);
   };
 }

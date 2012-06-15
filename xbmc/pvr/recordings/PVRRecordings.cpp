@@ -106,9 +106,18 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
-    CVideoDatabase db;
-    if (db.Open())
+
+    // Set the play count either directly from client (if supported) or from video db
+    if (g_PVRClients->GetAddonCapabilities(pFileItem->GetPVRRecordingInfoTag()->m_iClientId).bSupportsRecordingPlayCount)
+    {
+      pFileItem->GetPVRRecordingInfoTag()->m_playCount=pFileItem->GetPVRRecordingInfoTag()->m_iRecPlayCount;
+    }
+    else
+    {
+      CVideoDatabase db;
+      if (db.Open())
       pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
+    }
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
 
     results->Add(pFileItem);
@@ -118,6 +127,8 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
 void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip /* = true */)
 {
   CStdString strUseBase = TrimSlashes(strBase);
+
+  std::set<CStdString> unwatchedFolders;
 
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
   {
@@ -140,6 +151,20 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       pFileItem->SetLabel(strCurrent);
       pFileItem->SetLabelPreformated(true);
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
+
+      // Initialize folder overlay from play count (either directly from client or from video database)
+      CVideoDatabase db;
+      bool supportsPlayCount = g_PVRClients->GetAddonCapabilities(current->m_iClientId).bSupportsRecordingPlayCount;
+      if ((supportsPlayCount && current->m_iRecPlayCount > 0) ||
+          (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) > 0))
+      {
+        pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
+      }
+      else
+      {
+        unwatchedFolders.insert(strFilePath);
+      }
+
       results->Add(pFileItem);
     }
     else
@@ -148,6 +173,17 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       pFileItem=results->Get(strFilePath);
       if (pFileItem->m_dateTime<current->RecordingTimeAsLocalTime())
         pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
+
+      // Unset folder overlay if recording is unwatched
+      if (unwatchedFolders.find(strFilePath) == unwatchedFolders.end()) {
+        CVideoDatabase db;
+        bool supportsPlayCount = g_PVRClients->GetAddonCapabilities(current->m_iClientId).bSupportsRecordingPlayCount;
+        if ((supportsPlayCount && current->m_iRecPlayCount == 0) || (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) == 0))
+        {
+          pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
+          unwatchedFolders.insert(strFilePath);
+        }
+      }
     }
   }
 
@@ -257,6 +293,56 @@ bool CPVRRecordings::RenameRecording(CFileItem &item, CStdString &strNewName)
   return tag->Rename(strNewName);
 }
 
+bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
+{
+  bool bResult = false;
+
+  CVideoDatabase database;
+  if (database.Open())
+  {
+    bResult = true;
+
+    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - item path %s", __FUNCTION__, item->GetPath().c_str());
+    CFileItemList items;
+    if (item->m_bIsFolder)
+    {
+      CStdString strPath = item->GetPath();
+      CDirectory::GetDirectory(strPath, items);
+    }
+    else
+      items.Add(item);
+
+    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - will set watched for %d items", __FUNCTION__, items.Size());
+    for (int i=0;i<items.Size();++i)
+    {
+      CLog::Log(LOGDEBUG, "CPVRRecordings - %s - setting watched for item %d", __FUNCTION__, i);
+
+      CFileItemPtr pItem=items[i];
+      if (pItem->m_bIsFolder)
+      {
+        CLog::Log(LOGDEBUG, "CPVRRecordings - %s - path %s is a folder, will call recursively", __FUNCTION__, pItem->GetPath().c_str());
+        if (pItem->GetLabel() != "..")
+        {
+          SetRecordingsPlayCount(pItem, count);
+        }
+        continue;
+      }
+
+      pItem->GetPVRRecordingInfoTag()->SetPlayCount(count);
+
+      // Clear resume bookmark
+      if (count > 0)
+        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+
+      database.SetPlayCount(*pItem, count);
+    }
+
+    database.Close();
+  }
+
+  return bResult;
+}
+
 bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   bool bSuccess(false);
@@ -318,6 +404,20 @@ CPVRRecording *CPVRRecordings::GetByPath(const CStdString &path)
     }
   }
 
+  return tag;
+}
+
+CPVRRecording *CPVRRecordings::GetByRecording(const CPVRRecording &recording)
+{
+  CPVRRecording *tag(NULL);
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  {
+    if (*at(iRecordingPtr) == recording)
+    {
+      tag = at(iRecordingPtr);
+      break;
+    }
+  }
   return tag;
 }
 
