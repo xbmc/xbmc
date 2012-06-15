@@ -34,6 +34,7 @@
 namespace PLATFORM
 {
   #define thread_t                                 HANDLE
+  #define INVALID_THREAD_VALUE                     NULL
   #define ThreadsWait(thread, retVal)              (::WaitForSingleObject(thread, INFINITE) < 0)
   #define ThreadsCreate(thread, func, arg)         ((thread = ::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)func, arg, 0, NULL)) == NULL ? false : true)
 

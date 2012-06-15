@@ -222,18 +222,14 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
 }
 
-#elif defined(__APPLE__) && !defined(__arm__)
+#elif defined(TARGET_DARWIN_OSX)
 #include <IOKit/IOKitLib.h>
 #include <CoreFoundation/CFNumber.h>
 
 void DPMSSupport::PlatformSpecificInit()
 {
-  //releasing the display on ATV is an instant reboot
-  //so allow only non AppleTVs to go into powersaving
-  if(!g_sysinfo.IsAppleTV()) {
-    m_supportedModes.push_back(OFF);
-    m_supportedModes.push_back(STANDBY);
-  }
+  m_supportedModes.push_back(OFF);
+  m_supportedModes.push_back(STANDBY);
 }
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)

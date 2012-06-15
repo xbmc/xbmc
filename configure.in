@@ -147,6 +147,11 @@ dashes="------------------------"
 final_message="\n  XBMC Configuration:"
 final_message="\n$dashes$final_message\n$dashes"
 
+AC_ARG_ENABLE([shared-lib],
+  [AS_HELP_STRING([--enable-shared-lib],
+  [build libxbmc. helpful for tests (default is no)])],
+  [build_shared_lib=$enableval],
+  [build_shared_lib=no])
 
 AC_ARG_ENABLE([debug],
   [AS_HELP_STRING([--enable-debug],
@@ -560,6 +565,11 @@ case $host in
      AC_MSG_ERROR(unsupported host ($host))
 esac
 AC_SUBST([ARCH])
+
+if test "$build_shared_lib" = "yes"; then
+  final_message="$final_message\n Shared lib\tYes"
+  AC_SUBST(USE_LIBXBMC,1)
+fi
 
 # platform debug flags
 if test "$use_debug" = "yes"; then
@@ -1265,14 +1275,6 @@ else
 fi
 
 # libcap
-if test "$use_libcap" = "auto"; then
-  if echo "$ARCH" | grep -q "linux" ; then
-    use_libcap="yes"
-  else
-    use_libcap="no"
-  fi
-fi
-
 if test "$use_libcap" != "no"; then
   AC_CHECK_HEADERS([sys/capability.h],,
    [if test "$use_libcap" = "yes"; then
@@ -1955,6 +1957,12 @@ if test "x$use_libvorbisenc" != "xno"; then
   final_message="$final_message\n  libvorbisenc support:\tYes"
 else
   final_message="$final_message\n  libvorbisenc support:\tNo"
+fi
+
+if test "x$use_libcap" != "xno"; then
+  final_message="$final_message\n  libcap support:\tYes"
+else
+  final_message="$final_message\n  libcap support:\tNo"
 fi
 
 ### External libraries messages

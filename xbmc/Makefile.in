@@ -19,7 +19,6 @@ SRCS=Application.cpp \
      PlayListPlayer.cpp \
      PartyModeManager.cpp \
      SectionLoader.cpp \
-     SortFileItem.cpp \
      SystemGlobals.cpp \
      Temperature.cpp \
      TextureCache.cpp \
@@ -36,6 +35,10 @@ SRCS=Application.cpp \
      XbmcContext.cpp \
 
 LIB=xbmc.a
+
+ifneq (@USE_LIBXBMC@,1)
+SRCS += main.cpp
+endif
 
 DISTCLEAN_FILES=DllPaths_generated.h
 

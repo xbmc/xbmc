@@ -332,7 +332,7 @@ void CGUIDialogFileBrowser::ClearFileItems()
 void CGUIDialogFileBrowser::OnSort()
 {
   if (!m_singleList)
-    m_vecItems->Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    m_vecItems->Sort(SORT_METHOD_LABEL, SortOrderAscending);
 }
 
 void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)

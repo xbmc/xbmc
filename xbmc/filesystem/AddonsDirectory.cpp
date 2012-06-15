@@ -319,7 +319,7 @@ CFileItemPtr CAddonsDirectory::GetMoreItem(const CStdString &content)
   item->SetLabelPreformated(true);
   item->SetLabel(g_localizeStrings.Get(21452));
   item->SetIconImage("DefaultAddon.png");
-  item->SetSpecialSort(SORT_ON_BOTTOM);
+  item->SetSpecialSort(SortSpecialOnBottom);
   return item;
 }
   

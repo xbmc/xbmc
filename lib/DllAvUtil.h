@@ -36,14 +36,22 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
     #include <libavutil/avutil.h>
+    // for av_get_default_channel_layout
+    #include <libavutil/audioconvert.h>
     #include <libavutil/crc.h>
     #include <libavutil/fifo.h>
+    // for enum AVSampleFormat
+    #include <libavutil/samplefmt.h>
     // for LIBAVCODEC_VERSION_INT:
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVUTIL_H)
     #include <ffmpeg/avutil.h>
+    // for av_get_default_channel_layout
+    #include <ffmpeg/audioconvert.h>
     #include <ffmpeg/crc.h>
     #include <ffmpeg/fifo.h>
+    // for enum AVSampleFormat
+    #include <ffmpeg/samplefmt.h>
     // for LIBAVCODEC_VERSION_INT:
     #include <ffmpeg/avcodec.h>
   #endif
@@ -64,11 +72,13 @@ extern "C" {
   #endif
 #else
   #include "libavutil/avutil.h"
+  //for av_get_default_channel_layout
   #include "libavutil/audioconvert.h"
   #include "libavutil/crc.h"
   #include "libavutil/opt.h"
   #include "libavutil/mem.h"
   #include "libavutil/fifo.h"
+  // for enum AVSampleFormat
   #include "libavutil/samplefmt.h"
 #endif
 }

@@ -44,7 +44,7 @@
                  "special://xbmc/system/players/paplayer/;" \
                  "special://xbmc/system/python/"
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #define ENV_PATH ENV_PARTIAL_PATH \
                  ";special://frameworks/"
 #else

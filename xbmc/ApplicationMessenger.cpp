@@ -49,7 +49,7 @@
 #ifdef _WIN32
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
-#elif defined __APPLE__
+#elif defined(TARGET_DARWIN)
 #include "CocoaInterface.h"
 #endif
 #include "addons/AddonCallbacks.h"
@@ -512,7 +512,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_EXECUTE_OS:
-#if defined( _LINUX) && !defined(__APPLE__)
+#if defined( _LINUX) && !defined(TARGET_DARWIN)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #elif defined(_WIN32)
       CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));

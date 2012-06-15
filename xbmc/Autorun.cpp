@@ -76,8 +76,7 @@ void CAutorun::ExecuteAutorun(const CStdString& path, bool bypassSettings, bool 
   if (g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_RIP && 
       pInfo->IsAudio(1) && !g_settings.GetCurrentProfile().musicLocked())
   {
-    CCDDARipper ripper;
-    ripper.RipCD();
+    CCDDARipper::GetInstance().RipCD();
   }
   else
 #endif
@@ -217,7 +216,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           CDirectory::GetDirectory(pItem->GetPath(), items, strExt);
           if (items.Size())
           {
-            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+            items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
             g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
             g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
             g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);

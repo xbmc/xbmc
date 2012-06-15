@@ -702,7 +702,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
           m_channelItems.push_back(item);
         }
       }
-      if (m_epgItemsPtr.size() > 0)
+      if (items->Size() > 0)
       {
         itemsPointer.stop = items->Size()-1;
         m_epgItemsPtr.push_back(itemsPointer);

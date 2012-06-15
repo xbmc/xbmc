@@ -19,7 +19,7 @@
  *
  */
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
 #include <CoreServices/CoreServices.h>
 #include "utils/URIUtils.h"
 #elif defined(_LINUX)
@@ -33,7 +33,7 @@ bool IsAliasShortcut(CStdString &path)
 {
   bool  rtn = false;
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   // Note: regular files that have an .alias extension can be
   //   reported as an alias when clearly, they are not. Trap them out.
   if (URIUtils::GetExtension(path) != ".alias")
@@ -69,7 +69,7 @@ bool IsAliasShortcut(CStdString &path)
 
 void TranslateAliasShortcut(CStdString &path)
 {
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   FSRef fileRef;
   Boolean targetIsFolder, wasAliased;
 

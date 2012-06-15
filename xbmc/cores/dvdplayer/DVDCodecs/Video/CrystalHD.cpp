@@ -254,7 +254,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #pragma mark -
 #endif
 CPictureBuffer::CPictureBuffer(ERenderFormat format, int width, int height)
@@ -321,7 +321,7 @@ CPictureBuffer::~CPictureBuffer()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #pragma mark -
 #endif
 CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_bcm70015) :
@@ -1073,7 +1073,7 @@ void CMPCOutputThread::Process(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #pragma mark -
 #endif
 CCrystalHD* CCrystalHD::m_pInstance = NULL;
@@ -1363,14 +1363,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       bcm_input_format.metaDataSz = metaDataSz;
       bcm_input_format.startCodeSz = startCodeSz;
 
-#if defined(__APPLE__)
-      if (g_sysinfo.IsAppleTV() && bcm_input_format.width > 1280)
-      {
-        bcm_input_format.bEnableScaling = m_has_bcm70015;
-        bcm_input_format.ScalingParams.sWidth = 1280;
-        bcm_input_format.ScalingParams.sHeight = 0;
-      }
-#endif
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
       if (res != BCM::BC_STS_SUCCESS)
       {

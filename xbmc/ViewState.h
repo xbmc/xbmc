@@ -33,7 +33,7 @@
 class CViewState
 {
 public:
-  CViewState(int viewMode, SORT_METHOD sortMethod, SORT_ORDER sortOrder)
+  CViewState(int viewMode, SORT_METHOD sortMethod, SortOrder sortOrder)
   {
     m_viewMode = viewMode;
     m_sortMethod = sortMethod;
@@ -43,10 +43,10 @@ public:
   {
     m_viewMode = 0;
     m_sortMethod = SORT_METHOD_LABEL;
-    m_sortOrder = SORT_ORDER_ASC;
+    m_sortOrder = SortOrderAscending;
   };
 
   int m_viewMode;
   SORT_METHOD m_sortMethod;
-  SORT_ORDER m_sortOrder;
+  SortOrder m_sortOrder;
 };

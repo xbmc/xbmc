@@ -25,7 +25,6 @@
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
 #include "DVDClock.h"
-#include "utils/Win32Exception.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
 
@@ -160,15 +159,7 @@ int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts, double dura
   avpkt.data = data;
   avpkt.size = size;
 
-  try
-  {
-    len = m_dllAvCodec.avcodec_decode_subtitle2(m_pCodecContext, &m_Subtitle, &gotsub, &avpkt);
-  }
-  catch (win32_exception e)
-  {
-    e.writelog("avcodec_decode_subtitle");
-    return OC_ERROR;
-  }
+  len = m_dllAvCodec.avcodec_decode_subtitle2(m_pCodecContext, &m_Subtitle, &gotsub, &avpkt);
 
   if (len < 0)
   {
@@ -197,13 +188,7 @@ void CDVDOverlayCodecFFmpeg::Flush()
   FreeSubtitle(m_Subtitle);
   m_SubtitleIndex = -1;
 
-  try {
-
   m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
-
-  } catch (win32_exception e) {
-    e.writelog(__FUNCTION__);
-  }
 }
 
 CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()

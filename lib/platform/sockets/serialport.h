@@ -71,6 +71,9 @@ namespace PLATFORM
     public:
       CSerialSocket(const CStdString &strName, uint32_t iBaudrate, SerialDataBits iDatabits = SERIAL_DATA_BITS_EIGHT, SerialStopBits iStopbits = SERIAL_STOP_BITS_ONE, SerialParity iParity = SERIAL_PARITY_NONE) :
           CCommonSocket<serial_socket_t>(INVALID_SERIAL_SOCKET_VALUE, strName),
+          #ifdef __WINDOWS__
+          m_iCurrentReadTimeout(MAXDWORD),
+          #endif
           m_bIsOpen(false),
           m_iBaudrate(iBaudrate),
           m_iDatabits(iDatabits),
@@ -96,6 +99,9 @@ namespace PLATFORM
     protected:
   #ifndef __WINDOWS__
       struct termios  m_options;
+  #else
+      bool SetTimeouts(serial_socket_t socket, int* iError, DWORD iTimeoutMs);
+      DWORD           m_iCurrentReadTimeout;
   #endif
 
       bool            m_bIsOpen;

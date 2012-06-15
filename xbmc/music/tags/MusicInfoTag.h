@@ -26,12 +26,13 @@ class CAlbum;
 
 #include "utils/Archive.h"
 #include "utils/ISerializable.h"
+#include "utils/ISortable.h"
 #include "XBDateTime.h"
 
 namespace MUSIC_INFO
 {
 
-class CMusicInfoTag : public IArchivable, public ISerializable
+class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
   CMusicInfoTag(void);
@@ -121,6 +122,7 @@ public:
 
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& ar);
+  virtual void ToSortable(SortItem& sortable);
 
   void Clear();
 protected:

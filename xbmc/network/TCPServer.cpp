@@ -659,11 +659,11 @@ void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buff
         CTCPClient::PushBuffer(host, frames.at(index)->GetApplicationData(), (int)frames.at(index)->GetLength());
     }
 
-    if (m_websocket->GetState() == WebSocketStateClosed)
-      Disconnect();
-
     delete msg;
   }
+
+  if (m_websocket->GetState() == WebSocketStateClosed)
+    Disconnect();
 }
 
 void CTCPServer::CWebSocketClient::Disconnect()

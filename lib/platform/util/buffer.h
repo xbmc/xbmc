@@ -41,7 +41,8 @@ namespace PLATFORM
     {
     public:
       SyncedBuffer(size_t iMaxSize = 100) :
-          m_maxSize(iMaxSize) {}
+          m_maxSize(iMaxSize),
+          m_bHasMessages(false) {}
 
       virtual ~SyncedBuffer(void)
       {
@@ -53,6 +54,7 @@ namespace PLATFORM
         CLockObject lock(m_mutex);
         while (!m_buffer.empty())
           m_buffer.pop();
+        m_condition.Broadcast();
       }
 
       size_t Size(void)
@@ -74,17 +76,41 @@ namespace PLATFORM
           return false;
 
         m_buffer.push(entry);
+        m_bHasMessages = true;
+        m_condition.Signal();
         return true;
       }
 
-      bool Pop(_BType &entry)
+      bool Pop(_BType &entry, uint32_t iTimeoutMs = 0)
+      {
+        bool bReturn(false);
+        CLockObject lock(m_mutex);
+
+        // wait for a signal if the buffer is empty
+        if (m_buffer.empty() && iTimeoutMs > 0)
+        {
+          if (!m_condition.Wait(m_mutex, m_bHasMessages, iTimeoutMs))
+            return bReturn;
+        }
+
+        // pop the first item
+        if (!m_buffer.empty())
+        {
+          entry = m_buffer.front();
+          m_buffer.pop();
+          m_bHasMessages = !m_buffer.empty();
+          bReturn = true;
+        }
+        return bReturn;
+      }
+
+      bool Peek(_BType &entry)
       {
         bool bReturn(false);
         CLockObject lock(m_mutex);
         if (!m_buffer.empty())
         {
           entry = m_buffer.front();
-          m_buffer.pop();
           bReturn = true;
         }
         return bReturn;
@@ -94,5 +120,7 @@ namespace PLATFORM
       size_t             m_maxSize;
       std::queue<_BType> m_buffer;
       CMutex             m_mutex;
+      CCondition<bool>   m_condition;
+      bool               m_bHasMessages;
     };
 };

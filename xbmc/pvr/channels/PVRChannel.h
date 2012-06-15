@@ -368,6 +368,8 @@ namespace PVR
      */
     const CStdString &Path(void) const { return m_strFileNameAndPath; }
 
+    void ToSortable(SortItem& sortable);
+
   private:
     /*!
      * @brief Update the path after the channel number in the internal group changed.

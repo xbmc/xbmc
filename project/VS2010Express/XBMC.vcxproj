@@ -165,7 +165,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>SDL.lib;D3D9.lib;D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;strmiids.lib;dxguid.lib;mfuuid.lib;comctl32.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3D9.lib;D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;strmiids.lib;dxguid.lib;mfuuid.lib;comctl32.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)XBMC.exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;..\..\xbmc\cores\DSPlayer\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcrtd;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -214,7 +214,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>SDL.lib;D3D9.lib;D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;strmiids.lib;mfuuid.lib;comctl32.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3D9.lib;D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;strmiids.lib;dxguid.lib;mfuuid.lib;comctl32.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)XBMC.exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;..\..\xbmc\cores\DSPlayer\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;msvcprt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -588,9 +588,9 @@
     <ClCompile Include="..\..\xbmc\input\KeyboardLayoutConfiguration.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardStat.cpp" />
     <ClCompile Include="..\..\xbmc\input\MouseStat.cpp" />
-    <ClCompile Include="..\..\xbmc\input\SDLJoystick.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IrssMessage.cpp" />
+    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp" />
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp" />
@@ -799,6 +799,7 @@
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicSongs.cpp" />
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowVisualisation.cpp" />
     <ClCompile Include="..\..\xbmc\network\AirPlayServer.cpp" />
+    <ClCompile Include="..\..\xbmc\network\AirTunesServer.cpp" />
     <ClCompile Include="..\..\xbmc\network\cddb.cpp" />
     <ClCompile Include="..\..\xbmc\network\DNSNameCache.cpp" />
     <ClCompile Include="..\..\xbmc\network\EventClient.cpp" />
@@ -933,7 +934,6 @@
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingsControls.cpp" />
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp" />
-    <ClCompile Include="..\..\xbmc\SortFileItem.cpp" />
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp" />
     <ClCompile Include="..\..\xbmc\storage\cdioSupport.cpp" />
     <ClCompile Include="..\..\xbmc\storage\IoSupport.cpp" />
@@ -977,8 +977,11 @@
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h" />
+    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h" />
+    <ClInclude Include="..\..\xbmc\network\AirTunesServer.h" />
+    <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h" />
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocket.h" />
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocketManager.h" />
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h" />
@@ -1114,6 +1117,7 @@
     <ClCompile Include="..\..\xbmc\utils\CharsetConverter.cpp" />
     <ClCompile Include="..\..\xbmc\utils\CPUInfo.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Crc32.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\DownloadQueue.cpp" />
     <ClCompile Include="..\..\xbmc\utils\DownloadQueueManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Fanart.cpp" />
@@ -1156,6 +1160,7 @@
     <ClCompile Include="..\..\xbmc\utils\RssReader.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ScraperParser.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ScraperUrl.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\SortUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Splash.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ssrc.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Stopwatch.cpp" />
@@ -1170,7 +1175,6 @@
     <ClCompile Include="..\..\xbmc\utils\URIUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Variant.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Weather.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\Win32Exception.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp" />
@@ -1440,7 +1444,7 @@
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ScreenSaver.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Visualisation.cpp" />
-    <ClCompile Include="..\..\xbmc\cdrip\CDDAReader.cpp" />
+    <ClCompile Include="..\..\xbmc\cdrip\CDDARipJob.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\CDDARipper.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\Encoder.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp" />
@@ -1679,7 +1683,6 @@
     <ClInclude Include="..\..\xbmc\input\KeyboardLayoutConfiguration.h" />
     <ClInclude Include="..\..\xbmc\input\KeyboardStat.h" />
     <ClInclude Include="..\..\xbmc\input\MouseStat.h" />
-    <ClInclude Include="..\..\xbmc\input\SDLJoystick.h" />
     <ClInclude Include="..\..\xbmc\input\windows\IRServerSuite.h" />
     <ClInclude Include="..\..\xbmc\input\windows\IrssMessage.h" />
     <ClInclude Include="..\..\xbmc\input\XBIRRemote.h" />
@@ -1959,6 +1962,7 @@
     <ClInclude Include="..\..\xbmc\utils\CharsetConverter.h" />
     <ClInclude Include="..\..\xbmc\utils\CPUInfo.h" />
     <ClInclude Include="..\..\xbmc\utils\Crc32.h" />
+    <ClInclude Include="..\..\xbmc\utils\DatabaseUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\DownloadQueue.h" />
     <ClInclude Include="..\..\xbmc\utils\DownloadQueueManager.h" />
     <ClInclude Include="..\..\xbmc\utils\EndianSwap.h" />
@@ -1979,6 +1983,7 @@
     <ClInclude Include="..\..\xbmc\utils\HttpResponse.h" />
     <ClInclude Include="..\..\xbmc\utils\InfoLoader.h" />
     <ClInclude Include="..\..\xbmc\utils\ISerializable.h" />
+    <ClInclude Include="..\..\xbmc\utils\ISortable.h" />
     <ClInclude Include="..\..\xbmc\utils\Job.h" />
     <ClInclude Include="..\..\xbmc\utils\JobManager.h" />
     <ClInclude Include="..\..\xbmc\utils\JSONVariantParser.h" />
@@ -2001,6 +2006,7 @@
     <ClInclude Include="..\..\xbmc\utils\SaveFileStateJob.h" />
     <ClInclude Include="..\..\xbmc\utils\ScraperParser.h" />
     <ClInclude Include="..\..\xbmc\utils\ScraperUrl.h" />
+    <ClInclude Include="..\..\xbmc\utils\SortUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\Splash.h" />
     <ClInclude Include="..\..\xbmc\utils\ssrc.h" />
     <ClInclude Include="..\..\xbmc\utils\StdString.h" />
@@ -2016,7 +2022,6 @@
     <ClInclude Include="..\..\xbmc\utils\URIUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\Variant.h" />
     <ClInclude Include="..\..\xbmc\utils\Weather.h" />
-    <ClInclude Include="..\..\xbmc\utils\Win32Exception.h" />
     <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h" />
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h" />
     <ClInclude Include="..\..\xbmc\video\Bookmark.h" />
@@ -2287,7 +2292,7 @@
     <ClInclude Include="..\..\xbmc\addons\Scraper.h" />
     <ClInclude Include="..\..\xbmc\addons\ScreenSaver.h" />
     <ClInclude Include="..\..\xbmc\addons\Visualisation.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\CDDAReader.h" />
+    <ClInclude Include="..\..\xbmc\cdrip\CDDARipJob.h" />
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipper.h" />
     <ClInclude Include="..\..\xbmc\cdrip\DllLameenc.h" />
     <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h" />

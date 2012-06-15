@@ -29,7 +29,7 @@
 #include "XBDateTime.h"
 #include "utils/md5.h"
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "CocoaInterface.h"
 #endif
 
@@ -547,7 +547,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
 
 void CGUIEditControl::OnPasteClipboard()
 {
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   const char *szStr = Cocoa_Paste();
   if (szStr)
   {

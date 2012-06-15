@@ -62,6 +62,7 @@
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "ThumbnailCache.h"
 #include "utils/Mime.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 using namespace XFILE;
@@ -590,7 +591,7 @@ void CFileItem::Reset()
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
-  m_specialSort = SORT_NORMALLY;
+  m_specialSort = SortSpecialNone;
   SetInvalid();
 }
 
@@ -669,7 +670,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_mimetype;
     ar >> m_extrainfo;
     ar >> temp;
-    m_specialSort = (SPECIAL_SORT)temp;
+    m_specialSort = (SortSpecial)temp;
 
     int iType;
     ar >> iType;
@@ -706,6 +707,37 @@ void CFileItem::Serialize(CVariant& value)
 
   if (m_pictureInfoTag)
     (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
+}
+
+void CFileItem::ToSortable(SortItem &sortable)
+{
+  sortable[FieldPath] = m_strPath;
+  sortable[FieldDate] = (m_dateTime.IsValid()) ? m_dateTime.GetAsDBDateTime() : "";
+  sortable[FieldSize] = m_dwSize;
+  sortable[FieldDriveType] = m_iDriveType;
+  sortable[FieldStartOffset] = m_lStartOffset;
+  sortable[FieldStartOffset] = m_lEndOffset;
+  sortable[FieldProgramCount] = m_iprogramCount;
+  sortable[FieldBitrate] = m_dwSize;
+  sortable[FieldTitle] = m_strTitle;
+  sortable[FieldSortSpecial] = m_specialSort;
+  sortable[FieldFolder] = m_bIsFolder;
+
+  // If there's ever a need to convert more properties from CGUIListItem it might be
+  // worth to make CGUIListItem  implement ISortable as well and call it from here
+  sortable[FieldLabel] = GetLabel();
+
+  if (HasMusicInfoTag())
+    GetMusicInfoTag()->ToSortable(sortable);
+    
+  if (HasVideoInfoTag())
+    GetVideoInfoTag()->ToSortable(sortable);
+    
+  if (HasPictureInfoTag())
+    GetPictureInfoTag()->ToSortable(sortable);
+
+  if (HasPVRChannelInfoTag())
+    GetPVRChannelInfoTag()->ToSortable(sortable);
 }
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
@@ -1327,7 +1359,7 @@ void CFileItem::SetLabel(const CStdString &strLabel)
   {
     m_bIsParentFolder=true;
     m_bIsFolder=true;
-    m_specialSort = SORT_ON_TOP;
+    m_specialSort = SortSpecialOnTop;
     SetLabelPreformated(true);
   }
   CGUIListItem::SetLabel(strLabel);
@@ -1485,10 +1517,10 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 CFileItemList::CFileItemList()
 {
   m_fastLookup = false;
-  m_bIsFolder=true;
-  m_cacheToDisc=CACHE_IF_SLOW;
-  m_sortMethod=SORT_METHOD_NONE;
-  m_sortOrder=SORT_ORDER_NONE;
+  m_bIsFolder = true;
+  m_cacheToDisc = CACHE_IF_SLOW;
+  m_sortMethod = SORT_METHOD_NONE;
+  m_sortOrder = SortOrderNone;
   m_sortIgnoreFolders = false;
   m_replaceListing = false;
 }
@@ -1496,9 +1528,9 @@ CFileItemList::CFileItemList()
 CFileItemList::CFileItemList(const CStdString& strPath) : CFileItem(strPath, true)
 {
   m_fastLookup = false;
-  m_cacheToDisc=CACHE_IF_SLOW;
-  m_sortMethod=SORT_METHOD_NONE;
-  m_sortOrder=SORT_ORDER_NONE;
+  m_cacheToDisc = CACHE_IF_SLOW;
+  m_sortMethod = SORT_METHOD_NONE;
+  m_sortOrder = SortOrderNone;
   m_sortIgnoreFolders = false;
   m_replaceListing = false;
 }
@@ -1570,10 +1602,10 @@ void CFileItemList::Clear()
   CSingleLock lock(m_lock);
 
   ClearItems();
-  m_sortMethod=SORT_METHOD_NONE;
-  m_sortOrder=SORT_ORDER_NONE;
+  m_sortMethod = SORT_METHOD_NONE;
+  m_sortOrder = SortOrderNone;
   m_sortIgnoreFolders = false;
-  m_cacheToDisc=CACHE_IF_SLOW;
+  m_cacheToDisc = CACHE_IF_SLOW;
   m_sortDetails.clear();
   m_replaceListing = false;
   m_content.Empty();
@@ -1808,139 +1840,167 @@ void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
   std::for_each(m_items.begin(), m_items.end(), func);
 }
 
-void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
+void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
 {
   //  Already sorted?
-  if (sortMethod==m_sortMethod && m_sortOrder==sortOrder)
+  if (sortMethod == m_sortMethod && m_sortOrder == sortOrder)
     return;
+
+  SortBy sortBy = SortByNone;
+  SortAttribute sortAttributes = SortAttributeNone;
 
   switch (sortMethod)
   {
   case SORT_METHOD_LABEL:
   case SORT_METHOD_LABEL_IGNORE_FOLDERS:
-    FillSortFields(SSortFileItem::ByLabel);
-    break;
   case SORT_METHOD_LABEL_IGNORE_THE:
-    FillSortFields(SSortFileItem::ByLabelNoThe);
+    sortBy = SortByLabel;
     break;
   case SORT_METHOD_DATE:
-    FillSortFields(SSortFileItem::ByDate);
+    sortBy = SortByDate;
     break;
   case SORT_METHOD_SIZE:
-    FillSortFields(SSortFileItem::BySize);
+    sortBy = SortBySize;
     break;
   case SORT_METHOD_BITRATE:
-    FillSortFields(SSortFileItem::ByBitrate);
+    sortBy = SortByBitrate;
     break;      
   case SORT_METHOD_DRIVE_TYPE:
-    FillSortFields(SSortFileItem::ByDriveType);
+    sortBy = SortByDriveType;
     break;
   case SORT_METHOD_TRACKNUM:
-    FillSortFields(SSortFileItem::BySongTrackNum);
+    sortBy = SortByTrackNumber;
     break;
   case SORT_METHOD_EPISODE:
-    FillSortFields(SSortFileItem::ByEpisodeNum);
+    sortBy = SortByEpisodeNumber;
     break;
   case SORT_METHOD_DURATION:
-    FillSortFields(SSortFileItem::BySongDuration);
-    break;
-  case SORT_METHOD_TITLE_IGNORE_THE:
-    FillSortFields(SSortFileItem::BySongTitleNoThe);
+  case SORT_METHOD_VIDEO_RUNTIME:
+    sortBy = SortByTime;
     break;
   case SORT_METHOD_TITLE:
-    FillSortFields(SSortFileItem::BySongTitle);
+  case SORT_METHOD_TITLE_IGNORE_THE:
+  case SORT_METHOD_VIDEO_TITLE:
+    sortBy = SortByTitle;
     break;
   case SORT_METHOD_ARTIST:
-    FillSortFields(SSortFileItem::BySongArtist);
-    break;
   case SORT_METHOD_ARTIST_IGNORE_THE:
-    FillSortFields(SSortFileItem::BySongArtistNoThe);
+    sortBy = SortByArtist;
     break;
   case SORT_METHOD_ALBUM:
-    FillSortFields(SSortFileItem::BySongAlbum);
-    break;
   case SORT_METHOD_ALBUM_IGNORE_THE:
-    FillSortFields(SSortFileItem::BySongAlbumNoThe);
+    sortBy = SortByAlbum;
     break;
   case SORT_METHOD_GENRE:
-    FillSortFields(SSortFileItem::ByGenre);
+    sortBy = SortByGenre;
     break;
   case SORT_METHOD_COUNTRY:
-    FillSortFields(SSortFileItem::ByCountry);
+    sortBy = SortByCountry;
     break;
   case SORT_METHOD_DATEADDED:
-    FillSortFields(SSortFileItem::ByDateAdded);
+    sortBy = SortByDateAdded;
     break;
   case SORT_METHOD_FILE:
-    FillSortFields(SSortFileItem::ByFile);
-    break;
-  case SORT_METHOD_VIDEO_RATING:
-    FillSortFields(SSortFileItem::ByMovieRating);
-    break;
-  case SORT_METHOD_VIDEO_TITLE:
-    FillSortFields(SSortFileItem::ByMovieTitle);
-    break;
-  case SORT_METHOD_VIDEO_SORT_TITLE:
-    FillSortFields(SSortFileItem::ByMovieSortTitle);
-    break;
-  case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
-    FillSortFields(SSortFileItem::ByMovieSortTitleNoThe);
-    break;
-  case SORT_METHOD_YEAR:
-    FillSortFields(SSortFileItem::ByYear);
-    break;
-  case SORT_METHOD_PRODUCTIONCODE:
-    FillSortFields(SSortFileItem::ByProductionCode);
-    break;
-  case SORT_METHOD_PROGRAM_COUNT:
-  case SORT_METHOD_PLAYLIST_ORDER:
-    // TODO: Playlist order is hacked into program count variable (not nice, but ok until 2.0)
-    FillSortFields(SSortFileItem::ByProgramCount);
+    sortBy = SortByFile;
     break;
   case SORT_METHOD_SONG_RATING:
-    FillSortFields(SSortFileItem::BySongRating);
+  case SORT_METHOD_VIDEO_RATING:
+    sortBy = SortByRating;
+    break;
+  case SORT_METHOD_VIDEO_SORT_TITLE:
+  case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
+    sortBy = SortBySortTitle;
+    break;
+  case SORT_METHOD_YEAR:
+    sortBy = SortByYear;
+    break;
+  case SORT_METHOD_PRODUCTIONCODE:
+    sortBy = SortByProductionCode;
+    break;
+  case SORT_METHOD_PROGRAM_COUNT:
+    sortBy = SortByProgramCount;
+    break;
+  case SORT_METHOD_PLAYLIST_ORDER:
+    sortBy = SortByPlaylistOrder;
     break;
   case SORT_METHOD_MPAA_RATING:
-    FillSortFields(SSortFileItem::ByMPAARating);
-    break;
-  case SORT_METHOD_VIDEO_RUNTIME:
-    FillSortFields(SSortFileItem::ByMovieRuntime);
+    sortBy = SortByMPAA;
     break;
   case SORT_METHOD_STUDIO:
-    FillSortFields(SSortFileItem::ByStudio);
-    break;
   case SORT_METHOD_STUDIO_IGNORE_THE:
-    FillSortFields(SSortFileItem::ByStudioNoThe);
+    sortBy = SortByStudio;
     break;
   case SORT_METHOD_FULLPATH:
-    FillSortFields(SSortFileItem::ByFullPath);
+    sortBy = SortByPath;
     break;
   case SORT_METHOD_LASTPLAYED:
-    FillSortFields(SSortFileItem::ByLastPlayed);
+    sortBy = SortByLastPlayed;
     break;
   case SORT_METHOD_PLAYCOUNT:
-    FillSortFields(SSortFileItem::ByPlayCount);
+    sortBy = SortByPlaycount;
     break;
   case SORT_METHOD_LISTENERS:
-    FillSortFields(SSortFileItem::ByListeners);
+    sortBy = SortByListeners;
     break;    
   case SORT_METHOD_CHANNEL:
-    FillSortFields(SSortFileItem::ByChannel);
+    sortBy = SortByChannel;
     break;
   default:
-    break;
+    CLog::Log(LOGWARNING, "Unknown sort method %d", sortMethod);
+    return;
   }
+
+  if (sortMethod == SORT_METHOD_LABEL_IGNORE_THE ||
+      sortMethod == SORT_METHOD_TITLE_IGNORE_THE ||
+      sortMethod == SORT_METHOD_ARTIST_IGNORE_THE ||
+      sortMethod == SORT_METHOD_ALBUM_IGNORE_THE ||
+      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
+      sortMethod == SORT_METHOD_STUDIO_IGNORE_THE)
+    sortAttributes = (SortAttribute)((int)sortAttributes | SortAttributeIgnoreArticle);
+
   if (sortMethod == SORT_METHOD_FILE        ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
       sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS ||
+      sortMethod == SORT_METHOD_DATEADDED ||
+      sortMethod == SORT_METHOD_VIDEO_RATING ||
+      sortMethod == SORT_METHOD_YEAR ||
+      sortMethod == SORT_METHOD_PLAYLIST_ORDER ||
+      sortMethod == SORT_METHOD_LASTPLAYED ||
+      sortMethod == SORT_METHOD_PLAYCOUNT ||
       m_sortIgnoreFolders)
-    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
-  else if (sortMethod != SORT_METHOD_NONE && sortMethod != SORT_METHOD_UNSORTED)
-    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
+    sortAttributes = (SortAttribute)((int)sortAttributes | SortAttributeIgnoreFolders);
 
-  m_sortMethod=sortMethod;
-  m_sortOrder=sortOrder;
+  if (sortBy == SortByNone)
+    return;
+
+  SortItems sortItems((size_t)Size());
+  for (int index = 0; index < Size(); index++)
+  {
+    m_items[index]->ToSortable(sortItems[index]);
+    sortItems[index][FieldId] = index;
+  }
+
+  // do the sorting
+  SortUtils::Sort(sortBy, sortOrder, sortAttributes, sortItems);
+
+  // apply the new order to the existing CFileItems
+  VECFILEITEMS sortedFileItems;
+  sortedFileItems.reserve(Size());
+  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); it++)
+  {
+    CFileItemPtr item = m_items[(int)it->at(FieldId).asInteger()];
+    // Set the sort label in the CFileItem
+    item->SetSortLabel(CStdStringW(it->at(FieldSort).asWideString()));
+
+    sortedFileItems.push_back(item);
+  }
+
+  // replace the current list with the re-ordered one
+  m_items.assign(sortedFileItems.begin(), sortedFileItems.end());
+
+  m_sortMethod = sortMethod;
+  m_sortOrder = sortOrder;
 }
 
 void CFileItemList::Randomize()
@@ -2025,7 +2085,7 @@ void CFileItemList::Archive(CArchive& ar)
     ar >> (int&)tempint;
     m_sortMethod = SORT_METHOD(tempint);
     ar >> (int&)tempint;
-    m_sortOrder = SORT_ORDER(tempint);
+    m_sortOrder = SortOrder(tempint);
     ar >> m_sortIgnoreFolders;
     ar >> (int&)tempint;
     m_cacheToDisc = CACHE_TYPE(tempint);
@@ -2295,7 +2355,7 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   SetProperty("isstacked", true);
 
   // items needs to be sorted for stuff below to work properly
-  Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  Sort(SORT_METHOD_LABEL, SortOrderAscending);
 
   StackFolders();
 
@@ -3289,8 +3349,8 @@ void CFileItemList::SetReplaceListing(bool replace)
 
 void CFileItemList::ClearSortState()
 {
-  m_sortMethod=SORT_METHOD_NONE;
-  m_sortOrder=SORT_ORDER_NONE;
+  m_sortMethod = SORT_METHOD_NONE;
+  m_sortOrder = SortOrderNone;
 }
 
 CVideoInfoTag* CFileItem::GetVideoInfoTag()

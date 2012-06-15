@@ -1,3 +1,2 @@
 ; filename                          	mirror of the file									source of the file
-sqlite-vc100-3.7.2-lib.tar.bz2   		http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/sqlite-vc100-3.7.2-lib.tar.bz2
-sqlite-vc100-3.7.2-bin.tar.bz2   		http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/sqlite-vc100-3.7.2-bin.tar.bz2
+sqlite-3.7.12.1-win32.7z		   		http://mirrors.xbmc.org/build-deps/win32/			

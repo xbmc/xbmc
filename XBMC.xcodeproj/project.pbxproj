@@ -14,6 +14,7 @@
 				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
 				6E2FACC70E26E22400DF79EA /* copy frameworks */,
 				81B8FC150E7D927A00354E2E /* update version info */,
+				1D64E5FC157BD76F001ACEBE /* genoutputdirlink */,
 			);
 			dependencies = (
 				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
@@ -187,8 +188,12 @@
 		18B7C97C1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C97A12943809009E7A26 /* GUIWindowAddonBrowser.cpp */; };
 		18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
 		18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
+		18E7CACB1578C26D001D4554 /* CDDARipJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18E7CAC91578C26D001D4554 /* CDDARipJob.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
+		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
+		36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
+		36A9444115821E7C00727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443F15821E7C00727135 /* SortUtils.cpp */; };
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
@@ -458,7 +463,6 @@
 		E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
 		E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14700D25F9F900618676 /* AutoSwitch.cpp */; };
 		E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */; };
-		E38E1F440D25F9FD00618676 /* CDDAReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14800D25F9F900618676 /* CDDAReader.cpp */; };
 		E38E1F450D25F9FD00618676 /* CDDARipper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14820D25F9F900618676 /* CDDARipper.cpp */; };
 		E38E1F460D25F9FD00618676 /* Encoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14880D25F9F900618676 /* Encoder.cpp */; };
 		E38E1F470D25F9FD00618676 /* EncoderLame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E148A0D25F9F900618676 /* EncoderLame.cpp */; };
@@ -801,7 +805,6 @@
 		E38E22B70D25F9FE00618676 /* Shortcut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E070D25F9FD00618676 /* Shortcut.cpp */; };
 		E38E22B80D25F9FE00618676 /* SlideShowPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E090D25F9FD00618676 /* SlideShowPicture.cpp */; };
 		E38E22BA0D25F9FE00618676 /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0D0D25F9FD00618676 /* Song.cpp */; };
-		E38E22BB0D25F9FE00618676 /* SortFileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0F0D25F9FD00618676 /* SortFileItem.cpp */; };
 		E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E160D25F9FD00618676 /* Temperature.cpp */; };
 		E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */; };
 		E38E22C00D25F9FE00618676 /* ThumbnailCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */; };
@@ -840,7 +843,6 @@
 		E38E22F60D25F9FE00618676 /* TuxBoxUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */; };
 		E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */; };
 		E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8D0D25F9FD00618676 /* Weather.cpp */; };
-		E38E22F90D25F9FE00618676 /* Win32Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8F0D25F9FD00618676 /* Win32Exception.cpp */; };
 		E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */; };
 		E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */; };
 		E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E970D25F9FD00618676 /* VideoInfoTag.cpp */; };
@@ -999,6 +1001,7 @@
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
+		F5DA82D915803129003EE43C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DA82D815803129003EE43C /* main.cpp */; };
 		F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		F5DC8801110A46C700EE1B15 /* ModplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */; };
 		F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
@@ -1410,10 +1413,19 @@
 		18B7C9E7129447B9009E7A26 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
 		18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
 		18C1D22C13033F6A00CFFE59 /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
+		18E7CAC91578C26D001D4554 /* CDDARipJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDARipJob.cpp; sourceTree = "<group>"; };
+		18E7CACA1578C26D001D4554 /* CDDARipJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDARipJob.h; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
+		1DE0443315828F4B005DDB4D /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = commons/Exception.cpp; sourceTree = "<group>"; };
+		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
 		32C631261423A90F00F18420 /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
 		32C631271423A90F00F18420 /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
+		36A9443B15821E2800727135 /* DatabaseUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseUtils.cpp; sourceTree = "<group>"; };
+		36A9443C15821E2800727135 /* DatabaseUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseUtils.h; sourceTree = "<group>"; };
+		36A9443E15821E5400727135 /* ISortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISortable.h; sourceTree = "<group>"; };
+		36A9443F15821E7C00727135 /* SortUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortUtils.cpp; sourceTree = "<group>"; };
+		36A9444015821E7C00727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
 		3802709713D5A62D009493DD /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		3802709813D5A653009493DD /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		3802709913D5A653009493DD /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
@@ -1991,8 +2003,6 @@
 		E38E14710D25F9F900618676 /* AutoSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSwitch.h; sourceTree = "<group>"; };
 		E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BackgroundInfoLoader.cpp; sourceTree = "<group>"; };
 		E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundInfoLoader.h; sourceTree = "<group>"; };
-		E38E14800D25F9F900618676 /* CDDAReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDAReader.cpp; sourceTree = "<group>"; };
-		E38E14810D25F9F900618676 /* CDDAReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDAReader.h; sourceTree = "<group>"; };
 		E38E14820D25F9F900618676 /* CDDARipper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDARipper.cpp; sourceTree = "<group>"; };
 		E38E14830D25F9F900618676 /* CDDARipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDARipper.h; sourceTree = "<group>"; };
 		E38E14840D25F9F900618676 /* DllLameenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLameenc.h; sourceTree = "<group>"; };
@@ -2809,7 +2819,6 @@
 		E38E1E0A0D25F9FD00618676 /* SlideShowPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideShowPicture.h; sourceTree = "<group>"; };
 		E38E1E0D0D25F9FD00618676 /* Song.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Song.cpp; sourceTree = "<group>"; };
 		E38E1E0E0D25F9FD00618676 /* Song.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Song.h; sourceTree = "<group>"; };
-		E38E1E0F0D25F9FD00618676 /* SortFileItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortFileItem.cpp; sourceTree = "<group>"; };
 		E38E1E100D25F9FD00618676 /* SortFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortFileItem.h; sourceTree = "<group>"; };
 		E38E1E160D25F9FD00618676 /* Temperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Temperature.cpp; sourceTree = "<group>"; };
 		E38E1E170D25F9FD00618676 /* Temperature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Temperature.h; sourceTree = "<group>"; };
@@ -2891,8 +2900,6 @@
 		E38E1E8C0D25F9FD00618676 /* UdpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdpClient.h; sourceTree = "<group>"; };
 		E38E1E8D0D25F9FD00618676 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Weather.cpp; sourceTree = "<group>"; };
 		E38E1E8E0D25F9FD00618676 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Weather.h; sourceTree = "<group>"; };
-		E38E1E8F0D25F9FD00618676 /* Win32Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32Exception.cpp; sourceTree = "<group>"; };
-		E38E1E900D25F9FD00618676 /* Win32Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Win32Exception.h; sourceTree = "<group>"; };
 		E38E1E920D25F9FD00618676 /* WindowsShortcut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowsShortcut.h; sourceTree = "<group>"; };
 		E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDatabase.cpp; sourceTree = "<group>"; };
 		E38E1E940D25F9FD00618676 /* VideoDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabase.h; sourceTree = "<group>"; };
@@ -3162,6 +3169,7 @@
 		F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRenderer.cpp; sourceTree = "<group>"; };
 		F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserVplayer.cpp; sourceTree = "<group>"; };
 		F5D8EF5A103912A4004A11AB /* DVDSubtitleParserVplayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserVplayer.h; sourceTree = "<group>"; };
+		F5DA82D815803129003EE43C /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F5DC87E0110A287400EE1B15 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RingBuffer.cpp; sourceTree = "<group>"; };
 		F5DC87FF110A46C700EE1B15 /* ModplugCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModplugCodec.h; sourceTree = "<group>"; };
@@ -4648,6 +4656,7 @@
 				E38E184F0D25F9FA00618676 /* IProgressCallback.h */,
 				E38E18580D25F9FA00618676 /* LangInfo.cpp */,
 				E38E18590D25F9FA00618676 /* LangInfo.h */,
+				F5DA82D815803129003EE43C /* main.cpp */,
 				880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */,
 				880DBE4C0DC223FF00E26B71 /* MediaSource.h */,
 				E38E1DC10D25F9FD00618676 /* NfoFile.cpp */,
@@ -4660,7 +4669,6 @@
 				E38E1DEA0D25F9FD00618676 /* PlayListPlayer.h */,
 				E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */,
 				E38E1DFF0D25F9FD00618676 /* SectionLoader.h */,
-				E38E1E0F0D25F9FD00618676 /* SortFileItem.cpp */,
 				E38E1E100D25F9FD00618676 /* SortFileItem.h */,
 				C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */,
 				E38E1E160D25F9FD00618676 /* Temperature.cpp */,
@@ -4696,8 +4704,8 @@
 		E38E147F0D25F9F900618676 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				E38E14800D25F9F900618676 /* CDDAReader.cpp */,
-				E38E14810D25F9F900618676 /* CDDAReader.h */,
+				18E7CAC91578C26D001D4554 /* CDDARipJob.cpp */,
+				18E7CACA1578C26D001D4554 /* CDDARipJob.h */,
 				E38E14820D25F9F900618676 /* CDDARipper.cpp */,
 				E38E14830D25F9F900618676 /* CDDARipper.h */,
 				E38E14840D25F9F900618676 /* DllLameenc.h */,
@@ -6117,6 +6125,8 @@
 				18B7C8E812942603009E7A26 /* Crc32.h */,
 				F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */,
 				F5BD02F5148D3A7E001B5583 /* CryptThreading.h */,
+				36A9443B15821E2800727135 /* DatabaseUtils.cpp */,
+				36A9443C15821E2800727135 /* DatabaseUtils.h */,
 				E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */,
 				E38E1E320D25F9FD00618676 /* DownloadQueue.h */,
 				E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */,
@@ -6149,6 +6159,7 @@
 				DF52769D151BAEDA00B5B63B /* HttpResponse.h */,
 				E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */,
 				E38E1E4D0D25F9FD00618676 /* InfoLoader.h */,
+				36A9443E15821E5400727135 /* ISortable.h */,
 				7CAA205B107AFC280096DE39 /* Job.h */,
 				F57B6F7E1071B8B500079ACB /* JobManager.cpp */,
 				F57B6F7F1071B8B500079ACB /* JobManager.h */,
@@ -6189,6 +6200,8 @@
 				E38E1E780D25F9FD00618676 /* ScraperParser.h */,
 				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
 				7CAA25381085971C0096DE39 /* ScraperUrl.h */,
+				36A9443F15821E7C00727135 /* SortUtils.cpp */,
+				36A9444015821E7C00727135 /* SortUtils.h */,
 				E38E1E7F0D25F9FD00618676 /* Splash.cpp */,
 				E38E1E800D25F9FD00618676 /* Splash.h */,
 				E38E16560D25F9FA00618676 /* ssrc.cpp */,
@@ -6217,8 +6230,6 @@
 				7CF1FB0A123B1AF000B2CBCB /* Variant.h */,
 				E38E1E8D0D25F9FD00618676 /* Weather.cpp */,
 				E38E1E8E0D25F9FD00618676 /* Weather.h */,
-				E38E1E8F0D25F9FD00618676 /* Win32Exception.cpp */,
-				E38E1E900D25F9FD00618676 /* Win32Exception.h */,
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
 				F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */,
 				F5ED908715538DCE00842059 /* XBMCTinyXML.h */,
@@ -6231,6 +6242,8 @@
 		EC720A91155091CA00FFD782 /* commons */ = {
 			isa = PBXGroup;
 			children = (
+				1DE0443315828F4B005DDB4D /* Exception.cpp */,
+				1DE0443415828F4B005DDB4D /* Exception.h */,
 				EC720A8D155091BB00FFD782 /* ilog.cpp */,
 				EC720A8E155091BB00FFD782 /* ilog.h */,
 			);
@@ -6542,6 +6555,7 @@
 			buildPhases = (
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
+				1D64E5FA157BD742001ACEBE /* genoutputdirlink */,
 			);
 			buildRules = (
 			);
@@ -6582,6 +6596,34 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1D64E5FA157BD742001ACEBE /* genoutputdirlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = genoutputdirlink;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+		};
+		1D64E5FC157BD76F001ACEBE /* genoutputdirlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = genoutputdirlink;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+		};
 		6E2FACC70E26E22400DF79EA /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -6638,7 +6680,6 @@
 				E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */,
 				E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */,
 				E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */,
-				E38E1F440D25F9FD00618676 /* CDDAReader.cpp in Sources */,
 				E38E1F450D25F9FD00618676 /* CDDARipper.cpp in Sources */,
 				E38E1F460D25F9FD00618676 /* Encoder.cpp in Sources */,
 				E38E1F470D25F9FD00618676 /* EncoderLame.cpp in Sources */,
@@ -6981,7 +7022,6 @@
 				E38E22B70D25F9FE00618676 /* Shortcut.cpp in Sources */,
 				E38E22B80D25F9FE00618676 /* SlideShowPicture.cpp in Sources */,
 				E38E22BA0D25F9FE00618676 /* Song.cpp in Sources */,
-				E38E22BB0D25F9FE00618676 /* SortFileItem.cpp in Sources */,
 				E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */,
 				E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */,
 				E38E22C00D25F9FE00618676 /* ThumbnailCache.cpp in Sources */,
@@ -7020,7 +7060,6 @@
 				E38E22F60D25F9FE00618676 /* TuxBoxUtil.cpp in Sources */,
 				E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */,
 				E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */,
-				E38E22F90D25F9FE00618676 /* Win32Exception.cpp in Sources */,
 				E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */,
 				E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */,
 				E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */,
@@ -7635,6 +7674,11 @@
 				C848291B156CFFE7005A996F /* AddonCallbacksGUI.cpp in Sources */,
 				C848291C156CFFE7005A996F /* AddonCallbacksPVR.cpp in Sources */,
 				C848291F156D003E005A996F /* TextSearch.cpp in Sources */,
+				18E7CACB1578C26D001D4554 /* CDDARipJob.cpp in Sources */,
+				F5DA82D915803129003EE43C /* main.cpp in Sources */,
+				36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */,
+				36A9444115821E7C00727135 /* SortUtils.cpp in Sources */,
+				1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7885,6 +7929,7 @@
 					i386,
 					x86_64,
 				);
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";

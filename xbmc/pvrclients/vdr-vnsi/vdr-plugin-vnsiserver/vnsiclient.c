@@ -1352,7 +1352,11 @@ bool cVNSIClient::processRECORDINGS_GetList() /* OPCODE 102 */
       }
       else
       {
+#if APIVERSNUM >= 10727
+        recordingStart = recording->Start();
+#else
         recordingStart = recording->start;
+#endif
       }
     }
     DEBUGLOG("GRI: RC: recordingStart=%lu recordingDuration=%i", recordingStart, recordingDuration);
@@ -1364,10 +1368,18 @@ bool cVNSIClient::processRECORDINGS_GetList() /* OPCODE 102 */
     m_resp->add_U32(recordingDuration);
 
     // priority
+#if APIVERSNUM >= 10727
+    m_resp->add_U32(recording->Priority());
+#else
     m_resp->add_U32(recording->priority);
+#endif
 
     // lifetime
+#if APIVERSNUM >= 10727
+    m_resp->add_U32(recording->Lifetime());
+#else
     m_resp->add_U32(recording->lifetime);
+#endif
 
     // channel_name
     m_resp->add_String(recording->Info()->ChannelName() ? m_toUTF8.Convert(recording->Info()->ChannelName()) : "");

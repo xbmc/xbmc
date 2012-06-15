@@ -229,7 +229,13 @@ bool CLangInfo::Load(const CStdString& strFileName)
   if (!g_LangCodeExpander.ConvertWindowsToGeneralCharCode(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
     m_languageCodeGeneral = "";
 #else
-  m_languageCodeGeneral = m_defaultRegion.m_strLangLocaleName;
+  if (m_defaultRegion.m_strLangLocaleName.length() != 3)
+  {
+    if (!g_LangCodeExpander.ConvertToThreeCharCode(m_languageCodeGeneral, m_defaultRegion.m_strLangLocaleName))
+      m_languageCodeGeneral = "";
+  }
+  else
+    m_languageCodeGeneral = m_defaultRegion.m_strLangLocaleName;
 #endif
 
   const TiXmlNode *pCharSets = pRootElement->FirstChild("charsets");

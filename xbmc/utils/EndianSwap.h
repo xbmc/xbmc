@@ -26,7 +26,7 @@
 
 /* Include config.h to define (or not) WORDS_BIGENDIAN
    File created by configure */
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(TARGET_DARWIN)
 #include "config.h"
 #include <inttypes.h>
 #endif

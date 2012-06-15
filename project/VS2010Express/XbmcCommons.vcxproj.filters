@@ -2,8 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\commons\ilog.cpp" />
+    <ClCompile Include="..\..\xbmc\commons\Exception.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\commons\ilog.h" />
+    <ClInclude Include="..\..\xbmc\commons\Exception.h" />
   </ItemGroup>
 </Project>

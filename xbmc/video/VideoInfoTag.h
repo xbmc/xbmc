@@ -25,6 +25,7 @@
 #include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
+#include "utils/ISortable.h"
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
 #include "XBDateTime.h"
@@ -41,7 +42,7 @@ struct SActorInfo
   CStdString thumb;
 };
 
-class CVideoInfoTag : public IArchivable, public ISerializable
+class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
   CVideoInfoTag() { Reset(); };
@@ -65,6 +66,7 @@ public:
   bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true, const TiXmlElement *additionalNode = NULL);
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value);
+  virtual void ToSortable(SortItem& sortable);
   const CStdString GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;

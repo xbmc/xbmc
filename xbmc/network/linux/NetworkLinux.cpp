@@ -51,12 +51,19 @@
 
 using namespace std;
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, CStdString interfaceMacAdr)
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, char interfaceMacAddrRaw[6])
 
 {
    m_network = network;
    m_interfaceName = interfaceName;
-   m_interfaceMacAdr = interfaceMacAdr;
+   m_interfaceMacAdr.Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                  (uint8_t)interfaceMacAddrRaw[0],
+                  (uint8_t)interfaceMacAddrRaw[1],
+                  (uint8_t)interfaceMacAddrRaw[2],
+                  (uint8_t)interfaceMacAddrRaw[3],
+                  (uint8_t)interfaceMacAddrRaw[4],
+                  (uint8_t)interfaceMacAddrRaw[5]);
+   memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
 CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
@@ -114,6 +121,11 @@ bool CNetworkInterfaceLinux::IsConnected()
 CStdString CNetworkInterfaceLinux::GetMacAddress()
 {
   return m_interfaceMacAdr;
+}
+
+void CNetworkInterfaceLinux::GetMacAddressRaw(char rawMac[6])
+{
+  memcpy(rawMac, m_interfaceMacAddrRaw, 6);
 }
 
 CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
@@ -328,9 +340,9 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 #endif
 
 
-CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
+void CNetworkLinux::GetMacAddress(CStdString interfaceName, char rawMac[6])
 {
-  CStdString result = "00:00:00:00:00:00";
+  memset(rawMac, 0, 6);
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 
 #if !defined(IFT_ETHER)
@@ -344,7 +356,7 @@ CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
 
   if( getifaddrs(&list) < 0 )
   {
-    return result;
+    return;
   }
 
   for(interface = list; interface != NULL; interface = interface->ifa_next)
@@ -358,13 +370,7 @@ CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
 
         if( dlAddr->sdl_alen > 5 )
         {
-          result.Format("%02X:%02X:%02X:%02X:%02X:%02X",
-             base[0],
-             base[1],
-             base[2],
-             base[3],
-             base[4],
-             base[5]);
+          memcpy(rawMac, base, 6);
         }
       }
       break;
@@ -379,22 +385,14 @@ CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
    strcpy(ifr.ifr_name, interfaceName.c_str());
    if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
    {
-      result.Format("%02X:%02X:%02X:%02X:%02X:%02X",
-         (unsigned char)ifr.ifr_hwaddr.sa_data[0],
-         (unsigned char)ifr.ifr_hwaddr.sa_data[1],
-         (unsigned char)ifr.ifr_hwaddr.sa_data[2],
-         (unsigned char)ifr.ifr_hwaddr.sa_data[3],
-         (unsigned char)ifr.ifr_hwaddr.sa_data[4],
-         (unsigned char)ifr.ifr_hwaddr.sa_data[5]);
+      memcpy(rawMac, ifr.ifr_hwaddr.sa_data, 6);
    }
 #endif
-
-   return result;
 }
 
 void CNetworkLinux::queryInterfaceList()
 {
-  CStdString macAddr = "";
+  char macAddrRaw[6];
   m_interfaces.clear();
 
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
@@ -410,9 +408,9 @@ void CNetworkLinux::queryInterfaceList()
      if(cur->ifa_addr->sa_family != AF_INET)
        continue;
 
-     macAddr = GetMacAddress(cur->ifa_name);
+     GetMacAddress(cur->ifa_name, macAddrRaw);
      // Add the interface.
-     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddr));
+     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddrRaw));
    }
 
    freeifaddrs(list);
@@ -447,8 +445,8 @@ void CNetworkLinux::queryInterfaceList()
 
       // save the result
       CStdString interfaceName = p;
-      macAddr = GetMacAddress(interfaceName);
-      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddr));
+      GetMacAddress(interfaceName, macAddrRaw);
+      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddrRaw));
    }
    free(line);
    fclose(fp);

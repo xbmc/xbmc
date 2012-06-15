@@ -46,17 +46,11 @@ typedef long          __off_t;
 #define strncasecmp strnicmp
 #endif
 
-#ifndef PRIdS
-#define PRIdS "Id"
-#endif
-
 #define popen   _popen
-#define pclose  _pclose 
+#define pclose  _pclose
 
-#ifdef HAS_SDL
-#include <SDL/SDL_endian.h>
-
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if 0
+// big endian
 #define PIXEL_ASHIFT 0
 #define PIXEL_RSHIFT 8
 #define PIXEL_GSHIFT 16
@@ -65,8 +59,8 @@ typedef long          __off_t;
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
-
 #else
+// little endian
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
 #define PIXEL_GSHIFT 8
@@ -75,7 +69,6 @@ typedef long          __off_t;
 #define RMASK 0x00ff0000
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
-#endif
 #endif
 
 #ifndef va_copy

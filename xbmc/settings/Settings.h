@@ -39,7 +39,7 @@
 #define DEFAULT_VSYNC       VSYNC_DISABLED
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(TARGET_DARWIN) || defined(_WIN32)
 #define DEFAULT_VSYNC       VSYNC_ALWAYS
 #else
 #define DEFAULT_VSYNC       VSYNC_DRIVER

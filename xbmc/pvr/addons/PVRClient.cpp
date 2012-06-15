@@ -85,18 +85,19 @@ void CPVRClient::ResetProperties(void)
 
 void CPVRClient::ResetAddonCapabilities(void)
 {
-  m_addonCapabilities.bSupportsChannelSettings  = false;
-  m_addonCapabilities.bSupportsTimeshift        = false;
-  m_addonCapabilities.bSupportsEPG              = false;
-  m_addonCapabilities.bSupportsTV               = false;
-  m_addonCapabilities.bSupportsRadio            = false;
-  m_addonCapabilities.bSupportsRecordings       = false;
-  m_addonCapabilities.bSupportsTimers           = false;
-  m_addonCapabilities.bSupportsChannelGroups    = false;
-  m_addonCapabilities.bSupportsChannelScan      = false;
-  m_addonCapabilities.bHandlesInputStream       = false;
-  m_addonCapabilities.bHandlesDemuxing          = false;
-  m_addonCapabilities.bSupportsRecordingFolders = false;
+  m_addonCapabilities.bSupportsChannelSettings    = false;
+  m_addonCapabilities.bSupportsTimeshift          = false;
+  m_addonCapabilities.bSupportsEPG                = false;
+  m_addonCapabilities.bSupportsTV                 = false;
+  m_addonCapabilities.bSupportsRadio              = false;
+  m_addonCapabilities.bSupportsRecordings         = false;
+  m_addonCapabilities.bSupportsTimers             = false;
+  m_addonCapabilities.bSupportsChannelGroups      = false;
+  m_addonCapabilities.bSupportsChannelScan        = false;
+  m_addonCapabilities.bHandlesInputStream         = false;
+  m_addonCapabilities.bHandlesDemuxing            = false;
+  m_addonCapabilities.bSupportsRecordingFolders   = false;
+  m_addonCapabilities.bSupportsRecordingPlayCount = false;
 }
 
 bool CPVRClient::Create(int iClientId)
@@ -628,6 +629,33 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
   catch (exception &e)
   {
     CLog::Log(LOGERROR, "PVRClient - %s - exception '%s' caught while trying to call RenameRecording() on addon '%s'. please contact the developer of this addon: %s",
+        __FUNCTION__, e.what(), GetFriendlyName().c_str(), Author().c_str());
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording &recording, int count)
+{
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
+  if (!m_bReadyToUse)
+    return retVal;
+
+  if (!m_addonCapabilities.bSupportsRecordingPlayCount)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  try
+  {
+    PVR_RECORDING tag;
+    PVRWriteClientRecordingInfo(recording, tag);
+
+    retVal = m_pStruct->SetRecordingPlayCount(tag, count);
+
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (exception &e)
+  {
+    CLog::Log(LOGERROR, "PVRClient - %s - exception '%s' caught while trying to call SetRecordingPlayCount() on addon '%s'. please contact the developer of this addon: %s",
         __FUNCTION__, e.what(), GetFriendlyName().c_str(), Author().c_str());
   }
 

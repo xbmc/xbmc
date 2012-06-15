@@ -515,14 +515,14 @@ void CGUIMediaWindow::UpdateButtons()
   if (m_guiState.get())
   {
     // Update sorting controls
-    if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_NONE)
+    if (m_guiState->GetDisplaySortOrder() == SortOrderNone)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTASC);
     }
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
+      if (m_guiState->GetDisplaySortOrder() == SortOrderAscending)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
         g_windowManager.SendMessage(msg);
@@ -770,7 +770,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(SORT_ON_BOTTOM);
+    pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems->Add(pItem);
   }
   m_iLastControl = GetFocusedControlID();
@@ -855,11 +855,8 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
   m_unfilteredItems->Append(items);
   
   CStdString filter(GetProperty("filter").asString());
-  if (!filter.IsEmpty())
-  {
-    items.ClearItems();
-    GetFilteredItems(filter, items);
-  }
+
+  GetFilteredItems(filter, items);
 }
 
 // \brief With this function you can react on a users click in the list/thumb panel.
@@ -1526,8 +1523,8 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   m_viewControl.Clear();
   
   CFileItemList items;
-  GetFilteredItems(filter, items);
-  if (filter.IsEmpty() || items.GetObjectCount() > 0)
+  items.Append(*m_unfilteredItems);
+  if (GetFilteredItems(filter, items))
   {
     m_vecItems->ClearItems();
     m_vecItems->Append(items);
@@ -1540,24 +1537,22 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   UpdateButtons();
 }
 
-void CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &items)
+bool CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &items)
 {
   CStdString trimmedFilter(filter);
   trimmedFilter.TrimLeft().ToLower();
   
   if (trimmedFilter.IsEmpty())
-  {
-    items.Append(*m_unfilteredItems);
-    return;
-  }
-  
+    return true;
+
+  CFileItemList filteredItems;
   bool numericMatch = StringUtils::IsNaturalNumber(trimmedFilter);
-  for (int i = 0; i < m_unfilteredItems->Size(); i++)
+  for (int i = 0; i < items.Size(); i++)
   {
-    CFileItemPtr item = m_unfilteredItems->Get(i);
+    CFileItemPtr item = items.Get(i);
     if (item->IsParentFolder())
     {
-      items.Add(item);
+      filteredItems.Add(item);
       continue;
     }
     // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
@@ -1578,8 +1573,12 @@ void CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &
     
     size_t pos = StringUtils::FindWords(match.c_str(), trimmedFilter.c_str());
     if (pos != CStdString::npos)
-      items.Add(item);
+      filteredItems.Add(item);
   }
+
+  items.ClearItems();
+  items.Append(filteredItems);
+  return (items.GetObjectCount() > 0);
 }
 
 CStdString CGUIMediaWindow::GetStartFolder(const CStdString &dir)

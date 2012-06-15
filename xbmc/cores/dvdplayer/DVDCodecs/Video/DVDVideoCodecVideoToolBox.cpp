@@ -1503,8 +1503,10 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   VTDecompressionOutputCallback outputCallback;
   OSStatus status;
 
-  #if defined(__arm__)
-    if (!DarwinIsIPad3())
+  #if defined(TARGET_DARWIN_IOS)
+    //TODO - remove the clamp for ipad3 when CVOpenGLESTextureCacheCreateTextureFromImage
+    //has been planted ...
+    //if (!DarwinIsIPad3())
     {
       // decoding, scaling and rendering above 1920 x 800 runs into
       // some bandwidth limit. detect and scale down to reduce

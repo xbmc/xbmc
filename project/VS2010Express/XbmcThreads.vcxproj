@@ -19,6 +19,7 @@
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadImpl.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\win\Win32Exception.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
   </ItemGroup>
@@ -37,6 +38,7 @@
     <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadImpl.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Win32Exception.h" />
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\threads\SystemClock.h" />
@@ -113,6 +115,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4800;4018;4146;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Lib>
       <OutputFile>$(TargetPath)</OutputFile>
