@@ -217,7 +217,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 
   g_application.Run(true);
   
-  // put everything in CApplication::Cleanup() since this point is never reached
+  // the end
+  WSACleanup();
+  CoUninitialize();
 
   return 0;
 }
