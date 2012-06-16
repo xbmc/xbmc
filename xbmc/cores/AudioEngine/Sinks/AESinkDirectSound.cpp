@@ -151,7 +151,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   if (hr == RPC_S_OK) RpcStringFree(&wszUuid);
   }
 
- hr = DirectSoundCreate(deviceGUID, &m_pDSound, NULL);
+  hr = DirectSoundCreate(deviceGUID, &m_pDSound, NULL);
 
   if (FAILED(hr))
   {
@@ -458,7 +458,6 @@ double CAESinkDirectSound::GetCacheTotal()
 void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 {
   CAEDeviceInfo        deviceInfo;
-  OSVERSIONINFO        osvi;
 
   IMMDeviceEnumerator* pEnumerator = NULL;
   IMMDeviceCollection* pEnumDevices = NULL;
@@ -467,12 +466,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
   HRESULT                hr;
 
   /* See if we are on Windows XP */
-  ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-  GetVersionEx(&osvi);
-
-  if (osvi.dwMajorVersion == 5)
+  if (!g_sysinfo.IsVistaOrHigher())
   {
     /* We are on XP - WASAPI not supported - enumerate using DS devices */
     LPGUID deviceGUID = NULL;
