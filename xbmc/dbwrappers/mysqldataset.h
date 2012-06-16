@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAVE_MYSQL
 #ifndef _MYSQLDATASET_H
 #define _MYSQLDATASET_H
 
@@ -174,3 +175,4 @@ or insert() operations default = false) */
 };
 } //namespace
 #endif
+#endif //HAVE_MYSQL

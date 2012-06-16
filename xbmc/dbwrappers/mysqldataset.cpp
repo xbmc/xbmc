@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAVE_MYSQL
 #include <iostream>
 #include <string>
 #include <set>
@@ -1598,3 +1599,4 @@ void MysqlDataset::interrupt() {
 
 }//namespace
 
+#endif //HAVE_MYSQL
