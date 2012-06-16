@@ -3007,7 +3007,7 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
   return false;
 }
 
-bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end)
+bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end, const SortDescription &sortDescription /* = SortDescription() */)
 {
   //Create limit
   CStdString limit;
@@ -3074,7 +3074,7 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
       strWhere += "and albumview.strAlbum <> ''" + limit;
   }
 
-  bool bResult = GetAlbumsByWhere(strBaseDir, strWhere, "", items);
+  bool bResult = GetAlbumsByWhere(strBaseDir, strWhere, "", items, sortDescription);
   if (bResult && idArtist != -1)
   {
     CStdString strArtist = GetArtistById(idArtist);
@@ -3086,64 +3086,7 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
   return bResult;
 }
 
-bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items)
-{
-  if (m_pDB.get() == NULL || m_pDS.get() == NULL)
-    return false;
-
-  try
-  {
-    CStdString sql = "select * from albumview " + where + order;
-
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());
-    // run query
-    unsigned int time = XbmcThreads::SystemClockMillis();
-    if (!m_pDS->query(sql.c_str())) return false;
-    CLog::Log(LOGDEBUG, "%s - query took %i ms",
-              __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
-
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-
-    items.Reserve(iRowsFound);
-
-    // get data from returned rows
-    while (!m_pDS->eof())
-    {
-      try
-      {
-        CStdString strDir;
-        int idAlbum = m_pDS->fv("idAlbum").get_asInt();
-        strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
-        CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
-        pItem->SetIconImage("DefaultAlbumCover.png");
-        items.Add(pItem);
-        m_pDS->next();
-      }
-      catch (...)
-      {
-        m_pDS->close();
-        CLog::Log(LOGERROR, "%s - out of memory getting listing (got %i)", __FUNCTION__, items.Size());
-      }
-    }
-
-    // cleanup
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    m_pDS->close();
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, where.c_str());
-  }
-  return false;
-}
-
-bool CMusicDatabase::GetSortedAlbums(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where /* = "" */)
+bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */)
 {
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
@@ -3191,7 +3134,7 @@ bool CMusicDatabase::GetSortedAlbums(const CStdString& strBaseDir, const SortDes
       {
         CStdString strDir;
         int idAlbum = record->at(album_idAlbum).get_asInt();
-        strDir.Format("%s%ld/", strBaseDir.c_str(), idAlbum);
+        strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
         CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(record)));
         pItem->SetIconImage("DefaultAlbumCover.png");
         items.Add(pItem);
@@ -3215,64 +3158,7 @@ bool CMusicDatabase::GetSortedAlbums(const CStdString& strBaseDir, const SortDes
   return false;
 }
 
-bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList &items)
-{
-  if (NULL == m_pDB.get()) return false;
-  if (NULL == m_pDS.get()) return false;
-
-  try
-  {
-    unsigned int time = XbmcThreads::SystemClockMillis();
-    // We don't use PrepareSQL here, as the WHERE clause is already formatted.
-    CStdString strSQL = "select * from songview " + whereClause;
-    CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
-    // run query
-    if (!m_pDS->query(strSQL.c_str()))
-      return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-
-    // get data from returned rows
-    items.Reserve(items.Size() + iRowsFound);
-    // get songs from returned subtable
-    int count = 0;
-    while (!m_pDS->eof())
-    {
-      try
-      {
-        CFileItemPtr item(new CFileItem);
-        GetFileItemFromDataset(item.get(), baseDir);
-        // HACK for sorting by database returned order
-        item->m_iprogramCount = ++count;
-        items.Add(item);
-        m_pDS->next();
-      }
-      catch (...)
-      {
-        m_pDS->close();
-        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, whereClause.c_str());
-        return (items.Size() > 0);
-      }
-    }
-    // cleanup
-    m_pDS->close();
-    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), XbmcThreads::SystemClockMillis() - time);
-    return true;
-  }
-  catch (...)
-  {
-    // cleanup
-    m_pDS->close();
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, whereClause.c_str());
-  }
-  return false;
-}
-
-bool CMusicDatabase::GetSortedSongs(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where /* = "" */)
+bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */)
 {
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
@@ -3281,9 +3167,9 @@ bool CMusicDatabase::GetSortedSongs(const CStdString& strBaseDir, const SortDesc
   {
     unsigned int time = XbmcThreads::SystemClockMillis();
     // We don't use PrepareSQL here, as the WHERE clause is already formatted.
-    CStdString strSQL = "select * from songview " + where;
+    CStdString strSQL = "select * from songview " + whereClause;
     // Apply the limiting directly here if there's no special sorting but limiting
-    CStdString whereLower = where;
+    CStdString whereLower = whereClause;
     whereLower.ToLower();
     if (whereLower.find(" limit ") == string::npos &&
         sortDescription.sortBy == SortByNone &&
@@ -3319,7 +3205,7 @@ bool CMusicDatabase::GetSortedSongs(const CStdString& strBaseDir, const SortDesc
       try
       {
         CFileItemPtr item(new CFileItem);
-        GetFileItemFromDataset(record, item.get(), strBaseDir);
+        GetFileItemFromDataset(record, item.get(), baseDir);
         // HACK for sorting by database returned order
         item->m_iprogramCount = ++count;
         items.Add(item);
@@ -3327,20 +3213,20 @@ bool CMusicDatabase::GetSortedSongs(const CStdString& strBaseDir, const SortDesc
       catch (...)
       {
         m_pDS->close();
-        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, where.c_str());
+        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, whereClause.c_str());
         return (items.Size() > 0);
       }
     }
     // cleanup
     m_pDS->close();
-    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, where.c_str(), XbmcThreads::SystemClockMillis() - time);
+    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
   {
     // cleanup
     m_pDS->close();
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, where.c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, whereClause.c_str());
   }
   return false;
 }
@@ -3351,7 +3237,7 @@ bool CMusicDatabase::GetSongsByYear(const CStdString& baseDir, CFileItemList& it
   return GetSongsByWhere(baseDir, where, items);
 }
 
-bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum)
+bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription /* = SortDescription() */)
 {
   CStdString strWhere;
 
@@ -3406,7 +3292,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
   }
 
   // run query
-  bool bResult = GetSongsByWhere(strBaseDir, strWhere, items);
+  bool bResult = GetSongsByWhere(strBaseDir, strWhere, items, sortDescription);
   if (bResult && idArtist != -1)
   {
     CStdString strArtist = GetArtistById(idArtist);

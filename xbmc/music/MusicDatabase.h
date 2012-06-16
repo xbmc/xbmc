@@ -168,20 +168,17 @@ public:
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, bool albumArtistsOnly);
-  bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end);
+  bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end, const SortDescription &sortDescription = SortDescription());
   bool GetAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, int year);
-  bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum);
+  bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year);
-  bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
-  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
+  bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
+  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items, const SortDescription &sortDescription = SortDescription());
   bool GetArtistsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetRandomSong(CFileItem* item, int& idSong, const CStdString& strWhere);
   int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere = "");
   unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
-
-  bool GetSortedAlbums(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where = "");
-  bool GetSortedSongs(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where = "");
 
   bool GetAlbumPath(int idAlbum, CStdString &path);
   bool SaveAlbumThumb(int idAlbum, const CStdString &thumb);
