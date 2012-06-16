@@ -35,7 +35,7 @@
 #include "utils/EndianSwap.h"
 
 /* typecast AE to CCoreAudioAE */
-#define AE (*(CCoreAudioAE*)CAEFactory::AE)
+#define AE (*(CCoreAudioAE*)CAEFactory::GetEngine())
 
 CCoreAudioAESound::CCoreAudioAESound(const std::string &filename) :
   IAESound         (filename),

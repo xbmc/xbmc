@@ -36,7 +36,7 @@
 #include "SoftAESound.h"
 
 /* typecast AE to CSoftAE */
-#define AE (*((CSoftAE*)CAEFactory::AE))
+#define AE (*((CSoftAE*)CAEFactory::GetEngine()))
 
 typedef struct
 {

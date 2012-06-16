@@ -33,6 +33,13 @@
 #endif
 
 IAE* CAEFactory::AE = NULL;
+static float  g_fVolume = 1.0f;
+static bool   g_bMute = false;
+
+IAE *CAEFactory::GetEngine()
+{
+  return AE;
+}
 
 bool CAEFactory::LoadEngine()
 {
@@ -96,8 +103,22 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
   return AE != NULL;
 }
 
+void CAEFactory::UnLoadEngine()
+{
+  if(AE)
+  {
+    AE->Shutdown();
+    delete AE;
+    AE = NULL;
+  }
+}
+
 bool CAEFactory::StartEngine()
 {
+#if defined(TARGET_RASPBERRY_PI)
+  return true;
+#endif
+
   if (!AE)
     return false;
 
@@ -107,4 +128,114 @@ bool CAEFactory::StartEngine()
   delete AE;
   AE = NULL;
   return false;
+}
+
+/* engine wrapping */
+IAESound *CAEFactory::MakeSound(const std::string &file)
+{
+  if(AE)
+    return AE->MakeSound(file);
+  
+  return NULL;
+}
+
+void CAEFactory::FreeSound(IAESound *sound)
+{
+  if(AE)
+    AE->FreeSound(sound);
+}
+
+void CAEFactory::SetSoundMode(const int mode)
+{
+  if(AE)
+    AE->SetSoundMode(mode);
+}
+
+void CAEFactory::OnSettingsChange(std::string setting)
+{
+  if(AE)
+    AE->OnSettingsChange(setting);
+}
+
+void CAEFactory::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
+{
+  if(AE)
+    AE->EnumerateOutputDevices(devices, passthrough);
+}
+
+std::string CAEFactory::GetDefaultDevice(bool passthrough)
+{
+  if(AE)
+    return AE->GetDefaultDevice(passthrough);
+
+  return "default";
+}
+
+bool CAEFactory::SupportsRaw()
+{
+  if(AE)
+    return AE->SupportsRaw();
+
+  return false;
+}
+
+void CAEFactory::SetMute(const bool enabled)
+{
+  if(AE)
+    AE->SetMute(enabled);
+
+  g_bMute = enabled;
+}
+
+bool CAEFactory::IsMuted()
+{
+  if(AE)
+    return AE->IsMuted();
+
+  return g_bMute || (g_fVolume == 0.0f);
+}
+
+float CAEFactory::GetVolume()
+{
+  if(AE)
+    return AE->GetVolume();
+
+  return g_fVolume;
+}
+
+void CAEFactory::SetVolume(const float volume)
+{
+  if(AE)
+    AE->SetVolume(volume);
+  else
+    g_fVolume = volume;
+}
+
+void CAEFactory::Shutdown()
+{
+  if(AE)
+    AE->Shutdown();
+}
+
+IAEStream *CAEFactory::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, 
+  unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options)
+{
+  if(AE)
+    return AE->MakeStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options);
+
+  return NULL;
+}
+
+IAEStream *CAEFactory::FreeStream(IAEStream *stream)
+{
+  if(AE)
+    return AE->FreeStream(stream);
+
+  return NULL;
+}
+
+void CAEFactory::GarbageCollect()
+{
+  if(AE)
+    AE->GarbageCollect();
 }
