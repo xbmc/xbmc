@@ -656,6 +656,9 @@ public:
   CStdString GetVersion();
   CStdString GetBuild();
 
+  /* Retrieve AudioEngine current audio device report */
+  AEDeviceReport* GetAudioDeviceReport();
+
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };

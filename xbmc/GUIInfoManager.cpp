@@ -76,6 +76,7 @@
 #include "interfaces/info/InfoBool.h"
 #include "TextureCache.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -1679,6 +1680,11 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   }
 
   return strLabel;
+}
+
+AEDeviceReport* CGUIInfoManager::GetAudioDeviceReport()
+{
+  return CAEFactory::AE->GetDeviceReport();
 }
 
 // tries to get a integer value for use in progressbars/sliders and such

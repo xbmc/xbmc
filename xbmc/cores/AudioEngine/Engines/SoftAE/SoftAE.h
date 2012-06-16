@@ -110,6 +110,11 @@ public:
   void PauseStream (CSoftAEStream *stream);
   void ResumeStream(CSoftAEStream *stream);
 
+  AEDeviceReport  m_DeviceReport;
+
+  /* provide device report for SystemInfo */
+  AEDeviceReport* GetDeviceReport();
+
 private:
   CThread *m_thread;
 
@@ -123,6 +128,8 @@ private:
   void ResetEncoder();
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
+
+  void GenerateDeviceReport();
 
   IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough, std::string &device);
   void StopAllSounds();
