@@ -152,7 +152,7 @@ bool CRemoteControl::Connect()
   if(m_socket == INVALID_SOCKET)
   {
     if(m_iAttempt == 0)
-      CLog::Log(LOGERROR, "CRemoteControl::Connect - failed to connect");
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - failed to connect");
     Close();
     return false;
   }
