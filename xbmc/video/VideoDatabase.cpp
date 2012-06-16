@@ -5155,7 +5155,9 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = PrepareSQL("select %s from movieview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    int total = -1;
+
+    CStdString strSQL;
     CFileItemList setItems;
     if (fetchSets && g_guiSettings.GetBool("videolibrary.groupmoviesets"))
     {
@@ -5204,17 +5206,27 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
       strSQL += " ORDER BY " + filter.order;
     if (!filter.limit.empty())
       strSQL += " LIMIT " + filter.limit;
-    // Apply the limiting directly here if there's no special sorting but limiting
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    {
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
       strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
+
+    strSQL = PrepareSQL("select %s from movieview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0 && setItems.Size() == 0)
       return iRowsFound == 0;
+
+    iRowsFound += setItems.Size();
+    // store the total value of items as a property
+    if (total < iRowsFound)
+      total = iRowsFound;
+    items.SetProperty("total", total);
     
     DatabaseResults results;
-    results.reserve(iRowsFound + setItems.Size());
+    results.reserve(iRowsFound);
 
     // Add the previously retrieved sets
     for (int index = 0; index < setItems.Size(); index++)
@@ -5305,7 +5317,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = PrepareSQL("SELECT %s FROM tvshowview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    int total = -1;
+
+    CStdString strSQL;
     if (!filter.join.empty())
       strSQL += filter.join;
     if (!filter.where.empty())
@@ -5319,11 +5333,21 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     // Apply the limiting directly here if there's no special sorting but limiting
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    {
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
       strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
+
+    strSQL = PrepareSQL("SELECT %s FROM tvshowview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
+
+    // store the total value of items as a property
+    if (total < iRowsFound)
+      total = iRowsFound;
+    items.SetProperty("total", total);
     
     DatabaseResults results;
     results.reserve(iRowsFound);
@@ -5618,7 +5642,9 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = PrepareSQL("select %s from episodeview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    int total = -1;
+
+    CStdString strSQL;
     if (!filter.join.empty())
       strSQL += filter.join;
     if (!filter.where.empty())
@@ -5632,11 +5658,21 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
     // Apply the limiting directly here if there's no special sorting but limiting
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    {
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
       strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
+
+    strSQL = PrepareSQL("select %s from episodeview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
+
+    // store the total value of items as a property
+    if (total < iRowsFound)
+      total = iRowsFound;
+    items.SetProperty("total", total);
     
     DatabaseResults results;
     results.reserve(iRowsFound);
@@ -6465,8 +6501,9 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // We don't use PrepareSQL here, as the WHERE clause is already formatted.
-    CStdString strSQL = PrepareSQL("select %s from musicvideoview ", !filter.fields.empty() ? filter.fields.c_str() : "*");;
+    int total = -1;
+
+    CStdString strSQL;
     if (!filter.join.empty())
       strSQL += filter.join;
     if (!filter.where.empty())
@@ -6480,11 +6517,21 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
     // Apply the limiting directly here if there's no special sorting but limiting
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    {
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
       strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
+
+    strSQL = PrepareSQL("select %s from musicvideoview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
+
+    // store the total value of items as a property
+    if (total < iRowsFound)
+      total = iRowsFound;
+    items.SetProperty("total", total);
     
     DatabaseResults results;
     results.reserve(iRowsFound);
