@@ -156,7 +156,7 @@ fische__audiobuffer_get (struct fische__audiobuffer* self)
 
     // set export buffer
     self->front_samples = P->buffer;
-    self->back_samples = P->buffer + P->buffer_size - 1 - n_samples * 2;
+    self->back_samples = P->buffer + P->buffer_size - n_samples * 2;
 
     // increment get counter
     ++ P->gets;
