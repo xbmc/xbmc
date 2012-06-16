@@ -22,8 +22,8 @@
  */
 
 
-#include <Wbemidl.h> 
-#pragma comment(lib, "wbemuuid.lib") 
+#include <Wbemidl.h>
+#pragma comment(lib, "wbemuuid.lib")
 #pragma comment(lib, "comsuppw.lib")
 
 

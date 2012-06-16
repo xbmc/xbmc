@@ -77,7 +77,7 @@ void CWHelper::Process()
 {
   while (( !m_bStop ))
   {
-    if(WaitForSingleObject(m_hProcess,500) != WAIT_TIMEOUT) 
+    if(WaitForSingleObject(m_hProcess,500) != WAIT_TIMEOUT)
       break;
     /*if((m_hwnd != NULL) && (IsIconic(m_hwnd) == TRUE))
       break;*/
