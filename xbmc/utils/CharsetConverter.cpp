@@ -60,7 +60,15 @@ static iconv_t m_iconvUtf16LEtoUtf8              = (iconv_t)-1;
 static iconv_t m_iconvUtf8toW                    = (iconv_t)-1;
 static iconv_t m_iconvUcs2CharsetToUtf8          = (iconv_t)-1;
 
+#if defined(FRIBIDI_CHAR_SET_NOT_FOUND)
 static FriBidiCharSet m_stringFribidiCharset     = FRIBIDI_CHAR_SET_NOT_FOUND;
+#define FRIBIDI_UTF8 FRIBIDI_CHAR_SET_UTF8
+#define FRIBIDI_NOTFOUND FRIBIDI_CHAR_SET_NOT_FOUND
+#else /* compatibility to older version */
+static FriBidiCharSet m_stringFribidiCharset     = FRIBIDI_CHARSET_NOT_FOUND;
+#define FRIBIDI_UTF8 FRIBIDI_CHARSET_UTF8
+#define FRIBIDI_NOTFOUND FRIBIDI_CHARSET_NOT_FOUND
+#endif
 
 static CCriticalSection            m_critSection;
 
@@ -69,6 +77,7 @@ static struct SFribidMapping
   FriBidiCharSet name;
   const char*    charset;
 } g_fribidi[] = {
+#if defined(FRIBIDI_CHAR_SET_NOT_FOUND)
   { FRIBIDI_CHAR_SET_ISO8859_6, "ISO-8859-6"   }
 , { FRIBIDI_CHAR_SET_ISO8859_8, "ISO-8859-8"   }
 , { FRIBIDI_CHAR_SET_CP1255   , "CP1255"       }
@@ -76,6 +85,15 @@ static struct SFribidMapping
 , { FRIBIDI_CHAR_SET_CP1256   , "CP1256"       }
 , { FRIBIDI_CHAR_SET_CP1256   , "Windows-1256" }
 , { FRIBIDI_CHAR_SET_NOT_FOUND, NULL           }
+#else /* compatibility to older version */
+  { FRIBIDI_CHARSET_ISO8859_6, "ISO-8859-6"   }
+, { FRIBIDI_CHARSET_ISO8859_8, "ISO-8859-8"   }
+, { FRIBIDI_CHARSET_CP1255   , "CP1255"       }
+, { FRIBIDI_CHARSET_CP1255   , "Windows-1255" }
+, { FRIBIDI_CHARSET_CP1256   , "CP1256"       }
+, { FRIBIDI_CHARSET_CP1256   , "Windows-1256" }
+, { FRIBIDI_CHARSET_NOT_FOUND, NULL           }
+#endif
 };
 
 static struct SCharsetMapping
@@ -377,7 +395,7 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToUtf8);
 
 
-  m_stringFribidiCharset = FRIBIDI_CHAR_SET_NOT_FOUND;
+  m_stringFribidiCharset = FRIBIDI_NOTFOUND;
 
   CStdString strCharset=g_langInfo.GetGuiCharSet();
   for(SFribidMapping *c = g_fribidi; c->charset; c++)
@@ -396,7 +414,7 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   {
     CStdStringA strFlipped;
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
-    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
+    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_UTF8, charset, bWasFlipped);
     CSingleLock lock(m_critSection);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
   }
@@ -674,5 +692,5 @@ bool CCharsetConverter::isValidUtf8(const CStdString& str)
 
 void CCharsetConverter::utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest)
 {
-  logicalToVisualBiDi(strSource, strDest, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
+  logicalToVisualBiDi(strSource, strDest, FRIBIDI_UTF8, FRIBIDI_TYPE_RTL);
 }
