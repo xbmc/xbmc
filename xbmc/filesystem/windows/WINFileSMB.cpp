@@ -210,11 +210,11 @@ int CWINFileSMB::Write(const void *lpBuf, int64_t uiBufSize)
 {
   if (!m_hFile.isValid())
     return 0;
-  
+
   DWORD nBytesWriten;
   if ( WriteFile((HANDLE)m_hFile, (void*) lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
     return nBytesWriten;
-  
+
   return 0;
 }
 
@@ -316,6 +316,6 @@ void CWINFileSMB::Flush()
 }
 
 int CWINFileSMB::IoControl(EIoControl request, void* param)
-{ 
+{
   return -1;
 }

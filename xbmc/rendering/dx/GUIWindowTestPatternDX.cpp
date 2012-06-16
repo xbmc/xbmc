@@ -73,4 +73,4 @@ void CGUIWindowTestPatternDX::EndRender()
 {
  // TODO: write dx code
 }
- 
+
