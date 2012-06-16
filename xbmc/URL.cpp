@@ -433,9 +433,6 @@ const CStdString& CURL::GetProtocol() const
 
 const CStdString CURL::GetTranslatedProtocol() const
 {
-  if (m_strProtocol == "ftpx")
-    return "ftp";
-
   if (m_strProtocol == "shout"
    || m_strProtocol == "daap"
    || m_strProtocol == "dav"
