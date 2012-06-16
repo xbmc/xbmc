@@ -249,9 +249,6 @@
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WINDirectSound.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp">
       <Filter>win32</Filter>
     </ClCompile>
@@ -2598,9 +2595,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WIN32Util.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WINDirectSound.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h">

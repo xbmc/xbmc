@@ -1161,7 +1161,6 @@
     <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp" />
     <ClCompile Include="..\..\xbmc\win32\win32env.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp" />
-    <ClCompile Include="..\..\xbmc\win32\WINDirectSound.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp" />
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp" />
@@ -1963,7 +1962,6 @@
     <ClInclude Include="..\..\xbmc\win32\stat_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\WIN32Util.h" />
-    <ClInclude Include="..\..\xbmc\win32\WINDirectSound.h" />
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h" />
