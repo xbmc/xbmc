@@ -96,9 +96,19 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
   int artistID  = (int)parameterObject["artistid"].asInteger();
   int genreID   = (int)parameterObject["genreid"].asInteger();
 
+  SortDescription sorting;
+  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return InvalidParams;
+
   CFileItemList items;
-  if (musicdatabase.GetAlbumsNav("musicdb://3/", items, genreID, artistID, -1, -1))
-    HandleFileItemList("albumid", false, "albums", items, parameterObject, result);
+  if (!musicdatabase.GetAlbumsNav("musicdb://3/", items, genreID, artistID, -1, -1, sorting))
+    return InternalError;
+
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  HandleFileItemList("albumid", false, "albums", items, parameterObject, result, size, false);
 
   musicdatabase.Close();
   return OK;
@@ -140,9 +150,19 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
   int albumID  = (int)parameterObject["albumid"].asInteger();
   int genreID  = (int)parameterObject["genreid"].asInteger();
 
+  SortDescription sorting;
+  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return InvalidParams;
+
   CFileItemList items;
-  if (musicdatabase.GetSongsNav("musicdb://4/", items, genreID, artistID, albumID))
-    HandleFileItemList("songid", true, "songs", items, parameterObject, result);
+  if (!musicdatabase.GetSongsNav("musicdb://4/", items, genreID, artistID, albumID, sorting))
+    InternalError;
+
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  HandleFileItemList("songid", true, "songs", items, parameterObject, result, size, false);
 
   musicdatabase.Close();
   return OK;

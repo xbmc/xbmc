@@ -3093,6 +3093,8 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
 
   try
   {
+    int total = -1;
+
     CStdString sql = "select * from albumview " + where;
     // Apply the limiting directly here if there's no special sorting but limiting
     CStdString whereLower = where;
@@ -3100,7 +3102,10 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
     if (whereLower.find(" limit ") == string::npos &&
         sortDescription.sortBy == SortByNone &&
        (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    {
+      total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM albumview " + where, m_pDS).c_str(), NULL, 10);
       sql += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());
     // run query
@@ -3116,6 +3121,11 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
       m_pDS->close();
       return false;
     }
+
+    // store the total value of items as a property
+    if (total < iRowsFound)
+      total = iRowsFound;
+    items.SetProperty("total", total);
     
     DatabaseResults results;
     results.reserve(iRowsFound);
@@ -3166,6 +3176,8 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
   try
   {
     unsigned int time = XbmcThreads::SystemClockMillis();
+    int total = -1;
+
     // We don't use PrepareSQL here, as the WHERE clause is already formatted.
     CStdString strSQL = "select * from songview " + whereClause;
     // Apply the limiting directly here if there's no special sorting but limiting
@@ -3174,7 +3186,10 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     if (whereLower.find(" limit ") == string::npos &&
         sortDescription.sortBy == SortByNone &&
        (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    {
+      total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM songview " + whereClause, m_pDS).c_str(), NULL, 10);
       strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -3187,6 +3202,11 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
       m_pDS->close();
       return false;
     }
+
+    // store the total value of items as a property
+    if (total < iRowsFound)
+      total = iRowsFound;
+    items.SetProperty("total", total);
     
     DatabaseResults results;
     results.reserve(iRowsFound);
