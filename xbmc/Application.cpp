@@ -3339,12 +3339,6 @@ bool CApplication::Cleanup()
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
 #endif
-#ifdef _WIN32
-    WSACleanup();
-
-    //Uninitialize COM
-    CoUninitialize();
-#endif
     return true;
   }
   catch (...)
