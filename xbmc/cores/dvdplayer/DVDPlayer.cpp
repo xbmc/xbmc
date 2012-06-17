@@ -3011,10 +3011,16 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
   {
     m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
+    // TODO: Why the VIDEO_NO_SKIP message?
     m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
     m_dvdPlayerSubtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_dvdPlayerTeletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    SynchronizePlayers(SYNCSOURCE_ALL);
+
+    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(100, SYNCSOURCE_ALL);
+    m_dvdPlayerAudio.SendMessage(msg->Acquire(), 1);
+    m_dvdPlayerVideo.SendMessage(msg->Acquire(), 1);
+    msg->Wait(&m_bStop, 0);
+    msg->Release();
   }
   else
   {
