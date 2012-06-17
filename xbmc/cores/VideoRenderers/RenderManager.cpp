@@ -654,7 +654,7 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
   if( m_presentmethod == PRESENT_METHOD_BOB )
     PresentBob(clear, flags, alpha);
   else if( m_presentmethod == PRESENT_METHOD_WEAVE )
-    PresentWeave(clear, flags, alpha);
+    PresentBob(clear, flags | RENDER_FLAG_WEAVE, alpha);
   else if( m_presentmethod == PRESENT_METHOD_BLEND )
     PresentBlend(clear, flags, alpha);
   else
