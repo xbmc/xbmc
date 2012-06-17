@@ -652,9 +652,9 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
   CSharedLock lock(m_sharedSection);
 
   if( m_presentmethod == PRESENT_METHOD_BOB )
-    PresentBob(clear, flags, alpha);
+    PresentFields(clear, flags, alpha);
   else if( m_presentmethod == PRESENT_METHOD_WEAVE )
-    PresentBob(clear, flags | RENDER_FLAG_WEAVE, alpha);
+    PresentFields(clear, flags | RENDER_FLAG_WEAVE, alpha);
   else if( m_presentmethod == PRESENT_METHOD_BLEND )
     PresentBlend(clear, flags, alpha);
   else
@@ -698,7 +698,7 @@ void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 
 /* new simpler method of handling interlaced material, *
  * we just render the two fields right after eachother */
-void CXBMCRenderManager::PresentBob(bool clear, DWORD flags, DWORD alpha)
+void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -735,16 +735,6 @@ void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, alpha);
     m_pRenderer->RenderUpdate(false, flags | RENDER_FLAG_BOT, alpha / 2);
   }
-  m_presentstep = PRESENT_IDLE;
-}
-
-/* renders the two fields as one, but doing fieldbased *
- * scaling then reinterlaceing resulting image         */
-void CXBMCRenderManager::PresentWeave(bool clear, DWORD flags, DWORD alpha)
-{
-  CSingleLock lock(g_graphicsContext);
-
-  m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
   m_presentstep = PRESENT_IDLE;
 }
 
