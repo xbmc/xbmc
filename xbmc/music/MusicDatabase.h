@@ -330,7 +330,8 @@ private:
 
   enum _ArtistFields
   {
-    artist_idArtist=1, // not a typo - we have the primary key @ 0
+    artist_idArtist=0,
+    artist_strArtist,
     artist_strBorn,
     artist_strFormed,
     artist_strGenres,
