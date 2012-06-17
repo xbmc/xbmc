@@ -429,21 +429,21 @@ namespace PVR
      * @param channel The channel to open.
      * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
      */
-    bool CheckParentalLock(const CPVRChannel *channel);
+    bool CheckParentalLock(const CPVRChannel &channel);
 
     /*!
      * @brief Check if parental lock is overriden at the given moment.
      * @param channel The channel to open.
      * @return True if parental lock is overriden, false otherwise.
      */
-    bool CheckParentalOverride(const CPVRChannel *channel);
+    bool IsParentalLocked(const CPVRChannel &channel);
 
     /*!
      * @brief Open Numeric dialog to check for parental PIN.
-     * @param bool bSettings is true if this is called from settins, false otherwise.
+     * @param strTitle Override the title of the dialog if set.
      * @return True if entered PIN was correct, false otherwise.
      */
-    bool CheckParentalPIN(bool bSettings = false);
+    bool CheckParentalPIN(const char *strTitle = NULL);
 
   protected:
     /*!

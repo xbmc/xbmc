@@ -268,7 +268,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &
   CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_PARENTAL_LOCK);
 
   // ask for PIN first
-  if (!g_PVRManager.CheckParentalPIN(true)) 
+  if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
   {
     pRadioButton->SetSelected(!pRadioButton->IsSelected());
     return false;

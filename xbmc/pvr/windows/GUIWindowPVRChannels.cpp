@@ -371,7 +371,7 @@ bool CGUIWindowPVRChannels::OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON 
   if (button == CONTEXT_BUTTON_ADD_LOCK)
   {
     // ask for PIN first
-    if (!g_PVRManager.CheckParentalPIN(true))
+    if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
       return bReturn;
 
     CPVRChannelGroup *group = g_PVRChannelGroups->GetGroupAll(m_bRadio);

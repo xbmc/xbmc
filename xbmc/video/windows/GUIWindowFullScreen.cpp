@@ -470,9 +470,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
           if (!channel)
             return false;
 
-          if (!g_PVRManager.CheckParentalLock(channel))
-            return false;
-
           OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
         }
       }
@@ -841,9 +838,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
             {
               CLog::Log(LOGDEBUG, "%s - channel '%s' is not a member of '%s', switching to channel 1 of the new group", __FUNCTION__, playingChannel.ChannelName().c_str(), selectedGroup->GroupName().c_str());
               const CPVRChannel *switchChannel = selectedGroup->GetByChannelNumber(1);
-
-              if (!g_PVRManager.CheckParentalLock(switchChannel))
-                return false;
 
               if (switchChannel)
                 OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->ChannelNumber()));
@@ -1230,9 +1224,6 @@ void CGUIWindowFullScreen::SeekTV(bool bPlus, bool bLargeStep)
       nextChannel = selectedGroup->GetByChannelUp(playingChannel);
     else
       nextChannel = selectedGroup->GetByChannelDown(playingChannel);
-
-    if (!g_PVRManager.CheckParentalLock(nextChannel))
-      return;
 
     if (bPlus)
       OnAction(CAction(ACTION_NEXT_ITEM));

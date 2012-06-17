@@ -397,9 +397,6 @@ bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
   if (!channel)
     return false;
 
-  if (!g_PVRManager.CheckParentalLock(channel))
-    return false;
-
   CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());
   bool bReturn = g_application.PlayFile(CFileItem(*channel));
   if (!bReturn)

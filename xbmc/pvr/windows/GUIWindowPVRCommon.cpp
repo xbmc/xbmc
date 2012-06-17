@@ -418,7 +418,8 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
   if (!epgTag)
     return bReturn;
 
-  if (!epgTag->HasPVRChannel())
+  const CPVRChannel *channel = epgTag->ChannelTag();
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return bReturn;
 
   if (epgTag->Timer() == NULL)
@@ -515,9 +516,6 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
 
   const CPVRChannel *channel = epgTag->ChannelTag();
   if (!channel || channel->ChannelNumber() > 0)
-    return bReturn;
-
-  if (!g_PVRManager.CheckParentalLock(channel))
     return bReturn;
 
   bReturn = g_application.PlayFile(CFileItem(*channel));
@@ -675,13 +673,11 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
   {
     bool bSwitchSuccessful(false);
 
-    CPVRChannel* channel = item->GetPVRChannelInfoTag();
-    if (!g_PVRManager.CheckParentalLock(channel))
-      return false;
-    
+    CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
+
     /* try a fast switch */
-    if (item->IsPVRChannel() && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-        (item->GetPVRChannelInfoTag()->IsRadio() == g_PVRManager.IsPlayingRadio()) && g_application.m_pPlayer)
+    if (channel && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
+        (channel->IsRadio() == g_PVRManager.IsPlayingRadio()) && g_application.m_pPlayer)
     {
       if (channel->StreamURL().IsEmpty())
         bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*channel);
@@ -709,7 +705,9 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
     return false;
 
   CEpgInfoTag *tag = item->GetEPGInfoTag();
-  if (!tag || !tag->HasPVRChannel())
+  const CPVRChannel *channel = tag ? tag->ChannelTag() : NULL;
+
+  if (!channel || g_PVRManager.CheckParentalLock(*channel))
     return false;
 
   CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(item);
@@ -776,21 +774,17 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
 
   if (tag)
   {
-    if (!g_PVRManager.CheckParentalLock(channel)) 
+    if (g_PVRManager.CheckParentalLock(channel))
     {
-      delete tag;
-      return;
+      CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
+      if (pDlgInfo)
+      {
+        pDlgInfo->SetProgInfo(tag);
+        pDlgInfo->DoModal();
+
+        UpdateData();
+      }
     }
-
-    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-    if (!pDlgInfo)
-      return;
-
-    pDlgInfo->SetProgInfo(tag);
-    pDlgInfo->DoModal();
-
-    UpdateData();
-
     delete tag;
   }
 }

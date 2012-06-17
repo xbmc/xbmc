@@ -100,8 +100,8 @@ bool EpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
   if (!m_strSearchTerm.IsEmpty())
   {
     CTextSearch search(m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
-    bReturn = search.Search(tag.Title(true)) ||
-        search.Search(tag.PlotOutline(true));
+    bReturn = search.Search(tag.Title()) ||
+        search.Search(tag.PlotOutline());
   }
 
   return bReturn;
@@ -198,8 +198,8 @@ int EpgSearchFilter::FilterRecordings(CFileItemList &results)
 
       /* no match */
       if (!epgentry ||
-          epgentry->Title()       != recording->m_strTitle ||
-          epgentry->Plot()        != recording->m_strPlot)
+          epgentry->Title() != recording->m_strTitle ||
+          epgentry->Plot()  != recording->m_strPlot)
         continue;
 
       results.Remove(iResultPtr);

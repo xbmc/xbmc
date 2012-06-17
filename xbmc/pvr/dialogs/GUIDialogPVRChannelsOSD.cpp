@@ -165,10 +165,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   if (g_PVRManager.IsPlaying() && pItem->HasPVRChannelInfoTag() && g_application.m_pPlayer)
   {
     CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
-    if (!g_PVRManager.CheckParentalLock(channel))
-      return;
-
-    if (!g_application.m_pPlayer->SwitchChannel(*pItem->GetPVRChannelInfoTag()))
+    if (!g_application.m_pPlayer->SwitchChannel(*channel))
     {
       Close(true);
       return;
@@ -189,7 +186,7 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   if (pItem && pItem->IsPVRChannel())
   {
     CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
-    if (!g_PVRManager.CheckParentalLock(channel))
+    if (!g_PVRManager.CheckParentalLock(*channel))
       return;
 
     /* Get the current running show on this channel from the EPG storage */

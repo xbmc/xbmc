@@ -200,7 +200,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         }
         if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "pvrparental")
         {
-          if (!g_PVRManager.CheckParentalPIN(true))
+          if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
           { // unable to go to this category - focus the previous one
             SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iSection, 0);
             return false;
@@ -1883,7 +1883,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {
-    if (g_PVRManager.CheckParentalPIN(true) && CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
+    if (g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()) &&
+        CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
       g_PVRManager.ResetDatabase();
   }
   else if (strSetting.Equals("epg.resetepg"))

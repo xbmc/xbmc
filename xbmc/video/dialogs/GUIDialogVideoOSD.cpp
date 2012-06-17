@@ -74,9 +74,6 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
         nextChannel = selectedGroup->GetByChannelUp(playingChannel);
       else
         nextChannel = selectedGroup->GetByChannelDown(playingChannel);
-
-      if (!g_PVRManager.CheckParentalLock(nextChannel))
-        return true;
     }
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
       return true;
