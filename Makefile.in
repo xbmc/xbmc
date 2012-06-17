@@ -347,7 +347,7 @@ OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
 LIBS += @PYTHON_LDFLAGS@
 
-libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC)
+libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS)
 else
