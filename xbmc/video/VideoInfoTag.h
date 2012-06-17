@@ -129,6 +129,7 @@ public:
   float m_fEpBookmark;
   int m_iBookmarkId;
   int m_iIdShow;
+  int m_iIdSeason;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
   CBookmark m_resumePoint;
