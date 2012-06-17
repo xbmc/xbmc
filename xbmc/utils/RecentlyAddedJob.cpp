@@ -291,10 +291,10 @@ bool CRecentlyAddedJob::UpdateMusic()
       
       CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);
       
-      home->SetProperty("LatestAlbum." + value + ".Title"   , musicdatabase.GetAlbumById(album.idAlbum));
-      home->SetProperty("LatestAlbum." + value + ".Year"    , atoi(musicdatabase.GetSingleValue("album", "iYear", strSQLAlbum)));
+      home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);
+      home->SetProperty("LatestAlbum." + value + ".Year"    , album.iYear);
       home->SetProperty("LatestAlbum." + value + ".Artist"  , strArtist);      
-      home->SetProperty("LatestAlbum." + value + ".Rating"  , musicdatabase.GetSingleValue("albumview", "iRating", strSQLAlbum));
+      home->SetProperty("LatestAlbum." + value + ".Rating"  , album.iRating);
       home->SetProperty("LatestAlbum." + value + ".Path"    , strDBpath);
       home->SetProperty("LatestAlbum." + value + ".Thumb"   , strThumb);
       home->SetProperty("LatestAlbum." + value + ".Fanart"  , strFanart);
