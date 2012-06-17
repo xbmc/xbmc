@@ -3018,12 +3018,12 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
   return match;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */,  bool needsStreamDetails /* = true */)
 {
-  return GetDetailsForMovie(pDS->get_sql_record(), needsCast);
+  return GetDetailsForMovie(pDS->get_sql_record(), needsCast, needsStreamDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool needsCast /* = false */, bool needsStreamDetails /* = true */)
 {
   CVideoInfoTag details;
 
@@ -3040,7 +3040,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   GetCommonDetails(record, details);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  GetStreamDetails(details);
+  if (needsStreamDetails)
+    GetStreamDetails(details);
 
   if (needsCast)
   {
@@ -4424,7 +4425,7 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
       }
 
       // add the movie's details to the set
-      it->second.movies.push_back(GetDetailsForMovie(m_pDS));
+      it->second.movies.push_back(GetDetailsForMovie(m_pDS, false, false));
 
       m_pDS->next();
     }
