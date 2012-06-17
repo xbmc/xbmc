@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -641,6 +642,64 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   return bReturn;
 }
 
+bool CPVRManager::CheckParentalLock(const CPVRChannel &channel)
+{
+  bool bReturn(true);
+
+  if (IsParentalLocked(channel))
+  {
+    // check the pin code
+    if (!CheckParentalPIN())
+    {
+      CLog::Log(LOGERROR, "PVRManager - %s - parental lock verification failed for channel '%s': wrong PIN entered.",
+          __FUNCTION__, channel.ChannelName().c_str());
+      bReturn = false;
+    }
+    else
+    {
+      // reset the timer
+      m_parentalTimer.StartZero();
+    }
+  }
+
+  return bReturn;
+}
+
+bool CPVRManager::IsParentalLocked(const CPVRChannel &channel)
+{
+  bool bReturn(false);
+  CPVRChannel currentChannel(NULL);
+
+  if (// different channel
+      (!GetCurrentChannel(currentChannel) || channel != currentChannel) &&
+      // parental control enabled
+      g_guiSettings.GetBool("pvrparental.enabled") &&
+      // channel is locked
+      channel.IsLocked())
+  {
+    float parentalDurationMs = g_guiSettings.GetInt("pvrparental.duration") * 1000.0f;
+    bReturn = !m_parentalTimer.IsRunning() ||
+        m_parentalTimer.GetElapsedMilliseconds() > parentalDurationMs;
+  }
+
+  return bReturn;
+}
+
+bool CPVRManager::CheckParentalPIN(const char *strTitle /* = NULL */)
+{
+  CStdString pinCode = g_guiSettings.GetString("pvrparental.pin");
+
+  if (!g_guiSettings.GetBool("pvrparental.enabled") || pinCode.empty())
+    return true;
+
+  bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, strTitle ? strTitle : g_localizeStrings.Get(19263).c_str(), true);
+  if (!bValidPIN)
+    // display message: The entered PIN number was incorrect
+    CGUIDialogOK::ShowAndGetInput(19264,0,19265,0);
+
+  return bValidPIN;
+}
+
 void CPVRManager::SaveCurrentChannelSettings(void)
 {
   m_addons->SaveCurrentChannelSettings();
@@ -693,6 +752,10 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)
   bool bReturn(false);
   CLog::Log(LOGDEBUG,"PVRManager - %s - opening live stream on channel '%s'",
       __FUNCTION__, tag.ChannelName().c_str());
+
+  // check if we're allowed to play this file
+  if (!CheckParentalLock(tag))
+    return bReturn;
 
   if ((bReturn = m_addons->OpenLiveStream(tag)) != false)
   {
@@ -835,6 +898,9 @@ bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = f
 bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview)
 {
   bool bSwitched(false);
+
+  if (!CheckParentalLock(channel))
+    return false;
 
   CSingleLock lock(m_critSection);
   if (m_bIsSwitchingChannels)

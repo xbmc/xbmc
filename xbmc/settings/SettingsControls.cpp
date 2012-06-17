@@ -196,6 +196,8 @@ CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, int id, CSettin
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_IPADDRESS, heading);
   else if (pSetting->GetControlType() == EDIT_CONTROL_NUMBER_INPUT)
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_NUMBER, heading);
+  else if (pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW, heading);
   else
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, heading);
   Update();

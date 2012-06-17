@@ -62,7 +62,7 @@ void CGUIViewControl::SetParentWindow(int window)
   m_parentWindow = window;
 }
 
-void CGUIViewControl::SetCurrentView(int viewMode)
+void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
 {
   // grab the previous control
   CGUIControl *previousView = NULL;
@@ -99,7 +99,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
     (*view)->SetVisible(false);
   pNewView->SetVisible(true);
 
-  if (pNewView == previousView)
+  if (!bRefresh && pNewView == previousView)
     return; // no need to actually update anything (other than visibility above)
 
 //  CLog::Log(LOGDEBUG,"SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);

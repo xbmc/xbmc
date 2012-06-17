@@ -33,6 +33,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "epg/Epg.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
 using namespace PVR;
@@ -163,7 +164,8 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
   if (g_PVRManager.IsPlaying() && pItem->HasPVRChannelInfoTag() && g_application.m_pPlayer)
   {
-    if (!g_application.m_pPlayer->SwitchChannel(*pItem->GetPVRChannelInfoTag()))
+    CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
+    if (!g_application.m_pPlayer->SwitchChannel(*channel))
     {
       Close(true);
       return;
@@ -183,9 +185,13 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   CFileItemPtr pItem = m_vecItems->Get(item);
   if (pItem && pItem->IsPVRChannel())
   {
+    CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
+    if (!g_PVRManager.CheckParentalLock(*channel))
+      return;
+
     /* Get the current running show on this channel from the EPG storage */
     CEpgInfoTag epgnow;
-    if (!pItem->GetPVRChannelInfoTag()->GetEPGNow(epgnow))
+    if (!channel->GetEPGNow(epgnow))
       return;
     CFileItem *itemNow  = new CFileItem(epgnow);
 

@@ -59,6 +59,7 @@ namespace PVR
     bool             m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
     bool             m_bIsHidden;               /*!< true if this channel is hidden, false if not */
     bool             m_bIsUserSetIcon;          /*!< true if user set the icon via GUI, false if not */
+    bool             m_bIsLocked;               /*!< true if channel is locked, false if not */
     CStdString       m_strIconPath;             /*!< the path to the icon for this channel */
     CStdString       m_strChannelName;          /*!< the name for this channel used by XBMC */
     bool             m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
@@ -170,6 +171,23 @@ namespace PVR
      * @return True if the something changed, false otherwise.
      */
     bool SetHidden(bool bIsHidden, bool bSaveInDb = false);
+
+    /*!
+     * @brief True if this channel is locked. False if not.
+     * @return True if this channel is locked. False if not.
+     */
+    bool IsLocked(void) const { return m_bIsLocked; }
+
+    /*!
+     * @brief Set to true to lock this channel. Set to false to unlock it.
+     *
+     * Set to true to lock this channel. Set to false to unlock it.
+     * Locked channels need can only be viewed if parental PIN entered.
+     * @param bIsLocked The new setting.
+     * @param bSaveInDb Save in the database or not.
+     * @return True if the something changed, false otherwise.
+     */
+    bool SetLocked(bool bIsLocked, bool bSaveInDb = false);
 
     /*!
      * @brief True if a recording is currently running on this channel. False if not.

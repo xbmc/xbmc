@@ -53,6 +53,10 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTag *tag)
 {
   bool bReturn = false;
 
+  const CPVRChannel *channel(tag ? tag->ChannelTag() : NULL);
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
+    return false;
+
   // prompt user for confirmation of channel record
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 

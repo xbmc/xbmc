@@ -491,6 +491,9 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   if (!channel)
     return NULL;
 
+  if (!g_PVRManager.CheckParentalLock(*channel))
+    return NULL;
+
   CEpgInfoTag epgTag;
   bool bHasEpgNow = channel->GetEPGNow(epgTag);
   CPVRTimerInfoTag *newTimer = bHasEpgNow ? CPVRTimerInfoTag::CreateFromEpg(epgTag) : NULL;
@@ -556,11 +559,17 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
 
 bool CPVRTimers::AddTimer(CPVRTimerInfoTag &item)
 {
+  if (!item.m_channel)
+    return false;
+
   if (!g_PVRClients->GetAddonCapabilities(item.m_iClientId).bSupportsTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;
   }
+
+  if (!g_PVRManager.CheckParentalLock(*item.m_channel))
+    return false;
 
   return item.AddToClient();
 }

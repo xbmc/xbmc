@@ -50,6 +50,7 @@
 #define IMAGE_CHANNEL_LOGO        10
 #define RADIOBUTTON_USEEPG        12
 #define SPIN_EPGSOURCE_SELECTION  13
+#define RADIOBUTTON_PARENTAL_LOCK 14
 #define CONTROL_LIST_CHANNELS     20
 #define BUTTON_GROUP_MANAGER      30
 #define BUTTON_EDIT_CHANNEL       31
@@ -253,6 +254,33 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
     {
       pItem->SetProperty("Changed", true);
       pItem->SetProperty("ActiveChannel", pRadioButton->IsSelected());
+      m_bContainsChanges = true;
+      Renumber();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &message)
+{
+  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_PARENTAL_LOCK);
+
+  // ask for PIN first
+  if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
+  {
+    pRadioButton->SetSelected(!pRadioButton->IsSelected());
+    return false;
+  }
+
+  if (pRadioButton)
+  {
+    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+    if (pItem)
+    {
+      pItem->SetProperty("Changed", true);
+      pItem->SetProperty("ParentalLocked", pRadioButton->IsSelected());
       m_bContainsChanges = true;
       Renumber();
       return true;
@@ -496,6 +524,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
             channel->SetProperty("Icon", newchannel->IconPath());
             channel->SetProperty("EPGSource", (int)0);
             channel->SetProperty("ClientName", g_localizeStrings.Get(19209));
+            channel->SetProperty("ParentalLocked", false);
 
             m_channelItems->AddFront(channel, m_iSelected);
             m_viewControl.SetItems(*m_channelItems);
@@ -529,6 +558,8 @@ bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage &message)
     return OnClickButtonRadioTV(message);
   case RADIOBUTTON_ACTIVE:
     return OnClickButtonRadioActive(message);
+  case RADIOBUTTON_PARENTAL_LOCK:
+    return OnClickButtonRadioParentalLocked(message);
   case EDIT_NAME:
     return OnClickButtonEditName(message);
   case BUTTON_CHANNEL_LOGO:
@@ -667,6 +698,9 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
   if (pRadioButton) pRadioButton->SetSelected(pItem->GetProperty("UseEPG").asBoolean());
+
+  pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_PARENTAL_LOCK);
+  if (pRadioButton) pRadioButton->SetSelected(pItem->GetProperty("ParentalLocked").asBoolean());
 }
 
 void CGUIDialogPVRChannelManager::Update()
@@ -693,6 +727,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("UseEPG", channel->EPGEnabled());
     channelFile->SetProperty("Icon", channel->IconPath());
     channelFile->SetProperty("EPGSource", (int)0);
+    channelFile->SetProperty("ParentalLocked", channel->IsLocked());
     CStdString number; number.Format("%i", channel->ChannelNumber());
     channelFile->SetProperty("Number", number);
 
@@ -747,6 +782,7 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
   bool bHidden              = !pItem->GetProperty("ActiveChannel").asBoolean();
   bool bVirtual             = pItem->GetProperty("Virtual").asBoolean();
   bool bEPGEnabled          = pItem->GetProperty("UseEPG").asBoolean();
+  bool bParentalLocked      = pItem->GetProperty("ParentalLocked").asBoolean();
   int iEPGSource            = pItem->GetProperty("EPGSource").asInteger();
   CStdString strChannelName = pItem->GetProperty("Name").asString();
   CStdString strIconPath    = pItem->GetProperty("Icon").asString();
@@ -754,6 +790,7 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
 
   channel->SetChannelName(strChannelName);
   channel->SetHidden(bHidden);
+  channel->SetLocked(bParentalLocked);
   channel->SetIconPath(strIconPath);
   if (bVirtual)
     channel->SetStreamURL(strStreamURL);

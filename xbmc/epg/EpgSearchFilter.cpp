@@ -198,8 +198,8 @@ int EpgSearchFilter::FilterRecordings(CFileItemList &results)
 
       /* no match */
       if (!epgentry ||
-          epgentry->Title()       != recording->m_strTitle ||
-          epgentry->Plot()        != recording->m_strPlot)
+          epgentry->Title() != recording->m_strTitle ||
+          epgentry->Plot()  != recording->m_strPlot)
         continue;
 
       results.Remove(iResultPtr);
