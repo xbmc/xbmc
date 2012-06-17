@@ -6,7 +6,7 @@ LIB=utilsTest.a
 
 CLEAN_FILES=testMain
 
-runtest: testMain
+check: testMain
 	./testMain
 
 include ../../../Makefile.include

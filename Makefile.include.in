@@ -132,6 +132,7 @@ pch: $(PCH:.h=.h.gch)
 clean: 
 	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(DEPS)
 	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" clean); fi ); done
+	for d in $(CHECK_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d $@; fi; done
 
 distclean:
 	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(STATICLIB) $(CLEAN_FILES) $(DISTCLEAN_FILES) $(PCH:.h=.h.gch) $(DEPS)

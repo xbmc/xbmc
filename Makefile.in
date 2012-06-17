@@ -198,6 +198,8 @@ FINAL_TARGETS=xbmc.bin skins xbmc-xrandr
 endif
 FINAL_TARGETS+=Makefile externals
 
+CHECK_DIRS = xbmc/utils/test
+
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'
 	@echo 'XBMC built successfully'
@@ -486,3 +488,6 @@ clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
 	clean-screensavers clean-visualisations
+
+check:
+	for d in $(CHECK_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d $@; fi; done
