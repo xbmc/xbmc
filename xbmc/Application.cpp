@@ -2684,7 +2684,7 @@ bool CApplication::OnAction(const CAction &action)
       else
         volume -= (float)fabs(action.GetAmount()) * action.GetAmount() * step;
 
-      SetHardwareVolume(volume);
+      SetVolume(volume, false);
     }
     // show visual feedback of volume change...
     ShowVolumeBar(&action);
@@ -5180,6 +5180,7 @@ void CApplication::Mute()
 
   CAEFactory::SetMute(true);
   g_settings.m_bMute = true;
+  VolumeChanged();
 }
 
 void CApplication::UnMute()
@@ -5189,6 +5190,7 @@ void CApplication::UnMute()
 
   CAEFactory::SetMute(false);
   g_settings.m_bMute = false;
+  VolumeChanged();
 }
 
 void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
@@ -5199,11 +5201,7 @@ void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
     hardwareVolume /= 100.0f;
 
   SetHardwareVolume(hardwareVolume);
-
-  CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = (int)(hardwareVolume * 100.0f + 0.5f);
-  data["muted"] = g_settings.m_bMute;
-  CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
+  VolumeChanged();
 }
 
 void CApplication::SetHardwareVolume(float hardwareVolume)
@@ -5227,6 +5225,14 @@ int CApplication::GetVolume() const
 {
   // converts the hardware volume to a percentage
   return (int)(g_settings.m_fVolumeLevel * 100.0f);
+}
+
+void CApplication::VolumeChanged() const
+{
+  CVariant data(CVariant::VariantTypeObject);
+  data["volume"] = GetVolume();
+  data["muted"] = g_settings.m_bMute;
+  CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 }
 
 int CApplication::GetSubtitleDelay() const
