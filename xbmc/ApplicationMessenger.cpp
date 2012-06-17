@@ -73,6 +73,9 @@
 #include "storage/DetectDVDType.h"
 #include "ThumbLoader.h"
 
+#include "pvr/PVRManager.h"
+
+using namespace PVR;
 using namespace std;
 
 CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("CDelayedMessage")
@@ -261,12 +264,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_HIBERNATE:
       {
+        g_PVRManager.SetWakeupCommand();
         g_powerManager.Hibernate();
       }
       break;
 
     case TMSG_SUSPEND:
       {
+        g_PVRManager.SetWakeupCommand();
         g_powerManager.Suspend();
       }
       break;
