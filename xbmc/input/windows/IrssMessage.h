@@ -164,14 +164,14 @@
     /// Operation Time-Out.
     /// </summary>
     IRSSMF_Timeout         = 0x0020,
-    
+
     //IRSSMF_Error           = 0x0040,
 
     //IRSSMF_DataString      = 0x0080,
     //IRSSMF_DataBytes       = 0x0100,
 
     //IRSSMF_ForceRespond    = 0x0200,
-    
+
     /// <summary>
     /// Force the recipient not to respond.
     /// </summary>
@@ -201,7 +201,7 @@ public:
 private:
   IRSS_MessageType m_type;
   uint32_t m_flags;
-  
+
   char* m_data;
   int m_dataSize;
 

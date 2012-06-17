@@ -79,7 +79,7 @@ bool CPulseAESound::Initialize()
       return false;
   }
 
-  m_maxVolume     = CAEFactory::AE->GetVolume();
+  m_maxVolume     = CAEFactory::GetEngine()->GetVolume();
   m_volume        = 1.0f;
   pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_volume * m_maxVolume));
   pa_cvolume_set(&m_chVolume, m_sampleSpec.channels, paVolume);

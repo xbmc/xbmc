@@ -152,7 +152,7 @@ bool CRemoteControl::Connect()
   if(m_socket == INVALID_SOCKET)
   {
     if(m_iAttempt == 0)
-      CLog::Log(LOGERROR, "CRemoteControl::Connect - failed to connect");
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - failed to connect");
     Close();
     return false;
   }
@@ -325,7 +325,7 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
       //seems to be version 1.0.4.1, only keycode is sent, use Microsoft MCE mapping??
       devicenamelength = 13;
       deviceName = new char[devicenamelength + 1];
-      sprintf(deviceName, "Microsoft MCE"); 
+      sprintf(deviceName, "Microsoft MCE");
       keycodelength = datalen;
       keycode = new char[keycodelength + 1];
       memcpy(keycode, data, keycodelength);
@@ -402,14 +402,14 @@ int CRemoteControl::ReadN(char *buffer, int n)
       Close();
       return -1;
     }
-    
+
     if (nBytes == 0)
     {
       CLog::Log(LOGDEBUG,"%s, IRServerSuite socket closed by server", __FUNCTION__);
       Close();
       break;
     }
-    
+
     n -= nBytes;
     ptr += nBytes;
   }
@@ -429,10 +429,10 @@ bool CRemoteControl::WriteN(const char *buffer, int n)
       Close();
       return false;
     }
-    
+
     if (nBytes == 0)
       break;
-    
+
     n -= nBytes;
     ptr += nBytes;
   }

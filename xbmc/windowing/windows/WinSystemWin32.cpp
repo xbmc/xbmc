@@ -139,10 +139,10 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
     return false;
   }
 
-  const DWORD dwHwndTabletProperty = 
+  const DWORD dwHwndTabletProperty =
       TABLET_DISABLE_PENBARRELFEEDBACK | // disables UI feedback on pen button down (circle)
       TABLET_DISABLE_FLICKS; // disables pen flicks (back, forward, drag down, drag up)
-  
+
   SetProp(hWnd, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>(dwHwndTabletProperty));
 
   // setup our touch pointers
@@ -189,7 +189,7 @@ bool CWinSystemWin32::CreateBlankWindows()
 
   // We need as many blank windows as there are screens (minus 1)
   int BlankWindowsCount = m_MonitorsInfo.size() -1;
-  
+
   m_hBlankWindows.reserve(BlankWindowsCount);
 
   for (int i=0; i < BlankWindowsCount; i++)
@@ -400,7 +400,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
     rc.right = m_nLeft + m_nWidth;
     rc.top = m_nTop;
     rc.bottom = m_nTop + m_nHeight;
-    
+
     HMONITOR hMon = MonitorFromRect(&rc, MONITOR_DEFAULTTONULL);
     HMONITOR hMon2 = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTOPRIMARY);
 
@@ -452,7 +452,7 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
   if (!EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode) ||
       sDevMode.dmPelsWidth != res.iWidth || sDevMode.dmPelsHeight != res.iHeight ||
       sDevMode.dmDisplayFrequency != (int)res.fRefreshRate ||
-      ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) || 
+      ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) ||
       (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED)) )
   {
     ZeroMemory(&sDevMode, sizeof(DEVMODE));
@@ -579,7 +579,7 @@ void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
 
 bool CWinSystemWin32::UpdateResolutionsInternal()
 {
-  
+
   DISPLAY_DEVICE ddAdapter;
   ZeroMemory(&ddAdapter, sizeof(ddAdapter));
   ddAdapter.cb = sizeof(ddAdapter);

@@ -29,6 +29,7 @@
 #include "Directory.h"
 #include "File.h"
 #include "FileItem.h"
+#include "settings/GUISettings.h"
 #include "utils/URIUtils.h"
 
 namespace XFILE
@@ -59,7 +60,8 @@ namespace XFILE
     sorting.limitEnd = playlist.GetLimit();
     sorting.sortBy = playlist.GetOrder();
     sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
-    sorting.sortAttributes = SortAttributeIgnoreArticle;
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      sorting.sortAttributes = SortAttributeIgnoreArticle;
 
     if (playlist.GetType().Equals("movies") ||
         playlist.GetType().Equals("tvshows") ||

@@ -36,7 +36,7 @@
 #include "MathUtils.h"
 
 // typecast AE to CCoreAudioAE
-#define AE (*(CCoreAudioAE*)CAEFactory::AE)
+#define AE (*(CCoreAudioAE*)CAEFactory::GetEngine())
 
 void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
 {

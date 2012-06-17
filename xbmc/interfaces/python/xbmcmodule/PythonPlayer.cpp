@@ -58,9 +58,9 @@ static int SPyEvent_Function(void* e)
   if(object->m_player->m_callback)
    {
     if (object->m_params.size() == 2)
-      ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, "ii", object->m_params[0], object->m_params[1]);
+      ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, (char*)"ii", object->m_params[0], object->m_params[1]);
     else if (object->m_params.size() == 1)
-      ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, "i", object->m_params[0]);
+      ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, (char*)"i", object->m_params[0]);
     else
       ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, NULL);
    }

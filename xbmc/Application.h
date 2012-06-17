@@ -418,6 +418,8 @@ protected:
   void UpdateLCD();
   void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);
 
+  void VolumeChanged() const;
+
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
   bool ProcessMouse();

@@ -724,7 +724,7 @@ void CWinEventsWin32::RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWN
   NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
   NotificationFilter.dbcc_classguid = InterfaceClassGuid;
 
-  *hDeviceNotify = RegisterDeviceNotification( 
+  *hDeviceNotify = RegisterDeviceNotification(
       hWnd,                       // events recipient
       &NotificationFilter,        // type of device
       DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle

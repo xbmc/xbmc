@@ -728,8 +728,8 @@ bool CApplication::Create()
 
   // restore AE's previous volume state
   SetHardwareVolume(g_settings.m_fVolumeLevel);
-  CAEFactory::AE->SetMute     (g_settings.m_bMute);
-  CAEFactory::AE->SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
+  CAEFactory::SetMute     (g_settings.m_bMute);
+  CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
@@ -821,6 +821,15 @@ bool CApplication::CreateGUI()
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
     return false;
+  }
+
+  // Retrieve the matching resolution based on GUI settings
+  g_guiSettings.m_LookAndFeelResolution = g_guiSettings.GetResolution();
+  CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
+  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  {
+    CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
+    g_guiSettings.SetResolution(RES_DESKTOP);
   }
 
   // update the window resolution
@@ -2747,7 +2756,7 @@ bool CApplication::OnAction(const CAction &action)
       else
         volume -= (float)fabs(action.GetAmount()) * action.GetAmount() * step;
 
-      SetHardwareVolume(volume);
+      SetVolume(volume, false);
     }
     // show visual feedback of volume change...
     ShowVolumeBar(&action);
@@ -3417,12 +3426,6 @@ bool CApplication::Cleanup()
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
 #endif
-#ifdef _WIN32
-    WSACleanup();
-
-    //Uninitialize COM
-    CoUninitialize();
-#endif
     return true;
   }
   catch (...)
@@ -3576,7 +3579,7 @@ void CApplication::Stop(int exitCode)
     g_Windowing.DestroyWindowSystem();
 
     // shutdown the AudioEngine
-    CAEFactory::AE->Shutdown();
+    CAEFactory::Shutdown();
 
     CLog::Log(LOGNOTICE, "stopped");
   }
@@ -5163,7 +5166,7 @@ void CApplication::ProcessSlow()
   if (!IsPlayingVideo())
     CAddonInstaller::Get().UpdateRepos();
 
-  CAEFactory::AE->GarbageCollect();
+  CAEFactory::GarbageCollect();
 }
 
 // Global Idle Time in Seconds
@@ -5265,7 +5268,7 @@ bool CApplication::IsMuted() const
 {
   if (g_peripherals.IsMuted())
     return true;
-  return CAEFactory::AE->IsMuted();
+  return CAEFactory::IsMuted();
 }
 
 void CApplication::ToggleMute(void)
@@ -5281,8 +5284,9 @@ void CApplication::Mute()
   if (g_peripherals.Mute())
     return;
 
-  CAEFactory::AE->SetMute(true);
+  CAEFactory::SetMute(true);
   g_settings.m_bMute = true;
+  VolumeChanged();
 }
 
 void CApplication::UnMute()
@@ -5290,8 +5294,9 @@ void CApplication::UnMute()
   if (g_peripherals.UnMute())
     return;
 
-  CAEFactory::AE->SetMute(false);
+  CAEFactory::SetMute(false);
   g_settings.m_bMute = false;
+  VolumeChanged();
 }
 
 void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
@@ -5302,11 +5307,7 @@ void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
     hardwareVolume /= 100.0f;
 
   SetHardwareVolume(hardwareVolume);
-
-  CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = (int)(hardwareVolume * 100.0f + 0.5f);
-  data["muted"] = g_settings.m_bMute;
-  CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
+  VolumeChanged();
 }
 
 void CApplication::SetHardwareVolume(float hardwareVolume)
@@ -5323,13 +5324,21 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
   if (value >= 0.99f)
     value = 1.0f;
 
-  CAEFactory::AE->SetVolume(value);
+  CAEFactory::SetVolume(value);
 }
 
 int CApplication::GetVolume() const
 {
   // converts the hardware volume to a percentage
   return (int)(g_settings.m_fVolumeLevel * 100.0f);
+}
+
+void CApplication::VolumeChanged() const
+{
+  CVariant data(CVariant::VariantTypeObject);
+  data["volume"] = GetVolume();
+  data["muted"] = g_settings.m_bMute;
+  CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 }
 
 int CApplication::GetSubtitleDelay() const
