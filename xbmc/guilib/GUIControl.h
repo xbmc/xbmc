@@ -193,6 +193,7 @@ public:
   virtual void SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
                                     const CGUIAction &left, const CGUIAction &right,
                                     const CGUIAction &back, bool replace = true);
+  void SetNavigationAction(int direction, const CGUIAction &action, bool replace = true);
   int GetControlIdUp() const { return m_actionUp.GetNavigation(); };
   int GetControlIdDown() const { return  m_actionDown.GetNavigation(); };
   int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };

@@ -64,7 +64,7 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
       }
     }
 
-    CVariant param(CVariant::VariantTypeObject);
+    CVariant param = parameterObject;
     param["properties"] = CVariant(CVariant::VariantTypeArray);
     param["properties"].append("file");
 
@@ -234,17 +234,22 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItem &
     else if (media.Equals("music"))
       status = CAudioLibrary::FillFileItem(strFilename, item);
 
-    if (!status && originalItem->GetLabel().empty())
+    if (!status)
     {
       bool isDir = CDirectory::Exists(strFilename);
-      CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
-      if (!label.empty())
+      if (originalItem->GetLabel().empty())
       {
+        CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
+        if (label.empty())
+          return false;
+
         item = CFileItem(strFilename, isDir);
         item.SetLabel(label);
-
-        status = true;
       }
+      else
+        item = *originalItem.get();
+
+      status = true;
     }
   }
 

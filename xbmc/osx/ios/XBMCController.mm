@@ -37,6 +37,7 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include "WinEventsIOS.h"
+#include "osx/DarwinUtils.h"
 #undef BOOL
 
 #import "XBMCEAGLView.h"
@@ -345,7 +346,16 @@ XBMCEAGLView  *m_glView;
   
   /* Check if screen is Retina */
   if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
+  {
     screenScale = [[UIScreen mainScreen] scale];
+    //if no retina display scale detected yet -
+    //ensure retina resolution on ipad3
+    //even on older iOS SDKs      
+    if (screenScale == 1.0 && DarwinIsIPad3())
+    {
+      screenScale = 2.0;
+    }
+  }
   else
     screenScale = 1.0;
   

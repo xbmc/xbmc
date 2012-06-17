@@ -32,6 +32,7 @@ class CGUIAction
 {
 public:
   CGUIAction();
+  CGUIAction(int controlID);
 
   /**
    * Execute actions, if action is paired with condition - evaluate condition first

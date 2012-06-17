@@ -62,6 +62,7 @@ static uint16_t SymMappingsEvdev[][2] =
 { { 121, XBMCK_VOLUME_MUTE }         // Volume mute
 , { 122, XBMCK_VOLUME_DOWN }         // Volume down
 , { 123, XBMCK_VOLUME_UP }           // Volume up
+, { 124, XBMCK_POWER }               // Power button on PC case
 , { 127, XBMCK_SPACE }               // Pause
 , { 135, XBMCK_MENU }                // Right click
 , { 136, XBMCK_MEDIA_STOP }          // Stop

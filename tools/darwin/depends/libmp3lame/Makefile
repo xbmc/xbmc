@@ -1,33 +1,33 @@
 include ../Makefile.include
 
 # lib name, version
-LIBNAME=SDL
-VERSION=1.2.13
+LIBNAME=lame
+VERSION=3.99.5
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+BASE_URL=http://voxel.dl.sourceforge.net/project/lame/lame/3.99
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) \
-  --without-x --disable-video-x11
+CONFIGURE=./configure --disable-gtktest --disable-frontend --prefix=$(PREFIX)
 
-LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
+LIBDYLIB=$(SOURCE)/.libs/libmp3lame.dylib
+
+CLEAN_FILES=$(ARCHIVE) $(SOURCE)
 
 all: $(LIBDYLIB) .installed
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
-	echo $(ARCHIVE) > .gitignore
 
 $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	cd $(SOURCE); patch -p0 < ../01-SDL_SetWidthHeight.patch
-	cd $(SOURCE); patch -p0 < ../02-mmx.patch
+	#cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
-	make -j $(MAKE_JOBS) -C $(SOURCE)
+	make -j 1 -C $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install

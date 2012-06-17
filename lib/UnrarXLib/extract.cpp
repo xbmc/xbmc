@@ -863,10 +863,7 @@ void CmdExtract::UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize)
       }
       if (Code > 0)
       {
-        Code=Code<DestUnpSize ? Code:int64to32(DestUnpSize);
         DataIO.UnpWrite(&Buffer[0],Code);
-        if (DestUnpSize>=0)
-          DestUnpSize-=Code;
       }
       else 
       {

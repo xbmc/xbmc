@@ -478,6 +478,33 @@ void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &d
   if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
 }
 
+void CGUIControl::SetNavigationAction(int direction, const CGUIAction &action, bool replace /*= true*/)
+{
+  switch (direction)
+  {
+  case ACTION_MOVE_UP:
+    if (!m_actionUp.HasAnyActions() || replace)
+      m_actionUp = action;
+    break;
+  case ACTION_MOVE_DOWN:
+    if (!m_actionDown.HasAnyActions() || replace)
+      m_actionDown = action;
+    break;
+  case ACTION_MOVE_LEFT:
+    if (!m_actionLeft.HasAnyActions() || replace)
+      m_actionLeft = action;
+    break;
+  case ACTION_MOVE_RIGHT:
+    if (!m_actionRight.HasAnyActions() || replace)
+      m_actionRight = action;
+    break;
+  case ACTION_NAV_BACK:
+    if (!m_actionBack.HasAnyActions() || replace)
+      m_actionBack = action;
+    break;
+  }
+}
+
 void CGUIControl::SetWidth(float width)
 {
   if (m_width != width)

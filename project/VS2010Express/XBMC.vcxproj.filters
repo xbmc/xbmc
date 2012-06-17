@@ -1463,9 +1463,6 @@
     <ClCompile Include="..\..\xbmc\input\MouseStat.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\SDLJoystick.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp">
       <Filter>input\windows</Filter>
     </ClCompile>
@@ -2552,6 +2549,10 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp" />
+    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp">
+      <Filter>input\windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3955,9 +3956,6 @@
     <ClInclude Include="..\..\xbmc\input\MouseStat.h">
       <Filter>input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\SDLJoystick.h">
-      <Filter>input</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\input\XBIRRemote.h">
       <Filter>input</Filter>
     </ClInclude>
@@ -5138,6 +5136,10 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h">
       <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h" />
+    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h">
+      <Filter>input\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

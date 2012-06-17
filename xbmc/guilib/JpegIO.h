@@ -24,7 +24,7 @@
 
 #ifdef TARGET_WINDOWS
 #define XMD_H
-#pragma comment(lib, "jpeg-static.lib")
+#pragma comment(lib, "turbojpeg-static.lib")
 #endif
 
 #include <jpeglib.h>

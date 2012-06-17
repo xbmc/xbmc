@@ -363,14 +363,6 @@
 		18B7C97D1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C97A12943809009E7A26 /* GUIWindowAddonBrowser.cpp */; };
 		18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
 		18B7C9841294385F009E7A26 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
-		18B7CA1412944A8E009E7A26 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0412944A8E009E7A26 /* tinystr.cpp */; };
-		18B7CA1812944A8E009E7A26 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0912944A8E009E7A26 /* tinyxml.cpp */; };
-		18B7CA1B12944A8E009E7A26 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */; };
-		18B7CA1E12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */; };
-		18B7CA2212944A8E009E7A26 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0412944A8E009E7A26 /* tinystr.cpp */; };
-		18B7CA2612944A8E009E7A26 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0912944A8E009E7A26 /* tinyxml.cpp */; };
-		18B7CA2912944A8E009E7A26 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */; };
-		18B7CA2C12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */; };
 		18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
 		18C1D22E13033F6A00CFFE59 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
 		18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
@@ -2285,12 +2277,6 @@
 		18B7C9811294385F009E7A26 /* XMLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLUtils.cpp; sourceTree = "<group>"; };
 		18B7C9821294385F009E7A26 /* XMLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLUtils.h; sourceTree = "<group>"; };
 		18B7C9E7129447B9009E7A26 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
-		18B7CA0412944A8E009E7A26 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
-		18B7CA0512944A8E009E7A26 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
-		18B7CA0912944A8E009E7A26 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
-		18B7CA0A12944A8E009E7A26 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
-		18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
-		18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
 		18C1D22C13033F6A00CFFE59 /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
 		18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMRemap.cpp; sourceTree = "<group>"; };
@@ -2665,7 +2651,6 @@
 		E38E148D0D25F9F900618676 /* EncoderVorbis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderVorbis.h; sourceTree = "<group>"; };
 		E38E148E0D25F9F900618676 /* EncoderWav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderWav.cpp; sourceTree = "<group>"; };
 		E38E148F0D25F9F900618676 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
-		E38E14910D25F9F900618676 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		E38E149E0D25F9F900618676 /* coff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = coff.cpp; sourceTree = "<group>"; };
 		E38E149F0D25F9F900618676 /* coff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coff.h; sourceTree = "<group>"; };
 		E38E14A00D25F9F900618676 /* coffldr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coffldr.h; sourceTree = "<group>"; };
@@ -4451,20 +4436,6 @@
 			path = playlists;
 			sourceTree = "<group>";
 		};
-		18B7CA0212944A8E009E7A26 /* tinyXML */ = {
-			isa = PBXGroup;
-			children = (
-				18B7CA0412944A8E009E7A26 /* tinystr.cpp */,
-				18B7CA0512944A8E009E7A26 /* tinystr.h */,
-				18B7CA0912944A8E009E7A26 /* tinyxml.cpp */,
-				18B7CA0A12944A8E009E7A26 /* tinyxml.h */,
-				18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */,
-				18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */,
-			);
-			name = tinyXML;
-			path = lib/tinyXML;
-			sourceTree = SOURCE_ROOT;
-		};
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -5183,7 +5154,6 @@
 		E38E147F0D25F9F900618676 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				E38E14900D25F9F900618676 /* lame */,
 				E38E14800D25F9F900618676 /* CDDAReader.cpp */,
 				E38E14810D25F9F900618676 /* CDDAReader.h */,
 				E38E14820D25F9F900618676 /* CDDARipper.cpp */,
@@ -5206,14 +5176,6 @@
 				E38E148F0D25F9F900618676 /* EncoderWav.h */,
 			);
 			path = cdrip;
-			sourceTree = "<group>";
-		};
-		E38E14900D25F9F900618676 /* lame */ = {
-			isa = PBXGroup;
-			children = (
-				E38E14910D25F9F900618676 /* lame.h */,
-			);
-			path = lame;
 			sourceTree = "<group>";
 		};
 		E38E149A0D25F9F900618676 /* cores */ = {
@@ -5952,7 +5914,6 @@
 				F5E55E601076B34F006E788A /* libsquish */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
 				E38E1C840D25F9FC00618676 /* libXDAAP */,
-				18B7CA0212944A8E009E7A26 /* tinyXML */,
 				E38E1CE40D25F9FC00618676 /* UnrarXLib */,
 				E38E15EF0D25F9FA00618676 /* DllAdpcm.h */,
 				88ACB01E0DCF409E0083CFDF /* DllASAP.h */,
@@ -7965,10 +7926,6 @@
 				18B7C938129428CA009E7A26 /* SmartPlayList.cpp in Sources */,
 				18B7C97C1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */,
 				18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */,
-				18B7CA1412944A8E009E7A26 /* tinystr.cpp in Sources */,
-				18B7CA1812944A8E009E7A26 /* tinyxml.cpp in Sources */,
-				18B7CA1B12944A8E009E7A26 /* tinyxmlerror.cpp in Sources */,
-				18B7CA1E12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */,
 				432D7CE412D86DA500CE4C49 /* NetworkLinux.cpp in Sources */,
 				432D7CF712D870E800CE4C49 /* TCPServer.cpp in Sources */,
 				433219D712E4C6A500CD7486 /* FileUDF.cpp in Sources */,
@@ -8887,10 +8844,6 @@
 				18B7C942129428CA009E7A26 /* SmartPlayList.cpp in Sources */,
 				18B7C97D1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */,
 				18B7C9841294385F009E7A26 /* XMLUtils.cpp in Sources */,
-				18B7CA2212944A8E009E7A26 /* tinystr.cpp in Sources */,
-				18B7CA2612944A8E009E7A26 /* tinyxml.cpp in Sources */,
-				18B7CA2912944A8E009E7A26 /* tinyxmlerror.cpp in Sources */,
-				18B7CA2C12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */,
 				432D7CE512D86DA500CE4C49 /* NetworkLinux.cpp in Sources */,
 				432D7CF812D870E800CE4C49 /* TCPServer.cpp in Sources */,
 				433219DA12E4C6A500CD7486 /* FileUDF.cpp in Sources */,

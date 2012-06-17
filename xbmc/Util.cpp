@@ -2383,7 +2383,6 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
           }
         }
       }
-      g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
 

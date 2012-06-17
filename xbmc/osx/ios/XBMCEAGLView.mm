@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
+#include "osx/DarwinUtils.h"
 #undef BOOL
 
 #import <QuartzCore/QuartzCore.h>
@@ -74,8 +75,16 @@
     
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
     {
-      eaglLayer.contentsScale = [[UIScreen mainScreen] scale];
-      self.contentScaleFactor = [[UIScreen mainScreen] scale];
+      CGFloat scale = [[UIScreen mainScreen] scale];
+      //if no retina display scale detected yet -
+      //ensure retina resolution on ipad3
+      //even on older iOS SDKs      
+      if (scale == 1.0 && DarwinIsIPad3())
+      {
+        scale = 2.0;
+      }
+      eaglLayer.contentsScale = scale;
+      self.contentScaleFactor = scale;
     }
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:

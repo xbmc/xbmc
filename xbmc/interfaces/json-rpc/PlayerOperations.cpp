@@ -451,32 +451,14 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
         break;
 
       case PLAYLIST_PICTURE:
-        return StartSlideshow();
+        return StartSlideshow("", false, false);
         break;
     }
 
     return ACK;
   }
   else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("path"))
-  {
-    CStdString exec = "slideShow(";
-
-    exec += parameterObject["item"]["path"].asString();
-
-    if (parameterObject["item"]["random"].asBoolean())
-      exec += ", random";
-    else
-      exec += ", notrandom";
-
-    if (parameterObject["item"]["recursive"].asBoolean())
-      exec += ", recursive";
-
-    exec += ")";
-    ThreadMessage msg = { TMSG_EXECUTE_BUILT_IN, (DWORD)0, (DWORD)0, exec };
-    g_application.getApplicationMessenger().SendMessage(msg);
-
-    return ACK;
-  }
+    return StartSlideshow(parameterObject["item"]["path"].asString(), parameterObject["item"]["recursive"].asBoolean(), parameterObject["item"]["random"].asBoolean());
   else
   {
     CFileItemList list;
@@ -503,7 +485,7 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
         for (int index = 0; index < list.Size(); index++)
           slideshow->Add(list[index].get());
 
-        return StartSlideshow();
+        return StartSlideshow("", false, false);
       }
       else
         g_application.getApplicationMessenger().MediaPlay(list);
@@ -816,24 +798,19 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
   }
 }
 
-JSON_STATUS CPlayerOperations::StartSlideshow()
+JSON_STATUS CPlayerOperations::StartSlideshow(const std::string path, bool recursive, bool random)
 {
-  CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (!slideshow || slideshow->NumSlides() <= 0)
-    return FailedToExecute;
+  int flags = 0;
+  if (recursive)
+    flags |= 1;
+  if (random)
+    flags |= 2;
+  else
+    flags |= 4;
 
-  if (g_application.IsPlayingVideo())
-    g_application.StopPlaying();
-
-  g_graphicsContext.Lock();
-
-  g_application.WakeUpScreenSaverAndDPMS();
-  slideshow->StartSlideShow();
-
-  if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-
-  g_graphicsContext.Unlock();
+  CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
+  msg.SetStringParam(path);
+  g_application.getApplicationMessenger().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
 
   return ACK;
 }

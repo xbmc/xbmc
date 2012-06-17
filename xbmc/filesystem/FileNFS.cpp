@@ -236,7 +236,13 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
         if( path.Find(*it) ==  0 )
         {
           exportPath = *it;
-          relativePath = "//" + path.Right((path.length()-1) - exportPath.length());
+          //handle special case where root is exported
+          //in that case we don't want to stripp off to
+          //much from the path
+          if( exportPath == "/" )
+            relativePath = "//" + path.Right((path.length()) - exportPath.length());
+          else
+            relativePath = "//" + path.Right((path.length()-1) - exportPath.length());
           ret = true;
           break;          
         }
