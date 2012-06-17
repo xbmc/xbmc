@@ -112,6 +112,9 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
 
+    CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
+    buttons.Add(CONTEXT_BUTTON_ADD_LOCK, channel->IsLocked() ? 19258 : 19257);        /* show lock/unlock channel */
+
     buttons.Add(CONTEXT_BUTTON_FILTER, 19249);                                        /* filter channels */
     buttons.Add(CONTEXT_BUTTON_UPDATE_EPG, 19251);                                    /* update EPG information */
   }
@@ -134,6 +137,7 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       OnContextButtonFilter(pItem.get(), button) ||
       OnContextButtonUpdateEpg(pItem.get(), button) ||
       OnContextButtonRecord(pItem.get(), button) ||
+      OnContextButtonLock(pItem.get(), button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
@@ -352,6 +356,38 @@ bool CGUIWindowPVRChannels::OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON 
       return bReturn;
 
     g_PVRManager.GetPlayingGroup(m_bRadio)->RemoveFromGroup(*channel);
+    UpdateData();
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_ADD_LOCK)
+  {
+    // ask for PIN first
+    if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
+      return bReturn;
+
+    CPVRChannelGroup *group = g_PVRChannelGroups->GetGroupAll(m_bRadio);
+    if (!group)
+      return bReturn;
+
+    // Get the REAL channel!!!
+    CPVRChannel *channel = (CPVRChannel *) group->GetByUniqueID(item->GetPVRChannelInfoTag()->UniqueID());
+    if (!channel)
+      return bReturn;
+
+    if(channel->IsLocked())
+      channel->SetLocked(false, true);
+    else
+      channel->SetLocked(true, true);
+
     UpdateData();
 
     bReturn = true;

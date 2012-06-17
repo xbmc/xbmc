@@ -198,6 +198,15 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
             return false;
           }
         }
+        if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "pvrparental")
+        {
+          if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
+          { // unable to go to this category - focus the previous one
+            SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iSection, 0);
+            return false;
+          }
+        }
+
         m_iSection = focusedControl - CONTROL_START_BUTTONS;
 
         CreateSettings();
@@ -687,6 +696,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
     }
+    else if (!strSetting.Equals("pvrparental.enabled") &&
+        (strSetting.Equals("pvrparental.pin") || strSetting.Equals("pvrparental.duration")))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrparental.enabled"));
+    }
     else if (!strSetting.Equals("services.esenabled")
              && strSetting.Left(11).Equals("services.es"))
     {
@@ -736,7 +751,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("audiooutput.guisoundmode"))
     {
-      CAEFactory::AE->SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
+      CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
     }
     else if (strSetting.Equals("musicplayer.crossfade"))
     {
@@ -1868,7 +1883,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
+    if (g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()) &&
+        CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
       g_PVRManager.ResetDatabase();
   }
   else if (strSetting.Equals("epg.resetepg"))
@@ -1908,7 +1924,25 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
     
-    CAEFactory::AE->OnSettingsChange(strSetting);
+    CAEFactory::OnSettingsChange(strSetting);
+  }
+  else if (strSetting.Equals("pvrparental.enabled"))
+  {
+    if (g_guiSettings.GetBool("pvrparental.enabled") && g_guiSettings.GetString("pvrparental.pin").GetLength() == 0)
+    {
+      CStdString newPassword = "";
+      bool bNewPassword = CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword);
+      if (bNewPassword)
+      {
+        // password set... save it
+        g_guiSettings.SetString("pvrparental.pin", newPassword);
+      }
+      else
+      {
+        // password not set... disable parental
+        g_guiSettings.SetBool("pvrparental.enabled", false);
+      }
+    }
   }
 
   UpdateSettings();
@@ -1976,7 +2010,8 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
            pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT ||
            pSetting->GetControlType() == EDIT_CONTROL_MD5_INPUT ||
            pSetting->GetControlType() == EDIT_CONTROL_NUMBER_INPUT ||
-           pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
+           pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT ||
+           pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW )
   {
     pControl = new CGUIEditControl(*m_pOriginalEdit);
     if (!pControl) return NULL;
@@ -2787,7 +2822,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 
   int selectedValue = -1;
   AEDeviceList sinkList;
-  CAEFactory::AE->EnumerateOutputDevices(sinkList, Passthrough);
+  CAEFactory::EnumerateOutputDevices(sinkList, Passthrough);
 #if !defined(TARGET_DARWIN)
   if (sinkList.size()==0)
   {

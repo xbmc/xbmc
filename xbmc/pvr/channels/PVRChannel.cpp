@@ -62,6 +62,7 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bIsRadio                = bRadio;
   m_bIsHidden               = false;
   m_bIsUserSetIcon          = false;
+  m_bIsLocked               = false;
   m_strIconPath             = StringUtils::EmptyString;
   m_strChannelName          = StringUtils::EmptyString;
   m_bIsVirtual              = false;
@@ -90,6 +91,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_bIsRadio                = channel.bIsRadio;
   m_bIsHidden               = channel.bIsHidden;
   m_bIsUserSetIcon          = false;
+  m_bIsLocked               = false;
   m_strIconPath             = channel.strIconPath;
   m_strChannelName          = channel.strChannelName;
   m_iUniqueId               = channel.iUniqueId;
@@ -126,6 +128,7 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   m_bIsRadio                = channel.m_bIsRadio;
   m_bIsHidden               = channel.m_bIsHidden;
   m_bIsUserSetIcon          = channel.m_bIsUserSetIcon;
+  m_bIsLocked               = channel.m_bIsLocked;
   m_strIconPath             = channel.m_strIconPath;
   m_strChannelName          = channel.m_strChannelName;
   m_bIsVirtual              = channel.m_bIsVirtual;
@@ -277,6 +280,29 @@ bool CPVRChannel::SetHidden(bool bIsHidden, bool bSaveInDb /* = false */)
 
   return bReturn;
 }
+
+bool CPVRChannel::SetLocked(bool bIsLocked, bool bSaveInDb /* = false */)
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+
+  if (m_bIsLocked != bIsLocked)
+  {
+    /* update the locked flag */
+    m_bIsLocked = bIsLocked;
+    SetChanged();
+    m_bChanged = true;
+
+    /* persist the changes */
+    if (bSaveInDb)
+      Persist();
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
 
 bool CPVRChannel::IsRecording(void) const
 {

@@ -162,7 +162,7 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   {
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CTuxBoxDirectory();
-    if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
+    if (strProtocol == "ftp" || strProtocol == "ftps") return new CFTPDirectory();
     if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
     if (strProtocol == "dav" || strProtocol == "davs") return new CDAVDirectory();
 #ifdef HAS_FILESYSTEM_SFTP

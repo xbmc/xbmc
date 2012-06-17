@@ -139,7 +139,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     ||  strProtocol == "dav"
     ||  strProtocol == "davs"
     ||  strProtocol == "ftp"
-    ||  strProtocol == "ftpx"
     ||  strProtocol == "ftps"
     ||  strProtocol == "rss") return new CCurlFile();
 #ifdef HAS_FILESYSTEM_SFTP

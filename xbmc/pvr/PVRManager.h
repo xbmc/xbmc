@@ -26,6 +26,7 @@
 #include "threads/Event.h"
 #include "windows/GUIWindowPVRCommon.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "utils/Stopwatch.h"
 
 class CGUIDialogExtendedProgressBar;
 
@@ -423,6 +424,53 @@ namespace PVR
      */
     void LoadCurrentChannelSettings(void);
 
+    /*!
+     * @brief Check if channel is parental locked. Ask for PIN if neccessary.
+     * @param channel The channel to open.
+     * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
+     */
+    bool CheckParentalLock(const CPVRChannel &channel);
+
+    /*!
+     * @brief Check if parental lock is overriden at the given moment.
+     * @param channel The channel to open.
+     * @return True if parental lock is overriden, false otherwise.
+     */
+    bool IsParentalLocked(const CPVRChannel &channel);
+
+    /*!
+     * @brief Open Numeric dialog to check for parental PIN.
+     * @param strTitle Override the title of the dialog if set.
+     * @return True if entered PIN was correct, false otherwise.
+     */
+    bool CheckParentalPIN(const char *strTitle = NULL);
+
+    /*!
+     * @brief Executes "pvrpowermanagement.setwakeupcmd"
+     */
+    bool SetWakeupCommand(void);
+
+    /*!
+     * @brief Update the last played position for the current playing file
+     * @param lastplayedposition channel The channel to start to play.
+     */
+    bool UpdateCurrentLastPlayedPosition(int lastplayedposition);
+
+    /*!
+     * @brief Set the last watched position of a recording on the backend.
+     * @param recording The recording.
+     * @param position The last watched position in seconds
+     * @return True if the last played position was updated successfully, false otherwise
+    */
+    bool SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition);
+
+    /*!
+    * @brief Retrieve the last watched position of a recording on the backend.
+    * @param recording The recording.
+    * @return The last watched position in seconds
+    */
+    int GetRecordingLastPlayedPosition(const CPVRRecording &recording);
+
   protected:
     /*!
      * @brief PVR update and control thread.
@@ -498,11 +546,6 @@ namespace PVR
     void ShowProgressDialog(const CStdString &strText, int iProgress);
 
     /*!
-     * @brief Executes "pvrpowermanagement.setwakeupcmd"
-     */
-    bool SetWakeupCommand(void);
-
-    /*!
      * @brief Hide the progress dialog if it's visible.
      */
     void HideProgressDialog(void);
@@ -541,6 +584,7 @@ namespace PVR
 
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
+    CStopWatch                      m_parentalTimer;
   };
 
   class CPVRRecordingsUpdateJob : public CJob

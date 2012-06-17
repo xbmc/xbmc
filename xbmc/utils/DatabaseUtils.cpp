@@ -571,6 +571,7 @@ bool DatabaseUtils::GetDatabaseResults(MediaType mediaType, const FieldList &fie
     case MediaTypeMovie:
     case MediaTypeVideoCollection:
     case MediaTypeTvShow:
+    case MediaTypeAlbum:
       result[FieldLabel] = result.at(FieldTitle).asString();
       break;
       
@@ -578,6 +579,16 @@ bool DatabaseUtils::GetDatabaseResults(MediaType mediaType, const FieldList &fie
     {
       std::ostringstream label;
       label << (int)(result.at(FieldSeason).asInteger() * 100 + result.at(FieldEpisodeNumber).asInteger());
+      label << ". ";
+      label << result.at(FieldTitle).asString();
+      result[FieldLabel] = label.str();
+      break;
+    }
+
+    case MediaTypeSong:
+    {
+      std::ostringstream label;
+      label << (int)result.at(FieldTrackNumber).asInteger();
       label << ". ";
       label << result.at(FieldTitle).asString();
       result[FieldLabel] = label.str();

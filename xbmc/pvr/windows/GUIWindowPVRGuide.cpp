@@ -219,7 +219,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
 
   m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
-  m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
+  m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE, true);
   SelectPlayingFile();
 }
 

@@ -64,6 +64,7 @@ namespace PVR
     virtual bool OnContextButtonFilter(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON button);
 
     virtual void ShowGroupManager(void);
 

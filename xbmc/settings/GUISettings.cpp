@@ -491,8 +491,8 @@ void CGUISettings::Initialize()
   AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
 #else
   AddSeparator(ao, "audiooutput.sep1");
-  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::AE->GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
-  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::AE->GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
   AddSeparator(ao, "audiooutput.sep2");
 #endif
 
@@ -957,6 +957,12 @@ void CGUISettings::Initialize()
   AddSeparator(pvrpwr, "pvrpowermanagement.sep2");
   AddBool(pvrpwr, "pvrpowermanagement.dailywakeup", 19247, false);
   AddString(pvrpwr, "pvrpowermanagement.dailywakeuptime", 19248, "00:00:00", EDIT_CONTROL_INPUT);
+
+  CSettingsCategory* pvrpa = AddCategory(8, "pvrparental", 19259);
+  AddBool(pvrpa, "pvrparental.enabled", 449  , false);
+  AddSeparator(pvrpa, "pvrparental.sep1");
+  AddString(pvrpa, "pvrparental.pin", 19261, "", EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW, true);
+  AddInt(pvrpa, "pvrparental.duration", 19260, 300, 5, 5, 1200, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 }
 
 CGUISettings::~CGUISettings(void)
@@ -1319,7 +1325,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "AAC pass through is %s", GetBool("audiooutput.passthroughaac") ? "enabled" : "disabled");
 
-  g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #if defined(TARGET_DARWIN)
   // trap any previous vsync by driver setting, does not exist on OSX
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
@@ -1329,12 +1334,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
 #endif
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
-  CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
-  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-  {
-    CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
-    SetResolution(RES_DESKTOP);
-  }
 
   // Move replaygain settings into our struct
   m_replayGain.iPreAmp = GetInt("musicplayer.replaygainpreamp");

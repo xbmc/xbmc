@@ -60,7 +60,7 @@ typedef struct _SCSI_PASS_THROUGH_DIRECT {
     ULONG TimeOutValue;
     PVOID DataBuffer;
     ULONG SenseInfoOffset;
-    UCHAR Cdb[16];    
+    UCHAR Cdb[16];
 }SCSI_PASS_THROUGH_DIRECT, *PSCSI_PASS_THROUGH_DIRECT;
 //** End of defines taken from ntddscsi.h from MS Windows DDK CD
 

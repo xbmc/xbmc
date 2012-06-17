@@ -182,9 +182,10 @@ namespace EPG
 
     /*!
      * @brief Get the title of this event.
+     * @param bOverrideParental True to override parental control, false check it.
      * @return The title.
      */
-    virtual CStdString Title(void) const;
+    virtual CStdString Title(bool bOverrideParental = false) const;
 
     /*!
      * @brief Change the plot outline of this event.
@@ -194,9 +195,10 @@ namespace EPG
 
     /*!
      * @brief Get the plot outline of this event.
+     * @param bOverrideParental True to override parental control, false check it.
      * @return The plot outline.
      */
-    virtual CStdString PlotOutline(void) const;
+    virtual CStdString PlotOutline(bool bOverrideParental = false) const;
 
     /*!
      * @brief Change the plot of this event.
@@ -206,9 +208,10 @@ namespace EPG
 
     /*!
      * @brief Get the plot of this event.
+     * @param bOverrideParental True to override parental control, false check it.
      * @return The plot.
      */
-    virtual CStdString Plot(void) const;
+    virtual CStdString Plot(bool bOverrideParental = false) const;
 
     /*!
      * @brief Change the genre of this event.

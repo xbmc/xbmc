@@ -135,7 +135,7 @@ bool CRenderSystemDX::InitRenderSystem()
     if(m_pD3D == NULL)
       return false;
   }
-  
+
   UpdateMonitor();
 
   if(CreateDevice()==false)
@@ -191,7 +191,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
     OnDeviceLost();
     OnDeviceReset();
   }
-  
+
   return true;
 }
 

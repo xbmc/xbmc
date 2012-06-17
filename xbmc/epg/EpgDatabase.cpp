@@ -391,7 +391,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 
   if (tag.EpgID() <= 0)
   {
-    CLog::Log(LOGERROR, "%s - tag '%s' does not have a valid table", __FUNCTION__, tag.Title().c_str());
+    CLog::Log(LOGERROR, "%s - tag '%s' does not have a valid table", __FUNCTION__, tag.Title(true).c_str());
     return iReturn;
   }
 
@@ -415,7 +415,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
         tag.EpgID(), iStartTime, iEndTime,
-        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
+        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID());
@@ -428,7 +428,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         tag.EpgID(), iStartTime, iEndTime,
-        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
+        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);

@@ -50,7 +50,8 @@ public:
                     INPUT_TYPE_PASSWORD,
                     INPUT_TYPE_PASSWORD_MD5,
                     INPUT_TYPE_SEARCH,
-                    INPUT_TYPE_FILTER
+                    INPUT_TYPE_FILTER,
+                    INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW
                   };
 
   CGUIEditControl(int parentID, int controlID, float posX, float posY,

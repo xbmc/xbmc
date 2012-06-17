@@ -47,7 +47,7 @@ bool CWIN32Wmi::Connect()
   if (FAILED(hres))
   {
       return false;                  // Program has failed.
-  } 
+  }
 
 	hres =  CoInitializeSecurity(
         NULL,
@@ -55,21 +55,21 @@ bool CWIN32Wmi::Connect()
         NULL,                        // Authentication services
         NULL,                        // Reserved
         RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication
-        RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation  
+        RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation
         NULL,                        // Authentication info
         EOAC_NONE,                   // Additional capabilities
         NULL                         // Reserved
-        ); 
+        );
 
 	if (FAILED(hres))
   {
       return false;                    // Program has failed.
-  } 
+  }
 
 	pLoc = NULL;
 
   hres = CoCreateInstance(
-      CLSID_WbemLocator,            
+      CLSID_WbemLocator,
       0,
       CLSCTX_INPROC_SERVER,
       IID_IWbemLocator, (LPVOID *) &pLoc);
@@ -80,7 +80,7 @@ bool CWIN32Wmi::Connect()
   }
 
 	pSvc = NULL;
-   
+
   // Connect to the root\cimv2 namespace with
   // the current user and obtain pointer pSvc
   // to make IWbemServices calls.
@@ -94,13 +94,13 @@ bool CWIN32Wmi::Connect()
        0,                       // Context object
        &pSvc                    // pointer to IWbemServices proxy
        );
- 
+
   if (FAILED(hres))
   {
-      pLoc->Release();    
+      pLoc->Release();
       CoUninitialize();
       return false;                // Program has failed.
-  } 
+  }
 
 	hres = CoSetProxyBlanket(
        pSvc,                        // Indicates the proxy to set
@@ -116,10 +116,10 @@ bool CWIN32Wmi::Connect()
     if (FAILED(hres))
     {
         pSvc->Release();
-        pLoc->Release();    
+        pLoc->Release();
         CoUninitialize();
         return false;               // Program has failed.
-    } 
+    }
 
 		pEnumerator = NULL;
 
@@ -138,7 +138,7 @@ void CWIN32Wmi::Release()
   if(pclsObj != NULL)
     pclsObj->Release();
 
-  CoUninitialize(); 
+  CoUninitialize();
 
   bconnected = false;
   pSvc = NULL;
@@ -157,11 +157,11 @@ void CWIN32Wmi::testquery()
       WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
       NULL,
       &pEnumerator);
- 
+
   if (FAILED(hres))
   {
       return;               // Program has failed.
-  } 
+  }
   ULONG uReturn = 0;
 
   while (pEnumerator)
@@ -175,7 +175,7 @@ void CWIN32Wmi::testquery()
       }
 
       VARIANT vtProp;
-      VariantInit(&vtProp); 
+      VariantInit(&vtProp);
 
       // Get the value of the Name property
       //hr = pclsObj->Get(L"Description", 0, &vtProp, 0, 0);
@@ -185,7 +185,7 @@ void CWIN32Wmi::testquery()
       VariantClear(&vtProp);
 			//iCpu++;
   }
-	pclsObj->Release(); 
+	pclsObj->Release();
   pclsObj = NULL;
 }
 
@@ -204,11 +204,11 @@ std::vector<CStdString> CWIN32Wmi::GetWMIStrVector(CStdString& strQuery, CStdStr
       WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
       NULL,
       &pEnumerator);
- 
+
   if (FAILED(hres))
   {
       return strResult;               // Program has failed.
-  } 
+  }
   ULONG uReturn = 0;
 
   while (pEnumerator)
@@ -232,7 +232,7 @@ std::vector<CStdString> CWIN32Wmi::GetWMIStrVector(CStdString& strQuery, CStdStr
     pEnumerator->Release();
   pEnumerator = NULL;
   if(pclsObj != NULL)
-	  pclsObj->Release(); 
+	  pclsObj->Release();
   pclsObj = NULL;
   return strResult;
 }

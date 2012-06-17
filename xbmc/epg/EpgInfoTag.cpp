@@ -399,13 +399,19 @@ void CEpgInfoTag::SetTitle(const CStdString &strTitle)
     UpdatePath();
 }
 
-CStdString CEpgInfoTag::Title(void) const
+CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  retVal = (m_strTitle.IsEmpty()) ?
-      g_localizeStrings.Get(19055) :
-      m_strTitle;
+  const CPVRChannel *channel(ChannelTag());
+
+  if (!bOverrideParental && channel && g_PVRManager.IsParentalLocked(*channel))
+    retVal = g_localizeStrings.Get(19266);
+  else if (m_strTitle.IsEmpty())
+    retVal = g_localizeStrings.Get(19055);
+  else
+    retVal = m_strTitle;
+
   return retVal;
 }
 
@@ -425,11 +431,15 @@ void CEpgInfoTag::SetPlotOutline(const CStdString &strPlotOutline)
     UpdatePath();
 }
 
-CStdString CEpgInfoTag::PlotOutline(void) const
+CStdString CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  retVal = m_strPlotOutline;
+  const CPVRChannel *channel(ChannelTag());
+
+  if (bOverrideParental || !channel || !g_PVRManager.IsParentalLocked(*channel))
+    retVal = m_strPlotOutline;
+
   return retVal;
 }
 
@@ -453,11 +463,15 @@ void CEpgInfoTag::SetPlot(const CStdString &strPlot)
     UpdatePath();
 }
 
-CStdString CEpgInfoTag::Plot(void) const
+CStdString CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  retVal = m_strPlot;
+  const CPVRChannel *channel(ChannelTag());
+
+  if (bOverrideParental || !channel || !g_PVRManager.IsParentalLocked(*channel))
+    retVal = m_strPlot;
+
   return retVal;
 }
 

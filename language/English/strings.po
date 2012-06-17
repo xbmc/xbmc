@@ -7074,6 +7074,50 @@ msgctxt "#19256"
 msgid "Stop recording"
 msgstr ""
 
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr ""
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr ""
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr ""
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr ""
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr ""
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr ""
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr ""
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr ""
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr ""
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr ""
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr ""
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr ""

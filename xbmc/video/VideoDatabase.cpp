@@ -699,6 +699,9 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
     if (URIUtils::IsStack(strFileNameAndPath))
       file = CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
 
+    if (URIUtils::IsInArchive(file))
+      file = CURL(file).GetHostName();
+
     CDateTime dateAdded;
     // Skip looking at the files ctime/mtime if defined by the user through as.xml
     if (g_advancedSettings.m_iVideoLibraryDateAdded > 0)
