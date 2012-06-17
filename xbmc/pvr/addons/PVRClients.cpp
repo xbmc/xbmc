@@ -797,6 +797,30 @@ bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *err
 
   return *error == PVR_ERROR_NO_ERROR;
 }
+bool CPVRClients::SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition, PVR_ERROR *error)
+{
+  *error = PVR_ERROR_UNKNOWN;
+  boost::shared_ptr<CPVRClient> client;
+  if (GetConnectedClient(recording.m_iClientId, client) && client->GetAddonCapabilities().bSupportsRecordings)
+    *error = client->SetRecordingLastPlayedPosition(recording, lastplayedposition);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings",__FUNCTION__, recording.m_iClientId);
+
+  return *error == PVR_ERROR_NO_ERROR;
+}
+
+int CPVRClients::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
+{
+  int rc = 0;
+
+  boost::shared_ptr<CPVRClient> client;
+  if (GetConnectedClient(recording.m_iClientId, client) && client->GetAddonCapabilities().bSupportsRecordings)
+    rc = client->GetRecordingLastPlayedPosition(recording);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings",__FUNCTION__, recording.m_iClientId);
+
+  return rc;
+}
 
 bool CPVRClients::SetRecordingPlayCount(const CPVRRecording &recording, int count, PVR_ERROR *error)
 {

@@ -450,6 +450,27 @@ namespace PVR
      */
     bool SetWakeupCommand(void);
 
+    /*!
+     * @brief Update the last played position for the current playing file
+     * @param lastplayedposition channel The channel to start to play.
+     */
+    bool UpdateCurrentLastPlayedPosition(int lastplayedposition);
+
+    /*!
+     * @brief Set the last watched position of a recording on the backend.
+     * @param recording The recording.
+     * @param position The last watched position in seconds
+     * @return True if the last played position was updated successfully, false otherwise
+    */
+    bool SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition);
+
+    /*!
+    * @brief Retrieve the last watched position of a recording on the backend.
+    * @param recording The recording.
+    * @return The last watched position in seconds
+    */
+    int GetRecordingLastPlayedPosition(const CPVRRecording &recording);
+
   protected:
     /*!
      * @brief PVR update and control thread.
