@@ -37,4 +37,3 @@ BOOST_AUTO_TEST_CASE(TestCtorPattern1)
     boost::shared_ptr<TestGlobalPattern1> ptr = g_testGlobalPattern1Ref;
   }
 }
-
