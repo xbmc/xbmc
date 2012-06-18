@@ -38,6 +38,10 @@ using namespace MUSIC_INFO;
 
 #define MAKE_ATOM_NAME( a, b, c, d ) ( ( (a) << 24 ) | ( (b) << 16 ) | ( (c) << 8 ) | (d) )
 
+static const unsigned int g_DataAtomName        = MAKE_ATOM_NAME(  'd', 'a', 't', 'a' );  // 'data'
+static const unsigned int g_MeanAtomName        = MAKE_ATOM_NAME(  'm', 'e', 'a', 'n' );  // 'mean'
+static const unsigned int g_NameAtomName        = MAKE_ATOM_NAME(  'n', 'a', 'm', 'e' );  // 'name'
+
 static const unsigned int g_MetaAtomName        = MAKE_ATOM_NAME( 'm', 'e', 't', 'a' );   // 'meta'
 static const unsigned int g_IlstAtomName        = MAKE_ATOM_NAME(  'i', 'l', 's', 't' );  // 'ilst'
 static const unsigned int g_MdhdAtomName        = MAKE_ATOM_NAME(  'm', 'd', 'h', 'd' );  // 'mdhd'
@@ -55,6 +59,7 @@ static const unsigned int g_CoverArtAtomName    = MAKE_ATOM_NAME(  'c', 'o', 'v'
 static const unsigned int g_CompilationAtomName = MAKE_ATOM_NAME(  'c', 'p', 'i', 'l' );  // 'cpil'
 static const unsigned int g_CommentAtomName     = MAKE_ATOM_NAME(  0xa9, 'c', 'm', 't' ); // 'cpil'
 static const unsigned int g_LyricsAtomName      = MAKE_ATOM_NAME(  0xa9, 'l', 'y', 'r' ); // '©lyr'
+static const unsigned int g_HyphensAtomName     = MAKE_ATOM_NAME(  '-', '-', '-', '-' );  // '----'
 
 // These atoms contain other atoms.. so when we find them, we have to recurse..
 
@@ -90,78 +95,152 @@ unsigned int CMusicInfoTagLoaderMP4::ReadUnsignedInt( const char* pData )
   return result;
 }
 
+// Given a 'data', 'mean', or 'name' tag and a pointer to the data this function will read out the string contained within
+// Return the total amount of bytes consumed from the buffer, not the total number of characters in the string, which is null terminated.
+int CMusicInfoTagLoaderMP4::ParseData( unsigned int metaKey, const char* pMetaData, int metaSize, unsigned int *dataKey, CStdString& strData)
+{
+  int dataSize          = ReadUnsignedInt( pMetaData ); // 24 = 36
+  *dataKey              = ReadUnsignedInt( pMetaData + 4 ); //
+
+  int payloadSize = -1;
+  const char *pPayloadData;
+  
+  if (*dataKey == g_DataAtomName)
+  {
+    // Have 8 bytes of header (size+key) plus 8 bytes of (not useful right now) meta info
+    payloadSize = dataSize - 16;
+    pPayloadData = pMetaData + 16;
+    metaSize -= 8;
+  }
+  else if (*dataKey == g_MeanAtomName || *dataKey == g_NameAtomName)
+  {
+    // Have 8 bytes of header (size+key) plus 4 bytes of (not useful right now) meta info
+    payloadSize = dataSize - 12;
+    pPayloadData = pMetaData + 12;
+    metaSize -= 4;
+  }
+  if (payloadSize <= 0 || payloadSize > metaSize) {
+    return -1;
+  }
+  memcpy(strData.GetBuffer(payloadSize+1), pPayloadData, payloadSize);
+  strData.ReleaseBuffer();
+  
+  return dataSize;
+};
+
+void CMusicInfoTagLoaderMP4::ParseHyphens(CStdString& mean, CStdString& name, CStdString& data, CMusicInfoTag& tag) 
+{
+  if (mean.empty() || name.empty() || data.empty())
+    return;
+  if (mean == "com.apple.iTunes") {
+    if (name == "MusicBrainz Track Id") {
+      tag.SetMusicBrainzTrackID(data);
+    } else if (name == "MusicBrainz Album Id") {
+      tag.SetMusicBrainzAlbumID(data);
+    } else if (name == "MusicBrainz Artist Id") { 
+      tag.SetMusicBrainzArtistID(data);
+    } else if (name == "MusicBrainz Album Artist Id") {
+      tag.SetMusicBrainzAlbumArtistID(data);
+    }
+  }
+}
+
 // Given a metadata type, and a pointer to the data (and the size), this function attempts to populate
 // XBMC's CMusicInfoTag object. Tags that we don't support are simply ignored..
-
 void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize, CMusicInfoTag& tag)
 {
+  unsigned int dataKey = 0;
+  int dataSize = 0;
+  metaSize -= 8; // remove 4 bytes for metaSize + 4 bytes for metaKey
   switch ( metaKey )
   {
-  case g_TitleAtomName:
+    case g_TitleAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
-      // we use utf8 internally
-      tag.SetLoaded( true );
-      tag.SetTitle( dataWorkspace.get() );
-
+      CStdString strTitle;
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strTitle);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        tag.SetLoaded(true);
+        tag.SetTitle(strTitle);
+      }
       break;
     }
-
-  case g_ArtistAtomName:
+    case g_ArtistAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
-      tag.SetArtist( dataWorkspace.get() );
-
+      CStdString strArtist;
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strArtist);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        tag.SetArtist(strArtist);
+      }
       break;
     }
-
-  case g_AlbumAtomName:
+    case g_AlbumAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
-      tag.SetAlbum( dataWorkspace.get() );
-
+      CStdString strAlbum;
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strAlbum);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        tag.SetAlbum(strAlbum);
+      }
       break;
     }
-
-  case g_AlbumArtistAtomName:
+    case g_AlbumArtistAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
-      tag.SetAlbumArtist( dataWorkspace.get() );
-
+      CStdString strAlbumArtist;
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strAlbumArtist);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        tag.SetAlbumArtist(strAlbumArtist);
+      }
       break;
     }
-  case g_DayAtomName:
+    case g_CommentAtomName:
     {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
+      CStdString strComment;
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strComment);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        tag.SetComment(strComment);
+      }
+      break;
+    }
+    case g_LyricsAtomName:
+    {
+      CStdString strLyrics;
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strLyrics);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        tag.SetLyrics(strLyrics);
+      }
+      break;
+    }
+    case g_CustomGenreAtomName:
+    {
+      CStdString strGenre;
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey,strGenre);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        tag.SetGenre(strGenre);
+      }
+      break;
+    }
+    case g_DayAtomName:
+    {
+      CStdString strDay;
       SYSTEMTIME dateTime;
-      dateTime.wYear = atoi( dataWorkspace.get() );
-      tag.SetReleaseDate( dateTime );
-
+      dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strDay);
+      if (dataSize > 0 && dataKey == g_DataAtomName) {
+        dateTime.wYear = atoi(strDay);
+        tag.SetReleaseDate( dateTime );
+      }
       break;
     }
-
-  case g_GenreAtomName:
+    case g_CompilationAtomName:
     {
+      metaSize -= 8;
+      pMetaData += 16;
+      if (metaSize == 1)
+        m_isCompilation = *pMetaData == 1;
+      break;
+    }
+    case g_GenreAtomName:
+    {
+      metaSize -= 8;
+      pMetaData += 16;
       // When a genre number is specified, we need to translate to a string for display..
       // Note that AAC/iTunes genre numbers are the same as ID3 numbers, but are offset by 1.
       const char* pGenre = ID3_V1GENRE2DESCRIPTION( (unsigned char)pMetaData[ 1 ] - 1 );
@@ -172,62 +251,27 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
 
       break;
     }
-  case g_CompilationAtomName:
+    case g_TrackNumberAtomName:
     {
-      if (metaSize == 1)
-        m_isCompilation = *pMetaData == 1;
-      break;
-    }
-  case g_CommentAtomName:
-    {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
-      tag.SetComment( dataWorkspace.get() );
-      break;
-    }
-  case g_LyricsAtomName:
-    {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
-      tag.SetLyrics( dataWorkspace.get() );
-      break;
-    }
-  case g_CustomGenreAtomName:
-    {
-      // We need to zero-terminate the string, which needs workspace..
-      auto_aptr<char> dataWorkspace( new char[ metaSize + 1 ] );
-      memcpy( dataWorkspace.get(), pMetaData, metaSize );
-      dataWorkspace[ metaSize ] = '\0';
-
-      tag.SetGenre( dataWorkspace.get() );
-
-      break;
-    }
-
-  case g_TrackNumberAtomName:
-    {
+      // Track on album == [3] Total in album == [5]
+      metaSize -= 8;
+      pMetaData += 16;
       tag.SetTrackNumber( (unsigned char)pMetaData[ 3 ] );
-
       break;
     }
-
-  case g_DiscNumberAtomName:
+    case g_DiscNumberAtomName:
     {
+      // Disk in set == [3] Total in set == [5]
+      metaSize -= 8;
+      pMetaData += 16;
       tag.SetPartOfSet( (unsigned char)pMetaData[ 3 ] );
-
       break;
     }
-
-  case g_CoverArtAtomName:
+    case g_CoverArtAtomName:
     {
+      metaSize -= 16;
+      pMetaData += 16;
       // This cover-art handling is pretty much what was in the old MP4 tag processing code..
-
       // note that according to http://atomicparsley.sourceforge.net/mpeg-4files.html the type
       // of image (PNG=14 or JPG=13) is contained in pMetadata[-5] but we currently don't use this.
       m_thumbSize = metaSize;
@@ -237,6 +281,29 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
         memcpy(m_thumbData, pMetaData, metaSize);
       break;
     }
+    case g_HyphensAtomName:
+    {
+      // Don't assume these are always in the same order...
+      CStdString strMean, strName, strData, strBuffer;
+      while (metaSize > 0) {
+        dataSize = ParseData(metaKey, pMetaData, metaSize, &dataKey, strBuffer);
+        if (dataSize == -1)
+        {
+          break;
+        }
+        if (dataKey == g_DataAtomName)
+          strData = strBuffer;
+        else if (dataKey == g_MeanAtomName)
+          strMean = strBuffer;
+        else if (dataKey == g_NameAtomName)
+          strName = strBuffer;
+        metaSize -= dataSize;
+        pMetaData += dataSize;
+        strBuffer.Empty();
+      }
+      ParseHyphens(strMean, strName, strData, tag);
+      break;
+    }
   default:
     break;
   }
@@ -244,7 +311,6 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
 
 // Used to locate 'ilst' area within 'meta' atom in a really quick and dirty way. Ideally should
 // parse 'ilst' atom list, but this method seems to be reliable.
-
 int CMusicInfoTagLoaderMP4::GetILSTOffset( const char* pBuffer, int bufferSize )
 {
   for ( int loop = 0; loop < bufferSize; loop++)
@@ -264,7 +330,6 @@ int CMusicInfoTagLoaderMP4::GetILSTOffset( const char* pBuffer, int bufferSize )
 // although it fails to credit them.
 //
 // I hope to make this particular function more readable/structured when time permits.
-
 int CMusicInfoTagLoaderMP4::ParseAtom( int64_t startOffset, int64_t stopOffset, CMusicInfoTag& tag )
 {
   int64_t       currentOffset;
@@ -321,11 +386,11 @@ int CMusicInfoTagLoaderMP4::ParseAtom( int64_t startOffset, int64_t stopOffset, 
       // Now go through all of the tags we find.. processing is pretty much taken from source at http://www.getid3.org..
       while ( ( nextTagPosition < ( atomSize - 4 ) ) && ( nextTagPosition > 8 ) )
       {
-        int metaSize          = ReadUnsignedInt( atomBuffer.get() + ( nextTagPosition - 4 ) ) - 4;
-        unsigned int metaKey  = ReadUnsignedInt( atomBuffer.get() + nextTagPosition );
-        char* metaData        = ( atomBuffer.get() + nextTagPosition ) + 20;
+        int metaSize          = ReadUnsignedInt( atomBuffer.get() + ( nextTagPosition - 4 ) ) - 4; // 2c = 44
+        unsigned int metaKey  = ReadUnsignedInt( atomBuffer.get() + nextTagPosition ); //
+        char* metaData        = ( atomBuffer.get() + nextTagPosition ) + 4;
 
-        if (metaSize - 20 <= 0)
+        if (metaSize - 8 <= 0)
           break;
 
         // This is where the next chunk of data will be, if present..
@@ -333,7 +398,7 @@ int CMusicInfoTagLoaderMP4::ParseAtom( int64_t startOffset, int64_t stopOffset, 
 
 
         // Ok.. we've got some metadata to process. Go to it.
-        ParseTag( metaKey, metaData, metaSize - 20, tag );
+        ParseTag( metaKey, metaData, metaSize, tag );
       }
     }
     else
