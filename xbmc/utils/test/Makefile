@@ -14,5 +14,3 @@ include ../../../Makefile.include
 
 testMain: $(LIB)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o testMain -Wl,--whole-archive $(LIB) -Wl,--no-whole-archive -lboost_unit_test_framework
-
-
