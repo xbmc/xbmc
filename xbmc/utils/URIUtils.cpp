@@ -682,13 +682,18 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
   CStdString strProtocol2 = url.GetTranslatedProtocol();
 
   // Special case these
-  if (strProtocol2 == "ftp" || strProtocol2 == "ftps" ||
-      strProtocol  == "dav" || strProtocol  == "davs")
+  if (strProtocol2 == "ftp"   || strProtocol2 == "ftps"   ||
+      strProtocol  == "dav"   || strProtocol  == "davs")
     return bStrictCheck;
 
-  if (strProtocol2 == "http" || strProtocol2 == "https" ||
-      strProtocol  == "rtp"  || strProtocol  == "udp"   ||
-      strProtocol  == "rtmp" || strProtocol  == "rtsp")
+  if (strProtocol2 == "http"  || strProtocol2 == "https"  ||
+      strProtocol2 == "tcp"   || strProtocol2 == "udp"    ||
+      strProtocol2 == "rtp"   || strProtocol2 == "sdp"    ||
+      strProtocol2 == "mms"   || strProtocol2 == "mmst"   ||
+      strProtocol2 == "mmsh"  || strProtocol2 == "rtsp"   ||
+      strProtocol2 == "rtmp"  || strProtocol2 == "rtmpt"  ||
+      strProtocol2 == "rtmpe" || strProtocol2 == "rtmpte" ||
+      strProtocol2 == "rtmps")
     return true;
 
   return false;

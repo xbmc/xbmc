@@ -714,7 +714,6 @@ CStdString CURL::TranslateProtocol(const CStdString& prot)
    || prot == "dav"
    || prot == "tuxbox"
    || prot == "lastfm"
-   || prot == "mms"
    || prot == "rss")
    return "http";
 
