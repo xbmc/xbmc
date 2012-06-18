@@ -682,7 +682,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    g_Windowing.Get3DDevice()->SetTexture( 0, pTexture->GetTextureObject() );
+    pTexture->BindToUnit(0);
   }
 
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
@@ -693,10 +693,6 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_settings.m_minFilter*/ );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_settings.m_maxFilter*/ );
   g_Windowing.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
   g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
   g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
@@ -720,8 +716,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
+    pTexture->BindToUnit(0);
 
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
@@ -772,8 +767,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
+    pTexture->BindToUnit(0);
 
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On

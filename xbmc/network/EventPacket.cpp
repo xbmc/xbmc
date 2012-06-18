@@ -98,8 +98,8 @@ bool CEventPacket::Parse(int datasize, const void *data)
     }
     memcpy(m_pPayload, buf, (size_t)m_iPayloadSize);
   }
-
-  return  (m_bValid = true);
+  m_bValid = true;
+  return true;
 }
 
 #endif // HAS_EVENT_SERVER

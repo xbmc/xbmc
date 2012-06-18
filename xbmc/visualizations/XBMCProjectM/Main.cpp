@@ -59,6 +59,7 @@ d4rk@xbmc.org
 #include <GL/glew.h>
 #include "libprojectM/projectM.hpp"
 #include <string>
+#include <utils/log.h>
 
 projectM *globalPM = NULL;
 
@@ -77,6 +78,7 @@ bool g_UserPackFolder;
 char lastPresetDir[1024];
 bool lastLockStatus;
 int lastPresetIdx;
+int lastLoggedPresetIdx;
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
@@ -99,6 +101,7 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   g_configPM.easterEgg = 0.0;
   g_configPM.windowLeft = visprops->x;
   g_configPM.windowBottom = visprops->y;
+  lastLoggedPresetIdx = lastPresetIdx;
 
   return ADDON_STATUS_NEED_SAVEDSETTINGS;
 }
@@ -114,10 +117,10 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   if (globalPM)
-    globalPM->pcm()->addPCM16Data(pAudioData, iAudioDataLength);
+    globalPM->pcm()->addPCMfloat(pAudioData, iAudioDataLength);
 }
 
 //-- Render -------------------------------------------------------------------
@@ -126,7 +129,13 @@ extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *
 extern "C" void Render()
 {
   if (globalPM)
+  {
     globalPM->renderFrame();
+    unsigned preset;
+    globalPM->selectedPresetIndex(preset);
+    if (lastLoggedPresetIdx != preset) CLog::Log(LOGDEBUG,"PROJECTM - Changed preset to: %s",g_presets[preset]);
+    lastLoggedPresetIdx = preset;
+  }
 }
 
 //-- GetInfo ------------------------------------------------------------------

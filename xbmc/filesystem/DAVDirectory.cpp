@@ -21,7 +21,7 @@
 
 #include "DAVDirectory.h"
 #include "URL.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -168,7 +168,7 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
 
 bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CFileCurl dav;
+  CCurlFile dav;
   CURL url(strPath);
   CStdString strRequest = "PROPFIND";
 
@@ -197,7 +197,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString strResponse;
   dav.ReadData(strResponse);
 
-  TiXmlDocument davResponse;
+  CXBMCTinyXML davResponse;
   davResponse.Parse(strResponse.c_str());
 
   if (!davResponse.Parse(strResponse))
@@ -251,7 +251,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
 bool CDAVDirectory::Exists(const char* strPath)
 {
-  CFileCurl dav;
+  CCurlFile dav;
   CURL url(strPath);
   return dav.Exists(url);
 }

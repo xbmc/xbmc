@@ -27,7 +27,7 @@
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
 #include "JpegIO.h"
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
 #include "osx/DarwinUtils.h"
@@ -39,12 +39,27 @@
 CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
  : m_hasAlpha( true )
 {
-#ifndef HAS_DX 
-  m_texture = 0; 
-#endif
   m_pixels = NULL;
   m_loadedToGPU = false;
   Allocate(width, height, format);
+}
+
+CBaseTexture::CBaseTexture(const CBaseTexture &copy)
+{
+  m_imageWidth = copy.m_imageWidth;
+  m_imageHeight = copy.m_imageHeight;
+  m_textureWidth = copy.m_textureWidth;
+  m_textureHeight = copy.m_textureHeight;
+  m_format = copy.m_format;
+  m_orientation = copy.m_orientation;
+  m_hasAlpha = copy.m_hasAlpha;
+  m_pixels = NULL;
+  m_loadedToGPU = false;
+  if (copy.m_pixels)
+  {
+    m_pixels = new unsigned char[GetPitch() * GetRows()];
+    memcpy(m_pixels, copy.m_pixels, GetPitch() * GetRows());
+  }
 }
 
 CBaseTexture::~CBaseTexture()
@@ -174,7 +189,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   if (URIUtils::GetExtension(texturePath).Equals(".jpg") || URIUtils::GetExtension(texturePath).Equals(".tbn"))
   {
     CJpegIO jpegfile;
-    if (jpegfile.Open(texturePath))
+    if (jpegfile.Open(texturePath, maxWidth, maxHeight))
     {
       if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
       {
@@ -184,6 +199,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
           if (autoRotate && jpegfile.Orientation())
             m_orientation = jpegfile.Orientation() - 1;
           m_hasAlpha=false;
+          ClampToEdge();
           return true;
         }
       }

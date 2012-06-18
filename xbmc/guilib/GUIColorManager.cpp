@@ -24,7 +24,7 @@
 #include "addons/Skin.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 CGUIColorManager g_colorManager;
 
@@ -48,8 +48,8 @@ void CGUIColorManager::Load(const CStdString &colorFile)
   Clear();
 
   // load the global color map if it exists
-  TiXmlDocument xmlDoc;
-  if (xmlDoc.LoadFile(PTH_IC("special://xbmc/system/colors.xml")))
+  CXBMCTinyXML xmlDoc;
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/colors.xml")))
     LoadXML(xmlDoc);
 
   // first load the default color map if it exists
@@ -57,7 +57,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
   URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors", basePath);
   URIUtils::AddFileToFolder(basePath, "defaults.xml", path);
 
-  if (xmlDoc.LoadFile(PTH_IC(path)))
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
     LoadXML(xmlDoc);
 
   // now the color map requested
@@ -71,7 +71,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
     LoadXML(xmlDoc);
 }
 
-bool CGUIColorManager::LoadXML(TiXmlDocument &xmlDoc)
+bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
 {
   TiXmlElement* pRootElement = xmlDoc.RootElement();
 

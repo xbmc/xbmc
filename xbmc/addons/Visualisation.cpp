@@ -25,8 +25,12 @@
 #include "Application.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Utils/AEConvert.h"
 #ifdef _LINUX
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"
@@ -39,7 +43,7 @@ using namespace ADDON;
 CAudioBuffer::CAudioBuffer(int iSize)
 {
   m_iLen = iSize;
-  m_pBuffer = new short[iSize];
+  m_pBuffer = new float[iSize];
 }
 
 CAudioBuffer::~CAudioBuffer()
@@ -47,42 +51,17 @@ CAudioBuffer::~CAudioBuffer()
   delete [] m_pBuffer;
 }
 
-const short* CAudioBuffer::Get() const
+const float* CAudioBuffer::Get() const
 {
   return m_pBuffer;
 }
 
-void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
+void CAudioBuffer::Set(const float* psBuffer, int iSize)
 {
   if (iSize<0)
-  {
     return;
-  }
-
-  if (iBitsPerSample == 16)
-  {
-    iSize /= 2;
-    for (int i = 0; i < iSize && i < m_iLen; i++)
-    { // 16 bit -> convert to short directly
-      m_pBuffer[i] = ((short *)psBuffer)[i];
-    }
-  }
-  else if (iBitsPerSample == 8)
-  {
-    for (int i = 0; i < iSize && i < m_iLen; i++)
-    { // 8 bit -> convert to signed short by multiplying by 256
-      m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
-    }
-  }
-  else // assume 24 bit data
-  {
-    iSize /= 3;
-    for (int i = 0; i < iSize && i < m_iLen; i++)
-    { // 24 bit -> ignore least significant byte and convert to signed short
-      m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
-    }
-  }
-  for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
+  memcpy(m_pBuffer, psBuffer, iSize * sizeof(float));
+  for (int i = iSize; i < m_iLen; ++i) m_pBuffer[i] = 0;
 }
 
 bool CVisualisation::Create(int x, int y, int w, int h)
@@ -100,8 +79,8 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
 
   m_pInfo->name = strdup(Name().c_str());
-  m_pInfo->presets = strdup(_P(Path()).c_str());
-  m_pInfo->profile = strdup(_P(Profile()).c_str());
+  m_pInfo->presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
+  m_pInfo->profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_pInfo->submodule = NULL;
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
@@ -122,7 +101,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
     GetPresets();
 
     if (GetSubModules())
-      m_pInfo->submodule = strdup(_P(m_submodules.front()).c_str());
+      m_pInfo->submodule = strdup(CSpecialProtocol::TranslatePath(m_submodules.front()).c_str());
     else
       m_pInfo->submodule = NULL;
 
@@ -153,7 +132,7 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
   }
 }
 
-void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   // pass audio data to visz.
   // audio data: is short audiodata [channel][iAudioDataLength] containing the raw audio data
@@ -234,10 +213,10 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
         const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
         VisTrack track;
         track.title       = tag->GetTitle().c_str();
-        track.artist      = tag->GetArtist().c_str();
+        track.artist      = StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
         track.album       = tag->GetAlbum().c_str();
-        track.albumArtist = tag->GetAlbumArtist().c_str();
-        track.genre       = tag->GetGenre().c_str();
+        track.albumArtist = StringUtils::Join(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
+        track.genre       = StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str();
         track.comment     = tag->GetComment().c_str();
         track.lyrics      = tag->GetLyrics().c_str();
         track.trackNumber = tag->GetTrackNumber();
@@ -272,7 +251,7 @@ void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPe
   CLog::Log(LOGDEBUG, "OnInitialize() done");
 }
 
-void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
+void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)
 {
   if (!m_pStruct)
     return ;
@@ -282,8 +261,8 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
     return;
 
   // Save our audio data in the buffers
-  auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
-  pBuffer->Set(pAudioData, iAudioDataLength, m_iBitsPerSample);
+  auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(AUDIO_BUFFER_SIZE) );
+  pBuffer->Set(pAudioData, iAudioDataLength);
   m_vecBuffers.push_back( pBuffer.release() );
 
   if ( (int)m_vecBuffers.size() < m_iNumBuffers) return ;
@@ -293,12 +272,8 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
   // Fourier transform the data if the vis wants it...
   if (m_bWantsFreq)
   {
-    // Convert to floats
-    const short* psAudioData = ptrAudioBuffer->Get();
-    for (int i = 0; i < 2*AUDIO_BUFFER_SIZE; i++)
-    {
-      m_fFreq[i] = (float)psAudioData[i];
-    }
+    const float *psAudioData = ptrAudioBuffer->Get();
+    memcpy(m_fFreq, psAudioData, AUDIO_BUFFER_SIZE * sizeof(float));
 
     // FFT the data
     twochanwithwindow(m_fFreq, AUDIO_BUFFER_SIZE);
@@ -312,7 +287,7 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
     }
 
     // Transfer data to our visualisation
-    AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+    AudioData(psAudioData, AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
   }
   else
   { // Transfer data to our visualisation
@@ -359,7 +334,7 @@ bool CVisualisation::UpdateTrack()
   if (Initialized())
   {
     // get the current album art filename
-    m_AlbumThumb = _P(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
+    m_AlbumThumb = CSpecialProtocol::TranslatePath(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
 
     // get the current track tag
     const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();

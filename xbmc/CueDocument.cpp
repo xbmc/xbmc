@@ -61,6 +61,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
+#include "settings/AdvancedSettings.h"
 
 #include <set>
 
@@ -102,7 +103,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
   {
     if (!ReadNextLine(strLine))
       break;
-    if (strLine.Left(7) == "INDEX 0")
+    if (strLine.Left(8) == "INDEX 01")
     {
       if (bCurrentFileChanged)
       {
@@ -228,12 +229,12 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   {
     CSong song;
     if ((m_Track[i].strArtist.length() == 0) && (m_strArtist.length() > 0))
-      song.strArtist = m_strArtist;
+      song.artist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
     else
-      song.strArtist = m_Track[i].strArtist;
-    song.strAlbumArtist = m_strArtist;
+      song.artist = StringUtils::Split(m_Track[i].strArtist, g_advancedSettings.m_musicItemSeparator);
+    song.albumArtist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
     song.strAlbum = m_strAlbum;
-    song.strGenre = m_strGenre;
+    song.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);
     song.iYear = m_iYear;
     song.iTrack = m_Track[i].iTrackNumber;
     if (m_Track[i].strTitle.length() == 0) // No track information for this track!

@@ -138,11 +138,11 @@ bool CTextureBundleXPR::OpenBundle()
   else
     strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xpr");
 
-  strPath = PTH_IC(strPath);
+  strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 
 #ifndef _LINUX
   CStdStringW strPathW;
-  g_charsetConverter.utf8ToW(_P(strPath), strPathW, false);
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strPath), strPathW, false);
   m_hFile = _wfopen(strPathW.c_str(), L"rb");
 #else
   m_hFile = fopen(strPath.c_str(), "rb");
@@ -284,7 +284,7 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     GlobalMemoryStatusEx(&stat);
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %"PRIu64" bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize, stat.ullAvailPhys);
-#elif defined(__APPLE__) || defined(__FreeBSD__)
+#elif defined(TARGET_DARWIN) || defined(__FreeBSD__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize);
 #else

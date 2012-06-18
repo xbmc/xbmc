@@ -45,12 +45,7 @@
  *   in ai_flags?
  */
 
-#ifdef _XBOX
-#include <xtl.h>
-#include <winsockx.h>
-#else
 #include <windows.h>
-#endif
 #include <stddef.h>
 #include "addrinfo.h"
 #include "emu_socket.h"
@@ -61,19 +56,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <errno.h>
-
-#ifdef _XBOX
-extern struct mphostent* __stdcall dllgethostbyname(const char* name);
-#define gethostbyname(name) dllgethostbyname(name)
-
-extern struct mphostent* __stdcall dllgethostbyaddr(const char* addr, int len, int type);
-#define gethostbyaddr(addr, len, type) dllgethostbyaddr(addr, len, type)
-
-extern struct servent* __stdcall dllgetservbyname(const char* name, const char* proto);
-#define getservbyname(name, proto) dllgetservbyname(name, proto)
-
-#define hostent mphostent
-#endif
 
 #ifndef HAVE_U_INT32_T
 #include "bittypes.h"
@@ -333,18 +315,10 @@ getaddrinfo(const char*hostname, const char*servname,
 				pai->ai_socktype = SOCK_STREAM;
 				break;
 			default:
-#ifdef _XBOX
-				pai->ai_socktype = SOCK_STREAM;
-#else
 				pai->ai_socktype = SOCK_RAW;
-#endif //_XBOX
 				break;
 			}
 			break;
-#ifndef _XBOX
-		case SOCK_RAW:
-			break;
-#endif //_XBOX
 		case SOCK_DGRAM:
 			if (pai->ai_protocol != IPPROTO_UDP &&
 			    pai->ai_protocol != GAI_ANY)

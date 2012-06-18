@@ -3,7 +3,9 @@ include $(SUBDIR)../config.mak
 NAME = avutil
 
 HEADERS = adler32.h                                                     \
+          aes.h                                                         \
           attributes.h                                                  \
+          audioconvert.h                                                \
           avassert.h                                                    \
           avstring.h                                                    \
           avutil.h                                                      \
@@ -16,6 +18,8 @@ HEADERS = adler32.h                                                     \
           eval.h                                                        \
           fifo.h                                                        \
           file.h                                                        \
+          imgutils.h                                                    \
+          intfloat.h                                                    \
           intfloat_readwrite.h                                          \
           intreadwrite.h                                                \
           lfg.h                                                         \
@@ -24,17 +28,21 @@ HEADERS = adler32.h                                                     \
           mathematics.h                                                 \
           md5.h                                                         \
           mem.h                                                         \
+          dict.h                                                        \
           opt.h                                                         \
+          parseutils.h                                                  \
           pixdesc.h                                                     \
           pixfmt.h                                                      \
           random_seed.h                                                 \
           rational.h                                                    \
-          sha1.h                                                        \
+          samplefmt.h                                                   \
+          sha.h                                                         \
 
 BUILT_HEADERS = avconfig.h
 
 OBJS = adler32.o                                                        \
        aes.o                                                            \
+       audioconvert.o                                                   \
        avstring.o                                                       \
        base64.o                                                         \
        cpu.o                                                            \
@@ -44,6 +52,7 @@ OBJS = adler32.o                                                        \
        eval.o                                                           \
        fifo.o                                                           \
        file.o                                                           \
+       imgutils.o                                                       \
        intfloat_readwrite.o                                             \
        inverse.o                                                        \
        lfg.o                                                            \
@@ -53,11 +62,14 @@ OBJS = adler32.o                                                        \
        mathematics.o                                                    \
        md5.o                                                            \
        mem.o                                                            \
+       dict.o                                                           \
        opt.o                                                            \
+       parseutils.o                                                     \
        pixdesc.o                                                        \
        random_seed.o                                                    \
        rational.o                                                       \
        rc4.o                                                            \
+       samplefmt.o                                                      \
        sha.o                                                            \
        tree.o                                                           \
        utils.o                                                          \
@@ -66,13 +78,15 @@ OBJS-$(ARCH_ARM) += arm/cpu.o
 OBJS-$(ARCH_PPC) += ppc/cpu.o
 OBJS-$(ARCH_X86) += x86/cpu.o
 
-TESTPROGS = adler32 aes base64 cpu crc des lls md5 pca sha softfloat tree
+
+TESTPROGS = adler32 aes avstring base64 cpu crc des eval file fifo lfg lls \
+            md5 opt pca parseutils rational sha tree
 TESTPROGS-$(HAVE_LZO1X_999_COMPRESS) += lzo
+
+TOOLS = ffeval
 
 DIRS = arm bfin sh4 x86
 
 ARCH_HEADERS = bswap.h intmath.h intreadwrite.h timer.h
-
-include $(SUBDIR)../subdir.mak
 
 $(SUBDIR)lzo-test$(EXESUF): ELIBS = -llzo2

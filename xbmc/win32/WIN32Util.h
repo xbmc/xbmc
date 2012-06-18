@@ -38,6 +38,8 @@ enum Drive_Types
   DVD_DRIVES
 };
 
+#define BONJOUR_EVENT             ( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
+#define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x110 )
 
 class CWIN32Util
 {
@@ -79,7 +81,7 @@ public:
   static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
 
   static bool GetCrystalHDLibraryPath(CStdString &strPath);
-  
+
   static bool GetFocussedProcess(CStdString &strProcessFile);
   static void CropSource(CRect& src, CRect& dst, CRect target);
 

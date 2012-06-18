@@ -23,17 +23,19 @@
 #include "scrobbler.h"
 #include "utils/md5.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "Util.h"
 #include "music/tags/MusicInfoTag.h"
 #include "errors.h"
 #include "threads/Atomics.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/XMLUtils.h"
 #include "Application.h"
 #include "threads/SingleLock.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 #define SCROBBLER_CLIENT              "xbm"
 //#define SCROBBLER_CLIENT              "tst"     // For testing ONLY!
@@ -46,7 +48,7 @@
 #define SCROBBLER_ACTION_NOWPLAYING   2
 
 CScrobbler::CScrobbler(const CStdString &strHandshakeURL, const CStdString &strLogPrefix)
-  : CThread()
+  : CThread("CScrobbler")
 { 
   m_bBanned         = false;
   m_bBadAuth        = false;
@@ -67,7 +69,7 @@ void CScrobbler::Init()
   ResetState();
   LoadCredentials();
   LoadJournal();
-  if (!ThreadHandle())
+  if (!IsRunning())
     Create();
 }
 
@@ -84,12 +86,12 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio)
   if (!CanScrobble() || !tag.Loaded())
     return;
 
-  if (tag.GetArtist().IsEmpty() || tag.GetTitle().IsEmpty())
+  if (tag.GetArtist().empty() || tag.GetTitle().IsEmpty())
     return;
 
   // our tags are stored as UTF-8, so no conversion needed
   m_CurrentTrack.length           = tag.GetDuration();
-  m_CurrentTrack.strArtist        = tag.GetArtist();
+  m_CurrentTrack.strArtist        = StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
   m_CurrentTrack.strAlbum         = tag.GetAlbum();
   m_CurrentTrack.strTitle         = tag.GetTitle();
   m_CurrentTrack.strMusicBrainzID = tag.GetMusicBrainzTrackID();
@@ -277,7 +279,7 @@ bool CScrobbler::LoadJournal()
 {
   int                     journalVersion  = 0;
   SubmissionJournalEntry  entry;
-  TiXmlDocument           xmlDoc;
+  CXBMCTinyXML            xmlDoc;
   CStdString              JournalFileName = GetJournalFileName();
   CSingleLock             lock(m_queueLock);
 
@@ -355,7 +357,7 @@ bool CScrobbler::SaveJournal()
     return true;
   }
   CStdString        strJournalVersion;
-  TiXmlDocument     xmlDoc;
+  CXBMCTinyXML      xmlDoc;
   TiXmlDeclaration  decl("1.0", "utf-8", "yes");
   TiXmlElement      xmlRootElement("asjournal");
   xmlDoc.InsertEndChild(decl);
@@ -626,8 +628,8 @@ void CScrobbler::Process()
   CLog::Log(LOGDEBUG, "%s: Thread started.", m_strLogPrefix.c_str());
   if (!m_pHttp)
   {
-    // Hack since CFileCurl isn't threadsafe
-    if (!(m_pHttp = new XFILE::CFileCurl))
+    // Hack since CCurlFile isn't threadsafe
+    if (!(m_pHttp = new XFILE::CCurlFile))
       return;
   }
   while (!m_bStop)

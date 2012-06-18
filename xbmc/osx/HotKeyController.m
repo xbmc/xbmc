@@ -29,18 +29,6 @@
 #import <IOKit/hidsystem/ev_keymap.h>
 #import <sys/sysctl.h>
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-#if __LP64__ || NS_BUILD_32_LIKE_64
-typedef long NSInteger;
-typedef unsigned long NSUInteger;
-#define NSUIntegerMax   ULONG_MAX
-#else
-typedef int NSInteger;
-typedef unsigned int NSUInteger;
-#define NSUIntegerMax   UINT_MAX
-#endif
-#endif
-
 NSString* const MediaKeyPower                 = @"MediaKeyPower";
 NSString* const MediaKeySoundMute             = @"MediaKeySoundMute";
 NSString* const MediaKeySoundUp               = @"MediaKeySoundUp";
@@ -90,7 +78,7 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
   return NSUIntegerMax;
 }
  
-- (void)release
+- (oneway void)release
 {
   //do nothing
 }
@@ -180,9 +168,6 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
   if ((type != NX_SYSDEFINED) || (![hot_key_controller getActive]))
     return event;
 
-  // eventWithCGEvent does not exist under 10.4 SDK,
-  // but thanks to how objc works, it will resolve at runtime on 10.5+
-  // but we will get a compile warning, just ignore it.
   NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
   if (!nsEvent || [nsEvent subtype] != 8) 
     return event;

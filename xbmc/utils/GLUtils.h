@@ -32,6 +32,9 @@
 // if not it's just an empty inline stub, and thus won't affect performance
 // and will be optimized out.
 
+#include "system.h"
+#include "system_gl.h"
+
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 #if defined(GL_DEBUGGING) && (defined(HAS_GL) || defined(HAS_GLES))
 #define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)
@@ -41,3 +44,4 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 
 void LogGraphicsInfo();
 
+int glFormatElementByteCount(GLenum format);

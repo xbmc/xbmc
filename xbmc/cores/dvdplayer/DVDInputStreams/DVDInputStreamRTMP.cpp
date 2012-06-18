@@ -192,7 +192,7 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
   return i;
 }
 
-__int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamRTMP::Seek(int64_t offset, int whence)
 {
   if (whence == SEEK_POSSIBLE)
     return 0;
@@ -211,14 +211,9 @@ bool CDVDInputStreamRTMP::SeekTime(int iTimeInMsec)
   return false;
 }
 
-__int64 CDVDInputStreamRTMP::GetLength()
+int64_t CDVDInputStreamRTMP::GetLength()
 {
   return -1;
-}
-
-bool CDVDInputStreamRTMP::NextStream()
-{
-  return false;
 }
 
 bool CDVDInputStreamRTMP::Pause(double dTime)

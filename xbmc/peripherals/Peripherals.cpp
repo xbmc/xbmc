@@ -27,9 +27,7 @@
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
-#if defined(HAVE_LIBCEC)
 #include "devices/PeripheralCecAdapter.h"
-#endif
 #include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
 
@@ -37,12 +35,13 @@
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "settings/GUISettings.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
+#include "guilib/Key.h"
 
 using namespace PERIPHERALS;
 using namespace XFILE;
@@ -331,9 +330,16 @@ int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const Periphera
     PeripheralDeviceMapping mapping = m_mappings.at(iMappingPtr);
 
     bool bProductMatch = false;
-    for (unsigned int i = 0; i < mapping.m_PeripheralID.size(); i++)
-      if (mapping.m_PeripheralID[i].m_iVendorId == iVendorId && mapping.m_PeripheralID[i].m_iProductId == iProductId)
-        bProductMatch = true;
+    if (mapping.m_PeripheralID.size() == 0)
+    {
+      bProductMatch = true;
+    }
+    else
+    {
+      for (unsigned int i = 0; i < mapping.m_PeripheralID.size(); i++)
+        if (mapping.m_PeripheralID[i].m_iVendorId == iVendorId && mapping.m_PeripheralID[i].m_iProductId == iProductId)
+          bProductMatch = true;
+    }
 
     bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == bus.Type());
     bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == classType);
@@ -359,9 +365,16 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
     const PeripheralDeviceMapping *mapping = &m_mappings.at(iMappingPtr);
 
     bool bProductMatch = false;
-    for (unsigned int i = 0; i < mapping->m_PeripheralID.size(); i++)
-      if (mapping->m_PeripheralID[i].m_iVendorId == peripheral.VendorId() && mapping->m_PeripheralID[i].m_iProductId == peripheral.ProductId())
-        bProductMatch = true;
+    if (mapping->m_PeripheralID.size() == 0)
+    {
+      bProductMatch = true;
+    }
+    else
+    {
+      for (unsigned int i = 0; i < mapping->m_PeripheralID.size(); i++)
+        if (mapping->m_PeripheralID[i].m_iVendorId == peripheral.VendorId() && mapping->m_PeripheralID[i].m_iProductId == peripheral.ProductId())
+          bProductMatch = true;
+    }
 
     bool bBusMatch = (mapping->m_busType == PERIPHERAL_BUS_UNKNOWN || mapping->m_busType == peripheral.GetBusType());
     bool bClassMatch = (mapping->m_class == PERIPHERAL_UNKNOWN || mapping->m_class == peripheral.Type());
@@ -376,7 +389,7 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
 
 bool CPeripherals::LoadMappings(void)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile("special://xbmc/system/peripherals.xml"))
   {
     CLog::Log(LOGWARNING, "%s - peripherals.xml does not exist", __FUNCTION__);
@@ -399,29 +412,24 @@ bool CPeripherals::LoadMappings(void)
     mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
 
     // If there is no vendor_product attribute ignore this entry
-    if (!currentNode->Attribute("vendor_product"))
+    if (currentNode->Attribute("vendor_product"))
     {
-      CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with missing vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
-      continue;
-    }
-
-    // The vendor_product attribute is a list of comma separated vendor:product pairs
-    StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
-    for (unsigned int i = 0; i < vpArray.size(); i++)
-    {
-      StringUtils::SplitString(vpArray[i], ":", idArray);
-      if (idArray.size() != 2)
+      // The vendor_product attribute is a list of comma separated vendor:product pairs
+      StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
+      for (unsigned int i = 0; i < vpArray.size(); i++)
       {
-        CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
-        continue;
-      }
+        StringUtils::SplitString(vpArray[i], ":", idArray);
+        if (idArray.size() != 2)
+        {
+          CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
+          continue;
+        }
 
-      id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
-      id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
-      mapping.m_PeripheralID.push_back(id);
+        id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
+        id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
+        mapping.m_PeripheralID.push_back(id);
+      }
     }
-    if (mapping.m_PeripheralID.size() == 0)
-      continue;
 
     mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(currentNode->Attribute("bus"));
     mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("class"));
@@ -438,6 +446,8 @@ bool CPeripherals::LoadMappings(void)
 void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdString, CSetting *> &m_settings)
 {
   TiXmlElement *currentNode = xmlNode->FirstChildElement("setting");
+  int iMaxOrder(0);
+
   while (currentNode)
   {
     CSetting *setting = NULL;
@@ -483,9 +493,31 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
     }
 
     //TODO add more types if needed
+
+    /* set the visibility */
     setting->SetVisible(bConfigurable);
+
+    /* set the order */
+    int iOrder(0);
+    currentNode->Attribute("order", &iOrder);
+    /* if the order attribute is invalid or 0, then the setting will be added at the end */
+    if (iOrder < 0)
+      iOrder = 0;
+    setting->SetOrder(iOrder);
+    if (iOrder > iMaxOrder)
+      iMaxOrder = iOrder;
+
+    /* and add this new setting */
     m_settings[strKey] = setting;
+
     currentNode = currentNode->NextSiblingElement("setting");
+  }
+
+  /* add the settings without an order attribute or an invalid order attribute set at the end */
+  for (map<CStdString, CSetting *>::iterator it = m_settings.begin(); it != m_settings.end(); it++)
+  {
+    if (it->second->GetOrder() == 0)
+      it->second->SetOrder(++iMaxOrder);
   }
 }
 
@@ -521,4 +553,90 @@ CPeripheral *CPeripherals::GetByPath(const CStdString &strPath) const
   }
 
   return NULL;
+}
+
+bool CPeripherals::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_MUTE)
+  {
+    return ToggleMute();
+  }
+
+  if (SupportsCEC() && action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
+  {
+    vector<CPeripheral *> peripherals;
+    if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+    {
+      for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+      {
+        CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+        if (cecDevice && cecDevice->HasConnectedAudioSystem())
+        {
+          if (action.GetID() == ACTION_VOLUME_UP)
+            cecDevice->ScheduleVolumeUp();
+          else
+            cecDevice->ScheduleVolumeDown();
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+bool CPeripherals::IsMuted(void)
+{
+  vector<CPeripheral *> peripherals;
+  if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->IsMuted())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+bool CPeripherals::ToggleMute(void)
+{
+  vector<CPeripheral *> peripherals;
+  if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->HasConnectedAudioSystem())
+      {
+        cecDevice->ScheduleMute();
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
+{
+  vector<CPeripheral *> peripherals;
+  if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->GetButton())
+      {
+        CKey newKey(cecDevice->GetButton(), cecDevice->GetHoldTime());
+        cecDevice->ResetButton();
+        key = newKey;
+        return true;
+      }
+    }
+  }
+
+  return false;
 }

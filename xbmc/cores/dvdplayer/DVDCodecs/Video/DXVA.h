@@ -121,7 +121,7 @@ public:
 
   bool           PreInit();
   void           UnInit();
-  bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format);
+  bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
   void           Close();
   REFERENCE_TIME Add(DVDVideoPicture* picture);
   bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
@@ -137,6 +137,7 @@ protected:
   bool CreateSurfaces();
   bool OpenProcessor();
   bool SelectProcessor();
+  void EvaluateQuirkNoDeintProcForProg();
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
@@ -171,6 +172,8 @@ protected:
 
   LPDIRECT3DSURFACE9* m_surfaces;
   CSurfaceContext* m_context;
+
+  bool             m_quirk_nodeintprocforprog;
 };
 
 };

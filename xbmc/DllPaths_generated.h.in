@@ -74,20 +74,16 @@
 #define DLL_PATH_LIBMAD        "@MAD_SONAME@"
 
 /* ffmpeg */
-#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-52-@ARCH@.so"
-#define DLL_PATH_LIBAVCORE     "special://xbmcbin/system/players/dvdplayer/avcore-0-@ARCH@.so"
-#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-52-@ARCH@.so"
-#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-50-@ARCH@.so"
-#define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-51-@ARCH@.so"
-#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0-@ARCH@.so"
-#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-1-@ARCH@.so"
+#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-53-@ARCH@.so"
+#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-53-@ARCH@.so"
+#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-51-@ARCH@.so"
+#define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-52-@ARCH@.so"
+#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-2-@ARCH@.so"
+#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-2-@ARCH@.so"
+#define DLL_PATH_LIBSWRESAMPLE "special://xbmcbin/system/players/dvdplayer/swresample-0-@ARCH@.so"
 
 /* cdrip */
-#if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LAME_ENC      "libmp3lame.so.0"
-#else
-#define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc-@ARCH@.so"
-#endif
+#define DLL_PATH_LAME_ENC      "@LAMEENC_SONAME@"
 #define DLL_PATH_OGG           "@OGG_SONAME@"
 #define DLL_PATH_VORBIS_ENC    "@VORBISENC_SONAME@"
 #define DLL_PATH_VORBIS        "@VORBIS_SONAME@"

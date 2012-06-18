@@ -1,0 +1,606 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-04 12:52+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Confluence is the default skin for XBMC, removing it may cause issues"
+msgstr ""
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "Cambia il tuo"
+
+msgctxt "#31001"
+msgid "Love"
+msgstr "Amo"
+
+msgctxt "#31002"
+msgid "Hate"
+msgstr "Odio"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "Impostazioni Avanzate"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Sto lavorando..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "Nascondi informazioni"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "Vedi Opzioni"
+
+msgctxt "#31007"
+msgid "Plugins"
+msgstr "Plugins"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Schermo Intero"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr ""
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Aggiunti di recente"
+
+msgctxt "#31021"
+msgid "Video - Files"
+msgstr "Files - Video"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Files - Musica"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "In Riproduzione"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Pagina"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Oggetti"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "Opzioni Varie"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Località"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "Poster"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31030"
+msgid "Full list"
+msgstr "Lista estesa"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "Miniature immagini"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "Immagine"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Informazioni"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "In riproduzione"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "IN RIPRODUZIONE"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "IN PAUSA"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "AVANTI VELOCE"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "INDIETRO"
+
+msgctxt "#31046"
+msgid "Audio Properties"
+msgstr "Proprietà Audio "
+
+msgctxt "#31047"
+msgid "Current Preset"
+msgstr "Preset Corrente"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Preset Visualizzazione"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Orario fine riproduzione"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Ordina: Crescente"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Ordina: Decrescente"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Apri playlist"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Salva playlist"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Chiudi playlist"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Suoni di sistema"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Playlist Corrente "
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Questo file è stato accorpato, scegli la parte da cui vuoi iniziare."
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "Correntemente Selezionato"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Opzioni pagina principale"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Sfondo"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Mostra \"In pausa\" durante la visualizzazione delle immagini"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Riproduci i trailer in finestra [COLOR=grey3](Solo nel pannello informazioni video)[/COLOR]"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Opzioni Varie"
+
+msgctxt "#31107"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Nascondi la spunta letto dai nomi dei file video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "Nascondi i bottoni del menù principale"
+
+msgctxt "#31109"
+msgid "Media backgrounds"
+msgstr "Sfondi per le sezioni principali"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Modifica lo Sfondo per la Sezione"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Nascondi"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Opzioni"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Singola Immagine"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Immagini Multiple"
+
+msgctxt "#31115"
+msgid "Customizer"
+msgstr "Personalizzazione"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr ""
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "Mostra i Video Aggiunti di Recente"
+
+msgctxt "#31118"
+msgid "Home Page Programs Submenu"
+msgstr "Sottomenù Pagina Principale"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "Nascondi i Fanart sullo sfondo"
+
+msgctxt "#31120"
+msgid "BUTTON LABEL"
+msgstr "ETICHETTA BOTTONE"
+
+msgctxt "#31122"
+msgid "Weather Page"
+msgstr "Pagina Meteo"
+
+msgctxt "#31123"
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "Usa i \"Posters\" invece dei \"Banners\" per le Serie Tv"
+
+msgctxt "#31124"
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Mostra nello Sfondo il nome del Video \"In Riproduzione\" "
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Mostra nello Sfondo Visualizzazioni il nome del file \"In Riproduzione\""
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Riproduci le sigle TV (sonore) nell'archivio video (add-on TvTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "XBMC Testi Canzoni"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Add-on Testi"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Add-on Sottotitoli"
+
+msgctxt "#31134"
+msgid "Home Page Videos Submenu"
+msgstr "Sottomenù Home Page Video"
+
+msgctxt "#31135"
+msgid "Home Page Music Submenu"
+msgstr "Sottomenù Home Page Musica"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Submenu"
+msgstr "Sottomenù Home Page Immagini"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD Musica"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD Video"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Collegamenti"
+
+msgctxt "#31201"
+msgid "Categories"
+msgstr "Categorie"
+
+msgctxt "#31202"
+msgid "Show Cast"
+msgstr "Mostra il Cast"
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "Scegli la canzone"
+
+msgctxt "#31204"
+msgid "Section Links"
+msgstr "Sezione Links"
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr "Sorgente Testi"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr ""
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr ""
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr ""
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Temperatura Corrente"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Ultimo Aggiornamento"
+
+msgctxt "#31302"
+msgid "Menu"
+msgstr "Menù"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Fornitore dei dati"
+
+msgctxt "#31304"
+msgid "Picture"
+msgstr "Immagini"
+
+msgctxt "#31305"
+msgid "No Disc Media Detected"
+msgstr "Nessun Disco Rilevato"
+
+msgctxt "#31306"
+msgid "Eject"
+msgstr "Espelli"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr "Nascondi Fanart"
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr "Dettagli Film"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memoria Usata:"
+
+msgctxt "#31310"
+msgid "Track Number"
+msgstr "Numero Traccia"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Immagine Fanart [CR][CR]Nono disponibile[CR][CR] Premi il bottone per impostarla"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Scraper Corrente"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Scegli uno Scraper"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Opzioni Scansione Contenuti"
+
+msgctxt "#31315"
+msgid "Basic"
+msgstr "Base"
+
+msgctxt "#31317"
+msgid "Set Fanart Path"
+msgstr "Imposta il percorso per le immagini fanart"
+
+msgctxt "#31318"
+msgid "Small Fanart"
+msgstr "Fanart ridotte"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "Scegli il Profilo"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Ultimo Login"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Karaoke Song Selector"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Trasmessa"
+
+msgctxt "#31323"
+msgid "Latest Movies"
+msgstr "Ultimi Film"
+
+msgctxt "#31324"
+msgid "Latest Episodes"
+msgstr "Ultimi Episodi"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Opzioni Playlist"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Creato"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Risoluzione"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "Aggiunti di Recente"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Timer Impostato![/B] [COLOR=grey2] - Il Sistema Verrà Spento in[/COLOR]"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "Premi il bottone per riprodurre [CR][CR]il trailer del Film"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "Dettagli Album"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pausa"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stop"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Avanti Veloce"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Indietro"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menù Filmato"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Scarica Sottotitoli"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Predefinito della Skin"
+
+msgctxt "#31391"
+msgid "Skin default with no Caps"
+msgstr "Predefinito della Skin senza maiuscole"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Basato su Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]CONFIGURA LE IMPOSTAZIONI PER L'ASPETTO[/B][CR][CR]Cambia la skin · Imposta Lingua e Regione · Cambia le impostazioni di elenco dei file[CR]Imposta uno screensaver"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]CONFIGURA IMPOSTAZIONI VIDEO[/B][CR][CR]Gestisci la tua Libreria Video · Imposta le impostazioni di riproduzione dei video · Cambia impostazioni per le liste video[CR]Imposta il fonts dei sottotitoli"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]CONFIGURA IMPOSTAZIONI MUSICA[/B][CR][CR]Gestisci la tua Libreria Musicale · Imposta le impostazioni di riproduzione della musica · Cambia impostazioni per le liste audio[CR]Setup song submission · Imposta le opzioni per il karaoke"
+
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
+msgstr "[B]CONFIGURA IMPOSTAZIONI IMMAGINI[/B][CR][CR]Cambia impostazioni per le liste delle immagini· Configura lo slideshows"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]CONFIGURA IMPOSTAZIONI METEO[/B][CR][CR]Imposta tre città su cui avere le informazioni meteo"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]CONFIGURA IMPOSTAZIONI DI SISTEMA[/B][CR][CR]Imposta e calibra il video · Configura l'uscita Audio · Imposta i controlli remoti[CR]Imposta le ozioni di risparmio energetico · Abilita il Debug · Imposta il master lock"
+
+msgctxt "#31407"
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B]CONFIGURA IMPOSTAZIONI SKIN[/B][CR][CR]Configura la skin Confluence · Aggiungi o rimuovi oggetti dalla pagina principale[CR]Cambia gli sfondi"
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B]CONFIGURA GLI ADD-ONS[/B][CR][CR]Gestisci i tuoi Add-ons installati · Cerca ed installa gli Add-ons da xbmc.org[CR]Modifica le impostazioni degli Add-ons"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr ""
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Scegli il tuo profilo utente di XBMC[CR]per fare il login e continuare"
+
+msgctxt "#31900"
+msgid "Weather Maps"
+msgstr "Mappa Meteo"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Previsioni a 36 Ore"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Previsioni Orarie"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Previsioni per il Weekend"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Previsioni a 10 giorni"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Previsioni"
+
+msgctxt "#31906"
+msgid "Maps & Video"
+msgstr "Mappe & Video"
+
+msgctxt "#31907"
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "Previsioni Video [COLOR=grey2](Riproduzione a schermo intero)[/COLOR]"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "Percentuale di precipitazioni"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Recuper informazioni previsioni..."

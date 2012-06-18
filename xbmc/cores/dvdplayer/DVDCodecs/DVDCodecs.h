@@ -28,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include "cores/VideoRenderers/RenderFormats.h"
 
 extern "C" {
 #ifndef HAVE_MMX
@@ -65,4 +66,10 @@ public:
   std::string m_name;
   std::string m_value;
 };
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+
+class CDVDCodecOptions
+{
+public:
+  std::vector<CDVDCodecOption> m_keys;
+  std::vector<ERenderFormat>   m_formats;
+};

@@ -22,6 +22,7 @@
  */
 
 #include "system.h" // for HANDLE and SOCKET
+#include <stdlib.h>
 
 namespace AUTOPTR
 {

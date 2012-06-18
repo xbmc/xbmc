@@ -130,7 +130,7 @@ bool CGUITextureBase::AllocateOnDemand()
 {
   if (m_visible)
   { // visible, so make sure we're allocated
-    if (!IsAllocated() || (m_isAllocated == LARGE && !m_texture.size()))
+    if (!IsAllocated() || (m_isAllocated == IN_PROGRESS))
       return AllocResources();
   }
   else
@@ -315,11 +315,12 @@ bool CGUITextureBase::AllocResources()
       CTextureArray texture;
       if (g_largeTextureManager.GetImage(m_info.filename, texture, !IsAllocated()))
       {
-        m_isAllocated = LARGE;
+        m_isAllocated = IN_PROGRESS;
 
         if (!texture.size()) // not ready as yet
           return false;
 
+        m_isAllocated = LARGE;
         m_texture = texture;
         changed = true;
       }
@@ -455,7 +456,9 @@ bool CGUITextureBase::CalculateSize()
 
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
-  if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
+  if (m_isAllocated == IN_PROGRESS)
+    g_largeTextureManager.ReleaseQueuedImage(m_info.filename);
+  else if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
     g_largeTextureManager.ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
   else if (m_isAllocated == NORMAL && m_texture.size())
     g_TextureManager.ReleaseTexture(m_info.filename);
@@ -654,9 +657,7 @@ bool CGUITextureBase::SetFileName(const CStdString& filename)
 
 int CGUITextureBase::GetOrientation() const
 {
-  if (m_isAllocated == LARGE)
-    return m_info.orientation;
-  // otherwise multiply our orientations
+  // multiply our orientations
   static char orient_table[] = { 0, 1, 2, 3, 4, 5, 6, 7,
                                  1, 0, 3, 2, 5, 4, 7, 6,
                                  2, 3, 0, 1, 6, 7, 4, 5,

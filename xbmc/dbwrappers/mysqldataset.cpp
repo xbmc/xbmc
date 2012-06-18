@@ -213,7 +213,7 @@ int MysqlDatabase::copy(const char *backup_name) {
   if ( !active || conn == NULL)
     throw DbErrors("Can't copy database: no active connection...");
 
-  char sql[512];
+  char sql[4096];
   int ret;
 
   // ensure we're connected to the db we are about to copy
@@ -258,7 +258,29 @@ int MysqlDatabase::copy(const char *backup_name) {
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
-        throw DbErrors("Can't copy data for table '%s'\nError: %s", db.c_str(), ret);
+        throw DbErrors("Can't copy data for table '%s'\nError: %s", row[0], ret);
+    }
+
+    // after table are recreated and repopulated we can recreate views
+    // grab a list of views and their definitions
+    sprintf(sql, "SELECT TABLE_NAME, VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '%s'", db.c_str());
+    if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      throw DbErrors("Can't determine views to recreate.");
+
+    // get list of all views from old DB
+    MYSQL_RES* resViews = mysql_store_result(conn);
+
+    if (resViews)
+    {
+      while ( (row=mysql_fetch_row(resViews)) != NULL )
+      {
+        sprintf(sql, "CREATE VIEW %s.%s AS %s",
+                backup_name, row[0], row[1]);
+
+        if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+          throw DbErrors("Can't create view '%s'\nError: %s", db.c_str(), ret);
+      }
+      mysql_free_result(resViews);
     }
   }
 
@@ -271,7 +293,7 @@ int MysqlDatabase::query_with_reconnect(const char* query) {
 
   // try to reconnect if server is gone
   while ( ((result = mysql_real_query(conn, query, strlen(query))) != MYSQL_OK) &&
-          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR) && 
+          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR || result == CR_SERVER_LOST) &&
           (attempts-- > 0) )
   {
     CLog::Log(LOGINFO,"MYSQL server has gone. Will try %d more attempt(s) to reconnect.", attempts);
@@ -1198,9 +1220,9 @@ MYSQL* MysqlDataset::handle(){
 void MysqlDataset::make_query(StringList &_sql) {
   string query;
   int result = 0;
+  if (db == NULL) throw DbErrors("No Database Connection");
   try
   {
-    if (db == NULL) throw DbErrors("No Database Connection");
     if (autocommit) db->start_transaction();
 
     for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); i++)
@@ -1297,6 +1319,20 @@ bool MysqlDataset::dropIndex(const char *table, const char *index)
   return true;
 }
 
+static bool ci_test(char l, char r)
+{
+  return tolower(l) == tolower(r);
+}
+
+static size_t ci_find(const string& where, const string& what)
+{
+  std::string::const_iterator loc = std::search(where.begin(), where.end(), what.begin(), what.end(), ci_test);
+  if (loc == where.end())
+    return string::npos;
+  else
+    return loc - where.begin();
+}
+
 int MysqlDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
   string qry = sql;
@@ -1306,25 +1342,25 @@ int MysqlDataset::exec(const string &sql) {
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
   size_t loc;
 
-  if ( (loc=qry.find("integer primary key")) != string::npos)
+  if ( (loc=ci_find(qry, "integer primary key")) != string::npos)
   {
     qry = qry.insert(loc + 19, " auto_increment ");
   }
 
   // force the charset and collation to UTF-8
-  if ( qry.find("CREATE TABLE") != string::npos )
+  if ( ci_find(qry, "CREATE TABLE") != string::npos )
   {
     qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
   // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
-  else if ( qry.find("CREATE TRIGGER") != string::npos )
+  else if ( ci_find(qry, "CREATE TRIGGER") != string::npos )
   {
-    if ( (loc=qry.find("BEGIN ")) != string::npos )
+    if ( (loc=ci_find(qry, "BEGIN ")) != string::npos )
     {
         qry.replace(loc, 6, "");
     }
 
-    if ( (loc=qry.find(" END")) != string::npos )
+    if ( (loc=ci_find(qry, " END")) != string::npos )
     {
         qry.replace(loc, 4, "");
     }

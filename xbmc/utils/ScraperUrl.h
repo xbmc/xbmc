@@ -23,10 +23,11 @@
  */
 
 #include <vector>
+#include <map>
 #include "StdString.h"
 
 class TiXmlElement;
-namespace XFILE { class CFileCurl; }
+namespace XFILE { class CCurlFile; }
 
 class CScraperUrl
 {
@@ -60,6 +61,7 @@ public:
 
   const SUrlEntry GetFirstThumb() const;
   const SUrlEntry GetSeasonThumb(int) const;
+  void GetSeasonThumbs(std::map<int, std::string> &thumbs) const;
 
   /*! \brief fetch the full URL (including referrer) of a thumb
    \param URL entry to use to create the full URL
@@ -73,7 +75,7 @@ public:
    */
   void GetThumbURLs(std::vector<CStdString> &thumbs, int season = -1) const;
   void Clear();
-  static bool Get(const SUrlEntry&, std::string&, XFILE::CFileCurl& http,
+  static bool Get(const SUrlEntry&, std::string&, XFILE::CCurlFile& http,
                  const CStdString& cacheContext);
   static bool DownloadThumbnail(const CStdString &thumb, const SUrlEntry& entry);
 

@@ -19,10 +19,10 @@ SRCS=Application.cpp \
      PlayListPlayer.cpp \
      PartyModeManager.cpp \
      SectionLoader.cpp \
-     SortFileItem.cpp \
      SystemGlobals.cpp \
      Temperature.cpp \
      TextureCache.cpp \
+     TextureCacheJob.cpp \
      TextureDatabase.cpp \
      ThumbLoader.cpp \
      ThumbnailCache.cpp \
@@ -32,8 +32,13 @@ SRCS=Application.cpp \
      XBApplicationEx.cpp \
      XBDateTime.cpp \
      xbmc.cpp \
+     XbmcContext.cpp \
 
 LIB=xbmc.a
+
+ifneq (@USE_LIBXBMC@,1)
+SRCS += main.cpp
+endif
 
 DISTCLEAN_FILES=DllPaths_generated.h
 

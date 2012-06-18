@@ -209,7 +209,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
             r = *buf++;
             g = *buf++;
             b = *buf++;
-            c->pal[i] = (r << 16) | (g << 8) | b;
+            c->pal[i] = 0xFF << 24 | r << 16 | g << 8 | b;
         }
         pc = 1;
         buf_size -= 768+4;
@@ -240,13 +240,13 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     switch(compr){
     case -1:
         c->pic.key_frame = 0;
-        c->pic.pict_type = FF_P_TYPE;
+        c->pic.pict_type = AV_PICTURE_TYPE_P;
         if(c->prev.data[0])
             memcpy(c->pic.data[0], c->prev.data[0], c->pic.linesize[0] * avctx->height);
         else{ // Should happen only when first frame is 'NULL'
             memset(c->pic.data[0], 0, c->pic.linesize[0] * avctx->height);
             c->pic.key_frame = 1;
-            c->pic.pict_type = FF_I_TYPE;
+            c->pic.pict_type = AV_PICTURE_TYPE_I;
         }
         break;
     case 2:
@@ -254,7 +254,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     case 4:
     case 5:
         c->pic.key_frame = !(compr & 1);
-        c->pic.pict_type = (compr & 1) ? FF_P_TYPE : FF_I_TYPE;
+        c->pic.pict_type = (compr & 1) ? AV_PICTURE_TYPE_P : AV_PICTURE_TYPE_I;
         for(j = 0; j < avctx->height; j++){
             if(compr & 1){
                 for(i = 0; i < avctx->width; i++)
@@ -269,7 +269,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     case 12: // ScummVM coding
     case 13:
         c->pic.key_frame = 0;
-        c->pic.pict_type = FF_P_TYPE;
+        c->pic.pict_type = AV_PICTURE_TYPE_P;
         decode_13(avctx, c, c->pic.data[0], srcptr, c->prev.data[0]);
         break;
     default:
@@ -295,6 +295,9 @@ static av_cold int decode_init(AVCodecContext *avctx)
     c->avctx = avctx;
     avctx->pix_fmt = PIX_FMT_PAL8;
 
+    avcodec_get_frame_defaults(&c->pic);
+    avcodec_get_frame_defaults(&c->prev);
+
     c->dsize = avctx->width * avctx->height * 2;
     if((c->decomp_buf = av_malloc(c->dsize)) == NULL) {
         av_log(avctx, AV_LOG_ERROR, "Can't allocate decompression buffer.\n");
@@ -318,15 +321,14 @@ static av_cold int decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_dxa_decoder = {
-    "dxa",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_DXA,
-    sizeof(DxaDecContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "dxa",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_DXA,
+    .priv_data_size = sizeof(DxaDecContext),
+    .init           = decode_init,
+    .close          = decode_end,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Feeble Files/ScummVM DXA"),
 };
 

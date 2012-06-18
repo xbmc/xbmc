@@ -28,6 +28,7 @@
 #include <math.h>
 
 #ifdef HAS_SDL_JOYSTICK
+#include <SDL/SDL.h>
 
 using namespace std;
 
@@ -77,7 +78,7 @@ void CJoystick::Initialize()
     {
       SDL_Joystick *joy = SDL_JoystickOpen(i);
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
       // On OS X, the 360 controllers are handled externally, since the SDL code is
       // really buggy and doesn't handle disconnects.
       //
@@ -406,6 +407,26 @@ float CJoystick::SetDeadzone(float val)
   if (val>1) val=1;
   m_DeadzoneRange = (int)(val*MAX_AXISAMOUNT);
   return val;
+}
+
+bool CJoystick::Reinitialize()
+{
+  // Restart SDL joystick subsystem
+  SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+  if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
+  {
+    CLog::Log(LOGERROR, "Stop joystick subsystem failed");
+    return false;
+  }
+  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
+  {
+    CLog::Log(LOGERROR, "Restart joystick subsystem failed : %s",SDL_GetError());
+    return false;
+  }
+
+  Initialize();
+
+  return true;
 }
 
 #endif

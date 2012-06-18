@@ -29,7 +29,7 @@
 #include "pictures/Picture.h"
 #include "utils/md5.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "GUIInfoManager.h"
 #include "MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
@@ -47,7 +47,7 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -70,7 +70,7 @@ using namespace XFILE;
 
 CLastFmManager* CLastFmManager::m_pInstance=NULL;
 
-CLastFmManager::CLastFmManager()
+CLastFmManager::CLastFmManager() : CThread("CLastFmManager")
 {
   m_RadioTrackQueue = new CPlayList;
 }
@@ -130,7 +130,7 @@ bool CLastFmManager::RadioHandShake()
 
   m_RadioSession = "";
 
-  CFileCurl http;
+  CCurlFile http;
   CStdString html;
 
   CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpass");
@@ -221,7 +221,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 
   UpdateProgressDialog(15252); // Selecting station...
 
-  CFileCurl http;
+  CCurlFile http;
   CStdString url;
   CStdString html;
 
@@ -274,7 +274,7 @@ bool CLastFmManager::RequestRadioTracks()
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/xspf.php?sk=%s&discovery=0&desktop=", m_RadioSession);
   {
-    CFileCurl http;
+    CCurlFile http;
     if (!http.Get(url, html))
     {
       m_RadioSession.empty();
@@ -285,7 +285,7 @@ bool CLastFmManager::RequestRadioTracks()
   //CLog::Log(LOGDEBUG, "RequestRadioTracks: %s", html.c_str());
 
   //parse playlist
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   xmlDoc.Parse(html);
   if (xmlDoc.Error())
@@ -418,7 +418,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
   unsigned int start = XbmcThreads::SystemClockMillis();
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
-  CFileCurl http;
+  CCurlFile http;
   for (int i = 0; i < nrInitialTracksToAdd && i < iNrCachedTracks; i++)
   {
     CFileItemPtr item = (*m_RadioTrackQueue)[i];
@@ -534,7 +534,7 @@ void CLastFmManager::Update()
     if (iNrCachedTracks == 0)
     {
       //get more tracks
-      if (ThreadHandle() != NULL)
+      if (IsRunning())
       {
         m_hWorkerEvent.Set();
       }
@@ -633,7 +633,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
   {
     m_RadioSession = "";
   }
-  if (m_ThreadHandle)
+  if (IsRunning())
   {
     m_bStop = true;
     m_hWorkerEvent.Set();
@@ -712,7 +712,7 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   CreateMD5Hash(strAuth, strAuth);
 
   //create request xml
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
   doc.LinkEndChild( decl );
 
@@ -775,7 +775,7 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   CStdString strBody;
   strBody << doc;
 
-  CFileCurl http;
+  CCurlFile http;
   CStdString html;
   CStdString url = "http://ws.audioscrobbler.com/1.0/rw/xmlrpc.php";
   http.SetMimeType("text/xml");
@@ -801,7 +801,7 @@ bool CLastFmManager::Love(bool askConfirmation)
     if (infoTag)
     {
       CStdString strTitle = infoTag->GetTitle();
-      CStdString strArtist = infoTag->GetArtist();
+      CStdString strArtist = StringUtils::Join(infoTag->GetArtist(), g_advancedSettings.m_musicItemSeparator);
 
       CStdString strInfo;
       strInfo.Format("%s - %s", strArtist, strTitle);
@@ -834,7 +834,7 @@ bool CLastFmManager::Ban(bool askConfirmation)
     if (infoTag)
     {
       CStdString strTitle = infoTag->GetTitle();
-      CStdString strArtist = infoTag->GetArtist();
+      CStdString strArtist = StringUtils::Join(infoTag->GetArtist(), g_advancedSettings.m_musicItemSeparator);
 
       CStdString strInfo;
       strInfo.Format("%s - %s", strArtist, strTitle);
@@ -868,7 +868,7 @@ bool CLastFmManager::Love(const CMusicInfoTag& musicinfotag)
   }
 
   CStdString strTitle = musicinfotag.GetTitle();
-  CStdString strArtist = musicinfotag.GetArtist();
+  CStdString strArtist = StringUtils::Join(musicinfotag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
 
   CStdString strFilePath;
   if (m_CurrentSong.CurrentSong && !m_CurrentSong.CurrentSong->IsLastFM())
@@ -908,7 +908,7 @@ bool CLastFmManager::Ban(const CMusicInfoTag& musicinfotag)
     return false;
   }
 
-  if (CallXmlRpc("banTrack", musicinfotag.GetArtist(), musicinfotag.GetTitle()))
+  if (CallXmlRpc("banTrack", StringUtils::Join(musicinfotag.GetArtist(), g_advancedSettings.m_musicItemSeparator), musicinfotag.GetTitle()))
   {
     //we banned this track so skip to the next track
     g_application.getApplicationMessenger().ExecBuiltIn("playercontrol(next)");
@@ -927,7 +927,7 @@ bool CLastFmManager::Unlove(const CMusicInfoTag& musicinfotag, bool askConfirmat
   }
 
   CStdString strTitle = musicinfotag.GetTitle();
-  CStdString strArtist = musicinfotag.GetArtist();
+  CStdString strArtist = StringUtils::Join(musicinfotag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
 
   if (strArtist.IsEmpty())
   {
@@ -982,7 +982,7 @@ bool CLastFmManager::Unban(const CMusicInfoTag& musicinfotag, bool askConfirmati
   }
 
   CStdString strTitle = musicinfotag.GetTitle();
-  CStdString strArtist = musicinfotag.GetArtist();
+  CStdString strArtist = StringUtils::Join(musicinfotag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
 
   if (strArtist.IsEmpty())
   {
@@ -1022,7 +1022,7 @@ bool CLastFmManager::CanLove()
     (
       m_CurrentSong.CurrentSong->HasMusicInfoTag() &&
       m_CurrentSong.CurrentSong->GetMusicInfoTag()->Loaded() &&
-      !m_CurrentSong.CurrentSong->GetMusicInfoTag()->GetArtist().IsEmpty() &&
+      !m_CurrentSong.CurrentSong->GetMusicInfoTag()->GetArtist().empty() &&
       !m_CurrentSong.CurrentSong->GetMusicInfoTag()->GetTitle().IsEmpty()
     ))
   );

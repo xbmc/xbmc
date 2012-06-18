@@ -22,6 +22,8 @@
 
 class CJob;
 
+#include <stddef.h>
+
 /*!
  \ingroup jobs
  \brief Callback interface for asynchronous jobs.
@@ -66,7 +68,7 @@ public:
    \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
    \param progress the current progress of the job, out of total.
    \param total the total amount of work to be processed.
-   \param job the job that has been processed.  The job will be destroyed after this function returns
+   \param job the job that has been processed.
    \sa CJobManager and CJob
    */
   virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) {};

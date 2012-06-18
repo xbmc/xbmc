@@ -19,8 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/audioconvert.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/dict.h"
 #include "avformat.h"
+#include "internal.h"
 #include "apetag.h"
 #include "id3v1.h"
 
@@ -75,7 +78,7 @@ static int wv_probe(AVProbeData *p)
         return 0;
 }
 
-static int wv_read_block_header(AVFormatContext *ctx, ByteIOContext *pb, int append)
+static int wv_read_block_header(AVFormatContext *ctx, AVIOContext *pb, int append)
 {
     WVContext *wc = ctx->priv_data;
     uint32_t tag, ver;
@@ -83,35 +86,38 @@ static int wv_read_block_header(AVFormatContext *ctx, ByteIOContext *pb, int app
     int rate, bpp, chan;
     uint32_t chmask;
 
-    wc->pos = url_ftell(pb);
+    wc->pos = avio_tell(pb);
     if(!append){
-        tag = get_le32(pb);
+        tag = avio_rl32(pb);
         if (tag != MKTAG('w', 'v', 'p', 'k'))
             return -1;
-        size = get_le32(pb);
+        size = avio_rl32(pb);
         if(size < 24 || size > WV_BLOCK_LIMIT){
             av_log(ctx, AV_LOG_ERROR, "Incorrect block size %i\n", size);
             return -1;
         }
         wc->blksize = size;
-        ver = get_le16(pb);
+        ver = avio_rl16(pb);
         if(ver < 0x402 || ver > 0x410){
             av_log(ctx, AV_LOG_ERROR, "Unsupported version %03X\n", ver);
             return -1;
         }
-        get_byte(pb); // track no
-        get_byte(pb); // track sub index
-        wc->samples = get_le32(pb); // total samples in file
-        wc->soff = get_le32(pb); // offset in samples of current block
-        get_buffer(pb, wc->extra, WV_EXTRA_SIZE);
+        avio_r8(pb); // track no
+        avio_r8(pb); // track sub index
+        wc->samples = avio_rl32(pb); // total samples in file
+        wc->soff = avio_rl32(pb); // offset in samples of current block
+        avio_read(pb, wc->extra, WV_EXTRA_SIZE);
     }else{
         size = wc->blksize;
     }
     wc->flags = AV_RL32(wc->extra + 4);
+    // blocks with zero samples don't contain actual audio information and should be ignored
+    if (!AV_RN32(wc->extra))
+        return 0;
     //parse flags
     bpp = ((wc->flags & 3) + 1) << 3;
     chan = 1 + !(wc->flags & WV_MONO);
-    chmask = wc->flags & WV_MONO ? CH_LAYOUT_MONO : CH_LAYOUT_STEREO;
+    chmask = wc->flags & WV_MONO ? AV_CH_LAYOUT_MONO : AV_CH_LAYOUT_STEREO;
     rate = wv_rates[(wc->flags >> 23) & 0xF];
     wc->multichannel = !!((wc->flags & WV_SINGLE_BLOCK) != WV_SINGLE_BLOCK);
     if(wc->multichannel){
@@ -119,15 +125,15 @@ static int wv_read_block_header(AVFormatContext *ctx, ByteIOContext *pb, int app
         chmask = wc->chmask;
     }
     if((rate == -1 || !chan) && !wc->block_parsed){
-        int64_t block_end = url_ftell(pb) + wc->blksize - 24;
-        if(url_is_streamed(pb)){
+        int64_t block_end = avio_tell(pb) + wc->blksize - 24;
+        if(!pb->seekable){
             av_log(ctx, AV_LOG_ERROR, "Cannot determine additional parameters\n");
             return -1;
         }
-        while(url_ftell(pb) < block_end){
+        while(avio_tell(pb) < block_end){
             int id, size;
-            id = get_byte(pb);
-            size = (id & 0x80) ? get_le24(pb) : get_byte(pb);
+            id = avio_r8(pb);
+            size = (id & 0x80) ? avio_rl24(pb) : avio_r8(pb);
             size <<= 1;
             if(id&0x40)
                 size--;
@@ -137,24 +143,24 @@ static int wv_read_block_header(AVFormatContext *ctx, ByteIOContext *pb, int app
                     av_log(ctx, AV_LOG_ERROR, "Insufficient channel information\n");
                     return -1;
                 }
-                chan = get_byte(pb);
+                chan = avio_r8(pb);
                 switch(size - 2){
                 case 0:
-                    chmask = get_byte(pb);
+                    chmask = avio_r8(pb);
                     break;
                 case 1:
-                    chmask = get_le16(pb);
+                    chmask = avio_rl16(pb);
                     break;
                 case 2:
-                    chmask = get_le24(pb);
+                    chmask = avio_rl24(pb);
                     break;
                 case 3:
-                    chmask = get_le32(pb);
+                    chmask = avio_rl32(pb);
                     break;
                 case 5:
-                    url_fskip(pb, 1);
-                    chan |= (get_byte(pb) & 0xF) << 8;
-                    chmask = get_le24(pb);
+                    avio_skip(pb, 1);
+                    chan |= (avio_r8(pb) & 0xF) << 8;
+                    chmask = avio_rl24(pb);
                     break;
                 default:
                     av_log(ctx, AV_LOG_ERROR, "Invalid channel info size %d\n", size);
@@ -162,19 +168,19 @@ static int wv_read_block_header(AVFormatContext *ctx, ByteIOContext *pb, int app
                 }
                 break;
             case 0x27:
-                rate = get_le24(pb);
+                rate = avio_rl24(pb);
                 break;
             default:
-                url_fskip(pb, size);
+                avio_skip(pb, size);
             }
             if(id&0x40)
-                url_fskip(pb, 1);
+                avio_skip(pb, 1);
         }
         if(rate == -1){
             av_log(ctx, AV_LOG_ERROR, "Cannot determine custom sampling rate\n");
             return -1;
         }
-        url_fseek(pb, block_end - wc->blksize + 24, SEEK_SET);
+        avio_seek(pb, block_end - wc->blksize + 24, SEEK_SET);
     }
     if(!wc->bpp) wc->bpp = bpp;
     if(!wc->chan) wc->chan = chan;
@@ -200,16 +206,22 @@ static int wv_read_block_header(AVFormatContext *ctx, ByteIOContext *pb, int app
 static int wv_read_header(AVFormatContext *s,
                           AVFormatParameters *ap)
 {
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     WVContext *wc = s->priv_data;
     AVStream *st;
 
     wc->block_parsed = 0;
-    if(wv_read_block_header(s, pb, 0) < 0)
-        return -1;
+    for(;;){
+        if(wv_read_block_header(s, pb, 0) < 0)
+            return -1;
+        if(!AV_RN32(wc->extra))
+            avio_skip(pb, wc->blksize - 24);
+        else
+            break;
+    }
 
     /* now we are ready: build format streams */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return -1;
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -218,16 +230,16 @@ static int wv_read_header(AVFormatContext *s,
     st->codec->channel_layout = wc->chmask;
     st->codec->sample_rate = wc->rate;
     st->codec->bits_per_coded_sample = wc->bpp;
-    av_set_pts_info(st, 64, 1, wc->rate);
+    avpriv_set_pts_info(st, 64, 1, wc->rate);
     st->start_time = 0;
     st->duration = wc->samples;
 
-    if(!url_is_streamed(s->pb)) {
-        int64_t cur = url_ftell(s->pb);
+    if(s->pb->seekable) {
+        int64_t cur = avio_tell(s->pb);
         ff_ape_parse_tag(s);
-        if(!av_metadata_get(s->metadata, "", NULL, AV_METADATA_IGNORE_SUFFIX))
+        if(!av_dict_get(s->metadata, "", NULL, AV_DICT_IGNORE_SUFFIX))
             ff_id3v1_read(s);
-        url_fseek(s->pb, cur, SEEK_SET);
+        avio_seek(s->pb, cur, SEEK_SET);
     }
 
     return 0;
@@ -239,6 +251,7 @@ static int wv_read_packet(AVFormatContext *s,
     WVContext *wc = s->priv_data;
     int ret;
     int size, ver, off;
+    int64_t pos;
 
     if (url_feof(s->pb))
         return AVERROR(EIO);
@@ -247,19 +260,20 @@ static int wv_read_packet(AVFormatContext *s,
             return -1;
     }
 
+    pos = wc->pos;
     off = wc->multichannel ? 4 : 0;
     if(av_new_packet(pkt, wc->blksize + WV_EXTRA_SIZE + off) < 0)
         return AVERROR(ENOMEM);
     if(wc->multichannel)
         AV_WL32(pkt->data, wc->blksize + WV_EXTRA_SIZE + 12);
     memcpy(pkt->data + off, wc->extra, WV_EXTRA_SIZE);
-    ret = get_buffer(s->pb, pkt->data + WV_EXTRA_SIZE + off, wc->blksize);
+    ret = avio_read(s->pb, pkt->data + WV_EXTRA_SIZE + off, wc->blksize);
     if(ret != wc->blksize){
         av_free_packet(pkt);
         return AVERROR(EIO);
     }
     while(!(wc->flags & WV_END_BLOCK)){
-        if(get_le32(s->pb) != MKTAG('w', 'v', 'p', 'k')){
+        if(avio_rl32(s->pb) != MKTAG('w', 'v', 'p', 'k')){
             av_free_packet(pkt);
             return -1;
         }
@@ -274,16 +288,16 @@ static int wv_read_packet(AVFormatContext *s,
             return -1;
         }
         wc->blksize = size;
-        ver = get_le16(s->pb);
+        ver = avio_rl16(s->pb);
         if(ver < 0x402 || ver > 0x410){
             av_free_packet(pkt);
             av_log(s, AV_LOG_ERROR, "Unsupported version %03X\n", ver);
             return -1;
         }
-        get_byte(s->pb); // track no
-        get_byte(s->pb); // track sub index
-        wc->samples = get_le32(s->pb); // total samples in file
-        wc->soff = get_le32(s->pb); // offset in samples of current block
+        avio_r8(s->pb); // track no
+        avio_r8(s->pb); // track sub index
+        wc->samples = avio_rl32(s->pb); // total samples in file
+        wc->soff = avio_rl32(s->pb); // offset in samples of current block
         if((ret = av_append_packet(s->pb, pkt, WV_EXTRA_SIZE)) < 0){
             av_free_packet(pkt);
             return ret;
@@ -303,7 +317,7 @@ static int wv_read_packet(AVFormatContext *s,
     pkt->stream_index = 0;
     wc->block_parsed = 1;
     pkt->pts = wc->soff;
-    av_add_index_entry(s->streams[0], wc->pos, pkt->pts, 0, 0, AVINDEX_KEYFRAME);
+    av_add_index_entry(s->streams[0], pos, pkt->pts, 0, 0, AVINDEX_KEYFRAME);
     return 0;
 }
 
@@ -317,20 +331,21 @@ static int wv_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp,
     int64_t pos, pts;
 
     /* if found, seek there */
-    if (index >= 0){
+    if (index >= 0 &&
+        timestamp <= st->index_entries[st->nb_index_entries - 1].timestamp) {
         wc->block_parsed = 1;
-        url_fseek(s->pb, st->index_entries[index].pos, SEEK_SET);
+        avio_seek(s->pb, st->index_entries[index].pos, SEEK_SET);
         return 0;
     }
     /* if timestamp is out of bounds, return error */
     if(timestamp < 0 || timestamp >= s->duration)
         return -1;
 
-    pos = url_ftell(s->pb);
+    pos = avio_tell(s->pb);
     do{
         ret = av_read_frame(s, pkt);
         if (ret < 0){
-            url_fseek(s->pb, pos, SEEK_SET);
+            avio_seek(s->pb, pos, SEEK_SET);
             return -1;
         }
         pts = pkt->pts;
@@ -340,12 +355,11 @@ static int wv_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp,
 }
 
 AVInputFormat ff_wv_demuxer = {
-    "wv",
-    NULL_IF_CONFIG_SMALL("WavPack"),
-    sizeof(WVContext),
-    wv_probe,
-    wv_read_header,
-    wv_read_packet,
-    NULL,
-    wv_read_seek,
+    .name           = "wv",
+    .long_name      = NULL_IF_CONFIG_SMALL("WavPack"),
+    .priv_data_size = sizeof(WVContext),
+    .read_probe     = wv_probe,
+    .read_header    = wv_read_header,
+    .read_packet    = wv_read_packet,
+    .read_seek      = wv_read_seek,
 };

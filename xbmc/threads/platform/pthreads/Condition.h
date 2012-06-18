@@ -25,8 +25,12 @@
 #include "threads/Helpers.h"
 
 #include <pthread.h>
-#include <sys/time.h>
-#include <assert.h>
+
+#ifdef TARGET_DARWIN
+  #include <sys/time.h> //for gettimeofday
+#else
+  #include <time.h> //for clock_gettime
+#endif
 
 namespace XbmcThreads
 {
@@ -59,18 +63,21 @@ namespace XbmcThreads
 
     inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
     { 
-      struct timeval tv;
       struct timespec ts;
 
-      gettimeofday(&tv,NULL);
+#ifdef TARGET_DARWIN
+      struct timeval tv;
+      gettimeofday(&tv, NULL);
+      ts.tv_nsec = tv.tv_usec * 1000;
+      ts.tv_sec  = tv.tv_sec;
+#else
+      clock_gettime(CLOCK_REALTIME, &ts);
+#endif
 
-      milliseconds += tv.tv_usec / 1000; // move the usecs onto milliseconds
+      ts.tv_nsec += milliseconds % 1000 * 1000000;
+      ts.tv_sec  += milliseconds / 1000 + ts.tv_nsec / 1000000000;
+      ts.tv_nsec %= 1000000000;
 
-      time_t tsecs = (time_t)(milliseconds/1000); // temporary used for assert
-      assert(tsecs >= (time_t)0);
-
-      ts.tv_sec = tv.tv_sec + tsecs;
-      ts.tv_nsec = (long)((milliseconds % (unsigned long)1000) * (unsigned long)1000000);
       return (pthread_cond_timedwait(&cond,&lock.get_underlying().mutex,&ts) == 0);
     }
 

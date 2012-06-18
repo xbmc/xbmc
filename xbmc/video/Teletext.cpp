@@ -34,7 +34,9 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 
-#ifndef HAS_SDL
+#ifdef HAS_SDL
+#include <SDL/SDL_stdinc.h>
+#else
 #define SDL_memset4(dst, val, len) memset(dst, val, (len)*4)
 #define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len)*4)
 #define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len)*4)
@@ -413,7 +415,7 @@ CTeletextDecoder::CTeletextDecoder()
 {
   memset(&m_RenderInfo, 0, sizeof(TextRenderInfo_t));
 
-  m_teletextFont                 = _P(TeletextFont);
+  m_teletextFont                 = CSpecialProtocol::TranslatePath(TeletextFont);
   m_TextureBuffer                = NULL;
   m_txtCache                     = NULL;
   m_Manager                      = NULL;

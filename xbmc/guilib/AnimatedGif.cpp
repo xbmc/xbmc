@@ -224,7 +224,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
   int GraphicExtensionFound = 0;
 
   // OPEN FILE
-  FILE *fd = fopen_utf8(_P(szFileName), "rb");
+  FILE *fd = fopen_utf8(CSpecialProtocol::TranslatePath(szFileName), "rb");
   if (!fd)
   {
     return 0;

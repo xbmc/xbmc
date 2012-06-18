@@ -37,6 +37,7 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace std;
 using namespace XFILE;
@@ -75,8 +76,8 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // clear out any old settings
   m_settings.clear();
   // create our settings
-  m_volume = g_settings.m_nVolumeLevel * 0.01f;
-  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, FormatDecibel, false);
+  m_volume = g_settings.m_fVolumeLevel;
+  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM, PercentAsDecibel, false);
   AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
   if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
   {
@@ -214,8 +215,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   // check and update anything that needs it
   if (setting.id == AUDIO_SETTINGS_VOLUME)
   {
-    g_settings.m_nVolumeLevel = (long)(m_volume * 100.0f);
-    g_application.SetVolume(int(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f));
+    g_settings.m_fVolumeLevel = m_volume;
+    g_application.SetVolume(m_volume, false);//false - value is not in percent
   }
   else if (setting.id == AUDIO_SETTINGS_VOLUME_AMPLIFICATION)
   {
@@ -352,7 +353,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
 
 void CGUIDialogAudioSubtitleSettings::FrameMove()
 {
-  m_volume = g_settings.m_nVolumeLevel * 0.01f;
+  m_volume = g_settings.m_fVolumeLevel;
   UpdateSetting(AUDIO_SETTINGS_VOLUME);
   if (g_application.m_pPlayer)
   {
@@ -362,6 +363,13 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
     UpdateSetting(SUBTITLE_SETTINGS_DELAY);
   }
   CGUIDialogSettings::FrameMove();
+}
+
+CStdString CGUIDialogAudioSubtitleSettings::PercentAsDecibel(float value, float interval)
+{
+  CStdString text;
+  text.Format("%2.1f dB", CAEUtil::PercentToGain(value));
+  return text;
 }
 
 CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)

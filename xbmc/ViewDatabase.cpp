@@ -90,16 +90,16 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
 
     CStdString sql;
     if (skin.IsEmpty())
-      sql = PrepareSQL("select * from view where window = %i and path like '%s'", window, path1.c_str());
+      sql = PrepareSQL("select * from view where window = %i and path='%s'", window, path1.c_str());
     else
-      sql = PrepareSQL("select * from view where window = %i and path like '%s' and skin='%s'", window, path1.c_str(), skin.c_str());
+      sql = PrepareSQL("select * from view where window = %i and path='%s' and skin='%s'", window, path1.c_str(), skin.c_str());
     m_pDS->query(sql.c_str());
 
     if (!m_pDS->eof())
     { // have some information
       state.m_viewMode = m_pDS->fv("viewMode").get_asInt();
       state.m_sortMethod = (SORT_METHOD)m_pDS->fv("sortMethod").get_asInt();
-      state.m_sortOrder = (SORT_ORDER)m_pDS->fv("sortOrder").get_asInt();
+      state.m_sortOrder = (SortOrder)m_pDS->fv("sortOrder").get_asInt();
       m_pDS->close();
       return true;
     }
@@ -123,7 +123,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
     URIUtils::AddSlashAtEnd(path1);
     if (path1.IsEmpty()) path1 = "root://";
 
-    CStdString sql = PrepareSQL("select idView from view where window = %i and path like '%s' and skin='%s'", window, path1.c_str(), skin.c_str());
+    CStdString sql = PrepareSQL("select idView from view where window = %i and path='%s' and skin='%s'", window, path1.c_str(), skin.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update the view

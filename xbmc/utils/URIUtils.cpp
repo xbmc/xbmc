@@ -103,7 +103,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     strFileMask = g_settings.m_pictureExtensions;
     strFileMask += "|" + g_settings.m_musicExtensions;
     strFileMask += "|" + g_settings.m_videoExtensions;
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
     strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.applescript|.workflow";
 #else
     strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg";
@@ -231,7 +231,8 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
 bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
 {
   return prot.Equals("zip")
-      || prot.Equals("rar");
+      || prot.Equals("rar")
+      || prot.Equals("bluray");
 }
 
 bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
@@ -361,7 +362,12 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath)
       i != g_advancedSettings.m_pathSubstitutions.end(); i++)
   {
     if (strncmp(strPath.c_str(), i->first.c_str(), i->first.size()) == 0)
-      return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+    {
+      if (strPath.size() > i->first.size())
+        return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+      else
+        return i->second;
+    }
   }
   return strPath;
 }
@@ -498,7 +504,7 @@ bool URIUtils::IsHD(const CStdString& strFileName)
   if (IsInArchive(strFileName))
     return IsHD(url.GetHostName());
 
-  return url.IsLocal();
+  return url.GetProtocol().IsEmpty() || url.GetProtocol() == "file";
 }
 
 bool URIUtils::IsDVD(const CStdString& strFile)
@@ -770,6 +776,11 @@ bool URIUtils::IsVideoDb(const CStdString& strFile)
 bool URIUtils::IsLastFM(const CStdString& strFile)
 {
   return strFile.Left(7).Equals("lastfm:");
+}
+
+bool URIUtils::IsBluray(const CStdString& strFile)
+{
+  return strFile.Left(7).Equals("bluray:");
 }
 
 bool URIUtils::IsDOSPath(const CStdString &path)

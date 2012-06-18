@@ -20,6 +20,7 @@
 
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
+#include "internal.h"
 #include "oggdec.h"
 
 static int skeleton_header(AVFormatContext *s, int idx)
@@ -60,8 +61,9 @@ static int skeleton_header(AVFormatContext *s, int idx)
         start_den = AV_RL64(buf+20);
 
         if (start_den) {
-            av_reduce(&start_time, &st->time_base.den, start_num, start_den, INT_MAX);
-            st->time_base.num = 1;
+            int base_den;
+            av_reduce(&start_time, &base_den, start_num, start_den, INT_MAX);
+            avpriv_set_pts_info(st, 64, 1, base_den);
             os->lastpts =
             st->start_time = start_time;
         }

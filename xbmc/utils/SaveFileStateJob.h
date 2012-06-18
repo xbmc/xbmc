@@ -37,7 +37,11 @@ bool CSaveFileStateJob::DoWork()
       CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
 
       CVideoDatabase videodatabase;
-      if (videodatabase.Open())
+      if (!videodatabase.Open())
+      {
+        CLog::Log(LOGWARNING, "%s - Unable to open video database. Can not save file state!", __FUNCTION__);
+      }
+      else
       {
         bool updateListing = false;
         // No resume & watched status for livetv
@@ -107,12 +111,16 @@ bool CSaveFileStateJob::DoWork()
         if (dialog && !dialog->IsDialogRunning())
 #endif
         {
-          // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
-
           CMusicDatabase musicdatabase;
-          if (musicdatabase.Open())
+          if (!musicdatabase.Open())
           {
+            CLog::Log(LOGWARNING, "%s - Unable to open music database. Can not save file state!", __FUNCTION__);
+          }
+          else
+          {
+            // consider this item as played
+            CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
+
             musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
             musicdatabase.Close();
           }

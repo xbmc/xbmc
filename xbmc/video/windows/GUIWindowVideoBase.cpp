@@ -26,6 +26,7 @@
 #include "utils/RegExp.h"
 #include "utils/Variant.h"
 #include "addons/AddonManager.h"
+#include "addons/GUIDialogAddonInfo.h"
 #include "addons/IAddon.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "GUIWindowVideoNav.h"
@@ -278,7 +279,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(), items,"",true,false,DIR_CACHE_ONCE,true,true);
+      CDirectory::GetDirectory(item.GetPath(), items, g_settings.m_videoExtensions);
       items.Stack();
 
       // check for media files
@@ -367,7 +368,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   bool bHasInfo=false;
 
   CVideoInfoTag movieDetails;
-  movieDetails.Reset();
   if (info)
   {
     m_database.Open(); // since we can be called from the music library
@@ -445,8 +445,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   if(!info)
     return false;
 
-  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialog && pDialog->IsScanning())
+  if (g_application.IsVideoScanning())
   {
     CGUIDialogOK::ShowAndGetInput(13346,14057,-1,-1);
     return false;
@@ -582,6 +581,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     {
       // 5. Download the movie information
       // show dialog that we're downloading the movie info
+
+      // clear artwork
+      item->SetThumbnailImage("");
+      item->ClearProperty("fanart_image");
+
       CFileItemList list;
       CStdString strPath=item->GetPath();
       if (item->IsVideoDb())
@@ -822,26 +826,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   db.Open();
   long startoffset = 0;
 
-  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
-                          CFileItem(CStackDirectory::GetFirstStackedFile(item->GetPath()),false).IsDVDImage()) )
-  {
-
-    CStdStringArray movies;
-    GetStackedFiles(item->GetPath(), movies);
-
-    /* check if any of the stacked files have a resume bookmark */
-    for (unsigned i = 0; i<movies.size();i++)
-    {
-      CBookmark bookmark;
-      if (db.GetResumeBookMark(movies[i], bookmark))
-      {
-        startoffset = (long)(bookmark.timeInSeconds*75);
-        startoffset += 0x10000000 * (i+1); /* store file number in here */
-        break;
-      }
-    }
-  }
-  else if (!item->IsNFO() && !item->IsPlayList())
+  if (!item->IsNFO() && !item->IsPlayList())
   {
     if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0.0)
       startoffset = (long)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
@@ -854,6 +839,25 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
       if (db.GetResumeBookMark(strPath, bookmark))
         startoffset = (long)(bookmark.timeInSeconds*75);
+
+      if (URIUtils::IsStack(strPath) && CFileItem(CStackDirectory::GetFirstStackedFile(strPath),false).IsDVDImage())
+      {
+        CStackDirectory dir;
+        CFileItemList movies;
+        dir.GetDirectory(strPath, movies);
+
+        /* check if any of the stacked files have a resume bookmark */
+        for (int i = 0; i < movies.Size(); i++)
+        {
+          CBookmark bookmark;
+          if (db.GetResumeBookMark(movies[i]->GetPath(), bookmark))
+          {
+            startoffset = (long)(bookmark.timeInSeconds);
+            startoffset += 0x10000000 * (i+1); /* store file number in here */
+            // don't break, we  take the last one!
+          }
+        }
+      }
     }
   }
   db.Close();
@@ -895,6 +899,14 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
       CContextButtons choices;
       bool resume = false;
 
+      if (item->IsVideoDb())
+      {
+        CStdString itemPath(item->GetPath());
+        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+        if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDVDImage())
+          choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
+      }
+
       if (!item->IsLiveTV())
       {
         CStdString resumeString = GetResumeString(*item);
@@ -929,6 +941,10 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
   case SELECT_ACTION_RESUME:
     item->m_lStartOffset = STARTOFFSET_RESUME;
     break;
+  case SELECT_ACTION_PLAYPART:
+    if (!OnPlayStackPart(iItem))
+      return false;
+    break;
   case SELECT_ACTION_PLAY:
   default:
     break;
@@ -946,6 +962,9 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
   if (item->GetPath().Equals("add") || item->IsParentFolder() ||
      (item->IsPlayList() && !URIUtils::GetExtension(item->GetPath()).Equals(".strm")))
     return false;
+
+  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+    return CGUIDialogAddonInfo::ShowForItem(item);
 
   ADDON::ScraperPtr scraper;
   if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
@@ -989,6 +1008,7 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 CStdString CGUIWindowVideoBase::GetResumeString(CFileItem item) 
 {
   CStdString resumeString;
+  CStdString partString;
   CVideoDatabase db;
   if (db.Open())
   {
@@ -996,7 +1016,20 @@ CStdString CGUIWindowVideoBase::GetResumeString(CFileItem item)
     CStdString itemPath(item.GetPath());
     if (item.IsVideoDb() || item.IsDVD())
       itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
-    if (db.GetResumeBookMark(itemPath, bookmark) )
+
+    if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDVDImage())
+    {
+      int startoffset = GetResumeItemOffset(&item);
+      if (startoffset > 0)
+      {
+        int selectedPart = (startoffset>>28);
+        startoffset = startoffset & ~0xF0000000;
+        partString.Format(g_localizeStrings.Get(23051).c_str(), selectedPart);
+        resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(startoffset)).c_str());
+        resumeString.append(" (").append(partString).append(")");
+      }
+    }
+    else if (db.GetResumeBookMark(itemPath, bookmark) )
       resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
     db.Close();
   }
@@ -1021,6 +1054,78 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
     }
   }
   return true;
+}
+
+bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
+{
+  /* if asked to resume somewhere, we should not show anything */
+  if (item->m_lStartOffset)
+    return true;
+
+  if (item->IsBDFile())
+  {
+    CStdString root = URIUtils::GetParentPath(item->GetPath());
+    URIUtils::RemoveSlashAtEnd(root);
+    if(URIUtils::GetFileName(root) == "BDMV")
+    {
+      CURL url("bluray://");
+      url.SetHostName(URIUtils::GetParentPath(root));
+      return ShowPlaySelection(item, url.Get());
+    }
+  }
+
+  return true;
+}
+
+bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item, const CStdString& directory)
+{
+
+  CFileItemList items;
+
+  if (!XFILE::CDirectory::GetDirectory(directory, items, XFILE::CDirectory::CHints(), true))
+  {
+    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for %s", directory.c_str());
+    return true;
+  }
+
+  if (items.Size() == 0)
+  {
+    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", directory.c_str());
+    return true;
+  }
+
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  while(true)
+  {
+    dialog->Reset();
+    dialog->SetHeading(25006 /* Select playback item */);
+    dialog->SetItems(&items);
+    dialog->SetUseDetails(true);
+    dialog->DoModal();
+
+    CFileItemPtr item_new = dialog->GetSelectedItem();
+    if(!item_new || dialog->GetSelectedLabel() < 0)
+    {
+      CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted %s", directory.c_str());
+      break;
+    }
+
+    if(item_new->m_bIsFolder == false)
+    {
+      item.reset(new CFileItem(*item));
+      item->SetPath(item_new->GetPath());
+      return true;
+    }
+
+    items.Clear();
+    if(!XFILE::CDirectory::GetDirectory(item_new->GetPath(), items, XFILE::CDirectory::CHints(), true) || items.Size() == 0)
+    {
+      CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", item_new->GetPath().c_str());
+      break;
+    }
+  }
+
+  return false;
 }
 
 bool CGUIWindowVideoBase::OnResumeItem(int iItem)
@@ -1080,12 +1185,13 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      if (!item->IsPlugin() && !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
+      if (!item->GetPath().Equals("add") && !item->IsPlugin() &&
+          !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
       {
         if (URIUtils::IsStack(path))
         {
           vector<int> times;
-          if (m_database.GetStackTimes(path,times))
+          if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDVDImage())
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
@@ -1102,6 +1208,10 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
         }
       }
+
+      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+        buttons.Add(CONTEXT_BUTTON_INFO,24003); // Add-on info
+
       if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
       { // get players
         VECPLAYERCORES vecCores;
@@ -1127,7 +1237,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
-      if (item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode > -1)
+      if (item->HasVideoInfoTag() && !item->m_bIsFolder && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
       }
@@ -1144,6 +1254,64 @@ void CGUIWindowVideoBase::GetNonContextButtons(int itemNumber, CContextButtons &
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
 }
 
+bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return false;
+
+  CFileItemPtr stack = m_vecItems->Get(iItem);
+  CStdString path(stack->GetPath());
+  if (stack->IsVideoDb())
+    path = stack->GetVideoInfoTag()->m_strFileNameAndPath;
+
+  if (!URIUtils::IsStack(path))
+    return false;
+
+  CFileItemList parts;
+  CDirectory::GetDirectory(path,parts);
+  CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+  if (!dlg) return true;
+  dlg->SetNumberOfFiles(parts.Size());
+  dlg->DoModal();
+  int selectedFile = dlg->GetSelectedFile();
+  if (selectedFile > 0)
+  {
+    // ISO stack
+    if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDVDImage())
+    {
+      CStdString resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile - 1].get()));
+      stack->m_lStartOffset = 0x10000000 * (selectedFile); /* store file number in here */
+      if (!resumeString.IsEmpty()) 
+      {
+        CContextButtons choices;
+        choices.Add(SELECT_ACTION_RESUME, resumeString);
+        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+        int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+        if (value == SELECT_ACTION_RESUME)
+          stack->m_lStartOffset += (long)CGUIWindowVideoBase::GetResumeItemOffset(parts[selectedFile - 1].get());
+        else if (value != SELECT_ACTION_PLAY)
+          return false; // if not selected PLAY, then we changed our mind so return
+      }
+    }
+    // regular stack
+    else
+    {
+      if (selectedFile > 1)
+      {
+        vector<int> times;
+        if (m_database.GetStackTimes(path,times))
+          stack->m_lStartOffset = times[selectedFile-2]*75; // wtf?
+      }
+      else
+        stack->m_lStartOffset = 0;
+    }
+
+
+  }
+
+  return true;
+}
+
 bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item;
@@ -1153,39 +1321,19 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      SScanSettings settings;
-      ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings);
-      OnAssignContent(item->GetPath(),0, info, settings);
+      OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
       return true;
     }
   case CONTEXT_BUTTON_PLAY_PART:
     {
-      CFileItemList items;
-      CStdString path(item->GetPath());
-      if (item->IsVideoDb())
-        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
-
-      CDirectory::GetDirectory(path,items);
-      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
-      if (!dlg) return true;
-      dlg->SetNumberOfFiles(items.Size());
-      dlg->DoModal();
-      int btn2 = dlg->GetSelectedFile();
-      if (btn2 > 0)
+      if (OnPlayStackPart(itemNumber)) 
       {
-        if (btn2 > 1)
-        {
-          vector<int> times;
-          if (m_database.GetStackTimes(path,times))
-            item->m_lStartOffset = times[btn2-2]*75; // wtf?
-        }
-        else
-          item->m_lStartOffset = 0;
-
         // call CGUIMediaWindow::OnClick() as otherwise autoresume will kick in
         CGUIMediaWindow::OnClick(itemNumber);
+        return true;
       }
-      return true;
+      else
+        return false;
     }
   case CONTEXT_BUTTON_QUEUE_ITEM:
     OnQueueItem(itemNumber);
@@ -1232,9 +1380,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_STOP_SCANNING:
     {
-      CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pScanDlg && pScanDlg->IsScanning())
-        pScanDlg->StopScanning();
+      g_application.StopVideoScan();
       return true;
     }
   case CONTEXT_BUTTON_SCAN:
@@ -1258,7 +1404,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (item->m_bIsFolder)
       {
         m_database.SetPathHash(strPath,""); // to force scan
-        OnScan(strPath);
+        OnScan(strPath, true);
       }
       else
         OnInfo(item.get(),info);
@@ -1302,25 +1448,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector<CStdString> &movies)
-{
-  CStdString strFilePath = strFilePath1;  // we're gonna be altering it
-
-  movies.clear();
-
-  CURL url(strFilePath);
-  if (url.GetProtocol() == "stack")
-  {
-    CStackDirectory dir;
-    CFileItemList items;
-    dir.GetDirectory(strFilePath, items);
-    for (int i = 0; i < items.Size(); ++i)
-      movies.push_back(items[i]->GetPath());
-  }
-  if (movies.empty())
-    movies.push_back(strFilePath);
 }
 
 bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
@@ -1371,85 +1498,16 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
-  CFileItemList movieList;
-  int selectedFile = 1;
-  long startoffset = item->m_lStartOffset;
+  CFileItemPtr movieItem(new CFileItem(*item));
 
-  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
-                          CFileItem(CStackDirectory::GetFirstStackedFile(item->GetPath()),false).IsDVDImage()) )
-  {
-    CStdStringArray movies;
-    GetStackedFiles(item->GetPath(), movies);
-
-    if (item->m_lStartOffset == STARTOFFSET_RESUME)
-    {
-      startoffset = GetResumeItemOffset(item);
-
-      if (startoffset & 0xF0000000) /* file is specified as a flag */
-      {
-        selectedFile = (startoffset>>28);
-        startoffset = startoffset & ~0xF0000000;
-      }
-      else
-      {
-        /* attempt to start on a specific time in a stack */
-        /* if we are lucky, we might have stored timings for */
-        /* this stack at some point */
-
-        m_database.Open();
-
-        /* figure out what file this time offset is */
-        vector<int> times;
-        m_database.GetStackTimes(item->GetPath(), times);
-        long totaltime = 0;
-        for (unsigned i = 0; i < times.size(); i++)
-        {
-          totaltime += times[i]*75;
-          if (startoffset < totaltime )
-          {
-            selectedFile = i+1;
-            startoffset -= totaltime - times[i]*75; /* rebase agains selected file */
-            break;
-          }
-        }
-        m_database.Close();
-      }
-    }
-    else
-    { // show file stacking dialog
-      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
-      if (dlg)
-      {
-        dlg->SetNumberOfFiles(movies.size());
-        dlg->DoModal();
-        selectedFile = dlg->GetSelectedFile();
-        if (selectedFile < 1)
-          return;
-      }
-    }
-    // add to our movie list
-    for (unsigned int i = 0; i < movies.size(); i++)
-    {
-      CFileItemPtr movieItem(new CFileItem(movies[i], false));
-      movieList.Add(movieItem);
-    }
-  }
-  else
-  {
-    CFileItemPtr movieItem(new CFileItem(*item));
-    movieList.Add(movieItem);
-  }
+  if(!ShowPlaySelection(movieItem))
+    return;
 
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   playlist.Clear();
-  for (int i = selectedFile - 1; i < (int)movieList.Size(); ++i)
-  {
-    if (i == selectedFile - 1)
-      movieList[i]->m_lStartOffset = startoffset;
-    playlist.Add(movieList[i]);
-  }
+  playlist.Add(movieItem);
 
   if(m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
@@ -1468,6 +1526,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 
   OnDeleteItem(m_vecItems->Get(iItem));
 
+  m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->GetPath());
   m_viewControl.SetSelectedItem(iItem);
 }
@@ -1494,8 +1553,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
   if (!g_settings.GetCurrentProfile().canWriteDatabases())
     return;
   // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
+  if (g_application.IsVideoScanning())
   {
     CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
     return;
@@ -1542,8 +1600,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
 void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
 {
   // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
+  if (g_application.IsVideoScanning())
   {
     CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
     return;
@@ -1565,7 +1622,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   }
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
     iType = VIDEODB_CONTENT_EPISODES;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_artist.empty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
   if (params.GetSetId() != -1 && params.GetMovieId() == -1)
     iType = VIDEODB_CONTENT_MOVIE_SETS;
@@ -1668,7 +1725,7 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
-  m_thumbLoader.Load(*m_vecItems);
+  m_thumbLoader.Load(*m_unfilteredItems);
 
   return true;
 }
@@ -1697,9 +1754,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
   }
 
-  m_stackingAvailable = !(items.IsTuxBox() || items.IsPlugin() ||
-                          items.IsAddonsPath() || items.IsRSS() ||
-                          items.IsInternetStream() || items.IsVideoDb());
+  m_stackingAvailable = StackingAvailable(items);
   // we may also be in a tvshow files listing
   // (ideally this should be removed, and our stack regexps tidied up if necessary
   // No "normal" episodes should stack, and multi-parts should be supported)
@@ -1713,24 +1768,15 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   return bResult;
 }
 
+bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
+{
+  return !(items.IsTuxBox()         || items.IsPlugin()  ||
+           items.IsAddonsPath()     || items.IsRSS()     ||
+           items.IsInternetStream() || items.IsVideoDb());
+}
+
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
 {
-  if (!items.GetPath().Equals("plugin://video/"))
-    items.SetCachedVideoThumbs();
-
-  if (items.GetContent() != "episodes")
-  { // we don't set cached fanart for episodes, as this requires a db fetch per episode
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      CFileItemPtr item = items[i];
-      if (!item->HasProperty("fanart_image"))
-      {
-        CStdString art = item->GetCachedFanart();
-        if (CFile::Exists(art))
-          item->SetProperty("fanart_image", art);
-      }
-    }
-  }
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
@@ -1783,17 +1829,17 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
 
   // set movie info
   movie.m_strTitle = strTitle;
-  movie.m_strGenre = strGenre;
+  movie.m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
 
   // everything is ok, so add to database
   m_database.Open();
   int idMovie = m_database.AddMovie(pItem->GetPath());
   movie.m_strIMDBNumber.Format("xx%08i", idMovie);
-  m_database.SetDetailsForMovie(pItem->GetPath(), movie);
+  m_database.SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
   m_database.Close();
 
   // done...
-  CGUIDialogOK::ShowAndGetInput(20177, movie.m_strTitle, movie.m_strGenre, movie.m_strIMDBNumber);
+  CGUIDialogOK::ShowAndGetInput(20177, movie.m_strTitle, StringUtils::Join(movie.m_genre, g_advancedSettings.m_videoItemSeparator), movie.m_strIMDBNumber);
 
   // library view cache needs to be cleared
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1924,15 +1970,13 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   }
 
   bool foundDirectly = false;
-  info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
+  info = m_database.GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
   return foundDirectly ? 1 : 0;
 }
 
 void CGUIWindowVideoBase::OnScan(const CStdString& strPath, bool scanAll)
 {
-  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialog)
-    pDialog->StartScanning(strPath, scanAll);
+    g_application.StartVideoScan(strPath, scanAll);
 }
 
 CStdString CGUIWindowVideoBase::GetStartFolder(const CStdString &dir)
@@ -1949,7 +1993,7 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
   if (!searchItems.Size())
     return;
 
-  searchItems.Sort(g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SORT_METHOD_LABEL_IGNORE_THE : SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  searchItems.Sort(g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SORT_METHOD_LABEL_IGNORE_THE : SORT_METHOD_LABEL, SortOrderAscending);
   for (int i = 0; i < searchItems.Size(); i++)
     searchItems[i]->SetLabel(prependLabel + searchItems[i]->GetLabel());
   results.Append(searchItems);
@@ -1984,19 +2028,18 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const CStdString &path, int label1, 
   return false;
 }
 
-void CGUIWindowVideoBase::OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
+void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
 {
   bool bScan=false;
   CVideoDatabase db;
   db.Open();
-  if (iFound == 0)
-  {
-    info = db.GetScraperForPath(path, settings);
-  }
-  
+
+  SScanSettings settings;
+  ADDON::ScraperPtr info = db.GetScraperForPath(path, settings);
+
   ADDON::ScraperPtr info2(info);
   
-  if (CGUIDialogContentSettings::Show(info, settings, bScan))
+  if (CGUIDialogContentSettings::Show(info, settings))
   {
     if(settings.exclude || (!info && info2))
     {
@@ -2007,14 +2050,12 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path, int iFound, AD
       if (OnUnAssignContent(path,20442,20443,20444))
         bScan = true;
     }
-    
-    db.SetScraperForPath(path,info,settings);
-    
-    if (bScan)
-    {
-      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pDialog)
-        pDialog->StartScanning(path, true);
-    }
+  }
+
+  db.SetScraperForPath(path,info,settings);
+
+  if (bScan)
+  {
+    g_application.StartVideoScan(path, true);
   }
 }

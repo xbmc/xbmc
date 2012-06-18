@@ -12,12 +12,13 @@ ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-shared \
-  --disable-toolbox-glue --disable-framework
+  --disable-toolbox-glue --disable-framework \
+  --with-system-ffi
 
 CONFIGURE_NATIVE= CFLAGS="" CXXFLAGS="" LDFLAGS="" CPPFLAGS="" \
-  CPP="/usr/bin/cpp" \
-  CC="gcc-4.2" \
-  CXX="g++-4.2" \
+  CPP="gcc -E" \
+  CC="gcc" \
+  CXX="g++" \
   LD="ld" \
   ./configure --prefix=$(TOOLCHAIN) --enable-shared --disable-toolbox-glue --disable-framework
 
@@ -42,6 +43,7 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); make install HOSTPYTHON=./hostpython
 	cd $(SOURCE); make distclean
 	cd $(SOURCE); patch -p1 <../Python-2.6.5-xcompile.patch
+	sed -ie "s#/usr/include/ffi#$(PREFIX)/include/ffi#" $(SOURCE)/setup.py
 	cd $(SOURCE); $(CONFIGURE)
 	cd $(SOURCE); make -j $(MAKE_JOBS) HOSTPYTHON=./hostpython HOSTPGEN=./Parser/hostpgen CROSS_COMPILE_TARGET=yes
 

@@ -29,13 +29,14 @@
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
 #include "win32/WIN32Util.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
   m_NeedRecalc = true;
 }
 
-void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags)
+void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format)
 {
   if (m_contrast != contrast)
   {
@@ -52,6 +53,11 @@ void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned in
     m_NeedRecalc = true;
     m_flags = flags;
   }
+  if (m_format != format)
+  {
+    m_NeedRecalc = true;
+    m_format = format;
+  }
 }
 
 D3DXMATRIX* CYUV2RGBMatrix::Matrix()
@@ -59,7 +65,7 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
   if (m_NeedRecalc)
   {
     TransformMatrix matrix;
-    CalculateYUVMatrix(matrix, m_flags, m_blacklevel, m_contrast);
+    CalculateYUVMatrix(matrix, m_flags, m_format, m_blacklevel, m_contrast);
 
     m_mat._11 = matrix.m[0][0];
     m_mat._12 = matrix.m[1][0];
@@ -199,18 +205,45 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt)
+bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt)
 {
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
   m_sourceWidth = sourceWidth;
   m_sourceHeight = sourceHeight;
+  m_format = fmt;
 
   unsigned int texWidth;
 
   DefinesMap defines;
 
-  if (fmt == YV12)
+  if (fmt == RENDER_FMT_YUV420P16)
+  {
+    defines["XBMC_YV12"] = "";
+    texWidth = sourceWidth;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 16 bit YV12 planes.");
+      return false;
+    }
+  }
+  else if (fmt == RENDER_FMT_YUV420P10)
+  {
+    defines["XBMC_YV12"] = "";
+    texWidth = sourceWidth;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 10 bit YV12 planes.");
+      return false;
+    }
+  }
+  else if (fmt == RENDER_FMT_YUV420P)
   {
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;
@@ -223,7 +256,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
       return false;
     }
   }
-  else if (fmt == NV12)
+  else if (fmt == RENDER_FMT_NV12)
   {
     defines["XBMC_NV12"] = "";
     texWidth = sourceWidth;
@@ -235,7 +268,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
       return false;
     }
   }
-  else if (fmt == YUY2)
+  else if (fmt == RENDER_FMT_YUYV422)
   {
     defines["XBMC_YUY2"] = "";
     texWidth = sourceWidth >> 1;
@@ -246,7 +279,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
       return false;
     }
   }
-  else if (fmt == UYVY)
+  else if (fmt == RENDER_FMT_UYVY422)
   {
     defines["XBMC_UYVY"] = "";
     texWidth = sourceWidth >> 1;
@@ -355,7 +388,8 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
 
   m_matrix.SetParameters(contrast * 0.02f,
                          brightness * 0.01f - 0.5f,
-                         flags);
+                         flags,
+                         m_format);
 }
 
 void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
@@ -714,6 +748,27 @@ bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int wi
   return true;
 }
 
+bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
+{
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  LPDIRECT3DSURFACE9 currentRT;
+  pD3DDevice->GetRenderTarget(0, &currentRT);
+
+  LPDIRECT3DSURFACE9 intermediateRT;
+  m_IntermediateTarget.GetSurfaceLevel(0, &intermediateRT);
+
+  pD3DDevice->SetRenderTarget(0, intermediateRT);
+
+  pD3DDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0L, 1.0f, 0L);
+
+  pD3DDevice->SetRenderTarget(0, currentRT);
+  currentRT->Release();
+  intermediateRT->Release();
+
+  return true;
+}
+
 void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                            unsigned int destWidth, unsigned int destHeight,
                                            CRect sourceRect,
@@ -723,6 +778,12 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
   || m_destWidth != destWidth || m_destHeight != destHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
   {
+    // fixme better: clearing the whole render target when changing the source/dest rect is not optimal.
+    // Problem is that the edges of the final picture may retain content when the rects change.
+    // For example when changing zoom value, the edges can retain content from the previous zoom value.
+    // Playing with coordinates was unsuccessful so far, this is a quick fix for release.
+    ClearIntermediateRenderTarget();
+
     m_sourceWidth = sourceWidth;
     m_sourceHeight = sourceHeight;
     m_destWidth = destWidth;

@@ -24,6 +24,8 @@
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -633,7 +635,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   tag->m_strShowTitle = event.title;
   tag->m_strPlot      = event.descs;
   tag->m_strStatus    = "livetv";
-  tag->m_strGenre     = GetGenre(event.content);
+  tag->m_genre        = StringUtils::Split(GetGenre(event.content), g_advancedSettings.m_videoItemSeparator);
 
   tag->m_strTitle = tag->m_strAlbum;
   if(tag->m_strShowTitle.length() > 0)
@@ -643,7 +645,6 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   item.m_strTitle = tag->m_strTitle;
   item.SetThumbnailImage(channel.icon);
   item.SetMimeType("video/X-htsp");
-  item.SetCachedVideoThumb();
   return true;
 }
 

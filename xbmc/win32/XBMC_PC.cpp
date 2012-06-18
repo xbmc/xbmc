@@ -29,6 +29,7 @@
 #include "XBDateTime.h"
 #include "threads/Thread.h"
 #include "Application.h"
+#include "XbmcContext.h"
 
 typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
                                         CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
@@ -36,48 +37,48 @@ typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hF
                                         CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
 
 
-// Minidump creation function 
-LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp ) 
+// Minidump creation function
+LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
 {
   // Create the dump file where the xbmc.exe resides
   CStdString errorMsg;
   CStdString dumpFile;
   CDateTime now(CDateTime::GetCurrentDateTime());
   dumpFile.Format("%s\\xbmc_crashlog-%04i%02i%02i-%02i%02i%02i.dmp", CWIN32Util::GetProfilePath().c_str(), now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
-  HANDLE hFile = CreateFile(dumpFile.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ); 
+  HANDLE hFile = CreateFile(dumpFile.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
   // Call MiniDumpWriteDump api with the dump file
-  if ( hFile && ( hFile != INVALID_HANDLE_VALUE ) ) 
+  if ( hFile && ( hFile != INVALID_HANDLE_VALUE ) )
   {
     // Load the DBGHELP DLL
-    HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");       
+    HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
     if (hDbgHelpDll)
     {
       MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
       if (pDump)
       {
         // Initialize minidump structure
-        MINIDUMP_EXCEPTION_INFORMATION mdei; 
+        MINIDUMP_EXCEPTION_INFORMATION mdei;
         mdei.ThreadId           = CThread::GetCurrentThreadId();
-        mdei.ExceptionPointers  = pEp; 
-        mdei.ClientPointers     = FALSE; 
+        mdei.ExceptionPointers  = pEp;
+        mdei.ClientPointers     = FALSE;
 
         // Call the minidump api with normal dumping
         // We can get more detail information by using other minidump types but the dump file will be
         // extermely large.
-        BOOL rv = pDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &mdei, 0, NULL); 
-        if( !rv ) 
+        BOOL rv = pDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &mdei, 0, NULL);
+        if( !rv )
         {
           errorMsg.Format("MiniDumpWriteDump failed with error id %d", GetLastError());
-          MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR); 
-        } 
+          MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+        }
       }
       else
       {
         errorMsg.Format("MiniDumpWriteDump failed to load with error id %d", GetLastError());
         MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
       }
-      
+
       // Close the DLL
       FreeLibrary(hDbgHelpDll);
     }
@@ -87,13 +88,13 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
       MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
     }
 
-    // Close the file 
-    CloseHandle( hFile ); 
+    // Close the file
+    CloseHandle( hFile );
   }
-  else 
+  else
   {
     errorMsg.Format("CreateFile '%s' failed with error id %d", dumpFile.c_str(), GetLastError());
-    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR); 
+    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
   }
 
   return pEp->ExceptionRecord->ExceptionCode;;
@@ -105,6 +106,9 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 {
+  // set up some xbmc specific relationships
+  XBMC::Context context;
+
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
@@ -148,9 +152,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   // Handle numeric values using the default/POSIX standard
   setlocale(LC_NUMERIC, "C");
 
-  // If the command line passed to WinMain, commandLine, is not "" we need 
+  // If the command line passed to WinMain, commandLine, is not "" we need
   // to process the command line arguments.
-  // Note that commandLine does not include the program name and can be 
+  // Note that commandLine does not include the program name and can be
   // equal to "" if no arguments were supplied. By contrast GetCommandLineW()
   // does include the program name and is never equal to "".
   g_advancedSettings.Initialize();
@@ -195,9 +199,27 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 #endif
 
-  g_application.Run();
-  
-  // put everything in CApplication::Cleanup() since this point is never reached
+  if (!g_application.CreateGUI())
+  {
+    CStdString errorMsg;
+    errorMsg.Format("CApplication::CreateGUI() failed - Check log file for display errors");
+    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 0;
+  }
+
+  if (!g_application.Initialize())
+  {
+    CStdString errorMsg;
+    errorMsg.Format("CApplication::Initialize() failed - Check log file and that it is writable");
+    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 0;
+  }
+
+  g_application.Run(true);
+
+  // the end
+  WSACleanup();
+  CoUninitialize();
 
   return 0;
 }

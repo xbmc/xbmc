@@ -33,15 +33,16 @@ using namespace MUSIC_INFO;
 #define DECODING_SUCCESS   0
 #define DECODING_CALLAGAIN 1
 
-#define BITSPERSAMPLE  32
-#define mad_scale_float(sample) ((float)(sample/(float)(1L << MAD_F_FRACBITS)))
+#define SAMPLESPERFRAME   1152
+#define CHANNELSPERSAMPLE 2
+#define BITSPERSAMPLE     32
+#define OUTPUTFRAMESIZE   (SAMPLESPERFRAME * CHANNELSPERSAMPLE * (BITSPERSAMPLE >> 3))
 
 MP3Codec::MP3Codec()
 {
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
-  m_BitsPerSampleInternal = 0;
   m_TotalTime = 0;
   m_Bitrate = 0;
   m_CodecName = "MP3";
@@ -55,9 +56,10 @@ MP3Codec::MP3Codec()
   m_InputBufferPos = 0;
 
   memset(&m_Formatdata,0,sizeof(m_Formatdata));
+  m_DataFormat = AE_FMT_S32NE;
 
   // create our output buffer
-  m_OutputBufferSize = 1152*4*8;        // enough for 4 frames
+  m_OutputBufferSize = OUTPUTFRAMESIZE * 4;        // enough for 4 frames
   m_OutputBuffer = new BYTE[m_OutputBufferSize];
   m_OutputBufferPos = 0;
   m_Decoding = false;
@@ -71,7 +73,9 @@ MP3Codec::MP3Codec()
   
   m_HaveData = false;
   flushcnt = 0;
-  madx_init(&mxhouse);
+
+  if (m_dll.Load())
+    madx_init(&mxhouse);
 }
 
 MP3Codec::~MP3Codec()
@@ -84,7 +88,8 @@ MP3Codec::~MP3Codec()
   delete[] m_OutputBuffer;
   m_OutputBuffer = NULL;
   
-  madx_deinit(&mxhouse);
+  if (m_dll.IsLoaded())
+    madx_deinit(&mxhouse);
 }
 
 //Eventhandler if filereader is clearedwe flush the decoder.
@@ -95,8 +100,9 @@ void MP3Codec::OnFileReaderClearEvent()
 
 bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!m_dll.IsLoaded())
-    m_dll.Load();
+  if (!m_dll.Load())
+    return false;
+
   // set defaults...
   m_InputBufferPos = 0;
   m_OutputBufferPos = 0;
@@ -113,7 +119,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
   int id3v2Size = 0;
   int result = -1;
-  __int64 length = 0;
+  int64_t length = 0;
   bool bTags = false;
 
   if (!m_file.Open(strFile, READ_CACHED))
@@ -133,7 +139,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
   length = m_file.GetLength();
   if (bTags)
-    m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
+    m_TotalTime = (int64_t)(m_seekInfo.GetDuration() * 1000.0f);
 
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
@@ -154,13 +160,13 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     }
   }
   
-  if ( m_TotalTime && (length-id3v2Size > 0) )
+  if ( m_TotalTime && (length - id3v2Size > 0) )
   {
-    m_Bitrate = (int)(((length-id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
+    m_Bitrate = (int)(((length - id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
   }
 
   m_eof = false;
-  while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < 1152*8)) // eof can be set from outside (when stopping playback)
+  while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < OUTPUTFRAMESIZE)) // eof can be set from outside (when stopping playback)
   {
     result = Read(8192, true);
     if (result == DECODING_ERROR)
@@ -171,6 +177,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     if (bTags && !m_Bitrate) //use tag bitrate if average bitrate is not available
       m_Bitrate = m_Formatdata[4];
   } ;
+
   return true;
 
 error:
@@ -193,20 +200,13 @@ void MP3Codec::FlushDecoder()
   m_CallAgainWithSameBuffer = false;
 }
 
-__int64 MP3Codec::Seek(__int64 iSeekTime)
+int64_t MP3Codec::Seek(int64_t iSeekTime)
 {
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
   m_file.Seek(m_lastByteOffset, SEEK_SET);
   FlushDecoder();
   return iSeekTime;
-}
-
-int MP3Codec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
-{
-  int result = ReadPCM((BYTE *)pBuffer, numsamples * sizeof(float), actualsamples);
-  *actualsamples /= sizeof(float);
-  return result;
 }
 
 int MP3Codec::Read(int size, bool init)
@@ -277,16 +277,15 @@ int MP3Codec::Read(int size, bool init)
 
           m_Channels              = m_Formatdata[2];
           m_SampleRate            = m_Formatdata[1];
-          m_BitsPerSampleInternal = m_Formatdata[3];
-          //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
-          m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
+          m_BitsPerSample         = m_Formatdata[3];
         }
+
         // let's check if we need to ignore the decoded data.
         if ( m_IgnoreFirst && outputsize && m_seekInfo.GetFirstSample() )
         {
           // starting up - lets ignore the first (typically 576) samples
           int iDelay = DECODER_DELAY + m_seekInfo.GetFirstSample();  // decoder delay + encoder delay
-          iDelay *= m_Channels * m_BitsPerSampleInternal / 8;            // sample size
+          iDelay *= m_Channels * (m_BitsPerSample >> 3);            // sample size
           if (outputsize + m_IgnoredBytes >= iDelay)
           {
             // have enough data to ignore - let's move the valid data to the start
@@ -302,6 +301,7 @@ int MP3Codec::Read(int size, bool init)
             outputsize = 0;
           }
         }
+
         // Do we still have data in the buffer to decode?
         if ( result == DECODING_CALLAGAIN )
           m_CallAgainWithSameBuffer = true;
@@ -316,7 +316,7 @@ int MP3Codec::Read(int size, bool init)
             if (m_IgnoreLast && m_seekInfo.GetLastSample())
             {
               unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
-              samplestoremove *= m_Channels * m_BitsPerSampleInternal / 8;
+              samplestoremove *= m_Channels * (m_BitsPerSample >> 3);
               if (samplestoremove > m_OutputBufferPos)
                 samplestoremove = m_OutputBufferPos;
               m_OutputBufferPos -= samplestoremove;
@@ -343,22 +343,22 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   // check whether we can move data out of our output buffer
   // we leave some data in our output buffer to allow us to remove samples
   // at the end of the track for gapless playback
-  int amounttomove = 0;
-  if (m_OutputBufferPos > 1152 * 4 * 2)
-    amounttomove = m_OutputBufferPos - 1152 * 4 * 2;
-  if (m_eof && !m_Decoding)
-    amounttomove = m_OutputBufferPos;
-  if (amounttomove > size) amounttomove = size;
-  if (amounttomove)
-  {
-    memcpy(pBuffer, m_OutputBuffer, amounttomove);
-    m_OutputBufferPos -= amounttomove;
-    memmove(m_OutputBuffer, m_OutputBuffer + amounttomove, m_OutputBufferPos);
-    *actualsize = amounttomove;
-  }
+  int move;
+  if ((m_eof && !m_Decoding) || m_OutputBufferPos <= OUTPUTFRAMESIZE)
+    move = m_OutputBufferPos;
+  else
+    move = m_OutputBufferPos - OUTPUTFRAMESIZE;
+  move = std::min(move, size);
+
+  memcpy(pBuffer, m_OutputBuffer, move);
+  m_OutputBufferPos -= move;
+  memmove(m_OutputBuffer, m_OutputBuffer + move, m_OutputBufferPos);
+  *actualsize = move;
+
   // only return READ_EOF when we've reached the end of the mp3 file, we've finished decoding, and our output buffer is depleated.
   if (m_eof && !m_Decoding && !m_OutputBufferPos)
     return READ_EOF;
+
   return READ_SUCCESS;
 }
 
@@ -377,9 +377,8 @@ bool MP3Codec::CanSeek()
   return true;
 }
 
-int MP3Codec::Decode(
-  int         *out_len // out_len is read and written to
-) {
+int MP3Codec::Decode(int *out_len)
+{
   if (!m_HaveData)
   {
     if (!m_dll.IsLoaded())
@@ -403,9 +402,9 @@ int MP3Codec::Decode(
       int skip;
       skip = 2;
       do
-	  {
-        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) 
-		{
+      {
+        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0)
+        {
           if (--skip == 0)
             m_dll.mad_synth_frame(&mxhouse.synth, &mxhouse.frame);
         }
@@ -486,7 +485,7 @@ int MP3Codec::madx_init (madx_house *mxhouse )
   return(1);
 }
 
-madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrite, bool discard)
+madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrite)
 {
   if (!m_dll.IsLoaded())
     m_dll.Load();
@@ -514,27 +513,25 @@ madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrit
 
   m_dll.mad_synth_frame( &mxhouse->synth, &mxhouse->frame );
   
-  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)BITSPERSAMPLE/8;
+  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)(BITSPERSAMPLE >> 3);
   mxhouse->frame_cnt++;
   m_dll.mad_timer_add( &mxhouse->timer, mxhouse->frame.header.duration );
-  float *data_f = (float *)mxhouse->output_ptr;
-  if (!discard)
+
+  int32_t *dest = (int32_t*)mxhouse->output_ptr;
+  for(int i=0; i < mxhouse->synth.pcm.length; i++)
   {
-    for( int i=0; i < mxhouse->synth.pcm.length; i++ )
-    {
-      // Left channel
-      *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[0][i]);
-      mxhouse->output_ptr += sizeof(float);
-      // Right channel
-      if(MAD_NCHANNELS(&mxhouse->frame.header)==2)
-      {
-        *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[1][i]);
-        mxhouse->output_ptr += sizeof(float);
-      }
-    }
-    // Tell calling code buffer size
-    mxstat->write_size = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
+    // Left channel
+    *dest++ = (int32_t)(mxhouse->synth.pcm.samples[0][i] << 2);
+
+    // Right channel
+    if(MAD_NCHANNELS(&mxhouse->frame.header) == 2)
+      *dest++ = (int32_t)(mxhouse->synth.pcm.samples[1][i] << 2);
   }
+
+  // Tell calling code buffer size
+  mxhouse->output_ptr = (unsigned char*)dest;
+  mxstat->write_size  = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
+
   return(FLUSH_BUFFER);
 }
 
@@ -545,4 +542,17 @@ void MP3Codec::madx_deinit( madx_house *mxhouse )
   mad_synth_finish(&mxhouse->synth);
   m_dll.mad_frame_finish(&mxhouse->frame);
   m_dll.mad_stream_finish(&mxhouse->stream);
+}
+
+CAEChannelInfo MP3Codec::GetChannelInfo()
+{
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR  , AE_CH_NULL}
+  };
+
+  if (m_Channels > 2)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }

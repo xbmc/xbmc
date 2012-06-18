@@ -41,16 +41,16 @@ public:
   void Reset()
   {
     strArtist.Empty();
-    strGenre.Empty();
+    genre.clear();
     strBiography.Empty();
-    strStyles.Empty();
-    strMoods.Empty();
-    strInstruments.Empty();
+    styles.clear();
+    moods.clear();
+    instruments.clear();
     strBorn.Empty();
     strFormed.Empty();
     strDied.Empty();
     strDisbanded.Empty();
-    strYearsActive.Empty();
+    yearsActive.clear();
     thumbURL.Clear();
     discography.clear();
     idArtist = -1;
@@ -67,16 +67,16 @@ public:
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   CStdString strArtist;
-  CStdString strGenre;
+  std::vector<std::string> genre;
   CStdString strBiography;
-  CStdString strStyles;
-  CStdString strMoods;
-  CStdString strInstruments;
+  std::vector<std::string> styles;
+  std::vector<std::string> moods;
+  std::vector<std::string> instruments;
   CStdString strBorn;
   CStdString strFormed;
   CStdString strDied;
   CStdString strDisbanded;
-  CStdString strYearsActive;
+  std::vector<std::string> yearsActive;
   CScraperUrl thumbURL;
   CFanart fanart;
   std::vector<std::pair<CStdString,CStdString> > discography;

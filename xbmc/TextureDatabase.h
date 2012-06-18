@@ -22,6 +22,7 @@
 #pragma once
 
 #include "dbwrappers/Database.h"
+#include "TextureCacheJob.h"
 
 class CTextureDatabase : public CDatabase
 {
@@ -30,25 +31,46 @@ public:
   virtual ~CTextureDatabase();
   virtual bool Open();
 
-  bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile, CStdString &imageHash);
-  bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "");
+  bool GetCachedTexture(const CStdString &originalURL, CTextureDetails &details);
+  bool AddCachedTexture(const CStdString &originalURL, const CTextureDetails &details);
+  bool SetCachedTextureValid(const CStdString &originalURL, bool updateable);
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
+  bool IncrementUseCount(const CTextureDetails &details);
+
+  /*! \brief Invalidate a previously cached texture
+   Invalidates the texture hash, and sets the texture update time to the current time so that
+   next texture load it will be re-cached.
+   \param url texture path
+   */
+  bool InvalidateCachedTexture(const CStdString &originalURL);
 
   /*! \brief Get a texture associated with the given path
-   Used for retrieval of previously discovered (and cached) images to save
+   Used for retrieval of previously discovered images to save
    stat() on the filesystem all the time
    \param url path that may be associated with a texture
+   \param type type of image to look for
    \return URL of the texture associated with the given path
    */
-  CStdString GetTextureForPath(const CStdString &url);
+  CStdString GetTextureForPath(const CStdString &url, const CStdString &type);
 
   /*! \brief Set a texture associated with the given path
-   Used for setting of previously discovered (and cached) images to save
-   stat() on the filesystem all the time
+   Used for setting of previously discovered images to save
+   stat() on the filesystem all the time. Should be used to set
+   the actual image path, not the cached image path (the image will be
+   cached at load time.)
    \param url path that was used to find the texture
+   \param type type of image to associate
    \param texture URL of the texture to associate with the path
    */
-  void SetTextureForPath(const CStdString &url, const CStdString &texture);
+  void SetTextureForPath(const CStdString &url, const CStdString &type, const CStdString &texture);
+
+  /*! \brief Clear a texture associated with the given path
+   \param url path that was used to find the texture
+   \param type type of image to associate
+   \param texture URL of the texture to associate with the path
+   \sa GetTextureForPath, SetTextureForPath
+   */
+  void ClearTextureForPath(const CStdString &url, const CStdString &type);
 
 protected:
   /*! \brief retrieve a hash for the given url
@@ -60,6 +82,6 @@ protected:
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 6; };
+  virtual int GetMinVersion() const { return 13; };
   const char *GetBaseDBName() const { return "Textures"; };
 };

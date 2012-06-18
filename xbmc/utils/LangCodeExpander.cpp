@@ -20,8 +20,8 @@
  */
 
 #include "LangCodeExpander.h"
-#include "SectionLoader.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
+#include "LangInfo.h"
 #include "utils/log.h" 
 
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
@@ -142,7 +142,7 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const int code)
   return Lookup(desc, lang);
 }
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack /*= false*/)
 #else
 bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode)
@@ -176,6 +176,50 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
   return false;
 }
 
+#ifdef TARGET_WINDOWS
+bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack /*= false*/)
+#else
+bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode)
+#endif
+{
+  if (strCharCode.size() == 2)
+#ifdef TARGET_WINDOWS
+    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode, localeHack);
+#else
+    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode);
+#endif
+  else if (strCharCode.size() == 3)
+  {
+    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    {
+#ifdef TARGET_WINDOWS
+      if (strCharCode.Equals(CharCode2To3[index].id) ||
+         (localeHack && CharCode2To3[index].win_id != NULL && strCharCode.Equals(CharCode2To3[index].win_id)))
+#else
+      if (strCharCode.Equals(CharCode2To3[index].id))
+#endif
+      {
+        strThreeCharCode = strCharCode;
+        return true;
+      }
+    }
+  }
+  else if (strCharCode.size() > 3)
+  {
+    CStdString strLangInfoPath;
+    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
+    CLangInfo langInfo;
+    if (!langInfo.Load(strLangInfoPath))
+      return false;
+
+    strThreeCharCode = langInfo.GetLanguageCode();
+    return true;
+  }
+
+  return false;
+}
+
+#ifdef TARGET_WINDOWS
 bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode)
 {
   if (strTwoCharCode.length() != 2)
@@ -196,6 +240,27 @@ bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTw
 
   return true;
 }
+
+bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWindowsCharCode, CStdString& strThreeCharCode)
+{
+  if (strWindowsCharCode.length() != 3)
+    return false;
+
+  CStdString strLower(strWindowsCharCode);
+  strLower.MakeLower();
+  for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+  {
+    if ((CharCode2To3[index].win_id && strLower.Equals(CharCode2To3[index].win_id)) ||
+         strLower.Equals(CharCode2To3[index].id))
+    {
+      strThreeCharCode = CharCode2To3[index].id;
+      return true;
+    }
+  }
+
+  return true;
+}
+#endif
 
 bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 {
@@ -223,33 +288,27 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   sCode.TrimRight();
   if(sCode.length() == 2)
   {
-    CSectionLoader::Load("LCODE");
     longcode = MAKECODE('\0', '\0', sCode[0], sCode[1]);
     for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_1[i].code == longcode)
       {
         desc = g_iso639_1[i].name;
-        CSectionLoader::Unload("LCODE");
         return true;
       }
     }
-    CSectionLoader::Unload("LCODE");
   }
   else if(code.length() == 3)
   {
-    CSectionLoader::Load("LCODE");
     longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
     for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_2[i].code == longcode)
       {
         desc = g_iso639_2[i].name;
-        CSectionLoader::Unload("LCODE");
         return true;
       }
     }
-    CSectionLoader::Unload("LCODE");
   }
   return false;
 }

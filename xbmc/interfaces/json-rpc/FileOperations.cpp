@@ -37,7 +37,7 @@ using namespace JSONRPC;
 static const unsigned int SourcesSize = 5;
 static CStdString SourceNames[] = { "programs", "files", "video", "music", "pictures" };
 
-JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
@@ -64,7 +64,7 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
       }
     }
 
-    CVariant param(CVariant::VariantTypeObject);
+    CVariant param = parameterObject;
     param["properties"] = CVariant(CVariant::VariantTypeArray);
     param["properties"].append("file");
 
@@ -74,12 +74,11 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
   return OK;
 }
 
-JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
 
-  CDirectory directory;
   CFileItemList items;
   CStdString strPath = parameterObject["directory"].asString();
 
@@ -112,7 +111,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     extensions = g_settings.m_pictureExtensions;
   }
 
-  if (directory.GetDirectory(strPath, items, extensions))
+  if (CDirectory::GetDirectory(strPath, items, extensions))
   {
     CFileItemList filteredDirectories, filteredFiles;
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
@@ -127,7 +126,9 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       }
 
       if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-          (media == "music" && items[i]->HasMusicInfoTag()))
+          (media == "music" && items[i]->HasMusicInfoTag()) ||
+          (media == "picture" && items[i]->HasPictureInfoTag()) ||
+           media == "files")
       {
         if (items[i]->m_bIsFolder)
           filteredDirectories.Add(items[i]);
@@ -139,6 +140,11 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         CFileItem fileItem;
         if (FillFileItem(items[i], fileItem, media))
         {
+          fileItem.m_bIsFolder = items[i]->m_bIsFolder;
+          fileItem.m_dateTime = items[i]->m_dateTime;
+          fileItem.m_dwSize = items[i]->m_dwSize;
+          fileItem.SetMimeType(items[i]->GetMimeType());
+
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(CFileItemPtr(new CFileItem(fileItem)));
           else
@@ -197,7 +203,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   return InvalidParams;
 }
 
-JSON_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string protocol;
   if (transport->PrepareDownload(parameterObject["path"].asString().c_str(), result["details"], protocol))
@@ -215,7 +221,7 @@ JSON_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITranspor
   return InvalidParams;
 }
 
-JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
 }
@@ -234,17 +240,22 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItem &
     else if (media.Equals("music"))
       status = CAudioLibrary::FillFileItem(strFilename, item);
 
-    if (!status && originalItem->GetLabel().empty())
+    if (!status)
     {
       bool isDir = CDirectory::Exists(strFilename);
-      CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
-      if (!label.empty())
+      if (originalItem->GetLabel().empty())
       {
+        CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
+        if (label.empty())
+          return false;
+
         item = CFileItem(strFilename, isDir);
         item.SetLabel(label);
-
-        status = true;
       }
+      else
+        item = *originalItem.get();
+
+      status = true;
     }
   }
 
@@ -284,7 +295,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       CDirectory directory;
       if (directory.GetDirectory(strPath, items, extensions))
       {
-        items.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+        items.Sort(SORT_METHOD_FILE, SortOrderAscending);
         CFileItemList filteredDirectories;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {

@@ -26,11 +26,13 @@ class CAlbum;
 
 #include "utils/Archive.h"
 #include "utils/ISerializable.h"
+#include "utils/ISortable.h"
+#include "XBDateTime.h"
 
 namespace MUSIC_INFO
 {
 
-class CMusicInfoTag : public IArchivable, public ISerializable
+class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
   CMusicInfoTag(void);
@@ -41,10 +43,10 @@ public:
   bool Loaded() const;
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;
-  const CStdString& GetArtist() const;
+  const std::vector<std::string>& GetArtist() const;
   const CStdString& GetAlbum() const;
-  const CStdString& GetAlbumArtist() const;
-  const CStdString& GetGenre() const;
+  const std::vector<std::string>& GetAlbumArtist() const;
+  const std::vector<std::string> GetGenre() const;
   int GetTrackNumber() const;
   int GetDiscNumber() const;
   int GetTrackAndDiskNumber() const;
@@ -61,7 +63,7 @@ public:
   const CStdString& GetMusicBrainzTRMID() const;
   const CStdString& GetComment() const;
   const CStdString& GetLyrics() const;
-  const CStdString& GetLastPlayed() const;
+  const CDateTime& GetLastPlayed() const;
   char  GetRating() const;
   int  GetListeners() const;
   int  GetPlayCount() const;
@@ -69,11 +71,14 @@ public:
   void SetURL(const CStdString& strURL);
   void SetTitle(const CStdString& strTitle);
   void SetArtist(const CStdString& strArtist);
+  void SetArtist(const std::vector<std::string>& artists);
   void SetArtistId(const int iArtistId);
   void SetAlbum(const CStdString& strAlbum);
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const CStdString& strAlbumArtist);
+  void SetAlbumArtist(const std::vector<std::string>& albumArtists);
   void SetGenre(const CStdString& strGenre);
+  void SetGenre(const std::vector<std::string>& genres);
   void SetYear(int year);
   void SetDatabaseId(long id);
   void SetReleaseDate(SYSTEMTIME& dateTime);
@@ -95,6 +100,7 @@ public:
   void SetListeners(int listeners);
   void SetPlayCount(int playcount);
   void SetLastPlayed(const CStdString& strLastPlayed);
+  void SetLastPlayed(const CDateTime& strLastPlayed);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -116,6 +122,7 @@ public:
 
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& ar);
+  virtual void ToSortable(SortItem& sortable);
 
   void Clear();
 protected:
@@ -127,10 +134,10 @@ protected:
 
   CStdString m_strURL;
   CStdString m_strTitle;
-  CStdString m_strArtist;
+  std::vector<std::string> m_artist;
   CStdString m_strAlbum;
-  CStdString m_strAlbumArtist;
-  CStdString m_strGenre;
+  std::vector<std::string> m_albumArtist;
+  std::vector<std::string> m_genre;
   CStdString m_strMusicBrainzTrackID;
   CStdString m_strMusicBrainzArtistID;
   CStdString m_strMusicBrainzAlbumID;
@@ -138,7 +145,7 @@ protected:
   CStdString m_strMusicBrainzTRMID;
   CStdString m_strComment;
   CStdString m_strLyrics;
-  CStdString m_strLastPlayed;
+  CDateTime m_lastPlayed;
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   long m_iDbId;

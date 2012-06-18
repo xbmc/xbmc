@@ -120,7 +120,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     {
       CFileItemList items;
       CDirectory::GetDirectory(g_advancedSettings.m_cachePath,items);
-      items.Sort(SORT_METHOD_SIZE, SORT_ORDER_DESC);
+      items.Sort(SORT_METHOD_SIZE, SortOrderDescending);
       while (items.Size() && CheckFreeSpace(strDir) < iSize)
       {
         if (!items[0]->m_bIsFolder)
@@ -452,7 +452,7 @@ void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 int64_t CRarManager::CheckFreeSpace(const CStdString& strDrive)
 {
   ULARGE_INTEGER lTotalFreeBytes;
-  if (GetDiskFreeSpaceEx(_P(strDrive.c_str()), NULL, NULL, &lTotalFreeBytes))
+  if (GetDiskFreeSpaceEx(CSpecialProtocol::TranslatePath(strDrive.c_str()), NULL, NULL, &lTotalFreeBytes))
     return lTotalFreeBytes.QuadPart;
 
   return 0;

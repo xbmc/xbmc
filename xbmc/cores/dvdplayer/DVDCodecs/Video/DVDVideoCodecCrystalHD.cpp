@@ -60,6 +60,19 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
         m_pFormatName = "chd-mpeg2";
       break;
       case CODEC_ID_H264:
+        switch(hints.profile)
+        {
+          case FF_PROFILE_H264_HIGH_10:
+          case FF_PROFILE_H264_HIGH_10_INTRA:
+          case FF_PROFILE_H264_HIGH_422:
+          case FF_PROFILE_H264_HIGH_422_INTRA:
+          case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
+          case FF_PROFILE_H264_HIGH_444_INTRA:
+          case FF_PROFILE_H264_CAVLC_444:
+            CLog::Log(LOGNOTICE, "%s - unsupported h264 profile(%d)", __FUNCTION__, hints.profile);
+            return false;
+            break;
+        }
         if (hints.extrasize < 7 || hints.extradata == NULL)
         {
           CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);

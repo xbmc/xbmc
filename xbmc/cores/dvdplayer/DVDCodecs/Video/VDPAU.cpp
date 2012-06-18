@@ -413,9 +413,11 @@ int CVDPAU::Check(AVCodecContext* avctx)
     if (!m_DisplayEvent.WaitMSec(2000))
     {
       CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
-      return VC_ERROR;
+      state = VDPAU_RESET;
     }
-    { CSharedLock lock(m_DisplaySection);
+    else
+    {
+      CSharedLock lock(m_DisplaySection);
       state = m_DisplayState;
     }
   }
@@ -1195,14 +1197,12 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   if(pic->reference)
   {
-    pic->age = pA->ip_age[0];
     pA->ip_age[0]= pA->ip_age[1]+1;
     pA->ip_age[1]= 1;
     pA->b_age++;
   }
   else
   {
-    pic->age = pA->b_age;
     pA->ip_age[0]++;
     pA->ip_age[1]++;
     pA->b_age = 1;
@@ -1549,7 +1549,7 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   if (m_mixerstep != 1)
     m_DVDVideoPics.pop();
 
-  picture->format = DVDVideoPicture::FMT_VDPAU;
+  picture->format = RENDER_FMT_VDPAU;
   picture->iFlags &= DVP_FLAG_DROPPED;
   picture->iWidth = OutWidth;
   picture->iHeight = OutHeight;
@@ -1612,7 +1612,10 @@ bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
     if(m_DisplayState == VDPAU_OPEN)
     {
       if (vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
+      {
+        m_DisplayEvent.Reset();
         m_DisplayState = VDPAU_LOST;
+      }
       else
         m_DisplayState = VDPAU_ERROR;
     }

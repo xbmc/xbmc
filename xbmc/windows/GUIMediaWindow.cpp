@@ -53,7 +53,7 @@
 #include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/TimeUtils.h"
-#include "filesystem/FactoryFileDirectory.h"
+#include "filesystem/FileDirectoryFactory.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "guilib/GUIEditControl.h"
@@ -217,6 +217,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
+      CGUIDialogContextMenu* pDlg = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+      if (pDlg && pDlg->IsActive())
+        pDlg->Close();
+      
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
       ClearFileItems();
@@ -360,13 +364,18 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       {
         if (message.GetNumStringParams())
         {
-          m_vecItems->SetPath(message.GetStringParam());
           if (message.GetParam2()) // param2 is used for resetting the history
-            SetHistoryForPath(m_vecItems->GetPath());
+            SetHistoryForPath(message.GetStringParam());
+
+          CFileItemList list(message.GetStringParam());
+          list.RemoveDiscCache(GetID());
+          Update(message.GetStringParam());
         }
-        // clear any cached listing
-        m_vecItems->RemoveDiscCache(GetID());
-        Update(m_vecItems->GetPath());
+        else
+        { // refresh the listing
+          m_vecItems->RemoveDiscCache(GetID());
+          Update(m_vecItems->GetPath());
+        }
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
@@ -506,14 +515,14 @@ void CGUIMediaWindow::UpdateButtons()
   if (m_guiState.get())
   {
     // Update sorting controls
-    if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_NONE)
+    if (m_guiState->GetDisplaySortOrder() == SortOrderNone)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTASC);
     }
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
+      if (m_guiState->GetDisplaySortOrder() == SortOrderAscending)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
         g_windowManager.SendMessage(msg);
@@ -652,7 +661,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  if (m_guiState.get() && !m_guiState->HideParentDirItems() && items.GetPath() != m_startDirectory)
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
@@ -761,7 +770,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(SORT_ON_BOTTOM);
+    pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems->Add(pItem);
   }
   m_iLastControl = GetFocusedControlID();
@@ -845,11 +854,8 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
   m_unfilteredItems->Append(items);
   
   CStdString filter(GetProperty("filter").asString());
-  if (!filter.IsEmpty())
-  {
-    items.ClearItems();
-    GetFilteredItems(filter, items);
-  }
+
+  GetFilteredItems(filter, items);
 }
 
 // \brief With this function you can react on a users click in the list/thumb panel.
@@ -874,7 +880,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
   if (!pItem->m_bIsFolder && pItem->IsFileFolder())
   {
     XFILE::IFileDirectory *pFileDirectory = NULL;
-    pFileDirectory = XFILE::CFactoryFileDirectory::Create(pItem->GetPath(), pItem.get(), "");
+    pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetPath(), pItem.get(), "");
     if(pFileDirectory)
       pItem->m_bIsFolder = true;
     else if(pItem->m_bIsFolder)
@@ -1516,8 +1522,8 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   m_viewControl.Clear();
   
   CFileItemList items;
-  GetFilteredItems(filter, items);
-  if (filter.IsEmpty() || items.GetObjectCount() > 0)
+  items.Append(*m_unfilteredItems);
+  if (GetFilteredItems(filter, items))
   {
     m_vecItems->ClearItems();
     m_vecItems->Append(items);
@@ -1530,24 +1536,22 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   UpdateButtons();
 }
 
-void CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &items)
+bool CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &items)
 {
   CStdString trimmedFilter(filter);
   trimmedFilter.TrimLeft().ToLower();
   
   if (trimmedFilter.IsEmpty())
-  {
-    items.Append(*m_unfilteredItems);
-    return;
-  }
-  
+    return true;
+
+  CFileItemList filteredItems;
   bool numericMatch = StringUtils::IsNaturalNumber(trimmedFilter);
-  for (int i = 0; i < m_unfilteredItems->Size(); i++)
+  for (int i = 0; i < items.Size(); i++)
   {
-    CFileItemPtr item = m_unfilteredItems->Get(i);
+    CFileItemPtr item = items.Get(i);
     if (item->IsParentFolder())
     {
-      items.Add(item);
+      filteredItems.Add(item);
       continue;
     }
     // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
@@ -1568,8 +1572,12 @@ void CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &
     
     size_t pos = StringUtils::FindWords(match.c_str(), trimmedFilter.c_str());
     if (pos != CStdString::npos)
-      items.Add(item);
+      filteredItems.Add(item);
   }
+
+  items.ClearItems();
+  items.Append(filteredItems);
+  return (items.GetObjectCount() > 0);
 }
 
 CStdString CGUIMediaWindow::GetStartFolder(const CStdString &dir)

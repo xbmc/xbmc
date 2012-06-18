@@ -25,14 +25,9 @@
 #ifdef HAS_CDDA_RIPPER
 
 #include "CDDARipper.h"
-#include "CDDAReader.h"
+#include "CDDARipJob.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
-#include "EncoderLame.h"
-#include "EncoderWav.h"
-#include "EncoderVorbis.h"
-#include "EncoderFFmpeg.h"
-#include "EncoderFlac.h"
 #include "filesystem/CDDADirectory.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
@@ -42,6 +37,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "filesystem/SpecialProtocol.h"
 #include "storage/MediaManager.h"
@@ -54,201 +50,18 @@ using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
+CCDDARipper& CCDDARipper::GetInstance()
+{
+  static CCDDARipper sRipper;
+  return sRipper;
+}
+
 CCDDARipper::CCDDARipper()
 {
-  m_pEncoder = NULL;
 }
 
 CCDDARipper::~CCDDARipper()
 {
-  delete m_pEncoder;
-}
-
-bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile, const MUSIC_INFO::CMusicInfoTag& infoTag)
-{
-  m_cdReader.Init(strTrackFile);
-
-  switch (g_guiSettings.GetInt("audiocds.encoder"))
-  {
-  case CDDARIP_ENCODER_WAV:
-    m_pEncoder = new CEncoderWav();
-    break;
-  case CDDARIP_ENCODER_VORBIS:
-    m_pEncoder = new CEncoderVorbis();
-    break;
-  case CDDARIP_ENCODER_FLAC:
-    m_pEncoder = new CEncoderFlac();
-    break;
-  default:
-    m_pEncoder = new CEncoderLame();
-    break;
-  }
-
-  // we have to set the tags before we init the Encoder
-  CStdString strTrack;
-  strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()));
-
-  m_pEncoder->SetComment("Ripped with XBMC");
-  m_pEncoder->SetArtist(infoTag.GetArtist().c_str());
-  m_pEncoder->SetTitle(infoTag.GetTitle().c_str());
-  m_pEncoder->SetAlbum(infoTag.GetAlbum().c_str());
-  m_pEncoder->SetAlbumArtist(infoTag.GetAlbumArtist().c_str());
-  m_pEncoder->SetGenre(infoTag.GetGenre().c_str());
-  m_pEncoder->SetTrack(strTrack.c_str());
-  m_pEncoder->SetTrackLength(m_cdReader.GetTrackLength());
-  m_pEncoder->SetYear(infoTag.GetYearString().c_str());
-
-  // init encoder
-  CStdString strFile2=CUtil::MakeLegalPath(strFile);
-  if (!m_pEncoder->Init(strFile2.c_str(), 2, 44100, 16))
-  {
-    m_cdReader.DeInit();
-    delete m_pEncoder;
-    m_pEncoder = NULL;
-    return false;
-  }
-  return true;
-}
-
-bool CCDDARipper::DeInit()
-{
-  // Close the encoder
-  m_pEncoder->Close();
-
-  m_cdReader.DeInit();
-
-  delete m_pEncoder;
-  m_pEncoder = NULL;
-
-  return true;
-}
-
-int CCDDARipper::RipChunk(int& nPercent)
-{
-  BYTE* pbtStream = NULL;
-  long lBytesRead = 0;
-  nPercent = 0;
-
-  // get data
-  int iResult = m_cdReader.GetData(&pbtStream, lBytesRead);
-
-  // return if rip is done or on some kind of error
-  if (iResult != CDDARIP_OK) return iResult;
-
-  // encode data
-  m_pEncoder->Encode(lBytesRead, pbtStream);
-
-  // Get progress indication
-  nPercent = m_cdReader.GetPercent();
-
-  return CDDARIP_OK;
-}
-
-// rip a single track from cd to hd
-// strFileName has to be a valid filename and the directory must exist
-bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile, const MUSIC_INFO::CMusicInfoTag& infoTag)
-{
-  int iPercent, iOldPercent = 0;
-  bool bCancelled = false;
-  CStdString strFilename(strFile);
-
-  CLog::Log(LOGINFO, "Start ripping track %s to %s", strTrackFile.c_str(), strFile.c_str());
-
-  // if we are ripping to a samba share, rip it to hd first and then copy it it the share
-  CFileItem file(strFile, false);
-  if (file.IsRemote()) 
-  {
-    char tmp[MAX_PATH];
-#ifndef _LINUX
-    GetTempFileName(_P("special://temp/"), "riptrack", 0, tmp);
-#else
-    int fd;
-    strncpy(tmp, _P("special://temp/riptrackXXXXXX"), MAX_PATH);
-    if ((fd = mkstemp(tmp)) == -1)
-      strFilename = "";
-    close(fd);
-#endif
-    strFilename = tmp;
-  }
-  
-  if (!strFilename)
-  {
-    CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
-    return false;
-  }
-
-  // init ripper
-  if (!Init(strTrackFile, strFilename, infoTag))
-  {
-    CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
-    return false;
-  }
-
-  // setup the progress dialog
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  CStdString strLine0, strLine1;
-  int iTrack = atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str());
-  strLine0.Format("%s %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
-  strLine1.Format("%s %s", g_localizeStrings.Get(607).c_str(), strFile); // To: %s
-  pDlgProgress->SetHeading(605); // Ripping
-  pDlgProgress->SetLine(0, strLine0);
-  pDlgProgress->SetLine(1, strLine1);
-  pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal();
-  pDlgProgress->ShowProgressBar(true);
-
-  // show progress dialog
-  g_graphicsContext.Lock();
-  pDlgProgress->Progress();
-  g_graphicsContext.Unlock();
-
-  // start ripping
-  while (!bCancelled && CDDARIP_DONE != RipChunk(iPercent))
-  {
-    pDlgProgress->ProgressKeys();
-    bCancelled = pDlgProgress->IsCanceled();
-    if (!bCancelled && iPercent > iOldPercent) // update each 2%, it's a bit faster then every 1%
-    {
-      // update dialog
-      iOldPercent = iPercent;
-      pDlgProgress->SetPercentage(iPercent);
-      pDlgProgress->Progress();
-    }
-  }
-
-  // close dialog and deinit ripper
-  pDlgProgress->Close();
-  DeInit();
-
-  if (file.IsRemote() && !bCancelled)
-  {
-    // copy the ripped track to the share
-    if (!CFile::Cache(strFilename, strFile.c_str()))
-    {
-      CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename.c_str(), strFile.c_str());
-      // show error
-      g_graphicsContext.Lock();
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-      pDlgOK->SetHeading("Error copying");
-      pDlgOK->SetLine(0, CStdString(strFilename) + " to");
-      pDlgOK->SetLine(1, strFile);
-      pDlgOK->SetLine(2, "");
-      pDlgOK->DoModal();
-      g_graphicsContext.Unlock();
-      CFile::Delete(strFilename);
-      return false;
-    }
-    // delete cached file
-    CFile::Delete(strFilename);
-  }
-
-  if (bCancelled)
-  {
-    CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
-    CFile::Delete(strFilename);
-  }
-  else CLog::Log(LOGINFO, "Finished ripping %s", strTrackFile.c_str());
-  return !bCancelled;
 }
 
 // rip a single track from cd
@@ -269,9 +82,14 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   if (!CreateAlbumDir(*pItem->GetMusicInfoTag(), strDirectory, legalType))
     return false;
 
-  CStdString strFile = URIUtils::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(pItem), legalType));
+  CStdString strFile = URIUtils::AddFileToFolder(strDirectory, 
+                      CUtil::MakeLegalFileName(GetTrackName(pItem), legalType));
 
-  return Rip(pItem->GetPath(), strFile.c_str(), *pItem->GetMusicInfoTag());
+  AddJob(new CCDDARipJob(pItem->GetPath(),strFile,
+                         *pItem->GetMusicInfoTag(),
+                         g_guiSettings.GetInt("audiocds.encoder")));
+
+  return true;
 }
 
 bool CCDDARipper::RipCD()
@@ -309,7 +127,7 @@ bool CCDDARipper::RipCD()
   if (!CreateAlbumDir(*vecItems[0]->GetMusicInfoTag(), strDirectory, legalType))
     return false;
 
-  // rip all tracks one by one, if one fails we quit and return false
+  // rip all tracks one by one
   for (int i = 0; i < vecItems.Size(); i++)
   {
     CFileItemPtr item = vecItems[i];
@@ -317,21 +135,17 @@ bool CCDDARipper::RipCD()
     // construct filename
     CStdString strFile = URIUtils::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(item.get()), legalType));
 
-    unsigned int tick = XbmcThreads::SystemClockMillis();
-
     // don't rip non cdda items
     if (item->GetPath().Find(".cdda") < 0)
       continue;
 
-    // return false if Rip returned false (this means an error or the user cancelled
-    if (!Rip(item->GetPath(), strFile.c_str(), *item->GetMusicInfoTag()))
-      return false;
-
-    tick = XbmcThreads::SystemClockMillis() - tick;
-    CLog::Log(LOGINFO, "Ripping Track %d took %s", i, StringUtils::SecondsToTimeString(tick / 1000).c_str());
+    bool eject = g_guiSettings.GetBool("audiocds.ejectonrip") && 
+                 i == vecItems.Size()-1;
+    AddJob(new CCDDARipJob(item->GetPath(),strFile,
+                           *item->GetMusicInfoTag(),
+                           g_guiSettings.GetInt("audiocds.encoder"), eject));
   }
 
-  CLog::Log(LOGINFO, "Ripped CD succesfull");
   return true;
 }
 
@@ -404,9 +218,9 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   // replace %A with album artist name
   if (strAlbumDir.Find("%A") != -1)
   {
-    CStdString strAlbumArtist = infoTag.GetAlbumArtist();
+    CStdString strAlbumArtist = StringUtils::Join(infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.IsEmpty())
-      strAlbumArtist = infoTag.GetArtist();
+      strAlbumArtist = StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.IsEmpty())
       strAlbumArtist = "Unknown Artist";
     else
@@ -428,7 +242,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   // replace %G with genre
   if (strAlbumDir.Find("%G") != -1)
   {
-    CStdString strGenre = infoTag.GetGenre();
+    CStdString strGenre = StringUtils::Join(infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator);
     if (strGenre.IsEmpty())
       strGenre = "Unknown Genre";
     else
@@ -478,6 +292,14 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item)
   track += GetExtension(g_guiSettings.GetInt("audiocds.encoder"));
 
   return track;
+}
+
+void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
+{
+  if (success)
+    return CJobQueue::OnJobComplete(jobID, success, job);
+
+  CancelJobs();
 }
 
 #endif

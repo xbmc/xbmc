@@ -20,7 +20,7 @@
  */
 
 #include "CDDAcodec.h"
-#if !(defined(__APPLE__) && defined(__arm__))
+#if !defined(TARGET_DARWIN_IOS)
 #include <cdio/sector.h>
 #else
 typedef int32_t lsn_t;
@@ -36,6 +36,7 @@ CDDACodec::CDDACodec()
   m_SampleRate = 44100;
   m_Channels = 2;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = 0;
   m_Bitrate = 0;
   m_CodecName = "CDDA";
@@ -73,7 +74,7 @@ void CDDACodec::DeInit()
   m_file.Close();
 }
 
-__int64 CDDACodec::Seek(__int64 iSeekTime)
+int64_t CDDACodec::Seek(int64_t iSeekTime)
 {
   //  Calculate the next full second...
   int iSeekTimeFullSec=(int)(iSeekTime+(1000-(iSeekTime%1000)))/1000;

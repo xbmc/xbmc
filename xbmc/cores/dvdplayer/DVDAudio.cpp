@@ -26,7 +26,7 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
-#include "../AudioRenderers/AudioRendererFactory.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "settings/Settings.h"
 
 using namespace std;
@@ -34,15 +34,13 @@ using namespace std;
 CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)
 {
-  m_pAudioDecoder = NULL;
-  m_pCallback = NULL;
+  m_pAudioStream = NULL;
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
   m_iBitrate = 0;
-  m_iChannels = 0;
   m_SecondsPerByte = 0.0;
   m_bPaused = true;
 }
@@ -50,71 +48,48 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
 CDVDAudio::~CDVDAudio()
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder)
-  {
-    m_pAudioDecoder->Deinitialize();
-    delete m_pAudioDecoder;
-  }
+  if (m_pAudioStream)
+    CAEFactory::FreeStream(m_pAudioStream);
+
   free(m_pBuffer);
 }
 
-void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
+bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool needresampler)
 {
-  CSingleLock lock (m_critSection);
-  m_pCallback = pCallback;
-  if (m_pCallback && m_pAudioDecoder && !m_bPassthrough)
-    m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
-}
-
-void CDVDAudio::UnRegisterAudioCallback()
-{
-  CSingleLock lock (m_critSection);
-  m_pCallback = NULL;
-}
-
-bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
-{
-  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
+  CLog::Log(LOGNOTICE,
+    "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
+    codec,
+    audioframe.channel_count,
+    audioframe.sample_rate,
+    audioframe.passthrough ? "pass-through" : "no pass-through"
+  );
 
   // if passthrough isset do something else
-  CSingleLock lock (m_critSection);
+  CSingleLock lock(m_critSection);
+  unsigned int options = needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0;
+  options |= AESTREAM_AUTOSTART;
 
-  IAudioRenderer::EEncoded encoded = IAudioRenderer::ENCODED_NONE;
-  if(audioframe.passthrough)
-  {
-    switch(codec) {
-      case CODEC_ID_AC3 : encoded = IAudioRenderer::ENCODED_IEC61937_AC3;     break;
-      case CODEC_ID_EAC3: encoded = IAudioRenderer::ENCODED_IEC61937_EAC3;    break;
-      case CODEC_ID_DTS : encoded = IAudioRenderer::ENCODED_IEC61937_DTS;     break;
-      case CODEC_ID_MP1 :
-      case CODEC_ID_MP2 :
-      case CODEC_ID_MP3 : encoded = IAudioRenderer::ENCODED_IEC61937_MPEG;    break;
-      default:            encoded = IAudioRenderer::ENCODED_IEC61937_UNKNOWN; break;
-    }
-  }
+  m_pAudioStream = CAEFactory::MakeStream(
+    audioframe.data_format,
+    audioframe.sample_rate,
+    audioframe.encoded_sample_rate,
+    audioframe.channel_layout,
+    options
+  );
+  if (!m_pAudioStream) return false;
 
-  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, false, encoded);
-
-  if (!m_pAudioDecoder) return false;
-
-  m_iChannels = audioframe.channels;
-  m_iBitrate = audioframe.sample_rate;
+  m_iBitrate       = audioframe.sample_rate;
   m_iBitsPerSample = audioframe.bits_per_sample;
-  m_bPassthrough = audioframe.passthrough;
-  if(m_iChannels && m_iBitrate && m_iBitsPerSample)
-    m_SecondsPerByte = 1.0 / (m_iChannels * m_iBitrate * (m_iBitsPerSample>>3));
+  m_bPassthrough   = audioframe.passthrough;
+  m_channelLayout  = audioframe.channel_layout;
+  m_dwPacketSize   = m_pAudioStream->GetFrameSize();
+
+  if(m_channelLayout.Count() && m_iBitrate && m_iBitsPerSample)
+    m_SecondsPerByte = 1.0 / (m_channelLayout.Count() * m_iBitrate * (m_iBitsPerSample>>3));
   else
     m_SecondsPerByte = 0.0;
 
-  m_dwPacketSize = m_pAudioDecoder->GetChunkLen();
-  if(m_bPaused)
-    m_pAudioDecoder->Pause();
-
   m_iBufferSize = 0;
-
-  if(m_pCallback && !m_bPassthrough)
-    m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
-
   SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
 
   return true;
@@ -124,18 +99,14 @@ void CDVDAudio::Destroy()
 {
   CSingleLock lock (m_critSection);
 
-  if (m_pAudioDecoder)
-  {
-    m_pAudioDecoder->Stop();
-    m_pAudioDecoder->Deinitialize();
-    delete m_pAudioDecoder;
-  }
+  if (m_pAudioStream)
+    CAEFactory::FreeStream(m_pAudioStream);
+
   free(m_pBuffer);
   m_pBuffer = NULL;
   m_dwPacketSize = 0;
-  m_pAudioDecoder = NULL;
+  m_pAudioStream = NULL;
   m_iBufferSize = 0;
-  m_iChannels = 0;
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;
@@ -144,16 +115,16 @@ void CDVDAudio::Destroy()
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
 {
-  if(!m_pAudioDecoder)
+  if(!m_pAudioStream)
     return 0;
 
-  DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
+  DWORD bps = m_channelLayout.Count() * m_iBitrate * (m_iBitsPerSample>>3);
   if(!bps)
     return 0;
 
   //Calculate a timeout when this definitely should be done
   double timeout;
-  timeout  = DVD_SEC_TO_TIME(m_pAudioDecoder->GetDelay() + len * m_SecondsPerByte);
+  timeout  = DVD_SEC_TO_TIME(m_pAudioStream->GetDelay() + len * m_SecondsPerByte);
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += CDVDClock::GetAbsoluteClock();
 
@@ -161,7 +132,7 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
   DWORD  copied;
   do
   {
-    copied = m_pAudioDecoder->AddPackets(data, len);
+    copied = m_pAudioStream->AddData(data, len);
     data += copied;
     len -= copied;
     if (len < m_dwPacketSize)
@@ -190,19 +161,6 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
   DWORD total = len;
   DWORD copied;
-
-  //Feed audio to the visualizer if necessary.
-  if(m_pCallback && !m_bPassthrough)
-    m_pCallback->OnAudioData(data, len);
-
-  // When paused, we need to buffer all data as renderers don't need to accept it
-  if (m_bPaused)
-  {
-    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + len);
-    memcpy(m_pBuffer+m_iBufferSize, data, len);
-    m_iBufferSize += len;
-    return len;
-  }
 
   if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
@@ -245,35 +203,10 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   return total;
 }
 
-double CDVDAudio::AddSilence(double delay)
-{
-  CLog::Log(LOGDEBUG, "CDVDAudio::AddSilence - %f seconds", delay);
-  DVDAudioFrame audioframe;
-  audioframe.passthrough     = m_bPassthrough;
-  audioframe.channels        = m_iChannels;
-  audioframe.sample_rate     = m_iBitrate;
-  audioframe.bits_per_sample = m_iBitsPerSample;
-  audioframe.size            = m_iChannels * (m_iBitsPerSample>>3);
-  audioframe.data            = (BYTE*)calloc(1, audioframe.size);
-  if(audioframe.data == NULL)
-    return 0.0;
-  unsigned samples = m_iBitrate * delay;
-  unsigned added = 0;
-  for(; added < samples; added++)
-  {
-    if(AddPackets(audioframe) != audioframe.size)
-      break;
-  }
-  if(added < samples)
-    CLog::Log(LOGDEBUG, "CDVDAudio::AddSilence - failed to %d silence samples of %u", samples - added, samples);
-  free(audioframe.data);
-  return (double)added / m_iBitrate;
-}
-
 void CDVDAudio::Finish()
 {
   CSingleLock lock (m_critSection);
-  if (!m_pAudioDecoder)
+  if (!m_pAudioStream)
     return;
 
   DWORD silence = m_dwPacketSize - m_iBufferSize % m_dwPacketSize;
@@ -296,27 +229,26 @@ void CDVDAudio::Drain()
 {
   Finish();
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder)
-    m_pAudioDecoder->WaitCompletion();
+  if (m_pAudioStream)
+    m_pAudioStream->Drain();
 }
 
-void CDVDAudio::SetVolume(int iVolume)
+void CDVDAudio::SetVolume(float volume)
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->SetCurrentVolume(iVolume);
+  if (m_pAudioStream) m_pAudioStream->SetVolume(volume);
 }
 
 void CDVDAudio::SetDynamicRangeCompression(long drc)
 {
-  CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->SetDynamicRangeCompression(drc);
+
 }
 
 float CDVDAudio::GetCurrentAttenuation()
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder)
-    return m_pAudioDecoder->GetCurrentAttenuation();
+  if (m_pAudioStream)
+    return m_pAudioStream->GetVolume();
   else
     return 1.0f;
 }
@@ -324,15 +256,13 @@ float CDVDAudio::GetCurrentAttenuation()
 void CDVDAudio::Pause()
 {
   CSingleLock lock (m_critSection);
-  m_bPaused = true;
-  if (m_pAudioDecoder) m_pAudioDecoder->Pause();
+  if (m_pAudioStream) m_pAudioStream->Pause();
 }
 
 void CDVDAudio::Resume()
 {
   CSingleLock lock (m_critSection);
-  m_bPaused = false;
-  if (m_pAudioDecoder) m_pAudioDecoder->Resume();
+  if (m_pAudioStream) m_pAudioStream->Resume();
 }
 
 double CDVDAudio::GetDelay()
@@ -340,8 +270,8 @@ double CDVDAudio::GetDelay()
   CSingleLock lock (m_critSection);
 
   double delay = 0.0;
-  if(m_pAudioDecoder)
-    delay = m_pAudioDecoder->GetDelay();
+  if(m_pAudioStream)
+    delay = m_pAudioStream->GetDelay();
 
   delay += m_SecondsPerByte * m_iBufferSize;
 
@@ -352,39 +282,46 @@ void CDVDAudio::Flush()
 {
   CSingleLock lock (m_critSection);
 
-  if (m_pAudioDecoder)
+  if (m_pAudioStream)
   {
-    m_pAudioDecoder->Stop();
-    m_pAudioDecoder->Resume();
+    m_pAudioStream->Flush();
   }
   m_iBufferSize = 0;
 }
 
 bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
 {
-  if(!m_pAudioDecoder)
+  if(!m_pAudioStream)
     return false;
 
   if(audioframe.passthrough != m_bPassthrough)
     return false;
 
-  if(audioframe.channels != m_iChannels
-  || audioframe.sample_rate != m_iBitrate
-  || audioframe.bits_per_sample != m_iBitsPerSample)
+  if(m_iBitrate       != audioframe.sample_rate
+  || m_iBitsPerSample != audioframe.bits_per_sample
+  || m_channelLayout  != audioframe.channel_layout)
     return false;
 
   return true;
 }
 
+void CDVDAudio::SetResampleRatio(double ratio)
+{
+  CSingleLock lock (m_critSection);
+
+  if(m_pAudioStream)
+    m_pAudioStream->SetResampleRatio(ratio);
+}
+
 double CDVDAudio::GetCacheTime()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioDecoder)
+  if(!m_pAudioStream)
     return 0.0;
 
   double delay = 0.0;
-  if(m_pAudioDecoder)
-    delay = m_pAudioDecoder->GetCacheTime();
+  if(m_pAudioStream)
+    delay = m_pAudioStream->GetCacheTime();
 
   delay += m_SecondsPerByte * m_iBufferSize;
 
@@ -394,7 +331,7 @@ double CDVDAudio::GetCacheTime()
 double CDVDAudio::GetCacheTotal()
 {
   CSingleLock lock (m_critSection);
-  if(!m_pAudioDecoder)
+  if(!m_pAudioStream)
     return 0.0;
-  return m_pAudioDecoder->GetCacheTotal();
+  return m_pAudioStream->GetCacheTotal();
 }

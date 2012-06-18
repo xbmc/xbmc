@@ -25,7 +25,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
 	if test "$(DARWIN)" = "ios"; then \
-		sed -i "" -e "s|CC -dynamiclib|CC -arch armv7 -dynamiclib|" "$(SOURCE)/libtool"; \
+		sed -ie "s|CC -dynamiclib|CC -arch armv7 -dynamiclib|" "$(SOURCE)/libtool"; \
 	fi
 
 $(LIBDYLIB): $(SOURCE)

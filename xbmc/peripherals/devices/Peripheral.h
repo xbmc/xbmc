@@ -20,7 +20,7 @@
  *
  */
 
-#include <vector>
+#include <set>
 #include "utils/StdString.h"
 #include "peripherals/PeripheralTypes.h"
 
@@ -87,11 +87,6 @@ namespace PERIPHERALS
     virtual void OnSettingChanged(const CStdString &strChangedSetting) {};
 
     /*!
-     * @brief Called when one or more settings changed. Calls OnSettingChanged for every setting.
-     */
-    virtual void OnSettingsChanged(void);
-
-    /*!
      * @brief Get all subdevices if this device is multifunctional.
      * @param subDevices The subdevices.
      */
@@ -133,6 +128,8 @@ namespace PERIPHERALS
      */
     virtual const CStdString GetSettingString(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, const CStdString &strValue);
+    virtual void SetSettingVisible(const CStdString &strKey, bool bSetTo);
+    virtual bool IsSettingVisible(const CStdString &strKey) const;
 
     virtual int GetSettingInt(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, int iValue);
@@ -143,9 +140,11 @@ namespace PERIPHERALS
     virtual float GetSettingFloat(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, float fValue);
 
-    virtual void PersistSettings(void) const;
+    virtual void PersistSettings(bool bExiting = false);
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
+
+    virtual std::vector<CSetting *> GetSettings(void) const;
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
@@ -168,5 +167,6 @@ namespace PERIPHERALS
     std::vector<PeripheralFeature>   m_features;
     std::vector<CPeripheral *>       m_subDevices;
     std::map<CStdString, CSetting *> m_settings;
+    std::set<CStdString>             m_changedSettings;
   };
 }

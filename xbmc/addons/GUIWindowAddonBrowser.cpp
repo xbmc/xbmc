@@ -48,9 +48,11 @@
 #include "settings/AdvancedSettings.h"
 #include "storage/MediaManager.h"
 #include "settings/GUISettings.h"
+#include "LangInfo.h"
 
-#define CONTROL_AUTOUPDATE 5
-#define CONTROL_SHUTUP     6
+#define CONTROL_AUTOUPDATE    5
+#define CONTROL_SHUTUP        6
+#define CONTROL_FOREIGNFILTER 7
 
 using namespace ADDON;
 using namespace XFILE;
@@ -98,6 +100,13 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bAddonNotifications = !g_settings.m_bAddonNotifications;
         g_settings.Save();
+        return true;
+      }
+      else if (iControl == CONTROL_FOREIGNFILTER)
+      {
+        g_settings.m_bAddonForeignFilter = !g_settings.m_bAddonForeignFilter;
+        g_settings.Save();
+        Update(m_vecItems->GetPath());
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -212,6 +221,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     // pop up filebrowser to grab an installed folder
     VECSOURCES shares = g_settings.m_fileSources;
     g_mediaManager.GetLocalDrives(shares);
+    g_mediaManager.GetNetworkLocations(shares);
     CStdString path;
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
       CAddonInstaller::Get().InstallFromZip(path);
@@ -245,7 +255,21 @@ void CGUIWindowAddonBrowser::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
   SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,g_settings.m_bAddonNotifications);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER,g_settings.m_bAddonForeignFilter);
   CGUIMediaWindow::UpdateButtons();
+}
+
+static bool FilterVar(bool valid, const CVariant& variant,
+                                  const std::string& check)
+{
+  if (!valid)
+    return false;
+
+  if (variant.isNull() || variant.asString().empty())
+    return false;
+
+  std::string regions = variant.asString();
+  return regions.find(check) == std::string::npos;
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
@@ -274,7 +298,26 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
 
   }
   else
+  {
     result = CGUIMediaWindow::GetDirectory(strDirectory,items);
+    if (g_settings.m_bAddonForeignFilter)
+    {
+      int i=0;
+      while (i < items.Size())
+      {
+        if (!FilterVar(g_settings.m_bAddonForeignFilter,
+                      items[i]->GetProperty("Addon.Language"), "en") ||
+            !FilterVar(g_settings.m_bAddonForeignFilter,
+                      items[i]->GetProperty("Addon.Language"),
+                      g_langInfo.GetLanguageLocale()))
+        {
+          i++;
+        }
+        else
+          items.Remove(i);
+      }
+    }
+  }
 
   if (strDirectory.IsEmpty() && CAddonInstaller::Get().IsDownloading())
   {
@@ -394,11 +437,10 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
   dialog->SetHeading(heading);
   dialog->Reset();
   dialog->SetUseDetails(true);
-  if (multipleSelection || iTypes > 1)
-  {
+  if (multipleSelection)
     showNone = false;
+  if (multipleSelection || iTypes > 1)
     dialog->EnableButton(true, 186);
-  }
   else
     dialog->EnableButton(true, 21452);
   if (showNone)
@@ -407,10 +449,10 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
     item->SetLabel(g_localizeStrings.Get(231));
     item->SetLabel2(g_localizeStrings.Get(24040));
     item->SetIconImage("DefaultAddonNone.png");
-    item->SetSpecialSort(SORT_ON_TOP);
+    item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
   }
-  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
 
   if (addonIDs.size() > 0)
   {

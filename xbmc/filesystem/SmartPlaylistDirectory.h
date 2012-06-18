@@ -20,8 +20,10 @@
  *
  */
 
-
 #include "IFileDirectory.h"
+#include "utils/SortUtils.h"
+
+class CSmartPlaylist;
 
 namespace XFILE
 {
@@ -34,6 +36,8 @@ namespace XFILE
     virtual bool IsAllowed(const CStdString &strFile) const { return true; };
     virtual bool ContainsFiles(const CStdString& strPath);
     virtual bool Remove(const char *strPath);
+
+    static bool GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items);
 
     static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
   };

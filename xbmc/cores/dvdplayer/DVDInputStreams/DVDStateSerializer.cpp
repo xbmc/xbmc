@@ -19,9 +19,15 @@
  *
  */
 
-#include "DllDvdNav.h"
-#include "tinyXML/tinyxml.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#ifdef _WIN32
+#include "system.h"
+#endif
 
+#include "DllDvdNav.h"
+#include "utils/XBMCTinyXML.h"
 #include "DVDStateSerializer.h"
 #include <sstream>
 
@@ -36,14 +42,14 @@ bool CDVDStateSerializer::test( const dvd_state_t *state  )
 
   XMLToDVDState( &state2, buffer);
 
-  return memcmp( &state2, state, sizeof( state )) == 0;
+  return memcmp( &state2, state, sizeof( dvd_state_t )) == 0;
 
 }
 
 bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_t *state )
 {
   char buffer[256];
-  TiXmlDocument xmlDoc("navstate");
+  CXBMCTinyXML xmlDoc("navstate");
 
   TiXmlElement eRoot("navstate");
   eRoot.SetAttribute("version", 1);
@@ -205,7 +211,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
 
 bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &xmlstate )
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   xmlDoc.Parse(xmlstate.c_str());
 

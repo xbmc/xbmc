@@ -1,0 +1,8923 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "תוכנות"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "תמונות"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "מוסיקה"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "וידאו"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "מדריך תוכניות"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "הגדרות"
+
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr ""
+
+msgctxt "#7"
+msgid "File manager"
+msgstr "מנהל קבצים"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "מזג האויר"
+
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "XBMC מדיה סנטר"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "יום שני"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "יום שלישי"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "יום רביעי"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "יום חמישי"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "יום שישי"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "יום שבת"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "יום ראשון"
+
+msgctxt "#21"
+msgid "January"
+msgstr "ינואר"
+
+msgctxt "#22"
+msgid "February"
+msgstr "פברואר"
+
+msgctxt "#23"
+msgid "March"
+msgstr "מרץ"
+
+msgctxt "#24"
+msgid "April"
+msgstr "אפריל"
+
+msgctxt "#25"
+msgid "May"
+msgstr "מאי"
+
+msgctxt "#26"
+msgid "June"
+msgstr "יוני"
+
+msgctxt "#27"
+msgid "July"
+msgstr "יולי"
+
+msgctxt "#28"
+msgid "August"
+msgstr "אוגוסט"
+
+msgctxt "#29"
+msgid "September"
+msgstr "ספטמבר"
+
+msgctxt "#30"
+msgid "October"
+msgstr "אוקטובר"
+
+msgctxt "#31"
+msgid "November"
+msgstr "נובמבר"
+
+msgctxt "#32"
+msgid "December"
+msgstr "דצמבר"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr " שני"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr " שלישי"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr " רביעי"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr " חמישי"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr " שישי"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr " שבת"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr " ראשון"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "ינו"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "פבר"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "מרץ"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "אפר"
+
+msgctxt "#55"
+msgid "May"
+msgstr "מאי"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "יונ"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "יול"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "אוג"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "ספט"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "אוק"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "נוב"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "דצמ"
+
+msgctxt "#71"
+msgid "N"
+msgstr "צ"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "צ-צ-מז"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "צ-מז"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "מז-צ-מז"
+
+msgctxt "#75"
+msgid "E"
+msgstr "מז"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "מז-ד-מז"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "ד-מז"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "ד-ד-מז"
+
+msgctxt "#79"
+msgid "S"
+msgstr "ד"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "ד-ד-מע"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "ד-מע"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "מע-ד-מע"
+
+msgctxt "#83"
+msgid "W"
+msgstr "מע"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "מע-צ-מע"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "צ-מע"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "צ-צ-מע"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "VAR"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "תצוגה: אוטומטי"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "תצוגה: אוטומטי גדול"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "תצוגה: צלמיות"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "תצוגה: רשימה"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "סרוק"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "מיין לפי : שם"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "מיין לפי : תאריך"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "מיין לפי : גודל"
+
+msgctxt "#106"
+msgid "No"
+msgstr "לא"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "כן"
+
+msgctxt "#108"
+msgid "Slideshow"
+msgstr "מצגת"
+
+msgctxt "#109"
+msgid "Create thumbs"
+msgstr "צור תמונות ממוזערות"
+
+msgctxt "#110"
+msgid "Create thumbnails"
+msgstr "צור תמונות ממוזערות"
+
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "קיצורי דרך"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "מושהה"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "עדכון נכשל"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "ההתקנה נכשלה"
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "העתק"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "העבר"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "מחק"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "שנה שם"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "תיקיה חדשה"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr "אשר העתקת קובץ"
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "אשר העברת קובץ"
+
+msgctxt "#122"
+msgid "Confirm file delete?"
+msgstr "אשר מחיקת קובץ"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "?להעתיק קבצים אלו"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "?להעביר קבצים אלו"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "למחוק קבצים אלה? - !קבצים לאחר מחיקה אינם ניתנים לשיחזור"
+
+msgctxt "#126"
+msgid "Status"
+msgstr "מצב"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "אובייקטים"
+
+msgctxt "#128"
+msgid "General"
+msgstr "כללי"
+
+msgctxt "#129"
+msgid "Slideshow"
+msgstr "מצגת"
+
+msgctxt "#130"
+msgid "System info"
+msgstr "פרטי מערכת"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "מסך"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "אלבומים"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "אמנים"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "שירים"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "סגנונות"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "רשימות ניגון"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "חפש"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "פרטי מערכת"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "טמפרטורות:"
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "מעבד:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "מעבד גרפי:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "זמן:"
+
+msgctxt "#143"
+msgid "Current:"
+msgstr "נוכחי:"
+
+msgctxt "#144"
+msgid "Build:"
+msgstr "גירסה:"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "רשת:"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "סוג:"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "סטאטי"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "MAC"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "IP"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "Link:"
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "Half duplex"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "Full duplex"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "אחסון"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "כונן"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "פנוי"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "וידאו"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "זיכרון פנוי"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "אין חיבור"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "פנוי"
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "לא זמין"
+
+msgctxt "#162"
+msgid "Tray open"
+msgstr "מגש פתוח"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "קורא"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "אין דיסק"
+
+msgctxt "#165"
+msgid "Disc present"
+msgstr "דיסק נמצא"
+
+msgctxt "#166"
+msgid "Skin"
+msgstr "סקין"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "רזולוציה"
+
+msgctxt "#170"
+msgid "Adjust display refresh rate to match video"
+msgstr "התאם את קצב רענון המסך לוידאו"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "תאריך הפצה"
+
+msgctxt "#173"
+msgid "Display 4:3 videos as"
+msgstr "הצג וידאו 4:3 כמו"
+
+msgctxt "#175"
+msgid "Moods"
+msgstr "מצבים"
+
+msgctxt "#176"
+msgid "Styles"
+msgstr "סגנונות"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "שיר"
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "אורך"
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "בחר אלבום"
+
+msgctxt "#182"
+msgid "Tracks"
+msgstr "רצועות"
+
+msgctxt "#183"
+msgid "Review"
+msgstr "ביקורת"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "רענן"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "מחפש אלבום"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "אישור"
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "!לא נמצאו אלבומים"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "בחר הכל"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "סורק פרטי מערכת"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "שמור"
+
+msgctxt "#191"
+msgid "Shuffle"
+msgstr "ערבב"
+
+msgctxt "#192"
+msgid "Clear"
+msgstr "נקה"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "סרוק"
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "...מחפש"
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "!לא נמצאו פרטים"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr ":בחר סרט"
+
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "%s מחפש פרטים"
+
+msgctxt "#198"
+msgid "Loading movie details"
+msgstr "טוען פרטים אודות הסרט"
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "ממשק אינטרנט"
+
+msgctxt "#202"
+msgid "Tagline"
+msgstr "מילות מפתח"
+
+msgctxt "#203"
+msgid "Plot outline"
+msgstr "תקציר עלילה"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr ":הצבעות"
+
+msgctxt "#206"
+msgid "Cast"
+msgstr "צוות"
+
+msgctxt "#207"
+msgid "Plot"
+msgstr "עלילה"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "נגן"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "הבא"
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "הקודם"
+
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "כיול ממשק משתמש"
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "כיול וידאו..."
+
+msgctxt "#215"
+msgid "Soften"
+msgstr "רכך"
+
+msgctxt "#216"
+msgid "Zoom amount"
+msgstr "כמות זום"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "יחס פיקסלים"
+
+msgctxt "#218"
+msgid "DVD drive"
+msgstr "DVD כונן"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "הכנס דיסק בבקשה"
+
+msgctxt "#220"
+msgid "Remote share"
+msgstr "תקיית רשת"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "הרשת אינה מחוברת"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "בטל"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "מהירות"
+
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "תזוזה אנכי"
+
+msgctxt "#226"
+msgid "Test patterns..."
+msgstr "בדוק תבניות..."
+
+msgctxt "#227"
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "חפש את שמות רצועות הדיסק ב freedb.org"
+
+msgctxt "#228"
+msgid "Shuffle playlist on load"
+msgstr "רשימת השמעה אקראית בעת הטעינה"
+
+msgctxt "#229"
+msgid "HDD spindown time"
+msgstr "זמן סיבוב כונן קשיח (בדקות)"
+
+msgctxt "#230"
+msgid "Video filters"
+msgstr "פילטרים"
+
+msgctxt "#231"
+msgid "None"
+msgstr "ללא"
+
+msgctxt "#232"
+msgid "Point"
+msgstr "נקודה"
+
+msgctxt "#233"
+msgid "Linear"
+msgstr "קווי"
+
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "אנזיאוטרופי"
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "מחומש"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "קוביה גאוסנית"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "הקטנה"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "הגדלה"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "נקה רשימת השמעה בסיום"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "סגנון תצוגה"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "מסך מלא #%d"
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "חלון"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "קצב רענון"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "מסך מלא"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "גודל: (%i,%i)->(%i,%i) (זום x%2.2f) AR:%2.2f:1 (פיקסלים: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#247"
+msgid "Scripts"
+msgstr "סקריפטים"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "שפה"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "מוסיקה"
+
+msgctxt "#250"
+msgid "Visualization"
+msgstr "חיזוי"
+
+msgctxt "#251"
+msgid "Select destination directory"
+msgstr "בחר ספרית יעד"
+
+msgctxt "#252"
+msgid "Output stereo to all speakers"
+msgstr "- פלט סטריאו לכל הרמקולים"
+
+msgctxt "#253"
+msgid "Number of channels"
+msgstr "מספר ערוצים"
+
+msgctxt "#254"
+msgid "- DTS capable receiver"
+msgstr "DTS רסיבר תומך"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "CDDB מחפש ברשת פרטי"
+
+msgctxt "#257"
+msgid "Error"
+msgstr "שגיאה"
+
+msgctxt "#258"
+msgid "Enable tag reading"
+msgstr "ID3 אפשר תגיות"
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "פותח"
+
+msgctxt "#260"
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "....ממתין להתחלה"
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "פלט סקריפטים"
+
+msgctxt "#263"
+msgid "Allow control of XBMC via HTTP"
+msgstr "אפשר שליטה על XBMC דרך HTTP"
+
+msgctxt "#264"
+msgid "Record"
+msgstr "הקלט"
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "עצור הקלטה"
+
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "מיין לפי : רצועה"
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "מיין לפי : זמן"
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "מיין לפי : כותרת"
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "מיין לפי : אמן"
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "מיין לפי : אלבום"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "מאה הגדולים"
+
+msgctxt "#272"
+msgid "Top-Left overscan compensation"
+msgstr "פיצוי סריקת יתר משמאל למעלה"
+
+msgctxt "#273"
+msgid "Bottom-Right overscan compensation"
+msgstr "פיצוי סריקת יתר מימין למטה"
+
+msgctxt "#274"
+msgid "Subtitle positioning"
+msgstr "מיקום הכתוביות"
+
+msgctxt "#275"
+msgid "Pixel ratio adjustment"
+msgstr "כיוון יחס הפיקסלים"
+
+msgctxt "#276"
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "הזז את הסמן לשינוי רמת סריקת היתר"
+
+msgctxt "#277"
+msgid "Adjust the bar to change the subtitles position"
+msgstr "הזז את המצביע לשינוי מקום הכתוביות"
+
+msgctxt "#278"
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "כוון את המלבן כך שיהפוך לריבוע מושלם"
+
+msgctxt "#279"
+msgid "Unable to load settings"
+msgstr "אין אפשרות לטעון הגדרות"
+
+msgctxt "#280"
+msgid "Using default settings"
+msgstr "משתמש בהגדרות ברירת מחדל"
+
+msgctxt "#281"
+msgid "Please check the XML files"
+msgstr "XML אנא בדוק קבצי"
+
+msgctxt "#282"
+msgid "Found %i items"
+msgstr "התאמות %i נמצאו"
+
+msgctxt "#283"
+msgid "Search results"
+msgstr "תוצאות חיפוש"
+
+msgctxt "#284"
+msgid "No results found"
+msgstr "לא נמצאו התאמות לחיפוש"
+
+msgctxt "#287"
+msgid "Subtitles"
+msgstr "כתוביות"
+
+msgctxt "#288"
+msgid "Font"
+msgstr "פונט"
+
+msgctxt "#289"
+msgid "- Size"
+msgstr "גודל"
+
+msgctxt "#290"
+msgid "Dynamic range compression"
+msgstr " (db) הגברת ווליום"
+
+msgctxt "#291"
+msgid "Video"
+msgstr "וידאו"
+
+msgctxt "#292"
+msgid "Audio"
+msgstr "אודיו"
+
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "עיין לכתוביות"
+
+msgctxt "#294"
+msgid "Create bookmark"
+msgstr "צור סימניה"
+
+msgctxt "#296"
+msgid "Clear bookmarks"
+msgstr "נקה סימניות"
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "השהיית קול הנומתו"
+
+msgctxt "#298"
+msgid "Bookmarks"
+msgstr "סימניות"
+
+msgctxt "#299"
+msgid "- AAC capable receiver"
+msgstr "- AAC רסיבר נתמך"
+
+msgctxt "#300"
+msgid "- MP1 capable receiver"
+msgstr "- MP1 רסיבר נתמך"
+
+msgctxt "#301"
+msgid "- MP2 capable receiver"
+msgstr "- MP2 רסיבר נתמך"
+
+msgctxt "#302"
+msgid "- MP3 capable receiver"
+msgstr "- MP3 רסיבר נתמך"
+
+msgctxt "#303"
+msgid "Delay"
+msgstr "השהייה"
+
+msgctxt "#304"
+msgid "Language"
+msgstr "שפה"
+
+msgctxt "#305"
+msgid "Enabled"
+msgstr "זמין"
+
+msgctxt "#306"
+msgid "Non-interleaved"
+msgstr "ללא-הפרדה"
+
+msgctxt "#312"
+msgid "(0=auto)"
+msgstr "(0=אוטומטי)"
+
+msgctxt "#313"
+msgid "Cleaning database"
+msgstr "מנקה מסד נתונים"
+
+msgctxt "#314"
+msgid "Preparing..."
+msgstr "...מתכונן"
+
+msgctxt "#315"
+msgid "Database error"
+msgstr "שגיאת מסד נתונים"
+
+msgctxt "#316"
+msgid "Searching songs..."
+msgstr "...מחפש שירים"
+
+msgctxt "#317"
+msgid "Cleaned database successfully"
+msgstr "ניקוי הושלם בהצלחה"
+
+msgctxt "#318"
+msgid "Cleaning songs..."
+msgstr "...מנקה שירים"
+
+msgctxt "#319"
+msgid "Error cleaning songs"
+msgstr "שגיאה בניקוי שירים"
+
+msgctxt "#320"
+msgid "Cleaning artists..."
+msgstr "...ניקוי אמנים"
+
+msgctxt "#321"
+msgid "Error cleaning artists"
+msgstr "שגיאה בניקוי אמנים"
+
+msgctxt "#322"
+msgid "Cleaning genres..."
+msgstr "...ניקוי סגנונות"
+
+msgctxt "#323"
+msgid "Error cleaning genres"
+msgstr "שגיאה בניקוי סגנונות"
+
+msgctxt "#324"
+msgid "Cleaning paths..."
+msgstr "...ניקוי נתיבים"
+
+msgctxt "#325"
+msgid "Error cleaning paths"
+msgstr "שגיאה בניקוי נתיבים"
+
+msgctxt "#326"
+msgid "Cleaning albums..."
+msgstr "...ניקוי אלבומים"
+
+msgctxt "#327"
+msgid "Error cleaning albums"
+msgstr "שגיאה בניקוי אלבומים"
+
+msgctxt "#328"
+msgid "Writing changes..."
+msgstr "...כותב שינויים"
+
+msgctxt "#329"
+msgid "Error writing changes"
+msgstr "שגיאה בכתיבת שינויים"
+
+msgctxt "#330"
+msgid "This may take some time..."
+msgstr "...פעולה זו עשויה לקחת זמן"
+
+msgctxt "#331"
+msgid "Compressing database..."
+msgstr "...דוחס נתונים"
+
+msgctxt "#332"
+msgid "Error compressing database"
+msgstr "שגיאה בדחיסת נתונים"
+
+msgctxt "#333"
+msgid "Do you want to clean the library?"
+msgstr "?האם ברצונך לנקות את הספריה"
+
+msgctxt "#334"
+msgid "Clean library..."
+msgstr "נקה ספריה..."
+
+msgctxt "#335"
+msgid "Start"
+msgstr "התחל"
+
+msgctxt "#336"
+msgid "Framerate conversion"
+msgstr "המרת קצב פריימים"
+
+msgctxt "#337"
+msgid "Audio output"
+msgstr "פלט אודיו"
+
+msgctxt "#338"
+msgid "Analog"
+msgstr "אנלוגי"
+
+msgctxt "#339"
+msgid "Optical/Coax"
+msgstr "דיגיטאלי"
+
+msgctxt "#340"
+msgid "Various artists"
+msgstr "אמנים שונים"
+
+msgctxt "#341"
+msgid "Play disc"
+msgstr "נגן דיסק"
+
+msgctxt "#342"
+msgid "Movies"
+msgstr "סרטים"
+
+msgctxt "#343"
+msgid "Adjust framerate"
+msgstr "התאם קצב פריימים"
+
+msgctxt "#344"
+msgid "Actors"
+msgstr "שחקנים"
+
+msgctxt "#345"
+msgid "Year"
+msgstr "שנה"
+
+msgctxt "#346"
+msgid "Boost volume level on downmix"
+msgstr "הגבר קול ב downmix"
+
+msgctxt "#350"
+msgid "Programs"
+msgstr "תוכנות"
+
+msgctxt "#351"
+msgid "Off"
+msgstr "כבה"
+
+msgctxt "#352"
+msgid "Dim"
+msgstr "עמעם"
+
+msgctxt "#353"
+msgid "Black"
+msgstr "מסך שחור"
+
+msgctxt "#354"
+msgid "Matrix trails"
+msgstr "Matrix trails"
+
+msgctxt "#355"
+msgid "Screensaver time"
+msgstr "זמן לשומר מסך"
+
+msgctxt "#356"
+msgid "Screensaver mode"
+msgstr "מצב שומר מסך"
+
+msgctxt "#357"
+msgid "Shutdown function timer"
+msgstr "זמן המתנה לפני כיבוי"
+
+msgctxt "#358"
+msgid "All albums"
+msgstr "כל האלבומים"
+
+msgctxt "#359"
+msgid "Recently added albums"
+msgstr "אלבומים אחרונים"
+
+msgctxt "#360"
+msgid "Screensaver"
+msgstr "שומר מסך"
+
+msgctxt "#361"
+msgid "R. Slideshow"
+msgstr "מצגת רקורס."
+
+msgctxt "#362"
+msgid "Screensaver dim level"
+msgstr "רמת עמעום המסך"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "סדר לפי : קובץ"
+
+msgctxt "#364"
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "AC3 רסיבר תומך"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "סדר לפי : שם"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "סדר לפי : שנה"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "סדר לפי : רייטינג"
+
+msgctxt "#368"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#369"
+msgid "Title"
+msgstr "כותרת"
+
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "רעמים"
+
+msgctxt "#371"
+msgid "Partly"
+msgstr "חלקית"
+
+msgctxt "#372"
+msgid "Mostly"
+msgstr "בעיקר"
+
+msgctxt "#373"
+msgid "Sunny"
+msgstr "שמשי"
+
+msgctxt "#374"
+msgid "Cloudy"
+msgstr "מעונן"
+
+msgctxt "#375"
+msgid "Snow"
+msgstr "שלג"
+
+msgctxt "#376"
+msgid "Rain"
+msgstr "גשם"
+
+msgctxt "#377"
+msgid "Light"
+msgstr "קל"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "בוקר"
+
+msgctxt "#379"
+msgid "PM"
+msgstr "ערב"
+
+msgctxt "#380"
+msgid "Showers"
+msgstr "ממטרים"
+
+msgctxt "#381"
+msgid "Few"
+msgstr "מעטים"
+
+msgctxt "#382"
+msgid "Scattered"
+msgstr "לסירוגין"
+
+msgctxt "#383"
+msgid "Wind"
+msgstr "רוח"
+
+msgctxt "#384"
+msgid "Strong"
+msgstr "חזקה"
+
+msgctxt "#385"
+msgid "Fair"
+msgstr "קלילה"
+
+msgctxt "#386"
+msgid "Clear"
+msgstr "בהיר"
+
+msgctxt "#387"
+msgid "Clouds"
+msgstr "עננים"
+
+msgctxt "#388"
+msgid "Early"
+msgstr "מוקדם"
+
+msgctxt "#389"
+msgid "Shower"
+msgstr "ממטרים"
+
+msgctxt "#390"
+msgid "Flurries"
+msgstr "סוער"
+
+msgctxt "#391"
+msgid "Low"
+msgstr "נמוך"
+
+msgctxt "#392"
+msgid "Medium"
+msgstr "בינוני"
+
+msgctxt "#393"
+msgid "High"
+msgstr "גבוה"
+
+msgctxt "#394"
+msgid "Fog"
+msgstr "ערפילי"
+
+msgctxt "#395"
+msgid "Haze"
+msgstr "אביך"
+
+msgctxt "#396"
+msgid "Select location"
+msgstr "בחר מיקום"
+
+msgctxt "#397"
+msgid "Refresh time"
+msgstr "זמני רענון"
+
+msgctxt "#398"
+msgid "Temperature units"
+msgstr "יחידות טמפרטורה"
+
+msgctxt "#399"
+msgid "Speed units"
+msgstr "יחידות מהירות"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "מזג אוויר"
+
+msgctxt "#401"
+msgid "Temp"
+msgstr "טמפרטורה"
+
+msgctxt "#402"
+msgid "Feels like"
+msgstr "מרגיש כאילו"
+
+msgctxt "#403"
+msgid "UV index"
+msgstr "UV רמת"
+
+msgctxt "#404"
+msgid "Wind"
+msgstr "רוח"
+
+msgctxt "#405"
+msgid "Dew point"
+msgstr "נקודת אידוי"
+
+msgctxt "#406"
+msgid "Humidity"
+msgstr "לחות"
+
+msgctxt "#409"
+msgid "Defaults"
+msgstr "ברירת מחדל"
+
+msgctxt "#410"
+msgid "Accessing weather service"
+msgstr "ניגש לשירות מזג אויר"
+
+msgctxt "#411"
+msgid "Getting weather for:"
+msgstr ":טוען מזג אויר עבור"
+
+msgctxt "#412"
+msgid "Unable to get weather data"
+msgstr "אין אפשרות לקבל פרטי מזג אויר"
+
+msgctxt "#413"
+msgid "Manual"
+msgstr "ידני"
+
+msgctxt "#414"
+msgid "No review for this album"
+msgstr "אין סקירות עבור אלבום זה"
+
+msgctxt "#415"
+msgid "Downloading thumbnail..."
+msgstr "...מוריד תמונות ממוזערות"
+
+msgctxt "#416"
+msgid "Not available"
+msgstr "לא זמין"
+
+msgctxt "#417"
+msgid "View: Big icons"
+msgstr "תצוגה : צלמיות גדולות"
+
+msgctxt "#418"
+msgid "Low"
+msgstr "נמוך"
+
+msgctxt "#419"
+msgid "High"
+msgstr "גבוה"
+
+msgctxt "#420"
+msgid "HDMI"
+msgstr "HDMI"
+
+msgctxt "#422"
+msgid "Delete album info"
+msgstr "מחק פרטי אלבום"
+
+msgctxt "#423"
+msgid "Delete CD information"
+msgstr "מחק פרטי CDDB"
+
+msgctxt "#424"
+msgid "Select"
+msgstr "בחר"
+
+msgctxt "#425"
+msgid "No album information found"
+msgstr "לא נמצא פרטי אלבום"
+
+msgctxt "#426"
+msgid "No CD information found"
+msgstr "לא נמצא פרטי דיסק"
+
+msgctxt "#427"
+msgid "Disc"
+msgstr "דיסק"
+
+msgctxt "#428"
+msgid "Insert correct CD/DVD"
+msgstr "הכנס דיסק נכון"
+
+msgctxt "#429"
+msgid "Please insert the following disc:"
+msgstr "אנא הכנס את הדיסק הבא:"
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "DVD# : מיין לפי"
+
+msgctxt "#431"
+msgid "No cache"
+msgstr "אין זכרון מטמון"
+
+msgctxt "#432"
+msgid "Remove movie from library"
+msgstr "מחק סרט מהספריה"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "?'%s' האם אתה בטוח שברצונך למחוק את"
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "מ%s ב%i %s"
+
+msgctxt "#437"
+msgid "Removable disk"
+msgstr "כונן נייד"
+
+msgctxt "#438"
+msgid "Opening file"
+msgstr "פותח קובץ"
+
+msgctxt "#439"
+msgid "Cache"
+msgstr "זכרון מטמון"
+
+msgctxt "#440"
+msgid "Harddisk"
+msgstr "כונן קשיח"
+
+msgctxt "#441"
+msgid "UDF"
+msgstr "UDF"
+
+msgctxt "#442"
+msgid "Local network"
+msgstr "רשת מקומית"
+
+msgctxt "#443"
+msgid "Internet"
+msgstr "אינטרנט"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "וידאו"
+
+msgctxt "#445"
+msgid "Audio"
+msgstr "אודיו"
+
+msgctxt "#446"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#447"
+msgid "Autorun media"
+msgstr "נגן אוטומטית"
+
+msgctxt "#448"
+msgid "LCD"
+msgstr "LCD"
+
+msgctxt "#449"
+msgid "Enabled"
+msgstr "פעיל"
+
+msgctxt "#450"
+msgid "Columns"
+msgstr "עמודות"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "1: שורת כתובת"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "2: שורת כתובת"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "3: שורת כתובת"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "4: שורת כתובת"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "שורות"
+
+msgctxt "#456"
+msgid "Mode"
+msgstr "מצב"
+
+msgctxt "#457"
+msgid "Switch view"
+msgstr "החלף תצוגה"
+
+msgctxt "#459"
+msgid "Subs"
+msgstr "כתוביות"
+
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "זרימת אודיו"
+
+msgctxt "#461"
+msgid "[active]"
+msgstr "[פעיל]"
+
+msgctxt "#462"
+msgid "Subtitle"
+msgstr "כתובית"
+
+msgctxt "#463"
+msgid "Backlight"
+msgstr "תאורה אחורית"
+
+msgctxt "#464"
+msgid "Brightness"
+msgstr "בהירות"
+
+msgctxt "#465"
+msgid "Contrast"
+msgstr "ניגודיות"
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "גאמה"
+
+msgctxt "#467"
+msgid "Type"
+msgstr "סוג"
+
+msgctxt "#468"
+msgid "Move the bar to change the OSD position"
+msgstr "הזז את הסמן כדי לשנות את מיקום התפריט"
+
+msgctxt "#469"
+msgid "OSD position"
+msgstr "מיקום תפריט"
+
+msgctxt "#470"
+msgid "Credits"
+msgstr "תודות"
+
+msgctxt "#471"
+msgid "Modchip"
+msgstr "Modchip"
+
+msgctxt "#474"
+msgid "Off"
+msgstr "כבוי"
+
+msgctxt "#475"
+msgid "Music only"
+msgstr "מוזיקה בלבד"
+
+msgctxt "#476"
+msgid "Music & video"
+msgstr "מוזיקה ווידאו"
+
+msgctxt "#477"
+msgid "Unable to load playlist"
+msgstr "לא יכול לטעון רשימת השמעה"
+
+msgctxt "#478"
+msgid "OSD"
+msgstr "תפריט"
+
+msgctxt "#479"
+msgid "Skin & language"
+msgstr "סקין ושפה"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "מראה"
+
+msgctxt "#481"
+msgid "Audio options"
+msgstr "אפשרויות אודיו"
+
+msgctxt "#482"
+msgid "About XBMC"
+msgstr " XBMC אודות"
+
+msgctxt "#485"
+msgid "Delete album"
+msgstr "מחק אלבום"
+
+msgctxt "#486"
+msgid "Repeat"
+msgstr "חזרה"
+
+msgctxt "#487"
+msgid "Repeat one"
+msgstr "חזור פעם אחת"
+
+msgctxt "#488"
+msgid "Repeat folder"
+msgstr "חזור רשימת השמעה לתיקיה"
+
+msgctxt "#489"
+msgid "Play the next song automatically"
+msgstr "נגן את השיר הבא אוטומטית"
+
+msgctxt "#491"
+msgid "- Use big icons"
+msgstr "- השתמש בצלמיות גדולות"
+
+msgctxt "#492"
+msgid "Resize VobSubs"
+msgstr "הגדל כתוביות"
+
+msgctxt "#493"
+msgid "Advanced options (Experts Only!)"
+msgstr "אפשרויות מתקדמות"
+
+msgctxt "#494"
+msgid "Overall audio headroom"
+msgstr "Overall Audio Headroom (dB)"
+
+msgctxt "#495"
+msgid "Upsample videos to GUI resolution"
+msgstr "דגום מחדש וידאו לרזולוצית תצוגה"
+
+msgctxt "#496"
+msgid "Calibration"
+msgstr "כיוונון"
+
+msgctxt "#497"
+msgid "Show file extensions"
+msgstr "הראה סיומות קבצים"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "מיין לפי : סוג"
+
+msgctxt "#499"
+msgid "Unable to connect to online lookup service"
+msgstr "אין אפשרות להתחבר לשירות החיפוש"
+
+msgctxt "#500"
+msgid "Downloading album information failed"
+msgstr "הורדת פרטי אלבום נכשלה"
+
+msgctxt "#501"
+msgid "Looking for album names..."
+msgstr "מחפש שמות אלבום..."
+
+msgctxt "#502"
+msgid "Open"
+msgstr "פתח"
+
+msgctxt "#503"
+msgid "Busy"
+msgstr "עסוק"
+
+msgctxt "#504"
+msgid "Empty"
+msgstr "ריק"
+
+msgctxt "#505"
+msgid "Loading media info from files..."
+msgstr "טוען פרטי מדיה מהקבצים"
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "מיין לפי : שימוש"
+
+msgctxt "#510"
+msgid "Enable visualizations"
+msgstr "אפשר חיזוי"
+
+msgctxt "#511"
+msgid "Enable video mode switching"
+msgstr "אפשר החלפת מצב וידאו"
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "חלון ראשוני"
+
+msgctxt "#513"
+msgid "Home window"
+msgstr "חלון הבית"
+
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "הגדרות ידניות"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "סגנון"
+
+msgctxt "#517"
+msgid "Recently played albums"
+msgstr "אלבומים שנוגנו לאחרונה"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "הפעל"
+
+msgctxt "#519"
+msgid "Launch in..."
+msgstr "...הפעל ב"
+
+msgctxt "#521"
+msgid "Compilations"
+msgstr "אוספים"
+
+msgctxt "#522"
+msgid "Remove source"
+msgstr "הסר מקור"
+
+msgctxt "#523"
+msgid "Switch media"
+msgstr "החלף מדיה"
+
+msgctxt "#524"
+msgid "Select playlist"
+msgstr "בחר רשימת ניגון"
+
+msgctxt "#525"
+msgid "New playlist..."
+msgstr "רשימת ניגון חדשה"
+
+msgctxt "#526"
+msgid "Add to playlist"
+msgstr "הוסף לרשימת ניגון"
+
+msgctxt "#527"
+msgid "Manually add to library"
+msgstr "הוסף ידנית למסד הנתונים"
+
+msgctxt "#528"
+msgid "Enter title"
+msgstr "הזן כותרת"
+
+msgctxt "#529"
+msgid "Error: Duplicate title"
+msgstr "שגיאה: כותרת כפולה"
+
+msgctxt "#530"
+msgid "Select genre"
+msgstr "בחר סגנון"
+
+msgctxt "#531"
+msgid "New genre"
+msgstr "סגנון חדש"
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "הוספה ידנית"
+
+msgctxt "#533"
+msgid "Enter genre"
+msgstr "הזן סגנון"
+
+msgctxt "#534"
+msgid "View: %s"
+msgstr "תצוגה: %s"
+
+msgctxt "#535"
+msgid "List"
+msgstr "רשימה"
+
+msgctxt "#536"
+msgid "Icons"
+msgstr "צלמיות"
+
+msgctxt "#537"
+msgid "Big list"
+msgstr "רשימה גדולה"
+
+msgctxt "#538"
+msgid "Big icons"
+msgstr "צלמיות גדולות"
+
+msgctxt "#539"
+msgid "Wide"
+msgstr "רחב"
+
+msgctxt "#540"
+msgid "Big wide"
+msgstr "רחב גדול"
+
+msgctxt "#541"
+msgid "Album icons"
+msgstr "צלמיות אלבומים"
+
+msgctxt "#542"
+msgid "DVD icons"
+msgstr "צלמיות DVD"
+
+msgctxt "#543"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#544"
+msgid "Media info"
+msgstr "פרטי מדיה"
+
+msgctxt "#545"
+msgid "Audio output device"
+msgstr "התקן פלט אודיו"
+
+msgctxt "#546"
+msgid "Passthrough output device"
+msgstr "עובר דרך התקן חיצוני"
+
+msgctxt "#547"
+msgid "No biography for this artist"
+msgstr "אין ביוגרפיה לאמן זה"
+
+msgctxt "#548"
+msgid "Downmix multichannel audio to stereo"
+msgstr "התאם אודיו רב-ערוצי לסטריאו"
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "מיין לפי: %s"
+
+msgctxt "#551"
+msgid "Name"
+msgstr "שם"
+
+msgctxt "#552"
+msgid "Date"
+msgstr "תאריך"
+
+msgctxt "#553"
+msgid "Size"
+msgstr "גודל"
+
+msgctxt "#554"
+msgid "Track"
+msgstr "רצועה"
+
+msgctxt "#555"
+msgid "Time"
+msgstr "זמן"
+
+msgctxt "#556"
+msgid "Title"
+msgstr "כותרת"
+
+msgctxt "#557"
+msgid "Artist"
+msgstr "אמן"
+
+msgctxt "#558"
+msgid "Album"
+msgstr "אלבום"
+
+msgctxt "#559"
+msgid "Playlist"
+msgstr "רשימת השמעה"
+
+msgctxt "#560"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "#561"
+msgid "File"
+msgstr "קובץ"
+
+msgctxt "#562"
+msgid "Year"
+msgstr "שנה"
+
+msgctxt "#563"
+msgid "Rating"
+msgstr "דירוג"
+
+msgctxt "#564"
+msgid "Type"
+msgstr "סוג"
+
+msgctxt "#565"
+msgid "Usage"
+msgstr "שימוש"
+
+msgctxt "#566"
+msgid "Album artist"
+msgstr "אלבום אמן"
+
+msgctxt "#567"
+msgid "Play count"
+msgstr "מספר פעמים שנוגן"
+
+msgctxt "#568"
+msgid "Last played"
+msgstr "נוגן לאחרונה"
+
+msgctxt "#569"
+msgid "Comment"
+msgstr "הערות"
+
+msgctxt "#570"
+msgid "Date added"
+msgstr "תאריך הוספה"
+
+msgctxt "#571"
+msgid "Default"
+msgstr "ברירת מחדל"
+
+msgctxt "#572"
+msgid "Studio"
+msgstr "אולפן"
+
+msgctxt "#573"
+msgid "Path"
+msgstr "נתיב"
+
+msgctxt "#574"
+msgid "Country"
+msgstr "ארץ"
+
+msgctxt "#575"
+msgid "In progress"
+msgstr "בתהליך"
+
+msgctxt "#576"
+msgid "Times played"
+msgstr "פעמים שנוגן"
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "כיוון מיון"
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "שיטת מיון"
+
+msgctxt "#582"
+msgid "View mode"
+msgstr "מצב תצוגה"
+
+msgctxt "#583"
+msgid "Remember views for different folders"
+msgstr "זכור תצוגות לתיקיות שונות"
+
+msgctxt "#584"
+msgid "Ascending"
+msgstr "עולה"
+
+msgctxt "#585"
+msgid "Descending"
+msgstr "יורד"
+
+msgctxt "#586"
+msgid "Edit playlist"
+msgstr "ערוך רשימת השמעה"
+
+msgctxt "#587"
+msgid "Filter"
+msgstr "פילטר"
+
+msgctxt "#588"
+msgid "Cancel party mode"
+msgstr "בטל מצב מסיבה"
+
+msgctxt "#589"
+msgid "Party mode"
+msgstr "מצב מסיבה"
+
+msgctxt "#590"
+msgid "Random"
+msgstr "אקראי"
+
+msgctxt "#591"
+msgid "Off"
+msgstr "כבוי"
+
+msgctxt "#592"
+msgid "One"
+msgstr "אחד"
+
+msgctxt "#593"
+msgid "All"
+msgstr "הכל"
+
+msgctxt "#594"
+msgid "Off"
+msgstr "כבוי"
+
+msgctxt "#595"
+msgid "Repeat: Off"
+msgstr "חזרה: כבוי"
+
+msgctxt "#596"
+msgid "Repeat: One"
+msgstr "חזרה: אחד"
+
+msgctxt "#597"
+msgid "Repeat: All"
+msgstr "חזרה: הכל"
+
+msgctxt "#600"
+msgid "Rip audio CD"
+msgstr "העתק דיסק"
+
+msgctxt "#601"
+msgid "Medium"
+msgstr "בינוני"
+
+msgctxt "#602"
+msgid "Standard"
+msgstr "רגיל"
+
+msgctxt "#603"
+msgid "Extreme"
+msgstr "קיצוני"
+
+msgctxt "#604"
+msgid "Constant bitrate"
+msgstr "קצב ביטים קבוע"
+
+msgctxt "#605"
+msgid "Ripping..."
+msgstr "...מעתיק"
+
+msgctxt "#607"
+msgid "To:"
+msgstr "אל:"
+
+msgctxt "#608"
+msgid "Could not rip CD or track"
+msgstr "לא יכול להעתיק דיסק או רצועה"
+
+msgctxt "#609"
+msgid "CDDARipPath is not set."
+msgstr "נתיב CDDARipPath אינו מוגדר"
+
+msgctxt "#610"
+msgid "Rip audio track"
+msgstr "העתק רצועת דיסק"
+
+msgctxt "#611"
+msgid "Enter number"
+msgstr "הזן מספר"
+
+msgctxt "#612"
+msgid "Bits/Sample"
+msgstr ""
+
+msgctxt "#613"
+msgid "Sample Frequency"
+msgstr ""
+
+msgctxt "#620"
+msgid "Audio CDs"
+msgstr "דיסק אודיו"
+
+msgctxt "#621"
+msgid "Encoder"
+msgstr "מקודד"
+
+msgctxt "#622"
+msgid "Quality"
+msgstr "איכות"
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "קצב ביטים"
+
+msgctxt "#624"
+msgid "Include track number"
+msgstr "כלול מספר רצועה"
+
+msgctxt "#625"
+msgid "All songs of"
+msgstr "כל השירים של"
+
+msgctxt "#629"
+msgid "View mode"
+msgstr "מצב תצוגה"
+
+msgctxt "#630"
+msgid "Normal"
+msgstr "רגיל"
+
+msgctxt "#631"
+msgid "Zoom"
+msgstr "זום"
+
+msgctxt "#632"
+msgid "Stretch 4:3"
+msgstr "4:3 מתח"
+
+msgctxt "#633"
+msgid "Wide Zoom"
+msgstr "זום רחב"
+
+msgctxt "#634"
+msgid "Stretch 16:9"
+msgstr "16:9 מתח"
+
+msgctxt "#635"
+msgid "Original Size"
+msgstr "גודל מקורי"
+
+msgctxt "#636"
+msgid "Custom"
+msgstr "מותאם אישי"
+
+msgctxt "#637"
+msgid "Replay gain"
+msgstr "תיקון עוצמת הקול"
+
+msgctxt "#638"
+msgid "Replaygain volume adjustments"
+msgstr "כיוונון תיקון עוצמת הקול"
+
+msgctxt "#639"
+msgid "Use track levels"
+msgstr "השתמש בעוצמת הרצועה"
+
+msgctxt "#640"
+msgid "Use album levels"
+msgstr "השתמש בעוצמת האלבום"
+
+msgctxt "#641"
+msgid "PreAmp Level - Replay gained files"
+msgstr "עוצמת PreAmp  - תיקון עוצמת קבצים"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non replay gained files"
+msgstr "עוצמת PreAmp - ללא תיקון עוצמת קבצים"
+
+msgctxt "#643"
+msgid "Avoid clipping on replay gained files"
+msgstr "המנע מחיתוך קבצים מתוקני עוצמה"
+
+msgctxt "#644"
+msgid "Crop black bars"
+msgstr "חתוך פסים שחורים"
+
+msgctxt "#645"
+msgid "Need to unpack a big file. Continue?"
+msgstr "?צריך לחלץ קובץ גדול. להמשיך"
+
+msgctxt "#646"
+msgid "Remove from library"
+msgstr "הסר כותרת"
+
+msgctxt "#647"
+msgid "Export video library"
+msgstr "ייצא ספרית וידאו"
+
+msgctxt "#648"
+msgid "Import video library"
+msgstr "ייבא ספרית וידאו"
+
+msgctxt "#649"
+msgid "Importing"
+msgstr "מייבא"
+
+msgctxt "#650"
+msgid "Exporting"
+msgstr "מייצא"
+
+msgctxt "#651"
+msgid "Browse for library"
+msgstr "עיין לספריה"
+
+msgctxt "#652"
+msgid "Years"
+msgstr "שנים"
+
+msgctxt "#653"
+msgid "Update library"
+msgstr "עדכן ספריה"
+
+msgctxt "#654"
+msgid "Show debug info"
+msgstr "הצג פרטי ניפוי שגיאות"
+
+msgctxt "#655"
+msgid "Browse for executable"
+msgstr "עיין לקובץ הפעלה"
+
+msgctxt "#656"
+msgid "Browse for playlist"
+msgstr "עיין לרשימת ניגון"
+
+msgctxt "#657"
+msgid "Browse for folder"
+msgstr "עיין לתיקייה"
+
+msgctxt "#658"
+msgid "Song information"
+msgstr "פרטי שיר"
+
+msgctxt "#659"
+msgid "Non-linear stretch"
+msgstr ""
+
+msgctxt "#660"
+msgid "Volume amplification"
+msgstr "הגברת ווליום"
+
+msgctxt "#661"
+msgid "Choose export folder"
+msgstr "בחר תיקיית ייצוא"
+
+msgctxt "#662"
+msgid "This file is no longer available."
+msgstr "קובץ זה לא זמין יותר"
+
+msgctxt "#663"
+msgid "Would you like to remove it from the library?"
+msgstr "?האם תרצה להסיר אותו מהספריה"
+
+msgctxt "#664"
+msgid "Browse for Script"
+msgstr "עיין לסקריפט"
+
+msgctxt "#665"
+msgid "Compression level"
+msgstr "רמת דחיסה"
+
+msgctxt "#700"
+msgid "Cleaning up library"
+msgstr "מנקה מסד נתונים"
+
+msgctxt "#701"
+msgid "Removing old songs from the library"
+msgstr "מוחק שירים ישנים ממסד הנתונים"
+
+msgctxt "#702"
+msgid "This path has been scanned before"
+msgstr "נתיב זה נסרק בעבר"
+
+msgctxt "#705"
+msgid "Network"
+msgstr "רשת"
+
+msgctxt "#706"
+msgid "- Server"
+msgstr "- שרת"
+
+msgctxt "#708"
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "השתמש ב HTTP Proxy על מנת להיכנס לאינטרנט"
+
+msgctxt "#711"
+msgid "Internet Protocol (IP)"
+msgstr "פרוטוקול תקשורת (IP)"
+
+msgctxt "#712"
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "מספר פורט שגוי. ערך חייב להיות בין 1 ל 65535."
+
+msgctxt "#713"
+msgid "HTTP proxy"
+msgstr "HTTP פרוקסי"
+
+msgctxt "#715"
+msgid "- Assignment"
+msgstr "השמת כתובת"
+
+msgctxt "#716"
+msgid "Automatic (DHCP)"
+msgstr "אוטומטית (DHCP)"
+
+msgctxt "#717"
+msgid "Manual (Static)"
+msgstr "ידנית (סטטית)"
+
+msgctxt "#719"
+msgid "- IP address"
+msgstr "- IP address"
+
+msgctxt "#720"
+msgid "- Netmask"
+msgstr "- Netmask"
+
+msgctxt "#721"
+msgid "- Default gateway"
+msgstr "- Default gateway"
+
+msgctxt "#722"
+msgid "- DNS server"
+msgstr "- DNS server"
+
+msgctxt "#723"
+msgid "Save & restart"
+msgstr "שמור והפעל מחדש"
+
+msgctxt "#724"
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "כתובת שגויה. הכתובת חייבת להיות במבנה AAA.BBB.CCC.DDD"
+
+msgctxt "#725"
+msgid "with numbers between 0 and 255."
+msgstr "עם מספרים בין 0 ל- 255."
+
+msgctxt "#726"
+msgid "Changes not saved. Continue without saving?"
+msgstr "שינויים לא נשמרו. להמשיך בלי לשמור?"
+
+msgctxt "#727"
+msgid "Web server"
+msgstr "שרת Web"
+
+msgctxt "#728"
+msgid "FTP server"
+msgstr "שרת FTP"
+
+msgctxt "#730"
+msgid "- Port"
+msgstr "- פורט"
+
+msgctxt "#732"
+msgid "Save & apply"
+msgstr "שמור והפעל"
+
+msgctxt "#733"
+msgid "- Password"
+msgstr "- סיסמא"
+
+msgctxt "#734"
+msgid "No pass"
+msgstr "ללא סיסמא"
+
+msgctxt "#735"
+msgid "- Character set"
+msgstr "ערכת התווים -"
+
+msgctxt "#736"
+msgid "- Style"
+msgstr "סגנון -"
+
+msgctxt "#737"
+msgid "- Colour"
+msgstr "צבע -"
+
+msgctxt "#738"
+msgid "Normal"
+msgstr "רגיל"
+
+msgctxt "#739"
+msgid "Bold"
+msgstr "מודגש"
+
+msgctxt "#740"
+msgid "Italics"
+msgstr "נטוי"
+
+msgctxt "#741"
+msgid "Bold italics"
+msgstr "מודגש ונטוי"
+
+msgctxt "#742"
+msgid "White"
+msgstr "לבן"
+
+msgctxt "#743"
+msgid "Yellow"
+msgstr "צהוב"
+
+msgctxt "#744"
+msgid "Files"
+msgstr "קבצים"
+
+msgctxt "#745"
+msgid "No scanned information for this view"
+msgstr "לא נסרקו פרטים עבור תצוגה זו"
+
+msgctxt "#746"
+msgid "Please turn off library mode"
+msgstr "שנה לתצוגת קבצים"
+
+msgctxt "#747"
+msgid "Error loading image"
+msgstr "שגיאה בטעינת התמונה"
+
+msgctxt "#748"
+msgid "Edit path"
+msgstr "ערוך נתיב"
+
+msgctxt "#749"
+msgid "Mirror image"
+msgstr "הפוך תמונה"
+
+msgctxt "#750"
+msgid "Are you sure?"
+msgstr "האם אתה בטוח?"
+
+msgctxt "#751"
+msgid "Removing source"
+msgstr "מסיר מקור"
+
+msgctxt "#754"
+msgid "Add program link"
+msgstr "הוסף קישור לתוכנה"
+
+msgctxt "#755"
+msgid "Edit program path"
+msgstr "ערוך נתיב תוכנה"
+
+msgctxt "#756"
+msgid "Edit program name"
+msgstr "ערוך שם תוכנה"
+
+msgctxt "#757"
+msgid "Edit path depth"
+msgstr "ערוך עומק נתיב"
+
+msgctxt "#759"
+msgid "View: Big list"
+msgstr "תצוגה: רשימה גדולה"
+
+msgctxt "#760"
+msgid "Yellow"
+msgstr "צהוב"
+
+msgctxt "#761"
+msgid "White"
+msgstr "לבן"
+
+msgctxt "#762"
+msgid "Blue"
+msgstr "כחול"
+
+msgctxt "#763"
+msgid "Bright green"
+msgstr "ירוק בוהק"
+
+msgctxt "#764"
+msgid "Yellow green"
+msgstr "צהוב ירוק"
+
+msgctxt "#765"
+msgid "Cyan"
+msgstr "תכלת"
+
+msgctxt "#766"
+msgid "Light grey"
+msgstr "שמור"
+
+msgctxt "#767"
+msgid "Grey"
+msgstr "שמור"
+
+msgctxt "#770"
+msgid "Error %i: share not available"
+msgstr "שיתוף לא קיים :%i שגיאה"
+
+msgctxt "#772"
+msgid "Audio output"
+msgstr "פלט אודיו"
+
+msgctxt "#773"
+msgid "Seeking"
+msgstr "מחפש"
+
+msgctxt "#774"
+msgid "Slideshow folder"
+msgstr "ספריית מצגת"
+
+msgctxt "#775"
+msgid "Network interface"
+msgstr "ממשק רשת"
+
+msgctxt "#776"
+msgid "- Wireless network name (ESSID)"
+msgstr "- שם רשת אלחוטית (ESSID)"
+
+msgctxt "#777"
+msgid "- Wireless password"
+msgstr "- סיסמאת רשת אלחוטית"
+
+msgctxt "#778"
+msgid "- Wireless security"
+msgstr "- אבטחת רשת אלחוטית"
+
+msgctxt "#779"
+msgid "Save and apply network interface settings"
+msgstr "שמור הגדרות ממשק רשת"
+
+msgctxt "#780"
+msgid "No encryption"
+msgstr "ללא הצפנה"
+
+msgctxt "#781"
+msgid "WEP"
+msgstr "WEP"
+
+msgctxt "#782"
+msgid "WPA"
+msgstr "WPA"
+
+msgctxt "#783"
+msgid "WPA2"
+msgstr "WPA2"
+
+msgctxt "#784"
+msgid "Applying network interface settings. Please wait."
+msgstr "מגדיר הגדרות ממשק רשת. אנא המתן."
+
+msgctxt "#785"
+msgid "Network interface restarted successfully."
+msgstr "ממשק רשת הופעל מחדש בהצלחה"
+
+msgctxt "#786"
+msgid "Network interface did not start successfully."
+msgstr "ממשק רשת לא הופעל בהצלחה."
+
+msgctxt "#787"
+msgid "Interface disabled"
+msgstr "ממשק מנוטרל"
+
+msgctxt "#788"
+msgid "Network interface disabled successfully."
+msgstr "ממשק רשת נוטרל בהצלחה."
+
+msgctxt "#789"
+msgid "Wireless network name (ESSID)"
+msgstr "שם רשת אלחוטית (ESSID)"
+
+msgctxt "#790"
+msgid "Remote control"
+msgstr "שליטה מרחוק"
+
+msgctxt "#791"
+msgid "Allow programs on this system to control XBMC"
+msgstr "אפשר לתוכנות במערכת זו לשלוט על XBMC"
+
+msgctxt "#792"
+msgid "Port"
+msgstr "פורט"
+
+msgctxt "#793"
+msgid "Port range"
+msgstr "תווך פורטים"
+
+msgctxt "#794"
+msgid "Allow programs on other systems to control XBMC"
+msgstr "אפשר לתוכנות במערכות אחרות לשלוט על XBMC"
+
+msgctxt "#795"
+msgid "Initial repeat delay (ms)"
+msgstr "חוזר על עיכוב ראשוני (ms)"
+
+msgctxt "#796"
+msgid "Continuous repeat delay (ms)"
+msgstr "חזור על עיקוב מתמשך (ms)"
+
+msgctxt "#797"
+msgid "Maximum number of clients"
+msgstr "מספר קליינטים מירבי"
+
+msgctxt "#798"
+msgid "Internet access"
+msgstr "גישת אינטרנט"
+
+msgctxt "#850"
+msgid "Invalid port number entered"
+msgstr "מספר פורט שגוי"
+
+msgctxt "#851"
+msgid "Valid port range is 1-65535"
+msgstr "טווח פורט תקין הוא 1-65535"
+
+msgctxt "#852"
+msgid "Valid port range is 1024-65535"
+msgstr "טווח פורט תקין הוא 1024-65535"
+
+msgctxt "#998"
+msgid "Add Music..."
+msgstr "הוסף מוזיקה..."
+
+msgctxt "#999"
+msgid "Add Videos..."
+msgstr "הוסף וידאו..."
+
+msgctxt "#1000"
+msgid "- Preview"
+msgstr "- תצוגה מקדימה"
+
+msgctxt "#1001"
+msgid "Unable to connect"
+msgstr "חיבור נכשל"
+
+msgctxt "#1002"
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC נכשל בחיבור לרשת המיקום."
+
+msgctxt "#1003"
+msgid "This could be due to the network not being connected."
+msgstr "זהו כנראה עקב הרשת שאיננה מחוברת."
+
+msgctxt "#1004"
+msgid "Would you like to add it anyway?"
+msgstr "האם ברצונך להוסיף בכל זאת?"
+
+msgctxt "#1006"
+msgid "IP address"
+msgstr "IP כתובת"
+
+msgctxt "#1007"
+msgid "Add network location"
+msgstr "הוסף מיקום ברשת"
+
+msgctxt "#1008"
+msgid "Protocol"
+msgstr "פרוטוקול"
+
+msgctxt "#1009"
+msgid "Server address"
+msgstr "כתובת שרת"
+
+msgctxt "#1010"
+msgid "Server name"
+msgstr "שם שרת"
+
+msgctxt "#1011"
+msgid "Remote path"
+msgstr "נתיב מרוחק"
+
+msgctxt "#1012"
+msgid "Shared folder"
+msgstr "ספריה משותפת"
+
+msgctxt "#1013"
+msgid "Port"
+msgstr "פורט"
+
+msgctxt "#1014"
+msgid "Username"
+msgstr "שם משתמש"
+
+msgctxt "#1015"
+msgid "Browse for network server"
+msgstr "עיין לחיפוש שרת רשת"
+
+msgctxt "#1016"
+msgid "Enter the network address of the server"
+msgstr "הזן כתובת רשת של השרת"
+
+msgctxt "#1017"
+msgid "Enter the path on the server"
+msgstr "הזן נתיב של השרת"
+
+msgctxt "#1018"
+msgid "Enter the port number"
+msgstr "הזן מספר פורט"
+
+msgctxt "#1019"
+msgid "Enter the username"
+msgstr "הזן שם משתמש"
+
+msgctxt "#1020"
+msgid "Add %s source"
+msgstr "%s הוסף מקור"
+
+msgctxt "#1021"
+msgid "Enter the paths or browse for the media locations."
+msgstr "הזן נתיב או עיין למיקום המדיה."
+
+msgctxt "#1022"
+msgid "Enter a name for this media Source."
+msgstr "הזן שם למקור מדיה זה."
+
+msgctxt "#1023"
+msgid "Browse for new share"
+msgstr "עיין לשיתוף חדש"
+
+msgctxt "#1024"
+msgid "Browse"
+msgstr "עיון"
+
+msgctxt "#1025"
+msgid "Could not retrieve directory information."
+msgstr "בעיה בקבלת פרטי הספריה."
+
+msgctxt "#1026"
+msgid "Add source"
+msgstr "הוסף מקור"
+
+msgctxt "#1027"
+msgid "Edit source"
+msgstr "ערוך מקור"
+
+msgctxt "#1028"
+msgid "Edit %s source"
+msgstr "%s ערוך מקור"
+
+msgctxt "#1029"
+msgid "Enter the new label"
+msgstr "הזן תווית"
+
+msgctxt "#1030"
+msgid "Browse for image"
+msgstr "עיין לתמונה"
+
+msgctxt "#1031"
+msgid "Browse for image folder"
+msgstr "עיין לתמונת תיקיה"
+
+msgctxt "#1032"
+msgid "Add network location..."
+msgstr "הוסף מיקום רשת..."
+
+msgctxt "#1033"
+msgid "Browse for file"
+msgstr "עיין לקובץ"
+
+msgctxt "#1034"
+msgid "Submenu"
+msgstr "תת-תפריט"
+
+msgctxt "#1035"
+msgid "Enable submenu buttons"
+msgstr "אפשר כפתורי תת-תפריט"
+
+msgctxt "#1036"
+msgid "Favourites"
+msgstr "מועדפים"
+
+msgctxt "#1037"
+msgid "Video Add-ons"
+msgstr "הרחבות וידאו"
+
+msgctxt "#1038"
+msgid "Music Add-ons"
+msgstr "הרחבות מוזיקה"
+
+msgctxt "#1039"
+msgid "Picture Add-ons"
+msgstr "הרחבות תמונות"
+
+msgctxt "#1040"
+msgid "Loading directory"
+msgstr "טוען ספריה"
+
+msgctxt "#1041"
+msgid "Retrieved %i items"
+msgstr "קיבל %i פריטים"
+
+msgctxt "#1042"
+msgid "Retrieved %i of %i items"
+msgstr "קיבל %i מתוך %i פריטים"
+
+msgctxt "#1043"
+msgid "Program Add-ons"
+msgstr "הרחבות תוכנות"
+
+msgctxt "#1044"
+msgid "Set plugin thumb"
+msgstr "הגדר תמונה ממוזערת להרחבה"
+
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "הגדרות הרחבה"
+
+msgctxt "#1046"
+msgid "Access points"
+msgstr "נקודת גישה"
+
+msgctxt "#1047"
+msgid "Other..."
+msgstr "אחר..."
+
+msgctxt "#1048"
+msgid "- Username"
+msgstr "- שם משתמש"
+
+msgctxt "#1049"
+msgid "Script settings"
+msgstr "הגדרות סקריפט"
+
+msgctxt "#1050"
+msgid "Singles"
+msgstr "סינגלים"
+
+msgctxt "#1051"
+msgid "Enter web address"
+msgstr "הזן כתובת אינטרנט"
+
+msgctxt "#1200"
+msgid "SMB client"
+msgstr "SMB חלוקה"
+
+msgctxt "#1202"
+msgid "Workgroup"
+msgstr "SMB קבוצת עבודה"
+
+msgctxt "#1203"
+msgid "Default username"
+msgstr "SMB שם משתמש"
+
+msgctxt "#1204"
+msgid "Default password"
+msgstr "SMB סיסמא"
+
+msgctxt "#1207"
+msgid "WINS server"
+msgstr "SMB WINS שרת"
+
+msgctxt "#1208"
+msgid "Mount SMB shares"
+msgstr "מאונט שיתופי SMB"
+
+msgctxt "#1210"
+msgid "Remove"
+msgstr "הסר"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "מוסיקה"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "וידאו"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "תמונות"
+
+msgctxt "#1214"
+msgid "Files"
+msgstr "קבצים"
+
+msgctxt "#1215"
+msgid "Music & video "
+msgstr "מוסיקה ווידאו"
+
+msgctxt "#1216"
+msgid "Music & pictures"
+msgstr "מוסיקה ותמונות"
+
+msgctxt "#1217"
+msgid "Music & files"
+msgstr "מוסיקה וקבצים"
+
+msgctxt "#1218"
+msgid "Video & pictures"
+msgstr "וידאו ותמונות"
+
+msgctxt "#1219"
+msgid "Video & files"
+msgstr "וידאו וקבצים"
+
+msgctxt "#1220"
+msgid "Pictures & files"
+msgstr "תמונות וקבצים"
+
+msgctxt "#1221"
+msgid "Music & video & pictures"
+msgstr "מוזיקה, וידאו ותמונות"
+
+msgctxt "#1222"
+msgid "Music & video & pictures & files"
+msgstr "מוסיקה, וידאו, תמונות וקבצים"
+
+msgctxt "#1223"
+msgid "Disabled"
+msgstr "מנוטרל"
+
+msgctxt "#1226"
+msgid "Files & music & video"
+msgstr "קבצים, מוסיקה ווידאו"
+
+msgctxt "#1227"
+msgid "Files & pictures & music"
+msgstr "קבצים, תמונות ומוסיקה"
+
+msgctxt "#1228"
+msgid "Files & pictures & video"
+msgstr "קבצים, תמונות ווידאו"
+
+msgctxt "#1229"
+msgid "Music & programs"
+msgstr "מוסיקה ותוכנות"
+
+msgctxt "#1230"
+msgid "Video & programs"
+msgstr "וידאו ותוכנות"
+
+msgctxt "#1231"
+msgid "Pictures & programs"
+msgstr "תמונות ותוכנות"
+
+msgctxt "#1232"
+msgid "Music & video & pictures & programs"
+msgstr "מוסיקה, וידאו, תמונות ותוכנות"
+
+msgctxt "#1233"
+msgid "Programs & video & music"
+msgstr "תוכנות, וידאו ומוסיקה"
+
+msgctxt "#1234"
+msgid "Programs & pictures & music"
+msgstr "תוכנות, תמונות ומוסיקה"
+
+msgctxt "#1235"
+msgid "Programs & pictures & video"
+msgstr "תוכנות, תמונות ווידאו"
+
+msgctxt "#1250"
+msgid "Auto-detection"
+msgstr "זיהוי אוטומטי"
+
+msgctxt "#1251"
+msgid "Auto-detect system"
+msgstr "זיהוי מערכת אוטומטי"
+
+msgctxt "#1252"
+msgid "Nickname"
+msgstr "כינוי"
+
+msgctxt "#1254"
+msgid "Ask to connect"
+msgstr "שאל על מנת להתחבר"
+
+msgctxt "#1255"
+msgid "Send FTP user and password"
+msgstr "שלח פרטי FTP משתמש וסיסמא"
+
+msgctxt "#1256"
+msgid "Ping interval"
+msgstr "השהיית פינג"
+
+msgctxt "#1257"
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "האם ברצונך להתחבר למערכת שזוהתה אוטומטית?"
+
+msgctxt "#1259"
+msgid "Zeroconf"
+msgstr "Zeroconf"
+
+msgctxt "#1260"
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "הכרז על שירותים אלו למערכות אחרות דרך Zeroconf"
+
+msgctxt "#1270"
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "אפשר ל-XBMC לקבל תכני AirPlay"
+
+msgctxt "#1271"
+msgid "Device name"
+msgstr "שם התקן"
+
+msgctxt "#1272"
+msgid "- Use password protection"
+msgstr "- השתמש בהגנת סיסמא"
+
+msgctxt "#1273"
+msgid "AirPlay"
+msgstr "AirPlay"
+
+msgctxt "#1300"
+msgid "Custom audio device"
+msgstr "התקן אודיו מותאם אישית"
+
+msgctxt "#1301"
+msgid "Custom passthrough device"
+msgstr "התקן פלט מותאם אישית"
+
+msgctxt "#1396"
+msgid "Drifting"
+msgstr "זולג"
+
+msgctxt "#1397"
+msgid "and"
+msgstr "ו"
+
+msgctxt "#1398"
+msgid "Freezing"
+msgstr "קופא"
+
+msgctxt "#1399"
+msgid "Late"
+msgstr "מאוחר"
+
+msgctxt "#1400"
+msgid "Isolated"
+msgstr "מבודד"
+
+msgctxt "#1401"
+msgid "Thundershowers"
+msgstr "רעמים וגשם"
+
+msgctxt "#1402"
+msgid "Thunder"
+msgstr "רעמים"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "שמש"
+
+msgctxt "#1404"
+msgid "Heavy"
+msgstr "כבד"
+
+msgctxt "#1405"
+msgid "in"
+msgstr "ב"
+
+msgctxt "#1406"
+msgid "the"
+msgstr "ה"
+
+msgctxt "#1407"
+msgid "Vicinity"
+msgstr "אזור"
+
+msgctxt "#1408"
+msgid "Ice"
+msgstr "קרח"
+
+msgctxt "#1409"
+msgid "Crystals"
+msgstr "גבישי"
+
+msgctxt "#1410"
+msgid "Calm"
+msgstr "רגוע"
+
+msgctxt "#1411"
+msgid "with"
+msgstr "עם"
+
+msgctxt "#1412"
+msgid "windy"
+msgstr "סוער"
+
+msgctxt "#1413"
+msgid "drizzle"
+msgstr "טפטוף"
+
+msgctxt "#1414"
+msgid "Thunderstorm"
+msgstr "סערת רעמים"
+
+msgctxt "#1415"
+msgid "Drizzle"
+msgstr "טפטוף"
+
+msgctxt "#1416"
+msgid "Foggy"
+msgstr "ערפלי"
+
+msgctxt "#1417"
+msgid "Grains"
+msgstr "גרגירים"
+
+msgctxt "#1418"
+msgid "T-Storms"
+msgstr ""
+
+msgctxt "#1419"
+msgid "T-Showers"
+msgstr ""
+
+msgctxt "#1420"
+msgid "Moderate"
+msgstr "מתון"
+
+msgctxt "#1421"
+msgid "Very High"
+msgstr "גבוה מאוד"
+
+msgctxt "#1422"
+msgid "Windy"
+msgstr "סוער"
+
+msgctxt "#1423"
+msgid "Mist"
+msgstr "ערפל"
+
+msgctxt "#1450"
+msgid "Put display to sleep when idle"
+msgstr "הכנס צג למצב שינה כשאין פעילות"
+
+msgctxt "#2050"
+msgid "Runtime"
+msgstr "זמן ריצה"
+
+msgctxt "#2100"
+msgid "Script failed! : %s"
+msgstr "הסקריפט ניכשל!: %s"
+
+msgctxt "#2101"
+msgid "Newer version needed - See log"
+msgstr "יש צורך בגרסא חדשה - עיין בלוג"
+
+msgctxt "#4501"
+msgid "Enable LCD/VFD"
+msgstr "הפעל LCD/VFD"
+
+msgctxt "#10000"
+msgid "Home"
+msgstr "בית"
+
+msgctxt "#10001"
+msgid "Programs"
+msgstr "תוכנות"
+
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "תמונות"
+
+msgctxt "#10003"
+msgid "File manager"
+msgstr "מנהל קבצים"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "הגדרות"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "מוסיקה"
+
+msgctxt "#10006"
+msgid "Videos"
+msgstr "וידאו"
+
+msgctxt "#10007"
+msgid "System information"
+msgstr "פרטי מערכת"
+
+msgctxt "#10008"
+msgid "Settings - General"
+msgstr "הגדרות - כללי"
+
+msgctxt "#10009"
+msgid "Settings - Screen"
+msgstr "הגדרות - מסך"
+
+msgctxt "#10010"
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "הגדרות - מראה - כיוונון GUI"
+
+msgctxt "#10011"
+msgid "Settings - Videos - Screen Calibration"
+msgstr "הגדרות - וידאו - כיוונון מסך"
+
+msgctxt "#10012"
+msgid "Settings - Pictures"
+msgstr "הגדרות - תמונות"
+
+msgctxt "#10013"
+msgid "Settings - Programs"
+msgstr "הגדרות - תוכניות"
+
+msgctxt "#10014"
+msgid "Settings - Weather"
+msgstr "הגדרות - מזג האויר"
+
+msgctxt "#10015"
+msgid "Settings - Music"
+msgstr "הגדרות - מוסיקה"
+
+msgctxt "#10016"
+msgid "Settings - System"
+msgstr "הגדרות - מערכת"
+
+msgctxt "#10017"
+msgid "Settings - Videos"
+msgstr "הגדרות - וידאו"
+
+msgctxt "#10018"
+msgid "Settings - Network"
+msgstr "הגדרות - רשת"
+
+msgctxt "#10019"
+msgid "Settings - Appearance"
+msgstr "הגדרות - מראה"
+
+msgctxt "#10020"
+msgid "Scripts"
+msgstr "סקריפטים"
+
+msgctxt "#10021"
+msgid "Web Browser"
+msgstr "דפדפן אינטרנט"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "וידאו"
+
+msgctxt "#10028"
+msgid "Videos/Playlist"
+msgstr "וידאו/רשימת ניגון"
+
+msgctxt "#10029"
+msgid "Login screen"
+msgstr "מסך כניסה"
+
+msgctxt "#10034"
+msgid "Settings - Profiles"
+msgstr "הגדרות - פרופילים"
+
+msgctxt "#10040"
+msgid "Addon browser"
+msgstr "דפדפן הרחבות"
+
+msgctxt "#10100"
+msgid "Yes/No dialog"
+msgstr "דיאלוג לא/כן"
+
+msgctxt "#10101"
+msgid "Progress dialog"
+msgstr "דיאלוג התקדמות"
+
+msgctxt "#10210"
+msgid "Looking for subtitles..."
+msgstr "מחפש כתוביות..."
+
+msgctxt "#10211"
+msgid "Looking for or caching subtitles..."
+msgstr "מחפש או אוגר כתוביות..."
+
+msgctxt "#10212"
+msgid "terminating"
+msgstr "מבטל"
+
+msgctxt "#10213"
+msgid "buffering"
+msgstr "אוגר מידע"
+
+msgctxt "#10214"
+msgid "Opening stream"
+msgstr "פותח זרימה"
+
+msgctxt "#10500"
+msgid "Music/Playlist"
+msgstr "מוסיקה/רשימת ניגון"
+
+msgctxt "#10501"
+msgid "Music/Files"
+msgstr "מוסיקה/קבצים"
+
+msgctxt "#10502"
+msgid "Music/Library"
+msgstr "מוסיקה/ספרייה"
+
+msgctxt "#10503"
+msgid "Playlist editor"
+msgstr "עורך רשימת ניגון"
+
+msgctxt "#10504"
+msgid "Top 100 songs"
+msgstr "מאה השירים הגדולים"
+
+msgctxt "#10505"
+msgid "Top 100 albums"
+msgstr "מאה האלבומים הגדולים"
+
+msgctxt "#10506"
+msgid "Programs"
+msgstr "תוכנות"
+
+msgctxt "#10507"
+msgid "Configuration"
+msgstr "הגדרות"
+
+msgctxt "#10508"
+msgid "Weather forecast"
+msgstr "תחזית מזג אויר"
+
+msgctxt "#10509"
+msgid "Network gaming"
+msgstr "משחקי רשת"
+
+msgctxt "#10510"
+msgid "Extensions"
+msgstr "סיומות"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "פרטי מערכת"
+
+msgctxt "#10516"
+msgid "Music - Library"
+msgstr "מוסיקה - ספריה"
+
+msgctxt "#10517"
+msgid "Now Playing - Music"
+msgstr "מנגן כעת - מוסיקה"
+
+msgctxt "#10522"
+msgid "Now Playing - Videos"
+msgstr "מנגן כעת - וידאו"
+
+msgctxt "#10523"
+msgid "Album info"
+msgstr "פרטי אלבום"
+
+msgctxt "#10524"
+msgid "Movie info"
+msgstr "פרטי סרט"
+
+msgctxt "#12000"
+msgid "Select dialog"
+msgstr "בחר דיאלוג"
+
+msgctxt "#12001"
+msgid "Music/Info"
+msgstr "מוסיקה/פרטים"
+
+msgctxt "#12002"
+msgid "Dialog OK"
+msgstr "דיאלוג אישור"
+
+msgctxt "#12003"
+msgid "Videos/Info"
+msgstr "וידאו/פרטים"
+
+msgctxt "#12004"
+msgid "Scripts/Info"
+msgstr "סקרפטים/פרטים"
+
+msgctxt "#12005"
+msgid "Fullscreen video"
+msgstr "וידאו במסך מלא"
+
+msgctxt "#12006"
+msgid "Audio visualization"
+msgstr "חיזוי אודיו"
+
+msgctxt "#12008"
+msgid "File stacking dialog"
+msgstr "דיאלוג ערימת קבצים"
+
+msgctxt "#12009"
+msgid "Rebuild index..."
+msgstr "בונה אינדקס..."
+
+msgctxt "#12010"
+msgid "Return to music window"
+msgstr "חזור לחלון המוזיקה"
+
+msgctxt "#12011"
+msgid "Return to videos window"
+msgstr "חזור לחלון הוידאו"
+
+msgctxt "#12021"
+msgid "Start from beginning"
+msgstr "התחל מהתחלה"
+
+msgctxt "#12022"
+msgid "Resume from %s"
+msgstr "המשך מנקודה %s"
+
+msgctxt "#12310"
+msgid "0"
+msgstr "0"
+
+msgctxt "#12311"
+msgid "1"
+msgstr "1"
+
+msgctxt "#12312"
+msgid "2"
+msgstr "2"
+
+msgctxt "#12313"
+msgid "3"
+msgstr "3"
+
+msgctxt "#12314"
+msgid "4"
+msgstr "4"
+
+msgctxt "#12315"
+msgid "5"
+msgstr "5"
+
+msgctxt "#12316"
+msgid "6"
+msgstr "6"
+
+msgctxt "#12317"
+msgid "7"
+msgstr "7"
+
+msgctxt "#12318"
+msgid "8"
+msgstr "8"
+
+msgctxt "#12319"
+msgid "9"
+msgstr "9"
+
+msgctxt "#12320"
+msgid "c"
+msgstr "c"
+
+msgctxt "#12321"
+msgid "Ok"
+msgstr "ok"
+
+msgctxt "#12322"
+msgid "*"
+msgstr "*"
+
+msgctxt "#12325"
+msgid "Locked! Enter code..."
+msgstr "נעול! הקש קוד..."
+
+msgctxt "#12326"
+msgid "Enter password"
+msgstr "הזן סיסמא"
+
+msgctxt "#12327"
+msgid "Enter master code"
+msgstr "הזן קוד נעילה ראשי"
+
+msgctxt "#12328"
+msgid "Enter unlock code"
+msgstr "הזן קוד שחרור"
+
+msgctxt "#12329"
+msgid "or press C to cancel"
+msgstr "או הקש C לביטול"
+
+msgctxt "#12330"
+msgid "Enter gamepad button combo and"
+msgstr "לחץ על כפתורי קומבו בגיימפד"
+
+msgctxt "#12331"
+msgid "press OK, or Back to cancel"
+msgstr "ולחץ אישור או אחורה לביטול"
+
+msgctxt "#12332"
+msgid "Set lock"
+msgstr "נעל"
+
+msgctxt "#12333"
+msgid "Unlock"
+msgstr "שחרר"
+
+msgctxt "#12334"
+msgid "Reset lock"
+msgstr "אפס נעילה"
+
+msgctxt "#12335"
+msgid "Remove lock"
+msgstr "הסר נעילה"
+
+msgctxt "#12337"
+msgid "Numeric password"
+msgstr "סיסמת מספר"
+
+msgctxt "#12338"
+msgid "Gamepad button combo"
+msgstr "כפתור קומבו בגיימפד"
+
+msgctxt "#12339"
+msgid "Full-text password"
+msgstr "סיסמת טקסט מלא"
+
+msgctxt "#12340"
+msgid "Enter new password"
+msgstr "הזן סיסמא חדשה"
+
+msgctxt "#12341"
+msgid "Re-Enter new password"
+msgstr "הזן סיסמא פעם נוספת"
+
+msgctxt "#12342"
+msgid "Incorrect password,"
+msgstr "סיסמא שגויה,"
+
+msgctxt "#12343"
+msgid "retries left "
+msgstr "נסיונות נותרו "
+
+msgctxt "#12344"
+msgid "Passwords entered did not match."
+msgstr "סיסמאות לא תואמות."
+
+msgctxt "#12345"
+msgid "Access denied"
+msgstr "הגישה נדחתה"
+
+msgctxt "#12346"
+msgid "Password retry limit exceeded."
+msgstr "נסיונות כניסה כושלים רבים מדי."
+
+msgctxt "#12347"
+msgid "The system will now shut off."
+msgstr "המערכת כעת תכבה."
+
+msgctxt "#12348"
+msgid "Item locked"
+msgstr "פריט נעול"
+
+msgctxt "#12353"
+msgid "Reactivate lock"
+msgstr "הפעל נעילה מחדש"
+
+msgctxt "#12356"
+msgid "Change lock"
+msgstr "שנה נעילה"
+
+msgctxt "#12357"
+msgid "Source lock"
+msgstr "נעילת מקור"
+
+msgctxt "#12358"
+msgid "Password entry was blank. Try again."
+msgstr "שדה הסיסמא ריק. נסה שנית."
+
+msgctxt "#12360"
+msgid "Master lock"
+msgstr "נעילה ראשית"
+
+msgctxt "#12362"
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "כבה מערכת כאשר ניסיונות הקוד הראשי רבים מדי"
+
+msgctxt "#12367"
+msgid "Master code is not valid"
+msgstr "קוד ראשי אינו תקין"
+
+msgctxt "#12368"
+msgid "Please enter a valid master code"
+msgstr "אנא הזן קוד ראשי תקין"
+
+msgctxt "#12373"
+msgid "Settings & file manager"
+msgstr "הגדרות & הקבצים שלי"
+
+msgctxt "#12376"
+msgid "Set as default for all movies"
+msgstr "הגדר כברירת מחדל לכל הסרטים"
+
+msgctxt "#12377"
+msgid "This will reset any previously saved values"
+msgstr "פעולה זו תאתחל כל ערכים קודמים שנשמרו"
+
+msgctxt "#12378"
+msgid "Amount of time to display each image"
+msgstr "זמן הצגת כל תמונה"
+
+msgctxt "#12379"
+msgid "Use pan and zoom effects"
+msgstr "Pan and Zoom השתמש באפקט"
+
+msgctxt "#12383"
+msgid "12 hour clock"
+msgstr "שעון 12 שעות"
+
+msgctxt "#12384"
+msgid "24 hour clock"
+msgstr "שעון 24 שעות"
+
+msgctxt "#12385"
+msgid "Day/Month"
+msgstr "יום/חודש"
+
+msgctxt "#12386"
+msgid "Month/Day"
+msgstr "חודש/יום"
+
+msgctxt "#12390"
+msgid "System uptime"
+msgstr "זמן מערכת פעילה"
+
+msgctxt "#12391"
+msgid "Minutes"
+msgstr "דקות"
+
+msgctxt "#12392"
+msgid "Hours"
+msgstr "שעות"
+
+msgctxt "#12393"
+msgid "Days"
+msgstr "ימים"
+
+msgctxt "#12394"
+msgid "Total uptime"
+msgstr "סה\"כ פעילות"
+
+msgctxt "#12395"
+msgid "Battery level"
+msgstr "רמת סוללה"
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "מזג אויר"
+
+msgctxt "#12900"
+msgid "Screensaver"
+msgstr "שומר מסך"
+
+msgctxt "#12901"
+msgid "Fullscreen OSD"
+msgstr "תפריט במסך מלא"
+
+msgctxt "#13000"
+msgid "System"
+msgstr "מערכת"
+
+msgctxt "#13001"
+msgid "Immediate HD spindown"
+msgstr "הורד כמות סיבובים בדיסק הקשיח מיידית"
+
+msgctxt "#13002"
+msgid "Video only"
+msgstr "וידאו בלבד"
+
+msgctxt "#13003"
+msgid "- Delay"
+msgstr "- השהייה"
+
+msgctxt "#13004"
+msgid "- Minimum file duration"
+msgstr "- אורך קובץ מינימאלי"
+
+msgctxt "#13005"
+msgid "Shutdown"
+msgstr "כיבוי"
+
+msgctxt "#13008"
+msgid "Shutdown function"
+msgstr "פעולת כיבוי"
+
+msgctxt "#13009"
+msgid "Quit"
+msgstr "צא"
+
+msgctxt "#13010"
+msgid "Hibernate"
+msgstr "מצב שינה"
+
+msgctxt "#13011"
+msgid "Suspend"
+msgstr "השהייה"
+
+msgctxt "#13012"
+msgid "Exit"
+msgstr "יציאה"
+
+msgctxt "#13013"
+msgid "Reboot"
+msgstr "הפעלה מחדש"
+
+msgctxt "#13014"
+msgid "Minimize"
+msgstr "מזער"
+
+msgctxt "#13015"
+msgid "Power button action"
+msgstr "פעולת כפתור הכיבוי"
+
+msgctxt "#13016"
+msgid "Power off System"
+msgstr "כיבוי מערכת"
+
+msgctxt "#13020"
+msgid "Is another session active, perhaps over ssh?"
+msgstr "יש תוכנית אחרת פעילה, יכול להיות SSH?"
+
+msgctxt "#13021"
+msgid "Mounted removable harddrive"
+msgstr "כונן נייד מחובר"
+
+msgctxt "#13022"
+msgid "Unsafe device removal"
+msgstr "לא בטוח להסיר התקן נייד"
+
+msgctxt "#13023"
+msgid "Successfully removed device"
+msgstr "התקן הוסר בהצלחה"
+
+msgctxt "#13024"
+msgid "Joystick plugged"
+msgstr "ג'ויסטיק חובר"
+
+msgctxt "#13025"
+msgid "Joystick unplugged"
+msgstr "ג'ויסטיק נותק"
+
+msgctxt "#13050"
+msgid "Running low on battery"
+msgstr "רץ על סוללה חלשה"
+
+msgctxt "#13100"
+msgid "Flicker filter"
+msgstr "פילטר הבהובים"
+
+msgctxt "#13101"
+msgid "Let driver choose (requires restart)"
+msgstr "תן למנהל ההתקן להחליט (הפעלה מחדש)"
+
+msgctxt "#13105"
+msgid "Vertical blank sync"
+msgstr ""
+
+msgctxt "#13106"
+msgid "Disabled"
+msgstr "מנוטרל"
+
+msgctxt "#13107"
+msgid "Enabled during video playback"
+msgstr "הפעל בזמן ניגון וידאו"
+
+msgctxt "#13108"
+msgid "Always enabled"
+msgstr "מופעל תמיד"
+
+msgctxt "#13109"
+msgid "Test & apply resolution"
+msgstr "בדוק והחל רזולוציה"
+
+msgctxt "#13110"
+msgid "Save resolution?"
+msgstr "לשמור רזולוציה?"
+
+msgctxt "#13111"
+msgid "Would you like to keep this resolution?"
+msgstr "האם תרצה לשמור את הרזולוציה הזו?"
+
+msgctxt "#13112"
+msgid "High quality upscaling"
+msgstr ""
+
+msgctxt "#13113"
+msgid "Disabled"
+msgstr "מנוטרל"
+
+msgctxt "#13114"
+msgid "Enabled for SD content"
+msgstr "מופעל רק לתכני SD"
+
+msgctxt "#13115"
+msgid "Always enabled"
+msgstr "אפשר תמיד"
+
+msgctxt "#13116"
+msgid "Upscaling method"
+msgstr ""
+
+msgctxt "#13117"
+msgid "Bicubic"
+msgstr ""
+
+msgctxt "#13118"
+msgid "Lanczos"
+msgstr ""
+
+msgctxt "#13119"
+msgid "Sinc"
+msgstr ""
+
+msgctxt "#13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13121"
+msgid "VDPAU HQ Upscaling level"
+msgstr ""
+
+msgctxt "#13122"
+msgid "VDPAU Studio level color conversion"
+msgstr ""
+
+msgctxt "#13130"
+msgid "Blank other displays"
+msgstr "החשך צגים אחרים"
+
+msgctxt "#13131"
+msgid "Disabled"
+msgstr "מנוטרל"
+
+msgctxt "#13132"
+msgid "Blank displays"
+msgstr "צגים ריקים"
+
+msgctxt "#13140"
+msgid "Active connections detected!"
+msgstr "חיבורים פעילים זוהו!"
+
+msgctxt "#13141"
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "אם תמשיך, ייתכן שלא תוכל לשלוט ב-XBMC יותר"
+
+msgctxt "#13142"
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "אתה בטוח שברצונך להפסיק את EventServer?"
+
+msgctxt "#13144"
+msgid "Change Apple Remote mode?"
+msgstr "שנה מצב שלט Apple?"
+
+msgctxt "#13145"
+msgid "If you are currently using the Apple Remote to control"
+msgstr "אם אתה משתמש כרגע בשלט Apple כדי לשלוט"
+
+msgctxt "#13146"
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "ב- XBMC. שינוי הגדרות אלה כנראה ישפיעו על היכולות שלך"
+
+msgctxt "#13147"
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "כדי להמשיך לשלוט בזה. האם ברצונך להמשיך?"
+
+msgctxt "#13159"
+msgid "Subnet mask"
+msgstr ""
+
+msgctxt "#13160"
+msgid "Gateway"
+msgstr "שער"
+
+msgctxt "#13161"
+msgid "Primary DNS"
+msgstr "DNS ראשי"
+
+msgctxt "#13162"
+msgid "Initialize failed"
+msgstr "אתחול נכשל"
+
+msgctxt "#13170"
+msgid "Never"
+msgstr "אף פעם"
+
+msgctxt "#13171"
+msgid "Immediately"
+msgstr "מיידי"
+
+msgctxt "#13172"
+msgid "After %i secs"
+msgstr "לאחר %i שניות"
+
+msgctxt "#13173"
+msgid "HDD install date:"
+msgstr "תאריך התקנת כונן קשיח:"
+
+msgctxt "#13174"
+msgid "HDD power cycle count:"
+msgstr "HDD ספירת מחזור האנרגיה:"
+
+msgctxt "#13200"
+msgid "Profiles"
+msgstr "פרופילים"
+
+msgctxt "#13201"
+msgid "Delete profile '%s'?"
+msgstr "למחוק פרופיל '%s'?"
+
+msgctxt "#13204"
+msgid "Last loaded profile:"
+msgstr "פרופיל אחרון בשימוש:"
+
+msgctxt "#13205"
+msgid "Unknown"
+msgstr "לא ידוע"
+
+msgctxt "#13206"
+msgid "Overwrite"
+msgstr "לדרוס"
+
+msgctxt "#13208"
+msgid "Alarm clock"
+msgstr "שעון מעורר"
+
+msgctxt "#13209"
+msgid "Alarm clock interval (in minutes)"
+msgstr "השהיית שעון מעורר (בדקות)"
+
+msgctxt "#13210"
+msgid "Started, alarm in %im"
+msgstr "התחיל. צלצול בעוד %i דקות"
+
+msgctxt "#13211"
+msgid "Alarm!"
+msgstr "צלצול!"
+
+msgctxt "#13212"
+msgid "Canceled with %im%is left"
+msgstr "בוטל עם %i דק' %i שנ' שנשארו"
+
+msgctxt "#13213"
+msgid "%2.0fm"
+msgstr "%2.0f דק'"
+
+msgctxt "#13214"
+msgid "%2.0fs"
+msgstr "%2.0f שנ'"
+
+msgctxt "#13249"
+msgid "Search for subtitles in RARs"
+msgstr "חפש כתוביות בקבצי RAR"
+
+msgctxt "#13250"
+msgid "Browse for subtitle..."
+msgstr "עיין לכתובית..."
+
+msgctxt "#13251"
+msgid "Move item"
+msgstr "הזז פריט"
+
+msgctxt "#13252"
+msgid "Move item here"
+msgstr "הזז פריט לכאן"
+
+msgctxt "#13253"
+msgid "Cancel move"
+msgstr "בטל העברה"
+
+msgctxt "#13270"
+msgid "Hardware:"
+msgstr "חומרה:"
+
+msgctxt "#13271"
+msgid "CPU Usage:"
+msgstr "CPU מהירות:"
+
+msgctxt "#13274"
+msgid "Connected, but no DNS is available."
+msgstr "מחובר. אבל DNS לא זמין"
+
+msgctxt "#13275"
+msgid "Hard Disk"
+msgstr "דיסק קשיח"
+
+msgctxt "#13276"
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "אחסון"
+
+msgctxt "#13278"
+msgid "Default"
+msgstr "ברירת מחדל"
+
+msgctxt "#13279"
+msgid "Network"
+msgstr "רשת"
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "וידאו"
+
+msgctxt "#13281"
+msgid "Hardware"
+msgstr "חומרה"
+
+msgctxt "#13283"
+msgid "Operating system:"
+msgstr "מערכת הפעלה:"
+
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU מהירות:"
+
+msgctxt "#13286"
+msgid "Video encoder:"
+msgstr "מקודד וידאו:"
+
+msgctxt "#13287"
+msgid "Screen resolution:"
+msgstr "רזולוצית מסך:"
+
+msgctxt "#13292"
+msgid "A/V cable:"
+msgstr "A/V כבל:"
+
+msgctxt "#13294"
+msgid "DVD region:"
+msgstr "DVD איזור:"
+
+msgctxt "#13295"
+msgid "Internet:"
+msgstr "אינטרנט:"
+
+msgctxt "#13296"
+msgid "Connected"
+msgstr "מחובר"
+
+msgctxt "#13297"
+msgid "Not connected. Check network settings."
+msgstr "לא מחובר. בדוק הגדרות רשת "
+
+msgctxt "#13299"
+msgid "Target temperature"
+msgstr "טמפרטורת יעד"
+
+msgctxt "#13300"
+msgid "Fan speed"
+msgstr "מהירות מאורר:"
+
+msgctxt "#13301"
+msgid "Auto temperature control"
+msgstr "בקרת טמפרטורה אוטומטית"
+
+msgctxt "#13302"
+msgid "Fan speed override"
+msgstr "בקרת מהירות מאורר"
+
+msgctxt "#13303"
+msgid "- Fonts"
+msgstr "- פונטים"
+
+msgctxt "#13304"
+msgid "Enable flipping bi-directional strings"
+msgstr "אפשר הפיכת תווים דו-כיווניים"
+
+msgctxt "#13305"
+msgid "Show RSS news feeds"
+msgstr "הראה RSS לעידכוני חדשות"
+
+msgctxt "#13306"
+msgid "Show parent folder items"
+msgstr "הראה פריטי ספריית אב"
+
+msgctxt "#13307"
+msgid "Track naming template"
+msgstr "תבנית שם רצועה"
+
+msgctxt "#13308"
+msgid "Do you wish to reboot your system"
+msgstr "האם ברצונך לאתחל את המערכת"
+
+msgctxt "#13309"
+msgid "instead of just XBMC?"
+msgstr "במקום רק את XBMC?"
+
+msgctxt "#13310"
+msgid "Zoom effect"
+msgstr "אפקט זום"
+
+msgctxt "#13311"
+msgid "Float effect"
+msgstr "אפקט ציפה"
+
+msgctxt "#13312"
+msgid "Black bar reduction"
+msgstr "הפחת פסים שחורים"
+
+msgctxt "#13313"
+msgid "Restart"
+msgstr "הפעלה מחדש"
+
+msgctxt "#13314"
+msgid "Crossfade between songs"
+msgstr "זמן חפיפה במעבר בין שירים"
+
+msgctxt "#13315"
+msgid "Regenerate thumbnails"
+msgstr "חדש תמונות ממוזערות"
+
+msgctxt "#13316"
+msgid "Recursive thumbnails"
+msgstr "תמונות ממוזערות רקורסיביות"
+
+msgctxt "#13317"
+msgid "View slideshow"
+msgstr "צפה במצגת תמונות"
+
+msgctxt "#13318"
+msgid "Recursive slideshow"
+msgstr "מצגת תמונות רקורסיבית"
+
+msgctxt "#13319"
+msgid "Randomize"
+msgstr "אקראי"
+
+msgctxt "#13320"
+msgid "Stereo"
+msgstr "סטריאו"
+
+msgctxt "#13321"
+msgid "Left only"
+msgstr "שמאל בלבד"
+
+msgctxt "#13322"
+msgid "Right only"
+msgstr "ימין בלבד"
+
+msgctxt "#13323"
+msgid "Enable karaoke support"
+msgstr "הפעל תמיכת קריוקי"
+
+msgctxt "#13324"
+msgid "Background transparency"
+msgstr "שקיפות רקע"
+
+msgctxt "#13325"
+msgid "Foreground transparency"
+msgstr "שקיפות רקע קדמי"
+
+msgctxt "#13326"
+msgid "A/V delay"
+msgstr "השהיית A/V"
+
+msgctxt "#13327"
+msgid "Karaoke"
+msgstr "קריוקי"
+
+msgctxt "#13328"
+msgid "%s not found"
+msgstr "%s לא נמצא"
+
+msgctxt "#13329"
+msgid "Error opening %s"
+msgstr "שגיאה בפתיחת %s"
+
+msgctxt "#13330"
+msgid "Unable to load %s"
+msgstr "כשלון בטעינת %s"
+
+msgctxt "#13331"
+msgid "Error: Out of memory"
+msgstr "שגיאה: הזכרון מלא."
+
+msgctxt "#13332"
+msgid "Move up"
+msgstr "הזז למעלה"
+
+msgctxt "#13333"
+msgid "Move down"
+msgstr "הזז למטה"
+
+msgctxt "#13334"
+msgid "Edit label"
+msgstr "ערוך תווית"
+
+msgctxt "#13335"
+msgid "Make default"
+msgstr "קבע כברירת מחדל"
+
+msgctxt "#13336"
+msgid "Remove button"
+msgstr "הסר כפתור"
+
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "השאר ללא שינוי"
+
+msgctxt "#13341"
+msgid "Green"
+msgstr "ירוק"
+
+msgctxt "#13342"
+msgid "Orange"
+msgstr "כתום"
+
+msgctxt "#13343"
+msgid "Red"
+msgstr "אדום"
+
+msgctxt "#13344"
+msgid "Cycle"
+msgstr "משתנה"
+
+msgctxt "#13345"
+msgid "Switch LED off on playback"
+msgstr "כבה נורית בזמן ניגון"
+
+msgctxt "#13346"
+msgid "Movie information"
+msgstr "פרטי סרט"
+
+msgctxt "#13347"
+msgid "Queue item"
+msgstr "הכנס פריט לתור"
+
+msgctxt "#13348"
+msgid "Search IMDb..."
+msgstr "חפש ב- IMDb..."
+
+msgctxt "#13349"
+msgid "Scan for new content"
+msgstr "סרוק לתוכן חדש"
+
+msgctxt "#13350"
+msgid "Now playing..."
+msgstr "מנגן כעת..."
+
+msgctxt "#13351"
+msgid "Album information"
+msgstr "פרטי אלבום"
+
+msgctxt "#13352"
+msgid "Scan item to library"
+msgstr "סרוק פריט לספריה"
+
+msgctxt "#13353"
+msgid "Stop scanning"
+msgstr "עצור סריקה"
+
+msgctxt "#13354"
+msgid "Render method"
+msgstr "שיטת Render"
+
+msgctxt "#13355"
+msgid "Low quality pixel shader"
+msgstr "באיכות נמוכה Pixel Shader"
+
+msgctxt "#13356"
+msgid "Hardware overlays"
+msgstr "Hardware Overlays"
+
+msgctxt "#13357"
+msgid "High quality pixel shader"
+msgstr "באיכות גבוהה Pixel Shader"
+
+msgctxt "#13358"
+msgid "Play item"
+msgstr "נגן פריט"
+
+msgctxt "#13359"
+msgid "Set artist thumb"
+msgstr "הגדר תמונה ממוזערת לאמן"
+
+msgctxt "#13360"
+msgid "Automatically generate thumbnails"
+msgstr "צור תמונות ממוזערות אוטומטית"
+
+msgctxt "#13361"
+msgid "Enable voice"
+msgstr "הפעל קול"
+
+msgctxt "#13375"
+msgid "Enable device"
+msgstr "הפעל מתקן"
+
+msgctxt "#13376"
+msgid "Volume"
+msgstr "עוצמה"
+
+msgctxt "#13377"
+msgid "Default view mode"
+msgstr "מצב תצוגה ברירת מחדל"
+
+msgctxt "#13378"
+msgid "Default brightness"
+msgstr "בהירות ברירת מחדל"
+
+msgctxt "#13379"
+msgid "Default contrast"
+msgstr "ניגודיות ברירת מחדל"
+
+msgctxt "#13380"
+msgid "Default gamma"
+msgstr "גאמה ברירת מחדל"
+
+msgctxt "#13381"
+msgid "Resume video"
+msgstr "המשך וידאו"
+
+msgctxt "#13382"
+msgid "Voice mask - Port 1"
+msgstr "Voice mask - Port 3"
+
+msgctxt "#13383"
+msgid "Voice mask - Port 2"
+msgstr "Voice mask - Port 3"
+
+msgctxt "#13384"
+msgid "Voice mask - Port 3"
+msgstr "Voice Mask - Port 3"
+
+msgctxt "#13385"
+msgid "Voice mask - Port 4"
+msgstr "Voice Mask - Port 4"
+
+msgctxt "#13386"
+msgid "Use time based seeking"
+msgstr "השתמש בחיפוש מבוסס זמן"
+
+msgctxt "#13387"
+msgid "Track naming template - right"
+msgstr "תבנית שם רצועה - ימין"
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "ערכים קבועים מראש"
+
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualization"
+msgstr "אין ערכים קבועים מראש לחיזוי זה"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualization"
+msgstr "אין הגדרות לחיזוי זה"
+
+msgctxt "#13391"
+msgid "Eject/Load"
+msgstr "הוצאה/טעינה"
+
+msgctxt "#13392"
+msgid "Use visualization if playing audio"
+msgstr "השתמש בחיזוי בזמן נגינת אודיו"
+
+msgctxt "#13393"
+msgid "Calculate size"
+msgstr "חשב גודל"
+
+msgctxt "#13394"
+msgid "Calculating folder size"
+msgstr "מחשב גודל תקייה"
+
+msgctxt "#13395"
+msgid "Video settings"
+msgstr "הגדרות וידאו"
+
+msgctxt "#13396"
+msgid "Audio and subtitle settings"
+msgstr "הגדרות אודיו וכתוביות"
+
+msgctxt "#13397"
+msgid "Enable subtitles"
+msgstr "הפעל כתוביות"
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "קיצורים"
+
+msgctxt "#13399"
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "התעלם מתוויות בזמן מיון (למשל: \"The\")"
+
+msgctxt "#13400"
+msgid "Crossfade between songs on the same album"
+msgstr "נגן בחפיפה במעבר שירים באותו אלבום"
+
+msgctxt "#13401"
+msgid "Browse for %s"
+msgstr " עיין ל%s"
+
+msgctxt "#13402"
+msgid "Show track position"
+msgstr "הצג מיקום ברצועה"
+
+msgctxt "#13403"
+msgid "Clear default"
+msgstr "נקה ברירות מחדל"
+
+msgctxt "#13404"
+msgid "Resume"
+msgstr "המשך"
+
+msgctxt "#13405"
+msgid "Get thumb"
+msgstr "קבל תמונה ממוזערת"
+
+msgctxt "#13406"
+msgid "Picture information"
+msgstr "פרטי תמונה"
+
+msgctxt "#13407"
+msgid "%s presets"
+msgstr "%s ערכים מוגדרים מראש"
+
+msgctxt "#13408"
+msgid "(IMDb user rating)"
+msgstr "(דירוג משתמשים IMDB)"
+
+msgctxt "#13409"
+msgid "Top 250"
+msgstr "250 המובילים"
+
+msgctxt "#13410"
+msgid "Tune in on Last.fm"
+msgstr "התחבר ל LAST.FM"
+
+msgctxt "#13411"
+msgid "Minimum fan speed"
+msgstr "מהירות מאוורר מינימאלית"
+
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "נגן מכאן"
+
+msgctxt "#13413"
+msgid "Downloading"
+msgstr "מוריד"
+
+msgctxt "#13414"
+msgid "Include artists who appear only on compilations"
+msgstr "הוסף אמנים שמופיעים רק באוספים"
+
+msgctxt "#13415"
+msgid "Render method"
+msgstr "שיטת Render"
+
+msgctxt "#13416"
+msgid "Auto detect"
+msgstr "זהה אוטומטית"
+
+msgctxt "#13417"
+msgid "Basic shaders (ARB)"
+msgstr ""
+
+msgctxt "#13418"
+msgid "Advanced shaders (GLSL)"
+msgstr ""
+
+msgctxt "#13419"
+msgid "Software"
+msgstr "תוכנתי"
+
+msgctxt "#13420"
+msgid "Remove safely"
+msgstr "הסר בבטחה"
+
+msgctxt "#13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13422"
+msgid "Start slideshow here"
+msgstr "התחל מצגת תמונות כאן"
+
+msgctxt "#13423"
+msgid "Remember for this path"
+msgstr "זכור לנתיב זה"
+
+msgctxt "#13424"
+msgid "Use pixel buffer objects"
+msgstr ""
+
+msgctxt "#13425"
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "אפשר תאוצת חומרה (VDPAU)"
+
+msgctxt "#13426"
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "אפשר תאוצת חומרה (VAAPI)"
+
+msgctxt "#13427"
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "אפשר תאוצת חומרה (DXVA2)"
+
+msgctxt "#13428"
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "אפשר תאוצת חומרה (CrystalHD)"
+
+msgctxt "#13429"
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "אפשר תאוצת חומרה (VDADecoder)"
+
+msgctxt "#13430"
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "אפשרת תאוצת חומרה (OpenMax)"
+
+msgctxt "#13431"
+msgid "Pixel Shaders"
+msgstr ""
+
+msgctxt "#13432"
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "אפשר תאוצת חומרה (VideoToolbox)"
+
+msgctxt "#13500"
+msgid "A/V sync method"
+msgstr "שיטת סינכרון ניגון למסך"
+
+msgctxt "#13501"
+msgid "Audio clock"
+msgstr "שעון שמע"
+
+msgctxt "#13502"
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "שעון וידאו (Drop/Dupe audio)"
+
+msgctxt "#13503"
+msgid "Video clock (Resample audio)"
+msgstr "שעון וידאו"
+
+msgctxt "#13504"
+msgid "Maximum resample amount (%)"
+msgstr "כמות דגימה מקסימלית (%)"
+
+msgctxt "#13505"
+msgid "Resample quality"
+msgstr "דגום איכות שוב"
+
+msgctxt "#13506"
+msgid "Low(fast)"
+msgstr "נמוך (מהיר)"
+
+msgctxt "#13507"
+msgid "Medium"
+msgstr "בינוני"
+
+msgctxt "#13508"
+msgid "High"
+msgstr "גבוה"
+
+msgctxt "#13509"
+msgid "Really high(slow!)"
+msgstr "ממש גבוה (איטי!)"
+
+msgctxt "#13510"
+msgid "Sync playback to display"
+msgstr "סנכרן ניגון למסך"
+
+msgctxt "#13550"
+msgid "Pause during refresh rate change"
+msgstr "עצור בזמן שינוי קצב רענון"
+
+msgctxt "#13551"
+msgid "Off"
+msgstr "כבוי"
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f שניה"
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f שניות"
+
+msgctxt "#13600"
+msgid "Apple remote"
+msgstr "APPLE שלט"
+
+msgctxt "#13602"
+msgid "Allow start of XBMC using the remote"
+msgstr "אפשר הפעלת XBMC בעזרת השלט"
+
+msgctxt "#13603"
+msgid "Sequence delay time"
+msgstr "זמן השהייה ברצף"
+
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "מנוטרל"
+
+msgctxt "#13611"
+msgid "Standard"
+msgstr "סטנדרטי"
+
+msgctxt "#13612"
+msgid "Universal Remote"
+msgstr "שלט אוניברסלי"
+
+msgctxt "#13613"
+msgid "Multi Remote (Harmony)"
+msgstr "רב שלט (הרמוני)"
+
+msgctxt "#13620"
+msgid "Apple Remote Error"
+msgstr "שגיאת שלט Apple"
+
+msgctxt "#13621"
+msgid "Apple Remote support could be enabled."
+msgstr "יש אפשרות להפעיל תמיכה בשלט Apple"
+
+msgctxt "#14000"
+msgid "Stack"
+msgstr "לערום"
+
+msgctxt "#14001"
+msgid "Unstack"
+msgstr "לפזר"
+
+msgctxt "#14003"
+msgid "Downloading playlist file..."
+msgstr "מוריד קובץ רשימת השמעה..."
+
+msgctxt "#14004"
+msgid "Downloading streams list..."
+msgstr "מוריד רשימת זרימה..."
+
+msgctxt "#14005"
+msgid "Parsing streams list..."
+msgstr "מפענח רשימת זרימה..."
+
+msgctxt "#14006"
+msgid "Downloading streams list failed"
+msgstr "הורדת רשימת זרימה נכשלה"
+
+msgctxt "#14007"
+msgid "Downloading playlist file failed"
+msgstr "הורדת קובץ רשימת שמע נכשלה"
+
+msgctxt "#14009"
+msgid "Games directory"
+msgstr "ספריית משחקים"
+
+msgctxt "#14010"
+msgid "Auto switch to thumbs based on"
+msgstr "העבר אוטומטי לתמונות ממוזערות שמבוססות על"
+
+msgctxt "#14011"
+msgid "Enable auto switching to thumbs view"
+msgstr "הפעל העברה אוטומטית לתצוגת תמונות ממוזערות"
+
+msgctxt "#14012"
+msgid "- Use large icons"
+msgstr "- השתמש בצלמיות גדולות"
+
+msgctxt "#14013"
+msgid "- Switch based on"
+msgstr "- החלפה מבוססת על"
+
+msgctxt "#14014"
+msgid "- Percentage"
+msgstr "- אחוזים"
+
+msgctxt "#14015"
+msgid "No files and at least one thumb"
+msgstr "אין קבצים ולפחות תמונה ממוזערת אחת"
+
+msgctxt "#14016"
+msgid "At least one file and thumb"
+msgstr "לפחות קובץ אחד ותמונה ממוזערת"
+
+msgctxt "#14017"
+msgid "Percentage of thumbs"
+msgstr "אחוזי התמונות הממוזערות"
+
+msgctxt "#14018"
+msgid "View options"
+msgstr "צפה באפשריות"
+
+msgctxt "#14019"
+msgid "Change area code 1"
+msgstr "שנה קוד אזור 1"
+
+msgctxt "#14020"
+msgid "Change area code 2"
+msgstr "שנה קוד אזור 2"
+
+msgctxt "#14021"
+msgid "Change area code 3"
+msgstr "שנה קוד אזור 3"
+
+msgctxt "#14022"
+msgid "Library"
+msgstr "ספריה"
+
+msgctxt "#14023"
+msgid "No TV"
+msgstr "אין טלויזיה"
+
+msgctxt "#14024"
+msgid "Enter the nearest large town"
+msgstr "הזן את העיר הגדולה הקרובה"
+
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "מטמון וידאו/אודיו/DVD - דיסק קשיח"
+
+msgctxt "#14026"
+msgid "Video cache - DVD-ROM"
+msgstr "מטמון וידאו - DVD-ROM"
+
+msgctxt "#14027"
+msgid "- Local Network"
+msgstr "- רשת מקומית"
+
+msgctxt "#14028"
+msgid "- Internet"
+msgstr "- אינטרנט"
+
+msgctxt "#14030"
+msgid "Audio cache - DVD-ROM"
+msgstr "מטמון אודיו - DVD-ROM"
+
+msgctxt "#14031"
+msgid "- Local Network"
+msgstr "- רשמת מקומית"
+
+msgctxt "#14032"
+msgid "- Internet"
+msgstr "- אינטרנט"
+
+msgctxt "#14034"
+msgid "DVD cache - DVD-ROM"
+msgstr "מטמון DVD - DVD-ROM"
+
+msgctxt "#14035"
+msgid "- Local Network"
+msgstr "- רשת מקומית"
+
+msgctxt "#14036"
+msgid "Services"
+msgstr "שרותים"
+
+msgctxt "#14038"
+msgid "Network settings changed"
+msgstr "הגדרות רשת שונו"
+
+msgctxt "#14039"
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC דורש הפעלה מחדש כדי לשנות את"
+
+msgctxt "#14040"
+msgid "network setup.  Would you like to restart now?"
+msgstr "הגדרות הרשת. האם ברצונך להפעיל מחדש כעת?"
+
+msgctxt "#14041"
+msgid "Internet connection bandwidth limitation"
+msgstr "הגבלת חיבור אינטרנט"
+
+msgctxt "#14043"
+msgid "- Shutdown while playing"
+msgstr "- כבה תוך כדי ניגון"
+
+msgctxt "#14044"
+msgid "%i min"
+msgstr "%i דקות"
+
+msgctxt "#14045"
+msgid "%i sec"
+msgstr "%i שניות"
+
+msgctxt "#14046"
+msgid "%i ms"
+msgstr "%i מ.ש"
+
+msgctxt "#14047"
+msgid "%i %%"
+msgstr "%i %%"
+
+msgctxt "#14048"
+msgid "%i kbps"
+msgstr "%i kbps"
+
+msgctxt "#14049"
+msgid "%i kb"
+msgstr "%i kb"
+
+msgctxt "#14050"
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+msgctxt "#14051"
+msgid "Time format"
+msgstr "מבנה שעה"
+
+msgctxt "#14052"
+msgid "Date format"
+msgstr "מבנה תאריך"
+
+msgctxt "#14053"
+msgid "GUI filters"
+msgstr "GUI פילטרים ב"
+
+msgctxt "#14055"
+msgid "Use background scanning"
+msgstr "השתמש בסריקה ברקע"
+
+msgctxt "#14056"
+msgid "Stop scan"
+msgstr "הפסק סריקה"
+
+msgctxt "#14057"
+msgid "Not possible while scanning for media info"
+msgstr "לא אפשרי בזמן סריקת פרטי מדיה"
+
+msgctxt "#14058"
+msgid "Film grain effect"
+msgstr "אפקט גרעיניות סרטים"
+
+msgctxt "#14059"
+msgid "Search for thumbnails on remote shares"
+msgstr "חפש תמונות ממוזערות בשיתוף מרוחק"
+
+msgctxt "#14060"
+msgid "Unknown type cache - Internet"
+msgstr "סוג מטמון לא מוכר - אינטרנט"
+
+msgctxt "#14061"
+msgid "Auto"
+msgstr "אוטומטי"
+
+msgctxt "#14062"
+msgid "Enter username for"
+msgstr "הזן שם משתמש עבור"
+
+msgctxt "#14063"
+msgid "Date & time"
+msgstr "תאריך & שעה"
+
+msgctxt "#14064"
+msgid "Set date"
+msgstr "קבע תאריך"
+
+msgctxt "#14065"
+msgid "Set time"
+msgstr "קבע שעה"
+
+msgctxt "#14066"
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "הזן זמן 24 שעות במבנה HH:MM"
+
+msgctxt "#14067"
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "הזן תאריך במבנה DD/MM/YYYY"
+
+msgctxt "#14068"
+msgid "Enter the IP address"
+msgstr "IP הזן כתובת"
+
+msgctxt "#14069"
+msgid "Apply these settings now?"
+msgstr "החל הגדרות אלה כעת?"
+
+msgctxt "#14070"
+msgid "Apply changes now"
+msgstr "החל שינויים כעת"
+
+msgctxt "#14071"
+msgid "Allow file renaming and deletion"
+msgstr "אפשר שינויי שמות ומחיקת קבצים"
+
+msgctxt "#14074"
+msgid "Set timezone"
+msgstr "הגדר איזור זמן"
+
+msgctxt "#14075"
+msgid "Use daylight saving time"
+msgstr "השתמש בשעון קיץ"
+
+msgctxt "#14076"
+msgid "Add to favourites"
+msgstr "הוסף למועדפים"
+
+msgctxt "#14077"
+msgid "Remove from favourites"
+msgstr "הסר ממועדפים"
+
+msgctxt "#14078"
+msgid "- Colours"
+msgstr "- צבעים"
+
+msgctxt "#14079"
+msgid "Timezone country"
+msgstr "מדינת איזור זמן"
+
+msgctxt "#14080"
+msgid "Timezone"
+msgstr "איזור זמן"
+
+msgctxt "#14081"
+msgid "File lists"
+msgstr "רשימות קבצים"
+
+msgctxt "#14082"
+msgid "Show EXIF picture information"
+msgstr "הצג פרטי EXIF מתמונה"
+
+msgctxt "#14083"
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "השתמש בחלון מסך מלא במקום מסך מלא אמיתי"
+
+msgctxt "#14084"
+msgid "Queue songs on selection"
+msgstr "הכנס שירים לתור בבחירה"
+
+msgctxt "#14086"
+msgid "Playback"
+msgstr "ניגון"
+
+msgctxt "#14087"
+msgid "DVDs"
+msgstr ""
+
+msgctxt "#14088"
+msgid "Play DVDs automatically"
+msgstr "נגן DVD אוטומטית"
+
+msgctxt "#14089"
+msgid "Font to use for text subtitles"
+msgstr "פונט לשימוש עבור כתוביות טקסט"
+
+msgctxt "#14090"
+msgid "International"
+msgstr "בינלאומי"
+
+msgctxt "#14091"
+msgid "Character set"
+msgstr "ערכת תווים"
+
+msgctxt "#14092"
+msgid "Debugging"
+msgstr "ניפוי שגיאות"
+
+msgctxt "#14093"
+msgid "Security"
+msgstr "אבטחה"
+
+msgctxt "#14094"
+msgid "Input devices"
+msgstr "התקני קלט"
+
+msgctxt "#14095"
+msgid "Power saving"
+msgstr "חסכון באנרגיה"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr ""
+
+msgctxt "#14097"
+msgid "Audio CD Insert Action"
+msgstr ""
+
+msgctxt "#14098"
+msgid "Play"
+msgstr ""
+
+msgctxt "#14099"
+msgid "Eject disc when CD ripping is complete"
+msgstr "הוצא דיסק כאשר ההעתקה הושלמה"
+
+msgctxt "#15015"
+msgid "Remove"
+msgstr "הסר"
+
+msgctxt "#15016"
+msgid "Games"
+msgstr "משחקים"
+
+msgctxt "#15019"
+msgid "Add"
+msgstr "הוסף"
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "סיסמא"
+
+msgctxt "#15100"
+msgid "Library"
+msgstr "ספריה"
+
+msgctxt "#15101"
+msgid "Database"
+msgstr "מסד נתונים"
+
+msgctxt "#15102"
+msgid "* All albums"
+msgstr "* כל האלבומים"
+
+msgctxt "#15103"
+msgid "* All artists"
+msgstr "* כל האמנים"
+
+msgctxt "#15104"
+msgid "* All songs"
+msgstr "* כל השירים"
+
+msgctxt "#15105"
+msgid "* All genres"
+msgstr "* כל הסגנונות"
+
+msgctxt "#15107"
+msgid "Buffering..."
+msgstr "אוגר..."
+
+msgctxt "#15108"
+msgid "Navigation sounds"
+msgstr "צלילי ניווט"
+
+msgctxt "#15109"
+msgid "Skin default"
+msgstr "ברירת מחדל של הסקין"
+
+msgctxt "#15111"
+msgid "- Theme"
+msgstr "- ערכת נושא"
+
+msgctxt "#15112"
+msgid "Default theme"
+msgstr "ערכת נושא ברירת מחדל"
+
+msgctxt "#15200"
+msgid "Last.fm"
+msgstr "LastFM"
+
+msgctxt "#15201"
+msgid "Submit songs to Last.fm"
+msgstr "שלח שירים לשירות LastFM"
+
+msgctxt "#15202"
+msgid "Last.fm username"
+msgstr "LastFM משתמש"
+
+msgctxt "#15203"
+msgid "Last.fm password"
+msgstr "LastFM סיסמא"
+
+msgctxt "#15204"
+msgid "Unable to handshake: sleeping..."
+msgstr "לחיצת ידיים נכשלה: שינה..."
+
+msgctxt "#15205"
+msgid "Please update XBMC"
+msgstr "XBMC אנא עדכן"
+
+msgctxt "#15206"
+msgid "Bad authorization: Check username and password"
+msgstr "הרשאה שגויה: בדוק שם ומשתמש וסיסמא"
+
+msgctxt "#15207"
+msgid "Connected"
+msgstr "מחובר"
+
+msgctxt "#15208"
+msgid "Not connected"
+msgstr "לא מחובר"
+
+msgctxt "#15209"
+msgid "Submit interval %i"
+msgstr "השהיית שליחה %i"
+
+msgctxt "#15210"
+msgid "Cached %i songs"
+msgstr "אגר %i שירים"
+
+msgctxt "#15211"
+msgid "Submitting..."
+msgstr "שולח..."
+
+msgctxt "#15212"
+msgid "Submitting in %i secs"
+msgstr "שולח בעוד %i שניות"
+
+msgctxt "#15213"
+msgid "Play using..."
+msgstr "נגן באמצעות..."
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronization"
+msgstr "השתמש בסנכרון A/V חלק"
+
+msgctxt "#15215"
+msgid "Hide file names in thumbs view"
+msgstr "הסתר שמות קבצים בתצוגת תמונות ממוזערות"
+
+msgctxt "#15216"
+msgid "Play in party mode"
+msgstr "נגן במצב מסיבה"
+
+msgctxt "#15217"
+msgid "Submit songs to Libre.fm"
+msgstr "שלח שירים לשירות Libre.fm"
+
+msgctxt "#15218"
+msgid "Libre.fm username"
+msgstr "Libre.fm משתמש"
+
+msgctxt "#15219"
+msgid "Libre.fm password"
+msgstr "Libre.fm סיסמא"
+
+msgctxt "#15220"
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+msgctxt "#15221"
+msgid "Song submission"
+msgstr "הגשת שיר"
+
+msgctxt "#15250"
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "שלח Last.fm אל Last.fm"
+
+msgctxt "#15251"
+msgid "Connecting to Last.fm..."
+msgstr "מתחבר אל Last.fm..."
+
+msgctxt "#15252"
+msgid "Selecting station..."
+msgstr "בחירת תחנה..."
+
+msgctxt "#15253"
+msgid "Search similar artists..."
+msgstr "חפש אמנים דומים..."
+
+msgctxt "#15254"
+msgid "Search similar tags..."
+msgstr "חפש תגיות דומות..."
+
+msgctxt "#15255"
+msgid "Your profile (%name%)"
+msgstr "הפרופיל שלך (%name%)"
+
+msgctxt "#15256"
+msgid "Overall top tags"
+msgstr "תגיות במקומות הראשונים"
+
+msgctxt "#15257"
+msgid "Top artists for tag %name%"
+msgstr "%name% אמנים מובילים עבור תגית %name%"
+
+msgctxt "#15258"
+msgid "Top albums for tag %name%"
+msgstr "אלבומים מובילים עבור תגית %name%"
+
+msgctxt "#15259"
+msgid "Top tracks for tag %name%"
+msgstr "רצועות מובילות עבור תגית %name% "
+
+msgctxt "#15260"
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "האזן לתגית %name% Last.fm"
+
+msgctxt "#15261"
+msgid "Similar artists as %name%"
+msgstr "אמנים דומים ל%name%"
+
+msgctxt "#15262"
+msgid "Top %name% albums"
+msgstr "%name% האלבומים המובילים"
+
+msgctxt "#15263"
+msgid "Top %name% tracks"
+msgstr "%name% הרצועות המובילות"
+
+msgctxt "#15264"
+msgid "Top %name% tags"
+msgstr "%name% התגיות המובילות"
+
+msgctxt "#15265"
+msgid "Biggest fans of %name%"
+msgstr "המעריצים הגדולים של %name%"
+
+msgctxt "#15266"
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "האזן למעריצי %name% רדיו Last.fm"
+
+msgctxt "#15267"
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "האזן לאמנים דומים last.fm %name%"
+
+msgctxt "#15268"
+msgid "Top artists for user %name%"
+msgstr "האמנים הנבחרים של משתמש %name%"
+
+msgctxt "#15269"
+msgid "Top albums for user %name%"
+msgstr "האלבומים הנבחרים של משתמש %name%"
+
+msgctxt "#15270"
+msgid "Top tracks for user %name%"
+msgstr "הרצועות הנבחרות של משתמש %name%"
+
+msgctxt "#15271"
+msgid "Friends of user %name%"
+msgstr "חברים של משתמש %name%"
+
+msgctxt "#15272"
+msgid "Neighbours of user %name%"
+msgstr "שכנים של משתמש %name%"
+
+msgctxt "#15273"
+msgid "Weekly artist chart for %name%"
+msgstr "המצעד השבועי של אמן %name%"
+
+msgctxt "#15274"
+msgid "Weekly album chart for %name%"
+msgstr "המצעד השבועי של אלבום %name%"
+
+msgctxt "#15275"
+msgid "Weekly track chart for %name%"
+msgstr "המצעד השבועי של רצועת %name%"
+
+msgctxt "#15276"
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "האזן לשכנים של %name% רדיו Last.fm"
+
+msgctxt "#15277"
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "האזן להעדפות האישיות של %name% רדיו Last.fm"
+
+msgctxt "#15278"
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "האזן לרצועות האהובות של %name% רדיו Last.fm"
+
+msgctxt "#15279"
+msgid "Retrieving list from Last.fm..."
+msgstr "שולף רשימה מ last.fm..."
+
+msgctxt "#15280"
+msgid "Can't retrieve list from Last.fm..."
+msgstr "בעיה בקבלת רשימה מ last.fm..."
+
+msgctxt "#15281"
+msgid "Enter an artist name to find related ones"
+msgstr "הזן שם אמן למציאת אמנים דומים"
+
+msgctxt "#15282"
+msgid "Enter a tag name to find similar ones"
+msgstr "הזן תגית למציאת שירים דומים"
+
+msgctxt "#15283"
+msgid "Tracks recently listened by %name%"
+msgstr "רצועות שנשמעו לאחרונה ע\"י %name%"
+
+msgctxt "#15284"
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "האזן להמלצות %name%'s רדיו Last.FM"
+
+msgctxt "#15285"
+msgid "Top tags for user %name%"
+msgstr "התגיות המובילות למשתמש %name%"
+
+msgctxt "#15287"
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "האם ברצונך להוסיף את השיר הנוכחי לרשימת האהובים?"
+
+msgctxt "#15288"
+msgid "Do you want to ban the current track?"
+msgstr "האם אתה רוצה להחרים את השיר הנוכחי?"
+
+msgctxt "#15289"
+msgid "Added to your loved tracks: '%s'."
+msgstr "הוסף לרשימת השירים האהובים: '%s'."
+
+msgctxt "#15290"
+msgid "Could not add '%s' to your loved tracks."
+msgstr "לא יכול להוסיף את '%s'  לרשימת שירים אהובים"
+
+msgctxt "#15291"
+msgid "Banned: '%s'."
+msgstr "החרם '%s'."
+
+msgctxt "#15292"
+msgid "Could not ban '%s'."
+msgstr "לא יכול להחרים '%s'."
+
+msgctxt "#15293"
+msgid "Tracks recently loved by %name%"
+msgstr "שירים אהובים שנוספו לאחרונה לפי %name%"
+
+msgctxt "#15294"
+msgid "Tracks recently banned by %name%"
+msgstr "שירים שהוחרמו לאחרונה לפי %name%"
+
+msgctxt "#15295"
+msgid "Remove from loved tracks"
+msgstr "הסר מרשימת שירים אהובים"
+
+msgctxt "#15296"
+msgid "Un-ban"
+msgstr "בטל החרמה"
+
+msgctxt "#15297"
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "האם אתה רוצה להסיר את השיר מרשימת שירים אהובים?"
+
+msgctxt "#15298"
+msgid "Do you want to un-ban this track?"
+msgstr "האם אתה רוצה לבטל החרמת שיר?"
+
+msgctxt "#15300"
+msgid "Path not found or invalid"
+msgstr "נתיב לא נמצא או לא חוקי"
+
+msgctxt "#15301"
+msgid "Could not connect to network server"
+msgstr "חיבור לשרת נכשל"
+
+msgctxt "#15302"
+msgid "No servers found"
+msgstr "שרתים לא נמצאו"
+
+msgctxt "#15303"
+msgid "Workgroup not found"
+msgstr "קבוצת עבודה לא נמצאה"
+
+msgctxt "#15310"
+msgid "Opening multi-path source"
+msgstr "פותח מקור עם מספר נתיבים"
+
+msgctxt "#15311"
+msgid "Path:"
+msgstr "נתיב:"
+
+msgctxt "#16000"
+msgid "General"
+msgstr "כללי"
+
+msgctxt "#16002"
+msgid "Internet lookup"
+msgstr "חיפוש באינטרנט"
+
+msgctxt "#16003"
+msgid "Player"
+msgstr "נגן"
+
+msgctxt "#16004"
+msgid "Play media from disc"
+msgstr "נגן מדיה מדיסק"
+
+msgctxt "#16008"
+msgid "Enter new title"
+msgstr "הזן כותרת חדשה"
+
+msgctxt "#16009"
+msgid "Enter the movie name"
+msgstr "הזן שם סרט"
+
+msgctxt "#16010"
+msgid "Enter the profile name"
+msgstr "הזן שם פרופיל"
+
+msgctxt "#16011"
+msgid "Enter the album name"
+msgstr "הזן שם אלבום"
+
+msgctxt "#16012"
+msgid "Enter the playlist name"
+msgstr "הזן שם רשימת ניגון"
+
+msgctxt "#16013"
+msgid "Enter new filename"
+msgstr "הזן שם קובץ חדש"
+
+msgctxt "#16014"
+msgid "Enter folder name"
+msgstr "הזן שם ספריה חדשה"
+
+msgctxt "#16015"
+msgid "Enter directory"
+msgstr "הזן ספריה"
+
+msgctxt "#16016"
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "אפשרויות זמינות: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+msgctxt "#16017"
+msgid "Enter search string"
+msgstr "הזן מחרוזת חיפוש"
+
+msgctxt "#16018"
+msgid "None"
+msgstr "ללא"
+
+msgctxt "#16019"
+msgid "Auto select"
+msgstr "חיפוש אוטומטי"
+
+msgctxt "#16020"
+msgid "De-interlace"
+msgstr ""
+
+msgctxt "#16021"
+msgid "Bob"
+msgstr ""
+
+msgctxt "#16022"
+msgid "Bob (inverted)"
+msgstr ""
+
+msgctxt "#16024"
+msgid "Canceling..."
+msgstr "מבטל..."
+
+msgctxt "#16025"
+msgid "Enter the artist name"
+msgstr "הזן שם האמן"
+
+msgctxt "#16026"
+msgid "Playback failed"
+msgstr "ניגון רשימת השמעה בוטל"
+
+msgctxt "#16027"
+msgid "One or more items failed to play."
+msgstr "יותר מידי פריטים שנכשלו"
+
+msgctxt "#16028"
+msgid "Enter value"
+msgstr "הזן ערך"
+
+msgctxt "#16029"
+msgid "Check the log file for details."
+msgstr "בדוק לוג לפרטים"
+
+msgctxt "#16030"
+msgid "Party mode aborted."
+msgstr "מצב מסיבה בוטל."
+
+msgctxt "#16031"
+msgid "No matching songs in the library."
+msgstr "לא נמצאו שירים מתאימים במסד הנתונים."
+
+msgctxt "#16032"
+msgid "Could not initialize database."
+msgstr "אתחול מסד הנתונים נכשל."
+
+msgctxt "#16033"
+msgid "Could not open database."
+msgstr "פתיחת מסד נתונים נכשלה."
+
+msgctxt "#16034"
+msgid "Could not get songs from database."
+msgstr "בעיה בשליפת השירים ממסד הנתונים."
+
+msgctxt "#16035"
+msgid "Party mode playlist"
+msgstr "רשימת השמעה מצב מסיבה"
+
+msgctxt "#16036"
+msgid "De-interlace (Half)"
+msgstr ""
+
+msgctxt "#16037"
+msgid "Deinterlace video"
+msgstr ""
+
+msgctxt "#16038"
+msgid "Deinterlace method"
+msgstr ""
+
+msgctxt "#16039"
+msgid "Off"
+msgstr "כבוי"
+
+msgctxt "#16040"
+msgid "Auto"
+msgstr "אוטומטי"
+
+msgctxt "#16041"
+msgid "On"
+msgstr "פעיל"
+
+msgctxt "#16100"
+msgid "All Videos"
+msgstr "כל הוידאו"
+
+msgctxt "#16101"
+msgid "Unwatched"
+msgstr "לא נצפו"
+
+msgctxt "#16102"
+msgid "Watched"
+msgstr "נצפו"
+
+msgctxt "#16103"
+msgid "Mark as watched"
+msgstr "סמן כנצפה"
+
+msgctxt "#16104"
+msgid "Mark as unwatched"
+msgstr "סמן כלא כנצפה"
+
+msgctxt "#16105"
+msgid "Edit title"
+msgstr "ערוך כותרת"
+
+msgctxt "#16200"
+msgid "Operation was aborted"
+msgstr "פעולה בוטלה"
+
+msgctxt "#16201"
+msgid "Copy failed"
+msgstr "העתקה נכשלה"
+
+msgctxt "#16202"
+msgid "Failed to copy at least one file"
+msgstr "נכשל בהעתקת קובץ אחד לפחות"
+
+msgctxt "#16203"
+msgid "Move failed"
+msgstr "העברה נכשלה"
+
+msgctxt "#16204"
+msgid "Failed to move at least one file"
+msgstr "נכשל בהעברת קובץ אחד לפחות"
+
+msgctxt "#16205"
+msgid "Delete failed"
+msgstr "מחיקה נכשלה"
+
+msgctxt "#16206"
+msgid "Failed to delete at least one file"
+msgstr "נכשל במחיקת קובץ אחד לפחות"
+
+msgctxt "#16300"
+msgid "Video scaling method"
+msgstr ""
+
+msgctxt "#16301"
+msgid "Nearest neighbour"
+msgstr "השכן הקרוב"
+
+msgctxt "#16302"
+msgid "Bilinear"
+msgstr ""
+
+msgctxt "#16303"
+msgid "Bicubic"
+msgstr ""
+
+msgctxt "#16304"
+msgid "Lanczos2"
+msgstr ""
+
+msgctxt "#16305"
+msgid "Lanczos3"
+msgstr ""
+
+msgctxt "#16306"
+msgid "Sinc8"
+msgstr ""
+
+msgctxt "#16307"
+msgid "Bicubic (software)"
+msgstr ""
+
+msgctxt "#16308"
+msgid "Lanczos (software)"
+msgstr ""
+
+msgctxt "#16309"
+msgid "Sinc (software)"
+msgstr ""
+
+msgctxt "#16310"
+msgid "Temporal"
+msgstr ""
+
+msgctxt "#16311"
+msgid "Temporal/Spatial"
+msgstr ""
+
+msgctxt "#16312"
+msgid "(VDPAU)Noise Reduction"
+msgstr ""
+
+msgctxt "#16313"
+msgid "(VDPAU)Sharpness"
+msgstr ""
+
+msgctxt "#16314"
+msgid "Inverse Telecine"
+msgstr ""
+
+msgctxt "#16315"
+msgid "Lanczos3 optimized"
+msgstr ""
+
+msgctxt "#16316"
+msgid "Auto"
+msgstr "אוטומטי"
+
+msgctxt "#16317"
+msgid "Temporal (Half)"
+msgstr ""
+
+msgctxt "#16318"
+msgid "Temporal/Spatial (Half)"
+msgstr ""
+
+msgctxt "#16319"
+msgid "DXVA"
+msgstr "DXVA"
+
+msgctxt "#16320"
+msgid "DXVA Bob"
+msgstr ""
+
+msgctxt "#16321"
+msgid "DXVA Best"
+msgstr ""
+
+msgctxt "#16322"
+msgid "Spline36"
+msgstr ""
+
+msgctxt "#16323"
+msgid "Spline36 optimized"
+msgstr ""
+
+msgctxt "#16324"
+msgid "Software Blend"
+msgstr ""
+
+msgctxt "#16400"
+msgid "Post-processing"
+msgstr ""
+
+msgctxt "#17500"
+msgid "Display sleep timeout"
+msgstr "מסך פרק זמן שינה"
+
+msgctxt "#19000"
+msgid "Switch to channel"
+msgstr "החלף לערוץ"
+
+msgctxt "#20000"
+msgid "Saved music folder"
+msgstr "תיקיית שמירת מוזיקה"
+
+msgctxt "#20001"
+msgid "Use external DVD player"
+msgstr "השתמש בנגן DVD חיצוני"
+
+msgctxt "#20002"
+msgid "External DVD player"
+msgstr "נגן DVD חיצוני"
+
+msgctxt "#20003"
+msgid "Trainers folder"
+msgstr "תיקיית מאמנים"
+
+msgctxt "#20004"
+msgid "Screenshot folder"
+msgstr "תיקיית תמונות מסך"
+
+msgctxt "#20006"
+msgid "Playlists folder"
+msgstr "תיקיית רשימות ניגון"
+
+msgctxt "#20007"
+msgid "Recordings"
+msgstr "הקלטות"
+
+msgctxt "#20008"
+msgid "Screenshots"
+msgstr "תמונות מסך"
+
+msgctxt "#20009"
+msgid "Use XBMC"
+msgstr "השתמש ב XBMC"
+
+msgctxt "#20011"
+msgid "Music playlists"
+msgstr "רשימות השמעה למוזיקה"
+
+msgctxt "#20012"
+msgid "Video playlists"
+msgstr "רשימות השמעה לוידאו"
+
+msgctxt "#20013"
+msgid "Do you wish to launch the game?"
+msgstr "האם ברצונך להריץ את המשחק?"
+
+msgctxt "#20014"
+msgid "Sort by: Playlist"
+msgstr "מיין לפי: רשימת השמעה"
+
+msgctxt "#20015"
+msgid "Remote thumb"
+msgstr "תמונה ממוזערת בשרת מרוחק"
+
+msgctxt "#20016"
+msgid "Current thumb"
+msgstr "תמונה ממוזערת נוכחית"
+
+msgctxt "#20017"
+msgid "Local thumb"
+msgstr "תמונה ממוזערת מקומית"
+
+msgctxt "#20018"
+msgid "No thumb"
+msgstr "ללא תמונה ממוזערת"
+
+msgctxt "#20019"
+msgid "Choose thumbnail"
+msgstr "בחר תמונה ממוזערת"
+
+msgctxt "#20023"
+msgid "Conflict"
+msgstr "קונפליקט"
+
+msgctxt "#20024"
+msgid "Scan new"
+msgstr "סרוק חדש"
+
+msgctxt "#20025"
+msgid "Scan all"
+msgstr "סרוק הכול"
+
+msgctxt "#20026"
+msgid "Region"
+msgstr "אזור"
+
+msgctxt "#20037"
+msgid "Summary"
+msgstr "סיכום"
+
+msgctxt "#20038"
+msgid "Lock music window"
+msgstr "נעל חלון מוסיקה"
+
+msgctxt "#20039"
+msgid "Lock videos window"
+msgstr "נעל חלון וידאו"
+
+msgctxt "#20040"
+msgid "Lock pictures window"
+msgstr "נעל חלון תמונות"
+
+msgctxt "#20041"
+msgid "Lock programs & scripts windows"
+msgstr "נעל חלונות תוכנות וסקריפטים"
+
+msgctxt "#20042"
+msgid "Lock file manager"
+msgstr "נעל מנהל קבצים"
+
+msgctxt "#20043"
+msgid "Lock settings"
+msgstr "נעל הגדרות"
+
+msgctxt "#20044"
+msgid "Start fresh"
+msgstr "התחל מחדש"
+
+msgctxt "#20045"
+msgid "Enter master mode"
+msgstr "היכנס למצב ראשי"
+
+msgctxt "#20046"
+msgid "Leave master mode"
+msgstr "צא ממצב ראשי"
+
+msgctxt "#20047"
+msgid "Create profile '%s'?"
+msgstr "צור פרופיל '%s' ?"
+
+msgctxt "#20048"
+msgid "Start with fresh settings"
+msgstr "התחל עם הגדרות חדשות"
+
+msgctxt "#20049"
+msgid "Best available"
+msgstr "הזמין הטוב ביותר"
+
+msgctxt "#20050"
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "החלף אוטומטית בין 16x9 ו 4x3"
+
+msgctxt "#20051"
+msgid "Treat stacked files as single file"
+msgstr "התייחס לערימת קבצים כקובץ אחד"
+
+msgctxt "#20052"
+msgid "Caution"
+msgstr "זהירות"
+
+msgctxt "#20053"
+msgid "Left master mode"
+msgstr "עזב מצב ראשי"
+
+msgctxt "#20054"
+msgid "Entered master mode"
+msgstr "נכנס למצב ראשי"
+
+msgctxt "#20055"
+msgid "Allmusic.com thumb"
+msgstr "תמונה ממוזערת Allmusic.com"
+
+msgctxt "#20057"
+msgid "Remove thumbnail"
+msgstr "הסר תמונה ממוזערת"
+
+msgctxt "#20058"
+msgid "Add profile..."
+msgstr "הוסף פרופיל..."
+
+msgctxt "#20059"
+msgid "Query info for all albums"
+msgstr "בקש אחזור פרטים עבור כל האלבומים"
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "פרטי מדיה"
+
+msgctxt "#20061"
+msgid "Separate"
+msgstr "הפרד"
+
+msgctxt "#20062"
+msgid "Shares with default"
+msgstr "משתף עם ברירת מחדל"
+
+msgctxt "#20063"
+msgid "Shares with default (read only)"
+msgstr "משתף עם ברירת מחדל (קריאה בלבד)"
+
+msgctxt "#20064"
+msgid "Copy default"
+msgstr "העתק ברירת מחדל"
+
+msgctxt "#20065"
+msgid "Profile picture"
+msgstr "תמונת פרופיל"
+
+msgctxt "#20066"
+msgid "Lock preferences"
+msgstr "נעל העדפות"
+
+msgctxt "#20067"
+msgid "Edit profile"
+msgstr "ערוך פרופיל"
+
+msgctxt "#20068"
+msgid "Profile lock"
+msgstr "נעילת פרופיל"
+
+msgctxt "#20069"
+msgid "Could not create folder"
+msgstr "לא ניתן ליצור תיקיה"
+
+msgctxt "#20070"
+msgid "Profile directory"
+msgstr "ספריית פרופיל"
+
+msgctxt "#20071"
+msgid "Start with fresh media sources"
+msgstr "התחל עם מקורות מדיה חדשים"
+
+msgctxt "#20072"
+msgid "Make sure the selected folder is writable"
+msgstr "ודא כי התיקיה הנבחרת ניתנת לכתיבה"
+
+msgctxt "#20073"
+msgid "and that the new folder name is valid"
+msgstr "וכי שם התיקיה החדשה תקף"
+
+msgctxt "#20074"
+msgid "MPAA rating"
+msgstr "דירוג MPAA:"
+
+msgctxt "#20075"
+msgid "Enter master lock code"
+msgstr "הזן קוד נעיל ראשי"
+
+msgctxt "#20076"
+msgid "Ask for master lock code on startup"
+msgstr "בקש קוד נעילה ראשי בזמן אתחול"
+
+msgctxt "#20077"
+msgid "Skin settings"
+msgstr "הגדרות סקין"
+
+msgctxt "#20078"
+msgid "- no link set -"
+msgstr "- קישור לא נקבע -"
+
+msgctxt "#20079"
+msgid "Enable animations"
+msgstr "אפשר הנפשה"
+
+msgctxt "#20080"
+msgid "Disable RSS during music"
+msgstr "נטרל RSS בעת מוזיקה"
+
+msgctxt "#20081"
+msgid "Enable shortcut buttons"
+msgstr "אפשר כפתורי קיצורים"
+
+msgctxt "#20082"
+msgid "Show programs in main menu"
+msgstr "הצג תוכנות בתפריט ראשי"
+
+msgctxt "#20083"
+msgid "Show music info"
+msgstr "הצג פרטים אודות המוסיקה"
+
+msgctxt "#20084"
+msgid "Show weather info"
+msgstr "הצג פרטים אודות מזג האויר"
+
+msgctxt "#20085"
+msgid "Show system info"
+msgstr "הצג פרטים אודות המערכת"
+
+msgctxt "#20086"
+msgid "Show available disc space C: E: F:"
+msgstr "הצג מקום פנוי בכונן C: E: F:"
+
+msgctxt "#20087"
+msgid "Show available disc space E: F: G:"
+msgstr "הצג מקום פנוי בכונן E: F: G:"
+
+msgctxt "#20088"
+msgid "Weather info"
+msgstr "פרטי מזג האויר"
+
+msgctxt "#20089"
+msgid "Drive space free"
+msgstr "מקום פנוי בכונן"
+
+msgctxt "#20090"
+msgid "Enter the name of an existing share"
+msgstr "הזן את השם של שיתוף קיים"
+
+msgctxt "#20091"
+msgid "Lock code"
+msgstr "קוד נעילה"
+
+msgctxt "#20092"
+msgid "Load profile"
+msgstr "טען פרופיל"
+
+msgctxt "#20093"
+msgid "Profile name"
+msgstr "שם הפרופיל"
+
+msgctxt "#20094"
+msgid "Media sources"
+msgstr "מקורות מדיה"
+
+msgctxt "#20095"
+msgid "Enter profile lock code"
+msgstr "הזן קוד נעילת פרופיל"
+
+msgctxt "#20096"
+msgid "Login screen"
+msgstr "מסך התחברות"
+
+msgctxt "#20097"
+msgid "Fetching album info"
+msgstr "משיג פרטי אלבום"
+
+msgctxt "#20098"
+msgid "Fetching info for album"
+msgstr "משיג פרטים עבור האלבום"
+
+msgctxt "#20099"
+msgid "Can't rip CD or track while playing from CD"
+msgstr "לא יכול להעתיק דיסק או רצועה בזמן ניגון מהדיסק"
+
+msgctxt "#20100"
+msgid "Master lock code and settings"
+msgstr "קוד נעילה ראשי והגדרות"
+
+msgctxt "#20101"
+msgid "Entering master lock code always enables master mode"
+msgstr "הזנת קוד נעילה ראשי תמיד מאפשרת מצב ראשי"
+
+msgctxt "#20102"
+msgid "or copy from default?"
+msgstr "או העתק מברירת מחדל?"
+
+msgctxt "#20103"
+msgid "Save changes to profile?"
+msgstr "שמור שינויים לפרופיל?"
+
+msgctxt "#20104"
+msgid "Old settings found."
+msgstr "הגדרות ישנות נמצאו"
+
+msgctxt "#20105"
+msgid "Do you want to use them?"
+msgstr "האם ברצונך להשתמש בהן?"
+
+msgctxt "#20106"
+msgid "Old media sources found."
+msgstr "מקורות מדיה ישנות נמצאו."
+
+msgctxt "#20107"
+msgid "Separate (locked)"
+msgstr "הפרד (נעול)"
+
+msgctxt "#20108"
+msgid "Root"
+msgstr "ראשי"
+
+msgctxt "#20109"
+msgid "- Zoom"
+msgstr "- הגדלה"
+
+msgctxt "#20110"
+msgid "UPnP settings"
+msgstr "הגדרות UPnP"
+
+msgctxt "#20111"
+msgid "Autostart UPnP client"
+msgstr "הפעלה אוטומטית"
+
+msgctxt "#20112"
+msgid "Last login: %s"
+msgstr "התחברות אחרונה: %s"
+
+msgctxt "#20113"
+msgid "Never logged on"
+msgstr "אף פעם לא התחבר"
+
+msgctxt "#20114"
+msgid "Profile %i / %i"
+msgstr "פרופיל %i / %i"
+
+msgctxt "#20115"
+msgid "User login / Select a profile"
+msgstr "חיבור משתמש / בחר פרופיל"
+
+msgctxt "#20116"
+msgid "Use lock on login screen"
+msgstr "במסך ההתחברות השתמש בנעילה"
+
+msgctxt "#20117"
+msgid "Invalid lock code."
+msgstr "קוד נעילה שגוי"
+
+msgctxt "#20118"
+msgid "This requires the master lock to be set."
+msgstr "זה מצריך קביעה של קוד נעילה ראשי"
+
+msgctxt "#20119"
+msgid "Would you like to set it now?"
+msgstr "האם ברצונך לקבוע זאת כעת?"
+
+msgctxt "#20120"
+msgid "Loading program information"
+msgstr "טוען פרטי התוכנה"
+
+msgctxt "#20121"
+msgid "Party on!"
+msgstr "מסיבה!"
+
+msgctxt "#20122"
+msgid "True"
+msgstr "אמת"
+
+msgctxt "#20123"
+msgid "Mixing drinks"
+msgstr "מערבב משקאות"
+
+msgctxt "#20124"
+msgid "Filling glasses"
+msgstr "ממלא כוסות"
+
+msgctxt "#20125"
+msgid "Logged on as"
+msgstr "מחובר בתור"
+
+msgctxt "#20126"
+msgid "Log off"
+msgstr "ניתוק"
+
+msgctxt "#20128"
+msgid "Go to root"
+msgstr "לך לראשי"
+
+msgctxt "#20129"
+msgid "Weave"
+msgstr "ארוג"
+
+msgctxt "#20130"
+msgid "Weave (inverted)"
+msgstr "ארוג (הפוך)"
+
+msgctxt "#20131"
+msgid "Blend"
+msgstr "מזג"
+
+msgctxt "#20132"
+msgid "Restart video"
+msgstr "התחל וידאו מחדש"
+
+msgctxt "#20133"
+msgid "Edit network location"
+msgstr "ערוך מיקום רשת"
+
+msgctxt "#20134"
+msgid "Remove network location"
+msgstr "הסר מיקום רשת"
+
+msgctxt "#20135"
+msgid "Do you want to scan the folder?"
+msgstr "האם ברצונך לסרוק את התיקייה?"
+
+msgctxt "#20136"
+msgid "Memory unit"
+msgstr "יחידת זיכרון"
+
+msgctxt "#20137"
+msgid "Memory unit mounted"
+msgstr "יחידת זיכרון מחוברת"
+
+msgctxt "#20138"
+msgid "Unable to mount memory unit"
+msgstr "לא מסוגל לחבר יחידת זיכרון"
+
+msgctxt "#20139"
+msgid "In port %i, slot %i"
+msgstr "ביציאה %i, חריץ %i"
+
+msgctxt "#20140"
+msgid "Lock screensaver"
+msgstr "נעל שומר מסך"
+
+msgctxt "#20141"
+msgid "Set"
+msgstr "קבע"
+
+msgctxt "#20142"
+msgid "Username"
+msgstr "שם משתמש"
+
+msgctxt "#20143"
+msgid "Enter password for"
+msgstr "הזן סיסמא עבור"
+
+msgctxt "#20144"
+msgid "Shutdown timer"
+msgstr "תזמון כיבוי"
+
+msgctxt "#20145"
+msgid "Shutdown interval (in minutes)"
+msgstr "השהיית זמן כיבוי (בדקות)"
+
+msgctxt "#20146"
+msgid "Started, shutdown in %im"
+msgstr "הוחל, כיבוי ב %im"
+
+msgctxt "#20147"
+msgid "Shutdown in 30 minutes"
+msgstr "כיבוי תוך 30 דקות"
+
+msgctxt "#20148"
+msgid "Shutdown in 60 minutes"
+msgstr "כיבוי תוך 60 דקות"
+
+msgctxt "#20149"
+msgid "Shutdown in 120 minutes"
+msgstr "כיבוי תוך 120 דקות"
+
+msgctxt "#20150"
+msgid "Custom shutdown timer"
+msgstr "תזמן כיבוי מותאם אישית"
+
+msgctxt "#20151"
+msgid "Cancel shutdown timer"
+msgstr "בטל תזמון כיבוי"
+
+msgctxt "#20152"
+msgid "Lock preferences for %s"
+msgstr "נעל העדפות עבור %s"
+
+msgctxt "#20153"
+msgid "Browse..."
+msgstr "עיון..."
+
+msgctxt "#20154"
+msgid "Summary information"
+msgstr "פרטים בסיסיים"
+
+msgctxt "#20155"
+msgid "Storage information"
+msgstr "פרטים אודות מקום האיכסון"
+
+msgctxt "#20156"
+msgid "Hard disk information"
+msgstr "פרטי הכונן הקשיח"
+
+msgctxt "#20157"
+msgid "DVD-ROM information"
+msgstr "פרטי כונן ה DVD"
+
+msgctxt "#20158"
+msgid "Network information"
+msgstr "פרטי הרשת"
+
+msgctxt "#20159"
+msgid "Video information"
+msgstr "פרטי הוידאו"
+
+msgctxt "#20160"
+msgid "Hardware information"
+msgstr "פרטי החומרה"
+
+msgctxt "#20161"
+msgid "Total"
+msgstr "סך הכל"
+
+msgctxt "#20162"
+msgid "Used"
+msgstr "בשימוש"
+
+msgctxt "#20163"
+msgid "of"
+msgstr "מתוך"
+
+msgctxt "#20164"
+msgid "Locking not supported"
+msgstr "נעילה לא נתמכת"
+
+msgctxt "#20165"
+msgid "Not locked"
+msgstr "לא נעול"
+
+msgctxt "#20166"
+msgid "Locked"
+msgstr "נעול"
+
+msgctxt "#20167"
+msgid "Frozen"
+msgstr "קפוא"
+
+msgctxt "#20168"
+msgid "Requires reset"
+msgstr "מצריך אתחול"
+
+msgctxt "#20169"
+msgid "Week"
+msgstr "שבוע"
+
+msgctxt "#20170"
+msgid "Line"
+msgstr "שורה"
+
+msgctxt "#20171"
+msgid "Windows network (SMB)"
+msgstr "רשת חלונות (SMB)"
+
+msgctxt "#20172"
+msgid "XBMSP server"
+msgstr "שרת XBMSP"
+
+msgctxt "#20173"
+msgid "FTP server"
+msgstr "שרת FTP"
+
+msgctxt "#20174"
+msgid "iTunes music share (DAAP)"
+msgstr "מוזיקה משותפת של iTunes (DAAP)"
+
+msgctxt "#20175"
+msgid "UPnP server"
+msgstr "שרת UPnP"
+
+msgctxt "#20176"
+msgid "Show video info"
+msgstr "הצג פרטי וידאו"
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "סיים"
+
+msgctxt "#20178"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#20179"
+msgid "Caps Lock"
+msgstr "Caps Lock"
+
+msgctxt "#20180"
+msgid "Symbols"
+msgstr "סמלים"
+
+msgctxt "#20181"
+msgid "Backspace"
+msgstr "Backspace"
+
+msgctxt "#20182"
+msgid "Space"
+msgstr "רווח"
+
+msgctxt "#20183"
+msgid "Reload skin"
+msgstr "טען סקין מחדש"
+
+msgctxt "#20184"
+msgid "Rotate pictures using EXIF information"
+msgstr "סובב תמונות בעזרת פרטי EXIF"
+
+msgctxt "#20185"
+msgid "Use poster view styles for TV shows"
+msgstr "השתמש בפוסטרים לתוכניות טלויזיה"
+
+msgctxt "#20186"
+msgid "Please wait"
+msgstr "אנא המתן"
+
+msgctxt "#20187"
+msgid "UPnP"
+msgstr "UPnP"
+
+msgctxt "#20189"
+msgid "Enable auto scrolling for plot & review"
+msgstr "אפשר גלילה אוטומטית לעלילות וסקירות"
+
+msgctxt "#20190"
+msgid "Custom"
+msgstr "מותאם אישית"
+
+msgctxt "#20191"
+msgid "Enable debug logging"
+msgstr "הפעל לוג מורחב"
+
+msgctxt "#20192"
+msgid "Download additional information during updates"
+msgstr "הורד פרטים נוספים בזמן עדכון"
+
+msgctxt "#20193"
+msgid "Default service for album information"
+msgstr "שירות ברירת מחדל לפרטי אלבום"
+
+msgctxt "#20194"
+msgid "Default service for artist information"
+msgstr "שירות ברירת מחדל לפרטי אמן"
+
+msgctxt "#20195"
+msgid "Change scraper"
+msgstr "החלף סקרייפר"
+
+msgctxt "#20196"
+msgid "Export music library"
+msgstr "ייצא ספרית המוסיקה"
+
+msgctxt "#20197"
+msgid "Import music library"
+msgstr "ייבא ספרית המוסיקה"
+
+msgctxt "#20198"
+msgid "No artist found!"
+msgstr "לא נימצא אמן!"
+
+msgctxt "#20199"
+msgid "Downloading artist info failed"
+msgstr "הורדת פרטי אמן נכשלה"
+
+msgctxt "#20250"
+msgid "Party on! (videos)"
+msgstr "יש מסיבה! (וידאו)"
+
+msgctxt "#20251"
+msgid "Mixing drinks (videos)"
+msgstr "מערבב משקאות (וידאו)"
+
+msgctxt "#20252"
+msgid "Filling glasses (videos)"
+msgstr "ממלא כוסות (וידאו)"
+
+msgctxt "#20253"
+msgid "WebDAV server (HTTP)"
+msgstr ""
+
+msgctxt "#20254"
+msgid "WebDAV server (HTTPS)"
+msgstr ""
+
+msgctxt "#20255"
+msgid "First logon, edit your profile"
+msgstr "ראשית התחבר, ערוך את הפרופיל שלך"
+
+msgctxt "#20256"
+msgid "HTS Tvheadend client"
+msgstr ""
+
+msgctxt "#20257"
+msgid "VDR Streamdev client"
+msgstr ""
+
+msgctxt "#20258"
+msgid "MythTV client"
+msgstr "קליינט MythTV "
+
+msgctxt "#20259"
+msgid "Network Filesystem (NFS)"
+msgstr ""
+
+msgctxt "#20260"
+msgid "Secure Shell (SSH/SFTP)"
+msgstr ""
+
+msgctxt "#20261"
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+msgctxt "#20300"
+msgid "Web server directory (HTTP)"
+msgstr "נתיב שרת האינטרנט (HTTP)"
+
+msgctxt "#20301"
+msgid "Web server directory (HTTPS)"
+msgstr "נתיב שרת האינטרנט (HTTPS)"
+
+msgctxt "#20302"
+msgid "Unable to write to folder:"
+msgstr "לא יכול לרשום לתיקייה:"
+
+msgctxt "#20303"
+msgid "Do you want to skip and proceed?"
+msgstr "האם תרצה לדלג ולהמשיך?"
+
+msgctxt "#20304"
+msgid "RSS Feed"
+msgstr "הזנת RSS"
+
+msgctxt "#20307"
+msgid "Secondary DNS"
+msgstr "DNS משני"
+
+msgctxt "#20308"
+msgid "DHCP server:"
+msgstr "DHCP שרת:"
+
+msgctxt "#20309"
+msgid "Make new folder"
+msgstr "צור תיקיה חדשה"
+
+msgctxt "#20310"
+msgid "Dim LCD on playback"
+msgstr "עמעם LCD בזמן ניגון"
+
+msgctxt "#20311"
+msgid "Unknown or onboard (protected)"
+msgstr "לא ידוע או על הלוח (מוגן)"
+
+msgctxt "#20312"
+msgid "Dim LCD on paused"
+msgstr "עמעם LCD בזמן הפסקה"
+
+msgctxt "#20314"
+msgid "Videos - Library"
+msgstr "וידאו - ספריה"
+
+msgctxt "#20316"
+msgid "Sort by: ID"
+msgstr "מיין לפי: ID"
+
+msgctxt "#20324"
+msgid "Play part..."
+msgstr "נגן חלק..."
+
+msgctxt "#20325"
+msgid "Calibration reset"
+msgstr "אפס כיול"
+
+msgctxt "#20326"
+msgid "This will reset the calibration values for %s"
+msgstr "זה יאפס את ערכי הכיול ל %s"
+
+msgctxt "#20327"
+msgid "to it's default values."
+msgstr "לערכי ברירת המחדל שלו"
+
+msgctxt "#20328"
+msgid "Browse for destination"
+msgstr "עיין לנתיב יעד"
+
+msgctxt "#20329"
+msgid "Movies are in separate folders that match the movie title"
+msgstr "סרטים נמצאים בתיקיות נפרדות עם כותרת הסרט"
+
+msgctxt "#20330"
+msgid "Use folder names for lookups"
+msgstr "השתמש בשמות תיקיות לחיפוש"
+
+msgctxt "#20331"
+msgid "File"
+msgstr "קובץ"
+
+msgctxt "#20332"
+msgid "Use file or folder names in lookups?"
+msgstr "השתמש בשמות תיקיה או קובץ בחיפוש?"
+
+msgctxt "#20333"
+msgid "Set content"
+msgstr "קבע תוכן"
+
+msgctxt "#20334"
+msgid "Folder"
+msgstr "תיקיה"
+
+msgctxt "#20335"
+msgid "Look for content recursively?"
+msgstr "לחפש תוכן בצורה רקורסיבית?"
+
+msgctxt "#20336"
+msgid "Unlock sources"
+msgstr "שחרר מקורות"
+
+msgctxt "#20337"
+msgid "Actor"
+msgstr "שחקן"
+
+msgctxt "#20338"
+msgid "Movie"
+msgstr "סרט"
+
+msgctxt "#20339"
+msgid "Director"
+msgstr "במאי"
+
+msgctxt "#20340"
+msgid "Do you want to remove all items within"
+msgstr "האם ברצונך להסיר את כל הפרטים מתוך"
+
+msgctxt "#20341"
+msgid "this path from the XBMC library?"
+msgstr "נתיב זה ממסד הנתונים?"
+
+msgctxt "#20342"
+msgid "Movies"
+msgstr "סרטים"
+
+msgctxt "#20343"
+msgid "TV shows"
+msgstr "תוכניות טלוויזיה"
+
+msgctxt "#20344"
+msgid "This directory contains"
+msgstr "ספריה זו מכילה"
+
+msgctxt "#20345"
+msgid "Run automated scan"
+msgstr "הרץ סריקה אוטומטית"
+
+msgctxt "#20346"
+msgid "Scan recursively"
+msgstr "סרוק בצורה רקורסיבית"
+
+msgctxt "#20347"
+msgid "as"
+msgstr "בתור"
+
+msgctxt "#20348"
+msgid "Directors"
+msgstr "במאים"
+
+msgctxt "#20349"
+msgid "No video files found in this path!"
+msgstr "לא נמצאו קבצי וידאו בנתיב זה!"
+
+msgctxt "#20350"
+msgid "votes"
+msgstr "הצבעות"
+
+msgctxt "#20351"
+msgid "TV show information"
+msgstr "פרטי תוכנית טלוויזיה"
+
+msgctxt "#20352"
+msgid "Episode information"
+msgstr "פרטי פרק"
+
+msgctxt "#20353"
+msgid "Loading TV show details"
+msgstr "טוען פרטי תוכנית טלוויזיה"
+
+msgctxt "#20354"
+msgid "Fetching episode guide"
+msgstr "מייבא מדריך פרקים"
+
+msgctxt "#20355"
+msgid "Loading info for episodes in directory"
+msgstr "טוען פרטים עבור פרקים בתיקייה"
+
+msgctxt "#20356"
+msgid "Select TV show:"
+msgstr "בחר תוכנית טלוויזיה:"
+
+msgctxt "#20357"
+msgid "Enter the TV show name"
+msgstr "הזן שם תוכנית טלויזיה"
+
+msgctxt "#20358"
+msgid "Season %i"
+msgstr "עונה %i"
+
+msgctxt "#20359"
+msgid "Episode"
+msgstr "פרק"
+
+msgctxt "#20360"
+msgid "Episodes"
+msgstr "פרקים"
+
+msgctxt "#20361"
+msgid "Loading episode details"
+msgstr "טוען פרטי פרק"
+
+msgctxt "#20362"
+msgid "Remove episode from library"
+msgstr "הסר פרק מספריה"
+
+msgctxt "#20363"
+msgid "Remove TV show from library"
+msgstr "הסר תוכנית טלויזיה מספריה"
+
+msgctxt "#20364"
+msgid "TV show"
+msgstr "תוכנית טלויזיה"
+
+msgctxt "#20365"
+msgid "Episode plot"
+msgstr "עלילת פרק"
+
+msgctxt "#20366"
+msgid "* All seasons"
+msgstr "* כל העונות"
+
+msgctxt "#20367"
+msgid "Hide watched"
+msgstr "הסתר שנצפו"
+
+msgctxt "#20368"
+msgid "Prod code"
+msgstr "קוד הפקה"
+
+msgctxt "#20369"
+msgid "Show plot for unwatched items"
+msgstr "הראה עלילה לפריטים שעוד לא נצפו"
+
+msgctxt "#20370"
+msgid "* Hidden to prevent spoilers *"
+msgstr "* הסתר למניעת ספוילרים *"
+
+msgctxt "#20371"
+msgid "Set season thumb"
+msgstr "בחר תמונה ממוזערת לעונה"
+
+msgctxt "#20372"
+msgid "Season image"
+msgstr "תמונת עונה"
+
+msgctxt "#20373"
+msgid "Season"
+msgstr "עונה"
+
+msgctxt "#20374"
+msgid "Downloading movie information"
+msgstr "מוריד פרטי סרט"
+
+msgctxt "#20375"
+msgid "Unassign content"
+msgstr "תוכן לא מוקצה"
+
+msgctxt "#20376"
+msgid "Original title"
+msgstr "כותרת מקורית"
+
+msgctxt "#20377"
+msgid "Refresh TV show information"
+msgstr "רענן פרטי תוכנית טלויזיה"
+
+msgctxt "#20378"
+msgid "Refresh info for all episodes?"
+msgstr "רענן פרטים לכל הפרקים?"
+
+msgctxt "#20379"
+msgid "Selected folder contains a single TV show"
+msgstr "תיקיה מכילה תוכנית טלויזיה בודדת"
+
+msgctxt "#20380"
+msgid "Exclude selected folder from scans"
+msgstr "מנע תיקייה מסריקות"
+
+msgctxt "#20381"
+msgid "Specials"
+msgstr "ספיישלים"
+
+msgctxt "#20382"
+msgid "Automatically grab season thumbs"
+msgstr "הורד אוטומטי תמונה ממוזערת לעונה"
+
+msgctxt "#20383"
+msgid "Selected folder contains a single video"
+msgstr "תיקייה מכילה וידאו בודד"
+
+msgctxt "#20384"
+msgid "Link to TV show"
+msgstr "קשר לתוכנית טלויזיה"
+
+msgctxt "#20385"
+msgid "Remove link to TV show"
+msgstr "הסר קישור לתוכנית טלויזיה"
+
+msgctxt "#20386"
+msgid "Recently added movies"
+msgstr "סרטים שנוספו לאחרונה"
+
+msgctxt "#20387"
+msgid "Recently added episodes"
+msgstr "פרקים שנוספו לאחרונה"
+
+msgctxt "#20388"
+msgid "Studios"
+msgstr "אולפנים"
+
+msgctxt "#20389"
+msgid "Music videos"
+msgstr "קליפים"
+
+msgctxt "#20390"
+msgid "Recently added music videos"
+msgstr "קליפים שנוספו לאחרונה"
+
+msgctxt "#20391"
+msgid "Music video"
+msgstr "קליפ"
+
+msgctxt "#20392"
+msgid "Remove music video from library"
+msgstr "הסר קליפ מספרית הוידאו"
+
+msgctxt "#20393"
+msgid "Music video information"
+msgstr "פרטי קליפ"
+
+msgctxt "#20394"
+msgid "Loading music video information"
+msgstr "טוען פרטי קליפ"
+
+msgctxt "#20395"
+msgid "Mixed"
+msgstr "מעורבב"
+
+msgctxt "#20396"
+msgid "Go to albums by artist"
+msgstr "עבור לאלבומים לפי אמנים"
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "עבור לאלבומים"
+
+msgctxt "#20398"
+msgid "Play song"
+msgstr "נגן שיר"
+
+msgctxt "#20399"
+msgid "Go to music videos from album"
+msgstr "לך לקליפים מהאלבום"
+
+msgctxt "#20400"
+msgid "Go to music videos by artist"
+msgstr "לך לקליפים לפי אמן"
+
+msgctxt "#20401"
+msgid "Play music video"
+msgstr "נגן קליפ"
+
+msgctxt "#20402"
+msgid "Download actor thumbnails when adding to library"
+msgstr "הורד תמונות ממוזערות לשחקנים בהוספה לספריה"
+
+msgctxt "#20403"
+msgid "Set actor thumb"
+msgstr "בחר תמונה ממוזערת לשחקן"
+
+msgctxt "#20405"
+msgid "Remove episode bookmark"
+msgstr "הסר סימניית פרק"
+
+msgctxt "#20406"
+msgid "Set episode bookmark"
+msgstr "הוסף סימניית פרק"
+
+msgctxt "#20407"
+msgid "Scraper settings"
+msgstr "הגדרות סקרייפר"
+
+msgctxt "#20408"
+msgid "Downloading music video information"
+msgstr "מוריד פרטי קליפ"
+
+msgctxt "#20409"
+msgid "Downloading TV show information"
+msgstr "מוריד פרטי תוכנית טלויזיה"
+
+msgctxt "#20410"
+msgid "Trailer"
+msgstr "קדימון"
+
+msgctxt "#20411"
+msgid "Flatten"
+msgstr "שטח"
+
+msgctxt "#20412"
+msgid "Flatten TV shows"
+msgstr "שטח תוכניות טלויזיה"
+
+msgctxt "#20413"
+msgid "Get fanart"
+msgstr "קבל פאנארט"
+
+msgctxt "#20414"
+msgid "Show Fanart in video and music libraries"
+msgstr "הצג פאנארט בספריות וידאו ומוזיקה"
+
+msgctxt "#20415"
+msgid "Scanning for new content"
+msgstr "סורק עבור תוכן חדש"
+
+msgctxt "#20416"
+msgid "First aired"
+msgstr "שודר לראשונה"
+
+msgctxt "#20417"
+msgid "Writer"
+msgstr "כותב"
+
+msgctxt "#20419"
+msgid "Replace file names with library titles"
+msgstr "החלף שמות קבצים עם כותרות ספריה"
+
+msgctxt "#20420"
+msgid "Never"
+msgstr "אף פעם"
+
+msgctxt "#20421"
+msgid "If only one season"
+msgstr "אם רק עונה אחת"
+
+msgctxt "#20422"
+msgid "Always"
+msgstr "תמיד"
+
+msgctxt "#20423"
+msgid "Has trailer"
+msgstr "יש קדימון"
+
+msgctxt "#20424"
+msgid "False"
+msgstr "שקר"
+
+msgctxt "#20425"
+msgid "Fanart slideshow"
+msgstr "מצגת פאנארט"
+
+msgctxt "#20426"
+msgid "Export to a single file or separate"
+msgstr "?לייצא לקובץ בודד או קבצים ניפרדים"
+
+msgctxt "#20427"
+msgid "files per entry?"
+msgstr "קבצים לכל ערך?"
+
+msgctxt "#20428"
+msgid "Single file"
+msgstr "קובץ בודד"
+
+msgctxt "#20429"
+msgid "Separate"
+msgstr "ניפרדים"
+
+msgctxt "#20430"
+msgid "Export thumbnails and fanart?"
+msgstr "?לייצא תמונות ממוזערות ופאנארט"
+
+msgctxt "#20431"
+msgid "Overwrite old files?"
+msgstr "?לדרוס קבצים קיימים"
+
+msgctxt "#20432"
+msgid "Exclude path from library updates"
+msgstr "אל תכלול נתיב זה בעידכוני ספריה"
+
+msgctxt "#20433"
+msgid "Extract thumbnails and video information"
+msgstr "חלץ תמונות ממוזערות ופרטי וידאו"
+
+msgctxt "#20434"
+msgid "Sets"
+msgstr "מארזים"
+
+msgctxt "#20435"
+msgid "Set movieset thumb"
+msgstr "קבע תמונה ממוזערת למארז סרטים"
+
+msgctxt "#20436"
+msgid "Export actor thumbs?"
+msgstr "לייצא תמונות ממוזערות לשחקנים"
+
+msgctxt "#20437"
+msgid "Choose fanart"
+msgstr "בחר פאנארט"
+
+msgctxt "#20438"
+msgid "Local fanart"
+msgstr "פאנארט מקומי"
+
+msgctxt "#20439"
+msgid "No fanart"
+msgstr "ללא פאנארט"
+
+msgctxt "#20440"
+msgid "Current fanart"
+msgstr "פאנארט נוכחי"
+
+msgctxt "#20441"
+msgid "Remote fanart"
+msgstr "פאנארט מרוחק"
+
+msgctxt "#20442"
+msgid "Change content"
+msgstr "שנה תוכן"
+
+msgctxt "#20443"
+msgid "Do you want to refresh info for all"
+msgstr "האם ברצונך לרענן את כל הפרטים"
+
+msgctxt "#20444"
+msgid "items within this path?"
+msgstr "פריטים בתוך נתיב זה?"
+
+msgctxt "#20445"
+msgid "Fanart"
+msgstr "פאנארט"
+
+msgctxt "#20446"
+msgid "Locally stored information found."
+msgstr "מידע מקומי נמצא."
+
+msgctxt "#20447"
+msgid "Ignore and refresh from internet?"
+msgstr "התעלם ולעדכן מהאינטרנט?"
+
+msgctxt "#20448"
+msgid "Could not download information"
+msgstr "אין אפשרות להוריד פרטים"
+
+msgctxt "#20449"
+msgid "Unable to connect to remote server"
+msgstr "אין אפשרות להתחבר לשרת מרוחק"
+
+msgctxt "#20450"
+msgid "Would you like to continue scanning?"
+msgstr "האם ברצונך להמשיך בסריקה?"
+
+msgctxt "#20451"
+msgid "Countries"
+msgstr "ארצות"
+
+msgctxt "#20452"
+msgid "episode"
+msgstr "פרק"
+
+msgctxt "#20453"
+msgid "episodes"
+msgstr "פרקים"
+
+msgctxt "#20454"
+msgid "Listener"
+msgstr "מאזין"
+
+msgctxt "#20455"
+msgid "Listeners"
+msgstr "מאזינים"
+
+msgctxt "#20456"
+msgid "Set movieset fanart"
+msgstr "הגדר פאנארט למארז סרטים"
+
+msgctxt "#20457"
+msgid "Movie set"
+msgstr "מארז סרטים"
+
+msgctxt "#20458"
+msgid "Group movies in sets"
+msgstr "קבוצות סרטים במארזים"
+
+msgctxt "#21330"
+msgid "Show hidden files and directories"
+msgstr "הצג קבצים וספריות מוחבאים"
+
+msgctxt "#21331"
+msgid "TuxBox client"
+msgstr "קליינט TuxBox"
+
+msgctxt "#21332"
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "אזהרה: הצב את מכשיר ה TuxBox במצב הקלטה"
+
+msgctxt "#21333"
+msgid "The stream will be stopped!"
+msgstr "הזרימה תופסק!"
+
+msgctxt "#21334"
+msgid "Zap to channel: %s failed!"
+msgstr "זפזופ לערוץ: %s נכשל"
+
+msgctxt "#21335"
+msgid "Are you sure to start the stream?"
+msgstr "האם אתה בטוח להתחיל את הזרימה?"
+
+msgctxt "#21336"
+msgid "Connecting to: %s"
+msgstr "מתחבר אל: %s"
+
+msgctxt "#21337"
+msgid "TuxBox device"
+msgstr "מכשיר TuxBox"
+
+msgctxt "#21359"
+msgid "Add media share..."
+msgstr "הוסף שיתוף מדיה..."
+
+msgctxt "#21360"
+msgid "Share video and music libraries through UPnP"
+msgstr "שתף את ספריות הוידאו והמוסיקה דרך UPnP"
+
+msgctxt "#21364"
+msgid "Edit media share"
+msgstr "ערוך שיתוף מדיה"
+
+msgctxt "#21365"
+msgid "Remove media share"
+msgstr "הסר סיתוף מדיה"
+
+msgctxt "#21366"
+msgid "Subtitle folder"
+msgstr "תיקיית כתוביות"
+
+msgctxt "#21367"
+msgid "Movie & alternate subtitle directory"
+msgstr "ספריית סרט ותרגום חלופי"
+
+msgctxt "#21368"
+msgid "Override ASS/SSA subtitles fonts"
+msgstr "דלג על גופני כתוביות ASS/SSA"
+
+msgctxt "#21369"
+msgid "Enable mouse and Touch Screen support"
+msgstr "אפשר תמיכה בעכבר ומסך מגע"
+
+msgctxt "#21370"
+msgid "Play navigation sounds during media playback"
+msgstr "בזמן ניגון המדיה נגן צלילי ניווט"
+
+msgctxt "#21371"
+msgid "Thumbnail"
+msgstr "תמונה ממוזערת"
+
+msgctxt "#21372"
+msgid "Forced DVD player region"
+msgstr "קביעת איזור נגן דיוידי"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "פלט וידאו"
+
+msgctxt "#21374"
+msgid "Video aspect"
+msgstr "גודל וידאו"
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "רגיל"
+
+msgctxt "#21376"
+msgid "Letterbox"
+msgstr "תיבת מכתבים"
+
+msgctxt "#21377"
+msgid "Widescreen"
+msgstr "מסך רחב"
+
+msgctxt "#21378"
+msgid "Enable 480p"
+msgstr "הפעל 480p"
+
+msgctxt "#21379"
+msgid "Enable 720p"
+msgstr "הפעל 720p"
+
+msgctxt "#21380"
+msgid "Enable 1080i"
+msgstr "הפעל 1080i"
+
+msgctxt "#21381"
+msgid "Enter name of new playlist"
+msgstr "הזן שם רשימת השמעה חדשה"
+
+msgctxt "#21382"
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "הראה כפתור \"הוסף מקור\" ברשימות קבצים"
+
+msgctxt "#21383"
+msgid "Enable scrollbars"
+msgstr "אפשר פסי גלילה"
+
+msgctxt "#21384"
+msgid "Make watched filtering a toggle in video library"
+msgstr "אפשר פילטר נצפו בספריית וידאו"
+
+msgctxt "#21385"
+msgid "Open"
+msgstr "פתח"
+
+msgctxt "#21386"
+msgid "Acoustic management level"
+msgstr "רמת ניהול אקוסטי"
+
+msgctxt "#21387"
+msgid "Fast"
+msgstr "מהר"
+
+msgctxt "#21388"
+msgid "Quiet"
+msgstr "שקט"
+
+msgctxt "#21389"
+msgid "Enable custom background"
+msgstr "אפשר רקע מותאם אישית"
+
+msgctxt "#21390"
+msgid "Power management level"
+msgstr "רמת ניהול כוח"
+
+msgctxt "#21391"
+msgid "High power"
+msgstr "כוח גבוה"
+
+msgctxt "#21392"
+msgid "Low power"
+msgstr "כוח נמוך"
+
+msgctxt "#21393"
+msgid "High standby"
+msgstr "המתנה גבוהה"
+
+msgctxt "#21394"
+msgid "Low standby"
+msgstr "המתנה נמוכה"
+
+msgctxt "#21395"
+msgid "Unable to cache files bigger than 4GB"
+msgstr "לא יכול להכניס למטמון קבצים גדולים מ 4 גיגה"
+
+msgctxt "#21396"
+msgid "Chapter"
+msgstr "פרק"
+
+msgctxt "#21397"
+msgid "High quality pixel shader v2"
+msgstr ""
+
+msgctxt "#21398"
+msgid "Enable playlist at startup"
+msgstr "אפר רשימת ניגון בהפעלה"
+
+msgctxt "#21399"
+msgid "Use tween animations"
+msgstr "השתמש בתאוצת (tween) אנימציות"
+
+msgctxt "#21400"
+msgid "contains"
+msgstr "מכיל"
+
+msgctxt "#21401"
+msgid "does not contain"
+msgstr "לא מכיל"
+
+msgctxt "#21402"
+msgid "is"
+msgstr "הוא"
+
+msgctxt "#21403"
+msgid "is not"
+msgstr "הוא לא"
+
+msgctxt "#21404"
+msgid "starts with"
+msgstr "מתחיל עם"
+
+msgctxt "#21405"
+msgid "ends with"
+msgstr "נגמר עם"
+
+msgctxt "#21406"
+msgid "greater than"
+msgstr "גדול יותר מ"
+
+msgctxt "#21407"
+msgid "less than"
+msgstr "פחות מ"
+
+msgctxt "#21408"
+msgid "after"
+msgstr "אחרי"
+
+msgctxt "#21409"
+msgid "before"
+msgstr "לפני"
+
+msgctxt "#21410"
+msgid "in the last"
+msgstr "באחרון"
+
+msgctxt "#21411"
+msgid "not in the last"
+msgstr "לא באחרון"
+
+msgctxt "#21412"
+msgid "Scrapers"
+msgstr "סקרייפרים"
+
+msgctxt "#21413"
+msgid "Default movie scraper"
+msgstr "סקרייפר ברירת מחדל לסרטים"
+
+msgctxt "#21414"
+msgid "Default tvshow scraper"
+msgstr "סקרייפר ברירת מחדל לתוכניות"
+
+msgctxt "#21415"
+msgid "Default music video scraper"
+msgstr "סקרייפר ברירת מחדל למוסיקה"
+
+msgctxt "#21416"
+msgid "Enable fallback based on scraper language"
+msgstr "אפשר גיבוי על פי שפת הסקרייפר"
+
+msgctxt "#21417"
+msgid "- Settings"
+msgstr "- הגדרות"
+
+msgctxt "#21418"
+msgid "Multilingual"
+msgstr "רב-לשוני"
+
+msgctxt "#21419"
+msgid "No scrapers present"
+msgstr "אין סקרייפרים"
+
+msgctxt "#21420"
+msgid "Value to match"
+msgstr "ערך להתאמה"
+
+msgctxt "#21421"
+msgid "Smart playlist rule"
+msgstr "חוקי רשימת השמעה חכמה"
+
+msgctxt "#21422"
+msgid "Match items where"
+msgstr "התאם פריטים בהם"
+
+msgctxt "#21423"
+msgid "New rule..."
+msgstr "חוק חדש..."
+
+msgctxt "#21424"
+msgid "Items must match"
+msgstr "הפריטים חייבים להתאים"
+
+msgctxt "#21425"
+msgid "all of the rules"
+msgstr "כל החוקים"
+
+msgctxt "#21426"
+msgid "one or more of the rules"
+msgstr "חוק אחד או יותר"
+
+msgctxt "#21427"
+msgid "Limit to"
+msgstr "הגבלה"
+
+msgctxt "#21428"
+msgid "No limit"
+msgstr "אין הגבלה"
+
+msgctxt "#21429"
+msgid "Order by"
+msgstr "סדר לפי"
+
+msgctxt "#21430"
+msgid "ascending"
+msgstr "עולה"
+
+msgctxt "#21431"
+msgid "descending"
+msgstr "יורד"
+
+msgctxt "#21432"
+msgid "Edit smart playlist"
+msgstr "ערוך רשימת השמעה חכמה"
+
+msgctxt "#21433"
+msgid "Name of the playlist"
+msgstr "שם רשימת השמעה"
+
+msgctxt "#21434"
+msgid "Find items where"
+msgstr "מצא פריטים בהם"
+
+msgctxt "#21435"
+msgid "Edit"
+msgstr "- ערוך"
+
+msgctxt "#21436"
+msgid "%i items"
+msgstr " פריטים %i"
+
+msgctxt "#21437"
+msgid "New smart playlist..."
+msgstr "רשימת השמעה חכמה חדשה"
+
+msgctxt "#21438"
+msgid "%c Drive"
+msgstr "כונן %c"
+
+msgctxt "#21439"
+msgid "Edit party mode rules"
+msgstr "ערוך חוקי מצב מסיבה"
+
+msgctxt "#21440"
+msgid "Home folder"
+msgstr "תיקיית בית"
+
+msgctxt "#21441"
+msgid "Watched count"
+msgstr "ספירת שנצפו"
+
+msgctxt "#21442"
+msgid "Episode title"
+msgstr "שם פרק"
+
+msgctxt "#21443"
+msgid "Video resolution"
+msgstr "רזולוצית וידאו"
+
+msgctxt "#21444"
+msgid "Audio channels"
+msgstr "ערוצי שמע"
+
+msgctxt "#21445"
+msgid "Video codec"
+msgstr "מקודד וידאו"
+
+msgctxt "#21446"
+msgid "Audio codec"
+msgstr "מקודד שמע"
+
+msgctxt "#21447"
+msgid "Audio language"
+msgstr "שפת שמע"
+
+msgctxt "#21448"
+msgid "Subtitle language"
+msgstr "שפת כתובית"
+
+msgctxt "#21449"
+msgid "Remote control sends keyboard presses"
+msgstr "שלט רחוק שולח לחיצות מקלדת"
+
+msgctxt "#21450"
+msgid "- Edit"
+msgstr "- עריכה"
+
+msgctxt "#21451"
+msgid "Internet connection required."
+msgstr "נחוץ חיבור לאינטרנט."
+
+msgctxt "#21452"
+msgid "Get More..."
+msgstr "קבל עוד..."
+
+msgctxt "#21453"
+msgid "Root filesystem"
+msgstr "שורש מערכת הקבצים"
+
+msgctxt "#21454"
+msgid "Cache full"
+msgstr "מטמון מלא"
+
+msgctxt "#21455"
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr "המטמון התמלא לפני שהגיע לכמות הנחוצה לניגון רציף"
+
+msgctxt "#21460"
+msgid "Subtitle location"
+msgstr "מיקום הכתובית"
+
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "מקובע"
+
+msgctxt "#21462"
+msgid "Bottom of video"
+msgstr "תחתית הוידאו"
+
+msgctxt "#21463"
+msgid "Below video"
+msgstr "מתחת לוידאו"
+
+msgctxt "#21464"
+msgid "Top of video"
+msgstr "בראש הוידאו"
+
+msgctxt "#21465"
+msgid "Above video"
+msgstr "מעל הוידאו"
+
+msgctxt "#21800"
+msgid "File name"
+msgstr "שם קובץ"
+
+msgctxt "#21801"
+msgid "File path"
+msgstr "נתיב קובץ"
+
+msgctxt "#21802"
+msgid "File size"
+msgstr "גודל קובץ"
+
+msgctxt "#21803"
+msgid "File date/time"
+msgstr "תאריך/שעה קובץ"
+
+msgctxt "#21804"
+msgid "Slide index"
+msgstr "שקופית אינדקס"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "רזולוציה"
+
+msgctxt "#21806"
+msgid "Comment"
+msgstr "הערות"
+
+msgctxt "#21807"
+msgid "Colour/B&W"
+msgstr "צבעוני/שחור-לבן"
+
+msgctxt "#21808"
+msgid "JPEG process"
+msgstr "תהליך JPEG"
+
+msgctxt "#21820"
+msgid "Date/Time"
+msgstr "תאריך/שעה"
+
+msgctxt "#21821"
+msgid "Description"
+msgstr "תיאור"
+
+msgctxt "#21822"
+msgid "Camera make"
+msgstr "יצרן המצלמה"
+
+msgctxt "#21823"
+msgid "Camera model"
+msgstr "דגם המצלמה"
+
+msgctxt "#21824"
+msgid "EXIF comment"
+msgstr "EXIF תגובה"
+
+msgctxt "#21825"
+msgid "Firmware"
+msgstr "קושחה"
+
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "צמצם"
+
+msgctxt "#21827"
+msgid "Focal length"
+msgstr "מוקד אורך"
+
+msgctxt "#21828"
+msgid "Focus distance"
+msgstr "מרחק הפוקוס"
+
+msgctxt "#21829"
+msgid "Exposure"
+msgstr "חשיפה"
+
+msgctxt "#21830"
+msgid "Exposure time"
+msgstr "זמן חשיפה"
+
+msgctxt "#21831"
+msgid "Exposure bias"
+msgstr "הטיית חשיפה"
+
+msgctxt "#21832"
+msgid "Exposure mode"
+msgstr "מצב חשיפה"
+
+msgctxt "#21833"
+msgid "Flash used"
+msgstr "פלאש בשימוש"
+
+msgctxt "#21834"
+msgid "White-balance"
+msgstr "איזון לבן"
+
+msgctxt "#21835"
+msgid "Light source"
+msgstr "מקור האור"
+
+msgctxt "#21836"
+msgid "Metering mode"
+msgstr "מצב מדידה"
+
+msgctxt "#21837"
+msgid "ISO"
+msgstr "ISO"
+
+msgctxt "#21838"
+msgid "Digital zoom"
+msgstr "זום דיגיטלי"
+
+msgctxt "#21839"
+msgid "CCD width"
+msgstr "CCD רוחב"
+
+msgctxt "#21840"
+msgid "GPS latitude"
+msgstr "GPS קו-רוחב"
+
+msgctxt "#21841"
+msgid "GPS longitude"
+msgstr "GPS קו-אורך"
+
+msgctxt "#21842"
+msgid "GPS altitude"
+msgstr "GPS גובה"
+
+msgctxt "#21843"
+msgid "Orientation"
+msgstr "התמצאות"
+
+msgctxt "#21860"
+msgid "Supplemental categories"
+msgstr "קטגוריות נוספות"
+
+msgctxt "#21861"
+msgid "Keywords"
+msgstr "מילות מפתח"
+
+msgctxt "#21862"
+msgid "Caption"
+msgstr "מלות הסבר"
+
+msgctxt "#21863"
+msgid "Author"
+msgstr "מחבר"
+
+msgctxt "#21864"
+msgid "Headline"
+msgstr "כותרת"
+
+msgctxt "#21865"
+msgid "Special instructions"
+msgstr "הוראות מיוחדות"
+
+msgctxt "#21866"
+msgid "Category"
+msgstr "קטגוריה"
+
+msgctxt "#21867"
+msgid "Byline"
+msgstr "כותרת-משנה"
+
+msgctxt "#21868"
+msgid "Byline title"
+msgstr "כותרת-משנה"
+
+msgctxt "#21869"
+msgid "Credit"
+msgstr "קרדיט"
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "מקור"
+
+msgctxt "#21871"
+msgid "Copyright notice"
+msgstr "הערת זכויות יוצרים"
+
+msgctxt "#21872"
+msgid "Object name"
+msgstr "שם אובייקט"
+
+msgctxt "#21873"
+msgid "City"
+msgstr "עיר"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "מדינה"
+
+msgctxt "#21875"
+msgid "Country"
+msgstr "ארץ"
+
+msgctxt "#21876"
+msgid "Original Tx Reference"
+msgstr ""
+
+msgctxt "#21877"
+msgid "Date created"
+msgstr "תאריך יצירה"
+
+msgctxt "#21878"
+msgid "Copyright flag"
+msgstr "דגל זכויות יוצרים"
+
+msgctxt "#21879"
+msgid "Country code"
+msgstr "קוד מדינה"
+
+msgctxt "#21880"
+msgid "Reference service"
+msgstr ""
+
+msgctxt "#21881"
+msgid "Allow control of XBMC via UPnP"
+msgstr "אפשר שליטה על XBMC דרך UPnP"
+
+msgctxt "#21882"
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "נסה לדלג על הקדמות לפני תפריט DVD"
+
+msgctxt "#21883"
+msgid "Saved music"
+msgstr "מוסיקה שמורה"
+
+msgctxt "#21884"
+msgid "Query info for all artists"
+msgstr "בדוק פרטים של כל האמנים"
+
+msgctxt "#21885"
+msgid "Downloading album information"
+msgstr "מוריד פרטי אלבום"
+
+msgctxt "#21886"
+msgid "Downloading artist information"
+msgstr "מוריד פרטי אמן"
+
+msgctxt "#21887"
+msgid "Biography"
+msgstr "ביוגרפיה"
+
+msgctxt "#21888"
+msgid "Discography"
+msgstr "דיסקוגרפיה"
+
+msgctxt "#21889"
+msgid "Searching artist"
+msgstr "מחפש אמן"
+
+msgctxt "#21890"
+msgid "Select artist"
+msgstr "בחר אמן"
+
+msgctxt "#21891"
+msgid "Artist information"
+msgstr "פרטי אמן"
+
+msgctxt "#21892"
+msgid "Instruments"
+msgstr "כלי נגינה"
+
+msgctxt "#21893"
+msgid "Born"
+msgstr "נולד"
+
+msgctxt "#21894"
+msgid "Formed"
+msgstr "הוקמו"
+
+msgctxt "#21895"
+msgid "Themes"
+msgstr "נושאים"
+
+msgctxt "#21896"
+msgid "Disbanded"
+msgstr "התפרקו"
+
+msgctxt "#21897"
+msgid "Died"
+msgstr "נפטר"
+
+msgctxt "#21898"
+msgid "Years active"
+msgstr "שנות פעילות"
+
+msgctxt "#21899"
+msgid "Label"
+msgstr "חברת הפקה"
+
+msgctxt "#21900"
+msgid "Born/Formed"
+msgstr "נולד / הוקם"
+
+msgctxt "#22000"
+msgid "Update library on startup"
+msgstr "עדכן את הספריה בהפעלה"
+
+msgctxt "#22001"
+msgid "Hide progress of library updates"
+msgstr "תמיד עדכן ספרייה ברקע"
+
+msgctxt "#22002"
+msgid "- DNS suffix"
+msgstr "- DNS סיומת"
+
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "%2.3f שניות עוכבו"
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr "%2.3f שניות הוקדמו"
+
+msgctxt "#22006"
+msgid "Subtitle offset"
+msgstr "השהיית כתוביות"
+
+msgctxt "#22007"
+msgid "OpenGL vendor:"
+msgstr "OpenGL ספק:"
+
+msgctxt "#22008"
+msgid "OpenGL renderer:"
+msgstr ""
+
+msgctxt "#22009"
+msgid "OpenGL version:"
+msgstr "OpenGL גרסה:"
+
+msgctxt "#22010"
+msgid "GPU temperature:"
+msgstr "GPU טמפרטורה:"
+
+msgctxt "#22011"
+msgid "CPU temperature:"
+msgstr "CPU טמפרטורה:"
+
+msgctxt "#22012"
+msgid "Total memory"
+msgstr "סה\"כ זיכרון"
+
+msgctxt "#22013"
+msgid "Profile data"
+msgstr "נתוני פרופיל"
+
+msgctxt "#22014"
+msgid "Use dim if paused during video playback"
+msgstr "השתמש בעמעום כשמושהה בזמן ניגון וידאו"
+
+msgctxt "#22015"
+msgid "All recordings"
+msgstr "כל ההקלטות"
+
+msgctxt "#22016"
+msgid "By title"
+msgstr "לפי כותרת"
+
+msgctxt "#22017"
+msgid "By group"
+msgstr "לפי קבוצה"
+
+msgctxt "#22018"
+msgid "Live channels"
+msgstr "ערוצים חיים"
+
+msgctxt "#22019"
+msgid "Recordings by title"
+msgstr "הקלטות לפי כותרת"
+
+msgctxt "#22020"
+msgid "Guide"
+msgstr "מדריך"
+
+msgctxt "#22021"
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "אפשר שגיאות ביחס גודל כדי להקטין פסים שחורים"
+
+msgctxt "#22022"
+msgid "Show video files in listings"
+msgstr "הצג קיבצי וידאו ברשימה"
+
+msgctxt "#22023"
+msgid "DirectX vendor:"
+msgstr "DirectX ספק:"
+
+msgctxt "#22024"
+msgid "Direct3D version:"
+msgstr "Direct3D גרסה:"
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "פונט"
+
+msgctxt "#22031"
+msgid "- Size"
+msgstr "- גודל"
+
+msgctxt "#22032"
+msgid "- Colours"
+msgstr "- צבעים"
+
+msgctxt "#22033"
+msgid "- Charset"
+msgstr "- מערך תוים"
+
+msgctxt "#22034"
+msgid "Export karaoke titles as HTML"
+msgstr "ייצא כותרות קריוקי כקובץ HTML"
+
+msgctxt "#22035"
+msgid "Export karaoke titles as CSV"
+msgstr "ייצא כותרות קריוקי כקובץ CSV"
+
+msgctxt "#22036"
+msgid "Import karaoke titles..."
+msgstr "ייבא כותרות קריוקי..."
+
+msgctxt "#22037"
+msgid "Show song selector automatically"
+msgstr "הראה אוטומטית את בורר השירים"
+
+msgctxt "#22038"
+msgid "Export karaoke titles..."
+msgstr "ייצא כותרות קריוקי..."
+
+msgctxt "#22039"
+msgid "Enter song number"
+msgstr "הזן מספר שיר"
+
+msgctxt "#22040"
+msgid "white/green"
+msgstr "לבן/ירוק"
+
+msgctxt "#22041"
+msgid "white/red"
+msgstr "לבן/אדום"
+
+msgctxt "#22042"
+msgid "white/blue"
+msgstr "לבן/כחול"
+
+msgctxt "#22043"
+msgid "black/white"
+msgstr "שחור/לבן"
+
+msgctxt "#22079"
+msgid "Default select action"
+msgstr "פעולת בחירה ברירת מחדל"
+
+msgctxt "#22080"
+msgid "Choose"
+msgstr "בחר"
+
+msgctxt "#22081"
+msgid "Show Information"
+msgstr "הצג פרטים"
+
+msgctxt "#22082"
+msgid "More..."
+msgstr "עוד..."
+
+msgctxt "#22083"
+msgid "Play all"
+msgstr "נגן הכל"
+
+msgctxt "#23049"
+msgid "Teletext not available"
+msgstr "טלטקסט לא זמין"
+
+msgctxt "#23050"
+msgid "Activate Teletext"
+msgstr "הפעל טלטקסט"
+
+msgctxt "#23051"
+msgid "Part %i"
+msgstr "חלק %i"
+
+msgctxt "#23052"
+msgid "Buffering %i bytes"
+msgstr "אוגר %i בייטים"
+
+msgctxt "#23053"
+msgid "Stopping"
+msgstr "עוצר"
+
+msgctxt "#23054"
+msgid "Running"
+msgstr "רץ"
+
+msgctxt "#23100"
+msgid "External Player Active"
+msgstr "נגן חיצוני פעיל"
+
+msgctxt "#23101"
+msgid "Click OK to terminate the player"
+msgstr "לחץ על אישור כדי לנטרל את הנגן"
+
+msgctxt "#23104"
+msgid "Click OK when playback has ended"
+msgstr "לחץ אישור כאשר ההשמעה הסתיימה"
+
+msgctxt "#24000"
+msgid "Add-on"
+msgstr "תוסף"
+
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "הרחבות"
+
+msgctxt "#24002"
+msgid "Add-on options"
+msgstr "אפשרויות הרחבות"
+
+msgctxt "#24003"
+msgid "Add-on Information"
+msgstr "פרטי תוסף"
+
+msgctxt "#24005"
+msgid "Media sources"
+msgstr "מקורות מדיה"
+
+msgctxt "#24007"
+msgid "Movie information"
+msgstr "פרטי סרט"
+
+msgctxt "#24008"
+msgid "Screensaver"
+msgstr "שומר מסך"
+
+msgctxt "#24009"
+msgid "Script"
+msgstr "סקריפט"
+
+msgctxt "#24010"
+msgid "Visualization"
+msgstr "חיזוי"
+
+msgctxt "#24011"
+msgid "Add-on repository"
+msgstr "מאגר הרחבות"
+
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "כתוביות"
+
+msgctxt "#24013"
+msgid "Lyrics"
+msgstr "מילות שירים"
+
+msgctxt "#24014"
+msgid "TV information"
+msgstr "פרטי טלויזיה"
+
+msgctxt "#24015"
+msgid "Music video information"
+msgstr "פרטי קליפים"
+
+msgctxt "#24016"
+msgid "Album information"
+msgstr "פרטי אלבומים"
+
+msgctxt "#24017"
+msgid "Artist information"
+msgstr "פרטי אמנים"
+
+msgctxt "#24018"
+msgid "Services"
+msgstr "שירותים"
+
+msgctxt "#24020"
+msgid "Configure"
+msgstr "הגדר"
+
+msgctxt "#24021"
+msgid "Disable"
+msgstr "נטרל"
+
+msgctxt "#24022"
+msgid "Enable"
+msgstr "הפעל"
+
+msgctxt "#24023"
+msgid "Add-on disabled"
+msgstr "תוסף מנוטרל"
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "מזג אויר"
+
+msgctxt "#24028"
+msgid "Weather.com (standard)"
+msgstr "Weather.com (רגיל)"
+
+msgctxt "#24030"
+msgid "This Add-on can not be configured"
+msgstr "הרחבה זו אינה ניתנת להגדרה"
+
+msgctxt "#24031"
+msgid "Error loading settings"
+msgstr "תקלה בעת טעינת הגדרות"
+
+msgctxt "#24032"
+msgid "All Add-ons"
+msgstr "כל ההרחבות"
+
+msgctxt "#24033"
+msgid "Get Add-ons"
+msgstr "קבל הרחבות"
+
+msgctxt "#24034"
+msgid "Check for updates"
+msgstr "חפש עדכונים"
+
+msgctxt "#24035"
+msgid "Force refresh"
+msgstr "רענן בכוח"
+
+msgctxt "#24036"
+msgid "Change log"
+msgstr "שינויים"
+
+msgctxt "#24037"
+msgid "Uninstall"
+msgstr "הסר הרחבה"
+
+msgctxt "#24038"
+msgid "Install"
+msgstr "התקן הרחבה"
+
+msgctxt "#24039"
+msgid "Disabled Add-ons"
+msgstr "הרחבות מנוטרלות"
+
+msgctxt "#24040"
+msgid "(Clear the current setting)"
+msgstr "(נקה הגדרות קיימות)"
+
+msgctxt "#24041"
+msgid "Install from zip file"
+msgstr "התקן מקובץ zip"
+
+msgctxt "#24042"
+msgid "Downloading %i%%"
+msgstr "מוריד %i%%"
+
+msgctxt "#24043"
+msgid "Available Updates"
+msgstr "עדכונים קיימים"
+
+msgctxt "#24044"
+msgid "Dependencies not met"
+msgstr "אין התאמה בתלויות"
+
+msgctxt "#24045"
+msgid "Add-on does not have the correct structure"
+msgstr "להרחבה אין את המבנה הנכון"
+
+msgctxt "#24046"
+msgid "%s is used by the following installed add-on(s)"
+msgstr "%s בשימוש ע\"י ההרחבה/ות המותקנות הבאות"
+
+msgctxt "#24047"
+msgid "This add-on cannot be uninstalled"
+msgstr "התקן זה אינו ניתן להסרה"
+
+msgctxt "#24048"
+msgid "Rollback"
+msgstr "חזור לאחור"
+
+msgctxt "#24050"
+msgid "Available Add-ons"
+msgstr "הרחבות קיימות"
+
+msgctxt "#24051"
+msgid "Version:"
+msgstr "גרסה:"
+
+msgctxt "#24052"
+msgid "Disclaimer"
+msgstr "הצהרת אחריות"
+
+msgctxt "#24053"
+msgid "License:"
+msgstr "רישיון:"
+
+msgctxt "#24054"
+msgid "Changelog"
+msgstr "רשימת שינויים"
+
+msgctxt "#24059"
+msgid "Would you like to enable this Add-on?"
+msgstr "האם תרצה/י להפעיל הרחבה זו?"
+
+msgctxt "#24060"
+msgid "Would you like to disable this Add-on?"
+msgstr "האם תרצה/י לנטרל הרחבה זו?"
+
+msgctxt "#24061"
+msgid "Add-on update available!"
+msgstr "יש עדכון להרחבה זו!"
+
+msgctxt "#24062"
+msgid "Enabled Add-ons"
+msgstr "הרחבות מופעלות"
+
+msgctxt "#24063"
+msgid "Auto update"
+msgstr "עדכון אוטומטי"
+
+msgctxt "#24064"
+msgid "Add-on enabled"
+msgstr "הרחבה מופעלת"
+
+msgctxt "#24065"
+msgid "Add-on updated"
+msgstr "הרחבה עודכנה"
+
+msgctxt "#24066"
+msgid "Cancel Add-on download?"
+msgstr "בטל הורדת הרחבה?"
+
+msgctxt "#24067"
+msgid "Currently downloading Add-ons"
+msgstr "בתהליך הורדת הרחבות"
+
+msgctxt "#24068"
+msgid "Update available"
+msgstr "קיים עדכון"
+
+msgctxt "#24069"
+msgid "Update"
+msgstr "עדכן"
+
+msgctxt "#24070"
+msgid "Add-on could not be loaded."
+msgstr "לא ניתן לטעון את ההרחבה"
+
+msgctxt "#24071"
+msgid "An unknown error has occurred."
+msgstr "ארעה תקלה בלתי ידועה"
+
+msgctxt "#24072"
+msgid "Settings required"
+msgstr "דרושות הגדרות"
+
+msgctxt "#24073"
+msgid "Could not connect"
+msgstr "לא מצליח להתחבר"
+
+msgctxt "#24074"
+msgid "Needs to restart"
+msgstr "צריך לבצע הפעלה מחדש"
+
+msgctxt "#24075"
+msgid "Disable"
+msgstr "נטרל"
+
+msgctxt "#24076"
+msgid "Add-on Required"
+msgstr "דרושה הרחבה"
+
+msgctxt "#24080"
+msgid "Try to reconnect?"
+msgstr "לנסות להתחבר מחדש?"
+
+msgctxt "#24089"
+msgid "Add-on restarts"
+msgstr "ההרחבה מופעלת מחדש"
+
+msgctxt "#24090"
+msgid "Lock Add-on manager"
+msgstr "נעל מנהל הרחבות"
+
+msgctxt "#24094"
+msgid "(current)"
+msgstr "(נוכחי)"
+
+msgctxt "#24095"
+msgid "(blacklisted)"
+msgstr "(רשימה שחורה)"
+
+msgctxt "#24096"
+msgid "Add-on has been marked as broken in repository."
+msgstr "ההרחבה מסומנת כלא תקינה במאגר"
+
+msgctxt "#24097"
+msgid "Would you like to disable it on your system?"
+msgstr "תרצה לנטרל אותה אצלך במערכת?"
+
+msgctxt "#24098"
+msgid "Broken"
+msgstr "לא תקין"
+
+msgctxt "#24099"
+msgid "Would you like to switch to this skin?"
+msgstr "תרצה להחליף לסקין זה?"
+
+msgctxt "#24100"
+msgid "To use this feature you must download an Add-on:"
+msgstr "לשימוש ביכולת זו עליך להוריד הרחבה:"
+
+msgctxt "#24101"
+msgid "Would you like to download this Add-on?"
+msgstr "ברצונך להוריד הרחבה זו?"
+
+msgctxt "#25000"
+msgid "Notifications"
+msgstr "הודעות"
+
+msgctxt "#25001"
+msgid "Hide foreign"
+msgstr ""
+
+msgctxt "#25002"
+msgid "Select from all titles ..."
+msgstr ""
+
+msgctxt "#25003"
+msgid "Show bluray menus"
+msgstr ""
+
+msgctxt "#25004"
+msgid "Play main title: %d"
+msgstr ""
+
+msgctxt "#25005"
+msgid "Title: %d"
+msgstr ""
+
+msgctxt "#25006"
+msgid "Select playback item"
+msgstr ""
+
+msgctxt "#29800"
+msgid "Library Mode"
+msgstr "מצב ספריה"
+
+msgctxt "#29801"
+msgid "QWERTY keyboard"
+msgstr "מקלדת QWERTY"
+
+msgctxt "#29802"
+msgid "Passthrough Audio in use"
+msgstr "שימוש בהעברת קול ישירה (passthrough)"
+
+msgctxt "#33001"
+msgid "Trailer quality"
+msgstr "איכות הקדימון"
+
+msgctxt "#33002"
+msgid "Stream"
+msgstr "זרימה"
+
+msgctxt "#33003"
+msgid "Download"
+msgstr "הורד"
+
+msgctxt "#33004"
+msgid "Download & play"
+msgstr "הורד ונגן"
+
+msgctxt "#33005"
+msgid "Download & save"
+msgstr "הורד ושמור"
+
+msgctxt "#33006"
+msgid "Today"
+msgstr "היום"
+
+msgctxt "#33007"
+msgid "Tomorrow"
+msgstr "מחר"
+
+msgctxt "#33008"
+msgid "Saving"
+msgstr "שומר"
+
+msgctxt "#33009"
+msgid "Copying"
+msgstr "מעתיק"
+
+msgctxt "#33010"
+msgid "Set download directory"
+msgstr "הגדר תיקיית הורדות"
+
+msgctxt "#33011"
+msgid "Search duration"
+msgstr "חפש אורך"
+
+msgctxt "#33012"
+msgid "Short"
+msgstr "קצר"
+
+msgctxt "#33013"
+msgid "Long"
+msgstr "ארוך"
+
+msgctxt "#33014"
+msgid "Use DVD player instead of regular player"
+msgstr "השתמש בנגן DVD במקום הנגן הרגיל"
+
+msgctxt "#33015"
+msgid "Ask for download before playing video"
+msgstr "בקש לשמור לפני נגינת הוידאו"
+
+msgctxt "#33016"
+msgid "Clips"
+msgstr "קליפים"
+
+msgctxt "#33017"
+msgid "Restart plugin to enable"
+msgstr "הפעל תוסף מחדש כדי להפעיל"
+
+msgctxt "#33018"
+msgid "Tonight"
+msgstr "הלילה"
+
+msgctxt "#33019"
+msgid "Tomorrow Night"
+msgstr "מחר בלילה"
+
+msgctxt "#33020"
+msgid "Condition"
+msgstr "תנאי"
+
+msgctxt "#33021"
+msgid "Precipitation"
+msgstr "משקעים"
+
+msgctxt "#33022"
+msgid "Precip"
+msgstr "משקעים"
+
+msgctxt "#33023"
+msgid "Humid"
+msgstr "לח"
+
+msgctxt "#33024"
+msgid "Feels"
+msgstr "מרגיש כמו"
+
+msgctxt "#33025"
+msgid "Observed"
+msgstr "ניצפה"
+
+msgctxt "#33026"
+msgid "Departure from normal"
+msgstr "פרידה מהרגיל"
+
+msgctxt "#33027"
+msgid "Sunrise"
+msgstr "זריחה"
+
+msgctxt "#33028"
+msgid "Sunset"
+msgstr "שקיעה"
+
+msgctxt "#33029"
+msgid "Details"
+msgstr "פרטים"
+
+msgctxt "#33030"
+msgid "Outlook"
+msgstr "השקפה"
+
+msgctxt "#33031"
+msgid "Coverflow"
+msgstr "Coverflow"
+
+msgctxt "#33032"
+msgid "Translate text"
+msgstr "תרגם טקסט"
+
+msgctxt "#33033"
+msgid "Map list %s category"
+msgstr "קטגוריה %s מרשימת המפות"
+
+msgctxt "#33034"
+msgid "36 Hour"
+msgstr "36 שעות"
+
+msgctxt "#33035"
+msgid "Maps"
+msgstr "מפות"
+
+msgctxt "#33036"
+msgid "Hourly"
+msgstr "לפי שעה"
+
+msgctxt "#33037"
+msgid "Weekend"
+msgstr "סוף שבוע"
+
+msgctxt "#33038"
+msgid "%s day"
+msgstr "יום %s"
+
+msgctxt "#33049"
+msgid "Alert"
+msgstr "התראה"
+
+msgctxt "#33050"
+msgid "Alerts"
+msgstr "התראות"
+
+msgctxt "#33051"
+msgid "Choose Your"
+msgstr "בחר את "
+
+msgctxt "#33052"
+msgid "Check"
+msgstr "בדוק"
+
+msgctxt "#33053"
+msgid "Configure the"
+msgstr "הגדר את"
+
+msgctxt "#33054"
+msgid "Seasons"
+msgstr "עונות"
+
+msgctxt "#33055"
+msgid "Use your"
+msgstr "השתמש ב"
+
+msgctxt "#33056"
+msgid "Watch your"
+msgstr "תיראה את"
+
+msgctxt "#33057"
+msgid "Listen to"
+msgstr "הקשב ל"
+
+msgctxt "#33058"
+msgid "View your"
+msgstr "צפה ב"
+
+msgctxt "#33059"
+msgid "Configure the"
+msgstr "הגדר את ה"
+
+msgctxt "#33060"
+msgid "Power"
+msgstr "הפעלה"
+
+msgctxt "#33061"
+msgid "Menu"
+msgstr "תפריט"
+
+msgctxt "#33062"
+msgid "Play the"
+msgstr "נגן את ה"
+
+msgctxt "#33063"
+msgid "Options"
+msgstr "אפשרויות"
+
+msgctxt "#33065"
+msgid "Editor"
+msgstr "עורך"
+
+msgctxt "#33066"
+msgid "About your"
+msgstr "אודות ה"
+
+msgctxt "#33067"
+msgid "Star rating"
+msgstr "כוכבי דירוג"
+
+msgctxt "#33068"
+msgid "Background"
+msgstr "רקע"
+
+msgctxt "#33069"
+msgid "Backgrounds"
+msgstr "רקעים"
+
+msgctxt "#33070"
+msgid "Custom background"
+msgstr "רקע מותאם אישית"
+
+msgctxt "#33071"
+msgid "Custom backgrounds"
+msgstr "רקעים מותאמים אישית"
+
+msgctxt "#33072"
+msgid "View Readme"
+msgstr "צפה בקובץ README"
+
+msgctxt "#33073"
+msgid "View Changelog"
+msgstr "צפה בקובץ שינויים"
+
+msgctxt "#33074"
+msgid "This version of %s requires an"
+msgstr "גרסה זו של %s דורשת"
+
+msgctxt "#33075"
+msgid "XBMC revision of %s or greater to run."
+msgstr "דרושה גרסה %s של XBMC או יותר כדי לרוץ"
+
+msgctxt "#33076"
+msgid "Please update XBMC."
+msgstr "אנא עדכן את XBMC."
+
+msgctxt "#33077"
+msgid "No data found!"
+msgstr "לא נמצאו פרטים!"
+
+msgctxt "#33078"
+msgid "Next page"
+msgstr "עמוד הבא"
+
+msgctxt "#33079"
+msgid "Love"
+msgstr "אוהב"
+
+msgctxt "#33080"
+msgid "Hate"
+msgstr "שונא"
+
+msgctxt "#33081"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "קובץ זה שייך לערמה. בחר נקודת התחלה"
+
+msgctxt "#33082"
+msgid "Path to script"
+msgstr "נתיב לסקריפט"
+
+msgctxt "#33083"
+msgid "Enable custom script button"
+msgstr "הפעל כפתור סקריפט מותאם אישית"
+
+msgctxt "#33100"
+msgid "Failed to start"
+msgstr "אתחול נכשל"
+
+msgctxt "#33101"
+msgid "Webserver"
+msgstr "שרת"
+
+msgctxt "#33102"
+msgid "Event Server"
+msgstr "Event Server"
+
+msgctxt "#33103"
+msgid "Remote communication server"
+msgstr "שרת התחברות מרחוק"
+
+msgctxt "#33200"
+msgid "Detected New Connection"
+msgstr "זוהה חיבור חדש"
+
+msgctxt "#34000"
+msgid "Lame"
+msgstr "Lame"
+
+msgctxt "#34001"
+msgid "Vorbis"
+msgstr "Vorbis"
+
+msgctxt "#34002"
+msgid "Wav"
+msgstr "Wav"
+
+msgctxt "#34003"
+msgid "DXVA2"
+msgstr "DXVA2"
+
+msgctxt "#34004"
+msgid "VAAPI"
+msgstr "VAAPI"
+
+msgctxt "#34005"
+msgid "Flac"
+msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Speaker Configuration"
+msgstr "תצורת רמקול"
+
+msgctxt "#34101"
+msgid "2.0"
+msgstr "2.0"
+
+msgctxt "#34102"
+msgid "2.1"
+msgstr "2.1"
+
+msgctxt "#34103"
+msgid "3.0"
+msgstr "3.0"
+
+msgctxt "#34104"
+msgid "3.1"
+msgstr "3.1"
+
+msgctxt "#34105"
+msgid "4.0"
+msgstr "4.0"
+
+msgctxt "#34106"
+msgid "4.1"
+msgstr "4.1"
+
+msgctxt "#34107"
+msgid "5.0"
+msgstr "5.0"
+
+msgctxt "#34108"
+msgid "5.1"
+msgstr "5.1"
+
+msgctxt "#34109"
+msgid "7.0"
+msgstr "7.0"
+
+msgctxt "#34110"
+msgid "7.1"
+msgstr "7.1"
+
+msgctxt "#34201"
+msgid "Can't find a next item to play"
+msgstr "לא נמצא פריט הבא לניגון"
+
+msgctxt "#34202"
+msgid "Can't find a previous item to play"
+msgstr "לא נמצא הפריט הקודם לניגון"
+
+msgctxt "#34300"
+msgid "Failed to start zeroconf"
+msgstr "נכשל בהפעלת zeroconf"
+
+msgctxt "#34301"
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr "האם שירות Apple's Bonjour מותקן? ראה לוג למידע נוסף"
+
+msgctxt "#34400"
+msgid "Video Rendering"
+msgstr "עיבוד וידאו"
+
+msgctxt "#34401"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+msgctxt "#34402"
+msgid "Failed to initialize audio device"
+msgstr "נכשל בהפעלת התקן האודיו"
+
+msgctxt "#34403"
+msgid "Check your audiosettings"
+msgstr "בדוק הגדרות אודיו"
+
+msgctxt "#34404"
+msgid "Use gestures for navigation:"
+msgstr ""
+
+msgctxt "#34405"
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+msgctxt "#34406"
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+msgctxt "#34407"
+msgid "1 finger single tap for enter"
+msgstr ""
+
+msgctxt "#34408"
+msgid "2 finger single tap or 1 finger long press for contextmenu"
+msgstr ""
+
+msgctxt "#35000"
+msgid "Peripherals"
+msgstr "ציוד היקפי"
+
+msgctxt "#35001"
+msgid "Generic HID device"
+msgstr "התקן HID כללי"
+
+msgctxt "#35002"
+msgid "Generic network adapter"
+msgstr "מתאם רשת כללי"
+
+msgctxt "#35003"
+msgid "Generic disk"
+msgstr "דיסק כללי"
+
+msgctxt "#35004"
+msgid "There are no settings available\nfor this peripheral."
+msgstr "אין הגדרות להתקן זה"
+
+msgctxt "#35005"
+msgid "New device configured"
+msgstr "התקן חדש הוגדר"
+
+msgctxt "#35006"
+msgid "Device removed"
+msgstr "התקן הוסר"
+
+msgctxt "#35007"
+msgid "Keymap to use for this device"
+msgstr ""
+
+msgctxt "#35008"
+msgid "Keymap enabled"
+msgstr "Keymap פעיל"
+
+msgctxt "#35009"
+msgid "Do not use the custom keymap for this device"
+msgstr "אל תשתמש ב 'keymap' מותאם אישית להתקן זה"
+
+msgctxt "#35500"
+msgid "Location"
+msgstr "מיקום"
+
+msgctxt "#35501"
+msgid "Class"
+msgstr "מחלקה"
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "שם"
+
+msgctxt "#35503"
+msgid "Vendor"
+msgstr "ספק"
+
+msgctxt "#35504"
+msgid "Product ID"
+msgstr "מוצר ID"
+
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+msgctxt "#36001"
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+msgctxt "#36002"
+msgid "Switch to keyboard side command"
+msgstr ""
+
+msgctxt "#36003"
+msgid "Switch to remote side command"
+msgstr ""
+
+msgctxt "#36004"
+msgid "Press \"user\" button command"
+msgstr ""
+
+msgctxt "#36005"
+msgid "Enable switch side commands"
+msgstr ""
+
+msgctxt "#36006"
+msgid "Could not open the adapter"
+msgstr "אין אפשרות לפתוח מתאם"
+
+msgctxt "#36007"
+msgid "Devices to power on when starting XBMC"
+msgstr "התקנים אשר יפעלו כאשר מפעילים את XBMC"
+
+msgctxt "#36008"
+msgid "Devices to power off when stopping XBMC"
+msgstr "התקנים אשר יכבו כאשר מפסיקים את XBMC"
+
+msgctxt "#36009"
+msgid "Put devices in standby mode when activating screensaver"
+msgstr "הכנס את ההתקנים למצב שינה כאשר מפעילים שומר מסך"
+
+msgctxt "#36011"
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr "אין אפשרות לזהות פורט CEC. הגדר זאת ידנית."
+
+msgctxt "#36012"
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr "אין אפשרות לאתחל מתאם CEC. בדוק את ההגדרות שלך"
+
+msgctxt "#36013"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "ממשק libCEC  לא נתמך. %d גדול יותר מאשר הגרסא ש- XBMC תומך (%d)"
+
+msgctxt "#36014"
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr "הכנס את המחשב למצב המתנה כאשר הטלוויזיה נכבית"
+
+msgctxt "#36015"
+msgid "HDMI port number"
+msgstr "מספר פורט HDMI"
+
+msgctxt "#36016"
+msgid "Connected"
+msgstr "מחובר"
+
+msgctxt "#36017"
+msgid "Adapter found, but libCEC is not available"
+msgstr "מתאם נמצא. אבל libCEC לא זמין"
+
+msgctxt "#36018"
+msgid "Use the TV's language setting"
+msgstr "השתמש בהגדרות שפה של הטלוויזיה"
+
+msgctxt "#36019"
+msgid "Connected to HDMI device"
+msgstr "מחובר להתקן HDMI"
+
+msgctxt "#36020"
+msgid "Make XBMC the active source when starting"
+msgstr "הפוך את XBMC למקור הפעיל כאשר מפעילים"
+
+msgctxt "#36021"
+msgid "Physical address (overrules HDMI port)"
+msgstr "כתובת פיזית (מבטל יציאת HDMI)"
+
+msgctxt "#36022"
+msgid "COM port (leave empty unless needed)"
+msgstr "יציאת COM (השאר ריק אלא אם יש צורך)"
+
+msgctxt "#36023"
+msgid "Configuration updated"
+msgstr "תצורה עודכנה"
+
+msgctxt "#36024"
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr "נכשל בהגדרת תצורה חדשה. אנא בדוק את ההגדרות שלך."
+
+msgctxt "#36025"
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr "שלח פקודת 'מקור לא פעיל' כאשר עוצרים את XBMC"
+

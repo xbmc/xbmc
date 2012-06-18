@@ -145,13 +145,13 @@
   </global>
   <LoginScreen>
     <keyboard>
-      <end>XBMC.ShutDown()</end>
+      <end mod="ctrl">XBMC.ShutDown()</end>
     </keyboard>
   </LoginScreen>
   <Home>
     <keyboard>
       <i>info</i>
-      <end>XBMC.ShutDown()</end>
+      <end mod="ctrl">XBMC.ShutDown()</end>
     </keyboard>
   </Home>
   <VirtualKeyboard>
@@ -223,6 +223,8 @@
       <v>XBMC.ActivateWindow(Teletext)</v>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
+      <pageup>SkipNext</pageup>
+      <pagedown>SkipPrevious</pagedown>
     </keyboard>
   </FullscreenVideo>
   <VideoTimeSeek>
@@ -371,6 +373,8 @@
       <escape>Fullscreen</escape>
       <return>Select</return>
       <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
+      <pageup>SkipNext</pageup>
+      <pagedown>SkipPrevious</pagedown>
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>

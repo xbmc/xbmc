@@ -40,7 +40,7 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
   std::vector<CStdString> result;
 
   CRegExp reMount;
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   reMount.RegComp("on (.+) \\(([^,]+)");
 #else
   reMount.RegComp("on (.+) type ([^ ]+)");
@@ -96,7 +96,7 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
   std::vector<CStdString> result;
   char line[1024];
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   FILE* pipe = popen("df -hT ufs,cd9660,hfs,udf", "r");
 #elif defined(__FreeBSD__)
   FILE* pipe = popen("df -h -t ufs,cd9660,hfs,udf,zfs", "r");

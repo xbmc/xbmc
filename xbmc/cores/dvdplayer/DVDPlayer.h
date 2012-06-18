@@ -60,17 +60,20 @@ public:
   int              id;     // demuxerid of current playing stream
   int              source;
   double           dts;    // last dts from demuxer, used to find disncontinuities
+  double           dur;    // last frame expected duration
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
   bool             inited;
   bool             started; // has the player started
   const StreamType type;
+  const int        player;
   // stuff to handle starting after seek
   double   startpts;
   CDVDMsg* startsync;
 
-  CCurrentStream(StreamType t)
+  CCurrentStream(StreamType t, int i)
     : type(t)
+    , player(i)
   {
     startsync = NULL;
     Clear();
@@ -81,6 +84,7 @@ public:
     id     = -1;
     source = STREAM_SOURCE_NONE;
     dts    = DVD_NOPTS_VALUE;
+    dur    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
     inited = false;
@@ -90,11 +94,21 @@ public:
     startsync = NULL;
     startpts  = DVD_NOPTS_VALUE;
   }
+
+  double dts_end()
+  {
+    if(dts == DVD_NOPTS_VALUE)
+      return DVD_NOPTS_VALUE;
+    if(dur == DVD_NOPTS_VALUE)
+      return dts;
+    return dts + dur;
+  }
 };
 
 typedef struct
 {
   StreamType   type;
+  int          type_index;
   std::string  filename;
   std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub) 
   std::string  language;
@@ -105,6 +119,8 @@ typedef struct
   std::string  codec;
   int          channels;
 } SelectionStream;
+
+typedef std::vector<SelectionStream> SelectionStreams;
 
 class CSelectionStreams
 {
@@ -125,6 +141,14 @@ public:
   SelectionStream& Get     (StreamType type, int index);
   bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
 
+  SelectionStreams Get(StreamType type);
+  template<typename Compare> SelectionStreams Get(StreamType type, Compare compare)
+  {
+    SelectionStreams streams = Get(type);
+    std::stable_sort(streams.begin(), streams.end(), compare);
+    return streams;
+  }
+
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);
 
@@ -143,8 +167,6 @@ class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 public:
   CDVDPlayer(IPlayerCallback& callback);
   virtual ~CDVDPlayer();
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
-  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
@@ -160,7 +182,7 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
-  virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
+  virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio.SetVolume(nVolume); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
@@ -200,8 +222,8 @@ public:
   virtual void GetChapterName(CStdString& strChapterName);
   virtual int  SeekChapter(int iChapter);
 
-  virtual void SeekTime(__int64 iTime);
-  virtual __int64 GetTime();
+  virtual void SeekTime(int64_t iTime);
+  virtual int64_t GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
@@ -272,7 +294,7 @@ protected:
   int GetPlaySpeed()                                                { return m_playSpeed; }
   void SetCaching(ECacheState state);
 
-  __int64 GetTotalTimeInMsec();
+  int64_t GetTotalTimeInMsec();
 
   double GetQueueTime();
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
@@ -291,6 +313,7 @@ protected:
   bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
   bool CheckStartCaching(CCurrentStream& current);
+  void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
@@ -329,6 +352,7 @@ protected:
   } m_SpeedState;
 
   int m_errorCount;
+  double m_offset_pts;
 
   CDVDMessageQueue m_messenger;     // thread messenger
 
@@ -407,7 +431,7 @@ protected:
     std::string demux_video;
     std::string demux_audio;
 
-    __int64 cache_bytes;   // number of bytes current's cached
+    int64_t cache_bytes;   // number of bytes current's cached
     double  cache_level;   // current estimated required cache level
     double  cache_delay;   // time until cache is expected to reach estimated level
     double  cache_offset;  // percentage of file ahead of current position

@@ -24,8 +24,11 @@
 #include "PlatformInclude.h"
 #include "LinuxTimezone.h"
 #include "utils/SystemInfo.h"
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "OSXGNUReplacements.h"
+#endif
+#ifdef __FreeBSD__
+#include "freebsd/FreeBSDGNUReplacements.h"
 #endif
 
 #include "Util.h"
@@ -36,6 +39,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
 {
    char* line = NULL;
    size_t linelen = 0;
+   int nameonfourthfield = 0;
    CStdString s;
    vector<CStdString> tokens;
 
@@ -91,6 +95,11 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
 
    // Load countries
    fp = fopen("/usr/share/zoneinfo/iso3166.tab", "r");
+   if (!fp)
+   {
+      fp = fopen("/usr/share/misc/iso3166", "r");
+      nameonfourthfield = 1;
+   }
    if (fp)
    {
       CStdString countryCode;
@@ -110,6 +119,16 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
          // Search for the first non space from the 2nd character and on
          int i = 2;
          while (s[i] == ' ' || s[i] == '\t') i++;
+
+         if (nameonfourthfield)
+         {
+            // skip three letter
+            while (s[i] != ' ' && s[i] != '\t') i++;
+            while (s[i] == ' ' || s[i] == '\t') i++;
+            // skip number
+            while (s[i] != ' ' && s[i] != '\t') i++;
+            while (s[i] == ' ' || s[i] == '\t') i++;
+         }
 
          countryCode = s.Left(2);
          countryName = s.Mid(i);
@@ -136,7 +155,7 @@ vector<CStdString> CLinuxTimezone::GetTimezonesByCountry(const CStdString countr
 
 CStdString CLinuxTimezone::GetCountryByTimezone(const CStdString timezone)
 {
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
    return CStdString("?");
 #else
    return m_countryByCode[m_countriesByTimezoneName[timezone]];
@@ -147,7 +166,7 @@ void CLinuxTimezone::SetTimezone(CStdString timezoneName)
 {
   bool use_timezone = false;
   
-#ifndef __APPLE__ 
+#if !defined(TARGET_DARWIN)
   use_timezone = true;
 #else
   if (g_sysinfo.IsAppleTV2())
@@ -169,14 +188,21 @@ CStdString CLinuxTimezone::GetOSConfiguredTimezone()
 
    // try Slackware approach first
    ssize_t rlrc = readlink("/etc/localtime-copied-from"
-                           , timezoneName, sizeof(timezoneName));
+                           , timezoneName, sizeof(timezoneName)-1);
    if (rlrc != -1)
    {
      timezoneName[rlrc] = '\0';
 
-     const char* p = strrchr(timezoneName+rlrc,'/');
+     char* p = strrchr(timezoneName,'/');
      if (p)
-       p = strrchr(p-1,'/')+1; 
+     { // we want the previous '/'
+       char* q = p;
+       *q = 0;
+       p = strrchr(timezoneName,'/');
+       *q = '/';
+       if (p)
+         p++;
+     }
      return p;
    }
 

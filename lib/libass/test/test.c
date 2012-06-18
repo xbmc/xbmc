@@ -194,6 +194,8 @@ int main(int argc, char *argv[])
     ass_library_done(ass_library);
 
     write_png(imgfile, frame);
+    free(frame->buffer);
+    free(frame);
 
     return 0;
 }

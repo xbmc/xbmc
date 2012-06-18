@@ -24,7 +24,7 @@
 #ifndef WINDOW_SYSTEM_IOSEGL_H
 #define WINDOW_SYSTEM_IOSEGL_H
 
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
 #include "windowing/WinSystem.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
@@ -57,6 +57,7 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
+  virtual int GetNumScreens();    
   
           void InitDisplayLink(void);
           void DeinitDisplayLink(void);
@@ -71,6 +72,11 @@ protected:
   bool         m_bWasFullScreenBeforeMinimize;
   CStdString   m_eglext;
   int          m_iVSyncErrors;
+  
+private:
+  bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
+  void FillInVideoModes();
+  bool SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx);
 };
 
 XBMC_GLOBAL_REF(CWinSystemIOS,g_Windowing);

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,10 +20,10 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "JSONRPC.h"
 #include "JSONUtils.h"
 #include "FileItem.h"
+#include "utils/StdString.h"
 
 namespace JSONRPC
 {
@@ -36,7 +36,7 @@ namespace JSONRPC
 
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
   private:
-    static bool ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder);
+    static bool ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SortOrder &sortorder);
     static void Sort(CFileItemList &items, const CVariant& parameterObject);
   };
 }

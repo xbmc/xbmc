@@ -76,7 +76,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     int zret; // Zlib return code
 
     *p = *pict;
-    p->pict_type= FF_I_TYPE;
+    p->pict_type= AV_PICTURE_TYPE_I;
     p->key_frame= 1;
 
     if(avctx->pix_fmt != PIX_FMT_BGR24){
@@ -171,13 +171,13 @@ static av_cold int encode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_zlib_encoder = {
-    "zlib",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_ZLIB,
-    sizeof(LclEncContext),
-    encode_init,
-    encode_frame,
-    encode_end,
+    .name           = "zlib",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_ZLIB,
+    .priv_data_size = sizeof(LclEncContext),
+    .init           = encode_init,
+    .encode         = encode_frame,
+    .close          = encode_end,
     .pix_fmts = (const enum PixelFormat[]) { PIX_FMT_BGR24, PIX_FMT_NONE },
     .long_name = NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) ZLIB"),
 };

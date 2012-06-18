@@ -117,11 +117,16 @@ void CGUIDialogTeletext::OnInitWindow()
   m_bClose            = false;
   m_windowLoaded      = true;
 
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  m_vertCoords.SetRect((float)g_settings.m_ResInfo[res].Overscan.left,
-                       (float)g_settings.m_ResInfo[res].Overscan.top,
-                       (float)g_settings.m_ResInfo[res].Overscan.right,
-                       (float)g_settings.m_ResInfo[res].Overscan.bottom);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
+  float left = g_graphicsContext.ScaleFinalXCoord(0, 0);
+  float right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth, 0);
+  float top = g_graphicsContext.ScaleFinalYCoord(0, 0);
+  float bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
+
+  m_vertCoords.SetRect(left,
+                       top,
+                       right,
+                       bottom);
 
   if (!m_TextDecoder.InitDecoder())
   {

@@ -26,7 +26,6 @@
 #include "guilib/TextureManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
-#include "SectionLoader.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -50,7 +49,7 @@
 #ifdef _WIN32
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
-#elif defined __APPLE__
+#elif defined(TARGET_DARWIN)
 #include "CocoaInterface.h"
 #endif
 #include "storage/MediaManager.h"
@@ -70,10 +69,11 @@
 
 #include "utils/JobManager.h"
 #include "storage/DetectDVDType.h"
+#include "ThumbLoader.h"
 
 using namespace std;
 
-CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
+CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("CDelayedMessage")
 {
   m_msg.dwMessage  = msg.dwMessage;
   m_msg.dwParam1   = msg.dwParam1;
@@ -331,6 +331,13 @@ case TMSG_POWERDOWN:
               g_application.PlayMedia(*((*list)[0]), playlist);
             else
             {
+              // Handle "shuffled" option if present
+              if (list->HasProperty("shuffled") && list->GetProperty("shuffled").isBoolean())
+                g_playlistPlayer.SetShuffle(playlist, list->GetProperty("shuffled").asBoolean(), false);
+              // Handle "repeat" option if present
+              if (list->HasProperty("repeat") && list->GetProperty("repeat").isInteger())
+                g_playlistPlayer.SetRepeat(playlist, (PLAYLIST::REPEAT_STATE)list->GetProperty("repeat").asInteger(), false);
+
               g_playlistPlayer.Add(playlist, (*list));
               g_playlistPlayer.Play(pMsg->dwParam1);
             }
@@ -497,7 +504,7 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_EXECUTE_OS:
-#if defined( _LINUX) && !defined(__APPLE__)
+#if defined( _LINUX) && !defined(TARGET_DARWIN)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #elif defined(_WIN32)
       CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
@@ -509,7 +516,6 @@ case TMSG_POWERDOWN:
 #ifdef HAS_HTTPAPI
       if (!m_pXbmcHttp)
       {
-        CSectionLoader::Load("LIBHTTP");
         m_pXbmcHttp = new CXbmcHttp();
       }
       switch (m_pXbmcHttp->xbmcCommand(pMsg->strParam))
@@ -707,6 +713,17 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_GUI_MESSAGE:
+      {
+        if (pMsg->lpVoid)
+        {
+          CGUIMessage *message = (CGUIMessage *)pMsg->lpVoid;
+          g_windowManager.SendMessage(*message, pMsg->dwParam1);
+          delete message;
+        }
+      }
+      break;
+
     case TMSG_GUI_INFOLABEL:
       {
         if (pMsg->lpVoid)
@@ -728,23 +745,26 @@ case TMSG_POWERDOWN:
       }
       break;
 
-#ifdef HAS_DVD_DRIVE
     case TMSG_CALLBACK:
       {
         ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
         callback->callback(callback->userptr);
       }
-#endif
+      break;
+
     case TMSG_VOLUME_SHOW:
       {
         CAction action((int)pMsg->dwParam1);
         g_application.ShowVolumeBar(&action);
       }
+      break;
+
     case TMSG_SPLASH_MESSAGE:
       {
         if (g_application.m_splash)
           g_application.m_splash->Show(pMsg->strParam);
       }
+      break;
   }
 }
 
@@ -810,7 +830,7 @@ void CApplicationMessenger::MediaPlay(string filename)
   if (item.IsAudio())
     item.SetMusicThumb();
   else
-    item.SetVideoThumb();
+    CVideoThumbLoader::FillThumb(item);
   item.FillInDefaultIcon();
 
   MediaPlay(item);
@@ -1133,6 +1153,14 @@ void CApplicationMessenger::SendAction(const CAction &action, int windowID, bool
   ThreadMessage tMsg = {TMSG_GUI_ACTION};
   tMsg.dwParam1 = windowID;
   tMsg.lpVoid = new CAction(action);
+  SendMessage(tMsg, waitResult);
+}
+
+void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windowID, bool waitResult)
+{
+  ThreadMessage tMsg = {TMSG_GUI_MESSAGE};
+  tMsg.dwParam1 = windowID == WINDOW_INVALID ? 0 : windowID;
+  tMsg.lpVoid = new CGUIMessage(message);
   SendMessage(tMsg, waitResult);
 }
 

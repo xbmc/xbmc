@@ -33,7 +33,7 @@ CArchive::CArchive(CFile* pFile, int mode)
   m_iMode = mode;
 
   m_pBuffer = new BYTE[BUFFER_MAX];
-  memset(m_pBuffer, 0, sizeof(m_pBuffer));
+  memset(m_pBuffer, 0, BUFFER_MAX);
 
   m_BufferPos = 0;
 }
@@ -265,6 +265,24 @@ CArchive& CArchive::operator<<(const CVariant& variant)
   return *this;
 }
 
+CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
+{
+  *this << (unsigned int)strArray.size();
+  for (unsigned int index = 0; index < strArray.size(); index++)
+    *this << CStdString(strArray.at(index));
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(const std::vector<int>& iArray)
+{
+  *this << (unsigned int)iArray.size();
+  for (unsigned int index = 0; index < iArray.size(); index++)
+    *this << iArray.at(index);
+
+  return *this;
+}
+
 CArchive& CArchive::operator>>(float& f)
 {
   m_pFile->Read((void*)&f, sizeof(float));
@@ -432,6 +450,36 @@ CArchive& CArchive::operator>>(CVariant& variant)
   case CVariant::VariantTypeConstNull:
   default:
     break;
+  }
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
+{
+  int size;
+  *this >> size;
+  strArray.clear();
+  for (int index = 0; index < size; index++)
+  {
+    CStdString str;
+    *this >> str;
+    strArray.push_back(str);
+  }
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(std::vector<int>& iArray)
+{
+  int size;
+  *this >> size;
+  iArray.clear();
+  for (int index = 0; index < size; index++)
+  {
+    int i;
+    *this >> i;
+    iArray.push_back(i);
   }
 
   return *this;

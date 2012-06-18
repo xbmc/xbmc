@@ -31,6 +31,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 #define NUM_ITEMS 10
 
@@ -76,7 +78,7 @@ bool CRecentlyAddedJob::UpdateVideo()
         m_thumbLoader.LoadItem(item.get());
 
       home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
-      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetCachedFanart());
+      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetProperty("fanart_image"));
     }
   } 
   for (; i < NUM_ITEMS; ++i)
@@ -107,10 +109,13 @@ bool CRecentlyAddedJob::UpdateVideo()
       CStdString   EpisodeNo;
       CStdString   value;
       CStdString   strRating;
+      CStdString   strSeason;
       EpisodeNo.Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
       value.Format("%i", i + 1);
       strRating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
-      
+
+      CFileItem show(item->GetVideoInfoTag()->m_strShowPath, true);
+
       home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
       home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , item->GetVideoInfoTag()->m_strTitle);
       home->SetProperty("LatestEpisode." + value + ".Rating"        , strRating);      
@@ -123,8 +128,14 @@ bool CRecentlyAddedJob::UpdateVideo()
       if (!item->HasThumbnail())
         m_thumbLoader.LoadItem(item.get());
 
+      int seasonID = videodatabase.GetSeasonId(item->GetVideoInfoTag()->m_iIdShow, EpisodeSeason);
+      std::string seasonThumb = videodatabase.GetArtForItem(seasonID, "season", "thumb");
+      std::string showThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdShow, "tvshow", "thumb");
+
       home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetThumbnailImage());
-      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
+      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , showThumb);
+      home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
+      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetProperty("fanart_image"));
     }
   } 
   for (; i < NUM_ITEMS; ++i)
@@ -140,6 +151,8 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , "");
     home->SetProperty("LatestEpisode." + value + ".Path"          , "");
     home->SetProperty("LatestEpisode." + value + ".Thumb"         , "");
+    home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , "");
+    home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , "");
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
   }  
 
@@ -159,13 +172,13 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMusicVideo." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
       home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
-      home->SetProperty("LatestMusicVideo." + value + ".Artist"      , item->GetVideoInfoTag()->m_strArtist);
+      home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator));
 
       if (!item->HasThumbnail())
         m_thumbLoader.LoadItem(item.get());
 
       home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetThumbnailImage());
-      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetCachedFanart());
+      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetProperty("fanart_image"));
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -212,7 +225,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       CStdString   strThumb;
       CStdString   strRating;
       CStdString   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
-      CStdString   strArtist = item->GetMusicInfoTag()->GetArtist();
+      CStdString   strArtist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
       
       long idAlbum = musicdatabase.GetAlbumByName(strAlbum,strArtist);
       if (idAlbum != -1)

@@ -1,0 +1,14 @@
+diff --git a/configure b/configure
+index 5e11b2d..c06005b 100755
+--- a/configure
++++ b/configure
+@@ -2635,7 +2635,7 @@ case $target_os in
+         ;;
+     darwin)
+         enable malloc_aligned
+-        gas="gas-preprocessor.pl $cc"
++        #gas="gas-preprocessor.pl $cc"
+         enabled ppc && add_asflags -force_cpusubtype_ALL
+         SHFLAGS='-dynamiclib -Wl,-single_module -Wl,-install_name,$(SHLIBDIR)/$(SLIBNAME),-current_version,$(LIBVERSION),-compatibility_version,$(LIBMAJOR)'
+         enabled x86_32 && append SHFLAGS -Wl,-read_only_relocs,suppress
+

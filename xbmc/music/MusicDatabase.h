@@ -26,9 +26,16 @@
 #include "dbwrappers/Database.h"
 #include "Album.h"
 #include "addons/Scraper.h"
+#include "utils/SortUtils.h"
 
 class CArtist;
 class CFileItem;
+
+namespace dbiplus
+{
+  class field_value;
+  typedef std::vector<field_value> sql_record;
+}
 
 #include <set>
 
@@ -79,6 +86,8 @@ class CFileItemList;
  */
 class CMusicDatabase : public CDatabase
 {
+  friend class DatabaseUtils;
+
   class CArtistCache
   {
   public:
@@ -120,6 +129,7 @@ public:
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
   void AddSong(CSong& song, bool bCheck = true);
+  int UpdateSong(const CSong& song, int idSong = -1);
   int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
   bool DeleteAlbumInfo(int idArtist);
   int SetArtistInfo(int idArtist, const CArtist& artist);
@@ -164,10 +174,14 @@ public:
   bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
+  bool GetArtistsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetRandomSong(CFileItem* item, int& idSong, const CStdString& strWhere);
   int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere = "");
   unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
+
+  bool GetSortedAlbums(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where = "");
+  bool GetSortedSongs(const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const CStdString &where = "");
 
   bool GetAlbumPath(int idAlbum, CStdString &path);
   bool SaveAlbumThumb(int idAlbum, const CStdString &thumb);
@@ -180,6 +194,7 @@ public:
 
   int GetArtistByName(const CStdString& strArtist);
   int GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
+  int GetAlbumByName(const CStdString& strAlbum, const std::vector<std::string>& artist);
   int GetGenreByName(const CStdString& strGenre);
   int GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
@@ -214,7 +229,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 18; };
+  virtual int GetMinVersion() const { return 20; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
@@ -222,10 +237,10 @@ protected:
   int AddArtist(const CStdString& strArtist);
   int AddPath(const CStdString& strPath);
   int AddThumb(const CStdString& strThumb1);
-  void AddExtraAlbumArtists(const CStdStringArray& vecArtists, int idAlbum);
-  void AddExtraSongArtists(const CStdStringArray& vecArtists, int idSong, bool bCheck = true);
+  void AddExtraAlbumArtists(const std::vector<std::string>& vecArtists, int idAlbum);
+  void AddExtraSongArtists(const std::vector<std::string>& vecArtists, int idSong, bool bCheck = true);
   void AddKaraokeData(const CSong& song);
-  void AddExtraGenres(const CStdStringArray& vecGenres, int idSong, int idAlbum, bool bCheck = true);
+  void AddExtraGenres(const std::vector<std::string>& vecGenres, int idSong, int idAlbum, bool bCheck = true);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:
@@ -233,11 +248,13 @@ private:
    */
   virtual void CreateViews();
 
-  void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
+  void SplitString(const CStdString &multiString, std::vector<std::string> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb=true);
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
+  CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL=false);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
+  void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
   bool CleanupPaths();

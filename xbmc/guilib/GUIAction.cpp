@@ -32,6 +32,12 @@ CGUIAction::CGUIAction()
   m_sendThreadMessages = false;
 }
 
+CGUIAction::CGUIAction(int controlID)
+{
+  m_sendThreadMessages = false;
+  SetNavigation(controlID);
+}
+
 bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) const
 {
   if (m_actions.size() == 0) return false;
@@ -105,7 +111,7 @@ bool CGUIAction::HasActionsMeetingCondition() const
 {
   for (ciActions it = m_actions.begin() ; it != m_actions.end() ; it++)
   {
-    if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->action))
+    if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition))
       return true;
   }
   return false;

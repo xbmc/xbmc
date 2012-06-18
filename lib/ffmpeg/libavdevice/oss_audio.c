@@ -37,12 +37,15 @@
 #include <sys/select.h>
 
 #include "libavutil/log.h"
+#include "libavutil/opt.h"
 #include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
+#include "avdevice.h"
+#include "libavformat/internal.h"
 
 #define AUDIO_BLOCK_SIZE 4096
 
 typedef struct {
+    AVClass *class;
     int fd;
     int sample_rate;
     int channels;
@@ -78,13 +81,6 @@ static int audio_open(AVFormatContext *s1, int is_output, const char *audio_devi
         fcntl(audio_fd, F_SETFL, O_NONBLOCK);
 
     s->frame_size = AUDIO_BLOCK_SIZE;
-#if 0
-    tmp = (NB_FRAGMENTS << 16) | FRAGMENT_BITS;
-    err = ioctl(audio_fd, SNDCTL_DSP_SETFRAGMENT, &tmp);
-    if (err < 0) {
-        perror("SNDCTL_DSP_SETFRAGMENT");
-    }
-#endif
 
     /* select format : favour native format */
     err = ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp);
@@ -179,9 +175,7 @@ static int audio_write_packet(AVFormatContext *s1, AVPacket *pkt)
     uint8_t *buf= pkt->data;
 
     while (size > 0) {
-        len = AUDIO_BLOCK_SIZE - s->buffer_ptr;
-        if (len > size)
-            len = size;
+        len = FFMIN(AUDIO_BLOCK_SIZE - s->buffer_ptr, size);
         memcpy(s->buffer + s->buffer_ptr, buf, len);
         s->buffer_ptr += len;
         if (s->buffer_ptr >= AUDIO_BLOCK_SIZE) {
@@ -216,15 +210,10 @@ static int audio_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     AVStream *st;
     int ret;
 
-    if (ap->sample_rate <= 0 || ap->channels <= 0)
-        return -1;
-
-    st = av_new_stream(s1, 0);
+    st = avformat_new_stream(s1, NULL);
     if (!st) {
         return AVERROR(ENOMEM);
     }
-    s->sample_rate = ap->sample_rate;
-    s->channels = ap->channels;
 
     ret = audio_open(s1, 0, s1->filename);
     if (ret < 0) {
@@ -237,7 +226,7 @@ static int audio_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     st->codec->sample_rate = s->sample_rate;
     st->codec->channels = s->channels;
 
-    av_set_pts_info(st, 64, 1, 1000000);  /* 64 bits pts in us */
+    avpriv_set_pts_info(st, 64, 1, 1000000);  /* 64 bits pts in us */
     return 0;
 }
 
@@ -293,33 +282,44 @@ static int audio_read_close(AVFormatContext *s1)
 }
 
 #if CONFIG_OSS_INDEV
+static const AVOption options[] = {
+    { "sample_rate", "", offsetof(AudioData, sample_rate), AV_OPT_TYPE_INT, {.dbl = 48000}, 1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
+    { "channels",    "", offsetof(AudioData, channels),    AV_OPT_TYPE_INT, {.dbl = 2},     1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
+    { NULL },
+};
+
+static const AVClass oss_demuxer_class = {
+    .class_name     = "OSS demuxer",
+    .item_name      = av_default_item_name,
+    .option         = options,
+    .version        = LIBAVUTIL_VERSION_INT,
+};
+
 AVInputFormat ff_oss_demuxer = {
-    "oss",
-    NULL_IF_CONFIG_SMALL("Open Sound System capture"),
-    sizeof(AudioData),
-    NULL,
-    audio_read_header,
-    audio_read_packet,
-    audio_read_close,
-    .flags = AVFMT_NOFILE,
+    .name           = "oss",
+    .long_name      = NULL_IF_CONFIG_SMALL("Open Sound System capture"),
+    .priv_data_size = sizeof(AudioData),
+    .read_header    = audio_read_header,
+    .read_packet    = audio_read_packet,
+    .read_close     = audio_read_close,
+    .flags          = AVFMT_NOFILE,
+    .priv_class     = &oss_demuxer_class,
 };
 #endif
 
 #if CONFIG_OSS_OUTDEV
 AVOutputFormat ff_oss_muxer = {
-    "oss",
-    NULL_IF_CONFIG_SMALL("Open Sound System playback"),
-    "",
-    "",
-    sizeof(AudioData),
+    .name           = "oss",
+    .long_name      = NULL_IF_CONFIG_SMALL("Open Sound System playback"),
+    .priv_data_size = sizeof(AudioData),
     /* XXX: we make the assumption that the soundcard accepts this format */
     /* XXX: find better solution with "preinit" method, needed also in
        other formats */
-    AV_NE(CODEC_ID_PCM_S16BE, CODEC_ID_PCM_S16LE),
-    CODEC_ID_NONE,
-    audio_write_header,
-    audio_write_packet,
-    audio_write_trailer,
-    .flags = AVFMT_NOFILE,
+    .audio_codec    = AV_NE(CODEC_ID_PCM_S16BE, CODEC_ID_PCM_S16LE),
+    .video_codec    = CODEC_ID_NONE,
+    .write_header   = audio_write_header,
+    .write_packet   = audio_write_packet,
+    .write_trailer  = audio_write_trailer,
+    .flags          = AVFMT_NOFILE,
 };
 #endif

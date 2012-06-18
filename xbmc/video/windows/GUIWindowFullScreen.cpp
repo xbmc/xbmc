@@ -55,7 +55,8 @@
 #include "windowing/WindowingFactory.h"
 
 #include <stdio.h>
-#ifdef __APPLE__
+#include <algorithm>
+#if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
 
@@ -107,7 +108,7 @@
 //Progressbar used for buffering status and after seeking
 #define CONTROL_PROGRESS                 23
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 static CLinuxResourceCounter m_resourceCounter;
 #endif
 
@@ -601,6 +602,27 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
       break;
     }
+  case ACTION_VOLAMP_UP:
+  case ACTION_VOLAMP_DOWN:
+    {
+      float sliderMax = VOLUME_DRC_MAXIMUM / 100.0f;
+      float sliderMin = VOLUME_DRC_MINIMUM / 100.0f;
+
+      if (action.GetID() == ACTION_VOLAMP_UP)
+        g_settings.m_currentVideoSettings.m_VolumeAmplification += 1.0f;
+      else
+        g_settings.m_currentVideoSettings.m_VolumeAmplification -= 1.0f;
+
+      g_settings.m_currentVideoSettings.m_VolumeAmplification =
+        std::max(std::min(g_settings.m_currentVideoSettings.m_VolumeAmplification, sliderMax), sliderMin);
+
+      if (g_application.m_pPlayer)
+        g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
+
+      ShowSlider(action.GetID(), 660, g_settings.m_currentVideoSettings.m_VolumeAmplification, sliderMin, 1.0f, sliderMax);
+
+      break;
+    }
   default:
       break;
   }
@@ -802,7 +824,7 @@ void CGUIWindowFullScreen::FrameMove()
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
     {
       CStdString strGeneralFPS;
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
       // We show CPU usage for the entire process, as it's arguably more useful.
       double dCPU = m_resourceCounter.GetCPUUsage();
       CStdString strCores;
@@ -1103,6 +1125,8 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
     strValue.Format("%1.2f",slider->GetFloatValue());
     slider->SetTextValue(strValue);
   }
+  else if (m_sliderAction == ACTION_VOLAMP_UP || m_sliderAction == ACTION_VOLAMP_DOWN)
+    slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDecibel(slider->GetFloatValue(), 1.0f));
   else
     slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
 

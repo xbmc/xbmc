@@ -25,7 +25,7 @@
 #include "music/Artist.h"
 #include "addons/Scraper.h"
 
-class TiXmlDocument;
+class CXBMCTinyXML;
 class CScraperUrl;
 
 namespace MUSIC_GRABBER
@@ -42,7 +42,7 @@ public:
   const CArtist& GetArtist() const { return m_artist; }
   CArtist& GetArtist() { return m_artist; }
   const CScraperUrl& GetArtistURL() const { return m_artistURL; }
-  bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper,
+  bool Load(XFILE::CCurlFile& http, const ADDON::ScraperPtr& scraper,
     const CStdString &strSearch);
 
 protected:

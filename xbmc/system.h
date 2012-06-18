@@ -97,7 +97,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_SDL
 #define HAS_SDL_JOYSTICK
 #define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
@@ -115,7 +114,10 @@
 #define HAS_FILESYSTEM_NFS
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
+#define HAS_AIRTUNES
 #define HAVE_LIBCEC
+#define HAVE_LIBMP3LAME
+#define HAVE_LIBVORBISENC
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
@@ -128,7 +130,6 @@
   #if defined(TARGET_DARWIN_OSX)
     #define HAS_GL
     #define HAS_SDL
-    #define HAS_SDL_AUDIO
     #define HAS_SDL_OPENGL
     #define HAS_SDL_WIN_EVENTS
   #endif
@@ -140,7 +141,7 @@
  * Linux Specific
  *****************/
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
 #if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
 #define HAS_ZEROCONF
 #define HAS_AVAHI
@@ -158,7 +159,6 @@
 #ifndef HAS_SDL_OPENGL
 #define HAS_SDL_OPENGL
 #endif
-#define HAS_SDL_AUDIO
 #define HAS_SDL_WIN_EVENTS
 #endif
 #define HAS_LINUX_NETWORK
@@ -168,6 +168,9 @@
 #endif
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
+#endif
+#ifdef HAVE_ALSA
+#define HAS_ALSA
 #endif
 #endif
 
@@ -220,14 +223,6 @@
 #include "PlatformInclude.h"
 #endif
 
-// ARM does not support certain features... disable them here!
-#ifdef _ARMEL
-#undef HAS_AVAHI
-#undef HAS_ZEROCONF
-#undef HAS_VISUALISATION
-#undef HAS_FILESYSTEM_HTSP
-#endif
-
 // EGL detected. Dont use GLX!
 #ifdef HAVE_LIBEGL
 #undef HAS_GLX
@@ -244,32 +239,6 @@
 #ifdef HAVE_LIBGLES
 #undef HAS_GL
 #define HAS_GLES 1
-#endif
-
-
-#ifdef HAS_GL
-#if defined(TARGET_WINDOWS)
-#include "GL/glew.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
-//#include <GL/wglext.h>
-#elif defined(TARGET_DARWIN)
-#include <GL/glew.h>
-#include <OpenGL/gl.h>
-#elif defined(TARGET_LINUX)
-#include <GL/glew.h>
-#include <GL/gl.h>
-#endif
-#endif
-
-#if HAS_GLES == 2
-  #if defined(TARGET_DARWIN)
-    #include <OpenGLES/ES2/gl.h>
-    #include <OpenGLES/ES2/glext.h>
-  #else
-    #include <GLES2/gl2.h>
-    #include <GLES2/gl2ext.h>
-  #endif
 #endif
 
 #ifdef HAS_DVD_DRIVE

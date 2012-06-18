@@ -10,7 +10,7 @@ else
 endif
 
 all: 
-	xcodebuild -sdk macosx10.4 -configuration $(CONFIGURATION)
+	xcodebuild -configuration $(CONFIGURATION)
 
 clean:
 	xcodebuild clean -configuration $(CONFIGURATION)

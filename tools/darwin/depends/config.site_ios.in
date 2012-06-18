@@ -1,23 +1,38 @@
-host_alias=arm-apple-darwin10
+case @use_xcode@ in
+  3.*.*)
+    platform_cc=gcc-4.2
+    platform_cpp=cpp-4.2
+    platform_cxx=g++-4.2
+    ;;
+  *)
+    platform_cc=llvm-gcc-4.2
+    platform_cpp="llvm-gcc-4.2 -E"
+    platform_cxx=llvm-g++-4.2
+    ;;
+esac
+platform_gnu=gnu99
 platform_gcc_version=4.2
 platform_sdk_version=@use_sdk@
+platform_min_version="iphoneos-version-min=4.2"
+
+host_alias=arm-apple-darwin10
+
 cross_compiling=yes
 
-platform_min_version="iphoneos-version-min=4.1"
-platform_path="/Developer/Platforms/iPhoneOS.platform/Developer"
+platform_path="@use_xcodepath@/Platforms/iPhoneOS.platform/Developer"
 platform_os_cflags="-arch @use_arch@ -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -O3 -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
 platform_os_ldflags="-arch @use_arch@ -mcpu=cortex-a8"
-platform_sdk_path="${platform_path}/SDKs/iPhoneOS${platform_sdk_version}.sdk"
+platform_sdk_path=@use_sdk_path@
 
 export NM=${platform_path}/usr/bin/nm
-export CPP=${platform_path}/usr/bin/cpp-${platform_gcc_version}
+export CPP=${platform_path}/usr/bin/${platform_cpp}
 export CXXCPP=${CPP}
 export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
-export CC=${platform_path}/usr/bin/gcc-${platform_gcc_version}
+export CC=${platform_path}/usr/bin/${platform_cc}
 export CFLAGS="${CFLAGS} -std=gnu99 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags} -I${platform_sdk_path}/usr/include"
 export LD=${platform_path}/usr/bin/ld
 export LDFLAGS="${LDFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} -L${platform_sdk_path}/usr/lib -L${platform_sdk_path}/usr/lib/system ${platform_os_ldflags} -L${prefix}/lib"
-export CXX=${platform_path}/usr/bin/g++-${platform_gcc_version}
+export CXX=${platform_path}/usr/bin/${platform_cxx}
 export CXXFLAGS="${CXXFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export AR=${platform_path}/usr/bin/ar
 export AS="@use_toolchain@/bin/gas-preprocessor.pl ${CC}"
@@ -25,7 +40,7 @@ export M4=@use_toolchain@/bin/m4
 export CCAS="--tag CC @use_toolchain@/bin/gas-preprocessor.pl ${CC}"
 export STRIP=${platform_path}/usr/bin/strip
 export RANLIB=${platform_path}/usr/bin/ranlib
-export ACLOCAL="@use_toolchain@/bin/aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal -I /Developer/usr/share/aclocal"
+export ACLOCAL="@use_toolchain@/bin/aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal"
 export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
@@ -104,4 +119,12 @@ fi
 if test "${PACKAGE_NAME}" = "libjpeg-turbo" ; then
   export CCAS="${AS}"
   export CFLAGS="${CFLAGS} -fexceptions"
+fi
+
+# tweaks for libffi (ios must use llvm-gcc-4.2)
+if test "${PACKAGE_NAME}" = "libffi" ; then
+  export CC="${platform_path}/usr/bin/llvm-gcc-4.2"
+  export CPP="${platform_path}/usr/bin/llvm-gcc-4.2 -E"
+  unset AS
+  unset CCAS
 fi

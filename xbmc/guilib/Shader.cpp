@@ -22,11 +22,16 @@
 #include "system.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
+
+#include "Shader.h"
 #include "settings/Settings.h"
 #include "filesystem/File.h"
-#include "Shader.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+
+#ifdef HAS_GLES
+#define GLchar char
+#endif
 
 #define LOG_SIZE 1024
 
@@ -49,12 +54,7 @@ bool CShader::LoadSource(const string& filename, const string& prefix)
     CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
     return false;
   }
-#ifdef _ARMEL
-  CLog::Log(LOGDEBUG, "Shader - Loading shader file %s", filename.c_str());
-  m_source.assign(file.ReadFile());
-#else
   getline(file, m_source, '\0');
-#endif
   m_source.insert(0, prefix);
   return true;
 }

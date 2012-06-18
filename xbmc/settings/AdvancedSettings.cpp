@@ -41,6 +41,7 @@ using namespace XFILE;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+  m_initialized = false;
 }
 
 void CAdvancedSettings::Initialize()
@@ -49,6 +50,12 @@ void CAdvancedSettings::Initialize()
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
+  m_audioResample = 0;
+  m_allowTranscode44100 = false;
+  m_audioForceDirectSound = false;
+  m_audioAudiophile = false;
+  m_allChannelStereo = false;
+  m_audioSinkBufferDurationMsec = 50;
 
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
   m_limiterHold = 0.025f;
@@ -99,6 +106,9 @@ void CAdvancedSettings::Initialize()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_DXVAForceProcessorRenderer = true;
+  m_DXVANoDeintProcForProgressive = false;
+  m_videoFpsDetect = 1;
+  m_videoDefaultLatency = 0.0;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -109,7 +119,6 @@ void CAdvancedSettings::Initialize()
   m_musicPercentSeekBackward = -1;
   m_musicPercentSeekForwardBig = 10;
   m_musicPercentSeekBackwardBig = -10;
-  m_musicResample = 0;
 
   m_slideshowPanAmount = 2.5f;
   m_slideshowZoomAmount = 5.0f;
@@ -207,7 +216,9 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryExportAutoThumbs = false;
   m_bVideoLibraryImportWatchedState = false;
+  m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
+  m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
   m_iTuxBoxStreamtsPort = 31339;
   m_bTuxBoxAudioChannelSelection = false;
@@ -261,7 +272,7 @@ void CAdvancedSettings::Initialize()
 
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   // default for osx is fullscreen always on top
   m_alwaysOnTop = true;
 #else
@@ -287,6 +298,7 @@ void CAdvancedSettings::Initialize()
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
+  m_initialized = true;
 }
 
 bool CAdvancedSettings::Load()
@@ -304,7 +316,7 @@ bool CAdvancedSettings::Load()
 
 void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 {
-  TiXmlDocument advancedXML;
+  CXBMCTinyXML advancedXML;
   if (!CFile::Exists(file))
   {
     CLog::Log(LOGNOTICE, "No settings file to load (%s)", file.c_str());
@@ -354,7 +366,13 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "percentseekforwardbig", m_musicPercentSeekForwardBig, 0, 100);
     XMLUtils::GetInt(pElement, "percentseekbackwardbig", m_musicPercentSeekBackwardBig, -100, 0);
 
-    XMLUtils::GetInt(pElement, "resample", m_musicResample, 0, 192000);
+    XMLUtils::GetInt(pElement, "resample", m_audioResample, 0, 192000);
+    XMLUtils::GetBoolean(pElement, "allowtranscode44100", m_allowTranscode44100);
+    XMLUtils::GetBoolean(pElement, "forceDirectSound", m_audioForceDirectSound);
+    XMLUtils::GetBoolean(pElement, "audiophile", m_audioAudiophile);
+    XMLUtils::GetBoolean(pElement, "allchannelstereo", m_allChannelStereo);
+    XMLUtils::GetString(pElement, "transcodeto", m_audioTranscodeTo);
+    XMLUtils::GetInt(pElement, "audiosinkbufferdurationmsec", m_audioSinkBufferDurationMsec);
 
     TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pAudioExcludes)
@@ -537,6 +555,46 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
     XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
+    XMLUtils::GetBoolean(pElement,"dxvanodeintforprogressive", m_DXVANoDeintProcForProgressive);
+    //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
+    XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
+
+    // Store global display latency settings
+    TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
+    if (pVideoLatency)
+    {
+      float refresh, refreshmin, refreshmax, delay;
+      TiXmlElement* pRefreshVideoLatency = pVideoLatency->FirstChildElement("refresh");
+
+      while (pRefreshVideoLatency)
+      {
+        RefreshVideoLatency videolatency = {0};
+
+        if (XMLUtils::GetFloat(pRefreshVideoLatency, "rate", refresh))
+        {
+          videolatency.refreshmin = refresh - 0.01f;
+          videolatency.refreshmax = refresh + 0.01f;
+        }
+        else if (XMLUtils::GetFloat(pRefreshVideoLatency, "min", refreshmin) &&
+                 XMLUtils::GetFloat(pRefreshVideoLatency, "max", refreshmax))
+        {
+          videolatency.refreshmin = refreshmin;
+          videolatency.refreshmax = refreshmax;
+        }
+        if (XMLUtils::GetFloat(pRefreshVideoLatency, "delay", delay, -600.0f, 600.0f))
+          videolatency.delay = delay;
+
+        if (videolatency.refreshmin > 0.0f && videolatency.refreshmax >= videolatency.refreshmin)
+          m_videoRefreshLatency.push_back(videolatency);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed display latency <refresh> entry, min:%f max:%f", videolatency.refreshmin, videolatency.refreshmax);
+
+        pRefreshVideoLatency = pRefreshVideoLatency->NextSiblingElement("refresh");
+      }
+
+      // Get default global display latency
+      XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
+    }
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -564,6 +622,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
+    XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
+    XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
@@ -656,7 +716,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
@@ -791,7 +851,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       CStdString strFrom, strTo;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom)
-        strFrom = _P(pFrom->FirstChild()->Value()).c_str();
+        strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
       TiXmlNode* pTo = pSubstitute->FirstChild("to");
       if (pTo)
         strTo = pTo->FirstChild()->Value();
@@ -961,6 +1021,7 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
     if (pRegExp->FirstChild())
     {
       bool bByDate = false;
+      int iDefaultSeason = 1;
       if (pRegExp->ToElement())
       {
         CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
@@ -968,13 +1029,18 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
         {
           bByDate = true;
         }
+        CStdString defaultSeason = pRegExp->ToElement()->Attribute("defaultseason");
+        if(!defaultSeason.empty())
+        {
+          iDefaultSeason = atoi(defaultSeason.c_str());
+        }
       }
       CStdString regExp = pRegExp->FirstChild()->Value();
       regExp.MakeLower();
       if (iAction == 2)
-        settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp));
+        settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp,iDefaultSeason));
       else
-        settings.push_back(TVShowRegexp(bByDate,regExp));
+        settings.push_back(TVShowRegexp(bByDate,regExp,iDefaultSeason));
     }
     pRegExp = pRegExp->NextSibling("regexp");
   }
@@ -1045,4 +1111,17 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
 void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
 {
   m_settingsFiles.push_back(filename);
+}
+
+float CAdvancedSettings::GetDisplayLatency(float refreshrate)
+{
+  float delay = m_videoDefaultLatency / 1000.0f;
+  for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)
+  {
+    RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];
+    if (refreshrate >= videolatency.refreshmin && refreshrate <= videolatency.refreshmax)
+      delay = videolatency.delay / 1000.0f;
+  }
+
+  return delay; // in seconds
 }

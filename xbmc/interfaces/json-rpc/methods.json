@@ -42,7 +42,9 @@
         "UpdateData": { "type": "boolean", "required": true },
         "RemoveData": { "type": "boolean", "required": true },
         "Navigate": { "type": "boolean", "required": true },
-        "WriteFile": { "type": "boolean", "required": true }
+        "WriteFile": { "type": "boolean", "required": true },
+        "ControlSystem": { "type": "boolean", "required": true },
+        "ControlGUI": { "type": "boolean", "required": true }
       }
     }
   },
@@ -75,6 +77,7 @@
           "System": { "$ref": "Optional.Boolean" },
           "AudioLibrary": { "$ref": "Optional.Boolean" },
           "VideoLibrary": { "$ref": "Optional.Boolean" },
+          "Application": { "$ref": "Optional.Boolean" },
           "Other": { "$ref": "Optional.Boolean" }
         }
       }
@@ -99,7 +102,7 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "item", 
+      { "name": "item",
         "type": [
           { "type": "object", "required": true, "additionalProperties": false,
             "properties": {
@@ -111,11 +114,24 @@
           { "type": "object", "required": true, "additionalProperties": false,
             "properties": {
               "path": { "type": "string", "required": true },
-              "random": { "type": "boolean", "default": true },
+              "random": { "type": "boolean", "default": true, "description": "Deprecated, use the shuffled property of the options parameter instead" },
               "recursive": { "type": "boolean", "default": true }
             }
           }
         ]
+      },
+      { "name": "options", "type": "object", "additionalProperties": false,
+        "properties": {
+          "shuffled": { "$ref": "Optional.Boolean" },
+          "repeat": { "type": [ "null", { "$ref": "Player.Repeat", "required": true } ], "default": null },
+          "resume": { "type": [
+              { "type": "boolean", "required": true, "description": "Whether to resume from the resume point or not" },
+              { "$ref": "Player.Position.Percentage", "required": true, "description": "Percentage value to start from" },
+              { "$ref": "Player.Position.Time", "required": true, "description": "Time to start from" }
+            ],
+            "default": false
+          }
+        }
       }
     ],
     "returns": "string"
@@ -129,7 +145,7 @@
     "returns": {
       "type": "array",
       "uniqueItems": true,
-      "items": { 
+      "items": {
         "type": "object",
         "properties": {
           "playerid": { "$ref": "Player.Id", "required": true },
@@ -170,7 +186,8 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "play", "$ref": "Global.Toggle", "default": "toggle" }
     ],
     "returns": { "$ref": "Player.Speed" }
   },
@@ -193,7 +210,7 @@
       { "name": "playerid", "$ref": "Player.Id", "required": true },
       { "name": "speed", "type": [
           { "type": "integer", "required": true, "enum": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32 ] },
-          { "type": "string", "required": true, "enum": [ "increment", "decrement" ] } 
+          { "$ref": "Global.IncrementDecrement", "required": true }
         ],
         "required": true
       }
@@ -209,14 +226,7 @@
       { "name": "playerid", "$ref": "Player.Id", "required": true },
       { "name": "value", "required": true, "type": [
           { "$ref": "Player.Position.Percentage", "required": true, "description": "Percentage value to seek to" },
-          { "type": "object", "additionalProperties": false, "required": true, "description": "Time to seek to",
-            "properties": {
-              "hours": { "type": "integer", "minimum": 0, "maximum": 23 },
-              "minutes": { "type": "integer", "minimum": 0, "maximum": 59 },
-              "seconds": { "type": "integer", "minimum": 0, "maximum": 59 },
-              "milliseconds": { "type": "integer", "minimum": 0, "maximum": 999 }
-            }
-          },
+          { "$ref": "Player.Position.Time", "required": true, "description": "Time to seek to" },
           { "type": "string", "enum": [ "smallforward", "smallbackward", "bigforward", "bigbackward" ], "required": true, "description": "Seek by predefined jumps" }
         ]
       }
@@ -399,7 +409,8 @@
           { "type": "string", "enum": [ "previous", "next", "off", "on" ] },
           { "type": "integer", "minimum": 0, "description": "Index of the subtitle to display" }
         ]
-      }
+      },
+      { "name": "enable", "type": "boolean", "default": false, "description": "Whether to enable subtitles to be displayed after setting the new subtitle" }
     ],
     "returns": "string"
   },
@@ -412,7 +423,7 @@
     "returns": {
       "type": "array",
       "uniqueItems": true,
-      "items": { 
+      "items": {
         "type": "object",
         "properties": {
           "playlistid": { "$ref": "Playlist.Id", "required": true },
@@ -559,7 +570,7 @@
     "params": [
       { "name": "directory", "type": "string", "required": true },
       { "name": "media", "$ref": "Files.Media", "default": "files" },
-      { "name": "properties", "$ref": "List.Fields.All" },
+      { "name": "properties", "$ref": "List.Fields.Files" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": {
@@ -723,6 +734,46 @@
       }
     }
   },
+    "AudioLibrary.GetRecentlyPlayedAlbums": {
+    "type": "method",
+    "description": "Retrieve recently played albums",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Audio.Fields.Album" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "albums": { "type": "array",
+          "items": { "$ref": "Audio.Details.Album" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetRecentlyPlayedSongs": {
+    "type": "method",
+    "description": "Retrieve recently played songs",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Audio.Fields.Song" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "songs": { "type": "array",
+          "items": { "$ref": "Audio.Details.Song" }
+        }
+      }
+    }
+  },
   "AudioLibrary.GetGenres": {
     "type": "method",
     "description": "Retrieve all genres",
@@ -743,12 +794,80 @@
       }
     }
   },
+  "AudioLibrary.SetArtistDetails": {
+    "type": "method",
+    "description": "Update the given artist with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "artistid", "$ref": "Library.Id", "required": true },
+      { "name": "artist", "$ref": "Optional.String" },
+      { "name": "instrument", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "style", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "mood", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "born", "$ref": "Optional.String" },
+      { "name": "formed", "$ref": "Optional.String" },
+      { "name": "description", "$ref": "Optional.String" },
+      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "died", "$ref": "Optional.String" },
+      { "name": "disbanded", "$ref": "Optional.String" },
+      { "name": "yearsactive", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
+    ],
+    "returns": "string"
+  },
+  "AudioLibrary.SetAlbumDetails": {
+    "type": "method",
+    "description": "Update the given album with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "albumid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "description", "$ref": "Optional.String" },
+      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "theme", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "mood", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "style", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "type", "$ref": "Optional.String" },
+      { "name": "albumlabel", "$ref": "Optional.String" },
+      { "name": "rating", "$ref": "Optional.Integer" },
+      { "name": "year", "$ref": "Optional.Integer" }
+    ],
+    "returns": "string"
+  },
+  "AudioLibrary.SetSongDetails": {
+    "type": "method",
+    "description": "Update the given song with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "songid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "albumartist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "year", "$ref": "Optional.Integer" },
+      { "name": "rating", "$ref": "Optional.Integer" },
+      { "name": "album", "$ref": "Optional.String" },
+      { "name": "track", "$ref": "Optional.Integer" },
+      { "name": "duration", "$ref": "Optional.Integer" },
+      { "name": "comment", "$ref": "Optional.String" },
+      { "name": "musicbrainztrackid", "$ref": "Optional.String" },
+      { "name": "musicbrainzartistid", "$ref": "Optional.String" },
+      { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
+      { "name": "musicbrainzalbumartistid", "$ref": "Optional.String" }
+    ],
+    "returns": "string"
+  },
   "AudioLibrary.Scan": {
     "type": "method",
     "description": "Scans the audio sources for new library items",
     "transport": "Response",
     "permission": "UpdateData",
-    "params": [],
+    "params": [
+      { "name": "directory", "type": "string", "default": "" }
+    ],
     "returns": "string"
   },
   "AudioLibrary.Export": {
@@ -1062,12 +1181,158 @@
       }
     }
   },
+  "VideoLibrary.SetMovieDetails": {
+    "type": "method",
+    "description": "Update the given movie with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "movieid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "playcount", "$ref": "Optional.Integer" },
+      { "name": "runtime", "$ref": "Optional.String" },
+      { "name": "director", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "studio", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "year", "$ref": "Optional.Integer" },
+      { "name": "plot", "$ref": "Optional.String" },
+      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "rating", "$ref": "Optional.Number" },
+      { "name": "mpaa", "$ref": "Optional.String" },
+      { "name": "imdbnumber", "$ref": "Optional.String" },
+      { "name": "votes", "$ref": "Optional.String" },
+      { "name": "lastplayed", "$ref": "Optional.String" },
+      { "name": "originaltitle", "$ref": "Optional.String" },
+      { "name": "trailer", "$ref": "Optional.String" },
+      { "name": "tagline", "$ref": "Optional.String" },
+      { "name": "plotoutline", "$ref": "Optional.String" },
+      { "name": "writer", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "country", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "top250", "$ref": "Optional.Integer" },
+      { "name": "sorttitle", "$ref": "Optional.String" },
+      { "name": "set", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "showlink", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.SetTVShowDetails": {
+    "type": "method",
+    "description": "Update the given tvshow with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "tvshowid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "playcount", "$ref": "Optional.Integer" },
+      { "name": "studio", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "year", "$ref": "Optional.Integer" },
+      { "name": "plot", "$ref": "Optional.String" },
+      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "rating", "$ref": "Optional.Number" },
+      { "name": "mpaa", "$ref": "Optional.String" },
+      { "name": "imdbnumber", "$ref": "Optional.String" },
+      { "name": "premiered", "$ref": "Optional.String" },
+      { "name": "votes", "$ref": "Optional.String" },
+      { "name": "lastplayed", "$ref": "Optional.String" },
+      { "name": "originaltitle", "$ref": "Optional.String" },
+      { "name": "sorttitle", "$ref": "Optional.String" },
+      { "name": "episodeguide", "$ref": "Optional.String" }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.SetEpisodeDetails": {
+    "type": "method",
+    "description": "Update the given episode with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "episodeid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "playcount", "$ref": "Optional.Integer" },
+      { "name": "runtime", "$ref": "Optional.String" },
+      { "name": "director", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "plot", "$ref": "Optional.String" },
+      { "name": "rating", "$ref": "Optional.Number" },
+      { "name": "votes", "$ref": "Optional.String" },
+      { "name": "lastplayed", "$ref": "Optional.String" },
+      { "name": "writer", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "firstaired", "$ref": "Optional.String" },
+      { "name": "productioncode", "$ref": "Optional.String" },
+      { "name": "season", "$ref": "Optional.Integer" },
+      { "name": "episode", "$ref": "Optional.Integer" },
+      { "name": "originaltitle", "$ref": "Optional.String" }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.SetMusicVideoDetails": {
+    "type": "method",
+    "description": "Update the given music video with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "musicvideoid", "$ref": "Library.Id", "required": true },
+      { "name": "title", "$ref": "Optional.String" },
+      { "name": "playcount", "$ref": "Optional.Integer" },
+      { "name": "runtime", "$ref": "Optional.String" },
+      { "name": "director", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "studio", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "year", "$ref": "Optional.Integer" },
+      { "name": "plot", "$ref": "Optional.String" },
+      { "name": "album", "$ref": "Optional.String" },
+      { "name": "artist", "type": [ "null", { "$ref": "Array.String", "required": true } ] },
+      { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
+      { "name": "track", "$ref": "Optional.Integer" },
+      { "name": "lastplayed", "$ref": "Optional.String" }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RemoveMovie": {
+    "type": "method",
+    "description": "Removes the given movie from the library",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [
+      { "name": "movieid", "$ref": "Library.Id", "required": true }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RemoveTVShow": {
+    "type": "method",
+    "description": "Removes the given tv show from the library",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [
+      { "name": "tvshowid", "$ref": "Library.Id", "required": true }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RemoveEpisode": {
+    "type": "method",
+    "description": "Removes the given episode from the library",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [
+      { "name": "episodeid", "$ref": "Library.Id", "required": true }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RemoveMusicVideo": {
+    "type": "method",
+    "description": "Removes the given music video from the library",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [
+      { "name": "musicvideoid", "$ref": "Library.Id", "required": true }
+    ],
+    "returns": "string"
+  },
   "VideoLibrary.Scan": {
     "type": "method",
     "description": "Scans the video sources for new library items",
     "transport": "Response",
     "permission": "UpdateData",
-    "params": [],
+    "params": [
+      { "name": "directory", "type": "string", "default": "" }
+    ],
     "returns": "string"
   },
   "VideoLibrary.Export": {
@@ -1102,6 +1367,43 @@
     "params": [ ],
     "returns": "string"
   },
+  "GUI.ShowNotification": {
+    "type": "method",
+    "description": "Shows a GUI notification",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      { "name": "title", "type": "string", "required": true },
+      { "name": "message", "type": "string", "required": true },
+      { "name": "image", "type": [
+          { "type": "string", "required": true, "enum": [ "info", "warning", "error" ] },
+          { "type": "string", "required": true }
+        ], "default": ""
+      },
+      { "name": "displaytime", "type": "integer", "minimum": 1500, "default": 5000, "description": "The time in milliseconds the notification will be visible" }
+    ],
+    "returns":  { "$ref": "System.Property.Value", "required": true }
+  },
+  "GUI.GetProperties": {
+    "type": "method",
+    "description": "Retrieves the values of the given properties",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "GUI.Property.Name" } }
+    ],
+    "returns":  { "$ref": "GUI.Property.Value", "required": true }
+  },
+  "GUI.SetFullscreen": {
+    "type": "method",
+    "description": "Toggle fullscreen/GUI",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      { "name": "fullscreen", "required": true, "$ref": "Global.Toggle" }
+    ],
+    "returns": { "type": "boolean", "description": "Fullscreen state" }
+  },
   "System.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the given properties",
@@ -1111,6 +1413,14 @@
       { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "System.Property.Name" } }
     ],
     "returns":  { "$ref": "System.Property.Value", "required": true }
+  },
+  "System.EjectOpticalDrive": {
+    "type": "method",
+    "description": "Ejects or closes the optical disc drive (if available)",
+    "transport": "Response",
+    "permission": "ControlSystem",
+    "params": [ ],
+    "returns":  "string"
   },
   "System.Shutdown": {
     "type": "method",
@@ -1192,6 +1502,22 @@
     "params": [],
     "returns": "string"
   },
+  "Input.ContextMenu": {
+    "type": "method",
+    "description": "Shows the context menu",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
+  "Input.Info": {
+    "type": "method",
+    "description": "Shows the information dialog",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
   "Input.Home": {
     "type": "method",
     "description": "Goes to home window in GUI",
@@ -1216,7 +1542,12 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "volume", "type": "integer", "minimum": 0, "maximum": 100, "required": true }
+      { "name": "volume", "type": [
+          { "type": "integer", "minimum": 0, "maximum": 100, "required": true },
+          { "$ref": "Global.IncrementDecrement", "required": true }
+        ],
+        "required": true
+      }
     ],
     "returns": "integer"
   },
@@ -1226,11 +1557,7 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "mute", "required": true, "type": [
-          { "type": "boolean", "required": true },
-          { "type": "string", "enum": [ "toggle" ], "required": true }
-        ]
-      }
+      { "name": "mute", "required": true, "$ref": "Global.Toggle" }
     ],
     "returns": { "type": "boolean", "description": "Mute state" }
   },

@@ -73,7 +73,8 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 2;
   m_SampleRate = 44100;
   m_BitsPerSample = 16;
-  m_TotalTime = (__int64)(m_dll.ModPlug_GetLength(m_module));
+  m_DataFormat = AE_FMT_S16NE;
+  m_TotalTime = (int64_t)(m_dll.ModPlug_GetLength(m_module));
 
   return true;
 }
@@ -85,7 +86,7 @@ void ModplugCodec::DeInit()
   m_module = NULL;
 }
 
-__int64 ModplugCodec::Seek(__int64 iSeekTime)
+int64_t ModplugCodec::Seek(int64_t iSeekTime)
 {
   m_dll.ModPlug_Seek(m_module, (int)iSeekTime);
   return iSeekTime;

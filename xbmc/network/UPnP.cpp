@@ -50,6 +50,7 @@
 #include "settings/GUISettings.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
@@ -57,6 +58,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/md5.h"
 #include "guilib/Key.h"
+#include "ThumbLoader.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -221,7 +223,7 @@ class CUPnPServer : public PLT_MediaConnect
 {
 public:
     CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0) :
-        PLT_MediaConnect("", friendly_name, true, uuid, port) {
+        PLT_MediaConnect("", friendly_name, false, uuid, port) {
         // hack: override path to make sure it's empty
         // urls will contain full paths to local files
         m_Path = "";
@@ -459,16 +461,21 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
     if (!tag.GetURL().IsEmpty() && file_path)
       *file_path = tag.GetURL();
 
-    object.m_Affiliation.genre = NPT_String(tag.GetGenre().c_str()).Split(" / ");
+    std::vector<std::string> genres = tag.GetGenre();
+    for (unsigned int index = 0; index < genres.size(); index++)
+      object.m_Affiliation.genre.Add(genres.at(index).c_str());
     object.m_Title = tag.GetTitle();
     object.m_Affiliation.album = tag.GetAlbum();
-    object.m_People.artists.Add(tag.GetArtist().c_str());
-    object.m_People.artists.Add(tag.GetArtist().c_str(), "Performer");
-    object.m_People.artists.Add(!tag.GetAlbumArtist().empty()?tag.GetAlbumArtist().c_str():tag.GetArtist().c_str(), "AlbumArtist");
-    if(tag.GetAlbumArtist().IsEmpty())
-        object.m_Creator = tag.GetArtist();
+    for (unsigned int index = 0; index < tag.GetArtist().size(); index++)
+    {
+      object.m_People.artists.Add(tag.GetArtist().at(index).c_str());
+      object.m_People.artists.Add(tag.GetArtist().at(index).c_str(), "Performer");
+    }
+    object.m_People.artists.Add(StringUtils::Join(!tag.GetAlbumArtist().empty() ? tag.GetAlbumArtist() : tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str(), "AlbumArtist");
+    if(tag.GetAlbumArtist().empty())
+        object.m_Creator = StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
     else
-        object.m_Creator = tag.GetAlbumArtist();
+        object.m_Creator = StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
     if(tag.GetDatabaseId() >= 0) {
       object.m_ReferenceID = NPT_String::Format("musicdb://4/%i%s", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL()).c_str());
@@ -498,9 +505,9 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
       *file_path = tag.m_strFileNameAndPath;
 
     if (tag.m_iDbId != -1 ) {
-        if (!tag.m_strArtist.IsEmpty()) {
+        if (!tag.m_artist.empty()) {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
-          object.m_Creator = tag.m_strArtist;
+          object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://3/2/%i", tag.m_iDbId);
         } else if (!tag.m_strShowTitle.IsEmpty()) {
@@ -511,7 +518,7 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
           object.m_Recorded.series_title = tag.m_strShowTitle;
           object.m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
-          object.m_Date = tag.m_strFirstAired;
+          object.m_Date = tag.m_firstAired.GetAsLocalizedDate();
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
         } else {
@@ -528,14 +535,16 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
-    object.m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
+    for (unsigned int index = 0; index < tag.m_genre.size(); index++)
+      object.m_Affiliation.genre.Add(tag.m_genre.at(index).c_str());
 
     for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
 
-    object.m_People.director = tag.m_strDirector;
-    object.m_People.authors.Add(tag.m_strWritingCredits.c_str());
+    object.m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);
+    for (unsigned int index = 0; index < tag.m_writingCredits.size(); index++)
+      object.m_People.authors.Add(tag.m_writingCredits[index].c_str());
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
@@ -677,9 +686,9 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                       CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
                       if (tag) {
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(tag->GetArtist()).c_str(), "Performer");
+                              CorrectAllItemsSortHack(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "Performer");
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():tag->GetArtist()).c_str(), "AlbumArtist");
+                              CorrectAllItemsSortHack(StringUtils::Join(!tag->GetAlbumArtist().empty() ? tag->GetAlbumArtist() : tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "AlbumArtist");
                       }
 #ifdef WMP_ID_MAPPING
                       // Some upnp clients expect all artists to have parent root id 107
@@ -696,9 +705,9 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                       CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
                       if (tag) {
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(tag->GetArtist()).c_str(), "Performer");
+                              CorrectAllItemsSortHack(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "Performer");
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():tag->GetArtist()).c_str(), "AlbumArtist");
+                              CorrectAllItemsSortHack(StringUtils::Join(!tag->GetAlbumArtist().empty() ? tag->GetAlbumArtist() : tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "AlbumArtist");
                           container->m_Affiliation.album = CorrectAllItemsSortHack(tag->GetAlbum()).c_str();
                       }
 #ifdef WMP_ID_MAPPING
@@ -722,7 +731,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
                   container->m_ObjectClass.type += ".person.videoArtist";
-                  container->m_Creator = tag.m_strArtist;
+                  container->m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
                   container->m_Title   = tag.m_strTitle;
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS:
@@ -734,19 +743,21 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   container->m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
                   container->m_Title = container->m_Recorded.series_title + " - " + container->m_Recorded.program_title;
                   container->m_Title = tag.m_strTitle;
-                  if(tag.m_strFirstAired.IsEmpty() && tag.m_iYear)
+                  if(!tag.m_firstAired.IsValid() && tag.m_iYear)
                     container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
                   else
-                    container->m_Date = tag.m_strFirstAired;
+                    container->m_Date = tag.m_firstAired.GetAsLocalizedDate();
 
-                  container->m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
+                  for (unsigned int index = 0; index < tag.m_genre.size(); index++)
+                    container->m_Affiliation.genre.Add(tag.m_genre.at(index).c_str());
 
                   for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
                       container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
                   }
 
-                  container->m_People.director = tag.m_strDirector;
-                  container->m_People.authors.Add(tag.m_strWritingCredits.c_str());
+                  container->m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);;
+                  for (unsigned int index = 0; index < tag.m_writingCredits.size(); index++)
+                    container->m_People.authors.Add(tag.m_writingCredits[index].c_str());
 
                   container->m_Description.description = tag.m_strTagLine;
                   container->m_Description.long_description = tag.m_strPlot;
@@ -916,7 +927,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
 
                 if (!item->HasThumbnail() )
-                    item->SetCachedVideoThumb();
+                    item->SetThumbnailImage(CThumbLoader::GetCachedImage(*item, "thumb"));
             }
         }
 
@@ -929,14 +940,15 @@ CUPnPServer::Build(CFileItemPtr                  item,
         }
     }
 
-    // remap Root virtualpath://upnproot/ to id "0"
-    if (object->m_ObjectID == "virtualpath://upnproot/")
-        object->m_ObjectID = "0";
+    if (object) {
+        // remap Root virtualpath://upnproot/ to id "0"
+        if (object->m_ObjectID == "virtualpath://upnproot/")
+            object->m_ObjectID = "0";
 
-    // remap Parent Root virtualpath://upnproot/ to id "0"
-    if (object->m_ParentID == "virtualpath://upnproot/")
-        object->m_ParentID = "0";
-
+        // remap Parent Root virtualpath://upnproot/ to id "0"
+        if (object->m_ParentID == "virtualpath://upnproot/")
+            object->m_ParentID = "0";
+    }
     return object;
 
 failure:
@@ -1096,7 +1108,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     }
 
     // Always sort by label
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
@@ -1660,11 +1672,10 @@ CUPnPRenderer::UpdateState()
     int volume;
     if (g_settings.m_bMute) {
         rct->SetStateVariable("Mute", "1");
-        volume = g_settings.m_iPreMuteVolumeLevel;
     } else {
         rct->SetStateVariable("Mute", "0");
-        volume = g_application.GetVolume();
     }
+    volume = g_application.GetVolume();
 
     buffer.Format("%d", volume);
     rct->SetStateVariable("Volume", buffer.c_str());
@@ -1979,7 +1990,7 @@ CUPnPRenderer::OnSetVolume(PLT_ActionReference& action)
 {
     NPT_String volume;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredVolume", volume));
-    g_application.SetVolume(atoi((const char*)volume));
+    g_application.SetVolume((float)strtod((const char*)volume, NULL));
     return NPT_SUCCESS;
 }
 
@@ -2408,7 +2419,7 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
         int episode;
         int season;
         int title = object.m_Recorded.program_title.Find(" : ");
-        if(sscanf(object.m_Recorded.program_title, "S%2dE%2d", &episode, &season) == 2 && title >= 0) {
+        if(sscanf(object.m_Recorded.program_title, "S%2dE%2d", &season, &episode) == 2 && title >= 0) {
             tag.m_strTitle = object.m_Recorded.program_title.SubString(title + 3);
             tag.m_iEpisode = episode;
             tag.m_iSeason  = season;
@@ -2417,16 +2428,17 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
             tag.m_iSeason  = object.m_Recorded.episode_number / 100;
             tag.m_iEpisode = object.m_Recorded.episode_number % 100;
         }
-        tag.m_strFirstAired = date.GetAsLocalizedDate();
+        tag.m_firstAired = date;
     }
     else
     {
         tag.m_strTitle     = object.m_Title;
-        tag.m_strPremiered = date.GetAsLocalizedDate();
+        tag.m_premiered    = date;
     }
     tag.m_iYear       = date.GetYear();
-    tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
-    tag.m_strDirector = object.m_People.director;
+    for (unsigned int index = 0; index < object.m_Affiliation.genre.GetItemCount(); index++)
+      tag.m_genre.push_back(object.m_Affiliation.genre.GetItem(index)->GetChars());
+    tag.m_director = StringUtils::Split((CStdString)object.m_People.director, g_advancedSettings.m_videoItemSeparator);
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strShowTitle = object.m_Recorded.series_title;

@@ -25,6 +25,7 @@
 #include <arpa/inet.h>
 #include "DllLibPlist.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "filesystem/File.h"
@@ -33,6 +34,7 @@
 #include "Application.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
+#include "guilib/GUIWindowManager.h"
 
 #ifdef TARGET_WINDOWS
 #define close closesocket
@@ -182,7 +184,7 @@ void CAirPlayServer::StopServer(bool bWait)
   }
 }
 
-CAirPlayServer::CAirPlayServer(int port, bool nonlocal)
+CAirPlayServer::CAirPlayServer(int port, bool nonlocal) : CThread("AirPlayServer")
 {
   m_port = port;
   m_nonlocal = nonlocal;
@@ -678,6 +680,34 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         }
       }
   }
+  
+  // The volume command is used to change playback volume.
+  // A value argument should be supplied which indicates how loud we should get.
+  // 0.000000 => silent
+  // 1.000000 => loud
+  else if (uri == "/volume")
+  {
+      const char* found = strstr(queryString.c_str(), "volume=");
+      float volume = found ? (float)strtod(found + strlen("volume="), NULL) : 0;
+
+      CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %f", uri.c_str(), volume);
+
+      if (needAuth && !checkAuthorization(authorization, method, uri))
+      {
+        status = AIRPLAY_STATUS_NEED_AUTH;
+      }
+      else if (volume >= 0 && volume <= 1)
+      {
+        int oldVolume = g_application.GetVolume();
+        volume *= 100;
+        if(oldVolume != (int)volume)
+        {
+          g_application.SetVolume(volume);          
+          g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
+        }
+      }
+  }
+
 
   // Contains a header like format in the request body which should contain a
   // Content-Location and optionally a Start-Position
@@ -764,7 +794,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
     if (status != AIRPLAY_STATUS_NEED_AUTH)
     {
-      CFileItem fileToPlay(location + "|User-Agent=AppleCoreMedia/1.0.0.8F455 (Apple†TV; U; CPU OS 4_3 like Mac OS X; de_de)", false);
+      CStdString userAgent="AppleCoreMedia/1.0.0.8F455 (AppleTV; U; CPU OS 4_3 like Mac OS X; de_de)";
+      CURL::Encode(userAgent);
+      location += "|User-Agent=" + userAgent;
+
+      CFileItem fileToPlay(location, false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
       g_application.getApplicationMessenger().MediaPlay(fileToPlay);
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
@@ -787,13 +821,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
         responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime(), position);
-
-        //unpause media on GET scrub when paused
-        if (g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
-        {
-          g_application.getApplicationMessenger().MediaPause();
-          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-        }
       }
       else 
       {
@@ -806,7 +833,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       
       if (found && g_application.m_pPlayer)
       {
-        __int64 position = (__int64) (atof(found + strlen("position=")) * 1000.0);
+        int64_t position = (int64_t) (atof(found + strlen("position=")) * 1000.0);
         g_application.m_pPlayer->SeekTime(position);
         CLog::Log(LOGDEBUG, "AIRPLAY: got POST request %s with pos %"PRId64, uri.c_str(), position);
       }
@@ -823,8 +850,15 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     }
     else
     {
-      g_application.getApplicationMessenger().MediaStop();
-      CAirPlayServer::m_isPlaying--;
+      if (IsPlaying()) //only stop player if we started him
+      {
+        g_application.getApplicationMessenger().MediaStop();
+        CAirPlayServer::m_isPlaying--;
+      }
+      else //if we are not playing and get the stop request - we just wanna stop picture streaming
+      {
+        g_windowManager.PreviousWindow();
+      }
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
     }
   }
@@ -840,7 +874,17 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     else if (m_httpParser->getContentLength() > 0)
     {
       XFILE::CFile tmpFile;
-      if (tmpFile.OpenForWrite("special://temp/airplay_photo.jpg", true))
+      CStdString tmpFileName = "special://temp/airplay_photo.jpg";
+
+      if( m_httpParser->getContentLength() > 3 &&
+          m_httpParser->getBody()[1] == 'P' &&
+          m_httpParser->getBody()[2] == 'N' &&
+          m_httpParser->getBody()[3] == 'G')
+      {
+        tmpFileName = "special://temp/airplay_photo.png";
+      }
+
+      if (tmpFile.OpenForWrite(tmpFileName, true))
       {
         int writtenBytes=0;
         writtenBytes = tmpFile.Write(m_httpParser->getBody(), m_httpParser->getContentLength());
@@ -848,7 +892,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
         if (writtenBytes > 0 && (unsigned int)writtenBytes == m_httpParser->getContentLength())
         {
-          g_application.getApplicationMessenger().PictureShow("special://temp/airplay_photo.jpg");
+          g_application.getApplicationMessenger().PictureShow(tmpFileName);
         }
         else
         {

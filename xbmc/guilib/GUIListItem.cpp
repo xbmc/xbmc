@@ -25,6 +25,8 @@
 #include "utils/CharsetConverter.h"
 #include "utils/Variant.h"
 
+using namespace std;
+
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
   m_layout = NULL;
@@ -100,6 +102,11 @@ void CGUIListItem::SetSortLabel(const CStdString &label)
   // no need to invalidate - this is never shown in the UI
 }
 
+void CGUIListItem::SetSortLabel(const CStdStringW &label)
+{
+  m_sortLabel = label;
+}
+
 const CStdStringW& CGUIListItem::GetSortLabel() const
 {
   return m_sortLabel;
@@ -163,6 +170,25 @@ CStdString CGUIListItem::GetOverlayImage() const
   default:
     return "";
   }
+}
+
+map<string, string> CGUIListItem::GetArt() const
+{
+  map<string, string> art;
+  if (HasThumbnail())
+    art.insert(make_pair("thumb", GetThumbnailImage()));
+  if (HasProperty("fanart_image"))
+    art.insert(make_pair("fanart", GetProperty("fanart_image").asString()));
+  return art;
+}
+
+void CGUIListItem::SetArt(const map<string, string> &art)
+{
+  map<string, string>::const_iterator i = art.find("thumb");
+  if (i != art.end())
+    SetThumbnailImage(i->second);
+  if ((i = art.find("fanart")) != art.end())
+    SetProperty("fanart_image", i->second);
 }
 
 void CGUIListItem::Select(bool bOnOff)

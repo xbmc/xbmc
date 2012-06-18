@@ -98,7 +98,7 @@ public:
   DemuxPacket* Read();
 
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
-  bool SeekByte(__int64 pos);
+  bool SeekByte(int64_t pos);
   int GetStreamLength();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
@@ -128,7 +128,7 @@ protected:
   #define MAX_STREAMS 100
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
-  ByteIOContext* m_ioContext;
+  AVIOContext* m_ioContext;
 
   DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;

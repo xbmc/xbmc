@@ -3,42 +3,37 @@
 	<!-- Normal Fonts -->
 	 	<font>
 			<name>font10</name>
-			<filename>DejaVuSans.ttf</filename>
-			<size>12</size>
+			<filename>Roboto-Regular.ttf</filename>
+			<size>14</size>
 		</font>
 	 	<font>
 			<name>font12</name>
-			<filename>DejaVuSans.ttf</filename>
-			<size>16</size>
-		</font>
-	 	<font>
-			<name>font12caps</name>
-			<filename>DefaultCaps.ttf</filename>
-			<size>16</size>
+			<filename>Roboto-Regular.ttf</filename>
+			<size>17</size>
 		</font>
 	 	<font>
 			<name>font13</name>
-			<filename>DejaVuSans.ttf</filename>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
-			<name>font13caps</name>
-			<filename>DefaultCaps.ttf</filename>
-			<size>20</size>
+			<name>font14</name>
+			<filename>Roboto-Regular.ttf</filename>
+			<size>22</size>
 		</font>
 	 	<font>
-			<name>font16caps</name>
-			<filename>DefaultCaps.ttf</filename>
+			<name>font16</name>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>25</size>
 		</font>
 	 	<font>
 			<name>font30</name>
-			<filename>DejaVuSans.ttf</filename>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
 			<name>fontContextMenu</name>
-			<filename>DejaVuSans.ttf</filename>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>18</size>
 		</font>
 
@@ -46,97 +41,93 @@
 	<!-- Title Fonts -->
 	 	<font>
 			<name>font10_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
 			<name>font12_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
-			<size>16</size>
+			<filename>Roboto-Bold.ttf</filename>
+			<size>17</size>
 		</font>
 	 	<font>
 			<name>font13_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
 			<name>font24_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>24</size>
 		</font>
 	 	<font>
 			<name>font28_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>28</size>
 		</font>
 	 	<font>
 			<name>font30_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
 			<name>font35_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
-			<size>35</size>
-		</font>
-	 	<font>
-			<name>font50caps_title</name>
-			<filename>DejaVuSans-Bold-Caps.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>35</size>
 		</font>
 	 	<font>
 			<name>font45caps_title</name>
-			<filename>DejaVuSans-Bold-Caps.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>45</size>
 		</font>
 
 	 	<font>
+			<name>font_MainMenu</name>
+			<filename>Roboto-Bold.ttf</filename>
+			<style>uppercase</style>
+			<size>40</size>
+		</font>
+	 	<font>
 			<name>WeatherTemp</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>80</size>
 		</font>
 	</fontset>
 
-	<fontset id="Default_NoCaps" idloc="31391" unicode="true">
+	<fontset id="DefaultNoCaps" idloc="31391" unicode="true"> 
 	<!-- Normal Fonts -->
 	 	<font>
 			<name>font10</name>
-			<filename>DejaVuSans.ttf</filename>
-			<size>12</size>
+			<filename>Roboto-Regular.ttf</filename>
+			<size>14</size>
 		</font>
 	 	<font>
 			<name>font12</name>
-			<filename>DejaVuSans.ttf</filename>
-			<size>16</size>
-		</font>
-	 	<font>
-			<name>font12caps</name>
-			<filename>DejaVuSans.ttf</filename>
-			<size>16</size>
+			<filename>Roboto-Regular.ttf</filename>
+			<size>17</size>
 		</font>
 	 	<font>
 			<name>font13</name>
-			<filename>DejaVuSans.ttf</filename>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
-			<name>font13caps</name>
-			<filename>DejaVuSans.ttf</filename>
-			<size>20</size>
+			<name>font14</name>
+			<filename>Roboto-Regular.ttf</filename>
+			<size>22</size>
 		</font>
 	 	<font>
-			<name>font16caps</name>
-			<filename>DejaVuSans.ttf</filename>
+			<name>font16</name>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>25</size>
 		</font>
 	 	<font>
 			<name>font30</name>
-			<filename>DejaVuSans.ttf</filename>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
 			<name>fontContextMenu</name>
-			<filename>DejaVuSans.ttf</filename>
+			<filename>Roboto-Regular.ttf</filename>
 			<size>18</size>
 		</font>
 
@@ -144,152 +135,157 @@
 	<!-- Title Fonts -->
 	 	<font>
 			<name>font10_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
 			<name>font12_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
-			<size>16</size>
+			<filename>Roboto-Bold.ttf</filename>
+			<size>17</size>
 		</font>
 	 	<font>
 			<name>font13_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
 			<name>font24_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>24</size>
 		</font>
 	 	<font>
 			<name>font28_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>28</size>
 		</font>
 	 	<font>
 			<name>font30_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
 			<name>font35_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>35</size>
 		</font>
 	 	<font>
 			<name>font45caps_title</name>
-			<filename>DejaVuSans-Bold-Caps.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>45</size>
-		</font>
-	 	<font>
-			<name>font50caps_title</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
-			<size>35</size>
 		</font>
 
 	 	<font>
+			<name>font_MainMenu</name>
+			<filename>Roboto-Bold.ttf</filename>
+			<size>40</size>
+		</font>
+	 	<font>
 			<name>WeatherTemp</name>
-			<filename>DejaVuSans-Bold.ttf</filename>
+			<filename>Roboto-Bold.ttf</filename>
 			<size>80</size>
 		</font>
 	</fontset>
 
-	<fontset id="Arial" idloc="31392" unicode="true">
-	<!-- Normal Fonts -->
+	<fontset id="Arial" idloc="31392" unicode="true"> 
+	<!-- Arial Font better for non English -->
 	 	<font>
 			<name>font10</name>
-			<filename>Arial.ttf</filename>
+			<filename>arial.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
 			<name>font12</name>
-			<filename>Arial.ttf</filename>
-			<size>16</size>
-		</font>
-	 	<font>
-			<name>font12caps</name>
-			<filename>Arial.ttf</filename>
-			<size>16</size>
+			<filename>arial.ttf</filename>
+			<size>15</size>
 		</font>
 	 	<font>
 			<name>font13</name>
-			<filename>Arial.ttf</filename>
+			<filename>arial.ttf</filename>
+			<size>18</size>
+		</font>
+	 	<font>
+			<name>font14</name>
+			<filename>arial.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
-			<name>font13caps</name>
-			<filename>Arial.ttf</filename>
-			<size>20</size>
-		</font>
-	 	<font>
-			<name>font16caps</name>
-			<filename>Arial.ttf</filename>
-			<size>25</size>
+			<name>font16</name>
+			<filename>arial.ttf</filename>
+			<size>23</size>
 		</font>
 	 	<font>
 			<name>font30</name>
-			<filename>Arial.ttf</filename>
-			<size>30</size>
+			<filename>arial.ttf</filename>
+			<size>28</size>
 		</font>
 	 	<font>
 			<name>fontContextMenu</name>
-			<filename>Arial.ttf</filename>
-			<size>18</size>
+			<filename>arial.ttf</filename>
+			<size>16</size>
 		</font>
 
 
 	<!-- Title Fonts -->
 	 	<font>
 			<name>font10_title</name>
-			<filename>Arial.ttf</filename>
-			<size>12</size>
+			<filename>arial.ttf</filename>
+			<size>10</size>
+			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font12_title</name>
-			<filename>Arial.ttf</filename>
-			<size>16</size>
+			<filename>arial.ttf</filename>
+			<size>15</size>
+			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font13_title</name>
-			<filename>Arial.ttf</filename>
-			<size>20</size>
+			<filename>arial.ttf</filename>
+			<size>18</size>
+			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font24_title</name>
-			<filename>Arial.ttf</filename>
-			<size>24</size>
+			<filename>arial.ttf</filename>
+			<size>22</size>
+			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font28_title</name>
-			<filename>Arial.ttf</filename>
-			<size>28</size>
+			<filename>arial.ttf</filename>
+			<size>26</size>
+			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font30_title</name>
-			<filename>Arial.ttf</filename>
-			<size>30</size>
+			<filename>arial.ttf</filename>
+			<size>28</size>
+			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font35_title</name>
-			<filename>Arial.ttf</filename>
-			<size>35</size>
-		</font>
-	 	<font>
-			<name>font50caps_title</name>
-			<filename>Arial.ttf</filename>
-			<size>35</size>
+			<filename>arial.ttf</filename>
+			<size>33</size>
+			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font45caps_title</name>
-			<filename>Arial.ttf</filename>
-			<size>45</size>
+			<filename>arial.ttf</filename>
+			<size>43</size>
+			<style>bold</style>
 		</font>
 
 	 	<font>
+			<name>font_MainMenu</name>
+			<filename>arial.ttf</filename>
+			<size>35</size>
+			<style>bold</style>
+		</font>
+	 	<font>
 			<name>WeatherTemp</name>
-			<filename>Arial.ttf</filename>
+			<filename>arial.ttf</filename>
 			<size>80</size>
+			<style>bold</style>
 		</font>
 	</fontset>
 </fonts>

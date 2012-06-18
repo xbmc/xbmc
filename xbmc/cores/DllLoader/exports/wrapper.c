@@ -37,14 +37,14 @@
 #include <dirent.h>
 #endif
 
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
 typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
 typedef fpos_t    fpos64_t;
 #define stat64    stat
 #define statvfs64 statvfs
-#if defined(__arm__)
+#if defined(TARGET_DARWIN)
 #define _G_va_list va_list
 #endif
 #endif

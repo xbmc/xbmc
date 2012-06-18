@@ -117,15 +117,15 @@ unsigned char waves[2][576];
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
 	int ipos=0;
 	while (ipos < 576)
 	{
 		for (int i=0; i < iAudioDataLength; i+=2)
 		{
-      waves[0][ipos] = char ((pAudioData[i] / 65535.0f) * 255.0f);
-      waves[1][ipos] = char ((pAudioData[i+1] / 65535.0f) * 255.0f);
+      waves[0][ipos] = char (pAudioData[i] * 255.0f);
+      waves[1][ipos] = char (pAudioData[i+1]  * 255.0f);
 			ipos++;
 			if (ipos >= 576) break;
 		}

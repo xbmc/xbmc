@@ -135,7 +135,7 @@ bool CRenderSystemDX::InitRenderSystem()
     if(m_pD3D == NULL)
       return false;
   }
-  
+
   UpdateMonitor();
 
   if(CreateDevice()==false)
@@ -191,7 +191,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
     OnDeviceLost();
     OnDeviceReset();
   }
-  
+
   return true;
 }
 
@@ -569,7 +569,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
 
   //CVideoReferenceClock polls GetRasterStatus too,
   //polling it from two threads at the same time is bad
-  if (g_advancedSettings.m_sleepBeforeFlip > 0 && g_VideoReferenceClock.ThreadHandle() == NULL)
+  if (g_advancedSettings.m_sleepBeforeFlip > 0 && !g_VideoReferenceClock.IsRunning())
   {
     //save current thread priority and set thread priority to THREAD_PRIORITY_TIME_CRITICAL
     int priority = GetThreadPriority(GetCurrentThread());

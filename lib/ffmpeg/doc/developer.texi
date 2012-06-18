@@ -34,59 +34,57 @@ You can use libavcodec or libavformat in your commercial program, but
 @emph{any patch you make must be published}. The best way to proceed is
 to send your patches to the FFmpeg mailing list.
 
+@section Contributing
+
+There are 3 ways by which code gets into ffmpeg.
+@itemize @bullet
+@item Submitting Patches to the main developer mailing list
+      see @ref{Submitting patches} for details.
+@item Directly committing changes to the main tree.
+@item Committing changes to a git clone, for example on github.com or
+      gitorious.org. And asking us to merge these changes.
+@end itemize
+
+Whichever way, changes should be reviewed by the maintainer of the code
+before they are committed. And they should follow the @ref{Coding Rules}.
+The developer making the commit and the author are responsible for their changes
+and should try to fix issues their commit causes.
+
 @anchor{Coding Rules}
 @section Coding Rules
 
-FFmpeg is programmed in the ISO C90 language with a few additional
-features from ISO C99, namely:
+@subsection Code formatting conventions
+
+There are the following guidelines regarding the indentation in files:
 @itemize @bullet
 @item
-the @samp{inline} keyword;
-@item
-@samp{//} comments;
-@item
-designated struct initializers (@samp{struct s x = @{ .i = 17 @};})
-@item
-compound literals (@samp{x = (struct s) @{ 17, 23 @};})
-@end itemize
-
-These features are supported by all compilers we care about, so we will not
-accept patches to remove their use unless they absolutely do not impair
-clarity and performance.
-
-All code must compile with GCC 2.95 and GCC 3.3. Currently, FFmpeg also
-compiles with several other compilers, such as the Compaq ccc compiler
-or Sun Studio 9, and we would like to keep it that way unless it would
-be exceedingly involved. To ensure compatibility, please do not use any
-additional C99 features or GCC extensions. Especially watch out for:
-@itemize @bullet
-@item
-mixing statements and declarations;
-@item
-@samp{long long} (use @samp{int64_t} instead);
-@item
-@samp{__attribute__} not protected by @samp{#ifdef __GNUC__} or similar;
-@item
-GCC statement expressions (@samp{(x = (@{ int y = 4; y; @})}).
-@end itemize
-
 Indent size is 4.
-The presentation is one inspired by 'indent -i4 -kr -nut'.
+@item
 The TAB character is forbidden outside of Makefiles as is any
 form of trailing whitespace. Commits containing either will be
-rejected by the Subversion repository.
+rejected by the git repository.
+@item
+You should try to limit your code lines to 80 characters; however, do so if
+and only if this improves readability.
+@end itemize
+The presentation is one inspired by 'indent -i4 -kr -nut'.
 
 The main priority in FFmpeg is simplicity and small code size in order to
 minimize the bug count.
 
-Comments: Use the JavaDoc/Doxygen
-format (see examples below) so that code documentation
+@subsection Comments
+Use the JavaDoc/Doxygen  format (see examples below) so that code documentation
 can be generated automatically. All nontrivial functions should have a comment
 above them explaining what the function does, even if it is just one sentence.
 All structures and their member variables should be documented, too.
+
+Avoid Qt-style and similar Doxygen syntax with @code{!} in it, i.e. replace
+@code{//!} with @code{///} and similar.  Also @@ syntax should be employed
+for markup commands, i.e. use @code{@@param} and not @code{\param}.
+
 @example
 /**
- * @@file mpeg.c
+ * @@file
  * MPEG codec.
  * @@author ...
  */
@@ -114,11 +112,97 @@ int myfunc(int my_parameter)
 ...
 @end example
 
+@subsection C language features
+
+FFmpeg is programmed in the ISO C90 language with a few additional
+features from ISO C99, namely:
+@itemize @bullet
+@item
+the @samp{inline} keyword;
+@item
+@samp{//} comments;
+@item
+designated struct initializers (@samp{struct s x = @{ .i = 17 @};})
+@item
+compound literals (@samp{x = (struct s) @{ 17, 23 @};})
+@end itemize
+
+These features are supported by all compilers we care about, so we will not
+accept patches to remove their use unless they absolutely do not impair
+clarity and performance.
+
+All code must compile with recent versions of GCC and a number of other
+currently supported compilers. To ensure compatibility, please do not use
+additional C99 features or GCC extensions. Especially watch out for:
+@itemize @bullet
+@item
+mixing statements and declarations;
+@item
+@samp{long long} (use @samp{int64_t} instead);
+@item
+@samp{__attribute__} not protected by @samp{#ifdef __GNUC__} or similar;
+@item
+GCC statement expressions (@samp{(x = (@{ int y = 4; y; @})}).
+@end itemize
+
+@subsection Naming conventions
+All names are using underscores (_), not CamelCase. For example, @samp{avfilter_get_video_buffer} is
+a valid function name and @samp{AVFilterGetVideo} is not. The exception from this are type names, like
+for example structs and enums; they should always be in the CamelCase
+
+
+There are following conventions for naming variables and functions:
+@itemize @bullet
+@item
+For local variables no prefix is required.
+@item
+For variables and functions declared as @code{static} no prefixes are required.
+@item
+For variables and functions used internally by the library, @code{ff_} prefix
+should be used.
+For example, @samp{ff_w64_demuxer}.
+@item
+For variables and functions used internally across multiple libraries, use
+@code{avpriv_}. For example, @samp{avpriv_aac_parse_header}.
+@item
+For exported names, each library has its own prefixes. Just check the existing
+code and name accordingly.
+@end itemize
+
+@subsection Miscellanous conventions
+@itemize @bullet
+@item
 fprintf and printf are forbidden in libavformat and libavcodec,
 please use av_log() instead.
-
+@item
 Casts should be used only when necessary. Unneeded parentheses
 should also be avoided if they don't make the code easier to understand.
+@end itemize
+
+@subsection Editor configuration
+In order to configure Vim to follow FFmpeg formatting conventions, paste
+the following snippet into your @file{.vimrc}:
+@example
+" indentation rules for FFmpeg: 4 spaces, no tabs
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+" allow tabs in Makefiles
+autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=8
+" Trailing whitespace and tabs are forbidden, so highlight them.
+highlight ForbiddenWhitespace ctermbg=red guibg=red
+match ForbiddenWhitespace /\s\+$\|\t/
+" Do not highlight spaces at the end of line while typing on that line.
+autocmd InsertEnter * match ForbiddenWhitespace /\t\|\s\+\%#\@@<!$/
+@end example
+
+For Emacs, add these roughly equivalent lines to your @file{.emacs.d/init.el}:
+@example
+(setq c-default-style "k&r")
+(setq-default c-basic-offset 4)
+(setq-default indent-tabs-mode nil)
+(setq-default show-trailing-whitespace t)
+@end example
 
 @section Development Policy
 
@@ -180,10 +264,13 @@ should also be avoided if they don't make the code easier to understand.
    Always fill out the commit log message. Describe in a few lines what you
    changed and why. You can refer to mailing list postings if you fix a
    particular bug. Comments such as "fixed!" or "Changed it." are unacceptable.
+   Recommended format:
+   area changed: Short 1 line description
+
+   details describing what and why and giving references.
 @item
-   If you apply a patch by someone else, include the name and email address in
-   the log message. Since the ffmpeg-cvslog mailing list is publicly
-   archived you should add some SPAM protection to the email address. Send an
+   Make sure the author of the commit is set correctly. (see git commit --author)
+   If you apply a patch, send an
    answer to ffmpeg-devel (or wherever you got the patch from) saying that
    you applied the patch.
 @item
@@ -212,7 +299,7 @@ should also be avoided if they don't make the code easier to understand.
     always check values read from some untrusted source before using them
     as array index or other risky things.
 @item
-    Remember to check if you need to bump versions for the specific libav
+    Remember to check if you need to bump versions for the specific libav*
     parts (libavutil, libavcodec, libavformat) you are changing. You need
     to change the version integer.
     Incrementing the first component means no backward compatibility to
@@ -239,12 +326,14 @@ We think our rules are not too hard. If you have comments, contact us.
 
 Note, these rules are mostly borrowed from the MPlayer project.
 
+@anchor{Submitting patches}
 @section Submitting patches
 
-First, (@pxref{Coding Rules}) above if you did not yet.
+First, read the @ref{Coding Rules} above if you did not yet, in particular
+the rules regarding patch submission.
 
-When you submit your patch, try to send a unified diff (diff '-up'
-option). We cannot read other diffs :-)
+When you submit your patch, please use @code{git format-patch} or
+@code{git send-email}. We cannot read other diffs :-)
 
 Also please do not submit a patch which contains several unrelated changes.
 Split it into separate, self-contained pieces. This does not mean splitting
@@ -256,13 +345,13 @@ for us and greatly increases your chances of getting your patch applied.
 Use the patcheck tool of FFmpeg to check your patch.
 The tool is located in the tools directory.
 
-Run the regression tests before submitting a patch so that you can
-verify that there are no big problems.
+Run the @ref{Regression tests} before submitting a patch in order to verify
+it does not cause unexpected problems.
 
 Patches should be posted as base64 encoded attachments (or any other
 encoding which ensures that the patch will not be trashed during
 transmission) to the ffmpeg-devel mailing list, see
-@url{http://lists.mplayerhq.hu/mailman/listinfo/ffmpeg-devel}
+@url{http://lists.ffmpeg.org/mailman/listinfo/ffmpeg-devel}
 
 It also helps quite a bit if you tell us what the patch does (for example
 'replaces lrint by lrintf'), and why (for example '*BSD isn't C99 compliant
@@ -291,13 +380,13 @@ send a reminder by email. Your patch should eventually be dealt with.
     AVInputFormat/AVOutputFormat struct?
 @item
     Did you bump the minor version number (and reset the micro version
-    number) in @file{avcodec.h} or @file{avformat.h}?
+    number) in @file{libavcodec/version.h} or @file{libavformat/version.h}?
 @item
     Did you register it in @file{allcodecs.c} or @file{allformats.c}?
 @item
     Did you add the CodecID to @file{avcodec.h}?
 @item
-    If it has a fourcc, did you add it to @file{libavformat/riff.c},
+    If it has a fourCC, did you add it to @file{libavformat/riff.c},
     even if it is only a decoder?
 @item
     Did you add a rule to compile the appropriate files in the Makefile?
@@ -312,22 +401,31 @@ send a reminder by email. Your patch should eventually be dealt with.
     If it depends on a parser or a library, did you add that dependency in
     configure?
 @item
-    Did you "svn add" the appropriate files before commiting?
+    Did you @code{git add} the appropriate files before committing?
+@item
+    Did you make sure it compiles standalone, i.e. with
+    @code{configure --disable-everything --enable-decoder=foo}
+    (or @code{--enable-demuxer} or whatever your component is)?
 @end enumerate
+
 
 @section patch submission checklist
 
 @enumerate
 @item
-    Do the regression tests pass with the patch applied?
+    Does @code{make fate} pass with the patch applied?
 @item
-    Does @code{make checkheaders} pass with the patch applied?
+    Was the patch generated with git format-patch or send-email?
 @item
-    Is the patch a unified diff?
+    Did you sign off your patch? (git commit -s)
+    See @url{http://kerneltrap.org/files/Jeremy/DCO.txt} for the meaning
+    of sign off.
 @item
-    Is the patch against latest FFmpeg SVN?
+    Did you provide a clear git commit log message?
 @item
-    Are you subscribed to ffmpeg-dev?
+    Is the patch against latest FFmpeg git master branch?
+@item
+    Are you subscribed to ffmpeg-devel?
     (the list is subscribers only due to spam)
 @item
     Have you checked that the changes are minimal, so that the same cannot be
@@ -343,9 +441,6 @@ send a reminder by email. Your patch should eventually be dealt with.
     Did you test your decoder or demuxer against damaged data? If no, see
     tools/trasher and the noise bitstream filter. Your decoder or demuxer
     should not crash or end in a (near) infinite loop when fed damaged data.
-@item
-    Is the patch created from the root of the source tree, so it can be
-    applied with @code{patch -p0}?
 @item
     Does the patch not mix functional and cosmetic changes?
 @item
@@ -382,13 +477,15 @@ send a reminder by email. Your patch should eventually be dealt with.
     Lines with similar content should be aligned vertically when doing so
     improves readability.
 @item
-    Did you provide a suggestion for a clear commit log message?
+    Consider to add a regression test for your code.
+@item
+    If you added YASM code please check that things still work with --disable-yasm
 @end enumerate
 
 @section Patch review process
 
 All patches posted to ffmpeg-devel will be reviewed, unless they contain a
-clear note that the patch is not for SVN.
+clear note that the patch is not for the git master branch.
 Reviews and comments will be posted as replies to the patch on the
 mailing list. The patch submitter then has to take care of every comment,
 that can be by resubmitting a changed patch or by discussion. Resubmitted
@@ -401,34 +498,23 @@ After a patch is approved it will be committed to the repository.
 We will review all submitted patches, but sometimes we are quite busy so
 especially for large patches this can take several weeks.
 
+If you feel that the review process is too slow and you are willing to try to
+take over maintainership of the area of code you change then just clone
+git master and maintain the area of code there. We will merge each area from
+where its best maintained.
+
 When resubmitting patches, please do not make any significant changes
 not related to the comments received during review. Such patches will
-be rejected. Instead, submit  significant changes or new features as
+be rejected. Instead, submit significant changes or new features as
 separate patches.
 
+@anchor{Regression tests}
 @section Regression tests
 
 Before submitting a patch (or committing to the repository), you should at least
 test that you did not break anything.
 
-The regression tests build a synthetic video stream and a synthetic
-audio stream. These are then encoded and decoded with all codecs or
-formats. The CRC (or MD5) of each generated file is recorded in a
-result file. A 'diff' is launched to compare the reference results and
-the result file. The output is checked immediately after each test
-has run.
-
-The regression tests then go on to test the FFserver code with a
-limited set of streams. It is important that this step runs correctly
-as well.
-
-Run 'make test' to test all the codecs and formats. Commands like
-'make regtest-mpeg2' can be used to run a single test. By default,
-make will abort if any test fails. To run all tests regardless,
-use make -k. To get a more verbose output, use 'make V=1 test' or
-'make V=2 test'.
-
-Run 'make fulltest' to test all the codecs, formats and FFserver.
+Running 'make fate' accomplishes this, please see @url{fate.html} for details.
 
 [Of course, some patches may change the results of the regression tests. In
 this case, the reference results of the regression tests shall be modified

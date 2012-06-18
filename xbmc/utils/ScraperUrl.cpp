@@ -25,8 +25,8 @@
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "URL.h"
-#include "filesystem/FileCurl.h"
-#include "filesystem/FileZip.h"
+#include "filesystem/CurlFile.h"
+#include "filesystem/ZipFile.h"
 #include "pictures/Picture.h"
 #include "URIUtils.h"
 
@@ -124,7 +124,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
   if (!XMLUtils::HasUTF8Declaration(strUrl))
     g_charsetConverter.unknownToUTF8(strUrl);
 
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
 
   TiXmlElement* pElement = doc.RootElement();
@@ -175,7 +175,16 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CFileCurl& http, const CStdString& cacheContext)
+void CScraperUrl::GetSeasonThumbs(map<int, string> &thumbs) const
+{
+  for (vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
+  {
+    if (iter->m_type == URL_TYPE_SEASON && thumbs.find(iter->m_season) == thumbs.end())
+      thumbs.insert(make_pair(iter->m_season, GetThumbURL(*iter)));
+  }
+}
+
+bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCurlFile& http, const CStdString& cacheContext)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
@@ -222,7 +231,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CFil
 
   if (scrURL.m_url.Find(".zip") > -1 )
   {
-    XFILE::CFileZip file;
+    XFILE::CZipFile file;
     CStdString strBuffer;
     int iSize = file.UnpackFromMemory(strBuffer,strHTML,scrURL.m_isgz);
     if (iSize)
@@ -265,7 +274,7 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     return false;
   }
 
-  XFILE::CFileCurl http;
+  XFILE::CCurlFile http;
   http.SetReferer(entry.m_spoof);
   CStdString thumbData;
   if (http.Get(entry.m_url, thumbData))
@@ -293,7 +302,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
   if (!XMLUtils::HasUTF8Declaration(strUrls))
     g_charsetConverter.unknownToUTF8(strUrls);
 
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);
   if (doc.RootElement())
   {

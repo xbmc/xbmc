@@ -34,15 +34,26 @@ public:
   CDirectory(void);
   virtual ~CDirectory(void);
 
+  class CHints
+  {
+  public:
+    CHints() : flags(DIR_FLAG_DEFAULTS)
+    {
+    };
+    CStdString mask;
+    int flags;
+  };
+
   static bool GetDirectory(const CStdString& strPath
-                         , CFileItemList &items
-                         , CStdString strMask=""
-                         , bool bUseFileDirectories=true
-                         , bool allowPrompting=false
-                         , DIR_CACHE_TYPE cacheDirectory=DIR_CACHE_ONCE
-                         , bool extFileInfo=true
-                         , bool allowThreads=false
-                         , bool getHidden=false);
+                           , CFileItemList &items
+                           , const CStdString &strMask=""
+                           , int flags=DIR_FLAG_DEFAULTS
+                           , bool allowThreads=false);
+
+  static bool GetDirectory(const CStdString& strPath
+                           , CFileItemList &items
+                           , const CHints &hints
+                           , bool allowThreads=false);
 
   static bool Create(const CStdString& strPath);
   static bool Exists(const CStdString& strPath);

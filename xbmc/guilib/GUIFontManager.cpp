@@ -31,6 +31,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
 
 using namespace std;
@@ -80,7 +81,7 @@ static bool CheckFont(CStdString& strPath, const CStdString& newPath,
   {
     strPath = URIUtils::AddFileToFolder(newPath,filename);
 #ifdef _LINUX
-    strPath = PTH_IC(strPath);
+    strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 #endif
     return false;
   }
@@ -114,7 +115,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
     strPath = strFilename;
 
 #ifdef _LINUX
-  strPath = PTH_IC(strPath);
+  strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 #endif
 
   // Check if the file exists, otherwise try loading it from the global media dir
@@ -339,7 +340,7 @@ void GUIFontManager::Clear()
 
 void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return;
 
@@ -429,16 +430,22 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
             if (iSize <= 0) iSize = 20;
 
             pNode = fontNode->FirstChild("style");
-            if (pNode)
+            if (pNode && pNode->FirstChild())
             {
-              CStdString style = pNode->FirstChild()->Value();
-              iStyle = FONT_STYLE_NORMAL;
-              if (style == "bold")
-                iStyle = FONT_STYLE_BOLD;
-              else if (style == "italics")
-                iStyle = FONT_STYLE_ITALICS;
-              else if (style == "bolditalics")
-                iStyle = FONT_STYLE_BOLD_ITALICS;
+              vector<string> styles = StringUtils::Split(pNode->FirstChild()->ValueStr(), " ");
+              for (vector<string>::iterator i = styles.begin(); i != styles.end(); ++i)
+              {
+                if (*i == "bold")
+                  iStyle |= FONT_STYLE_BOLD;
+                else if (*i == "italics")
+                  iStyle |= FONT_STYLE_ITALICS;
+                else if (*i == "bolditalics") // backward compatibility
+                  iStyle |= (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
+                else if (*i == "uppercase")
+                  iStyle |= FONT_STYLE_UPPERCASE;
+                else if (*i == "lowercase")
+                  iStyle |= FONT_STYLE_LOWERCASE;
+              }
             }
 
             XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
@@ -454,7 +461,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
   }
 }
 
-bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
+bool GUIFontManager::OpenFontFile(CXBMCTinyXML& xmlDoc)
 {
   // Get the file to load fonts from:
   CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
@@ -483,7 +490,7 @@ bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
   strFontSet.Empty();
 
   // Load our font file
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return false;
 
@@ -529,7 +536,7 @@ bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
 
 bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return false;
 

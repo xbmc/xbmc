@@ -29,7 +29,7 @@
 #include <sys/times.h>
 #include <sched.h>
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "threads/Atomics.h"
 #include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
@@ -92,7 +92,7 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
 BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   static long timegm_lock = 0;
 #endif
 
@@ -111,7 +111,7 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
     sysTime.tm_yday++;
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   CAtomicSpinLock lock(timegm_lock);
 #endif
   time_t t = timegm(&sysTime);

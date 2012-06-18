@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
+ * Copyright (C) 2011 Grigori Goronzy <greg@chown.ath.cx>
  *
  * This file is part of libass.
  *
@@ -22,6 +23,7 @@
 #include <assert.h>
 #include <ft2build.h>
 #include FT_GLYPH_H
+#include FT_OUTLINE_H
 
 #include "ass_utils.h"
 #include "ass_bitmap.h"
@@ -133,10 +135,12 @@ void ass_synth_done(ASS_SynthPriv *priv)
 static Bitmap *alloc_bitmap(int w, int h)
 {
     Bitmap *bm;
+    unsigned s = w; // XXX: alignment
     bm = malloc(sizeof(Bitmap));
-    bm->buffer = calloc(w, h);
+    bm->buffer = calloc(s, h);
     bm->w = w;
     bm->h = h;
+    bm->stride = s;
     bm->left = bm->top = 0;
     return bm;
 }
@@ -153,70 +157,57 @@ static Bitmap *copy_bitmap(const Bitmap *src)
     Bitmap *dst = alloc_bitmap(src->w, src->h);
     dst->left = src->left;
     dst->top = src->top;
-    memcpy(dst->buffer, src->buffer, src->w * src->h);
+    memcpy(dst->buffer, src->buffer, src->stride * src->h);
     return dst;
 }
 
-int check_glyph_area(ASS_Library *library, FT_Glyph glyph)
+Bitmap *outline_to_bitmap(ASS_Library *library, FT_Library ftlib,
+                          FT_Outline *outline, int bord)
 {
-    FT_BBox bbox;
-    long long dx, dy;
-    FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_TRUNCATE, &bbox);
-    dx = bbox.xMax - bbox.xMin;
-    dy = bbox.yMax - bbox.yMin;
-    if (dx * dy > 8000000) {
-        ass_msg(library, MSGL_WARN, "Glyph bounding box too large: %dx%dpx",
-               (int) dx, (int) dy);
-        return 1;
-    } else
-        return 0;
-}
-
-static Bitmap *glyph_to_bitmap_internal(ASS_Library *library,
-                                          FT_Glyph glyph, int bord)
-{
-    FT_BitmapGlyph bg;
-    FT_Bitmap *bit;
     Bitmap *bm;
     int w, h;
-    unsigned char *src;
-    unsigned char *dst;
-    int i;
     int error;
+    FT_BBox bbox;
+    FT_Bitmap bitmap;
 
-    if (check_glyph_area(library, glyph))
-        return 0;
-    error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 0);
-    if (error) {
-        ass_msg(library, MSGL_WARN, "FT_Glyph_To_Bitmap error %d",
-               error);
-        return 0;
+    FT_Outline_Get_CBox(outline, &bbox);
+    // move glyph to origin (0, 0)
+    bbox.xMin &= ~63;
+    bbox.yMin &= ~63;
+    FT_Outline_Translate(outline, -bbox.xMin, -bbox.yMin);
+    // bitmap size
+    bbox.xMax = (bbox.xMax + 63) & ~63;
+    bbox.yMax = (bbox.yMax + 63) & ~63;
+    w = (bbox.xMax - bbox.xMin) >> 6;
+    h = (bbox.yMax - bbox.yMin) >> 6;
+    // pen offset
+    bbox.xMin >>= 6;
+    bbox.yMax >>= 6;
+
+    if (w * h > 8000000) {
+        ass_msg(library, MSGL_WARN, "Glyph bounding box too large: %dx%dpx",
+                w, h);
+        return NULL;
     }
 
-    bg = (FT_BitmapGlyph) glyph;
-    bit = &(bg->bitmap);
-    if (bit->pixel_mode != FT_PIXEL_MODE_GRAY) {
-        ass_msg(library, MSGL_WARN, "Unsupported pixel mode: %d",
-               (int) (bit->pixel_mode));
-        FT_Done_Glyph(glyph);
-        return 0;
-    }
-
-    w = bit->width;
-    h = bit->rows;
+    // allocate and set up bitmap
     bm = alloc_bitmap(w + 2 * bord, h + 2 * bord);
-    bm->left = bg->left - bord;
-    bm->top = -bg->top - bord;
+    bm->left = bbox.xMin - bord;
+    bm->top = -bbox.yMax - bord;
+    bitmap.width = w;
+    bitmap.rows = h;
+    bitmap.pitch = bm->stride;
+    bitmap.buffer = bm->buffer + bord + bm->stride * bord;
+    bitmap.num_grays = 256;
+    bitmap.pixel_mode = FT_PIXEL_MODE_GRAY;
 
-    src = bit->buffer;
-    dst = bm->buffer + bord + bm->w * bord;
-    for (i = 0; i < h; ++i) {
-        memcpy(dst, src, w);
-        src += bit->pitch;
-        dst += bm->w;
+    // render into target bitmap
+    if ((error = FT_Outline_Get_Bitmap(ftlib, outline, &bitmap))) {
+        ass_msg(library, MSGL_WARN, "Failed to rasterize glyph: %d\n", error);
+        ass_free_bitmap(bm);
+        return NULL;
     }
 
-    FT_Done_Glyph(glyph);
     return bm;
 }
 
@@ -232,16 +223,16 @@ static void fix_outline(Bitmap *bm_g, Bitmap *bm_o)
     const int l = bm_o->left > bm_g->left ? bm_o->left : bm_g->left;
     const int t = bm_o->top > bm_g->top ? bm_o->top : bm_g->top;
     const int r =
-        bm_o->left + bm_o->w <
-        bm_g->left + bm_g->w ? bm_o->left + bm_o->w : bm_g->left + bm_g->w;
+        bm_o->left + bm_o->stride <
+        bm_g->left + bm_g->stride ? bm_o->left + bm_o->stride : bm_g->left + bm_g->stride;
     const int b =
         bm_o->top + bm_o->h <
         bm_g->top + bm_g->h ? bm_o->top + bm_o->h : bm_g->top + bm_g->h;
 
     unsigned char *g =
-        bm_g->buffer + (t - bm_g->top) * bm_g->w + (l - bm_g->left);
+        bm_g->buffer + (t - bm_g->top) * bm_g->stride + (l - bm_g->left);
     unsigned char *o =
-        bm_o->buffer + (t - bm_o->top) * bm_o->w + (l - bm_o->left);
+        bm_o->buffer + (t - bm_o->top) * bm_o->stride + (l - bm_o->left);
 
     for (y = 0; y < b - t; ++y) {
         for (x = 0; x < r - l; ++x) {
@@ -250,8 +241,8 @@ static void fix_outline(Bitmap *bm_g, Bitmap *bm_o)
             c_o = o[x];
             o[x] = (c_o > c_g) ? c_o - (c_g / 2) : 0;
         }
-        g += bm_g->w;
-        o += bm_o->w;
+        g += bm_g->stride;
+        o += bm_o->stride;
     }
 }
 
@@ -259,27 +250,30 @@ static void fix_outline(Bitmap *bm_g, Bitmap *bm_o)
  * \brief Shift a bitmap by the fraction of a pixel in x and y direction
  * expressed in 26.6 fixed point
  */
-static void shift_bitmap(unsigned char *buf, int w, int h, int shift_x,
-                         int shift_y)
+static void shift_bitmap(Bitmap *bm, int shift_x, int shift_y)
 {
     int x, y, b;
+    int w = bm->w;
+    int h = bm->h;
+    int s = bm->stride;
+    unsigned char *buf = bm->buffer;
 
     // Shift in x direction
     if (shift_x > 0) {
         for (y = 0; y < h; y++) {
             for (x = w - 1; x > 0; x--) {
-                b = (buf[x + y * w - 1] * shift_x) >> 6;
-                buf[x + y * w - 1] -= b;
-                buf[x + y * w] += b;
+                b = (buf[x + y * s - 1] * shift_x) >> 6;
+                buf[x + y * s - 1] -= b;
+                buf[x + y * s] += b;
             }
         }
     } else if (shift_x < 0) {
         shift_x = -shift_x;
         for (y = 0; y < h; y++) {
             for (x = 0; x < w - 1; x++) {
-                b = (buf[x + y * w + 1] * shift_x) >> 6;
-                buf[x + y * w + 1] -= b;
-                buf[x + y * w] += b;
+                b = (buf[x + y * s + 1] * shift_x) >> 6;
+                buf[x + y * s + 1] -= b;
+                buf[x + y * s] += b;
             }
         }
     }
@@ -288,18 +282,18 @@ static void shift_bitmap(unsigned char *buf, int w, int h, int shift_x,
     if (shift_y > 0) {
         for (x = 0; x < w; x++) {
             for (y = h - 1; y > 0; y--) {
-                b = (buf[x + (y - 1) * w] * shift_y) >> 6;
-                buf[x + (y - 1) * w] -= b;
-                buf[x + y * w] += b;
+                b = (buf[x + (y - 1) * s] * shift_y) >> 6;
+                buf[x + (y - 1) * s] -= b;
+                buf[x + y * s] += b;
             }
         }
     } else if (shift_y < 0) {
         shift_y = -shift_y;
         for (x = 0; x < w; x++) {
             for (y = 0; y < h - 1; y++) {
-                b = (buf[x + (y + 1) * w] * shift_y) >> 6;
-                buf[x + (y + 1) * w] -= b;
-                buf[x + y * w] += b;
+                b = (buf[x + (y + 1) * s] * shift_y) >> 6;
+                buf[x + (y + 1) * s] -= b;
+                buf[x + y * s] += b;
             }
         }
     }
@@ -430,16 +424,20 @@ static void ass_gauss_blur(unsigned char *buffer, unsigned short *tmp2,
  * \brief Blur with [[1,2,1]. [2,4,2], [1,2,1]] kernel
  * This blur is the same as the one employed by vsfilter.
  */
-static void be_blur(unsigned char *buf, int w, int h)
+static void be_blur(Bitmap *bm)
 {
+    int w = bm->w;
+    int h = bm->h;
+    int s = bm->stride;
+    unsigned char *buf = bm->buffer;
     unsigned int x, y;
     unsigned int old_sum, new_sum;
 
     for (y = 0; y < h; y++) {
-        old_sum = 2 * buf[y * w];
+        old_sum = 2 * buf[y * s];
         for (x = 0; x < w - 1; x++) {
-            new_sum = buf[y * w + x] + buf[y * w + x + 1];
-            buf[y * w + x] = (old_sum + new_sum) >> 2;
+            new_sum = buf[y * s + x] + buf[y * s + x + 1];
+            buf[y * s + x] = (old_sum + new_sum) >> 2;
             old_sum = new_sum;
         }
     }
@@ -447,18 +445,18 @@ static void be_blur(unsigned char *buf, int w, int h)
     for (x = 0; x < w; x++) {
         old_sum = 2 * buf[x];
         for (y = 0; y < h - 1; y++) {
-            new_sum = buf[y * w + x] + buf[(y + 1) * w + x];
-            buf[y * w + x] = (old_sum + new_sum) >> 2;
+            new_sum = buf[y * s + x] + buf[(y + 1) * s + x];
+            buf[y * s + x] = (old_sum + new_sum) >> 2;
             old_sum = new_sum;
         }
     }
 }
 
-int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
-                    FT_Glyph glyph, FT_Glyph outline_glyph,
-                    Bitmap **bm_g, Bitmap **bm_o, Bitmap **bm_s,
-                    int be, double blur_radius, FT_Vector shadow_offset,
-                    int border_style)
+int outline_to_bitmap3(ASS_Library *library, ASS_SynthPriv *priv_blur,
+                       FT_Library ftlib, FT_Outline *outline, FT_Outline *border,
+                       Bitmap **bm_g, Bitmap **bm_o, Bitmap **bm_s,
+                       int be, double blur_radius, FT_Vector shadow_offset,
+                       int border_style)
 {
     int bord, bbord, gbord;
     blur_radius *= 2;
@@ -472,13 +470,13 @@ int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
 
     *bm_g = *bm_o = *bm_s = 0;
 
-    if (glyph)
-        *bm_g = glyph_to_bitmap_internal(library, glyph, bord);
+    if (outline)
+        *bm_g = outline_to_bitmap(library, ftlib, outline, bord);
     if (!*bm_g)
         return 1;
 
-    if (outline_glyph) {
-        *bm_o = glyph_to_bitmap_internal(library, outline_glyph, bord);
+    if (border) {
+        *bm_o = outline_to_bitmap(library, ftlib, border, bord);
         if (!*bm_o) {
             return 1;
         }
@@ -487,9 +485,9 @@ int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
     // Apply box blur (multiple passes, if requested)
     while (be--) {
         if (*bm_o)
-            be_blur((*bm_o)->buffer, (*bm_o)->w, (*bm_o)->h);
+            be_blur(*bm_o);
         else
-            be_blur((*bm_g)->buffer, (*bm_g)->w, (*bm_g)->h);
+            be_blur(*bm_g);
     }
 
     // Apply gaussian blur
@@ -501,12 +499,12 @@ int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
         generate_tables(priv_blur, blur_radius);
         if (*bm_o)
             ass_gauss_blur((*bm_o)->buffer, priv_blur->tmp,
-                           (*bm_o)->w, (*bm_o)->h, (*bm_o)->w,
+                           (*bm_o)->w, (*bm_o)->h, (*bm_o)->stride,
                            (int *) priv_blur->gt2, priv_blur->g_r,
                            priv_blur->g_w);
         else
             ass_gauss_blur((*bm_g)->buffer, priv_blur->tmp,
-                           (*bm_g)->w, (*bm_g)->h, (*bm_g)->w,
+                           (*bm_g)->w, (*bm_g)->h, (*bm_g)->stride,
                            (int *) priv_blur->gt2, priv_blur->g_r,
                            priv_blur->g_w);
     }
@@ -522,8 +520,7 @@ int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
 
     assert(bm_s);
 
-    shift_bitmap((*bm_s)->buffer, (*bm_s)->w,(*bm_s)->h,
-                 shadow_offset.x, shadow_offset.y);
+    shift_bitmap(*bm_s, shadow_offset.x, shadow_offset.y);
 
     return 0;
 }

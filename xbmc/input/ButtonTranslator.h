@@ -31,10 +31,6 @@
 #include "network/EventClient.h"
 #endif
 
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "SDLJoystick.h"
-#endif
-
 class CKey;
 class CAction;
 class TiXmlNode;
@@ -101,8 +97,6 @@ public:
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
 
-  // m_baseMap contains all the standard mappings
-  std::map<int, buttonMap> m_baseMap;
   // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
   std::map<int, buttonMap> m_translatorMap;
   // m_deviceList contains the list of connected HID devices

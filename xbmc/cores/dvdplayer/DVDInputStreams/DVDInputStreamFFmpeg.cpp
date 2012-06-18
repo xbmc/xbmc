@@ -58,12 +58,12 @@ int CDVDInputStreamFFmpeg::Read(BYTE* buf, int buf_size)
   return -1;
 }
 
-__int64 CDVDInputStreamFFmpeg::GetLength()
+int64_t CDVDInputStreamFFmpeg::GetLength()
 {
   return 0;
 }
 
-__int64 CDVDInputStreamFFmpeg::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamFFmpeg::Seek(int64_t offset, int whence)
 {
   return -1;
 }

@@ -48,7 +48,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 
     //! UStar lyrics might have video
     virtual bool HasVideo();
-    virtual void GetVideoParameters( CStdString& path, __int64& offset  );
+    virtual void GetVideoParameters( CStdString& path, int64_t& offset  );
 
   protected:
     enum
@@ -102,7 +102,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     CStdString    m_artist;
     bool          m_hasPitch;
     CStdString    m_videoFile;
-    __int64       m_videoOffset;
+    int64_t       m_videoOffset;
 
   private:
 

@@ -19,18 +19,15 @@
 */
 
 #include "system.h"
+
+#if defined(HAS_GL) || HAS_GLES == 2
+#include <string>
+#include <math.h>
+
 #include "VideoFilterShader.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "ConvolutionKernels.h"
-
-#include <string>
-#include <math.h>
-
-#if defined(HAS_GL) || HAS_GLES == 2
-
-using namespace Shaders;
-using namespace std;
 
 #if defined(HAS_GL)
   #define USE1DTEXTURE
@@ -38,6 +35,9 @@ using namespace std;
 #else
   #define TEXTARGET GL_TEXTURE_2D
 #endif
+
+using namespace Shaders;
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // BaseVideoFilterShader - base class for video filter shaders

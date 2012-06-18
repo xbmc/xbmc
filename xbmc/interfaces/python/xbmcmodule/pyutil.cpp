@@ -25,7 +25,7 @@
 #include <vector>
 #include "addons/Skin.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/CharsetConverter.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
@@ -33,7 +33,7 @@
 
 using namespace std;
 
-static TiXmlDocument pySkinReferences;
+static CXBMCTinyXML pySkinReferences;
 
 
 namespace PYXBMC
@@ -140,8 +140,27 @@ namespace PYXBMC
     memset(type_object, 0, sizeof(PyTypeObject));
     memcpy(type_object, &py_type_object_header, size);
   }
-}
 
+  bool PyXBMCGetAddonId(std::string &addonId)
+  {
+    // we need to retrieve the addon's ID from python using
+    // __xbmcaddonid__ so let's get a reference to the main
+    // module and global dictionary
+    PyObject* main_module = PyImport_AddModule((char*)"__main__");
+    PyObject* global_dict = PyModule_GetDict(main_module);
+    
+    // extract a reference to the function "func_name"
+    // from the global dictionary
+    PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
+    
+    // if we were unable to retrieve the addon's ID return false
+    if (pyid == NULL)
+     return false;
+    
+    addonId = PyString_AsString(pyid);
+    return true;
+  }
+}
 
 struct SPending
 {

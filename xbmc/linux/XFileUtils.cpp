@@ -29,7 +29,7 @@
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 #include <sys/vfs.h>
 #else
 #include <sys/param.h>
@@ -60,7 +60,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   strPath.Replace("\\","/");
 
   // if the file name is a directory then we add a * to look for all files in this directory
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
   DIR *testDir = opendir(strPath.c_str());
 #else
   DIR *testDir = opendir(szPath);
@@ -251,7 +251,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   {
     // Failed to open file. maybe due to case sensitivity.
     // Try opening the same name in lower case.
-    CStdString igFileName = PTH_IC(lpFileName);
+    CStdString igFileName = CSpecialProtocol::TranslatePathConvertCase(lpFileName);
     fd = open(igFileName.c_str(), flags, mode);
     if (fd != -1)
     {
@@ -275,7 +275,7 @@ if (errno == 20)
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
 
-#if defined(TARGET_LINUX) && defined(HAS_DVD_DRIVE) 
+#if (defined(TARGET_LINUX) || defined(TARGET_FREEBSD)) && defined(HAS_DVD_DRIVE) 
   // special case for opening the cdrom device
   if (strcmp(lpFileName, MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName())==0)
     result->m_bCDROM = true;
@@ -552,7 +552,7 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
     nMode = SEEK_END;
 
   off64_t currOff;
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
   currOff = lseek(hFile->fd, offset, nMode);
 #else
   currOff = lseek64(hFile->fd, offset, nMode);
@@ -576,7 +576,7 @@ BOOL GetDiskFreeSpaceEx(
 
 {
   struct statfs64 fsInfo;
-  if (statfs64(_P(lpDirectoryName), &fsInfo) != 0)
+  if (statfs64(CSpecialProtocol::TranslatePath(lpDirectoryName), &fsInfo) != 0)
     return false;
 
   if (lpFreeBytesAvailable)
@@ -615,7 +615,7 @@ BOOL SetEndOfFile(HANDLE hFile)
     return false;
 
   // get the current offset
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
   off64_t currOff = lseek(hFile->fd, 0, SEEK_CUR);
 #else
   off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
@@ -643,7 +643,7 @@ BOOL SetFilePointerEx(  HANDLE hFile,
 
   off64_t toMove = liDistanceToMove.QuadPart;
 
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
   off64_t currOff = lseek(hFile->fd, toMove, nMode);
 #else
   off64_t currOff = lseek64(hFile->fd, toMove, nMode);

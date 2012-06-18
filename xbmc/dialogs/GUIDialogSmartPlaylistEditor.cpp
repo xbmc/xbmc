@@ -164,12 +164,12 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   // save our playlist
   if (m_path.IsEmpty())
   {
-    CStdString filename(m_playlist.m_playlistName);
+    CStdString filename(CUtil::MakeLegalFileName(m_playlist.m_playlistName));
     CStdString path;
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       path = URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),m_playlist.GetSaveLocation());
-      path = URIUtils::AddFileToFolder(path, filename);
+      path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(filename));
     }
     else
       return;
@@ -236,7 +236,7 @@ void CGUIDialogSmartPlaylistEditor::OnOrder()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ORDER_FIELD);
   OnMessage(msg);
-  m_playlist.m_orderField = (CSmartPlaylistRule::DATABASE_FIELD)msg.GetParam1();
+  m_playlist.m_orderField = (SortBy)msg.GetParam1();
   UpdateButtons();
 }
 
@@ -271,7 +271,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   for (unsigned int i = 0; i < m_playlist.m_playlistRules.size(); i++)
   {
     CFileItemPtr item(new CFileItem("", false));
-    if (m_playlist.m_playlistRules[i].m_field == CSmartPlaylistRule::FIELD_NONE)
+    if (m_playlist.m_playlistRules[i].m_field == FieldNone)
       item->SetLabel(g_localizeStrings.Get(21423));
     else
       item->SetLabel(m_playlist.m_playlistRules[i].GetLocalizedRule());
@@ -295,11 +295,11 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_ORDER_FIELD);
     OnMessage(msg);
   }
-  vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_playlist.GetType(), true);
-  for (unsigned int i = 0; i < fields.size(); i++)
+  vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
+  for (unsigned int i = 0; i < orders.size(); i++)
   {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ORDER_FIELD, fields[i]);
-    msg.SetLabel(CSmartPlaylistRule::GetLocalizedField(fields[i]));
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ORDER_FIELD, orders[i]);
+    msg.SetLabel(CSmartPlaylistRule::GetLocalizedOrder(orders[i]));
     OnMessage(msg);
   }
   {
@@ -451,7 +451,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
   CSmartPlaylistRule rule;
   if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
   {
-    if (m_playlist.m_playlistRules.size() == 1 && m_playlist.m_playlistRules[0].m_field == CSmartPlaylistRule::FIELD_NONE)
+    if (m_playlist.m_playlistRules.size() == 1 && m_playlist.m_playlistRules[0].m_field == FieldNone)
       m_playlist.m_playlistRules[0] = rule;
     else
       m_playlist.m_playlistRules.push_back(rule);

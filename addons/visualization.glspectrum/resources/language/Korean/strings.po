@@ -1,0 +1,86 @@
+# XBMC Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-28 15:29+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgctxt "Addon Summary"
+msgid "Visualisation showing a rotating 3D Spectrum Analyzer"
+msgstr "회전하는 3D 스펙트럼 분석기를 보여지는 음악시각화"
+
+msgctxt "Addon Description"
+msgid "Opengl Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in Opengl that moves to the beat of the music creating a wave effect across the spectrum grid.\nIt also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great"
+msgstr "Opengl 스펙트럼은 회전하는 3D 스펙트럼 분석기를 통해 음악시각화를 보여주며 음악의 비트가 만들어내는 웨이브 효과를 스펙트럼 그리드에 보여줍니다. 설정에서 스펙트럼 바의 높이, 속도, 바의 갯수 (채워짐, 점, 와이어 프레임)를 지정할수 있습니다. 가볍고 CPU를 많이 사용하지 않습니다."
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "모드"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "채워짐"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "와이어 프레임"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "점"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "바 높이"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "낮음"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "보통"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "높음"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "매우 높음"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "속도"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "매우 느림"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "느림"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "보통"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "빠름"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "매우 빠름"

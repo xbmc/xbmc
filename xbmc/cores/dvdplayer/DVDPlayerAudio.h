@@ -28,7 +28,8 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "utils/BitstreamStats.h"
-#include "DVDPlayerAudioResampler.h"
+
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 #include <list>
 #include <queue>
@@ -53,11 +54,14 @@ typedef struct stDVDAudioFrame
   double duration;
   unsigned int size;
 
-  int channels;
-  enum PCMChannels *channel_map;
-  int bits_per_sample;
-  int sample_rate;
-  bool passthrough;
+  int               channel_count;
+  int               encoded_channel_count;
+  CAEChannelInfo    channel_layout;
+  enum AEDataFormat data_format;
+  int               bits_per_sample;
+  int               sample_rate;
+  int               encoded_sample_rate;
+  bool              passthrough;
 } DVDAudioFrame;
 
 class CPTSOutputQueue
@@ -78,12 +82,12 @@ public:
 class CPTSInputQueue
 {
 private:
-  typedef std::list<std::pair<__int64, double> >::iterator IT;
-  std::list<std::pair<__int64, double> > m_list;
+  typedef std::list<std::pair<int64_t, double> >::iterator IT;
+  std::list<std::pair<int64_t, double> > m_list;
   CCriticalSection m_sync;
 public:
-  void   Add(__int64 bytes, double pts);
-  double Get(__int64 bytes, bool consume);
+  void   Add(int64_t bytes, double pts);
+  double Get(int64_t bytes, bool consume);
   void   Flush();
 };
 
@@ -92,9 +96,6 @@ class CDVDPlayerAudio : public CThread
 public:
   CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent);
   virtual ~CDVDPlayerAudio();
-
-  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
-  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
   bool OpenStream(CDVDStreamInfo &hints);
   void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
@@ -105,14 +106,17 @@ public:
 
   // waits until all available data has been rendered
   void WaitForBuffers();
-  bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
+  bool AcceptsData() const                              { return !m_messageQueue.IsFull(); }
+  bool HasData() const                                  { return m_messageQueue.GetDataSize() > 0; }
+  int  GetLevel() const                                 { return m_messageQueue.GetLevel(); }
+  bool IsInited() const                                 { return m_messageQueue.IsInited(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 
   //! Switch codec if needed. Called when the sample rate gotten from the
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
 
-  void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
+  void SetVolume(float fVolume)                         { m_dvdAudio.SetVolume(fVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
   float GetCurrentAttenuation()                         { return m_dvdAudio.GetCurrentAttenuation(); }
 
@@ -122,8 +126,6 @@ public:
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
 
-  CDVDMessageQueue m_messageQueue;
-  CDVDMessageQueue& m_messageParent;
   CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
@@ -138,6 +140,9 @@ protected:
   virtual void Process();
 
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
+
+  CDVDMessageQueue m_messageQueue;
+  CDVDMessageQueue& m_messageParent;
 
   double m_audioClock;
 
@@ -180,8 +185,6 @@ protected:
   bool    m_started;
   double  m_duration; // last packets duration
   bool    m_silence;
-
-  CDVDPlayerResampler m_resampler;
 
   bool OutputPacket(DVDAudioFrame &audioframe);
 

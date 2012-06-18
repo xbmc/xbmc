@@ -7,7 +7,7 @@ CALL dlextract.bat libjpeg-turbo %FILES%
 
 cd %TMP_PATH%
 
-xcopy libjpeg-turbo-1.1.1-win32-1\include\* "%CUR_PATH%\include\" /E /Q /I /Y
-copy libjpeg-turbo-1.1.1-win32-1\lib\jpeg-static.lib "%CUR_PATH%\lib\" /Y
+xcopy libjpeg-turbo-1.2.0-win32\project\BuildDependencies\include\* "%CUR_PATH%\include\" /E /Q /I /Y
+xcopy libjpeg-turbo-1.2.0-win32\project\BuildDependencies\lib\*.lib "%CUR_PATH%\lib\" /E /Q /I /Y
 
 cd %LOC_PATH%

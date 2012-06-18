@@ -25,10 +25,10 @@
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererGL.h"
 #ifdef HAS_GL
-#include "LinuxRendererGL.h"
+  #include "LinuxRendererGL.h"
 #elif HAS_GLES == 2
-#include "LinuxRendererGLES.h"
-#include "guilib/MatrixGLES.h"
+  #include "LinuxRendererGLES.h"
+  #include "guilib/MatrixGLES.h"
 #endif
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
@@ -62,24 +62,7 @@ static void LoadTexture(GLenum target
   char *pixelVector = NULL;
   const GLvoid *pixelData = pixels;
 
-  int bytesPerPixel;
-  switch (externalFormat)
-  {
-#ifndef HAS_GLES
-  case GL_BGRA:
-#endif
-  case GL_RGBA:
-    bytesPerPixel = 4;
-    break;
-#ifndef HAS_GLES
-  case GL_BGR:
-#endif
-  case GL_RGB:
-    bytesPerPixel = 3;
-    break;
-  default:
-    bytesPerPixel = 1;
-  }
+  int bytesPerPixel = glFormatElementByteCount(externalFormat);
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
@@ -263,11 +246,8 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_height = (float)(max_y - min_y);
 }
 
-COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
+COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
 {
-  CRect src, dst;
-  g_renderManager.GetVideoRect(src, dst);
-
   m_vertex = NULL;
   m_width  = 1.0;
   m_height = 1.0;
@@ -275,24 +255,15 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_pos    = POSITION_RELATIVE;
   m_x      = 0.0f;
   m_y      = 0.0f;
-
-  int width  = MathUtils::round_int(dst.Width());
-  int height = MathUtils::round_int(dst.Height());
-
   m_texture = 0;
 
   SQuads quads;
-  if(!convert_quad(o, pts, width, height, quads))
+  if(!convert_quad(images, quads))
     return;
 
   glGenTextures(1, &m_texture);
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_texture);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   LoadTexture(GL_TEXTURE_2D
             , quads.size_x
@@ -397,6 +368,12 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glBindTexture(GL_TEXTURE_2D, m_texture);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
 #ifdef HAS_GL
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -490,6 +467,11 @@ void COverlayTextureGL::Render(SRenderState& state)
 #else
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 #endif
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 #if defined(HAS_GL)
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

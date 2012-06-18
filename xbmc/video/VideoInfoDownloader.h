@@ -26,10 +26,10 @@
 #include "addons/Scraper.h"
 #include "Episode.h"
 #include "XBDateTime.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 // forward declarations
-class TiXmlDocument;
+class CXBMCTinyXML;
 class CGUIDialogProgress;
 
 namespace ADDON
@@ -42,7 +42,7 @@ typedef std::vector<CScraperUrl> MOVIELIST;
 class CVideoInfoDownloader : public CThread
 {
 public:
-  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) : m_info(scraper) {}
+  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) : CThread("CVideoInfoDownloader"), m_info(scraper) {}
   virtual ~CVideoInfoDownloader() {}
 
   // threaded lookup functions
@@ -67,7 +67,7 @@ protected:
                       GET_EPISODE_LIST = 3,
                       GET_EPISODE_DETAILS = 4 };
 
-  XFILE::CFileCurl m_http;
+  XFILE::CCurlFile m_http;
   CStdString        m_strMovie;
   MOVIELIST         m_movieList;
   CVideoInfoTag     m_movieDetails;

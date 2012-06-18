@@ -36,7 +36,7 @@
 #define TIME_FOR_DEACELLERATION_DECREASE 0.5f
 //the factor for decreasing the deacceleration
 #define DEACELLERATION_DECREASE_FACTOR 0.9f
-//minimum speed for doing inertial scroll is 50 pixels / s
+//minimum speed for doing inertial scroll is 100 pixels / s
 #define MINIMUM_SPEED_FOR_INERTIA 100
 
 CInertialScrollingHandler::CInertialScrollingHandler()
@@ -75,6 +75,11 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   //on begin/tap stop all inertial scrolling
   if ( action->GetID() == ACTION_GESTURE_BEGIN )
   {
+    //release any former exclusive mouse mode
+    //for making switching between multiple lists
+    //possible
+    CGUIMessage message(GUI_MSG_EXCLUSIVE_MOUSE, 0, 0);
+    g_windowManager.SendMessage(message);     
     m_bScrolling = false;
     //wakeup screensaver on pan begin
     g_application.ResetScreenSaver();    

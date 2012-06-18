@@ -19,14 +19,9 @@
  *
  */
 
-/*!
-\file Texture.h
-\brief
-*/
+#pragma once
 
-#ifndef GUILIB_TEXTURE_H
-#define GUILIB_TEXTURE_H
-
+#include "system.h"
 #include "gui3d.h"
 #include "utils/StdString.h"
 #include "XBTF.h"
@@ -35,15 +30,9 @@
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #pragma pack()
 
-#ifdef HAS_DX
-#include "D3DResource.h"
-#endif
-
 class CTexture;
 class CGLTexture;
 class CDXTexture;
-
-#pragma once
 
 /*!
 \ingroup textures
@@ -54,6 +43,8 @@ class CBaseTexture
 
 public:
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
+  CBaseTexture(const CBaseTexture &copy);
+
   virtual ~CBaseTexture();
 
   bool LoadFromFile(const CStdString& texturePath, unsigned int maxHeight = 0, unsigned int maxWidth = 0,
@@ -66,15 +57,8 @@ public:
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
+  virtual void BindToUnit(unsigned int unit) = 0;
 
-  XBMC::TexturePtr GetTextureObject() const
-  {
-#ifdef HAS_DX
-    return m_texture.Get();
-#else
-    return m_texture;
-#endif
-  }
   unsigned char* GetPixels() const { return m_pixels; }
   unsigned int GetPitch() const { return GetPitch(m_textureWidth); }
   unsigned int GetRows() const { return GetRows(m_textureHeight); }
@@ -83,6 +67,7 @@ public:
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
   int GetOrientation() const { return m_orientation; }
+  void SetOrientation(int orientation) { m_orientation = orientation; }
 
   void Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU);
   void Allocate(unsigned int width, unsigned int height, unsigned int format);
@@ -101,11 +86,7 @@ protected:
   unsigned int m_imageHeight;
   unsigned int m_textureWidth;
   unsigned int m_textureHeight;
-#ifdef HAS_DX
-  CD3DTexture m_texture;
-#else
-  XBMC::TexturePtr m_texture;
-#endif
+
   unsigned char* m_pixels;
   bool m_loadedToGPU;
   unsigned int m_format;
@@ -119,6 +100,4 @@ protected:
 #elif defined(HAS_DX)
 #include "TextureDX.h"
 #define CTexture CDXTexture
-#endif
-
 #endif

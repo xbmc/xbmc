@@ -26,7 +26,7 @@
 
 namespace XFILE
 {
-  class CFileCurl;
+  class CCurlFile;
 }
 
 class CDVDInputStreamHttp : public CDVDInputStream
@@ -37,14 +37,14 @@ public:
   virtual bool Open(const char* strFile, const std::string& content);
   virtual void Close();
   virtual int Read(BYTE* buf, int buf_size);
-  virtual __int64 Seek(__int64 offset, int whence);
+  virtual int64_t Seek(int64_t offset, int whence);
   virtual bool IsEOF();
-  virtual __int64 GetLength();
+  virtual int64_t GetLength();
 
   CHttpHeader* GetHttpHeader();
 
 protected:
-  XFILE::CFileCurl* m_pFile;
+  XFILE::CCurlFile* m_pFile;
   CHttpHeader m_httpHeader;
   bool m_eof;
 };

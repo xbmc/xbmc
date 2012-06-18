@@ -39,6 +39,6 @@ private:
   virtual void DrawContrastBrightnessPattern(int top, int left, int bottom, int right);
   virtual void DrawCircle(int originX, int originY, int radius);
   virtual void BeginRender();
-  virtual void EndRender();  
+  virtual void EndRender();
 };
 

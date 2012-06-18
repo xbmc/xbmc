@@ -41,7 +41,12 @@ bool CDirectoryNodeEpisodes::GetContent(CFileItemList& items) const
   CollectQueryParams(params);
 
   CStdString strBaseDir=BuildPath();
-  bool bSuccess=videodatabase.GetEpisodesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetTvShowId(), params.GetSeason());
+
+  int season = (int)params.GetSeason();
+  if (season == -2)
+    season = -1;
+
+  bool bSuccess=videodatabase.GetEpisodesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetTvShowId(), season);
 
   videodatabase.Close();
 

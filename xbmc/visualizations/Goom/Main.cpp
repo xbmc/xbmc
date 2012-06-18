@@ -27,9 +27,11 @@ Goom Visualization Interface for XBMC
 
 */
 
+#define __STDC_LIMIT_MACROS
 
 #include "../../addons/include/xbmc_vis_dll.h"
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <string>
 extern "C" {
@@ -136,10 +138,15 @@ extern "C" void ADDON_Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
-  int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) ? iAudioDataLength : (int)sizeof( g_audio_data );
-  memcpy( g_audio_data, pAudioData, copysize );
+  int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) >> 1 ? iAudioDataLength : (int)sizeof( g_audio_data ) >> 1;
+  int ipos, i;
+  for(ipos = 0, i = 0; i < copysize; i += 2, ++ipos)
+  {
+    g_audio_data[0][ipos] = (int)(pAudioData[i  ] * (INT16_MAX+.5f));
+    g_audio_data[1][ipos] = (int)(pAudioData[i+1] * (INT16_MAX+.5f));
+  }
 }
 
 

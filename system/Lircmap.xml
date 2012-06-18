@@ -425,7 +425,6 @@
 		<play>KEY_PLAY</play>
 		<play>KEY_PLAYPAUSE</play>
 		<pause>KEY_PAUSE</pause>
-		<pause>KEY_PLAYPAUSE</pause>
 		<stop>KEY_STOP</stop>
 		<stop>KEY_STOPCD</stop>
 		<forward>KEY_FASTFORWARD</forward>
@@ -465,5 +464,49 @@
 		<start>KEY_HOME</start>
 		<display>KEY_ANGLE</display>
 		<teletext>KEY_TEXT</teletext>
+	</remote>
+	<remote device="mediacenter">
+		<pause>pause</pause>
+		<stop>stop</stop>
+		<forward>fwd</forward>
+		<reverse>rew</reverse>
+		<left>left</left>
+		<right>right</right>
+		<up>up</up>
+		<down>down</down>
+		<select>ok</select>
+		<pageplus>ch+</pageplus>
+		<pageminus>ch-</pageminus>
+		<back>back</back>
+		<menu>clear</menu>
+		<title>play</title>
+		<info>info</info>
+		<skipplus>next</skipplus>
+		<skipminus>prev</skipminus>
+		<display>teletext</display>
+		<start>ehome</start>
+		<record>rec</record>
+		<volumeplus>vol+</volumeplus>
+		<volumeminus>vol-</volumeminus>
+		<mute>mute</mute>
+		<power>power</power>
+		<myvideo>video</myvideo>
+		<mymusic>music</mymusic>
+		<mypictures>pictures</mypictures>
+		<mytv>tv</mytv>
+		<one>1</one>
+		<two>2</two>
+		<three>3</three>
+		<four>4</four>
+		<five>5</five>
+		<six>6</six>
+		<seven>7</seven>
+		<eight>8</eight>
+		<nine>9</nine>
+		<zero>0</zero>
+		<mytv>red</mytv>
+		<mymusic>green</mymusic>
+		<mypictures>yellow</mypictures>
+		<myvideo>blue</myvideo>
 	</remote>
 </lircmap>

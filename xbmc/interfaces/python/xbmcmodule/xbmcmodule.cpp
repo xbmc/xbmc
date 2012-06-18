@@ -54,6 +54,7 @@
 #include "pythreadstate.h"
 #include "utils/log.h"
 #include "pyrendercapture.h"
+#include "monitor.h"
 
 // include for constants
 #include "pyutil.h"
@@ -609,11 +610,15 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    PyXBMCGUILock();
-    int id = g_windowManager.GetTopMostModalDialogID();
-    if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
-    bool ret = g_infoManager.EvaluateBool(cLine,id);
-    PyXBMCGUIUnlock();
+    bool ret;
+    {
+      CPyThreadState gilRelease;
+      CSingleLock gc(g_graphicsContext);
+
+      int id = g_windowManager.GetTopMostModalDialogID();
+      if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
+      ret = g_infoManager.EvaluateBool(cLine,id);
+    }
 
     return Py_BuildValue((char*)"b", ret);
   }
@@ -718,9 +723,6 @@ namespace PYXBMC
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (URIUtils::IsDOSPath(strText))
-      strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
-
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
@@ -935,36 +937,6 @@ namespace PYXBMC
     return Py_BuildValue((char*)"b", exists);
   }
   
-  PyDoc_STRVAR(subHashAndFileSize__doc__,
-    "subHashAndFileSize(file) -- Calculate subtitle hash and size.\n"
-    "\n"
-    "file        : file to calculate subtitle hash and size for\n"
-    "\n"
-    "example:\n"
-    " - size,hash = xbmc.subHashAndFileSize(file)\n"); 
-  PyObject* XBMC_subHashAndFileSize(PyObject *self, PyObject *args, PyObject *kwds)
-  {
-    PyObject *f_line;
-    if (!PyArg_ParseTuple(
-      args,
-      (char*)"O",
-      &f_line))
-    {
-      return NULL;
-    }
-    CStdString strSource;
-    if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
-    
-    CStdString strSize;
-    CStdString strHash;
-
-    CPyThreadState pyState;
-    CFileUtils::SubtitleFileSizeAndHash(strSource, strSize, strHash);
-    pyState.Restore();
-    
-    return Py_BuildValue((char*)"ss",strSize.c_str(), strHash.c_str());
-  } 
-
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS|METH_KEYWORDS, output__doc__},
@@ -1010,7 +982,6 @@ namespace PYXBMC
     {(char*)"getCleanMovieTitle", (PyCFunction)XBMC_GetCleanMovieTitle, METH_VARARGS|METH_KEYWORDS, getCleanMovieTitle__doc__},
 
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
-    {(char*)"subHashAndFileSize", (PyCFunction)XBMC_subHashAndFileSize, METH_VARARGS, subHashAndFileSize__doc__},
 
     {NULL, NULL, 0, NULL}
   };
@@ -1020,7 +991,7 @@ namespace PYXBMC
  * initxbmc(void);
  *****************************************************************/
   PyMODINIT_FUNC
-  InitXBMCTypes(bool bInitTypes)
+  InitXBMCTypes()
   {
     initKeyboard_Type();
     initPlayer_Type();
@@ -1028,6 +999,7 @@ namespace PYXBMC
     initPlayListItem_Type();
     initInfoTagMusic_Type();
     initInfoTagVideo_Type();
+    initMonitor_Type();
 
 #ifdef HAS_PYRENDERCAPTURE
     initRenderCapture_Type();
@@ -1038,7 +1010,8 @@ namespace PYXBMC
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
-        PyType_Ready(&InfoTagVideo_Type) < 0) return;
+        PyType_Ready(&InfoTagVideo_Type) < 0 ||
+        PyType_Ready(&Monitor_Type) < 0) return;
 
 #ifdef HAS_PYRENDERCAPTURE
     if (PyType_Ready(&RenderCapture_Type) < 0)
@@ -1065,6 +1038,7 @@ namespace PYXBMC
     Py_INCREF(&PlayListItem_Type);
     Py_INCREF(&InfoTagMusic_Type);
     Py_INCREF(&InfoTagVideo_Type);
+    Py_INCREF(&Monitor_Type);
 
 #ifdef HAS_PYRENDERCAPTURE
     Py_INCREF(&RenderCapture_Type);
@@ -1079,11 +1053,12 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcModule, (char*)"PlayListItem", (PyObject*)&PlayListItem_Type);
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"Monitor", (PyObject*)&Monitor_Type);
 
     // constants
     PyModule_AddStringConstant(pXbmcModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
-    PyModule_AddStringConstant(pXbmcModule, (char*)"__date__", (char*)"15 November 2005");
-    PyModule_AddStringConstant(pXbmcModule, (char*)"__version__", (char*)"1.3");
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__date__", (char*)"16 February 2011");
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__version__", (char*)"1.4");
     PyModule_AddStringConstant(pXbmcModule, (char*)"__credits__", (char*)PY_XBMC_CREDITS);
     PyModule_AddStringConstant(pXbmcModule, (char*)"__platform__", (char*)PY_XBMC_PLATFORM);
 

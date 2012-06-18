@@ -73,14 +73,15 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol()=="musicsearch")
     return new CGUIViewStateMusicSearch(items);
 
-  if (items.IsSmartPlayList() || url.GetProtocol() == "upnp")
+  if (items.IsSmartPlayList() || url.GetProtocol() == "upnp" ||
+      (url.GetProtocol() == "library" && items.GetProperty("library.filter").asBoolean()))
   {
-    if (items.GetContent() == "songs")
+    if (items.GetContent() == "songs" ||
+        items.GetContent() == "albums" ||
+        items.GetContent() == "mixed")
       return new CGUIViewStateMusicSmartPlaylist(items);
-    else if (items.GetContent() == "albums")
-      return new CGUIViewStateMusicSmartPlaylist(items);
-    else if (items.GetContent() == "musicvideos") // TODO: Update this
-      return new CGUIViewStateMusicSmartPlaylist(items);
+    else if (items.GetContent() == "musicvideos")
+      return new CGUIViewStateVideoMusicVideos(items);
     else if (items.GetContent() == "tvshows")
       return new CGUIViewStateVideoTVShows(items);
     else if (items.GetContent() == "episodes")
@@ -88,6 +89,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     else if (items.GetContent() == "movies")
       return new CGUIViewStateVideoMovies(items);
   }
+
+  if (url.GetProtocol() == "library")
+    return new CGUIViewStateLibrary(items);
 
   if (items.IsPlayList())
     return new CGUIViewStateMusicPlaylist(items);
@@ -137,14 +141,14 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
   m_playlist = PLAYLIST_NONE;
-  m_sortOrder=SORT_ORDER_ASC;
+  m_sortOrder = SortOrderAscending;
 }
 
 CGUIViewState::~CGUIViewState()
 {
 }
 
-SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
+SortOrder CGUIViewState::GetDisplaySortOrder() const
 {
   // we actually treat some sort orders in reverse, so that we can have
   // the one sort order variable to save but it can be ascending usually,
@@ -155,18 +159,18 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
       sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT ||
       sortMethod == SORT_METHOD_SONG_RATING || sortMethod == SORT_METHOD_BITRATE || sortMethod == SORT_METHOD_LISTENERS)
   {
-    if (m_sortOrder == SORT_ORDER_ASC) return SORT_ORDER_DESC;
-    if (m_sortOrder == SORT_ORDER_DESC) return SORT_ORDER_ASC;
+    if (m_sortOrder == SortOrderAscending) return SortOrderDescending;
+    if (m_sortOrder == SortOrderDescending) return SortOrderAscending;
   }
   return m_sortOrder;
 }
 
-SORT_ORDER CGUIViewState::SetNextSortOrder()
+SortOrder CGUIViewState::SetNextSortOrder()
 {
-  if (m_sortOrder==SORT_ORDER_ASC)
-    SetSortOrder(SORT_ORDER_DESC);
+  if (m_sortOrder == SortOrderAscending)
+    SetSortOrder(SortOrderDescending);
   else
-    SetSortOrder(SORT_ORDER_ASC);
+    SetSortOrder(SortOrderAscending);
 
   SaveViewState();
 
@@ -392,15 +396,15 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(SORT_ORDER_ASC);
+  SetSortOrder(SortOrderAscending);
 }
 
-void CGUIViewState::SetSortOrder(SORT_ORDER sortOrder)
+void CGUIViewState::SetSortOrder(SortOrder sortOrder)
 {
   if (GetSortMethod() == SORT_METHOD_NONE)
-    m_sortOrder = SORT_ORDER_NONE;
-  else if (sortOrder == SORT_ORDER_NONE)
-    m_sortOrder = SORT_ORDER_ASC;
+    m_sortOrder = SortOrderNone;
+  else if (sortOrder == SortOrderNone)
+    m_sortOrder = SortOrderAscending;
   else
     m_sortOrder = sortOrder;
 }
@@ -450,7 +454,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(SORT_ORDER_ASC);
+  SetSortOrder(SortOrderAscending);
   if (items.IsPlugin())
   {
     CURL url(items.GetPath());
@@ -472,4 +476,19 @@ void CGUIViewStateFromItems::SaveViewState()
   SaveViewToDb(m_items.GetPath(), g_windowManager.GetActiveWindow());
 }
 
+CGUIViewStateLibrary::CGUIViewStateLibrary(const CFileItemList &items) : CGUIViewState(items)
+{
+  AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+  SetSortMethod(SORT_METHOD_NONE);
+  SetSortOrder(SortOrderNone);
+
+  SetViewAsControl(DEFAULT_VIEW_LIST);
+
+  LoadViewState(items.GetPath(), g_windowManager.GetActiveWindow());
+}
+
+void CGUIViewStateLibrary::SaveViewState()
+{
+  SaveViewToDb(m_items.GetPath(), g_windowManager.GetActiveWindow());
+}
 

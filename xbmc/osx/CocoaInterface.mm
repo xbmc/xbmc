@@ -28,7 +28,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
-#import <Carbon/Carbon.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
 #import <AudioUnit/AudioUnit.h>
@@ -39,6 +38,7 @@
 #import "DllPaths_generated.h"
 
 #import "AutoPool.h"
+
 
 // hack for Cocoa_GL_ResizeWindow
 //extern "C" void SDL_SetWidthHeight(int w, int h);
@@ -76,40 +76,6 @@ int Cocoa_GL_GetCurrentDisplayID(void)
   }
   
   return((int)display_id);
-}
-
-/* 10.5 only
-void Cocoa_SetSystemSleep(bool enable)
-{
-  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
-  IOPMAssertionID assertionID;
-  IOReturn success;
-  
-  if (enable) {
-    success= IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &assertionID); 
-  } else {
-    success = IOPMAssertionRelease(assertionID);
-  }
-}
-
-void Cocoa_SetDisplaySleep(bool enable)
-{
-  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
-  IOPMAssertionID assertionID;
-  IOReturn success;
-  
-  if (enable) {
-    success= IOPMAssertionCreate(kIOPMAssertionTypeNoIdleSleep, kIOPMAssertionLevelOn, &assertionID); 
-  } else {
-    success = IOPMAssertionRelease(assertionID);
-  }
-}
-*/
-
-void Cocoa_UpdateSystemActivity(void)
-{
-  // Original Author: Elan Feingold
-  UpdateSystemActivity(UsrActivity);
 }
 
 bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
@@ -186,18 +152,12 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
   }
   else
   {
-    // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
-    CGDirectDisplayID display_id;
-    CFDictionaryRef mode;
-  
-    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
-    mode = CGDisplayCurrentMode(display_id);
-    if (mode)
-    {
-      CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayRefreshRate), kCFNumberDoubleType, &fps);
-      if (fps <= 0.0)
-        fps = 60.0;
-    }
+    CGDisplayModeRef display_mode;
+    display_mode = (CGDisplayModeRef)Cocoa_GL_GetCurrentDisplayID();
+    fps = CGDisplayModeGetRefreshRate(display_mode);
+    CGDisplayModeRelease(display_mode);
+    if (fps <= 0.0)
+      fps = 60.0;
   }
   
   return(fps);
@@ -445,62 +405,6 @@ void Cocoa_HideDock()
     }
   }
 }
-void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void* userData, void* userData2, const char* path), void* userData, void* userData2)
-{
-  NSString*     filePath = [[NSString alloc] initWithUTF8String:strFile];
-  NSDictionary* doc = [[NSDictionary alloc] initWithContentsOfFile:filePath];
-  NSString*     raw = [doc objectForKey:@"RawQuery"];
-  NSArray*      searchPaths = [[doc objectForKey:@"SearchCriteria"] objectForKey:@"FXScopeArrayOfPaths"];
-
-  if (raw == 0)
-    return;
-
-  // Ugh, Carbon from now on...
-  MDQueryRef query = MDQueryCreate(kCFAllocatorDefault, (CFStringRef)raw, NULL, NULL);
-  if (query)
-  {
-  	if (searchPaths)
-  	  MDQuerySetSearchScope(query, (CFArrayRef)searchPaths, 0);
-  	  
-    MDQueryExecute(query, 0);
-
-	// Keep track of when we started.
-	CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent(); 
-    for (;;)
-    {
-      CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, YES);
-    
-      // If we're done or we timed out.
-      if (MDQueryIsGatheringComplete(query) == true ||
-      	  CFAbsoluteTimeGetCurrent() - startTime >= 5)
-      {
-        // Stop the query.
-        MDQueryStop(query);
-      
-    	CFIndex count = MDQueryGetResultCount(query);
-    	char title[BUFSIZ];
-    	int i;
-  
-    	for (i = 0; i < count; ++i) 
-   		{
-      	  MDItemRef resultItem = (MDItemRef)MDQueryGetResultAtIndex(query, i);
-      	  CFStringRef titleRef = (CFStringRef)MDItemCopyAttribute(resultItem, kMDItemPath);
-      
-      	  CFStringGetCString(titleRef, title, BUFSIZ, kCFStringEncodingUTF8);
-      	  CallbackFunc(userData, userData2, title);
-      	  CFRelease(titleRef);
-    	}  
-    
-        CFRelease(query);
-    	break;
-      }
-    }
-  }
-  
-  // Freeing these causes a crash when scanning for new content.
-  CFRelease(filePath);
-  CFRelease(doc);
-}
 
 static char strVersion[32];
 
@@ -564,7 +468,7 @@ bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
   if (model)
   {
     cstr = (const char*)CFDataGetBytePtr(model);
-    if (std::string(cstr).find("NVIDIA GeForce 9400") != std::string::npos)
+    if (cstr && std::string(cstr).find("NVIDIA GeForce 9400") != std::string::npos)
       result = true;
 
     CFRelease(model);
@@ -628,212 +532,6 @@ const char *Cocoa_Paste()
   }
   
   return NULL;
-}
-
-OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
-{
-  AEAddressDesc targetDesc;
-  static const ProcessSerialNumber kPSNOfSystemProcess = { 0, kSystemProcess };
-  AppleEvent eventReply = {typeNull, NULL};
-  AppleEvent appleEventToSend = {typeNull, NULL};
-
-  OSStatus error = noErr;
-
-  error = AECreateDesc(typeProcessSerialNumber, &kPSNOfSystemProcess, 
-                       sizeof(kPSNOfSystemProcess), &targetDesc);
-
-  if (error != noErr)
-  {
-    return(error);
-  }
-
-  error = AECreateAppleEvent(kCoreEventClass, EventToSend, &targetDesc, 
-                             kAutoGenerateReturnID, kAnyTransactionID, &appleEventToSend);
-
-  AEDisposeDesc(&targetDesc);
-  if (error != noErr)
-  {
-    return(error);
-  }
-
-  error = AESend(&appleEventToSend, &eventReply, kAENoReply, 
-                 kAENormalPriority, kAEDefaultTimeout, NULL, NULL);
-
-  AEDisposeDesc(&appleEventToSend);
-  if (error != noErr)
-  {
-    return(error);
-  }
-
-  AEDisposeDesc(&eventReply);
-
-  return(error); 
-}
-
-// All this just to reset all audio devices to default :)
-static AudioStreamBasicDescription* FormatsAudioList(AudioStreamID s)
-{
-  OSStatus ret;
-  UInt32   listSize;
-  AudioDevicePropertyID p;
-  AudioStreamBasicDescription *list;
-
-  // This is deprecated for kAudioStreamPropertyAvailablePhysicalFormats,
-  // but compiling on 10.3 requires the older constant
-  p = kAudioStreamPropertyPhysicalFormats;
-
-  // Retrieve all the stream formats supported by this output stream
-  ret = AudioStreamGetPropertyInfo(s, 0, p, &listSize, NULL);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList: "
-      "could not get list size: Error = 0x%08x",
-      (unsigned int)ret);
-    return NULL;
-  }
-
-  // Space for a terminating ID:
-  listSize += sizeof(AudioStreamBasicDescription);
-  list      = (AudioStreamBasicDescription *)malloc(listSize);
-
-  if (list == NULL)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList(): out of memory?");
-    return NULL;
-  }
-
-  ret = AudioStreamGetProperty(s, 0, p, &listSize, list);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList: "
-      "could not get list: Error = 0x%08x",
-      (unsigned int)ret);
-    free(list);
-    return NULL;
-  }
-
-  // Add a terminating ID:
-  list[listSize/sizeof(AudioStreamID)].mFormatID = 0;
-
-  return list;
-}
-
-static void ResetAudioStream(AudioStreamID s)
-{
-  OSStatus ret;
-  UInt32   paramSize;
-  AudioStreamBasicDescription currentFormat;
-
-  // Find the streams current physical format
-  paramSize = sizeof(currentFormat);
-  AudioStreamGetProperty(s, 0, 
-    kAudioStreamPropertyPhysicalFormat, &paramSize, &currentFormat);
-
-  // If it's currently AC-3/SPDIF then reset it to some mixable format
-  if (currentFormat.mFormatID == 'IAC3' ||
-      currentFormat.mFormatID == kAudioFormat60958AC3)
-  {
-    bool streamReset = false;
-    AudioStreamBasicDescription *formats = FormatsAudioList(s);
-
-    if (!formats)
-      return;
-
-    for (int i = 0; !streamReset && formats[i].mFormatID != 0; i++)
-    {
-      if (formats[i].mFormatID == kAudioFormatLinearPCM)
-      {
-        ret = AudioStreamSetProperty(s, NULL, 0,
-          kAudioStreamPropertyPhysicalFormat, sizeof(formats[i]), &(formats[i]));
-        if (ret != noErr)
-        {
-          CLog::Log(LOGWARNING, "ResetAudioStream: "
-            "could not set physical format: Error = 0x%08x",
-            (unsigned int)ret);
-          continue;
-        }
-        else
-        {
-          streamReset = true;
-          sleep(1);   // For the change to take effect
-        }
-      }
-    }
-    free(formats);
-  }
-}
-
-static AudioStreamID* AudioStreamsList(AudioDeviceID d)
-{
-  OSStatus ret;
-  UInt32   listSize;
-  AudioStreamID *list;
-
-  ret = AudioDeviceGetPropertyInfo(d, 0, FALSE,
-    kAudioDevicePropertyStreams, &listSize, NULL);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
-      "could not get list size: Error = 0x%08x",
-      (unsigned int)ret);
-    return NULL;
-  }
-
-  // Space for a terminating ID:
-  listSize += sizeof(AudioStreamID);
-  list      = (AudioStreamID *)malloc(listSize);
-
-  if (list == NULL)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList(): out of memory?");
-    return NULL;
-  }
-
-  ret = AudioDeviceGetProperty(d, 0, FALSE,
-    kAudioDevicePropertyStreams, &listSize, list);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
-      "could not get list: Error = 0x%08x",
-      (unsigned int)ret);
-    return NULL;
-  }
-  // Add a terminating ID:
-  list[listSize/sizeof(AudioStreamID)] = kAudioHardwareBadStreamError;
-
-  return list;
-}
-
-void Cocoa_ResetAudioDevices()
-{
-  // Reset any devices with an AC3/DTS/SPDIF stream back to a Linear PCM
-  // so that they can become a default output device
-  UInt32 size;
-  int    numDevices;
-  AudioDeviceID *devices;
-
-  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
-  devices = (AudioDeviceID*)malloc(size);
-  if (!devices)
-  {
-    CLog::Log(LOGERROR, "ResetAudioDevices: out of memory?");
-    return;
-  }
-  numDevices = size / sizeof(AudioDeviceID);
-  AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, devices);
-
-  for (int i = 0; i < numDevices; i++)
-  {
-    AudioStreamID *streams;
-    streams = AudioStreamsList(devices[i]);
-    if (!streams)
-      continue;
-    for (int j = 0; streams[j] != kAudioHardwareBadStreamError; j++)
-      ResetAudioStream(streams[j]);
-
-    free(streams);
-  }
-  free(devices);
 }
 
 #endif

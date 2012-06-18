@@ -31,6 +31,7 @@
 
 #include "libavutil/cpu.h"
 #include "avcodec.h"
+#include "libavutil/audioconvert.h"
 
 #if FF_API_OLD_SAMPLE_FMT
 /**
@@ -79,7 +80,7 @@ int avcodec_channel_layout_num_channels(int64_t channel_layout);
  * @param fmt_name Format name, or NULL if unknown
  * @return Channel layout mask
  */
-int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name);
+uint64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name);
 
 struct AVAudioConvert;
 typedef struct AVAudioConvert AVAudioConvert;

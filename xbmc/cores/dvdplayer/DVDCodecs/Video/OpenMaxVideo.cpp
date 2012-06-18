@@ -413,7 +413,7 @@ bool COpenMaxVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
     pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-    pDvdVideoPicture->format = DVDVideoPicture::FMT_OMXEGL;
+    pDvdVideoPicture->format = RENDER_FMT_OMXEGL;
     pDvdVideoPicture->openMax = this;
     pDvdVideoPicture->openMaxBuffer = buffer;
 

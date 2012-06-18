@@ -62,6 +62,7 @@ static uint16_t SymMappingsEvdev[][2] =
 { { 121, XBMCK_VOLUME_MUTE }         // Volume mute
 , { 122, XBMCK_VOLUME_DOWN }         // Volume down
 , { 123, XBMCK_VOLUME_UP }           // Volume up
+, { 124, XBMCK_POWER }               // Power button on PC case
 , { 127, XBMCK_SPACE }               // Pause
 , { 135, XBMCK_MENU }                // Right click
 , { 136, XBMCK_MEDIA_STOP }          // Stop
@@ -264,11 +265,17 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_KEYDOWN;
         newEvent.key.keysym.scancode = event.key.keysym.scancode;
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
-        newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
         newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
         newEvent.key.which = event.key.which;
+
+        // Check if the Windows keys are down because SDL doesn't flag this.
+        uint16_t mod = event.key.keysym.mod;
+        uint8_t* keystate = SDL_GetKeyState(NULL);
+        if (keystate[SDLK_LSUPER] || keystate[SDLK_RSUPER])
+          mod |= XBMCKMOD_LSUPER;
+        newEvent.key.keysym.mod = (XBMCMod) mod;
 
 #if defined(_LINUX) && !defined(__APPLE__)
         // If the keysym.sym is zero try to get it from the scan code

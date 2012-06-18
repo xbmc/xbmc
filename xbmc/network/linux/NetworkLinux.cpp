@@ -23,20 +23,26 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#ifndef __APPLE__
-#include <linux/if.h>
-#include <linux/wireless.h>
-#include <linux/sockios.h>
+#if defined(TARGET_LINUX)
+  #include <linux/if.h>
+  #include <linux/wireless.h>
+  #include <linux/sockios.h>
 #endif
 #include <errno.h>
 #include <resolv.h>
-#if defined(__APPLE__)
-#include <sys/sockio.h>
-#include <net/if.h>
-#include <net/if_dl.h>
-#include <ifaddrs.h>
+#if defined(TARGET_DARWIN)
+  #include <sys/sockio.h>
+  #include <net/if.h>
+  #include <net/if_dl.h>
+  #include <ifaddrs.h>
+#elif defined(TARGET_FREEBSD)
+  #include <sys/sockio.h>
+  #include <net/if.h>
+  #include <net/if_dl.h>
+  #include <ifaddrs.h>
+  #include <net/route.h>
 #else
-#include <net/if_arp.h>
+  #include <net/if_arp.h>
 #endif
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
@@ -45,12 +51,19 @@
 
 using namespace std;
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, CStdString interfaceMacAdr)
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, char interfaceMacAddrRaw[6])
 
 {
    m_network = network;
    m_interfaceName = interfaceName;
-   m_interfaceMacAdr = interfaceMacAdr;
+   m_interfaceMacAdr.Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                  (uint8_t)interfaceMacAddrRaw[0],
+                  (uint8_t)interfaceMacAddrRaw[1],
+                  (uint8_t)interfaceMacAddrRaw[2],
+                  (uint8_t)interfaceMacAddrRaw[3],
+                  (uint8_t)interfaceMacAddrRaw[4],
+                  (uint8_t)interfaceMacAddrRaw[5]);
+   memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
 CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
@@ -64,7 +77,7 @@ CStdString& CNetworkInterfaceLinux::GetName(void)
 
 bool CNetworkInterfaceLinux::IsWireless()
 {
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   return false;
 #else
   struct iwreq wrq;
@@ -110,6 +123,11 @@ CStdString CNetworkInterfaceLinux::GetMacAddress()
   return m_interfaceMacAdr;
 }
 
+void CNetworkInterfaceLinux::GetMacAddressRaw(char rawMac[6])
+{
+  memcpy(rawMac, m_interfaceMacAddrRaw, 6);
+}
+
 CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
    CStdString result = "";
@@ -144,7 +162,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
 {
    CStdString result = "";
 
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    char essid[IW_ESSID_MAX_SIZE + 1];
    memset(&essid, 0, sizeof(essid));
 
@@ -166,7 +184,65 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 {
    CStdString result = "";
 
-#ifndef __APPLE__
+#if defined(TARGET_DARWIN)
+  FILE* pipe = popen("echo \"show State:/Network/Global/IPv4\" | scutil | grep Router", "r");
+  if (pipe)
+  {
+    CStdString tmpStr;
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
+      tmpStr = buffer;
+      result = tmpStr.Mid(11);
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Unable to determine gateway");
+    }
+    pclose(pipe);
+  }
+#elif defined(TARGET_FREEBSD)
+   size_t needed;
+   int mib[6];
+   char *buf, *next, *lim;
+   char line[16];
+   struct rt_msghdr *rtm;
+   struct sockaddr *sa;
+   struct sockaddr_in *sockin;
+
+   mib[0] = CTL_NET;
+   mib[1] = PF_ROUTE;
+   mib[2] = 0;
+   mib[3] = 0;
+   mib[4] = NET_RT_DUMP;
+   mib[5] = 0;
+   if (sysctl(mib, 6, NULL, &needed, NULL, 0) < 0)
+      return result;
+
+   if ((buf = (char *)malloc(needed)) == NULL)
+      return result;
+
+   if (sysctl(mib, 6, buf, &needed, NULL, 0) < 0) {
+      free(buf);
+      return result;
+   }
+
+   lim  = buf + needed;
+   for (next = buf; next < lim; next += rtm->rtm_msglen) {
+      rtm = (struct rt_msghdr *)next;
+      sa = (struct sockaddr *)(rtm + 1);
+      sa = (struct sockaddr *)(SA_SIZE(sa) + (char *)sa);	
+      sockin = (struct sockaddr_in *)sa;
+      if (inet_ntop(AF_INET, &sockin->sin_addr.s_addr,
+         line, sizeof(line)) == NULL) {
+            free(buf);
+            return result;
+	  }
+	  result = line;
+      break;
+   }
+   free(buf);
+#else
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
    {
@@ -242,7 +318,7 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
    return m_interfaces;
 }
 
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
 // on iOS, overwrite the GetFirstConnectedInterface and requery
 // the interface list if no connected device is found
 // this fixes a bug when no network is available after first start of xbmc after reboot
@@ -264,12 +340,12 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 #endif
 
 
-CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
+void CNetworkLinux::GetMacAddress(CStdString interfaceName, char rawMac[6])
 {
-  CStdString result = "00:00:00:00:00:00";
-#ifdef __APPLE__
+  memset(rawMac, 0, 6);
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 
-#if ! defined(IFT_ETHER)
+#if !defined(IFT_ETHER)
 #define IFT_ETHER 0x6/* Ethernet CSMACD */
 #endif
   const struct sockaddr_dl* dlAddr = NULL;
@@ -280,7 +356,7 @@ CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
 
   if( getifaddrs(&list) < 0 )
   {
-    return result;
+    return;
   }
 
   for(interface = list; interface != NULL; interface = interface->ifa_next)
@@ -294,13 +370,7 @@ CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
 
         if( dlAddr->sdl_alen > 5 )
         {
-          result.Format("%hhX:%hhX:%hhX:%hhX:%hhX:%hhX",
-             base[0],
-             base[1],
-             base[2],
-             base[3],
-             base[4],
-             base[5]);
+          memcpy(rawMac, base, 6);
         }
       }
       break;
@@ -315,25 +385,17 @@ CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
    strcpy(ifr.ifr_name, interfaceName.c_str());
    if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
    {
-      result.Format("%hhX:%hhX:%hhX:%hhX:%hhX:%hhX",
-         ifr.ifr_hwaddr.sa_data[0],
-         ifr.ifr_hwaddr.sa_data[1],
-         ifr.ifr_hwaddr.sa_data[2],
-         ifr.ifr_hwaddr.sa_data[3],
-         ifr.ifr_hwaddr.sa_data[4],
-         ifr.ifr_hwaddr.sa_data[5]);
+      memcpy(rawMac, ifr.ifr_hwaddr.sa_data, 6);
    }
 #endif
-
-   return result;
 }
 
 void CNetworkLinux::queryInterfaceList()
 {
-  CStdString macAddr = "";
+  char macAddrRaw[6];
   m_interfaces.clear();
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 
    // Query the list of interfaces.
    struct ifaddrs *list;
@@ -346,9 +408,9 @@ void CNetworkLinux::queryInterfaceList()
      if(cur->ifa_addr->sa_family != AF_INET)
        continue;
 
-     macAddr = GetMacAddress(cur->ifa_name);
+     GetMacAddress(cur->ifa_name, macAddrRaw);
      // Add the interface.
-     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddr));
+     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddrRaw));
    }
 
    freeifaddrs(list);
@@ -383,8 +445,8 @@ void CNetworkLinux::queryInterfaceList()
 
       // save the result
       CStdString interfaceName = p;
-      macAddr = GetMacAddress(interfaceName);
-      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddr));
+      GetMacAddress(interfaceName, macAddrRaw);
+      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddrRaw));
    }
    free(line);
    fclose(fp);
@@ -394,7 +456,26 @@ void CNetworkLinux::queryInterfaceList()
 std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 {
    std::vector<CStdString> result;
-#ifndef __APPLE__
+
+#if defined(TARGET_DARWIN)
+  //only finds the primary dns (0 :)
+  FILE* pipe = popen("scutil --dns | grep \"nameserver\\[0\\]\" | tail -n1", "r");
+  if (pipe)
+  {
+    CStdString tmpStr;
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
+      tmpStr = buffer;
+      result.push_back(tmpStr.Mid(17));
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Unable to determine nameserver");
+    }
+    pclose(pipe);
+  } 
+#else
    res_init();
 
    for (int i = 0; i < _res.nscount; i ++)
@@ -430,7 +511,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    if (!IsWireless())
       return result;
 
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    // Query the wireless extentsions version number. It will help us when we
    // parse the resulting events
    struct iwreq iwr;
@@ -616,7 +697,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
    encryptionMode = ENC_NONE;
    assignment = NETWORK_DISABLED;
 
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    FILE* fp = fopen("/etc/network/interfaces", "r");
    if (!fp)
    {
@@ -692,7 +773,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
 
 void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    FILE* fr = fopen("/etc/network/interfaces", "r");
    if (!fr)
    {

@@ -64,7 +64,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS library font settings");
   // libass uses fontconfig (system lib) which is not wrapped
   //  so translate the path before calling into libass
-  m_dll.ass_set_fonts_dir(m_library,  _P(strPath).c_str());
+  m_dll.ass_set_fonts_dir(m_library,  CSpecialProtocol::TranslatePath(strPath).c_str());
   m_dll.ass_set_extract_fonts(m_library, 1);
   m_dll.ass_set_style_overrides(m_library, NULL);
 
@@ -86,7 +86,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 
   // libass uses fontconfig (system lib) which is not wrapped
   //  so translate the path before calling into libass
-  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "Arial", fc, NULL, 1);
+  m_dll.ass_set_fonts(m_renderer, CSpecialProtocol::TranslatePath(strPath).c_str(), "Arial", fc, NULL, 1);
 }
 
 
@@ -150,7 +150,7 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf)
   return true;
 }
 
-ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, double pts)
+ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, double pts, int *changes)
 {
   CSingleLock lock(m_section);
   if(!m_renderer || !m_track)
@@ -160,7 +160,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, dou
   }
 
   m_dll.ass_set_frame_size(m_renderer, imageWidth, imageHeight);
-  return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), NULL);
+  return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 
 ASS_Event* CDVDSubtitlesLibass::GetEvents()

@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/MusicDatabase.h"
@@ -62,13 +63,13 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
   }
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message)
 {
   CVariant data;
   Announce(flag, sender, message, data);
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
   CSingleLock lock (m_critSection);
@@ -76,13 +77,13 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
     m_announcers[i]->Announce(flag, sender, message, data);
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
 {
   CVariant data;
   Announce(flag, sender, message, item, data);
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
 {
   if (!item.get())
   {
@@ -139,8 +140,8 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
       case VIDEODB_CONTENT_MUSICVIDEOS:
         if (!item->GetVideoInfoTag()->m_strAlbum.empty())
           object["album"] = item->GetVideoInfoTag()->m_strAlbum;
-        if (!item->GetVideoInfoTag()->m_strArtist.empty())
-          object["artist"] = item->GetVideoInfoTag()->m_strArtist;
+        if (!item->GetVideoInfoTag()->m_artist.empty())
+          object["artist"] = StringUtils::Join(item->GetVideoInfoTag()->m_artist, " / ");
         break;
       }
     }

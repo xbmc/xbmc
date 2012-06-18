@@ -1,0 +1,608 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
+# Translators:
+# Gunnar Norin <blittan@xbmc.org>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-04 12:52+0000\n"
+"PO-Revision-Date: 2012-05-08 16:16+0000\n"
+"Last-Translator: Gunnar Norin <blittan@xbmc.org>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Confluence is the default skin for XBMC, removing it may cause issues"
+msgstr ""
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "Ändra din"
+
+msgctxt "#31001"
+msgid "Love"
+msgstr "Älska"
+
+msgctxt "#31002"
+msgid "Hate"
+msgstr "Hata"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "Strömalternativ"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Arbetar..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "Dölj INFO"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "Visa val"
+
+msgctxt "#31007"
+msgid "Plugins"
+msgstr "Tillägg"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Helskärm"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "Total längd"
+
+msgctxt "#31020"
+msgid "Recently Added"
+msgstr "Nyligen tillagda"
+
+msgctxt "#31021"
+msgid "Video - Files"
+msgstr "Filmer - Filer"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Musik - Filer"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Spelar"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Sida"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Objekt"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "Övr. alternativ"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Plats"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "Omslagssvep"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31030"
+msgid "Full list"
+msgstr "Full lista"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "Bildminiatyrer"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "Bildsvep"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Nu spelas"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "SPELAR"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSAD"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "SPOLA FRAMÅT"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "SPOLA BAKÅT"
+
+msgctxt "#31046"
+msgid "Audio Properties"
+msgstr "Ljudegenskaper"
+
+msgctxt "#31047"
+msgid "Current Preset"
+msgstr "Nuvarande förval"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Visualiseringsförval"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Sluttid"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sort: stigande"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sort: fallande"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Öppna spellista"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Spara spellista"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Stäng spellista"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Systemmusikfiler"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Nuvarande spellista"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Denna fil är sammanslagen, välj den del du vill spela."
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "Nuvarande vald"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Hemskärmsalternativ"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Bakgrund"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Visa \"Pausad\" i bildspel"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Spela trailers i ett fönster [COLOR=grey3](Endast i videoinformationsdialogen)[/COLOR]"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Övriga alternativ"
+
+msgctxt "#31107"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Dölj flaggläsning från videofilnamn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "Dölj huvudmenyknappar"
+
+msgctxt "#31109"
+msgid "Media backgrounds"
+msgstr "Mediabakgrunder"
+
+msgctxt "#31110"
+msgid "Edit Background for Media Type"
+msgstr "Ändra bakgrund för mediatyp"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Göm"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Alternativ"
+
+msgctxt "#31113"
+msgid "Single Image"
+msgstr "Solobild"
+
+msgctxt "#31114"
+msgid "Multi Image"
+msgstr "Flerbild"
+
+msgctxt "#31115"
+msgid "Customizer"
+msgstr "Anpassare"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "Visa nyligen tillagda album"
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "Visa nyligen tillagda filmer"
+
+msgctxt "#31118"
+msgid "Home Page Programs Submenu"
+msgstr "Hemsidans undermeny"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "Dölj bakgrundsfanart"
+
+msgctxt "#31120"
+msgid "BUTTON LABEL"
+msgstr "KNAPPETIKETT"
+
+msgctxt "#31122"
+msgid "Weather Page"
+msgstr "Vädersida"
+
+msgctxt "#31123"
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "Använd omslag istället för banner för TV-serier"
+
+msgctxt "#31124"
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Visa bakgrund \"Nu spelas\" filmer"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Visa bakgrund \"Nu spelas\" visualisering"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Spela TV-temasånger i videobiblioteket (TVTunes-tillägg)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Sångtexter"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Sångtextstillägg"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Undertextstillägg"
+
+msgctxt "#31134"
+msgid "Home Page Videos Submenu"
+msgstr "Hemskärmens videoundermeny"
+
+msgctxt "#31135"
+msgid "Home Page Music Submenu"
+msgstr "Hemskärmens musikundermeny"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Submenu"
+msgstr "Hemskärmens bildundermeny"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Musik-OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Video-OSD"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Genvägar"
+
+msgctxt "#31201"
+msgid "Categories"
+msgstr "Kategorier"
+
+msgctxt "#31202"
+msgid "Show Cast"
+msgstr "Visa rollista"
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "Välj din låt"
+
+msgctxt "#31204"
+msgid "Section Links"
+msgstr "Sektionslänkar"
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr "Sångtextkälla"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Hittade"
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr "Hitta fler objekt"
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "Kommande avsnitt"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Nuvarande temp"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Sist uppdaterad"
+
+msgctxt "#31302"
+msgid "Menu"
+msgstr "Meny"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Dataleverantör"
+
+msgctxt "#31304"
+msgid "Picture"
+msgstr "Bild"
+
+msgctxt "#31305"
+msgid "No Disc Media Detected"
+msgstr "Ingen diskmedia upptäckt"
+
+msgctxt "#31306"
+msgid "Eject"
+msgstr "Mata ut"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr "Dölj fanart"
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr "Filmdetaljer"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Använt minne:"
+
+msgctxt "#31310"
+msgid "Track Number"
+msgstr "Spårnummer"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Fanart-bild[CR][CR]Inte Tillgänglig[CR][CR]Klicka på knappen för att ange"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Nuvarande skrapa"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Välj en skrapa"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Innehållsskrapealternativ"
+
+msgctxt "#31315"
+msgid "Basic"
+msgstr "Grundläggande"
+
+msgctxt "#31317"
+msgid "Set Fanart Path"
+msgstr "Sätt fanartsökväg"
+
+msgctxt "#31318"
+msgid "Small Fanart"
+msgstr "Liten fanart"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "Vald profil"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Sist inloggad"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Karaoke-låtväljare"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Sänt"
+
+msgctxt "#31323"
+msgid "Latest Movies"
+msgstr "Senaste filmerna"
+
+msgctxt "#31324"
+msgid "Latest Episodes"
+msgstr "Senaste avsnitten"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Spellistsalternativ"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Skapad"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Upplösning"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "Nyligen tillagda"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Timer satt![/B] [COLOR=grey2] - Automatisk avstängning av systemet om[/COLOR]"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "Klicka på knappen för att[CR][CR]spela filmtrailer"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "Albumdetaljer"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Paus"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stopp"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Spola framåt"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Spola bakåt"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Filmmeny"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Ladda ner undertexter"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Skalstandard"
+
+msgctxt "#31391"
+msgid "Skin default with no Caps"
+msgstr "Skalstandard utan VERSAL"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Arialbaserad"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra videoförteckningsalternativ[CR]Konfigurera undertextfonter"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ"
+
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
+msgstr "[B]KONFIGURERA BILDINSTÄLLNINGAR[/B][CR][CR]Ange bildlistningsalternativ · Justera bildspel"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange tre städer för att insamling av väderinformation"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera bildskärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange energisparalternativ · Aktivera debuggningen · Konfigurera huvudkod och lås"
+
+msgctxt "#31407"
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemsidans menyknappar[CR]Ändra skalets bakgrunder"
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade tillägg - Visa och installera tillägg från xbmc.org[CR]Ändra inställningar för tillägg"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGURERA SERVICEINSTÄLLNINGAR[/B][CR][CR]Ställ in kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Aktivera Zeroconf · Konfigurera AirPlay"
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Välj din XBMC användarprofil[CR]för att logga in  och fortsätta"
+
+msgctxt "#31900"
+msgid "Weather Maps"
+msgstr "Väderkartor"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36-timmarsprognos"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Timprognos"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Helgprognos"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10-dagarsprognos"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Prognos"
+
+msgctxt "#31906"
+msgid "Maps & Video"
+msgstr "Karta & video"
+
+msgctxt "#31907"
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "Videoprognost [COLOR=grey2](Helskärmsuppspelning)[/COLOR]"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "Chans till nederbörd"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Hämtar prognosinfo..."

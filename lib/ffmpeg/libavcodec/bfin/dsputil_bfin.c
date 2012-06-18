@@ -197,11 +197,14 @@ static int bfin_pix_abs8_xy2 (void *c, uint8_t *blk1, uint8_t *blk2, int line_si
 
 void dsputil_init_bfin( DSPContext* c, AVCodecContext *avctx )
 {
-    c->get_pixels         = ff_bfin_get_pixels;
+    const int high_bit_depth = avctx->bits_per_raw_sample > 8;
+
     c->diff_pixels        = ff_bfin_diff_pixels;
     c->put_pixels_clamped = ff_bfin_put_pixels_clamped;
     c->add_pixels_clamped = ff_bfin_add_pixels_clamped;
 
+    if (!high_bit_depth)
+    c->get_pixels         = ff_bfin_get_pixels;
     c->clear_blocks       = bfin_clear_blocks;
     c->pix_sum            = ff_bfin_pix_sum;
     c->pix_norm1          = ff_bfin_pix_norm1;
@@ -228,6 +231,7 @@ void dsputil_init_bfin( DSPContext* c, AVCodecContext *avctx )
     c->sse[1] = ff_bfin_sse8;
     c->sse[2] = ff_bfin_sse4;
 
+    if (!high_bit_depth) {
     c->put_pixels_tab[0][0] = bfin_put_pixels16;
     c->put_pixels_tab[0][1] = bfin_put_pixels16_x2;
     c->put_pixels_tab[0][2] = bfin_put_pixels16_y2;
@@ -247,20 +251,23 @@ void dsputil_init_bfin( DSPContext* c, AVCodecContext *avctx )
     c->put_no_rnd_pixels_tab[0][1] = bfin_put_pixels16_x2_nornd;
     c->put_no_rnd_pixels_tab[0][2] = bfin_put_pixels16_y2_nornd;
 /*     c->put_no_rnd_pixels_tab[0][3] = ff_bfin_put_pixels16_xy2_nornd; */
+    }
 
-    if (avctx->dct_algo == FF_DCT_AUTO)
-        c->fdct               = ff_bfin_fdct;
+    if (avctx->bits_per_raw_sample <= 8) {
+        if (avctx->dct_algo == FF_DCT_AUTO)
+            c->fdct                  = ff_bfin_fdct;
 
-    if (avctx->idct_algo==FF_IDCT_VP3) {
-        c->idct_permutation_type = FF_NO_IDCT_PERM;
-        c->idct               = ff_bfin_vp3_idct;
-        c->idct_add           = ff_bfin_vp3_idct_add;
-        c->idct_put           = ff_bfin_vp3_idct_put;
-    } else if (avctx->idct_algo == FF_IDCT_AUTO) {
-        c->idct_permutation_type = FF_NO_IDCT_PERM;
-        c->idct               = ff_bfin_idct;
-        c->idct_add           = bfin_idct_add;
-        c->idct_put           = bfin_idct_put;
+        if (avctx->idct_algo == FF_IDCT_VP3) {
+            c->idct_permutation_type = FF_NO_IDCT_PERM;
+            c->idct                  = ff_bfin_vp3_idct;
+            c->idct_add              = ff_bfin_vp3_idct_add;
+            c->idct_put              = ff_bfin_vp3_idct_put;
+        } else if (avctx->idct_algo == FF_IDCT_AUTO) {
+            c->idct_permutation_type = FF_NO_IDCT_PERM;
+            c->idct                  = ff_bfin_idct;
+            c->idct_add              = bfin_idct_add;
+            c->idct_put              = bfin_idct_put;
+        }
     }
 }
 

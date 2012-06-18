@@ -26,7 +26,7 @@
 #include "filesystem/MythFile.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "PlatformDefs.h"
 
 extern "C"
@@ -181,6 +181,8 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
     // Log any errors from previous run in the loop
     if (bError)
       CLog::Log(LOGWARNING, "%s - Error on line %i in EDL file: %s", __FUNCTION__, iLine, edlFilename.c_str());
+
+    bError = false;
 
     iLine++;
 
@@ -504,7 +506,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(beyondTVFilename))
   {
     CLog::Log(LOGERROR, "%s - Could not load Beyond TV file: %s. %s", __FUNCTION__, beyondTVFilename.c_str(),

@@ -22,9 +22,8 @@
 #ifndef LIBRARY_LOADER
 #define LIBRARY_LOADER
 
-#ifndef _LINUX
-#include "system.h" // WIN32INCLUDES - needed for HMODULE
-#else
+#include "system.h"
+#ifdef _LINUX
 #include "PlatformDefs.h"
 #endif
 

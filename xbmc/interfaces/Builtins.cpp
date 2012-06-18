@@ -76,7 +76,7 @@
 #include "interfaces/python/XBPython.h"
 #endif
 
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"
 #include "CocoaInterface.h"
 #endif
@@ -119,7 +119,7 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   { "RunAppleScript",             true,   "Run the specified AppleScript command" },
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
@@ -331,7 +331,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
       if (params[0].Equals("shutdownmenu"))
         CBuiltins::Execute("Quit");
 #endif     
@@ -350,11 +350,11 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
-#ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())
   {
-#if defined(__APPLE__) && !defined(__arm__)
-    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript")
+#if defined(TARGET_DARWIN_OSX)
+    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript" ||
+        URIUtils::GetExtension(strParameterCaseIntact) == ".scpt")
     {
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
@@ -362,6 +362,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else
 #endif
     {
+#ifdef HAS_PYTHON
       vector<CStdString> argv = params;
 
       vector<CStdString> path;
@@ -376,10 +377,10 @@ int CBuiltins::Execute(const CStdString& execString)
         scriptpath = script->LibPath();
 
       g_pythonParser.evalFile(scriptpath, argv,script);
+#endif
     }
   }
-#endif
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   else if (execute.Equals("runapplescript"))
   {
     Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
@@ -824,7 +825,17 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("setvolume"))
   {
-    g_application.SetVolume(atoi(parameter.c_str()));
+    int oldVolume = g_application.GetVolume();
+    int volume = atoi(parameter.c_str());
+
+    g_application.SetVolume((float)volume);
+    if(oldVolume != volume)
+    {
+      if(params.size() > 1 && params[1].Equals("showVolumeBar"))    
+      {
+        g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);  
+      }
+    }
   }
   else if (execute.Equals("playlist.playoffset"))
   {
@@ -947,8 +958,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("ripcd"))
   {
 #ifdef HAS_CDDA_RIPPER
-    CCDDARipper ripper;
-    ripper.RipCD();
+    CCDDARipper::GetInstance().RipCD();
 #endif
   }
   else if (execute.Equals("skin.togglesetting"))
@@ -1162,18 +1172,22 @@ int CBuiltins::Execute(const CStdString& execString)
       return -1;
 
     g_application.StopPlaying();
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsScanning())
+    if (g_application.IsMusicScanning())
     {
-      musicScan->StopScanning();
-      musicScan->Close(true);
+      g_application.StopMusicScan();
+      CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (musicScan)
+        musicScan->Close(true);
     }
 
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsScanning())
+    if (g_application.IsVideoScanning())
     {
-      videoScan->StopScanning();
-      videoScan->Close(true);
+      g_application.StopVideoScan();
+      CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      if (videoScan)
+      {
+        videoScan->Close(true);
+      }
     }
 
     ADDON::CAddonMgr::Get().StopServices(true);
@@ -1201,61 +1215,40 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     if (params[0].Equals("music"))
     {
-      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (scanner)
-      {
-        if (scanner->IsScanning())
-          scanner->StopScanning();
-        else
-          scanner->StartScanning(params.size() > 1 ? params[1] : "");
-      }
+      if (g_application.IsMusicScanning())
+        g_application.StopMusicScan();
+      else
+        g_application.StartMusicScan(params.size() > 1 ? params[1] : "");
     }
     if (params[0].Equals("video"))
     {
-      CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (scanner)
-      {
-        if (scanner->IsScanning())
-          scanner->StopScanning();
-        else
-          scanner->StartScanning(params.size() > 1 ? params[1] : "");
-      }
+      if (g_application.IsVideoScanning())
+        g_application.StopVideoScan();
+      else
+        g_application.StartVideoScan(params.size() > 1 ? params[1] : "");
     }
   }
   else if (execute.Equals("cleanlibrary"))
   {
     if (!params.size() || params[0].Equals("video"))
     {
-      CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (scanner)
-      {
-        if (!scanner->IsScanning())
-        {
-           CVideoDatabase videodatabase;
-           videodatabase.Open();
-           videodatabase.CleanDatabase();
-           videodatabase.Close();
-        }
-        else
-          CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
-      }
+      if (!g_application.IsVideoScanning())
+         g_application.StartVideoCleanup();
+      else
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning or cleaning");
     }
     else if (params[0].Equals("music"))
     {
-      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (scanner)
+      if (!g_application.IsMusicScanning())
       {
-        if (!scanner->IsScanning())
-        {
-          CMusicDatabase musicdatabase;
+        CMusicDatabase musicdatabase;
 
-          musicdatabase.Open();
-          musicdatabase.Cleanup();
-          musicdatabase.Close();
-        }
-        else
-          CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
+        musicdatabase.Open();
+        musicdatabase.Cleanup();
+        musicdatabase.Close();
       }
+      else
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
   }
   else if (execute.Equals("exportlibrary"))

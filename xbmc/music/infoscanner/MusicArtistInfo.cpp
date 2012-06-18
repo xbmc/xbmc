@@ -40,7 +40,7 @@ void CMusicArtistInfo::SetArtist(const CArtist& artist)
   m_bLoaded = true;
 }
 
-bool CMusicArtistInfo::Load(CFileCurl& http, const ADDON::ScraperPtr& scraper,
+bool CMusicArtistInfo::Load(CCurlFile& http, const ADDON::ScraperPtr& scraper,
   const CStdString &strSearch)
 {
   return m_bLoaded = scraper->GetArtistDetails(http, m_artistURL, strSearch, m_artist);

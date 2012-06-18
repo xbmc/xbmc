@@ -129,7 +129,7 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::UpdateControls()
 {
-  CStdString xbmcPath = _P("special://xbmc/addons");
+  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   bool isInstalled = NULL != m_localAddon.get();
   bool isSystem = isInstalled && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath);
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
@@ -377,8 +377,8 @@ void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
 void CGUIDialogAddonInfo::GrabRollbackVersions()
 {
   CFileItemList items;
-  XFILE::CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",false);
-  items.Sort(SORT_METHOD_LABEL,SORT_ORDER_ASC);
+  XFILE::CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",DIR_FLAG_NO_FILE_DIRS);
+  items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
   for (int i=0;i<items.Size();++i)
   {
     if (items[i]->m_bIsFolder)

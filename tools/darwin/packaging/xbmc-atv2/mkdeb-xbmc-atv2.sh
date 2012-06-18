@@ -44,8 +44,8 @@ fi
 
 PACKAGE=org.xbmc.xbmc-atv2
 
-VERSION=10.0
-REVISION=9
+VERSION=12.0
+REVISION=0~alpha3
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
@@ -57,6 +57,7 @@ mkdir -p $DIRNAME/$PACKAGE/DEBIAN
 echo "Package: $PACKAGE"                          >  $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Name: XBMC-ATV2"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Pre-Depends: firmware (<< 5.0)"             >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Depends: curl, org.awkwardtv.whitelist, com.nito.updatebegone, org.xbmc.xbmc-seatbeltunlock" >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
@@ -83,6 +84,7 @@ echo "if [ \"\`uname -r\`\" = \"10.3.1\" ]; then" >> $DIRNAME/$PACKAGE/DEBIAN/po
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/Lowtide.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  killall Lowtide"                          >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "else"                                       >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "  mkdir -p /Applications/AppleTV.app/Appliances"                                               >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/AppleTV.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  killall AppleTV"                          >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/postinst

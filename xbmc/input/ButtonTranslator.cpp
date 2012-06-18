@@ -32,8 +32,14 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
+
+#if defined(TARGET_WINDOWS)
+#include "input/windows/WINJoystick.h"
+#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#include "SDLJoystick.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -201,6 +207,8 @@ static const ActionMapping actions[] =
         {"blue"              , ACTION_TELETEXT_BLUE},
         {"increasepar"       , ACTION_INCREASE_PAR},
         {"decreasepar"       , ACTION_DECREASE_PAR},
+        {"volampup"          , ACTION_VOLAMP_UP},
+        {"volampdown"        , ACTION_VOLAMP_DOWN},
 
         // Mouse actions
         {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
@@ -236,7 +244,8 @@ static const ActionMapping windows[] =
         {"musicsettings"            , WINDOW_SETTINGS_MYMUSIC},
         {"systemsettings"           , WINDOW_SETTINGS_SYSTEM},
         {"videossettings"           , WINDOW_SETTINGS_MYVIDEOS},
-        {"networksettings"          , WINDOW_SETTINGS_NETWORK},
+        {"networksettings"          , WINDOW_SETTINGS_SERVICE}, // backward compat
+        {"servicesettings"          , WINDOW_SETTINGS_SERVICE},
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
         {"scripts"                  , WINDOW_PROGRAMS}, // backward compat
         {"videofiles"               , WINDOW_VIDEO_FILES},
@@ -363,7 +372,6 @@ CButtonTranslator& CButtonTranslator::GetInstance()
 
 CButtonTranslator::CButtonTranslator()
 {
-  m_baseMap.clear();
   m_deviceList.clear();
   m_Loaded = false;
 }
@@ -429,37 +437,48 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
   };
   bool success = false;
 
-  // If we've already loaded the m_baseMap we don't need to load it
-  // again - this speeds up reloads caused by plugging and unplugging
-  // HID devices. However if AlwaysLoad is true always load the keymaps
-  // from scratch.
-  if (m_Loaded && !AlwaysLoad)
+  for (unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
   {
-    m_translatorMap = m_baseMap;
-  }
-
-  // Else load the standard mappings
-  else
-  {
-    for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex) {
-      if( XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
+    if (XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]))
+    {
+      CFileItemList files;
+      XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, ".xml");
+      // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+      files.Sort(SORT_METHOD_FILE, SortOrderAscending);
+      for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
       {
-        CFileItemList files;
-        XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
-        // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-        files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-        // In (at least) Windows the GetDirectory returns all files not just *.xml files
-        for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-          if (files[fileIndex]->GetPath().Right(4) == ".xml")
-            success |= LoadKeymap(files[fileIndex]->GetPath());
+        if (!files[fileIndex]->m_bIsFolder)
+          success |= LoadKeymap(files[fileIndex]->GetPath());
+      }
+
+      // Load mappings for any HID devices we have connected
+      std::list<CStdString>::iterator it;
+      for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+      {
+        CStdString devicedir = DIRS_TO_CHECK[dirIndex];
+        devicedir.append(*it);
+        devicedir.append("/");
+        if( XFILE::CDirectory::Exists(devicedir) )
+        {
+          CFileItemList files;
+          XFILE::CDirectory::GetDirectory(devicedir, files, ".xml");
+          // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+          files.Sort(SORT_METHOD_FILE, SortOrderAscending);
+          for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
+          {
+            if (!files[fileIndex]->m_bIsFolder)
+              success |= LoadKeymap(files[fileIndex]->GetPath());
+          }
+        }
       }
     }
+  }
 
-    if (!success)
-    {
-      CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
-      return false;
-    }
+  if (!success)
+  {
+    CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
+    return false;
+  }
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 #ifdef _LINUX
@@ -467,52 +486,24 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
 #else
 #define REMOTEMAP "IRSSmap.xml"
 #endif
-    CStdString lircmapPath;
-    URIUtils::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
-    lircRemotesMap.clear();
-    if(CFile::Exists(lircmapPath))
-      success |= LoadLircMap(lircmapPath);
-    else
-      CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
+  CStdString lircmapPath;
+  URIUtils::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
+  lircRemotesMap.clear();
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
 
-    lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
-    if(CFile::Exists(lircmapPath))
-      success |= LoadLircMap(lircmapPath);
-    else
-      CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
+  lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
 
-    if (!success)
-      CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
-    // don't return false - it is to only indicate a fatal error (which this is not)
+  if (!success)
+    CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
+  // don't return false - it is to only indicate a fatal error (which this is not)
 #endif
-
-    // Standard mappings have been loaded into m_translatorMap, copy them to
-    // m_baseMap for future reuse.
-    m_baseMap = m_translatorMap;
-  }
-
-  // Load mappings for any HID devices we have connected
-  std::list<CStdString>::iterator it;
-  for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
-  {
-    for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
-    {
-      CStdString devicedir = DIRS_TO_CHECK[dirIndex];
-      devicedir.append(*it);
-      devicedir.append("/");
-      if( XFILE::CDirectory::Exists(devicedir) )
-      {
-        CFileItemList files;
-        XFILE::CDirectory::GetDirectory(devicedir, files, "*.xml");
-        // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-        files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-        // In (at least) Windows the GetDirectory returns all files not just *.xml files
-        for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-          if (files[fileIndex]->GetPath().Right(4) == ".xml")
-            success |= LoadKeymap(files[fileIndex]->GetPath());
-      }
-    }
-  }
 
   // Done!
   m_Loaded = true;
@@ -521,7 +512,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
 
 bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
   if (!xmlDoc.LoadFile(keymapPath))
@@ -540,7 +531,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   TiXmlNode* pWindow = pRoot->FirstChild();
   while (pWindow)
   {
-    if (pWindow->Type() == TiXmlNode::ELEMENT)
+    if (pWindow->Type() == TiXmlNode::TINYXML_ELEMENT)
     {
       int windowID = WINDOW_INVALID;
       const char *szWindow = pWindow->Value();
@@ -568,7 +559,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 #define REMOTEMAPTAG "irssmap"
 #endif
   // load our xml file, and fill up our mapping tables
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   // Load the config file
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
@@ -590,7 +581,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
   TiXmlNode* pRemote = pRoot->FirstChild();
   while (pRemote)
   {
-    if (pRemote->Type() == TiXmlNode::ELEMENT)
+    if (pRemote->Type() == TiXmlNode::TINYXML_ELEMENT)
     {
       const char *szRemote = pRemote->Value();
       if (szRemote)

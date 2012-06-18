@@ -30,9 +30,8 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
-
-
+#include "utils/XBMCTinyXML.h"
+#include "dialogs/GUIDialogYesNo.h"
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif
@@ -117,7 +116,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in screensaver
           return AddonPtr(new CAddon(props));
         }
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
           break;
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
@@ -126,7 +125,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #elif defined(_WIN32) && defined(HAS_DX)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_windx")) && value.empty())
           break;
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
           break;
 #endif
@@ -248,9 +247,9 @@ bool CAddonMgr::Init()
   // would allow partial unloading of addon framework
   m_cp_context = m_cpluff->create_context(&status);
   assert(m_cp_context);
-  status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons"));
-  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons"));
-  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmcbin/addons"));
+  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://home/addons"));
+  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons"));
+  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons"));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
@@ -581,7 +580,7 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
     {
       if (platforms[i] == "all")
         return true;
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
       if (platforms[i] == "linux")
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
       if (platforms[i] == "wingl")
@@ -681,7 +680,7 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
 bool CAddonMgr::LoadAddonDescription(const CStdString &path, AddonPtr &addon)
 {
   cp_status_t status;
-  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, _P(path).c_str(), &status);
+  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, CSpecialProtocol::TranslatePath(path).c_str(), &status);
   if (info)
   {
     addon = GetAddonFromDescriptor(info);

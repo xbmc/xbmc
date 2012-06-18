@@ -212,14 +212,14 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
 
   case g_TrackNumberAtomName:
     {
-      tag.SetTrackNumber( pMetaData[ 3 ] );
+      tag.SetTrackNumber( (unsigned char)pMetaData[ 3 ] );
 
       break;
     }
 
   case g_DiscNumberAtomName:
     {
-      tag.SetPartOfSet( pMetaData[ 3 ] );
+      tag.SetPartOfSet( (unsigned char)pMetaData[ 3 ] );
 
       break;
     }
@@ -396,7 +396,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
       // if we don't have an album tag, cache with the full file path so that
       // other non-tagged files don't get this album image
       CStdString strCoverArt;
-      if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().IsEmpty()))
+      if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().empty() || !tag.GetArtist().empty()))
         strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
       else
         strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
@@ -417,7 +417,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 
     if (m_isCompilation)
     { // iTunes compilation flag is set - this could be a various artists file
-      if (tag.GetAlbumArtist().IsEmpty())
+      if (tag.GetAlbumArtist().empty())
         tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
     }
     // Close the file..

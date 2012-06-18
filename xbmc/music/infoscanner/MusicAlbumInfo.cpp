@@ -22,6 +22,8 @@
 #include "MusicAlbumInfo.h"
 #include "addons/Scraper.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;
@@ -38,7 +40,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& s
   const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL)
 {
   m_album.strAlbum = strAlbum;
-  m_album.strArtist = strArtist;
+  m_album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
   m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
   m_relevance = -1;
@@ -53,7 +55,7 @@ void CMusicAlbumInfo::SetAlbum(CAlbum& album)
   m_bLoaded = true;
 }
 
-bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper)
+bool CMusicAlbumInfo::Load(XFILE::CCurlFile& http, const ADDON::ScraperPtr& scraper)
 {
   bool fSuccess = scraper->GetAlbumDetails(http, m_albumURL, m_album);
   if (fSuccess && m_strTitle2.empty())

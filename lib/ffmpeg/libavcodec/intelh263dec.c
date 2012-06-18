@@ -46,13 +46,13 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
     skip_bits1(&s->gb);         /* freeze picture release off */
 
     format = get_bits(&s->gb, 3);
-    if (format != 7) {
+    if (format == 0 || format == 6) {
         av_log(s->avctx, AV_LOG_ERROR, "Intel H263 free format not supported\n");
         return -1;
     }
     s->h263_plus = 0;
 
-    s->pict_type = FF_I_TYPE + get_bits1(&s->gb);
+    s->pict_type = AV_PICTURE_TYPE_I + get_bits1(&s->gb);
 
     s->unrestricted_mv = get_bits1(&s->gb);
     s->h263_long_vectors = s->unrestricted_mv;
@@ -64,7 +64,12 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
     s->obmc= get_bits1(&s->gb);
     s->pb_frame = get_bits1(&s->gb);
 
-    if(format == 7){
+    if (format < 6) {
+        s->width = h263_format[format][0];
+        s->height = h263_format[format][1];
+        s->avctx->sample_aspect_ratio.num = 12;
+        s->avctx->sample_aspect_ratio.den = 11;
+    } else {
         format = get_bits(&s->gb, 3);
         if(format == 0 || format == 7){
             av_log(s->avctx, AV_LOG_ERROR, "Wrong Intel H263 format\n");
@@ -88,9 +93,13 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
         skip_bits1(&s->gb);
         skip_bits(&s->gb, 9); // display height
         if(ar == 15){
-            skip_bits(&s->gb, 8); // aspect ratio - width
-            skip_bits(&s->gb, 8); // aspect ratio - height
+            s->avctx->sample_aspect_ratio.num = get_bits(&s->gb, 8); // aspect ratio - width
+            s->avctx->sample_aspect_ratio.den = get_bits(&s->gb, 8); // aspect ratio - height
+        } else {
+            s->avctx->sample_aspect_ratio = ff_h263_pixel_aspect[ar];
         }
+        if (s->avctx->sample_aspect_ratio.num == 0)
+            av_log(s->avctx, AV_LOG_ERROR, "Invalid aspect ratio.\n");
     }
 
     s->chroma_qscale= s->qscale = get_bits(&s->gb, 5);
@@ -116,15 +125,14 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
 }
 
 AVCodec ff_h263i_decoder = {
-    "h263i",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_H263I,
-    sizeof(MpegEncContext),
-    ff_h263_decode_init,
-    NULL,
-    ff_h263_decode_end,
-    ff_h263_decode_frame,
-    CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
+    .name           = "h263i",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_H263I,
+    .priv_data_size = sizeof(MpegEncContext),
+    .init           = ff_h263_decode_init,
+    .close          = ff_h263_decode_end,
+    .decode         = ff_h263_decode_frame,
+    .capabilities   = CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Intel H.263"),
     .pix_fmts= ff_pixfmt_list_420,
 };

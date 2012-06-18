@@ -141,7 +141,7 @@ int translate_APIC(struct id3_frame *frame, char const *oldid,
 		   id3_byte_t const *data, id3_length_t length)
 {
   id3_byte_t const *end;
-  char type[3];
+  char type[4];
   enum id3_field_textencoding encoding;
   int result = 0;
   

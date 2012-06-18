@@ -114,7 +114,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
   {
     CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -125,7 +125,7 @@ bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPa
   return Load(xmlDoc);
 }
 
-bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
+bool CGUIWindow::Load(CXBMCTinyXML &xmlDoc)
 {
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (strcmpi(pRootElement->Value(), "window"))
@@ -354,9 +354,9 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     return;
   }
 
+  m_closing = false;
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   OnMessage(msg);
-  m_closing = false;
 }
 
 void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
@@ -531,6 +531,21 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       }
       break;
     }
+  
+  case GUI_MSG_UNFOCUS_ALL:
+    {
+      //unfocus the current focused control in this window
+      CGUIControl *control = GetFocusedControl();
+      if(control)
+      {
+        //tell focused control that it has lost the focus
+        CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), control->GetID());
+        control->OnMessage(msgLostFocus);
+        CLog::Log(LOGDEBUG, "Unfocus WindowID: %i, ControlID: %i",GetID(), control->GetID());
+      }
+      return true;
+    break;
+    }
 
   case GUI_MSG_SELCHANGED:
     {
@@ -601,6 +616,27 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       EVENT_RESULT result = OnMouseAction(action);
       message.SetParam1(result);
       return result != EVENT_RESULT_UNHANDLED;
+    }
+  case GUI_MSG_ADD_CONTROL:
+    {
+      if (message.GetPointer())
+      {
+        CGUIControl *control = (CGUIControl *)message.GetPointer();
+        control->AllocResources();
+        AddControl(control);
+      }
+      return true;
+    }
+  case GUI_MSG_REMOVE_CONTROL:
+    {
+      if (message.GetPointer())
+      {
+        CGUIControl *control = (CGUIControl *)message.GetPointer();
+        RemoveControl(control);
+        control->FreeResources(true);
+        delete control;
+      }
+      return true;
     }
   case GUI_MSG_NOTIFY_ALL:
     {

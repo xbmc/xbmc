@@ -26,7 +26,7 @@
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "utils/RegExp.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {
@@ -48,6 +48,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_tAudio = GetTristate(pRule->Attribute("audio"));
   m_tVideo = GetTristate(pRule->Attribute("video"));
 
+  m_tBD = GetTristate(pRule->Attribute("bd"));
   m_tDVD = GetTristate(pRule->Attribute("dvd"));
   m_tDVDFile = GetTristate(pRule->Attribute("dvdfile"));
   m_tDVDImage = GetTristate(pRule->Attribute("dvdimage"));
@@ -111,6 +112,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo()) return;
   if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream()) return;
 
+  if (m_tBD >= 0 && (m_tBD > 0) != (item.IsBDFile() && item.IsOnDVD())) return;
   if (m_tDVD >= 0 && (m_tDVD > 0) != item.IsDVD()) return;
   if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile()) return;
   if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDVDImage()) return;

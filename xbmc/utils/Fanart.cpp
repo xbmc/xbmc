@@ -20,10 +20,10 @@
  */
 
 #include "Fanart.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "URIUtils.h"
 #include "pictures/Picture.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "StringUtils.h"
 #include "filesystem/File.h"
 
@@ -59,7 +59,7 @@ void CFanart::Pack()
 
 bool CFanart::Unpack()
 {
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   doc.Parse(m_xml.c_str());
 
   m_fanart.clear();
@@ -146,7 +146,7 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
     else
       thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
-    XFILE::CFileCurl http;
+    XFILE::CCurlFile http;
     if (http.Download(thumbURL, strDestination))
       return true;
   }

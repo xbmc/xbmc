@@ -272,7 +272,7 @@ int SqliteDatabase::copy(const char *backup_name) {
   if (active == false)
     throw DbErrors("Can't copy database: no active connection...");
 
-  CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", backup_name, db.c_str(), host.c_str());
+  CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", db.c_str(), backup_name, host.c_str());
 
   int rc;
   string backup_db = backup_name;
@@ -444,10 +444,10 @@ sqlite3* SqliteDataset::handle(){
 
 void SqliteDataset::make_query(StringList &_sql) {
   string query;
+  if (db == NULL) throw DbErrors("No Database Connection");
 
  try {
 
-  if (db == NULL) throw DbErrors("No Database Connection");
   if (autocommit) db->start_transaction();
 
 
@@ -608,7 +608,7 @@ bool SqliteDataset::query(const char *query) {
   close();
 
   sqlite3_stmt *stmt = NULL;
-  #ifdef __APPLE__
+  #if defined(TARGET_DARWIN)
   if (db->setErr(sqlite3_prepare(handle(),query,-1,&stmt, NULL),query) != SQLITE_OK)
   #else
   if (db->setErr(sqlite3_prepare_v2(handle(),query,-1,&stmt, NULL),query) != SQLITE_OK)

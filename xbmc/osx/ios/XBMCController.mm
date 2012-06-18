@@ -26,26 +26,29 @@
 #include <signal.h>
 
 #include "system.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "Application.h"
-#include "MouseStat.h"
-#include "WindowingFactory.h"
-#include "guilib/GUIWindowManager.h"
-#include "VideoReferenceClock.h"
+#include "input/MouseStat.h"
+#include "windowing/WindowingFactory.h"
+#include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
-#include "WinEventsIOS.h"
+#include "threads/Event.h"
 #undef BOOL
 
-#import "XBMCEAGLView.h"
+#import "IOSEAGLView.h"
 
 #import "XBMCController.h"
+#import "IOSScreenManager.h"
 #import "XBMCApplication.h"
 #import "XBMCDebugHelpers.h"
 
 XBMCController *g_xbmcController;
+static CEvent screenChangeEvent;
+
 
 // notification messages
 extern NSString* kBRScreenSaverActivated;
@@ -55,7 +58,7 @@ extern NSString* kBRScreenSaverDismissed;
 //
 
 @interface XBMCController ()
-XBMCEAGLView  *m_glView;
+
 @end
 
 @interface UIApplication (extended)
@@ -63,45 +66,62 @@ XBMCEAGLView  *m_glView;
 @end
 
 @implementation XBMCController
+@synthesize animating;
 @synthesize lastGesturePoint;
 @synthesize lastPinchScale;
 @synthesize currentPinchScale;
+@synthesize screenScale;
 @synthesize lastEvent;
 @synthesize touchBeginSignaled;
+@synthesize m_screenIdx;
 @synthesize screensize;
-
 //--------------------------------------------------------------
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-  if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
+{  
+  //on external screens somehow the logic is rotated by 90°
+  //so we have to do this with our supported orientations then aswell
+  if([[IOSScreenManager sharedInstance] isExternalScreen])
   {
-    return YES;
+    if(interfaceOrientation == UIInterfaceOrientationPortrait) 
+    {
+      return YES;
+    }
   }
-  else if(interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+  else//internal screen
   {
-    return YES;
+    if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
+    {
+      return YES;
+    }
+    else if(interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+    {
+      return YES;
+    }
   }
-  else
-  {
-    return NO;
-  }
+  return NO;
 }
 //--------------------------------------------------------------
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
   orientation = toInterfaceOrientation;
+  CGRect srect = [IOSScreenManager getLandscapeResolution: [m_glView getCurrentScreen]];
+  CGRect rect = srect;;
   
-  CGRect rect;
-  CGRect srect = [[UIScreen mainScreen] bounds];
-  
-	if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
-    rect = srect;
-	} else if(toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-    rect.size = CGSizeMake( srect.size.height, srect.size.width );
-	}
-  
+
+  switch(toInterfaceOrientation)
+  {
+    case UIInterfaceOrientationPortrait:  
+    case UIInterfaceOrientationPortraitUpsideDown:
+      if(![[IOSScreenManager sharedInstance] isExternalScreen]) 
+      {
+        rect.size = CGSizeMake( srect.size.height, srect.size.width );    
+      }
+      break;
+    case UIInterfaceOrientationLandscapeLeft:
+    case UIInterfaceOrientationLandscapeRight:
+      break;//just leave the rect as is
+  }  
 	m_glView.frame = rect;
-  
 }
 
 - (UIInterfaceOrientation) getOrientation
@@ -130,33 +150,46 @@ XBMCEAGLView  *m_glView;
   //single finger double tab delays single finger single tab - so we
   //go for 2 fingers here - so single finger single tap is instant
   UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
-                                                    initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+    initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+
   doubleFingerSingleTap.delaysTouchesBegan = YES;
   doubleFingerSingleTap.numberOfTapsRequired = 1;
   doubleFingerSingleTap.numberOfTouchesRequired = 2;
   [self.view addGestureRecognizer:doubleFingerSingleTap];
   [doubleFingerSingleTap release];
-  
+
+  //1 finger single long tab - right mouse - alernative
+  UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
+    initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
+
+  singleFingerSingleLongTap.delaysTouchesBegan = YES;
+  singleFingerSingleLongTap.delaysTouchesEnded = YES;
+  [self.view addGestureRecognizer:singleFingerSingleLongTap];
+  [singleFingerSingleLongTap release];
+
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-                                          initWithTarget:self action:@selector(handleSwipeLeft:)];
+    initWithTarget:self action:@selector(handleSwipeLeft:)];
+
   swipeLeft.delaysTouchesBegan = YES;
   swipeLeft.numberOfTouchesRequired = 2;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   [self.view addGestureRecognizer:swipeLeft];
   [swipeLeft release];
-  
+
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
-                                  initWithTarget:self action:@selector(handlePan:)];
+    initWithTarget:self action:@selector(handlePan:)];
+
   pan.delaysTouchesBegan = YES;
   pan.maximumNumberOfTouches = 1;
   [self.view addGestureRecognizer:pan];
   [pan release];
-  
+
   //for zoom gesture
   UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc]
-                                      initWithTarget:self action:@selector(handlePinch:)];
+    initWithTarget:self action:@selector(handlePinch:)];
+
   pinch.delaysTouchesBegan = YES;
   [self.view addGestureRecognizer:pinch];
   [pinch release];
@@ -169,6 +202,8 @@ XBMCEAGLView  *m_glView;
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
+    point.x *= screenScale;
+    point.y *= screenScale;
     currentPinchScale += [sender scale] - lastPinchScale;
     lastPinchScale = [sender scale];  
   
@@ -178,9 +213,11 @@ XBMCEAGLView  *m_glView;
       break;
       case UIGestureRecognizerStateChanged:
         g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_ZOOM, 0, (float)point.x, (float)point.y, 
-                                                           currentPinchScale, 0), WINDOW_INVALID,false);    
+          currentPinchScale, 0), WINDOW_INVALID,false);    
       break;
       case UIGestureRecognizerStateEnded:
+      break;
+      default:
       break;
     }
   }
@@ -193,6 +230,8 @@ XBMCEAGLView  *m_glView;
     if( [sender state] == UIGestureRecognizerStateBegan )
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
+      point.x *= screenScale;
+      point.y *= screenScale;
       touchBeginSignaled = false;
       lastGesturePoint = point;
     }
@@ -200,6 +239,8 @@ XBMCEAGLView  *m_glView;
     if( [sender state] == UIGestureRecognizerStateChanged )
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];    
+      point.x *= screenScale;
+      point.y *= screenScale;
       bool bNotify = false;
       CGFloat yMovement=point.y - lastGesturePoint.y;
       CGFloat xMovement=point.x - lastGesturePoint.x;
@@ -241,32 +282,77 @@ XBMCEAGLView  *m_glView;
 //--------------------------------------------------------------
 - (IBAction)handleSwipeLeft:(UISwipeGestureRecognizer *)sender 
 {
-  [self sendKey:XBMCK_BACKSPACE];
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    [self sendKey:XBMCK_BACKSPACE];
+  }
+}
+//--------------------------------------------------------------
+- (void)postMouseMotionEvent:(CGPoint)point
+{
+  XBMC_Event newEvent;
+
+  point.x *= screenScale;
+  point.y *= screenScale;
+
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_MOUSEMOTION;
+  newEvent.motion.type = XBMC_MOUSEMOTION;
+  newEvent.motion.which = 0;
+  newEvent.motion.state = 0;
+  newEvent.motion.x = point.x;
+  newEvent.motion.y = point.y;
+  newEvent.motion.xrel = 0;
+  newEvent.motion.yrel = 0;
+  CWinEventsIOS::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
-  CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-  
-  //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
-  
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-  
-  newEvent.type = XBMC_MOUSEBUTTONDOWN;
-  newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
-  newEvent.button.button = XBMC_BUTTON_RIGHT;
-  newEvent.button.x = point.x;
-  newEvent.button.y = point.y;
-  
-  CWinEventsIOS::MessagePush(&newEvent);    
-  
-  newEvent.type = XBMC_MOUSEBUTTONUP;
-  newEvent.button.type = XBMC_MOUSEBUTTONUP;
-  CWinEventsIOS::MessagePush(&newEvent);    
-  
-  memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
-  
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+    point.x *= screenScale;
+    point.y *= screenScale;
+    //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
+
+    [self postMouseMotionEvent:point];
+
+    XBMC_Event newEvent;
+    memset(&newEvent, 0, sizeof(newEvent));
+    
+    newEvent.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.button = XBMC_BUTTON_RIGHT;
+    newEvent.button.x = point.x;
+    newEvent.button.y = point.y;
+    
+    CWinEventsIOS::MessagePush(&newEvent);    
+    
+    newEvent.type = XBMC_MOUSEBUTTONUP;
+    newEvent.button.type = XBMC_MOUSEBUTTONUP;
+    CWinEventsIOS::MessagePush(&newEvent);    
+    
+    memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
+  }
+}
+//--------------------------------------------------------------
+- (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
+{
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+      [self postMouseMotionEvent:point];//selects the current control
+    }
+
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+      [self handleDoubleFingerSingleTap:sender];
+    }
+  }
 }
 //--------------------------------------------------------------
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event 
@@ -278,6 +364,10 @@ XBMCEAGLView  *m_glView;
     if( [touches count] == 1 && [touch tapCount] == 1)
     {
       lastGesturePoint = [touch locationInView:m_glView];    
+      [self postMouseMotionEvent:lastGesturePoint];//selects the current control
+
+      lastGesturePoint.x *= screenScale;
+      lastGesturePoint.y *= screenScale;  
       XBMC_Event newEvent;
       memset(&newEvent, 0, sizeof(newEvent));
       
@@ -301,30 +391,40 @@ XBMCEAGLView  *m_glView;
 //--------------------------------------------------------------
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 
 {
-  UITouch *touch = [touches anyObject];
-  
-  if( [touches count] == 1 && [touch tapCount] == 1 )
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    XBMC_Event newEvent = lastEvent;
+    UITouch *touch = [touches anyObject];
     
-    newEvent.type = XBMC_MOUSEBUTTONUP;
-    newEvent.button.type = XBMC_MOUSEBUTTONUP;
-    newEvent.button.button = XBMC_BUTTON_LEFT;
-    newEvent.button.x = lastGesturePoint.x;
-    newEvent.button.y = lastGesturePoint.y;
-    CWinEventsIOS::MessagePush(&newEvent);    
-    
-    memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
+    if( [touches count] == 1 && [touch tapCount] == 1 )
+    {
+      XBMC_Event newEvent = lastEvent;
+      
+      newEvent.type = XBMC_MOUSEBUTTONUP;
+      newEvent.button.type = XBMC_MOUSEBUTTONUP;
+      newEvent.button.button = XBMC_BUTTON_LEFT;
+      newEvent.button.x = lastGesturePoint.x;
+      newEvent.button.y = lastGesturePoint.y;
+      CWinEventsIOS::MessagePush(&newEvent);
+      
+      memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
+    }
   }
 }
 //--------------------------------------------------------------
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
 { 
   //NSLog(@"%s", __PRETTY_FUNCTION__);
-  
+  m_screenIdx = 0;
   self = [super init];
   if ( !self )
     return ( nil );
+
+  m_window = [[UIWindow alloc] initWithFrame:frame];
+  [m_window setRootViewController:self];  
+  m_window.screen = screen;
+  /* Turn off autoresizing */
+  m_window.autoresizingMask = 0;
+  m_window.autoresizesSubviews = NO;
   
   NSNotificationCenter *center;
   center = [NSNotificationCenter defaultCenter];
@@ -332,22 +432,25 @@ XBMCEAGLView  *m_glView;
              selector: @selector(observeDefaultCenterStuff:)
                  name: nil
                object: nil];
-  
+
   /* We start in landscape mode */
   CGRect srect = frame;
   srect.size = CGSizeMake( frame.size.height, frame.size.width );
   orientation = UIInterfaceOrientationLandscapeLeft;
   
-  m_glView = [[XBMCEAGLView alloc] initWithFrame: srect];
+  m_glView = [[IOSEAGLView alloc] initWithFrame: srect withScreen:screen];
+  [[IOSScreenManager sharedInstance] setView:m_glView];  
   [m_glView setMultipleTouchEnabled:YES];
   
-  //[self setView: m_glView];
-  
+  /* Check if screen is Retina */
+  screenScale = [m_glView getScreenScale:screen];
+
   [self.view addSubview: m_glView];
   
   [self createGestureRecognizers];
-  
-  g_xbmcController = self;
+  [m_window addSubview: self.view];
+  [m_window makeKeyAndVisible];
+  g_xbmcController = self;  
   
   return self;
 }
@@ -361,7 +464,8 @@ XBMCEAGLView  *m_glView;
 {
   [m_glView stopAnimation];
   [m_glView release];
-  
+  [m_window release];
+
   NSNotificationCenter *center;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
@@ -426,8 +530,8 @@ XBMCEAGLView  *m_glView;
 //--------------------------------------------------------------
 - (CGSize) getScreenSize
 {
-  screensize.width  = m_glView.bounds.size.width;
-  screensize.height = m_glView.bounds.size.height;  
+  screensize.width  = m_glView.bounds.size.width * screenScale;
+  screensize.height = m_glView.bounds.size.height * screenScale;  
   return screensize;
 }
 //--------------------------------------------------------------
@@ -459,6 +563,29 @@ XBMCEAGLView  *m_glView;
 //--------------------------------------------------------------
 - (void) enableScreenSaver
 {
+}
+//--------------------------------------------------------------
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode
+{
+  bool ret = false;
+
+  ret = [[IOSScreenManager sharedInstance] changeScreen:screenIdx withMode:mode];
+
+  return ret;
+}
+//--------------------------------------------------------------
+- (void) activateScreen: (UIScreen *)screen
+{
+  //this is the only way for making ios call the
+  //shouldAutorotateToInterfaceOrientation of the controller
+  //this is needed because at least with my vga adapter
+  //the orientation on the external screen is messed up by 90°
+  //so we need to hard force the orientation to Portrait for
+  //getting the correct display on external screen
+  UIView *view = [m_window.subviews objectAtIndex:0];
+  [view removeFromSuperview];
+  [m_window addSubview:view];  
+  m_window.screen = screen;
 }
 //--------------------------------------------------------------
 - (void)pauseAnimation
@@ -499,8 +626,6 @@ XBMCEAGLView  *m_glView;
 {
   [m_glView stopAnimation];
 }
-//--------------------------------------------------------------
-
 #pragma mark -
 #pragma mark private helper methods
 //

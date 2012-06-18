@@ -36,10 +36,10 @@ typedef struct DCAParseContext {
 #define IS_MARKER(state, i, buf, buf_size) \
  ((state == DCA_MARKER_14B_LE && (i < buf_size-2) && (buf[i+1] & 0xF0) == 0xF0 && buf[i+2] == 0x07) \
  || (state == DCA_MARKER_14B_BE && (i < buf_size-2) && buf[i+1] == 0x07 && (buf[i+2] & 0xF0) == 0xF0) \
- || state == DCA_MARKER_RAW_LE || state == DCA_MARKER_RAW_BE)
+ || state == DCA_MARKER_RAW_LE || state == DCA_MARKER_RAW_BE || state == DCA_HD_MARKER)
 
 /**
- * finds the end of the current frame in the bitstream.
+ * Find the end of the current frame in the bitstream.
  * @return the position of the first byte of the next frame, or -1
  */
 static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
@@ -57,10 +57,7 @@ static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
         for (i = 0; i < buf_size; i++) {
             state = (state << 8) | buf[i];
             if (IS_MARKER(state, i, buf, buf_size)) {
-                if (pc1->lastmarker && state == pc1->lastmarker) {
-                    start_found = 1;
-                    break;
-                } else if (!pc1->lastmarker) {
+                if (!pc1->lastmarker || state == pc1->lastmarker || pc1->lastmarker == DCA_HD_MARKER) {
                     start_found = 1;
                     pc1->lastmarker = state;
                     break;
@@ -74,10 +71,11 @@ static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
             state = (state << 8) | buf[i];
             if (state == DCA_HD_MARKER && !pc1->hd_pos)
                 pc1->hd_pos = pc1->size;
-            if (state == pc1->lastmarker && IS_MARKER(state, i, buf, buf_size)) {
+            if (IS_MARKER(state, i, buf, buf_size) && (state == pc1->lastmarker || pc1->lastmarker == DCA_HD_MARKER)) {
                 if(pc1->framesize > pc1->size)
                     continue;
-                if(!pc1->framesize){
+                // We have to check that we really read a full frame here, and that it isn't a pure HD frame, because their size is not constant.
+                if(!pc1->framesize && state == pc1->lastmarker && state != DCA_HD_MARKER){
                     pc1->framesize = pc1->hd_pos ? pc1->hd_pos : pc1->size;
                 }
                 pc->frame_start_found = 0;
@@ -126,9 +124,9 @@ static int dca_parse(AVCodecParserContext * s,
 }
 
 AVCodecParser ff_dca_parser = {
-    {CODEC_ID_DTS},
-    sizeof(DCAParseContext),
-    dca_parse_init,
-    dca_parse,
-    ff_parse_close,
+    .codec_ids      = { CODEC_ID_DTS },
+    .priv_data_size = sizeof(DCAParseContext),
+    .parser_init    = dca_parse_init,
+    .parser_parse   = dca_parse,
+    .parser_close   = ff_parse_close,
 };

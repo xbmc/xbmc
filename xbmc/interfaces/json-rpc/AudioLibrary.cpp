@@ -25,6 +25,8 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
+#include "music/Artist.h"
+#include "music/Album.h"
 #include "music/Song.h"
 #include "music/Artist.h"
 #include "Application.h"
@@ -36,7 +38,7 @@ using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 
-JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -62,7 +64,7 @@ JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer 
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int artistID = (int)parameterObject["artistid"].asInteger();
 
@@ -70,25 +72,22 @@ JSON_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransport
   if (!musicdatabase.Open())
     return InternalError;
 
-  CArtist artist;
-  if (!musicdatabase.GetArtistInfo(artistID, artist))
+  CFileItemList items;
+  CStdString where;
+  where.Format("idArtist = %d", artistID);
+  if (!musicdatabase.GetArtistsByWhere("musicdb://2/", where, items) || items.Size() != 1)
   {
     musicdatabase.Close();
     return InvalidParams;
   }
 
-  CFileItemPtr m_artistItem(new CFileItem(artist));
-  m_artistItem->GetMusicInfoTag()->SetArtist(m_artistItem->GetLabel());
-  m_artistItem->GetMusicInfoTag()->SetDatabaseId(artistID);
-  CMusicDatabase::SetPropertiesFromArtist(*m_artistItem, artist);
-  m_artistItem->SetCachedArtistThumb();
-  HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("artistid", false, "artistdetails", items[0], parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -105,7 +104,7 @@ JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int albumID = (int)parameterObject["albumid"].asInteger();
 
@@ -131,7 +130,7 @@ JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportL
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -149,7 +148,7 @@ JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int idSong = (int)parameterObject["songid"].asInteger();
 
@@ -170,7 +169,7 @@ JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLa
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -198,7 +197,7 @@ JSON_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, ITra
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetRecentlyAddedSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -216,7 +215,49 @@ JSON_STATUS CAudioLibrary::GetRecentlyAddedSongs(const CStdString &method, ITran
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  VECALBUMS albums;
+  if (musicdatabase.GetRecentlyPlayedAlbums(albums))
+  {
+    CFileItemList items;
+
+    for (unsigned int index = 0; index < albums.size(); index++)
+    {
+      CStdString path;
+      path.Format("musicdb://8/%i/", albums[index].idAlbum);
+
+      CFileItemPtr item;
+      FillAlbumItem(albums[index], path, item);
+      items.Add(item);
+    }
+
+    HandleFileItemList("albumid", false, "albums", items, parameterObject, result);
+  }
+
+  musicdatabase.Close();
+  return OK;
+}
+
+JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CFileItemList items;
+  if (musicdatabase.GetRecentlyPlayedAlbumSongs("musicdb://", items))
+    HandleFileItemList("songid", true, "songs", items, parameterObject, result);
+
+  musicdatabase.Close();
+  return OK;
+}
+
+JSONRPC_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -236,13 +277,173 @@ JSON_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *
   return OK;
 }
 
-JSON_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");
+  int id = (int)parameterObject["artistid"].asInteger();
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CArtist artist;
+  musicdatabase.GetArtistInfo(id, artist);
+  if (artist.idArtist <= 0)
+  {
+    musicdatabase.Close();
+    return InvalidParams;
+  }
+
+  if (ParameterNotNull(parameterObject, "artist"))
+    artist.strArtist = parameterObject["artist"].asString();
+  if (ParameterNotNull(parameterObject, "instrument"))
+    CopyStringArray(parameterObject["instrument"], artist.instruments);
+  if (ParameterNotNull(parameterObject, "style"))
+    CopyStringArray(parameterObject["style"], artist.styles);
+  if (ParameterNotNull(parameterObject, "mood"))
+    CopyStringArray(parameterObject["mood"], artist.moods);
+  if (ParameterNotNull(parameterObject, "born"))
+    artist.strBorn = parameterObject["born"].asString();
+  if (ParameterNotNull(parameterObject, "formed"))
+    artist.strFormed = parameterObject["formed"].asString();
+  if (ParameterNotNull(parameterObject, "description"))
+    artist.strBiography = parameterObject["description"].asString();
+  if (ParameterNotNull(parameterObject, "genre"))
+    CopyStringArray(parameterObject["genre"], artist.genre);
+  if (ParameterNotNull(parameterObject, "died"))
+    artist.strDied = parameterObject["died"].asString();
+  if (ParameterNotNull(parameterObject, "disbanded"))
+    artist.strDisbanded = parameterObject["disbanded"].asString();
+  if (ParameterNotNull(parameterObject, "yearsactive"))
+    CopyStringArray(parameterObject["yearsactive"], artist.yearsActive);
+
+  JSONRPC_STATUS status;
+  if (musicdatabase.SetArtistInfo(id, artist) > 0)
+    status = ACK;
+  else
+    status = InternalError;
+
+  musicdatabase.Close();
+  return status;
+}
+
+JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["albumid"].asInteger();
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CAlbum album;
+  VECSONGS songs;
+  musicdatabase.GetAlbumInfo(id, album, &songs);
+  if (album.idAlbum <= 0)
+  {
+    musicdatabase.Close();
+    return InvalidParams;
+  }
+
+  if (ParameterNotNull(parameterObject, "title"))
+    album.strAlbum = parameterObject["title"].asString();
+  if (ParameterNotNull(parameterObject, "artist"))
+    CopyStringArray(parameterObject["artist"], album.artist);
+  if (ParameterNotNull(parameterObject, "description"))
+    album.strReview = parameterObject["description"].asString();
+  if (ParameterNotNull(parameterObject, "genre"))
+    CopyStringArray(parameterObject["genre"], album.genre);
+  if (ParameterNotNull(parameterObject, "theme"))
+    CopyStringArray(parameterObject["theme"], album.themes);
+  if (ParameterNotNull(parameterObject, "mood"))
+    CopyStringArray(parameterObject["mood"], album.moods);
+  if (ParameterNotNull(parameterObject, "style"))
+    CopyStringArray(parameterObject["style"], album.styles);
+  if (ParameterNotNull(parameterObject, "type"))
+    album.strType = parameterObject["type"].asString();
+  if (ParameterNotNull(parameterObject, "albumlabel"))
+    album.strLabel = parameterObject["albumlabel"].asString();
+  if (ParameterNotNull(parameterObject, "rating"))
+    album.iRating = (int)parameterObject["rating"].asInteger();
+  if (ParameterNotNull(parameterObject, "year"))
+    album.iYear = (int)parameterObject["year"].asInteger();
+
+  JSONRPC_STATUS status;
+  if (musicdatabase.SetAlbumInfo(id, album, songs) > 0)
+    status = ACK;
+  else
+    status = InternalError;
+
+  musicdatabase.Close();
+  return status;
+}
+
+JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["songid"].asInteger();
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CSong song;
+  if (!musicdatabase.GetSongById(id, song) || song.idSong != id)
+  {
+    musicdatabase.Close();
+    return InvalidParams;
+  }
+
+  if (ParameterNotNull(parameterObject, "title"))
+    song.strTitle = parameterObject["title"].asString();
+  if (ParameterNotNull(parameterObject, "artist"))
+    CopyStringArray(parameterObject["artist"], song.artist);
+  if (ParameterNotNull(parameterObject, "albumartist"))
+    CopyStringArray(parameterObject["albumartist"], song.albumArtist);
+  if (ParameterNotNull(parameterObject, "genre"))
+    CopyStringArray(parameterObject["genre"], song.genre);
+  if (ParameterNotNull(parameterObject, "year"))
+    song.iYear = (int)parameterObject["year"].asInteger();
+  if (ParameterNotNull(parameterObject, "rating"))
+    song.rating = (char)parameterObject["rating"].asInteger();
+  if (ParameterNotNull(parameterObject, "album"))
+    song.strAlbum = parameterObject["album"].asString();
+  if (ParameterNotNull(parameterObject, "track"))
+    song.iTrack = (int)parameterObject["track"].asInteger();
+  if (ParameterNotNull(parameterObject, "duration"))
+    song.iDuration = (int)parameterObject["duration"].asInteger();
+  if (ParameterNotNull(parameterObject, "comment"))
+    song.strComment = parameterObject["comment"].asString();
+  if (ParameterNotNull(parameterObject, "musicbrainztrackid"))
+    song.strMusicBrainzTrackID = parameterObject["musicbrainztrackid"].asString();
+  if (ParameterNotNull(parameterObject, "musicbrainzartistid"))
+    song.strMusicBrainzArtistID = parameterObject["musicbrainzartistid"].asString();
+  if (ParameterNotNull(parameterObject, "musicbrainzalbumid"))
+    song.strMusicBrainzAlbumID = parameterObject["musicbrainzalbumid"].asString();
+  if (ParameterNotNull(parameterObject, "musicbrainzalbumartistid"))
+    song.strMusicBrainzAlbumArtistID = parameterObject["musicbrainzalbumartistid"].asString();
+
+  JSONRPC_STATUS status;
+  if (musicdatabase.UpdateSong(song, id) > 0)
+    status = ACK;
+  else
+    status = InternalError;
+
+  musicdatabase.Close();
+  return status;
+}
+
+JSONRPC_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  std::string directory = parameterObject["directory"].asString();
+  CStdString cmd;
+  if (directory.empty())
+    cmd = "updatelibrary(music)";
+  else
+    cmd.Format("updatelibrary(music, %s)", directory.c_str());
+
+  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
   return ACK;
 }
 
-JSON_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString cmd;
   if (parameterObject["options"].isMember("path"))
@@ -256,7 +457,7 @@ JSON_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *tra
   return ACK;
 }
 
-JSON_STATUS CAudioLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CAudioLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().ExecBuiltIn("cleanlibrary(music)");
   return ACK;
@@ -329,6 +530,22 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     }
 
     musicdatabase.Close();
+
+    if (success)
+    {
+      // If we retrieved the list of songs by "artistid"
+      // we sort by album (and implicitly by track number)
+      if (artistID != -1)
+        list.Sort(SORT_METHOD_ALBUM_IGNORE_THE, SortOrderAscending);
+      // If we retrieve the list of songs by "genreid"
+      // we sort by artist (and implicitly by album and track number)
+      else if (genreID != -1)
+        list.Sort(SORT_METHOD_ARTIST_IGNORE_THE, SortOrderAscending);
+      // otherwise we sort by track number
+      else
+        list.Sort(SORT_METHOD_TRACKNUM, SortOrderAscending);
+
+    }
   }
 
   return success;

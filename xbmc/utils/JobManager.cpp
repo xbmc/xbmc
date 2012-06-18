@@ -22,6 +22,10 @@
 #include "JobManager.h"
 #include <algorithm>
 #include "threads/SingleLock.h"
+#include "utils/log.h"
+
+#include "system.h"
+
 
 using namespace std;
 
@@ -41,8 +45,8 @@ CJobWorker::CJobWorker(CJobManager *manager) : CThread("Jobworker")
 CJobWorker::~CJobWorker()
 {
   // while we should already be removed from the job manager, if an exception
-  // occurs during processing, we may skip over that step.  Thus, before we
-  // go out of scope, ensure the job manager knows we're gone.
+  // occurs during processing that we haven't caught, we may skip over that step.
+  // Thus, before we go out of scope, ensure the job manager knows we're gone.
   m_jobManager->RemoveWorker(this);
   if(!IsAutoDelete())
     StopThread();
@@ -58,8 +62,15 @@ void CJobWorker::Process()
     if (!job)
       break;
 
-    // we have a job to do
-    bool success = job->DoWork();
+    bool success = false;
+    try
+    {
+      success = job->DoWork();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, job->GetType());
+    }
     m_jobManager->OnJobComplete(success, job);
   }
 }
@@ -89,6 +100,24 @@ void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_processing.erase(i);
   // request a new job be queued
   QueueNextJob();
+}
+
+void CJobQueue::CancelJob(const CJob *job)
+{
+  CSingleLock lock(m_section);
+  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
+  if (i != m_processing.end())
+  {
+    i->CancelJob();
+    m_processing.erase(i);
+    return;
+  }
+  Queue::iterator j = find(m_jobQueue.begin(), m_jobQueue.end(), job);
+  if (j != m_jobQueue.end())
+  {
+    j->FreeJob();
+    m_jobQueue.erase(j);
+  }
 }
 
 void CJobQueue::AddJob(CJob *job)
@@ -231,6 +260,15 @@ CJob *CJobManager::PopJob()
     if (m_jobQueue[priority].size() && m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
     {
       CWorkItem job = m_jobQueue[priority].front();
+
+      // skip adding any paused types
+      if (priority <= CJob::PRIORITY_LOW)
+      {
+        std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), job.m_job->GetType());
+        if (i != m_pausedTypes.end())
+          return NULL;
+      }
+
       m_jobQueue[priority].pop_front();
       // add to the processing vector
       m_processing.push_back(job);
@@ -239,6 +277,42 @@ CJob *CJobManager::PopJob()
     }
   }
   return NULL;
+}
+
+void CJobManager::Pause(const std::string &pausedType)
+{
+  CSingleLock lock(m_section);
+  // just push it in so we get ref counting,
+  // the queue will resume when all Pause requests
+  // for a given type have been UnPaused.
+  m_pausedTypes.push_back(pausedType);
+}
+
+void CJobManager::UnPause(const std::string &pausedType)
+{
+  CSingleLock lock(m_section);
+  std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), pausedType);
+  if (i != m_pausedTypes.end())
+    m_pausedTypes.erase(i);
+}
+
+bool CJobManager::IsPaused(const std::string &pausedType)
+{
+  CSingleLock lock(m_section);
+  std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), pausedType);
+  return (i != m_pausedTypes.end());
+}
+
+int CJobManager::IsProcessing(const std::string &pausedType)
+{
+  int jobsMatched = 0;
+  CSingleLock lock(m_section);
+  for(Processing::iterator it = m_processing.begin(); it < m_processing.end(); it++)
+  {
+    if (pausedType == std::string(it->m_job->GetType()))
+      jobsMatched++;
+  }
+  return jobsMatched;
 }
 
 CJob *CJobManager::GetNextJob(const CJobWorker *worker)
@@ -295,8 +369,15 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     // tell any listeners we're done with the job, then delete it
     CWorkItem item(*i);
     lock.Leave();
-    if (item.m_callback)
-      item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+    try
+    {
+      if (item.m_callback)
+        item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, item.m_job->GetType());
+    }
     lock.Enter();
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
     if (j != m_processing.end())
