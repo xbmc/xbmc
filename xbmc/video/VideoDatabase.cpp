@@ -2253,10 +2253,22 @@ void CVideoDatabase::GetFilePathById(int idMovie, CStdString &filePath, VIDEODB_
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type /*= CBookmark::STANDARD*/, bool bAppend)
+void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type /*= CBookmark::STANDARD*/, bool bAppend, long partNumber)
 {
   try
   {
+    if (URIUtils::IsStack(strFilenameAndPath) && CFileItem(CStackDirectory::GetFirstStackedFile(strFilenameAndPath),false).IsDVDImage())
+    {
+      CStackDirectory dir;
+      CFileItemList fileList;
+      dir.GetDirectory(strFilenameAndPath, fileList);
+      if (!bAppend)
+        bookmarks.clear();
+      for (int i = fileList.Size() - 1; i >= 0; i--) // put the bookmarks of the highest part first in the list
+        GetBookMarksForFile(fileList[i]->GetPath(), bookmarks, type, true, (i+1));
+    }
+    else
+    {
     int idFile = GetFileId(strFilenameAndPath);
     if (idFile < 0) return ;
     if (!bAppend)
@@ -2270,6 +2282,7 @@ void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, V
     {
       CBookmark bookmark;
       bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
+      bookmark.partNumber = partNumber;
       bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
       bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
       bookmark.playerState = m_pDS->fv("playerState").get_asString();
@@ -2288,6 +2301,7 @@ void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, V
     }
     //sort(bookmarks.begin(), bookmarks.end(), SortBookmarks);
     m_pDS->close();
+    }
   }
   catch (...)
   {
@@ -2940,7 +2954,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   return retVal;
 }
  
-bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
+bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
 {
   if (tag.m_iFileId < 0)
     return false;
@@ -2949,17 +2963,38 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
 
   try
   {
+    if (URIUtils::IsStack(tag.m_strFileNameAndPath) && CFileItem(CStackDirectory::GetFirstStackedFile(tag.m_strFileNameAndPath),false).IsDVDImage())
+    {
+      CStackDirectory dir;
+      CFileItemList fileList;
+      dir.GetDirectory(tag.m_strFileNameAndPath, fileList);
+      tag.m_resumePoint.Reset();
+      for (int i = fileList.Size() - 1; i >= 0; i--)
+      {
+        CBookmark bookmark;
+        if (GetResumeBookMark(fileList[i]->GetPath(), bookmark))
+        {
+          tag.m_resumePoint = bookmark;
+          tag.m_resumePoint.partNumber = (i+1); /* store part number in here */
+          match = true;
+          break;
+        }
+      }
+    }
+    else
+    {
     CStdString strSQL=PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
     m_pDS2->query( strSQL.c_str() );
     if (!m_pDS2->eof())
     {
       tag.m_resumePoint.timeInSeconds = m_pDS2->fv(0).get_asDouble();
       tag.m_resumePoint.totalTimeInSeconds = m_pDS2->fv(1).get_asDouble();
+      tag.m_resumePoint.partNumber = 0; // regular files or non-iso stacks don't need partNumber
       tag.m_resumePoint.type = CBookmark::RESUME;
-
       match = true;
     }
     m_pDS2->close();
+    }
   }
   catch (...)
   {

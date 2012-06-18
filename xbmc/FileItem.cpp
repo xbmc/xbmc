@@ -74,6 +74,7 @@ CFileItem::CFileItem(const CSong& song)
   m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
+  m_lStartPartNumber = 0;
   SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = song.strThumb;
@@ -297,6 +298,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
 
   m_lStartOffset = item.m_lStartOffset;
+  m_lStartPartNumber = item.m_lStartPartNumber;
   m_lEndOffset = item.m_lEndOffset;
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
@@ -333,6 +335,7 @@ void CFileItem::Reset()
   m_dateTime.Reset();
   m_iDriveType = CMediaSource::SOURCE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
+  m_lStartPartNumber = 0;
   m_lEndOffset = 0;
   m_iprogramCount = 0;
   m_idepth = 1;
@@ -371,6 +374,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_iprogramCount;
     ar << m_idepth;
     ar << m_lStartOffset;
+    ar << m_lStartPartNumber;
     ar << m_lEndOffset;
     ar << m_iLockMode;
     ar << m_strLockCode;
@@ -417,6 +421,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_iprogramCount;
     ar >> m_idepth;
     ar >> m_lStartOffset;
+    ar >> m_lStartPartNumber;
     ar >> m_lEndOffset;
     int temp;
     ar >> temp;

@@ -816,20 +816,22 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   }
 }
 
-int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
+void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber)
 {
   // do not resume livetv
   if (item->IsLiveTV())
-    return 0;
+    return;
 
-  CVideoDatabase db;
-  db.Open();
-  long startoffset = 0;
+  startoffset = 0;
+  partNumber = 0;
 
   if (!item->IsNFO() && !item->IsPlayList())
   {
     if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0.0)
-      startoffset = (long)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
+    {
+      startoffset = (int)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
+      partNumber = item->GetVideoInfoTag()->m_resumePoint.partNumber;
+    }
     else
     {
       CBookmark bookmark;
@@ -837,32 +839,27 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
       if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
         strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      if (db.GetResumeBookMark(strPath, bookmark))
-        startoffset = (long)(bookmark.timeInSeconds*75);
-
-      if (URIUtils::IsStack(strPath) && CFileItem(CStackDirectory::GetFirstStackedFile(strPath),false).IsDVDImage())
+      CVideoDatabase db;
+      if (!db.Open())
       {
-        CStackDirectory dir;
-        CFileItemList movies;
-        dir.GetDirectory(strPath, movies);
-
-        /* check if any of the stacked files have a resume bookmark */
-        for (int i = 0; i < movies.Size(); i++)
-        {
-          CBookmark bookmark;
-          if (db.GetResumeBookMark(movies[i]->GetPath(), bookmark))
-          {
-            startoffset = (long)(bookmark.timeInSeconds);
-            startoffset += 0x10000000 * (i+1); /* store file number in here */
-            // don't break, we  take the last one!
-          }
-        }
+        CLog::Log(LOGERROR, "%s - Cannot open VideoDatabase", __FUNCTION__);
+        return;
       }
+      if (db.GetResumeBookMark(strPath, bookmark))
+      {
+        startoffset = (int)(bookmark.timeInSeconds*75);
+        partNumber = bookmark.partNumber;
+      }
+      db.Close();
     }
   }
-  db.Close();
+}
 
-  return startoffset;
+bool CGUIWindowVideoBase::HasResumeItemOffset(const CFileItem *item)
+{
+  int startoffset, partNumber = 0;
+  GetResumeItemOffset(item, startoffset, partNumber);
+  return startoffset > 0;
 }
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
@@ -1017,20 +1014,15 @@ CStdString CGUIWindowVideoBase::GetResumeString(CFileItem item)
     if (item.IsVideoDb() || item.IsDVD())
       itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
 
-    if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDVDImage())
+    if (db.GetResumeBookMark(itemPath, bookmark))
     {
-      int startoffset = GetResumeItemOffset(&item);
-      if (startoffset > 0)
+      resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
+      if (bookmark.partNumber > 0)
       {
-        int selectedPart = (startoffset>>28);
-        startoffset = startoffset & ~0xF0000000;
-        partString.Format(g_localizeStrings.Get(23051).c_str(), selectedPart);
-        resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(startoffset)).c_str());
+        partString.Format(g_localizeStrings.Get(23051).c_str(), bookmark.partNumber);
         resumeString.append(" (").append(partString).append(")");
       }
     }
-    else if (db.GetResumeBookMark(itemPath, bookmark) )
-      resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
     db.Close();
   }
   return resumeString;
@@ -1233,7 +1225,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // if autoresume is enabled then add restart video button
       // check to see if the Resume Video button is applicable
       // only if the video is NOT a DVD (in that case the resume button will be added by CGUIDialogContextMenu::GetContextButtons)
-      if (!item->IsDVD() && GetResumeItemOffset(item.get()) > 0)
+      if (!item->IsDVD() && HasResumeItemOffset(item.get()))
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
@@ -1280,7 +1272,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDVDImage())
     {
       CStdString resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile - 1].get()));
-      stack->m_lStartOffset = 0x10000000 * (selectedFile); /* store file number in here */
+      stack->m_lStartOffset = 0;
       if (!resumeString.IsEmpty()) 
       {
         CContextButtons choices;
@@ -1288,10 +1280,11 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
         choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
         int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (value == SELECT_ACTION_RESUME)
-          stack->m_lStartOffset += (long)CGUIWindowVideoBase::GetResumeItemOffset(parts[selectedFile - 1].get());
+          GetResumeItemOffset(parts[selectedFile - 1].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);
         else if (value != SELECT_ACTION_PLAY)
           return false; // if not selected PLAY, then we changed our mind so return
       }
+      stack->m_lStartPartNumber = selectedFile;
     }
     // regular stack
     else

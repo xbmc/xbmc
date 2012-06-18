@@ -310,6 +310,7 @@ public:
   int m_iprogramCount;
   int m_idepth;
   int m_lStartOffset;
+  int m_lStartPartNumber;
   int m_lEndOffset;
   LockType m_iLockMode;
   CStdString m_strLockCode;

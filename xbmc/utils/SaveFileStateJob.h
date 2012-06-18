@@ -8,13 +8,16 @@
 class CSaveFileStateJob : public CJob
 {
   CFileItem m_item;
+  CFileItem m_item_discstack;
   CBookmark m_bookmark;
   bool      m_updatePlayCount;
 public:
                 CSaveFileStateJob(const CFileItem& item,
+                                  const CFileItem& item_discstack,
                                   const CBookmark& bookmark,
                                   bool updatePlayCount)
                   : m_item(item),
+                    m_item_discstack(item_discstack),
                     m_bookmark(bookmark),
                     m_updatePlayCount(updatePlayCount) {}
   virtual       ~CSaveFileStateJob() {}
@@ -84,6 +87,12 @@ bool CSaveFileStateJob::DoWork()
         {
           videodatabase.SetStreamDetailsForFile(m_item.GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
           updateListing = true;
+        }
+        // in order to properly update the the list, we need to update the stack item which is held in g_application.m_stackFileItemToUpdate
+        if (m_item.HasProperty("stackFileItemToUpdate"))
+        {
+          m_item = m_item_discstack; // as of now, the item is replaced by the discstack item
+          videodatabase.GetResumePoint(*m_item.GetVideoInfoTag());
         }
         videodatabase.Close();
 
