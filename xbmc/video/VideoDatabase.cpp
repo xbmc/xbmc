@@ -3018,12 +3018,12 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
   return match;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */,  bool needsStreamDetails /* = true */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
-  return GetDetailsForMovie(pDS->get_sql_record(), needsCast, needsStreamDetails);
+  return GetDetailsForMovie(pDS->get_sql_record(), needsCast);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool needsCast /* = false */, bool needsStreamDetails /* = true */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool needsCast /* = false */)
 {
   CVideoInfoTag details;
 
@@ -3039,9 +3039,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_type = "movie";
   GetCommonDetails(record, details);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
-
-  if (needsStreamDetails)
-    GetStreamDetails(details);
 
   if (needsCast)
   {
@@ -3153,8 +3150,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  GetStreamDetails(details);
-
   if (needsCast)
   {
     GetCast("episode", "idEpisode", details.m_iDbId, details.m_cast);
@@ -3188,8 +3183,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   details.m_type = "musicvideo";
   GetCommonDetails(record, details);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
-
-  GetStreamDetails(details);
 
   details.m_strPictureURL.Parse();
   return details;
@@ -4425,7 +4418,7 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
       }
 
       // add the movie's details to the set
-      it->second.movies.push_back(GetDetailsForMovie(m_pDS, false, false));
+      it->second.movies.push_back(GetDetailsForMovie(m_pDS));
 
       m_pDS->next();
     }

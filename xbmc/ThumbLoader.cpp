@@ -206,6 +206,13 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       pItem->SetInvalid();
   }
 
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails() &&
+     (pItem->GetVideoInfoTag()->m_type == "movie" || pItem->GetVideoInfoTag()->m_type == "episode" || pItem->GetVideoInfoTag()->m_type == "musicvideo"))
+  {
+    if (m_database->GetStreamDetails(*pItem->GetVideoInfoTag()))
+      pItem->SetInvalid();
+  }
+
   // video db items normally have info in the database
   if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
   {
