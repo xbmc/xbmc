@@ -29,9 +29,11 @@
 #include "utils/AutoPtrHandle.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "mysqldataset.h"
 #include "sqlitedataset.h"
 
+#ifdef HAS_MYSQL
+#include "mysqldataset.h"
+#endif
 
 using namespace AUTOPTR;
 using namespace dbiplus;
@@ -363,10 +365,12 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
   {
     m_pDB.reset( new SqliteDatabase() ) ;
   }
+#ifdef HAS_MYSQL
   else if (dbSettings.type.Equals("mysql"))
   {
     m_pDB.reset( new MysqlDatabase() ) ;
   }
+#endif
   else
   {
     CLog::Log(LOGERROR, "Unable to determine database type: %s", dbSettings.type.c_str());
