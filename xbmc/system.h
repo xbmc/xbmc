@@ -80,6 +80,9 @@
   #define HAS_AIRTUNES
 #endif
 
+#ifdef HAVE_MYSQL
+  #define HAS_MYSQL
+#endif
 /**********************
  * Non-free Components
  **********************/
