@@ -6,8 +6,10 @@ LIB=utilsTest.a
 
 CLEAN_FILES=testMain
 
-check: testMain
+check: testsuite
 	./testMain
+
+testsuite: testMain
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

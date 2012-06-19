@@ -146,6 +146,8 @@ alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
 libcap_disabled="== Capabilities detection support disabled. =="
 libcap_not_found="== Could not find libcap. Capabilities detection support disabled. =="
+gtest_enabled="== Google Test Framework will be configured. =="
+gtest_disabled="== Google Test Framework will not be configured. =="
 
 libudev_not_found="== Could not find libudev. Will use polling to check for device changes. =="
 libudev_disabled="== udev support disabled. Will use polling to check for device changes. =="
@@ -485,6 +487,12 @@ AC_ARG_ENABLE([player],
   [enable additional players from a list of comma separated names, (default is none, choices are amlplayer, omxplayer)])],
   [add_players=$enableval],
   [add_players=no])
+
+AC_ARG_ENABLE([gtest],
+  [AS_HELP_STRING([--enable-gtest],
+  [configure Google Test Framework (default is no)])],
+  [configure_gtest=$enableval],
+  [configure_gtest=no])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -2018,6 +2026,19 @@ if test "$host_vendor" = "apple"; then
  DVDREAD_CFLAGS="$DVDREAD_CFLAGS -D__DARWIN__"
 fi
 
+# Google Test Framework
+if test "$configure_gtest" = "yes"; then
+  AC_MSG_NOTICE($gtest_enabled)
+  final_message="$final_message\n  Google Test Framework Configured:\tYes"
+  GTEST_CONFIGURED=1
+  SKIP_CONFIG_GTEST=0
+else
+  AC_MSG_NOTICE($gtest_disabled)
+  final_message="$final_message\n  Google Test Framework Configured:\tNo"
+  GTEST_CONFIGURED=0
+  SKIP_CONFIG_GTEST=1
+fi
+
 if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
 else
@@ -2321,6 +2342,7 @@ AC_SUBST(USE_CEC_RPI_API)
 AC_SUBST(USE_MYSQL)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_ANDROID)
+AC_SUBST(GTEST_CONFIGURED)
 
 
 # pushd and popd are not available in other shells besides bash, so implement
@@ -2635,6 +2657,20 @@ XB_CONFIG_MODULE([lib/cpluff], [
     --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS" LIBS=""
     #LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
 ], [0])
+
+XB_CONFIG_MODULE([lib/gtest], [
+  ./configure \
+    CC="$CC" \
+    CXX="$CXX" \
+    CFLAGS="$CFLAGS" \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \
+    --disable-shared \
+    --enable-static \
+    --with-pthreads
+], [$SKIP_CONFIG_GTEST])
 
 AC_OUTPUT
 
