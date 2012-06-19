@@ -883,6 +883,8 @@ extern long long cmyth_proginfo_length(cmyth_proginfo_t prog);
  */
 extern char *cmyth_proginfo_host(cmyth_proginfo_t prog);
 
+extern int cmyth_proginfo_port(cmyth_proginfo_t prog);
+
 /**
  * Determine if two proginfo handles refer to the same program.
  * \param a proginfo handle a
