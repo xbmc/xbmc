@@ -60,9 +60,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   python-support, unzip, yasm, zip, zlib1g-dev, libcap-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
-use ccache. Also, it is recommended developers install the Boost Unit Test
-Framework to be able to run the testsuite. On Debian/Ubuntu machines, the
-package to install the framework is libboost-test-dev.
+use ccache
 
 --------------------------------------------------------------
 3.1. Using the XBMC PPA to get all build dependencies (Debian/Ubuntu only)
@@ -112,13 +110,6 @@ Tip: To override the location that XBMC is installed, use PREFIX=<path>.
 For example.
 
     $ make install DESTDIR=$HOME/xbmc
-
------------------------------------------------------------------------------
-4.1 Compiling/Running the testsuite.
------------------------------------------------------------------------------
-For developers, to compile and run the testsuite, simply type the following.
-
-    $ make check
 
 -----------------------------------------------------------------------------
 5. How to run
