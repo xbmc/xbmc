@@ -953,7 +953,7 @@ int
 cmyth_conn_check_block(cmyth_conn_t conn, unsigned long size)
 {
 	fd_set check;
-	struct timeval timeout = {0,0};
+	struct timeval timeout;
 	int length;
 	int err = 0;
 	unsigned long sent;
@@ -961,6 +961,7 @@ cmyth_conn_check_block(cmyth_conn_t conn, unsigned long size)
 	if (!conn) {
 		return -EINVAL;
 	}
+	timeout.tv_sec = timeout.tv_usec = 0;
 	FD_ZERO(&check);
 	FD_SET(conn->conn_fd, &check);
 	if (select((int)conn->conn_fd + 1, &check, NULL, NULL, &timeout) < 0) {
