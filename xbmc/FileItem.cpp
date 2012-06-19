@@ -74,6 +74,7 @@ CFileItem::CFileItem(const CSong& song)
   m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
+  SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = song.strThumb;
 }
@@ -1148,29 +1149,34 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   if (!item)
     return false;
 
-  if (item->GetPath() == m_strPath && item->m_lStartOffset == m_lStartOffset) return true;
+  if (item->GetPath() == m_strPath)
+  {
+    if (item->HasProperty("item_start") || HasProperty("item_start"))
+      return (item->GetProperty("item_start") == GetProperty("item_start"));
+    return true;
+  }
   if (IsMusicDb() && HasMusicInfoTag())
   {
     CFileItem dbItem(m_musicInfoTag->GetURL(), false);
-    dbItem.m_lStartOffset = m_lStartOffset;
+    dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
   if (IsVideoDb() && HasVideoInfoTag())
   {
     CFileItem dbItem(m_videoInfoTag->m_strFileNameAndPath, false);
-    dbItem.m_lStartOffset = m_lStartOffset;
+    dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
   if (item->IsMusicDb() && item->HasMusicInfoTag())
   {
     CFileItem dbItem(item->m_musicInfoTag->GetURL(), false);
-    dbItem.m_lStartOffset = item->m_lStartOffset;
+    dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
   }
   if (item->IsVideoDb() && item->HasVideoInfoTag())
   {
     CFileItem dbItem(item->m_videoInfoTag->m_strFileNameAndPath, false);
-    dbItem.m_lStartOffset = item->m_lStartOffset;
+    dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
   }
   if (HasProperty("original_listitem_url"))
