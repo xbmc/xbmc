@@ -172,10 +172,21 @@ extern "C" void __stdcall init_emu_environ()
     dll_putenv(string("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
   }
+
+#if defined(TARGET_ANDROID)
+  string apkPath = getenv("XBMC_ANDROID_APK");
+  apkPath += "/assets/python2.6";
+  dll_putenv(string("PYTHONHOME=" + apkPath).c_str());
+  dll_putenv("PYTHONOPTIMIZE=");
+  dll_putenv("PYTHONNOUSERSITE=1");
+  dll_putenv("PYTHONPATH=");
+#else
+  dll_putenv("PYTHONOPTIMIZE=1");
+#endif
+
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
-  dll_putenv("PYTHONOPTIMIZE=1");
   //dll_putenv("PYTHONDUMPREFS=1");
   //dll_putenv("THREADDEBUG=1");
   //dll_putenv("PYTHONMALLOCSTATS=1");
