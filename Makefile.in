@@ -198,7 +198,8 @@ FINAL_TARGETS=xbmc.bin skins xbmc-xrandr
 endif
 FINAL_TARGETS+=Makefile externals
 
-CHECK_DIRS = xbmc/utils/test
+CHECK_DIRS = xbmc/utils/test \
+             xbmc/threads/test
 
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'

@@ -10,7 +10,7 @@ LIB=threadTest.a
 
 CLEAN_FILES=testMain
 
-runtest: testMain
+check: testMain
 	./testMain
 
 include ../../../Makefile.include
