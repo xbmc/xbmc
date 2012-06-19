@@ -1777,11 +1777,6 @@ void CDVDPlayer::CheckAutoSceneSkip()
     m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
     m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
   }
-
-  /*
-   * Reset the EDL automatic skip cut marker every 500 ms.
-   */
-  m_EdlAutoSkipMarkers.ResetCutMarker(500); // in msec
 }
 
 
