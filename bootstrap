@@ -13,6 +13,7 @@ autoreconf -vif lib/cpluff
   autoreconf -vif lib/libdvd/libdvdcss
 autoreconf -vif lib/libdvd/libdvdread
 autoreconf -vif lib/libdvd/libdvdnav
+autoreconf -vif lib/gtest
 
 # Clean the generated files
 find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
