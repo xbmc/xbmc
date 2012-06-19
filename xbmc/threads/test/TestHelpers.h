@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <unittest++/UnitTest++.h>
+#include "gtest/gtest.h"
 
 #include "threads/Thread.h"
 #include "threads/Atomics.h"

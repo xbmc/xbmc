@@ -53,7 +53,7 @@ void doSubtract(long* number, long toAdd)
     AtomicSubtract(number,toAdd);
 }
 
-TEST(TestMassAtomicIncrement)
+TEST(TestMassAtomic, Increment)
 {
   long lNumber = 0;
   boost::shared_array<thread> t;
@@ -64,10 +64,10 @@ TEST(TestMassAtomicIncrement)
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL((NUMTHREADS * TESTNUM), lNumber);
+  EXPECT_EQ((NUMTHREADS * TESTNUM), lNumber);
  }
 
-TEST(TestMassAtomicDecrement)
+TEST(TestMassAtomic, Decrement)
 {
   long lNumber = (NUMTHREADS * TESTNUM);
   boost::shared_array<thread> t;
@@ -78,10 +78,10 @@ TEST(TestMassAtomicDecrement)
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL(0, lNumber);
+  EXPECT_EQ(0, lNumber);
  }
 
-TEST(TestMassAtomicAdd)
+TEST(TestMassAtomic, Add)
 {
   long lNumber = 0;
   long toAdd = 10;
@@ -93,10 +93,10 @@ TEST(TestMassAtomicAdd)
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL((NUMTHREADS * TESTNUM) * toAdd, lNumber);
+  EXPECT_EQ((NUMTHREADS * TESTNUM) * toAdd, lNumber);
  }
 
-TEST(TestMassAtomicSubtract)
+TEST(TestMassAtomic, Subtract)
 {
   long toSubtract = 10;
   long lNumber = (NUMTHREADS * TESTNUM) * toSubtract;
@@ -108,36 +108,36 @@ TEST(TestMassAtomicSubtract)
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL(0, lNumber);
+  EXPECT_EQ(0, lNumber);
  }
 
 #define STARTVAL 767856l
 
-TEST(TestAtomicIncrement)
+TEST(TestAtomic, Increment)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL + 1l, AtomicIncrement(&check));
-  CHECK_EQUAL(STARTVAL + 1l,check);
+  EXPECT_EQ(STARTVAL + 1l, AtomicIncrement(&check));
+  EXPECT_EQ(STARTVAL + 1l,check);
 }
 
-TEST(TestAtomicDecrement)
+TEST(TestAtomic, Decrement)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL - 1l, AtomicDecrement(&check));
-  CHECK_EQUAL(STARTVAL - 1l,check);
+  EXPECT_EQ(STARTVAL - 1l, AtomicDecrement(&check));
+  EXPECT_EQ(STARTVAL - 1l,check);
 }
 
-TEST(TestAtomicAdd)
+TEST(TestAtomic, Add)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL + 123l, AtomicAdd(&check,123l));
-  CHECK_EQUAL(STARTVAL + 123l,check);
+  EXPECT_EQ(STARTVAL + 123l, AtomicAdd(&check,123l));
+  EXPECT_EQ(STARTVAL + 123l,check);
 }
 
-TEST(TestAtomicSubtract)
+TEST(TestAtomic, Subtract)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL - 123l, AtomicSubtract(&check,123l));
-  CHECK_EQUAL(STARTVAL - 123l, check);
+  EXPECT_EQ(STARTVAL - 123l, AtomicSubtract(&check,123l));
+  EXPECT_EQ(STARTVAL - 123l, check);
 }
 
