@@ -37,6 +37,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
+  virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
 
   static bool EditPlaylist(const CStdString &path, const CStdString &type = "");
   static bool NewPlaylist(const CStdString &type);
