@@ -114,6 +114,22 @@ For example.
     $ make install DESTDIR=$HOME/xbmc
 
 -----------------------------------------------------------------------------
+4.1. Test Suite
+-----------------------------------------------------------------------------
+XBMC has a test suite which uses the Google C++ Testing Framework. The
+framework is provided directly in XBMC's source tree and has very little
+requirements in order to build and run. See the README file for the framework
+at 'lib/gtest/README' for specific requirements.
+
+To compile and run XBMC's test suite, simply type the following.
+
+    $ make check
+
+To compile the test suite without running it, type the following.
+
+    $ make testsuite
+
+-----------------------------------------------------------------------------
 5. How to run
 -----------------------------------------------------------------------------
 How to run xbmc depends on the type of installation you have done. It is
