@@ -50,10 +50,9 @@ public:
   CSkinInfo(const cp_extension_t *ext);
   virtual ~CSkinInfo();
 
-  /*! \brief Load information regarding the skin from the given skin directory
-   \param skinDir folder of the skin to load (defaults to this skin's basedir)
+  /*! \brief Load resultion information from directories in Path().
    */
-  void Start(const CStdString& skinDir = "");
+  void Start();
 
   bool HasSkinFile(const CStdString &strFile) const;
 
