@@ -1,4 +1,4 @@
-/** \file mvp_debug.h
+/** \file debug.h
  * A C library for generating and controlling debug output
  */
 

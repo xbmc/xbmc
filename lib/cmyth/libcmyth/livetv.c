@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006, Sergio Slobodrian
+ *  Copyright (C) 2006-2012, Sergio Slobodrian
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or

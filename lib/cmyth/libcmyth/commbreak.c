@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2006, Jon Gettler
+ *  Copyright (C) 2005-2012, Jon Gettler
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or

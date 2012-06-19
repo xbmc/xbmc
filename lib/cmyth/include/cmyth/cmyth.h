@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund, Jon Gettler
+ *  Copyright (C) 2004-2012, Eric Lund, Jon Gettler
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -15,6 +15,22 @@
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*! \mainpage cmyth
+ *
+ * cmyth is a library that provides a C language API to access and control
+ * a MythTV backend.
+ *
+ * \section projectweb Project website
+ * http://www.mvpmc.org/
+ *
+ * \section repos Source repositories
+ * http://git.mvpmc.org/
+ *
+ * \section libraries Libraries
+ * \li \link cmyth.h libcmyth \endlink
+ * \li \link refmem.h librefmem \endlink
  */
 
 /** \file cmyth.h
@@ -234,7 +250,7 @@ extern cmyth_conn_t cmyth_conn_connect_event(char *server,
 					     unsigned buflen, int tcp_rcvbuf);
 
 /**
- * Create a file connection to a backend.
+ * Create a file connection to a backend for reading a recording.
  * \param prog program handle
  * \param control control handle
  * \param buflen buffer size for the connection to use
@@ -364,6 +380,11 @@ extern char * cmyth_conn_get_setting(cmyth_conn_t conn,
  */
 extern cmyth_event_t cmyth_event_get(cmyth_conn_t conn, char * data, int len);
 
+/**
+ * Selects on the event socket, waiting for an event to show up.
+ * allows nonblocking access to events.
+ * \return <= 0 on failure
+ */
 extern int cmyth_event_select(cmyth_conn_t conn, struct timeval *timeout);
 
 /*
