@@ -1360,18 +1360,6 @@ cmyth_conn_get_free_recorder_count(cmyth_conn_t conn)
 	return ret;
 }
 
-char *
-cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* setting)
-{
-	char* result = NULL;
-
-	pthread_mutex_lock(&mutex);
-	result = cmyth_conn_get_setting_unlocked(conn, hostname, setting);
-	pthread_mutex_unlock(&mutex);
-
-	return result;
-}
-
 static char *
 cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting)
 {
@@ -1431,3 +1419,14 @@ err:
 	return NULL;
 }
 
+char *
+cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* setting)
+{
+	char* result = NULL;
+
+	pthread_mutex_lock(&mutex);
+	result = cmyth_conn_get_setting_unlocked(conn, hostname, setting);
+	pthread_mutex_unlock(&mutex);
+
+	return result;
+}
