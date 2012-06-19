@@ -103,14 +103,14 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
   CStdString realPath = CSpecialProtocol::TranslatePath( filename );
   
   // Open video file
-  if ( m_dllAvFormat->av_open_input_file( &pFormatCtx, realPath.c_str(), NULL, 0, NULL ) < 0 )
+  if ( m_dllAvFormat->avformat_open_input( &pFormatCtx, realPath.c_str(), NULL, NULL ) < 0 )
   {
     CLog::Log( LOGERROR, "Karaoke Video Background: Could not open video file %s (%s)", filename.c_str(), realPath.c_str() );
     return false;
   }
 
   // Retrieve stream information
-  if ( m_dllAvFormat->av_find_stream_info( pFormatCtx ) < 0 )
+  if ( m_dllAvFormat->avformat_find_stream_info( pFormatCtx, 0 ) < 0 )
   {
     CLog::Log( LOGERROR, "Karaoke Video Background: Could not find stream information in the video file %s", filename.c_str() );
     return false;
@@ -121,7 +121,7 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
 
   for ( unsigned i = 0; i < pFormatCtx->nb_streams; i++ )
   {
-    if ( pFormatCtx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO )
+    if ( pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
     {
       videoStream = i;
       break;
@@ -153,7 +153,7 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
   }
     
   // Open the codec
-  if ( m_dllAvCodec->avcodec_open( pCodecCtx, pCodec ) < 0 )
+  if ( m_dllAvCodec->avcodec_open2( pCodecCtx, pCodec, 0 ) < 0 )
   {
     CLog::Log( LOGERROR, "Karaoke Video Background: Could not open the video decoder for the file %s", filename.c_str() );
     return false;
@@ -255,7 +255,7 @@ void KaraokeVideoFFMpeg::closeVideoFile()
 
   // Close the video file
   if ( pFormatCtx )
-    m_dllAvFormat->av_close_input_file( pFormatCtx );
+    m_dllAvFormat->avformat_close_input( &pFormatCtx );
 
   pFormatCtx = 0;
   pCodecCtx = 0;

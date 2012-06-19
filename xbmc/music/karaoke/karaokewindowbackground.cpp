@@ -180,11 +180,7 @@ void CKaraokeWindowBackground::StartImage( const CStdString& path )
 }
 
 
-<<<<<<< HEAD
 void CKaraokeWindowBackground::StartVideo( const CStdString& path )
-=======
-void CKaraokeWindowBackground::StartVideo( const CStdString& path, int64_t offset)
->>>>>>> upstream/master
 {
   if ( !m_videoPlayer )
     m_videoPlayer = new KaraokeVideoFFMpeg();
