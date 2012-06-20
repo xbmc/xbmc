@@ -8725,7 +8725,15 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr ""
 
-#empty strings from id 24102 to 24999
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr ""
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr ""
+
+#empty strings from id 24104 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
