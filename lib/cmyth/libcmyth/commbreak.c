@@ -197,7 +197,6 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 	unsigned short type;
 	unsigned short start_type;
 	int i;
-	int j;
 
 	if (count <= 0) {
 		*err = EINVAL;
@@ -242,8 +241,8 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 			start_type = type;
 		} else if (type == CMYTH_COMMBREAK_END || type == CMYTH_CUTLIST_END) {
 			if (start >= 0 &&
-			   (type == CMYTH_COMMBREAK_END && start_type == CMYTH_COMMBREAK_START
-			    || type == CMYTH_CUTLIST_END && start_type == CMYTH_CUTLIST_START))
+			    ((type == CMYTH_COMMBREAK_END && start_type == CMYTH_COMMBREAK_START)
+			     || (type == CMYTH_CUTLIST_END && start_type == CMYTH_CUTLIST_START)))
 			{
 				commbreak = cmyth_commbreak_create();
 				commbreak->start_mark = start;
