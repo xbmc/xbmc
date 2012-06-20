@@ -662,10 +662,8 @@ bool URIUtils::IsFTP(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  CURL url(strFile2);
-
-  return url.GetTranslatedProtocol() == "ftp"  ||
-         url.GetTranslatedProtocol() == "ftps";
+  return strFile2.Left(4).Equals("ftp:")  ||
+         strFile2.Left(5).Equals("ftps:");
 }
 
 bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
@@ -682,7 +680,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
   CStdString strProtocol2 = url.GetTranslatedProtocol();
 
   // Special case these
-  if (strProtocol2 == "ftp"   || strProtocol2 == "ftps"   ||
+  if (strProtocol  == "ftp"   || strProtocol  == "ftps"   ||
       strProtocol  == "dav"   || strProtocol  == "davs")
     return bStrictCheck;
 
