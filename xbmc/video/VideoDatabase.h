@@ -321,20 +321,6 @@ class CVideoDatabase : public CDatabase
 {
 public:
 
-  class Filter
-  {
-  public:
-    Filter() : fields("*") {};
-    Filter(const char *w) : fields("*"), where(w) {};
-    Filter(const std::string &w) : fields("*"), where(w) {};
-    std::string fields;
-    std::string join;
-    std::string where;
-    std::string order;
-    std::string group;
-    std::string limit;
-  };
-
   class CActor    // used for actor retrieval for non-master users
   {
   public:
