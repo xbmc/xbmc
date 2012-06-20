@@ -35,7 +35,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLaye
 
   CFileItemList items;
   JSONRPC_STATUS ret = OK;
-  if (videodatabase.GetMoviesByWhere("videodb://1/", "", items))
+  if (videodatabase.GetMoviesByWhere("videodb://1/2/", "", items))
     ret = GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
@@ -100,7 +100,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITran
   // Get movies from the set
   CFileItemList items;
   JSONRPC_STATUS ret = OK;
-  if (videodatabase.GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, id))
+  if (videodatabase.GetMoviesNav("videodb://2/2/", items, -1, -1, -1, -1, -1, -1, id))
     ret = GetAdditionalMovieDetails(parameterObject["movies"], items, result["setdetails"]["items"], videodatabase);
 
   videodatabase.Close();
@@ -114,7 +114,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetTvShowsNav("videodb://2/", items))
+  if (videodatabase.GetTvShowsNav("videodb://2/2/", items))
   {
     bool additionalInfo = false;
     for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
@@ -215,6 +215,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITrans
   int tvshowid = infos.m_iIdShow;
   if (tvshowid <= 0)
     tvshowid = videodatabase.GetTvShowForEpisode(id);
+
   CStdString basePath; basePath.Format("videodb://2/2/%ld/%ld/%ld", tvshowid, infos.m_iSeason, id);
   pItem->SetPath(basePath);
 
@@ -234,7 +235,7 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITranspor
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetMusicVideosNav("videodb://3/", items, -1, -1, artistID, -1, -1, albumID))
+  if (videodatabase.GetMusicVideosNav("videodb://3/2/", items, -1, -1, artistID, -1, -1, albumID))
     GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();

@@ -171,7 +171,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldTvShowTitle)
   {
-    videodatabase.GetTvShowsNav("",items);
+    videodatabase.GetTvShowsNav("videodb://2/2/",items);
     iLabel = 20343;
   }
   else if (m_rule.m_field == FieldPlaylist)
