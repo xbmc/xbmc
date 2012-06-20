@@ -294,7 +294,11 @@ cmyth_mysql_get_commbreaklist(cmyth_database_t db, cmyth_conn_t conn, cmyth_prog
 	}
 
 	fprintf(stderr, "Found %li commercial breaks for current program.\n", breaklist->commbreak_count);
-
+	if (r != breaklist->commbreak_count) {
+		fprintf(stderr, "commbreak error.  Setting number of commercial breaks to zero\n");
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s  - returned rows=%d commbreak_count=%li\n",__FUNCTION__, r,breaklist->commbreak_count);
+		breaklist->commbreak_count = 0;
+	}
 	out:
 	pthread_mutex_unlock(&mutex);
 	return breaklist;
