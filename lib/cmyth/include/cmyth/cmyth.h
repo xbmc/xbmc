@@ -579,6 +579,7 @@ extern int cmyth_livetv_read(cmyth_recorder_t rec,
 extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
 
 extern int mythtv_new_livetv(void);
+extern int cmyth_tuner_type_check(cmyth_database_t db, cmyth_recorder_t rec, int check_tuner_enabled);
 
 /*
  * -----------------------------------------------------------------
