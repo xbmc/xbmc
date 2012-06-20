@@ -332,7 +332,8 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
       newTag = itr->second;
     else
     {
-      newTag = new CEpgInfoTag(m_iEpgID, m_iPVRChannelNumber, m_iPVRChannelId, m_strName);
+      CPVRChannel *channel = Channel();
+      newTag = new CEpgInfoTag(this, m_iPVRChannelNumber, m_iPVRChannelId, m_strName, channel ? channel->IconPath() : StringUtils::EmptyString);
       m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
     }
   }
@@ -340,7 +341,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   if (newTag)
   {
     newTag->Update(tag);
-    newTag->m_iEpgId            = m_iEpgID;
+    newTag->m_epg               = this;
     newTag->m_iPVRChannelNumber = m_iPVRChannelNumber;
     newTag->m_iPVRChannelID     = m_iPVRChannelId;
     newTag->m_strTableName      = m_strName;
@@ -363,14 +364,15 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   else
   {
     /* create a new tag if no tag with this ID exists */
-    infoTag = new CEpgInfoTag(m_iEpgID, m_iPVRChannelNumber, m_iPVRChannelId, m_strName);
+    CPVRChannel *channel = Channel();
+    infoTag = new CEpgInfoTag(this, m_iPVRChannelNumber, m_iPVRChannelId, m_strName, channel ? channel->IconPath() : StringUtils::EmptyString);
     infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
     m_tags.insert(make_pair(tag.StartAsUTC(), infoTag));
     bNewTag = true;
   }
 
   infoTag->Update(tag, bNewTag);
-  infoTag->m_iEpgId            = m_iEpgID;
+  infoTag->m_epg               = this;
   infoTag->m_iPVRChannelNumber = m_iPVRChannelNumber;
   infoTag->m_iPVRChannelID     = m_iPVRChannelId;
   infoTag->m_strTableName      = m_strName;
