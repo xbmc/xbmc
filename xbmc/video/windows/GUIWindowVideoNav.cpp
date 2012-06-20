@@ -361,11 +361,16 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
 {
   // TODO: this could possibly be threaded as per the music info loading,
   //       we could also cache the info
-  if (!items.GetContent().IsEmpty())
-    return; // don't load for listings that have content set
+  if (!items.GetContent().IsEmpty() && !items.IsPlugin())
+    return; // don't load for listings that have content set and weren't created from plugins
 
-  CStdString content = m_database.GetContentForPath(items.GetPath());
-  items.SetContent(content.IsEmpty() ? "files" : content);
+  CStdString content = items.GetContent();
+  // determine content only if it isn't set
+  if (content.IsEmpty())
+  {
+    content = m_database.GetContentForPath(items.GetPath());
+    items.SetContent(content.IsEmpty() ? "files" : content);
+  }
 
   /*
     If we have a matching item in the library, so we can assign the metadata to it. In addition, we can choose
