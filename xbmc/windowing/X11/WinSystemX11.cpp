@@ -172,7 +172,6 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     return false;
   }
 
-  RefreshGlxContext();
   m_nWidth  = newWidth;
   m_nHeight = newHeight;
   m_bFullScreen = false;
@@ -223,13 +222,12 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     OnLostDevice();
     m_bIsInternalXrr = true;
     g_xrandr.SetMode(out, mode);
+    return true;
   }
 #endif
 
   if (!SetWindow(res.iWidth, res.iHeight, fullScreen, CSettings::Get().GetString("videoscreen.monitor")))
     return false;
-
-  RefreshGlxContext();
 
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
@@ -381,11 +379,8 @@ bool CWinSystemX11::RefreshGlxContext()
   if (m_glContext)
   {
     CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshGlxContext: refreshing context");
-    glFinish();
     glXMakeCurrent(m_dpy, None, NULL);
     glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
-    XSync(m_dpy, FALSE);
-    g_Windowing.ResetVSync();
     return true;
   }
 
@@ -445,14 +440,14 @@ bool CWinSystemX11::RefreshGlxContext()
     {
       glXMakeCurrent(m_dpy, None, NULL);
       glXDestroyContext(m_dpy, m_glContext);
+      XSync(m_dpy, FALSE);
+      m_newGlContext = true;
     }
 
     if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
     {
       // make this context current
       glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
-      g_Windowing.ResetVSync();
-      XSync(m_dpy, False);
       retVal = true;
     }
     else
@@ -729,6 +724,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     }
     OnLostDevice();
     DestroyWindow();
+    m_windowDirty = true;
   }
 
   // create main window
@@ -847,13 +843,21 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
       }
       XGrabKeyboard(m_dpy, m_glWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
     }
+
+    CDirtyRegionList dr;
+    RefreshGlxContext();
+    XSync(m_dpy, FALSE);
+    g_graphicsContext.Clear(0);
+    g_graphicsContext.Flip(dr);
+    g_Windowing.ResetVSync();
+    m_windowDirty = false;
+
     CSingleLock lock(m_resourceSection);
     // tell any shared resources
     for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
       (*i)->OnResetDevice();
-
-    m_windowDirty = false;
   }
+
   return true;
 }
 
