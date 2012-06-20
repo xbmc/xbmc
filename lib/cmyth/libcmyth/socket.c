@@ -367,7 +367,7 @@ cmyth_rcv_string(cmyth_conn_t conn, int *err, char *buf, int buflen, int count)
 			}
 		}
 
-		if (conn->conn_buf[conn->conn_pos] == *state) {
+		if (conn->conn_buf[conn->conn_pos] == (unsigned char)*state) {
 			/*
 			 * We matched the next (possibly first) step
 			 * of a separator, advance to the next.
@@ -460,7 +460,7 @@ cmyth_rcv_ulong(cmyth_conn_t conn, int *err, unsigned long *buf,
 	int consumed;
 	int tmp;
 
-  *buf = 0;
+	*buf = 0;
 
 	if (!err) {
 		err = &tmp;
@@ -1446,7 +1446,7 @@ cmyth_proginfo_parse_url(cmyth_proginfo_t p)
 	}
 
     out:
-	if (host && port) {
+	if (host && port && path) {
 		char tmp = *(port - 1);
 		*(port - 1) = '\0';
 		if (p->proginfo_host)
@@ -2890,7 +2890,7 @@ cmyth_rcv_data(cmyth_conn_t conn, int *err, unsigned char *buf, int count)
 		*err = EINVAL;
 		return 0;
 	}
-	err = 0;
+	*err = 0;
 	if (!conn) {
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no connection\n",
 			  __FUNCTION__);
