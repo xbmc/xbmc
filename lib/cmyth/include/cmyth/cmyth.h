@@ -81,12 +81,12 @@ typedef enum {
 	CHANNEL_DIRECTION_UP = 0,
 	CHANNEL_DIRECTION_DOWN = 1,
 	CHANNEL_DIRECTION_FAVORITE = 2,
-	CHANNEL_DIRECTION_SAME = 4
+	CHANNEL_DIRECTION_SAME = 4,
 } cmyth_channeldir_t;
 
 typedef enum {
 	ADJ_DIRECTION_UP = 1,
-	ADJ_DIRECTION_DOWN = 0
+	ADJ_DIRECTION_DOWN = 0,
 } cmyth_adjdir_t;
 
 typedef enum {
@@ -95,13 +95,13 @@ typedef enum {
 	BROWSE_DIRECTION_DOWN = 2,
 	BROWSE_DIRECTION_LEFT = 3,
 	BROWSE_DIRECTION_RIGHT = 4,
-	BROWSE_DIRECTION_FAVORITE = 5
+	BROWSE_DIRECTION_FAVORITE = 5,
 } cmyth_browsedir_t;
 
 typedef enum {
 	WHENCE_SET = 0,
 	WHENCE_CUR = 1,
-	WHENCE_END = 2
+	WHENCE_END = 2,
 } cmyth_whence_t;
 
 typedef enum {
@@ -121,13 +121,13 @@ typedef enum {
 	CMYTH_EVENT_SYSTEM_EVENT,
 	CMYTH_EVENT_UPDATE_FILE_SIZE,
 	CMYTH_EVENT_GENERATED_PIXMAP,
-	CMYTH_EVENT_CLEAR_SETTINGS_CACHE
+	CMYTH_EVENT_CLEAR_SETTINGS_CACHE,
 } cmyth_event_t;
 
 #define CMYTH_NUM_SORTS 2
 typedef enum {
 	MYTHTV_SORT_DATE_RECORDED = 0,
-	MYTHTV_SORT_ORIGINAL_AIRDATE
+	MYTHTV_SORT_ORIGINAL_AIRDATE,
 } cmyth_proglist_sort_t;
 
 struct cmyth_timestamp;
@@ -706,7 +706,7 @@ typedef enum {
 	RS_LATER_SHOWING = 8,
 	RS_REPEAT = 9,
 	RS_LOW_DISKSPACE = 11,
-	RS_TUNER_BUSY = 12
+	RS_TUNER_BUSY = 12,
 } cmyth_proginfo_rec_status_t;
 
 /**
