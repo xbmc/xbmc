@@ -2292,8 +2292,8 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 	return total;
 
     fail:
-	cmyth_dbg(CMYTH_DBG_ERROR, "%s: %s() failed (%d)\n",
-		  __FUNCTION__, failed, *err);
+	cmyth_dbg(CMYTH_DBG_ERROR, "%s: %s() failed (%d) (count = %d)\n",
+		  __FUNCTION__, failed, *err, count);
 	return total;
 }
 
@@ -2560,8 +2560,8 @@ cmyth_rcv_chaninfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 	return total;
 
     fail:
-	cmyth_dbg(CMYTH_DBG_ERROR, "%s: %s() failed (%d)\n",
-		  __FUNCTION__, failed, *err);
+	cmyth_dbg(CMYTH_DBG_ERROR, "%s: %s() failed (%d) (count = %d)\n",
+		  __FUNCTION__, failed, *err, count);
 	return total;
 }
 
