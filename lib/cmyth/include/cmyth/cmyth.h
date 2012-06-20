@@ -1119,7 +1119,7 @@ extern int cmyth_get_delete_list(cmyth_conn_t, char *, cmyth_proglist_t);
 
 #define PROGRAM_ADJUST  3600
 
-extern int cmyth_mythtv_remove_previos_recorded(cmyth_database_t db,char *query);
+extern int cmyth_mythtv_remove_previous_recorded(cmyth_database_t db,char *query);
 
 extern cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db);
 #endif /* __CMYTH_H */

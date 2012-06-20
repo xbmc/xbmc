@@ -964,7 +964,7 @@ cmyth_tuner_type_check(cmyth_database_t db, cmyth_recorder_t rec, int check_tune
 }
 
 int
-cmyth_mythtv_remove_previos_recorded(cmyth_database_t db,char *query)
+cmyth_mythtv_remove_previous_recorded(cmyth_database_t db,char *query)
 {
 	MYSQL_RES *res=NULL;
 	char N_query[128];
