@@ -433,19 +433,7 @@ const CStdString& CURL::GetProtocol() const
 
 const CStdString CURL::GetTranslatedProtocol() const
 {
-  if (m_strProtocol == "shout"
-   || m_strProtocol == "daap"
-   || m_strProtocol == "dav"
-   || m_strProtocol == "tuxbox"
-   || m_strProtocol == "lastfm"
-   || m_strProtocol == "mms"
-   || m_strProtocol == "rss")
-   return "http";
-  
-  if (m_strProtocol == "davs")
-    return "https";
-  
-  return m_strProtocol;
+  return TranslateProtocol(m_strProtocol);
 }
 
 const CStdString& CURL::GetFileType() const
@@ -715,3 +703,21 @@ void CURL::Encode(CStdString& strURLData)
   }
   strURLData = strResult;
 }
+
+CStdString CURL::TranslateProtocol(const CStdString& prot)
+{
+  if (prot == "shout"
+   || prot == "daap"
+   || prot == "dav"
+   || prot == "tuxbox"
+   || prot == "lastfm"
+   || prot == "mms"
+   || prot == "rss")
+   return "http";
+
+  if (prot == "davs")
+    return "https";
+
+  return prot;
+}
+
