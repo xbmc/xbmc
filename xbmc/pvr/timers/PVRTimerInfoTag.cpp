@@ -382,7 +382,7 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 
     if (epgTag)
     {
-      m_iEpgId = epgTag->m_iEpgId;
+      m_iEpgId = epgTag->EpgID();
       m_epgStart = epgTag->StartAsUTC();
       m_strGenre = epgTag->Genre();
       m_iGenreType = epgTag->GenreType();
@@ -425,10 +425,10 @@ void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTag *tag)
   CSingleLock lock(m_critSection);
   if (tag)
   {
-    if (m_iEpgId != tag->m_iEpgId || m_epgStart != tag->StartAsUTC())
+    if (m_iEpgId != tag->EpgID() || m_epgStart != tag->StartAsUTC())
     {
       CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to epg event %s", m_strTitle.c_str(), tag->Title().c_str());
-      m_iEpgId = tag->m_iEpgId;
+      m_iEpgId = tag->EpgID();
       m_epgStart = tag->StartAsUTC();
     }
   }
@@ -541,7 +541,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
     newTag->m_strSummary = tag.Plot();
   }
 
-  newTag->m_iEpgId = tag.m_iEpgId;
+  newTag->m_iEpgId = tag.EpgID();
   newTag->m_epgStart = tag.StartAsUTC();
 
   /* unused only for reference */

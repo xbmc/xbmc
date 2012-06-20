@@ -46,7 +46,7 @@ namespace EPG
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CEpgInfoTag(int iEpgId = -1, int iPVRChannelNumber = -1, int iPVRChannelID = -1, const CStdString &strTableName = StringUtils::EmptyString);
+    CEpgInfoTag(CEpg *epg = NULL, int iPVRChannelNumber = -1, int iPVRChannelID = -1, const CStdString &strTableName = StringUtils::EmptyString, const CStdString &strIconPath = StringUtils::EmptyString);
 
     /*!
      * @brief Create a new EPG infotag with 'data' as content.
@@ -114,7 +114,7 @@ namespace EPG
      */
     virtual const CEpg *GetTable() const;
 
-    virtual const int EpgID(void) const { return m_iEpgId; }
+    virtual const int EpgID(void) const;
 
     /*!
      * @brief Change the unique broadcast ID of this event.
@@ -459,7 +459,7 @@ namespace EPG
 
     CDateTime              m_timerStart;         /*!< the start time of the timer (if any) */
     int                    m_iTimerId;           /*!< the id of the timer (if any) */
-    int                    m_iEpgId;             /*!< the ID of the schedule that this event belongs to */
+    CEpg *                 m_epg;                /*!< the schedule that this event belongs to */
 
     int                    m_iPVRChannelNumber;  /*!< the channel number in the "all channels" group */
     int                    m_iPVRChannelID;      /*!< the ID of the PVR channel */
