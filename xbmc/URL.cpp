@@ -161,7 +161,8 @@ void CURL::Parse(const CStdString& strURL1)
   if(m_strProtocol.Equals("rss") ||
      m_strProtocol.Equals("rar") ||
      m_strProtocol.Equals("addons") ||
-     m_strProtocol.Equals("image"))
+     m_strProtocol.Equals("image") ||
+     m_strProtocol.Equals("videodb"))
     sep = "?";
   else
   if(strProtocol2.Equals("http")
