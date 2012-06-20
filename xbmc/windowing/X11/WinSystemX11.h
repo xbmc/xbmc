@@ -95,6 +95,7 @@ protected:
   CStdString                   m_currentOutput;
   bool                         m_windowDirty;
   bool                         m_bIsInternalXrr;
+  bool                         m_newGlContext;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
