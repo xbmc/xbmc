@@ -131,8 +131,7 @@ public:
    \param songIDs [out] the ids of the added songs
    \return the id of the album
    */
-  int  AddAlbum(const CAlbum &album, std::vector<int> &songIDs);
-  int  AddAlbum(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strGenre, int year, bool bCompilation);
+  int  AddAlbum(const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID, const CStdString& strArtist, const CStdString& strGenre, int year, bool bCompilation);
   bool GetAlbum(int idAlbum, CAlbum& album);
   int  UpdateAlbum(int idAlbum, const CAlbum &album);
   bool DeleteAlbum(int idAlbum);
@@ -140,7 +139,6 @@ public:
   //// Misc Album
   int  GetAlbumIdByPath(const CStdString& path);
   bool GetAlbumFromSong(int idSong, CAlbum &album);
-  bool GetAlbumFromSong(const CSong &song, CAlbum &album);
   int  GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
   int  GetAlbumByName(const CStdString& strAlbum, const std::vector<std::string>& artist);
   CStdString GetAlbumById(int id);
@@ -148,7 +146,7 @@ public:
   /////////////////////////////////////////////////
   // Artist CRUD
   /////////////////////////////////////////////////
-  int  AddArtist(const CStdString& strArtist);
+  int  AddArtist(const CStdString& strArtist, const CStdString& strMusicBrainzArtistID);
   bool GetArtist(int idArtist, CArtist& artist);
   int  UpdateArtist(int idArtist, const CArtist& artist);
   bool DeleteArtist(int idArtist);
@@ -161,7 +159,7 @@ public:
   /////////////////////////////////////////////////
   int AddPath(const CStdString& strPath);
 
-  bool GetPaths(std::set<CStdString> &paths);
+  bool GetPaths(std::set<std::string> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetAlbumPath(int idAlbum, CStdString &path);
@@ -199,11 +197,11 @@ public:
   /////////////////////////////////////////////////
   // Link tables
   /////////////////////////////////////////////////
-  bool AddAlbumArtist(int idArtist, int idAlbum, bool featured, int iOrder);
+  bool AddAlbumArtist(int idArtist, int idAlbum, std::string joinPhrase, bool featured, int iOrder);
   bool GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, bool includeFeatured, std::vector<int>& artists);
 
-  bool AddSongArtist(int idArtist, int idSong, bool featured, int iOrder);
+  bool AddSongArtist(int idArtist, int idSong, std::string joinPhrase, bool featured, int iOrder);
   bool GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<int>& songs);
   bool GetArtistsBySong(int idSong, bool includeFeatured, std::vector<int>& artists);
 
@@ -380,6 +378,7 @@ protected:
 
   virtual bool CreateTables();
   virtual int GetMinVersion() const;
+
   const char *GetBaseDBName() const { return "MyMusic"; };
 
 
@@ -394,6 +393,7 @@ private:
   CArtist GetArtistFromDataset(const dbiplus::sql_record* const record, bool needThumb = true);
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL=false);
+  CArtistCredit GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CStdString& strMusicDBbasePath);
   bool CleanupSongs();
@@ -422,10 +422,6 @@ private:
     song_dwFileNameCRC,
     song_strFileName,
     song_strMusicBrainzTrackID,
-    song_strMusicBrainzArtistID,
-    song_strMusicBrainzAlbumID,
-    song_strMusicBrainzAlbumArtistID,
-    song_strMusicBrainzTRMID,
     song_iTimesPlayed,
     song_iStartOffset,
     song_iEndOffset,
@@ -448,6 +444,7 @@ private:
   {
     album_idAlbum=0,
     album_strAlbum,
+    album_strMusicBrainzAlbumID,
     album_strArtists,
     album_strGenres,
     album_iYear,
@@ -461,13 +458,21 @@ private:
     album_strThumbURL,
     album_iRating,
     album_bCompilation,
-    album_iTimesPlayed
+    album_iTimesPlayed,
+
+    // used for GetAlbumInfo to get the cascaded artist credits
+    album_idArtist,
+    album_strArtist,
+    album_strMusicBrainzArtistID,
+    album_bFeatured,
+    album_strJoinPhrase
   } AlbumFields;
 
   enum _ArtistFields
   {
     artist_idArtist=0,
     artist_strArtist,
+    artist_strMusicBrainzArtistID,
     artist_strBorn,
     artist_strFormed,
     artist_strGenres,

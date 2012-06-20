@@ -89,9 +89,9 @@ public:
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
   CStdString GetYearString() const;
   const CStdString& GetMusicBrainzTrackID() const;
-  const CStdString& GetMusicBrainzArtistID() const;
+  const std::vector<std::string>& GetMusicBrainzArtistID() const;
   const CStdString& GetMusicBrainzAlbumID() const;
-  const CStdString& GetMusicBrainzAlbumArtistID() const;
+  const std::vector<std::string>& GetMusicBrainzAlbumArtistID() const;
   const CStdString& GetMusicBrainzTRMID() const;
   const CStdString& GetComment() const;
   const CStdString& GetLyrics() const;
@@ -129,9 +129,9 @@ public:
   void SetAlbum(const CAlbum& album);
   void SetSong(const CSong& song);
   void SetMusicBrainzTrackID(const CStdString& strTrackID);
-  void SetMusicBrainzArtistID(const CStdString& strArtistID);
+  void SetMusicBrainzArtistID(const std::vector<std::string>& musicBrainzArtistId);
   void SetMusicBrainzAlbumID(const CStdString& strAlbumID);
-  void SetMusicBrainzAlbumArtistID(const CStdString& strAlbumArtistID);
+  void SetMusicBrainzAlbumArtistID(const std::vector<std::string>& musicBrainzAlbumArtistId);
   void SetMusicBrainzTRMID(const CStdString& strTRMID);
   void SetComment(const CStdString& comment);
   void SetLyrics(const CStdString& lyrics);
@@ -184,9 +184,9 @@ protected:
   std::vector<std::string> m_albumArtist;
   std::vector<std::string> m_genre;
   CStdString m_strMusicBrainzTrackID;
-  CStdString m_strMusicBrainzArtistID;
+  std::vector<std::string> m_musicBrainzArtistID;
   CStdString m_strMusicBrainzAlbumID;
-  CStdString m_strMusicBrainzAlbumArtistID;
+  std::vector<std::string> m_musicBrainzAlbumArtistID;
   CStdString m_strMusicBrainzTRMID;
   CStdString m_strComment;
   CStdString m_strLyrics;

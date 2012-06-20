@@ -23,13 +23,43 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/MathUtils.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
 
+CAlbum::CAlbum(const CFileItem& item)
+{
+  Reset();
+  const CMusicInfoTag& tag = *item.GetMusicInfoTag();
+  SYSTEMTIME stTime;
+  tag.GetReleaseDate(stTime);
+  strAlbum = tag.GetAlbum();
+  strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
+  genre = tag.GetGenre();
+  artist = tag.GetAlbumArtist();
+  iYear = stTime.wYear;
+  bCompilation = tag.GetCompilation();
+  iTimesPlayed = 0;
+}
+
+CStdString CAlbum::GetArtistString() const
+{
+  return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
+}
+
+CStdString CAlbum::GetGenreString() const
+{
+  return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
+}
+
 bool CAlbum::operator<(const CAlbum &a) const
 {
-  return strAlbum +StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator) < a.strAlbum + StringUtils::Join(a.artist, g_advancedSettings.m_musicItemSeparator);
+  if (strAlbum < a.strAlbum) return true;
+  if (strAlbum > a.strAlbum) return false;
+  if (strMusicBrainzAlbumID < a.strMusicBrainzAlbumID) return true;
+  if (strMusicBrainzAlbumID > a.strMusicBrainzAlbumID) return false;
+  return false;
 }
 
 bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
@@ -38,7 +68,8 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   if (!append)
     Reset();
 
-  XMLUtils::GetString(album,"title",strAlbum);
+  XMLUtils::GetString(album,              "title", strAlbum);
+  XMLUtils::GetString(album, "musicBrainzAlbumID", strMusicBrainzAlbumID);
 
   XMLUtils::GetStringArray(album, "artist", artist, prioritise, g_advancedSettings.m_musicItemSeparator);
   XMLUtils::GetStringArray(album, "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
@@ -88,6 +119,25 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     thumbURL.m_xml = xmlAdd;
   }
 
+  const TiXmlElement* albumArtistCreditsNode = album->FirstChildElement("albumArtistCredits");
+  if (albumArtistCreditsNode)
+    artistCredits.clear();
+
+  while (albumArtistCreditsNode)
+  {
+    if (albumArtistCreditsNode->FirstChild())
+    {
+      CArtistCredit artistCredit;
+      XMLUtils::GetString(albumArtistCreditsNode,  "artist",               artistCredit.m_strArtist);
+      XMLUtils::GetString(albumArtistCreditsNode,  "musicBrainzArtistID",  artistCredit.m_strMusicBrainzArtistID);
+      XMLUtils::GetString(albumArtistCreditsNode,  "joinphrase",           artistCredit.m_strJoinPhrase);
+      XMLUtils::GetBoolean(albumArtistCreditsNode, "featuring",            artistCredit.m_boolFeatured);
+      artistCredits.push_back(artistCredit);
+    }
+
+    albumArtistCreditsNode = albumArtistCreditsNode->NextSiblingElement("albumArtistCredits");
+  }
+
   const TiXmlElement* node = album->FirstChildElement("track");
   if (node)
     songs.clear();  // this means that the tracks can't be spread over separate pages
@@ -130,12 +180,13 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
 
   if (!album) return false;
 
-  XMLUtils::SetString(album,  "title", strAlbum);
-  XMLUtils::SetStringArray(album, "artist", artist);
-  XMLUtils::SetStringArray(album,  "genre", genre);
-  XMLUtils::SetStringArray(album,  "style", styles);
-  XMLUtils::SetStringArray(album,   "mood", moods);
-  XMLUtils::SetStringArray(album,  "theme", themes);
+  XMLUtils::SetString(album,                    "title", strAlbum);
+  XMLUtils::SetString(album,       "musicBrainzAlbumID", strMusicBrainzAlbumID);
+  XMLUtils::SetStringArray(album,              "artist", artist);
+  XMLUtils::SetStringArray(album,               "genre", genre);
+  XMLUtils::SetStringArray(album,               "style", styles);
+  XMLUtils::SetStringArray(album,                "mood", moods);
+  XMLUtils::SetStringArray(album,               "theme", themes);
 
   XMLUtils::SetString(album,      "review", strReview);
   XMLUtils::SetString(album,        "type", strType);
@@ -157,6 +208,17 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
 
   XMLUtils::SetInt(album,         "rating", iRating);
   XMLUtils::SetInt(album,           "year", iYear);
+
+  for( VECARTISTCREDITS::const_iterator it = artistCredits.begin();it != artistCredits.end();++it)
+  {
+    // add an <albumArtistCredits> tag
+    TiXmlElement albumArtistCreditsElement("albumArtistCredits");
+    TiXmlNode *albumArtistCreditsNode = album->InsertEndChild(albumArtistCreditsElement);
+    XMLUtils::SetString(albumArtistCreditsNode,               "artist", it->m_strArtist);
+    XMLUtils::SetString(albumArtistCreditsNode,  "musicBrainzArtistID", it->m_strMusicBrainzArtistID);
+    XMLUtils::SetString(albumArtistCreditsNode,           "joinphrase", it->m_strJoinPhrase);
+    XMLUtils::SetString(albumArtistCreditsNode,            "featuring", it->GetArtist());
+  }
 
   for( VECSONGS::const_iterator it = songs.begin();it != songs.end();++it)
   {
