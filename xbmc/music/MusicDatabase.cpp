@@ -97,9 +97,9 @@ bool CMusicDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create artist table");
-    m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist varchar(256))\n");
+    m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist varchar(256), strMusicBrainzArtistID text)\n");
     CLog::Log(LOGINFO, "create album table");
-    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum varchar(256), strArtists text, strGenres text, iYear integer, idThumb integer)\n");
+    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum varchar(256), strMusicBrainzAlbumID text, strArtists text, strGenres text, iYear integer, idThumb integer)\n");
     CLog::Log(LOGINFO, "create album_artist table");
     m_pDS->exec("CREATE TABLE album_artist ( idArtist integer, idAlbum integer, boolFeatured integer, iOrder integer )\n");
     CLog::Log(LOGINFO, "create album_genre table");
@@ -214,7 +214,9 @@ void CMusicDatabase::CreateViews()
               "  song.strGenres AS strGenres,"
               "  strTitle, iTrack, iDuration,"
               "  song.iYear AS iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID,"
-              "  strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID,"
+              "  song.strMusicBrainzArtistID as strMusicBrainzArtistID,"
+              "  song.strMusicBrainzAlbumID as strMusicBrainzAlbumID,"
+              "  song.strMusicBrainzAlbumArtistID as strMusicBrainzAlbumArtistID,"
               "  strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed,"
               "  rating, comment, song.idAlbum AS idAlbum, strAlbum, strPath,"
               "  strThumb, iKaraNumber, iKaraDelay, strKaraEncoding "
@@ -3496,6 +3498,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
       m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
       m_pDS->exec("DROP TABLE IF EXISTS exgenresong");
+    }
+
+    if (version < 25)
+    {
+      m_pDS->exec("ALTER TABLE artist ADD strMusicBrainzArtistID text\n");
+      m_pDS->exec("ALTER TABLE album ADD strMusicBrainzAlbumID text\n");
     }
 
     // always recreate the views after any table change
