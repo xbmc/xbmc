@@ -1746,6 +1746,19 @@ void CApplication::LoadSkin(const SkinPtr& skin)
     return ;
   }
 
+  if (!skin->HasSkinFile("Home.xml"))
+  {
+    // failed to find home.xml
+    // fallback to default skin
+    if (strcmpi(skin->ID().c_str(), DEFAULT_SKIN) != 0)
+    {
+      CLog::Log(LOGERROR, "home.xml doesn't exist in skin: %s, fallback to \"%s\" skin", skin->ID().c_str(), DEFAULT_SKIN);
+      g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
+      LoadSkin(DEFAULT_SKIN);
+      return ;
+    }
+  }
+
   bool bPreviousPlayingState=false;
   bool bPreviousRenderingState=false;
   if (g_application.m_pPlayer && g_application.IsPlayingVideo())
@@ -1811,19 +1824,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   start = CurrentHostCounter();
 
   CLog::Log(LOGINFO, "  load new skin...");
-  CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
-  if (!pHome || !pHome->Load("Home.xml"))
-  {
-    // failed to load home.xml
-    // fallback to default skin
-    if ( strcmpi(skin->ID().c_str(), DEFAULT_SKIN) != 0)
-    {
-      CLog::Log(LOGERROR, "failed to load home.xml for skin: %s, fallback to \"%s\" skin", skin->ID().c_str(), DEFAULT_SKIN);
-      g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
-      LoadSkin(DEFAULT_SKIN);
-      return ;
-    }
-  }
 
   // Load the user windows
   LoadUserWindows();
