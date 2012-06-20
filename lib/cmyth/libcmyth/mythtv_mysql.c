@@ -125,7 +125,6 @@ cmyth_database_set_name(cmyth_database_t db, char *name)
 static int
 cmyth_db_check_connection(cmyth_database_t db)
 {
-    int new_conn = 0;
     if(db->mysql != NULL)
     {
 	/* Fetch the mysql stats (uptime and stuff) to check the connection is
@@ -139,7 +138,6 @@ cmyth_db_check_connection(cmyth_database_t db)
     if(db->mysql == NULL)
     {
 	db->mysql = mysql_init(NULL);
-	new_conn = 1;
 	if(db->mysql == NULL)
 	{
 	    fprintf(stderr,"%s: mysql_init() failed, insufficient memory?",
