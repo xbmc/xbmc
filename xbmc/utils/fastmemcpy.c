@@ -21,7 +21,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#if !defined(_WIN32) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) 
+#if !defined(_WIN32) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__sh__) 
 #define HAVE_MMX2
 #define HAVE_SSE
 

@@ -35,12 +35,14 @@
 
 #if defined(__ppc__) || \
     defined(__powerpc__) || \
+    defined(__sh__) || \
    (defined(__APPLE__) && defined(__arm__) && defined(__llvm__))
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 
 #if defined(__ppc__) || \
     defined(__powerpc__) || \
+    defined(__sh__) || \
    (defined(__APPLE__) && defined(__llvm__)) 
   #define DISABLE_MATHUTILS_ASM_TRUNCATE_INT
 #endif

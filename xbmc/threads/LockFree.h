@@ -31,7 +31,7 @@
 // A unique-valued pointer. Version is incremented with each write.
 union atomic_ptr
 {
-#if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__)
+#if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__sh__)
   long long d;
   struct {
     void* ptr;
@@ -45,7 +45,7 @@ union atomic_ptr
 #endif
 };
 
-#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__)
+#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__sh__)
   #define atomic_ptr_to_long(p) (long) *((long*)&p)
 #else
   // This is ugly but correct as long as sizeof(void*) == sizeof(long)...

@@ -24,7 +24,7 @@
 #include "coffldr.h"
 #include "LibraryLoader.h"
 
-#if defined(__linux__) && !defined(__powerpc__) && !defined(__arm__)
+#if defined(__linux__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__sh__)
 #define USE_LDT_KEEPER
 #include "ldt_keeper.h"
 #endif
