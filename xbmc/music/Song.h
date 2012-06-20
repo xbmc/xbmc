@@ -87,10 +87,6 @@ public:
   CStdString strThumb;
   MUSIC_INFO::EmbeddedArtInfo embeddedArt;
   CStdString strMusicBrainzTrackID;
-  CStdString strMusicBrainzArtistID;
-  CStdString strMusicBrainzAlbumID;
-  CStdString strMusicBrainzAlbumArtistID;
-  CStdString strMusicBrainzTRMID;
   CStdString strComment;
   char rating;
   int iTrack;
