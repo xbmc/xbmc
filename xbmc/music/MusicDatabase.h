@@ -228,7 +228,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 23; };
+  virtual int GetMinVersion() const { return 24; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year);
@@ -238,10 +238,10 @@ protected:
   int AddThumb(const CStdString& strThumb1);
   bool AddAlbumArtist(int idArtist, int idAlbum, bool featured, int iOrder);
   bool AddSongArtist(int idArtist, int idSong, bool featured, int iOrder);
+  bool AddSongGenre(int idGenre, int idSong, int iOrder);
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
 
   void AddKaraokeData(const CSong& song);
-  void AddExtraGenres(const std::vector<std::string>& vecGenres, int idSong, int idAlbum, bool bCheck = true);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:
@@ -275,7 +275,7 @@ private:
   {
     song_idSong=0,
     song_strArtists,
-    song_strExtraGenres,
+    song_strGenres,
     song_strTitle,
     song_iTrack,
     song_iDuration,
@@ -296,8 +296,6 @@ private:
     song_idAlbum,
     song_strAlbum,
     song_strPath,
-    song_idGenre,
-    song_strGenre,
     song_strThumb,
     song_iKarNumber,
     song_iKarDelay,
