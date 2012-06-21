@@ -228,7 +228,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 25; };
+  virtual int GetMinVersion() const { return 27; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year, bool bCompilation);
@@ -299,7 +299,8 @@ private:
     song_strThumb,
     song_iKarNumber,
     song_iKarDelay,
-    song_strKarEncoding
+    song_strKarEncoding,
+    song_bCompilation
   } SongFields;
 
   // Fields should be ordered as they
@@ -320,7 +321,8 @@ private:
     album_strLabel,
     album_strType,
     album_strThumbURL,
-    album_iRating
+    album_iRating,
+    album_bCompilation
   } AlbumFields;
 
   enum _ArtistFields

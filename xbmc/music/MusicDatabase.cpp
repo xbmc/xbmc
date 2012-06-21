@@ -221,7 +221,8 @@ void CMusicDatabase::CreateViews()
               "  song.strMusicBrainzAlbumArtistID as strMusicBrainzAlbumArtistID,"
               "  strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed,"
               "  rating, comment, song.idAlbum AS idAlbum, strAlbum, strPath,"
-              "  strThumb, iKaraNumber, iKaraDelay, strKaraEncoding "
+              "  strThumb, iKaraNumber, iKaraDelay, strKaraEncoding, "
+              "  album.bCompilation AS bCompilation "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
@@ -240,7 +241,8 @@ void CMusicDatabase::CreateViews()
               "  album.strGenres AS strGenres, "
               "  album.iYear AS iYear,"
               "  strThumb, idAlbumInfo, strMoods, strStyles, strThemes,"
-              "  strReview, strLabel, strType, strImage, iRating "
+              "  strReview, strLabel, strType, strImage, iRating, "
+              "  bCompilation "
               "FROM album "
               "  LEFT OUTER JOIN thumb ON"
               "    album.idThumb=thumb.idThumb"
@@ -690,6 +692,7 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.iKaraokeNumber = m_pDS->fv(song_iKarNumber).get_asInt();
   song.strKaraokeLyrEncoding = m_pDS->fv(song_strKarEncoding).get_asString();
   song.iKaraokeDelay = m_pDS->fv(song_iKarDelay).get_asInt();
+  song.bCompilation = m_pDS->fv(song_bCompilation).get_asInt() == 1;
 
   if (song.strThumb == "NONE")
     song.strThumb.Empty();
@@ -743,6 +746,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   CStdString strRealPath;
   URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString(), strRealPath);
   item->GetMusicInfoTag()->SetURL(strRealPath);
+  item->GetMusicInfoTag()->SetCompilation(m_pDS->fv(song_bCompilation).get_asInt() == 1);
   item->GetMusicInfoTag()->SetLoaded(true);
   CStdString strThumb = record->at(song_strThumb).get_asString();
   if (strThumb != "NONE")
@@ -790,6 +794,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.themes = StringUtils::Split(record->at(album_strThemes).get_asString(), g_advancedSettings.m_musicItemSeparator);
   album.strLabel = record->at(album_strLabel).get_asString();
   album.strType = record->at(album_strType).get_asString();
+  album.bCompilation = record->at(album_bCompilation).get_asInt() == 1;
   return album;
 }
 
@@ -3506,6 +3511,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     {
       m_pDS->exec("ALTER TABLE artist ADD strMusicBrainzArtistID text\n");
       m_pDS->exec("ALTER TABLE album ADD strMusicBrainzAlbumID text\n");
+    }
+
+    if (version < 26)
+    {
+      m_pDS->exec("ALTER TABLE album ADD bCompilation integer not null default '0'");
+      m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
     }
 
     // always recreate the views after any table change
