@@ -571,6 +571,7 @@ bool DatabaseUtils::GetDatabaseResults(MediaType mediaType, const FieldList &fie
     case MediaTypeMovie:
     case MediaTypeVideoCollection:
     case MediaTypeTvShow:
+    case MediaTypeMusicVideo:
     case MediaTypeAlbum:
       result[FieldLabel] = result.at(FieldTitle).asString();
       break;
