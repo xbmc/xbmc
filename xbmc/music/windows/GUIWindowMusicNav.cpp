@@ -317,7 +317,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (node == NODE_TYPE_YEAR)
       items.SetContent("years");
   }
-  else if (strDirectory.Equals("special://musicplaylists"))
+  else if (strDirectory.Equals("special://musicplaylists/"))
     items.SetContent("playlists");
   else if (strDirectory.Equals("plugin://music/"))
     items.SetContent("plugins");
