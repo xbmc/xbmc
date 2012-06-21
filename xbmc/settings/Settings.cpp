@@ -56,6 +56,7 @@
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -485,25 +486,62 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
   const TiXmlElement *pResolution = pElement->FirstChildElement("resolution");
   while (pResolution)
   {
-    // get the data for this resolution
-    CStdString mode;
-    XMLUtils::GetString(pResolution, "description", mode);
-    // find this resolution in our resolution vector
-    for (unsigned int res = 0; res < m_ResInfo.size(); res++)
+    // get the data for this calibration
+    RESOLUTION_INFO cal;
+
+    XMLUtils::GetString(pResolution, "description", cal.strMode);
+    XMLUtils::GetInt(pResolution, "subtitles", cal.iSubtitles);
+    XMLUtils::GetFloat(pResolution, "pixelratio", cal.fPixelRatio);
+#ifdef HAS_XRANDR
+    XMLUtils::GetFloat(pResolution, "refreshrate", cal.fRefreshRate);
+    XMLUtils::GetString(pResolution, "output", cal.strOutput);
+    XMLUtils::GetString(pResolution, "xrandrid", cal.strId);
+#endif
+
+    const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
+    if (pOverscan)
+    {
+      XMLUtils::GetInt(pOverscan, "left", cal.Overscan.left);
+      XMLUtils::GetInt(pOverscan, "top", cal.Overscan.top);
+      XMLUtils::GetInt(pOverscan, "right", cal.Overscan.right);
+      XMLUtils::GetInt(pOverscan, "bottom", cal.Overscan.bottom);
+    }
+
+    // mark calibration as not updated
+    // we must not delete those, resolution just might not be available
+    cal.iWidth = cal.iHeight = 0;
+
+    // stote calibration
+    m_Calibrations.push_back(cal);
+
+    // iterate around
+    pResolution = pResolution->NextSiblingElement("resolution");
+  }
+  ApplyCalibrations();
+  return true;
+}
+
+void CSettings::ApplyCalibrations()
+{
+  // apply all calibrations to the resolutions
+  for (size_t i = 0; i < m_Calibrations.size(); ++i)
+  {
+    // find resolutions
+    for (size_t res = 0; res < m_ResInfo.size(); ++res)
     {
       if (res == RES_WINDOW)
         continue;
-
-      if (m_ResInfo[res].strMode == mode)
-      { // found, read in the rest of the information for this item
-        const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
-        if (pOverscan)
-        {
-          GetInteger(pOverscan, "left", m_ResInfo[res].Overscan.left, 0, -m_ResInfo[res].iWidth / 4, m_ResInfo[res].iWidth / 4);
-          GetInteger(pOverscan, "top", m_ResInfo[res].Overscan.top, 0, -m_ResInfo[res].iHeight / 4, m_ResInfo[res].iHeight / 4);
-          GetInteger(pOverscan, "right", m_ResInfo[res].Overscan.right, m_ResInfo[res].iWidth, m_ResInfo[res].iWidth / 2, m_ResInfo[res].iWidth*3 / 2);
-          GetInteger(pOverscan, "bottom", m_ResInfo[res].Overscan.bottom, m_ResInfo[res].iHeight, m_ResInfo[res].iHeight / 2, m_ResInfo[res].iHeight*3 / 2);
-        }
+      if (m_Calibrations[i].strMode.Equals(m_ResInfo[res].strMode))
+      {
+        // overscan
+        if (-m_ResInfo[res].iWidth/4 < m_Calibrations[i].Overscan.left < m_ResInfo[res].iWidth/4)
+          m_ResInfo[res].Overscan.left = m_Calibrations[i].Overscan.left;
+        if (-m_ResInfo[res].iHeight/4 < m_Calibrations[i].Overscan.top < m_ResInfo[res].iHeight/4)
+          m_ResInfo[res].Overscan.top = m_Calibrations[i].Overscan.top;
+        if (-m_ResInfo[res].iWidth/2 < m_Calibrations[i].Overscan.right < m_ResInfo[res].iWidth*3/2)
+          m_ResInfo[res].Overscan.right = m_Calibrations[i].Overscan.right;
+        if (-m_ResInfo[res].iHeight/2 < m_Calibrations[i].Overscan.bottom < m_ResInfo[res].iHeight*3/2)
+          m_ResInfo[res].Overscan.bottom = m_Calibrations[i].Overscan.bottom;
 
         // get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
         float fSafe;
@@ -512,33 +550,42 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
         else
           fSafe = 0.035f;
 
-        GetInteger(pResolution, "subtitles", m_ResInfo[res].iSubtitles, (int)((1 - fSafe)*m_ResInfo[res].iHeight), m_ResInfo[res].iHeight / 2, m_ResInfo[res].iHeight*5 / 4);
-        GetFloat(pResolution, "pixelratio", m_ResInfo[res].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
-    /*    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[res].strMode, m_ResInfo[res].iWidth, m_ResInfo[res].iHeight);
-        CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i)",
-                  m_ResInfo[res].iSubtitles, m_ResInfo[res].fPixelRatio,
-                  m_ResInfo[res].Overscan.left, m_ResInfo[res].Overscan.top,
-                  m_ResInfo[res].Overscan.right, m_ResInfo[res].Overscan.bottom);*/
+        if (m_ResInfo[res].iHeight / 2 < m_Calibrations[i].iSubtitles < m_ResInfo[res].iHeight*5 / 4)
+          m_ResInfo[res].iSubtitles = m_Calibrations[i].iSubtitles;
+        if (0.5f < m_Calibrations[i].fPixelRatio < 2.0f)
+          m_ResInfo[res].fPixelRatio = m_Calibrations[i].fPixelRatio;
+
+        break;
       }
     }
-    // iterate around
-    pResolution = pResolution->NextSiblingElement("resolution");
-
-
-/* Hmm, these stuff shouldn't be releaded, they should be used instead of our internal
-   id counter to select what resolution is affected by this settings
-#ifdef HAS_XRANDR
-    const CStdString def("");
-    CStdString val;
-    GetString(pResolution, "xrandrid", val, def);
-    strncpy(m_ResInfo[iRes].strId, val.c_str(), sizeof(m_ResInfo[iRes].strId));
-    GetString(pResolution, "output", val, def);
-    strncpy(m_ResInfo[iRes].strOutput, val.c_str(), sizeof(m_ResInfo[iRes].strOutput));
-    GetFloat(pResolution, "refreshrate", m_ResInfo[iRes].fRefreshRate, 0, 0, 200);
-#endif
-*/
   }
-  return true;
+}
+
+void CSettings::UpdateCalibrations()
+{
+  for (size_t res = RES_DESKTOP; res < m_ResInfo.size(); ++res)
+  {
+    // only those with changes in calibration, windowing knows as it loads defaults
+    if (!g_Windowing.HasCalibration(m_ResInfo[res]))
+      continue;
+
+    // find calibration
+    bool found = false;
+    for (std::vector<RESOLUTION_INFO>::iterator  it = m_Calibrations.begin(); it != m_Calibrations.end(); ++it)
+    {
+      if (it->strMode.Equals(m_ResInfo[res].strMode))
+      {
+        if (g_Windowing.HasCalibration(m_ResInfo[res]))
+          (*it) = m_ResInfo[res];
+        else
+          m_Calibrations.erase(it);
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      m_Calibrations.push_back(m_ResInfo[res]);
+  }
 }
 
 bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
@@ -546,28 +593,28 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
   TiXmlElement xmlRootElement("resolutions");
   TiXmlNode *pRoot = pRootNode->InsertEndChild(xmlRootElement);
 
-  // save WINDOW, DESKTOP and CUSTOM resolution
-  for (size_t i = RES_WINDOW ; i < m_ResInfo.size() ; i++)
+  // save calibrations
+  for (size_t i = 0 ; i < m_Calibrations.size() ; i++)
   {
     // Write the resolution tag
     TiXmlElement resElement("resolution");
     TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
     // Now write each of the pieces of information we need...
-    XMLUtils::SetString(pNode, "description", m_ResInfo[i].strMode);
-    XMLUtils::SetInt(pNode, "subtitles", m_ResInfo[i].iSubtitles);
-    XMLUtils::SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
+    XMLUtils::SetString(pNode, "description", m_Calibrations[i].strMode);
+    XMLUtils::SetInt(pNode, "subtitles", m_Calibrations[i].iSubtitles);
+    XMLUtils::SetFloat(pNode, "pixelratio", m_Calibrations[i].fPixelRatio);
 #ifdef HAS_XRANDR
-    XMLUtils::SetFloat(pNode, "refreshrate", m_ResInfo[i].fRefreshRate);
-    XMLUtils::SetString(pNode, "output", m_ResInfo[i].strOutput);
-    XMLUtils::SetString(pNode, "xrandrid", m_ResInfo[i].strId);
+    XMLUtils::SetFloat(pNode, "refreshrate", m_Calibrations[i].fRefreshRate);
+    XMLUtils::SetString(pNode, "output", m_Calibrations[i].strOutput);
+    XMLUtils::SetString(pNode, "xrandrid", m_Calibrations[i].strId);
 #endif
     // create the overscan child
     TiXmlElement overscanElement("overscan");
     TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-    XMLUtils::SetInt(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
-    XMLUtils::SetInt(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
-    XMLUtils::SetInt(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
-    XMLUtils::SetInt(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
+    XMLUtils::SetInt(pOverscanNode, "left", m_Calibrations[i].Overscan.left);
+    XMLUtils::SetInt(pOverscanNode, "top", m_Calibrations[i].Overscan.top);
+    XMLUtils::SetInt(pOverscanNode, "right", m_Calibrations[i].Overscan.right);
+    XMLUtils::SetInt(pOverscanNode, "bottom", m_Calibrations[i].Overscan.bottom);
   }
   return true;
 }

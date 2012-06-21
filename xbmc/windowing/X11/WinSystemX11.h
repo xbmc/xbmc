@@ -61,6 +61,7 @@ public:
   virtual bool Show(bool raise = true);
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
+  virtual bool HasCalibration(const RESOLUTION_INFO &resInfo);
 
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
