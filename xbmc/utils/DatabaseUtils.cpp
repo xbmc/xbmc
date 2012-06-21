@@ -121,7 +121,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
     else if (field == FieldComment) return "songview.comment";
     else if (field == FieldAlbum) return "songview.strAlbum";
     else if (field == FieldPath) return "songview.strPath";
-    else if (field == FieldArtist || field == FieldAlbumArtist) return "songview.strArtist";
+    else if (field == FieldArtist || field == FieldAlbumArtist) return "songview.strArtists";
     else if (field == FieldGenre) return "songview.strGenre";
     else if (field == FieldDateAdded && queryPart == DatabaseQueryPartOrderBy) return "songview.idSong";     // only used for order clauses
   }
@@ -293,8 +293,8 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldComment) return CMusicDatabase::song_comment;
     else if (field == FieldAlbum) return CMusicDatabase::song_strAlbum;
     else if (field == FieldPath) return CMusicDatabase::song_strPath;
-    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtist;
     else if (field == FieldGenre) return CMusicDatabase::song_strGenre;
+    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtists;
   }
   else if (mediaType == MediaTypeMusicVideo)
   {
