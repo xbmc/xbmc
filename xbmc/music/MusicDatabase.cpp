@@ -625,6 +625,142 @@ bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
   return ExecuteQuery(strSQL);
 };
 
+bool CMusicDatabase::GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<long> &albums)
+{
+  try 
+  {
+    CStdString strSQL, strPrepSQL;
+
+    strPrepSQL = "select idAlbum from album_artist where idArtist=%i";
+    if (includeFeatured == false)
+      strPrepSQL += " AND boolFeatured = 0";
+    
+    strSQL=PrepareSQL(strPrepSQL, idArtist);
+    if (!m_pDS->query(strSQL.c_str())) 
+      return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    
+    while (!m_pDS->eof())
+    {
+      albums.push_back(m_pDS->fv("idAlbum").get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idArtist);
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetArtistsByAlbum(int idAlbum, bool includeFeatured, std::vector<long> &artists)
+{
+  try 
+  {
+    CStdString strSQL, strPrepSQL;
+
+    strPrepSQL = "select idArtist from album_artist where idAlbum=%i";
+    if (includeFeatured == false)
+      strPrepSQL += " AND boolFeatured = 0";
+
+    strSQL=PrepareSQL(strPrepSQL, idAlbum);
+    if (!m_pDS->query(strSQL.c_str())) 
+      return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    while (!m_pDS->eof())
+    {
+      artists.push_back(m_pDS->fv("idArtist").get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<long> &songs)
+{
+  try 
+  {
+    CStdString strSQL, strPrepSQL;
+    
+    strPrepSQL = "select idSong from song_artist where idArtist=%i";
+    if (includeFeatured == false)
+      strPrepSQL += " AND boolFeatured = 0";
+
+    strSQL=PrepareSQL(strPrepSQL, idArtist);
+    if (!m_pDS->query(strSQL.c_str())) 
+      return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    
+    while (!m_pDS->eof())
+    {
+      songs.push_back(m_pDS->fv("idSong").get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idArtist);
+  }
+  return false;
+};
+
+bool CMusicDatabase::GetArtistsBySong(int idSong, bool includeFeatured, std::vector<long> &artists)
+{
+  try 
+  {
+    CStdString strSQL, strPrepSQL;
+    
+    strPrepSQL = "select idArtist from song_artist where idSong=%i";
+    if (includeFeatured == false)
+      strPrepSQL += " AND boolFeatured = 0";
+    
+    strSQL=PrepareSQL(strPrepSQL, idSong);
+    if (!m_pDS->query(strSQL.c_str())) 
+      return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    while (!m_pDS->eof())
+    {
+      artists.push_back(m_pDS->fv("idArtist").get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idSong);
+  }
+  return false;
+};
+
 int CMusicDatabase::AddPath(const CStdString& strPath1)
 {
   CStdString strSQL;
