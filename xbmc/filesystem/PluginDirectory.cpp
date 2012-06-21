@@ -515,7 +515,15 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
           label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems->Size());
         progressBar->SetLine(2, label);
       }
-      progressBar->Progress();
+    }
+
+    {
+      CSingleLock lock(g_graphicsContext);
+      g_windowManager.ProcessRenderLoop(false);
+    }
+
+    if (progressBar)
+    {
       if (progressBar->IsCanceled())
       { // user has cancelled our process - cancel our process
         if (!m_cancelled)
