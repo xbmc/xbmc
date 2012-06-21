@@ -293,7 +293,7 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldComment) return CMusicDatabase::song_comment;
     else if (field == FieldAlbum) return CMusicDatabase::song_strAlbum;
     else if (field == FieldPath) return CMusicDatabase::song_strPath;
-    else if (field == FieldGenre) return CMusicDatabase::song_strGenre;
+    else if (field == FieldGenre) return CMusicDatabase::song_strGenres;
     else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtists;
   }
   else if (mediaType == MediaTypeMusicVideo)
