@@ -110,6 +110,16 @@ void CAdvancedSettings::Initialize()
   m_videoFpsDetect = 1;
   m_videoDefaultLatency = 0.0;
 
+  m_nativeUpscaleMode = false;
+  m_nativeOverrideFPS = true;
+  m_nativeCorrectPixelRatio = true;
+  m_nativeDestWidth = 1920;
+  m_nativeDestHeight = 1080;
+  m_nativeMinWidth = 0;
+  m_nativeMinHeight = 0;
+  m_nativeMaxWidth = 1024;
+  m_nativeMaxHeight = 768;
+
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
   m_musicTimeSeekBackward = -10;
@@ -470,6 +480,51 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement,"allowmpeg4vaapi",m_videoAllowMpeg4VAAPI);    
     XMLUtils::GetBoolean(pElement, "disablebackgrounddeinterlace", m_videoDisableBackgroundDeinterlace);
     XMLUtils::GetInt(pElement, "useocclusionquery", m_videoCaptureUseOcclusionQuery, -1, 1);
+
+    TiXmlElement* pNativeUpscale = pElement->FirstChildElement("nativeupscale");
+    if (pNativeUpscale)
+    {
+      m_nativeUpscaleMode = true;
+
+      XMLUtils::GetBoolean(pNativeUpscale, "overridefps", m_nativeOverrideFPS);
+      XMLUtils::GetBoolean(pNativeUpscale, "correctpixelratio", m_nativeCorrectPixelRatio);
+
+      CStdString tmpStr;
+
+      if (XMLUtils::GetString(pNativeUpscale, "destres",tmpStr))
+      {
+        int destWidth, destHeight;
+
+        if( sscanf(tmpStr.c_str(), "%dx%d", &destWidth, &destHeight) == 2 )
+        { 
+          m_nativeDestWidth = destWidth;
+          m_nativeDestHeight = destHeight;
+        }
+      }
+
+      if (XMLUtils::GetString(pNativeUpscale, "minoutres",tmpStr))
+      {
+        int minWidth, minHeight;
+
+        if( sscanf(tmpStr.c_str(), "%dx%d", &minWidth, &minHeight) == 2 )
+        {
+          m_nativeMinWidth = minWidth;
+          m_nativeMinHeight = minHeight;
+        }
+      }
+
+      if (XMLUtils::GetString(pNativeUpscale, "maxsrcres",tmpStr))
+      {
+        int maxWidth, maxHeight;
+      
+        if( sscanf(tmpStr.c_str(), "%dx%d", &maxWidth, &maxHeight) == 2 )
+        {
+          m_nativeMaxWidth = maxWidth;
+          m_nativeMaxHeight = maxHeight;
+        }
+      }
+
+    }
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)
