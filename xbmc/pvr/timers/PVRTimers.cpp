@@ -682,10 +682,10 @@ CPVRTimerInfoTag *CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
     {
       CPVRTimerInfoTag *timer = it->second->at(iTimerPtr);
 
-      if (!Epg || !Epg->GetTable() || !Epg->GetTable()->Channel())
+      const CPVRChannel *channel = Epg ? Epg->ChannelTag() : NULL;
+      if (!channel)
         continue;
 
-      const CPVRChannel *channel = Epg->GetTable()->Channel();
       if (timer->ChannelNumber() != channel->ChannelNumber()
           || timer->m_bIsRadio != channel->IsRadio())
         continue;
