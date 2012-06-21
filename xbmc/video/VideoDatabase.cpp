@@ -5302,7 +5302,7 @@ bool CVideoDatabase::GetSortedMovies(const CStdString& strBaseDir, const SortDes
       strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
     int iRowsFound = RunQuery(strSQL);
-    if (iRowsFound <= 0)
+    if (iRowsFound <= 0 && setItems.Size() == 0)
       return iRowsFound == 0;
     
     DatabaseResults results;
