@@ -93,7 +93,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
   {
     if (field == FieldId) return "albumview.idAlbum";
     else if (field == FieldAlbum) return "albumview.strAlbum";
-    else if (field == FieldArtist || field == FieldAlbumArtist) return "albumview.strArtist";
+    else if (field == FieldArtist || field == FieldAlbumArtist) return "albumview.strArtists";
     else if (field == FieldGenre) return "albumview.strGenre";
     else if (field == FieldYear) return "albumview.iYear";
     else if (field == FieldMoods) return "albumview.strMoods";
@@ -266,7 +266,7 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
   {
     if (field == FieldId) return CMusicDatabase::album_idAlbum;
     else if (field == FieldAlbum) return CMusicDatabase::album_strAlbum;
-    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::album_strArtist;
+    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::album_strArtists;
     else if (field == FieldGenre) return CMusicDatabase::album_strGenre;
     else if (field == FieldYear) return CMusicDatabase::album_iYear;
     else if (field == FieldMoods) return CMusicDatabase::album_strMoods;

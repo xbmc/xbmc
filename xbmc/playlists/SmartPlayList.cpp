@@ -597,7 +597,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
     else if (m_field == FieldArtist)
       query = negate + " ((strArtist" + parameter + ") or idSong IN (select idSong from artist,exartistsong where exartistsong.idArtist = artist.idArtist and artist.strArtist" + parameter + "))";
     else if (m_field == FieldAlbumArtist)
-      query = negate + " (idalbum in (select idalbum from artist,album where album.idArtist=artist.idArtist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idArtist = artist.idArtist and artist.strArtist" + parameter + "))";
+      query = negate + "idAlbum IN (SELECT idAlbum FROM album_artist, artist WHERE album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldLastPlayed && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
@@ -610,7 +610,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
       query = negate + " (idAlbum in (select song.idAlbum from song join artist on song.idArtist=artist.idArtist where artist.strArtist" + parameter + ") or "
               "idAlbum in (select song.idAlbum from song join exartistsong on song.idSong=exartistsong.idSong join artist on exartistsong.idArtist=artist.idArtist where artist.strArtist" + parameter + "))";
     else if (m_field == FieldAlbumArtist)
-      query = negate + " (idalbum in (select idalbum from artist,album where album.idArtist=artist.idArtist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idArtist = artist.idArtist and artist.strArtist" + parameter + "))";
+      query = negate + "idAlbum IN (SELECT album_artist.idAlbum FROM album_artist, artist WHERE album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
   }
   else if (strType == "movies")
   {
