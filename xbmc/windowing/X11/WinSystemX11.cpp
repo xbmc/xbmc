@@ -319,7 +319,7 @@ void CWinSystemX11::UpdateResolutions()
       res.strMode.Format("%s: %s @ %.2fHz", out->name.c_str(), mode.name.c_str(), mode.hz);
       res.strOutput    = out->name;
       res.strId        = mode.id;
-      res.iSubtitles   = (int)(0.95*mode.h);
+      res.iSubtitles   = (int)(0.965*mode.h);
       res.fRefreshRate = mode.hz;
       res.bFullScreen  = true;
 
@@ -332,8 +332,42 @@ void CWinSystemX11::UpdateResolutions()
       CDisplaySettings::Get().AddResolutionInfo(res);
     }
   }
+  CDisplaySettings::Get().ApplyCalibrations();
 #endif
+}
 
+bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
+{
+  XOutput *out = g_xrandr.GetOutput(m_currentOutput);
+
+  // keep calibrations done on a not connected output
+  if (!out->name.Equals(resInfo.strOutput))
+    return true;
+
+  // keep calibrations not updated with resolution data
+  if (resInfo.iWidth == 0)
+    return true;
+
+  float fPixRatio;
+  if (resInfo.iHeight>0 && resInfo.iWidth>0 && out->hmm>0 && out->wmm>0)
+    fPixRatio = ((float)out->wmm/(float)resInfo.iWidth) / (((float)out->hmm/(float)resInfo.iHeight));
+  else
+    fPixRatio = 1.0f;
+
+  if (resInfo.Overscan.left != 0)
+    return true;
+  if (resInfo.Overscan.top != 0)
+    return true;
+  if (resInfo.Overscan.right != resInfo.iWidth)
+    return true;
+  if (resInfo.Overscan.bottom != resInfo.iHeight)
+    return true;
+  if (resInfo.fPixelRatio != fPixRatio)
+    return true;
+  if (resInfo.iSubtitles != (int)(0.965*resInfo.iHeight))
+    return true;
+
+  return false;
 }
 
 void CWinSystemX11::GetConnectedOutputs(std::vector<CStdString> *outputs)
