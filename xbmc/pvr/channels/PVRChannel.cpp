@@ -757,6 +757,15 @@ bool CPVRChannel::GetEPGNow(CEpgInfoTag &tag) const
   return epg ? epg->InfoTagNow(tag) : false;
 }
 
+bool CPVRChannel::GetEPGTag(EPG::CEpgInfoTag &tag, const CDateTime &time) const
+{
+  CEpg *epg = GetEPG();
+  const EPG::CEpgInfoTag *newTag = epg ? epg->GetTagAround(time) : NULL;
+  if (newTag)
+    tag = *newTag;
+  return newTag != NULL;
+}
+
 bool CPVRChannel::GetEPGNext(CEpgInfoTag &tag) const
 {
   CEpg *epg = GetEPG();

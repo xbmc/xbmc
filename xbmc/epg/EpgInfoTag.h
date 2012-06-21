@@ -82,6 +82,13 @@ namespace EPG
     virtual bool IsActive(void) const;
 
     /*!
+     * @brief Check if this event is active in the given time.
+     * @param time time to check against.
+     * @return True if it's active, false otherwise.
+     */
+    virtual bool IsActive(CDateTime time) const;
+
+    /*!
      * @return True when this event has already passed, false otherwise.
      */
     virtual bool WasActive(void) const;

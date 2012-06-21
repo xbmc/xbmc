@@ -559,6 +559,15 @@ int CPVRManager::GetCurrentEpg(CFileItemList &results) const
   return iReturn;
 }
 
+bool CPVRManager::GetPlayingTag(CEpgInfoTag &tag) const
+{
+  if (GetState() == ManagerStateStarted && m_guiInfo)
+  {
+    return m_guiInfo->GetPlayingTag(tag);  
+  }
+  return false;
+}
+
 void CPVRManager::ResetPlayingTag(void)
 {
   CSingleLock lock(m_critSection);
@@ -1010,6 +1019,12 @@ int CPVRManager::GetTotalTime(void) const
 int CPVRManager::GetStartTime(void) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->GetStartTime() : 0;
+}
+
+void CPVRManager::UpdatePlayerPosition(double fPosition) const
+{
+   if( m_guiInfo)
+     m_guiInfo->UpdatePlayerPosition(fPosition);
 }
 
 bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const

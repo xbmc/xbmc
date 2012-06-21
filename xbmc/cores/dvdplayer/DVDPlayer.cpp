@@ -486,6 +486,11 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 bool CDVDPlayer::CloseFile()
 {
   CLog::Log(LOGNOTICE, "CDVDPlayer::CloseFile()");
+  // update player position if playing LiveTV
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
+      static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->UpdatePlayerPosition(0);
+  }
 
   // unpause the player
   SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
@@ -3809,6 +3814,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     {
       state.canrecord = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->CanRecord();
       state.recording = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->IsRecording();
+      static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->UpdatePlayerPosition(state.time);
     }
 
     CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);

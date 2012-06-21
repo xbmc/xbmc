@@ -62,6 +62,8 @@ public:
   int             GetTotalTime();
   int             GetStartTime();
 
+  void            UpdatePlayerPosition(double pos);
+
   bool            CanRecord();
   bool            IsRecording();
   bool            Record(bool bOnOff);

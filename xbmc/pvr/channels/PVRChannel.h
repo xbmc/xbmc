@@ -482,6 +482,14 @@ namespace PVR
      */
     bool GetEPGNow(EPG::CEpgInfoTag &tag) const;
 
+     /*!
+     * @brief Get the EPG tag that is active on this channel in the specified time.
+     * @param tag is active on this channel in the specified time.
+     * @param time to search for EPG tag
+     * @return The EPG tag that is active on this channel in the specified time.
+     */
+    bool GetEPGTag(EPG::CEpgInfoTag &tag, const CDateTime &time) const;
+
     /*!
      * @brief Get the EPG tag that is active on this channel next.
      *

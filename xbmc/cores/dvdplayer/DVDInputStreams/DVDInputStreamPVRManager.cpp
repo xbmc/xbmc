@@ -209,6 +209,12 @@ int CDVDInputStreamPVRManager::GetStartTime()
   return 0;
 }
 
+void CDVDInputStreamPVRManager::UpdatePlayerPosition(double pos)
+{
+  if (m_pLiveTV && g_PVRManager.IsStarted())
+    return g_PVRManager.UpdatePlayerPosition(pos);
+}
+
 bool CDVDInputStreamPVRManager::NextChannel(bool preview/* = false*/)
 {
   if (m_pLiveTV)

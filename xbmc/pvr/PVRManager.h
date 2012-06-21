@@ -200,6 +200,13 @@ namespace PVR
     int GetCurrentEpg(CFileItemList &results) const;
 
     /*!
+     * @brief Return the EPG tag for the channel that is currently playing.
+     * @param tag The tag to update with the current EPG tag. 
+     * @return true if the EPG tag is available.
+     */
+    bool GetPlayingTag(EPG::CEpgInfoTag &tag) const;
+
+    /*!
      * @brief Check whether the PVRManager has fully started.
      * @return True if started, false otherwise.
      */
@@ -356,6 +363,13 @@ namespace PVR
      * @return The position in milliseconds or NULL if no channel is playing.
      */
     int GetStartTime(void) const;
+
+     /*!
+     * @brief Updates the LiveTV Player position
+     * @param fPosition time in miliseconds from start of playback
+     * @return void 
+     */
+    void UpdatePlayerPosition(double fPosition) const;
 
     /*!
      * @brief Start playback on a channel.

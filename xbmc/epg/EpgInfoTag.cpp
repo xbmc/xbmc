@@ -210,6 +210,12 @@ bool CEpgInfoTag::IsActive(void) const
   return (m_startTime <= now && m_endTime > now);
 }
 
+bool CEpgInfoTag::IsActive(CDateTime time) const
+{
+  CSingleLock lock(m_critSection);
+  return (m_startTime <= time && m_endTime > time);
+}
+
 bool CEpgInfoTag::WasActive(void) const
 {
   CDateTime now = CDateTime::GetUTCDateTime();
