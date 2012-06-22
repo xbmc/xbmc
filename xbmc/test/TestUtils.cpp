@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,39 +19,33 @@
  *
  */
 
-#include "gtest/gtest.h"
-
-#include "TestBasicEnvironment.h"
 #include "TestUtils.h"
+#include "Util.h"
+#include "filesystem/SpecialProtocol.h"
 
-#include "threads/Thread.h"
-#include "commons/ilog.h"
+CXBMCTestUtils::CXBMCTestUtils(){}
 
-#include <cstdio>
-#include <cstdlib>
-
-class NullLogger : public XbmcCommons::ILogger
+CXBMCTestUtils &CXBMCTestUtils::Instance()
 {
-public:
-  void log(int loglevel, const char* message) {}
-};
+  static CXBMCTestUtils instance;
+  return instance;
+}
 
-int main(int argc, char **argv)
+CStdString CXBMCTestUtils::ReferenceFilePath(CStdString const& path)
 {
-  testing::InitGoogleTest(&argc, argv);
+  return CSpecialProtocol::TranslatePath("special://xbmc") + path;
+}
 
-  // we need to configure CThread to use a dummy logger
-  NullLogger* nullLogger = new NullLogger();
-  CThread::SetLogger(nullLogger);
+bool CXBMCTestUtils::SetReferenceFileBasePath()
+{
+  CStdString xbmcPath;
+  CUtil::GetHomePath(xbmcPath);
+  if (xbmcPath.IsEmpty())
+    return false;
 
-  if (!testing::AddGlobalTestEnvironment(new TestBasicEnvironment()))
-  {
-    fprintf(stderr, "Unable to add basic test environment.\n");
-    exit(EXIT_FAILURE);
-  }
-  int ret = RUN_ALL_TESTS();
+  /* Set xbmc path and xbmcbin path */
+  CSpecialProtocol::SetXBMCPath(xbmcPath);
+  CSpecialProtocol::SetXBMCBinPath(xbmcPath);
 
-  delete nullLogger;
-
-  return ret;
+  return true;
 }

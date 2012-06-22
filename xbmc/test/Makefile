@@ -1,4 +1,6 @@
 SRCS=	\
+	TestBasicEnvironment.cpp \
+	TestUtils.cpp \
 	xbmc-test.cpp
 
 LIB=xbmc-test.a

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,40 +18,27 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#pragma once
 
-#include "gtest/gtest.h"
+#include "utils/StdString.h"
 
-#include "TestBasicEnvironment.h"
-#include "TestUtils.h"
-
-#include "threads/Thread.h"
-#include "commons/ilog.h"
-
-#include <cstdio>
-#include <cstdlib>
-
-class NullLogger : public XbmcCommons::ILogger
+class CXBMCTestUtils
 {
 public:
-  void log(int loglevel, const char* message) {}
+  static CXBMCTestUtils &Instance();
+
+  /* ReferenceFilePath() is used to prepend a path with the location to the
+   * xbmc-test binary. It's assumed the test suite program will only be run
+   * with xbmc-test residing in the source tree.
+   */
+  CStdString ReferenceFilePath(CStdString const& path);
+
+  /* Function to set the reference file base path. */
+  bool SetReferenceFileBasePath();
+private:
+  CXBMCTestUtils();
+  CXBMCTestUtils(CXBMCTestUtils const&);
+  void operator=(CXBMCTestUtils const&);
 };
 
-int main(int argc, char **argv)
-{
-  testing::InitGoogleTest(&argc, argv);
-
-  // we need to configure CThread to use a dummy logger
-  NullLogger* nullLogger = new NullLogger();
-  CThread::SetLogger(nullLogger);
-
-  if (!testing::AddGlobalTestEnvironment(new TestBasicEnvironment()))
-  {
-    fprintf(stderr, "Unable to add basic test environment.\n");
-    exit(EXIT_FAILURE);
-  }
-  int ret = RUN_ALL_TESTS();
-
-  delete nullLogger;
-
-  return ret;
-}
+#define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
