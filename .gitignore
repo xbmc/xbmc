@@ -96,6 +96,7 @@ config.log
 /configure
 /xbmc/stamp-h1
 /xbmc.bin
+/xbmc-test
 /xbmc-xrandr
 /git_revision.h
 /libtool
