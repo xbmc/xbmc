@@ -29,6 +29,7 @@ CGUIDialogMusicOverlay::CGUIDialogMusicOverlay()
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OVERLAY, "MusicOverlay.xml")
 {
   m_renderOrder = 0;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMusicOverlay::~CGUIDialogMusicOverlay()

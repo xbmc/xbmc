@@ -46,6 +46,7 @@ CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
     : CGUIWindow(WINDOW_SETTINGS_PROFILES, "SettingsProfile.xml")
 {
   m_listItems = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)

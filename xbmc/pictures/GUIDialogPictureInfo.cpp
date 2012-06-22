@@ -34,6 +34,7 @@ CGUIDialogPictureInfo::CGUIDialogPictureInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PICTURE_INFO, "DialogPictureInfo.xml")
 {
   m_pictureInfo = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogPictureInfo::~CGUIDialogPictureInfo(void)

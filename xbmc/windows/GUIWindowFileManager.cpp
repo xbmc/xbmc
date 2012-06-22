@@ -102,6 +102,7 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
   m_Directory[0]->m_bIsFolder = true;
   m_Directory[1]->m_bIsFolder = true;
   bCheckShareConnectivity = true;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIWindowFileManager::~CGUIWindowFileManager(void)

@@ -59,6 +59,7 @@ CGUIDialogSettings::CGUIDialogSettings(int id, const char *xmlFile)
   m_pOriginalSlider = NULL;
   m_pOriginalSeparator = NULL;
   m_usePopupSliders = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSettings::~CGUIDialogSettings(void)

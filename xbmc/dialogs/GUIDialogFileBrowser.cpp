@@ -72,6 +72,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_thumbLoader.SetObserver(this);
   m_flipEnabled = false;
   m_multipleSelection = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogFileBrowser::~CGUIDialogFileBrowser()

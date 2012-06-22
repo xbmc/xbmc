@@ -61,6 +61,7 @@ CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
 {
   m_bRefresh = false;
   m_albumSongs = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMusicInfo::~CGUIDialogMusicInfo(void)

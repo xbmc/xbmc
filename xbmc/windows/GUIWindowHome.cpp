@@ -35,6 +35,7 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
                                        m_cumulativeUpdateFlag(0)
 {
   m_updateRA = (Audio | Video | Totals);
+  m_loadType = KEEP_IN_MEMORY;
   
   CAnnouncementManager::AddAnnouncer(this);
 }
