@@ -20,6 +20,7 @@
  */
 
 #include "utils/XBMCTinyXML.h"
+#include "test/TestUtils.h"
 
 #include "gtest/gtest.h"
 
@@ -41,6 +42,27 @@ TEST(TestXBMCTinyXML, ParseFromString)
     if (url && url->FirstChild())
     {
       retval = (url->FirstChild()->ValueStr() == "http://api.themoviedb.org/3/movie/12244?api_key=57983e31fb435df4df77afb854740ea9&language=en???");
+    }
+  }
+  EXPECT_TRUE(retval);
+}
+
+TEST(TestXBMCTinyXML, ParseFromFileHandle)
+{
+  bool retval = false;
+  // scraper results with unescaped &
+  CXBMCTinyXML doc;
+  FILE *f = fopen(XBMC_REF_FILE_PATH("/xbmc/utils/test/CXBMCTinyXML-test.xml"), "r");
+  ASSERT_TRUE(f);
+  doc.LoadFile(f);
+  TiXmlNode *root = doc.RootElement();
+  if (root && root->ValueStr() == "details")
+  {
+    TiXmlElement *url = root->FirstChildElement("url");
+    if (url && url->FirstChild())
+    {
+      CStdString str = url->FirstChild()->ValueStr();
+      retval = (str.Trim() == "http://api.themoviedb.org/3/movie/12244?api_key=57983e31fb435df4df77afb854740ea9&language=en???");
     }
   }
   EXPECT_TRUE(retval);
