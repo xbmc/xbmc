@@ -1350,6 +1350,15 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
 }
 
+bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items)
+{
+  CStdString content = items.GetContent();
+  if (items.IsMusicDb() && (content.Equals("artists") || content.Equals("albums") || content.Equals("songs")))
+    return true;
+
+  return false;
+}
+
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();

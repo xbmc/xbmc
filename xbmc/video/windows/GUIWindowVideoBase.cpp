@@ -1830,6 +1830,15 @@ void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
 {
 }
 
+bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items)
+{
+  CStdString content = items.GetContent();
+  if (items.IsVideoDb() && (content.Equals("movies") || content.Equals("tvshows") || content.Equals("episodes") || content.Equals("musicvideos")))
+    return true;
+
+  return false;
+}
+
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())

@@ -189,6 +189,7 @@ static const ActionMapping actions[] =
         {"jumpsms7"          , ACTION_JUMP_SMS7},
         {"jumpsms8"          , ACTION_JUMP_SMS8},
         {"jumpsms9"          , ACTION_JUMP_SMS9},
+        {"filter"            , ACTION_FILTER},
         {"filterclear"       , ACTION_FILTER_CLEAR},
         {"filtersms2"        , ACTION_FILTER_SMS2},
         {"filtersms3"        , ACTION_FILTER_SMS3},
