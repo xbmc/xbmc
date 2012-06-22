@@ -1,5 +1,6 @@
 SRCS=	\
-	TestGlobalsHandling.cpp
+	TestGlobalsHandling.cpp \
+	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
 
