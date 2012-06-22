@@ -21,9 +21,26 @@
 
 #include "gtest/gtest.h"
 
-using ::testing::InitGoogleTest;
+#include "threads/Thread.h"
+#include "commons/ilog.h"
 
-int main(int argc, char **argv) {
-  InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+class NullLogger : public XbmcCommons::ILogger
+{
+public:
+  void log(int loglevel, const char* message) {}
+};
+
+int main(int argc, char **argv)
+{
+  testing::InitGoogleTest(&argc, argv);
+
+  // we need to configure CThread to use a dummy logger
+  NullLogger* nullLogger = new NullLogger();
+  CThread::SetLogger(nullLogger);
+
+  int ret = RUN_ALL_TESTS();
+
+  delete nullLogger;
+
+  return ret;
 }
