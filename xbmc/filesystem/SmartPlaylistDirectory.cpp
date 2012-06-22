@@ -50,7 +50,7 @@ namespace XFILE
     return GetDirectory(playlist, items);
   }
   
-  bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items)
+  bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir /* = "" */)
   {
     bool success = false, success2 = false;
     std::set<CStdString> playlists;
@@ -71,20 +71,23 @@ namespace XFILE
       {
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(playlist.GetType());
 
-        CStdString strBaseDir;
-        switch (mediaType)
+        CStdString baseDir = strBaseDir;
+        if (strBaseDir.empty())
         {
-        case MediaTypeTvShow:
-        case MediaTypeEpisode:
-          strBaseDir = "videodb://2/2/";
-          break;
+          switch (mediaType)
+          {
+          case MediaTypeTvShow:
+          case MediaTypeEpisode:
+            baseDir = "videodb://2/2/";
+            break;
 
-        case MediaTypeMovie:
-          strBaseDir = "videodb://1/2/";
-          break;
+          case MediaTypeMovie:
+            baseDir = "videodb://1/2/";
+            break;
 
-        default:
-          return false;
+          default:
+            return false;
+          }
         }
 
         CVideoDbUrl videoUrl;
@@ -107,7 +110,7 @@ namespace XFILE
       {
         CMusicDbUrl musicUrl;
         CStdString xsp;
-        if (!musicUrl.FromString("musicdb://3/") || !playlist.SaveAsJson(xsp, false))
+        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://3/") || !playlist.SaveAsJson(xsp, false))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
@@ -151,7 +154,7 @@ namespace XFILE
         
         CMusicDbUrl musicUrl;
         CStdString xsp;
-        if (!musicUrl.FromString("musicdb://4/") || !songPlaylist.SaveAsJson(xsp, false))
+        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://4/") || !songPlaylist.SaveAsJson(xsp, false))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
@@ -174,7 +177,7 @@ namespace XFILE
 
         CVideoDbUrl videoUrl;
         CStdString xsp;
-        if (!videoUrl.FromString("videodb://3/2/") || !mvidPlaylist.SaveAsJson(xsp, false))
+        if (!videoUrl.FromString(!strBaseDir.empty() ? strBaseDir : "videodb://3/2/") || !mvidPlaylist.SaveAsJson(xsp, false))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
