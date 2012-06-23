@@ -89,6 +89,7 @@ bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 {
   CStdString data("");
   char buf[BUFFER_SIZE];
+  memset(buf, 0, BUFFER_SIZE);
   int result;
   while ((result = fread(buf, 1, BUFFER_SIZE, f)) > 0)
     data.append(buf, result);
