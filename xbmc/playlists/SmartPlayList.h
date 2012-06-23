@@ -159,6 +159,8 @@ public:
   TiXmlElement *OpenAndReadName(const CStdString &path);
   bool LoadFromXML(TiXmlElement *root, const CStdString &encoding = "UTF-8");
 
+  void Reset();
+
   void SetName(const CStdString &name);
   void SetType(const CStdString &type); // music, video, mixed
   const CStdString& GetName() const { return m_playlistName; };
@@ -191,6 +193,7 @@ public:
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
   static void GetAvailableOperators(std::vector<std::string> &operatorList);
 
+  bool IsEmpty() const { return m_ruleCombination.m_rules.empty() && m_ruleCombination.m_combinations.empty(); }
 private:
   friend class CGUIDialogSmartPlaylistEditor;
 

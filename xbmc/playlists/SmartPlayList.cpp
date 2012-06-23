@@ -1093,11 +1093,7 @@ void CSmartPlaylistRuleCombination::AddCombination(const CSmartPlaylistRuleCombi
 
 CSmartPlaylist::CSmartPlaylist()
 {
-  m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationAnd);
-  m_limit = 0;
-  m_orderField = SortByNone;
-  m_orderAscending = true;
-  m_playlistType = "songs"; // sane default
+  Reset();
 }
 
 TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
@@ -1372,6 +1368,17 @@ bool CSmartPlaylist::SaveAsJson(CStdString &json, bool full /* = true */) const
 
   json = CJSONVariantWriter::Write(xsp, true);
   return json.size() > 0;
+}
+
+void CSmartPlaylist::Reset()
+{
+  m_ruleCombination.m_combinations.clear();
+  m_ruleCombination.m_rules.clear();
+  m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationAnd);
+  m_limit = 0;
+  m_orderField = SortByNone;
+  m_orderAscending = true;
+  m_playlistType = "songs"; // sane default
 }
 
 void CSmartPlaylist::SetName(const CStdString &name)
