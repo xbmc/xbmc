@@ -1,4 +1,4 @@
-AR=ar
+AR=@AR@
 ARFLAGS=crus
 RM=rm -rf
 SHELL=@SHELL@
