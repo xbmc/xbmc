@@ -490,6 +490,7 @@ AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 MAKE="${MAKE:-make}"
+OBJDUMP="${OBJDUMP:-objdump}"
 
 # host detection and setup
 case $host in
