@@ -127,7 +127,7 @@ public:
   void DeleteAlbumInfo();
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
-  void AddSong(CSong& song, bool bCheck = true);
+  int AddSong(const CSong &song, bool bCheck = true);
   int UpdateSong(const CSong& song, int idSong = -1);
   int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
   bool DeleteAlbumInfo(int idArtist);
@@ -306,7 +306,7 @@ protected:
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
 
-  void AddKaraokeData(const CSong& song);
+  void AddKaraokeData(int idSong, const CSong& song);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:
