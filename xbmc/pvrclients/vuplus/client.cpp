@@ -329,6 +329,7 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
   pCapabilities->bSupportsChannelScan     = false;
   pCapabilities->bHandlesInputStream      = true;
   pCapabilities->bHandlesDemuxing         = false;
+  pCapabilities->bSupportsLastPlayedPosition = false;
 
   return PVR_ERROR_NO_ERROR;
 }

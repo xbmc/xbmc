@@ -213,6 +213,7 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
   pCapabilities->bHandlesInputStream         = true;
   pCapabilities->bHandlesDemuxing            = true;
   pCapabilities->bSupportsChannelScan        = (XVDRData && XVDRData->SupportChannelScan());
+  pCapabilities->bSupportsLastPlayedPosition = false;
 
   // <tricky_mode>
   // we don't know if XBMC has the new ABI, so
