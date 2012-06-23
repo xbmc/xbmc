@@ -14,7 +14,7 @@ RPATH=-Wl,-rpath=$(NATIVE_ROOT_PATH)/lib
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
 ifdef NATIVE_ROOT_PATH
-ifeq ($(findstring osx,@ARCH@),osx)
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 DEFINES += -DTARGET_DARWIN
 NATIVE_ARCH=@DARWIN_NATIVE_ARCH@
 RPATH=
