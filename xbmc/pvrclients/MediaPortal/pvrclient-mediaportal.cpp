@@ -927,6 +927,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
     CStdString strRecordingId;
     CStdString strDirectory;
+    CStdString strEpisodeName;
     cRecording recording;
 
     recording.SetCardSettings(&m_cCards);
@@ -935,10 +936,11 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     if (recording.ParseLine(data))
     {
       strRecordingId.Format("%i", recording.Index());
+      strEpisodeName = g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : "";
 
       tag.strRecordingId = strRecordingId.c_str();
       tag.strTitle       = recording.Title();
-      tag.strPlotOutline = g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : tag.strTitle;
+      tag.strPlotOutline = strEpisodeName.length() > 0 ? recording.EpisodeName() : tag.strTitle;
       tag.strPlot        = recording.Description();
       tag.strChannelName = recording.ChannelName();
       tag.recordingTime  = recording.StartTime();
@@ -949,8 +951,23 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.iGenreSubType  = recording.GenreSubType();
 
       strDirectory = recording.Directory();
-      strDirectory.Replace("\\", " - "); // XBMC supports only 1 sublevel below Recordings, so flatten the MediaPortal directory structure
-      tag.strDirectory   = strDirectory.c_str(); // used in XBMC as directory structure below "Recordings"
+      if (strDirectory.length() > 0)
+      {
+        strDirectory.Replace("\\", " - "); // XBMC supports only 1 sublevel below Recordings, so flatten the MediaPortal directory structure
+        tag.strDirectory   = strDirectory.c_str(); // used in XBMC as directory structure below "Recordings"
+
+        if ((g_iTVServerXBMCBuild >= 105) && (strDirectory.Equals(tag.strTitle)) && (strEpisodeName.length() > 0))
+        {
+          strEpisodeName = recording.Title();
+          strEpisodeName+= " - ";
+          strEpisodeName+= recording.EpisodeName();
+          tag.strTitle = strEpisodeName.c_str();
+        }
+      }
+      else
+      {
+        tag.strDirectory = "";
+      }
 
       //if (g_bUseRecordingsDir == true)
       if (g_bUseRTSP == false)
