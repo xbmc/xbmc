@@ -60,6 +60,7 @@ public:
                          OPERATOR_NOT_IN_THE_LAST,
                          OPERATOR_TRUE,
                          OPERATOR_FALSE,
+                         OPERATOR_BETWEEN,
                          OPERATOR_END
                        };
 

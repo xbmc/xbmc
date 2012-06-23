@@ -132,7 +132,8 @@ static const operatorField operators[] = { { "contains", CSmartPlaylistRule::OPE
                                            { "inthelast", CSmartPlaylistRule::OPERATOR_IN_THE_LAST, 21410 },
                                            { "notinthelast", CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST, 21411 },
                                            { "true", CSmartPlaylistRule::OPERATOR_TRUE, 20122 },
-                                           { "false", CSmartPlaylistRule::OPERATOR_FALSE, 20424 }
+                                           { "false", CSmartPlaylistRule::OPERATOR_FALSE, 20424 },
+                                           { "between", CSmartPlaylistRule::OPERATOR_BETWEEN, 21456 }
                                          };
 
 #define NUM_OPERATORS sizeof(operators) / sizeof(operatorField)
@@ -745,6 +746,21 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
                "(watchedcount = 0 AND " + GetField(FieldId, strType) + " IN "
                "(select episodeview.idShow from episodeview WHERE episodeview.idShow = " + GetField(FieldId, strType) + " AND episodeview.resumeTimeInSeconds > 0)))";
     }
+  }
+
+  // The BETWEEN operator is handled special
+  if (op == OPERATOR_BETWEEN)
+  {
+    if (m_parameter.size() != 2)
+      return "";
+
+    FIELD_TYPE fieldType = GetFieldType(m_field);
+    if (fieldType == NUMERIC_FIELD || m_field == FieldYear)
+      return db.PrepareSQL("CAST(%s as DECIMAL(5,1)) BETWEEN %s AND %s", GetField(m_field, strType).c_str(), m_parameter[0].c_str(), m_parameter[1].c_str());
+    else if (fieldType == SECONDS_FIELD)
+      return db.PrepareSQL("CAST(%s as INTEGER) BETWEEN %s AND %s", GetField(m_field, strType).c_str(), m_parameter[0].c_str(), m_parameter[1].c_str());
+    else
+      return db.PrepareSQL("%s BETWEEN '%s' AND '%s'", GetField(m_field, strType).c_str(), m_parameter[0].c_str(), m_parameter[1].c_str());
   }
 
   // now the query parameter
