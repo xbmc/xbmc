@@ -306,25 +306,6 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return amount;
 }
 
-#elif defined(__GNUC__)
-
-long AtomicAdd(volatile long* pAddr, long amount)
-{
-  return __sync_add_and_fetch(pAddr, amount);
-}
-
-#elif defined(__x86_64__)
-
-long AtomicAdd(volatile long* pAddr, long amount)
-{
-  register long result;
-  __asm__ __volatile__ (
-                        "lock/xaddq %q0, %1"
-                        : "=r" (result), "=m" (*pAddr)
-                        : "0" ((long) (amount)), "m" (*pAddr));
-  return *pAddr;
-}
-
 #else // Linux / OSX86 (GCC)
 
 long AtomicAdd(volatile long* pAddr, long amount)
@@ -483,25 +464,6 @@ long AtomicSubtract(volatile long* pAddr, long amount)
     mov amount, ebx;
   }
   return amount;
-}
-
-#elif defined(__GNUC__)
-
-long AtomicSubtract(volatile long* pAddr, long amount)
-{
-  return __sync_sub_and_fetch(pAddr, amount);
-}
-
-#elif defined(__x86_64__)
-
-long AtomicSubtract(volatile long* pAddr, long amount)
-{
-  register long result;
-  __asm__ __volatile__ (
-                        "lock/xaddq %q0, %1"
-                        : "=r" (result), "=m" (*pAddr)
-                        : "0" ((long) (-1 * amount)), "m" (*pAddr));
-  return *pAddr;
 }
 
 #else // Linux / OSX86 (GCC)
