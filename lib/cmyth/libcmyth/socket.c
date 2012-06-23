@@ -21,16 +21,12 @@
  * socket.c - functions to handle low level socket interactions with a
  *            MythTV frontend.  
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#include <sys/socket.h>
-#endif
 #include <stdio.h>
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
 #include <errno.h>
+#include <sys/types.h>
 #include <cmyth_local.h>
 
 #define __UNSIGNED	"0123456789"

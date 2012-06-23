@@ -24,28 +24,12 @@
  *                This allows the watcher to do things like pause, rewind
  *                and so forth on live-tv.
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#include <sys/socket.h>
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
 #include <cmyth_local.h>
-
-#ifdef _MSC_VER
-static void nullprint(a, ...) { return; }
-#define PRINTF nullprint
-#define TRC  nullprint
-#elif 0
-#define PRINTF(x...) PRINTF(x)
-#define TRC(fmt, args...) PRINTF(fmt, ## args) 
-#else
-#define PRINTF(x...)
-#define TRC(fmt, args...) 
-#endif
 
 #define LAST 0x7FFFFFFF
 

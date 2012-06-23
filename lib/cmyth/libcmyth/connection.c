@@ -23,21 +23,8 @@
  * interacting with those connections.  
  */
 
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
 #include <stdio.h>
-#ifdef _MSC_VER
-#include <winsock2.h>
-#include <Ws2tcpip.h>
-#else
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#endif
 #include <errno.h>
 #include <string.h>
 #include <signal.h>

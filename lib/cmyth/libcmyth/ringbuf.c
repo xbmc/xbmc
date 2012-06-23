@@ -24,15 +24,11 @@
  *                This allows the watcher to do things like pause, rewind
  *                and so forth on live-tv.
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#include <sys/socket.h>
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
 #include <cmyth_local.h>
 
 /*

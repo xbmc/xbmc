@@ -21,9 +21,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <inttypes.h>
-#ifndef _MSC_VER
-#include <sys/socket.h>
-#endif
+#include <sys/types.h>
 #include <cmyth_local.h>
 
 /*

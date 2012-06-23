@@ -26,11 +26,7 @@
  *              also retrieve and manipulate recordings and program
  *              material based on program information.
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
