@@ -686,7 +686,14 @@ bool SortUtils::SortFromDataset(const SortDescription &sortDescription, MediaTyp
   if (!DatabaseUtils::GetDatabaseResults(mediaType, fields, dataset, results))
     return false;
 
-  Sort(sortDescription, results);
+  SortDescription sorting = sortDescription;
+  if (sortDescription.sortBy == SortByNone)
+  {
+    sorting.limitStart = 0;
+    sorting.limitEnd = -1;
+  }
+
+  Sort(sorting, results);
 
   return true;
 }
