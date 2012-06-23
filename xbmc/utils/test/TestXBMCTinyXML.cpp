@@ -55,6 +55,7 @@ TEST(TestXBMCTinyXML, ParseFromFileHandle)
   FILE *f = fopen(XBMC_REF_FILE_PATH("/xbmc/utils/test/CXBMCTinyXML-test.xml"), "r");
   ASSERT_TRUE(f);
   doc.LoadFile(f);
+  fclose(f);
   TiXmlNode *root = doc.RootElement();
   if (root && root->ValueStr() == "details")
   {
