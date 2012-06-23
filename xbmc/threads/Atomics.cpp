@@ -313,6 +313,32 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return __sync_add_and_fetch(pAddr, amount);
 }
 
+#elif defined(__x86_64__)
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  register long result;
+  __asm__ __volatile__ (
+                        "lock/xaddq %q0, %1"
+                        : "=r" (result), "=m" (*pAddr)
+                        : "0" ((long) (amount)), "m" (*pAddr));
+  return *pAddr;
+}
+
+#else // Linux / OSX86 (GCC)
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  register long reg __asm__ ("eax") = amount;
+  __asm__ __volatile__ (
+                        "lock/xadd %0, %1 \n"
+                        "dec %%eax"
+                        : "+r" (reg)
+                        : "m" (*pAddr)
+                        : "memory" );
+  return reg;
+}
+
 #endif
 
 ///////////////////////////////////////////////////////////////////////////
@@ -464,6 +490,32 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 long AtomicSubtract(volatile long* pAddr, long amount)
 {
   return __sync_sub_and_fetch(pAddr, amount);
+}
+
+#elif defined(__x86_64__)
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  register long result;
+  __asm__ __volatile__ (
+                        "lock/xaddq %q0, %1"
+                        : "=r" (result), "=m" (*pAddr)
+                        : "0" ((long) (-1 * amount)), "m" (*pAddr));
+  return *pAddr;
+}
+
+#else // Linux / OSX86 (GCC)
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  register long reg __asm__ ("eax") = -1 * amount;
+  __asm__ __volatile__ (
+                        "lock/xadd %0, %1 \n"
+                        "dec %%eax"
+                        : "+r" (reg)
+                        : "m" (*pAddr)
+                        : "memory" );
+  return reg;
 }
 
 #endif
