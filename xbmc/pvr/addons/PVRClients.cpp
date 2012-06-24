@@ -310,7 +310,8 @@ PVR_ADDON_CAPABILITIES CPVRClients::GetCurrentAddonCapabilities(void)
 
 bool CPVRClients::IsPlaying(void) const
 {
-  CSingleLock lock(m_critSection);
+  //margro: workaround to fix 'timeout waiting for flip to complete' problems
+  // CSingleLock lock(m_critSection);
   return m_bIsPlayingRecording || m_bIsPlayingLiveTV;
 }
 
@@ -567,7 +568,8 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
 
 bool CPVRClients::GetPlayingChannel(CPVRChannel &channel) const
 {
-  CSingleLock lock(m_critSection);
+  //margro: workaround to fix 'timeout waiting for flip to complete' problems
+  // CSingleLock lock(m_critSection);
 
   if (m_bIsPlayingLiveTV)
     channel = m_currentChannel;
