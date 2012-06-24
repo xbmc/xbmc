@@ -2172,47 +2172,6 @@ bool CMusicDatabase::CleanupPaths()
   return false;
 }
 
-bool CMusicDatabase::CleanupThumbs()
-{
-  try
-  {
-    // needs to be done AFTER the songs have been cleaned up.
-    // we can happily delete any thumb that has no reference to a song
-    CStdString strSQL = "select * from thumb where idThumb not in (select idThumb from song) and idThumb not in (select idThumb from album)";
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
-    // get albums dir
-    CStdString strThumbsDir = g_settings.GetMusicThumbFolder();
-    while (!m_pDS->eof())
-    {
-      CStdString strThumb = m_pDS->fv("strThumb").get_asString();
-      if (strThumb.Left(strThumbsDir.size()) == strThumbsDir)
-      { // only delete cached thumbs
-        CTextureCache::Get().ClearCachedImage(strThumb, true);
-      }
-      m_pDS->next();
-    }
-    // clear the thumb cache
-    //URIUtils::ThumbCacheClear();
-    //g_directoryCache.ClearMusicThumbCache();
-    // now we can delete
-    m_pDS->close();
-    strSQL = "delete from thumb where idThumb not in (select idThumb from song) and idThumb not in (select idThumb from album)";
-    m_pDS->exec(strSQL.c_str());
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupThumbs() or was aborted");
-  }
-  return false;
-}
-
 bool CMusicDatabase::CleanupArtists()
 {
   try
@@ -2268,7 +2227,6 @@ bool CMusicDatabase::CleanupOrphanedItems()
   if (!CleanupAlbums()) return false;
   if (!CleanupArtists()) return false;
   if (!CleanupGenres()) return false;
-  if (!CleanupThumbs()) return false;
   return true;
 }
 
@@ -2315,7 +2273,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
     pDlgProgress->SetPercentage(40);
     pDlgProgress->Progress();
   }
-  if (!CleanupPaths() || !CleanupThumbs())
+  if (!CleanupPaths())
   {
     RollbackTransaction();
     return ERROR_REORG_PATH;
@@ -3575,53 +3533,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   return true;
 }
 
-int CMusicDatabase::AddThumb(const CStdString& strThumb1)
-{
-  CStdString strSQL;
-  try
-  {
-    CStdString strThumb = strThumb1;
-    if (strThumb.IsEmpty())
-      strThumb = "NONE";
-
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    map <CStdString, int>::const_iterator it;
-
-    it = m_thumbCache.find(strThumb1);
-    if (it != m_thumbCache.end())
-      return it->second;
-
-    strSQL=PrepareSQL( "select * from thumb where strThumb='%s'", strThumb.c_str());
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->num_rows() == 0)
-    {
-      m_pDS->close();
-      // doesnt exists, add it
-      strSQL=PrepareSQL("insert into thumb (idThumb, strThumb) values( NULL, '%s' )", strThumb.c_str());
-      m_pDS->exec(strSQL.c_str());
-
-      int idPath = (int)m_pDS->lastinsertid();
-      m_thumbCache.insert(pair<CStdString, int>(strThumb1, idPath));
-      return idPath;
-    }
-    else
-    {
-      int idPath = m_pDS->fv("idThumb").get_asInt();
-      m_thumbCache.insert(pair<CStdString, int>(strThumb1, idPath));
-      m_pDS->close();
-      return idPath;
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addthumb (%s)", strSQL.c_str());
-  }
-
-  return -1;
-}
-
 unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<int,int> > &songIDs)
 {
   try
@@ -3726,30 +3637,6 @@ bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const CStdString& strThumb)
                               " (SELECT idSong FROM song WHERE idAlbum=%ld)", idAlbum);
   ExecuteQuery(sql);
   return true;
-}
-
-bool CMusicDatabase::GetAlbumThumb(int idAlbum, CStdString& strThumb)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strSQL=PrepareSQL("select strThumb from thumb join album on album.idThumb = thumb.idThumb where album.idAlbum=%i", idAlbum);
-    m_pDS2->query(strSQL.c_str());
-    if (m_pDS2->eof())
-      return false;
-
-    strThumb = m_pDS2->fv("strThumb").get_asString();
-    m_pDS2->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - (%i) failed", __FUNCTION__, idAlbum);
-  }
-
-  return false;
 }
 
 bool CMusicDatabase::GetArtistPath(int idArtist, CStdString &basePath)

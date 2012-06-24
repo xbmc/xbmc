@@ -193,7 +193,6 @@ public:
 
   bool GetAlbumPath(int idAlbum, CStdString &path);
   bool SaveAlbumThumb(int idAlbum, const CStdString &thumb);
-  bool GetAlbumThumb(int idAlbum, CStdString &thumb);
   bool GetArtistPath(int idArtist, CStdString &path);
 
   CStdString GetGenreById(int id);
@@ -308,7 +307,7 @@ protected:
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);
   int AddPath(const CStdString& strPath);
-  int AddThumb(const CStdString& strThumb1);
+
   bool AddAlbumArtist(int idArtist, int idAlbum, bool featured, int iOrder);
   bool AddSongArtist(int idArtist, int idSong, bool featured, int iOrder);
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
@@ -332,7 +331,6 @@ private:
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
   bool CleanupPaths();
-  bool CleanupThumbs();
   bool CleanupAlbums();
   bool CleanupArtists();
   bool CleanupGenres();
