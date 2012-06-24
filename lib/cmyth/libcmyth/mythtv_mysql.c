@@ -717,17 +717,21 @@ cmyth_get_bookmark_mark(cmyth_database_t db, cmyth_proginfo_t prog, long long bk
 }
 
 int 
-cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark) 
+cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark, char *starttime, int mode) 
 {
 	MYSQL_RES *res = NULL;
 	MYSQL_ROW row;
-	const char *query_str = "SELECT * FROM recordedseek WHERE chanid = ? AND mark= ?;";
 	int offset=0;
 	int rows = 0;
+	int rectype = 0;
 	cmyth_mysql_query_t * query;
+	
+	const char *query_str = "SELECT * FROM recordedseek WHERE chanid = ? AND mark<= ? AND starttime = ? ORDER BY MARK DESC LIMIT 1;";
+
 	query = cmyth_mysql_query_create(db,query_str);
 	if (cmyth_mysql_query_param_long(query, chanid) < 0
 		|| cmyth_mysql_query_param_long(query, mark) < 0
+		|| cmyth_mysql_query_param_str(query, starttime) < 0
 		) {
 		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
 		ref_release(query);
@@ -741,7 +745,35 @@ cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark)
 	}
 	while ((row = mysql_fetch_row(res))) {
 		offset = safe_atoi(row[3]);
+		rectype = safe_atoi(row[4]);
 		rows++;
+	}
+	if (rectype != 9) {
+		if (mode == 0) {
+			mark=(mark/15)+1;
+		}
+		else if (mode == 1) {
+			mark=(mark/12)+1;
+		}
+		query = cmyth_mysql_query_create(db, query_str);
+		if (cmyth_mysql_query_param_long(query, chanid) < 0
+			|| cmyth_mysql_query_param_long(query, mark) < 0
+			|| cmyth_mysql_query_param_str(query, starttime) < 0
+			) {
+			cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
+			ref_release(query);
+			return -1;
+		}
+		res = cmyth_mysql_query_result(query);
+		ref_release(query);
+		if (res == NULL) {
+			cmyth_dbg(CMYTH_DBG_ERROR, "%s, finalisation/execution of query failed!\n", __FUNCTION__);
+			return -1;
+		}
+		while ((row = mysql_fetch_row(res))) {
+			offset = safe_atoi(row[3]);
+			rows++;
+		}
 	}
 	mysql_free_result(res);
 	return offset;
