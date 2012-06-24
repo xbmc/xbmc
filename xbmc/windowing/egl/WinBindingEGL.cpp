@@ -74,7 +74,7 @@ bool CWinBindingEGL::CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeW
   m_nativeDisplay = nativeDisplay;
   m_nativeWindow  = nativeWindow;
 
-  m_display = eglGetDisplay(nativeDisplay);
+  m_display = eglGetDisplay(((intptr_t)(NativeDisplayType)nativeDisplay));
   if (m_display == EGL_NO_DISPLAY) 
   {
     CLog::Log(LOGERROR, "EGL failed to obtain display");
@@ -96,7 +96,12 @@ bool CWinBindingEGL::CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeW
         EGL_SAMPLE_BUFFERS,  0,
         EGL_SAMPLES,         0,
         EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
-        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+        EGL_RENDERABLE_TYPE, 
+#if HAS_GLES == 2
+		EGL_OPENGL_ES2_BIT,
+#else
+        EGL_OPENGL_ES_BIT, 
+#endif
         EGL_NONE
   };
 

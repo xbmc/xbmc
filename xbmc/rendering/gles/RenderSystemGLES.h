@@ -27,6 +27,7 @@
 #include "system.h"
 #include "system_gl.h"
 #include "rendering/RenderSystem.h"
+#if HAS_GLES == 2
 #include "xbmc/guilib/GUIShader.h"
 
 enum ESHADERMETHOD
@@ -41,6 +42,7 @@ enum ESHADERMETHOD
   SM_TEXTURE_RGBA_BLENDCOLOR,
   SM_ESHADERCOUNT
 };
+#endif
 
 class CRenderSystemGLES : public CRenderSystemBase
 {
@@ -78,6 +80,7 @@ public:
 
   virtual void Project(float &x, float &y, float &z);
   
+#if HAS_GLES == 2
   void InitialiseGUIShader();
   void EnableGUIShader(ESHADERMETHOD method);
   void DisableGUIShader();
@@ -86,6 +89,7 @@ public:
   GLint GUIShaderGetCol();
   GLint GUIShaderGetCoord0();
   GLint GUIShaderGetCoord1();
+#endif
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
@@ -103,8 +107,10 @@ protected:
 
   CStdString m_RenderExtensions;
 
+#if HAS_GLES == 2
   CGUIShader  **m_pGUIshader;  // One GUI shader for each method
   ESHADERMETHOD m_method;      // Current GUI Shader method
+#endif
 
   GLfloat    m_view[16];
   GLfloat    m_projection[16];

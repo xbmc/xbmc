@@ -99,6 +99,11 @@ DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
 DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
 endif
 
+ifeq (@USE_OPENGLESV1@,1)
+DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
+DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
+endif
+
 ifeq ($(findstring osx,@ARCH@),osx)
 DIRECTORY_ARCHIVES += xbmc/osx/osx.a
 DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
@@ -153,8 +158,12 @@ ifneq (@DISABLE_RSXS@,1)
   SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
 endif
 
-VIS_DIRS=xbmc/visualizations/OpenGLSpectrum \
-         xbmc/visualizations/WaveForm
+VIS_DIRS=
+ifneq (@USE_OPENGLESV1@,1)
+  VIS_DIRS+=\
+	xbmc/visualizations/OpenGLSpectrum \
+	xbmc/visualizations/WaveForm
+endif
 
 ifneq (@DISABLE_PROJECTM@,1)
   VIS_DIRS+= xbmc/visualizations/XBMCProjectM

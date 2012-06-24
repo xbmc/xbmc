@@ -86,11 +86,13 @@ void LogGraphicsInfo()
   else
     CLog::Log(LOGNOTICE, "GL_VERSION = NULL");
 
+#if defined(HAS_GL) || (defined(HAS_GLES) && HAS_GLES == 2)
   s = glGetString(GL_SHADING_LANGUAGE_VERSION);
   if (s)
     CLog::Log(LOGNOTICE, "GL_SHADING_LANGUAGE_VERSION = %s", s);
   else
     CLog::Log(LOGNOTICE, "GL_SHADING_LANGUAGE_VERSION = NULL");
+#endif
 
   //GL_NVX_gpu_memory_info extension
 #define GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX          0x9047

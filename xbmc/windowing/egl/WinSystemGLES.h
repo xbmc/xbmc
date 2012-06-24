@@ -45,6 +45,7 @@ public:
   virtual bool  ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool  SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void  UpdateResolutions();
+  virtual int   GetNumScreens() { return 1; }
   virtual bool  IsExtSupported(const char* extension);
 
   virtual void  ShowOSMouse(bool show);
@@ -60,7 +61,11 @@ protected:
   virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
   virtual void  SetVSyncImpl(bool enable);
   void                  *m_display;
+#ifdef fbdev_window
   fbdev_window          *m_window;
+#else
+  void                  *m_window;
+#endif
   CWinBindingEGL        *m_eglBinding;
   int                   m_fb_width;
   int                   m_fb_height;

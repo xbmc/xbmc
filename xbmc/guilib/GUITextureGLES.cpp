@@ -57,9 +57,11 @@ void CGUITextureGLES::Begin(color_t color)
   }
 
   bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[0][3] < 255;
-
+  
+#if HAS_GLES == 2
   if (m_diffuse.size())
   {
+
     if (m_col[0][0] == 255 && m_col[0][1] == 255 && m_col[0][2] == 255 && m_col[0][3] == 255 )
     {
       g_Windowing.EnableGUIShader(SM_MULTI);
@@ -90,7 +92,17 @@ void CGUITextureGLES::Begin(color_t color)
       g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
     }
   }
+#endif
 
+#if HAS_GLES == 1
+  glVertexPointer(3, GL_FLOAT, 0, m_vert);
+  glColorPointer(4, GL_UNSIGNED_BYTE, 0, m_col);
+  glTexCoordPointer(2, GL_FLOAT , 0, m_tex0);
+  
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+#else //HAS_GLES == 2
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
@@ -104,6 +116,7 @@ void CGUITextureGLES::Begin(color_t color)
   if(colLoc >= 0)
     glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
+#endif
 
   if ( hasAlpha )
   {
@@ -118,6 +131,11 @@ void CGUITextureGLES::Begin(color_t color)
 
 void CGUITextureGLES::End()
 {
+#if HAS_GLES == 1
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+#else //HAS_GLES == 2
   if (m_diffuse.size())
   {
     glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord1());
@@ -129,13 +147,72 @@ void CGUITextureGLES::End()
   if(colLoc >= 0)
     glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord0());
-
+#endif
   glEnable(GL_BLEND);
+#if HAS_GLES == 2
   g_Windowing.DisableGUIShader();
+#endif
 }
 
 void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
 {
+#if HAS_GLES == 1
+
+  // Setup vertex position values
+  m_vert[0][0] = x[3];
+  m_vert[0][1] = y[0];
+  m_vert[0][2] = z[0];
+  
+  m_vert[1][0] = x[0];
+  m_vert[1][1] = y[2];
+  m_vert[1][2] = z[1];
+  
+  m_vert[2][0] = x[1];
+  m_vert[2][1] = y[1];
+  m_vert[2][2] = z[2];
+  
+  m_vert[3][0] = x[2];
+  m_vert[3][1] = y[3];
+  m_vert[3][2] = z[3];
+
+  // Setup texture coordinates
+  //TopLeft
+  m_tex0[0][0] = texture.x1;
+  m_tex0[0][1] = texture.y1;
+  //BottomLeft
+  if (orientation & 4)
+  {
+    m_tex0[1][0] = texture.x2;
+    m_tex0[1][1] = texture.y1;
+  }
+  else
+  {
+    m_tex0[1][0] = texture.x1;
+    m_tex0[1][1] = texture.y2;
+  }
+  //TopRight
+  if (orientation & 4)
+  {
+    m_tex0[2][0] = texture.x1;
+    m_tex0[2][1] = texture.y2;
+  }
+  else
+  {
+    m_tex0[2][0] = texture.x2;
+    m_tex0[2][1] = texture.y1;
+  }
+  //BottomRight
+  m_tex0[3][0] = texture.x2;
+  m_tex0[3][1] = texture.y2;
+
+#ifdef GL_QUADS
+  glEnable(GL_TEXTURE_2D);
+  glDrawArrays(GL_QUADS, 0, 4);
+#else
+   TODO: Convert quads to vertexes for real es1.1, without quads, support
+#endif
+
+#else //HAS_GLES == 2
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
   // Setup vertex position values
@@ -209,10 +286,12 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
   }
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+#endif
 }
 
 void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
+#if HAS_GLES == 2 //TODO GLES == 1
   if (texture)
   {
     texture->LoadToGPU();
@@ -291,6 +370,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
     glDisableVertexAttribArray(tex0Loc);
 
   g_Windowing.DisableGUIShader();
+#endif
 }
 
 #endif

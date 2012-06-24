@@ -52,4 +52,7 @@
     #include <GLES2/gl2.h>
     #include <GLES2/gl2ext.h>
   #endif
+#elif HAS_GLES == 1
+  #include <GLES/gl.h>
+  #include <GLES/glext.h>
 #endif

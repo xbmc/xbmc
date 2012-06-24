@@ -28,7 +28,7 @@
 #include "gui3d.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
-#if HAS_GLES == 2
+#if HAS_GLES == 2 || HAS_GLES == 1
 #include "windowing/WindowingFactory.h"
 #endif
 
@@ -42,6 +42,9 @@ using namespace std;
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 
+#if HAS_GLES == 1 && defined(__sh__)
+  #define TTF_ARGB
+#endif
 
 CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
 : CGUIFontTTFBase(strFileName)
@@ -63,7 +66,7 @@ void CGUIFontTTFGL::Begin()
 
       // Bind the texture object
       glBindTexture(GL_TEXTURE_2D, m_nTexture);
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 1
       glEnable(GL_TEXTURE_2D);
 #endif
       // Set the texture's stretching properties
@@ -71,8 +74,13 @@ void CGUIFontTTFGL::Begin()
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
       // Set the texture image -- THIS WORKS, so the pixels must be wrong.
+#ifdef TTF_ARGB
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_texture->GetWidth(), m_texture->GetHeight(), 0,
+                   GL_RGBA, GL_UNSIGNED_BYTE, m_texture->GetPixels());
+#else
       glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->GetWidth(), m_texture->GetHeight(), 0,
                    GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->GetPixels());
+#endif
 
       VerifyGLState();
       m_bTextureLoaded = true;
@@ -81,7 +89,7 @@ void CGUIFontTTFGL::Begin()
     // Turn Blending On
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 1
     glEnable(GL_TEXTURE_2D);
 #endif
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
@@ -97,6 +105,9 @@ void CGUIFontTTFGL::Begin()
     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
+
+#if defined(HAS_GL) || HAS_GLES == 1
     VerifyGLState();
 #else
     g_Windowing.EnableGUIShader(SM_FONTS);
@@ -116,17 +127,24 @@ void CGUIFontTTFGL::End()
   if (--m_nestedBeginCount > 0)
     return;
 
+#if defined(HAS_GL) || HAS_GLES == 1
 #ifdef HAS_GL
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
-
+#endif
   glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
   glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
   glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+#ifdef GL_QUADS
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
+#else
+   TODO: Convert quads to vertexes for real es1.1, without quads, support
+#endif
+#ifdef HAS_GL
   glPopClientAttrib();
+#endif
 #else
   // GLES 2.0 version. Cannot draw quads. Convert to triangles.
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
@@ -173,7 +191,11 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
   newHeight = CBaseTexture::PadPow2(newHeight);
 
+#ifdef TTF_ARGB
+  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8R8G8B8);
+#else
   CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8);
+#endif
 
   if (!newTexture || newTexture->GetPixels() == NULL)
   {
@@ -205,11 +227,21 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
   unsigned char* source = (unsigned char*) bitmap.buffer;
+#ifdef TTF_ARGB
+  unsigned char* target = (unsigned char*) m_texture->GetPixels() + (m_posY + ch->offsetY) * m_texture->GetPitch() + (m_posX + bitGlyph->left)*4/*ARGB*/;
+#else
   unsigned char* target = (unsigned char*) m_texture->GetPixels() + (m_posY + ch->offsetY) * m_texture->GetPitch() + m_posX + bitGlyph->left;
+#endif
 
   for (int y = 0; y < bitmap.rows; y++)
   {
+#ifdef TTF_ARGB
+    for (unsigned int i = 0, j = 0; i < bitmap.width; i++, j+=4) {
+      memset(target + j, source[i], 4);
+    }
+#else
     memcpy(target, source, bitmap.width);
+#endif
     source += bitmap.width;
     target += m_texture->GetPitch();
   }

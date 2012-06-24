@@ -762,7 +762,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
 
   glEnd();
   g_graphicsContext.EndPaint();
-#elif defined(HAS_GLES)
+#elif defined(HAS_GLES) && HAS_GLES == 2
   g_graphicsContext.BeginPaint();
   if (pTexture)
   {
@@ -833,6 +833,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   g_Windowing.DisableGUIShader();
 
   g_graphicsContext.EndPaint();
+#elif defined(HAS_GLES) && HAS_GLES == 1
 #else
 // SDL render
   g_Windowing.BlitToScreen(m_pImage, NULL, NULL);

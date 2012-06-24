@@ -22,7 +22,7 @@
 
 #include "system.h"
 
-#if HAS_GLES == 2
+#if HAS_GLES == 2 || HAS_GLES == 1
 #include "system_gl.h"
 
 #include <cmath>

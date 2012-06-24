@@ -24,7 +24,7 @@
   #include "config.h"
 #endif
 
-#if HAS_GLES == 2
+#if HAS_GLES == 2 || HAS_GLES == 1
 #include "system_gl.h"
 
 #include <locale.h>
@@ -36,9 +36,11 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#if HAS_GLES == 2 
 #include "guilib/FrameBufferObject.h"
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
+#endif
 #include "windowing/WindowingFactory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
@@ -59,7 +61,9 @@
 #include "osx/DarwinUtils.h"
 #endif
 
+#if HAS_GLES == 2 
 using namespace Shaders;
+#endif
 
 CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
 {
@@ -94,9 +98,11 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_iYV12RenderBuffer = 0;
   m_flipindex = 0;
   m_currentField = FIELD_FULL;
+#if HAS_GLES == 2 
   m_reloadShaders = 0;
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
+#endif
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
@@ -122,13 +128,14 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
-
+#if HAS_GLES == 2 
   if (m_pYUVShader)
   {
     m_pYUVShader->Free();
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
+#endif
 
   delete m_dllSwScale;
 }
@@ -146,9 +153,10 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   {
     CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
+#if HAS_GLES == 2 
      // create the yuv textures    
     LoadShaders();
-
+#endif
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       (this->*m_textureCreate)(i);
 
@@ -458,14 +466,18 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#if HAS_GLES == 2 
     if (m_pYUVShader)
       m_pYUVShader->SetAlpha(alpha / 255.0f);
+#endif
   }
   else
   {
     glDisable(GL_BLEND);
+#if HAS_GLES == 2 
     if (m_pYUVShader)
       m_pYUVShader->SetAlpha(1.0f);
+#endif
   }
 
   if ((flags & RENDER_FLAG_TOP) && (flags & RENDER_FLAG_BOT))
@@ -484,6 +496,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGLES::FlipPage(int source)
 {
+#if HAS_GLES == 2 
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
@@ -492,10 +505,12 @@ void CLinuxRendererGLES::FlipPage(int source)
   m_buffers[m_iYV12RenderBuffer].flipindex = ++m_flipindex;
 
   return;
+#endif
 }
 
 unsigned int CLinuxRendererGLES::PreInit()
 {
+#if HAS_GLES == 2 
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   m_bValidated = false;
@@ -522,11 +537,13 @@ unsigned int CLinuxRendererGLES::PreInit()
   if (!m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
+#endif
   return true;
 }
 
 void CLinuxRendererGLES::UpdateVideoFilter()
 {
+#if HAS_GLES == 2 
   if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
     return;
   m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
@@ -587,10 +604,12 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
   SetTextureFilter(GL_LINEAR);
   m_renderQuality = RQ_SINGLEPASS;
+#endif
 }
 
 void CLinuxRendererGLES::LoadShaders(int field)
 {
+#if HAS_GLES == 2 
 #ifdef TARGET_DARWIN_IOS
   float ios_version = GetIOSVersion();
 #endif
@@ -695,10 +714,12 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGLES::CreateYV12Texture;
     m_textureDelete = &CLinuxRendererGLES::DeleteYV12Texture;
   }
+#endif
 }
 
 void CLinuxRendererGLES::UnInit()
 {
+#if HAS_GLES == 2 
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
@@ -723,10 +744,12 @@ void CLinuxRendererGLES::UnInit()
   m_bValidated = false;
   m_bImageReady = false;
   m_bConfigured = false;
+#endif
 }
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
 {
+#if HAS_GLES == 2 
   // If rendered directly by the hardware
   if (m_renderMethod & RENDER_BYPASS)
     return;
@@ -780,10 +803,12 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
     RenderSoftware(index, m_currentField);
     VerifyGLState();
   }
+#endif
 }
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
+#if HAS_GLES == 2 
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
@@ -885,10 +910,12 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   g_matrices.MatrixMode(MM_MODELVIEW);
 
   VerifyGLState();
+#endif
 }
 
 void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 {
+#if HAS_GLES == 2 
   // TODO: Multipass rendering does not currently work! FIX!
   CLog::Log(LOGERROR, "GLES: MULTIPASS rendering was called! But it doesnt work!!!");
   return;
@@ -1075,10 +1102,12 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 
   glDisable(m_textureTarget);
   VerifyGLState();
+#endif
 }
 
 void CLinuxRendererGLES::RenderSoftware(int index, int field)
 {
+#if HAS_GLES == 2 
   YUVPLANES &planes = m_buffers[index].fields[field];
 
   glDisable(GL_DEPTH_TEST);
@@ -1136,6 +1165,7 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 
   glDisable(m_textureTarget);
   VerifyGLState();
+#endif
 }
 
 void CLinuxRendererGLES::RenderOpenMax(int index, int field)
@@ -1268,6 +1298,7 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
 
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 {
+#if HAS_GLES == 2 
   if (!m_bValidated)
     return false;
 
@@ -1309,6 +1340,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   // restore original video rect
   m_destRect = saveSize;
 
+#endif
   return true;
 }
 
@@ -1317,6 +1349,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 //********************************************************************************************************
 void CLinuxRendererGLES::UploadYV12Texture(int source)
 {
+#if HAS_GLES == 2 
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
@@ -1455,10 +1488,12 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
+#endif
 }
 
 void CLinuxRendererGLES::DeleteYV12Texture(int index)
 {
+#if HAS_GLES == 2 
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
 
@@ -1488,10 +1523,12 @@ void CLinuxRendererGLES::DeleteYV12Texture(int index)
       im.plane[p] = NULL;
     }
   }
+#endif
 }
 
 bool CLinuxRendererGLES::CreateYV12Texture(int index)
 {
+#if HAS_GLES == 2 
   /* since we also want the field textures, pitch must be texture aligned */
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
@@ -1596,6 +1633,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   }
   glDisable(m_textureTarget);
   m_eventTexturesDone[index]->Set();
+#endif
   return true;
 }
 
@@ -1751,6 +1789,7 @@ bool CLinuxRendererGLES::CreateBYPASSTexture(int index)
 
 void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 {
+#if HAS_GLES == 2 
   for (int i = 0 ; i<m_NumYV12Buffers ; i++)
   {
     YUVFIELDS &fields = m_buffers[i].fields;
@@ -1776,6 +1815,7 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
       }
     }
   }
+#endif
 }
 
 bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)

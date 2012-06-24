@@ -54,10 +54,14 @@ bool CWinSystemGLES::InitWindowSystem()
   CLog::Log(LOGDEBUG, "Video mode: %dx%d with %d bits per pixel.",
     m_fb_width, m_fb_height, m_fb_bpp);
 
-  m_display = EGL_DEFAULT_DISPLAY;
+  m_display = (void*)EGL_DEFAULT_DISPLAY;
+#ifdef fbdev_window
   m_window  = (fbdev_window*)calloc(1, sizeof(fbdev_window));
 	m_window->width  = m_fb_width;
 	m_window->height = m_fb_height;
+#else
+  m_window = NULL;
+#endif
 
   if (!CWinSystemBase::InitWindowSystem())
     return false;
@@ -106,6 +110,8 @@ bool CWinSystemGLES::ResizeWindow(int newWidth, int newHeight, int newLeft, int 
 bool CWinSystemGLES::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CLog::Log(LOGDEBUG, "CWinSystemDFB::SetFullScreen");
+#if defined(__sh__) //TODO: Fix crash at this point
+#else
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
@@ -114,7 +120,7 @@ bool CWinSystemGLES::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool b
   CreateNewWindow("", fullScreen, res, NULL);
 
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, true, 0);
-
+#endif
   return true;
 }
 

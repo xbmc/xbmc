@@ -26,7 +26,7 @@
 #include "OverlayRendererGL.h"
 #ifdef HAS_GL
   #include "LinuxRendererGL.h"
-#elif HAS_GLES == 2
+#elif HAS_GLES == 2 || HAS_GLES == 1
   #include "LinuxRendererGLES.h"
   #include "guilib/MatrixGLES.h"
 #endif
@@ -41,9 +41,9 @@
 #include "utils/GLUtils.h"
 #include "RenderManager.h"
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if defined(HAS_GL) || HAS_GLES == 2 || HAS_GLES == 1
 
-#if HAS_GLES == 2
+#if HAS_GLES == 2 || HAS_GLES == 1
 // GLES2.0 cant do CLAMP, but can do CLAMP_TO_EDGE.
 #define GL_CLAMP	GL_CLAMP_TO_EDGE
 #endif
@@ -407,6 +407,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glPopMatrix();
 #else
+#if defined(HAS_GL) || HAS_GLES == 2
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
   g_matrices.Translatef(state.x, state.y, 0.0f);
@@ -442,6 +443,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
   g_Windowing.DisableGUIShader();
 
   g_matrices.PopMatrix();
+#endif
 #endif
 
   glDisable(GL_BLEND);
@@ -512,6 +514,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glVertex2f(rd.left , rd.bottom);
   glEnd();
 #else
+#if defined(HAS_GL) || HAS_GLES == 2
   g_Windowing.EnableGUIShader(SM_TEXTURE);
 
   GLfloat col[4][4];
@@ -555,6 +558,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glDisableVertexAttribArray(tex0Loc);
 
   g_Windowing.DisableGUIShader();
+#endif
 #endif
 
   glDisable(GL_BLEND);
