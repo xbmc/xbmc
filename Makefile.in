@@ -108,17 +108,19 @@ DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
 DIRECTORY_ARCHIVES += xbmc/storage/osx/storage.a
 DIRECTORY_ARCHIVES += xbmc/windowing/osx/windowing_osx.a
 else
+ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
-
-ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/powermanagement/android/powermanagement_android.a
+DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
+DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 else
+DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/linux/powermanagement_linux.a
-endif
-
 DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
+endif
 endif
 
 ifeq ($(findstring freebsd,@ARCH@),freebsd)
