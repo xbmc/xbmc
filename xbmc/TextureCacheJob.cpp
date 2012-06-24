@@ -33,6 +33,8 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "ThumbLoader.h"
+#include "music/tags/MusicInfoTag.h"
 
 CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldHash)
 {
@@ -78,7 +80,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   unsigned int width, height;
   CStdString image = DecodeImageURL(m_url, width, height, additional_info);
 
-  m_details.updateable = UpdateableURL(image);
+  m_details.updateable = additional_info != "music" && UpdateableURL(image);
 
   // generate the hash
   m_details.hash = GetImageHash(image);
@@ -130,7 +132,12 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
     CURL thumbURL(url);
 
     if (!thumbURL.GetUserName().IsEmpty())
-      return ""; // we don't re-cache special images (eg picturefolder/video embedded thumbs)
+    {
+      if (thumbURL.GetUserName() == "music")
+        additional_info = "music";
+      else
+        return ""; // we don't re-cache special images (eg picturefolder/video embedded thumbs)
+    }
 
     image = thumbURL.GetHostName();
     CURL::Decode(image);
@@ -169,6 +176,13 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
 
 CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info)
 {
+  if (additional_info == "music")
+  { // special case for embedded music images
+    MUSIC_INFO::EmbeddedArt art;
+    if (CMusicThumbLoader::GetEmbeddedThumb(image, art))
+      return CBaseTexture::LoadFromFileInMemory(&art.data[0], art.size, art.mime, width, height);
+  }
+
   // Validate file URL to see if it is an image
   CFileItem file(image, false);
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
