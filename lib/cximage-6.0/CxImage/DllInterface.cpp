@@ -429,6 +429,75 @@ extern "C"
     return SaveThumb(image, "", thumb, maxWidth, maxHeight);
   };
 
+  __declspec(dllexport) bool LoadImageFromMemory(const BYTE *buffer, unsigned int size, const char *mime, unsigned int maxwidth, unsigned int maxheight, ImageInfo *info)
+  {
+    if (!buffer || !size || !mime || !info) return false;
+
+    // load the image
+    DWORD dwImageType = CXIMAGE_FORMAT_UNKNOWN;
+    if (strlen(mime))
+      dwImageType = GetImageType(mime);
+    if (dwImageType == CXIMAGE_FORMAT_UNKNOWN)
+      dwImageType = DetectFileType(buffer, size);
+    if (dwImageType == CXIMAGE_FORMAT_UNKNOWN)
+    {
+      printf("PICTURE::LoadImageFromMemory: Unable to determine image type.");
+      return false;
+    }
+
+    CxImage *image = new CxImage(dwImageType);
+    if (!image)
+      return false;
+
+    int actualwidth = maxwidth;
+    int actualheight = maxheight;
+
+    try
+    {
+      bool success = image->Decode((BYTE*)buffer, size, dwImageType, actualwidth, actualheight);
+      if (!success && dwImageType != CXIMAGE_FORMAT_UNKNOWN)
+      { // try to decode with unknown imagetype
+        success = image->Decode((BYTE*)buffer, size, CXIMAGE_FORMAT_UNKNOWN);
+      }
+      if (!success || !image->IsValid())
+      {
+        printf("PICTURE::LoadImageFromMemory: Unable to decode image. Error:%s\n", image->GetLastError());
+        delete image;
+        return false;
+      }
+    }
+    catch (...)
+    {
+      printf("PICTURE::LoadImageFromMemory: Unable to decode image.");
+      delete image;
+      return false;
+    }
+
+    // ok, now resample the image down if necessary
+    if (ResampleKeepAspect(*image, maxwidth, maxheight) < 0)
+    {
+      printf("PICTURE::LoadImage: Unable to resample picture\n");
+      delete image;
+      return false;
+    }
+
+    // make sure our image is 24bit minimum
+    image->IncreaseBpp(24);
+
+    // fill in our struct
+    info->width = image->GetWidth();
+    info->height = image->GetHeight();
+    info->originalwidth = actualwidth;
+    info->originalheight = actualheight;
+    memcpy(&info->exifInfo, image->GetExifInfo(), sizeof(EXIFINFO));
+
+    // create our texture
+    info->context = image;
+    info->texture = image->GetBits();
+    info->alpha = image->AlphaGetBits();
+    return (info->texture != NULL);
+  };
+
   __declspec(dllexport) bool CreateFolderThumbnail(const char **file, const char *thumb, int maxWidth, int maxHeight)
   {
     if (!file || !file[0] || !file[1] || !file[2] || !file[3] || !thumb) return false;
