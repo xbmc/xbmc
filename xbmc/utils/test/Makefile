@@ -1,4 +1,5 @@
 SRCS=	\
+	TestBase64.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
