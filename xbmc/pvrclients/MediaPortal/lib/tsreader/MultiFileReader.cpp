@@ -48,6 +48,7 @@ MultiFileReader::MultiFileReader():
   m_startPosition = 0;
   m_endPosition = 0;
   m_currentPosition = 0;
+  m_lastZapPosition = 0;
   m_filesAdded = 0;
   m_filesRemoved = 0;
   m_TSFileId = 0;
@@ -75,6 +76,7 @@ long MultiFileReader::SetFileName(const char* pszFileName)
 long MultiFileReader::OpenFile()
 {
   long hr = m_TSBufferFile.OpenFile();
+  m_lastZapPosition = 0;
 
   if (RefreshTSBufferFile() == S_FALSE)
   {
@@ -153,7 +155,7 @@ int64_t MultiFileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long 
   }
 
   //RefreshTSBufferFile(); // This one is used by mepo tsreader..
-  return S_OK;
+  return m_currentPosition;
 }
 
 int64_t MultiFileReader::GetFilePointer()
@@ -216,7 +218,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     int64_t seekPosition = m_currentPosition - file->startPosition;
 
     m_TSFile.SetFilePointer(seekPosition, FILE_BEGIN);
-    int64_t posSeeked=m_TSFile.GetFilePointer();
+    int64_t posSeeked = m_TSFile.GetFilePointer();
     if (posSeeked != seekPosition)
     {
       m_TSFile.SetFilePointer(seekPosition, FILE_BEGIN);
@@ -540,6 +542,13 @@ long MultiFileReader::RefreshTSBufferFile()
   {
     file = m_tsFiles.front();
     m_startPosition = file->startPosition;
+    // Since the buffer file may be re-used when a channel is changed, we
+    // want the start position to reflect the position in the file after the last
+    // channel change, or the real start position, whichever is larger
+    if (m_lastZapPosition > m_startPosition)
+    {
+      m_startPosition = m_lastZapPosition;
+    }
 
     file = m_tsFiles.back();
     file->length = currentPosition;
@@ -641,4 +650,10 @@ void MultiFileReader::RefreshFileSize()
   }
   m_cachedFileSize = fileLength;
   // XBMC->Log(LOG_DEBUG, "%s: m_cachedFileSize %d.", __FUNCTION__, m_cachedFileSize);
+}
+
+int64_t MultiFileReader::OnChannelChange(void)
+{
+  m_lastZapPosition = m_currentPosition;
+  return m_currentPosition;
 }

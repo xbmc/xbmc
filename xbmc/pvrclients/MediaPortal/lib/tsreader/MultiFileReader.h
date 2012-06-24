@@ -69,6 +69,7 @@ class MultiFileReader : public FileReader
     virtual int64_t SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
     virtual int64_t GetFilePointer();
     virtual int64_t GetFileSize();
+    virtual int64_t OnChannelChange(void);
 
   protected:
     long RefreshTSBufferFile();
@@ -80,6 +81,7 @@ class MultiFileReader : public FileReader
     int64_t m_startPosition;
     int64_t m_endPosition;
     int64_t m_currentPosition;
+    int64_t m_lastZapPosition;
     int64_t m_llBufferPointer;  
     int32_t m_filesAdded;
     int32_t m_filesRemoved;

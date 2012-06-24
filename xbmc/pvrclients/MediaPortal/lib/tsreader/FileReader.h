@@ -54,6 +54,7 @@ class FileReader
     virtual int64_t GetFilePointer();
     virtual int64_t GetFileSize();
     virtual bool IsBuffer(){return false;};
+    virtual int64_t OnChannelChange(void);
 
   protected:
     PLATFORM::CFile m_hFile;        // Handle to file for streaming

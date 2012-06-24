@@ -209,3 +209,8 @@ int64_t FileReader::GetFileSize()
 {
   return m_hFile.GetLength();
 }
+
+int64_t FileReader::OnChannelChange(void)
+{
+  return m_hFile.GetPosition();
+}
