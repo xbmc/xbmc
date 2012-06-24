@@ -178,6 +178,11 @@ const CStdString& CMusicInfoTag::GetAlbum() const
   return m_strAlbum;
 }
 
+int CMusicInfoTag::GetAlbumId() const
+{
+  return m_iAlbumId;
+}
+
 const std::vector<std::string>& CMusicInfoTag::GetAlbumArtist() const
 {
   return m_albumArtist;

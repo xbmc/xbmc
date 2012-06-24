@@ -226,12 +226,9 @@ void CGUIDialogMusicInfo::SetDiscography()
     CFileItemPtr item(new CFileItem(m_artist.discography[i].first));
     item->SetLabel2(m_artist.discography[i].second);
     long idAlbum = database.GetAlbumByName(item->GetLabel(),m_artist.strArtist);
-    CStdString strThumb;
-    if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
-      database.GetAlbumThumb(idAlbum,strThumb);
 
-    if (!strThumb.IsEmpty() && CFile::Exists(strThumb))
-      item->SetThumbnailImage(strThumb);
+    if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
+      item->SetThumbnailImage(database.GetArtForItem(idAlbum, "album", "thumb"));
     else
       item->SetThumbnailImage("DefaultAlbumCover.png");
 

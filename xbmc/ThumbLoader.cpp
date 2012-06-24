@@ -570,9 +570,13 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     map<string, string> artwork;
     if (m_database->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
       item.SetArt(artwork);
-    else
+    else if (tag.GetType() == "song")
+    { // no art for the song, try the album
+      if (m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork))
+        item.SetArt(artwork);
+    }
+    else if (tag.GetType() == "artist")
     {
-      if (tag.GetType() == "artist")
       { // Need the artist thumb/fanart which isn't grabbed during normal directory fetches
         CArtist artist;
         m_database->GetArtistInfo(tag.GetDatabaseId(), artist, false);

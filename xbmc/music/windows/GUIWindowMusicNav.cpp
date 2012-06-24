@@ -291,8 +291,6 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   {
     if (items.IsPlayList())
       OnRetrieveMusicInfo(items);
-    if (!items.IsMusicDb())
-      items.SetCachedMusicThumbs();
   }
 
   // update our content in the info manager

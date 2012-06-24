@@ -71,6 +71,7 @@ public:
   const std::vector<std::string>& GetArtist() const;
   int GetArtistId() const;
   const CStdString& GetAlbum() const;
+  int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;
   const std::vector<std::string> GetGenre() const;
   int GetTrackNumber() const;

@@ -91,10 +91,6 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   m_strLabel2 = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
   URIUtils::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
-  if (album.thumbURL.m_url.size() > 0)
-    m_strThumbnailImage = album.thumbURL.m_url[0].m_url;
-  else
-    m_strThumbnailImage.clear();
   m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
 }
@@ -110,7 +106,6 @@ CFileItem::CFileItem(const CMusicInfoTag& music)
   m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
   *GetMusicInfoTag() = music;
   FillInDefaultIcon();
-  SetCachedMusicThumb();
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
