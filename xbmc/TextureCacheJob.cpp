@@ -74,9 +74,9 @@ bool CTextureCacheJob::DoWork()
 bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
 {
   // unwrap the URL as required
-  bool flipped;
+  std::string additional_info;
   unsigned int width, height;
-  CStdString image = DecodeImageURL(m_url, width, height, flipped);
+  CStdString image = DecodeImageURL(m_url, width, height, additional_info);
 
   m_details.updateable = UpdateableURL(image);
 
@@ -87,7 +87,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   else if (m_details.hash == m_oldHash)
     return true;
 
-  CBaseTexture *texture = LoadImage(image, width, height, flipped);
+  CBaseTexture *texture = LoadImage(image, width, height, additional_info);
   if (texture)
   {
     if (texture->HasAlpha())
@@ -117,11 +117,11 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   return false;
 }
 
-CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, bool &flipped)
+CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, std::string &additional_info)
 {
   // unwrap the URL as required
   CStdString image(url);
-  flipped = false;
+  additional_info.clear();
   width = g_advancedSettings.m_fanartHeight * 16/9;
   height = g_advancedSettings.m_fanartHeight;
   if (url.compare(0, 8, "image://") == 0)
@@ -160,14 +160,14 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
       }
       else if (option == "flipped")
       {
-        flipped = true;
+        additional_info = "flipped";
       }
     }
   }
   return image;
 }
 
-CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped)
+CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info)
 {
   // Validate file URL to see if it is an image
   CFileItem file(image, false);
@@ -181,8 +181,8 @@ CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int 
 
   // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
   // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
-  // When flipped = true we have an additional <flipX> on the left, which is equivalent to toggling the last bit
-  if (flipped)
+  // When flipped we have an additional <flipX> on the left, which is equivalent to toggling the last bit
+  if (additional_info == "flipped")
     texture->SetOrientation(texture->GetOrientation() ^ 1);
 
   return texture;
