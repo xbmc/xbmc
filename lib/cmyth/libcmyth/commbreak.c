@@ -190,7 +190,7 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 	int consumed;
 	int total = 0;
 	long rows;
-	long long mark;
+	int64_t mark;
 	long long start = -1;
 	char *failed = NULL;
 	cmyth_commbreak_t commbreak;
@@ -229,7 +229,7 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 			goto fail;
 		}
 
-		consumed = cmyth_rcv_long_long(conn, err, &mark, count);
+		consumed = cmyth_rcv_int64(conn, err, &mark, count);
 		count -= consumed;
 		total += consumed;
 		if (*err) {

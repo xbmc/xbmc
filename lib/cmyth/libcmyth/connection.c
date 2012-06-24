@@ -634,10 +634,10 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 		goto shut;
 	}
 	count -= r;
-	r = cmyth_rcv_u_long_long(conn, &err, &ret->file_length, count);
+	r = cmyth_rcv_uint64(conn, &err, &ret->file_length, count);
 	if (err) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
-			  "%s: (length) cmyth_rcv_u_long_long() failed (%d)\n",
+			  "%s: (length) cmyth_rcv_uint64() failed (%d)\n",
 			  __FUNCTION__, err);
 		goto shut;
 	}
@@ -784,10 +784,10 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 		goto shut;
 	}
 	count -= r;
-	r = cmyth_rcv_u_long_long(conn, &err, &ret->file_length, count);
+	r = cmyth_rcv_uint64(conn, &err, &ret->file_length, count);
 	if (err) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
-			  "%s: (length) cmyth_rcv_u_long_long() failed (%d)\n",
+			  "%s: (length) cmyth_rcv_uint64() failed (%d)\n",
 			  __FUNCTION__, err);
 		goto shut;
 	}
@@ -1197,7 +1197,7 @@ cmyth_conn_get_freespace(cmyth_conn_t control,
 	int r;
 	char msg[256];
 	char reply[256];
-	long long lreply;
+	int64_t lreply;
 
 	if (control == NULL)
 		return -EINVAL;
@@ -1231,19 +1231,17 @@ cmyth_conn_get_freespace(cmyth_conn_t control,
 	}
 	
 	if (control->conn_version >= 17) {
-		if ((r=cmyth_rcv_long_long(control, &err, &lreply,
-					   count)) < 0) {
+		if ((r=cmyth_rcv_int64(control, &err, &lreply, count)) < 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
-				  "%s: cmyth_rcv_long_long() failed (%d)\n",
+				  "%s: cmyth_rcv_int64() failed (%d)\n",
 				  __FUNCTION__, err);
 			ret = err;
 			goto out;
 		}
 		*total = lreply;
-		if ((r=cmyth_rcv_long_long(control, &err, &lreply,
-					   count-r)) < 0) {
+		if ((r=cmyth_rcv_int64(control, &err, &lreply, count - r)) < 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
-				  "%s: cmyth_rcv_long_long() failed (%d)\n",
+				  "%s: cmyth_rcv_int64() failed (%d)\n",
 				  __FUNCTION__, err);
 			ret = err;
 			goto out;
