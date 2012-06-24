@@ -1,4 +1,5 @@
 SRCS=	\
+	TestAlarmClock.cpp \
 	TestBase64.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
