@@ -523,6 +523,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
   newTag->m_bIsRadio          = channel->IsRadio();
   newTag->m_iGenreType        = tag.GenreType();
   newTag->m_iGenreSubType     = tag.GenreSubType();
+  newTag->m_channel           = channel;
   newTag->SetStartFromUTC(newStart);
   newTag->SetEndFromUTC(newEnd);
 
