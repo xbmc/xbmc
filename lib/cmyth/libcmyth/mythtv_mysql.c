@@ -669,20 +669,23 @@ cmyth_update_bookmark_setting(cmyth_database_t db, cmyth_proginfo_t prog)
 	return (1);
 }
 
-int 
-cmyth_get_bookmark_mark(cmyth_database_t db, cmyth_proginfo_t prog, long long bk)
+long long 
+cmyth_get_bookmark_mark(cmyth_database_t db, cmyth_proginfo_t prog, long long bk, int mode)
 {
 	MYSQL_RES *res = NULL;
 	MYSQL_ROW row;
-	const char *query_str = "SELECT mark FROM recordedseek WHERE chanid = ? AND offset>= ? AND type = 6 ORDER by MARK ASC LIMIT 0,1;";
+	const char *query_str = "SELECT mark, type FROM recordedseek WHERE chanid = ? AND offset < ? AND (type = 6 or type = 9 ) AND starttime = ? ORDER by MARK DESC LIMIT 0, 1;";
 	int rows = 0;
-	int mark=0;
+	long long mark=0;
+	int rectype = 0;
 	char start_ts_dt[CMYTH_TIMESTAMP_LEN + 1];
 	cmyth_mysql_query_t * query;
-	cmyth_datetime_to_string(start_ts_dt, prog->proginfo_rec_start_ts);
+	cmyth_timestamp_to_string(start_ts_dt, prog->proginfo_rec_start_ts);
 	query = cmyth_mysql_query_create(db,query_str);
+
 	if (cmyth_mysql_query_param_long(query, prog->proginfo_chanId) < 0
 		|| cmyth_mysql_query_param_long(query, bk) < 0
+		|| cmyth_mysql_query_param_str(query, start_ts_dt) < 0
 		) {
 		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
 		ref_release(query);
@@ -696,9 +699,20 @@ cmyth_get_bookmark_mark(cmyth_database_t db, cmyth_proginfo_t prog, long long bk
 	}
 	while ((row = mysql_fetch_row(res))) {
 		mark = safe_atoi(row[0]);
+		rectype = safe_atoi(row[1]);
 		rows++;
 	}
 	mysql_free_result(res);
+
+	if (rectype == 6) {
+		if (mode == 0) {
+			mark=(mark-1)*15;
+		}
+		else if (mode == 1) {
+			mark=(mark-1)*12;
+		}
+	}
+
 	return mark;
 }
 
