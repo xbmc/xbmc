@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.vuplus"
-  version="0.2.6"
+  version="0.2.8"
   name="VU+ Client"
   provider-name="Joerg Dembski">
   <requires>

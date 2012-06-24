@@ -23,6 +23,8 @@
     <string id="30022">Recording path on DVB box</string>
     <string id="30023">Recording folder on the receiver</string>
     <string id="30024">Send DeepStandby-Command</string>
+    <string id="30025">Fetch only one TV bouquet</string>
+    <string id="30026">TV-Bouquet</string>
 
     <!-- notifications -->
     <string id="30500">Disconnected from '%s'</string>

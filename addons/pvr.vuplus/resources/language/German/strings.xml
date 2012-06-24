@@ -22,6 +22,8 @@
     <string id="30022">Aufnahmen / Timer</string>
     <string id="30023">Aufnahmeverzeichnis auf dem Receiver</string>
     <string id="30024">Sende DeepStandby-Befehl</string>
+    <string id="30025">Nur ein TV-Bouquet</string>
+    <string id="30026">TV-Bouquet</string>
 
     <!-- notifications -->
     <string id="30500">Verbindung '%s' unterbrochen</string>
