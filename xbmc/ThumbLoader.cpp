@@ -314,7 +314,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
       else if (tag.m_type == "set")
       { // no art for a set -> use the first movie for this set for art
         CFileItemList items;
-        if (m_database->GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, tag.m_iDbId) && items.Size() > 0)
+        if (m_database->GetMoviesNav("videodb://1/2/", items, -1, -1, -1, -1, -1, -1, tag.m_iDbId) && items.Size() > 0)
         {
           LoadItem(items[0].get());
           if (!items[0]->GetArt().empty())
