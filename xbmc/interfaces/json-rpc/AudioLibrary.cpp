@@ -415,12 +415,6 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITranspor
     song.strComment = parameterObject["comment"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainztrackid"))
     song.strMusicBrainzTrackID = parameterObject["musicbrainztrackid"].asString();
-  if (ParameterNotNull(parameterObject, "musicbrainzartistid"))
-    song.strMusicBrainzArtistID = parameterObject["musicbrainzartistid"].asString();
-  if (ParameterNotNull(parameterObject, "musicbrainzalbumid"))
-    song.strMusicBrainzAlbumID = parameterObject["musicbrainzalbumid"].asString();
-  if (ParameterNotNull(parameterObject, "musicbrainzalbumartistid"))
-    song.strMusicBrainzAlbumArtistID = parameterObject["musicbrainzalbumartistid"].asString();
 
   JSONRPC_STATUS status;
   if (musicdatabase.UpdateSong(song, id) > 0)

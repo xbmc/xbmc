@@ -110,7 +110,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strHash text)\n");
     CLog::Log(LOGINFO, "create song table");
-    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, strGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
+    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, strGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
     CLog::Log(LOGINFO, "create song_artist table");
     m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, boolFeatured integer, iOrder integer )\n");
     CLog::Log(LOGINFO, "create song_genre table");
@@ -216,10 +216,7 @@ void CMusicDatabase::CreateViews()
               "  song.strGenres AS strGenres,"
               "  strTitle, iTrack, iDuration,"
               "  song.iYear AS iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID,"
-              "  song.strMusicBrainzArtistID as strMusicBrainzArtistID,"
-              "  song.strMusicBrainzAlbumID as strMusicBrainzAlbumID,"
-              "  song.strMusicBrainzAlbumArtistID as strMusicBrainzAlbumArtistID,"
-              "  strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed,"
+              "  iTimesPlayed, iStartOffset, iEndOffset, lastplayed,"
               "  rating, comment, song.idAlbum AS idAlbum, strAlbum, strPath,"
               "  strThumb, iKaraNumber, iKaraDelay, strKaraEncoding, "
               "  album.bCompilation AS bCompilation "
@@ -325,7 +322,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
 
       // we use replace because it can handle both inserting a new song
       // and replacing an existing song's record if the given idSong already exists
-      strSQL=PrepareSQL("replace into song (idSong,idAlbum,idPath,strArtists,strGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (%s,%i,%i,'%s','%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
+      strSQL=PrepareSQL("replace into song (idSong,idAlbum,idPath,strArtists,strGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (%s,%i,%i,'%s','%s','%s',%i,%i,%i,'%ul','%s','%s'",
                     strIdSong.c_str(),
                     idAlbum, idPath, 
                     StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator).c_str(),
@@ -333,11 +330,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
                     crc, strFileName.c_str(),
-                    song.strMusicBrainzTrackID.c_str(),
-                    song.strMusicBrainzArtistID.c_str(),
-                    song.strMusicBrainzAlbumID.c_str(),
-                    song.strMusicBrainzAlbumArtistID.c_str(),
-                    song.strMusicBrainzTRMID.c_str());
+                    song.strMusicBrainzTrackID.c_str());
 
       if (song.lastPlayed.IsValid())
         strSQL1=PrepareSQL(",%i,%i,%i,%i,'%s','%c','%s')",
@@ -830,10 +823,6 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.iStartOffset = m_pDS->fv(song_iStartOffset).get_asInt();
   song.iEndOffset = m_pDS->fv(song_iEndOffset).get_asInt();
   song.strMusicBrainzTrackID = m_pDS->fv(song_strMusicBrainzTrackID).get_asString();
-  song.strMusicBrainzArtistID = m_pDS->fv(song_strMusicBrainzArtistID).get_asString();
-  song.strMusicBrainzAlbumID = m_pDS->fv(song_strMusicBrainzAlbumID).get_asString();
-  song.strMusicBrainzAlbumArtistID = m_pDS->fv(song_strMusicBrainzAlbumArtistID).get_asString();
-  song.strMusicBrainzTRMID = m_pDS->fv(song_strMusicBrainzTRMID).get_asString();
   song.rating = m_pDS->fv(song_rating).get_asChar();
   song.strComment = m_pDS->fv(song_comment).get_asString();
   song.strThumb = m_pDS->fv(song_strThumb).get_asString();
@@ -883,10 +872,6 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->SetProperty("item_start", item->m_lStartOffset);
   item->m_lEndOffset = record->at(song_iEndOffset).get_asInt();
   item->GetMusicInfoTag()->SetMusicBrainzTrackID(record->at(song_strMusicBrainzTrackID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzArtistID(record->at(song_strMusicBrainzArtistID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzAlbumID(record->at(song_strMusicBrainzAlbumID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(record->at(song_strMusicBrainzAlbumArtistID).get_asString());
-  item->GetMusicInfoTag()->SetMusicBrainzTRMID(record->at(song_strMusicBrainzTRMID).get_asString());
   item->GetMusicInfoTag()->SetRating(record->at(song_rating).get_asChar());
   item->GetMusicInfoTag()->SetComment(record->at(song_comment).get_asString());
   item->GetMusicInfoTag()->SetPlayCount(record->at(song_iTimesPlayed).get_asInt());
@@ -3667,7 +3652,20 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("ALTER TABLE album ADD bCompilation integer not null default '0'");
       m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
     }
-
+    if (version < 28)
+    {
+      m_pDS->exec("CREATE TABLE song_new ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, strGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
+      m_pDS->exec("INSERT INTO song_new ( idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment) SELECT idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment FROM song");
+      
+      m_pDS->exec("DROP TABLE song");
+      m_pDS->exec("ALTER TABLE song_new RENAME TO song");
+      m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
+      m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
+      m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
+      m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
+      m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
+      m_pDS->exec("DROP TABLE IF EXISTS exgenresong");
+    }
     // always recreate the views after any table change
     CreateViews();
 

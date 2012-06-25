@@ -236,7 +236,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 27; };
+  virtual int GetMinVersion() const { return 28; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year, bool bCompilation);
@@ -291,10 +291,6 @@ private:
     song_dwFileNameCRC,
     song_strFileName,
     song_strMusicBrainzTrackID,
-    song_strMusicBrainzArtistID,
-    song_strMusicBrainzAlbumID,
-    song_strMusicBrainzAlbumArtistID,
-    song_strMusicBrainzTRMID,
     song_iTimesPlayed,
     song_iStartOffset,
     song_iEndOffset,

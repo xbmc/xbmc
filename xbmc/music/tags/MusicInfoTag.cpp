@@ -413,9 +413,6 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetAlbum(song.strAlbum);
   SetAlbumArtist(song.albumArtist);
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
-  SetMusicBrainzArtistID(song.strMusicBrainzArtistID);
-  SetMusicBrainzAlbumID(song.strMusicBrainzAlbumID);
-  SetMusicBrainzAlbumArtistID(song.strMusicBrainzAlbumArtistID);
   SetMusicBrainzTRMID(song.strMusicBrainzTRMID);
   SetComment(song.strComment);
   SetPlayCount(song.iTimesPlayed);

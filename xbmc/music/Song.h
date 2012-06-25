@@ -80,9 +80,6 @@ public:
   std::vector<std::string> genre;
   CStdString strThumb;
   CStdString strMusicBrainzTrackID;
-  CStdString strMusicBrainzArtistID;
-  CStdString strMusicBrainzAlbumID;
-  CStdString strMusicBrainzAlbumArtistID;
   CStdString strMusicBrainzTRMID;
   CStdString strComment;
   char rating;
