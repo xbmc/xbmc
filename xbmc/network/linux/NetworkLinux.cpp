@@ -51,7 +51,6 @@
 #include "NetworkLinux.h"
 #include "Util.h"
 #include "utils/log.h"
-
 using namespace std;
 
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, char interfaceMacAddrRaw[6])
@@ -460,7 +459,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 {
    std::vector<CStdString> result;
 
-#if defined(TARGET_DARWIN) || defined(__ANDROID__)
+#if defined(TARGET_DARWIN)
   //only finds the primary dns (0 :)
   FILE* pipe = popen("scutil --dns | grep \"nameserver\\[0\\]\" | tail -n1", "r");
   if (pipe)
@@ -478,6 +477,26 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
     }
     pclose(pipe);
   } 
+#elif defined(TARGET_ANDROID)
+  CSingleLock lock(m_critSection);
+  //only finds the primary dns (0 :)
+  FILE* pipe = popen("getprop net.dns1 | tail -n1", "r");
+  if (pipe)
+  {
+    CStdString tmpStr;
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
+      tmpStr = buffer;
+      CLog::Log(LOGWARNING, "CNetworkLinux::GetNameServers: Got server: %s", tmpStr.c_str());
+      result.push_back(tmpStr);
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Unable to determine nameserver");
+    }
+    pclose(pipe);
+  }
 #else
    res_init();
 
