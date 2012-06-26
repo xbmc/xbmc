@@ -4337,22 +4337,22 @@ void CVideoDatabase::EraseVideoSettings()
   }
 }
 
-bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
-  return GetNavCommon(strBaseDir, items, "genre", idContent);
+  return GetNavCommon(strBaseDir, items, "genre", idContent, filter);
 }
 
-bool CVideoDatabase::GetCountriesNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetCountriesNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
-  return GetNavCommon(strBaseDir, items, "country", idContent);
+  return GetNavCommon(strBaseDir, items, "country", idContent, filter);
 }
 
-bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
-  return GetNavCommon(strBaseDir, items, "studio", idContent);
+  return GetNavCommon(strBaseDir, items, "studio", idContent, filter);
 }
 
-bool CVideoDatabase::GetNavCommon(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, int idContent)
+bool CVideoDatabase::GetNavCommon(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
   try
   {
@@ -4360,30 +4360,71 @@ bool CVideoDatabase::GetNavCommon(const CStdString& strBaseDir, CFileItemList& i
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
+    Filter extFilter = filter;
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL = PrepareSQL("select %s.id%s,%s.str%s,path.strPath,files.playCount from %s join %slinkmovie on %s.id%s=%slinkmovie.id%s join movie on %slinkmovie.idMovie = movie.idMovie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath",
-                           type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select %s.id%s, %s.str%s, path.strPath, files.playCount from %s ", type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        extFilter.AppendJoin(PrepareSQL("join %slinkmovie on %s.id%s = %slinkmovie.id%s join movieview on %slinkmovie.idMovie = movieview.idMovie join files on files.idFile = movieview.idFile join path on path.idPath = files.idPath",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS) //this will not get tvshows with 0 episodes
-        strSQL = PrepareSQL("select %s.id%s,%s.str%s,path.strPath from %s join %slinktvshow on %s.id%s=%slinktvshow.id%s join episode on %slinktvshow.idShow=episode.idShow join files on files.idFile=episode.idFile join path on path.idPath=files.idPath",
-                           type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select %s.id%s, %s.str%s, path.strPath from %s ", type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        extFilter.AppendJoin(PrepareSQL("join %slinktvshow on %s.id%s = %slinktvshow.id%s join episodeview on %slinktvshow.idShow = episodeview.idShow join files on files.idFile = episodeview.idFile join path on path.idPath = files.idPath",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        strSQL = PrepareSQL("select %s.id%s,%s.str%s,path.strPath,files.playCount from %s join %slinkmusicvideo on %s.id%s=%slinkmusicvideo.id%s join musicvideo on %slinkmusicvideo.idMVideo = musicvideo.idMVideo join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath",
-                           type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select %s.id%s, %s.str%s, path.strPath, files.playCount from %s ", type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        extFilter.AppendJoin(PrepareSQL("join %slinkmusicvideo on %s.id%s = %slinkmusicvideo.id%s join musicvideoview on %slinkmusicvideo.idMVideo = musicvideoview.idMVideo join files on files.idFile = musicvideoview.idFile join path on path.idPath = files.idPath",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
+      else
+        return false;
     }
     else
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL = PrepareSQL("select %s.id%s,%s.str%s,count(1),count(files.playCount) from %s join %slinkmovie on %s.id%s=%slinkmovie.id%s join movie on %slinkmovie.idMovie=movie.idMovie join files on files.idFile=movie.idFile group by %s.id%s",
-                           type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select %s.id%s, %s.str%s, count(1), count(files.playCount) from %s ", type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        extFilter.AppendJoin(PrepareSQL("join %slinkmovie on %s.id%s = %slinkmovie.id%s join movieview on %slinkmovie.idMovie = movieview.idMovie join files on files.idFile = movieview.idFile",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        extFilter.AppendGroup(PrepareSQL("%s.id%s", type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL = PrepareSQL("select distinct %s.id%s,%s.str%s from %s join %slinktvshow on %s.id%s=%slinktvshow.id%s join tvshow on %slinktvshow.idShow=tvshow.idShow",
-                           type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select distinct %s.id%s, %s.str%s from %s ", type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        extFilter.AppendJoin(PrepareSQL("join %slinktvshow on %s.id%s = %slinktvshow.id%s join tvshowview on %slinktvshow.idShow = tvshowview.idShow",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        strSQL = PrepareSQL("select %s.id%s,%s.str%s,count(1),count(files.playCount) from %s join %slinkmusicvideo on %s.id%s=%slinkmusicvideo.id%s join musicvideo on %slinkmusicvideo.idMVideo=musicvideo.idMVideo join files on files.idFile=musicvideo.idFile group by %s.id%s",
-                           type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select %s.id%s, %s.str%s, count(1), count(files.playCount) from %s ", type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        extFilter.AppendJoin(PrepareSQL("join %slinkmusicvideo on %s.id%s = %slinkmusicvideo.id%s join musicvideoview on %slinkmusicvideo.idMVideo = musicvideoview.idMVideo join files on files.idFile = musicvideoview.idFile",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        extFilter.AppendGroup(PrepareSQL("%s.id%s", type.c_str(), type.c_str()));
+      }
+      else
+        return false;
     }
+
+    // parse the base path to get additional filters
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
+      return false;
+
+    if (!extFilter.join.empty())
+      strSQL += extFilter.join;
+    if (!extFilter.where.empty())
+      strSQL += " WHERE " + extFilter.where;
+    if (!extFilter.group.empty())
+      strSQL += " GROUP BY " + extFilter.group;
+    if (!extFilter.order.empty())
+      strSQL += " ORDER BY " + extFilter.order;
+    if (!extFilter.limit.empty())
+      strSQL += " LIMIT " + extFilter.limit;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
@@ -4420,9 +4461,12 @@ bool CVideoDatabase::GetNavCommon(const CStdString& strBaseDir, CFileItemList& i
         CFileItemPtr pItem(new CFileItem(it->second.first));
         pItem->GetVideoInfoTag()->m_iDbId = it->first;
         pItem->GetVideoInfoTag()->m_type = type;
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->SetPath(strBaseDir + strDir);
+
+        CVideoDbUrl itemUrl = videoUrl;
+        CStdString path; path.Format("%ld/", it->first);
+        itemUrl.AppendPath(path);
+        pItem->SetPath(itemUrl.ToString());
+
         pItem->m_bIsFolder = true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
@@ -4440,9 +4484,12 @@ bool CVideoDatabase::GetNavCommon(const CStdString& strBaseDir, CFileItemList& i
         CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
         pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(0).get_asInt();
         pItem->GetVideoInfoTag()->m_type = type;
-        CStdString strDir;
-        strDir.Format("%ld/", m_pDS->fv(0).get_asInt());
-        pItem->SetPath(strBaseDir + strDir);
+
+        CVideoDbUrl itemUrl = videoUrl;
+        CStdString path; path.Format("%ld/", m_pDS->fv(0).get_asInt());
+        itemUrl.AppendPath(path);
+        pItem->SetPath(itemUrl.ToString());
+
         pItem->m_bIsFolder = true;
         pItem->SetLabelPreformated(true);
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
@@ -4464,7 +4511,7 @@ bool CVideoDatabase::GetNavCommon(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
-bool CVideoDatabase::GetTagsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetTagsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
   CStdString mediaType;
   if (idContent == VIDEODB_CONTENT_MOVIES)
@@ -4477,7 +4524,30 @@ bool CVideoDatabase::GetTagsNav(const CStdString& strBaseDir, CFileItemList& ite
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    int iRowsFound = RunQuery(PrepareSQL("SELECT tag.idTag, tag.strTag FROM taglinks JOIN tag ON tag.idTag = taglinks.idTag WHERE taglinks.media_type = '%s' GROUP BY taglinks.idTag", mediaType.c_str()));
+    CStdString strSQL = "SELECT tag.idTag, tag.strTag FROM taglinks ";
+
+    Filter extFilter = filter;
+    extFilter.AppendJoin("JOIN tag ON tag.idTag = taglinks.idTag");
+    extFilter.AppendWhere(PrepareSQL("taglinks.media_type = '%s'", mediaType.c_str()));
+    extFilter.AppendGroup("taglinks.idTag");
+
+    // parse the base path to get additional filters
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
+      return false;
+
+    if (!extFilter.join.empty())
+      strSQL += extFilter.join;
+    if (!extFilter.where.empty())
+      strSQL += " WHERE " + extFilter.where;
+    if (!extFilter.group.empty())
+      strSQL += " GROUP BY " + extFilter.group;
+    if (!extFilter.order.empty())
+      strSQL += " ORDER BY " + extFilter.order;
+    if (!extFilter.limit.empty())
+      strSQL += " LIMIT " + extFilter.limit;
+
+    int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
 
@@ -4490,8 +4560,10 @@ bool CVideoDatabase::GetTagsNav(const CStdString& strBaseDir, CFileItemList& ite
       pItem->GetVideoInfoTag()->m_iDbId = idTag;
       pItem->GetVideoInfoTag()->m_type = "tag";
 
-      CStdString strDir; strDir.Format("%ld/", idTag);
-      pItem->SetPath(strBaseDir + strDir);
+      CVideoDbUrl itemUrl = videoUrl;
+      CStdString path; path.Format("%ld/", idTag);
+      itemUrl.AppendPath(path);
+      pItem->SetPath(itemUrl.ToString());
 
       if (!items.Contains(pItem->GetPath()))
       {
@@ -4648,7 +4720,7 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
   return false;
 }
 
-bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idArtist)
+bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idArtist /* = -1 */, const Filter &filter /* = Filter() */)
 {
   try
   {
@@ -4656,18 +4728,37 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
+    Filter extFilter = filter;
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      strSQL=PrepareSQL("select musicvideo.c%02d,musicvideo.idMVideo,actors.strActor,path.strPath from musicvideo join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideo.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath",VIDEODB_ID_MUSICVIDEO_ALBUM);
+      strSQL = PrepareSQL("select musicvideoview.c%02d, musicvideoview.idMVideo, actors.strActor, path.strPath from musicvideoview ", VIDEODB_ID_MUSICVIDEO_ALBUM);
+      extFilter.AppendJoin("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = artistlinkmusicvideo.idArtist join files on files.idFile = musicvideoview.idFile join path on path.idPath = files.idPath");
     }
     else
     {
-      strSQL=PrepareSQL("select musicvideo.c%02d,musicvideo.idMVideo,actors.strActor from musicvideo join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideo.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist",VIDEODB_ID_MUSICVIDEO_ALBUM);
+      strSQL = PrepareSQL("select musicvideoview.c%02d, musicvideoview.idMVideo, actors.strActor from musicvideoview ", VIDEODB_ID_MUSICVIDEO_ALBUM);
+      extFilter.AppendJoin("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = artistlinkmusicvideo.idArtist");
     }
     if (idArtist > -1)
-      strSQL += PrepareSQL(" where artistlinkmusicvideo.idArtist=%i",idArtist);
+      extFilter.AppendWhere(PrepareSQL("artistlinkmusicvideo.idArtist = %i", idArtist));
 
-    strSQL += PrepareSQL(" group by musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_ALBUM);
+    extFilter.AppendGroup(PrepareSQL("musicvideoview.c%02d", VIDEODB_ID_MUSICVIDEO_ALBUM));
+
+    // parse the base path to get additional filters
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
+      return false;
+
+    if (!extFilter.join.empty())
+      strSQL += extFilter.join;
+    if (!extFilter.where.empty())
+      strSQL += " WHERE " + extFilter.where;
+    if (!extFilter.group.empty())
+      strSQL += " GROUP BY " + extFilter.group;
+    if (!extFilter.order.empty())
+      strSQL += " ORDER BY " + extFilter.order;
+    if (!extFilter.limit.empty())
+      strSQL += " LIMIT " + extFilter.limit;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
@@ -4698,9 +4789,12 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         if (!it->second.first.IsEmpty())
         {
           CFileItemPtr pItem(new CFileItem(it->second.first));
-          CStdString strDir;
-          strDir.Format("%ld/", it->first);
-          pItem->SetPath(strBaseDir + strDir);
+
+          CVideoDbUrl itemUrl = videoUrl;
+          CStdString path; path.Format("%ld/", it->first);
+          itemUrl.AppendPath(path);
+          pItem->SetPath(itemUrl.ToString());
+
           pItem->m_bIsFolder=true;
           pItem->SetLabelPreformated(true);
           if (!items.Contains(pItem->GetPath()))
@@ -4718,9 +4812,12 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         if (!m_pDS->fv(0).get_asString().empty())
         {
           CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
-          CStdString strDir;
-          strDir.Format("%ld/", m_pDS->fv(1).get_asInt());
-          pItem->SetPath(strBaseDir + strDir);
+
+          CVideoDbUrl itemUrl = videoUrl;
+          CStdString path; path.Format("%ld/", m_pDS->fv(1).get_asInt());
+          itemUrl.AppendPath(path);
+          pItem->SetPath(itemUrl.ToString());
+
           pItem->m_bIsFolder=true;
           pItem->SetLabelPreformated(true);
           if (!items.Contains(pItem->GetPath()))
@@ -4744,19 +4841,19 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
   return false;
 }
 
-bool CVideoDatabase::GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
-  return GetPeopleNav(strBaseDir, items, "writer", idContent);
+  return GetPeopleNav(strBaseDir, items, "writer", idContent, filter);
 }
 
-bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
-  return GetPeopleNav(strBaseDir, items, "director", idContent);
+  return GetPeopleNav(strBaseDir, items, "director", idContent, filter);
 }
 
-bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
-  if (GetPeopleNav(strBaseDir, items, (idContent == VIDEODB_CONTENT_MUSICVIDEOS) ? "artist" : "actor", idContent))
+  if (GetPeopleNav(strBaseDir, items, (idContent == VIDEODB_CONTENT_MUSICVIDEOS) ? "artist" : "actor", idContent, filter))
   { // set thumbs - ideally this should be in the normal thumb setting routines
     for (int i = 0; i < items.Size(); i++)
     {
@@ -4771,7 +4868,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
-bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, int idContent)
+bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -4789,34 +4886,84 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
 
     // get primary genres for movies
     CStdString strSQL;
+    Filter extFilter = filter;
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL=PrepareSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath,files.playCount from actors join %slinkmovie on actors.idActor=%slinkmovie.id%s join movie on %slinkmovie.idMovie=movie.idMovie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select actors.idActor, actors.strActor, actors.strThumb, path.strPath, files.playCount from actors ");
+        extFilter.AppendJoin(PrepareSQL("join %slinkmovie on actors.idActor = %slinkmovie.id%s join movieview on %slinkmovie.idMovie = movieview.idMovie join files on files.idFile = movieview.idFile join path on path.idPath = files.idPath",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=PrepareSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath from actors join %slinktvshow on actors.idActor=%slinktvshow.id%s join episode on %slinktvshow.idShow = episode.idShow join files on files.idFile=episode.idFile join path on path.idPath = files.idPath", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select actors.idActor, actors.strActor, actors.strThumb, path.strPath from actors ");
+        extFilter.AppendJoin(PrepareSQL("join %slinktvshow on actors.idActor = %slinktvshow.id%s join episodeview on %slinktvshow.idShow = episodeview.idShow join files on files.idFile = episodeview.idFile join path on path.idPath = files.idPath",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_EPISODES)
-        strSQL=PrepareSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath,files.playCount from actors join %slinkepisode on actors.idActor=%slinkepisode.id%s join episode on %slinkepisode.idEpisode = episode.idEpisode join files on files.idFile=episode.idFile join path on path.idPath = files.idPath", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select actors.idActor, actors.strActor, actors.strThumb, path.strPath, files.playCount from actors ");
+        extFilter.AppendJoin(PrepareSQL("join %slinkepisode on actors.idActor = %slinkepisode.id%s join episodeview on %slinkepisode.idEpisode = episodeview.idEpisode join files on files.idFile = episodeview.idFile join path on path.idPath = files.idPath",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        strSQL=PrepareSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath,files.playCount from actors join %slinkmusicvideo on actors.idActor=%slinkmusicvideo.id%s join musicvideo on %slinkmusicvideo.idMVideo = musicvideo.idMVideo join files on files.idFile=musicvideo.idFile join path on path.idPath = files.idPath", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select actors.idActor, actors.strActor, actors.strThumb, path.strPath, files.playCount from actors ");
+        extFilter.AppendJoin(PrepareSQL("join %slinkmusicvideo on actors.idActor = %slinkmusicvideo.id%s join musicvideoview on %slinkmusicvideo.idMVideo = musicvideoview.idMVideo join files on files.idFile = musicvideoview.idFile join path on path.idPath = files.idPath",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+      }
+      else
+        return false;
     }
     else
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=PrepareSQL("select actors.idActor,actors.strActor,actors.strThumb,count(1),count(files.playCount) from actors join %slinkmovie on actors.idActor=%slinkmovie.id%s join movie on %slinkmovie.idMovie=movie.idMovie join files on files.idFile=movie.idFile", type.c_str(), type.c_str(), type.c_str(), type.c_str());
-        strSQL += " group by actors.idActor";
+        strSQL = PrepareSQL("select actors.idActor, actors.strActor, actors.strThumb, count(1), count(files.playCount) from actors ");
+        extFilter.AppendJoin(PrepareSQL("join %slinkmovie on actors.idActor = %slinkmovie.id%s join movieview on %slinkmovie.idMovie = movieview.idMovie join files on files.idFile = movieview.idFile",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        extFilter.AppendGroup("actors.idActor");
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=PrepareSQL("select distinct actors.idActor,actors.strActor,actors.strThumb from actors,%slinktvshow,tvshow where actors.idActor=%slinktvshow.id%s and %slinktvshow.idShow=tvshow.idShow", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select distinct actors.idActor, actors.strActor, actors.strThumb from actors, %slinktvshow, tvshowview ", type.c_str());
+        extFilter.AppendWhere(PrepareSQL("actors.idActor = %slinktvshow.id%s and %slinktvshow.idShow = tvshowview.idShow",
+                                         type.c_str(), type.c_str(), type.c_str()));
+      }
       else if (idContent == VIDEODB_CONTENT_EPISODES)
-        strSQL=PrepareSQL("select actors.idActor,actors.strActor,actors.strThumb,count(1),count(files.playCount) from %slinkepisode,actors,episode,files where actors.idActor=%slinkepisode.id%s and %slinkepisode.idEpisode=episode.idEpisode and files.idFile=episode.idFile group by actors.idActor", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      {
+        strSQL = PrepareSQL("select actors.idActor, actors.strActor, actors.strThumb, count(1), count(files.playCount) from %slinkepisode, actors, episodeview, files ", type.c_str());
+        extFilter.AppendWhere(PrepareSQL("actors.idActor = %slinkepisode.id%s and %slinkepisode.idEpisode = episodeview.idEpisode and files.idFile = episodeview.idFile",
+                                         type.c_str(), type.c_str(), type.c_str()));
+        extFilter.AppendGroup("actors.idActor");
+      }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL=PrepareSQL("select actors.idActor,actors.strActor,actors.strThumb,count(1),count(files.playCount) from actors join %slinkmusicvideo on actors.idActor=%slinkmusicvideo.id%s join musicvideo on %slinkmusicvideo.idMVideo=musicvideo.idMVideo join files on files.idFile=musicvideo.idFile", type.c_str(), type.c_str(), type.c_str(), type.c_str());
-        strSQL += " group by actors.idActor";
+        strSQL = PrepareSQL("select actors.idActor, actors.strActor, actors.strThumb, count(1), count(files.playCount) from actors ");
+        extFilter.AppendJoin(PrepareSQL("join %slinkmusicvideo on actors.idActor = %slinkmusicvideo.id%s join musicvideoview on %slinkmusicvideo.idMVideo = musicvideoview.idMVideo join files on files.idFile = musicvideoview.idFile",
+                                        type.c_str(), type.c_str(), type.c_str(), type.c_str()));
+        extFilter.AppendGroup("actors.idActor");
       }
+      else
+        return false;
     }
+
+    // parse the base path to get additional filters
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
+      return false;
+
+    if (!extFilter.join.empty())
+      strSQL += extFilter.join;
+    if (!extFilter.where.empty())
+      strSQL += " WHERE " + extFilter.where;
+    if (!extFilter.group.empty())
+      strSQL += " GROUP BY " + extFilter.group;
+    if (!extFilter.order.empty())
+      strSQL += " ORDER BY " + extFilter.order;
+    if (!extFilter.limit.empty())
+      strSQL += " LIMIT " + extFilter.limit;
 
     // run query
     unsigned int time = XbmcThreads::SystemClockMillis();
@@ -4858,9 +5005,12 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
       for (it=mapActors.begin();it != mapActors.end();++it)
       {
         CFileItemPtr pItem(new CFileItem(it->second.name));
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->SetPath(strBaseDir + strDir);
+
+        CVideoDbUrl itemUrl = videoUrl;
+        CStdString path; path.Format("%ld/", it->first);
+        itemUrl.AppendPath(path);
+        pItem->SetPath(itemUrl.ToString());
+
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->m_playCount = it->second.playcount;
         pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(it->second.thumb);
@@ -4876,9 +5026,12 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
         try
         {
           CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
-          CStdString strDir;
-          strDir.Format("%ld/", m_pDS->fv(0).get_asInt());
-          pItem->SetPath(strBaseDir + strDir);
+
+          CVideoDbUrl itemUrl = videoUrl;
+          CStdString path; path.Format("%ld/", m_pDS->fv(0).get_asInt());
+          itemUrl.AppendPath(path);
+          pItem->SetPath(itemUrl.ToString());
+
           pItem->m_bIsFolder=true;
           pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv(2).get_asString());
           pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(0).get_asInt();
@@ -4916,9 +5069,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
-
-
-bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */)
 {
   try
   {
@@ -4926,32 +5077,63 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
+    Filter extFilter = filter;
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL = PrepareSQL("select movie.c%02d,path.strPath,files.playCount from movie join files on files.idFile=movie.idFile join path on files.idPath = path.idPath", VIDEODB_ID_YEAR);
+      {
+        strSQL = PrepareSQL("select movieview.c%02d, path.strPath, files.playCount from movieview ", VIDEODB_ID_YEAR);
+        extFilter.AppendJoin("join files on files.idFile = movieview.idFile join path on files.idPath = path.idPath");
+      }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL = PrepareSQL("select tvshow.c%02d,path.strPath from tvshow join files on files.idFile=episode.idFile join episode on episode.idShow=tvshow.idShow join path on files.idPath = path.idPath", VIDEODB_ID_TV_PREMIERED);
+      {
+        strSQL = PrepareSQL("select tvshowview.c%02d, path.strPath from tvshowview ", VIDEODB_ID_TV_PREMIERED);
+        extFilter.AppendJoin("join episodeview on episodeview.idShow = tvshowview.idShow join files on files.idFile = episodeview.idFile join path on files.idPath = path.idPath");
+      }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        strSQL = PrepareSQL("select musicvideo.c%02d,path.strPath,files.playCount from musicvideo join files on files.idFile=musicvideo.idFile join path on files.idPath = path.idPath", VIDEODB_ID_MUSICVIDEO_YEAR);
+      {
+        strSQL = PrepareSQL("select musicvideoview.c%02d, path.strPath, files.playCount from musicvideoview ", VIDEODB_ID_MUSICVIDEO_YEAR);
+        extFilter.AppendJoin("join files on files.idFile = musicvideoview.idFile join path on files.idPath = path.idPath");
+      }
+      else
+        return false;
     }
     else
     {
       CStdString group;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL = PrepareSQL("select movie.c%02d,count(1),count(files.playCount) from movie join files on files.idFile=movie.idFile", VIDEODB_ID_YEAR);
-        group = PrepareSQL(" group by movie.c%02d", VIDEODB_ID_YEAR);
+        strSQL = PrepareSQL("select movieview.c%02d, count(1), count(files.playCount) from movieview ", VIDEODB_ID_YEAR);
+        extFilter.AppendJoin("join files on files.idFile = movieview.idFile");
+        extFilter.AppendGroup(PrepareSQL("movieview.c%02d", VIDEODB_ID_YEAR));
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL = PrepareSQL("select distinct tvshow.c%02d from tvshow", VIDEODB_ID_TV_PREMIERED);
+        strSQL = PrepareSQL("select distinct tvshowview.c%02d from tvshowview", VIDEODB_ID_TV_PREMIERED);
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL = PrepareSQL("select musicvideo.c%02d,count(1),count(files.playCount) from musicvideo join files on files.idFile=musicvideo.idFile", VIDEODB_ID_MUSICVIDEO_YEAR);
-        group = PrepareSQL(" group by musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_YEAR);
+        strSQL = PrepareSQL("select musicvideoview.c%02d, count(1), count(files.playCount) from musicvideoview ", VIDEODB_ID_MUSICVIDEO_YEAR);
+        extFilter.AppendJoin("join files on files.idFile = musicvideoview.idFile");
+        extFilter.AppendGroup(PrepareSQL("musicvideoview.c%02d", VIDEODB_ID_MUSICVIDEO_YEAR));
       }
-      strSQL += group;
+      else
+        return false;
     }
+
+    // parse the base path to get additional filters
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
+      return false;
+
+    if (!extFilter.join.empty())
+      strSQL += extFilter.join;
+    if (!extFilter.where.empty())
+      strSQL += " WHERE " + extFilter.where;
+    if (!extFilter.group.empty())
+      strSQL += " GROUP BY " + extFilter.group;
+    if (!extFilter.order.empty())
+      strSQL += " ORDER BY " + extFilter.order;
+    if (!extFilter.limit.empty())
+      strSQL += " LIMIT " + extFilter.limit;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
@@ -4995,9 +5177,12 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
         if (it->first == 0)
           continue;
         CFileItemPtr pItem(new CFileItem(it->second.first));
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->SetPath(strBaseDir + strDir);
+
+        CVideoDbUrl itemUrl = videoUrl;
+        CStdString path; path.Format("%ld/", it->first);
+        itemUrl.AppendPath(path);
+        pItem->SetPath(itemUrl.ToString());
+
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
@@ -5028,9 +5213,12 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           continue;
         }
         CFileItemPtr pItem(new CFileItem(strLabel));
-        CStdString strDir;
-        strDir.Format("%ld/", lYear);
-        pItem->SetPath(strBaseDir + strDir);
+
+        CVideoDbUrl itemUrl = videoUrl;
+        CStdString path; path.Format("%ld/", lYear);
+        itemUrl.AppendPath(path);
+        pItem->SetPath(itemUrl.ToString());
+
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
