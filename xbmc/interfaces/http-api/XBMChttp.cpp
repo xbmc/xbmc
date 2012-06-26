@@ -1190,7 +1190,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     tag->GetReleaseDate(stTime);
     tmp.Format("%i", stTime.wYear);
     output += closeTag+openTag+"Release year:" + tmp;
-    pItem->SetMusicThumb();
+    CMusicThumbLoader::FillThumb(*pItem);
     if (pItem->HasThumbnail())
       output += closeTag+openTag+"Thumb:" + pItem->GetThumbnailImage() ;
     else {

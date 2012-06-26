@@ -1312,7 +1312,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   items.SetThumbnailImage("");
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
   if (bResult)
-    items.SetMusicThumb();
+    CMusicThumbLoader::FillThumb(items);
 
   // add in the "New Playlist" item if we're in the playlists folder
   if ((items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))

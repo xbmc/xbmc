@@ -174,6 +174,14 @@ public:
    */
   bool FillLibraryArt(CFileItem &item);
 
+  /*! \brief Fill the thumb of a music file/folder item
+   First uses a cached thumb from a previous run, then checks for a local thumb
+   and caches it for the next run
+   \param item the CFileItem object to fill
+   \return true if we fill the thumb, false otherwise
+   */
+  static bool FillThumb(CFileItem &item);
+
   static bool GetEmbeddedThumb(const std::string &path, MUSIC_INFO::EmbeddedArt &art);
 
 protected:

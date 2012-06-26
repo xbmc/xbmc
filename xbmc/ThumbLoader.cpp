@@ -557,8 +557,24 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   }
 
   if (!pItem->HasThumbnail())
-    pItem->SetUserMusicThumb();
+    FillThumb(*pItem);
+
   return true;
+}
+
+bool CMusicThumbLoader::FillThumb(CFileItem &item)
+{
+  if (item.HasThumbnail())
+    return true;
+  CStdString thumb = GetCachedImage(item, "thumb");
+  if (thumb.IsEmpty())
+  {
+    thumb = item.GetUserMusicThumb();
+    if (!thumb.IsEmpty())
+      SetCachedImage(item, "thumb", thumb);
+  }
+  item.SetThumbnailImage(thumb);
+  return !thumb.IsEmpty();
 }
 
 bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)

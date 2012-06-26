@@ -3119,8 +3119,8 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   // try to set a thumbnail
   if (!playlistItem->HasThumbnail())
   {
-    playlistItem->SetMusicThumb();
-    // still no thumb? then just the set the default cover
+    CMusicThumbLoader::FillThumb(*playlistItem);
+    // still no thumb? then just the set the default cover TODO: remove me?
     if (!playlistItem->HasThumbnail())
       playlistItem->SetThumbnailImage("DefaultAlbumCover.png");
   }
@@ -3545,10 +3545,9 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     {
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem streamingItem(g_application.m_strPlayListFile,false);
-      streamingItem.SetMusicThumb();
-      CStdString strThumb = streamingItem.GetThumbnailImage();
-      if (CFile::Exists(strThumb))
-        m_currentFile->SetThumbnailImage(strThumb);
+      CMusicThumbLoader::FillThumb(streamingItem);
+      if (streamingItem.HasThumbnail())
+        m_currentFile->SetThumbnailImage(streamingItem.GetThumbnailImage());
     }
   }
   else
