@@ -51,7 +51,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "TextureCache.h"
-#include "ThumbnailCache.h"
 #include "ThumbLoader.h"
 
 #ifdef _WIN32
@@ -1805,15 +1804,7 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
 
 int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 {
-  CStdString thumbFilename="";
-
-  if (numParas>1)
-  {
-    thumbFilename = CThumbnailCache::GetAlbumThumb(paras[0], paras[1]);
-    return SetResponse(openTag+thumbFilename ) ;
-  }
-  else
-    return SetResponse(openTag+"Error:Missing parameter (album;artist)") ;
+  return SetResponse(openTag+"Error:Deprecated function") ;
 }
 
 int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
