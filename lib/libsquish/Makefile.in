@@ -25,7 +25,7 @@ NATIVE_LIB=libsquish-native.so
 CLEAN_FILES+=$(NATIVE_LIB)
 
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
-NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
+NATIVE_ARCH=@DARWIN_NATIVE_ARCH@
 endif
 
 all: $(LIB) $(NATIVE_LIB)
