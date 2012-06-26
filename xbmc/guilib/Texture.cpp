@@ -204,6 +204,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
         }
       }
     }
+    CLog::Log(LOGDEBUG, "%s - Load of %s failed. Falling back to ImageLib", __FUNCTION__, texturePath.c_str());
   }
 
   DllImageLib dll;
