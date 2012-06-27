@@ -383,7 +383,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetAlbum(album.strAlbum);
   SetAlbumArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
   SetGenre(album.genre);
-  SetRating('0' + (album.iRating + 1) / 2);
+  SetRating('0' + album.iRating);
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
