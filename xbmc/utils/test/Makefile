@@ -4,6 +4,7 @@ SRCS=	\
 	TestArchive.cpp \
 	TestAsyncFileCopy.cpp \
 	TestBase64.cpp \
+	TestBitstreamStats.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
