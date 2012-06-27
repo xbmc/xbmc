@@ -1142,7 +1142,11 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
             if (!scraper.GetArtist(i).GetArtist().strBorn.IsEmpty())
               strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
             if (!scraper.GetArtist(i).GetArtist().genre.empty())
-              strTemp.Format("[%s] %s",StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, g_advancedSettings.m_musicItemSeparator).c_str(),strTemp.c_str());
+            {
+              CStdString genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, g_advancedSettings.m_musicItemSeparator);
+              if (!genres.empty())
+                strTemp.Format("[%s] %s", genres.c_str(), strTemp.c_str());
+            }
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);

@@ -764,7 +764,8 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl,
         CMusicArtistInfo ari(pxnTitle->FirstChild()->Value(), scurlArtist);
         CStdString genre;
         XMLUtils::GetString(pxeArtist, "genre", genre);
-        ari.GetArtist().genre = StringUtils::Split(genre, g_advancedSettings.m_musicItemSeparator);
+        if (!genre.empty())
+          ari.GetArtist().genre = StringUtils::Split(genre, g_advancedSettings.m_musicItemSeparator);
         XMLUtils::GetString(pxeArtist, "year", ari.GetArtist().strBorn);
 
         vcari.push_back(ari);
