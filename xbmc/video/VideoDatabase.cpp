@@ -55,6 +55,7 @@
 #include "URL.h"
 #include "video/VideoDbUrl.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/GroupUtils.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -4815,111 +4816,21 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
     if (!videoUrl.FromString(strBaseDir))
       return false;
 
-    CStdString strSQL = "SELECT movieview.*, sets.strSet FROM movieview"
-                        " JOIN sets ON movieview.idSet = sets.idSet ";
-    if (!filter.join.empty())
-      strSQL += filter.join;
-    if (!filter.where.empty())
-      strSQL += " WHERE (" + filter.where + ")";
-    strSQL += " ORDER BY sets.idSet";
-    if (!filter.order.empty())
-      strSQL += "," + filter.order;
-    if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+    Filter setFilter = filter;
+    setFilter.join += " JOIN sets ON movieview.idSet = sets.idSet";
+    if (!setFilter.order.empty())
+      setFilter.order += ",";
+    setFilter.order += "sets.idSet";
 
-    int iRowsFound = RunQuery(strSQL);
-    if (iRowsFound <= 0)
-      return iRowsFound == 0;
+    if (!GetMoviesByWhere(strBaseDir, setFilter, items))
+      return false;
 
-    map<int, CSetInfo> mapSets;
-    map<int, CSetInfo>::iterator it;
-    while (!m_pDS->eof())
-    {
-      if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser &&
-          !g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("movieview.strPath").get_asString()),g_settings.m_videoSources))
-        continue;
+    CFileItemList sets;
+    if (!GroupUtils::Group(GroupBySet, items, sets))
+      return false;
 
-      // get the setid and check if we already have this set
-      int idSet = m_pDS->fv("movieview.idSet").get_asInt();
-      if ((it = mapSets.find(idSet)) == mapSets.end())
-      {
-        // add the set to the list of sets
-        CSetInfo set;
-        set.name = m_pDS->fv("sets.strSet").get_asString();
-
-        pair<map<int, CSetInfo>::iterator, bool> insertIt = mapSets.insert(make_pair(idSet, set));
-        it = insertIt.first;
-      }
-
-      // add the movie's details to the set
-      it->second.movies.push_back(GetDetailsForMovie(m_pDS));
-
-      m_pDS->next();
-    }
-    m_pDS->close();
-    
-    for (it = mapSets.begin(); it != mapSets.end(); it++)
-    {
-      // we only handle sets with at least 2 movies
-      if (it->second.movies.size() <= 0 ||
-         (ignoreSingleMovieSets && it->second.movies.size() == 1))
-        continue;
-
-      CFileItemPtr pItem(new CFileItem(it->second.name));
-      pItem->GetVideoInfoTag()->m_iDbId = it->first;
-      pItem->GetVideoInfoTag()->m_type = "set";
-
-      CVideoDbUrl itemUrl = videoUrl;
-      CStdString strDir; strDir.Format("%ld/", it->first);
-      itemUrl.AppendPath(strDir);
-      pItem->SetPath(itemUrl.ToString());
-
-      pItem->m_bIsFolder = true;
-      pItem->GetVideoInfoTag()->m_strPath = pItem->GetPath();
-      pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
-
-      // calculate the remaining metadata from the movies
-      int ratings = 0;
-      int iWatched = 0; // have all the movies been played at least once?
-      for (VECMOVIES::const_iterator movie = it->second.movies.begin(); movie != it->second.movies.end(); movie++)
-      {
-        // handle rating
-        if (movie->m_fRating > 0.0f)
-        {
-          ratings++;
-          pItem->GetVideoInfoTag()->m_fRating += movie->m_fRating;
-        }
-        
-        // handle year
-        if (movie->m_iYear > pItem->GetVideoInfoTag()->m_iYear)
-          pItem->GetVideoInfoTag()->m_iYear = movie->m_iYear;
-        
-        // handle lastplayed
-        if (movie->m_lastPlayed.IsValid() && movie->m_lastPlayed > pItem->GetVideoInfoTag()->m_lastPlayed)
-          pItem->GetVideoInfoTag()->m_lastPlayed = movie->m_lastPlayed;
-        
-        // handle dateadded
-        if (movie->m_dateAdded.IsValid() && movie->m_dateAdded > pItem->GetVideoInfoTag()->m_dateAdded)
-          pItem->GetVideoInfoTag()->m_dateAdded = movie->m_dateAdded;
-        
-        // handle playcount/watched
-        pItem->GetVideoInfoTag()->m_playCount += movie->m_playCount;
-        if (movie->m_playCount > 0)
-          iWatched++;
-      }
-      
-      if (ratings > 1)
-        pItem->GetVideoInfoTag()->m_fRating /= ratings;
-        
-      pItem->GetVideoInfoTag()->m_playCount = iWatched >= (int)it->second.movies.size() ? (pItem->GetVideoInfoTag()->m_playCount / it->second.movies.size()) : 0;
-      pItem->SetProperty("total", (int)it->second.movies.size());
-      pItem->SetProperty("watched", iWatched);
-      pItem->SetProperty("unwatched", (int)it->second.movies.size() - iWatched);
-      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
-
-      if (!items.Contains(pItem->GetPath()))
-        items.Add(pItem);
-    }
+    items.ClearItems();
+    items.Append(sets);
 
     return true;
   }
@@ -5686,7 +5597,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
-bool CVideoDatabase::GetSortedVideos(MediaType mediaType, const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter /* = Filter() */, bool fetchSets /* = false */)
+bool CVideoDatabase::GetSortedVideos(MediaType mediaType, const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter /* = Filter() */)
 {
   if (NULL == m_pDB.get() || NULL == m_pDS.get())
     return false;
@@ -5710,7 +5621,7 @@ bool CVideoDatabase::GetSortedVideos(MediaType mediaType, const CStdString& strB
   switch (mediaType)
   {
   case MediaTypeMovie:
-    success = GetMoviesByWhere(strBaseDir, filter, items, fetchSets, sorting);
+    success = GetMoviesByWhere(strBaseDir, filter, items, sorting);
     break;
       
   case MediaTypeTvShow:
@@ -5760,10 +5671,10 @@ bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& i
     videoUrl.AddOption("tagid", idTag);
 
   Filter filter;
-  return GetMoviesByWhere(videoUrl.ToString(), filter, items, idSet == -1, sortDescription);
+  return GetMoviesByWhere(videoUrl.ToString(), filter, items, sortDescription);
 }
 
-bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool fetchSets /* = false */, const SortDescription &sortDescription /* = SortDescription() */)
+bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */)
 {
   try
   {
@@ -5780,50 +5691,10 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter, sorting))
       return false;
 
-    // if we have a "setid" option we don't want to retrieve sets
-    CVariant setId;
-    if (fetchSets && videoUrl.GetOption("setid", setId) &&
-        setId.isInteger() && setId.asInteger() > 0)
-      fetchSets = false;
-
     int total = -1;
 
     CStdString strSQL = "select %s from movieview ";
     CStdString strSQLExtra;
-    CFileItemList setItems;
-    if (fetchSets && g_guiSettings.GetBool("videolibrary.groupmoviesets"))
-    {
-      // user wants sets (and we're not fetching a particular set node), so grab all sets that match this where clause first
-      Filter setsFilter;
-      if (!extFilter.where.empty() || !extFilter.join.empty())
-      {
-        setsFilter.where = "movieview.idMovie in (select movieview.idMovie from movieview ";
-        if (!extFilter.join.empty())
-          setsFilter.where += extFilter.join;
-        if (!extFilter.where.empty())
-          setsFilter.where += " WHERE " + extFilter.where;
-        setsFilter.where += ")";
-      }
-
-      CVideoDbUrl setUrl;
-      if (!setUrl.FromString("videodb://1/7/"))
-        return false;
- 
-      setUrl.AddOptions(videoUrl.GetOptionsString());
-      GetSetsByWhere(setUrl.ToString(), setsFilter, setItems, true);
-
-      CStdString movieSetsWhere;
-      if (setItems.Size() > 0)
-      {
-        movieSetsWhere = "movieview.idMovie NOT IN (SELECT idMovie FROM movieview WHERE movieview.idSet IN (";
-        for (int index = 0; index < setItems.Size(); index++)
-          movieSetsWhere.AppendFormat("%s%d", index > 0 ? "," : "", setItems[index]->GetVideoInfoTag()->m_iDbId);
-        movieSetsWhere += "))";
-
-        extFilter.AppendWhere(movieSetsWhere);
-      }
-    }
-
     if (!CDatabase::BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
@@ -5839,10 +5710,9 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
-    if (iRowsFound <= 0 && setItems.Size() == 0)
+    if (iRowsFound <= 0)
       return iRowsFound == 0;
 
-    iRowsFound += setItems.Size();
     // store the total value of items as a property
     if (total < iRowsFound)
       total = iRowsFound;
@@ -5851,16 +5721,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     DatabaseResults results;
     results.reserve(iRowsFound);
 
-    // Add the previously retrieved sets
-    for (int index = 0; index < setItems.Size(); index++)
-    {
-      DatabaseResult result;
-      setItems[index]->ToSortable(result);
-      result[FieldRow] = (unsigned int)index;
-      results.push_back(result);
-    }
-
-    if (!SortUtils::SortFromDataset(sorting, MediaTypeMovie, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMovie, m_pDS, results))
       return false;
 
     // get data from returned rows
@@ -5869,13 +5730,6 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); it++)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
-      if (targetRow < (unsigned int)setItems.Size())
-      {
-        items.Add(setItems[targetRow]);
-        continue;
-      }
-      targetRow -= setItems.Size();
-
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       CVideoInfoTag movie = GetDetailsForMovie(record);
