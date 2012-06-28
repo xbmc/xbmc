@@ -23,6 +23,7 @@
 #include <vector>
 #include "utils/StdString.h"
 #include "utils/GlobalsHandling.h"
+#include "threads/SystemClock.h"
 
 class TiXmlElement;
 
@@ -198,6 +199,16 @@ class CAdvancedSettings
     CStdString m_tvshowMultiPartEnumRegExp;
     typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
     StringMapping m_pathSubstitutions;
+
+    struct WakeUpEntry  
+    {
+       CStdString host, mac;
+       unsigned timeout_ms, wait_ms;
+       XbmcThreads::EndTime nextWake;
+    };
+    typedef std::vector<WakeUpEntry*> WakeUpMapping;
+    WakeUpMapping m_onAccessWakeUp; //list of 'onaccesswake' hosts
+
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
