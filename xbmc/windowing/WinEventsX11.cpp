@@ -368,6 +368,8 @@ bool CWinEventsX11Imp::MessagePump()
         if (WinEvents->m_xic)
           XSetICFocus(WinEvents->m_xic);
         g_application.m_AppFocused = true;
+        memset(&(WinEvents->m_lastKey), 0, sizeof(XBMC_Event));
+        WinEvents->m_keymodState = 0;
         if (serial == xevent.xfocus.serial)
           break;
         g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
@@ -379,6 +381,7 @@ bool CWinEventsX11Imp::MessagePump()
         if (WinEvents->m_xic)
           XUnsetICFocus(WinEvents->m_xic);
         g_application.m_AppFocused = false;
+        memset(&(WinEvents->m_lastKey), 0, sizeof(XBMC_Event));
         g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
         serial = xevent.xfocus.serial;
         break;
