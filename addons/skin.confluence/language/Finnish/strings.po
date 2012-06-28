@@ -558,12 +558,56 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr "[B]Muokkaa lisäosia[/B][CR][CR]Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia xbmc.org:sta[CR]Muokkaa lisäosien asetuksia"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr "[B]Muokkaa TV-asetuksia[/B][CR][CR]Muokkaa kokoruudun tietoja · Hallitse ohjelmaoppaan asetuksia"
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Valitse XBMC-käyttäjäprofiili[CR]kirjautuaksesi sisään"
+
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr "Nauhoitusajastukset"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Kellonaika"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "TV-lähetys"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Lisää ryhmä"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Muuta ryhmän nimeä"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Poista ryhmä"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Saatavilla olevat[CR]ryhmät"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Kanavaryhmä"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Ajastettu"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Kanavan valinnat"
 
 msgctxt "#31900"
 msgid "Weather Maps"
