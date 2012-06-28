@@ -51,8 +51,8 @@ void CVideoInfoTag::Reset()
   m_strSortTitle.clear();
   m_strVotes.clear();
   m_cast.clear();
-  m_set.clear();
-  m_setId.clear();
+  m_strSet.clear();
+  m_iSetId = -1;
   m_tags.clear();
   m_strFile.clear();
   m_strPath.clear();
@@ -174,7 +174,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetStringArray(movie, "genre", m_genre);
   XMLUtils::SetStringArray(movie, "country", m_country);
-  XMLUtils::SetStringArray(movie, "set", m_set);
+  XMLUtils::SetString(movie, "set", m_strSet);
   XMLUtils::SetStringArray(movie, "tag", m_tags);
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
@@ -291,8 +291,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar << m_cast[i].thumbUrl.m_xml;
     }
 
-    ar << m_set;
-    ar << m_setId;
+    ar << m_strSet;
+    ar << m_iSetId;
     ar << m_tags;
     ar << m_strRuntime;
     ar << m_strFile;
@@ -368,8 +368,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       m_cast.push_back(info);
     }
 
-    ar >> m_set;
-    ar >> m_setId;
+    ar >> m_strSet;
+    ar >> m_iSetId;
     ar >> m_tags;
     ar >> m_strRuntime;
     ar >> m_strFile;
@@ -443,10 +443,8 @@ void CVideoInfoTag::Serialize(CVariant& value)
       actor["thumbnail"] = CTextureCache::GetWrappedImageURL(m_cast[i].thumb);
     value["cast"].push_back(actor);
   }
-  value["set"] = m_set;
-  value["setid"] = CVariant(CVariant::VariantTypeArray);
-  for (unsigned int i = 0; i < m_setId.size(); i++)
-    value["setid"].push_back(m_setId[i]);
+  value["set"] = m_strSet;
+  value["setid"] = m_iSetId;
   value["tags"] = m_tags;
   value["runtime"] = m_strRuntime;
   value["file"] = m_strFile;
@@ -500,7 +498,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldVotes] = m_strVotes;
   sortable[FieldStudio] = m_studio;
   sortable[FieldTrailer] = m_strTrailer;
-  sortable[FieldSet] = m_set;
+  sortable[FieldSet] = m_strSet;
   sortable[FieldTime] = m_strRuntime;
   sortable[FieldFilename] = m_strFile;
   sortable[FieldMPAA] = m_strMPAARating;
@@ -663,7 +661,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     node = node->NextSiblingElement("actor");
   }
 
-  XMLUtils::GetStringArray(movie, "set", m_set, prioritise, g_advancedSettings.m_videoItemSeparator);
+  XMLUtils::GetString(movie, "set", m_strSet);
   XMLUtils::GetStringArray(movie, "tag", m_tags, prioritise, g_advancedSettings.m_videoItemSeparator);
   XMLUtils::GetStringArray(movie, "studio", m_studio, prioritise, g_advancedSettings.m_videoItemSeparator);
   // artists
