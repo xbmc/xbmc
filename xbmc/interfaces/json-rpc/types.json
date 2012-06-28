@@ -405,7 +405,7 @@
   "Video.Fields.Movie": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the cast, set, showlink and/or resume field will result in increased response times",
+      "description": "Requesting the cast, showlink and/or resume field will result in increased response times",
       "enum": [ "title", "genre", "year", "rating", "director", "trailer",
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
@@ -565,11 +565,11 @@
       "imdbnumber": { "type": "string" },
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
-      "set": { "$ref": "Array.String" },
+      "set": { "type": "string" },
       "showlink": { "type": "string" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
-      "setid": { "$ref": "Array.Integer" }
+      "setid": { "$ref": "Library.Id" }
     }
   },
   "Video.Details.MovieSet": {
@@ -725,7 +725,7 @@
       "imdbnumber": { "type": "string" },
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
-      "set": { "$ref": "Array.String" },
+      "set": { "type": "string" },
       "showlink": { "type": "string" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
@@ -735,7 +735,7 @@
       "showtitle": { "type": "string" },
       "artistid": { "$ref": "Library.Id" },
       "albumid": { "$ref": "Library.Id" },
-      "setid": { "$ref": "Array.Integer" },
+      "setid": { "$ref": "Library.Id" },
       "tvshowid": { "$ref": "Library.Id" },
       "watchedepisodes": { "type": "integer" },
       "disc": { "type": "integer" }
