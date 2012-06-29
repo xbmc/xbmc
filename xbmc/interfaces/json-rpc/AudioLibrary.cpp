@@ -402,11 +402,11 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITranspor
   if (ParameterNotNull(parameterObject, "year"))
     song.iYear = (int)parameterObject["year"].asInteger();
   if (ParameterNotNull(parameterObject, "rating"))
-    song.rating = (char)parameterObject["rating"].asInteger();
+    song.rating = '0' + (char)parameterObject["rating"].asInteger();
   if (ParameterNotNull(parameterObject, "album"))
     song.strAlbum = parameterObject["album"].asString();
   if (ParameterNotNull(parameterObject, "track"))
-    song.iTrack = (int)parameterObject["track"].asInteger();
+    song.iTrack = (song.iTrack & 0xffff0000) | ((int)parameterObject["track"].asInteger() & 0xffff);
   if (ParameterNotNull(parameterObject, "duration"))
     song.iDuration = (int)parameterObject["duration"].asInteger();
   if (ParameterNotNull(parameterObject, "comment"))
