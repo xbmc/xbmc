@@ -27,6 +27,13 @@
 #define _onexit_t void*
 #endif
 
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
+typedef off_t __off_t;
+typedef int64_t off64_t;
+typedef off64_t __off64_t;
+typedef fpos_t fpos64_t;
+#endif
+
 #ifdef WIN32
 #include "win32-dirent.h"
 #else
@@ -167,7 +174,6 @@ extern "C"
   int dll_fstat64i32(int fd, struct _stat64i32 *buffer);
   int dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags);
 #endif
-  int dll_fstatvfs64(int fd, struct statvfs64 *buf);
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
   int dll_filbuf(FILE *fp);
   int dll_flsbuf(int data, FILE*fp);

@@ -1126,7 +1126,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
     result->st_size = (_off_t)stat->st_size;
 #else
   if (sizeof(stat->st_size) <= sizeof(result->st_size) )
-    result->st_size = (off_t)stat->st_size;
+    result->st_size = stat->st_size;
 #endif
   else
   {
@@ -1153,7 +1153,7 @@ void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
     result->st_size = (_off_t)stat->st_size;
 #else
   if (sizeof(stat->st_size) <= sizeof(result->st_size) )
-    result->st_size = (off_t)stat->st_size;
+    result->st_size = stat->st_size;
 #endif
   else
   {
