@@ -130,7 +130,7 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)\n");
 
     CLog::Log(LOGINFO, "create karaokedata table");
-    m_pDS->exec("CREATE TABLE karaokedata ( iKaraNumber integer, idSong integer, iKaraDelay integer, strKaraEncoding text, "
+    m_pDS->exec("CREATE TABLE karaokedata ( iKaraNumber integer primary key, idSong integer, iKaraDelay integer, strKaraEncoding text, "
                 "strKaralyrics text, strKaraLyrFileCRC text )\n");
 
     CLog::Log(LOGINFO, "create album index");
@@ -181,8 +181,11 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idxAlbumInfo on albuminfo(idAlbum)");
 
     CLog::Log(LOGINFO, "create karaokedata index");
-    m_pDS->exec("CREATE INDEX idxKaraNumber on karaokedata(iKaraNumber)");
     m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
+
+    CLog::Log(LOGINFO, "seed karaokedata index");
+    m_pDS->exec(PrepareSQL("INSERT INTO karaokedata (iKaraNumber) VALUES (%d)", g_advancedSettings.m_karaokeStartIndex - 1));
+    m_pDS->exec(PrepareSQL("DELETE FROM karaokedata WHERE iKaraNumber = %d", g_advancedSettings.m_karaokeStartIndex - 1));
 
     // Trigger
     CLog::Log(LOGINFO, "create albuminfo trigger");
@@ -3545,6 +3548,21 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     g_settings.Save();
   }
 
+  if (version < 28)
+  {
+    m_pDS->exec("CREATE TABLE karaokedata_new ( iKaraNumber integer primary key, idSong integer, iKaraDelay integer, strKaraEncoding text, strKaralyrics text, strKaraLyrFileCRC text )");
+    m_pDS->exec("INSERT INTO karaokedata_new (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) SELECT iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC FROM karaokedata");
+    
+    m_pDS->exec("DROP TABLE karaokedata");
+    m_pDS->exec("ALTER TABLE karaokedata_new RENAME TO karaokedata");
+    m_pDS->exec("CREATE INDEX idxKaraNumber on karaokedata(iKaraNumber)");
+    m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
+    
+    // Seed the Karaoke index in case the table was empty when we copied data over
+    m_pDS->exec(PrepareSQL("INSERT INTO karaokedata (iKaraNumber) VALUES (%d)", g_advancedSettings.m_karaokeStartIndex - 1));
+    m_pDS->exec(PrepareSQL("DELETE FROM karaokedata WHERE iKaraNumber = %d", g_advancedSettings.m_karaokeStartIndex - 1));
+  }
+
   // always recreate the views after any table change
   CreateViews();
 
@@ -4584,20 +4602,19 @@ void CMusicDatabase::AddKaraokeData(int idSong, const CSong& song)
     }
 
     // Add new karaoke data
-    DWORD crc = ComputeCRC( song.strFileName );
-
-    // Get the maximum number allocated
-    strSQL=PrepareSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
-    if (!m_pDS->query(strSQL.c_str())) return;
-
-    int iKaraokeNumber = g_advancedSettings.m_karaokeStartIndex;
-
-    if ( m_pDS->num_rows() == 1 )
-      iKaraokeNumber = m_pDS->fv("MAX(iKaraNumber)").get_asInt() + 1;
+    DWORD crc = ComputeCRC(song.strFileName);
 
     // Add the data
-    strSQL=PrepareSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) "
-        "VALUES( %i, %i, 0, NULL, NULL, '%ul' )", iKaraokeNumber, idSong, crc );
+    strSQL=PrepareSQL("INSERT INTO karaokedata "
+                      " (idSong, iKaraDelay, "
+                      "  strKaraEncoding, strKaralyrics, "
+                      "  strKaraLyrFileCRC) "
+                      " VALUES "
+                      " (%i, 0, "
+                      "  NULL, NULL, "
+                      " '%ul' )", 
+                      song.idSong, 
+                      crc);
 
     m_pDS->exec(strSQL.c_str());
   }
