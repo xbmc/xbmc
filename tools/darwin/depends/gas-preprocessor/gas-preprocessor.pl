@@ -92,16 +92,20 @@ my $macro_level = 0;
 my %macro_lines;
 my %macro_args;
 my %macro_args_default;
+my $macro_count = 0;
+my $altmacro = 0;
 
 my @pass1_lines;
 my @ifstack;
+
+my %symbols;
 
 # pass 1: parse .macro
 # note that the handling of arguments is probably overly permissive vs. gas
 # but it should be the same for valid cases
 while (<ASMFILE>) {
     # remove all comments (to avoid interfering with evaluating directives)
-    s/$comm.*//x;
+    s/(?<!\\)$comm.*//x;
 
     # comment out unsupported directives
     s/\.type/$comm.type/x;
@@ -128,6 +132,12 @@ while (<ASMFILE>) {
     parse_line($_);
 }
 
+sub eval_expr {
+    my $expr = $_[0];
+    $expr =~ s/([A-Za-z._][A-Za-z0-9._]*)/$symbols{$1}/g;
+    eval $expr;
+}
+
 sub handle_if {
     my $line = $_[0];
     # handle .if directives; apple's assembler doesn't support important non-basic ones
@@ -147,11 +157,11 @@ sub handle_if {
                 die "argument to .ifc not recognized";
             }
         } elsif ($type eq "") {
-            $result ^= eval($expr) != 0;
+            $result ^= eval_expr($expr) != 0;
         } elsif ($type eq "eq") {
-            $result = eval($expr) == 0;
+            $result = eval_expr($expr) == 0;
         } elsif ($type eq "lt") {
-            $result = eval($expr) < 0;
+            $result = eval_expr($expr) < 0;
         } else {
 	    chomp($line);
             die "unhandled .if varient. \"$line\"";
@@ -173,7 +183,7 @@ sub parse_line {
             return;
         } elsif ($line =~ /\.elseif\s+(.*)/) {
             if ($ifstack[-1] == 0) {
-                $ifstack[-1] = !!eval($1);
+                $ifstack[-1] = !!eval_expr($1);
             } elsif ($ifstack[-1] > 0) {
                 $ifstack[-1] = -$ifstack[-1];
             }
@@ -213,7 +223,7 @@ sub parse_line {
     } elsif ($macro_level == 0) {
         expand_macros($line);
     } else {
-        if (/\.macro\s+([\d\w\.]+)\s*(.*)/) {
+        if ($line =~ /\.macro\s+([\d\w\.]+)\s*(.*)/) {
             $current_macro = $1;
 
             # commas in the argument list are optional, so only use whitespace as the separator
@@ -254,6 +264,22 @@ sub expand_macros {
         return;
     }
 
+    if ($line =~ /\.altmacro/) {
+        $altmacro = 1;
+        return;
+    }
+
+    if ($line =~ /\.noaltmacro/) {
+        $altmacro = 0;
+        return;
+    }
+
+    $line =~ s/\%([^,]*)/eval_expr($1)/eg if $altmacro;
+
+    if ($line =~ /\.set\s+(.*),\s*(.*)/) {
+        $symbols{$1} = eval_expr($2);
+    }
+
     if ($line =~ /(\S+:|)\s*([\w\d\.]+)\s*(.*)/ && exists $macro_lines{$2}) {
         push(@pass1_lines, $1);
         my $macro = $2;
@@ -266,9 +292,8 @@ sub expand_macros {
 
         my $comma_sep_required = 0;
         foreach (@arglist) {
-            # allow for + and - in macro arguments
-            $_ =~ s/\s*\+\s*/+/;
-            $_ =~ s/\s*\-\s*/-/;
+            # allow arithmetic/shift operators in macro arguments
+            $_ =~ s/\s*(\+|-|\*|\/|<<|>>)\s*/$1/g;
 
             my @whitespace_split = split(/\s+/, $_);
             if (!@whitespace_split) {
@@ -322,6 +347,8 @@ sub expand_macros {
             }
         }
 
+        my $count = $macro_count++;
+
         # apply replacements as regex
         foreach (@{$macro_lines{$macro}}) {
             my $macro_line = $_;
@@ -330,6 +357,7 @@ sub expand_macros {
             foreach (reverse sort {length $a <=> length $b} keys %replacements) {
                 $macro_line =~ s/\\$_/$replacements{$_}/g;
             }
+            $macro_line =~ s/\\\@/$count/g;
             $macro_line =~ s/\\\(\)//g;     # remove \()
             parse_line($macro_line);
         }
