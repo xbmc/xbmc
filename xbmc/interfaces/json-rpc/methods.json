@@ -851,6 +851,7 @@
       { "name": "rating", "$ref": "Optional.Integer" },
       { "name": "album", "$ref": "Optional.String" },
       { "name": "track", "$ref": "Optional.Integer" },
+      { "name": "disc", "$ref": "Optional.Integer" },
       { "name": "duration", "$ref": "Optional.Integer" },
       { "name": "comment", "$ref": "Optional.String" },
       { "name": "musicbrainztrackid", "$ref": "Optional.String" },

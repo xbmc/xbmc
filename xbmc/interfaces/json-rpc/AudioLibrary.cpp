@@ -407,6 +407,8 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITranspor
     song.strAlbum = parameterObject["album"].asString();
   if (ParameterNotNull(parameterObject, "track"))
     song.iTrack = (song.iTrack & 0xffff0000) | ((int)parameterObject["track"].asInteger() & 0xffff);
+  if (ParameterNotNull(parameterObject, "disc"))
+    song.iTrack = (song.iTrack & 0xffff) | ((int)parameterObject["disc"].asInteger() << 16);
   if (ParameterNotNull(parameterObject, "duration"))
     song.iDuration = (int)parameterObject["duration"].asInteger();
   if (ParameterNotNull(parameterObject, "comment"))

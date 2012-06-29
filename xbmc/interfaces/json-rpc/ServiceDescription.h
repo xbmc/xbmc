@@ -358,7 +358,7 @@ namespace JSONRPC
                   "\"lyrics\", \"musicbrainztrackid\", \"musicbrainzartistid\","
                   "\"musicbrainzalbumid\", \"musicbrainzalbumartistid\","
                   "\"playcount\", \"fanart\", \"thumbnail\", \"file\", \"artistid\","
-                  "\"albumid\", \"lastplayed\" ]"
+                  "\"albumid\", \"lastplayed\", \"disc\" ]"
       "}"
     "}",
     "\"Audio.Details.Base\": {"
@@ -424,7 +424,8 @@ namespace JSONRPC
         "\"musicbrainzartistid\": { \"type\": \"string\" },"
         "\"artistid\": { \"$ref\": \"Library.Id\" },"
         "\"albumid\": { \"$ref\": \"Library.Id\" },"
-        "\"lastplayed\": { \"type\": \"string\" }"
+        "\"lastplayed\": { \"type\": \"string\" },"
+        "\"disc\": { \"type\": \"integer\" }"
       "}"
     "}",
     "\"Video.Fields.Movie\": {"
@@ -721,7 +722,8 @@ namespace JSONRPC
                   "\"mpaa\", \"cast\", \"country\", \"imdbnumber\", \"premiered\", \"productioncode\","
                   "\"runtime\", \"set\", \"showlink\", \"streamdetails\", \"top250\", \"votes\","
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
-                  "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\" ]"
+                  "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
+                  "\"disc\" ]"
       "}"
     "}",
     "\"List.Item.All\": {"
@@ -761,7 +763,8 @@ namespace JSONRPC
         "\"albumid\": { \"$ref\": \"Library.Id\" },"
         "\"setid\": { \"$ref\": \"Array.Integer\" },"
         "\"tvshowid\": { \"$ref\": \"Library.Id\" },"
-        "\"watchedepisodes\": { \"type\": \"integer\" }"
+        "\"watchedepisodes\": { \"type\": \"integer\" },"
+        "\"disc\": { \"type\": \"integer\" }"
       "}"
     "}",
     "\"List.Fields.Files\": {"
@@ -776,7 +779,7 @@ namespace JSONRPC
                   "\"runtime\", \"set\", \"showlink\", \"streamdetails\", \"top250\", \"votes\","
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
                   "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"size\","
-                  "\"lastmodified\", \"mimetype\", \"watchedepisodes\" ]"
+                  "\"lastmodified\", \"mimetype\", \"watchedepisodes\", \"disc\" ]"
       "}"
     "}",
     "\"List.Item.File\": {"
@@ -1713,6 +1716,7 @@ namespace JSONRPC
         "{ \"name\": \"rating\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"album\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"track\", \"$ref\": \"Optional.Integer\" },"
+        "{ \"name\": \"disc\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"duration\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"comment\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"musicbrainztrackid\", \"$ref\": \"Optional.String\" },"

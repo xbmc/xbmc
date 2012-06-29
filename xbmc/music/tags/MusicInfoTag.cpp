@@ -434,6 +434,7 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["genre"] = StringUtils::Join(m_genre, " / ");
   value["duration"] = m_iDuration;
   value["track"] = GetTrackNumber();
+  value["disc"] = GetDiscNumber();
   value["loaded"] = m_bLoaded;
   value["year"] = m_dwReleaseDate.wYear;
   value["musicbrainztrackid"] = m_strMusicBrainzTrackID;
