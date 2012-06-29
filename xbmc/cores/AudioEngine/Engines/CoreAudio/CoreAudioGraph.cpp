@@ -30,9 +30,9 @@
 
 CCoreAudioGraph::CCoreAudioGraph() :
   m_audioGraph    (NULL ),
+  m_inputUnit     (NULL ),
   m_audioUnit     (NULL ),
   m_mixerUnit     (NULL ),
-  m_inputUnit     (NULL ),
   m_initialized   (false),
   m_deviceId      (NULL ),
   m_allowMixing   (false),

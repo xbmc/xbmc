@@ -616,22 +616,20 @@ if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
   if test "$use_arch" != "arm"; then
-    LIBS="$LIBS -framework IOKit"
-    LIBS="$LIBS -framework Cocoa"
-    LIBS="$LIBS -framework AppKit"
-    LIBS="$LIBS -framework Carbon"
-    LIBS="$LIBS -framework CoreAudio"
-    LIBS="$LIBS -framework QuickTime"
+    LIBS="$LIBS -framework ApplicationServices"
     LIBS="$LIBS -framework AudioUnit"
-    LIBS="$LIBS -framework Foundation"
-    LIBS="$LIBS -framework CoreServices"
-    LIBS="$LIBS -framework CoreVideo"
-    LIBS="$LIBS -framework CoreAudio"
     LIBS="$LIBS -framework AudioToolbox"
+    LIBS="$LIBS -framework Cocoa"
+    LIBS="$LIBS -framework CoreAudio"
+    LIBS="$LIBS -framework CoreVideo"
+    LIBS="$LIBS -framework CoreServices"
     LIBS="$LIBS -framework CoreFoundation"
     LIBS="$LIBS -framework DiskArbitration"
-    LIBS="$LIBS -framework ApplicationServices"
+    LIBS="$LIBS -framework IOKit"
+    LIBS="$LIBS -framework IOSurface"
+    LIBS="$LIBS -framework QuartzCore"
   fi
+  USE_EXTERNAL_FFMPEG=1
 elif test "$use_arch" = "arm"; then
   CFLAGS="$CFLAGS -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mno-apcs-stack-check"
@@ -1972,6 +1970,19 @@ if test "$use_external_ffmpeg" = "yes"; then
   final_message="$final_message\n  External FFmpeg:\tYes"
 else
   final_message="$final_message\n  External FFmpeg:\tNo"
+fi
+
+if test "$host_vendor" = "apple" ; then
+  # built internal but referenced as external, we link directly to them.
+  # this MUST be the last thing before OUTPUT_FILES as they do not
+  # exist until after we build FFMpeg.
+  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavcodec -lavcodec"
+  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavfilter -lavfilter"
+  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libswresample -lswresample"
+  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavformat -lavformat"
+  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libavutil -lavutil"
+  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libpostproc -lpostproc"
+  LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libswscale -lswscale"
 fi
 
 OUTPUT_FILES="Makefile \

@@ -20,20 +20,21 @@
  */
 
 #include "system.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-
-#include "Interfaces/AE.h"
-#include "AEFactory.h"
-#include "AEUtil.h"
 
 #include "CoreAudioAE.h"
 #include "CoreAudioAEStream.h"
 
+#include "xbmc/cores/AudioEngine/Interfaces/AE.h"
+#include "xbmc/cores/AudioEngine/AEFactory.h"
+#include "xbmc/cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #include "settings/AdvancedSettings.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
+#include "utils/log.h"
+
+
 
 // typecast AE to CCoreAudioAE
 #define AE (*(CCoreAudioAE*)CAEFactory::GetEngine())
@@ -90,20 +91,20 @@ void CCoreAudioAEStream::Upmix(void *input,
 }
 
 CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options) :
-  m_convertBuffer   (NULL ),
+  m_outputUnit      (NULL ),
   m_valid           (false),
   m_delete          (false),
   m_volume          (1.0f ),
   m_rgain           (1.0f ),
   m_slave           (NULL ),
   m_convertFn       (NULL ),
+  m_Buffer          (NULL ),
+  m_convertBuffer   (NULL ),
   m_ssrc            (NULL ),
   m_draining        (false),
-  m_audioCallback   (NULL ),
   m_AvgBytesPerSec  (0    ),
-  m_Buffer          (NULL ),
+  m_audioCallback   (NULL ),
   m_fadeRunning     (false),
-  m_outputUnit      (NULL ),
   m_frameSize       (0    ),
   m_doRemap         (true ),
   m_firstInput      (true )

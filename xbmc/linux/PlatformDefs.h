@@ -41,7 +41,9 @@
 #include <string.h>
 #if defined(TARGET_DARWIN)
 #include <stdio.h>
-#define __STDC_FORMAT_MACROS
+#ifndef __STDC_FORMAT_MACROS
+  #define __STDC_FORMAT_MACROS
+#endif
 #include <inttypes.h>
 #include <sys/sysctl.h>
 #include <mach/mach.h>

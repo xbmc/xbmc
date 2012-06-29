@@ -13,7 +13,6 @@ SRCS = \
 	DarwinUtils.mm \
 	CocoaInterface.mm \
 	HotKeyController.m \
-	CoreAudio.cpp \
 	OSXGNUReplacements.c \
 	
 LIB=osx.a
