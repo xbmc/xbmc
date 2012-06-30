@@ -80,6 +80,10 @@ public:
     Close();
     return CFile::Delete(m_ptempFilePath);
   };
+  CStdString getTempFilePath() const
+  {
+    return m_ptempFilePath;
+  }
 private:
   CStdString m_ptempFilePath;
 };
@@ -128,4 +132,12 @@ bool CXBMCTestUtils::DeleteTempFile(XFILE::CFile *tempfile)
   bool retval = f->Delete();
   delete f;
   return retval;
+}
+
+CStdString CXBMCTestUtils::TempFilePath(XFILE::CFile const* const tempfile)
+{
+  if (!tempfile)
+    return "";
+  CTempFile const* const f = static_cast<CTempFile const* const>(tempfile);
+  return f->getTempFilePath();
 }

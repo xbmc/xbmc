@@ -51,6 +51,9 @@ public:
    * using CreateTempFile().
    */
   bool DeleteTempFile(XFILE::CFile *tempfile);
+
+  /* Function to get path of a tempfile */
+  CStdString TempFilePath(XFILE::CFile const* const tempfile);
 private:
   CXBMCTestUtils();
   CXBMCTestUtils(CXBMCTestUtils const&);
@@ -60,3 +63,4 @@ private:
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
 #define XBMC_CREATETEMPFILE(a) CXBMCTestUtils::Instance().CreateTempFile(a)
 #define XBMC_DELETETEMPFILE(a) CXBMCTestUtils::Instance().DeleteTempFile(a)
+#define XBMC_TEMPFILEPATH(a) CXBMCTestUtils::Instance().TempFilePath(a)
