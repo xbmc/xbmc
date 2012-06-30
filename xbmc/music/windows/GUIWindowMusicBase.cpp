@@ -92,7 +92,6 @@ bool CGUIWindowMusicBase::OnBack(int actionID)
 {
   if (!g_application.IsMusicScanning())
   {
-    CUtil::ThumbCacheClear();
     CUtil::RemoveTempFiles();
   }
   return CGUIMediaWindow::OnBack(actionID);

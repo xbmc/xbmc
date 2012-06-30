@@ -64,9 +64,6 @@ void CMusicInfoLoader::OnLoaderStart()
     m_mapFileItems->SetFastLookup(true);
   }
 
-  // Precache album thumbs
-  g_directoryCache.InitMusicThumbCache();
-
   m_strPrevPath.Empty();
 
   m_databaseHits = m_tagReads = 0;
@@ -186,9 +183,6 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
 void CMusicInfoLoader::OnLoaderFinish()
 {
-  // clear precached album thumbs
-  g_directoryCache.ClearMusicThumbCache();
-
   // cleanup last loaded songs from database
   m_songsMap.Clear();
 

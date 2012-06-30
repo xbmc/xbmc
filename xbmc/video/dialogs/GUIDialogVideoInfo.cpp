@@ -650,10 +650,6 @@ void CGUIDialogVideoInfo::OnGetThumb()
     return;   // user chose the one they have
 
   CStdString newThumb;
-  // delete the thumbnail if that's what the user wants, else overwrite with the
-  // new thumbnail
-  CFileItem item(*m_movieItem->GetVideoInfoTag());
-
   if (result.Left(14) == "thumb://Remote")
   {
     int number = atoi(result.Mid(14));

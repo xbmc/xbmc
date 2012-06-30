@@ -58,17 +58,12 @@ namespace XFILE
     void Clear();
     void AddFile(const CStdString& strFile);
     bool FileExists(const CStdString& strPath, bool& bInCache);
-    void InitThumbCache();
-    void ClearThumbCache();
-    void InitMusicThumbCache();
-    void ClearMusicThumbCache();
 #ifdef _DEBUG
     void PrintStats() const;
 #endif
   protected:
     void InitCache(std::set<CStdString>& dirs);
     void ClearCache(std::set<CStdString>& dirs);
-    bool IsCacheDir(const CStdString &strPath) const;
     void CheckIfFull();
 
     std::map<CStdString, CDir*> m_cache;
@@ -77,10 +72,6 @@ namespace XFILE
     void Delete(iCache i);
 
     CCriticalSection m_cs;
-    std::set<CStdString> m_thumbDirs;
-    std::set<CStdString> m_musicThumbDirs;
-    int m_iThumbCacheRefCount;
-    int m_iMusicThumbCacheRefCount;
 
     unsigned int m_accessCounter;
 
