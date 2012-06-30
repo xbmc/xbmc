@@ -2,6 +2,7 @@ SRCS=	\
 	TestAlarmClock.cpp \
 	TestAliasShortcutUtils.cpp \
 	TestArchive.cpp \
+	TestAsyncFileCopy.cpp \
 	TestBase64.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
