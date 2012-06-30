@@ -93,8 +93,6 @@ public:
    \param path [in] path containing albums.
    */
   static void FindArtForAlbums(VECALBUMS &albums, const CStdString &path);
-  static void CheckForVariousArtists(VECSONGS &songs);
-  static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 
   bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& album, CGUIDialogProgress* pDialog=NULL);
   bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
@@ -103,7 +101,6 @@ public:
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
-  void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
   int GetPathHash(const CFileItemList &items, CStdString &hash);
   void GetAlbumArtwork(long id, const CAlbum &artist);
 
