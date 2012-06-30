@@ -50,7 +50,7 @@ typedef char my_bool;
 #define __WIN__
 #endif
 #ifdef __WIN__
-#include <winsock.h>				/* For windows */
+#include <winsock2.h>				/* For windows */
 #endif
 #if !defined(__WIN__)
 #define STDCALL
