@@ -7,6 +7,7 @@ SRCS=	\
 	TestBitstreamStats.cpp \
 	TestCharsetConverter.cpp \
 	TestCPUInfo.cpp \
+	TestCrc32.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
