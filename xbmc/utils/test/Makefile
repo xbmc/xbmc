@@ -5,6 +5,7 @@ SRCS=	\
 	TestAsyncFileCopy.cpp \
 	TestBase64.cpp \
 	TestBitstreamStats.cpp \
+	TestCharsetConverter.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
