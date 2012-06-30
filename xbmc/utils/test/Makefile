@@ -8,6 +8,7 @@ SRCS=	\
 	TestCharsetConverter.cpp \
 	TestCPUInfo.cpp \
 	TestCrc32.cpp \
+	TestCryptThreading.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
