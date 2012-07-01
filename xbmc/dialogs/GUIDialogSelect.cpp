@@ -56,6 +56,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
       m_viewControl.Reset();
+
       m_bButtonEnabled = false;
       m_useDetails = false;
       m_multiSelection = false;
@@ -83,6 +84,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_bButtonPressed = false;
+      m_bConfirmed = false;
       CGUIDialog::OnMessage(message);
       return true;
     }
@@ -108,6 +110,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
               for (int i = 0 ; i < m_vecList->Size() ; i++)
                 m_vecList->Get(i)->Select(false);
               item->Select(true);
+              m_bConfirmed = true;
               Close();
             }
           }
@@ -117,6 +120,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       {
         m_iSelected = -1;
         m_bButtonPressed = true;
+        if (m_multiSelection)
+          m_bConfirmed = true;
         Close();
       }
     }
@@ -138,6 +143,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 bool CGUIDialogSelect::OnBack(int actionID)
 {
   m_iSelected = -1;
+  m_selectedItems->Clear();
+  m_bConfirmed = false;
   return CGUIDialog::OnBack(actionID);
 }
 
@@ -218,13 +225,61 @@ void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 
 void CGUIDialogSelect::SetSelected(int iSelected)
 {
-  if (iSelected < 0 || iSelected >= (int)m_vecList->Size()) return;
-  m_iSelected = iSelected;
+  if (iSelected < 0 || iSelected >= (int)m_vecList->Size() ||
+      m_vecList->Get(iSelected).get() == NULL) 
+    return;
+
+  // only set m_iSelected if there is no multi-select
+  // or if it doesn't have a valid value yet
+  // or if the current value is bigger than the new one
+  // so that we always focus the item nearest to the beginning of the list
+  if (!m_multiSelection || m_iSelected < 0 || m_iSelected > iSelected)
+    m_iSelected = iSelected;
+  m_vecList->Get(iSelected)->Select(true);
+  m_selectedItems->Add(m_vecList->Get(iSelected));
+}
+
+void CGUIDialogSelect::SetSelected(const CStdString &strSelectedLabel)
+{
+  if (strSelectedLabel.empty())
+    return;
+
+  for (int index = 0; index < m_vecList->Size(); index++)
+  {
+    if (strSelectedLabel.Equals(m_vecList->Get(index)->GetLabel()))
+    {
+      SetSelected(index);
+      return;
+    }
+  }
+}
+
+void CGUIDialogSelect::SetSelected(std::vector<int> selectedIndexes)
+{
+  if (selectedIndexes.empty())
+    return;
+
+  for (std::vector<int>::const_iterator it = selectedIndexes.begin(); it != selectedIndexes.end(); it++)
+    SetSelected(*it);
+}
+
+void CGUIDialogSelect::SetSelected(const std::vector<CStdString> &selectedLabels)
+{
+  if (selectedLabels.empty())
+    return;
+
+  for (std::vector<CStdString>::const_iterator it = selectedLabels.begin(); it != selectedLabels.end(); it++)
+    SetSelected(*it);
 }
 
 void CGUIDialogSelect::SetUseDetails(bool useDetails)
 {
   m_useDetails = useDetails;
+}
+
+void CGUIDialogSelect::SetMultiSelection(bool multiSelection)
+{
+  m_multiSelection = multiSelection;
 }
 
 CGUIControl *CGUIDialogSelect::GetFirstFocusableControl(int id)
@@ -263,6 +318,9 @@ void CGUIDialogSelect::OnInitWindow()
   CStdString items;
   items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
+  
+  if (m_multiSelection)
+    EnableButton(true, 186);
 
   if (m_bButtonEnabled)
   {
