@@ -93,7 +93,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
   {
     if (field == FieldId) return "albumview.idAlbum";
     else if (field == FieldAlbum) return "albumview.strAlbum";
-    else if (field == FieldArtist || field == FieldAlbumArtist) return "albumview.strArtist";
+    else if (field == FieldArtist || field == FieldAlbumArtist) return "albumview.strArtists";
     else if (field == FieldGenre) return "albumview.strGenre";
     else if (field == FieldYear) return "albumview.iYear";
     else if (field == FieldMoods) return "albumview.strMoods";
@@ -121,7 +121,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
     else if (field == FieldComment) return "songview.comment";
     else if (field == FieldAlbum) return "songview.strAlbum";
     else if (field == FieldPath) return "songview.strPath";
-    else if (field == FieldArtist || field == FieldAlbumArtist) return "songview.strArtist";
+    else if (field == FieldArtist || field == FieldAlbumArtist) return "songview.strArtists";
     else if (field == FieldGenre) return "songview.strGenre";
     else if (field == FieldDateAdded && queryPart == DatabaseQueryPartOrderBy) return "songview.idSong";     // only used for order clauses
   }
@@ -266,8 +266,8 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
   {
     if (field == FieldId) return CMusicDatabase::album_idAlbum;
     else if (field == FieldAlbum) return CMusicDatabase::album_strAlbum;
-    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::album_strArtist;
-    else if (field == FieldGenre) return CMusicDatabase::album_strGenre;
+    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::album_strArtists;
+    else if (field == FieldGenre) return CMusicDatabase::album_strGenres;
     else if (field == FieldYear) return CMusicDatabase::album_iYear;
     else if (field == FieldMoods) return CMusicDatabase::album_strMoods;
     else if (field == FieldStyles) return CMusicDatabase::album_strStyles;
@@ -293,8 +293,8 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldComment) return CMusicDatabase::song_comment;
     else if (field == FieldAlbum) return CMusicDatabase::song_strAlbum;
     else if (field == FieldPath) return CMusicDatabase::song_strPath;
-    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtist;
-    else if (field == FieldGenre) return CMusicDatabase::song_strGenre;
+    else if (field == FieldGenre) return CMusicDatabase::song_strGenres;
+    else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtists;
   }
   else if (mediaType == MediaTypeMusicVideo)
   {

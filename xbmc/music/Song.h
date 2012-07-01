@@ -80,9 +80,6 @@ public:
   std::vector<std::string> genre;
   CStdString strThumb;
   CStdString strMusicBrainzTrackID;
-  CStdString strMusicBrainzArtistID;
-  CStdString strMusicBrainzAlbumID;
-  CStdString strMusicBrainzAlbumArtistID;
   CStdString strMusicBrainzTRMID;
   CStdString strComment;
   char rating;
@@ -95,6 +92,7 @@ public:
   int iEndOffset;
   int iArtistId;
   int iAlbumId;
+  bool bCompilation;
 
   // Karaoke-specific information
   long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke

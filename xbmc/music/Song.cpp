@@ -37,15 +37,13 @@ CSong::CSong(CMusicInfoTag& tag)
   strAlbum = tag.GetAlbum();
   albumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
-  strMusicBrainzArtistID = tag.GetMusicBrainzArtistID();
-  strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
-  strMusicBrainzAlbumArtistID = tag.GetMusicBrainzAlbumArtistID();
   strMusicBrainzTRMID = tag.GetMusicBrainzTRMID();
   strComment = tag.GetComment();
   rating = tag.GetRating();
   iYear = stTime.wYear;
   iTrack = tag.GetTrackAndDiskNumber();
   iDuration = tag.GetDuration();
+  bCompilation = tag.GetCompilation();
   strThumb = "";
   iStartOffset = 0;
   iEndOffset = 0;
@@ -74,9 +72,6 @@ void CSong::Serialize(CVariant& value)
   value["track"] = iTrack;
   value["year"] = iYear;
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
-  value["musicbrainzartistid"] = strMusicBrainzArtistID;
-  value["musicbrainzalbumid"] = strMusicBrainzAlbumID;
-  value["musicbrainzalbumartistid"] = strMusicBrainzAlbumArtistID;
   value["musicbrainztrmid"] = strMusicBrainzTRMID;
   value["comment"] = strComment;
   value["rating"] = rating;
@@ -97,9 +92,6 @@ void CSong::Clear()
   genre.clear();
   strThumb.Empty();
   strMusicBrainzTrackID.Empty();
-  strMusicBrainzArtistID.Empty();
-  strMusicBrainzAlbumID.Empty();
-  strMusicBrainzAlbumArtistID.Empty();
   strMusicBrainzTRMID.Empty();
   strComment.Empty();
   rating = '0';
@@ -116,6 +108,7 @@ void CSong::Clear()
   iKaraokeDelay = 0;
   iArtistId = -1;
   iAlbumId = -1;
+  bCompilation = false;
 }
 
 CSongMap::CSongMap()

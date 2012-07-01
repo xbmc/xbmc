@@ -130,6 +130,7 @@ bool CID3Tag::Parse()
   bool partOfCompilation = GetCompilation();
   if (partOfCompilation && tag.GetAlbumArtist().empty())
     tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
+  tag.SetCompilation(GetCompilation());
 
   if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().empty() || !tag.GetAlbum().IsEmpty())
     tag.SetLoaded();

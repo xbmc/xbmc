@@ -55,7 +55,7 @@ public:
     m_strDateOfRelease.Empty();
     iRating=-1;
     iYear=-1;
-    idArtist = -1;
+    bCompilation = false;
     songs.clear();
   }
 
@@ -83,7 +83,7 @@ public:
   CStdString m_strDateOfRelease;
   int iRating;
   int iYear;
-  int idArtist;
+  bool bCompilation;
   VECSONGS songs;
 };
 

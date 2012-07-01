@@ -276,7 +276,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       strDBpath.Format("musicdb://3/%i/", album.idAlbum);
       strSQLAlbum.Format("idAlbum=%i", album.idAlbum);
       
-      CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtist", strSQLAlbum);
+      CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);
       
       home->SetProperty("LatestAlbum." + value + ".Title"   , musicdatabase.GetAlbumById(album.idAlbum));
       home->SetProperty("LatestAlbum." + value + ".Year"    , atoi(musicdatabase.GetSingleValue("album", "iYear", strSQLAlbum)));
@@ -319,7 +319,7 @@ bool CRecentlyAddedJob::UpdateTotal()
   musicdatabase.Open();
   int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)"));
   int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)"));
-  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtist)"));
+  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)"));
   musicdatabase.Close();
  
   videodatabase.Open();

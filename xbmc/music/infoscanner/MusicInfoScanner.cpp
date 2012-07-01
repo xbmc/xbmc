@@ -535,8 +535,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     UpdateFolderThumb(songsToAdd, items.GetPath());
 
   // finally, add these to the database
-  set<CStdString> artistsToScan;
-  set< pair<CStdString, CStdString> > albumsToScan;
   m_musicDatabase.BeginTransaction();
   for (unsigned int i = 0; i < songsToAdd.size(); ++i)
   {
@@ -545,51 +543,72 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       m_musicDatabase.RollbackTransaction();
       return i;
     }
-    CSong &song = songsToAdd[i];
-    m_musicDatabase.AddSong(song, false);
-
-    artistsToScan.insert(StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator));
-    albumsToScan.insert(make_pair(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator)));
+    m_musicDatabase.AddSong(songsToAdd[i], false);
   }
   m_musicDatabase.CommitTransaction();
 
+  // Build the artist & album sets
+  set<long> artistsToScan;
+  set<long> albumsToScan;
+  for (unsigned int i = 0; i < songsToAdd.size(); ++i)
+  {
+    if (m_bStop)
+    {
+      return 0;
+    }
+    std::vector<long> songArtists;
+    m_musicDatabase.GetArtistsBySong(songsToAdd[i].idSong, false, songArtists);
+    for (std::vector<long>::iterator it = songArtists.begin(); it != songArtists.end(); ++it)
+      artistsToScan.insert(*it);
+    
+    std::vector<long> albumArtists;
+    m_musicDatabase.GetArtistsByAlbum(songsToAdd[i].iAlbumId, false, albumArtists);
+    for (std::vector<long>::iterator it = albumArtists.begin(); it != albumArtists.end(); ++it)
+      artistsToScan.insert(*it);
+    
+    albumsToScan.insert(songsToAdd[i].iAlbumId);
+  }
+  
+  // Download info & artwork
   bool bCanceled;
-  for (set<CStdString>::iterator i = artistsToScan.begin(); i != artistsToScan.end(); ++i)
+  for (set<long>::iterator it = artistsToScan.begin(); it != artistsToScan.end(); ++it)
   {
     bCanceled = false;
-    long iArtist = m_musicDatabase.GetArtistByName(*i);
-    if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
+    if (find(m_artistsScanned.begin(),m_artistsScanned.end(), *it) == m_artistsScanned.end())
     {
-      m_artistsScanned.push_back(iArtist);
+      CStdString strArtist = m_musicDatabase.GetArtistById(*it);
+      m_artistsScanned.push_back(*it);
       if (!m_bStop && g_guiSettings.GetBool("musiclibrary.downloadinfo"))
       {
         CStdString strPath;
-        strPath.Format("musicdb://2/%u/",iArtist);
-        if (!DownloadArtistInfo(strPath,*i, bCanceled)) // assume we want to retry
+        strPath.Format("musicdb://2/%u/", *it);
+
+        if (!DownloadArtistInfo(strPath, strArtist, bCanceled)) // assume we want to retry
           m_artistsScanned.pop_back();
       }
       else
-        GetArtistArtwork(iArtist, *i);
+        GetArtistArtwork(*it, strArtist);
     }
   }
 
   if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
   {
-    for (set< pair<CStdString, CStdString> >::iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
+    for (set<long>::iterator it = albumsToScan.begin(); it != albumsToScan.end(); ++it)
     {
       if (m_bStop)
         return songsToAdd.size();
 
-      long iAlbum = m_musicDatabase.GetAlbumByName(i->first, i->second);
       CStdString strPath;
-      strPath.Format("musicdb://3/%u/",iAlbum);
+      strPath.Format("musicdb://3/%u/",*it);
 
+      CAlbum album;
+      m_musicDatabase.GetAlbumInfo(*it, album, NULL);
       bCanceled = false;
-      if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
+      if (find(m_albumsScanned.begin(), m_albumsScanned.end(), *it) == m_albumsScanned.end())
       {
         CMusicAlbumInfo albumInfo;
-        if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
-          m_albumsScanned.push_back(iAlbum);
+        if (DownloadAlbumInfo(strPath, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator), album.strAlbum, bCanceled, albumInfo))
+          m_albumsScanned.push_back(*it);
       }
     }
   }
