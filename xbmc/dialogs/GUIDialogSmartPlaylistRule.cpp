@@ -225,7 +225,13 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     g_mediaManager.GetLocalDrives(sources);
     
-    CGUIDialogFileBrowser::ShowAndGetDirectory(sources,g_localizeStrings.Get(657),m_rule.GetLocalizedParameter(m_type),false);
+    CStdString path = m_rule.GetLocalizedParameter(m_type);
+    CGUIDialogFileBrowser::ShowAndGetDirectory(sources, g_localizeStrings.Get(657), path, false);
+    if (m_rule.m_parameter.size() > 0)
+      m_rule.m_parameter.clear();
+    if (!path.empty())
+      m_rule.m_parameter.push_back(path);
+
     UpdateButtons();
     return;
   }
