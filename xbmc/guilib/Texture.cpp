@@ -223,15 +223,24 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
+  if (originalWidth)
+    *originalWidth = image.originalwidth;
+  if (originalHeight)
+    *originalHeight = image.originalheight;
+
+  LoadFromImage(image, autoRotate);
+  dll.ReleaseImage(&image);
+
+  return true;
+}
+
+void CBaseTexture::LoadFromImage(ImageInfo &image, bool autoRotate)
+{
   m_hasAlpha = NULL != image.alpha;
 
   Allocate(image.width, image.height, XB_FMT_A8R8G8B8);
   if (autoRotate && image.exifInfo.Orientation)
     m_orientation = image.exifInfo.Orientation - 1;
-  if (originalWidth)
-    *originalWidth = image.originalwidth;
-  if (originalHeight)
-    *originalHeight = image.originalheight;
 
   unsigned int dstPitch = GetPitch();
   unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
@@ -270,11 +279,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
       dst += dstPitch;
     }
   }
-  dll.ReleaseImage(&image);
-
   ClampToEdge();
-
-  return true;
 }
 
 bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)

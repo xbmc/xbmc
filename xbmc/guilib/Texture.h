@@ -33,6 +33,7 @@ struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 class CTexture;
 class CGLTexture;
 class CDXTexture;
+struct ImageInfo;
 
 /*!
 \ingroup textures
@@ -77,6 +78,7 @@ public:
   bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
 
 protected:
+  void LoadFromImage(ImageInfo &image, bool autoRotate = false);
   // helpers for computation of texture parameters for compressed textures
   unsigned int GetPitch(unsigned int width) const;
   unsigned int GetRows(unsigned int height) const;
