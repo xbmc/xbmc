@@ -373,7 +373,7 @@ uint32_t *CPicture::FlipHorizontal(uint32_t *pixels, unsigned int width, unsigne
     for (unsigned int x = 0; x < width / 2; ++x)
       std::swap(line[x], line[width - 1 - x]);
   }
-  return pixels;
+  return NULL;
 }
 
 uint32_t *CPicture::FlipVertical(uint32_t *pixels, unsigned int width, unsigned int height)
@@ -386,7 +386,7 @@ uint32_t *CPicture::FlipVertical(uint32_t *pixels, unsigned int width, unsigned 
     for (unsigned int x = 0; x < width; ++x)
       std::swap(*line1++, *line2++);
   }
-  return pixels;
+  return NULL;
 }
 
 uint32_t *CPicture::Rotate180CCW(uint32_t *pixels, unsigned int width, unsigned int height)
@@ -405,7 +405,7 @@ uint32_t *CPicture::Rotate180CCW(uint32_t *pixels, unsigned int width, unsigned 
     for (unsigned int x = 0; x < width / 2; ++x)
       std::swap(line[x], line[width - 1 - x]);
   }
-  return pixels;
+  return NULL;
 }
 
 uint32_t *CPicture::Rotate90CCW(uint32_t *pixels, unsigned int width, unsigned int height)
