@@ -54,10 +54,15 @@ public:
 
   /* Function to get path of a tempfile */
   CStdString TempFilePath(XFILE::CFile const* const tempfile);
+
+  /* Functions to get variables used in the TestDownloadQueue tests. */
+  std::vector<CStdString> &getTestDownloadQueueUrls();
 private:
   CXBMCTestUtils();
   CXBMCTestUtils(CXBMCTestUtils const&);
   void operator=(CXBMCTestUtils const&);
+
+  std::vector<CStdString> TestDownloadQueueUrls;
 };
 
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)

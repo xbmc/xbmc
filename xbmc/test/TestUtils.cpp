@@ -141,3 +141,8 @@ CStdString CXBMCTestUtils::TempFilePath(XFILE::CFile const* const tempfile)
   CTempFile const* const f = static_cast<CTempFile const* const>(tempfile);
   return f->getTempFilePath();
 }
+
+std::vector<CStdString> &CXBMCTestUtils::getTestDownloadQueueUrls()
+{
+  return TestDownloadQueueUrls;
+}
