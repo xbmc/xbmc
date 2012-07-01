@@ -88,6 +88,7 @@ protected:
   void OnFocus();
   void OnUnFocus();
   virtual void ProcessText(unsigned int currentTime);
+  virtual void RenderText();
   CGUILabel::COLOR GetTextColor() const;
 
   CGUITexture m_imgFocus;

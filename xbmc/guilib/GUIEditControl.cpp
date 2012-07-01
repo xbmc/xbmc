@@ -372,8 +372,10 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
 
   bool changed = false;
 
-  float posX = m_label.GetRenderRect().x1;
-  float maxTextWidth = m_label.GetMaxWidth();
+  m_clipRect.x1 = m_label.GetRenderRect().x1;
+  m_clipRect.x2 = m_clipRect.x1 + m_label.GetMaxWidth();
+  m_clipRect.y1 = m_posY;
+  m_clipRect.y2 = m_posY + m_height;
 
   // start by rendering the normal text
   float leftTextWidth = m_label.GetRenderRect().Width();
@@ -382,15 +384,14 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     // render the text on the left
     changed |= m_label.SetColor(GetTextColor());
     changed |= m_label.Process(currentTime);
-    
-    posX += leftTextWidth + spaceWidth;
-    maxTextWidth -= leftTextWidth + spaceWidth;
+
+    m_clipRect.x1 += leftTextWidth + spaceWidth;
   }
 
-  if (g_graphicsContext.SetClipRegion(posX, m_posY, maxTextWidth, m_height))
+  if (g_graphicsContext.SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
   {
     uint32_t align = m_label.GetLabelInfo().align & XBFONT_CENTER_Y; // start aligned left
-    if (m_label2.GetTextWidth() < maxTextWidth)
+    if (m_label2.GetTextWidth() < m_clipRect.Width())
     { // align text as our text fits
       if (leftTextWidth > 0)
       { // right align as we have 2 labels
@@ -413,18 +414,30 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
       text.Insert(m_cursorPos, col);
     }
 
-    changed |= m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
+    changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
     if (text.IsEmpty())
       changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
     else
       changed |= m_label2.SetTextW(text);
     changed |= m_label2.SetAlign(align);
     changed |= m_label2.SetColor(GetTextColor());
+    changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_CLIP);
     changed |= m_label2.Process(currentTime);
     g_graphicsContext.RestoreClipRegion();
   }
   if (changed)
     MarkDirtyRegion();
+}
+
+void CGUIEditControl::RenderText()
+{
+  m_label.Render();
+
+  if (g_graphicsContext.SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
+  {
+    m_label2.Render();
+    g_graphicsContext.RestoreClipRegion();
+  }
 }
 
 void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)

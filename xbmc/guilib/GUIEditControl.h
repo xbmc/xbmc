@@ -80,6 +80,7 @@ public:
 
 protected:
   virtual void ProcessText(unsigned int currentTime);
+  virtual void RenderText();
   CStdStringW GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
@@ -98,6 +99,7 @@ protected:
   CGUIInfoLabel m_hintInfo;
   float m_textOffset;
   float m_textWidth;
+  CRect m_clipRect; ///< clipping rect for the second label
 
   static const int spaceWidth = 5;
 
