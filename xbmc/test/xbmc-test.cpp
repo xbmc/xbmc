@@ -39,6 +39,7 @@ public:
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);
+  CXBMCTestUtils::Instance().ParseArgs(argc, argv);
 
   // we need to configure CThread to use a dummy logger
   NullLogger* nullLogger = new NullLogger();

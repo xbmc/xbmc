@@ -57,6 +57,9 @@ public:
 
   /* Functions to get variables used in the TestDownloadQueue tests. */
   std::vector<CStdString> &getTestDownloadQueueUrls();
+
+  /* Function to parse command line options */
+  void ParseArgs(int argc, char **argv);
 private:
   CXBMCTestUtils();
   CXBMCTestUtils(CXBMCTestUtils const&);
