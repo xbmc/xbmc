@@ -25,7 +25,6 @@
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ZipManager.h"
-#include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIListContainer.h"
 #include "dialogs/GUIDialogMediaSource.h"

@@ -50,7 +50,6 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "pictures/Picture.h"
 #include "TextureCache.h"
 
 using namespace XFILE;

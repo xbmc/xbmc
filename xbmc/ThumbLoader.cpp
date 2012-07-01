@@ -23,7 +23,6 @@
 #include "ThumbLoader.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
-#include "pictures/Picture.h"
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
 #include "FileItem.h"

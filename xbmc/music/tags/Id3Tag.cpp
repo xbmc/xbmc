@@ -22,7 +22,6 @@
 #include "Id3Tag.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
-#include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"

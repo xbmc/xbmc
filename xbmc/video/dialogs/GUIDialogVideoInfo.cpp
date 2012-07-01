@@ -22,7 +22,6 @@
 #include "GUIDialogVideoInfo.h"
 #include "guilib/GUIWindow.h"
 #include "Util.h"
-#include "pictures/Picture.h"
 #include "guilib/GUIImage.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

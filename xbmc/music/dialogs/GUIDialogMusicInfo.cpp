@@ -23,7 +23,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "Util.h"
 #include "guilib/GUIImage.h"
-#include "pictures/Picture.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
 #include "music/MusicDatabase.h"

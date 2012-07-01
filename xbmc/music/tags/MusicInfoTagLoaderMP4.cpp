@@ -21,7 +21,6 @@
 
 #include "MusicInfoTagLoaderMP4.h"
 #include "Util.h"
-#include "pictures/Picture.h"
 #include "id3v1genre.h"
 #include "MusicInfoTag.h"
 #include "guilib/LocalizeStrings.h"

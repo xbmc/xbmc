@@ -42,7 +42,6 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "pictures/Picture.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"

@@ -21,7 +21,6 @@
 
 #include "threads/SystemClock.h"
 #include "GUILargeTextureManager.h"
-#include "pictures/Picture.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/Texture.h"

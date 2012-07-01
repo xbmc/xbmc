@@ -24,7 +24,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
-#include "pictures/Picture.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/Crc32.h"
 #include "filesystem/DirectoryCache.h"
