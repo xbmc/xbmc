@@ -413,7 +413,6 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClear(GL_COLOR_BUFFER_BIT);
 
     g_graphicsContext.EndPaint();
-    glFinish();
     return;
   }
 
@@ -479,9 +478,6 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
 
   g_graphicsContext.EndPaint();
-#if !defined(TARGET_DARWIN)
-  glFinish();
-#endif
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
