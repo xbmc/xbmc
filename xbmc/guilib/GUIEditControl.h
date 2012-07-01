@@ -41,6 +41,7 @@ class CGUIEditControl : public CGUIButtonControl
 {
 public:
   enum INPUT_TYPE {
+                    INPUT_TYPE_READONLY = -1,
                     INPUT_TYPE_TEXT = 0,
                     INPUT_TYPE_NUMBER,
                     INPUT_TYPE_SECONDS,
