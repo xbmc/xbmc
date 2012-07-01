@@ -61,6 +61,9 @@ pgwin32_wputenv(const wchar_t *envval)
 			"msvcr90", 0, NULL
 		},						/* Visual Studio 2008 */
 		{
+			"msvcr100", 0, NULL
+		},						/* Visual Studio 2010 */
+		{
 			NULL, 0, NULL
 		}
 	};
