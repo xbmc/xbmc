@@ -9,6 +9,7 @@ SRCS=	\
 	TestCPUInfo.cpp \
 	TestCrc32.cpp \
 	TestCryptThreading.cpp \
+	TestDatabaseUtils.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
