@@ -312,13 +312,41 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     item.SetProperty("set_folder_thumb", pItem->GetPath());
 
   bool modified = ShowIMDB(&item, scraper);
-  if (modified &&
-     (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
-      g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
+  if (modified)
   {
-    int itemNumber = m_viewControl.GetSelectedItem();
-    Update(m_vecItems->GetPath());
-    m_viewControl.SetSelectedItem(itemNumber);
+    XFILE::CVideoDatabaseDirectory dir;
+    VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems->GetPath());
+
+    if (node == NODE_TYPE_SEASONS)
+    {
+      // refreshing tv show changes its database id - we need to get new id
+      // to construct updated path
+      CVideoDatabase db;
+      db.Open();
+      int idTvShow = db.GetTvShowId(item.GetPath());
+      db.Close();
+
+      if (idTvShow != -1)
+      {
+        // replace old id with new one
+        CStdString updatedPath;
+        updatedPath.Format("videodb://2/2/%i/",idTvShow);
+        if (!updatedPath.Equals(m_vecItems->GetPath(), true))
+        {
+          // library path to tvshow changed - use new path
+          m_vecItems->SetPath(updatedPath);
+          m_history.RemoveParentPath(); // previous path is no longer valid
+        }
+      }
+    }
+
+    if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
+        g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV) // since we can be called from the music library we need this check
+    {
+      int itemNumber = m_viewControl.GetSelectedItem();
+      Update(m_vecItems->GetPath());
+      m_viewControl.SetSelectedItem(itemNumber);
+    }
   }
 }
 
