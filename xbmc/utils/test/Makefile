@@ -11,6 +11,7 @@ SRCS=	\
 	TestCryptThreading.cpp \
 	TestDatabaseUtils.cpp \
 	TestDownloadQueue.cpp \
+	TestDownloadQueueManager.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
