@@ -13,6 +13,7 @@ SRCS=	\
 	TestDownloadQueue.cpp \
 	TestDownloadQueueManager.cpp \
 	TestEndianSwap.cpp \
+	Testfastmemcpy.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
