@@ -77,6 +77,22 @@ public:
    */
   static void CategoriseAlbums(VECSONGS &songs, VECALBUMS &albums);
 
+  /*! \brief Find art for albums
+   Based on the albums in the folder, finds whether we have unique album art
+   and assigns to the album if we do.
+
+   In order of priority:
+    1. If there is a single album in the folder, then the folder art is assigned to the album.
+    2. We find the art for each song. A .tbn file takes priority over embedded art.
+    3. If we have a unique piece of art for all songs in the album, we assign that to the album
+       and remove that art from each song so that they inherit from the album.
+    4. If there is not a unique piece of art for each song, then no art is assigned
+       to the album.
+
+   \param albums [in/out] list of albums to categorise - art field may be altered.
+   \param path [in] path containing albums.
+   */
+  static void FindArtForAlbums(VECALBUMS &albums, const CStdString &path);
   static void CheckForVariousArtists(VECSONGS &songs);
   static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 

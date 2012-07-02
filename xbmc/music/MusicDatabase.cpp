@@ -4116,6 +4116,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path1, CSongMap &song
       while (!m_pDS->eof())
       {
         CSong song = GetSongFromDataset();
+        song.strThumb = GetArtForItem(song.idSong, "song", "thumb");
         songs.Add(song.strFileName, song);
         songIds += PrepareSQL("%i,", song.idSong);
         ids.push_back(song.idSong);

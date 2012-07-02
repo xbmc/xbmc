@@ -50,6 +50,7 @@
 #include "utils/URIUtils.h"
 #include "ThumbnailCache.h"
 #include "TextureCache.h"
+#include "ThumbLoader.h"
 #include "interfaces/AnnouncementManager.h"
 
 #include <algorithm>
@@ -383,9 +384,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   CStdString hash;
   GetPathHash(items, hash);
 
-  // get the folder's thumb (this will cache the album thumb).
-  items.SetMusicThumb(true); // true forces it to get a remote thumb
-
   // check whether we need to rescan or not
   CStdString dbHash;
   if (!m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
@@ -513,6 +511,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
         song.iStartOffset = pItem->m_lStartOffset;
         song.iEndOffset = pItem->m_lEndOffset;
+        song.strThumb = pItem->GetUserMusicThumb(true);
         if (dbSong)
         { // keep the db-only fields intact on rescan...
           song.iTimesPlayed = dbSong->iTimesPlayed;
@@ -520,9 +519,9 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
           song.iKaraokeNumber = dbSong->iKaraokeNumber;
 
           if (song.rating == '0') song.rating = dbSong->rating;
+          if (song.strThumb.empty())
+            song.strThumb = dbSong->strThumb;
         }
-        pItem->SetMusicThumb();
-        song.strThumb = pItem->GetThumbnailImage();
         songsToAdd.push_back(song);
 //        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, pItem->GetPath().c_str());
       }
@@ -533,9 +532,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
   VECALBUMS albums;
   CategoriseAlbums(songsToAdd, albums);
-
-  if (!items.HasThumbnail())
-    UpdateFolderThumb(songsToAdd, items.GetPath());
+  FindArtForAlbums(albums, items.GetPath());
 
   // finally, add these to the database
   m_musicDatabase.BeginTransaction();
@@ -728,6 +725,73 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
 
       albums.push_back(album);
     }
+  }
+}
+
+void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &path)
+{
+  /*
+   If there's a single album in the folder, then art can be taken from
+   the folder art.
+   */
+  std::string albumArt;
+  if (albums.size() == 1)
+  {
+    CFileItem album(path, true);
+    albumArt = album.GetUserMusicThumb(true);
+    albums[0].art["thumb"] = albumArt;
+  }
+  for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
+  {
+    CAlbum &album = *i;
+    /*
+     Find art that is common across these items
+     If we find a single art image we treat it as the album art
+     else we keep everything as song art.
+     */
+    bool singleArt = true;
+    CSong *art = NULL;
+    for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
+    {
+      CSong &song = *k;
+      if (song.HasArt())
+      {
+        if (art && !art->ArtMatches(song))
+        {
+          singleArt = false;
+          break;
+        }
+        if (!art)
+          art = &song;
+      }
+    }
+    if (singleArt)
+    { // a single piece of art was found for these songs so assign to the album
+      // and clear out of the songs
+      if (art && albumArt.empty())
+      {
+        if (!art->strThumb.empty())
+          albumArt = art->strThumb;
+        else
+          albumArt = CTextureCache::GetWrappedImageURL(art->strFileName, "music");
+      }
+      for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
+        k->strThumb.clear();
+      albums[0].art["thumb"] = albumArt;
+    }
+    else
+    { // more than one piece of art was found for these songs, so cache per song
+      // and don't assign to the album
+      for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
+      {
+        if (k->strThumb.empty() && !k->embeddedArt.empty())
+          k->strThumb = CTextureCache::GetWrappedImageURL(k->strFileName, "music");
+      }
+    }
+  }
+  if (albums.size() == 1 && !albumArt.empty())
+  { // assign to folder thumb as well
+    CMusicThumbLoader::SetCachedImage(path, "thumb", albumArt);
   }
 }
 
