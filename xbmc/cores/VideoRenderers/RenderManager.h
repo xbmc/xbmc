@@ -135,8 +135,7 @@ protected:
   void Render(bool clear, DWORD flags, DWORD alpha);
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
-  void PresentWeave(bool clear, DWORD flags, DWORD alpha);
-  void PresentBob(bool clear, DWORD flags, DWORD alpha);
+  void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);

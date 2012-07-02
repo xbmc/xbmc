@@ -628,8 +628,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       index = m_iYV12RenderBuffer;
     }
   }
-  else
-    m_iLastRenderBuffer = index;
 
   if (clear)
   {
@@ -652,17 +650,26 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   }
 
-  if( (flags & RENDER_FLAG_TOP)
-   && (flags & RENDER_FLAG_BOT) )
+  if(flags & RENDER_FLAG_WEAVE)
   {
+    int top_index = index;
+    int bot_index = index;
+
+    if((flags & RENDER_FLAG_FIELD0) && m_iLastRenderBuffer > -1)
+    {
+      if(flags & RENDER_FLAG_TOP)
+        bot_index = m_iLastRenderBuffer;
+      else
+        top_index = m_iLastRenderBuffer;
+    }
+
     glEnable(GL_POLYGON_STIPPLE);
-
     glPolygonStipple(stipple_weave);
-    Render(flags & ~RENDER_FLAG_BOT, index);
+    Render((flags & ~RENDER_FLAG_FIELDMASK) | RENDER_FLAG_TOP, top_index);
     glPolygonStipple(stipple_weave+4);
-    Render(flags & ~RENDER_FLAG_TOP , index);
-
+    Render((flags & ~RENDER_FLAG_FIELDMASK) | RENDER_FLAG_BOT, bot_index);
     glDisable(GL_POLYGON_STIPPLE);
+
   }
   else
     Render(flags, index);
@@ -732,6 +739,8 @@ void CLinuxRendererGL::DrawBlackBars()
 void CLinuxRendererGL::FlipPage(int source)
 {
   UnBindPbo(m_buffers[m_iYV12RenderBuffer]);
+
+  m_iLastRenderBuffer = m_iYV12RenderBuffer;
 
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
