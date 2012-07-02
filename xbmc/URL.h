@@ -71,6 +71,8 @@ public:
   static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
   static void Decode(CStdString& strURLData);
   static void Encode(CStdString& strURLData);
+  static CStdString TranslateProtocol(const CStdString& prot);
+
 protected:
   int m_iPort;
   CStdString m_strHostName;
