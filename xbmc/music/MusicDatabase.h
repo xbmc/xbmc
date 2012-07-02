@@ -127,7 +127,14 @@ public:
   void DeleteAlbumInfo();
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
-  int AddSong(const CSong &song, bool bCheck = true);
+
+  /*! \brief Add an album and all its songs to the database
+   \param album the album to add
+   \param songIDs [out] the ids of the added songs
+   \return the id of the album
+   */
+  int AddAlbum(const CAlbum &album, std::vector<int> &songIDs);
+
   int UpdateSong(const CSong& song, int idSong = -1);
   int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
   bool DeleteAlbumInfo(int idArtist);
@@ -296,6 +303,7 @@ protected:
   virtual int GetMinVersion() const { return 26; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
+  int AddSong(const CSong& song, bool bCheck = true, int idAlbum = -1);
   int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year, bool bCompilation);
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);

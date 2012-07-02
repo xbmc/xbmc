@@ -268,7 +268,19 @@ void CMusicDatabase::CreateViews()
               "    artist.idArtist = artistinfo.idArtist");
 }
 
-int CMusicDatabase::AddSong(const CSong& song, bool bCheck)
+int CMusicDatabase::AddAlbum(const CAlbum &album, vector<int> &songIDs)
+{
+  // add the album
+  int idAlbum = AddAlbum(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator), -1, StringUtils::Join(album.genre, g_advancedSettings.m_musicItemSeparator), album.iYear, album.bCompilation);
+
+  // add the songs
+  for (VECSONGS::const_iterator i = album.songs.begin(); i != album.songs.end(); ++i)
+    songIDs.push_back(AddSong(*i, false, idAlbum));
+
+  return idAlbum;
+}
+
+int CMusicDatabase::AddSong(const CSong& song, bool bCheck, int idAlbum)
 {
   int idSong = -1;
   CStdString strSQL;
@@ -286,11 +298,13 @@ int CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     int idPath = AddPath(strPath);
     int idThumb = AddThumb(song.strThumb);
-    int idAlbum;
-    if (!song.albumArtist.empty())  // have an album artist
-      idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.albumArtist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
-    else
-      idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
+    if (idAlbum < 0)
+    {
+      if (!song.albumArtist.empty())  // have an album artist
+        idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.albumArtist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
+      else
+        idAlbum = AddAlbum(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), idThumb, StringUtils::Join(song.genre, g_advancedSettings.m_musicItemSeparator), song.iYear, song.bCompilation);
+    }
 
     DWORD crc = ComputeCRC(song.strFileName);
 

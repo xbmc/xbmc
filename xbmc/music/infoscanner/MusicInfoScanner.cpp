@@ -536,39 +536,34 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
   // finally, add these to the database
   m_musicDatabase.BeginTransaction();
-  for (unsigned int i = 0; i < songsToAdd.size(); ++i)
+  int numAdded = 0;
+  set<long> albumsToScan;
+  set<long> artistsToScan;
+  for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
   {
+    vector<int> songIDs;
+    int idAlbum = m_musicDatabase.AddAlbum(*i, songIDs);
+    numAdded += i->songs.size();
     if (m_bStop)
     {
       m_musicDatabase.RollbackTransaction();
-      return i;
+      return numAdded;
     }
-    m_musicDatabase.AddSong(songsToAdd[i], false);
+
+    // Build the artist & album sets
+    albumsToScan.insert(idAlbum);
+    for (vector<int>::iterator j = songIDs.begin(); j != songIDs.end(); ++j)
+    {
+      vector<long> songArtists;
+      m_musicDatabase.GetArtistsBySong(*j, false, songArtists);
+      artistsToScan.insert(songArtists.begin(), songArtists.end());
+    }
+    std::vector<long> albumArtists;
+    m_musicDatabase.GetArtistsByAlbum(idAlbum, false, albumArtists);
+    artistsToScan.insert(albumArtists.begin(), albumArtists.end());
   }
   m_musicDatabase.CommitTransaction();
 
-  // Build the artist & album sets
-  set<long> artistsToScan;
-  set<long> albumsToScan;
-  for (unsigned int i = 0; i < songsToAdd.size(); ++i)
-  {
-    if (m_bStop)
-    {
-      return 0;
-    }
-    std::vector<long> songArtists;
-    m_musicDatabase.GetArtistsBySong(songsToAdd[i].idSong, false, songArtists);
-    for (std::vector<long>::iterator it = songArtists.begin(); it != songArtists.end(); ++it)
-      artistsToScan.insert(*it);
-    
-    std::vector<long> albumArtists;
-    m_musicDatabase.GetArtistsByAlbum(songsToAdd[i].iAlbumId, false, albumArtists);
-    for (std::vector<long>::iterator it = albumArtists.begin(); it != albumArtists.end(); ++it)
-      artistsToScan.insert(*it);
-    
-    albumsToScan.insert(songsToAdd[i].iAlbumId);
-  }
-  
   // Download info & artwork
   bool bCanceled;
   for (set<long>::iterator it = artistsToScan.begin(); it != artistsToScan.end(); ++it)
