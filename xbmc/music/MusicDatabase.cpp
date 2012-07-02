@@ -3933,103 +3933,6 @@ int CMusicDatabase::GetCompilationAlbumsCount()
   return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1"), NULL, 10);
 }
 
-bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strVariousArtists = g_localizeStrings.Get(340);
-    int idVariousArtists=AddArtist(strVariousArtists);
-    if (idVariousArtists<0)
-      return false;
-
-    CStdString strSQL = PrepareSQL("select * from albumview where idArtist=%i", idVariousArtists);
-
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-
-    items.Reserve(iRowsFound);
-
-    // get data from returned rows
-    while (!m_pDS->eof())
-    {
-      CStdString strDir;
-      strDir.Format("%s%ld/", strBaseDir.c_str(), m_pDS->fv("idAlbum").get_asInt());
-      CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
-      items.Add(pItem);
-
-      m_pDS->next();
-    }
-
-    // cleanup
-    m_pDS->close();
-    return true;
-
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
-}
-
-bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strVariousArtists = g_localizeStrings.Get(340);
-    int idVariousArtists=AddArtist(strVariousArtists);
-    if (idVariousArtists<0)
-      return false;
-
-    CStdString strSQL = PrepareSQL("select * from songview where idAlbum IN (select idAlbum from album where idArtist=%i)", idVariousArtists);
-
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-
-    items.Reserve(iRowsFound);
-
-    // get data from returned rows
-    while (!m_pDS->eof())
-    {
-      CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), strBaseDir);
-      items.Add(item);
-
-      m_pDS->next();
-    }
-
-    // cleanup
-    m_pDS->close();
-    return true;
-
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
-}
-
 void CMusicDatabase::SplitString(const CStdString &multiString, vector<string> &vecStrings, CStdString &extraStrings)
 {
   vecStrings = StringUtils::Split(multiString, g_advancedSettings.m_musicItemSeparator);
@@ -5096,29 +4999,6 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
   CStdString strFanart = item.GetCachedFanart();
   if (XFILE::CFile::Exists(strFanart))
     item.SetProperty("fanart_image",strFanart);
-}
-
-int CMusicDatabase::GetVariousArtistsAlbumsCount()
-{
-  CStdString strVariousArtists = g_localizeStrings.Get(340);
-  int idVariousArtists=AddArtist(strVariousArtists);
-  CStdString strSQL = PrepareSQL("select count(idAlbum) from album where idArtist=%i", idVariousArtists);
-  int result=0;
-  try
-  {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
-    m_pDS->query(strSQL.c_str());
-    if (!m_pDS->eof())
-      result = m_pDS->fv(0).get_asInt();
-    m_pDS->close();
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-
-  return result;
 }
 
 void CMusicDatabase::AnnounceRemove(std::string content, int id)
