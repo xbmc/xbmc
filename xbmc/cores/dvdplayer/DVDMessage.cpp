@@ -34,9 +34,9 @@ class CDVDMsgGeneralSynchronizePriv
 {
 public:
   CDVDMsgGeneralSynchronizePriv(unsigned int timeout, unsigned int sources)
-    : timeout(timeout)
-    , sources(sources ? sources : SYNCSOURCE_ALL)
+    : sources(sources ? sources : SYNCSOURCE_ALL)
     , reached(0)
+    , timeout(timeout)
   {}
   unsigned int                   sources;
   unsigned int                   reached;
