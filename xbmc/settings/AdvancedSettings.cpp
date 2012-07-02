@@ -877,6 +877,63 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     }
   }
 
+  // on access - wake on lan
+  TiXmlElement* pOnAccessWakeUp = pRootElement->FirstChildElement("onaccesswakeup");
+  if (pOnAccessWakeUp)
+  {
+    m_onAccessWakeUp.clear();
+    CLog::Log(LOGDEBUG,"Configuring on-access wakeup");
+    TiXmlNode* pWakeUp = pOnAccessWakeUp->FirstChildElement("wakeup");
+    while (pWakeUp)
+    {
+      CStdString strHost, strMac;
+      TiXmlNode* pHost = pWakeUp->FirstChild("host");
+      if (pHost)
+        strHost = pHost->FirstChild()->Value();
+      TiXmlNode* pMac = pWakeUp->FirstChild("mac");
+      if (pMac)
+        strMac = pMac->FirstChild()->Value();
+
+      if (strHost.IsEmpty())
+          CLog::Log(LOGERROR,"  Missing <host> tag");
+      else if (strMac.IsEmpty())
+          CLog::Log(LOGERROR,"  Missing <mac> tag");
+      else
+      {
+        int tmout = 600 ; //seconds .. 10 min default
+        {
+           const int _min = 10, _max = 12*60*60;
+
+           XMLUtils::GetInt(pWakeUp, "tmout", tmout, _min, _max);
+        }
+        int wait = 0 ; //seconds .. 0 default
+        {
+           const int _min = 0, _max = 2*60; // 2 minutes ..
+
+           XMLUtils::GetInt(pWakeUp, "wait", wait, _min, _max);
+        }
+
+        CAdvancedSettings::WakeUpEntry* entry = new CAdvancedSettings::WakeUpEntry ();
+
+        entry->host = strHost;
+        entry->mac = strMac;
+        entry->timeout_ms = tmout * 1000;
+        entry->wait_ms = wait * 1000;
+
+        CLog::Log(LOGDEBUG,"  Registering wakeup entry:");
+        CLog::Log(LOGDEBUG,"    HostName       : [%s]", entry->host.c_str());
+        CLog::Log(LOGDEBUG,"    MacAddress     : [%s]", entry->mac.c_str());
+        CLog::Log(LOGDEBUG,"    Timeout (sec)  : [%d]", entry->timeout_ms / 1000);
+        CLog::Log(LOGDEBUG,"    WaitTime (sec) : [%d]", entry->wait_ms / 1000);
+
+        m_onAccessWakeUp.push_back (entry);
+      }
+
+      // get next one
+      pWakeUp = pWakeUp->NextSiblingElement("wakeup");
+    }
+  }
+
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
   XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 0, 1024);

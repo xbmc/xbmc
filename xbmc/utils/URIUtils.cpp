@@ -29,6 +29,9 @@
 #include "network/DNSNameCache.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "utils/log.h"
 #include "URL.h"
 #include "StringUtils.h"
 
@@ -356,7 +359,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
-CStdString URIUtils::SubstitutePath(const CStdString& strPath)
+static CStdString SubstituteAdvancedPath (const CStdString& strPath)
 {
   for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
       i != g_advancedSettings.m_pathSubstitutions.end(); i++)
@@ -370,6 +373,92 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath)
     }
   }
   return strPath;
+}
+
+static void WaitAfterWake (unsigned wait_ms)
+{
+   if (g_application.IsCurrentThread() && wait_ms > 600)
+   {
+      CSingleExit ex(g_graphicsContext);
+
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*) g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+
+      dialog->Show();
+
+      while (wait_ms > 300)
+      {
+         CSingleLock lock(g_graphicsContext);
+
+         g_windowManager.ProcessRenderLoop();
+
+         if (dialog->IsCanceled())
+         {
+            wait_ms = 0;
+         }
+         else
+         {
+            Sleep (20);
+
+            wait_ms -= 20;
+         }
+      }
+
+      dialog->Close();
+   }
+
+   Sleep (wait_ms);
+}
+
+static void WakeUp (const CStdString& mac_address, const CStdString& hostAddress, const CStdString& targetName)
+{
+   CLog::Log(LOGDEBUG,"OnAccessWakeUp [%s] trigged by accessing : %s", hostAddress.c_str(), targetName.c_str());
+
+   g_application.getNetwork().WakeOnLan(mac_address.c_str());
+}
+
+void URIUtils::WakeUpHost (const CStdString& hostName, const CStdString& targetName)
+{
+   for (CAdvancedSettings::WakeUpMapping::iterator i = g_advancedSettings.m_onAccessWakeUp.begin();
+      i != g_advancedSettings.m_onAccessWakeUp.end(); ++i)
+   {
+      CAdvancedSettings::WakeUpEntry* entry = *i;
+
+      if (hostName.CompareNoCase(entry->host) == 0)
+      {
+         // concurrency ; even if we have multiple threads coming here the worst thing
+         // that can happen is that we accidentally issue 2 wakeups
+
+         bool dowake = entry->nextWake.IsTimePast();
+
+         entry->nextWake.Set (entry->timeout_ms);
+
+         if (dowake)
+         {
+            WakeUp (entry->mac, entry->host, targetName);
+
+            WaitAfterWake (entry->wait_ms);
+         }
+
+         return; // done
+      }
+   }
+}
+
+CStdString URIUtils::SubstitutePath(const CStdString& strPath)
+{
+   CStdString realPath = SubstituteAdvancedPath (strPath);
+
+   // it is about to be accessed ; see if wakeup is required
+   {
+      CURL url (realPath);
+
+      CStdString hostName = url.GetHostName();
+
+      if (!hostName.IsEmpty())
+         WakeUpHost (hostName, realPath);
+   }
+
+   return realPath;
 }
 
 bool URIUtils::IsRemote(const CStdString& strFile)

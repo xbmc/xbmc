@@ -392,6 +392,8 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());
 
+  URIUtils::WakeUpHost (dbSettings.host, "DataBase:" + dbSettings.name); // in case of mysql or other remote db
+
   if (m_pDB->connect(create) != DB_CONNECTION_OK)
     return false;
 
