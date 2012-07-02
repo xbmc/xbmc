@@ -1706,7 +1706,7 @@ void CMusicDatabase::IncrementPlayCount(const CFileItem& item)
   }
 }
 
-bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs, bool bAppendToMap)
+bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs, bool bAppendToMap)
 {
   CStdString strPath(strPath1);
   try
@@ -1715,7 +1715,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs,
       URIUtils::AddSlashAtEnd(strPath);
 
     if (!bAppendToMap)
-      songs.Clear();
+      songs.clear();
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
@@ -1731,7 +1731,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs,
     while (!m_pDS->eof())
     {
       CSong song = GetSongFromDataset();
-      songs.Add(song.strFileName, song);
+      songs.insert(make_pair(song.strFileName, song));
       m_pDS->next();
     }
 
@@ -3958,7 +3958,7 @@ bool CMusicDatabase::GetPathHash(const CStdString &path, CStdString &hash)
   return false;
 }
 
-bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path1, CSongMap &songs, bool exact)
+bool CMusicDatabase::RemoveSongsFromPath(const CStdString& path1, MAPSONGS& songs, bool exact)
 {
   // We need to remove all songs from this path, as their tags are going
   // to be re-read.  We need to remove all songs from the song table + all links to them
@@ -4011,7 +4011,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path1, CSongMap &song
       {
         CSong song = GetSongFromDataset();
         song.strThumb = GetArtForItem(song.idSong, "song", "thumb");
-        songs.Add(song.strFileName, song);
+        songs.insert(make_pair(song.strFileName, song));
         songIds += PrepareSQL("%i,", song.idSong);
         ids.push_back(song.idSong);
         m_pDS->next();

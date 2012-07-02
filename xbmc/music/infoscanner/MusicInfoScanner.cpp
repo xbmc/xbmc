@@ -437,7 +437,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
 int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory)
 {
-  CSongMap songsMap;
+  MAPSONGS songsMap;
 
   // get all information for all files in current directory from database, and remove them
   if (m_musicDatabase.RemoveSongsFromPath(strDirectory, songsMap))
@@ -468,7 +468,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 //      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->GetPath().c_str());
 
       // grab info from the song
-      CSong *dbSong = songsMap.Find(pItem->GetPath());
+      CSong *dbSong = NULL;
+      MAPSONGS::iterator it = songsMap.find(pItem->GetPath());
+      if (it != songsMap.end())
+        dbSong = &it->second;
 
       CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
       if (!tag.Loaded() )
