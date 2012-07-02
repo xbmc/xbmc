@@ -186,7 +186,11 @@ CCPUInfo::CCPUInfo(void)
           m_cores[nCurrId].m_strVendor.Trim();
         }
       }
+#if defined(__sh__)
+      else if (strncmp(buffer, "cpu type", strlen("cpu type"))==0)
+#else
       else if (strncmp(buffer, "model name", strlen("model name"))==0)
+#endif
       {
         char *needle = strstr(buffer, ":");
         if (needle && strlen(needle)>3)
@@ -337,7 +341,11 @@ float CCPUInfo::getCPUFrequency()
   rewind(m_fCPUInfo);
   fflush(m_fCPUInfo);
   while (fgets(buf, 256, m_fCPUInfo) != NULL) {
+#if defined(__sh__)
+    if (strncmp(buf, "bogomips", 8) == 0) {
+#else
     if (strncmp(buf, "cpu MHz", 7) == 0) {
+#endif
       needle = strchr(buf, ':');
       sscanf(++needle, "%f", &mhz);
       break;
@@ -597,7 +605,7 @@ void CCPUInfo::ReadCPUFeatures()
   #endif
 #elif defined(LINUX)
 // empty on purpose, the implementation is in the constructor
-#elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
+#elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(__sh__)
   m_cpuFeatures |= CPU_FEATURE_MMX;
 #elif defined(__powerpc__) || defined(__ppc__)
   m_cpuFeatures |= CPU_FEATURE_ALTIVEC;

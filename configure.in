@@ -561,6 +561,12 @@ case $host in
      use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
+  sh*-*-linux-gnu*)
+     use_texturepacker=no
+     ARCH="sh"
+     use_arch="sh"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
+     ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
 esac

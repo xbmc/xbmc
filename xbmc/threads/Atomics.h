@@ -24,7 +24,7 @@
 
 // TODO: Inline these methods
 long cas(volatile long *pAddr, long expectedVal, long swapVal);
-#if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__)
+#if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__sh__)
 long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal);
 #endif
 long AtomicIncrement(volatile long* pAddr);

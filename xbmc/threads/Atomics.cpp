@@ -71,6 +71,25 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
 #elif defined(__mips__)
 // TODO:
 
+#elif defined(__sh__)
+long cas(volatile long* pAddr, long expectedVal, long swapVal)
+{
+  unsigned int prev;
+
+  __asm__ __volatile__ (
+                "   .align 2               \n"
+                "   mov.l   @%2, %0       \n" /* Load the current value of *pAddr(%2) into prev (%0) */
+                "   cmp/eq  %0,  %3       \n" /* Verify that the current value (%2) == old value (%3) */
+                "   bf      2f             \n" /* Bail if the two values are not equal [not as expected] */
+                "   mov.l   %4,  @%2       \n" /* Attempt to store swapVal (%4) value into *pAddr (%2) [p must still be reserved] */
+                "2:                        \n"
+                : "=&r" (prev), "+m" (*pAddr)                   /* Outputs [prev, *pAddr] */
+                : "r" (pAddr), "r" (expectedVal), "r" (swapVal) /* Inputs [pAddr, expectedVal, swapVal] */
+                );
+  
+  return prev;
+}
+
 #elif defined(WIN32)
 
 long cas(volatile long* pAddr, long expectedVal, long swapVal)
@@ -115,7 +134,7 @@ long cas(volatile long* pAddr,long expectedVal, long swapVal)
 // 64-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__mips__) // PowerPC, ARM, and MIPS
+#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__mips__) || defined(__sh__) // PowerPC, ARM, MIPS and SH
 
 // Not available/required
 
@@ -212,6 +231,21 @@ long AtomicIncrement(volatile long* pAddr)
 #elif defined(__mips__)
 // TODO:
 
+#elif defined(__sh__)
+long AtomicIncrement(volatile long* pAddr)
+{
+  register long val;
+  __asm__ __volatile__ (
+                "   .align 2               \n"
+                "   mov.l   @%1,  %0       \n" //Move the first value to val
+                "   add     #1,   %0       \n" //Increase val by 1
+                "   mov.l   %0,   @%1      \n" //Move val to the first value
+                : "=&r" (val)
+                : "r" (pAddr)
+                );
+  return val;
+}
+
 #elif defined(WIN32)
 
 long AtomicIncrement(volatile long* pAddr)
@@ -290,6 +324,21 @@ long AtomicAdd(volatile long* pAddr, long amount)
 
 #elif defined(__mips__)
 // TODO:
+
+#elif defined(__sh__)
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  register long val;
+  __asm__ __volatile__ (
+                "   .align 2               \n"
+                "   mov.l   @%1,  %0       \n"
+                "   add     %2,   %0       \n"
+                "   mov.l   %0,   @%1      \n"
+                : "=&r" (val)
+                : "r" (pAddr), "r" (amount)
+                );
+  return val;
+}
 
 #elif defined(WIN32)
 
@@ -370,6 +419,21 @@ long AtomicDecrement(volatile long* pAddr)
 #elif defined(__mips__)
 // TODO:
 
+#elif defined(__sh__)
+long AtomicDecrement(volatile long* pAddr)
+{
+  register long val;
+  __asm__ __volatile__ (
+                "   .align 2               \n"
+                "   mov.l   @%1,  %0       \n"
+                "   add     #-1,  %0       \n"
+                "   mov.l   %0,   @%1      \n"
+                : "=&r" (val)
+                : "r" (pAddr)
+                );
+  return val;
+}
+
 #elif defined(WIN32)
 
 long AtomicDecrement(volatile long* pAddr)
@@ -449,6 +513,22 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 
 #elif defined(__mips__)
 // TODO:
+
+#elif defined(__sh__)
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  register long val;
+  amount *= -1;
+  __asm__ __volatile__ (
+                "   .align 2               \n"
+                "   mov.l   @%1,  %0       \n"
+                "   add     %2,   %0       \n"
+                "   mov.l   %0,   @%1      \n"
+                : "=&r" (val)
+                : "r" (pAddr), "r" (amount)
+                );
+  return val;
+}
 
 #elif defined(WIN32)
 
