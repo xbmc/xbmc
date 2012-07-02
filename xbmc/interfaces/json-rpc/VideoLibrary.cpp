@@ -399,7 +399,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
   if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
-      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
     return ACK;
   }
 
@@ -436,7 +436,7 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, seasonArt, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
-      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
     return ACK;
   }
 
@@ -477,7 +477,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
   if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
-      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
     return ACK;
   }
 
@@ -511,7 +511,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
   if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
-      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
     return ACK;
   }
 
