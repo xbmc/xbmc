@@ -396,7 +396,7 @@ public:
    */
   void UpdateLastPlayed(const CFileItem &item);
 
-  /*! \brief Get the playcount of a list of items
+  /*! \brief Get the playcount and resume point of a list of items
    \param path the path to fetch videos from
    \param items CFileItemList to fetch the playcounts for
    \sa GetPlayCount, SetPlayCount, IncrementPlayCount

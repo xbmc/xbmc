@@ -3961,7 +3961,15 @@ bool CVideoDatabase::GetPlayCounts(const CStdString &strPath, CFileItemList &ite
     if (NULL == m_pDS.get()) return false;
 
     // TODO: also test a single query for the above and below
-    CStdString sql = PrepareSQL("select strFilename,playCount from files where idPath=%i", pathID);
+    CStdString sql = PrepareSQL(
+      "SELECT"
+      "  files.strFilename, files.playCount,"
+      "  bookmark.timeInSeconds, bookmark.totalTimeInSeconds "
+      "FROM files"
+      "  LEFT JOIN bookmark ON"
+      "    files.idFile = bookmark.idFile AND bookmark.type = %i"
+      "  WHERE files.idPath=%i", (int)CBookmark::RESUME, pathID);
+
     if (RunQuery(sql) <= 0)
       return false;
 
@@ -3972,7 +3980,12 @@ bool CVideoDatabase::GetPlayCounts(const CStdString &strPath, CFileItemList &ite
       ConstructPath(path, strPath, m_pDS->fv(0).get_asString());
       CFileItemPtr item = items.Get(path);
       if (item)
+      {
         item->GetVideoInfoTag()->m_playCount = m_pDS->fv(1).get_asInt();
+        item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = m_pDS->fv(2).get_asInt();
+        item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds = m_pDS->fv(3).get_asInt();
+        item->GetVideoInfoTag()->m_resumePoint.type = CBookmark::RESUME;
+      }
       m_pDS->next();
     }
     return true;
