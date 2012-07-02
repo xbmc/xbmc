@@ -2813,7 +2813,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
       int idVariousArtists = AddArtist(strVariousArtists);
-      strSQL+=PrepareSQL(" and artist.idArtist<>%i", idVariousArtists);
+      strSQL+=PrepareSQL(" and artistview.idArtist<>%i", idVariousArtists);
     }
 
     bool result = GetArtistsByWhere(strBaseDir, strSQL, items);
