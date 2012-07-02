@@ -107,7 +107,6 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_iTimesPlayed = tag.m_iTimesPlayed;
   m_iDbId = tag.m_iDbId;
   m_type = tag.m_type;
-  m_iArtistId = tag.m_iArtistId;
   m_iAlbumId = tag.m_iAlbumId;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   m_coverArt = tag.m_coverArt;
@@ -166,11 +165,6 @@ const CStdString& CMusicInfoTag::GetURL() const
 const std::vector<std::string>& CMusicInfoTag::GetArtist() const
 {
   return m_artist;
-}
-
-int CMusicInfoTag::GetArtistId() const
-{
-  return m_iArtistId;
 }
 
 const CStdString& CMusicInfoTag::GetAlbum() const
@@ -278,11 +272,6 @@ void CMusicInfoTag::SetArtist(const CStdString& strArtist)
 void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
 {
   m_artist = artists;
-}
-
-void CMusicInfoTag::SetArtistId(const int iArtistId)
-{
-  m_iArtistId = iArtistId;
 }
 
 void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
@@ -500,7 +489,6 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_type = "song";
   m_bLoaded = true;
   m_iTimesPlayed = song.iTimesPlayed;
-  m_iArtistId = song.iArtistId;
   m_iAlbumId = song.iAlbumId;
 }
 
@@ -530,7 +518,6 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["playcount"] = m_iTimesPlayed;
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
   value["lyrics"] = m_strLyrics;
-  value["artistid"] = m_iArtistId;
   value["albumid"] = m_iAlbumId;
 }
 
@@ -575,7 +562,6 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strComment;
     ar << m_rating;
     ar << m_iTimesPlayed;
-    ar << m_iArtistId;
     ar << m_iAlbumId;
   }
   else
@@ -599,7 +585,6 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strComment;
     ar >> m_rating;
     ar >> m_iTimesPlayed;
-    ar >> m_iArtistId;
     ar >> m_iAlbumId;
  }
 }
@@ -628,7 +613,6 @@ void CMusicInfoTag::Clear()
   m_type.clear();
   m_iTimesPlayed = 0;
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
-  m_iArtistId = -1;
   m_iAlbumId = -1;
   m_coverArt.clear();
 }

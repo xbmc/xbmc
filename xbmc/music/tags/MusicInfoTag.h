@@ -69,7 +69,6 @@ public:
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;
   const std::vector<std::string>& GetArtist() const;
-  int GetArtistId() const;
   const CStdString& GetAlbum() const;
   int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;
@@ -102,7 +101,6 @@ public:
   void SetTitle(const CStdString& strTitle);
   void SetArtist(const CStdString& strArtist);
   void SetArtist(const std::vector<std::string>& artists);
-  void SetArtistId(const int iArtistId);
   void SetAlbum(const CStdString& strAlbum);
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const CStdString& strAlbumArtist);
@@ -187,7 +185,6 @@ protected:
   char m_rating;
   int m_listeners;
   int m_iTimesPlayed;
-  int m_iArtistId;
   int m_iAlbumId;
   SYSTEMTIME m_dwReleaseDate;
 
