@@ -134,6 +134,11 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
       URIUtils::RemoveSlashAtEnd(strNoSlash);
       CStdString strFileName = URIUtils::GetFileName(strNoSlash);
 
+      // URL Decode for cases where source uses URL encoding and target does not 
+      if ( URIUtils::ProtocolHasEncodedFilename(CURL(pItem->GetPath()).GetProtocol() )
+       && !URIUtils::ProtocolHasEncodedFilename(CURL(strDestFile).GetProtocol() ) )
+        CURL::Decode(strFileName);
+
       // special case for upnp
       if (URIUtils::IsUPnP(items.GetPath()) || URIUtils::IsUPnP(pItem->GetPath()))
       {
