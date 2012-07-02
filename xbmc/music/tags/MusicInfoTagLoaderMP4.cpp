@@ -175,7 +175,7 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
   case g_CompilationAtomName:
     {
       if (metaSize == 1)
-        m_isCompilation = *pMetaData == 1;
+        tag.SetCompilation(*pMetaData == 1);
       break;
     }
   case g_CommentAtomName:

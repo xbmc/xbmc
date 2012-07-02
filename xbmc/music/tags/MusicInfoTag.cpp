@@ -58,6 +58,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strComment = tag.m_strComment;
   m_strLyrics = tag.m_strLyrics;
   m_lastPlayed = tag.m_lastPlayed;
+  m_bCompilation = tag.m_bCompilation;
   m_iDuration = tag.m_iDuration;
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
@@ -81,6 +82,7 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
     if (tag.m_artist.at(index).compare(m_artist.at(index)) != 0)
       return true;
   }
+  if (m_bCompilation != tag.m_bCompilation) return true;
   if (m_artist != tag.m_artist) return true;
   if (m_albumArtist != tag.m_albumArtist) return true;
   if (m_strAlbum != tag.m_strAlbum) return true;
@@ -189,6 +191,11 @@ int CMusicInfoTag::GetPlayCount() const
 const CDateTime &CMusicInfoTag::GetLastPlayed() const
 {
   return m_lastPlayed;
+}
+
+bool CMusicInfoTag::GetCompilation() const
+{
+  return m_bCompilation;
 }
 
 void CMusicInfoTag::SetURL(const CStdString& strURL)
@@ -317,6 +324,11 @@ void CMusicInfoTag::SetLastPlayed(const CDateTime& lastplayed)
   m_lastPlayed = lastplayed;
 }
 
+void CMusicInfoTag::SetCompilation(bool compilation)
+{
+  m_bCompilation = compilation;
+}
+
 void CMusicInfoTag::SetLoaded(bool bOnOff)
 {
   m_bLoaded = bOnOff;
@@ -380,16 +392,17 @@ void CMusicInfoTag::SetMusicBrainzTRMID(const CStdString& strTRMID)
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   SetArtist(album.artist);
+  SetAlbumId(album.idAlbum);
   SetAlbum(album.strAlbum);
-  SetAlbumArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+  SetAlbumArtist(album.artist);
   SetGenre(album.genre);
   SetRating('0' + album.iRating);
+  SetCompilation(album.bCompilation);
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
   m_iDbId = album.idAlbum;
   m_bLoaded = true;
-  m_iArtistId = album.idArtist;
 }
 
 void CMusicInfoTag::SetSong(const CSong& song)
@@ -538,6 +551,7 @@ void CMusicInfoTag::Clear()
   m_iTrack = 0;
   m_bLoaded = false;
   m_lastPlayed.Reset();
+  m_bCompilation = false;
   m_strComment.Empty();
   m_rating = '0';
   m_iDbId = -1;
