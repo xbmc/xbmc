@@ -163,7 +163,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create song index3");
     m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
     CLog::Log(LOGINFO, "create song index6");
-    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
+    m_pDS->exec("CREATE UNIQUE INDEX idxSong6 ON song( idPath, strFileName(255) )");
 
     CLog::Log(LOGINFO, "create song_artist indexes");
     m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist )\n");
@@ -3561,6 +3561,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     // Seed the Karaoke index in case the table was empty when we copied data over
     m_pDS->exec(PrepareSQL("INSERT INTO karaokedata (iKaraNumber) VALUES (%d)", g_advancedSettings.m_karaokeStartIndex - 1));
     m_pDS->exec(PrepareSQL("DELETE FROM karaokedata WHERE iKaraNumber = %d", g_advancedSettings.m_karaokeStartIndex - 1));
+  }
+
+  if (version < 29)
+  {
+    m_pDS->exec("DROP INDEX idxSong6 ON song");
+    m_pDS->exec("CREATE UNIQUE INDEX idxSong6 on song( idPath, strFileName(255) )");
   }
 
   // always recreate the views after any table change
