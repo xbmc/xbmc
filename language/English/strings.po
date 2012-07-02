@@ -8725,10 +8725,12 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr ""
 
+#: xbmc/Application.cpp
 msgctxt "#24102"
 msgid "Unable to load skin"
 msgstr ""
 
+#: xbmc/Application.cpp
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr ""
