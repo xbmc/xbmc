@@ -20,6 +20,7 @@
  *
  */
 
+#include "system.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
 #include "threads/CriticalSection.h"

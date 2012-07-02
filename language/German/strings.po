@@ -8908,20 +8908,16 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "Geräte in den Standby versetzen wenn der Bilschirmschoner aktiviert wird"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Der CEC Port konnte nicht gefunden werden. Manuell einstellen."
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Der CEC Adapter konnte nicht initialisiert werden. Bitte Einstellungen prüfen!"
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "Nicht unterstützte libCEC Version. %d ist größer als die von XBMC unterstützte Version (%d)"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "PC in den Standby versetzen wenn der Fernseher ausgeschaltet wird"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8932,7 +8928,7 @@ msgid "Connected"
 msgstr "Verbunden"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "CEC Adapter gefunden, aber libCEC ist nicht verfügbar"
 
 msgctxt "#36018"
@@ -8966,4 +8962,32 @@ msgstr "Konfiguration konnte nicht aktualisiert werden. Bitte Einstellungen prü
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Sende 'inaktive Quelle' wenn XBMC beendet wird"
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr ""
 

@@ -8862,20 +8862,16 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "화면보호기 작동시 장치를 대기모드로 설정"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "CEC 포트를 찾을 수 없습니다. 수동으로 설정하세요."
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "CEC 어댑터를 찾을 수 없음."
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "지원하지 않는 libcec 인터페이스 버전입니다. %d 가 XBMC가 지원하는 버전보다 높습니다 (%d)"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "TV가 꺼지면 PC를 대기모드로 전환"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8886,7 +8882,7 @@ msgid "Connected"
 msgstr "연결됨"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "어댑터가 확인되었으나 libcec를 사용할 수 없습니다"
 
 msgctxt "#36018"
@@ -8919,5 +8915,33 @@ msgstr ""
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 
