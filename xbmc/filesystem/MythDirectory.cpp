@@ -309,9 +309,9 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
          * lookups.
          */
         CStdString label(item->m_strTitle);
-        CStdString prodyear = GetValue(m_dll->proginfo_prodyear(program));
-        if (!prodyear.IsEmpty())
-          label += " (" + prodyear + ")";
+        unsigned short year = m_dll->proginfo_year(program);
+        if (year > 0)
+          label.AppendFormat(" (%d)", year);
         item->SetLabel(label);
         item->SetLabelPreformated(true);
       }

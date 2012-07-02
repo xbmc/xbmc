@@ -965,9 +965,9 @@ extern char *cmyth_proginfo_chanicon(cmyth_proginfo_t prog);
 /**
  * Retrieve the production year for this program info
  * \param prog proginfo handle
- * \return null-terminated string
+ * \return production year
  */
-extern char *cmyth_proginfo_prodyear(cmyth_proginfo_t prog);
+extern unsigned short cmyth_proginfo_year(cmyth_proginfo_t prog);
 
 /*
  * -----------------------------------------------------------------

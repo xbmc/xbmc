@@ -151,9 +151,6 @@ cmyth_proginfo_destroy(cmyth_proginfo_t p)
 	if (p->proginfo_recpriority_2) {
 		ref_release(p->proginfo_recpriority_2);
 	}
-	if (p->proginfo_prodyear) {
-		ref_release(p->proginfo_prodyear);
-	}
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 }
 
@@ -265,7 +262,7 @@ cmyth_proginfo_create(void)
 	ret->proginfo_audioproperties = 0;
 	ret->proginfo_videoproperties = 0;
 	ret->proginfo_subtitletype = 0;
-	ret->proginfo_prodyear = NULL;
+	ret->proginfo_year = 0;
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 	return ret;
 
@@ -358,7 +355,7 @@ cmyth_proginfo_dup(cmyth_proginfo_t p)
 	ret->proginfo_audioproperties = p->proginfo_audioproperties;
 	ret->proginfo_videoproperties = p->proginfo_videoproperties;
 	ret->proginfo_subtitletype = p->proginfo_subtitletype;
-	ret->proginfo_prodyear = ref_hold(p->proginfo_prodyear);
+	ret->proginfo_year = p->proginfo_year;
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 	return ret;
 }
@@ -428,7 +425,6 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	len += strlen(S(prog->proginfo_inetref));
 	len += strlen(S(prog->proginfo_recpriority_2));
 	len += strlen(S(prog->proginfo_storagegroup));
-	len += strlen(S(prog->proginfo_prodyear));
 
 	buf = alloca(len + 1+2048);
 	if (!buf) {
@@ -546,8 +542,8 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_videoproperties);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_subtitletype);
 	}
-	if (control->conn_version >= 41) {
-		sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_prodyear));
+	if (control->conn_version >= 43) {
+		sprintf(buf + strlen(buf), "%d[]:[]", prog->proginfo_year);
 	}
 #undef S
 
@@ -1272,33 +1268,29 @@ cmyth_proginfo_flags(cmyth_proginfo_t prog)
 }
 
 /*
- * cmyth_proginfo_prodyear(cmyth_proginfo_t prog)
+ * cmyth_proginfo_year(cmyth_proginfo_t prog)
  *
  *
  * Scope: PUBLIC
  *
  * Description
  *
- * Retrieves the 'proginfo_prodyear' field of a program info
+ * Retrieves the 'proginfo_year' field of a program info
  * structure.
- *
- * The returned string is a pointer to the string within the program
- * info structure, so it should not be modified by the caller.  The
- * return value is a 'char *' for this reason.
  *
  * Return Value:
  *
- * Success: A pointer to a 'char *' pointing to the field.
+ * Success: the production year for the program
  *
- * Failure: NULL
+ * Failure: 0
  */
-char *
-cmyth_proginfo_prodyear(cmyth_proginfo_t prog)
+unsigned short
+cmyth_proginfo_year(cmyth_proginfo_t prog)
 {
 	if (!prog) {
-		return NULL;
+		return 0;
 	}
-	return ref_hold(prog->proginfo_prodyear);
+	return prog->proginfo_year;
 }
 
 static int
@@ -1340,7 +1332,6 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	len += strlen(S(prog->proginfo_inetref));
 	len += strlen(S(prog->proginfo_recpriority_2));
 	len += strlen(S(prog->proginfo_storagegroup));
-	len += strlen(S(prog->proginfo_prodyear));
 
 	buf = alloca(len + 1+2048);
 	if (!buf) {
@@ -1458,8 +1449,8 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_videoproperties);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_subtitletype);
 	}
-	if (control->conn_version >= 41) {
-		sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_prodyear));
+	if (control->conn_version >= 43) {
+		sprintf(buf + strlen(buf), "%d[]:[]", prog->proginfo_year);
 	}
 #undef S
 

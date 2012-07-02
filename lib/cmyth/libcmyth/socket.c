@@ -2345,23 +2345,22 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 			failed = "cmyth_rcv_ulong subtitletype";
 			goto fail;
 		}
-	}
-  if (buf->proginfo_version >= 41) {
-		/*
-		* Get proginfo_prodyear (string)
-		*/
-		consumed = cmyth_rcv_string(conn, err,
-							tmp_str, sizeof(tmp_str) - 1, count);
+	}	
+
+	/*
+	 * Get Year
+	 */
+	if (buf->proginfo_version >= 43) {
+		consumed = cmyth_rcv_ushort(conn, err, &buf->proginfo_year,
+						count);
 		count -= consumed;
 		total += consumed;
 		if (*err) {
-			failed = "cmyth_rcv_string";
+			failed = "cmyth_rcv_ushort proginfo_year";
 			goto fail;
 		}
-		if (buf->proginfo_prodyear)
-			ref_release(buf->proginfo_prodyear);
-		buf->proginfo_prodyear = ref_strdup(tmp_str);
-  }
+	}
+
 	cmyth_dbg(CMYTH_DBG_INFO, "%s: got recording info\n", __FUNCTION__);
 
 	cmyth_proginfo_parse_url(buf);

@@ -137,7 +137,7 @@ EXPORTS
 	cmyth_proginfo_host
 	cmyth_proginfo_card_id
 	cmyth_proginfo_recgroup
-	cmyth_proginfo_prodyear
+	cmyth_proginfo_year
 	cmyth_get_delete_list
 	cmyth_proglist_create
 	cmyth_proglist_get_item
