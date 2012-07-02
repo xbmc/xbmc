@@ -40,7 +40,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "music/Album.h"
-#include "ThumbnailCache.h"
 
 using namespace XFILE;
 
@@ -197,12 +196,14 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
   MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song.get());
   // set artist thumb as well
-  if (m_song->HasMusicInfoTag())
+  if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
   {
-    CFileItem artist(StringUtils::Join(m_song->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator));
-    artist.SetCachedArtistThumb();
-    if (CFile::Exists(artist.GetThumbnailImage()))
-      m_song->SetProperty("artistthumb", artist.GetThumbnailImage());
+    CMusicDatabase db;
+    db.Open();
+    int idArtist = db.GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
+    std::string thumb = db.GetArtForItem(idArtist, "artist", "thumb");
+    if (!thumb.empty())
+      m_song->SetProperty("artistthumb", thumb);
   }
   m_needsUpdate = false;
 }
@@ -266,14 +267,10 @@ void CGUIDialogSongInfo::OnGetThumb()
   }
   if (CFile::Exists(localThumb))
   {
-    URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    if (CPicture::CreateThumbnail(localThumb, cachedLocalThumb))
-    {
-      CFileItemPtr item(new CFileItem("thumb://Local", false));
-      item->SetThumbnailImage(cachedLocalThumb);
-      item->SetLabel(g_localizeStrings.Get(20017));
-      items.Add(item);
-    }
+    CFileItemPtr item(new CFileItem("thumb://Local", false));
+    item->SetThumbnailImage(localThumb);
+    item->SetLabel(g_localizeStrings.Get(20017));
+    items.Add(item);
   }
   else
   { // no local thumb exists, so we are just using the allmusic.com thumb or cached thumb
@@ -295,22 +292,25 @@ void CGUIDialogSongInfo::OnGetThumb()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
 
-  CStdString cachedThumb(CThumbnailCache::GetAlbumThumb(m_song->GetMusicInfoTag()));
-
-  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
+  CStdString newThumb;
   if (result == "thumb://None")
-  {
-    CFile::Delete(cachedThumb);
-    cachedThumb = "";
-  }
+    newThumb = "-";
   else if (result == "thumb://allmusic.com")
-    CFile::Cache(thumbFromWeb, cachedThumb);
+    newThumb = thumbFromWeb;
   else if (result == "thumb://Local")
-    CFile::Cache(cachedLocalThumb, cachedThumb);
-  else if (CFile::Exists(result))
-    CPicture::CreateThumbnail(result, cachedThumb);
+    newThumb = localThumb;
+  else
+    newThumb = result;
 
-  m_song->SetThumbnailImage(cachedThumb);
+  // update thumb in the database
+  CMusicDatabase db;
+  if (db.Open())
+  {
+    db.SetArtForItem(m_song->GetMusicInfoTag()->GetDatabaseId(), m_song->GetMusicInfoTag()->GetType(), "thumb", newThumb);
+    db.Close();
+  }
+
+  m_song->SetThumbnailImage(newThumb);
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
