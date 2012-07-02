@@ -154,14 +154,14 @@ class CDVDMsgGeneralSynchronizePriv;
 class CDVDMsgGeneralSynchronize : public CDVDMsg
 {
 public:
-  CDVDMsgGeneralSynchronize(DWORD timeout, DWORD sources);
+  CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources);
  ~CDVDMsgGeneralSynchronize();
   virtual long Release();
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
-  bool Wait(unsigned long  ms   , DWORD source);
-  void Wait(volatile bool *abort, DWORD source);
+  bool Wait(unsigned long  ms   , unsigned int source);
+  void Wait(volatile bool *abort, unsigned int source);
 private:
   class CDVDMsgGeneralSynchronizePriv* m_p;
 };

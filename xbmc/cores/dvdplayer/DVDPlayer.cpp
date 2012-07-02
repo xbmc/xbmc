@@ -1743,7 +1743,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
 }
 
 
-void CDVDPlayer::SynchronizeDemuxer(DWORD timeout)
+void CDVDPlayer::SynchronizeDemuxer(unsigned int timeout)
 {
   if(IsCurrentThread())
     return;
@@ -1756,7 +1756,7 @@ void CDVDPlayer::SynchronizeDemuxer(DWORD timeout)
   message->Release();
 }
 
-void CDVDPlayer::SynchronizePlayers(DWORD sources)
+void CDVDPlayer::SynchronizePlayers(unsigned int sources)
 {
   /* we need a big timeout as audio queue is about 8seconds for 2ch ac3 */
   const int timeout = 10*1000; // in milliseconds

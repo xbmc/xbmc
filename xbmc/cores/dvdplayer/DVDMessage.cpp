@@ -33,7 +33,7 @@
 class CDVDMsgGeneralSynchronizePriv
 {
 public:
-  CDVDMsgGeneralSynchronizePriv(DWORD timeout, DWORD sources)
+  CDVDMsgGeneralSynchronizePriv(unsigned int timeout, unsigned int sources)
     : timeout(timeout)
     , sources(sources ? sources : SYNCSOURCE_ALL)
     , reached(0)
@@ -48,7 +48,7 @@ public:
 /**
  * CDVDMsgGeneralSynchronize --- GENERAL_SYNCRONIZR
  */
-CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(DWORD timeout, DWORD sources) : CDVDMsg(GENERAL_SYNCHRONIZE)
+CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources) : CDVDMsg(GENERAL_SYNCHRONIZE)
   , m_p(new CDVDMsgGeneralSynchronizePriv(timeout, sources))
 {
 }
@@ -58,7 +58,7 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
   delete m_p;
 }
 
-bool CDVDMsgGeneralSynchronize::Wait(unsigned long milliseconds, DWORD source)
+bool CDVDMsgGeneralSynchronize::Wait(unsigned long milliseconds, unsigned int source)
 {
   if(source == 0)
     source = SYNCSOURCE_OWNER;
@@ -86,7 +86,7 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned long milliseconds, DWORD source)
   return true;
 }
 
-void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
+void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, unsigned int source)
 {
   while(!Wait(100, source))
   {
