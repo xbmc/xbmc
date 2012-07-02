@@ -185,7 +185,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 JSONSchemaTypeDefinition::JSONSchemaTypeDefinition()
   : missingReference(""),
-    type(AnyValue), minimum(std::numeric_limits<double>::min()), maximum(std::numeric_limits<double>::max()),
+    type(AnyValue), minimum(-std::numeric_limits<double>::max()), maximum(std::numeric_limits<double>::max()),
     exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
     minLength(-1), maxLength(-1),
     minItems(0), maxItems(0), uniqueItems(false),
