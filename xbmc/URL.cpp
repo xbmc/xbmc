@@ -693,7 +693,7 @@ void CURL::Encode(CStdString& strURLData)
   {
     int kar = (unsigned char)strURLData[i];
     //if (kar == ' ') strResult += '+'; // obsolete
-    if (isalnum(kar) || strchr("-_.!()" , kar) ) // Don't URL encode these according to RFC1738s
+    if (isalnum(kar) || strchr("-_.!()" , kar) ) // Don't URL encode these according to RFC1738
     {
       strResult += kar;
     }
