@@ -123,6 +123,12 @@ void CPythonMonitor::OnDatabaseUpdated(const std::string &database)
  g_pythonParser.PulseGlobalEvent();
 }
 
+void CPythonMonitor::OnAbortRequested()
+{
+  PyXBMC_AddPendingCall(m_state, SPyMonitor_Function, new SPyMonitor(this, "onAbortRequested"));
+  g_pythonParser.PulseGlobalEvent();
+}
+
 void CPythonMonitor::SetCallback(PyThreadState *state, PyObject *object)
 {
   /* python lock should be held */
