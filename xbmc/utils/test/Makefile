@@ -16,6 +16,7 @@ SRCS=	\
 	Testfastmemcpy.cpp \
 	Testfft.cpp \
 	TestFileOperationJob.cpp \
+	TestFileUtils.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
