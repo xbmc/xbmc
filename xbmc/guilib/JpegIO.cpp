@@ -23,8 +23,7 @@
 
 #include "lib/libexif/libexif.h"
 #include "windowing/WindowingFactory.h"
-#include "settings/GUISettings.h"
-#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "XBTF.h"
@@ -312,9 +311,18 @@ bool CJpegIO::Read(unsigned char* buffer, unsigned int bufSize, unsigned int min
     the gpu can hold, use the previous one.*/
     if (minx == 0 || miny == 0)
     {
-      minx = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
-      miny = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
+      miny = g_advancedSettings.m_imageRes;
+      if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
+      { // a separate fanart resolution is specified - check if the image is exactly equal to this res
+        if (m_cinfo.image_width == (unsigned int)g_advancedSettings.m_fanartRes * 16/9 &&
+            m_cinfo.image_height == (unsigned int)g_advancedSettings.m_fanartRes)
+        { // special case for fanart res
+          miny = g_advancedSettings.m_fanartRes;
+        }
+      }
+      minx = miny * 16/9;
     }
+
     m_cinfo.scale_denom = 8;
     m_cinfo.out_color_space = JCS_RGB;
     unsigned int maxtexsize = g_Windowing.GetMaxTextureSize();

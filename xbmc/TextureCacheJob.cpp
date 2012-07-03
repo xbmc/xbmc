@@ -119,8 +119,7 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
   // unwrap the URL as required
   CStdString image(url);
   additional_info.clear();
-  width = g_advancedSettings.m_fanartRes * 16/9;
-  height = g_advancedSettings.m_fanartRes;
+  width = height = 0;
   if (url.compare(0, 8, "image://") == 0)
   {
     // format is image://[type@]<url_encoded_path>?options
