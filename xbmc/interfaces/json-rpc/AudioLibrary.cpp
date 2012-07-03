@@ -148,7 +148,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
 
   CFileItemList items;
   if (!musicdatabase.GetSongsNav("musicdb://4/", items, genreID, artistID, albumID, sorting))
-    InternalError;
+    return InternalError;
 
   int size = items.Size();
   if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
@@ -445,7 +445,6 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
   if (strFilename.empty() || !musicdatabase.Open())
     return false;
 
-  bool status = false;
   if (CDirectory::Exists(strFilename))
   {
     CAlbum album;
