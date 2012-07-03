@@ -114,11 +114,24 @@ namespace PYXBMC
    return Py_None;
   }  
  
+  // Monitor_onAbortRequested
+  PyDoc_STRVAR(onAbortRequested__doc__,
+               "onAbortRequested() -- onAbortRequested method.\n"
+               "\n"
+               "Will be called when XBMC requests Abort");
+
+  PyObject* Monitor_OnAbortRequested(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }     
+    
   PyMethodDef Monitor_methods[] = {
     {(char*)"onSettingsChanged", (PyCFunction)Monitor_OnSettingsChanged, METH_VARARGS, onSettingsChanged__doc__},
     {(char*)"onScreensaverActivated", (PyCFunction)Monitor_OnScreensaverActivated, METH_VARARGS, onScreensaverActivated__doc__},
     {(char*)"onScreensaverDeactivated", (PyCFunction)Monitor_OnScreensaverDeactivated, METH_VARARGS, onScreensaverDeactivated__doc__},
     {(char*)"onDatabaseUpdated", (PyCFunction)Monitor_OnDatabaseUpdated, METH_VARARGS  , onDatabaseUpdated__doc__},
+    {(char*)"onAbortRequested", (PyCFunction)Monitor_OnAbortRequested, METH_VARARGS  , onAbortRequested__doc__},
     {NULL, NULL, 0, NULL}
   };
 

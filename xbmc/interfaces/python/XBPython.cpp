@@ -336,6 +336,28 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
  }  
 } 
 
+void XBPython::OnAbortRequested(const CStdString &ID)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    {
+      if (ID.IsEmpty())
+      {    
+        ((CPythonMonitor*)(*it))->OnAbortRequested();
+      }
+      else
+      {
+        if (((CPythonMonitor*)(*it))->Id == ID)
+          ((CPythonMonitor*)(*it))->OnAbortRequested();
+      }
+      it++;
+    }
+  }  
+} 
+
 /**
 * Check for file and print an error if needed
 */
