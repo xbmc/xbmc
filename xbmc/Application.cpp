@@ -2246,7 +2246,7 @@ bool CApplication::OnKey(const CKey& key)
   ResetScreenSaver();
 
   // allow some keys to be processed while the screensaver is active
-  if (WakeUpScreenSaverAndDPMS() && !processKey)
+  if (WakeUpScreenSaverAndDPMS(processKey) && !processKey)
   {
     CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
     return true;
@@ -4440,7 +4440,7 @@ bool CApplication::ToggleDPMS(bool manual)
   return false;
 }
 
-bool CApplication::WakeUpScreenSaverAndDPMS()
+bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false */)
 {
 
 #ifdef HAS_LCD
@@ -4458,13 +4458,13 @@ bool CApplication::WakeUpScreenSaverAndDPMS()
     // (DPMS came first), activate screensaver now.
     ToggleDPMS(false);
     ResetScreenSaverTimer();
-    return !m_bScreenSave || WakeUpScreenSaver();
+    return !m_bScreenSave || WakeUpScreenSaver(bPowerOffKeyPressed);
   }
   else
-    return WakeUpScreenSaver();
+    return WakeUpScreenSaver(bPowerOffKeyPressed);
 }
 
-bool CApplication::WakeUpScreenSaver()
+bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
 {
   if (m_iScreenSaveLock == 2)
     return false;
@@ -4493,7 +4493,9 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated");
+    // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
+    CVariant data(bPowerOffKeyPressed);
+    CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
 
     if (m_screenSaver->ID() == "visualization")
     {
