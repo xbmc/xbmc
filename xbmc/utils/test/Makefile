@@ -15,6 +15,7 @@ SRCS=	\
 	TestEndianSwap.cpp \
 	Testfastmemcpy.cpp \
 	Testfft.cpp \
+	TestFileOperationJob.cpp \
 	TestGlobalsHandling.cpp \
 	TestXBMCTinyXML.cpp
 
