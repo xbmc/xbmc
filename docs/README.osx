@@ -142,11 +142,12 @@ $ ./build/Release/XBMC
 
 You can also build via Xcode from the command-line using the following:
 
-$ xcodebuild -configuration Release -arch i386 -target "XBMC.app" -project XBMC.xcodeproj
+$ xcodebuild -configuration Release ONLY_ACTIVE_ARCH=YES ARCHS=i386 VALID_ARCHS=i386 \
+  -target "XBMC.app" -project XBMC.xcodeproj
 
-You can specify "Release" instead of "Debug" as a configuration. Be sure to set -arch 
-to the same architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 for 
-64Bit)
+You can specify "Release" instead of "Debug" as a configuration. Be sure to set *_ARCHS
+variables to the same architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 
+for 64Bit).
 
 -----------------------------------------------------------------------------
 4.2 Using Terminal (command-line) (this is a work in progress and might fail)
@@ -162,7 +163,8 @@ developers).
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
  $ make xcode_depends
- $ xcodebuild -sdk macosx10.7 -project XBMC.xcodeproj -target XBMC.app -arch x86_64 -configuration Release build
+ $ xcodebuild -sdk macosx10.7 -project XBMC.xcodeproj -target XBMC.app ONLY_ACTIVE_ARCH=YES \
+   ARCHS=x86_64 VALID_ARCHS=x86_64  -configuration Release build
 
  b) building via make
  $ cd $HOME/XBMC
@@ -185,3 +187,4 @@ distribution.
 
 Remember to unmount/eject XBMC.dmg before attempting to recreate it,
 otherwise dmgmaker.pl will fail.
+
