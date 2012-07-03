@@ -138,12 +138,10 @@ namespace XFILE
                 if (Ignore1.Equals(Ignore2) && Extension1.Equals(Extension2))
                 {
                   // got it
-                  strStackTitle = Title1 + Ignore1;
+                  strStackTitle = Title1 + Ignore1 + Extension1;
                   // Check if source path uses URL encoding
                   if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
                     CURL::Encode(strStackTitle);
-
-                  strStackTitle += Extension1;
 
                   itRegExp = RegExps.end();
                   break;
