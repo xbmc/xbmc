@@ -82,15 +82,13 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">UnrarXLib</TargetName>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Full</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\lib\win32\boost;..\..\lib\libSDL-WIN32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;NOMINMAX;NDEBUG;WIN32;_LIB;_XBMC;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -111,7 +109,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\lib\win32\boost;..\..\lib\libSDL-WIN32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;NOMINMAX;WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T;HAS_DX;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -136,7 +134,7 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Full</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\lib\win32\boost;..\..\lib\libSDL-WIN32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;NOMINMAX;NDEBUG;WIN32;_LIB;_XBMC;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -157,7 +155,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\lib\win32\boost;..\..\lib\libSDL-WIN32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc;..\..\xbmc\win32\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;NOMINMAX;WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
