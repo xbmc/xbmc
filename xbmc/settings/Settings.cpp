@@ -135,6 +135,9 @@ void CSettings::Initialize()
   m_lastUsedProfile = 0;
   m_currentProfile = 0;
   m_nextIdProfile = 0;
+
+  m_musicNeedsUpdate = 0;
+  m_videoNeedsUpdate = 0;
 }
 
 CSettings::~CSettings(void)
@@ -609,6 +612,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", m_bMyMusicSongThumbInVis);
+    GetInteger(pElement, "needsupdate", m_musicNeedsUpdate, 0, 0, INT_MAX);
     GetPath(pElement, "defaultlibview", m_defaultMusicLibSource);
   }
   // myvideos settings
@@ -624,6 +628,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "watchmodemusicvideos", m_watchMode["musicvideos"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     XMLUtils::GetBoolean(pElement, "flatten", m_bMyVideoNavFlatten);
+    GetInteger(pElement, "needsupdate", m_videoNeedsUpdate, 0, 0, INT_MAX);
 
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
@@ -805,6 +810,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     XMLUtils::SetBoolean(pChild, "isscanning", m_bMyMusicIsScanning);
   }
 
+  XMLUtils::SetInt(pNode, "needsupdate", m_musicNeedsUpdate);
   XMLUtils::SetInt(pNode, "startwindow", m_iMyMusicStartWindow);
   XMLUtils::SetBoolean(pNode, "songinfoinvis", m_bMyMusicSongInfoInVis);
   XMLUtils::SetBoolean(pNode, "songthumbinvis", m_bMyMusicSongThumbInVis);
@@ -822,7 +828,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "watchmodemovies", m_watchMode.find("movies")->second);
   XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchMode.find("tvshows")->second);
   XMLUtils::SetInt(pNode, "watchmodemusicvideos", m_watchMode.find("musicvideos")->second);
-
+  XMLUtils::SetInt(pNode, "needsupdate", m_videoNeedsUpdate);
   XMLUtils::SetBoolean(pNode, "flatten", m_bMyVideoNavFlatten);
 
   { // playlist window

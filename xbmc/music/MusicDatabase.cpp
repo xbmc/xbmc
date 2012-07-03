@@ -3518,6 +3518,9 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     if (version < 27)
     {
       m_pDS->exec("DROP TABLE thumb");
+
+      g_settings.m_musicNeedsUpdate = 27;
+      g_settings.Save();
     }
 
     // always recreate the views after any table change
