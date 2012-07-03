@@ -21,10 +21,78 @@
 
 #include "utils/DatabaseUtils.h"
 #include "video/VideoDatabase.h"
+#include "music/MusicDatabase.h"
 #include "dbwrappers/qry_dat.h"
 #include "utils/Variant.h"
 
 #include "gtest/gtest.h"
+
+class TestDatabaseUtilsHelper
+{
+public:
+  TestDatabaseUtilsHelper()
+  {
+    album_idAlbum = CMusicDatabase::album_idAlbum;
+    album_strAlbum = CMusicDatabase::album_strAlbum;
+    album_strArtists = CMusicDatabase::album_strArtists;
+    album_strGenres = CMusicDatabase::album_strGenres;
+    album_iYear = CMusicDatabase::album_iYear;
+    album_strMoods = CMusicDatabase::album_strMoods;
+    album_strStyles = CMusicDatabase::album_strStyles;
+    album_strThemes = CMusicDatabase::album_strThemes;
+    album_strReview = CMusicDatabase::album_strReview;
+    album_strLabel = CMusicDatabase::album_strLabel;
+    album_strType = CMusicDatabase::album_strType;
+    album_iRating = CMusicDatabase::album_iRating;
+
+    song_idSong = CMusicDatabase::song_idSong;
+    song_strTitle = CMusicDatabase::song_strTitle;
+    song_iTrack = CMusicDatabase::song_iTrack;
+    song_iDuration = CMusicDatabase::song_iDuration;
+    song_iYear = CMusicDatabase::song_iYear;
+    song_strFileName = CMusicDatabase::song_strFileName;
+    song_iTimesPlayed = CMusicDatabase::song_iTimesPlayed;
+    song_iStartOffset = CMusicDatabase::song_iStartOffset;
+    song_iEndOffset = CMusicDatabase::song_iEndOffset;
+    song_lastplayed = CMusicDatabase::song_lastplayed;
+    song_rating = CMusicDatabase::song_rating;
+    song_comment = CMusicDatabase::song_comment;
+    song_strAlbum = CMusicDatabase::song_strAlbum;
+    song_strPath = CMusicDatabase::song_strPath;
+    song_strGenres = CMusicDatabase::song_strGenres;
+    song_strArtists = CMusicDatabase::song_strArtists;
+  }
+
+  int album_idAlbum;
+  int album_strAlbum;
+  int album_strArtists;
+  int album_strGenres;
+  int album_iYear;
+  int album_strMoods;
+  int album_strStyles;
+  int album_strThemes;
+  int album_strReview;
+  int album_strLabel;
+  int album_strType;
+  int album_iRating;
+
+  int song_idSong;
+  int song_strTitle;
+  int song_iTrack;
+  int song_iDuration;
+  int song_iYear;
+  int song_strFileName;
+  int song_iTimesPlayed;
+  int song_iStartOffset;
+  int song_iEndOffset;
+  int song_lastplayed;
+  int song_rating;
+  int song_comment;
+  int song_strAlbum;
+  int song_strPath;
+  int song_strGenres;
+  int song_strArtists;
+};
 
 TEST(TestDatabaseUtils, MediaTypeToString)
 {
@@ -816,56 +884,57 @@ TEST(TestDatabaseUtils, GetFieldIndex_None)
 TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeAlbum)
 {
   int refindex, varindex;
+  TestDatabaseUtilsHelper a;
 
-  refindex = 0;
+  refindex = a.album_idAlbum;
   varindex = DatabaseUtils::GetFieldIndex(FieldId, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 1;
+  refindex = a.album_strAlbum;
   varindex = DatabaseUtils::GetFieldIndex(FieldAlbum, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 6;
+  refindex = a.album_strArtists;
   varindex = DatabaseUtils::GetFieldIndex(FieldArtist, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 6;
+  refindex = a.album_strArtists;
   varindex = DatabaseUtils::GetFieldIndex(FieldAlbumArtist, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 7;
+  refindex = a.album_strGenres;
   varindex = DatabaseUtils::GetFieldIndex(FieldGenre, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 8;
+  refindex = a.album_iYear;
   varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 11;
+  refindex = a.album_strMoods;
   varindex = DatabaseUtils::GetFieldIndex(FieldMoods, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 12;
+  refindex = a.album_strStyles;
   varindex = DatabaseUtils::GetFieldIndex(FieldStyles, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 13;
+  refindex = a.album_strThemes;
   varindex = DatabaseUtils::GetFieldIndex(FieldThemes, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 14;
+  refindex = a.album_strReview;
   varindex = DatabaseUtils::GetFieldIndex(FieldReview, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 15;
+  refindex = a.album_strLabel;
   varindex = DatabaseUtils::GetFieldIndex(FieldMusicLabel, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 16;
+  refindex = a.album_strType;
   varindex = DatabaseUtils::GetFieldIndex(FieldAlbumType, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 18;
+  refindex = a.album_iRating;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
@@ -877,68 +946,69 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeAlbum)
 TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeSong)
 {
   int refindex, varindex;
+  TestDatabaseUtilsHelper a;
 
-  refindex = 0;
+  refindex = a.song_idSong;
   varindex = DatabaseUtils::GetFieldIndex(FieldId, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 3;
+  refindex = a.song_strTitle;
   varindex = DatabaseUtils::GetFieldIndex(FieldTitle, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 4;
+  refindex = a.song_iTrack;
   varindex = DatabaseUtils::GetFieldIndex(FieldTrackNumber, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 5;
+  refindex = a.song_iDuration;
   varindex = DatabaseUtils::GetFieldIndex(FieldTime, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 6;
+  refindex = a.song_iYear;
   varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 8;
+  refindex = a.song_strFileName;
   varindex = DatabaseUtils::GetFieldIndex(FieldFilename, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 14;
+  refindex = a.song_iTimesPlayed;
   varindex = DatabaseUtils::GetFieldIndex(FieldPlaycount, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 15;
+  refindex = a.song_iStartOffset;
   varindex = DatabaseUtils::GetFieldIndex(FieldStartOffset, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 16;
+  refindex = a.song_iEndOffset;
   varindex = DatabaseUtils::GetFieldIndex(FieldEndOffset, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 17;
+  refindex = a.song_lastplayed;
   varindex = DatabaseUtils::GetFieldIndex(FieldLastPlayed, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 18;
+  refindex = a.song_rating;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 19;
+  refindex = a.song_comment;
   varindex = DatabaseUtils::GetFieldIndex(FieldComment, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 21;
+  refindex = a.song_strAlbum;
   varindex = DatabaseUtils::GetFieldIndex(FieldAlbum, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 22;
+  refindex = a.song_strPath;
   varindex = DatabaseUtils::GetFieldIndex(FieldPath, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 24;
+  refindex = a.song_strArtists;
   varindex = DatabaseUtils::GetFieldIndex(FieldArtist, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = 26;
+  refindex = a.song_strGenres;
   varindex = DatabaseUtils::GetFieldIndex(FieldGenre, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 

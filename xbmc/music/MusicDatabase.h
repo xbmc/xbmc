@@ -88,6 +88,7 @@ class CFileItemList;
 class CMusicDatabase : public CDatabase
 {
   friend class DatabaseUtils;
+  friend class TestDatabaseUtilsHelper;
 
 public:
   CMusicDatabase(void);
