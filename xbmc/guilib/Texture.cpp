@@ -171,6 +171,15 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
+CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate)
+{
+  CTexture *texture = new CTexture();
+  if (texture->LoadFromFile(texturePath, idealWidth, idealHeight, autoRotate, NULL, NULL))
+    return texture;
+  delete texture;
+  return NULL;
+}
+
 bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
                                 bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
 {

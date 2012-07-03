@@ -175,12 +175,10 @@ CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int 
       && !file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
     return NULL;
 
-  CTexture *texture = new CTexture();
-  if (!texture->LoadFromFile(image, width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
-  {
-    delete texture;
+  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, g_guiSettings.GetBool("pictures.useexifrotation"));
+  if (!texture)
     return NULL;
-  }
+
   // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
   // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
   // When flipped = true we have an additional <flipX> on the left, which is equivalent to toggling the last bit

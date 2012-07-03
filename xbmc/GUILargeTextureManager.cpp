@@ -64,14 +64,10 @@ bool CImageLoader::DoWork()
   if (!loadPath.IsEmpty())
   {
     // direct route - load the image
-    m_texture = new CTexture();
     unsigned int start = XbmcThreads::SystemClockMillis();
-    if (!m_texture->LoadFromFile(loadPath, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), g_guiSettings.GetBool("pictures.useexifrotation")))
-    {
-      delete m_texture;
-      m_texture = NULL;
+    m_texture = CBaseTexture::LoadFromFile(loadPath, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), g_guiSettings.GetBool("pictures.useexifrotation"));
+    if (!m_texture)
       return false;
-    }
     if (XbmcThreads::SystemClockMillis() - start > 100)
       CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
 
