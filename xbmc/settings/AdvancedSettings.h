@@ -132,6 +132,7 @@ class CAdvancedSettings
     int m_musicPercentSeekBackwardBig;
     int m_videoBlackBarColour;
     int m_videoIgnoreSecondsAtStart;
+    int m_videoUnpauseJumpBackSecs;
     float m_videoIgnorePercentAtEnd;
     CStdString m_audioHost;
     bool m_audioApplyDrc;

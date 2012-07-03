@@ -2173,6 +2173,15 @@ void CDVDPlayer::Pause()
   // return to normal speed if it was paused before, pause otherwise
   if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
   {
+    //check for the jumpback feature
+    //if set jumpback given secs on unpause
+    //for getting back into the story ;)
+    if(g_advancedSettings.m_videoUnpauseJumpBackSecs && 
+       GetTime() > g_advancedSettings.m_videoUnpauseJumpBackSecs * 1000)
+    {
+      SeekTime(GetTime() - g_advancedSettings.m_videoUnpauseJumpBackSecs * 1000);
+    }
+  
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
     m_callback.OnPlayBackResumed();
   }
