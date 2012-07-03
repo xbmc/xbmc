@@ -33,18 +33,15 @@
 #else
 #define DEFAULT_SKIN          "skin.confluence"
 #endif
-#define DEFAULT_FANART_HEIGHT 0
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED
-#define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #if defined(TARGET_DARWIN) || defined(_WIN32)
 #define DEFAULT_VSYNC       VSYNC_ALWAYS
 #else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
 #endif
-#define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
 #include "settings/VideoSettings.h"

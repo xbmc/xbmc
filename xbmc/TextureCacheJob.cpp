@@ -97,12 +97,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    if (width > 0 && height > 0)
-      CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                width, height, texture->GetOrientation(), m_details.file.c_str());
-    else
-      CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                texture->GetOrientation(), m_details.file.c_str());
+    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str());
 
     if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
     {
@@ -124,8 +119,8 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
   // unwrap the URL as required
   CStdString image(url);
   additional_info.clear();
-  width = g_advancedSettings.m_fanartHeight * 16/9;
-  height = g_advancedSettings.m_fanartHeight;
+  width = g_advancedSettings.m_fanartRes * 16/9;
+  height = g_advancedSettings.m_fanartRes;
   if (url.compare(0, 8, "image://") == 0)
   {
     // format is image://[type@]<url_encoded_path>?options
@@ -163,7 +158,7 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
       }
       if (option == "size" && value == "thumb")
       {
-        width = height = g_advancedSettings.m_thumbSize;
+        width = height = g_advancedSettings.GetThumbSize();
       }
       else if (option == "flipped")
       {

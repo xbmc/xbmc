@@ -36,6 +36,7 @@ using namespace XFILE;
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
 {
+  CLog::Log(LOGDEBUG, "cached image '%s' size %dx%d", thumbFile.c_str(), width, height);
   if (URIUtils::GetExtension(thumbFile).Equals(".jpg"))
   {
     CJpegIO jpegImage;
@@ -85,6 +86,19 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
   if (dest_height == 0)
     dest_height = height;
 
+  uint32_t max_height = g_advancedSettings.m_imageRes;
+  if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
+  { // a separate fanart resolution is specified - check if the image is exactly equal to this res
+    if (width == g_advancedSettings.m_fanartRes * 16/9 && height == g_advancedSettings.m_fanartRes)
+    { // special case for fanart res
+      max_height = g_advancedSettings.m_fanartRes;
+    }
+  }
+  uint32_t max_width = max_height * 16/9;
+
+  dest_height = std::min(dest_height, max_height);
+  dest_width  = std::min(dest_width, max_width);
+
   if (width > dest_width || height > dest_height || orientation)
   {
     bool success = false;
@@ -125,12 +139,12 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
   unsigned int num_across = (unsigned int)ceil(sqrt((float)files.size()));
   unsigned int num_down = (files.size() + num_across - 1) / num_across;
 
-  unsigned int tile_width = g_advancedSettings.m_thumbSize / num_across;
-  unsigned int tile_height = g_advancedSettings.m_thumbSize / num_down;
-  unsigned int tile_gap = std::max(1,g_advancedSettings.m_thumbSize / 512);
+  unsigned int tile_width = g_advancedSettings.GetThumbSize() / num_across;
+  unsigned int tile_height = g_advancedSettings.GetThumbSize() / num_down;
+  unsigned int tile_gap = 1;
 
   // create a buffer for the resulting thumb
-  uint32_t *buffer = (uint32_t *)calloc(g_advancedSettings.m_thumbSize * g_advancedSettings.m_thumbSize, 4);
+  uint32_t *buffer = (uint32_t *)calloc(g_advancedSettings.GetThumbSize() * g_advancedSettings.GetThumbSize(), 4);
   for (unsigned int i = 0; i < files.size(); ++i)
   {
     int x = i % num_across;
@@ -152,12 +166,12 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
           // drop into the texture
           unsigned int posX = x*tile_width + (tile_width - width)/2;
           unsigned int posY = y*tile_height + (tile_height - height)/2;
-          uint32_t *dest = buffer + posX + posY*g_advancedSettings.m_thumbSize;
+          uint32_t *dest = buffer + posX + posY*g_advancedSettings.GetThumbSize();
           uint32_t *src = scaled;
           for (unsigned int y = 0; y < height; ++y)
           {
             memcpy(dest, src, width*4);
-            dest += g_advancedSettings.m_thumbSize;
+            dest += g_advancedSettings.GetThumbSize();
             src += width;
           }
         }
@@ -166,8 +180,8 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
     }
   }
   // now save to a file
-  bool ret = CreateThumbnailFromSurface((uint8_t *)buffer, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize,
-                                        g_advancedSettings.m_thumbSize * 4, thumb);
+  bool ret = CreateThumbnailFromSurface((uint8_t *)buffer, g_advancedSettings.GetThumbSize(), g_advancedSettings.GetThumbSize(),
+                                        g_advancedSettings.GetThumbSize() * 4, thumb);
   free(buffer);
   return ret;
 }
