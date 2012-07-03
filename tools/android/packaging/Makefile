@@ -5,7 +5,7 @@ OBJS = libcurl.so \
   libafpclient.so  \
   libshairport.so libplist.so \
   libxbogg.so libxbvorbis.so libxbvorbisfile.so libxbFLAC.so libxbmpeg2.so \
-  libxbmpeg2convert.so
+  libxbmpeg2convert.so libxbtag.so
 
 PLATFORM_OBJS =
 
