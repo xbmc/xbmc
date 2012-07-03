@@ -890,7 +890,14 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
 
   // Reset the current start offset. The actual resume
   // option is set in the switch, based on the action passed.
-  item->m_lStartOffset = 0;
+  // Exception for plugin:// items if the startoffset is set
+  if (item->IsPlugin())
+  {
+    if (item->m_lStartOffset != STARTOFFSET_RESUME)
+      action = SELECT_ACTION_PLAY;
+  }
+  else
+    item->m_lStartOffset = 0;
   
   switch (action)
   {
