@@ -47,6 +47,7 @@ CSong::CSong(CMusicInfoTag& tag)
   iTrack = tag.GetTrackAndDiskNumber();
   iDuration = tag.GetDuration();
   bCompilation = tag.GetCompilation();
+  embeddedArt = tag.GetCoverArtInfo();
   strThumb = "";
   iStartOffset = 0;
   iEndOffset = 0;
@@ -54,7 +55,6 @@ CSong::CSong(CMusicInfoTag& tag)
   iTimesPlayed = 0;
   iKaraokeNumber = 0;
   iKaraokeDelay = 0;         //! Karaoke song lyrics-music delay in 1/10 seconds.
-  iArtistId = -1;
   iAlbumId = -1;
 }
 
@@ -84,7 +84,6 @@ void CSong::Serialize(CVariant& value)
   value["timesplayed"] = iTimesPlayed;
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["karaokenumber"] = (int64_t) iKaraokeNumber;
-  value["artistid"] = iArtistId;
   value["albumid"] = iAlbumId;
 }
 
@@ -115,9 +114,22 @@ void CSong::Clear()
   iKaraokeNumber = 0;
   strKaraokeLyrEncoding.Empty();
   iKaraokeDelay = 0;
-  iArtistId = -1;
   iAlbumId = -1;
   bCompilation = false;
+  embeddedArt.clear();
+}
+
+bool CSong::HasArt() const
+{
+  if (!strThumb.empty()) return true;
+  if (!embeddedArt.empty()) return true;
+  return false;
+}
+
+bool CSong::ArtMatches(const CSong &right) const
+{
+  return (right.strThumb == strThumb &&
+          embeddedArt.matches(right.embeddedArt));
 }
 
 CSongMap::CSongMap()

@@ -54,18 +54,55 @@ public:
   void Stop();
   void SetObserver(IMusicInfoScannerObserver* pObserver);
 
-  static void CheckForVariousArtists(VECSONGS &songs);
-  static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
+  /*! \brief Categorise songs into albums
+   Albums are defined uniquely by the album name and album artist.
+
+   If albumartist is not available in a song, we determine it from the
+   common portion of each song's artist list.
+
+   eg the common artist for
+     Bob Dylan / Tom Petty / Roy Orbison
+     Bob Dylan / Tom Petty
+   would be "Bob Dylan / Tom Petty".
+
+   If all songs that share an album
+    1. have a non-empty album name
+    2. have at least two different primary artists
+    3. have no album artist set
+    4. and no track numbers overlap
+   we assume it is a various artists album, and set the albumartist field accordingly.
+
+   \param songs [in/out] list of songs to categorise - albumartist field may be altered.
+   \param albums [out] albums found within these songs.
+   */
+  static void CategoriseAlbums(VECSONGS &songs, VECALBUMS &albums);
+
+  /*! \brief Find art for albums
+   Based on the albums in the folder, finds whether we have unique album art
+   and assigns to the album if we do.
+
+   In order of priority:
+    1. If there is a single album in the folder, then the folder art is assigned to the album.
+    2. We find the art for each song. A .tbn file takes priority over embedded art.
+    3. If we have a unique piece of art for all songs in the album, we assign that to the album
+       and remove that art from each song so that they inherit from the album.
+    4. If there is not a unique piece of art for each song, then no art is assigned
+       to the album.
+
+   \param albums [in/out] list of albums to categorise - art field may be altered.
+   \param path [in] path containing albums.
+   */
+  static void FindArtForAlbums(VECALBUMS &albums, const CStdString &path);
 
   bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& album, CGUIDialogProgress* pDialog=NULL);
   bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
+
+  std::map<std::string, std::string> GetArtistArtwork(long id, const CArtist *artist = NULL);
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
-  void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
   int GetPathHash(const CFileItemList &items, CStdString &hash);
   void GetAlbumArtwork(long id, const CAlbum &artist);
-  void GetArtistArtwork(long id, const CStdString &artistName, const CArtist *artist = NULL);
 
   bool DoScan(const CStdString& strDirectory);
 

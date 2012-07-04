@@ -21,14 +21,12 @@
 
 #include "MusicInfoTagLoaderWMA.h"
 #include "Util.h"
-#include "pictures/Picture.h"
 #include "MusicInfoTag.h"
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/AutoPtrHandle.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "ThumbnailCache.h"
 #include "utils/StringUtils.h"
 
 using namespace AUTOPTR;
@@ -87,7 +85,7 @@ CMusicInfoTagLoaderWMA::~CMusicInfoTagLoaderWMA()
 // Based on MediaInfo
 // by J�r�me Martinez, Zen@MediaArea.net
 // http://sourceforge.net/projects/mediainfo/
-bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& tag)
+bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   try
   {
@@ -280,7 +278,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
         {
           unsigned char* pValue = (unsigned char*)(pData.get() + iOffset); // Raw data
-          SetTagValueBinary(strFrameName, pValue, tag);
+          SetTagValueBinary(strFrameName, pValue, tag, art);
         }
         else if (iFrameType == WMT_TYPE_BOOL && iValueSize > 0)
         {
@@ -361,7 +359,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
         {
           unsigned char* pValue = (unsigned char*)(pData.get() + iOffset); // Raw data
-          SetTagValueBinary(strFrameName, pValue, tag);
+          SetTagValueBinary(strFrameName, pValue, tag, art);
         }
         else if (iFrameType == WMT_TYPE_BOOL && iValueSize > 0)
         {
@@ -482,7 +480,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueUnsigned(const CStdString& strFrameName,
   }
 }
 
-void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, const unsigned char* pValue, CMusicInfoTag& tag)
+void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, const unsigned char* pValue, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   if (strFrameName == "WM/Picture")
   {
@@ -514,36 +512,11 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
     // Cover Front (3) or Other (0) as the cover.
     if (picture.bPictureType == 3 || picture.bPictureType == 0) // Cover Front
     {
-      CStdString strExtension(picture.pwszMIMEType);
-      // if we don't have an album tag, cache with the full file path so that
-      // other non-tagged files don't get this album image
-      CStdString strCoverArt;
-      if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().empty() || !tag.GetArtist().empty()))
-        strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
-      else
-        strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
-      if (!CUtil::ThumbExists(strCoverArt))
+      if (picture.pbData != NULL && picture.dwDataLen > 0)
       {
-        int nPos = strExtension.Find('/');
-        if (nPos > -1)
-          strExtension.Delete(0, nPos + 1);
-
-        if (picture.pbData != NULL && picture.dwDataLen > 0)
-        {
-          if (CPicture::CreateThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
-          {
-            CUtil::ThumbCacheAdd(strCoverArt, true);
-          }
-          else
-          {
-            CUtil::ThumbCacheAdd(strCoverArt, false);
-            CLog::Log(LOGERROR, "Tag loader wma: "
-                                "Unable to create album art for %s "
-                                "(extension=%s, size=%u)",
-                      tag.GetURL().c_str(), strExtension.c_str(),
-                      picture.dwDataLen);
-          }
-        }
+        tag.SetCoverArtInfo(picture.dwDataLen, picture.pwszMIMEType);
+        if (art)
+          art->set(picture.pbData, picture.dwDataLen, picture.pwszMIMEType);
       }
     }
   }

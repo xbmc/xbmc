@@ -28,7 +28,6 @@
 #include "NfoFile.h"
 #include "utils/RegExp.h"
 #include "utils/md5.h"
-#include "pictures/Picture.h"
 #include "filesystem/StackDirectory.h"
 #include "VideoInfoDownloader.h"
 #include "GUIInfoManager.h"
@@ -1189,25 +1188,6 @@ namespace VIDEO
       FetchActorThumbs(movieDetails.m_cast, parentDir);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, thumb);
-  }
-
-  void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)
-  {
-    if (progress)
-    {
-      progress->SetLine(2, 415);
-      progress->Progress();
-    }
-    bool result = false;
-    if (asThumb)
-      result = CPicture::CreateThumbnail(url, destination);
-    else
-      result = CPicture::CacheFanart(url, destination);
-    if (!result)
-    {
-      CFile::Delete(destination);
-      return;
-    }
   }
 
   INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)

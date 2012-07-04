@@ -211,6 +211,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   int            i = 0;
   CFileItemList  musicItems;
   CMusicDatabase musicdatabase;
+  CMusicThumbLoader loader;
   
   musicdatabase.Open();
   
@@ -227,10 +228,8 @@ bool CRecentlyAddedJob::UpdateMusic()
       CStdString   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
       CStdString   strArtist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
       
-      long idAlbum = musicdatabase.GetAlbumByName(strAlbum,strArtist);
-      if (idAlbum != -1)
-        musicdatabase.GetAlbumThumb(idAlbum,strThumb);
-      
+      loader.LoadItem(item.get());
+
       strRating.Format("%c", item->GetMusicInfoTag()->GetRating());
       
       home->SetProperty("LatestSong." + value + ".Title"   , item->GetMusicInfoTag()->GetTitle());
@@ -240,7 +239,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestSong." + value + ".Rating"  , strRating);
       home->SetProperty("LatestSong." + value + ".Path"    , item->GetMusicInfoTag()->GetURL());
       home->SetProperty("LatestSong." + value + ".Thumb"   , strThumb);
-      home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetCachedFanart());
+      home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetProperty("fanart_image"));
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -267,12 +266,14 @@ bool CRecentlyAddedJob::UpdateMusic()
       CStdString value;
       CStdString strPath;
       CStdString strThumb;
+      CStdString strFanart;
       CStdString strDBpath;
       CStdString strSQLAlbum;
       CAlbum&    album=albums[i];     
-      
+
       value.Format("%i", i + 1);
-      musicdatabase.GetAlbumThumb(album.idAlbum,strThumb);
+      strThumb = musicdatabase.GetArtForItem(album.idAlbum, "album", "thumb");
+      strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, "album", "fanart");
       strDBpath.Format("musicdb://3/%i/", album.idAlbum);
       strSQLAlbum.Format("idAlbum=%i", album.idAlbum);
       
@@ -284,7 +285,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestAlbum." + value + ".Rating"  , musicdatabase.GetSingleValue("albumview", "iRating", strSQLAlbum));
       home->SetProperty("LatestAlbum." + value + ".Path"    , strDBpath);
       home->SetProperty("LatestAlbum." + value + ".Thumb"   , strThumb);
-      home->SetProperty("LatestAlbum." + value + ".Fanart"  , CFileItem::GetCachedThumb(strArtist,g_settings.GetMusicFanartFolder()));
+      home->SetProperty("LatestAlbum." + value + ".Fanart"  , strFanart);
     }
   }
   for (; i < NUM_ITEMS; ++i)

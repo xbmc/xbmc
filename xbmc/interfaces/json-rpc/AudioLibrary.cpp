@@ -453,7 +453,6 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
       return false;
 
     item = CFileItem(strFilename, album);
-    item.SetMusicThumb();
   }
   else
   {
@@ -522,5 +521,4 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
 void CAudioLibrary::FillAlbumItem(const CAlbum &album, const CStdString &path, CFileItemPtr &item)
 {
   item = CFileItemPtr(new CFileItem(path, album));
-  item->SetMusicThumb();
 }

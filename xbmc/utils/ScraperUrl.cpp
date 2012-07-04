@@ -27,7 +27,6 @@
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/ZipFile.h"
-#include "pictures/Picture.h"
 #include "URIUtils.h"
 
 #include <cstring>
@@ -253,42 +252,6 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     file.Close();
   }
   return true;
-}
-
-bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry& entry)
-{
-  if (entry.m_url.IsEmpty())
-    return false;
-
-  CURL url(entry.m_url);
-  if (url.GetProtocol() != "http")
-  { // do a direct file copy
-    try
-    {
-      return CPicture::CreateThumbnail(entry.m_url, thumb);
-    }
-    catch (...)
-    {
-      XFILE::CFile::Delete(thumb);
-    }
-    return false;
-  }
-
-  XFILE::CCurlFile http;
-  http.SetReferer(entry.m_spoof);
-  CStdString thumbData;
-  if (http.Get(entry.m_url, thumbData))
-  {
-    try
-    {
-      return CPicture::CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), URIUtils::GetExtension(entry.m_url), thumb);
-    }
-    catch (...)
-    {
-      XFILE::CFile::Delete(thumb);
-    }
-  }
-  return false;
 }
 
 // XML format is of strUrls is:

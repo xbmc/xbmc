@@ -33,6 +33,8 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "ThumbLoader.h"
+#include "music/tags/MusicInfoTag.h"
 
 CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldHash)
 {
@@ -74,11 +76,11 @@ bool CTextureCacheJob::DoWork()
 bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
 {
   // unwrap the URL as required
-  bool flipped;
+  std::string additional_info;
   unsigned int width, height;
-  CStdString image = DecodeImageURL(m_url, width, height, flipped);
+  CStdString image = DecodeImageURL(m_url, width, height, additional_info);
 
-  m_details.updateable = UpdateableURL(image);
+  m_details.updateable = additional_info != "music" && UpdateableURL(image);
 
   // generate the hash
   m_details.hash = GetImageHash(image);
@@ -87,7 +89,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   else if (m_details.hash == m_oldHash)
     return true;
 
-  CBaseTexture *texture = LoadImage(image, width, height, flipped);
+  CBaseTexture *texture = LoadImage(image, width, height, additional_info);
   if (texture)
   {
     if (texture->HasAlpha())
@@ -95,12 +97,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    if (width > 0 && height > 0)
-      CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                width, height, texture->GetOrientation(), m_details.file.c_str());
-    else
-      CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                texture->GetOrientation(), m_details.file.c_str());
+    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str());
 
     if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
     {
@@ -117,20 +114,24 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   return false;
 }
 
-CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, bool &flipped)
+CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, std::string &additional_info)
 {
   // unwrap the URL as required
   CStdString image(url);
-  flipped = false;
-  width = g_advancedSettings.m_fanartHeight * 16/9;
-  height = g_advancedSettings.m_fanartHeight;
+  additional_info.clear();
+  width = height = 0;
   if (url.compare(0, 8, "image://") == 0)
   {
     // format is image://[type@]<url_encoded_path>?options
     CURL thumbURL(url);
 
     if (!thumbURL.GetUserName().IsEmpty())
-      return ""; // we don't re-cache special images (eg picturefolder/video embedded thumbs)
+    {
+      if (thumbURL.GetUserName() == "music")
+        additional_info = "music";
+      else
+        return ""; // we don't re-cache special images (eg picturefolder/video embedded thumbs)
+    }
 
     image = thumbURL.GetHostName();
     CURL::Decode(image);
@@ -156,35 +157,40 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
       }
       if (option == "size" && value == "thumb")
       {
-        width = height = g_advancedSettings.m_thumbSize;
+        width = height = g_advancedSettings.GetThumbSize();
       }
       else if (option == "flipped")
       {
-        flipped = true;
+        additional_info = "flipped";
       }
     }
   }
   return image;
 }
 
-CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped)
+CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info)
 {
+  if (additional_info == "music")
+  { // special case for embedded music images
+    MUSIC_INFO::EmbeddedArt art;
+    if (CMusicThumbLoader::GetEmbeddedThumb(image, art))
+      return CBaseTexture::LoadFromFileInMemory(&art.data[0], art.size, art.mime, width, height);
+  }
+
   // Validate file URL to see if it is an image
   CFileItem file(image, false);
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
       && !file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
     return NULL;
 
-  CTexture *texture = new CTexture();
-  if (!texture->LoadFromFile(image, width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
-  {
-    delete texture;
+  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, g_guiSettings.GetBool("pictures.useexifrotation"));
+  if (!texture)
     return NULL;
-  }
+
   // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
   // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
-  // When flipped = true we have an additional <flipX> on the left, which is equivalent to toggling the last bit
-  if (flipped)
+  // When flipped we have an additional <flipX> on the left, which is equivalent to toggling the last bit
+  if (additional_info == "flipped")
     texture->SetOrientation(texture->GetOrientation() ^ 1);
 
   return texture;

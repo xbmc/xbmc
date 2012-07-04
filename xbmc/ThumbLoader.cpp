@@ -23,7 +23,6 @@
 #include "ThumbLoader.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
-#include "pictures/Picture.h"
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
 #include "FileItem.h"
@@ -37,10 +36,15 @@
 #include "video/VideoDatabase.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "video/VideoInfoScanner.h"
+#include "music/tags/MusicInfoTag.h"
+#include "music/tags/MusicInfoTagLoaderFactory.h"
+#include "music/infoscanner/MusicInfoScanner.h"
+#include "music/Artist.h"
 
 using namespace XFILE;
 using namespace std;
 using namespace VIDEO;
+using namespace MUSIC_INFO;
 
 CThumbLoader::CThumbLoader(int nThreads) :
   CBackgroundInfoLoader(nThreads)
@@ -295,6 +299,22 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
     m_database->Open();
     if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       pItem->SetArt(artwork);
+    else if (pItem->GetVideoInfoTag()->m_type == "artist")
+    { // we retrieve music video art from the music database (no backward compat)
+      CMusicDatabase database;
+      database.Open();
+      int idArtist = database.GetArtistByName(pItem->GetLabel());
+      if (database.GetArtForItem(idArtist, "artist", artwork))
+        pItem->SetArt(artwork);
+    }
+    else if (pItem->GetVideoInfoTag()->m_type == "album")
+    { // we retrieve music video art from the music database (no backward compat)
+      CMusicDatabase database;
+      database.Open();
+      int idAlbum = database.GetAlbumByName(pItem->GetLabel(), pItem->GetVideoInfoTag()->m_artist);
+      if (database.GetArtForItem(idAlbum, "album", artwork))
+        pItem->SetArt(artwork);
+    }
     else
     {
       if (tag.m_type == "movie"  || tag.m_type == "episode" ||
@@ -321,7 +341,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
             pItem->SetArt(items[0]->GetArt());
         }
       }
-      else if (tag.m_type == "actor"  || tag.m_type == "artist" ||
+      else if (tag.m_type == "actor"  ||
                tag.m_type == "writer" || tag.m_type == "director")
       {
         // We can't realistically get the local thumbs (as we'd need to check every movie that contains this actor)
@@ -485,19 +505,126 @@ CStdString CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
   return "";
 }
 
-CMusicThumbLoader::CMusicThumbLoader()
+CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader(1)
 {
+  m_database = new CMusicDatabase;
 }
 
 CMusicThumbLoader::~CMusicThumbLoader()
 {
+  delete m_database;
+}
+
+void CMusicThumbLoader::OnLoaderStart()
+{
+  m_database->Open();
+}
+
+void CMusicThumbLoader::OnLoaderFinish()
+{
+  m_database->Close();
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive) return true;
+  if (pItem->m_bIsShareOrDrive)
+    return true;
+
+  if (pItem->HasMusicInfoTag() && pItem->GetArt().empty())
+  {
+    if (FillLibraryArt(*pItem))
+      return true;
+    if (pItem->GetMusicInfoTag()->GetType() == "artist")
+      return true; // no fallback
+  }
+
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
+    {
+      std::string artist = pItem->GetMusicInfoTag()->GetArtist()[0];
+      m_database->Open();
+      int idArtist = m_database->GetArtistByName(artist);
+      if (idArtist >= 0)
+      {
+        string fanart = m_database->GetArtForItem(idArtist, "artist", "fanart");
+        if (!fanart.empty())
+          pItem->SetProperty("fanart_image", fanart);
+      }
+      m_database->Close();
+    }
+  }
+
   if (!pItem->HasThumbnail())
-    pItem->SetUserMusicThumb();
+    FillThumb(*pItem);
+
   return true;
 }
 
+bool CMusicThumbLoader::FillThumb(CFileItem &item)
+{
+  if (item.HasThumbnail())
+    return true;
+  CStdString thumb = GetCachedImage(item, "thumb");
+  if (thumb.IsEmpty())
+  {
+    thumb = item.GetUserMusicThumb();
+    if (!thumb.IsEmpty())
+      SetCachedImage(item, "thumb", thumb);
+  }
+  item.SetThumbnailImage(thumb);
+  return !thumb.IsEmpty();
+}
+
+bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
+{
+  CMusicInfoTag &tag = *item.GetMusicInfoTag();
+  if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
+  {
+    m_database->Open();
+    map<string, string> artwork;
+    if (m_database->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
+      item.SetArt(artwork);
+    else if (tag.GetType() == "song")
+    { // no art for the song, try the album
+      if (m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork))
+        item.SetArt(artwork);
+    }
+    else if (tag.GetType() == "artist")
+    {
+      { // Need the artist thumb/fanart which isn't grabbed during normal directory fetches
+        CArtist artist;
+        m_database->GetArtistInfo(tag.GetDatabaseId(), artist, false);
+        CMusicInfoScanner scanner;
+        artwork = scanner.GetArtistArtwork(tag.GetDatabaseId(), &artist);
+        item.SetArt(artwork);
+      }
+      // add to the database for next time around
+      map<string, string> artwork = item.GetArt();
+      if (!artwork.empty())
+      {
+        m_database->SetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork);
+        for (map<string, string>::iterator i = artwork.begin(); i != artwork.end(); ++i)
+          CTextureCache::Get().BackgroundCacheImage(i->second);
+      }
+      else // nothing found - set an empty thumb so that next time around we don't hit here again
+        m_database->SetArtForItem(tag.GetDatabaseId(), tag.GetType(), "thumb", "");
+    }
+    if (tag.GetType() == "song" || tag.GetType() == "album")
+    { // fanart from the artist
+      item.SetProperty("fanart_image", m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart"));
+    }
+    m_database->Close();
+  }
+  return !item.GetArt().empty();
+}
+
+bool CMusicThumbLoader::GetEmbeddedThumb(const std::string &path, EmbeddedArt &art)
+{
+  auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
+  CMusicInfoTag tag;
+  if (NULL != pLoader.get())
+    pLoader->Load(path, tag, &art);
+
+  return !art.empty();
+}

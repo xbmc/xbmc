@@ -22,10 +22,7 @@
 #include "Fanart.h"
 #include "utils/XBMCTinyXML.h"
 #include "URIUtils.h"
-#include "pictures/Picture.h"
-#include "filesystem/CurlFile.h"
 #include "StringUtils.h"
-#include "filesystem/File.h"
 
 const unsigned int CFanart::max_fanart_colors=3;
 
@@ -131,44 +128,6 @@ bool CFanart::SetPrimaryFanart(unsigned int index)
   Pack();
 
   return true;
-}
-
-bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination) const
-{
-  if (index >= m_fanart.size())
-    return false;
-
-  CStdString thumbURL;
-  if (!m_fanart[index].strPreview.IsEmpty())
-  {
-    if (m_url.IsEmpty())
-      thumbURL = m_fanart[index].strPreview;
-    else
-      thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strPreview);
-
-    XFILE::CCurlFile http;
-    if (http.Download(thumbURL, strDestination))
-      return true;
-  }
-
-  // try downloading the image instead
-  if (m_url.IsEmpty())
-    thumbURL = m_fanart[index].strImage;
-  else
-    thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strImage);
-  return DownloadImage(thumbURL, strDestination);
-}
-
-bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination) const
-{
-  return CPicture::CacheFanart(url, destination);
-}
-
-bool CFanart::DownloadImage(const CStdString &strDestination) const
-{
-  if (m_fanart.size() == 0)
-    return false;
-  return DownloadImage(GetImageURL(), strDestination);
 }
 
 unsigned int CFanart::GetNumFanarts()

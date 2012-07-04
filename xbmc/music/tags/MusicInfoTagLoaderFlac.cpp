@@ -32,13 +32,14 @@ CMusicInfoTagLoaderFlac::CMusicInfoTagLoaderFlac(void)
 CMusicInfoTagLoaderFlac::~CMusicInfoTagLoaderFlac()
 {}
 
-bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag& tag)
+bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   try
   {
     // retrieve the Flac Tag info from strFileName
     // and put it in tag
     CFlacTag myTag;
+    myTag.SetArt(art);
     if (myTag.Read(strFileName))
     {
       myTag.GetMusicInfoTag(tag);

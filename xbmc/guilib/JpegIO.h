@@ -37,6 +37,7 @@ public:
   CJpegIO();
   ~CJpegIO();
   bool           Open(const CStdString& m_texturePath,  unsigned int minx=0, unsigned int miny=0, bool read=true);
+  bool           Read(unsigned char* buffer, unsigned int bufSize, unsigned int minx, unsigned int miny);
   bool           Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
   bool           CreateThumbnail(const CStdString& sourceFile, const CStdString& destFile, int minx, int miny, bool rotateExif);
   bool           CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny);
@@ -48,7 +49,6 @@ public:
   unsigned int   Orientation() { return m_orientation; }
 
 protected:
-  bool           Read(unsigned char* buffer, unsigned int bufSize, unsigned int minx, unsigned int miny);
   static  void   jpeg_error_exit(j_common_ptr cinfo);
 
   unsigned int   GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);

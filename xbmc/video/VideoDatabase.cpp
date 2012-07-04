@@ -50,7 +50,6 @@
 #include "addons/AddonInstaller.h"
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
-#include "ThumbnailCache.h"
 #include "utils/LabelFormatter.h"
 #include "XBDateTime.h"
 
@@ -3837,6 +3836,9 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; END");
       m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; END");
       m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
+
+      g_settings.m_videoNeedsUpdate = 63;
+      g_settings.Save();
     }
     if (iVersion < 64)
     { // add idShow to episode table
@@ -4499,9 +4501,6 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           if (!items.Contains(pItem->GetPath()))
           {
             pItem->GetVideoInfoTag()->m_artist.push_back(it->second.second);
-            CStdString strThumb = CThumbnailCache::GetAlbumThumb(*pItem);
-            if (CFile::Exists(strThumb))
-              pItem->SetThumbnailImage(strThumb);
             items.Add(pItem);
           }
         }
@@ -4522,9 +4521,6 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           if (!items.Contains(pItem->GetPath()))
           {
             pItem->GetVideoInfoTag()->m_artist.push_back(m_pDS->fv(2).get_asString());
-            CStdString strThumb = CThumbnailCache::GetAlbumThumb(pItem->GetLabel(), m_pDS->fv(2).get_asString());
-            if (CFile::Exists(strThumb))
-              pItem->SetThumbnailImage(strThumb);
             items.Add(pItem);
           }
         }
@@ -4561,11 +4557,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     {
       CFileItemPtr pItem = items[i];
       if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-      {
-        if (CFile::Exists(pItem->GetCachedArtistThumb()))
-          pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
         pItem->SetIconImage("DefaultArtist.png");
-      }
       else
         pItem->SetIconImage("DefaultActor.png");
     }

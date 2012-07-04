@@ -31,7 +31,7 @@ CMusicInfoTagLoaderSHN::CMusicInfoTagLoaderSHN(void)
 CMusicInfoTagLoaderSHN::~CMusicInfoTagLoaderSHN()
 {}
 
-bool CMusicInfoTagLoaderSHN::Load(const CStdString& strFileName, CMusicInfoTag& tag)
+bool CMusicInfoTagLoaderSHN::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   try
   {

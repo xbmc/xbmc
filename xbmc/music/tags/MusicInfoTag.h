@@ -24,6 +24,10 @@
 class CSong;
 class CAlbum;
 
+#include <vector>
+#include <string>
+#include <stdint.h>
+
 #include "utils/Archive.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -31,6 +35,27 @@ class CAlbum;
 
 namespace MUSIC_INFO
 {
+  class EmbeddedArtInfo
+  {
+  public:
+    EmbeddedArtInfo() {};
+    EmbeddedArtInfo(size_t size, const std::string &mime);
+    void set(size_t size, const std::string &mime);
+    void clear();
+    bool empty() const;
+    bool matches(const EmbeddedArtInfo &right) const;
+    size_t      size;
+    std::string mime;
+  };
+
+  class EmbeddedArt : public EmbeddedArtInfo
+  {
+  public:
+    EmbeddedArt() {};
+    EmbeddedArt(const uint8_t *data, size_t size, const std::string &mime);
+    void set(const uint8_t *data, size_t size, const std::string &mime);
+    std::vector<uint8_t> data;
+  };
 
 class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 {
@@ -45,6 +70,7 @@ public:
   const CStdString& GetURL() const;
   const std::vector<std::string>& GetArtist() const;
   const CStdString& GetAlbum() const;
+  int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;
   const std::vector<std::string> GetGenre() const;
   int GetTrackNumber() const;
@@ -53,6 +79,7 @@ public:
   int GetDuration() const;  // may be set even if Loaded() returns false
   int GetYear() const;
   long GetDatabaseId() const;
+  const std::string &GetType() const;
 
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
   CStdString GetYearString() const;
@@ -68,12 +95,12 @@ public:
   char  GetRating() const;
   int  GetListeners() const;
   int  GetPlayCount() const;
+  const EmbeddedArtInfo &GetCoverArtInfo() const;
 
   void SetURL(const CStdString& strURL);
   void SetTitle(const CStdString& strTitle);
   void SetArtist(const CStdString& strArtist);
   void SetArtist(const std::vector<std::string>& artists);
-  void SetArtistId(const int iArtistId);
   void SetAlbum(const CStdString& strAlbum);
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const CStdString& strAlbumArtist);
@@ -81,7 +108,7 @@ public:
   void SetGenre(const CStdString& strGenre);
   void SetGenre(const std::vector<std::string>& genres);
   void SetYear(int year);
-  void SetDatabaseId(long id);
+  void SetDatabaseId(long id, const std::string &type);
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
   void SetPartOfSet(int m_iPartOfSet);
@@ -103,6 +130,7 @@ public:
   void SetLastPlayed(const CStdString& strLastPlayed);
   void SetLastPlayed(const CDateTime& strLastPlayed);
   void SetCompilation(bool compilation);
+  void SetCoverArtInfo(size_t size, const std::string &mimeType);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -152,12 +180,14 @@ protected:
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   long m_iDbId;
+  std::string m_type; ///< item type "song", "album", "artist"
   bool m_bLoaded;
   char m_rating;
   int m_listeners;
   int m_iTimesPlayed;
-  int m_iArtistId;
   int m_iAlbumId;
   SYSTEMTIME m_dwReleaseDate;
+
+  EmbeddedArtInfo m_coverArt; ///< art information
 };
 }
