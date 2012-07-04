@@ -23,6 +23,7 @@ SRCS=	\
 	TestHTMLUtil.cpp \
 	TestHttpHeader.cpp \
 	TestHttpParser.cpp \
+	TestHttpResponse.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
