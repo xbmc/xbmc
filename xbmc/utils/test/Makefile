@@ -19,6 +19,7 @@ SRCS=	\
 	TestFileUtils.cpp \
 	Testfstrcmp.cpp \
 	TestGlobalsHandling.cpp \
+	TestHTMLTable.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
