@@ -1746,6 +1746,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
     return ;
   }
 
+  skin->Start();
   if (!skin->HasSkinFile("Home.xml"))
   {
     // failed to find home.xml
