@@ -816,9 +816,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
     }
 
     if (upnp_server) {
-        CStdString fanart(item.GetCachedFanart());
-        if (CFile::Exists(fanart)) {
-            upnp_server->AddSafeResourceUri(object, ips, fanart, "xbmc.org:*:fanart:*");
+        if (item.HasProperty("fanart_image")) {
+            upnp_server->AddSafeResourceUri(object, ips, item.GetProperty("fanart_image").asString().c_str(), "xbmc.org:*:fanart:*");
         }
     }
 
@@ -880,7 +879,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     item->LoadMusicTag();
 
                 if (!item->HasThumbnail() )
-                    item->SetCachedMusicThumb();
+                    item->SetThumbnailImage(CThumbLoader::GetCachedImage(*item, "thumb"));
 
                 if (item->GetLabel().IsEmpty()) {
                     /* if no label try to grab it from node type */

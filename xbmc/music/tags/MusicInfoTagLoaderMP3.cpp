@@ -74,13 +74,14 @@ CMusicInfoTagLoaderMP3::~CMusicInfoTagLoaderMP3()
 {
 }
 
-bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& tag)
+bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   try
   {
     // retrieve the ID3 Tag info from strFileName
     // and put it in tag
     CID3Tag id3tag;
+    id3tag.SetArt(art);
     if (id3tag.Read(strFileName))
     {
       id3tag.GetMusicInfoTag(tag);

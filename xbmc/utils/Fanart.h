@@ -80,19 +80,6 @@ public:
   /// \return A boolean value indicating success or failure.  This should only return false if the specified index is not a valid fanart
   bool SetPrimaryFanart(unsigned int index);
   ///
-  /// Downloads the indicated fanart thumbnail into the specified file
-  /// \param index: 0 based index specfying which fanart thumb should be downloaded
-  /// \param strDestination: CStdString full path and filename indicating where to store the thumbnail
-  /// \return A boolean indicating success or failure of the download
-  bool DownloadThumb(unsigned int index, const CStdString &strDestination) const;
-  ///
-  /// Downloads the primary fanart full resolution image
-  ///
-  /// This interface ONLY downloads the primary image because there should not be a reason to download any other
-  /// \param strDestination: CStdString full path and filename indicating where to store the image
-  /// \return A boolean indicating success of failure of the download
-  bool DownloadImage(const CStdString &strDestination) const;
-  ///
   /// Returns how many fanarts are stored
   /// \return An integer indicating how many fanarts are stored in the class.  Fanart indices are 0 to (GetNumFanarts() - 1)
   unsigned int GetNumFanarts();
@@ -104,13 +91,6 @@ public:
   /// also the interface used to pass the fanart data from the scraper to CFanart.
   CStdString m_xml;
 private:
-  ///
-  /// Downloads the specified image to the specified destination
-  ///
-  /// \param url: CStdString full url indicating where to download the image from
-  /// \param destination: CStdString full path and filename indicating where to store the image
-  /// \return A boolean indicating success of failure of the download
-  bool DownloadImage(const CStdString &url, const CStdString &destination) const;
   static const unsigned int max_fanart_colors;
   ///
   /// Parse various color formats as returned by the sites scraped into a format we recognize

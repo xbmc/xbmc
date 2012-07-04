@@ -24,7 +24,6 @@
 #include "GUIWindowPictures.h"
 #include "URL.h"
 #include "Util.h"
-#include "Picture.h"
 #include "Application.h"
 #include "GUIPassword.h"
 #include "dialogs/GUIDialogMediaSource.h"

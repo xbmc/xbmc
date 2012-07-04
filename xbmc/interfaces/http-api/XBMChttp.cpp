@@ -26,7 +26,6 @@
 #include "video/VideoDatabase.h"
 #include "guilib/GUIButtonControl.h"
 #include "GUIInfoManager.h"
-#include "pictures/Picture.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "music/infoscanner/MusicInfoScraper.h"
 #include "addons/AddonManager.h"
@@ -51,7 +50,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "TextureCache.h"
-#include "ThumbnailCache.h"
 #include "ThumbLoader.h"
 
 #ifdef _WIN32
@@ -1190,7 +1188,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     tag->GetReleaseDate(stTime);
     tmp.Format("%i", stTime.wYear);
     output += closeTag+openTag+"Release year:" + tmp;
-    pItem->SetMusicThumb();
+    CMusicThumbLoader::FillThumb(*pItem);
     if (pItem->HasThumbnail())
       output += closeTag+openTag+"Thumb:" + pItem->GetThumbnailImage() ;
     else {
@@ -1805,15 +1803,7 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
 
 int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 {
-  CStdString thumbFilename="";
-
-  if (numParas>1)
-  {
-    thumbFilename = CThumbnailCache::GetAlbumThumb(paras[0], paras[1]);
-    return SetResponse(openTag+thumbFilename ) ;
-  }
-  else
-    return SetResponse(openTag+"Error:Missing parameter (album;artist)") ;
+  return SetResponse(openTag+"Error:Deprecated function") ;
 }
 
 int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
@@ -2869,77 +2859,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
   if (numParas<1)
     CUtil::TakeScreenshot();
   else
-  {
-    CStdString filepath;
-    if (paras[0]=="")
-      filepath = "special://temp/screenshot.jpg";
-    else
-      filepath = paras[0];
-    if (numParas>5)
-    {
-      CStdString tmpFile = "special://temp/temp.png";
-      CUtil::TakeScreenshot(tmpFile, true);
-      int height, width;
-      if (paras[4]=="")
-        if (paras[3]=="")
-        {
-          return SetResponse(openTag+"Error:Both height and width parameters cannot be absent");
-        }
-        else
-        {
-          width=atoi(paras[3]);
-          height=-1;
-        }
-      else
-        if (paras[3]=="")
-        {
-          height=atoi(paras[4]);
-          width=-1;
-        }
-        else
-        {
-          width=atoi(paras[3]);
-          height=atoi(paras[4]);
-        }
-      int ret = CPicture::ConvertFile(tmpFile, filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
-      if (ret == 0)
-      {
-        CFile::Delete(tmpFile);
-        if (numParas>6)
-          if (paras[6].ToLower()=="true")
-          {
-            CStdString b64="";
-            int linesize=80;
-            bool bImgTag=false;
-            // only allow the old GetThumb command to accept "imgtag"
-            if (numParas==8 && paras[7].Equals("imgtag"))
-            {
-              bImgTag=true;
-              b64="<img src=\"data:image/jpg;base64,";
-              linesize=0;
-            }
-            b64+=encodeFileToBase64(filepath,linesize);
-            if (filepath == "special://temp/screenshot.jpg")
-              CFile::Delete(filepath);
-            if (bImgTag)
-            {
-              b64+="\" alt=\"Your browser doesnt support this\" title=\"";
-              b64+=paras[0];
-              b64+="\">";
-            }
-            return SetResponse(b64) ;
-          }
-      }
-      else
-      {
-        CStdString strInt;
-        strInt.Format("%", ret);
-        return SetResponse(openTag+"Error:Could not convert image, error: " + strInt );
-      }
-    }
-    else
-      return SetResponse(openTag+"Error:Missing parameters");
-  }
+    return SetResponse(openTag+"Error: xbmcTakeScreenshot with params depracated");
   return SetResponse(openTag+"OK");
 }
 

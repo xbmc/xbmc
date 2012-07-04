@@ -48,7 +48,6 @@
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/RSSDirectory.h"
-#include "ThumbnailCache.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
@@ -769,26 +768,6 @@ int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
   n <<= 32;
   n += low;
   return n;
-}
-
-bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
-{
-  return CThumbnailCache::GetThumbnailCache()->ThumbExists(strFileName, bAddCache);
-}
-
-void CUtil::ThumbCacheAdd(const CStdString& strFileName, bool bFileExists)
-{
-  CThumbnailCache::GetThumbnailCache()->Add(strFileName, bFileExists);
-}
-
-void CUtil::ThumbCacheClear()
-{
-  CThumbnailCache::GetThumbnailCache()->Clear();
-}
-
-bool CUtil::ThumbCached(const CStdString& strFileName)
-{
-  return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
 CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)

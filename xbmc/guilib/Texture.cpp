@@ -171,6 +171,24 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
+CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate)
+{
+  CTexture *texture = new CTexture();
+  if (texture->LoadFromFile(texturePath, idealWidth, idealHeight, autoRotate, NULL, NULL))
+    return texture;
+  delete texture;
+  return NULL;
+}
+
+CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t bufferSize, const std::string &mimeType, unsigned int idealWidth, unsigned int idealHeight)
+{
+  CTexture *texture = new CTexture();
+  if (texture->LoadFromFileInMem(buffer, bufferSize, mimeType, idealWidth, idealHeight))
+    return texture;
+  delete texture;
+  return NULL;
+}
+
 bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
                                 bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
 {
@@ -223,15 +241,73 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
+  if (originalWidth)
+    *originalWidth = image.originalwidth;
+  if (originalHeight)
+    *originalHeight = image.originalheight;
+
+  LoadFromImage(image, autoRotate);
+  dll.ReleaseImage(&image);
+
+  return true;
+}
+
+bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType, unsigned int maxWidth, unsigned int maxHeight)
+{
+  if (!buffer || !size)
+    return false;
+
+  //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
+  if (mimeType == "image/jpeg")
+  {
+    CJpegIO jpegfile;
+    if (jpegfile.Read(buffer, size, maxWidth, maxHeight))
+    {
+      if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
+      {
+        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_A8R8G8B8);
+        if (jpegfile.Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
+        {
+          m_hasAlpha=false;
+          ClampToEdge();
+          return true;
+        }
+      }
+    }
+  }
+  DllImageLib dll;
+  if (!dll.Load())
+    return false;
+
+  ImageInfo image;
+  memset(&image, 0, sizeof(image));
+
+  unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+  unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+
+  CStdString ext = mimeType;
+  int nPos = ext.Find('/');
+  if (nPos > -1)
+    ext.Delete(0, nPos + 1);
+
+  if(!dll.LoadImageFromMemory(buffer, size, ext.c_str(), width, height, &image))
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to load image from memory");
+    return false;
+  }
+  LoadFromImage(image);
+  dll.ReleaseImage(&image);
+
+  return true;
+}
+
+void CBaseTexture::LoadFromImage(ImageInfo &image, bool autoRotate)
+{
   m_hasAlpha = NULL != image.alpha;
 
   Allocate(image.width, image.height, XB_FMT_A8R8G8B8);
   if (autoRotate && image.exifInfo.Orientation)
     m_orientation = image.exifInfo.Orientation - 1;
-  if (originalWidth)
-    *originalWidth = image.originalwidth;
-  if (originalHeight)
-    *originalHeight = image.originalheight;
 
   unsigned int dstPitch = GetPitch();
   unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
@@ -270,11 +346,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
       dst += dstPitch;
     }
   }
-  dll.ReleaseImage(&image);
-
   ClampToEdge();
-
-  return true;
 }
 
 bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)

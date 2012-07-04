@@ -77,7 +77,6 @@ public:
   void Clear();
   static bool Get(const SUrlEntry&, std::string&, XFILE::CCurlFile& http,
                  const CStdString& cacheContext);
-  static bool DownloadThumbnail(const CStdString &thumb, const SUrlEntry& entry);
 
   CStdString m_xml;
   CStdString m_spoof; // for backwards compatibility only!

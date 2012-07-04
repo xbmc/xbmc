@@ -22,12 +22,10 @@
 #include "Id3Tag.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
-#include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "ThumbnailCache.h"
 
 #include <set>
 
@@ -168,34 +166,16 @@ bool CID3Tag::Parse()
       bFound = true;
   }
 
-  // if we don't have an album tag, cache with the full file path so that
-  // other non-tagged files don't get this album image
-  CStdString strCoverArt;
-  if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().empty() || !tag.GetArtist().empty()))
-    strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
-  else
-    strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
-  if (bFound && !CUtil::ThumbExists(strCoverArt))
+  if (bFound)
   {
-    CStdString strExtension=GetPictureMimeType(pictype);
-
-    int nPos = strExtension.Find('/');
-    if (nPos > -1)
-      strExtension.Delete(0, nPos + 1);
-
     id3_length_t nBufSize = 0;
     const BYTE* pPic = GetPictureData(pictype, &nBufSize );
+    std::string mimeType = GetPictureMimeType(pictype);
     if (pPic != NULL && nBufSize > 0)
     {
-      if (CPicture::CreateThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
-      {
-        CUtil::ThumbCacheAdd(strCoverArt, true);
-      }
-      else
-      {
-        CUtil::ThumbCacheAdd(strCoverArt, false);
-        CLog::Log(LOGERROR, "Tag loader mp3: Unable to create album art for %s (extension=%s, size=%lu)", tag.GetURL().c_str(), strExtension.c_str(), nBufSize);
-      }
+      tag.SetCoverArtInfo(nBufSize, mimeType);
+      if (m_art)
+        m_art->set(pPic, nBufSize, mimeType);
     }
   }
 

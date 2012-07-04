@@ -209,8 +209,6 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
 {
   RetrieveMusicInfo();
-
-  items.SetCachedMusicThumbs();
 }
 
 void CGUIWindowMusicSongs::UpdateButtons()
