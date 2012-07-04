@@ -20,6 +20,7 @@ SRCS=	\
 	Testfstrcmp.cpp \
 	TestGlobalsHandling.cpp \
 	TestHTMLTable.cpp \
+	TestHTMLUtil.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
