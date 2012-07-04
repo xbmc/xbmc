@@ -190,12 +190,6 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
       return;
     }
   }
-  assert(false);
-}
-
-void CGUILargeTextureManager::ReleaseQueuedImage(const CStdString &path)
-{
-  CSingleLock lock(m_listSection);
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
     unsigned int id = it->first;
