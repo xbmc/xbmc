@@ -22,6 +22,7 @@ SRCS=	\
 	TestHTMLTable.cpp \
 	TestHTMLUtil.cpp \
 	TestHttpHeader.cpp \
+	TestHttpParser.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
