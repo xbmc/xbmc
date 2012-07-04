@@ -45,6 +45,8 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     return InternalError;
 
   int genreID = (int)parameterObject["genreid"].asInteger();
+  int songID = (int)parameterObject["songid"].asInteger();
+  int albumID = (int)parameterObject["albumid"].asInteger();
 
   // Add "artist" to "properties" array by default
   CVariant param = parameterObject;
@@ -57,7 +59,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     albumArtistsOnly = parameterObject["albumartistsonly"].asBoolean();
 
   CFileItemList items;
-  if (!musicdatabase.GetArtistsNav("musicdb://2/", items, genreID, albumArtistsOnly))
+  if (!musicdatabase.GetArtistsNav("musicdb://2/", items, genreID, songID, albumID, albumArtistsOnly))
     return InternalError;
 
   HandleFileItemList("artistid", false, "artists", items, param, result);
