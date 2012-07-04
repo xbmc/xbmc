@@ -21,6 +21,7 @@ SRCS=	\
 	TestGlobalsHandling.cpp \
 	TestHTMLTable.cpp \
 	TestHTMLUtil.cpp \
+	TestHttpHeader.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
