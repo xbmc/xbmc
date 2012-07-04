@@ -25,6 +25,7 @@ SRCS=	\
 	TestHttpParser.cpp \
 	TestHttpResponse.cpp \
 	TestJobManager.cpp \
+	TestJSONVariantParser.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
