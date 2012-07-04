@@ -24,6 +24,7 @@ SRCS=	\
 	TestHttpHeader.cpp \
 	TestHttpParser.cpp \
 	TestHttpResponse.cpp \
+	TestJobManager.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
