@@ -81,8 +81,6 @@ private:
 
   int Load(const CStdString&);
   int Scrape(ADDON::ScraperPtr& scraper);
-  void AddScrapers(ADDON::VECADDONS& addons,
-                   std::vector<ADDON::ScraperPtr>& vecScrapers);
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)
