@@ -29,6 +29,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "guilib/DispResource.h"
+#include "pictures/DllImageLib.h"
 #include "utils/log.h"
 #include "XRandR.h"
 #include <vector>
@@ -122,6 +123,139 @@ static Cursor AllocateInvisibleCursor(Display* dpy, Window wnd)
   return cursor;
 }
 
+static Pixmap AllocateIconPixmap(Display* dpy, Window w)
+{
+  int depth;
+  XImage *img = NULL;
+  Visual *vis;
+  XWindowAttributes wndattribs;
+  XVisualInfo visInfo;
+  double rRatio;
+  double gRatio;
+  double bRatio;
+  int outIndex = 0;
+  unsigned i,j;
+  unsigned char *buf;
+  uint32_t *newBuf = 0;
+  size_t numNewBufBytes;
+
+  // Get visual Info
+  XGetWindowAttributes(dpy, w, &wndattribs);
+  visInfo.visualid = wndattribs.visual->visualid;
+  int nvisuals = 0;
+  XVisualInfo* visuals = XGetVisualInfo(dpy, VisualIDMask, &visInfo, &nvisuals);
+  if (nvisuals != 1)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - could not find visual");
+    return None;
+  }
+  visInfo = visuals[0];
+  XFree(visuals);
+
+  depth = visInfo.depth;
+  vis = visInfo.visual;
+
+  if (depth < 15)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - no suitable depth");
+    return None;
+  }
+
+  rRatio = vis->red_mask / 255.0;
+  gRatio = vis->green_mask / 255.0;
+  bRatio = vis->blue_mask / 255.0;
+
+  DllImageLib dll;
+  if (!dll.Load())
+    return false;
+
+  ImageInfo image;
+  memset(&image, 0, sizeof(image));
+
+  if(!dll.LoadImage("special://xbmc/media/icon.png", 256, 256, &image))
+  {
+    CLog::Log(LOGERROR, "AllocateIconPixmap to load icon");
+    return false;
+  }
+
+  buf = image.texture;
+  int pitch = ((image.width + 1)* 3 / 4) * 4;
+
+
+  if (depth>=24)
+    numNewBufBytes = 4 * image.width * image.height;
+  else
+    numNewBufBytes = 2 * image.width * image.height;
+
+  newBuf = (uint32_t*)malloc(numNewBufBytes);
+  if (!newBuf)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - malloc failed");
+    dll.ReleaseImage(&image);
+    return None;
+  }
+
+  for (i=0; i<image.height;++i)
+  {
+    for (j=0; j<image.width;++j)
+    {
+      unsigned int pos = (image.height-i-1)*pitch+j*3;
+      unsigned int r, g, b;
+      r = (buf[pos+2] * rRatio);
+      g = (buf[pos+1] * gRatio);
+      b = (buf[pos+0] * bRatio);
+      r &= vis->red_mask;
+      g &= vis->green_mask;
+      b &= vis->blue_mask;
+      newBuf[outIndex] = r | g | b;
+      ++outIndex;
+    }
+  }
+
+  dll.ReleaseImage(&image);
+
+  img = XCreateImage(dpy, vis, depth,ZPixmap, 0, (char *)newBuf,
+                     image.width, image.height,
+                     (depth>=24)?32:16, 0);
+  if (!img)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - could not create image");
+    free(newBuf);
+    return None;
+  }
+  if (!XInitImage(img))
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - init image failed");
+    XDestroyImage(img);
+    return None;
+  }
+
+  // set byte order
+  union
+  {
+    char c[sizeof(short)];
+    short s;
+  } order;
+  order.s = 1;
+  if ((1 == order.c[0]))
+  {
+    img->byte_order = LSBFirst;
+  }
+  else
+  {
+    img->byte_order = MSBFirst;
+  }
+
+  // create icon pixmap from image
+  Pixmap icon = XCreatePixmap(dpy, w, img->width, img->height, depth);
+  GC gc = XCreateGC(dpy, w, 0, NULL);
+  XPutImage(dpy, icon, gc, img, 0, 0, 0, 0, img->width, img->height);
+  XFreeGC(dpy, gc);
+  XDestroyImage(img); // this also frees newBuf
+
+  return icon;
+}
+
 
 bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
@@ -171,6 +305,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   m_invisibleCursor = AllocateInvisibleCursor(m_dpy, m_wmWindow);
   XDefineCursor(m_dpy, m_wmWindow, m_invisibleCursor);
 
+  m_icon = AllocateIconPixmap(m_dpy, m_wmWindow);
 
   XWMHints wm_hints;
   XTextProperty windowName, iconName;
@@ -180,7 +315,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   XStringListToTextProperty((char**)&title, 1, &iconName);
   wm_hints.initial_state = NormalState;
   wm_hints.input         = True;
-  wm_hints.icon_pixmap   = None;
+  wm_hints.icon_pixmap   = m_icon;
   wm_hints.flags         = StateHint | IconPixmapHint | InputHint;
 
   XSetWMProperties(m_dpy, m_wmWindow, &windowName, &iconName,
@@ -226,6 +361,12 @@ bool CWinSystemX11::DestroyWindow()
     XSync(m_dpy, True);
     XDestroyWindow(m_dpy, m_wmWindow);
     m_wmWindow = 0;
+  }
+
+  if (m_icon)
+  {
+    XFreePixmap(m_dpy, m_icon);
+    m_icon = None;
   }
 
   return true;
