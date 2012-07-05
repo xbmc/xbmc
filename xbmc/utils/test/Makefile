@@ -35,6 +35,7 @@ SRCS=	\
 	TestMime.cpp \
 	TestPerformanceSample.cpp \
 	TestPOUtils.cpp \
+	TestRegExp.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
