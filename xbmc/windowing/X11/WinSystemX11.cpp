@@ -510,7 +510,7 @@ bool CWinSystemX11::Show(bool raise)
 
 void CWinSystemX11::CheckDisplayEvents()
 {
-#if defined(HAS_XRANDR)
+#if defined(HAS_XRANDR) && defined(HAS_SDL_VIDEO_X11)
   bool bGotEvent(false);
   bool bTimeout(false);
   XEvent Event;
@@ -566,8 +566,12 @@ void CWinSystemX11::OnLostDevice()
       (*i)->OnLostDevice();
   }
 
+#if defined(HAS_SDL_VIDEO_X11)
   // fail safe timer
   m_dpyLostTime = CurrentHostCounter();
+#else
+  CWinEventsX11Imp::SetXRRFailSafeTimer(3000);
+#endif
 }
 
 void CWinSystemX11::Register(IDispResource *resource)
