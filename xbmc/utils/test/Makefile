@@ -32,6 +32,7 @@ SRCS=	\
 	Testlog.cpp \
 	TestMathUtils.cpp \
 	Testmd5.cpp \
+	TestMime.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
