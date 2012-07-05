@@ -48,6 +48,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
   virtual int  GetNumScreens() { return 1; }
+  virtual int  GetCurrentScreen() { return m_nScreen; }
   virtual void ShowOSMouse(bool show);
   virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
