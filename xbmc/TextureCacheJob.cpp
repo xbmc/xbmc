@@ -242,14 +242,16 @@ bool CTextureDDSJob::operator==(const CJob* job) const
 
 bool CTextureDDSJob::DoWork()
 {
-  CTexture texture;
   if (URIUtils::GetExtension(m_original).Equals(".dds"))
     return false;
-  if (texture.LoadFromFile(m_original))
+  CBaseTexture *texture = CBaseTexture::LoadFromFile(m_original);
+  if (texture)
   { // convert to DDS
     CDDSImage dds;
     CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str());
-    return dds.Create(URIUtils::ReplaceExtension(m_original, ".dds"), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40);
+    bool ret = dds.Create(URIUtils::ReplaceExtension(m_original, ".dds"), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(), texture->GetPixels(), 40);
+    delete texture;
+    return ret;
   }
   return false;
 }
