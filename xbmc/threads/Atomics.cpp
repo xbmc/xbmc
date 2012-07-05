@@ -21,6 +21,14 @@
 
 #include "Atomics.h"
 
+// the only safe way to be absolutly sure that
+// gcc intrinsics are present when using an unknown GCC
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 4))
+  #define HAS_GCC_INTRINSICS
+#elif defined(TARGET_DARWIN)
+  // safe under darwin gcc-4.2, llvm-gcc-4.2 and clang
+  #define HAS_GCC_INTRINSICS
+#endif
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr
@@ -169,7 +177,13 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 // 32-bit atomic increment
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#if defined(__ppc__) || defined(__powerpc__) // PowerPC
+#if defined(HAS_GCC_INTRINSICS)
+long AtomicIncrement(volatile long* pAddr)
+{
+  return __sync_add_and_fetch(pAddr, 1);
+}
+
+#elif defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicIncrement(volatile long* pAddr)
 {
@@ -227,6 +241,18 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 }
 
+#elif defined(__x86_64__)
+
+long AtomicIncrement(volatile long* pAddr)
+{
+  register long result;
+  __asm__ __volatile__ (
+    "lock/xaddq %q0, %1"
+    : "=r" (result), "=m" (*pAddr)
+    : "0" ((long) (1)), "m" (*pAddr));
+  return *pAddr;
+}
+
 #else // Linux / OSX86 (GCC)
 
 long AtomicIncrement(volatile long* pAddr)
@@ -247,8 +273,13 @@ long AtomicIncrement(volatile long* pAddr)
 // 32-bit atomic add
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
+#if defined(HAS_GCC_INTRINSICS)
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  return __sync_add_and_fetch(pAddr, amount);
+}
 
-#if defined(__ppc__) || defined(__powerpc__) // PowerPC
+#elif defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicAdd(volatile long* pAddr, long amount)
 {
@@ -306,6 +337,18 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return amount;
 }
 
+#elif defined(__x86_64__)
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  register long result;
+  __asm__ __volatile__ (
+    "lock/xaddq %q0, %1"
+    : "=r" (result), "=m" (*pAddr)
+    : "0" ((long) (amount)), "m" (*pAddr));
+  return *pAddr;
+}
+
 #else // Linux / OSX86 (GCC)
 
 long AtomicAdd(volatile long* pAddr, long amount)
@@ -326,7 +369,13 @@ long AtomicAdd(volatile long* pAddr, long amount)
 // 32-bit atomic decrement
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#if defined(__ppc__) || defined(__powerpc__) // PowerPC
+#if defined(HAS_GCC_INTRINSICS)
+long AtomicDecrement(volatile long* pAddr)
+{
+  return __sync_sub_and_fetch(pAddr, 1);
+}
+
+#elif defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicDecrement(volatile long* pAddr)
 {
@@ -385,6 +434,18 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 }
 
+#elif defined(__x86_64__)
+
+long AtomicDecrement(volatile long* pAddr)
+{
+  register long result;
+  __asm__ __volatile__ (
+    "lock/xaddq %q0, %1"
+    : "=r" (result), "=m" (*pAddr)
+    : "0" ((long) (-1)), "m" (*pAddr));
+  return *pAddr;
+}
+
 #else // Linux / OSX86 (GCC)
 
 long AtomicDecrement(volatile long* pAddr)
@@ -405,7 +466,13 @@ long AtomicDecrement(volatile long* pAddr)
 // 32-bit atomic subtract
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#if defined(__ppc__) || defined(__powerpc__) // PowerPC
+#if defined(HAS_GCC_INTRINSICS)
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  return __sync_sub_and_fetch(pAddr, amount);
+}
+
+#elif defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicSubtract(volatile long* pAddr, long amount)
 {
@@ -464,6 +531,18 @@ long AtomicSubtract(volatile long* pAddr, long amount)
     mov amount, ebx;
   }
   return amount;
+}
+
+#elif defined(__x86_64__)
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  register long result;
+  __asm__ __volatile__ (
+    "lock/xaddq %q0, %1"
+    : "=r" (result), "=m" (*pAddr)
+    : "0" ((long) (-1 * amount)), "m" (*pAddr));
+  return *pAddr;
 }
 
 #else // Linux / OSX86 (GCC)
