@@ -32,6 +32,7 @@ void CBookmark::Reset()
   seasonNumber = 0;
   timeInSeconds = 0.0f;
   totalTimeInSeconds = 0.0f;
+  partNumber = 0;
   type = STANDARD;
 }
 

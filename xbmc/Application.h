@@ -370,6 +370,8 @@ protected:
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
+  CFileItemPtr m_stackFileItemToUpdate;
+
   CStdString m_prevMedia;
   CSplash* m_splash;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.

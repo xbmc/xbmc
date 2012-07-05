@@ -307,7 +307,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     {
       // We need to check if there is a detected is inserted!
       buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
-      if (CGUIWindowVideoBase::GetResumeItemOffset(item.get()) > 0)
+      if (CGUIWindowVideoBase::HasResumeItemOffset(item.get()))
         buttons.Add(CONTEXT_BUTTON_RESUME_DISC, CGUIWindowVideoBase::GetResumeString(*(item.get())));     // Resume Disc
 
       buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
