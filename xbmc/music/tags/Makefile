@@ -1,4 +1,5 @@
-SRCS=APEv2Tag.cpp \
+SRCS=\
+     APEv2Tag.cpp \
      FlacTag.cpp \
      Id3Tag.cpp \
      MusicInfoTag.cpp \
@@ -24,6 +25,8 @@ SRCS=APEv2Tag.cpp \
      MusicInfoTagLoaderYM.cpp \
      OggTag.cpp \
      VorbisTag.cpp \
+     TagLoaderTagLib.cpp \
+     TagLibVFSStream.cpp \
 
 LIB=musictags.a
 

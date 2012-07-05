@@ -2963,6 +2963,15 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcvfs.cpp">
       <Filter>interfaces\python\generated</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\TagLibVFSStream.cpp">
+      <Filter>music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\TagLoaderTagLib.cpp">
+      <Filter>music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.cpp">
+      <Filter>music\tags</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5814,6 +5823,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h">
       <Filter>interfaces\python</Filter>
+    </ClInclude>
+   <ClInclude Include="..\..\xbmc\music\tags\TagLibVFSStream.h">
+      <Filter>music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\tags\TagLoaderTagLib.h">
+      <Filter>music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.h">
+      <Filter>music\tags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

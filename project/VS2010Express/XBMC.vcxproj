@@ -809,6 +809,8 @@
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWavPack.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWMA.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderYM.cpp" />
+    <ClCompile Include="..\..\xbmc\music\tags\TagLibVFSStream.cpp" />
+    <ClCompile Include="..\..\xbmc\music\tags\TagLoaderTagLib.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\OggTag.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\VorbisTag.cpp" />
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicBase.cpp" />
@@ -1067,6 +1069,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h" />
     <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h" />
+    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.h" />
+    <ClInclude Include="..\..\xbmc\music\tags\TagLibVFSStream.h" />
+    <ClInclude Include="..\..\xbmc\music\tags\TagLoaderTagLib.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h" />
     <ClInclude Include="..\..\xbmc\network\AirTunesServer.h" />
     <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h" />
