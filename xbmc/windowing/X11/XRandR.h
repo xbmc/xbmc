@@ -79,6 +79,7 @@ public:
     }
   CStdString name;
   bool isConnected;
+  int screen;
   int w;
   int h;
   int x;
@@ -94,12 +95,15 @@ class CXRandR
 public:
   CXRandR(bool query=false);
   bool Query(bool force=false);
+  bool Query(bool force, int screennum);
   std::vector<XOutput> GetModes(void);
-  XOutput GetCurrentOutput();
   XMode   GetCurrentMode(CStdString outputName);
+  XOutput *GetOutput(CStdString outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
   void SaveState();
+  void SetNumScreens(unsigned int num);
+  bool IsOutputConnected(CStdString name);
   //bool Has1080i();
   //bool Has1080p();
   //bool Has720p();
@@ -107,10 +111,10 @@ public:
 
 private:
   bool m_bInit;
-  std::vector<XOutput> m_current;
   std::vector<XOutput> m_outputs;
   CStdString m_currentOutput;
   CStdString m_currentMode;
+  unsigned int m_numScreens;
 };
 
 extern CXRandR g_xrandr;
