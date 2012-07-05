@@ -52,6 +52,7 @@ public:
   virtual void ResetOSScreensaver();
 
   virtual void NotifyAppActiveChange(bool bActivated);
+  virtual void NotifyAppFocusChange(bool bGaining);
 
   virtual bool Minimize();
   virtual bool Restore() ;
@@ -63,18 +64,20 @@ public:
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
+  void RefreshWindow();
 
 protected:
   bool RefreshGlxContext();
   void CheckDisplayEvents();
   void OnLostDevice();
+  bool SetWindow(int width, int height, bool fullscreen);
 
-  SDL_Surface* m_SDLSurface;
+  Window       m_glWindow;
   GLXContext   m_glContext;
-  GLXWindow    m_glWindow;
-  Window       m_wmWindow;
   Display*     m_dpy;
+  Cursor       m_invisibleCursor;
   bool         m_bWasFullScreenBeforeMinimize;
+  bool         m_bIgnoreNextFocusMessage;
   int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
