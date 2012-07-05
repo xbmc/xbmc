@@ -171,6 +171,7 @@ CWinEventsX11Imp::CWinEventsX11Imp()
   m_display = 0;
   m_window = 0;
   m_keybuf = 0;
+  m_keybuf_len = 0;
 }
 
 CWinEventsX11Imp::~CWinEventsX11Imp()
@@ -205,7 +206,8 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
   WinEvents = new CWinEventsX11Imp();
   WinEvents->m_display = dpy;
   WinEvents->m_window = win;
-  WinEvents->m_keybuf = (char*)malloc(32*sizeof(char));
+  WinEvents->m_keybuf_len = 32*sizeof(char);
+  WinEvents->m_keybuf = (char*)malloc(WinEvents->m_keybuf_len);
   WinEvents->m_keymodState = 0;
   WinEvents->m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
   WinEvents->m_structureChanged = false;
@@ -437,13 +439,14 @@ bool CWinEventsX11Imp::MessagePump()
         Status status;
         int len;
         len = Xutf8LookupString(WinEvents->m_xic, &xevent.xkey,
-                                WinEvents->m_keybuf, sizeof(WinEvents->m_keybuf),
+                                WinEvents->m_keybuf, WinEvents->m_keybuf_len,
                                 &xkeysym, &status);
         if (status == XBufferOverflow)
         {
-          WinEvents->m_keybuf = (char*)realloc(WinEvents->m_keybuf, len*sizeof(char));
+          WinEvents->m_keybuf_len = len;
+          WinEvents->m_keybuf = (char*)realloc(WinEvents->m_keybuf, WinEvents->m_keybuf_len);
           len = Xutf8LookupString(WinEvents->m_xic, &xevent.xkey,
-                                  WinEvents->m_keybuf, sizeof(WinEvents->m_keybuf),
+                                  WinEvents->m_keybuf, WinEvents->m_keybuf_len,
                                   &xkeysym, &status);
         }
         switch (status)
