@@ -219,13 +219,19 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
   const std::string &settingId = setting->GetId();
   if (settingId == "videoscreen.resolution" ||
-      settingId == "videoscreen.screen")
+      settingId == "videoscreen.screen" ||
+      settingId == "videoscreen.monitor")
   {
     RESOLUTION newRes = RES_DESKTOP;
     if (settingId == "videoscreen.resolution")
       newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
     else if (settingId == "videoscreen.screen")
       newRes = GetResolutionForScreen();
+    else if (settingId == "videoscreen.monitor")
+    {
+      g_Windowing.UpdateResolutions();
+      newRes = GetResolutionForScreen();
+    }
 
     string screenmode = GetStringFromResolution(newRes);
     CSettings::Get().SetString("videoscreen.screenmode", screenmode);
@@ -236,7 +242,11 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     RESOLUTION newRes = GetResolutionFromString(((CSettingString*)setting)->GetValue());
 
     SetCurrentResolution(newRes, false);
-    g_graphicsContext.SetVideoResolution(newRes);
+    bool outputChanged = false;
+#if defined(HAS_GLX)
+    outputChanged = !g_Windowing.IsCurrentOutput(CSettings::Get().GetString("videoscreen.monitor"));
+#endif
+    g_graphicsContext.SetVideoResolution(newRes, outputChanged);
 
     // check if the old or the new resolution was/is windowed
     // in which case we don't show any prompt to the user
@@ -622,6 +632,10 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
   if (g_advancedSettings.m_canWindowed)
     list.push_back(make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
+#if defined(HAS_GLX)
+  list.push_back(make_pair(g_localizeStrings.Get(244), 0));
+#else
+
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
     int screen = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
@@ -636,6 +650,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
     RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(res);
     current = resInfo.iScreen;
   }
+#endif
 }
 
 void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
@@ -662,4 +677,29 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(const 
 {
   SettingOptionsStereoscopicModesFiller(setting, list, current);
   list.push_back(make_pair(g_localizeStrings.Get(36525), RENDER_STEREO_MODE_AUTO)); // option for autodetect
+}
+
+void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+#if defined(HAS_GLX)
+  std::vector<CStdString> monitors;
+  g_Windowing.GetConnectedOutputs(&monitors);
+  for (unsigned int i=0; i<monitors.size(); ++i)
+  {
+    if(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput.Equals(monitors[i]))
+    {
+      current = monitors[i];
+    }
+    list.push_back(make_pair(monitors[i], monitors[i]));
+  }
+#endif
+}
+
+void CDisplaySettings::ClearCustomResolutions()
+{
+  if (m_resolutions.size() > RES_CUSTOM)
+  {
+    std::vector<RESOLUTION_INFO>::iterator firstCustom = m_resolutions.begin()+RES_CUSTOM;
+    m_resolutions.erase(firstCustom, m_resolutions.end());
+  }
 }
