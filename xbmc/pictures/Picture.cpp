@@ -89,7 +89,7 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
   uint32_t max_height = g_advancedSettings.m_imageRes;
   if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
   { // a separate fanart resolution is specified - check if the image is exactly equal to this res
-    if (width == g_advancedSettings.m_fanartRes * 16/9 && height == g_advancedSettings.m_fanartRes)
+    if (width == (unsigned int)g_advancedSettings.m_fanartRes * 16/9 && height == (unsigned int)g_advancedSettings.m_fanartRes)
     { // special case for fanart res
       max_height = g_advancedSettings.m_fanartRes;
     }

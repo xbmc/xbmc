@@ -253,7 +253,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
 #endif
   int width = BOOKMARK_THUMB_WIDTH;
   int height = (int)(BOOKMARK_THUMB_WIDTH / aspectRatio);
-  if (height > BOOKMARK_THUMB_WIDTH)
+  if (height > (int)BOOKMARK_THUMB_WIDTH)
   {
     height = BOOKMARK_THUMB_WIDTH;
     width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
