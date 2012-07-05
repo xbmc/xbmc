@@ -167,7 +167,7 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
     return false;
 
   m_glxext  = " ";
-  m_glxext += (const char*)glXQueryExtensionsString(m_dpy, DefaultScreen(m_dpy));
+  m_glxext += (const char*)glXQueryExtensionsString(m_dpy, m_nScreen);
   m_glxext += " ";
 
   CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:%s", m_glxext.c_str());
