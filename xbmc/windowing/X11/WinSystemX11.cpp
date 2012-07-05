@@ -520,6 +520,33 @@ void CWinSystemX11::ResetOSScreensaver()
   }
 }
 
+void CWinSystemX11::EnableSystemScreenSaver(bool bEnable)
+{
+  if (!m_dpy)
+    return;
+
+  if (bEnable)
+    XForceScreenSaver(m_dpy, ScreenSaverActive);
+  else
+  {
+    Window root_return, child_return;
+    int root_x_return, root_y_return;
+    int win_x_return, win_y_return;
+    unsigned int mask_return;
+    bool isInWin = XQueryPointer(m_dpy, RootWindow(m_dpy, m_nScreen), &root_return, &child_return,
+                                 &root_x_return, &root_y_return,
+                                 &win_x_return, &win_y_return,
+                                 &mask_return);
+
+    XWarpPointer(m_dpy, None, RootWindow(m_dpy, m_nScreen), 0, 0, 0, 0, root_x_return+300, root_y_return+300);
+    XSync(m_dpy, FALSE);
+    XWarpPointer(m_dpy, None, RootWindow(m_dpy, m_nScreen), 0, 0, 0, 0, 0, 0);
+    XSync(m_dpy, FALSE);
+    XWarpPointer(m_dpy, None, RootWindow(m_dpy, m_nScreen), 0, 0, 0, 0, root_x_return, root_y_return);
+    XSync(m_dpy, FALSE);
+  }
+}
+
 void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize && !m_bFullScreen)
@@ -763,6 +790,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
   // create main window
   if (!m_glWindow)
   {
+    EnableSystemScreenSaver(false);
+
     GLint att[] =
     {
       GLX_RGBA,

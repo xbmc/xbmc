@@ -53,6 +53,7 @@ public:
   virtual void ShowOSMouse(bool show);
   virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
+  virtual void EnableSystemScreenSaver(bool bEnable);
 
   virtual void NotifyAppActiveChange(bool bActivated);
   virtual void NotifyAppFocusChange(bool bGaining);
