@@ -76,6 +76,7 @@ protected:
   GLXContext   m_glContext;
   Display*     m_dpy;
   Cursor       m_invisibleCursor;
+  Pixmap       m_icon;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_bIgnoreNextFocusMessage;
   int          m_RREventBase;
@@ -86,6 +87,7 @@ protected:
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   static int XErrorHandler(Display* dpy, XErrorEvent* error);
+  bool CreateIconPixmap();
 
   CStopWatch m_screensaverReset;
 };

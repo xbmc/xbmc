@@ -134,6 +134,9 @@ bool CWinSystemX11::DestroyWindow()
   XDestroyWindow(m_dpy, m_glWindow);
   m_glWindow = 0;
 
+  if (m_icon)
+    XFreePixmap(m_dpy, m_icon);
+
   return true;
 }
 
@@ -677,8 +680,10 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
 
   if (changeWindow)
   {
+    m_icon = None;
     if (!fullscreen)
     {
+      CreateIconPixmap();
       XWMHints wm_hints;
       XClassHint class_hints;
       XTextProperty windowName, iconName;
@@ -689,7 +694,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
       XStringListToTextProperty(&title, 1, &iconName);
       wm_hints.initial_state = NormalState;
       wm_hints.input = True;
-      wm_hints.icon_pixmap = None;
+      wm_hints.icon_pixmap = m_icon;
       wm_hints.flags = StateHint | IconPixmapHint | InputHint;
 
       XSetWMProperties(m_dpy, m_glWindow, &windowName, &iconName,
@@ -720,6 +725,125 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
 
     }
   }
+  return true;
+}
+
+bool CWinSystemX11::CreateIconPixmap()
+{
+  int depth;
+  XImage *img = NULL;
+  Visual *vis;
+  XWindowAttributes wndattribs;
+  XVisualInfo visInfo;
+  double rRatio;
+  double gRatio;
+  double bRatio;
+  int outIndex = 0;
+  int i,j;
+  int numBufBytes;
+  unsigned char *buf;
+  uint32_t *newBuf = 0;
+  size_t numNewBufBytes;
+
+  // Get visual Info
+  XGetWindowAttributes(m_dpy, m_glWindow, &wndattribs);
+  visInfo.visualid = wndattribs.visual->visualid;
+  int nvisuals = 0;
+  XVisualInfo* visuals = XGetVisualInfo(m_dpy, VisualIDMask, &visInfo, &nvisuals);
+  if (nvisuals != 1)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - could not find visual");
+    return false;
+  }
+  visInfo = visuals[0];
+  XFree(visuals);
+
+  depth = visInfo.depth;
+  vis = visInfo.visual;
+
+  if (depth < 15)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - no suitable depth");
+    return false;
+  }
+
+  rRatio = vis->red_mask / 255.0;
+  gRatio = vis->green_mask / 255.0;
+  bRatio = vis->blue_mask / 255.0;
+
+  CTexture iconTexture;
+  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
+  buf = iconTexture.GetPixels();
+
+  numBufBytes = iconTexture.GetWidth() * iconTexture.GetHeight() * 4;
+
+  if (depth>=24)
+    numNewBufBytes = (4 * (iconTexture.GetWidth() * iconTexture.GetHeight()));
+  else
+    numNewBufBytes = (2 * (iconTexture.GetWidth() * iconTexture.GetHeight()));
+
+  newBuf = (uint32_t*)malloc(numNewBufBytes);
+  if (!newBuf)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - malloc failed");
+    return false;
+  }
+
+  for (i=0; i<iconTexture.GetHeight();++i)
+  {
+    for (j=0; j<iconTexture.GetWidth();++j)
+    {
+      unsigned int pos = i*iconTexture.GetPitch()+j*4;
+      unsigned int r, g, b;
+      r = (buf[pos+2] * rRatio);
+      g = (buf[pos+1] * gRatio);
+      b = (buf[pos+0] * bRatio);
+      r &= vis->red_mask;
+      g &= vis->green_mask;
+      b &= vis->blue_mask;
+      newBuf[outIndex] = r | g | b;
+      ++outIndex;
+    }
+  }
+  img = XCreateImage(m_dpy, vis, depth,ZPixmap, 0, (char *)newBuf,
+                     iconTexture.GetWidth(), iconTexture.GetHeight(),
+                     (depth>=24)?32:16, 0);
+  if (!img)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - could not create image");
+    free(newBuf);
+    return false;
+  }
+  if (!XInitImage(img))
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::CreateIconPixmap - init image failed");
+    XDestroyImage(img);
+    return false;
+  }
+
+  // set byte order
+  union
+  {
+    char c[sizeof(short)];
+    short s;
+  } order;
+  order.s = 1;
+  if ((1 == order.c[0]))
+  {
+    img->byte_order = LSBFirst;
+  }
+  else
+  {
+    img->byte_order = MSBFirst;
+  }
+
+  // create icon pixmap from image
+  m_icon = XCreatePixmap(m_dpy, m_glWindow, img->width, img->height, depth);
+  GC gc = XCreateGC(m_dpy, m_glWindow, 0, NULL);
+  XPutImage(m_dpy, m_icon, gc, img, 0, 0, 0, 0, img->width, img->height);
+  XFreeGC(m_dpy, gc);
+  XDestroyImage(img); // this also frees newBuf
+
   return true;
 }
 
