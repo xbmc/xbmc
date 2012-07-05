@@ -30,6 +30,7 @@ SRCS=	\
 	TestLabelFormatter.cpp \
 	TestLangCodeExpander.cpp \
 	Testlog.cpp \
+	TestMathUtils.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
