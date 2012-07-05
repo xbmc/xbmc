@@ -25,7 +25,6 @@
 
 #include "system_gl.h"
 #include <GL/glx.h>
-#include <SDL/SDL.h>
 
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
@@ -54,6 +53,7 @@ public:
   virtual bool EnableFrameLimiter();
 
   virtual void NotifyAppActiveChange(bool bActivated);
+  virtual void NotifyAppFocusChange(bool bGaining);
 
   virtual bool Minimize();
   virtual bool Restore() ;
@@ -66,20 +66,23 @@ public:
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
   GLXContext GetGlxContext() { return m_glContext; }
-  virtual void OnSettingChanged(const CSetting *setting);
+  void RefreshWindow();
+  void NotifyXRREvent();
 
 protected:
   bool RefreshGlxContext();
   void CheckDisplayEvents();
   void OnLostDevice();
+  bool SetWindow(int width, int height, bool fullscreen);
 
-  SDL_Surface* m_SDLSurface;
+  Window       m_glWindow;
   GLXContext   m_glContext;
-  GLXWindow    m_glWindow;
-  Window       m_wmWindow;
   Display*     m_dpy;
+  Cursor       m_invisibleCursor;
+  Pixmap       m_icon;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
+  bool         m_bIgnoreNextFocusMessage;
   int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
@@ -88,7 +91,7 @@ protected:
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   static int XErrorHandler(Display* dpy, XErrorEvent* error);
-  void SetGrabMode(const CSetting *setting = NULL);
+  bool CreateIconPixmap();
 
   CStopWatch m_screensaverReset;
 };
