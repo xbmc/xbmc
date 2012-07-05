@@ -31,6 +31,7 @@
   #include <X11/X.h>
   #include <X11/Xlib.h>
   #include <GL/glx.h>
+  #include "guilib/DispResource.h"
 #elif defined(_WIN32) && defined(HAS_DX)
   #include <d3d9.h>
   #include "guilib/D3DResource.h"
@@ -57,9 +58,13 @@ class CD3DCallback : public ID3DResource
 #endif
 
 class CVideoReferenceClock : public CThread
+#if defined(HAS_GLX)
+                            ,public IDispResource
+#endif
 {
   public:
     CVideoReferenceClock();
+    virtual ~CVideoReferenceClock();
 
     int64_t GetTime(bool interpolated = true);
     int64_t GetFrequency();
@@ -74,6 +79,11 @@ class CVideoReferenceClock : public CThread
 
 #if defined(TARGET_DARWIN)
     void VblankHandler(int64_t nowtime, double fps);
+#endif
+
+#if defined(HAS_GLX)
+    virtual void OnLostDevice();
+    virtual void OnResetDevice();
 #endif
 
   private:
@@ -122,7 +132,8 @@ class CVideoReferenceClock : public CThread
     GLXContext   m_Context;
     Pixmap       m_pixmap;
     GLXPixmap    m_glPixmap;
-    int          m_RREventBase;
+    bool         m_xrrEvent;
+    CEvent       m_releaseEvent, m_resetEvent;
 
     bool         m_UseNvSettings;
     bool         m_bIsATI;
