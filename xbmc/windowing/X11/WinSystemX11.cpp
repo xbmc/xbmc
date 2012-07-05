@@ -34,6 +34,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/TimeUtils.h"
 #include "settings/GUISettings.h"
+#include "windowing/WindowingFactory.h"
 
 #if defined(HAS_XRANDR)
 #include <X11/extensions/Xrandr.h>
@@ -54,6 +55,8 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_bIgnoreNextFocusMessage = false;
   m_dpyLostTime = 0;
   m_invisibleCursor = 0;
+  m_initDone = false;
+  m_bIsInternalXrr = false;
 
   XSetErrorHandler(XErrorHandler);
 }
@@ -66,7 +69,9 @@ bool CWinSystemX11::InitWindowSystem()
 {
   if ((m_dpy = XOpenDisplay(NULL)))
   {
-    return CWinSystemBase::InitWindowSystem();
+    bool ret = CWinSystemBase::InitWindowSystem();
+    m_initDone = true;
+    return ret;
   }
   else
     CLog::Log(LOGERROR, "GLX Error: No Display found");
@@ -103,6 +108,8 @@ bool CWinSystemX11::DestroyWindowSystem()
 
     //we don't call XCloseDisplay() here, since ati keeps a pointer to our m_dpy
     //so instead we just let m_dpy die on exit
+    // i have seen core dumps on ATI if the display is not closed here
+    XCloseDisplay(m_dpy);
   }
 
   // m_SDLSurface is free()'d by SDL_Quit().
@@ -125,7 +132,10 @@ bool CWinSystemX11::DestroyWindow()
     return true;
 
   if (m_glContext)
+  {
+    glFinish();
     glXMakeCurrent(m_dpy, None, NULL);
+  }
 
   if (m_invisibleCursor)
   {
@@ -155,7 +165,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   && m_nHeight == newHeight)
     return true;
 
-  if (!SetWindow(newWidth, newHeight, false))
+  if (!SetWindow(newWidth, newHeight, false, g_guiSettings.GetString("videoscreen.monitor")))
   {
     return false;
   }
@@ -164,56 +174,9 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   m_nWidth  = newWidth;
   m_nHeight = newHeight;
   m_bFullScreen = false;
+  m_currentOutput = g_guiSettings.GetString("videoscreen.monitor");
 
   return false;
-}
-
-void CWinSystemX11::RefreshWindow()
-{
-  if (!g_xrandr.Query(true))
-  {
-    CLog::Log(LOGERROR, "WinSystemX11::RefreshWindow - failed to query xrandr");
-    return;
-  }
-  XOutput out  = g_xrandr.GetCurrentOutput();
-  XMode   mode = g_xrandr.GetCurrentMode(out.name);
-
-  RotateResolutions();
-
-  // only overwrite desktop resolution, if we are not in fullscreen mode
-  if (!g_graphicsContext.IsFullScreenVideo())
-  {
-    CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshWindow - store desktop resolution, width: %d, height: %d, hz: %2.2f", mode.w, mode.h, mode.hz);
-    if (!out.isRotated)
-      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
-    else
-      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.h, mode.w, mode.hz);
-    g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
-    g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
-  }
-
-  RESOLUTION_INFO res;
-  unsigned int i;
-  bool found(false);
-  for (i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
-  {
-    if (g_settings.m_ResInfo[i].strId == mode.id)
-    {
-      found = true;
-      break;
-    }
-  }
-
-  if (!found)
-  {
-    CLog::Log(LOGERROR, "CWinSystemX11::RefreshWindow - could not find resolution");
-    return;
-  }
-
-  if (g_graphicsContext.IsFullScreenRoot())
-    g_graphicsContext.SetVideoResolution((RESOLUTION)i, true);
-  else
-    g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
 }
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
@@ -240,8 +203,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     mode.id  = g_settings.m_ResInfo[RES_DESKTOP].strId;
   }
  
-  XOutput currout  = g_xrandr.GetCurrentOutput();
-  XMode   currmode = g_xrandr.GetCurrentMode(currout.name);
+  XMode   currmode = g_xrandr.GetCurrentMode(out.name);
 
   // flip h/w when rotated
   if (m_bIsRotated)
@@ -252,16 +214,17 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
 
   // only call xrandr if mode changes
-  if (currout.name != out.name || currmode.w != mode.w || currmode.h != mode.h ||
+  if (currmode.w != mode.w || currmode.h != mode.h ||
       currmode.hz != mode.hz || currmode.id != mode.id)
   {
     CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
     OnLostDevice();
+    m_bIsInternalXrr = true;
     g_xrandr.SetMode(out, mode);
   }
 #endif
 
-  if (!SetWindow(res.iWidth, res.iHeight, fullScreen))
+  if (!SetWindow(res.iWidth, res.iHeight, fullScreen, g_guiSettings.GetString("videoscreen.monitor")))
     return false;
 
   RefreshGlxContext();
@@ -269,6 +232,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
+  m_currentOutput = g_guiSettings.GetString("videoscreen.monitor");
 
   return true;
 }
@@ -277,19 +241,33 @@ void CWinSystemX11::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
 
+  if (!m_initDone)
+    return;
 
 #if defined(HAS_XRANDR)
-  if(g_xrandr.Query())
+  CStdString currentMonitor;
+  int numScreens = XScreenCount(m_dpy);
+  g_xrandr.SetNumScreens(numScreens);
+  if(g_xrandr.Query(true))
   {
-    XOutput out  = g_xrandr.GetCurrentOutput();
-    XMode   mode = g_xrandr.GetCurrentMode(out.name);
-    m_bIsRotated = out.isRotated;
+    currentMonitor = g_guiSettings.GetString("videoscreen.monitor");
+    // check if the monitor is connected
+    XOutput *out = g_xrandr.GetOutput(currentMonitor);
+    if (!out)
+    {
+      // choose first output
+      currentMonitor = g_xrandr.GetModes()[0].name;
+      out = g_xrandr.GetOutput(currentMonitor);
+      g_guiSettings.SetString("videoscreen.monitor", currentMonitor);
+    }
+    XMode mode = g_xrandr.GetCurrentMode(currentMonitor);
+    m_bIsRotated = out->isRotated;
     if (!m_bIsRotated)
-      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], out->screen, mode.w, mode.h, mode.hz);
     else
-      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.h, mode.w, mode.hz);
+      UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], out->screen, mode.h, mode.w, mode.hz);
     g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
-    g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
+    g_settings.m_ResInfo[RES_DESKTOP].strOutput = currentMonitor;
   }
   else
 #endif
@@ -300,23 +278,26 @@ void CWinSystemX11::UpdateResolutions()
     UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0);
   }
 
-
 #if defined(HAS_XRANDR)
 
+  // erase previous stored modes
+  if (g_settings.m_ResInfo.size() > RES_CUSTOM)
+  {
+    std::vector<RESOLUTION_INFO>::iterator firstCustom = g_settings.m_ResInfo.begin()+RES_CUSTOM;
+    g_settings.m_ResInfo.erase(firstCustom, g_settings.m_ResInfo.end());
+  }
+
   CLog::Log(LOGINFO, "Available videomodes (xrandr):");
-  vector<XOutput>::iterator outiter;
-  vector<XOutput> outs;
-  outs = g_xrandr.GetModes();
-  CLog::Log(LOGINFO, "Number of connected outputs: %"PRIdS"", outs.size());
+
+  XOutput *out = g_xrandr.GetOutput(currentMonitor);
   string modename = "";
 
-  for (outiter = outs.begin() ; outiter != outs.end() ; outiter++)
+  if (out != NULL)
   {
-    XOutput out = *outiter;
     vector<XMode>::iterator modeiter;
-    CLog::Log(LOGINFO, "Output '%s' has %"PRIdS" modes", out.name.c_str(), out.modes.size());
+    CLog::Log(LOGINFO, "Output '%s' has %"PRIdS" modes", out->name.c_str(), out->modes.size());
 
-    for (modeiter = out.modes.begin() ; modeiter!=out.modes.end() ; modeiter++)
+    for (modeiter = out->modes.begin() ; modeiter!=out->modes.end() ; modeiter++)
     {
       XMode mode = *modeiter;
       CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
@@ -332,15 +313,15 @@ void CWinSystemX11::UpdateResolutions()
         res.iWidth  = mode.h;
         res.iHeight = mode.w;
       }
-      if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
-        res.fPixelRatio = ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
+      if (mode.h>0 && mode.w>0 && out->hmm>0 && out->wmm>0)
+        res.fPixelRatio = ((float)out->wmm/(float)mode.w) / (((float)out->hmm/(float)mode.h));
       else
         res.fPixelRatio = 1.0f;
 
       CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
 
-      res.strMode.Format("%s: %s @ %.2fHz", out.name.c_str(), mode.name.c_str(), mode.hz);
-      res.strOutput    = out.name;
+      res.strMode.Format("%s: %s @ %.2fHz", out->name.c_str(), mode.name.c_str(), mode.hz);
+      res.strOutput    = out->name;
       res.strId        = mode.id;
       res.iSubtitles   = (int)(0.95*mode.h);
       res.fRefreshRate = mode.hz;
@@ -359,28 +340,19 @@ void CWinSystemX11::UpdateResolutions()
 
 }
 
-void CWinSystemX11::RotateResolutions()
+void CWinSystemX11::GetConnectedOutputs(std::vector<CStdString> *outputs)
 {
-#if defined(HAS_XRANDR)
-  XOutput out  = g_xrandr.GetCurrentOutput();
-  if (out.isRotated == m_bIsRotated)
-    return;
-
-  for (unsigned int i = 0; i < g_settings.m_ResInfo.size(); ++i)
+  vector<XOutput> outs;
+  outs = g_xrandr.GetModes();
+  for(unsigned int i=0; i<outs.size(); ++i)
   {
-    int width = g_settings.m_ResInfo[i].iWidth;
-    g_settings.m_ResInfo[i].iWidth = g_settings.m_ResInfo[i].iHeight;
-    g_settings.m_ResInfo[i].iHeight = width;
+    outputs->push_back(outs[i].name);
   }
-  // update desktop resolution
-//  int h = g_settings.m_ResInfo[RES_DESKTOP].iHeight;
-//  int w = g_settings.m_ResInfo[RES_DESKTOP].iWidth;
-//  float hz = g_settings.m_ResInfo[RES_DESKTOP].fRefreshRate;
-//  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, hz);
+}
 
-  m_bIsRotated = out.isRotated;
-
-#endif
+bool CWinSystemX11::IsCurrentOutput(CStdString output)
+{
+  return m_currentOutput.Equals(output);
 }
 
 bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
@@ -410,8 +382,11 @@ bool CWinSystemX11::RefreshGlxContext()
   if (m_glContext)
   {
     CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshGlxContext: refreshing context");
+    glFinish();
     glXMakeCurrent(m_dpy, None, NULL);
     glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+    XSync(m_dpy, FALSE);
+    g_Windowing.ResetVSync();
     return true;
   }
 
@@ -477,6 +452,8 @@ bool CWinSystemX11::RefreshGlxContext()
     {
       // make this context current
       glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+      g_Windowing.ResetVSync();
+      XSync(m_dpy, False);
       retVal = true;
     }
     else
@@ -518,22 +495,50 @@ void CWinSystemX11::ResetOSScreensaver()
 
 void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
 {
-  if (bActivated && m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
+  if (bActivated && m_bWasFullScreenBeforeMinimize && !m_bFullScreen)
+  {
     g_graphicsContext.ToggleFullScreenRoot();
+    m_bWasFullScreenBeforeMinimize = false;
+  }
 }
 
 void CWinSystemX11::NotifyAppFocusChange(bool bGaining)
 {
   if (bGaining && m_bWasFullScreenBeforeMinimize && !m_bIgnoreNextFocusMessage &&
-      !g_graphicsContext.IsFullScreenRoot())
+      !m_bFullScreen)
+  {
+    m_bWasFullScreenBeforeMinimize = false;
     g_graphicsContext.ToggleFullScreenRoot();
+  }
   if (!bGaining)
     m_bIgnoreNextFocusMessage = false;
 }
 
+void CWinSystemX11::NotifyMouseCoverage(bool covered)
+{
+  if (!m_bFullScreen)
+    return;
+
+  if (covered)
+  {
+    int result = -1;
+    while (result != GrabSuccess && result != AlreadyGrabbed)
+    {
+      result = XGrabPointer(m_dpy, m_glWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+      XbmcThreads::ThreadSleep(100);
+    }
+    XGrabKeyboard(m_dpy, m_glWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+  }
+  else
+  {
+    XUngrabKeyboard(m_dpy, CurrentTime);
+    XUngrabPointer(m_dpy, CurrentTime);
+  }
+}
+
 bool CWinSystemX11::Minimize()
 {
-  m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
+  m_bWasFullScreenBeforeMinimize = m_bFullScreen;
   if (m_bWasFullScreenBeforeMinimize)
   {
     m_bIgnoreNextFocusMessage = true;
@@ -597,13 +602,46 @@ void CWinSystemX11::CheckDisplayEvents()
 void CWinSystemX11::NotifyXRREvent()
 {
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
-  RefreshWindow();
+  m_windowDirty = true;
 
-  CSingleLock lock(m_resourceSection);
+  // if external event update resolutions
+  if (!m_bIsInternalXrr)
+  {
+    UpdateResolutions();
+  }
+  else if (!g_xrandr.Query(true))
+  {
+    CLog::Log(LOGERROR, "WinSystemX11::RefreshWindow - failed to query xrandr");
+    return;
+  }
+  m_bIsInternalXrr = false;
 
-  // tell any shared resources
-  for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
-    (*i)->OnResetDevice();
+  CStdString currentOutput = g_guiSettings.GetString("videoscreen.monitor");
+  XOutput *out = g_xrandr.GetOutput(currentOutput);
+  XMode   mode = g_xrandr.GetCurrentMode(currentOutput);
+
+  RESOLUTION_INFO res;
+  unsigned int i;
+  bool found(false);
+  for (i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
+  {
+    if (g_settings.m_ResInfo[i].strId == mode.id)
+    {
+      found = true;
+      break;
+    }
+  }
+
+  if (!found)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::RefreshWindow - could not find resolution");
+    i = RES_DESKTOP;
+  }
+
+  if (g_graphicsContext.IsFullScreenRoot())
+    g_graphicsContext.SetVideoResolution((RESOLUTION)i, true);
+  else
+    g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
 
 }
 
@@ -651,14 +689,14 @@ int CWinSystemX11::XErrorHandler(Display* dpy, XErrorEvent* error)
   return 0;
 }
 
-bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
+bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStdString &output)
 {
   bool changeWindow = false;
   bool changeSize = false;
   bool mouseActive = false;
   float mouseX, mouseY;
 
-  if (m_glWindow && (m_bFullScreen != fullscreen))
+  if (m_glWindow && ((m_bFullScreen != fullscreen) || !m_currentOutput.Equals(output) || m_windowDirty))
   {
     mouseActive = g_Mouse.IsActive();
     if (mouseActive)
@@ -680,6 +718,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
       else
         mouseActive = false;
     }
+    OnLostDevice();
     DestroyWindow();
   }
 
@@ -701,7 +740,11 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
     XSetWindowAttributes swa;
     XVisualInfo *vi;
 
-    vi = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), att);
+    XOutput *out = g_xrandr.GetOutput(output);
+    if (!out)
+      out = g_xrandr.GetOutput(m_currentOutput);
+    m_nScreen = out->screen;
+    vi = glXChooseVisual(m_dpy, m_nScreen, att);
     cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
 
     int def_vis = (vi->visual == DefaultVisual(m_dpy, vi->screen));
@@ -717,7 +760,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
     unsigned long mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWEventMask;
 
     m_glWindow = XCreateWindow(m_dpy, RootWindow(m_dpy, vi->screen),
-                    0, 0, width, height, 0, vi->depth,
+                    out->x, out->y, width, height, 0, vi->depth,
                     InputOutput, vi->visual,
                     mask, &swa);
 
@@ -788,14 +831,19 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
     if (fullscreen)
     {
       int result = -1;
-      while (result != GrabSuccess)
+      while (result != GrabSuccess && result != AlreadyGrabbed)
       {
-        result = XGrabPointer(m_dpy, m_glWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, m_glWindow, None, CurrentTime);
+        result = XGrabPointer(m_dpy, m_glWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
         XbmcThreads::ThreadSleep(100);
       }
       XGrabKeyboard(m_dpy, m_glWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
-
     }
+    CSingleLock lock(m_resourceSection);
+    // tell any shared resources
+    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+      (*i)->OnResetDevice();
+
+    m_windowDirty = false;
   }
   return true;
 }
