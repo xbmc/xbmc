@@ -46,7 +46,6 @@ public:
   static size_t GetQueueSize();
 
 protected:
-  static int Utf8ToUnicode(const char *utf8, const int utf8Length, uint16_t *utf16, const int utf16MaxLength);
   static XBMCKey LookupXbmcKeySym(KeySym keysym);
   static bool ProcessKey(XBMC_Event &event, int repeatDelay);
   static bool ProcessKeyRepeat();
@@ -56,7 +55,6 @@ protected:
   Window m_window;
   Atom m_wmDeleteMessage;
   char *m_keybuf;
-  uint16_t *m_utf16buf;
   XIM m_xim;
   XIC m_xic;
   XBMC_Event m_lastKey;

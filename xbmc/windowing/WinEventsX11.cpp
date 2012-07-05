@@ -32,6 +32,7 @@
 #include "X11/keysymdef.h"
 #include "X11/XF86keysym.h"
 #include "utils/log.h"
+#include "utils/CharsetConverter.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
 
@@ -170,7 +171,6 @@ CWinEventsX11Imp::CWinEventsX11Imp()
   m_display = 0;
   m_window = 0;
   m_keybuf = 0;
-  m_utf16buf = 0;
 }
 
 CWinEventsX11Imp::~CWinEventsX11Imp()
@@ -179,12 +179,6 @@ CWinEventsX11Imp::~CWinEventsX11Imp()
   {
     free(m_keybuf);
     m_keybuf = 0;
-  }
-
-  if (m_utf16buf)
-  {
-    free(m_utf16buf);
-    m_utf16buf = 0;
   }
 
   if (m_xic)
@@ -212,7 +206,6 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
   WinEvents->m_display = dpy;
   WinEvents->m_window = win;
   WinEvents->m_keybuf = (char*)malloc(32*sizeof(char));
-  WinEvents->m_utf16buf = (uint16_t*)malloc(32*sizeof(uint16_t));
   WinEvents->m_keymodState = 0;
   WinEvents->m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
   WinEvents->m_structureChanged = false;
@@ -442,8 +435,6 @@ bool CWinEventsX11Imp::MessagePump()
         }
 
         Status status;
-        int utf16size;
-        int utf16length;
         int len;
         len = Xutf8LookupString(WinEvents->m_xic, &xevent.xkey,
                                 WinEvents->m_keybuf, sizeof(WinEvents->m_keybuf),
@@ -462,36 +453,29 @@ bool CWinEventsX11Imp::MessagePump()
           case XLookupChars:
           case XLookupBoth:
           {
-            if (len == 0)
-              break;
-            utf16size = len * sizeof(uint16_t);
-            if (utf16size > sizeof(WinEvents->m_utf16buf))
-            {
-              WinEvents->m_utf16buf = (uint16_t *)realloc(WinEvents->m_utf16buf,utf16size);
-              if (WinEvents->m_utf16buf == NULL)
-              {
-                break;
-              }
-            }
-            utf16length = Utf8ToUnicode(WinEvents->m_keybuf, len, WinEvents->m_utf16buf, utf16size);
-            if (utf16length < 0)
+            CStdString   data(WinEvents->m_keybuf, len);
+            CStdStringW keys;
+            g_charsetConverter.utf8ToW(data, keys, false);
+
+            if (keys.length() == 0)
             {
               break;
             }
-            for (unsigned int i = 0; i < utf16length - 1; i++)
+
+            for (unsigned int i = 0; i < keys.length() - 1; i++)
             {
               newEvent.key.keysym.sym = XBMCK_UNKNOWN;
-              newEvent.key.keysym.unicode = WinEvents->m_utf16buf[i];
+              newEvent.key.keysym.unicode = keys[i];
               newEvent.key.state = xevent.xkey.state;
               newEvent.key.type = xevent.xkey.type;
               ret |= ProcessKey(newEvent, 500);
             }
-            if (utf16length > 0)
+            if (keys.length() > 0)
             {
               newEvent.key.keysym.scancode = xevent.xkey.keycode;
               xkeysym = XLookupKeysym(&xevent.xkey, 0);
               newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
-              newEvent.key.keysym.unicode = WinEvents->m_utf16buf[utf16length - 1];
+              newEvent.key.keysym.unicode = keys[keys.length() - 1];
               newEvent.key.state = xevent.xkey.state;
               newEvent.key.type = xevent.xkey.type;
 
@@ -760,87 +744,6 @@ bool CWinEventsX11Imp::ProcessKeyRepeat()
     }
   }
   return false;
-}
-
-int CWinEventsX11Imp::Utf8ToUnicode(const char *utf8, const int utf8Length, uint16_t *utf16, const int utf16MaxLength)
-{
-  // p moves over the output buffer.  max_ptr points to the next to the last slot of the buffer.
-  uint16_t *p = utf16;
-  uint16_t const *const maxPtr = utf16 + utf16MaxLength;
-
-  // end_of_input points to the last byte of input as opposed to the next to the last byte.
-  char const *const endOfInput = utf8 + utf8Length - 1;
-
-  while (utf8 <= endOfInput)
-  {
-    unsigned char const c = *utf8;
-    if (p >= maxPtr)
-    {
-      //No more output space.
-      return -1;
-    }
-    if (c < 0x80)
-    {
-      //One byte ASCII.
-      *p++ = c;
-      utf8 += 1;
-    }
-    else if (c < 0xC0)
-    {
-      // Follower byte without preceding leader bytes.
-      return -1;
-    }
-    // 11 bits
-    else if (c < 0xE0)
-    {
-      // Two byte sequence.  We need one follower byte.
-      if (endOfInput - utf8 < 1 || (((utf8[1] ^ 0x80)) & 0xC0))
-      {
-        return -1;
-      }
-      *p++ = (uint16_t)(((c & 0x1F) << 6) + (utf8[1] & 0x3F));
-      utf8 += 2;
-    }
-    // 16 bis
-    else if (c < 0xF0)
-    {
-      // Three byte sequence.  We need two follower byte.
-      if (endOfInput - utf8 < 2 || ((utf8[1] ^ 0x80) & 0xC0) || ((utf8[2] ^ 0x80) & 0xC0))
-      {
-        return -1;
-      }
-      *p++ = (uint16_t)(((c & 0xF) << 12) + ((utf8[1] & 0x3F) << 6) + (utf8[2] & 0x3F));
-      utf8 += 3;
-    }
-    // 21 bits
-    else if (c < 0xF8)
-    {
-      int plane;
-      // Four byte sequence.  We need three follower bytes.
-      if (endOfInput - utf8 < 3 || ((utf8[1] ^ 0x80) & 0xC0) ||
-          ((utf8[2] ^ 0x80) & 0xC0) || ((utf8[3] ^ 0x80) & 0xC0))
-      {
-        return -1;
-      }
-      uint32_t unicode = ((c & 0x7) << 18) + ((utf8[1] & 0x3F) << 12) +
-                          ((utf8[2] & 0x3F) << 6) + (utf8[3] & 0x3F);
-      utf8 += 4;
-      CLog::Log(LOGERROR, "CWinEventsX11::Utf8ToUnicode: 4 byte unicode not supported");
-    }
-    // 26 bits
-    else if (c < 0xFC)
-    {
-      CLog::Log(LOGERROR, "CWinEventsX11::Utf8ToUnicode: 4 byte unicode not supported");
-      utf8 += 5;
-    }
-    // 31 bit
-    else
-    {
-      CLog::Log(LOGERROR, "CWinEventsX11::Utf8ToUnicode: 4 byte unicode not supported");
-      utf8 += 6;
-    }
-  }
-  return p - utf16;
 }
 
 XBMCKey CWinEventsX11Imp::LookupXbmcKeySym(KeySym keysym)
