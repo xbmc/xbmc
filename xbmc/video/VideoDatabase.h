@@ -463,7 +463,7 @@ public:
   bool GetStackTimes(const CStdString &filePath, std::vector<int> &times);
   void SetStackTimes(const CStdString &filePath, std::vector<int> &times);
 
-  void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false);
+  void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false, long partNumber=0);
   void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
   bool GetResumeBookMark(const CStdString& strFilenameAndPath, CBookmark &bookmark);
   void DeleteResumeBookMark(const CStdString &strFilenameAndPath);
@@ -472,7 +472,7 @@ public:
   bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
   void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
-  bool GetResumePoint(CVideoInfoTag& tag) const;
+  bool GetResumePoint(CVideoInfoTag& tag);
 
   // scraper settings
   void SetScraperForPath(const CStdString& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);

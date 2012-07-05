@@ -369,6 +369,7 @@ CApplication::CApplication(void)
 #endif
 #endif
   , m_itemCurrentFile(new CFileItem)
+  , m_stackFileItemToUpdate(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
   , m_videoInfoScanner(new CVideoInfoScanner)
@@ -3604,26 +3605,35 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     CFileItemList movieList;
     dir.GetDirectory(item.GetPath(), movieList);
 
-    int selectedFile = 1; // if playing from beginning, play file 1.
-    long startoffset = item.m_lStartOffset;
+    // first assume values passed to the stack
+    int selectedFile = item.m_lStartPartNumber;
+    int startoffset = item.m_lStartOffset;
 
-    // We instructed the stack to resume.
+    // check if we instructed the stack to resume from default
     if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
-      startoffset = CGUIWindowVideoBase::GetResumeItemOffset(&item);
-
-    if (startoffset & 0xF0000000) /* selected part is specified as a flag */
     {
-      selectedFile = (startoffset>>28);
-      startoffset = startoffset & ~0xF0000000;
-
-      // set startoffset in movieitem. The remaining startoffset is either 0 (just play part from beginning) or positive (then we use STARTOFFSET_RESUME).
-      if (selectedFile > 0 && selectedFile <= (int)movieList.Size())
-        movieList[selectedFile - 1]->m_lStartOffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
+      if (dbs.Open())
+      {
+        CBookmark bookmark;
+        if (dbs.GetResumeBookMark(item.GetPath(), bookmark))
+        {
+          startoffset = (int)(bookmark.timeInSeconds*75);
+          selectedFile = bookmark.partNumber;
+        }
+        dbs.Close();
+      }
+      else
+        CLog::Log(LOGERROR, "%s - Cannot open VideoDatabase", __FUNCTION__);
     }
 
-    // finally play selected item
+    // set startoffset in movieitem, track stack item for updating purposes, and finally play disc part
     if (selectedFile > 0 && selectedFile <= (int)movieList.Size())
+    {
+      movieList[selectedFile - 1]->m_lStartOffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
+      movieList[selectedFile - 1]->SetProperty("stackFileItemToUpdate", true);
+      *m_stackFileItemToUpdate = item;
       return PlayFile(*(movieList[selectedFile - 1]));
+    }
   }
   // case 2: all other stacks
   else
@@ -4289,6 +4299,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
   if (bForeground)
   {
     CSaveFileStateJob job(*m_progressTrackingItem,
+    *m_stackFileItemToUpdate,
     m_progressTrackingVideoResumeBookmark,
     m_progressTrackingPlayCountUpdate);
 
@@ -4298,6 +4309,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
   else
   {
     CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
+        *m_stackFileItemToUpdate,
         m_progressTrackingVideoResumeBookmark,
         m_progressTrackingPlayCountUpdate);
     CJobManager::GetInstance().AddJob(job, NULL);
