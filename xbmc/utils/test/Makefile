@@ -36,6 +36,7 @@ SRCS=	\
 	TestPerformanceSample.cpp \
 	TestPOUtils.cpp \
 	TestRegExp.cpp \
+	TestRingBuffer.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
