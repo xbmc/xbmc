@@ -51,6 +51,7 @@ public:
   virtual int  GetCurrentScreen() { return m_nScreen; }
   virtual void ShowOSMouse(bool show);
   virtual void ResetOSScreensaver();
+  virtual void EnableSystemScreenSaver(bool bEnable);
 
   virtual void NotifyAppActiveChange(bool bActivated);
   virtual void NotifyAppFocusChange(bool bGaining);
