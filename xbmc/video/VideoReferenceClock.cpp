@@ -251,7 +251,7 @@ bool CVideoReferenceClock::SetupGLX()
   }
 
   bool          ExtensionFound = false;
-  istringstream Extensions(glXQueryExtensionsString(m_Dpy, DefaultScreen(m_Dpy)));
+  istringstream Extensions(glXQueryExtensionsString(m_Dpy, g_Windowing.GetCurrentScreen()));
   string        ExtensionStr;
 
   while (!ExtensionFound)
@@ -278,7 +278,7 @@ bool CVideoReferenceClock::SetupGLX()
     m_bIsATI = true;
   }
 
-  m_vInfo = glXChooseVisual(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributes);
+  m_vInfo = glXChooseVisual(m_Dpy, g_Windowing.GetCurrentScreen(), singleBufferAttributes);
   if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseVisual returned NULL");
@@ -289,15 +289,16 @@ bool CVideoReferenceClock::SetupGLX()
   {
     Swa.border_pixel = 0;
     Swa.event_mask = StructureNotifyMask;
-    Swa.colormap = XCreateColormap(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), m_vInfo->visual, AllocNone );
+    Swa.colormap = XCreateColormap(m_Dpy, g_Windowing.GetWindow(), m_vInfo->visual, AllocNone );
     SwaMask = CWBorderPixel | CWColormap | CWEventMask;
 
-    m_Window = XCreateWindow(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), 0, 0, 256, 256, 0,
+    m_Window = XCreateWindow(m_Dpy, g_Windowing.GetWindow(), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
   }
   else
   {
-    m_pixmap = XCreatePixmap(m_Dpy, DefaultRootWindow(m_Dpy), 256, 256, m_vInfo->depth);
+    Window window = g_Windowing.GetWindow();
+    m_pixmap = XCreatePixmap(m_Dpy, window, 256, 256, m_vInfo->depth);
     if (!m_pixmap)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: unable to create pixmap");
@@ -364,7 +365,7 @@ bool CVideoReferenceClock::SetupGLX()
 
   //set up receiving of RandR events, we'll get one when the refreshrate changes
   XRRQueryExtension(m_Dpy, &m_RREventBase, &ReturnV);
-  XRRSelectInput(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), RRScreenChangeNotifyMask);
+  XRRSelectInput(m_Dpy, g_Windowing.GetWindow(), RRScreenChangeNotifyMask);
 
   UpdateRefreshrate(true); //forced refreshrate update
   m_MissedVblanks = 0;
@@ -499,7 +500,7 @@ int CVideoReferenceClock::GetRandRRate()
   int RefreshRate;
   XRRScreenConfiguration *CurrInfo;
 
-  CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
+  CurrInfo = XRRGetScreenInfo(m_Dpy, g_Windowing.GetWindow());
   RefreshRate = XRRConfigCurrentRate(CurrInfo);
   XRRFreeScreenConfigInfo(CurrInfo);
 
