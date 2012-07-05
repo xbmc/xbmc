@@ -44,6 +44,7 @@ public:
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
+  virtual void ResetVSync() { m_bVsyncInit = false; }
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
