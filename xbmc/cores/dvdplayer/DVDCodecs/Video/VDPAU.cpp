@@ -249,7 +249,7 @@ bool CVDPAU::MakePixmapGL()
   };
 
   GLXFBConfig *fbConfigs;
-  fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
+  fbConfigs = glXChooseFBConfig(m_Display, g_Windowing.GetCurrentScreen(), doubleVisAttributes, &num);
   if (fbConfigs==NULL)
   {
     CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
@@ -300,10 +300,10 @@ bool CVDPAU::MakePixmap(int width, int height)
 
     // Get our window attribs.
   XWindowAttributes wndattribs;
-  XGetWindowAttributes(m_Display, DefaultRootWindow(m_Display), &wndattribs); // returns a status but I don't know what success is
+  XGetWindowAttributes(m_Display, g_Windowing.GetWindow(), &wndattribs); // returns a status but I don't know what success is
 
   m_Pixmap = XCreatePixmap(m_Display,
-                           DefaultRootWindow(m_Display),
+                           g_Windowing.GetWindow(),
                            OutWidth,
                            OutHeight,
                            wndattribs.depth);
@@ -315,7 +315,7 @@ bool CVDPAU::MakePixmap(int width, int height)
 
   XGCValues values = {};
   GC xgc;
-  values.foreground = BlackPixel (m_Display, DefaultScreen (m_Display));
+  values.foreground = BlackPixel (m_Display, g_Windowing.GetCurrentScreen());
   xgc = XCreateGC(m_Display, m_Pixmap, GCForeground, &values);
   XFillRectangle(m_Display, m_Pixmap, xgc, 0, 0, OutWidth, OutHeight);
   XFreeGC(m_Display, xgc);
@@ -707,7 +707,7 @@ void CVDPAU::InitVDPAUProcs()
     m_Display = g_Windowing.GetDisplay();
   }
 
-  int mScreen = DefaultScreen(m_Display);
+  int mScreen = g_Windowing.GetCurrentScreen();
   VdpStatus vdp_st;
 
   // Create Device

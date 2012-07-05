@@ -272,7 +272,7 @@ void CWinSystemX11::UpdateResolutions()
   else
 #endif
   {
-    int x11screen = DefaultScreen(m_dpy);
+    int x11screen = m_nScreen;
     int w = DisplayWidth(m_dpy, x11screen);
     int h = DisplayHeight(m_dpy, x11screen);
     UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0);
@@ -394,7 +394,7 @@ bool CWinSystemX11::RefreshGlxContext()
   XVisualInfo *visuals;
   XVisualInfo *vInfo      = NULL;
   int availableVisuals    = 0;
-  vMask.screen = DefaultScreen(m_dpy);
+  vMask.screen = m_nScreen;
   XWindowAttributes winAttr;
 
   /* Assume a depth of 24 in case the below calls to XGetWindowAttributes()
@@ -545,7 +545,7 @@ bool CWinSystemX11::Minimize()
     g_graphicsContext.ToggleFullScreenRoot();
   }
 
-  XIconifyWindow(m_dpy, m_glWindow, DefaultScreen(m_dpy));
+  XIconifyWindow(m_dpy, m_glWindow, m_nScreen);
 
   return true;
 }
