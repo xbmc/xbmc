@@ -35,6 +35,7 @@
 #include "utils/TimeUtils.h"
 #include "settings/GUISettings.h"
 #include "windowing/WindowingFactory.h"
+#include <X11/Xatom.h>
 
 #if defined(HAS_XRANDR)
 #include <X11/extensions/Xrandr.h>
@@ -807,7 +808,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
 
     int def_vis = (vi->visual == DefaultVisual(m_dpy, vi->screen));
-    swa.override_redirect = fullscreen ? True : False;
+    swa.override_redirect = False;
     swa.border_pixel = fullscreen ? 0 : 5;
     swa.background_pixel = def_vis ? BlackPixel(m_dpy, vi->screen) : 0;
     swa.colormap = cmap;
@@ -822,6 +823,12 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
                     out->x, out->y, width, height, 0, vi->depth,
                     InputOutput, vi->visual,
                     mask, &swa);
+
+    if (fullscreen)
+    {
+      Atom fs = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", True);
+      XChangeProperty(m_dpy, m_glWindow, XInternAtom(m_dpy, "_NET_WM_STATE", True), XA_ATOM, 32, PropModeReplace, (unsigned char *) &fs, 1);
+    }
 
     // define invisible cursor
     Pixmap bitmapNoData;
