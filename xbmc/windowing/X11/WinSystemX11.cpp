@@ -533,19 +533,25 @@ void CWinSystemX11::CheckDisplayEvents()
 
   if (bGotEvent || bTimeout)
   {
-    CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
-    RefreshWindow();
-
-    CSingleLock lock(m_resourceSection);
-
-    // tell any shared resources
-    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
-      (*i)->OnResetDevice();
+    NotifyXRREvent();
 
     // reset fail safe timer
     m_dpyLostTime = 0;
   }
 #endif
+}
+
+void CWinSystemX11::NotifyXRREvent()
+{
+  CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
+  RefreshWindow();
+
+  CSingleLock lock(m_resourceSection);
+
+  // tell any shared resources
+  for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnResetDevice();
+
 }
 
 void CWinSystemX11::OnLostDevice()
