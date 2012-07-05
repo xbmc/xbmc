@@ -387,6 +387,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("screens");
   m_settingsManager->UnregisterSettingOptionsFiller("stereoscopicmodes");
   m_settingsManager->UnregisterSettingOptionsFiller("preferedstereoscopicviewmodes");
+  m_settingsManager->UnregisterSettingOptionsFiller("monitors");
   m_settingsManager->UnregisterSettingOptionsFiller("shutdownstates");
   m_settingsManager->UnregisterSettingOptionsFiller("startupwindows");
   m_settingsManager->UnregisterSettingOptionsFiller("streamlanguages");
@@ -701,6 +702,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("screens", CDisplaySettings::SettingOptionsScreensFiller);
   m_settingsManager->RegisterSettingOptionsFiller("stereoscopicmodes", CDisplaySettings::SettingOptionsStereoscopicModesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("preferedstereoscopicviewmodes", CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("monitors", CDisplaySettings::SettingOptionsMonitorsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("shutdownstates", CPowerManager::SettingOptionsShutdownStatesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("startupwindows", ADDON::CSkinInfo::SettingOptionsStartupWindowsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("streamlanguages", CLangInfo::SettingOptionsStreamLanguagesFiller);
@@ -730,6 +732,9 @@ void CSettings::InitializeConditions()
 #endif
 #ifdef HAS_GL
   m_settingsManager->AddCondition("has_gl");
+#endif
+#ifdef HAS_GLX
+  m_settingsManager->AddCondition("has_glx");
 #endif
 #ifdef HAS_GLES
   m_settingsManager->AddCondition("has_gles");
@@ -880,6 +885,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("videoscreen.screen");
   settingSet.insert("videoscreen.resolution");
   settingSet.insert("videoscreen.screenmode");
+  settingSet.insert("videoscreen.monitor");
   m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
 
   settingSet.clear();
