@@ -79,7 +79,8 @@ public:
   int Write(const void* lpBuf, int64_t uiBufSize);
   void Flush();
   int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  int64_t GetPosition();
+  int Truncate(int64_t iSize);
+  int64_t GetPosition() const;
   int64_t GetLength();
   void Close();
   int GetChunkSize();

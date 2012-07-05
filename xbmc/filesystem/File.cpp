@@ -573,6 +573,24 @@ int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
+int CFile::Truncate(int64_t iSize)
+{
+  if (!m_pFile)
+    return -1;
+  
+  try
+  {
+    return m_pFile->Truncate(iSize);
+  }
+  XBMCCOMMONS_HANDLE_UNCHECKED
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+  }
+  return -1;
+}
+
+//*********************************************************************************************
 int64_t CFile::GetLength()
 {
   try
@@ -590,7 +608,7 @@ int64_t CFile::GetLength()
 }
 
 //*********************************************************************************************
-int64_t CFile::GetPosition()
+int64_t CFile::GetPosition() const
 {
   if (!m_pFile)
     return -1;
