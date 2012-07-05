@@ -47,6 +47,7 @@ protected:
   Window m_window;
   Atom m_wmDeleteMessage;
   char *m_keybuf;
+  size_t m_keybuf_len;
   XIM m_xim;
   XIC m_xic;
   XBMC_Event m_lastKey;
