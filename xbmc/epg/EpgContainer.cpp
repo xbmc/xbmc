@@ -55,14 +55,11 @@ CEpgContainer::CEpgContainer(void) :
   m_updateEvent.Reset();
   m_bLoaded = false;
   m_bHasPendingUpdates = false;
-
-  m_database.Open();
 }
 
 CEpgContainer::~CEpgContainer(void)
 {
   Unload();
-  m_database.Close();
 }
 
 CEpgContainer &CEpgContainer::Get(void)
@@ -109,6 +106,9 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   /* clear the database entries */
   if (bClearDb && !m_bIgnoreDbForClient)
   {
+    if (!m_database.IsOpen())
+      m_database.Open();
+
     if (m_database.IsOpen())
       m_database.DeleteEpg();
   }
@@ -123,6 +123,9 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
 void CEpgContainer::Start(void)
 {
   CSingleLock lock(m_critSection);
+
+  if (!m_database.IsOpen())
+    m_database.Open();
 
   m_bIsInitialising = true;
   m_bStop = false;
@@ -140,6 +143,10 @@ void CEpgContainer::Start(void)
 bool CEpgContainer::Stop(void)
 {
   StopThread();
+
+  if (m_database.IsOpen())
+    m_database.Close();
+
   return true;
 }
 
@@ -472,7 +479,6 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   if (bShowProgress && !bOnlyPending)
     ShowProgressDialog();
 
-  /* open the database */
   if (!m_bIgnoreDbForClient && !m_database.IsOpen())
   {
     CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
