@@ -22,7 +22,6 @@
 
 #ifdef HAS_GLX
 
-#include <SDL/SDL_syswm.h>
 #include "WinSystemX11.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -34,13 +33,16 @@
 #include "XRandR.h"
 #include <vector>
 #include "threads/SingleLock.h"
-#include <X11/Xlib.h>
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/TimeUtils.h"
+//#include "settings/GUISettings.h"
 
 #if defined(HAS_XRANDR)
 #include <X11/extensions/Xrandr.h>
 #endif
+
+#include "../WinEventsX11.h"
+#include "input/MouseStat.h"
 
 using namespace std;
 
@@ -48,13 +50,13 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
   m_glContext = NULL;
-  m_SDLSurface = NULL;
   m_dpy = NULL;
   m_glWindow = 0;
-  m_wmWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
   m_minimized = false;
+  m_bIgnoreNextFocusMessage = false;
   m_dpyLostTime = 0;
+  m_invisibleCursor = 0;
 
   XSetErrorHandler(XErrorHandler);
 }
@@ -67,18 +69,6 @@ bool CWinSystemX11::InitWindowSystem()
 {
   if ((m_dpy = XOpenDisplay(NULL)))
   {
-
-    SDL_EnableUNICODE(1);
-    // set repeat to 10ms to ensure repeat time < frame time
-    // so that hold times can be reliably detected
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
-
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
     return CWinSystemBase::InitWindowSystem();
   }
   else
@@ -116,38 +106,8 @@ bool CWinSystemX11::DestroyWindowSystem()
 
 bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  RESOLUTION_INFO& desktop = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP);
-
-  if (fullScreen &&
-      (res.iWidth != desktop.iWidth || res.iHeight != desktop.iHeight ||
-       res.fRefreshRate != desktop.fRefreshRate || res.iScreen != desktop.iScreen))
-  {
-    //on the first call to SDL_SetVideoMode, SDL stores the current displaymode
-    //SDL restores the displaymode on SDL_QUIT(), if we change the displaymode
-    //before the first call to SDL_SetVideoMode, SDL changes the displaymode back
-    //to the wrong mode on exit
-
-    CLog::Log(LOGINFO, "CWinSystemX11::CreateNewWindow initializing to desktop resolution first");
-    if (!SetFullScreen(true, desktop, false))
-      return false;
-  }
-
   if(!SetFullScreen(fullScreen, res, false))
     return false;
-
-  CBaseTexture* iconTexture = CTexture::LoadFromFile("special://xbmc/media/icon.png");
-
-  if (iconTexture)
-    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture->GetPixels(), iconTexture->GetWidth(), iconTexture->GetHeight(), 32, iconTexture->GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
-  SDL_WM_SetCaption("XBMC Media Center", NULL);
-  delete iconTexture;
-
-  // register XRandR Events
-#if defined(HAS_XRANDR)
-  int iReturn;
-  XRRQueryExtension(m_dpy, &m_RREventBase, &iReturn);
-  XRRSelectInput(m_dpy, m_wmWindow, RRScreenChangeNotifyMask);
-#endif
 
   m_bWindowCreated = true;
   return true;
@@ -155,6 +115,28 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 
 bool CWinSystemX11::DestroyWindow()
 {
+  if (!m_glWindow)
+    return true;
+
+  if (m_glContext)
+    glXMakeCurrent(m_dpy, None, NULL);
+
+  if (m_invisibleCursor)
+  {
+    XUndefineCursor(m_dpy, m_glWindow);
+    XFreeCursor(m_dpy, m_invisibleCursor);
+    m_invisibleCursor = 0;
+  }
+
+  CWinEventsX11Imp::Quit();
+
+  XUnmapWindow(m_dpy, m_glWindow);
+  XSync(m_dpy,TRUE);
+  XUngrabKeyboard(m_dpy, CurrentTime);
+  XUngrabPointer(m_dpy, CurrentTime);
+  XDestroyWindow(m_dpy, m_glWindow);
+  m_glWindow = 0;
+
   return true;
 }
 
@@ -164,67 +146,105 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   && m_nHeight == newHeight)
     return true;
 
+  if (!SetWindow(newWidth, newHeight, false))
+  {
+    return false;
+  }
+
+  RefreshGlxContext();
   m_nWidth  = newWidth;
   m_nHeight = newHeight;
-
-  int options = SDL_OPENGL;
-  if (m_bFullScreen)
-    options |= SDL_FULLSCREEN;
-  else
-    options |= SDL_RESIZABLE;
-
-  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
-  {
-    SetGrabMode();
-    RefreshGlxContext();
-    return true;
-  }
+  m_bFullScreen = false;
 
   return false;
 }
 
+void CWinSystemX11::RefreshWindow()
+{
+  g_xrandr.Query(true);
+  XOutput out  = g_xrandr.GetCurrentOutput();
+  XMode   mode = g_xrandr.GetCurrentMode(out.name);
+
+  // only overwrite desktop resolution, if we are not in fullscreen mode
+  if (!g_graphicsContext.IsFullScreenVideo())
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshWindow - store desktop resolution, width: %d, height: %d, hz: %2.2f", mode.w, mode.h, mode.hz);
+    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+    g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
+    g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
+  }
+
+  RESOLUTION_INFO res;
+  unsigned int i;
+  bool found(false);
+  for (i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
+  {
+    if (g_settings.m_ResInfo[i].strId == mode.id)
+    {
+      found = true;
+      break;
+    }
+  }
+
+  if (!found)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11::RefreshWindow - could not find resolution");
+    return;
+  }
+
+  if (g_graphicsContext.IsFullScreenRoot())
+    g_graphicsContext.SetVideoResolution((RESOLUTION)i, true);
+  else
+    g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
+}
+
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  m_nWidth      = res.iWidth;
-  m_nHeight     = res.iHeight;
-  m_bFullScreen = fullScreen;
 
 #if defined(HAS_XRANDR)
   XOutput out;
   XMode mode;
-  out.name = res.strOutput;
-  mode.w   = res.iWidth;
-  mode.h   = res.iHeight;
-  mode.hz  = res.fRefreshRate;
-  mode.id  = res.strId;
- 
-  if(m_bFullScreen)
+
+  if (fullScreen)
   {
+    out.name = res.strOutput;
+    mode.w   = res.iWidth;
+    mode.h   = res.iHeight;
+    mode.hz  = res.fRefreshRate;
+    mode.id  = res.strId;
+  }
+  else
+  {
+    out.name = g_settings.m_ResInfo[RES_DESKTOP].strOutput;
+    mode.w   = g_settings.m_ResInfo[RES_DESKTOP].iWidth;
+    mode.h   = g_settings.m_ResInfo[RES_DESKTOP].iHeight;
+    mode.hz  = g_settings.m_ResInfo[RES_DESKTOP].fRefreshRate;
+    mode.id  = g_settings.m_ResInfo[RES_DESKTOP].strId;
+  }
+ 
+  XOutput currout  = g_xrandr.GetCurrentOutput();
+  XMode   currmode = g_xrandr.GetCurrentMode(currout.name);
+
+  // only call xrandr if mode changes
+  if (currout.name != out.name || currmode.w != mode.w || currmode.h != mode.h ||
+      currmode.hz != mode.hz || currmode.id != mode.id)
+  {
+    CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
     OnLostDevice();
     g_xrandr.SetMode(out, mode);
   }
-  else
-    g_xrandr.RestoreState();
 #endif
 
-  int options = SDL_OPENGL;
-  if (m_bFullScreen)
-    options |= SDL_FULLSCREEN;
-  else
-    options |= SDL_RESIZABLE;
+  if (!SetWindow(res.iWidth, res.iHeight, fullScreen))
+    return false;
 
-  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
-  {
-    if ((m_SDLSurface->flags & SDL_OPENGL) != SDL_OPENGL)
-      CLog::Log(LOGERROR, "CWinSystemX11::SetFullScreen SDL_OPENGL not set, SDL_GetError:%s", SDL_GetError());
+  RefreshGlxContext();
 
-    SetGrabMode();
-    RefreshGlxContext();
+  m_nWidth      = res.iWidth;
+  m_nHeight     = res.iHeight;
+  m_bFullScreen = fullScreen;
 
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
 void CWinSystemX11::UpdateResolutions()
@@ -326,17 +346,10 @@ bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
 bool CWinSystemX11::RefreshGlxContext()
 {
   bool retVal = false;
-  SDL_SysWMinfo info;
-  SDL_VERSION(&info.version);
-  if (SDL_GetWMInfo(&info) <= 0)
-  {
-    CLog::Log(LOGERROR, "Failed to get window manager info from SDL");
-    return false;
-  }
 
-  if(m_glWindow == info.info.x11.window && m_glContext)
+  if (m_glContext)
   {
-    CLog::Log(LOGERROR, "GLX: Same window as before, refreshing context");
+    CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshGlxContext: refreshing context");
     glXMakeCurrent(m_dpy, None, NULL);
     glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
     return true;
@@ -348,8 +361,6 @@ bool CWinSystemX11::RefreshGlxContext()
   int availableVisuals    = 0;
   vMask.screen = DefaultScreen(m_dpy);
   XWindowAttributes winAttr;
-  m_glWindow = info.info.x11.window;
-  m_wmWindow = info.info.x11.wmwindow;
 
   /* Assume a depth of 24 in case the below calls to XGetWindowAttributes()
      or XGetVisualInfo() fail. That shouldn't happen unless something is
@@ -420,7 +431,10 @@ bool CWinSystemX11::RefreshGlxContext()
 
 void CWinSystemX11::ShowOSMouse(bool show)
 {
-  SDL_ShowCursor(show ? 1 : 0);
+  if (show)
+    XUndefineCursor(m_dpy,m_glWindow);
+  else if (m_invisibleCursor)
+    XDefineCursor(m_dpy,m_glWindow, m_invisibleCursor);
 }
 
 void CWinSystemX11::ResetOSScreensaver()
@@ -434,8 +448,6 @@ void CWinSystemX11::ResetOSScreensaver()
     {
       m_screensaverReset.StartZero();
       XResetScreenSaver(m_dpy);
-      //need to flush the output buffer, since we don't check for events on m_dpy
-      XFlush(m_dpy);
     }
   }
   else
@@ -451,13 +463,27 @@ void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
 
   m_minimized = !bActivated;
 }
+
+void CWinSystemX11::NotifyAppFocusChange(bool bGaining)
+{
+  if (bGaining && m_bWasFullScreenBeforeMinimize && !m_bIgnoreNextFocusMessage &&
+      !g_graphicsContext.IsFullScreenRoot())
+    g_graphicsContext.ToggleFullScreenRoot();
+  if (!bGaining)
+    m_bIgnoreNextFocusMessage = false;
+}
+
 bool CWinSystemX11::Minimize()
 {
   m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
+  {
+    m_bIgnoreNextFocusMessage = true;
     g_graphicsContext.ToggleFullScreenRoot();
+  }
 
-  SDL_WM_IconifyWindow();
+  XIconifyWindow(m_dpy, m_glWindow, DefaultScreen(m_dpy));
+
   m_minimized = true;
   return true;
 }
@@ -467,13 +493,13 @@ bool CWinSystemX11::Restore()
 }
 bool CWinSystemX11::Hide()
 {
-  XUnmapWindow(m_dpy, m_wmWindow);
+  XUnmapWindow(m_dpy, m_glWindow);
   XSync(m_dpy, False);
   return true;
 }
 bool CWinSystemX11::Show(bool raise)
 {
-  XMapWindow(m_dpy, m_wmWindow);
+  XMapWindow(m_dpy, m_glWindow);
   XSync(m_dpy, False);
   m_minimized = false;
   return true;
@@ -505,6 +531,7 @@ void CWinSystemX11::CheckDisplayEvents()
   if (bGotEvent || bTimeout)
   {
     CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
+    RefreshWindow();
 
     CSingleLock lock(m_resourceSection);
 
@@ -563,37 +590,151 @@ bool CWinSystemX11::EnableFrameLimiter()
   return m_minimized;
 }
 
-void CWinSystemX11::SetGrabMode(const CSetting *setting /*= NULL*/)
+bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen)
 {
-  bool enabled;
-  if (setting)
-    enabled = ((CSettingBool*)setting)->GetValue();
-  else
-    enabled = CSettings::Get().GetBool("input.enablesystemkeys");
-    
-  if (m_SDLSurface && m_SDLSurface->flags & SDL_FULLSCREEN)
+  bool changeWindow = false;
+  bool changeSize = false;
+  bool mouseActive = false;
+  float mouseX, mouseY;
+
+  if (m_glWindow && (m_bFullScreen != fullscreen))
   {
-    if (enabled)
+    mouseActive = g_Mouse.IsActive();
+    if (mouseActive)
     {
-      //SDL will always call XGrabPointer and XGrabKeyboard when in fullscreen
-      //so temporarily zero the SDL_FULLSCREEN flag, then turn off SDL grab mode
-      //this will make SDL call XUnGrabPointer and XUnGrabKeyboard
-      m_SDLSurface->flags &= ~SDL_FULLSCREEN;
-      SDL_WM_GrabInput(SDL_GRAB_OFF);
-      m_SDLSurface->flags |= SDL_FULLSCREEN;
+      Window root_return, child_return;
+      int root_x_return, root_y_return;
+      int win_x_return, win_y_return;
+      unsigned int mask_return;
+      bool isInWin = XQueryPointer(m_dpy, m_glWindow, &root_return, &child_return,
+                                   &root_x_return, &root_y_return,
+                                   &win_x_return, &win_y_return,
+                                   &mask_return);
+      if (isInWin)
+      {
+        mouseX = (float)win_x_return/m_nWidth;
+        mouseY = (float)win_y_return/m_nHeight;
+        g_Mouse.SetActive(false);
+      }
+      else
+        mouseActive = false;
     }
-    else
+    DestroyWindow();
+  }
+
+  // create main window
+  if (!m_glWindow)
+  {
+    GLint att[] =
     {
-      //turn off key grabbing, which will actually make SDL turn it on when in fullscreen
-      SDL_WM_GrabInput(SDL_GRAB_OFF);
+      GLX_RGBA,
+      GLX_RED_SIZE, 8,
+      GLX_GREEN_SIZE, 8,
+      GLX_BLUE_SIZE, 8,
+      GLX_ALPHA_SIZE, 8,
+      GLX_DEPTH_SIZE, 24,
+      GLX_DOUBLEBUFFER,
+      None
+    };
+    Colormap cmap;
+    XSetWindowAttributes swa;
+    XVisualInfo *vi;
+
+    vi = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), att);
+    cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
+
+    int def_vis = (vi->visual == DefaultVisual(m_dpy, vi->screen));
+    swa.override_redirect = fullscreen ? True : False;
+    swa.border_pixel = fullscreen ? 0 : 5;
+    swa.background_pixel = def_vis ? BlackPixel(m_dpy, vi->screen) : 0;
+    swa.colormap = cmap;
+    swa.background_pixel = def_vis ? BlackPixel(m_dpy, vi->screen) : 0;
+    swa.event_mask = FocusChangeMask | KeyPressMask | KeyReleaseMask |
+                     ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+                     PropertyChangeMask | StructureNotifyMask | KeymapStateMask |
+                     EnterWindowMask | LeaveWindowMask | ExposureMask;
+    unsigned long mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWEventMask;
+
+    m_glWindow = XCreateWindow(m_dpy, RootWindow(m_dpy, vi->screen),
+                    0, 0, width, height, 0, vi->depth,
+                    InputOutput, vi->visual,
+                    mask, &swa);
+
+    // define invisible cursor
+    Pixmap bitmapNoData;
+    XColor black;
+    static char noData[] = { 0,0,0,0,0,0,0,0 };
+    black.red = black.green = black.blue = 0;
+
+    bitmapNoData = XCreateBitmapFromData(m_dpy, m_glWindow, noData, 8, 8);
+    m_invisibleCursor = XCreatePixmapCursor(m_dpy, bitmapNoData, bitmapNoData,
+                                            &black, &black, 0, 0);
+    XFreePixmap(m_dpy, bitmapNoData);
+    XDefineCursor(m_dpy,m_glWindow, m_invisibleCursor);
+
+    //init X11 events
+    CWinEventsX11Imp::Init(m_dpy, m_glWindow);
+
+    changeWindow = true;
+    changeSize = true;
+  }
+
+  if (!CWinEventsX11Imp::HasStructureChanged() && ((width != m_nWidth) || (height != m_nHeight)))
+  {
+    changeSize = true;
+  }
+
+  if (changeSize || changeWindow)
+  {
+    XResizeWindow(m_dpy, m_glWindow, width, height);
+  }
+
+  if (changeWindow)
+  {
+    if (!fullscreen)
+    {
+      XWMHints wm_hints;
+      XClassHint class_hints;
+      XTextProperty windowName, iconName;
+      std::string titleString = "XBMC Media Center";
+      char *title = (char*)titleString.c_str();
+
+      XStringListToTextProperty(&title, 1, &windowName);
+      XStringListToTextProperty(&title, 1, &iconName);
+      wm_hints.initial_state = NormalState;
+      wm_hints.input = True;
+      wm_hints.icon_pixmap = None;
+      wm_hints.flags = StateHint | IconPixmapHint | InputHint;
+
+      XSetWMProperties(m_dpy, m_glWindow, &windowName, &iconName,
+                            NULL, 0, NULL, &wm_hints,
+                            NULL);
+
+      // register interest in the delete window message
+      Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
+      XSetWMProtocols(m_dpy, m_glWindow, &wmDeleteMessage, 1);
+    }
+    XMapRaised(m_dpy, m_glWindow);
+    XSync(m_dpy,TRUE);
+
+    if (changeWindow && mouseActive)
+    {
+      XWarpPointer(m_dpy, None, m_glWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
+    }
+
+    if (fullscreen)
+    {
+      int result = -1;
+      while (result != GrabSuccess)
+      {
+        result = XGrabPointer(m_dpy, m_glWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, m_glWindow, None, CurrentTime);
+        XbmcThreads::ThreadSleep(100);
+      }
+      XGrabKeyboard(m_dpy, m_glWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+
     }
   }
-}
-
-void CWinSystemX11::OnSettingChanged(const CSetting *setting)
-{
-  if (setting->GetId() == "input.enablesystemkeys")
-    SetGrabMode(setting);
+  return true;
 }
 
 #endif
