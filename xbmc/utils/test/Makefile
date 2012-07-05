@@ -29,6 +29,7 @@ SRCS=	\
 	TestJSONVariantWriter.cpp \
 	TestLabelFormatter.cpp \
 	TestLangCodeExpander.cpp \
+	Testlog.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
