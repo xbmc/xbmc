@@ -55,11 +55,11 @@ uint8_t*    g_axis = 0;
 
 // render functions
 // must be included AFTER global variables
-#if defined(__linux__) || defined(__APPLE__)
-#include "fishbmc_opengl.hpp"
-#else // __linux__ || __APPLE__
+#if defined(_WIN32)
 #include "fishbmc_directx.hpp"
-#endif // __linux__ || __APPLE__
+#else // _WIN32
+#include "fishbmc_opengl.hpp"
+#endif // _WIN32
 
 
 
