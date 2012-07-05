@@ -65,6 +65,7 @@ public:
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
   void RefreshWindow();
+  void NotifyXRREvent();
 
 protected:
   bool RefreshGlxContext();
