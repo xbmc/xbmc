@@ -94,6 +94,7 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultDVDPlayer = "dvdplayer";
   m_videoIgnoreSecondsAtStart = 3*60;
   m_videoIgnorePercentAtEnd   = 8.0f;
+  m_videoUnpauseJumpBackSecs      = 0;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoVDPAUScaling = false;
   m_videoNonLinStretchRatio = 0.5f;
@@ -426,6 +427,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 101.0f);
     XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_videoIgnoreSecondsAtStart, 0, 900);
+    XMLUtils::GetInt(pElement, "unpausejumpbacksecs", m_videoUnpauseJumpBackSecs);
     XMLUtils::GetFloat(pElement, "ignorepercentatend", m_videoIgnorePercentAtEnd, 0, 100.0f);
 
     XMLUtils::GetInt(pElement, "smallstepbackseconds", m_videoSmallStepBackSeconds, 1, INT_MAX);
