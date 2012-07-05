@@ -86,6 +86,7 @@ protected:
   Display*     m_dpy;
 
   Cursor       m_invisibleCursor;
+  Pixmap       m_icon;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
   int          m_RREventBase;
