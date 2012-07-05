@@ -33,6 +33,8 @@ public:
   static bool Init(Display *dpy, Window win);
   static void Quit();
   static bool HasStructureChanged();
+  static void PendingResize(int width, int height);
+  static void SetXRRFailSafeTimer(int millis);
   static bool MessagePump();
 
 protected:
@@ -54,4 +56,7 @@ protected:
   std::map<uint32_t,uint32_t> m_symLookupTable;
   int m_keymodState;
   bool m_structureChanged;
+  int m_RREventBase;
+  XbmcThreads::EndTime m_xrrFailSafeTimer;
+  bool m_xrrEventPending;
 };
