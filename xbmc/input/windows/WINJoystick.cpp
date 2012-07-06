@@ -53,7 +53,7 @@ extern HWND g_hWnd;
 
 CJoystick::CJoystick()
 {
-  Reset();
+  Reset(true);
   m_NumAxes = 0;
   m_AxisId = 0;
   m_JoyId = 0;
@@ -61,8 +61,6 @@ CJoystick::CJoystick()
   m_HatId = 0;
   m_HatState = SDL_HAT_CENTERED;
   m_ActiveFlags = JACTIVE_NONE;
-  for (int i = 0 ; i<MAX_AXES ; i++)
-    m_Amount[i] = 0;
   SetDeadzone(0);
 
   m_pDI = NULL;
@@ -88,6 +86,13 @@ void CJoystick::ReleaseJoysticks()
   m_pJoysticks.clear();
   m_JoystickNames.clear();
   m_devCaps.clear();
+  m_HatId = 0;
+  m_ButtonId = 0;
+  m_HatState = SDL_HAT_CENTERED;
+  m_ActiveFlags = JACTIVE_NONE;
+  Reset(true);
+  m_lastPressTicks = 0;
+  m_lastTicks = 0;
   // Release any DirectInput objects.
   SAFE_RELEASE( m_pDI );
 }
@@ -208,7 +213,7 @@ void CJoystick::Initialize()
   SetDeadzone(g_advancedSettings.m_controllerDeadzone);
 }
 
-void CJoystick::Reset(bool axis)
+void CJoystick::Reset(bool axis /*=true*/)
 {
   if (axis)
   {
@@ -361,7 +366,10 @@ void CJoystick::Update()
 bool CJoystick::GetHat(int &id, int &position,bool consider_repeat)
 {
   if (!IsHatActive())
+  {
+    id = position = 0;
     return false;
+  }
   position = m_HatState;
   id = m_HatId;
   if (!consider_repeat)
@@ -392,7 +400,10 @@ bool CJoystick::GetHat(int &id, int &position,bool consider_repeat)
 bool CJoystick::GetButton(int &id, bool consider_repeat)
 {
   if (!IsButtonActive())
+  {
+    id = 0;
     return false;
+  }
   if (!consider_repeat)
   {
     id = m_ButtonId;
@@ -423,6 +434,17 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
   }
   id = m_ButtonId;
   return true;
+}
+
+bool CJoystick::GetAxis (int &id)
+{ 
+  if (!IsAxisActive()) 
+  {
+    id = 0;
+    return false; 
+  }
+  id = m_AxisId; 
+  return true; 
 }
 
 int CJoystick::GetAxisWithMaxAmount()

@@ -57,7 +57,7 @@ public:
   void Update();
   void Update(SDL_Event& event);
   bool GetButton (int& id, bool consider_repeat=true);
-  bool GetAxis (int &id) { if (!IsAxisActive()) return false; id=m_AxisId; return true; }
+  bool GetAxis (int &id);
   bool GetHat (int &id, int &position, bool consider_repeat=true);
   std::string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
