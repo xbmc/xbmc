@@ -3497,7 +3497,10 @@ bool CApplication::Cleanup()
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();
 #endif
-
+#if defined(TARGET_ANDROID)
+    // enable for all platforms once it's safe
+    g_sectionLoader.UnloadAll();
+#endif
 #ifdef _CRTDBG_MAP_ALLOC
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
