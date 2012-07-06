@@ -41,6 +41,7 @@ SRCS=	\
 	TestScraperUrl.cpp \
 	TestSortUtils.cpp \
 	TestStdString.cpp \
+	TestStopwatch.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
