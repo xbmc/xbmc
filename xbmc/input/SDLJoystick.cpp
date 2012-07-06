@@ -32,8 +32,6 @@
 
 using namespace std;
 
-CJoystick g_Joystick; // global
-
 CJoystick::CJoystick()
 {
   Reset(true);

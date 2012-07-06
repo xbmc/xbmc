@@ -41,6 +41,13 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#if defined(TARGET_WINDOWS)
+#include "input/windows/WINJoystick.h"
+#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#include "input/SDLJoystick.h"
+#endif
+
+
 
   CGUISettings       g_guiSettings;
   CSettings          g_settings;
@@ -57,6 +64,9 @@
   CGUITextureManager g_TextureManager;
   CGUILargeTextureManager g_largeTextureManager;
   CMouseStat         g_Mouse;
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  CJoystick          g_Joystick; 
+#endif
   CGUIPassword       g_passwordManager;
   CGUIInfoManager    g_infoManager;
 

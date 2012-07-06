@@ -31,8 +31,6 @@
 
 using namespace std;
 
-CJoystick g_Joystick; // global
-
 extern HWND g_hWnd;
 
 #define MAX_AXISAMOUNT  32768
