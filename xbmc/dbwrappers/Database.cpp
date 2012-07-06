@@ -29,7 +29,9 @@
 #include "utils/AutoPtrHandle.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#ifdef BUILD_MYSQL
 #include "mysqldataset.h"
+#endif /* BUILD_MYSQL */
 #include "sqlitedataset.h"
 
 
@@ -260,6 +262,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
 
   m_sqlite = true;
 
+#ifdef BUILD_MYSQL
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
@@ -270,6 +273,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
       CLog::Log(LOGINFO, "Essential mysql database information is missing. Require at least host, user and pass defined.");
   }
   else
+#endif /* BUILD_MYSQL */
   {
     dbSettings.type = "sqlite3";
     dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
@@ -363,10 +367,12 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
   {
     m_pDB.reset( new SqliteDatabase() ) ;
   }
+#ifdef BUILD_MYSQL
   else if (dbSettings.type.Equals("mysql"))
   {
     m_pDB.reset( new MysqlDatabase() ) ;
   }
+#endif /* BUILD_MYSQL */
   else
   {
     CLog::Log(LOGERROR, "Unable to determine database type: %s", dbSettings.type.c_str());
