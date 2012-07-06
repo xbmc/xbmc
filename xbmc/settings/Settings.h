@@ -345,14 +345,9 @@ public:
   CStdString GetDatabaseFolder() const;
   CStdString GetCDDBFolder() const;
   CStdString GetThumbnailsFolder() const;
-  CStdString GetMusicThumbFolder() const;
-  CStdString GetLastFMThumbFolder() const;
-  CStdString GetMusicArtistThumbFolder() const;
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetSourcesFile() const;
-  CStdString GetVideoFanartFolder() const;
-  CStdString GetMusicFanartFolder() const;
 
   CStdString GetSettingsFile() const;
 
