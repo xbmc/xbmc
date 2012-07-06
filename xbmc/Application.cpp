@@ -5548,12 +5548,20 @@ void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
   m_videoInfoScanner->Start(strDirectory,scanAll);
 }
 
-void CApplication::StartMusicScan(const CStdString &strDirectory)
+void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
 
-  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  if (!flags)
+  { // setup default flags
+    if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
+      flags |= CMusicInfoScanner::SCAN_ONLINE;
+    if (g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+      flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+  }
+
+  if (!(flags & CMusicInfoScanner::SCAN_BACKGROUND))
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan)
@@ -5563,7 +5571,7 @@ void CApplication::StartMusicScan(const CStdString &strDirectory)
     }
   }
   SaveMusicScanSettings();
-  m_musicInfoScanner->Start(strDirectory);
+  m_musicInfoScanner->Start(strDirectory, flags);
 }
 
 void CApplication::StartMusicAlbumScan(const CStdString& strDirectory,

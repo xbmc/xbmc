@@ -65,6 +65,7 @@ CMusicInfoScanner::CMusicInfoScanner() : CThread("CMusicInfoScanner")
   m_bCanInterrupt = false;
   m_currentItem=0;
   m_itemCount=0;
+  m_flags = 0;
 }
 
 CMusicInfoScanner::~CMusicInfoScanner()
@@ -205,11 +206,12 @@ void CMusicInfoScanner::Process()
     m_pObserver->OnFinished();
 }
 
-void CMusicInfoScanner::Start(const CStdString& strDirectory)
+void CMusicInfoScanner::Start(const CStdString& strDirectory, int flags)
 {
   m_pathsToScan.clear();
   m_albumsScanned.clear();
   m_artistsScanned.clear();
+  m_flags = flags;
 
   if (strDirectory.IsEmpty())
   { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
@@ -565,7 +567,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     {
       CStdString strArtist = m_musicDatabase.GetArtistById(*it);
       m_artistsScanned.push_back(*it);
-      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.downloadinfo"))
+      if (!m_bStop && (m_flags & SCAN_ONLINE))
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/", *it);
@@ -581,7 +583,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     }
   }
 
-  if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
+  if (m_flags & SCAN_ONLINE)
   {
     for (set<long>::iterator it = albumsToScan.begin(); it != albumsToScan.end(); ++it)
     {

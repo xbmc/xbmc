@@ -44,10 +44,16 @@ public:
 class CMusicInfoScanner : CThread, public IRunnable
 {
 public:
+  /*! \brief Flags for controlling the scanning process
+   */
+  enum SCAN_FLAGS { SCAN_NORMAL     = 0,
+                    SCAN_ONLINE     = 1 << 0,
+                    SCAN_BACKGROUND = 1 << 1 };
+
   CMusicInfoScanner();
   virtual ~CMusicInfoScanner();
 
-  void Start(const CStdString& strDirectory);
+  void Start(const CStdString& strDirectory, int flags);
   void FetchAlbumInfo(const CStdString& strDirectory, bool refresh=false);
   void FetchArtistInfo(const CStdString& strDirectory, bool refresh=false);
   bool IsScanning();
@@ -126,5 +132,6 @@ protected:
   std::set<CStdString> m_pathsToCount;
   std::vector<long> m_artistsScanned;
   std::vector<long> m_albumsScanned;
+  int m_flags;
 };
 }
