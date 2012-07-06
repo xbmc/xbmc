@@ -40,6 +40,7 @@ SRCS=	\
 	TestScraperParser.cpp \
 	TestScraperUrl.cpp \
 	TestSortUtils.cpp \
+	TestStdString.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
