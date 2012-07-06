@@ -39,6 +39,7 @@ SRCS=	\
 	TestRingBuffer.cpp \
 	TestScraperParser.cpp \
 	TestScraperUrl.cpp \
+	TestSortUtils.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
