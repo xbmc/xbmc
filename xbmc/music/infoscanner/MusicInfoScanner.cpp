@@ -380,7 +380,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   // check whether we need to rescan or not
   CStdString dbHash;
-  if (!m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+  if ((m_flags & SCAN_RESCAN) || !m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
   { // path has changed - rescan
     if (dbHash.IsEmpty())
       CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());

@@ -48,7 +48,8 @@ public:
    */
   enum SCAN_FLAGS { SCAN_NORMAL     = 0,
                     SCAN_ONLINE     = 1 << 0,
-                    SCAN_BACKGROUND = 1 << 1 };
+                    SCAN_BACKGROUND = 1 << 1,
+                    SCAN_RESCAN     = 1 << 2 };
 
   CMusicInfoScanner();
   virtual ~CMusicInfoScanner();

@@ -2784,7 +2784,21 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr ""
 
-#empty strings from id 799 to 849
+msgctxt "#799"
+msgid "Library Update"
+msgstr ""
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr ""
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr ""
+
+#empty strings from id 802 to 849
 
 msgctxt "#850"
 msgid "Invalid port number entered"
