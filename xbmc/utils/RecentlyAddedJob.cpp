@@ -223,7 +223,6 @@ bool CRecentlyAddedJob::UpdateMusic()
       CStdString   value;
       value.Format("%i", i + 1);
       
-      CStdString   strThumb;
       CStdString   strRating;
       CStdString   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
       CStdString   strArtist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
@@ -238,7 +237,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestSong." + value + ".Album"   , strAlbum);
       home->SetProperty("LatestSong." + value + ".Rating"  , strRating);
       home->SetProperty("LatestSong." + value + ".Path"    , item->GetMusicInfoTag()->GetURL());
-      home->SetProperty("LatestSong." + value + ".Thumb"   , strThumb);
+      home->SetProperty("LatestSong." + value + ".Thumb"   , item->GetThumbnailImage());
       home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetProperty("fanart_image"));
     }
   }
