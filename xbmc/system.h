@@ -228,6 +228,11 @@
 #include "PlatformInclude.h"
 #endif
 
+#if defined(TARGET_ANDROID)
+#undef HAS_LIRC
+#undef HAS_LCD
+#endif
+
 // EGL detected. Dont use GLX!
 #ifdef HAVE_LIBEGL
 #undef HAS_GLX
