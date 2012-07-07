@@ -45,6 +45,7 @@ SRCS=	\
 	TestStreamDetails.cpp \
 	TestStreamUtils.cpp \
 	TestStringUtils.cpp \
+	TestSystemInfo.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
