@@ -22,6 +22,11 @@
 
 #include "utils/StdString.h"
 
+namespace XFILE
+{
+  class CFile;
+}
+
 class CXBMCTestUtils
 {
 public:
@@ -35,6 +40,17 @@ public:
 
   /* Function to set the reference file base path. */
   bool SetReferenceFileBasePath();
+
+  /* Function used in creating a temporary file. It accepts a parameter
+   * 'suffix' to append to the end of the tempfile path. The temporary
+   * file is return as a XFILE::CFile object.
+   */
+  XFILE::CFile *CreateTempFile(CStdString const& suffix);
+
+  /* Function used to close and delete a temporary file previously created
+   * using CreateTempFile().
+   */
+  bool DeleteTempFile(XFILE::CFile *tempfile);
 private:
   CXBMCTestUtils();
   CXBMCTestUtils(CXBMCTestUtils const&);
@@ -42,3 +58,5 @@ private:
 };
 
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
+#define XBMC_CREATETEMPFILE(a) CXBMCTestUtils::Instance().CreateTempFile(a)
+#define XBMC_DELETETEMPFILE(a) CXBMCTestUtils::Instance().DeleteTempFile(a)

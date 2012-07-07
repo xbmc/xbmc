@@ -21,14 +21,47 @@
 
 #include "TestBasicEnvironment.h"
 #include "TestUtils.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 
 #include <cstdio>
 #include <cstdlib>
+#include <climits>
 
 void TestBasicEnvironment::SetUp()
 {
+  char buf[MAX_PATH], *tmp;
+  CStdString xbmcTempPath;
+
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();
+
+  /* Create a temporary directory and set it to be used throughout the
+   * test suite run.
+   */
+#ifndef _LINUX
+  if (!GetTempPath(buf, sizeof(buf)))
+    SetUpError();
+  xbmcTempPath = buf;
+  if (!GetTempFileName(xbmcTempPath.c_str(), "xbmctempdir", 0, buf))
+    SetUpError();
+  if (!CreateDirectory(buf, NULL))
+    SetUpError();
+  CSpecialProtocol::SetTempPath(buf);
+#else
+  (void)xbmcTempPath;
+  strcpy(buf, "/tmp/xbmctempdirXXXXXX");
+  if ((tmp = mkdtemp(buf)) == NULL)
+    SetUpError();
+  CSpecialProtocol::SetTempPath(tmp);
+#endif
+}
+
+void TestBasicEnvironment::TearDown()
+{
+  CStdString xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
+  XFILE::CDirectory::Remove(xbmcTempPath);
 }
 
 void TestBasicEnvironment::SetUpError()

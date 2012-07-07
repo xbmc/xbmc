@@ -26,6 +26,7 @@ class TestBasicEnvironment : public testing::Environment
 {
 public:
   void SetUp();
+  void TearDown();
 private:
   void SetUpError();
 };
