@@ -331,20 +331,9 @@ bool CDatabase::Open(const DatabaseSettings &settings)
     // drop back to the previous version and try that
     version--;
   }
-
-  // unable to open any version fall through to create a new one
-  if (Connect(latestDb, dbSettings, true) && UpdateVersion(latestDb))
-  {
+  // try creating a new one
+  if (Connect(latestDb, dbSettings, true))
     return true;
-  }
-  // safely fall back to sqlite as appropriate
-  else if ( ! m_sqlite )
-  {
-    CLog::Log(LOGDEBUG, "Falling back to sqlite.");
-    dbSettings = settings;
-    dbSettings.type = "sqlite3";
-    return Open(dbSettings);
-  }
 
   // failed to update or open the database
   Close();
