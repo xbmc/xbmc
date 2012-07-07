@@ -431,7 +431,8 @@ void XBPyThread::stop()
     PyThreadState* old = PyThreadState_Swap((PyThreadState*)m_threadState);
 
     //tell xbmc.Monitor to call onAbortRequested()
-    g_pythonParser.OnAbortRequested(addon->ID());
+    if (addon)
+      g_pythonParser.OnAbortRequested(addon->ID());
 
     PyObject *m;
     m = PyImport_AddModule((char*)"xbmc");
