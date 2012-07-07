@@ -234,13 +234,16 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
       }
       CAddon::SaveSettings();
     }
-    if (m_pDll) m_pDll->Stop();
+    if (m_pDll)
+    {
+      m_pDll->Stop();
+      CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
+    }
   }
   catch (std::exception &e)
   {
     HandleException(e, "m_pDll->Stop");
   }
-  CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -261,10 +264,13 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   }
   free(m_pStruct);
   m_pStruct = NULL;
-  delete m_pDll;
-  m_pDll = NULL;
+  if (m_pDll)
+  {
+    delete m_pDll;
+    m_pDll = NULL;
+    CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
+  }
   m_initialized = false;
-  CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
