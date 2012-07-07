@@ -404,7 +404,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
       {
         if (strcmpi(type,"sep") == 0 || strcmpi(type,"lsep") == 0)
         {
-            /* Don't propagate separators */
+          /* Don't propagate separators */
         }
         else if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
           strcmpi(type, "video") == 0 || strcmpi(type, "audio") == 0 ||
@@ -442,11 +442,10 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
           {
             status = m_pDll->SetSetting(id, (float*) &tmpf);
           }
-          
         }
         else
         {
-            /* Log unknowns as an error, but go ahead and transfer the string */
+          /* Log unknowns as an error, but go ahead and transfer the string */
           CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, Name().c_str());
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
         }
