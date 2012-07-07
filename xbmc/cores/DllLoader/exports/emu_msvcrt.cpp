@@ -71,7 +71,11 @@
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
 #endif
-
+#if defined(TARGET_ANDROID)
+#include "android/loader/AndroidDyload.h"
+#elif !defined(_WIN32)
+#include <dlfcn.h>
+#endif
 using namespace std;
 using namespace XFILE;
 
@@ -440,6 +444,18 @@ extern "C"
   {
     not_implement("msvcrt.dll fake function _popen(...) called\n"); //warning
     return NULL;
+  }
+
+  void *dll_dlopen(const char *filename, int flag)
+  {
+#if defined(TARGET_ANDROID)
+    CAndroidDyload temp;
+    return temp.Open(filename);
+#elif !defined(_WIN32)
+    return dlopen(filename, flag);
+#else
+    return NULL;
+#endif
   }
 
   int dll_pclose(FILE *stream)
