@@ -31,15 +31,12 @@
 #include "utils/URIUtils.h"
 #include "mysqldataset.h"
 #include "sqlitedataset.h"
-#include "threads/SingleLock.h"
 
 
 using namespace AUTOPTR;
 using namespace dbiplus;
 
 #define MAX_COMPRESS_COUNT 20
-
-std::map<std::string, bool> CDatabase::m_updated;
 
 CDatabase::CDatabase(void)
 {
@@ -440,10 +437,6 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
 
 bool CDatabase::UpdateVersion(const CStdString &dbName)
 {
-  CSingleLock lock(m_critSect);
-  if (m_updated[dbName])
-    return true;
-
   int version = 0;
   m_pDS->query("SELECT idVersion FROM version\n");
   if (m_pDS->num_rows() > 0)
@@ -479,8 +472,6 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
-
-  m_updated[dbName] = true;
   return true;
 }
 

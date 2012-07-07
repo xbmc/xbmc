@@ -21,16 +21,14 @@
  *
  */
 
-#include <map>
-#include <memory>
-
-#include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 
 namespace dbiplus {
   class Database;
   class Dataset;
 }
+
+#include <memory>
 
 class DatabaseSettings; // forward
 
@@ -141,7 +139,4 @@ private:
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
   unsigned int m_openCount;
-
-  CCriticalSection m_critSect;
-  static std::map<std::string, bool> m_updated;
 };
