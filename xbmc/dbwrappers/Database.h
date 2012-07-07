@@ -125,6 +125,7 @@ protected:
   virtual int GetMinVersion() const=0;
   virtual const char *GetBaseDBName() const=0;
 
+  int GetDBVersion();
   bool UpdateVersion(const CStdString &dbName);
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)

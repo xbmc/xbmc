@@ -420,13 +420,17 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
   return true;
 }
 
-bool CDatabase::UpdateVersion(const CStdString &dbName)
+int CDatabase::GetDBVersion()
 {
-  int version = 0;
   m_pDS->query("SELECT idVersion FROM version\n");
   if (m_pDS->num_rows() > 0)
-    version = m_pDS->fv("idVersion").get_asInt();
+    return m_pDS->fv("idVersion").get_asInt();
+  return 0;
+}
 
+bool CDatabase::UpdateVersion(const CStdString &dbName)
+{
+  int version = GetDBVersion();
   if (version < GetMinVersion())
   {
     CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
