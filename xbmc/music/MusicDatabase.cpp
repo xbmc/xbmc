@@ -4765,45 +4765,61 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
         *p = '\0';
 
         unsigned int tabs = 0;
-        char * songpath;
+        char * songpath, *artist = 0, *title = 0;
         for ( songpath = linestart; *songpath; songpath++ )
         {
           if ( *songpath == '\t' )
           {
             tabs++;
+            *songpath = '\0';
 
-            if ( tabs == 1 )
-              *songpath = '\0'; // terminate number
-
-            if ( tabs == 3 )
+            switch( tabs )
             {
-              songpath++;
-              break; // songpath points to file name
+              case 1: // the number end
+                artist = songpath + 1;
+                break; 
+
+              case 2: // the artist end
+                title = songpath + 1;
+                break; 
+
+              case 3: // the title end
+                break;
             }
           }
         }
 
         int num = atoi( linestart );
-        if ( num <= 0 || *songpath == '\0' )
+        if ( num <= 0 || tabs < 3 || *artist == '\0' || *title == '\0' )
         {
           CLog::Log( LOGERROR, "Karaoke import: error in line %s", linestart );
-          m_pDS->close();
-          return;
-        }
-
-        // Update the database
-        CSong song;
-        if ( GetSongByFileName( songpath, song) )
-        {
-          CStdString strSQL = PrepareSQL("UPDATE karaokedata SET iKaraNumber=%i WHERE idSong=%i", num, song.idSong);
-          m_pDS->exec(strSQL.c_str());
-        }
-        else
-        {
-          CLog::Log( LOGDEBUG, "Karaoke import: file '%s' was not found in database, skipped", songpath );
+          linestart = p + 1;
+          continue;
         }
 
         linestart = p + 1;
+        CStdString strSQL=PrepareSQL("select idSong from songview "
+                     "where strArtist like '%s' and strTitle like '%s'", artist, title );
+
+        if ( !m_pDS->query(strSQL.c_str()) )
+        {
+            RollbackTransaction();
+            progress->Close();
+            m_pDS->close();
+            return;
+        }
+
+        int iRowsFound = m_pDS->num_rows();
+        if (iRowsFound == 0)
+        {
+          CLog::Log( LOGERROR, "Karaoke import: song %s by %s #%d is not found in the database, skipped", 
+               title, artist, num );
+          continue;
+        }
+
+        int lResult = m_pDS->fv(0).get_asInt();
+        strSQL = PrepareSQL("UPDATE karaokedata SET iKaraNumber=%i WHERE idSong=%i", num, lResult );
+        m_pDS->exec(strSQL.c_str());
 
         if ( progress && (offset * 100 / size) != lastpercentage )
         {
@@ -4820,8 +4836,8 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
         }
       }
     }
-    CommitTransaction();
 
+    CommitTransaction();
     CLog::Log( LOGNOTICE, "Karaoke import: file '%s' was imported successfully", inputFile.c_str() );
   }
   catch (...)
