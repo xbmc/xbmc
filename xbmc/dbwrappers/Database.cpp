@@ -249,15 +249,27 @@ bool CDatabase::Open()
 
 bool CDatabase::Open(const DatabaseSettings &settings)
 {
-  // take a copy - we're gonna be messing with it and we don't want to touch the original
-  DatabaseSettings dbSettings = settings;
-
   if (IsOpen())
   {
     m_openCount++;
     return true;
   }
 
+  DatabaseSettings dbSettings = settings;
+  InitSettings(dbSettings);
+
+  CStdString dbName = dbSettings.name;
+  dbName.AppendFormat("%d", GetMinVersion());
+  if (!Connect(dbName, dbSettings, false) || GetDBVersion() != GetMinVersion())
+  {
+    if (!Update(dbSettings))
+      return false;
+  }
+  return true;
+}
+
+void CDatabase::InitSettings(DatabaseSettings &dbSettings)
+{
   m_sqlite = true;
 
   if ( dbSettings.type.Equals("mysql") )
@@ -278,15 +290,6 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   // use separate, versioned database
   if (dbSettings.name.IsEmpty())
     dbSettings.name = GetBaseDBName();
-
-  CStdString dbName = dbSettings.name;
-  dbName.AppendFormat("%d", GetMinVersion());
-  if (!Connect(dbName, dbSettings, false) || GetDBVersion() != GetMinVersion())
-  {
-    if (!Update(dbSettings))
-      return false;
-  }
-  return true;
 }
 
 bool CDatabase::Update(const DatabaseSettings &dbSettings)
