@@ -388,9 +388,15 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
     // For episodes and seasons, we want to set fanart for that of the show
     if (!pItem->HasProperty("fanart_image") && tag.m_iIdShow >= 0)
     {
-      string fanart = m_database->GetArtForItem(tag.m_iIdShow, "tvshow", "fanart");
-      if (!fanart.empty())
-        pItem->SetProperty("fanart_image", fanart);
+      map<string, string> showArt;
+      if (m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt))
+      {
+        map<string, string>::iterator i = showArt.find("fanart");
+        if (i != showArt.end())
+          pItem->SetProperty("fanart_image", i->second);
+        if ((i = showArt.find("thumb")) != showArt.end())
+          pItem->SetProperty("tvshowthumb", i->second);
+      }
     }
     m_database->Close();
   }
