@@ -114,6 +114,7 @@ public:
   bool CommitInsertQueries();
 
 protected:
+  friend class CDatabaseManager;
   bool Update(const DatabaseSettings &db);
 
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
