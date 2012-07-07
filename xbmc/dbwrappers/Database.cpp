@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "mysqldataset.h"
 #include "sqlitedataset.h"
+#include "DatabaseManager.h"
 
 
 using namespace AUTOPTR;
@@ -255,17 +256,16 @@ bool CDatabase::Open(const DatabaseSettings &settings)
     return true;
   }
 
+  // check our database manager to see if this database can be opened
+  if (!CDatabaseManager::Get().CanOpen(GetBaseDBName()))
+    return false;
+
   DatabaseSettings dbSettings = settings;
   InitSettings(dbSettings);
 
   CStdString dbName = dbSettings.name;
   dbName.AppendFormat("%d", GetMinVersion());
-  if (!Connect(dbName, dbSettings, false) || GetDBVersion() != GetMinVersion())
-  {
-    if (!Update(settings))
-      return false;
-  }
-  return true;
+  return Connect(dbName, dbSettings, false);
 }
 
 void CDatabase::InitSettings(DatabaseSettings &dbSettings)

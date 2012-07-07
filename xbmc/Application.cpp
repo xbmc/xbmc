@@ -306,6 +306,7 @@
 #include "utils/SaveFileStateJob.h"
 #include "utils/AlarmClock.h"
 #include "utils/StringUtils.h"
+#include "DatabaseManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -708,6 +709,9 @@ bool CApplication::Create()
   SetHardwareVolume(g_settings.m_fVolumeLevel);
   CAEFactory::SetMute     (g_settings.m_bMute);
   CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
+
+  // initialize the addon database (must be before the addon manager is init'd)
+  CDatabaseManager::Get().Initialize(true);
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
@@ -1152,6 +1156,9 @@ bool CApplication::Initialize()
   //  uses these other libraries."
   g_curlInterface.Load();
   g_curlInterface.Unload();
+
+  // initialize (and update as needed) our databases
+  CDatabaseManager::Get().Initialize();
 
 #ifdef HAS_WEB_SERVER
   CWebServer::RegisterRequestHandler(&m_httpImageHandler);
