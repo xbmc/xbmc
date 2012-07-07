@@ -4516,6 +4516,10 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     }
     else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
       return true;
+#ifdef HAS_PYTHON
+    else if (URIUtils::GetExtension(m_screenSaver->LibPath()).Equals(".py", false))
+      return true;
+#endif
     else if (!m_screenSaver->ID().IsEmpty())
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
@@ -4640,6 +4644,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
     return;
+#ifdef HAS_PYTHON
+  else if (URIUtils::GetExtension(m_screenSaver->LibPath()).Equals(".py", false))
+  {
+    if (!g_pythonParser.StopScript(m_screenSaver->LibPath()))
+      g_pythonParser.evalFile(m_screenSaver->LibPath(), m_screenSaver);
+  }
+#endif
   else if (!m_screenSaver->ID().IsEmpty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
