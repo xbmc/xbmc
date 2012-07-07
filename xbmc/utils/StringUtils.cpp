@@ -160,7 +160,7 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
 {
   int pos = strInput.Find(strFind, 0);
   int numfound = 0;
-  while (pos > 0)
+  while (pos >= 0)
   {
     numfound++;
     pos = strInput.Find(strFind, pos + 1);
