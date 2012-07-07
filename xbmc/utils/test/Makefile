@@ -44,6 +44,7 @@ SRCS=	\
 	TestStopwatch.cpp \
 	TestStreamDetails.cpp \
 	TestStreamUtils.cpp \
+	TestStringUtils.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
