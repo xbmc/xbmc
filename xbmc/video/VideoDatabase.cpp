@@ -349,14 +349,21 @@ void CVideoDatabase::CreateViews()
                                       "  tvshow.c%02d AS strStudio,"
                                       "  tvshow.c%02d AS premiered,"
                                       "  tvshow.c%02d AS mpaa,"
-                                      "  tvshow.c%02d AS strShowPath "
+                                      "  tvshow.c%02d AS strShowPath, "
+                                      "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
+                                      "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
+                                      "  seasons.idSeason AS idSeason "
                                       "FROM episode"
                                       "  JOIN files ON"
                                       "    files.idFile=episode.idFile"
                                       "  JOIN tvshow ON"
                                       "    tvshow.idShow=episode.idShow"
+                                      "  LEFT JOIN seasons ON"
+                                      "    seasons.idShow=episode.idShow AND seasons.season=episode.c%02d"
                                       "  JOIN path ON"
-                                      "    files.idPath=path.idPath", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA, VIDEODB_ID_TV_BASEPATH);
+                                      "    files.idPath=path.idPath"
+                                      "  LEFT JOIN bookmark ON"
+                                      "    bookmark.idFile=episode.idFile AND bookmark.type=1", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA, VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_EPISODE_SEASON);
   m_pDS->exec(episodeview.c_str());
 
   CLog::Log(LOGINFO, "create tvshowview");
@@ -388,12 +395,16 @@ void CVideoDatabase::CreateViews()
               "  path.strPath as strPath,"
               "  files.playCount as playCount,"
               "  files.lastPlayed as lastPlayed,"
-              "  files.dateAdded as dateAdded "
+              "  files.dateAdded as dateAdded, "
+              "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
+              "  bookmark.totalTimeInSeconds AS totalTimeInSeconds "
               "FROM musicvideo"
               "  JOIN files ON"
               "    files.idFile=musicvideo.idFile"
               "  JOIN path ON"
-              "    path.idPath=files.idPath");
+              "    path.idPath=files.idPath"
+              "  LEFT JOIN bookmark ON"
+              "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1");
 
   CLog::Log(LOGINFO, "create movieview");
   m_pDS->exec("DROP VIEW IF EXISTS movieview");
@@ -403,12 +414,16 @@ void CVideoDatabase::CreateViews()
               "  path.strPath AS strPath,"
               "  files.playCount AS playCount,"
               "  files.lastPlayed AS lastPlayed, "
-              "  files.dateAdded AS dateAdded "
+              "  files.dateAdded AS dateAdded, "
+              "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
+              "  bookmark.totalTimeInSeconds AS totalTimeInSeconds "
               "FROM movie"
               "  JOIN files ON"
               "    files.idFile=movie.idFile"
               "  JOIN path ON"
-              "    path.idPath=files.idPath");
+              "    path.idPath=files.idPath"
+              "  LEFT JOIN bookmark ON"
+              "    bookmark.idFile=movie.idFile AND bookmark.type=1");
 }
 
 //********************************************************************************************************************************
@@ -3025,11 +3040,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   GetCommonDetails(record, details);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  GetStreamDetails(details);
-
   if (needsCast)
   {
-    GetResumePoint(details);
     GetCast("movie", "idMovie", details.m_iDbId, details.m_cast);
 
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
@@ -3130,14 +3142,16 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_premiered.SetFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
   details.m_iIdShow = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
   details.m_strShowPath = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_PATH).get_asString();
+  details.m_iIdSeason = record->at(VIDEODB_DETAILS_EPISODE_SEASON_ID).get_asInt();
+
+  details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt();
+  details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt();
+  details.m_resumePoint.type = CBookmark::RESUME;
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  GetStreamDetails(details);
-
   if (needsCast)
   {
-    GetResumePoint(details);
     GetCast("episode", "idEpisode", details.m_iDbId, details.m_cast);
     GetCast("tvshow", "idShow", details.m_iIdShow, details.m_cast);
 
@@ -3170,9 +3184,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   GetCommonDetails(record, details);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  GetStreamDetails(details);
-  GetResumePoint(details);
-
   details.m_strPictureURL.Parse();
   return details;
 }
@@ -3191,6 +3202,9 @@ void CVideoDatabase::GetCommonDetails(const dbiplus::sql_record* const record, C
   details.m_playCount = record->at(VIDEODB_DETAILS_PLAYCOUNT).get_asInt();
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_LASTPLAYED).get_asString());
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_DATEADDED).get_asString());
+  details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_RESUME_TIME).get_asInt();
+  details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_TOTAL_TIME).get_asInt();
+  details.m_resumePoint.type = CBookmark::RESUME;
 }
 
 void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id, int type_id, vector<SActorInfo> &cast)
