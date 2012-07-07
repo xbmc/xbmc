@@ -471,6 +471,7 @@ void XBPython::InitializeInterpreter(ADDON::AddonPtr addon)
   InitGUIModule(); // init xbmcgui modules
   InitAddonModule(); // init xbmcaddon modules
   InitVFSModule(); // init xbmcvfs modules
+  InitVFSTypes();
 
   CStdString addonVer = ADDON::GetXbmcApiVersionDependency(addon);
   bool bwcompatMode = (addon.get() == NULL || (ADDON::AddonVersion(addonVer) <= ADDON::AddonVersion("1.0")));
