@@ -21,6 +21,8 @@
 #ifndef OPTCODE_H_INCLUDED
 #define OPTCODE_H_INCLUDED 1
 
+#include "sysdep.h"
+
 /* Generic version of imuldiv. */
 #define imuldiv8(a, b) \
     (int32)(((int64)(a) * (int64)(b)) >> 8)
