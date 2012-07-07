@@ -33,6 +33,7 @@ void TestBasicEnvironment::SetUp()
 {
   char buf[MAX_PATH], *tmp;
   CStdString xbmcTempPath;
+  XFILE::CFile *f;
 
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();
@@ -56,6 +57,20 @@ void TestBasicEnvironment::SetUp()
     SetUpError();
   CSpecialProtocol::SetTempPath(tmp);
 #endif
+
+  /* Create and delete a tempfile to initialize the VFS (really to initialize
+   * CLibcdio). This is done so that the initialization of the VFS does not
+   * affect the performance results of the test cases.
+   */
+  /* TODO: Make the initialization of the VFS here optional so it can be
+   * testable in a test case.
+   */
+  f = XBMC_CREATETEMPFILE("");
+  if (!f || !XBMC_DELETETEMPFILE(f))
+  {
+    TearDown();
+    SetUpError();
+  }
 }
 
 void TestBasicEnvironment::TearDown()
