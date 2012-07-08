@@ -114,7 +114,8 @@ private:
   bool                m_isPlaying;
   bool                m_isPaused;
   bool                m_isFinished;          /* if there are no more songs in the queue */
-  unsigned int        m_crossFadeTime;       /* how long the crossfade is */
+  unsigned int        m_defaultCrossfadeMS;  /* how long the default crossfade is in ms */
+  unsigned int        m_upcomingCrossfadeMS; /* how long the upcoming crossfade is in ms */
   CEvent              m_startEvent;          /* event for playback start */
   StreamInfo*         m_currentStream;       /* the current playing stream */
   IAudioCallback*     m_audioCallback;       /* the viz audio callback */
@@ -133,7 +134,8 @@ private:
   bool PrepareStream(StreamInfo *si);
   bool ProcessStream(StreamInfo *si, double &delay, double &buffer);
   bool QueueData(StreamInfo *si);
-  void UpdateCrossFadingTime(const CFileItem& file);
   int64_t GetTotalTime64();
+  void UpdateCrossfadeTime(const CFileItem& file);
+  void UpdateStreamInfoPlayNextAtFrame(StreamInfo *si, unsigned int crossFadingTime);
 };
 
