@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.musicvideos.last.fm"
+       name="Last.fm for Music Videos"
+       version="1.0.0"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+    <import addon="metadata.common.last.fm" version="1.3.2"/>
+    <import addon="metadata.common.fanart.tv" version="1.0.1"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.musicvideos"
+             language="en"
+             library="lastfmmusicvideos.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Сваля инф. за музикални клипове от Last.fm</summary>
+    <summary lang="en">Last.fm Music Video Scraper</summary>
+    <summary lang="fi">Last.fm musiikkivideotietojen lataaja</summary>
+    <summary lang="hu">Last.fm videóklip leolvasó</summary>
+    <summary lang="kr">야후! 뮤직 비디오 스크래퍼</summary>
+    <summary lang="pl">Scraper teledysków Last.fm</summary>
+    <summary lang="pt">Scraper de música Last.fm</summary>
+    <summary lang="se">Skrapa för Last.fm musik</summary>
+    <description lang="bg">Сваля информация за музикални клипове</description>
+    <description lang="en">Download Music Video information</description>
+    <description lang="fi">Lataa musiikkivideoiden tiedot</description>
+    <description lang="hu">Videóklip információk letöltése a Last.fm webhelyről</description>
+    <description lang="kr">뮤직 비디오 정보 다운로드</description>
+    <description lang="pl">Pobieraj informacje o teledyskach z last.fm</description>
+    <description lang="pt">Descarregar informação de filmes de last.fm</description>
+    <description lang="se">Ladda ner musikvideoinformation från last.fm</description>
+  </extension>
+</addon>
