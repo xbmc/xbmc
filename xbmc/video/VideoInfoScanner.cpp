@@ -1106,7 +1106,7 @@ namespace VIDEO
       m_database.SetPlayCount(*pItem, movieDetails.m_playCount, movieDetails.m_lastPlayed);
 
     if ((g_advancedSettings.m_bVideoLibraryImportResumePoint || libraryImport) &&
-        movieDetails.m_resumePoint.timeInSeconds > 0.0f && movieDetails.m_resumePoint.totalTimeInSeconds > 0.0f)
+        movieDetails.m_resumePoint.IsPartWay())
       m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.m_resumePoint, CBookmark::RESUME);
 
     m_database.Close();
