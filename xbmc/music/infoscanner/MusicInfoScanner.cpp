@@ -663,7 +663,9 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
      3. no album artist is specified
      4. we have at least two different primary artists
      */
-    if (compilation && artists.size() > 1)
+    if (artists.size() == 1)
+      compilation = false;
+    if (compilation)
     {
       artists.clear();
       std::string various = g_localizeStrings.Get(340); // Various Artists
@@ -700,6 +702,7 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
       CAlbum album;
       album.strAlbum = i->first;
       album.artist = common;
+      album.bCompilation = compilation;
       for (vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
       {
         if ((*k)->albumArtist.empty())
