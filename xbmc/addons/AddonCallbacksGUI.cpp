@@ -205,8 +205,9 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
     URIUtils::AddFileToFolder(basePath, "skins", basePath);
     URIUtils::AddFileToFolder(basePath, defaultSkin, basePath);
+    props.path = basePath;
 
-    skinInfo.Start(basePath);
+    skinInfo.Start();
     strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res, basePath);
 
     if (!XFILE::CFile::Exists(strSkinPath))
