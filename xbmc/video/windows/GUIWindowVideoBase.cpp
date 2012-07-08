@@ -875,7 +875,8 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   CStdString path = item->GetPath();
-  if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" && path.Left(19) != "newsmartplaylist://" && path.Left(14) != "newplaylist://")
+  if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" &&
+      path.Left(19) != "newsmartplaylist://" && path.Left(14) != "newplaylist://" && path.Left(9) != "newtag://")
     return OnFileAction(iItem, g_guiSettings.GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -1187,7 +1188,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
-        if (!m_vecItems->GetPath().IsEmpty() && !item->GetPath().Left(19).Equals("newsmartplaylist://")
+        if (!m_vecItems->GetPath().IsEmpty() && !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://")
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist

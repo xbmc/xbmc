@@ -211,6 +211,18 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_settings.m_viewStateVideoNavGenres.m_sortOrder);
       }
       break;
+    case NODE_TYPE_TAGS:
+      {
+        SORT_METHOD method = SORT_METHOD_LABEL_IGNORE_THE;
+        if (!g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          method = SORT_METHOD_LABEL;
+
+        AddSortMethod(method, 551, LABEL_MASKS("%T","", "%T",""));  // Title, empty | Title, empty
+        SetSortMethod(method);
+        SetViewAsControl(g_settings.m_viewStateVideoNavGenres.m_viewMode);
+        SetSortOrder(g_settings.m_viewStateVideoNavGenres.m_sortOrder);
+      }
+      break;
     case NODE_TYPE_EPISODES:
       {
         if (params.GetSeason() > -1)

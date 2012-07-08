@@ -1,0 +1,5 @@
+<node order="7" type="folder" visible="Library.HasContent(MovieSets)">
+  <label>20459</label>
+  <path>videodb://1/9</path>
+  <icon>DefaultTags.png</icon>
+</node>

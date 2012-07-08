@@ -2586,6 +2586,9 @@
     <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.cpp">
+      <Filter>filesystem\VideoDatabaseDirectory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5215,6 +5218,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\ISortable.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.h">
+      <Filter>filesystem\VideoDatabaseDirectory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

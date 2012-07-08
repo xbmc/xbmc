@@ -7427,8 +7427,32 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr ""
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr ""
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr ""
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr ""
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr ""
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr ""
+
 #up to 21329 is reserved for the video db !! !
-#empty strings from id 20459 to 21329
+#empty strings from id 20465 to 21329
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
