@@ -103,6 +103,28 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
       }
     }
     break;
+
+  case GUI_MSG_MOVE:
+    {
+      int iAction = message.GetParam1();
+
+      if (iAction == ACTION_MOVE_RIGHT || iAction == ACTION_MOVE_LEFT)
+      {
+        CPVRChannel channel;
+        g_PVRManager.GetCurrentChannel(channel);
+
+        const CPVRChannelGroup *group = g_PVRManager.GetPlayingGroup(channel.IsRadio());
+        CPVRChannelGroup *nextGroup = iAction == ACTION_MOVE_RIGHT ? group->GetNextGroup() : group->GetPreviousGroup();
+
+        g_PVRManager.SetPlayingGroup(nextGroup);
+
+        Clear();
+        Update();
+
+        return true;
+      }
+    }
+    break;
   }
 
   return CGUIDialog::OnMessage(message);
