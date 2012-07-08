@@ -8910,20 +8910,16 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "Colocar os equipamentos em modo de espera quando ativando proteção de tela"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Não pude detectar a porta CEC. Seta manualmente."
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Não pude detectar o adaptador CEC."
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "Versãod libcec da interface não suportada. %d é superior a versão que o XBMC suporta (%d)"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "Passar este PC para modo standby, quando a TV for desligada"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8934,7 +8930,7 @@ msgid "Connected"
 msgstr "Conectado"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "Adaptador encontrado, mas libcec não esta disponível"
 
 msgctxt "#36018"
@@ -8968,4 +8964,32 @@ msgstr "Falha para setar a nova configuração. Por favor verifique seus ajustes
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Envie comando 'fonte inativa' quando parando XBMC"
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr ""
 

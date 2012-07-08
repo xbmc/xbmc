@@ -101,21 +101,23 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
             loader.FillLibraryArt(item.get());
             fetchedArt = true;
           }
-          if (item->HasThumbnail())
-            result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
         }
         else if (item->HasPictureInfoTag())
         {
           if (!item->HasThumbnail())
             item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
-          if (item->HasThumbnail())
-            result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
         }
-        else
-        { // TODO: music art is not currently wrapped
-          if (item->HasThumbnail())
-            result["thumbnail"] = item->GetThumbnailImage();
+        else if (item->HasMusicInfoTag())
+        {
+          if (!item->HasThumbnail() && !fetchedArt && item->GetMusicInfoTag()->GetDatabaseId() > -1)
+          {
+            CMusicThumbLoader loader;
+            loader.FillLibraryArt(*item);
+            fetchedArt = true;
+          }
         }
+        if (item->HasThumbnail())
+          result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
         if (!result.isMember("thumbnail"))
           result["thumbnail"] = "";
         continue;
@@ -135,14 +137,15 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
             result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
         }
         else if (item->HasMusicInfoTag())
-        { // TODO: music art is not currently wrapped
-          CStdString fanart;
+        {
+          if (!item->HasProperty("fanart_image") && !fetchedArt && item->GetMusicInfoTag()->GetDatabaseId() > -1)
+          {
+            CMusicThumbLoader loader;
+            loader.FillLibraryArt(*item);
+            fetchedArt = true;
+          }
           if (item->HasProperty("fanart_image"))
-            fanart = item->GetProperty("fanart_image").asString();
-          if (fanart.empty())
-            fanart = item->GetCachedFanart();
-          if (!fanart.empty())
-            result["fanart"] = fanart.c_str();
+            result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
         }
         if (!result.isMember("fanart"))
           result["fanart"] = "";
@@ -175,19 +178,30 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
   }
 }
 
-void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result)
+void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool sortLimit /* = true */)
 {
-  int size  = items.Size();
+  HandleFileItemList(ID, allowFile, resultname, items, parameterObject, result, items.Size(), sortLimit);
+}
+
+void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, int size, bool sortLimit /* = true */)
+{
   int start = (int)parameterObject["limits"]["start"].asInteger();
   int end   = (int)parameterObject["limits"]["end"].asInteger();
   end = (end <= 0 || end > size) ? size : end;
   start = start > end ? end : start;
 
-  Sort(items, parameterObject["sort"]);
+  if (sortLimit)
+    Sort(items, parameterObject["sort"]);
 
   result["limits"]["start"] = start;
   result["limits"]["end"]   = end;
   result["limits"]["total"] = size;
+
+  if (!sortLimit)
+  {
+    start = 0;
+    end = items.Size();
+  }
 
   for (int i = start; i < end; i++)
   {
@@ -329,6 +343,99 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
   }
 
   return (list.Size() > 0);
+}
+
+bool CFileItemHandler::ParseSorting(const CVariant &parameterObject, SortBy &sortBy, SortOrder &sortOrder, SortAttribute &sortAttributes)
+{
+  CStdString method = parameterObject["sort"]["method"].asString();
+  CStdString order = parameterObject["sort"]["order"].asString();
+  method.ToLower();
+  order.ToLower();
+
+  sortAttributes = SortAttributeNone;
+  if (parameterObject["sort"]["ignorearticle"].asBoolean())
+    sortAttributes = SortAttributeIgnoreArticle;
+  else
+    sortAttributes = SortAttributeNone;
+
+  if (order.Equals("ascending"))
+    sortOrder = SortOrderAscending;
+  else if (order.Equals("descending"))
+    sortOrder = SortOrderDescending;
+  else
+    return false;
+
+  if (method.Equals("none"))
+    sortBy = SortByNone;
+  else if (method.Equals("label"))
+    sortBy = SortByLabel;
+  else if (method.Equals("date"))
+    sortBy = SortByDate;
+  else if (method.Equals("size"))
+    sortBy = SortBySize;
+  else if (method.Equals("file"))
+    sortBy = SortByFile;
+  else if (method.Equals("drivetype"))
+    sortBy = SortByDriveType;
+  else if (method.Equals("track"))
+    sortBy = SortByTrackNumber;
+  else if (method.Equals("duration") ||
+           method.Equals("videoruntime"))
+    sortBy = SortByTime;
+  else if (method.Equals("title") ||
+           method.Equals("videotitle"))
+    sortBy = SortByTitle;
+  else if (method.Equals("artist"))
+    sortBy = SortByArtist;
+  else if (method.Equals("album"))
+    sortBy = SortByAlbum;
+  else if (method.Equals("genre"))
+    sortBy = SortByGenre;
+  else if (method.Equals("country"))
+    sortBy = SortByCountry;
+  else if (method.Equals("year"))
+    sortBy = SortByYear;
+  else if (method.Equals("videorating") ||
+           method.Equals("songrating"))
+    sortBy = SortByRating;
+  else if (method.Equals("dateadded"))
+    sortBy = SortByDateAdded;
+  else if (method.Equals("programcount"))
+    sortBy = SortByProgramCount;
+  else if (method.Equals("playlist"))
+    sortBy = SortByPlaylistOrder;
+  else if (method.Equals("episode"))
+    sortBy = SortByEpisodeNumber;
+  else if (method.Equals("sorttitle"))
+    sortBy = SortBySortTitle;
+  else if (method.Equals("productioncode"))
+    sortBy = SortByProductionCode;
+  else if (method.Equals("mpaarating"))
+    sortBy = SortByMPAA;
+  else if (method.Equals("studio"))
+    sortBy = SortByStudio;
+  else if (method.Equals("fullpath"))
+    sortBy = SortByPath;
+  else if (method.Equals("lastplayed"))
+    sortBy = SortByLastPlayed;
+  else if (method.Equals("playcount"))
+    sortBy = SortByPlaycount;
+  else if (method.Equals("listeners"))
+    sortBy = SortByListeners;
+  else if (method.Equals("unsorted"))
+    sortBy = SortByRandom;
+  else if (method.Equals("bitrate"))
+    sortBy = SortByBitrate;
+  else
+    return false;
+
+  return true;
+}
+
+void CFileItemHandler::ParseLimits(const CVariant &parameterObject, int &limitStart, int &limitEnd)
+{
+  limitStart = (int)parameterObject["limits"]["start"].asInteger();
+  limitEnd = (int)parameterObject["limits"]["end"].asInteger();
 }
 
 bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SortOrder &sortorder)

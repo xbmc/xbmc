@@ -51,4 +51,3 @@ namespace xbmcutil
 
 XBMC_GLOBAL_REF(xbmcutil::test::TestGlobalPattern1,g_testGlobalPattern1);
 #define g_testGlobalPattern1 XBMC_GLOBAL_USE(xbmcutil::test::TestGlobalPattern1)
-

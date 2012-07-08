@@ -33,6 +33,7 @@ struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 class CTexture;
 class CGLTexture;
 class CDXTexture;
+struct ImageInfo;
 
 /*!
 \ingroup textures
@@ -47,8 +48,33 @@ public:
 
   virtual ~CBaseTexture();
 
-  bool LoadFromFile(const CStdString& texturePath, unsigned int maxHeight = 0, unsigned int maxWidth = 0,
-                    bool autoRotate = false, unsigned int *originalWidth = NULL, unsigned int *originalHeight = NULL);
+  /*! \brief Load a texture from a file
+   Loads a texture from a file, restricting in size if needed based on maxHeight and maxWidth.
+   Note that these are the ideal size to load at - the returned texture may be smaller or larger than these.
+   \param texturePath the path of the texture to load.
+   \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
+   \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
+   \param autoRotate whether the textures should be autorotated based on EXIF information (defaults to false).
+   \return a CBaseTexture pointer to the created texture - NULL if the texture failed to load.
+   */
+  static CBaseTexture *LoadFromFile(const CStdString& texturePath, unsigned int idealWidth = 0, unsigned int idealHeight = 0,
+                                    bool autoRotate = false);
+
+  /*! \brief Load a texture from a file in memory
+   Loads a texture from a file in memory, restricting in size if needed based on maxHeight and maxWidth.
+   Note that these are the ideal size to load at - the returned texture may be smaller or larger than these.
+   \param buffer the memory buffer holding the file.
+   \param bufferSize the size of buffer.
+   \param mimeType the mime type of the file in buffer.
+   \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
+   \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
+   \return a CBaseTexture pointer to the created texture - NULL if the texture failed to load.
+   */
+  static CBaseTexture *LoadFromFileInMemory(unsigned char* buffer, size_t bufferSize, const std::string& mimeType,
+                                            unsigned int idealWidth = 0, unsigned int idealHeight = 0);
+
+  bool LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
+                    bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight);
   bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels);
   bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
@@ -77,6 +103,9 @@ public:
   bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
 
 protected:
+  bool LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType,
+                         unsigned int maxWidth, unsigned int maxHeight);
+  void LoadFromImage(ImageInfo &image, bool autoRotate = false);
   // helpers for computation of texture parameters for compressed textures
   unsigned int GetPitch(unsigned int width) const;
   unsigned int GetRows(unsigned int height) const;

@@ -50,8 +50,11 @@ public:
   bool IsButtonPressed();
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
+  void SetSelected(const CStdString &strSelectedLabel);
+  void SetSelected(std::vector<int> selectedIndexes);
+  void SetSelected(const std::vector<CStdString> &selectedLabels);
   void SetUseDetails(bool useDetails);
-  void SetMultiSelection(bool multiSelection) { m_multiSelection = multiSelection; };
+  void SetMultiSelection(bool multiSelection);
 protected:
   virtual CGUIControl *GetFirstFocusableControl(int id);
   virtual void OnWindowLoaded();

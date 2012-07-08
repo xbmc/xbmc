@@ -33,7 +33,7 @@ CMusicInfoTagLoaderASAP::~CMusicInfoTagLoaderASAP()
 {
 }
 
-bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag)
+bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
 

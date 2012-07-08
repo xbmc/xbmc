@@ -8862,11 +8862,11 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "Placer les dispositifs en veille si l'écran de veille est activé"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Impossible de détecter le port CEC. Le paramétrer manuellement."
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Impossible de détecter l'adaptateur CEC."
 
 msgctxt "#36013"
@@ -8886,7 +8886,7 @@ msgid "Connected"
 msgstr "Connecté"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "Adaptateur trouvé, mais libcec indisponible"
 
 msgctxt "#36018"
@@ -8919,5 +8919,33 @@ msgstr ""
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 

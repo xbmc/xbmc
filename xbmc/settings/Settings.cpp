@@ -137,6 +137,9 @@ void CSettings::Initialize()
   m_lastUsedProfile = 0;
   m_currentProfile = 0;
   m_nextIdProfile = 0;
+
+  m_musicNeedsUpdate = 0;
+  m_videoNeedsUpdate = 0;
 }
 
 CSettings::~CSettings(void)
@@ -611,6 +614,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", m_bMyMusicSongThumbInVis);
+    GetInteger(pElement, "needsupdate", m_musicNeedsUpdate, 0, 0, INT_MAX);
     GetPath(pElement, "defaultlibview", m_defaultMusicLibSource);
   }
   // myvideos settings
@@ -626,6 +630,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "watchmodemusicvideos", m_watchMode["musicvideos"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     XMLUtils::GetBoolean(pElement, "flatten", m_bMyVideoNavFlatten);
+    GetInteger(pElement, "needsupdate", m_videoNeedsUpdate, 0, 0, INT_MAX);
 
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
@@ -807,6 +812,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     XMLUtils::SetBoolean(pChild, "isscanning", m_bMyMusicIsScanning);
   }
 
+  XMLUtils::SetInt(pNode, "needsupdate", m_musicNeedsUpdate);
   XMLUtils::SetInt(pNode, "startwindow", m_iMyMusicStartWindow);
   XMLUtils::SetBoolean(pNode, "songinfoinvis", m_bMyMusicSongInfoInVis);
   XMLUtils::SetBoolean(pNode, "songthumbinvis", m_bMyMusicSongThumbInVis);
@@ -824,7 +830,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "watchmodemovies", m_watchMode.find("movies")->second);
   XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchMode.find("tvshows")->second);
   XMLUtils::SetInt(pNode, "watchmodemusicvideos", m_watchMode.find("musicvideos")->second);
-
+  XMLUtils::SetInt(pNode, "needsupdate", m_videoNeedsUpdate);
   XMLUtils::SetBoolean(pNode, "flatten", m_bMyVideoNavFlatten);
 
   { // playlist window
@@ -1672,39 +1678,6 @@ CStdString CSettings::GetThumbnailsFolder() const
   return folder;
 }
 
-CStdString CSettings::GetMusicThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music", folder);
-  else
-    URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetLastFMThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music/LastFM", folder);
-  else
-    URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music/LastFM", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetMusicArtistThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music/Artists", folder);
-  else
-    URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music/Artists", folder);
-
-  return folder;
-}
-
 CStdString CSettings::GetVideoThumbFolder() const
 {
   CStdString folder;
@@ -1712,28 +1685,6 @@ CStdString CSettings::GetVideoThumbFolder() const
     URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Video", folder);
   else
     URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Video", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetVideoFanartFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Video/Fanart", folder);
-  else
-    URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Video/Fanart", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetMusicFanartFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music/Fanart", folder);
-  else
-    URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music/Fanart", folder);
 
   return folder;
 }
@@ -1836,24 +1787,14 @@ void CSettings::CreateProfileFolders()
 
   // Thumbnails/
   CDirectory::Create(GetThumbnailsFolder());
-  CDirectory::Create(GetMusicThumbFolder());
-  CDirectory::Create(GetMusicArtistThumbFolder());
-  CDirectory::Create(GetLastFMThumbFolder());
   CDirectory::Create(GetVideoThumbFolder());
-  CDirectory::Create(GetVideoFanartFolder());
-  CDirectory::Create(GetMusicFanartFolder());
   CDirectory::Create(GetBookmarksThumbFolder());
-  CStdString generatedThumbsFolder = URIUtils::AddFileToFolder(GetThumbnailsFolder(), "generated");
-  CDirectory::Create(generatedThumbsFolder);
   CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
     CStdString strHex;
     strHex.Format("%x",hex);
-    CDirectory::Create(URIUtils::AddFileToFolder(GetMusicThumbFolder(), strHex));
-    CDirectory::Create(URIUtils::AddFileToFolder(GetVideoThumbFolder(), strHex));
     CDirectory::Create(URIUtils::AddFileToFolder(GetThumbnailsFolder(), strHex));
-    CDirectory::Create(URIUtils::AddFileToFolder(generatedThumbsFolder, strHex));
   }
   CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");

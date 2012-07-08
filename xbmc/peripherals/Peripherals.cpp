@@ -41,6 +41,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
+#include "Util.h"
 #include "guilib/Key.h"
 
 using namespace PERIPHERALS;
@@ -486,29 +487,46 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       float fMax   = currentNode->Attribute("max") ? (float) atof(currentNode->Attribute("max")) : 0;
       setting = new CSettingFloat(0, strKey, iLabelId, fValue, fMin, fStep, fMax, SPIN_CONTROL_FLOAT);
     }
+    else if (strSettingsType.Equals("enum"))
+    {
+      CStdString strEnums(currentNode->Attribute("lvalues"));
+      if (!strEnums.IsEmpty())
+      {
+        map<int,int> enums;
+        vector<CStdString> valuesVec;
+        CUtil::Tokenize(strEnums, valuesVec, "|");
+        for (unsigned int i = 0; i < valuesVec.size(); i++)
+          enums.insert(make_pair(atoi(valuesVec[i]), atoi(valuesVec[i])));
+        int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
+        setting = new CSettingInt(0, strKey, iLabelId, iValue, enums, SPIN_CONTROL_TEXT);
+      }
+    }
     else
     {
       CStdString strValue(currentNode->Attribute("value"));
       setting = new CSettingString(0, strKey, iLabelId, strValue, EDIT_CONTROL_INPUT, !bConfigurable, -1);
     }
 
-    //TODO add more types if needed
+    if (setting)
+    {
+      //TODO add more types if needed
 
-    /* set the visibility */
-    setting->SetVisible(bConfigurable);
+      /* set the visibility */
+      setting->SetVisible(bConfigurable);
 
-    /* set the order */
-    int iOrder(0);
-    currentNode->Attribute("order", &iOrder);
-    /* if the order attribute is invalid or 0, then the setting will be added at the end */
-    if (iOrder < 0)
-      iOrder = 0;
-    setting->SetOrder(iOrder);
-    if (iOrder > iMaxOrder)
-      iMaxOrder = iOrder;
+      /* set the order */
+      int iOrder(0);
+      currentNode->Attribute("order", &iOrder);
+      /* if the order attribute is invalid or 0, then the setting will be added at the end */
+      if (iOrder < 0)
+        iOrder = 0;
+      setting->SetOrder(iOrder);
+      if (iOrder > iMaxOrder)
+       iMaxOrder = iOrder;
 
-    /* and add this new setting */
-    m_settings[strKey] = setting;
+      /* and add this new setting */
+      m_settings[strKey] = setting;
+    }
 
     currentNode = currentNode->NextSiblingElement("setting");
   }

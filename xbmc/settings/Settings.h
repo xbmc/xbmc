@@ -33,18 +33,15 @@
 #else
 #define DEFAULT_SKIN          "skin.confluence"
 #endif
-#define DEFAULT_FANART_HEIGHT 0
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED
-#define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #if defined(TARGET_DARWIN) || defined(_WIN32)
 #define DEFAULT_VSYNC       VSYNC_ALWAYS
 #else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
 #endif
-#define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
 #include "settings/VideoSettings.h"
@@ -255,6 +252,9 @@ public:
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
+  int        m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
+  int        m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
+
   /*! \brief Retrieve the master profile
    \return const reference to the master profile
    */
@@ -345,14 +345,9 @@ public:
   CStdString GetDatabaseFolder() const;
   CStdString GetCDDBFolder() const;
   CStdString GetThumbnailsFolder() const;
-  CStdString GetMusicThumbFolder() const;
-  CStdString GetLastFMThumbFolder() const;
-  CStdString GetMusicArtistThumbFolder() const;
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetSourcesFile() const;
-  CStdString GetVideoFanartFolder() const;
-  CStdString GetMusicFanartFolder() const;
 
   CStdString GetSettingsFile() const;
 

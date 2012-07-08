@@ -10,6 +10,17 @@
 			<width>1280</width>
 			<height>720</height>
 		</control>
+		<control type="image">
+			<description>Fanart Image for Artist</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture background="true">$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+			<colordiffuse>AAFFFFFF</colordiffuse>
+			<visible>!IsEmpty(MusicPlayer.Property(Fanart_Image)) + !Skin.HasSetting(HideVisualizationFanart)</visible>
+			<fadetime>600</fadetime>
+		</control>
 		<!-- media infos -->
 		<control type="group">
 			<animation effect="fade" time="200">VisibleChange</animation>

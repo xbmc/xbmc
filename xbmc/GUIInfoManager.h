@@ -104,6 +104,7 @@ namespace INFO
 #define PLAYER_FILEPATH              46
 #define PLAYER_SEEKOFFSET            47
 #define PLAYER_PROGRESS_CACHE        48
+#define PLAYER_ITEM_PROPERTY         49
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -495,7 +496,7 @@ namespace INFO
 
 #define VERSION_MAJOR 12
 #define VERSION_MINOR 0
-#define VERSION_TAG "-ALPHA3"
+#define VERSION_TAG "-ALPHA4"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

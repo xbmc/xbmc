@@ -100,7 +100,7 @@ CSkinInfo::~CSkinInfo()
 {
 }
 
-void CSkinInfo::Start(const CStdString &strBaseDir)
+void CSkinInfo::Start()
 {
   if (!m_resolutions.size())
   { // try falling back to whatever resolutions exist in the directory

@@ -8862,20 +8862,16 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "הכנס את ההתקנים למצב שינה כאשר מפעילים שומר מסך"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "אין אפשרות לזהות פורט CEC. הגדר זאת ידנית."
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "אין אפשרות לאתחל מתאם CEC. בדוק את ההגדרות שלך"
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "ממשק libCEC  לא נתמך. %d גדול יותר מאשר הגרסא ש- XBMC תומך (%d)"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "הכנס את המחשב למצב המתנה כאשר הטלוויזיה נכבית"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8886,7 +8882,7 @@ msgid "Connected"
 msgstr "מחובר"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "מתאם נמצא. אבל libCEC לא זמין"
 
 msgctxt "#36018"
@@ -8920,4 +8916,32 @@ msgstr "נכשל בהגדרת תצורה חדשה. אנא בדוק את ההגד
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "שלח פקודת 'מקור לא פעיל' כאשר עוצרים את XBMC"
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr ""
 

@@ -210,8 +210,8 @@ public:
   void ResetScreenSaverTimer();
   void StopScreenSaverTimer();
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
-  bool WakeUpScreenSaverAndDPMS();
-  bool WakeUpScreenSaver();
+  bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
+  bool WakeUpScreenSaver(bool bPowerOffKeyPressed = false);
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -378,6 +378,8 @@ protected:
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
+  CFileItemPtr m_stackFileItemToUpdate;
+
   CStdString m_prevMedia;
   CSplash* m_splash;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.

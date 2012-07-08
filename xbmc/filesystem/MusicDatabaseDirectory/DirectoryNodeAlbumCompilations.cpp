@@ -58,7 +58,7 @@ bool CDirectoryNodeAlbumCompilations::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=musicdatabase.GetVariousArtistsAlbums(BuildPath(), items);
+  bool bSuccess=musicdatabase.GetCompilationAlbums(BuildPath(), items);
 
   musicdatabase.Close();
 

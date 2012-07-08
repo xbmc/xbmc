@@ -20,10 +20,33 @@ CXXFLAGS += -D__STDC_LIMIT_MACROS
 
 SRCS  = AEFactory.cpp
 SRCS += AESinkFactory.cpp
+SRCS += Sinks/AESinkNULL.cpp
+ifeq ($(findstring osx,@ARCH@),osx)
+SRCS += Engines/CoreAudio/CoreAudioAE.cpp
+SRCS += Engines/CoreAudio/CoreAudioAEHAL.cpp
+SRCS += Engines/CoreAudio/CoreAudioAEHALOSX.cpp
+SRCS += Engines/CoreAudio/CoreAudioAESound.cpp
+SRCS += Engines/CoreAudio/CoreAudioAEStream.cpp
+SRCS += Engines/CoreAudio/CoreAudioChannelLayout.cpp
+SRCS += Engines/CoreAudio/CoreAudioDevice.cpp
+SRCS += Engines/CoreAudio/CoreAudioGraph.cpp
+SRCS += Engines/CoreAudio/CoreAudioHardware.cpp
+SRCS += Engines/CoreAudio/CoreAudioMixMap.cpp
+SRCS += Engines/CoreAudio/CoreAudioStream.cpp
+SRCS += Engines/CoreAudio/CoreAudioUnit.cpp
+else
 SRCS += Sinks/AESinkALSA.cpp
 SRCS += Sinks/AESinkOSS.cpp
 SRCS += Sinks/AESinkProfiler.cpp
-SRCS += Sinks/AESinkNULL.cpp
+
+SRCS += Engines/SoftAE/SoftAE.cpp
+SRCS += Engines/SoftAE/SoftAEStream.cpp
+SRCS += Engines/SoftAE/SoftAESound.cpp
+
+SRCS += Engines/PulseAE/PulseAE.cpp
+SRCS += Engines/PulseAE/PulseAEStream.cpp
+SRCS += Engines/PulseAE/PulseAESound.cpp
+endif
 
 SRCS += Utils/AEChannelInfo.cpp
 SRCS += Utils/AEBuffer.cpp
@@ -36,14 +59,6 @@ SRCS += Utils/AEBitstreamPacker.cpp
 SRCS += Utils/AEWAVLoader.cpp
 SRCS += Utils/AEELDParser.cpp
 SRCS += Utils/AEDeviceInfo.cpp
-
-SRCS += Engines/SoftAE/SoftAE.cpp
-SRCS += Engines/SoftAE/SoftAEStream.cpp
-SRCS += Engines/SoftAE/SoftAESound.cpp
-
-SRCS += Engines/PulseAE/PulseAE.cpp
-SRCS += Engines/PulseAE/PulseAEStream.cpp
-SRCS += Engines/PulseAE/PulseAESound.cpp
 
 SRCS += Encoders/AEEncoderFFmpeg.cpp
 

@@ -8823,59 +8823,55 @@ msgstr "Product ID"
 
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adapter"
-msgstr "Pulse-Eight CEC adapter"
+msgstr ""
 
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
-msgstr "Pulse-Eight Nyxboard"
+msgstr ""
 
 msgctxt "#36002"
 msgid "Switch to keyboard side command"
-msgstr "Switch to keyboard side command"
+msgstr ""
 
 msgctxt "#36003"
 msgid "Switch to remote side command"
-msgstr "Switch to remote side command"
+msgstr ""
 
 msgctxt "#36004"
 msgid "Press \"user\" button command"
-msgstr "Press \"user\" button command"
+msgstr ""
 
 msgctxt "#36005"
 msgid "Enable switch side commands"
-msgstr "Enable switch side commands"
+msgstr ""
 
 msgctxt "#36006"
 msgid "Could not open the adapter"
-msgstr "Could not open the adapter"
+msgstr ""
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
-msgstr "Power on the TV when starting XBMC"
+msgstr ""
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr "Power off devices when stopping XBMC"
+msgstr ""
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "Put devices in standby mode when activating screensaver"
+msgstr ""
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
-msgstr "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
+msgstr ""
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
-msgstr "Could not detect the CEC adapter."
+msgid "Could not initialise the CEC adapter. Please check your settings."
+msgstr ""
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "Put this PC in standby mode when the TV is switched off"
+msgstr ""
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8886,12 +8882,12 @@ msgid "Connected"
 msgstr "Connectat"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "S'ha trobat un adaptador, però la libcec no està disponible"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
-msgstr "Use the TV's language setting"
+msgstr ""
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
@@ -8919,5 +8915,33 @@ msgstr ""
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 

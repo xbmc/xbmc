@@ -1578,6 +1578,7 @@
 		7C0A7EBF13A5DBCE00AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
 		7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEDeviceInfo.cpp; sourceTree = "<group>"; };
 		7C0B98A2154B79C30065A238 /* AEDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDeviceInfo.h; sourceTree = "<group>"; };
+		7C1A495B15A96918004AF4A4 /* SaveFileStateJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaveFileStateJob.h; sourceTree = "<group>"; };
 		7C1A85631520522500C63311 /* TextureCacheJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCacheJob.cpp; sourceTree = "<group>"; };
 		7C1A85641520522500C63311 /* TextureCacheJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCacheJob.h; sourceTree = "<group>"; };
 		7C1F6EB913ECCFA7001726AB /* LibraryDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LibraryDirectory.cpp; sourceTree = "<group>"; };
@@ -6192,6 +6193,7 @@
 				F5DC87E0110A287400EE1B15 /* RingBuffer.h */,
 				E38E1E750D25F9FD00618676 /* RssReader.cpp */,
 				E38E1E760D25F9FD00618676 /* RssReader.h */,
+				7C1A495B15A96918004AF4A4 /* SaveFileStateJob.h */,
 				E38E1E770D25F9FD00618676 /* ScraperParser.cpp */,
 				E38E1E780D25F9FD00618676 /* ScraperParser.h */,
 				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
@@ -7797,6 +7799,7 @@
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				WARNING_CFLAGS = "-Wreorder";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(ARCHS)";
 				ZERO_LINK = NO;
 			};
@@ -7913,6 +7916,7 @@
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				WARNING_CFLAGS = "-Wreorder";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(ARCHS)";
 				ZERO_LINK = NO;
 			};

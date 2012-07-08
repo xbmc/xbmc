@@ -31,6 +31,7 @@ public:
   void Reset();
   double timeInSeconds;
   double totalTimeInSeconds;
+  long partNumber;
   CStdString thumbNailImage;
   CStdString playerState;
   CStdString player;

@@ -24,11 +24,11 @@
 #include <list>
 
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
 #include "CoreAudioRingBuffer.h"
 #include "ICoreAudioSource.h"
 #include "Interfaces/AEStream.h"
+#include "cores/AudioEngine/Utils/AEConvert.h"
+#include "cores/AudioEngine/Utils/AERemap.h"
 
 #if defined(TARGET_DARWIN_IOS)
 # include "CoreAudioAEHALIOS.h"

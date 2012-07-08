@@ -10191,7 +10191,17 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr ""
 
-#empty strings from id 24102 to 24999
+#: xbmc/Application.cpp
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr ""
+
+#: xbmc/Application.cpp
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr ""
+
+#empty strings from id 24104 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10827,20 +10837,18 @@ msgstr ""
 #empty string with id 36010
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr ""
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr ""
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr ""
 
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr ""
+#empty string with id 36014
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10852,7 +10860,7 @@ msgid "Connected"
 msgstr ""
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr ""
 
 msgctxt "#36018"
@@ -10885,5 +10893,33 @@ msgstr ""
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 

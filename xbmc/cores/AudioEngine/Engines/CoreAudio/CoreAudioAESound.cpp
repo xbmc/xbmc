@@ -25,12 +25,12 @@
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
-#include "AEUtil.h"
 #include "CoreAudioAE.h"
 #include "Interfaces/AESound.h"
 #include "threads/SingleLock.h"
+#include "cores/AudioEngine/Utils/AEConvert.h"
+#include "cores/AudioEngine/Utils/AERemap.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
 

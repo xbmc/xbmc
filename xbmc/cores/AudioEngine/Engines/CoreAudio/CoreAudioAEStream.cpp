@@ -20,20 +20,21 @@
  */
 
 #include "system.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-
-#include "Interfaces/AE.h"
-#include "AEFactory.h"
-#include "AEUtil.h"
 
 #include "CoreAudioAE.h"
 #include "CoreAudioAEStream.h"
 
+#include "xbmc/cores/AudioEngine/Interfaces/AE.h"
+#include "xbmc/cores/AudioEngine/AEFactory.h"
+#include "xbmc/cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #include "settings/AdvancedSettings.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
+#include "utils/log.h"
+
+
 
 // typecast AE to CCoreAudioAE
 #define AE (*(CCoreAudioAE*)CAEFactory::GetEngine())
@@ -90,20 +91,20 @@ void CCoreAudioAEStream::Upmix(void *input,
 }
 
 CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options) :
-  m_convertBuffer   (NULL ),
+  m_outputUnit      (NULL ),
   m_valid           (false),
   m_delete          (false),
   m_volume          (1.0f ),
   m_rgain           (1.0f ),
   m_slave           (NULL ),
   m_convertFn       (NULL ),
+  m_Buffer          (NULL ),
+  m_convertBuffer   (NULL ),
   m_ssrc            (NULL ),
   m_draining        (false),
-  m_audioCallback   (NULL ),
   m_AvgBytesPerSec  (0    ),
-  m_Buffer          (NULL ),
+  m_audioCallback   (NULL ),
   m_fadeRunning     (false),
-  m_outputUnit      (NULL ),
   m_frameSize       (0    ),
   m_doRemap         (true ),
   m_firstInput      (true )
@@ -328,6 +329,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   unsigned int samples  = size / m_StreamBytesPerSample;
   uint8_t     *adddata  = (uint8_t *)data;
   unsigned int addsize  = size;
+  unsigned int channelsInBuffer = m_chLayoutCountStream;
 
   if (!m_valid || size == 0 || data == NULL || !m_Buffer)
     return 0;
@@ -345,11 +347,11 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   // convert the data if we need to
   if (m_convert)
   {
-    CheckOutputBufferSize((void **)&m_convertBuffer, &m_convertBufferSize, frames * m_chLayoutCountStream  * m_OutputBytesPerSample);
+    CheckOutputBufferSize((void **)&m_convertBuffer, &m_convertBufferSize, frames * channelsInBuffer  * m_OutputBytesPerSample);
 
     samples = m_convertFn(adddata, size / m_StreamBytesPerSample, m_convertBuffer);
-    frames  = samples / m_chLayoutCountStream;
-    addsize = frames * m_chLayoutCountStream * m_OutputBytesPerSample;
+    frames  = samples / channelsInBuffer;
+    addsize = frames * channelsInBuffer * m_OutputBytesPerSample;
     adddata = (uint8_t *)m_convertBuffer;
   }
   else
@@ -398,15 +400,16 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     // downmix/remap the data
     m_remap.Remap((float *)adddata, (float *)m_remapBuffer, frames);
     adddata = (uint8_t *)m_remapBuffer;
+    channelsInBuffer = m_OutputFormat.m_channelLayout.Count();
   }
-
-  // upmix the ouput to 8 channels
-  if ( (!m_isRaw || m_rawDataFormat == AE_FMT_LPCM) && (m_chLayoutCountOutput > m_chLayoutCountStream) )
+  
+  // upmix the ouput to output channels
+  if ( (!m_isRaw || m_rawDataFormat == AE_FMT_LPCM) && (m_chLayoutCountOutput > channelsInBuffer) )
   {
     frames = addsize / m_StreamFormat.m_frameSize;
 
     CheckOutputBufferSize((void **)&m_upmixBuffer, &m_upmixBufferSize, frames * m_chLayoutCountOutput  * sizeof(float));
-    Upmix(adddata, m_chLayoutCountStream, m_upmixBuffer, m_chLayoutCountOutput, frames, m_OutputFormat.m_dataFormat);
+    Upmix(adddata, channelsInBuffer, m_upmixBuffer, m_chLayoutCountOutput, frames, m_OutputFormat.m_dataFormat);
     adddata = m_upmixBuffer;
     addsize = frames * m_chLayoutCountOutput *  sizeof(float);
   }

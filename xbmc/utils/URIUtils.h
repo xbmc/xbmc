@@ -113,5 +113,6 @@ public:
 
   static bool ProtocolHasParentInHostname(const CStdString& prot);
   static bool ProtocolHasEncodedHostname(const CStdString& prot);
+  static bool ProtocolHasEncodedFilename(const CStdString& prot);
 };
 

@@ -26,7 +26,6 @@
 #include "Application.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayListFactory.h"
-#include "pictures/Picture.h"
 #include "utils/md5.h"
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
@@ -424,35 +423,6 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
     CFileItemPtr item = (*m_RadioTrackQueue)[i];
     if (!item->GetMusicInfoTag()->Loaded())
     {
-      //cache albumthumb, GetThumbnailImage contains the url to cache
-      if (item->HasThumbnail())
-      {
-        CStdString coverUrl = item->GetThumbnailImage();
-        CStdString crcFile;
-        CStdString cachedFile;
-        CStdString thumbFile;
-
-        Crc32 crc;
-        crc.ComputeFromLowerCase(coverUrl);
-        crcFile.Format("%08x.tbn", (__int32)crc);
-        URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, crcFile, cachedFile);
-        URIUtils::AddFileToFolder(g_settings.GetLastFMThumbFolder(), crcFile, thumbFile);
-        item->SetThumbnailImage("");
-        try
-        {
-          //download to temp, then make a thumb
-          if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && CPicture::CreateThumbnail(cachedFile, thumbFile)))
-          {
-            if (CFile::Exists(cachedFile))
-              CFile::Delete(cachedFile);
-            item->SetThumbnailImage(thumbFile);
-          }
-        }
-        catch(...)
-        {
-          CLog::Log(LOGERROR, "LastFmManager: exception while caching %s to %s.", coverUrl.c_str(), thumbFile.c_str());
-        }
-      }
       if (!item->HasThumbnail())
       {
         item->SetThumbnailImage("DefaultAlbumCover.png");

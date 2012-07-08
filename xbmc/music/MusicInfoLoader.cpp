@@ -21,6 +21,7 @@
 
 #include "MusicInfoLoader.h"
 #include "MusicDatabase.h"
+#include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/MusicDatabaseDirectory.h"
@@ -62,9 +63,6 @@ void CMusicInfoLoader::OnLoaderStart()
     m_mapFileItems->Load();
     m_mapFileItems->SetFastLookup(true);
   }
-
-  // Precache album thumbs
-  g_directoryCache.InitMusicThumbCache();
 
   m_strPrevPath.Empty();
 
@@ -185,14 +183,39 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
 void CMusicInfoLoader::OnLoaderFinish()
 {
-  // clear precached album thumbs
-  g_directoryCache.ClearMusicThumbCache();
-
   // cleanup last loaded songs from database
   m_songsMap.Clear();
 
   // cleanup cache loaded from HD
   m_mapFileItems->Clear();
+
+  if (!m_bStop)
+  { // check for art
+    VECSONGS songs;
+    songs.reserve(m_pVecItems->Size());
+    for (int i = 0; i < m_pVecItems->Size(); ++i)
+    {
+      CSong song(*m_pVecItems->Get(i)->GetMusicInfoTag());
+      if (m_pVecItems->Get(i)->HasThumbnail())
+        song.strThumb = m_pVecItems->Get(i)->GetThumbnailImage();
+      song.idSong = i; // for the lookup below
+      songs.push_back(song);
+    }
+    VECALBUMS albums;
+    CMusicInfoScanner::CategoriseAlbums(songs, albums);
+    CMusicInfoScanner::FindArtForAlbums(albums, m_pVecItems->GetPath());
+    for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
+    {
+      string albumArt = i->art["thumb"];
+      for (VECSONGS::iterator j = i->songs.begin(); j != i->songs.end(); ++j)
+      {
+        if (!j->strThumb.empty())
+          m_pVecItems->Get(j->idSong)->SetThumbnailImage(j->strThumb);
+        else
+          m_pVecItems->Get(j->idSong)->SetThumbnailImage(albumArt);
+      }
+    }
+  }
 
   // Save loaded items to HD
   if (!m_strCacheFileName.IsEmpty())

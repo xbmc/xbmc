@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "URL.h"
 
 using namespace std;
 namespace XFILE
@@ -102,6 +103,12 @@ namespace XFILE
 
       CStdString File1 = URIUtils::GetFileName(files[0]->GetPath());
       CStdString File2 = URIUtils::GetFileName(files[1]->GetPath());
+      // Check if source path uses URL encoding
+      if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
+      {
+        CURL::Decode(File1);
+        CURL::Decode(File2);
+      }
 
       std::vector<CRegExp>::iterator itRegExp = RegExps.begin();
       int offset = 0;
@@ -132,6 +139,10 @@ namespace XFILE
                 {
                   // got it
                   strStackTitle = Title1 + Ignore1 + Extension1;
+                  // Check if source path uses URL encoding
+                  if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
+                    CURL::Encode(strStackTitle);
+
                   itRegExp = RegExps.end();
                   break;
                 }

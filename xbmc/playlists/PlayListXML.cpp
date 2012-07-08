@@ -27,9 +27,6 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
-#ifndef _LINUX
-#include "cores/dllloader/exports/emu_msvcrt.h"
-#endif
 
 using namespace PLAYLIST;
 using namespace XFILE;

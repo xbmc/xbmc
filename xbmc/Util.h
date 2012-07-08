@@ -91,10 +91,6 @@ public:
   static bool FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath );
   static bool IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath );  
   static int64_t ToInt64(uint32_t high, uint32_t low);
-  static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
-  static bool ThumbCached(const CStdString& strFileName);
-  static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
-  static void ThumbCacheClear();
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
   static void TakeScreenshot();

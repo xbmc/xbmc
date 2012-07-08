@@ -74,13 +74,11 @@ public:
   const int        player;
   // stuff to handle starting after seek
   double   startpts;
-  CDVDMsg* startsync;
 
   CCurrentStream(StreamType t, int i)
     : type(t)
     , player(i)
   {
-    startsync = NULL;
     Clear();
   }
 
@@ -94,9 +92,6 @@ public:
     stream = NULL;
     inited = false;
     started = false;
-    if(startsync)
-      startsync->Release();
-    startsync = NULL;
     startpts  = DVD_NOPTS_VALUE;
   }
 
@@ -317,8 +312,8 @@ protected:
   void HandlePlaySpeed();
   bool IsInMenu() const;
 
-  void SynchronizePlayers(DWORD sources);
-  void SynchronizeDemuxer(DWORD timeout);
+  void SynchronizePlayers(unsigned int sources);
+  void SynchronizeDemuxer(unsigned int timeout);
   void CheckAutoSceneSkip();
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);
@@ -465,31 +460,13 @@ protected:
       commbreak_start = -1;
       commbreak_end = -1;
       seek_to_start = false;
-      reset = 0;
       mute = false;
-    }
-
-    void ResetCutMarker(double timeout)
-    {
-      if(reset != 0
-      && reset + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
-        return;
-
-      /*
-       * Reset the automatic EDL skip marker for a cut so automatic seeking can happen again if,
-       * for example, the initial automatic skip ended up back in the cut due to seeking
-       * inaccuracies.
-       */
-      cut = -1;
-
-      reset = CDVDClock::GetAbsoluteClock();
     }
 
     int cut;              // last automatically skipped EDL cut seek position
     int commbreak_start;  // start time of the last commercial break automatically skipped
     int commbreak_end;    // end time of the last commercial break automatically skipped
     bool seek_to_start;   // whether seeking can go back to the start of a previously skipped break
-    double reset;         // last actual reset time
     bool mute;            // whether EDL mute is on
 
   } m_EdlAutoSkipMarkers;

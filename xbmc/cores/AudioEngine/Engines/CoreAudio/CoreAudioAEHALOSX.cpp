@@ -25,7 +25,6 @@
 
 #include "CoreAudioAEHALOSX.h"
 
-#include "AEUtil.h"
 #include "CoreAudioAE.h"
 #include "CoreAudioAEHAL.h"
 #include "CoreAudioUnit.h"
@@ -35,17 +34,18 @@
 #include "CoreAudioHardware.h"
 #include "CoreAudioChannelLayout.h"
 
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 
 CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
+  m_audioGraph        (NULL   ),
   m_Initialized       (false  ),
   m_Passthrough       (false  ),
-  m_NumLatencyFrames  (0      ),
-  m_OutputBufferIndex (0      ),
   m_allowMixing       (false  ),
   m_encoded           (false  ),
-  m_audioGraph        (NULL   )
+  m_NumLatencyFrames  (0      ),
+  m_OutputBufferIndex (0      )
 {
   m_AudioDevice   = new CCoreAudioDevice();
   m_OutputStream  = new CCoreAudioStream();

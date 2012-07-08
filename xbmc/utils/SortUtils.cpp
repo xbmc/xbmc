@@ -664,19 +664,13 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
     }
   }
 
-  if (limitEnd > 0 || limitStart > 0)
+  if (limitStart > 0 && (size_t)limitStart < items.size())
   {
-    SortItems::iterator start = items.begin();
-    SortItems::iterator end = items.end();
-    
-    if (limitStart > 0 && (size_t)limitStart < items.size())
-      start += limitStart;
-    if (limitEnd > 0 && (size_t)limitEnd < items.size())
-      end = items.begin() + limitEnd;
-
-    items.erase(items.begin(), start);
-    items.erase(end, items.end());
+    items.erase(items.begin(), items.begin() + limitStart);
+    limitEnd -= limitStart;
   }
+  if (limitEnd > 0 && (size_t)limitEnd < items.size())
+    items.erase(items.begin() + limitEnd, items.end());
 }
 
 void SortUtils::Sort(const SortDescription &sortDescription, SortItems& items)
@@ -693,7 +687,14 @@ bool SortUtils::SortFromDataset(const SortDescription &sortDescription, MediaTyp
   if (!DatabaseUtils::GetDatabaseResults(mediaType, fields, dataset, results))
     return false;
 
-  Sort(sortDescription, results);
+  SortDescription sorting = sortDescription;
+  if (sortDescription.sortBy == SortByNone)
+  {
+    sorting.limitStart = 0;
+    sorting.limitEnd = -1;
+  }
+
+  Sort(sorting, results);
 
   return true;
 }

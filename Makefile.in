@@ -217,6 +217,9 @@ FINAL_TARGETS=xbmc.bin skins xbmc-xrandr
 endif
 FINAL_TARGETS+=Makefile externals
 
+CHECK_DIRS = xbmc/utils/test \
+             xbmc/threads/test
+
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'
 	@echo 'XBMC built successfully'
@@ -377,7 +380,7 @@ OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
 LIBS += @PYTHON_LDFLAGS@
 
-libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC)
+libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS)
 else
@@ -523,3 +526,6 @@ clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
 	clean-pvrclients clean-screensavers clean-visualisations clean-libaddons
+
+check:
+	for d in $(CHECK_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d $@; fi; done

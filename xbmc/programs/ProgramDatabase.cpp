@@ -74,18 +74,6 @@ bool CProgramDatabase::CreateTables()
 
 bool CProgramDatabase::UpdateOldVersion(int version)
 {
-  if (NULL == m_pDB.get()) return false;
-  if (NULL == m_pDS.get()) return false;
-  if (NULL == m_pDS2.get()) return false;
-
-  try
-  {
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Error attempting to update the database version!");
-    return false;
-  }
   return true;
 }
 

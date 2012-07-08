@@ -81,6 +81,7 @@
 #include "addons/AddonManager.h"
 #include "interfaces/info/InfoBool.h"
 #include "TextureCache.h"
+#include "ThumbLoader.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
@@ -196,6 +197,8 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "starrating",       PLAYER_STAR_RATING },
                                   { "folderpath",       PLAYER_PATH },
                                   { "filenameandpath",  PLAYER_FILEPATH }};
+
+const infomap player_param[] =   {{ "property",         PLAYER_ITEM_PROPERTY }};
 
 const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "seekoffset",       PLAYER_SEEKOFFSET },
@@ -774,6 +777,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       {
         if (prop.name == player_times[i].str)
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
+      }
+      if (prop.num_params() == 1)
+      {
+        for (size_t i = 0; i < sizeof(player_param) / sizeof(infomap); i++)
+        {
+          if (prop.name == player_param[i].str)
+            return AddMultiInfo(GUIInfo(player_param[i].val, ConditionalStringParameter(prop.param())));
+        }
       }
     }
     else if (cat.name == "weather")
@@ -2915,6 +2926,10 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     if (m_seekOffset > 0)
       return "+" + seekOffset;
   }
+  else if (info.m_info == PLAYER_ITEM_PROPERTY)
+  {
+    return m_currentFile->GetProperty(m_stringParameters[info.GetData1()]).asString();
+  }
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.GetData1());
@@ -2998,11 +3013,15 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   else if (info.m_info == SYSTEM_ADDON_TITLE ||
            info.m_info == SYSTEM_ADDON_ICON)
   {
+    // This logic does not check/care whether an addon has been disabled/marked as broken,
+    // it simply retrieves it's name or icon that means if an addon is placed on the home screen it
+    // will stay there even if it's disabled/marked as broken. This might need to be changed/fixed
+    // in the future.
     AddonPtr addon;
     if (info.GetData2() == 0)
-      CAddonMgr::Get().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon);
+      CAddonMgr::Get().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon,ADDON_UNKNOWN,false);
     else
-      CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon);
+      CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon,ADDON_UNKNOWN,false);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
@@ -3293,8 +3312,8 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   // try to set a thumbnail
   if (!playlistItem->HasThumbnail())
   {
-    playlistItem->SetMusicThumb();
-    // still no thumb? then just the set the default cover
+    CMusicThumbLoader::FillThumb(*playlistItem);
+    // still no thumb? then just the set the default cover TODO: remove me?
     if (!playlistItem->HasThumbnail())
       playlistItem->SetThumbnailImage("DefaultAlbumCover.png");
   }
@@ -3819,18 +3838,15 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     {
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem streamingItem(g_application.m_strPlayListFile,false);
-      streamingItem.SetMusicThumb();
-      CStdString strThumb = streamingItem.GetThumbnailImage();
-      if (CFile::Exists(strThumb))
-        m_currentFile->SetThumbnailImage(strThumb);
+      CMusicThumbLoader::FillThumb(streamingItem);
+      if (streamingItem.HasThumbnail())
+        m_currentFile->SetThumbnailImage(streamingItem.GetThumbnailImage());
     }
   }
   else
-    m_currentFile->SetMusicThumb();
-  if (!m_currentFile->HasProperty("fanart_image"))
   {
-    if (m_currentFile->CacheLocalFanart())
-      m_currentFile->SetProperty("fanart_image", m_currentFile->GetCachedFanart());
+    CMusicThumbLoader loader;
+    loader.LoadItem(m_currentFile);
   }
   m_currentFile->FillInDefaultIcon();
 
@@ -4112,7 +4128,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     }
     break;
   case LISTITEM_PERCENT_PLAYED:
-    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0)
+    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0 && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0)
       value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
     else
       value = 0;
@@ -4840,13 +4856,12 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
-
-  if (item->IsFileItem())
+  else if (condition == LISTITEM_IS_RESUMABLE)
+    return (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0);
+  else if (item->IsFileItem())
   {
     const CFileItem *pItem = (const CFileItem *)item;
-    if (condition == LISTITEM_IS_RESUMABLE)
-      return (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
-    else if (condition == LISTITEM_ISRECORDING)
+    if (condition == LISTITEM_ISRECORDING)
     {
       if (!g_PVRManager.IsStarted())
         return false;

@@ -49,13 +49,14 @@ public:
     moods.clear();
     styles.clear();
     themes.clear();
+    art.clear();
     strReview.Empty();
     strLabel.Empty();
     strType.Empty();
     m_strDateOfRelease.Empty();
     iRating=-1;
     iYear=-1;
-    idArtist = -1;
+    bCompilation = false;
     songs.clear();
   }
 
@@ -77,13 +78,14 @@ public:
   std::vector<std::string> moods;
   std::vector<std::string> styles;
   std::vector<std::string> themes;
+  std::map<std::string, std::string> art;
   CStdString strReview;
   CStdString strLabel;
   CStdString strType;
   CStdString m_strDateOfRelease;
   int iRating;
   int iYear;
-  int idArtist;
+  bool bCompilation;
   VECSONGS songs;
 };
 

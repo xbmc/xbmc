@@ -94,10 +94,14 @@ void CGUIButtonControl::Render()
   m_imgFocus.Render();
   m_imgNoFocus.Render();
 
+  RenderText();
+  CGUIControl::Render();
+}
+
+void CGUIButtonControl::RenderText()
+{
   m_label.Render();
   m_label2.Render();
-
-  CGUIControl::Render();
 }
 
 CGUILabel::COLOR CGUIButtonControl::GetTextColor() const

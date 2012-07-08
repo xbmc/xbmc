@@ -208,6 +208,14 @@ namespace MathUtils
     return (a < 0) ? -a : a;
   }
 
+  inline unsigned bitcount(unsigned v)
+  {
+    unsigned c = 0;
+    for (c = 0; v; c++)
+      v &= v - 1; // clear the least significant bit set
+    return c;
+  }
+
   inline void hack()
   {
     // stupid hack to keep compiler from dropping these
