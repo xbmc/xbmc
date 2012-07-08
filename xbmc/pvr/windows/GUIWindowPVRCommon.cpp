@@ -774,7 +774,7 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
 
   if (tag)
   {
-    if (g_PVRManager.CheckParentalLock(channel))
+    if (g_PVRManager.CheckParentalLock(*channel))
     {
       CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
       if (pDlgInfo)

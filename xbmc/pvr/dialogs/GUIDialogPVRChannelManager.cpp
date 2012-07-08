@@ -515,7 +515,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
           g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->AddToGroup(*newchannel);
           newchannel->Persist();
 
-          CFileItemPtr channel(new CFileItem(newchannel));
+          CFileItemPtr channel(new CFileItem(*newchannel));
           if (channel)
           {
             channel->SetProperty("ActiveChannel", true);
@@ -783,7 +783,7 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
   bool bVirtual             = pItem->GetProperty("Virtual").asBoolean();
   bool bEPGEnabled          = pItem->GetProperty("UseEPG").asBoolean();
   bool bParentalLocked      = pItem->GetProperty("ParentalLocked").asBoolean();
-  int iEPGSource            = pItem->GetProperty("EPGSource").asInteger();
+  int iEPGSource            = (int) pItem->GetProperty("EPGSource").asInteger();
   CStdString strChannelName = pItem->GetProperty("Name").asString();
   CStdString strIconPath    = pItem->GetProperty("Icon").asString();
   CStdString strStreamURL   = pItem->GetProperty("StreamURL").asString();

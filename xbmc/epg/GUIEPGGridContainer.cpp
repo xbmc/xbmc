@@ -1158,7 +1158,7 @@ void CGUIEPGGridContainer::SetChannel(const CPVRChannel &channel)
   int iChannelIndex(-1);
   for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
   {
-    int iChannelId = m_channelItems[iIndex]->GetProperty("channelid").asInteger(-1);
+    int iChannelId = (int) m_channelItems[iIndex]->GetProperty("channelid").asInteger(-1);
     if (iChannelId == channel.ChannelID())
     {
       iChannelIndex = iIndex;
