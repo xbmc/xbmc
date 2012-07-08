@@ -101,32 +101,20 @@ bool CAddonDatabase::CreateTables()
 
 bool CAddonDatabase::UpdateOldVersion(int version)
 {
-  BeginTransaction();
-  
-  try
+  if (version < 13)
   {
-    if (version < 13)
-    {
-      m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
-      m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
-    }
-    if (version < 14)
-    {
-      m_pDS->exec("ALTER TABLE addon add minversion text");
-    }
-    if (version < 15)
-    {
-      m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
-    }
+    m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
+    m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
   }
-  catch (...)
+  if (version < 14)
   {
-    CLog::Log(LOGERROR, "Error attempting to upgrade an old addon database!");
-    RollbackTransaction();
-    return false;
+    m_pDS->exec("ALTER TABLE addon add minversion text");
   }
-  CommitTransaction();
+  if (version < 15)
+  {
+    m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+  }
   return true;
 }
 

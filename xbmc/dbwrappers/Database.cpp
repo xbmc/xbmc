@@ -452,13 +452,27 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
   if (version < GetMinVersion())
   {
     CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
-    if (UpdateOldVersion(version) && UpdateVersionNumber())
-      CLog::Log(LOGINFO, "Update to version %i successfull", GetMinVersion());
-    else
+    bool success = false;
+    BeginTransaction();
+    try
     {
-      CLog::Log(LOGERROR, "Can't update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+      success = UpdateOldVersion(version);
+      if (success)
+        success = UpdateVersionNumber();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Exception updating database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+      success = false;
+    }
+    if (!success)
+    {
+      CLog::Log(LOGERROR, "Error updating database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+      RollbackTransaction();
       return false;
     }
+    CommitTransaction();
+    CLog::Log(LOGINFO, "Update to version %i successful", GetMinVersion());
   }
   else if (version > GetMinVersion())
   {
@@ -597,18 +611,8 @@ bool CDatabase::CreateTables()
 
 bool CDatabase::UpdateVersionNumber()
 {
-  try
-  {
-    CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
-    m_pDS->exec(strSQL.c_str());
-
-    CommitTransaction();
-  }
-  catch(...)
-  {
-    return false;
-  }
-
+  CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
+  m_pDS->exec(strSQL.c_str());
   return true;
 }
 

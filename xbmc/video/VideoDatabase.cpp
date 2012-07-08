@@ -3686,234 +3686,222 @@ bool CVideoDatabase::ScraperInUse(const CStdString &scraperID) const
 
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
-  BeginTransaction();
-
-  try
+  if (iVersion < 43)
   {
-    if (iVersion < 43)
+    m_pDS->exec("ALTER TABLE settings ADD VerticalShift float");
+  }
+  if (iVersion < 44)
+  {
+    // only if MySQL is used and default character set is not utf8
+    // string data needs to be converted to proper utf8
+    CStdString charset = m_pDS->getDatabase()->getDefaultCharset();
+    if (!m_sqlite && !charset.empty() && charset != "utf8")
     {
-      m_pDS->exec("ALTER TABLE settings ADD VerticalShift float");
-    }
-    if (iVersion < 44)
-    {
-      // only if MySQL is used and default character set is not utf8
-      // string data needs to be converted to proper utf8
-      CStdString charset = m_pDS->getDatabase()->getDefaultCharset();
-      if (!m_sqlite && !charset.empty() && charset != "utf8")
+      map<CStdString, CStdStringArray> tables;
+      map<CStdString, CStdStringArray>::iterator itt;
+      CStdStringArray::iterator itc;
+
+      // columns that need to be converted
+      // content columns
+      CStdStringArray c_columns;
+      for (int i = 0; i < 22; i++)
       {
-        map<CStdString, CStdStringArray> tables;
-        map<CStdString, CStdStringArray>::iterator itt;
-        CStdStringArray::iterator itc;
+        CStdString c;
+        c.Format("c%02d", i);
+        c_columns.push_back(c);
+      }
 
-        // columns that need to be converted
-        // content columns
-        CStdStringArray c_columns;
-        for (int i = 0; i < 22; i++)
+      tables.insert(pair<CStdString, CStdStringArray> ("episode", c_columns));
+      tables.insert(pair<CStdString, CStdStringArray> ("movie", c_columns));
+      tables.insert(pair<CStdString, CStdStringArray> ("musicvideo", c_columns));
+      tables.insert(pair<CStdString, CStdStringArray> ("tvshow", c_columns));
+
+      //common columns
+      CStdStringArray c1;
+      c1.push_back("strRole");
+      tables.insert(pair<CStdString, CStdStringArray> ("actorlinkepisode", c1));
+      tables.insert(pair<CStdString, CStdStringArray> ("actorlinkmovie", c1));
+      tables.insert(pair<CStdString, CStdStringArray> ("actorlinktvshow", c1));
+
+      //remaining columns
+      CStdStringArray c2;
+      c2.push_back("strActor");
+      tables.insert(pair<CStdString, CStdStringArray> ("actors", c2));
+
+      CStdStringArray c3;
+      c3.push_back("strCountry");
+      tables.insert(pair<CStdString, CStdStringArray> ("country", c3));
+
+      CStdStringArray c4;
+      c4.push_back("strFilename");
+      tables.insert(pair<CStdString, CStdStringArray> ("files", c4));
+
+      CStdStringArray c5;
+      c5.push_back("strGenre");
+      tables.insert(pair<CStdString, CStdStringArray> ("genre", c5));
+
+      CStdStringArray c6;
+      c6.push_back("strSet");
+      tables.insert(pair<CStdString, CStdStringArray> ("sets", c6));
+
+      CStdStringArray c7;
+      c7.push_back("strStudio");
+      tables.insert(pair<CStdString, CStdStringArray> ("studio", c7));
+
+      CStdStringArray c8;
+      c8.push_back("strPath");
+      tables.insert(pair<CStdString, CStdStringArray> ("path", c8));
+
+      for (itt = tables.begin(); itt != tables.end(); ++itt)
+      {
+        CStdString q;
+        q = PrepareSQL("UPDATE `%s` SET", itt->first.c_str());
+        for (itc = itt->second.begin(); itc != itt->second.end(); ++itc)
         {
-          CStdString c;
-          c.Format("c%02d", i);
-          c_columns.push_back(c);
-        }
-
-        tables.insert(pair<CStdString, CStdStringArray> ("episode", c_columns));
-        tables.insert(pair<CStdString, CStdStringArray> ("movie", c_columns));
-        tables.insert(pair<CStdString, CStdStringArray> ("musicvideo", c_columns));
-        tables.insert(pair<CStdString, CStdStringArray> ("tvshow", c_columns));
-
-        //common columns
-        CStdStringArray c1;
-        c1.push_back("strRole");
-        tables.insert(pair<CStdString, CStdStringArray> ("actorlinkepisode", c1));
-        tables.insert(pair<CStdString, CStdStringArray> ("actorlinkmovie", c1));
-        tables.insert(pair<CStdString, CStdStringArray> ("actorlinktvshow", c1));
-
-        //remaining columns
-        CStdStringArray c2;
-        c2.push_back("strActor");
-        tables.insert(pair<CStdString, CStdStringArray> ("actors", c2));
-
-        CStdStringArray c3;
-        c3.push_back("strCountry");
-        tables.insert(pair<CStdString, CStdStringArray> ("country", c3));
-
-        CStdStringArray c4;
-        c4.push_back("strFilename");
-        tables.insert(pair<CStdString, CStdStringArray> ("files", c4));
-
-        CStdStringArray c5;
-        c5.push_back("strGenre");
-        tables.insert(pair<CStdString, CStdStringArray> ("genre", c5));
-
-        CStdStringArray c6;
-        c6.push_back("strSet");
-        tables.insert(pair<CStdString, CStdStringArray> ("sets", c6));
-
-        CStdStringArray c7;
-        c7.push_back("strStudio");
-        tables.insert(pair<CStdString, CStdStringArray> ("studio", c7));
-
-        CStdStringArray c8;
-        c8.push_back("strPath");
-        tables.insert(pair<CStdString, CStdStringArray> ("path", c8));
-
-        for (itt = tables.begin(); itt != tables.end(); ++itt)
-        {
-          CStdString q;
-          q = PrepareSQL("UPDATE `%s` SET", itt->first.c_str());
-          for (itc = itt->second.begin(); itc != itt->second.end(); ++itc)
+          q += PrepareSQL(" `%s` = CONVERT(CAST(CONVERT(`%s` USING %s) AS BINARY) USING utf8)",
+                          itc->c_str(), itc->c_str(), charset.c_str());
+          if (*itc != itt->second.back())
           {
-            q += PrepareSQL(" `%s` = CONVERT(CAST(CONVERT(`%s` USING %s) AS BINARY) USING utf8)",
-                            itc->c_str(), itc->c_str(), charset.c_str());
-            if (*itc != itt->second.back())
-            {
-              q += ",";
-            }
+            q += ",";
           }
-          m_pDS->exec(q);
         }
+        m_pDS->exec(q);
       }
     }
-    if (iVersion < 45)
-    {
-      m_pDS->exec("ALTER TABLE movie ADD c22 text");
-      m_pDS->exec("ALTER TABLE episode ADD c22 text");
-      m_pDS->exec("ALTER TABLE musicvideo ADD c22 text");
-      m_pDS->exec("ALTER TABLE tvshow ADD c22 text");
-      // Now update our tables
-      UpdateBasePath("movie", "idMovie", VIDEODB_ID_BASEPATH);
-      UpdateBasePath("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH);
-      UpdateBasePath("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH);
-      UpdateBasePath("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, true);
-    }
-    if (iVersion < 46)
-    { // add indices for dir entry lookups
-      m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c22(255) )");
-      m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c13(255) )");
-      m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c18(255) )");
-      m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c16(255) )");
-    }
-    if (iVersion < 50)
-    {
-      m_pDS->exec("ALTER TABLE settings ADD ScalingMethod integer");
-      m_pDS->exec(PrepareSQL("UPDATE settings set ScalingMethod=%i", g_settings.m_defaultVideoSettings.m_ScalingMethod));
-    }
-    if (iVersion < 51)
-    {
-      // Add iOrder fields to actorlink* tables to be able to list
-      // actors by importance
-      m_pDS->exec("ALTER TABLE actorlinkmovie ADD iOrder integer");
-      m_pDS->exec("ALTER TABLE actorlinktvshow ADD iOrder integer");
-      m_pDS->exec("ALTER TABLE actorlinkepisode ADD iOrder integer");
-    }
-    if (iVersion < 52)
-    { // Add basepath link to path table for faster content retrieval, and indicies
-      m_pDS->exec("ALTER TABLE movie ADD c23 text");
-      m_pDS->exec("ALTER TABLE episode ADD c23 text");
-      m_pDS->exec("ALTER TABLE musicvideo ADD c23 text");
-      m_pDS->exec("ALTER TABLE tvshow ADD c23 text");
-      m_pDS->dropIndex("movie", "ixMovieBasePath");
-      m_pDS->dropIndex("musicvideo", "ixMusicVideoBasePath");
-      m_pDS->dropIndex("episode", "ixEpisodeBasePath");
-      m_pDS->dropIndex("tvshow", "ixTVShowBasePath");
-      m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
-      m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
-      m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
-      m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c17(12) )");
-      // now update the base path links
-      UpdateBasePathID("movie", "idMovie", VIDEODB_ID_BASEPATH, VIDEODB_ID_PARENTPATHID);
-      UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
-      UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
-      UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
-    }
-    if (iVersion < 54)
-    { // Change INDEX for bookmark table
-      m_pDS->dropIndex("bookmark", "ix_bookmark");
-      m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
-    }
-    if (iVersion < 55)
-    {
-      m_pDS->exec("ALTER TABLE settings ADD DeinterlaceMode integer");
-      m_pDS->exec("UPDATE settings SET DeinterlaceMode = 2 WHERE Deinterlace NOT IN (0,1)"); // anything other than none: method auto => mode force
-      m_pDS->exec("UPDATE settings SET DeinterlaceMode = 1 WHERE Deinterlace = 1"); // method auto => mode auto
-      m_pDS->exec("UPDATE settings SET DeinterlaceMode = 0, Deinterlace = 1 WHERE Deinterlace = 0"); // method none => mode off, method auto
-    }
-
-    if (iVersion < 59)
-    { // base paths for video_ts and bdmv files was wrong (and inconsistent depending on where and when they were scanned)
-      CStdString where = PrepareSQL(" WHERE files.strFileName LIKE 'VIDEO_TS.IFO' or files.strFileName LIKE 'index.BDMV'");
-      UpdateBasePath("movie", "idMovie", VIDEODB_ID_BASEPATH, false, where);
-      UpdateBasePath("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, false, where);
-      UpdateBasePath("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, false, where);
-      UpdateBasePathID("movie", "idMovie", VIDEODB_ID_BASEPATH, VIDEODB_ID_PARENTPATHID);
-      UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
-      UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
-    }
-    if (iVersion < 61)
-    {
-      m_pDS->exec("ALTER TABLE path ADD dateAdded text");
-      m_pDS->exec("ALTER TABLE files ADD dateAdded text");
-    }
-    if (iVersion < 62)
-    { // add seasons table
-      m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
-      m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
-      // insert all seasons for each show
-      m_pDS->query("SELECT idShow FROM tvshow");
-      while (!m_pDS->eof())
-      {
-        CStdString sql = PrepareSQL("INSERT INTO seasons (idShow,season)"
-                                    "  SELECT DISTINCT"
-                                    "    idShow,c%02d"
-                                    "  FROM"
-                                    "    episodeview"
-                                    "  WHERE idShow=%i", VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(0).get_asInt());
-        m_pDS2->exec(sql.c_str());
-        // and the "all seasons node"
-        sql = PrepareSQL("INSERT INTO seasons (idShow,season) VALUES(%i,-1)", m_pDS->fv(0).get_asInt());
-        m_pDS2->exec(sql.c_str());
-        m_pDS->next();
-      }
-    }
-    if (iVersion < 63)
-    { // add art table
-      m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
-      m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
-      m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; END");
-      m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; END");
-      m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; END");
-      m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; END");
-      m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; END");
-      m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; END");
-      m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
-
-      g_settings.m_videoNeedsUpdate = 63;
-      g_settings.Save();
-    }
-    if (iVersion < 64)
-    { // add idShow to episode table
-      m_pDS->exec("ALTER TABLE episode ADD idShow integer");
-      m_pDS->query("SELECT idEpisode FROM episode");
-      while (!m_pDS->eof())
-      {
-        int idEpisode = m_pDS->fv(0).get_asInt();
-        CStdString update = PrepareSQL("UPDATE episode SET idShow=(SELECT idShow FROM tvshowlinkepisode WHERE idEpisode=%d) WHERE idEpisode=%d", idEpisode, idEpisode);
-        m_pDS2->exec(update.c_str());
-        m_pDS->next();
-      }
-      m_pDS->exec("DROP TABLE tvshowlinkepisode");
-      m_pDS->exec("CREATE INDEX ix_episode_show1 on episode(idEpisode,idShow)");
-      m_pDS->exec("CREATE INDEX ix_episode_show2 on episode(idShow,idEpisode)");
-    }
-    // always recreate the view after any table change
-    CreateViews();
   }
-  catch (...)
+  if (iVersion < 45)
   {
-    CLog::Log(LOGERROR, "Error attempting to update the database version!");
-    RollbackTransaction();
-    return false;
+    m_pDS->exec("ALTER TABLE movie ADD c22 text");
+    m_pDS->exec("ALTER TABLE episode ADD c22 text");
+    m_pDS->exec("ALTER TABLE musicvideo ADD c22 text");
+    m_pDS->exec("ALTER TABLE tvshow ADD c22 text");
+    // Now update our tables
+    UpdateBasePath("movie", "idMovie", VIDEODB_ID_BASEPATH);
+    UpdateBasePath("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH);
+    UpdateBasePath("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH);
+    UpdateBasePath("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, true);
   }
-  CommitTransaction();
+  if (iVersion < 46)
+  { // add indices for dir entry lookups
+    m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c22(255) )");
+    m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c13(255) )");
+    m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c18(255) )");
+    m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c16(255) )");
+  }
+  if (iVersion < 50)
+  {
+    m_pDS->exec("ALTER TABLE settings ADD ScalingMethod integer");
+    m_pDS->exec(PrepareSQL("UPDATE settings set ScalingMethod=%i", g_settings.m_defaultVideoSettings.m_ScalingMethod));
+  }
+  if (iVersion < 51)
+  {
+    // Add iOrder fields to actorlink* tables to be able to list
+    // actors by importance
+    m_pDS->exec("ALTER TABLE actorlinkmovie ADD iOrder integer");
+    m_pDS->exec("ALTER TABLE actorlinktvshow ADD iOrder integer");
+    m_pDS->exec("ALTER TABLE actorlinkepisode ADD iOrder integer");
+  }
+  if (iVersion < 52)
+  { // Add basepath link to path table for faster content retrieval, and indicies
+    m_pDS->exec("ALTER TABLE movie ADD c23 text");
+    m_pDS->exec("ALTER TABLE episode ADD c23 text");
+    m_pDS->exec("ALTER TABLE musicvideo ADD c23 text");
+    m_pDS->exec("ALTER TABLE tvshow ADD c23 text");
+    m_pDS->dropIndex("movie", "ixMovieBasePath");
+    m_pDS->dropIndex("musicvideo", "ixMusicVideoBasePath");
+    m_pDS->dropIndex("episode", "ixEpisodeBasePath");
+    m_pDS->dropIndex("tvshow", "ixTVShowBasePath");
+    m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
+    m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
+    m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
+    m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c17(12) )");
+    // now update the base path links
+    UpdateBasePathID("movie", "idMovie", VIDEODB_ID_BASEPATH, VIDEODB_ID_PARENTPATHID);
+    UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
+    UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
+    UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
+  }
+  if (iVersion < 54)
+  { // Change INDEX for bookmark table
+    m_pDS->dropIndex("bookmark", "ix_bookmark");
+    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
+  }
+  if (iVersion < 55)
+  {
+    m_pDS->exec("ALTER TABLE settings ADD DeinterlaceMode integer");
+    m_pDS->exec("UPDATE settings SET DeinterlaceMode = 2 WHERE Deinterlace NOT IN (0,1)"); // anything other than none: method auto => mode force
+    m_pDS->exec("UPDATE settings SET DeinterlaceMode = 1 WHERE Deinterlace = 1"); // method auto => mode auto
+    m_pDS->exec("UPDATE settings SET DeinterlaceMode = 0, Deinterlace = 1 WHERE Deinterlace = 0"); // method none => mode off, method auto
+  }
+
+  if (iVersion < 59)
+  { // base paths for video_ts and bdmv files was wrong (and inconsistent depending on where and when they were scanned)
+    CStdString where = PrepareSQL(" WHERE files.strFileName LIKE 'VIDEO_TS.IFO' or files.strFileName LIKE 'index.BDMV'");
+    UpdateBasePath("movie", "idMovie", VIDEODB_ID_BASEPATH, false, where);
+    UpdateBasePath("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, false, where);
+    UpdateBasePath("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, false, where);
+    UpdateBasePathID("movie", "idMovie", VIDEODB_ID_BASEPATH, VIDEODB_ID_PARENTPATHID);
+    UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
+    UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
+  }
+  if (iVersion < 61)
+  {
+    m_pDS->exec("ALTER TABLE path ADD dateAdded text");
+    m_pDS->exec("ALTER TABLE files ADD dateAdded text");
+  }
+  if (iVersion < 62)
+  { // add seasons table
+    m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
+    m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
+    // insert all seasons for each show
+    m_pDS->query("SELECT idShow FROM tvshow");
+    while (!m_pDS->eof())
+    {
+      CStdString sql = PrepareSQL("INSERT INTO seasons (idShow,season)"
+                                  "  SELECT DISTINCT"
+                                  "    idShow,c%02d"
+                                  "  FROM"
+                                  "    episodeview"
+                                  "  WHERE idShow=%i", VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(0).get_asInt());
+      m_pDS2->exec(sql.c_str());
+      // and the "all seasons node"
+      sql = PrepareSQL("INSERT INTO seasons (idShow,season) VALUES(%i,-1)", m_pDS->fv(0).get_asInt());
+      m_pDS2->exec(sql.c_str());
+      m_pDS->next();
+    }
+  }
+  if (iVersion < 63)
+  { // add art table
+    m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
+    m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
+    m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; END");
+    m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; END");
+    m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; END");
+    m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; END");
+    m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; END");
+    m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; END");
+    m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
+
+    g_settings.m_videoNeedsUpdate = 63;
+    g_settings.Save();
+  }
+  if (iVersion < 64)
+  { // add idShow to episode table
+    m_pDS->exec("ALTER TABLE episode ADD idShow integer");
+    m_pDS->query("SELECT idEpisode FROM episode");
+    while (!m_pDS->eof())
+    {
+      int idEpisode = m_pDS->fv(0).get_asInt();
+      CStdString update = PrepareSQL("UPDATE episode SET idShow=(SELECT idShow FROM tvshowlinkepisode WHERE idEpisode=%d) WHERE idEpisode=%d", idEpisode, idEpisode);
+      m_pDS2->exec(update.c_str());
+      m_pDS->next();
+    }
+    m_pDS->exec("DROP TABLE tvshowlinkepisode");
+    m_pDS->exec("CREATE INDEX ix_episode_show1 on episode(idEpisode,idShow)");
+    m_pDS->exec("CREATE INDEX ix_episode_show2 on episode(idShow,idEpisode)");
+  }
+  // always recreate the view after any table change
+  CreateViews();
   return true;
 }
 
