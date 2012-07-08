@@ -274,8 +274,8 @@ void CGUISettings::Initialize()
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
-  AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.albums.allmusic.com", ADDON_SCRAPER_ALBUMS);
-  AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.artists.allmusic.com", ADDON_SCRAPER_ARTISTS);
+  AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.album.universal", ADDON_SCRAPER_ALBUMS);
+  AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.artists.universal", ADDON_SCRAPER_ARTISTS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(ml, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -774,7 +774,7 @@ void CGUISettings::Initialize()
 
   AddDefaultAddon(NULL, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
   AddDefaultAddon(NULL, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
-  AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.yahoomusic.com", ADDON_SCRAPER_MUSICVIDEOS);
+  AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.musicvideos.last.fm", ADDON_SCRAPER_MUSICVIDEOS);
   AddBool(NULL, "scrapers.langfallback", 21416, false);
 
   // service settings
