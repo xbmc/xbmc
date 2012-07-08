@@ -71,6 +71,9 @@ protected:
   std::vector<struct MatrixWrapper> m_matrices[(int)MM_MATRIXSIZE];
   GLfloat *m_pMatrix;
   EMATRIXMODE m_matrixMode;
+#if defined(__ARM_NEON__)
+  bool m_has_neon;
+#endif
 };
 
 extern CMatrixGLES g_matrices;
