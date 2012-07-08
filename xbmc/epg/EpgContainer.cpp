@@ -206,7 +206,6 @@ void CEpgContainer::Process(void)
 
   if (!m_bLoaded)
   {
-    CSingleLock lock(m_critSection);
     LoadFromDB();
     CheckPlayingEvents();
   }
