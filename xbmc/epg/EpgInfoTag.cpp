@@ -35,7 +35,7 @@ using namespace std;
 using namespace EPG;
 using namespace PVR;
 
-CEpgInfoTag::CEpgInfoTag(CEpg *epg /* = NULL */, int iPVRChannelNumber /* = -1 */, int iPVRChannelID /* = -1 */, const CStdString &strTableName /* = StringUtils::EmptyString */, const CStdString &strIconPath /* = StringUtils::EmptyString */) :
+CEpgInfoTag::CEpgInfoTag(CEpg *epg /* = NULL */, PVR::CPVRChannel *pvrChannel /* = NULL */, const CStdString &strTableName /* = StringUtils::EmptyString */, const CStdString &strIconPath /* = StringUtils::EmptyString */) :
     m_bNotify(false),
     m_bChanged(false),
     m_iBroadcastId(-1),
@@ -56,8 +56,7 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg /* = NULL */, int iPVRChannelNumber /* = -1 *
     m_strFileNameAndPath(""),
     m_iTimerId(-1),
     m_epg(epg),
-    m_iPVRChannelNumber(iPVRChannelNumber),
-    m_iPVRChannelID(iPVRChannelID),
+    m_pvrChannel(pvrChannel),
     m_strTableName(strTableName)
 {
 }
@@ -83,8 +82,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_strFileNameAndPath(""),
     m_iTimerId(-1),
     m_epg(NULL),
-    m_iPVRChannelNumber(-1),
-    m_iPVRChannelID(-1)
+    m_pvrChannel(NULL)
 {
   Update(data);
 }
@@ -113,8 +111,7 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_firstAired(tag.m_firstAired),
     m_iTimerId(tag.m_iTimerId),
     m_epg(tag.m_epg),
-    m_iPVRChannelNumber(tag.m_iPVRChannelNumber),
-    m_iPVRChannelID(tag.m_iPVRChannelID),
+    m_pvrChannel(tag.m_pvrChannel),
     m_strTableName(tag.m_strTableName)
 {
 }
@@ -152,8 +149,7 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
           m_endTime            == right.m_endTime &&
-          m_iPVRChannelNumber  == right.m_iPVRChannelNumber &&
-          m_iPVRChannelID      == right.m_iPVRChannelID &&
+          m_pvrChannel         == right.m_pvrChannel &&
           m_strTableName       == right.m_strTableName);
 }
 
@@ -192,8 +188,7 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_iTimerId           = other.m_iTimerId;
   m_timerStart         = other.m_timerStart;
   m_epg                = other.m_epg;
-  m_iPVRChannelNumber  = other.m_iPVRChannelNumber;
-  m_iPVRChannelID      = other.m_iPVRChannelID;
+  m_pvrChannel         = other.m_pvrChannel;
   m_strTableName       = other.m_strTableName;
 
   return *this;
@@ -782,49 +777,37 @@ CPVRTimerInfoTag *CEpgInfoTag::Timer(void) const
   return tag;
 }
 
-void CEpgInfoTag::SetPVRChannelID(int iPVRChannelID)
+void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannel *channel)
 {
   CSingleLock lock(m_critSection);
-  m_iPVRChannelID = iPVRChannelID;
-}
-
-void CEpgInfoTag::SetPVRChannelNumber(int iPVRChannelNumber)
-{
-  CSingleLock lock(m_critSection);
-  m_iPVRChannelNumber = iPVRChannelNumber;
+  m_pvrChannel = channel;
 }
 
 bool CEpgInfoTag::HasPVRChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_iPVRChannelID != -1;
+  return m_pvrChannel != NULL;
 }
 
 int CEpgInfoTag::PVRChannelNumber(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_iPVRChannelNumber;
+  return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
 }
 
 CStdString CEpgInfoTag::PVRChannelName(void) const
 {
   CStdString strReturn;
   CSingleLock lock(m_critSection);
-  strReturn = m_strTableName;
+  if (m_pvrChannel)
+    strReturn = m_pvrChannel->ChannelName();
   return strReturn;
 }
 
 const PVR::CPVRChannel *CEpgInfoTag::ChannelTag(void) const
 {
-  int iChannelId(-1);
-  {
-    CSingleLock lock(m_critSection);
-    iChannelId = m_iPVRChannelID;
-  }
-
-  return (iChannelId != -1) ?
-      g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId) :
-      NULL;
+  CSingleLock lock(m_critSection);
+  return m_pvrChannel;
 }
 
 void CEpgInfoTag::Update(const EPG_TAG &tag)
@@ -870,8 +853,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_strEpisodeName     != tag.m_strEpisodeName ||
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
         EpgID()              != tag.EpgID() ||
-        m_iPVRChannelID      != tag.m_iPVRChannelID ||
-        m_iPVRChannelNumber  != tag.m_iPVRChannelNumber ||
+        m_pvrChannel         != tag.m_pvrChannel ||
         m_strTableName       != tag.m_strTableName ||
         ( tag.m_strGenre.length() > 0 && m_strGenre != tag.m_strGenre )
     );
@@ -891,8 +873,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iGenreType         = tag.m_iGenreType;
       m_iGenreSubType      = tag.m_iGenreSubType;
       m_epg                = tag.m_epg;
-      m_iPVRChannelID      = tag.m_iPVRChannelID;
-      m_iPVRChannelNumber  = tag.m_iPVRChannelNumber;
+      m_pvrChannel         = tag.m_pvrChannel;
       m_strTableName       = tag.m_strTableName;
       if (m_iGenreType == EPG_GENRE_USE_STRING && tag.m_strGenre.length() > 0)
       {
