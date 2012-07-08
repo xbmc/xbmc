@@ -708,6 +708,9 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
         // TODO: in future we may wish to union up the genres, for now we assume they're the same
         if (album.genre.empty())
           album.genre = (*k)->genre;
+        //       in addition, we may want to use year as discriminating for albums
+        if (album.iYear == 0)
+          album.iYear = (*k)->iYear;
       }
 
       albums.push_back(album);
