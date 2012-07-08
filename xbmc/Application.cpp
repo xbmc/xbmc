@@ -1351,7 +1351,7 @@ bool CApplication::Initialize()
   ResetScreenSaver();
 
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
+  g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick"));
 #endif
 
   return true;
@@ -2815,8 +2815,9 @@ bool CApplication::ProcessGamepad(float frameTime)
 #ifdef HAS_SDL_JOYSTICK
   if (!m_AppFocused)
     return false;
+
   int iWin = GetActiveWindowID();
-  int bid;
+  int bid = 0;
   g_Joystick.Update();
   if (g_Joystick.GetButton(bid))
   {
@@ -2875,7 +2876,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       g_Joystick.ResetAxis(abs(bid));
     }
   }
-  int position;
+  int position = 0;
   if (g_Joystick.GetHat(bid, position))
   {
     // reset Idle Timer
@@ -2894,7 +2895,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 
     bid = position<<16|bid;
 
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_HAT, actionID, actionName, fullrange))
+    if (bid && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_HAT, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
       g_audioManager.PlayActionSound(action);

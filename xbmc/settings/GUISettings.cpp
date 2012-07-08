@@ -520,6 +520,9 @@ void CGUISettings::Initialize()
 #else
   AddBool(in, "input.enablemouse", 21369, true);
 #endif
+#if defined(HAS_SDL_JOYSTICK)
+  AddBool(in, "input.enablejoystick", 35100, true);
+#endif
 
   CSettingsCategory* net = AddCategory(4, "network", 798);
   if (g_application.IsStandAlone())
