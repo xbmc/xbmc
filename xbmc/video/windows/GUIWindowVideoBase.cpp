@@ -895,7 +895,6 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
   case SELECT_ACTION_CHOOSE:
     {
       CContextButtons choices;
-      bool resume = false;
 
       if (item->IsVideoDb())
       {
@@ -905,17 +904,13 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
           choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
       }
 
-      if (!item->IsLiveTV())
+      CStdString resumeString = GetResumeString(*item);
+      if (!resumeString.IsEmpty())
       {
-        CStdString resumeString = GetResumeString(*item);
-        if (!resumeString.IsEmpty()) 
-        {
-          resume = true;
-          choices.Add(SELECT_ACTION_RESUME, resumeString);
-          choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
-        }
+        choices.Add(SELECT_ACTION_RESUME, resumeString);
+        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
       }
-      if (!resume)
+      else
         choices.Add(SELECT_ACTION_PLAY, 208);   // Play
 
       choices.Add(SELECT_ACTION_INFO, 22081); // Info
@@ -1003,28 +998,20 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
   CGUIMediaWindow::OnClick(iItem);
 }
 
-CStdString CGUIWindowVideoBase::GetResumeString(CFileItem item) 
+CStdString CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 {
   CStdString resumeString;
-  CStdString partString;
-  CVideoDatabase db;
-  if (db.Open())
+  int startOffset = 0, startPart = 0;
+  GetResumeItemOffset(&item, startOffset, startPart);
+  if (startOffset > 0)
   {
-    CBookmark bookmark;
-    CStdString itemPath(item.GetPath());
-    if (item.IsVideoDb() || item.IsDVD())
-      itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
-
-    if (db.GetResumeBookMark(itemPath, bookmark))
+    resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
+    if (startPart > 0)
     {
-      resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
-      if (bookmark.partNumber > 0)
-      {
-        partString.Format(g_localizeStrings.Get(23051).c_str(), bookmark.partNumber);
-        resumeString.append(" (").append(partString).append(")");
-      }
+      CStdString partString;
+      partString.Format(g_localizeStrings.Get(23051).c_str(), startPart);
+      resumeString += " (" + partString + ")";
     }
-    db.Close();
   }
   return resumeString;
 }
