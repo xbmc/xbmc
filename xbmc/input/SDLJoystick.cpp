@@ -35,6 +35,7 @@ using namespace std;
 CJoystick::CJoystick()
 {
   Reset(true);
+  m_joystickEnabled = false;
   m_NumAxes = 0;
   m_AxisId = 0;
   m_JoyId = 0;
@@ -47,6 +48,15 @@ CJoystick::CJoystick()
 
 void CJoystick::Initialize()
 {
+  if (!IsEnabled())
+    return;
+
+  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
+  {
+    CLog::Log(LOGERROR, "(Re)start joystick subsystem failed : %s",SDL_GetError());
+    return;
+  }
+
   // clear old joystick names
   m_JoystickNames.clear();
 
@@ -118,6 +128,9 @@ void CJoystick::Reset(bool axis /*=false*/)
 
 void CJoystick::Update()
 {
+  if (!IsEnabled())
+    return;
+
   int buttonId    = -1;
   int axisId      = -1;
   int hatId       = -1;
@@ -232,6 +245,9 @@ void CJoystick::Update()
 
 void CJoystick::Update(SDL_Event& joyEvent)
 {
+  if (!IsEnabled())
+    return;
+
   int buttonId = -1;
   int axisId = -1;
   int joyId = -1;
@@ -299,7 +315,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
 
 bool CJoystick::GetHat(int &id, int &position,bool consider_repeat) 
 {
-  if (!IsHatActive())
+  if (!IsEnabled() || !IsHatActive())
   {
     id = position = 0;
     return false;
@@ -335,7 +351,7 @@ bool CJoystick::GetHat(int &id, int &position,bool consider_repeat)
 
 bool CJoystick::GetButton(int &id, bool consider_repeat)
 {
-  if (!IsButtonActive())
+  if (!IsEnabled() || !IsButtonActive())
   {
     id = 0;
     return false;
@@ -376,7 +392,7 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
 
 bool CJoystick::GetAxis (int &id)
 { 
-  if (!IsAxisActive()) 
+  if (!IsEnabled() || !IsAxisActive()) 
   {
     id = 0;
     return false; 
@@ -414,6 +430,20 @@ float CJoystick::GetAmount(int axis)
   return 0;
 }
 
+void CJoystick::SetEnabled(bool enabled /*=true*/)
+{
+  if( enabled && !m_joystickEnabled )
+  {
+    m_joystickEnabled = true;
+    Initialize();
+  }
+  else if( !enabled && m_joystickEnabled )
+  {
+    ReleaseJoysticks();
+    m_joystickEnabled = false;
+  }
+}
+
 float CJoystick::SetDeadzone(float val)
 {
   if (val<0) val=0;
@@ -422,8 +452,16 @@ float CJoystick::SetDeadzone(float val)
   return val;
 }
 
-bool CJoystick::Reinitialize()
+bool CJoystick::ReleaseJoysticks()
 {
+  m_pJoysticks.clear();
+  m_JoystickNames.clear();
+  m_HatId = 0;
+  m_ButtonId = 0;
+  m_HatState = SDL_HAT_CENTERED;
+  m_ActiveFlags = JACTIVE_NONE;
+  Reset(true);
+
   // Restart SDL joystick subsystem
   SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
   if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
@@ -431,12 +469,12 @@ bool CJoystick::Reinitialize()
     CLog::Log(LOGERROR, "Stop joystick subsystem failed");
     return false;
   }
-  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
-  {
-    CLog::Log(LOGERROR, "Restart joystick subsystem failed : %s",SDL_GetError());
-    return false;
-  }
+  return true;
+}
 
+bool CJoystick::Reinitialize()
+{
+  if( !ReleaseJoysticks() ) return false;
   Initialize();
 
   return true;

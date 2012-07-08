@@ -53,6 +53,8 @@ public:
   int GetAxisWithMaxAmount();
   float GetAmount(int axis);
   float GetAmount() { return GetAmount(m_AxisId); }
+  bool IsEnabled() const { return m_joystickEnabled; }
+  void SetEnabled(bool enabled = true);
   float SetDeadzone(float val);
   bool Reinitialize();
   void Acquire();
@@ -77,6 +79,7 @@ private:
   int m_JoyId;
   int m_NumAxes;
   int m_DeadzoneRange;
+  bool m_joystickEnabled;
   uint32_t m_pressTicksButton;
   uint32_t m_pressTicksHat;
   uint8_t m_ActiveFlags;

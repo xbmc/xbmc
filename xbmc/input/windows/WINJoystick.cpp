@@ -52,6 +52,7 @@ extern HWND g_hWnd;
 CJoystick::CJoystick()
 {
   Reset(true);
+  m_joystickEnabled = false;
   m_NumAxes = 0;
   m_AxisId = 0;
   m_JoyId = 0;
@@ -175,6 +176,9 @@ BOOL CALLBACK CJoystick::EnumObjectsCallback( const DIDEVICEOBJECTINSTANCE* pdid
 
 void CJoystick::Initialize()
 {
+  if (!IsEnabled())
+    return;
+
   HRESULT hr;
 
   // clear old joystick names
@@ -225,6 +229,9 @@ void CJoystick::Reset(bool axis /*=true*/)
 
 void CJoystick::Update()
 {
+  if (!IsEnabled())
+    return;
+
   int buttonId    = -1;
   int axisId      = -1;
   int hatId       = -1;
@@ -363,7 +370,7 @@ void CJoystick::Update()
 
 bool CJoystick::GetHat(int &id, int &position,bool consider_repeat)
 {
-  if (!IsHatActive())
+  if (!IsEnabled() || !IsHatActive())
   {
     id = position = 0;
     return false;
@@ -397,7 +404,7 @@ bool CJoystick::GetHat(int &id, int &position,bool consider_repeat)
 
 bool CJoystick::GetButton(int &id, bool consider_repeat)
 {
-  if (!IsButtonActive())
+  if (!IsEnabled() || !IsButtonActive())
   {
     id = 0;
     return false;
@@ -436,7 +443,7 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
 
 bool CJoystick::GetAxis (int &id)
 { 
-  if (!IsAxisActive()) 
+  if (!IsEnabled() || !IsAxisActive()) 
   {
     id = 0;
     return false; 
@@ -472,6 +479,20 @@ float CJoystick::GetAmount(int axis)
   return 0;
 }
 
+void CJoystick::SetEnabled(bool enabled /*=true*/)
+{
+  if( enabled && !m_joystickEnabled )
+  {
+    m_joystickEnabled = true;
+    Initialize();
+  }
+  else if( !enabled && m_joystickEnabled )
+  {
+    ReleaseJoysticks();
+    m_joystickEnabled = false;
+  }
+}
+
 float CJoystick::SetDeadzone(float val)
 {
   if (val<0) val=0;
@@ -488,6 +509,8 @@ bool CJoystick::Reinitialize()
 
 void CJoystick::Acquire()
 {
+  if (!IsEnabled())
+    return;
   if(!m_pJoysticks.empty())
   {
     CLog::Log(LOGDEBUG, __FUNCTION__": Focus back, acquire Joysticks");
