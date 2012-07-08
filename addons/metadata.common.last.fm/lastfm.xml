@@ -1,38 +1,287 @@
 <scraperfunctions>
-	<GetLastFMDiscography dest="5">
+	<GetLastFMDiscographyByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMDiscography&quot; cache=&quot;lastfmdiscog-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMDiscographyByMBID>
+	<GetLastFMDiscography dest="5" clearbuffers="no">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMDiscography&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetLastFMDiscography>
-	<ParseLastFMDiscography dest="5">
+	<ParseLastFMDiscography dest="5" clearbuffers="no">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/album&gt;" dest="2+">
+			<RegExp input="" output="" dest="2">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/album&gt;" dest="2">
 				<expression repeat="yes">&lt;album[^&gt;]*&gt;[^&lt;]*&lt;name&gt;([^&lt;]*?)&lt;/name&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</ParseLastFMDiscography>
-	<GetLastFMArtistThumbsByID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistThumbs&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getimages&amp;mbid=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
+
+	<GetLastFMBiographyByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMBiography&quot; cache=&quot;lastfmartistinfo-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMBiographyByMBID>
+	<ParseLastFMBiography dest="5" clearbuffers="no">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="6">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="11">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="11">
+				<expression fixchars="1">&lt;content&gt;&lt;!\[CDATA\[(.*?)\]\]</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$12" dest="2">
+				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetAMGFallbackBiographyByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
+					<expression>allmusic.com</expression>
+				</RegExp>
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$11" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="6">
+				<expression>(.+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseLastFMBiography>
+
+	<GetLastFMFallbackBiographyByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMFallbackBiography&quot; cache=&quot;lastfmartistinfo-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMFallbackBiographyByMBID>
+	<ParseLastFMFallbackBiography dest="5" clearbuffers="no">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="6">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="6">
+				<expression fixchars="1">&lt;content&gt;&lt;!\[CDATA\[(.*?)\]\]</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseLastFMFallbackBiography>
+
+	<GetLastFMArtistGenresByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistGenres&quot; cache=&quot;lastfmgenres-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMArtistGenresByMBID>
+	<ParseLastFMArtistGenres dest="5" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="4">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="11">
+				<expression noclean="1">&lt;tag&gt;.*?&lt;name&gt;([^/lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$12" dest="4">
+				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistGenresByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
+					<expression>allmusic.com</expression>
+				</RegExp>
+				<expression>&lt;genre&gt;&lt;/genre&gt;</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$11" dest="4">
+				<expression>&lt;genre&gt;(.+)&lt;/genre&gt;</expression>
+			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
-	</GetLastFMArtistThumbsByID>
-	<GetLastFMArtistThumbsByName dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistThumbs&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getimages&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
+	</ParseLastFMArtistGenres>
+
+	<GetLastFMFallbackArtistGenresByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMFallbackArtistGenres&quot; cache=&quot;lastfmgenres-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMFallbackArtistGenresByMBID>
+	<ParseLastFMFallbackArtistGenres dest="5" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="4">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4">
+				<expression noclean="1">&lt;tag&gt;.*?&lt;name&gt;([^/lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseLastFMFallbackArtistGenres>
+
+	<GetLastFMArtistStylesByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistStyles&quot; cache=&quot;lastfmgenres-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMArtistStylesByMBID>
+	<ParseLastFMArtistStyles dest="5" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="4">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;style&gt;\1&lt;/style&gt;" dest="11">
+				<expression repeat="yes" noclean="1">&lt;tag&gt;.*?&lt;name&gt;([^/lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$12" dest="4">
+				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistStylesByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
+					<expression>allmusic.com</expression>
+				</RegExp>
+				<expression>&lt;style&gt;&lt;/style&gt;</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$11" dest="4">
+				<expression>&lt;style&gt;(.+)&lt;/style&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseLastFMArtistStyles>
+
+	<GetLastFMFallbackArtistStylesByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMFallbackArtistStyles&quot; cache=&quot;lastfmgenres-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMFallbackArtistStylesByMBID>
+	<ParseLastFMFallbackArtistStyles dest="5" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="4">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;style&gt;\1&lt;/style&gt;" dest="4">
+				<expression repeat="yes" noclean="1">&lt;tag&gt;.*?&lt;name&gt;([^/lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseLastFMFallbackArtistStyles>
+
+	<GetLastFMArtistThumbsByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistThumbs&quot; cache=&quot;lastfmartistimages-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getimages&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetLastFMArtistThumbsByMBID>
+	<GetLastFMArtistThumbsByName dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMArtistThumbs&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getimages&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetLastFMArtistThumbsByName>
-	<ParseLastFMArtistThumbs dest="5">
+	<ParseLastFMArtistThumbs dest="5" clearbuffers="no">
 		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="6">
+				<expression />
+			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="6">
-				<expression repeat="yes" noclean="1">&lt;size name="original"[^&gt;]*&gt;([^&lt;]*)&lt;[^&lt;]*&lt;size name="large"[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" noclean="1">&lt;size name=&quot;original&quot;[^&gt;]*&gt;([^&lt;]*)&lt;[^&lt;]*&lt;size name=&quot;large&quot;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseLastFMArtistThumbs>
+
+
+	<GetLastFMAlbumTitleByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumTitle&quot; cache=&quot;lastfmalbum-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMAlbumTitleByMBID>
+	<GetLastFMAlbumTitleByAlbumAndArtist dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumTitle&quot; cache=&quot;lastfmalbum-\4-\3.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;amp;album=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression encode="1,2">(.+)::(.+)::(.+)::(.+)</expression>
+		</RegExp>
+	</GetLastFMAlbumTitleByAlbumAndArtist>
+	<ParseLastFMAlbumTitle dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="2">
+				<expression noclean="1">&lt;name&gt;(.*?)&lt;/name&gt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
-	</ParseLastFMArtistThumbs>
+	</ParseLastFMAlbumTitle>
+
+	<GetLastFMAlbumArtistByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumArtist&quot; cache=&quot;lastfmalbum-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMAlbumArtistByMBID>
+	<GetLastFMAlbumArtistByAlbumAndArtist dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumArtist&quot; cache=&quot;lastfmalbum-\4-\3.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;amp;album=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression encode="1,2">(.+)::(.+)::(.+)::(.+)</expression>
+		</RegExp>
+	</GetLastFMAlbumArtistByAlbumAndArtist>
+	<ParseLastFMAlbumArtist dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="2">
+				<expression noclean="1">&lt;artist&gt;(.*?)&lt;/artist&gt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</ParseLastFMAlbumArtist>
+
+	<GetLastFMAlbumDateByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumDate&quot; cache=&quot;lastfmalbum-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMAlbumDateByMBID>
+	<GetLastFMAlbumDateByAlbumAndArtist dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumDate&quot; cache=&quot;lastfmalbum-\4-\3.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;amp;album=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression encode="1,2">(.+)::(.+)::(.+)::(.+)</expression>
+		</RegExp>
+	</GetLastFMAlbumDateByAlbumAndArtist>
+	<ParseLastFMAlbumDate dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;releasedate&gt;\1&lt;/releasedate&gt;" dest="2">
+				<expression trim="1">&lt;releasedate&gt;([^,]*)?([^&lt;]*)?&lt;/releasedate&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="2+">
+				<expression trim="1">&lt;releasedate&gt;.*?([0-9]{4})[^&lt;]*&lt;/releasedate&gt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</ParseLastFMAlbumDate>
+
+	<GetLastFMAlbumTracksByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumTracks&quot; cache=&quot;lastfmalbum-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMAlbumTracksByMBID>
+	<GetLastFMAlbumTracksByAlbumAndArtist dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumTracks&quot; cache=&quot;lastfmalbum-\4-\3.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;amp;album=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression encode="1,2">(.+)::(.+)::(.+)::(.+)</expression>
+		</RegExp>
+	</GetLastFMAlbumTracksByAlbumAndArtist>
+	<ParseLastFMAlbumTracks dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\2&lt;/title&gt;&lt;/track&gt;" dest="2">
+				<expression repeat="yes" noclean="1">&lt;track rank=&quot;(.*?)&quot;.*?&lt;name&gt;(.*?)&lt;/name&gt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</ParseLastFMAlbumTracks>
+
+	<GetLastFMAlbumReviewByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumReview&quot; cache=&quot;lastfmalbum-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMAlbumReviewByMBID>
+	<GetLastFMAlbumReviewByAlbumAndArtist dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumReview&quot; cache=&quot;lastfmalbum-\4-\3.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;amp;album=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression encode="1,2">(.+)::(.+)::(.+)::(.+)</expression>
+		</RegExp>
+	</GetLastFMAlbumReviewByAlbumAndArtist>
+	<ParseLastFMAlbumReview dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
+				<expression fixchars="1">&lt;content&gt;&lt;!\[CDATA\[(.*?)(User-|\]\])</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</ParseLastFMAlbumReview>
+
+	<GetLastFMAlbumThumbsByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumThumbs&quot; cache=&quot;lastfmalbum-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;amp;mbid=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetLastFMAlbumThumbsByMBID>
 	<GetLastFMAlbumThumbs dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumThumbs&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;album=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>(.+)::(.+)</expression>
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseLastFMAlbumThumbs&quot; cache=&quot;lastfmalbum-\4-\3.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;artist=\2&amp;amp;album=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;lang=$INFO[lastfmlanguage]&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression encode="1,2">(.+)::(.+)::(.+)::(.+)</expression>
 		</RegExp>
 	</GetLastFMAlbumThumbs>
 	<ParseLastFMAlbumThumbs dest="5">
@@ -43,7 +292,8 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2+">
 				<expression noclean="1">&lt;image size=&quot;large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</ParseLastFMAlbumThumbs>
+
 </scraperfunctions>

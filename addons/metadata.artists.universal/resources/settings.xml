@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <category label="128">
+      <setting label="30006" type="labelenum" values="last.fm|None" id="biogsource" default="last.fm"/>
+      <setting label="30015" type="labelenum" values="en|de|es|fr|it|jp|pl|pt|ru|sv|tr|zh" id="lastfmlanguage" default="en" visible="eq(-1,0)"/>
+      <setting type="sep"/>
+      <setting label="30008" type="labelenum" values="last.fm|MusicBrainz|allmusic.com|None" id="discogsource" default="MusicBrainz"/>
+      <setting type="sep"/>
+      <setting label="30009" type="labelenum" values="last.fm|allmusic.com|None" id="genressource" default="last.fm"/>
+      <setting label="30010" type="labelenum" values="last.fm|allmusic.com|None" id="stylessource" default="last.fm"/>
+      <setting label="30011" type="labelenum" values="allmusic.com|MusicBrainz|None" id="lifespansource" default="allmusic.com"/>
+      <setting label="30012" type="labelenum" values="allmusic.com|None" id="moodssource" default="allmusic.com"/>
+      <setting label="30014" type="labelenum" values="allmusic.com|None" id="yearsasource" default="allmusic.com"/>
+  </category>
+
+  <category label="30021">
+      <setting label="30016" type="labelenum" values="last.fm|None" id="biogfbsource" default="None"/>
+      <setting label="30015" type="labelenum" values="en|de|es|fr|it|jp|pl|pt|ru|sv|tr|zh" id="lastfmlanguage" default="en" visible="eq(-1,0)"/>
+      <setting type="sep"/>
+      <setting label="30017" type="labelenum" values="last.fm|MusicBrainz|None" id="discogfbsource" default="None" visible="false"/>
+      <setting label="30018" type="labelenum" values="last.fm|allmusic.com|None" id="genresfbsource" default="None"/>
+      <setting label="30019" type="labelenum" values="last.fm|allmusic.com|None" id="stylesfbsource" default="None"/>
+      <setting label="30020" type="labelenum" values="MusicBrainz|allmusic.com|None" id="lifespanfbsource" default="None"/>
+  </category>
+
+  <category label="30007">
+    <setting type="lsep" label="Thumb Sources"/>
+    <setting label="30005" type="bool" id="fanarttvthumbs" default="true"/>
+    <setting label="30003" type="bool" id="htbthumbs" default="true"/>
+    <setting label="30002" type="bool" id="lastfmartistthumbs" default="true"/>
+    <setting label="30001" type="bool" id="allmusicartistthumbs" default="true"/>
+    <setting type="lsep" label="Fanart Sources"/>
+    <setting label="30004" type="bool" id="fanarttvfanart" default="true"/>
+    <setting label="30000" type="bool" id="htbfanart" default="true"/>
+  </category>
+
+</settings>
