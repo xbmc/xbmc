@@ -47,8 +47,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
-    m_iPVRChannelId(-1),
-    m_iPVRChannelNumber(-1)
+    m_pvrChannel(NULL)
 {
 }
 
@@ -60,8 +59,7 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
     m_iEpgID(channel->EpgID()),
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
-    m_iPVRChannelId(channel->ChannelID()),
-    m_iPVRChannelNumber(channel->ChannelNumber())
+    m_pvrChannel(channel)
 {
 }
 
@@ -73,8 +71,7 @@ CEpg::CEpg(void) :
     m_iEpgID(0),
     m_strName(StringUtils::EmptyString),
     m_strScraperName(StringUtils::EmptyString),
-    m_iPVRChannelId(-1),
-    m_iPVRChannelNumber(-1)
+    m_pvrChannel(NULL)
 {
 }
 
@@ -94,8 +91,7 @@ CEpg &CEpg::operator =(const CEpg &right)
   m_strScraperName    = right.m_strScraperName;
   m_nowActiveStart    = right.m_nowActiveStart;
   m_lastScanTime      = right.m_lastScanTime;
-  m_iPVRChannelId     = right.m_iPVRChannelId;
-  m_iPVRChannelNumber = right.m_iPVRChannelNumber;
+  m_pvrChannel        = right.m_pvrChannel;
 
   for (map<CDateTime, CEpgInfoTag *>::const_iterator it = right.m_tags.begin(); it != right.m_tags.end(); it++)
     m_tags.insert(make_pair(it->first, new CEpgInfoTag(*it->second)));
@@ -325,57 +321,53 @@ const CEpgInfoTag *CEpg::GetTagAround(const CDateTime &time) const
 void CEpg::AddEntry(const CEpgInfoTag &tag)
 {
   CEpgInfoTag *newTag(NULL);
+  CSingleLock lock(m_critSection);
+  map<CDateTime, CEpgInfoTag*>::iterator itr = m_tags.find(tag.StartAsUTC());
+  if (itr != m_tags.end())
+    newTag = itr->second;
+  else
   {
-    CSingleLock lock(m_critSection);
-    map<CDateTime, CEpgInfoTag*>::iterator itr = m_tags.find(tag.StartAsUTC());
-    if (itr != m_tags.end())
-      newTag = itr->second;
-    else
-    {
-      CPVRChannel *channel = Channel();
-      newTag = new CEpgInfoTag(this, m_iPVRChannelNumber, m_iPVRChannelId, m_strName, channel ? channel->IconPath() : StringUtils::EmptyString);
-      m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
-    }
+    newTag = new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : StringUtils::EmptyString);
+    m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
   }
 
   if (newTag)
   {
     newTag->Update(tag);
-    newTag->m_epg               = this;
-    newTag->m_iPVRChannelNumber = m_iPVRChannelNumber;
-    newTag->m_iPVRChannelID     = m_iPVRChannelId;
-    newTag->m_strTableName      = m_strName;
-    newTag->m_bChanged          = false;
+    newTag->SetPVRChannel(m_pvrChannel);
+    newTag->m_epg          = this;
+    newTag->m_strTableName = m_strName;
+    newTag->m_bChanged     = false;
   }
 }
 
 bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */, bool bSort /* = true */)
 {
-  bool bReturn(false);
-  CSingleLock lock(m_critSection);
-
   CEpgInfoTag *infoTag(NULL);
-  map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.find(tag.StartAsUTC());
-  bool bNewTag(false);
-  if (it != m_tags.end())
+  bool bReturn(false);
   {
-    infoTag = it->second;
-  }
-  else
-  {
-    /* create a new tag if no tag with this ID exists */
-    CPVRChannel *channel = Channel();
-    infoTag = new CEpgInfoTag(this, m_iPVRChannelNumber, m_iPVRChannelId, m_strName, channel ? channel->IconPath() : StringUtils::EmptyString);
-    infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
-    m_tags.insert(make_pair(tag.StartAsUTC(), infoTag));
-    bNewTag = true;
-  }
+    CSingleLock lock(m_critSection);
 
-  infoTag->Update(tag, bNewTag);
-  infoTag->m_epg               = this;
-  infoTag->m_iPVRChannelNumber = m_iPVRChannelNumber;
-  infoTag->m_iPVRChannelID     = m_iPVRChannelId;
-  infoTag->m_strTableName      = m_strName;
+    map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.find(tag.StartAsUTC());
+    bool bNewTag(false);
+    if (it != m_tags.end())
+    {
+      infoTag = it->second;
+    }
+    else
+    {
+      /* create a new tag if no tag with this ID exists */
+      infoTag = new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : StringUtils::EmptyString);
+      infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
+      m_tags.insert(make_pair(tag.StartAsUTC(), infoTag));
+      bNewTag = true;
+    }
+
+    infoTag->Update(tag, bNewTag);
+    infoTag->m_epg          = this;
+    infoTag->m_pvrChannel   = m_pvrChannel;
+    infoTag->m_strTableName = m_strName;
+  }
 
   if (bUpdateDatabase)
     bReturn = infoTag->Persist();
@@ -670,18 +662,8 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
 
   m_strName        = epg.m_strName;
   m_strScraperName = epg.m_strScraperName;
-  if (m_iPVRChannelId == -1 || epg.m_iPVRChannelId != -1)
-  {
-    m_iPVRChannelId     = epg.m_iPVRChannelId;
-    m_iPVRChannelNumber = epg.m_iPVRChannelNumber;
-
-    /* Copy the new channel information to all child tags */
-    for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
-    {
-      it->second->SetPVRChannelID(m_iPVRChannelId);
-      it->second->SetPVRChannelNumber(m_iPVRChannelNumber);
-    }
-  }
+  if (epg.m_pvrChannel)
+    SetChannel(epg.m_pvrChannel);
 
   if (bUpdateDb)
     bReturn = Persist();
@@ -955,46 +937,37 @@ const CEpgInfoTag *CEpg::GetPreviousEvent(const CEpgInfoTag& tag) const
 
 CPVRChannel *CEpg::Channel(void) const
 {
-  int iChannelId(-1);
-  {
-    CSingleLock lock(m_critSection);
-    iChannelId = m_iPVRChannelId;
-  }
-
-  if (iChannelId != -1 && g_PVRManager.IsStarted())
-    return g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
-
-  return NULL;
+  CSingleLock lock(m_critSection);
+  return m_pvrChannel;
 }
 
 int CEpg::ChannelID(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_iPVRChannelId;
+  return m_pvrChannel ? m_pvrChannel->ChannelID() : -1;
 }
 
 int CEpg::ChannelNumber(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_iPVRChannelNumber;
+  return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
 }
 
 void CEpg::SetChannel(PVR::CPVRChannel *channel)
 {
   CSingleLock lock(m_critSection);
-  m_iPVRChannelId     = channel->ChannelID();
-  m_iPVRChannelNumber = channel->ChannelNumber();
-  for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
+  if (m_pvrChannel != channel)
   {
-    it->second->m_iPVRChannelID     = m_iPVRChannelId;
-    it->second->m_iPVRChannelNumber = m_iPVRChannelNumber;
+    m_pvrChannel = channel;
+    for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
+      it->second->SetPVRChannel(m_pvrChannel);
   }
 }
 
 bool CEpg::HasPVRChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_iPVRChannelId != -1;
+  return m_pvrChannel != NULL;
 }
 
 bool CEpg::UpdatePending(void) const

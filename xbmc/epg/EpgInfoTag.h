@@ -46,7 +46,7 @@ namespace EPG
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CEpgInfoTag(CEpg *epg = NULL, int iPVRChannelNumber = -1, int iPVRChannelID = -1, const CStdString &strTableName = StringUtils::EmptyString, const CStdString &strIconPath = StringUtils::EmptyString);
+    CEpgInfoTag(CEpg *epg = NULL, PVR::CPVRChannel *pvrChannel = NULL, const CStdString &strTableName = StringUtils::EmptyString, const CStdString &strIconPath = StringUtils::EmptyString);
 
     /*!
      * @brief Create a new EPG infotag with 'data' as content.
@@ -379,16 +379,10 @@ namespace EPG
     virtual PVR::CPVRTimerInfoTag *Timer(void) const;
 
     /*!
-     * @brief Set the PVR channel ID of the tag
-     * @param The new value
+     * @brief Change the channel tag of this epg tag
+     * @param channel The new channel
      */
-    virtual void SetPVRChannelID(int iPVRChannelID);
-
-    /*!
-     * @brief Set the PVR channel number of the tag
-     * @param The new value
-     */
-    virtual void SetPVRChannelNumber(int iPVRChannelNumber);
+    virtual void SetPVRChannel(PVR::CPVRChannel *channel);
 
     /*!
      * @return True if this tag has a PVR channel set.
@@ -464,8 +458,7 @@ namespace EPG
     int                    m_iTimerId;           /*!< the id of the timer (if any) */
     CEpg *                 m_epg;                /*!< the schedule that this event belongs to */
 
-    int                    m_iPVRChannelNumber;  /*!< the channel number in the "all channels" group */
-    int                    m_iPVRChannelID;      /*!< the ID of the PVR channel */
+    PVR::CPVRChannel *     m_pvrChannel;
     CStdString             m_strTableName;       /*!< the name of the EPG table (or PVR channel, if it's a PVR epg table */
     CCriticalSection       m_critSection;
   };
