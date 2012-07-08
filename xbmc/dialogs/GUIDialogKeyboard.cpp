@@ -255,6 +255,14 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
       }
     }
     break;
+
+  case GUI_MSG_SET_TEXT:
+    SetText(message.GetLabel());
+
+    // close the dialog if requested
+    if (message.GetParam1() > 0)
+      OnOK();
+    break;
   }
 
   return true;
