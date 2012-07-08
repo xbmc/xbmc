@@ -50,7 +50,8 @@ SRCS=	\
 	TestTimeUtils.cpp \
 	TestURIUtils.cpp \
 	TestVariant.cpp \
-	TestXBMCTinyXML.cpp
+	TestXBMCTinyXML.cpp \
+	TestXMLUtils.cpp
 
 LIB=utilsTest.a
 
