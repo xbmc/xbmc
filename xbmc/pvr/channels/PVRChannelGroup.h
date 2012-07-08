@@ -325,6 +325,11 @@ namespace PVR
     virtual CPVRChannelGroup *GetNextGroup(void) const;
 
     /*!
+     * @return The previous channel group.
+     */
+    virtual CPVRChannelGroup *GetPreviousGroup(void) const;
+
+    /*!
      * @brief The amount of hidden channels in this container.
      * @return The amount of hidden channels in this container.
      */

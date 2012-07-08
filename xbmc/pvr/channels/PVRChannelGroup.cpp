@@ -523,6 +523,11 @@ CPVRChannelGroup *CPVRChannelGroup::GetNextGroup(void) const
   return g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*this);
 }
 
+CPVRChannelGroup *CPVRChannelGroup::GetPreviousGroup(void) const
+{
+  return g_PVRChannelGroups->Get(m_bRadio)->GetPreviousGroup(*this);
+}
+
 /********** private methods **********/
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
