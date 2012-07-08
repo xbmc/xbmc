@@ -21,10 +21,9 @@
 
 #include "GUIDialogSeekBar.h"
 #include "guilib/GUISliderControl.h"
-#include "GUIUserMessages.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
-#include "utils/StringUtils.h"
+#include "utils/SeekHandler.h"
 
 #define POPUP_SEEK_SLIDER       401
 #define POPUP_SEEK_LABEL        402
@@ -37,16 +36,6 @@ CGUIDialogSeekBar::CGUIDialogSeekBar(void)
 
 CGUIDialogSeekBar::~CGUIDialogSeekBar(void)
 {
-}
-
-bool CGUIDialogSeekBar::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK)
-  {
-    m_handler.Seek(action.GetID() == ACTION_ANALOG_SEEK_FORWARD, action.GetAmount(), action.GetRepeat());
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
@@ -63,12 +52,6 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
         CGUIDialog::OnMessage(message);
     }
     break;
-  case GUI_MSG_PLAYBACK_STARTED:
-    { // new song started while our window is up - reset our seek handler
-      m_handler.Reset();
-    }
-    break;
-
   }
   return false; // don't process anything other than what we need!
 }
@@ -82,7 +65,7 @@ void CGUIDialogSeekBar::FrameMove()
   }
 
   // update controls
-  if (!m_handler.InProgress() && !g_infoManager.m_performingSeek)
+  if (!g_application.GetSeekHandler()->InProgress() && !g_infoManager.m_performingSeek)
   { // position the bar at our current time
     CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
     if (pSlider && g_infoManager.GetTotalPlayTime())
@@ -96,22 +79,12 @@ void CGUIDialogSeekBar::FrameMove()
   {
     CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
     if (pSlider)
-      pSlider->SetPercentage((int)m_handler.GetPercent());
+      pSlider->SetPercentage((int)g_application.GetSeekHandler()->GetPercent());
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_SEEK_LABEL);
-    msg.SetLabel(GetSeekTimeLabel());
+    msg.SetLabel(g_infoManager.GetCurrentSeekTime());
     OnMessage(msg);
   }
 
-  // Check for seek timeout, and perform the seek
-  m_handler.Process();
-
   CGUIDialog::FrameMove();
 }
-
-CStdString CGUIDialogSeekBar::GetSeekTimeLabel(TIME_FORMAT format)
-{
-  int time = (int)(g_infoManager.GetTotalPlayTime() * m_handler.GetPercent() * 0.01f);
-  return StringUtils::SecondsToTimeString(time, format);
-}
-

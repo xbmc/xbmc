@@ -22,8 +22,6 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "XBDateTime.h"
-#include "utils/SeekHandler.h"
 
 class CGUIDialogSeekBar : public CGUIDialog
 {
@@ -31,10 +29,5 @@ public:
   CGUIDialogSeekBar(void);
   virtual ~CGUIDialogSeekBar(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
   virtual void FrameMove();
-  float GetPercentage() {return m_handler.GetPercent();};
-  CStdString GetSeekTimeLabel(TIME_FORMAT format = TIME_FORMAT_GUESS);
-protected:
-  CSeekHandler m_handler;
 };
