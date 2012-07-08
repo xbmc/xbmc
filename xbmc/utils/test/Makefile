@@ -49,6 +49,7 @@ SRCS=	\
 	TestTimeSmoother.cpp \
 	TestTimeUtils.cpp \
 	TestURIUtils.cpp \
+	TestVariant.cpp \
 	TestXBMCTinyXML.cpp
 
 LIB=utilsTest.a
