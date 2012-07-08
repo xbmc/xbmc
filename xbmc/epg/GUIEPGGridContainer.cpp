@@ -725,7 +725,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       UpdateLayout(true); // true to refresh all items
 
       /* Create Ruler items */
-      CDateTime ruler = m_gridStart;
+      CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
       CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
       CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true, true)));
       rulerItem->SetProperty("DateLabel", true);
@@ -793,7 +793,7 @@ void CGUIEPGGridContainer::UpdateItems()
     CDateTime gridCursor  = m_gridStart; //reset cursor for new channel
     unsigned long progIdx = m_epgItemsPtr[row].start;
     unsigned long lastIdx = m_epgItemsPtr[row].stop;
-    int channelnum        = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->PVRChannelNumber();
+    int iEpgId            = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->EpgID();
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -806,18 +806,18 @@ void CGUIEPGGridContainer::UpdateItems()
         if (tag == NULL)
           progIdx++;
 
-        if (tag->PVRChannelNumber() != channelnum)
+        if (tag->EpgID() != iEpgId)
           break;
 
-        if (m_gridEnd <= tag->StartAsLocalTime())
+        if (m_gridEnd <= tag->StartAsUTC())
         {
           break;
         }
-        else if (gridCursor >= tag->EndAsLocalTime())
+        else if (gridCursor >= tag->EndAsUTC())
         {
           progIdx++;
         }
-        else if (gridCursor < tag->EndAsLocalTime())
+        else if (gridCursor < tag->EndAsUTC())
         {
           m_gridIndex[row][block].item = item;
           break;
