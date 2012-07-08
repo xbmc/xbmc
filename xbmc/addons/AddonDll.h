@@ -430,7 +430,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
         else if (strcmpi(type, "rangeofnum") == 0 || strcmpi(type, "slider") == 0 ||
                  strcmpi(type, "number") == 0)
         {
-          float tmpf = atof(GetSetting(id));
+          float tmpf = (float)atof(GetSetting(id));
           int   tmpi;
 
           if (option && strcmpi(option,"int") == 0)
