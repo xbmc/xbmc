@@ -1,5 +1,7 @@
 v1.2.3.116:
 - Fixed: playback of recordings with non-ASCII characters
+- Added: Hungarian translation
+- Added: Korean translation
 
 v1.2.3.115:
 - Changed: Switch to gettext (PO) files for addon translations
