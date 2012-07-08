@@ -370,7 +370,7 @@ ifneq (1,@USE_XRANDR@)
 	# xbmc-xrandr.c gets picked up by the default make rules
 	@echo "excluding xbmc-xrandr"
 else
-	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11
+	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 -lm
 endif
 
 tools/XBMCTex/XBMCTex:
