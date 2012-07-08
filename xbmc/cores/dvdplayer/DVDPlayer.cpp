@@ -1523,8 +1523,6 @@ void CDVDPlayer::HandlePlaySpeed()
         g_PVRManager.LoadCurrentChannelSettings();
 
       caching = CACHESTATE_DONE;
-      SAFE_RELEASE(m_CurrentAudio.startsync);
-      SAFE_RELEASE(m_CurrentVideo.startsync);
     }
     else
     {
