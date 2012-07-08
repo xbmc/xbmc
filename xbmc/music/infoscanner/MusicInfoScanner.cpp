@@ -687,7 +687,7 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
       {
         unsigned int match = 0;
         vector<string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
-        for (; match < common.size(), match < compare.size(); match++)
+        for (; match < common.size() && match < compare.size(); match++)
         {
           if (compare[match] != common[match])
             break;
