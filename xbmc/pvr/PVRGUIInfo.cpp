@@ -794,7 +794,7 @@ int CPVRGUIInfo::GetStartTime(void) const
     /* Calculate here the position we have of the running live TV event.
      * "position in ms" = ("current local time" - "event start local time") * 1000
      */
-    CDateTime current = m_playingStarted + CDateTimeSpan(0,0,0,m_fPlayerPostion/1000.0);
+    CDateTime current = m_playingStarted + CDateTimeSpan(0,0,0,(int) (m_fPlayerPostion/1000.0));
     CDateTime start = m_playingEpgTag->StartAsUTC(); 
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return (time.GetDays()   * 60 * 60 * 24
@@ -852,7 +852,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
         epgTag = *m_playingEpgTag;
     }
     const CPVRChannel *channel = bHasEpgTag ? epgTag.ChannelTag() : NULL;
-    CDateTime currentPlayTime = m_playingStarted + CDateTimeSpan(0,0,0,m_fPlayerPostion/1000.0);
+    CDateTime currentPlayTime = m_playingStarted + CDateTimeSpan(0,0,0, (int) (m_fPlayerPostion/1000.0));
     if (!bHasEpgTag || !epgTag.IsActive(currentPlayTime) ||
         !channel || *channel != currentChannel)
     {
