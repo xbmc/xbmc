@@ -540,14 +540,7 @@ int CEpg::Get(CFileItemList &results) const
   CSingleLock lock(m_critSection);
 
   for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
-  {
-    CDateTime localStartTime;
-    localStartTime.SetFromUTCDateTime(it->first);
-
-    CFileItemPtr entry(new CFileItem(*it->second));
-    entry->SetLabel2(localStartTime.GetAsLocalizedDateTime(false, false));
-    results.Add(entry);
-  }
+    results.Add(CFileItemPtr(new CFileItem(*it->second)));
 
   return results.Size() - iInitialSize;
 }
@@ -564,14 +557,7 @@ int CEpg::Get(CFileItemList &results, const EpgSearchFilter &filter) const
   for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
   {
     if (filter.FilterEntry(*it->second))
-    {
-      CDateTime localStartTime;
-      localStartTime.SetFromUTCDateTime(it->first);
-
-      CFileItemPtr entry(new CFileItem(*it->second));
-      entry->SetLabel2(localStartTime.GetAsLocalizedDateTime(false, false));
-      results.Add(entry);
-    }
+      results.Add(CFileItemPtr(new CFileItem(*it->second)));
   }
 
   return results.Size() - iInitialSize;
