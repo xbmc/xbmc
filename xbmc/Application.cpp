@@ -5409,6 +5409,13 @@ float CApplication::GetPercentage() const
 {
   if (IsPlaying() && m_pPlayer)
   {
+    if (m_pPlayer->GetTotalTime() == 0 && IsPlayingAudio() && m_itemCurrentFile->HasMusicInfoTag())
+    {
+      const CMusicInfoTag& tag = *m_itemCurrentFile->GetMusicInfoTag();
+      if (tag.GetDuration() > 0)
+        return (float)(GetTime() / tag.GetDuration() * 100);
+    }
+
     if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
       return (float)(GetTime() / GetTotalTime() * 100);
     else
