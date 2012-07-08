@@ -400,8 +400,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   }
   else
   {
-    pTexture = new CTexture();
-    if(!pTexture->LoadFromFile(strPath))
+    pTexture = CBaseTexture::LoadFromFile(strPath);
+    if (!pTexture)
       return 0;
     width = pTexture->GetWidth();
     height = pTexture->GetHeight();

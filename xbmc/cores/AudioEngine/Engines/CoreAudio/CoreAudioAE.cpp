@@ -19,16 +19,14 @@
  *
  */
 
-#define __STDC_LIMIT_MACROS
-
 #include "system.h"
 
 #include "CoreAudioAE.h"
 
-#include "AEUtil.h"
 #include "MathUtils.h"
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -42,14 +40,14 @@
 
 CCoreAudioAE::CCoreAudioAE() :
   m_Initialized        (false         ),
+  m_callbackRunning    (false         ),
+  m_chLayoutCount      (0             ),
   m_rawPassthrough     (false         ),
   m_volume             (1.0f          ),
   m_volumeBeforeMute   (1.0f          ),
   m_muted              (false         ),
   m_soundMode          (AE_SOUND_OFF  ),
-  m_streamsPlaying     (false         ),
-  m_chLayoutCount      (0             ),
-  m_callbackRunning    (false         )
+  m_streamsPlaying     (false         )
 {
   HAL = new CCoreAudioAEHAL;
 }

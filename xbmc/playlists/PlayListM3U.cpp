@@ -27,10 +27,6 @@
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#ifndef _LINUX
-#include "cores/dllloader/exports/emu_msvcrt.h"
-#endif
-
 #include "settings/AdvancedSettings.h"
 #include "music/tags/MusicInfoTag.h"
 

@@ -214,15 +214,6 @@ namespace VIDEO
      */
     bool CanFastHash(const CFileItemList &items) const;
 
-    /*! \brief Download an image file and apply the image to a folder if necessary
-     \param url URL of the image.
-     \param destination File to save the image as
-     \param asThumb whether we need to download as a thumbnail or as a full image. Defaults to true
-     \param progress progressbar to update - defaults to NULL
-     \param directory directory that this thumbnail should be applied to. Defaults to empty
-     */
-    void DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb = true, CGUIDialogProgress *dialog = NULL);
-
     /*! \brief Process a series folder, filling in episode details and adding them to the database.
      TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes
      and we should return INFO_NOT_FOUND only if no information is found for any of

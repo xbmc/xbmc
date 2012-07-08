@@ -44,7 +44,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "ThumbnailCache.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -308,7 +307,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     {
       // We need to check if there is a detected is inserted!
       buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
-      if (CGUIWindowVideoBase::GetResumeItemOffset(item.get()) > 0)
+      if (CGUIWindowVideoBase::HasResumeItemOffset(item.get()))
         buttons.Add(CONTEXT_BUTTON_RESUME_DISC, CGUIWindowVideoBase::GetResumeString(*(item.get())));     // Resume Disc
 
       buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
@@ -544,22 +543,10 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         g_settings.SaveSources();
       }
       else if (!strThumb.IsEmpty())
-      { // this is some sort of an auto-share, so we have to cache it based on the criteria we use to retrieve them
-        CStdString cachedThumb;
-        if (type == "music")
-        {
-          cachedThumb = item->GetPath();
-          URIUtils::RemoveSlashAtEnd(cachedThumb);
-          cachedThumb = CThumbnailCache::GetMusicThumb(cachedThumb);
-        }
-        else  // programs, video, pictures
-        { // store the thumb for this share
-          CTextureDatabase db;
-          if (db.Open())
-            db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
-        }
-        if (!cachedThumb.IsEmpty())
-          XFILE::CFile::Cache(strThumb, cachedThumb);
+      { // this is some sort of an auto-share, so store in the texture database
+        CTextureDatabase db;
+        if (db.Open())
+          db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
       }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);

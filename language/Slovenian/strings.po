@@ -8908,20 +8908,16 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "Postavi naprave v stanje pripravljenosti ob ohranjevalniku zaslona"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Ni mogoče zaznati vrat CEC. Nastavite jih ročno."
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Ni mogoče zaznati adapterja CEC."
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "Nepodprta različica libcec. %d je višja, kot jo podpira XBMC (%d)"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "Postavi računalnik v stanje pripravljenosti, ko se ugasne TV"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8932,7 +8928,7 @@ msgid "Connected"
 msgstr "XBMC povezan"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "Vmesnik najden, toda libcec ni na voljo"
 
 msgctxt "#36018"
@@ -8966,4 +8962,32 @@ msgstr "Ni mogoče uveljaviti novih nastavitev. Preverite svoje možnosti."
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Pošlji ukaz 'neaktiven vir' ob izhodu iz XBMC"
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr ""
 

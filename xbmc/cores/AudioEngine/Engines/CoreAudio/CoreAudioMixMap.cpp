@@ -28,6 +28,8 @@
 
 #include <AudioToolbox/AudioToolbox.h>
 
+UInt32 CCoreAudioMixMap::m_deviceChannels = 0;
+
 CCoreAudioMixMap::CCoreAudioMixMap() :
   m_isValid(false)
 {
@@ -161,6 +163,8 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   CCoreAudioChannelLayout deviceLayout;
   if (!audioUnit->GetPreferredChannelLayout(deviceLayout))
     return NULL;
+    
+  m_deviceChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(*deviceLayout);
 
   // When all channels on the output device are unknown take the gui layout
   //if(deviceLayout.AllChannelUnknown())
@@ -211,6 +215,7 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: Loading matrix mixer configuration");
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
+    val = (Float32*)*mixMap + i*m_deviceChannels;
     for (UInt32 j = 0; j < fmt->mChannelsPerFrame; ++j)
     {
       OSStatus ret = AudioUnitSetParameter(mixerUnit->GetUnit(),

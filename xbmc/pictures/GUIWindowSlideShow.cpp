@@ -23,7 +23,6 @@
 #include "system.h"
 #include "GUIWindowSlideShow.h"
 #include "Application.h"
-#include "Picture.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "guilib/TextureManager.h"

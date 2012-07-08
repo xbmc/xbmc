@@ -121,7 +121,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
   CHints hints;
   hints.flags = flags;
   hints.mask = strMask;
-  return GetDirectory(strPath, items, hints);
+  return GetDirectory(strPath, items, hints, allowThreads);
 }
 
 bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, const CHints &hints, bool allowThreads)

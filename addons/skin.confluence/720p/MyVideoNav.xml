@@ -1,7 +1,7 @@
 <window id="25">
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<views>50,51,500,550,551,560,501,508,504,503,505,511</views>
+	<views>50,51,500,550,551,560,501,508,504,503,515,505,511</views>
 	<onload condition="Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True&amp;loop=False)</onload>
 	<controls>
 		<include>CommonBackground</include>
@@ -15,6 +15,7 @@
 			<include>PosterWrapView2_Fanart</include> <!-- view id = 508 -->
 			<include>MediaListView3</include> <!-- view id = 503 -->
 			<include>MediaListView2</include> <!-- view id = 504 -->
+			<include>MediaListView4</include> <!-- view id = 515 -->
 			<include>WideIconView</include> <!-- view id = 505 -->
 			<include>MusicVideoInfoListView</include> <!-- view id = 511 -->
 			<include>AddonInfoListView1</include> <!-- view id = 550 -->

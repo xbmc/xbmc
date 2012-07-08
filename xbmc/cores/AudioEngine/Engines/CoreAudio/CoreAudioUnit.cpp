@@ -21,8 +21,8 @@
 
 #include "CoreAudioUnit.h"
 
-#include "AEUtil.h"
 #include "CoreAudioAEHAL.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 
 #include <AudioToolbox/AUGraph.h>
@@ -32,12 +32,12 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 CCoreAudioUnit::CCoreAudioUnit() :
-  m_Initialized     (false        ),
   m_pSource         (NULL         ),
-  m_renderProc      (NULL         ),
   m_audioUnit       (NULL         ),
   m_audioNode       (NULL         ),
   m_audioGraph      (NULL         ),
+  m_Initialized     (false        ),
+  m_renderProc      (NULL         ),
   m_busNumber       (INVALID_BUS  )
 {
 }

@@ -30,7 +30,7 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderMod(void);
       virtual ~CMusicInfoTagLoaderMod();
 
-      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
+      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
     private:
       bool getFile(CStdString& strFile, const CStdString& strSource);
   };

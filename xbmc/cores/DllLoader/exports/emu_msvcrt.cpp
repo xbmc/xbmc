@@ -593,12 +593,6 @@ extern "C"
     return -1;
   }
 
-  int dll_fstatvfs64(int fd, struct statvfs64 *buf)
-  {
-    not_implement("msvcrt.dll incomplete function fstatvfs64(...) called\n");
-    return -1;
-  }
-
   int dll_close(int fd)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);

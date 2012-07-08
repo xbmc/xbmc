@@ -35,7 +35,6 @@ class IAE;
 class CAEFactory
 {
 public:
-  static IAE *AE;
   static IAE *GetEngine();
   static bool LoadEngine();
   static void UnLoadEngine();
@@ -59,5 +58,6 @@ public:
   static void GarbageCollect();
 private:
   static bool LoadEngine(enum AEEngine engine);
+  static IAE *AE;
 };
 

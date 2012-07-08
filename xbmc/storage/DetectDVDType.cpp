@@ -41,12 +41,10 @@
 #include "settings/AdvancedSettings.h"
 #include "GUIUserMessages.h"
 #include "utils/URIUtils.h"
-#include "pictures/Picture.h"
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (TARGET_DARWIN)
 #define USING_CDIO78
 #endif
 #include "guilib/GUIWindowManager.h"
-#include "filesystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "IoSupport.h"
@@ -312,30 +310,6 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   // store it in case others want it
   m_diskLabel = strDescription;
   m_diskPath = strNewUrl;
-
-  // delete any previously cached disc thumbnail
-  CStdString strCache = "special://temp/dvdicon.tbn";
-  if (CFile::Exists(strCache))
-    CFile::Delete(strCache);
-
-  // find and cache disc thumbnail
-  if (IsDiscInDrive() && !bCDDA)
-  {
-    CStdString strThumb;
-    CStdStringArray thumbs;
-    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
-    for (unsigned int i = 0; i < thumbs.size(); ++i)
-    {
-      URIUtils::AddFileToFolder(m_diskPath, thumbs[i], strThumb);
-      CLog::Log(LOGDEBUG,"%s: looking for disc thumb:[%s]", __FUNCTION__, strThumb.c_str());
-      if (CFile::Exists(strThumb))
-      {
-        CLog::Log(LOGDEBUG,"%s: found disc thumb:[%s], caching as:[%s]", __FUNCTION__, strThumb.c_str(), strCache.c_str());
-        CPicture::CreateThumbnail(strThumb, strCache);
-        break;
-      }
-    }
-  }
 }
 
 DWORD CDetectDVDMedia::GetTrayState()

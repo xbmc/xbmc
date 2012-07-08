@@ -44,6 +44,7 @@ namespace PERIPHERALS
     bool                             m_bIsInitialising;
     std::map<CStdString, bool>       m_boolSettings;
     std::map<CStdString, float>      m_intSettings;
+    std::map<CStdString, int>        m_intTextSettings;
     std::map<CStdString, float>      m_floatSettings;
     std::map<CStdString, CStdString> m_stringSettings;
   };

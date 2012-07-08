@@ -548,10 +548,14 @@ bool CGUIWindowPVRChannels::OnContextButtonFilter(CFileItem *item, CONTEXT_BUTTO
 bool CGUIWindowPVRChannels::OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn(false);
-  CPVRChannel *channel = item->GetPVRChannelInfoTag();
+  
+  if (button == CONTEXT_BUTTON_RECORD_ITEM)
+  {
+    CPVRChannel *channel = item->GetPVRChannelInfoTag();
 
-  if (channel)
-    return g_PVRManager.ToggleRecordingOnChannel(channel->ChannelID());
+    if (channel)
+      return g_PVRManager.ToggleRecordingOnChannel(channel->ChannelID());
+  }
 
   return bReturn;
 }

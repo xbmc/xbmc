@@ -82,7 +82,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
   {
     if (i == 3 && !showSingles) // singles
       continue;
-    if (i == 9 && musicDatabase.GetVariousArtistsAlbumsCount() == 0) // compilations
+    if (i == 9 && musicDatabase.GetCompilationAlbumsCount() == 0) // compilations
       continue;
 
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(OverviewChildren[i].label)));

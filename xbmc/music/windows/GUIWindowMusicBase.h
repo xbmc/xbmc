@@ -49,7 +49,6 @@ public:
   virtual bool OnBack(int actionID);
 
   void OnInfo(CFileItem *pItem, bool bShowInfo = false);
-  static void SetupFanart(CFileItemList& items);
 
 protected:
   /*!

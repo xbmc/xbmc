@@ -89,7 +89,7 @@
 				<width>740</width>
 				<height>40</height>
 				<textoffsetx>10</textoffsetx>
-				<textwidth>750</textwidth>
+				<textwidth>720</textwidth>
 				<font>font13</font>
 				<align>center</align>
 				<texturefocus border="5">button-focus2.png</texturefocus>

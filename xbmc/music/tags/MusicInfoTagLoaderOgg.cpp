@@ -31,13 +31,14 @@ CMusicInfoTagLoaderOgg::CMusicInfoTagLoaderOgg(void)
 CMusicInfoTagLoaderOgg::~CMusicInfoTagLoaderOgg()
 {}
 
-bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& tag)
+bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   try
   {
     // retrieve the OGG Tag info from strFileName
     // and put it in tag
     COggTag myTag;
+    myTag.SetArt(art);
     if (myTag.Read(strFileName))
     {
       myTag.GetMusicInfoTag(tag);

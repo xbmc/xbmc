@@ -330,7 +330,7 @@
                 "lyrics", "musicbrainztrackid", "musicbrainzartistid",
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file", "artistid",
-                "albumid", "lastplayed" ]
+                "albumid", "lastplayed", "disc" ]
     }
   },
   "Audio.Details.Base": {
@@ -396,7 +396,8 @@
       "musicbrainzartistid": { "type": "string" },
       "artistid": { "$ref": "Library.Id" },
       "albumid": { "$ref": "Library.Id" },
-      "lastplayed": { "type": "string" }
+      "lastplayed": { "type": "string" },
+      "disc": { "type": "integer" }
     }
   },
   "Video.Fields.Movie": {
@@ -693,7 +694,8 @@
                 "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
                 "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
-                "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes" ]
+                "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
+                "disc" ]
     }
   },
   "List.Item.All": {
@@ -733,7 +735,8 @@
       "albumid": { "$ref": "Library.Id" },
       "setid": { "$ref": "Array.Integer" },
       "tvshowid": { "$ref": "Library.Id" },
-      "watchedepisodes": { "type": "integer" }
+      "watchedepisodes": { "type": "integer" },
+      "disc": { "type": "integer" }
     }
   },
   "List.Fields.Files": {
@@ -748,7 +751,7 @@
                 "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
                 "resume", "artistid", "albumid", "tvshowid", "setid", "size",
-                "lastmodified", "mimetype", "watchedepisodes" ]
+                "lastmodified", "mimetype", "watchedepisodes", "disc" ]
     }
   },
   "List.Item.File": {

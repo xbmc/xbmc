@@ -764,7 +764,8 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl,
         CMusicArtistInfo ari(pxnTitle->FirstChild()->Value(), scurlArtist);
         CStdString genre;
         XMLUtils::GetString(pxeArtist, "genre", genre);
-        ari.GetArtist().genre = StringUtils::Split(genre, g_advancedSettings.m_musicItemSeparator);
+        if (!genre.empty())
+          ari.GetArtist().genre = StringUtils::Split(genre, g_advancedSettings.m_musicItemSeparator);
         XMLUtils::GetString(pxeArtist, "year", ari.GetArtist().strBorn);
 
         vcari.push_back(ari);
@@ -830,25 +831,6 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
         vcep.push_back(ep);
       }
     }
-  }
-
-  // find minimum in each season
-  map<int, int> mpMin;
-  for (EPISODELIST::const_iterator i = vcep.begin(); i != vcep.end(); ++i)
-  {
-    map<int, int>::iterator iMin = mpMin.find(i->key.first);
-    if (iMin == mpMin.end())
-      mpMin.insert(i->key);
-    else if (i->key.second < iMin->second)
-      iMin->second = i->key.second;
-  }
-
-  // correct episode numbers
-  for (EPISODELIST::iterator i = vcep.begin(); i != vcep.end(); ++i)
-  {
-    i->key.second -= mpMin[i->key.first];
-    if (mpMin[i->key.first] > 0)
-      ++i->key.second;
   }
 
   return vcep;

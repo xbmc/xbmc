@@ -102,7 +102,7 @@ namespace XFILE
         CStdString whereClause = playlist.GetWhereClause(db, playlists);
         if (!whereClause.empty())
           whereClause = "WHERE " + whereClause;
-        success = db.GetSortedAlbums("musicdb://3/", sorting, items, whereClause);
+        success = db.GetAlbumsByWhere("musicdb://3/", whereClause, "", items, sorting);
         items.SetContent("albums");
         db.Close();
       }
@@ -125,7 +125,7 @@ namespace XFILE
         if (!whereClause.empty())
           whereClause = "WHERE " + whereClause;
 
-        success = db.GetSortedSongs("", sorting, items, whereClause);
+        success = db.GetSongsByWhere("", whereClause, items, sorting);
         items.SetContent("songs");
         db.Close();
       }

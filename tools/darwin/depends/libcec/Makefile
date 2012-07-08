@@ -3,7 +3,7 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libcec
-VERSION=1.5.2
+VERSION=1.7.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

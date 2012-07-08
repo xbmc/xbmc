@@ -31,7 +31,7 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderNSF(void);
       virtual ~CMusicInfoTagLoaderNSF();
 
-      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
+      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
       virtual int GetStreamCount(const CStdString& strFileName);
     private:
       void* m_nsf;

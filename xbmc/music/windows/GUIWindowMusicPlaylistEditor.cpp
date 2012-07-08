@@ -169,11 +169,6 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory,
 void CGUIWindowMusicPlaylistEditor::OnPrepareFileItems(CFileItemList &items)
 {
   RetrieveMusicInfo();
-
-  // set fanart
-  SetupFanart(items);
-
-  items.SetCachedMusicThumbs();
 }
 
 void CGUIWindowMusicPlaylistEditor::UpdateButtons()

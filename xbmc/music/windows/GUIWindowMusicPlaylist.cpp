@@ -479,14 +479,6 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       pItem->SetLabel(str);
     }
   }
-
-  //  MusicDb items already have thumbs
-  if (!pItem->IsMusicDb())
-  {
-    // Reset thumbs and default icons
-    pItem->SetMusicThumb();
-    pItem->FillInDefaultIcon();
-  }
 }
 
 bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)

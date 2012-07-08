@@ -113,7 +113,7 @@ class CMusicInfoTagLoaderMP3: public IMusicInfoTagLoader
 public:
   CMusicInfoTagLoaderMP3(void);
   virtual ~CMusicInfoTagLoaderMP3();
-  virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
+  virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
   void GetSeekInfo(CVBRMP3SeekHelper &info) const;
   bool GetReplayGain(CReplayGain &info) const;
   bool ReadSeekAndReplayGainInfo(const CStdString &strFileName);
