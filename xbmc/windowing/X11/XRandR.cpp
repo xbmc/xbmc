@@ -102,6 +102,13 @@ bool CXRandR::Query(int screennum)
     xoutput.y = (output->Attribute("y") != NULL ? atoi(output->Attribute("y")) : 0);
     xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
     xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
+    if (output->Attribute("rotation") != NULL
+        && (strcasecmp(output->Attribute("rotation"), "left") == 0 || strcasecmp(output->Attribute("rotation"), "right") == 0))
+    {
+      xoutput.isRotated = true;
+    }
+    else
+      xoutput.isRotated = false;
 
     if (!xoutput.isConnected)
        continue;
@@ -115,6 +122,9 @@ bool CXRandR::Query(int screennum)
       xmode.hz = atof(mode->Attribute("hz"));
       xmode.w = atoi(mode->Attribute("w"));
       xmode.h = atoi(mode->Attribute("h"));
+      if(xoutput.isRotated)
+        std::swap(xmode.w, xmode.h);
+
       xmode.isPreferred = (strcasecmp(mode->Attribute("preferred"), "true") == 0);
       xmode.isCurrent = (strcasecmp(mode->Attribute("current"), "true") == 0);
       xoutput.modes.push_back(xmode);
