@@ -109,7 +109,8 @@ typedef enum {
   FieldAudioCodec,
   FieldAudioLanguage,
   FieldSubtitleLanguage,
-  FieldProductionCode
+  FieldProductionCode,
+  FieldTag
 } Field;
 
 typedef std::set<Field> Fields;

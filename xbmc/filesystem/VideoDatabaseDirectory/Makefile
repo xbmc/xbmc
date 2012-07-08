@@ -15,6 +15,7 @@ SRCS=DirectoryNode.cpp \
      DirectoryNodeSeasons.cpp \
      DirectoryNodeSets.cpp \
      DirectoryNodeStudio.cpp \
+     DirectoryNodeTags.cpp \
      DirectoryNodeTitleMovies.cpp \
      DirectoryNodeTitleMusicVideos.cpp \
      DirectoryNodeTitleTvShows.cpp \

@@ -419,6 +419,7 @@ public:
   CStdString GetGenreById(int id);
   CStdString GetCountryById(int id);
   CStdString GetSetById(int id);
+  CStdString GetTagById(int id);
   CStdString GetPersonById(int id);
   CStdString GetStudioById(int id);
   CStdString GetTvShowTitleById(int id);
@@ -459,6 +460,7 @@ public:
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
   void DeleteSet(int idSet);
+  void DeleteTag(int idTag, const std::string &mediaType);
 
   // per-file video settings
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
@@ -584,9 +586,10 @@ public:
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
+  bool GetTagsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idArtist);
 
-  bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1, int idCountry=-1, int idSet=-1);
+  bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1, int idCountry=-1, int idSet=-1, int idTag=-1);
   bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, int idActor=-1, int idDirector=-1, int idGenre=-1, int idYear=-1, int idShow=-1);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idShow=-1, int idSeason=-1, const SortDescription &sortDescription = SortDescription());
@@ -680,6 +683,10 @@ public:
   std::string GetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
   bool GetTvShowSeasonArt(int mediaId, std::map<int, std::string> &seasonArt);
 
+  int AddTag(const std::string &tag);
+  void AddTagToItem(int idItem, int idTag, const std::string &type);
+  void RemoveTagFromItem(int idItem, int idTag, const std::string &type);
+
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
@@ -710,7 +717,8 @@ protected:
 
   // link functions - these two do all the work
   void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
-  void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID);
+  void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
+  void RemoveFromLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
 
   void AddSetToMovie(int idMovie, int idSet);
 
@@ -799,7 +807,7 @@ private:
    */
   bool LookupByFolders(const CStdString &path, bool shows = false);
 
-  virtual int GetMinVersion() const { return 66; };
+  virtual int GetMinVersion() const { return 67; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 

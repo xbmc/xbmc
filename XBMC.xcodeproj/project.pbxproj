@@ -194,6 +194,7 @@
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
 		36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
 		36A9444115821E7C00727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443F15821E7C00727135 /* SortUtils.cpp */; };
+		36A9464C15AA25FD00727135 /* DirectoryNodeTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */; };
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
@@ -1376,6 +1377,8 @@
 		36A9443E15821E5400727135 /* ISortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISortable.h; sourceTree = "<group>"; };
 		36A9443F15821E7C00727135 /* SortUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortUtils.cpp; sourceTree = "<group>"; };
 		36A9444015821E7C00727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
+		36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTags.cpp; sourceTree = "<group>"; };
+		36A9464B15AA25FD00727135 /* DirectoryNodeTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTags.h; sourceTree = "<group>"; };
 		3802709713D5A62D009493DD /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		3802709813D5A653009493DD /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		3802709913D5A653009493DD /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
@@ -5146,6 +5149,8 @@
 				7CCF7E711067643800992676 /* DirectoryNodeSets.h */,
 				E38E177A0D25F9FA00618676 /* DirectoryNodeStudio.cpp */,
 				E38E177B0D25F9FA00618676 /* DirectoryNodeStudio.h */,
+				36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */,
+				36A9464B15AA25FD00727135 /* DirectoryNodeTags.h */,
 				E38E177C0D25F9FA00618676 /* DirectoryNodeTitleMovies.cpp */,
 				E38E177D0D25F9FA00618676 /* DirectoryNodeTitleMovies.h */,
 				E38E177E0D25F9FA00618676 /* DirectoryNodeTitleMusicVideos.cpp */,
@@ -7313,6 +7318,7 @@
 				36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */,
 				36A9444115821E7C00727135 /* SortUtils.cpp in Sources */,
 				1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */,
+				36A9464C15AA25FD00727135 /* DirectoryNodeTags.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

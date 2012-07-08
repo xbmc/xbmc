@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,19 +19,32 @@
  *
  */
 
-#include "DirectoryNodeTitleMovies.h"
+#include "DirectoryNodeTags.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const CStdString& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TITLE_MOVIES, strName, pParent)
+CDirectoryNodeTags::CDirectoryNodeTags(const CStdString& strName, CDirectoryNode* pParent)
+  : CDirectoryNode(NODE_TYPE_TAGS, strName, pParent)
 {
 
 }
 
-bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items) const
+NODE_TYPE CDirectoryNodeTags::GetChildType() const
+{
+  return NODE_TYPE_TITLE_MOVIES;
+}
+
+CStdString CDirectoryNodeTags::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetTagById(GetID());
+  return "";
+}
+
+bool CDirectoryNodeTags::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -40,9 +53,7 @@ bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  CStdString strBaseDir=BuildPath();
-  bool bSuccess=videodatabase.GetMoviesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetStudioId(), params.GetCountryId(), params.GetSetId(), params.GetTagId());
-
+  bool bSuccess = videodatabase.GetTagsNav(BuildPath(), items, params.GetContentType());
   videodatabase.Close();
 
   return bSuccess;

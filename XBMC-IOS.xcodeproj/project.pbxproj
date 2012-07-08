@@ -22,6 +22,7 @@
 		3291892B1423A9B700E878CD /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329189291423A9B700E878CD /* JpegIO.cpp */; };
 		36A9444E15821F2C00727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9444C15821F2C00727135 /* DatabaseUtils.cpp */; };
 		36A9445215821F5300727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9445015821F5300727135 /* SortUtils.cpp */; };
+		36A9465B15AA26BC00727135 /* DirectoryNodeTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9465915AA26BC00727135 /* DirectoryNodeTags.cpp */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C0A7EDE13A5DC2800AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */; };
 		7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7F9B13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp */; };
@@ -1010,6 +1011,8 @@
 		36A9444F15821F3B00727135 /* ISortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISortable.h; sourceTree = "<group>"; };
 		36A9445015821F5300727135 /* SortUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortUtils.cpp; sourceTree = "<group>"; };
 		36A9445115821F5300727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
+		36A9465915AA26BC00727135 /* DirectoryNodeTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTags.cpp; sourceTree = "<group>"; };
+		36A9465A15AA26BC00727135 /* DirectoryNodeTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTags.h; sourceTree = "<group>"; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7EDD13A5DC2800AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -4882,6 +4885,8 @@
 				F56C8464131F42E8000AD0F6 /* DirectoryNodeSets.h */,
 				F56C8465131F42E8000AD0F6 /* DirectoryNodeStudio.cpp */,
 				F56C8466131F42E8000AD0F6 /* DirectoryNodeStudio.h */,
+				36A9465915AA26BC00727135 /* DirectoryNodeTags.cpp */,
+				36A9465A15AA26BC00727135 /* DirectoryNodeTags.h */,
 				F56C8467131F42E8000AD0F6 /* DirectoryNodeTitleMovies.cpp */,
 				F56C8468131F42E8000AD0F6 /* DirectoryNodeTitleMovies.h */,
 				F56C8469131F42E8000AD0F6 /* DirectoryNodeTitleMusicVideos.cpp */,
@@ -7232,6 +7237,7 @@
 				36A9444E15821F2C00727135 /* DatabaseUtils.cpp in Sources */,
 				36A9445215821F5300727135 /* SortUtils.cpp in Sources */,
 				DFC3867E158296EC008AE277 /* Exception.cpp in Sources */,
+				36A9465B15AA26BC00727135 /* DirectoryNodeTags.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
