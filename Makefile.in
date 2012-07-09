@@ -97,6 +97,7 @@ endif
 ifeq (@USE_OPENGLES@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
 DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
+DIRECTORY_ARCHIVES += xbmc/visualizations/EGLHelpers/eglhelpers.a
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
@@ -272,7 +273,14 @@ exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/uti
 	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
 dllloader: exports xbmc/cores/DllLoader/dllloader.a
 
-$(VIS_DIRS) $(SS_DIRS): force exports
+ifeq (@USE_OPENGLES@,1)
+EGLHELPERS=xbmc/visualizations/EGLHelpers/eglhelpers.a
+endif
+
+$(VIS_DIRS): force exports $(EGLHELPERS)
+	$(MAKE) -C $@
+
+$(SS_DIRS): force exports
 	$(MAKE) -C $@
 
 visualizations: $(VIS_DIRS)
