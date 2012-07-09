@@ -873,22 +873,24 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     if (!fullscreen)
     {
       CreateIconPixmap();
-      XWMHints wm_hints;
-      XClassHint class_hints;
+      XWMHints *wm_hints;
       XTextProperty windowName, iconName;
       std::string titleString = "XBMC Media Center";
       char *title = (char*)titleString.c_str();
 
       XStringListToTextProperty(&title, 1, &windowName);
       XStringListToTextProperty(&title, 1, &iconName);
-      wm_hints.initial_state = NormalState;
-      wm_hints.input = True;
-      wm_hints.icon_pixmap = m_icon;
-      wm_hints.flags = StateHint | IconPixmapHint | InputHint;
 
+      wm_hints = XAllocWMHints();
+      wm_hints->initial_state = NormalState;
+      wm_hints->icon_pixmap = m_icon;
+      wm_hints->flags = StateHint | IconPixmapHint;
+
+      XSync(m_dpy,False);
       XSetWMProperties(m_dpy, m_glWindow, &windowName, &iconName,
-                            NULL, 0, NULL, &wm_hints,
+                            NULL, 0, NULL, wm_hints,
                             NULL);
+      XFree(wm_hints);
 
       // register interest in the delete window message
       Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
@@ -973,16 +975,21 @@ bool CWinSystemX11::CreateIconPixmap()
   gRatio = vis->green_mask / 255.0;
   bRatio = vis->blue_mask / 255.0;
 
-  CTexture iconTexture;
-  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
-  buf = iconTexture.GetPixels();
+  CBaseTexture *iconTexture = CBaseTexture::LoadFromFile("special://xbmc/media/icon.png");
 
-  numBufBytes = iconTexture.GetWidth() * iconTexture.GetHeight() * 4;
+  if (!iconTexture)
+    return false;
+
+  buf = iconTexture->GetPixels();
+
+  numBufBytes = iconTexture->GetWidth() * iconTexture->GetHeight() * 4;
+  int wid = iconTexture->GetWidth();
+  int hi = iconTexture->GetHeight();
 
   if (depth>=24)
-    numNewBufBytes = (4 * (iconTexture.GetWidth() * iconTexture.GetHeight()));
+    numNewBufBytes = (4 * (iconTexture->GetWidth() * iconTexture->GetHeight()));
   else
-    numNewBufBytes = (2 * (iconTexture.GetWidth() * iconTexture.GetHeight()));
+    numNewBufBytes = (2 * (iconTexture->GetWidth() * iconTexture->GetHeight()));
 
   newBuf = (uint32_t*)malloc(numNewBufBytes);
   if (!newBuf)
@@ -991,11 +998,11 @@ bool CWinSystemX11::CreateIconPixmap()
     return false;
   }
 
-  for (i=0; i<iconTexture.GetHeight();++i)
+  for (i=0; i<iconTexture->GetHeight();++i)
   {
-    for (j=0; j<iconTexture.GetWidth();++j)
+    for (j=0; j<iconTexture->GetWidth();++j)
     {
-      unsigned int pos = i*iconTexture.GetPitch()+j*4;
+      unsigned int pos = i*iconTexture->GetPitch()+j*4;
       unsigned int r, g, b;
       r = (buf[pos+2] * rRatio);
       g = (buf[pos+1] * gRatio);
@@ -1008,7 +1015,7 @@ bool CWinSystemX11::CreateIconPixmap()
     }
   }
   img = XCreateImage(m_dpy, vis, depth,ZPixmap, 0, (char *)newBuf,
-                     iconTexture.GetWidth(), iconTexture.GetHeight(),
+                     iconTexture->GetWidth(), iconTexture->GetHeight(),
                      (depth>=24)?32:16, 0);
   if (!img)
   {
@@ -1045,6 +1052,8 @@ bool CWinSystemX11::CreateIconPixmap()
   XPutImage(m_dpy, m_icon, gc, img, 0, 0, 0, 0, img->width, img->height);
   XFreeGC(m_dpy, gc);
   XDestroyImage(img); // this also frees newBuf
+
+  delete iconTexture;
 
   return true;
 }
