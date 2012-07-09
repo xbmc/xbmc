@@ -43,7 +43,7 @@
 #endif
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#elif defined(HAS_SDL_JOYSTICK) 
 #include "input/SDLJoystick.h"
 #endif
 
@@ -64,7 +64,7 @@
   CGUITextureManager g_TextureManager;
   CGUILargeTextureManager g_largeTextureManager;
   CMouseStat         g_Mouse;
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_SDL_JOYSTICK) 
   CJoystick          g_Joystick; 
 #endif
   CGUIPassword       g_passwordManager;
