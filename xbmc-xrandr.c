@@ -39,6 +39,11 @@
 #include <stdint.h>
 #include <math.h>
 
+
+#ifndef _X_NORETURN
+#define _X_NORETURN
+#endif
+
 static char	*program_name;
 static Display	*dpy;
 static Window	root;
