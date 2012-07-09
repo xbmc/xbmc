@@ -854,11 +854,13 @@ void CSoftAE::Run()
   CSingleLock runningLock(m_runningLock);
   CLog::Log(LOGINFO, "CSoftAE::Run - Thread Started");
 
+  bool hasAudio = false;
   while (m_running)
   {
     bool restart = false;
 
-    (this->*m_outputStageFn)(true);
+    if ((this->*m_outputStageFn)(hasAudio) > 0)
+      hasAudio = false; /* taken some audio - reset our silence flag */
 
     /* if we have enough room in the buffer */
     if (m_buffer.Free() >= m_frameSize)
@@ -869,7 +871,8 @@ void CSoftAE::Run()
 
       /* run the stream stage */
       CSoftAEStream *oldMaster = m_masterStream;
-      (this->*m_streamStageFn)(m_chLayout.Count(), out, restart);
+      if ((this->*m_streamStageFn)(m_chLayout.Count(), out, restart) > 0)
+        hasAudio = true; /* have some audio */
 
       /* if in audiophile mode and the master stream has changed, flag for restart */
       if (m_audiophile && oldMaster != m_masterStream)
