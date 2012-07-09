@@ -792,7 +792,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if ((frames = m_dllAvFilter.av_buffersink_poll_frame(m_pFilterOut)) < 0)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - avfilter_poll_frame");
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersink_poll_frame");
     return VC_ERROR;
   }
 
