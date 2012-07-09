@@ -50,6 +50,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "FileItem.h"
@@ -1342,6 +1343,21 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
 
 void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
+}
+
+void CGUIWindowMusicBase::OnInitWindow()
+{
+  CGUIMediaWindow::OnInitWindow();
+  if (g_settings.m_musicNeedsUpdate == 27 && !g_application.IsMusicScanning())
+  {
+    // rescan of music library required
+    if (CGUIDialogYesNo::ShowAndGetInput(799, 800, 801, -1))
+    {
+      g_application.StartMusicScan("", CMusicInfoScanner::SCAN_RESCAN);
+      g_settings.m_musicNeedsUpdate = false; // once is enough (user may interrupt, but that's up to them)
+      g_settings.Save();
+    }
+  }
 }
 
 CStdString CGUIWindowMusicBase::GetStartFolder(const CStdString &dir)
