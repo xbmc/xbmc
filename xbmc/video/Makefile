@@ -6,6 +6,7 @@ SRCS=Bookmark.cpp \
      VideoInfoScanner.cpp \
      VideoInfoTag.cpp \
      VideoReferenceClock.cpp \
+     FFmpegVideoDecoder.cpp \
      
 LIB=video.a
 

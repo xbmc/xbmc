@@ -743,6 +743,7 @@
     <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextlrc.cpp" />
     <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextustar.cpp" />
     <ClCompile Include="..\..\xbmc\music\karaoke\karaokewindowbackground.cpp" />
+    <ClCompile Include="..\..\xbmc\music\karaoke\karaokevideobackground.cpp" />
     <ClCompile Include="..\..\xbmc\music\LastFmManager.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicInfoLoader.cpp" />
@@ -928,6 +929,8 @@
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
+    <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h" />
     <ClInclude Include="..\..\xbmc\network\AirTunesServer.h" />
     <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h" />
@@ -1135,6 +1138,7 @@
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoScan.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\video\FFmpegVideoDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp" />
     <ClCompile Include="..\..\xbmc\video\Teletext.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp" />

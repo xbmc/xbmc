@@ -2586,6 +2586,9 @@
     <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\karaoke\karaokevideobackground.cpp">
+      <Filter>music\karaoke</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.cpp">
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
     </ClCompile>
