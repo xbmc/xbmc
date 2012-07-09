@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund
+ *  Copyright (C) 2004-2009, Eric Lund
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -27,9 +27,9 @@
 
 #include "debug.h"
 
-static mvp_debug_ctx_t cmyth_debug_ctx = MVP_DEBUG_CTX_INIT("cmyth",
-							    CMYTH_DBG_NONE,
-							    NULL);
+static cmyth_debug_ctx_t cmyth_debug_ctx = CMYTH_DEBUG_CTX_INIT("cmyth",
+								CMYTH_DBG_NONE,
+								NULL);
 
 /*
  * cmyth_dbg_level(int l)
@@ -49,7 +49,7 @@ static mvp_debug_ctx_t cmyth_debug_ctx = MVP_DEBUG_CTX_INIT("cmyth",
 void
 cmyth_dbg_level(int l)
 {
-	mvp_dbg_setlevel(&cmyth_debug_ctx, l);
+	__cmyth_dbg_setlevel(&cmyth_debug_ctx, l);
 }
 
 /*
@@ -68,7 +68,7 @@ cmyth_dbg_level(int l)
 void
 cmyth_dbg_all()
 {
-	mvp_dbg_setlevel(&cmyth_debug_ctx, CMYTH_DBG_ALL);
+	__cmyth_dbg_setlevel(&cmyth_debug_ctx, CMYTH_DBG_ALL);
 }
 
 /*
@@ -87,7 +87,7 @@ cmyth_dbg_all()
 void
 cmyth_dbg_none()
 {
-	mvp_dbg_setlevel(&cmyth_debug_ctx, CMYTH_DBG_NONE);
+	__cmyth_dbg_setlevel(&cmyth_debug_ctx, CMYTH_DBG_NONE);
 }
 
 /*
@@ -111,7 +111,7 @@ cmyth_dbg(int level, char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	mvp_dbg(&cmyth_debug_ctx, level, fmt, ap);
+	__cmyth_dbg(&cmyth_debug_ctx, level, fmt, ap);
 	va_end(ap);
 }
 

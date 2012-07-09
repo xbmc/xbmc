@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund
+ *  Copyright (C) 2004-2012, Eric Lund
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -21,9 +21,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <inttypes.h>
-#ifndef _MSC_VER
-#include <sys/socket.h>
-#endif
+#include <sys/types.h>
 #include <cmyth_local.h>
 
 /*
@@ -426,7 +424,7 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 	char msg[128];
 	int err;
 	int count;
-	long long c;
+	int64_t c;
 	long r;
 	long long ret;
 
@@ -488,9 +486,9 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 		ret = count;
 		goto out;
 	}
-	if ((r=cmyth_rcv_long_long(file->file_control, &err, &c, count)) < 0) {
+	if ((r=cmyth_rcv_int64(file->file_control, &err, &c, count)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
-			  "%s: cmyth_rcv_long_long() failed (%d)\n",
+			  "%s: cmyth_rcv_int64() failed (%d)\n",
 			  __FUNCTION__, r);
 		ret = err;
 		goto out;
@@ -541,7 +539,7 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 	int ret, req, nfds, rec;
 	char *end, *cur;
 	char msg[256];
-	long long len64;
+	int64_t len64;
 	struct timeval tv;
 	fd_set fds;
 
@@ -624,9 +622,20 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 				goto out;
 			}
 
-			if ((ret=cmyth_rcv_int64 (file->file_control, &err, &len64, count))< 0) {
+			/*
+			 * MythTV originally sent back a signed 32bit value but was changed to a
+			 * signed 64bit value in http://svn.mythtv.org/trac/changeset/18011 (1-Aug-2008).
+			 *
+			 * libcmyth now retrieves the 64-bit signed value, does error-checking,
+			 * and then converts to a 32bit unsigned.
+			 *
+			 * This rcv_ method needs to be forced to use new_int64 to pull back a
+			 * single 64bit number otherwise the handling in rcv_int64 will revert to
+			 * the old two 32bit hi and lo long values.
+			 */
+			if ((ret=cmyth_rcv_new_int64 (file->file_control, &err, &len64, count, 1))< 0) {
 				cmyth_dbg (CMYTH_DBG_ERROR,
-				           "%s: cmyth_rcv_int64() failed (%d)\n",
+				           "%s: cmyth_rcv_new_int64() failed (%d)\n",
 				           __FUNCTION__, ret);
 				ret = err;
 				goto out;
@@ -634,8 +643,8 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 			if (len64 >= 0x100000000LL || len64 < 0) {
 				/* -1 seems to be a common result, but isn't valid so use 0 instead. */
 				cmyth_dbg (CMYTH_DBG_WARN,
-				           "%s: cmyth_rcv_int64() returned out of bound value (%d). Using 0\n",
-				           __FUNCTION__, (long)len64);
+				           "%s: cmyth_rcv_new_int64() returned out of bound value (%"PRId64"). Using 0 instead.\n",
+				           __FUNCTION__, len64);
 				len64 = 0;
 			}
 			len = (unsigned long)len64;
@@ -644,8 +653,8 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 
 			if (file->file_req < file->file_pos) {
 				cmyth_dbg (CMYTH_DBG_ERROR,
-				           "%s: received invalid invalid length, read position is ahead of request (req: %d, rec: %d, len: %d)\n",
-				           __FUNCTION__, file->file_req, file->file_pos, len);
+				           "%s: received invalid invalid length, read position is ahead of request (req: %"PRIu64", pos: %"PRIu64", len: %"PRId64")\n",
+				           __FUNCTION__, file->file_req, file->file_pos, len64);
 				ret = -1;
 				goto out;
 			}
