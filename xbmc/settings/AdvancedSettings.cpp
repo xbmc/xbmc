@@ -299,6 +299,9 @@ void CAdvancedSettings::Initialize()
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
   m_initialized = true;
+
+  m_databaseMusic.Reset();
+  m_databaseVideo.Reset();
 }
 
 bool CAdvancedSettings::Load()
