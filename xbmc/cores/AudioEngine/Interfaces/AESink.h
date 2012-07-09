@@ -72,7 +72,7 @@ public:
   /*
     Adds packets to be sent out, this routine MUST block or sleep.
   */
-  virtual unsigned int AddPackets(uint8_t *data, unsigned int frames) = 0;
+  virtual unsigned int AddPackets(uint8_t *data, unsigned int frames, bool hasAudio) = 0;
 
   /*
     Drain the sink

@@ -1009,7 +1009,7 @@ int CSoftAE::RunOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames);
+  wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames, hasAudio);
 
   /* Return value of INT_MAX signals error in sink - restart */
   if (wroteFrames == INT_MAX)
@@ -1047,7 +1047,7 @@ int CSoftAE::RunRawOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  int wroteFrames = m_sink->AddPackets((uint8_t *)data, m_sinkFormat.m_frames);
+  int wroteFrames = m_sink->AddPackets((uint8_t *)data, m_sinkFormat.m_frames, hasAudio);
 
   /* Return value of INT_MAX signals error in sink - restart */
   if (wroteFrames == INT_MAX)
@@ -1108,7 +1108,7 @@ int CSoftAE::RunTranscodeStage(bool hasAudio)
   /* if we have enough data to write */
   if (m_encodedBuffer.Used() >= sinkBlock)
   {
-    int wroteFrames = m_sink->AddPackets((uint8_t*)m_encodedBuffer.Raw(sinkBlock), m_sinkFormat.m_frames);
+    int wroteFrames = m_sink->AddPackets((uint8_t*)m_encodedBuffer.Raw(sinkBlock), m_sinkFormat.m_frames, hasAudio);
     
     /* Return value of INT_MAX signals error in sink - restart */
     if (wroteFrames == INT_MAX)
