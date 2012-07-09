@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund
+ *  Copyright (C) 2004-2012, Eric Lund
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -24,15 +24,11 @@
  *                This allows the watcher to do things like pause, rewind
  *                and so forth on live-tv.
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#include <sys/socket.h>
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
 #include <cmyth_local.h>
 
 /*
@@ -135,7 +131,7 @@ cmyth_ringbuf_setup(cmyth_recorder_t rec)
 
 	int err, count;
 	int r;
-	long long size, fill;
+	int64_t size, fill;
 	char msg[256];
 	char url[1024];
 	char buf[32];
@@ -171,7 +167,7 @@ cmyth_ringbuf_setup(cmyth_recorder_t rec)
 	r = cmyth_rcv_string(control, &err, url, sizeof(url)-1, count); 
 	count -= r;
 
-	if ((r=cmyth_rcv_long_long(control, &err, &size, count)) < 0) {
+	if ((r=cmyth_rcv_int64(control, &err, &size, count)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: cmyth_rcv_length() failed (%d)\n",
 			  __FUNCTION__, r);
@@ -179,7 +175,7 @@ cmyth_ringbuf_setup(cmyth_recorder_t rec)
 	}
 	count -= r;
 
-	if ((r=cmyth_rcv_long_long(control, &err, &fill, count)) < 0) {
+	if ((r=cmyth_rcv_int64(control, &err, &fill, count)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: cmyth_rcv_length() failed (%d)\n",
 			  __FUNCTION__, r);
@@ -532,7 +528,7 @@ cmyth_ringbuf_seek(cmyth_recorder_t rec,
 	char msg[128];
 	int err;
 	int count;
-	long long c;
+	int64_t c;
 	long r;
 	long long ret;
 	cmyth_ringbuf_t ring;
@@ -565,7 +561,7 @@ cmyth_ringbuf_seek(cmyth_recorder_t rec,
 	}
 
 	count = cmyth_rcv_length(rec->rec_conn);
-	if ((r=cmyth_rcv_long_long(rec->rec_conn, &err, &c, count)) < 0) {
+	if ((r=cmyth_rcv_int64(rec->rec_conn, &err, &c, count)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: cmyth_rcv_length() failed (%d)\n",
 			  __FUNCTION__, r);

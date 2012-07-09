@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund, Jon Gettler
+ *  Copyright (C) 2004-2012, Eric Lund, Jon Gettler
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -25,56 +25,36 @@
 #ifndef __CMYTH_LOCAL_H
 #define __CMYTH_LOCAL_H
 
-#ifdef _MSC_VER
 #include <stdio.h>
-#include <malloc.h>
-#else
-#include <unistd.h>
+#include <stdlib.h>
+#if !defined(_MSC_VER)
+#include <sys/time.h>
 #endif
 #include <refmem/refmem.h>
 #include <cmyth/cmyth.h>
 #include <time.h>
-#include <mysql/mysql.h>
 #include <stdint.h>
+#include <mysql/mysql.h>
 
-#ifdef _MSC_VER
-#pragma warning(disable:4267)
-#define pthread_mutex_lock(a)
-#define pthread_mutex_unlock(a)
-#define PTHREAD_MUTEX_INITIALIZER NULL;
-typedef void* pthread_mutex_t;
-extern pthread_mutex_t mutex;
-#define mutex __cmyth_mutex
-#define SHUT_RDWR SD_BOTH
-typedef SOCKET cmyth_socket_t;
-typedef int socklen_t;
-#define snprintf _snprintf
-#define sleep(a) Sleep(a*1000)
-#define usleep(a) Sleep(a/1000)
-static inline struct tm* localtime_r (const time_t *clock, struct tm *result) { 
-	struct tm* data;
-  if (!clock || !result) return NULL;
-  data = localtime(clock);
-  if (!data) return NULL;
-	memcpy(result,data,sizeof(*result)); 
-	return result; 
-}
-static inline __int64 atoll(const char* s)
-{
-  __int64 value;
-  if(sscanf(s,"%I64d", &value))
-    return value;
-  else
-    return 0;
-}
-
+#if defined(_MSC_VER)
+#include "cmyth_msc.h"
 #else
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/select.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 #include <pthread.h>
+
+typedef int cmyth_socket_t;
+#define closesocket(fd) close(fd)
+#endif /* _MSC_VER */
+
 #define mutex __cmyth_mutex
 extern pthread_mutex_t mutex;
-#define closesocket(fd) close(fd)
-typedef int cmyth_socket_t;
-#endif
+
 /*
  * Some useful constants
  */
@@ -170,10 +150,10 @@ struct cmyth_file {
 	long file_id;			/**< file identifier */
 	/** callback when close is completed */
 	void (*closed_callback)(cmyth_file_t file);
-	unsigned long long file_start;	/**< file start offest */
-	unsigned long long file_length;	/**< file length */
-	unsigned long long file_pos;	/**< current file position */
-	unsigned long long file_req;	/**< current file position requested */
+	uint64_t file_start;	/**< file start offest */
+	uint64_t file_length;	/**< file length */
+	uint64_t file_pos;	/**< current file position */
+	uint64_t file_req;	/**< current file position requested */
 	cmyth_conn_t file_control;	/**< master backend connection */
 };
 
@@ -181,10 +161,10 @@ struct cmyth_ringbuf {
 	cmyth_conn_t conn_data;
 	long file_id;
 	char *ringbuf_url;
-	unsigned long long ringbuf_size;
-	unsigned long long file_length;
-	unsigned long long file_pos;
-	unsigned long long ringbuf_fill;
+	uint64_t ringbuf_size;
+	uint64_t file_length;
+	uint64_t file_pos;
+	uint64_t ringbuf_fill;
 	char *ringbuf_hostname;
 	int ringbuf_port;
 };
@@ -197,7 +177,7 @@ struct cmyth_rec_num {
 
 struct cmyth_keyframe {
 	unsigned long keyframe_number;
-	unsigned long long keyframe_pos;
+	uint64_t keyframe_pos;
 };
 
 struct cmyth_posmap {
@@ -206,8 +186,8 @@ struct cmyth_posmap {
 };
 
 struct cmyth_freespace {
-	unsigned long long freespace_total;
-	unsigned long long freespace_used;
+	uint64_t freespace_total;
+	uint64_t freespace_used;
 };
 
 struct cmyth_timestamp {
@@ -233,7 +213,7 @@ struct cmyth_proginfo {
 	char *proginfo_channame;  /* Deprecated in V8, simulated for compat. */
 	char *proginfo_chanicon;  /* New in V8 */
 	char *proginfo_url;
-	long long proginfo_Length;
+	int64_t proginfo_Length;
 	cmyth_timestamp_t proginfo_start_ts;
 	cmyth_timestamp_t proginfo_end_ts;
 	unsigned long proginfo_conflicting; /* Deprecated in V8, always 0 */
@@ -276,7 +256,7 @@ struct cmyth_proginfo {
 	unsigned long proginfo_audioproperties; /* new in v35 */
 	unsigned long proginfo_videoproperties; /* new in v35 */
 	unsigned long proginfo_subtitletype; /* new in v35 */
-	char *proginfo_prodyear; /* new in v41 */
+	unsigned short proginfo_year; /* new in v43 */
 };
 
 struct cmyth_proglist {
@@ -315,14 +295,27 @@ extern int cmyth_rcv_short(cmyth_conn_t conn, int *err, short *buf, int count);
 extern int cmyth_rcv_long(cmyth_conn_t conn, int *err, long *buf, int count);
 #define cmyth_rcv_u_long(c, e, b, n) cmyth_rcv_long(c, e, (long*)b, n)
 
-#define cmyth_rcv_long_long __cmyth_rcv_long_long
-extern int cmyth_rcv_long_long(cmyth_conn_t conn, int *err, long long *buf,
+#define cmyth_rcv_old_int64 __cmyth_rcv_old_int64
+extern int cmyth_rcv_old_int64(cmyth_conn_t conn, int *err, int64_t *buf,
 			       int count);
-#define cmyth_rcv_u_long_long(c, e, b, n) cmyth_rcv_long_long(c, e, (long long*)b, n)
 
-#define cmyth_rcv_int64 __cmyth_rcv_int64
-extern int cmyth_rcv_int64(cmyth_conn_t conn, int *err, long long *buf,
-			       int count);
+#define cmyth_rcv_new_int64 __cmyth_rcv_new_int64
+extern int cmyth_rcv_new_int64(cmyth_conn_t conn, int *err, int64_t *buf,
+			       int count, int forced);
+
+#define cmyth_rcv_old_uint64 __cmyth_rcv_old_uint64
+extern int cmyth_rcv_old_uint64(cmyth_conn_t conn, int *err, uint64_t *buf,
+				int count);
+
+#define cmyth_rcv_new_uint64 __cmyth_rcv_new_uint64
+extern int cmyth_rcv_new_uint64(cmyth_conn_t conn, int *err, uint64_t *buf,
+				int count, int forced);
+
+#define cmyth_rcv_int64(conn, err, buf, count)	\
+	cmyth_rcv_new_int64(conn, err, buf, count, 0)
+
+#define cmyth_rcv_uint64(conn, err, buf, count)	\
+	cmyth_rcv_new_uint64(conn, err, buf, count, 0)
 
 #define cmyth_rcv_ubyte __cmyth_rcv_ubyte
 extern int cmyth_rcv_ubyte(cmyth_conn_t conn, int *err, unsigned char *buf,
