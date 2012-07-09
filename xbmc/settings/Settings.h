@@ -335,6 +335,7 @@ public:
   int GetCurrentProfileId() const;
 
   std::vector<RESOLUTION_INFO> m_ResInfo;
+  std::vector<RESOLUTION_INFO> m_Calibrations;
 
   // utility functions for user data folders
 
@@ -381,6 +382,9 @@ public:
   static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
+
+  void ApplyCalibrations();
+  void UpdateCalibrations();
 protected:
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);

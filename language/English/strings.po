@@ -845,7 +845,9 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr ""
 
-#empty string with id 246
+msgctxt "#246"
+msgid "Monitor"
+msgstr ""
 
 msgctxt "#247"
 msgid "Scripts"

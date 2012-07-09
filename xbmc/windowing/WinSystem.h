@@ -99,6 +99,7 @@ public:
   std::vector<RESOLUTION_WHR> ScreenResolutions(int screen);
   std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height);
   REFRESHRATE DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates);
+  virtual bool HasCalibration(const RESOLUTION_INFO &resInfo) { return true; };
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);

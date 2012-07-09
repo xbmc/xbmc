@@ -753,7 +753,7 @@ bool CApplication::CreateGUI()
 
   uint32_t sdlFlags = 0;
 
-#if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
+#if (defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)) && !defined(HAS_GLX)
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
@@ -801,6 +801,11 @@ bool CApplication::CreateGUI()
     return false;
   }
 
+  // update the window resolutions
+#if defined(HAS_GLX)
+  g_Windowing.UpdateResolutions();
+#endif
+
   // Retrieve the matching resolution based on GUI settings
   g_guiSettings.m_LookAndFeelResolution = g_guiSettings.GetResolution();
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
@@ -810,7 +815,6 @@ bool CApplication::CreateGUI()
     g_guiSettings.SetResolution(RES_DESKTOP);
   }
 
-  // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
   if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)

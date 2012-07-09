@@ -40,6 +40,7 @@ using namespace std;
 CXRandR::CXRandR(bool query)
 {
   m_bInit = false;
+  m_numScreens = 1;
   if (query)
     Query();
 }
@@ -56,11 +57,21 @@ bool CXRandR::Query(bool force)
     return false;
 
   m_outputs.clear();
-  m_current.clear();
+  // query all screens
+  for(unsigned int screennum=0; screennum<m_numScreens; ++screennum)
+  {
+    if(!Query(force, screennum))
+      return false;
+  }
+  return true;
+}
 
+bool CXRandR::Query(bool force, int screennum)
+{
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
+  cmd.append("-q --screen %d", screennum);
 
   FILE* file = popen(cmd.c_str(),"r");
   if (!file)
@@ -80,7 +91,7 @@ bool CXRandR::Query(bool force)
   pclose(file);
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (strcasecmp(pRootElement->Value(), "screen") != 0)
+  if (strcasecmp(pRootElement->Value(), "screen") != screennum)
   {
     // TODO ERROR
     return false;
@@ -93,12 +104,20 @@ bool CXRandR::Query(bool force)
     xoutput.name.TrimLeft(" \n\r\t");
     xoutput.name.TrimRight(" \n\r\t");
     xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
+    xoutput.screen = screennum;
     xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
     xoutput.x = (output->Attribute("x") != NULL ? atoi(output->Attribute("x")) : 0);
     xoutput.y = (output->Attribute("y") != NULL ? atoi(output->Attribute("y")) : 0);
     xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
     xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
+    if (output->Attribute("rotation") != NULL
+        && (strcasecmp(output->Attribute("rotation"), "left") == 0 || strcasecmp(output->Attribute("rotation"), "right") == 0))
+    {
+      xoutput.isRotated = true;
+    }
+    else
+      xoutput.isRotated = false;
 
     if (!xoutput.isConnected)
        continue;
@@ -117,7 +136,6 @@ bool CXRandR::Query(bool force)
       xoutput.modes.push_back(xmode);
       if (xmode.isCurrent)
       {
-        m_current.push_back(xoutput);
         hascurrent = true;
       }
     }
@@ -138,25 +156,6 @@ std::vector<XOutput> CXRandR::GetModes(void)
 void CXRandR::SaveState()
 {
   Query(true);
-}
-
-void CXRandR::RestoreState()
-{
-  vector<XOutput>::iterator outiter;
-  for (outiter=m_current.begin() ; outiter!=m_current.end() ; outiter++)
-  {
-    vector<XMode> modes = (*outiter).modes;
-    vector<XMode>::iterator modeiter;
-    for (modeiter=modes.begin() ; modeiter!=modes.end() ; modeiter++)
-    {
-      XMode mode = *modeiter;
-      if (mode.isCurrent)
-      {
-        SetMode(*outiter, mode);
-        return;
-      }
-    }
-  }
 }
 
 bool CXRandR::SetMode(XOutput output, XMode mode)
@@ -260,17 +259,6 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   return true;
 }
 
-XOutput CXRandR::GetCurrentOutput()
-{
-  Query();
-  for (unsigned int j = 0; j < m_outputs.size(); j++)
-  {
-    if(m_outputs[j].isConnected)
-      return m_outputs[j];
-  }
-  XOutput empty;
-  return empty;
-}
 XMode CXRandR::GetCurrentMode(CStdString outputName)
 {
   Query();
@@ -342,6 +330,43 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
       }
     }
   }
+}
+
+void CXRandR::SetNumScreens(unsigned int num)
+{
+  m_numScreens = num;
+  m_bInit = false;
+}
+
+bool CXRandR::IsOutputConnected(CStdString name)
+{
+  bool result = false;
+  Query();
+
+  for (unsigned int i = 0; i < m_outputs.size(); ++i)
+  {
+    if (m_outputs[i].name == name)
+    {
+      result = true;
+      break;
+    }
+  }
+  return result;
+}
+
+XOutput* CXRandR::GetOutput(CStdString outputName)
+{
+  XOutput *result = 0;
+  Query();
+  for (unsigned int i = 0; i < m_outputs.size(); ++i)
+  {
+    if (m_outputs[i].name == outputName)
+    {
+      result = &m_outputs[i];
+      break;
+    }
+  }
+  return result;
 }
 
 CXRandR g_xrandr;

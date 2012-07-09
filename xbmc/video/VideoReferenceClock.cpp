@@ -122,6 +122,18 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("CVideoReferenceClock")
 #endif
 }
 
+CVideoReferenceClock::~CVideoReferenceClock()
+{
+#if defined(HAS_GLX)
+  // some ATI voodoo, if we don't close the display, we crash on exit
+  if (m_Dpy)
+  {
+    XCloseDisplay(m_Dpy);
+    m_Dpy = NULL;
+  }
+#endif
+}
+
 void CVideoReferenceClock::Process()
 {
   bool SetupSuccess = false;
@@ -131,6 +143,10 @@ void CVideoReferenceClock::Process()
   //register callback
   m_D3dCallback.Reset();
   g_Windowing.Register(&m_D3dCallback);
+#endif
+#if defined(HAS_GLX)
+  g_Windowing.Register(this);
+  m_xrrEvent = false;
 #endif
 
   while(!m_bStop)
@@ -192,6 +208,16 @@ void CVideoReferenceClock::Process()
     //clean up the vblank clock
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
     CleanupGLX();
+    if (m_xrrEvent)
+    {
+      m_releaseEvent.Set();
+      while (!m_bStop)
+      {
+        if (m_resetEvent.WaitMSec(100))
+          break;
+      }
+      m_xrrEvent = false;
+    }
 #elif defined(_WIN32) && defined(HAS_DX)
     CleanupD3D();
 #elif defined(TARGET_DARWIN)
@@ -203,6 +229,9 @@ void CVideoReferenceClock::Process()
 #if defined(_WIN32) && defined(HAS_DX)
   g_Windowing.Unregister(&m_D3dCallback);
 #endif
+#if defined(HAS_GLX)
+  g_Windowing.Unregister(this);
+#endif
 }
 
 bool CVideoReferenceClock::WaitStarted(int MSecs)
@@ -212,6 +241,24 @@ bool CVideoReferenceClock::WaitStarted(int MSecs)
 }
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
+
+void CVideoReferenceClock::OnLostDevice()
+{
+  if (!m_xrrEvent)
+  {
+    m_releaseEvent.Reset();
+    m_resetEvent.Reset();
+    m_xrrEvent = true;
+    m_releaseEvent.Wait();
+  }
+}
+
+void CVideoReferenceClock::OnResetDevice()
+{
+  m_xrrEvent = false;
+  m_resetEvent.Set();
+}
+
 bool CVideoReferenceClock::SetupGLX()
 {
   int singleBufferAttributes[] = {
@@ -251,7 +298,7 @@ bool CVideoReferenceClock::SetupGLX()
   }
 
   bool          ExtensionFound = false;
-  istringstream Extensions(glXQueryExtensionsString(m_Dpy, DefaultScreen(m_Dpy)));
+  istringstream Extensions(glXQueryExtensionsString(m_Dpy, g_Windowing.GetCurrentScreen()));
   string        ExtensionStr;
 
   while (!ExtensionFound)
@@ -278,7 +325,7 @@ bool CVideoReferenceClock::SetupGLX()
     m_bIsATI = true;
   }
 
-  m_vInfo = glXChooseVisual(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributes);
+  m_vInfo = glXChooseVisual(m_Dpy, g_Windowing.GetCurrentScreen(), singleBufferAttributes);
   if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseVisual returned NULL");
@@ -289,15 +336,16 @@ bool CVideoReferenceClock::SetupGLX()
   {
     Swa.border_pixel = 0;
     Swa.event_mask = StructureNotifyMask;
-    Swa.colormap = XCreateColormap(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), m_vInfo->visual, AllocNone );
+    Swa.colormap = XCreateColormap(m_Dpy, g_Windowing.GetWindow(), m_vInfo->visual, AllocNone );
     SwaMask = CWBorderPixel | CWColormap | CWEventMask;
 
-    m_Window = XCreateWindow(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), 0, 0, 256, 256, 0,
+    m_Window = XCreateWindow(m_Dpy, g_Windowing.GetWindow(), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
   }
   else
   {
-    m_pixmap = XCreatePixmap(m_Dpy, DefaultRootWindow(m_Dpy), 256, 256, m_vInfo->depth);
+    Window window = g_Windowing.GetWindow();
+    m_pixmap = XCreatePixmap(m_Dpy, window, 256, 256, m_vInfo->depth);
     if (!m_pixmap)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: unable to create pixmap");
@@ -361,10 +409,6 @@ bool CVideoReferenceClock::SetupGLX()
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported");
     return false;
   }
-
-  //set up receiving of RandR events, we'll get one when the refreshrate changes
-  XRRQueryExtension(m_Dpy, &m_RREventBase, &ReturnV);
-  XRRSelectInput(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), RRScreenChangeNotifyMask);
 
   UpdateRefreshrate(true); //forced refreshrate update
   m_MissedVblanks = 0;
@@ -499,7 +543,7 @@ int CVideoReferenceClock::GetRandRRate()
   int RefreshRate;
   XRRScreenConfiguration *CurrInfo;
 
-  CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
+  CurrInfo = XRRGetScreenInfo(m_Dpy, g_Windowing.GetWindow());
   RefreshRate = XRRConfigCurrentRate(CurrInfo);
   XRRFreeScreenConfigInfo(CurrInfo);
 
@@ -566,6 +610,9 @@ void CVideoReferenceClock::RunGLX()
 
   while(!m_bStop)
   {
+    if (m_xrrEvent)
+      return;
+
     //wait for the next vblank
     if (!m_bIsATI)
     {
@@ -629,7 +676,6 @@ void CVideoReferenceClock::RunGLX()
       UpdateClock((int)(VblankCount - PrevVblankCount), true);
       SingleLock.Leave();
       SendVblankSignal();
-      UpdateRefreshrate();
       IsReset = false;
     }
     else if (!m_bStop)
@@ -1166,23 +1212,10 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
 
-  //check for RandR events
-  bool   GotEvent = Forced || m_RefreshChanged == 2;
-  XEvent Event;
-  while (XCheckTypedEvent(m_Dpy, m_RREventBase + RRScreenChangeNotify, &Event))
-  {
-    if (Event.type == m_RREventBase + RRScreenChangeNotify)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Received RandR event %i", Event.type);
-      GotEvent = true;
-    }
-    XRRUpdateConfiguration(&Event);
-  }
-
   if (!Forced)
     m_RefreshChanged = 0;
 
-  if (!GotEvent) //refreshrate did not change
+  if (!Forced) //refreshrate did not change
     return false;
 
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
