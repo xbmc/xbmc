@@ -24,6 +24,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/AdvancedSettings.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -34,6 +35,11 @@ void TestBasicEnvironment::SetUp()
   char buf[MAX_PATH], *tmp;
   CStdString xbmcTempPath;
   XFILE::CFile *f;
+
+  /* NOTE: The below is done to fix memleak warning about unitialized variable
+   * in xbmcutil::GlobalsSingleton<CAdvancedSettings>::getInstance().
+   */
+  g_advancedSettings.Initialize();
 
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();
