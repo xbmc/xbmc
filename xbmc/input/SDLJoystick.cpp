@@ -454,7 +454,7 @@ float CJoystick::SetDeadzone(float val)
 
 bool CJoystick::ReleaseJoysticks()
 {
-  m_pJoysticks.clear();
+  m_Joysticks.clear();
   m_JoystickNames.clear();
   m_HatId = 0;
   m_ButtonId = 0;
