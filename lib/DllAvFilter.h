@@ -74,7 +74,6 @@ public:
   virtual void avfilter_inout_free(AVFilterInOut **inout)=0;
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)=0;
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)=0;
-  virtual int avfilter_poll_frame(AVFilterLink *link)=0;
   virtual int avfilter_request_frame(AVFilterLink *link)=0;
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h)=0;
@@ -133,7 +132,6 @@ public:
   {
     return ::avfilter_graph_config(graphctx, log_ctx);
   }
-  virtual int avfilter_poll_frame(AVFilterLink *link) { return ::avfilter_poll_frame(link); }
   virtual int avfilter_request_frame(AVFilterLink *link) { return ::avfilter_request_frame(link); }
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, flags); }
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h) { return ::avfilter_get_video_buffer(link, perms, w, h); }
@@ -168,7 +166,6 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_METHOD1(void, avfilter_inout_free_dont_call, (AVFilterInOut **p1))
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_dont_call, AVFilterGraph *, const char *, AVFilterInOut **, AVFilterInOut **, void *)
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avfilter_graph_config_dont_call, AVFilterGraph *, void *)
-  DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_poll_frame, AVFilterLink *)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_request_frame, AVFilterLink*)
   DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
   DEFINE_METHOD4(AVFilterBufferRef*, avfilter_get_video_buffer, (AVFilterLink *p1, int p2, int p3, int p4))
@@ -190,7 +187,6 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
     RESOLVE_METHOD_RENAME(avfilter_inout_free, avfilter_inout_free_dont_call)
     RESOLVE_METHOD_RENAME(avfilter_graph_parse, avfilter_graph_parse_dont_call)
     RESOLVE_METHOD_RENAME(avfilter_graph_config, avfilter_graph_config_dont_call)
-    RESOLVE_METHOD(avfilter_poll_frame)
     RESOLVE_METHOD(avfilter_request_frame)
     RESOLVE_METHOD(av_vsrc_buffer_add_frame)
     RESOLVE_METHOD(avfilter_get_video_buffer)
