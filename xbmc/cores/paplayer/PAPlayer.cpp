@@ -51,11 +51,11 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_isPlaying          (false),
   m_isPaused           (false),
   m_isFinished         (false),
+  m_defaultCrossfadeMS (0),
+  m_upcomingCrossfadeMS(0),
   m_currentStream      (NULL ),
   m_audioCallback      (NULL ),
-  m_FileItem           (new CFileItem()),
-  m_defaultCrossfadeMS (0),
-  m_upcomingCrossfadeMS(0)
+  m_FileItem           (new CFileItem())
 {
 }
 
