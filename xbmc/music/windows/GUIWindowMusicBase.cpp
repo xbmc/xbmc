@@ -1348,7 +1348,8 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
-  if (g_settings.m_musicNeedsUpdate == 27 && !g_application.IsMusicScanning())
+  if (g_settings.m_musicNeedsUpdate == 27 && !g_application.IsMusicScanning() &&
+      g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC))
   {
     // rescan of music library required
     if (CGUIDialogYesNo::ShowAndGetInput(799, 800, 801, -1))
