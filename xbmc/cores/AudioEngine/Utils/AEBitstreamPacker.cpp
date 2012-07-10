@@ -20,6 +20,7 @@
  */
 
 #include "AEBitstreamPacker.h"
+#include "AEPackIEC61937.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
@@ -54,6 +55,18 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
       PackDTSHD (info, data, size);
+      break;
+
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+      m_dataSize = CAEPackIEC61937::PackDTS_512(data, size, m_packedBuffer, info.IsLittleEndian());
+      break;
+
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+      m_dataSize = CAEPackIEC61937::PackDTS_1024(data, size, m_packedBuffer, info.IsLittleEndian());
+      break;
+
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+      m_dataSize = CAEPackIEC61937::PackDTS_2048(data, size, m_packedBuffer, info.IsLittleEndian());
       break;
 
     default:
