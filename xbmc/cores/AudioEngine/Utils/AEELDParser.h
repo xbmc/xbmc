@@ -22,7 +22,8 @@
 
 #include <stdint.h>
 #include <cstring>
-#include "AEDeviceInfo.h"
+
+class CAEDeviceInfo;
 
 class CAEELDParser {
 public:

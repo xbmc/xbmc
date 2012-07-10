@@ -28,9 +28,6 @@
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"
-#include "Utils/AEConvert.h"
-#include "Utils/AERemap.h"
-#include "Utils/AEUtil.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"

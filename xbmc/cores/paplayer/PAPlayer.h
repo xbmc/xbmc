@@ -29,8 +29,9 @@
 #include "threads/SharedSection.h"
 
 #include "cores/IAudioCallback.h"
-#include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
+
+class IAEStream;
 
 class CFileItem;
 class PAPlayer : public IPlayer, public CThread

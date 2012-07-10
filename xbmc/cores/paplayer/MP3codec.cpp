@@ -22,6 +22,7 @@
 #include "MP3codec.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace MUSIC_INFO;
 

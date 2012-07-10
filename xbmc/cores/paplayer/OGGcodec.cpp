@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace MUSIC_INFO;
 
