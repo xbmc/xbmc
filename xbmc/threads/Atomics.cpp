@@ -35,7 +35,9 @@
 ///////////////////////////////////////////////////////////////////////////
 long cas(volatile long *pAddr, long expectedVal, long swapVal)
 {
-#if defined(__ppc__) || defined(__powerpc__) // PowerPC
+#if defined(HAS_GCC_INTRINSICS)
+  return(__sync_val_compare_and_swap(pAddr, expectedVal, swapVal));
+#elif defined(__ppc__) || defined(__powerpc__) // PowerPC
   unsigned int prev;
   __asm__ __volatile__ (
     "  1:      lwarx   %0,0,%2  \n" /* Load the current value of *pAddr(%2) into prev (%0) and lock pAddr,  */
