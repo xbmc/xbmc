@@ -1230,7 +1230,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
-      if (item->HasVideoInfoTag() && !item->m_bIsFolder && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
+      //if the item isn't a folder, is a member of a list rather than a single item
+      //and we're not on the last element of the list, then add the 'play from here' option
+      if (!item->m_bIsFolder && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
       }
