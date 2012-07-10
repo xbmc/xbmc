@@ -139,6 +139,14 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
       }
     }
     break;
+
+  case GUI_MSG_SET_TEXT:
+    SetMode(m_mode, message.GetLabel());
+
+    // close the dialog if requested
+    if (message.GetParam1() > 0)
+      OnOK();
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -462,7 +470,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
     m_datetime = *(SYSTEMTIME *)initial;
     m_lastblock = (m_mode == INPUT_DATE) ? 2 : 1;
   }
-  if (m_mode == INPUT_IP_ADDRESS)
+  else if (m_mode == INPUT_IP_ADDRESS)
   {
     m_lastblock = 3;
     m_ip[0] = m_ip[1] = m_ip[2] = m_ip[3] = 0;
@@ -484,10 +492,51 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
       }
     }
   }
-  if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
-  {
+  else if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
     m_number = *(CStdString *)initial;
+}
+
+void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const CStdString &initial)
+{
+  m_mode = mode;
+  m_block = 0;
+  m_lastblock = 0;
+  if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS || m_mode == INPUT_DATE)
+  {
+    CDateTime dateTime;
+    if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS)
+    {
+      // check if we have a pure number
+      if (initial.find_first_not_of("0123456789") == std::string::npos)
+      {
+        long seconds = strtol(initial.c_str(), NULL, 10);
+        dateTime = seconds;
+      }
+      else
+      {
+        CStdString tmp = initial;
+        // if we are handling seconds and if the string only contains
+        // "mm:ss" we need to add dummy "hh:" to get "hh:mm:ss"
+        if (m_mode == INPUT_TIME_SECONDS && tmp.size() <= 5)
+          tmp = "00:" + tmp;
+        dateTime.SetFromDBTime(tmp);
+      }
+    }
+    else if (m_mode == INPUT_DATE)
+    {
+      CStdString tmp = initial;
+      tmp.Replace("/", ".");
+      dateTime.SetFromDBDate(tmp);
+    }
+
+    if (!dateTime.IsValid())
+      return;
+
+    dateTime.GetAsSystemTime(m_datetime);
+    m_lastblock = (m_mode == INPUT_DATE) ? 2 : 1;
   }
+  else
+    SetMode(mode, (void*)&initial);
 }
 
 void CGUIDialogNumeric::GetOutput(void *output)
