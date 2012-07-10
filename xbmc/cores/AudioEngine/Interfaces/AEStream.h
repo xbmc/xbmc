@@ -59,8 +59,9 @@ public:
   virtual unsigned int AddData(void *data, unsigned int size) = 0;
 
   /**
-   * Returns how long until new data will be played
-   * @return The delay in seconds
+   * Returns the time in seconds that it will take
+   * for the next added packet to be heard from the speakers.
+   * @return seconds
    */
   virtual double GetDelay() = 0;
 
@@ -71,14 +72,15 @@ public:
   virtual bool IsBuffering() = 0;
 
   /**
-   * Returns how long until playback will start
-   * @return The delay in seconds
+   * Returns the time in seconds that it will take
+   * to underrun the cache if no sample is added.
+   * @return seconds
    */
   virtual double GetCacheTime() = 0;
 
   /**
-   * Returns the total length of the cache before playback will start
-   * @return The delay in seconds
+   * Returns the total time in seconds of the cache
+   * @return seconds
    */
   virtual double GetCacheTotal() = 0;
 
