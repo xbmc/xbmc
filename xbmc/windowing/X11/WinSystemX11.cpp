@@ -816,8 +816,10 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     vi = glXChooseVisual(m_dpy, m_nScreen, att);
     cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
 
+    bool hasWM = HasWindowManager();
+
     int def_vis = (vi->visual == DefaultVisual(m_dpy, vi->screen));
-    swa.override_redirect = False;
+    swa.override_redirect = hasWM ? False : True;
     swa.border_pixel = fullscreen ? 0 : 5;
     swa.background_pixel = def_vis ? BlackPixel(m_dpy, vi->screen) : 0;
     swa.colormap = cmap;
@@ -833,7 +835,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
                     InputOutput, vi->visual,
                     mask, &swa);
 
-    if (fullscreen)
+    if (fullscreen && hasWM)
     {
       Atom fs = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", True);
       XChangeProperty(m_dpy, m_glWindow, XInternAtom(m_dpy, "_NET_WM_STATE", True), XA_ATOM, 32, PropModeReplace, (unsigned char *) &fs, 1);
@@ -1055,6 +1057,74 @@ bool CWinSystemX11::CreateIconPixmap()
   XDestroyImage(img); // this also frees newBuf
 
   delete iconTexture;
+
+  return true;
+}
+
+bool CWinSystemX11::HasWindowManager()
+{
+  Window wm_check;
+  unsigned char *data;
+  int status, real_format;
+  Atom real_type, prop;
+  unsigned long items_read, items_left, i;
+  char req = 0;
+
+  prop = XInternAtom(m_dpy, "_NET_SUPPORTING_WM_CHECK", True);
+  if (prop == None)
+    return false;
+  status = XGetWindowProperty(m_dpy, DefaultRootWindow(m_dpy), prop,
+                      0L, 1L, False, XA_WINDOW, &real_type, &real_format,
+                      &items_read, &items_left, &data);
+  if(status != Success || ! items_read)
+  {
+    if(status == Success)
+      XFree(data);
+    return false;
+  }
+
+  wm_check = ((Window*)data)[0];
+  XFree(data);
+
+  status = XGetWindowProperty(m_dpy, wm_check, prop,
+                      0L, 1L, False, XA_WINDOW, &real_type, &real_format,
+                      &items_read, &items_left, &data);
+
+  if(status != Success || !items_read)
+  {
+    if(status == Success)
+      XFree(data);
+    return false;
+  }
+
+  if(wm_check != ((Window*)data)[0])
+  {
+    XFree(data);
+    return false;
+  }
+
+  XFree(data);
+
+  prop = XInternAtom(m_dpy, "_NET_WM_NAME", True);
+  if (prop == None)
+  {
+    CLog::Log(LOGDEBUG,"Window Manager Name: ");
+    return true;
+  }
+
+  status = XGetWindowProperty(m_dpy, wm_check, prop,
+                        0L, (~0L), False, AnyPropertyType, &real_type, &real_format,
+                        &items_read, &items_left, &data);
+
+  if(status == Success && items_read)
+  {
+    CLog::Log(LOGDEBUG,"Window Manager Name: %s", data);
+  }
+  else
+    CLog::Log(LOGDEBUG,"Window Manager Name: ");
+
+  if(status == Success)
+    XFree(data);
 
   return true;
 }

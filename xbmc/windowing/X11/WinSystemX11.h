@@ -103,6 +103,7 @@ private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   static int XErrorHandler(Display* dpy, XErrorEvent* error);
   bool CreateIconPixmap();
+  bool HasWindowManager();
 
   CStopWatch m_screensaverReset;
 };
