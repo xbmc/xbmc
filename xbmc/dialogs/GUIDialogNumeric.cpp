@@ -27,6 +27,7 @@
 #include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "interfaces/AnnouncementManager.h"
 
 #define CONTROL_HEADING_LABEL  1
 #define CONTROL_INPUT_LABEL    4
@@ -52,6 +53,51 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 
 CGUIDialogNumeric::~CGUIDialogNumeric(void)
 {
+}
+
+void CGUIDialogNumeric::OnInitWindow()
+{
+  CGUIDialog::OnInitWindow();
+
+  CVariant data;
+  switch (m_mode)
+  {
+  case INPUT_TIME:
+    data["type"] = "time";
+    break;
+  case INPUT_DATE:
+    data["type"] = "date";
+    break;
+  case INPUT_IP_ADDRESS:
+    data["type"] = "ip";
+    break;
+  case INPUT_PASSWORD:
+    data["type"] = "password";
+    break;
+  case INPUT_NUMBER:
+    data["type"] = "number";
+    break;
+  case INPUT_TIME_SECONDS:
+    data["type"] = "seconds";
+    break;
+  default:
+    data["type"] = "keyboard";
+    break;
+  }
+
+  const CGUILabelControl *control = (const CGUILabelControl *)GetControl(CONTROL_HEADING_LABEL);
+  if (control != NULL)
+    data["title"] = control->GetDescription();
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
+}
+
+void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
+{
+  // call base class
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
 }
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)

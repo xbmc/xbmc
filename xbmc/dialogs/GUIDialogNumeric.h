@@ -54,6 +54,9 @@ public:
   static bool ShowAndGetSeconds(CStdString& timeString, const CStdString &heading);
 
 protected:
+  virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
+
   void OnNumber(unsigned int num);
   void VerifyDate(bool checkYear);
   void OnNext();
