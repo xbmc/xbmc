@@ -28,6 +28,9 @@
 #elif defined(TARGET_DARWIN)
   // safe under darwin gcc-4.2, llvm-gcc-4.2 and clang
   #define HAS_GCC_INTRINSICS
+#elif defined(TARGET_FREEBSD)
+  // safe under freebsd gcc-4.2 and clang
+  #define HAS_GCC_INTRINSICS
 #endif
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
