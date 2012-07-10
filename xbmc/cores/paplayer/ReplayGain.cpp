@@ -32,3 +32,27 @@ CReplayGain::CReplayGain()
 CReplayGain::~CReplayGain()
 {
 }
+
+void CReplayGain::SetTrackGain(int trackGain)
+{
+  iTrackGain = trackGain;
+  iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+}
+
+void CReplayGain::SetAlbumGain(int albumGain)
+{
+  iTrackGain = albumGain;
+  iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+}
+
+void CReplayGain::SetTrackPeak(float trackPeak)
+{
+  fTrackPeak = trackPeak;
+  iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+}
+
+void CReplayGain::SetAlbumPeak(float albumPeak)
+{
+  fAlbumPeak = albumPeak;
+  iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
+}
