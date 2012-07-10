@@ -323,7 +323,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create tag table");
     m_pDS->exec("CREATE TABLE tag (idTag integer primary key, strTag text)");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_tag_1 ON tag (strTag(256))");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_tag_1 ON tag (strTag(255))");
 
     CLog::Log(LOGINFO, "create taglinks table");
     m_pDS->exec("CREATE TABLE taglinks (idTag integer, idMedia integer, media_type TEXT)");
@@ -4001,7 +4001,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   if (iVersion < 67)
   {
     m_pDS->exec("CREATE TABLE tag (idTag integer primary key, strTag text)");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_tag_1 ON tag (strTag(256))");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_tag_1 ON tag (strTag(255))");
 
     m_pDS->exec("CREATE TABLE taglinks (idTag integer, idMedia integer, media_type TEXT)");
     m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_1 ON taglinks (idTag, media_type(20), idMedia)");
