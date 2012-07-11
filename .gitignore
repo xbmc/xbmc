@@ -111,6 +111,7 @@ config.log
 /addons/visualization.waveform/Waveform.vis
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
+/addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
 
 # /xbmc/guilib/
@@ -1226,3 +1227,5 @@ lib/cmyth/Makefile
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
 /xbmc/win32/git_rev.h
+
+/xbmc/visualizations/fishBMC/Makefile

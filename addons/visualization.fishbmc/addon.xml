@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.fishbmc"
+  version="4.0.1"
+  name="FishBMC"
+  provider-name="26elf">
+  <extension
+    point="xbmc.player.musicviz"
+    library_linux="fishbmc.vis"
+    library_osx="fishbmc.vis"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Visualisation showing Waves and Blur Effects</summary>
+    <description lang="en">fishBMC is based on fische, a standalone sound visualisation tool. The basic principle is: draw the waveform and smear the drawing along predefined vectors. However fische also incorporates advanced beat detection, which really guarantees a great visual experience.</description>
+    <disclaimer>If this breaks anything, the pieces remain yours.</disclaimer>
+    <platform>linux osx</platform>
+  </extension>
+</addon>
