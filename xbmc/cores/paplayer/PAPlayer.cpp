@@ -41,6 +41,11 @@
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
 #define MAX_SKIP_XFADE_TIME     2000 /* max 2 seconds crossfade on track skip */
 
+CAEChannelInfo ICodec::GetChannelInfo()
+{
+  return CAEUtil::GuessChLayout(m_Channels);
+}
+
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
