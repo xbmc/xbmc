@@ -35,6 +35,7 @@
 #include <mmdeviceapi.h>
 #include <Functiondiscoverykeys_devpkey.h>
 #include <Rpc.h>
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #pragma comment(lib, "Rpcrt4.lib")
 
 extern HWND g_hWnd;
