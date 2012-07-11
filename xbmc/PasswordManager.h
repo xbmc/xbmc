@@ -63,9 +63,21 @@ public:
    
    \param url the URL to authenticate.
    \return true if the user entered details, false if the user cancelled the dialog.
-   \sa CURL
+   \sa CURL, SaveAuthenticatedURL
    */
   bool PromptToAuthenticateURL(CURL &url);
+
+  /*!
+   \brief Save an authenticated URL.
+
+   This routine stores an authenticated URL in the temporary cache, and optionally
+   saves these details into the users profile.
+
+   \param url the URL to authenticate.
+   \param saveToProfile whether to save in the users profile, defaults to true.
+   \sa CURL, PromptToAuthenticateURL
+   */
+  void SaveAuthenticatedURL(const CURL &url, bool saveToProfile = true);
 
   /*!
    \brief Clear any previously cached passwords
