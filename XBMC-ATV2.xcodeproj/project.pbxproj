@@ -29,6 +29,7 @@
 		7C0A7FCC13A9E76E00AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FCA13A9E76E00AFC2BD /* GUIWindowDebugInfo.cpp */; };
 		7C0B990A154B80200065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B9908154B80200065A238 /* AEDeviceInfo.cpp */; };
 		7C1A89BB152671FB00C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A89B9152671FB00C63311 /* TextureCacheJob.cpp */; };
+		7C1D698B15A8142F00658B65 /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1D698915A8142F00658B65 /* DatabaseManager.cpp */; };
 		7C1F6F8C13ED17CC001726AB /* LibraryDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1F6F8A13ED17CC001726AB /* LibraryDirectory.cpp */; };
 		7C6EB586155E3EC80080368A /* ImageFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB584155E3EC80080368A /* ImageFile.cpp */; };
 		7C6EB708155F3B160080368A /* HTTPImageHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB706155F3B160080368A /* HTTPImageHandler.cpp */; };
@@ -1028,6 +1029,8 @@
 		7C1A494015A968D6004AF4A4 /* SaveFileStateJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaveFileStateJob.h; sourceTree = "<group>"; };
 		7C1A89B9152671FB00C63311 /* TextureCacheJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCacheJob.cpp; sourceTree = "<group>"; };
 		7C1A89BA152671FB00C63311 /* TextureCacheJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCacheJob.h; sourceTree = "<group>"; };
+		7C1D698915A8142F00658B65 /* DatabaseManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseManager.cpp; sourceTree = "<group>"; };
+		7C1D698A15A8142F00658B65 /* DatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
 		7C1F6F8A13ED17CC001726AB /* LibraryDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LibraryDirectory.cpp; sourceTree = "<group>"; };
 		7C1F6F8B13ED17CC001726AB /* LibraryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDirectory.h; sourceTree = "<group>"; };
 		7C6EB584155E3EC80080368A /* ImageFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageFile.cpp; sourceTree = "<group>"; };
@@ -3573,6 +3576,8 @@
 				F56C77CB131EC154000AD0F6 /* config.h */,
 				F56C77D8131EC154000AD0F6 /* CueDocument.cpp */,
 				F56C77D9131EC154000AD0F6 /* CueDocument.h */,
+				7C1D698915A8142F00658B65 /* DatabaseManager.cpp */,
+				7C1D698A15A8142F00658B65 /* DatabaseManager.h */,
 				F56C77DC131EC154000AD0F6 /* DynamicDll.cpp */,
 				F56C77DD131EC154000AD0F6 /* DynamicDll.h */,
 				F56C77DE131EC154000AD0F6 /* Favourites.cpp */,
@@ -7227,6 +7232,7 @@
 				36A9445D15821FAC00727135 /* SortUtils.cpp in Sources */,
 				DF08E84515829BA600058C77 /* Exception.cpp in Sources */,
 				36A9465315AA269B00727135 /* DirectoryNodeTags.cpp in Sources */,
+				7C1D698B15A8142F00658B65 /* DatabaseManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

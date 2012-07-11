@@ -4,6 +4,7 @@ SRCS=Application.cpp \
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \
      CueDocument.cpp \
+     DatabaseManager.cpp \
      DynamicDll.cpp \
      Favourites.cpp \
      FileItem.cpp \

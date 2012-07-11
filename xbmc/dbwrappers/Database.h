@@ -21,16 +21,14 @@
  *
  */
 
-#include <map>
-#include <memory>
-
-#include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 
 namespace dbiplus {
   class Database;
   class Dataset;
 }
+
+#include <memory>
 
 class DatabaseSettings; // forward
 
@@ -116,6 +114,9 @@ public:
   bool CommitInsertQueries();
 
 protected:
+  friend class CDatabaseManager;
+  bool Update(const DatabaseSettings &db);
+
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   uint32_t ComputeCRC(const CStdString &text);
 
@@ -127,6 +128,7 @@ protected:
   virtual int GetMinVersion() const=0;
   virtual const char *GetBaseDBName() const=0;
 
+  int GetDBVersion();
   bool UpdateVersion(const CStdString &dbName);
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
@@ -136,12 +138,10 @@ protected:
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
 
 private:
-  bool Connect(const DatabaseSettings &db, bool create);
+  void InitSettings(DatabaseSettings &dbSettings);
+  bool Connect(const CStdString &dbName, const DatabaseSettings &db, bool create);
   bool UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
   unsigned int m_openCount;
-
-  CCriticalSection m_critSect;
-  static std::map<std::string, bool> m_updated;
 };
