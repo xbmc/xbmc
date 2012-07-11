@@ -46,6 +46,11 @@ namespace EPG
 
   public:
     /*!
+     * @brief Create a new EPG table container.
+     */
+    CEpgContainer(void);
+
+    /*!
      * @brief Destroy this instance.
      */
     virtual ~CEpgContainer(void);
@@ -255,11 +260,6 @@ namespace EPG
      * @brief EPG update thread
      */
     virtual void Process(void);
-
-    /*!
-     * @brief Create a new EPG table container.
-     */
-    CEpgContainer(void);
 
     /*!
      * @brief Load all tables from the database
