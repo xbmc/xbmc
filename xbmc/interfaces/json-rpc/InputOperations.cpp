@@ -22,19 +22,24 @@
 #include "InputOperations.h"
 #include "Application.h"
 #include "guilib/GUIAudioManager.h"
+#include "guilib/GUIWindow.h"
+#include "guilib/GUIWindowManager.h"
+#include "input/ButtonTranslator.h"
+#include "input/XBMC_keyboard.h"
 #include "input/XBMC_vkeys.h"
 #include "threads/SingleLock.h"
+#include "utils/CharsetConverter.h"
 
 using namespace JSONRPC;
 
 CCriticalSection CInputOperations::m_critSection;
-uint32_t CInputOperations::m_key = KEY_INVALID;
+CKey CInputOperations::m_key(KEY_INVALID);
 
-uint32_t CInputOperations::GetKey()
+CKey CInputOperations::GetKey()
 {
   CSingleLock lock(m_critSection);
-  uint32_t currentKey = m_key;
-  m_key = KEY_INVALID;
+  CKey currentKey = m_key;
+  m_key = CKey(KEY_INVALID);
   return currentKey;
 }
 
@@ -55,13 +60,16 @@ bool CInputOperations::handleScreenSaver()
   return screenSaverBroken;
 }
 
-JSONRPC_STATUS CInputOperations::SendKey(uint32_t keyCode)
+JSONRPC_STATUS CInputOperations::SendKey(uint32_t keyCode, bool unicode /* = false */)
 {
   if (keyCode == KEY_INVALID)
     return InternalError;
 
   CSingleLock lock(m_critSection);
-  m_key = keyCode | KEY_VKEY;
+  if (unicode)
+    m_key = CKey(0, (wchar_t)keyCode, 0, 0, 0);
+  else
+    m_key = CKey(keyCode | KEY_VKEY);
   return ACK;
 }
 
@@ -82,6 +90,33 @@ JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
     g_application.getApplicationMessenger().ActivateWindow(windowID, std::vector<CStdString>(), false);
 
   return ACK;
+}
+
+JSONRPC_STATUS CInputOperations::SendText(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  std::string text = parameterObject["text"].asString();
+  if (text.empty())
+    return InvalidParams;
+
+  int controlID = 0;
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+  if (!window)
+    return InternalError;
+
+  CGUIMessage msg(GUI_MSG_SET_TEXT, 0, 0);
+  msg.SetLabel(text);
+  msg.SetParam1(parameterObject["done"].asBoolean() ? 1 : 0);
+  g_application.getApplicationMessenger().SendGUIMessage(msg, window->GetID());
+  return ACK;
+}
+
+JSONRPC_STATUS CInputOperations::ExecuteAction(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int action;
+  if (!CButtonTranslator::TranslateActionString(parameterObject["action"].asString().c_str(), action))
+    return InvalidParams;
+
+  return SendAction(action);
 }
 
 JSONRPC_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -127,4 +162,14 @@ JSONRPC_STATUS CInputOperations::Info(const CStdString &method, ITransportLayer 
 JSONRPC_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return activateWindow(WINDOW_HOME);
+}
+
+JSONRPC_STATUS CInputOperations::ShowCodec(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_SHOW_CODEC);
+}
+
+JSONRPC_STATUS CInputOperations::ShowOSD(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_SHOW_OSD);
 }

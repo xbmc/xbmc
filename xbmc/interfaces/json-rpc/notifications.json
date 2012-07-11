@@ -187,5 +187,28 @@
       }
     ],
     "returns": null
+  },
+  "Input.OnInputRequested": {
+    "type": "notification",
+    "description": "The user is requested to provide some information.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "type": { "type": "string", "enum": [ "keyboard", "time", "date", "ip", "password", "number", "seconds" ], "required": true },
+          "title": { "type": "string" }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Input.OnInputFinished": {
+    "type": "notification",
+    "description": "The user has provided the requested input.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
   }
 }
