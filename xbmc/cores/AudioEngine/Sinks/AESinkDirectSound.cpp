@@ -354,7 +354,7 @@ bool CAESinkDirectSound::IsCompatible(const AEAudioFormat format, const std::str
   return false;
 }
 
-unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames)
+unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
   if (!m_initialized)
     return 0;
