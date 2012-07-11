@@ -93,18 +93,29 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   vector<ScraperPtr> vecScrapers;
 
-  // add selected scraper
+  // add selected scraper - first proirity
   if (m_info)
     vecScrapers.push_back(m_info);
 
+  // Add all scrapers except selected and default
   VECADDONS addons;
   CAddonMgr::Get().GetAddons(m_type,addons);
-  // first pass - add language based scrapers
-  if (m_info && g_guiSettings.GetBool("scrapers.langfallback"))
-    AddScrapers(addons,vecScrapers);
 
-  // add default scraper
-  if (defaultScraper && m_info && m_info->ID() != defaultScraper->ID())
+  for (unsigned i = 0; i < addons.size(); ++i)
+  {
+    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
+
+    // skip if scraper requires settings and there's nothing set yet
+    if (scraper->RequiresSettings() && !scraper->HasUserSettings())
+      continue;
+
+    if( (!m_info || m_info->ID() != scraper->ID()) && (!defaultScraper || defaultScraper->ID() != scraper->ID()) )
+      vecScrapers.push_back(scraper);
+  }
+
+  // add default scraper - not user selectable so it's last priority
+  if( defaultScraper && (!m_info || m_info->ID() != defaultScraper->ID()) &&
+      ( !defaultScraper->RequiresSettings() || defaultScraper->HasUserSettings() ) )
     vecScrapers.push_back(defaultScraper);
 
   // search ..
@@ -178,21 +189,4 @@ void CNfoFile::Close()
   delete m_doc;
   m_doc = NULL;
   m_scurl.Clear();
-}
-
-void CNfoFile::AddScrapers(VECADDONS& addons,
-                           vector<ScraperPtr>& vecScrapers)
-{
-  for (unsigned i=0;i<addons.size();++i)
-  {
-    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
-
-    // skip if scraper requires settings and there's nothing set yet
-    if (scraper->RequiresSettings() && !scraper->HasUserSettings())
-      continue;
-
-    // add same language and multi-language
-    if (scraper->Language() == m_info->Language() || scraper->Language().Equals("multi"))
-      vecScrapers.push_back(scraper);
-  }
 }

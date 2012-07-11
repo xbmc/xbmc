@@ -7721,9 +7721,7 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr ""
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr ""
+#empty string id 21416
 
 msgctxt "#21417"
 msgid "- Settings"
