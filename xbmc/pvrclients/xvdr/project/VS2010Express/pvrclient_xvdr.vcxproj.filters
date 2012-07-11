@@ -63,9 +63,6 @@
     <ClInclude Include="..\..\requestpacket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\responsepacket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -31,7 +31,6 @@
     <ClInclude Include="..\..\codecids.h" />
     <ClInclude Include="..\..\iso639.h" />
     <ClInclude Include="..\..\requestpacket.h" />
-    <ClInclude Include="..\..\responsepacket.h" />
     <ClInclude Include="..\..\thread.h" />
     <ClInclude Include="..\..\tools.h" />
     <ClInclude Include="..\..\XVDRChannelScan.h" />
