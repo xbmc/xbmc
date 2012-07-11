@@ -292,8 +292,12 @@ else
 endif
 libexif: dllloader
 	$(MAKE) -C lib/libexif
+ifeq (@USE_MYSQL@,1)
 cmyth: dllloader
 	$(MAKE) -C lib/cmyth
+else
+cmyth:
+endif
 libhdhomerun: dllloader
 	$(MAKE) -C lib/libhdhomerun
 libid3tag: dllloader
