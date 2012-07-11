@@ -240,6 +240,14 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     videodatabase.GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES);
     iLabel = 20434;
   }
+  else if (m_rule.m_field == FieldTag)
+  {
+    if (m_type == "movies")
+      videodatabase.GetTagsNav("videodb://1/9/", items, VIDEODB_CONTENT_MOVIES);
+    else
+      return;
+    iLabel = 20459;
+  }
   else
   { // TODO: Add browseability in here.
     assert(false);

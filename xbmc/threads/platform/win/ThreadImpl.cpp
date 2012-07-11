@@ -136,7 +136,7 @@ bool CThread::WaitForThreadExit(unsigned int milliseconds)
   {
     // boost priority of thread we are waiting on to same as caller
     int callee = GetThreadPriority(m_ThreadOpaque.handle);
-    HANDLE cthread = GetCurrentThread();
+    HANDLE cthread = ::GetCurrentThread();
     int caller = (cthread != NULL) ? GetThreadPriority(cthread) : 0;
     if(cthread != NULL && caller != THREAD_PRIORITY_ERROR_RETURN && caller > callee)
       SetThreadPriority(m_ThreadOpaque.handle, caller);

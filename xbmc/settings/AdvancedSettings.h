@@ -29,6 +29,15 @@ class TiXmlElement;
 class DatabaseSettings
 {
 public:
+  void Reset()
+  {
+    type.clear();
+    host.clear();
+    port.clear();
+    user.clear();
+    pass.clear();
+    name.clear();
+  };
   CStdString type;
   CStdString host;
   CStdString port;

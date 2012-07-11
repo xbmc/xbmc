@@ -91,7 +91,7 @@ EXPORTS
 	cmyth_get_bookmark_mark
 	cmyth_get_bookmark_offset
 	cmyth_mysql_get_commbreak_list
-	cmyth_mythtv_remove_previos_recorded
+	cmyth_mythtv_remove_previous_recorded
 	cmyth_mysql_testdb_connection
 	cmyth_chanlist_create
 	cmyth_chanlist_get_item
@@ -137,7 +137,7 @@ EXPORTS
 	cmyth_proginfo_host
 	cmyth_proginfo_card_id
 	cmyth_proginfo_recgroup
-	cmyth_proginfo_prodyear
+	cmyth_proginfo_year
 	cmyth_get_delete_list
 	cmyth_proglist_create
 	cmyth_proglist_get_item
@@ -216,3 +216,8 @@ EXPORTS
 	cmyth_file_read
 	cmyth_livetv_read
 	cmyth_get_cutlist
+	cmyth_tuner_type_check
+	cmyth_update_bookmark_setting
+	cmyth_proginfo_port
+	cmyth_proginfo_season
+	cmyth_proginfo_episode

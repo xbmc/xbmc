@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
+#include "utils/EndianSwap.h"
 #include "threads/SingleLock.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
@@ -809,7 +810,7 @@ double CSoftAE::GetCacheTime()
   CSharedLock sinkLock(m_sinkLock);
 
   double time;
-  time  = (double)m_buffer.Free() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
+  time  = (double)m_buffer.Used() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
   time += m_sink->GetCacheTime();
 
   return time;
@@ -881,6 +882,16 @@ void CSoftAE::Run()
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
       InternalOpenSink();
     }
+  }
+}
+
+void CSoftAE::AllocateConvIfNeeded(size_t convertedSize)
+{
+  if (m_convertedSize < convertedSize)
+  {
+    _aligned_free(m_converted);
+    m_converted = (uint8_t *)_aligned_malloc(convertedSize, 16);
+    m_convertedSize = convertedSize;
   }
 }
 
@@ -982,12 +993,7 @@ void CSoftAE::RunOutputStage()
   if (m_convertFn)
   {
     const unsigned int convertedBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
-    if (m_convertedSize < convertedBytes)
-    {
-      _aligned_free(m_converted);
-      m_converted = (uint8_t *)_aligned_malloc(convertedBytes, 16);
-      m_convertedSize = convertedBytes;
-    }
+    AllocateConvIfNeeded(convertedBytes);
     m_convertFn((float*)data, needSamples, m_converted);
     data = m_converted;
   }
@@ -1010,7 +1016,26 @@ void CSoftAE::RunRawOutputStage()
   if(m_buffer.Used() < m_sinkBlockSize)
     return;
 
-  int wroteFrames = m_sink->AddPackets((uint8_t*)m_buffer.Raw(m_sinkBlockSize), m_sinkFormat.m_frames);
+  void *data = m_buffer.Raw(m_sinkBlockSize);
+
+  if (CAEUtil::S16NeedsByteSwap(AE_FMT_S16NE, m_sinkFormat.m_dataFormat))
+  {
+    /*
+     * It would really be preferable to handle this at packing stage, so that
+     * it could byteswap the data efficiently without wasting CPU time on
+     * swapping the huge IEC 61937 zero padding between frames (or not
+     * byteswap at all, if there are two byteswaps).
+     *
+     * Unfortunately packing is done on a higher level and we can't easily
+     * tell it the needed format from here, so do it here for now (better than
+     * nothing)...
+     */
+    AllocateConvIfNeeded(m_sinkBlockSize);
+    Endian_Swap16_buf((uint16_t *)m_converted, (uint16_t *)data, m_sinkBlockSize / 2);
+    data = m_converted;
+  }
+
+  int wroteFrames = m_sink->AddPackets((uint8_t *)data, m_sinkFormat.m_frames);
 
   /* Return value of INT_MAX signals error in sink - restart */
   if (wroteFrames == INT_MAX)

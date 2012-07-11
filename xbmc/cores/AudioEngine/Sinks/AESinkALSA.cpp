@@ -23,6 +23,7 @@
 
 #include <stdint.h>
 #include <limits.h>
+#include <set>
 #include <sstream>
 
 #include "AESinkALSA.h"
@@ -34,7 +35,7 @@
 #include "threads/SingleLock.h"
 #include "settings/GUISettings.h"
 
-#define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
+#define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 #define ALSA_PERIODS 16
 
 #define ALSA_MAX_CHANNELS 16
@@ -105,17 +106,23 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format)
   return info;
 }
 
-void CAESinkALSA::GetPassthroughDevice(AEAudioFormat format, std::string& device)
+void CAESinkALSA::GetAESParams(AEAudioFormat format, std::string& params)
 {
-  device += ",AES0=0x06,AES1=0x82,AES2=0x00";
-       if (format.m_sampleRate == 192000) device += ",AES3=0x0e";
-  else if (format.m_sampleRate == 176400) device += ",AES3=0x0c";
-  else if (format.m_sampleRate ==  96000) device += ",AES3=0x0a";
-  else if (format.m_sampleRate ==  88200) device += ",AES3=0x08";
-  else if (format.m_sampleRate ==  48000) device += ",AES3=0x02";
-  else if (format.m_sampleRate ==  44100) device += ",AES3=0x00";
-  else if (format.m_sampleRate ==  32000) device += ",AES3=0x03";
-  else device += ",AES3=0x01";
+  if (m_passthrough)
+    params = "AES0=0x06";
+  else
+    params = "AES0=0x04";
+
+  params += ",AES1=0x82,AES2=0x00";
+
+       if (format.m_sampleRate == 192000) params += ",AES3=0x0e";
+  else if (format.m_sampleRate == 176400) params += ",AES3=0x0c";
+  else if (format.m_sampleRate ==  96000) params += ",AES3=0x0a";
+  else if (format.m_sampleRate ==  88200) params += ",AES3=0x08";
+  else if (format.m_sampleRate ==  48000) params += ",AES3=0x02";
+  else if (format.m_sampleRate ==  44100) params += ",AES3=0x00";
+  else if (format.m_sampleRate ==  32000) params += ",AES3=0x03";
+  else params += ",AES3=0x01";
 }
 
 bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
@@ -144,25 +151,39 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
   format.m_channelLayout = m_channelLayout;
 
-  /* if passthrough we need the additional AES flags */
-  if (m_passthrough)
-    GetPassthroughDevice(format, device);
+  std::string AESParams;
+  /* digital interfaces should have AESx set, though in practice most
+   * receivers don't care */
+  if (m_passthrough || device.substr(0, 6) == "iec958" || device.substr(0, 4) == "hdmi")
+    GetAESParams(format, AESParams);
 
-  m_device = device;
-  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device %s", device.c_str());
+  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device \"%s\"", device.c_str());
 
   /* get the sound config */
   snd_config_t *config;
   snd_config_copy(&config, snd_config);
-  int error;
 
-  error = snd_pcm_open_lconf(&m_pcm, device.c_str(), SND_PCM_STREAM_PLAYBACK, ALSA_OPTIONS, config);
-  if (error < 0)
+  snd_config_t *dmixRateConf;
+  long dmixRate;
+
+  if (snd_config_search(config, "defaults.pcm.dmix.rate", &dmixRateConf) < 0
+      || snd_config_get_integer(dmixRateConf, &dmixRate) < 0)
+    dmixRate = 48000; /* assume default */
+
+
+  /* Prefer dmix for non-passthrough stereo when sample rate matches */
+  if (!OpenPCMDevice(device, AESParams, m_channelLayout.Count(), &m_pcm, config, format.m_sampleRate == dmixRate && !m_passthrough))
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - snd_pcm_open_lconf(%d) - %s", error, device.c_str());
+    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to initialize device \"%s\"", device.c_str());
     snd_config_delete(config);
     return false;
   }
+
+  /* get the actual device name that was used */
+  device = snd_pcm_name(m_pcm);
+  m_device = device;
+
+  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Opened device \"%s\"", device.c_str());
 
   /* free the sound config */
   snd_config_delete(config);
@@ -193,13 +214,15 @@ bool CAESinkALSA::IsCompatible(const AEAudioFormat format, const std::string dev
 snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat format)
 {
   if (AE_IS_RAW(format))
-    return SND_PCM_FORMAT_S16_LE;
+    return SND_PCM_FORMAT_S16;
 
   switch (format)
   {
     case AE_FMT_S8    : return SND_PCM_FORMAT_S8;
     case AE_FMT_U8    : return SND_PCM_FORMAT_U8;
     case AE_FMT_S16NE : return SND_PCM_FORMAT_S16;
+    case AE_FMT_S16LE : return SND_PCM_FORMAT_S16_LE;
+    case AE_FMT_S16BE : return SND_PCM_FORMAT_S16_BE;
     case AE_FMT_S24NE4: return SND_PCM_FORMAT_S24;
 #ifdef __BIG_ENDIAN__
     case AE_FMT_S24NE3: return SND_PCM_FORMAT_S24_3BE;
@@ -258,6 +281,10 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
     {
       if (AE_IS_RAW(i) || i == AE_FMT_MAX)
         continue;
+
+      if (m_passthrough && i != AE_FMT_S16BE && i != AE_FMT_S16LE)
+	continue;
+
       fmt = AEFormatToALSAFormat(i);
 
       if (fmt == SND_PCM_FORMAT_UNKNOWN || snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
@@ -334,7 +361,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
         {
           CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Failed to set the parameters");
           return false;
-	}
+        }
       }
     }
   }
@@ -525,220 +552,505 @@ void CAESinkALSA::Drain()
   snd_pcm_nonblock(m_pcm, 1);
 }
 
+void CAESinkALSA::AppendParams(std::string &device, const std::string &params)
+{
+  /* Note: escaping, e.g. "plug:'something:X=y'" isn't handled,
+   * but it is not normally encountered at this point. */
+
+  device += (device.find(':') == std::string::npos) ? ':' : ',';
+  device += params;
+}
+
+bool CAESinkALSA::TryDevice(const std::string &name, snd_pcm_t **pcmp, snd_config_t *lconf)
+{
+  /* Check if this device was already open (e.g. when checking for supported
+   * channel count in EnumerateDevice()) */
+  if (*pcmp)
+  {
+    if (name == snd_pcm_name(*pcmp))
+      return true;
+
+    snd_pcm_close(*pcmp);
+    *pcmp = NULL;
+  }
+
+  int err = snd_pcm_open_lconf(pcmp, name.c_str(), SND_PCM_STREAM_PLAYBACK, ALSA_OPTIONS, lconf);
+  if (err < 0)
+  {
+    CLog::Log(LOGINFO, "CAESinkALSA - Unable to open device \"%s\" for playback", name.c_str());
+  }
+
+  return err == 0;
+}
+
+bool CAESinkALSA::TryDeviceWithParams(const std::string &name, const std::string &params, snd_pcm_t **pcmp, snd_config_t *lconf)
+{
+  if (!params.empty())
+  {
+    std::string nameWithParams = name;
+    AppendParams(nameWithParams, params);
+    if (TryDevice(nameWithParams, pcmp, lconf))
+      return true;
+  }
+
+  /* Try the variant without extra parameters.
+   * Custom devices often do not take the AESx parameters, for example.
+   */
+  return TryDevice(name, pcmp, lconf);
+}
+
+bool CAESinkALSA::OpenPCMDevice(const std::string &name, const std::string &params, int channels, snd_pcm_t **pcmp, snd_config_t *lconf, bool preferDmixStereo)
+{
+ /* Special name denoting surroundXX mangling. This is needed for some
+   * devices for multichannel to work. */
+  if (name == "@" || name.substr(0, 2) == "@:")
+  {
+    std::string openName = name.substr(1);
+
+    /* These device names allow alsa-lib to perform special routing if needed
+     * for multichannel to work with the audio hardware.
+     * Fall through in switch() so that devices with more channels are
+     * added as fallback. */
+    switch (channels)
+    {
+      case 3:
+      case 4:
+        if (TryDeviceWithParams("surround40" + openName, params, pcmp, lconf))
+          return true;
+      case 5:
+      case 6:
+        if (TryDeviceWithParams("surround51" + openName, params, pcmp, lconf))
+          return true;
+      case 7:
+      case 8:
+        if (TryDeviceWithParams("surround71" + openName, params, pcmp, lconf))
+          return true;
+    }
+
+    /* If preferDmix is false, try non-dmix configuration first.
+     * This allows output with non-48000 sample rate if device is free */
+    if (!preferDmixStereo && TryDeviceWithParams("front" + openName, params, pcmp, lconf))
+      return true;
+
+    /* Try "sysdefault" and "default" (they provide dmix),
+     * unless the selected devices is not DEV=0 of the card, in which case
+     * "sysdefault" and "default" would point to another device.
+     * "sysdefault" is a newish device name that won't be overwritten in case
+     * system configuration redefines "default". "default" is still tried
+     * because "sysdefault" is rather new. */
+    size_t devPos = openName.find(",DEV=");
+    if (devPos == std::string::npos || (devPos + 5 < openName.size() && openName[devPos+5] == '0'))
+    {
+      /* "sysdefault" and "default" do not have "DEV=0", drop it */
+      std::string nameWithoutDev = openName;
+      if (devPos != std::string::npos)
+        nameWithoutDev.erase(nameWithoutDev.begin() + devPos, nameWithoutDev.begin() + devPos + 6);
+
+      if (TryDeviceWithParams("sysdefault" + nameWithoutDev, params, pcmp, lconf)
+          || TryDeviceWithParams("default" + nameWithoutDev, params, pcmp, lconf))
+        return true;
+    }
+
+    /* Try non-dmix "front" */
+    if (preferDmixStereo && TryDeviceWithParams("front" + openName, params, pcmp, lconf))
+      return true;
+
+  }
+  else
+  {
+    /* Non-surroundXX device, just add it */
+    if (TryDeviceWithParams(name, params, pcmp, lconf))
+      return true;
+  }
+
+  return false;
+}
+
 void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
 {
   /* ensure that ALSA has been initialized */
+  snd_lib_error_set_handler(sndLibErrorHandler);
   if(!snd_config)
     snd_config_update();
 
-  snd_ctl_t *ctlhandle;
-  snd_pcm_t *pcmhandle;
+  snd_config_t *config;
+  snd_config_copy(&config, snd_config);
 
-  snd_ctl_card_info_t *ctlinfo;
-  snd_ctl_card_info_alloca(&ctlinfo);
-  memset(ctlinfo, 0, snd_ctl_card_info_sizeof());
+  /* Always enumerate the default device.
+   * Note: If "default" is a stereo device, EnumerateDevice()
+   * will automatically add "@" instead to enable surroundXX mangling.
+   * We don't want to do that if "default" can handle multichannel
+   * itself (e.g. in case of a pulseaudio server). */
+  EnumerateDevice(list, "default", "", config);
 
-  snd_pcm_hw_params_t *hwparams;
-  snd_pcm_hw_params_alloca(&hwparams);
-  memset(hwparams, 0, snd_pcm_hw_params_sizeof());
+  void **hints;
+
+  if (snd_device_name_hint(-1, "pcm", &hints) < 0)
+  {
+    CLog::Log(LOGINFO, "CAESinkALSA - Unable to get a list of devices");
+    return;
+  }
+
+  std::string defaultDescription;
+
+  for (void** hint = hints; *hint != NULL; ++hint)
+  {
+    char *io = snd_device_name_get_hint(*hint, "IOID");
+    char *name = snd_device_name_get_hint(*hint, "NAME");
+    char *desc = snd_device_name_get_hint(*hint, "DESC");
+    if ((!io || strcmp(io, "Output") == 0) && name
+        && strcmp(name, "null") != 0)
+    {
+      std::string baseName = std::string(name);
+      baseName = baseName.substr(0, baseName.find(':'));
+
+      if (strcmp(name, "default") == 0)
+      {
+        /* added already, but lets get the description if we have one */
+        if (desc)
+          defaultDescription = desc;
+      }
+      else if (baseName == "front")
+      {
+        /* Enumerate using the surroundXX mangling */
+        /* do not enumerate basic "front", it is already handled
+         * by the default "@" entry added in the very beginning */
+        if (strcmp(name, "front") != 0)
+          EnumerateDevice(list, std::string("@") + (name+5), desc ? desc : name, config);
+      }
+      /* Do not enumerate the sysdefault or surroundXX devices, those are
+       * always accompanied with a "front" device and it is handled above
+       * as "@". The below devices will be automatically used if available
+       * for a "@" device. */
+      else if (baseName != "default"
+            && baseName != "sysdefault"
+            && baseName != "surround40"
+            && baseName != "surround41"
+            && baseName != "surround50"
+            && baseName != "surround51"
+            && baseName != "surround71")
+      {
+        EnumerateDevice(list, name, desc ? desc : name, config);
+      }
+    }
+    free(io);
+    free(name);
+    free(desc);
+  }
+  snd_device_name_free_hint(hints);
+
+  /* set the displayname for default device */
+  if (!list.empty() && list[0].m_deviceName == "default")
+  {
+    /* If we have one from a hint (DESC), use it */
+    if (!defaultDescription.empty())
+      list[0].m_displayName = defaultDescription;
+    /* Otherwise use the discovered name or (unlikely) "Default" */
+    else if (list[0].m_displayName.empty())
+      list[0].m_displayName = "Default";
+  }
+
+  /* lets check uniqueness, we may need to append DEV or CARD to DisplayName */
+  /* If even a single device of card/dev X clashes with Y, add suffixes to
+   * all devices of both them, for clarity. */
+
+  /* clashing card names, e.g. "NVidia", "NVidia_2" */
+  std::set<std::string> cardsToAppend;
+
+  /* clashing basename + cardname combinations, e.g. ("hdmi","Nvidia") */
+  std::set<std::pair<std::string, std::string> > devsToAppend;
+
+  for (AEDeviceInfoList::iterator it1 = list.begin(); it1 != list.end(); ++it1)
+  {
+    for (AEDeviceInfoList::iterator it2 = it1+1; it2 != list.end(); ++it2)
+    {
+      if (it1->m_displayName == it2->m_displayName
+       && it1->m_displayNameExtra == it2->m_displayNameExtra)
+      {
+        /* something needs to be done */
+        std::string cardString1;
+        std::string cardString2;
+        GetParamFromName(it1->m_deviceName, "CARD", cardString1);
+        GetParamFromName(it2->m_deviceName, "CARD", cardString2);
+
+        if (cardString1 != cardString2)
+        {
+          /* card name differs, add identifiers to all devices */
+          cardsToAppend.insert(cardString1);
+          cardsToAppend.insert(cardString2);
+          continue;
+        }
+
+        std::string devString1;
+        std::string devString2;
+        GetParamFromName(it1->m_deviceName, "DEV", devString1);
+        GetParamFromName(it2->m_deviceName, "DEV", devString2);
+
+        if (devString1 != devString2)
+        {
+          /* device number differs, add identifiers to all such devices */
+          devsToAppend.insert(std::make_pair(it1->m_deviceName.substr(0, it1->m_deviceName.find(':')), cardString1));
+          devsToAppend.insert(std::make_pair(it2->m_deviceName.substr(0, it2->m_deviceName.find(':')), cardString2));
+          continue;
+        }
+
+        /* if we got here, the configuration is really weird, just give up */
+        it1->m_displayName = it1->m_deviceName;
+        it2->m_displayName = it2->m_deviceName;
+      }
+    }
+  }
+
+  for (std::set<std::string>::iterator it = cardsToAppend.begin();
+       it != cardsToAppend.end(); ++it)
+  {
+    for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
+    {
+      std::string cardString;
+      GetParamFromName(itl->m_deviceName, "CARD", cardString);
+      if (cardString == *it)
+        /* "HDA NVidia (NVidia)", "HDA NVidia (NVidia_2)", ... */
+        itl->m_displayName += " (" + cardString + ")";
+    }
+  }
+
+  for (std::set<std::pair<std::string, std::string> >::iterator it = devsToAppend.begin();
+       it != devsToAppend.end(); ++it)
+  {
+    for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
+    {
+      std::string baseName = itl->m_deviceName.substr(0, itl->m_deviceName.find(':'));
+      std::string cardString;
+      GetParamFromName(itl->m_deviceName, "CARD", cardString);
+      if (baseName == it->first && cardString == it->second)
+      {
+        std::string devString;
+        GetParamFromName(itl->m_deviceName, "DEV", devString);
+        /* "HDMI #0", "HDMI #1" ... */
+        itl->m_displayNameExtra += " #" + devString;
+      }
+    }
+  }
+}
+
+void CAESinkALSA::GetParamFromName(const std::string &name, const std::string &param, std::string &value)
+{
+  /* name = "hdmi:CARD=x,DEV=y" param = "CARD" => value = "x" */
+  size_t parPos = name.find(param + '=');
+  if (parPos != std::string::npos)
+  {
+    parPos += param.size() + 1;
+    value = name.substr(parPos, name.find_first_of(",'\"", parPos)-parPos);
+  }
+  else
+  {
+    value = "";
+  }
+}
+
+void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config)
+{
+  snd_pcm_t *pcmhandle = NULL;
+  if (!OpenPCMDevice(device, "", ALSA_MAX_CHANNELS, &pcmhandle, config, false))
+    return;
 
   snd_pcm_info_t *pcminfo;
   snd_pcm_info_alloca(&pcminfo);
   memset(pcminfo, 0, snd_pcm_info_sizeof());
 
-  /* get the sound config */
-  snd_config_t *config;
-  snd_config_copy(&config, snd_config);
-
-  std::string strHwName;
-  int n_cards = -1;
-  while (snd_card_next(&n_cards) == 0 && n_cards != -1)
+  int err = snd_pcm_info(pcmhandle, pcminfo);
+  if (err < 0)
   {
-    std::stringstream sstr;
-    sstr << "hw:" << n_cards;
-    std::string strHwName = sstr.str();
-
-    if (snd_ctl_open_lconf(&ctlhandle, strHwName.c_str(), 0, config) != 0)
-    {
-      CLog::Log(LOGDEBUG, "CAESinkALSA::EnumerateDevicesEx - Unable to open control for device %s", strHwName.c_str());
-      continue;
-    }
-
-    if (snd_ctl_card_info(ctlhandle, ctlinfo) != 0)
-    {
-      CLog::Log(LOGDEBUG, "CAESinkALSA::EnumerateDevicesEx - Unable to get card control info for device %s", strHwName.c_str());
-      snd_ctl_close(ctlhandle);
-      continue;
-    }
-
-    snd_hctl_t *hctl;
-    if (snd_hctl_open_ctl(&hctl, ctlhandle) != 0)
-      hctl = NULL;
-    snd_hctl_load(hctl);
-
-    int pcm_index    = 0;
-    int iec958_index = 0;
-    int hdmi_index   = 0;
-
-    int dev = -1;
-    while (snd_ctl_pcm_next_device(ctlhandle, &dev) == 0 && dev != -1)
-    {
-      snd_pcm_info_set_device   (pcminfo, dev);
-      snd_pcm_info_set_subdevice(pcminfo, 0  );
-      snd_pcm_info_set_stream   (pcminfo, SND_PCM_STREAM_PLAYBACK);
-
-      if (snd_ctl_pcm_info(ctlhandle, pcminfo) < 0)
-      {
-        CLog::Log(LOGDEBUG, "CAESinkALSA::EnumerateDevicesEx - Skipping device %s,%d as it does not have PCM playback ability", strHwName.c_str(), dev);
-        continue;
-      }
-
-      int dev_index;
-      sstr.str(std::string());
-      CAEDeviceInfo info;
-      std::string devname = snd_pcm_info_get_name(pcminfo);
-
-      bool maybeHDMI = false;
-
-      /* detect HDMI */
-      if (devname.find("HDMI") != std::string::npos)
-      { 
-        info.m_deviceType = AE_DEVTYPE_HDMI;
-        dev_index = hdmi_index++;
-        sstr << "hdmi";
-      }
-      else
-      {
-        /* detect IEC958 */
-
-        /* some HDMI devices (intel) report Digital for HDMI also */
-        if (devname.find("Digital") != std::string::npos)
-          maybeHDMI = true;
-
-        if (maybeHDMI || devname.find("IEC958" ) != std::string::npos)
-        {
-          info.m_deviceType = AE_DEVTYPE_IEC958;
-          dev_index = iec958_index; /* dont increment, it might be HDMI */
-          sstr << "iec958";
-        }
-        else
-        {
-          info.m_deviceType = AE_DEVTYPE_PCM;
-          dev_index = pcm_index++;
-          sstr << "hw";
-        }
-      }
-
-      /* build the driver string to pass to ALSA */
-      sstr << ":CARD=" << snd_ctl_card_info_get_id(ctlinfo) << ",DEV=" << dev_index;
-      info.m_deviceName = sstr.str();
-
-      /* get the friendly display name*/
-      info.m_displayName      = snd_ctl_card_info_get_name(ctlinfo);
-      info.m_displayNameExtra = devname;
-
-      /* open the device for testing */
-      int err = snd_pcm_open_lconf(&pcmhandle, info.m_deviceName.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
-
-      /* if open of possible IEC958 failed and it could be HDMI, try as HDMI */
-      if (err < 0 && maybeHDMI)
-      {
-        /* check for HDMI if it failed */
-        sstr.str(std::string());
-        dev_index = hdmi_index;
-
-        sstr << "hdmi";
-        sstr << ":CARD=" << snd_ctl_card_info_get_id(ctlinfo) << ",DEV=" << dev_index;
-        info.m_deviceName = sstr.str();
-        err = snd_pcm_open_lconf(&pcmhandle, info.m_deviceName.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
-
-        /* if it was valid, increment the index and set the type */
-        if (err >= 0)
-        {
-          ++hdmi_index;
-          info.m_deviceType = AE_DEVTYPE_HDMI;
-        }
-      }
-
-      /* if it's still IEC958, increment the index */
-      if (info.m_deviceType == AE_DEVTYPE_IEC958)
-        ++iec958_index;
-
-      /* final error check */
-      if (err < 0)
-      {
-        CLog::Log(LOGINFO, "CAESinkALSA::EnumerateDevicesEx - Unable to open %s for capability detection", strHwName.c_str());
-        continue;
-      }
-
-      /* see if we can get ELD for this device */
-      if (info.m_deviceType == AE_DEVTYPE_HDMI)
-      {
-        bool badHDMI = false;
-        if (hctl && !GetELD(hctl, dev, info, badHDMI))
-          CLog::Log(LOGDEBUG, "CAESinkALSA::EnumerateDevicesEx - Unable to obtain ELD information for device %s, make sure you have ALSA >= 1.0.25", info.m_deviceName.c_str());
-
-        if (badHDMI)
-        {
-          CLog::Log(LOGDEBUG, "CAESinkALSA::EnumerateDevicesEx - Skipping HDMI device %s as it has no ELD data", info.m_deviceName.c_str());
-          snd_pcm_close(pcmhandle);
-          continue;
-        }
-      }
-
-      /* ensure we can get a playback configuration for the device */
-      if (snd_pcm_hw_params_any(pcmhandle, hwparams) < 0)
-      {
-        CLog::Log(LOGINFO, "CAESinkALSA::EnumerateDevicesEx - No playback configurations available for device %s", info.m_deviceName.c_str());
-        snd_pcm_close(pcmhandle);
-        continue;
-      }
-
-      /* detect the available sample rates */
-      for (unsigned int *rate = ALSASampleRateList; *rate != 0; ++rate)
-        if (snd_pcm_hw_params_test_rate(pcmhandle, hwparams, *rate, 0) >= 0)
-          info.m_sampleRates.push_back(*rate);
-
-      /* detect the channels available */
-      int channels = 0;
-      for (int i = 1; i <= ALSA_MAX_CHANNELS; ++i)
-        if (snd_pcm_hw_params_test_channels(pcmhandle, hwparams, i) >= 0)
-          channels = i;
-
-      CAEChannelInfo alsaChannels;
-      for (int i = 0; i < channels; ++i)
-      {
-        if (!info.m_channels.HasChannel(ALSAChannelMap[i]))
-          info.m_channels += ALSAChannelMap[i];
-        alsaChannels += ALSAChannelMap[i];
-      }
-
-      /* remove the channels from m_channels that we cant use */
-      info.m_channels.ResolveChannels(alsaChannels);
-
-      /* detect the PCM sample formats that are available */
-      for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
-      {
-        if (AE_IS_RAW(i) || i == AE_FMT_MAX)
-          continue;
-        snd_pcm_format_t fmt = AEFormatToALSAFormat(i);
-        if (fmt == SND_PCM_FORMAT_UNKNOWN)
-          continue;
-
-        if (snd_pcm_hw_params_test_format(pcmhandle, hwparams, fmt) >= 0)
-          info.m_dataFormats.push_back(i);
-      }
-
-      snd_pcm_close(pcmhandle);
-      list.push_back(info);
-    }
-
-    /* snd_hctl_close also closes ctlhandle */
-    if (hctl)
-      snd_hctl_close(hctl);
-    else
-      snd_ctl_close(ctlhandle);
+    CLog::Log(LOGINFO, "CAESinkALSA - Unable to get pcm_info for \"%s\"", device.c_str());
+    snd_pcm_close(pcmhandle);
   }
+
+  int cardNr = snd_pcm_info_get_card(pcminfo);
+
+  CAEDeviceInfo info;
+  info.m_deviceName = device;
+
+  bool isHDMI  = (device.substr(0, 4) == "hdmi");
+  bool isSPDIF = (device.substr(0, 6) == "iec958");
+
+  if (isHDMI)
+    info.m_deviceType = AE_DEVTYPE_HDMI;
+  else if (isSPDIF)
+    info.m_deviceType = AE_DEVTYPE_IEC958;
+  else
+    info.m_deviceType = AE_DEVTYPE_PCM;
+
+  if (cardNr >= 0)
+  {
+    /* "HDA NVidia", "HDA Intel", "HDA ATI HDMI", "SB Live! 24-bit External", ... */
+    char *cardName;
+    if (snd_card_get_name(cardNr, &cardName) == 0)
+      info.m_displayName = cardName;
+
+    if (isHDMI && info.m_displayName.size() > 5 &&
+        info.m_displayName.substr(info.m_displayName.size()-5) == " HDMI")
+    {
+      /* We already know this is HDMI, strip it */
+      info.m_displayName.erase(info.m_displayName.size()-5);
+    }
+
+    /* "CONEXANT Analog", "USB Audio", "HDMI 0", "ALC889 Digital" ... */
+    std::string pcminfoName = snd_pcm_info_get_name(pcminfo);
+
+    /*
+     * Filter "USB Audio", in those cases snd_card_get_name() is more
+     * meaningful already
+     */
+    if (pcminfoName != "USB Audio")
+      info.m_displayNameExtra = pcminfoName;
+
+    if (isHDMI)
+    {
+      /* replace, this was likely "HDMI 0" */
+      info.m_displayNameExtra = "HDMI";
+
+      int dev = snd_pcm_info_get_device(pcminfo);
+
+      if (dev >= 0)
+      {
+        /* lets see if we can get ELD info */
+
+        snd_ctl_t *ctlhandle;
+        std::stringstream sstr;
+        sstr << "hw:" << cardNr;
+        std::string strHwName = sstr.str();
+
+        if (snd_ctl_open_lconf(&ctlhandle, strHwName.c_str(), 0, config) == 0)
+        {
+          snd_hctl_t *hctl;
+          if (snd_hctl_open_ctl(&hctl, ctlhandle) == 0)
+          {
+            snd_hctl_load(hctl);
+            bool badHDMI = false;
+            if (!GetELD(hctl, dev, info, badHDMI))
+              CLog::Log(LOGDEBUG, "CAESinkALSA - Unable to obtain ELD information for device \"%s\" (not supported by device, or kernel older than 3.2)",
+                        device.c_str());
+
+            /* snd_hctl_close also closes ctlhandle */
+            snd_hctl_close(hctl);
+
+            if (badHDMI)
+            {
+              /* unconnected HDMI port */
+              CLog::Log(LOGDEBUG, "CAESinkALSA - Skipping HDMI device \"%s\" as it has no ELD data", device.c_str());
+              snd_pcm_close(pcmhandle);
+              return;
+            }
+          }
+          else
+          {
+            snd_ctl_close(ctlhandle);
+          }
+        }
+      }
+    }
+    else if (isSPDIF)
+    {
+      /* append instead of replace, pcminfoName is useful for S/PDIF */
+      if (!info.m_displayNameExtra.empty())
+        info.m_displayNameExtra += ' ';
+      info.m_displayNameExtra += "S/PDIF";
+    }
+    else if (info.m_displayNameExtra.empty())
+    {
+      /* for USB audio, it gets a bit confusing as there is
+       * - "SB Live! 24-bit External"
+       * - "SB Live! 24-bit External, S/PDIF"
+       * so add "Analog" qualifier to the first one */
+      info.m_displayNameExtra = "Analog";
+    }
+
+    /* "default" is a device that will be used for all inputs, while
+     * "@" will be mangled to front/default/surroundXX as necessary */
+    if (device == "@" || device == "default")
+    {
+      /* Make it "Default (whatever)" */
+      info.m_displayName = "Default (" + info.m_displayName + (info.m_displayNameExtra.empty() ? "" : " " + info.m_displayNameExtra + ")");
+      info.m_displayNameExtra = "";
+    }
+
+  }
+  else
+  {
+    /* virtual devices: "default", "pulse", ... */
+    /* description can be e.g. "PulseAudio Sound Server" - for hw devices it is
+     * normally uninteresting, like "HDMI Audio Output" or "Default Audio Device",
+     * so we only use it for virtual devices that have no better display name */
+    info.m_displayName = description;
+  }
+
+  snd_pcm_hw_params_t *hwparams;
+  snd_pcm_hw_params_alloca(&hwparams);
+  memset(hwparams, 0, snd_pcm_hw_params_sizeof());
+
+  /* ensure we can get a playback configuration for the device */
+  if (snd_pcm_hw_params_any(pcmhandle, hwparams) < 0)
+  {
+    CLog::Log(LOGINFO, "CAESinkALSA - No playback configurations available for device \"%s\"", device.c_str());
+    snd_pcm_close(pcmhandle);
+    return;
+  }
+
+  /* detect the available sample rates */
+  for (unsigned int *rate = ALSASampleRateList; *rate != 0; ++rate)
+    if (snd_pcm_hw_params_test_rate(pcmhandle, hwparams, *rate, 0) >= 0)
+      info.m_sampleRates.push_back(*rate);
+
+  /* detect the channels available */
+  int channels = 0;
+  for (int i = ALSA_MAX_CHANNELS; i >= 1; --i)
+  {
+    /* Reopen the device if needed on the special "surroundXX" cases */
+    if (info.m_deviceType == AE_DEVTYPE_PCM && (i == 8 || i == 6 || i == 4))
+      OpenPCMDevice(device, "", i, &pcmhandle, config, false);
+
+    if (snd_pcm_hw_params_test_channels(pcmhandle, hwparams, i) >= 0)
+    {
+      channels = i;
+      break;
+    }
+  }
+
+  if (device == "default" && channels == 2)
+  {
+    /* This looks like the ALSA standard default stereo dmix device, we
+     * probably want to use "@" instead to get surroundXX. */
+    snd_pcm_close(pcmhandle);
+    EnumerateDevice(list, "@", description, config);
+    return;
+  }
+
+  CAEChannelInfo alsaChannels;
+  for (int i = 0; i < channels; ++i)
+  {
+    if (!info.m_channels.HasChannel(ALSAChannelMap[i]))
+      info.m_channels += ALSAChannelMap[i];
+    alsaChannels += ALSAChannelMap[i];
+  }
+
+  /* remove the channels from m_channels that we cant use */
+  info.m_channels.ResolveChannels(alsaChannels);
+
+  /* detect the PCM sample formats that are available */
+  for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
+  {
+    if (AE_IS_RAW(i) || i == AE_FMT_MAX)
+      continue;
+    snd_pcm_format_t fmt = AEFormatToALSAFormat(i);
+    if (fmt == SND_PCM_FORMAT_UNKNOWN)
+      continue;
+
+    if (snd_pcm_hw_params_test_format(pcmhandle, hwparams, fmt) >= 0)
+      info.m_dataFormats.push_back(i);
+  }
+
+  snd_pcm_close(pcmhandle);
+  list.push_back(info);
 }
 
 bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool& badHDMI)
@@ -792,4 +1104,19 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
   info.m_deviceType = AE_DEVTYPE_HDMI;
   return true;
 }
+
+void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
+{
+  va_list arg;
+  va_start(arg, fmt);
+  char *errorStr;
+  if (vasprintf(&errorStr, fmt, arg) >= 0)
+  {
+    CLog::Log(LOGINFO, "CAESinkALSA - ALSA: %s:%d:(%s) %s%s%s",
+              file, line, function, errorStr, err ? ": " : "", err ? snd_strerror(err) : "");
+    free(errorStr);
+  }
+  va_end(arg);
+}
+
 #endif

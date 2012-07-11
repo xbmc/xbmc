@@ -1391,7 +1391,7 @@ bool CApplication::Initialize()
   ResetScreenSaver();
 
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
+  g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick"));
 #endif
 
   return true;
@@ -2878,8 +2878,9 @@ bool CApplication::ProcessGamepad(float frameTime)
 #ifdef HAS_SDL_JOYSTICK
   if (!m_AppFocused)
     return false;
+
   int iWin = GetActiveWindowID();
-  int bid;
+  int bid = 0;
   g_Joystick.Update();
   if (g_Joystick.GetButton(bid))
   {
@@ -2938,7 +2939,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       g_Joystick.ResetAxis(abs(bid));
     }
   }
-  int position;
+  int position = 0;
   if (g_Joystick.GetHat(bid, position))
   {
     // reset Idle Timer
@@ -2957,7 +2958,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 
     bid = position<<16|bid;
 
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_HAT, actionID, actionName, fullrange))
+    if (bid && CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_HAT, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
       g_audioManager.PlayActionSound(action);
@@ -5506,6 +5507,13 @@ float CApplication::GetPercentage() const
 {
   if (IsPlaying() && m_pPlayer)
   {
+    if (m_pPlayer->GetTotalTime() == 0 && IsPlayingAudio() && m_itemCurrentFile->HasMusicInfoTag())
+    {
+      const CMusicInfoTag& tag = *m_itemCurrentFile->GetMusicInfoTag();
+      if (tag.GetDuration() > 0)
+        return (float)(GetTime() / tag.GetDuration() * 100);
+    }
+
     if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
       return (float)(GetTime() / GetTotalTime() * 100);
     else
@@ -5657,12 +5665,20 @@ void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
   m_videoInfoScanner->Start(strDirectory,scanAll);
 }
 
-void CApplication::StartMusicScan(const CStdString &strDirectory)
+void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
 
-  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  if (!flags)
+  { // setup default flags
+    if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
+      flags |= CMusicInfoScanner::SCAN_ONLINE;
+    if (g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+      flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+  }
+
+  if (!(flags & CMusicInfoScanner::SCAN_BACKGROUND))
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan)
@@ -5672,7 +5688,7 @@ void CApplication::StartMusicScan(const CStdString &strDirectory)
     }
   }
   SaveMusicScanSettings();
-  m_musicInfoScanner->Start(strDirectory);
+  m_musicInfoScanner->Start(strDirectory, flags);
 }
 
 void CApplication::StartMusicAlbumScan(const CStdString& strDirectory,

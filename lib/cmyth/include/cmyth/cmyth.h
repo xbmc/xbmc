@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund, Jon Gettler
+ *  Copyright (C) 2004-2012, Eric Lund, Jon Gettler
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -15,6 +15,22 @@
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*! \mainpage cmyth
+ *
+ * cmyth is a library that provides a C language API to access and control
+ * a MythTV backend.
+ *
+ * \section projectweb Project website
+ * http://www.mvpmc.org/
+ *
+ * \section repos Source repositories
+ * http://git.mvpmc.org/
+ *
+ * \section libraries Libraries
+ * \li \link cmyth.h libcmyth \endlink
+ * \li \link refmem.h librefmem \endlink
  */
 
 /** \file cmyth.h
@@ -65,12 +81,12 @@ typedef enum {
 	CHANNEL_DIRECTION_UP = 0,
 	CHANNEL_DIRECTION_DOWN = 1,
 	CHANNEL_DIRECTION_FAVORITE = 2,
-	CHANNEL_DIRECTION_SAME = 4
+	CHANNEL_DIRECTION_SAME = 4,
 } cmyth_channeldir_t;
 
 typedef enum {
 	ADJ_DIRECTION_UP = 1,
-	ADJ_DIRECTION_DOWN = 0
+	ADJ_DIRECTION_DOWN = 0,
 } cmyth_adjdir_t;
 
 typedef enum {
@@ -79,13 +95,13 @@ typedef enum {
 	BROWSE_DIRECTION_DOWN = 2,
 	BROWSE_DIRECTION_LEFT = 3,
 	BROWSE_DIRECTION_RIGHT = 4,
-	BROWSE_DIRECTION_FAVORITE = 5
+	BROWSE_DIRECTION_FAVORITE = 5,
 } cmyth_browsedir_t;
 
 typedef enum {
 	WHENCE_SET = 0,
 	WHENCE_CUR = 1,
-	WHENCE_END = 2
+	WHENCE_END = 2,
 } cmyth_whence_t;
 
 typedef enum {
@@ -105,13 +121,13 @@ typedef enum {
 	CMYTH_EVENT_SYSTEM_EVENT,
 	CMYTH_EVENT_UPDATE_FILE_SIZE,
 	CMYTH_EVENT_GENERATED_PIXMAP,
-	CMYTH_EVENT_CLEAR_SETTINGS_CACHE
+	CMYTH_EVENT_CLEAR_SETTINGS_CACHE,
 } cmyth_event_t;
 
 #define CMYTH_NUM_SORTS 2
 typedef enum {
 	MYTHTV_SORT_DATE_RECORDED = 0,
-	MYTHTV_SORT_ORIGINAL_AIRDATE
+	MYTHTV_SORT_ORIGINAL_AIRDATE,
 } cmyth_proglist_sort_t;
 
 struct cmyth_timestamp;
@@ -198,7 +214,7 @@ extern void cmyth_dbg_none(void);
 extern void cmyth_dbg(int level, char *fmt, ...);
 
 /**
- * Define a callback to use to send messages rather than using stderr
+ * Define a callback to use to send messages rather than using stdout
  * \param msgcb function pointer to pass a string to
  */
 extern void cmyth_set_dbg_msgcallback(void (*msgcb)(int level,char *));
@@ -234,7 +250,7 @@ extern cmyth_conn_t cmyth_conn_connect_event(char *server,
 					     unsigned buflen, int tcp_rcvbuf);
 
 /**
- * Create a file connection to a backend.
+ * Create a file connection to a backend for reading a recording.
  * \param prog program handle
  * \param control control handle
  * \param buflen buffer size for the connection to use
@@ -364,6 +380,11 @@ extern char * cmyth_conn_get_setting(cmyth_conn_t conn,
  */
 extern cmyth_event_t cmyth_event_get(cmyth_conn_t conn, char * data, int len);
 
+/**
+ * Selects on the event socket, waiting for an event to show up.
+ * allows nonblocking access to events.
+ * \return <= 0 on failure
+ */
 extern int cmyth_event_select(cmyth_conn_t conn, struct timeval *timeout);
 
 /*
@@ -558,6 +579,7 @@ extern int cmyth_livetv_read(cmyth_recorder_t rec,
 extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
 
 extern int mythtv_new_livetv(void);
+extern int cmyth_tuner_type_check(cmyth_database_t db, cmyth_recorder_t rec, int check_tuner_enabled);
 
 /*
  * -----------------------------------------------------------------
@@ -685,7 +707,7 @@ typedef enum {
 	RS_LATER_SHOWING = 8,
 	RS_REPEAT = 9,
 	RS_LOW_DISKSPACE = 11,
-	RS_TUNER_BUSY = 12
+	RS_TUNER_BUSY = 12,
 } cmyth_proginfo_rec_status_t;
 
 /**
@@ -883,6 +905,8 @@ extern long long cmyth_proginfo_length(cmyth_proginfo_t prog);
  */
 extern char *cmyth_proginfo_host(cmyth_proginfo_t prog);
 
+extern int cmyth_proginfo_port(cmyth_proginfo_t prog);
+
 /**
  * Determine if two proginfo handles refer to the same program.
  * \param a proginfo handle a
@@ -941,9 +965,9 @@ extern char *cmyth_proginfo_chanicon(cmyth_proginfo_t prog);
 /**
  * Retrieve the production year for this program info
  * \param prog proginfo handle
- * \return null-terminated string
+ * \return production year
  */
-extern char *cmyth_proginfo_prodyear(cmyth_proginfo_t prog);
+extern unsigned short cmyth_proginfo_year(cmyth_proginfo_t prog);
 
 /*
  * -----------------------------------------------------------------
@@ -1032,8 +1056,9 @@ extern cmyth_freespace_t cmyth_freespace_create(void);
  * -------
  */
 extern long long cmyth_get_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog);
-extern int cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark);
-extern int cmyth_get_bookmark_mark(cmyth_database_t, cmyth_proginfo_t, long long);
+extern int cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark, char *starttime, int mode);
+extern int cmyth_update_bookmark_setting(cmyth_database_t, cmyth_proginfo_t);
+extern long long cmyth_get_bookmark_mark(cmyth_database_t, cmyth_proginfo_t, long long, int);
 extern int cmyth_set_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog,
 	long long bookmark);
 extern cmyth_commbreaklist_t cmyth_commbreaklist_create(void);
@@ -1094,7 +1119,7 @@ extern int cmyth_get_delete_list(cmyth_conn_t, char *, cmyth_proglist_t);
 
 #define PROGRAM_ADJUST  3600
 
-extern int cmyth_mythtv_remove_previos_recorded(cmyth_database_t db,char *query);
+extern int cmyth_mythtv_remove_previous_recorded(cmyth_database_t db,char *query);
 
 extern cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db);
 #endif /* __CMYTH_H */

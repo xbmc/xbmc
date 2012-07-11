@@ -93,6 +93,11 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "input/MouseStat.h"
+#if defined(TARGET_WINDOWS)
+#include "input/windows/WINJoystick.h"
+#elif defined(HAS_SDL_JOYSTICK)
+#include "input/SDLJoystick.h"
+#endif
 #include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
 #include "utils/StringUtils.h"
@@ -1420,6 +1425,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("input.enablemouse"))
   {
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+  }
+  else if (strSetting.Equals("input.enablejoystick"))
+  {
+#if defined(HAS_SDL_JOYSTICK)
+    g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick"));
+#endif
   }
   else if (strSetting.Equals("videoscreen.screen"))
   {

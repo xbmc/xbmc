@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <category label="128">
+    <setting type="lsep" label="General Settings"/>
+      <setting label="30002" type="labelenum" values="last.fm|amazon.de|None" id="albumreviewsource" default="last.fm"/>
+      <setting label="30003" type="labelenum" values="en|de|es|fr|it|jp|pl|pt|ru|sv|tr|zh" id="lastfmlanguage" default="en" visible="eq(-1,0)"/>
+      <setting type="sep"/>
+      <setting label="30004" type="labelenum" values="MusicBrainz|allmusic.com|None" id="albumratingsource" default="MusicBrainz"/>
+      <setting label="30005" type="labelenum" values="allmusic.com|None" id="albumstylessource" default="allmusic.com"/>
+      <setting label="30006" type="labelenum" values="allmusic.com|None" id="albummoodssource" default="allmusic.com"/>
+      <setting label="30007" type="labelenum" values="allmusic.com|None" id="albumthemessource" default="allmusic.com"/>
+  </category>
+
+  <category label="30009">
+    <setting type="lsep" label="Artwork Settings"/>
+      <setting label="30000" type="bool" id="fanarttvalbumthumbs" default="true"/>
+      <setting label="30001" type="bool" id="lastfmalbumthumbs" default="true"/>
+      <setting label="30008" type="bool" id="allmusicalbumthumbs" default="true"/>
+  </category>
+</settings>

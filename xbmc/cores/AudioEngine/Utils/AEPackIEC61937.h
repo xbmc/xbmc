@@ -52,12 +52,16 @@ public:
 
   static int PackAC3     (uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackEAC3    (uint8_t *data, unsigned int size, uint8_t *dest);
-  static int PackDTS_512 (uint8_t *data, unsigned int size, uint8_t *dest);
-  static int PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest);
-  static int PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest);
+  static int PackDTS_512 (uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian);
+  static int PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian);
+  static int PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian);
   static int PackTrueHD  (uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackDTSHD   (uint8_t *data, unsigned int size, uint8_t *dest, unsigned int period);
 private:
+
+  static int PackDTS(uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian,
+                     unsigned int frameSize, uint16_t type);
+
   enum IEC61937DataType
   {
     IEC61937_TYPE_NULL   = 0x00,

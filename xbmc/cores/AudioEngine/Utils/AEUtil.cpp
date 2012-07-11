@@ -455,3 +455,20 @@ void CAEUtil::FloatRand4(const float min, const float max, float result[4], __m1
     result[3] = ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;
   #endif
 }
+
+bool CAEUtil::S16NeedsByteSwap(AEDataFormat in, AEDataFormat out)
+{
+  const AEDataFormat nativeFormat =
+#ifdef WORDS_BIGENDIAN
+    AE_FMT_S16BE;
+#else
+    AE_FMT_S16LE;
+#endif
+
+  if (in == AE_FMT_S16NE || AE_IS_RAW(in))
+    in = nativeFormat;
+  if (out == AE_FMT_S16NE || AE_IS_RAW(out))
+    out = nativeFormat;
+
+  return in != out;
+}

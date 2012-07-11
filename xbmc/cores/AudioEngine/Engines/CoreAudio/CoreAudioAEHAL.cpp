@@ -90,7 +90,9 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::str
     case kAudioFormat60958AC3:
       sstr  << "["
             << fourCC
-            << "] AC-3/DTS for S/PDIF ("
+            << "] AC-3/DTS for S/PDIF "
+            << ((desc.mFormatFlags & kAudioFormatFlagIsBigEndian) ? "BE" : "LE")
+            << " ("
             << (UInt32)desc.mSampleRate
             << "Hz)";
       str = sstr.str();

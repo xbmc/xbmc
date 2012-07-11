@@ -97,6 +97,7 @@ public:
   typedef std::vector< SActorInfo >::const_iterator iCast;
   std::vector<std::string> m_set;
   std::vector<int> m_setId;
+  std::vector<std::string> m_tags;
   CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;

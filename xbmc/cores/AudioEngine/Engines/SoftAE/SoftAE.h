@@ -192,6 +192,8 @@ private:
   uint8_t        *m_converted;
   size_t          m_convertedSize;
 
+  void         AllocateConvIfNeeded(size_t convertedSize);
+
   /* thread run stages */
   void         MixSounds        (float *buffer, unsigned int samples);
   void         FinalizeSamples  (float *buffer, unsigned int samples);

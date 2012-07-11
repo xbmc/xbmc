@@ -44,6 +44,7 @@ namespace XFILE
       long GetStudioId() const { return m_idStudio; }
       long GetMVideoId() const { return m_idMVideo; }
       long GetSetId() const { return m_idSet; }
+      long GetTagId() const { return m_idTag; }
 
     protected:
       void SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName);
@@ -64,6 +65,7 @@ namespace XFILE
       long m_idMVideo;
       long m_idAlbum;
       long m_idSet;
+      long m_idTag;
     };
   }
 }
