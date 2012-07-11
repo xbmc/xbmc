@@ -130,6 +130,8 @@
  */
 #define GUI_MSG_UNFOCUS_ALL 41
 
+#define GUI_MSG_SET_TEXT        42
+
 #define GUI_MSG_USER         1000
 
 /*!

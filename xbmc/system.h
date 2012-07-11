@@ -81,6 +81,10 @@
   #define HAS_AIRTUNES
 #endif
 
+#ifdef HAVE_MYSQL
+  #define HAS_MYSQL
+#endif
+
 /**********************
  * Non-free Components
  **********************/
@@ -119,6 +123,7 @@
 #define HAVE_LIBCEC
 #define HAVE_LIBMP3LAME
 #define HAVE_LIBVORBISENC
+#define HAS_MYSQL
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif

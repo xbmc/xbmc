@@ -868,6 +868,15 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 }
 #endif
 
+void CButtonTranslator::GetActions(std::vector<std::string> &actionList)
+{
+  unsigned int size = sizeof(actions) / sizeof(ActionMapping);
+  actionList.clear();
+  actionList.reserve(size);
+  for (unsigned int index = 0; index < size; index++)
+    actionList.push_back(actions[index].name);
+}
+
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
 {
   CStdString strAction;

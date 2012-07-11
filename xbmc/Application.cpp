@@ -3124,6 +3124,16 @@ bool CApplication::ProcessJsonRpcButtons()
 {
 #ifdef HAS_JSONRPC
   CKey tempKey(JSONRPC::CInputOperations::GetKey());
+  if (tempKey.GetButtonCode() == KEY_UNICODE && tempKey.GetUnicode() != 0)
+  {
+    XBMC_Event event = { 0 };
+    event.type = XBMC_KEYDOWN;
+    event.key.type = XBMC_KEYDOWN;
+    event.key.keysym.unicode = (uint16_t)tempKey.GetUnicode();
+    event.key.keysym.sym = (XBMCKey)tempKey.GetUnicode();
+
+    return OnEvent(event);
+  }
   if (tempKey.GetButtonCode() != KEY_INVALID)
   {
     tempKey.SetFromService(true);
