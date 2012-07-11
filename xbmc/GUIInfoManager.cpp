@@ -1321,13 +1321,18 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case LCD_GPU_TEMPERATURE:
   case LCD_FAN_SPEED:
   case SYSTEM_CPU_USAGE:
+#if defined(_WIN32)
+  case SYSTEM_CPUFREQUENCY:
+#endif
     return GetSystemHeatInfo(info);
     break;
 
   case SYSTEM_VIDEO_ENCODER_INFO:
   case NETWORK_MAC_ADDRESS:
   case SYSTEM_KERNEL_VERSION:
+#if !defined (_WIN32)
   case SYSTEM_CPUFREQUENCY:
+#endif
   case SYSTEM_INTERNET_STATE:
   case SYSTEM_UPTIME:
   case SYSTEM_TOTALUPTIME:
@@ -1778,6 +1783,11 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case SYSTEM_CPU_USAGE:
       value = g_cpuInfo.getUsedPercentage();
       return true;
+#if defined(_WIN32)
+    case SYSTEM_CPUFREQUENCY:
+      value = g_cpuInfo.GetCPUFeatures();
+      return true;
+#endif
     case SYSTEM_BATTERY_LEVEL:
       value = g_powerManager.BatteryLevel();
       return true;
@@ -3654,6 +3664,11 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%s", g_cpuInfo.GetCoresUsageString());
 #endif
       break;
+#if defined(_WIN32)
+    case SYSTEM_CPUFREQUENCY:
+      text.Format("%.f MHz", g_cpuInfo.getCPUFrequency());
+      break;
+#endif
   }
   return text;
 }
