@@ -30,7 +30,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "sqlitedataset.h"
-#include "threads/SingleLock.h"
+#include "DatabaseManager.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -40,8 +40,6 @@ using namespace AUTOPTR;
 using namespace dbiplus;
 
 #define MAX_COMPRESS_COUNT 20
-
-std::map<std::string, bool> CDatabase::m_updated;
 
 CDatabase::CDatabase(void)
 {
@@ -254,15 +252,26 @@ bool CDatabase::Open()
 
 bool CDatabase::Open(const DatabaseSettings &settings)
 {
-  // take a copy - we're gonna be messing with it and we don't want to touch the original
-  DatabaseSettings dbSettings = settings;
-
   if (IsOpen())
   {
     m_openCount++;
     return true;
   }
 
+  // check our database manager to see if this database can be opened
+  if (!CDatabaseManager::Get().CanOpen(GetBaseDBName()))
+    return false;
+
+  DatabaseSettings dbSettings = settings;
+  InitSettings(dbSettings);
+
+  CStdString dbName = dbSettings.name;
+  dbName.AppendFormat("%d", GetMinVersion());
+  return Connect(dbName, dbSettings, false);
+}
+
+void CDatabase::InitSettings(DatabaseSettings &dbSettings)
+{
   m_sqlite = true;
 
 #ifdef HAS_MYSQL
@@ -283,23 +292,29 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   {
     dbSettings.type = "sqlite3";
     dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
-    dbSettings.name = GetBaseDBName();
   }
 
   // use separate, versioned database
+  if (dbSettings.name.IsEmpty())
+    dbSettings.name = GetBaseDBName();
+}
+
+bool CDatabase::Update(const DatabaseSettings &settings)
+{
+  DatabaseSettings dbSettings = settings;
+  InitSettings(dbSettings);
+
   int version = GetMinVersion();
-  CStdString baseDBName = (dbSettings.name.IsEmpty() ? GetBaseDBName() : dbSettings.name.c_str());
-  CStdString latestDb;
-  latestDb.Format("%s%d", baseDBName, version);
+  CStdString latestDb = dbSettings.name;
+  latestDb.AppendFormat("%d", version);
 
   while (version >= 0)
   {
+    CStdString dbName = dbSettings.name;
     if (version)
-      dbSettings.name.Format("%s%d", baseDBName, version);
-    else
-      dbSettings.name.Format("%s", baseDBName);
+      dbName.AppendFormat("%d", version);
 
-    if (Connect(dbSettings, false))
+    if (Connect(dbName, dbSettings, false))
     {
       // Database exists, take a copy for our current version (if needed) and reopen that one
       if (version < GetMinVersion())
@@ -314,7 +329,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
         }
         catch(...)
         {
-          CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbSettings.name.c_str(), latestDb.c_str());
+          CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbName.c_str(), latestDb.c_str());
           copy_fail = true;
         }
 
@@ -323,16 +338,15 @@ bool CDatabase::Open(const DatabaseSettings &settings)
         if ( copy_fail )
           return false;
 
-        dbSettings.name = latestDb;
-        if (!Connect(dbSettings, false))
+        if (!Connect(latestDb, dbSettings, false))
         {
-          CLog::Log(LOGERROR, "Unable to open freshly copied database %s", dbSettings.name.c_str());
+          CLog::Log(LOGERROR, "Unable to open freshly copied database %s", latestDb.c_str());
           return false;
         }
       }
 
       // yay - we have a copy of our db, now do our worst with it
-      if (UpdateVersion(dbSettings.name))
+      if (UpdateVersion(latestDb))
         return true;
 
       // update failed - loop around and see if we have another one available
@@ -342,31 +356,17 @@ bool CDatabase::Open(const DatabaseSettings &settings)
     // drop back to the previous version and try that
     version--;
   }
-
-
-  // unable to open any version fall through to create a new one
-  dbSettings.name = latestDb;
-
-  if (Connect(dbSettings, true) && UpdateVersion(dbSettings.name))
-  {
+  // try creating a new one
+  if (Connect(latestDb, dbSettings, true))
     return true;
-  }
-  // safely fall back to sqlite as appropriate
-  else if ( ! m_sqlite )
-  {
-    CLog::Log(LOGDEBUG, "Falling back to sqlite.");
-    dbSettings = settings;
-    dbSettings.type = "sqlite3";
-    return Open(dbSettings);
-  }
 
   // failed to update or open the database
   Close();
-  CLog::Log(LOGERROR, "Unable to open database %s", dbSettings.name.c_str());
+  CLog::Log(LOGERROR, "Unable to create new database");
   return false;
 }
 
-bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
+bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSettings, bool create)
 {
   // create the appropriate database structure
   if (dbSettings.type.Equals("sqlite3"))
@@ -398,7 +398,7 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
     m_pDB->setPasswd(dbSettings.pass.c_str());
 
   // database name is always required
-  m_pDB->setDatabase(dbSettings.name.c_str());
+  m_pDB->setDatabase(dbName.c_str());
 
   // create the datasets
   m_pDS.reset(m_pDB->CreateDataset());
@@ -447,17 +447,17 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
   return true;
 }
 
-bool CDatabase::UpdateVersion(const CStdString &dbName)
+int CDatabase::GetDBVersion()
 {
-  CSingleLock lock(m_critSect);
-  if (m_updated[dbName])
-    return true;
-
-  int version = 0;
   m_pDS->query("SELECT idVersion FROM version\n");
   if (m_pDS->num_rows() > 0)
-    version = m_pDS->fv("idVersion").get_asInt();
+    return m_pDS->fv("idVersion").get_asInt();
+  return 0;
+}
 
+bool CDatabase::UpdateVersion(const CStdString &dbName)
+{
+  int version = GetDBVersion();
   if (version < GetMinVersion())
   {
     CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
@@ -488,8 +488,6 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
-
-  m_updated[dbName] = true;
   return true;
 }
 
