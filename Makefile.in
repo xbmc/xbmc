@@ -425,6 +425,9 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 install: install-binaries install-arch install-datas
 
+apk: install
+	make -C tools/android/packaging
+
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/"
 	@install -d $(DESTDIR)$(libdir)/xbmc
