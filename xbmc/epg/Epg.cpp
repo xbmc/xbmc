@@ -413,8 +413,6 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   bool bReturn(false);
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
-  CSingleLock lock(m_critSection);
-
   if (epg.m_tags.size() > 0)
   {
     if (bStoreInDb)
@@ -426,18 +424,22 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
       }
       database->BeginTransaction();
     }
-    CLog::Log(LOGDEBUG, "%s - %u entries in memory before merging", __FUNCTION__, m_tags.size());
-    /* copy over tags */
-    for (map<CDateTime, CEpgInfoTag *>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
-      UpdateEntry(*it->second, bStoreInDb, false);
 
-    CLog::Log(LOGDEBUG, "%s - %u entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
-    FixOverlappingEvents(bStoreInDb);
-    CLog::Log(LOGDEBUG, "%s - %u entries in memory after fixing", __FUNCTION__, m_tags.size());
-    /* update the last scan time of this table */
-    m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+    {
+      CSingleLock lock(m_critSection);
+      CLog::Log(LOGDEBUG, "%s - %u entries in memory before merging", __FUNCTION__, m_tags.size());
+      /* copy over tags */
+      for (map<CDateTime, CEpgInfoTag *>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
+        UpdateEntry(*it->second, bStoreInDb, false);
 
-    //m_bTagsChanged = true;
+      CLog::Log(LOGDEBUG, "%s - %u entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+      FixOverlappingEvents(bStoreInDb);
+      CLog::Log(LOGDEBUG, "%s - %u entries in memory after fixing", __FUNCTION__, m_tags.size());
+      /* update the last scan time of this table */
+      m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+
+      SetChanged();
+    }
     /* persist changes */
     if (bStoreInDb)
     {
@@ -453,8 +455,10 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
     if (bStoreInDb)
       bReturn = Persist(true);
     else
-       bReturn = true;
+      bReturn = true;
   }
+
+  NotifyObservers("epg");
 
   return bReturn;
 }
