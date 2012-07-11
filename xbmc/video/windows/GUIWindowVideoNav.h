@@ -67,5 +67,8 @@ protected:
 
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
 
+  bool GetItemsForTag(const CStdString &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
+  static CStdString GetLocalizedType(const std::string &strType);
+
   VECSOURCES m_shares;
 };

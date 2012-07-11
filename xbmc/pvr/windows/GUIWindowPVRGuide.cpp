@@ -44,17 +44,21 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   Observer(),
   m_iGuideView(g_guiSettings.GetInt("epg.defaultguideview"))
 {
+  m_cachedTimeline = new CFileItemList;
+}
+
+CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
+{
+  delete m_cachedTimeline;
 }
 
 void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
-  CSingleLock lock(m_critSection);
   g_EpgContainer.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRGuide::ResetObservers(void)
 {
-  CSingleLock lock(m_critSection);
   g_EpgContainer.RegisterObserver(this);
 }
 
@@ -62,11 +66,11 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("epg"))
   {
+    m_bUpdateRequired = true;
+
     /* update the current window if the EPG timeline view is visible */
     if (IsVisible() && m_iGuideView == GUIDE_VIEW_TIMELINE)
       UpdateData();
-    else
-      m_bUpdateRequired = true;
   }
   else if (msg.Equals("epg-now"))
   {
@@ -202,24 +206,34 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
 
 void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 {
-  CPVRChannel CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-  bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
-  CDateTime gridStart = CDateTime::GetCurrentDateTime();
-  CDateTime firstDate; firstDate.SetFromUTCDateTime(g_EpgContainer.GetFirstEPGDate());
-  CDateTime lastDate;  lastDate.SetFromUTCDateTime(g_EpgContainer.GetLastEPGDate());
   m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
   if (!m_parent->m_guideGrid)
     return;
 
+  if (m_bUpdateRequired || m_cachedTimeline->IsEmpty())
+  {
+    m_bUpdateRequired = false;
+    CPVRChannel CurrentChannel;
+    bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
+    bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
+
+    m_cachedTimeline->Clear();
+    g_PVRManager.GetPlayingGroup(bRadio)->GetEPGAll(*m_cachedTimeline);
+  }
+
+  m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
+  m_parent->m_vecItems->Clear();
+  m_parent->m_vecItems->Copy(*m_cachedTimeline);
+
+  CDateTime gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+  CDateTime firstDate(g_EpgContainer.GetFirstEPGDate());
+  CDateTime lastDate(g_EpgContainer.GetLastEPGDate());
+  m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
+
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
-
-  g_PVRManager.GetPlayingGroup(bRadio)->GetEPGAll(*m_parent->m_vecItems);
-  m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
-
-  m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE, true);
+
   SelectPlayingFile();
 }
 
@@ -239,9 +253,6 @@ void CGUIWindowPVRGuide::UpdateData(void)
   CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
 
-  g_EpgContainer.RegisterObserver(this);
-  m_bUpdateRequired = false;
-
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
   m_parent->m_viewControl.Clear();
@@ -256,6 +267,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
     UpdateViewTimeline();
 
+  m_bUpdateRequired = false;
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19222));
   UpdateButtons();
 }

@@ -359,8 +359,7 @@ namespace EPG
 
     CDateTime                  m_lastScanTime;    /*!< the last time the EPG has been updated */
 
-    int                        m_iPVRChannelId;   /*!< the channel this EPG belongs to */
-    int                        m_iPVRChannelNumber; /*!< the channel number in the "all channels" group. set on create and not updated */
+    PVR::CPVRChannel *         m_pvrChannel;      /*!< the channel this EPG belongs to */
 
     CCriticalSection           m_critSection;     /*!< critical section for changes in this table */
   };

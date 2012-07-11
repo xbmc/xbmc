@@ -36,7 +36,7 @@ namespace PVR
 
   public:
     CGUIWindowPVRGuide(CGUIWindowPVR *parent);
-    virtual ~CGUIWindowPVRGuide(void) {};
+    virtual ~CGUIWindowPVRGuide(void);
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -67,6 +67,7 @@ namespace PVR
     virtual void UpdateViewNext(void);
     virtual void UpdateViewTimeline(void);
 
-    int             m_iGuideView;
+    int            m_iGuideView;
+    CFileItemList *m_cachedTimeline;
   };
 }

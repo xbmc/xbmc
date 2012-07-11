@@ -163,6 +163,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "System.Reboot",                                CSystemOperations::Reboot },
 
 // Input operations
+  { "Input.SendText",                               CInputOperations::SendText },
+  { "Input.ExecuteAction",                          CInputOperations::ExecuteAction },
   { "Input.Left",                                   CInputOperations::Left },
   { "Input.Right",                                  CInputOperations::Right },
   { "Input.Down",                                   CInputOperations::Down },
@@ -172,6 +174,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.ContextMenu",                            CInputOperations::ContextMenu },
   { "Input.Info",                                   CInputOperations::Info },
   { "Input.Home",                                   CInputOperations::Home },
+  { "Input.ShowCodec",                              CInputOperations::ShowCodec },
+  { "Input.ShowOSD",                                CInputOperations::ShowOSD },
 
 // Application operations
   { "Application.GetProperties",                    CApplicationOperations::GetProperties },

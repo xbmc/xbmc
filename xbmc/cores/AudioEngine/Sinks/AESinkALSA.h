@@ -48,13 +48,13 @@ public:
   virtual double       GetDelay        ();
   virtual double       GetCacheTime    ();
   virtual double       GetCacheTotal   ();
-  virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames);
+  virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio);
   virtual void         Drain           ();
 
   static void EnumerateDevicesEx(AEDeviceInfoList &list);
 private:
   CAEChannelInfo GetChannelLayout(AEAudioFormat format);
-  void           GetPassthroughDevice(const AEAudioFormat format, std::string& device);
+  void           GetAESParams(const AEAudioFormat format, std::string& params);
   void           HandleError(const char* name, int err);
 
   std::string       m_initDevice;
@@ -73,8 +73,17 @@ private:
   bool InitializeHW(AEAudioFormat &format);
   bool InitializeSW(AEAudioFormat &format);
 
+  static void AppendParams(std::string &device, const std::string &params);
+  static bool TryDevice(const std::string &name, snd_pcm_t **pcmp, snd_config_t *lconf);
+  static bool TryDeviceWithParams(const std::string &name, const std::string &params, snd_pcm_t **pcmp, snd_config_t *lconf);
+  static bool OpenPCMDevice(const std::string &name, const std::string &params, int channels, snd_pcm_t **pcmp, snd_config_t *lconf, bool preferDmixStereo = false);
+
+  static void GetParamFromName(const std::string &name, const std::string &param, std::string &value);
+  static void EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config);
   static bool SoundDeviceExists(const std::string& device);
   static bool GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool& badHDMI);
+
+  static void sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...);
 };
 #endif
 

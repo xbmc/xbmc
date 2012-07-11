@@ -435,7 +435,7 @@
 		<channelminus>KEY_CHANNELDOWN</channelminus>
 		<skipplus>KEY_NEXTSONG</skipplus>
 		<skipminus>KEY_PREVIOUSSONG</skipminus>
-		<title>KEY_TEXT</title>
+		<title>KEY_TITLE</title>
 		<subtitle>KEY_SUBTITLE</subtitle>
 		<language>KEY_LANGUAGE</language>
 		<mute>KEY_MUTE</mute>

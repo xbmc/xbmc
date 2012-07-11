@@ -27,6 +27,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
+			<aspectratio>scale</aspectratio>
 			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>backgroundfade</include>
 			<fadetime>FanartCrossfadeTime</fadetime>

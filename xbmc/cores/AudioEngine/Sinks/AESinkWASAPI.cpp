@@ -332,19 +332,7 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
 
 double CAESinkWASAPI::GetDelay()
 {
-  HRESULT hr;
-  if (!m_initialized)
-    return 0.0;
-
-  hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
-  if (FAILED(hr))
-  {
-    #ifdef _DEBUG
-    CLog::Log(LOGERROR, __FUNCTION__": GetBufferSize Failed : %s", WASAPIErrToStr(hr));
-    #endif
-    return 0.0;
-  }
-  return (double)m_uiBufferLen / (double)m_format.m_sampleRate;
+  return GetCacheTime();
 }
 
 double CAESinkWASAPI::GetCacheTime()
@@ -352,11 +340,14 @@ double CAESinkWASAPI::GetCacheTime()
   if (!m_initialized)
     return 0.0;
 
-  REFERENCE_TIME hnsLatency;
-  HRESULT hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
-
-  /** returns buffer duration in seconds */
-  return hnsLatency / 10.0;
+  unsigned int numPaddingFrames;
+  HRESULT hr = m_pAudioClient->GetCurrentPadding(&numPaddingFrames);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": GetCurrentPadding Failed : %s", WASAPIErrToStr(hr));
+    return 0.0;
+  }
+  return (double)numPaddingFrames / (double)m_format.m_sampleRate;
 }
 
 double CAESinkWASAPI::GetCacheTotal()
@@ -371,7 +362,7 @@ double CAESinkWASAPI::GetCacheTotal()
   return hnsLatency / 10.0;
 }
 
-unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
+unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
   if (!m_initialized)
     return 0;

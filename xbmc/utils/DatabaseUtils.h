@@ -110,6 +110,7 @@ typedef enum {
   FieldAudioLanguage,
   FieldSubtitleLanguage,
   FieldProductionCode,
+  FieldTag,
   FieldChannelName
 } Field;
 

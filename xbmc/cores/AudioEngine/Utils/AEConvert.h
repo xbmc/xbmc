@@ -23,8 +23,6 @@
 #include <stdint.h>
 #include "../AEAudioFormat.h"
 
-/* note: always converts to machine byte endian */
-
 class CAEConvert{
 private:
   static unsigned int U8_Float    (uint8_t *data, const unsigned int samples, float   *dest);

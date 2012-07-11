@@ -2784,7 +2784,21 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr ""
 
-#empty strings from id 799 to 849
+msgctxt "#799"
+msgid "Library Update"
+msgstr ""
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr ""
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr ""
+
+#empty strings from id 802 to 849
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -8891,8 +8905,32 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr ""
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr ""
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr ""
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr ""
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr ""
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr ""
+
 #up to 21329 is reserved for the video db !! !
-#empty strings from id 20459 to 21329
+#empty strings from id 20465 to 21329
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -10770,7 +10808,13 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr ""
 
-#empty strings from id 35010 to 35499
+#empty strings from id 35010 to 35099
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr ""
+
+#empty strings from id 35101 to 35499
 
 msgctxt "#35500"
 msgid "Location"

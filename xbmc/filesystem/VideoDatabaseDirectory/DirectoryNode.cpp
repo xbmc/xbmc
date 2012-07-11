@@ -43,6 +43,7 @@
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
 #include "DirectoryNodeMusicVideoAlbum.h"
+#include "DirectoryNodeTags.h"
 #include "video/VideoInfoTag.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
@@ -122,6 +123,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeCountry(strName, pParent);
   case NODE_TYPE_SETS:
     return new CDirectoryNodeSets(strName, pParent);
+  case NODE_TYPE_TAGS:
+    return new CDirectoryNodeTags(strName, pParent);
   case NODE_TYPE_YEAR:
     return new CDirectoryNodeYear(strName, pParent);
   case NODE_TYPE_ACTOR:

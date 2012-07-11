@@ -27,6 +27,7 @@
 #include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "interfaces/AnnouncementManager.h"
 
 #define CONTROL_HEADING_LABEL  1
 #define CONTROL_INPUT_LABEL    4
@@ -52,6 +53,51 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 
 CGUIDialogNumeric::~CGUIDialogNumeric(void)
 {
+}
+
+void CGUIDialogNumeric::OnInitWindow()
+{
+  CGUIDialog::OnInitWindow();
+
+  CVariant data;
+  switch (m_mode)
+  {
+  case INPUT_TIME:
+    data["type"] = "time";
+    break;
+  case INPUT_DATE:
+    data["type"] = "date";
+    break;
+  case INPUT_IP_ADDRESS:
+    data["type"] = "ip";
+    break;
+  case INPUT_PASSWORD:
+    data["type"] = "password";
+    break;
+  case INPUT_NUMBER:
+    data["type"] = "number";
+    break;
+  case INPUT_TIME_SECONDS:
+    data["type"] = "seconds";
+    break;
+  default:
+    data["type"] = "keyboard";
+    break;
+  }
+
+  const CGUILabelControl *control = (const CGUILabelControl *)GetControl(CONTROL_HEADING_LABEL);
+  if (control != NULL)
+    data["title"] = control->GetDescription();
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
+}
+
+void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
+{
+  // call base class
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
 }
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
@@ -138,6 +184,14 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
         return true;
       }
     }
+    break;
+
+  case GUI_MSG_SET_TEXT:
+    SetMode(m_mode, message.GetLabel());
+
+    // close the dialog if requested
+    if (message.GetParam1() > 0)
+      OnOK();
     break;
   }
   return CGUIDialog::OnMessage(message);
@@ -464,7 +518,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
     m_datetime = *(SYSTEMTIME *)initial;
     m_lastblock = (m_mode == INPUT_DATE) ? 2 : 1;
   }
-  if (m_mode == INPUT_IP_ADDRESS)
+  else if (m_mode == INPUT_IP_ADDRESS)
   {
     m_lastblock = 3;
     m_ip[0] = m_ip[1] = m_ip[2] = m_ip[3] = 0;
@@ -486,10 +540,51 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
       }
     }
   }
-  if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
-  {
+  else if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
     m_number = *(CStdString *)initial;
+}
+
+void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const CStdString &initial)
+{
+  m_mode = mode;
+  m_block = 0;
+  m_lastblock = 0;
+  if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS || m_mode == INPUT_DATE)
+  {
+    CDateTime dateTime;
+    if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS)
+    {
+      // check if we have a pure number
+      if (initial.find_first_not_of("0123456789") == std::string::npos)
+      {
+        long seconds = strtol(initial.c_str(), NULL, 10);
+        dateTime = seconds;
+      }
+      else
+      {
+        CStdString tmp = initial;
+        // if we are handling seconds and if the string only contains
+        // "mm:ss" we need to add dummy "hh:" to get "hh:mm:ss"
+        if (m_mode == INPUT_TIME_SECONDS && tmp.size() <= 5)
+          tmp = "00:" + tmp;
+        dateTime.SetFromDBTime(tmp);
+      }
+    }
+    else if (m_mode == INPUT_DATE)
+    {
+      CStdString tmp = initial;
+      tmp.Replace("/", ".");
+      dateTime.SetFromDBDate(tmp);
+    }
+
+    if (!dateTime.IsValid())
+      return;
+
+    dateTime.GetAsSystemTime(m_datetime);
+    m_lastblock = (m_mode == INPUT_DATE) ? 2 : 1;
   }
+  else
+    SetMode(mode, (void*)&initial);
 }
 
 void CGUIDialogNumeric::GetOutput(void *output)

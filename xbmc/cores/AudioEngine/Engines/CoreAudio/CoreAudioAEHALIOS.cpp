@@ -311,7 +311,6 @@ void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
       streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
       break;
     case AE_FMT_S16LE:
-      streamDesc->mFormatFlags |= kAudioFormatFlagsNativeEndian;
       streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
       break;
     case AE_FMT_S16BE:

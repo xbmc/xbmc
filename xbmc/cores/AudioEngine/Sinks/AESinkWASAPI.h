@@ -43,7 +43,7 @@ public:
     virtual double       GetDelay                    ();
     virtual double       GetCacheTime                ();
     virtual double       GetCacheTotal               ();
-    virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames);
+    virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames, bool hasAudio);
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
