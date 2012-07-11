@@ -426,15 +426,15 @@ else
 install: install-binaries install-arch install-datas
 
 install-binaries: install-scripts
-	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
+	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/"
 	@install -d $(DESTDIR)$(libdir)/xbmc
-	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
 ifeq (1,@USE_XRANDR@)
 	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
 endif
 ifeq (@USE_LIBXBMC@,1)
 	@install libxbmc.so $(DESTDIR)$(libdir)/xbmc/libxbmc.so
 else
+	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 endif
