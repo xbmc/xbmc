@@ -54,13 +54,11 @@ CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 
 void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
-  CSingleLock lock(m_critSection);
   g_EpgContainer.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRGuide::ResetObservers(void)
 {
-  CSingleLock lock(m_critSection);
   g_EpgContainer.RegisterObserver(this);
 }
 
@@ -214,6 +212,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 
   if (m_bUpdateRequired || m_cachedTimeline->IsEmpty())
   {
+    m_bUpdateRequired = false;
     CPVRChannel CurrentChannel;
     bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
     bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
@@ -253,8 +252,6 @@ void CGUIWindowPVRGuide::UpdateData(void)
 {
   CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
-
-  g_EpgContainer.RegisterObserver(this);
 
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
