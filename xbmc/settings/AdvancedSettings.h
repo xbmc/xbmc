@@ -162,6 +162,16 @@ class CAdvancedSettings
     bool m_DXVANoDeintProcForProgressive;
     int  m_videoFpsDetect;
 
+    bool m_nativeUpscaleMode;
+    bool m_nativeOverrideFPS;
+    bool m_nativeCorrectPixelRatio;
+    int  m_nativeDestWidth;
+    int  m_nativeDestHeight;
+    int  m_nativeMinWidth;
+    int  m_nativeMinHeight;
+    int  m_nativeMaxWidth;
+    int  m_nativeMaxHeight;
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;

@@ -37,6 +37,7 @@ CBaseRenderer::CBaseRenderer()
   m_sourceWidth = 720;
   m_sourceHeight = 480;
   m_resolution = RES_DESKTOP;
+  m_bestResolution = m_resolution;
   m_fps = 0.0f;
 }
 
@@ -66,6 +67,67 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 #endif
     CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)",
         m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
+        
+  m_bestResolution = m_resolution;                                   // save it
+  int iNatW = (int)m_sourceWidth;
+  int iNatH = (int)m_sourceHeight;
+
+  if( g_advancedSettings.m_nativeMaxWidth && iNatW > g_advancedSettings.m_nativeMaxWidth )
+    iNatW = 0;
+
+  if( g_advancedSettings.m_nativeMaxHeight && iNatH > g_advancedSettings.m_nativeMaxHeight )
+    iNatH = 0;
+
+  if( g_advancedSettings.m_nativeUpscaleMode && iNatW && iNatH )     // Native Upscale Mode
+  { 
+    CLog::Log(LOGNOTICE, "Searching for NATIVE resolution: %dx%d", m_sourceWidth, m_sourceHeight);
+    
+    bool bOverrideFPS = g_advancedSettings.m_nativeOverrideFPS;
+    double fRD, fD, fODist = 100000000.0;
+    int iWD, iHD;
+    double fOrgRefreshRate = g_settings.m_ResInfo[m_resolution].fRefreshRate;
+    int iOrgScreen = g_settings.m_ResInfo[m_resolution].iScreen;
+
+    if(iNatW <= g_advancedSettings.m_nativeMinWidth && 
+       iNatH <= g_advancedSettings.m_nativeMinHeight)
+    {
+      iNatW = g_advancedSettings.m_nativeMinWidth;
+      iNatH = g_advancedSettings.m_nativeMinHeight;
+    }
+    
+    // best fit
+    for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)  
+    {
+      fRD = g_settings.m_ResInfo[i].fRefreshRate - fOrgRefreshRate;  // refreshrate delta
+      iWD = g_settings.m_ResInfo[i].iWidth - iNatW;                  // width delta 
+      iHD = g_settings.m_ResInfo[i].iHeight - iNatH;                 // height delta
+      // distance function:
+      // refreshrate, witdh and height deltas are multiplied by weight factors
+      // current weights values do not prefer any parameter (well, almost...)
+      // so we will search for lowest width, height and refresh rate which fit to the source parameters
+      // however if any of these parameters need to be preferred, bump up the weight value for it 
+      if (!bOverrideFPS)
+      {
+        fD = (iWD * 1.0) + (iHD * 1.0);                   // if original fps should be preserved, accept only these 
+        fRD = (fRD == 0.0) ? (0.0) : (-1.0);              // resolutions where refreshrate is the same
+      }
+      else
+      {
+        fD = (fRD * 10.0) + (iWD * 1.0) + (iHD * 1.0);    // normalize refreshrate and calculate distance
+      }
+     
+      if( fRD >= 0.0 && iWD >= 0 && iHD >= 0 && fD <= fODist &&
+          g_settings.m_ResInfo[i].iScreen == iOrgScreen ) 
+      {
+        m_resolution = (RESOLUTION)i;         // if we are here, then this resolution is closer to 
+        fODist = fD;                          // the source parameters than previous one
+      }
+    }
+
+    CLog::Log(LOGNOTICE, "Display resolution ADJUST2 : %s (%d)",
+        g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
+  }
+        
 }
 
 bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fallback)
@@ -391,10 +453,12 @@ void CBaseRenderer::ManageDisplay()
 
 void CBaseRenderer::SetViewMode(int viewMode)
 {
+  int savedViewMode;
+
   if (viewMode < VIEW_MODE_NORMAL || viewMode > VIEW_MODE_CUSTOM)
     viewMode = VIEW_MODE_NORMAL;
 
-  g_settings.m_currentVideoSettings.m_ViewMode = viewMode;
+  g_settings.m_currentVideoSettings.m_ViewMode = savedViewMode = viewMode;
 
   // get our calibrated full screen resolution
   RESOLUTION res = GetResolution();
@@ -402,6 +466,27 @@ void CBaseRenderer::SetViewMode(int viewMode)
   float screenHeight = (float)(g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
+
+  // if we upscale via external AVR device, correct the pixel ratio
+  if( g_advancedSettings.m_nativeUpscaleMode && m_bestResolution != m_resolution  
+   && g_advancedSettings.m_nativeCorrectPixelRatio ) 
+  {
+    float destWidth = (float)(g_advancedSettings.m_nativeDestWidth);
+    float destHeight = (float)(g_advancedSettings.m_nativeDestHeight);
+    float destFrameRatio = (float)destWidth / destHeight;
+    bool  destScreenIs43 = (destFrameRatio < 8.f/(3.f*sqrt(3.f)));   // final output
+    float outWidth = (float)(g_settings.m_ResInfo[m_resolution].iWidth);
+    float outHeight = (float)(g_settings.m_ResInfo[m_resolution].iHeight);
+    float outFrameRatio = (float)outWidth / outHeight;
+    bool  outScreenIs43 = (outFrameRatio < 8.f/(3.f*sqrt(3.f)));     // xbmc output
+
+    if( outScreenIs43 && !destScreenIs43 )         // final output is 16x9
+      viewMode = VIEW_MODE_STRETCH_16x9;
+    else if( !outScreenIs43 && destScreenIs43 )    // final output is 4x3
+      viewMode = VIEW_MODE_STRETCH_4x3;
+
+    g_settings.m_currentVideoSettings.m_ViewMode = viewMode;
+  }
 
   bool is43 = (sourceFrameRatio < 8.f/(3.f*sqrt(3.f)) &&
               g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL);
@@ -494,8 +579,12 @@ void CBaseRenderer::SetViewMode(int viewMode)
     g_settings.m_fZoomAmount = 1.0;
   }
 
+  // restore original view mode
+  g_settings.m_currentVideoSettings.m_ViewMode = savedViewMode;
+
   g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
   g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
   g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
   g_settings.m_currentVideoSettings.m_CustomVerticalShift = g_settings.m_fVerticalShift;
+
 }
