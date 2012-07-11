@@ -25,6 +25,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include "system.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK, HAS_LIRC
 
 #ifdef HAS_EVENT_SERVER
@@ -68,6 +69,8 @@ public:
   bool Load(bool AlwaysLoad = false);
   /// clears the maps
   void Clear();
+
+  static void GetActions(std::vector<std::string> &actionList);
 
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 

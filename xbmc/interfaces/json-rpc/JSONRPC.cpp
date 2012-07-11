@@ -23,6 +23,7 @@
 
 #include "JSONRPC.h"
 #include "ServiceDescription.h"
+#include "input/ButtonTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -38,6 +39,11 @@ void CJSONRPC::Initialize()
 {
   if (m_initialized)
     return;
+
+  // Add some types/enums at runtime
+  vector<string> inputActions;
+  CButtonTranslator::GetActions(inputActions);
+  CJSONServiceDescription::AddEnum("Input.Action", inputActions);
 
   unsigned int size = sizeof(JSONRPC_SERVICE_TYPES) / sizeof(char*);
 

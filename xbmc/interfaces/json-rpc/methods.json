@@ -1463,6 +1463,27 @@
     "params": [],
     "returns": "string"
   },
+  "Input.SendText": {
+    "type": "method",
+    "description": "Send a generic (unicode) text",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [
+      { "name": "text", "type": "string", "minLength": 1, "required": true, "description": "Unicode text" },
+      { "name": "done", "type": "boolean", "default": true, "description": "Whether this is the whole input or not (closes an open input dialog if true)." }
+    ],
+    "returns": "string"
+  },
+  "Input.ExecuteAction": {
+    "type": "method",
+    "description": "Execute a specific action",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [
+      { "name": "action", "$ref": "Input.Action", "required": true }
+    ],
+    "returns": "string"
+  },
   "Input.Left": {
     "type": "method",
     "description": "Navigate left in GUI",
@@ -1530,6 +1551,22 @@
   "Input.Home": {
     "type": "method",
     "description": "Goes to home window in GUI",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
+  "Input.ShowCodec": {
+    "type": "method",
+    "description": "Show codec information of the playing item",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
+  "Input.ShowOSD": {
+    "type": "method",
+    "description": "Show the on-screen display for the current player",
     "transport": "Response",
     "permission": "Navigate",
     "params": [],
