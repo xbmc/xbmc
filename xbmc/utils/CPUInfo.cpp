@@ -63,6 +63,27 @@
 #define CPUINFO_ECX 2
 #define CPUINFO_EDX 3
 
+typedef NTSTATUS (NTAPI * p_NtPowerInformation)(
+    __in POWER_INFORMATION_LEVEL InformationLevel,
+    __in_bcount_opt(InputBufferLength) PVOID InputBuffer,
+    __in ULONG InputBufferLength,
+    __out_bcount_opt(OutputBufferLength) PVOID OutputBuffer,
+    __in ULONG OutputBufferLength
+    );
+
+// as in "Process Hacker" 
+// http://processhacker.sourceforge.net/doc/ntpoapi_8h_source.html
+
+typedef struct _PROCESSOR_POWER_INFORMATION
+{
+  ULONG Number;
+  ULONG MaxMhz;
+  ULONG CurrentMhz;
+  ULONG MhzLimit;
+  ULONG MaxIdleState;
+  ULONG CurrentIdleState;
+} PROCESSOR_POWER_INFORMATION, *PPROCESSOR_POWER_INFORMATION;
+
 #endif
 
 #include "log.h"
@@ -316,8 +337,28 @@ float CCPUInfo::getCPUFrequency()
     return 0.f;
   return hz / 1000000.0;
 #elif defined _WIN32
+  DWORD dwMHz = 0;
+  if(m_cpuCount)
+  {
+    static p_NtPowerInformation NtPowerInformation_ = NULL;
+    if( !NtPowerInformation_)
+    {
+      HMODULE hNtdll = GetModuleHandle(TEXT("ntdll.dll"));
+      if( hNtdll )
+        NtPowerInformation_ = (p_NtPowerInformation) GetProcAddress( hNtdll, TEXT("NtPowerInformation") );
+    }
+    if( NtPowerInformation_)
+    {
+      PROCESSOR_POWER_INFORMATION * cpuPowerInfo = new PROCESSOR_POWER_INFORMATION[m_cpuCount];
+      if( NtPowerInformation_( ProcessorInformation, NULL, 0, cpuPowerInfo, sizeof (PROCESSOR_POWER_INFORMATION) * m_cpuCount ) == 0 )
+        dwMHz = cpuPowerInfo[0].CurrentMhz;
+      delete cpuPowerInfo;
+      if( dwMHz!= 0) 
+        return dwMHz;
+    }
+  }
+
   HKEY hKey;
-  DWORD dwMHz=0;
   DWORD dwSize=sizeof(dwMHz);
   LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
   ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
