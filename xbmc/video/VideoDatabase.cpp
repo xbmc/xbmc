@@ -54,6 +54,7 @@
 #include "XBDateTime.h"
 #include "URL.h"
 #include "video/VideoDbUrl.h"
+#include "playlists/SmartPlayList.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -9079,6 +9080,17 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
   }
   else
     return false;
+
+  option = options.find("xsp");
+  if (option != options.end())
+  {
+    CSmartPlaylist xsp;
+    if (!xsp.LoadFromJson(option->second.asString()))
+      return false;
+
+    std::set<CStdString> playlists;
+    filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
+  }
 
   return true;
 }

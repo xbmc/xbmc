@@ -71,8 +71,6 @@ namespace XFILE
       if (db.Open())
       {
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(playlist.GetType());
-        CDatabase::Filter filter;
-        filter.where = playlist.GetWhereClause(db, playlists);
 
         CStdString strBaseDir;
         switch (mediaType)
@@ -90,7 +88,16 @@ namespace XFILE
           return false;
         }
 
-        success = db.GetSortedVideos(mediaType, strBaseDir, sorting, items, filter, true);
+        CVideoDbUrl videoUrl;
+        CStdString xsp;
+        if (!videoUrl.FromString(strBaseDir) || !playlist.SaveAsJson(xsp, false))
+          return false;
+
+        // store the smartplaylist as JSON in the URL as well
+        videoUrl.AddOption("xsp", xsp);
+        
+        CDatabase::Filter filter;
+        success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, filter, true);
         db.Close();
       }
     }
@@ -135,18 +142,20 @@ namespace XFILE
       CVideoDatabase db;
       if (db.Open())
       {
-        CDatabase::Filter filter;
+        CSmartPlaylist mvidPlaylist(playlist);
         if (playlist.GetType().Equals("mixed"))
-        {
-          CSmartPlaylist mvidPlaylist(playlist);
           mvidPlaylist.SetType("musicvideos");
-          filter.where = mvidPlaylist.GetWhereClause(db, playlists);
-        }
-        else
-          filter.where = playlist.GetWhereClause(db, playlists);
 
+        CVideoDbUrl videoUrl;
+        CStdString xsp;
+        if (!videoUrl.FromString("videodb://3/2/") || !mvidPlaylist.SaveAsJson(xsp, false))
+          return false;
+
+        // store the smartplaylist as JSON in the URL as well
+        videoUrl.AddOption("xsp", xsp);
+        
         CFileItemList items2;
-        success2 = db.GetSortedVideos(MediaTypeMusicVideo, "videodb://3/2/", sorting, items2, filter);
+        success2 = db.GetSortedVideos(MediaTypeMusicVideo, videoUrl.ToString(), sorting, items2);
         db.Close();
 
         items.Append(items2);
