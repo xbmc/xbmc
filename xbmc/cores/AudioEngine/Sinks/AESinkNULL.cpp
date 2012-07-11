@@ -81,7 +81,7 @@ double CAESinkNULL::GetDelay()
   return std::max(0.0, (double)(m_ts - CurrentHostCounter()) / 1000000.0f);
 }
 
-unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames)
+unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
   float timeout = m_msPerFrame * frames;
   m_ts = CurrentHostCounter() + MathUtils::round_int(timeout * 1000000.0f);
