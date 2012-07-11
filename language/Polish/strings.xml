@@ -2367,7 +2367,7 @@
   <string id="36011">Nie mogę wykryć portu CEC. Ustaw go ręcznie.</string>
   <string id="36012">Nie mogę wykryć adaptera CEC.</string>
   <string id="36013">Nieaktualna wersja interfejsu libcec. %d jest wyższy niż wersja wspierana przez XBMC (%d)</string>
-  <string id="36014">Włącz tryb czuwania tego PC, kiedy TV jest wyłączony</string>
+  <string id="36014"></string>
   <string id="36015">Numer portu HDMI</string>
   <string id="36016">Połączono</string>
   <string id="36017">Znaleziono adapter, ale brak biblioteki libcec</string>

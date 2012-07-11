@@ -2404,7 +2404,7 @@ fyrir þetta tæki.</string>
   <string id="36011">Fann ekki CEC gátt. Settu það upp handvirkt.</string>
   <string id="36012">Fann ekki CEC tengispjald.</string>
   <string id="36013">Þessi útgáfa af libcec er ekki studd. %d er hærri en útgáfan sem XBMC styður (%d)</string>
-  <string id="36014">Setja tölvuna í biðstöðu þegar slökkt er á sjónvarpinu</string>
+  <string id="36014"></string>
   <string id="36015">HDMI gátt</string>
   <string id="36016">Tengdur</string> <!-- max. 13 characters -->
   <string id="36017">Fann tengispjald, en libcec er ekki tiltækt</string>

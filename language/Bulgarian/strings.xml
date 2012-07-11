@@ -2379,7 +2379,7 @@
   <string id="36011">Не мога да открия  порт CEC. Настройте ръчно.</string>
   <string id="36012">Не мога да открия  адаптер CEC.</string>
   <string id="36013">Неподдържана libcec интерфейс версия. %d е по-голяма от поддържаната от XBMC (%d)</string>
-  <string id="36014">Компютъра на стендбай, когато телевизора е изключен</string>
+  <string id="36014"></string>
   <string id="36015">HDMI номер</string>
   <string id="36016">Свързан</string> <!-- max. 13 characters -->
   <string id="36017">Адаптера е намерен, но libcec не е достъпен</string>

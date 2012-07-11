@@ -2395,7 +2395,7 @@
   <string id="36011">未检测到 CEC 端口。需人工设置。</string>
   <string id="36012">未检测到 CEC 适配器。</string>
   <string id="36013">不支持的 libcec 界面版本。%d 高于 XBMC 支持的版本（%d）</string>
-  <string id="36014">电视关闭时本计算机进入待机状态</string>
+  <string id="36014"></string>
   <string id="36015">HDMI 端口号</string>
   <string id="36016">XBMC 已连接</string> <!-- max. 13 characters -->
   <string id="36017">发现适配器，但 libcec 不可用</string>

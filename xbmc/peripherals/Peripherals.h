@@ -20,6 +20,7 @@
  *
  */
 
+#include "system.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
 #include "threads/CriticalSection.h"
@@ -29,6 +30,8 @@ class CFileItemList;
 class CSetting;
 class CSettingsCategory;
 class TiXmlElement;
+class CAction;
+class CKey;
 
 namespace PERIPHERALS
 {
@@ -146,6 +149,54 @@ namespace PERIPHERALS
      * @return The peripheral or NULL if it wasn't found.
      */
     virtual CPeripheral *GetByPath(const CStdString &strPath) const;
+
+    /*!
+     * @brief Try to let one of the peripherals handle an action.
+     * @param action The change to handle.
+     * @return True when this change was handled by a peripheral (and should not be handled by anything else), false otherwise.
+     */
+    virtual bool OnAction(const CAction &action);
+
+    /*!
+     * @brief Check whether there's a peripheral that reports to be muted.
+     * @return True when at least one peripheral reports to be muted, false otherwise.
+     */
+    virtual bool IsMuted(void);
+
+    /*!
+     * @brief Try to toggle the mute status via a peripheral.
+     * @return True when this change was handled by a peripheral (and should not be handled by anything else), false otherwise.
+     */
+    virtual bool ToggleMute(void);
+
+    /*!
+     * @brief Try to mute the audio via a peripheral.
+     * @return True when this change was handled by a peripheral (and should not be handled by anything else), false otherwise.
+     */
+    virtual bool Mute(void) { return ToggleMute(); } // TODO CEC only supports toggling the mute status at this time
+
+    /*!
+     * @brief Try to unmute the audio via a peripheral.
+     * @return True when this change was handled by a peripheral (and should not be handled by anything else), false otherwise.
+     */
+    virtual bool UnMute(void) { return ToggleMute(); } // TODO CEC only supports toggling the mute status at this time
+
+    /*!
+     * @brief Try to get a keypress from a peripheral.
+     * @param frameTime The current frametime.
+     * @param key The fetched key.
+     * @return True when a keypress was fetched, false otherwise.
+     */
+    virtual bool GetNextKeypress(float frameTime, CKey &key);
+
+    bool SupportsCEC(void) const
+    {
+#if defined(HAVE_LIBCEC)
+      return true;
+#else
+      return false;
+#endif
+    }
 
   private:
     CPeripherals(void);

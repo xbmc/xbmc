@@ -2404,7 +2404,7 @@
   <string id="36011">A CEC csatlakozó nem található. Állítsd be manuálisan.</string>
   <string id="36012">A CEC adapter nem található.</string>
   <string id="36013">Nem támogatott libcec csatoló verzió. %d nagyobb mint amit az XBMC támogat (%d)</string>
-  <string id="36014">A Média Center készenléti módba helyezése, a TV kikapcsolásával</string>
+  <string id="36014"></string>
   <string id="36015">HDMI csatlakozó száma</string>
   <string id="36016">Csatlakozva</string> <!-- max. 13 characters -->
   <string id="36017">Az adaptert megtaláltam, de a libcec nem elérhető</string>

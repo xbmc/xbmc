@@ -2847,7 +2847,7 @@
   <string id="36011">Ni mogoče zaznati vrat CEC. Nastavite jih ročno.</string>
   <string id="36012">Ni mogoče zaznati adapterja CEC.</string>
   <string id="36013">Nepodprta različica libcec. %d je višja, kot jo podpira XBMC (%d)</string>
-  <string id="36014">Postavi računalnik v stanje pripravljenosti, ko se ugasne TV</string>
+  <string id="36014"></string>
   <string id="36015">Št. vrat HDMI</string>
   <string id="36016">XBMC povezan</string>  <!-- max. 13 characters -->
   <string id="36017">Vmesnik najden, toda libcec ni na voljo</string>

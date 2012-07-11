@@ -2186,11 +2186,11 @@
   <string id="36007">Encender TV al iniciar XBMC</string>
   <string id="36008">Apagar dispositivos al detener XBMC</string>
   <string id="36009">Poner dispositivos en standby cuando se active el refrescapantallas</string>
-  <string id="36010">Activar como fuente inactiva al detener XBMC</string>
+  <string id="36010"></string>
   <string id="36011">No se pudo detectar puerto CEC. Configurelo manualmente.</string>
   <string id="36012">No se pudo detectar adaptador CEC.</string>
   <string id="36013">Versión de interface libcec no soportada. %d es mayor que la versión soportada por XBMC (%d)</string>
-  <string id="36014">Poner esta PC en standby cuando se apage la TV</string>
+  <string id="36014"></string>
   <string id="36015">puerto HDMI</string>
   <string id="36016">Connectado</string>
   <string id="36017">Adaptador encontrado, pero libcec no está disponible</string>

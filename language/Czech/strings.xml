@@ -2830,7 +2830,7 @@
   <string id="36011">Nepodařilo se najít CEC port. Nastavte jej ručně.</string>
   <string id="36012">Nepodařilo se najít CEC adaptér.</string>
   <string id="36013">Nepodporovaná verze libcec rozhraní. %d je vyšší než verze podporovaná XBMC (%d)</string>
-  <string id="36014">Při vypnutí TV uspat tento počítač</string>
+  <string id="36014">/string>
   <string id="36015">HDMI port</string>
   <string id="36016">Připojeno</string> <!-- maximálně 13 znaků -->
   <string id="36017">Adaptér byl nalezen, ale libcec není k dispozici</string>

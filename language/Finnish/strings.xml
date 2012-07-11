@@ -2853,7 +2853,7 @@
   <string id="36011">CEC-porttia ei havaittu. Määritä se käsin.</string>
   <string id="36012">CEC-sovitinta ei havaittu.</string>
   <string id="36013">Ei tuettu libcec-rajapinnan versio. %d on suurempi kuin versio, jota XBMC tukee (%d)</string>
-  <string id="36014">Aseta tämä tietokone valmiustilaan kun TV sammutetaan</string>
+  <string id="36014"></string>
   <string id="36015">HDMI-liitin</string>
   <string id="36016">Yhdistetty</string>
   <string id="36017">Sovitin löytyi, mutta libcec ei ole saatavilla</string>

@@ -2622,7 +2622,7 @@ den här visualiseringen</string>
   <string id="36011">Kunde inte hitta CEC-porten. Ställ in den manuellt</string>
   <string id="36012">Kunde inte hitta CEC-adaptern</string>
   <string id="36013">Ostödd libcec-gränssnittsversion. %d är nyare än versionen XBMC stödjer (%d)</string>
-  <string id="36014">Ställ denna PC i standbyläge när TVn stängs av</string>
+  <string id="36014"></string>
   <string id="36015">HDMI-portnummer</string>
   <string id="36016">Ansluten</string>
   <string id="36017">Adapter hittat, men libcec är inte tillgänglig</string>

@@ -2106,11 +2106,18 @@
   <string id="36008">כבה את ההתקנים כאשר מפסיקים את XBMC</string>
   <string id="36009">הכנס את ההתקנים למצב שינה כאשר מפעילים שומר מסך</string>
   <string id="36011">אין אפשרות לזהות פורט CEC. הגדר זאת ידנית.</string>
-  <string id="36012">אין אפשרות לזהות מתאם CEC.</string>
-  <string id="36013">ממשק libcec  לא נתמך. %d גדול יותר מאשר הגרסא ש- XBMC תומך (%d)</string>
-  <string id="36014">הכנס את המחשב למצב המתנה כאשר הטלוויזיה נכבית</string>
+  <string id="36012">אין אפשרות לאתחל מתאם CEC. בדוק את ההגדרות שלך</string>
+  <string id="36013">ממשק libCEC  לא נתמך. %d גדול יותר מאשר הגרסא ש- XBMC תומך (%d)</string>
+  <string id="36014"></string>
   <string id="36015">מספר פורט HDMI</string>
   <string id="36016">מחובר</string>
   <string id="36017">מתאם נמצא. אבל libcec לא זמין</string>
   <string id="36018">השתמש בהגדרות שפה של הטלוויזיה</string>
+  <string id="36019">מחובר להתקן HDMI</string>
+  <string id="36020">הפוך את XBMC למקור הפעיל כאשר מפעילים</string>
+  <string id="36021">כתובת פיזית (מבטל יציאת HDMI)</string>
+  <string id="36022">יציאת COM (השאר ריק אלא אם יש צורך)</string>
+  <string id="36023">תצורה עודכנה</string>
+  <string id="36024">נכשל בהגדרת תצורה חדשה. אנא בדוק את ההגדרות שלך.</string>
+  <string id="36025">שלח פקודת 'מקור לא פעיל' כאשר עוצרים את XBMC</string>
 </strings>

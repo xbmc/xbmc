@@ -2827,7 +2827,7 @@
   <string id="36011">Impossible de détecter le port CEC. Le paramétrer manuellement.</string>
   <string id="36012">Impossible de détecter l'adaptateur CEC.</string>
   <string id="36013">Version de l'interface libcec non-supportée. %d est plus grand que le version supportée par XBMC (%d)</string>
-  <string id="36014">Placer ce PC en veille lorsque la TV est éteinte</string>
+  <string id="36014"></string>
   <string id="36015">Numéro de port HDMI</string>
   <string id="36016">Connecté</string> <!-- max. 13 characters -->
   <string id="36017">Adaptateur trouvé, mais libcec indisponible</string>
