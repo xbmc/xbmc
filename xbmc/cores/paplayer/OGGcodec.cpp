@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "music/tags/TagLoaderTagLib.h"
 
 using namespace MUSIC_INFO;
 
@@ -135,13 +136,10 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   vorbis_comment* pComments=m_dll.ov_comment(&m_VorbisFile, m_CurrentStream);
   if (pComments)
   {
-    COggTag oggTag;
-    for (int i=0; i < pComments->comments; ++i)
-    {
-      CStdString strTag=pComments->user_comments[i];
-      oggTag.ParseTagEntry(strTag);
-    }
-    m_replayGain=oggTag.GetReplayGain();
+    CTagLoaderTagLib tagLoaderTagLib(strFile);
+    CMusicInfoTag tag;
+    tagLoaderTagLib.Load(strFile, tag);
+    tagLoaderTagLib.GetReplayGain(m_replayGain);
   }
 
   //  Seek to the logical bitstream to play

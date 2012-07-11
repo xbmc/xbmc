@@ -22,6 +22,7 @@
 #include "music/tags/FlacTag.h"
 #include "utils/log.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "music/tags/TagLoaderTagLib.h"
 
 using namespace MUSIC_INFO;
 
@@ -55,6 +56,12 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   if (!m_file.Open(strFile, READ_CACHED))
     return false;
+
+  //  Extract ReplayGain info
+  CTagLoaderTagLib tagLoaderTagLib(strFile);
+  CMusicInfoTag tag;
+  tagLoaderTagLib.Load(strFile, tag);
+  tagLoaderTagLib.GetReplayGain(m_replayGain);
 
   m_pFlacDecoder=m_dll.FLAC__stream_decoder_new();
 
@@ -94,11 +101,6 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
     FreeDecoder();
     return false;
   }
-
-  //  Extract ReplayGain info
-  CFlacTag tag;
-  if (tag.Read(strFile))
-    m_replayGain=tag.GetReplayGain();
 
   m_Bitrate = (int)(((float)m_file.GetLength() * 8) / ((float)m_TotalTime / 1000));
 
