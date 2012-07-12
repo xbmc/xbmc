@@ -1111,7 +1111,6 @@
     <ClCompile Include="..\..\xbmc\utils\SeekHandler.cpp" />
     <ClCompile Include="..\..\xbmc\utils\SortUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Splash.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\ssrc.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Stopwatch.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StreamDetails.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StreamUtils.cpp" />
@@ -1906,7 +1905,6 @@
     <ClInclude Include="..\..\xbmc\utils\SeekHandler.h" />
     <ClInclude Include="..\..\xbmc\utils\SortUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\Splash.h" />
-    <ClInclude Include="..\..\xbmc\utils\ssrc.h" />
     <ClInclude Include="..\..\xbmc\utils\StdString.h" />
     <ClInclude Include="..\..\xbmc\utils\Stopwatch.h" />
     <ClInclude Include="..\..\xbmc\utils\StreamDetails.h" />

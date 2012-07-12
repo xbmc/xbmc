@@ -859,7 +859,6 @@
 		F56C8B31131F42ED000AD0F6 /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C875D131F42EC000AD0F6 /* Variant.cpp */; };
 		F56C8B32131F42ED000AD0F6 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C875F131F42EC000AD0F6 /* Weather.cpp */; };
 		F56C8B34131F42ED000AD0F6 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8764131F42EC000AD0F6 /* fft.cpp */; };
-		F56C8B35131F42ED000AD0F6 /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8766131F42EC000AD0F6 /* ssrc.cpp */; };
 		F56C8B36131F42ED000AD0F6 /* GUIDialogAudioSubtitleSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C876A131F42EC000AD0F6 /* GUIDialogAudioSubtitleSettings.cpp */; };
 		F56C8B37131F42ED000AD0F6 /* GUIDialogFileStacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C876C131F42EC000AD0F6 /* GUIDialogFileStacking.cpp */; };
 		F56C8B38131F42ED000AD0F6 /* GUIDialogFullScreenInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C876E131F42EC000AD0F6 /* GUIDialogFullScreenInfo.cpp */; };
@@ -2831,8 +2830,6 @@
 		F56C8763131F42EC000AD0F6 /* WindowsShortcut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowsShortcut.h; sourceTree = "<group>"; };
 		F56C8764131F42EC000AD0F6 /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
 		F56C8765131F42EC000AD0F6 /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
-		F56C8766131F42EC000AD0F6 /* ssrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ssrc.cpp; sourceTree = "<group>"; };
-		F56C8767131F42EC000AD0F6 /* ssrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssrc.h; sourceTree = "<group>"; };
 		F56C876A131F42EC000AD0F6 /* GUIDialogAudioSubtitleSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAudioSubtitleSettings.cpp; sourceTree = "<group>"; };
 		F56C876B131F42EC000AD0F6 /* GUIDialogAudioSubtitleSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogAudioSubtitleSettings.h; sourceTree = "<group>"; };
 		F56C876C131F42EC000AD0F6 /* GUIDialogFileStacking.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogFileStacking.cpp; sourceTree = "<group>"; };
@@ -5819,8 +5816,6 @@
 				36A9445115821F5300727135 /* SortUtils.h */,
 				F56C8751131F42EC000AD0F6 /* Splash.cpp */,
 				F56C8752131F42EC000AD0F6 /* Splash.h */,
-				F56C8766131F42EC000AD0F6 /* ssrc.cpp */,
-				F56C8767131F42EC000AD0F6 /* ssrc.h */,
 				F56C8753131F42EC000AD0F6 /* Stopwatch.cpp */,
 				F56C8754131F42EC000AD0F6 /* Stopwatch.h */,
 				F56C8755131F42EC000AD0F6 /* StreamDetails.cpp */,
@@ -7024,7 +7019,6 @@
 				F56C8B31131F42ED000AD0F6 /* Variant.cpp in Sources */,
 				F56C8B32131F42ED000AD0F6 /* Weather.cpp in Sources */,
 				F56C8B34131F42ED000AD0F6 /* fft.cpp in Sources */,
-				F56C8B35131F42ED000AD0F6 /* ssrc.cpp in Sources */,
 				F56C8B36131F42ED000AD0F6 /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
 				F56C8B37131F42ED000AD0F6 /* GUIDialogFileStacking.cpp in Sources */,
 				F56C8B38131F42ED000AD0F6 /* GUIDialogFullScreenInfo.cpp in Sources */,
