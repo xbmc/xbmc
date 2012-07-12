@@ -22,24 +22,14 @@
 #include "system.h"
 #include "GUIWindowPrograms.h"
 #include "Util.h"
-#include "filesystem/HDDirectory.h"
-#include "GUIPassword.h"
-#include "dialogs/GUIDialogMediaSource.h"
 #include "addons/GUIDialogAddonInfo.h"
-#include "Autorun.h"
-#include "utils/LabelFormatter.h"
 #include "Autorun.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKeyboard.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
-
-using namespace XFILE;
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3
@@ -72,7 +62,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_iRegionSet = 0;
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // is this the first time accessing this window?
@@ -145,22 +134,8 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   switch (button)
   {
-  case CONTEXT_BUTTON_RENAME:
-    {
-      CStdString strDescription = item->GetLabel();
-      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16008), false))
-      {
-        Update(m_vecItems->GetPath());
-      }
-      return true;
-    }
-
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");
-    return true;
-
-  case CONTEXT_BUTTON_LAUNCH:
-    OnClick(itemNumber);
     return true;
 
   case CONTEXT_BUTTON_INFO:
@@ -198,12 +173,6 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
   if (pItem->m_bIsFolder) return false;
 
   return false;
-}
-
-int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
-{
-  // TODO?
-  return 0;
 }
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
