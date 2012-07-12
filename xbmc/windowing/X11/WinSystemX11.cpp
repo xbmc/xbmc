@@ -664,15 +664,16 @@ void CWinSystemX11::NotifyXRREvent()
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
   m_windowDirty = true;
 
+  if (!g_xrandr.Query(true))
+  {
+    CLog::Log(LOGERROR, "WinSystemX11::RefreshWindow - failed to query xrandr");
+    return;
+  }
+
   // if external event update resolutions
   if (!m_bIsInternalXrr)
   {
     UpdateResolutions();
-  }
-  else if (!g_xrandr.Query(true))
-  {
-    CLog::Log(LOGERROR, "WinSystemX11::RefreshWindow - failed to query xrandr");
-    return;
   }
   m_bIsInternalXrr = false;
 
