@@ -2679,8 +2679,6 @@
 		F56C86A5131F42EB000AD0F6 /* GUIWindowPrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPrograms.h; sourceTree = "<group>"; };
 		F56C86A6131F42EB000AD0F6 /* ProgramDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProgramDatabase.cpp; sourceTree = "<group>"; };
 		F56C86A7131F42EB000AD0F6 /* ProgramDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgramDatabase.h; sourceTree = "<group>"; };
-		F56C86A8131F42EB000AD0F6 /* Shortcut.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shortcut.cpp; sourceTree = "<group>"; };
-		F56C86A9131F42EB000AD0F6 /* Shortcut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shortcut.h; sourceTree = "<group>"; };
 		F56C86AC131F42EB000AD0F6 /* RenderSystemGLES.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystemGLES.cpp; sourceTree = "<group>"; };
 		F56C86AD131F42EB000AD0F6 /* RenderSystemGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystemGLES.h; sourceTree = "<group>"; };
 		F56C86AE131F42EB000AD0F6 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
@@ -5601,8 +5599,6 @@
 				F56C86A5131F42EB000AD0F6 /* GUIWindowPrograms.h */,
 				F56C86A6131F42EB000AD0F6 /* ProgramDatabase.cpp */,
 				F56C86A7131F42EB000AD0F6 /* ProgramDatabase.h */,
-				F56C86A8131F42EB000AD0F6 /* Shortcut.cpp */,
-				F56C86A9131F42EB000AD0F6 /* Shortcut.h */,
 			);
 			path = programs;
 			sourceTree = "<group>";

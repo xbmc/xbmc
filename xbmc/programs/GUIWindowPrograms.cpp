@@ -22,7 +22,6 @@
 #include "system.h"
 #include "GUIWindowPrograms.h"
 #include "Util.h"
-#include "Shortcut.h"
 #include "filesystem/HDDirectory.h"
 #include "GUIPassword.h"
 #include "dialogs/GUIDialogMediaSource.h"
@@ -89,25 +88,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_CLICKED:
     {
-      if (message.GetSenderId() == CONTROL_BTNSORTBY)
-      {
-        // need to update shortcuts manually
-        if (CGUIMediaWindow::OnMessage(message))
-        {
-          LABEL_MASKS labelMasks;
-          m_guiState->GetSortMethodLabelMasks(labelMasks);
-          CLabelFormatter formatter("", labelMasks.m_strLabel2File);
-          for (int i=0;i<m_vecItems->Size();++i)
-          {
-            CFileItemPtr item = m_vecItems->Get(i);
-            if (item->IsShortCut())
-              formatter.FormatLabel2(item.get());
-          }
-          return true;
-        }
-        else
-          return false;
-      }
       if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
       {
         int iAction = message.GetParam1();
@@ -143,20 +123,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
-      if (item->IsXBE() || item->IsShortCut())
-      {
-        CStdString strLaunch = g_localizeStrings.Get(518); // Launch
-        buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
-
-        if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.GetCurrentProfile().canWriteDatabases())
-        {
-          if (item->IsShortCut())
-            buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
-          else
-            buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
-        }
-      }
-
       if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
         buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
@@ -184,29 +150,9 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_RENAME:
     {
-      CStdString strDescription;
-      CShortcut cut;
-      if (item->IsShortCut())
-      {
-        cut.Create(item->GetPath());
-        strDescription = cut.m_strLabel;
-      }
-      else
-        strDescription = item->GetLabel();
-
+      CStdString strDescription = item->GetLabel();
       if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16008), false))
       {
-        if (item->IsShortCut())
-        {
-          cut.m_strLabel = strDescription;
-          cut.Save(item->GetPath());
-        }
-        else
-        {
-          // SetXBEDescription will truncate to 40 characters.
-          //CUtil::SetXBEDescription(item->GetPath(),strDescription);
-          //m_database.SetDescription(item->GetPath(),strDescription);
-        }
         Update(m_vecItems->GetPath());
       }
       return true;

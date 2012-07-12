@@ -681,19 +681,9 @@ bool CFileItem::IsPythonScript() const
   return URIUtils::GetExtension(m_strPath).Equals(".py", false);
 }
 
-bool CFileItem::IsXBE() const
-{
-  return URIUtils::GetExtension(m_strPath).Equals(".xbe", false);
-}
-
 bool CFileItem::IsType(const char *ext) const
 {
   return URIUtils::GetExtension(m_strPath).Equals(ext, false);
-}
-
-bool CFileItem::IsShortCut() const
-{
-  return URIUtils::GetExtension(m_strPath).Equals(".cut", false);
 }
 
 bool CFileItem::IsNFO() const
@@ -960,20 +950,6 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsPlayList() )
       {
         SetIconImage("DefaultPlaylist.png");
-      }
-      else if ( IsXBE() )
-      {
-        // xbe
-        SetIconImage("DefaultProgram.png");
-      }
-      else if ( IsShortCut() && !IsLabelPreformated() )
-      {
-        // shortcut
-        CStdString strFName = URIUtils::GetFileName(m_strPath);
-        int iPos = strFName.ReverseFind(".");
-        CStdString strDescription = strFName.Left(iPos);
-        SetLabel(strDescription);
-        SetIconImage("DefaultShortcut.png");
       }
       else if ( IsPythonScript() )
       {

@@ -1456,9 +1456,6 @@
     <ClCompile Include="..\..\xbmc\programs\GUIWindowPrograms.cpp">
       <Filter>programs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\programs\Shortcut.cpp">
-      <Filter>programs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\rendering\RenderSystem.cpp">
       <Filter>rendering</Filter>
     </ClCompile>
@@ -4041,9 +4038,6 @@
       <Filter>programs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\programs\GUIWindowPrograms.h">
-      <Filter>programs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\programs\Shortcut.h">
       <Filter>programs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\rendering\RenderSystem.h">
