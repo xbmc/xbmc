@@ -809,7 +809,9 @@ AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
 if echo "$ARCH" | grep -q freebsd; then
 AC_CHECK_LIB([pthread],     [main],LIBS="-pthread $LIBS", AC_MSG_ERROR($missing_library))
 else
-AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
+if test "$target_platform" != "target_android" ; then
+  AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
+fi
 fi
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
