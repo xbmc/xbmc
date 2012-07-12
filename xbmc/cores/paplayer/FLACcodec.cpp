@@ -58,9 +58,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   //  Extract ReplayGain info
   CTagLoaderTagLib tagLoaderTagLib(strFile);
-  CMusicInfoTag tag;
-  tagLoaderTagLib.Load(strFile, tag);
-  tagLoaderTagLib.GetReplayGain(m_replayGain);
+  tagLoaderTagLib.Load(strFile, m_tag);
 
   m_pFlacDecoder=m_dll.FLAC__stream_decoder_new();
 

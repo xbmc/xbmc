@@ -168,7 +168,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int64_t length = 0;
   bool bTags = false;
 
-  CMusicInfoTag musicInfoTag;
   CTagLoaderTagLib tagLoaderTagLib(strFile);
 
   if (!m_file.Open(strFile, READ_CACHED))
@@ -178,12 +177,9 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   // Guess Bitrate and obtain replayGain information etc.
-  bTags = tagLoaderTagLib.Load(strFile, musicInfoTag);
+  bTags = tagLoaderTagLib.Load(strFile, m_tag);
   if (bTags)
-  {
-    tagLoaderTagLib.GetReplayGain(m_replayGain);
     ReadDuration();
-  }
 
   length = m_file.GetLength();
   if (bTags)

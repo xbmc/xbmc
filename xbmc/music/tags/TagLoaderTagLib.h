@@ -44,7 +44,6 @@
 #include <taglib/xiphcomment.h>
 #include <taglib/mp4tag.h>
 #include "TagLibVFSStream.h"
-#include "cores/paplayer/ReplayGain.h"
 
 namespace MUSIC_INFO
 {
@@ -58,7 +57,6 @@ public:
   CTagLoaderTagLib(const std::string& strFileName);
   virtual ~CTagLoaderTagLib();
   virtual bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL);
-  bool                           GetReplayGain(CReplayGain &info) const;
 private:
   bool                           Open(const std::string& strFileName, bool readOnly);
   const std::vector<std::string> GetASFStringList(const TagLib::List<TagLib::ASF::Attribute>& list);
@@ -71,6 +69,5 @@ private:
   bool                           ParseMP4Tag(TagLib::MP4::Tag *mp4, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
   bool                           ParseGenericTag(TagLib::Tag *generic, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
 
-  CReplayGain      m_rg;
   MUSIC_INFO::TagLibVFSStream    m_tagLibVFSStream;
 };

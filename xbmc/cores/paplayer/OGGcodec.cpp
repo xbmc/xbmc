@@ -136,9 +136,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   if (pComments)
   {
     CTagLoaderTagLib tagLoaderTagLib(strFile);
-    CMusicInfoTag tag;
-    tagLoaderTagLib.Load(strFile, tag);
-    tagLoaderTagLib.GetReplayGain(m_replayGain);
+    tagLoaderTagLib.Load(strFile, m_tag);
   }
 
   //  Seek to the logical bitstream to play

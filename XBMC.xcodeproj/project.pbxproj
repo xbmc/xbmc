@@ -538,7 +538,6 @@
 		E38E1FCF0D25F9FD00618676 /* MP3codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16130D25F9FA00618676 /* MP3codec.cpp */; };
 		E38E1FD10D25F9FD00618676 /* NSFCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E161B0D25F9FA00618676 /* NSFCodec.cpp */; };
 		E38E1FD20D25F9FD00618676 /* OGGcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16230D25F9FA00618676 /* OGGcodec.cpp */; };
-		E38E1FD70D25F9FD00618676 /* ReplayGain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E162A0D25F9FA00618676 /* ReplayGain.cpp */; };
 		E38E1FD90D25F9FD00618676 /* SIDCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16310D25F9FA00618676 /* SIDCodec.cpp */; };
 		E38E1FDA0D25F9FD00618676 /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16350D25F9FA00618676 /* SPCCodec.cpp */; };
 		E38E1FDB0D25F9FD00618676 /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16370D25F9FA00618676 /* TimidityCodec.cpp */; };
@@ -2222,8 +2221,6 @@
 		E38E161C0D25F9FA00618676 /* NSFCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFCodec.h; sourceTree = "<group>"; };
 		E38E16230D25F9FA00618676 /* OGGcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OGGcodec.cpp; sourceTree = "<group>"; };
 		E38E16240D25F9FA00618676 /* OGGcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGGcodec.h; sourceTree = "<group>"; };
-		E38E162A0D25F9FA00618676 /* ReplayGain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReplayGain.cpp; sourceTree = "<group>"; };
-		E38E162B0D25F9FA00618676 /* ReplayGain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplayGain.h; sourceTree = "<group>"; };
 		E38E16310D25F9FA00618676 /* SIDCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SIDCodec.cpp; sourceTree = "<group>"; };
 		E38E16320D25F9FA00618676 /* SIDCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIDCodec.h; sourceTree = "<group>"; };
 		E38E16350D25F9FA00618676 /* SPCCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SPCCodec.cpp; sourceTree = "<group>"; };
@@ -5154,8 +5151,6 @@
 				F5987FD90FBE2DFD008EF4FB /* PAPlayer.h */,
 				7CCFD98A151494E100211D82 /* PCMCodec.cpp */,
 				7CCFD98B151494E100211D82 /* PCMCodec.h */,
-				E38E162A0D25F9FA00618676 /* ReplayGain.cpp */,
-				E38E162B0D25F9FA00618676 /* ReplayGain.h */,
 				E38E16310D25F9FA00618676 /* SIDCodec.cpp */,
 				E38E16320D25F9FA00618676 /* SIDCodec.h */,
 				E38E16350D25F9FA00618676 /* SPCCodec.cpp */,
@@ -6708,7 +6703,6 @@
 				E38E1FCF0D25F9FD00618676 /* MP3codec.cpp in Sources */,
 				E38E1FD10D25F9FD00618676 /* NSFCodec.cpp in Sources */,
 				E38E1FD20D25F9FD00618676 /* OGGcodec.cpp in Sources */,
-				E38E1FD70D25F9FD00618676 /* ReplayGain.cpp in Sources */,
 				E38E1FD90D25F9FD00618676 /* SIDCodec.cpp in Sources */,
 				E38E1FDA0D25F9FD00618676 /* SPCCodec.cpp in Sources */,
 				E38E1FDB0D25F9FD00618676 /* TimidityCodec.cpp in Sources */,

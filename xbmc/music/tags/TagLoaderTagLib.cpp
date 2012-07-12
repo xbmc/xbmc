@@ -292,13 +292,13 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
         // First field is the same as the description
         StringList stringList = frame->fieldList(); 
         stringList.erase(stringList.begin());
-        if      (frame->description() == "MusicBrainz Artist Id")      tag.SetMusicBrainzArtistID(stringList.front().toCString());
-        else if (frame->description() == "MusicBrainz Album Id")       tag.SetMusicBrainzAlbumID(stringList.front().toCString());
+        if      (frame->description() == "MusicBrainz Artist Id")       tag.SetMusicBrainzArtistID(stringList.front().toCString());
+        else if (frame->description() == "MusicBrainz Album Id")        tag.SetMusicBrainzAlbumID(stringList.front().toCString());
         else if (frame->description() == "MusicBrainz Album Artist Id") tag.SetMusicBrainzAlbumArtistID(stringList.front().toCString());
-        else if (frame->description() == "replaygain_track_gain")    m_rg.SetTrackGain(atof(stringList.front().toCString()) * 100 + 0.5);
-        else if (frame->description() == "replaygain_album_gain")    m_rg.SetAlbumGain(atof(stringList.front().toCString()) * 100 + 0.5);
-        else if (frame->description() == "replaygain_track_peak")    m_rg.SetTrackPeak(atof(stringList.front().toCString()));
-        else if (frame->description() == "replaygain_album_peak")    m_rg.SetAlbumPeak(atof(stringList.front().toCString()));
+        else if (frame->description() == "replaygain_track_gain")       tag.SetReplayGainTrackGain(atof(stringList.front().toCString()) * 100 + 0.5);
+        else if (frame->description() == "replaygain_album_gain")       tag.SetReplayGainTrackGain(atof(stringList.front().toCString()) * 100 + 0.5);
+        else if (frame->description() == "replaygain_track_peak")       tag.SetReplayGainTrackGain(atof(stringList.front().toCString()));
+        else if (frame->description() == "replaygain_album_peak")       tag.SetReplayGainTrackGain(atof(stringList.front().toCString()));
         else
           CLog::Log(LOGDEBUG, "unrecognized user text tag detected: TXXX:%s", frame->description().toCString());
       }
@@ -388,10 +388,10 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "ENCODEDBY")                 {}
     else if (it->first == "COMPILATION")               tag.SetCompilation(it->second.toString().toInt() == 1);
     else if (it->first == "LYRICS")                    tag.SetLyrics(it->second.toString().toCString());
-    else if (it->first == "REPLAYGAIN_TRACK_GAIN")     m_rg.SetTrackGain((int)(atof(it->second.toString().toCString()) * 100 + 0.5));
-    else if (it->first == "REPLAYGAIN_ALBUM_GAIN")     m_rg.SetAlbumGain((int)(atof(it->second.toString().toCString()) * 100 + 0.5));
-    else if (it->first == "REPLAYGAIN_TRACK_PEAK")     m_rg.SetTrackPeak((float)atof(it->second.toString().toCString()));
-    else if (it->first == "REPLAYGAIN_ALBUM_PEAK")     m_rg.SetAlbumPeak((float)atof(it->second.toString().toCString()));
+    else if (it->first == "REPLAYGAIN_TRACK_GAIN")     tag.SetReplayGainTrackGain((int)(atof(it->second.toString().toCString()) * 100 + 0.5));
+    else if (it->first == "REPLAYGAIN_ALBUM_GAIN")     tag.SetReplayGainTrackGain((int)(atof(it->second.toString().toCString()) * 100 + 0.5));
+    else if (it->first == "REPLAYGAIN_TRACK_PEAK")     tag.SetReplayGainTrackGain((float)atof(it->second.toString().toCString()));
+    else if (it->first == "REPLAYGAIN_ALBUM_PEAK")     tag.SetReplayGainTrackGain((float)atof(it->second.toString().toCString()));
     else if (it->first == "MUSICBRAINZ_ARTISTID")      tag.SetMusicBrainzArtistID(it->second.toString().toCString());
     else if (it->first == "MUSICBRAINZ_ALBUMARTISTID") tag.SetMusicBrainzAlbumArtistID(it->second.toString().toCString());
     else if (it->first == "MUSICBRAINZ_ALBUMID")       tag.SetMusicBrainzAlbumID(it->second.toString().toCString());
@@ -423,10 +423,10 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
     else if (it->first == "ENCODEDBY")                 {}
     else if (it->first == "COMPILATION")               tag.SetCompilation(it->second.front().toInt() == 1);
     else if (it->first == "LYRICS")                    tag.SetLyrics(it->second.front().toCString());
-    else if (it->first == "REPLAYGAIN_TRACK_GAIN")     m_rg.SetTrackGain((int)(atof(it->second.front().toCString()) * 100 + 0.5));
-    else if (it->first == "REPLAYGAIN_ALBUM_GAIN")     m_rg.SetAlbumGain((int)(atof(it->second.front().toCString()) * 100 + 0.5));
-    else if (it->first == "REPLAYGAIN_TRACK_PEAK")     m_rg.SetTrackPeak((float)atof(it->second.front().toCString()));
-    else if (it->first == "REPLAYGAIN_ALBUM_PEAK")     m_rg.SetAlbumPeak((float)atof(it->second.front().toCString()));
+    else if (it->first == "REPLAYGAIN_TRACK_GAIN")     tag.SetReplayGainTrackGain((int)(atof(it->second.front().toCString()) * 100 + 0.5));
+    else if (it->first == "REPLAYGAIN_ALBUM_GAIN")     tag.SetReplayGainTrackGain((int)(atof(it->second.front().toCString()) * 100 + 0.5));
+    else if (it->first == "REPLAYGAIN_TRACK_PEAK")     tag.SetReplayGainTrackGain((float)atof(it->second.front().toCString()));
+    else if (it->first == "REPLAYGAIN_ALBUM_PEAK")     tag.SetReplayGainTrackGain((float)atof(it->second.front().toCString()));
     else if (it->first == "MUSICBRAINZ_ARTISTID")      tag.SetMusicBrainzArtistID(it->second.front().toCString());
     else if (it->first == "MUSICBRAINZ_ALBUMARTISTID") tag.SetMusicBrainzAlbumArtistID(it->second.front().toCString());
     else if (it->first == "MUSICBRAINZ_ALBUMID")       tag.SetMusicBrainzAlbumID(it->second.front().toCString());
@@ -527,12 +527,4 @@ const vector<string> CTagLoaderTagLib::GetID3v2StringList(const ID3v2::FrameList
   if (frame)
     return StringListToVectorString(frame->fieldList());
   return vector<string>();
-}
-
-bool CTagLoaderTagLib::GetReplayGain(CReplayGain &info) const
-{
-  if (!m_rg.iHasGainInfo)
-    return false;
-  info = m_rg;
-  return true;
 }
