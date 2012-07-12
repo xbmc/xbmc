@@ -62,6 +62,7 @@ namespace MEDIA_DETECT
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
+class CSeekHandler;
 class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
 class CApplicationMessenger;
@@ -337,6 +338,12 @@ public:
   bool ToggleDPMS(bool manual);
 
   float GetDimScreenSaverLevel() const;
+
+  /*! \brief Retrieve the applications seek handler.
+   \return a constant pointer to the seek handler.
+   \sa CSeekHandler
+   */
+  const CSeekHandler *GetSeekHandler() const { return m_seekHandler; };
 protected:
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
@@ -436,6 +443,7 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
+  CSeekHandler *m_seekHandler;
   CInertialScrollingHandler *m_pInertialScrollingHandler;
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)

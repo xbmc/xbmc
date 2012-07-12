@@ -2581,6 +2581,9 @@
     <ClCompile Include="..\..\xbmc\network\AirTunesServer.cpp">
       <Filter>network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\SeekHandler.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\SortUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -5214,6 +5217,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h">
       <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\SeekHandler.h">
+      <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\SortUtils.h">
       <Filter>utils</Filter>

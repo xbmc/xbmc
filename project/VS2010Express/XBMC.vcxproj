@@ -1110,6 +1110,7 @@
     <ClCompile Include="..\..\xbmc\utils\RssReader.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ScraperParser.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ScraperUrl.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\SeekHandler.cpp" />
     <ClCompile Include="..\..\xbmc\utils\SortUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Splash.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ssrc.cpp" />
@@ -1906,6 +1907,7 @@
     <ClInclude Include="..\..\xbmc\utils\SaveFileStateJob.h" />
     <ClInclude Include="..\..\xbmc\utils\ScraperParser.h" />
     <ClInclude Include="..\..\xbmc\utils\ScraperUrl.h" />
+    <ClInclude Include="..\..\xbmc\utils\SeekHandler.h" />
     <ClInclude Include="..\..\xbmc\utils\SortUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\Splash.h" />
     <ClInclude Include="..\..\xbmc\utils\ssrc.h" />

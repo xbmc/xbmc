@@ -258,6 +258,7 @@
 		43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
 		7C0A7EC013A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */; };
 		7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
+		7C1A492315A962EE004AF4A4 /* SeekHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */; };
 		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
 		7C1D682915A7D2FD00658B65 /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */; };
 		7C1F6EBB13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1F6EB913ECCFA7001726AB /* LibraryDirectory.cpp */; };
@@ -1533,6 +1534,8 @@
 		7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEDeviceInfo.cpp; sourceTree = "<group>"; };
 		7C0B98A2154B79C30065A238 /* AEDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDeviceInfo.h; sourceTree = "<group>"; };
 		7C1A495B15A96918004AF4A4 /* SaveFileStateJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaveFileStateJob.h; sourceTree = "<group>"; };
+		7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SeekHandler.cpp; sourceTree = "<group>"; };
+		7C1A492215A962EE004AF4A4 /* SeekHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeekHandler.h; sourceTree = "<group>"; };
 		7C1A85631520522500C63311 /* TextureCacheJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCacheJob.cpp; sourceTree = "<group>"; };
 		7C1A85641520522500C63311 /* TextureCacheJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCacheJob.h; sourceTree = "<group>"; };
 		7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseManager.cpp; sourceTree = "<group>"; };
@@ -5898,6 +5901,8 @@
 				E38E1E780D25F9FD00618676 /* ScraperParser.h */,
 				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
 				7CAA25381085971C0096DE39 /* ScraperUrl.h */,
+				7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */,
+				7C1A492215A962EE004AF4A4 /* SeekHandler.h */,
 				36A9443F15821E7C00727135 /* SortUtils.cpp */,
 				36A9444015821E7C00727135 /* SortUtils.h */,
 				E38E1E7F0D25F9FD00618676 /* Splash.cpp */,
@@ -7325,6 +7330,7 @@
 				1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */,
 				36A9464C15AA25FD00727135 /* DirectoryNodeTags.cpp in Sources */,
 				7C1D682915A7D2FD00658B65 /* DatabaseManager.cpp in Sources */,
+				7C1A492315A962EE004AF4A4 /* SeekHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
