@@ -72,6 +72,7 @@
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "xbmc/playlists/PlayListM3U.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "LangInfo.h"
@@ -542,6 +543,18 @@ bool CDVDPlayer::OpenInputStream()
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
 retry:
+  // before creating the input stream, if this is an HLS playlist then get the
+  // most appropriate bitrate based on our network settings
+  if (filename.Left(7) == "http://" && filename.Right(5) == ".m3u8")
+  {
+    // get the available bandwidth (as per user settings)
+    int maxrate = g_guiSettings.GetInt("network.bandwidth");
+    if(maxrate <= 0)
+      maxrate = INT_MAX;
+
+    // determine the most appropriate stream
+    m_filename = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(m_filename, (size_t)maxrate);
+  }
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype);
   if(m_pInputStream == NULL)
   {
