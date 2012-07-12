@@ -2069,7 +2069,9 @@ OUTPUT_FILES="Makefile \
     tools/TexturePacker/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
     xbmc/peripherals/bus/Makefile \
-    xbmc/peripherals/devices/Makefile"
+    xbmc/peripherals/devices/Makefile \
+    xbmc/android/activity/Makefile \
+    xbmc/android/loader/Makefile"
 
 if test "$use_skin_touched" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.touched/media/Makefile"
