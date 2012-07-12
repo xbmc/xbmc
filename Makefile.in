@@ -385,7 +385,7 @@ libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS)
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
