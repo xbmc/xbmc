@@ -911,11 +911,16 @@ else
   esac
   case $host_os in
     freebsd*) ;;
-    *) AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library)) ;;
+    *)
+     if test "$target_platform" != "target_android" ; then
+        AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
+     fi
+  ;;
   esac
+if test "$target_platform" != "target_android" ; then
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
-
+fi
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"; use_alsa=yes],
     AC_MSG_NOTICE($alsa_not_found); use_alsa=no)
