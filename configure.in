@@ -493,6 +493,13 @@ MAKE="${MAKE:-make}"
 
 # host detection and setup
 case $host in
+  i*86*-android-linux-gnu*)
+     target_platform=target_android
+     ARCH="i486-linux"
+     use_arch="x86"
+     use_cpu="i686"
+     ffmpeg_target_os=linux
+     ;;
   i*86*-linux-gnu*)
      ARCH="i486-linux"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
@@ -571,10 +578,27 @@ case $host in
      use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
+  arm*-*linux-android*)
+     target_platform=target_android
+     use_arch="arm"
+     use_cpu=cortex-a9
+     ARCH="arm"
+     ffmpeg_target_os=linux
+     ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
 esac
 AC_SUBST([ARCH])
+
+if test "$target_platform" = "target_android" ; then
+  USE_ANDROID=1
+  use_texturepacker_native=yes
+  webserver_checkdepends=yes
+  AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID")
+  CFLAGS="$CFLAGS -Wno-psabi"
+  CXXFLAGS="$CXXFLAGS -Wno-psabi"
+  AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
+fi
 
 if test "$build_shared_lib" = "yes"; then
   final_message="$final_message\n Shared lib\tYes"
@@ -2134,6 +2158,7 @@ AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_MYSQL)
 AC_SUBST(USE_WEB_SERVER)
+AC_SUBST(USE_ANDROID)
 
 
 # pushd and popd are not available in other shells besides bash, so implement
