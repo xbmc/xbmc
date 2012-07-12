@@ -126,6 +126,7 @@ endif
 BIN_DIRS = $(dir $(DIRECTORY_ARCHIVES)) $(dir $(NWAOBJSXBMC))
 
 ifeq (@USE_ANDROID@,1)
+DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
 endif
