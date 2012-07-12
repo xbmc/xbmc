@@ -2176,11 +2176,6 @@ CUPnP::StartClient()
     // create controlpoint, pass NULL to avoid sending a multicast search
     m_CtrlPointHolder->m_CtrlPoint = new PLT_CtrlPoint(broadcast?NULL:"upnp:rootdevice");
 
-    // ignore our own server
-    if (!m_ServerHolder->m_Device.IsNull()) {
-        m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_ServerHolder->m_Device->GetUUID());
-    }
-
     // start it
     m_UPnP->AddCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
 
@@ -2248,22 +2243,12 @@ CUPnP::StartServer()
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
     m_ServerHolder->m_Device = CreateServer(g_settings.m_UPnPPortServer);
 
-    // tell controller to ignore ourselves from list of upnp servers
-    if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
-        m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_ServerHolder->m_Device->GetUUID());
-    }
-
     // start server
     NPT_Result res = m_UPnP->AddDevice(m_ServerHolder->m_Device);
     if (NPT_FAILED(res)) {
         // if the upnp device port was not 0, it could have failed because
         // of port being in used, so restart with a random port
         if (g_settings.m_UPnPPortServer > 0) m_ServerHolder->m_Device = CreateServer(0);
-
-        // tell controller to ignore ourselves from list of upnp servers
-        if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
-            m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_ServerHolder->m_Device->GetUUID());
-        }
 
         res = m_UPnP->AddDevice(m_ServerHolder->m_Device);
     }
@@ -2337,21 +2322,11 @@ void CUPnP::StartRenderer()
 
     m_RendererHolder->m_Device = CreateRenderer(g_settings.m_UPnPPortRenderer);
 
-    // tell controller to ignore ourselves from list of upnp servers
-    if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
-        m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_RendererHolder->m_Device->GetUUID());
-    }
-
     NPT_Result res = m_UPnP->AddDevice(m_RendererHolder->m_Device);
 
     // failed most likely because port is in use, try again with random port now
     if (NPT_FAILED(res) && g_settings.m_UPnPPortRenderer != 0) {
         m_RendererHolder->m_Device = CreateRenderer(0);
-
-        // tell controller to ignore ourselves from list of upnp servers
-        if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
-            m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_RendererHolder->m_Device->GetUUID());
-        }
 
         res = m_UPnP->AddDevice(m_RendererHolder->m_Device);
     }
