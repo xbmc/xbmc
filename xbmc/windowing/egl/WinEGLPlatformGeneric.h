@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
@@ -19,9 +20,6 @@
  *
  */
 
-#ifndef WINDOW_BINDING_EGL_H
-#define WINDOW_BINDING_EGL_H
-
 #include "utils/StringUtils.h"
 
 #include <EGL/egl.h>
@@ -29,26 +27,36 @@
 #include <EGL/eglext.h>
 #endif
 
-class CWinBindingEGL
+class CWinEGLPlatformGeneric
 {
 public:
-  CWinBindingEGL();
-  ~CWinBindingEGL();
+  CWinEGLPlatformGeneric();
+  virtual ~CWinEGLPlatformGeneric();
 
-  bool  CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeWindowType nativeWindow);
-  bool  DestroyWindow();
-  bool  ReleaseSurface();
-  void  SwapBuffers();
-  bool  SetVSync(bool enable);
-  bool  IsExtSupported(const char* extension);
+  virtual EGLNativeWindowType InitWindowSystem(EGLNativeDisplayType nativeDisplay, int width, int height, int bpp);
+  virtual void DestroyWindowSystem(EGLNativeWindowType native_window);
+  virtual bool SetDisplayResolution(int width, int height, float refresh, bool interlace);
+  virtual bool ClampToGUIDisplayLimits(int &width, int &height);
+  virtual bool ProbeDisplayResolutions(std::vector<CStdString> &resolutions);
+  
+  virtual bool InitializeDisplay();
+  virtual bool UninitializeDisplay();
+  virtual bool CreateWindow();
+  virtual bool DestroyWindow();
+  virtual bool BindSurface();
+  virtual bool ReleaseSurface();
+  
+  virtual bool ShowWindow(bool show);
+  virtual void SwapBuffers();
+  virtual bool SetVSync(bool enable);
+  virtual bool IsExtSupported(const char* extension);
 
-  EGLNativeWindowType   GetNativeWindow();
-  EGLNativeDisplayType  GetNativeDisplay();
-  EGLDisplay            GetDisplay();
-  EGLSurface            GetSurface();
-  EGLContext            GetContext();
+  virtual EGLDisplay GetEGLDisplay();
+  virtual EGLContext GetEGLContext();
 
 protected:
+  virtual EGLNativeWindowType getNativeWindow();
+
   EGLNativeWindowType   m_nativeWindow;
   EGLNativeDisplayType  m_nativeDisplay;
   EGLDisplay            m_display;
@@ -56,7 +64,6 @@ protected:
   EGLConfig             m_config;
   EGLContext            m_context;
   CStdString            m_eglext;
+  int                   m_width;
+  int                   m_height;
 };
-
-#endif // WINDOW_BINDING_EGL_H
-
