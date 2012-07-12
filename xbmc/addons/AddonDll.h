@@ -417,7 +417,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
         {
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
         }
-        else if (strcmpi(type, "enum") == 0)
+        else if ((strcmpi(type, "enum") == 0 || strcmpi(type,"integer") == 0))
         {
           int tmp = atoi(GetSetting(id));
           status = m_pDll->SetSetting(id, (int*) &tmp);
