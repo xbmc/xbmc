@@ -24,12 +24,13 @@
 namespace MUSIC_INFO
 {
 
-class CID3Tag : public CTag
+class CID3Tag
 {
 public:
   CID3Tag(void);
   virtual ~CID3Tag(void);
   virtual bool Write(const CStdString& strFile);
+  void SetMusicInfoTag(CMusicInfoTag& tag) { m_musicInfoTag=tag; }
 
 protected:
   void SetArtist(const CStdString& strValue);
@@ -49,7 +50,7 @@ protected:
   id3_ucs4_t* StringCharsetToUcs4(const CStdString& str) const;
 
   mutable DllLibID3Tag m_dll;
-
+  CMusicInfoTag m_musicInfoTag;
   id3_tag* m_tag;
 };
 }
