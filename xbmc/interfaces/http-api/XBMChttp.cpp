@@ -1033,7 +1033,6 @@ int CXbmcHttp::xbmcAddToPlayListFromDB(int numParas, CStdString paras[])
   if (type.Equals("songs"))
   {
     playList = PLAYLIST_MUSIC;
-    where = " where " + where;
 
     CMusicDatabase musicdatabase;
     if (!musicdatabase.Open())

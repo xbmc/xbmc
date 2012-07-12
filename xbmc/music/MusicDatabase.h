@@ -156,13 +156,13 @@ public:
   bool GetAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, int year);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year);
-  bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
-  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items, const SortDescription &sortDescription = SortDescription());
-  bool GetArtistsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
-  bool GetRandomSong(CFileItem* item, int& idSong, const CStdString& strWhere);
+  bool GetSongsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
+  bool GetAlbumsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription());
+  bool GetArtistsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items);
+  bool GetRandomSong(CFileItem* item, int& idSong, const Filter &filter);
   int GetKaraokeSongsCount();
-  int GetSongsCount(const CStdString& strWhere = "");
-  unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
+  int GetSongsCount(const Filter &filter = Filter());
+  unsigned int GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs);
 
   bool GetAlbumPath(int idAlbum, CStdString &path);
   bool SaveAlbumThumb(int idAlbum, const CStdString &thumb);
