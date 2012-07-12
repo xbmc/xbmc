@@ -451,7 +451,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    map <CStdString, CAlbumCache>::const_iterator it;
+    map <CStdString, CAlbum>::const_iterator it;
 
     it = m_albumCache.find(strAlbum + strArtist);
     if (it != m_albumCache.end())
@@ -467,22 +467,22 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
       strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strGenres, iYear, bCompilation) values( NULL, '%s', '%s', '%s', %i, %i)", strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), year, bCompilation);
       m_pDS->exec(strSQL.c_str());
 
-      CAlbumCache album;
+      CAlbum album;
       album.idAlbum = (int)m_pDS->lastinsertid();
       album.strAlbum = strAlbum;
       album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
-      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + strArtist, album));
+      m_albumCache.insert(pair<CStdString, CAlbum>(album.strAlbum + strArtist, album));
       return album.idAlbum;
     }
     else
     {
       // exists in our database and not scanned during this scan, so we should update it as the details
       // may have changed (there's a reason we're rescanning, afterall!)
-      CAlbumCache album;
+      CAlbum album;
       album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
       album.strAlbum = strAlbum;
       album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
-      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + strArtist, album));
+      m_albumCache.insert(pair<CStdString, CAlbum>(album.strAlbum + strArtist, album));
       m_pDS->close();
       strSQL=PrepareSQL("update album set strGenres='%s', iYear=%i where idAlbum=%i", strGenre.c_str(), year, album.idAlbum);
       m_pDS->exec(strSQL.c_str());
@@ -2353,10 +2353,10 @@ void CMusicDatabase::DeleteAlbumInfo()
     m_pDS->close();
     CGUIDialogOK::ShowAndGetInput(313, 425, 0, 0);
   }
-  vector<CAlbumCache> vecAlbums;
+  vector<CAlbum> vecAlbums;
   while (!m_pDS->eof())
   {
-    CAlbumCache album;
+    CAlbum album;
     album.idAlbum = m_pDS->fv("album.idAlbum").get_asInt() ;
     album.strAlbum = m_pDS->fv("album.strAlbum").get_asString();
     album.artist = StringUtils::Split(m_pDS->fv("album.strArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
@@ -2373,7 +2373,7 @@ void CMusicDatabase::DeleteAlbumInfo()
     pDlg->Reset();
     for (int i = 0; i < (int)vecAlbums.size(); ++i)
     {
-      CMusicDatabase::CAlbumCache& album = vecAlbums[i];
+      CAlbum& album = vecAlbums[i];
       pDlg->Add(album.strAlbum + " - " + StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
     }
     pDlg->DoModal();
@@ -2386,7 +2386,7 @@ void CMusicDatabase::DeleteAlbumInfo()
       return ;
     }
 
-    CAlbumCache& album = vecAlbums[iSelectedAlbum];
+    CAlbum& album = vecAlbums[iSelectedAlbum];
     strSQL=PrepareSQL("delete from albuminfo where albuminfo.idAlbum=%i", album.idAlbum);
     if (!m_pDS->exec(strSQL.c_str())) return ;
 

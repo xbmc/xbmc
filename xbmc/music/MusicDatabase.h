@@ -88,33 +88,6 @@ class CMusicDatabase : public CDatabase
 {
   friend class DatabaseUtils;
 
-  class CArtistCache
-  {
-  public:
-    int idArtist;
-    CStdString strArtist;
-  };
-
-  class CPathCache
-  {
-  public:
-    int idPath;
-    CStdString strPath;
-  };
-
-  class CGenreCache
-  {
-  public:
-    int idGenre;
-    CStdString strGenre;
-  };
-
-  class CAlbumCache : public CAlbum
-  {
-  public:
-    int idAlbum;
-  };
-
 public:
   CMusicDatabase(void);
   virtual ~CMusicDatabase(void);
@@ -292,11 +265,11 @@ public:
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
 
 protected:
-  std::map<CStdString, int /*CArtistCache*/> m_artistCache;
-  std::map<CStdString, int /*CGenreCache*/> m_genreCache;
-  std::map<CStdString, int /*CPathCache*/> m_pathCache;
-  std::map<CStdString, int /*CPathCache*/> m_thumbCache;
-  std::map<CStdString, CAlbumCache> m_albumCache;
+  std::map<CStdString, int> m_artistCache;
+  std::map<CStdString, int> m_genreCache;
+  std::map<CStdString, int> m_pathCache;
+  std::map<CStdString, int> m_thumbCache;
+  std::map<CStdString, CAlbum> m_albumCache;
 
   virtual bool CreateTables();
   virtual int GetMinVersion() const { return 27; };
