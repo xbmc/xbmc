@@ -112,7 +112,10 @@ IF %comp%==vs2010 (
   ECHO Compiling XBMC...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2010express\XBMC\%buildconfig%\BuildLog.htm for details."
+  	set DIETEXT="XBMC.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+	IF %promptlevel%==noprompt (
+		type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+	)
   	goto DIE
   )
   ECHO Done!
@@ -126,7 +129,10 @@ IF %comp%==vs2010 (
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2010express\XBMC\%buildconfig%\BuildLog\BuildLog.htm for details."
+  	set DIETEXT="XBMC.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+	IF %promptlevel%==noprompt (
+		type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+	)
   	goto DIE
   )
   ECHO Done!
