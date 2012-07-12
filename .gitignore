@@ -27,6 +27,7 @@ config.log
 *.rej
 *.orig
 *.bak
+*.apk
 
 # Windows specific generated files
 *.exp
@@ -112,6 +113,11 @@ config.log
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
+
+# /xbmc/android
+/xbmc/android/Makefile
+/xbmc/android/activity/Makefile
+/xbmc/android/loader/Makefile
 
 # /xbmc/guilib/
 /xbmc/guilib/Makefile
@@ -1192,6 +1198,8 @@ lib/cmyth/Makefile
 
 /xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)
+
+xbmc/visualizations/EGLHelpers/Makefile
 
 /xbmc/visualizations/Goom/Makefile
 /xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
