@@ -752,7 +752,6 @@
 		E38E22A40D25F9FE00618676 /* PictureThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DDD0D25F9FD00618676 /* PictureThumbLoader.cpp */; };
 		E38E22AA0D25F9FE00618676 /* PlayListPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DE90D25F9FD00618676 /* PlayListPlayer.cpp */; };
 		E38E22AE0D25F9FE00618676 /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF10D25F9FD00618676 /* Profile.cpp */; };
-		E38E22AF0D25F9FE00618676 /* ProgramDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */; };
 		E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
 		E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		E38E22B70D25F9FE00618676 /* Shortcut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E070D25F9FD00618676 /* Shortcut.cpp */; };
@@ -2666,8 +2665,6 @@
 		E38E1DEA0D25F9FD00618676 /* PlayListPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListPlayer.h; sourceTree = "<group>"; };
 		E38E1DF10D25F9FD00618676 /* Profile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Profile.cpp; sourceTree = "<group>"; };
 		E38E1DF20D25F9FD00618676 /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
-		E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProgramDatabase.cpp; sourceTree = "<group>"; };
-		E38E1DF40D25F9FD00618676 /* ProgramDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgramDatabase.h; sourceTree = "<group>"; };
 		E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SectionLoader.cpp; sourceTree = "<group>"; };
 		E38E1DFF0D25F9FD00618676 /* SectionLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionLoader.h; sourceTree = "<group>"; };
 		E38E1E010D25F9FD00618676 /* VideoSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoSettings.cpp; sourceTree = "<group>"; };
@@ -3667,8 +3664,6 @@
 				8863281A0E07B37200BB3DAB /* GUIViewStatePrograms.h */,
 				E38E18230D25F9FA00618676 /* GUIWindowPrograms.cpp */,
 				E38E18240D25F9FA00618676 /* GUIWindowPrograms.h */,
-				E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */,
-				E38E1DF40D25F9FD00618676 /* ProgramDatabase.h */,
 			);
 			path = programs;
 			sourceTree = "<group>";
@@ -6711,7 +6706,6 @@
 				E38E22A40D25F9FE00618676 /* PictureThumbLoader.cpp in Sources */,
 				E38E22AA0D25F9FE00618676 /* PlayListPlayer.cpp in Sources */,
 				E38E22AE0D25F9FE00618676 /* Profile.cpp in Sources */,
-				E38E22AF0D25F9FE00618676 /* ProgramDatabase.cpp in Sources */,
 				E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */,
 				E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */,
 				E38E22B70D25F9FE00618676 /* Shortcut.cpp in Sources */,

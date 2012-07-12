@@ -694,7 +694,6 @@
 		F56C7AEC131EC155000AD0F6 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76B2131EC153000AD0F6 /* PowerManager.cpp */; };
 		F56C7AED131EC155000AD0F6 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76B5131EC153000AD0F6 /* GUIViewStatePrograms.cpp */; };
 		F56C7AEE131EC155000AD0F6 /* GUIWindowPrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76B7131EC153000AD0F6 /* GUIWindowPrograms.cpp */; };
-		F56C7AEF131EC155000AD0F6 /* ProgramDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76B9131EC153000AD0F6 /* ProgramDatabase.cpp */; };
 		F56C7AF3131EC155000AD0F6 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76C3131EC153000AD0F6 /* RenderSystem.cpp */; };
 		F56C7AF4131EC155000AD0F6 /* GUIDialogContentSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76C7131EC153000AD0F6 /* GUIDialogContentSettings.cpp */; };
 		F56C7AF5131EC155000AD0F6 /* GUIDialogLockSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76C9131EC153000AD0F6 /* GUIDialogLockSettings.cpp */; };
@@ -2478,8 +2477,6 @@
 		F56C76B6131EC153000AD0F6 /* GUIViewStatePrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStatePrograms.h; sourceTree = "<group>"; };
 		F56C76B7131EC153000AD0F6 /* GUIWindowPrograms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPrograms.cpp; sourceTree = "<group>"; };
 		F56C76B8131EC153000AD0F6 /* GUIWindowPrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPrograms.h; sourceTree = "<group>"; };
-		F56C76B9131EC153000AD0F6 /* ProgramDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProgramDatabase.cpp; sourceTree = "<group>"; };
-		F56C76BA131EC153000AD0F6 /* ProgramDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgramDatabase.h; sourceTree = "<group>"; };
 		F56C76C3131EC153000AD0F6 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
 		F56C76C4131EC153000AD0F6 /* RenderSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystem.h; sourceTree = "<group>"; };
 		F56C76C7131EC153000AD0F6 /* GUIDialogContentSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogContentSettings.cpp; sourceTree = "<group>"; };
@@ -5240,8 +5237,6 @@
 				F56C76B6131EC153000AD0F6 /* GUIViewStatePrograms.h */,
 				F56C76B7131EC153000AD0F6 /* GUIWindowPrograms.cpp */,
 				F56C76B8131EC153000AD0F6 /* GUIWindowPrograms.h */,
-				F56C76B9131EC153000AD0F6 /* ProgramDatabase.cpp */,
-				F56C76BA131EC153000AD0F6 /* ProgramDatabase.h */,
 			);
 			path = programs;
 			sourceTree = "<group>";
@@ -6851,7 +6846,6 @@
 				F56C7AEC131EC155000AD0F6 /* PowerManager.cpp in Sources */,
 				F56C7AED131EC155000AD0F6 /* GUIViewStatePrograms.cpp in Sources */,
 				F56C7AEE131EC155000AD0F6 /* GUIWindowPrograms.cpp in Sources */,
-				F56C7AEF131EC155000AD0F6 /* ProgramDatabase.cpp in Sources */,
 				F56C7AF3131EC155000AD0F6 /* RenderSystem.cpp in Sources */,
 				F56C7AF4131EC155000AD0F6 /* GUIDialogContentSettings.cpp in Sources */,
 				F56C7AF5131EC155000AD0F6 /* GUIDialogLockSettings.cpp in Sources */,

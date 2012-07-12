@@ -67,7 +67,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
     {
       if (m_thumbLoader.IsLoading())
         m_thumbLoader.StopThread();
-      m_database.Close();
     }
     break;
 
@@ -79,8 +78,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       // is this the first time accessing this window?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
         message.SetStringParam(g_settings.m_defaultProgramSource);
-
-      m_database.Open();
 
       return CGUIMediaWindow::OnMessage(message);
     }

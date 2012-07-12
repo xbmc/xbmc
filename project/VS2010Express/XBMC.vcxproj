@@ -853,7 +853,6 @@
     <ClCompile Include="..\..\xbmc\powermanagement\windows\Win32PowerSyscall.cpp" />
     <ClCompile Include="..\..\xbmc\programs\GUIViewStatePrograms.cpp" />
     <ClCompile Include="..\..\xbmc\programs\GUIWindowPrograms.cpp" />
-    <ClCompile Include="..\..\xbmc\programs\ProgramDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\rendering\dx\GUIWindowTestPatternDX.cpp" />
     <ClCompile Include="..\..\xbmc\rendering\dx\RenderSystemDX.cpp" />
     <ClCompile Include="..\..\xbmc\rendering\gl\GUIWindowTestPatternGL.cpp">
@@ -1806,7 +1805,6 @@
     <ClInclude Include="..\..\xbmc\powermanagement\windows\Win32PowerSyscall.h" />
     <ClInclude Include="..\..\xbmc\programs\GUIViewStatePrograms.h" />
     <ClInclude Include="..\..\xbmc\programs\GUIWindowPrograms.h" />
-    <ClInclude Include="..\..\xbmc\programs\ProgramDatabase.h" />
     <ClInclude Include="..\..\xbmc\rendering\dx\GUIWindowTestPatternDX.h" />
     <ClInclude Include="..\..\xbmc\rendering\dx\RenderSystemDX.h" />
     <ClInclude Include="..\..\xbmc\rendering\gl\GUIWindowTestPatternGL.h">

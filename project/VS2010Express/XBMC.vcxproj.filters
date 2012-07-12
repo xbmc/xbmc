@@ -2505,9 +2505,6 @@
     <ClCompile Include="..\..\xbmc\music\MusicDatabase.cpp">
       <Filter>music</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\programs\ProgramDatabase.cpp">
-      <Filter>programs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp">
       <Filter>video</Filter>
     </ClCompile>
@@ -5129,9 +5126,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\MusicDatabase.h">
       <Filter>music</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\programs\ProgramDatabase.h">
-      <Filter>programs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\VideoDatabase.h">
       <Filter>video</Filter>

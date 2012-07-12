@@ -22,7 +22,6 @@
  */
 
 #include "windows/GUIMediaWindow.h"
-#include "ProgramDatabase.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "ThumbLoader.h"
 
@@ -46,8 +45,6 @@ protected:
   int GetRegion(int iItem, bool bReload=false);
 
   CGUIDialogProgress* m_dlgProgress;
-
-  CProgramDatabase m_database;
 
   int m_iRegionSet; // for cd stuff
 

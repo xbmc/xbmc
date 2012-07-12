@@ -24,7 +24,6 @@
 #include "addons/AddonDatabase.h"
 #include "ViewDatabase.h"
 #include "TextureDatabase.h"
-#include "programs/ProgramDatabase.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
 #include "settings/AdvancedSettings.h"
@@ -54,7 +53,6 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   CLog::Log(LOGDEBUG, "%s, updating databases...", __FUNCTION__);
   { CViewDatabase db; UpdateDatabase(db); }
   { CTextureDatabase db; UpdateDatabase(db); }
-  { CProgramDatabase db; UpdateDatabase(db); }
   { CMusicDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseMusic); }
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
