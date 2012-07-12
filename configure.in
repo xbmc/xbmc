@@ -798,6 +798,7 @@ AC_CHECK_HEADER([openssl/crypto.h], AC_DEFINE([HAVE_OPENSSL],[1],[Define if we h
 AC_CHECK_HEADER([gcrypt.h], gcrypt_headers_available=yes,gcrypt_headers_available=no)
 if test "$gcrypt_headers_available" = "yes"; then
    # if we have the headers then we must have the lib
+   AC_CHECK_LIB([gpg-error],[main],, AC_MSG_ERROR($missing_library))
    AC_CHECK_LIB([gcrypt],[gcry_control],, AC_MSG_ERROR($missing_library))
    AC_DEFINE([HAVE_GCRYPT],[1],[Define if we have gcrypt])
 fi
