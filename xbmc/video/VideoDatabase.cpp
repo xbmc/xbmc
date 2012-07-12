@@ -5363,7 +5363,8 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
 
     int total = -1;
 
-    CStdString strSQL;
+    CStdString strSQL = "select %s from movieview ";
+    CStdString strSQLExtra;
     CFileItemList setItems;
     if (fetchSets && g_guiSettings.GetBool("videolibrary.groupmoviesets"))
     {
@@ -5388,38 +5389,38 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
         movieSetsWhere += "))";
       }
       if (!filter.join.empty())
-        strSQL += filter.join;
+        strSQLExtra += filter.join;
       if (!filter.where.empty())
       {
-        strSQL += " WHERE (" + filter.where + ")";
+        strSQLExtra += " WHERE (" + filter.where + ")";
         if (!movieSetsWhere.empty())
-          strSQL += " AND " + movieSetsWhere;
+          strSQLExtra += " AND " + movieSetsWhere;
       }
       else if (!movieSetsWhere.empty())
-        strSQL += " WHERE " + movieSetsWhere;
+        strSQLExtra += " WHERE " + movieSetsWhere;
     }
     else
     {
       if (!filter.join.empty())
-        strSQL += filter.join;
+        strSQLExtra += filter.join;
       if (!filter.where.empty())
-        strSQL += " WHERE " + filter.where;
+        strSQLExtra += " WHERE " + filter.where;
     }
 
     if (!filter.group.empty())
-      strSQL += " GROUP BY " + filter.group;
+      strSQLExtra += " GROUP BY " + filter.group;
     if (filter.order.size())
-      strSQL += " ORDER BY " + filter.order;
+      strSQLExtra += " ORDER BY " + filter.order;
     if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+      strSQLExtra += " LIMIT " + filter.limit;
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
-      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    strSQL = PrepareSQL("select %s from movieview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0 && setItems.Size() == 0)
@@ -5525,26 +5526,27 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
 
     int total = -1;
 
-    CStdString strSQL;
+    CStdString strSQL = "SELECT %s FROM tvshowview ";
+    CStdString strSQLExtra;
     if (!filter.join.empty())
-      strSQL += filter.join;
+      strSQLExtra += filter.join;
     if (!filter.where.empty())
-      strSQL += " WHERE " + filter.where;
+      strSQLExtra += " WHERE " + filter.where;
     if (!filter.group.empty())
-      strSQL += " GROUP BY " + filter.group;
+      strSQLExtra += " GROUP BY " + filter.group;
     if (!filter.order.empty())
-      strSQL += " ORDER BY " + filter.order;
+      strSQLExtra += " ORDER BY " + filter.order;
     if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+      strSQLExtra += " LIMIT " + filter.limit;
     // Apply the limiting directly here if there's no special sorting but limiting
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
-      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    strSQL = PrepareSQL("SELECT %s FROM tvshowview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
@@ -5850,26 +5852,27 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
 
     int total = -1;
 
-    CStdString strSQL;
+    CStdString strSQL = "select %s from episodeview ";
+    CStdString strSQLExtra;
     if (!filter.join.empty())
-      strSQL += filter.join;
+      strSQLExtra += filter.join;
     if (!filter.where.empty())
-      strSQL += " WHERE " + filter.where;
+      strSQLExtra += " WHERE " + filter.where;
     if (!filter.group.empty())
-      strSQL += " GROUP BY " + filter.group;
+      strSQLExtra += " GROUP BY " + filter.group;
     if (!filter.order.empty())
-      strSQL += " ORDER BY " + filter.order;
+      strSQLExtra += " ORDER BY " + filter.order;
     if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+      strSQLExtra += " LIMIT " + filter.limit;
     // Apply the limiting directly here if there's no special sorting but limiting
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
-      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    strSQL = PrepareSQL("select %s from episodeview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
@@ -6714,26 +6717,27 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
 
     int total = -1;
 
-    CStdString strSQL;
+    CStdString strSQL = "select %s from musicvideoview ";
+    CStdString strSQLExtra;
     if (!filter.join.empty())
-      strSQL += filter.join;
+      strSQLExtra += filter.join;
     if (!filter.where.empty())
-      strSQL += " WHERE " + filter.where;
+      strSQLExtra += " WHERE " + filter.where;
     if (!filter.group.empty())
-      strSQL += PrepareSQL(" GROUP BY " + filter.group);
+      strSQLExtra += PrepareSQL(" GROUP BY " + filter.group);
     if (!filter.order.empty())
-      strSQL += " ORDER BY " + filter.order;
+      strSQLExtra += " ORDER BY " + filter.order;
     if (!filter.limit.empty())
-      strSQL += PrepareSQL(" LIMIT " + filter.limit);
+      strSQLExtra += PrepareSQL(" LIMIT " + filter.limit);
     // Apply the limiting directly here if there's no special sorting but limiting
     else if (sortDescription.sortBy == SortByNone &&
             (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL.c_str(), "COUNT(1)"), m_pDS).c_str(), NULL, 10);
-      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    strSQL = PrepareSQL("select %s from musicvideoview ", !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQL;
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
