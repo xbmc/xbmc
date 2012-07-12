@@ -2334,6 +2334,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-gpl \
       `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
       `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
+      `if test "$use_optimizations" != "no"; then echo --enable-optimizations; else echo --disable-optimizations; fi` \
       --enable-protocol=http \
       --enable-pthreads \
       --enable-runtime-cpudetect \
