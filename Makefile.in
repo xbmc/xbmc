@@ -212,6 +212,9 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
 
 ifeq (@USE_LIBXBMC@,1)
 FINAL_TARGETS+=libxbmc.so
+ifeq (@USE_ANDROID@,1)
+FINAL_TARGETS+=skins
+endif
 else
 FINAL_TARGETS=xbmc.bin skins xbmc-xrandr
 endif
