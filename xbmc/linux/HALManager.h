@@ -143,7 +143,9 @@ private:
   static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
   static CCriticalSection m_lock;
 
+#if defined(HAS_SDL_JOYSTICK)
   bool m_bMultipleJoysticksSupport;
+#endif
 
   //Callbacks HAL
   static void DeviceRemoved(LibHalContext *ctx, const char *udi);
