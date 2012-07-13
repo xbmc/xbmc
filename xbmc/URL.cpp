@@ -707,6 +707,20 @@ void CURL::Encode(CStdString& strURLData)
   strURLData = strResult;
 }
 
+std::string CURL::Decode(const std::string& strURLData)
+{
+  CStdString url = strURLData;
+  Decode(url);
+  return url;
+}
+
+std::string CURL::Encode(const std::string& strURLData)
+{
+  CStdString url = strURLData;
+  Encode(url);
+  return url;
+}
+
 CStdString CURL::TranslateProtocol(const CStdString& prot)
 {
   if (prot == "shout"
