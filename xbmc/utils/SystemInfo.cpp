@@ -547,11 +547,16 @@ CStdString CSysInfo::GetLinuxDistro()
 #ifdef _LINUX
 CStdString CSysInfo::GetUnameVersion()
 {
-#if defined(TARGET_ANDROID)
-  return "Android";
-#endif
   CStdString result = "";
 
+#if defined(TARGET_ANDROID)
+  struct utsname name;
+  if (uname(&name) == -1)
+    result = "Android";
+  result += name.release;
+  result += " ";
+  result += name.machine;
+#else
   FILE* pipe = popen("uname -rm", "r");
   if (pipe)
   {
@@ -569,6 +574,7 @@ CStdString CSysInfo::GetUnameVersion()
       CLog::Log(LOGWARNING, "Unable to determine Uname version");
     pclose(pipe);
   }
+#endif//else !TARGET_ANDROID
 
   return result.Trim();
 }
