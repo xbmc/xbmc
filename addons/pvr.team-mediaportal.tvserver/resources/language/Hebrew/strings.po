@@ -1,0 +1,193 @@
+# XBMC Media Center language file
+# Addon Name: MediaPortal PVR addon
+# Addon id: pvr.team-mediaportal.tvserver
+# Addon version: 1.2.3.114
+# Addon Provider: Marcel Groothuis
+# Translators:
+#   <zivads@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC MediaPortal pvr addon\n"
+"Report-Msgid-Bugs-To: margro.xbmc@gmail.com\n"
+"POT-Creation-Date: 2012-06-03 16:35+0000\n"
+"PO-Revision-Date: 2012-07-12 18:50+0000\n"
+"Last-Translator: zivads <zivads@gmail.com>\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/mepopvraddon/language/he/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgctxt "Addon Summary"
+msgid ""
+"XBMC frontend for the MediaPortal TV Server (ffmpeg + tsreader version)"
+msgstr "ממשק XBMC עבור MediaPortal TV Server (גירסת ffmpeg + tsreader)"
+
+msgctxt "Addon Description"
+msgid ""
+"MediaPortal TV Server frontend. Supports streaming of Live TV &amp; "
+"Recordings, listening to Radio channels, EPG and Timers. This addon combines"
+" the former ffmpeg and tsreader addons."
+msgstr "ממשק MediaPortal TV Server. תומך בהזרמה של שידורי טלוויזיה לייב &amp;\nהקלטות, האזנה לערוצי רדיו, מדריך תוכניות ותזמוני הקלטות. התוסף משלב את מזרימי ffmpeg וtsreader שקדמו לו."
+
+msgctxt "Addon Disclaimer"
+msgid ""
+"This is unstable software! The authors are in no way responsible for failed "
+"recordings, incorrect timers, wasted hours, or any other undesirable "
+"effects."
+msgstr "זוהי תוכנה לא יציבה! הכותבים אינם אחראים בשום צורה על הקלטות שכשלו, תזמוני הקלטות לא נכונים, שעות שביזבזתם או כל השפעות בלתי רצויות אחרות."
+
+# Settings labels
+msgctxt "#30000"
+msgid "Mediaportal Hostname"
+msgstr "שם מחשב Mediaportal"
+
+msgctxt "#30001"
+msgid "Mediaportal XBMC plugin Port"
+msgstr "פורט לפלאגין XBMC בMediaportal"
+
+msgctxt "#30002"
+msgid "Free-to-air only"
+msgstr "ערוצים חופשיים Free-to-air בלבד"
+
+msgctxt "#30003"
+msgid "Include Radio"
+msgstr "כלול ערוצי רדיו"
+
+msgctxt "#30004"
+msgid "Fast channel switching (don't stop timeshift)"
+msgstr "העברה מהירה בין ערוצים (אל תעצור timeshift)"
+
+msgctxt "#30005"
+msgid "Connect timeout (s)"
+msgstr "זמן לניסיון חיבור (שניות)"
+
+msgctxt "#30006"
+msgid "Import only TV Channels from group"
+msgstr "ייבא ערוצי טלוויזיה רק מקבוצת"
+
+msgctxt "#30007"
+msgid "Import only Radio Channels from group"
+msgstr "ייבא ערוצי רדיו רק מקבוצת"
+
+msgctxt "#30008"
+msgid "Convert hostname to IP-adress"
+msgstr "הפוך שם מחשב לכתובת IP"
+
+msgctxt "#30009"
+msgid "EPG: Read genre strings (slow)"
+msgstr "מדריך התוכניות: קרא ז'אנרים של תוכניות (איטי)"
+
+msgctxt "#30010"
+msgid "Wait time after tuning a channel (ms)"
+msgstr "המתן אחרי מעבר ערוץ (מילישניות)"
+
+msgctxt "#30015"
+msgid "Streaming method"
+msgstr "שיטת הזרמה"
+
+msgctxt "#30016"
+msgid "Windows user account (SMB)"
+msgstr "חשבון משתמש של חלונות (SMB)"
+
+msgctxt "#30017"
+msgid "Windows password (SMB)"
+msgstr "סיסמה של חלונות (SMB)"
+
+msgctxt "#30018"
+msgid "Use RTSP streaming"
+msgstr "השתמש בהזרמת RTSP"
+
+# Category labels
+msgctxt "#30040"
+msgid "Connection"
+msgstr "חיבור"
+
+msgctxt "#30041"
+msgid "MediaPortal"
+msgstr "MediaPortal"
+
+msgctxt "#30042"
+msgid "Playback"
+msgstr "ניגון"
+
+# on-screen error messages
+msgctxt "#30050"
+msgid ""
+"Your TVServerXBMC version '%s' is too old. Please upgrade to '%s' or higher!"
+msgstr "גירסת '%s' של הפלאגין TVServerXBMC ישנה מדי. אנא עדכן ל'%s' או חדשה יותר!"
+
+msgctxt "#30051"
+msgid ""
+"Your TVServerXBMC version is too old. Please upgrade to '%s' or higher!"
+msgstr "גירסת הפלאגין TVServerXBMC ישנה מדי. אנא עדכן ל'%s' או חדשה יותר!"
+
+msgctxt "#30052"
+msgid "Recording playback failed. Empty URL of filename."
+msgstr "ניגון ההקלטה נכשלה. נקה את הURL או שם הקובץ."
+
+# Status message strings corresponding to the MediaPortal TvResult enum
+msgctxt "#30060"
+msgid "All cards are busy"
+msgstr "כל הכרטיסים עסוקים"
+
+msgctxt "#30061"
+msgid "Channel is scrambled"
+msgstr "הערוץ מעורבל/מוצפן"
+
+msgctxt "#30062"
+msgid "No video or audio detected"
+msgstr "לא זוהה וידאו או אודיו"
+
+msgctxt "#30063"
+msgid "No signal detected"
+msgstr "אין קליטה"
+
+msgctxt "#30064"
+msgid "Unknown error"
+msgstr "שגיאה לא ידועה"
+
+msgctxt "#30065"
+msgid "Unable to start graph"
+msgstr "אין אפשרות להתחיל את הגרף"
+
+msgctxt "#30066"
+msgid "Unknown channel"
+msgstr "ערוץ לא ידוע"
+
+msgctxt "#30067"
+msgid "No tuning details"
+msgstr "אין נתוני כוונון"
+
+msgctxt "#30068"
+msgid "Channel is not mapped to any card"
+msgstr "הערוץ לא ממופה לשום כרטיס"
+
+msgctxt "#30069"
+msgid "Card is disabled"
+msgstr "הכרטיס מנוטרל"
+
+msgctxt "#30070"
+msgid "Connection to slave failed"
+msgstr "התקשורת לslave נכשלה"
+
+msgctxt "#30071"
+msgid "Not the owner"
+msgstr "לא הבעלים"
+
+msgctxt "#30072"
+msgid "Graph building failed"
+msgstr "בניית גרף נכשלה"
+
+msgctxt "#30073"
+msgid "SW Encoder missing"
+msgstr "מקודד SW חסר"
+
+msgctxt "#30074"
+msgid "No free disk space"
+msgstr "אין מקום פנוי בדיסק הקשיח"
+
+msgctxt "#30075"
+msgid "No PMT found"
+msgstr "לא נמצא PMT"
