@@ -4650,13 +4650,45 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     g_infoManager.SetShowCodec(false);
     CStdString type = m_screenSaver->GetSetting("type");
     CStdString path = m_screenSaver->GetSetting("path");
-    if (type == "2" && path.IsEmpty())
-      type = "0";
+
+    CFileItemList items;
+
+    // video fanart slideshow
     if (type == "0")
-      path = "special://profile/Thumbnails/Video/Fanart";
+    {
+      CVideoDatabase db;
+      if (db.Open())
+        db.GetArtForType("fanart", items);
+    }
+
+    // music fanart slideshow
     if (type == "1")
-      path = "special://profile/Thumbnails/Music/Fanart";
-    m_applicationMessenger.PictureSlideShow(path, true, type != "2");
+    {
+      CMusicDatabase db;
+      if (db.Open())
+        db.GetArtForType("fanart", items);
+    }
+
+    // custom path-based picture slideshow
+    if (type == "2")
+    {
+      if (path.IsEmpty())
+      {
+        // fallback to video fanart
+        CVideoDatabase db;
+        if (db.Open())
+          db.GetArtForType("fanart", items);
+      }
+      else
+      {
+        // extensions mask - .tbn for backward compatibility
+        CStdString extensions = g_settings.m_pictureExtensions;
+        extensions += "|.tbn";
+        CUtil::GetRecursiveListing(path, items, extensions);
+      }
+    }
+
+    m_applicationMessenger.PictureSlideShow(items, true);
   }
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim")
     return;

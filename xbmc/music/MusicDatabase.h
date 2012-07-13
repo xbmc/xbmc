@@ -291,9 +291,17 @@ public:
    */
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
 
+  /*! \brief Get artwork list associated with the given artwork type
+   \param type type of image to associate
+   \param items the returned items
+   \return true if items are found, false otherwise.
+   */
+  bool GetArtForType(const std::string &mediaType, CFileItemList &items);
+
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
+
   std::map<CStdString, int /*CPathCache*/> m_pathCache;
   std::map<CStdString, int /*CPathCache*/> m_thumbCache;
   std::map<CStdString, CAlbumCache> m_albumCache;

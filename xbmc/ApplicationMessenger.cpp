@@ -420,17 +420,15 @@ case TMSG_POWERDOWN:
         g_graphicsContext.Lock();
         pSlideShow->Reset();
 
-        CFileItemList items;
-        CStdString strPath = pMsg->strParam;
-        CStdString extensions = g_settings.m_pictureExtensions;
-        if (pMsg->dwParam1)
-          extensions += "|.tbn";
-        CUtil::GetRecursiveListing(strPath, items, extensions);
+        CFileItemList *items = NULL;
 
-        if (items.Size() > 0)
+        if(pMsg->lpVoid)
+          items = (CFileItemList *)pMsg->lpVoid;
+
+        if (items->Size() > 0)
         {
-          for (int i=0;i<items.Size();++i)
-            pSlideShow->Add(items[i].get());
+          for (int i=0; i < items->Size(); ++i)
+            pSlideShow->Add((*items)[i].get());
           pSlideShow->StartSlideShow(pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER); //Start the slideshow!
         }
         if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER)
@@ -438,7 +436,7 @@ case TMSG_POWERDOWN:
 
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
         {
-          if(items.Size() == 0)
+          if(items->Size() == 0)
           {
             g_guiSettings.SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
             g_application.ActivateScreenSaver();
@@ -448,6 +446,7 @@ case TMSG_POWERDOWN:
         }
 
         g_graphicsContext.Unlock();
+        delete items;
       }
       break;
 
@@ -1016,14 +1015,15 @@ void CApplicationMessenger::PictureShow(string filename)
   SendMessage(tMsg);
 }
 
-void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver /* = false */, bool addTBN /* = false */)
+void CApplicationMessenger::PictureSlideShow(const CFileItemList &list, bool bScreensaver /* = false */)
 {
   DWORD dwMessage = TMSG_PICTURE_SLIDESHOW;
   if (bScreensaver)
     dwMessage = TMSG_SLIDESHOW_SCREENSAVER;
   ThreadMessage tMsg = {dwMessage};
-  tMsg.strParam = pathname;
-  tMsg.dwParam1 = addTBN ? 1 : 0;
+  CFileItemList* listcopy = new CFileItemList();
+  listcopy->Copy(list);
+  tMsg.lpVoid = (void*)listcopy;
   SendMessage(tMsg);
 }
 
