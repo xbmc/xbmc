@@ -112,10 +112,6 @@ DLNA_ORG_FLAGS_VAL = '01500000000000000000000000000000'
 |   static
 +---------------------------------------------------------------------*/
 CUPnP* CUPnP::upnp = NULL;
-// change to false for XBMC_PC if you want real UPnP functionality
-// otherwise keep to true for xbox as it doesn't support multicast
-// don't change unless you know what you're doing!
-bool CUPnP::broadcast = true;
 
 namespace
 {
@@ -2098,9 +2094,7 @@ CUPnP::CUPnP() :
     m_RendererHolder(new CRendererReferenceHolder()),
     m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
-    broadcast = false;
-
-    // initialize upnp in broadcast listening mode for xbmc
+    // initialize upnp context
     m_UPnP = new PLT_UPnP();
 
     // keep main IP around
@@ -2173,8 +2167,8 @@ CUPnP::StartClient()
 {
     if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) return;
 
-    // create controlpoint, pass NULL to avoid sending a multicast search
-    m_CtrlPointHolder->m_CtrlPoint = new PLT_CtrlPoint(broadcast?NULL:"upnp:rootdevice");
+    // create controlpoint
+    m_CtrlPointHolder->m_CtrlPoint = new PLT_CtrlPoint();
 
     // start it
     m_UPnP->AddCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
