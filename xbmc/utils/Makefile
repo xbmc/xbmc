@@ -58,6 +58,7 @@ SRCS=AlarmClock.cpp \
      TimeUtils.cpp \
      TuxBoxUtil.cpp \
      URIUtils.cpp \
+     UrlOptions.cpp \
      Variant.cpp \
      Weather.cpp \
      XBMCTinyXML.cpp \
