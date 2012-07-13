@@ -28,9 +28,8 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
-#ifndef M_PI
-#define M_PI 3.1415926535897932384626433832795028842
-#endif
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace std;
 
