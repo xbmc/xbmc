@@ -157,7 +157,7 @@ private:
 
   //Remembered Devices
   std::vector<CStorageDevice> m_Volumes;
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_SDL_JOYSTICK)
   std::vector<CHALDevice> m_Joysticks;
 #endif
 };
