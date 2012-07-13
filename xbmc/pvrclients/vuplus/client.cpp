@@ -51,6 +51,8 @@ bool        g_bCheckForGroupUpdates   = true;
 bool        g_bCheckForChannelUpdates = true;
 bool        g_bOnlyCurrentLocation    = false;
 bool        g_bSetPowerstate          = false;
+bool        g_bOnlyOneGroup           = false;
+std::string g_strOneGroup             = "";
 std::string g_szClientPath            = "";
 std::string g_strChannelDataPath      = "/tmp/";
 
@@ -120,6 +122,16 @@ void ADDON_ReadSettings(void)
   /* read setting "zap" from settings.xml */
   if (!XBMC->GetSetting("zap", &g_bZap))
     g_bZap = false;
+
+  /* read setting "onlyonegroup" from settings.xml */
+  if (!XBMC->GetSetting("onlyonegroup", &g_bOnlyOneGroup))
+    g_bOnlyOneGroup = false;
+  
+  /* read setting "onegroup" from settings.xml */
+  if (XBMC->GetSetting("onegroup", buffer))
+    g_strOneGroup = buffer;
+  else
+    g_strOneGroup = "";
 
   /* read setting "timerlistcleanup" from settings.xml */
   if (!XBMC->GetSetting("timerlistcleanup", &g_bAutomaticTimerlistCleanup))

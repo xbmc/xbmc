@@ -419,7 +419,7 @@ void Vu::StoreChannelData()
     stream << "\t\t<group>\n";
 
     CStdString strTmp = group.strServiceReference;
-    Escape(strTmp, "&", "&quot;");
+    Escape(strTmp, "&", "&amp;");
     Escape(strTmp, "<", "&lt;");
     Escape(strTmp, ">", "&gt;");
 
@@ -710,6 +710,11 @@ bool Vu::LoadChannelGroups()
       continue;
 
     newGroup.strGroupName = strTmp;
+
+    if (g_bOnlyOneGroup && g_strOneGroup.compare(strTmp.c_str())) {
+        XBMC->Log(LOG_INFO, "%s Only one group is set, but current e2servicename '%s' does not match requested name '%s'", __FUNCTION__, strTmp.c_str(), g_strOneGroup.c_str());
+        continue;
+    }
  
     m_groups.push_back(newGroup);
 

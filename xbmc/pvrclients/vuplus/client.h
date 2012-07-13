@@ -47,6 +47,8 @@ extern bool                      g_bCheckForGroupUpdates;
 extern bool                      g_bCheckForChannelUpdates;
 extern bool                      g_bOnlyCurrentLocation;
 extern bool			 g_bSetPowerstate;
+extern bool			 g_bOnlyOneGroup;
+extern std::string               g_strOneGroup;
 extern std::string               g_szUserPath;
 extern std::string               g_szClientPath;
 extern std::string               g_strChannelDataPath;
