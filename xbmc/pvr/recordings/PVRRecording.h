@@ -53,7 +53,7 @@ namespace PVR
     int           m_iLifetime;      /*!< lifetime of this recording */
     CStdString    m_strStreamURL;   /*!< stream URL. if empty use pvr client */
     CStdString    m_strDirectory;   /*!< directory of this recording on the client */
-    bool          m_iRecPlayCount;  /*!< play count of this recording on the client */
+    int           m_iRecPlayCount;  /*!< play count of this recording on the client */
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
