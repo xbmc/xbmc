@@ -9148,6 +9148,10 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Dienste"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR Klienten"
+
 msgctxt "#24020"
 msgid "Configure"
 msgstr "Konfigurieren"
