@@ -70,10 +70,29 @@ void CThread::SetThreadInfo()
 #endif
 #endif
     
-  // start thread with nice level of appication
-  int appNice = getpriority(PRIO_PROCESS, getpid());
-  if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
-    if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+#ifdef RLIMIT_NICE
+  // get user max prio
+  struct rlimit limit;
+  int userMaxPrio;
+  if (getrlimit(RLIMIT_NICE, &limit) == 0)
+  {
+    userMaxPrio = limit.rlim_cur - 20;
+    if (userMaxPrio < 0)
+      userMaxPrio = 0;
+  }
+  else
+    userMaxPrio = 0;
+
+  // if the user does not have an entry in limits.conf the following
+  // call will fail
+  if (userMaxPrio > 0)
+  {
+    // start thread with nice level of appication
+    int appNice = getpriority(PRIO_PROCESS, getpid());
+    if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
+      if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+  }
+#endif
 }
 
 ThreadIdentifier CThread::GetCurrentThreadId()
@@ -129,6 +148,9 @@ bool CThread::SetPriority(const int iPriority)
     if (getrlimit(RLIMIT_NICE, &limit) == 0)
     {
       userMaxPrio = limit.rlim_cur - 20;
+      // is a user has no entry in limits.conf rlim_cur is zero
+      if (userMaxPrio < 0)
+        userMaxPrio = 0;
     }
     else
       userMaxPrio = 0;
