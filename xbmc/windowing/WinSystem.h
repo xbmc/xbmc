@@ -123,7 +123,6 @@ protected:
   int               m_nLeft;
   bool              m_bWindowCreated;
   bool              m_bFullScreen;
-  int               m_nScreen;
   bool              m_bBlankOtherDisplay;
   float             m_fRefreshRate;
 };
