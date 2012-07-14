@@ -26,9 +26,13 @@
 #include "TextureDatabase.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
+#include "pvr/PVRDatabase.h"
+#include "epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
 
 using namespace std;
+using namespace EPG;
+using namespace PVR;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -55,6 +59,8 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CTextureDatabase db; UpdateDatabase(db); }
   { CMusicDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseMusic); }
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
+  { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
+  { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
 }
 
