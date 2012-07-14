@@ -729,14 +729,14 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
     {
       // Let's try to get the modification datetime
       struct __stat64 buffer;
-      if (CFile::Stat(file, &buffer) == 0)
+      if (CFile::Stat(file, &buffer) == 0 && (buffer.st_mtime != 0 || buffer.st_ctime !=0))
       {
         time_t now = time(NULL);
         time_t addedTime;
         // Prefer the modification time if it's valid
         if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
         {
-          if ((time_t)buffer.st_mtime <= now)
+          if (buffer.st_mtime != 0 && (time_t)buffer.st_mtime <= now)
             addedTime = (time_t)buffer.st_mtime;
           else
             addedTime = (time_t)buffer.st_ctime;
