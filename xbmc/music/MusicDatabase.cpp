@@ -5051,3 +5051,35 @@ string CMusicDatabase::GetArtistArtForItem(int mediaId, const string &mediaType,
   std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i) AND media_type='artist' AND type='%s'", mediaType.c_str(), mediaType.c_str(), mediaId, artType.c_str());
   return GetSingleValue(query, m_pDS2);
 }
+
+bool CMusicDatabase::GetArtForType(const string &artType, CFileItemList &items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = PrepareSQL("SELECT url FROM art WHERE type='%s'", artType.c_str());
+    m_pDS->query(sql.c_str());
+
+    while (!m_pDS->eof())
+    {
+      CStdString url = m_pDS->fv(0).get_asString();
+      CFileItemPtr pItem(new CFileItem(url));
+      CURL::Encode(url);
+      pItem->SetPath("image://"+ url);
+      items.Add(pItem);
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();
+    return items.Size() > 0;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  return false;
+}

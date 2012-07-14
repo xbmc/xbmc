@@ -683,6 +683,13 @@ public:
   std::string GetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
   bool GetTvShowSeasonArt(int mediaId, std::map<int, std::string> &seasonArt);
 
+  /*! \brief Get artwork list associated with the given artwork type
+   \param type type of image to associate
+   \param items the returned items
+   \return true if items are found, false otherwise.
+   */
+  bool GetArtForType(const std::string &mediaType, CFileItemList &items);
+
   int AddTag(const std::string &tag);
   void AddTagToItem(int idItem, int idTag, const std::string &type);
   void RemoveTagFromItem(int idItem, int idTag, const std::string &type);
