@@ -28,7 +28,9 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 
 using namespace std;
