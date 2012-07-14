@@ -452,7 +452,16 @@ ifeq ($(findstring freebsd,@ARCH@), freebsd)
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
+	@find -E system addons -type f -not -iregex ".*svn.*" \
+		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
+		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-and \
+		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
+		-exec printf " -- %-75.75s\r" "{}" \;
+else
 	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+endif
 endif
 
 install-scripts:
@@ -482,7 +491,16 @@ ifeq ($(findstring bsd,@ARCH@), bsd)
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
+	@find -E addons language media sounds userdata system -type f \
+		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" \
+		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-and \
+		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
+		-exec printf " -- %-75.75s\r" "{}" \;
+else
 	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+endif
 endif
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications
