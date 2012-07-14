@@ -2574,6 +2574,9 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
+    
+    if (IsPaused())
+      m_pPlayer->Pause();
 
     g_playlistPlayer.PlayNext();
 
