@@ -24,8 +24,9 @@
 #include <string>
 #include <vector>
 
-#include "Interfaces/AESink.h"
 #include "Utils/AEDeviceInfo.h"
+
+class IAESink;
 
 typedef struct
 {

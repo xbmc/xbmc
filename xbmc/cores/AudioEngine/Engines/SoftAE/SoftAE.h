@@ -30,10 +30,6 @@
 #include "threads/SharedSection.h"
 
 #include "Interfaces/ThreadedAE.h"
-#include "Interfaces/AESink.h"
-#include "Interfaces/AEEncoder.h"
-#include "Utils/AEConvert.h"
-#include "Utils/AERemap.h"
 #include "Utils/AEBuffer.h"
 #include "AEAudioFormat.h"
 #include "AESinkFactory.h"
@@ -44,10 +40,8 @@
 #include "cores/IAudioCallback.h"
 
 /* forward declarations */
-class IThreadedAE;
-class CSoftAEStream;
-class CSoftAESound;
 class IAESink;
+class IAEEncoder;
 
 class CSoftAE : public IThreadedAE
 {

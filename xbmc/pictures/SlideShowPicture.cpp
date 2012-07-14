@@ -22,13 +22,16 @@
 #include "SlideShowPicture.h"
 #include "system.h"
 #include "guilib/Texture.h"
-#include "utils/ssrc.h"         // for M_PI
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>
 
 using namespace std;
 

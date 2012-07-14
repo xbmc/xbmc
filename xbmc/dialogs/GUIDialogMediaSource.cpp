@@ -35,6 +35,7 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "PasswordManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -477,7 +478,20 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
 {
   vector<CStdString> paths;
   for (int i = 0; i < m_paths->Size(); i++)
+  {
     if (!m_paths->Get(i)->GetPath().IsEmpty())
-      paths.push_back(m_paths->Get(i)->GetPath());
+    { // strip off the user and password for smb paths (anything that the password manager can auth)
+      // and add the user/pass to the password manager - note, we haven't confirmed that it works
+      // at this point, but if it doesn't, the user will get prompted anyway in SMBDirectory.
+      CURL url(m_paths->Get(i)->GetPath());
+      if (url.GetProtocol() == "smb")
+      {
+        CPasswordManager::GetInstance().SaveAuthenticatedURL(url);
+        url.SetPassword("");
+        url.SetUserName("");
+      }
+      paths.push_back(url.Get());
+    }
+  }
   return paths;
 }

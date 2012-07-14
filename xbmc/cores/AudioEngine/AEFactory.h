@@ -31,7 +31,6 @@ enum AEEngine
   AE_ENGINE_PULSE
 };
 
-class IAE;
 class CAEFactory
 {
 public:

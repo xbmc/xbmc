@@ -21,6 +21,7 @@
 
 #include "AEBitstreamPacker.h"
 #include "AEPackIEC61937.h"
+#include "AEStreamInfo.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>

@@ -630,8 +630,6 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     return ;
   }
 #endif
-  if (pItem->IsShortCut())
-    CUtil::RunShortcut(pItem->GetPath());
   if (pItem->IsPicture())
   {
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);

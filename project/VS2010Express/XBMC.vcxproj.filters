@@ -1480,9 +1480,6 @@
     <ClCompile Include="..\..\xbmc\programs\GUIWindowPrograms.cpp">
       <Filter>programs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\programs\Shortcut.cpp">
-      <Filter>programs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\rendering\RenderSystem.cpp">
       <Filter>rendering</Filter>
     </ClCompile>
@@ -1887,9 +1884,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcplugin.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\ssrc.cpp">
-      <Filter>cores</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogCache.cpp">
       <Filter>dialogs</Filter>
@@ -2685,9 +2679,6 @@
     <ClCompile Include="..\..\xbmc\music\MusicDatabase.cpp">
       <Filter>music</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\programs\ProgramDatabase.cpp">
-      <Filter>programs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp">
       <Filter>video</Filter>
     </ClCompile>
@@ -2710,6 +2701,7 @@
     <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
     <ClCompile Include="..\..\xbmc\TextureCacheJob.cpp" />
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\DatabaseManager.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
     <ClCompile Include="..\..\xbmc\URL.cpp" />
     <ClCompile Include="..\..\xbmc\Util.cpp" />
@@ -2756,6 +2748,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\AirTunesServer.cpp">
       <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\SeekHandler.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\SortUtils.cpp">
       <Filter>utils</Filter>
@@ -4216,9 +4211,6 @@
     <ClInclude Include="..\..\xbmc\programs\GUIWindowPrograms.h">
       <Filter>programs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\programs\Shortcut.h">
-      <Filter>programs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\rendering\RenderSystem.h">
       <Filter>rendering</Filter>
     </ClInclude>
@@ -4608,9 +4600,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\winxml.h">
       <Filter>interfaces\python\xbmcmodule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\ssrc.h">
-      <Filter>cores</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogCache.h">
       <Filter>dialogs</Filter>
@@ -5460,9 +5449,6 @@
     <ClInclude Include="..\..\xbmc\music\MusicDatabase.h">
       <Filter>music</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\programs\ProgramDatabase.h">
-      <Filter>programs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\video\VideoDatabase.h">
       <Filter>video</Filter>
     </ClInclude>
@@ -5489,6 +5475,7 @@
     <ClInclude Include="..\..\xbmc\TextureCache.h" />
     <ClInclude Include="..\..\xbmc\TextureCacheJob.h" />
     <ClInclude Include="..\..\xbmc\TextureDatabase.h" />
+    <ClInclude Include="..\..\xbmc\DatabaseManager.h" />
     <ClInclude Include="..\..\xbmc\ThumbnailCache.h" />
     <ClInclude Include="..\..\xbmc\URL.h" />
     <ClInclude Include="..\..\xbmc\Util.h" />
@@ -5540,6 +5527,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h">
       <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\SeekHandler.h">
+      <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\SortUtils.h">
       <Filter>utils</Filter>

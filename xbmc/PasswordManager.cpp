@@ -79,12 +79,21 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
   url.SetUserName(username);
 
   // save the information for later
+  SaveAuthenticatedURL(url, saveDetails);
+  return true;
+}
+
+void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
+{
+  CSingleLock lock(m_critSection);
+
+  CStdString path = GetLookupPath(url);
   CStdString authenticatedPath = url.Get();
 
   if (!m_loaded)
     Load();
 
-  if (saveDetails)
+  if (saveToProfile)
   { // write to some random XML file...
     m_permanentCache[path] = authenticatedPath;
     Save();
@@ -93,7 +102,6 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
   // save for both this path and more generally the server as a whole.
   m_temporaryCache[path] = authenticatedPath;
   m_temporaryCache[GetServerLookup(path)] = authenticatedPath;
-  return true;
 }
 
 void CPasswordManager::Clear()

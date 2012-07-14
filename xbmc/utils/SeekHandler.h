@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,34 +19,24 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-// Shortcut.h: interface for the CShortcut class.
-//
-//////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_SHORTCUT_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)
-#define AFX_SHORTCUT_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_
+#include "utils/Stopwatch.h"
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
-#include "utils/StdString.h"
-
-class CShortcut
+class CSeekHandler
 {
 public:
-  CShortcut();
-  virtual ~CShortcut();
+  CSeekHandler();
 
-  bool Create(const CStdString& szPath);
-  bool Save(const CStdString& strFileName);
+  void Seek(bool forward, float amount, float duration = 0);
+  void Process();
+  void Reset();
 
-  CStdString m_strPath;
-  CStdString m_strVideo;
-  CStdString m_strParameters;
-  CStdString m_strCustomGame;
-  CStdString m_strThumb;
-  CStdString m_strLabel;
+  float GetPercent() const;
+  bool InProgress() const;
+private:
+  static const int time_before_seek = 500;
+  static const int time_for_display = 2000; // TODO: WTF?
+  bool       m_requireSeek;
+  float      m_percent;
+  CStopWatch m_timer;
 };
-
-#endif // !defined(AFX_SHORTCUT_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

@@ -117,12 +117,10 @@ public:
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;
-  bool IsXBE() const;
   bool IsPlugin() const;
   bool IsScript() const;
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
-  bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;
   bool IsOpticalMediaFile() const;

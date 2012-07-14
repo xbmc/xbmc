@@ -27,7 +27,8 @@
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
 
-#include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
+class IAEStream;
 
 #ifndef _LINUX
 enum CodecID;

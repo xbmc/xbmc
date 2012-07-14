@@ -26,7 +26,6 @@
 #include "filesystem/File.h"
 
 #include "cores/AudioEngine/AEAudioFormat.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0
@@ -94,7 +93,8 @@ public:
 
   // GetChannelInfo()
   // Return the channel layout and count information in an CAEChannelInfo object
-  virtual CAEChannelInfo GetChannelInfo() {return CAEUtil::GuessChLayout(m_Channels);}
+  // Implemented in PAPlayer.cpp to avoid an include here
+  virtual CAEChannelInfo GetChannelInfo(); 
 
   int64_t m_TotalTime;  // time in ms
   int m_SampleRate;

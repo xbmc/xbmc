@@ -22,6 +22,7 @@
 #include "system.h"
 #include "BXAcodec.h"
 #include "utils/EndianSwap.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 BXACodec::BXACodec()
 {

@@ -143,7 +143,9 @@ private:
   static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
   static CCriticalSection m_lock;
 
+#if defined(HAS_SDL_JOYSTICK)
   bool m_bMultipleJoysticksSupport;
+#endif
 
   //Callbacks HAL
   static void DeviceRemoved(LibHalContext *ctx, const char *udi);
@@ -155,7 +157,7 @@ private:
 
   //Remembered Devices
   std::vector<CStorageDevice> m_Volumes;
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_SDL_JOYSTICK)
   std::vector<CHALDevice> m_Joysticks;
 #endif
 };

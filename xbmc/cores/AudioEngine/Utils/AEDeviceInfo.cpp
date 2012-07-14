@@ -21,6 +21,7 @@
 
 #include <sstream>
 #include "AEDeviceInfo.h"
+#include "AEUtil.h"
 
 CAEDeviceInfo::operator std::string()
 {

@@ -98,7 +98,6 @@ JSONRPC_STATUS CInputOperations::SendText(const CStdString &method, ITransportLa
   if (text.empty())
     return InvalidParams;
 
-  int controlID = 0;
   CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
   if (!window)
     return InternalError;

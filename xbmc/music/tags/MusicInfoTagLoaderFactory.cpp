@@ -47,6 +47,10 @@
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 
+#ifdef HAS_ASAP_CODEC
+#include "cores/paplayer/ASAPCodec.h"
+#endif
+
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory()

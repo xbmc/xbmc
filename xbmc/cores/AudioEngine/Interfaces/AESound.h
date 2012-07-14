@@ -23,7 +23,6 @@
 #include "utils/StdString.h"
 #include "AE.h"
 
-class IAE;
 class IAESound
 {
 protected:
