@@ -96,10 +96,8 @@ private:
       static int ao_append_option(ao_option **options, const char *key, const char *value);
       static void ao_free_options(ao_option *options);
       static char* ao_get_option(ao_option *options, const char* key);
-#ifdef HAVE_AUDIOOUTPUT_AO_SET_METADATA_AUDIOOUTPUT_AO_SET_METADATA_COVERART
       static void ao_set_metadata(const char *buffer, unsigned int size);
-      static void ao_set_metadata_coverart(const char *buffer, unsigned int size);
-#endif
+      static void ao_set_metadata_coverart(const char *buffer, unsigned int size);      
 #endif
     };
 };
