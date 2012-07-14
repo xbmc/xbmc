@@ -72,6 +72,7 @@ protected:
   bool RefreshGlxContext();
   void CheckDisplayEvents();
   void OnLostDevice();
+  void OnResetDevice();
 
   SDL_Surface* m_SDLSurface;
   GLXContext   m_glContext;
