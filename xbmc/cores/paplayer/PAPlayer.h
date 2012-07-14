@@ -74,6 +74,20 @@ public:
   virtual bool SkipNext();
 
   static bool HandlesType(const CStdString &type);
+
+  struct
+  {
+    char         m_codec[21];
+    int64_t      m_time;
+    int64_t      m_totalTime;
+    int          m_channelCount;
+    int          m_bitsPerSample;
+    int          m_sampleRate;
+    int          m_audioBitrate;
+    int          m_cacheLevel;
+    bool         m_canSeek;
+  } m_playerGUIData;
+
 protected:
   virtual void OnStartup() {}
   virtual void Process();
@@ -138,5 +152,7 @@ private:
   int64_t GetTotalTime64();
   void UpdateCrossfadeTime(const CFileItem& file);
   void UpdateStreamInfoPlayNextAtFrame(StreamInfo *si, unsigned int crossFadingTime);
+  void UpdateGUIData(StreamInfo *si);
+  int64_t GetTimeInternal();
 };
 

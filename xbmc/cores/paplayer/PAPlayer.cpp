@@ -64,6 +64,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_audioCallback      (NULL ),
   m_FileItem           (new CFileItem())
 {
+  m_playerGUIData.m_codec[20] = 0;
 }
 
 PAPlayer::~PAPlayer()
@@ -268,14 +269,16 @@ void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
   m_upcomingCrossfadeMS = m_defaultCrossfadeMS = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
   if (m_upcomingCrossfadeMS)
   {
-    if (
-        file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
-        m_FileItem->HasMusicInfoTag() &&
-        (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
-        (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
-        (m_FileItem->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
-        (m_FileItem->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
-    )
+    if (m_streams.size() == 0 ||
+         (
+            file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
+            m_FileItem->HasMusicInfoTag() &&
+            (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
+            (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
+            (m_FileItem->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
+            (m_FileItem->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
+         )
+       )
     {
       //do not crossfade when playing consecutive albumtracks
       m_upcomingCrossfadeMS = 0;
@@ -464,8 +467,11 @@ void PAPlayer::Process()
     double buffer = 100.0;
     ProcessStreams(delay, buffer);
 
-    if (delay < buffer && delay > 0.75 * buffer)
-      CThread::Sleep(MathUtils::round_int((buffer - delay) * 1000.0));
+    double watermark = buffer * 0.5;
+    if (delay < buffer && delay > watermark)
+      CThread::Sleep(MathUtils::round_int((delay - watermark) * 1000.0));
+
+    GetTimeInternal(); //update for GUI
   }
 }
 
@@ -502,7 +508,10 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
   {
     StreamInfo* si = *itt;
     if (!m_currentStream && !si->m_started)
+    {
       m_currentStream = si;
+      UpdateGUIData(si); //update for GUI
+    }
     /* if the stream is finishing */
     if ((si->m_playNextTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
     {
@@ -531,6 +540,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
         else
         {
           m_currentStream = *itt;
+          UpdateGUIData(*itt); //update for GUI
         }
       }
 
@@ -607,6 +617,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
       time = (int64_t)((float)si->m_seekFrame / (float)si->m_sampleRate * 1000.0f);
       si->m_framesSent = (int)(si->m_seekFrame - ((float)si->m_startOffset * (float)si->m_sampleRate) / 1000.0f);
       si->m_seekFrame  = -1;
+      m_playerGUIData.m_time = time; //update for GUI
     }
     /* if its FF/RW */
     else
@@ -670,6 +681,9 @@ bool PAPlayer::QueueData(StreamInfo *si)
 
   unsigned int added = si->m_stream->AddData(data, samples * si->m_bytesPerSample);
   si->m_framesSent += added / si->m_bytesPerFrame;
+
+  const ICodec* codec = si->m_decoder.GetCodec();
+  m_playerGUIData.m_cacheLevel = codec ? codec->GetCacheLevel() : 0; //update for GUI
 
   return true;
 }
@@ -742,7 +756,7 @@ void PAPlayer::ToFFRW(int iSpeed)
   m_signalSpeedChange = true;
 }
 
-int64_t PAPlayer::GetTime()
+int64_t PAPlayer::GetTimeInternal()
 {
   CSharedLock lock(m_streamsLock);
   if (!m_currentStream)
@@ -751,8 +765,16 @@ int64_t PAPlayer::GetTime()
   double time = ((double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate);
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
+  time = time * 1000.0;
 
-  return (int64_t)(time * 1000.0);
+  m_playerGUIData.m_time = (int64_t)time; //update for GUI
+
+  return (int64_t)time;
+}
+
+int64_t PAPlayer::GetTime()
+{
+  return m_playerGUIData.m_time;
 }
 
 int64_t PAPlayer::GetTotalTime64()
@@ -770,79 +792,42 @@ int64_t PAPlayer::GetTotalTime64()
 
 int PAPlayer::GetTotalTime()
 {
-  return (int)(GetTotalTime64() / 1000);
+  return (int)m_playerGUIData.m_totalTime;
 }
 
 int PAPlayer::GetCacheLevel() const
 {
-  CSharedLock lock(m_streamsLock);
-  if (!m_currentStream)
-    return -1;
-
-  const ICodec* codec = m_currentStream->m_decoder.GetCodec();
-  if (codec)
-    return codec->GetCacheLevel();
-  return -1;
+  return m_playerGUIData.m_cacheLevel;
 }
 
 int PAPlayer::GetChannels()
 {
-  CSharedLock lock(m_streamsLock);
-  if (!m_currentStream)
-    return 0;
-
-  return m_currentStream->m_channelInfo.Count();
+  return m_playerGUIData.m_channelCount;
 }
 
 int PAPlayer::GetBitsPerSample()
 {
-  CSharedLock lock(m_streamsLock);
-  if (!m_currentStream)
-    return 0;
-
-  return m_currentStream->m_bytesPerSample >> 3;
+  return m_playerGUIData.m_bitsPerSample;
 }
 
 int PAPlayer::GetSampleRate()
 {
-  CSharedLock lock(m_streamsLock);
-  if (!m_currentStream)
-    return 0;
-
-  return m_currentStream->m_sampleRate;
+  return m_playerGUIData.m_sampleRate;
 }
 
 CStdString PAPlayer::GetAudioCodecName()
 {
-  CSharedLock lock(m_streamsLock);
-  if (!m_currentStream)
-    return "";
-
-  const ICodec* codec = m_currentStream->m_decoder.GetCodec();
-  if (codec)
-    return codec->m_CodecName;
-  return "";
+  return m_playerGUIData.m_codec;
 }
 
 int PAPlayer::GetAudioBitrate()
 {
-  CSharedLock lock(m_streamsLock);
-  if (!m_currentStream)
-    return 0;
-
-  const ICodec* codec = m_currentStream->m_decoder.GetCodec();
-  if (codec)
-    return codec->m_Bitrate;
-  return 0;
+  return m_playerGUIData.m_audioBitrate;
 }
 
 bool PAPlayer::CanSeek()
 {
-  CSharedLock lock(m_streamsLock);
-  if (!m_currentStream)
-    return false;
-
-  return m_currentStream->m_decoder.CanSeek();
+  return m_playerGUIData.m_canSeek;
 }
 
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
@@ -857,9 +842,7 @@ void PAPlayer::SeekTime(int64_t iTime /*=0*/)
   if (!m_currentStream)
     return;
 
-  int seekOffset = (int)(iTime - GetTime());
-  /*if (m_currentStream->m_startOffset)
-    iTime += m_currentStream->m_startOffset;*/
+  int seekOffset = (int)(iTime - GetTimeInternal());
 
   if (m_playbackSpeed != 1)
     ToFFRW(1);
@@ -877,10 +860,36 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 
 float PAPlayer::GetPercentage()
 {
-  return GetTime() * 100.0f / GetTotalTime64();
+  return m_playerGUIData.m_time * 100.0f / m_playerGUIData.m_totalTime;
 }
 
 bool PAPlayer::SkipNext()
 {
   return false;
+}
+
+void PAPlayer::UpdateGUIData(StreamInfo *si)
+{
+  /* Store data need by external threads in member
+   * structure to prevent locking conflicts when
+   * data required by GUI and main application
+   */
+  CSharedLock lock(m_streamsLock);
+
+  m_playerGUIData.m_sampleRate    = si->m_sampleRate;
+  m_playerGUIData.m_bitsPerSample = si->m_bytesPerSample << 3;
+  m_playerGUIData.m_channelCount  = si->m_channelInfo.Count();
+  m_playerGUIData.m_canSeek       = si->m_decoder.CanSeek();
+
+  const ICodec* codec = si->m_decoder.GetCodec();
+
+  m_playerGUIData.m_audioBitrate = codec ? codec->m_Bitrate : 0;
+  strncpy(m_playerGUIData.m_codec,codec ? codec->m_CodecName : "",20);
+  m_playerGUIData.m_cacheLevel   = codec ? codec->GetCacheLevel() : 0;
+
+  int64_t total = si->m_decoder.TotalTime();
+  if (si->m_endOffset)
+    total = m_currentStream->m_endOffset;
+  total -= m_currentStream->m_startOffset;
+  m_playerGUIData.m_totalTime = total;
 }
