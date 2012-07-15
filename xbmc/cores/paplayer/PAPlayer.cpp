@@ -389,6 +389,12 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   if (si->m_stream)
     return true;
 
+  if (si->m_channelInfo.Count() == 0)
+  {
+    CLog::Log(LOGERROR, "PAPlayer::PrepareStream - Not creating an empty audio stream");
+    return false;
+  }
+
   /* get a paused stream */
   si->m_stream = CAEFactory::MakeStream(
     si->m_dataFormat,
