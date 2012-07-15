@@ -2799,16 +2799,8 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filte
   try
   {
     CStdString strSQL = PrepareSQL("select %s from artistview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
-    if (!filter.join.empty())
-      strSQL += filter.join;
-    if (!filter.where.empty())
-      strSQL += " WHERE " + filter.where;
-    if (!filter.group.empty())
-      strSQL += " GROUP BY " + filter.group;
-    if (!filter.order.empty())
-      strSQL += " ORDER BY " + filter.order;
-    if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+    if (!BuildSQL(strSQL, filter, strSQL))
+      return false;
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -2951,20 +2943,15 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
     int total = -1;
 
     CStdString strSQL = "select %s from albumview ";
+
     CStdString strSQLExtra;
-    if (!filter.join.empty())
-      strSQLExtra += filter.join;
-    if (!filter.where.empty())
-      strSQLExtra += " WHERE " + filter.where;
-    if (!filter.group.empty())
-      strSQLExtra += " GROUP BY " + filter.group;
-    if (!filter.order.empty())
-      strSQLExtra += " ORDER BY " + filter.order;
-    if (!filter.limit.empty())
-      strSQLExtra += " LIMIT " + filter.limit;
+    if (!BuildSQL(strSQLExtra, filter, strSQLExtra))
+      return false;
+
     // Apply the limiting directly here if there's no special sorting but limiting
-    else if (sortDescription.sortBy == SortByNone &&
-            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    if (filter.limit.empty() &&
+        sortDescription.sortBy == SortByNone &&
+       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
@@ -3044,20 +3031,15 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
     int total = -1;
 
     CStdString strSQL = "select %s from songview ";
+
     CStdString strSQLExtra;
-    if (!filter.join.empty())
-      strSQLExtra += filter.join;
-    if (!filter.where.empty())
-      strSQLExtra += " WHERE " + filter.where;
-    if (!filter.group.empty())
-      strSQLExtra += " GROUP BY " + filter.group;
-    if (!filter.order.empty())
-      strSQLExtra += " ORDER BY " + filter.order;
-    if (!filter.limit.empty())
-      strSQLExtra += " LIMIT " + filter.limit;
+    if (!BuildSQL(strSQLExtra, filter, strSQLExtra))
+      return false;
+
     // Apply the limiting directly here if there's no special sorting but limiting
-    else if (sortDescription.sortBy == SortByNone &&
-            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    if (filter.limit.empty() &&
+        sortDescription.sortBy == SortByNone &&
+       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
@@ -3500,16 +3482,8 @@ unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,in
     if (NULL == m_pDS.get()) return 0;
 
     CStdString strSQL = "select idSong from songview ";
-    if (!filter.join.empty())
-      strSQL += filter.join;
-    if (!filter.where.empty())
-      strSQL += " WHERE " + filter.where;
-    if (!filter.group.empty())
-      strSQL += " GROUP BY " + filter.group;
-    if (!filter.order.empty())
-      strSQL += " ORDER BY " + filter.order;
-    if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+    if (!BuildSQL(strSQL, filter, strSQL))
+      return false;
 
     if (!m_pDS->query(strSQL.c_str())) return 0;
     songIDs.clear();
@@ -3542,16 +3516,8 @@ int CMusicDatabase::GetSongsCount(const Filter &filter)
     if (NULL == m_pDS.get()) return 0;
 
     CStdString strSQL = "select count(idSong) as NumSongs from songview ";
-    if (!filter.join.empty())
-      strSQL += filter.join;
-    if (!filter.where.empty())
-      strSQL += " WHERE " + filter.where;
-    if (!filter.group.empty())
-      strSQL += " GROUP BY " + filter.group;
-    if (!filter.order.empty())
-      strSQL += " ORDER BY " + filter.order;
-    if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+    if (!BuildSQL(strSQL, filter, strSQL))
+      return false;
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0)
@@ -3802,16 +3768,9 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
     extFilter.AppendOrder("idSong");
     extFilter.limit = "1";
 
-    if (!extFilter.join.empty())
-      strSQL += extFilter.join;
-    if (!extFilter.where.empty())
-      strSQL += " WHERE " + extFilter.where;
-    if (!extFilter.group.empty())
-      strSQL += " GROUP BY " + extFilter.group;
-    if (!extFilter.order.empty())
-      strSQL += " ORDER BY " + extFilter.order;
-    if (!extFilter.limit.empty())
-      strSQL += " LIMIT " + extFilter.limit;
+    if (!BuildSQL(strSQL, extFilter, strSQL))
+      return false;
+
     strSQL += PrepareSQL(" OFFSET %i", iRandom);
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());

@@ -681,3 +681,20 @@ bool CDatabase::UpdateVersionNumber()
   return true;
 }
 
+bool CDatabase::BuildSQL(const CStdString &strQuery, const Filter &filter, CStdString &strSQL)
+{
+  strSQL = strQuery;
+
+  if (!filter.join.empty())
+    strSQL += filter.join;
+  if (!filter.where.empty())
+    strSQL += " WHERE " + filter.where;
+  if (!filter.group.empty())
+    strSQL += " GROUP BY " + filter.group;
+  if (!filter.order.empty())
+    strSQL += " ORDER BY " + filter.order;
+  if (!filter.limit.empty())
+    strSQL += " LIMIT " + filter.limit;
+
+  return true;
+}

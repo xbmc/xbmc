@@ -818,5 +818,5 @@ private:
   void AnnounceRemove(std::string content, int id);
   void AnnounceUpdate(std::string content, int id);
 
-  bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, const Filter &filter, CStdString &strSQL, CVideoDbUrl &videoUrl);
+  bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CVideoDbUrl &videoUrl);
 };

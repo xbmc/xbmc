@@ -152,6 +152,8 @@ protected:
   int GetDBVersion();
   bool UpdateVersion(const CStdString &dbName);
 
+  bool BuildSQL(const CStdString &strQuery, const Filter &filter, CStdString &strSQL);
+
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
   std::auto_ptr<dbiplus::Database> m_pDB;
