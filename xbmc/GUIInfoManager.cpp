@@ -1190,6 +1190,8 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
       return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
     return AddListItemProp(info.param());
   }
+  if (info.name == "art" && info.num_params() == 1)
+    return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
   return 0;
 }
 
