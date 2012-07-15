@@ -403,7 +403,7 @@
   "Video.Fields.Movie": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the cast, set, showling and/or resume field will result in increased response times",
+      "description": "Requesting the cast, set, showlink and/or resume field will result in increased response times",
       "enum": [ "title", "genre", "year", "rating", "director", "trailer",
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
