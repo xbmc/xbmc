@@ -112,7 +112,7 @@ extern "C" void ADDON_Stop()
   }
 }
 
-unsigned char waves[2][576];
+unsigned char waves[2][512];
 
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
@@ -120,14 +120,14 @@ unsigned char waves[2][576];
 extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
 	int ipos=0;
-	while (ipos < 576)
+	while (ipos < 512)
 	{
 		for (int i=0; i < iAudioDataLength; i+=2)
 		{
       waves[0][ipos] = char (pAudioData[i] * 255.0f);
       waves[1][ipos] = char (pAudioData[i+1]  * 255.0f);
 			ipos++;
-			if (ipos >= 576) break;
+			if (ipos >= 512) break;
 		}
 	}
 }
