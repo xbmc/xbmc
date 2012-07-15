@@ -517,6 +517,9 @@ void CFile::Close()
 {
   try
   {
+    if (m_pFile)
+      m_pFile->Close();
+
     SAFE_DELETE(m_pBuffer);
     SAFE_DELETE(m_pFile);
   }
