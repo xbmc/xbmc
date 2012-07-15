@@ -1144,6 +1144,21 @@ namespace VIDEO
     return lResult;
   }
 
+  string ContentToMediaType(CONTENT_TYPE content, bool folder)
+  {
+    switch (content)
+    {
+      case CONTENT_MOVIES:
+        return "movie";
+      case CONTENT_MUSICVIDEOS:
+        return "musicvideo";
+      case CONTENT_TVSHOWS:
+        return folder ? "tvshow" : "episode";
+      default:
+        return "";
+    }
+  }
+
   void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal)
   {
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
@@ -1164,10 +1179,17 @@ namespace VIDEO
         art.insert(make_pair("fanart", fanart));
     }
 
-    // get and cache thumb image
-    std::string thumb = GetImage(pItem, useLocal, bApplyToDir, "");
-    if (!thumb.empty())
-      art.insert(make_pair("thumb", thumb));
+    // get and cache thumb images
+    vector<string> artTypes = CVideoThumbLoader::GetArtTypes(ContentToMediaType(content, pItem->m_bIsFolder));
+    for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+    {
+      string type = *i;
+      if (type == "fanart")
+        continue; // handled above
+      std::string image = GetImage(pItem, useLocal, bApplyToDir, type);
+      if (!image.empty())
+        art.insert(make_pair(type, image));
+    }
 
     for (CGUIListItem::ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
       CTextureCache::Get().BackgroundCacheImage(i->second);
