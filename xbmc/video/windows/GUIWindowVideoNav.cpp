@@ -1133,7 +1133,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         else
           tag = *m_vecItems->Get(itemNumber)->GetVideoInfoTag();
         if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
-          tag.m_strPictureURL.GetThumbURLs(thumbs, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
+          tag.m_strPictureURL.GetThumbURLs(thumbs, "", m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
         else
           tag.m_strPictureURL.GetThumbURLs(thumbs);
 
