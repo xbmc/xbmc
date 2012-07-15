@@ -167,7 +167,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_GET_THUMB)
       {
-        OnGetThumb();
+        OnGetArt();
       }
       else if (iControl == CONTROL_BTN_PLAY_TRAILER)
       {
@@ -587,22 +587,55 @@ void CGUIDialogVideoInfo::Play(bool resume)
 // 2.  IMDb thumb
 // 3.  Local thumb
 // 4.  No thumb (if no Local thumb is available)
-void CGUIDialogVideoInfo::OnGetThumb()
+void CGUIDialogVideoInfo::OnGetArt()
 {
-  CFileItemList items;
+  // prompt for choice
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!dialog)
+    return;
 
+  CFileItemList items;
+  dialog->SetHeading(13511);
+  dialog->Reset();
+  dialog->SetUseDetails(true);
+
+  vector<string> artTypes = CVideoThumbLoader::GetArtTypes(m_movieItem->GetVideoInfoTag()->m_type);
+  for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  {
+    string type = *i;
+    CFileItemPtr item(new CFileItem(type, "false"));
+    item->SetLabel(type);
+    if (m_movieItem->HasArt(type))
+      item->SetArt("thumb", m_movieItem->GetArt(type));
+    items.Add(item);
+  }
+
+  dialog->SetItems(&items);
+  dialog->DoModal();
+
+  string type = dialog->GetSelectedItem()->GetLabel();
+  if (type.empty())
+    return; // cancelled
+
+  if (type == "fanart")
+  { // TODO: this can be removed once these are unified.
+    OnGetFanart();
+    return;
+  }
+
+  items.Clear();
   // Current thumb
-  if (CFile::Exists(m_movieItem->GetArt("thumb")))
+  if (CFile::Exists(m_movieItem->GetArt(type)))
   {
     CFileItemPtr item(new CFileItem("thumb://Current", false));
-    item->SetArt("thumb", m_movieItem->GetArt("thumb"));
-    item->SetLabel(g_localizeStrings.Get(20016));
+    item->SetArt("thumb", m_movieItem->GetArt(type));
+    item->SetLabel(g_localizeStrings.Get(13512));
     items.Add(item);
   }
 
   // Grab the thumbnails from the web
   vector<CStdString> thumbs;
-  m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs);
+  m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs, type);
 
   for (unsigned int i = 0; i < thumbs.size(); ++i)
   {
@@ -611,19 +644,19 @@ void CGUIDialogVideoInfo::OnGetThumb()
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetArt("thumb", thumbs[i]);
     item->SetIconImage("DefaultPicture.png");
-    item->SetLabel(g_localizeStrings.Get(20015));
+    item->SetLabel(g_localizeStrings.Get(13513));
 
     // TODO: Do we need to clear the cached image?
     //    CTextureCache::Get().ClearCachedImage(thumb);
     items.Add(item);
   }
 
-  CStdString localThumb(m_movieItem->GetUserVideoThumb());
-  if (CFile::Exists(localThumb))
+  CStdString localThumb = CVideoThumbLoader::GetLocalArt(*m_movieItem, type);
+  if (!localThumb.empty())
   {
     CFileItemPtr item(new CFileItem("thumb://Local", false));
     item->SetArt("thumb", localThumb);
-    item->SetLabel(g_localizeStrings.Get(20017));
+    item->SetLabel(g_localizeStrings.Get(13514));
     items.Add(item);
   }
   else
@@ -632,14 +665,14 @@ void CGUIDialogVideoInfo::OnGetThumb()
     // to delete the incorrect thumb
     CFileItemPtr item(new CFileItem("thumb://None", false));
     item->SetIconImage("DefaultVideo.png");
-    item->SetLabel(g_localizeStrings.Get(20018));
+    item->SetLabel(g_localizeStrings.Get(13515));
     items.Add(item);
   }
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
   g_mediaManager.GetLocalDrives(sources);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")
@@ -662,12 +695,12 @@ void CGUIDialogVideoInfo::OnGetThumb()
   CVideoDatabase db;
   if (db.Open())
   {
-    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "thumb", newThumb);
+    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, type, newThumb);
     db.Close();
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  m_movieItem->SetArt("thumb", newThumb);
+  m_movieItem->SetArt(type, newThumb);
   if (m_movieItem->HasProperty("set_folder_thumb"))
   { // have a folder thumb to set as well
     VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), newThumb);

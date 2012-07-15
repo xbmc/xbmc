@@ -4891,7 +4891,27 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr ""
 
-#empty strings from id 13511 to 13549
+msgctxt "#13511"
+msgid "Choose art"
+msgstr ""
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr ""
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr ""
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr ""
+
+msgctxt "#13515"
+msgid "No art"
+msgstr ""
+
+#empty strings from id 13516 to 13549
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"

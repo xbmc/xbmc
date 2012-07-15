@@ -53,7 +53,7 @@ protected:
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
   void Play(bool resume = false);
-  void OnGetThumb();
+  void OnGetArt();
   void OnGetFanart();
   void PlayTrailer();
 
