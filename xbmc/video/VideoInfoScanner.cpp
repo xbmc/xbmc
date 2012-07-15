@@ -1150,48 +1150,52 @@ namespace VIDEO
     movieDetails.m_fanart.Unpack();
     movieDetails.m_strPictureURL.Parse();
 
+    CGUIListItem::ArtMap art;
     // get & save fanart image
     bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
     if (!isEpisode)
     {
-      CStdString fanart;
-      if (pItem->HasArt("fanart"))
-        fanart = pItem->GetArt("fanart");
-      else if (useLocal)
+      CStdString fanart = pItem->GetArt("fanart");
+      if (fanart.empty() && useLocal)
         fanart = pItem->GetLocalFanart();
       if (fanart.IsEmpty())
         fanart = movieDetails.m_fanart.GetImageURL();
       if (!fanart.IsEmpty())
-      {
-        CTextureCache::Get().BackgroundCacheImage(fanart);
-        pItem->SetArt("fanart", fanart);
-      }
+        art.insert(make_pair("fanart", fanart));
     }
 
     // get and cache thumb image
-    CStdString thumb = pItem->GetArt("thumb");
-    if (thumb.empty() && useLocal)
-    {
-      thumb = pItem->GetUserVideoThumb();
-      if (bApplyToDir && thumb.IsEmpty())
-      {
-        CStdString strParent;
-        URIUtils::GetParentPath(pItem->GetPath(), strParent);
-        CFileItem folderItem(*pItem);
-        folderItem.SetPath(strParent);
-        folderItem.m_bIsFolder = true;
-        thumb = folderItem.GetUserVideoThumb();
-      }
-    }
+    std::string thumb = GetImage(pItem, useLocal, bApplyToDir, "");
+    if (!thumb.empty())
+      art.insert(make_pair("thumb", thumb));
 
-    if (thumb.IsEmpty())
+    for (CGUIListItem::ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
+      CTextureCache::Get().BackgroundCacheImage(i->second);
+
+    pItem->SetArt(art);
+
+    // parent folder to apply the thumb to and to search for local actor thumbs
+    CStdString parentDir = GetParentDir(*pItem);
+    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+      FetchActorThumbs(movieDetails.m_cast, parentDir);
+    if (bApplyToDir)
+      ApplyThumbToFolder(parentDir, art["thumb"]);
+  }
+
+  std::string CVideoInfoScanner::GetImage(CFileItem *pItem, bool useLocal, bool bApplyToDir, const std::string &type)
+  {
+    std::string thumb;
+    if (useLocal)
+      thumb = CVideoThumbLoader::GetLocalArt(*pItem, type, bApplyToDir);
+
+    if (thumb.empty())
     {
-      thumb = CScraperUrl::GetThumbURL(movieDetails.m_strPictureURL.GetFirstThumb());
-      if (!thumb.IsEmpty())
+      thumb = CScraperUrl::GetThumbURL(pItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb(type));
+      if (!thumb.empty())
       {
-        if (thumb.Find("http://") < 0 &&
-            thumb.Find("/") < 0 &&
-            thumb.Find("\\") < 0)
+        if (thumb.find("http://") == string::npos &&
+            thumb.find("/") == string::npos &&
+            thumb.find("\\") == string::npos)
         {
           CStdString strPath;
           URIUtils::GetDirectory(pItem->GetPath(), strPath);
@@ -1199,18 +1203,7 @@ namespace VIDEO
         }
       }
     }
-    if (!thumb.IsEmpty())
-    {
-      CTextureCache::Get().BackgroundCacheImage(thumb);
-      pItem->SetArt("thumb", thumb);
-    }
-
-    // parent folder to apply the thumb to and to search for local actor thumbs
-    CStdString parentDir = GetParentDir(*pItem);
-    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast, parentDir);
-    if (bApplyToDir)
-      ApplyThumbToFolder(parentDir, thumb);
+    return thumb;
   }
 
   INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODELIST& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
