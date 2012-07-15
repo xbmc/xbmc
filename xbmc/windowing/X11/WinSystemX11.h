@@ -72,6 +72,7 @@ public:
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
+  void NotifyXRREvent();
 
 protected:
   void RefreshWindowState();
@@ -89,7 +90,6 @@ protected:
   Pixmap       m_icon;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
-  int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   uint64_t                     m_dpyLostTime;

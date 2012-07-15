@@ -51,4 +51,5 @@ protected:
   XbmcThreads::EndTime m_repeatKeyTimeout;
   std::map<uint32_t,uint32_t> m_symLookupTable;
   int m_keymodState;
+  int m_RREventBase;
 };

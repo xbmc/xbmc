@@ -35,6 +35,10 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
 
+#if defined(HAS_XRANDR)
+#include <X11/extensions/Xrandr.h>
+#endif
+
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
 #endif
@@ -233,6 +237,13 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
   {
     WinEvents->m_symLookupTable[SymMappingsX11[i][0]] = SymMappingsX11[i][1];
   }
+
+  // register for xrandr events
+#if defined(HAS_XRANDR)
+  int iReturn;
+  XRRQueryExtension(WinEvents->m_display, &WinEvents->m_RREventBase, &iReturn);
+  XRRSelectInput(WinEvents->m_display, WinEvents->m_window, RRScreenChangeNotifyMask);
+#endif
 
   return true;
 }
@@ -515,6 +526,15 @@ bool CWinEventsX11::MessagePump()
         break;
       }
     }// switch event.type
+
+#if defined(HAS_XRANDR)
+    if (WinEvents && xevent.type == WinEvents->m_RREventBase + RRScreenChangeNotify)
+    {
+      XRRUpdateConfiguration(&xevent);
+      g_Windowing.NotifyXRREvent();
+    }
+#endif
+
   }// while
 
   ret |= ProcessKeyRepeat();
