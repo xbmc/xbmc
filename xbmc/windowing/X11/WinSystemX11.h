@@ -76,6 +76,7 @@ public:
   GLXWindow GetWindow() { return m_glWindow; }
   GLXContext GetGlxContext() { return m_glContext; }
   virtual void OnSettingChanged(const CSetting *setting);
+  void NotifyXRREvent();
 
 protected:
   void RefreshWindowState();
@@ -93,7 +94,6 @@ protected:
   Pixmap       m_icon;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
-  int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   uint64_t                     m_dpyLostTime;

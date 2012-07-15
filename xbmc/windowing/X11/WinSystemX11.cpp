@@ -646,33 +646,21 @@ bool CWinSystemX11::Show(bool raise)
 
 void CWinSystemX11::CheckDisplayEvents()
 {
-#if defined(HAS_XRANDR)
-  bool bGotEvent(false);
-  bool bTimeout(false);
-  XEvent Event;
-  while (XCheckTypedEvent(m_dpy, m_RREventBase + RRScreenChangeNotify, &Event))
-  {
-    if (Event.type == m_RREventBase + RRScreenChangeNotify)
-    {
-      CLog::Log(LOGDEBUG, "%s: Received RandR event %i", __FUNCTION__, Event.type);
-      bGotEvent = true;
-    }
-    XRRUpdateConfiguration(&Event);
-  }
-
-  // check fail safe timer
   if (m_dpyLostTime && CurrentHostCounter() - m_dpyLostTime > (uint64_t)3 * CurrentHostFrequency())
   {
     CLog::Log(LOGERROR, "%s - no display event after 3 seconds", __FUNCTION__);
-    bTimeout = true;
-  }
-
-  if (bGotEvent || bTimeout)
-  {
-    CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
     OnResetDevice();
   }
+}
+
+void CWinSystemX11::NotifyXRREvent()
+{
+  CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
+
+#if defined(HAS_XRANDR)
+  g_xrandr.Query(true);
 #endif
+  OnResetDevice();
 }
 
 void CWinSystemX11::OnLostDevice()
