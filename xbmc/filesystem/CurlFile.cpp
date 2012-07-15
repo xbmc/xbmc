@@ -1159,7 +1159,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
       CLog::Log(LOGWARNING, "%s - Cannot get curl filetime", __FUNCTION__);
     } else {
       if (filetime != -1) {
-        CLog::Log(LOGDEBUG, "%s - curl filetime: %d", __FUNCTION__, filetime);
+        CLog::Log(LOGDEBUG, "%s - curl filetime: %ld", __FUNCTION__, filetime);
         buffer->st_mtime = filetime;
       }
     }
