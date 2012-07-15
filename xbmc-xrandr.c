@@ -39,9 +39,12 @@
 #include <stdint.h>
 #include <math.h>
 
-
 #ifndef _X_NORETURN
+#if defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 205)
+#define _X_NORETURN __attribute((noreturn))
+#else
 #define _X_NORETURN
+#endif
 #endif
 
 static char	*program_name;

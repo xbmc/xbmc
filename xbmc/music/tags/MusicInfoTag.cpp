@@ -266,7 +266,10 @@ void CMusicInfoTag::SetTitle(const CStdString& strTitle)
 
 void CMusicInfoTag::SetArtist(const CStdString& strArtist)
 {
-  SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
+  if (!strArtist.empty())
+    SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
+  else
+    m_artist.clear();
 }
 
 void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
@@ -286,7 +289,10 @@ void CMusicInfoTag::SetAlbumId(const int iAlbumId)
 
 void CMusicInfoTag::SetAlbumArtist(const CStdString& strAlbumArtist)
 {
-  SetAlbumArtist(StringUtils::Split(strAlbumArtist, g_advancedSettings.m_musicItemSeparator));
+  if (!strAlbumArtist.empty())
+    SetAlbumArtist(StringUtils::Split(strAlbumArtist, g_advancedSettings.m_musicItemSeparator));
+  else
+    m_albumArtist.clear();
 }
 
 void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists)
@@ -296,7 +302,10 @@ void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists)
 
 void CMusicInfoTag::SetGenre(const CStdString& strGenre)
 {
-  SetGenre(StringUtils::Split(strGenre, g_advancedSettings.m_musicItemSeparator));
+  if (!strGenre.empty())
+    SetGenre(StringUtils::Split(strGenre, g_advancedSettings.m_musicItemSeparator));
+  else
+    m_genre.clear();
 }
 
 void CMusicInfoTag::SetGenre(const std::vector<std::string>& genres)

@@ -56,6 +56,7 @@
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
+#include "DatabaseManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -951,6 +952,8 @@ bool CSettings::LoadProfile(unsigned int index)
 
     CButtonTranslator::GetInstance().Load(true);
     g_localizeStrings.Load("special://xbmc/language/", strLanguage);
+
+    CDatabaseManager::Get().Initialize();
 
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 

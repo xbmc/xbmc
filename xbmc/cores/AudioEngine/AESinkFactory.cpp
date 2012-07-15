@@ -20,6 +20,7 @@
  */
 
 #include "AESinkFactory.h"
+#include "Interfaces/AESink.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"

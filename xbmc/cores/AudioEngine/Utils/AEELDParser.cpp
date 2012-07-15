@@ -20,6 +20,7 @@
  */
 
 #include "AEELDParser.h"
+#include "AEDeviceInfo.h"
 #include "utils/EndianSwap.h"
 #include <string.h>
 

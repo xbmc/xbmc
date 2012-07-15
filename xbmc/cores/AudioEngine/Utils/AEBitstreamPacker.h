@@ -23,7 +23,8 @@
 #include <stdint.h>
 #include <list>
 #include "AEPackIEC61937.h"
-#include "AEStreamInfo.h"
+
+class CAEStreamInfo;
 
 class CAEBitstreamPacker
 {

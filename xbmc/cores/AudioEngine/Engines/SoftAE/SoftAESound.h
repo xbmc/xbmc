@@ -26,7 +26,6 @@
 #include "Interfaces/AESound.h"
 #include "Utils/AEWAVLoader.h"
 
-class CWAVLoader;
 class CSoftAESound : public IAESound
 {
 public:
