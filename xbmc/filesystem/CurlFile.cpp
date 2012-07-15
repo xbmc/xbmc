@@ -1157,8 +1157,11 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_FILETIME, &filetime))
     {
       CLog::Log(LOGWARNING, "%s - Cannot get curl filetime", __FUNCTION__);
-    } else {
-      if (filetime != -1) {
+    }
+    else
+    {
+      if (filetime != -1)
+      {
         CLog::Log(LOGDEBUG, "%s - curl filetime: %ld", __FUNCTION__, filetime);
         buffer->st_mtime = filetime;
       }
