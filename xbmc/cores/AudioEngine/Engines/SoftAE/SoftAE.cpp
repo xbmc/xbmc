@@ -482,7 +482,7 @@ void CSoftAE::OnSettingsChange(std::string setting)
     OpenSink();
   }
 
-  if (setting == "audiooutput.dontnormalizelevels" || setting == "audiooutput.stereoupmix")
+  if (setting == "audiooutput.normalizelevels" || setting == "audiooutput.stereoupmix")
   {
     /* re-init stream reamppers */
     CSingleLock streamLock(m_streamLock);
