@@ -238,13 +238,12 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
 
   DestroyWindow();
 
-  m_visual = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), att);
+  m_visual = glXChooseVisual(m_dpy, res.iInternal, att);
   if(m_visual == NULL)
   {
     CLog::Log(LOGERROR, "CWinSystemX11GL::CreateNewWindow - failed to create visual");
     return false;
   }
-
 
   if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res, userFunction))
     return false;
@@ -265,7 +264,7 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
   m_glWindow  = m_wmWindow;
 
   m_glxext  = " ";
-  m_glxext += (const char*)glXQueryExtensionsString(m_dpy, DefaultScreen(m_dpy));
+  m_glxext += (const char*)glXQueryExtensionsString(m_dpy, m_visual->screen);
   m_glxext += " ";
 
   CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:%s", m_glxext.c_str());

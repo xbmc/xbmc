@@ -98,6 +98,7 @@ struct RESOLUTION_INFO
   CStdString strMode;
   CStdString strOutput;
   CStdString strId;
+  int iInternal; /* internal to windowing layer */
 public:
   RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const CStdString &mode = "")
   {
@@ -111,6 +112,7 @@ public:
     bFullScreen = true;
     fRefreshRate = 0;
     dwFlags = iSubtitles = iScreen = 0;
+    iInternal = 0;
   }
   float DisplayRatio() const
   {
@@ -125,6 +127,6 @@ public:
     iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
     fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
     strMode = res.strMode; strOutput = res.strOutput; strId = res.strId;
-    iBlanking = res.iBlanking;
+    iInternal = res.iInternal;
   }
 };

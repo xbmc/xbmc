@@ -77,6 +77,7 @@ public:
   GLXWindow GetWindow() { return m_glWindow; }
   GLXContext GetGlxContext() { return m_glContext; }
   virtual void OnSettingChanged(const CSetting *setting);
+  XVisualInfo* GetVisual() { return m_visual; }
   void NotifyXRREvent();
 
 protected:

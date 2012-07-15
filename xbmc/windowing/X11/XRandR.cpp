@@ -36,14 +36,12 @@
 
 using namespace std;
 
-CXRandR::CXRandR(bool query)
+CXRandR::CXRandR()
 {
   m_bInit = false;
-  if (query)
-    Query();
 }
 
-bool CXRandR::Query(bool force)
+bool CXRandR::Query(int screens, bool force)
 {
   if (!force)
     if (m_bInit)
@@ -55,11 +53,21 @@ bool CXRandR::Query(bool force)
     return false;
 
   m_outputs.clear();
-  m_current.clear();
+  // query all screens
+  for(int screennum=0; screennum<screens; ++screennum)
+  {
+    if(!Query(screennum))
+      return false;
+  }
+  return true;
+}
 
+bool CXRandR::Query(int screennum)
+{
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
+  cmd.AppendFormat(" -q --screen %d", screennum);
 
   FILE* file = popen(cmd.c_str(),"r");
   if (!file)
@@ -79,11 +87,6 @@ bool CXRandR::Query(bool force)
   pclose(file);
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (strcasecmp(pRootElement->Value(), "screen") != 0)
-  {
-    // TODO ERROR
-    return false;
-  }
 
   for (TiXmlElement* output = pRootElement->FirstChildElement("output"); output; output = output->NextSiblingElement("output"))
   {
@@ -92,6 +95,7 @@ bool CXRandR::Query(bool force)
     xoutput.name.TrimLeft(" \n\r\t");
     xoutput.name.TrimRight(" \n\r\t");
     xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
+    xoutput.screen = screennum;
     xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
     xoutput.x = (output->Attribute("x") != NULL ? atoi(output->Attribute("x")) : 0);
@@ -142,7 +146,8 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   XOutput outputFound;
   for (size_t i = 0; i < m_outputs.size(); i++)
   {
-    if (m_outputs[i].name == output.name)
+    if (m_outputs[i].name   == output.name
+    &&  m_outputs[i].screen == output.screen)
     {
       isOutputFound = true;
       outputFound = m_outputs[i];
@@ -215,7 +220,7 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
 
   char cmd[255];
   if (getenv("XBMC_BIN_HOME"))
-    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_BIN_HOME"), outputFound.name.c_str(), modeFound.id.c_str());
+    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --screen %d --output %s --mode %s", getenv("XBMC_BIN_HOME"), outputFound.screen, outputFound.name.c_str(), modeFound.id.c_str());
   else
     return false;
   CLog::Log(LOGINFO, "XRANDR: %s", cmd);
@@ -229,13 +234,14 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   return true;
 }
 
-XMode CXRandR::GetCurrentMode(CStdString outputName)
+XMode CXRandR::GetCurrentMode(int screen, CStdString outputName)
 {
   XMode result;
 
   for (unsigned int j = 0; j < m_outputs.size(); j++)
   {
-    if (m_outputs[j].name == outputName || outputName == "")
+    if ((m_outputs[j].name   == outputName || outputName == "")
+    &&  (m_outputs[j].screen == screen))
     {
       for (unsigned int i = 0; i < m_outputs[j].modes.size(); i++)
       {
@@ -300,12 +306,13 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
   }
 }
 
-XOutput CXRandR::GetOutput(CStdString outputName)
+XOutput CXRandR::GetOutput(int screen, CStdString outputName)
 {
   XOutput result;
   for (unsigned int i = 0; i < m_outputs.size(); ++i)
   {
-    if (m_outputs[i].name == outputName)
+    if ((m_outputs[i].name   == outputName || outputName == "")
+    &&  (m_outputs[i].screen == screen))
     {
       result = m_outputs[i];
       break;
