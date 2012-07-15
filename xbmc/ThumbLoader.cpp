@@ -391,7 +391,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         if (i != showArt.end())
           item.SetArt("fanart", i->second);
         if ((i = showArt.find("thumb")) != showArt.end())
-          item.SetProperty("tvshowthumb", i->second);
+          item.SetArt("tvshowthumb", i->second);
       }
     }
     m_database->Close();

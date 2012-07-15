@@ -308,7 +308,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
                                       m_movieItem->GetVideoInfoTag()->m_iSeason);
           string thumb = db.GetArtForItem(seasonID, "season", "thumb");
           if (!thumb.empty())
-            m_movieItem->SetProperty("seasonthumb", thumb);
+            m_movieItem->SetArt("seasonthumb", thumb);
         }
         db.Close();
       }

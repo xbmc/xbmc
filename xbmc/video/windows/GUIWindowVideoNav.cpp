@@ -293,7 +293,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
         {
           if (art.find("thumb") != art.end())
-            items.SetProperty("tvshowthumb", art["thumb"]);
+            items.SetArt("tvshowthumb", art["thumb"]);
           if (art.find("fanart") != art.end())
             items.SetArt("fanart", art["fanart"]);
         }
@@ -316,7 +316,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           string seasonThumb = m_database.GetArtForItem(seasonID, "season", "thumb");
           if (!seasonThumb.empty())
           {
-            items.SetProperty("seasonthumb",seasonThumb);
+            items.SetArt("seasonthumb",seasonThumb);
             items.SetArt("thumb", seasonThumb);
           }
         }
