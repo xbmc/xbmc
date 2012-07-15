@@ -270,7 +270,7 @@ void CGUIListItem::Archive(CArchive &ar)
     ar >> mapSize;
     for (int i = 0; i < mapSize; i++)
     {
-      CStdString key;
+      std::string key;
       CVariant value;
       ar >> key;
       ar >> value;
