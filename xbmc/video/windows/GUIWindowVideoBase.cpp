@@ -587,7 +587,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
       // clear artwork
       item->SetThumbnailImage("");
-      item->ClearProperty("fanart_image");
+      item->SetArt("fanart", "");
 
       CFileItemList list;
       CStdString strPath=item->GetPath();

@@ -206,8 +206,6 @@ void CGUIListItem::SetArt(const map<string, string> &art)
   map<string, string>::const_iterator i = art.find("thumb");
   if (i != art.end())
     SetThumbnailImage(i->second);
-  if ((i = art.find("fanart")) != art.end())
-    SetProperty("fanart_image", i->second);
   m_art = art;
 }
 

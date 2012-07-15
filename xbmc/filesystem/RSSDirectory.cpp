@@ -359,9 +359,9 @@ static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElemen
   {
     const char* url = element->Attribute("url");
     if(url)
-      item->SetProperty("fanart_image", url);
+      item->SetArt("fanart", url);
     else if(IsPathToThumbnail(text))
-      item->SetProperty("fanart_image", text);
+      item->SetArt("fanart", text);
   }
 }
 

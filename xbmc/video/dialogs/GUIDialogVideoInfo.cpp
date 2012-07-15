@@ -684,10 +684,10 @@ void CGUIDialogVideoInfo::OnGetFanart()
   CFileItemList items;
 
   CFileItem item(*m_movieItem->GetVideoInfoTag());
-  if (item.HasProperty("fanart_image"))
+  if (item.HasArt("fanart"))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetThumbnailImage(item.GetProperty("fanart_image").asString());
+    itemCurrent->SetThumbnailImage(item.GetArt("fanart"));
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
@@ -767,10 +767,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  if (!result.IsEmpty())
-    m_movieItem->SetProperty("fanart_image", result);
-  else
-    m_movieItem->ClearProperty("fanart_image");
+  m_movieItem->SetArt("fanart", result);
   m_hasUpdatedThumb = true;
 
   // Update our screen

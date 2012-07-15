@@ -295,7 +295,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           if (art.find("thumb") != art.end())
             items.SetProperty("tvshowthumb", art["thumb"]);
           if (art.find("fanart") != art.end())
-            items.SetProperty("fanart_image", art["fanart"]);
+            items.SetArt("fanart", art["fanart"]);
         }
         CFileItem showItem(details.m_strShowPath, true);
 
@@ -1239,10 +1239,10 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CVideoThumbLoader loader;
       loader.LoadItem(item.get());
 
-      if (item->HasProperty("fanart_image"))
+      if (item->HasArt("fanart"))
       {
         CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-        itemCurrent->SetThumbnailImage(item->GetProperty("fanart_image").asString());
+        itemCurrent->SetThumbnailImage(item->GetArt("fanart"));
         itemCurrent->SetLabel(g_localizeStrings.Get(20440));
         items.Add(itemCurrent);
       }

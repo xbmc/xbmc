@@ -258,7 +258,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
       (URIUtils::IsInternetStream(addon->FanArt()) || 
        CFile::Exists(addon->FanArt())))
   {
-    item->SetProperty("fanart_image", addon->FanArt());
+    item->SetArt("fanart", addon->FanArt());
   }
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
   return item;

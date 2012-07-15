@@ -173,7 +173,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
       if (artwork.find("thumb") != artwork.end())
         m_albumItem->SetProperty("artistthumb", artwork["thumb"]);
       if (artwork.find("fanart") != artwork.end())
-        m_albumItem->SetProperty("fanart_image",artwork["fanart"]);
+        m_albumItem->SetArt("fanart",artwork["fanart"]);
     }
   }
   m_hasUpdatedThumb = false;
@@ -450,10 +450,10 @@ void CGUIDialogMusicInfo::OnGetFanart()
 {
   CFileItemList items;
 
-  if (m_albumItem->HasProperty("fanart_image"))
+  if (m_albumItem->HasArt("fanart"))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetThumbnailImage(m_albumItem->GetProperty("fanart_image").asString());
+    itemCurrent->SetThumbnailImage(m_albumItem->GetArt("fanart"));
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
@@ -534,10 +534,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
     db.Close();
   }
 
-  if (!result.empty())
-    m_albumItem->SetProperty("fanart_image",result);
-  else
-    m_albumItem->ClearProperty("fanart_image");
+  m_albumItem->SetArt("fanart", result);
   m_hasUpdatedThumb = true;
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

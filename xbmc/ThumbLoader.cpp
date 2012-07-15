@@ -227,7 +227,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   }
 
   // fanart
-  if (!pItem->HasProperty("fanart_image"))
+  if (!pItem->HasArt("fanart"))
   {
     CStdString fanart = GetCachedImage(*pItem, "fanart");
     if (fanart.IsEmpty())
@@ -239,7 +239,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     if (!fanart.IsEmpty())
     {
       CTextureCache::Get().BackgroundCacheImage(fanart);
-      pItem->SetProperty("fanart_image", fanart);
+      pItem->SetArt("fanart", fanart);
     }
   }
 
@@ -382,14 +382,14 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         m_database->SetArtForItem(tag.m_iDbId, tag.m_type, "thumb", "");
     }
     // For episodes and seasons, we want to set fanart for that of the show
-    if (!item.HasProperty("fanart_image") && tag.m_iIdShow >= 0)
+    if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
     {
       map<string, string> showArt;
       if (m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt))
       {
         map<string, string>::iterator i = showArt.find("fanart");
         if (i != showArt.end())
-          item.SetProperty("fanart_image", i->second);
+          item.SetArt("fanart", i->second);
         if ((i = showArt.find("thumb")) != showArt.end())
           item.SetProperty("tvshowthumb", i->second);
       }
@@ -537,7 +537,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       return true; // no fallback
   }
 
-  if (!pItem->HasProperty("fanart_image"))
+  if (!pItem->HasArt("fanart"))
   {
     if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
     {
@@ -548,7 +548,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       {
         string fanart = m_database->GetArtForItem(idArtist, "artist", "fanart");
         if (!fanart.empty())
-          pItem->SetProperty("fanart_image", fanart);
+          pItem->SetArt("fanart", fanart);
       }
       m_database->Close();
     }
@@ -611,7 +611,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     }
     if (tag.GetType() == "song" || tag.GetType() == "album")
     { // fanart from the artist
-      item.SetProperty("fanart_image", m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart"));
+      item.SetArt("fanart", m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart"));
     }
     m_database->Close();
   }

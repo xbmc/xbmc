@@ -1155,8 +1155,8 @@ namespace VIDEO
     if (!isEpisode)
     {
       CStdString fanart;
-      if (pItem->HasProperty("fanart_image"))
-        fanart = pItem->GetProperty("fanart_image").asString();
+      if (pItem->HasArt("fanart"))
+        fanart = pItem->GetArt("fanart");
       else if (useLocal)
         fanart = pItem->GetLocalFanart();
       if (fanart.IsEmpty())
@@ -1164,7 +1164,7 @@ namespace VIDEO
       if (!fanart.IsEmpty())
       {
         CTextureCache::Get().BackgroundCacheImage(fanart);
-        pItem->SetProperty("fanart_image", fanart);
+        pItem->SetArt("fanart", fanart);
       }
     }
 
