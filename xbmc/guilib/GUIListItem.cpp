@@ -283,7 +283,7 @@ void CGUIListItem::Serialize(CVariant &value)
   value["isFolder"] = m_bIsFolder;
   value["strLabel"] = m_strLabel;
   value["strLabel2"] = m_strLabel2;
-  value["sortLabel"] = CStdString(m_sortLabel);
+  value["sortLabel"] = m_sortLabel;
   value["strThumbnailImage"] = m_strThumbnailImage;
   value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
