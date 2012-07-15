@@ -116,7 +116,6 @@ bool CXRandR::Query(bool force)
       xoutput.modes.push_back(xmode);
       if (xmode.isCurrent)
       {
-        m_current.push_back(xoutput);
         hascurrent = true;
       }
     }
@@ -130,40 +129,13 @@ bool CXRandR::Query(bool force)
 
 std::vector<XOutput> CXRandR::GetModes(void)
 {
-  Query();
   return m_outputs;
-}
-
-void CXRandR::SaveState()
-{
-  Query(true);
-}
-
-void CXRandR::RestoreState()
-{
-  vector<XOutput>::iterator outiter;
-  for (outiter=m_current.begin() ; outiter!=m_current.end() ; outiter++)
-  {
-    vector<XMode> modes = (*outiter).modes;
-    vector<XMode>::iterator modeiter;
-    for (modeiter=modes.begin() ; modeiter!=modes.end() ; modeiter++)
-    {
-      XMode mode = *modeiter;
-      if (mode.isCurrent)
-      {
-        SetMode(*outiter, mode);
-        return;
-      }
-    }
-  }
 }
 
 bool CXRandR::SetMode(XOutput output, XMode mode)
 {
-  if ((output.name == m_currentOutput && mode.id == m_currentMode) || (output.name == "" && mode.id == ""))
+  if (output.name == "" && mode.id == "")
     return true;
-
-  Query();
 
   // Make sure the output exists, if not -- complain and exit
   bool isOutputFound = false;
@@ -241,8 +213,6 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
     return false;
   }
 
-  m_currentOutput = outputFound.name;
-  m_currentMode = modeFound.id;
   char cmd[255];
   if (getenv("XBMC_BIN_HOME"))
     snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_BIN_HOME"), outputFound.name.c_str(), modeFound.id.c_str());
@@ -259,20 +229,8 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   return true;
 }
 
-XOutput CXRandR::GetCurrentOutput()
-{
-  Query();
-  for (unsigned int j = 0; j < m_outputs.size(); j++)
-  {
-    if(m_outputs[j].isConnected)
-      return m_outputs[j];
-  }
-  XOutput empty;
-  return empty;
-}
 XMode CXRandR::GetCurrentMode(CStdString outputName)
 {
-  Query();
   XMode result;
 
   for (unsigned int j = 0; j < m_outputs.size(); j++)
@@ -295,7 +253,6 @@ XMode CXRandR::GetCurrentMode(CStdString outputName)
 
 void CXRandR::LoadCustomModeLinesToAllOutputs(void)
 {
-  Query();
   CXBMCTinyXML xmlDoc;
 
   if (!xmlDoc.LoadFile("special://xbmc/userdata/ModeLines.xml"))
@@ -341,6 +298,20 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
       }
     }
   }
+}
+
+XOutput CXRandR::GetOutput(CStdString outputName)
+{
+  XOutput result;
+  for (unsigned int i = 0; i < m_outputs.size(); ++i)
+  {
+    if (m_outputs[i].name == outputName)
+    {
+      result = m_outputs[i];
+      break;
+    }
+  }
+  return result;
 }
 
 CXRandR g_xrandr;

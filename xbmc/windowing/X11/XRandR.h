@@ -94,23 +94,14 @@ public:
   CXRandR(bool query=false);
   bool Query(bool force=false);
   std::vector<XOutput> GetModes(void);
-  XOutput GetCurrentOutput();
   XMode   GetCurrentMode(CStdString outputName);
+  XOutput GetOutput(CStdString outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
-  void SaveState();
-  void RestoreState();
-  //bool Has1080i();
-  //bool Has1080p();
-  //bool Has720p();
-  //bool Has480p();
 
 private:
   bool m_bInit;
-  std::vector<XOutput> m_current;
   std::vector<XOutput> m_outputs;
-  CStdString m_currentOutput;
-  CStdString m_currentMode;
 };
 
 extern CXRandR g_xrandr;
