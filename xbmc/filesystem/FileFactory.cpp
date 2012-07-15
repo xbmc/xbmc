@@ -26,6 +26,7 @@
 #include "FileFactory.h"
 #include "HDFile.h"
 #include "CurlFile.h"
+#include "DAVFile.h"
 #include "ShoutcastFile.h"
 #include "LastFMFile.h"
 #include "FileReaderFile.h"
@@ -146,11 +147,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   {
     if (strProtocol == "http"
     ||  strProtocol == "https"
-    ||  strProtocol == "dav"
-    ||  strProtocol == "davs"
     ||  strProtocol == "ftp"
     ||  strProtocol == "ftps"
     ||  strProtocol == "rss") return new CCurlFile();
+    else if (strProtocol == "dav" || strProtocol == "davs") return new CDAVFile();
 #ifdef HAS_FILESYSTEM_SFTP
     else if (strProtocol == "sftp" || strProtocol == "ssh") return new CSFTPFile();
 #endif

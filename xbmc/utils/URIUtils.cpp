@@ -683,6 +683,17 @@ bool URIUtils::IsFTP(const CStdString& strFile)
          strFile2.Left(5).Equals("ftps:");
 }
 
+bool URIUtils::IsDAV(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return strFile2.Left(4).Equals("dav:")  ||
+         strFile2.Left(5).Equals("davs:");
+}
+
 bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
 {
   CStdString strProtocol = url.GetProtocol();

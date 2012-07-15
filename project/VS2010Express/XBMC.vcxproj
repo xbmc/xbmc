@@ -456,7 +456,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\CurlFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DAAPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DAAPFile.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\DAVCommon.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DAVDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\DAVFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DirectoryCache.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DirectoryFactory.cpp" />
@@ -1015,6 +1017,8 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\DAVCommon.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\DAVFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
