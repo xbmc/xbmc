@@ -116,12 +116,37 @@ void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
   if (m_strThumbnailImage == strThumbnail)
     return;
   m_strThumbnailImage = strThumbnail;
+  m_art["thumb"] = strThumbnail;
   SetInvalid();
 }
 
 const CStdString& CGUIListItem::GetThumbnailImage() const
 {
   return m_strThumbnailImage;
+}
+
+void CGUIListItem::SetArt(const std::string &type, const std::string &url)
+{
+  ArtMap::iterator i = m_art.find(type);
+  if (i == m_art.end() || i->second != url)
+  {
+    m_art[type] = url;
+    SetInvalid();
+  }
+}
+
+std::string CGUIListItem::GetArt(const std::string &type) const
+{
+  ArtMap::const_iterator i = m_art.find(type);
+  if (i != m_art.end())
+    return i->second;
+  return "";
+}
+
+bool CGUIListItem::HasArt(const std::string &type) const
+{
+  ArtMap::const_iterator i = m_art.find(type);
+  return (i != m_art.end() && !i->second.empty());
 }
 
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
@@ -171,14 +196,9 @@ CStdString CGUIListItem::GetOverlayImage() const
   }
 }
 
-map<string, string> CGUIListItem::GetArt() const
+const map<string, string> &CGUIListItem::GetArt() const
 {
-  map<string, string> art;
-  if (HasThumbnail())
-    art.insert(make_pair("thumb", GetThumbnailImage()));
-  if (HasProperty("fanart_image"))
-    art.insert(make_pair("fanart", GetProperty("fanart_image").asString()));
-  return art;
+  return m_art;
 }
 
 void CGUIListItem::SetArt(const map<string, string> &art)
@@ -188,6 +208,7 @@ void CGUIListItem::SetArt(const map<string, string> &art)
     SetThumbnailImage(i->second);
   if ((i = art.find("fanart")) != art.end())
     SetProperty("fanart_image", i->second);
+  m_art = art;
 }
 
 void CGUIListItem::Select(bool bOnOff)
@@ -229,6 +250,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
+  m_art = item.m_art;
   SetInvalid();
   return *this;
 }
@@ -250,6 +272,12 @@ void CGUIListItem::Archive(CArchive &ar)
     {
       ar << it->first;
       ar << it->second;
+    }
+    ar << (int)m_art.size();
+    for (ArtMap::const_iterator i = m_art.begin(); i != m_art.end(); i++)
+    {
+      ar << i->first;
+      ar << i->second;
     }
   }
   else
@@ -276,6 +304,14 @@ void CGUIListItem::Archive(CArchive &ar)
       ar >> value;
       SetProperty(key, value);
     }
+    ar >> mapSize;
+    for (int i = 0; i < mapSize; i++)
+    {
+      std::string key, value;
+      ar >> key;
+      ar >> value;
+      m_art.insert(make_pair(key, value));
+    }
   }
 }
 void CGUIListItem::Serialize(CVariant &value)
@@ -292,12 +328,17 @@ void CGUIListItem::Serialize(CVariant &value)
   {
     value["properties"][it->first] = it->second;
   }
+  for (ArtMap::const_iterator it = m_art.begin(); it != m_art.end(); it++)
+    value["art"][it->first] = it->second;
 }
 
 void CGUIListItem::FreeIcons()
 {
   FreeMemory();
   m_strThumbnailImage = "";
+  ArtMap::iterator i = m_art.find("thumb");
+  if (i != m_art.end())
+    m_art.erase(i);
   m_strIcon = "";
   SetInvalid();
 }
