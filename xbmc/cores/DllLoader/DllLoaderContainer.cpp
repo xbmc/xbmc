@@ -158,17 +158,21 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
 
   //  in environment variable?
   CStdStringArray vecEnv;
-  StringUtils::SplitString(ENV_PATH, ";", vecEnv);
 
 #if defined(TARGET_ANDROID)
-  vecEnv.push_back(CStdString(getenv("XBMC_ANDROID_LIBS")) + "/");
+  CStdString systemLibs = getenv("XBMC_ANDROID_SYSTEM_LIBS");
+  StringUtils::SplitString(systemLibs, ":", vecEnv);
+  CStdString localLibs = getenv("XBMC_ANDROID_LIBS");
+  vecEnv.insert(vecEnv.begin(),localLibs);
+#else
+  StringUtils::SplitString(ENV_PATH, ";", vecEnv);
 #endif
-
   LibraryLoader* pDll = NULL;
 
   for (int i=0; i<(int)vecEnv.size(); ++i)
   {
     CStdString strPath=vecEnv[i];
+    URIUtils::AddSlashAtEnd(strPath);
 
 #ifdef LOGALL
     CLog::Log(LOGDEBUG, "Searching for the dll %s in directory %s", sName, strPath.c_str());
