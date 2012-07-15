@@ -188,7 +188,8 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
 void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *session, float volume)
 {
   // iOS reports volume in dB units with 0 dB as full volume reference and -144 dB as soft mute.
-  float volPercent = pow(10.0f, volume / 20.0f);
+  // The actual range seems to be approx 30 dB, so clip to mute for any value lower than -30 dB
+  float volPercent = (volume < -30.0f) ? 0.0f : (1 - (volume / -30.0f));
   g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
 }
 
