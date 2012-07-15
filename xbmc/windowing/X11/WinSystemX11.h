@@ -46,7 +46,8 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
-  virtual int  GetNumScreens() { return 1; }
+  virtual int  GetNumScreens();
+  virtual int  GetCurrentScreen();
   virtual void ShowOSMouse(bool show);
   virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
@@ -93,6 +94,8 @@ protected:
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   uint64_t                     m_dpyLostTime;
+  CStdString                   m_outputName;
+  int                          m_outputIndex;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
