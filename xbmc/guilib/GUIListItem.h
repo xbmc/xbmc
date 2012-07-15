@@ -75,7 +75,7 @@ public:
   const CStdString& GetIconImage() const;
 
   void SetThumbnailImage(const CStdString& strThumbnail);
-  const CStdString& GetThumbnailImage() const;
+  CStdString GetThumbnailImage() const;
 
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
@@ -161,7 +161,6 @@ public:
 
 protected:
   CStdString m_strLabel2;     // text of column2
-  CStdString m_strThumbnailImage; // filename of thumbnail
   CStdString m_strIcon;      // filename of icon
   GUIIconOverlay m_overlayIcon; // type of overlay icon
 

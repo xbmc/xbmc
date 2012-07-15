@@ -41,7 +41,6 @@ CGUIListItem::CGUIListItem(void)
   m_strLabel = "";
   m_bSelected = false;
   m_strIcon = "";
-  m_strThumbnailImage = "";
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -55,7 +54,6 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   SetSortLabel(strLabel);
   m_bSelected = false;
   m_strIcon = "";
-  m_strThumbnailImage = "";
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -113,16 +111,12 @@ const CStdStringW& CGUIListItem::GetSortLabel() const
 
 void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
 {
-  if (m_strThumbnailImage == strThumbnail)
-    return;
-  m_strThumbnailImage = strThumbnail;
-  m_art["thumb"] = strThumbnail;
-  SetInvalid();
+  SetArt("thumb", strThumbnail);
 }
 
-const CStdString& CGUIListItem::GetThumbnailImage() const
+CStdString CGUIListItem::GetThumbnailImage() const
 {
-  return m_strThumbnailImage;
+  return GetArt("thumb");
 }
 
 void CGUIListItem::SetArt(const std::string &type, const std::string &url)
@@ -203,9 +197,6 @@ const map<string, string> &CGUIListItem::GetArt() const
 
 void CGUIListItem::SetArt(const map<string, string> &art)
 {
-  map<string, string>::const_iterator i = art.find("thumb");
-  if (i != art.end())
-    SetThumbnailImage(i->second);
   m_art = art;
 }
 
@@ -222,7 +213,7 @@ bool CGUIListItem::HasIcon() const
 
 bool CGUIListItem::HasThumbnail() const
 {
-  return (m_strThumbnailImage.size() != 0);
+  return HasArt("thumb");
 }
 
 bool CGUIListItem::HasOverlay() const
@@ -244,7 +235,6 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   FreeMemory();
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
-  m_strThumbnailImage = item.m_strThumbnailImage;
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
@@ -261,7 +251,6 @@ void CGUIListItem::Archive(CArchive &ar)
     ar << m_strLabel;
     ar << m_strLabel2;
     ar << m_sortLabel;
-    ar << m_strThumbnailImage;
     ar << m_strIcon;
     ar << m_bSelected;
     ar << m_overlayIcon;
@@ -284,7 +273,6 @@ void CGUIListItem::Archive(CArchive &ar)
     ar >> m_strLabel;
     ar >> m_strLabel2;
     ar >> m_sortLabel;
-    ar >> m_strThumbnailImage;
     ar >> m_strIcon;
     ar >> m_bSelected;
 
@@ -318,7 +306,6 @@ void CGUIListItem::Serialize(CVariant &value)
   value["strLabel"] = m_strLabel;
   value["strLabel2"] = m_strLabel2;
   value["sortLabel"] = m_sortLabel;
-  value["strThumbnailImage"] = m_strThumbnailImage;
   value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
 
@@ -333,7 +320,6 @@ void CGUIListItem::Serialize(CVariant &value)
 void CGUIListItem::FreeIcons()
 {
   FreeMemory();
-  m_strThumbnailImage = "";
   ArtMap::iterator i = m_art.find("thumb");
   if (i != m_art.end())
     m_art.erase(i);

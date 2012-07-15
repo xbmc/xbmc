@@ -82,7 +82,7 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartPartNumber = 1;
   SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
-  m_strThumbnailImage = song.strThumb;
+  SetThumbnailImage(song.strThumb);
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -398,7 +398,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  m_strThumbnailImage = share.m_strThumbnailImage;
+  SetThumbnailImage(share.m_strThumbnailImage);
   SetLabelPreformated(true);
   if (IsDVD())
     GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
