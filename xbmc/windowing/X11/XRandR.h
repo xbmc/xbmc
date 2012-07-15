@@ -76,9 +76,11 @@ public:
       name="";
       isConnected=false;
       w=h=x=y=wmm=hmm=0;
+      screen=0;
     }
   CStdString name;
   bool isConnected;
+  int screen;
   int w;
   int h;
   int x;
@@ -91,15 +93,16 @@ public:
 class CXRandR
 {
 public:
-  CXRandR(bool query=false);
-  bool Query(bool force=false);
+  CXRandR();
+  bool Query(int screens, bool force);
   std::vector<XOutput> GetModes(void);
-  XMode   GetCurrentMode(CStdString outputName);
-  XOutput GetOutput(CStdString outputName);
+  XMode   GetCurrentMode(int screen, CStdString outputName);
+  XOutput GetOutput(int screen, CStdString outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
 
 private:
+  bool Query(int screen);
   bool m_bInit;
   std::vector<XOutput> m_outputs;
 };

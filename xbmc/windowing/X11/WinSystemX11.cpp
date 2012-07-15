@@ -47,7 +47,7 @@ static bool SetOutputMode(RESOLUTION_INFO& res)
 {
 #if defined(HAS_XRANDR)
   XOutput out;
-  XMode   mode = g_xrandr.GetCurrentMode(res.strOutput);
+  XMode   mode = g_xrandr.GetCurrentMode(res.iInternal, res.strOutput);
 
   /* mode matches so we are done */
   if(res.strId == mode.id)
@@ -55,6 +55,7 @@ static bool SetOutputMode(RESOLUTION_INFO& res)
 
   /* set up mode */
   out.name = res.strOutput;
+  out.screen = res.iInternal;
   mode.w   = res.iWidth;
   mode.h   = res.iHeight;
   mode.hz  = res.fRefreshRate;
@@ -294,7 +295,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   XSetWindowAttributes swa = {0};
 
 #if defined(HAS_XRANDR)
-  XOutput out = g_xrandr.GetOutput(res.strOutput);
+  XOutput out = g_xrandr.GetOutput(m_visual->screen, res.strOutput);
   if(out.isConnected)
   {
     x = out.x;
@@ -440,6 +441,15 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     OnLostDevice();
   }
 
+  if(res.iInternal != m_visual->screen)
+  {
+    CreateNewWindow("", fullScreen, res, NULL);
+    m_bFullScreen = fullScreen;
+    m_outputName  = res.strOutput;
+    m_outputIndex = res.iScreen;
+    return true;
+  }
+
   XSetWindowAttributes attr = {0};
   if(fullScreen)
     attr.border_pixel = 0;
@@ -449,7 +459,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   int x = 0, y = 0;
 #if defined(HAS_XRANDR)
-  XOutput out = g_xrandr.GetOutput(res.strOutput);
+  XOutput out = g_xrandr.GetOutput(res.iInternal, res.strOutput);
   if(out.isConnected)
   {
     x = out.x;
@@ -528,19 +538,20 @@ void CWinSystemX11::UpdateResolutions()
 
 #if defined(HAS_XRANDR)
   // add desktop modes
-  g_xrandr.Query(true);
+  g_xrandr.Query(XScreenCount(m_dpy), true);
   std::vector<XOutput> outs = g_xrandr.GetModes();
   if(outs.size() > 0)
   {
     for(unsigned i = 0; i < outs.size(); ++i)
     {
       XOutput out  = outs[i];
-      XMode   mode = g_xrandr.GetCurrentMode(out.name);
+      XMode   mode = g_xrandr.GetCurrentMode(out.screen, out.name);
       RESOLUTION_INFO res;
 
       UpdateDesktopResolution(res, i, mode.w, mode.h, mode.hz);
       res.strId     = mode.id;
       res.strOutput = out.name;
+      res.iInternal = out.screen;
       g_settings.m_ResInfo.push_back(res);
     }
   }
@@ -551,6 +562,7 @@ void CWinSystemX11::UpdateResolutions()
     int x11screen = DefaultScreen(m_dpy);
     int w = DisplayWidth(m_dpy, x11screen);
     int h = DisplayHeight(m_dpy, x11screen);
+    res.iInternal = x11screen;
     UpdateDesktopResolution(res, 0, w, h, 0.0);
     g_settings.m_ResInfo.push_back(res);
   }
@@ -588,6 +600,7 @@ void CWinSystemX11::UpdateResolutions()
       res.strOutput    = out.name;
       res.strId        = mode.id;
       res.iScreen      = outiter - outs.begin();
+      res.iInternal    = out.screen;
       res.iSubtitles   = (int)(0.95*mode.h);
       res.fRefreshRate = mode.hz;
       res.bFullScreen  = true;
@@ -628,6 +641,8 @@ int  CWinSystemX11::GetCurrentScreen()
   for(unsigned i = 0; i < outs.size(); ++i)
   {
     XOutput out  = outs[i];
+    if(out.screen != m_visual->screen)
+      continue;
 
     int w = std::max(0, std::min(m_nLeft + m_nWidth , out.x + out.w) - std::max(m_nLeft, out.x));
     int h = std::max(0, std::min(m_nTop  + m_nHeight, out.y + out.h) - std::max(m_nTop , out.y));
@@ -742,7 +757,7 @@ void CWinSystemX11::NotifyXRREvent()
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
 
 #if defined(HAS_XRANDR)
-  g_xrandr.Query(true);
+  g_xrandr.Query(XScreenCount(m_dpy), true);
 #endif
   OnResetDevice();
 }

@@ -73,6 +73,7 @@ public:
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
+  XVisualInfo* GetVisual() { return m_visual; }
   void NotifyXRREvent();
 
 protected:
