@@ -106,9 +106,16 @@ namespace XFILE
       CMusicDatabase db;
       if (db.Open())
       {
+        CMusicDbUrl musicUrl;
+        CStdString xsp;
+        if (!musicUrl.FromString("musicdb://3/") || !playlist.SaveAsJson(xsp, false))
+          return false;
+
+        // store the smartplaylist as JSON in the URL as well
+        musicUrl.AddOption("xsp", xsp);
+
         CDatabase::Filter filter;
-        filter.where = playlist.GetWhereClause(db, playlists);
-        success = db.GetAlbumsByWhere("musicdb://3/", filter, items, sorting);
+        success = db.GetAlbumsByWhere(musicUrl.ToString(), filter, items, sorting);
         items.SetContent("albums");
         db.Close();
       }
@@ -118,14 +125,20 @@ namespace XFILE
       CMusicDatabase db;
       if (db.Open())
       {
-        CDatabase::Filter filter;
         CSmartPlaylist songPlaylist(playlist);
         if (playlist.GetType().IsEmpty() || playlist.GetType().Equals("mixed"))
           songPlaylist.SetType("songs");
+        
+        CMusicDbUrl musicUrl;
+        CStdString xsp;
+        if (!musicUrl.FromString("musicdb://4/") || !songPlaylist.SaveAsJson(xsp, false))
+          return false;
 
-        filter.where = songPlaylist.GetWhereClause(db, playlists);
+        // store the smartplaylist as JSON in the URL as well
+        musicUrl.AddOption("xsp", xsp);
 
-        success = db.GetSongsByWhere("", filter, items, sorting);
+        CDatabase::Filter filter;
+        success = db.GetSongsByWhere(musicUrl.ToString(), filter, items, sorting);
         items.SetContent("songs");
         db.Close();
       }

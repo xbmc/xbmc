@@ -5136,6 +5136,17 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
   else
     return false;
 
+  option = options.find("xsp");
+  if (option != options.end())
+  {
+    CSmartPlaylist xsp;
+    if (!xsp.LoadFromJson(option->second.asString()))
+      return false;
+
+    std::set<CStdString> playlists;
+    filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
+  }
+
   return true;
 }
 
