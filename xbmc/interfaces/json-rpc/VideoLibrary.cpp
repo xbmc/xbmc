@@ -38,12 +38,40 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLaye
   if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
     return InvalidParams;
 
-  CFileItemList items;
-  JSONRPC_STATUS ret = OK;
-  if (!videodatabase.GetMoviesNav("videodb://1/2/", items, -1, -1, -1, -1, -1, -1, -1, -1, sorting))
-    ret = GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
+  CVideoDbUrl videoUrl;
+  videoUrl.FromString("videodb://1/2/");
+  int genreID = -1, year = -1, setID = 0;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    videoUrl.AddOption("genre", filter["genre"].asString());
+  if (filter.isMember("year"))
+    year = (int)filter["year"].asInteger();
+  if (filter.isMember("actor"))
+    videoUrl.AddOption("actor", filter["actor"].asString());
+  if (filter.isMember("director"))
+    videoUrl.AddOption("director", filter["director"].asString());
+  if (filter.isMember("studio"))
+    videoUrl.AddOption("studio", filter["studio"].asString());
+  if (filter.isMember("country"))
+    videoUrl.AddOption("country", filter["country"].asString());
+  if (filter.isMember("setid"))
+    setID = (int)filter["setid"].asInteger();
+  if (filter.isMember("set"))
+    videoUrl.AddOption("set", filter["set"].asString());
+  if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
 
-  return ret;
+  // setID must not be -1 otherwise GetMoviesNav() will return sets
+  if (setID < 0)
+    setID = 0;
+
+  CFileItemList items;
+  if (!videodatabase.GetMoviesNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, setID, -1, sorting))
+    return InvalidParams;
+
+  return GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -121,9 +149,8 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
     return InvalidParams;
 
   CFileItemList items;
-  JSONRPC_STATUS ret = OK;
   if (!videodatabase.GetTvShowsNav("videodb://2/2/", items, -1, -1, -1, -1, -1, sorting))
-    return ret;
+    return InvalidParams;
 
   bool additionalInfo = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
@@ -144,7 +171,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
     size = (int)items.GetProperty("total").asInteger();
   HandleFileItemList("tvshowid", true, "tvshows", items, parameterObject, result, size, false);
 
-  return ret;
+  return OK;
 }
 
 JSONRPC_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
