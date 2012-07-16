@@ -2747,7 +2747,7 @@ bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList
   return GetAlbumsByWhere(musicUrl.ToString(), filter, items);
 }
 
-bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, bool albumArtistsOnly)
+bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, bool albumArtistsOnly /* = false */, int idGenre /* = -1 */, int idAlbum /* = -1 */, int idSong /* = -1 */)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -2761,6 +2761,10 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
     if (idGenre > 0)
       musicUrl.AddOption("genreid", idGenre);
+    else if (idAlbum > 0)
+      musicUrl.AddOption("albumid", idAlbum);
+    else if (idSong > 0)
+      musicUrl.AddOption("songid", idSong);
 
     musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
 
@@ -5032,12 +5036,32 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
 
   if (type == "artists")
   {
-    int idGenre = -1;
+    int idGenre = -1, idAlbum = -1, idSong = -1;
     bool albumArtistsOnly = false;
 
     option = options.find("genreid");
     if (option != options.end())
       idGenre = (int)option->second.asInteger();
+    else
+    {
+      option = options.find("genre");
+      if (option != options.end())
+        idGenre = GetGenreByName(option->second.asString());
+    }
+
+    option = options.find("albumid");
+    if (option != options.end())
+      idAlbum = (int)option->second.asInteger();
+    else
+    {
+      option = options.find("album");
+      if (option != options.end())
+        idAlbum = GetAlbumByName(option->second.asString());
+    }
+
+    option = options.find("songid");
+    if (option != options.end())
+      idSong = (int)option->second.asInteger();
 
     option = options.find("albumartistsonly");
     if (option != options.end())
@@ -5045,36 +5069,38 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
 
     CStdString strSQL = "(idArtist IN ";
 
-    if (idGenre <= 0)
-    {
-      if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
-        strSQL += "(SELECT song_artist.idArtist FROM song_artist) "
-                  "or idArtist IN ";
-
-      // and always show any artists linked to an album (may be different from above due to album artist tag)
-      strSQL +=   "(SELECT album_artist.idArtist from album_artist"; // All artists linked to an album
-      if (albumArtistsOnly)
-        strSQL += " WHERE album_artist.boolFeatured = 0";            // then exclude those that have no extra artists
-      strSQL +=   ")"
-                ") ";
-    }
-    else
-    { // same statements as above, but limit to the specified genre
+    if (idAlbum > 0)
+      strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist WHERE album_artist.idAlbum = %i)", idAlbum);
+    else if (idSong > 0)
+      strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist WHERE song_artist.idSong = %i)", idSong);
+    else if (idGenre > 0)
+    { // same statements as below, but limit to the specified genre
       // in this case we show the whole lot always - there is no limitation to just album artists
       if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
-        strSQL+=PrepareSQL("(SELECT song_artist.idArtist FROM song_artist " // All artists linked to extra genres
-                           "JOIN song_genre ON song_artist.idSong = song_genre.idSong "
-                           "WHERE song_genre.idGenre = %i) "
-                           "or idArtist IN ", idGenre);
+        strSQL+=PrepareSQL("(SELECT song_artist.idArtist FROM song_artist" // All artists linked to extra genres
+                           " JOIN song_genre ON song_artist.idSong = song_genre.idSong"
+                           " WHERE song_genre.idGenre = %i)"
+                           " OR idArtist IN ", idGenre);
       // and add any artists linked to an album (may be different from above due to album artist tag)
-      strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist " // All album artists linked to extra genres
-                           "JOIN album_genre ON album_artist.idAlbum = album_genre.idAlbum "
-                           "WHERE album_genre.idGenre = %i)"
-                           ")", idGenre);
+      strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist" // All album artists linked to extra genres
+                           " JOIN album_genre ON album_artist.idAlbum = album_genre.idAlbum"
+                           " WHERE album_genre.idGenre = %i)", idGenre);
+    }
+    else
+    {
+      if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
+        strSQL += "(SELECT song_artist.idArtist FROM song_artist)"
+                  " OR idArtist IN ";
+
+      // and always show any artists linked to an album (may be different from above due to album artist tag)
+      strSQL +=   "(SELECT album_artist.idArtist FROM album_artist"; // All artists linked to an album
+      if (albumArtistsOnly)
+        strSQL += " WHERE album_artist.boolFeatured = 0";            // then exclude those that have no extra artists
+      strSQL +=   ")";
     }
 
     // remove the null string
-    strSQL += " and strArtist != ''";
+    strSQL += ") and strArtist != ''";
 
     // and the various artist entry if applicable
     if (!albumArtistsOnly)
