@@ -407,10 +407,9 @@
       "enum": [ "title", "genre", "year", "rating", "director", "trailer",
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
-                "imdbnumber", "premiered", "productioncode", "runtime", "set",
-                "showlink", "streamdetails", "top250", "votes", "fanart",
-                "thumbnail", "file", "sorttitle", "resume", "setid", "dateadded",
-                "tag" ]
+                "imdbnumber", "runtime", "set", "showlink", "streamdetails",
+                "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
+                "resume", "setid", "dateadded", "tag" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -562,8 +561,6 @@
       "cast": { "$ref": "Video.Cast" },
       "country": { "$ref": "Array.String" },
       "imdbnumber": { "type": "string" },
-      "premiered": { "type": "string" },
-      "productioncode": { "type": "string" },
       "set": { "type": "string" },
       "showlink": { "$ref": "Array.String" },
       "top250": { "type": "integer" },
