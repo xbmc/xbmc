@@ -4,15 +4,15 @@
     "default": null
   },
   "Optional.String": {
-    "type": [ "null", "string" ], 
+    "type": [ "null", "string" ],
     "default": null
   },
   "Optional.Integer": {
-    "type": [ "null", "integer" ], 
+    "type": [ "null", "integer" ],
     "default": null
   },
   "Optional.Number": {
-    "type": [ "null", "number" ], 
+    "type": [ "null", "number" ],
     "default": null
   },
   "Array.String": {
@@ -67,7 +67,7 @@
     "type": "integer",
     "default": -1,
     "minimum": 1
-  },  
+  },
   "Playlist.Id": {
     "type": "integer",
     "minimum": 0,

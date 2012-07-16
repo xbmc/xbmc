@@ -32,15 +32,15 @@ namespace JSONRPC
       "\"default\": null"
     "}",
     "\"Optional.String\": {"
-      "\"type\": [ \"null\", \"string\" ], "
+      "\"type\": [ \"null\", \"string\" ],"
       "\"default\": null"
     "}",
     "\"Optional.Integer\": {"
-      "\"type\": [ \"null\", \"integer\" ], "
+      "\"type\": [ \"null\", \"integer\" ],"
       "\"default\": null"
     "}",
     "\"Optional.Number\": {"
-      "\"type\": [ \"null\", \"number\" ], "
+      "\"type\": [ \"null\", \"number\" ],"
       "\"default\": null"
     "}",
     "\"Array.String\": {"
@@ -2535,7 +2535,7 @@ namespace JSONRPC
       "\"description\": \"Playback of a media item has been stopped. If there is no ID available extra information will be provided.\","
       "\"params\": ["
         "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
-        "{ \"name\": \"data\", \"type\": \"object\", \"required\": true, "
+        "{ \"name\": \"data\", \"type\": \"object\", \"required\": true,"
           "\"properties\": {"
             "\"item\": { \"$ref\": \"Player.Notifications.Item\" },"
             "\"end\": { \"type\": \"boolean\", \"required\": true, \"description\": \"Whether the player has reached the end of the playable item(s) or not\" }"
@@ -2558,7 +2558,7 @@ namespace JSONRPC
       "\"description\": \"The playback position has been changed. If there is no ID available extra information will be provided.\","
       "\"params\": ["
         "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
-        "{ \"name\": \"data\", \"type\": \"object\", \"required\": true, "
+        "{ \"name\": \"data\", \"type\": \"object\", \"required\": true,"
           "\"properties\": {"
             "\"item\": { \"$ref\": \"Player.Notifications.Item\" },"
             "\"player\": { \"$ref\": \"Player.Notifications.Player.Seek\", \"required\": true }"
