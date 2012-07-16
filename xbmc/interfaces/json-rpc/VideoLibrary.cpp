@@ -148,8 +148,23 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
   if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
     return InvalidParams;
 
+  CVideoDbUrl videoUrl;
+  videoUrl.FromString("videodb://2/2/");
+  int genreID = -1, year = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    videoUrl.AddOption("genre", filter["genre"].asString());
+  if (filter.isMember("year"))
+    year = (int)filter["year"].asInteger();
+  if (filter.isMember("actor"))
+    videoUrl.AddOption("actor", filter["actor"].asString());
+  if (filter.isMember("studio"))
+    videoUrl.AddOption("studio", filter["studio"].asString());
+
   CFileItemList items;
-  if (!videodatabase.GetTvShowsNav("videodb://2/2/", items, -1, -1, -1, -1, -1, sorting))
+  if (!videodatabase.GetTvShowsNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, sorting))
     return InvalidParams;
 
   bool additionalInfo = false;

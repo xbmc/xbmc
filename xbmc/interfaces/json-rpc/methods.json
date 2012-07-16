@@ -1021,7 +1021,16 @@
     "params": [
       { "name": "properties", "$ref": "Video.Fields.TVShow" },
       { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
+      { "name": "sort", "$ref": "List.Sort" },
+      { "name": "filter",
+        "type": [
+          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "year": { "type": "integer", "minimum": 0, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "actor": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "studio": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false }
+        ]
+      }
     ],
     "returns": { "type": "object",
       "properties": {
