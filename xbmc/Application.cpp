@@ -4344,7 +4344,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
 void CApplication::UpdateFileState()
 {
   // Did the file change?
-  if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
+  if (m_progressTrackingItem->GetPath() != "" && (m_progressTrackingItem->GetPath() != CurrentFile() || IsPaused() ) )
   {
     SaveFileState();
 
@@ -4353,7 +4353,7 @@ void CApplication::UpdateFileState()
   }
   else
   {
-    if (IsPlayingVideo() || IsPlayingAudio())
+    if ( ( IsPlayingVideo() || IsPlayingAudio() ) && !IsPaused() )
     {
       if (m_progressTrackingItem->GetPath() == "")
       {
