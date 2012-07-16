@@ -5126,14 +5126,26 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
 
+    option = options.find("genre");
+    if (option != options.end())
+      filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
+
     option = options.find("artistid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong WHERE song_artist.idArtist = %i)" // All albums linked to this artist via songs
                                     " OR idAlbum IN (SELECT album_artist.idAlbum FROM album_artist WHERE album_artist.idArtist = %i)", // All albums where album artists fit
                                     (int)option->second.asInteger(), (int)option->second.asInteger()));
-    // no artist given, so exclude any single albums (aka empty tagged albums)
     else
-      filter.AppendWhere("albumview.strAlbum <> ''");
+    {
+      option = options.find("artist");
+      if (option != options.end())
+        filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong JOIN artist ON artist.idArtist = song_artist.idArtist WHERE artist.strArtist like '%s')" // All albums linked to this artist via songs
+                                      " OR idAlbum IN (SELECT album_artist.idAlbum FROM album_artist JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // All albums where album artists fit
+                                      option->second.asString().c_str(), option->second.asString().c_str()));
+      // no artist given, so exclude any single albums (aka empty tagged albums)
+      else
+        filter.AppendWhere("albumview.strAlbum <> ''");
+    }
   }
   else if (type == "songs")
   {

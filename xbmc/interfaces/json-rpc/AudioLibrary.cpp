@@ -105,9 +105,19 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
-
-  int artistID  = (int)parameterObject["artistid"].asInteger();
-  int genreID   = (int)parameterObject["genreid"].asInteger();
+  
+  CMusicDbUrl musicUrl;
+  musicUrl.FromString("musicdb://3/");
+  int artistID = -1, genreID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("artistid"))
+    artistID = (int)filter["artistid"].asInteger();
+  if (filter.isMember("artist"))
+    musicUrl.AddOption("artist", filter["artist"].asString());
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    musicUrl.AddOption("genre", filter["genre"].asString());
 
   SortDescription sorting;
   ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
@@ -115,7 +125,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
     return InvalidParams;
 
   CFileItemList items;
-  if (!musicdatabase.GetAlbumsNav("musicdb://3/", items, genreID, artistID, sorting))
+  if (!musicdatabase.GetAlbumsNav(musicUrl.ToString(), items, genreID, artistID, sorting))
     return InternalError;
 
   int size = items.Size();
