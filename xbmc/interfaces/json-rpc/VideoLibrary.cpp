@@ -832,4 +832,6 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     artwork["thumb"] = parameterObject["thumbnail"].asString();
   if (ParameterNotNull(parameterObject, "fanart"))
     artwork["fanart"] = parameterObject["fanart"].asString();
+  if (ParameterNotNull(parameterObject, "tag"))
+    CopyStringArray(parameterObject["tag"], details.m_tags);
 }

@@ -1213,7 +1213,8 @@
       { "name": "set", "$ref": "Optional.String" },
       { "name": "showlink", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "thumbnail", "$ref": "Optional.String" },
-      { "name": "fanart", "$ref": "Optional.String" }
+      { "name": "fanart", "$ref": "Optional.String" },
+      { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
     ],
     "returns": "string"
   },

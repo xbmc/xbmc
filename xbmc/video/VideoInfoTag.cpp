@@ -442,7 +442,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   }
   value["set"] = m_strSet;
   value["setid"] = m_iSetId;
-  value["tags"] = m_tags;
+  value["tag"] = m_tags;
   value["runtime"] = m_strRuntime;
   value["file"] = m_strFile;
   value["path"] = m_strPath;

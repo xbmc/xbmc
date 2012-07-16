@@ -437,7 +437,8 @@ namespace JSONRPC
                   "\"playcount\", \"writer\", \"studio\", \"mpaa\", \"cast\", \"country\","
                   "\"imdbnumber\", \"premiered\", \"productioncode\", \"runtime\", \"set\","
                   "\"showlink\", \"streamdetails\", \"top250\", \"votes\", \"fanart\","
-                  "\"thumbnail\", \"file\", \"sorttitle\", \"resume\", \"setid\", \"dateadded\" ]"
+                  "\"thumbnail\", \"file\", \"sorttitle\", \"resume\", \"setid\", \"dateadded\","
+                  "\"tag\" ]"
       "}"
     "}",
     "\"Video.Fields.MovieSet\": {"
@@ -595,7 +596,8 @@ namespace JSONRPC
         "\"showlink\": { \"$ref\": \"Array.String\" },"
         "\"top250\": { \"type\": \"integer\" },"
         "\"votes\": { \"type\": \"string\" },"
-        "\"setid\": { \"$ref\": \"Library.Id\" }"
+        "\"setid\": { \"$ref\": \"Library.Id\" },"
+        "\"tag\": { \"$ref\": \"Array.String\" }"
       "}"
     "}",
     "\"Video.Details.MovieSet\": {"
@@ -723,7 +725,7 @@ namespace JSONRPC
                   "\"runtime\", \"set\", \"showlink\", \"streamdetails\", \"top250\", \"votes\","
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
                   "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
-                  "\"disc\" ]"
+                  "\"disc\", \"tag\" ]"
       "}"
     "}",
     "\"List.Item.All\": {"
@@ -763,7 +765,8 @@ namespace JSONRPC
         "\"setid\": { \"$ref\": \"Library.Id\" },"
         "\"tvshowid\": { \"$ref\": \"Library.Id\" },"
         "\"watchedepisodes\": { \"type\": \"integer\" },"
-        "\"disc\": { \"type\": \"integer\" }"
+        "\"disc\": { \"type\": \"integer\" },"
+        "\"tag\": { \"$ref\": \"Array.String\" }"
       "}"
     "}",
     "\"List.Fields.Files\": {"
@@ -2077,7 +2080,8 @@ namespace JSONRPC
         "{ \"name\": \"set\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"showlink\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" }"
+        "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
+        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
