@@ -105,7 +105,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
-  
+
   CMusicDbUrl musicUrl;
   musicUrl.FromString("musicdb://3/");
   int artistID = -1, genreID = -1;
@@ -165,9 +165,22 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
   if (!musicdatabase.Open())
     return InternalError;
 
-  int artistID = (int)parameterObject["artistid"].asInteger();
-  int albumID  = (int)parameterObject["albumid"].asInteger();
-  int genreID  = (int)parameterObject["genreid"].asInteger();
+  CMusicDbUrl musicUrl;
+  musicUrl.FromString("musicdb://4/");
+  int genreID = -1, albumID = -1, artistID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("artistid"))
+    artistID = (int)filter["artistid"].asInteger();
+  if (filter.isMember("artist"))
+    musicUrl.AddOption("artist", filter["artist"].asString());
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    musicUrl.AddOption("genre", filter["genre"].asString());
+  if (filter.isMember("albumid"))
+    albumID = (int)filter["albumid"].asInteger();
+  if (filter.isMember("album"))
+    musicUrl.AddOption("album", filter["album"].asString());
 
   SortDescription sorting;
   ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
@@ -175,7 +188,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
     return InvalidParams;
 
   CFileItemList items;
-  if (!musicdatabase.GetSongsNav("musicdb://4/", items, genreID, artistID, albumID, sorting))
+  if (!musicdatabase.GetSongsNav(musicUrl.ToString(), items, genreID, artistID, albumID, sorting))
     return InternalError;
 
   int size = items.Size();

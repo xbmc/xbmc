@@ -5160,16 +5160,30 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
     option = options.find("albumid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("idAlbum = %i", (int)option->second.asInteger()));
+    
+    option = options.find("album");
+    if (option != options.end())
+      filter.AppendWhere(PrepareSQL("strAlbum like '%s'", option->second.asString().c_str()));
 
     option = options.find("genreid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_genre.idSong FROM song_genre WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
+
+    option = options.find("genre");
+    if (option != options.end())
+      filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_genre.idSong FROM song_genre JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
 
     option = options.find("artistid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_artist.idSong FROM song_artist WHERE song_artist.idArtist = %i)" // song artists
                                     " OR idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum WHERE album_artist.idArtist = %i)", // album artists
                                     (int)option->second.asInteger(), (int)option->second.asInteger()));
+
+    option = options.find("artist");
+    if (option != options.end())
+      filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_artist.idSong FROM song_artist JOIN artist ON artist.idArtist = song_artist.idArtist WHERE artist.strArtist like '%s')" // song artists
+                                    " OR idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // album artists
+                                    option->second.asString().c_str(), option->second.asString().c_str()));
   }
   else
     return false;
