@@ -338,14 +338,14 @@
   "Audio.Details.Base": {
     "extends": "Media.Details.Base",
     "properties": {
-      "genre": { "type": "string" }
+      "genre": { "$ref": "Array.String" }
     }
   },
   "Audio.Details.Media": {
     "extends": "Audio.Details.Base",
     "properties": {
       "title": { "type": "string" },
-      "artist": { "type": "string" },
+      "artist": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "integer" },
       "musicbrainzalbumid": { "type": "string" },
@@ -357,15 +357,15 @@
     "properties": {
       "artistid": { "$ref": "Library.Id", "required": true },
       "artist": { "type": "string", "required": true },
-      "instrument": { "type": "string" },
-      "style": { "type": "string" },
-      "mood": { "type": "string" },
+      "instrument": { "$ref": "Array.String" },
+      "style": { "$ref": "Array.String" },
+      "mood": { "$ref": "Array.String" },
       "born": { "type": "string" },
       "formed": { "type": "string" },
       "description": { "type": "string" },
       "died": { "type": "string" },
       "disbanded": { "type": "string" },
-      "yearsactive": { "type": "string" },
+      "yearsactive": { "$ref": "Array.String" },
       "musicbrainzartistid": { "type": "string" }
     }
   },
@@ -374,12 +374,11 @@
     "properties": {
       "albumid": { "$ref": "Library.Id", "required": true },
       "description": { "type": "string" },
-      "theme": { "type": "string" },
-      "mood": { "type": "string" },
-      "style": { "type": "string" },
+      "theme": { "$ref": "Array.String" },
+      "mood": { "$ref": "Array.String" },
+      "style": { "$ref": "Array.String" },
       "type": { "type": "string" },
-      "albumlabel": { "type": "string" },
-      "artistid": { "$ref": "Library.Id" }
+      "albumlabel": { "type": "string" }
     }
   },
   "Audio.Details.Song": {
@@ -387,7 +386,7 @@
     "properties": {
       "songid": { "$ref": "Library.Id", "required": true },
       "file": { "type": "string" },
-      "albumartist": { "type": "string" },
+      "albumartist": { "$ref": "Array.String" },
       "album": { "type": "string" },
       "track": { "type": "integer" },
       "duration": { "type": "integer" },
@@ -396,7 +395,6 @@
       "playcount": { "type": "integer" },
       "musicbrainztrackid": { "type": "string" },
       "musicbrainzartistid": { "type": "string" },
-      "artistid": { "$ref": "Library.Id" },
       "albumid": { "$ref": "Library.Id" },
       "lastplayed": { "type": "string" },
       "disc": { "type": "integer" }
@@ -540,7 +538,7 @@
     "extends": "Video.Details.Item",
     "properties": {
       "runtime": { "type": "string" },
-      "director": { "type": "string" },
+      "director": { "$ref": "Array.String" },
       "streamdetails": { "$ref": "Video.Streams" },
       "resume": { "$ref": "Video.Resume" }
     }
@@ -549,7 +547,7 @@
     "extends": "Video.Details.File",
     "properties": {
       "movieid": { "$ref": "Library.Id", "required": true },
-      "genre": { "type": "string" },
+      "genre": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "number" },
       "trailer": { "type": "string" },
@@ -557,16 +555,16 @@
       "plotoutline": { "type": "string" },
       "originaltitle": { "type": "string" },
       "sorttitle": { "type": "string" },
-      "writer": { "type": "string" },
-      "studio": { "type": "string" },
+      "writer": { "$ref": "Array.String" },
+      "studio": { "$ref": "Array.String" },
       "mpaa": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
-      "country": { "type": "string" },
+      "country": { "$ref": "Array.String" },
       "imdbnumber": { "type": "string" },
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
       "set": { "type": "string" },
-      "showlink": { "type": "string" },
+      "showlink": { "$ref": "Array.String" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "setid": { "$ref": "Library.Id" }
@@ -590,12 +588,12 @@
     "extends": "Video.Details.Item",
     "properties": {
       "tvshowid": { "$ref": "Library.Id", "required": true },
-      "genre": { "type": "string" },
+      "genre": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "number" },
       "originaltitle": { "type": "string" },
       "sorttitle": { "type": "string" },
-      "studio": { "type": "string" },
+      "studio": { "$ref": "Array.String" },
       "mpaa": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
       "episode": { "type": "integer" },
@@ -623,7 +621,7 @@
       "episodeid": { "$ref": "Library.Id", "required": true },
       "votes": { "type": "string" },
       "rating": { "type": "number" },
-      "writer": { "type": "string" },
+      "writer": { "$ref": "Array.String" },
       "firstaired": { "type": "string" },
       "productioncode": { "type": "string" },
       "season": { "type": "integer" },
@@ -638,11 +636,11 @@
     "extends": "Video.Details.File",
     "properties": {
       "musicvideoid": { "$ref": "Library.Id", "required": true },
-      "studio": { "type": "string" },
+      "studio": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "album": { "type": "string" },
-      "artist": { "type": "string" },
-      "genre": { "type": "string" },
+      "artist": { "$ref": "Array.String" },
+      "genre": { "$ref": "Array.String" },
       "track": { "type": "integer" }
     }
   },
@@ -705,7 +703,7 @@
     "properties": {
       "id": { "$ref": "Library.Id" },
       "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture" ] },
-      "albumartist": { "type": "string" },
+      "albumartist": { "$ref": "Array.String" },
       "album": { "type": "string" },
       "track": { "type": "integer" },
       "duration": { "type": "integer" },
@@ -717,8 +715,8 @@
       "tagline": { "type": "string" },
       "plotoutline": { "type": "string" },
       "originaltitle": { "type": "string" },
-      "writer": { "type": "string" },
-      "studio": { "type": "string" },
+      "writer": { "$ref": "Array.String" },
+      "studio": { "$ref": "Array.String" },
       "mpaa": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
       "country": { "type": "string" },
@@ -726,14 +724,13 @@
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
       "set": { "type": "string" },
-      "showlink": { "type": "string" },
+      "showlink": { "$ref": "Array.String" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "firstaired": { "type": "string" },
       "season": { "type": "integer" },
       "episode": { "type": "integer" },
       "showtitle": { "type": "string" },
-      "artistid": { "$ref": "Library.Id" },
       "albumid": { "$ref": "Library.Id" },
       "setid": { "$ref": "Library.Id" },
       "tvshowid": { "$ref": "Library.Id" },
