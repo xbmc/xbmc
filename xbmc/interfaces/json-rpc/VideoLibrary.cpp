@@ -236,11 +236,30 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLa
 
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
   int season   = (int)parameterObject["season"].asInteger();
-
+  
   CStdString strPath;
   strPath.Format("videodb://2/2/%i/%i/", tvshowID, season);
+
+  CVideoDbUrl videoUrl;
+  videoUrl.FromString(strPath);
+  int genreID = -1, year = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    videoUrl.AddOption("genre", filter["genre"].asString());
+  if (filter.isMember("year"))
+    year = (int)filter["year"].asInteger();
+  if (filter.isMember("actor"))
+    videoUrl.AddOption("actor", filter["actor"].asString());
+  if (filter.isMember("director"))
+    videoUrl.AddOption("director", filter["director"].asString());
+
+  if (tvshowID <= 0 && (genreID > 0 || filter.isMember("actor")))
+    return InvalidParams;
+
   CFileItemList items;
-  if (!videodatabase.GetEpisodesNav(strPath, items, -1, -1, -1, -1, tvshowID, season, sorting))
+  if (!videodatabase.GetEpisodesNav(videoUrl.ToString(), items, genreID, year, -1, -1, tvshowID, season, sorting))
     return InternalError;
 
   return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase);

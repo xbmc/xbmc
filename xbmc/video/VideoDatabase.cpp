@@ -5924,15 +5924,16 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
 
     if (idGenre != -1)
       videoUrl.AddOption("genreid", idGenre);
-    else if (idDirector != -1)
-      videoUrl.AddOption("directorid", idDirector);
     else if (idYear !=-1)
       videoUrl.AddOption("year", idYear);
     else if (idActor != -1)
       videoUrl.AddOption("actorid", idActor);
   }
-  else
+  else if (idYear != -1)
     videoUrl.AddOption("year", idYear);
+  
+  if (idDirector != -1)
+    videoUrl.AddOption("directorid", idDirector);
 
   Filter filter;
   bool ret = GetEpisodesByWhere(videoUrl.ToString(), filter, items, false, sortDescription);
@@ -9009,12 +9010,28 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and genrelinktvshow.idGenre = %i", idShow, (int)option->second.asInteger()));
         }
 
+        option = options.find("genre");
+        if (option != options.end())
+        {
+          condition = true;
+          filter.AppendJoin(PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow = episodeview.idShow join genre on genre.idGenre = genrelinktvshow.idGenre"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and genre.strGenre like '%s'", idShow, option->second.asString().c_str()));
+        }
+
         option = options.find("directorid");
         if (option != options.end())
         {
           condition = true;
           filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = episodeview.idShow"));
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and directorlinktvshow.idDirector = %i", idShow, (int)option->second.asInteger()));
+        }
+
+        option = options.find("director");
+        if (option != options.end())
+        {
+          condition = true;
+          filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = episodeview.idShow join actors on actors.idActor = directorlinktvshow.idDirector"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actors.strActor like '%s'", idShow, option->second.asString().c_str()));
         }
       
         option = options.find("year");
@@ -9030,6 +9047,14 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
           condition = true;
           filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = episodeview.idShow"));
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actorlinktvshow.idActor = %s", idShow, (int)option->second.asInteger()));
+        }
+
+        option = options.find("actor");
+        if (option != options.end())
+        {
+          condition = true;
+          filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = episodeview.idShow join actors on actors.idActor = actorlinktvshow.idActor"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actors.strActor = '%s'", idShow, option->second.asString().c_str()));
         }
 
         if (!condition)
@@ -9049,6 +9074,20 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
         option = options.find("year");
         if (option != options.end())
           filter.AppendWhere(PrepareSQL("episodeview.premiered like '%%%i%%'", (int)option->second.asInteger()));
+
+        option = options.find("directorid");
+        if (option != options.end())
+        {
+          filter.AppendJoin(PrepareSQL("join directorlinkepisode on directorlinkepisode.idEpisode = episodeview.idEpisode"));
+          filter.AppendWhere(PrepareSQL("directorlinkepisode.idDirector = %i", (int)option->second.asInteger()));
+        }
+
+        option = options.find("director");
+        if (option != options.end())
+        {
+          filter.AppendJoin(PrepareSQL("join directorlinkepisode on directorlinkepisode.idEpisode = episodeview.idEpisode join actors on actors.idActor = directorlinktvshow.idDirector"));
+          filter.AppendWhere(PrepareSQL("actors.strActor = %s", option->second.asString().c_str()));
+        }
       }
     }
   }
