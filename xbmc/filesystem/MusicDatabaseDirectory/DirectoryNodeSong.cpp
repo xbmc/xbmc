@@ -19,6 +19,8 @@
  *
  */
 
+//spotify
+#include "../../music/spotyXBMC/Addon.music.spotify.h"
 #include "DirectoryNodeSong.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
@@ -42,6 +44,10 @@ bool CDirectoryNodeSong::GetContent(CFileItemList& items) const
 
   CStdString strBaseDir=BuildPath();
   bool bSuccess=musicdatabase.GetSongsNav(strBaseDir, items, params.GetGenreId(), params.GetArtistId(), params.GetAlbumId());
+
+  //spotify
+  //TODO scan through all addons that provide songs, also create a better naming system for addon sources
+  bSuccess = g_spotify->GetTracks(items, strBaseDir,musicdatabase.GetArtistById(params.GetArtistId()),params.GetAlbumId());
 
   musicdatabase.Close();
 

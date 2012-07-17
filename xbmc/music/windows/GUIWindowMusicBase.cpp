@@ -19,6 +19,9 @@
  *
  */
 
+//spotify
+#include "../spotyXBMC/Addon.music.spotify.h"
+
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "GUIUserMessages.h"
@@ -1317,6 +1320,11 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   // add in the "New Playlist" item if we're in the playlists folder
   if ((items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
   {
+    //spotify, this is probably not the right place to do this but cant find a better one.
+    //load up the spotify playlists
+    //TODO scan all plugins for playlists
+    g_spotify->GetPlaylists(items);
+
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
     newPlaylist->SetLabelPreformated(true);

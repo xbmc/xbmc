@@ -19,6 +19,9 @@
  *
  */
 
+//spotify include spotify hooks so that we can allow toggling of stared tracks and albums
+#include "music/spotyXBMC/Addon.music.spotify.h"
+
 #include "GUIWindowMusicNav.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -100,11 +103,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
         message.SetStringParam(g_settings.m_defaultMusicLibSource);
-      
-      DisplayEmptyDatabaseMessage(false); // reset message state
+	  
+	  DisplayEmptyDatabaseMessage(false); // reset message state
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
+
+		//spotify, force the library to be enabled even if there are no local songs
+		/*
 
       //  base class has opened the database, do our check
       DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
@@ -117,6 +123,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         SetHistoryForPath("");
         Update("");
       }
+      */
 
       return true;
     }
@@ -260,7 +267,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   }
   if (item->IsMusicDb() && !item->m_bIsFolder)
     m_musicdatabase.SetPropertiesForFileItem(*item);
-    
+  
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
@@ -429,6 +436,10 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
        !item->IsLastFM() && !item->m_bIsFolder)
     {
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+
+			//Spotify allow spotyxbmc to add contextbuttons to songs and albums, for now its the star/unstar capability
+			g_spotify->GetContextButtons(item, buttons);
+
     }
     else if (item->IsVideoDb())
     {
@@ -461,6 +472,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
        !item->IsPlugin() && !item->GetPath().Left(14).Equals("musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
+			//Spotify allow spotyxbmc to add contextbuttons to songs and albums, for now its the star/unstar capability
+			g_spotify->GetContextButtons(item, buttons);
     }
 
     // enable query all artist button only in album view
@@ -553,6 +566,41 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   switch (button)
   {
+
+  //spotify context buttons
+  case CONTEXT_BUTTON_SPOTIFY_TOGGLE_STAR_TRACK:
+  	{
+  		g_spotify->ToggleStarTrack(item);
+  		return true;
+  	}
+
+  case CONTEXT_BUTTON_SPOTIFY_TOGGLE_STAR_ALBUM:
+  	{
+  		g_spotify->ToggleStarAlbum(item);
+  		return true;
+  	}
+
+  case CONTEXT_BUTTON_SPOTIFY_BROWSE_ALBUM:
+  	{
+  		CURL url(item->GetPath());
+  		CStdString uri = url.GetFileNameWithoutPath();
+  		CStdString path;
+  		path.Format("musicdb://3/%s/", uri);
+  		Update(path);
+  		return true;
+  	}
+
+  case CONTEXT_BUTTON_SPOTIFY_BROWSE_ARTIST:
+  	{
+  		CURL url(item->GetPath());
+  		CStdString uri = url.GetFileNameWithoutPath();
+  		CStdString path;
+  		path.Format("musicdb://2/%s/", uri);
+  		Update(path);
+  		return true;
+  	}
+  //spotify end
+
   case CONTEXT_BUTTON_INFO:
     {
       if (!item->IsVideoDb())

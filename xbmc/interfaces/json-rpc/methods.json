@@ -663,6 +663,7 @@
     "params": [
       { "name": "artistid", "$ref": "Library.Id" },
       { "name": "albumid", "$ref": "Library.Id" },
+      { "name": "spotify_albumid", "type": "string" },
       { "name": "genreid", "$ref": "Library.Id" },
       { "name": "properties", "$ref": "Audio.Fields.Song" },
       { "name": "limits", "$ref": "List.Limits" },

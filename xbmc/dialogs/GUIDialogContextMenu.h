@@ -115,7 +115,12 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_USER7,
                       CONTEXT_BUTTON_USER8,
                       CONTEXT_BUTTON_USER9,
-                      CONTEXT_BUTTON_USER10
+                      CONTEXT_BUTTON_USER10,
+                      //spotify allow us to set stared tracks and albums
+                      CONTEXT_BUTTON_SPOTIFY_TOGGLE_STAR_TRACK,
+                      CONTEXT_BUTTON_SPOTIFY_TOGGLE_STAR_ALBUM,
+                      CONTEXT_BUTTON_SPOTIFY_BROWSE_ALBUM,
+                      CONTEXT_BUTTON_SPOTIFY_BROWSE_ARTIST
                     };
 
 class CContextButtons : public std::vector< std::pair<unsigned int, CStdString> >

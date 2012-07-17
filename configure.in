@@ -1430,6 +1430,9 @@ else
   AC_MSG_NOTICE($vdpau_disabled)
 fi
 
+# spotify
+LIBS="-lspotify $LIBS"
+
 # VAAPI
 if test "x$use_vaapi" != "xno"; then
   if test "$host_vendor" = "apple" ; then

@@ -19,6 +19,8 @@
  *
  */
 
+//spotify
+#include "../../music/spotyXBMC/Addon.music.spotify.h"
 #include "DirectoryNodeArtist.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
@@ -57,6 +59,12 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items) const
   CollectQueryParams(params);
 
   bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId(), !g_guiSettings.GetBool("musiclibrary.showcompilationartists"));
+
+  //spotify
+  // TODO ask all loaded music addons for artists
+  CStdString strBaseDir = BuildPath();
+  bSuccess = g_spotify->GetArtists(items, strBaseDir);
+
 
   musicdatabase.Close();
 

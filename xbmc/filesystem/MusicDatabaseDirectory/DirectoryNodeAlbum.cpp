@@ -19,6 +19,8 @@
  *
  */
 
+//spotify
+#include "../../music/spotyXBMC/Addon.music.spotify.h"
 #include "DirectoryNodeAlbum.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
@@ -54,8 +56,14 @@ bool CDirectoryNodeAlbum::GetContent(CFileItemList& items) const
 
   CQueryParams params;
   CollectQueryParams(params);
+  CStdString strBaseDir = BuildPath();
+  CURL url(strBaseDir);
 
   bool bSuccess=musicdatabase.GetAlbumsNav(BuildPath(), items, params.GetGenreId(), params.GetArtistId(),-1,-1);
+
+  //spotify
+  // TODO ask all loaded music addons for albums
+  bSuccess = g_spotify->GetAlbums(items, strBaseDir,musicdatabase.GetArtistById(params.GetArtistId()));
 
   musicdatabase.Close();
 

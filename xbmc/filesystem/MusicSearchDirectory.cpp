@@ -18,7 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+//spotify
+#include "../music/spotyXBMC/Addon.music.spotify.h"
 #include "threads/SystemClock.h"
 #include "MusicSearchDirectory.h"
 #include "music/MusicDatabase.h"
@@ -50,6 +51,9 @@ bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
   // and retrieve the search details
   items.SetPath(strPath);
+  //spotify perform a search in spotify.
+  //TODO search all addons providing search functionality
+  g_spotify->Search(search, items);
   unsigned int time = XbmcThreads::SystemClockMillis();
   CMusicDatabase db;
   db.Open();

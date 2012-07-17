@@ -532,7 +532,18 @@ MediaLibrary.prototype = {
   },
   displayAlbumDetails: function(event) {
     this.showAlbumSelectorBlock(event.data.album);
-    var albumDetailsContainer = $('#albumDetails' + event.data.album.albumid);
+    var s_albumid = 0;
+    var p_album_id = "";
+     if(event.data.album.albumid != undefined) {
+         s_albumid = event.data.album.albumid;
+         p_album_id = ', "albumid" : ' + event.data.album.albumid;
+      }
+      else if(event.data.album.spotify_albumid != undefined) {
+        s_albumid = event.data.album.spotify_albumid;
+        s_albumid = s_albumid.substr(26,22);
+        p_album_id = ', "albumid" : 1, "spotify_albumid" : "' + event.data.album.spotify_albumid+'"';
+      }
+    var albumDetailsContainer = $('#albumDetails' + s_albumid);
     $('#topScrollFade').hide();
     if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
       $('#spinner').show();
@@ -540,10 +551,10 @@ MediaLibrary.prototype = {
         type: 'POST',
         contentType: 'application/json',
         url: JSON_RPC + '?GetSongs',
-        data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}',
+        data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"] '+p_album_id+' , "sort": { "method" : "track"} }, "id": 1}',
         success: jQuery.proxy(function(data) {
           albumDetailsContainer = $('<div>');
-          albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
+          albumDetailsContainer.attr('id', 'albumDetails' + s_albumid)
                      .addClass('contentContainer')
                      .addClass('albumContainer')
                      .html('<table class="albumView"><thead><tr class="headerRow"><th>Artwork</th><th>&nbsp;</th><th>Name</th><th class="time">Time</th><th>Artist</th><th>Genre</th></tr></thead><tbody class="resultSet"></tbody></table>');
@@ -560,7 +571,7 @@ MediaLibrary.prototype = {
               for (var a = 0; a < 5; a++) {
                 trackRow.append($('<td>').html('&nbsp').attr('style', 'display: none'));
               }
-              $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
+              $('#albumDetails' + s_albumid + ' .resultSet').append(trackRow);
             }
             var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2).bind('click', { album: event.data.album, itmnbr: i }, jQuery.proxy(this.playTrack,this));
             var trackNumberTD = $('<td>')
@@ -584,32 +595,32 @@ MediaLibrary.prototype = {
               .html(item.genre);
 
             trackRow.append(trackGenreTD);
-            $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
+            $('#albumDetails' + s_albumid + ' .resultSet').append(trackRow);
           }, this));
           if (trackCount > 0) {
             var trackRow = $('<tr>').addClass('fillerTrackRow');
             for (var i = 0; i < 5; i++) {
               trackRow.append($('<td>').html('&nbsp'));
             }
-            $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
+            $('#albumDetails' + s_albumid + ' .resultSet').append(trackRow);
 
             var trackRow2 = $('<tr>').addClass('fillerTrackRow2');
             trackRow2.append($('<td>').addClass('albumBG').html('&nbsp'));
             for (var i = 0; i < 5; i++) {
               trackRow2.append($('<td>').html('&nbsp'));
             }
-            $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow2);
+            $('#albumDetails' + s_albumid + ' .resultSet').append(trackRow2);
           }
-          $('#albumDetails' + event.data.album.albumid + ' .albumThumb')
+          $('#albumDetails' + s_albumid + ' .albumThumb')
             .append(this.generateThumb('album', albumThumbnail, albumTitle, albumArtist))
             .append($('<div>').addClass('footerPadding'));
           $('#spinner').hide();
-          myScroll = new iScroll('albumDetails' + event.data.album.albumid);
+          myScroll = new iScroll('albumDetails' + s_albumid);
         }, this),
         dataType: 'json'});
     } else {
       $('.contentContainer').hide();
-      $('#albumDetails' + event.data.album.albumid).show();
+      $('#albumDetails' + s_albumid).show();
     }
   },
 
@@ -866,6 +877,15 @@ MediaLibrary.prototype = {
     this.updatePlayButtonLocation();
   },
   playTrack: function(event) {
+     if(event.data.album.albumid != undefined) {
+       s_albumid = event.data.album.albumid;
+       p_album_id = '"albumid" : ' + event.data.album.albumid;
+      }
+      else if(event.data.album.spotify_albumid != undefined) {
+         s_albumid = event.data.album.spotify_albumid;
+         s_albumid = s_albumid.substr(26,22);
+         p_album_id = '"spotify_albumid" : "' + event.data.album.spotify_albumid+'"';
+      }
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
@@ -877,7 +897,7 @@ MediaLibrary.prototype = {
           type: 'POST',
           contentType: 'application/json',
           url: JSON_RPC + '?AddAlbumToPlaylist',
-          data: '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}',
+          data: '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { '+p_album_id+' } }, "id": 1}',
           success: jQuery.proxy(function(data) {
             //play specific song in playlist
             jQuery.ajax({

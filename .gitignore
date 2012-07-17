@@ -1,5 +1,6 @@
 # global patterns
 testMain
+appkey.h
 
 # commonly used editors
 # vim
@@ -308,7 +309,6 @@ lib/cmyth/Makefile
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/BUILD_WIN32/
-/project/Win32BuildSetup/dependencies
 
 # /project/BuildDependencies
 /project/BuildDependencies/downloads
