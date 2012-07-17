@@ -38,6 +38,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace MUSICDATABASEDIRECTORY;
 
 // HACK until we make this threadable - specify 1 thread only for now
 CMusicInfoLoader::CMusicInfoLoader() : CBackgroundInfoLoader(1)
@@ -189,28 +190,58 @@ void CMusicInfoLoader::OnLoaderFinish()
 
   if (!m_bStop)
   { // check for art
-    VECSONGS songs;
-    songs.reserve(m_pVecItems->Size());
+    map<int, string> albumArtCache;
     for (int i = 0; i < m_pVecItems->Size(); ++i)
     {
-      CSong song(*m_pVecItems->Get(i)->GetMusicInfoTag());
-      if (m_pVecItems->Get(i)->HasThumbnail())
-        song.strThumb = m_pVecItems->Get(i)->GetThumbnailImage();
-      song.idSong = i; // for the lookup below
-      songs.push_back(song);
-    }
-    VECALBUMS albums;
-    CMusicInfoScanner::CategoriseAlbums(songs, albums);
-    CMusicInfoScanner::FindArtForAlbums(albums, m_pVecItems->GetPath());
-    for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
-    {
-      string albumArt = i->art["thumb"];
-      for (VECSONGS::iterator j = i->songs.begin(); j != i->songs.end(); ++j)
+      CFileItemPtr pItem = m_pVecItems->Get(i);
+      if (pItem->IsMusicDb())
       {
-        if (!j->strThumb.empty())
-          m_pVecItems->Get(j->idSong)->SetThumbnailImage(j->strThumb);
+        CQueryParams params;
+        CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
+        if (!pItem->m_bIsFolder)
+        {
+          // MusicDB song
+          std::string songArt;
+          map<int, string>::const_iterator it = albumArtCache.find(pItem->GetMusicInfoTag()->GetAlbumId());
+          if (it != albumArtCache.end())
+            songArt = it->second;
+
+          // No cache, hit the database
+          if (songArt.empty())
+            songArt = m_musicDatabase.GetArtForItem(pItem->GetMusicInfoTag()->GetDatabaseId(), "song", "thumb");
+
+          // No per-song art, try the album
+          if (songArt.empty())
+            songArt = m_musicDatabase.GetArtForItem(pItem->GetMusicInfoTag()->GetDatabaseId(), "album", "thumb");
+
+          if (songArt.empty())
+          {
+            int idAlbum = pItem->GetMusicInfoTag()->GetAlbumId();
+            songArt = m_musicDatabase.GetArtForItem(idAlbum, "album", "thumb");
+
+            // If we had to resort to finding the album art, 
+            // cache it locally so other songs from the same album
+            // don't have to requery
+            if (!songArt.empty())
+              albumArtCache[idAlbum] = songArt;
+          }
+          if (!songArt.empty())
+            pItem->SetThumbnailImage(songArt);
+        }
+        else if (params.GetAlbumId() == -1)
+        { 
+          // Artist
+          int idArtist = params.GetArtistId();
+          pItem->SetThumbnailImage(m_musicDatabase.GetArtForItem(idArtist, "artist", "thumb"));
+        }
         else
-          m_pVecItems->Get(j->idSong)->SetThumbnailImage(albumArt);
+        { // Album
+          int idAlbum = params.GetAlbumId();
+          pItem->SetThumbnailImage(m_musicDatabase.GetArtForItem(idAlbum, "album", "thumb"));
+        }
+      } else {
+        // File on disk
+        pItem->SetThumbnailImage(pItem->GetUserMusicThumb());
       }
     }
   }
