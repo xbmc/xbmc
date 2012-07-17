@@ -51,7 +51,16 @@ public:
   virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
 
-  virtual void NotifyAppActiveChange(bool bActivated);
+  virtual void OnMove(int x, int y)
+  {
+    if(!m_bFullScreen)
+    {
+      m_nLeft = x;
+      m_nTop  = y;
+    }
+  }
+
+  virtual void NotifyAppFocusChange(bool bGaining);
 
   virtual bool Minimize();
   virtual bool Restore() ;
@@ -65,16 +74,18 @@ public:
   GLXWindow GetWindow() { return m_glWindow; }
 
 protected:
-  bool RefreshGlxContext();
+  void RefreshWindowState();
   void CheckDisplayEvents();
   void OnLostDevice();
   void OnResetDevice();
 
-  SDL_Surface* m_SDLSurface;
+  XVisualInfo* m_visual;
   GLXContext   m_glContext;
   GLXWindow    m_glWindow;
   Window       m_wmWindow;
   Display*     m_dpy;
+
+  Cursor       m_invisibleCursor;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
   int          m_RREventBase;
