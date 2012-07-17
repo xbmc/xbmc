@@ -8,7 +8,8 @@
     point="xbmc.player.musicviz"
     library_linux="Waveform.vis"
     library_windx="Waveform_win32.vis"
-    library_osx="Waveform.vis"/>
+    library_osx="Waveform.vis"
+    library_android="libvisWaveform.so"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="bg">Визуализация представяща графика на две осцилиращи вълни на екрана</summary>
     <summary lang="en">Visualization showing 2 Waveform Graphs on the screen</summary>
