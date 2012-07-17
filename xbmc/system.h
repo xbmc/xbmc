@@ -177,9 +177,13 @@
 #ifndef HAS_SDL_OPENGL
 #define HAS_SDL_OPENGL
 #endif
+#ifdef HAVE_X11
+#define HAS_X11_WIN_EVENTS
+#else
 #define HAS_SDL_WIN_EVENTS
 #else
 #define HAS_LINUX_EVENTS
+#endif
 #endif
 #define HAS_LINUX_NETWORK
 #define HAS_LIRC

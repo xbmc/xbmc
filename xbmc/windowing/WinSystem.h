@@ -94,6 +94,9 @@ public:
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
+  int          GetLeft() { return m_nLeft; }
+  int          GetTop()  { return m_nTop; }
+
   virtual int GetNumScreens() { return 0; }
   virtual int GetCurrentScreen() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; }

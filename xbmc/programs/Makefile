@@ -1,5 +1,5 @@
 SRCS=GUIViewStatePrograms.cpp \
-     GUIWindowPrograms.cpp \
+     GUIWindowPrograms.cpp
      
 LIB=programs.a
 
