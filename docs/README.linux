@@ -121,13 +121,36 @@ framework is provided directly in XBMC's source tree and has very little
 requirements in order to build and run. See the README file for the framework
 at 'lib/gtest/README' for specific requirements.
 
-To compile and run XBMC's test suite, simply type the following.
+To compile and run XBMC's test suite, the configure option '--enable-gtest'
+has to be explicitely set during the configure stage. Once configured, to
+build the testsuite, type the following.
 
     $ make check
 
 To compile the test suite without running it, type the following.
 
     $ make testsuite
+
+The test suite program can be run manually as well. The name of the test suite
+program is 'xbmc-test' and will build in the XBMC source tree. To bring up the
+'help' notes for the program, type the following.
+
+    $ ./xbmc-test --gtest_help
+
+The most useful options are,
+
+  --gtest_list_tests
+      List the names of all tests instead of running them. The name of
+      TEST(Foo, Bar) is "Foo.Bar".
+  --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
+      Run only the tests whose name matches one of the positive patterns but
+      none of the negative patterns. '?' matches any single character; '*'
+      matches any substring; ':' separates two patterns.
+
+NOTE: If the '--enable-gtest' option is not set during the configure
+stage, the make targets 'check,' 'testsuite,' and 'testframework' will
+simply show a message saying the framework has not been configured, and then
+silently succeed (i.e. it will not return an error).
 
 -----------------------------------------------------------------------------
 5. How to run
