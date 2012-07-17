@@ -1164,18 +1164,15 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     CFileItemList items;
     GetDirectory(albumPath, items);
     OnRetrieveMusicInfo(items);
-    VECSONGS songs;
+    CFileItemList scannedItems;
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
       if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->Loaded())
-      {
-        CSong song(*item->GetMusicInfoTag());
-        songs.push_back(song);
-      }
+        scannedItems.Add(item);
     }
     VECALBUMS albums;
-    CMusicInfoScanner::CategoriseAlbums(songs, albums);
+    CMusicInfoScanner::CategoriseAlbums(scannedItems, albums);
     if (albums.size() == 1)
     { // set as folder thumb as well
       CThumbLoader::SetCachedImage(items, "thumb", albumPath);

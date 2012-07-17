@@ -286,6 +286,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_bIsFolder = true;
   URIUtils::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist.strArtist);
+  GetMusicInfoTag()->SetDatabaseId(artist.idArtist, "artist");
 }
 
 CFileItem::CFileItem(const CGenre& genre)

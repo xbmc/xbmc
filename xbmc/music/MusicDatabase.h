@@ -70,6 +70,7 @@ typedef std::set<CStdString>::iterator ISETPATHES;
 
 class CGUIDialogProgress;
 class CFileItemList;
+class CFileItem;
 
 /*!
  \ingroup music
@@ -102,14 +103,23 @@ public:
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
 
-  /*! \brief Add an album and all its songs to the database
+  /*! \brief Add a file item to the database
    \param album the album to add
-   \param songIDs [out] the ids of the added songs
+   \param albumHints a vector of albums with hints for album 
+          artist and compilation flags, calculated in the scanner
+   \a CMusicInfoScanner::CategorizeAlbums
    \return the id of the album
    */
-  int AddAlbum(const CAlbum &album, std::vector<int> &songIDs);
+  int AddFileItem(const CFileItem& pItem, const VECALBUMS& albumHints);
 
   int UpdateSong(const CSong& song, int idSong = -1);
+
+  /*! \brief Delete a song record from the database
+   \param idSong the ID of the song to remove
+   \sa CMusicDatabase::AddSong
+   \return whether the delete succeeded or failed
+   */
+  bool DeleteSong(int idSong);
 
   /*! \brief Update an artist in the database
    \param idArtist the ID of the artist to update
@@ -293,7 +303,7 @@ protected:
   virtual int GetMinVersion() const { return 30; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
-  int AddSong(const CSong& song, bool bCheck = true, int idAlbum = -1);
+  int AddSong(const CStdString& strTitle, const CStdString& strArtists, int idAlbum, const CStdString& strPathAndFileName, const CStdString& strGenres, int iTrack, int iDuration, int iYear, const CStdString& strMusicBrainzTrackID, const CStdString& strComment, int iStartOffset, int iEndOffset);
   int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, const CStdString& strGenre, int year, bool bCompilation);
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);
@@ -304,7 +314,12 @@ protected:
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
 
-  void AddKaraokeData(int idSong, const CSong& song);
+  /*! \brief Add a row to the karaoke table for the given song.
+   \param idSong the id in the song table.
+   \param strPathAndFileName the full, real path on disk to the song.
+   \sa AddFileItem
+   */
+  void AddKaraokeData(int idSong, const CStdString& strPathAndFileName);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:

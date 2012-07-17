@@ -179,7 +179,7 @@ void CMusicInfoScanner::Process()
         m_pObserver->OnStateChanged(DOWNLOADING_ARTIST_INFO);
 
       int iCurrentItem=1;
-      for (set<CArtist>::iterator it=m_artistsToScan.begin();it != m_artistsToScan.end();++it)
+      for (set<CArtist>::iterator it = m_artistsToScan.begin();it != m_artistsToScan.end();++it)
       {
         if (m_pObserver)
         {
@@ -307,16 +307,16 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory,
   {
     if (CMusicDatabaseDirectory::IsAllItem(items[i]->GetPath()) || items[i]->IsParentFolder())
       continue;
-
+    
     CArtist artist;
-    artist.strArtist = StringUtils::Join(items[i]->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
-    artist.genre.push_back(items[i]->GetPath()); // a bit hacky use of field
-    m_artistsToScan.insert(artist);
-    if (refresh)
+    int idArtist = items[i]->GetMusicInfoTag()->GetDatabaseId();
+    if (m_musicDatabase.GetArtistInfo(idArtist, artist))
     {
-      int id = m_musicDatabase.GetArtistByName(artist.strArtist);
-      if (id > -1)
-        m_musicDatabase.DeleteArtistInfo(id);
+      m_artistsToScan.insert(artist);
+      if (refresh)
+      {
+        m_musicDatabase.DeleteArtistInfo(items[i]->GetMusicInfoTag()->GetDatabaseId());
+      }
     }
   }
   m_musicDatabase.Close();
@@ -475,6 +475,7 @@ INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& 
         CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->GetPath().c_str());
     }
   }
+  scannedItems.SetPath(items.GetPath());
   return INFO_ADDED;
 }
 
@@ -482,99 +483,65 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 {
   MAPSONGS songsMap;
 
-  // get all information for all files in current directory from database, and remove them
-  if (m_musicDatabase.RemoveSongsFromPath(strDirectory, songsMap))
-    m_needsCleanup = true;
-
-  VECSONGS songsToAdd;
+  // get all information for all files in current directory from database
+  m_musicDatabase.GetSongsByPath(strDirectory, songsMap);
 
   CFileItemList scannedItems;
   if (ScanTags(items, scannedItems) == INFO_CANCELLED)
     return 0;
 
-  for (int i = 0; i < scannedItems.Size(); ++i)
-  {
-    CFileItemPtr pItem = scannedItems[i];
-    // grab info from the song
-    CSong *dbSong = NULL;
-    MAPSONGS::iterator it = songsMap.find(pItem->GetPath());
-    if (it != songsMap.end())
-      dbSong = &it->second;
+  VECALBUMS albumHints;
+  CategoriseAlbums(scannedItems, albumHints);
 
-    CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
-
-    if (tag.Loaded())
-    {
-      CSong song(tag);
-      
-      // ensure our song has a valid filename or else it will assert in AddSong()
-      if (song.strFileName.IsEmpty())
-      {
-        // copy filename from path in case UPnP or other tag loaders didn't specify one (FIXME?)
-        song.strFileName = pItem->GetPath();
-        
-        // if we still don't have a valid filename, skip the song
-        if (song.strFileName.IsEmpty())
-        {
-          // this shouldn't ideally happen!
-          CLog::Log(LOGERROR, "Skipping song since it doesn't seem to have a filename");
-          continue;
-        }
-      }
-      
-      song.iStartOffset = pItem->m_lStartOffset;
-      song.iEndOffset = pItem->m_lEndOffset;
-      song.strThumb = pItem->GetUserMusicThumb(true);
-      if (dbSong)
-      { // keep the db-only fields intact on rescan...
-        song.iTimesPlayed = dbSong->iTimesPlayed;
-        song.lastPlayed = dbSong->lastPlayed;
-        song.iKaraokeNumber = dbSong->iKaraokeNumber;
-        
-        if (song.rating == '0') song.rating = dbSong->rating;
-        if (song.strThumb.empty())
-          song.strThumb = dbSong->strThumb;
-      }
-      songsToAdd.push_back(song);
-      //        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, pItem->GetPath().c_str());
-    }
-    else
-      CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->GetPath().c_str());
-  }
-
-  VECALBUMS albums;
-  CategoriseAlbums(songsToAdd, albums);
-  FindArtForAlbums(albums, items.GetPath());
-
-  // finally, add these to the database
+  vector<int> songs;
+  // add the scanned items to the database
   m_musicDatabase.BeginTransaction();
-  int numAdded = 0;
-  set<int> albumsToScan;
-  set<int> artistsToScan;
-  for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
-  {
-    vector<int> songIDs;
-    int idAlbum = m_musicDatabase.AddAlbum(*i, songIDs);
-    numAdded += i->songs.size();
+  for (int i = 0; i < scannedItems.Size(); ++i)
+  {    
     if (m_bStop)
     {
       m_musicDatabase.RollbackTransaction();
-      return numAdded;
+      return i;
     }
 
-    // Build the artist & album sets
-    albumsToScan.insert(idAlbum);
-    for (vector<int>::iterator j = songIDs.begin(); j != songIDs.end(); ++j)
+    CFileItemPtr pItem = scannedItems[i];
+    int idSong = m_musicDatabase.AddFileItem(*pItem, albumHints);
+    if (idSong > -1)
     {
-      vector<int> songArtists;
-      m_musicDatabase.GetArtistsBySong(*j, false, songArtists);
-      artistsToScan.insert(songArtists.begin(), songArtists.end());
+      songs.push_back(idSong);
+      for (MAPSONGS::iterator it = songsMap.begin(); it != songsMap.end(); ++it)
+      {
+        if (it->second.idSong == idSong)
+          songsMap.erase(it);
+      }
     }
+  }
+  for (MAPSONGS::const_iterator it = songsMap.begin(); it != songsMap.end(); ++it)
+    m_musicDatabase.DeleteSong(it->second.idSong);
+  m_musicDatabase.CommitTransaction();
+
+  set<int> albumsToScan;
+  set<int> artistsToScan;
+  for (vector<int>::const_iterator i = songs.begin(); i != songs.end(); ++i)
+  {
+    CSong song;
+    m_musicDatabase.GetSongById(*i, song);
+
+    albumsToScan.insert(song.iAlbumId);
+
+    vector<int> songArtists;
+    m_musicDatabase.GetArtistsBySong(*i, false, songArtists);
+    artistsToScan.insert(songArtists.begin(), songArtists.end());
+  }
+
+  for (set<int>::const_iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
+  {
     std::vector<int> albumArtists;
-    m_musicDatabase.GetArtistsByAlbum(idAlbum, false, albumArtists);
+    m_musicDatabase.GetArtistsByAlbum(*i, false, albumArtists);
     artistsToScan.insert(albumArtists.begin(), albumArtists.end());
   }
-  m_musicDatabase.CommitTransaction();
+
+  std::vector<int> albums(albumsToScan.begin(), albumsToScan.end());
 
   // Download info & artwork
   bool bCanceled;
@@ -583,14 +550,17 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     bCanceled = false;
     if (find(m_artistsScanned.begin(),m_artistsScanned.end(), *it) == m_artistsScanned.end())
     {
-      CStdString strArtist = m_musicDatabase.GetArtistById(*it);
+      CArtist artist;
+      if (!m_musicDatabase.GetArtistInfo(*it, artist))
+        continue;
+
       m_artistsScanned.push_back(*it);
       if (!m_bStop && (m_flags & SCAN_ONLINE))
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/", *it);
 
-        if (!DownloadArtistInfo(strPath, strArtist, bCanceled)) // assume we want to retry
+        if (!DownloadArtistInfo(strPath, artist.strArtist, bCanceled)) // assume we want to retry
           m_artistsScanned.pop_back();
       }
       else
@@ -606,7 +576,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     for (set<int>::iterator it = albumsToScan.begin(); it != albumsToScan.end(); ++it)
     {
       if (m_bStop)
-        return songsToAdd.size();
+        return scannedItems.Size();
 
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",*it);
@@ -625,56 +595,95 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   if (m_pObserver)
     m_pObserver->OnStateChanged(READING_MUSIC_INFO);
 
-  return songsToAdd.size();
+  return scannedItems.Size();
 }
 
-static bool SortSongsByTrack(CSong *song, CSong *song2)
+static bool SortSongsByTrack(CFileItemPtr song, CFileItemPtr song2)
 {
-  return song->iTrack < song2->iTrack;
+  return song->GetMusicInfoTag()->GetTrackNumber() < song2->GetMusicInfoTag()->GetTrackNumber();
 }
 
-void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albums)
+void CMusicInfoScanner::CategoriseAlbums(const CFileItemList& items, VECALBUMS& albumHints)
 {
   /* Step 1: categorise on the album name */
-  map<string, vector<CSong *> > albumNames;
-  for (VECSONGS::iterator i = songsToCheck.begin(); i != songsToCheck.end(); ++i)
-    albumNames[i->strAlbum].push_back(&(*i));
+  map<string, vector<CFileItemPtr> > albumNames;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CMusicInfoTag& tag = *(items[i])->GetMusicInfoTag();
+    albumNames[tag.GetAlbum()].push_back(items[i]);
+  }
 
   /*
    Step 2: Split into unique albums based on album name and album artist
    In the case where the album artist is unknown, we use the primary artist
    (i.e. first artist from each song).
    */
-  albums.clear();
-  for (map<string, vector<CSong *> >::iterator i = albumNames.begin(); i != albumNames.end(); ++i)
+  for (map<string, vector<CFileItemPtr> >::iterator i = albumNames.begin(); i != albumNames.end(); ++i)
   {
+    /*
+     If there's a single album in the folder, then art can be taken from
+     the folder art.
+     */
+    std::string albumArt;
+    if (albumNames.size() == 1)
+    {
+      CFileItem album(items.GetPath(), true);
+      albumArt = album.GetUserMusicThumb(true);
+    }
+
     // sort the songs by tracknumber to identify duplicate track numbers
-    vector<CSong *> &songs = i->second;
+    vector<CFileItemPtr> &songs = i->second;
     sort(songs.begin(), songs.end(), SortSongsByTrack);
 
     // map the songs to their primary artists
     bool compilation = !i->first.empty();
-    map<string, vector<CSong *> > artists;
-    for (vector<CSong *>::iterator j = songs.begin(); j != songs.end(); ++j)
+    bool singleArt = true;
+    CFileItemPtr art;
+    map<string, vector<CFileItemPtr> > artists;
+    for (vector<CFileItemPtr>::iterator j = songs.begin(); j != songs.end(); ++j)
     {
-      CSong *song = *j;
-      // test for song overlap
-      if (j != songs.begin() && song->iTrack == (*(j-1))->iTrack)
-        compilation = false;
+      CMusicInfoTag* currTag = (*j)->GetMusicInfoTag();
+
+      if (j != songs.begin())
+      {
+        CMusicInfoTag* prevTag = (*(j-1))->GetMusicInfoTag();
+
+        // test for song overlap
+        if (currTag->GetTrackNumber() == prevTag->GetTrackNumber())
+          compilation = false;
+      }
 
       // get primary artist
       string primary;
-      if (!song->albumArtist.empty())
+      if (!currTag->GetAlbumArtist().empty())
       {
-        primary = song->albumArtist[0];
+        primary = currTag->GetAlbumArtist()[0];
         compilation = false;
       }
-      else if (!song->artist.empty())
-        primary = song->artist[0];
+      else if (!currTag->GetArtist().empty())
+        primary = currTag->GetArtist()[0];
 
       // add to the artist map
-      artists[primary].push_back(song);
+      artists[primary].push_back(*j);
+
+      // test for a common cover art image
+      if (!currTag->GetCoverArtInfo().empty())
+      {
+        if (art && !art->GetMusicInfoTag()->GetCoverArtInfo().matches(currTag->GetCoverArtInfo()))
+          singleArt = false;
+
+        if (!art)
+          art = *j;
+      }
     }
+
+    if (art && albumArt.empty())
+      albumArt = CTextureCache::GetWrappedImageURL(art->GetPath(), "music");
+
+    if (!singleArt)
+      for (vector<CFileItemPtr>::iterator j = songs.begin(); j != songs.end(); ++j)
+        if (!(*j)->GetMusicInfoTag()->GetCoverArtInfo().empty())
+          (*j)->SetThumbnailImage(CTextureCache::GetWrappedImageURL((*j)->GetPath(), "music"));
 
     /*
      We have a compilation if
@@ -689,24 +698,26 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
     {
       artists.clear();
       std::string various = g_localizeStrings.Get(340); // Various Artists
-      for (vector<CSong *>::iterator j = songs.begin(); j != songs.end(); ++j)
-        (*j)->albumArtist.push_back(various);
       artists.insert(make_pair(various, songs));
     }
+
+    // assign to folder thumb as well   
+    if (albumHints.size() == 1 && !albumArt.empty())
+      CMusicThumbLoader::SetCachedImage(items.GetPath(), "thumb", albumArt);
 
     /*
      Step 3: Find the common albumartist for each song and assign
      albumartist to those tracks that don't have it set.
      */
-    for (map<string, vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
+    for (map<string, vector<CFileItemPtr> >::iterator j = artists.begin(); j != artists.end(); ++j)
     {
       // find the common artist for these songs
-      vector<CSong *> &artistSongs = j->second;
-      vector<string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
-      for (vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
+      vector<CFileItemPtr> &artistSongs = j->second;
+      vector<string> common = artistSongs.front()->GetMusicInfoTag()->GetAlbumArtist().empty() ? artistSongs.front()->GetMusicInfoTag()->GetArtist() : artistSongs.front()->GetMusicInfoTag()->GetAlbumArtist();
+      for (vector<CFileItemPtr>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
       {
         unsigned int match = 0;
-        vector<string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
+        const vector<string> &compare = (*k)->GetMusicInfoTag()->GetAlbumArtist().empty() ? (*k)->GetMusicInfoTag()->GetArtist() : (*k)->GetMusicInfoTag()->GetAlbumArtist();
         for (; match < common.size() && match < compare.size(); match++)
         {
           if (compare[match] != common[match])
@@ -723,98 +734,9 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
       album.strAlbum = i->first;
       album.artist = common;
       album.bCompilation = compilation;
-      for (vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
-      {
-        if ((*k)->albumArtist.empty())
-          (*k)->albumArtist = common;
-        album.songs.push_back(*(*k));
-        // TODO: in future we may wish to union up the genres, for now we assume they're the same
-        if (album.genre.empty())
-          album.genre = (*k)->genre;
-        //       in addition, we may want to use year as discriminating for albums
-        if (album.iYear == 0)
-          album.iYear = (*k)->iYear;
-      }
-
-      albums.push_back(album);
+      album.art["thumb"] = albumArt;
+      albumHints.push_back(album);
     }
-  }
-}
-
-void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &path)
-{
-  /*
-   If there's a single album in the folder, then art can be taken from
-   the folder art.
-   */
-  std::string albumArt;
-  if (albums.size() == 1)
-  {
-    CFileItem album(path, true);
-    albumArt = album.GetUserMusicThumb(true);
-    albums[0].art["thumb"] = albumArt;
-  }
-  for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
-  {
-    CAlbum &album = *i;
-
-    if (albums.size() != 1)
-      albumArt = "";
-
-    /*
-     Find art that is common across these items
-     If we find a single art image we treat it as the album art
-     and discard song art else we use first as album art and
-     keep everything as song art.
-     */
-    bool singleArt = true;
-    CSong *art = NULL;
-    for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
-    {
-      CSong &song = *k;
-      if (song.HasArt())
-      {
-        if (art && !art->ArtMatches(song))
-        {
-          singleArt = false;
-          break;
-        }
-        if (!art)
-          art = &song;
-      }
-    }
-
-    /*
-      assign the first art found to the album - better than no art at all
-    */
-
-    if (art && albumArt.empty())
-    {
-      if (!art->strThumb.empty())
-        albumArt = art->strThumb;
-      else
-        albumArt = CTextureCache::GetWrappedImageURL(art->strFileName, "music");
-    }
-
-    album.art["thumb"] = albumArt;
-
-    if (singleArt)
-    { //if singleArt then we can clear the artwork for all songs
-      for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
-        k->strThumb.clear();
-    }
-    else
-    { // more than one piece of art was found for these songs, so cache per song
-      for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
-      {
-        if (k->strThumb.empty() && !k->embeddedArt.empty())
-          k->strThumb = CTextureCache::GetWrappedImageURL(k->strFileName, "music");
-      }
-    }
-  }
-  if (albums.size() == 1 && !albumArt.empty())
-  { // assign to folder thumb as well
-    CMusicThumbLoader::SetCachedImage(path, "thumb", albumArt);
   }
 }
 
