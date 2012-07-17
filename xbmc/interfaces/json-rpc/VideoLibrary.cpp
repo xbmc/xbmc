@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "filesystem/File.h"
 
 using namespace JSONRPC;
 
@@ -697,14 +698,47 @@ JSONRPC_STATUS CVideoLibrary::RemoveVideo(const CVariant &parameterObject)
   if (!videodatabase.Open())
     return InternalError;
 
+  bool bDeleteFile = false;
+  if (parameterObject.isMember("deletefile"))
+    bDeleteFile = parameterObject["deletefile"].asBoolean();
+
+  int itemId = -1;
+  VIDEODB_CONTENT_TYPE iType;
+  CStdString filePath("");
+
   if (parameterObject.isMember("movieid"))
-    videodatabase.DeleteMovie((int)parameterObject["movieid"].asInteger());
-  else if (parameterObject.isMember("tvshowid"))
-    videodatabase.DeleteTvShow((int)parameterObject["tvshowid"].asInteger());
-  else if (parameterObject.isMember("episodeid"))
-    videodatabase.DeleteEpisode((int)parameterObject["episodeid"].asInteger());
-  else if (parameterObject.isMember("musicvideoid"))
-    videodatabase.DeleteMusicVideo((int)parameterObject["musicvideoid"].asInteger());
+  {
+    iType = VIDEODB_CONTENT_MOVIES;
+    itemId = (int)parameterObject["movieid"].asInteger();
+    videodatabase.GetFilePathById(itemId, filePath, iType);
+    videodatabase.DeleteMovie(itemId);
+  } else if (parameterObject.isMember("tvshowid"))
+  {
+    iType = VIDEODB_CONTENT_TVSHOWS;
+    itemId = (int)parameterObject["tvshowid"].asInteger();
+    videodatabase.DeleteTvShow(itemId);
+  } else if (parameterObject.isMember("episodeid"))
+  {
+    iType = VIDEODB_CONTENT_EPISODES;
+    itemId = (int)parameterObject["episodeid"].asInteger();
+    videodatabase.GetFilePathById(itemId, filePath, iType);
+    videodatabase.DeleteEpisode(itemId);
+  } else if (parameterObject.isMember("musicvideoid"))
+  {
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
+    videodatabase.GetFilePathById(itemId, filePath, iType);
+    itemId = (int)parameterObject["musicvideoid"].asInteger();
+    videodatabase.DeleteMusicVideo(itemId);
+  }
+
+  if (bDeleteFile && itemId >= 0) 
+  {
+    if (filePath != "")
+    {
+      XFILE::CFile::Delete(filePath);
+    }
+  }
+
   return ACK;
 }
 
