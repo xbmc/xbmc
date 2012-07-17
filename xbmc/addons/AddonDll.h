@@ -148,6 +148,15 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   }
 
   /* Check if lib being loaded exists, else check in XBMC binary location */
+#if defined(TARGET_ANDROID)
+  // Android libs MUST live in this path, else multi-arch will break.
+  // The usual soname requirements apply. no subdirs, and filename is ^lib.*\.so$
+  if (!CFile::Exists(strFileName))
+  {
+    CStdString tempbin = getenv("XBMC_ANDROID_LIBS");
+    strFileName = tempbin + "/" + m_strLibName;
+  }
+#endif
   if (!CFile::Exists(strFileName))
   {
     CStdString temp = CSpecialProtocol::TranslatePath("special://xbmc/");
