@@ -70,7 +70,7 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 
     /* update the current window if the EPG timeline view is visible */
     if (IsVisible() && m_iGuideView == GUIDE_VIEW_TIMELINE)
-      UpdateData();
+      UpdateData(false);
   }
   else if (msg.Equals("epg-now"))
   {
@@ -135,7 +135,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowPVRGuide::UpdateViewChannel(void)
+void CGUIWindowPVRGuide::UpdateViewChannel(bool bUpdateSelectedFile)
 {
   CPVRChannel CurrentChannel;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
@@ -158,7 +158,7 @@ void CGUIWindowPVRGuide::UpdateViewChannel(void)
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
 }
 
-void CGUIWindowPVRGuide::UpdateViewNow(void)
+void CGUIWindowPVRGuide::UpdateViewNow(bool bUpdateSelectedFile)
 {
   CPVRChannel CurrentChannel;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
@@ -181,7 +181,7 @@ void CGUIWindowPVRGuide::UpdateViewNow(void)
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
 }
 
-void CGUIWindowPVRGuide::UpdateViewNext(void)
+void CGUIWindowPVRGuide::UpdateViewNext(bool bUpdateSelectedFile)
 {
   CPVRChannel CurrentChannel;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
@@ -204,7 +204,7 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
 }
 
-void CGUIWindowPVRGuide::UpdateViewTimeline(void)
+void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
 {
   m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
   if (!m_parent->m_guideGrid)
@@ -234,7 +234,8 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
 
-  SelectPlayingFile();
+  if (bUpdateSelectedFile)
+    SelectPlayingFile();
 }
 
 bool CGUIWindowPVRGuide::SelectPlayingFile(void)
@@ -248,7 +249,7 @@ bool CGUIWindowPVRGuide::SelectPlayingFile(void)
   return false;
 }
 
-void CGUIWindowPVRGuide::UpdateData(void)
+void CGUIWindowPVRGuide::UpdateData(bool bUpdateSelectedFile /* = true */)
 {
   CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
@@ -259,13 +260,13 @@ void CGUIWindowPVRGuide::UpdateData(void)
   m_parent->m_vecItems->Clear();
 
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
-    UpdateViewChannel();
+    UpdateViewChannel(bUpdateSelectedFile);
   else if (m_iGuideView == GUIDE_VIEW_NOW)
-    UpdateViewNow();
+    UpdateViewNow(bUpdateSelectedFile);
   else if (m_iGuideView == GUIDE_VIEW_NEXT)
-    UpdateViewNext();
+    UpdateViewNext(bUpdateSelectedFile);
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
-    UpdateViewTimeline();
+    UpdateViewTimeline(bUpdateSelectedFile);
 
   m_bUpdateRequired = false;
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19222));

@@ -146,7 +146,7 @@ void CGUIWindowPVRRecordings::OnWindowUnload(void)
   CGUIWindowPVRCommon::OnWindowUnload();
 }
 
-void CGUIWindowPVRRecordings::UpdateData(void)
+void CGUIWindowPVRRecordings::UpdateData(bool bUpdateSelectedFile /* = true */)
 {
   CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "CGUIWindowPVRRecordings - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
@@ -165,8 +165,12 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   m_parent->m_vecItems->SetPath("pvr://recordings/");
   m_parent->Update(m_strSelectedPath);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
-  if (!SelectPlayingFile())
-    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+
+  if (bUpdateSelectedFile)
+  {
+    if (!SelectPlayingFile())
+      m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+  }
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19017));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
@@ -184,7 +188,7 @@ void CGUIWindowPVRRecordings::Notify(const Observable &obs, const CStdString& ms
   else if (msg.Equals("recordings-reset") || msg.Equals("timers-reset"))
   {
     if (IsVisible())
-      UpdateData();
+      UpdateData(false);
     else
       m_bUpdateRequired = true;
   }

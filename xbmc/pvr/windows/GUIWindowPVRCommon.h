@@ -89,7 +89,7 @@ namespace PVR
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const = 0;
-    virtual void UpdateData(void) = 0;
+    virtual void UpdateData(bool bUpdateSelectedFile = true) = 0;
     virtual void SetInvalid(void);
 
     virtual void OnInitWindow(void);

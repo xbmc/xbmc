@@ -31,10 +31,10 @@ namespace PVR
   public:
     CGUIViewStatePVR(const CFileItemList& items);
     virtual ~CGUIViewStatePVR(void) {}
-    virtual PVRWindow GetActiveView(void);
+    PVRWindow GetActiveView(void);
   protected:
-    virtual bool AutoPlayNextItem(void) { return false; };
-    virtual bool HideParentDirItems(void) { return true; }
-    virtual void SaveViewState(void);
+    bool AutoPlayNextItem(void) { return false; };
+    bool HideParentDirItems(void) { return true; }
+    void SaveViewState(void);
   };
 }

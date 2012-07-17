@@ -36,21 +36,21 @@ namespace PVR
     CGUIWindowPVRTimers(CGUIWindowPVR *parent);
     virtual ~CGUIWindowPVRTimers(void) {};
 
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    virtual void UpdateData(void);
-    virtual void Notify(const Observable &obs, const CStdString& msg);
-    virtual void UnregisterObservers(void);
-    virtual void ResetObservers(void);
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    void UpdateData(bool bUpdateSelectedFile = true);
+    void Notify(const Observable &obs, const CStdString& msg);
+    void UnregisterObservers(void);
+    void ResetObservers(void);
 
   private:
-    virtual bool OnClickButton(CGUIMessage &message);
-    virtual bool OnClickList(CGUIMessage &message);
+    bool OnClickButton(CGUIMessage &message);
+    bool OnClickList(CGUIMessage &message);
 
-    virtual bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
   };
 }
