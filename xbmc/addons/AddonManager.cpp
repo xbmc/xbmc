@@ -589,7 +589,9 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
     {
       if (platforms[i] == "all")
         return true;
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_ANDROID)
+      if (platforms[i] == "android")
+#elif defined(_LINUX) && !defined(TARGET_DARWIN)
       if (platforms[i] == "linux")
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
       if (platforms[i] == "wingl")
