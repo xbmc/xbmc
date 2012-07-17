@@ -1,7 +1,11 @@
 ARCH=@ARCH@
 CXXFLAGS=-fPIC
 
+ifeq (@USE_ANDROID@,1)
+SLIB = @abs_top_srcdir@/system/libvisWaveform.so
+else
 SLIB = @abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
+endif
 
 ifeq (@USE_OPENGLES@,1)
   DEFINES += -DHAS_GLES=2
