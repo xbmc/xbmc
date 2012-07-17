@@ -102,8 +102,8 @@ float* CCoreAudioAESound::GetSamples()
 void CCoreAudioAESound::ReleaseSamples()
 {
   CSingleLock cs(m_critSection);
-  ASSERT(m_inUse > 0);
-  --m_inUse;
+  if(m_inUse > 0);
+    --m_inUse;
 }
 
 bool CCoreAudioAESound::IsPlaying()
