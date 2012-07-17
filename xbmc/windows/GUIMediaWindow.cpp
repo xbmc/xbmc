@@ -853,6 +853,7 @@ void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
 // to modify the fileitems. Eg. to modify the item label
 void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 {
+  m_unfilteredItems->SetPath(items.GetPath()); // use the original path - it'll likely be relied on for other things later.
   m_unfilteredItems->Append(items);
   
   CStdString filter(GetProperty("filter").asString());
@@ -1523,7 +1524,7 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   
   m_viewControl.Clear();
   
-  CFileItemList items;
+  CFileItemList items(m_unfilteredItems->GetPath()); // use the original path - it'll likely be relied on for other things later.
   items.Append(*m_unfilteredItems);
   if (GetFilteredItems(filter, items))
   {
@@ -1546,7 +1547,7 @@ bool CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &
   if (trimmedFilter.IsEmpty())
     return true;
 
-  CFileItemList filteredItems;
+  CFileItemList filteredItems(items.GetPath()); // use the original path - it'll likely be relied on for other things later.
   bool numericMatch = StringUtils::IsNaturalNumber(trimmedFilter);
   for (int i = 0; i < items.Size(); i++)
   {
