@@ -69,12 +69,12 @@ UInt32 CIOSCoreAudioHardware::GetOutputDevices(IOSCoreAudioDeviceList* pList)
 // CCoreAudioUnit
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoreAudioUnit::CCoreAudioUnit() :
-m_Initialized     (false        ),
 m_pSource         (NULL         ),
-m_renderProc      (NULL         ),
 m_audioUnit       (NULL         ),
 m_audioNode       (NULL         ),
 m_audioGraph      (NULL         ),
+m_Initialized     (false        ),
+m_renderProc      (NULL         ),
 m_busNumber       (INVALID_BUS  )
 {
 }
@@ -1094,15 +1094,14 @@ float CCoreAudioGraph::GetLatency()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioAEHALIOS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 CCoreAudioAEHALIOS::CCoreAudioAEHALIOS() :
+m_audioGraph        (NULL   ),
 m_Initialized       (false  ),
 m_Passthrough       (false  ),
-m_NumLatencyFrames  (0      ),
-m_OutputBufferIndex (0      ),
 m_allowMixing       (false  ),
 m_encoded           (false  ),
-m_audioGraph        (NULL   )
+m_NumLatencyFrames  (0      ),
+m_OutputBufferIndex (0      )
 {
 }
 
