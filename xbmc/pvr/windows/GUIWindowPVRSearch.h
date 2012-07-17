@@ -37,22 +37,22 @@ namespace PVR
     CGUIWindowPVRSearch(CGUIWindowPVR *parent);
     virtual ~CGUIWindowPVRSearch(void) {};
 
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    virtual void UpdateData(void);
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    void UpdateData(bool bUpdateSelectedFile = true);
 
   private:
 
-    virtual bool OnClickButton(CGUIMessage &message);
-    virtual bool OnClickList(CGUIMessage &message);
+    bool OnClickButton(CGUIMessage &message);
+    bool OnClickList(CGUIMessage &message);
 
-    virtual bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
-    virtual bool ActionShowSearch(CFileItem *item);
-    virtual void ShowSearchResults();
+    bool ActionShowSearch(CFileItem *item);
+    void ShowSearchResults();
 
     bool               m_bSearchStarted;
     bool               m_bSearchConfirmed;

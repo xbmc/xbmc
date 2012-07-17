@@ -173,7 +173,7 @@ void CGUIWindowPVRChannels::Notify(const Observable &obs, const CStdString& msg)
   else if (msg.Equals("channelgroup-reset"))
   {
     if (IsVisible())
-      UpdateData();
+      UpdateData(false);
     else
       m_bUpdateRequired = true;
   }
@@ -196,7 +196,7 @@ CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
   return m_selectedGroup;
 }
 
-void CGUIWindowPVRChannels::UpdateData(void)
+void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
 {
   CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d",
@@ -226,8 +226,12 @@ void CGUIWindowPVRChannels::UpdateData(void)
   m_parent->m_vecItems->SetPath(strPath);
   m_parent->Update(m_parent->m_vecItems->GetPath());
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
-  if (!SelectPlayingFile())
-    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+
+  if (bUpdateSelectedFile)
+  {
+    if (!SelectPlayingFile())
+      m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+  }
 
   /* empty list */
   if (m_parent->m_vecItems->Size() == 0)
@@ -239,7 +243,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
       graphicsLock.Leave();
       lock.Leave();
 
-      UpdateData();
+      UpdateData(bUpdateSelectedFile);
       return;
     }
     else if (currentGroup->GroupID() > 0)

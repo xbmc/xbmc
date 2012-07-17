@@ -96,7 +96,7 @@ bool CGUIWindowPVRTimers::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowPVRTimers::UpdateData(void)
+void CGUIWindowPVRTimers::UpdateData(bool bUpdateSelectedFile /* = true */)
 {
   CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "CGUIWindowPVRTimers - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
@@ -115,7 +115,9 @@ void CGUIWindowPVRTimers::UpdateData(void)
   m_parent->Update(m_parent->m_vecItems->GetPath());
   m_parent->m_vecItems->Sort(m_iSortMethod, m_iSortOrder);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
-  m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+
+  if (bUpdateSelectedFile)
+    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19025));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
@@ -277,7 +279,7 @@ void CGUIWindowPVRTimers::Notify(const Observable &obs, const CStdString& msg)
   else if (msg.Equals("timers-reset"))
   {
     if (IsVisible())
-      UpdateData();
+      UpdateData(false);
     else
       m_bUpdateRequired = true;
   }

@@ -38,34 +38,34 @@ namespace PVR
     CGUIWindowPVRGuide(CGUIWindowPVR *parent);
     virtual ~CGUIWindowPVRGuide(void);
 
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    virtual void UpdateData(void);
-    virtual void Notify(const Observable &obs, const CStdString& msg);
-    virtual void SetInvalid(void) { UpdateData(); }
-    virtual void UnregisterObservers(void);
-    virtual void ResetObservers(void);
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    void UpdateData(bool bUpdateSelectedFile = true);
+    void Notify(const Observable &obs, const CStdString& msg);
+    void SetInvalid(void) { UpdateData(); }
+    void UnregisterObservers(void);
+    void ResetObservers(void);
 
   private:
-    virtual bool SelectPlayingFile(void);
-    virtual bool IsSelectedButton(CGUIMessage &message) const;
-    virtual bool IsSelectedList(CGUIMessage &message) const;
-    virtual bool OnClickButton(CGUIMessage &message);
-    virtual bool OnClickList(CGUIMessage &message);
-    virtual bool PlayEpgItem(CFileItem *item);
+    bool SelectPlayingFile(void);
+    bool IsSelectedButton(CGUIMessage &message) const;
+    bool IsSelectedList(CGUIMessage &message) const;
+    bool OnClickButton(CGUIMessage &message);
+    bool OnClickList(CGUIMessage &message);
+    bool PlayEpgItem(CFileItem *item);
 
-    virtual bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
-    virtual void UpdateButtons(void);
-    virtual void UpdateViewChannel(void);
-    virtual void UpdateViewNow(void);
-    virtual void UpdateViewNext(void);
-    virtual void UpdateViewTimeline(void);
+    void UpdateButtons(void);
+    void UpdateViewChannel(bool bUpdateSelectedFile);
+    void UpdateViewNow(bool bUpdateSelectedFile);
+    void UpdateViewNext(bool bUpdateSelectedFile);
+    void UpdateViewTimeline(bool bUpdateSelectedFile);
 
     int            m_iGuideView;
     CFileItemList *m_cachedTimeline;
