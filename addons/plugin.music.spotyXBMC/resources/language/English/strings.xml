@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30001">spotyXBMC</string>
+    <string id="30002">by</string>
+    <string id="30003">Restart XBMC to apply</string>
+    
+    <string id="30400">General</string>
+    <string id="30401">Username</string>
+    <string id="30402">Password</string>
+    <string id="30403">Cache location</string>
+    <string id="30404">Use high bitrate</string>
+    <string id="30405">Enable</string>
+    <string id="30406">Fanart</string>
+    <string id="30407">Use spotify fanart</string>
+    <string id="30408">Use custom fanart image</string>
+    <string id="30409">Use volume normalization</string>
+    <string id="30410">Download fanarts from HTBackdrops</string>
+    <string id="30411">Download artist thumbs from HTBackdrops.com</string>
+    <string id="30412">Delayed start (seconds)</string>
+    <string id="30413">Write log to file (temp/spotify/log.txt)</string>
+    
+    <string id="30420">Performance</string>
+    <string id="30421">Search: Max number of artists</string>
+    <string id="30422">Search: Max number of albums</string>
+    <string id="30423">Search: Max number of tracks</string>
+    <string id="30424">Artist browse: Max number of similar artists</string>
+    <string id="30425">Artist browse: Max number of albums</string>
+    <string id="30426">Artist browse: Max number of tracks</string>
+    <string id="30427">Preload artist albums and tracks</string>
+
+    <string id="30430">Top lists</string>
+    <string id="30431">Show lists for region</string>
+    <string id="30432">Everywhere</string>
+    <string id="30433">Your country</string>
+    <string id="30434">Preload top 100 lists (true = slow XBMC start)</string>
+
+    <string id="30440">Spotify radio1</string>
+    <string id="30441">Spotify radio2</string>
+    <string id="30442">Name</string>
+    <string id="30443">Alternative</string>
+    <string id="30444">Black Metal</string>
+    <string id="30445">Blues</string>
+    <string id="30446">Classical</string>
+    <string id="30447">Country</string>
+    <string id="30448">Club/House</string>
+    <string id="30449">Death Metal</string>
+    <string id="30450">Electronic</string>
+    <string id="30451">Emo</string>
+    <string id="30452">Folk</string>
+    <string id="30453">Hardcore</string>
+    <string id="30454">Heavy Metal</string>
+    <string id="30455">Hip-hop</string>
+    <string id="30456">Indie</string>
+    <string id="30457">Jazz</string>
+    <string id="30458">Latin</string>
+    <string id="30459">Pop</string>
+    <string id="30462">Punk</string>
+    <string id="30463">Reggae</string>
+    <string id="30464">R&B</string>
+    <string id="30465">Rock</string>
+    <string id="30466">Singer-songwriter</string>
+    <string id="30467">Soul</string>
+    <string id="30468">Trance</string>
+    <string id="30469">60s</string>
+    <string id="30471">70s</string>
+    <string id="30472">80s</string>
+    
+    <string id="30460">From decade</string>
+    <string id="30461">To decade</string>
+
+    <string id="30470">Number of radio tracks</string>
+
+    <string id="30500">Top 100 Spotify artists</string>
+    <string id="30501">Top 100 Spotify albums</string>
+    <string id="30502">Top 100 Spotify songs</string>
+    <string id="30503">Spotify radio: </string>
+    <string id="30504">* Similar artists</string>
+    <string id="30505">* Spotify inbox</string>
+    
+    <!-- Context buttons -->
+    <string id="30600">Spotify: star track</string>
+    <string id="30601">Spotify: unstar track</string>
+    <string id="30602">Spotify: star album</string>
+    <string id="30603">Spotify: unstar album</string>
+    <string id="30604">Spotify: browse album</string>
+    <string id="30605">Spotify: browse artist</string>
+</strings>

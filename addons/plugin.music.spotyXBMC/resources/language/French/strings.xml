@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30001">spotyXBMC</string>
+    <string id="30002">par</string>
+    <string id="30003">Redémarrer XBMC pour appliquer</string>
+    
+    <string id="30400">Général</string>
+    <string id="30401">Nom d'utilisateur</string>
+    <string id="30402">Mot de Passe</string>
+    <string id="30403">Emplacement du cache</string>
+    <string id="30404">Bitrate haute qualité</string>
+    <string id="30405">Activé</string>
+    <string id="30406">Vignettes</string>
+    <string id="30407">Utilisé les pochettes Spotify</string>
+    <string id="30408">Utilisé des pochettes personnalisé</string>
+    <string id="30409">Utilisé le normalisateur de volume</string>
+    <string id="30410">Télécharger les pochettes depuis HTBackdrops</string>
+    <string id="30411">Télécharger les vignettes depuis HTBackdrops</string>
+    <string id="30412">Temporisation du démarrage (seconds)</string>
+    <string id="30413">Emplacement du log (temp/spotify/log.txt)</string>
+    
+    <string id="30420">Performance</string>
+    <string id="30421">Recherche: Nombre max d'artistes</string>
+    <string id="30422">Recherche: Nombre max d'albums</string>
+    <string id="30423">Recherche: Nombre max de pistes</string>
+    <string id="30424">Explorateur d'artiste: Nombre max d'artistes similaire</string>
+    <string id="30425">Explorateur d'artiste: Nombre max d'albums</string>
+    <string id="30426">Explorateur d'artiste: Nombre max de pistes</string>
+    <string id="30427">Préchargement albums et piste des artistes</string>
+
+    <string id="30430">Top listes</string>
+    <string id="30431">Voir listes par région</string>
+    <string id="30432">Mondial</string>
+    <string id="30433">Votre Pays</string>
+    <string id="30434">Précharger le top 100 (cocher = ralenti le démarrage de XBMC)</string>
+
+    <string id="30440">Spotify radio1</string>
+    <string id="30441">Spotify radio2</string>
+    <string id="30442">Nom</string>
+    <string id="30443">Alternative</string>
+    <string id="30444">Black Metal</string>
+    <string id="30445">Blues</string>
+    <string id="30446">Classical</string>
+    <string id="30447">Country</string>
+    <string id="30448">Club/House</string>
+    <string id="30449">Death Metal</string>
+    <string id="30450">Electronic</string>
+    <string id="30451">Emo</string>
+    <string id="30452">Folk</string>
+    <string id="30453">Hardcore</string>
+    <string id="30454">Heavy Metal</string>
+    <string id="30455">Hip-hop</string>
+    <string id="30456">Indie</string>
+    <string id="30457">Jazz</string>
+    <string id="30458">Latin</string>
+    <string id="30459">Pop</string>
+    <string id="30462">Punk</string>
+    <string id="30463">Reggae</string>
+    <string id="30464">R&B</string>
+    <string id="30465">Rock</string>
+    <string id="30466">Singer-songwriter</string>
+    <string id="30467">Soul</string>
+    <string id="30468">Trance</string>
+    <string id="30469">60s</string>
+    <string id="30471">70s</string>
+    <string id="30472">80s</string>
+    
+    <string id="30460">De la décénnie</string>
+    <string id="30461">à la décénnie</string>
+
+    <string id="30470">Nombre de piste de la radio</string>
+
+    <string id="30500">Top 100 Spotify artistes</string>
+    <string id="30501">Top 100 Spotify albums</string>
+    <string id="30502">Top 100 Spotify pistes</string>
+    <string id="30503">Spotify radio: </string>
+    <string id="30504">* Artistes Similaire </string>
+    <string id="30505">* Boite de réception</string>
+    
+    <!-- Context buttons -->
+    <string id="30600">Spotify: suivre la piste</string>
+    <string id="30601">Spotify: désactivé le suivi de la piste</string>
+    <string id="30602">Spotify: suivre l'album</string>
+    <string id="30603">Spotify: désactivé le suivi de l'album</string>
+    <string id="30604">Spotify: parcourir l'album</string>
+    <string id="30605">Spotify: parcourir l'artiste</string>
+</strings>

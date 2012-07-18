@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+
+  <!-- General -->
+  <category label="30400">
+    <setting id="desc" type="text" label="30003" default="" enable="false" />
+    <setting type="sep" />
+    <setting id="enable" type="bool" label="30405" default="false" />
+    <setting id="username" type="text" enable="eq(-1,true)" label="30401" default="" />
+    <setting id="password" type="text" enable="eq(-2,true)" option="hidden" label="30402" default="" />
+    <setting id="delay" type="enum" enable="eq(-3,true)" label="30412" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20" default="1" />
+    <setting id="logtofile" type="bool" enable="eq(-4,true)" label="30413" default="false" />
+    <setting type="sep" />
+    <setting id="highBitrate" type="bool" enable="eq(-6,true)" label="30404" default="true" />
+    <setting id="normalization" type="bool" enable="eq(-7,true)" label="30409" default="true" />
+    <setting id="enablefanart" type="bool" enable="eq(-8,true)"  label="30407" default="true" />
+    <setting id="customfanart" type="bool" enable="eq(-9,true)" visible="eq(-1,true)" label="30408" default="false" />
+    <setting id="fanart" type="file" enable="eq(-10,true)" visible="eq(-1,true)" label="30406" default="" />
+    <setting id="htfanart" type="bool" enable="eq(-11,true)" visible="eq(-3,true)" label="30410" default="false" />
+    <setting id="htartistthumb" type="bool" enable="false" visible="false" label="30411" default="false" />
+  </category>
+  <category label="30420">
+    <setting id="searchNoArtists" type="enum" label="30421" values="10|20|30|40|50|60|70|80|90|100" default="1" />
+    <setting id="searchNoAlbums" type="enum" label="30422" values="10|20|30|40|50|60|70|80|90|100" default="1" />
+    <setting id="searchNoTracks" type="enum" label="30423" values="10|20|30|40|50|60|70|80|90|100" default="1" />
+    <setting type="sep" />
+    <setting id="preloadArtistDetails" type="bool" label="30427" default="false" />
+    <setting id="artistNoArtists" type="enum" label="30424" values="10|20|30|40|50|60|70|80|90|100|All" default="1" />
+    <setting id="artistNoAlbums" type="enum" label="30425" values="10|20|30|40|50|60|70|80|90|100|All" default="6" />
+    <setting id="artistNoTracks" type="enum" label="30426" values="10|20|30|40|50|60|70|80|90|100|All" default="6" />
+    <setting type="sep" />
+    <setting id="radioNoTracks" type="enum" label="30470" values="3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20" default="11" />
+  </category>
+  <category label="30430">
+    <setting id="topListRegion" type="enum" label="30431" lvalues="30433|30432" default="0" />
+    <setting id="preloadToplists" type="bool" label="30434" default="false" />
+  </category>
+  <category label="30440">
+    <setting id="radio1name" type="text" label="30442" default="Rock"/>
+    <setting id="radio1from" type="enum" label="30460" values="Older|50s|60s|70s|80s|90s|00s|10s" default="3" />
+    <setting id="radio1to" type="enum" label="30461" values="Older|50s|60s|70s|80s|90s|00s|10s" default="7" />
+    <setting id="radio1genre1" type="bool" label="30443" default="false" />
+    <setting id="radio1genre2" type="bool" label="30444" default="true" />
+    <setting id="radio1genre3" type="bool" label="30445" default="false" />
+    <setting id="radio1genre4" type="bool" label="30446" default="false" />
+    <setting id="radio1genre5" type="bool" label="30447" default="false" />
+    <setting id="radio1genre6" type="bool" label="30448" default="false" />
+    <setting id="radio1genre7" type="bool" label="30449" default="true" />
+    <setting id="radio1genre8" type="bool" label="30450" default="false" />
+    <setting id="radio1genre9" type="bool" label="30451" default="false" />
+    <setting id="radio1genre10" type="bool" label="30452" default="false" />
+    <setting id="radio1genre11" type="bool" label="30453" default="false" />
+    <setting id="radio1genre12" type="bool" label="30454" default="true" />
+    <setting id="radio1genre13" type="bool" label="30455" default="false" />
+    <setting id="radio1genre14" type="bool" label="30456" default="false" />
+    <setting id="radio1genre15" type="bool" label="30457" default="false" />
+    <setting id="radio1genre16" type="bool" label="30458" default="false" />
+    <setting id="radio1genre17" type="bool" label="30459" default="false" />
+    <setting id="radio1genre18" type="bool" label="30462" default="false" />
+    <setting id="radio1genre19" type="bool" label="30463" default="false" />
+    <setting id="radio1genre20" type="bool" label="30464" default="false" />
+    <setting id="radio1genre21" type="bool" label="30465" default="true" />
+    <setting id="radio1genre22" type="bool" label="30466" default="false" />
+    <setting id="radio1genre23" type="bool" label="30467" default="false" />
+    <setting id="radio1genre24" type="bool" label="30468" default="false" />
+    <setting id="radio1genre25" type="bool" label="30469" default="false" />
+    <setting id="radio1genre26" type="bool" label="30471" default="false" />
+    <setting id="radio1genre27" type="bool" label="30472" default="false" />
+    
+
+</category>
+  <category label="30441">
+    <setting id="radio2name" type="text" label="30442" default="Dance"/>
+    <setting id="radio2from" type="enum" label="30460" values="Older|50s|60s|70s|80s|90s|00s|10s" default="0" />
+    <setting id="radio2to" type="enum" label="30461" values="Older|50s|60s|70s|80s|90s|00s|10s" default="7" />
+    <setting id="radio2genre1" type="bool" label="30443" default="false" />
+    <setting id="radio2genre2" type="bool" label="30444" default="false" />
+    <setting id="radio2genre3" type="bool" label="30445" default="false" />
+    <setting id="radio2genre4" type="bool" label="30446" default="false" />
+    <setting id="radio2genre5" type="bool" label="30447" default="false" />
+    <setting id="radio2genre6" type="bool" label="30448" default="true" />
+    <setting id="radio2genre7" type="bool" label="30449" default="false" />
+    <setting id="radio2genre8" type="bool" label="30450" default="false" />
+    <setting id="radio2genre9" type="bool" label="30451" default="false" />
+    <setting id="radio2genre10" type="bool" label="30452" default="false" />
+    <setting id="radio2genre11" type="bool" label="30453" default="false" />
+    <setting id="radio2genre12" type="bool" label="30454" default="false" />
+    <setting id="radio2genre13" type="bool" label="30455" default="true" />
+    <setting id="radio2genre14" type="bool" label="30456" default="false" />
+    <setting id="radio2genre15" type="bool" label="30457" default="false" />
+    <setting id="radio2genre16" type="bool" label="30458" default="false" />
+    <setting id="radio2genre17" type="bool" label="30459" default="true" />
+    <setting id="radio2genre18" type="bool" label="30462" default="false" />
+    <setting id="radio2genre18" type="bool" label="30462" default="false" />
+    <setting id="radio2genre19" type="bool" label="30463" default="false" />
+    <setting id="radio2genre20" type="bool" label="30464" default="true" />
+    <setting id="radio2genre21" type="bool" label="30465" default="false" />
+    <setting id="radio2genre22" type="bool" label="30466" default="false" />
+    <setting id="radio2genre23" type="bool" label="30467" default="true" />
+    <setting id="radio2genre24" type="bool" label="30468" default="true" />
+    <setting id="radio2genre25" type="bool" label="30469" default="false" />
+    <setting id="radio2genre26" type="bool" label="30471" default="false" />
+    <setting id="radio2genre27" type="bool" label="30472" default="false" />
+</category>
+</settings>
