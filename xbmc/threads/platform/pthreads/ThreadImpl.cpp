@@ -64,6 +64,12 @@ void CThread::SetThreadInfo()
   m_ThreadOpaque.LwpId = syscall(SYS_gettid);
 #endif
 
+#ifdef TARGET_DARWIN
+#if(__MAC_OS_X_VERSION_MIN_REQUIRED >= 1060 || __IPHONE_OS_VERSION_MIN_REQUIRED >= 30200)
+  pthread_setname_np(m_ThreadName.c_str());
+#endif
+#endif
+    
   // start thread with nice level of appication
   int appNice = getpriority(PRIO_PROCESS, getpid());
   if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
