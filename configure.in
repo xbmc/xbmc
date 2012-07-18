@@ -15,6 +15,21 @@ tolower(){
   echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
 }
 
+# check for enabling additional players
+AC_DEFUN([XB_ADD_PLAYER],
+[
+  AC_MSG_CHECKING([for $2])
+  case $add_players in
+    *$2*)
+      AC_SUBST([USE_$1], 1)
+      AC_DEFINE([HAS_$1], 1, [using $2])
+      AC_MSG_RESULT([enabling $2])
+      ;;
+    *)
+      AC_MSG_RESULT([$2 is not enabled])
+  esac
+])
+
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
@@ -457,6 +472,12 @@ AC_ARG_ENABLE([libcap],
   [enable libcap support (default is auto)])],
   [use_libcap=$enableval],
   [use_libcap=auto])
+
+AC_ARG_ENABLE([player],
+  [AS_HELP_STRING([--enable-player],
+  [enable additional players from a list of comma separated names, (default is none)])],
+  [add_players=$enableval],
+  [add_players=no])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -2044,6 +2065,12 @@ if test "x$use_libcap" != "xno"; then
   final_message="$final_message\n  libcap support:\tYes"
 else
   final_message="$final_message\n  libcap support:\tNo"
+fi
+
+if test "x$add_players" != "xno"; then
+  final_message="$final_message\n  additional players:\tYes"
+else
+  final_message="$final_message\n  additional players:\tNo"
 fi
 
 ### External libraries messages
