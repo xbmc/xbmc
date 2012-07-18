@@ -155,15 +155,6 @@ static const uint32_t SymMappingsX11[][2] =
 , {XF86XK_AudioForward, XBMCK_FASTFORWARD}
 };
 
-
-CWinEventsX11::CWinEventsX11()
-{
-  m_display = 0;
-  m_window = 0;
-  m_keybuf = 0;
-  m_keybuf_len = 0;
-}
-
 CWinEventsX11::~CWinEventsX11()
 {
   free(m_keybuf);
@@ -189,15 +180,20 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
 {
   if (WinEvents)
     return true;
+  WinEvents = new CWinEventsX11(dpy, win);
+  return true;
+}
 
-  WinEvents = new CWinEventsX11();
-  WinEvents->m_display = dpy;
-  WinEvents->m_window = win;
-  WinEvents->m_keybuf_len = 32*sizeof(char);
-  WinEvents->m_keybuf = (char*)malloc(WinEvents->m_keybuf_len);
-  WinEvents->m_keymodState = 0;
-  WinEvents->m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-  memset(&(WinEvents->m_lastKey), 0, sizeof(XBMC_Event));
+CWinEventsX11::CWinEventsX11(Display *dpy, Window win)
+{
+  m_display = dpy;
+  m_window = win;
+  m_keybuf_len = 32*sizeof(char);
+  m_keybuf = (char*)malloc(m_keybuf_len);
+  m_keymodState = 0;
+  m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+  memset(&(m_lastKey), 0, sizeof(XBMC_Event));
+  memset(&m_compose, 0, sizeof(m_compose));
 
   // open input method
   CStdString old_locale, old_modifiers;
@@ -211,41 +207,39 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
   setlocale(LC_ALL, "");
   XSetLocaleModifiers("");
 
-  WinEvents->m_xim = XOpenIM(WinEvents->m_display, NULL, res_name, res_name);
+  m_xim = XOpenIM(m_display, NULL, res_name, res_name);
 
   // restore original locale
   XSetLocaleModifiers(old_modifiers.c_str());
   setlocale(LC_ALL, old_locale.c_str());
 
-  WinEvents->m_xic = NULL;
-  if (WinEvents->m_xim)
+  m_xic = NULL;
+  if (m_xim)
   {
-    WinEvents->m_xic = XCreateIC(WinEvents->m_xim,
-                                 XNClientWindow, WinEvents->m_window,
-                                 XNFocusWindow, WinEvents->m_window,
-                                 XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
-                                 XNResourceName, res_name,
-                                 XNResourceClass, res_name,
-                                 NULL);
+    m_xic = XCreateIC(m_xim,
+                      XNClientWindow , m_window,
+                      XNFocusWindow  , m_window,
+                      XNInputStyle   , XIMPreeditNothing | XIMStatusNothing,
+                      XNResourceName , res_name,
+                      XNResourceClass, res_name,
+                      NULL);
   }
 
-  if (!WinEvents->m_xic)
+  if (!m_xic)
     CLog::Log(LOGWARNING,"CWinEventsX11::Init - no input method found");
 
   // build Keysym lookup table
   for (unsigned int i = 0; i < sizeof(SymMappingsX11)/(2*sizeof(uint32_t)); ++i)
   {
-    WinEvents->m_symLookupTable[SymMappingsX11[i][0]] = SymMappingsX11[i][1];
+    m_symLookupTable[SymMappingsX11[i][0]] = SymMappingsX11[i][1];
   }
 
   // register for xrandr events
 #if defined(HAS_XRANDR)
   int iReturn;
-  XRRQueryExtension(WinEvents->m_display, &WinEvents->m_RREventBase, &iReturn);
-  XRRSelectInput(WinEvents->m_display, WinEvents->m_window, RRScreenChangeNotifyMask);
+  XRRQueryExtension(m_display, &m_RREventBase, &iReturn);
+  XRRSelectInput(m_display, m_window, RRScreenChangeNotifyMask);
 #endif
-
-  return true;
 }
 
 void CWinEventsX11::Quit()
@@ -254,32 +248,242 @@ void CWinEventsX11::Quit()
     return;
 
   delete WinEvents;
-  WinEvents = 0;
+  WinEvents = NULL;
 }
 
 bool CWinEventsX11::MessagePump()
 {
   if (!WinEvents)
     return false;
+  return WinEvents->Process();
+}
 
+bool CWinEventsX11::ProcessKeyPress(XKeyEvent& xevent)
+{
+  XBMC_Event newEvent = {0};
+  KeySym xkeysym;
+  bool ret = false;
+  Status status;
+  int len;
+  CStdString data;
+  CStdStringW keys;
+
+  // fallback if we have no IM
+  if (m_xic)
+  {
+    len = Xutf8LookupString(m_xic, &xevent,
+                            m_keybuf, m_keybuf_len,
+                            &xkeysym, &status);
+    if (status == XBufferOverflow)
+    {
+      m_keybuf_len = len;
+      m_keybuf = (char*)realloc(m_keybuf, m_keybuf_len);
+      len = Xutf8LookupString(m_xic, &xevent,
+                              m_keybuf, m_keybuf_len,
+                              &xkeysym, &status);
+    }
+    data.assign(m_keybuf, len);
+    g_charsetConverter.utf8ToW(data, keys, false);
+  }
+  else
+  {
+    len = XLookupString(&xevent, m_keybuf, m_keybuf_len, &xkeysym, &m_compose);
+    if(len > 0)
+      status = XLookupBoth;
+    else
+      status = XLookupKeySym;
+    data.assign(m_keybuf, len);
+    g_charsetConverter.toW(data, keys, "LATIN1");
+  }
+
+
+  /* apparently Xutf8LookupString will not always return
+   * the expected keysym for Ctrl+S and will instead
+   * return Ctrl+s (lowercase). This causes keymap
+   * issues. Investigation needed to see if it can be
+   * removed
+   */
+  xkeysym = XLookupKeysym(&xevent, 0);
+
+  switch (status)
+  {
+    case XLookupNone:
+      break;
+    case XLookupChars:
+    case XLookupBoth:
+    {
+      if (keys.length() == 0)
+      {
+        break;
+      }
+
+      for (unsigned int i = 0; i < keys.length() - 1; i++)
+      {
+        newEvent.key.keysym.sym     = XBMCK_UNKNOWN;
+        newEvent.key.keysym.unicode = keys[i];
+        newEvent.key.state          = XBMC_PRESSED;
+        newEvent.key.type           = XBMC_KEYDOWN;
+        ret |= ProcessKey(newEvent, 500);
+      }
+      if (keys.length() > 0)
+      {
+        newEvent.key.keysym.scancode = xevent.keycode;
+        newEvent.key.keysym.sym     = LookupXbmcKeySym(xkeysym);
+        newEvent.key.keysym.unicode = keys[keys.length() - 1];
+        newEvent.key.state          = XBMC_PRESSED;
+        newEvent.key.type           = XBMC_KEYDOWN;
+        ret |= ProcessKey(newEvent, 500);
+      }
+      break;
+    }
+
+    case XLookupKeySym:
+    {
+      newEvent.key.keysym.scancode = xevent.keycode;
+      newEvent.key.keysym.sym      = LookupXbmcKeySym(xkeysym);
+      newEvent.key.state           = XBMC_PRESSED;
+      newEvent.key.type            = XBMC_KEYDOWN;
+      ret |= ProcessKey(newEvent, 500);
+      break;
+    }
+
+  }
+
+  return ret;
+}
+
+bool CWinEventsX11::ProcessKeyRelease(XKeyEvent& xkey)
+{
+  XBMC_Event newEvent = {0};
+  newEvent.key.keysym.scancode = xkey.keycode;
+  newEvent.key.keysym.sym      = LookupXbmcKeySym(XLookupKeysym(&xkey, 0));
+  newEvent.key.state           = XBMC_RELEASED;
+  newEvent.key.type            = XBMC_KEYUP;
+  return ProcessKey(newEvent, 0);
+}
+
+bool CWinEventsX11::ProcessConfigure (XConfigureEvent& xevent)
+{
+  if (xevent.window != m_window)
+    return false;
+
+  bool ret = false;
+
+  /* find the last configure event in the queue */
+  while(XCheckTypedWindowEvent(m_display, m_window, ConfigureNotify, (XEvent*)&xevent))
+    ;
+
+  /* check for resize */
+  if((int)g_Windowing.GetWidth()  != xevent.width
+  || (int)g_Windowing.GetHeight() != xevent.height)
+  {
+    XBMC_Event newEvent = {0};
+    newEvent.type = XBMC_VIDEORESIZE;
+    newEvent.resize.w = xevent.width;
+    newEvent.resize.h = xevent.height;
+    ret |= g_application.OnEvent(newEvent);
+  }
+
+  /* check for move */
+  if(g_Windowing.GetLeft()  != xevent.x
+  || g_Windowing.GetTop()   != xevent.y)
+  {
+    XBMC_Event newEvent = {0};
+    newEvent.type = XBMC_VIDEOMOVE;
+    newEvent.move.x = xevent.x;
+    newEvent.move.y = xevent.y;
+    ret |= g_application.OnEvent(newEvent);
+  }
+  return ret;
+}
+
+bool CWinEventsX11::ProcessMotion(XMotionEvent& xmotion)
+{
+  XBMC_Event newEvent = {0};
+  newEvent.type = XBMC_MOUSEMOTION;
+  newEvent.motion.xrel = (int16_t)xmotion.x_root;
+  newEvent.motion.yrel = (int16_t)xmotion.y_root;
+  newEvent.motion.x    = (int16_t)xmotion.x;
+  newEvent.motion.y    = (int16_t)xmotion.y;
+  return g_application.OnEvent(newEvent);
+}
+
+bool CWinEventsX11::ProcessButtonPress(XButtonEvent& xbutton)
+{
+  XBMC_Event newEvent = {0};
+  newEvent.type = XBMC_MOUSEBUTTONDOWN;
+  newEvent.button.button = (unsigned char)(xbutton.button);
+  newEvent.button.state  = XBMC_PRESSED;
+  newEvent.button.x      = (int16_t)(xbutton.x);
+  newEvent.button.y      = (int16_t)(xbutton.y);
+  return g_application.OnEvent(newEvent);
+}
+
+bool CWinEventsX11::ProcessButtonRelease(XButtonEvent& xbutton)
+{
+  XBMC_Event newEvent = {0};
+  newEvent.type = XBMC_MOUSEBUTTONUP;
+  newEvent.button.button = (unsigned char)(xbutton.button);
+  newEvent.button.state  = XBMC_RELEASED;
+  newEvent.button.x      = (int16_t)(xbutton.x);
+  newEvent.button.y      = (int16_t)(xbutton.y);
+  return g_application.OnEvent(newEvent);
+}
+
+bool CWinEventsX11::ProcessClientMessage(XClientMessageEvent& xclient)
+{
+  if ((Atom)(xclient.data.l[0]) == m_wmDeleteMessage)
+  {
+    if (!g_application.m_bStop)
+      g_application.getApplicationMessenger().Quit();
+    return true;
+  }
+  return false;
+}
+
+bool CWinEventsX11::ProcessFocusIn(XFocusInEvent& xfocus)
+{
+  if (m_xic)
+    XSetICFocus(m_xic);
+
+  g_application.m_AppFocused = true;
+  memset(&(m_lastKey), 0, sizeof (XBMC_Event));
+  m_keymodState = 0;
+  g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+  return true;
+}
+
+bool CWinEventsX11::ProcessFocusOut(XFocusOutEvent& xfocus)
+{
+  if (m_xic)
+    XUnsetICFocus(m_xic);
+
+  g_application.m_AppFocused = false;
+  memset(&(m_lastKey), 0, sizeof(XBMC_Event));
+  g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+  return true;
+}
+
+bool CWinEventsX11::Process()
+{
   bool ret = false;
   XEvent xevent;
 
-  while (WinEvents && XPending(WinEvents->m_display))
+  while (WinEvents && XPending(m_display))
   {
     memset(&xevent, 0, sizeof (XEvent));
-    XNextEvent(WinEvents->m_display, &xevent);
+    XNextEvent(m_display, &xevent);
 
     //  ignore events generated by auto-repeat
-    if (xevent.type == KeyRelease && XPending(WinEvents->m_display))
+    if (xevent.type == KeyRelease && XPending(m_display))
     {
       XEvent peekevent;
-      XPeekEvent(WinEvents->m_display, &peekevent);
+      XPeekEvent(m_display, &peekevent);
       if ((peekevent.type == KeyPress) &&
           (peekevent.xkey.keycode == xevent.xkey.keycode) &&
           ((peekevent.xkey.time - xevent.xkey.time) < 2))
       {
-        XNextEvent(WinEvents->m_display, &peekevent);
+        XNextEvent(m_display, &peekevent);
         continue;
       }
     }
@@ -290,245 +494,63 @@ bool CWinEventsX11::MessagePump()
     switch (xevent.type)
     {
       case MapNotify:
-      {
         g_application.m_AppActive = true;
         break;
-      }
 
       case UnmapNotify:
-      {
         g_application.m_AppActive = false;
         break;
-      }
 
       case FocusIn:
-      {
-        if (WinEvents->m_xic)
-          XSetICFocus(WinEvents->m_xic);
-        g_application.m_AppFocused = true;
-        memset(&(WinEvents->m_lastKey), 0, sizeof(XBMC_Event));
-        WinEvents->m_keymodState = 0;
-        g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+        ret |= ProcessFocusIn(xevent.xfocus);
         break;
-      }
 
       case FocusOut:
-      {
-        if (WinEvents->m_xic)
-          XUnsetICFocus(WinEvents->m_xic);
-        g_application.m_AppFocused = false;
-        memset(&(WinEvents->m_lastKey), 0, sizeof(XBMC_Event));
-        g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+        ret |= ProcessFocusOut(xevent.xfocus);
         break;
-      }
 
       case Expose:
-      {
         g_windowManager.MarkDirty();
         break;
-      }
 
       case ConfigureNotify:
-      {
-        if (xevent.xconfigure.window != WinEvents->m_window)
-          break;
-
-        /* find the last configure event in the queue */
-        while(XCheckTypedWindowEvent(WinEvents->m_display, WinEvents->m_window, ConfigureNotify, &xevent))
-          ;
-
-        /* check for resize */
-        if((int)g_Windowing.GetWidth()  != xevent.xconfigure.width
-        || (int)g_Windowing.GetHeight() != xevent.xconfigure.height)
-        {
-          XBMC_Event newEvent = {0};
-          newEvent.type = XBMC_VIDEORESIZE;
-          newEvent.resize.w = xevent.xconfigure.width;
-          newEvent.resize.h = xevent.xconfigure.height;
-          ret |= g_application.OnEvent(newEvent);
-        }
-
-        /* check for move */
-        if(g_Windowing.GetLeft()  != xevent.xconfigure.x
-        || g_Windowing.GetTop()   != xevent.xconfigure.y)
-        {
-          XBMC_Event newEvent = {0};
-          newEvent.type = XBMC_VIDEOMOVE;
-          newEvent.move.x = xevent.xconfigure.x;
-          newEvent.move.y = xevent.xconfigure.y;
-          ret |= g_application.OnEvent(newEvent);
-        }
-
-
+        ret |= ProcessConfigure(xevent.xconfigure);
         break;
-      }
 
       case ClientMessage:
-      {
-        if ((Atom)xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
-          if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
+        ret |= ProcessClientMessage(xevent.xclient);
         break;
-      }
 
       case KeyPress:
-      {
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
-        newEvent.type = XBMC_KEYDOWN;
-        KeySym xkeysym;
-
-        // fallback if we have no IM
-        if (!WinEvents->m_xic)
-        {
-          static XComposeStatus state;
-          char keybuf[32];
-          xkeysym = XLookupKeysym(&xevent.xkey, 0);
-          newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
-          newEvent.key.keysym.scancode = xevent.xkey.keycode;
-          newEvent.key.state = xevent.xkey.state;
-          newEvent.key.type = xevent.xkey.type;
-          if (XLookupString(&xevent.xkey, keybuf, sizeof(keybuf), NULL, &state))
-          {
-            newEvent.key.keysym.unicode = keybuf[0];
-          }
-          ret |= ProcessKey(newEvent, 500);
-          break;
-        }
-
-        Status status;
-        int len;
-        len = Xutf8LookupString(WinEvents->m_xic, &xevent.xkey,
-                                WinEvents->m_keybuf, WinEvents->m_keybuf_len,
-                                &xkeysym, &status);
-        if (status == XBufferOverflow)
-        {
-          WinEvents->m_keybuf_len = len;
-          WinEvents->m_keybuf = (char*)realloc(WinEvents->m_keybuf, WinEvents->m_keybuf_len);
-          len = Xutf8LookupString(WinEvents->m_xic, &xevent.xkey,
-                                  WinEvents->m_keybuf, WinEvents->m_keybuf_len,
-                                  &xkeysym, &status);
-        }
-        switch (status)
-        {
-          case XLookupNone:
-            break;
-          case XLookupChars:
-          case XLookupBoth:
-          {
-            CStdString   data(WinEvents->m_keybuf, len);
-            CStdStringW keys;
-            g_charsetConverter.utf8ToW(data, keys, false);
-
-            if (keys.length() == 0)
-            {
-              break;
-            }
-
-            for (unsigned int i = 0; i < keys.length() - 1; i++)
-            {
-              newEvent.key.keysym.sym = XBMCK_UNKNOWN;
-              newEvent.key.keysym.unicode = keys[i];
-              newEvent.key.state = xevent.xkey.state;
-              newEvent.key.type = xevent.xkey.type;
-              ret |= ProcessKey(newEvent, 500);
-            }
-            if (keys.length() > 0)
-            {
-              newEvent.key.keysym.scancode = xevent.xkey.keycode;
-              xkeysym = XLookupKeysym(&xevent.xkey, 0);
-              newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
-              newEvent.key.keysym.unicode = keys[keys.length() - 1];
-              newEvent.key.state = xevent.xkey.state;
-              newEvent.key.type = xevent.xkey.type;
-
-              ret |= ProcessKey(newEvent, 500);
-            }
-            break;
-          }
-
-          case XLookupKeySym:
-          {
-            newEvent.key.keysym.scancode = xevent.xkey.keycode;
-            newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
-            newEvent.key.state = xevent.xkey.state;
-            newEvent.key.type = xevent.xkey.type;
-            ret |= ProcessKey(newEvent, 500);
-            break;
-          }
-
-        }// switch status
+        ret |= ProcessKeyPress(xevent.xkey);
         break;
-      } //KeyPress
 
       case KeyRelease:
-      {
-        XBMC_Event newEvent;
-        KeySym xkeysym;
-        memset(&newEvent, 0, sizeof(newEvent));
-        newEvent.type = XBMC_KEYUP;
-        xkeysym = XLookupKeysym(&xevent.xkey, 0);
-        newEvent.key.keysym.scancode = xevent.xkey.keycode;
-        newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
-        newEvent.key.state = xevent.xkey.state;
-        newEvent.key.type = xevent.xkey.type;
-        ret |= ProcessKey(newEvent, 0);
+        ret |= ProcessKeyRelease(xevent.xkey);
         break;
-      }
 
-      // lose mouse coverage
       case LeaveNotify:
-      {
         g_Mouse.SetActive(false);
         break;
-      }
 
       case MotionNotify:
-      {
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
-        newEvent.type = XBMC_MOUSEMOTION;
-        newEvent.motion.xrel = (int16_t)xevent.xmotion.x_root;
-        newEvent.motion.yrel = (int16_t)xevent.xmotion.y_root;
-        newEvent.motion.x = (int16_t)xevent.xmotion.x;
-        newEvent.motion.y = (int16_t)xevent.xmotion.y;
-        ret |= g_application.OnEvent(newEvent);
+        ret |= ProcessMotion(xevent.xmotion);
         break;
-      }
 
       case ButtonPress:
-      {
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
-        newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.button = (unsigned char)xevent.xbutton.button;
-        newEvent.button.state = XBMC_PRESSED;
-        newEvent.button.x = (int16_t)xevent.xbutton.x;
-        newEvent.button.y = (int16_t)xevent.xbutton.y;
-        ret |= g_application.OnEvent(newEvent);
+        ret |= ProcessButtonPress(xevent.xbutton);
         break;
-      }
 
       case ButtonRelease:
-      {
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
-        newEvent.type = XBMC_MOUSEBUTTONUP;
-        newEvent.button.button = (unsigned char)xevent.xbutton.button;
-        newEvent.button.state = XBMC_RELEASED;
-        newEvent.button.x = (int16_t)xevent.xbutton.x;
-        newEvent.button.y = (int16_t)xevent.xbutton.y;
-        ret |= g_application.OnEvent(newEvent);
+        ret |= ProcessButtonRelease(xevent.xbutton);
         break;
-      }
 
       default:
-      {
         break;
-      }
     }// switch event.type
 
 #if defined(HAS_XRANDR)
-    if (WinEvents && xevent.type == WinEvents->m_RREventBase + RRScreenChangeNotify)
+    if (WinEvents && xevent.type == m_RREventBase + RRScreenChangeNotify)
     {
       XRRUpdateConfiguration(&xevent);
       g_Windowing.NotifyXRREvent();
@@ -572,38 +594,38 @@ bool CWinEventsX11::ProcessKey(XBMC_Event &event, int repeatDelay)
     switch(event.key.keysym.sym)
     {
       case XBMCK_LSHIFT:
-        WinEvents->m_keymodState |= XBMCKMOD_LSHIFT;
+        m_keymodState |= XBMCKMOD_LSHIFT;
         break;
       case XBMCK_RSHIFT:
-        WinEvents->m_keymodState |= XBMCKMOD_RSHIFT;
+        m_keymodState |= XBMCKMOD_RSHIFT;
         break;
       case XBMCK_LCTRL:
-        WinEvents->m_keymodState |= XBMCKMOD_LCTRL;
+        m_keymodState |= XBMCKMOD_LCTRL;
         break;
       case XBMCK_RCTRL:
-        WinEvents->m_keymodState |= XBMCKMOD_RCTRL;
+        m_keymodState |= XBMCKMOD_RCTRL;
         break;
       case XBMCK_LALT:
-        WinEvents->m_keymodState |= XBMCKMOD_LALT;
+        m_keymodState |= XBMCKMOD_LALT;
         break;
       case XBMCK_RALT:
-        WinEvents->m_keymodState |= XBMCKMOD_RCTRL;
+        m_keymodState |= XBMCKMOD_RCTRL;
         break;
       case XBMCK_LMETA:
-        WinEvents->m_keymodState |= XBMCKMOD_LMETA;
+        m_keymodState |= XBMCKMOD_LMETA;
         break;
       case XBMCK_RMETA:
-        WinEvents->m_keymodState |= XBMCKMOD_RMETA;
+        m_keymodState |= XBMCKMOD_RMETA;
         break;
       case XBMCK_MODE:
-        WinEvents->m_keymodState |= XBMCKMOD_MODE;
+        m_keymodState |= XBMCKMOD_MODE;
         break;
       default:
         break;
     }
-    event.key.keysym.mod = (XBMCMod)WinEvents->m_keymodState;
-    memcpy(&(WinEvents->m_lastKey), &event, sizeof(event));
-    WinEvents->m_repeatKeyTimeout.Set(repeatDelay);
+    event.key.keysym.mod = (XBMCMod)m_keymodState;
+    memcpy(&(m_lastKey), &event, sizeof(event));
+    m_repeatKeyTimeout.Set(repeatDelay);
 
     bool ret = ProcessShortcuts(event);
     if (ret)
@@ -614,37 +636,37 @@ bool CWinEventsX11::ProcessKey(XBMC_Event &event, int repeatDelay)
     switch(event.key.keysym.sym)
     {
       case XBMCK_LSHIFT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LSHIFT;
+        m_keymodState &= ~XBMCKMOD_LSHIFT;
         break;
       case XBMCK_RSHIFT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RSHIFT;
+        m_keymodState &= ~XBMCKMOD_RSHIFT;
         break;
       case XBMCK_LCTRL:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LCTRL;
+        m_keymodState &= ~XBMCKMOD_LCTRL;
         break;
       case XBMCK_RCTRL:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RCTRL;
+        m_keymodState &= ~XBMCKMOD_RCTRL;
         break;
       case XBMCK_LALT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LALT;
+        m_keymodState &= ~XBMCKMOD_LALT;
         break;
       case XBMCK_RALT:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RCTRL;
+        m_keymodState &= ~XBMCKMOD_RCTRL;
         break;
       case XBMCK_LMETA:
-        WinEvents->m_keymodState &= ~XBMCKMOD_LMETA;
+        m_keymodState &= ~XBMCKMOD_LMETA;
         break;
       case XBMCK_RMETA:
-        WinEvents->m_keymodState &= ~XBMCKMOD_RMETA;
+        m_keymodState &= ~XBMCKMOD_RMETA;
         break;
       case XBMCK_MODE:
-        WinEvents->m_keymodState &= ~XBMCKMOD_MODE;
+        m_keymodState &= ~XBMCKMOD_MODE;
         break;
       default:
         break;
     }
-    event.key.keysym.mod = (XBMCMod)WinEvents->m_keymodState;
-    memset(&(WinEvents->m_lastKey), 0, sizeof(event));
+    event.key.keysym.mod = (XBMCMod)m_keymodState;
+    memset(&(m_lastKey), 0, sizeof(event));
   }
 
   return g_application.OnEvent(event);
@@ -669,11 +691,11 @@ bool CWinEventsX11::ProcessShortcuts(XBMC_Event& event)
 
 bool CWinEventsX11::ProcessKeyRepeat()
 {
-  if (WinEvents && (WinEvents->m_lastKey.type == XBMC_KEYDOWN))
+  if (WinEvents && (m_lastKey.type == XBMC_KEYDOWN))
   {
-    if (WinEvents->m_repeatKeyTimeout.IsTimePast())
+    if (m_repeatKeyTimeout.IsTimePast())
     {
-      return ProcessKey(WinEvents->m_lastKey, 10);
+      return ProcessKey(m_lastKey, 10);
     }
   }
   return false;
@@ -683,8 +705,8 @@ XBMCKey CWinEventsX11::LookupXbmcKeySym(KeySym keysym)
 {
   // try direct mapping first
   std::map<uint32_t, uint32_t>::iterator it;
-  it = WinEvents->m_symLookupTable.find(keysym);
-  if (it != WinEvents->m_symLookupTable.end())
+  it = m_symLookupTable.find(keysym);
+  if (it != m_symLookupTable.end())
   {
     return (XBMCKey)(it->second);
   }
