@@ -22,23 +22,34 @@
 
 #include "WinEvents.h"
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include "threads/SystemClock.h"
 #include <map>
 
 class CWinEventsX11 : public CWinEventsBase
 {
 public:
-  CWinEventsX11();
   virtual ~CWinEventsX11();
   static bool Init(Display *dpy, Window win);
   static void Quit();
   static bool MessagePump();
 
 protected:
-  static XBMCKey LookupXbmcKeySym(KeySym keysym);
-  static bool ProcessKey(XBMC_Event &event, int repeatDelay);
-  static bool ProcessKeyRepeat();
-  static bool ProcessShortcuts(XBMC_Event& event);
+  CWinEventsX11(Display *dpy, Window win);
+  XBMCKey LookupXbmcKeySym(KeySym keysym);
+  bool    Process();
+  bool    ProcessMotion       (XMotionEvent& xmotion);
+  bool    ProcessConfigure    (XConfigureEvent& xevent);
+  bool    ProcessKeyPress     (XKeyEvent& xevent);
+  bool    ProcessKeyRelease   (XKeyEvent& xevent);
+  bool    ProcessButtonPress  (XButtonEvent& xbutton);
+  bool    ProcessButtonRelease(XButtonEvent& xbutton);
+  bool    ProcessClientMessage(XClientMessageEvent& xclient);
+  bool    ProcessFocusIn      (XFocusInEvent& xfocus);
+  bool    ProcessFocusOut     (XFocusOutEvent& xfocus);
+  bool    ProcessKey(XBMC_Event &event, int repeatDelay);
+  bool    ProcessKeyRepeat();
+  bool    ProcessShortcuts(XBMC_Event& event);
   static CWinEventsX11 *WinEvents;
   Display *m_display;
   Window m_window;
@@ -48,6 +59,7 @@ protected:
   XIM m_xim;
   XIC m_xic;
   XBMC_Event m_lastKey;
+  XComposeStatus m_compose;
   XbmcThreads::EndTime m_repeatKeyTimeout;
   std::map<uint32_t,uint32_t> m_symLookupTable;
   int m_keymodState;
