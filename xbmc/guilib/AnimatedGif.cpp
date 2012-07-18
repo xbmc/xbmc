@@ -212,15 +212,6 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
   }
   gifgce;
 
-  struct GIFNetscapeTag
-  {
-    unsigned char comment[11];  //4...14  NETSCAPE2.0
-    unsigned char SubBlockLength; //15      0x3
-    unsigned char reserved;       //16      0x1
-    unsigned short iIterations ;    //17..18  number of iterations (lo-hi)
-  }
-  gifnetscape;
-
   int GraphicExtensionFound = 0;
 
   // OPEN FILE
