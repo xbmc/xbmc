@@ -318,7 +318,8 @@ bool CWinEGLPlatformGeneric::ReleaseSurface()
     m_context = EGL_NO_CONTEXT;
   }
 
-  eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+  if (m_display != EGL_NO_DISPLAY)
+    eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
   return true;
 }
