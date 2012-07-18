@@ -70,8 +70,8 @@
 
 using namespace std;
 
-// In seconds
-#define MINIMUM_TIME_BETWEEN_READS 2
+// In milliseconds
+#define MINIMUM_TIME_BETWEEN_READS 500
 
 #ifdef _WIN32
 /* replacement gettimeofday implementation, copy from dvdnav_internal.h */
@@ -240,7 +240,7 @@ CCPUInfo::CCPUInfo(void)
 
 #endif
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
-  m_lastReadTime = time(NULL);
+  m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 
   ReadCPUFeatures();
 
@@ -264,7 +264,7 @@ CCPUInfo::~CCPUInfo()
 
 int CCPUInfo::getUsedPercentage()
 {
-  if (m_lastReadTime + MINIMUM_TIME_BETWEEN_READS > time(NULL))
+  if (!m_nextUsedReadTime.IsTimePast())
     return m_lastUsedPercentage;
 
   unsigned long long userTicks;
@@ -299,7 +299,7 @@ int CCPUInfo::getUsedPercentage()
   m_ioTicks += ioTicks;
 
   m_lastUsedPercentage = result;
-  m_lastReadTime = time(NULL);
+  m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 
   return result;
 }
