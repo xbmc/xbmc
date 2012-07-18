@@ -759,6 +759,36 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
   return devt;
 }
 
+void CLinuxInputDevice::SetupKeyboardAutoRepeat(int fd)
+{
+  bool enable = true;
+
+  if (enable)
+  {
+    int kbdrep[2] = { 400, 80 };
+    ioctl(fd, EVIOCSREP, kbdrep);
+  }
+  else
+  {
+    struct input_event event;
+    memset(&event, 0, sizeof(event));
+
+    gettimeofday(&event.time, NULL);
+    event.type  = EV_REP;
+    event.code  = REP_DELAY;
+    event.value = 0;
+    write(fd, &event, sizeof(event));
+
+    gettimeofday(&event.time, NULL);
+    event.type  = EV_REP;
+    event.code  = REP_PERIOD;
+    event.value = 0;
+    write(fd, &event, sizeof(event));
+
+    CLog::Log(LOGINFO, "CLinuxInputDevice: auto key repeat disabled on device '%s'\n", m_deviceName);
+  }
+}
+
 /*
  * Fill device information.
  * Queries the input device and tries to classify it.
@@ -980,9 +1010,6 @@ bool CLinuxInputDevice::Open()
     return false;
   }
 
-  int kbdrep[2] = { 400, 80 };
-  ioctl(fd, EVIOCSREP, kbdrep);
-
   // Set the socket to non-blocking
   int opts = 0;
   if ((opts = fcntl(fd, F_GETFL)) < 0)
@@ -1002,6 +1029,9 @@ bool CLinuxInputDevice::Open()
 
   /* fill device info structure */
   GetInfo(fd);
+
+  if (m_deviceType & LI_DEVICE_KEYBOARD)
+    SetupKeyboardAutoRepeat(fd);
 
   m_fd = fd;
   m_vt_fd = -1;
