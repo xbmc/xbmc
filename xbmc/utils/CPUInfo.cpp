@@ -273,7 +273,7 @@ int CCPUInfo::getUsedPercentage()
   unsigned long long ioTicks;
 
   if (!readProcStat(userTicks, niceTicks, systemTicks, idleTicks, ioTicks))
-    return 0;
+    return m_lastUsedPercentage;
 
   userTicks -= m_userTicks;
   niceTicks -= m_niceTicks;
