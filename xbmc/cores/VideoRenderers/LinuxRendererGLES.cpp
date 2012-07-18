@@ -188,6 +188,10 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
     m_buffers[i].image.flags = 0;
 
   m_iLastRenderBuffer = -1;
+
+  m_RenderUpdateCallBackFn = NULL;
+  m_RenderUpdateCallBackCtx = NULL;
+
   return true;
 }
 
@@ -399,14 +403,12 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     ManageDisplay();
     ManageTextures();
-    g_graphicsContext.BeginPaint();
+    // if running bypass, then the player might need the src/dst rects
+    // for sizing video playback on a layer other than the gles layer.
+    if (m_RenderUpdateCallBackFn)
+      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
 
-    // RENDER_BYPASS means we are rendering video
-    // outside the control of gles and on a different
-    // graphics plane that is under the gles layer.
-    // Clear a hole where video would appear so we do not see
-    // background images that have already been rendered.
-    g_graphicsContext.SetScissors(m_destRect);
+    g_graphicsContext.BeginPaint();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -729,6 +731,8 @@ void CLinuxRendererGLES::UnInit()
   m_bValidated = false;
   m_bImageReady = false;
   m_bConfigured = false;
+  m_RenderUpdateCallBackFn = NULL;
+  m_RenderUpdateCallBackCtx = NULL;
 }
 
 inline void CLinuxRendererGLES::ReorderDrawPoints()
@@ -1925,7 +1929,6 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
   CVBufferRetain(buf.cvBufferRef);
 }
 #endif
-
 
 #endif
 

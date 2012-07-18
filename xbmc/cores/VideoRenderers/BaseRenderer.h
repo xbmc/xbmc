@@ -60,6 +60,8 @@ enum ERENDERFEATURE
   RENDERFEATURE_ROTATION
 };
 
+typedef void (*RenderUpdateCallBackFn)(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
+
 struct DVDVideoPicture;
 
 class CBaseRenderer
@@ -82,6 +84,8 @@ public:
 
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }
+
+  virtual void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
 
 protected:
   void       ChooseBestResolution(float fps);
@@ -111,4 +115,7 @@ protected:
   CRect m_destRect;
   CRect m_oldDestRect; // destrect of the previous frame
   CRect m_sourceRect;
+
+  const void* m_RenderUpdateCallBackCtx;
+  RenderUpdateCallBackFn m_RenderUpdateCallBackFn;
 };
