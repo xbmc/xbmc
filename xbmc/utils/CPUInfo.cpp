@@ -240,6 +240,7 @@ CCPUInfo::CCPUInfo(void)
 
 #endif
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
+  m_lastReadTime = time(NULL);
 
   ReadCPUFeatures();
 
@@ -298,6 +299,7 @@ int CCPUInfo::getUsedPercentage()
   m_ioTicks += ioTicks;
 
   m_lastUsedPercentage = result;
+  m_lastReadTime = time(NULL);
 
   return result;
 }
@@ -488,7 +490,6 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   }
 #endif
 
-  m_lastReadTime = time(NULL);
   return true;
 }
 
