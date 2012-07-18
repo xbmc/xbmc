@@ -130,7 +130,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   LPGUID deviceGUID = NULL;
   RPC_CSTR wszUuid  = NULL;
-  HRESULT hr;
+  HRESULT hr = E_FAIL;
   std::list<DSDevice> DSDeviceList;
   std::string deviceFriendlyName;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
@@ -149,7 +149,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
         break;
       }
     }
-  if (hr == RPC_S_OK) RpcStringFree(&wszUuid);
+    if (hr == RPC_S_OK) RpcStringFree(&wszUuid);
   }
 
   hr = DirectSoundCreate(deviceGUID, &m_pDSound, NULL);
