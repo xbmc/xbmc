@@ -192,43 +192,22 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
   memset(&(WinEvents->m_lastKey), 0, sizeof(XBMC_Event));
 
   // open input method
-  char *old_locale = NULL, *old_modifiers = NULL;
-  char res_name[8];
-  const char *p;
-
-  // set resource name to xbmc, not used
-  strcpy(res_name, "xbmc");
+  CStdString old_locale, old_modifiers;
+  char res_name[] = "xbmc";
 
   // save current locale, this should be "C"
-  p = setlocale(LC_ALL, NULL);
-  if (p)
-  {
-    old_locale = (char*)malloc(strlen(p) +1);
-    strcpy(old_locale, p);
-  }
-  p = XSetLocaleModifiers(NULL);
-  if (p)
-  {
-    old_modifiers = (char*)malloc(strlen(p) +1);
-    strcpy(old_modifiers, p);
-  }
+  old_locale    = setlocale(LC_ALL, NULL);
+  old_modifiers = XSetLocaleModifiers(NULL);
 
   // set users preferences and open input method
-  p = setlocale(LC_ALL, "");
+  setlocale(LC_ALL, "");
   XSetLocaleModifiers("");
+
   WinEvents->m_xim = XOpenIM(WinEvents->m_display, NULL, res_name, res_name);
 
-  // restore old locale
-  if (old_locale)
-  {
-    setlocale(LC_ALL, old_locale);
-    free(old_locale);
-  }
-  if (old_modifiers)
-  {
-    XSetLocaleModifiers(old_modifiers);
-    free(old_modifiers);
-  }
+  // restore original locale
+  XSetLocaleModifiers(old_modifiers.c_str());
+  setlocale(LC_ALL, old_locale.c_str());
 
   WinEvents->m_xic = NULL;
   if (WinEvents->m_xim)
