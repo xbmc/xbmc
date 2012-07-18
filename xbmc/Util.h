@@ -186,6 +186,10 @@ public:
   static CStdString GetFrameworksPath(bool forPython = false);
 
   static bool CanBindPrivileged();
+
+  static void WakeUpHost(const CStdString& hostName, const CStdString& targetName);
+  static void WakeUpFileHost(const CURL& realFilePath);
+  static void WakeUpFileHost(const CStdString& realFilePath);
 };
 
 

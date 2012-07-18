@@ -96,6 +96,7 @@
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
+#include "dialogs/GUIDialogBusy.h"
 
 using namespace std;
 using namespace XFILE;
@@ -2580,3 +2581,108 @@ bool CUtil::CanBindPrivileged()
 #endif //_LINUX
 }
 
+//
+
+static void WaitWithBusyDialog (unsigned wait_ms)
+{
+   CGUIDialogBusy* dialog = 0;
+
+   if (g_application.IsCurrentThread() && wait_ms > 600)
+      dialog = (CGUIDialogBusy*) g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+
+   if (dialog)
+   {
+      CSingleExit ex(g_graphicsContext);
+
+      dialog->Show();
+
+      while (wait_ms > 300)
+      {
+         CSingleLock lock(g_graphicsContext);
+
+         g_windowManager.ProcessRenderLoop();
+
+         if (dialog->IsCanceled())
+         {
+            wait_ms = 0;
+         }
+         else
+         {
+            Sleep (20);
+
+            wait_ms -= 20;
+         }
+      }
+
+      dialog->Close();
+   }
+
+   Sleep (wait_ms);
+}
+
+void CUtil::WakeUpHost (const CStdString& hostName, const CStdString& targetName)
+{
+   for (CAdvancedSettings::OnAccessWakeup::Map::iterator i = g_advancedSettings.m_onAccessWakeUp.entrymap.begin();
+      i != g_advancedSettings.m_onAccessWakeUp.entrymap.end(); ++i)
+   {
+      CAdvancedSettings::OnAccessWakeup::WakeUpEntry& entry = *i;
+
+      if (hostName.CompareNoCase(entry.host) == 0)
+      {
+         // concurrency ; even if we have multiple threads coming here the worst thing
+         // that can happen is that we accidentally issue 2 wakeups
+
+         bool dowake = entry.nextWake.IsTimePast();
+
+         entry.nextWake.Set (entry.timeout_ms);
+
+         if (dowake)
+         {
+            CLog::Log(LOGDEBUG,"WakeOnAccess [%s] trigged by accessing : %s", entry.host.c_str(), targetName.c_str());
+
+            CNetwork& network = g_application.getNetwork();
+
+            { // loop until network connected before sending wake-on-lan
+
+               int retry_ms = g_advancedSettings.m_onAccessWakeUp.netinit_ms;
+
+               while (retry_ms > 0)
+               {
+                  if (network.IsConnected())
+                  {
+                     retry_ms = 0;
+                  }
+                  else
+                  {
+                     WaitWithBusyDialog (800);
+
+                     retry_ms -= 800;
+                  }
+               }
+            }
+
+            if (network.WakeOnLan(entry.mac.c_str()))
+            {
+               WaitWithBusyDialog (entry.wait_ms);
+            }
+         }
+
+         return; // done
+      }
+   }
+}
+
+void CUtil::WakeUpFileHost(const CURL& url)
+{
+   CStdString hostName = url.GetHostName();
+
+   if (!hostName.IsEmpty())
+      WakeUpHost (hostName, url.Get());
+}
+
+void CUtil::WakeUpFileHost(const CStdString& realFilePath)
+{
+   CURL url = realFilePath;
+
+   WakeUpFileHost(url);
+}
