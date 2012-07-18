@@ -264,9 +264,7 @@ CCPUInfo::~CCPUInfo()
 int CCPUInfo::getUsedPercentage()
 {
   if (m_lastReadTime + MINIMUM_TIME_BETWEEN_READS > time(NULL))
-  {
     return m_lastUsedPercentage;
-  }
 
   unsigned long long userTicks;
   unsigned long long niceTicks;
@@ -275,9 +273,7 @@ int CCPUInfo::getUsedPercentage()
   unsigned long long ioTicks;
 
   if (!readProcStat(userTicks, niceTicks, systemTicks, idleTicks, ioTicks))
-  {
     return 0;
-  }
 
   userTicks -= m_userTicks;
   niceTicks -= m_niceTicks;
@@ -323,9 +319,7 @@ float CCPUInfo::getCPUFrequency()
   ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
   RegCloseKey(hKey);
   if(ret == 0)
-  {
     return float(dwMHz);
-  }
   else
     return 0.f;
 #else
@@ -605,13 +599,3 @@ void CCPUInfo::ReadCPUFeatures()
 }
 
 CCPUInfo g_cpuInfo;
-
-/*
-int main()
-{
-  CCPUInfo c;
-  usleep(...);
-  int r = c.getUsedPercentage();
-  printf("%d\n", r);
-}
-*/
