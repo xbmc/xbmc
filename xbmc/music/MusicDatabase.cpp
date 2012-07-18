@@ -320,17 +320,23 @@ int CMusicDatabase::AddFileItem(const CFileItem& pItem, const VECALBUMS& albumHi
   DeleteValues("song_genre", PrepareSQL("idSong = %d", idSong));
 
   // Add the artists
-  const vector<string>& albumArtist = tag.GetAlbumArtist().empty() ? albumArtistHint : tag.GetAlbumArtist();
-  for (unsigned int index = 0; index < albumArtist.size(); index++)
+  bool musicBrainz = g_advancedSettings.m_bMusicLibraryUseMusicBrainz && !tag.GetMusicBrainzArtistID().empty();
+  const vector<string>& artists = musicBrainz ? tag.GetMusicBrainzArtistID() : tag.GetArtist();
+  for (vector<string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
   {
-    int idAlbumArtist = AddArtist(albumArtist[index]);
-    AddAlbumArtist(idAlbumArtist, idAlbum, index > 0 ? true : false, index);
+    int idArtist = AddArtist(*it, musicBrainz ? *it : "");
+    AddSongArtist(idArtist, idSong, it - artists.begin() > 0, it - artists.begin());
   }
 
-  for (unsigned int index = 0; index < tag.GetArtist().size(); index++)
+  // Add the album artists - first priority musicBrainz, second album artist tag, finally album artist hint
+  musicBrainz = g_advancedSettings.m_bMusicLibraryUseMusicBrainz && !tag.GetMusicBrainzAlbumArtistID().empty();
+  bool hasAlbumArtist = !tag.GetAlbumArtist().empty();
+  const vector<string>& albumArtists = musicBrainz ? tag.GetMusicBrainzAlbumArtistID() : 
+                                   (hasAlbumArtist ? tag.GetAlbumArtist() : albumArtistHint);
+  for (vector<string>::const_iterator it = albumArtists.begin(); it != albumArtists.end(); ++it)
   {
-    int idArtist = AddArtist(tag.GetArtist()[index]);
-    AddSongArtist(idArtist, idSong, index > 0 ? true : false, index);
+    int idAlbumArtist = AddArtist(*it, musicBrainz ? *it : "");
+    AddAlbumArtist(idAlbumArtist, idAlbum, it - artists.begin() > 0, it - albumArtists.begin());
   }
 
   unsigned int index = 0;
@@ -610,7 +616,7 @@ int CMusicDatabase::AddGenre(const CStdString& strGenre1)
   return -1;
 }
 
-int CMusicDatabase::AddArtist(const CStdString& strArtist1)
+int CMusicDatabase::AddArtist(const CStdString& strArtist1, const CStdString& strMusicBrainzArtistID)
 {
   CStdString strSQL;
   try
@@ -625,29 +631,27 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist1)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    map <CStdString, int>::const_iterator it;
+    strSQL = PrepareSQL("SELECT * FROM artist WHERE ");
+    if (strMusicBrainzArtistID.empty())
+      strSQL += PrepareSQL("strArtist = '%s'", strArtist.c_str());
+    else
+      strSQL += PrepareSQL("strMusicBrainzArtistID = '%s'", strMusicBrainzArtistID.c_str());
 
-    it = m_artistCache.find(strArtist);
-    if (it != m_artistCache.end())
-      return it->second;//.idArtist;
-
-    strSQL=PrepareSQL("select * from artist where strArtist like '%s'", strArtist.c_str());
     m_pDS->query(strSQL.c_str());
-
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      // doesnt exists, add it
-      strSQL=PrepareSQL("insert into artist (idArtist, strArtist) values( NULL, '%s' )", strArtist.c_str());
+      if (strMusicBrainzArtistID.empty())
+        strSQL = PrepareSQL("INSERT INTO artist (idArtist, strArtist, strMusicBrainzArtistID) VALUES ( NULL, '%s', NULL )", strArtist.c_str());
+      else
+        strSQL = PrepareSQL("INSERT INTO artist (idArtist, strArtist, strMusicBrainzArtistID) VALUES ( NULL, '%s', '%s' )", strArtist.c_str(), strMusicBrainzArtistID.c_str());
       m_pDS->exec(strSQL.c_str());
       int idArtist = (int)m_pDS->lastinsertid();
-      m_artistCache.insert(pair<CStdString, int>(strArtist1, idArtist));
       return idArtist;
     }
     else
     {
       int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
-      m_artistCache.insert(pair<CStdString, int>(strArtist1, idArtist));
       m_pDS->close();
       return idArtist;
     }
@@ -1177,7 +1181,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
     if (NULL == m_pDS.get()) return false;
 
     // Exclude "Various Artists"
-    int idVariousArtist = AddArtist(g_localizeStrings.Get(340));
+    int idVariousArtist = AddArtist(g_localizeStrings.Get(340), "");
 
     CStdString strSQL;
     if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
@@ -1800,7 +1804,6 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs,
 
 void CMusicDatabase::EmptyCache()
 {
-  m_artistCache.erase(m_artistCache.begin(), m_artistCache.end());
   m_genreCache.erase(m_genreCache.begin(), m_genreCache.end());
   m_pathCache.erase(m_pathCache.begin(), m_pathCache.end());
   m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
@@ -2239,7 +2242,7 @@ bool CMusicDatabase::CleanupArtists()
     // must be executed AFTER the song, album and their artist link tables are cleaned.
     // don't delete the "Various Artists" string
     CStdString strVariousArtists = g_localizeStrings.Get(340);
-    int idVariousArtists = AddArtist(strVariousArtists);
+    int idVariousArtists = AddArtist(strVariousArtists, "");
     CStdString strSQL = "delete from artist where idArtist not in (select idArtist from song_artist)";
     strSQL += " and idArtist not in (select idArtist from album_artist)";
     CStdString strSQL2;
@@ -2820,7 +2823,6 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       musicUrl.AddOption("songid", idSong);
 
     musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
-
     Filter filter;
     bool result = GetArtistsByWhere(musicUrl.ToString(), filter, items, sortDescription);
     CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
