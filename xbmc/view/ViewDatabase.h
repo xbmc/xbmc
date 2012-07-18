@@ -36,6 +36,6 @@ public:
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 5; };
+  virtual int GetMinVersion() const { return 6; };
   const char *GetBaseDBName() const { return "ViewModes"; };
 };

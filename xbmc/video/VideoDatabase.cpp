@@ -6220,7 +6220,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
     case VIDEODB_CONTENT_TVSHOWS:
     {
       // sort by Title
-      items.Sort(SORT_METHOD_VIDEO_TITLE, SortOrderAscending);
+      items.Sort(SortBySortTitle, SortOrderAscending);
 
       int i = 0;
       while (i < items.Size())
@@ -6287,7 +6287,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
     case VIDEODB_CONTENT_EPISODES:
     {
       // sort by ShowTitle, Episode, Filename
-      items.Sort(SORT_METHOD_EPISODE, SortOrderAscending);
+      items.Sort(SortByEpisodeNumber, SortOrderAscending);
 
       int i = 0;
       while (i < items.Size())
@@ -6382,7 +6382,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
   if (maintainSortOrder)
   {
     // restore original sort order - essential for smartplaylists
-    items.Sort(SORT_METHOD_PROGRAM_COUNT, SortOrderAscending);
+    items.Sort(SortByProgramCount, SortOrderAscending);
   }
 }
 

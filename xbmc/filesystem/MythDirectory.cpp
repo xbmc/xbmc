@@ -150,7 +150,7 @@ bool CMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
     }
   }
 
-  items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%K", ""));
+  items.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("", "", "%K", ""));
 
   m_dll->ref_release(list);
   return true;
@@ -227,7 +227,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
    * result in the guide being shown in the wrong order for skins that sort by date in descending
    * order by default with no option to change to ascending, e.g. Confluence.
    */
-  items.AddSortMethod(SORT_METHOD_NONE, 552 /* Date */, LABEL_MASKS("%K", "%J")); // Still leave the date label
+  items.AddSortMethod(SortByNone, 552 /* Date */, LABEL_MASKS("%K", "%J")); // Still leave the date label
 
   m_dll->ref_release(program);
   return true;
@@ -325,13 +325,8 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
    * the subtitle doesn't influence the sort order and they are sorted by date.
    */
   if (type != TV_SHOWS)
-  {
-    if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556, LABEL_MASKS("%K", "%J"));
-    else
-      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556, LABEL_MASKS("%K", "%J"));
-  }
-  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
+    items.AddSortMethod(SortBySortTitle, 556 /* Name */, LABEL_MASKS("%K", "%J"), CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
+  items.AddSortMethod(SortByDate, 552 /* Date */, LABEL_MASKS("%K", "%J"));
 
   return true;
 }
@@ -392,11 +387,8 @@ bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &ite
   }
   m_dll->ref_release(list);
 
-  if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
-  else
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
-  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("", "", "%L", "%J"));
+  items.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"), CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
+  items.AddSortMethod(SortByDate, 552 /* Date */, LABEL_MASKS("", "", "%L", "%J"));
 
   return true;
 }
@@ -464,15 +456,12 @@ bool CMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     m_dll->ref_release(program);
   }
 
-  items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%K", "%B"));
+  items.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("%K", "%B"));
 
   /*
    * Video sort title is set to the channel number.
    */
-  if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556 /* Title */, LABEL_MASKS("%K", "%B"));
-  else
-    items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556 /* Title */, LABEL_MASKS("%K", "%B"));
+  items.AddSortMethod(SortBySortTitle, 556 /* Title */, LABEL_MASKS("%K", "%B"), CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
 
   return true;
 }
@@ -528,7 +517,7 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     item->SetLabel(g_localizeStrings.Get(22020)); // Guide
     items.Add(item);
 
-    items.AddSortMethod(SORT_METHOD_NONE, 564 /* Type */, LABEL_MASKS("", "", "%L", "")); // No sorting, as added to list.
+    items.AddSortMethod(SortByNone, 564 /* Type */, LABEL_MASKS("", "", "%L", "")); // No sorting, as added to list.
 
     /*
      * Clear the directory cache so the cached sub-folders are guaranteed to be accurate.

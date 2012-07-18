@@ -139,7 +139,8 @@ namespace PVR
     bool             m_bUpdateRequired;
     int              m_iSelected;
     SortOrder        m_iSortOrder;
-    SORT_METHOD      m_iSortMethod;
+    SortBy           m_iSortMethod;
+    SortAttribute    m_iSortAttributes;
     CCriticalSection m_critSection;
     CDirectoryHistory m_history;
   };

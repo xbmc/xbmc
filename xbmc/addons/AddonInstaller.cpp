@@ -413,11 +413,11 @@ void CAddonInstaller::PrunePackageCache()
   for (std::map<CStdString,CFileItemList*>::const_iterator it  = packs.begin();
                                                           it != packs.end();++it)
   {
-    it->second->Sort(SORT_METHOD_LABEL,SortOrderDescending);
+    it->second->Sort(SortByLabel, SortOrderDescending);
     for (int j=2;j<it->second->Size();++j)
       items.Add(CFileItemPtr(new CFileItem(*it->second->Get(j))));
   }
-  items.Sort(SORT_METHOD_SIZE,SortOrderDescending);
+  items.Sort(SortBySize, SortOrderDescending);
   int i=0;
   while (size > limit && i < items.Size())
   {
@@ -435,7 +435,7 @@ void CAddonInstaller::PrunePackageCache()
       if (it->second->Size() > 1)
         items.Add(CFileItemPtr(new CFileItem(*it->second->Get(1))));
     }
-    items.Sort(SORT_METHOD_DATE,SortOrderAscending);
+    items.Sort(SortByDate, SortOrderAscending);
     i=0;
     while (size > limit && i < items.Size())
     {

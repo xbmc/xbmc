@@ -529,7 +529,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
       CFileItemList files;
       XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, ".xml");
       // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-      files.Sort(SORT_METHOD_FILE, SortOrderAscending);
+      files.Sort(SortByFile, SortOrderAscending);
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
       {
         if (!files[fileIndex]->m_bIsFolder)
@@ -548,7 +548,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
           CFileItemList files;
           XFILE::CDirectory::GetDirectory(devicedir, files, ".xml");
           // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-          files.Sort(SORT_METHOD_FILE, SortOrderAscending);
+          files.Sort(SortByFile, SortOrderAscending);
           for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
           {
             if (!files[fileIndex]->m_bIsFolder)

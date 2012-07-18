@@ -352,7 +352,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 
   }
 
-  m_vecItems[iList]->Sort(SORT_METHOD_LABEL, SortOrderAscending);
+  m_vecItems[iList]->Sort(SortByLabel, SortOrderAscending);
 }
 
 void CGUIWindowFileManager::ClearFileItems(int iList)

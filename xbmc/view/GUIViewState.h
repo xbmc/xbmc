@@ -37,12 +37,11 @@ public:
   void SaveViewAsControl(int viewAsControl);
   int GetViewAsControl() const;
 
-  SORT_METHOD SetNextSortMethod(int direction = 1);
+  SortDescription SetNextSortMethod(int direction = 1);
   void SetCurrentSortMethod(int method);
-  SORT_METHOD GetSortMethod() const;
+  SortDescription GetSortMethod() const;
   int GetSortMethodLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
-  void GetSortMethods(std::vector< std::pair<int,int> > &sortMethods) const;
 
   SortOrder SetNextSortOrder();
   SortOrder GetSortOrder() const { return m_sortOrder; };
@@ -83,8 +82,11 @@ protected:
    */
   void AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks);
 
-  void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
-  void SetSortMethod(SORT_METHOD sortMethod);
+  void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
+  void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
+  void AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks);
+  void SetSortMethod(SortBy sortBy, SortAttribute sortAttributes = SortAttributeNone);
+  void SetSortMethod(SortDescription sortDescription);
   void SetSortOrder(SortOrder sortOrder);
   const CFileItemList& m_items;
 

@@ -174,8 +174,8 @@ bool CBlurayDirectory::GetDirectory(const CStdString& path, CFileItemList &items
   else
     return false;
 
-  items.AddSortMethod(SORT_METHOD_TRACKNUM , 554, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty
-  items.AddSortMethod(SORT_METHOD_SIZE     , 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
+  items.AddSortMethod(SortByTrackNumber,  554, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty
+  items.AddSortMethod(SortBySize,         553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
 
   return true;
 }

@@ -202,7 +202,7 @@ TEST(TestRarFile, StoredRAR)
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/refRARstored.rar");
   URIUtils::CreateArchivePath(strrarpath, "rar", reffile, "");
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strrarpath, itemlist));
-  itemlist.Sort(SORT_METHOD_FULLPATH, SortOrderAscending);
+  itemlist.Sort(SortByPath, SortOrderAscending);
 
   /* /reffile.txt */
   /*
@@ -286,7 +286,7 @@ TEST(TestRarFile, StoredRAR)
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
-  itemlist.Sort(SORT_METHOD_FULLPATH, SortOrderAscending);
+  itemlist.Sort(SortByPath, SortOrderAscending);
 
   /* /testdir/reffile.txt */
   strpathinrar = itemlist[1]->GetPath();
@@ -367,7 +367,7 @@ TEST(TestRarFile, StoredRAR)
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
-  itemlist.Sort(SORT_METHOD_FULLPATH, SortOrderAscending);
+  itemlist.Sort(SortByPath, SortOrderAscending);
 
   /* /testdir/testsubdir/reffile.txt */
   strpathinrar = itemlist[0]->GetPath();
@@ -428,7 +428,7 @@ TEST(TestRarFile, NormalRAR)
   reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/refRARnormal.rar");
   URIUtils::CreateArchivePath(strrarpath, "rar", reffile, "");
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strrarpath, itemlist));
-  itemlist.Sort(SORT_METHOD_FULLPATH, SortOrderAscending);
+  itemlist.Sort(SortByPath, SortOrderAscending);
 
   /* /reffile.txt */
   strpathinrar = itemlist[1]->GetPath();
@@ -508,7 +508,7 @@ TEST(TestRarFile, NormalRAR)
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
-  itemlist.Sort(SORT_METHOD_FULLPATH, SortOrderAscending);
+  itemlist.Sort(SortByPath, SortOrderAscending);
 
   /* /testdir/reffile.txt */
   strpathinrar = itemlist[1]->GetPath();
@@ -589,7 +589,7 @@ TEST(TestRarFile, NormalRAR)
 
   itemlist.Clear();
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlist));
-  itemlist.Sort(SORT_METHOD_FULLPATH, SortOrderAscending);
+  itemlist.Sort(SortByPath, SortOrderAscending);
 
   /* /testdir/testsubdir/reffile.txt */
   strpathinrar = itemlist[0]->GetPath();

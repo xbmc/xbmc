@@ -1046,10 +1046,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       }
       else if (prop.name == "sort")
       {
-        SORT_METHOD sort = SORT_METHOD_NONE;
-        if (prop.param().Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
-        if (sort != SORT_METHOD_NONE)
-          return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, sort));
+        if (prop.param().Equals("songrating"))
+          return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, SortByRating));
       }
     }
     else if (cat.name == "listitem")
@@ -2867,7 +2865,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
           if (viewState)
-            bReturn = ((unsigned int)viewState->GetSortMethod() == info.GetData1());
+            bReturn = ((unsigned int)viewState->GetSortMethod().sortBy == info.GetData1());
         }
         break;
       }

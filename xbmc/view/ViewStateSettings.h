@@ -58,5 +58,5 @@ private:
   SettingLevel m_settingLevel;
   CCriticalSection m_critical;
 
-  void AddViewState(const std::string& strTagName, int defaultView = DEFAULT_VIEW_LIST, SORT_METHOD defaultSort = SORT_METHOD_LABEL);
+  void AddViewState(const std::string& strTagName, int defaultView = DEFAULT_VIEW_LIST, SortBy defaultSort = SortByLabel);
 };

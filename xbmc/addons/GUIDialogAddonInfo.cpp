@@ -396,7 +396,7 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
 {
   CFileItemList items;
   XFILE::CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",DIR_FLAG_NO_FILE_DIRS);
-  items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+  items.Sort(SortByLabel, SortOrderAscending);
   for (int i=0;i<items.Size();++i)
   {
     if (items[i]->m_bIsFolder)

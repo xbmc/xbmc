@@ -92,7 +92,7 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     items.Add(item);
 
     // Sort by name only. Labels are preformated.
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+    items.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
 
     return true;
   }
