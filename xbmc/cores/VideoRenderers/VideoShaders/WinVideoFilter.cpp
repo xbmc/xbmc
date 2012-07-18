@@ -307,13 +307,13 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint destPoints[4],
                             float contrast,
                             float brightness,
                             unsigned int flags,
                             YUVBuffer* YUVbuf)
 {
-  PrepareParameters(sourceRect, destRect,
+  PrepareParameters(sourceRect, destPoints,
                     contrast, brightness, flags);
   UploadToGPU(YUVbuf);
   SetShaderParameters(YUVbuf);
@@ -330,13 +330,18 @@ CYUV2RGBShader::~CYUV2RGBShader()
 }
 
 void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
-                                       CRect destRect,
+                                       CPoint destPoints[4],
                                        float contrast,
                                        float brightness,
                                        unsigned int flags)
 {
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
+  CRect destRect;
+  destRect.x1 = destPoints[0].x;
+  destRect.y1 = destPoints[0].y;
+  destRect.x2 = destPoints[2].x;
+  destRect.y2 = destPoints[2].y;
 
   if (m_sourceRect != sourceRect || m_destRect != destRect)
   {
@@ -346,34 +351,31 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer((void**)&v);
 
-    v[0].x = destRect.x1;
-    v[0].y = destRect.y1;
+    for(int i = 0; i < 4; i++)
+    {
+      v[i].x = destPoints[i].x;
+      v[i].y = destPoints[i].y;
+    }
+
     v[0].tu = sourceRect.x1 / m_sourceWidth;
     v[0].tv = sourceRect.y1 / m_sourceHeight;
     v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
     v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
-    v[1].x = destRect.x2;
-    v[1].y = destRect.y1;
     v[1].tu = sourceRect.x2 / m_sourceWidth;
     v[1].tv = sourceRect.y1 / m_sourceHeight;
     v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
     v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
-    v[2].x = destRect.x2;
-    v[2].y = destRect.y2;
     v[2].tu = sourceRect.x2 / m_sourceWidth;
     v[2].tv = sourceRect.y2 / m_sourceHeight;
     v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
     v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
-    v[3].x = destRect.x1;
-    v[3].y = destRect.y2;
     v[3].tu = sourceRect.x1 / m_sourceWidth;
     v[3].tv = sourceRect.y2 / m_sourceHeight;
     v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
     v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
-
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
     for(int i = 0; i < 4; i++)
@@ -556,9 +558,9 @@ void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
                                 unsigned int destWidth, unsigned int destHeight,
                                 CRect sourceRect,
-                                CRect destRect)
+                                CPoint destPoints[4])
 {
-  PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
+  PrepareParameters(sourceWidth, sourceHeight, sourceRect, destPoints);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
   Execute(NULL,4);
@@ -566,8 +568,14 @@ void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
 
 void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                            CRect sourceRect,
-                                           CRect destRect)
+                                           CPoint destPoints[4])
 {
+  CRect destRect;
+  destRect.x1 = destPoints[0].x;
+  destRect.y1 = destPoints[0].y;
+  destRect.x2 = destPoints[2].x;
+  destRect.y2 = destPoints[2].y;
+
   if(m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
   {
@@ -579,23 +587,21 @@ void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsign
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer((void**)&v);
 
-    v[0].x = destRect.x1;
-    v[0].y = destRect.y1;
+    for(int i = 0; i < 4; i++)
+    {
+      v[i].x = destPoints[i].x;
+      v[i].y = destPoints[i].y;
+    }
+
     v[0].tu = sourceRect.x1 / sourceWidth;
     v[0].tv = sourceRect.y1 / sourceHeight;
 
-    v[1].x = destRect.x2;
-    v[1].y = destRect.y1;
     v[1].tu = sourceRect.x2 / sourceWidth;
     v[1].tv = sourceRect.y1 / sourceHeight;
 
-    v[2].x = destRect.x2;
-    v[2].y = destRect.y2;
     v[2].tu = sourceRect.x2 / sourceWidth;
     v[2].tv = sourceRect.y2 / sourceHeight;
 
-    v[3].x = destRect.x1;
-    v[3].y = destRect.y2;
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
 
@@ -687,14 +693,14 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
                                 unsigned int destWidth, unsigned int destHeight,
                                 CRect sourceRect,
-                                CRect destRect)
+                                CPoint destPoints[4])
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
   if(m_destWidth != destWidth || m_sourceHeight != sourceHeight)
     CreateIntermediateRenderTarget(destWidth, sourceHeight);
 
-  PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
+  PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destPoints);
   float texSteps1[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   float texSteps2[] = { 1.0f/(float)destWidth, 1.0f/(float)(sourceHeight)};
   SetShaderParameters(sourceTexture, &texSteps1[0], sizeof(texSteps1)/sizeof(texSteps1[0]), &texSteps2[0], sizeof(texSteps2)/sizeof(texSteps2[0]));
@@ -772,8 +778,14 @@ bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
 void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                            unsigned int destWidth, unsigned int destHeight,
                                            CRect sourceRect,
-                                           CRect destRect)
+                                           CPoint destPoints[4])
 {
+  CRect destRect;
+  destRect.x1 = destPoints[0].x;
+  destRect.y1 = destPoints[0].y;
+  destRect.x2 = destPoints[2].x;
+  destRect.y2 = destPoints[2].y;
+
   if(m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
   || m_destWidth != destWidth || m_destHeight != destHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
@@ -812,12 +824,12 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     v[0].tu = sourceRect.x1 / sourceWidth;
     v[0].tv = sourceRect.y1 / sourceHeight;
 
-    v[1].x = destRect.x2 - destRect.x1;
+    v[1].x =  destPoints[1].x - destPoints[0].x;
     v[1].y = 0;
     v[1].tu = sourceRect.x2 / sourceWidth;
     v[1].tv = sourceRect.y1 / sourceHeight;
 
-    v[2].x = destRect.x2 - destRect.x1;
+    v[2].x = destPoints[1].x - destPoints[0].x;
     v[2].y = sourceRect.y2 - sourceRect.y1;
     v[2].tu = sourceRect.x2 / sourceWidth;
     v[2].tv = sourceRect.y2 / sourceHeight;
@@ -829,23 +841,23 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     // Pass 2: pass the horizontal data untouched, resize vertical dimension for final result.
 
-    v[4].x = destRect.x1;
-    v[4].y = destRect.y1;
+    v[4].x = destPoints[0].x;
+    v[4].y = destPoints[0].y;
     v[4].tu = 0;
     v[4].tv = 0;
 
-    v[5].x = destRect.x2;
-    v[5].y = destRect.y1;
-    v[5].tu = (destRect.x2 - destRect.x1) / destWidth;
+    v[5].x = destPoints[1].x;
+    v[5].y = destPoints[1].y;
+    v[5].tu = (destPoints[1].x - destPoints[0].x) / destWidth;
     v[5].tv = 0;
 
-    v[6].x = destRect.x2;
-    v[6].y = destRect.y2;
-    v[6].tu = (destRect.x2 - destRect.x1) / destWidth;
+    v[6].x = destPoints[2].x;
+    v[6].y = destPoints[2].y;
+    v[6].tu = (destPoints[1].x - destPoints[0].x) / destWidth;
     v[6].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
 
-    v[7].x = destRect.x1;
-    v[7].y = destRect.y2;
+    v[7].x = destPoints[3].x;
+    v[7].y = destPoints[3].y;
     v[7].tu = 0;
     v[7].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
 

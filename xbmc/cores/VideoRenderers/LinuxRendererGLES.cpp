@@ -158,10 +158,11 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   return false;  
 }
 
-bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
+  m_renderOrientation = orientation;
 
   // Save the flags.
   m_iFlags = flags;
@@ -725,6 +726,24 @@ void CLinuxRendererGLES::UnInit()
   m_bConfigured = false;
 }
 
+inline void CLinuxRendererGLES::ReorderDrawPoints()
+{ 
+  
+  CBaseRenderer::ReorderDrawPoints();//call base impl. for rotating the points
+  
+  //corevideo is flipped in y
+  if(m_renderMethod & RENDER_CVREF)
+  {
+    CPoint tmp;
+    tmp = m_rotatedDestCoords[0];
+    m_rotatedDestCoords[0] = m_rotatedDestCoords[3];
+    m_rotatedDestCoords[3] = tmp;
+    tmp = m_rotatedDestCoords[1];
+    m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
+    m_rotatedDestCoords[2] = tmp;
+  }
+}
+
 void CLinuxRendererGLES::Render(DWORD flags, int index)
 {
   // If rendered directly by the hardware
@@ -846,11 +865,12 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glEnableVertexAttribArray(Vloc);
 
   // Setup vertex position values
-  m_vert[0][0] = m_vert[3][0] = m_destRect.x1;
-  m_vert[0][1] = m_vert[1][1] = m_destRect.y1;
-  m_vert[1][0] = m_vert[2][0] = m_destRect.x2;
-  m_vert[2][1] = m_vert[3][1] = m_destRect.y2;
-  m_vert[0][2] = m_vert[1][2] = m_vert[2][2] = m_vert[3][2] = 0.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    m_vert[i][0] = m_rotatedDestCoords[i].x;
+    m_vert[i][1] = m_rotatedDestCoords[i].y;
+    m_vert[i][2] = 0.0f;// set z to 0
+  }
 
   // Setup texture coordinates
   for (int i=0; i<3; i++)
@@ -1111,13 +1131,14 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y1;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y2;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
-
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
+  
   // Set texture coordinates
   tex[0][0] = tex[3][0] = planes[0].rect.x1;
   tex[0][1] = tex[1][1] = planes[0].rect.y1;
@@ -1175,12 +1196,13 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y2;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y1;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates
   tex[0][0] = tex[3][0] = 0;
@@ -1238,13 +1260,14 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
   glEnableVertexAttribArray(texLoc);
   glEnableVertexAttribArray(colLoc);
 
-  // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y2;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y1;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  // Set vertex coordinates 
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates (corevideo is flipped in y)
   tex[0][0] = tex[3][0] = 0;
@@ -1892,3 +1915,4 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
 
 
 #endif
+
