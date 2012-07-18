@@ -110,6 +110,15 @@ public:
   int AddAlbum(const CAlbum &album, std::vector<int> &songIDs);
 
   int UpdateSong(const CSong& song, int idSong = -1);
+
+  /*! \brief Update an artist in the database
+   \param idArtist the ID of the artist to update
+   \param strArtist the new name of the artist
+   \sa CMusicDatabase::AddArtist
+   \return whether the update succeeded or failed
+   */
+  bool UpdateArtist(int idArtist, const CStdString& strArtist);
+
   int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
   bool DeleteAlbumInfo(int idArtist);
   int SetArtistInfo(int idArtist, const CArtist& artist);

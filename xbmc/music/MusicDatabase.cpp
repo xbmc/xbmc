@@ -606,6 +606,11 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist1)
   return -1;
 }
 
+bool CMusicDatabase::UpdateArtist(int idArtist, const CStdString& strArtist)
+{
+  return ExecuteQuery(PrepareSQL("UPDATE artist SET strArtist = '%s' WHERE idArtist = %d", strArtist.c_str(), idArtist));
+}
+
 bool CMusicDatabase::AddSongArtist(int idArtist, int idSong, bool featured, int iOrder)
 {
   CStdString strSQL;
