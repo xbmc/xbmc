@@ -154,6 +154,8 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
   }
 
   bool bOk = false;
+  int packetsTried = 0;
+
   if (nVideoStream != -1)
   {
     CDVDVideoCodec *pVideoCodec;
@@ -184,11 +186,14 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
         int iDecoderState = VC_ERROR;
         DVDVideoPicture picture;
 
-        // num streams * 40 frames, should get a valid frame, if not abort.
-        int abort_index = pDemuxer->GetNrOfStreams() * 40;
+        // num streams * 80 frames, should get a valid frame, if not abort.
+        int packetsToTry = 80;
+        int abort_index = pDemuxer->GetNrOfStreams() * packetsToTry;
         do
         {
           pPacket = pDemuxer->Read();
+          packetsTried++;
+
           if (!pPacket)
             break;
 
@@ -254,7 +259,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
         }
         else
         {
-          CLog::Log(LOGDEBUG,"%s - decode failed in %s", __FUNCTION__, strPath.c_str());
+          CLog::Log(LOGDEBUG,"%s - decode failed in %s after %d packets.", __FUNCTION__, strPath.c_str(), packetsTried);
         }
       }
       delete pVideoCodec;
@@ -274,7 +279,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
   }
 
   unsigned int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
-  CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strPath.c_str());
+  CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> in %d packets. ", __FUNCTION__, nTotalTime, strPath.c_str(), packetsTried);
   return bOk;
 }
 
