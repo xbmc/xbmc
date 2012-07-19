@@ -60,6 +60,7 @@ CGUIDialogMediaSource::CGUIDialogMediaSource(void)
     : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
 {
   m_paths =  new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMediaSource::~CGUIDialogMediaSource()
@@ -547,4 +548,13 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
     }
   }
   return paths;
+}
+
+void CGUIDialogMediaSource::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  // clear paths container
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PATH, 0);
+  OnMessage(msg);
 }
