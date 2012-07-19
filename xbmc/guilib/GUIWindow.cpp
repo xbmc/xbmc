@@ -302,6 +302,12 @@ void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregi
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
   if (size != g_graphicsContext.RemoveTransform())
     CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
+
+  // check if currently focused control can have it
+  // and fallback to default control if not
+  CGUIControl* focusedControl = GetFocusedControl();
+  if (focusedControl && !focusedControl->CanFocus())
+    SET_CONTROL_FOCUS(m_defaultControl, 0);
 }
 
 void CGUIWindow::DoRender()
