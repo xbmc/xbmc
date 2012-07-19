@@ -47,6 +47,8 @@ protected:
   bool    ProcessClientMessage(XClientMessageEvent& xclient);
   bool    ProcessFocusIn      (XFocusInEvent& xfocus);
   bool    ProcessFocusOut     (XFocusOutEvent& xfocus);
+  bool    ProcessEnter        (XCrossingEvent& xcrossing);
+  bool    ProcessLeave        (XCrossingEvent& xcrossing);
   bool    ProcessKey(XBMC_Event &event, int repeatDelay);
   bool    ProcessKeyRepeat();
   bool    ProcessShortcuts(XBMC_Event& event);
