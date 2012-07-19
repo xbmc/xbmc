@@ -28,7 +28,7 @@
 #include "Temperature.h"
 #include <string>
 #include <map>
-#include "threads\SystemClock.h"
+#include "threads/SystemClock.h"
 
 #define CPU_FEATURE_MMX      1 << 0
 #define CPU_FEATURE_MMX2     1 << 1
