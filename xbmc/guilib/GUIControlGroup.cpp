@@ -464,6 +464,19 @@ int CGUIControlGroup::GetFocusedControlID() const
 
 CGUIControl *CGUIControlGroup::GetFocusedControl() const
 {
+  // try lookup first
+  if (m_focusedControl)
+  {
+    // we may have multiple controls with same id - we pick first that has focus
+    pair<LookupMap::const_iterator, LookupMap::const_iterator> range = m_lookup.equal_range(m_focusedControl);
+    for (LookupMap::const_iterator i = range.first; i != range.second; ++i)
+    {
+      if (i->second->HasFocus())
+        return i->second;
+    }
+  }
+
+  // if lookup didn't find focused control, iterate m_children to find it
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     const CGUIControl* control = *it;
