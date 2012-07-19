@@ -307,20 +307,22 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 
   m_icon = AllocateIconPixmap(m_dpy, m_wmWindow);
 
-  XWMHints wm_hints;
+  XWMHints* wm_hints = XAllocWMHints();
   XTextProperty windowName, iconName;
   const char* title = "XBMC Media Center";
 
   XStringListToTextProperty((char**)&title, 1, &windowName);
   XStringListToTextProperty((char**)&title, 1, &iconName);
-  wm_hints.initial_state = NormalState;
-  wm_hints.input         = True;
-  wm_hints.icon_pixmap   = m_icon;
-  wm_hints.flags         = StateHint | IconPixmapHint | InputHint;
+  wm_hints->initial_state = NormalState;
+  wm_hints->input         = True;
+  wm_hints->icon_pixmap   = m_icon;
+  wm_hints->flags         = StateHint | IconPixmapHint | InputHint;
 
   XSetWMProperties(m_dpy, m_wmWindow, &windowName, &iconName,
-                        NULL, 0, NULL, &wm_hints,
+                        NULL, 0, NULL, wm_hints,
                         NULL);
+
+  XFree(wm_hints);
 
   // register interest in the delete window message
   Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
