@@ -40,6 +40,7 @@ CGUIDialogSelect::CGUIDialogSelect(void)
   m_multiSelection = false;
   m_vecList = m_vecListInternal;
   m_iSelected = -1;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
@@ -55,7 +56,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialog::OnMessage(message);
-      m_viewControl.Reset();
+      m_viewControl.Clear();
 
       m_bButtonEnabled = false;
       m_useDetails = false;
@@ -336,4 +337,10 @@ void CGUIDialogSelect::OnInitWindow()
 
   if (m_iSelected >= 0)
     m_viewControl.SetSelectedItem(m_iSelected);
+}
+
+void CGUIDialogSelect::OnWindowUnload()
+{
+  CGUIDialog::OnWindowUnload();
+  m_viewControl.Reset();
 }
