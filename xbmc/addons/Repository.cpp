@@ -95,16 +95,15 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
   CStdString checksum;
   try
   {
-    char* temp = new char[(size_t)file.GetLength()+1];
+    char* temp = checksum.GetBufferSetLength((int)file.GetLength());
     file.Read(temp,file.GetLength());
-    temp[file.GetLength()] = 0;
-    checksum = temp;
-    delete[] temp;
+    checksum.ReleaseBuffer();
+    return checksum;
   }
   catch (...)
   {
+    return "";
   }
-  return checksum;
 }
 
 CStdString CRepository::GetAddonHash(const AddonPtr& addon)
