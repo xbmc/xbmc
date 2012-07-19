@@ -443,6 +443,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   {
     CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - modes changed, reset device");
     OnLostDevice();
+    XSync(m_dpy, False);
   }
 
   if(res.iInternal != m_visual->screen)
@@ -481,6 +482,12 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if(m_NET_WM_STATE_FULLSCREEN)
   {
+    /* if on other screen, we must move it first, otherwise
+     * the window manager will fullscreen it on the wrong
+     * window */
+    if(fullScreen && GetCurrentScreen() != res.iScreen)
+      XMoveWindow(m_dpy, m_wmWindow, x, y);
+
     if(attr2.map_state == IsUnmapped)
     {
       if(fullScreen)
@@ -512,13 +519,19 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       XSendEvent(m_dpy, RootWindow(m_dpy, m_visual->screen), False,
                  SubstructureNotifyMask | SubstructureRedirectMask, &e);
     }
-    XSync(m_dpy, False);
+
+  }
+  else
+  {
+
+    if(fullScreen)
+      XMoveResizeWindow(m_dpy, m_wmWindow, x, y, res.iWidth, res.iHeight);
+    else
+      XResizeWindow(m_dpy, m_wmWindow, res.iWidth, res.iHeight);
+
   }
 
-  if(fullScreen)
-    XMoveResizeWindow(m_dpy, m_wmWindow, x, y, res.iWidth, res.iHeight);
-  else
-    XResizeWindow(m_dpy, m_wmWindow, res.iWidth, res.iHeight);
+  XRaiseWindow(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
 
   RefreshWindowState();
