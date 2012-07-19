@@ -480,15 +480,17 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     const CGUIControl* control = *it;
-    if (control->HasFocus())
+    // Avoid calling HasFocus() on control group as it will (possibly) recursively
+    // traverse entire group tree just to check if there is focused control.
+    // We are recursively traversing it here so no point in doing it twice.
+    if (control->IsGroup())
     {
-      if (control->IsGroup())
-      {
-        CGUIControlGroup *group = (CGUIControlGroup *)control;
-        return group->GetFocusedControl();
-      }
-      return (CGUIControl *)control;
+      CGUIControl* focusedControl = ((CGUIControlGroup *)control)->GetFocusedControl();
+      if (focusedControl)
+        return (CGUIControl *)focusedControl;
     }
+    else if (control->HasFocus())
+      return (CGUIControl *)control;
   }
   return NULL;
 }
