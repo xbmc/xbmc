@@ -71,7 +71,7 @@ namespace XFILE
       if (db.Open())
       {
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(playlist.GetType());
-        CVideoDatabase::Filter filter;
+        CDatabase::Filter filter;
         filter.where = playlist.GetWhereClause(db, playlists);
 
         CStdString strBaseDir;
@@ -99,10 +99,9 @@ namespace XFILE
       CMusicDatabase db;
       if (db.Open())
       {
-        CStdString whereClause = playlist.GetWhereClause(db, playlists);
-        if (!whereClause.empty())
-          whereClause = "WHERE " + whereClause;
-        success = db.GetAlbumsByWhere("musicdb://3/", whereClause, "", items, sorting);
+        CDatabase::Filter filter;
+        filter.where = playlist.GetWhereClause(db, playlists);
+        success = db.GetAlbumsByWhere("musicdb://3/", filter, items, sorting);
         items.SetContent("albums");
         db.Close();
       }
@@ -112,20 +111,14 @@ namespace XFILE
       CMusicDatabase db;
       if (db.Open())
       {
-        CStdString whereClause;
+        CDatabase::Filter filter;
+        CSmartPlaylist songPlaylist(playlist);
         if (playlist.GetType().IsEmpty() || playlist.GetType().Equals("mixed"))
-        {
-          CSmartPlaylist songPlaylist(playlist);
           songPlaylist.SetType("songs");
-          whereClause = songPlaylist.GetWhereClause(db, playlists);
-        }
-        else
-          whereClause = playlist.GetWhereClause(db, playlists);
 
-        if (!whereClause.empty())
-          whereClause = "WHERE " + whereClause;
+        filter.where = songPlaylist.GetWhereClause(db, playlists);
 
-        success = db.GetSongsByWhere("", whereClause, items, sorting);
+        success = db.GetSongsByWhere("", filter, items, sorting);
         items.SetContent("songs");
         db.Close();
       }
@@ -135,7 +128,7 @@ namespace XFILE
       CVideoDatabase db;
       if (db.Open())
       {
-        CVideoDatabase::Filter filter;
+        CDatabase::Filter filter;
         if (playlist.GetType().Equals("mixed"))
         {
           CSmartPlaylist mvidPlaylist(playlist);

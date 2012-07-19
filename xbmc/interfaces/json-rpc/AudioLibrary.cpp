@@ -73,9 +73,8 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransp
     return InternalError;
 
   CFileItemList items;
-  CStdString where;
-  where.Format("idArtist = %d", artistID);
-  if (!musicdatabase.GetArtistsByWhere("musicdb://2/", where, items) || items.Size() != 1)
+  CDatabase::Filter filter(musicdatabase.PrepareSQL("idArtist = %d", artistID));
+  if (!musicdatabase.GetArtistsByWhere("musicdb://2/", filter, items) || items.Size() != 1)
     return InvalidParams;
 
   HandleFileItem("artistid", false, "artistdetails", items[0], parameterObject, parameterObject["properties"], result, false);

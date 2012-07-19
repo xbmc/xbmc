@@ -451,7 +451,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    map <CStdString, CAlbumCache>::const_iterator it;
+    map <CStdString, CAlbum>::const_iterator it;
 
     it = m_albumCache.find(strAlbum + strArtist);
     if (it != m_albumCache.end())
@@ -467,22 +467,22 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
       strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strGenres, iYear, bCompilation) values( NULL, '%s', '%s', '%s', %i, %i)", strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), year, bCompilation);
       m_pDS->exec(strSQL.c_str());
 
-      CAlbumCache album;
+      CAlbum album;
       album.idAlbum = (int)m_pDS->lastinsertid();
       album.strAlbum = strAlbum;
       album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
-      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + strArtist, album));
+      m_albumCache.insert(pair<CStdString, CAlbum>(album.strAlbum + strArtist, album));
       return album.idAlbum;
     }
     else
     {
       // exists in our database and not scanned during this scan, so we should update it as the details
       // may have changed (there's a reason we're rescanning, afterall!)
-      CAlbumCache album;
+      CAlbum album;
       album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
       album.strAlbum = strAlbum;
       album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
-      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + strArtist, album));
+      m_albumCache.insert(pair<CStdString, CAlbum>(album.strAlbum + strArtist, album));
       m_pDS->close();
       strSQL=PrepareSQL("update album set strGenres='%s', iYear=%i where idAlbum=%i", strGenre.c_str(), year, album.idAlbum);
       m_pDS->exec(strSQL.c_str());
@@ -2353,10 +2353,10 @@ void CMusicDatabase::DeleteAlbumInfo()
     m_pDS->close();
     CGUIDialogOK::ShowAndGetInput(313, 425, 0, 0);
   }
-  vector<CAlbumCache> vecAlbums;
+  vector<CAlbum> vecAlbums;
   while (!m_pDS->eof())
   {
-    CAlbumCache album;
+    CAlbum album;
     album.idAlbum = m_pDS->fv("album.idAlbum").get_asInt() ;
     album.strAlbum = m_pDS->fv("album.strAlbum").get_asString();
     album.artist = StringUtils::Split(m_pDS->fv("album.strArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
@@ -2373,7 +2373,7 @@ void CMusicDatabase::DeleteAlbumInfo()
     pDlg->Reset();
     for (int i = 0; i < (int)vecAlbums.size(); ++i)
     {
-      CMusicDatabase::CAlbumCache& album = vecAlbums[i];
+      CAlbum& album = vecAlbums[i];
       pDlg->Add(album.strAlbum + " - " + StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
     }
     pDlg->DoModal();
@@ -2386,7 +2386,7 @@ void CMusicDatabase::DeleteAlbumInfo()
       return ;
     }
 
-    CAlbumCache& album = vecAlbums[iSelectedAlbum];
+    CAlbum& album = vecAlbums[iSelectedAlbum];
     strSQL=PrepareSQL("delete from albuminfo where albuminfo.idAlbum=%i", album.idAlbum);
     if (!m_pDS->exec(strSQL.c_str())) return ;
 
@@ -2715,9 +2715,10 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
 
 bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList& items, int year)
 {
-  CStdString where = PrepareSQL("where iYear=%ld", year);
+  Filter filter;
+  filter.where = PrepareSQL("iYear=%ld", year);
 
-  return GetAlbumsByWhere(strBaseDir, where, "", items);
+  return GetAlbumsByWhere(strBaseDir, filter, items);
 }
 
 bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, bool albumArtistsOnly)
@@ -2789,16 +2790,24 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
-bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items)
+bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
 
   try
   {
-    CStdString strSQL = "select * from artistview";
-    if (!where.empty())
-       strSQL += " WHERE " + where;
+    CStdString strSQL = PrepareSQL("select %s from artistview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    if (!filter.join.empty())
+      strSQL += filter.join;
+    if (!filter.where.empty())
+      strSQL += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQL += " GROUP BY " + filter.group;
+    if (!filter.order.empty())
+      strSQL += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQL += " LIMIT " + filter.limit;
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -2907,60 +2916,31 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
 
 bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end, const SortDescription &sortDescription /* = SortDescription() */)
 {
+  Filter filter;
   //Create limit
-  CStdString limit;
   if (start >= 0 && end >= 0)
-  {
-    limit.Format(" limit %i,%i", start, end);
-  }
+    filter.limit = PrepareSQL("%i,%i", start, end);
 
   // where clause
-  CStdString strWhere;
-  if (idGenre!=-1)
-  {
-    strWhere+=PrepareSQL("where (idAlbum IN "
-                          "("
-                          "select song.idAlbum from song " // All song genres
-                            "JOIN song_genre ON song.idSong=song_genre.idSong "
-                          "where song_genre.idGenre=%i"
-                          ")"
-                        ") " + limit
-                        , idGenre);
-  }
+  if (idGenre != -1)
+    filter.where = PrepareSQL("(idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong WHERE song_genre.idGenre = %i))", idGenre);
 
-  if (idArtist!=-1)
-  {
-    if (strWhere.IsEmpty())
-      strWhere += "where ";
-    else
-      strWhere += "and ";
-
-    strWhere +=PrepareSQL("(idAlbum IN "
-                            "("
-                              "select song.idAlbum from song "                 // All albums linked to this artist via songs
-                                "JOIN song_artist ON song.idSong=song_artist.idSong "
-                              "WHERE song_artist.idArtist=%i"
-                            ")"
-                          " or idAlbum IN "
-                            "("
-                              "select album_artist.idAlbum from album_artist " // All albums where album artists fit
-                              "where album_artist.idArtist=%i"
-                            ")"
-                          ") " + limit
-                          , idArtist, idArtist);
-  }
+  if (idArtist != -1)
+    filter.AppendWhere(PrepareSQL("(idAlbum IN "
+                                    // All albums linked to this artist via songs
+                                    "(SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong WHERE song_artist.idArtist = %i)"
+                                  " OR idAlbum IN "
+                                    // All albums where album artists fit
+                                    "(SELECT album_artist.idAlbum FROM album_artist WHERE album_artist.idArtist = %i)"
+                                  ")", idArtist, idArtist));
   else
-  { // no artist given, so exclude any single albums (aka empty tagged albums)
-    if (strWhere.IsEmpty())
-      strWhere += "where albumview.strAlbum <> ''" + limit;
-    else
-      strWhere += "and albumview.strAlbum <> ''" + limit;
-  }
+    // no artist given, so exclude any single albums (aka empty tagged albums)
+    filter.AppendWhere("albumview.strAlbum <> ''");
 
-  return GetAlbumsByWhere(strBaseDir, strWhere, "", items, sortDescription);
+  return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
 }
 
-bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */)
+bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */)
 {
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
@@ -2969,22 +2949,32 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
   {
     int total = -1;
 
-    CStdString sql = "select * from albumview " + where;
+    CStdString strSQL = "select %s from albumview ";
+    CStdString strSQLExtra;
+    if (!filter.join.empty())
+      strSQLExtra += filter.join;
+    if (!filter.where.empty())
+      strSQLExtra += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQLExtra += " GROUP BY " + filter.group;
+    if (!filter.order.empty())
+      strSQLExtra += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQLExtra += " LIMIT " + filter.limit;
     // Apply the limiting directly here if there's no special sorting but limiting
-    CStdString whereLower = where;
-    whereLower.ToLower();
-    if (whereLower.find(" limit ") == string::npos &&
-        sortDescription.sortBy == SortByNone &&
-       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    else if (sortDescription.sortBy == SortByNone &&
+            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
-      total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM albumview " + where, m_pDS).c_str(), NULL, 10);
-      sql += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
+
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     // run query
     unsigned int time = XbmcThreads::SystemClockMillis();
-    if (!m_pDS->query(sql.c_str()))
+    if (!m_pDS->query(strSQL.c_str()))
       return false;
     CLog::Log(LOGDEBUG, "%s - query took %i ms",
               __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
@@ -3037,12 +3027,12 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
   catch (...)
   {
     m_pDS->close();
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, where.c_str());
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, filter.where.c_str());
   }
   return false;
 }
 
-bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */)
+bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */)
 {
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
@@ -3052,18 +3042,27 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     unsigned int time = XbmcThreads::SystemClockMillis();
     int total = -1;
 
-    // We don't use PrepareSQL here, as the WHERE clause is already formatted.
-    CStdString strSQL = "select * from songview " + whereClause;
+    CStdString strSQL = "select %s from songview ";
+    CStdString strSQLExtra;
+    if (!filter.join.empty())
+      strSQLExtra += filter.join;
+    if (!filter.where.empty())
+      strSQLExtra += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQLExtra += " GROUP BY " + filter.group;
+    if (!filter.order.empty())
+      strSQLExtra += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQLExtra += " LIMIT " + filter.limit;
     // Apply the limiting directly here if there's no special sorting but limiting
-    CStdString whereLower = whereClause;
-    whereLower.ToLower();
-    if (whereLower.find(" limit ") == string::npos &&
-        sortDescription.sortBy == SortByNone &&
-       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    else if (sortDescription.sortBy == SortByNone &&
+            (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
-      total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM songview " + whereClause, m_pDS).c_str(), NULL, 10);
-      strSQL += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
+
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -3107,77 +3106,48 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
       catch (...)
       {
         m_pDS->close();
-        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, whereClause.c_str());
+        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, filter.where.c_str());
         return (items.Size() > 0);
       }
     }
     // cleanup
     m_pDS->close();
-    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), XbmcThreads::SystemClockMillis() - time);
+    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
   {
     // cleanup
     m_pDS->close();
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, whereClause.c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, filter.where.c_str());
   }
   return false;
 }
 
 bool CMusicDatabase::GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year)
 {
-  CStdString where=PrepareSQL("where (iYear=%ld)", year);
-  return GetSongsByWhere(baseDir, where, items);
+  Filter filter(PrepareSQL("iYear = %ld", year));
+  return GetSongsByWhere(baseDir, filter, items);
 }
 
 bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription /* = SortDescription() */)
 {
-  CStdString strWhere;
-
+  Filter filter;
   if (idAlbum!=-1)
-    strWhere=PrepareSQL("where (idAlbum=%ld) ", idAlbum);
+    filter.where = PrepareSQL("idAlbum = %ld", idAlbum);
 
   if (idGenre!=-1)
-  {
-    if (strWhere.IsEmpty())
-      strWhere += "where ";
-    else
-      strWhere += "and ";
-
-    strWhere += PrepareSQL("(idSong IN "
-                            "("
-                            "SELECT song_genre.idSong FROM song_genre "
-                            "WHERE song_genre.idGenre = %i"
-                            ")"
-                          ") "
-                          , idGenre);
-  }
+    filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_genre.idSong FROM song_genre WHERE song_genre.idGenre = %i)", idGenre));
 
   if (idArtist!=-1)
-  {
-    if (strWhere.IsEmpty())
-      strWhere += "where ";
-    else
-      strWhere += "and ";
-
-    strWhere += PrepareSQL("(idSong IN " // song artists
-                            "("
-                            "SELECT song_artist.idSong FROM song_artist "
-                            "WHERE song_artist.idArtist=%i"
-                            ") "
-                          "or idSong IN " // album artists
-                            "("
-                            "SELECT song.idSong FROM song "
-                            "JOIN album_artist ON song.idAlbum=album_artist.idAlbum "
-                            "WHERE album_artist.idArtist=%i"
-                            ")"
-                          ") "
-                          , idArtist, idArtist);
-  }
+    filter.AppendWhere(PrepareSQL("idSong IN (" // song artists
+                                    "SELECT song_artist.idSong FROM song_artist WHERE song_artist.idArtist = %i"
+                                  ") OR idSong IN (" // album artists
+                                    "SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum WHERE album_artist.idArtist = %i"
+                                  ")", idArtist, idArtist));
 
   // run query
-  return GetSongsByWhere(strBaseDir, strWhere, items, sortDescription);
+  return GetSongsByWhere(strBaseDir, filter, items, sortDescription);
 }
 
 bool CMusicDatabase::UpdateOldVersion(int version)
@@ -3521,14 +3491,25 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   return true;
 }
 
-unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<int,int> > &songIDs)
+unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
 {
   try
   {
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    CStdString strSQL = "select idSong from songview " + strWhere;
+    CStdString strSQL = "select idSong from songview ";
+    if (!filter.join.empty())
+      strSQL += filter.join;
+    if (!filter.where.empty())
+      strSQL += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQL += " GROUP BY " + filter.group;
+    if (!filter.order.empty())
+      strSQL += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQL += " LIMIT " + filter.limit;
+
     if (!m_pDS->query(strSQL.c_str())) return 0;
     songIDs.clear();
     if (m_pDS->num_rows() == 0)
@@ -3547,19 +3528,30 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strWhere.c_str());
+    CLog::Log(LOGERROR, "%s(%) failed", __FUNCTION__, filter.where.c_str());
   }
   return 0;
 }
 
-int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
+int CMusicDatabase::GetSongsCount(const Filter &filter)
 {
   try
   {
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    CStdString strSQL = "select count(idSong) as NumSongs from songview " + strWhere;
+    CStdString strSQL = "select count(idSong) as NumSongs from songview ";
+    if (!filter.join.empty())
+      strSQL += filter.join;
+    if (!filter.where.empty())
+      strSQL += " WHERE " + filter.where;
+    if (!filter.group.empty())
+      strSQL += " GROUP BY " + filter.group;
+    if (!filter.order.empty())
+      strSQL += " ORDER BY " + filter.order;
+    if (!filter.limit.empty())
+      strSQL += " LIMIT " + filter.limit;
+
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0)
     {
@@ -3574,7 +3566,7 @@ int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strWhere.c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, filter.where.c_str());
   }
   return 0;
 }
@@ -3789,13 +3781,13 @@ int CMusicDatabase::GetGenreByName(const CStdString& strGenre)
   return -1;
 }
 
-bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const CStdString& strWhere)
+bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &filter)
 {
   try
   {
     idSong = -1;
 
-    int iCount = GetSongsCount(strWhere);
+    int iCount = GetSongsCount(filter);
     if (iCount <= 0)
       return false;
     int iRandom = rand() % iCount;
@@ -3804,8 +3796,22 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const CStdStrin
     if (NULL == m_pDS.get()) return false;
 
     // We don't use PrepareSQL here, as the WHERE clause is already formatted
-    CStdString strSQL;
-    strSQL.Format("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
+    CStdString strSQL = PrepareSQL("select %s from songview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    Filter extFilter = filter;
+    extFilter.AppendOrder("idSong");
+    extFilter.limit = "1";
+
+    if (!extFilter.join.empty())
+      strSQL += extFilter.join;
+    if (!extFilter.where.empty())
+      strSQL += " WHERE " + extFilter.where;
+    if (!extFilter.group.empty())
+      strSQL += " GROUP BY " + extFilter.group;
+    if (!extFilter.order.empty())
+      strSQL += " ORDER BY " + extFilter.order;
+    if (!extFilter.limit.empty())
+      strSQL += " LIMIT " + extFilter.limit;
+    strSQL += PrepareSQL(" OFFSET %i", iRandom);
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -3824,19 +3830,21 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const CStdStrin
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strWhere.c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, filter.where.c_str());
   }
   return false;
 }
 
 bool CMusicDatabase::GetCompilationAlbums(const CStdString& strBaseDir, CFileItemList& items)
 {
-  return GetAlbumsByWhere(strBaseDir, "WHERE bCompilation = 1", "", items);
+  Filter filter("bCompilation = 1");
+  return GetAlbumsByWhere(strBaseDir, filter, items);
 }
 
 bool CMusicDatabase::GetCompilationSongs(const CStdString& strBaseDir, CFileItemList& items)
 {
-  return GetSongsByWhere(strBaseDir, "WHERE bCompilation = 1", items);
+  Filter filter("bCompilation = 1");
+  return GetSongsByWhere(strBaseDir, filter, items);
 }
 
 int CMusicDatabase::GetCompilationAlbumsCount()
@@ -4089,7 +4097,7 @@ bool CMusicDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so reset the infomanager cache
-    g_infoManager.SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount("") > 0);
+    g_infoManager.SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
     return true;
   }
   return false;
