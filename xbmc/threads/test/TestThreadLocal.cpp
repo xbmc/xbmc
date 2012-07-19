@@ -46,7 +46,7 @@ void cleanup()
 }
 
 CEvent waiter;
-class Runnable
+class Runnable : public IRunnable
 {
 public:
   bool waiting;
@@ -54,7 +54,7 @@ public:
   ThreadLocal<Thinggy>& threadLocal;
 
   inline Runnable(ThreadLocal<Thinggy>& tl) : waiting(false), threadLocal(tl) {}
-  inline void operator()()
+  inline void Run()
   {
     staticThinggy = new Thinggy;
     staticThreadLocal.set(staticThinggy);
@@ -93,7 +93,7 @@ public:
 TEST(TestThreadLocal, Simple)
 {
   GlobalThreadLocal runnable;
-  thread t(ref(runnable));
+  thread t(runnable);
 
   gate.Wait();
   EXPECT_TRUE(runnable.waiting);
@@ -111,7 +111,7 @@ TEST(TestThreadLocal, Simple)
 TEST(TestThreadLocal, Stack)
 {
   StackThreadLocal runnable;
-  thread t(ref(runnable));
+  thread t(runnable);
 
   gate.Wait();
   EXPECT_TRUE(runnable.waiting);
@@ -129,7 +129,7 @@ TEST(TestThreadLocal, Stack)
 TEST(TestThreadLocal, Heap)
 {
   HeapThreadLocal runnable;
-  thread t(ref(runnable));
+  thread t(runnable);
 
   gate.Wait();
   EXPECT_TRUE(runnable.waiting);
@@ -148,7 +148,7 @@ TEST(TestThreadLocal, HeapDestroyed)
 {
   {
     HeapThreadLocal runnable;
-    thread t(ref(runnable));
+    thread t(runnable);
 
     gate.Wait();
     EXPECT_TRUE(runnable.waiting);

@@ -33,7 +33,7 @@ using namespace XbmcThreads;
 // Helper classes
 //=============================================================================
 
-class waiter
+class waiter : public IRunnable
 {
   CEvent& event;
 public:
@@ -43,7 +43,7 @@ public:
 
   waiter(CEvent& o, bool& flag) : event(o), result(flag), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     result = event.Wait();
@@ -51,7 +51,7 @@ public:
   }
 };
 
-class timed_waiter
+class timed_waiter : public IRunnable
 {
   CEvent& event;
   unsigned int waitTime;
@@ -62,7 +62,7 @@ public:
 
   timed_waiter(CEvent& o, int& flag, int waitTimeMillis) : event(o), waitTime(waitTimeMillis), result(flag), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     result = 0;
@@ -71,7 +71,7 @@ public:
   }
 };
 
-class group_wait
+class group_wait : public IRunnable
 {
   CEventGroup& event;
   int timeout;
@@ -82,7 +82,7 @@ public:
   group_wait(CEventGroup& o) : event(o), timeout(-1), result(NULL), waiting(false) {}
   group_wait(CEventGroup& o, int timeout_) : event(o), timeout(timeout_), result(NULL), waiting(false) {}
 
-  void operator()()
+  void Run()
   {
     waiting = true;
     if (timeout == -1)
@@ -186,9 +186,9 @@ TEST(TestEvent, Group)
   waiter w2(event2,result2);
   group_wait w3(group);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(event1,1,10000));
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
@@ -234,9 +234,9 @@ TEST(TestEvent, GroupLimitedGroupScope)
     waiter w2(event2,result2);
     group_wait w3(group);
 
-    thread waitThread1(ref(w1));
-    thread waitThread2(ref(w2));
-    thread waitThread3(ref(w3));
+    thread waitThread1(w1);
+    thread waitThread2(w2);
+    thread waitThread3(w3);
 
     EXPECT_TRUE(waitForWaiters(event1,1,10000));
     EXPECT_TRUE(waitForWaiters(event2,1,10000));
@@ -283,10 +283,10 @@ TEST(TestEvent, TwoGroups)
   group_wait w3(group1);
   group_wait w4(group2);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
-  thread waitThread4(ref(w4));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
+  thread waitThread4(w4);
 
   EXPECT_TRUE(waitForWaiters(event1,1,10000));
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
@@ -385,9 +385,9 @@ TEST(TestEvent, GroupChildSet)
   waiter w2(event2,result2);
   group_wait w3(group);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
@@ -419,9 +419,9 @@ TEST(TestEvent, GroupChildSet2)
   waiter w2(event2,result2);
   group_wait w3(group);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
@@ -448,7 +448,7 @@ TEST(TestEvent, GroupWaitResetsChild)
 
   group_wait w3(group);
 
-  thread waitThread3(ref(w3));
+  thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(group,1,10000));
 
@@ -477,8 +477,8 @@ TEST(TestEvent, GroupTimedWait)
   waiter w1(event1,result1);
   waiter w2(event2,result2);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
 
   EXPECT_TRUE(waitForWaiters(event1,1,10000));
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
@@ -486,7 +486,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(group.wait(20) == NULL); // waited ... got nothing
 
   group_wait w3(group,50);
-  thread waitThread3(ref(w3));
+  thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(group,1,10000));
 
@@ -503,7 +503,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(w3.result == NULL);
 
   group_wait w4(group,50);
-  thread waitThread4(ref(w4));
+  thread waitThread4(w4);
 
   EXPECT_TRUE(waitForWaiters(group,1,10000));
 
@@ -533,7 +533,7 @@ TEST(TestEvent, GroupTimedWait)
 CEvent* g_event = NULL;
 volatile long g_mutex;
 
-class mass_waiter
+class mass_waiter : public IRunnable
 {
 public:
   CEvent& event;
@@ -543,7 +543,7 @@ public:
 
   mass_waiter() : event(*g_event), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     AtomicGuard g(&g_mutex);
@@ -552,7 +552,7 @@ public:
   }
 };
 
-class poll_mass_waiter
+class poll_mass_waiter : public IRunnable
 {
 public:
   CEvent& event;
@@ -562,7 +562,7 @@ public:
 
   poll_mass_waiter() : event(*g_event), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     AtomicGuard g(&g_mutex);
@@ -576,7 +576,7 @@ template <class W> void RunMassEventTest(boost::shared_array<W>& m, bool canWait
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(ref(m[i]));
+    t[i] = thread(m[i]);
 
   EXPECT_TRUE(waitForThread(g_mutex,NUMTHREADS,10000));
   if (canWaitOnEvent)

@@ -67,40 +67,27 @@ public:
 
 class thread
 {
-  template <class F> class FunctorRunnable : public IRunnable
-  {
-    F f;
-  public:
-    inline explicit FunctorRunnable(F f_) : f(f_) { }
-    inline virtual ~FunctorRunnable(){ }
-    inline virtual void Run() { f (); }
-  };
-
   IRunnable* f;
   CThread* cthread;
 
 //  inline thread(const thread& other) { }
 public:
-  template <class F> inline explicit thread(F functor) : 
-    f(new FunctorRunnable<F>(functor)), 
-    cthread(new CThread(f, "dumb thread"))
+  inline explicit thread(IRunnable& runnable) : 
+    f(&runnable), cthread(new CThread(f, "dumb thread"))
   {
     cthread->Create();
   }
 
   inline thread() : f(NULL), cthread(NULL) {}
 
-  inline thread(thread& other) : f(other.f), cthread(other.cthread) { other.f = NULL; other.cthread = NULL; }
+  /**
+   * Gcc-4.2 requires this to be 'const' to find the right constructor.
+   * It really shouldn't be since it modifies the parameter thread
+   * to ensure only one thread instance has control of the
+   * Runnable.a
+   */
+  inline thread(const thread& other) : f(other.f), cthread(other.cthread) { ((thread&)other).f = NULL; ((thread&)other).cthread = NULL; }
   inline thread& operator=(const thread& other) { f = other.f; ((thread&)other).f = NULL; cthread = other.cthread; ((thread&)other).cthread = NULL; return *this; }
-
-  virtual ~thread()
-  {
-//    if (cthread && cthread->IsRunning())
-//      cthread->StopThread();
-
-    if (f)
-      delete f;
-  }
 
   void join()
   {
@@ -113,17 +100,3 @@ public:
   }
 };
 
-template <class F> class FunctorReference
-{
-  F& f;
- public:
-  inline FunctorReference(F& f_) : f(f_) {}
-  inline FunctorReference(const FunctorReference<F>& fr) : f(fr.f) {}
-
-  inline void operator() ()
-  {
-    f ();
-  }
-};
-
-template<class F> inline FunctorReference<F> ref(F& f) { return FunctorReference<F>(f); }

@@ -32,7 +32,7 @@
 //=============================================================================
 
 template<class L>
-class locker
+class locker : public IRunnable
 {
   CSharedSection& sec;
   CEvent* wait;
@@ -48,7 +48,7 @@ public:
   inline locker(CSharedSection& o, CEvent* wait_ = NULL) : 
     sec(o), wait(wait_), mutex(NULL), haslock(false), obtainedlock(false) {}
   
-  void operator()()
+  void Run()
   {
     AtomicGuard g(mutex);
     L lock(sec);
@@ -86,7 +86,7 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
   CSharedLock l1(sec); // get a shared lock
 
   locker<CExclusiveLock> l2(sec,&mutex);
-  thread waitThread1(ref(l2)); // try to get an exclusive lock
+  thread waitThread1(l2); // try to get an exclusive lock
 
   EXPECT_TRUE(waitForThread(mutex,1,10000));
   SleepMillis(10);  // still need to give it a chance to move ahead
@@ -96,7 +96,7 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
 
   // now try and get a SharedLock
   locker<CSharedLock> l3(sec,&mutex,&event);
-  thread waitThread3(ref(l3)); // try to get a shared lock
+  thread waitThread3(l3); // try to get a shared lock
   EXPECT_TRUE(waitForThread(mutex,2,10000));
   SleepMillis(10);
   EXPECT_TRUE(l3.haslock);
@@ -131,7 +131,7 @@ TEST(TestSharedSection, TwoCase)
 
   {
     CSharedLock lock(sec);
-    thread waitThread1(ref(l1));
+    thread waitThread1(l1);
 
     EXPECT_TRUE(waitForWaiters(event,1,10000));
     EXPECT_TRUE(l1.haslock);
@@ -144,7 +144,7 @@ TEST(TestSharedSection, TwoCase)
   locker<CSharedLock> l2(sec,&mutex,&event);
   {
     CExclusiveLock lock(sec); // get exclusive lock
-    thread waitThread2(ref(l2)); // thread should block
+    thread waitThread2(l2); // thread should block
 
     EXPECT_TRUE(waitForThread(mutex,1,10000));
     SleepMillis(10);
@@ -174,7 +174,7 @@ TEST(TestMultipleSharedSection, General)
 
   {
     CSharedLock lock(sec);
-    thread waitThread1(ref(l1));
+    thread waitThread1(l1);
 
     EXPECT_TRUE(waitForThread(mutex,1,10000));
     SleepMillis(10);
@@ -192,10 +192,10 @@ TEST(TestMultipleSharedSection, General)
   locker<CSharedLock> l5(sec,&mutex,&event);
   {
     CExclusiveLock lock(sec);
-    thread waitThread1(ref(l2));
-    thread waitThread2(ref(l3));
-    thread waitThread3(ref(l4));
-    thread waitThread4(ref(l5));
+    thread waitThread1(l2);
+    thread waitThread2(l3);
+    thread waitThread3(l4);
+    thread waitThread4(l5);
 
     EXPECT_TRUE(waitForThread(mutex,4,10000));
     SleepMillis(10);

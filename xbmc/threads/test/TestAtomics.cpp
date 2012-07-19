@@ -23,43 +23,74 @@
 #include "threads/Atomics.h"
 
 #include <boost/shared_array.hpp>
-#include <boost/bind.hpp>
 #include <iostream>
 
 #define TESTNUM 100000l
 #define NUMTHREADS 10l
 
-void doIncrement(long* number)
+class DoIncrement : public IRunnable
 {
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicIncrement(number);
-}
+  long* number;
+public:
+  inline DoIncrement(long* num) : number(num) {}
 
-void doDecrement(long* number)
-{
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicDecrement(number);
-}
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicIncrement(number);
+  }
+};
 
-void doAdd(long* number, long toAdd)
+class DoDecrement : public IRunnable
 {
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicAdd(number,toAdd);
-}
+  long* number;
+public:
+  inline DoDecrement(long* num) : number(num) {}
 
-void doSubtract(long* number, long toAdd)
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicDecrement(number);
+  }
+};
+
+class DoAdd : public IRunnable
 {
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicSubtract(number,toAdd);
-}
+  long* number;
+  long toAdd;
+
+public:
+  inline DoAdd(long* num, long toAd) : number(num), toAdd(toAd) {}
+
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicAdd(number,toAdd);
+  }
+};
+
+class DoSubtract : public IRunnable
+{
+  long* number;
+  long toAdd;
+public:
+  inline DoSubtract(long* num, long toAd) : number(num), toAdd(toAd) {}
+
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicSubtract(number,toAdd);
+  }
+};
 
 TEST(TestMassAtomic, Increment)
 {
   long lNumber = 0;
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoIncrement di(&lNumber);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doIncrement,&lNumber));
+    t[i] = thread(di);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
@@ -72,8 +103,9 @@ TEST(TestMassAtomic, Decrement)
   long lNumber = (NUMTHREADS * TESTNUM);
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoDecrement dd(&lNumber);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doDecrement,&lNumber));
+    t[i] = thread(dd);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
@@ -87,8 +119,9 @@ TEST(TestMassAtomic, Add)
   long toAdd = 10;
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoAdd da(&lNumber,toAdd);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doAdd,&lNumber,toAdd));
+    t[i] = thread(da);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
@@ -102,8 +135,9 @@ TEST(TestMassAtomic, Subtract)
   long lNumber = (NUMTHREADS * TESTNUM) * toSubtract;
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoSubtract ds(&lNumber,toSubtract);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doSubtract,&lNumber,toSubtract));
+    t[i] = thread(ds);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
