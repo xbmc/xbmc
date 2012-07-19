@@ -70,8 +70,8 @@
 
 using namespace std;
 
-// In seconds
-#define MINIMUM_TIME_BETWEEN_READS 2
+// In milliseconds
+#define MINIMUM_TIME_BETWEEN_READS 500
 
 #ifdef _WIN32
 /* replacement gettimeofday implementation, copy from dvdnav_internal.h */
@@ -238,8 +238,9 @@ CCPUInfo::CCPUInfo(void)
     m_cpuModel = "Unknown";
   }
 
-  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
 #endif
+  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
+  m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 
   ReadCPUFeatures();
 
@@ -263,10 +264,8 @@ CCPUInfo::~CCPUInfo()
 
 int CCPUInfo::getUsedPercentage()
 {
-  if (m_lastReadTime + MINIMUM_TIME_BETWEEN_READS > time(NULL))
-  {
+  if (!m_nextUsedReadTime.IsTimePast())
     return m_lastUsedPercentage;
-  }
 
   unsigned long long userTicks;
   unsigned long long niceTicks;
@@ -275,9 +274,7 @@ int CCPUInfo::getUsedPercentage()
   unsigned long long ioTicks;
 
   if (!readProcStat(userTicks, niceTicks, systemTicks, idleTicks, ioTicks))
-  {
-    return 0;
-  }
+    return m_lastUsedPercentage;
 
   userTicks -= m_userTicks;
   niceTicks -= m_niceTicks;
@@ -302,6 +299,7 @@ int CCPUInfo::getUsedPercentage()
   m_ioTicks += ioTicks;
 
   m_lastUsedPercentage = result;
+  m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 
   return result;
 }
@@ -323,9 +321,7 @@ float CCPUInfo::getCPUFrequency()
   ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
   RegCloseKey(hKey);
   if(ret == 0)
-  {
     return float(dwMHz);
-  }
   else
     return 0.f;
 #else
@@ -494,7 +490,6 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   }
 #endif
 
-  m_lastReadTime = time(NULL);
   return true;
 }
 
@@ -605,13 +600,3 @@ void CCPUInfo::ReadCPUFeatures()
 }
 
 CCPUInfo g_cpuInfo;
-
-/*
-int main()
-{
-  CCPUInfo c;
-  usleep(...);
-  int r = c.getUsedPercentage();
-  printf("%d\n", r);
-}
-*/
