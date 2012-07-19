@@ -87,7 +87,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
-  virtual void FreeResources();
+  virtual void OnDeinitWindow(int nextWindowID);
   void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
