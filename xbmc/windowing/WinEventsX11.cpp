@@ -408,6 +408,17 @@ bool CWinEventsX11::ProcessMotion(XMotionEvent& xmotion)
   return g_application.OnEvent(newEvent);
 }
 
+bool CWinEventsX11::ProcessEnter(XCrossingEvent& xcrossing)
+{
+  return true;
+}
+
+bool CWinEventsX11::ProcessLeave(XCrossingEvent& xcrossing)
+{
+  g_Mouse.SetActive(false);
+  return true;
+}
+
 bool CWinEventsX11::ProcessButtonPress(XButtonEvent& xbutton)
 {
   XBMC_Event newEvent = {0};
@@ -491,6 +502,25 @@ bool CWinEventsX11::Process()
     if (XFilterEvent(&xevent, None))
       continue;
 
+
+    if(!g_Windowing.IsWindowManagerControlled())
+    {
+      switch (xevent.type)
+      {
+        case ButtonPress:
+        case ButtonRelease:
+          XSetInputFocus(m_display, m_window, RevertToParent, xevent.xbutton.time);
+          break;
+        case KeyPress:
+        case KeyRelease:
+          XSetInputFocus(m_display, m_window, RevertToParent, xevent.xkey.time);
+          break;
+        case MapNotify:
+          XSetInputFocus(m_display, m_window, RevertToParent, CurrentTime);
+          break;
+      }
+    }
+
     switch (xevent.type)
     {
       case MapNotify:
@@ -529,8 +559,12 @@ bool CWinEventsX11::Process()
         ret |= ProcessKeyRelease(xevent.xkey);
         break;
 
+      case EnterNotify:
+        ret |= ProcessEnter(xevent.xcrossing);
+        break;
+
       case LeaveNotify:
-        g_Mouse.SetActive(false);
+        ret |= ProcessLeave(xevent.xcrossing);
         break;
 
       case MotionNotify:

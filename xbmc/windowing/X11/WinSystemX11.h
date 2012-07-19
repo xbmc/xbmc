@@ -80,7 +80,10 @@ public:
   XVisualInfo* GetVisual() { return m_visual; }
   void NotifyXRREvent();
 
+  bool IsWindowManagerControlled() { return m_wm_controlled; }
+
 protected:
+  void ProbeWindowManager();
   void RefreshWindowState();
   void CheckDisplayEvents();
   void OnLostDevice();
@@ -101,6 +104,20 @@ protected:
   uint64_t                     m_dpyLostTime;
   CStdString                   m_outputName;
   int                          m_outputIndex;
+
+  bool         m_wm;
+  CStdString   m_wm_name;
+  bool         m_wm_fullscreen;
+  bool         m_wm_controlled;
+
+  Atom m_NET_SUPPORTING_WM_CHECK;
+  Atom m_NET_WM_STATE;
+  Atom m_NET_WM_STATE_FULLSCREEN;
+  Atom m_NET_WM_STATE_MAXIMIZED_VERT;
+  Atom m_NET_WM_STATE_MAXIMIZED_HORZ;
+  Atom m_NET_SUPPORTED;
+  Atom m_NET_WM_NAME;
+  Atom m_WM_DELETE_WINDOW;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);

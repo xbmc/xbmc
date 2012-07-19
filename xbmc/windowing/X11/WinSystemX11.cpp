@@ -38,6 +38,7 @@
 #include <X11/Xatom.h>
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/TimeUtils.h"
+#include "Application.h"
 
 #if defined(HAS_XRANDR)
 #include <X11/extensions/Xrandr.h>
@@ -83,6 +84,8 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_invisibleCursor = 0;
   m_outputName  = "";
   m_outputIndex = 0;
+  m_wm_fullscreen = false;
+  m_wm_controlled = false;
 
   XSetErrorHandler(XErrorHandler);
 }
@@ -278,6 +281,72 @@ static Pixmap AllocateIconPixmap(Display* dpy, Window w)
   return icon;
 }
 
+void CWinSystemX11::ProbeWindowManager()
+{
+  int res, format;
+  Atom *items, type;
+  unsigned long bytes_after, nitems;
+  unsigned char *prop_return;
+  int wm_window_id;
+
+  m_wm            = false;
+  m_wm_name       = "";
+  m_wm_fullscreen = false;
+
+  res = XGetWindowProperty(m_dpy, XRootWindow(m_dpy, m_visual->screen), m_NET_SUPPORTING_WM_CHECK,
+                        0, 16384, False, AnyPropertyType, &type, &format,
+                        &nitems, &bytes_after, &prop_return);
+  if(res != Success || nitems == 0 || prop_return == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemX11::ProbeWindowManager - No window manager found (NET_SUPPORTING_WM_CHECK not set)");
+    return;
+  }
+
+  wm_window_id = *(int *)prop_return;
+  XFree(prop_return);
+  prop_return = NULL;
+
+  res = XGetWindowProperty(m_dpy, wm_window_id, m_NET_WM_NAME,
+                        0, 16384, False, AnyPropertyType, &type, &format,
+                        &nitems, &bytes_after, &prop_return);
+  if(res != Success || nitems == 0 || prop_return == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemX11::ProbeWindowManager - No window manager found (NET_WM_NAME not set on wm window)");
+    return;
+  }
+  m_wm_name = (char *)prop_return;
+  XFree(prop_return);
+  prop_return = NULL;
+
+  res = XGetWindowProperty(m_dpy, XRootWindow(m_dpy, m_visual->screen), m_NET_SUPPORTED,
+                        0, 16384, False, AnyPropertyType, &type, &format,
+                        &nitems, &bytes_after, &prop_return);
+  if(res != Success || nitems == 0 || prop_return == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemX11::ProbeWindowManager - No window manager found (NET_SUPPORTING_WM_CHECK not set)");
+    return;
+  }
+  items = (Atom *)prop_return;
+  m_wm = true;
+  for(unsigned long i = 0; i < nitems; i++)
+  {
+    if(items[i] == m_NET_WM_STATE_FULLSCREEN)
+      m_wm_fullscreen = true;
+  }
+  XFree(prop_return);
+  prop_return = NULL;
+
+  CLog::Log(LOGDEBUG, "CWinSystemX11::ProbeWindowManager - Window manager (%s) detected%s",
+        m_wm_name.c_str(),
+        m_wm_fullscreen ? ", can fullscreen" : "");
+
+  if(m_wm_fullscreen && g_application.IsStandAlone())
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemX11::ProbeWindowManager - Disable window manager fullscreen due to standalone");
+    m_wm_fullscreen = false;
+  }
+}
+
 
 bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
@@ -289,12 +358,27 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
     DestroyWindow();
   }
 
+  /* update available atoms */
+  m_NET_SUPPORTING_WM_CHECK     = XInternAtom(m_dpy, "_NET_SUPPORTING_WM_CHECK", False);
+  m_NET_WM_STATE                = XInternAtom(m_dpy, "_NET_WM_STATE", False);
+  m_NET_WM_STATE_FULLSCREEN     = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", False);
+  m_NET_WM_STATE_MAXIMIZED_VERT = XInternAtom(m_dpy, "_NET_WM_STATE_MAXIMIZED_VERT", False);
+  m_NET_WM_STATE_MAXIMIZED_HORZ = XInternAtom(m_dpy, "_NET_WM_STATE_MAXIMIZED_HORZ", False);
+  m_NET_SUPPORTED               = XInternAtom(m_dpy, "_NET_SUPPORTED", False);
+  m_NET_WM_STATE_FULLSCREEN     = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", False);
+  m_NET_SUPPORTING_WM_CHECK     = XInternAtom(m_dpy, "_NET_SUPPORTING_WM_CHECK", False);
+  m_NET_WM_NAME                 = XInternAtom(m_dpy, "_NET_WM_NAME", False);
+  m_WM_DELETE_WINDOW            = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
+
   /* higher layer should have set m_visual */
   if(m_visual == NULL)
   {
     CLog::Log(LOGERROR, "CWinSystemX11::CreateNewWindow - no visual setup");
     return false;
   }
+
+  /* figure out what the window manager support */
+  ProbeWindowManager();
 
   XSetWindowAttributes swa = {0};
 
@@ -307,7 +391,10 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   }
 #endif
 
-  swa.override_redirect = False;
+  if(m_wm_fullscreen)
+    swa.override_redirect = 0;
+  else
+    swa.override_redirect = fullScreen ? 1 : 0;
   swa.border_pixel      = fullScreen ? 0 : 5;
 
   if(m_visual->visual == DefaultVisual(m_dpy, m_visual->screen))
@@ -327,13 +414,13 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
                   CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWEventMask,
                   &swa);
 
-  if (fullScreen)
+  if(m_wm_fullscreen)
   {
-    Atom fs = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", False);
-    XChangeProperty(m_dpy, m_wmWindow, XInternAtom(m_dpy, "_NET_WM_STATE", False), XA_ATOM, 32, PropModeReplace, (unsigned char *) &fs, 1);
+    if (fullScreen)
+      XChangeProperty(m_dpy, m_wmWindow, m_NET_WM_STATE, XA_ATOM, 32, PropModeReplace, (unsigned char *) &m_NET_WM_STATE_FULLSCREEN, 1);
+    else
+      XDeleteProperty(m_dpy, m_wmWindow, m_NET_WM_STATE);
   }
-  else
-    XDeleteProperty(m_dpy, m_wmWindow, XInternAtom(m_dpy, "_NET_WM_STATE", False));
 
   m_invisibleCursor = AllocateInvisibleCursor(m_dpy, m_wmWindow);
   XDefineCursor(m_dpy, m_wmWindow, m_invisibleCursor);
@@ -358,8 +445,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   XFree(wm_hints);
 
   // register interest in the delete window message
-  Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
-  XSetWMProtocols(m_dpy, m_wmWindow, &wmDeleteMessage, 1);
+  XSetWMProtocols(m_dpy, m_wmWindow, &m_WM_DELETE_WINDOW, 1);
 
   XMapRaised(m_dpy, m_wmWindow);
   XSync(m_dpy, True);
@@ -455,13 +541,6 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     return true;
   }
 
-  XSetWindowAttributes attr = {0};
-  if(fullScreen)
-    attr.border_pixel = 0;
-  else
-    attr.border_pixel = 5;
-  XChangeWindowAttributes(m_dpy, m_wmWindow, CWBorderPixel, &attr);
-
   int x = 0, y = 0;
 #if defined(HAS_XRANDR)
   XOutput out = g_xrandr.GetOutput(res.iInternal, res.strOutput);
@@ -472,15 +551,17 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
 #endif
 
+
+  if(!fullScreen)
+  {
+    x = m_nLeft;
+    y = m_nTop;
+  }
+
   XWindowAttributes attr2;
   XGetWindowAttributes(m_dpy, m_wmWindow, &attr2);
 
-  Atom m_NET_WM_STATE                = XInternAtom(m_dpy, "_NET_WM_STATE", False);
-  Atom m_NET_WM_STATE_FULLSCREEN     = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", True);
-  Atom m_NET_WM_STATE_MAXIMIZED_VERT = XInternAtom(m_dpy, "_NET_WM_STATE_MAXIMIZED_VERT", True);
-  Atom m_NET_WM_STATE_MAXIMIZED_HORZ = XInternAtom(m_dpy, "_NET_WM_STATE_MAXIMIZED_HORZ", True);
-
-  if(m_NET_WM_STATE_FULLSCREEN)
+  if(m_wm_fullscreen)
   {
     /* if on other screen, we must move it first, otherwise
      * the window manager will fullscreen it on the wrong
@@ -512,8 +593,6 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       {
         e.xclient.data.l[0] = 0; /* _NET_WM_STATE_REMOVE */
         e.xclient.data.l[1] = m_NET_WM_STATE_FULLSCREEN;
-        e.xclient.data.l[2] = m_NET_WM_STATE_MAXIMIZED_VERT;
-        e.xclient.data.l[3] = m_NET_WM_STATE_MAXIMIZED_HORZ;
       }
 
       XSendEvent(m_dpy, RootWindow(m_dpy, m_visual->screen), False,
@@ -523,15 +602,36 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
   else
   {
-
+    XSetWindowAttributes attr = {0};
     if(fullScreen)
-      XMoveResizeWindow(m_dpy, m_wmWindow, x, y, res.iWidth, res.iHeight);
+      attr.override_redirect = 1;
     else
-      XResizeWindow(m_dpy, m_wmWindow, res.iWidth, res.iHeight);
+      attr.override_redirect = 0;
 
+    /* if override_redirect changes, we need to notify
+     * WM by reparenting the window to root */
+    if(attr.override_redirect != attr2.override_redirect)
+    {
+      XUnmapWindow           (m_dpy, m_wmWindow);
+      XChangeWindowAttributes(m_dpy, m_wmWindow, CWOverrideRedirect, &attr);
+      XReparentWindow        (m_dpy, m_wmWindow, RootWindow(m_dpy, res.iInternal), x, y);
+      XGetWindowAttributes   (m_dpy, m_wmWindow, &attr2);
+    }
+
+    XWindowChanges cw;
+    cw.x = x;
+    cw.y = y;
+    if(fullScreen)
+      cw.border_width = 0;
+    else
+      cw.border_width = 5;
+    cw.width  = res.iWidth;
+    cw.height = res.iHeight;
+
+    XConfigureWindow(m_dpy, m_wmWindow, CWX | CWY | CWWidth | CWHeight | CWBorderWidth, &cw);
   }
 
-  XRaiseWindow(m_dpy, m_wmWindow);
+  XMapRaised(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
 
   RefreshWindowState();
@@ -688,6 +788,8 @@ void CWinSystemX11::RefreshWindowState()
   m_nHeight   = attr.height;
   m_nLeft     = attr.x;
   m_nTop      = attr.y;
+
+  m_wm_controlled = attr.override_redirect == 0 && m_wm_name;
 }
 
 void CWinSystemX11::ShowOSMouse(bool show)
