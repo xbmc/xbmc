@@ -3,6 +3,7 @@ SRCS=Album.cpp \
      GUIViewStateMusic.cpp \
      LastFmManager.cpp \
      MusicDatabase.cpp \
+     MusicDbUrl.cpp \
      MusicInfoLoader.cpp \
      Song.cpp \
      

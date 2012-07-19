@@ -68,13 +68,19 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransp
 {
   int artistID = (int)parameterObject["artistid"].asInteger();
 
+  CMusicDbUrl musicUrl;
+  if (!musicUrl.FromString("musicdb://2/"))
+    return InternalError;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
+  musicUrl.AddOption("artistid", artistID);
+
   CFileItemList items;
-  CDatabase::Filter filter(musicdatabase.PrepareSQL("idArtist = %d", artistID));
-  if (!musicdatabase.GetArtistsByWhere("musicdb://2/", filter, items) || items.Size() != 1)
+  CDatabase::Filter filter;
+  if (!musicdatabase.GetArtistsByWhere(musicUrl.ToString(), filter, items) || items.Size() != 1)
     return InvalidParams;
 
   HandleFileItem("artistid", false, "artistdetails", items[0], parameterObject, parameterObject["properties"], result, false);
@@ -96,7 +102,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
     return InvalidParams;
 
   CFileItemList items;
-  if (!musicdatabase.GetAlbumsNav("musicdb://3/", items, genreID, artistID, -1, -1, sorting))
+  if (!musicdatabase.GetAlbumsNav("musicdb://3/", items, genreID, artistID, sorting))
     return InternalError;
 
   int size = items.Size();
@@ -230,7 +236,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const CStdString &method, 
   for (unsigned int index = 0; index < albums.size(); index++)
   {
     CStdString path;
-    path.Format("musicdb://8/%i/", albums[index].idAlbum);
+    path.Format("musicdb://7/%i/", albums[index].idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(albums[index], path, item);
@@ -485,7 +491,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   }
 
   if (artistID != -1 || albumID != -1 || genreID != -1)
-    success |= musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
+    success |= musicdatabase.GetSongsNav("musicdb://4/", list, genreID, artistID, albumID);
 
   int songID = (int)parameterObject["songid"].asInteger(-1);
   if (songID != -1)

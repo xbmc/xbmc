@@ -1037,7 +1037,7 @@ int CXbmcHttp::xbmcAddToPlayListFromDB(int numParas, CStdString paras[])
     CMusicDatabase musicdatabase;
     if (!musicdatabase.Open())
       return SetResponse(openTag+ "Error: Could not open music database");
-    musicdatabase.GetSongsByWhere("", where, filelist);
+    musicdatabase.GetSongsByWhere("musicdb://4/", where, filelist);
     musicdatabase.Close();
   }
   else if (type.Equals("movies") || 
