@@ -194,7 +194,7 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
-  bool Load(CXBMCTinyXML &xmlDoc);                 ///< Loads from the given XML document
+  bool Load(TiXmlElement *pRootElement);                 ///< Loads from the given XML root element
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();
@@ -269,6 +269,8 @@ protected:
 
   CGUIAction m_loadActions;
   CGUIAction m_unloadActions;
+
+  TiXmlElement* m_windowXMLRootElement;
 
   bool m_manualRunActions;
 

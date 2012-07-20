@@ -70,10 +70,13 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_manualRunActions = false;
   m_exclusiveMouseControl = 0;
   m_clearBackground = 0xff000000; // opaque black -> always clear
+  m_windowXMLRootElement = NULL;
 }
 
 CGUIWindow::~CGUIWindow(void)
-{}
+{
+  delete m_windowXMLRootElement;
+}
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
@@ -115,20 +118,29 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
 {
-  CXBMCTinyXML xmlDoc;
-  if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
+  // load window xml if we don't have it stored yet
+  if (!m_windowXMLRootElement)
   {
-    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    SetID(WINDOW_INVALID);
-    return false;
+    CXBMCTinyXML xmlDoc;
+    if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
+    {
+      CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      SetID(WINDOW_INVALID);
+      return false;
+    }
+    m_windowXMLRootElement = (TiXmlElement*)xmlDoc.RootElement()->Clone();
   }
+  else
+    CLog::Log(LOGDEBUG, "Using already stored xml root node for %s", strPath.c_str());
 
-  return Load(xmlDoc);
+  return Load(m_windowXMLRootElement);
 }
 
-bool CGUIWindow::Load(CXBMCTinyXML &xmlDoc)
+bool CGUIWindow::Load(TiXmlElement* pRootElement)
 {
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (!pRootElement)
+    return false;
+  
   if (strcmpi(pRootElement->Value(), "window"))
   {
     CLog::Log(LOGERROR, "file : XML file doesnt contain <window>");
@@ -737,6 +749,11 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   //g_TextureManager.Dump();
   // unload the skin
   if (m_loadType == LOAD_EVERY_TIME || forceUnload) ClearAll();
+  if (forceUnload)
+  {
+    delete m_windowXMLRootElement;
+    m_windowXMLRootElement = NULL;
+  }
 }
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)

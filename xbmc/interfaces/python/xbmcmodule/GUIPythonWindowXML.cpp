@@ -352,7 +352,7 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
   if (xmlDoc.Error())
     return false;
 
-  return Load(xmlDoc);
+  return Load(xmlDoc.RootElement());
 }
 
 void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
