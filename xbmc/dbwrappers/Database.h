@@ -83,6 +83,7 @@ public:
    * @return The requested value or an empty string if it wasn't found.
    */
   CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
+  CStdString GetSingleValue(const CStdString &query);
 
   /*! \brief Get a single value from a query on a dataset.
    \param query the query in question.

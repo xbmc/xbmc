@@ -203,6 +203,11 @@ CStdString CDatabase::GetSingleValue(const CStdString &strTable, const CStdStrin
   return GetSingleValue(query, m_pDS);
 }
 
+CStdString CDatabase::GetSingleValue(const CStdString &query)
+{
+  return GetSingleValue(query, m_pDS);
+}
+
 bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWhereClause /* = CStdString() */)
 {
   bool bReturn = true;
