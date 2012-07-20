@@ -139,6 +139,10 @@ DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
 endif
 
+ifeq (@USE_AMLPLAYER@,1)
+DIRECTORY_ARCHIVES += xbmc/cores/amlplayer/amlplayer.a
+endif
+
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
 	lib/nosefart \
