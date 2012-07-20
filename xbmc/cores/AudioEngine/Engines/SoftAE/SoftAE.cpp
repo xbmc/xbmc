@@ -922,8 +922,9 @@ unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
     #ifdef __SSE__
       CAEUtil::SSEMulAddArray(buffer, ss->samples, volume, mixSamples);
     #else
+      float *sample_buffer = ss->samples;
       for (unsigned int i = 0; i < mixSamples; ++i)
-        buffer[i] = (buffer[i] + (ss->samples[i] * volume));
+        *buffer++ = *sample_buffer++ * volume;
     #endif
 
     ss->sampleCount -= mixSamples;
@@ -951,34 +952,27 @@ bool CSoftAE::FinalizeSamples(float *buffer, unsigned int samples, bool hasAudio
   }
 
   /* deamplify */
-  bool clamp = false;
   if (m_volume < 1.0)
   {
     #ifdef __SSE__
       CAEUtil::SSEMulArray(buffer, m_volume, samples);
-      for (unsigned int i = 0; i < samples; ++i)
-        if (buffer[i] < -1.0f || buffer[i] > 1.0f)
-        {
-          clamp = true;
-          break;
-        }
     #else
-      for (unsigned int i = 0; i < samples; ++i)
-      {
-        buffer[i] *= m_volume;
-        if (!clamp && (buffer[i] < -1.0f || buffer[i] > 1.0f))
-          clamp = true;
-      }
+      float *fbuffer = buffer;
+      for (unsigned int i = 0; i < samples; i++)
+        *fbuffer++ *= m_volume;
     #endif
   }
-  else
+
+  /* check if we need to clamp */
+  bool clamp = false;
+  float *fbuffer = buffer;
+  for (unsigned int i = 0; i < samples; i++, fbuffer++)
   {
-    for (unsigned int i = 0; i < samples; ++i)
-      if (buffer[i] < -1.0f || buffer[i] > 1.0f)
-      {
-        clamp = true;
-        break;
-      }
+    if (*fbuffer < -1.0f || *fbuffer > 1.0f)
+    {
+      clamp = true;
+      break;
+    }
   }
 
   /* if there were no samples outside of the range, dont clamp the buffer */
@@ -1204,17 +1198,17 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
       unsigned int i      = 0;
       for (i = 0; i < blocks; i += 4)
       {
-        dst[i+0] += frame[i+0] * volume;
-        dst[i+1] += frame[i+1] * volume;
-        dst[i+2] += frame[i+2] * volume;
-        dst[i+3] += frame[i+3] * volume;
+        *dst++ += *frame++ * volume;
+        *dst++ += *frame++ * volume;
+        *dst++ += *frame++ * volume;
+        *dst++ += *frame++ * volume;
       }
 
       switch (channelCount & 0x3)
       {
-        case 3: dst[i] += frame[i] * volume; ++i;
-        case 2: dst[i] += frame[i] * volume; ++i;
-        case 1: dst[i] += frame[i] * volume;
+        case 3: *dst++ += *frame++ * volume;
+        case 2: *dst++ += *frame++ * volume;
+        case 1: *dst   += *frame++ * volume;
       }
     }
 
