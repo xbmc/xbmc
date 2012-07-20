@@ -50,7 +50,7 @@ namespace XFILE
     return GetDirectory(playlist, items);
   }
   
-  bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir /* = "" */)
+  bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir /* = "" */, bool filter /* = false */)
   {
     bool success = false, success2 = false;
     std::set<CStdString> playlists;
@@ -61,6 +61,8 @@ namespace XFILE
     sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       sorting.sortAttributes = SortAttributeIgnoreArticle;
+
+    std::string option = !filter ? "xsp" : "filter";
 
     if (playlist.GetType().Equals("movies") ||
         playlist.GetType().Equals("tvshows") ||
@@ -101,7 +103,7 @@ namespace XFILE
           if (!playlist.SaveAsJson(xsp, false))
             return false;
         }
-        videoUrl.AddOption("xsp", xsp);
+        videoUrl.AddOption(option, xsp);
         
         CDatabase::Filter dbfilter;
         success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter, true);
@@ -124,7 +126,7 @@ namespace XFILE
           if (!playlist.SaveAsJson(xsp, false))
             return false;
         }
-        musicUrl.AddOption("xsp", xsp);
+        musicUrl.AddOption(option, xsp);
 
         CDatabase::Filter dbfilter;
         success = db.GetAlbumsByWhere(musicUrl.ToString(), dbfilter, items, sorting);
@@ -148,7 +150,7 @@ namespace XFILE
           if (!playlist.SaveAsJson(xsp, false))
             return false;
         }
-        musicUrl.AddOption("xsp", xsp);
+        musicUrl.AddOption(option, xsp);
 
         CDatabase::Filter filter;
         success = db.GetArtistsByWhere(musicUrl.ToString(), filter, items, sorting);
@@ -177,7 +179,7 @@ namespace XFILE
           if (!songPlaylist.SaveAsJson(xsp, false))
             return false;
         }
-        musicUrl.AddOption("xsp", xsp);
+        musicUrl.AddOption(option, xsp);
 
         CDatabase::Filter dbfilter;
         success = db.GetSongsByWhere(musicUrl.ToString(), dbfilter, items, sorting);
@@ -205,7 +207,7 @@ namespace XFILE
           if (!mvidPlaylist.SaveAsJson(xsp, false))
             return false;
         }
-        videoUrl.AddOption("xsp", xsp);
+        videoUrl.AddOption(option, xsp);
         
         CFileItemList items2;
         success2 = db.GetSortedVideos(MediaTypeMusicVideo, videoUrl.ToString(), sorting, items2);

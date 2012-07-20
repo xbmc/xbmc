@@ -9400,5 +9400,16 @@ bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
     }
   }
 
+  option = options.find("filter");
+  if (option != options.end())
+  {
+    CSmartPlaylist xspFilter;
+    if (!xspFilter.LoadFromJson(option->second.asString()))
+      return false;
+
+    std::set<CStdString> playlists;
+    filter.AppendWhere(xspFilter.GetWhereClause(*this, playlists));
+  }
+
   return true;
 }
