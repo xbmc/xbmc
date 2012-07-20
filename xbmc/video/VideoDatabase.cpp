@@ -8788,13 +8788,13 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   return items.Size() > 0;
 }
 
-bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) const
+bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
 {
   if (!videoUrl.IsValid())
     return false;
 
   std::string type = videoUrl.GetType();
-  std::string itemType = videoUrl.GetItemType();
+  std::string itemType = ((const CVideoDbUrl &)videoUrl).GetItemType();
   const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
   CUrlOptions::UrlOptions::const_iterator option;
 
@@ -9172,14 +9172,4 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
   }
 
   return true;
-}
-
-bool CVideoDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CVideoDbUrl &videoUrl)
-{
-  // parse the base path to get additional filters
-  videoUrl.Reset();
-  if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, filter))
-    return false;
-
-  return CDatabase::BuildSQL(strQuery, filter, strSQL);
 }

@@ -30,6 +30,7 @@
 #include "utils/URIUtils.h"
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
+#include "DbUrl.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -697,4 +698,14 @@ bool CDatabase::BuildSQL(const CStdString &strQuery, const Filter &filter, CStdS
     strSQL += " LIMIT " + filter.limit;
 
   return true;
+}
+
+bool CDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl)
+{
+  // parse the base path to get additional filters
+  dbUrl.Reset();
+  if (!dbUrl.FromString(strBaseDir) || !GetFilter(dbUrl, filter))
+    return false;
+
+  return BuildSQL(strQuery, filter, strSQL);
 }

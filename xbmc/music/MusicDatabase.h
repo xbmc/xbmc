@@ -265,7 +265,7 @@ public:
    */
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
 
-  bool GetFilter(const CMusicDbUrl &musicUrl, Filter &filter);
+  virtual bool GetFilter(const CDbUrl &musicUrl, Filter &filter);
 
 protected:
   std::map<CStdString, int> m_artistCache;
@@ -390,6 +390,4 @@ private:
 
   void AnnounceRemove(std::string content, int id);
   void AnnounceUpdate(std::string content, int id);
-
-  bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CMusicDbUrl &musicUrl);
 };

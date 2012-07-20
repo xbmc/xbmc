@@ -677,7 +677,7 @@ public:
   void AddTagToItem(int idItem, int idTag, const std::string &type);
   void RemoveTagFromItem(int idItem, int idTag, const std::string &type);
 
-  bool GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) const;
+  virtual bool GetFilter(const CDbUrl &videoUrl, Filter &filter);
 
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
@@ -817,6 +817,4 @@ private:
 
   void AnnounceRemove(std::string content, int id);
   void AnnounceUpdate(std::string content, int id);
-
-  bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CVideoDbUrl &videoUrl);
 };
