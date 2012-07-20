@@ -183,8 +183,11 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     }
   }
 
+  /* to collect timer with changed starting time */
+  vector<CPVRTimerInfoTag *> timersToMove;
+  
   /* check for deleted timers */
-  for (map<CDateTime, vector<CPVRTimerInfoTag *>* >::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
+  for (map<CDateTime, vector<CPVRTimerInfoTag *>* >::iterator it = m_tags.begin(); it != m_tags.end();)
   {
     vector<CPVRTimerInfoTag*> *entry = it->second;
     for (int iTagPtr = entry->size() - 1; iTagPtr >= 0; iTagPtr--)
@@ -192,7 +195,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
       CPVRTimerInfoTag *timer = entry->at(iTagPtr);
       if (!timer)
         continue;
-
+        
       if (timers->GetByClient(timer->m_iClientId, timer->m_iClientIndex) == NULL)
       {
         /* timer was not found */
@@ -209,12 +212,49 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
         delete entry->at(iTagPtr);
         entry->erase(entry->begin() + iTagPtr);
 
-        if (entry->size() == 0)
-          m_tags.erase(it++);
+        bChanged = true;
+        bAddedOrDeleted = true;
+      }
+      else if (timer->StartAsUTC() != it->first)
+      {
+        /* timer start has changed */
+        CLog::Log(LOGDEBUG,"PVRTimers - %s - changed start time timer %d on client %d",
+            __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
+                    
+        /* remember timer */
+        timersToMove.push_back(entry->at(iTagPtr));
+        
+        /* remove timer for now, reinsert later */
+        entry->erase(entry->begin() + iTagPtr);
+
         bChanged = true;
         bAddedOrDeleted = true;
       }
     }
+    if (entry->size() == 0)
+      m_tags.erase(it++);
+    else
+      ++it;
+  }
+
+  /* reinsert timers with changed timer start */
+  for (unsigned int iTagPtr = 0; iTagPtr < timersToMove.size(); iTagPtr++)
+  {
+      CPVRTimerInfoTag *timer = timersToMove.at(iTagPtr);
+      
+      vector<CPVRTimerInfoTag *>* addEntry = NULL;
+      map<CDateTime, vector<CPVRTimerInfoTag *>* >::iterator itr = m_tags.find(timer->StartAsUTC());
+      if (itr == m_tags.end())
+      {
+        addEntry = new vector<CPVRTimerInfoTag *>;
+        m_tags.insert(make_pair(timer->StartAsUTC(), addEntry));
+      }
+      else
+      {
+        addEntry = itr->second;
+      }
+
+      addEntry->push_back(timer);
   }
 
   m_bIsUpdating = false;
