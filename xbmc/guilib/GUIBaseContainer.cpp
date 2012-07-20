@@ -59,6 +59,7 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_layout = NULL;
   m_focusedLayout = NULL;
   m_cacheItems = preloadItems;
+  m_scrollItemsPerFrame = 0.0f;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -294,24 +295,33 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_NAV_BACK:
     {
       if (!HasFocus()) return false;
+
       if (action.GetHoldTime() > HOLD_TIME_START &&
         ((m_orientation == VERTICAL && (action.GetID() == ACTION_MOVE_UP || action.GetID() == ACTION_MOVE_DOWN)) ||
          (m_orientation == HORIZONTAL && (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
         float speed = std::min(1.0f, (float)(action.GetHoldTime() - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
-        unsigned int itemsPerFrame = 1;
-        if (m_lastHoldTime) // number of rows/10 items/second max speed
-          itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (CTimeUtils::GetFrameTime() - m_lastHoldTime)));
+        unsigned int frameDuration = CTimeUtils::GetFrameTime() - m_lastHoldTime;
+
+        //scrollrate is minimum 4 items/sec and max rows/10 items/sec
+        m_scrollItemsPerFrame += std::max(0.004f*(float)frameDuration, (float)(speed * 0.0001f * GetRows() * frameDuration));
         m_lastHoldTime = CTimeUtils::GetFrameTime();
+
+        if(m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
+          return true;
+
         if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_UP)
-          while (itemsPerFrame--) MoveUp(false);
+          while (m_scrollItemsPerFrame-- >= 1) MoveUp(false);
         else
-          while (itemsPerFrame--) MoveDown(false);
+          while (m_scrollItemsPerFrame-- >= 1) MoveDown(false);
         return true;
       }
       else
       {
-        m_lastHoldTime = 0;
+        //if HOLD_TIME_START is reached we need
+        //a sane initial value for calculating m_scrollItemsPerPage
+        m_lastHoldTime = CTimeUtils::GetFrameTime();
+        m_scrollItemsPerFrame = 0.0f;
         return CGUIControl::OnAction(action);
       }
     }
