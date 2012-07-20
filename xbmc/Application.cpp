@@ -2478,10 +2478,23 @@ bool CApplication::OnKey(const CKey& key)
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
-  //  Play a sound based on the action
-  g_audioManager.PlayActionSound(action);
+  bool bResult = false;
 
-  return OnAction(action);
+  // play sound before the action unless the button is held, 
+  // where we execute after the action as held actions aren't fired every time.
+  if(action.GetHoldTime())
+  {
+    bResult = OnAction(action);
+    if(bResult)
+      g_audioManager.PlayActionSound(action);
+  }
+  else
+  {
+    g_audioManager.PlayActionSound(action);
+    bResult = OnAction(action);
+  }
+
+  return bResult;
 }
 
 // OnAppCommand is called in response to a XBMC_APPCOMMAND event.
@@ -3308,8 +3321,23 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, actionID, actionName, fullRange))
    {
      CAction action(actionID, fAmount, 0.0f, actionName, holdTime);
-     g_audioManager.PlayActionSound(action);
-     return OnAction(action);
+     bool bResult = false;
+
+     // play sound before the action unless the button is held, 
+     // where we execute after the action as held actions aren't fired every time.
+     if(action.GetHoldTime())
+     {
+       bResult = OnAction(action);
+       if(bResult)
+         g_audioManager.PlayActionSound(action);
+     }
+     else
+     {
+       g_audioManager.PlayActionSound(action);
+       bResult = OnAction(action);
+     }
+
+     return bResult;
    }
    else
    {
