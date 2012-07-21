@@ -83,7 +83,6 @@ namespace PVR
     CGUIWindowPVRSearch *    m_windowSearch;
     CGUIWindowPVRTimers *    m_windowTimers;
 
-    bool                     m_bViewsCreated;
     CCriticalSection         m_critSection;
   };
 }
