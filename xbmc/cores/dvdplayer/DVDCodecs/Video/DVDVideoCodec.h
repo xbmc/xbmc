@@ -214,6 +214,7 @@ public:
     FILTER_DEINTERLACE_ANY     =  0xf,  /* use any deinterlace mode */
     FILTER_DEINTERLACE_FLAGGED = 0x10,  /* only deinterlace flagged frames */
     FILTER_DEINTERLACE_HALFED  = 0x20,  /* do half rate deinterlacing */
+    FILTER_ROTATE              = 0x40,  /* rotate image according to the codec hints */
   };
 
   /*

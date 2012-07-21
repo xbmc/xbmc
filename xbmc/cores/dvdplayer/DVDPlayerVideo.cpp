@@ -526,6 +526,9 @@ void CDVDPlayerVideo::Process()
         if (mDeintMode == VS_DEINTERLACEMODE_AUTO && mFilters)
           mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
       }
+      
+      if (!g_renderManager.Supports(RENDERFEATURE_ROTATION))
+        mFilters |= CDVDVideoCodec::FILTER_ROTATE;
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
 

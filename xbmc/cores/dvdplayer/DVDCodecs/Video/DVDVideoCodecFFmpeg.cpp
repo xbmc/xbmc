@@ -366,6 +366,24 @@ unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
   if(m_pHardware)
     return 0;
 
+  if(flags & FILTER_ROTATE)
+  {
+    switch(m_iOrientation)
+    {
+      case 90:
+        m_filters_next += "transpose=1";
+        break;
+      case 180:
+        m_filters_next += "vflip,hflip";
+        break;
+      case 270:  
+        m_filters_next += "transpose=2";
+        break;
+      default:
+        break;
+      }
+  }
+
   if(flags & FILTER_DEINTERLACE_YADIF)
   {
     if(flags & FILTER_DEINTERLACE_HALFED)
