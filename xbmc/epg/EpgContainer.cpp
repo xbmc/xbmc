@@ -482,6 +482,14 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   if (!m_bIgnoreDbForClient && !m_database.IsOpen())
   {
     CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
+
+    CSingleLock lock(m_critSection);
+    m_bIsUpdating = false;
+    m_updateEvent.Set();
+
+    if (bShowProgress && !bOnlyPending)
+      CloseProgressDialog();
+
     return false;
   }
 
