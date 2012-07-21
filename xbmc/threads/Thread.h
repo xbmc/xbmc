@@ -64,7 +64,7 @@ public:
   bool SetPrioritySched_RR(int iPriority);
   bool IsAutoDelete() const;
   virtual void StopThread(bool bWait = true);
-  bool IsRunning();
+  bool IsRunning() const;
 
   // -----------------------------------------------------------------------------------
   // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
