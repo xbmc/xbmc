@@ -439,16 +439,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         if (CWIN32Util::GetFocussedProcess(procfile))
           CLog::Log(LOGDEBUG, __FUNCTION__": Focus switched to process %s", procfile.c_str());
       }
-      if(GetForegroundWindow() == hWnd)
-      {
-        CLog::Log(LOGDEBUG, __FUNCTION__": Got Focus, deactivating system screensaver");
-        g_Windowing.EnableSystemScreenSaver(false);
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, __FUNCTION__": Lost Focus, activating system screensaver");
-        g_Windowing.EnableSystemScreenSaver(true);
-      }
       break;
     case WM_SYSKEYDOWN:
       switch (wParam)
