@@ -56,7 +56,8 @@ enum ERENDERFEATURE
   RENDERFEATURE_CONTRAST,
   RENDERFEATURE_NOISE,
   RENDERFEATURE_SHARPNESS,
-  RENDERFEATURE_NONLINSTRETCH
+  RENDERFEATURE_NONLINSTRETCH,
+  RENDERFEATURE_ROTATION
 };
 
 struct DVDVideoPicture;
@@ -76,6 +77,8 @@ public:
   virtual void Flush() {};
 
   virtual unsigned int GetProcessorSize() { return 0; }
+
+  virtual bool Supports(ERENDERFEATURE feature) { return false; }
 
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }

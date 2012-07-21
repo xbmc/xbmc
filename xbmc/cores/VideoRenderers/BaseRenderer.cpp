@@ -265,6 +265,16 @@ inline void CBaseRenderer::ReorderDrawPoints()
       changeAspect = true;
       break;
   }
+  
+  // if renderer doesn't support rotation
+  // treat orientation as 0 degree so that
+  // ffmpeg might handle it.
+  if (!Supports(RENDERFEATURE_ROTATION))
+  {
+    pointOffset = 0;
+    changeAspect = false;
+  }
+  
 
   int diff = (m_destRect.Height() - m_destRect.Width()) / 2;
 
