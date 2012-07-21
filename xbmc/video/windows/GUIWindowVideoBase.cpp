@@ -511,7 +511,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       if (needsRefresh)
       {
         bHasInfo = true;
-        if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO)
+        if (!info->IsNoop() && (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO))
         {
           if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
           {
