@@ -140,6 +140,7 @@ public:
   bool IsParentFolder() const;
   bool IsFileFolder() const;
   bool IsRemovable() const;
+  bool IsSpotify() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
   bool IsHDHomeRun() const;

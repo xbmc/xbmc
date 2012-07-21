@@ -900,6 +900,16 @@ bool CFileItem::IsRemovable() const
   return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
+bool CFileItem::IsSpotify() const
+{
+  if (URIUtils::GetExtension(m_strPath).Equals(".spotify", false))
+    return true;
+  CStdString extension = m_strPath.Right(m_strPath.GetLength() - m_strPath.Find('.') - 1);
+  if (extension.Left(12) == "spotifyradio")
+    return true;
+  return false;
+}
+
 bool CFileItem::IsReadOnly() const
 {
   if (IsParentFolder()) return true;
