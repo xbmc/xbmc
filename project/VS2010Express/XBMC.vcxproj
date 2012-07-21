@@ -1265,6 +1265,9 @@
     <ClCompile Include="..\..\xbmc\utils\StringUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\test\TestAlarmClock.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\test\TestAliasShortcutUtils.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\test\TestArchive.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TuxBoxUtil.cpp" />

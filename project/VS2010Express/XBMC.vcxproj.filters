@@ -265,6 +265,9 @@
     <Filter Include="test">
       <UniqueIdentifier>{18ab66ab-877f-4d79-a963-c3b0865781e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils\test">
+      <UniqueIdentifier>{216a634b-e689-418c-aca8-a3abbd2c0387}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2785,6 +2788,15 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\test\xbmc-test.cpp">
       <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\TestAlarmClock.cpp">
+      <Filter>utils\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\TestAliasShortcutUtils.cpp">
+      <Filter>utils\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\TestArchive.cpp">
+      <Filter>utils\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
