@@ -746,7 +746,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   // Add the list of disc stub extensions (if any) to the list of video extensions
   if (!m_discStubExtensions.IsEmpty())
- 	g_settings.m_videoExtensions += "|" + m_discStubExtensions;
+    g_settings.m_videoExtensions += "|" + m_discStubExtensions;
 
   // Default players?
   CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.m_videoDefaultDVDPlayer.c_str());

@@ -620,7 +620,7 @@ bool CRenderSystemDX::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
-  DWORD oldStatus = m_nDeviceStatus;
+  HRESULT oldStatus = m_nDeviceStatus;
   if (m_useD3D9Ex)
   {
     m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->CheckDeviceState(m_hDeviceWnd);

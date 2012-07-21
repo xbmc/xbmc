@@ -185,7 +185,7 @@ const CWebSocketFrame* CWebSocketV8::close(WebSocketCloseReason reason /* = WebS
     m_state = WebSocketStateClosed;
 
   CWebSocketFrame* frame = new CWebSocketFrame(WebSocketConnectionClose, data, length);
-  delete data;
+  delete[] data;
 
   return frame;
 }

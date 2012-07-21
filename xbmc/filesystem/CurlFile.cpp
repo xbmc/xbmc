@@ -1072,6 +1072,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1); 
 
   if(url2.GetProtocol() == "ftp")
   {
@@ -1101,6 +1102,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_RANGE, "0-0");
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1); 
     result = g_curlInterface.easy_perform(m_state->m_easyHandle);
   }
 
@@ -1150,6 +1152,19 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
         buffer->st_mode = _S_IFDIR;
       else
         buffer->st_mode = _S_IFREG;
+    }
+    long filetime;
+    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_FILETIME, &filetime))
+    {
+      CLog::Log(LOGWARNING, "%s - Cannot get curl filetime", __FUNCTION__);
+    }
+    else
+    {
+      if (filetime != -1)
+      {
+        CLog::Log(LOGDEBUG, "%s - curl filetime: %ld", __FUNCTION__, filetime);
+        buffer->st_mtime = filetime;
+      }
     }
   }
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);

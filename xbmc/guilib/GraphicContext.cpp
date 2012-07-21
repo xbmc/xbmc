@@ -280,14 +280,14 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
   if(m_bFullScreenRoot)
   {
     if(m_bFullScreenVideo)
-      g_graphicsContext.SetVideoResolution(g_renderManager.GetResolution());
+      SetVideoResolution(g_renderManager.GetResolution());
     else if(g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+      SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
     else
-      g_graphicsContext.SetVideoResolution(RES_DESKTOP);
+      SetVideoResolution(RES_DESKTOP);
   }
   else
-    g_graphicsContext.SetVideoResolution(RES_WINDOW);
+    SetVideoResolution(RES_WINDOW);
 #endif
 
   Unlock();
@@ -783,7 +783,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     uiRes = newRes;
 
 #if defined(HAS_VIDEO_PLAYBACK)
-    if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
+    if (IsFullScreenVideo() || IsCalibrating())
     {
       /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
       m_bFullScreenRoot = true;

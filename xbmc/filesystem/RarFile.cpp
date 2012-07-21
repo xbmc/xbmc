@@ -226,6 +226,14 @@ bool CRarFile::Open(const CURL& url)
 bool CRarFile::Exists(const CURL& url)
 {
   InitFromUrl(url);
+  
+  // First step:
+  // Make sure that the archive exists in the filesystem.
+  if (!CFile::Exists(m_strRarPath, false)) 
+    return false;
+
+  // Second step:
+  // Make sure that the requested file exists in the archive.
   bool bResult;
 
   if (!g_RarManager.IsFileInRar(bResult, m_strRarPath, m_strPathInRar))

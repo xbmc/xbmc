@@ -1197,7 +1197,8 @@ if test "x$use_airtunes" != "xno"; then
   if test "x$use_airtunes" != "xno"; then
     XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
     USE_AIRTUNES=1
-    AC_CHECK_MEMBERS(AudioOutput.ao_set_metadata AudioOutput.ao_set_metadata_coverart)
+    AC_CHECK_MEMBERS([struct AudioOutput.ao_set_metadata],,,
+                     [[#include <shairport/shairport.h>]])
   fi
 fi
 

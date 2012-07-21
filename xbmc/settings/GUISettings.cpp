@@ -456,7 +456,7 @@ void CGUISettings::Initialize()
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100+layout, layout));
   AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
-  AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
+  AddBool(ao, "audiooutput.normalizelevels", 346, false);
   AddBool(ao, "audiooutput.stereoupmix", 252, false);
 
 #if defined(TARGET_DARWIN_IOS)
