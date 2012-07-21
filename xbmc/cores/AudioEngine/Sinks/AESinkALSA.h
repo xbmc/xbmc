@@ -79,7 +79,7 @@ private:
   static bool OpenPCMDevice(const std::string &name, const std::string &params, int channels, snd_pcm_t **pcmp, snd_config_t *lconf, bool preferDmixStereo = false);
 
   static AEDeviceType AEDeviceTypeFromName(const std::string &name);
-  static void GetParamFromName(const std::string &name, const std::string &param, std::string &value);
+  static std::string GetParamFromName(const std::string &name, const std::string &param);
   static void EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config);
   static bool SoundDeviceExists(const std::string& device);
   static bool GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool& badHDMI);
