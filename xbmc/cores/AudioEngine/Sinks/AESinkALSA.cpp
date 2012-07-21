@@ -832,7 +832,7 @@ AEDeviceType CAESinkALSA::AEDeviceTypeFromName(const std::string &name)
 {
   if (name.substr(0, 4) == "hdmi")
     return AE_DEVTYPE_HDMI;
-  else if (name.substr(0, 6) == "iec958")
+  else if (name.substr(0, 6) == "iec958" || name.substr(0, 5) == "spdif")
     return AE_DEVTYPE_IEC958;
 
   return AE_DEVTYPE_PCM;
