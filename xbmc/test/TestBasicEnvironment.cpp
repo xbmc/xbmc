@@ -52,7 +52,7 @@ void TestBasicEnvironment::SetUp()
   if (!GetTempPath(MAX_PATH, lpTempPathBuffer))
     SetUpError();
   xbmcTempPath = lpTempPathBuffer;
-  if (!GetTempFileName(xbmcTempPath.c_str(), "xbmctempdir", 0, lpTempPathBuffer))
+  if (!GetTempFileName(xbmcTempPath.c_str(), "xbmctempdir", 1, lpTempPathBuffer))
     SetUpError();
   if (!CreateDirectory(lpTempPathBuffer, NULL))
     SetUpError();
