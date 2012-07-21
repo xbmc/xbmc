@@ -131,6 +131,11 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 // return value: 0 - success; 1 - no result; skip; 2 - error
 int CNfoFile::Scrape(ScraperPtr& scraper)
 {
+  if (scraper->IsNoop())
+  {
+    m_scurl = CScraperUrl();
+    return 0;
+  }
   if (scraper->Type() != m_type)
     return 1;
   scraper->ClearCache();

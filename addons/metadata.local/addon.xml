@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.local"
+       name="Local information only"
+       version="1.0.0"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.albums"
+             language="multi"
+             library="local.xml"/>
+  <extension point="xbmc.metadata.scraper.artists"
+             language="multi"
+             library="local.xml"/>
+  <extension point="xbmc.metadata.scraper.musicvideos"
+             language="multi"
+             library="local.xml"/>
+  <extension point="xbmc.metadata.scraper.tvshows"
+             language="multi"
+             library="local.xml"/>
+  <extension point="xbmc.metadata.scraper.movies"
+             language="multi"
+             library="local.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Local Infomation only pseudo-scraper</summary>
+    <description lang="en">Use local information only</description>
+    <platform>all</platform>
+  </extension>
+</addon>
