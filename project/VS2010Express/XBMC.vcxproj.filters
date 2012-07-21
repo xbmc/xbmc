@@ -262,6 +262,9 @@
     <Filter Include="dbwrappers">
       <UniqueIdentifier>{5c7ad2df-b46d-4a29-ae17-3406fe73edde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{18ab66ab-877f-4d79-a963-c3b0865781e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2773,6 +2776,15 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\MusicDbUrl.cpp">
       <Filter>music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestBasicEnvironment.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestUtils.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\xbmc-test.cpp">
+      <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5556,6 +5568,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h">
       <Filter>music</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\xbmc\test\TestBasicEnvironment.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\test\TestUtils.h">
+      <Filter>test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

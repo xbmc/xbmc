@@ -32,7 +32,7 @@
 
 void TestBasicEnvironment::SetUp()
 {
-  char buf[MAX_PATH], *tmp;
+  char *tmp;
   CStdString xbmcTempPath;
   XFILE::CFile *f;
 
@@ -48,15 +48,17 @@ void TestBasicEnvironment::SetUp()
    * test suite run.
    */
 #ifndef _LINUX
-  if (!GetTempPath(buf, sizeof(buf)))
+  TCHAR lpTempPathBuffer[MAX_PATH];
+  if (!GetTempPath(MAX_PATH, lpTempPathBuffer))
     SetUpError();
-  xbmcTempPath = buf;
-  if (!GetTempFileName(xbmcTempPath.c_str(), "xbmctempdir", 0, buf))
+  xbmcTempPath = lpTempPathBuffer;
+  if (!GetTempFileName(xbmcTempPath.c_str(), "xbmctempdir", 0, lpTempPathBuffer))
     SetUpError();
-  if (!CreateDirectory(buf, NULL))
+  if (!CreateDirectory(lpTempPathBuffer, NULL))
     SetUpError();
-  CSpecialProtocol::SetTempPath(buf);
+  CSpecialProtocol::SetTempPath(lpTempPathBuffer);
 #else
+  char buf[MAX_PATH];
   (void)xbmcTempPath;
   strcpy(buf, "/tmp/xbmctempdirXXXXXX");
   if ((tmp = mkdtemp(buf)) == NULL)
