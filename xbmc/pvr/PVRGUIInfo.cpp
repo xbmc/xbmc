@@ -810,10 +810,8 @@ int CPVRGUIInfo::GetStartTime(void) const
 void CPVRGUIInfo::ResetPlayingTag(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_playingEpgTag)
-    delete m_playingEpgTag;
-  m_playingEpgTag = NULL;
-  m_iDuration     = 0;
+  SAFE_DELETE(m_playingEpgTag);
+  m_iDuration = 0;
 }
 
 bool CPVRGUIInfo::GetPlayingTag(CEpgInfoTag &tag) const

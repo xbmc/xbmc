@@ -85,11 +85,11 @@ void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_addons)        delete m_addons;        m_addons = NULL;
-  if (m_guiInfo)       delete m_guiInfo;       m_guiInfo = NULL;
-  if (m_timers)        delete m_timers;        m_timers = NULL;
-  if (m_recordings)    delete m_recordings;    m_recordings = NULL;
-  if (m_channelGroups) delete m_channelGroups; m_channelGroups = NULL;
+  if (m_addons)        SAFE_DELETE(m_addons);
+  if (m_guiInfo)       SAFE_DELETE(m_guiInfo);
+  if (m_timers)        SAFE_DELETE(m_timers);
+  if (m_recordings)    SAFE_DELETE(m_recordings);
+  if (m_channelGroups) SAFE_DELETE(m_channelGroups);
   m_triggerEvent.Set();
 
   m_currentFile           = NULL;
@@ -738,11 +738,7 @@ void CPVRManager::CloseStream(void)
   }
 
   m_addons->CloseStream();
-  if (m_currentFile)
-  {
-    delete m_currentFile;
-    m_currentFile = NULL;
-  }
+  SAFE_DELETE(m_currentFile);
 }
 
 void CPVRManager::UpdateCurrentFile(void)
@@ -849,11 +845,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
   if (!bPreview)
     SaveCurrentChannelSettings();
 
-  if (m_currentFile)
-  {
-    delete m_currentFile;
-    m_currentFile = NULL;
-  }
+  SAFE_DELETE(m_currentFile);
 
   lock.Leave();
 
