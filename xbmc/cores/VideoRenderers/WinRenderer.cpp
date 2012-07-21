@@ -1034,6 +1034,12 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
   if(feature == RENDERFEATURE_CONTRAST)
     return true;
 
+  if(feature == RENDERFEATURE_ROTATION)
+  {
+    if (m_renderMethod != RENDER_DXVA)
+      return true;
+  }
+
   return false;
 }
 

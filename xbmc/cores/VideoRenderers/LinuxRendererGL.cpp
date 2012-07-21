@@ -3162,6 +3162,9 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
       return true;
   }
 
+  if (feature == RENDERFEATURE_ROTATION)
+    return true;
+
   return false;
 }
 

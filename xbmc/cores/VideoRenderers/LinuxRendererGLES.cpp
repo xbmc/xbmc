@@ -1821,6 +1821,9 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
   if (feature == RENDERFEATURE_NONLINSTRETCH)
     return false;
 
+  if (feature == RENDERFEATURE_ROTATION)
+    return true;
+
   return false;
 }
 
