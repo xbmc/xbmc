@@ -768,10 +768,8 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
        && it1->m_displayNameExtra == it2->m_displayNameExtra)
       {
         /* something needs to be done */
-        std::string cardString1;
-        std::string cardString2;
-        GetParamFromName(it1->m_deviceName, "CARD", cardString1);
-        GetParamFromName(it2->m_deviceName, "CARD", cardString2);
+        std::string cardString1 = GetParamFromName(it1->m_deviceName, "CARD");
+        std::string cardString2 = GetParamFromName(it2->m_deviceName, "CARD");
 
         if (cardString1 != cardString2)
         {
@@ -781,10 +779,8 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
           continue;
         }
 
-        std::string devString1;
-        std::string devString2;
-        GetParamFromName(it1->m_deviceName, "DEV", devString1);
-        GetParamFromName(it2->m_deviceName, "DEV", devString2);
+        std::string devString1 = GetParamFromName(it1->m_deviceName, "DEV");
+        std::string devString2 = GetParamFromName(it2->m_deviceName, "DEV");
 
         if (devString1 != devString2)
         {
@@ -806,8 +802,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
   {
     for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
     {
-      std::string cardString;
-      GetParamFromName(itl->m_deviceName, "CARD", cardString);
+      std::string cardString = GetParamFromName(itl->m_deviceName, "CARD");
       if (cardString == *it)
         /* "HDA NVidia (NVidia)", "HDA NVidia (NVidia_2)", ... */
         itl->m_displayName += " (" + cardString + ")";
@@ -820,12 +815,10 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
     for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
     {
       std::string baseName = itl->m_deviceName.substr(0, itl->m_deviceName.find(':'));
-      std::string cardString;
-      GetParamFromName(itl->m_deviceName, "CARD", cardString);
+      std::string cardString = GetParamFromName(itl->m_deviceName, "CARD");
       if (baseName == it->first && cardString == it->second)
       {
-        std::string devString;
-        GetParamFromName(itl->m_deviceName, "DEV", devString);
+        std::string devString = GetParamFromName(itl->m_deviceName, "DEV");
         /* "HDMI #0", "HDMI #1" ... */
         itl->m_displayNameExtra += " #" + devString;
       }
@@ -833,19 +826,17 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
   }
 }
 
-void CAESinkALSA::GetParamFromName(const std::string &name, const std::string &param, std::string &value)
+std::string CAESinkALSA::GetParamFromName(const std::string &name, const std::string &param)
 {
-  /* name = "hdmi:CARD=x,DEV=y" param = "CARD" => value = "x" */
+  /* name = "hdmi:CARD=x,DEV=y" param = "CARD" => return "x" */
   size_t parPos = name.find(param + '=');
   if (parPos != std::string::npos)
   {
     parPos += param.size() + 1;
-    value = name.substr(parPos, name.find_first_of(",'\"", parPos)-parPos);
+    return name.substr(parPos, name.find_first_of(",'\"", parPos)-parPos);
   }
-  else
-  {
-    value = "";
-  }
+
+  return "";
 }
 
 void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config)
