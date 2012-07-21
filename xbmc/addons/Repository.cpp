@@ -92,19 +92,24 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
   CSingleLock lock(m_critSection);
   CFile file;
   file.Open(url);
-  CStdString checksum;
   try
   {
-    char* temp = new char[(size_t)file.GetLength()+1];
-    file.Read(temp,file.GetLength());
-    temp[file.GetLength()] = 0;
-    checksum = temp;
-    delete[] temp;
+    // we intentionally avoid using file.GetLength() since
+    // some http servers returns 0
+    std::stringstream str;
+    char temp[1024];
+    int read;
+    while ((read=file.Read(temp,1023)) > 0)
+    {
+      temp[read] = 0;
+      str << temp;
+    }
+    return str.str();
   }
   catch (...)
   {
+    return "";
   }
-  return checksum;
 }
 
 CStdString CRepository::GetAddonHash(const AddonPtr& addon)
