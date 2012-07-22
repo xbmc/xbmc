@@ -647,3 +647,10 @@ void CEpgContainer::SetHasPendingUpdates(bool bHasPendingUpdates /* = true */)
   CSingleLock lock(m_critSection);
   m_bHasPendingUpdates = bHasPendingUpdates;
 }
+
+void CEpgContainer::ClearTimerTag(int iEpgId, const CDateTime &startTime)
+{
+  CEpg *table = GetById(iEpgId);
+  if (table)
+    table->ClearTimerTag(startTime);
+}

@@ -112,7 +112,7 @@ namespace PVR
 
     static CPVRTimerInfoTag *CreateFromEpg(const EPG::CEpgInfoTag &tag);
     void SetEpgInfoTag(EPG::CEpgInfoTag *tag);
-    EPG::CEpgInfoTag *GetEpgInfoTag(void) const;
+    CFileItemPtr GetEpgInfoTag(void) const;
 
     int ChannelNumber(void) const;
     CStdString ChannelName(void) const;
@@ -170,6 +170,8 @@ namespace PVR
      * @brief Called by the CEpgInfoTag destructor
      */
     virtual void OnEpgTagDeleted(void);
+
+    void ClearEpgTag(void);
 
     CCriticalSection      m_critSection;
     int                   m_iEpgId;    /*!< the id of the epg table or -1 if none */

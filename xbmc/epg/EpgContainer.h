@@ -224,6 +224,8 @@ namespace EPG
 
     bool PersistTables(void);
 
+    void ClearTimerTag(int iEpgId, const CDateTime &startTime);
+
   protected:
     /*!
      * @brief Load the EPG settings.

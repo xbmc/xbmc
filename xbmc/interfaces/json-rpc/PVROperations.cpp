@@ -173,19 +173,22 @@ JSONRPC_STATUS CPVROperations::ScheduleRecording(const CStdString &method, ITran
   }
 
   int iEpgId     = (int)parameterObject["epgid"].asInteger();
-  int iUniqueId  = (int)parameterObject["uniqueid"].asInteger();
   int iStartTime = (int)parameterObject["starttime"].asInteger();
 
-  if (iEpgId > 0 && iUniqueId > 0 && iStartTime > 0)
+  if (iEpgId > 0 && iStartTime > 0)
   {
     CDateTime startTime(iStartTime);
-    CEpgInfoTag *tag = g_EpgContainer.GetById(iEpgId)->GetTag(iUniqueId, startTime);
+    CFileItemPtr tag = g_EpgContainer.GetById(iEpgId)->GetTag(startTime);
 
-    if (tag && tag->HasPVRChannel())
+    if (tag && tag->HasEPGInfoTag() && tag->GetEPGInfoTag()->HasPVRChannel())
     {
-      CLog::Log(LOGDEBUG, "JSONRPC: schedule recording - channel: '%s' start: '%s' end: '%s'", tag->PVRChannelName().c_str(), tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str(), tag->EndAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+      CEpgInfoTag *epgTag = tag->GetEPGInfoTag();
+      CLog::Log(LOGDEBUG, "JSONRPC: schedule recording - channel: '%s' start: '%s' end: '%s'",
+          epgTag->PVRChannelName().c_str(),
+          epgTag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str(),
+          epgTag->EndAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
 
-      CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
+      CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
       bool bCreated = (newTimer != NULL);
       bool bAdded = false;
 

@@ -270,16 +270,18 @@ bool CEpg::CheckPlayingEvent(void)
   return bReturn;
 }
 
-CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const // TODO remove uid param
+CFileItemPtr CEpg::GetTag(const CDateTime &StartTime) const
 {
-  CEpgInfoTag *returnTag = NULL;
-
   CSingleLock lock(m_critSection);
   map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.find(StartTime);
   if (it != m_tags.end())
-    returnTag = it->second;
+  {
+    CFileItemPtr fileItem(new CFileItem(*it->second));
+    return fileItem;
+  }
 
-  return returnTag;
+  CFileItemPtr fileItem;
+  return fileItem;
 }
 
 const CEpgInfoTag *CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const
@@ -964,4 +966,12 @@ bool CEpg::UpdatePending(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bUpdatePending;
+}
+
+void CEpg::ClearTimerTag(const CDateTime &startTime)
+{
+  CSingleLock lock(m_critSection);
+  map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.find(startTime);
+  if (it != m_tags.end())
+    it->second->OnTimerDeleted();
 }

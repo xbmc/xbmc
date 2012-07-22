@@ -40,6 +40,7 @@ namespace EPG
   class CEpg : public Observable
   {
     friend class CEpgDatabase;
+    friend class CEpgInfoTag;
 
   public:
     /*!
@@ -207,7 +208,7 @@ namespace EPG
      * @param beginTime The start time in UTC of the event to find if it wasn't found by it's unique ID.
      * @return The found tag or NULL if it wasn't found.
      */
-    virtual CEpgInfoTag *GetTag(int uniqueID, const CDateTime &beginTime) const;
+    CFileItemPtr GetTag(const CDateTime &beginTime) const;
 
     /*!
      * @brief Update an entry in this EPG.
@@ -298,6 +299,7 @@ namespace EPG
 
     virtual size_t Size(void) const { return m_tags.size(); }
 
+    void ClearTimerTag(const CDateTime &startTime);
   protected:
     CEpg(void);
 

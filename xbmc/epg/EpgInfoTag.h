@@ -419,7 +419,6 @@ namespace EPG
      * @return True if something changed, false otherwise.
      */
     virtual bool Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId = true);
-
   protected:
     /*!
      * @brief Hook that is called when the start date changed.
