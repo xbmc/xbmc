@@ -29,7 +29,7 @@
 #include "music/Album.h"
 #include "music/Song.h"
 #include "music/Artist.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
@@ -415,7 +415,7 @@ JSONRPC_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *tr
   else
     cmd.Format("updatelibrary(music, %s)", directory.c_str());
 
-  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;
 }
 
@@ -429,13 +429,13 @@ JSONRPC_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *
       parameterObject["options"]["images"].asBoolean() ? "true" : "false",
       parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false");
 
-  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;
 }
 
 JSONRPC_STATUS CAudioLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().ExecBuiltIn("cleanlibrary(music)");
+  CApplicationMessenger::Get().ExecBuiltIn("cleanlibrary(music)");
   return ACK;
 }
 

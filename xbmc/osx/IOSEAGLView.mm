@@ -30,6 +30,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "WindowingFactory.h"
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
@@ -346,7 +347,7 @@
     if (!g_application.m_bStop)
     {
       ThreadMessage tMsg = {TMSG_QUIT};
-      g_application.getApplicationMessenger().SendMessage(tMsg);
+      CApplicationMessenger::Get().SendMessage(tMsg);
     }
     // wait for animation thread to die
     if ([animationThread isFinished] == NO)

@@ -29,7 +29,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "input/MouseStat.h"
 #include "windowing/WindowingFactory.h"
 #include "video/VideoReferenceClock.h"
@@ -212,7 +212,7 @@ extern NSString* kBRScreenSaverDismissed;
       case UIGestureRecognizerStateBegan:  
       break;
       case UIGestureRecognizerStateChanged:
-        g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_ZOOM, 0, (float)point.x, (float)point.y, 
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_ZOOM, 0, (float)point.x, (float)point.y, 
           currentPinchScale, 0), WINDOW_INVALID,false);    
       break;
       case UIGestureRecognizerStateEnded:
@@ -259,12 +259,12 @@ extern NSString* kBRScreenSaverDismissed;
       {
         if( !touchBeginSignaled )
         {
-          g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_BEGIN, 0, (float)point.x, (float)point.y, 
+          CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_BEGIN, 0, (float)point.x, (float)point.y, 
                                                             0, 0), WINDOW_INVALID,false);
           touchBeginSignaled = true;
         }    
         
-        g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_PAN, 0, (float)point.x, (float)point.y,
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_PAN, 0, (float)point.x, (float)point.y,
                                                           xMovement, yMovement), WINDOW_INVALID,false);
         lastGesturePoint = point;
       }
@@ -274,7 +274,7 @@ extern NSString* kBRScreenSaverDismissed;
     {
       CGPoint velocity = [sender velocityInView:m_glView];
       //signal end of pan - this will start inertial scrolling with deacceleration in CApplication
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_END, 0, (float)velocity.x, (float)velocity.y, (int)lastGesturePoint.x, (int)lastGesturePoint.y),WINDOW_INVALID,false);
+      CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_END, 0, (float)velocity.x, (float)velocity.y, (int)lastGesturePoint.x, (int)lastGesturePoint.y),WINDOW_INVALID,false);
       touchBeginSignaled = false;
     }
   }

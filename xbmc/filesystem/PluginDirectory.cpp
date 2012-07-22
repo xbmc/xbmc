@@ -38,7 +38,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 
 using namespace XFILE;
 using namespace std;
@@ -539,7 +539,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
   }
   if (progressBar)
-    g_application.getApplicationMessenger().Close(progressBar, false, false);
+    CApplicationMessenger::Get().Close(progressBar, false, false);
 
   return !m_cancelled && m_success;
 }

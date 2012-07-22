@@ -21,6 +21,7 @@
 
 #include "system.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "GUIWindowLoginScreen.h"
 #include "settings/GUIWindowSettingsProfile.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -228,7 +229,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     if (g_passwordManager.CheckLock(g_settings.GetMasterProfile().getLockMode(),g_settings.GetMasterProfile().getLockCode(),20075))
       g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
     else // be inconvenient
-      g_application.getApplicationMessenger().Shutdown();
+      CApplicationMessenger::Get().Shutdown();
 
     return true;
   }

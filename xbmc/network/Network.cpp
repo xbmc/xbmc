@@ -22,6 +22,7 @@
 #include "system.h"
 #include "Network.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "libscrobbler/lastfmscrobbler.h"
 #include "libscrobbler/librefmscrobbler.h"
 #include "utils/RssReader.h"
@@ -94,12 +95,12 @@ bool in_ether (const char *bufp, unsigned char *addr)
 
 CNetwork::CNetwork()
 {
-   g_application.getApplicationMessenger().NetworkMessage(SERVICES_UP, 0);
+  CApplicationMessenger::Get().NetworkMessage(SERVICES_UP, 0);
 }
 
 CNetwork::~CNetwork()
 {
-   g_application.getApplicationMessenger().NetworkMessage(SERVICES_DOWN, 0);
+  CApplicationMessenger::Get().NetworkMessage(SERVICES_DOWN, 0);
 }
 
 int CNetwork::ParseHex(char *str, unsigned char *addr)

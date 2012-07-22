@@ -21,7 +21,7 @@
  
 #include "threads/SystemClock.h"
 #include "GUIDialogCache.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/LocalizeStrings.h"
@@ -56,7 +56,7 @@ void CGUIDialogCache::Close(bool bForceClose)
   // we cannot wait for the app thread to process the close message
   // as this might happen during player startup which leads to a deadlock
   if (m_pDlg->IsDialogRunning())
-    g_application.getApplicationMessenger().Close(m_pDlg,bForceClose,false);
+    CApplicationMessenger::Get().Close(m_pDlg,bForceClose,false);
 
   //Set stop, this will kill this object, when thread stops  
   CThread::m_bStop = true;

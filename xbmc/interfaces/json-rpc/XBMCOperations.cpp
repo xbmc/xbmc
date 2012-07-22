@@ -20,7 +20,6 @@
  */
 
 #include "XBMCOperations.h"
-#include "Application.h"
 #include "ApplicationMessenger.h"
 #include "Util.h"
 #include "utils/Variant.h"
@@ -42,7 +41,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITranspo
 
   if (info.size() > 0)
   {
-    std::vector<CStdString> infoLabels = g_application.getApplicationMessenger().GetInfoLabels(info);
+    std::vector<CStdString> infoLabels = CApplicationMessenger::Get().GetInfoLabels(info);
     for (unsigned int i = 0; i < info.size(); i++)
     {
       if (i >= infoLabels.size())
@@ -83,7 +82,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITrans
 
   if (info.size() > 0)
   {
-    std::vector<bool> infoLabels = g_application.getApplicationMessenger().GetInfoBooleans(info);
+    std::vector<bool> infoLabels = CApplicationMessenger::Get().GetInfoBooleans(info);
     for (unsigned int i = 0; i < info.size(); i++)
     {
       if (i >= infoLabels.size())
