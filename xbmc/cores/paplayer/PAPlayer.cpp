@@ -289,10 +289,8 @@ void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
   if (!file.IsSpotify())
     m_upcomingCrossfadeMS = m_defaultCrossfadeMS = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
   else
-  {
     CLog::Log(LOGDEBUG, "PAPlayer::UpdateCrossfadeTime: Spotify track detected, crossfade is disabled.");
-    m_upcomingCrossfadeMS = m_defaultCrossfadeMS; // Spotify (spotyxbmc) can not handle crossfade
-  }
+  m_upcomingCrossfadeMS = m_defaultCrossfadeMS; // Spotify (spotyxbmc) can not handle crossfade
 
   if (m_upcomingCrossfadeMS)
   {
@@ -339,10 +337,14 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
     #define TIME_TO_CACHE_NEXT_FILE 0000
     #define FAST_XFADE_TIME           00
     #define MAX_SKIP_XFADE_TIME     0000
-    do  //Make sure we only have one concurrent spotifyc stream
+    CSharedLock lock(m_streamsLock);
+    while (m_streams.size() > 0) //Make sure we only have one concurrent stream
     {
-      CThread::Sleep(5); //Always execute at least once to allow stream to close
-    } while((m_streams.size() > 0) && (m_playerGUIData.m_codec == "spotify"));
+      lock.Leave();
+      Sleep(50);
+      CSharedLock lock(m_streamsLock);
+    }
+    lock.Leave();
   }
 
   StreamInfo *si = new StreamInfo();
