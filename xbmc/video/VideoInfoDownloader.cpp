@@ -20,7 +20,6 @@
  */
 
 #include "VideoInfoDownloader.h"
-#include "Util.h"
 #include "utils/XMLUtils.h"
 #include "utils/RegExp.h"
 #include "NfoFile.h"

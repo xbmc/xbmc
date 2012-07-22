@@ -25,7 +25,6 @@
 
 #include "Autorun.h"
 #include "Application.h"
-#include "Util.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"

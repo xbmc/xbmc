@@ -20,7 +20,7 @@
  */
 
 #include "GUIDialogKaraokeSongSelector.h"
-#include "Application.h"
+#include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"

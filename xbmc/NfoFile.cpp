@@ -27,7 +27,6 @@
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
-#include "Util.h"
 #include "FileItem.h"
 #include "music/Album.h"
 #include "music/Artist.h"

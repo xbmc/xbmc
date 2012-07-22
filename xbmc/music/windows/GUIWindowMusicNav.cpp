@@ -49,6 +49,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
+#include "Util.h"
 
 using namespace std;
 using namespace XFILE;

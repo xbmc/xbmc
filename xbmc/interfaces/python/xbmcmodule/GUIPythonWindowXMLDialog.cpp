@@ -21,7 +21,6 @@
 
 #include "GUIPythonWindowXMLDialog.h"
 #include "guilib/GUIWindowManager.h"
-#include "Application.h"
 #include "threads/SingleLock.h"
 
 CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(int id, CStdString strXML, CStdString strFallBackPath)

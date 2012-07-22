@@ -24,7 +24,6 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "Application.h"
 #include "windowing/WindowingFactory.h"
 
 namespace OVERLAY {

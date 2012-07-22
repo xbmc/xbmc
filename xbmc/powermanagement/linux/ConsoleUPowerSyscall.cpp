@@ -24,7 +24,6 @@
 #include "utils/log.h"
 
 #ifdef HAS_DBUS
-#include "Application.h"
 
 CUPowerSource::CUPowerSource(const char *powerSource)
 {
