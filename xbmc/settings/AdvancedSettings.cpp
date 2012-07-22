@@ -298,6 +298,7 @@ void CAdvancedSettings::Initialize()
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
+  m_cacheMemBufferThrottleMultiplier = 1.0f;
   m_initialized = true;
 
   m_databaseMusic.Reset();
@@ -666,6 +667,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
     XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
+    XMLUtils::GetFloat(pElement, "cachemembufferthrottlemultiplier", m_cacheMemBufferThrottleMultiplier, 1.0f, 100.0f);
   }
 
   pElement = pRootElement->FirstChildElement("jsonrpc");
