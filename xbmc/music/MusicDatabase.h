@@ -178,7 +178,7 @@ public:
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, bool albumArtistsOnly);
+  bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idAlbum, int idSong, bool albumArtistsOnly);
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end, const SortDescription &sortDescription = SortDescription());
   bool GetAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, int year);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());

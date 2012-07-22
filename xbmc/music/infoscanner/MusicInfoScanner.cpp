@@ -289,7 +289,7 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory,
   if (strDirectory.IsEmpty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetArtistsNav("musicdb://2/",items,-1,false);
+    m_musicDatabase.GetArtistsNav("musicdb://2/",items,-1,-1,-1,false);
     m_musicDatabase.Close();
   }
   else

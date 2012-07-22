@@ -56,7 +56,7 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId(), !g_guiSettings.GetBool("musiclibrary.showcompilationartists"));
+  bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId(), -1, -1, !g_guiSettings.GetBool("musiclibrary.showcompilationartists"));
 
   musicdatabase.Close();
 
