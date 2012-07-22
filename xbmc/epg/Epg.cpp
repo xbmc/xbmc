@@ -167,7 +167,6 @@ void CEpg::Cleanup(void)
 
 void CEpg::Cleanup(const CDateTime &Time)
 {
-  bool bTagsChanged(false);
   CSingleLock lock(m_critSection);
   for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
   {
@@ -178,7 +177,6 @@ void CEpg::Cleanup(const CDateTime &Time)
 
       delete it->second;
       m_tags.erase(it++);
-      bTagsChanged = true;
     }
   }
 }
