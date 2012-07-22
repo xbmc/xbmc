@@ -146,10 +146,6 @@ public:
   virtual bool Hide();
   virtual bool Show(bool raise = true);
 
-   // OS System screensaver
-  virtual void EnableSystemScreenSaver(bool bEnable);
-  virtual bool IsSystemScreenSaverEnabled();
-
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }
   bool IsAlteringWindow() { return m_IsAlteringWindow; }
