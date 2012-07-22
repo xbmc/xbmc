@@ -576,6 +576,11 @@ void CSoftAEStream::InternalFlush()
   /* reset our counts */
   m_framesBuffered = 0;
   m_refillBuffer   = m_waterLevel;
+<<<<<<< HEAD
+  m_draining       = false;	
+=======
+  m_draining       = false;
+>>>>>>> 64f9b9339a6c6ed777f6232832040d948e89fdcf
 }
 
 double CSoftAEStream::GetResampleRatio()
