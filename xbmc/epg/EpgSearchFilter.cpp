@@ -217,13 +217,15 @@ int EpgSearchFilter::FilterTimers(CFileItemList &results)
   if (!g_PVRManager.IsStarted())
     return iRemoved;
 
-  vector<CPVRTimerInfoTag *> timers;
-  g_PVRTimers->GetActiveTimers(&timers);
-
-  // TODO not thread safe and inefficient!
+  vector<CFileItemPtr> timers = g_PVRTimers->GetActiveTimers();
+  // TODO inefficient!
   for (unsigned int iTimerPtr = 0; iTimerPtr < timers.size(); iTimerPtr++)
   {
-    CPVRTimerInfoTag *timer = timers.at(iTimerPtr);
+    CFileItemPtr fileItem = timers.at(iTimerPtr);
+    if (!fileItem || !fileItem->HasPVRTimerInfoTag())
+      continue;
+
+    CPVRTimerInfoTag *timer = fileItem->GetPVRTimerInfoTag();
     if (!timer)
       continue;
 

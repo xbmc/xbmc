@@ -285,7 +285,7 @@ int CPVRTimers::GetTimers(CFileItemList* results)
   return iReturn;
 }
 
-bool CPVRTimers::GetNextActiveTimer(CPVRTimerInfoTag *tag) const
+CFileItemPtr CPVRTimers::GetNextActiveTimer(void) const
 {
   CSingleLock lock(m_critSection);
   for (map<CDateTime, vector<CPVRTimerInfoTag *>* >::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
@@ -295,18 +295,19 @@ bool CPVRTimers::GetNextActiveTimer(CPVRTimerInfoTag *tag) const
       CPVRTimerInfoTag *current = it->second->at(iTimerPtr);
       if (current->IsActive() && !current->IsRecording())
       {
-        *tag = *current;
-        return true;
+        CFileItemPtr fileItem(new CFileItem(*current));
+        return fileItem;
       }
     }
   }
 
-  return false;
+  CFileItemPtr fileItem;
+  return fileItem;
 }
 
-int CPVRTimers::GetActiveTimers(vector<CPVRTimerInfoTag *> *tags) const
+vector<CFileItemPtr> CPVRTimers::GetActiveTimers(void) const
 {
-  int iInitialSize = tags->size();
+  vector<CFileItemPtr> tags;
   CSingleLock lock(m_critSection);
 
   for (map<CDateTime, vector<CPVRTimerInfoTag *>* >::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
@@ -314,11 +315,14 @@ int CPVRTimers::GetActiveTimers(vector<CPVRTimerInfoTag *> *tags) const
     for (unsigned int iTimerPtr = 0; iTimerPtr < it->second->size(); iTimerPtr++)
     {
       if (it->second->at(iTimerPtr)->IsActive())
-        tags->push_back(it->second->at(iTimerPtr));
+      {
+        CFileItemPtr fileItem(new CFileItem(*it->second->at(iTimerPtr)));
+        tags.push_back(fileItem);
+      }
     }
   }
 
-  return tags->size() - iInitialSize;
+  return tags;
 }
 
 int CPVRTimers::GetNumActiveTimers(void) const
@@ -338,9 +342,9 @@ int CPVRTimers::GetNumActiveTimers(void) const
   return iReturn;
 }
 
-int CPVRTimers::GetActiveRecordings(vector<CPVRTimerInfoTag *> *tags) const
+std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(void) const
 {
-  int iInitialSize = tags->size();
+  std::vector<CFileItemPtr> tags;
   CSingleLock lock(m_critSection);
 
   for (map<CDateTime, vector<CPVRTimerInfoTag *>* >::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
@@ -348,11 +352,14 @@ int CPVRTimers::GetActiveRecordings(vector<CPVRTimerInfoTag *> *tags) const
     for (unsigned int iTimerPtr = 0; iTimerPtr < it->second->size(); iTimerPtr++)
     {
       if (it->second->at(iTimerPtr)->IsRecording())
-        tags->push_back(it->second->at(iTimerPtr));
+      {
+        CFileItemPtr fileItem(new CFileItem(*it->second->at(iTimerPtr)));
+        tags.push_back(fileItem);
+      }
     }
   }
 
-  return tags->size() - iInitialSize;
+  return tags;
 }
 
 int CPVRTimers::GetNumActiveRecordings(void) const
@@ -672,7 +679,7 @@ bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel &channel) const
   return false;
 }
 
-CPVRTimerInfoTag *CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
+CFileItemPtr CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
 {
   CSingleLock lock(m_critSection);
 
@@ -693,20 +700,21 @@ CPVRTimerInfoTag *CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
       if (timer->StartAsUTC() > Epg->StartAsUTC() || timer->EndAsUTC() < Epg->EndAsUTC())
         continue;
 
-      return timer;
+      CFileItemPtr fileItem(new CFileItem(*timer));
+      return fileItem;
     }
   }
-  return NULL;
+  CFileItemPtr fileItem;
+  return fileItem;
 }
 
-CPVRTimerInfoTag *CPVRTimers::GetMatch(const CFileItem *item)
+CFileItemPtr CPVRTimers::GetMatch(const CFileItem *item)
 {
-  CPVRTimerInfoTag *returnTag = NULL;
-
   if (item && item->HasEPGInfoTag())
-    returnTag = GetMatch(item->GetEPGInfoTag());
+    return GetMatch(item->GetEPGInfoTag());
 
-  return returnTag;
+  CFileItemPtr fileItem;
+  return fileItem;
 }
 
 void CPVRTimers::Notify(const Observable &obs, const CStdString& msg)
@@ -726,10 +734,10 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
   CDateTime wakeuptime;
 
   /* Check next active time */
-  CPVRTimerInfoTag timer;
-  if (GetNextActiveTimer(&timer))
+  CFileItemPtr item = GetNextActiveTimer();
+  if (item && item->HasPVRTimerInfoTag())
   {
-    const CDateTime start = timer.StartAsUTC();
+    const CDateTime start = item->GetPVRTimerInfoTag()->StartAsUTC();
 
     if ((start - idle) > now) {
       wakeuptime = start - prewakeup;

@@ -710,8 +710,8 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   if (!channel || g_PVRManager.CheckParentalLock(*channel))
     return false;
 
-  CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(item);
-  if (timer)
+  CFileItemPtr timer = g_PVRTimers->GetMatch(item);
+  if (timer && timer->HasPVRTimerInfoTag())
   {
     CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
     return false;
@@ -744,8 +744,8 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
   if (!tag || !tag->HasPVRChannel())
     return false;
 
-  CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(item);
-  if (!timer || timer->m_bIsRepeating)
+  CFileItemPtr timer = g_PVRTimers->GetMatch(item);
+  if (!timer || !timer->HasPVRTimerInfoTag() || timer->GetPVRTimerInfoTag()->m_bIsRepeating)
     return false;
 
   return g_PVRTimers->DeleteTimer(*timer);

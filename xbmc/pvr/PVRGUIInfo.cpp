@@ -725,19 +725,20 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   CStdString strNextRecordingTime;
   CStdString strNextTimerInfo;
 
-  CPVRTimerInfoTag tag;
-  if (g_PVRTimers->GetNextActiveTimer(&tag))
+  CFileItemPtr tag = g_PVRTimers->GetNextActiveTimer();
+  if (tag && tag->HasPVRTimerInfoTag())
   {
-    strNextRecordingTitle.Format("%s",       tag.m_strTitle);
-    strNextRecordingChannelName.Format("%s", tag.ChannelName());
-    strNextRecordingChannelIcon.Format("%s", tag.ChannelIcon());
-    strNextRecordingTime.Format("%s",        tag.StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+    CPVRTimerInfoTag *timer = tag->GetPVRTimerInfoTag();
+    strNextRecordingTitle.Format("%s",       timer->m_strTitle);
+    strNextRecordingChannelName.Format("%s", timer->ChannelName());
+    strNextRecordingChannelIcon.Format("%s", timer->ChannelIcon());
+    strNextRecordingTime.Format("%s",        timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
 
     strNextTimerInfo.Format("%s %s %s %s",
         g_localizeStrings.Get(19106),
-        tag.StartAsLocalTime().GetAsLocalizedDate(true),
+        timer->StartAsLocalTime().GetAsLocalizedDate(true),
         g_localizeStrings.Get(19107),
-        tag.StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
+        timer->StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
   }
 
   CSingleLock lock(m_critSection);
@@ -761,14 +762,14 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   if (m_iRecordingTimerAmount > 0)
   {
-    vector<CPVRTimerInfoTag *> activeTags;
-    g_PVRTimers->GetActiveRecordings(&activeTags);
-    if (activeTags.at(m_iTimerInfoToggleCurrent) != 0)
+    vector<CFileItemPtr> activeTags = g_PVRTimers->GetActiveRecordings();
+    if (m_iTimerInfoToggleCurrent < activeTags.size() && activeTags.at(m_iTimerInfoToggleCurrent)->HasPVRTimerInfoTag())
     {
-      strActiveTimerTitle.Format("%s",       activeTags.at(m_iTimerInfoToggleCurrent)->m_strTitle);
-      strActiveTimerChannelName.Format("%s", activeTags.at(m_iTimerInfoToggleCurrent)->ChannelName());
-      strActiveTimerChannelIcon.Format("%s", activeTags.at(m_iTimerInfoToggleCurrent)->ChannelIcon());
-      strActiveTimerTime.Format("%s",        activeTags.at(m_iTimerInfoToggleCurrent)->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+      CPVRTimerInfoTag *tag = activeTags.at(m_iTimerInfoToggleCurrent)->GetPVRTimerInfoTag();
+      strActiveTimerTitle.Format("%s",       tag->m_strTitle);
+      strActiveTimerChannelName.Format("%s", tag->ChannelName());
+      strActiveTimerChannelIcon.Format("%s", tag->ChannelIcon());
+      strActiveTimerTime.Format("%s",        tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
     }
   }
 

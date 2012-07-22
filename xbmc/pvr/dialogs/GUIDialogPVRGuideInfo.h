@@ -45,7 +45,7 @@ namespace PVR
   protected:
     void Update();
     bool ActionStartTimer(const EPG::CEpgInfoTag *tag);
-    bool ActionCancelTimer(const CPVRTimerInfoTag *tag);
+    bool ActionCancelTimer(CFileItemPtr timer);
 
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);

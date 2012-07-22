@@ -89,8 +89,8 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
-    CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(pItem->GetEPGInfoTag());
-    if (!timer)
+    CFileItemPtr timer = g_PVRTimers->GetMatch(pItem->GetEPGInfoTag());
+    if (!timer || !timer->HasPVRTimerInfoTag())
     {
       if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
         buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record program */

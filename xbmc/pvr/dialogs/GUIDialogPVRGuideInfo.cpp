@@ -80,7 +80,7 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTag *tag)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::ActionCancelTimer(const CPVRTimerInfoTag *tag)
+bool CGUIDialogPVRGuideInfo::ActionCancelTimer(CFileItemPtr timer)
 {
   bool bReturn = false;
 
@@ -91,14 +91,14 @@ bool CGUIDialogPVRGuideInfo::ActionCancelTimer(const CPVRTimerInfoTag *tag)
   {
     pDialog->SetHeading(265);
     pDialog->SetLine(0, "");
-    pDialog->SetLine(1, tag->m_strTitle);
+    pDialog->SetLine(1, timer->m_strTitle);
     pDialog->SetLine(2, "");
     pDialog->DoModal();
 
     if (pDialog->IsConfirmed())
     {
       Close();
-      bReturn = CPVRTimers::DeleteTimer(*tag);
+      bReturn = CPVRTimers::DeleteTimer(*timer);
     }
   }
 
@@ -135,8 +135,8 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
       return bReturn;
     }
 
-    const CPVRTimerInfoTag *timerTag = g_PVRTimers->GetMatch(tag);
-    bool bHasTimer = timerTag != NULL;
+    CFileItemPtr timerTag = g_PVRTimers->GetMatch(tag);
+    bool bHasTimer = timerTag != NULL && timerTag->HasPVRTimerInfoTag();
 
     if (!bHasTimer)
       ActionStartTimer(tag);
@@ -208,8 +208,8 @@ void CGUIDialogPVRGuideInfo::Update()
     return;
   }
 
-  bool bHasTimer = g_PVRTimers->GetMatch(tag) != NULL;
-  if (!bHasTimer)
+  CFileItemPtr match = g_PVRTimers->GetMatch(tag);
+  if (!match || !match->HasPVRTimerInfoTag())
   {
     /* no timer present on this tag */
     if (tag->StartAsLocalTime() < CDateTime::GetCurrentDateTime())

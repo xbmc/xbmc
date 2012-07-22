@@ -4872,9 +4872,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(pItem);
-        if (timer)
-          return timer->IsRecording();
+        CFileItemPtr timer = g_PVRTimers->GetMatch(pItem);
+        if (timer && timer->HasPVRTimerInfoTag())
+          return timer->GetPVRTimerInfoTag()->IsRecording();
       }
       else if (pItem->HasPVRTimerInfoTag())
       {
@@ -4887,9 +4887,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(pItem);
-        if (timer)
-          return timer->IsActive();
+        CFileItemPtr timer = g_PVRTimers->GetMatch(pItem);
+        if (timer && timer->HasPVRTimerInfoTag())
+          return timer->GetPVRTimerInfoTag()->IsActive();
       }
     }
     else if (condition == LISTITEM_HAS_EPG)
