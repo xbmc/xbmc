@@ -300,6 +300,10 @@ bool CPVRManager::Load(void)
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
 
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+  if (pWindow)
+    pWindow->Reset();
+
   /* load all channels and groups */
   ShowProgressDialog(g_localizeStrings.Get(19236), 0);
   if (!m_channelGroups->Load() || GetState() != ManagerStateStarting)
@@ -316,10 +320,6 @@ bool CPVRManager::Load(void)
   CSingleLock lock(m_critSection);
   if (GetState() != ManagerStateStarting)
     return false;
-
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pWindow)
-    pWindow->Reset();
 
   /* start the other pvr related update threads */
   ShowProgressDialog(g_localizeStrings.Get(19239), 85);
