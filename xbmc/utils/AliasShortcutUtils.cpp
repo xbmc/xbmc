@@ -26,7 +26,6 @@
 #else
 #endif
 
-#include "Util.h"
 #include "AliasShortcutUtils.h"
 
 bool IsAliasShortcut(CStdString &path)

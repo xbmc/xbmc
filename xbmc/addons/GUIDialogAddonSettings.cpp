@@ -48,6 +48,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
+#include "Util.h"
 
 using namespace std;
 using namespace ADDON;

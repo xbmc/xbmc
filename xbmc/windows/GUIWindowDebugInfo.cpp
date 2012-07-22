@@ -35,6 +35,8 @@
 #include "GUIInfoManager.h"
 #include "utils/Variant.h"
 
+#include <climits>
+
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
     : CGUIDialog(98, "")
 {

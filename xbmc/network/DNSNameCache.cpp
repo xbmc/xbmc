@@ -20,7 +20,6 @@
  */
 
 #include "DNSNameCache.h"
-#include "Application.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 

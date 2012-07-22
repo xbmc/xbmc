@@ -59,6 +59,7 @@
 #include "utils/md5.h"
 #include "guilib/Key.h"
 #include "ThumbLoader.h"
+#include "Util.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

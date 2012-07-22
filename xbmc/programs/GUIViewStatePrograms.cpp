@@ -25,7 +25,6 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "filesystem/Directory.h"
-#include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Key.h"
 

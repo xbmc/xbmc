@@ -39,13 +39,11 @@
 #endif
 
 #include "Application.h"
-#include "utils/AutoPtrHandle.h"
 #include "Util.h"
 #include "addons/Addon.h"
-#include "storage/IoSupport.h"
+#include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/DirectoryCache.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/RSSDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -63,9 +61,6 @@
 #include "guilib/TextureManager.h"
 #include "utils/fstrcmp.h"
 #include "storage/MediaManager.h"
-#include "guilib/DirectXGraphics.h"
-#include "network/DNSNameCache.h"
-#include "guilib/GUIWindowManager.h"
 #ifdef _WIN32
 #include <shlobj.h>
 #include "WIN32Util.h"
@@ -75,7 +70,6 @@
 #endif
 #include "GUIUserMessages.h"
 #include "filesystem/File.h"
-#include "utils/Crc32.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
@@ -92,7 +86,6 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "windowing/WindowingFactory.h"
-#include "video/VideoInfoTag.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
@@ -104,7 +97,6 @@ using namespace XFILE;
 static const int64_t SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const int64_t SECS_TO_100NS = 10000000;
 
-using namespace AUTOPTR;
 using namespace XFILE;
 using namespace PLAYLIST;
 
