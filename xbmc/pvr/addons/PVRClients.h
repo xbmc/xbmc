@@ -568,6 +568,11 @@ namespace PVR
      */
     void StartChannelScan(void);
 
+    /*!
+     * @return All clients that support channel scanning.
+     */
+    std::vector< boost::shared_ptr<CPVRClient> > GetClientsSupportingChannelScan(void) const;
+
     //@}
 
     void Notify(const Observable &obs, const CStdString& msg);
