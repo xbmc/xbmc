@@ -106,6 +106,7 @@
 #include "windowing/WindowingFactory.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
@@ -694,9 +695,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (!strSetting.Equals("pvrmanager.enabled") &&
-        (strSetting.Equals("pvrmanager.channelscan") || strSetting.Equals("pvrmanager.channelmanager") ||
-         strSetting.Equals("pvrmenu.searchicons")))
+    else if (strSetting.Equals("pvrmanager.channelscan"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled") && g_PVRClients->GetClientsSupportingChannelScan().size() > 0);
+    }
+    else if (strSetting.Equals("pvrmanager.channelmanager") || strSetting.Equals("pvrmenu.searchicons"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));

@@ -1004,21 +1004,27 @@ bool CPVRClients::IsRunningChannelScan(void) const
   return m_bChannelScanRunning;
 }
 
-void CPVRClients::StartChannelScan(void)
+vector< boost::shared_ptr<CPVRClient> > CPVRClients::GetClientsSupportingChannelScan(void) const
 {
-  CLIENTMAP clients;
   vector< boost::shared_ptr<CPVRClient> > possibleScanClients;
-  boost::shared_ptr<CPVRClient> scanClient;
   CSingleLock lock(m_critSection);
-  GetConnectedClients(&clients);
-  m_bChannelScanRunning = true;
 
   /* get clients that support channel scanning */
-  for (CLIENTMAPITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+  for (CLIENTMAPCITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
   {
     if (itr->second->ReadyToUse() && itr->second->GetAddonCapabilities().bSupportsChannelScan)
       possibleScanClients.push_back(itr->second);
   }
+
+  return possibleScanClients;
+}
+
+void CPVRClients::StartChannelScan(void)
+{
+  boost::shared_ptr<CPVRClient> scanClient;
+  CSingleLock lock(m_critSection);
+  vector< boost::shared_ptr<CPVRClient> > possibleScanClients = GetClientsSupportingChannelScan();
+  m_bChannelScanRunning = true;
 
   /* multiple clients found */
   if (possibleScanClients.size() > 1)
