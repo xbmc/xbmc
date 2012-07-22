@@ -29,7 +29,7 @@
 #include "utils/CharsetConverter.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 
 using namespace std;
 
@@ -87,7 +87,7 @@ namespace PYXBMC
   {
     CPyThreadState pyState;
     ThreadMessage tMsg = {message, param1, param2};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
   }
 
   static char defaultImage[1024];

@@ -39,7 +39,7 @@
 #include "video/VideoInfoScanner.h"
 #include "addons/Scraper.h"
 #include "guilib/GUIWindowManager.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
@@ -409,7 +409,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             action.Replace("$ID", m_addon->ID());
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
-            g_application.getApplicationMessenger().ExecBuiltIn(action);
+            CApplicationMessenger::Get().ExecBuiltIn(action);
           }
         }
         else if (strcmp(type, "date") == 0)

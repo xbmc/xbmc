@@ -24,6 +24,7 @@
 #include "PeripheralCecAdapter.h"
 #include "input/XBIRRemote.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -609,7 +610,7 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
 
   if (!strGuiLanguage.IsEmpty())
   {
-    g_application.getApplicationMessenger().SetGUILanguage(strGuiLanguage);
+    CApplicationMessenger::Get().SetGUILanguage(strGuiLanguage);
     CLog::Log(LOGDEBUG, "%s - language set to '%s'", __FUNCTION__, strGuiLanguage.c_str());
   }
   else
@@ -637,9 +638,9 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command &command)
       {
         adapter->m_bStarted = false;
         if (adapter->m_configuration.bPowerOffOnStandby == 1)
-          g_application.getApplicationMessenger().Suspend();
+          CApplicationMessenger::Get().Suspend();
         else if (adapter->m_configuration.bShutdownOnStandby == 1)
-          g_application.getApplicationMessenger().Shutdown();
+          CApplicationMessenger::Get().Shutdown();
       }
       break;
     case CEC_OPCODE_SET_MENU_LANGUAGE:

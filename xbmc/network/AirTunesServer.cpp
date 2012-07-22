@@ -171,16 +171,16 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
     return 0;
 
   ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMessage(tMsg, true);
 
   CFileItem item;
   item.SetPath(pipe->GetName());
   item.SetMimeType("audio/x-xbmc-pcm");
 
   ThreadMessage tMsg2 = { TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VISUALISATION, 0 };
-  g_application.getApplicationMessenger().SendMessage(tMsg2, true);
+  CApplicationMessenger::Get().SendMessage(tMsg2, true);
 
-  g_application.getApplicationMessenger().PlayFile(item);
+  CApplicationMessenger::Get().PlayFile(item);
 
   return "XBMC-AirTunes";//session
 }
@@ -234,7 +234,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
 #endif
   {
     ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
 }
@@ -339,7 +339,7 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
     return 0;
 
   ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMessage(tMsg, true);
 
   CFileItem item;
   item.SetPath(device->pipe->GetName());
@@ -355,9 +355,9 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
     item.GetMusicInfoTag()->SetTitle(ao_get_option(option, "name"));
 
   ThreadMessage tMsg2 = { TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VISUALISATION, 0 };
-  g_application.getApplicationMessenger().SendMessage(tMsg2, true);
+  CApplicationMessenger::Get().SendMessage(tMsg2, true);
 
-  g_application.getApplicationMessenger().PlayFile(item);
+  CApplicationMessenger::Get().PlayFile(item);
 
   return (ao_device*) device;
 }
@@ -380,7 +380,7 @@ int CAirTunesServer::AudioOutputFunctions::ao_close(ao_device *device)
 #endif
   {
     ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
 
