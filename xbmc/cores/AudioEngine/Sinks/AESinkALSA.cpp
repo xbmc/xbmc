@@ -933,7 +933,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
               /* only trust badHDMI (= unconnected or non-existent port) on Intel
                * and NVIDIA where it has been confirmed to work, show the empty
                * port on other systems */
-              if (info.m_displayName.compare(0, 9, "HDA Intel") || info.m_displayName.compare(0, 10, "HDA NVidia"))
+              if (info.m_displayName.compare(0, 9, "HDA Intel") == 0 || info.m_displayName.compare(0, 10, "HDA NVidia") == 0)
               {
                 /* unconnected HDMI port */
                 CLog::Log(LOGDEBUG, "CAESinkALSA - Skipping HDMI device \"%s\" as it has no ELD data", device.c_str());
