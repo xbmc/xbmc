@@ -207,6 +207,7 @@ void CAdvancedSettings::Initialize()
   m_prioritiseAPEv2tags = false;
   m_musicItemSeparator = " / ";
   m_videoItemSeparator = " / ";
+  m_bMusicLibraryUseMusicBrainz = false;
 
   m_bVideoLibraryHideAllItems = false;
   m_bVideoLibraryAllItemsOnBottom = false;
@@ -634,6 +635,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pElement, "albumformat", m_strMusicLibraryAlbumFormat);
     XMLUtils::GetString(pElement, "albumformatright", m_strMusicLibraryAlbumFormatRight);
     XMLUtils::GetString(pElement, "itemseparator", m_musicItemSeparator);
+    XMLUtils::GetBoolean(pElement, "usemusicbrainz", m_bMusicLibraryUseMusicBrainz);
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");

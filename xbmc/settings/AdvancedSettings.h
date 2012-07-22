@@ -243,6 +243,7 @@ class CAdvancedSettings
     CStdString m_musicItemSeparator;
     CStdString m_videoItemSeparator;
     std::vector<CStdString> m_musicTagsFromFileFilters;
+    bool m_bMusicLibraryUseMusicBrainz;
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
