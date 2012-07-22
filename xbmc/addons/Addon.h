@@ -23,11 +23,8 @@
 #include "IAddon.h"
 #include "addons/AddonVersion.h"
 #include "utils/XBMCTinyXML.h"
-#include "Util.h"
-#include "URL.h"
 #include "guilib/LocalizeStrings.h"
 
-class CURL;
 class TiXmlElement;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;

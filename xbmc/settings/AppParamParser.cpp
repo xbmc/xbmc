@@ -25,6 +25,7 @@
 #include "PlayListPlayer.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
@@ -156,5 +157,5 @@ void CAppParamParser::PlayPlaylist()
   }
 
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
-  g_application.getApplicationMessenger().SendMessage(tMsg, false);
+  CApplicationMessenger::Get().SendMessage(tMsg, false);
 }

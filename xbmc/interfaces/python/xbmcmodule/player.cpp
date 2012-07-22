@@ -21,6 +21,7 @@
 
 #include "pyutil.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "player.h"
@@ -139,7 +140,7 @@ namespace PYXBMC
       }
 
       CPyThreadState pyState;
-      g_application.getApplicationMessenger().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
+      CApplicationMessenger::Get().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
     else if ((PyString_Check(pObject) || PyUnicode_Check(pObject)) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
     {
@@ -151,14 +152,14 @@ namespace PYXBMC
       pListItem->item->SetPath(PyString_AsString(pObject));
 
       CPyThreadState pyState;
-      g_application.getApplicationMessenger().PlayFile((const CFileItem)*pListItem->item, false);
+      CApplicationMessenger::Get().PlayFile((const CFileItem)*pListItem->item, false);
     }
     else if (PyString_Check(pObject) || PyUnicode_Check(pObject))
     {
       CFileItem item(PyString_AsString(pObject), false);
       
       CPyThreadState pyState;
-      g_application.getApplicationMessenger().MediaPlay(item.GetPath());
+      CApplicationMessenger::Get().MediaPlay(item.GetPath());
     }
     else if (PlayList_Check(pObject))
     {
@@ -168,7 +169,7 @@ namespace PYXBMC
       g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
 
       CPyThreadState pyState;
-      g_application.getApplicationMessenger().PlayListPlayerPlay();
+      CApplicationMessenger::Get().PlayListPlayerPlay();
     }
 
     Py_INCREF(Py_None);
@@ -182,7 +183,7 @@ namespace PYXBMC
   PyObject* pyPlayer_Stop(PyObject *self, PyObject *args)
   {
     CPyThreadState pyState;
-    g_application.getApplicationMessenger().MediaStop();
+    CApplicationMessenger::Get().MediaStop();
     pyState.Restore();
 
     Py_INCREF(Py_None);
@@ -196,7 +197,7 @@ namespace PYXBMC
   PyObject* Player_Pause(PyObject *self, PyObject *args)
   {
     CPyThreadState pyState;
-    g_application.getApplicationMessenger().MediaPause();
+    CApplicationMessenger::Get().MediaPause();
     pyState.Restore();
 
     Py_INCREF(Py_None);
@@ -213,7 +214,7 @@ namespace PYXBMC
     g_application.m_eForcedNextPlayer = self->playerCore;
 
     CPyThreadState pyState;
-    g_application.getApplicationMessenger().PlayListPlayerNext();
+    CApplicationMessenger::Get().PlayListPlayerNext();
     pyState.Restore();
 
     Py_INCREF(Py_None);
@@ -230,7 +231,7 @@ namespace PYXBMC
     g_application.m_eForcedNextPlayer = self->playerCore;
 
     CPyThreadState pyState;
-    g_application.getApplicationMessenger().PlayListPlayerPrevious();
+    CApplicationMessenger::Get().PlayListPlayerPrevious();
     pyState.Restore();
 
     Py_INCREF(Py_None);
@@ -256,7 +257,7 @@ namespace PYXBMC
     g_playlistPlayer.SetCurrentSong(iItem);
 
     CPyThreadState pyState;
-    g_application.getApplicationMessenger().PlayListPlayerPlay(iItem);
+    CApplicationMessenger::Get().PlayListPlayerPlay(iItem);
     pyState.Restore();
 
     //g_playlistPlayer.Play(iItem);

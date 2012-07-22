@@ -457,7 +457,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   {
     case XBMC_QUIT:
       if (!g_application.m_bStop)
-        g_application.getApplicationMessenger().Quit();
+        CApplicationMessenger::Get().Quit();
       break;
     case XBMC_KEYDOWN:
       g_application.OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
@@ -501,7 +501,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     case XBMC_USEREVENT:
-      g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
+      CApplicationMessenger::Get().UserEvent(newEvent.user.code);
       break;
     case XBMC_APPCOMMAND:
       return g_application.OnAppCommand(newEvent.appcommand.action);
@@ -1400,7 +1400,7 @@ bool CApplication::StartWebServer()
     }
 #ifdef HAS_HTTPAPI
     if (g_settings.m_HttpApiBroadcastLevel >= 1)
-      getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
+      CApplicationMessenger::Get().HttpApi("broadcastlevel; StartUp;1");
 #endif
 
     return started;
@@ -2428,7 +2428,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     CStdString tmp;
     tmp.Format("%i",action.GetID());
-    getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
+    CApplicationMessenger::Get().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 #endif
 
@@ -3011,7 +3011,7 @@ void  CApplication::CheckForTitleChange()
         CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
         if (m_prevMedia!=msg && g_settings.m_HttpApiBroadcastLevel>=1)
         {
-          getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          CApplicationMessenger::Get().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
           m_prevMedia=msg;
         }
       }
@@ -3028,7 +3028,7 @@ void  CApplication::CheckForTitleChange()
           msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+StringUtils::Join(tagVal->GetArtist(), g_advancedSettings.m_musicItemSeparator)+m_pXbmcHttp->GetCloseTag();
         if (m_prevMedia!=msg)
         {
-          getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          CApplicationMessenger::Get().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
           m_prevMedia=msg;
         }
       }
@@ -3402,7 +3402,7 @@ void CApplication::Stop(int exitCode)
     if (m_pXbmcHttp)
     {
       if (g_settings.m_HttpApiBroadcastLevel >= 1)
-        getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+        CApplicationMessenger::Get().HttpApi("broadcastlevel; ShutDown;1");
 
       m_pXbmcHttp->shuttingDown = true;
     }
@@ -3436,7 +3436,7 @@ void CApplication::Stop(int exitCode)
     if (m_videoInfoScanner->IsScanning())
       m_videoInfoScanner->Stop();
 
-    m_applicationMessenger.Cleanup();
+    CApplicationMessenger::Get().Cleanup();
 
     StopServices();
     //Sleep(5000);
@@ -4065,7 +4065,7 @@ void CApplication::OnPlayBackEnded()
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (g_settings.m_HttpApiBroadcastLevel>=1)
-    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
+    CApplicationMessenger::Get().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
   CVariant data(CVariant::VariantTypeObject);
@@ -4099,7 +4099,7 @@ void CApplication::OnPlayBackStarted()
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (g_settings.m_HttpApiBroadcastLevel>=1)
-    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
+    CApplicationMessenger::Get().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
@@ -4117,7 +4117,7 @@ void CApplication::OnQueueNextItem()
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (g_settings.m_HttpApiBroadcastLevel>=1)
-    getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
+    CApplicationMessenger::Get().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
 
   if(IsPlayingAudio())
@@ -4147,7 +4147,7 @@ void CApplication::OnPlayBackStopped()
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (g_settings.m_HttpApiBroadcastLevel>=1)
-    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
+    CApplicationMessenger::Get().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
   CVariant data(CVariant::VariantTypeObject);
@@ -4170,7 +4170,7 @@ void CApplication::OnPlayBackPaused()
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (g_settings.m_HttpApiBroadcastLevel>=1)
-    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
+    CApplicationMessenger::Get().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
   CVariant param;
@@ -4188,7 +4188,7 @@ void CApplication::OnPlayBackResumed()
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (g_settings.m_HttpApiBroadcastLevel>=1)
-    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
+    CApplicationMessenger::Get().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
   CVariant param;
@@ -4209,7 +4209,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSpeedChanged:%i;1",iSpeed);
-    getApplicationMessenger().HttpApi(tmp);
+    CApplicationMessenger::Get().HttpApi(tmp);
   }
 #endif
 
@@ -4231,7 +4231,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSeek:%i;1",iTime);
-    getApplicationMessenger().HttpApi(tmp);
+    CApplicationMessenger::Get().HttpApi(tmp);
   }
 #endif
 
@@ -4256,7 +4256,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSkeekChapter:%i;1",iChapter);
-    getApplicationMessenger().HttpApi(tmp);
+    CApplicationMessenger::Get().HttpApi(tmp);
   }
 #endif
 }
@@ -4546,7 +4546,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
       if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
-        g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
     }
     return true;
   }
@@ -4659,7 +4659,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
       path = "special://profile/Thumbnails/Video/Fanart";
     if (type == "1")
       path = "special://profile/Thumbnails/Music/Fanart";
-    m_applicationMessenger.PictureSlideShow(path, true, type != "2");
+    CApplicationMessenger::Get().PictureSlideShow(path, true, type != "2");
   }
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim")
     return;
@@ -4697,7 +4697,7 @@ void CApplication::CheckShutdown()
     m_shutdownTimer.Stop();
 
     // Sleep the box
-    getApplicationMessenger().Shutdown();
+    CApplicationMessenger::Get().Shutdown();
   }
 }
 
@@ -4888,7 +4888,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_windowManager.PreviousWindow();
       }
 
-      if (IsEnableTestMode()) g_application.getApplicationMessenger().Quit();
+      if (IsEnableTestMode())
+        CApplicationMessenger::Get().Quit();
       return true;
     }
     break;
@@ -4960,7 +4961,7 @@ void CApplication::Process()
 
   // process messages which have to be send to the gui
   // (this can only be done after g_windowManager.Render())
-  m_applicationMessenger.ProcessWindowMessages();
+  CApplicationMessenger::Get().ProcessWindowMessages();
 
 #ifdef HAS_PYTHON
   // process any Python scripts
@@ -4968,7 +4969,7 @@ void CApplication::Process()
 #endif
 
   // process messages, even if a movie is playing
-  m_applicationMessenger.ProcessMessages();
+  CApplicationMessenger::Get().ProcessMessages();
   if (g_application.m_bStop) return; //we're done, everything has been unloaded
 
   // check how far we are through playing the current item
@@ -5422,7 +5423,7 @@ void CApplication::SeekTime( double dTime )
             item.m_lStartOffset = (long)((dTime - startOfNewFile) * 75.0);
             // don't just call "PlayFile" here, as we are quite likely called from the
             // player thread, so we won't be able to delete ourselves.
-            m_applicationMessenger.PlayFile(item, true);
+            CApplicationMessenger::Get().PlayFile(item, true);
           }
           return;
         }
@@ -5759,11 +5760,6 @@ bool CApplication::AlwaysProcess(const CAction& action)
   }
 
   return false;
-}
-
-CApplicationMessenger& CApplication::getApplicationMessenger()
-{
-   return m_applicationMessenger;
 }
 
 bool CApplication::IsCurrentThread() const

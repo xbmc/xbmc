@@ -45,6 +45,7 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "Util.h"
 
 using namespace std;
 

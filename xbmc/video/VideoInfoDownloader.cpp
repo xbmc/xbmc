@@ -20,13 +20,12 @@
  */
 
 #include "VideoInfoDownloader.h"
-#include "Util.h"
 #include "utils/XMLUtils.h"
 #include "utils/RegExp.h"
 #include "NfoFile.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogOK.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -62,7 +61,7 @@ void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
     CGUIDialogOK *pdlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     pdlg->SetHeading(sce.Title());
     pdlg->SetLine(0, sce.Message());
-    g_application.getApplicationMessenger().DoModal(pdlg, WINDOW_DIALOG_OK);
+    CApplicationMessenger::Get().DoModal(pdlg, WINDOW_DIALOG_OK);
   }
 }
 

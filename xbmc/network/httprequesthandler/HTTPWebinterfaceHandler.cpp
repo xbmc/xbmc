@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "Util.h"
 
 #define DEFAULT_PAGE        "index.html"
 

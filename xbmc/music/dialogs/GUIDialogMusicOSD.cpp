@@ -20,7 +20,6 @@
  */
 
 #include "GUIDialogMusicOSD.h"
-#include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
 #include "GUIUserMessages.h"

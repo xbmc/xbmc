@@ -29,9 +29,9 @@
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "filesystem/File.h"
-#include "Util.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
@@ -667,7 +667,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
         {
-          g_application.getApplicationMessenger().MediaPause();
+          CApplicationMessenger::Get().MediaPause();
           ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PAUSED);
         }
       }
@@ -675,7 +675,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
         {
-          g_application.getApplicationMessenger().MediaPause();
+          CApplicationMessenger::Get().MediaPause();
           ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
         }
       }
@@ -703,7 +703,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         if(oldVolume != (int)volume)
         {
           g_application.SetVolume(volume);          
-          g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
+          CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);
         }
       }
   }
@@ -800,7 +800,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
       CFileItem fileToPlay(location, false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
-      g_application.getApplicationMessenger().MediaPlay(fileToPlay);
+      CApplicationMessenger::Get().MediaPlay(fileToPlay);
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
     }
   }
@@ -852,7 +852,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     {
       if (IsPlaying()) //only stop player if we started him
       {
-        g_application.getApplicationMessenger().MediaStop();
+        CApplicationMessenger::Get().MediaStop();
         CAirPlayServer::m_isPlaying--;
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
@@ -892,7 +892,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
         if (writtenBytes > 0 && (unsigned int)writtenBytes == m_httpParser->getContentLength())
         {
-          g_application.getApplicationMessenger().PictureShow(tmpFileName);
+          CApplicationMessenger::Get().PictureShow(tmpFileName);
         }
         else
         {

@@ -20,7 +20,6 @@
  */
 
 #include "GUIDialogSongInfo.h"
-#include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogFileBrowser.h"

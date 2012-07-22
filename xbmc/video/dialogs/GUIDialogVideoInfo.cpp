@@ -28,7 +28,7 @@
 #include "video/windows/GUIWindowVideoNav.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "video/VideoInfoScanner.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "video/VideoInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
@@ -791,9 +791,9 @@ void CGUIDialogVideoInfo::PlayTrailer()
   Close(true);
 
   if (item.IsPlayList())
-    g_application.getApplicationMessenger().MediaPlay(item);
+    CApplicationMessenger::Get().MediaPlay(item);
   else
-    g_application.getApplicationMessenger().PlayFile(item);
+    CApplicationMessenger::Get().PlayFile(item);
 }
 
 void CGUIDialogVideoInfo::SetLabel(int iControl, const CStdString &strLabel)

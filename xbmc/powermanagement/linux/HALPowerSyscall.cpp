@@ -24,7 +24,6 @@
 #include "utils/log.h"
 
 #ifdef HAS_HAL
-#include "Application.h"
 #include <dbus/dbus.h>
 #include <stdlib.h>
 
