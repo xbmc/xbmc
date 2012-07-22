@@ -98,7 +98,7 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       bool bCloseDialog = false;
 
       if (iControl == ID_BUTTON_DEFAULT)
-        SetDefaults();
+        SetDefaultSettings();
       else if (iControl != ID_BUTTON_OK)
         bCloseDialog = ShowVirtualKeyboard(iControl);
 
@@ -1079,7 +1079,7 @@ CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting
 }
 
 // Go over all the settings and set their default values
-void CGUIDialogAddonSettings::SetDefaults()
+void CGUIDialogAddonSettings::SetDefaultSettings()
 {
   if(!m_addon)
     return;

@@ -70,7 +70,7 @@ private:
   void FreeControls();
   void UpdateFromControls();
   void EnableControls();
-  void SetDefaults();
+  void SetDefaultSettings();
   bool GetCondition(const CStdString &condition, const int controlId);
 
   void SaveSettings(void);
