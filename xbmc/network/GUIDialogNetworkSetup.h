@@ -49,6 +49,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnBack(int actionID);
   virtual void OnInitWindow();
+  virtual void OnWindowLoaded();
+  virtual void OnDeinitWindow(int nextWindowID);
 
   static bool ShowAndGetNetworkAddress(CStdString &path);
 
