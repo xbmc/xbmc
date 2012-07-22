@@ -336,6 +336,7 @@
 					<aligny>center</aligny>
 					<font>font10_title</font>
 					<textcolor>blue</textcolor>
+					<visible>Container(12).ListItem.HasEpg</visible>
 					<label>$INFO[Container(12).ListItem.StartTime]</label>
 				</control>
 				<control type="progress">
@@ -344,6 +345,7 @@
 					<posy>30</posy>
 					<width>510</width>
 					<height>8</height>
+					<visible>Container(12).ListItem.HasEpg</visible>
 					<info>Container(12).ListItem.Progress</info>
 				</control>
 				<control type="label">
@@ -355,6 +357,7 @@
 					<aligny>center</aligny>
 					<font>font10_title</font>
 					<textcolor>blue</textcolor>
+					<visible>Container(12).ListItem.HasEpg</visible>
 					<label>$INFO[Container(12).ListItem.EndTime]</label>
 				</control>
 				<control type="textbox">
@@ -463,6 +466,7 @@
 						<height>6</height>
 						<colordiffuse>88FFFFFF</colordiffuse>
 						<info>ListItem.Progress</info>
+						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="image">
 						<posx>340</posx>
@@ -557,6 +561,7 @@
 						<height>6</height>
 						<colordiffuse>88FFFFFF</colordiffuse>
 						<info>ListItem.Progress</info>
+						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="image">
 						<posx>340</posx>
