@@ -32,6 +32,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "URL.h"
 
 #define ENV_PARTIAL_PATH "special://xbmcbin/system/;" \
                  "special://xbmcbin/system/players/mplayer/;" \

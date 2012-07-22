@@ -67,6 +67,7 @@
 #include "addons/Skin.h"
 #include "storage/MediaManager.h"
 #include "Autorun.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

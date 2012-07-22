@@ -29,6 +29,7 @@
 #include "log.h"
 #include "Util.h"
 #include "URIUtils.h"
+#include "URL.h"
 #include "guilib/LocalizeStrings.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"

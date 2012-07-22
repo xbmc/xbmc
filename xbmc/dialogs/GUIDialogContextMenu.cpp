@@ -44,6 +44,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "video/windows/GUIWindowVideoBase.h"
+#include "URL.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"

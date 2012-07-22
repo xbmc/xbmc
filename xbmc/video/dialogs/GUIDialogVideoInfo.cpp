@@ -46,6 +46,7 @@
 #include "GUIUserMessages.h"
 #include "TextureCache.h"
 #include "music/MusicDatabase.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

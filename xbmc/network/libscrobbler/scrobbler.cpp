@@ -36,6 +36,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
+#include "URL.h"
 
 #define SCROBBLER_CLIENT              "xbm"
 //#define SCROBBLER_CLIENT              "tst"     // For testing ONLY!

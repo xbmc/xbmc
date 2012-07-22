@@ -43,6 +43,7 @@
 #include "utils/Variant.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/EndianSwap.h"
+#include "URL.h"
 
 #include <map>
 #include <string>

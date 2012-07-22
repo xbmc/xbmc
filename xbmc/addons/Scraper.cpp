@@ -40,6 +40,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "Util.h"
+#include "URL.h"
 
 #include <sstream>
 

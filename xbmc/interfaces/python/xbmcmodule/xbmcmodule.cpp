@@ -56,6 +56,7 @@
 #include "utils/log.h"
 #include "pyrendercapture.h"
 #include "monitor.h"
+#include "URL.h"
 
 // include for constants
 #include "pyutil.h"

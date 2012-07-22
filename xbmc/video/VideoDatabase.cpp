@@ -52,6 +52,7 @@
 #include "dbwrappers/dataset.h"
 #include "utils/LabelFormatter.h"
 #include "XBDateTime.h"
+#include "URL.h"
 
 using namespace std;
 using namespace dbiplus;

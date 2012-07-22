@@ -35,6 +35,7 @@
 #include "utils/md5.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
+#include "URL.h"
 
 #ifdef TARGET_WINDOWS
 #define close closesocket

@@ -32,11 +32,13 @@
 #include "PlatformDefs.h" // for __stat64
 #endif
 
-#include "URL.h"
-
 #include <stdio.h>
 #include <stdint.h>
 #include <sys/stat.h>
+
+#include "utils/StdString.h"
+
+class CURL;
 
 namespace XFILE
 {
@@ -107,12 +109,9 @@ public:
   IFile *m_pNewFileImp;
   CURL  *m_pNewUrl;
 
-  CRedirectException() : m_pNewFileImp(NULL), m_pNewUrl(NULL) { }
+  CRedirectException();
   
-  CRedirectException(IFile *pNewFileImp, CURL *pNewUrl=NULL) 
-  : m_pNewFileImp(pNewFileImp)
-  , m_pNewUrl(pNewUrl) 
-  { }
+  CRedirectException(IFile *pNewFileImp, CURL *pNewUrl=NULL);
 };
 
 }

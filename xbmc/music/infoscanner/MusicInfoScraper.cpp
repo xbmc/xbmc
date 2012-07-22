@@ -20,7 +20,6 @@
  */
 
 #include "MusicInfoScraper.h"
-#include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 
