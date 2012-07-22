@@ -907,7 +907,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   unsigned char* pixels = new unsigned char[stride * height];
 
   //read pixels from the backbuffer
-#if HAS_GLES == 2
+#if HAS_GLES == 2 || HAS_GLES == 1
   glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
 #else
   glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);

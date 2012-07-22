@@ -113,7 +113,7 @@ public:
 
 #ifdef HAS_GL
   CLinuxRendererGL    *m_pRenderer;
-#elif HAS_GLES == 2
+#elif HAS_GLES == 2 || HAS_GLES == 1
   CLinuxRendererGLES  *m_pRenderer;
 #elif defined(HAS_DX)
   CWinRenderer        *m_pRenderer;

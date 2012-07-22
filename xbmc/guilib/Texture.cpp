@@ -69,6 +69,11 @@ CBaseTexture::~CBaseTexture()
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
 {
+  if(m_imageWidth != width && m_imageHeight != height && m_format != format && m_pixels != NULL) {
+    //Nothing to do
+    return;
+  }
+
   m_imageWidth = width;
   m_imageHeight = height;
   m_format = format;

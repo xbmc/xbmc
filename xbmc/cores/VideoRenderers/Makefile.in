@@ -21,6 +21,12 @@ SRCS+= LinuxRendererGLES.cpp \
 
 endif
 
+ifeq (@USE_OPENGLESV1@,1)
+SRCS+= LinuxRendererGLES.cpp \
+       OverlayRendererGL.cpp \
+
+endif
+
 LIB=VideoRenderer.a
 
 include @abs_top_srcdir@/Makefile.include

@@ -300,7 +300,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
       return o->m_overlay->Acquire();
   }
 
-#if defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL) || (defined(HAS_GLES) && HAS_GLES == 2)
   return new COverlayGlyphGL(images, width, height);
 #elif defined(HAS_DX)
   return new COverlayQuadsDX(images, width, height);
@@ -326,7 +326,7 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
     return r;
   }
 
-#if defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL) || (defined(HAS_GLES) && HAS_GLES == 2)
   if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = new COverlayTextureGL((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))

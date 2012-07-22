@@ -22,11 +22,13 @@
  *
  */
 
-#if HAS_GLES == 2
+#if HAS_GLES == 2 || HAS_GLES == 1
 
 #include "system_gl.h"
 
+#if HAS_GLES == 2
 #include "xbmc/guilib/FrameBufferObject.h"
+#endif
 #include "xbmc/guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
@@ -193,7 +195,9 @@ protected:
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
 
+#if HAS_GLES == 2
   CFrameBufferObject m_fbo;
+#endif
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;

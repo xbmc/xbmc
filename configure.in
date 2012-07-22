@@ -195,6 +195,12 @@ AC_ARG_ENABLE([gles],
   [use_gles=$enableval],
   [use_gles=no])
 
+AC_ARG_ENABLE([glesv1],
+  [AS_HELP_STRING([--enable-glesv1],
+  [enable OpenGLESv1 rendering (default is no)])],
+  [use_glesv1=$enableval],
+  [use_glesv1=no])
+
 AC_ARG_ENABLE([sdl],
   [AS_HELP_STRING([--enable-sdl],
   [enable SDL (default is auto)])],
@@ -731,8 +737,19 @@ else
       AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR($missing_library))
     fi
   else
-    AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
-    AC_CHECK_LIB([SDL_gfx],[main])
+    if test "$use_glesv1" = "yes"; then
+      if test "$host_alias" = "sh4-linux" ; then
+        AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
+        AC_DEFINE([HAVE_LIBGLES],[1],["Define to 1 if you have the `GLES' library (-lGLES)."])
+        
+        PKG_CHECK_MODULES([STGLES],  [libstgles],
+	  INCLUDES="$INCLUDES $STGLES_CFLAGS"; LIBS="$LIBS $STGLES_LIBS"; use_stgles=yes],
+          AC_MSG_NOTICE($stgles_not_found); use_stgles=no)
+      fi
+    else
+      AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
+      AC_CHECK_LIB([SDL_gfx],[main])
+    fi
   fi
 fi
 
@@ -1650,16 +1667,23 @@ final_message="$final_message\n  target CPU:\t$use_cpu"
 if test "$use_gles" = "yes"; then
   final_message="$final_message\n  OpenGLES:\tYes"
   USE_OPENGLES=1
+  USE_OPENGLESV1=0
   USE_OPENGL=0
 else
   USE_OPENGLES=0
   if test "$use_gl" = "yes"; then
     final_message="$final_message\n  OpenGL:\tYes"
     USE_OPENGL=1
+    USE_OPENGLESV1=0
   else
-    final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
-    SDL_DEFINES="-DHAS_SDL_2D"
     USE_OPENGL=0
+    final_message="$final_message\n  OpenGLESV1:\tYes"
+    if test "$use_glesv1" = "yes"; then
+      USE_OPENGLESV1=1
+    else
+      final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
+      SDL_DEFINES="-DHAS_SDL_2D"
+    fi
   fi
 fi
 
@@ -2105,6 +2129,7 @@ AC_SUBST(LIBMEPG2_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 AC_SUBST(USE_OPENGL)
 AC_SUBST(USE_OPENGLES)
+AC_SUBST(USE_OPENGLESV1)
 AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_CRYSTALHD)

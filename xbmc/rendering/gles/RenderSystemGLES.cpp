@@ -22,7 +22,7 @@
 
 #include "system.h"
 
-#if HAS_GLES == 2
+#if HAS_GLES == 2 || HAS_GLES == 1
 
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
@@ -34,6 +34,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
 
+#if HAS_GLES == 2
 static const char* ShaderNames[SM_ESHADERCOUNT] =
     {"guishader_frag_default.glsl",
      "guishader_frag_texture.glsl",
@@ -44,11 +45,14 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
      "guishader_frag_rgba.glsl",
      "guishader_frag_rgba_blendcolor.glsl"
     };
+#endif
 
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
+#if HAS_GLES == 2
  , m_pGUIshader(0)
  , m_method(SM_DEFAULT)
+#endif
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
 }
@@ -117,9 +121,9 @@ bool CRenderSystemGLES::InitRenderSystem()
 
 
   m_bRenderCreated = true;
-  
+#if HAS_GLES == 2
   InitialiseGUIShader();
-
+#endif
   return true;
 }
 
@@ -153,6 +157,7 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height, bool fullScreen
 
 bool CRenderSystemGLES::DestroyRenderSystem()
 {
+#if HAS_GLES == 2
   CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
 
   if (m_pGUIshader)
@@ -169,7 +174,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
     delete[] m_pGUIshader;
     m_pGUIshader = NULL;
   }
-
+#endif
   m_bRenderCreated = false;
 
   return true;
@@ -200,6 +205,10 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
   float g = GET_G(color) / 255.0f;
   float b = GET_B(color) / 255.0f;
   float a = GET_A(color) / 255.0f;
+#if HAS_GLES == 1
+  //TODO: Ugly Hack, somehow the alpha value goes missing, check this
+  a = 0.0f;
+#endif
 
   glClearColor(r, g, b, a);
 
@@ -424,6 +433,7 @@ bool CRenderSystemGLES::TestRender()
 {
   static float theta = 0.0;
 
+#if HAS_GLES == 2
   //RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
   //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
@@ -466,6 +476,7 @@ bool CRenderSystemGLES::TestRender()
 
   theta += 1.0f;
 
+#endif
   return true;
 }
 
@@ -544,7 +555,7 @@ void CRenderSystemGLES::ResetScissors()
 {
   SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
 }
-
+#if HAS_GLES == 2
 void CRenderSystemGLES::InitialiseGUIShader()
 {
   if (!m_pGUIshader)
@@ -626,5 +637,5 @@ GLint CRenderSystemGLES::GUIShaderGetCoord1()
 
   return -1;
 }
-
+#endif
 #endif

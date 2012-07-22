@@ -56,7 +56,7 @@ void CGLTexture::DestroyTextureObject()
 
 void CGLTexture::LoadToGPU()
 {
-  if (!m_pixels)
+  if (m_loadedToGPU || !m_pixels)
   {
     // nothing to load - probably same image (no change)
     return;
@@ -194,6 +194,9 @@ void CGLTexture::BindToUnit(unsigned int unit)
 #else // GLES
   glActiveTexture((unit == 1) ? GL_TEXTURE1 : GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_texture);
+#if HAS_GLES == 1
+  glEnable(GL_TEXTURE_2D);
+#endif
 #endif
 }
 
