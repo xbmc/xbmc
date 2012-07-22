@@ -948,7 +948,7 @@ void CGUISettings::Initialize()
   AddInt(pvrr, "pvrrecord.marginstart", 19175, 2, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(pvrr, "pvrrecord.marginend", 19176, 10, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(pvrr, "pvrrecord.sep1");
-  AddBool(pvr, "pvrrecord.timernotifications", 19233, true);
+  AddBool(pvrr, "pvrrecord.timernotifications", 19233, true);
 
   CSettingsCategory* pvrpwr = AddCategory(8, "pvrpowermanagement", 14095);
   AddBool(pvrpwr, "pvrpowermanagement.enabled", 305, false);
