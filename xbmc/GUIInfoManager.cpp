@@ -55,6 +55,7 @@
 #include "utils/StringUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/SeekHandler.h"
+#include "URL.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"

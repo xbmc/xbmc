@@ -52,6 +52,7 @@
 #include "utils/log.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
+#include "URL.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

@@ -25,7 +25,12 @@
 #include <set>
 #include <vector>
 #include <map>
-#include "URL.h"
+
+#include "utils/StdString.h"
+
+#ifdef _WIN32
+#undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
+#endif
 
 //forwards
 class CCriticalSection;

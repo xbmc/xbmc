@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "PlatformDefs.h"
+#include "URL.h"
 
 extern "C"
 {

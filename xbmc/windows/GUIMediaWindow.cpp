@@ -41,6 +41,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "URL.h"
 
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "addons/GUIDialogAddonSettings.h"

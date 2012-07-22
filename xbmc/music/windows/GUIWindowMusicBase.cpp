@@ -66,6 +66,7 @@
 #include "video/VideoInfoTag.h"
 #include "utils/StringUtils.h"
 #include "ThumbLoader.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

@@ -58,6 +58,7 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

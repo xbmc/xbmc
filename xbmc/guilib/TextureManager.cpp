@@ -33,6 +33,7 @@
 #endif
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
+#include "URL.h"
 #include <assert.h>
 
 using namespace std;

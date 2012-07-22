@@ -27,6 +27,7 @@
 #include "utils/EndianSwap.h"
 #include "filesystem/FileFactory.h"
 #include "filesystem/IFile.h"
+#include "URL.h"
 #include <samplerate.h>
 
 #include "AEConvert.h"

@@ -28,6 +28,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 
 using namespace XFILE;
 

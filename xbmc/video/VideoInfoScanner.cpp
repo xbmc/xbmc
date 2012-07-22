@@ -47,6 +47,7 @@
 #include "utils/Variant.h"
 #include "ThumbLoader.h"
 #include "TextureCache.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;
