@@ -170,7 +170,12 @@ void CGUIWindowPVRGuide::UpdateViewNow(bool bUpdateSelectedFile)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19030));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-  if (g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNow(*m_parent->m_vecItems) == 0)
+  int iEpgItems = g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNow(*m_parent->m_vecItems);
+  if (iEpgItems == 0 && bRadio)
+    // if we didn't get any events for radio, get tv instead
+    iEpgItems = g_PVRManager.GetPlayingGroup(false)->GetEPGNow(*m_parent->m_vecItems);
+
+  if (iEpgItems == 0)
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -193,7 +198,12 @@ void CGUIWindowPVRGuide::UpdateViewNext(bool bUpdateSelectedFile)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-  if (g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNext(*m_parent->m_vecItems) == 0)
+  int iEpgItems = g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNext(*m_parent->m_vecItems);
+  if (iEpgItems == 0 && bRadio)
+    // if we didn't get any events for radio, get tv instead
+    iEpgItems = g_PVRManager.GetPlayingGroup(false)->GetEPGNext(*m_parent->m_vecItems);
+
+  if (iEpgItems)
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -218,7 +228,11 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
     bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
 
     m_cachedTimeline->Clear();
-    g_PVRManager.GetPlayingGroup(bRadio)->GetEPGAll(*m_cachedTimeline);
+
+    if (g_PVRManager.GetPlayingGroup(bRadio)->GetEPGAll(*m_cachedTimeline) == 0 &&
+        bRadio)
+      // if we didn't get any events for radio, get tv instead
+      g_PVRManager.GetPlayingGroup(false)->GetEPGAll(*m_cachedTimeline);
   }
 
   m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
