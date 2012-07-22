@@ -32,6 +32,7 @@ namespace PERIPHERALS
     virtual ~CGUIDialogPeripheralManager(void);
     virtual bool OnMessage(CGUIMessage& message);
     virtual bool OnAction(const CAction& action);
+    virtual void OnInitWindow();
     virtual void OnWindowLoaded(void);
     virtual void OnWindowUnload(void);
     virtual bool HasListItems() const { return true; };
@@ -39,7 +40,6 @@ namespace PERIPHERALS
     virtual void Update(void);
 
   protected:
-    virtual bool OnMessageInit(CGUIMessage &message);
     virtual bool OnMessageClick(CGUIMessage &message);
 
     virtual bool OnClickList(CGUIMessage &message);

@@ -39,6 +39,7 @@ CGUIDialogPeripheralManager::CGUIDialogPeripheralManager(void) :
     m_iSelected(0),
     m_peripheralItems(new CFileItemList)
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogPeripheralManager::~CGUIDialogPeripheralManager(void)
@@ -69,13 +70,11 @@ bool CGUIDialogPeripheralManager::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIDialogPeripheralManager::OnMessageInit(CGUIMessage &message)
+void CGUIDialogPeripheralManager::OnInitWindow()
 {
-  CGUIWindow::OnMessage(message);
+  CGUIWindow::OnInitWindow();
   m_iSelected = 0;
   Update();
-
-  return true;
 }
 
 bool CGUIDialogPeripheralManager::OnClickList(CGUIMessage &message)
@@ -137,11 +136,6 @@ bool CGUIDialogPeripheralManager::OnMessage(CGUIMessage& message)
       break;
     case GUI_MSG_ITEM_SELECT:
       return true;
-    case GUI_MSG_WINDOW_INIT:
-      {
-        OnMessageInit(message);
-        break;
-      }
     case GUI_MSG_CLICKED:
       return OnMessageClick(message);
   }
