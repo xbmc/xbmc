@@ -92,13 +92,16 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
   CSingleLock lock(m_critSection);
   CFile file;
   file.Open(url);
-  CStdString checksum;
   try
   {
-    char* temp = checksum.GetBufferSetLength((int)file.GetLength());
-    file.Read(temp,file.GetLength());
-    checksum.ReleaseBuffer();
-    return checksum;
+    // we intentionally avoid using file.GetLength() for 
+    // Transfer-Encoding: chunked servers.
+    std::stringstream str;
+    char temp[1024];
+    int read;
+    while ((read=file.Read(temp, sizeof(temp))) > 0)
+      str.write(temp, read);
+    return str.str();
   }
   catch (...)
   {
