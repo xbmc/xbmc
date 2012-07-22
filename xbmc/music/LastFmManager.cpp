@@ -24,6 +24,7 @@
 #include "Album.h"
 #include "Artist.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/md5.h"
@@ -881,7 +882,7 @@ bool CLastFmManager::Ban(const CMusicInfoTag& musicinfotag)
   if (CallXmlRpc("banTrack", StringUtils::Join(musicinfotag.GetArtist(), g_advancedSettings.m_musicItemSeparator), musicinfotag.GetTitle()))
   {
     //we banned this track so skip to the next track
-    g_application.getApplicationMessenger().ExecBuiltIn("playercontrol(next)");
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(next)");
     m_CurrentSong.IsBanned = true;
     return true;
   }

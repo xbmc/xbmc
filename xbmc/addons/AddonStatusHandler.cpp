@@ -21,7 +21,7 @@
 #include "AddonStatusHandler.h"
 #include "AddonManager.h"
 #include "threads/SingleLock.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -95,7 +95,7 @@ void CAddonStatusHandler::Process()
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
 
     if (pDialog->IsConfirmed())
       CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
@@ -111,7 +111,7 @@ void CAddonStatusHandler::Process()
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
 
     CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
@@ -128,7 +128,7 @@ void CAddonStatusHandler::Process()
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
 
     if (!pDialogYesNo->IsConfirmed()) return;
 
@@ -156,7 +156,7 @@ void CAddonStatusHandler::Process()
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
   }
 }
 

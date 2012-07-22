@@ -23,6 +23,8 @@
 
 #include <vector>
 
+#include "utils/StdString.h"
+
 #define DIFFRINGSIZE 120
 
 class CPullupCorrection

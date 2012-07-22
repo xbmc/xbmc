@@ -21,17 +21,17 @@ CStdString CHttpApi::MethodCall(CStdString &command, CStdString &parameter)
   int cnt=0;
 
   if (!parameter.IsEmpty())
-    g_application.getApplicationMessenger().HttpApi(command + "; " + parameter, true);
+    CApplicationMessenger::Get().HttpApi(command + "; " + parameter, true);
   else
-    g_application.getApplicationMessenger().HttpApi(command, true);
+    CApplicationMessenger::Get().HttpApi(command, true);
 
   //wait for response - max 20s
   Sleep(0);
-  CStdString response = g_application.getApplicationMessenger().GetResponse();
+  CStdString response = CApplicationMessenger::Get().GetResponse();
 
   while (response=="[No response yet]" && cnt++<200 && !g_application.m_bStop)
   {
-    response=g_application.getApplicationMessenger().GetResponse();
+    response=CApplicationMessenger::Get().GetResponse();
     CLog::Log(LOGDEBUG, "HttpApi: waiting %d", cnt);
     Sleep(100);
   }

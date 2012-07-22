@@ -24,7 +24,6 @@
 #include "utils/log.h"
 
 #ifdef HAS_DBUS
-#include "Application.h"
 #include "DBusUtil.h"
 
 CConsoleDeviceKitPowerSyscall::CConsoleDeviceKitPowerSyscall()

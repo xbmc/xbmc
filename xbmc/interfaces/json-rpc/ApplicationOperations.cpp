@@ -85,7 +85,7 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITran
   else
     return InvalidParams;
 
-  g_application.getApplicationMessenger().ShowVolumeBar(up);
+  CApplicationMessenger::Get().ShowVolumeBar(up);
 
   return GetPropertyValue("volume", result);
 }
@@ -94,7 +94,7 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransp
 {
   if ((parameterObject["mute"].isString() && parameterObject["mute"].asString().compare("toggle") == 0) ||
       (parameterObject["mute"].isBoolean() && parameterObject["mute"].asBoolean() != g_application.IsMuted()))
-    g_application.getApplicationMessenger().SendAction(CAction(ACTION_MUTE));
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_MUTE));
   else if (!parameterObject["mute"].isBoolean() && !parameterObject["mute"].isString())
     return InvalidParams;
 
@@ -103,7 +103,7 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransp
 
 JSONRPC_STATUS CApplicationOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().Quit();
+  CApplicationMessenger::Get().Quit();
   return ACK;
 }
 

@@ -28,6 +28,7 @@
 #include "filesystem/CurlFile.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "video/VideoInfoTag.h"
 #include "guilib/GUIWindowManager.h"
@@ -120,7 +121,7 @@ void CTuxBoxService::Process()
         if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
         {
           CLog::Log(LOGDEBUG," - ERROR: Non controlled channel change detected! Stopping current playing stream!");
-          g_application.getApplicationMessenger().MediaStop();
+          CApplicationMessenger::Get().MediaStop();
           break;
         }
       }
@@ -579,7 +580,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       }
 
       if (g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
-        g_application.getApplicationMessenger().MediaStop();
+        CApplicationMessenger::Get().MediaStop();
 
       strLabel.Format("%s: %s %s-%s",items.GetLabel().c_str(), sCurSrvData.current_event_date.c_str(),sCurSrvData.current_event_start.c_str(), sCurSrvData.current_event_start.c_str());
       strLabel2.Format("%s", sCurSrvData.current_event_description.c_str());
@@ -1439,7 +1440,7 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
 
   // IsPlaying, Stop it..
   if(g_application.IsPlaying())
-    g_application.getApplicationMessenger().MediaStop();
+    CApplicationMessenger::Get().MediaStop();
 
   // popup the context menu
   CContextButtons buttons;

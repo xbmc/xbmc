@@ -24,7 +24,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "IoSupport.h"
 #include "URL.h"
-#include "Util.h"
 #include "utils/URIUtils.h"
 #ifdef _WIN32
 #include "WIN32Util.h"

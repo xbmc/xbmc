@@ -25,7 +25,7 @@
 #include "Util.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 
@@ -80,7 +80,7 @@ JSONRPC_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITranspor
   {
     case PLAYLIST_VIDEO:
     case PLAYLIST_MUSIC:
-      g_application.getApplicationMessenger().PlayListPlayerGetItems(playlist, list);
+      CApplicationMessenger::Get().PlayListPlayerGetItems(playlist, list);
       break;
 
     case PLAYLIST_PICTURE:
@@ -116,7 +116,7 @@ JSONRPC_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLaye
       if (!FillFileItemList(params["item"], list))
         return InvalidParams;
 
-      g_application.getApplicationMessenger().PlayListPlayerAdd(playlist, list);
+      CApplicationMessenger::Get().PlayListPlayerAdd(playlist, list);
 
       break;
 
@@ -163,7 +163,7 @@ JSONRPC_STATUS CPlaylistOperations::Insert(const CStdString &method, ITransportL
   if (!FillFileItemList(params["item"], list))
     return InvalidParams;
 
-  g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(parameterObject["playlistid"]), list, (int)parameterObject["position"].asInteger());
+  CApplicationMessenger::Get().PlayListPlayerInsert(GetPlaylist(parameterObject["playlistid"]), list, (int)parameterObject["position"].asInteger());
 
   NotifyAll();
   return ACK;
@@ -179,7 +179,7 @@ JSONRPC_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportL
   if (g_playlistPlayer.GetCurrentPlaylist() == playlist && g_playlistPlayer.GetCurrentSong() == position)
     return InvalidParams;
 
-  g_application.getApplicationMessenger().PlayListPlayerRemove(playlist, position);
+  CApplicationMessenger::Get().PlayListPlayerRemove(playlist, position);
 
   NotifyAll();
   return ACK;
@@ -193,14 +193,14 @@ JSONRPC_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLa
   {
     case PLAYLIST_MUSIC:
     case PLAYLIST_VIDEO:
-      g_application.getApplicationMessenger().PlayListPlayerClear(playlist);
+      CApplicationMessenger::Get().PlayListPlayerClear(playlist);
       break;
 
     case PLAYLIST_PICTURE:
        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
        if (!slideshow)
          return FailedToExecute;
-       g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
+       CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
        slideshow->Reset();
        break;
   }
@@ -215,7 +215,7 @@ JSONRPC_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLay
   if (playlist == PLAYLIST_PICTURE)
     return FailedToExecute;
 
-  g_application.getApplicationMessenger().PlayListPlayerSwap(playlist, (int)parameterObject["position1"].asInteger(), (int)parameterObject["position2"].asInteger());
+  CApplicationMessenger::Get().PlayListPlayerSwap(playlist, (int)parameterObject["position1"].asInteger(), (int)parameterObject["position2"].asInteger());
 
   NotifyAll();
   return ACK;
@@ -267,7 +267,7 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const CStdStr
     {
       case PLAYLIST_MUSIC:
       case PLAYLIST_VIDEO:
-        g_application.getApplicationMessenger().PlayListPlayerGetItems(playlist, list);
+        CApplicationMessenger::Get().PlayListPlayerGetItems(playlist, list);
         result = list.Size();
         break;
 

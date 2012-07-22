@@ -20,7 +20,7 @@
  */
 
 #include "SystemOperations.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "interfaces/Builtins.h"
 #include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
@@ -55,7 +55,7 @@ JSONRPC_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportL
 {
   if (g_powerManager.CanPowerdown())
   {
-    g_application.getApplicationMessenger().Powerdown();
+    CApplicationMessenger::Get().Powerdown();
     return ACK;
   }
   else
@@ -66,7 +66,7 @@ JSONRPC_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLa
 {
   if (g_powerManager.CanSuspend())
   {
-    g_application.getApplicationMessenger().Suspend();
+    CApplicationMessenger::Get().Suspend();
     return ACK;
   }
   else
@@ -77,7 +77,7 @@ JSONRPC_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransport
 {
   if (g_powerManager.CanHibernate())
   {
-    g_application.getApplicationMessenger().Hibernate();
+    CApplicationMessenger::Get().Hibernate();
     return ACK;
   }
   else
@@ -88,7 +88,7 @@ JSONRPC_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLay
 {
   if (g_powerManager.CanReboot())
   {
-    g_application.getApplicationMessenger().Restart();
+    CApplicationMessenger::Get().Restart();
     return ACK;
   }
   else

@@ -41,6 +41,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIAudioManager.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/Variant.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -365,7 +366,7 @@ void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bo
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().Close(this, forceClose, true, nextWindowID, enableSound);
+    CApplicationMessenger::Get().Close(this, forceClose, true, nextWindowID, enableSound);
   }
   else
     Close_Internal(forceClose, nextWindowID, enableSound);

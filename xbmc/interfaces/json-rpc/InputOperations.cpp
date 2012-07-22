@@ -21,6 +21,7 @@
 
 #include "InputOperations.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
@@ -79,7 +80,7 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
   {
     g_application.ResetSystemIdleTimer();
     g_audioManager.PlayActionSound(actionID);
-    g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_INVALID, waitResult);
+    CApplicationMessenger::Get().SendAction(CAction(actionID), WINDOW_INVALID, waitResult);
   }
   return ACK;
 }
@@ -87,7 +88,7 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
-    g_application.getApplicationMessenger().ActivateWindow(windowID, std::vector<CStdString>(), false);
+    CApplicationMessenger::Get().ActivateWindow(windowID, std::vector<CStdString>(), false);
 
   return ACK;
 }
@@ -105,7 +106,7 @@ JSONRPC_STATUS CInputOperations::SendText(const CStdString &method, ITransportLa
   CGUIMessage msg(GUI_MSG_SET_TEXT, 0, 0);
   msg.SetLabel(text);
   msg.SetParam1(parameterObject["done"].asBoolean() ? 1 : 0);
-  g_application.getApplicationMessenger().SendGUIMessage(msg, window->GetID());
+  CApplicationMessenger::Get().SendGUIMessage(msg, window->GetID());
   return ACK;
 }
 

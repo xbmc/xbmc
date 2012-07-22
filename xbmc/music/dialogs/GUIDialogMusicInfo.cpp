@@ -21,7 +21,6 @@
 
 #include "GUIDialogMusicInfo.h"
 #include "guilib/GUIWindowManager.h"
-#include "Util.h"
 #include "guilib/GUIImage.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
