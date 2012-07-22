@@ -842,7 +842,11 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     CMusicInfoTag* musictag = item.GetMusicInfoTag();
     if (musictag)
     {
-      musictag->SetTitle(bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055));
+      musictag->SetTitle(bHasTagNow ?
+          epgTagNow.Title() :
+          g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+              StringUtils::EmptyString :
+              g_localizeStrings.Get(19055)); // no information available
       if (bHasTagNow)
         musictag->SetGenre(epgTagNow.Genre());
       musictag->SetDuration(bHasTagNow ? epgTagNow.GetDuration() : 3600);
@@ -859,7 +863,11 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     CVideoInfoTag *videotag = item.GetVideoInfoTag();
     if (videotag)
     {
-      videotag->m_strTitle = bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055);
+      videotag->m_strTitle = bHasTagNow ?
+          epgTagNow.Title() :
+          g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+              StringUtils::EmptyString :
+              g_localizeStrings.Get(19055); // no information available
       if (bHasTagNow)
         videotag->m_genre = epgTagNow.Genre();
       videotag->m_strPath = channelTag->Path();

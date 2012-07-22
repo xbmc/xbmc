@@ -193,7 +193,10 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = bHasEpgNow ? epgNow.Title() : g_localizeStrings.Get(19055);
+  m_strLabel2 = bHasEpgNow ? epgNow.Title() :
+      g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+        StringUtils::EmptyString :
+        g_localizeStrings.Get(19055); // no information available
 
   if (channel.IsRadio() && bHasEpgNow)
   {
@@ -201,7 +204,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
     if (musictag)
     {
       musictag->SetURL(channel.Path());
-      musictag->SetTitle(bHasEpgNow ? epgNow.Title() : g_localizeStrings.Get(19055));
+      musictag->SetTitle(m_strLabel2);
       musictag->SetArtist(channel.ChannelName());
       musictag->SetAlbumArtist(channel.ChannelName());
       if (bHasEpgNow)

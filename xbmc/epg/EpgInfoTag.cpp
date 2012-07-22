@@ -28,6 +28,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "addons/include/xbmc_pvr_types.h"
 
@@ -394,18 +395,22 @@ void CEpgInfoTag::SetTitle(const CStdString &strTitle)
 
 CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 {
-  CStdString retVal;
-  CSingleLock lock(m_critSection);
-  const CPVRChannel *channel(ChannelTag());
+  CStdString strTitle;
+  bool bParentalLocked(false);
 
-  if (!bOverrideParental && channel && g_PVRManager.IsParentalLocked(*channel))
-    retVal = g_localizeStrings.Get(19266);
-  else if (m_strTitle.IsEmpty())
-    retVal = g_localizeStrings.Get(19055);
-  else
-    retVal = m_strTitle;
+  {
+    CSingleLock lock(m_critSection);
+    strTitle = m_strTitle;
+    if (m_pvrChannel)
+      bParentalLocked = m_pvrChannel->IsLocked();
+  }
 
-  return retVal;
+  if (!bOverrideParental && bParentalLocked)
+    strTitle = g_localizeStrings.Get(19266); // parental locked
+  else if (strTitle.IsEmpty() && !g_guiSettings.GetBool("epg.hidenoinfoavailable"))
+    strTitle = g_localizeStrings.Get(19055); // no information available
+
+  return strTitle;
 }
 
 void CEpgInfoTag::SetPlotOutline(const CStdString &strPlotOutline)
