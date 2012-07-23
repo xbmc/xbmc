@@ -642,6 +642,9 @@ PVR_ERROR CHTSPData::RenameRecording(const PVR_RECORDING &recording, const char 
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  if (success > 0)
+    PVR->TriggerRecordingUpdate();
+
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_SAVED;
 }
 
