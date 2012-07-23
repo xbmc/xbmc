@@ -45,6 +45,7 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   m_iGuideView(g_guiSettings.GetInt("epg.defaultguideview"))
 {
   m_cachedTimeline = new CFileItemList;
+  m_cachedChannelGroup = NULL;
 }
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
@@ -220,19 +221,23 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   if (!m_parent->m_guideGrid)
     return;
 
-  if (m_bUpdateRequired || m_cachedTimeline->IsEmpty())
+  CPVRChannel CurrentChannel;
+  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
+  bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
+
+  if (m_bUpdateRequired || m_cachedTimeline->IsEmpty() ||
+      m_cachedChannelGroup != g_PVRManager.GetPlayingGroup(bRadio))
   {
     m_bUpdateRequired = false;
-    CPVRChannel CurrentChannel;
-    bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-    bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
 
     m_cachedTimeline->Clear();
-
-    if (g_PVRManager.GetPlayingGroup(bRadio)->GetEPGAll(*m_cachedTimeline) == 0 &&
-        bRadio)
+    m_cachedChannelGroup = g_PVRManager.GetPlayingGroup(bRadio);
+    if (m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline) == 0 && bRadio)
+    {
       // if we didn't get any events for radio, get tv instead
-      g_PVRManager.GetPlayingGroup(false)->GetEPGAll(*m_cachedTimeline);
+      m_cachedChannelGroup = g_PVRManager.GetPlayingGroup(false);
+      m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline);
+    }
   }
 
   m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());

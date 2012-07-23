@@ -29,6 +29,7 @@
 namespace PVR
 {
   class CGUIWindowPVR;
+  class CPVRChannelGroup;
 
   class CGUIWindowPVRGuide : public CGUIWindowPVRCommon, public Observer
   {
@@ -67,7 +68,8 @@ namespace PVR
     void UpdateViewNext(bool bUpdateSelectedFile);
     void UpdateViewTimeline(bool bUpdateSelectedFile);
 
-    int            m_iGuideView;
-    CFileItemList *m_cachedTimeline;
+    int               m_iGuideView;
+    CFileItemList    *m_cachedTimeline;
+    CPVRChannelGroup *m_cachedChannelGroup;
   };
 }
