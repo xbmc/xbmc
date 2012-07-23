@@ -278,7 +278,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("inhibitidleshutdown"))
   {
     bool inhibit = (params.size() == 1 && params[0].Equals("true"));
-    g_application.getApplicationMessenger().InhibitIdleShutdown(inhibit);
+    CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
   }
   else if (execute.Equals("minimize"))
   {

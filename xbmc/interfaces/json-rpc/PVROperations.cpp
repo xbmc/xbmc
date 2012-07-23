@@ -20,7 +20,7 @@
  */
 
 #include "PVROperations.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
@@ -55,9 +55,9 @@ JSONRPC_STATUS CPVROperations::ChannelSwitch(const CStdString &method, ITranspor
 
   CPVRChannel currentChannel;
   if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.IsRadio() == channel->IsRadio())
-    g_application.getApplicationMessenger().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)channel->ChannelNumber()));
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)channel->ChannelNumber()));
   else
-    g_application.getApplicationMessenger().MediaPlay(CFileItem(*channel));
+    CApplicationMessenger::Get().MediaPlay(CFileItem(*channel));
   return ACK;
 }
 
@@ -70,7 +70,7 @@ JSONRPC_STATUS CPVROperations::ChannelUp(const CStdString &method, ITransportLay
   }
 
   CLog::Log(LOGDEBUG, "JSONRPC: channel up");
-  g_application.getApplicationMessenger().SendAction(CAction(ACTION_NEXT_ITEM));
+  CApplicationMessenger::Get().SendAction(CAction(ACTION_NEXT_ITEM));
   return ACK;
 }
 
@@ -83,7 +83,7 @@ JSONRPC_STATUS CPVROperations::ChannelDown(const CStdString &method, ITransportL
   }
 
   CLog::Log(LOGDEBUG, "JSONRPC: channel down");
-  g_application.getApplicationMessenger().SendAction(CAction(ACTION_PREV_ITEM));
+  CApplicationMessenger::Get().SendAction(CAction(ACTION_PREV_ITEM));
   return ACK;
 }
 

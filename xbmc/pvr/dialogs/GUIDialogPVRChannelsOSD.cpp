@@ -21,6 +21,7 @@
 
 #include "GUIDialogPVRChannelsOSD.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
@@ -194,7 +195,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     }
   }
   else
-    g_application.getApplicationMessenger().PlayFile(*pItem);
+    CApplicationMessenger::Get().PlayFile(*pItem);
 
   CloseOrSelect(item);
 }

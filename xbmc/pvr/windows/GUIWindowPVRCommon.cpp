@@ -22,6 +22,7 @@
 #include "GUIWindowPVRCommon.h"
 
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/StackDirectory.h"
@@ -649,7 +650,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
     return false;
   }
 
-  g_application.getApplicationMessenger().PlayFile(*item, false);
+  CApplicationMessenger::Get().PlayFile(*item, false);
 
   return true;
 }
@@ -685,7 +686,7 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
     if (!bSwitchSuccessful)
     {
-      g_application.getApplicationMessenger().PlayFile(*item, false);
+      CApplicationMessenger::Get().PlayFile(*item, false);
       return true;
     }
 

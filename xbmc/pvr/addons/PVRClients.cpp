@@ -23,6 +23,7 @@
 #include "PVRClient.h"
 
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/GUISettings.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -524,7 +525,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
       {
         // StreamURL should always be opened as a new file
         CFileItem m_currentFile(channel);
-        g_application.getApplicationMessenger().PlayFile(m_currentFile, false);
+        CApplicationMessenger::Get().PlayFile(m_currentFile, false);
         bSwitchSuccessful = true;
         bNewStreamOpened = true;
       }

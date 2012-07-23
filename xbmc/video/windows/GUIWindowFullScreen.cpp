@@ -23,6 +23,7 @@
 #include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "Util.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -844,20 +845,20 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
               else
               {
                 CLog::Log(LOGERROR, "%s - cannot find channel '1' in group %s", __FUNCTION__, selectedGroup->GroupName().c_str());
-                g_application.getApplicationMessenger().MediaStop(false);
+                CApplicationMessenger::Get().MediaStop(false);
               }
             }
           }
           else
           {
             CLog::Log(LOGERROR, "%s - could not switch to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());
-            g_application.getApplicationMessenger().MediaStop(false);
+            CApplicationMessenger::Get().MediaStop(false);
           }
         }
         else
         {
           CLog::Log(LOGERROR, "%s - cannot find the current channel", __FUNCTION__);
-          g_application.getApplicationMessenger().MediaStop(false);
+          CApplicationMessenger::Get().MediaStop(false);
         }
 
         // hide the control and reset focus

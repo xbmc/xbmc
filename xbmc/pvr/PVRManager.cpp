@@ -20,6 +20,7 @@
  */
 
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -161,7 +162,7 @@ void CPVRManager::Stop(void)
   if (IsPlaying())
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
-    g_application.getApplicationMessenger().MediaStop();
+    CApplicationMessenger::Get().MediaStop();
   }
 
   /* stop all update threads */
@@ -437,7 +438,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (m_addons && m_addons->IsPlaying())
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
-    g_application.getApplicationMessenger().MediaStop();
+    CApplicationMessenger::Get().MediaStop();
   }
 
   if (bShowProgress)
@@ -936,7 +937,7 @@ int CPVRManager::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
 bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)
 {
   g_settings.m_bStartVideoWindowed = bPreview;
-  g_application.getApplicationMessenger().MediaPlay(CFileItem(*channel));
+  CApplicationMessenger::Get().MediaPlay(CFileItem(*channel));
   CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
       __FUNCTION__, channel->ChannelName().c_str());
   return true;

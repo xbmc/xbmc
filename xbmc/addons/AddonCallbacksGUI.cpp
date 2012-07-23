@@ -20,6 +20,7 @@
  */
 
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "Addon.h"
 #include "AddonCallbacksGUI.h"
 #include "utils/log.h"
@@ -1506,7 +1507,7 @@ void CGUIAddonWindowDialog::Show(bool show /* = true */)
   unsigned int iCount = g_graphicsContext.exit();
   ThreadMessage tMsg = {TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0};
   tMsg.lpVoid = this;
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMessage(tMsg, true);
   g_graphicsContext.restore(iCount);
 }
 

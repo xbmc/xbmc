@@ -366,7 +366,7 @@ void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bo
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().Close(this, forceClose, bWait, nextWindowID, enableSound);
+    CApplicationMessenger::Get().Close(this, forceClose, bWait, nextWindowID, enableSound);
   }
   else
     Close_Internal(forceClose, nextWindowID, enableSound);
