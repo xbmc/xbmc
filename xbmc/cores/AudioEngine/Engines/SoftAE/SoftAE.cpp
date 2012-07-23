@@ -162,6 +162,7 @@ void CSoftAE::OpenSink()
   m_reOpenEvent.Reset();
   m_reOpen = true;
   m_reOpenEvent.Wait();
+  m_wake.Set();
 }
 
 /* this must NEVER be called from outside the main thread or Initialization */
@@ -425,6 +426,7 @@ void CSoftAE::InternalOpenSink()
   /* notify any event listeners that we are done */
   m_reOpen = false;
   m_reOpenEvent.Set();
+  m_wake.Set();
 }
 
 void CSoftAE::ResetEncoder()
@@ -666,6 +668,7 @@ void CSoftAE::ResumeStream(CSoftAEStream *stream)
 void CSoftAE::Stop()
 {
   m_running = false;
+  m_wake.Set();
 
   /* wait for the thread to stop */
   CSingleLock lock(m_runningLock);
@@ -732,6 +735,7 @@ void CSoftAE::PlaySound(IAESound *sound)
       ((CSoftAESound*)sound)->GetSampleCount()
    };
    m_playing_sounds.push_back(ss);
+   m_wake.Set();
 }
 
 void CSoftAE::FreeSound(IAESound *sound)
@@ -885,6 +889,15 @@ void CSoftAE::Run()
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
       InternalOpenSink();
     }
+#if defined(TARGET_ANDROID)
+    else if (m_playingStreams.empty() && m_playing_sounds.empty())
+    {
+      // if we have nothing to do, take a dirt nap.
+      // we do not have to take a lock just to check empty.
+      // this keeps AE from sucking CPU if nothing is going on.
+      m_wake.WaitMSec(100);
+    }
+#endif
   }
 }
 

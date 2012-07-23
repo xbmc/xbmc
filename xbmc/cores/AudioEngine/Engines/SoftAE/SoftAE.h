@@ -130,6 +130,7 @@ private:
   /* internal vars */
   bool             m_running, m_reOpen;
   CEvent           m_reOpenEvent;
+  CEvent           m_wake;
 
   CCriticalSection m_runningLock;     /* released when the thread exits */
   CCriticalSection m_streamLock;      /* m_streams lock */
