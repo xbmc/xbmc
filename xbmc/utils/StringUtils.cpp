@@ -33,7 +33,6 @@
 #include "StringUtils.h"
 #include "utils/RegExp.h"
 #include "utils/fstrcmp.h"
-#include "LangInfo.h"
 #include <locale>
 
 #include <math.h>

@@ -31,7 +31,6 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "settings/GUISettings.h"
-#include "LangInfo.h"
 #include "utils/log.h"
 
 #include <vector>
