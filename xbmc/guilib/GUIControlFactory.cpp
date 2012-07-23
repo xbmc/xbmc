@@ -174,17 +174,21 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
+float CGUIControlFactory::ParsePosition(const char* pos, float parentSize)
+{
+  char* end;
+  float value = (float)strtod(pos, &end);
+  if (end && *end == 'r')
+    value = parentSize - value;
+  return value;
+}
+
 bool CGUIControlFactory::GetPosition(const TiXmlElement *pControlNode, const char* strTag, float& value, float parentSize)
 {
   const TiXmlElement* pNode = pControlNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
 
-  const char* pos = pNode->FirstChild()->Value();
-  char* end;
-  value = (float)strtod(pos, &end);
-  if (end && *end == 'r')
-    value = parentSize - value;
-
+  value = ParsePosition(pNode->FirstChild()->Value(), parentSize);
   return true;
 }
 
