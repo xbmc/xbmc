@@ -20,6 +20,7 @@
  */
 
 #include "CPUInfo.h"
+#include "Temperature.h"
 #include <string>
 #include <string.h>
 
@@ -343,7 +344,7 @@ float CCPUInfo::getCPUFrequency()
 #endif
 }
 
-CTemperature CCPUInfo::getTemperature()
+bool CCPUInfo::getTemperature(CTemperature& temperature)
 {
   int         value = 0,
               ret   = 0;
@@ -351,8 +352,10 @@ CTemperature CCPUInfo::getTemperature()
   FILE        *p    = NULL;
   CStdString  cmd   = g_advancedSettings.m_cpuTempCmd;
 
+  temperature.SetState(CTemperature::invalid);
+
   if (cmd.IsEmpty() && m_fProcTemperature == NULL)
-    return CTemperature();
+    return false;
 
   if (!cmd.IsEmpty())
   {
@@ -384,13 +387,16 @@ CTemperature CCPUInfo::getTemperature()
   }
 
   if (ret != 2)
-    return CTemperature();
+    return false; 
 
   if (scale == 'C' || scale == 'c')
-    return CTemperature::CreateFromCelsius(value);
-  if (scale == 'F' || scale == 'f')
-    return CTemperature::CreateFromFahrenheit(value);
-  return CTemperature();
+    temperature = CTemperature::CreateFromCelsius(value);
+  else if (scale == 'F' || scale == 'f')
+    temperature = CTemperature::CreateFromFahrenheit(value);
+  else
+    return false;
+  
+  return true;
 }
 
 bool CCPUInfo::HasCoreId(int nCoreId) const

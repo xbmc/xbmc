@@ -25,10 +25,11 @@
 #include <stdio.h>
 #include <time.h>
 #include "Archive.h"
-#include "Temperature.h"
 #include <string>
 #include <map>
 #include "threads/SystemClock.h"
+
+class CTemperature;
 
 #define CPU_FEATURE_MMX      1 << 0
 #define CPU_FEATURE_MMX2     1 << 1
@@ -66,7 +67,7 @@ public:
   int getUsedPercentage();
   int getCPUCount() { return m_cpuCount; }
   float getCPUFrequency();
-  CTemperature getTemperature();
+  bool getTemperature(CTemperature& temperature);
   std::string& getCPUModel() { return m_cpuModel; }
 
   const CoreInfo &GetCoreInfo(int nCoreId);
