@@ -902,6 +902,11 @@ void CSoftAE::AllocateConvIfNeeded(size_t convertedSize, bool prezero)
 
 unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
 {
+  // no point doing anything if we have no sounds,
+  // we do not have to take a lock just to check empty
+  if (m_playing_sounds.empty())
+    return 0;
+
   SoundStateList::iterator itt;
 
   unsigned int mixed = 0;
@@ -1160,15 +1165,16 @@ unsigned int CSoftAE::RunRawStreamStage(unsigned int channelCount, void *out, bo
 
 unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
 {
+  // no point doing anything if we have no streams,
+  // we do not have to take a lock just to check empty
+  if (m_playingStreams.empty())
+    return 0;
+
   float *dst = (float*)out;
   unsigned int mixed = 0;
 
   /* identify the master stream */
   CSingleLock streamLock(m_streamLock);
-
-  /* no point doing anything if we have no streams */
-  if (m_playingStreams.empty())
-    return mixed;
 
   /* mix in any running streams */
   StreamList resumeStreams;
