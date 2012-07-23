@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "GUIInfoManager.h"
 #include "windows/GUIMediaWindow.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "Application.h"
@@ -37,13 +38,11 @@
 #include "LangInfo.h"
 #include "utils/SystemInfo.h"
 #include "guilib/GUITextBox.h"
-#include "GUIInfoManager.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "music/LastFmManager.h"
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
-#include "filesystem/File.h"
 #include "playlists/PlayList.h"
 #include "utils/TuxBoxUtil.h"
 #include "windowing/WindowingFactory.h"

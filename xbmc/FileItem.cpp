@@ -26,18 +26,16 @@
 #include "Util.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/Crc32.h"
-#include "filesystem/DirectoryCache.h"
+#include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
-#include "filesystem/DirectoryFactory.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
 #include "video/VideoDatabase.h"
 #include "music/MusicDatabase.h"
-#include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
 #include "video/VideoInfoTag.h"
 #include "threads/SingleLock.h"
@@ -55,7 +53,6 @@
 #include "utils/Variant.h"
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
-#include "utils/CharsetConverter.h"
 
 using namespace std;
 using namespace XFILE;
