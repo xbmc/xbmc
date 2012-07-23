@@ -440,6 +440,14 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           CLog::Log(LOGDEBUG, __FUNCTION__": Focus switched to process %s", procfile.c_str());
       }
       break;
+    case WM_SYSCOMMAND:
+      switch( wParam&0xFFF0 )
+      {
+        case SC_MONITORPOWER:
+        case SC_SCREENSAVE:
+          return 0;
+      }
+      break;
     case WM_SYSKEYDOWN:
       switch (wParam)
       {
