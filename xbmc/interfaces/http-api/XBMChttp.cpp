@@ -21,6 +21,7 @@
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
+#include "filesystem/CurlFile.h" 
 #include "filesystem/HDDirectory.h" 
 #include "filesystem/CDDADirectory.h"
 #include "filesystem/SpecialProtocol.h"
