@@ -186,7 +186,7 @@ private:
   uint8_t        *m_converted;
   size_t          m_convertedSize;
 
-  void         AllocateConvIfNeeded(size_t convertedSize);
+  void         AllocateConvIfNeeded(size_t convertedSize, bool prezero = false);
 
   /* thread run stages */
 

@@ -888,7 +888,7 @@ void CSoftAE::Run()
   }
 }
 
-void CSoftAE::AllocateConvIfNeeded(size_t convertedSize)
+void CSoftAE::AllocateConvIfNeeded(size_t convertedSize, bool prezero)
 {
   if (m_convertedSize < convertedSize)
   {
@@ -896,6 +896,8 @@ void CSoftAE::AllocateConvIfNeeded(size_t convertedSize)
     m_converted = (uint8_t *)_aligned_malloc(convertedSize, 16);
     m_convertedSize = convertedSize;
   }
+  if (prezero)
+    memset(m_converted, 0x00, convertedSize);
 }
 
 unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
@@ -998,8 +1000,9 @@ int CSoftAE::RunOutputStage(bool hasAudio)
   if (m_convertFn)
   {
     const unsigned int convertedBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
-    AllocateConvIfNeeded(convertedBytes);
-    m_convertFn((float*)data, needSamples, m_converted);
+    AllocateConvIfNeeded(convertedBytes, !hasAudio);
+    if (hasAudio)
+      m_convertFn((float*)data, needSamples, m_converted);
     data = m_converted;
   }
 
@@ -1036,8 +1039,9 @@ int CSoftAE::RunRawOutputStage(bool hasAudio)
      * tell it the needed format from here, so do it here for now (better than
      * nothing)...
      */
-    AllocateConvIfNeeded(m_sinkBlockSize);
-    Endian_Swap16_buf((uint16_t *)m_converted, (uint16_t *)data, m_sinkBlockSize / 2);
+    AllocateConvIfNeeded(m_sinkBlockSize, !hasAudio);
+    if (hasAudio)
+      Endian_Swap16_buf((uint16_t *)m_converted, (uint16_t *)data, m_sinkBlockSize / 2);
     data = m_converted;
   }
 
@@ -1070,17 +1074,10 @@ int CSoftAE::RunTranscodeStage(bool hasAudio)
     if (m_convertFn)
     {
       unsigned int newsize = m_encoderFormat.m_frames * m_encoderFormat.m_frameSize;
-      if (m_convertedSize < newsize)
-      {
-        _aligned_free(m_converted);
-        m_converted     = (uint8_t *)_aligned_malloc(newsize, 16);
-        m_convertedSize = newsize;
-      }
-      m_convertFn(
-        (float*)m_buffer.Raw(block),
-        m_encoderFormat.m_frames * m_encoderFormat.m_channelLayout.Count(),
-        m_converted
-      );
+      AllocateConvIfNeeded(newsize, !hasAudio);
+      if (hasAudio)
+        m_convertFn((float*)m_buffer.Raw(block),
+          m_encoderFormat.m_frames * m_encoderFormat.m_channelLayout.Count(), m_converted);
       buffer = m_converted;
     }
     else
