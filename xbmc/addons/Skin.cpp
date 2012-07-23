@@ -62,12 +62,14 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
       CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
       float aspect = 0;
       CStdStringArray fracs;
-      StringUtils::SplitString(CAddonMgr::Get().GetExtValue(*i, "@aspect"), ":", fracs);
+      CStdString strAspect = CAddonMgr::Get().GetExtValue(*i, "@aspect");
+      StringUtils::SplitString(strAspect, ":", fracs);
       if (fracs.size() == 2)
         aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
       if (width > 0 && height > 0)
       {
         RESOLUTION_INFO res(width, height, aspect, folder);
+        res.strId = strAspect; // for skin usage, store aspect string in strId
         if (defRes)
           m_defaultRes = res;
         m_resolutions.push_back(res);
@@ -128,6 +130,14 @@ void CSkinInfo::Start()
       if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
         m_resolutions.push_back(res);
     }
+  }
+
+  if (!m_resolutions.empty())
+  {
+    // find the closest resolution
+    const RESOLUTION_INFO &target = g_graphicsContext.GetResInfo();
+    RESOLUTION_INFO& res = *std::min_element(m_resolutions.begin(), m_resolutions.end(), closestRes(target));
+    m_currentAspect = res.strId;
   }
 }
 

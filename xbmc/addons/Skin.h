@@ -105,6 +105,8 @@ public:
 
   bool IsInUse() const;
 
+  const CStdString& GetCurrentAspect() const { return m_currentAspect; }
+
 //  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
   static double GetMinVersion();
   void LoadIncludes();
@@ -133,6 +135,7 @@ protected:
 
   float m_effectsSlowDown;
   CGUIIncludes m_includes;
+  CStdString m_currentAspect;
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_onlyAnimateToHome;
