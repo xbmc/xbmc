@@ -38,7 +38,7 @@
 				<posx>40</posx>
 				<posy>16</posy>
 				<width>400</width>
-				<height>40</height>
+				<height>50</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
@@ -69,6 +69,19 @@
 				<shadowcolor>black</shadowcolor>
 				<visible>pvr.IsPlayingRadio</visible>
 			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>-7</posy>
+				<width>430</width>
+				<height>120</height>
+				<font>font10_title</font>
+				<label>$INFO[System.Date(DDD)], $INFO[System.Date(d)] $INFO[System.Date(mmm)] $INFO[System.Date(yyyy)] • $INFO[System.Time]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
 			<control type="list" id="11">
 				<posx>30</posx>
 				<posy>70</posy>
@@ -81,12 +94,12 @@
 				<viewtype label="535">list</viewtype>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="65" width="410">
+				<itemlayout height="70" width="410">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>410</width>
-						<height>60</height>
+						<height>65</height>
 						<texture border="5">button-nofocus.png</texture>
 						<include>VisibleFadeEffect</include>
 					</control>
@@ -148,29 +161,54 @@
 						<label>$INFO[ListItem.Title]</label>
 						<visible>!IsEmpty(Listitem.Icon)</visible>
 					</control>
+					<control type="label">
+						<posx>50</posx>
+						<posy>44</posy>
+						<width>60</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<selectedcolor>blue</selectedcolor>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.StartTime]</label>
+						<visible>ListItem.HasEpg</visible>
+					</control>
 					<control type="progress">
 						<description>Progressbar</description>
-						<posx>50</posx>
-						<posy>50</posy>
-						<width>300</width>
+						<posx>110</posx>
+						<posy>53</posy>
+						<width>230</width>
 						<height>6</height>
 						<colordiffuse>88FFFFFF</colordiffuse>
 						<info>ListItem.Progress</info>
+						<visible>ListItem.HasEpg</visible>
+					</control>
+					<control type="label">
+						<posx>355</posx>
+						<posy>44</posy>
+						<width>60</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<selectedcolor>blue</selectedcolor>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.EndTime]</label>
+						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="image">
-						<posx>355</posx>
+						<posx>360</posx>
 						<posy>4</posy>
-						<width>50</width>
-						<height>50</height>
+						<width>40</width>
+						<height>40</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout height="65" width="410">
+				<focusedlayout height="70" width="410">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>410</width>
-						<height>60</height>
+						<height>65</height>
 						<texture border="5">button-nofocus.png</texture>
 						<visible>!Control.HasFocus(11)</visible>
 						<include>VisibleFadeEffect</include>
@@ -179,7 +217,7 @@
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>410</width>
-						<height>60</height>
+						<height>65</height>
 						<texture border="5">button-focus2.png</texture>
 						<visible>Control.HasFocus(11)</visible>
 						<include>VisibleFadeEffect</include>
@@ -242,20 +280,45 @@
 						<label>$INFO[ListItem.Title]</label>
 						<visible>!IsEmpty(Listitem.Icon)</visible>
 					</control>
+					<control type="label">
+						<posx>50</posx>
+						<posy>44</posy>
+						<width>60</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<selectedcolor>blue</selectedcolor>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.StartTime]</label>
+						<visible>ListItem.HasEpg</visible>
+					</control>
 					<control type="progress">
 						<description>Progressbar</description>
-						<posx>50</posx>
-						<posy>50</posy>
-						<width>300</width>
+						<posx>110</posx>
+						<posy>53</posy>
+						<width>230</width>
 						<height>6</height>
 						<colordiffuse>88FFFFFF</colordiffuse>
 						<info>ListItem.Progress</info>
+						<visible>ListItem.HasEpg</visible>
+					</control>
+					<control type="label">
+						<posx>355</posx>
+						<posy>44</posy>
+						<width>60</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<selectedcolor>blue</selectedcolor>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.EndTime]</label>
+						<visible>ListItem.HasEpg</visible>
 					</control>
 					<control type="image">
-						<posx>355</posx>
+						<posx>360</posx>
 						<posy>4</posy>
-						<width>50</width>
-						<height>50</height>
+						<width>40</width>
+						<height>40</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 				</focusedlayout>
