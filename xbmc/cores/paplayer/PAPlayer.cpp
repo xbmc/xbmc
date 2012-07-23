@@ -21,7 +21,6 @@
 
 #include "PAPlayer.h"
 #include "CodecFactory.h"
-#include "GUIInfoManager.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
