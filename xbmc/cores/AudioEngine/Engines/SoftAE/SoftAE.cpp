@@ -795,34 +795,34 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
 
 double CSoftAE::GetDelay()
 {
+  double delay = (double)m_buffer.Used() * m_sinkFormatFrameSizeMul *m_sinkFormatSampleRateMul;
   CSharedLock sinkLock(m_sinkLock);
+  if (m_sink)
+    delay += m_sink->GetDelay();
+  sinkLock.Leave();
 
-  double delay = m_sink->GetDelay();
   if (m_transcode && m_encoder && !m_rawPassthrough)
     delay += m_encoder->GetDelay((double)m_encodedBuffer.Used() * m_encoderFrameSizeMul);
-  double buffered = (double)m_buffer.Used() * m_sinkFormatFrameSizeMul;
 
-  return delay + (buffered * m_sinkFormatSampleRateMul);
+  return delay;
 }
 
 double CSoftAE::GetCacheTime()
 {
+  double time = (double)m_buffer.Used() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
   CSharedLock sinkLock(m_sinkLock);
-
-  double time;
-  time  = (double)m_buffer.Used() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
-  time += m_sink->GetCacheTime();
+  if (m_sink)
+    time += m_sink->GetCacheTime();
 
   return time;
 }
 
 double CSoftAE::GetCacheTotal()
 {
+  double total = (double)m_buffer.Size() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
   CSharedLock sinkLock(m_sinkLock);
-
-  double total;
-  total  = (double)m_buffer.Size() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
-  total += m_sink->GetCacheTotal();
+  if (m_sink)
+    total += m_sink->GetCacheTotal();
 
   return total;
 }
