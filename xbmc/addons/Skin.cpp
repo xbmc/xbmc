@@ -100,21 +100,6 @@ CSkinInfo::~CSkinInfo()
 {
 }
 
-void CSkinInfo::Start()
-{
-  if (!m_resolutions.size())
-  { // try falling back to whatever resolutions exist in the directory
-    CFileItemList items;
-    CDirectory::GetDirectory(Path(), items, "", DIR_FLAG_NO_FILE_DIRS);
-    for (int i = 0; i < items.Size(); i++)
-    {
-      RESOLUTION_INFO res;
-      if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
-        m_resolutions.push_back(res);
-    }
-  }
-}
-
 struct closestRes
 {
   closestRes(const RESOLUTION_INFO &target) : m_target(target) { };
@@ -130,6 +115,21 @@ struct closestRes
   }
   RESOLUTION_INFO m_target;
 };
+
+void CSkinInfo::Start()
+{
+  if (!m_resolutions.size())
+  { // try falling back to whatever resolutions exist in the directory
+    CFileItemList items;
+    CDirectory::GetDirectory(Path(), items, "", DIR_FLAG_NO_FILE_DIRS);
+    for (int i = 0; i < items.Size(); i++)
+    {
+      RESOLUTION_INFO res;
+      if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
+        m_resolutions.push_back(res);
+    }
+  }
+}
 
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *res, const CStdString& strBaseDir /* = "" */) const
 {
