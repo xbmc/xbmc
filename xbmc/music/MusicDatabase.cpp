@@ -2785,6 +2785,97 @@ bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList
   return GetAlbumsByWhere(musicUrl.ToString(), filter, items);
 }
 
+bool CMusicDatabase::GetCommonNav(const CStdString &strBaseDir, const CStdString &table, const CStdString &labelField, CFileItemList &items, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
+{
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
+  if (table.empty() || labelField.empty())
+    return false;
+  
+  try
+  {
+    Filter extFilter = filter;
+    CStdString strSQL = "SELECT %s FROM " + table + " ";
+    extFilter.AppendGroup(labelField);
+    extFilter.AppendWhere(labelField + " != ''");
+    
+    if (countOnly)
+    {
+      extFilter.fields = "COUNT(DISTINCT " + labelField + ")";
+      extFilter.group.clear();
+      extFilter.order.clear();
+    }
+    
+    CMusicDbUrl musicUrl;
+    if (!BuildSQL(strBaseDir, strSQL, extFilter, strSQL, musicUrl))
+      return false;
+    
+    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : labelField.c_str());
+    
+    // run query
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+    
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound <= 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    
+    if (countOnly)
+    {
+      CFileItemPtr pItem(new CFileItem());
+      pItem->SetProperty("total", iRowsFound == 1 ? m_pDS->fv(0).get_asInt() : iRowsFound);
+      items.Add(pItem);
+      
+      m_pDS->close();
+      return true;
+    }
+    
+    // get data from returned rows
+    while (!m_pDS->eof())
+    {
+      string labelValue = m_pDS->fv(labelField).get_asString();
+      CFileItemPtr pItem(new CFileItem(labelValue));
+      
+      CMusicDbUrl itemUrl = musicUrl;
+      CStdString strDir; strDir.Format("%s/", labelValue.c_str());
+      itemUrl.AppendPath(strDir);
+      pItem->SetPath(itemUrl.ToString());
+      
+      pItem->m_bIsFolder = true;
+      items.Add(pItem);
+      
+      m_pDS->next();
+    }
+    
+    // cleanup
+    m_pDS->close();
+    
+    return true;
+  }
+  catch (...)
+  {
+    m_pDS->close();
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  
+  return false;
+}
+
+bool CMusicDatabase::GetAlbumTypesNav(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
+{
+  return GetCommonNav(strBaseDir, "albumview", "albumview.strType", items, filter, countOnly);
+}
+
+bool CMusicDatabase::GetMusicLabelsNav(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
+{
+  return GetCommonNav(strBaseDir, "albumview", "albumview.strLabel", items, filter, countOnly);
+}
+
 bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, bool albumArtistsOnly /* = false */, int idGenre /* = -1 */, int idAlbum /* = -1 */, int idSong /* = -1 */, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */, bool countOnly /* = false */)
 {
   if (NULL == m_pDB.get()) return false;
