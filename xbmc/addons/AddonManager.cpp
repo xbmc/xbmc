@@ -51,6 +51,7 @@
 #include "Service.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "Util.h"
 
 using namespace std;
 using namespace PVR;

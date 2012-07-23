@@ -19,11 +19,12 @@
  *
  */
 
-#include "Util.h"
 #include "DVDTSCorrection.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
+
+#include <cmath>
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
 

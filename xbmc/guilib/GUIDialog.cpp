@@ -27,6 +27,7 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 
 CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -209,7 +210,7 @@ void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().DoModal(this, iWindowID, param);
+    CApplicationMessenger::Get().DoModal(this, iWindowID, param);
   }
   else
     DoModal_Internal(iWindowID, param);
@@ -221,7 +222,7 @@ void CGUIDialog::Show()
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().Show(this);
+    CApplicationMessenger::Get().Show(this);
   }
   else
     Show_Internal();

@@ -23,6 +23,7 @@
 #include "GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"

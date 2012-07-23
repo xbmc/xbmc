@@ -23,6 +23,7 @@
 #include "system.h"
 #include "GUIWindowSlideShow.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "guilib/TextureManager.h"
@@ -427,7 +428,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   { 
     CLog::Log(LOGDEBUG, "Playing slide %s as video", m_slides->Get(m_iCurrentSlide)->GetPath().c_str());
     m_bPlayingVideo = true;
-    g_application.getApplicationMessenger().PlayFile(*m_slides->Get(m_iCurrentSlide));
+    CApplicationMessenger::Get().PlayFile(*m_slides->Get(m_iCurrentSlide));
     m_iCurrentSlide = m_iNextSlide;
     m_iNextSlide    = GetNextSlide();
   } 

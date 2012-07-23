@@ -200,7 +200,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
       else
       {
         if (parameterObject["play"].asBoolean() == g_application.IsPaused())
-          g_application.getApplicationMessenger().MediaPause();
+          CApplicationMessenger::Get().MediaPause();
       }
       result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
       return OK;
@@ -230,7 +230,7 @@ JSONRPC_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP));
+      CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP));
       return ACK;
 
     case Picture:
@@ -476,7 +476,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
     {
       case PLAYLIST_MUSIC:
       case PLAYLIST_VIDEO:
-        g_application.getApplicationMessenger().MediaPlay(playlistid, (int)parameterObject["item"]["position"].asInteger());
+        CApplicationMessenger::Get().MediaPlay(playlistid, (int)parameterObject["item"]["position"].asInteger());
         OnPlaylistChanged();
         break;
 
@@ -540,7 +540,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
             list[0]->m_lStartOffset = (int)(ParseTimeInSeconds(optionResume) * 75.0);
         }
 
-        g_application.getApplicationMessenger().MediaPlay(list);
+        CApplicationMessenger::Get().MediaPlay(list);
       }
 
       return ACK;
@@ -558,7 +558,7 @@ JSONRPC_STATUS CPlayerOperations::GoPrevious(const CStdString &method, ITranspor
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_PREV_ITEM));
+      CApplicationMessenger::Get().SendAction(CAction(ACTION_PREV_ITEM));
       return ACK;
 
     case Picture:
@@ -577,7 +577,7 @@ JSONRPC_STATUS CPlayerOperations::GoNext(const CStdString &method, ITransportLay
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_NEXT_ITEM));
+      CApplicationMessenger::Get().SendAction(CAction(ACTION_NEXT_ITEM));
       return ACK;
 
     case Picture:
@@ -597,7 +597,7 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const CStdString &method, ITransportLayer
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerPlay(position);
+      CApplicationMessenger::Get().PlayListPlayerPlay(position);
       break;
 
     case Picture:
@@ -617,7 +617,7 @@ JSONRPC_STATUS CPlayerOperations::Shuffle(const CStdString &method, ITransportLa
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), true);
+      CApplicationMessenger::Get().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), true);
       OnPlaylistChanged();
       break;
 
@@ -641,7 +641,7 @@ JSONRPC_STATUS CPlayerOperations::UnShuffle(const CStdString &method, ITransport
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), false);
+      CApplicationMessenger::Get().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), false);
       OnPlaylistChanged();
       break;
 
@@ -658,7 +658,7 @@ JSONRPC_STATUS CPlayerOperations::Repeat(const CStdString &method, ITransportLay
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerRepeat(GetPlaylist(GetPlayer(parameterObject["playerid"])), (REPEAT_STATE)ParseRepeatState(parameterObject["state"]));
+      CApplicationMessenger::Get().PlayListPlayerRepeat(GetPlaylist(GetPlayer(parameterObject["playerid"])), (REPEAT_STATE)ParseRepeatState(parameterObject["state"]));
       OnPlaylistChanged();
       break;
 
@@ -859,14 +859,14 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string path, bool re
 
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
   msg.SetStringParam(path);
-  g_application.getApplicationMessenger().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
+  CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
 
   return ACK;
 }
 
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
-  g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_SLIDESHOW);
+  CApplicationMessenger::Get().SendAction(CAction(actionID), WINDOW_SLIDESHOW);
 }
 
 void CPlayerOperations::OnPlaylistChanged()

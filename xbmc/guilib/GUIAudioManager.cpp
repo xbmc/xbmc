@@ -31,7 +31,6 @@
 #include "cores/AudioEngine/AEFactory.h"
 
 using namespace std;
-using namespace XFILE;
 
 CGUIAudioManager g_audioManager;
 

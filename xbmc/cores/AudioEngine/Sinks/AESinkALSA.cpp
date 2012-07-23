@@ -151,10 +151,12 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
   format.m_channelLayout = m_channelLayout;
 
+  AEDeviceType devType = AEDeviceTypeFromName(device);
+
   std::string AESParams;
   /* digital interfaces should have AESx set, though in practice most
    * receivers don't care */
-  if (m_passthrough || device.substr(0, 6) == "iec958" || device.substr(0, 4) == "hdmi")
+  if (m_passthrough || devType == AE_DEVTYPE_HDMI || devType == AE_DEVTYPE_IEC958)
     GetAESParams(format, AESParams);
 
   CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device \"%s\"", device.c_str());
@@ -768,10 +770,8 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
        && it1->m_displayNameExtra == it2->m_displayNameExtra)
       {
         /* something needs to be done */
-        std::string cardString1;
-        std::string cardString2;
-        GetParamFromName(it1->m_deviceName, "CARD", cardString1);
-        GetParamFromName(it2->m_deviceName, "CARD", cardString2);
+        std::string cardString1 = GetParamFromName(it1->m_deviceName, "CARD");
+        std::string cardString2 = GetParamFromName(it2->m_deviceName, "CARD");
 
         if (cardString1 != cardString2)
         {
@@ -781,10 +781,8 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
           continue;
         }
 
-        std::string devString1;
-        std::string devString2;
-        GetParamFromName(it1->m_deviceName, "DEV", devString1);
-        GetParamFromName(it2->m_deviceName, "DEV", devString2);
+        std::string devString1 = GetParamFromName(it1->m_deviceName, "DEV");
+        std::string devString2 = GetParamFromName(it2->m_deviceName, "DEV");
 
         if (devString1 != devString2)
         {
@@ -806,8 +804,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
   {
     for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
     {
-      std::string cardString;
-      GetParamFromName(itl->m_deviceName, "CARD", cardString);
+      std::string cardString = GetParamFromName(itl->m_deviceName, "CARD");
       if (cardString == *it)
         /* "HDA NVidia (NVidia)", "HDA NVidia (NVidia_2)", ... */
         itl->m_displayName += " (" + cardString + ")";
@@ -820,12 +817,10 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
     for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
     {
       std::string baseName = itl->m_deviceName.substr(0, itl->m_deviceName.find(':'));
-      std::string cardString;
-      GetParamFromName(itl->m_deviceName, "CARD", cardString);
+      std::string cardString = GetParamFromName(itl->m_deviceName, "CARD");
       if (baseName == it->first && cardString == it->second)
       {
-        std::string devString;
-        GetParamFromName(itl->m_deviceName, "DEV", devString);
+        std::string devString = GetParamFromName(itl->m_deviceName, "DEV");
         /* "HDMI #0", "HDMI #1" ... */
         itl->m_displayNameExtra += " #" + devString;
       }
@@ -833,19 +828,27 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
   }
 }
 
-void CAESinkALSA::GetParamFromName(const std::string &name, const std::string &param, std::string &value)
+AEDeviceType CAESinkALSA::AEDeviceTypeFromName(const std::string &name)
 {
-  /* name = "hdmi:CARD=x,DEV=y" param = "CARD" => value = "x" */
+  if (name.substr(0, 4) == "hdmi")
+    return AE_DEVTYPE_HDMI;
+  else if (name.substr(0, 6) == "iec958" || name.substr(0, 5) == "spdif")
+    return AE_DEVTYPE_IEC958;
+
+  return AE_DEVTYPE_PCM;
+}
+
+std::string CAESinkALSA::GetParamFromName(const std::string &name, const std::string &param)
+{
+  /* name = "hdmi:CARD=x,DEV=y" param = "CARD" => return "x" */
   size_t parPos = name.find(param + '=');
   if (parPos != std::string::npos)
   {
     parPos += param.size() + 1;
-    value = name.substr(parPos, name.find_first_of(",'\"", parPos)-parPos);
+    return name.substr(parPos, name.find_first_of(",'\"", parPos)-parPos);
   }
-  else
-  {
-    value = "";
-  }
+
+  return "";
 }
 
 void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config)
@@ -869,16 +872,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
 
   CAEDeviceInfo info;
   info.m_deviceName = device;
-
-  bool isHDMI  = (device.substr(0, 4) == "hdmi");
-  bool isSPDIF = (device.substr(0, 6) == "iec958");
-
-  if (isHDMI)
-    info.m_deviceType = AE_DEVTYPE_HDMI;
-  else if (isSPDIF)
-    info.m_deviceType = AE_DEVTYPE_IEC958;
-  else
-    info.m_deviceType = AE_DEVTYPE_PCM;
+  info.m_deviceType = AEDeviceTypeFromName(device);
 
   if (cardNr >= 0)
   {
@@ -887,7 +881,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     if (snd_card_get_name(cardNr, &cardName) == 0)
       info.m_displayName = cardName;
 
-    if (isHDMI && info.m_displayName.size() > 5 &&
+    if (info.m_deviceType == AE_DEVTYPE_HDMI && info.m_displayName.size() > 5 &&
         info.m_displayName.substr(info.m_displayName.size()-5) == " HDMI")
     {
       /* We already know this is HDMI, strip it */
@@ -904,7 +898,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     if (pcminfoName != "USB Audio")
       info.m_displayNameExtra = pcminfoName;
 
-    if (isHDMI)
+    if (info.m_deviceType == AE_DEVTYPE_HDMI)
     {
       /* replace, this was likely "HDMI 0" */
       info.m_displayNameExtra = "HDMI";
@@ -939,7 +933,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
               /* only trust badHDMI (= unconnected or non-existent port) on Intel
                * and NVIDIA where it has been confirmed to work, show the empty
                * port on other systems */
-              if (info.m_displayName.compare(0, 9, "HDA Intel") || info.m_displayName.compare(0, 10, "HDA NVidia"))
+              if (info.m_displayName.compare(0, 9, "HDA Intel") == 0 || info.m_displayName.compare(0, 10, "HDA NVidia") == 0)
               {
                 /* unconnected HDMI port */
                 CLog::Log(LOGDEBUG, "CAESinkALSA - Skipping HDMI device \"%s\" as it has no ELD data", device.c_str());
@@ -959,7 +953,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
         }
       }
     }
-    else if (isSPDIF)
+    else if (info.m_deviceType == AE_DEVTYPE_IEC958)
     {
       /* append instead of replace, pcminfoName is useful for S/PDIF */
       if (!info.m_displayNameExtra.empty())

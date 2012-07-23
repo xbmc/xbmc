@@ -33,7 +33,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
-#include "Util.h"
 #include "Settings.h"
 #include "guilib/LocalizeStrings.h"
 

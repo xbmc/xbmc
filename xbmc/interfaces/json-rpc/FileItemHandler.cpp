@@ -36,6 +36,7 @@
 #include "filesystem/File.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
+#include "Util.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;

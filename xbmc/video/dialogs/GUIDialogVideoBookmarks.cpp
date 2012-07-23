@@ -41,6 +41,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "Util.h"
 
 using namespace std;
 

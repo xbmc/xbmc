@@ -31,10 +31,11 @@
 #include "GUIPassword.h"
 #include "utils/md5.h"
 #include "utils/TimeUtils.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "utils/CharsetConverter.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -554,7 +555,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CVariant
   pKeyboard->SetText(aTextString);
   // do this using a thread message to avoid render() conflicts
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow()};
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMessage(tMsg, true);
   pKeyboard->Close();
 
   // If have text - update this.

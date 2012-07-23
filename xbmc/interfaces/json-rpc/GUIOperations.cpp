@@ -21,6 +21,7 @@
 
 #include "GUIOperations.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -76,7 +77,7 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const CStdString &method, ITranspor
        parameterObject["fullscreen"].asString().compare("toggle") == 0) ||
       (parameterObject["fullscreen"].isBoolean() &&
        parameterObject["fullscreen"].asBoolean() != g_application.IsFullScreen()))
-    g_application.getApplicationMessenger().SendAction(CAction(ACTION_SHOW_GUI));
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_SHOW_GUI));
   else if (!parameterObject["fullscreen"].isBoolean() && !parameterObject["fullscreen"].isString())
     return InvalidParams;
 

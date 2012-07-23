@@ -39,6 +39,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIAudioManager.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/Crc32.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
@@ -150,7 +151,7 @@ namespace PYXBMC
   PyObject* XBMC_Shutdown(PyObject *self, PyObject *args)
   {
     ThreadMessage tMsg = {TMSG_SHUTDOWN};
-    g_application.getApplicationMessenger().SendMessage(tMsg);
+    CApplicationMessenger::Get().SendMessage(tMsg);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -166,7 +167,7 @@ namespace PYXBMC
   PyObject* XBMC_Restart(PyObject *self, PyObject *args)
   {
     ThreadMessage tMsg = {TMSG_RESTART};
-    g_application.getApplicationMessenger().SendMessage(tMsg);
+    CApplicationMessenger::Get().SendMessage(tMsg);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -188,7 +189,7 @@ namespace PYXBMC
 
     ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
     tMsg.strParam = cLine;
-    g_application.getApplicationMessenger().SendMessage(tMsg);
+    CApplicationMessenger::Get().SendMessage(tMsg);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -214,7 +215,7 @@ namespace PYXBMC
     bool bWait = false;
     if (!PyArg_ParseTuple(args, (char*)"s|b", &cLine, &bWait)) return NULL;
 
-    g_application.getApplicationMessenger().ExecBuiltIn(cLine, bWait);
+    CApplicationMessenger::Get().ExecBuiltIn(cLine, bWait);
 
     Py_INCREF(Py_None);
     return Py_None;

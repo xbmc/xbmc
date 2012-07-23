@@ -21,7 +21,7 @@
 
 #include "dialog.h"
 
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "pyutil.h"
 #include "pythreadstate.h"

@@ -20,7 +20,7 @@
  */
 
 #include "AlarmClock.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "log.h"
@@ -114,7 +114,7 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   }
   else
   {
-    g_application.getApplicationMessenger().ExecBuiltIn(iter->second.m_strCommand);
+    CApplicationMessenger::Get().ExecBuiltIn(iter->second.m_strCommand);
     if (iter->second.m_loop)
     {
       iter->second.watch.Reset();

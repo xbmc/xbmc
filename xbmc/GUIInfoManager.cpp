@@ -21,8 +21,6 @@
 
 #include "system.h"
 #include "windows/GUIMediaWindow.h"
-#include "dialogs/GUIDialogFileBrowser.h"
-#include "settings/GUIDialogContentSettings.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "Application.h"
 #include "Util.h"
@@ -36,7 +34,6 @@
 #ifdef HAS_LCD
 #include "utils/LCD.h"
 #endif
-#include "GUIPassword.h"
 #include "LangInfo.h"
 #include "utils/SystemInfo.h"
 #include "guilib/GUITextBox.h"
@@ -60,9 +57,7 @@
 #include "utils/SeekHandler.h"
 
 // stuff for current song
-#include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "music/MusicInfoLoader.h"
-#include "utils/LabelFormatter.h"
 
 #include "GUIUserMessages.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -80,7 +75,6 @@
 
 #include "addons/AddonManager.h"
 #include "interfaces/info/InfoBool.h"
-#include "TextureCache.h"
 #include "ThumbLoader.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 

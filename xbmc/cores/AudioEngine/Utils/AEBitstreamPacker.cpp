@@ -58,6 +58,7 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
       PackDTSHD (info, data, size);
       break;
 
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
     case CAEStreamInfo::STREAM_TYPE_DTS_512:
       m_dataSize = CAEPackIEC61937::PackDTS_512(data, size, m_packedBuffer, info.IsLittleEndian());
       break;

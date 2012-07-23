@@ -23,7 +23,6 @@
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
-#include "Util.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
 #include "video/VideoDatabase.h"

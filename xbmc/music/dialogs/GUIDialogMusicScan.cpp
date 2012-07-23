@@ -22,6 +22,7 @@
 #include "GUIDialogMusicScan.h"
 #include "guilib/GUIProgressControl.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "Util.h"
 #include "URL.h"
 #include "guilib/GUIWindowManager.h"
@@ -124,7 +125,7 @@ void CGUIDialogMusicScan::OnFinished()
 
   if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
   {
-    g_application.getApplicationMessenger().Close(this, false, false);
+    CApplicationMessenger::Get().Close(this, false, false);
   }
 }
 

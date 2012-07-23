@@ -24,7 +24,7 @@
 #include "pyutil.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKeyboard.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 
 using namespace std;
 

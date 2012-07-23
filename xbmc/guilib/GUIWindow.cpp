@@ -41,6 +41,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIAudioManager.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/Variant.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE

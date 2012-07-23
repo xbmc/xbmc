@@ -930,16 +930,18 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   }
 
   if (!scraper.GetAlbumCount())
+  {
     scraper.FindAlbumInfo(strAlbum, strArtist);
 
-  while (!scraper.Completed())
-  {
-    if (m_bStop)
+    while (!scraper.Completed())
     {
-      scraper.Cancel();
-      bCanceled = true;
+      if (m_bStop)
+      {
+        scraper.Cancel();
+        bCanceled = true;
+      }
+      Sleep(1);
     }
-    Sleep(1);
   }
 
   CGUIDialogSelect *pDlg=NULL;
@@ -1156,16 +1158,18 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   if (!scraper.GetArtistCount())
+  {
     scraper.FindArtistInfo(strArtist);
 
-  while (!scraper.Completed())
-  {
-    if (m_bStop)
+    while (!scraper.Completed())
     {
-      scraper.Cancel();
-      bCanceled = true;
+      if (m_bStop)
+      {
+        scraper.Cancel();
+        bCanceled = true;
+      }
+      Sleep(1);
     }
-    Sleep(1);
   }
 
   int iSelectedArtist = 0;

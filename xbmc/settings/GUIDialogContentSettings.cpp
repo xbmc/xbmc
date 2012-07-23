@@ -32,6 +32,8 @@
 #include "filesystem/AddonsDirectory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 
+#include <climits>
+
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
 #define CONTROL_SCRAPER_SETTINGS    6

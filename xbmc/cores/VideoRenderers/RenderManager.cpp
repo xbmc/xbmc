@@ -31,6 +31,7 @@
 #include "utils/log.h"
 
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
@@ -253,7 +254,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     if( flags & CONF_FLAGS_FULLSCREEN )
     {
       lock.Leave();
-      g_application.getApplicationMessenger().SwitchToFullscreen();
+      CApplicationMessenger::Get().SwitchToFullscreen();
       lock.Enter();
     }
     m_pRenderer->Update(false);
@@ -372,7 +373,7 @@ bool CXBMCRenderManager::Flush()
   {
     ThreadMessage msg = {TMSG_RENDERER_FLUSH};
     m_flushEvent.Reset();
-    g_application.getApplicationMessenger().SendMessage(msg, false);
+    CApplicationMessenger::Get().SendMessage(msg, false);
     if (!m_flushEvent.WaitMSec(1000))
     {
       CLog::Log(LOGERROR, "%s - timed out waiting for renderer to flush", __FUNCTION__);
