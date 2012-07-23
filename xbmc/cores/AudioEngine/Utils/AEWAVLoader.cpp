@@ -25,8 +25,7 @@
 #include "system.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
-#include "filesystem/FileFactory.h"
-#include "filesystem/IFile.h"
+#include "filesystem/File.h"
 #include "URL.h"
 #include <samplerate.h>
 
@@ -60,18 +59,17 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
   DeInitialize();
   m_filename = filename;
 
-  XFILE::IFile *file = XFILE::CFileFactory::CreateLoader(m_filename);
-  if (!file)
+  XFILE::CFile file;
+  if (!file.Open(m_filename))
   {
     CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Failed to create loader: %s", m_filename.c_str());
     return false;
   }
 
   struct __stat64 st;
-  if (!file->Open(CStdString(m_filename)) || file->Stat(&st) < 0)
+  if (file.Stat(&st) < 0)
   {
     CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Failed to stat file: %s", m_filename.c_str());
-    delete file;
     return false;
   }
 
@@ -87,7 +85,7 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
   uint16_t bitsPerSample;
 
   WAVE_CHUNK chunk;
-  while (file->Read(&chunk, sizeof(chunk)) == sizeof(chunk))
+  while (file.Read(&chunk, sizeof(chunk)) == sizeof(chunk))
   {
     chunk.chunksize = Endian_SwapLE32(chunk.chunksize);
 
@@ -104,14 +102,13 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
       if (chunk.chunksize > st.st_size - 8)
       {
         CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Corrupt WAV header: %s", m_filename.c_str());
-        file->Close();
-        delete file;
+        file.Close();
         return false;
       }
 
       /* we only support WAVE files */
       char format[4];
-      if (file->Read(&format, 4) != 4)
+      if (file.Read(&format, 4) != 4)
         break;
       isWAVE = memcmp(format, "WAVE", 4) == 0;
       if (!isWAVE)
@@ -124,22 +121,22 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
       if (chunk.chunksize < 16)
         break;
       uint16_t format;
-      if (file->Read(&format, sizeof(format)) != sizeof(format))
+      if (file.Read(&format, sizeof(format)) != sizeof(format))
         break;
       format = Endian_SwapLE16(format);
       if (format != WAVE_FORMAT_PCM)
         break;
 
       uint16_t channelCount;
-      if (file->Read(&channelCount , 2) != 2)
+      if (file.Read(&channelCount , 2) != 2)
         break;
-      if (file->Read(&sampleRate   , 4) != 4)
+      if (file.Read(&sampleRate   , 4) != 4)
         break;
-      if (file->Read(&byteRate     , 4) != 4)
+      if (file.Read(&byteRate     , 4) != 4)
         break;
-      if (file->Read(&blockAlign   , 2) != 2)
+      if (file.Read(&blockAlign   , 2) != 2)
         break;
-      if (file->Read(&bitsPerSample, 2) != 2)
+      if (file.Read(&bitsPerSample, 2) != 2)
         break;
 
       m_channelCount = Endian_SwapLE16(channelCount );
@@ -153,7 +150,7 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
       isPCM = true;
 
       if (chunk.chunksize > 16)
-        file->Seek(chunk.chunksize - 16, SEEK_CUR);
+        file.Seek(chunk.chunksize - 16, SEEK_CUR);
     }
     /* if we have the PCM info and its the DATA section */
     else if (isPCM && !isDATA && memcmp(chunk.chunk_id, "data", 4) == 0)
@@ -172,8 +169,7 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
          case 32: convertFn = CAEConvert::ToFloat(AE_FMT_S32LE); break;
          default:
            CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Unsupported data format in wav: %s", m_filename.c_str());
-           file->Close();
-           delete file;
+           file.Close();
            return false;
        }
 
@@ -183,14 +179,13 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
        uint8_t *raw = (uint8_t *)_aligned_malloc(bytesPerSample, 16);
        for (s = 0; s < m_sampleCount; ++s)
        {
-         if (file->Read(raw, bytesPerSample) != bytesPerSample)
+         if (file.Read(raw, bytesPerSample) != bytesPerSample)
          {
            CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
            _aligned_free(m_samples);
            _aligned_free(raw);
            m_samples = NULL;
-           file->Close();
-           delete file;
+           file.Close();
            return false;
          }
 
@@ -202,21 +197,19 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
     else
     {
       /* skip any unknown sections */
-      file->Seek(chunk.chunksize, SEEK_CUR);
+      file.Seek(chunk.chunksize, SEEK_CUR);
     }
   }
 
   if (!isRIFF || !isWAVE || !isFMT || !isPCM || !isDATA || m_sampleCount == 0)
   {
     CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Invalid, or un-supported WAV file: %s", m_filename.c_str());
-    file->Close();
-    delete file;
+    file.Close();
     return false;
   }
 
   /* close the file as we have the samples now */
-  file->Close();
-  delete file;
+  file.Close();
 
   /* if we got here, the file was valid and we have the data but it may need re-sampling still */
   if (resampleRate != 0 && m_sampleRate != resampleRate)
