@@ -72,7 +72,7 @@ public:
    \param min minimum value - set != 0 if auto is used.
    \return true if we found and read the tag.
    */
-  static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min);
+  static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min, float parentSize);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
   static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info, int parentID);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);

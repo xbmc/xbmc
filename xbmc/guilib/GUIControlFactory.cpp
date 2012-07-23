@@ -178,8 +178,13 @@ float CGUIControlFactory::ParsePosition(const char* pos, float parentSize)
 {
   char* end;
   float value = (float)strtod(pos, &end);
-  if (end && *end == 'r')
-    value = parentSize - value;
+  if (end)
+  {
+    if (*end == 'r')
+      value = parentSize - value;
+    else if (*end == '%')
+      value = value * parentSize / 100.0f;
+  }
   return value;
 }
 
@@ -192,18 +197,18 @@ bool CGUIControlFactory::GetPosition(const TiXmlElement *pControlNode, const cha
   return true;
 }
 
-bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min)
+bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min, float parentSize)
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
   if (0 == strnicmp("auto", pNode->FirstChild()->Value(), 4))
   { // auto-width - at least min must be set
-    pNode->QueryFloatAttribute("max", &value);
-    pNode->QueryFloatAttribute("min", &min);
+    value = ParsePosition(pNode->Attribute("max"), parentSize);
+    min = ParsePosition(pNode->Attribute("min"), parentSize);
     if (!min) min = 1;
     return true;
   }
-  value = (float)atof(pNode->FirstChild()->Value());
+  value = ParsePosition(pNode->FirstChild()->Value(), parentSize);
   return true;
 }
 
@@ -719,7 +724,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         GetPosition(pControlNode, "posx", posX, rect.Width()))
       hasLeft = true;
 
-    if (GetDimension(pControlNode, "width", width, minWidth))
+    if (GetDimension(pControlNode, "width", width, minWidth, rect.Width()))
       hasWidth = true;
 
     if (hasLeft != hasWidth) // poor man xor, we have to have at least 1 to continue
@@ -743,7 +748,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         GetPosition(pControlNode, "posy", posY, rect.Height()))
       hasTop = true;
 
-    if (GetDimension(pControlNode, "height", height, minHeight))
+    if (GetDimension(pControlNode, "height", height, minHeight, rect.Height()))
       hasHeight = true;
 
     if (hasTop != hasHeight) // poor man xor, we have to have at least 1 to continue
