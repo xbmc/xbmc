@@ -102,6 +102,7 @@ public:
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
   static bool GetScroller(const TiXmlNode *pControlNode, const CStdString &scrollerTag, CScroller& scroller);
 private:
+  static bool GetPosition(const TiXmlElement *pControlNode, const char* strTag, float& value, float parentSize);
   static CStdString GetType(const TiXmlElement *pControlNode);
   static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);

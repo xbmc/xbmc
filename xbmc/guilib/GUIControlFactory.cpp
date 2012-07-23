@@ -174,6 +174,20 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
+bool CGUIControlFactory::GetPosition(const TiXmlElement *pControlNode, const char* strTag, float& value, float parentSize)
+{
+  const TiXmlElement* pNode = pControlNode->FirstChildElement(strTag);
+  if (!pNode || !pNode->FirstChild()) return false;
+
+  const char* pos = pNode->FirstChild()->Value();
+  char* end;
+  value = (float)strtod(pos, &end);
+  if (end && *end == 'r')
+    value = parentSize - value;
+
+  return true;
+}
+
 bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min)
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
@@ -691,17 +705,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
-  XMLUtils::GetFloat(pControlNode, "posx", posX);
-  XMLUtils::GetFloat(pControlNode, "posy", posY);
-  // Convert these from relative coords
-  CStdString pos;
-  XMLUtils::GetString(pControlNode, "posx", pos);
-  if (pos.Right(1) == "r")
-    posX = rect.Width() - posX;
-  XMLUtils::GetString(pControlNode, "posy", pos);
-  if (pos.Right(1) == "r")
-    posY = rect.Height() - posY;
-
+  GetPosition(pControlNode, "posx", posX, rect.Width());
+  GetPosition(pControlNode, "posy", posY, rect.Height());
   GetDimension(pControlNode, "width", width, minWidth);
   GetDimension(pControlNode, "height", height, minHeight);
   XMLUtils::GetFloat(pControlNode, "offsetx", offset.x);
