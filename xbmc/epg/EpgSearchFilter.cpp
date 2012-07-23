@@ -183,12 +183,13 @@ int EpgSearchFilter::FilterRecordings(CFileItemList &results)
   if (!g_PVRManager.IsStarted())
     return iRemoved;
 
-  CPVRRecordings *recordings = CPVRManager::Get().Recordings();
+  CFileItemList recordings;
+  g_PVRRecordings->GetAll(recordings);
 
-  // TODO not thread safe and inefficient!
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < recordings->size(); iRecordingPtr++)
+  // TODO inefficient!
+  for (int iRecordingPtr = 0; iRecordingPtr < recordings.Size(); iRecordingPtr++)
   {
-    CPVRRecording *recording = recordings->at(iRecordingPtr);
+    CPVRRecording *recording = recordings.Get(iRecordingPtr)->GetPVRRecordingInfoTag();
     if (!recording)
       continue;
 

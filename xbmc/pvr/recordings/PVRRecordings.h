@@ -28,14 +28,14 @@
 
 namespace PVR
 {
-  class CPVRRecordings : public std::vector<CPVRRecording *>,
-                         public Observable
+  class CPVRRecordings : public Observable
   {
   private:
-    CCriticalSection m_critSection;
-    bool             m_bIsUpdating;
-    CStdString       m_strDirectoryHistory;
-    CVideoThumbLoader m_thumbLoader;
+    CCriticalSection             m_critSection;
+    bool                         m_bIsUpdating;
+    CStdString                   m_strDirectoryHistory;
+    CVideoThumbLoader            m_thumbLoader;
+    std::vector<CPVRRecording *> m_recordings;
 
     virtual void UpdateFromClients(void);
     virtual CStdString TrimSlashes(const CStdString &strOrig) const;
@@ -66,7 +66,8 @@ namespace PVR
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
 
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    CPVRRecording *GetByPath(const CStdString &path);
-    CPVRRecording *GetByRecording(const CPVRRecording &recording);
+    CFileItemPtr GetByPath(const CStdString &path);
+    void SetPlayCount(const CFileItem &item, int iPlayCount);
+    void GetAll(CFileItemList &items);
   };
 }

@@ -756,7 +756,7 @@ bool CPVRClients::HasRecordingsSupport(int iClientId)
 
 int CPVRClients::GetRecordings(CPVRRecordings *recordings)
 {
-  int iCurSize = recordings->size();
+  int iCurSize = recordings->GetNumRecordings();
   CLIENTMAP clients;
   GetConnectedClients(&clients);
 
@@ -771,7 +771,7 @@ int CPVRClients::GetRecordings(CPVRRecordings *recordings)
     itrClients++;
   }
 
-  return recordings->size() - iCurSize;
+  return recordings->GetNumRecordings() - iCurSize;
 }
 
 bool CPVRClients::RenameRecording(const CPVRRecording &recording, PVR_ERROR *error)

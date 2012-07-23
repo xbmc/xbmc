@@ -97,9 +97,9 @@ bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CSt
 
 void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results)
 {
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
-    CPVRRecording *current = at(iRecordingPtr);
+    CPVRRecording *current = m_recordings.at(iRecordingPtr);
     if (!IsDirectoryMember(strDirectory, current->m_strDirectory, true))
       continue;
 
@@ -131,9 +131,9 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
   std::set<CStdString> unwatchedFolders;
 
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
-    CPVRRecording *current = at(iRecordingPtr);
+    CPVRRecording *current = m_recordings.at(iRecordingPtr);
     const CStdString strCurrent = GetDirectoryFromPath(current->m_strDirectory, strUseBase);
     if (strCurrent.IsEmpty())
       continue;
@@ -222,7 +222,7 @@ int CPVRRecordings::Load(void)
 {
   Update();
 
-  return size();
+  return m_recordings.size();
 }
 
 void CPVRRecordings::Unload()
@@ -252,20 +252,20 @@ void CPVRRecordings::Update(void)
 int CPVRRecordings::GetNumRecordings()
 {
   CSingleLock lock(m_critSection);
-  return size();
+  return m_recordings.size();
 }
 
 int CPVRRecordings::GetRecordings(CFileItemList* results)
 {
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
-    CFileItemPtr pFileItem(new CFileItem(*at(iRecordingPtr)));
+    CFileItemPtr pFileItem(new CFileItem(*m_recordings.at(iRecordingPtr)));
     results->Add(pFileItem);
   }
 
-  return size();
+  return m_recordings.size();
 }
 
 bool CPVRRecordings::DeleteRecording(const CFileItem &item)
@@ -379,56 +379,84 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
   return bSuccess;
 }
 
-CPVRRecording *CPVRRecordings::GetByPath(const CStdString &path)
+void CPVRRecordings::SetPlayCount(const CFileItem &item, int iPlayCount)
 {
-  CPVRRecording *tag = NULL;
-  CSingleLock lock(m_critSection);
+  if (!item.HasPVRRecordingInfoTag())
+    return;
 
+  const CPVRRecording *recording = item.GetPVRRecordingInfoTag();
+  CSingleLock lock(m_critSection);
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  {
+    CPVRRecording *current = m_recordings.at(iRecordingPtr);
+    if (*current == *recording)
+    {
+      current->SetPlayCount(iPlayCount);
+      break;
+    }
+  }
+}
+
+void CPVRRecordings::GetAll(CFileItemList &items)
+{
+  CSingleLock lock(m_critSection);
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+  {
+    CPVRRecording *current = m_recordings.at(iRecordingPtr);
+
+    CFileItemPtr pFileItem(new CFileItem(*current));
+    pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
+    pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
+    pFileItem->SetPath(current->m_strFileNameAndPath);
+
+    // Set the play count either directly from client (if supported) or from video db
+    if (g_PVRClients->GetAddonCapabilities(pFileItem->GetPVRRecordingInfoTag()->m_iClientId).bSupportsRecordingPlayCount)
+    {
+      pFileItem->GetPVRRecordingInfoTag()->m_playCount=pFileItem->GetPVRRecordingInfoTag()->m_iRecPlayCount;
+    }
+    else
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
+    }
+    pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
+
+    items.Add(pFileItem);
+  }
+}
+
+CFileItemPtr CPVRRecordings::GetByPath(const CStdString &path)
+{
   CURL url(path);
   CStdString fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 
+  CSingleLock lock(m_critSection);
+
   if (fileName.Left(11) == "recordings/")
   {
-    if (fileName.IsEmpty())
-      return tag;
-
-    for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+    for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
     {
-      CPVRRecording *recording = at(iRecordingPtr);
-
-      if(path.Equals(recording->m_strFileNameAndPath))
+      if(path.Equals(m_recordings.at(iRecordingPtr)->m_strFileNameAndPath))
       {
-        tag = recording;
-        break;
+        CFileItemPtr fileItem(new CFileItem(*m_recordings.at(iRecordingPtr)));
+        return fileItem;
       }
     }
   }
 
-  return tag;
-}
-
-CPVRRecording *CPVRRecordings::GetByRecording(const CPVRRecording &recording)
-{
-  CPVRRecording *tag(NULL);
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
-  {
-    if (*at(iRecordingPtr) == recording)
-    {
-      tag = at(iRecordingPtr);
-      break;
-    }
-  }
-  return tag;
+  CFileItemPtr fileItem(new CFileItem);
+  return fileItem;
 }
 
 void CPVRRecordings::Clear()
 {
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
-    delete at(iRecordingPtr);
-  erase(begin(), end());
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
+    delete m_recordings.at(iRecordingPtr);
+  m_recordings.erase(m_recordings.begin(), m_recordings.end());
 }
 
 void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
@@ -436,9 +464,9 @@ void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
   bool bFound = false;
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
-    CPVRRecording *currentTag = at(iRecordingPtr);
+    CPVRRecording *currentTag = m_recordings.at(iRecordingPtr);
     if (currentTag->m_iClientId == tag.m_iClientId &&
         currentTag->m_strRecordingId.Equals(tag.m_strRecordingId))
     {
@@ -452,6 +480,6 @@ void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
   {
     CPVRRecording *newTag = new CPVRRecording();
     newTag->Update(tag);
-    push_back(newTag);
+    m_recordings.push_back(newTag);
   }
 }

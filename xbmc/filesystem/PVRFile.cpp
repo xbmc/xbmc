@@ -75,15 +75,11 @@ bool CPVRFile::Open(const CURL& url)
   }
   else if (strURL.Left(17) == "pvr://recordings/")
   {
-    const CPVRRecording *tag = g_PVRRecordings->GetByPath(strURL);
-    if (tag)
+    CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);
+    if (tag && tag->HasPVRRecordingInfoTag())
     {
-      CPVRRecording *newTag = new CPVRRecording(*tag);
-      if (!g_PVRManager.OpenRecordedStream(*newTag))
-      {
-        delete newTag;
+      if (!g_PVRManager.OpenRecordedStream(*tag->GetPVRRecordingInfoTag()))
         return false;
-      }
 
       m_isPlayRecording = true;
       CLog::Log(LOGDEBUG, "%s - Recording has started on filename %s", __FUNCTION__, strURL.c_str());
@@ -274,9 +270,9 @@ bool CPVRFile::Delete(const CURL& url)
   if (path.Left(11) == "recordings/" && path[path.size()-1] != '/')
   {
     CStdString strURL = url.Get();
-    CPVRRecording *tag = g_PVRRecordings->GetByPath(strURL);
-    if (tag)
-      return tag->Delete();
+    CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);
+    if (tag && tag->HasPVRRecordingInfoTag())
+      return tag->GetPVRRecordingInfoTag()->Delete();
   }
   return false;
 }
@@ -296,16 +292,17 @@ bool CPVRFile::Rename(const CURL& url, const CURL& urlnew)
   if (path.Left(11) == "recordings/" && path[path.size()-1] != '/')
   {
     CStdString strURL = url.Get();
-    CPVRRecording *tag = g_PVRRecordings->GetByPath(strURL);
-    if (tag)
-      return tag->Rename(newname);
+    CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);
+    if (tag && tag->HasPVRRecordingInfoTag())
+      return tag->GetPVRRecordingInfoTag()->Rename(newname);
   }
   return false;
 }
 
 bool CPVRFile::Exists(const CURL& url)
 {
-  return g_PVRManager.IsStarted() && g_PVRRecordings->GetByPath(url.Get()) != NULL;
+  return g_PVRManager.IsStarted() &&
+      g_PVRRecordings->GetByPath(url.Get())->HasPVRRecordingInfoTag();
 }
 
 int CPVRFile::IoControl(EIoControl request, void *param)
