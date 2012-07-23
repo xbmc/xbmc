@@ -248,7 +248,7 @@ void CGUIEPGGridContainer::Render()
 
     pos -= missingSection * m_blockSize;
   }
-  while (pos < end && m_rulerItems.size())
+  while (pos < end && (rulerOffset/m_rulerUnit+1) < m_rulerItems.size())
   {
     item = m_rulerItems[rulerOffset/m_rulerUnit+1];
     if (m_orientation == VERTICAL)
