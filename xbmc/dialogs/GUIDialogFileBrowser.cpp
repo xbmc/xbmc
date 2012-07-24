@@ -44,6 +44,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "URL.h"
 
 using namespace XFILE;
 

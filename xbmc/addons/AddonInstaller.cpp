@@ -39,6 +39,7 @@
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

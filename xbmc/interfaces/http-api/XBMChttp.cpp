@@ -21,6 +21,7 @@
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
+#include "filesystem/CurlFile.h" 
 #include "filesystem/HDDirectory.h" 
 #include "filesystem/CDDADirectory.h"
 #include "filesystem/SpecialProtocol.h"
@@ -52,6 +53,7 @@
 #include "utils/log.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
+#include "URL.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

@@ -20,6 +20,7 @@
  */
 
 #include "TimidityCodec.h"
+#include "URL.h"
 #include "../DllLoader/LibraryLoader.h"
 #include "../DllLoader/SoLoader.h"
 #include "../DllLoader/DllLoader.h"

@@ -21,7 +21,6 @@
 
 #include "HTTPVfsHandler.h"
 #include "network/WebServer.h"
-#include "URL.h"
 #include "filesystem/File.h"
 
 using namespace std;

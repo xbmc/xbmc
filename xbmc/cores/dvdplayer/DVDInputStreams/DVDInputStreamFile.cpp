@@ -21,6 +21,7 @@
 
 #include "DVDInputStreamFile.h"
 #include "filesystem/File.h"
+#include "filesystem/IFile.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 

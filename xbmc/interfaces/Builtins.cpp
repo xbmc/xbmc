@@ -54,6 +54,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
+#include "URL.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
