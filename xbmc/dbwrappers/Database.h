@@ -135,7 +135,7 @@ public:
    */
   bool CommitInsertQueries();
 
-  virtual bool GetFilter(const CDbUrl &dbUrl, Filter &filter) { return true; }
+  virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter) { return true; }
   virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl);
 
 protected:

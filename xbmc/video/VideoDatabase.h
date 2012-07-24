@@ -686,7 +686,7 @@ public:
   void AddTagToItem(int idItem, int idTag, const std::string &type);
   void RemoveTagFromItem(int idItem, int idTag, const std::string &type);
 
-  virtual bool GetFilter(const CDbUrl &videoUrl, Filter &filter);
+  virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter);
 
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);

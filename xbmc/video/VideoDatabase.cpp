@@ -8982,7 +8982,7 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   return items.Size() > 0;
 }
 
-bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
+bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter)
 {
   if (!videoUrl.IsValid())
     return false;
@@ -9407,8 +9407,15 @@ bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
     if (!xspFilter.LoadFromJson(option->second.asString()))
       return false;
 
-    std::set<CStdString> playlists;
-    filter.AppendWhere(xspFilter.GetWhereClause(*this, playlists));
+    // check if the filter playlist matches the item type
+    if (xspFilter.GetType() == itemType)
+    {
+      std::set<CStdString> playlists;
+      filter.AppendWhere(xspFilter.GetWhereClause(*this, playlists));
+    }
+    // remove the filter if it doesn't match the item type
+    else
+      videoUrl.AddOption("filter", "");
   }
 
   return true;

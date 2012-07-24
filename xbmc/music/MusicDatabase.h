@@ -272,7 +272,7 @@ public:
    */
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
 
-  virtual bool GetFilter(const CDbUrl &musicUrl, Filter &filter);
+  virtual bool GetFilter(CDbUrl &musicUrl, Filter &filter);
 
 protected:
   std::map<CStdString, int> m_artistCache;

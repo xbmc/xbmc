@@ -5262,7 +5262,7 @@ string CMusicDatabase::GetArtistArtForItem(int mediaId, const string &mediaType,
   return GetSingleValue(query, m_pDS2);
 }
 
-bool CMusicDatabase::GetFilter(const CDbUrl &musicUrl, Filter &filter)
+bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter)
 {
   if (!musicUrl.IsValid())
     return false;
@@ -5450,8 +5450,15 @@ bool CMusicDatabase::GetFilter(const CDbUrl &musicUrl, Filter &filter)
     if (!xspFilter.LoadFromJson(option->second.asString()))
       return false;
 
-    std::set<CStdString> playlists;
-    filter.AppendWhere(xspFilter.GetWhereClause(*this, playlists));
+    // check if the filter playlist matches the item type
+    if (xspFilter.GetType() == type)
+    {
+      std::set<CStdString> playlists;
+      filter.AppendWhere(xspFilter.GetWhereClause(*this, playlists));
+    }
+    // remove the filter if it doesn't match the item type
+    else
+      musicUrl.AddOption("filter", "");
   }
 
   return true;
