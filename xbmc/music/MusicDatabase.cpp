@@ -294,9 +294,9 @@ int CMusicDatabase::AddFileItem(const CFileItem& pItem, const VECALBUMS& albumHi
 
   int idAlbum;
   if (!tag.GetAlbumArtist().empty())
-    idAlbum = AddAlbum(tag.GetAlbum(), StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator), StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator), tag.GetYear(), tag.GetCompilation());
+    idAlbum = AddAlbum(tag.GetAlbum(), StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator), tag.GetMusicBrainzAlbumID(),StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator), tag.GetYear(), tag.GetCompilation());
   else
-    idAlbum = AddAlbum(tag.GetAlbum(), StringUtils::Join(albumArtistHint, g_advancedSettings.m_musicItemSeparator), StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator), tag.GetYear(), albumCompilationHint);
+    idAlbum = AddAlbum(tag.GetAlbum(), StringUtils::Join(albumArtistHint, g_advancedSettings.m_musicItemSeparator), tag.GetMusicBrainzAlbumID(), StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator), tag.GetYear(), albumCompilationHint);
 
   bool bHasKaraoke = false;
 #ifdef HAS_KARAOKE
@@ -497,7 +497,7 @@ bool CMusicDatabase::DeleteSong(int idSong)
   return bSuccess;
 };
 
-int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist, const CStdString& strGenre, int year, bool bCompilation)
+int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist, const CStdString& strMusicBrainzAlbumID, const CStdString& strGenre, int year, bool bCompilation)
 {
   CStdString strSQL;
   try
@@ -522,7 +522,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strGenres, iYear, bCompilation) values( NULL, '%s', '%s', '%s', %i, %i)", strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), year, bCompilation);
+      strSQL=PrepareSQL("insert into album (idAlbum, strAlbum, strArtists, strMusicBrainzAlbumID, strGenres, iYear, bCompilation) values( NULL, '%s', '%s', '%s', '%s', %i, %i)", strAlbum.c_str(), strArtist.c_str(), strMusicBrainzAlbumID.c_str(), strGenre.c_str(), year, bCompilation);
       m_pDS->exec(strSQL.c_str());
 
       CAlbum album;

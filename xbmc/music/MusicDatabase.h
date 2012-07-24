@@ -304,7 +304,7 @@ protected:
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddSong(const CStdString& strTitle, const CStdString& strArtists, int idAlbum, const CStdString& strPathAndFileName, const CStdString& strGenres, int iTrack, int iDuration, int iYear, const CStdString& strMusicBrainzTrackID, const CStdString& strComment, int iStartOffset, int iEndOffset);
-  int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, const CStdString& strGenre, int year, bool bCompilation);
+  int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, const CStdString& strMusicBrainzAlbumID, const CStdString& strGenre, int year, bool bCompilation);
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);
   int AddPath(const CStdString& strPath);
