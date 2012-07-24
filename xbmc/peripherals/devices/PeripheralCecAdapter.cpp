@@ -186,6 +186,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     m_callbacks.CBCecCommand              = &CecCommand;
     m_callbacks.CBCecConfigurationChanged = &CecConfiguration;
     m_callbacks.CBCecAlert                = &CecAlert;
+    m_callbacks.CBCecSourceActivated      = &CecSourceActivated;
     m_configuration.callbackParam         = this;
     m_configuration.callbacks             = &m_callbacks;
 
@@ -1124,6 +1125,13 @@ void CPeripheralCecAdapter::OnSettingChanged(const CStdString &strChangedSetting
     SetConfigurationFromSettings();
     InitialiseFeature(FEATURE_CEC);
   }
+}
+
+void CPeripheralCecAdapter::CecSourceActivated(void *param, const CEC::cec_logical_address address, const uint8_t activated)
+{
+  // wake up the screensaver, so the user doesn't switch to a black screen
+  if (activated == 1)
+    g_application.WakeUpScreenSaverAndDPMS();
 }
 
 int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message &message)
