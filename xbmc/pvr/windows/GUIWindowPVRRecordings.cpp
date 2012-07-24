@@ -197,10 +197,15 @@ void CGUIWindowPVRRecordings::UpdateData(bool bUpdateSelectedFile /* = true */)
   CSingleLock graphicsLock(g_graphicsContext);
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
+  if (m_parent->m_vecItems->GetPath().Left(17) != "pvr://recordings/")
+    m_strSelectedPath = "pvr://recordings/";
+  else
+    m_strSelectedPath = m_parent->m_vecItems->GetPath();
+
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
-  m_parent->m_vecItems->SetPath("pvr://recordings/");
+  m_parent->m_vecItems->SetPath(m_strSelectedPath);
   m_parent->Update(m_strSelectedPath);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
 
