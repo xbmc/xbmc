@@ -5677,6 +5677,12 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
       return false;
 
+    // if we have a "setid" option we don't want to retrieve sets
+    CVariant setId;
+    if (fetchSets && videoUrl.GetOption("setid", setId) &&
+        setId.isInteger() && setId.asInteger() > 0)
+      fetchSets = false;
+
     int total = -1;
 
     CStdString strSQL = "select %s from movieview ";
