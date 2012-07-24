@@ -37,6 +37,17 @@ using namespace std;
 #pragma warning (disable:4018)
 #endif
 
+CVideoInfoDownloader::CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) :
+  CThread("CVideoInfoDownloader"), m_info(scraper)
+{
+  m_http = new XFILE::CCurlFile;
+}
+
+CVideoInfoDownloader::~CVideoInfoDownloader()
+{
+  delete m_http;
+}
+
 // return value: 0 = we failed, -1 = we failed and reported an error, 1 = success
 int CVideoInfoDownloader::InternalFindMovie(const CStdString &strMovie,
                                             MOVIELIST& movielist,
@@ -44,7 +55,7 @@ int CVideoInfoDownloader::InternalFindMovie(const CStdString &strMovie,
 {
   try
   {
-    movielist = m_info->FindMovie(m_http, strMovie, cleanChars);
+    movielist = m_info->FindMovie(*m_http, strMovie, cleanChars);
   }
   catch (const ADDON::CScraperError &sce)
   {
@@ -177,7 +188,7 @@ bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
     return true;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(m_http, url, true/*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(*m_http, url, true/*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
@@ -212,7 +223,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
     return true;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(m_http, url, false/*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(*m_http, url, false/*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
@@ -247,14 +258,14 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
     return true;
   }
   else  // unthreaded
-    return !(movieDetails = m_info->GetEpisodeList(m_http, url)).empty();
+    return !(movieDetails = m_info->GetEpisodeList(*m_http, url)).empty();
 }
 
 void CVideoInfoDownloader::CloseThread()
 {
-  m_http.Cancel();
+  m_http->Cancel();
   StopThread();
-  m_http.Reset();
+  m_http->Reset();
   m_state = DO_NOTHING;
   m_found = 0;
 }

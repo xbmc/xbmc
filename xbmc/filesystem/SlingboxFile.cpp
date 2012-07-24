@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace std;

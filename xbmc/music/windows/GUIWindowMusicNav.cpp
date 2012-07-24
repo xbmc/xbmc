@@ -51,6 +51,7 @@
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
 #include "Util.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

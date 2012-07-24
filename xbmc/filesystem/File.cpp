@@ -19,6 +19,7 @@
 */
 
 #include "File.h"
+#include "IFile.h"
 #include "FileFactory.h"
 #include "Application.h"
 #include "DirectoryCache.h"
@@ -28,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "utils/BitstreamStats.h"
 #include "Util.h"
+#include "URL.h"
 
 #include "commons/Exception.h"
 
@@ -393,6 +395,13 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 int CFile::Stat(struct __stat64 *buffer)
 {
   return m_pFile->Stat(buffer);
+}
+
+bool CFile::SkipNext()
+{
+  if (m_pFile)
+    return m_pFile->SkipNext();
+  return false;
 }
 
 int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
@@ -763,6 +772,13 @@ int CFile::IoControl(EIoControl request, void* param)
   }
 
   return result;
+}
+
+int CFile::GetChunkSize()
+{
+  if (m_pFile)
+    return m_pFile->GetChunkSize();
+  return 0;
 }
 //*********************************************************************************************
 //*************** Stream IO for CFile objects *************************************************

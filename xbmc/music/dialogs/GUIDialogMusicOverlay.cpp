@@ -20,7 +20,6 @@
  */
 
 #include "GUIDialogMusicOverlay.h"
-#include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
 

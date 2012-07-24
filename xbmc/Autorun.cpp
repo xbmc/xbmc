@@ -33,7 +33,6 @@
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"

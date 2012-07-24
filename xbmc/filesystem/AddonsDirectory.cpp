@@ -32,6 +32,7 @@
 #include "guilib/TextureManager.h"
 #include "File.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 
 using namespace ADDON;
 

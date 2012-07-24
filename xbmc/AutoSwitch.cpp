@@ -20,7 +20,6 @@
  */
 
 #include "AutoSwitch.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"

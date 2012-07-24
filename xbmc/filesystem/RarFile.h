@@ -26,6 +26,7 @@
 #define FILERAR_H_
 
 #include "File.h"
+#include "IFile.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
 

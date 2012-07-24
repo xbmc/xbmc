@@ -24,7 +24,6 @@
 #include "system.h"
 #ifdef HAS_FILESYSTEM_SFTP
 #include "IFile.h"
-#include "URL.h"
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 
@@ -33,6 +32,8 @@
 #include <string>
 #include <map>
 #include <boost/shared_ptr.hpp>
+
+class CURL;
 
 #if LIBSSH_VERSION_INT < SSH_VERSION_INT(0,3,2)
 #define ssh_session SSH_SESSION

@@ -28,6 +28,7 @@
 #include "ApplicationMessenger.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "URL.h"
 
 #define CONTROL_LABELSTATUS       401
 #define CONTROL_LABELDIRECTORY    402
