@@ -467,8 +467,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         if (iChannelNumber > 0 && iChannelNumber != channel.ChannelNumber()) 
         {
           CPVRChannelGroup *selectedGroup = g_PVRManager.GetPlayingGroup(channel.IsRadio());
-          CPVRChannel *channel = selectedGroup->GetByChannelNumber(iChannelNumber);
-          if (!channel)
+          CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
+          if (!channel || !channel->HasPVRChannelInfoTag())
             return false;
 
           OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
@@ -838,10 +838,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
             if (!selectedGroup->IsGroupMember(playingChannel))
             {
               CLog::Log(LOGDEBUG, "%s - channel '%s' is not a member of '%s', switching to channel 1 of the new group", __FUNCTION__, playingChannel.ChannelName().c_str(), selectedGroup->GroupName().c_str());
-              const CPVRChannel *switchChannel = selectedGroup->GetByChannelNumber(1);
+              CFileItemPtr switchChannel = selectedGroup->GetByChannelNumber(1);
 
-              if (switchChannel)
-                OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->ChannelNumber()));
+              if (switchChannel && switchChannel->HasPVRChannelInfoTag())
+                OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->GetPVRChannelInfoTag()->ChannelNumber()));
               else
               {
                 CLog::Log(LOGERROR, "%s - cannot find channel '1' in group %s", __FUNCTION__, selectedGroup->GroupName().c_str());
@@ -1215,28 +1215,9 @@ void CGUIWindowFullScreen::SeekToTimeCodeStamp(SEEK_TYPE type, SEEK_DIRECTION di
 void CGUIWindowFullScreen::SeekTV(bool bPlus, bool bLargeStep)
 {
   if (bLargeStep)
-  {
-    CPVRChannel playingChannel, *nextChannel;
-    g_PVRManager.GetCurrentChannel(playingChannel);
-
-    CPVRChannelGroup *selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel.IsRadio());
-
-    if (bPlus)
-      nextChannel = selectedGroup->GetByChannelUp(playingChannel);
-    else
-      nextChannel = selectedGroup->GetByChannelDown(playingChannel);
-
-    if (bPlus)
-      OnAction(CAction(ACTION_NEXT_ITEM));
-    else
-      OnAction(CAction(ACTION_PREV_ITEM));
-    return;
-  }
+    OnAction(CAction(bPlus ? ACTION_NEXT_ITEM : ACTION_PREV_ITEM));
   else if (!bLargeStep)
-  {
     ChangetheTVGroup(bPlus);
-    return;
-  }
 }
 
 double CGUIWindowFullScreen::GetTimeCodeStamp()

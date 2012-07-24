@@ -225,10 +225,10 @@ namespace PVR
 
     /*!
      * @brief Open a stream from the given channel.
-     * @param tag The channel to open.
+     * @param channel The channel to open.
      * @return True if the stream was opened, false otherwise.
      */
-    bool OpenLiveStream(const CPVRChannel &tag);
+    bool OpenLiveStream(const CFileItem &channel);
 
     /*!
      * @brief Open a stream from the given recording.

@@ -366,14 +366,14 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannelNumber)
     return false;
   }
 
-  const CPVRChannel *channel = playingGroup->GetByChannelNumber(iChannelNumber);
-  if (channel == NULL)
+  CFileItemPtr channel = playingGroup->GetByChannelNumber(iChannelNumber);
+  if (!channel || !channel->HasPVRChannelInfoTag())
   {
     CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel %d", __FUNCTION__, iChannelNumber);
     return false;
   }
 
-  return PerformChannelSwitch(*channel, false);
+  return PerformChannelSwitch(*channel->GetPVRChannelInfoTag(), false);
 }
 
 bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp)
@@ -386,10 +386,14 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
     const CPVRChannelGroup *group = GetPlayingGroup(currentChannel->IsRadio());
     if (group)
     {
-      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(*currentChannel) : group->GetByChannelDown(*currentChannel);
-      if (newChannel && PerformChannelSwitch(*newChannel, bPreview))
+      CFileItemPtr newChannel = bUp ?
+          group->GetByChannelUp(*currentChannel) :
+          group->GetByChannelDown(*currentChannel);
+
+      if (newChannel && newChannel->HasPVRChannelInfoTag() &&
+          PerformChannelSwitch(*newChannel->GetPVRChannelInfoTag(), bPreview))
       {
-        *iNewChannelNumber = newChannel->ChannelNumber();
+        *iNewChannelNumber = newChannel->GetPVRChannelInfoTag()->ChannelNumber();
         bReturn = true;
       }
     }
@@ -400,19 +404,19 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
 
 bool CPVRManager::ContinueLastChannel(void)
 {
-  CSingleLock lock(m_critSection);
-  if (!m_bFirstStart)
-    return true;
-  m_bFirstStart = false;
-  lock.Leave();
+  {
+    CSingleLock lock(m_critSection);
+    if (!m_bFirstStart)
+      return true;
+    m_bFirstStart = false;
+  }
 
   bool bReturn(false);
-  const CPVRChannel *channel = m_channelGroups->GetLastPlayedChannel();
-  if (channel != NULL)
+  CFileItemPtr channel = m_channelGroups->GetLastPlayedChannel();
+  if (channel && channel->HasPVRChannelInfoTag())
   {
-    CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'",
-        __FUNCTION__, channel->ChannelName().c_str());
-    bReturn = StartPlayback(channel, (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN));
+    CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'", __FUNCTION__, channel->GetPVRChannelInfoTag()->ChannelName().c_str());
+    bReturn = StartPlayback(channel->GetPVRChannelInfoTag(), (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN));
   }
 
   return bReturn;
@@ -750,22 +754,25 @@ bool CPVRChannelSettingsSaveJob::DoWork(void)
   return true;
 }
 
-bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)
+bool CPVRManager::OpenLiveStream(const CFileItem &channel)
 {
   bool bReturn(false);
-  CLog::Log(LOGDEBUG,"PVRManager - %s - opening live stream on channel '%s'",
-      __FUNCTION__, tag.ChannelName().c_str());
-
-  // check if we're allowed to play this file
-  if (!CheckParentalLock(tag))
+  if (!channel.HasPVRChannelInfoTag())
     return bReturn;
 
-  if ((bReturn = m_addons->OpenLiveStream(tag)) != false)
+  CLog::Log(LOGDEBUG,"PVRManager - %s - opening live stream on channel '%s'",
+      __FUNCTION__, channel.GetPVRChannelInfoTag()->ChannelName().c_str());
+
+  // check if we're allowed to play this file
+  if (!CheckParentalLock(*channel.GetPVRChannelInfoTag()))
+    return bReturn;
+
+  if ((bReturn = m_addons->OpenLiveStream(*channel.GetPVRChannelInfoTag())) != false)
   {
     CSingleLock lock(m_critSection);
     if(m_currentFile)
       delete m_currentFile;
-    m_currentFile = new CFileItem(tag);
+    m_currentFile = new CFileItem(channel);
   }
 
   return bReturn;

@@ -54,15 +54,11 @@ bool CPVRFile::Open(const CURL& url)
 
   if (strURL.Left(18) == "pvr://channels/tv/" || strURL.Left(21) == "pvr://channels/radio/")
   {
-    const CPVRChannel *tag = g_PVRChannelGroups->GetByPath(strURL);
-    if (tag)
+    CFileItemPtr tag = g_PVRChannelGroups->GetByPath(strURL);
+    if (tag && tag->HasPVRChannelInfoTag())
     {
-      CPVRChannel *newTag = new CPVRChannel(*tag);
-      if (!g_PVRManager.OpenLiveStream(*newTag))
-      {
-        delete newTag;
+      if (!g_PVRManager.OpenLiveStream(*tag))
         return false;
-      }
 
       m_isPlayRecording = false;
       CLog::Log(LOGDEBUG, "PVRFile - %s - playback has started on filename %s", __FUNCTION__, strURL.c_str());
@@ -219,10 +215,10 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
   CStdString FileName = pathFile;
   if (FileName.substr(0, 14) == "pvr://channels")
   {
-    const CPVRChannel *tag = g_PVRChannelGroups->GetByPath(FileName);
-    if (tag)
+    CFileItemPtr channel = g_PVRChannelGroups->GetByPath(FileName);
+    if (channel && channel->HasPVRChannelInfoTag())
     {
-      CStdString stream = tag->StreamURL();
+      CStdString stream = channel->GetPVRChannelInfoTag()->StreamURL();
       if(!stream.IsEmpty())
       {
         if (stream.compare(6, 7, "stream/") == 0)
@@ -231,7 +227,7 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
           // This function was added to retrieve the stream URL for this item
           // Is is used for the MediaPortal (ffmpeg) PVR addon
           // see PVRManager.cpp
-          return g_PVRClients->GetStreamURL(*tag);
+          return g_PVRClients->GetStreamURL(*channel->GetPVRChannelInfoTag());
         }
         else
         {

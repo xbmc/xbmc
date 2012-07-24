@@ -382,16 +382,7 @@ bool CGUIWindowPVRChannels::OnContextButtonLock(CFileItem *item, CONTEXT_BUTTON 
     if (!group)
       return bReturn;
 
-    // Get the REAL channel!!!
-    CPVRChannel *channel = (CPVRChannel *) group->GetByUniqueID(item->GetPVRChannelInfoTag()->UniqueID());
-    if (!channel)
-      return bReturn;
-
-    if(channel->IsLocked())
-      channel->SetLocked(false, true);
-    else
-      channel->SetLocked(true, true);
-
+    group->ToggleChannelLocked(*item);
     UpdateData();
 
     bReturn = true;

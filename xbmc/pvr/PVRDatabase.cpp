@@ -370,7 +370,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
 
         CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
         PVRChannelGroupMember newMember = { channel, m_pDS->fv("iChannelNumber").get_asInt() };
-        results.push_back(newMember);
+        results.m_members.push_back(newMember);
 
         m_pDS->next();
         ++iReturn;
@@ -608,7 +608,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
     bDelete = DeleteValues("map_channelgroups_channels", strWhereClause);
   }
 
-  if (group.size() > 0)
+  if (group.m_members.size() > 0)
   {
     vector<int> currentMembers;
     if (GetCurrentGroupMembers(group, currentMembers))
@@ -710,7 +710,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
       {
         int iChannelId = m_pDS->fv("idChannel").get_asInt();
         int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
-        CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
+        CPVRChannel *channel = g_PVRChannelGroups->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
 
         if (channel && group.AddToGroup(*channel, iChannelNumber))
           ++iReturn;
@@ -737,9 +737,9 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
   if (m_sqlite)
     iLastChannel = GetLastChannelId();
 
-  for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < group.m_members.size(); iChannelPtr++)
   {
-    PVRChannelGroupMember member = group.at(iChannelPtr);
+    PVRChannelGroupMember member = group.m_members.at(iChannelPtr);
     if (member.channel->IsChanged() || member.channel->IsNew())
     {
       if (m_sqlite && member.channel->IsNew())
@@ -757,11 +757,11 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
   CStdString strQuery;
   CSingleLock lock(group.m_critSection);
 
-  if (group.size() > 0)
+  if (group.m_members.size() > 0)
   {
-    for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
+    for (unsigned int iChannelPtr = 0; iChannelPtr < group.m_members.size(); iChannelPtr++)
     {
-      PVRChannelGroupMember member = group.at(iChannelPtr);
+      PVRChannelGroupMember member = group.m_members.at(iChannelPtr);
 
       CStdString strWhereClause = FormatSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u",
           member.channel->ChannelID(), group.GroupID(), member.iChannelNumber);

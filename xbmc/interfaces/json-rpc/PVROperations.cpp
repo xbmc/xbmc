@@ -49,15 +49,15 @@ JSONRPC_STATUS CPVROperations::ChannelSwitch(const CStdString &method, ITranspor
 
   CLog::Log(LOGDEBUG, "JSONRPC: switch to channel '%d'", iChannelId);
 
-  const CPVRChannel *channel = g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
-  if (channel == NULL)
+  CFileItemPtr channel = g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
+  if (!channel || !channel->HasPVRChannelInfoTag())
     return InternalError;
 
   CPVRChannel currentChannel;
-  if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.IsRadio() == channel->IsRadio())
-    CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)channel->ChannelNumber()));
+  if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.IsRadio() == channel->GetPVRChannelInfoTag()->IsRadio())
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)channel->GetPVRChannelInfoTag()->ChannelNumber()));
   else
-    CApplicationMessenger::Get().MediaPlay(CFileItem(*channel));
+    CApplicationMessenger::Get().MediaPlay(*channel);
   return ACK;
 }
 

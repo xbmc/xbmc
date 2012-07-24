@@ -247,40 +247,21 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
   if (setting.id == CONTROL_TMR_DIR && CGUIDialogKeyboard::ShowAndGetInput(tag->m_strDirectory, g_localizeStrings.Get(19104), false))
       UpdateSetting(CONTROL_TMR_DIR);
-  else if (setting.id == CONTROL_TMR_RADIO)
+  else if (setting.id == CONTROL_TMR_RADIO || setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-    const CPVRChannel* channeltag = NULL;
-    if (!tag->m_bIsRadio)
+    if (setting.id == CONTROL_TMR_RADIO)
     {
-      EnableSettings(CONTROL_TMR_CHNAME_TV, true);
-      EnableSettings(CONTROL_TMR_CHNAME_RADIO, false);
-      channeltag = g_PVRChannelGroups->GetGroupAllTV()->GetByChannelNumber(tag->m_iChannelNumber);
-    }
-    else
-    {
-      EnableSettings(CONTROL_TMR_CHNAME_TV, false);
-      EnableSettings(CONTROL_TMR_CHNAME_RADIO, true);
-      channeltag = g_PVRChannelGroups->GetGroupAllRadio()->GetByChannelNumber(tag->m_iChannelNumber);
+      EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_bIsRadio);
+      EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_bIsRadio);
     }
 
-    if (channeltag)
+    CFileItemPtr channel = g_PVRChannelGroups->GetGroupAll(tag->m_bIsRadio)->GetByChannelNumber(tag->m_iChannelNumber);
+    if (channel && channel->HasPVRChannelInfoTag())
     {
-      tag->m_iClientChannelUid = channeltag->UniqueID();
-      tag->m_iClientId         = channeltag->ClientID();
-      tag->m_bIsRadio          = channeltag->IsRadio();
-      tag->m_iChannelNumber    = channeltag->ChannelNumber();
-    }
-  }
-  else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
-  {
-    const CPVRChannel* channeltag = g_PVRChannelGroups->GetGroupAll(tag->m_bIsRadio)->GetByChannelNumber(tag->m_iChannelNumber);
-
-    if (channeltag)
-    {
-      tag->m_iClientChannelUid = channeltag->UniqueID();
-      tag->m_iClientId         = channeltag->ClientID();
-      tag->m_bIsRadio          = channeltag->IsRadio();
-      tag->m_iChannelNumber    = channeltag->ChannelNumber();
+      tag->m_iClientChannelUid = channel->GetPVRChannelInfoTag()->UniqueID();
+      tag->m_iClientId         = channel->GetPVRChannelInfoTag()->ClientID();
+      tag->m_bIsRadio          = channel->GetPVRChannelInfoTag()->IsRadio();
+      tag->m_iChannelNumber    = channel->GetPVRChannelInfoTag()->ChannelNumber();
     }
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day > 10)

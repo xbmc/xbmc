@@ -63,18 +63,6 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
   if (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM)
   {
     // these could indicate next chapter if video supports it
-    if (g_application.CurrentFileItem().IsLiveTV())
-    {
-      CPVRChannel playingChannel, *nextChannel;
-      g_PVRManager.GetCurrentChannel(playingChannel);
-  
-      CPVRChannelGroup *selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel.IsRadio());
-  
-      if (action.GetID() == ACTION_NEXT_ITEM)
-        nextChannel = selectedGroup->GetByChannelUp(playingChannel);
-      else
-        nextChannel = selectedGroup->GetByChannelDown(playingChannel);
-    }
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
       return true;
   }

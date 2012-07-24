@@ -80,18 +80,18 @@ void CPVRChannelGroupInternal::CheckGroupName(void)
 
 void CPVRChannelGroupInternal::UpdateChannelPaths(void)
 {
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
-    PVRChannelGroupMember member = at(iChannelPtr);
+    PVRChannelGroupMember member = m_members.at(iChannelPtr);
     member.channel->UpdatePath(iChannelPtr);
   }
 }
 
 void CPVRChannelGroupInternal::Unload()
 {
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
-    delete at(iChannelPtr).channel;
+    delete m_members.at(iChannelPtr).channel;
   }
 
   CPVRChannelGroup::Unload();
@@ -171,7 +171,7 @@ bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumb
   /* move this channel and persist */
   bReturn = (iChannelNumber > 0) ?
     MoveChannel(realChannel->ChannelNumber(), iChannelNumber, true) :
-    MoveChannel(realChannel->ChannelNumber(), size() - m_iHiddenChannels, true);
+    MoveChannel(realChannel->ChannelNumber(), m_members.size() - m_iHiddenChannels, true);
 
   return bReturn;
 }
@@ -216,8 +216,8 @@ bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsig
 {
   CSingleLock lock(m_critSection);
   /* new channel number out of range */
-  if (iNewChannelNumber > size() - m_iHiddenChannels)
-    iNewChannelNumber = size() - m_iHiddenChannels;
+  if (iNewChannelNumber > m_members.size() - m_iHiddenChannels)
+    iNewChannelNumber = m_members.size() - m_iHiddenChannels;
 
   return CPVRChannelGroup::MoveChannel(iOldChannelNumber, iNewChannelNumber, bSaveInDb);
 }
@@ -227,9 +227,9 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMemb
   int iOrigSize = results.Size();
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
-    CPVRChannel *channel = at(iChannelPtr).channel;
+    CPVRChannel *channel = m_members.at(iChannelPtr).channel;
     if (!channel)
       continue;
 
@@ -249,7 +249,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
   if (!database)
     return -1;
 
-  int iChannelCount = size();
+  int iChannelCount = Size();
 
   if (database->Get(*this) > 0)
   {
@@ -264,12 +264,12 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 
   SortByChannelNumber();
 
-  return size() - iChannelCount;
+  return Size() - iChannelCount;
 }
 
 int CPVRChannelGroupInternal::LoadFromClients(void)
 {
-  int iCurSize = size();
+  int iCurSize = Size();
 
   /* get the channels from the backends */
   PVR_ERROR error;
@@ -277,7 +277,7 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
   if (error != PVR_ERROR_NO_ERROR)
     CLog::Log(LOGWARNING, "CPVRChannelGroupInternal - %s - got bad error (%d) on call to GetChannels", __FUNCTION__, error);
 
-  return size() - iCurSize;
+  return Size() - iCurSize;
 }
 
 bool CPVRChannelGroupInternal::Renumber(void)
@@ -286,12 +286,12 @@ bool CPVRChannelGroupInternal::Renumber(void)
   bool bReturn(CPVRChannelGroup::Renumber());
 
   m_iHiddenChannels = 0;
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size();  iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size();  iChannelPtr++)
   {
-    if (at(iChannelPtr).channel->IsHidden())
+    if (m_members.at(iChannelPtr).channel->IsHidden())
       m_iHiddenChannels++;
     else
-      at(iChannelPtr).channel->UpdatePath(iChannelPtr);
+      m_members.at(iChannelPtr).channel->UpdatePath(iChannelPtr);
   }
 
   return bReturn;
@@ -311,7 +311,7 @@ bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
   {
     updateChannel = new CPVRChannel(channel.IsRadio());
     PVRChannelGroupMember newMember = { updateChannel, 0 };
-    push_back(newMember);
+    m_members.push_back(newMember);
     updateChannel->SetUniqueID(channel.UniqueID());
   }
   updateChannel->UpdateFromClient(channel);
@@ -325,9 +325,9 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
   CSingleLock lock(m_critSection);
 
   /* go through the channel list and check for updated or new channels */
-  for (unsigned int iChannelPtr = 0; iChannelPtr < channels.size(); iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels.m_members.size(); iChannelPtr++)
   {
-    PVRChannelGroupMember member = channels.at(iChannelPtr);
+    PVRChannelGroupMember member = channels.m_members.at(iChannelPtr);
     if (!member.channel)
       continue;
 
@@ -383,9 +383,9 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
   {
     CSingleLock lock(m_critSection);
-    for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
     {
-      CPVRChannel *channel = at(iChannelPtr).channel;
+      CPVRChannel *channel = m_members.at(iChannelPtr).channel;
       if (!channel)
         continue;
 

@@ -85,12 +85,12 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
 
   for (int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
   {
-    const CPVRChannel *channel = group->GetByIndex(iChannelPtr);
-    if (!channel)
+    CFileItemPtr channel = group->GetByIndex(iChannelPtr);
+    if (!channel || !channel->HasPVRChannelInfoTag())
       continue;
 
-    int iChannelNumber = group->GetChannelNumber(*channel);
-    pSpin->AddLabel(channel->ChannelName().c_str(), iChannelNumber);
+    int iChannelNumber = group->GetChannelNumber(*channel->GetPVRChannelInfoTag());
+    pSpin->AddLabel(channel->GetPVRChannelInfoTag()->ChannelName().c_str(), iChannelNumber);
   }
 }
 

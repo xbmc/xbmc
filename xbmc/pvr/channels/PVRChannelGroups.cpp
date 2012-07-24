@@ -472,16 +472,21 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   return bReturn;
 }
 
-const CStdString &CPVRChannelGroups::GetGroupName(int iGroupId) const
+CStdString CPVRChannelGroups::GetGroupName(int iGroupId) const
 {
+  CStdString strReturn(g_localizeStrings.Get(13205));
+
   CSingleLock lock(m_critSection);
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
     if (iGroupId == at(iGroupPtr)->GroupID())
-      return at(iGroupPtr)->GroupName();
+    {
+      strReturn = at(iGroupPtr)->GroupName();
+      break;
+    }
   }
 
-  return g_localizeStrings.Get(13205);
+  return strReturn;
 }
 
 int CPVRChannelGroups::GetGroupId(CStdString strGroupName) const

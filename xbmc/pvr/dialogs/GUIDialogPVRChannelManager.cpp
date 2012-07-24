@@ -720,8 +720,11 @@ void CGUIDialogPVRChannelManager::Update()
 
   for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
-    const CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
-    CFileItemPtr channelFile(new CFileItem(*channel));
+    CFileItemPtr channelFile = channels->GetByIndex(iChannelPtr);
+    if (!channelFile || !channelFile->HasPVRChannelInfoTag())
+      continue;
+    const CPVRChannel *channel = channelFile->GetPVRChannelInfoTag();
+
     channelFile->SetProperty("ActiveChannel", !channel->IsHidden());
     channelFile->SetProperty("Name", channel->ChannelName());
     channelFile->SetProperty("UseEPG", channel->EPGEnabled());
@@ -770,12 +773,7 @@ void CGUIDialogPVRChannelManager::Clear(void)
 
 bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannelGroup *group, unsigned int *iChannelNumber)
 {
-  if (!pItem || !pItem->HasPVRChannelInfoTag())
-    return false;
-
-  /* get the real channel from the group */
-  CPVRChannel *channel = (CPVRChannel *) group->GetByUniqueID(pItem->GetPVRChannelInfoTag()->UniqueID());
-  if (!channel)
+  if (!pItem || !pItem->HasPVRChannelInfoTag() || !group)
     return false;
 
   /* get values from the form */
@@ -788,27 +786,7 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
   CStdString strIconPath    = pItem->GetProperty("Icon").asString();
   CStdString strStreamURL   = pItem->GetProperty("StreamURL").asString();
 
-  channel->SetChannelName(strChannelName);
-  channel->SetHidden(bHidden);
-  channel->SetLocked(bParentalLocked);
-  channel->SetIconPath(strIconPath);
-  if (bVirtual)
-    channel->SetStreamURL(strStreamURL);
-  if (iEPGSource == 0)
-    channel->SetEPGScraper("client");
-  // TODO add other scrapers
-  channel->SetEPGEnabled(bEPGEnabled);
-
-  /* set new values in the channel tag */
-  if (bHidden)
-  {
-    group->SortByChannelNumber(); // or previous changes will be overwritten
-    group->RemoveFromGroup(*channel);
-  }
-  else
-    group->SetChannelNumber(*channel, ++(*iChannelNumber));
-
-  return true;
+  return group->UpdateChannel(*pItem, bHidden, bVirtual, bEPGEnabled, bParentalLocked, iEPGSource, ++(*iChannelNumber), strChannelName, strIconPath, strStreamURL);
 }
 
 void CGUIDialogPVRChannelManager::SaveList(void)
