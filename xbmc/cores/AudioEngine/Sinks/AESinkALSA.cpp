@@ -806,9 +806,9 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
           continue;
         }
 
-        /* if we got here, the configuration is really weird, just give up */
-        it1->m_displayName = it1->m_deviceName;
-        it2->m_displayName = it2->m_deviceName;
+        /* if we got here, the configuration is really weird, just append the whole device string */
+        it1->m_displayName += " (" + it1->m_deviceName + ")";
+        it2->m_displayName += " (" + it2->m_deviceName + ")";
       }
     }
   }
