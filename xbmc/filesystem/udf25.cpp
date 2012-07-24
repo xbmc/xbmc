@@ -391,7 +391,7 @@ static int file_seek(CFile* fp, int blocks)
   pos = fp->Seek((off64_t)blocks * (off64_t)DVD_VIDEO_LB_LEN, SEEK_SET);
 
   if(pos < 0) {
-    return pos;
+    return (int) pos;
   }
   /* assert pos % DVD_VIDEO_LB_LEN == 0 */
   return (int) (pos / DVD_VIDEO_LB_LEN);
@@ -1236,7 +1236,7 @@ long udf25::ReadFile(HANDLE hFile, unsigned char *pBuffer, long lSize)
   if( bdfile == NULL || pBuffer == NULL )
     return -1;
 
-  seek_sector = bdfile->seek_pos / DVD_VIDEO_LB_LEN;
+  seek_sector =(unsigned int) (bdfile->seek_pos / DVD_VIDEO_LB_LEN);
   seek_byte   = bdfile->seek_pos % DVD_VIDEO_LB_LEN;
 
   numsec = ( ( seek_byte + lSize ) / DVD_VIDEO_LB_LEN ) +
@@ -1363,7 +1363,7 @@ udf_dir_t *udf25::OpenDir( const char *subdir )
 
   result->dir_location = UDFFileBlockPos(bd_file->file, 0);
   result->dir_current  = UDFFileBlockPos(bd_file->file, 0);
-  result->dir_length   = bd_file->filesize;
+  result->dir_length   = (uint32_t) bd_file->filesize;
   UDFFreeFile(bd_file->file);
   free(bd_file);
 

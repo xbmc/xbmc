@@ -641,7 +641,7 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
     return;
   }
 
-  group->iPTSStartTime = ov->pts;
+  group->iPTSStartTime = (double) ov->pts;
   group->iPTSStopTime  = 0;
 
   if (ov->plane > 1)
