@@ -2851,6 +2851,7 @@ bool CMusicDatabase::GetCommonNav(const CStdString &strBaseDir, const CStdString
       
       m_pDS->next();
     }
+    items.SetPath(musicUrl.ToString());
     
     // cleanup
     m_pDS->close();
@@ -3028,6 +3029,7 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filte
         CLog::Log(LOGERROR, "%s - out of memory getting listing (got %i)", __FUNCTION__, items.Size());
       }
     }
+    items.SetPath(musicUrl.ToString());
 
     // cleanup
     m_pDS->close();
@@ -3219,6 +3221,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
         CLog::Log(LOGERROR, "%s - out of memory getting listing (got %i)", __FUNCTION__, items.Size());
       }
     }
+    items.SetPath(musicUrl.ToString());
 
     // cleanup
     m_pDS->close();
@@ -3318,6 +3321,8 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
         return (items.Size() > 0);
       }
     }
+    items.SetPath(musicUrl.ToString());
+
     // cleanup
     m_pDS->close();
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
