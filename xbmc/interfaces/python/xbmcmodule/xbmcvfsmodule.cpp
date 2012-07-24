@@ -421,7 +421,7 @@ extern "C" {
         return NULL;
       int64_t size = self->pFile->GetLength();
       if (!readBytes || readBytes > size)
-        readBytes = size;
+        readBytes = (unsigned int) size;
       char* buffer = new char[readBytes + 1];
       PyObject* ret = NULL;
       if (buffer)
@@ -455,7 +455,7 @@ extern "C" {
         return NULL;
 
       CPyThreadState pyState;
-      bool bResult = self->pFile->Write( (void*) pBuffer, strlen( pBuffer ) + 1 );
+      bool bResult = self->pFile->Write( (void*) pBuffer, strlen( pBuffer ) + 1 ) > 0 ? true : false;
       pyState.Restore();
 
       return Py_BuildValue((char*)"b", bResult);
