@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/BitstreamStats.h"
+#include "settings/AdvancedSettings.h"
 #include "Util.h"
 
 #include "commons/Exception.h"
@@ -224,7 +225,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     }
 
     CURL url(URIUtils::SubstitutePath(strFileName));
-    if ( (flags & READ_NO_CACHE) == 0 && URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(strFileName) )
+    if ( (flags & READ_NO_CACHE) == 0 && (URIUtils::IsInternetStream(url, true) || (URIUtils::IsSmb(strFileName) && g_advancedSettings.m_smbForceBuffer)) && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
     if (m_flags & READ_CACHED)

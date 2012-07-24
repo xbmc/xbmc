@@ -331,6 +331,7 @@ class CAdvancedSettings
     int  m_guiAlgorithmDirtyRegions;
     int  m_guiDirtyRegionNoFlipTimeout;
 
+    bool m_smbForceBuffer;
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;
