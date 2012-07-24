@@ -297,7 +297,8 @@ void CAdvancedSettings::Initialize()
 
   m_measureRefreshrate = false;
 
-  m_cacheMemBufferSize = 1024 * 1024 * 20;
+  m_alwaysForceBuffer = false;
+  m_freeMemCachePercent = 50;
   m_addonPackageFolderSize = 200;
 
   m_jsonOutputCompact = true;
@@ -676,11 +677,12 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "alwaysforcebuffer", m_alwaysForceBuffer);
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
-    XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
+    XMLUtils::GetInt(pElement, "freememorycachepercent", m_freeMemCachePercent, 0, 80);
   }
 
   pElement = pRootElement->FirstChildElement("jsonrpc");
