@@ -131,13 +131,13 @@ namespace PYXBMC
   PyDoc_STRVAR(output__doc__,
     "'xbmc.output()' is depreciated and will be removed in future releases,\n"
     "please use 'xbmc.log()' instead");
-  
+
   PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
   {
     CLog::Log(LOGWARNING,"'xbmc.output()' is depreciated and will be removed in future releases, please use 'xbmc.log()' instead");
     return XBMC_Log(self, args, kwds);
   }
-  
+
   // shutdown() method
   PyDoc_STRVAR(shutdown__doc__,
     "shutdown() -- Shutdown the xbox.\n"
@@ -937,7 +937,7 @@ namespace PYXBMC
 
     return Py_BuildValue((char*)"b", exists);
   }
-  
+
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS|METH_KEYWORDS, output__doc__},
