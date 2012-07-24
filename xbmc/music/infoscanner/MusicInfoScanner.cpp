@@ -49,6 +49,8 @@
 #include "TextureCache.h"
 #include "ThumbLoader.h"
 #include "interfaces/AnnouncementManager.h"
+#include "addons/AddonManager.h"
+#include "addons/Scraper.h"
 
 #include <algorithm>
 
@@ -56,6 +58,7 @@ using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
+using namespace ADDON;
 
 CMusicInfoScanner::CMusicInfoScanner() : CThread("CMusicInfoScanner")
 {
@@ -831,6 +834,19 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, CMusicAlbumIn
   info->ClearCache();
 
   CMusicInfoScraper scraper(info);
+  
+  bool bMusicBrainz;
+  if (g_advancedSettings.m_bMusicLibraryUseMusicBrainz && !album.strMusicBrainzAlbumID.empty())
+  {
+    CScraperUrl musicBrainzURL;
+    if (ResolveMusicBrainz(album.strMusicBrainzAlbumID, info, scraper, musicBrainzURL))
+    {
+      CMusicArtistInfo albumNfo("nfo", musicBrainzURL);
+      scraper.GetArtists().clear();
+      scraper.GetArtists().push_back(albumNfo);
+      bMusicBrainz = true;
+    }
+  }
 
   // handle nfo files
   CStdString strAlbumPath;
@@ -862,6 +878,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, CMusicAlbumIn
       CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",info->Name().c_str());
       CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
       scraper.SetScraperInfo(info);
+      scraper.GetAlbums().clear();
       scraper.GetAlbums().push_back(albumNfo);
     }
     else
@@ -891,7 +908,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, CMusicAlbumIn
 
   CGUIDialogSelect *pDlg = NULL;
   int iSelectedAlbum=0;
-  if (result == CNfoFile::NO_NFO)
+  if (result == CNfoFile::NO_NFO && !bMusicBrainz)
   {
     iSelectedAlbum = -1; // set negative so that we can detect a failure
     if (scraper.Succeeded() && scraper.GetAlbumCount() >= 1)
@@ -1068,6 +1085,19 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, CMusicArti
 
   CMusicInfoScraper scraper(info);
 
+  bool bMusicBrainz;
+  if (g_advancedSettings.m_bMusicLibraryUseMusicBrainz && !artist.strMusicBrainzArtistID.empty())
+  {
+    CScraperUrl musicBrainzURL;
+    if (ResolveMusicBrainz(artist.strMusicBrainzArtistID, info, scraper, musicBrainzURL))
+    {
+      CMusicArtistInfo artistNfo("nfo", musicBrainzURL);
+      scraper.GetArtists().clear();
+      scraper.GetArtists().push_back(artistNfo);
+      bMusicBrainz = true;
+    }
+  }
+
   // handle nfo files
   CStdString strArtistPath;
   m_musicDatabase.GetArtistPath(artist.idArtist, strArtistPath);
@@ -1086,6 +1116,10 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, CMusicArti
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
       nfoReader.GetDetails(artistInfo.GetArtist());
       m_musicDatabase.SetArtistInfo(artist.idArtist, artistInfo.GetArtist());
+      // Update the name from the .nfo if we're using MusicBrainz to ensure any MBIDs get wiped out
+      // even for .nfo artists
+      if (g_advancedSettings.m_bMusicLibraryUseMusicBrainz && !artistInfo.GetArtist().strArtist.empty())
+        m_musicDatabase.UpdateArtist(artist.idArtist, artistInfo.GetArtist().strArtist);
       map<string, string> artwork = GetArtistArtwork(artist.idArtist, &artist);
       m_musicDatabase.SetArtForItem(artist.idArtist, "artist", artwork);
       m_musicDatabase.Close();
@@ -1121,9 +1155,9 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, CMusicArti
   }
 
   int iSelectedArtist = 0;
-  if (result == CNfoFile::NO_NFO)
+  if (result == CNfoFile::NO_NFO && !bMusicBrainz)
   {
-    if (scraper.Succeeded() && scraper.GetArtistCount() >= 1)
+    if (scraper.GetArtistCount() >= 1)
     {
       // now load the first match
       if (pDialog && scraper.GetArtistCount() > 1)
@@ -1214,11 +1248,90 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, CMusicArti
     nfoReader.GetDetails(artistInfo.GetArtist(), NULL, true);
   m_musicDatabase.SetArtistInfo(artist.idArtist, artistInfo.GetArtist());
 
+  // The next line (unintuitively) will also update your artist names from .nfo files
+  // if they existed, so you can use a .nfo to override the MBID based default names
+  if (g_advancedSettings.m_bMusicLibraryUseMusicBrainz && !artistInfo.GetArtist().strArtist.empty())
+    m_musicDatabase.UpdateArtist(artist.idArtist, artistInfo.GetArtist().strArtist);
+
   // check thumb stuff
   map<string, string> artwork = GetArtistArtwork(artist.idArtist, &artistInfo.GetArtist());
   m_musicDatabase.SetArtForItem(artist.idArtist, "artist", artwork);
   m_musicDatabase.Close();
   return INFO_ADDED;
+}
+
+bool CMusicInfoScanner::ResolveMusicBrainz(const CStdString strMusicBrainzID, ScraperPtr &preferredScraper, CMusicInfoScraper &musicInfoScraper, CScraperUrl &musicBrainzURL)
+{
+  // We have a MusicBrainz ID
+  // Get a scraper that can resolve it to a MusicBrainz URL & force our
+  // search directly to the specific album.
+  bool bMusicBrainz = false;
+  ADDON::TYPE type = ScraperTypeFromContent(preferredScraper->Content());
+
+  CFileItemList items;
+  ADDON::AddonPtr addon;
+  ADDON::ScraperPtr defaultScraper;
+  if (ADDON::CAddonMgr::Get().GetDefault(type, addon))
+    defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
+
+  vector<ScraperPtr> vecScrapers;
+
+  // add selected scraper - first proirity
+  if (preferredScraper)
+    vecScrapers.push_back(preferredScraper);
+
+  // Add all scrapers except selected and default
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(type, addons);
+
+  for (unsigned i = 0; i < addons.size(); ++i)
+  {
+    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
+    
+    // skip if scraper requires settings and there's nothing set yet
+    if (scraper->RequiresSettings() && !scraper->HasUserSettings())
+      continue;
+    
+    if((!preferredScraper || preferredScraper->ID() != scraper->ID()) && (!defaultScraper || defaultScraper->ID() != scraper->ID()) )
+      vecScrapers.push_back(scraper);
+  }
+
+  // add default scraper - not user selectable so it's last priority
+  if(defaultScraper && 
+     (!preferredScraper || preferredScraper->ID() != defaultScraper->ID()) &&
+     (!defaultScraper->RequiresSettings() || defaultScraper->HasUserSettings()))
+    vecScrapers.push_back(defaultScraper);
+
+  for (unsigned int i=0; i < vecScrapers.size(); ++i)
+  {
+    if (vecScrapers[i]->Type() != type)
+      continue;
+
+    vecScrapers[i]->ClearCache();
+    try
+    {
+      musicBrainzURL = vecScrapers[i]->ResolveIDToUrl(strMusicBrainzID);
+    }
+    catch (const ADDON::CScraperError &sce)
+    {
+      if (!sce.FAborted())
+        continue;
+    }
+    if (!musicBrainzURL.m_url.empty())
+    {
+      Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
+                   // they start serving up the 'you hit the rate-limiter' page fast - meaning
+                   // we will never get below the rate-limit threshold again in a specific run. 
+                   // This helps us to avoidthe rate-limiter as far as possible.
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",vecScrapers[i]->Name().c_str());
+      CLog::Log(LOGDEBUG,"-- nfo url: %s", musicBrainzURL.m_url[0].m_url.c_str());
+      musicInfoScraper.SetScraperInfo(vecScrapers[i]);
+      bMusicBrainz = true;
+      break;
+    }
+  }
+
+  return bMusicBrainz;
 }
 
 map<string, string> CMusicInfoScanner::GetArtistArtwork(long id, const CArtist *artist)

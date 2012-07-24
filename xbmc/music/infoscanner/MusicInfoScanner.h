@@ -21,6 +21,7 @@
 #include "threads/Thread.h"
 #include "music/MusicDatabase.h"
 #include "MusicAlbumInfo.h"
+#include "MusicInfoScraper.h"
 
 class CAlbum;
 class CArtist;
@@ -114,6 +115,15 @@ protected:
   virtual void Run();
   int CountFiles(const CFileItemList& items, bool recursive);
   int CountFilesRecursively(const CStdString& strPath);
+
+  /*! \brief Resolve a MusicBrainzID to a URL
+   If we have a MusicBrainz ID for an artist or album, 
+   resolve it to an MB URL and set up the scrapers accordingly.
+   
+   \param preferredScraper [in] A ScraperPtr to the preferred album/artist scraper.
+   \param musicBrainzURL [out] will be populated with the MB URL for the artist/album.
+   */
+  bool ResolveMusicBrainz(const CStdString strMusicBrainzID, ADDON::ScraperPtr &preferredScraper, MUSIC_GRABBER::CMusicInfoScraper &musicInfoScraper, CScraperUrl &musicBrainzURL);
 
 protected:
   IMusicInfoScannerObserver* m_pObserver;
