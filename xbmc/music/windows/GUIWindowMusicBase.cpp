@@ -404,7 +404,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
         break;
       }
 
-      if (!FindArtistInfo(artist.strArtist, artistInfo, bShowInfo ? SELECTION_ALLOWED : SELECTION_AUTO))
+      if (!FindArtistInfo(artist, artistInfo, bShowInfo ? SELECTION_ALLOWED : SELECTION_AUTO))
         break;
 
       if (!artistInfo.Loaded())
@@ -458,10 +458,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
         break;
       }
 
-      if (!FindAlbumInfo(album.strAlbum, 
-                         StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator),
-                         albumInfo,
-                         bShowInfo ? SELECTION_ALLOWED : SELECTION_AUTO))
+      if (!FindAlbumInfo(album, albumInfo, bShowInfo ? SELECTION_ALLOWED : SELECTION_AUTO))
         break;
       
       if (!albumInfo.Loaded())
@@ -693,97 +690,80 @@ void CGUIWindowMusicBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CAlbum& album, CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection)
 {
+  CStdString strTempAlbum(album.strAlbum);
+  CStdString strTempArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
     m_dlgProgress->SetHeading(185);
-    m_dlgProgress->SetLine(0, strAlbum);
-    m_dlgProgress->SetLine(1, strArtist);
+    m_dlgProgress->SetLine(0, strTempAlbum);
+    m_dlgProgress->SetLine(1, strTempArtist);
     m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal();
   }
 
   CMusicInfoScanner scanner;
-  CStdString strPath;
-  CStdString strTempAlbum(strAlbum);
-  CStdString strTempArtist(strArtist);
-  long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
-  strPath.Format("musicdb://3/%d/",idAlbum);
-
-  bool bCanceled(false);
   bool needsRefresh(true);
   do
   {
-    if (!scanner.DownloadAlbumInfo(strPath,strTempArtist,strTempAlbum,bCanceled,album,m_dlgProgress))
+    INFO_RET result = scanner.DownloadAlbumInfo(album, albumInfo, m_dlgProgress);
+    if (result == INFO_NOT_FOUND && m_dlgProgress && allowSelection != SELECTION_AUTO)
     {
-      if (bCanceled)
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
         return false;
-      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
-      {
-        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
-          return false;
-
-        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
-          return false;
-      }
-      else
-        needsRefresh = false;
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+        return false;
     }
+    else if (result == INFO_CANCELLED || result == INFO_ERROR)
+      return false;
     else
       needsRefresh = false;
   }
-  while (needsRefresh || bCanceled);
+  while (needsRefresh);
 
   // Read the album information from the database if we are dealing with a DB album.
-  if (idAlbum != -1)
-    m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
+  if (album.idAlbum != -1)
+    m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo.GetAlbum(),&albumInfo.GetAlbum().songs);
 
-  album.SetLoaded(true);
+  albumInfo.SetLoaded(true);
   return true;
 }
 
-bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindArtistInfo(const CArtist& artist, CMusicArtistInfo& artistInfo, ALLOW_SELECTION allowSelection)
 {
+  CStdString strTempArtist(artist.strArtist);
+
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
     m_dlgProgress->SetHeading(21889);
-    m_dlgProgress->SetLine(0, strArtist);
+    m_dlgProgress->SetLine(0, strTempArtist);
     m_dlgProgress->SetLine(1, "");
     m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal();
   }
 
   CMusicInfoScanner scanner;
-  CStdString strPath;
-  CStdString strTempArtist(strArtist);
-  long idArtist = m_musicdatabase.GetArtistByName(strArtist);
-  strPath.Format("musicdb://2/%u/",idArtist);
-
-  bool bCanceled(false);
   bool needsRefresh(true);
   do
   {
-    if (!scanner.DownloadArtistInfo(strPath,strTempArtist,bCanceled,m_dlgProgress))
+    INFO_RET result = scanner.DownloadArtistInfo(artist, artistInfo, m_dlgProgress);
+    if (result == INFO_NOT_FOUND && m_dlgProgress && allowSelection != SELECTION_AUTO)
     {
-      if (bCanceled)
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
         return false;
-      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
-      {
-        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
-          return false;
-      }
-      else
-        needsRefresh = false;
     }
+    else if (result == INFO_CANCELLED || result == INFO_ERROR)
+      return false;
     else
       needsRefresh = false;
   }
-  while (needsRefresh || bCanceled);
+  while (needsRefresh);
 
-  if (!m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist()))
+  if (!m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo.GetArtist()))
     return false;
 
   artist.SetLoaded();

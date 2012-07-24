@@ -98,8 +98,8 @@ public:
    */
   static void CategoriseAlbums(const CFileItemList& items, VECALBUMS& albumHints);
 
-  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& album, CGUIDialogProgress* pDialog=NULL);
-  bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
+  INFO_RET DownloadAlbumInfo(const CAlbum& album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, CGUIDialogProgress* pDialog = NULL);
+  INFO_RET DownloadArtistInfo(const CArtist& artist, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, CGUIDialogProgress* pDialog = NULL);
 
   std::map<std::string, std::string> GetArtistArtwork(long id, const CArtist *artist = NULL);
 protected:

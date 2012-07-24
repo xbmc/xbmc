@@ -5261,7 +5261,7 @@ bool CMusicDatabase::GetFilter(const CDbUrl &musicUrl, Filter &filter)
     if (!albumArtistsOnly)
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
-      int idVariousArtists = AddArtist(strVariousArtists);
+      int idVariousArtists = AddArtist(strVariousArtists, "");
       strSQL += PrepareSQL(" and artistview.idArtist <> %i", idVariousArtists);
     }
 
