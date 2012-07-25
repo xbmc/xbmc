@@ -45,7 +45,12 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
   if ((action.GetButtonCode() >= KEY_BUTTON_A &&
        action.GetButtonCode() <= KEY_BUTTON_RIGHT_TRIGGER) ||
       (action.GetButtonCode() >= KEY_BUTTON_DPAD_UP &&
-       action.GetButtonCode() <= KEY_BUTTON_DPAD_RIGHT))
+       action.GetButtonCode() <= KEY_BUTTON_DPAD_RIGHT) || 
+      // AppleTV Remote Control Actions 
+      (action.GetID() >= ACTION_MOVE_LEFT && 
+       action.GetID() <= ACTION_MOVE_DOWN) || 
+      action.GetID() == ACTION_PLAYER_PLAY 
+     )
   {
     switch (action.GetButtonCode())
     {
@@ -61,7 +66,17 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     case KEY_BUTTON_DPAD_DOWN : m_strUserInput += "D"; break;
     case KEY_BUTTON_DPAD_LEFT : m_strUserInput += "L"; break;
     case KEY_BUTTON_DPAD_RIGHT : m_strUserInput += "R"; break;
-    default : return true; break;
+    default :  
+      switch (action.GetID())  
+      { 
+      // AppleTV Remote Control actions 
+      case ACTION_MOVE_LEFT: m_strUserInput += "L"; break; 
+      case ACTION_MOVE_RIGHT: m_strUserInput += "R"; break; 
+      case ACTION_MOVE_UP: m_strUserInput += "U"; break; 
+      case ACTION_MOVE_DOWN: m_strUserInput += "D"; break; 
+      case ACTION_PLAYER_PLAY: m_strUserInput += "P"; break; 
+      default: return true; break; 
+      } 
     }
 
     CStdString strHiddenInput(m_strUserInput);
@@ -81,7 +96,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     Close();
     return true;
   }
-  else if (action.GetButtonCode() == KEY_BUTTON_START)
+  else if (action.GetButtonCode() == KEY_BUTTON_START || action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bConfirmed = false;
     m_bCanceled = false;
