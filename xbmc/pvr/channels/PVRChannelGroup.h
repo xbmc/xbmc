@@ -266,7 +266,7 @@ namespace PVR
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelDown(const CFileItem &channel) const { return GetByChannelUpDown(channel, true); }
+    CFileItemPtr GetByChannelDown(const CFileItem &channel) const { return GetByChannelUpDown(channel, false); }
 
     /*!
      * @brief Get a channel given it's index in this container.
