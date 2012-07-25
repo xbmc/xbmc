@@ -1,13 +1,14 @@
 # XBMC Media Center language file
 # Translators:
 # Max  <M_Auer1@gmx.de>, 2012.
+# PVR: Sascha Woo  <sascha.woo@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: 2012-05-10 10:13+0000\n"
-"Last-Translator: Max <M_Auer1@gmx.de>\n"
+"Last-Translator: Max <M_Auer1@gmx.de>, PVR: Sascha Woo <sascha.woo@gmail.com>\n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5733,7 +5734,7 @@ msgstr "Suche gleiche Programme"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Importiere EPG von den Klienten"
+msgstr "Importiere EPG von den Clients"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -5897,7 +5898,7 @@ msgstr "Bitte Konfiguration überprüfen. Für mehr Details Log einsehen."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Keine PVR-Klienten gestartet. Warte auf Klienten. Für mehr Details Log einsehen."
+msgstr "Es sind keine PVR-Clients gestartet. Warte auf Start der PVR-Clients oder prüfe die Logs für mehr Details."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -5981,7 +5982,7 @@ msgstr "Standard EPG-Fenster"
 
 msgctxt "#19066"
 msgid "Loading recordings from clients"
-msgstr "Lade Aufnahmen von den Klienten"
+msgstr "Lade Aufnahmen von den Clients"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6198,7 +6199,7 @@ msgstr "Auf welchem Server soll gesucht werden?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr "Klientnummer"
+msgstr "Client-Nummer"
 
 msgctxt "#19221"
 msgid "Synchronise channel groups with backends"
@@ -6490,11 +6491,11 @@ msgstr "Fortsetzen?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr "Aktionen der Klienten"
+msgstr "Client-Aktionen"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "PVR Klient spezifische Aktion"
+msgstr "PVR-Client spezifische Aktionen"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6550,7 +6551,7 @@ msgstr "Virtuelles XBMC-Backend"
 
 msgctxt "#19210"
 msgid "Client"
-msgstr "Klient"
+msgstr "Client"
 
 msgctxt "#19211"
 msgid "Delete channel"
@@ -6570,7 +6571,7 @@ msgstr "Gültige URL für neuen Kanal eingeben"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "PVR-Backend unterstützt keine Timer"
+msgstr "Das PVR-Backend unterstützt keine Timer."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6634,7 +6635,7 @@ msgstr "Verhindere EPG Aktualisierungen während der Wiedergabe"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
-msgstr "Nutze immer Kanalreihenfolge der Backends"
+msgstr "Nutze immer die Kanalreihenfolge der Backends"
 
 msgctxt "#19232"
 msgid "Clear search results"
@@ -7542,7 +7543,7 @@ msgstr "VDR Streamdev Client"
 
 msgctxt "#20258"
 msgid "MythTV client"
-msgstr "MythTV client"
+msgstr "MythTV Client"
 
 msgctxt "#20259"
 msgid "Network Filesystem (NFS)"
@@ -9150,7 +9151,7 @@ msgstr "Dienste"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "PVR Klienten"
+msgstr "PVR-Clients"
 
 msgctxt "#24020"
 msgid "Configure"
