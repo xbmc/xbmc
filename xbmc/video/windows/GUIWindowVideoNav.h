@@ -49,7 +49,7 @@ protected:
    */
   void LoadVideoInfo(CFileItemList &items);
 
-  void ApplyWatchedFilter(CFileItemList &items);
+  bool ApplyWatchedFilter(CFileItemList &items);
   virtual bool GetFilteredItems(const CStdString &filter, CFileItemList &items);
 
   virtual void OnItemLoaded(CFileItem* pItem) {};
