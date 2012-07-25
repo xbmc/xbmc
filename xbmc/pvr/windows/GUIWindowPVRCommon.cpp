@@ -708,7 +708,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   CEpgInfoTag *tag = item->GetEPGInfoTag();
   const CPVRChannel *channel = tag ? tag->ChannelTag() : NULL;
 
-  if (!channel || g_PVRManager.CheckParentalLock(*channel))
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
 
   CFileItemPtr timer = g_PVRTimers->GetMatch(item);
