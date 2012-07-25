@@ -1136,7 +1136,7 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
 void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool waitResult /*= true*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
   ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, nextWindowID};
-  tMsg.dwParam2 = (DWORD)(forceClose ? 0x01 : 0 | enableSound ? 0x02 : 0);
+  tMsg.dwParam2 = (DWORD)((forceClose ? 0x01 : 0) | (enableSound ? 0x02 : 0));
   tMsg.lpVoid = window;
   SendMessage(tMsg, waitResult);
 }
