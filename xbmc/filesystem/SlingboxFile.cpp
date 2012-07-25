@@ -69,7 +69,7 @@ bool CSlingboxFile::Open(const CURL& url)
   // Connect to the Slingbox
   if (m_pSlingbox->Connect(bAdmin, url.GetPassWord()))
   {
-    CLog::Log(LOGDEBUG, "%s - Sucessfully connected to Slingbox: %s",
+    CLog::Log(LOGDEBUG, "%s - Successfully connected to Slingbox: %s",
       __FUNCTION__, url.GetHostName().c_str());
   }
   else
