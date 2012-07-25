@@ -971,7 +971,7 @@ void CGUIWindowManager::CloseWindowSync(CGUIWindow *window, int nextWindowID /*=
 {
   window->Close(false, nextWindowID);
   while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-    g_windowManager.ProcessRenderLoop(true);
+    ProcessRenderLoop(true);
 }
 
 #ifdef _DEBUG
