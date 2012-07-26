@@ -264,7 +264,7 @@ extern "C" void ADDON_FreeSettings()
 //-----------------------------------------------------------------------------
 extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
 {
-  if (!id || !value)
+  if (!id || !value || !g_plugin)
     return ADDON_STATUS_UNKNOWN;
 
   if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file
