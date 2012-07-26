@@ -223,7 +223,8 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     OnLostDevice();
     m_bIsInternalXrr = true;
     g_xrandr.SetMode(out, mode);
-    return true;
+    if (m_glWindow)
+      return true;
   }
 #endif
 
