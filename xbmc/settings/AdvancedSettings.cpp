@@ -284,6 +284,7 @@ void CAdvancedSettings::Initialize()
 
   m_measureRefreshrate = false;
 
+  m_smbForceBuffer = false;
   m_cacheMemBufferSize = 1024 * 1024 * 20;
 
   m_jsonOutputCompact = true;
@@ -660,6 +661,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "smbforcebuffer", m_smbForceBuffer);
     XMLUtils::GetInt(pElement, "autodetectpingtime", m_autoDetectPingTime, 1, 240);
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
