@@ -7785,7 +7785,11 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
 
     progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     // find all movies
-    CStdString sql = "select * from movieview";
+    CStdString sql;
+    if (singleFiles)
+      sql = "select movieview.*, countFile from movieview left join (select strPath, count(*) as countFile from path left join files on path.idPath = files.idPath group by path.idPath) as joinSelect on movieview.strPath = joinSelect.strPath;";
+    else
+      sql = "select * from movieview;";
 
     m_pDS->query(sql.c_str());
 
@@ -7850,6 +7854,10 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         }
       }
 
+      bool forceDirectoryInfo = false;
+      if (m_pDS->fv("countFile").get_asInt() == 1)  // Number of files in the current file's path
+        forceDirectoryInfo = true;
+
       CFileItem item(movie.m_strFileNameAndPath,false);
       CFileItem saveItem(item);
       saveItem.SetArt(artwork);
@@ -7862,7 +7870,11 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         }
         else
         {
-          CStdString nfoFile(URIUtils::ReplaceExtension(item.GetTBNFile(), ".nfo"));
+          CStdString nfoFile;
+          if (!forceDirectoryInfo)
+           nfoFile = URIUtils::ReplaceExtension(item.GetTBNFile(), ".nfo");
+          else
+            nfoFile = movie.m_strPath + "movie.nfo";
 
           if (item.IsOpticalMediaFile())
           {
@@ -7895,11 +7907,21 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
 
       if (singleFiles && images && !bSkip)
       {
-        CStdString savedThumb(saveItem.GetTBNFile());
+        CStdString savedThumb;
+        CStdString savedFanart;
+        if (!forceDirectoryInfo)
+        {
+          savedThumb = saveItem.GetTBNFile();
+          savedFanart = URIUtils::ReplaceExtension(savedThumb, "-fanart.jpg");
+        } 
+        else
+        {
+          savedThumb = movie.m_strPath + "folder.jpg";
+          savedFanart = movie.m_strPath + "fanart.jpg";
+        }
         if (saveItem.HasThumbnail() && (overwrite || !CFile::Exists(savedThumb, false)))
           CTextureCache::Get().Export(saveItem.GetThumbnailImage(), savedThumb);
 
-        CStdString savedFanart(URIUtils::ReplaceExtension(savedThumb, "-fanart.jpg"));
         if (saveItem.HasProperty("fanart_image") && (overwrite || !CFile::Exists(savedFanart, false)))
           CTextureCache::Get().Export(saveItem.GetProperty("fanart_image").asString(), savedFanart);
 
