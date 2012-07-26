@@ -93,7 +93,8 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   _mkdir(visprops->profile);
 
   Preinit();
-  g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio);
+  if(!g_plugin || !g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio))
+    return ADDON_STATUS_UNKNOWN;
 
   return ADDON_STATUS_NEED_SAVEDSETTINGS; // We need some settings to be saved later before we quit this plugin
 }
