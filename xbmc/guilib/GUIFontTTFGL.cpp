@@ -23,6 +23,7 @@
 #include "GUIFontTTFGL.h"
 #include "GUIFontManager.h"
 #include "Texture.h"
+#include "TextureManager.h"
 #include "GraphicContext.h"
 #include "gui3d.h"
 #include "utils/log.h"
@@ -234,7 +235,7 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   if (m_bTextureLoaded)
   {
     if (glIsTexture(m_nTexture))
-      glDeleteTextures(1, (GLuint*) &m_nTexture);
+      g_TextureManager.ReleaseHwTexture(m_nTexture);
     m_bTextureLoaded = false;
   }
 }
