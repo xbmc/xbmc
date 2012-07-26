@@ -901,7 +901,7 @@ bool CPVRClients::HasChannelGroupSupport(int iClientId)
 int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKNOWN;
-  int iCurSize = groups->size();
+  int iCurSize = groups->Size();
   CLIENTMAP clients;
   GetConnectedClients(&clients);
 
@@ -917,7 +917,7 @@ int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
     itrClients++;
   }
 
-  return groups->size() - iCurSize;
+  return groups->Size() - iCurSize;
 }
 
 int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error)

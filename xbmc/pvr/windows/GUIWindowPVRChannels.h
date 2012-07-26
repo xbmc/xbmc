@@ -24,10 +24,10 @@
 #include "GUIWindowPVRCommon.h"
 #include "utils/Observer.h"
 #include "threads/Thread.h"
+#include "../channels/PVRChannelGroup.h"
 
 namespace PVR
 {
-  class CPVRChannelGroup;
   class CGUIWindowPVR;
 
   class CGUIWindowPVRChannels : public CGUIWindowPVRCommon, private Observer, private CThread
@@ -40,9 +40,9 @@ namespace PVR
 
     void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    const CPVRChannelGroup *SelectedGroup(void);
-    void SetSelectedGroup(CPVRChannelGroup *group);
-    CPVRChannelGroup *SelectNextGroup(void);
+    CPVRChannelGroupPtr SelectedGroup(void);
+    void SetSelectedGroup(CPVRChannelGroupPtr group);
+    CPVRChannelGroupPtr SelectNextGroup(void);
     void UpdateData(bool bUpdateSelectedFile = true);
     void Notify(const Observable &obs, const CStdString& msg);
     void ResetObservers(void);
@@ -68,7 +68,7 @@ namespace PVR
 
     void ShowGroupManager(void);
 
-    CPVRChannelGroup *m_selectedGroup;
+    CPVRChannelGroupPtr m_selectedGroup;
     bool              m_bShowHiddenChannels;
     bool              m_bRadio;
     bool              m_bThreadCreated;

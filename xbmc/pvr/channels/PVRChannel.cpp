@@ -559,9 +559,9 @@ void CPVRChannel::UpdatePath(unsigned int iNewChannelNumber)
 {
   CStdString strFileNameAndPath;
   CSingleLock lock(m_critSection);
-  CPVRChannelGroup *group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
+  CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
 
-  if (group)
+  if (group->IsValid())
   {
     strFileNameAndPath.Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), group->GroupName().c_str(), iNewChannelNumber);
     if (m_strFileNameAndPath != strFileNameAndPath)

@@ -35,7 +35,6 @@ namespace EPG
 namespace PVR
 {
   class CPVRChannelGroup;
-  class CPVRChannelGroupInternal;
   class CPVRDatabase;
   class CPVREpgContainer;
   class CPVRChannelIconCacheJob;
@@ -45,7 +44,6 @@ namespace PVR
   class CPVRChannel : public Observable
   {
     friend class CPVRChannelGroup;
-    friend class CPVRChannelGroupInternal;
     friend class CPVRDatabase;
     friend class CPVREpgContainer;
     friend class EPG::CEpg;
@@ -388,12 +386,12 @@ namespace PVR
 
     void ToSortable(SortItem& sortable);
 
-  private:
     /*!
      * @brief Update the path after the channel number in the internal group changed.
      */
     void UpdatePath(unsigned int iNewChannelNumber);
 
+  private:
     /*!
      * @brief Update the encryption name after SetEncryptionSystem() has been called.
      */

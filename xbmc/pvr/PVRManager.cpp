@@ -44,6 +44,7 @@
 #include "PVRGUIInfo.h"
 #include "addons/PVRClients.h"
 #include "channels/PVRChannelGroupsContainer.h"
+#include "channels/PVRChannelGroupInternal.h"
 #include "epg/EpgContainer.h"
 #include "recordings/PVRRecordings.h"
 #include "timers/PVRTimers.h"
@@ -359,8 +360,8 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannelNumber)
 {
   CSingleLock lock(m_critSection);
 
-  const CPVRChannelGroup *playingGroup = GetPlayingGroup(m_addons->IsPlayingRadio());
-  if (playingGroup == NULL)
+  CPVRChannelGroupPtr playingGroup = GetPlayingGroup(m_addons->IsPlayingRadio());
+  if (!playingGroup->IsValid())
   {
     CLog::Log(LOGERROR, "PVRManager - %s - cannot get the selected group", __FUNCTION__);
     return false;
@@ -383,8 +384,8 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
   {
     CFileItem currentFile(g_application.CurrentFileItem());
     CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
-    const CPVRChannelGroup *group = GetPlayingGroup(currentChannel->IsRadio());
-    if (group)
+    CPVRChannelGroupPtr group = GetPlayingGroup(currentChannel->IsRadio());
+    if (group->IsValid())
     {
       CFileItemPtr newChannel = bUp ?
           group->GetByChannelUp(*currentChannel) :
@@ -534,8 +535,8 @@ void CPVRManager::ResetEPG(void)
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
-    m_channelGroups->GetGroupAllTV()->CreateChannelEpgs(true);
-    m_channelGroups->GetGroupAllRadio()->CreateChannelEpgs(true);
+    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllTV().get())->CreateChannelEpgs(true);
+    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllRadio().get())->CreateChannelEpgs(true);
     g_EpgContainer.Start();
     StartUpdateThreads();
   }
@@ -717,12 +718,12 @@ void CPVRManager::LoadCurrentChannelSettings()
   m_addons->LoadCurrentChannelSettings();
 }
 
-void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
+void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
 {
   m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
 }
 
-CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
+CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
   return m_channelGroups->GetSelectedGroup(bRadio);
 }
@@ -1082,8 +1083,8 @@ void CPVRManager::LocalizationChanged(void)
   CSingleLock lock(m_critSection);
   if (IsStarted())
   {
-    m_channelGroups->GetGroupAllRadio()->CheckGroupName();
-    m_channelGroups->GetGroupAllTV()->CheckGroupName();
+    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllRadio().get())->CheckGroupName();
+    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllTV().get())->CheckGroupName();
   }
 }
 

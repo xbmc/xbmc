@@ -79,8 +79,8 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   int iGroupId = (iChannelGroup == EPG_SEARCH_UNSET) ?
       XBMC_INTERNAL_GROUP_TV :
       iChannelGroup;
-  const CPVRChannelGroup *group = g_PVRChannelGroups->GetByIdFromAll(iGroupId);
-  if (!group)
+  CPVRChannelGroupPtr group = g_PVRChannelGroups->GetByIdFromAll(iGroupId);
+  if (!group->IsValid())
     group = g_PVRChannelGroups->GetGroupAllTV();
 
   for (int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)

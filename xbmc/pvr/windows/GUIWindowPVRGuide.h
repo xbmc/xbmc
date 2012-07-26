@@ -25,11 +25,11 @@
 #include "epg/GUIEPGGridContainer.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
+#include "../channels/PVRChannelGroup.h"
 
 namespace PVR
 {
   class CGUIWindowPVR;
-  class CPVRChannelGroup;
 
   class CGUIWindowPVRGuide : public CGUIWindowPVRCommon, public Observer
   {
@@ -70,6 +70,6 @@ namespace PVR
 
     int               m_iGuideView;
     CFileItemList    *m_cachedTimeline;
-    CPVRChannelGroup *m_cachedChannelGroup;
+    CPVRChannelGroupPtr m_cachedChannelGroup;
   };
 }

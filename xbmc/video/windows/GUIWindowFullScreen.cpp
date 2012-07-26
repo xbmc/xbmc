@@ -466,7 +466,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
         if (iChannelNumber > 0 && iChannelNumber != channel.ChannelNumber()) 
         {
-          CPVRChannelGroup *selectedGroup = g_PVRManager.GetPlayingGroup(channel.IsRadio());
+          CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(channel.IsRadio());
           CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
           if (!channel || !channel->HasPVRChannelInfoTag())
             return false;
@@ -829,8 +829,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CPVRChannel playingChannel;
         if (g_PVRManager.GetCurrentChannel(playingChannel))
         {
-          CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) g_PVRChannelGroups->Get(playingChannel.IsRadio())->GetByName(strLabel);
-          if (selectedGroup)
+          CPVRChannelGroupPtr selectedGroup = g_PVRChannelGroups->Get(playingChannel.IsRadio())->GetByName(strLabel);
+          if (selectedGroup->IsValid())
           {
             g_PVRManager.SetPlayingGroup(selectedGroup);
             CLog::Log(LOGDEBUG, "%s - switched to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());
@@ -1294,25 +1294,8 @@ void CGUIWindowFullScreen::FillInTVGroups()
   g_windowManager.SendMessage(msgReset);
 
   const CPVRChannelGroups *groups = g_PVRChannelGroups->Get(g_PVRManager.IsPlayingRadio());
-  const CPVRChannelGroup *currentGroup = g_PVRManager.GetPlayingGroup(false);
-
-  int iListGroupPtr    = 0;
-  int iCurrentGroupPtr = 0;
-  for (int iGroupPtr = 0; iGroupPtr < (int) groups->size(); iGroupPtr++)
-  {
-    /* skip empty groups */
-    if (groups->at(iGroupPtr)->Size() == 0)
-      continue;
-
-    if (*groups->at(iGroupPtr) == *currentGroup)
-      iCurrentGroupPtr = iListGroupPtr;
-
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iListGroupPtr++);
-    msg.SetLabel(groups->at(iGroupPtr)->GroupName());
-    g_windowManager.SendMessage(msg);
-  }
-  CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_CHOOSER, iCurrentGroupPtr);
-  g_windowManager.SendMessage(msgSel);
+  if (groups)
+    groups->FillGroupsGUI(GetID(), CONTROL_GROUP_CHOOSER);
 }
 
 void CGUIWindowFullScreen::ChangetheTVGroup(bool next)

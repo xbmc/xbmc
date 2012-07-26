@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,23 +21,16 @@
  *
  */
 
-#include "video/VideoInfoTag.h"
-#include "XBDateTime.h"
 #include "FileItem.h"
 #include "PVRChannelGroup.h"
-#include "PVRChannelGroupInternal.h"
-#include "threads/SingleLock.h"
+#include "threads/CriticalSection.h"
 
 namespace PVR
 {
-  class CPVRChannelGroupsContainer;
-
   /** A container class for channel groups */
 
-  class CPVRChannelGroups : public std::vector<CPVRChannelGroup *>
+  class CPVRChannelGroups
   {
-    friend class CPVRChannelGroupsContainer;
-
   public:
     /*!
      * @brief Create a new group container.
@@ -58,33 +51,51 @@ namespace PVR
     bool Load(void);
 
     /*!
+     * @return Amount of groups in this container
+     */
+    int Size(void) const { CSingleLock lock(m_critSection); return m_groups.size(); }
+
+    /*!
      * @brief Update a group or add it if it's not in here yet.
      * @param group The group to update.
      * @param bSaveInDb True to save the changes in the db.
      * @return True if the group was added or update successfully, false otherwise.
      */
     bool Update(const CPVRChannelGroup &group, bool bSaveInDb = false);
-    bool UpdateFromClient(const CPVRChannelGroup &group);
+
+    /*!
+     * @brief Called by the add-on callback to add a new group
+     * @param group The group to add
+     * @return True when updated, false otherwise
+     */
+    bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group, false); }
+
+    /*!
+     * @brief Get a channel given it's path
+     * @param strPath The path to the channel
+     * @return The channel, or an empty fileitem when not found
+     */
+    CFileItemPtr GetByPath(const CStdString &strPath) const;
 
     /*!
      * @brief Get a pointer to a channel group given it's ID.
      * @param iGroupId The ID of the group.
      * @return The group or NULL if it wasn't found.
      */
-    CPVRChannelGroup *GetById(int iGroupId) const;
+    CPVRChannelGroupPtr GetById(int iGroupId) const;
 
     /*!
      * @brief Get a group given it's name.
      * @param strName The name.
      * @return The group or NULL if it wan't found.
      */
-    CPVRChannelGroup *GetByName(const CStdString &strName) const;
+    CPVRChannelGroupPtr GetByName(const CStdString &strName) const;
 
     /*!
      * @brief Get the group that contains all channels.
      * @return The group that contains all channels.
      */
-    CPVRChannelGroupInternal *GetGroupAll(void) const;
+    CPVRChannelGroupPtr GetGroupAll(void) const;
 
     /*!
      * @brief Get the list of groups.
@@ -94,44 +105,30 @@ namespace PVR
     int GetGroupList(CFileItemList* results) const;
 
     /*!
-     * @brief Get the ID of the previous group in this container.
-     * @param iGroupId The ID of the current group.
-     * @return The ID of the previous group or the ID of the group containing all channels if it wasn't found.
-     */
-    int GetPreviousGroupID(int iGroupId) const;
-
-    /*!
      * @brief Get the previous group in this container.
      * @param group The current group.
      * @return The previous group or the group containing all channels if it wasn't found.
      */
-    CPVRChannelGroup *GetPreviousGroup(const CPVRChannelGroup &group) const;
-
-    /*!
-     * @brief Get the ID of the next group in this container.
-     * @param iGroupId The ID of the current group.
-     * @return The ID of the next group or the ID of the group containing all channels if it wasn't found.
-     */
-    int GetNextGroupID(int iGroupId) const;
+    CPVRChannelGroupPtr GetPreviousGroup(const CPVRChannelGroup &group) const;
 
     /*!
      * @brief Get the next group in this container.
      * @param group The current group.
      * @return The next group or the group containing all channels if it wasn't found.
      */
-    CPVRChannelGroup *GetNextGroup(const CPVRChannelGroup &group) const;
+    CPVRChannelGroupPtr GetNextGroup(const CPVRChannelGroup &group) const;
 
     /*!
      * @brief Get the group that is currently selected in the UI.
      * @return The selected group.
      */
-    virtual CPVRChannelGroup *GetSelectedGroup(void) const;
+    CPVRChannelGroupPtr GetSelectedGroup(void) const;
 
     /*!
      * @brief Change the selected group.
      * @param group The group to select.
      */
-    virtual void SetSelectedGroup(CPVRChannelGroup *group);
+    void SetSelectedGroup(CPVRChannelGroupPtr group);
 
     /*!
      * @brief Add a group to this container.
@@ -148,32 +145,10 @@ namespace PVR
     bool DeleteGroup(const CPVRChannelGroup &group);
 
     /*!
-     * @brief Add a channel to the group with the given ID.
-     * @param channel The channel to add.
-     * @param iGroupId The ID of the group to add the channel to.
-     * @return True if the channel was added, false if not.
-     */
-    bool AddChannelToGroup(CPVRChannel *channel, int iGroupId);
-
-    /*!
-     * @brief Get the name of a group.
-     * @param iGroupId The ID of the group.
-     * @return The name of the group or localized string 953 if it wasn't found.
-     */
-    CStdString GetGroupName(int iGroupId) const;
-
-    /*!
-     * @brief Get the ID of a group given it's name.
-     * @param strGroupName The name of the group.
-     * @return The ID or -1 if it wasn't found.
-     */
-    int GetGroupId(CStdString strGroupName) const;
-
-    /*!
      * @brief Remove a channel from all non-system groups.
      * @param channel The channel to remove.
      */
-    void RemoveFromAllGroups(CPVRChannel *channel);
+    void RemoveFromAllGroups(const CPVRChannel &channel);
 
     /*!
      * @brief Persist all changes in channel groups.
@@ -181,9 +156,18 @@ namespace PVR
      */
     bool PersistAll(void);
 
+    /*!
+     * @return True when this container contains radio groups, false otherwise
+     */
     bool IsRadio(void) const { return m_bRadio; }
 
-  protected:
+    /*!
+     * @brief Call by a guiwindow/dialog to add the groups to a control
+     * @param iWindowId The window to add the groups to.
+     * @param iControlId The control to add the groups to
+     */
+    void FillGroupsGUI(int iWindowId, int iControlId) const;
+
     /*!
      * @brief Update the contents of the groups in this container.
      * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
@@ -191,21 +175,14 @@ namespace PVR
      */
     bool Update(bool bChannelsOnly = false);
 
-    bool UpdateGroupsEntries(const CPVRChannelGroups &groups);
-
   private:
-    bool             m_bRadio;      /*!< true if this is a container for radio channels, false if it is for tv channels */
-    int              m_iSelectedGroup; /*!< the index of the group that's currently selected in the UI */
-    CCriticalSection m_critSection;
-
-    /*!
-     * @brief Get the index in this container of the channel group with the given ID.
-     * @param iGroupId The ID to find.
-     * @return The index or -1 if it wasn't found.
-     */
-    int GetIndexForGroupID(int iGroupId) const;
-    int GetIndexForGroupName(const CStdString &strName) const;
+    bool UpdateGroupsEntries(const CPVRChannelGroups &groups);
     bool LoadUserDefinedChannelGroups(void);
     bool GetGroupsFromClients(void);
+
+    bool                             m_bRadio;         /*!< true if this is a container for radio channels, false if it is for tv channels */
+    CPVRChannelGroupPtr              m_selectedGroup;  /*!< the group that's currently selected in the UI */
+    std::vector<CPVRChannelGroupPtr> m_groups;         /*!< the groups in this container */
+    CCriticalSection m_critSection;
   };
 }

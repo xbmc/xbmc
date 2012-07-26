@@ -42,21 +42,21 @@
 using namespace PVR;
 using namespace EPG;
 
-CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName) :
-    m_bRadio(bRadio),
+CPVRChannelGroup::CPVRChannelGroup(void) :
+    m_bRadio(false),
     m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
-    m_iGroupId(iGroupId),
-    m_strGroupName(strGroupName),
+    m_iGroupId(-1),
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false)
 {
 }
 
-CPVRChannelGroup::CPVRChannelGroup(bool bRadio) :
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName) :
     m_bRadio(bRadio),
     m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
-    m_iGroupId(-1),
+    m_iGroupId(iGroupId),
+    m_strGroupName(strGroupName),
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false)
@@ -81,8 +81,6 @@ CPVRChannelGroup::~CPVRChannelGroup(void)
 
 bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
 {
-  if (this == &right) return true;
-
   return (m_bRadio == right.m_bRadio &&
       m_iGroupType == right.m_iGroupType &&
       m_iGroupId == right.m_iGroupId &&
@@ -146,7 +144,8 @@ void CPVRChannelGroup::Unload(void)
 
 bool CPVRChannelGroup::Update(void)
 {
-  if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED)
+  if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED ||
+      !g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
     return false;
 
   CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);
@@ -506,7 +505,7 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
   int iOrigSize = results.Size();
   CSingleLock lock(m_critSection);
 
-  const CPVRChannelGroup *channels = bGroupMembers ? this : g_PVRChannelGroups->GetGroupAll(m_bRadio);
+  const CPVRChannelGroup* channels = bGroupMembers ? this : g_PVRChannelGroups->GetGroupAll(m_bRadio).get();
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->m_members.size(); iChannelPtr++)
   {
     CPVRChannel *channel = channels->m_members.at(iChannelPtr).channel;
@@ -523,12 +522,12 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
   return results.Size() - iOrigSize;
 }
 
-CPVRChannelGroup *CPVRChannelGroup::GetNextGroup(void) const
+CPVRChannelGroupPtr CPVRChannelGroup::GetNextGroup(void) const
 {
   return g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*this);
 }
 
-CPVRChannelGroup *CPVRChannelGroup::GetPreviousGroup(void) const
+CPVRChannelGroupPtr CPVRChannelGroup::GetPreviousGroup(void) const
 {
   return g_PVRChannelGroups->Get(m_bRadio)->GetPreviousGroup(*this);
 }
@@ -615,7 +614,7 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
       /* remove this channel from all non-system groups if this is the internal group */
       if (IsInternalGroup())
       {
-        g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(channel);
+        g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(*channel);
 
         /* since it was not found in the internal group, it was deleted from the backend */
         channel->Delete();
@@ -701,7 +700,7 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
     {
       if (IsInternalGroup())
       {
-        g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(channel);
+        g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(*channel);
         channel->Delete();
       }
       else
@@ -888,11 +887,9 @@ bool CPVRChannelGroup::Renumber(void)
 
 void CPVRChannelGroup::ResetChannelNumberCache(void)
 {
-  CPVRChannelGroup *playingGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
-
-  if (this!=playingGroup) {
+  CPVRChannelGroupPtr playingGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
+  if (*this != *playingGroup)
     return;
-  }
 
   CSingleLock lock(m_critSection);
 
@@ -1072,6 +1069,12 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results)
   return results.Size() - iInitialSize;
 }
 
+bool CPVRChannelGroup::IsValid(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_iGroupId >= 0;
+}
+
 int CPVRChannelGroup::Size(void) const
 {
   CSingleLock lock(m_critSection);
@@ -1086,8 +1089,11 @@ int CPVRChannelGroup::GroupID(void) const
 
 void CPVRChannelGroup::SetGroupID(int iGroupId)
 {
-  CSingleLock lock(m_critSection);
-  m_iGroupId = iGroupId;
+  if (iGroupId >= 0)
+  {
+    CSingleLock lock(m_critSection);
+    m_iGroupId = iGroupId;
+  }
 }
 
 void CPVRChannelGroup::SetGroupType(int iGroupType)

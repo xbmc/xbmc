@@ -25,6 +25,8 @@
 #include "PVRChannel.h"
 #include "utils/JobManager.h"
 
+#include <boost/shared_ptr.hpp>
+
 namespace EPG
 {
   struct EpgSearchFilter;
@@ -49,6 +51,9 @@ namespace PVR
     unsigned int iChannelNumber;
   } PVRChannelGroupMember;
 
+  class CPVRChannelGroup;
+  typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
+
   /** A group of channels */
   class CPVRChannelGroup : private Observer,
                            public Observable,
@@ -61,6 +66,8 @@ namespace PVR
     friend class CPVRDatabase;
 
   public:
+    CPVRChannelGroup(void);
+
     /*!
      * @brief Create a new channel group instance.
      * @param bRadio True if this group holds radio channels.
@@ -68,12 +75,6 @@ namespace PVR
      * @param strGroupName The name of this group.
      */
     CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName);
-
-    /*!
-     * @brief Create a new channel group.
-     * @param bRadio True if this group holds radio channels.
-     */
-    CPVRChannelGroup(bool bRadio);
 
     /*!
      * @brief Create a new channel group instance from a channel group provided by an add-on.
@@ -91,6 +92,11 @@ namespace PVR
 
     bool operator ==(const CPVRChannelGroup &right) const;
     bool operator !=(const CPVRChannelGroup &right) const;
+
+    /*!
+     * @return True when this group has a valid id, false otherwise.
+     */
+    bool IsValid(void) const;
 
     /*!
      * @return The amount of group members
@@ -293,12 +299,12 @@ namespace PVR
     /*!
      * @return The next channel group.
      */
-    CPVRChannelGroup *GetNextGroup(void) const;
+    CPVRChannelGroupPtr GetNextGroup(void) const;
 
     /*!
      * @return The previous channel group.
      */
-    CPVRChannelGroup *GetPreviousGroup(void) const;
+    CPVRChannelGroupPtr GetPreviousGroup(void) const;
 
     /*!
      * @brief The amount of hidden channels in this container.
@@ -459,13 +465,13 @@ namespace PVR
   class CPVRPersistGroupJob : public CJob
   {
   public:
-    CPVRPersistGroupJob(CPVRChannelGroup *group) { m_group = group; }
+    CPVRPersistGroupJob(CPVRChannelGroupPtr group) { m_group = group; }
     virtual ~CPVRPersistGroupJob() {}
     const char *GetType() const { return "pvr-channelgroup-persist"; }
 
     virtual bool DoWork();
 
   private:
-    CPVRChannelGroup *m_group;
+    CPVRChannelGroupPtr m_group;
   };
 }

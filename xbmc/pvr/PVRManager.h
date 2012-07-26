@@ -27,6 +27,7 @@
 #include "windows/GUIWindowPVRCommon.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Stopwatch.h"
+#include "channels/PVRChannelGroup.h"
 
 class CGUIDialogExtendedProgressBar;
 
@@ -60,6 +61,8 @@ namespace PVR
   #define g_PVRTimers        g_PVRManager.Timers()
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
+
+  typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
   class CPVRManager : private CThread
   {
@@ -279,14 +282,14 @@ namespace PVR
      * @brief Set the current playing group, used to load the right channel.
      * @param group The new group.
      */
-    void SetPlayingGroup(CPVRChannelGroup *group);
+    void SetPlayingGroup(CPVRChannelGroupPtr group);
 
     /*!
      * @brief Get the current playing group, used to load the right channel.
      * @param bRadio True to get the current radio group, false to get the current TV group.
      * @return The current group or the group containing all channels if it's not set.
      */
-    CPVRChannelGroup *GetPlayingGroup(bool bRadio = false);
+    CPVRChannelGroupPtr GetPlayingGroup(bool bRadio = false);
 
     /*!
      * @brief Let the background thread update the recordings list.

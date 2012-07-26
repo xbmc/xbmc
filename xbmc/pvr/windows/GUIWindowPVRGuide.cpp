@@ -45,7 +45,7 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   m_iGuideView(g_guiSettings.GetInt("epg.defaultguideview"))
 {
   m_cachedTimeline = new CFileItemList;
-  m_cachedChannelGroup = NULL;
+  m_cachedChannelGroup = CPVRChannelGroupPtr(new CPVRChannelGroup);
 }
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
@@ -226,7 +226,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
 
   if (m_bUpdateRequired || m_cachedTimeline->IsEmpty() ||
-      m_cachedChannelGroup != g_PVRManager.GetPlayingGroup(bRadio))
+      *m_cachedChannelGroup != *g_PVRManager.GetPlayingGroup(bRadio))
   {
     m_bUpdateRequired = false;
 

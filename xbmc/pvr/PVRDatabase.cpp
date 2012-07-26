@@ -27,6 +27,7 @@
 
 #include "PVRManager.h"
 #include "channels/PVRChannelGroupsContainer.h"
+#include "channels/PVRChannelGroupInternal.h"
 #include "addons/PVRClient.h"
 
 using namespace std;
@@ -657,7 +658,7 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup &group)
 bool CPVRDatabase::Get(CPVRChannelGroups &results)
 {
   bool bReturn = false;
-  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u;", results.IsRadio());
+  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u", results.IsRadio());
 
   if (ResultQuery(strQuery))
   {
@@ -665,12 +666,8 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
     {
       while (!m_pDS->eof())
       {
-        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
-
-        data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
-        data.SetGroupName(m_pDS->fv("sName").get_asString());
+        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("idGroup").get_asInt(), m_pDS->fv("sName").get_asString());
         data.SetGroupType(m_pDS->fv("iGroupType").get_asInt());
-
         results.Update(data);
 
         CLog::Log(LOGDEBUG, "PVR - %s - group '%s' loaded from the database", __FUNCTION__, data.GroupName().c_str());

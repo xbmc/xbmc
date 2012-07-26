@@ -712,10 +712,10 @@ void CGUIDialogPVRChannelManager::Update()
   // empty the lists ready for population
   Clear();
 
-  const CPVRChannelGroup *channels = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
+  CPVRChannelGroupPtr channels = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
 
   // No channels available, nothing to do.
-  if( !channels )
+  if(!channels->IsValid())
     return;
 
   for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
@@ -771,9 +771,9 @@ void CGUIDialogPVRChannelManager::Clear(void)
   m_channelItems->Clear();
 }
 
-bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannelGroup *group, unsigned int *iChannelNumber)
+bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber)
 {
-  if (!pItem || !pItem->HasPVRChannelInfoTag() || !group)
+  if (!pItem || !pItem->HasPVRChannelInfoTag() || !group->IsValid())
     return false;
 
   /* get values from the form */
@@ -806,8 +806,8 @@ void CGUIDialogPVRChannelManager::SaveList(void)
 
   /* persist all channels */
   unsigned int iNextChannelNumber(0);
-  CPVRChannelGroup *group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
-  if (!group)
+  CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
+  if (!group->IsValid())
     return;
   for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
   {

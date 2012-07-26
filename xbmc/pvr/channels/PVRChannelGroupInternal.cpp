@@ -19,6 +19,8 @@
  *
  */
 
+#include "PVRChannelGroupInternal.h"
+
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -37,12 +39,10 @@ using namespace EPG;
 using namespace std;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
-  CPVRChannelGroup(bRadio)
+  CPVRChannelGroup(bRadio, bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV, g_localizeStrings.Get(bRadio ? 19216 : 19217))
 {
   m_iHiddenChannels = 0;
   m_iGroupType      = PVR_GROUP_TYPE_INTERNAL;
-  m_iGroupId        = bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV;
-  m_strGroupName    = g_localizeStrings.Get(bRadio ? 19216 : 19217);
 }
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelGroup &group) :

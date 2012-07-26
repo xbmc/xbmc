@@ -82,35 +82,27 @@ namespace PVR
      * @brief Get the group containing all TV channels.
      * @return The group containing all TV channels.
      */
-    CPVRChannelGroupInternal *GetGroupAllTV(void)  const{ return GetGroupAll(false); }
+    CPVRChannelGroupPtr GetGroupAllTV(void)  const{ return GetGroupAll(false); }
 
     /*!
      * @brief Get the group containing all radio channels.
      * @return The group containing all radio channels.
      */
-    CPVRChannelGroupInternal *GetGroupAllRadio(void)  const{ return GetGroupAll(true); }
+    CPVRChannelGroupPtr GetGroupAllRadio(void)  const{ return GetGroupAll(true); }
 
     /*!
      * @brief Get the group containing all TV or radio channels.
      * @param bRadio If true, get the group containing all radio channels. Get the group containing all TV channels otherwise.
      * @return The requested group.
      */
-    CPVRChannelGroupInternal *GetGroupAll(bool bRadio) const;
-
-    /*!
-     * @brief Get a group given it's ID.
-     * @param bRadio If true, search the radio channel container. Search the TV channels otherwise.
-     * @param iGroupId The ID of the group.
-     * @return The requested group or NULL if it wasn't found.
-     */
-    CPVRChannelGroup *GetById(bool bRadio, int iGroupId) const;
+    CPVRChannelGroupPtr GetGroupAll(bool bRadio) const;
 
     /*!
      * @brief Get a group given it's ID.
      * @param iGroupId The ID of the group.
      * @return The requested group or NULL if it wasn't found.
      */
-    CPVRChannelGroup *GetByIdFromAll(int iGroupId) const;
+    CPVRChannelGroupPtr GetByIdFromAll(int iGroupId) const;
 
     /*!
      * @brief Get a channel given it's database ID.
@@ -133,14 +125,14 @@ namespace PVR
      * @param bRadio Get radio channels or tv channels.
      * @return True if the list was filled succesfully.
      */
-    bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
+    bool GetGroupsDirectory(CFileItemList *results, bool bRadio);
 
     /*!
      * @brief Get a channel given it's path.
      * @param strPath The path.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByPath(const CStdString &strPath);
+    CFileItemPtr GetByPath(const CStdString &strPath) const;
 
     /*!
      * @brief Get the directory for a path.
@@ -161,7 +153,7 @@ namespace PVR
      * @param bRadio True to get the selected radio group, false to get the selected TV group.
      * @return The selected group.
      */
-    CPVRChannelGroup *GetSelectedGroup(bool bRadio) const;
+    CPVRChannelGroupPtr GetSelectedGroup(bool bRadio) const;
 
     /*!
      * @brief Get a channel given it's channel ID from all containers.

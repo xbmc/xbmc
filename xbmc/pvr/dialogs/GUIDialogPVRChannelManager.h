@@ -23,11 +23,10 @@
 #include "guilib/GUIDialog.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "GUIViewControl.h"
+#include "../channels/PVRChannelGroup.h"
 
 namespace PVR
 {
-  class CPVRChannelGroup;
-
   class CGUIDialogPVRChannelManager : public CGUIDialog
   {
   public:
@@ -66,7 +65,7 @@ namespace PVR
     virtual bool OnClickButtonDeleteChannel(CGUIMessage &message);
     virtual bool OnClickButtonNewChannel(CGUIMessage &message);
 
-    virtual bool PersistChannel(CFileItemPtr pItem, CPVRChannelGroup *group, unsigned int *iChannelNumber);
+    virtual bool PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber);
     virtual void SetItemsUnchanged(void);
 
   private:
