@@ -25,7 +25,6 @@
 #include "addons/GUIDialogAddonInfo.h"
 #include "Autorun.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogKeyboard.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"

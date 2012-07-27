@@ -32,7 +32,6 @@
 #include "playlists/PlayListM3U.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKeyboard.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "settings/GUISettings.h"
 #include "GUIUserMessages.h"

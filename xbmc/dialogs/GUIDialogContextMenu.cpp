@@ -23,8 +23,6 @@
 #include "GUIDialogContextMenu.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
 #include "Autorun.h"
