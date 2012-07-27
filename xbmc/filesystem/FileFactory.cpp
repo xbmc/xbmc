@@ -71,6 +71,9 @@
 #ifdef HAS_FILESYSTEM_AFP
 #include "AFPFile.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "AndroidAppFile.h"
+#endif
 #include "UPnPFile.h"
 #include "PipesManager.h"
 #include "PipeFile.h"
@@ -183,6 +186,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
     else if (strProtocol == "pipe") return new CPipeFile();    
     else if (strProtocol == "upnp") return new CUPnPFile();
+#if defined(TARGET_ANDROID)
+    else if (strProtocol == "androidapp") return new CFileAndroidApp();
+#endif
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

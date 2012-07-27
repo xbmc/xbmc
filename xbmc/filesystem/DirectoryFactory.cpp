@@ -106,6 +106,9 @@
 #ifdef HAVE_LIBBLURAY
 #include "BlurayDirectory.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "AndroidAppDirectory.h"
+#endif
 
 using namespace XFILE;
 
@@ -214,6 +217,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 #endif
 #ifdef HAVE_LIBBLURAY
       if (strProtocol == "bluray") return new CBlurayDirectory();
+#endif
+#if defined(TARGET_ANDROID)
+      if (strProtocol == "androidapp") return new CAndroidAppDirectory();
 #endif
   }
 

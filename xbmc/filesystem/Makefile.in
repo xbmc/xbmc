@@ -3,6 +3,8 @@ ARCH=@ARCH@
 CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
 SRCS=AddonsDirectory.cpp \
+     AndroidAppFile.cpp \
+     AndroidAppDirectory.cpp \
      ASAPFileDirectory.cpp \
      CacheStrategy.cpp \
      CircularCache.cpp \
