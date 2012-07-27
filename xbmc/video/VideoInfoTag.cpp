@@ -518,6 +518,8 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldYear] = m_iYear;
   sortable[FieldSeason] = m_iSeason;
   sortable[FieldEpisodeNumber] = m_iEpisode;
+  sortable[FieldEpisodeNumberSpecialSort] = m_iSpecialSortEpisode;
+  sortable[FieldSeasonSpecialSort] = m_iSpecialSortSeason;
   sortable[FieldRating] = m_fRating;
   sortable[FieldId] = m_iDbId;
   sortable[FieldTrackNumber] = m_iTrack;
