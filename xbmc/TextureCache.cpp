@@ -65,6 +65,7 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
   if (url != "-" && !CURL::IsFullPath(url))
     return true;
   if (URIUtils::IsInPath(url, "special://skin/") ||
+      URIUtils::IsInPath(url, "androidapp://")   ||
       URIUtils::IsInPath(url, g_settings.GetThumbnailsFolder()))
     return true;
   return false;
