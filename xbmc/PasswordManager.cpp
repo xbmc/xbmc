@@ -85,6 +85,10 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 
 void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
 {
+  // don't store/save authenticated url if it doesn't contain username
+  if (url.GetUserName().IsEmpty())
+    return;
+
   CSingleLock lock(m_critSection);
 
   CStdString path = GetLookupPath(url);
