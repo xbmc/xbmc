@@ -452,10 +452,13 @@ void XBPyThread::stop()
     old = PyThreadState_Swap((PyThreadState*)m_threadState);    
     for(PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
     {
+      // Raise a SystemExit exception in python threads
       Py_XDECREF(state->async_exc);
       state->async_exc = PyExc_SystemExit;
       Py_XINCREF(state->async_exc);
     }
+    // If a dialog entered its doModal(), we need to wake it to see the exception
+    g_pythonParser.PulseGlobalEvent();
 
     PyThreadState_Swap(old);
     PyEval_ReleaseLock();
