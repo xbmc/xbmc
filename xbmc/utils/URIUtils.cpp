@@ -812,6 +812,11 @@ bool URIUtils::IsBluray(const CStdString& strFile)
   return strFile.Left(7).Equals("bluray:");
 }
 
+bool URIUtils::IsAndroidApp(const CStdString &path)
+{
+  return path.Left(11).Equals("androidapp:");
+}
+
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))

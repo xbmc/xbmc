@@ -6779,7 +6779,11 @@ msgctxt "#20243"
 msgid "Android photos"
 msgstr ""
 
-#empty strings from id 20244 to 20249
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr ""
+
+#empty strings from id 20245 to 20249
 
 msgctxt "#20250"
 msgid "Party on! (videos)"

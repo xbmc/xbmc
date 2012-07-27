@@ -176,7 +176,8 @@ void CURL::Parse(const CStdString& strURL1)
      m_strProtocol.Equals("addons") ||
      m_strProtocol.Equals("image") ||
      m_strProtocol.Equals("videodb") ||
-     m_strProtocol.Equals("musicdb"))
+     m_strProtocol.Equals("musicdb") ||
+     m_strProtocol.Equals("androidapp"))
     sep = "?";
   else
   if(strProtocol2.Equals("http")
