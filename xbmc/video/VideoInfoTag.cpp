@@ -521,6 +521,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldRating] = m_fRating;
   sortable[FieldId] = m_iDbId;
   sortable[FieldTrackNumber] = m_iTrack;
+  sortable[FieldTag] = m_tags;
 
   sortable[FieldTime] = m_streamDetails.GetVideoDuration();
   sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight();
