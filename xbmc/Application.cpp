@@ -4912,42 +4912,42 @@ bool CApplication::OnMessage(CGUIMessage& message)
 }
 
 bool CApplication::ExecuteXBMCAction(std::string actionStr)
-    {
-      // see if it is a user set string
-      CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, actionStr.c_str());
-      CGUIInfoLabel info(actionStr, "");
-      actionStr = info.GetLabel(0);
-      CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, actionStr.c_str());
+{
+  // see if it is a user set string
+  CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, actionStr.c_str());
+  CGUIInfoLabel info(actionStr, "");
+  actionStr = info.GetLabel(0);
+  CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, actionStr.c_str());
 
-      // user has asked for something to be executed
-      if (CBuiltins::HasCommand(actionStr))
-        CBuiltins::Execute(actionStr);
-      else
-      {
-        // try translating the action from our ButtonTranslator
-        int actionID;
-        if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
-        {
-          OnAction(CAction(actionID));
-          return true;
-        }
-        CFileItem item(actionStr, false);
-#ifdef HAS_PYTHON
-        if (item.IsPythonScript())
-        { // a python script
-          g_pythonParser.evalFile(item.GetPath().c_str(),ADDON::AddonPtr());
-        }
-        else
-#endif
-        if (item.IsAudio() || item.IsVideo())
-        { // an audio or video file
-          PlayFile(item);
-        }
-        else
-          return false;
-      }
+  // user has asked for something to be executed
+  if (CBuiltins::HasCommand(actionStr))
+    CBuiltins::Execute(actionStr);
+  else
+  {
+    // try translating the action from our ButtonTranslator
+    int actionID;
+    if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
+    {
+      OnAction(CAction(actionID));
       return true;
     }
+    CFileItem item(actionStr, false);
+#ifdef HAS_PYTHON
+    if (item.IsPythonScript())
+    { // a python script
+      g_pythonParser.evalFile(item.GetPath().c_str(),ADDON::AddonPtr());
+    }
+    else
+#endif
+    if (item.IsAudio() || item.IsVideo())
+    { // an audio or video file
+      PlayFile(item);
+    }
+    else
+      return false;
+  }
+  return true;
+}
 
 void CApplication::Process()
 {
