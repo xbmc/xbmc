@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "URL.h"
 
 #include "PVRTimers.h"
 #include "pvr/PVRManager.h"

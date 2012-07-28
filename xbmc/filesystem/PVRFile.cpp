@@ -28,6 +28,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;
