@@ -27,6 +27,7 @@
 #include "utils/Splash.h"
 #include "LangInfo.h"
 #include "Util.h"
+#include "URL.h"
 #include "guilib/TextureManager.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "cores/AudioEngine/AEFactory.h"
