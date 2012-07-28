@@ -59,7 +59,7 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "guilib/GUIEditControl.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -279,7 +279,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (GetProperty("filter").empty())
         {
           CStdString filter = GetProperty("filter").asString();
-          CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
+          CGUIKeyboardFactory::ShowAndGetFilter(filter, false);
           SetProperty("filter", filter);
         }
         else

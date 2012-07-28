@@ -40,7 +40,7 @@
 #include "addons/Scraper.h"
 #include "guilib/GUIWindowManager.h"
 #include "ApplicationMessenger.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
@@ -251,7 +251,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (bEncoded)
             CURL::Decode(value);
 
-          if (CGUIDialogKeyboard::ShowAndGetInput(value, label, true, bHidden))
+          if (CGUIKeyboardFactory::ShowAndGetInput(value, label, true, bHidden))
           {
             // if hidden hide input
             if (bHidden)

@@ -21,7 +21,7 @@
 
 #include "GUIDialogLockSettings.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIWindowManager.h"
@@ -119,7 +119,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
       CStdString strDecodeUrl = m_strURL;
       CURL::Decode(strDecodeUrl);
       strHeading.Format("%s %s",g_localizeStrings.Get(14062).c_str(),strDecodeUrl.c_str());
-      if (CGUIDialogKeyboard::ShowAndGetInput(m_strUser,strHeading,true))
+      if (CGUIKeyboardFactory::ShowAndGetInput(m_strUser,strHeading,true))
       {
         m_bChanged = true;
         m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(20142).c_str(),m_strUser.c_str());
@@ -154,7 +154,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
       break;
     case 4:
       iLockMode = LOCK_MODE_QWERTY;
-      bResult = CGUIDialogKeyboard::ShowAndVerifyNewPassword(newPassword);
+      bResult = CGUIKeyboardFactory::ShowAndVerifyNewPassword(newPassword);
       break;
     default:
       break;
@@ -184,7 +184,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
     CStdString strDecodeUrl = m_strURL;
     CURL::Decode(strDecodeUrl);
     strHeading.Format("%s %s",g_localizeStrings.Get(20143).c_str(),strDecodeUrl.c_str());
-    if (CGUIDialogKeyboard::ShowAndGetInput(m_locks.code,strHeading,true,true))
+    if (CGUIKeyboardFactory::ShowAndGetInput(m_locks.code,strHeading,true,true))
     {
       m_settings[1].name.Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
       m_bChanged = true;

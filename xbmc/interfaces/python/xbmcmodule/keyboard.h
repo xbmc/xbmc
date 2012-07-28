@@ -24,7 +24,7 @@
 #include <string>
 #pragma once
 
-class CGUIDialogKeyboard;
+class CGUIDialogKeyboardGeneric;
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,7 +37,7 @@ namespace PYXBMC
     std::string strDefault;
     std::string strHeading;
     bool bHidden;
-    CGUIDialogKeyboard* dlg;
+    CGUIDialogKeyboardGeneric* dlg;
   } Keyboard;
 
   extern PyTypeObject Keyboard_Type;
