@@ -192,8 +192,8 @@ void CSoftAEStream::Initialize()
     m_ssrcData.data_in       = m_convertBuffer;
     m_internalRatio          = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.src_ratio     = m_internalRatio;
-    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * std::ceil(m_ssrcData.src_ratio) * sizeof(float), 16);
-    m_ssrcData.output_frames = m_format.m_frames * std::ceil(m_ssrcData.src_ratio);
+    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * (int)std::ceil(m_ssrcData.src_ratio) * sizeof(float), 16);
+    m_ssrcData.output_frames = m_format.m_frames * (long)std::ceil(m_ssrcData.src_ratio);
     m_ssrcData.end_of_input  = 0;
   }
 
@@ -595,7 +595,7 @@ bool CSoftAEStream::SetResampleRatio(double ratio)
 
   CSharedLock lock(m_lock);
 
-  int oldRatioInt = std::ceil(m_ssrcData.src_ratio);
+  int oldRatioInt = (int)std::ceil(m_ssrcData.src_ratio);
 
   m_resampleRatio = ratio;
 
@@ -606,8 +606,8 @@ bool CSoftAEStream::SetResampleRatio(double ratio)
   if (oldRatioInt < std::ceil(m_ssrcData.src_ratio))
   {
     _aligned_free(m_ssrcData.data_out);
-    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * std::ceil(m_ssrcData.src_ratio) * sizeof(float), 16);
-    m_ssrcData.output_frames = m_format.m_frames * std::ceil(m_ssrcData.src_ratio);
+    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * (int)std::ceil(m_ssrcData.src_ratio) * sizeof(float), 16);
+    m_ssrcData.output_frames = m_format.m_frames * (long)std::ceil(m_ssrcData.src_ratio);
   }
   return true;
 }
