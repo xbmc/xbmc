@@ -857,7 +857,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
 
 bool CGUIWindowVideoBase::HasResumeItemOffset(const CFileItem *item)
 {
-  int startoffset, partNumber = 0;
+  int startoffset = 0, partNumber = 0;
   GetResumeItemOffset(item, startoffset, partNumber);
   return startoffset > 0;
 }
