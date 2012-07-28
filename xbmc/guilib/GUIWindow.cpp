@@ -91,7 +91,21 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
+  const char* strLoadType;
+  switch (m_loadType)
+  {
+  case LOAD_ON_GUI_INIT:
+    strLoadType = "LOAD_ON_GUI_INIT";
+    break;
+  case KEEP_IN_MEMORY:
+    strLoadType = "KEEP_IN_MEMORY";
+    break;
+  case LOAD_EVERY_TIME:
+  default:
+    strLoadType = "LOAD_EVERY_TIME";
+    break;
+  }
+  CLog::Log(LOGINFO, "Loading skin file: %s, load type: %s", strFileName.c_str(), strLoadType);
   
   // Find appropriate skin folder + resolution to load from
   CStdString strPath;
