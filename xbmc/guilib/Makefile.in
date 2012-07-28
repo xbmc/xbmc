@@ -27,6 +27,7 @@ SRCS=AnimatedGif.cpp \
      GUIImage.cpp \
      GUIIncludes.cpp \
      GUIInfoTypes.cpp \
+     GUIKeyboardFactory.cpp \
      GUILabel.cpp \
      GUILabelControl.cpp \
      GUIListContainer.cpp \
