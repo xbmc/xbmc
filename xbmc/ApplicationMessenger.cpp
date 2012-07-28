@@ -285,10 +285,9 @@ case TMSG_POWERDOWN:
 
     case TMSG_RESTARTAPP:
       {
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
         g_application.Stop(EXITCODE_RESTARTAPP);
 #endif
-        // TODO
       }
       break;
 
