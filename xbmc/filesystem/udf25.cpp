@@ -422,7 +422,7 @@ static int file_read(CFile* fp, void *buffer, int blocks, int flags)
       /* Nothing more to read.  Return all of the whole blocks, if any.
        * Adjust the file position back to the previous block boundary. */
       size_t bytes = (size_t)blocks * DVD_VIDEO_LB_LEN - len;
-      off_t over_read = -(bytes % DVD_VIDEO_LB_LEN);
+      off_t over_read = -(off_t)(bytes % DVD_VIDEO_LB_LEN);
       /*off_t pos =*/ fp->Seek(over_read, SEEK_CUR);
       /* should have pos % 2048 == 0 */
       return (int) (bytes / DVD_VIDEO_LB_LEN);
