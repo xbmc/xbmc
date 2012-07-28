@@ -48,12 +48,13 @@ Install latest Xcode (4.3.2 or 3.2.6 as of the writing). You can download it fro
 1. Apple's site after registration at http://developer.apple.com/tools/download (Xcode 3.2.6)
 2. In the MacOSX AppStore (Xcode 4.3.x). 
 
-If you are using XCode 4.3.x you also need to install the "Command Line Tools". To do so
+If you are using XCode 4.3.x or later you also need to install the "Command Line Tools". To do so
 after installing Xcode you have to go to "Xcode->Preferences->Downloads" and install the
 package "Command Line Tools".
 
 Xcode 3.2.6 only runs on 10.6.x (Snow Leopard). 
 Xcode 4.3.x only runs on 10.7.x (Lion).
+Xcode 4.4 only runs on 10.8.x (Mountain Lion).
 
 -----------------------------------------------------------------------------
 3.1 Install XBMC build depends
@@ -72,6 +73,12 @@ Xcode 4.3.x only runs on 10.7.x (Lion).
  $ ./bootstrap
  $ ./configure --with-darwin=osx --with-arch=x86_64
  $ make
+
+IMPORTANT!! for Mountain Lion users. In Xcode 4.4 there is only SDK 10.7 and 10.8
+available. The XBMC buildsystem defaults to 10.6. So for compiling with ML
+you have to specify the 10.7 SDK explicitly on configure:
+
+ $ ./configure --with-darwin=osx --with-sdk=10.7
 
 
 -----------------------------------------------------------------------------
@@ -112,7 +119,7 @@ Xcode 3.2.6
  add "XBMC_HOME" as an enviroment variable. Set the value to the path to the
  XBMC root folder. For example, "/Users/bigdog/Documents/XBMC"
 
-Xcode 4.3.x
+Xcode 4.3.x and later
  Menu -> Product -> Edit Sheme -> "Run XBMC"/"Debug" -> Add XBMC_HOME into 
  the List of "Environment Variables".Set the value to the path to thev XBMC 
  root folder. For example, "/Users/bigdog/Documents/XBMC"	
@@ -124,7 +131,12 @@ OSX application.
 
 Set the build target to "XBMC" or "XBMC.app" and be sure to select the same 
 architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 for 64Bit), 
-then build. The build process will take a long time when building the first time. 
+then build. 
+
+Mountain Lion users have to ensure to build against 10.7 SDK not 10.8 (which is
+selected in Xcode 4.4 by default).
+
+The build process will take a long time when building the first time. 
 You can see the progress in "Build Results". There are a large number of static 
 and dynamic libaries that will need to be built. Once these are built, 
 subsequent builds will be faster.
