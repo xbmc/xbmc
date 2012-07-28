@@ -28,6 +28,7 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 #include "utils/Observer.h"
+#include "pvr/channels/PVRChannel.h"
 
 namespace PVR
 {
@@ -57,7 +58,7 @@ namespace EPG
      * @param channel The channel to create the EPG for.
      * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CEpg(PVR::CPVRChannel *channel, bool bLoadedFromDb = false);
+    CEpg(PVR::CPVRChannelPtr channel, bool bLoadedFromDb = false);
 
     /*!
      * @brief Destroy this EPG instance.
@@ -84,7 +85,7 @@ namespace EPG
      * @brief The channel this EPG belongs to.
      * @return The channel this EPG belongs to
      */
-    virtual PVR::CPVRChannel *Channel(void) const;
+    virtual PVR::CPVRChannelPtr Channel(void) const;
 
     virtual int ChannelID(void) const;
     virtual int ChannelNumber(void) const;
@@ -93,7 +94,7 @@ namespace EPG
      * @brief Channel the channel tag linked to this EPG table.
      * @param channel The new channel tag.
      */
-    virtual void SetChannel(PVR::CPVRChannel *channel);
+    virtual void SetChannel(PVR::CPVRChannelPtr channel);
 
     /*!
      * @brief Get the name of the scraper to use for this table.
@@ -361,7 +362,7 @@ namespace EPG
 
     CDateTime                  m_lastScanTime;    /*!< the last time the EPG has been updated */
 
-    PVR::CPVRChannel *         m_pvrChannel;      /*!< the channel this EPG belongs to */
+    PVR::CPVRChannelPtr        m_pvrChannel;      /*!< the channel this EPG belongs to */
 
     CCriticalSection           m_critSection;     /*!< critical section for changes in this table */
   };

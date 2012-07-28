@@ -108,7 +108,7 @@ namespace EPG
      */
     virtual void Notify(const Observable &obs, const CStdString& msg);
 
-    CEpg *CreateChannelEpg(PVR::CPVRChannel *channel);
+    CEpg *CreateChannelEpg(PVR::CPVRChannelPtr channel);
 
     /*!
      * @brief Get all EPG tables and apply a filter.

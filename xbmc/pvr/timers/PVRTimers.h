@@ -118,7 +118,7 @@ namespace PVR
      * @param bStartTimer True to start the timer instantly, false otherwise.
      * @return The new timer or NULL if it couldn't be created.
      */
-    CPVRTimerInfoTag *InstantTimer(CPVRChannel *channel, bool bStartTimer = true);
+    CPVRTimerInfoTag *InstantTimer(const CPVRChannel &channel, bool bStartTimer = true);
 
     /*!
      * @return Next event time (timer or daily wake up)

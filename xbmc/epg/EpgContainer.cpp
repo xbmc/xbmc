@@ -287,9 +287,9 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const CStdString &strName, co
   }
 }
 
-CEpg *CEpgContainer::CreateChannelEpg(CPVRChannel *channel)
+CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 {
-  if (!channel)
+  if (!channel->IsValid())
     return NULL;
 
   WaitForUpdateFinish(true);
@@ -354,8 +354,8 @@ CEpg *CEpgContainer::CreateEpg(int iEpgId)
 {
   if (g_PVRManager.IsStarted())
   {
-    CPVRChannel *channel = g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
-    if (channel)
+    CPVRChannelPtr channel = g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
+    if (channel->IsValid())
     {
       CEpg *epg = new CEpg(channel, true);
       channel->Persist();

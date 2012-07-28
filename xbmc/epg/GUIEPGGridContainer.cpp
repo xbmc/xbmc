@@ -687,8 +687,8 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         int iCurrentChannelNumber = tag->PVRChannelNumber();
         if (iCurrentChannelNumber != iLastChannelNumber)
         {
-          const CPVRChannel *channel = tag->ChannelTag();
-          if (!channel)
+          CPVRChannelPtr channel = tag->ChannelTag();
+          if (!channel->IsValid())
             continue;
 
           if (i > 0)

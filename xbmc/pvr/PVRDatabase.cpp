@@ -348,7 +348,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
     {
       while (!m_pDS->eof())
       {
-        CPVRChannel *channel = new CPVRChannel();
+        CPVRChannelPtr channel = CPVRChannelPtr(new CPVRChannel());
 
         channel->m_iChannelId              = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId               = m_pDS->fv("iUniqueId").get_asInt();
@@ -707,9 +707,9 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
       {
         int iChannelId = m_pDS->fv("idChannel").get_asInt();
         int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
-        CPVRChannel *channel = g_PVRChannelGroups->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
+        CPVRChannelPtr channel = g_PVRChannelGroups->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
 
-        if (channel && group.AddToGroup(*channel, iChannelNumber))
+        if (channel->IsValid() && group.AddToGroup(*channel, iChannelNumber))
           ++iReturn;
 
         m_pDS->next();

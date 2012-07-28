@@ -96,19 +96,19 @@ CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetByIdFromAll(int iGroupId) con
   return group;
 }
 
-CPVRChannel *CPVRChannelGroupsContainer::GetChannelById(int iChannelId) const
+CPVRChannelPtr CPVRChannelGroupsContainer::GetChannelById(int iChannelId) const
 {
-  CPVRChannel *channel = m_groupsTV->GetGroupAll()->GetByChannelID(iChannelId);
-  if (!channel)
+  CPVRChannelPtr channel = m_groupsTV->GetGroupAll()->GetByChannelID(iChannelId);
+  if (!channel->IsValid())
     channel = m_groupsRadio->GetGroupAll()->GetByChannelID(iChannelId);
 
   return channel;
 }
 
-CPVRChannel *CPVRChannelGroupsContainer::GetChannelByEpgId(int iEpgId) const
+CPVRChannelPtr CPVRChannelGroupsContainer::GetChannelByEpgId(int iEpgId) const
 {
-  CPVRChannel *channel = m_groupsTV->GetGroupAll()->GetByChannelEpgID(iEpgId);
-  if (!channel)
+  CPVRChannelPtr channel = m_groupsTV->GetGroupAll()->GetByChannelEpgID(iEpgId);
+  if (!channel->IsValid())
     channel = m_groupsRadio->GetGroupAll()->GetByChannelEpgID(iEpgId);
 
   return channel;
@@ -210,14 +210,14 @@ CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) co
   return Get(bRadio)->GetSelectedGroup();
 }
 
-CPVRChannel *CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber, int iClientID)
+CPVRChannelPtr CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber, int iClientID)
 {
-  CPVRChannel *channel(NULL);
+  CPVRChannelPtr channel = CPVRChannelPtrEmpty;
   CPVRChannelGroupPtr channelgroup = GetGroupAllTV();
   if (channelgroup->IsValid())
     channel = channelgroup->GetByClient(iClientChannelNumber, iClientID);
 
-  if (!channelgroup->IsValid() || !channel)
+  if (!channelgroup->IsValid() || !channel->IsValid())
     channelgroup = GetGroupAllRadio();
   if (channelgroup->IsValid())
     channel = channelgroup->GetByClient(iClientChannelNumber, iClientID);
@@ -227,19 +227,19 @@ CPVRChannel *CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber,
 
 CFileItemPtr CPVRChannelGroupsContainer::GetByChannelIDFromAll(int iChannelID)
 {
-  CPVRChannel *channel = NULL;
+  CPVRChannelPtr channel = CPVRChannelPtrEmpty;
   CPVRChannelGroupPtr channelgroup = GetGroupAllTV();
   if (channelgroup->IsValid())
     channel = channelgroup->GetByChannelID(iChannelID);
 
-  if (!channel)
+  if (!channel->IsValid())
   {
     channelgroup = GetGroupAllRadio();
     if (channelgroup->IsValid())
       channel = channelgroup->GetByChannelID(iChannelID);
   }
 
-  if (channel)
+  if (channel->IsValid())
   {
     CFileItemPtr retVal = CFileItemPtr(new CFileItem(*channel));
     return retVal;

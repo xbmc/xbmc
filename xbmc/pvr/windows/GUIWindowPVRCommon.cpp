@@ -419,8 +419,8 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
   if (!epgTag)
     return bReturn;
 
-  const CPVRChannel *channel = epgTag->ChannelTag();
-  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
+  CPVRChannelPtr channel = epgTag->ChannelTag();
+  if (!channel->IsValid() || !g_PVRManager.CheckParentalLock(*channel))
     return bReturn;
 
   if (epgTag->Timer() == NULL)
@@ -515,8 +515,8 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
   if (!epgTag)
     return bReturn;
 
-  const CPVRChannel *channel = epgTag->ChannelTag();
-  if (!channel || channel->ChannelNumber() > 0)
+  CPVRChannelPtr channel = epgTag->ChannelTag();
+  if (!channel->IsValid() || channel->ChannelNumber() > 0)
     return bReturn;
 
   bReturn = g_application.PlayFile(CFileItem(*channel));
@@ -706,9 +706,9 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
     return false;
 
   CEpgInfoTag *tag = item->GetEPGInfoTag();
-  const CPVRChannel *channel = tag ? tag->ChannelTag() : NULL;
+  CPVRChannelPtr channel = tag ? tag->ChannelTag() : CPVRChannelPtrEmpty;
 
-  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
+  if (!channel->IsValid() || !g_PVRManager.CheckParentalLock(*channel))
     return false;
 
   CFileItemPtr timer = g_PVRTimers->GetMatch(item);
@@ -755,16 +755,22 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
 void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
 {
   CFileItem *tag = NULL;
-  const CPVRChannel *channel = NULL;
+  bool bHasChannel(false);
+  CPVRChannel channel;
   if (item->IsEPG())
   {
     tag = new CFileItem(*item);
-    channel = item->GetEPGInfoTag()->ChannelTag();
+    if (item->GetEPGInfoTag()->HasPVRChannel())
+    {
+      channel = *item->GetEPGInfoTag()->ChannelTag();
+      bHasChannel = true;
+    }
   }
   else if (item->IsPVRChannel())
   {
     CEpgInfoTag epgnow;
-    channel = item->GetPVRChannelInfoTag();
+    channel = *item->GetPVRChannelInfoTag();
+    bHasChannel = true;
     if (!item->GetPVRChannelInfoTag()->GetEPGNow(epgnow))
     {
       CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
@@ -775,7 +781,7 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
 
   if (tag)
   {
-    if (g_PVRManager.CheckParentalLock(channel))
+    if (!bHasChannel || g_PVRManager.CheckParentalLock(channel))
     {
       CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
       if (pDlgInfo)

@@ -493,28 +493,28 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
   return bReturn;
 }
 
-CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTimer /* = true */)
+CPVRTimerInfoTag *CPVRTimers::InstantTimer(const CPVRChannel &channel, bool bStartTimer /* = true */)
 {
-  if (!channel)
+  if (!channel.IsValid())
     return NULL;
 
-  if (!g_PVRManager.CheckParentalLock(*channel))
+  if (!g_PVRManager.CheckParentalLock(channel))
     return NULL;
 
   CEpgInfoTag epgTag;
-  bool bHasEpgNow = channel->GetEPGNow(epgTag);
+  bool bHasEpgNow = channel.GetEPGNow(epgTag);
   CPVRTimerInfoTag *newTimer = bHasEpgNow ? CPVRTimerInfoTag::CreateFromEpg(epgTag) : NULL;
   if (!newTimer)
   {
     newTimer = new CPVRTimerInfoTag;
     /* set the timer data */
     newTimer->m_iClientIndex      = -1;
-    newTimer->m_strTitle          = channel->ChannelName();
+    newTimer->m_strTitle          = channel.ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
-    newTimer->m_iChannelNumber    = channel->ChannelNumber();
-    newTimer->m_iClientChannelUid = channel->UniqueID();
-    newTimer->m_iClientId         = channel->ClientID();
-    newTimer->m_bIsRadio          = channel->IsRadio();
+    newTimer->m_iChannelNumber    = channel.ChannelNumber();
+    newTimer->m_iClientChannelUid = channel.UniqueID();
+    newTimer->m_iClientId         = channel.ClientID();
+    newTimer->m_bIsRadio          = channel.IsRadio();
 
     /* generate summary string */
     newTimer->m_strSummary.Format("%s %s %s %s %s",
@@ -689,8 +689,8 @@ CFileItemPtr CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
     {
       CPVRTimerInfoTag *timer = it->second->at(iTimerPtr);
 
-      const CPVRChannel *channel = Epg ? Epg->ChannelTag() : NULL;
-      if (!channel)
+      CPVRChannelPtr channel = Epg ? Epg->ChannelTag() : CPVRChannelPtrEmpty;
+      if (!channel->IsValid())
         continue;
 
       if (timer->ChannelNumber() != channel->ChannelNumber()

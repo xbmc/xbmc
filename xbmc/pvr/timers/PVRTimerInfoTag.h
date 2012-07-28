@@ -51,6 +51,7 @@
 
 #include "XBDateTime.h"
 #include "../addons/include/xbmc_pvr_types.h"
+#include "pvr/channels/PVRChannel.h"
 
 class CFileItem;
 
@@ -62,7 +63,6 @@ namespace EPG
 namespace PVR
 {
   class CGUIDialogPVRTimerSettings;
-  class CPVRChannel;
 
   class CPVRTimerInfoTag
   {
@@ -83,7 +83,7 @@ namespace PVR
     CStdString            m_strFileNameAndPath; /*!< @brief filename is only for reference */
     int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
     bool                  m_bIsRadio;           /*!< @brief is radio channel if set */
-    const CPVRChannel *   m_channel;
+    CPVRChannelPtr        m_channel;
     unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int          m_iMarginEnd;         /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
     std::vector<std::string> m_genre;           /*!< @brief genre of the timer */
@@ -91,7 +91,7 @@ namespace PVR
     int                   m_iGenreSubType;      /*!< @brief genre subtype of the timer */
 
     CPVRTimerInfoTag(void);
-    CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId);
+    CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channel, unsigned int iClientId);
     virtual ~CPVRTimerInfoTag(void);
 
     void Reset();

@@ -77,7 +77,7 @@ namespace PVR
      * @param channel The updated channel.
      * @return True if the channel has been updated succesfully, false otherwise.
      */
-    bool UpdateFromClient(const CPVRChannel &channel);
+    void UpdateFromClient(const CPVRChannel &channel, unsigned int iChannelNumber = 0);
 
     /*!
      * @see CPVRChannelGroup::IsGroupMember
@@ -174,12 +174,7 @@ namespace PVR
      */
     void UpdateChannelPaths(void);
 
-    /*!
-     * @brief Clear this channel list and destroy all channel instances in it.
-     */
-    void Unload(void);
-
-    void CreateChannelEpg(CPVRChannel *channel, bool bForce = false);
+    void CreateChannelEpg(CPVRChannelPtr channel, bool bForce = false);
 
     int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
   };

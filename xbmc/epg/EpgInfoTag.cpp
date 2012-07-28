@@ -36,7 +36,7 @@ using namespace std;
 using namespace EPG;
 using namespace PVR;
 
-CEpgInfoTag::CEpgInfoTag(CEpg *epg /* = NULL */, PVR::CPVRChannel *pvrChannel /* = NULL */, const CStdString &strTableName /* = StringUtils::EmptyString */, const CStdString &strIconPath /* = StringUtils::EmptyString */) :
+CEpgInfoTag::CEpgInfoTag(CEpg *epg /* = NULL */, PVR::CPVRChannelPtr pvrChannel /* = CPVRChannelPtrEmpty */, const CStdString &strTableName /* = StringUtils::EmptyString */, const CStdString &strIconPath /* = StringUtils::EmptyString */) :
     m_bNotify(false),
     m_bChanged(false),
     m_iBroadcastId(-1),
@@ -81,7 +81,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_strFileNameAndPath(""),
     m_iTimerId(-1),
     m_epg(NULL),
-    m_pvrChannel(NULL)
+    m_pvrChannel(CPVRChannelPtrEmpty)
 {
   Update(data);
 }
@@ -433,9 +433,7 @@ CStdString CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  const CPVRChannel *channel(ChannelTag());
-
-  if (bOverrideParental || !channel || !g_PVRManager.IsParentalLocked(*channel))
+  if (bOverrideParental || !m_pvrChannel->IsValid() || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
     retVal = m_strPlotOutline;
 
   return retVal;
@@ -465,9 +463,7 @@ CStdString CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  const CPVRChannel *channel(ChannelTag());
-
-  if (bOverrideParental || !channel || !g_PVRManager.IsParentalLocked(*channel))
+  if (bOverrideParental || !m_pvrChannel->IsValid() || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
     retVal = m_strPlot;
 
   return retVal;
@@ -794,7 +790,7 @@ CPVRTimerInfoTag *CEpgInfoTag::Timer(void) const
   return tag;
 }
 
-void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannel *channel)
+void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannelPtr channel)
 {
   CSingleLock lock(m_critSection);
   m_pvrChannel = channel;
@@ -821,7 +817,7 @@ CStdString CEpgInfoTag::PVRChannelName(void) const
   return strReturn;
 }
 
-const PVR::CPVRChannel *CEpgInfoTag::ChannelTag(void) const
+const PVR::CPVRChannelPtr CEpgInfoTag::ChannelTag(void) const
 {
   CSingleLock lock(m_critSection);
   return m_pvrChannel;

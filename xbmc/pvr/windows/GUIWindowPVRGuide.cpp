@@ -424,9 +424,9 @@ bool CGUIWindowPVRGuide::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON but
 
 bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
 {
-  const CPVRChannel *channel = !item || !item->HasEPGInfoTag() || !item->GetEPGInfoTag()->HasPVRChannel() ?
-      NULL : item->GetEPGInfoTag()->ChannelTag();
-  if (!channel)
+  CPVRChannelPtr channel = !item || !item->HasEPGInfoTag() || !item->GetEPGInfoTag()->HasPVRChannel() ?
+      CPVRChannelPtrEmpty : item->GetEPGInfoTag()->ChannelTag();
+  if (!channel->IsValid())
     return false;
 
   CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());

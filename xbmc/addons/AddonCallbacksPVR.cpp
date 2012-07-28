@@ -101,8 +101,8 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
 
   CPVRClient* client      = (CPVRClient*) handle->callerAddress;
   CPVRChannelGroup *group = (CPVRChannelGroup *) handle->dataAddress;
-  CPVRChannel *channel    = (CPVRChannel *) g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
-  if (!group || !channel)
+  CPVRChannelPtr channel  = g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
+  if (!group || !channel->IsValid())
   {
     CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find group '%s' or channel '%d'", __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
   }
@@ -178,9 +178,9 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE
 
   CPVRTimers *xbmcTimers = (CPVRTimers*) handle->dataAddress;
   CPVRClient* client     = (CPVRClient*) handle->callerAddress;
-  CPVRChannel *channel   = (CPVRChannel *) g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
+  CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
 
-  if (channel == NULL)
+  if (!channel->IsValid())
   {
     CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find channel %d on client %d",
         __FUNCTION__, timer->iClientChannelUid, client->GetClientID());
