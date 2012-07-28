@@ -278,7 +278,7 @@ string ByEpisodeNumber(SortAttribute attributes, const SortItem &values)
   const CVariant &episodeSpecial = values.at(FieldEpisodeNumberSpecialSort);
   const CVariant &seasonSpecial = values.at(FieldSeasonSpecialSort);
   if (!episodeSpecial.isNull() && !seasonSpecial.isNull() &&
-      episodeSpecial.asInteger() > 0)
+     (episodeSpecial.asInteger() > 0 || seasonSpecial.asInteger() > 0))
     num = ((uint64_t)seasonSpecial.asInteger() << 32) + (episodeSpecial.asInteger() << 16) - ((2 << 15) - values.at(FieldEpisodeNumber).asInteger());
   else
     num = ((uint64_t)values.at(FieldSeason).asInteger() << 32) + (values.at(FieldEpisodeNumber).asInteger() << 16);

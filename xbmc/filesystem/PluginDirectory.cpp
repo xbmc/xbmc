@@ -39,6 +39,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "ApplicationMessenger.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace std;

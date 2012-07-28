@@ -232,7 +232,9 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_started = false;
 
   m_synctype = SYNC_DISCON;
-  m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
+  m_setsynctype = SYNC_DISCON;
+  if (g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
+    m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
   m_prevsynctype = -1;
 
   m_error = 0;

@@ -720,17 +720,31 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
         if (strcmp(name, "front") != 0)
           EnumerateDevice(list, std::string("@") + (name+5), desc ? desc : name, config);
       }
+
+      /* Do not enumerate "default", it is already enumerated above. */
+
       /* Do not enumerate the sysdefault or surroundXX devices, those are
        * always accompanied with a "front" device and it is handled above
        * as "@". The below devices will be automatically used if available
        * for a "@" device. */
+
+      /* Ubuntu has patched their alsa-lib so that "defaults.namehint.extended"
+       * defaults to "on" instead of upstream "off", causing lots of unwanted
+       * extra devices (many of which are not actually routed properly) to be
+       * found by the enumeration process. Skip them as well ("hw", "dmix",
+       * "plughw", "dsnoop"). */
+
       else if (baseName != "default"
             && baseName != "sysdefault"
             && baseName != "surround40"
             && baseName != "surround41"
             && baseName != "surround50"
             && baseName != "surround51"
-            && baseName != "surround71")
+            && baseName != "surround71"
+            && baseName != "hw"
+            && baseName != "dmix"
+            && baseName != "plughw"
+            && baseName != "dsnoop")
       {
         EnumerateDevice(list, name, desc ? desc : name, config);
       }
@@ -792,9 +806,9 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
           continue;
         }
 
-        /* if we got here, the configuration is really weird, just give up */
-        it1->m_displayName = it1->m_deviceName;
-        it2->m_displayName = it2->m_deviceName;
+        /* if we got here, the configuration is really weird, just append the whole device string */
+        it1->m_displayName += " (" + it1->m_deviceName + ")";
+        it2->m_displayName += " (" + it2->m_deviceName + ")";
       }
     }
   }

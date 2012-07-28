@@ -25,6 +25,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "log.h"
 #include "utils/TimeUtils.h"
+#include "URL.h"
 
 CAsyncFileCopy::CAsyncFileCopy() : CThread("CAsyncFileCopy")
 {

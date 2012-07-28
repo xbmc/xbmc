@@ -125,8 +125,8 @@ public:
   void StopServices();
   bool StartWebServer();
   void StopWebServer();
-  void StartAirplayServer();  
-  void StopAirplayServer(bool bWait);   
+  void StartAirplayServer();
+  void StopAirplayServer(bool bWait);
   bool StartJSONRPCServer();
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();
@@ -413,7 +413,7 @@ protected:
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
-  
+
   int        m_frameCount;
   CCriticalSection m_frameMutex;
   XbmcThreads::ConditionVariable  m_frameCond;

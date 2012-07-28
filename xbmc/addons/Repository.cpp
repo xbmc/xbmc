@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "TextureDatabase.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace ADDON;

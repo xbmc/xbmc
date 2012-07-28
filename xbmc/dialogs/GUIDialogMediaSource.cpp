@@ -36,6 +36,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "PasswordManager.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

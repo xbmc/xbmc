@@ -23,8 +23,6 @@
 #include "GUIDialogContextMenu.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
 #include "Autorun.h"
@@ -44,6 +42,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "video/windows/GUIWindowVideoBase.h"
+#include "URL.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"

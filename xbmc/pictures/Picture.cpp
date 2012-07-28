@@ -24,7 +24,6 @@
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "filesystem/CurlFile.h"
 #include "DllImageLib.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"

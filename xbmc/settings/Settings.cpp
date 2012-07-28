@@ -35,7 +35,6 @@
 #include "GUIInfoManager.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE enum
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"

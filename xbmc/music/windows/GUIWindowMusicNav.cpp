@@ -24,7 +24,6 @@
 #include "utils/URIUtils.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
-#include "dialogs/GUIDialogFileBrowser.h"
 #include "settings/GUIDialogContentSettings.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
@@ -51,6 +50,7 @@
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
 #include "Util.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

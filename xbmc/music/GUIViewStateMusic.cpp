@@ -21,7 +21,6 @@
 
 #include "GUIViewStateMusic.h"
 #include "PlayListPlayer.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "video/VideoDatabase.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"

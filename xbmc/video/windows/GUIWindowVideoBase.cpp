@@ -30,7 +30,6 @@
 #include "addons/IAddon.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "GUIWindowVideoNav.h"
-#include "dialogs/GUIDialogFileBrowser.h"
 #include "video/dialogs/GUIDialogVideoScan.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -70,6 +69,7 @@
 #include "addons/Skin.h"
 #include "storage/MediaManager.h"
 #include "Autorun.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;
@@ -861,7 +861,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
 
 bool CGUIWindowVideoBase::HasResumeItemOffset(const CFileItem *item)
 {
-  int startoffset, partNumber = 0;
+  int startoffset = 0, partNumber = 0;
   GetResumeItemOffset(item, startoffset, partNumber);
   return startoffset > 0;
 }

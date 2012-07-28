@@ -30,7 +30,6 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "GUIPassword.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "guilib/GUIWindowManager.h"

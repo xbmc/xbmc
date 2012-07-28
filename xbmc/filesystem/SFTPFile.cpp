@@ -28,6 +28,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/Variant.h"
 #include "Util.h"
+#include "URL.h"
 #include <fcntl.h>
 #include <sstream>
 

@@ -28,6 +28,7 @@
 #include "utils/Base64.h"
 #include "threads/SingleLock.h"
 #include "XBDateTime.h"
+#include "URL.h"
 
 #ifdef _WIN32
 #pragma comment(lib, "libmicrohttpd.dll.lib")

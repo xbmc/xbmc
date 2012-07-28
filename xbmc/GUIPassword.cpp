@@ -29,7 +29,6 @@
 #include "settings/GUIDialogLockSettings.h"
 #include "settings/GUIDialogProfileSettings.h"
 #include "Util.h"
-#include "URL.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"

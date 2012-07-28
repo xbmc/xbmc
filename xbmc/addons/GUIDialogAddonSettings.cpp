@@ -49,6 +49,7 @@
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
 #include "Util.h"
+#include "URL.h"
 
 using namespace std;
 using namespace ADDON;

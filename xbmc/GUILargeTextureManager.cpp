@@ -22,7 +22,6 @@
 #include "threads/SystemClock.h"
 #include "GUILargeTextureManager.h"
 #include "settings/GUISettings.h"
-#include "FileItem.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
@@ -30,7 +29,6 @@
 #include "guilib/GraphicContext.h"
 #include "utils/log.h"
 #include "TextureCache.h"
-#include "TextureCacheJob.h"
 
 using namespace std;
 

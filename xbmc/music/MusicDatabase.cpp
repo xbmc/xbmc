@@ -62,6 +62,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
 #include "utils/XMLUtils.h"
+#include "URL.h"
 
 using namespace std;
 using namespace AUTOPTR;

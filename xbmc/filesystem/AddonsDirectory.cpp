@@ -33,6 +33,7 @@
 #include "File.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 
 using namespace ADDON;
 

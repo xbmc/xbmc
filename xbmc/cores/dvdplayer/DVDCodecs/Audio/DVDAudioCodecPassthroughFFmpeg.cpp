@@ -465,11 +465,7 @@ int CDVDAudioCodecPassthroughFFmpeg::GetChannels()
 {
   //Can't return correct channels here as this is used to keep sync.
   //should probably have some other way to find out this
-  switch(m_codec)
-  {
-    default:
-      return 2;
-  }
+  return 2;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetSampleRate()
@@ -642,9 +638,5 @@ CAEChannelInfo CDVDAudioCodecPassthroughFFmpeg::GetChannelMap()
     {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
   };
 
-  switch(m_codec)
-  {
-    default:
-      return map[0];
-  }
+  return map[0];
 }

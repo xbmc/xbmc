@@ -101,7 +101,7 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
 
-  virtual void ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void ProcessItem(float posX, float posY, CGUIListItemPtr& item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -124,6 +124,7 @@ protected:
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   virtual void OnFocus();
+  void UpdateStaticItems(bool refreshItems = false);
 
   int ScrollCorrectionRange() const;
   inline float Size() const;
@@ -142,7 +143,7 @@ protected:
 
   std::vector< CGUIListItemPtr > m_items;
   typedef std::vector<CGUIListItemPtr> ::iterator iItems;
-  CGUIListItem *m_lastItem;
+  CGUIListItemPtr m_lastItem;
 
   int m_pageControl;
 

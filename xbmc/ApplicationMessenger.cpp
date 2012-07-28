@@ -23,7 +23,6 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
-#include "guilib/TextureManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #ifdef HAS_PYTHON
@@ -39,7 +38,6 @@
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
-#include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -69,8 +67,6 @@
 #include "playlists/PlayList.h"
 #include "FileItem.h"
 
-#include "utils/JobManager.h"
-#include "storage/DetectDVDType.h"
 #include "ThumbLoader.h"
 
 #include "pvr/PVRManager.h"

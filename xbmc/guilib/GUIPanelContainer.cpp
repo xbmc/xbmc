@@ -75,9 +75,9 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
       bool focused = (current == GetOffset() * m_itemsPerRow + GetCursor()) && m_bHasFocus;
 
       if (m_orientation == VERTICAL)
-        ProcessItem(origin.x + col * m_layout->Size(HORIZONTAL), pos, item.get(), focused, currentTime, dirtyregions);
+        ProcessItem(origin.x + col * m_layout->Size(HORIZONTAL), pos, item, focused, currentTime, dirtyregions);
       else
-        ProcessItem(pos, origin.y + col * m_layout->Size(VERTICAL), item.get(), focused, currentTime, dirtyregions);
+        ProcessItem(pos, origin.y + col * m_layout->Size(VERTICAL), item, focused, currentTime, dirtyregions);
     }
     // increment our position
     if (col < m_itemsPerRow - 1)

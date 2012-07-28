@@ -23,7 +23,7 @@
 
 #include <string>
 #include "utils/BitstreamStats.h"
-#include "filesystem/IFile.h"
+#include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
 

@@ -33,6 +33,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "URL.h"
 
 using namespace std;
 

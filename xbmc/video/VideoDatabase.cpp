@@ -54,6 +54,7 @@
 #include "XBDateTime.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "URL.h"
 
 using namespace std;
 using namespace dbiplus;

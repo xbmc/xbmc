@@ -65,8 +65,6 @@ using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
-extern CGUIInfoManager g_infoManager;
-
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
 #define UPNP_DEFAULT_MAX_RETURNED_ITEMS 200

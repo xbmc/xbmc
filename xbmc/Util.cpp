@@ -87,6 +87,7 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "windowing/WindowingFactory.h"
+#include "URL.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif

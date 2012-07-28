@@ -21,10 +21,7 @@
 
 #include "GUIDialogProfileSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogContextMenu.h"
-#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogKeyboard.h"
-#include "dialogs/GUIDialogGamepad.h"
 #include "GUIDialogLockSettings.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIWindowManager.h"
