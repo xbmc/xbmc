@@ -460,7 +460,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonDeleteChannel(CGUIMessage &messag
   {
     if (pItem->GetProperty("Virtual").asBoolean())
     {
-      pItem->GetPVRChannelInfoTag()->SetVirtual(true, true);
+      pItem->GetPVRChannelInfoTag()->SetVirtual(true);
       m_channelItems->Remove(m_iSelected);
       m_viewControl.SetItems(*m_channelItems);
       Renumber();

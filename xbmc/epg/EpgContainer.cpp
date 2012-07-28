@@ -276,51 +276,46 @@ CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
   return NULL;
 }
 
-bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = false */)
+void CEpgContainer::InsertFromDatabase(int iEpgID, const CStdString &strName, const CStdString &strScraperName)
 {
-  CEpg *epg(NULL);
-  bool bReturn(false);
-  WaitForUpdateFinish(true);
+  CEpg *epg = new CEpg(iEpgID, strName, strScraperName, true);
+  if (epg)
+  {
+    m_epgs.insert(make_pair(iEpgID, epg));
+    SetChanged();
+    epg->RegisterObserver(this);
+  }
+}
 
+CEpg *CEpgContainer::CreateChannelEpg(CPVRChannel *channel)
+{
+  if (!channel)
+    return NULL;
+
+  WaitForUpdateFinish(true);
   CSingleLock lock(m_critSection);
-  epg = entry.EpgID() > 0 ? GetById(entry.EpgID()) : NULL;
+
+  CEpg *epg(NULL);
+  if (channel->EpgID() > 0)
+    epg = GetById(channel->EpgID());
+
   if (!epg)
   {
-    /* table does not exist yet, create a new one */
-    unsigned int iEpgId = m_bIgnoreDbForClient || entry.EpgID() <= 0 ? NextEpgId() : entry.EpgID();
-    if (m_iNextEpgId < iEpgId)
-      m_iNextEpgId = iEpgId + 1;
-    epg = CreateEpg(iEpgId);
-    if (epg)
-    {
-      bReturn = epg->UpdateMetadata(entry, bUpdateDatabase);
-      m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));
-      SetChanged();
-      epg->RegisterObserver(this);
-    }
-  }
-  else
-  {
-    bReturn = epg->UpdateMetadata(entry, bUpdateDatabase);
+    epg = CreateEpg(NextEpgId());
+    m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));
+    SetChanged();
+    epg->RegisterObserver(this);
   }
 
-  if (g_PVRManager.IsStarted())
-  {
-    CPVRChannel *channel = g_PVRChannelGroups->GetChannelByEpgId(epg->EpgID());
-    if (epg->EpgID() > 0 && !channel)
-    {
-      DeleteEpg(*epg);
-      bReturn = false;
-      SetChanged();
-    }
-  }
+  if (epg)
+    epg->SetChannel(channel);
 
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
 
   NotifyObservers("epg");
 
-  return bReturn;
+  return epg;
 }
 
 bool CEpgContainer::LoadSettings(void)

@@ -798,22 +798,31 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecording &tag)
 
 void CPVRManager::CloseStream(void)
 {
-  CSingleLock lock(m_critSection);
+  CPVRChannel channel;
+  bool bPersistChannel(false);
 
-  if (m_addons->IsReadingLiveStream())
   {
-    CPVRChannel channel;
-    if (m_addons->GetPlayingChannel(channel))
+    CSingleLock lock(m_critSection);
+
+    if (m_addons->IsReadingLiveStream())
     {
-      /* store current time in iLastWatched */
-      time_t tNow;
-      CDateTime::GetCurrentDateTime().GetAsTime(tNow);
-      channel.SetLastWatched(tNow, true);
+      CPVRChannel channel;
+      if (m_addons->GetPlayingChannel(channel))
+      {
+        /* store current time in iLastWatched */
+        time_t tNow;
+        CDateTime::GetCurrentDateTime().GetAsTime(tNow);
+        channel.SetLastWatched(tNow);
+        bPersistChannel = true;
+      }
     }
+
+    m_addons->CloseStream();
+    SAFE_DELETE(m_currentFile);
   }
 
-  m_addons->CloseStream();
-  SAFE_DELETE(m_currentFile);
+  if (bPersistChannel)
+    channel.Persist();
 }
 
 void CPVRManager::UpdateCurrentFile(void)

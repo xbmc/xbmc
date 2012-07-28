@@ -740,7 +740,7 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
     if (member.channel->IsChanged() || member.channel->IsNew())
     {
       if (m_sqlite && member.channel->IsNew())
-        member.channel->SetChannelID(++iLastChannel, false);
+        member.channel->SetChannelID(++iLastChannel);
       bReturn &= Persist(*member.channel, m_sqlite || !member.channel->IsNew());
     }
   }

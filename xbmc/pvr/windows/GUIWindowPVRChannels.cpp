@@ -501,6 +501,7 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
         strThumb = "";
 
       channel->SetIconPath(strThumb, true);
+      channel->Persist();
       UpdateData();
     }
 

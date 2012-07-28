@@ -243,17 +243,20 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     CStdString strIconPathUid;
     strIconPathUid.Format("%s/%08d", strBasePath, groupMember.channel->UniqueID());
 
-    groupMember.channel->SetIconPath(strIconPath      + ".tbn", bUpdateDb) ||
-    groupMember.channel->SetIconPath(strIconPath      + ".jpg", bUpdateDb) ||
-    groupMember.channel->SetIconPath(strIconPath      + ".png", bUpdateDb) ||
+    groupMember.channel->SetIconPath(strIconPath      + ".tbn") ||
+    groupMember.channel->SetIconPath(strIconPath      + ".jpg") ||
+    groupMember.channel->SetIconPath(strIconPath      + ".png") ||
 
-    groupMember.channel->SetIconPath(strIconPathLower + ".tbn", bUpdateDb) ||
-    groupMember.channel->SetIconPath(strIconPathLower + ".jpg", bUpdateDb) ||
-    groupMember.channel->SetIconPath(strIconPathLower + ".png", bUpdateDb) ||
+    groupMember.channel->SetIconPath(strIconPathLower + ".tbn") ||
+    groupMember.channel->SetIconPath(strIconPathLower + ".jpg") ||
+    groupMember.channel->SetIconPath(strIconPathLower + ".png") ||
 
-    groupMember.channel->SetIconPath(strIconPathUid   + ".tbn", bUpdateDb) ||
-    groupMember.channel->SetIconPath(strIconPathUid   + ".jpg", bUpdateDb) ||
-    groupMember.channel->SetIconPath(strIconPathUid   + ".png", bUpdateDb);
+    groupMember.channel->SetIconPath(strIconPathUid   + ".tbn") ||
+    groupMember.channel->SetIconPath(strIconPathUid   + ".jpg") ||
+    groupMember.channel->SetIconPath(strIconPathUid   + ".png");
+
+    if (bUpdateDb)
+      groupMember.channel->Persist();
 
     /* TODO: start channel icon scraper here if nothing was found */
   }

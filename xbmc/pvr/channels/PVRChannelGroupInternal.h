@@ -179,6 +179,8 @@ namespace PVR
      */
     void Unload(void);
 
+    void CreateChannelEpg(CPVRChannel *channel, bool bForce = false);
+
     int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
   };
 }
