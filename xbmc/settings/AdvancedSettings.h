@@ -197,6 +197,7 @@ class CAdvancedSettings
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_moviesExcludeFromScanRegExps;
     CStdStringArray m_tvshowExcludeFromScanRegExps;
+    bool m_tvshowIncludeAllVideos;
     CStdStringArray m_audioExcludeFromListingRegExps;
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;

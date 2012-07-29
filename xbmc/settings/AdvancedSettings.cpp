@@ -149,6 +149,7 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
   m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
   m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
+  m_tvshowIncludeAllVideos = false;
 
   m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
 
@@ -481,6 +482,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     pVideoExcludes = pElement->FirstChildElement("excludetvshowsfromscan");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, m_tvshowExcludeFromScanRegExps);
+
+    XMLUtils::GetBoolean(pElement,"includealltvshowvideos", m_tvshowIncludeAllVideos);
 
     pVideoExcludes = pElement->FirstChildElement("cleanstrings");
     if (pVideoExcludes)

@@ -8138,6 +8138,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
+
       // strip paths to make them relative
       if (movie.m_strTrailer.Mid(0,movie.m_strPath.size()).Equals(movie.m_strPath))
         movie.m_strTrailer = movie.m_strTrailer.Mid(movie.m_strPath.size());
