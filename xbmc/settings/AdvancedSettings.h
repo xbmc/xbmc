@@ -202,6 +202,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_fullScreenOnMovieStart;
     CStdString m_cachePath;
+    bool m_videoIncludeAllVideos;
     CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_videoCleanStringRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
