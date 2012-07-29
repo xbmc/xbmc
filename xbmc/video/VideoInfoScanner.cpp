@@ -617,14 +617,28 @@ namespace VIDEO
     if (pURL)
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
-      return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
+    {
+      if (retVal < 0) 
+        return INFO_CANCELLED;
+      else if (retVal == 0 && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_IMPORTALL))
+      {
+        pItem->GetVideoInfoTag()->m_strTitle = CURL(pItem->GetPath()).GetFileNameWithoutPath();
+        CURL::Decode(pItem->GetVideoInfoTag()->m_strTitle);
+        if (AddVideo(pItem, CONTENT_MOVIES, bDirNames, useLocal) < 0)
+          return INFO_ERROR;
+        return INFO_ADDED;
+      }
+      else
+        return INFO_NOT_FOUND;
+    }
 
-    if (GetDetails(pItem, url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    if (GetDetails(pItem, url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress) || CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_IMPORTALL))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
         return INFO_ERROR;
       return INFO_ADDED;
     }
+
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
     return INFO_NOT_FOUND;
   }
@@ -1087,6 +1101,20 @@ namespace VIDEO
       }
       return true;
     }
+
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_IMPORTALL))
+    {
+      EPISODE episode;
+      episode.strPath = item->GetPath();
+      episode.iSeason = 0;
+      episode.iEpisode = 0;
+      episode.cDate.SetValid(false);
+      episode.isFolder = false;
+      episodeList.push_back(episode);
+
+      return true;
+    }
+
     return false;
   }
 
@@ -1483,8 +1511,9 @@ namespace VIDEO
           item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
           item.GetVideoInfoTag()->m_iSeason = file->iSeason;
         }
-        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
-          return INFO_ERROR;
+        if (m_database.GetEpisodeId(file->strPath, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_iSeason) < 0)
+          if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
+            return INFO_ERROR;
         continue;
       }
 
@@ -1512,10 +1541,25 @@ namespace VIDEO
 
       if (episodes.empty())
       {
-        CLog::Log(LOGERROR, "VideoInfoScanner: Asked to lookup episode %s"
-                            " online, but we have no episode guide. Check your tvshow.nfo and make"
-                            " sure the <episodeguide> tag is in place.", CURL::GetRedacted(file->strPath).c_str());
-        continue;
+        if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_IMPORTALL))
+        {
+          CLog::Log(LOGERROR, "VideoInfoScanner: Asked to lookup episode %s"
+                              " online, but we have no episode guide. Check your tvshow.nfo and make"
+                              " sure the <episodeguide> tag is in place.", CURL::GetRedacted(file->strPath).c_str());
+          continue;
+        }
+        else
+        {
+          file->iEpisode = 0;
+          file->iSeason = 0;
+
+          if (m_database.GetEpisodeId(file->strPath, file->iEpisode, file->iSeason) > -1)
+          {
+            if (m_handle)
+              m_handle->SetText(g_localizeStrings.Get(20415));
+            continue;
+          }
+        }
       }
 
       EPISODE key(file->iSeason, file->iEpisode, file->iSubepisode);
@@ -1617,9 +1661,59 @@ namespace VIDEO
       }
       else
       {
-        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d.%d, airdate: '%s', title: '%s'",
-                  __FUNCTION__, showInfo.m_strTitle.c_str(), file->iSeason, file->iEpisode, file->iSubepisode,
-                  file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
+        if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_IMPORTALL))
+        {
+          CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d.%d, airdate: '%s', title: '%s'",
+                    __FUNCTION__, showInfo.m_strTitle.c_str(), file->iSeason, file->iEpisode, file->iSubepisode,
+                    file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
+        }
+        else
+        {
+          CFileItem item;
+          item.SetPath(file->strPath);
+          item.GetVideoInfoTag()->m_strTitle = CURL(file->strPath).GetFileNameWithoutPath();
+          CURL::Decode(item.GetVideoInfoTag()->m_strTitle);
+          item.GetVideoInfoTag()->m_strSortTitle = item.GetVideoInfoTag()->m_strTitle;
+          item.GetVideoInfoTag()->m_iSeason = file->iSeason;
+          item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
+
+          // Let's try to get the modification datetime
+          CDateTime dateAdded;
+          struct __stat64 buffer;
+          if (CFile::Stat(file->strPath, &buffer) == 0 && (buffer.st_mtime != 0 || buffer.st_ctime !=0))
+          {
+            time_t now = time(NULL);
+            time_t addedTime;
+            // Prefer the modification time if it's valid
+            if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
+            {
+              if (buffer.st_mtime != 0 && (time_t)buffer.st_mtime <= now)
+                addedTime = (time_t)buffer.st_mtime;
+              else
+                addedTime = (time_t)buffer.st_ctime;
+            }
+            // Use the newer of the creation and modification time
+            else
+            {
+              addedTime = std::max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+              // if the newer of the two dates is in the future, we try it with the older one
+              if (addedTime > now)
+                addedTime = std::min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+            }
+
+            // make sure the datetime does is not in the future
+            if (addedTime <= now)
+            {
+              struct tm *time = localtime(&addedTime);
+              if (time)
+                dateAdded = *time;
+            }
+          }
+
+          item.GetVideoInfoTag()->m_firstAired = dateAdded;
+          if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
+            return INFO_ERROR;
+        }
       }
     }
     return INFO_ADDED;

@@ -11934,7 +11934,15 @@ msgctxt "#20470"
 msgid "Use movie sets for single movies"
 msgstr ""
 
-#empty strings from id 20471 to 21329
+msgctxt "#20471"
+msgid "Import all videos"
+msgstr ""
+
+msgctxt "#20472"
+msgid "Import all videos, even if no scrapper data is available"
+msgstr ""
+
+#empty strings from id 20473 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
