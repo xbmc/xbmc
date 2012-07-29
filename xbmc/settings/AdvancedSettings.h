@@ -342,6 +342,8 @@ class CAdvancedSettings
 
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
+
+    void SetDebugMode(bool debug);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
