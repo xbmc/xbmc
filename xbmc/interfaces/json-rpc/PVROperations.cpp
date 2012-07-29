@@ -28,7 +28,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "epg/EpgInfoTag.h"
+#include "epg/Epg.h"
 #include "epg/EpgContainer.h"
 
 using namespace JSONRPC;

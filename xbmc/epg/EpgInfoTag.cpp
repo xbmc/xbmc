@@ -240,12 +240,12 @@ float CEpgInfoTag::ProgressPercentage(void) const
   return fReturn;
 }
 
-const CEpgInfoTag *CEpgInfoTag::GetNextEvent(void) const
+CEpgInfoTagPtr CEpgInfoTag::GetNextEvent(void) const
 {
   return GetTable()->GetNextEvent(*this);
 }
 
-const CEpgInfoTag *CEpgInfoTag::GetPreviousEvent(void) const
+CEpgInfoTagPtr CEpgInfoTag::GetPreviousEvent(void) const
 {
   return GetTable()->GetPreviousEvent(*this);
 }
@@ -552,7 +552,7 @@ void CEpgInfoTag::SetFirstAiredFromUTC(const CDateTime &firstAired)
 void CEpgInfoTag::SetFirstAiredFromLocalTime(const CDateTime &firstAired)
 {
   CDateTime tmp = firstAired.GetAsUTCDateTime();
-  SetStartFromUTC(tmp);
+  SetFirstAiredFromUTC(tmp);
 }
 
 void CEpgInfoTag::SetParentalRating(int iParentalRating)

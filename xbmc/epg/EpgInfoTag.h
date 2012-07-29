@@ -23,9 +23,10 @@
 
 #include "addons/include/xbmc_pvr_types.h"
 #include "XBDateTime.h"
-#include "Epg.h"
 #include "utils/StringUtils.h"
 #include "pvr/channels/PVRChannel.h"
+
+#include <boost/shared_ptr.hpp>
 
 namespace PVR
 {
@@ -36,6 +37,9 @@ namespace PVR
 namespace EPG
 {
   class CEpg;
+
+  class CEpgInfoTag;
+  typedef boost::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 
   class CEpgInfoTag
   {
@@ -101,13 +105,13 @@ namespace EPG
      * @brief Get a pointer to the next event. Set by CEpg in a call to Sort()
      * @return A pointer to the next event or NULL if it's not set.
      */
-    const CEpgInfoTag *GetNextEvent(void) const;
+    CEpgInfoTagPtr GetNextEvent(void) const;
 
     /*!
      * @brief Get a pointer to the previous event. Set by CEpg in a call to Sort()
      * @return A pointer to the previous event or NULL if it's not set.
      */
-    const CEpgInfoTag *GetPreviousEvent(void) const;
+    CEpgInfoTagPtr GetPreviousEvent(void) const;
 
     /*!
      * @brief The table this event belongs to

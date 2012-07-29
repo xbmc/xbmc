@@ -99,8 +99,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channe
 
 bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
 {
-  if (this == &right) return true;
-
   bool bChannelsMatch = true;
   if (m_channel->IsValid() && right.m_channel->IsValid())
     bChannelsMatch = *m_channel == *right.m_channel;
@@ -162,8 +160,6 @@ CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
  */
 bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 {
-  if (this == &right) return false;
-
   return !(*this == right);
 }
 
@@ -370,9 +366,9 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
     return;
 
   /* try to set the timer on the epg tag that matches with a 2 minute margin */
-  CEpgInfoTag *epgTag = (CEpgInfoTag *) epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
+  CEpgInfoTagPtr epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
   if (!epgTag)
-    epgTag = (CEpgInfoTag *) epg->GetTagAround(StartAsUTC());
+    epgTag = epg->GetTagAround(StartAsUTC());
 
   if (epgTag)
   {
