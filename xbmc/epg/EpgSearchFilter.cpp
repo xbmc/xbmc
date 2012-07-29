@@ -155,7 +155,7 @@ bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
   if (m_iChannelNumber != EPG_SEARCH_UNSET && g_PVRManager.IsStarted())
   {
     CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
-    if (!group->IsValid())
+    if (!group)
       group = CPVRManager::Get().ChannelGroups()->GetGroupAllTV();
 
     bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(*tag.ChannelTag()));
@@ -171,7 +171,7 @@ bool EpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
   if (m_iChannelGroup != EPG_SEARCH_UNSET && g_PVRManager.IsStarted())
   {
     CPVRChannelGroupPtr group = g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup);
-    bReturn = (group->IsValid() && group->IsGroupMember(*tag.ChannelTag()));
+    bReturn = (group && group->IsGroupMember(*tag.ChannelTag()));
   }
 
   return bReturn;

@@ -51,7 +51,6 @@ CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager() :
   m_ungroupedChannels = new CFileItemList;
   m_groupMembers      = new CFileItemList;
   m_channelGroups     = new CFileItemList;
-  m_selectedGroup     = CPVRChannelGroupPtr(new CPVRChannelGroup);
 }
 
 CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager()
@@ -123,7 +122,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
 
   if (iControl == BUTTON_DELGROUP)
   {
-    if (!m_selectedGroup->IsValid())
+    if (!m_selectedGroup)
       return bReturn;
 
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -155,7 +154,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
 
   if (iControl == BUTTON_RENAMEGROUP)
   {
-    if (!m_selectedGroup->IsValid())
+    if (!m_selectedGroup)
       return bReturn;
 
     CStdString strGroupName(m_selectedGroup->GroupName());
@@ -215,7 +214,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(CGUIMessage &message)
 
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
     {
-      if (m_selectedGroup->IsValid() && m_groupMembers->GetFileCount() > 0)
+      if (m_selectedGroup && m_groupMembers->GetFileCount() > 0)
       {
         CFileItemPtr pItemChannel = m_groupMembers->Get(m_iSelectedGroupMember);
         m_selectedGroup->RemoveFromGroup(*pItemChannel->GetPVRChannelInfoTag());
@@ -335,7 +334,7 @@ void CGUIDialogPVRGroupManager::Update()
   /* select a group or select the default group if no group was selected */
   CFileItemPtr pItem = m_channelGroups->Get(m_viewChannelGroups.GetSelectedItem());
   m_selectedGroup = g_PVRChannelGroups->Get(m_bIsRadio)->GetByName(pItem->m_strTitle);
-  if (m_selectedGroup->IsValid())
+  if (m_selectedGroup)
   {
     /* set this group in the pvrmanager, so it becomes the selected group in other dialogs too */
     g_PVRManager.SetPlayingGroup(m_selectedGroup);

@@ -420,7 +420,7 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
     return bReturn;
 
   CPVRChannelPtr channel = epgTag->ChannelTag();
-  if (!channel->IsValid() || !g_PVRManager.CheckParentalLock(*channel))
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return bReturn;
 
   if (epgTag->Timer() == NULL)
@@ -516,7 +516,7 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
     return bReturn;
 
   CPVRChannelPtr channel = epgTag->ChannelTag();
-  if (!channel->IsValid() || channel->ChannelNumber() > 0)
+  if (!channel || channel->ChannelNumber() > 0)
     return bReturn;
 
   bReturn = g_application.PlayFile(CFileItem(*channel));
@@ -706,9 +706,11 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
     return false;
 
   CEpgInfoTag *tag = item->GetEPGInfoTag();
-  CPVRChannelPtr channel = tag ? tag->ChannelTag() : CPVRChannelPtrEmpty;
+  CPVRChannelPtr channel;
+  if (tag)
+    channel = tag->ChannelTag();
 
-  if (!channel->IsValid() || !g_PVRManager.CheckParentalLock(*channel))
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
 
   CFileItemPtr timer = g_PVRTimers->GetMatch(item);

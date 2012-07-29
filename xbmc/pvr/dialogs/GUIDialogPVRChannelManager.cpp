@@ -512,8 +512,8 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
           newchannel->SetVirtual(true);
           newchannel->SetStreamURL(strURL);
           newchannel->SetClientID(XBMC_VIRTUAL_CLIENTID);
-          g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->AddToGroup(*newchannel);
-          newchannel->Persist();
+          if (g_PVRChannelGroups->CreateChannel(*newchannel))
+            g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->Persist();
 
           CFileItemPtr channel(new CFileItem(newchannel));
           if (channel)
@@ -715,7 +715,7 @@ void CGUIDialogPVRChannelManager::Update()
   CPVRChannelGroupPtr channels = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
 
   // No channels available, nothing to do.
-  if(!channels->IsValid())
+  if(!channels)
     return;
 
   for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
@@ -773,7 +773,7 @@ void CGUIDialogPVRChannelManager::Clear(void)
 
 bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber)
 {
-  if (!pItem || !pItem->HasPVRChannelInfoTag() || !group->IsValid())
+  if (!pItem || !pItem->HasPVRChannelInfoTag() || !group)
     return false;
 
   /* get values from the form */
@@ -807,7 +807,7 @@ void CGUIDialogPVRChannelManager::SaveList(void)
   /* persist all channels */
   unsigned int iNextChannelNumber(0);
   CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
-  if (!group->IsValid())
+  if (!group)
     return;
   for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
   {

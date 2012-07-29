@@ -36,7 +36,7 @@ using namespace std;
 using namespace EPG;
 using namespace PVR;
 
-CEpgInfoTag::CEpgInfoTag(CEpg *epg /* = NULL */, PVR::CPVRChannelPtr pvrChannel /* = CPVRChannelPtrEmpty */, const CStdString &strTableName /* = StringUtils::EmptyString */, const CStdString &strIconPath /* = StringUtils::EmptyString */) :
+CEpgInfoTag::CEpgInfoTag(void) :
     m_bNotify(false),
     m_bChanged(false),
     m_iBroadcastId(-1),
@@ -48,12 +48,26 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg /* = NULL */, PVR::CPVRChannelPtr pvrChannel 
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
-    m_strTitle(""),
-    m_strPlotOutline(""),
-    m_strPlot(""),
-    m_strEpisodeName(""),
+    m_iTimerId(-1),
+    m_epg(NULL)
+{
+  CPVRChannelPtr empty;
+  m_pvrChannel = empty;
+}
+
+CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const CStdString &strTableName /* = StringUtils::EmptyString */, const CStdString &strIconPath /* = StringUtils::EmptyString */) :
+    m_bNotify(false),
+    m_bChanged(false),
+    m_iBroadcastId(-1),
+    m_iGenreType(0),
+    m_iGenreSubType(0),
+    m_iParentalRating(0),
+    m_iStarRating(0),
+    m_iSeriesNumber(0),
+    m_iEpisodeNumber(0),
+    m_iEpisodePart(0),
+    m_iUniqueBroadcastID(-1),
     m_strIconPath(strIconPath),
-    m_strFileNameAndPath(""),
     m_iTimerId(-1),
     m_epg(epg),
     m_pvrChannel(pvrChannel),
@@ -73,16 +87,11 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
-    m_strTitle(""),
-    m_strPlotOutline(""),
-    m_strPlot(""),
-    m_strEpisodeName(""),
-    m_strIconPath(""),
-    m_strFileNameAndPath(""),
     m_iTimerId(-1),
-    m_epg(NULL),
-    m_pvrChannel(CPVRChannelPtrEmpty)
+    m_epg(NULL)
 {
+  CPVRChannelPtr empty;
+  m_pvrChannel = empty;
   Update(data);
 }
 
@@ -433,7 +442,7 @@ CStdString CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  if (bOverrideParental || !m_pvrChannel->IsValid() || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
     retVal = m_strPlotOutline;
 
   return retVal;
@@ -463,7 +472,7 @@ CStdString CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 {
   CStdString retVal;
   CSingleLock lock(m_critSection);
-  if (bOverrideParental || !m_pvrChannel->IsValid() || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
+  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(*m_pvrChannel))
     retVal = m_strPlot;
 
   return retVal;

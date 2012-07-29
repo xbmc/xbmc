@@ -53,8 +53,10 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTag *tag)
 {
   bool bReturn = false;
 
-  CPVRChannelPtr channel(tag ? tag->ChannelTag() : CPVRChannelPtrEmpty);
-  if (channel->IsEmpty() || !g_PVRManager.CheckParentalLock(*channel))
+  CPVRChannelPtr channel;
+  if (tag)
+    channel = tag->ChannelTag();
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
 
   // prompt user for confirmation of channel record

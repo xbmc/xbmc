@@ -496,9 +496,6 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
 
 CPVRTimerInfoTag *CPVRTimers::InstantTimer(const CPVRChannel &channel, bool bStartTimer /* = true */)
 {
-  if (!channel.IsValid())
-    return NULL;
-
   if (!g_PVRManager.CheckParentalLock(channel))
     return NULL;
 
@@ -690,8 +687,10 @@ CFileItemPtr CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
     {
       CPVRTimerInfoTag *timer = it->second->at(iTimerPtr);
 
-      CPVRChannelPtr channel = Epg ? Epg->ChannelTag() : CPVRChannelPtrEmpty;
-      if (!channel->IsValid())
+      CPVRChannelPtr channel;
+      if (Epg)
+        channel = Epg->ChannelTag();
+      if (!channel)
         continue;
 
       if (timer->ChannelNumber() != channel->ChannelNumber()

@@ -149,7 +149,7 @@ void CGUIDialogPVRChannelsOSD::Update()
   g_PVRManager.GetCurrentChannel(channel);
   CPVRChannelGroupPtr group = g_PVRManager.GetPlayingGroup(channel.IsRadio());
 
-  if (group->IsValid())
+  if (group)
   {
     group->GetMembers(*m_vecItems);
     m_viewControl.SetItems(*m_vecItems);

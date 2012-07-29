@@ -830,7 +830,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         if (g_PVRManager.GetCurrentChannel(playingChannel))
         {
           CPVRChannelGroupPtr selectedGroup = g_PVRChannelGroups->Get(playingChannel.IsRadio())->GetByName(strLabel);
-          if (selectedGroup->IsValid())
+          if (selectedGroup)
           {
             g_PVRManager.SetPlayingGroup(selectedGroup);
             CLog::Log(LOGDEBUG, "%s - switched to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());

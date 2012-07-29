@@ -709,7 +709,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
         int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
         CPVRChannelPtr channel = g_PVRChannelGroups->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
 
-        if (channel->IsValid() && group.AddToGroup(*channel, iChannelNumber))
+        if (channel && group.AddToGroup(*channel, iChannelNumber))
           ++iReturn;
 
         m_pDS->next();

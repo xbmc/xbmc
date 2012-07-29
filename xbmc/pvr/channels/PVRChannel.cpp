@@ -159,7 +159,8 @@ bool CPVRChannel::Delete(void)
   CEpg *epg = GetEPG();
   if (epg)
   {
-    epg->SetChannel(CPVRChannelPtrEmpty);
+    CPVRChannelPtr empty;
+    epg->SetChannel(empty);
     g_EpgContainer.DeleteEpg(*epg, true);
     CSingleLock lock(m_critSection);
     m_bEPGCreated = false;
@@ -483,7 +484,7 @@ void CPVRChannel::UpdatePath(unsigned int iNewChannelNumber)
   CSingleLock lock(m_critSection);
   CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
 
-  if (group->IsValid())
+  if (group)
   {
     strFileNameAndPath.Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), group->GroupName().c_str(), iNewChannelNumber);
     if (m_strFileNameAndPath != strFileNameAndPath)

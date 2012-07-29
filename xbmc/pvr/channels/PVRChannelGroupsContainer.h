@@ -181,6 +181,8 @@ namespace PVR
      */
     CFileItemPtr GetLastPlayedChannel(void) const;
 
+    bool CreateChannel(const CPVRChannel &channel);
+
   protected:
     /*!
      * @brief Update the contents of all the groups in this container.

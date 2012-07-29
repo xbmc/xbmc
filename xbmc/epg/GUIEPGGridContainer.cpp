@@ -688,7 +688,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         if (iCurrentChannelNumber != iLastChannelNumber)
         {
           CPVRChannelPtr channel = tag->ChannelTag();
-          if (!channel->IsValid())
+          if (!channel)
             continue;
 
           if (i > 0)

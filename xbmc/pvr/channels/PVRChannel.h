@@ -41,7 +41,6 @@ namespace PVR
 
   class CPVRChannel;
   typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-  #define CPVRChannelPtrEmpty (PVR::CPVRChannelPtr(new PVR::CPVRChannel))
 
   /** PVR Channel class */
   class CPVRChannel : public Observable
@@ -92,8 +91,6 @@ namespace PVR
      * @return True when not persisted yet, false otherwise.
      */
     bool IsNew(void) const;
-
-    bool IsValid(void) const { return !IsNew(); }
 
     /*!
      * @brief Set the identifier for this channel.

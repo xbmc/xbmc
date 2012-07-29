@@ -94,11 +94,6 @@ namespace PVR
     bool operator !=(const CPVRChannelGroup &right) const;
 
     /*!
-     * @return True when this group has a valid id, false otherwise.
-     */
-    bool IsValid(void) const;
-
-    /*!
      * @return The amount of group members
      */
     int Size(void) const;
@@ -366,6 +361,8 @@ namespace PVR
     bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL);
 
     bool ToggleChannelLocked(const CFileItem &channel);
+
+    virtual bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { return false; }
 
   protected:
     /*!

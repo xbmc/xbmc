@@ -361,7 +361,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannelNumber)
   CSingleLock lock(m_critSection);
 
   CPVRChannelGroupPtr playingGroup = GetPlayingGroup(m_addons->IsPlayingRadio());
-  if (!playingGroup->IsValid())
+  if (!playingGroup)
   {
     CLog::Log(LOGERROR, "PVRManager - %s - cannot get the selected group", __FUNCTION__);
     return false;
@@ -385,7 +385,7 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
     CFileItem currentFile(g_application.CurrentFileItem());
     CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
     CPVRChannelGroupPtr group = GetPlayingGroup(currentChannel->IsRadio());
-    if (group->IsValid())
+    if (group)
     {
       CFileItemPtr newChannel = bUp ?
           group->GetByChannelUp(*currentChannel) :
@@ -596,7 +596,7 @@ bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
   bool bReturn = false;
 
   CPVRChannelPtr channel = m_channelGroups->GetChannelById(iChannelId);
-  if (!channel->IsValid())
+  if (!channel)
     return bReturn;
 
   if (m_addons->HasTimerSupport(channel->ClientID()))

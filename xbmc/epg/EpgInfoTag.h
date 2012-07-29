@@ -48,10 +48,12 @@ namespace EPG
     friend class PVR::CPVRTimerInfoTag;
 
   public:
+    CEpgInfoTag(void);
+
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CEpgInfoTag(CEpg *epg = NULL, PVR::CPVRChannelPtr pvrChannel = CPVRChannelPtrEmpty, const CStdString &strTableName = StringUtils::EmptyString, const CStdString &strIconPath = StringUtils::EmptyString);
+    CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const CStdString &strTableName = StringUtils::EmptyString, const CStdString &strIconPath = StringUtils::EmptyString);
 
     /*!
      * @brief Create a new EPG infotag with 'data' as content.

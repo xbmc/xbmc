@@ -46,9 +46,10 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_bUpdatePending(false),
     m_iEpgID(iEpgID),
     m_strName(strName),
-    m_strScraperName(strScraperName),
-    m_pvrChannel(CPVRChannelPtrEmpty)
+    m_strScraperName(strScraperName)
 {
+  CPVRChannelPtr empty;
+  m_pvrChannel = empty;
 }
 
 CEpg::CEpg(CPVRChannelPtr channel, bool bLoadedFromDb /* = false */) :
@@ -68,11 +69,10 @@ CEpg::CEpg(void) :
     m_bTagsChanged(false),
     m_bLoaded(false),
     m_bUpdatePending(false),
-    m_iEpgID(0),
-    m_strName(StringUtils::EmptyString),
-    m_strScraperName(StringUtils::EmptyString),
-    m_pvrChannel(CPVRChannelPtrEmpty)
+    m_iEpgID(0)
 {
+  CPVRChannelPtr empty;
+  m_pvrChannel = empty;
 }
 
 CEpg::~CEpg(void)
@@ -636,7 +636,7 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
 
   m_strName        = epg.m_strName;
   m_strScraperName = epg.m_strScraperName;
-  if (epg.m_pvrChannel->IsValid())
+  if (epg.m_pvrChannel)
     SetChannel(epg.m_pvrChannel);
 
   if (bUpdateDb)
@@ -729,7 +729,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   if (ScraperName() == "client")
   {
     CPVRChannelPtr channel = Channel();
-    if (!channel->IsValid())
+    if (!channel)
       CLog::Log(LOGINFO, "%s - channel not found, can't update", __FUNCTION__);
     else if (!channel->EPGEnabled())
       CLog::Log(LOGINFO, "%s - EPG updating disabled in the channel configuration", __FUNCTION__);
@@ -858,7 +858,7 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 bool CEpg::IsRadio(void) const
 {
   CPVRChannelPtr channel = Channel();
-  return channel->IsValid() ? channel->IsRadio() : false;
+  return channel ? channel->IsRadio() : false;
 }
 
 bool CEpg::IsRemovableTag(const CEpgInfoTag &tag) const
@@ -870,7 +870,7 @@ bool CEpg::LoadFromClients(time_t start, time_t end)
 {
   bool bReturn(false);
   CPVRChannelPtr channel = Channel();
-  if (channel->IsValid())
+  if (channel)
   {
     CEpg tmpEpg(channel);
     if (tmpEpg.UpdateFromScraper(start, end))
@@ -920,13 +920,13 @@ CPVRChannelPtr CEpg::Channel(void) const
 int CEpg::ChannelID(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel->IsValid() ? m_pvrChannel->ChannelID() : -1;
+  return m_pvrChannel ? m_pvrChannel->ChannelID() : -1;
 }
 
 int CEpg::ChannelNumber(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel->IsValid() ? m_pvrChannel->ChannelNumber() : -1;
+  return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
 }
 
 void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
@@ -934,6 +934,8 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
   CSingleLock lock(m_critSection);
   if (m_pvrChannel != channel)
   {
+    if (channel)
+      SetName(channel->ChannelName());
     m_pvrChannel = channel;
     for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
       it->second->SetPVRChannel(m_pvrChannel);
@@ -943,7 +945,7 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
 bool CEpg::HasPVRChannel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel->IsValid();
+  return m_pvrChannel;
 }
 
 bool CEpg::UpdatePending(void) const

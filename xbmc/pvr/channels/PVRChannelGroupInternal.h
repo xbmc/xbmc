@@ -116,6 +116,8 @@ namespace PVR
      */
     bool CreateChannelEpgs(bool bForce = false);
 
+    bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { UpdateFromClient(channel, iChannelNumber); return true; }
+
   protected:
     /*!
      * @brief Load all channels from the database.

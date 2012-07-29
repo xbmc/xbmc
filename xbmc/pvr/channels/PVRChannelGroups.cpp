@@ -35,11 +35,8 @@
 
 using namespace PVR;
 
-#define CPVRChannelGroupPtrEmpty (CPVRChannelGroupPtr(new CPVRChannelGroup))
-
 CPVRChannelGroups::CPVRChannelGroups(bool bRadio) :
-    m_bRadio(bRadio),
-    m_selectedGroup(CPVRChannelGroupPtrEmpty)
+    m_bRadio(bRadio)
 {
 }
 
@@ -70,7 +67,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
   if (group.GroupName().IsEmpty() && group.GroupID() <= 0)
     return true;
 
-  CPVRChannelGroupPtr updateGroup = CPVRChannelGroupPtrEmpty;
+  CPVRChannelGroupPtr updateGroup;
   {
     CSingleLock lock(m_critSection);
     // try to find the group by id
@@ -78,10 +75,10 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
       updateGroup = GetById(group.GroupID());
 
     // try to find the group by name if we didn't find it yet
-    if (!updateGroup->IsValid())
+    if (!updateGroup)
       updateGroup = GetByName(group.GroupName());
 
-    if (!updateGroup->IsValid())
+    if (!updateGroup)
     {
       // create a new group if none was found
       updateGroup = CPVRChannelGroupPtr(new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName()));
@@ -98,7 +95,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
   }
 
   // persist changes
-  if (bSaveInDb && updateGroup->IsValid())
+  if (bSaveInDb && updateGroup)
     return updateGroup->Persist();
 
   return true;
@@ -137,7 +134,8 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetById(int iGroupId) const
       return *it;
   }
 
-  return CPVRChannelGroupPtrEmpty;
+  CPVRChannelGroupPtr empty;
+  return empty;
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const CStdString &strName) const
@@ -149,7 +147,8 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const CStdString &strName) cons
       return *it;
   }
 
-  return CPVRChannelGroupPtrEmpty;
+  CPVRChannelGroupPtr empty;
+  return empty;
 }
 
 void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannel &channel)
@@ -196,7 +195,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
     CPVRChannelGroup existingGroup(*m_groups.at(iGroupPtr));
     CPVRChannelGroupPtr group = groups.GetByName(existingGroup.GroupName());
     // user defined group wasn't found
-    if (existingGroup.GroupType() == PVR_GROUP_TYPE_DEFAULT && !group->IsValid())
+    if (existingGroup.GroupType() == PVR_GROUP_TYPE_DEFAULT && !group)
     {
       CLog::Log(LOGDEBUG, "PVR - %s - user defined group %s with id '%u' does not exist on the client anymore; deleting it", __FUNCTION__, existingGroup.GroupName().c_str(), existingGroup.GroupID());
       DeleteGroup(*m_groups.at(iGroupPtr));
@@ -210,7 +209,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
     CPVRChannelGroupPtr existingGroup = GetByName((*it)->GroupName());
 
     // add it if not
-    if (!existingGroup->IsValid())
+    if (!existingGroup)
       m_groups.push_back(CPVRChannelGroupPtr(new CPVRChannelGroup(m_bRadio, -1, (*it)->GroupName())));
   }
 
@@ -294,7 +293,8 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetGroupAll(void) const
   if (m_groups.size() > 0)
     return m_groups.at(0);
 
-  return CPVRChannelGroupPtrEmpty;
+  CPVRChannelGroupPtr empty;
+  return empty;
 }
 
 int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
@@ -380,14 +380,14 @@ void CPVRChannelGroups::SetSelectedGroup(CPVRChannelGroupPtr group)
 bool CPVRChannelGroups::AddGroup(const CStdString &strName)
 {
   bool bPersist(false);
-  CPVRChannelGroupPtr group = CPVRChannelGroupPtrEmpty;
+  CPVRChannelGroupPtr group;
 
   {
     CSingleLock lock(m_critSection);
 
     // check if there's no group with the same name yet
     group = GetByName(strName);
-    if (!group->IsValid())
+    if (!group)
     {
       // create a new group
       group = CPVRChannelGroupPtr(new CPVRChannelGroup(m_bRadio, -1, strName));
@@ -417,7 +417,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     {
       // update the selected group in the gui if it's deleted
       CPVRChannelGroupPtr selectedGroup = GetSelectedGroup();
-      if (selectedGroup->IsValid() && *selectedGroup == group)
+      if (selectedGroup && *selectedGroup == group)
         g_PVRManager.SetPlayingGroup(GetGroupAll());
 
       m_groups.erase(it);

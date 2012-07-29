@@ -55,7 +55,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iChannelNumber     = 0;
   m_bIsRadio           = false;
   m_iEpgId             = -1;
-  m_channel            = CPVRChannelPtrEmpty;
   m_iMarginStart       = g_guiSettings.GetInt("pvrrecord.marginstart");
   m_iMarginEnd         = g_guiSettings.GetInt("pvrrecord.marginend");
   m_iGenreType         = 0;
@@ -100,12 +99,13 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channe
 bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
 {
   bool bChannelsMatch = true;
-  if (m_channel->IsValid() && right.m_channel->IsValid())
+  if (m_channel && right.m_channel)
     bChannelsMatch = *m_channel == *right.m_channel;
-  else if (m_channel->IsValid() != right.m_channel->IsValid())
+  else if (m_channel != right.m_channel)
     bChannelsMatch = false;
 
-  return (m_iClientIndex       == right.m_iClientIndex &&
+  return (bChannelsMatch &&
+          m_iClientIndex       == right.m_iClientIndex &&
           m_strSummary         == right.m_strSummary &&
           m_iClientChannelUid  == right.m_iClientChannelUid &&
           m_bIsRepeating       == right.m_bIsRepeating &&
@@ -121,8 +121,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iClientId          == right.m_iClientId &&
           m_iMarginStart       == right.m_iMarginStart &&
           m_iMarginEnd         == right.m_iMarginEnd &&
-          m_state              == right.m_state &&
-          bChannelsMatch);
+          m_state              == right.m_state);
 }
 
 CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
@@ -357,7 +356,7 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 
   /* try to get the channel */
   CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
-  if (!channel->IsValid())
+  if (!channel)
     return;
 
   /* try to get the EPG table */
@@ -439,7 +438,7 @@ int CPVRTimerInfoTag::ChannelNumber() const
 {
   CSingleLock lock(m_critSection);
   CPVRChannelPtr channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
-  if (channeltag->IsValid())
+  if (channeltag)
     return channeltag->ChannelNumber();
   else
     return 0;
@@ -449,7 +448,7 @@ CStdString CPVRTimerInfoTag::ChannelName() const
 {
   CSingleLock lock(m_critSection);
   CPVRChannelPtr channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
-  if (channeltag->IsValid())
+  if (channeltag)
     return channeltag->ChannelName();
   else
     return StringUtils::EmptyString;
@@ -459,7 +458,7 @@ CStdString CPVRTimerInfoTag::ChannelIcon() const
 {
   CSingleLock lock(m_critSection);
   CPVRChannelPtr channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
-  if (channeltag->IsValid())
+  if (channeltag)
     return channeltag->IconPath();
   else
     return StringUtils::EmptyString;
@@ -489,7 +488,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
 
   /* check if a valid channel is set */
   CPVRChannelPtr channel = tag.ChannelTag();
-  if (!channel->IsValid())
+  if (!channel)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
     return NULL;
