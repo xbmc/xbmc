@@ -114,7 +114,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   ULONG ulChanges=0;
   DWORD dwBytesReturned;
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
-  byte DataBuf[16];  //Buffer for holding data to/from drive.
+  byte DataBuf[8];  //Buffer for holding data to/from drive.
 
   hDevice = CreateFile( strPath.c_str(),                  // drive
                         0,                                // no access to the drive
@@ -163,8 +163,8 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   sptd_sb.sptd.CdbLength=10;
   sptd_sb.sptd.SenseInfoLength=MAX_SENSE_LEN;
   sptd_sb.sptd.DataIn=SCSI_IOCTL_DATA_IN;
-  sptd_sb.sptd.DataTransferLength=8;
-  sptd_sb.sptd.TimeOutValue=108000;
+  sptd_sb.sptd.DataTransferLength=sizeof(DataBuf);
+  sptd_sb.sptd.TimeOutValue=2;
   sptd_sb.sptd.DataBuffer=(PVOID)&(DataBuf);
   sptd_sb.sptd.SenseInfoOffset=sizeof(SCSI_PASS_THROUGH_DIRECT);
 
@@ -185,6 +185,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   sptd_sb.sptd.Cdb[14]=0;
   sptd_sb.sptd.Cdb[15]=0;
 
+  ZeroMemory(DataBuf, 8);
   ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
 
   //Send the command to drive
@@ -207,6 +208,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
     else
       return 2; // tray closed, media present
   }
+  CLog::Log(LOGERROR, __FUNCTION__": Could not determine tray status %d", GetLastError());
   return -1;
 }
 
