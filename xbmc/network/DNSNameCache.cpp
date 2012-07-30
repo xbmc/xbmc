@@ -51,6 +51,15 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;
 
+  // perform dns lookup
+  struct hostent *host = gethostbyname(strHostName.c_str());
+  if (host && host->h_addr_list[0])
+  {
+    strIpAddress.Format("%d.%d.%d.%d", (unsigned char)host->h_addr_list[0][0], (unsigned char)host->h_addr_list[0][1], (unsigned char)host->h_addr_list[0][2], (unsigned char)host->h_addr_list[0][3]);
+    g_DNSCache.Add(strHostName, strIpAddress);
+    return true;
+  }
+
 #ifndef _WIN32
   // perform netbios lookup (win32 is handling this via gethostbyname)
   char nmb_ip[100];
@@ -77,15 +86,6 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
     return true;
   }
 #endif
-
-  // perform dns lookup
-  struct hostent *host = gethostbyname(strHostName.c_str());
-  if (host && host->h_addr_list[0])
-  {
-    strIpAddress.Format("%d.%d.%d.%d", (unsigned char)host->h_addr_list[0][0], (unsigned char)host->h_addr_list[0][1], (unsigned char)host->h_addr_list[0][2], (unsigned char)host->h_addr_list[0][3]);
-    g_DNSCache.Add(strHostName, strIpAddress);
-    return true;
-  }
 
   CLog::Log(LOGERROR, "Unable to lookup host: '%s'", strHostName.c_str());
   return false;
