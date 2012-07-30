@@ -136,7 +136,9 @@ void CSoftAEStream::Initialize()
 
   m_aeChannelLayout = AE.GetChannelLayout();
   m_aeBytesPerFrame = AE_IS_RAW(m_initDataFormat) ? m_bytesPerFrame : (m_samplesPerFrame * sizeof(float));
-  m_waterLevel      = AE.GetSampleRate() / 2;
+  // set the waterlevel to 75 percent of the number of frames per second.
+  // this lets us drain the main buffer down futher before flagging an underrun.
+  m_waterLevel      = AE.GetSampleRate() - (AE.GetSampleRate() / 4);
   m_refillBuffer    = m_waterLevel;
 
   m_format.m_dataFormat    = useDataFormat;
