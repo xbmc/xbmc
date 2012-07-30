@@ -1678,25 +1678,22 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
   return false;
 }
 
-bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
+void CMusicDatabase::IncrementPlayCount(const CFileItem& item)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
 
-    int idSong = GetSongIDFromPath(strFileName);
+    int idSong = GetSongIDFromPath(item.GetPath());
 
     CStdString sql=PrepareSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%i", idSong);
     m_pDS->exec(sql.c_str());
-    return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strFileName.c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, item.GetPath().c_str());
   }
-
-  return false;
 }
 
 bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs, bool bAppendToMap)

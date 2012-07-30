@@ -170,7 +170,11 @@ public:
   bool GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CFileItemList& item, unsigned int limit=0);
   bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
   bool GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
-  bool IncrTop100CounterByFileName(const CStdString& strFileName1);
+  /*! \brief Increment the playcount of an item
+   Increments the playcount and updates the last played date
+   \param item CFileItem to increment the playcount for
+   */
+  void IncrementPlayCount(const CFileItem &item);
   bool RemoveSongsFromPath(const CStdString &path, CSongMap &songs, bool exact=true);
   bool CleanupOrphanedItems();
   bool GetPaths(std::set<CStdString> &paths);
