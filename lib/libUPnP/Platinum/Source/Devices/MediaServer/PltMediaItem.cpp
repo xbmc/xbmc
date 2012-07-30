@@ -183,6 +183,9 @@ PLT_MediaObject::Reset()
     m_ExtraInfo.artist_discography_uri = "";
 
     m_MiscInfo.original_track_number = 0;
+    m_MiscInfo.last_position         = 0;
+    m_MiscInfo.last_time             = "";
+    m_MiscInfo.play_count            = -1;
     m_MiscInfo.dvdregioncode		 = 0;
     m_MiscInfo.toc					 = "";
     m_MiscInfo.user_annotation		 = "";
@@ -314,6 +317,27 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         didl += "<upnp:originalTrackNumber>";
         didl += NPT_String::FromInteger(m_MiscInfo.original_track_number);
         didl += "</upnp:originalTrackNumber>";
+    }
+
+    // last playback position
+    if (m_MiscInfo.last_position > 0) {
+        didl += "<upnp:lastPlaybackPosition>";
+        didl += NPT_String::FromInteger(m_MiscInfo.last_position);
+        didl += "</upnp:lastPlaybackPosition>";
+    }
+
+    // last playback datetime
+    if (!m_MiscInfo.last_time.IsEmpty()) {
+        didl += "<upnp:lastPlaybackTime>";
+        PLT_Didl::AppendXmlEscape(didl, m_MiscInfo.last_time);
+        didl += "</upnp:lastPlaybackTime>";
+    }
+
+    // playcount
+    if (m_MiscInfo.play_count > -1) {
+        didl += "<upnp:playbackCount>";
+        didl += NPT_String::FromInteger(m_MiscInfo.play_count);
+        didl += "</upnp:playbackCount>";
     }
 
     // program title
@@ -509,6 +533,25 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_MiscInfo.original_track_number = value;
+
+    PLT_XmlHelper::GetChildText(entry, "lastPlaybackPosition", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    m_MiscInfo.last_position = value;
+
+    PLT_XmlHelper::GetChildText(entry, "lastPlaybackTime", m_MiscInfo.last_time, didl_namespace_dc, 256);
+    NPT_String parsed_last_time;
+    for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
+        NPT_DateTime date;
+        if (NPT_SUCCEEDED(date.FromString(m_MiscInfo.last_time, (NPT_DateTime::Format)format))) {
+            parsed_last_time = date.ToString((NPT_DateTime::Format)format);
+            break;
+        }
+    }
+    m_MiscInfo.last_time = parsed_last_time;
+
+    PLT_XmlHelper::GetChildText(entry, "playbackCount", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = -1;
+    m_MiscInfo.play_count = value;
 
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "res");
