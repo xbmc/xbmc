@@ -206,6 +206,9 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
     if (object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
+    object.m_MiscInfo.last_time = tag.GetLastPlayed().GetAsLocalizedDate();
+    object.m_MiscInfo.play_count = tag.GetPlayCount();
+
     if (resource) resource->m_Duration = tag.GetDuration();
 
     return NPT_SUCCESS;
@@ -271,6 +274,9 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
+    object.m_MiscInfo.last_position = tag.m_resumePoint.timeInSeconds;
+    object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsLocalizedDate();
+    object.m_MiscInfo.play_count = tag.m_playCount;
     if (resource) resource->m_Duration = tag.m_streamDetails.GetVideoDuration();
     if (resource) resource->m_Resolution = NPT_String::FromInteger(tag.m_streamDetails.GetVideoWidth()) + "x" + NPT_String::FromInteger(tag.m_streamDetails.GetVideoHeight());
 
@@ -574,6 +580,10 @@ PopulateTagFromObject(CMusicInfoTag&          tag,
         tag.SetGenre((const char*) *it);
 
     tag.SetAlbum((const char*)object.m_Affiliation.album);
+    CDateTime last;
+    last.SetFromDateString((const char*)object.m_MiscInfo.last_time);
+    tag.SetLastPlayed(last);
+    tag.SetPlayCount(object.m_MiscInfo.play_count);
     if(resource)
         tag.SetDuration(resource->m_Duration);
     tag.SetLoaded();
@@ -616,9 +626,18 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strShowTitle = object.m_Recorded.series_title;
+    tag.m_lastPlayed.SetFromDateString((const char*)object.m_MiscInfo.last_time);
+    tag.m_playCount = object.m_MiscInfo.play_count;
 
     if(resource)
+    {
       tag.m_strRuntime.Format("%d",resource->m_Duration);
+      if (object.m_MiscInfo.last_position > 0 )
+      {
+        tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;
+        tag.m_resumePoint.timeInSeconds = object.m_MiscInfo.last_position;
+      }
+    }
     return NPT_SUCCESS;
 }
 

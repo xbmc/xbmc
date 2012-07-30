@@ -130,6 +130,9 @@ typedef struct {
     NPT_UInt32 original_track_number;
     NPT_String toc;
     NPT_String user_annotation; //TODO: can be multiple
+    NPT_UInt32 last_position;
+    NPT_String last_time;
+    NPT_Int32  play_count;
 } PLT_MiscInfo;
 
 typedef struct {

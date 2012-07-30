@@ -472,6 +472,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     break;
                 }
             }
+            // HACK set the watched overlay, as this will not be set later due to
+            // content set on file item list
+            if (pItem->IsVideo())
+              pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0);
             items.Add(pItem);
 
             ++entry;
