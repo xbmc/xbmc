@@ -117,6 +117,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      g_settings.UpdateCalibrations();
       g_settings.Save();
       g_graphicsContext.SetCalibrating(false);
       g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
