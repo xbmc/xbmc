@@ -1035,6 +1035,14 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     xbmcKey.iButton = XINPUT_IR_REMOTE_TITLE; // context menu
     PushCecKeypress(xbmcKey);
     break;
+  case CEC_USER_CONTROL_CODE_DATA:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_SUB_PICTURE:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_SUBTITLE;
+    PushCecKeypress(xbmcKey);
+    break;
   case CEC_USER_CONTROL_CODE_POWER_ON_FUNCTION:
   case CEC_USER_CONTROL_CODE_EJECT:
   case CEC_USER_CONTROL_CODE_INPUT_SELECT:
@@ -1043,7 +1051,6 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_STOP_RECORD:
   case CEC_USER_CONTROL_CODE_PAUSE_RECORD:
   case CEC_USER_CONTROL_CODE_ANGLE:
-  case CEC_USER_CONTROL_CODE_SUB_PICTURE:
   case CEC_USER_CONTROL_CODE_VIDEO_ON_DEMAND:
   case CEC_USER_CONTROL_CODE_TIMER_PROGRAMMING:
   case CEC_USER_CONTROL_CODE_PLAY_FUNCTION:
@@ -1060,7 +1067,6 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_POWER_TOGGLE_FUNCTION:
   case CEC_USER_CONTROL_CODE_POWER_OFF_FUNCTION:
   case CEC_USER_CONTROL_CODE_F5:
-  case CEC_USER_CONTROL_CODE_DATA:
   case CEC_USER_CONTROL_CODE_UNKNOWN:
   default:
     break;
