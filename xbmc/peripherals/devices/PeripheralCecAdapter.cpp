@@ -28,9 +28,11 @@
 #include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/PeripheralBus.h"
+#include "pictures/GUIWindowSlideShow.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -1127,11 +1129,33 @@ void CPeripheralCecAdapter::OnSettingChanged(const CStdString &strChangedSetting
   }
 }
 
-void CPeripheralCecAdapter::CecSourceActivated(void *param, const CEC::cec_logical_address address, const uint8_t activated)
+void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_logical_address address, const uint8_t activated)
 {
+  CPeripheralCecAdapter *adapter = (CPeripheralCecAdapter *)cbParam;
+  if (!adapter)
+    return;
+
   // wake up the screensaver, so the user doesn't switch to a black screen
   if (activated == 1)
     g_application.WakeUpScreenSaverAndDPMS();
+
+  if (adapter->GetSettingBool("pause_playback_on_deactivate"))
+  {
+    bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
+
+    if (pSlideShow)
+    {
+      // pause/resume slideshow
+      pSlideShow->OnAction(CAction(ACTION_PAUSE));
+    }
+    else if ((g_application.IsPlaying() && activated == 0) ||
+             (g_application.IsPaused() && activated == 1))
+    {
+      // pause/resume player
+      CApplicationMessenger::Get().MediaPause();
+    }
+  }
 }
 
 int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message &message)
