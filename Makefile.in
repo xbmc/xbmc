@@ -149,6 +149,7 @@ LIB_DIRS=\
 
 ifeq (@USE_MYSQL@,1)
 LIB_DIRS += lib/cmyth
+CMYTH=cmyth
 endif
 
 SS_DIRS=
@@ -321,10 +322,7 @@ imagelib: dllloader
 
 codecs: papcodecs dvdpcodecs
 
-libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so
-ifeq (@USE_MYSQL@,1)
-libs += cmyth
-endif
+libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
 externals: codecs libs visualizations screensavers
 
