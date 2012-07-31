@@ -151,6 +151,11 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
 
   delete m_Buffer;
 
+  m_convertBuffer = NULL;
+  m_remapBuffer = NULL;
+  m_vizRemapBuffer = NULL;
+  m_Buffer = NULL;
+
   /*
   if (m_resample)
   {
