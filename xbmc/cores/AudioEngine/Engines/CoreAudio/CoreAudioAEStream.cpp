@@ -144,17 +144,12 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
 
   InternalFlush();
 
-  _aligned_free(m_convertBuffer);
-  //_aligned_free(m_resampleBuffer);
-  _aligned_free(m_remapBuffer);
-  _aligned_free(m_vizRemapBuffer);
+  _aligned_free(m_convertBuffer); m_convertBuffer = NULL;
+  //_aligned_free(m_resampleBuffer); m_resampleBuffer = NULL;
+  _aligned_free(m_remapBuffer); m_remapBuffer = NULL;
+  _aligned_free(m_vizRemapBuffer); m_vizRemapBuffer = NULL;
 
-  delete m_Buffer;
-
-  m_convertBuffer = NULL;
-  m_remapBuffer = NULL;
-  m_vizRemapBuffer = NULL;
-  m_Buffer = NULL;
+  delete m_Buffer; m_Buffer = NULL;
 
   /*
   if (m_resample)
