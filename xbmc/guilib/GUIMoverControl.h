@@ -76,6 +76,7 @@ public:
   void SetLocation(int iLocX, int iLocY, bool bSetPosition = true);
   int GetXLocation() const { return m_iLocationX;};
   int GetYLocation() const { return m_iLocationY;};
+  virtual bool CanFocus() const { return true; };
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
