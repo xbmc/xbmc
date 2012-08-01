@@ -21,7 +21,7 @@
 
 #include "GUIDialogProfileSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "GUIDialogLockSettings.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIWindowManager.h"
@@ -143,7 +143,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
   // check and update anything that needs it
   if (setting.id == 1)
   {
-    if (CGUIDialogKeyboard::ShowAndGetInput(m_strName,g_localizeStrings.Get(20093),false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(m_strName,g_localizeStrings.Get(20093),false))
     {
       m_bNeedSave = true;
       SET_CONTROL_LABEL(1000,m_strName);
@@ -273,7 +273,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_strDirectory.Empty();
     dialog->m_strThumb.Empty();
     // prompt for a name
-    if (!CGUIDialogKeyboard::ShowAndGetInput(dialog->m_strName,g_localizeStrings.Get(20093),false) || dialog->m_strName.IsEmpty())
+    if (!CGUIKeyboardFactory::ShowAndGetInput(dialog->m_strName,g_localizeStrings.Get(20093),false) || dialog->m_strName.IsEmpty())
       return false;
     // create a default path
     CStdString defaultDir = URIUtils::AddFileToFolder("profiles",CUtil::MakeLegalFileName(dialog->m_strName));
@@ -382,7 +382,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     profile->setDatabases((dialog->m_iDbMode & 2) == 2);
     profile->setSources((dialog->m_iSourcesMode & 2) == 2);
     profile->SetLocks(dialog->m_locks);
-    
+
     g_settings.SaveProfiles(PROFILES_FILE);
     return true;
   }

@@ -197,6 +197,16 @@ extern NSString* kBRScreenSaverDismissed;
   currentPinchScale = lastPinchScale;
 }
 //--------------------------------------------------------------
+- (void) activateKeyboard:(UIView *)view
+{
+  [self.view addSubview:view];
+}
+//--------------------------------------------------------------
+- (void) deactivateKeyboard:(UIView *)view
+{
+  [view removeFromSuperview];
+}
+//--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender 
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
@@ -534,6 +544,12 @@ extern NSString* kBRScreenSaverDismissed;
   screensize.height = m_glView.bounds.size.height * screenScale;  
   return screensize;
 }
+//--------------------------------------------------------------
+- (CGFloat) getScreenScale:(UIScreen *)screen;
+{
+  return [m_glView getScreenScale:screen];
+}
+//--------------------------------------------------------------
 //--------------------------------------------------------------
 - (BOOL) recreateOnReselect
 { 

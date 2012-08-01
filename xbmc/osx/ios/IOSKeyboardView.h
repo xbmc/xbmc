@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,31 +19,25 @@
  *
  */
 
-#include <Python.h>
+#import <UIKit/UIKit.h>
+#include "IOSKeyboard.h"
 
-#include <string>
-#pragma once
-
-class CGUIDialogKeyboardGeneric;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-namespace PYXBMC
+@interface KeyboardView : UIView <UIKeyInput>
 {
-  typedef struct {
-    PyObject_HEAD
-    std::string strDefault;
-    std::string strHeading;
-    bool bHidden;
-    CGUIDialogKeyboardGeneric* dlg;
-  } Keyboard;
-
-  extern PyTypeObject Keyboard_Type;
-  void initKeyboard_Type();
+    NSMutableString                    *_heading;
+    NSMutableString                    *_text;
+    bool                                _result;
+    bool                                _hiddenInput;
+    CIOSKeyboard                        *_iosKeyboard;
 }
 
-#ifdef __cplusplus
-}
-#endif
+@property (nonatomic, retain, getter = GetText) NSMutableString *_text;
+@property (copy, setter = SetHeading) NSMutableString *_heading;
+@property (getter = GetResult) bool _result;
+@property (setter = SetHiddenInput) bool _hiddenInput;
+@property (assign, setter = RegisterKeyboard) CIOSKeyboard *_iosKeyboard;
+
+- (void) setText:(NSMutableString *)text;
+- (void) activate;
+- (void) deactivate;
+@end

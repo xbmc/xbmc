@@ -43,6 +43,7 @@
 		C893606F152C870600812418 /* monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C893606D152C870600812418 /* monitor.cpp */; };
 		C8936072152C871400812418 /* PythonMonitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936070152C871400812418 /* PythonMonitor.cpp */; };
 		C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */; };
+		DF02A888153382A60084754E /* IOSKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF02A887153382A60084754E /* IOSKeyboard.mm */; };
 		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
 		DF2E329415509B2C000F5772 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2E329215509B2C000F5772 /* XbmcContext.cpp */; };
 		DF33C29415509BF50046CDCB /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C29115509BF50046CDCB /* ilog.cpp */; };
@@ -56,6 +57,8 @@
 		DF52775A151BAF8200B5B63B /* WebSocketV8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527754151BAF8200B5B63B /* WebSocketV8.cpp */; };
 		DF527760151BAFA000B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52775C151BAFA000B5B63B /* Base64.cpp */; };
 		DF527761151BAFA000B5B63B /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52775E151BAFA000B5B63B /* HttpResponse.cpp */; };
+		DF830C9515BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830C9315BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
+		DF830C9E15BB215500602BE6 /* GUIKeyboardFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830C9C15BB215500602BE6 /* GUIKeyboardFactory.cpp */; };
 		DF93D7CF1444B105007C6459 /* AFPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7971444B105007C6459 /* AFPFile.cpp */; };
 		DF93D7D21444B105007C6459 /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D79D1444B105007C6459 /* CDDAFile.cpp */; };
 		DF93D7D31444B105007C6459 /* CurlFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D79F1444B105007C6459 /* CurlFile.cpp */; };
@@ -121,6 +124,7 @@
 		DFDB00251516403A005079A4 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB001E1516403A005079A4 /* DirectoryCache.cpp */; };
 		DFDB00261516403A005079A4 /* FileCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00201516403A005079A4 /* FileCache.cpp */; };
 		DFDB00271516403A005079A4 /* MemBufferCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00221516403A005079A4 /* MemBufferCache.cpp */; };
+		DFE3505B1532535500F84CAA /* IOSKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */; };
 		DFFD59401506B5B10088DE4B /* IOSEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFFD593F1506B5B10088DE4B /* IOSEAGLView.mm */; };
 		DFFEFBEE15160739001294DC /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFFEFBED15160739001294DC /* IOSScreenManager.mm */; };
 		DFFEFC0415160808001294DC /* IOSExternalTouchController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFFEFC0315160808001294DC /* IOSExternalTouchController.mm */; };
@@ -423,7 +427,6 @@
 		F56C8943131F42ED000AD0F6 /* GUIDialogFileBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8352131F42E8000AD0F6 /* GUIDialogFileBrowser.cpp */; };
 		F56C8944131F42ED000AD0F6 /* GUIDialogGamepad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8354131F42E8000AD0F6 /* GUIDialogGamepad.cpp */; };
 		F56C8945131F42ED000AD0F6 /* GUIDialogKaiToast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8356131F42E8000AD0F6 /* GUIDialogKaiToast.cpp */; };
-		F56C8946131F42ED000AD0F6 /* GUIDialogKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8358131F42E8000AD0F6 /* GUIDialogKeyboard.cpp */; };
 		F56C8947131F42ED000AD0F6 /* GUIDialogMediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C835A131F42E8000AD0F6 /* GUIDialogMediaSource.cpp */; };
 		F56C8948131F42ED000AD0F6 /* GUIDialogMuteBug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C835C131F42E8000AD0F6 /* GUIDialogMuteBug.cpp */; };
 		F56C8949131F42ED000AD0F6 /* GUIDialogNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C835E131F42E8000AD0F6 /* GUIDialogNumeric.cpp */; };
@@ -1055,6 +1058,10 @@
 		C8936071152C871400812418 /* PythonMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PythonMonitor.h; sourceTree = "<group>"; };
 		C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D25136953E100CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
+		DF02A831153373EC0084754E /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
+		DF02A86D153381990084754E /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
+		DF02A881153382560084754E /* IOSKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboard.h; sourceTree = "<group>"; };
+		DF02A887153382A60084754E /* IOSKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboard.mm; sourceTree = "<group>"; };
 		DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF17E13A3AF9F008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		DF2E329215509B2C000F5772 /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
@@ -1081,6 +1088,10 @@
 		DF52775D151BAFA000B5B63B /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
 		DF52775E151BAFA000B5B63B /* HttpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpResponse.cpp; sourceTree = "<group>"; };
 		DF52775F151BAFA000B5B63B /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpResponse.h; sourceTree = "<group>"; };
+		DF830C9315BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboardGeneric.cpp; sourceTree = "<group>"; };
+		DF830C9415BB20FC00602BE6 /* GUIDialogKeyboardGeneric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboardGeneric.h; sourceTree = "<group>"; };
+		DF830C9C15BB215500602BE6 /* GUIKeyboardFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIKeyboardFactory.cpp; sourceTree = "<group>"; };
+		DF830C9D15BB215500602BE6 /* GUIKeyboardFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboardFactory.h; sourceTree = "<group>"; };
 		DF93D7971444B105007C6459 /* AFPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPFile.cpp; sourceTree = "<group>"; };
 		DF93D7981444B105007C6459 /* AFPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPFile.h; sourceTree = "<group>"; };
 		DF93D79D1444B105007C6459 /* CDDAFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDAFile.cpp; sourceTree = "<group>"; };
@@ -1225,6 +1236,8 @@
 		DFDB00211516403A005079A4 /* FileCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileCache.h; sourceTree = "<group>"; };
 		DFDB00221516403A005079A4 /* MemBufferCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemBufferCache.cpp; sourceTree = "<group>"; };
 		DFDB00231516403A005079A4 /* MemBufferCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemBufferCache.h; sourceTree = "<group>"; };
+		DFE350591532535500F84CAA /* IOSKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboardView.h; sourceTree = "<group>"; };
+		DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboardView.mm; sourceTree = "<group>"; };
 		DFFD593E1506B5B10088DE4B /* IOSEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSEAGLView.h; sourceTree = "<group>"; };
 		DFFD593F1506B5B10088DE4B /* IOSEAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSEAGLView.mm; sourceTree = "<group>"; };
 		DFFEFBEC15160739001294DC /* IOSScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSScreenManager.h; sourceTree = "<group>"; };
@@ -1943,8 +1956,6 @@
 		F56C8355131F42E8000AD0F6 /* GUIDialogGamepad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogGamepad.h; sourceTree = "<group>"; };
 		F56C8356131F42E8000AD0F6 /* GUIDialogKaiToast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKaiToast.cpp; sourceTree = "<group>"; };
 		F56C8357131F42E8000AD0F6 /* GUIDialogKaiToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKaiToast.h; sourceTree = "<group>"; };
-		F56C8358131F42E8000AD0F6 /* GUIDialogKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboard.cpp; sourceTree = "<group>"; };
-		F56C8359131F42E8000AD0F6 /* GUIDialogKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboard.h; sourceTree = "<group>"; };
 		F56C835A131F42E8000AD0F6 /* GUIDialogMediaSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMediaSource.cpp; sourceTree = "<group>"; };
 		F56C835B131F42E8000AD0F6 /* GUIDialogMediaSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMediaSource.h; sourceTree = "<group>"; };
 		F56C835C131F42E8000AD0F6 /* GUIDialogMuteBug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMuteBug.cpp; sourceTree = "<group>"; };
@@ -4550,8 +4561,8 @@
 				F56C8355131F42E8000AD0F6 /* GUIDialogGamepad.h */,
 				F56C8356131F42E8000AD0F6 /* GUIDialogKaiToast.cpp */,
 				F56C8357131F42E8000AD0F6 /* GUIDialogKaiToast.h */,
-				F56C8358131F42E8000AD0F6 /* GUIDialogKeyboard.cpp */,
-				F56C8359131F42E8000AD0F6 /* GUIDialogKeyboard.h */,
+				DF830C9315BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp */,
+				DF830C9415BB20FC00602BE6 /* GUIDialogKeyboardGeneric.h */,
 				F56C835A131F42E8000AD0F6 /* GUIDialogMediaSource.cpp */,
 				F56C835B131F42E8000AD0F6 /* GUIDialogMediaSource.h */,
 				F56C835C131F42E8000AD0F6 /* GUIDialogMuteBug.cpp */,
@@ -4971,6 +4982,9 @@
 				F56C84A4131F42E9000AD0F6 /* GUIIncludes.h */,
 				F56C84FF131F42E9000AD0F6 /* GUIInfoTypes.cpp */,
 				F56C84A5131F42E9000AD0F6 /* GUIInfoTypes.h */,
+				DF830C9C15BB215500602BE6 /* GUIKeyboardFactory.cpp */,
+				DF830C9D15BB215500602BE6 /* GUIKeyboardFactory.h */,
+				DF02A831153373EC0084754E /* GUIKeyboard.h */,
 				F56C8500131F42E9000AD0F6 /* GUILabel.cpp */,
 				F56C84A6131F42E9000AD0F6 /* GUILabel.h */,
 				F56C8501131F42E9000AD0F6 /* GUILabelControl.cpp */,
@@ -5084,6 +5098,7 @@
 				F56C84DF131F42E9000AD0F6 /* XBTF.h */,
 				F56C8535131F42E9000AD0F6 /* XBTFReader.cpp */,
 				F56C84E0131F42E9000AD0F6 /* XBTFReader.h */,
+				DF02A86D153381990084754E /* GUIKeyboard.h */,
 			);
 			path = guilib;
 			sourceTree = "<group>";
@@ -5969,6 +5984,10 @@
 			isa = PBXGroup;
 			children = (
 				F56C8BB6131F44AA000AD0F6 /* English.lproj */,
+				DF02A887153382A60084754E /* IOSKeyboard.mm */,
+				DF02A881153382560084754E /* IOSKeyboard.h */,
+				DFE350591532535500F84CAA /* IOSKeyboardView.h */,
+				DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */,
 				F56C8B9E131F4466000AD0F6 /* XBMC.png */,
 				F56C8B9F131F4466000AD0F6 /* XBMCApplication.h */,
 				F56C8BA0131F4466000AD0F6 /* XBMCApplication.m */,
@@ -6580,7 +6599,6 @@
 				F56C8943131F42ED000AD0F6 /* GUIDialogFileBrowser.cpp in Sources */,
 				F56C8944131F42ED000AD0F6 /* GUIDialogGamepad.cpp in Sources */,
 				F56C8945131F42ED000AD0F6 /* GUIDialogKaiToast.cpp in Sources */,
-				F56C8946131F42ED000AD0F6 /* GUIDialogKeyboard.cpp in Sources */,
 				F56C8947131F42ED000AD0F6 /* GUIDialogMediaSource.cpp in Sources */,
 				F56C8948131F42ED000AD0F6 /* GUIDialogMuteBug.cpp in Sources */,
 				F56C8949131F42ED000AD0F6 /* GUIDialogNumeric.cpp in Sources */,
@@ -7230,6 +7248,10 @@
 				36A9465B15AA26BC00727135 /* DirectoryNodeTags.cpp in Sources */,
 				7C1D697815A8141000658B65 /* DatabaseManager.cpp in Sources */,
 				7C1A495315A968FB004AF4A4 /* SeekHandler.cpp in Sources */,
+				DFE3505B1532535500F84CAA /* IOSKeyboardView.mm in Sources */,
+				DF02A888153382A60084754E /* IOSKeyboard.mm in Sources */,
+				DF830C9515BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */,
+				DF830C9E15BB215500602BE6 /* GUIKeyboardFactory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
