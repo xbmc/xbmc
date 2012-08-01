@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,32 +18,17 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#include <Python.h>
-
-#include <string>
 #pragma once
 
-class CGUIDialogKeyboardGeneric;
+#include "guilib/GUIKeyboard.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-namespace PYXBMC
+class CIOSKeyboard : public CGUIKeyboard
 {
-  typedef struct {
-    PyObject_HEAD
-    std::string strDefault;
-    std::string strHeading;
-    bool bHidden;
-    CGUIDialogKeyboardGeneric* dlg;
-  } Keyboard;
+  public:
+    virtual bool ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput);
+    void fireCallback(const std::string &str);
+    void invalidateCallback(){m_pCharCallback = NULL;}
 
-  extern PyTypeObject Keyboard_Type;
-  void initKeyboard_Type();
-}
-
-#ifdef __cplusplus
-}
-#endif
+  private:
+    char_callback_t m_pCharCallback;
+};

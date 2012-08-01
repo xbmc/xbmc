@@ -20,7 +20,7 @@
  */
 
 #include "GUIDialogAccessPoints.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #ifdef _LINUX
 #include "linux/NetworkLinux.h"
 #endif
@@ -52,7 +52,7 @@ bool CGUIDialogAccessPoints::OnAction(const CAction &action)
     if (iItem == (int) m_aps.size())
     {
        m_selectedAPEssId = "";
-       if (CGUIDialogKeyboard::ShowAndGetInput(m_selectedAPEssId, g_localizeStrings.Get(789), false))
+       if (CGUIKeyboardFactory::ShowAndGetInput(m_selectedAPEssId, g_localizeStrings.Get(789), false))
        {
          m_selectedAPEncMode = m_aps[iItem].getEncryptionMode();
          m_wasItemSelected = true;

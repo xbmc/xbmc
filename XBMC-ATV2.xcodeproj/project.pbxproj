@@ -56,6 +56,9 @@
 		DF527783151BAFD600B5B63B /* WebSocketV8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52777D151BAFD600B5B63B /* WebSocketV8.cpp */; };
 		DF527788151BAFEE00B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527784151BAFEE00B5B63B /* Base64.cpp */; };
 		DF527789151BAFEE00B5B63B /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527786151BAFEE00B5B63B /* HttpResponse.cpp */; };
+		DF830D4715BB2CFC00602BE6 /* GUIKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D4315BB2CFC00602BE6 /* GUIKeyboard.cpp */; };
+		DF830D4815BB2CFC00602BE6 /* GUIKeyboardFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D4515BB2CFC00602BE6 /* GUIKeyboardFactory.cpp */; };
+		DF830D4B15BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D4915BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
 		DF93D7701444B09C007C6459 /* AFPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7381444B09C007C6459 /* AFPFile.cpp */; };
 		DF93D7731444B09C007C6459 /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D73E1444B09C007C6459 /* CDDAFile.cpp */; };
 		DF93D7741444B09C007C6459 /* CurlFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7401444B09C007C6459 /* CurlFile.cpp */; };
@@ -333,7 +336,6 @@
 		F56C7959131EC154000AD0F6 /* GUIDialogFileBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C736F131EC151000AD0F6 /* GUIDialogFileBrowser.cpp */; };
 		F56C795A131EC154000AD0F6 /* GUIDialogGamepad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7371131EC151000AD0F6 /* GUIDialogGamepad.cpp */; };
 		F56C795B131EC154000AD0F6 /* GUIDialogKaiToast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7373131EC151000AD0F6 /* GUIDialogKaiToast.cpp */; };
-		F56C795C131EC154000AD0F6 /* GUIDialogKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7375131EC151000AD0F6 /* GUIDialogKeyboard.cpp */; };
 		F56C795D131EC154000AD0F6 /* GUIDialogMediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7377131EC151000AD0F6 /* GUIDialogMediaSource.cpp */; };
 		F56C795E131EC154000AD0F6 /* GUIDialogMuteBug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7379131EC151000AD0F6 /* GUIDialogMuteBug.cpp */; };
 		F56C795F131EC154000AD0F6 /* GUIDialogNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C737B131EC151000AD0F6 /* GUIDialogNumeric.cpp */; };
@@ -1083,6 +1085,12 @@
 		DF527785151BAFEE00B5B63B /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
 		DF527786151BAFEE00B5B63B /* HttpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpResponse.cpp; sourceTree = "<group>"; };
 		DF527787151BAFEE00B5B63B /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpResponse.h; sourceTree = "<group>"; };
+		DF830D4315BB2CFC00602BE6 /* GUIKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIKeyboard.cpp; sourceTree = "<group>"; };
+		DF830D4415BB2CFC00602BE6 /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
+		DF830D4515BB2CFC00602BE6 /* GUIKeyboardFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIKeyboardFactory.cpp; sourceTree = "<group>"; };
+		DF830D4615BB2CFC00602BE6 /* GUIKeyboardFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboardFactory.h; sourceTree = "<group>"; };
+		DF830D4915BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboardGeneric.cpp; sourceTree = "<group>"; };
+		DF830D4A15BB2D2300602BE6 /* GUIDialogKeyboardGeneric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboardGeneric.h; sourceTree = "<group>"; };
 		DF93D7381444B09C007C6459 /* AFPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPFile.cpp; sourceTree = "<group>"; };
 		DF93D7391444B09C007C6459 /* AFPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPFile.h; sourceTree = "<group>"; };
 		DF93D73E1444B09C007C6459 /* CDDAFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDAFile.cpp; sourceTree = "<group>"; };
@@ -1747,8 +1755,6 @@
 		F56C7372131EC151000AD0F6 /* GUIDialogGamepad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogGamepad.h; sourceTree = "<group>"; };
 		F56C7373131EC151000AD0F6 /* GUIDialogKaiToast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKaiToast.cpp; sourceTree = "<group>"; };
 		F56C7374131EC151000AD0F6 /* GUIDialogKaiToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKaiToast.h; sourceTree = "<group>"; };
-		F56C7375131EC151000AD0F6 /* GUIDialogKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboard.cpp; sourceTree = "<group>"; };
-		F56C7376131EC151000AD0F6 /* GUIDialogKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboard.h; sourceTree = "<group>"; };
 		F56C7377131EC151000AD0F6 /* GUIDialogMediaSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMediaSource.cpp; sourceTree = "<group>"; };
 		F56C7378131EC151000AD0F6 /* GUIDialogMediaSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMediaSource.h; sourceTree = "<group>"; };
 		F56C7379131EC151000AD0F6 /* GUIDialogMuteBug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMuteBug.cpp; sourceTree = "<group>"; };
@@ -4194,8 +4200,8 @@
 				F56C7372131EC151000AD0F6 /* GUIDialogGamepad.h */,
 				F56C7373131EC151000AD0F6 /* GUIDialogKaiToast.cpp */,
 				F56C7374131EC151000AD0F6 /* GUIDialogKaiToast.h */,
-				F56C7375131EC151000AD0F6 /* GUIDialogKeyboard.cpp */,
-				F56C7376131EC151000AD0F6 /* GUIDialogKeyboard.h */,
+				DF830D4915BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp */,
+				DF830D4A15BB2D2300602BE6 /* GUIDialogKeyboardGeneric.h */,
 				F56C7377131EC151000AD0F6 /* GUIDialogMediaSource.cpp */,
 				F56C7378131EC151000AD0F6 /* GUIDialogMediaSource.h */,
 				F56C7379131EC151000AD0F6 /* GUIDialogMuteBug.cpp */,
@@ -4615,6 +4621,10 @@
 				F56C74C1131EC152000AD0F6 /* GUIIncludes.h */,
 				F56C751C131EC152000AD0F6 /* GUIInfoTypes.cpp */,
 				F56C74C2131EC152000AD0F6 /* GUIInfoTypes.h */,
+				DF830D4315BB2CFC00602BE6 /* GUIKeyboard.cpp */,
+				DF830D4415BB2CFC00602BE6 /* GUIKeyboard.h */,
+				DF830D4515BB2CFC00602BE6 /* GUIKeyboardFactory.cpp */,
+				DF830D4615BB2CFC00602BE6 /* GUIKeyboardFactory.h */,
 				F56C751D131EC152000AD0F6 /* GUILabel.cpp */,
 				F56C74C3131EC152000AD0F6 /* GUILabel.h */,
 				F56C751E131EC152000AD0F6 /* GUILabelControl.cpp */,
@@ -6478,7 +6488,6 @@
 				F56C7959131EC154000AD0F6 /* GUIDialogFileBrowser.cpp in Sources */,
 				F56C795A131EC154000AD0F6 /* GUIDialogGamepad.cpp in Sources */,
 				F56C795B131EC154000AD0F6 /* GUIDialogKaiToast.cpp in Sources */,
-				F56C795C131EC154000AD0F6 /* GUIDialogKeyboard.cpp in Sources */,
 				F56C795D131EC154000AD0F6 /* GUIDialogMediaSource.cpp in Sources */,
 				F56C795E131EC154000AD0F6 /* GUIDialogMuteBug.cpp in Sources */,
 				F56C795F131EC154000AD0F6 /* GUIDialogNumeric.cpp in Sources */,
@@ -7219,6 +7228,9 @@
 				36A9465315AA269B00727135 /* DirectoryNodeTags.cpp in Sources */,
 				7C1D698B15A8142F00658B65 /* DatabaseManager.cpp in Sources */,
 				7C1A493D15A968BA004AF4A4 /* SeekHandler.cpp in Sources */,
+				DF830D4715BB2CFC00602BE6 /* GUIKeyboard.cpp in Sources */,
+				DF830D4815BB2CFC00602BE6 /* GUIKeyboardFactory.cpp in Sources */,
+				DF830D4B15BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

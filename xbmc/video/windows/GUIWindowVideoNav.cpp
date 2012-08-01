@@ -52,7 +52,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -1462,7 +1462,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
 
     //Get the new title
     CStdString strTag;
-    if (!CGUIDialogKeyboard::ShowAndGetInput(strTag, g_localizeStrings.Get(20462), false))
+    if (!CGUIKeyboardFactory::ShowAndGetInput(strTag, g_localizeStrings.Get(20462), false))
       return true;
 
     CVideoDatabase videodb;

@@ -23,7 +23,7 @@
 #include "GUIUserMessages.h"
 #include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogGamepad.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
 #include "settings/GUIDialogLockSettings.h"
@@ -466,7 +466,7 @@ int CGUIPassword::VerifyPassword(LockType btnType, const CStdString& strPassword
     iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(const_cast<CStdString&>(strPassword), strHeading, 0);
     break;
   case LOCK_MODE_QWERTY:
-    iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(const_cast<CStdString&>(strPassword), strHeading, 0);
+    iVerifyPasswordResult = CGUIKeyboardFactory::ShowAndVerifyPassword(const_cast<CStdString&>(strPassword), strHeading, 0);
     break;
   default:   // must not be supported, treat as unlocked
     iVerifyPasswordResult = 0;
