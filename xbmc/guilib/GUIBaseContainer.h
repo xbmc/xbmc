@@ -208,6 +208,7 @@ private:
   // letter match searching
   CStopWatch m_matchTimer;
   CStdString m_match;
+  float m_scrollItemsPerFrame;
 
   static const int letter_match_timeout = 1000;
 };
