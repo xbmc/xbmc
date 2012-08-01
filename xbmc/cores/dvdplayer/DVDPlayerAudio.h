@@ -206,7 +206,10 @@ protected:
 
   double m_integral; //integral correction for resampler
   int    m_skipdupcount; //counter for skip/duplicate synctype
-  bool   m_prevskipped;
+  double m_skipduptime; // target duration (error) for skip/duplicate
+  double m_skipduptimemax; // maximum target duration (error) for skip/duplicate (allow a bit overshoot)
+  double m_skippkttime; // total continuous duration skipped so far by dropping audio frames
+  double m_outpkttime; // total continuous duration played since last dropped/duplicated audio frame
   double m_maxspeedadjust;
   double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info
 };

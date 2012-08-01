@@ -242,7 +242,10 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_errorcount = 0;
   m_integral = 0;
   m_skipdupcount = 0;
-  m_prevskipped = false;
+  m_skipduptime = 0;
+  m_skipduptimemax = 0;
+  m_skippkttime = 0;
+  m_outpkttime = 0;
   m_syncclock = true;
   m_errortime = CurrentHostCounter();
   m_silence = false;
@@ -768,20 +771,17 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
           CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
       }
     }
-    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
+    else if (m_synctype == SYNC_SKIPDUP)
     {
-      //check how many packets to skip/duplicate
-      m_skipdupcount = (int)(m_error / duration);
-      //if less than one frame off, see if it's more than two thirds of a frame, so we can get better in sync
-      if (m_skipdupcount == 0 && fabs(m_error) > duration / 3 * 2)
-        m_skipdupcount = (int)(m_error / (duration / 3 * 2));
-
-      if (m_skipdupcount > 0)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating %i packet(s) of %.2f ms duration",
-                  m_skipdupcount, duration / DVD_TIME_BASE * 1000.0);
-      else if (m_skipdupcount < 0)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Skipping %i packet(s) of %.2f ms duration ",
-                  m_skipdupcount * -1,  duration / DVD_TIME_BASE * 1000.0);
+      // the measured error is not correct when packets were skipped/duplicated during the measurement
+      if (m_skipdupcount != 0)
+        m_skipdupcount = 0;
+      else if (fabs(m_error) > DVD_MSEC_TO_TIME(10))
+      {
+        // when error is more than 10 ms, try to skip/dup packets to get a better sync; allow 5 ms overshoot
+        m_skipduptime = m_error;
+        m_skipduptimemax = m_error + (m_error > 0 ? DVD_MSEC_TO_TIME(5) : DVD_MSEC_TO_TIME(-5));
+      }
     }
     else if (m_synctype == SYNC_RESAMPLE)
     {
@@ -802,24 +802,65 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   }
   else if (m_synctype == SYNC_SKIPDUP)
   {
-    if (m_skipdupcount < 0)
+    enum
     {
-      m_prevskipped = !m_prevskipped;
-      if (!m_prevskipped)
-      {
-        m_dvdAudio.AddPackets(audioframe);
-        m_skipdupcount++;
-      }
+      PKT_OUT,
+      PKT_SKIP,
+      PKT_DUP
+    } action = PKT_OUT;
+
+    // find out how to handle the next audio packet
+    if ((m_skipduptime == 0) // sync target reached
+     || (fabs(m_skipduptimemax) < audioframe.duration)) // skip/dup packet would overshoot target
+      action = PKT_OUT;
+    else if (m_skipduptime < 0) // audio is behind, try to skip packet
+    {
+      if ((m_skippkttime == 0 && m_outpkttime > DVD_MSEC_TO_TIME(10)) // played at least 10 ms and no packets dropped yet
+       || (m_skippkttime > 0 && m_skippkttime < DVD_MSEC_TO_TIME(10))) // already skipped some packets, but less, than 10 ms
+        action = PKT_SKIP;
+      else
+        action = PKT_OUT;
     }
-    else if (m_skipdupcount > 0)
+    else // audio is ahead, try to duplicate packet
     {
-      m_dvdAudio.AddPackets(audioframe);
-      m_dvdAudio.AddPackets(audioframe);
-      m_skipdupcount--;
+      if ((audioframe.duration >= DVD_MSEC_TO_TIME(5)) // frame must be at least 5 ms; duplicating very short frames is very audible
+       || (fabs(m_skipduptime) > DVD_MSEC_TO_TIME(30))) // failsafe: we are way off and all packets are short
+        action = PKT_DUP;
+      else
+        action = PKT_OUT;
     }
-    else if (m_skipdupcount == 0)
+
+    if (action == PKT_OUT)
     {
       m_dvdAudio.AddPackets(audioframe);
+      m_outpkttime += audioframe.duration;
+      m_skippkttime = 0;
+    }
+    else if (action == PKT_SKIP)
+    {
+      m_skipdupcount++;
+      m_outpkttime = 0;
+      m_skippkttime += audioframe.duration;
+      if (m_skippkttime >= DVD_MSEC_TO_TIME(10))
+        m_skippkttime = 0; // output some packets after skipping 10 msecs
+      m_skipduptimemax += audioframe.duration;
+      m_skipduptime += audioframe.duration;
+      if (m_skipduptime > 0)
+        m_skipduptime = 0; // sync target reached
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::OutputPacket Skipping packet of %.2f ms duration", audioframe.duration / DVD_TIME_BASE * 1000.0);
+    }
+    else
+    {
+      m_skipdupcount++;
+      m_outpkttime = 0;
+      m_skippkttime = 0;
+      m_skipduptimemax -= audioframe.duration;
+      m_skipduptime -= audioframe.duration;
+      if (m_skipduptime < 0)
+        m_skipduptime = 0; // sync target reached
+      m_dvdAudio.AddPackets(audioframe);
+      m_dvdAudio.AddPackets(audioframe);
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::OutputPacket Duplicating packet of %.2f ms duration", audioframe.duration / DVD_TIME_BASE * 1000.0);
     }
   }
   else if (m_synctype == SYNC_RESAMPLE)
@@ -905,6 +946,7 @@ string CDVDPlayerAudio::GetPlayerInfo()
   std::ostringstream s;
   s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
   s << ", kB/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+  s << ", ae:" << fixed << setprecision(2) << m_error / DVD_MSEC_TO_TIME(1) << " ms";
 
   //print the inverse of the resample ratio, since that makes more sense
   //if the resample ratio is 0.5, then we're playing twice as fast
