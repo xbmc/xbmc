@@ -45,7 +45,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
   return PerformDeviceScan(&USB_RAW_GUID, PERIPHERAL_UNKNOWN, results);
 }
 
-bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType type, PeripheralScanResults &results)
+bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType defaultType, PeripheralScanResults &results)
 {
   bool     bReturn(false);
   HDEVINFO hDevHandle;
@@ -109,7 +109,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
           {
             PeripheralScanResult result(m_type);
             result.m_strLocation  = devicedetailData->DevicePath;
-            result.m_type         = type;
+            result.m_type         = defaultType;
             result.m_iVendorId    = PeripheralTypeTranslator::HexStringToInt(strVendorId.c_str());
             result.m_iProductId   = PeripheralTypeTranslator::HexStringToInt(strProductId.c_str());
             result.m_iSequence    = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
