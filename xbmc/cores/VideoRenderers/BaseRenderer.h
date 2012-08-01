@@ -56,7 +56,8 @@ enum ERENDERFEATURE
   RENDERFEATURE_CONTRAST,
   RENDERFEATURE_NOISE,
   RENDERFEATURE_SHARPNESS,
-  RENDERFEATURE_NONLINSTRETCH
+  RENDERFEATURE_NONLINSTRETCH,
+  RENDERFEATURE_ROTATION
 };
 
 struct DVDVideoPicture;
@@ -77,6 +78,8 @@ public:
 
   virtual unsigned int GetProcessorSize() { return 0; }
 
+  virtual bool Supports(ERENDERFEATURE feature) { return false; }
+
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }
 
@@ -90,12 +93,22 @@ protected:
   void       CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   void       ManageDisplay();
 
+  virtual void       ReorderDrawPoints();//might be overwritten (by egl e.x.)
+
   RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;
   float m_fps;
 
+  unsigned int m_renderOrientation; // orientation of the video in degress counter clockwise
+  unsigned int m_oldRenderOrientation; // orientation of the previous frame
+  // for drawing the texture with glVertex4f (holds all 4 corner points of the destination rect
+  // with correct orientation based on m_renderOrientation
+  // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
+  CPoint m_rotatedDestCoords[4];
+
   CRect m_destRect;
+  CRect m_oldDestRect; // destrect of the previous frame
   CRect m_sourceRect;
 };
