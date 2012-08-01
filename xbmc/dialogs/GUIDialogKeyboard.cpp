@@ -103,7 +103,8 @@ void CGUIDialogKeyboard::OnInitWindow()
 
   CVariant data;
   data["title"] = m_strHeading;
-  data["type"] = "keyboard";
+  data["type"] = !m_hiddenInput ? "keyboard" : "password";
+  data["value"] = GetText();
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
 }
 
