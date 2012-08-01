@@ -28,9 +28,11 @@
 #include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/PeripheralBus.h"
+#include "pictures/GUIWindowSlideShow.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -186,6 +188,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     m_callbacks.CBCecCommand              = &CecCommand;
     m_callbacks.CBCecConfigurationChanged = &CecConfiguration;
     m_callbacks.CBCecAlert                = &CecAlert;
+    m_callbacks.CBCecSourceActivated      = &CecSourceActivated;
     m_configuration.callbackParam         = this;
     m_configuration.callbacks             = &m_callbacks;
 
@@ -1032,6 +1035,14 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     xbmcKey.iButton = XINPUT_IR_REMOTE_TITLE; // context menu
     PushCecKeypress(xbmcKey);
     break;
+  case CEC_USER_CONTROL_CODE_DATA:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT;
+    PushCecKeypress(xbmcKey);
+    break;
+  case CEC_USER_CONTROL_CODE_SUB_PICTURE:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_SUBTITLE;
+    PushCecKeypress(xbmcKey);
+    break;
   case CEC_USER_CONTROL_CODE_POWER_ON_FUNCTION:
   case CEC_USER_CONTROL_CODE_EJECT:
   case CEC_USER_CONTROL_CODE_INPUT_SELECT:
@@ -1040,7 +1051,6 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_STOP_RECORD:
   case CEC_USER_CONTROL_CODE_PAUSE_RECORD:
   case CEC_USER_CONTROL_CODE_ANGLE:
-  case CEC_USER_CONTROL_CODE_SUB_PICTURE:
   case CEC_USER_CONTROL_CODE_VIDEO_ON_DEMAND:
   case CEC_USER_CONTROL_CODE_TIMER_PROGRAMMING:
   case CEC_USER_CONTROL_CODE_PLAY_FUNCTION:
@@ -1057,7 +1067,6 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_POWER_TOGGLE_FUNCTION:
   case CEC_USER_CONTROL_CODE_POWER_OFF_FUNCTION:
   case CEC_USER_CONTROL_CODE_F5:
-  case CEC_USER_CONTROL_CODE_DATA:
   case CEC_USER_CONTROL_CODE_UNKNOWN:
   default:
     break;
@@ -1123,6 +1132,35 @@ void CPeripheralCecAdapter::OnSettingChanged(const CStdString &strChangedSetting
     CLog::Log(LOGDEBUG, "%s - restarting the CEC connection", __FUNCTION__);
     SetConfigurationFromSettings();
     InitialiseFeature(FEATURE_CEC);
+  }
+}
+
+void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_logical_address address, const uint8_t activated)
+{
+  CPeripheralCecAdapter *adapter = (CPeripheralCecAdapter *)cbParam;
+  if (!adapter)
+    return;
+
+  // wake up the screensaver, so the user doesn't switch to a black screen
+  if (activated == 1)
+    g_application.WakeUpScreenSaverAndDPMS();
+
+  if (adapter->GetSettingBool("pause_playback_on_deactivate"))
+  {
+    bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
+
+    if (pSlideShow)
+    {
+      // pause/resume slideshow
+      pSlideShow->OnAction(CAction(ACTION_PAUSE));
+    }
+    else if ((g_application.IsPlaying() && activated == 0) ||
+             (g_application.IsPaused() && activated == 1))
+    {
+      // pause/resume player
+      CApplicationMessenger::Get().MediaPause();
+    }
   }
 }
 
