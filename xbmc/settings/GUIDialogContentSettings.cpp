@@ -180,7 +180,7 @@ void CGUIDialogContentSettings::CreateSettings()
     {
       AddBool(1,20346,&m_bScanRecursive, m_bShowScanSettings);
       AddBool(2,20330,&m_bUseDirNames, m_bShowScanSettings);
-      AddBool(3,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames)
+      AddBool(3,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
       AddBool(4,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
       AddBool(5,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
@@ -403,7 +403,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
 
   dialog->m_bScanRecursive = (settings.recurse > 0 && !settings.parent_name) || (settings.recurse > 1 && settings.parent_name);
   dialog->m_bUseDirNames   = settings.parent_name;
-  dialog->m_bExclude       = settings.exclude; 
+  dialog->m_bExclude       = settings.exclude;
   dialog->m_bSingleItem    = settings.parent_name_root;
   dialog->m_bNoUpdate      = settings.noupdate;
   dialog->m_bNeedSave = false;
@@ -417,7 +417,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       scraper.reset();
       settings.exclude = dialog->m_bExclude;
     }
-    else 
+    else
     {
       settings.exclude = false;
       settings.noupdate = dialog->m_bNoUpdate;
