@@ -278,7 +278,7 @@ inline void CBaseRenderer::ReorderDrawPoints()
 
   int diff = (m_destRect.Height() - m_destRect.Width()) / 2;
 
-  for (int destIdx=0, srcIdx=pointOffset; destIdx < 4; destIdx++, srcIdx = ++srcIdx % 4)
+  for (int destIdx=0, srcIdx=pointOffset; destIdx < 4; destIdx++)
   {
     m_rotatedDestCoords[destIdx].x = origMat[srcIdx][0];
     m_rotatedDestCoords[destIdx].y = origMat[srcIdx][1];
@@ -305,6 +305,8 @@ inline void CBaseRenderer::ReorderDrawPoints()
           break;
       }
     }
+    srcIdx++;
+    srcIdx = srcIdx % 4;
   }
 }
 
