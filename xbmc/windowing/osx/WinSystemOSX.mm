@@ -482,6 +482,9 @@ static void DisplayReconfigured(CGDirectDisplayID display,
   {
     // pre/post-reconfiguration changes
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
+    if (res == RES_INVALID)
+      return;
+    
     NSScreen* pScreen = nil;
     unsigned int screenIdx = g_settings.m_ResInfo[res].iScreen;
     
