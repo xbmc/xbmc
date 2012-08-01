@@ -526,6 +526,9 @@ void CDVDPlayerVideo::Process()
         if (mDeintMode == VS_DEINTERLACEMODE_AUTO && mFilters)
           mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
       }
+      
+      if (!g_renderManager.Supports(RENDERFEATURE_ROTATION))
+        mFilters |= CDVDVideoCodec::FILTER_ROTATE;
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
 
@@ -1120,7 +1123,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format))
+    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format, m_hints.orientation))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;

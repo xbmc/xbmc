@@ -70,7 +70,7 @@ class CYUV2RGBShader : public CWinShader
 public:
   virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt);
   virtual void Render(CRect sourceRect,
-                      CRect destRect,
+                      CPoint destPoints[4],
                       float contrast,
                       float brightness,
                       unsigned int flags,
@@ -79,7 +79,7 @@ public:
 
 protected:
   virtual void PrepareParameters(CRect sourceRect,
-                                 CRect destRect,
+                                 CPoint destPoints[4],
                                  float contrast,
                                  float brightness,
                                  unsigned int flags);
@@ -111,7 +111,7 @@ public:
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
-                               CRect destRect) = 0;
+                               CPoint destPoints[4]) = 0;
   virtual ~CConvolutionShader();
 
 protected:
@@ -138,12 +138,12 @@ public:
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
-                               CRect destRect);
+                               CPoint destPoints[4]);
 
 protected:
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                CRect sourceRect,
-                               CRect destRect);
+                               CPoint destPoints[4]);
   virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount);
 
 
@@ -161,7 +161,7 @@ public:
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
-                               CRect destRect);
+                               CPoint destPoints[4]);
   virtual ~CConvolutionShaderSeparable();
 
 protected:
@@ -171,7 +171,7 @@ protected:
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
-                               CRect destRect);
+                               CPoint destPoints[4]);
   virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps1, int texStepsCount1, float* texSteps2, int texStepsCount2);
 
 private:
