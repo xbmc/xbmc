@@ -2231,7 +2231,7 @@ void CApplication::Render()
     // Less fps in DPMS
     bool lowfps = m_dpmsIsActive || g_Windowing.EnableFrameLimiter();
     // Whether externalplayer is playing and we're unfocused
-    bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
+    bool extPlayerActive = m_eCurrentPlayer == EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
 
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
