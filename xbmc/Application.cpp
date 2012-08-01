@@ -1365,6 +1365,100 @@ bool CApplication::Initialize()
   return true;
 }
 
+bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* = false*/)
+{
+  bool ret = true;
+  bool oldSetting = false;
+
+  switch(eServer)
+  {
+    case ES_WEBSERVER:
+      oldSetting = g_guiSettings.GetBool("services.webserver");
+      g_guiSettings.SetBool("services.webserver", bStart);
+
+      if (bStart)
+        ret = StartWebServer();
+      else
+        StopWebServer();
+
+      if (!ret)
+      {
+        g_guiSettings.SetBool("services.webserver", oldSetting);
+      }
+      break;
+    case ES_AIRPLAYSERVER:
+      oldSetting = g_guiSettings.GetBool("services.esenabled");
+      g_guiSettings.SetBool("services.airplay", bStart);
+
+      if (bStart)
+        ret = StartAirplayServer();
+      else
+        StopAirplayServer(bWait);
+
+      if (!ret)
+      {
+        g_guiSettings.SetBool("services.esenabled", oldSetting);
+      }
+      break;
+    case ES_JSONRPCSERVER:
+      oldSetting = g_guiSettings.GetBool("services.esenabled");
+      g_guiSettings.SetBool("services.esenabled", bStart);
+
+      if (bStart)
+        ret = StartJSONRPCServer();
+      else
+        StopJSONRPCServer(bWait);
+
+      if (!ret)
+      {
+        g_guiSettings.SetBool("services.esenabled", oldSetting);
+      }
+      break;
+    case ES_UPNPSERVER:
+      g_guiSettings.SetBool("services.upnpserver", bStart);
+      if (bStart)
+        StartUPnPServer();
+      else
+        StopUPnPServer();
+      break;
+    case ES_UPNPRENDERER:
+      g_guiSettings.SetBool("services.upnprenderer", bStart);
+      if (bStart)
+        StartUPnPRenderer();
+      else
+        StopUPnPRenderer();
+      break;
+    case ES_EVENTSERVER:
+      oldSetting = g_guiSettings.GetBool("services.esenabled");
+      g_guiSettings.SetBool("services.esenabled", bStart);
+
+      if (bStart)
+        ret = StartEventServer();
+      else
+        StopEventServer(bWait, false);
+
+      if (!ret)
+      {
+        g_guiSettings.SetBool("services.esenabled", oldSetting);
+      }
+
+      break;
+    case ES_ZEROCONF:
+      g_guiSettings.SetBool("services.zeroconf", bStart);
+      if (bStart)
+        StartZeroconf();
+      else
+        StopZeroconf();
+      break;
+    default:
+      ret = false;
+      break;
+  }
+  g_settings.Save();
+
+  return ret;
+}
+
 bool CApplication::StartWebServer()
 {
 #ifdef HAS_WEB_SERVER
@@ -1427,8 +1521,9 @@ void CApplication::StopWebServer()
 #endif
 }
 
-void CApplication::StartAirplayServer()
+bool CApplication::StartAirplayServer()
 {
+  bool ret = false;
 #ifdef HAS_AIRPLAY
   if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
   {
@@ -1453,22 +1548,28 @@ void CApplication::StartAirplayServer()
       txt["model"] = "AppleTV2,1";
       txt["srcvers"] = AIRPLAY_SERVER_VERSION_STR;
       CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), listenPort, txt);
+      ret = true;
     }
   }
+  if (ret)
 #endif
-#ifdef HAS_AIRTUNES
-  if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
   {
-    int listenPort = g_advancedSettings.m_airTunesPort;
-    CStdString password = g_guiSettings.GetString("services.airplaypassword");
-    bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
-
-    if (!CAirTunesServer::StartServer(listenPort, true, usePassword, password))
+#ifdef HAS_AIRTUNES
+    if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
     {
-      CLog::Log(LOGERROR, "Failed to start AirTunes Server");
+      int listenPort = g_advancedSettings.m_airTunesPort;
+      CStdString password = g_guiSettings.GetString("services.airplaypassword");
+      bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
+
+      if (!CAirTunesServer::StartServer(listenPort, true, usePassword, password))
+      {
+        CLog::Log(LOGERROR, "Failed to start AirTunes Server");
+      }
+      ret = true;
     }
-  }
 #endif
+  }
+  return ret;
 }
 
 void CApplication::StopAirplayServer(bool bWait)

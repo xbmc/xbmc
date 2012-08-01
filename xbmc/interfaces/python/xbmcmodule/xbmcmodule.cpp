@@ -939,6 +939,53 @@ namespace PYXBMC
     return Py_BuildValue((char*)"b", exists);
   }
 
+  // startServer() method
+  PyDoc_STRVAR(startServer__doc__,
+               "startServer(typ, bStart, bWait) -- start or stop a server.\n"
+               "\n"
+               "typ          : integer - use SERVER_* constants\n"
+               "\n"
+               "bStart       : bool - start (True) or stop (False) a server\n"
+               "\n"
+               "bWait        : [opt] bool - wait on stop before returning (not supported by all servers)\n"
+               "\n"
+               "returnValue  : bool - True or False\n"
+               "example:\n"
+               "  - xbmc.startServer(xbmc.SERVER_AIRPLAYSERVER, False)\n");
+
+  PyObject* XBMC_StartServer(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = {
+      "typ",
+      "bStart",
+      "bWait",
+      NULL};
+
+    int iTyp = 0;
+    char bStart = false;
+    char bWait = false;
+    bool ret = false;
+
+    if (!PyArg_ParseTupleAndKeywords(
+                                     args,
+                                     kwds,
+                                     (char*)"ib|b",
+                                     (char**)keywords,
+                                     &iTyp,
+                                     &bStart,
+                                     &bWait))
+    {
+      return NULL;
+    }
+
+    {
+      CPyThreadState save;
+      ret = g_application.StartServer((CApplication::ESERVERS)iTyp, bStart != 0, bWait != 0);
+    }
+
+    return Py_BuildValue((char*)"b", ret);
+  }
+
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS|METH_KEYWORDS, output__doc__},
@@ -984,6 +1031,8 @@ namespace PYXBMC
     {(char*)"getCleanMovieTitle", (PyCFunction)XBMC_GetCleanMovieTitle, METH_VARARGS|METH_KEYWORDS, getCleanMovieTitle__doc__},
 
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
+
+    {(char*)"startServer", (PyCFunction)XBMC_StartServer, METH_VARARGS|METH_KEYWORDS, startServer__doc__},
 
     {NULL, NULL, 0, NULL}
   };
@@ -1075,6 +1124,16 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_DVDPLAYER", EPC_DVDPLAYER);
     PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_MPLAYER", EPC_MPLAYER);
     PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_PAPLAYER", EPC_PAPLAYER);
+
+    // server constants for startServer method
+    PyModule_AddIntConstant(pXbmcModule, (char*)"SERVER_WEBSERVER", CApplication::ES_WEBSERVER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"SERVER_AIRPLAYSERVER", CApplication::ES_AIRPLAYSERVER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"SERVER_UPNPSERVER", CApplication::ES_UPNPSERVER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"SERVER_UPNPRENDERER", CApplication::ES_UPNPRENDERER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"SERVER_EVENTSERVER", CApplication::ES_EVENTSERVER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"SERVER_JSONRPCSERVER", CApplication::ES_JSONRPCSERVER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"SERVER_ZEROCONF", CApplication::ES_ZEROCONF);
+
 
     // dvd state constants
     PyModule_AddIntConstant(pXbmcModule, (char*)"TRAY_OPEN", TRAY_OPEN);
