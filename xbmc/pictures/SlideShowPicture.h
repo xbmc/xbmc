@@ -66,7 +66,7 @@ public:
 
   int SlideNumber() const { return m_iSlideNumber;};
 
-  void Zoom(int iZoomAmount, bool immediate = false);
+  void Zoom(float fZoomAmount, bool immediate = false);
   void Rotate(int iRotateAmount);
   void Pause(bool bPause);
   void SetInSlideshow(bool slideshow);

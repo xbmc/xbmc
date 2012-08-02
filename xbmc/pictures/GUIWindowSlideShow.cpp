@@ -172,6 +172,8 @@ void CGUIWindowSlideShow::Reset()
 
   m_iRotate = 0;
   m_iZoomFactor = 1;
+  m_fZoom = 1.0f;
+  m_fInitialZoom = 0.0f;
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
   m_iCurrentPic = 0;
@@ -365,8 +367,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_bLoadNextPic = false;
     // load using the background loader
     int maxWidth, maxHeight;
-    GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
-                    (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
+    GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom,
+                   (float)g_settings.m_ResInfo[m_Resolution].iHeight * m_fZoom,
                     maxWidth, maxHeight);
     if (!m_slides->Get(m_iCurrentSlide)->IsVideo())
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->GetPath(), maxWidth, maxHeight);
@@ -386,8 +388,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     { // reload the image if we need to
       CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_slides->Get(m_iCurrentSlide)->GetPath().c_str(), m_iZoomFactor);
       // first, our maximal size for this zoom level
-      int maxWidth = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1]);
-      int maxHeight = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1]);
+      int maxWidth = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom);
+      int maxHeight = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom);
 
       // the actual maximal size of the image to optimize the sizing based on the known sizing (aspect ratio)
       int width, height;
@@ -408,8 +410,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     { // load the next image
       CLog::Log(LOGDEBUG, "Loading the next image %s", m_slides->Get(m_iNextSlide)->GetPath().c_str());
       int maxWidth, maxHeight;
-      GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
-                     (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
+      GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom,
+                     (float)g_settings.m_ResInfo[m_Resolution].iHeight * m_fZoom,
                      maxWidth, maxHeight);
       if (!m_slides->Get(m_iNextSlide)->IsVideo())
         m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides->Get(m_iNextSlide)->GetPath(), maxWidth, maxHeight);
@@ -520,6 +522,7 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   {
     m_firstGesturePoint = point;
+    m_fInitialZoom = m_fZoom;
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
@@ -544,15 +547,14 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_END)
+  {
+    m_fInitialZoom = 0.0f;
     return EVENT_RESULT_HANDLED;
+  }
   else if (event.m_id == ACTION_GESTURE_ZOOM)
   {
-    if (event.m_offsetX > 1)
-      Zoom((int)event.m_offsetX);
-    else 
-      Zoom((int)(m_iZoomFactor - event.m_offsetX));
-
-    return EVENT_RESULT_HANDLED;    
+    ZoomRelative(m_fInitialZoom * event.m_offsetX, true);
+    return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;
 }
@@ -807,20 +809,46 @@ void CGUIWindowSlideShow::Zoom(int iZoom)
   if (iZoom > MAX_ZOOM_FACTOR || iZoom < 1)
     return;
 
+  ZoomRelative(zoomamount[iZoom - 1]);
+}
+
+void CGUIWindowSlideShow::ZoomRelative(float fZoom, bool immediate /* = false */)
+{
+  if (fZoom < zoomamount[0])
+    fZoom = zoomamount[0];
+  else if (fZoom > zoomamount[MAX_ZOOM_FACTOR - 1])
+    fZoom = zoomamount[MAX_ZOOM_FACTOR - 1];
+
+  if (m_Image[m_iCurrentPic].DrawNextImage())
+    return;
+
+  m_fZoom = fZoom;
+
+  // find the nearest zoom factor
+#ifdef RELOAD_ON_ZOOM
+  int iOldZoomFactor = m_iZoomFactor;
+#endif
+  for (unsigned int i = 1; i < MAX_ZOOM_FACTOR; i++)
+  {
+    if (m_fZoom > zoomamount[i])
+      continue;
+
+    if (fabs(m_fZoom - zoomamount[i - 1]) < fabs(m_fZoom - zoomamount[i]))
+      m_iZoomFactor = i;
+    else
+      m_iZoomFactor = i + 1;
+
+    break;
+  }
+
   // set the zoom amount and then set so that the image is reloaded at the higher (or lower)
   // resolution as necessary
-  if (!m_Image[m_iCurrentPic].DrawNextImage())
-  {
-    m_Image[m_iCurrentPic].Zoom(iZoom);
-    // check if we need to reload the image for better resolution
+  m_Image[m_iCurrentPic].Zoom(m_fZoom, immediate);
+
 #ifdef RELOAD_ON_ZOOM
-    if (iZoom > m_iZoomFactor && !m_Image[m_iCurrentPic].FullSize())
-      m_bReloadImage = true;
-    if (iZoom == 1)
-      m_bReloadImage = true;
+  if (m_iZoomFactor == 1 || (iZoomFactor > iOldZoomFactor && !m_Image[m_iCurrentPic].FullSize()))
+    m_bReloadImage = true;
 #endif
-    m_iZoomFactor = iZoom;
-  }
 }
 
 void CGUIWindowSlideShow::Move(float fX, float fY)

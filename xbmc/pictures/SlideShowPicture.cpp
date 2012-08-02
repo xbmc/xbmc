@@ -246,8 +246,10 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
         { // correct for any introduced inaccuracies.
           int i;
           for (i = 0; i < 10; i++)
-            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01*zoomamount[i])
+          {
+            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01 * zoomamount[i])
               break;
+          }
           m_fZoomAmount = zoomamount[i];
           m_bNoEffect = (m_fZoomAmount != 1.0f); // turn effect rendering back on.
         }
@@ -612,19 +614,19 @@ void CSlideShowPic::Rotate(int iRotate)
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
 }
 
-void CSlideShowPic::Zoom(int iZoom, bool immediate /*= false*/)
+void CSlideShowPic::Zoom(float fZoom, bool immediate /* = false */)
 {
-  if (m_bDrawNextImage) return ;
-  if (m_transistionTemp.type == TRANSISTION_ROTATE) return ;
+  if (m_bDrawNextImage) return;
+  if (m_transistionTemp.type == TRANSISTION_ROTATE) return;
   if (immediate)
   {
-    m_fZoomAmount = zoomamount[iZoom - 1];
+    m_fZoomAmount = fZoom;
     return;
   }
   m_transistionTemp.type = TRANSISTION_ZOOM;
   m_transistionTemp.start = m_iCounter;
   m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionZoom = (float)(zoomamount[iZoom - 1] - m_fZoomAmount) / (float)m_transistionTemp.length;
+  m_fTransistionZoom = (fZoom - m_fZoomAmount) / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
   // turn off the render effects until we're back down to normal zoom
@@ -646,7 +648,7 @@ void CSlideShowPic::Render()
   Render(m_ax, m_ay, m_pImage, (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1 || m_bIsComic) return ;
+  if (m_fZoomAmount == 1.0f || m_bIsComic) return ;
 
   Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
   Render(m_sx, m_sy, m_pImage, 0xFFFFFFFF);
