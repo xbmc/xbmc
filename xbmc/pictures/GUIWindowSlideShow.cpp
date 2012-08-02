@@ -170,7 +170,8 @@ void CGUIWindowSlideShow::Reset()
   m_Image[1].UnLoad();
   m_Image[1].Close();
 
-  m_iRotate = 0;
+  m_fRotate = 0.0f;
+  m_fInitialRotate = 0.0f;
   m_iZoomFactor = 1;
   m_fZoom = 1.0f;
   m_fInitialZoom = 0.0f;
@@ -478,7 +479,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_iNextSlide    = GetNextSlide();
 
 //    m_iZoomFactor = 1;
-    m_iRotate = 0;
+    m_fRotate = 0.0f;
   }
 
   if (m_Image[m_iCurrentPic].IsLoaded())
@@ -523,6 +524,7 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
   {
     m_firstGesturePoint = point;
     m_fInitialZoom = m_fZoom;
+    m_fInitialRotate = m_fRotate;
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
@@ -549,11 +551,17 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
   else if (event.m_id == ACTION_GESTURE_END)
   {
     m_fInitialZoom = 0.0f;
+    m_fInitialRotate = 0.0f;
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_ZOOM)
   {
     ZoomRelative(m_fInitialZoom * event.m_offsetX, true);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_ROTATE)
+  {
+    RotateRelative(m_fInitialRotate + event.m_offsetX - m_fRotate, true);
     return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;
@@ -800,8 +808,17 @@ void CGUIWindowSlideShow::RenderPause()
 
 void CGUIWindowSlideShow::Rotate()
 {
-  if (!m_Image[m_iCurrentPic].DrawNextImage() && m_iZoomFactor == 1)
-    m_Image[m_iCurrentPic].Rotate(++m_iRotate);
+  RotateRelative(90.0f);
+}
+
+void CGUIWindowSlideShow::RotateRelative(float fAngle, bool immediate /* = false */)
+{
+  if (m_Image[m_iCurrentPic].DrawNextImage() || m_fZoom > 1.0f)
+    return;
+
+  m_fRotate += fAngle;
+
+  m_Image[m_iCurrentPic].Rotate(fAngle, immediate);
 }
 
 void CGUIWindowSlideShow::Zoom(int iZoom)

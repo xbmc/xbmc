@@ -103,6 +103,7 @@ private:
   void RenderPause();
   void RenderErrorMessage();
   void Rotate();
+  void RotateRelative(float fAngle, bool immediate = false);
   void Zoom(int iZoom);
   void ZoomRelative(float fZoom, bool immediate = false);
   void Move(float fX, float fY);
@@ -112,7 +113,8 @@ private:
   int m_iCurrentSlide;
   int m_iNextSlide;
   int m_iDirection;
-  int m_iRotate;
+  float m_fRotate;
+  float m_fInitialRotate;
   int m_iZoomFactor;
   float m_fZoom;
   float m_fInitialZoom;

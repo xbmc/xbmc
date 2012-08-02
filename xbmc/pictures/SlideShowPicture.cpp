@@ -103,18 +103,18 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
   m_transistionTemp.type = TRANSISTION_NONE;
   m_fTransistionAngle = 0;
   m_fTransistionZoom = 0;
-  m_fAngle = 0;
+  m_fAngle = 0.0f;
   if (pTexture->GetOrientation() == 7)
   { // rotate to 270 degrees
-    m_fAngle = 3.0f;
+    m_fAngle = 270.0f;
   }
   if (pTexture->GetOrientation() == 2)
   { // rotate to 180 degrees
-      m_fAngle = 2.0f;
+      m_fAngle = 180.0f;
   }
   if (pTexture->GetOrientation() == 5)
   { // rotate to 90 degrees
-    m_fAngle = 1.0f;
+    m_fAngle = 90.0f;
   }
   m_fZoomAmount = 1;
   m_fZoomLeft = 0;
@@ -159,7 +159,7 @@ void CSlideShowPic::SetOriginalSize(int iOriginalWidth, int iOriginalHeight, boo
 
 int CSlideShowPic::GetOriginalWidth()
 {
-  int iAngle = (int)(m_fAngle + 0.4f);
+  int iAngle = (int)(m_fAngle / 90.0f + 0.4f);
   if (iAngle % 2)
     return m_iOriginalHeight;
   else
@@ -168,7 +168,7 @@ int CSlideShowPic::GetOriginalWidth()
 
 int CSlideShowPic::GetOriginalHeight()
 {
-  int iAngle = (int)(m_fAngle + 0.4f);
+  int iAngle = (int)(m_fAngle / 90.0f + 0.4f);
   if (iAngle % 2)
     return m_iOriginalWidth;
   else
@@ -253,22 +253,23 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
           m_fZoomAmount = zoomamount[i];
           m_bNoEffect = (m_fZoomAmount != 1.0f); // turn effect rendering back on.
         }
-        if (m_transistionTemp.type == TRANSISTION_ROTATE)
-        { // round to nearest integer for accuracy purposes
-          m_fAngle = floor(m_fAngle + 0.4f);
-        }
+        /* not really needed anymore as we support arbitrary rotations
+        else if (m_transistionTemp.type == TRANSISTION_ROTATE)
+        { // round to nearest of 0, 90, 180 and 270
+          float reminder = fmodf(m_fAngle, 90.0f);
+          if (reminder < 45.0f)
+            m_fAngle -= reminder;
+          else
+            m_fAngle += 90.0f - reminder;
+        }*/
         m_transistionTemp.type = TRANSISTION_NONE;
       }
       else
       {
         if (m_transistionTemp.type == TRANSISTION_ROTATE)
-        {
           m_fAngle += m_fTransistionAngle;
-        }
         if (m_transistionTemp.type == TRANSISTION_ZOOM)
-        {
           m_fZoomAmount += m_fTransistionZoom;
-        }
       }
     }
   }
@@ -367,8 +368,8 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   // Rotate the image as needed
   float x[4];
   float y[4];
-  float si = (float)sin(m_fAngle * M_PI * 0.5);
-  float co = (float)cos(m_fAngle * M_PI * 0.5);
+  float si = (float)sin(m_fAngle / 180.0f * M_PI);
+  float co = (float)cos(m_fAngle / 180.0f * M_PI);
   x[0] = -m_fWidth * co + m_fHeight * si;
   y[0] = -m_fWidth * si - m_fHeight * co;
   x[1] = m_fWidth * co + m_fHeight * si;
@@ -602,14 +603,19 @@ void CSlideShowPic::SetTransistionTime(int iType, int iTime)
     m_transistionEnd.length = iTime;
 }
 
-void CSlideShowPic::Rotate(int iRotate)
+void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 {
-  if (m_bDrawNextImage) return ;
-  if (m_transistionTemp.type == TRANSISTION_ZOOM) return ;
+  if (m_bDrawNextImage) return;
+  if (m_transistionTemp.type == TRANSISTION_ZOOM) return;
+  if (immediate)
+  {
+    m_fAngle += fRotateAngle;
+    return;
+  }
   m_transistionTemp.type = TRANSISTION_ROTATE;
   m_transistionTemp.start = m_iCounter;
   m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionAngle = (float)(iRotate - m_fAngle) / (float)m_transistionTemp.length;
+  m_fTransistionAngle = (float)fRotateAngle / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
 }
