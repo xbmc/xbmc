@@ -167,6 +167,8 @@ void CGUIWindowSlideShow::Reset()
   m_bScreensaver = false;
   m_Image[0].UnLoad();
   m_Image[0].Close();
+  m_Image[1].UnLoad();
+  m_Image[1].Close();
 
   m_iRotate = 0;
   m_iZoomFactor = 1;
