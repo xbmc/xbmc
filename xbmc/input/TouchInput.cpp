@@ -18,13 +18,20 @@
  *
  */
 
+#include <math.h>
+
 #include "TouchInput.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832795028842
+#endif
+
 CTouchInput::CTouchInput()
      : m_holdTimeout(1000),
        m_handler(NULL),
+       m_fRotateAngle(0.0f),
        m_gestureState(TouchGestureUnknown),
        m_gestureStateOld(TouchGestureUnknown)
 {
@@ -127,6 +134,7 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
           }
 
           setGestureState(TouchGestureMultiTouchStart);
+          m_fRotateAngle = 0.0f;
         }
         // Otherwise we should ignore this pointer
         else
@@ -313,6 +321,7 @@ void CTouchInput::saveLastTouch()
 void CTouchInput::handleMultiTouchGesture()
 {
   handleZoomPinch();
+  handleRotation();
 }
 
 void CTouchInput::handleZoomPinch()
@@ -339,6 +348,39 @@ void CTouchInput::handleZoomPinch()
     float zoom = curDiffLength / baseDiffLength;
 
     OnZoomPinch(centerX, centerY, zoom);
+  }
+}
+
+void CTouchInput::handleRotation()
+{
+  Pointer& primaryPointer = m_pointers[0];
+  Pointer& secondaryPointer = m_pointers[1];
+
+  CVector last = primaryPointer.last - secondaryPointer.last;
+  CVector current = primaryPointer.current - secondaryPointer.current;
+
+  float length = last.length() * current.length();
+  if (length != 0.0f)
+  {
+    float centerX = (primaryPointer.current.x + secondaryPointer.current.x) / 2;
+    float centerY = (primaryPointer.current.y + secondaryPointer.current.y) / 2;
+
+    float scalar = last.scalar(current);
+    float angle = acos(scalar / length) * 180.0f / M_PI;
+
+    // make sure the result of acos is a valid number
+    if (angle == angle)
+    {
+      // calculate the direction of the rotation using the
+      // z-component of the cross-product of last and current
+      float direction = last.x * current.y - current.x * last.y;
+      if (direction < 0.0f)
+        m_fRotateAngle -= angle;
+      else
+        m_fRotateAngle += angle;
+
+      OnRotate(centerX, centerY, m_fRotateAngle);
+    }
   }
 }
 
@@ -546,4 +588,12 @@ void CTouchInput::OnZoomPinch(float centerX, float centerY, float zoomFactor)
   
   if (m_handler)
     m_handler->OnZoomPinch(centerX, centerY, zoomFactor);
+}
+
+void CTouchInput::OnRotate(float centerX, float centerY, float angle)
+{
+  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
+
+  if (m_handler)
+    m_handler->OnRotate(centerX, centerY, angle);
 }
