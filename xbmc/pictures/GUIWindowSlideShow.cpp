@@ -813,7 +813,7 @@ void CGUIWindowSlideShow::Rotate()
 
 void CGUIWindowSlideShow::RotateRelative(float fAngle, bool immediate /* = false */)
 {
-  if (m_Image[m_iCurrentPic].DrawNextImage() || m_fZoom > 1.0f)
+  if (m_Image[m_iCurrentPic].DrawNextImage())
     return;
 
   m_fRotate += fAngle;
