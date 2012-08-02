@@ -150,7 +150,6 @@ CGUIWindowSlideShow::~CGUIWindowSlideShow(void)
   delete m_slides;
 }
 
-
 bool CGUIWindowSlideShow::IsPlaying() const
 {
   return m_Image[m_iCurrentPic].IsLoaded();
@@ -373,14 +372,11 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
   // check if we should discard an already loaded next slide
   if (m_bLoadNextPic && m_Image[1 - m_iCurrentPic].IsLoaded() && m_Image[1 - m_iCurrentPic].SlideNumber() != m_iNextSlide)
-  {
     m_Image[1 - m_iCurrentPic].Close();
-  }
+
   // if we're reloading an image (for better res on zooming we need to close any open ones as well)
   if (m_bReloadImage && m_Image[1 - m_iCurrentPic].IsLoaded() && m_Image[1 - m_iCurrentPic].SlideNumber() != m_iCurrentSlide)
-  {
     m_Image[1 - m_iCurrentPic].Close();
-  }
 
   if (m_bReloadImage)
   {
@@ -396,8 +392,10 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
       GetCheckedSize((float)m_Image[m_iCurrentPic].GetOriginalWidth(), (float)m_Image[m_iCurrentPic].GetOriginalHeight(), width, height);
 
       // use the smaller of the two (no point zooming in more than we have to)
-      if (maxWidth < width) width = maxWidth;
-      if (maxHeight < height) height = maxHeight;
+      if (maxWidth < width)
+        width = maxWidth;
+      if (maxHeight < height)
+        height = maxHeight;
 
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->GetPath(), width, height);
     }
@@ -431,7 +429,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     CApplicationMessenger::Get().PlayFile(*m_slides->Get(m_iCurrentSlide));
     m_iCurrentSlide = m_iNextSlide;
     m_iNextSlide    = GetNextSlide();
-  } 
+  }
+
   // Check if we should be transistioning immediately
   if (m_bLoadNextPic)
   {
@@ -499,26 +498,22 @@ void CGUIWindowSlideShow::Render()
 
 int CGUIWindowSlideShow::GetNextSlide()
 {
-  if(m_slides->Size() <= 1)
+  if (m_slides->Size() <= 1)
     return m_iCurrentSlide;
-  if(m_bSlideShow || m_iDirection >= 0)
-    return (m_iCurrentSlide + 1                   ) % m_slides->Size();
-  else
-    return (m_iCurrentSlide - 1 + m_slides->Size()) % m_slides->Size();
+  if (m_bSlideShow || m_iDirection >= 0)
+    return (m_iCurrentSlide + 1) % m_slides->Size();
+
+  return (m_iCurrentSlide - 1 + m_slides->Size()) % m_slides->Size();
 }
 
 EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
-    if( m_iZoomFactor == 1)//zoomed out - no inertial scrolling
-    {
+    if (m_iZoomFactor == 1) //zoomed out - no inertial scrolling
       return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
-    }
-    else//zoomed in - with inertia 
-    {
-      return EVENT_RESULT_PAN_HORIZONTAL;
-    }
+
+    return EVENT_RESULT_PAN_HORIZONTAL;
   }  
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   {
@@ -527,42 +522,34 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
   { // on zoomlevel 1 just detect swipe left and right
-    if( m_iZoomFactor == 1 )
-    {   
-      if( m_firstGesturePoint.x > 0 && fabs(point.x - m_firstGesturePoint.x) > 100 )
+    if (m_iZoomFactor == 1)
+    {
+      if (m_firstGesturePoint.x > 0 && fabs(point.x - m_firstGesturePoint.x) > 100)
       {
-        if( point.x < m_firstGesturePoint.x )
-        {
+        if (point.x < m_firstGesturePoint.x)
           OnAction(CAction(ACTION_NEXT_PICTURE));
-        }
         else 
-        {
           OnAction(CAction(ACTION_PREV_PICTURE));
-        }
+
         m_firstGesturePoint.x = 0;
       }
     }
-    else//zoomed in - free move mode
+    else //zoomed in - free move mode
     {
-      Move(PICTURE_MOVE_AMOUNT_TOUCH/m_iZoomFactor*(m_firstGesturePoint.x-point.x),PICTURE_MOVE_AMOUNT_TOUCH/m_iZoomFactor*(m_firstGesturePoint.y-point.y));
+      Move(PICTURE_MOVE_AMOUNT_TOUCH / m_iZoomFactor * (m_firstGesturePoint.x - point.x), PICTURE_MOVE_AMOUNT_TOUCH / m_iZoomFactor * (m_firstGesturePoint.y - point.y));
       m_firstGesturePoint = point;
     }
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_END)
-  {
     return EVENT_RESULT_HANDLED;
-  }
   else if (event.m_id == ACTION_GESTURE_ZOOM)
   {
-    if( event.m_offsetX > 1)
-    {
+    if (event.m_offsetX > 1)
       Zoom((int)event.m_offsetX);
-    }
     else 
-    {
       Zoom((int)(m_iZoomFactor - event.m_offsetX));
-    }
+
     return EVENT_RESULT_HANDLED;    
   }
   return EVENT_RESULT_UNHANDLED;
@@ -588,17 +575,21 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       }
     }
     break;
+
   case ACTION_PREVIOUS_MENU:
   case ACTION_NAV_BACK:
   case ACTION_STOP:
     g_windowManager.PreviousWindow();
     break;
+
   case ACTION_NEXT_PICTURE:
       ShowNext();
     break;
+
   case ACTION_PREV_PICTURE:
       ShowPrevious();
     break;
+
   case ACTION_MOVE_RIGHT:
     if (m_iZoomFactor == 1)
       ShowNext();
@@ -660,9 +651,11 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_ZOOM_LEVEL_9:
     Zoom((action.GetID() - ACTION_ZOOM_LEVEL_NORMAL) + 1);
     break;
+
   case ACTION_ANALOG_MOVE:
     Move(action.GetAmount()*PICTURE_MOVE_AMOUNT_ANALOG, -action.GetAmount(1)*PICTURE_MOVE_AMOUNT_ANALOG);
     break;
+
   default:
     return CGUIWindow::OnAction(action);
   }
@@ -699,9 +692,8 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
       //   Reset();
       if (message.GetParam1() != WINDOW_PICTURES)
-      {
         m_ImageLib.Unload();
-      }
+
       g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       FreeResources();
     }
@@ -713,19 +705,14 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
       //FIXME: Use GUI resolution for now
       if (0 /*m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID && m_Resolution!=AUTORES*/)
-      {
         g_graphicsContext.SetVideoResolution(m_Resolution);
-      }
       else
-      {
         m_Resolution = g_graphicsContext.GetVideoResolution();
-      }
 
       CGUIWindow::OnMessage(message);
       if (message.GetParam1() != WINDOW_PICTURES)
-      {
         m_ImageLib.Load();
-      }
+
       g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
 
       // turn off slideshow if we only have 1 image
@@ -735,6 +722,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+
   case GUI_MSG_START_SLIDESHOW:
     {
       CStdString strFolder = message.GetStringParam();
@@ -755,28 +743,31 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom);
     }
     break;
+
     case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    {
-      m_bPlayingVideo = false;
-      if (m_bSlideShow)
-        g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-    }
-    break;
-    case GUI_MSG_PLAYBACK_STARTED:
-    {
-      if(m_bSlideShow && m_bPlayingVideo)
-        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-    }
-    break;
-    case GUI_MSG_PLAYBACK_STOPPED:
-    {
-      if (m_bSlideShow && m_bPlayingVideo)
       {
-        m_bSlideShow = false;
-        g_windowManager.PreviousWindow();
+        m_bPlayingVideo = false;
+        if (m_bSlideShow)
+          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
       }
-    }
-    break;
+      break;
+
+    case GUI_MSG_PLAYBACK_STARTED:
+      {
+        if (m_bSlideShow && m_bPlayingVideo)
+          g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+      }
+      break;
+
+    case GUI_MSG_PLAYBACK_STOPPED:
+      {
+        if (m_bSlideShow && m_bPlayingVideo)
+        {
+          m_bSlideShow = false;
+          g_windowManager.PreviousWindow();
+        }
+      }
+      break;
   }
   return CGUIWindow::OnMessage(message);
 }
@@ -806,15 +797,14 @@ void CGUIWindowSlideShow::RenderPause()
 void CGUIWindowSlideShow::Rotate()
 {
   if (!m_Image[m_iCurrentPic].DrawNextImage() && m_iZoomFactor == 1)
-  {
     m_Image[m_iCurrentPic].Rotate(++m_iRotate);
-  }
 }
 
 void CGUIWindowSlideShow::Zoom(int iZoom)
 {
   if (iZoom > MAX_ZOOM_FACTOR || iZoom < 1)
-    return ;
+    return;
+
   // set the zoom amount and then set so that the image is reloaded at the higher (or lower)
   // resolution as necessary
   if (!m_Image[m_iCurrentPic].DrawNextImage())
@@ -1000,8 +990,10 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   }
   maxWidth = (int)width;
   maxHeight = (int)height;
-  if (maxWidth > (int)g_Windowing.GetMaxTextureSize()) maxWidth = g_Windowing.GetMaxTextureSize();
-  if (maxHeight > (int)g_Windowing.GetMaxTextureSize()) maxHeight = g_Windowing.GetMaxTextureSize();
+  if (maxWidth > (int)g_Windowing.GetMaxTextureSize())
+    maxWidth = g_Windowing.GetMaxTextureSize();
+  if (maxHeight > (int)g_Windowing.GetMaxTextureSize())
+    maxHeight = g_Windowing.GetMaxTextureSize();
 #else
   maxWidth = g_Windowing.GetMaxTextureSize();
   maxHeight = g_Windowing.GetMaxTextureSize();
