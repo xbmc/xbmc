@@ -29,7 +29,7 @@
 
 @class IOSEAGLView;
 
-@interface XBMCController : UIViewController
+@interface XBMCController : UIViewController <UIGestureRecognizerDelegate>
 {
   UIWindow *m_window;
   IOSEAGLView  *m_glView;
