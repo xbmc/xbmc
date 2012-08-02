@@ -38,8 +38,6 @@
   /* Touch handling */
   CGSize screensize;
   CGPoint lastGesturePoint;
-  CGFloat lastPinchScale;
-  CGFloat currentPinchScale;  
   CGFloat screenScale;
   bool touchBeginSignaled;
   int  m_screenIdx;
@@ -50,8 +48,6 @@
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
-@property CGFloat lastPinchScale;
-@property CGFloat currentPinchScale;
 @property CGFloat screenScale;
 @property bool touchBeginSignaled;
 @property int  m_screenIdx;
