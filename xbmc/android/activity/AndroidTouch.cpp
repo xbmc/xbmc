@@ -99,6 +99,18 @@ bool CAndroidTouch::OnSingleTouchStart(float x, float y)
   return true;
 }
 
+bool CAndroidTouch::OnMultiTouchStart(float x, float y, int32_t pointers /* = 2 */)
+{
+  XBMC_TouchGesture(ACTION_GESTURE_BEGIN, x, y, 0.0f, 0.0f);
+
+  return true;
+}
+
+bool CAndroidTouch::OnMultiTouchEnd(float x, float y, int32_t pointers /* = 2 */)
+{
+  XBMC_TouchGesture(ACTION_GESTURE_END, 0.0f, 0.0f, 0.0f, 0.0f);
+}
+
 bool CAndroidTouch::OnTouchGesturePanStart(float x, float y)
 {
   XBMC_TouchGesture(ACTION_GESTURE_BEGIN, x, y, 0.0f, 0.0f);

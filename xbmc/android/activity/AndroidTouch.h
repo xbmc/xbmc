@@ -34,6 +34,9 @@ public:
 protected:
   virtual bool OnSingleTouchStart(float x, float y);
 
+  virtual bool OnMultiTouchStart(float x, float y, int32_t pointers = 2);
+  virtual bool OnMultiTouchEnd(float x, float y, int32_t pointers = 2);
+
   virtual bool OnTouchGesturePanStart(float x, float y);
   virtual bool OnTouchGesturePan(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY);
   virtual bool OnTouchGesturePanEnd(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY);
