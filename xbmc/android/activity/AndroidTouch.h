@@ -44,6 +44,7 @@ protected:
   virtual void OnSingleTap(float x, float y);
   virtual void OnSingleLongPress(float x, float y);
   virtual void OnZoomPinch(float centerX, float centerY, float zoomFactor);
+  virtual void OnRotate(float centerX, float centerY, float angle);
 
 private:
   void XBMC_Touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y);

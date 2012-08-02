@@ -109,6 +109,8 @@ bool CAndroidTouch::OnMultiTouchStart(float x, float y, int32_t pointers /* = 2 
 bool CAndroidTouch::OnMultiTouchEnd(float x, float y, int32_t pointers /* = 2 */)
 {
   XBMC_TouchGesture(ACTION_GESTURE_END, 0.0f, 0.0f, 0.0f, 0.0f);
+
+  return true;
 }
 
 bool CAndroidTouch::OnTouchGesturePanStart(float x, float y)
@@ -154,6 +156,11 @@ void CAndroidTouch::OnZoomPinch(float centerX, float centerY, float zoomFactor)
   XBMC_TouchGesture(ACTION_GESTURE_ZOOM, centerX, centerY, zoomFactor, 0);
 }
 
+void CAndroidTouch::OnRotate(float centerX, float centerY, float angle)
+{
+  XBMC_TouchGesture(ACTION_GESTURE_ROTATE, centerX, centerY, angle, 0);
+}
+
 void CAndroidTouch::XBMC_Touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y)
 {
   XBMC_Event newEvent;
@@ -178,6 +185,6 @@ void CAndroidTouch::XBMC_TouchGesture(int32_t action, float posX, float posY, fl
     CApplicationMessenger::Get().SendAction(CAction(action, 0, posX, posY, offsetX, offsetY), WINDOW_INVALID, false);
   else if (action == ACTION_GESTURE_END)
     CApplicationMessenger::Get().SendAction(CAction(action, 0, posX, posY, offsetX, offsetY), WINDOW_INVALID, false);
-  else if (action == ACTION_GESTURE_ZOOM)
+  else if (action == ACTION_GESTURE_ZOOM || action == ACTION_GESTURE_ROTATE)
     CApplicationMessenger::Get().SendAction(CAction(action, 0, posX, posY, offsetX, 0), WINDOW_INVALID, false);
 }
