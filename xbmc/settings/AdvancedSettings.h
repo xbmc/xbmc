@@ -175,8 +175,6 @@ class CAdvancedSettings
     int m_lcdScrolldelay;
     CStdString m_lcdHostName;
 
-    int m_autoDetectPingTime;
-
     int m_songInfoDuration;
     int m_busyDialogDelay;
     int m_logLevel;
