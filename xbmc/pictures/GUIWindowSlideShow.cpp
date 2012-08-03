@@ -57,6 +57,8 @@ using namespace XFILE;
 #define PICTURE_VIEW_BOX_COLOR      0xffffff00 // YELLOW
 #define PICTURE_VIEW_BOX_BACKGROUND 0xff000000 // BLACK
 
+#define ROTATION_SNAP_RANGE              10.0f
+
 #define FPS                                 25
 
 #define BAR_IMAGE                            1
@@ -550,6 +552,17 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
   }
   else if (event.m_id == ACTION_GESTURE_END)
   {
+    if (m_fRotate != 0.0f)
+    {
+      // "snap" to nearest of 0, 90, 180 and 270 if the
+      // difference in angle is +/-10 degrees
+      float reminder = fmodf(m_fRotate, 90.0f);
+      if (reminder < ROTATION_SNAP_RANGE)
+        RotateRelative(-reminder);
+      else if (reminder > 90.0f - ROTATION_SNAP_RANGE)
+        RotateRelative(90.0f - reminder);
+    }
+
     m_fInitialZoom = 0.0f;
     m_fInitialRotate = 0.0f;
     return EVENT_RESULT_HANDLED;
