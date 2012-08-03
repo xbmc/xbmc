@@ -129,8 +129,6 @@ void CAdvancedSettings::Initialize()
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
-  m_autoDetectPingTime = 30;
-
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
 
@@ -660,7 +658,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "autodetectpingtime", m_autoDetectPingTime, 1, 240);
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
