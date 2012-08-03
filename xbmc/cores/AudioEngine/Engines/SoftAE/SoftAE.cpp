@@ -1193,23 +1193,8 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
     else
     #endif
     {
-      /* unrolled loop for performance */
-      unsigned int blocks = channelCount & ~0x3;
-      unsigned int i      = 0;
-      for (i = 0; i < blocks; i += 4)
-      {
+      for (unsigned int i = 0; i < channelCount; ++i)
         *dst++ += *frame++ * volume;
-        *dst++ += *frame++ * volume;
-        *dst++ += *frame++ * volume;
-        *dst++ += *frame++ * volume;
-      }
-
-      switch (channelCount & 0x3)
-      {
-        case 3: *dst++ += *frame++ * volume;
-        case 2: *dst++ += *frame++ * volume;
-        case 1: *dst   += *frame++ * volume;
-      }
     }
 
     ++mixed;
