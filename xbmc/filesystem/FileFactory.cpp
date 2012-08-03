@@ -77,7 +77,9 @@
 #if defined(TARGET_ANDROID)
 #include "AndroidAppFile.h"
 #endif
+#ifdef HAS_UPNP
 #include "UPnPFile.h"
+#endif
 #include "PipesManager.h"
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
@@ -191,7 +193,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "afp") return new CAFPFile();
 #endif
     else if (strProtocol == "pipe") return new CPipeFile();    
+#ifdef HAS_UPNP
     else if (strProtocol == "upnp") return new CUPnPFile();
+#endif
 #if defined(TARGET_ANDROID)
     else if (strProtocol == "androidapp") return new CFileAndroidApp();
 #endif

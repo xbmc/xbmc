@@ -118,7 +118,7 @@
 #include "filesystem/FileDAAP.h"
 #endif
 #ifdef HAS_UPNP
-#include "network/UPnP.h"
+#include "network/upnp/UPnP.h"
 #include "filesystem/UPnPDirectory.h"
 #endif
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
@@ -4032,6 +4032,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
+#ifdef HAS_UPNP
   if (URIUtils::IsUPnP(item.GetPath()))
   {
     CFileItem item_new(item);
@@ -4039,6 +4040,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       return PlayFile(item_new, false);
     return false;
   }
+#endif
 
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
@@ -5352,8 +5354,10 @@ void CApplication::ProcessSlow()
 #endif
 
   // update upnp server/renderer states
+#ifdef HAS_UPNP
   if(UPNP::CUPnP::IsInstantiated())
     UPNP::CUPnP::GetInstance()->UpdateState();
+#endif
 
   //Check to see if current playing Title has changed and whether we should broadcast the fact
   CheckForTitleChange();

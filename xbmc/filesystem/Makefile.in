@@ -52,7 +52,6 @@ SRCS=AddonsDirectory.cpp \
      MythDirectory.cpp \
      MythFile.cpp \
      MythSession.cpp \
-     NptXbmcFile.cpp \
      NSFFileDirectory.cpp \
      OGGFileDirectory.cpp \
      PlaylistDirectory.cpp \
@@ -84,8 +83,6 @@ SRCS=AddonsDirectory.cpp \
      udf25.cpp \
      UDFDirectory.cpp \
      UDFFile.cpp \
-     UPnPDirectory.cpp \
-     UPnPFile.cpp \
      VideoDatabaseDirectory.cpp \
      VirtualDirectory.cpp \
      VTPDirectory.cpp \
@@ -126,6 +123,10 @@ ifeq (@HAVE_LIBBLURAY@,1)
 SRCS+=BlurayDirectory.cpp
 endif
 
+ifeq (@USE_UPNP@,1)
+SRCS+=NptXbmcFile.cpp \
+      UPnPDirectory.cpp \
+      UPnPFile.cpp
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect \
@@ -134,6 +135,7 @@ INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Extras \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
+endif
 
 LIB=filesystem.a
 

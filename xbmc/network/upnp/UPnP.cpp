@@ -25,7 +25,7 @@
 #include "utils/URIUtils.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "Network.h"
+#include "network/Network.h"
 #include "utils/log.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"

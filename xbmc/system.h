@@ -36,7 +36,6 @@
 #define HAS_SCREENSAVER
 #define HAS_PYTHON
 #define HAS_SYSINFO
-#define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
 #define HAS_PVRCLIENTS
@@ -83,6 +82,10 @@
 
 #ifdef HAVE_MYSQL
   #define HAS_MYSQL
+#endif
+
+#if defined(USE_UPNP)
+  #define HAS_UPNP
 #endif
 
 /**********************

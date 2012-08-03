@@ -1,5 +1,6 @@
 ARCH=@ARCH@
 
+ifeq (@USE_UPNP@, 1)
 SRCS= Platinum/Source/Core/PltAction.cpp \
       Platinum/Source/Core/PltArgument.cpp \
       Platinum/Source/Core/PltConstants.cpp \
@@ -93,3 +94,4 @@ LIB=libupnp.a
 include ../../Makefile.include
 -include $(filter %.P, $(OBJS:.o=.P))
 
+endif

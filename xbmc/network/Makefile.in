@@ -1,12 +1,3 @@
-INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaRenderer \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Extras \
-          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
-          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
-
 SRCS=cddb.cpp \
      DNSNameCache.cpp \
      EventClient.cpp \
@@ -18,7 +9,6 @@ SRCS=cddb.cpp \
      Socket.cpp \
      TCPServer.cpp \
      UdpClient.cpp \
-     UPnP.cpp \
      WebServer.cpp \
      ZeroconfBrowser.cpp \
      Zeroconf.cpp \

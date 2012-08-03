@@ -22,7 +22,7 @@
 
 #include "UPnPDirectory.h"
 #include "URL.h"
-#include "network/UPnP.h"
+#include "network/upnp/UPnP.h"
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
 #include "video/VideoInfoTag.h"
