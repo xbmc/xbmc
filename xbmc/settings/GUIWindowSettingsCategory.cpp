@@ -231,6 +231,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_delayedSetting = NULL;
       return true;
     }
+  case GUI_MSG_UPDATE:
+    if (HasID(message.GetSenderId()))
+      UpdateSettings();
     break;
   case GUI_MSG_NOTIFY_ALL:
     {

@@ -40,6 +40,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "GUIUserMessages.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "guilib/Key.h"
@@ -311,6 +312,10 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
   if (dialog && dialog->IsActive())
     dialog->Update();
 
+  // refresh settings (peripherals manager could be enabled now)
+  CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
+  g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
+
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
 }
 
@@ -319,6 +324,10 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
   CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
   if (dialog && dialog->IsActive())
     dialog->Update();
+
+  // refresh settings (peripherals manager could be disabled now)
+  CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
+  g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
 }
