@@ -36,3 +36,12 @@ void CBookmark::Reset()
   type = STANDARD;
 }
 
+bool CBookmark::IsSet() const
+{
+  return totalTimeInSeconds > 0.0f;
+}
+
+bool CBookmark::IsPartWay() const
+{
+  return totalTimeInSeconds > 0.0f && timeInSeconds > 0.0f;
+}

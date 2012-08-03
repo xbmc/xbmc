@@ -35,6 +35,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
+#include "video/VideoInfoTag.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -148,6 +149,8 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
     resultItem.SetPath(newDir->m_fileResult->GetPath());
     resultItem.SetMimeType(newDir->m_fileResult->GetMimeType(false));
     resultItem.UpdateInfo(*newDir->m_fileResult);
+    if (newDir->m_fileResult->HasVideoInfoTag() && newDir->m_fileResult->GetVideoInfoTag()->m_resumePoint.IsSet())
+      resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
   }
   delete newDir;
 

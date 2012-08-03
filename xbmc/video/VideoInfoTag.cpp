@@ -536,7 +536,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   
   sortable[FieldSubtitleLanguage] = m_streamDetails.GetSubtitleLanguage();
 
-  sortable[FieldInProgress] = m_resumePoint.timeInSeconds > 0 && m_resumePoint.totalTimeInSeconds > 0;
+  sortable[FieldInProgress] = m_resumePoint.IsPartWay();
   sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
   sortable[FieldMediaType] = DatabaseUtils::MediaTypeFromString(m_type);
 }

@@ -4012,6 +4012,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
         }
+        /*
+         override with information from the actual item if available.  We do this as the VFS (eg plugins)
+         may set the resume point to override whatever XBMC has stored, yet we ignore it until now so that,
+         should the playerState be required, it is fetched from the database.
+         See the note in CGUIWindowVideoBase::ShowResumeMenu.
+         */
+        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_resumePoint.IsSet())
+          options.starttime = item.GetVideoInfoTag()->m_resumePoint.timeInSeconds;
       }
       else if (item.HasVideoInfoTag())
       {

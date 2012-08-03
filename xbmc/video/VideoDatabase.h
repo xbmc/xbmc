@@ -402,6 +402,7 @@ public:
   void UpdateLastPlayed(const CFileItem &item);
 
   /*! \brief Get the playcount and resume point of a list of items
+   Note that if the resume point is already set on an item, it won't be overridden.
    \param path the path to fetch videos from
    \param items CFileItemList to fetch the playcounts for
    \sa GetPlayCount, SetPlayCount, IncrementPlayCount
