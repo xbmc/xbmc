@@ -22,7 +22,7 @@
 
 #include "Interfaces/AESound.h"
 #include "threads/CriticalSection.h"
-#include "utils/AEWAVLoader.h"
+#include "Utils/AEWAVLoader.h"
 
 class CCoreAudioAESound : public IAESound
 {
