@@ -53,6 +53,58 @@ static void pa_sconv_s16le_from_f32ne_neon(unsigned n, const float32_t *a, int16
 }
 #endif
 
+#if defined(HAS_AMLPLAYER)
+// yes this is nasty here but there is really no place else to do it.
+static void aml_cpufreq_limit(bool limit)
+{
+  static int audiotrack_cputype = -1;
+
+  if (audiotrack_cputype == -1)
+  {
+    // defualt to m1 SoC
+    audiotrack_cputype = 1;
+
+    FILE *cpuinfo_fd = fopen("/proc/cpuinfo", "r");
+    if (cpuinfo_fd)
+    {
+      char buffer[512];
+      while (fgets(buffer, sizeof(buffer), cpuinfo_fd))
+      {
+        std::string stdbuffer(buffer);
+        if (stdbuffer.find("MESON-M3") != std::string::npos)
+        {
+          audiotrack_cputype = 3;
+          CLog::Log(LOGDEBUG, "CAMLPlayer::GetCpuType is AMLOGIC MESON-M3");
+          break;
+        }
+      }
+      fclose(cpuinfo_fd);
+    }
+  }
+  // On M1 SoCs, when playing hw decoded audio, we cannot drop below 600MHz
+  // or risk hw audio dropouts. AML code does a 2X scaling based off
+  // /sys/class/audiodsp/codec_mips but tests show that this is
+  // seems risky so we just clamp to 600Mhz to be safe.
+  if (audiotrack_cputype == 3)
+    return;
+
+  int cpufreq;
+  if (limit)
+    cpufreq = 600000;
+  else
+    cpufreq = 300000;
+
+  int fd = open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", O_CREAT | O_RDWR | O_TRUNC, 0644);
+  if (fd >= 0)
+  {
+    char bcmd[16];
+    sprintf(bcmd, "%d", cpufreq);
+    write(fd, bcmd, strlen(bcmd));
+    close(fd);
+  }
+}
+#endif
+
 static jint GetStaticIntField(JNIEnv *jenv, std::string class_name, std::string field_name)
 {
   class_name.insert(0, "android/media/");
@@ -70,10 +122,16 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
 {
   m_sinkbuffer = NULL;
   m_alignedS16LE = NULL;
+#if defined(HAS_AMLPLAYER)
+  aml_cpufreq_limit(true);
+#endif
 }
 
 CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
 {
+#if defined(HAS_AMLPLAYER)
+  aml_cpufreq_limit(false);
+#endif
 }
 
 bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
