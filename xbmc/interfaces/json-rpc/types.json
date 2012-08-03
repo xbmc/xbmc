@@ -51,6 +51,8 @@
       "System": { "type": "boolean", "required": true },
       "VideoLibrary": { "type": "boolean", "required": true },
       "AudioLibrary": { "type": "boolean", "required": true },
+      "Application": { "type": "boolean", "required": true },
+      "Input": { "type": "boolean", "required": true },
       "Other": { "type": "boolean", "required": true }
     },
     "additionalProperties": false
