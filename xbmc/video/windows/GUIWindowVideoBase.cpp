@@ -827,7 +827,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
 
   if (!item->IsNFO() && !item->IsPlayList())
   {
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.IsPartWay())
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.IsSet())
     {
       startoffset = (int)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
       partNumber = item->GetVideoInfoTag()->m_resumePoint.partNumber;
