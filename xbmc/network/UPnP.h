@@ -25,23 +25,26 @@
 
 #include "utils/StdString.h"
 
-/* forward declarations */
-class PLT_UPnP;
-class PLT_SyncMediaBrowser;
-class CDeviceHostReferenceHolder;
-class CCtrlPointReferenceHolder;
-class CRendererReferenceHolder;
-class CUPnPRenderer;
-class CUPnPServer;
-class PLT_MediaObject;
-class PLT_MediaItemResource;
-
 namespace MUSIC_INFO {
 class CMusicInfoTag;
 }
 
 class CVideoInfoTag;
 
+
+class PLT_UPnP;
+class PLT_SyncMediaBrowser;
+class PLT_MediaObject;
+class PLT_MediaItemResource;
+
+namespace UPNP
+{
+
+class CDeviceHostReferenceHolder;
+class CCtrlPointReferenceHolder;
+class CRendererReferenceHolder;
+class CUPnPRenderer;
+class CUPnPServer;
 
 class CUPnP
 {
@@ -94,3 +97,5 @@ private:
 
     static CUPnP* upnp;
 };
+
+} /* namespace UPNP */

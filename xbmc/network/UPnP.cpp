@@ -109,6 +109,18 @@ DLNA_ORG_FLAGS_VAL = '01500000000000000000000000000000'
 */
 
 /*----------------------------------------------------------------------
+|   NPT_Console::Output
++---------------------------------------------------------------------*/
+void
+NPT_Console::Output(const char* message)
+{
+    CLog::Log(LOGDEBUG, "%s", message);
+}
+
+namespace UPNP
+{
+
+/*----------------------------------------------------------------------
 |   static
 +---------------------------------------------------------------------*/
 CUPnP* CUPnP::upnp = NULL;
@@ -157,15 +169,6 @@ namespace
   }
 }
 
-
-/*----------------------------------------------------------------------
-|   NPT_Console::Output
-+---------------------------------------------------------------------*/
-void
-NPT_Console::Output(const char* message)
-{
-    CLog::Log(LOGDEBUG, "%s", message);
-}
 
 /*----------------------------------------------------------------------
 |   CDeviceHostReferenceHolder class
@@ -2417,4 +2420,4 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
     return NPT_SUCCESS;
 }
 
-
+} /* namespace UPNP */

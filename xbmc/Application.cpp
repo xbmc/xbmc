@@ -1681,10 +1681,10 @@ void CApplication::StartUPnP()
 void CApplication::StopUPnP(bool bWait)
 {
 #ifdef HAS_UPNP
-  if (CUPnP::IsInstantiated())
+  if (UPNP::CUPnP::IsInstantiated())
   {
     CLog::Log(LOGNOTICE, "stopping upnp");
-    CUPnP::ReleaseInstance(bWait);
+    UPNP::CUPnP::ReleaseInstance(bWait);
   }
 #endif
 }
@@ -1762,7 +1762,7 @@ void CApplication::StartUPnPRenderer()
   if (g_guiSettings.GetBool("services.upnprenderer"))
   {
     CLog::Log(LOGNOTICE, "starting upnp renderer");
-    CUPnP::GetInstance()->StartRenderer();
+    UPNP::CUPnP::GetInstance()->StartRenderer();
   }
 #endif
 }
@@ -1770,10 +1770,10 @@ void CApplication::StartUPnPRenderer()
 void CApplication::StopUPnPRenderer()
 {
 #ifdef HAS_UPNP
-  if (CUPnP::IsInstantiated())
+  if (UPNP::CUPnP::IsInstantiated())
   {
     CLog::Log(LOGNOTICE, "stopping upnp renderer");
-    CUPnP::GetInstance()->StopRenderer();
+    UPNP::CUPnP::GetInstance()->StopRenderer();
   }
 #endif
 }
@@ -1784,7 +1784,7 @@ void CApplication::StartUPnPServer()
   if (g_guiSettings.GetBool("services.upnpserver"))
   {
     CLog::Log(LOGNOTICE, "starting upnp server");
-    CUPnP::GetInstance()->StartServer();
+    UPNP::CUPnP::GetInstance()->StartServer();
   }
 #endif
 }
@@ -1792,10 +1792,10 @@ void CApplication::StartUPnPServer()
 void CApplication::StopUPnPServer()
 {
 #ifdef HAS_UPNP
-  if (CUPnP::IsInstantiated())
+  if (UPNP::CUPnP::IsInstantiated())
   {
     CLog::Log(LOGNOTICE, "stopping upnp server");
-    CUPnP::GetInstance()->StopServer();
+    UPNP::CUPnP::GetInstance()->StopServer();
   }
 #endif
 }
@@ -5352,8 +5352,8 @@ void CApplication::ProcessSlow()
 #endif
 
   // update upnp server/renderer states
-  if(CUPnP::IsInstantiated())
-    CUPnP::GetInstance()->UpdateState();
+  if(UPNP::CUPnP::IsInstantiated())
+    UPNP::CUPnP::GetInstance()->UpdateState();
 
   //Check to see if current playing Title has changed and whether we should broadcast the fact
   CheckForTitleChange();
