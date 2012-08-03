@@ -755,13 +755,13 @@ namespace PYXBMC
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
-    " Some of these are treated internally by XBMC, such as the 'StartOffset' property, which is\n"
-    " the offset in seconds at which to start playback of an item.  Others may be used in the skin\n"
-    " to add extra information, such as 'WatchedCount' for tvshow items\n"
+    " Some of these are treated internally by XBMC.\n"
+    " Others may be used in the skin to add extra information, such as 'WatchedCount' for tvshow items\n"
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n"
-    "  - self.list.getSelectedItem().setProperty('StartOffset', '256.4')\n");
+    "  - self.list.getSelectedItem().setProperty('TotalTime', '3668.4')\n"
+    "  - self.list.getSelectedItem().setProperty('ResumeTime', '306.8')\n");
 
   PyObject* ListItem_SetProperty(ListItem *self, PyObject *args, PyObject *kwds)
   {
@@ -798,6 +798,10 @@ namespace PYXBMC
     { // special case for mime type - don't actually stored in a property,
       self->item->SetMimeType(uText);
     }
+    else if (lowerKey.CompareNoCase("totaltime") == 0)
+      self->item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds = (float)atof(uText.c_str());
+    else if (lowerKey.CompareNoCase("resumetime") == 0)
+      self->item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = (float)atof(uText.c_str());
     else if (lowerKey.CompareNoCase("specialsort") == 0)
     {
       if (uText == "bottom")
@@ -851,6 +855,10 @@ namespace PYXBMC
       // we store it in item.m_lStartOffset instead
       value.Format("%f", self->item->m_lStartOffset / 75.0);
     }
+    else if (lowerKey.CompareNoCase("totaltime") == 0)
+      value.Format("%f", self->item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+    else if (lowerKey.CompareNoCase("resumetime") == 0)
+      value.Format("%f", self->item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
     else
       value = self->item->GetProperty(lowerKey.ToLower()).asString();
     PyXBMCGUIUnlock();
