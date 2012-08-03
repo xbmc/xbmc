@@ -558,9 +558,9 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
       // difference in angle is +/-10 degrees
       float reminder = fmodf(m_fRotate, 90.0f);
       if (reminder < ROTATION_SNAP_RANGE)
-        RotateRelative(-reminder);
+        Rotate(-reminder);
       else if (reminder > 90.0f - ROTATION_SNAP_RANGE)
-        RotateRelative(90.0f - reminder);
+        Rotate(90.0f - reminder);
     }
 
     m_fInitialZoom = 0.0f;
@@ -574,7 +574,7 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
   }
   else if (event.m_id == ACTION_GESTURE_ROTATE)
   {
-    RotateRelative(m_fInitialRotate + event.m_offsetX - m_fRotate, true);
+    Rotate(m_fInitialRotate + event.m_offsetX - m_fRotate, true);
     return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;
@@ -660,8 +660,12 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     Zoom(m_iZoomFactor + 1);
     break;
 
-  case ACTION_ROTATE_PICTURE:
-    Rotate();
+  case ACTION_ROTATE_PICTURE_CW:
+    Rotate(90.0f);
+    break;
+
+  case ACTION_ROTATE_PICTURE_CCW:
+    Rotate(-90.0f);
     break;
 
   case ACTION_ZOOM_LEVEL_NORMAL:
@@ -819,12 +823,7 @@ void CGUIWindowSlideShow::RenderPause()
 
 }
 
-void CGUIWindowSlideShow::Rotate()
-{
-  RotateRelative(90.0f);
-}
-
-void CGUIWindowSlideShow::RotateRelative(float fAngle, bool immediate /* = false */)
+void CGUIWindowSlideShow::Rotate(float fAngle, bool immediate /* = false */)
 {
   if (m_Image[m_iCurrentPic].DrawNextImage())
     return;

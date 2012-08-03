@@ -1181,7 +1181,8 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlPlayback\","
       "\"params\": ["
-        "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true }"
+        "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true },"
+        "{ \"name\": \"value\", \"type\": \"string\", \"enum\": [ \"clockwise\", \"counterclockwise\" ], \"default\": \"clockwise\" }"
       "],"
       "\"returns\": \"string\""
     "}",

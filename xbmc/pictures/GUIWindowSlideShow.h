@@ -102,8 +102,7 @@ private:
                 SortOrder order = SortOrderAscending);
   void RenderPause();
   void RenderErrorMessage();
-  void Rotate();
-  void RotateRelative(float fAngle, bool immediate = false);
+  void Rotate(float fAngle, bool immediate = false);
   void Zoom(int iZoom);
   void ZoomRelative(float fZoom, bool immediate = false);
   void Move(float fX, float fY);
