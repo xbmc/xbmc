@@ -64,6 +64,8 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
         message.SetStringParam(typedString);
         g_windowManager.SendMessage(message);
         break;
+      case FILTERING_NONE:
+        break;
     }
   }
 }
