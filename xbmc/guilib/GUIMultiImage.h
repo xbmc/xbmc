@@ -31,12 +31,14 @@
 
 #include "GUIImage.h"
 #include "utils/Stopwatch.h"
+#include "utils/Job.h"
+#include "threads/CriticalSection.h"
 
 /*!
  \ingroup controls
  \brief
  */
-class CGUIMultiImage : public CGUIControl
+class CGUIMultiImage : public CGUIControl, public IJobCallback
 {
 public:
   CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd);
@@ -63,6 +65,22 @@ public:
 
 protected:
   void LoadDirectory();
+  void OnDirectoryLoaded();
+  void CancelLoading();
+
+  enum DIRECTORY_STATUS { UNLOADED = 0, LOADING, LOADED, READY };
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+
+  class CMultiImageJob : public CJob
+  {
+  public:
+    CMultiImageJob(const CStdString &path);
+    virtual bool DoWork();
+    virtual const char *GetType() const { return "multiimage"; };
+
+    std::vector<CStdString> m_files;
+    CStdString              m_path;
+  };
 
   CGUIInfoLabel m_texturePath;
   CStdString m_currentPath;
@@ -74,9 +92,12 @@ protected:
   bool m_loop;
 
   bool m_bDynamicResourceAlloc;
-  bool m_directoryLoaded;
   std::vector<CStdString> m_files;
 
   CGUIImage m_image;
+
+  CCriticalSection m_section;
+  DIRECTORY_STATUS m_directoryStatus;
+  unsigned int m_jobID;
 };
 #endif

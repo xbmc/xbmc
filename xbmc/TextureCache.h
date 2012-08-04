@@ -92,7 +92,8 @@ public:
    */
   CStdString CacheImage(const CStdString &url, CBaseTexture **texture = NULL);
 
-  /*! \brief Check whether an image is cached
+  /*! \brief Check whether an image is in the cache
+   Note: If the image url won't normally be cached (eg a skin image) this function will return false.
    \param image url of the image
    \return true if the image is cached, false otherwise
    \sa ClearCachedImage

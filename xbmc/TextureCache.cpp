@@ -73,7 +73,8 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 bool CTextureCache::HasCachedImage(const CStdString &url)
 {
   CStdString cachedHash;
-  return !GetCachedImage(url, cachedHash).IsEmpty();
+  CStdString cachedImage(GetCachedImage(url, cachedHash));
+  return (!cachedImage.IsEmpty() && cachedImage != url);
 }
 
 CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash, bool trackUsage)
