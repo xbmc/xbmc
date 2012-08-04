@@ -145,6 +145,9 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
     URIUtils::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName, translatedPath);
   else if (RootDir.Equals("skin"))
     URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName, translatedPath);
+  else if (RootDir.Equals("logpath"))
+    URIUtils::AddFileToFolder(g_settings.m_logFolder, FileName, translatedPath);
+
 
   // from here on, we have our "real" special paths
   else if (RootDir.Equals("xbmc") ||
