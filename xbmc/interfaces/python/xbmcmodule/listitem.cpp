@@ -351,6 +351,7 @@ namespace PYXBMC
     "    plotoutline   : string (Short Description)\n"
     "    title         : string (Big Fan)\n"
     "    originaltitle : string (Big Fan)\n"
+    "    sorttitle     : string (Big Fan)\n"
     "    duration      : string (3:18)\n"
     "    studio        : string (Warner Bros.)\n"
     "    tagline       : string (An awesome movie) - short description of movie\n"
@@ -504,6 +505,8 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "originaltitle") == 0)
             self->item->GetVideoInfoTag()->m_strOriginalTitle = tmp;
+          else if (strcmpi(PyString_AsString(key), "sorttitle") == 0)
+            self->item->GetVideoInfoTag()->m_strSortTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "duration") == 0)
             self->item->GetVideoInfoTag()->m_strRuntime = tmp;
           else if (strcmpi(PyString_AsString(key), "studio") == 0)
