@@ -130,6 +130,7 @@ private:
   /* internal vars */
   bool             m_running, m_reOpen;
   CEvent           m_reOpenEvent;
+  CEvent           m_wake;
 
   CCriticalSection m_runningLock;     /* released when the thread exits */
   CCriticalSection m_streamLock;      /* m_streams lock */
@@ -150,6 +151,7 @@ private:
   float                     m_sinkFormatSampleRateMul;
   float                     m_sinkFormatFrameSizeMul;
   unsigned int              m_sinkBlockSize;
+  bool                      m_sinkHandlesVolume;
   AEAudioFormat             m_encoderFormat;
   float                     m_encoderFrameSizeMul;
   unsigned int              m_bytesPerSample;
@@ -186,7 +188,7 @@ private:
   uint8_t        *m_converted;
   size_t          m_convertedSize;
 
-  void         AllocateConvIfNeeded(size_t convertedSize);
+  void         AllocateConvIfNeeded(size_t convertedSize, bool prezero = false);
 
   /* thread run stages */
 
