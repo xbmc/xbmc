@@ -255,7 +255,8 @@ namespace PYXBMC
     "              applies to: SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,\n"
     "                          SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE\n"
     "                          SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL\n"
-    "                          SORT_METHOD_LABEL_IGNORE_THE\n"
+    "                          SORT_METHOD_LABEL_IGNORE_THE, SORT_METHOD_VIDEO_SORT_TITLE,\n"
+    "                          SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
@@ -623,6 +624,8 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_UNSORTED", SORT_METHOD_UNSORTED);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_BITRATE", SORT_METHOD_BITRATE);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_LISTENERS", SORT_METHOD_LISTENERS);
+    PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_VIDEO_SORT_TITLE", SORT_METHOD_VIDEO_SORT_TITLE);
+    PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE", SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE);
   }
 }
 
