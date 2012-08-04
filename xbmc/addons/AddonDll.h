@@ -81,7 +81,8 @@ template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   : CAddon(ext)
 {
-  if (ext)
+  // if library attribute isn't present, look for a system-dependent one
+  if (ext && m_strLibName.IsEmpty())
   {
 #if defined(_LINUX) && !defined(TARGET_DARWIN)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");

@@ -116,6 +116,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in screensaver
           return AddonPtr(new CAddon(props));
         }
+        if (type == ADDON_SCREENSAVER)
+        { // Python screensaver
+          CStdString library = CAddonMgr::Get().GetExtValue(props->configuration, "@library");
+          if (URIUtils::GetExtension(library).Equals(".py", false))
+            return AddonPtr(new CScreenSaver(props));
+        }
 #if defined(_LINUX) && !defined(TARGET_DARWIN)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
           break;
