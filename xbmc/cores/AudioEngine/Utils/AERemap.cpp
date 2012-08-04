@@ -290,19 +290,20 @@ void CAERemap::Remap(float * const in, float * const out, const unsigned int fra
     if (!info->in_dst)
     {
       unsigned int f = 0;
+      unsigned int odx = 0;
       for(; f < frameBlocks; f += 4)
       {
-        out[((f + 0) * m_outChannels) + o] = 0.0f;
-        out[((f + 1) * m_outChannels) + o] = 0.0f;
-        out[((f + 2) * m_outChannels) + o] = 0.0f;
-        out[((f + 3) * m_outChannels) + o] = 0.0f;
+        out[odx + o] = 0.0f, odx += m_outChannels;
+        out[odx + o] = 0.0f, odx += m_outChannels;
+        out[odx + o] = 0.0f, odx += m_outChannels;
+        out[odx + o] = 0.0f, odx += m_outChannels;
       }
 
       switch (frames & 0x3)
       {
-        case 3: out[(f * m_outChannels) + o] = 0.0f; ++f;
-        case 2: out[(f * m_outChannels) + o] = 0.0f; ++f;
-        case 1: out[(f * m_outChannels) + o] = 0.0f;
+        case 3: out[odx + o] = 0.0f, odx += m_outChannels;
+        case 2: out[odx + o] = 0.0f, odx += m_outChannels;
+        case 1: out[odx + o] = 0.0f;
       }
       continue;
     }
@@ -311,20 +312,23 @@ void CAERemap::Remap(float * const in, float * const out, const unsigned int fra
     if (info->srcCount == 1)
     {
       unsigned int f = 0;
+      unsigned int idx = 0;
+      unsigned int odx = 0;
+      unsigned int srcIndex = info->srcIndex[0].index;
       /* the compiler has a better chance of optimizing this if it is done in parallel */
       for (; f < frameBlocks; f += 4)
       {
-        out[((f + 0) * m_outChannels) + o] = in[((f + 0) * m_inChannels) + info->srcIndex[0].index];
-        out[((f + 1) * m_outChannels) + o] = in[((f + 1) * m_inChannels) + info->srcIndex[0].index];
-        out[((f + 2) * m_outChannels) + o] = in[((f + 2) * m_inChannels) + info->srcIndex[0].index];
-        out[((f + 3) * m_outChannels) + o] = in[((f + 3) * m_inChannels) + info->srcIndex[0].index];
+        out[odx + o] = in[idx + srcIndex], idx += m_inChannels, odx += m_outChannels;
+        out[odx + o] = in[idx + srcIndex], idx += m_inChannels, odx += m_outChannels;
+        out[odx + o] = in[idx + srcIndex], idx += m_inChannels, odx += m_outChannels;
+        out[odx + o] = in[idx + srcIndex], idx += m_inChannels, odx += m_outChannels;
       }
 
       switch (frames & 0x3)
       {
-        case 3: out[(f * m_outChannels) + o] = in[(f * m_inChannels) + info->srcIndex[0].index]; ++f;
-        case 2: out[(f * m_outChannels) + o] = in[(f * m_inChannels) + info->srcIndex[0].index]; ++f;
-        case 1: out[(f * m_outChannels) + o] = in[(f * m_inChannels) + info->srcIndex[0].index];
+        case 3: out[odx + o] = in[idx + srcIndex], idx += m_inChannels, odx += m_outChannels;
+        case 2: out[odx + o] = in[idx + srcIndex], idx += m_inChannels, odx += m_outChannels;
+        case 1: out[odx + o] = in[idx + srcIndex];
       }
     }
     else
@@ -341,17 +345,17 @@ void CAERemap::Remap(float * const in, float * const out, const unsigned int fra
         int i = 0;
         for (; i < blocks; i += 4)
         {
-          *outOffset += inOffset[info->srcIndex[i + 0].index] * info->srcIndex[i + 0].level;
-          *outOffset += inOffset[info->srcIndex[i + 1].index] * info->srcIndex[i + 1].level;
-          *outOffset += inOffset[info->srcIndex[i + 2].index] * info->srcIndex[i + 2].level;
-          *outOffset += inOffset[info->srcIndex[i + 3].index] * info->srcIndex[i + 3].level;
+          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
+          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
+          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
+          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
         }
 
         /* unrolled loop for higher performance */
         switch (info->srcCount & 0x3)
         {
-          case 3: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level; ++i;
-          case 2: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level; ++i;
+          case 3: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
+          case 2: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
           case 1: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level;
         }
       }

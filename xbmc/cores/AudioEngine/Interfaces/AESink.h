@@ -78,5 +78,15 @@ public:
     Drain the sink
    */
   virtual void Drain() {};
+
+  /*
+    Indicates if sink can handle volume control.
+  */
+  virtual bool  HasVolume() {return false;};
+
+  /*
+    This method sets the volume control, volume ranges from 0.0 to 1.0.
+  */
+  virtual void  SetVolume(float volume) {};
 };
 

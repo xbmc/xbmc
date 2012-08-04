@@ -132,7 +132,10 @@ public:
   #endif
     if (dst)
       memcpy(dst, m_buffer, size);
-    memmove(m_buffer, m_buffer + size, m_bufferSize - size);
+    // we can just reset m_bufferPos
+    // if there is nothing else inside.
+    if (m_bufferPos != size)
+      memmove(m_buffer, m_buffer + size, m_bufferSize - size);
     m_bufferPos -= size;
   }
 
