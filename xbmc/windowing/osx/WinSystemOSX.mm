@@ -1225,6 +1225,77 @@ bool CWinSystemOSX::FlushBuffer(void)
   return true;
 }
 
+bool CWinSystemOSX::IsObscured(void)
+{
+  NSOpenGLContext* cur_context = [NSOpenGLContext currentContext];
+  NSView* view = [cur_context view];
+  if (!view)
+    return true;
+
+  NSWindow *window = [view window];
+  if (!window)
+    return true;
+
+  if ([window isVisible] == NO)
+    return true;
+
+  if ([window isOnActiveSpace] == NO)
+    return true;
+
+  CGWindowListOption opts;
+  opts = kCGWindowListOptionOnScreenAboveWindow | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);
+  if (!windowIDs)
+    return false;
+
+  CFArrayRef windowDescs = CGWindowListCreateDescriptionFromArray(windowIDs);
+  if (!windowDescs)
+  {
+    CFRelease(windowIDs);
+    return false;
+  }
+
+  bool obscured = false;
+  CGRect bounds = NSRectToCGRect([window frame]);
+  // kCGWindowBounds measures the origin as the top-left corner of the rectangle
+  //  relative to the top-left corner of the screen.
+  // NSWindow’s frame property measures the origin as the bottom-left corner
+  //  of the rectangle relative to the bottom-left corner of the screen.
+  // convert bounds from NSWindow to CGWindowBounds here.
+  bounds.origin.y = [[window screen] frame].size.height - bounds.origin.y - bounds.size.height;
+
+  for (CFIndex idx=0; idx < CFArrayGetCount(windowDescs); idx++)
+  {
+    // walk the window list of windows that are above us and are not desktop elements
+    CFDictionaryRef windowDictionary = (CFDictionaryRef)CFArrayGetValueAtIndex(windowDescs, idx);
+
+    // skip the Dock window, it actually covers the entire screen.
+    CFStringRef ownerName = (CFStringRef)CFDictionaryGetValue(windowDictionary, kCGWindowOwnerName);
+    if (CFStringCompare(ownerName, CFSTR("Dock"), 0) == kCFCompareEqualTo)
+      continue;
+
+    CFDictionaryRef rectDictionary = (CFDictionaryRef)CFDictionaryGetValue(windowDictionary, kCGWindowBounds);
+    if (!rectDictionary)
+      continue;
+
+    CGRect windowBounds;
+    if (CGRectMakeWithDictionaryRepresentation(rectDictionary, &windowBounds))
+    {
+      if (CGRectContainsRect(windowBounds, bounds))
+      {   
+        // if the windowBounds completely encloses our bounds, we are obscured.
+        obscured = true;
+        break;
+      }
+      // TODO: handle overlaping windows above us that combine to obscure.
+    }
+  }
+  CFRelease(windowDescs);
+  CFRelease(windowIDs);
+
+  return obscured;
+}
+
 void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -1327,6 +1398,11 @@ void CWinSystemOSX::ResetOSScreensaver()
 {
   // allow os screensaver only if we are fullscreen
   EnableSystemScreenSaver(!m_bFullScreen);
+}
+
+bool CWinSystemOSX::EnableFrameLimiter()
+{
+  return IsObscured();
 }
 
 void CWinSystemOSX::Register(IDispResource *resource)

@@ -56,6 +56,7 @@ public:
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();
   virtual void ResetOSScreensaver();
+  virtual bool EnableFrameLimiter();
 
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
@@ -74,6 +75,7 @@ protected:
   bool  SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx);
   void  FillInVideoModes();
   bool  FlushBuffer(void);
+  bool  IsObscured(void);
 
   void* m_glContext;
   static void* m_lastOwnedContext;
