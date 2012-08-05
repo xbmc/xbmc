@@ -372,7 +372,6 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldGenre) index = VIDEODB_ID_TV_GENRE;
     else if (field == FieldMPAA) index = VIDEODB_ID_TV_MPAA;
     else if (field == FieldStudio) index = VIDEODB_ID_TV_STUDIOS;
-    else if (field == FieldSortTitle) index = VIDEODB_ID_TV_SORTTITLE;
     else if (field == FieldPath) return VIDEODB_DETAILS_TVSHOW_PATH;
     else if (field == FieldDateAdded) return VIDEODB_DETAILS_TVSHOW_DATEADDED;
     else if (field == FieldNumberOfEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_EPISODES;
@@ -399,6 +398,8 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldDirector) index = VIDEODB_ID_EPISODE_DIRECTOR;
     else if (field == FieldSeason) index = VIDEODB_ID_EPISODE_SEASON;
     else if (field == FieldEpisodeNumber) index = VIDEODB_ID_EPISODE_EPISODE;
+    else if (field == FieldEpisodeNumberSpecialSort) index = VIDEODB_ID_EPISODE_SORTEPISODE;
+    else if (field == FieldSeasonSpecialSort) index = VIDEODB_ID_EPISODE_SORTSEASON;
     else if (field == FieldFilename) return VIDEODB_DETAILS_EPISODE_FILE;
     else if (field == FieldPath) return VIDEODB_DETAILS_EPISODE_PATH;
     else if (field == FieldPlaycount) return VIDEODB_DETAILS_EPISODE_PLAYCOUNT;
