@@ -2492,7 +2492,7 @@ bool CApplication::OnKey(const CKey& key)
 
   bool bResult = false;
 
-  // play sound before the action unless the button is held, 
+  // play sound before the action unless the button is held,
   // where we execute after the action as held actions aren't fired every time.
   if(action.GetHoldTime())
   {
@@ -3335,7 +3335,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
      CAction action(actionID, fAmount, 0.0f, actionName, holdTime);
      bool bResult = false;
 
-     // play sound before the action unless the button is held, 
+     // play sound before the action unless the button is held,
      // where we execute after the action as held actions aren't fired every time.
      if(action.GetHoldTime())
      {

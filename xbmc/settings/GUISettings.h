@@ -301,11 +301,11 @@ public:
   virtual CStdString ToString() const;
 
   void SetData(int iData)
-  { 
+  {
     if (m_entries.empty())
     {
       m_iData = iData;
-      if (m_iData < m_iMin) m_iData = m_iMin; 
+      if (m_iData < m_iMin) m_iData = m_iMin;
       if (m_iData > m_iMax) m_iData = m_iMax;
     }
     else
