@@ -232,9 +232,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   m_defaultCrossfadeMS = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
 
-  if (m_streams.size() > 1 || !m_defaultCrossfadeMS)
+  if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
-    CloseAllStreams();
+    CloseAllStreams(!m_isPaused);
+    m_isPaused = false; // Make sure to reset the pause state
   }
 
   if (!QueueNextFileEx(file, false))
