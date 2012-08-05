@@ -301,19 +301,24 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
          (m_orientation == HORIZONTAL && (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
         float speed = std::min(1.0f, (float)(action.GetHoldTime() - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
-        unsigned int frameDuration = CTimeUtils::GetFrameTime() - m_lastHoldTime;
+        unsigned int frameDuration = std::min(CTimeUtils::GetFrameTime() - m_lastHoldTime, 50u); // max 20fps
 
-        //scrollrate is minimum 4 items/sec and max rows/10 items/sec
-        m_scrollItemsPerFrame += std::max(0.004f*(float)frameDuration, (float)(speed * 0.0001f * GetRows() * frameDuration));
+        // scrollrate is minimum 10 items/sec and timed to take around 10 seconds
+        // with ramp up (num_rows/7 items per second max speed) to traverse a long list
+        m_scrollItemsPerFrame += std::max(0.01f*(float)frameDuration, (float)(speed * 0.00015f * GetRows() * frameDuration));
         m_lastHoldTime = CTimeUtils::GetFrameTime();
 
         if(m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
           return false;
 
-        if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_UP)
-          while (m_scrollItemsPerFrame-- >= 1) MoveUp(false);
-        else
-          while (m_scrollItemsPerFrame-- >= 1) MoveDown(false);
+        while (m_scrollItemsPerFrame >= 1)
+        {
+          if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_UP)
+            MoveUp(false);
+          else
+            MoveDown(false);
+          m_scrollItemsPerFrame--;
+        }
         return true;
       }
       else
