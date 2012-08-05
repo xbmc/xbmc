@@ -29,7 +29,7 @@
 class CGUIWindow;
 class CGUIImage;
 class CGUIVisualisationControl;
-class CDVDPlayer;
+class KaraokeVideoBackground;
 
 class CKaraokeWindowBackground : public IPlayerCallback
 {
@@ -49,7 +49,7 @@ public:
   virtual void StartImage( const CStdString& path );
 
   // Start with song-specific video background
-  virtual void StartVideo( const CStdString& path, int64_t offset = 0 );
+  virtual void StartVideo( const CStdString& path = "" );
 
   // Start with default (setting-specific) background
   virtual void StartDefault();
@@ -59,9 +59,6 @@ public:
 
   // Stop any kind of background
   virtual void Stop();
-
-  // Switch to next video, or restart current one
-  virtual void NextVideo();
 
   // Function forwarders
   virtual bool OnAction(const CAction &action);
@@ -86,10 +83,6 @@ private:
   // This critical section protects all variables except m_videoEnded
   CCriticalSection          m_CritSectionShared;
 
-  // This critical section protects m_videoEnded, since it could be changed from a different thread
-  // while the section above is locked
-  CCriticalSection          m_CritSectionVideoEnded;
-
   // for visualization background
   CGUIVisualisationControl * m_VisControl;
   CGUIImage                * m_ImgControl;
@@ -100,14 +93,11 @@ private:
   CGUIWindow               * m_parentWindow;
 
   // Video player pointer
-  CDVDPlayer               * m_videoPlayer;
-  bool                       m_videoEnded;
+  KaraokeVideoBackground   * m_videoPlayer;
 
   // For default visualisation mode
   BackgroundMode             m_defaultMode;
-  CStdString                 m_path; // image or video
-  int64_t                    m_videoLastTime; // video only
-  bool                       m_playingDefaultVideo; // whether to store the time
+  CStdString                 m_path; // image
 };
 
 #endif

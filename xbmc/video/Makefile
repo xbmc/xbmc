@@ -1,4 +1,5 @@
 SRCS=Bookmark.cpp \
+     FFmpegVideoDecoder.cpp \
      GUIViewStateVideo.cpp \
      Teletext.cpp \
      VideoDatabase.cpp \
