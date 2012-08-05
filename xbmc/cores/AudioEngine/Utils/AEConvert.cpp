@@ -90,7 +90,7 @@ CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
     case AE_FMT_S24LE3: return &S24LE3_Float;
     case AE_FMT_S24BE3: return &S24BE3_Float;
 #if defined(__ARM_NEON__)
-    case AE_FMT_S32LE : return &S32LE_Float_Neon
+    case AE_FMT_S32LE : return &S32LE_Float_Neon;
     case AE_FMT_S32BE : return &S32BE_Float_Neon;
 #else
     case AE_FMT_S32LE : return &S32LE_Float;
