@@ -191,8 +191,9 @@ namespace VIDEO
     m_pObserver = pObserver;
   }
 
-  bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
+  bool CVideoInfoScanner::DoScan(const CFileItemPtr& file)
   {
+    CStdString strDirectory = file->GetPath();
     if (m_pObserver)
     {
       m_pObserver->OnDirectoryChanged(strDirectory);
@@ -234,7 +235,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnStateChanged(content == CONTENT_MOVIES ? FETCHING_MOVIE_INFO : FETCHING_MUSICVIDEO_INFO);
 
-      CStdString fastHash = GetFastHash(strDirectory);
+      CStdString fastHash = GetFastHash(file);
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.IsEmpty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change (fasthash)", strDirectory.c_str());
@@ -244,32 +245,41 @@ namespace VIDEO
       if (!bSkip)
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, g_settings.m_videoExtensions);
-        items.Stack();
-        // compute hash
-        GetPathHash(items, hash);
-        if (hash != dbHash && !hash.IsEmpty())
-        {
-          if (dbHash.IsEmpty())
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", strDirectory.c_str());
-          else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", strDirectory.c_str(), dbHash.c_str(), hash.c_str());
-        }
-        else
-        { // they're the same or the hash is empty (dir empty/dir not retrievable)
-          if (hash.IsEmpty() && !dbHash.IsEmpty())
+        if (!foundDirectly || settings.parent_name_root || !settings.parent_name)
+        { // folder may contain movies
+          items.Stack();
+          // compute hash
+          GetPathHash(items, hash);
+          if (hash != dbHash && !hash.IsEmpty())
           {
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", strDirectory.c_str());
-            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+            if (dbHash.IsEmpty())
+              CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", strDirectory.c_str());
+            else
+              CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", strDirectory.c_str(), dbHash.c_str(), hash.c_str());
           }
           else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
-          bSkip = true;
-          if (m_pObserver)
-            m_pObserver->OnDirectoryScanned(strDirectory);
+          { // they're the same or the hash is empty (dir empty/dir not retrievable)
+            if (hash.IsEmpty() && !dbHash.IsEmpty())
+            {
+              CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", strDirectory.c_str());
+              m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+            }
+            else
+              CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
+            bSkip = true;
+            if (m_pObserver)
+              m_pObserver->OnDirectoryScanned(strDirectory);
+          }
+          // update the hash to a fast hash if needed
+          // it's okay to fast hash movies in seperate dirs (that are not scanned recursively)
+          if (!fastHash.IsEmpty() && ((settings.parent_name && settings.recurse <= 1) || CanFastHash(items)))
+            hash = fastHash;
         }
-        // update the hash to a fast hash if needed
-        if (CanFastHash(items) && !fastHash.IsEmpty())
-          hash = fastHash;
+        else
+        {
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' because we don't expect to find movie info in a root dir that contain movies in seperate folders", strDirectory.c_str());
+          bSkip = true;
+        }
       }
     }
     else if (content == CONTENT_TVSHOWS)
@@ -337,13 +347,20 @@ namespace VIDEO
       // do not recurse for tv shows - we have already looked recursively for episodes
       if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && content != CONTENT_TVSHOWS)
       {
-        if (!DoScan(pItem->GetPath()))
+        if (!DoScan(pItem))
         {
           m_bStop = true;
         }
       }
     }
     return !m_bStop;
+  }
+
+  bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
+  {
+    // wrap the strDirectory in a CFileItemPtr so we can start using the recursive DoScan() method
+    CFileItemPtr filePtr = CFileItemPtr(new CFileItem(strDirectory, true));
+    return DoScan(filePtr);
   }
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
@@ -1552,19 +1569,29 @@ namespace VIDEO
     return items.GetFolderCount() == 0;
   }
 
-  CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory) const
-  {
-    struct __stat64 buffer;
-    if (XFILE::CFile::Stat(directory, &buffer) == 0)
+  CStdString CVideoInfoScanner::GetFastHash(const CFileItemPtr& file) const
+  { // attempt to use the time we've already retrieved
+    CStdString hash;
+    time_t timet;
+    file->m_dateTime.GetAsTime(timet);
+    if (timet)
     {
-      int64_t time = buffer.st_mtime;
-      if (!time)
-        time = buffer.st_ctime;
-      if (time)
+      hash.Format("fast%"PRIu32, timet);
+      return hash;
+    }
+    else
+    { // fall back to doing a stat() call
+      struct __stat64 buffer;
+      if (XFILE::CFile::Stat(file->GetPath(), &buffer) == 0)
       {
-        CStdString hash;
-        hash.Format("fast%"PRId64, time);
-        return hash;
+        int64_t time = buffer.st_mtime;
+        if (!time)
+          time = buffer.st_ctime;
+        if (time)
+        {
+          hash.Format("fast%"PRId64, time);
+          return hash;
+        }
       }
     }
     return "";

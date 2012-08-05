@@ -136,6 +136,7 @@ namespace VIDEO
 
   protected:
     virtual void Process();
+    bool DoScan(const CFileItemPtr& file);
     bool DoScan(const CStdString& strDirectory);
 
     INFO_RET RetrieveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress);
@@ -196,13 +197,14 @@ namespace VIDEO
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
     /*! \brief Retrieve a "fast" hash of the given directory (if available)
-     Performs a stat() on the directory, and uses modified time to create a "fast"
-     hash of the folder. If no modified time is available, the create time is used,
+     Uses the date of the directory to create a "fast" hash. If the directory has no date
+     a stat() is performed on the directory, and the modified time is used to create a
+     "fast" hash of the folder. If no modified time is available, the create time is used,
      and if neither are available, an empty hash is returned.
      \param directory folder to hash
      \return the hash of the folder of the form "fast<datetime>"
      */
-    CStdString GetFastHash(const CStdString &directory) const;
+    CStdString GetFastHash(const CFileItemPtr &file) const;
 
     /*! \brief Decide whether a folder listing could use the "fast" hash
      Fast hashing can be done whenever the folder contains no scannable subfolders, as the
