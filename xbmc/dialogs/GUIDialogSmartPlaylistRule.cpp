@@ -45,6 +45,7 @@ CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_RULE, "SmartPlaylistRule.xml")
 {
   m_cancelled = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule()
@@ -412,10 +413,17 @@ void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OP
   OnMessage(select);
 }
 
+void CGUIDialogSmartPlaylistRule::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
+}
+
 void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
-  ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
   CGUIDialog::OnInitWindow();
+
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_FIELD);
   // add the fields to the field spincontrol
   vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
   for (unsigned int i = 0; i < fields.size(); i++)
@@ -425,6 +433,16 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
     OnMessage(msg);
   }
   UpdateButtons();
+}
+
+void CGUIDialogSmartPlaylistRule::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  // reset field spincontrolex
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_FIELD);
+  // reset operator spincontrolex
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
 }
 
 bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdString& type)
