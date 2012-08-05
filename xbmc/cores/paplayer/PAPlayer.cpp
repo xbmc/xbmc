@@ -69,7 +69,7 @@ PAPlayer::~PAPlayer()
 {
   if (!m_isPaused)
     SoftStop(true, true);
-  CloseAllStreams(false);  
+  CloseAllStreams(false);
 
   /* wait for the thread to terminate */
   StopThread(true);//true - wait for end of thread
@@ -117,7 +117,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
         {
-          lock.Leave();	  
+          lock.Leave();
           wait = true;
           Sleep(1);
           lock.Enter();
@@ -163,7 +163,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
         StreamInfo* si = *itt;
         if (si->m_stream && si->m_stream->IsFading())
         {
-          lock.Leave();	  
+          lock.Leave();
           wait = true;
           Sleep(1);
           lock.Enter();
@@ -188,7 +188,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 {
   if (!fade) 
   {
-    CExclusiveLock lock(m_streamsLock);    
+    CExclusiveLock lock(m_streamsLock);
     while(!m_streams.empty())
     {
       StreamInfo* si = m_streams.front();
@@ -583,7 +583,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
         si->m_stream->UnRegisterAudioCallback();
       }
 
-      si->m_playNextTriggered = true;      
+      si->m_playNextTriggered = true;
     }
   }
 }
