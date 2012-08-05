@@ -4088,6 +4088,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       delete m_pPlayer;
       m_pPlayer = NULL;
     }
+    else
+    if (m_pPlayer->IsPaused()) // If paused, unpause first
+    {
+      m_pPlayer->Pause();
+    }
   }
 
   if (!m_pPlayer)
