@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace std;
@@ -64,6 +65,10 @@ CStdString CDirectoryNodeMoviesOverview::GetLocalizedName() const
 
 bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items) const
 {
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(BuildPath()))
+    return false;
+  
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
   {
     if (i == 6)
@@ -72,9 +77,12 @@ bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items) const
       if (db.Open() && !db.HasSets())
         continue;
     }
-    CStdString path;
-    path.Format("%s%ld/", BuildPath().c_str(), MovieChildren[i].id);
-    CFileItemPtr pItem(new CFileItem(path, true));
+
+    CVideoDbUrl itemUrl = videoUrl;
+    CStdString strDir; strDir.Format("%ld/", MovieChildren[i].id);
+    itemUrl.AppendPath(strDir);
+
+    CFileItemPtr pItem(new CFileItem(itemUrl.ToString(), true));
     pItem->SetLabel(g_localizeStrings.Get(MovieChildren[i].label));
     pItem->SetCanQueue(false);
     items.Add(pItem);

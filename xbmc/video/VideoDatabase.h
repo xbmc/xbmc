@@ -24,6 +24,7 @@
 #include "addons/Scraper.h"
 #include "Bookmark.h"
 #include "utils/SortUtils.h"
+#include "video/VideoDbUrl.h"
 
 #include <memory>
 #include <set>
@@ -321,20 +322,6 @@ class CVideoDatabase : public CDatabase
 {
 public:
 
-  class Filter
-  {
-  public:
-    Filter() : fields("*") {};
-    Filter(const char *w) : fields("*"), where(w) {};
-    Filter(const std::string &w) : fields("*"), where(w) {};
-    std::string fields;
-    std::string join;
-    std::string where;
-    std::string order;
-    std::string group;
-    std::string limit;
-  };
-
   class CActor    // used for actor retrieval for non-master users
   {
   public:
@@ -579,16 +566,16 @@ public:
   bool ArbitraryExec(const CStdString& strExec);
 
   // general browsing
-  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetCountriesNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
+  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
+  bool GetCountriesNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
+  bool GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
+  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
+  bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
+  bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
+  bool GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
   bool GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetTagsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idArtist);
+  bool GetTagsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter());
+  bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idArtist, const Filter &filter = Filter());
 
   bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1, int idCountry=-1, int idSet=-1, int idTag=-1);
   bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1);
@@ -688,6 +675,8 @@ public:
   void AddTagToItem(int idItem, int idTag, const std::string &type);
   void RemoveTagFromItem(int idItem, int idTag, const std::string &type);
 
+  bool GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) const;
+
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
@@ -759,8 +748,8 @@ protected:
   CVideoInfoTag GetDetailsForMusicVideo(const dbiplus::sql_record* const record);
   void GetCommonDetails(std::auto_ptr<dbiplus::Dataset> &pDS, CVideoInfoTag &details);
   void GetCommonDetails(const dbiplus::sql_record* const record, CVideoInfoTag &details);
-  bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1);
-  bool GetNavCommon(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1);
+  bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1, const Filter &filter = Filter());
+  bool GetNavCommon(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1, const Filter &filter = Filter());
   void GetCast(const CStdString &table, const CStdString &table_id, int type_id, std::vector<SActorInfo> &cast);
 
   void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
@@ -816,7 +805,7 @@ private:
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void InvalidatePathHash(const CStdString& strPath);
 
-  bool GetStackedTvShowList(int idShow, CStdString& strIn);
+  bool GetStackedTvShowList(int idShow, CStdString& strIn) const;
   void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
 
   /*! \brief Get a safe filename from a given string
@@ -828,4 +817,6 @@ private:
 
   void AnnounceRemove(std::string content, int id);
   void AnnounceUpdate(std::string content, int id);
+
+  bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CVideoDbUrl &videoUrl);
 };

@@ -214,7 +214,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   musicdatabase.Open();
   
-  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", musicItems, NUM_ITEMS))
+  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://4/", musicItems, NUM_ITEMS))
   {
     long idAlbum = -1;
     CStdString strAlbumThumb;

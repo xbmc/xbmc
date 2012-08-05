@@ -94,6 +94,9 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
     pParent=pNode;
   }
 
+  // Add all the additional URL options to the last node
+  pNode->AddOptions(url.GetOptions());
+
   return pNode;
 }
 
@@ -227,7 +230,19 @@ CStdString CDirectoryNode::BuildPath() const
   for (int i=0; i<(int)array.size(); ++i)
     strPath+=array[i]+"/";
 
+  string options = m_options.GetOptionsString();
+  if (!options.empty())
+    strPath += "?" + options;
+
   return strPath;
+}
+
+void CDirectoryNode::AddOptions(const CStdString &options)
+{
+  if (options.empty())
+    return;
+
+  m_options.AddOptions(options);
 }
 
 //  Collects Query params from this and all parent nodes. If a NODE_TYPE can
@@ -263,6 +278,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   bool bSuccess=false;
   if (pNode.get())
   {
+    pNode->m_options = m_options;
     bSuccess=pNode->GetContent(items);
     if (bSuccess)
     {

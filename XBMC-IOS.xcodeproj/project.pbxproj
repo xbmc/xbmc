@@ -23,6 +23,10 @@
 		36A9444E15821F2C00727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9444C15821F2C00727135 /* DatabaseUtils.cpp */; };
 		36A9445215821F5300727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9445015821F5300727135 /* SortUtils.cpp */; };
 		36A9465B15AA26BC00727135 /* DirectoryNodeTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9465915AA26BC00727135 /* DirectoryNodeTags.cpp */; };
+		36A9467415CF208B00727135 /* MusicDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9467215CF208B00727135 /* MusicDbUrl.cpp */; };
+		36A9467815CF20A500727135 /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9467615CF20A500727135 /* UrlOptions.cpp */; };
+		36A9467B15CF20BD00727135 /* VideoDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9467915CF20BD00727135 /* VideoDbUrl.cpp */; };
+		36A9467E15CF20E100727135 /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9467C15CF20E100727135 /* DbUrl.cpp */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C0A7EDE13A5DC2800AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */; };
 		7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7F9B13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp */; };
@@ -1015,6 +1019,14 @@
 		36A9445115821F5300727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
 		36A9465915AA26BC00727135 /* DirectoryNodeTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTags.cpp; sourceTree = "<group>"; };
 		36A9465A15AA26BC00727135 /* DirectoryNodeTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTags.h; sourceTree = "<group>"; };
+		36A9467215CF208B00727135 /* MusicDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDbUrl.cpp; sourceTree = "<group>"; };
+		36A9467315CF208B00727135 /* MusicDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDbUrl.h; sourceTree = "<group>"; };
+		36A9467615CF20A500727135 /* UrlOptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UrlOptions.cpp; sourceTree = "<group>"; };
+		36A9467715CF20A500727135 /* UrlOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlOptions.h; sourceTree = "<group>"; };
+		36A9467915CF20BD00727135 /* VideoDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDbUrl.cpp; sourceTree = "<group>"; };
+		36A9467A15CF20BD00727135 /* VideoDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDbUrl.h; sourceTree = "<group>"; };
+		36A9467C15CF20E100727135 /* DbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DbUrl.cpp; sourceTree = "<group>"; };
+		36A9467D15CF20E100727135 /* DbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbUrl.h; sourceTree = "<group>"; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7EDD13A5DC2800AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -3937,6 +3949,8 @@
 				F56C87C6131F42ED000AD0F6 /* CueDocument.h */,
 				7C1D697615A8141000658B65 /* DatabaseManager.cpp */,
 				7C1D697715A8141000658B65 /* DatabaseManager.h */,
+				36A9467C15CF20E100727135 /* DbUrl.cpp */,
+				36A9467D15CF20E100727135 /* DbUrl.h */,
 				F56C87C9131F42ED000AD0F6 /* DynamicDll.cpp */,
 				F56C87CA131F42ED000AD0F6 /* DynamicDll.h */,
 				F56C87CB131F42ED000AD0F6 /* Favourites.cpp */,
@@ -5270,6 +5284,8 @@
 				F56C8623131F42EA000AD0F6 /* LastFmManager.h */,
 				F56C8624131F42EA000AD0F6 /* MusicDatabase.cpp */,
 				F56C8625131F42EA000AD0F6 /* MusicDatabase.h */,
+				36A9467215CF208B00727135 /* MusicDbUrl.cpp */,
+				36A9467315CF208B00727135 /* MusicDbUrl.h */,
 				F56C8626131F42EA000AD0F6 /* MusicInfoLoader.cpp */,
 				F56C8627131F42EA000AD0F6 /* MusicInfoLoader.h */,
 				F56C8628131F42EA000AD0F6 /* Song.cpp */,
@@ -5846,6 +5862,8 @@
 				F56C875C131F42EC000AD0F6 /* TuxBoxUtil.h */,
 				F56C8703131F42EB000AD0F6 /* URIUtils.cpp */,
 				F56C8704131F42EB000AD0F6 /* URIUtils.h */,
+				36A9467615CF20A500727135 /* UrlOptions.cpp */,
+				36A9467715CF20A500727135 /* UrlOptions.h */,
 				F56C875D131F42EC000AD0F6 /* Variant.cpp */,
 				F56C875E131F42EC000AD0F6 /* Variant.h */,
 				F56C875F131F42EC000AD0F6 /* Weather.cpp */,
@@ -5873,6 +5891,8 @@
 				F56C878F131F42EC000AD0F6 /* TeletextDefines.h */,
 				F56C8790131F42EC000AD0F6 /* VideoDatabase.cpp */,
 				F56C8791131F42EC000AD0F6 /* VideoDatabase.h */,
+				36A9467915CF20BD00727135 /* VideoDbUrl.cpp */,
+				36A9467A15CF20BD00727135 /* VideoDbUrl.h */,
 				F56C8792131F42EC000AD0F6 /* VideoInfoDownloader.cpp */,
 				F56C8793131F42EC000AD0F6 /* VideoInfoDownloader.h */,
 				F56C8794131F42EC000AD0F6 /* VideoInfoScanner.cpp */,
@@ -7252,6 +7272,10 @@
 				DF02A888153382A60084754E /* IOSKeyboard.mm in Sources */,
 				DF830C9515BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */,
 				DF830C9E15BB215500602BE6 /* GUIKeyboardFactory.cpp in Sources */,
+				36A9467415CF208B00727135 /* MusicDbUrl.cpp in Sources */,
+				36A9467815CF20A500727135 /* UrlOptions.cpp in Sources */,
+				36A9467B15CF20BD00727135 /* VideoDbUrl.cpp in Sources */,
+				36A9467E15CF20E100727135 /* DbUrl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
