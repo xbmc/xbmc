@@ -815,8 +815,12 @@ bool CApplication::CreateGUI()
     g_guiSettings.SetResolution(RES_DESKTOP);
   }
 
-  // update the window resolution
-  g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
+  // Update the window resolution and preserve the overscan settings loaded from GUI settings
+  g_Windowing.SetWindowResolution(
+    g_guiSettings.GetInt("window.width"),
+    g_guiSettings.GetInt("window.height"),
+    false
+  );
 
   if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
