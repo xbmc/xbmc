@@ -48,7 +48,7 @@
 
 using namespace PERIPHERALS;
 
-extern HWND g_hWnd;
+HWND g_hWnd = NULL;
 
 #define XBMC_arraysize(array)	(sizeof(array)/sizeof(array[0]))
 
@@ -365,6 +365,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
   if (uMsg == WM_CREATE)
   {
+    g_hWnd = hWnd;
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG)(((LPCREATESTRUCT)lParam)->lpCreateParams));
     DIB_InitOSKeymap();
     g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));

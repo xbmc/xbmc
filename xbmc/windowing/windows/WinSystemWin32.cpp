@@ -30,8 +30,6 @@
 #ifdef _WIN32
 #include <tpcshrd.h>
 
-HWND g_hWnd = NULL;
-
 CWinSystemWin32::CWinSystemWin32()
 : CWinSystemBase()
 {
@@ -120,7 +118,6 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   PtrCloseGestureInfoHandle = (pCloseGestureInfoHandle) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "CloseGestureInfoHandle" );
 
   m_hWnd = hWnd;
-  g_hWnd = hWnd;
   m_hDC = GetDC(m_hWnd);
 
   m_bWindowCreated = true;
@@ -670,8 +667,8 @@ bool CWinSystemWin32::Show(bool raise)
   UpdateWindow(m_hWnd);
   if (raise)
   {
-    SetForegroundWindow(g_hWnd);
-    SetFocus(g_hWnd);
+    SetForegroundWindow(m_hWnd);
+    SetFocus(m_hWnd);
   }
   return true;
 }
