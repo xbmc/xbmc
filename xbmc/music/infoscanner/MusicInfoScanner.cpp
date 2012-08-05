@@ -746,7 +746,8 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
     /*
      Find art that is common across these items
      If we find a single art image we treat it as the album art
-     else we keep everything as song art.
+     and discard song art else we use first as album art and
+     keep everything as song art.
      */
     bool singleArt = true;
     CSong *art = NULL;
@@ -764,23 +765,28 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
           art = &song;
       }
     }
+
+    /*
+      assign the first art found to the album - better than no art at all
+    */
+
+    if (art && albumArt.empty())
+    {
+      if (!art->strThumb.empty())
+        albumArt = art->strThumb;
+      else
+        albumArt = CTextureCache::GetWrappedImageURL(art->strFileName, "music");
+    }
+
+    album.art["thumb"] = albumArt;
+
     if (singleArt)
-    { // a single piece of art was found for these songs so assign to the album
-      // and clear out of the songs
-      if (art && albumArt.empty())
-      {
-        if (!art->strThumb.empty())
-          albumArt = art->strThumb;
-        else
-          albumArt = CTextureCache::GetWrappedImageURL(art->strFileName, "music");
-      }
+    { //if singleArt then we can clear the artwork for all songs
       for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
         k->strThumb.clear();
-      album.art["thumb"] = albumArt;
     }
     else
     { // more than one piece of art was found for these songs, so cache per song
-      // and don't assign to the album
       for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
       {
         if (k->strThumb.empty() && !k->embeddedArt.empty())
