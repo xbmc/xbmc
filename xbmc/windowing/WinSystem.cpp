@@ -85,13 +85,24 @@ void CWinSystemBase::UpdateResolutions()
   window.strMode = "Windowed";
 }
 
-void CWinSystemBase::SetWindowResolution(int width, int height)
+void CWinSystemBase::SetWindowResolution(
+  int width,
+  int height,
+  bool resetOverscanSettings /* = true */)
 {
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
   window.iWidth = width;
   window.iHeight = height;
   window.iSubtitles = (int)(0.965 * window.iHeight);
-  g_graphicsContext.ResetOverscan(window);
+  /* Reset overscan settings only if resetting is requested (for example on resolution
+     change or when the overscan settings don't make any sense. For example when they
+     are not initialized yet and left = right = 0. */
+  if (resetOverscanSettings
+      || (   window.Overscan.left >= window.Overscan.right
+          || window.Overscan.top  >= window.Overscan.bottom)
+  ) {
+    g_graphicsContext.ResetOverscan(window);
+  }
 }
 
 int CWinSystemBase::DesktopResolution(int screen)

@@ -95,7 +95,7 @@ public:
   virtual int GetCurrentScreen() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; }
   virtual void UpdateResolutions();
-  void SetWindowResolution(int width, int height);
+  void SetWindowResolution(int width, int height, bool resetOverscanSettings = true);
   int DesktopResolution(int screen);
   std::vector<RESOLUTION_WHR> ScreenResolutions(int screen);
   std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height);

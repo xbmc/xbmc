@@ -70,6 +70,8 @@ void CSettings::Initialize()
   vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
 
   m_ResInfo.insert(it, RES_CUSTOM, res);
+  /* Set the mode name for windowed mode so it can be properly persisted and loaded */
+  m_ResInfo[RES_WINDOW].strMode = "Windowed";
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
@@ -494,9 +496,6 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
     // find this resolution in our resolution vector
     for (unsigned int res = 0; res < m_ResInfo.size(); res++)
     {
-      if (res == RES_WINDOW)
-        continue;
-
       if (m_ResInfo[res].strMode == mode)
       { // found, read in the rest of the information for this item
         const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
@@ -517,7 +516,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
 
         GetInteger(pResolution, "subtitles", m_ResInfo[res].iSubtitles, (int)((1 - fSafe)*m_ResInfo[res].iHeight), m_ResInfo[res].iHeight / 2, m_ResInfo[res].iHeight*5 / 4);
         GetFloat(pResolution, "pixelratio", m_ResInfo[res].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
-    /*    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[res].strMode, m_ResInfo[res].iWidth, m_ResInfo[res].iHeight);
+    /*    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[res].strMode.c_str(), m_ResInfo[res].iWidth, m_ResInfo[res].iHeight);
         CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i)",
                   m_ResInfo[res].iSubtitles, m_ResInfo[res].fPixelRatio,
                   m_ResInfo[res].Overscan.left, m_ResInfo[res].Overscan.top,
