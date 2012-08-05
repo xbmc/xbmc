@@ -225,7 +225,6 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
     m_bFilterInitialized = false;
   }
 
-  m_renderOrientation = orientation;
   m_fps = fps;
   m_flags = flags;
   m_format = format;
@@ -781,10 +780,10 @@ void CWinRenderer::ScaleFixedPipeline()
 
   VERTEX vertex[] =
   {
-    {m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
-    {m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {m_destRect.x2, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {m_destRect.x1, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
   };
 
   // Compensate for D3D coordinates system
@@ -862,7 +861,7 @@ void CWinRenderer::Stage1()
 {
   if (!m_bUseHQScaler)
   {
-      m_colorShader->Render(m_sourceRect, m_rotatedDestCoords,
+      m_colorShader->Render(m_sourceRect, m_destRect,
                             g_settings.m_currentVideoSettings.m_Contrast,
                             g_settings.m_currentVideoSettings.m_Brightness,
                             m_flags,
@@ -880,7 +879,7 @@ void CWinRenderer::Stage1()
     CRect srcRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
     CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
 
-    m_colorShader->Render(srcRect, m_rotatedDestCoords,
+    m_colorShader->Render(srcRect, rtRect,
                           g_settings.m_currentVideoSettings.m_Contrast,
                           g_settings.m_currentVideoSettings.m_Brightness,
                           m_flags,
@@ -896,7 +895,7 @@ void CWinRenderer::Stage1()
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, m_rotatedDestCoords);
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, m_destRect);
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
@@ -1033,12 +1032,6 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
 
   if(feature == RENDERFEATURE_CONTRAST)
     return true;
-
-  if(feature == RENDERFEATURE_ROTATION)
-  {
-    if (m_renderMethod != RENDER_DXVA)
-      return true;
-  }
 
   return false;
 }
