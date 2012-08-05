@@ -514,6 +514,8 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
   m_glContext = 0;
   m_SDLSurface = NULL;
   m_osx_events = NULL;
+  m_obscured   = false;
+  m_obscured_timecheck = XbmcThreads::SystemClockMillis() + 1000;
   m_use_system_screensaver = true;
   // check runtime, we only allow this on 10.5+
   m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
@@ -1227,35 +1229,62 @@ bool CWinSystemOSX::FlushBuffer(void)
 
 bool CWinSystemOSX::IsObscured(void)
 {
+  // check once a second if we are obscured.
+  unsigned int now_time = XbmcThreads::SystemClockMillis();
+  if (m_obscured_timecheck > now_time)
+    return m_obscured;
+  else
+    m_obscured_timecheck = now_time + 1000;
+
   NSOpenGLContext* cur_context = [NSOpenGLContext currentContext];
   NSView* view = [cur_context view];
   if (!view)
-    return true;
+  {
+    // sanity check, we should always have a view
+    m_obscured = true;
+    return m_obscured;
+  }
 
   NSWindow *window = [view window];
   if (!window)
-    return true;
+  {
+    // sanity check, we should always have a window
+    m_obscured = true;
+    return m_obscured;
+  }
 
   if ([window isVisible] == NO)
-    return true;
+  {
+    // not visable means the window is not showing.
+    // this should never really happen as we are always visable
+    // even when minimized in dock.
+    m_obscured = true;
+    return m_obscured;
+  }
 
+  // check if we are showing on the active workspace.
   if ([window isOnActiveSpace] == NO)
-    return true;
+  {
+    m_obscured = true;
+    return m_obscured;
+  }
+
+  // default to false before we start parsing though the windows.
+  // if we are are obscured by any windows, then set true.
+  m_obscured = false;
 
   CGWindowListOption opts;
   opts = kCGWindowListOptionOnScreenAboveWindow | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);
-  if (!windowIDs)
-    return false;
+  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);  if (!windowIDs)
+    return m_obscured;
 
   CFArrayRef windowDescs = CGWindowListCreateDescriptionFromArray(windowIDs);
   if (!windowDescs)
   {
     CFRelease(windowIDs);
-    return false;
+    return m_obscured;
   }
 
-  bool obscured = false;
   CGRect bounds = NSRectToCGRect([window frame]);
   // kCGWindowBounds measures the origin as the top-left corner of the rectangle
   //  relative to the top-left corner of the screen.
@@ -1284,7 +1313,7 @@ bool CWinSystemOSX::IsObscured(void)
       if (CGRectContainsRect(windowBounds, bounds))
       {   
         // if the windowBounds completely encloses our bounds, we are obscured.
-        obscured = true;
+        m_obscured = true;
         break;
       }
       // TODO: handle overlaping windows above us that combine to obscure.
@@ -1293,7 +1322,7 @@ bool CWinSystemOSX::IsObscured(void)
   CFRelease(windowDescs);
   CFRelease(windowIDs);
 
-  return obscured;
+  return m_obscured;
 }
 
 void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)

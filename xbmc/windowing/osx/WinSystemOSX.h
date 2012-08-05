@@ -81,6 +81,9 @@ protected:
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
   CWinEventsOSX *m_osx_events;
+  bool                         m_obscured;
+  unsigned int                 m_obscured_timecheck;
+
   bool                         m_use_system_screensaver;
   bool                         m_can_display_switch;
   void                        *m_windowDidMove;
