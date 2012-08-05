@@ -195,6 +195,10 @@
 		36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
 		36A9444115821E7C00727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443F15821E7C00727135 /* SortUtils.cpp */; };
 		36A9464C15AA25FD00727135 /* DirectoryNodeTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */; };
+		36A9466315CF1FA600727135 /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466115CF1FA600727135 /* DbUrl.cpp */; };
+		36A9466715CF1FD200727135 /* MusicDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466515CF1FD200727135 /* MusicDbUrl.cpp */; };
+		36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466815CF1FED00727135 /* UrlOptions.cpp */; };
+		36A9466D15CF201F00727135 /* VideoDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466B15CF201F00727135 /* VideoDbUrl.cpp */; };
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
@@ -1379,6 +1383,14 @@
 		36A9444015821E7C00727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
 		36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTags.cpp; sourceTree = "<group>"; };
 		36A9464B15AA25FD00727135 /* DirectoryNodeTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTags.h; sourceTree = "<group>"; };
+		36A9466115CF1FA600727135 /* DbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DbUrl.cpp; sourceTree = "<group>"; };
+		36A9466215CF1FA600727135 /* DbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbUrl.h; sourceTree = "<group>"; };
+		36A9466515CF1FD200727135 /* MusicDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDbUrl.cpp; sourceTree = "<group>"; };
+		36A9466615CF1FD200727135 /* MusicDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDbUrl.h; sourceTree = "<group>"; };
+		36A9466815CF1FED00727135 /* UrlOptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UrlOptions.cpp; sourceTree = "<group>"; };
+		36A9466915CF1FED00727135 /* UrlOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlOptions.h; sourceTree = "<group>"; };
+		36A9466B15CF201F00727135 /* VideoDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDbUrl.cpp; sourceTree = "<group>"; };
+		36A9466C15CF201F00727135 /* VideoDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDbUrl.h; sourceTree = "<group>"; };
 		3802709713D5A62D009493DD /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		3802709813D5A653009493DD /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		3802709913D5A653009493DD /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
@@ -3457,6 +3469,8 @@
 				E38E185B0D25F9FA00618676 /* LastFmManager.h */,
 				E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */,
 				E38E1D900D25F9FD00618676 /* MusicDatabase.h */,
+				36A9466515CF1FD200727135 /* MusicDbUrl.cpp */,
+				36A9466615CF1FD200727135 /* MusicDbUrl.h */,
 				E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */,
 				E38E1D920D25F9FD00618676 /* MusicInfoLoader.h */,
 				E38E1E0D0D25F9FD00618676 /* Song.cpp */,
@@ -4010,6 +4024,8 @@
 				F5E55B6F10741340006E788A /* TeletextDefines.h */,
 				E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */,
 				E38E1E940D25F9FD00618676 /* VideoDatabase.h */,
+				36A9466B15CF201F00727135 /* VideoDbUrl.cpp */,
+				36A9466C15CF201F00727135 /* VideoDbUrl.h */,
 				E38E1E4A0D25F9FD00618676 /* VideoInfoDownloader.cpp */,
 				E38E1E4B0D25F9FD00618676 /* VideoInfoDownloader.h */,
 				E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */,
@@ -4336,6 +4352,8 @@
 				E38E167F0D25F9FA00618676 /* CueDocument.h */,
 				7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */,
 				7C1D682815A7D2FD00658B65 /* DatabaseManager.h */,
+				36A9466115CF1FA600727135 /* DbUrl.cpp */,
+				36A9466215CF1FA600727135 /* DbUrl.h */,
 				E38E168C0D25F9FA00618676 /* DynamicDll.cpp */,
 				E38E168D0D25F9FA00618676 /* DynamicDll.h */,
 				E38E16900D25F9FA00618676 /* Favourites.cpp */,
@@ -5917,6 +5935,8 @@
 				E38E1E8A0D25F9FD00618676 /* TuxBoxUtil.h */,
 				18B7C8EC12942613009E7A26 /* URIUtils.cpp */,
 				18B7C8ED12942613009E7A26 /* URIUtils.h */,
+				36A9466815CF1FED00727135 /* UrlOptions.cpp */,
+				36A9466915CF1FED00727135 /* UrlOptions.h */,
 				7CF1FB09123B1AF000B2CBCB /* Variant.cpp */,
 				7CF1FB0A123B1AF000B2CBCB /* Variant.h */,
 				E38E1E8D0D25F9FD00618676 /* Weather.cpp */,
@@ -7319,6 +7339,10 @@
 				7C1A492315A962EE004AF4A4 /* SeekHandler.cpp in Sources */,
 				DF830D0C15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */,
 				DF830D1215BB262700602BE6 /* GUIKeyboardFactory.cpp in Sources */,
+				36A9466315CF1FA600727135 /* DbUrl.cpp in Sources */,
+				36A9466715CF1FD200727135 /* MusicDbUrl.cpp in Sources */,
+				36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */,
+				36A9466D15CF201F00727135 /* VideoDbUrl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

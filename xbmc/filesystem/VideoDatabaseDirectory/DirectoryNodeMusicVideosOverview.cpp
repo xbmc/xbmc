@@ -22,6 +22,7 @@
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -60,12 +61,19 @@ CStdString CDirectoryNodeMusicVideosOverview::GetLocalizedName() const
 
 bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items) const
 {
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(BuildPath()))
+    return false;
+  
   for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
   {
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(MusicVideoChildren[i].label)));
-    CStdString strDir;
-    strDir.Format("%ld/", MusicVideoChildren[i].id);
-    pItem->SetPath(BuildPath() + strDir);
+
+    CVideoDbUrl itemUrl = videoUrl;
+    CStdString strDir; strDir.Format("%ld/", MusicVideoChildren[i].id);
+    itemUrl.AppendPath(strDir);
+    pItem->SetPath(itemUrl.ToString());
+
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);
     items.Add(pItem);

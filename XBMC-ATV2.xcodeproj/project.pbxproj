@@ -22,6 +22,10 @@
 		36A9445915821F8300727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9445715821F8300727135 /* DatabaseUtils.cpp */; };
 		36A9445D15821FAC00727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9445B15821FAB00727135 /* SortUtils.cpp */; };
 		36A9465315AA269B00727135 /* DirectoryNodeTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9465115AA269B00727135 /* DirectoryNodeTags.cpp */; };
+		36A9468415CF213000727135 /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9468215CF213000727135 /* DbUrl.cpp */; };
+		36A9468815CF214300727135 /* VideoDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9468615CF214300727135 /* VideoDbUrl.cpp */; };
+		36A9468B15CF215300727135 /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9468915CF215300727135 /* UrlOptions.cpp */; };
+		36A9468E15CF217400727135 /* MusicDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9468C15CF217400727135 /* MusicDbUrl.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
 		7C0A7ECD13A5DBF900AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */; };
 		7C0A7FC813A9E75400AFC2BD /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FC413A9E75400AFC2BD /* DirtyRegionSolvers.cpp */; };
@@ -1013,6 +1017,14 @@
 		36A9445C15821FAB00727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
 		36A9465115AA269B00727135 /* DirectoryNodeTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTags.cpp; sourceTree = "<group>"; };
 		36A9465215AA269B00727135 /* DirectoryNodeTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTags.h; sourceTree = "<group>"; };
+		36A9468215CF213000727135 /* DbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DbUrl.cpp; sourceTree = "<group>"; };
+		36A9468315CF213000727135 /* DbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbUrl.h; sourceTree = "<group>"; };
+		36A9468615CF214300727135 /* VideoDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDbUrl.cpp; sourceTree = "<group>"; };
+		36A9468715CF214300727135 /* VideoDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDbUrl.h; sourceTree = "<group>"; };
+		36A9468915CF215300727135 /* UrlOptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UrlOptions.cpp; sourceTree = "<group>"; };
+		36A9468A15CF215300727135 /* UrlOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlOptions.h; sourceTree = "<group>"; };
+		36A9468C15CF217400727135 /* MusicDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDbUrl.cpp; sourceTree = "<group>"; };
+		36A9468D15CF217400727135 /* MusicDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDbUrl.h; sourceTree = "<group>"; };
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7ECC13A5DBF900AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -3574,6 +3586,8 @@
 				F56C77D9131EC154000AD0F6 /* CueDocument.h */,
 				7C1D698915A8142F00658B65 /* DatabaseManager.cpp */,
 				7C1D698A15A8142F00658B65 /* DatabaseManager.h */,
+				36A9468215CF213000727135 /* DbUrl.cpp */,
+				36A9468315CF213000727135 /* DbUrl.h */,
 				F56C77DC131EC154000AD0F6 /* DynamicDll.cpp */,
 				F56C77DD131EC154000AD0F6 /* DynamicDll.h */,
 				F56C77DE131EC154000AD0F6 /* Favourites.cpp */,
@@ -4906,6 +4920,8 @@
 				F56C7640131EC153000AD0F6 /* LastFmManager.h */,
 				F56C7641131EC153000AD0F6 /* MusicDatabase.cpp */,
 				F56C7642131EC153000AD0F6 /* MusicDatabase.h */,
+				36A9468C15CF217400727135 /* MusicDbUrl.cpp */,
+				36A9468D15CF217400727135 /* MusicDbUrl.h */,
 				F56C7643131EC153000AD0F6 /* MusicInfoLoader.cpp */,
 				F56C7644131EC153000AD0F6 /* MusicInfoLoader.h */,
 				F56C7645131EC153000AD0F6 /* Song.cpp */,
@@ -5473,6 +5489,8 @@
 				F56C776D131EC154000AD0F6 /* TuxBoxUtil.h */,
 				F56C7714131EC153000AD0F6 /* URIUtils.cpp */,
 				F56C7715131EC154000AD0F6 /* URIUtils.h */,
+				36A9468915CF215300727135 /* UrlOptions.cpp */,
+				36A9468A15CF215300727135 /* UrlOptions.h */,
 				F56C776E131EC154000AD0F6 /* Variant.cpp */,
 				F56C776F131EC154000AD0F6 /* Variant.h */,
 				F56C7770131EC154000AD0F6 /* Weather.cpp */,
@@ -5500,6 +5518,8 @@
 				F56C77A0131EC154000AD0F6 /* TeletextDefines.h */,
 				F56C77A1131EC154000AD0F6 /* VideoDatabase.cpp */,
 				F56C77A2131EC154000AD0F6 /* VideoDatabase.h */,
+				36A9468615CF214300727135 /* VideoDbUrl.cpp */,
+				36A9468715CF214300727135 /* VideoDbUrl.h */,
 				F56C77A3131EC154000AD0F6 /* VideoInfoDownloader.cpp */,
 				F56C77A4131EC154000AD0F6 /* VideoInfoDownloader.h */,
 				F56C77A5131EC154000AD0F6 /* VideoInfoScanner.cpp */,
@@ -7227,6 +7247,10 @@
 				7C1A493D15A968BA004AF4A4 /* SeekHandler.cpp in Sources */,
 				DF830D4815BB2CFC00602BE6 /* GUIKeyboardFactory.cpp in Sources */,
 				DF830D4B15BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */,
+				36A9468415CF213000727135 /* DbUrl.cpp in Sources */,
+				36A9468815CF214300727135 /* VideoDbUrl.cpp in Sources */,
+				36A9468B15CF215300727135 /* UrlOptions.cpp in Sources */,
+				36A9468E15CF217400727135 /* MusicDbUrl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

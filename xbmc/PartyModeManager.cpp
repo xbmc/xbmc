@@ -113,11 +113,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     {
       set<CStdString> playlists;
       if ( playlistLoaded )
-      {
         m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
-        if (!m_strCurrentFilterMusic.empty())
-          m_strCurrentFilterMusic = "WHERE " + m_strCurrentFilterMusic;
-      }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
       m_iMatchingSongs = (int)db.GetSongIDs(m_strCurrentFilterMusic, songIDs);
@@ -146,11 +142,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     {
       set<CStdString> playlists;
       if ( playlistLoaded )
-      {
         m_strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
-        if (!m_strCurrentFilterVideo.empty())
-          m_strCurrentFilterVideo = "WHERE " + m_strCurrentFilterVideo;
-      }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterVideo.c_str());
       m_iMatchingSongs += (int)db.GetMusicVideoIDs(m_strCurrentFilterVideo, songIDs2);
@@ -594,8 +586,8 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
     vector<pair<int,int> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
-    CStdString sqlWhereMusic = "where songview.idSong in (";
-    CStdString sqlWhereVideo = "idMVideo in (";
+    CStdString sqlWhereMusic = "songview.idSong IN (";
+    CStdString sqlWhereVideo = "idMVideo IN (";
 
     for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
@@ -614,7 +606,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
       sqlWhereMusic[sqlWhereMusic.size() - 1] = ')'; // replace the last comma with closing bracket
       CMusicDatabase database;
       database.Open();
-      database.GetSongsByWhere("", sqlWhereMusic, items);
+      database.GetSongsByWhere("musicdb://4/", sqlWhereMusic, items);
     }
     if (sqlWhereVideo.size() > 19)
     {
@@ -644,7 +636,7 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
   if (m_history.size())
   {
     if (m_strCurrentFilterMusic.IsEmpty())
-      historyWhereMusic = "where songview.idSong not in (";
+      historyWhereMusic = "songview.idSong not in (";
     else
       historyWhereMusic = m_strCurrentFilterMusic + " and songview.idSong not in (";
     if (m_strCurrentFilterVideo.IsEmpty())

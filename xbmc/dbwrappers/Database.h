@@ -35,6 +35,27 @@ class DatabaseSettings; // forward
 class CDatabase
 {
 public:
+  class Filter
+  {
+  public:
+    Filter() : fields("*") {};
+    Filter(const char *w) : fields("*"), where(w) {};
+    Filter(const std::string &w) : fields("*"), where(w) {};
+    
+    void AppendField(const std::string &strField);
+    void AppendJoin(const std::string &strJoin);
+    void AppendWhere(const std::string &strWhere, bool combineWithAnd = true);
+    void AppendOrder(const std::string &strOrder);
+    void AppendGroup(const std::string &strGroup);
+
+    std::string fields;
+    std::string join;
+    std::string where;
+    std::string order;
+    std::string group;
+    std::string limit;
+  };
+
   CDatabase(void);
   virtual ~CDatabase(void);
   bool IsOpen();
@@ -130,6 +151,8 @@ protected:
 
   int GetDBVersion();
   bool UpdateVersion(const CStdString &dbName);
+
+  bool BuildSQL(const CStdString &strQuery, const Filter &filter, CStdString &strSQL);
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 

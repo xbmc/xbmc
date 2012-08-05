@@ -2590,6 +2590,16 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\VideoDbUrl.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\DbUrl.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\UrlOptions.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\MusicDbUrl.cpp">
+      <Filter>music</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5223,6 +5233,16 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h">
       <Filter>dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\VideoDbUrl.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\DbUrl.h" />
+    <ClInclude Include="..\..\xbmc\utils\UrlOptions.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h">
+      <Filter>music</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
