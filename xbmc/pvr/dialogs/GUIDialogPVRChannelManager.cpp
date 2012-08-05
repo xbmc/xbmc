@@ -24,7 +24,7 @@
 #include "FileItem.h"
 #include "GUIDialogPVRGroupManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -431,7 +431,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditChannel(CGUIMessage &message)
   if (pItem->GetProperty("Virtual").asBoolean())
   {
     CStdString strURL = pItem->GetProperty("StreamURL").asString();
-    if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       pItem->SetProperty("StreamURL", strURL);
     return true;
   }
@@ -502,7 +502,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
     if (clientID == XBMC_VIRTUAL_CLIENTID)
     {
       CStdString strURL = "";
-      if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
+      if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       {
         if (!strURL.IsEmpty())
         {
@@ -668,7 +668,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   else if (button == CONTEXT_BUTTON_EDIT_SOURCE)
   {
     CStdString strURL = pItem->GetProperty("StreamURL").asString();
-    if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       pItem->SetProperty("StreamURL", strURL);
   }
   return true;

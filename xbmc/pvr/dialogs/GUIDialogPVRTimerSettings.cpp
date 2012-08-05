@@ -20,7 +20,7 @@
  */
 
 #include "GUIDialogPVRTimerSettings.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
@@ -240,12 +240,12 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
 
   if (setting.id == CONTROL_TMR_NAME)
   {
-    if (CGUIDialogKeyboard::ShowAndGetInput(tag->m_strTitle, g_localizeStrings.Get(19097), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(tag->m_strTitle, g_localizeStrings.Get(19097), false))
     {
       UpdateSetting(CONTROL_TMR_NAME);
     }
   }
-  if (setting.id == CONTROL_TMR_DIR && CGUIDialogKeyboard::ShowAndGetInput(tag->m_strDirectory, g_localizeStrings.Get(19104), false))
+  if (setting.id == CONTROL_TMR_DIR && CGUIKeyboardFactory::ShowAndGetInput(tag->m_strDirectory, g_localizeStrings.Get(19104), false))
       UpdateSetting(CONTROL_TMR_DIR);
   else if (setting.id == CONTROL_TMR_RADIO || setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {

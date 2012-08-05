@@ -22,7 +22,7 @@
 #include "GUIDialogPVRGroupManager.h"
 #include "Application.h"
 #include "FileItem.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
@@ -95,7 +95,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
   {
     CStdString strGroupName = "";
     /* prompt for a group name */
-    if (CGUIDialogKeyboard::ShowAndGetInput(strGroupName, g_localizeStrings.Get(19139), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, g_localizeStrings.Get(19139), false))
     {
       if (strGroupName != "")
       {
@@ -158,7 +158,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
       return bReturn;
 
     CStdString strGroupName(m_selectedGroup->GroupName());
-    if (CGUIDialogKeyboard::ShowAndGetInput(strGroupName, g_localizeStrings.Get(19139), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, g_localizeStrings.Get(19139), false))
     {
       if (strGroupName != "")
       {

@@ -26,7 +26,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIInfoManager.h"
 #include "pvr/PVRManager.h"
@@ -531,7 +531,7 @@ bool CGUIWindowPVRChannels::OnContextButtonFilter(CFileItem *item, CONTEXT_BUTTO
   if (button == CONTEXT_BUTTON_FILTER)
   {
     CStdString filter = m_parent->GetProperty("filter").asString();
-    CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
+    CGUIKeyboardFactory::ShowAndGetFilter(filter, false);
     m_parent->OnFilterItems(filter);
 
     bReturn = true;

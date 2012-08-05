@@ -21,7 +21,7 @@
 
 #include "GUIWindowPVRRecordings.h"
 
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -362,7 +362,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
 
     CPVRRecording *recording = item->GetPVRRecordingInfoTag();
     CStdString strNewName = recording->m_strTitle;
-    if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
     {
       if (g_PVRRecordings->RenameRecording(*item, strNewName))
         UpdateData();
