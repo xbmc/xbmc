@@ -48,7 +48,7 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ARTIST:
       m_type = "artists";
       break;
-      
+
     case NODE_TYPE_ALBUM:
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
@@ -78,7 +78,7 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ARTIST:
       m_type = "artists";
       break;
-      
+
     case NODE_TYPE_ALBUM:
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
@@ -86,7 +86,7 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_YEAR_ALBUM:
       m_type = "albums";
       break;
-      
+
     case NODE_TYPE_SONG:
     case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
@@ -100,15 +100,15 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_GENRE:
       m_type = "genres";
       break;
-      
+
     case NODE_TYPE_YEAR:
       m_type = "years";
       break;
-      
+
     case NODE_TYPE_ALBUM_COMPILATIONS:
       m_type = "albums";
       break;
-      
+
     case NODE_TYPE_SINGLES:
       m_type = "albums";
       break;
@@ -116,7 +116,7 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_TOP100:
       m_type = "top100";
       break;
-      
+
     case NODE_TYPE_ROOT:
     case NODE_TYPE_OVERVIEW:
     default:
@@ -135,15 +135,15 @@ bool CMusicDbUrl::parse()
 
   // add options based on the QueryParams
   if (queryParams.GetArtistId() != -1)
-    AddOption("artistid", queryParams.GetArtistId());
+    AddOption("artistid", (int)queryParams.GetArtistId());
   if (queryParams.GetAlbumId() != -1)
-    AddOption("albumid", queryParams.GetAlbumId());
+    AddOption("albumid", (int)queryParams.GetAlbumId());
   if (queryParams.GetGenreId() != -1)
-    AddOption("genreid", queryParams.GetGenreId());
+    AddOption("genreid", (int)queryParams.GetGenreId());
   if (queryParams.GetSongId() != -1)
-    AddOption("songid", queryParams.GetSongId());
+    AddOption("songid", (int)queryParams.GetSongId());
   if (queryParams.GetYear() != -1)
-    AddOption("year", queryParams.GetYear());
+    AddOption("year", (int)queryParams.GetYear());
 
   return true;
 }

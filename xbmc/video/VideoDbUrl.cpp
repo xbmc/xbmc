@@ -138,7 +138,7 @@ bool CVideoDbUrl::parse()
     case VIDEODATABASEDIRECTORY::NODE_TYPE_TAGS:
       m_itemType = "tags";
       break;
-      
+
     case VIDEODATABASEDIRECTORY::NODE_TYPE_ROOT:
     case VIDEODATABASEDIRECTORY::NODE_TYPE_OVERVIEW:
     default:
@@ -158,31 +158,31 @@ bool CVideoDbUrl::parse()
 
   // add options based on the QueryParams
   if (queryParams.GetActorId() != -1)
-    AddOption("actorid", queryParams.GetActorId());
+    AddOption("actorid", (int)queryParams.GetActorId());
   if (queryParams.GetAlbumId() != -1)
-    AddOption("albumid", queryParams.GetAlbumId());
+    AddOption("albumid", (int)queryParams.GetAlbumId());
   if (queryParams.GetCountryId() != -1)
-    AddOption("countryid", queryParams.GetCountryId());
+    AddOption("countryid", (int)queryParams.GetCountryId());
   if (queryParams.GetDirectorId() != -1)
-    AddOption("directorid", queryParams.GetDirectorId());
+    AddOption("directorid", (int)queryParams.GetDirectorId());
   if (queryParams.GetEpisodeId() != -1)
-    AddOption("episodeid", queryParams.GetEpisodeId());
+    AddOption("episodeid", (int)queryParams.GetEpisodeId());
   if (queryParams.GetGenreId() != -1)
-    AddOption("genreid", queryParams.GetGenreId());
+    AddOption("genreid", (int)queryParams.GetGenreId());
   if (queryParams.GetMovieId() != -1)
-    AddOption("movieid", queryParams.GetMovieId());
+    AddOption("movieid", (int)queryParams.GetMovieId());
   if (queryParams.GetMVideoId() != -1)
-    AddOption("musicvideoid", queryParams.GetMVideoId());
+    AddOption("musicvideoid", (int)queryParams.GetMVideoId());
   if (queryParams.GetSeason() != -1 && queryParams.GetSeason() >= -2)
-    AddOption("season", queryParams.GetSeason());
+    AddOption("season", (int)queryParams.GetSeason());
   if (queryParams.GetSetId() != -1)
-    AddOption("setid", queryParams.GetSetId());
+    AddOption("setid", (int)queryParams.GetSetId());
   if (queryParams.GetStudioId() != -1)
-    AddOption("studioid", queryParams.GetStudioId());
+    AddOption("studioid", (int)queryParams.GetStudioId());
   if (queryParams.GetTvShowId() != -1)
-    AddOption("tvshowid", queryParams.GetTvShowId());
+    AddOption("tvshowid", (int)queryParams.GetTvShowId());
   if (queryParams.GetYear() != -1)
-    AddOption("year", queryParams.GetYear());
+    AddOption("year", (int)queryParams.GetYear());
 
   return true;
 }
