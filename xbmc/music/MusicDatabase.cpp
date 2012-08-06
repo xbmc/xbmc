@@ -3497,7 +3497,7 @@ unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,in
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%) failed", __FUNCTION__, filter.where.c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, filter.where.c_str());
   }
   return 0;
 }
