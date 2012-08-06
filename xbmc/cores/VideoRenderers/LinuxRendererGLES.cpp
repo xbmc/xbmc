@@ -146,7 +146,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   {
     CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
-     // create the yuv textures    
+     // create the yuv textures
     LoadShaders();
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
@@ -155,7 +155,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
     m_bValidated = true;
     return true;
   }
-  return false;  
+  return false;
 }
 
 bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
@@ -403,7 +403,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     // outside the control of gles and on a different
     // graphics plane that is under the gles layer.
     // Clear a hole where video would appear so we do not see
-    // background images that have already been rendered. 
+    // background images that have already been rendered.
     g_graphicsContext.SetScissors(m_destRect);
 
     glEnable(GL_BLEND);
@@ -727,10 +727,10 @@ void CLinuxRendererGLES::UnInit()
 }
 
 inline void CLinuxRendererGLES::ReorderDrawPoints()
-{ 
-  
+{
+
   CBaseRenderer::ReorderDrawPoints();//call base impl. for rotating the points
-  
+
   //corevideo is flipped in y
   if(m_renderMethod & RENDER_CVREF)
   {
@@ -1138,7 +1138,7 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
     ver[i][2] = 0.0f;// set z to 0
     ver[i][3] = 1.0f;
   }
-  
+
   // Set texture coordinates
   tex[0][0] = tex[3][0] = planes[0].rect.x1;
   tex[0][1] = tex[1][1] = planes[0].rect.y1;
@@ -1260,7 +1260,7 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
   glEnableVertexAttribArray(texLoc);
   glEnableVertexAttribArray(colLoc);
 
-  // Set vertex coordinates 
+  // Set vertex coordinates
   for(int i = 0; i < 4; i++)
   {
     ver[i][0] = m_rotatedDestCoords[i].x;
@@ -1402,7 +1402,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 
       LoadPlane( fields[FIELD_BOT][0], GL_RGBA, buf.flipindex
                , im->width, im->height >> 1
-               , m_sourceWidth*8, m_rgbBuffer + m_sourceWidth*4);      
+               , m_sourceWidth*8, m_rgbBuffer + m_sourceWidth*4);
     }
     else
     {
@@ -1451,7 +1451,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
       LoadPlane( fields[FIELD_TOP][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
-      
+
       // Load Odd U & V Fields
       LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
@@ -1597,9 +1597,9 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         else
           CLog::Log(LOGDEBUG,  "GL: Creating RGB NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      } 
+      }
       else
       {
         if(m_renderMethod & RENDER_POT)
@@ -1805,13 +1805,13 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 {
   if(feature == RENDERFEATURE_BRIGHTNESS)
     return false;
-  
+
   if(feature == RENDERFEATURE_CONTRAST)
     return false;
 
   if(feature == RENDERFEATURE_GAMMA)
     return false;
-  
+
   if(feature == RENDERFEATURE_NOISE)
     return false;
 
