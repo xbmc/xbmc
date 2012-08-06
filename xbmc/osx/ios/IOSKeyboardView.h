@@ -32,10 +32,10 @@
 }
 
 @property (nonatomic, retain, getter = GetText) NSMutableString *_text;
-@property (copy, setter = SetHeading) NSMutableString *_heading;
+@property (copy, setter = SetHeading:) NSMutableString *_heading;
 @property (getter = GetResult) bool _result;
-@property (setter = SetHiddenInput) bool _hiddenInput;
-@property (assign, setter = RegisterKeyboard) CIOSKeyboard *_iosKeyboard;
+@property (setter = SetHiddenInput:) bool _hiddenInput;
+@property (assign, setter = RegisterKeyboard:) CIOSKeyboard *_iosKeyboard;
 
 - (void) setText:(NSMutableString *)text;
 - (void) activate;

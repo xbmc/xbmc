@@ -100,7 +100,11 @@ static CEvent screenChangeEvent;
         //the parameter enum is lacking the UIScreenOverscanCompensationNone value.
         //Someone on stackoverflow figured out that value 3 is for turning it off
         //(though there is no enum value for it).
+#ifdef __IPHONE_5_0
+        [newScreen setOverscanCompensation:(UIScreenOverscanCompensation)3];
+#else
         [newScreen setOverscanCompensation:3];
+#endif
         CLog::Log(LOGDEBUG, "[IOSScreenManager] Disabling overscancompensation.");
       }
       else
