@@ -30,7 +30,7 @@ class CGUIDialogSmartPlaylistEditor :
       public CGUIDialog
 {
 public:
-  enum PLAYLIST_TYPE { TYPE_SONGS = 1, TYPE_ALBUMS, TYPE_MIXED, TYPE_MUSICVIDEOS, TYPE_MOVIES, TYPE_TVSHOWS, TYPE_EPISODES };
+  enum PLAYLIST_TYPE { TYPE_SONGS = 1, TYPE_ALBUMS, TYPE_ARTISTS, TYPE_MIXED, TYPE_MUSICVIDEOS, TYPE_MOVIES, TYPE_TVSHOWS, TYPE_EPISODES };
 
   CGUIDialogSmartPlaylistEditor(void);
   virtual ~CGUIDialogSmartPlaylistEditor(void);
