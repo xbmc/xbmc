@@ -209,7 +209,7 @@ namespace EPG
      * @param beginTime The start time in UTC of the event to find if it wasn't found by it's unique ID.
      * @return The found tag or NULL if it wasn't found.
      */
-    CFileItemPtr GetTag(const CDateTime &beginTime) const;
+    CEpgInfoTagPtr GetTag(const CDateTime &beginTime) const;
 
     /*!
      * @brief Update an entry in this EPG.
@@ -298,9 +298,7 @@ namespace EPG
     CEpgInfoTagPtr GetNextEvent(const CEpgInfoTag& tag) const;
     CEpgInfoTagPtr GetPreviousEvent(const CEpgInfoTag& tag) const;
 
-    size_t Size(void) const { return m_tags.size(); }
-
-    void ClearTimerTag(const CDateTime &startTime);
+    size_t Size(void) const;
   protected:
     CEpg(void);
 

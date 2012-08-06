@@ -53,12 +53,6 @@ namespace PVR
     int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
     /*!
-     * @brief Update all channel numbers on timers.
-     * @return True if the channel number were updated, false otherwise.
-     */
-    bool UpdateTimers(void);
-
-    /*!
      * @brief Add or update a channel in this table.
      * @param channel The channel to update.
      * @return True if the channel was updated and persisted.

@@ -74,8 +74,15 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTag *tag)
     {
       Close();
       CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
-      bReturn = CPVRTimers::AddTimer(*newTimer);
-      delete newTimer;
+      if (newTimer)
+      {
+        bReturn = CPVRTimers::AddTimer(*newTimer);
+        delete newTimer;
+      }
+      else
+      {
+        bReturn = false;
+      }
     }
   }
 
@@ -85,6 +92,10 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTag *tag)
 bool CGUIDialogPVRGuideInfo::ActionCancelTimer(CFileItemPtr timer)
 {
   bool bReturn = false;
+  if (!timer || !timer->HasPVRTimerInfoTag())
+  {
+    return bReturn;
+  }
 
   // prompt user for confirmation of timer deletion
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -93,7 +104,7 @@ bool CGUIDialogPVRGuideInfo::ActionCancelTimer(CFileItemPtr timer)
   {
     pDialog->SetHeading(265);
     pDialog->SetLine(0, "");
-    pDialog->SetLine(1, timer->m_strTitle);
+    pDialog->SetLine(1, timer->GetPVRTimerInfoTag()->m_strTitle);
     pDialog->SetLine(2, "");
     pDialog->DoModal();
 
@@ -137,7 +148,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
       return bReturn;
     }
 
-    CFileItemPtr timerTag = g_PVRTimers->GetMatch(tag);
+    CFileItemPtr timerTag = g_PVRTimers->GetTimerForEpgTag(m_progItem.get());
     bool bHasTimer = timerTag != NULL && timerTag->HasPVRTimerInfoTag();
 
     if (!bHasTimer)
@@ -210,7 +221,7 @@ void CGUIDialogPVRGuideInfo::Update()
     return;
   }
 
-  CFileItemPtr match = g_PVRTimers->GetMatch(tag);
+  CFileItemPtr match = g_PVRTimers->GetTimerForEpgTag(m_progItem.get());
   if (!match || !match->HasPVRTimerInfoTag())
   {
     /* no timer present on this tag */

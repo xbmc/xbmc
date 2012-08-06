@@ -254,11 +254,11 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
 
   Reset();
 
-  m_strPath = timer.m_strFileNameAndPath;
+  m_strPath = timer.Path();
   m_bIsFolder = false;
   *GetPVRTimerInfoTag() = timer;
-  SetLabel(timer.m_strTitle);
-  m_strLabel2 = timer.m_strSummary;
+  SetLabel(timer.Title());
+  m_strLabel2 = timer.Summary();
   m_dateTime = timer.StartAsLocalTime();
 
   if (!timer.ChannelIcon().IsEmpty())

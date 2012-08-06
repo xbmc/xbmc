@@ -25,13 +25,9 @@
 #include "XBDateTime.h"
 #include "utils/StringUtils.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 
 #include <boost/shared_ptr.hpp>
-
-namespace PVR
-{
-  class CPVRTimerInfoTag;
-}
 
 /** an EPG info tag */
 namespace EPG
@@ -66,10 +62,6 @@ namespace EPG
      * @param tag The tag's content.
      */
     CEpgInfoTag(const CEpgInfoTag &tag);
-
-    /*!
-     * @brief Destroy this instance.
-     */
     virtual ~CEpgInfoTag();
 
     bool operator ==(const CEpgInfoTag& right) const;
@@ -371,7 +363,8 @@ namespace EPG
      * @brief Set a timer for this event or NULL to clear it.
      * @param newTimer The new timer value.
      */
-    void SetTimer(PVR::CPVRTimerInfoTag *newTimer);
+    void SetTimer(PVR::CPVRTimerInfoTagPtr newTimer);
+    void ClearTimer(void);
 
     /*!
      * @brief Check whether this event has an active timer tag.
@@ -383,7 +376,7 @@ namespace EPG
      * @brief Get a pointer to the timer for event or NULL if there is none.
      * @return A pointer to the timer for event or NULL if there is none.
      */
-    PVR::CPVRTimerInfoTag *Timer(void) const;
+    PVR::CPVRTimerInfoTagPtr Timer(void) const;
 
     /*!
      * @brief Change the channel tag of this epg tag
@@ -432,40 +425,33 @@ namespace EPG
      */
     void UpdatePath(void);
 
-    /*!
-     * @brief Called by the CPVRTimerInfoTag destructor
-     */
-    void OnTimerDeleted(void);
+    bool                     m_bNotify;            /*!< notify on start */
+    bool                     m_bChanged;           /*!< keep track of changes to this entry */
 
-    bool                   m_bNotify;            /*!< notify on start */
-    bool                   m_bChanged;           /*!< keep track of changes to this entry */
-
-    int                    m_iBroadcastId;       /*!< database ID */
-    int                    m_iGenreType;         /*!< genre type */
-    int                    m_iGenreSubType;      /*!< genre subtype */
-    int                    m_iParentalRating;    /*!< parental rating */
-    int                    m_iStarRating;        /*!< star rating */
-    int                    m_iSeriesNumber;      /*!< series number */
-    int                    m_iEpisodeNumber;     /*!< episode number */
-    int                    m_iEpisodePart;       /*!< episode part number */
-    int                    m_iUniqueBroadcastID; /*!< unique broadcast ID */
-    CStdString             m_strTitle;           /*!< title */
-    CStdString             m_strPlotOutline;     /*!< plot outline */
-    CStdString             m_strPlot;            /*!< plot */
+    int                      m_iBroadcastId;       /*!< database ID */
+    int                      m_iGenreType;         /*!< genre type */
+    int                      m_iGenreSubType;      /*!< genre subtype */
+    int                      m_iParentalRating;    /*!< parental rating */
+    int                      m_iStarRating;        /*!< star rating */
+    int                      m_iSeriesNumber;      /*!< series number */
+    int                      m_iEpisodeNumber;     /*!< episode number */
+    int                      m_iEpisodePart;       /*!< episode part number */
+    int                      m_iUniqueBroadcastID; /*!< unique broadcast ID */
+    CStdString               m_strTitle;           /*!< title */
+    CStdString               m_strPlotOutline;     /*!< plot outline */
+    CStdString               m_strPlot;            /*!< plot */
     std::vector<std::string> m_genre;            /*!< genre */
-    CStdString             m_strEpisodeName;     /*!< episode name */
-    CStdString             m_strIconPath;        /*!< the path to the icon */
-    CStdString             m_strFileNameAndPath; /*!< the filename and path */
-    CDateTime              m_startTime;          /*!< event start time */
-    CDateTime              m_endTime;            /*!< event end time */
-    CDateTime              m_firstAired;         /*!< first airdate */
+    CStdString               m_strEpisodeName;     /*!< episode name */
+    CStdString               m_strIconPath;        /*!< the path to the icon */
+    CStdString               m_strFileNameAndPath; /*!< the filename and path */
+    CDateTime                m_startTime;          /*!< event start time */
+    CDateTime                m_endTime;            /*!< event end time */
+    CDateTime                m_firstAired;         /*!< first airdate */
 
-    CDateTime              m_timerStart;         /*!< the start time of the timer (if any) */
-    int                    m_iTimerId;           /*!< the id of the timer (if any) */
-    CEpg *                 m_epg;                /*!< the schedule that this event belongs to */
+    PVR::CPVRTimerInfoTagPtr m_timer;
+    CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
 
     PVR::CPVRChannelPtr    m_pvrChannel;
-    CStdString             m_strTableName;       /*!< the name of the EPG table (or PVR channel, if it's a PVR epg table */
     CCriticalSection       m_critSection;
   };
 }

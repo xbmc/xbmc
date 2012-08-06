@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 #include "XBDateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"
-#include "threads/Thread.h"
 
 class CFileItem;
 namespace EPG
@@ -44,15 +43,10 @@ namespace PVR
     virtual ~CPVRTimers(void);
 
     /**
-     * Load the timers from the clients.
-     * Returns the amount of timers that were added.
+     * (re)load the timers from the clients.
+     * True when loaded, false otherwise.
      */
-    int Load();
-
-    /**
-     * Clear this timer list.
-     */
-    void Unload();
+    bool Load(void);
 
     /**
      * @brief refresh the channel list from the clients.
@@ -60,48 +54,59 @@ namespace PVR
     bool Update(void);
 
     /**
-     * Update a timer entry in this container.
+     * Add a timer entry to this container, called by the client callback.
      */
-    bool UpdateEntry(const CPVRTimerInfoTag &timer);
-    bool UpdateFromClient(const CPVRTimerInfoTag &timer) { return UpdateEntry(timer); }
-
-    /********** getters **********/
-
-    /**
-     * Get all known timers.
-     */
-    int GetTimers(CFileItemList* results);
+    bool UpdateFromClient(const CPVRTimerInfoTag &timer);
 
     /*!
-     * @return The timer that will be active next, or NULL if none
+     * @return The timer that will be active next (state scheduled), or an empty fileitemptr if none.
      */
     CFileItemPtr GetNextActiveTimer(void) const;
 
+    /*!
+     * @return All timers that are active (states scheduled or recording)
+     */
     std::vector<CFileItemPtr> GetActiveTimers(void) const;
 
+    /*!
+     * @return True when there is at least one timer that is active (states scheduled or recording), false otherwise.
+     */
+    bool HasActiveTimers(void) const;
+
+    /*!
+     * @return The amount of timers that are active (states scheduled or recording)
+     */
+    int AmountActiveTimers(void) const;
+
+    /*!
+     * @return All timers that are recording
+     */
     std::vector<CFileItemPtr> GetActiveRecordings(void) const;
-    /**
-     * The amount of timers in this container.
+
+    /*!
+     * @return True when recording, false otherwise.
      */
-    int GetNumTimers() const;
+    bool IsRecording(void) const;
 
-    int GetNumActiveTimers(void) const;
-
-    int GetNumActiveRecordings(void) const;
-
-    CPVRTimerInfoTag *GetTimer(const CDateTime &start, int iTimer = -1) const;
-
-    /**
-     * Get the directory for a path.
+    /*!
+     * @brief Check if a recording is running on the given channel.
+     * @param channel The channel to check.
+     * @return True when recording, false otherwise.
      */
-    bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    bool IsRecordingOnChannel(const CPVRChannel &channel) const;
 
-    /********** channel methods **********/
-
-    /**
-     * Check if there are any active timers on a channel.
+    /*!
+     * @return The amount of timers that are currently recording
      */
-    bool ChannelHasTimers(const CPVRChannel &channel);
+    int AmountActiveRecordings(void) const;
+
+    /*!
+     * @brief Get all timers for the given path.
+     * @param strPath The vfs path to get the timers for.
+     * @param items The results.
+     * @return True when the path was valid, false otherwise.
+     */
+    bool GetDirectory(const CStdString& strPath, CFileItemList &items) const;
 
     /*!
      * @brief Delete all timers on a channel.
@@ -115,83 +120,61 @@ namespace PVR
     /*!
      * @brief Create a new instant timer on a channel.
      * @param channel The channel to create the timer on.
-     * @param bStartTimer True to start the timer instantly, false otherwise.
-     * @return The new timer or NULL if it couldn't be created.
+     * @return True if the timer was created, false otherwise.
      */
-    CPVRTimerInfoTag *InstantTimer(const CPVRChannel &channel, bool bStartTimer = true);
+    bool InstantTimer(const CPVRChannel &channel);
 
     /*!
      * @return Next event time (timer or daily wake up)
      */
     CDateTime GetNextEventTime(void) const;
 
-    /********** static methods **********/
-
-    /**
-     * Add a timer to the client.
-     * True if it was sent correctly, false if not.
+    /*!
+     * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
+     * @return True if it was sent correctly, false if not.
      */
-    static bool AddTimer(const CFileItem &item);
+    static bool AddTimer(const CPVRTimerInfoTag &item);
 
-    /**
-     * Add a timer to the client.
-     * True if it was sent correctly, false if not.
-     */
-    static bool AddTimer(CPVRTimerInfoTag &item);
-
-    /**
-     * Delete a timer on the client.
-     * True if it was sent correctly, false if not.
+    /*!
+     * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.
+     * @return True if it was sent correctly, false if not.
      */
     static bool DeleteTimer(const CFileItem &item, bool bForce = false);
 
-    /**
-     * Delete a timer on the client.
-     * True if it was sent correctly, false if not.
-     */
-    static bool DeleteTimer(CPVRTimerInfoTag &item, bool bForce = false);
-
-    /**
-     * Rename a timer on the client.
-     * True if it was sent correctly, false if not.
+    /*!
+     * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.
+     * @return True if it was sent correctly, false if not.
      */
     static bool RenameTimer(CFileItem &item, const CStdString &strNewName);
 
     /**
-     * Rename a timer on the client.
-     * True if it was sent correctly, false if not.
+     * @brief Update the timer on the client. Doesn't update the timer in the container. The backend will do this.
+     * @return True if it was sent correctly, false if not.
      */
-    static bool RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewName);
+    static bool UpdateTimer(CFileItem &item);
 
-    /**
-     * Get updated timer information from the client.
-     * True if it was requested correctly, false if not.
+    /*!
+     * @brief Get the timer tag that matches the given epg tag.
+     * @param item The epg tag.
+     * @return The requested timer tag, or an empty fileitemptr if none was found.
      */
-    static bool UpdateTimer(const CFileItem &item);
+    CFileItemPtr GetTimerForEpgTag(const CFileItem *item) const;
 
-    /**
-     * Get updated timer information from the client.
-     * True if it was requested correctly, false if not.
+    /*!
+     * @brief Update the channel pointers.
      */
-    static bool UpdateTimer(CPVRTimerInfoTag &item);
+    void UpdateChannels(void);
 
-    bool IsRecording(void);
-    bool UpdateEntries(CPVRTimers *timers);
-    CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
-    CFileItemPtr GetMatch(const EPG::CEpgInfoTag *Epg);
-    CFileItemPtr GetMatch(const CFileItem *item);
-    virtual void Notify(const Observable &obs, const CStdString& msg);
-    bool IsRecordingOnChannel(const CPVRChannel &channel) const;
+    void Notify(const Observable &obs, const CStdString& msg);
 
   private:
-    /*!
-     * @brief Add timers to this container.
-     * @return The amount of timers that were added.
-     */
-    int LoadFromClients(void);
+    void Unload(void);
+    void UpdateEpgEvent(CPVRTimerInfoTagPtr timer);
+    bool UpdateEntries(const CPVRTimers &timers);
+    CPVRTimerInfoTagPtr GetByClient(int iClientId, int iClientTimerId) const;
 
-    CCriticalSection                                       m_critSection;
-    bool                                                   m_bIsUpdating;
-    std::map<CDateTime, std::vector<CPVRTimerInfoTag *>* > m_tags;
+    CCriticalSection                                        m_critSection;
+    bool                                                    m_bIsUpdating;
+    std::map<CDateTime, std::vector<CPVRTimerInfoTagPtr>* > m_tags;
   };
 }

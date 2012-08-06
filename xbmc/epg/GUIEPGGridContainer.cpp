@@ -650,11 +650,9 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
     break;
 
   default:
-
     if (action.GetID())
-    {
       return OnClick(action.GetID());
-    }
+    break;
   }
 
   return false;

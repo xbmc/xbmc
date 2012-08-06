@@ -171,6 +171,8 @@ void CEpg::Cleanup(const CDateTime &Time)
     {
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
+
+      it->second->ClearTimer();
       m_tags.erase(it++);
     }
   }
@@ -263,18 +265,17 @@ bool CEpg::CheckPlayingEvent(void)
   return bReturn;
 }
 
-CFileItemPtr CEpg::GetTag(const CDateTime &StartTime) const
+CEpgInfoTagPtr CEpg::GetTag(const CDateTime &StartTime) const
 {
   CSingleLock lock(m_critSection);
   map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.find(StartTime);
   if (it != m_tags.end())
   {
-    CFileItemPtr fileItem(new CFileItem(*it->second));
-    return fileItem;
+    return it->second;
   }
 
-  CFileItemPtr fileItem;
-  return fileItem;
+  CEpgInfoTagPtr empty;
+  return empty;
 }
 
 CEpgInfoTagPtr CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const
@@ -321,7 +322,6 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     newTag->Update(tag);
     newTag->SetPVRChannel(m_pvrChannel);
     newTag->m_epg          = this;
-    newTag->m_strTableName = m_strName;
     newTag->m_bChanged     = false;
   }
 }
@@ -350,7 +350,6 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
     infoTag->Update(tag, bNewTag);
     infoTag->m_epg          = this;
     infoTag->m_pvrChannel   = m_pvrChannel;
-    infoTag->m_strTableName = m_strName;
   }
 
   if (bUpdateDatabase)
@@ -682,6 +681,8 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
+
+      it->second->ClearTimer();
       m_tags.erase(it++);
     }
     else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
@@ -954,10 +955,8 @@ bool CEpg::UpdatePending(void) const
   return m_bUpdatePending;
 }
 
-void CEpg::ClearTimerTag(const CDateTime &startTime)
+size_t CEpg::Size(void) const
 {
   CSingleLock lock(m_critSection);
-  map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.find(startTime);
-  if (it != m_tags.end())
-    it->second->OnTimerDeleted();
+  return m_tags.size();
 }

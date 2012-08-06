@@ -364,6 +364,14 @@ namespace PVR
 
     virtual bool AddNewChannel(const CPVRChannel &channel, unsigned int iChannelNumber = 0) { return false; }
 
+    /*!
+     * @brief Get a channel given the channel number on the client.
+     * @param iUniqueChannelId The unique channel id on the client.
+     * @param iClientID The ID of the client.
+     * @return The channel or NULL if it wasn't found.
+     */
+    CPVRChannelPtr GetByClient(int iUniqueChannelId, int iClientID) const;
+
   protected:
     /*!
      * @brief Load the channels stored in the database.
@@ -438,14 +446,6 @@ namespace PVR
      * @return The channel or NULL if it wasn't found.
      */
     CPVRChannelPtr GetByChannelID(int iChannelID) const;
-
-    /*!
-     * @brief Get a channel given the channel number on the client.
-     * @param iUniqueChannelId The unique channel id on the client.
-     * @param iClientID The ID of the client.
-     * @return The channel or NULL if it wasn't found.
-     */
-    CPVRChannelPtr GetByClient(int iUniqueChannelId, int iClientID) const;
 
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupType;                  /*!< The type of this group */

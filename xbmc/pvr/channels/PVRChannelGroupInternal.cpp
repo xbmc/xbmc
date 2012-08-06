@@ -121,28 +121,6 @@ bool CPVRChannelGroupInternal::Update(void)
   return UpdateGroupEntries(PVRChannels_tmp);
 }
 
-bool CPVRChannelGroupInternal::UpdateTimers(void)
-{
-  CSingleLock lock(m_critSection);
-
-  /* update the timers with the new channel numbers */
-  vector<CFileItemPtr> timers = g_PVRTimers->GetActiveTimers();
-  for (unsigned int ptr = 0; ptr < timers.size(); ptr++)
-  {
-    CFileItemPtr item = timers.at(ptr);
-    if (!item || !item->HasPVRTimerInfoTag())
-      continue;
-
-    CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
-    if (!timer)
-      continue;
-
-    timer->m_channel = GetByClient(timer->m_iClientChannelUid, timer->m_iClientId);
-  }
-
-  return true;
-}
-
 bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
 {
   CSingleLock lock(m_critSection);
@@ -361,6 +339,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
   {
     /* try to find channel icons */
     SearchAndSetChannelIcons();
+    g_PVRTimers->UpdateChannels();
     Persist();
 
     bReturn = true;

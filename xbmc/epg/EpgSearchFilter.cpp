@@ -234,7 +234,7 @@ int EpgSearchFilter::FilterTimers(CFileItemList &results)
     {
       const CEpgInfoTag *epgentry = results.Get(iResultPtr)->GetEPGInfoTag();
       if (!epgentry ||
-          *epgentry->ChannelTag() != *timer->m_channel ||
+          *epgentry->ChannelTag() != *timer->ChannelTag() ||
           epgentry->StartAsUTC()   <  timer->StartAsUTC() ||
           epgentry->EndAsUTC()     >  timer->EndAsUTC())
         continue;

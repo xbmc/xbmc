@@ -379,7 +379,7 @@ bool CGUIWindowPVRCommon::ShowNewTimerDialog(void)
   if (ShowTimerSettings(newItem))
   {
     /* Add timer to backend */
-    bReturn = g_PVRTimers->AddTimer(*newItem);
+    bReturn = g_PVRTimers->AddTimer(*newItem->GetPVRTimerInfoTag());
   }
 
   delete newItem;
@@ -440,10 +440,16 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
-    CFileItem *item = new CFileItem(*newtimer);
-
-    bReturn = g_PVRTimers->AddTimer(*item);
+    CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
+    if (newTimer)
+    {
+      bReturn = g_PVRTimers->AddTimer(*newTimer);
+      delete newTimer;
+    }
+    else
+    {
+      bReturn = false;
+    }
   }
   else
   {
@@ -713,7 +719,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
 
-  CFileItemPtr timer = g_PVRTimers->GetMatch(item);
+  CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(item);
   if (timer && timer->HasPVRTimerInfoTag())
   {
     CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
@@ -732,10 +738,14 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   if (!pDialog->IsConfirmed())
     return false;
 
-  CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
-  CFileItem *newTimerItem = new CFileItem(*newtimer);
-
-  return g_PVRTimers->AddTimer(*newTimerItem);
+  CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
+  bool bReturn(false);
+  if (newTimer)
+  {
+    bReturn = g_PVRTimers->AddTimer(*newTimer);
+    delete newTimer;
+  }
+  return bReturn;
 }
 
 bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
@@ -747,7 +757,7 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
   if (!tag || !tag->HasPVRChannel())
     return false;
 
-  CFileItemPtr timer = g_PVRTimers->GetMatch(item);
+  CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(item);
   if (!timer || !timer->HasPVRTimerInfoTag() || timer->GetPVRTimerInfoTag()->m_bIsRepeating)
     return false;
 

@@ -178,17 +178,16 @@ JSONRPC_STATUS CPVROperations::ScheduleRecording(const CStdString &method, ITran
   if (iEpgId > 0 && iStartTime > 0)
   {
     CDateTime startTime(iStartTime);
-    CFileItemPtr tag = g_EpgContainer.GetById(iEpgId)->GetTag(startTime);
+    CEpgInfoTagPtr tag = g_EpgContainer.GetById(iEpgId)->GetTag(startTime);
 
-    if (tag && tag->HasEPGInfoTag() && tag->GetEPGInfoTag()->HasPVRChannel())
+    if (tag && tag->HasPVRChannel())
     {
-      CEpgInfoTag *epgTag = tag->GetEPGInfoTag();
       CLog::Log(LOGDEBUG, "JSONRPC: schedule recording - channel: '%s' start: '%s' end: '%s'",
-          epgTag->PVRChannelName().c_str(),
-          epgTag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str(),
-          epgTag->EndAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+          tag->PVRChannelName().c_str(),
+          tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str(),
+          tag->EndAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
 
-      CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
+      CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
       bool bCreated = (newTimer != NULL);
       bool bAdded = false;
 
@@ -196,12 +195,12 @@ JSONRPC_STATUS CPVROperations::ScheduleRecording(const CStdString &method, ITran
       {
         CLog::Log(LOGDEBUG, "JSONRPC: recording scheduled");
         bAdded = CPVRTimers::AddTimer(*newTimer);
+        delete newTimer;
       }
       else
       {
         CLog::Log(LOGERROR, "JSONRPC: failed to schedule recording");
       }
-      delete newTimer;
       return bAdded ? ACK : InternalError;
     }
   }

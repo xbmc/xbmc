@@ -88,23 +88,20 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     return;
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
-  if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+  CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem.get());
+  if (timer && timer->HasPVRTimerInfoTag())
   {
-    CFileItemPtr timer = g_PVRTimers->GetMatch(pItem->GetEPGInfoTag());
-    if (!timer || !timer->HasPVRTimerInfoTag())
-    {
-      if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record program */
-      else
-        buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* stop recording */
-    }
+    if (timer->GetPVRTimerInfoTag()->IsRecording())
+      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);  /* stop recording */
     else
-    {
-      if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-        buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);
-      else
-        buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);
-    }
+      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);  /* delete timer */
+  }
+  else if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+  {
+    if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
+      buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record */
+    else
+      buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* add timer */
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* epg info */

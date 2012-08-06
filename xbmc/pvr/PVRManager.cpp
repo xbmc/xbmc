@@ -604,11 +604,9 @@ bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
     /* timers are supported on this channel */
     if (!channel->IsRecording())
     {
-      CPVRTimerInfoTag *newTimer = m_timers->InstantTimer(*channel);
-      if (!newTimer)
+      bReturn = m_timers->InstantTimer(*channel);
+      if (!bReturn)
         CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
-      else
-        bReturn = true;
     }
     else
     {
@@ -633,11 +631,9 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     /* timers are supported on this channel */
     if (bOnOff && !channel.IsRecording())
     {
-      CPVRTimerInfoTag *newTimer = m_timers->InstantTimer(channel);
-      if (!newTimer)
+      bReturn = m_timers->InstantTimer(channel);
+      if (!bReturn)
         CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
-      else
-        bReturn = true;
     }
     else if (!bOnOff && channel.IsRecording())
     {
@@ -1046,12 +1042,12 @@ int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
 
 bool CPVRManager::HasTimers(void) const
 {
-  return IsStarted() && m_timers ? m_timers->GetNumTimers() > 0 : false;
+  return IsStarted() && m_timers ? m_timers->HasActiveTimers() : false;
 }
 
 bool CPVRManager::IsRecording(void) const
 {
-  return IsStarted() && m_timers ? m_timers->GetNumActiveRecordings() > 0 : false;
+  return IsStarted() && m_timers ? m_timers->IsRecording() : false;
 }
 
 bool CPVRManager::IsIdle(void) const

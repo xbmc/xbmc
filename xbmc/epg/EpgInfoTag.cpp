@@ -48,11 +48,13 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
-    m_iTimerId(-1),
     m_epg(NULL)
 {
-  CPVRChannelPtr empty;
-  m_pvrChannel = empty;
+  CPVRChannelPtr emptyChannel;
+  m_pvrChannel = emptyChannel;
+
+  CPVRTimerInfoTagPtr emptyTimer;
+  m_timer = emptyTimer;
 }
 
 CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const CStdString &strTableName /* = StringUtils::EmptyString */, const CStdString &strIconPath /* = StringUtils::EmptyString */) :
@@ -68,11 +70,11 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const CStdSt
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
     m_strIconPath(strIconPath),
-    m_iTimerId(-1),
     m_epg(epg),
-    m_pvrChannel(pvrChannel),
-    m_strTableName(strTableName)
+    m_pvrChannel(pvrChannel)
 {
+  CPVRTimerInfoTagPtr emptyTimer;
+  m_timer = emptyTimer;
 }
 
 CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
@@ -87,11 +89,14 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
-    m_iTimerId(-1),
     m_epg(NULL)
 {
-  CPVRChannelPtr empty;
-  m_pvrChannel = empty;
+  CPVRChannelPtr emptyChannel;
+  m_pvrChannel = emptyChannel;
+
+  CPVRTimerInfoTagPtr emptyTimer;
+  m_timer = emptyTimer;
+
   Update(data);
 }
 
@@ -117,18 +122,15 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_startTime(tag.m_startTime),
     m_endTime(tag.m_endTime),
     m_firstAired(tag.m_firstAired),
-    m_iTimerId(tag.m_iTimerId),
+    m_timer(tag.m_timer),
     m_epg(tag.m_epg),
-    m_pvrChannel(tag.m_pvrChannel),
-    m_strTableName(tag.m_strTableName)
+    m_pvrChannel(tag.m_pvrChannel)
 {
 }
 
 CEpgInfoTag::~CEpgInfoTag()
 {
-  CPVRTimerInfoTag* tag = Timer();
-  if (tag)
-    tag->OnEpgTagDeleted();
+  ClearTimer();
 }
 
 bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
@@ -157,8 +159,7 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
           m_endTime            == right.m_endTime &&
-          m_pvrChannel         == right.m_pvrChannel &&
-          m_strTableName       == right.m_strTableName);
+          m_pvrChannel         == right.m_pvrChannel);
 }
 
 bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
@@ -193,11 +194,9 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_startTime          = other.m_startTime;
   m_endTime            = other.m_endTime;
   m_firstAired         = other.m_firstAired;
-  m_iTimerId           = other.m_iTimerId;
-  m_timerStart         = other.m_timerStart;
+  m_timer              = other.m_timer;
   m_epg                = other.m_epg;
   m_pvrChannel         = other.m_pvrChannel;
-  m_strTableName       = other.m_strTableName;
 
   return *this;
 }
@@ -416,7 +415,7 @@ CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 
   if (!bOverrideParental && bParentalLocked)
     strTitle = g_localizeStrings.Get(19266); // parental locked
-  else if (strTitle.IsEmpty() && !g_guiSettings.GetBool("epg.hidenoinfoavailable"))
+  else if (strTitle.empty() && !g_guiSettings.GetBool("epg.hidenoinfoavailable"))
     strTitle = g_localizeStrings.Get(19055); // no information available
 
   return strTitle;
@@ -757,46 +756,34 @@ void CEpgInfoTag::SetPath(const CStdString &strFileNameAndPath)
 
 CStdString CEpgInfoTag::Path(void) const
 {
-  CStdString retVal;
+  string retVal;
   CSingleLock lock(m_critSection);
   retVal = m_strFileNameAndPath;
   return retVal;
 }
 
-void CEpgInfoTag::SetTimer(CPVRTimerInfoTag *newTimer)
-{
-  CPVRTimerInfoTag *oldTimer(NULL);
-  {
-    CSingleLock lock(m_critSection);
-    if (g_PVRManager.IsStarted())
-      oldTimer = Timer();
-    m_timerStart = newTimer->StartAsUTC();
-    m_iTimerId   = newTimer->m_iClientIndex;
-  }
-  if (oldTimer)
-    oldTimer->SetEpgInfoTag(NULL);
-}
-
-void CEpgInfoTag::OnTimerDeleted(void)
-{
-  CSingleLock lock(m_critSection);
-  m_iTimerId = -1;
-}
+//void CEpgInfoTag::SetTimer(CPVRTimerInfoTagPtr newTimer)
+//{
+//  CPVRTimerInfoTagPtr oldTimer;
+//  {
+//    CSingleLock lock(m_critSection);
+//    oldTimer = m_timer;
+//    m_timer = newTimer;
+//  }
+//  if (oldTimer)
+//    oldTimer->ClearEpgTag();
+//}
 
 bool CEpgInfoTag::HasTimer(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_iTimerId != -1;
+  return m_timer != NULL;
 }
 
-CPVRTimerInfoTag *CEpgInfoTag::Timer(void) const
+CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const
 {
-  CPVRTimerInfoTag* tag(NULL);
   CSingleLock lock(m_critSection);
-  if (m_iTimerId >= 0)
-    tag = g_PVRTimers->GetTimer(m_timerStart, m_iTimerId);
-
-  return tag;
+  return m_timer;
 }
 
 void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannelPtr channel)
@@ -876,7 +863,6 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
         EpgID()              != tag.EpgID() ||
         m_pvrChannel         != tag.m_pvrChannel ||
-        m_strTableName       != tag.m_strTableName ||
         m_genre              != tag.m_genre
     );
     if (bUpdateBroadcastId)
@@ -896,7 +882,6 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iGenreSubType      = tag.m_iGenreSubType;
       m_epg                = tag.m_epg;
       m_pvrChannel         = tag.m_pvrChannel;
-      m_strTableName       = tag.m_strTableName;
       if (m_iGenreType == EPG_GENRE_USE_STRING)
       {
         /* No type/subtype. Use the provided description */
@@ -974,4 +959,24 @@ const CEpg *CEpgInfoTag::GetTable() const
 const int CEpgInfoTag::EpgID(void) const
 {
   return m_epg ? m_epg->EpgID() : -1;
+}
+
+void CEpgInfoTag::SetTimer(CPVRTimerInfoTagPtr timer)
+{
+  CSingleLock lock(m_critSection);
+  m_timer = timer;
+}
+
+void CEpgInfoTag::ClearTimer(void)
+{
+  CPVRTimerInfoTagPtr previousTag;
+  {
+    CSingleLock lock(m_critSection);
+    previousTag = m_timer;
+    CPVRTimerInfoTagPtr empty;
+    m_timer = empty;
+  }
+
+  if (previousTag)
+    previousTag->ClearEpgTag();
 }
