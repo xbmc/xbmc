@@ -94,6 +94,7 @@ first. This is a simple step and involves the following:
  $ make -C tools/darwin/depends/xbmc
  $ make clean
  $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
 
 4.b Compilation by using command-line building via make (experimental)
 
@@ -175,6 +176,7 @@ developers).
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
  $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
  $ xcodebuild -sdk macosx10.7 -project XBMC.xcodeproj -target XBMC.app ONLY_ACTIVE_ARCH=YES \
    ARCHS=x86_64 VALID_ARCHS=x86_64  -configuration Release build
 
