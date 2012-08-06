@@ -177,6 +177,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
     else if (field == FieldTime) result.Format("movieview.c%02d", VIDEODB_ID_RUNTIME);
     else if (field == FieldMPAA) result.Format("movieview.c%02d", VIDEODB_ID_MPAA);
     else if (field == FieldTop250) result.Format("movieview.c%02d", VIDEODB_ID_TOP250);
+    else if (field == FieldSet) return "movieview.strSet";
     else if (field == FieldGenre) result.Format("movieview.c%02d", VIDEODB_ID_GENRE);
     else if (field == FieldDirector) result.Format("movieview.c%02d", VIDEODB_ID_DIRECTOR);
     else if (field == FieldStudio) result.Format("movieview.c%02d", VIDEODB_ID_STUDIOS);
@@ -340,6 +341,7 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldTime) index = VIDEODB_ID_RUNTIME;
     else if (field == FieldMPAA) index = VIDEODB_ID_MPAA;
     else if (field == FieldTop250) index = VIDEODB_ID_TOP250;
+    else if (field == FieldSet) return VIDEODB_DETAILS_SET_NAME;
     else if (field == FieldGenre) index = VIDEODB_ID_GENRE;
     else if (field == FieldDirector) index = VIDEODB_ID_DIRECTOR;
     else if (field == FieldStudio) index = VIDEODB_ID_STUDIOS;
