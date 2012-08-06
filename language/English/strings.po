@@ -3201,6 +3201,12 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr ""
 
+#empty string id 1274
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr ""
+
 #empty strings from id 1274 to 1299
 
 msgctxt "#1300"
@@ -9400,7 +9406,23 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr ""
 
-#empty strings from id 21466 to 21799
+msgctxt "#21466"
+msgid "between"
+msgstr ""
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr ""
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr ""
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr ""
+
+#empty strings from id 21470 to 21799
 
 msgctxt "#21800"
 msgid "File name"

@@ -336,7 +336,8 @@ static const ActionMapping windows[] =
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
         {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
-        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS}};
+        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS},
+        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER}};
 
 static const ActionMapping mousecommands[] =
 {

@@ -138,6 +138,7 @@ public:
 private:
   friend class CSmartPlaylist;
   friend class CGUIDialogSmartPlaylistEditor;
+  friend class CGUIDialogMediaFilter;
 
   Combination m_type;
   CSmartPlaylistRuleCombinations m_combinations;
@@ -197,6 +198,7 @@ public:
   bool IsEmpty() const { return m_ruleCombination.m_rules.empty() && m_ruleCombination.m_combinations.empty(); }
 private:
   friend class CGUIDialogSmartPlaylistEditor;
+  friend class CGUIDialogMediaFilter;
 
   TiXmlElement* readName();
   TiXmlElement *readNameFromXml(const CStdString &xml);
