@@ -137,8 +137,8 @@ int CPVRChannelGroup::Load(void)
 
 void CPVRChannelGroup::Unload(void)
 {
-  g_guiSettings.UnregisterObserver(this);
   CSingleLock lock(m_critSection);
+  g_guiSettings.UnregisterObserver(this);
   m_members.clear();
 }
 
@@ -696,7 +696,7 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
       }
       else
       {
-          m_members.erase(m_members.begin() + ptr);
+        m_members.erase(m_members.begin() + ptr);
       }
       m_bChanged = true;
     }
@@ -713,7 +713,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannel &channel)
     if (channel == *m_members.at(iChannelPtr).channel)
     {
       // TODO notify observers
-        m_members.erase(m_members.begin() + iChannelPtr);
+      m_members.erase(m_members.begin() + iChannelPtr);
       bReturn = true;
       m_bChanged = true;
       break;
@@ -1062,34 +1062,27 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results)
 
 int CPVRChannelGroup::Size(void) const
 {
-  CSingleLock lock(m_critSection);
   return m_members.size();
 }
 
 int CPVRChannelGroup::GroupID(void) const
 {
-  CSingleLock lock(m_critSection);
   return m_iGroupId;
 }
 
 void CPVRChannelGroup::SetGroupID(int iGroupId)
 {
   if (iGroupId >= 0)
-  {
-    CSingleLock lock(m_critSection);
     m_iGroupId = iGroupId;
-  }
 }
 
 void CPVRChannelGroup::SetGroupType(int iGroupType)
 {
-  CSingleLock lock(m_critSection);
   m_iGroupType = iGroupType;
 }
 
 int CPVRChannelGroup::GroupType(void) const
 {
-  CSingleLock lock(m_critSection);
   return m_iGroupType;
 }
 
