@@ -44,7 +44,20 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
   if (!musicdatabase.Open())
     return InternalError;
 
-  int genreID = (int)parameterObject["genreid"].asInteger();
+  CMusicDbUrl musicUrl;
+  musicUrl.FromString("musicdb://2/");
+  int genreID = -1, albumID = -1, songID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    musicUrl.AddOption("genre", filter["genre"].asString());
+  if (filter.isMember("albumid"))
+    albumID = (int)filter["albumid"].asInteger();
+  if (filter.isMember("album"))
+    musicUrl.AddOption("album", filter["album"].asString());
+  if (filter.isMember("songid"))
+    songID = (int)filter["songid"].asInteger();
 
   // Add "artist" to "properties" array by default
   CVariant param = parameterObject;
@@ -57,7 +70,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     albumArtistsOnly = parameterObject["albumartistsonly"].asBoolean();
 
   CFileItemList items;
-  if (!musicdatabase.GetArtistsNav("musicdb://2/", items, genreID, albumArtistsOnly))
+  if (!musicdatabase.GetArtistsNav(musicUrl.ToString(), items, albumArtistsOnly, genreID, albumID, songID))
     return InternalError;
 
   HandleFileItemList("artistid", false, "artists", items, param, result);
@@ -93,8 +106,18 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
   if (!musicdatabase.Open())
     return InternalError;
 
-  int artistID  = (int)parameterObject["artistid"].asInteger();
-  int genreID   = (int)parameterObject["genreid"].asInteger();
+  CMusicDbUrl musicUrl;
+  musicUrl.FromString("musicdb://3/");
+  int artistID = -1, genreID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("artistid"))
+    artistID = (int)filter["artistid"].asInteger();
+  if (filter.isMember("artist"))
+    musicUrl.AddOption("artist", filter["artist"].asString());
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    musicUrl.AddOption("genre", filter["genre"].asString());
 
   SortDescription sorting;
   ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
@@ -102,7 +125,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
     return InvalidParams;
 
   CFileItemList items;
-  if (!musicdatabase.GetAlbumsNav("musicdb://3/", items, genreID, artistID, sorting))
+  if (!musicdatabase.GetAlbumsNav(musicUrl.ToString(), items, genreID, artistID, sorting))
     return InternalError;
 
   int size = items.Size();
@@ -142,9 +165,22 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
   if (!musicdatabase.Open())
     return InternalError;
 
-  int artistID = (int)parameterObject["artistid"].asInteger();
-  int albumID  = (int)parameterObject["albumid"].asInteger();
-  int genreID  = (int)parameterObject["genreid"].asInteger();
+  CMusicDbUrl musicUrl;
+  musicUrl.FromString("musicdb://4/");
+  int genreID = -1, albumID = -1, artistID = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("artistid"))
+    artistID = (int)filter["artistid"].asInteger();
+  if (filter.isMember("artist"))
+    musicUrl.AddOption("artist", filter["artist"].asString());
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  if (filter.isMember("genre"))
+    musicUrl.AddOption("genre", filter["genre"].asString());
+  if (filter.isMember("albumid"))
+    albumID = (int)filter["albumid"].asInteger();
+  if (filter.isMember("album"))
+    musicUrl.AddOption("album", filter["album"].asString());
 
   SortDescription sorting;
   ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
@@ -152,7 +188,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
     return InvalidParams;
 
   CFileItemList items;
-  if (!musicdatabase.GetSongsNav("musicdb://4/", items, genreID, artistID, albumID, sorting))
+  if (!musicdatabase.GetSongsNav(musicUrl.ToString(), items, genreID, artistID, albumID, sorting))
     return InternalError;
 
   int size = items.Size();
