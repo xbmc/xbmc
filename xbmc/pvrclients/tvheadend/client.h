@@ -26,8 +26,8 @@
 #define DEFAULT_HOST             "127.0.0.1"
 #define DEFAULT_HTTP_PORT        9981
 #define DEFAULT_HTSP_PORT        9982
-#define DEFAULT_CONNECT_TIMEOUT  30
-#define DEFAULT_RESPONSE_TIMEOUT 3
+#define DEFAULT_CONNECT_TIMEOUT  6
+#define DEFAULT_RESPONSE_TIMEOUT 4
 
 extern bool                      m_bCreated;
 extern std::string               g_strHostname;
