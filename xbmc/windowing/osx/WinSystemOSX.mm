@@ -154,6 +154,17 @@ static NSWindow* blankingWindows[MAX_DISPLAYS];
 void* CWinSystemOSX::m_lastOwnedContext = 0;
 
 //------------------------------------------------------------------------------------------
+CRect CGRectToCRect(CGRect cgrect)
+{
+  CRect crect = CRect(
+    cgrect.origin.x,
+    cgrect.origin.y,
+    cgrect.origin.x + cgrect.size.width,
+    cgrect.origin.y + cgrect.size.height);
+  return crect;
+}
+
+//------------------------------------------------------------------------------------------
 Boolean GetDictionaryBoolean(CFDictionaryRef theDict, const void* key)
 {
         // get a boolean from the dictionary
@@ -1262,6 +1273,13 @@ bool CWinSystemOSX::IsObscured(void)
     return m_obscured;
   }
 
+  // check if we are minimized (to an icon in the Dock).
+  if ([window isMiniaturized] == YES)
+  {
+    m_obscured = true;
+    return m_obscured;
+  }
+
   // check if we are showing on the active workspace.
   if ([window isOnActiveSpace] == NO)
   {
@@ -1293,6 +1311,9 @@ bool CWinSystemOSX::IsObscured(void)
   // convert bounds from NSWindow to CGWindowBounds here.
   bounds.origin.y = [[window screen] frame].size.height - bounds.origin.y - bounds.size.height;
 
+  std::vector<CRect> partialOverlaps;
+  CRect ourBounds = CGRectToCRect(bounds);
+
   for (CFIndex idx=0; idx < CFArrayGetCount(windowDescs); idx++)
   {
     // walk the window list of windows that are above us and are not desktop elements
@@ -1316,9 +1337,26 @@ bool CWinSystemOSX::IsObscured(void)
         m_obscured = true;
         break;
       }
-      // TODO: handle overlaping windows above us that combine to obscure.
+
+      // handle overlaping windows above us that combine
+      // to obscure by collecting any partial overlaps,
+      // then subtract them from our bounds and check
+      // for any remaining area.
+      CRect intersection = CGRectToCRect(windowBounds);
+      intersection.Intersect(ourBounds);
+      if (!intersection.IsEmpty())
+        partialOverlaps.push_back(intersection);
     }
   }
+
+  if (!m_obscured)
+  {
+    std::vector<CRect> rects = ourBounds.SubtractRects(partialOverlaps);
+    // they got us covered
+    if (rects.size() == 0)
+      m_obscured = true;
+  }
+
   CFRelease(windowDescs);
   CFRelease(windowIDs);
 
