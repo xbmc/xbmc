@@ -825,7 +825,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "episodeguide"))
     details.m_strEpisodeGuide = parameterObject["episodeguide"].asString();
   if (ParameterNotNull(parameterObject, "set"))
-    CopyStringArray(parameterObject["set"], details.m_set);
+    details.m_strSet = parameterObject["set"].asString();
   if (ParameterNotNull(parameterObject, "showlink"))
     CopyStringArray(parameterObject["showlink"], details.m_showLink);
   if (ParameterNotNull(parameterObject, "thumbnail"))
