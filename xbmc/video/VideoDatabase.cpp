@@ -5455,31 +5455,32 @@ bool CVideoDatabase::GetSortedVideos(MediaType mediaType, const CStdString& strB
 
 bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items,
                                   int idGenre /* = -1 */, int idYear /* = -1 */, int idActor /* = -1 */, int idDirector /* = -1 */,
-                                  int idStudio /* = -1 */, int idCountry /* = -1 */, int idSet /* = -1 */, int idTag /* = -1 */)
+                                  int idStudio /* = -1 */, int idCountry /* = -1 */, int idSet /* = -1 */, int idTag /* = -1 */,
+                                  const SortDescription &sortDescription /* = SortDescription() */)
 {
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strBaseDir))
     return false;
 
-  if (idGenre != -1)
+  if (idGenre > 0)
     videoUrl.AddOption("genreid", idGenre);
-  else if (idCountry != -1)
+  else if (idCountry > 0)
     videoUrl.AddOption("countryid", idCountry);
-  else if (idStudio != -1)
+  else if (idStudio > 0)
     videoUrl.AddOption("studioid", idStudio);
-  else if (idDirector != -1)
+  else if (idDirector > 0)
     videoUrl.AddOption("directorid", idDirector);
-  else if (idYear !=-1)
+  else if (idYear > 0)
     videoUrl.AddOption("year", idYear);
-  else if (idActor != -1)
+  else if (idActor > 0)
     videoUrl.AddOption("actorid", idActor);
-  else if (idSet != -1)
+  else if (idSet > 0)
     videoUrl.AddOption("setid", idSet);
-  else if (idTag != -1)
+  else if (idTag > 0)
     videoUrl.AddOption("tagid", idTag);
 
   Filter filter;
-  return GetMoviesByWhere(videoUrl.ToString(), filter, items, idSet == -1);
+  return GetMoviesByWhere(videoUrl.ToString(), filter, items, idSet == -1, sortDescription);
 }
 
 bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool fetchSets /* = false */, const SortDescription &sortDescription /* = SortDescription() */)
@@ -5616,7 +5617,9 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
   return false;
 }
 
-bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idStudio)
+bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items,
+                                  int idGenre /* = -1 */, int idYear /* = -1 */, int idActor /* = -1 */, int idDirector /* = -1 */, int idStudio /* = -1 */,
+                                  const SortDescription &sortDescription /* = SortDescription() */)
 {
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strBaseDir))
@@ -5634,7 +5637,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
     videoUrl.AddOption("actorid", idActor);
 
   Filter filter;
-  return GetTvShowsByWhere(videoUrl.ToString(), filter, items);
+  return GetTvShowsByWhere(videoUrl.ToString(), filter, items, sortDescription);
 }
 
 bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */)
@@ -5921,15 +5924,16 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
 
     if (idGenre != -1)
       videoUrl.AddOption("genreid", idGenre);
-    else if (idDirector != -1)
-      videoUrl.AddOption("directorid", idDirector);
     else if (idYear !=-1)
       videoUrl.AddOption("year", idYear);
     else if (idActor != -1)
       videoUrl.AddOption("actorid", idActor);
   }
-  else
+  else if (idYear != -1)
     videoUrl.AddOption("year", idYear);
+  
+  if (idDirector != -1)
+    videoUrl.AddOption("directorid", idDirector);
 
   Filter filter;
   bool ret = GetEpisodesByWhere(videoUrl.ToString(), filter, items, false, sortDescription);
@@ -8803,11 +8807,25 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
       filter.AppendWhere(PrepareSQL("genrelinkmovie.idGenre = %i", (int)option->second.asInteger()));
     }
 
+    option = options.find("genre");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join genrelinkmovie on genrelinkmovie.idMovie = movieview.idMovie join genre on genre.idGenre = genrelinkmovie.idGenre"));
+      filter.AppendWhere(PrepareSQL("genre.strGenre like '%s'", option->second.asString().c_str()));
+    }
+
     option = options.find("countryid");
     if (option != options.end())
     {
       filter.AppendJoin(PrepareSQL("join countrylinkmovie on countrylinkmovie.idMovie = movieview.idMovie"));
       filter.AppendWhere(PrepareSQL("countrylinkmovie.idCountry = %i", (int)option->second.asInteger()));
+    }
+
+    option = options.find("country");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join countrylinkmovie on countrylinkmovie.idMovie = movieview.idMovie join country on country.idCountry = countrylinkmovie.idCountry"));
+      filter.AppendWhere(PrepareSQL("country.strCountry like '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("studioid");
@@ -8817,11 +8835,25 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
       filter.AppendWhere(PrepareSQL("studiolinkmovie.idStudio = %i", (int)option->second.asInteger()));
     }
 
+    option = options.find("studio");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join studiolinkmovie on studiolinkmovie.idMovie = movieview.idMovie join studio on studio.idStudio = studiolinkmovie.idStudio"));
+      filter.AppendWhere(PrepareSQL("studio.strStudio like '%s'", option->second.asString().c_str()));
+    }
+
     option = options.find("directorid");
     if (option != options.end())
     {
       filter.AppendJoin(PrepareSQL("join directorlinkmovie on directorlinkmovie.idMovie = movieview.idMovie"));
       filter.AppendWhere(PrepareSQL("directorlinkmovie.idDirector = %i", (int)option->second.asInteger()));
+    }
+
+    option = options.find("director");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join directorlinkmovie on directorlinkmovie.idMovie = movieview.idMovie join actors on actors.idActor = directorlinkmovie.idDirector"));
+      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("year");
@@ -8831,19 +8863,40 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
     option = options.find("actorid");
     if (option != options.end())
     {
+      filter.AppendJoin(PrepareSQL("join actorlinkmovie on actorlinkmovie.idMovie = movieview.idMovie"));
+      filter.AppendWhere(PrepareSQL("actorlinkmovie.idActor = %i", (int)option->second.asInteger()));
+    }
+
+    option = options.find("actor");
+    if (option != options.end())
+    {
       filter.AppendJoin(PrepareSQL("join actorlinkmovie on actorlinkmovie.idMovie = movieview.idMovie join actors on actors.idActor = actorlinkmovie.idActor"));
-      filter.AppendWhere(PrepareSQL("actors.idActor = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("setid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("movieview.idSet = %i", (int)option->second.asInteger()));
 
+    option = options.find("set");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join setlinkmovie on setlinkmovie.idMovie = movieview.idMovie join sets on sets.idSet = setlinkmovie.idSet"));
+      filter.AppendWhere(PrepareSQL("sets.strSet like '%s'", option->second.asString().c_str()));
+    }
+
     option = options.find("tagid");
     if (option != options.end())
     {
       filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = movieview.idMovie AND taglinks.media_type = 'movie'"));
       filter.AppendWhere(PrepareSQL("taglinks.idTag = %i", (int)option->second.asInteger()));
+    }
+
+    option = options.find("tag");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = movieview.idMovie AND taglinks.media_type = 'movie' join tag on tag.idTag = taglinks.idTag"));
+      filter.AppendWhere(PrepareSQL("tag.strTag like '%s'", option->second.asString().c_str()));
     }
   }
   else if (type == "tvshows")
@@ -8857,11 +8910,25 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
         filter.AppendWhere(PrepareSQL("genrelinktvshow.idGenre = %i", (int)option->second.asInteger()));
       }
 
+      option = options.find("genre");
+      if (option != options.end())
+      {
+        filter.AppendJoin(PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow = tvshowview.idShow join genre on genre.idGenre = genrelinktvshow.idGenre"));
+        filter.AppendWhere(PrepareSQL("genre.strGenre like '%s'", option->second.asString().c_str()));
+      }
+
       option = options.find("studioid");
       if (option != options.end())
       {
         filter.AppendJoin(PrepareSQL("join studiolinktvshow on studiolinktvshow.idShow = tvshowview.idShow"));
         filter.AppendWhere(PrepareSQL("studiolinktvshow.idStudio = %i", (int)option->second.asInteger()));
+      }
+
+      option = options.find("studio");
+      if (option != options.end())
+      {
+        filter.AppendJoin(PrepareSQL("join studiolinktvshow on studiolinktvshow.idShow = tvshowview.idShow join studio on studio.idStudio = studiolinktvshow.idStudio"));
+        filter.AppendWhere(PrepareSQL("studio.strStudio like '%s'", option->second.asString().c_str()));
       }
 
       option = options.find("directorid");
@@ -8878,8 +8945,15 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
       option = options.find("actorid");
       if (option != options.end())
       {
+        filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = tvshowview.idShow"));
+        filter.AppendWhere(PrepareSQL("actorlinktvshow.idActor = %i", (int)option->second.asInteger()));
+      }
+
+      option = options.find("actor");
+      if (option != options.end())
+      {
         filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = tvshowview.idShow join actors on actors.idActor = actorlinktvshow.idActor"));
-        filter.AppendWhere(PrepareSQL("actors.idActor = %i", (int)option->second.asInteger()));
+        filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
       }
     }
     else if (itemType == "seasons")
@@ -8936,12 +9010,28 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and genrelinktvshow.idGenre = %i", idShow, (int)option->second.asInteger()));
         }
 
+        option = options.find("genre");
+        if (option != options.end())
+        {
+          condition = true;
+          filter.AppendJoin(PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow = episodeview.idShow join genre on genre.idGenre = genrelinktvshow.idGenre"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and genre.strGenre like '%s'", idShow, option->second.asString().c_str()));
+        }
+
         option = options.find("directorid");
         if (option != options.end())
         {
           condition = true;
           filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = episodeview.idShow"));
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and directorlinktvshow.idDirector = %i", idShow, (int)option->second.asInteger()));
+        }
+
+        option = options.find("director");
+        if (option != options.end())
+        {
+          condition = true;
+          filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = episodeview.idShow join actors on actors.idActor = directorlinktvshow.idDirector"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actors.strActor like '%s'", idShow, option->second.asString().c_str()));
         }
       
         option = options.find("year");
@@ -8957,6 +9047,14 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
           condition = true;
           filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = episodeview.idShow"));
           filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actorlinktvshow.idActor = %s", idShow, (int)option->second.asInteger()));
+        }
+
+        option = options.find("actor");
+        if (option != options.end())
+        {
+          condition = true;
+          filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = episodeview.idShow join actors on actors.idActor = actorlinktvshow.idActor"));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actors.strActor = '%s'", idShow, option->second.asString().c_str()));
         }
 
         if (!condition)
@@ -8976,6 +9074,20 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
         option = options.find("year");
         if (option != options.end())
           filter.AppendWhere(PrepareSQL("episodeview.premiered like '%%%i%%'", (int)option->second.asInteger()));
+
+        option = options.find("directorid");
+        if (option != options.end())
+        {
+          filter.AppendJoin(PrepareSQL("join directorlinkepisode on directorlinkepisode.idEpisode = episodeview.idEpisode"));
+          filter.AppendWhere(PrepareSQL("directorlinkepisode.idDirector = %i", (int)option->second.asInteger()));
+        }
+
+        option = options.find("director");
+        if (option != options.end())
+        {
+          filter.AppendJoin(PrepareSQL("join directorlinkepisode on directorlinkepisode.idEpisode = episodeview.idEpisode join actors on actors.idActor = directorlinktvshow.idDirector"));
+          filter.AppendWhere(PrepareSQL("actors.strActor = %s", option->second.asString().c_str()));
+        }
       }
     }
   }
@@ -8988,11 +9100,25 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
       filter.AppendWhere(PrepareSQL("genrelinkmusicvideo.idGenre = %i", (int)option->second.asInteger()));
     }
 
+    option = options.find("genre");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join genrelinkmusicvideo on genrelinkmusicvideo.idMVideo = musicvideoview.idMVideo join genre on genre.idGenre = genrelinkmusicvideo.idGenre"));
+      filter.AppendWhere(PrepareSQL("genre.strGenre like '%s'", option->second.asString().c_str()));
+    }
+
     option = options.find("studioid");
     if (option != options.end())
     {
       filter.AppendJoin(PrepareSQL("join studiolinkmusicvideo on studiolinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
       filter.AppendWhere(PrepareSQL("studiolinkmusicvideo.idStudio = %i", (int)option->second.asInteger()));
+    }
+
+    option = options.find("studio");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join studiolinkmusicvideo on studiolinkmusicvideo.idMVideo = musicvideoview.idMVideo join studio on studio.idStudio = studiolinkmusicvideo.idStudio"));
+      filter.AppendWhere(PrepareSQL("studio.strStudio like '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("directorid");
@@ -9002,6 +9128,13 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
       filter.AppendWhere(PrepareSQL("directorlinkmusicvideo.idDirector = %i", (int)option->second.asInteger()));
     }
 
+    option = options.find("director");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join directorlinkmusicvideo on directorlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = directorlinkmusicvideo.idDirector"));
+      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
+    }
+
     option = options.find("year");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("musicvideoview.c%02d = '%i'",VIDEODB_ID_MUSICVIDEO_YEAR, (int)option->second.asInteger()));
@@ -9009,8 +9142,15 @@ bool CVideoDatabase::GetFilter(const CVideoDbUrl &videoUrl, Filter &filter) cons
     option = options.find("artistid");
     if (option != options.end())
     {
+      filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
+      filter.AppendWhere(PrepareSQL("artistlinkmusicvideo.idArtist = %i", (int)option->second.asInteger()));
+    }
+
+    option = options.find("artist");
+    if (option != options.end())
+    {
       filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = artistlinkmusicvideo.idArtist"));
-      filter.AppendWhere(PrepareSQL("actors.idActor = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
     }
 
     option = options.find("albumid");
