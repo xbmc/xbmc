@@ -912,6 +912,8 @@ void CGUISettings::Initialize()
   AddString(pvr, "pvrmanager.channelmanager", 19199, "", BUTTON_CONTROL_STANDARD);
   AddString(pvr, "pvrmanager.channelscan", 19117, "", BUTTON_CONTROL_STANDARD);
   AddString(pvr, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(pvr, "pvrmanager.sep3");
+  AddBool(pvr, "pvrmanager.hideconnectionlostwarning", 19269, false);
 
   CSettingsCategory* pvrm = AddCategory(8, "pvrmenu", 19181);
   AddBool(pvrm, "pvrmenu.infoswitch", 19178, true);

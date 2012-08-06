@@ -7104,6 +7104,10 @@ msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
 msgstr ""
 
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr ""
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr ""
