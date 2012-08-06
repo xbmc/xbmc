@@ -1084,7 +1084,7 @@ bool CGUISettings::GetBool(const char *strSetting) const
 void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(bSetting);
@@ -1138,7 +1138,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
 void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     ((CSettingFloat *)(*it).second)->SetData(fSetting);
@@ -1212,7 +1212,7 @@ int CGUISettings::GetInt(const char *strSetting) const
 void CGUISettings::SetInt(const char *strSetting, int iSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
@@ -1286,7 +1286,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt /
 void CGUISettings::SetString(const char *strSetting, const char *strData)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     ((CSettingString *)(*it).second)->SetData(strData);
