@@ -98,6 +98,13 @@ const char *CGUIWindowPVRCommon::GetName(void) const
   }
 }
 
+bool CGUIWindowPVRCommon::IsFocused(void) const
+{
+  return !g_application.IsPlayingFullScreenVideo() &&
+      g_windowManager.GetFocusedWindow() == WINDOW_PVR &&
+      IsActive();
+}
+
 bool CGUIWindowPVRCommon::IsVisible(void) const
 {
   return !g_application.IsPlayingFullScreenVideo() &&

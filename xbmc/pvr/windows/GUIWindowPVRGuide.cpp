@@ -70,7 +70,7 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
     m_bUpdateRequired = true;
 
     /* update the current window if the EPG timeline view is visible */
-    if (IsVisible() && m_iGuideView == GUIDE_VIEW_TIMELINE)
+    if (IsFocused() && m_iGuideView == GUIDE_VIEW_TIMELINE)
       UpdateData(false);
   }
   else if (msg.Equals("epg-now"))
