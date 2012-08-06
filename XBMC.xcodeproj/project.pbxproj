@@ -6317,7 +6317,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  if [ \"${BUILT_PRODUCTS_DIR}\" != \"${TARGET_OUTPUT_DIR}\" ]\n  then\n    rm -rf \"${TARGET_OUTPUT_DIR}/${FULL_PRODUCT_NAME}\"\n    rm -rf \"${TARGET_OUTPUT_DIR}/${DWARF_DSYM_FILE_NAME}\"\n    ln -s \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"  || true\n    ln -s \"${BUILT_PRODUCTS_DIR}/${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\" || true\n  fi\nfi";
 		};
 		1D64E5FC157BD76F001ACEBE /* genoutputdirlink */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6331,7 +6331,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\n  ln -sf \"${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\"\nfi";
+			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  if [ \"${BUILT_PRODUCTS_DIR}\" != \"${TARGET_OUTPUT_DIR}\" ]\n  then\n    rm -rf \"${TARGET_OUTPUT_DIR}/${PRODUCT_NAME}\"\n    rm -rf \"${TARGET_OUTPUT_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\"\n    ln -s \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"  || true\n    ln -s \"${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\" || true\n  fi\nfi";
 		};
 		6E2FACC70E26E22400DF79EA /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
