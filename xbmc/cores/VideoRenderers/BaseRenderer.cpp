@@ -276,7 +276,7 @@ inline void CBaseRenderer::ReorderDrawPoints()
   }
   
 
-  int diff = (m_destRect.Height() - m_destRect.Width()) / 2;
+  int diff = (int) ((m_destRect.Height() - m_destRect.Width()) / 2);
 
   for (int destIdx=0, srcIdx=pointOffset; destIdx < 4; destIdx++)
   {
