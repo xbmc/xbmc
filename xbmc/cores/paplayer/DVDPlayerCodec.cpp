@@ -147,7 +147,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   // we have to decode initial data in order to get channels/samplerate
   // for sanity - we read no more than 10 packets
   int nErrors = 0;
-  for (int nPacket=0; nPacket < 10 && (m_Channels == 0 || m_SampleRate == 0); nPacket++)
+  for (int nPacket=0; nPacket < 10 && (m_Channels <= 0 || m_SampleRate <= 0); nPacket++)
   {
     BYTE dummy[256];
     int nSize = 256;
