@@ -167,6 +167,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
                 cancel = true;
                 break;
               }
+
+              lock.Leave(); // prevent an occasional deadlock on exit
               g_windowManager.ProcessRenderLoop(false);
             }
             if(dialog)
