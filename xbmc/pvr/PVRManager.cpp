@@ -36,13 +36,16 @@
 #include "threads/SingleLock.h"
 #include "windows/GUIWindowPVR.h"
 #include "utils/log.h"
+#include "utils/Stopwatch.h"
 #include "utils/StringUtils.h"
 #include "threads/Atomics.h"
+#include "windows/GUIWindowPVRCommon.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
 #include "PVRGUIInfo.h"
 #include "addons/PVRClients.h"
+#include "channels/PVRChannel.h"
 #include "channels/PVRChannelGroupsContainer.h"
 #include "channels/PVRChannelGroupInternal.h"
 #include "epg/EpgContainer.h"
@@ -89,11 +92,12 @@ void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_addons)        SAFE_DELETE(m_addons);
-  if (m_guiInfo)       SAFE_DELETE(m_guiInfo);
-  if (m_timers)        SAFE_DELETE(m_timers);
-  if (m_recordings)    SAFE_DELETE(m_recordings);
-  if (m_channelGroups) SAFE_DELETE(m_channelGroups);
+  SAFE_DELETE(m_addons);
+  SAFE_DELETE(m_guiInfo);
+  SAFE_DELETE(m_timers);
+  SAFE_DELETE(m_recordings);
+  SAFE_DELETE(m_channelGroups);
+  SAFE_DELETE(m_parentalTimer);
   m_triggerEvent.Set();
 
   m_currentFile           = NULL;
@@ -122,6 +126,7 @@ void CPVRManager::ResetProperties(void)
     m_recordings    = new CPVRRecordings;
     m_timers        = new CPVRTimers;
     m_guiInfo       = new CPVRGUIInfo;
+    m_parentalTimer = new CStopWatch;
   }
 }
 
@@ -658,10 +663,10 @@ bool CPVRManager::CheckParentalLock(const CPVRChannel &channel)
           __FUNCTION__, channel.ChannelName().c_str());
       bReturn = false;
     }
-    else
+    else if (m_parentalTimer)
     {
       // reset the timer
-      m_parentalTimer.StartZero();
+      m_parentalTimer->StartZero();
     }
   }
 
@@ -681,8 +686,9 @@ bool CPVRManager::IsParentalLocked(const CPVRChannel &channel)
       channel.IsLocked())
   {
     float parentalDurationMs = g_guiSettings.GetInt("pvrparental.duration") * 1000.0f;
-    bReturn = !m_parentalTimer.IsRunning() ||
-        m_parentalTimer.GetElapsedMilliseconds() > parentalDurationMs;
+    bReturn = m_parentalTimer &&
+        (!m_parentalTimer->IsRunning() ||
+          m_parentalTimer->GetElapsedMilliseconds() > parentalDurationMs);
   }
 
   return bReturn;

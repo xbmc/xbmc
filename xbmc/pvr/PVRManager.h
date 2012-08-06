@@ -21,15 +21,12 @@
  */
 
 #include "threads/Thread.h"
-#include "utils/Observer.h"
 #include "utils/JobManager.h"
 #include "threads/Event.h"
-#include "windows/GUIWindowPVRCommon.h"
 #include "addons/include/xbmc_pvr_types.h"
-#include "utils/Stopwatch.h"
-#include "channels/PVRChannelGroup.h"
 
 class CGUIDialogExtendedProgressBar;
+class CStopWatch;
 
 namespace EPG
 {
@@ -39,12 +36,15 @@ namespace EPG
 namespace PVR
 {
   class CPVRClients;
+  class CPVRChannel;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
+  class CPVRRecording;
   class CPVRRecordings;
   class CPVRTimers;
   class CPVRGUIInfo;
   class CPVRDatabase;
+  class CGUIWindowPVRCommon;
 
   enum ManagerState
   {
@@ -481,9 +481,6 @@ namespace PVR
     virtual void Process(void);
 
   private:
-
-    
-
     /*!
      * @brief Load at least one client and load all other PVR data after loading the client.
      * If some clients failed to load here, the pvrmanager will retry to load them every second.
@@ -587,7 +584,7 @@ namespace PVR
 
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
-    CStopWatch                      m_parentalTimer;
+    CStopWatch                     *m_parentalTimer;
   };
 
   class CPVRRecordingsUpdateJob : public CJob
