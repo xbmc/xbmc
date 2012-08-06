@@ -875,7 +875,14 @@ int CPVRDatabase::Persist(const AddonPtr client)
         client->Name().c_str(), client->ID().c_str());
 
     if (ExecuteQuery(strQuery))
+    {
       iReturn = (int) m_pDS->lastinsertid();
+
+      CAddonDatabase database;
+      database.Open();
+      database.DisableAddon(client->ID());
+      database.Close();
+    }
   }
 
   return iReturn;
