@@ -625,6 +625,7 @@ const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
                                   { "israndom",         SLIDESHOW_ISRANDOM }};
 
 const int picture_slide_map[]  = {/* LISTITEM_PICTURE_RESOLUTION => */ SLIDE_RESOLUTION,
+                                  /* LISTITEM_PICTURE_DATE       => */ SLIDE_EXIF_DATE,
                                   /* LISTITEM_PICTURE_DATETIME   => */ SLIDE_EXIF_DATE_TIME,
                                   /* LISTITEM_PICTURE_COMMENT    => */ SLIDE_COMMENT,
                                   /* LISTITEM_PICTURE_CAPTION    => */ SLIDE_IPTC_CAPTION,
@@ -3409,7 +3410,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       CStdString strSampleRate = "";
       if (g_application.m_pPlayer->GetSampleRate() > 0)
       {
-        strSampleRate.Format("%i",g_application.m_pPlayer->GetSampleRate()/1000);
+        strSampleRate.Format("%.5g", ((double)g_application.m_pPlayer->GetSampleRate() / 1000.0));
       }
       return strSampleRate;
     }
@@ -4134,7 +4135,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     }
     break;
   case LISTITEM_PERCENT_PLAYED:
-    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0 && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0)
+    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.IsPartWay())
       value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
     else
       value = 0;

@@ -38,6 +38,15 @@ CBaseRenderer::CBaseRenderer()
   m_sourceHeight = 480;
   m_resolution = RES_DESKTOP;
   m_fps = 0.0f;
+  m_renderOrientation = 0;
+  m_oldRenderOrientation = 0;
+  m_oldDestRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
+
+  for(int i=0; i < 4; i++)
+  {
+    m_rotatedDestCoords[i].x = 0;
+    m_rotatedDestCoords[i].y = 0;    
+  }
 }
 
 CBaseRenderer::~CBaseRenderer()
@@ -232,6 +241,75 @@ void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
   dest = m_destRect;
 }
 
+inline void CBaseRenderer::ReorderDrawPoints()
+{
+  // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
+  float origMat[4][2] = {{m_destRect.x1, m_destRect.y1}, 
+                         {m_destRect.x2, m_destRect.y1},
+                         {m_destRect.x2, m_destRect.y2},
+                         {m_destRect.x1, m_destRect.y2}};
+  bool changeAspect = false;
+  int pointOffset = 0;
+
+  switch (m_renderOrientation)
+  {
+    case 90:
+      pointOffset = 1;
+      changeAspect = true;
+      break;
+    case 180:
+      pointOffset = 2;
+      break;
+    case 270:
+      pointOffset = 3;
+      changeAspect = true;
+      break;
+  }
+  
+  // if renderer doesn't support rotation
+  // treat orientation as 0 degree so that
+  // ffmpeg might handle it.
+  if (!Supports(RENDERFEATURE_ROTATION))
+  {
+    pointOffset = 0;
+    changeAspect = false;
+  }
+  
+
+  int diff = (m_destRect.Height() - m_destRect.Width()) / 2;
+
+  for (int destIdx=0, srcIdx=pointOffset; destIdx < 4; destIdx++)
+  {
+    m_rotatedDestCoords[destIdx].x = origMat[srcIdx][0];
+    m_rotatedDestCoords[destIdx].y = origMat[srcIdx][1];
+
+    if (changeAspect)
+    {
+      switch (srcIdx)
+      {
+        case 0:
+          m_rotatedDestCoords[destIdx].x -= diff;
+          m_rotatedDestCoords[destIdx].y += diff;
+          break;
+        case 1:
+          m_rotatedDestCoords[destIdx].x += diff;
+          m_rotatedDestCoords[destIdx].y += diff;
+          break;
+        case 2:
+          m_rotatedDestCoords[destIdx].x += diff;
+          m_rotatedDestCoords[destIdx].y -= diff;
+          break;
+        case 3:
+          m_rotatedDestCoords[destIdx].x -= diff;
+          m_rotatedDestCoords[destIdx].y -= diff;
+          break;
+      }
+    }
+    srcIdx++;
+    srcIdx = srcIdx % 4;
+  }
+}
+
 void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift)
 {
   // if view window is empty, set empty destination
@@ -307,6 +385,15 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
       m_sourceRect.x2 += (m_destRect.x2 - original.x2) * scaleX;
       m_sourceRect.y2 += (m_destRect.y2 - original.y2) * scaleY;
     }
+  }
+
+  if (m_oldDestRect != m_destRect || m_oldRenderOrientation != m_renderOrientation)
+  {
+    // adapt the drawing rect points if we have to rotate
+    // and either destrect or orientation changed
+    ReorderDrawPoints();
+    m_oldDestRect = m_destRect;
+    m_oldRenderOrientation = m_renderOrientation;
   }
 }
 

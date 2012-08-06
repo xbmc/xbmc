@@ -909,7 +909,6 @@ crtc_can_use_transform (crtc_t *crtc, XTransform *transform)
 	return True;
     return False;
 }
-#endif
 
 /*
  * Report only rotations that are supported by all crtcs
@@ -936,6 +935,7 @@ output_rotations (output_t *output)
     }
     return rotation;
 }
+#endif
 
 static Bool
 output_can_use_rotation (output_t *output, Rotation rotation)
@@ -2999,7 +2999,7 @@ main (int argc, char **argv)
 	    Atom	    *props;
 	    int		    j, k, nprop;
 	    Bool	    *mode_shown;
-	    Rotation	    rotations = output_rotations (output);
+//	    Rotation	    rotations = output_rotations (output);
 
 	    printf ("  <output name=\"%s\" connected=\"%s\"", output_info->name, connection[output_info->connection]);
 	    if (mode)

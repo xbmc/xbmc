@@ -45,7 +45,8 @@ public:
   void SetHeading(const CStdString &strHeading);
   void SetMode(INPUT_MODE mode, void *initial);
   void SetMode(INPUT_MODE mode, const CStdString &initial);
-  void GetOutput(void *output);
+  void GetOutput(void *output) const;
+  CStdString GetOutput() const;
 
   static bool ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading);
   static bool ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading);

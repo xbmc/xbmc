@@ -575,7 +575,7 @@ bool CAUMultiChannelMixer::SetCurrentVolume(Float32 vol)
   if (!m_audioUnit)
     return false;
 
-  OSStatus ret = AudioUnitSetParameter(m_audioUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, kInputBus, vol, 0);
+  OSStatus ret = AudioUnitSetParameter(m_audioUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, kOutputBus, vol, 0);
   if (ret)
   {
     CLog::Log(LOGERROR, "CAUMultiChannelMixer::SetCurrentVolume: Unable to set Mixer volume. Error = %s", GetError(ret).c_str());

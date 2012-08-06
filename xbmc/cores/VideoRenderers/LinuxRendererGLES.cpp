@@ -87,6 +87,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   }
 
   m_renderMethod = RENDER_GLSL;
+  m_oldRenderMethod = m_renderMethod;
   m_renderQuality = RQ_SINGLEPASS;
   m_iFlags = 0;
   m_format = RENDER_FMT_NONE;
@@ -146,7 +147,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   {
     CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
-     // create the yuv textures    
+     // create the yuv textures
     LoadShaders();
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
@@ -155,13 +156,14 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
     m_bValidated = true;
     return true;
   }
-  return false;  
+  return false;
 }
 
-bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
+  m_renderOrientation = orientation;
 
   // Save the flags.
   m_iFlags = flags;
@@ -402,7 +404,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     // outside the control of gles and on a different
     // graphics plane that is under the gles layer.
     // Clear a hole where video would appear so we do not see
-    // background images that have already been rendered. 
+    // background images that have already been rendered.
     g_graphicsContext.SetScissors(m_destRect);
 
     glEnable(GL_BLEND);
@@ -695,6 +697,13 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGLES::CreateYV12Texture;
     m_textureDelete = &CLinuxRendererGLES::DeleteYV12Texture;
   }
+
+  if (m_oldRenderMethod != m_renderMethod)
+  {
+    CLog::Log(LOGDEBUG, "CLinuxRendererGLES: Reorder drawpoints due to method change from %i to %i", m_oldRenderMethod, m_renderMethod);
+    ReorderDrawPoints();
+    m_oldRenderMethod = m_renderMethod;
+  }
 }
 
 void CLinuxRendererGLES::UnInit()
@@ -723,6 +732,24 @@ void CLinuxRendererGLES::UnInit()
   m_bValidated = false;
   m_bImageReady = false;
   m_bConfigured = false;
+}
+
+inline void CLinuxRendererGLES::ReorderDrawPoints()
+{
+
+  CBaseRenderer::ReorderDrawPoints();//call base impl. for rotating the points
+
+  //corevideo is flipped in y
+  if(m_renderMethod & RENDER_CVREF)
+  {
+    CPoint tmp;
+    tmp = m_rotatedDestCoords[0];
+    m_rotatedDestCoords[0] = m_rotatedDestCoords[3];
+    m_rotatedDestCoords[3] = tmp;
+    tmp = m_rotatedDestCoords[1];
+    m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
+    m_rotatedDestCoords[2] = tmp;
+  }
 }
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
@@ -846,11 +873,12 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glEnableVertexAttribArray(Vloc);
 
   // Setup vertex position values
-  m_vert[0][0] = m_vert[3][0] = m_destRect.x1;
-  m_vert[0][1] = m_vert[1][1] = m_destRect.y1;
-  m_vert[1][0] = m_vert[2][0] = m_destRect.x2;
-  m_vert[2][1] = m_vert[3][1] = m_destRect.y2;
-  m_vert[0][2] = m_vert[1][2] = m_vert[2][2] = m_vert[3][2] = 0.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    m_vert[i][0] = m_rotatedDestCoords[i].x;
+    m_vert[i][1] = m_rotatedDestCoords[i].y;
+    m_vert[i][2] = 0.0f;// set z to 0
+  }
 
   // Setup texture coordinates
   for (int i=0; i<3; i++)
@@ -1111,12 +1139,13 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y1;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y2;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates
   tex[0][0] = tex[3][0] = planes[0].rect.x1;
@@ -1175,12 +1204,13 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y2;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y1;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates
   tex[0][0] = tex[3][0] = 0;
@@ -1239,12 +1269,13 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y2;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y1;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates (corevideo is flipped in y)
   tex[0][0] = tex[3][0] = 0;
@@ -1379,7 +1410,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 
       LoadPlane( fields[FIELD_BOT][0], GL_RGBA, buf.flipindex
                , im->width, im->height >> 1
-               , m_sourceWidth*8, m_rgbBuffer + m_sourceWidth*4);      
+               , m_sourceWidth*8, m_rgbBuffer + m_sourceWidth*4);
     }
     else
     {
@@ -1428,7 +1459,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
       LoadPlane( fields[FIELD_TOP][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
-      
+
       // Load Odd U & V Fields
       LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
@@ -1574,9 +1605,9 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         else
           CLog::Log(LOGDEBUG,  "GL: Creating RGB NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      } 
+      }
       else
       {
         if(m_renderMethod & RENDER_POT)
@@ -1782,13 +1813,13 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 {
   if(feature == RENDERFEATURE_BRIGHTNESS)
     return false;
-  
+
   if(feature == RENDERFEATURE_CONTRAST)
     return false;
 
   if(feature == RENDERFEATURE_GAMMA)
     return false;
-  
+
   if(feature == RENDERFEATURE_NOISE)
     return false;
 
@@ -1797,6 +1828,9 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 
   if (feature == RENDERFEATURE_NONLINSTRETCH)
     return false;
+
+  if (feature == RENDERFEATURE_ROTATION)
+    return true;
 
   return false;
 }
@@ -1892,3 +1926,4 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
 
 
 #endif
+

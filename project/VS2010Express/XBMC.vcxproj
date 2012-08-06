@@ -327,6 +327,7 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
     <ClCompile Include="..\..\xbmc\CueDocument.cpp" />
+    <ClCompile Include="..\..\xbmc\DbUrl.cpp" />
     <ClCompile Include="..\..\xbmc\dbwrappers\Database.cpp" />
     <ClCompile Include="..\..\xbmc\dbwrappers\dataset.cpp" />
     <ClCompile Include="..\..\xbmc\dbwrappers\mysqldataset.cpp" />
@@ -342,7 +343,7 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogFileBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogGamepad.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKaiToast.cpp" />
-    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboard.cpp" />
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMuteBug.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogNumeric.cpp" />
@@ -511,6 +512,7 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIIncludes.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIInfoTypes.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\GUIKeyboardFactory.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUILabel.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUILabelControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIListContainer.cpp" />
@@ -761,6 +763,7 @@
     <ClCompile Include="..\..\xbmc\music\karaoke\karaokewindowbackground.cpp" />
     <ClCompile Include="..\..\xbmc\music\LastFmManager.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\music\MusicDbUrl.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\music\Song.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\APEv2Tag.cpp" />
@@ -969,13 +972,18 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEWAVLoader.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
+    <ClInclude Include="..\..\xbmc\DbUrl.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h" />
+    <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
+    <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h" />
     <ClInclude Include="..\..\xbmc\network\AirTunesServer.h" />
     <ClInclude Include="..\..\xbmc\network\DllLibShairplay.h" />
@@ -1171,6 +1179,7 @@
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TuxBoxUtil.cpp" />
     <ClCompile Include="..\..\xbmc\utils\URIUtils.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\UrlOptions.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Variant.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Weather.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp" />
@@ -1189,6 +1198,7 @@
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp" />
     <ClCompile Include="..\..\xbmc\video\Teletext.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\video\VideoDbUrl.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoInfoDownloader.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoInfoScanner.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoInfoTag.cpp" />
@@ -1527,7 +1537,6 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogFileBrowser.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogGamepad.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKaiToast.h" />
-    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboard.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaSource.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMuteBug.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogNumeric.h" />
@@ -2016,6 +2025,7 @@
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\TuxBoxUtil.h" />
     <ClInclude Include="..\..\xbmc\utils\URIUtils.h" />
+    <ClInclude Include="..\..\xbmc\utils\UrlOptions.h" />
     <ClInclude Include="..\..\xbmc\utils\Variant.h" />
     <ClInclude Include="..\..\xbmc\utils\Weather.h" />
     <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h" />
@@ -2035,6 +2045,7 @@
     <ClInclude Include="..\..\xbmc\video\Teletext.h" />
     <ClInclude Include="..\..\xbmc\video\TeletextDefines.h" />
     <ClInclude Include="..\..\xbmc\video\VideoDatabase.h" />
+    <ClInclude Include="..\..\xbmc\video\VideoDbUrl.h" />
     <ClInclude Include="..\..\xbmc\video\VideoInfoDownloader.h" />
     <ClInclude Include="..\..\xbmc\video\VideoInfoScanner.h" />
     <ClInclude Include="..\..\xbmc\video\VideoInfoTag.h" />

@@ -65,6 +65,7 @@ public:
   virtual void SetInvalid();
   virtual void SetPosition(float posX, float posY);
   void SetLimits(float x1, float y1, float x2, float y2);
+  virtual bool CanFocus() const { return true; };
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);

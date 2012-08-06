@@ -22,7 +22,7 @@
 #include "GUIEditControl.h"
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "input/XBMC_vkeys.h"
 #include "LocalizeStrings.h"
@@ -301,10 +301,10 @@ void CGUIEditControl::OnClick()
       textChanged = CGUIDialogNumeric::ShowAndGetIPAddress(utf8, heading);
       break;
     case INPUT_TYPE_SEARCH:
-      textChanged = CGUIDialogKeyboard::ShowAndGetFilter(utf8, true);
+      textChanged = CGUIKeyboardFactory::ShowAndGetFilter(utf8, true);
       break;
     case INPUT_TYPE_FILTER:
-      textChanged = CGUIDialogKeyboard::ShowAndGetFilter(utf8, false);
+      textChanged = CGUIKeyboardFactory::ShowAndGetFilter(utf8, false);
       break;
     case INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW:
       textChanged = CGUIDialogNumeric::ShowAndVerifyNewPassword(utf8);
@@ -314,7 +314,7 @@ void CGUIEditControl::OnClick()
       // fallthrough
     case INPUT_TYPE_TEXT:
     default:
-      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5);
+      textChanged = CGUIKeyboardFactory::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5);
       break;
   }
   if (textChanged)
@@ -334,7 +334,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 
-    m_textChangeActions.Execute(GetID(), GetParentID());
+    m_textChangeActions.ExecuteActions(GetID(), GetParentID());
   }
   SetInvalid();
 }

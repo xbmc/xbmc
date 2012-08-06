@@ -123,6 +123,7 @@ namespace PERIPHERALS
     static int CecCommand(void *cbParam, const CEC::cec_command &command);
     static int CecConfiguration(void *cbParam, const CEC::libcec_configuration &config);
     static int CecAlert(void *cbParam, const CEC::libcec_alert alert, const CEC::libcec_parameter &data);
+    static void CecSourceActivated(void *param, const CEC::cec_logical_address address, const uint8_t activated);
     bool IsRunning(void) const;
     void ReopenConnection(void);
 

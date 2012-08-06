@@ -73,14 +73,14 @@ INT CXBApplicationEx::Run(bool renderGUI)
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
 
-  BYTE processExceptionCount = 0;
-  BYTE frameMoveExceptionCount = 0;
-  BYTE renderExceptionCount = 0;
   unsigned int lastFrameTime = 0;
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
 #ifndef _DEBUG
+  BYTE processExceptionCount = 0;
+  BYTE frameMoveExceptionCount = 0;
+  BYTE renderExceptionCount = 0;
   const BYTE MAX_EXCEPTION_COUNT = 10;
 #endif
 
@@ -100,9 +100,8 @@ INT CXBApplicationEx::Run(bool renderGUI)
       lastFrameTime = XbmcThreads::SystemClockMillis();
       Process();
       //reset exception count
-      processExceptionCount = 0;
-
 #ifndef _DEBUG
+      processExceptionCount = 0;
 
     }
     catch (...)
@@ -124,9 +123,8 @@ INT CXBApplicationEx::Run(bool renderGUI)
 #endif
       if (!m_bStop) FrameMove(true, renderGUI);
       //reset exception count
-      frameMoveExceptionCount = 0;
-
 #ifndef _DEBUG
+      frameMoveExceptionCount = 0;
 
     }
     catch (...)
@@ -154,11 +152,9 @@ INT CXBApplicationEx::Run(bool renderGUI)
         if(frameTime < noRenderFrameTime)
           Sleep(noRenderFrameTime - frameTime);
       }
-
+#ifndef _DEBUG
       //reset exception count
       renderExceptionCount = 0;
-
-#ifndef _DEBUG
 
     }
     catch (...)

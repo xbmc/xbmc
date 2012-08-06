@@ -55,13 +55,7 @@ void WINAPI Sleep(DWORD dwMilliSeconds)
   }
 #endif
 
-  struct timespec req;
-  req.tv_sec = dwMilliSeconds / 1000;
-  req.tv_nsec = (dwMilliSeconds % 1000) * 1000000;
-
-  // many calls will be interupted. so we keep looping till we're done.
-  while ( nanosleep(&req, &req) == -1 && errno == EINTR && (req.tv_nsec > 0 || req.tv_sec > 0))
-    ;
+  usleep(dwMilliSeconds * 1000);
 }
 
 VOID GetLocalTime(LPSYSTEMTIME sysTime)

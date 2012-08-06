@@ -40,8 +40,7 @@ bool CDirectoryNodeTitleMusicVideos::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  CStdString strBaseDir=BuildPath();
-  bool bSuccess=videodatabase.GetMusicVideosNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(),params.GetStudioId(),params.GetAlbumId());
+  bool bSuccess=videodatabase.GetMusicVideosNav(BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(),params.GetStudioId(),params.GetAlbumId());
 
   videodatabase.Close();
 

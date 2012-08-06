@@ -195,7 +195,8 @@
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
         "properties": {
-          "type": { "type": "string", "enum": [ "keyboard", "time", "date", "ip", "password", "number", "seconds" ], "required": true },
+          "type": { "type": "string", "enum": [ "keyboard", "time", "date", "ip", "password", "numericpassword", "number", "seconds" ], "required": true },
+          "value": { "type": "string", "required": true },
           "title": { "type": "string" }
         }
       }

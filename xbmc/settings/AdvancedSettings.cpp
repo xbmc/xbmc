@@ -129,8 +129,6 @@ void CAdvancedSettings::Initialize()
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
-  m_autoDetectPingTime = 30;
-
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
 
@@ -675,7 +673,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "autodetectpingtime", m_autoDetectPingTime, 1, 240);
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
@@ -1188,4 +1185,22 @@ float CAdvancedSettings::GetDisplayLatency(float refreshrate)
   }
 
   return delay; // in seconds
+}
+
+void CAdvancedSettings::SetDebugMode(bool debug)
+{
+  if (debug)
+  {
+    int level = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+    m_logLevel = level;
+    CLog::SetLogLevel(level);
+    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
+  }
+  else
+  {
+    int level = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+    CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
+    m_logLevel = level;
+    CLog::SetLogLevel(level);
+  }	
 }

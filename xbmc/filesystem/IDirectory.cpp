@@ -23,7 +23,7 @@
 #include "IDirectory.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "URL.h"
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
@@ -114,7 +114,7 @@ bool IDirectory::ProcessRequirements()
   if (type == "keyboard")
   {
     CStdString input;
-    if (CGUIDialogKeyboard::ShowAndGetInput(input, m_requirements["heading"], false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(input, m_requirements["heading"], false))
     {
       m_requirements["input"] = input;
       return true;

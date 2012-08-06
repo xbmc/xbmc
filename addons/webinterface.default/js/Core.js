@@ -21,7 +21,7 @@
 
 /* Global Paths */
 
-var JSON_RPC = '/jsonrpc';
+var JSON_RPC = 'jsonrpc';
 var DEFAULT_ALBUM_COVER = 'images/DefaultAlbumCover.png';
 var DEFAULT_VIDEO_COVER = 'images/DefaultVideo.png';
 

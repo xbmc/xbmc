@@ -56,6 +56,7 @@ public:
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();
   virtual void ResetOSScreensaver();
+  virtual bool EnableFrameLimiter();
 
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
@@ -74,11 +75,15 @@ protected:
   bool  SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx);
   void  FillInVideoModes();
   bool  FlushBuffer(void);
+  bool  IsObscured(void);
 
   void* m_glContext;
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
   CWinEventsOSX *m_osx_events;
+  bool                         m_obscured;
+  unsigned int                 m_obscured_timecheck;
+
   bool                         m_use_system_screensaver;
   bool                         m_can_display_switch;
   void                        *m_windowDidMove;

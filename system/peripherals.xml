@@ -19,10 +19,11 @@
     <setting key="standby_tv_on_pc_standby" type="bool" value="1" label="36026" order="7" />
     <setting key="send_inactive_source" type="bool" value="1" label="36025" order="8" />
     <setting key="use_tv_menu_language" type="bool" value="1" label="36018" order="9" />
-    <setting key="physical_address" type="string" label="36021" value="0" order="10" />
-    <setting key="cec_hdmi_port" type="int" value="1" min="1" max="15" label="36015" order="11" />
-    <setting key="connected_device" type="int" label="36019" value="0" min="0" max="15" step="1" order="12" />
-    <setting key="port" type="string" value="" label="36022" order="13" />
+    <setting key="pause_playback_on_deactivate" type="bool" value="1" label="36033" order="10" />
+    <setting key="physical_address" type="string" label="36021" value="0" order="11" />
+    <setting key="cec_hdmi_port" type="int" value="1" min="1" max="15" label="36015" order="12" />
+    <setting key="connected_device" type="int" label="36019" value="0" min="0" max="15" step="1" order="13" />
+    <setting key="port" type="string" value="" label="36022" order="14" />
 
     <setting key="tv_vendor" type="int" value="0" configurable="0" />
     <setting key="device_name" type="string" value="XBMC" configurable="0" />

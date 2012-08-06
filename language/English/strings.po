@@ -3158,39 +3158,7 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr ""
 
-#empty strings from id 1236 to 1249
-
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr ""
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr ""
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr ""
-
-#empty string with id 1253
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr ""
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr ""
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr ""
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr ""
-
-#empty string with id 1258
+#empty strings from id 1236 to 1258
 
 msgctxt "#1259"
 msgid "Zeroconf"
@@ -10967,5 +10935,9 @@ msgstr ""
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr ""
+
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
 msgstr ""
 

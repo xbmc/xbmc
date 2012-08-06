@@ -144,12 +144,12 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
 
   InternalFlush();
 
-  _aligned_free(m_convertBuffer);
-  //_aligned_free(m_resampleBuffer);
-  _aligned_free(m_remapBuffer);
-  _aligned_free(m_vizRemapBuffer);
+  _aligned_free(m_convertBuffer); m_convertBuffer = NULL;
+  //_aligned_free(m_resampleBuffer); m_resampleBuffer = NULL;
+  _aligned_free(m_remapBuffer); m_remapBuffer = NULL;
+  _aligned_free(m_vizRemapBuffer); m_vizRemapBuffer = NULL;
 
-  delete m_Buffer;
+  delete m_Buffer; m_Buffer = NULL;
 
   /*
   if (m_resample)
@@ -402,7 +402,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     adddata = (uint8_t *)m_remapBuffer;
     channelsInBuffer = m_OutputFormat.m_channelLayout.Count();
   }
-  
+
   // upmix the ouput to output channels
   if ( (!m_isRaw || m_rawDataFormat == AE_FMT_LPCM) && (m_chLayoutCountOutput > channelsInBuffer) )
   {
@@ -453,11 +453,11 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   if (!m_isRaw)
   {
     float *floatBuffer   = (float *)buffer;
-    unsigned int samples = readsize / m_OutputBytesPerSample;        
+    unsigned int samples = readsize / m_OutputBytesPerSample;
 
     // we have a frame, if we have a viz we need to hand the data to it.
-    // Keep in mind that our buffer is already in output format. 
-    // So we remap output format to viz format !!!  
+    // Keep in mind that our buffer is already in output format.
+    // So we remap output format to viz format !!!
     if (m_OutputFormat.m_dataFormat == AE_FMT_FLOAT)
     {
       // TODO : Why the hell is vizdata limited ?
@@ -751,7 +751,7 @@ OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   if (!m_valid || m_delete || !m_Buffer || m_firstInput || m_paused)
   {
   	for (UInt32 i = 0; i < ioData->mNumberBuffers; i++)
-      bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);	
+      bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
     if (ioActionFlags)
       *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
     m_firstInput = false;

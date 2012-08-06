@@ -91,6 +91,16 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
     m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
     m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
   }
+  else
+  {
+    // align all textures so that they have an even width
+    // in some circumstances when we downsize a thumbnail
+    // which has an uneven number of pixels in width
+    // we crash in CPicture::ScaleImage in ffmpegs swscale
+    // because it tries to access beyond the source memory
+    // (happens on osx and ios)
+    m_textureWidth = ((m_textureWidth + 1) / 2) * 2;
+  }
 
   // check for max texture size
   #define CLAMP(x, y) { if (x > y) x = y; }

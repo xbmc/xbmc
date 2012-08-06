@@ -235,6 +235,8 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
     else if (field == FieldDirector) result.Format("episodeview.c%02d", VIDEODB_ID_EPISODE_DIRECTOR);
     else if (field == FieldSeason) result.Format("episodeview.c%02d", VIDEODB_ID_EPISODE_SEASON);
     else if (field == FieldEpisodeNumber) result.Format("episodeview.c%02d", VIDEODB_ID_EPISODE_EPISODE);
+    else if (field == FieldEpisodeNumberSpecialSort) result.Format("episodeview.c%02d", VIDEODB_ID_EPISODE_SORTEPISODE);
+    else if (field == FieldSeasonSpecialSort) result.Format("episodeview.c%02d", VIDEODB_ID_EPISODE_SORTSEASON);
     else if (field == FieldFilename) return "episodeview.strFilename";
     else if (field == FieldPath) return "episodeview.strPath";
     else if (field == FieldPlaycount) return "episodeview.playCount";
@@ -335,7 +337,6 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldRating) index = VIDEODB_ID_RATING;
     else if (field == FieldWriter) index = VIDEODB_ID_CREDITS;
     else if (field == FieldYear) index = VIDEODB_ID_YEAR;
-    else if (field == FieldSortTitle) index = VIDEODB_ID_SORTTITLE;
     else if (field == FieldTime) index = VIDEODB_ID_RUNTIME;
     else if (field == FieldMPAA) index = VIDEODB_ID_MPAA;
     else if (field == FieldTop250) index = VIDEODB_ID_TOP250;
@@ -370,7 +371,6 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldGenre) index = VIDEODB_ID_TV_GENRE;
     else if (field == FieldMPAA) index = VIDEODB_ID_TV_MPAA;
     else if (field == FieldStudio) index = VIDEODB_ID_TV_STUDIOS;
-    else if (field == FieldSortTitle) index = VIDEODB_ID_TV_SORTTITLE;
     else if (field == FieldPath) return VIDEODB_DETAILS_TVSHOW_PATH;
     else if (field == FieldDateAdded) return VIDEODB_DETAILS_TVSHOW_DATEADDED;
     else if (field == FieldNumberOfEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_EPISODES;
@@ -397,6 +397,8 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldDirector) index = VIDEODB_ID_EPISODE_DIRECTOR;
     else if (field == FieldSeason) index = VIDEODB_ID_EPISODE_SEASON;
     else if (field == FieldEpisodeNumber) index = VIDEODB_ID_EPISODE_EPISODE;
+    else if (field == FieldEpisodeNumberSpecialSort) index = VIDEODB_ID_EPISODE_SORTEPISODE;
+    else if (field == FieldSeasonSpecialSort) index = VIDEODB_ID_EPISODE_SORTSEASON;
     else if (field == FieldFilename) return VIDEODB_DETAILS_EPISODE_FILE;
     else if (field == FieldPath) return VIDEODB_DETAILS_EPISODE_PATH;
     else if (field == FieldPlaycount) return VIDEODB_DETAILS_EPISODE_PLAYCOUNT;

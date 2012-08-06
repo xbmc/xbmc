@@ -35,6 +35,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
+#include "video/VideoInfoTag.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -148,6 +149,8 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
     resultItem.SetPath(newDir->m_fileResult->GetPath());
     resultItem.SetMimeType(newDir->m_fileResult->GetMimeType(false));
     resultItem.UpdateInfo(*newDir->m_fileResult);
+    if (newDir->m_fileResult->HasVideoInfoTag() && newDir->m_fileResult->GetVideoInfoTag()->m_resumePoint.IsSet())
+      resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
   }
   delete newDir;
 
@@ -320,6 +323,15 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_VIDEO_TITLE:
       {
         dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_TITLE, 369, LABEL_MASKS("%T", label2Mask));
+        break;
+      }
+    case SORT_METHOD_VIDEO_SORT_TITLE:
+    case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 369, LABEL_MASKS("%T", label2Mask));
+        else
+          dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 369, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_MPAA_RATING:

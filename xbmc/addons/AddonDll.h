@@ -83,7 +83,8 @@ template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   : CAddon(ext)
 {
-  if (ext)
+  // if library attribute isn't present, look for a system-dependent one
+  if (ext && m_strLibName.IsEmpty())
   {
 #if defined(_LINUX) && !defined(TARGET_DARWIN)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
@@ -245,13 +246,16 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
       }
       CAddon::SaveSettings();
     }
-    if (m_pDll) m_pDll->Stop();
+    if (m_pDll)
+    {
+      m_pDll->Stop();
+      CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
+    }
   }
   catch (std::exception &e)
   {
     HandleException(e, "m_pDll->Stop");
   }
-  CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -274,10 +278,13 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   m_pHelpers = NULL;
   free(m_pStruct);
   m_pStruct = NULL;
-  delete m_pDll;
-  m_pDll = NULL;
+  if (m_pDll)
+  {
+    delete m_pDll;
+    m_pDll = NULL;
+    CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
+  }
   m_initialized = false;
-  CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

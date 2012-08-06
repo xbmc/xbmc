@@ -50,7 +50,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "filesystem/Directory.h"
 #include "playlists/PlayList.h"
 #include "settings/Settings.h"
@@ -573,7 +573,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       int iString = 16009;
       if (info->Content() == CONTENT_TVSHOWS)
         iString = 20357;
-      if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
+      if (!CGUIKeyboardFactory::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
       {
         m_database.Close();
         return listNeedsUpdating; // user backed out
@@ -831,7 +831,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
 
   if (!item->IsNFO() && !item->IsPlayList())
   {
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0.0)
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.IsSet())
     {
       startoffset = (int)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
       partNumber = item->GetVideoInfoTag()->m_resumePoint.partNumber;
@@ -899,7 +899,6 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
   case SELECT_ACTION_CHOOSE:
     {
       CContextButtons choices;
-      bool resume = false;
 
       if (item->IsVideoDb())
       {
@@ -909,17 +908,13 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
           choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
       }
 
-      if (!item->IsLiveTV())
+      CStdString resumeString = GetResumeString(*item);
+      if (!resumeString.IsEmpty())
       {
-        CStdString resumeString = GetResumeString(*item);
-        if (!resumeString.IsEmpty()) 
-        {
-          resume = true;
-          choices.Add(SELECT_ACTION_RESUME, resumeString);
-          choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
-        }
+        choices.Add(SELECT_ACTION_RESUME, resumeString);
+        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
       }
-      if (!resume)
+      else
         choices.Add(SELECT_ACTION_PLAY, 208);   // Play
 
       choices.Add(SELECT_ACTION_INFO, 22081); // Info
@@ -1007,28 +1002,20 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
   CGUIMediaWindow::OnClick(iItem);
 }
 
-CStdString CGUIWindowVideoBase::GetResumeString(CFileItem item) 
+CStdString CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 {
   CStdString resumeString;
-  CStdString partString;
-  CVideoDatabase db;
-  if (db.Open())
+  int startOffset = 0, startPart = 0;
+  GetResumeItemOffset(&item, startOffset, startPart);
+  if (startOffset > 0)
   {
-    CBookmark bookmark;
-    CStdString itemPath(item.GetPath());
-    if (item.IsVideoDb() || item.IsDVD())
-      itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
-
-    if (db.GetResumeBookMark(itemPath, bookmark))
+    resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
+    if (startPart > 0)
     {
-      resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
-      if (bookmark.partNumber > 0)
-      {
-        partString.Format(g_localizeStrings.Get(23051).c_str(), bookmark.partNumber);
-        resumeString.append(" (").append(partString).append(")");
-      }
+      CStdString partString;
+      partString.Format(g_localizeStrings.Get(23051).c_str(), startPart);
+      resumeString += " (" + partString + ")";
     }
-    db.Close();
   }
   return resumeString;
 }
@@ -1700,7 +1687,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   strInput = detail.m_strTitle;
 
   //Get the new title
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
     return;
 
   database.UpdateMovieTitle(iDbId, strInput, iType);
@@ -1853,7 +1840,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   // prompt for data
   // enter a new title
   CStdString strTitle = pItem->GetLabel();
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
+  if (!CGUIKeyboardFactory::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
     return;
 
   // pick genre
@@ -1880,7 +1867,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (strGenre.IsEmpty())
   {
     strGenre = g_localizeStrings.Get(532); // Manual Addition
-    if (!CGUIDialogKeyboard::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
+    if (!CGUIKeyboardFactory::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
       return; // user backed out
     if (strGenre.IsEmpty())
       return; // no genre string
@@ -1908,7 +1895,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
 void CGUIWindowVideoBase::OnSearch()
 {
   CStdString strSearch;
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(16017), false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, g_localizeStrings.Get(16017), false))
     return ;
 
   strSearch.ToLower();

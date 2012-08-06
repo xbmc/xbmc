@@ -66,7 +66,7 @@ public:
   void SetViewMode(int iViewMode);
 
   // Functions called from mplayer
-  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
+  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation);
   bool IsConfigured();
 
   int AddVideoPicture(DVDVideoPicture& picture);

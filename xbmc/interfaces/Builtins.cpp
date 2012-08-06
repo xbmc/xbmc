@@ -29,7 +29,7 @@
 #include "FileItem.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "music/dialogs/GUIDialogMusicScan.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -88,6 +88,7 @@
 #endif
 
 #include <vector>
+#include "xbmc/settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -124,6 +125,7 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
+  { "StopScript",                 true,   "Stop the script by ID or path, if running" },
 #if defined(TARGET_DARWIN)
   { "RunAppleScript",             true,   "Run the specified AppleScript command" },
 #endif
@@ -211,6 +213,7 @@ const BUILT_IN commands[] = {
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
+  { "toggledebug",                false,  "Enables/disables debug mode" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -429,6 +432,19 @@ int CBuiltins::Execute(const CStdString& execString)
     Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
   }
 #endif
+  else if (execute.Equals("stopscript"))
+  {
+#ifdef HAS_PYTHON
+    CStdString scriptpath(params[0]);
+
+    // Test to see if the param is an addon ID
+    AddonPtr script;
+    if (CAddonMgr::Get().GetAddon(params[0], script))
+      scriptpath = script->LibPath();
+
+    g_pythonParser.StopScript(scriptpath);
+#endif
+  }
   else if (execute.Equals("system.exec"))
   {
     CApplicationMessenger::Get().Minimize();
@@ -1098,7 +1114,7 @@ int CBuiltins::Execute(const CStdString& execString)
     g_mediaManager.GetLocalDrives(localShares);
     if (execute.Equals("skin.setstring"))
     {
-      if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
+      if (CGUIKeyboardFactory::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
         g_settings.SetSkinString(string, value);
     }
     else if (execute.Equals("skin.setnumeric"))
@@ -1596,8 +1612,13 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
   }
+  else if (execute.Equals("toggledebug"))
+  {
+    bool debug = g_guiSettings.GetBool("debug.showloginfo");
+    g_guiSettings.SetBool("debug.showloginfo", !debug);
+    g_advancedSettings.SetDebugMode(!debug);
+  }
   else
     return -1;
   return 0;
 }
-

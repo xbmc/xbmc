@@ -267,10 +267,11 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
+  m_renderOrientation = orientation;
   m_fps = fps;
 
   // Save the flags.
@@ -698,39 +699,39 @@ void CLinuxRendererGL::DrawBlackBars()
   glBegin(GL_QUADS);
 
   //top quad
-  if (m_destRect.y1 > 0.0)
+  if (m_rotatedDestCoords[0].y > 0.0)
   {
-    glVertex4f(0.0,                          0.0,           0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), 0.0,           0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), m_destRect.y1, 0.0, 1.0);
-    glVertex4f(0.0,                          m_destRect.y1, 0.0, 1.0);
+    glVertex4f(0.0,                          0.0,                      0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), 0.0,                      0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[0].y, 0.0, 1.0);
+    glVertex4f(0.0,                          m_rotatedDestCoords[0].y, 0.0, 1.0);
   }
 
   //bottom quad
-  if (m_destRect.y2 < g_graphicsContext.GetHeight())
+  if (m_rotatedDestCoords[2].y < g_graphicsContext.GetHeight())
   {
-    glVertex4f(0.0,                          m_destRect.y2,                 0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(), m_destRect.y2,                 0.0, 1.0);
+    glVertex4f(0.0,                          m_rotatedDestCoords[2].y,      0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[2].y,      0.0, 1.0);
     glVertex4f(g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0, 1.0);
     glVertex4f(0.0,                          g_graphicsContext.GetHeight(), 0.0, 1.0);
   }
 
   //left quad
-  if (m_destRect.x1 > 0.0)
+  if (m_rotatedDestCoords[0].x > 0.0)
   {
-    glVertex4f(0.0,           m_destRect.y1, 0.0, 1.0);
-    glVertex4f(m_destRect.x1, m_destRect.y1, 0.0, 1.0);
-    glVertex4f(m_destRect.x1, m_destRect.y2, 0.0, 1.0);
-    glVertex4f(0.0,           m_destRect.y2, 0.0, 1.0);
+    glVertex4f(0.0,                      m_rotatedDestCoords[0].y, 0.0, 1.0);
+    glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0.0, 1.0);
+    glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[2].y, 0.0, 1.0);
+    glVertex4f(0.0,                      m_rotatedDestCoords[2].y, 0.0, 1.0);
   }
 
   //right quad
-  if (m_destRect.x2 < g_graphicsContext.GetWidth())
+  if (m_rotatedDestCoords[2].x < g_graphicsContext.GetWidth())
   {
-    glVertex4f(m_destRect.x2,                 m_destRect.y1, 0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(),  m_destRect.y1, 0.0, 1.0);
-    glVertex4f(g_graphicsContext.GetWidth(),  m_destRect.y2, 0.0, 1.0);
-    glVertex4f(m_destRect.x2,                 m_destRect.y2, 0.0, 1.0);
+    glVertex4f(m_rotatedDestCoords[2].x,     m_rotatedDestCoords[0].y, 0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[0].y, 0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), m_rotatedDestCoords[2].y, 0.0, 1.0);
+    glVertex4f(m_rotatedDestCoords[2].x,     m_rotatedDestCoords[2].y, 0.0, 1.0);
   }
 
   glEnd();
@@ -1258,22 +1259,22 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y1);
   glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y1);
   glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y1);
-  glVertex4f(m_destRect.x1, m_destRect.y1, 0, 1.0f );
+  glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0, 1.0f );//top left
 
   glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y1);
   glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y1);
   glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y1);
-  glVertex4f(m_destRect.x2, m_destRect.y1, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 0, 1.0f );//top right
 
   glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y2);
   glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y2);
   glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y2);
-  glVertex4f(m_destRect.x2, m_destRect.y2, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 0, 1.0f );//bottom right
 
   glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y2);
   glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y2);
   glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y2);
-  glVertex4f(m_destRect.x1, m_destRect.y2, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0, 1.0f );//bottom left
 
   glEnd();
   VerifyGLState();
@@ -1471,16 +1472,16 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   glBegin(GL_QUADS);
 
   glMultiTexCoord2fARB(GL_TEXTURE0, 0.0f    , 0.0f);
-  glVertex4f(m_destRect.x1, m_destRect.y1, 0, 1.0f );
+  glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0, 1.0f );
 
   glMultiTexCoord2fARB(GL_TEXTURE0, imgwidth, 0.0f);
-  glVertex4f(m_destRect.x2, m_destRect.y1, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 0, 1.0f );
 
   glMultiTexCoord2fARB(GL_TEXTURE0, imgwidth, imgheight);
-  glVertex4f(m_destRect.x2, m_destRect.y2, 0, 1.0f);
-
+  glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 0, 1.0f );
+  
   glMultiTexCoord2fARB(GL_TEXTURE0, 0.0f    , imgheight);
-  glVertex4f(m_destRect.x1, m_destRect.y2, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0, 1.0f );
 
   glEnd();
 
@@ -1548,17 +1549,17 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   glBegin(GL_QUADS);
   if (m_textureTarget==GL_TEXTURE_2D)
   {
-    glTexCoord2f(0.0, 0.0);  glVertex2f(m_destRect.x1, m_destRect.y1);
-    glTexCoord2f(1.0, 0.0);  glVertex2f(m_destRect.x2, m_destRect.y1);
-    glTexCoord2f(1.0, 1.0);  glVertex2f(m_destRect.x2, m_destRect.y2);
-    glTexCoord2f(0.0, 1.0);  glVertex2f(m_destRect.x1, m_destRect.y2);
+    glTexCoord2f(0.0, 0.0);  glVertex2f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y);
+    glTexCoord2f(1.0, 0.0);  glVertex2f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y);
+    glTexCoord2f(1.0, 1.0);  glVertex2f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y);
+    glTexCoord2f(0.0, 1.0);  glVertex2f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y);
   }
   else
   {
-    glTexCoord2f(m_destRect.x1, m_destRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
-    glTexCoord2f(m_destRect.x2, m_destRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
-    glTexCoord2f(m_destRect.x2, m_destRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
-    glTexCoord2f(m_destRect.x1, m_destRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
+    glTexCoord2f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y); glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0.0f, 0.0f);
+    glTexCoord2f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y); glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 1.0f, 0.0f);
+    glTexCoord2f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y); glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 1.0f, 1.0f);
+    glTexCoord2f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y); glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0.0f, 1.0f);
   }
   glEnd();
   VerifyGLState();
@@ -1637,10 +1638,10 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
   VerifyGLState();
 
   glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);  glVertex2f(m_destRect.x1, m_destRect.y1);
-  glTexCoord2f(1.0, 0.0);  glVertex2f(m_destRect.x2, m_destRect.y1);
-  glTexCoord2f(1.0, 1.0);  glVertex2f(m_destRect.x2, m_destRect.y2);
-  glTexCoord2f(0.0, 1.0);  glVertex2f(m_destRect.x1, m_destRect.y2);
+  glTexCoord2f(0.0, 0.0);  glVertex2f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y);
+  glTexCoord2f(1.0, 0.0);  glVertex2f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y);
+  glTexCoord2f(1.0, 1.0);  glVertex2f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y);
+  glTexCoord2f(0.0, 1.0);  glVertex2f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y);
   glEnd();
 
   VerifyGLState();
@@ -1676,16 +1677,16 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
 
   glBegin(GL_QUADS);
   glTexCoord2f(planes[0].rect.x1, planes[0].rect.y1);
-  glVertex4f(m_destRect.x1, m_destRect.y1, 0, 1.0f );
+  glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0, 1.0f );
 
   glTexCoord2f(planes[0].rect.x2, planes[0].rect.y1);
-  glVertex4f(m_destRect.x2, m_destRect.y1, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 0, 1.0f);
 
   glTexCoord2f(planes[0].rect.x2, planes[0].rect.y2);
-  glVertex4f(m_destRect.x2, m_destRect.y2, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 0, 1.0f);
 
   glTexCoord2f(planes[0].rect.x1, planes[0].rect.y2);
-  glVertex4f(m_destRect.x1, m_destRect.y2, 0, 1.0f);
+  glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0, 1.0f);
 
   glEnd();
 
@@ -2838,6 +2839,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
                                                  im->width, im->height, srcFormat,
                                                  im->width, im->height, PIX_FMT_BGRA,
                                                  SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+
   uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
   int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
   m_dllSwScale->sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
@@ -3159,6 +3161,9 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
         (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
       return true;
   }
+
+  if (feature == RENDERFEATURE_ROTATION)
+    return true;
 
   return false;
 }

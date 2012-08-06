@@ -162,7 +162,9 @@ void CURL::Parse(const CStdString& strURL1)
   if(m_strProtocol.Equals("rss") ||
      m_strProtocol.Equals("rar") ||
      m_strProtocol.Equals("addons") ||
-     m_strProtocol.Equals("image"))
+     m_strProtocol.Equals("image") ||
+     m_strProtocol.Equals("videodb") ||
+     m_strProtocol.Equals("musicdb"))
     sep = "?";
   else
   if(strProtocol2.Equals("http")
@@ -708,6 +710,20 @@ void CURL::Encode(CStdString& strURLData)
     }
   }
   strURLData = strResult;
+}
+
+std::string CURL::Decode(const std::string& strURLData)
+{
+  CStdString url = strURLData;
+  Decode(url);
+  return url;
+}
+
+std::string CURL::Encode(const std::string& strURLData)
+{
+  CStdString url = strURLData;
+  Encode(url);
+  return url;
 }
 
 CStdString CURL::TranslateProtocol(const CStdString& prot)
