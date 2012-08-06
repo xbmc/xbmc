@@ -86,6 +86,8 @@ namespace PVR
      */
     bool IsConnectedClient(int iClientId);
 
+    bool IsConnectedClient(const ADDON::AddonPtr addon);
+
     /*!
      * @brief Restart a single client add-on.
      * @param addon The add-on to restart.

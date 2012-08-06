@@ -87,6 +87,14 @@ bool CPVRClients::IsConnectedClient(int iClientId)
   return GetConnectedClient(iClientId, client);
 }
 
+bool CPVRClients::IsConnectedClient(const AddonPtr addon)
+{
+  for (CLIENTMAPCITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+    if (itr->second->ID() == addon->ID())
+      return itr->second->ReadyToUse();
+  return false;
+}
+
 int CPVRClients::GetClientId(const AddonPtr client) const
 {
   CSingleLock lock(m_critSection);
@@ -1156,12 +1164,12 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     if (!clientAddon->Enabled() && IsKnownClient(clientAddon))
     {
       /* stop the client and remove it from the db */
-      bReturn &= StopClient(clientAddon, false) && bReturn;
+      bReturn &= StopClient(clientAddon, false);
     }
-    else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon)))
+    else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
     {
       /* register the new client and initialise it */
-      bReturn &= InitialiseClient(clientAddon) && bReturn;
+      bReturn &= InitialiseClient(clientAddon);
     }
   }
 
