@@ -208,6 +208,7 @@ protected:
   ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
+  unsigned short m_oldRenderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;

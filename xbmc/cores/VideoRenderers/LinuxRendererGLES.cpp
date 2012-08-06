@@ -87,6 +87,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   }
 
   m_renderMethod = RENDER_GLSL;
+  m_oldRenderMethod = m_renderMethod;
   m_renderQuality = RQ_SINGLEPASS;
   m_iFlags = 0;
   m_format = RENDER_FMT_NONE;
@@ -695,6 +696,13 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
     m_textureCreate = &CLinuxRendererGLES::CreateYV12Texture;
     m_textureDelete = &CLinuxRendererGLES::DeleteYV12Texture;
+  }
+
+  if (m_oldRenderMethod != m_renderMethod)
+  {
+    CLog::Log(LOGDEBUG, "CLinuxRendererGLES: Reorder drawpoints due to method change from %i to %i", m_oldRenderMethod, m_renderMethod);
+    ReorderDrawPoints();
+    m_oldRenderMethod = m_renderMethod;
   }
 }
 
