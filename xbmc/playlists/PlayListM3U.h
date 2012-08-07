@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -31,5 +31,11 @@ public:
   virtual ~CPlayListM3U(void);
   virtual bool Load(const CStdString& strFileName);
   virtual void Save(const CStdString& strFileName) const;
+
+  static CStdString GetBestBandwidthStream(const CStdString &strFileName, size_t bandwidth);
+
+protected:
+
+  static std::map< CStdString, CStdString > ParseStreamLine(const CStdString &streamLine);
 };
 }
