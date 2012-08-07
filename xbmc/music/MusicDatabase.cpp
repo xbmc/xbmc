@@ -5036,8 +5036,12 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
 
   if (type == "artists")
   {
-    int idGenre = -1, idAlbum = -1, idSong = -1;
+    int idArtist = -1, idGenre = -1, idAlbum = -1, idSong = -1;
     bool albumArtistsOnly = false;
+
+    option = options.find("artistid");
+    if (option != options.end())
+      idArtist = (int)option->second.asInteger();
 
     option = options.find("genreid");
     if (option != options.end())
@@ -5068,8 +5072,9 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
       albumArtistsOnly = option->second.asBoolean();
 
     CStdString strSQL = "(idArtist IN ";
-
-    if (idAlbum > 0)
+    if (idArtist > 0)
+      strSQL += PrepareSQL("(%d)", idArtist);
+    else if (idAlbum > 0)
       strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist WHERE album_artist.idAlbum = %i)", idAlbum);
     else if (idSong > 0)
       strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist WHERE song_artist.idSong = %i)", idSong);
