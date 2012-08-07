@@ -505,7 +505,10 @@ void CMusicInfoTag::Serialize(CVariant& value)
 {
   value["url"] = m_strURL;
   value["title"] = m_strTitle;
-  value["artist"] = m_artist;
+  if (m_type.compare("artist") == 0 && m_artist.size() == 1)
+    value["artist"] = m_artist[0];
+  else
+    value["artist"] = m_artist;
   value["album"] = m_strAlbum;
   value["albumartist"] = m_albumArtist;
   value["genre"] = m_genre;
