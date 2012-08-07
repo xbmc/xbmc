@@ -3279,7 +3279,7 @@ void CVideoDatabase::GetCommonDetails(auto_ptr<Dataset> &pDS, CVideoInfoTag &det
 void CVideoDatabase::GetCommonDetails(const dbiplus::sql_record* const record, CVideoInfoTag &details)
 {
   details.m_iSetId = record->at(VIDEODB_DETAILS_SET_ID).get_asInt();
-  details.m_strSet = record->at(VIDEODB_DETAILS_SET_NAME).get_asInt();
+  details.m_strSet = record->at(VIDEODB_DETAILS_SET_NAME).get_asString();
   details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
   details.m_strPath = record->at(VIDEODB_DETAILS_PATH).get_asString();
   CStdString strFileName = record->at(VIDEODB_DETAILS_FILE).get_asString();
