@@ -44,24 +44,32 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLaye
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
     genreID = (int)filter["genreid"].asInteger();
-  if (filter.isMember("genre"))
+  else if (filter.isMember("genre"))
     videoUrl.AddOption("genre", filter["genre"].asString());
-  if (filter.isMember("year"))
+  else if (filter.isMember("year"))
     year = (int)filter["year"].asInteger();
-  if (filter.isMember("actor"))
+  else if (filter.isMember("actor"))
     videoUrl.AddOption("actor", filter["actor"].asString());
-  if (filter.isMember("director"))
+  else if (filter.isMember("director"))
     videoUrl.AddOption("director", filter["director"].asString());
-  if (filter.isMember("studio"))
+  else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
-  if (filter.isMember("country"))
+  else if (filter.isMember("country"))
     videoUrl.AddOption("country", filter["country"].asString());
-  if (filter.isMember("setid"))
+  else if (filter.isMember("setid"))
     setID = (int)filter["setid"].asInteger();
-  if (filter.isMember("set"))
+  else if (filter.isMember("set"))
     videoUrl.AddOption("set", filter["set"].asString());
-  if (filter.isMember("tag"))
+  else if (filter.isMember("tag"))
     videoUrl.AddOption("tag", filter["tag"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("movies", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
 
   // setID must not be -1 otherwise GetMoviesNav() will return sets
   if (setID < 0)
@@ -154,14 +162,22 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
     genreID = (int)filter["genreid"].asInteger();
-  if (filter.isMember("genre"))
+  else if (filter.isMember("genre"))
     videoUrl.AddOption("genre", filter["genre"].asString());
-  if (filter.isMember("year"))
+  else if (filter.isMember("year"))
     year = (int)filter["year"].asInteger();
-  if (filter.isMember("actor"))
+  else if (filter.isMember("actor"))
     videoUrl.AddOption("actor", filter["actor"].asString());
-  if (filter.isMember("studio"))
+  else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("tvshows", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
 
   CFileItemList items;
   if (!videodatabase.GetTvShowsNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, sorting))
@@ -246,14 +262,22 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLa
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
     genreID = (int)filter["genreid"].asInteger();
-  if (filter.isMember("genre"))
+  else if (filter.isMember("genre"))
     videoUrl.AddOption("genre", filter["genre"].asString());
-  if (filter.isMember("year"))
+  else if (filter.isMember("year"))
     year = (int)filter["year"].asInteger();
-  if (filter.isMember("actor"))
+  else if (filter.isMember("actor"))
     videoUrl.AddOption("actor", filter["actor"].asString());
-  if (filter.isMember("director"))
+  else if (filter.isMember("director"))
     videoUrl.AddOption("director", filter["director"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("episodes", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
 
   if (tvshowID <= 0 && (genreID > 0 || filter.isMember("actor")))
     return InvalidParams;
@@ -317,16 +341,24 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITranspor
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("artist"))
     videoUrl.AddOption("artist", filter["artist"].asString());
-  if (filter.isMember("genreid"))
+  else if (filter.isMember("genreid"))
     genreID = (int)filter["genreid"].asInteger();
-  if (filter.isMember("genre"))
+  else if (filter.isMember("genre"))
     videoUrl.AddOption("genre", filter["genre"].asString());
-  if (filter.isMember("year"))
+  else if (filter.isMember("year"))
     year = (int)filter["year"].asInteger();
-  if (filter.isMember("director"))
+  else if (filter.isMember("director"))
     videoUrl.AddOption("director", filter["director"].asString());
-  if (filter.isMember("studio"))
+  else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("musicvideos", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
 
   CFileItemList items;
   if (!videodatabase.GetMusicVideosNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, sorting))

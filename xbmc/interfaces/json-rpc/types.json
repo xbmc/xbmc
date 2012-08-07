@@ -682,6 +682,158 @@
     },
     "additionalProperties": false
   },
+  "List.Filter.Rule": {
+    "type": "object",
+    "properties": {
+      "operator": { "$ref": "List.Filter.Operators", "required": true },
+      "value": {
+        "type": [
+          { "type": "string", "required": true },
+          { "type": "array", "items": { "type": "string" }, "required": true }
+        ], "required": true
+      }
+    }
+  },
+  "List.Filter.Rule.Movies": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Movies", "required": true }
+    }
+  },
+  "List.Filter.Rule.TVShows": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.TVShows", "required": true }
+    }
+  },
+  "List.Filter.Rule.Episodes": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Episodes", "required": true }
+    }
+  },
+  "List.Filter.Rule.MusicVideos": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.MusicVideos", "required": true }
+    }
+  },
+  "List.Filter.Rule.Artists": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Artists", "required": true }
+    }
+  },
+  "List.Filter.Rule.Albums": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Albums", "required": true }
+    }
+  },
+  "List.Filter.Rule.Songs": {
+    "extends": "List.Filter.Rule",
+    "properties": {
+      "field": { "$ref": "List.Filter.Fields.Songs", "required": true }
+    }
+  },
+  "List.Filter.Movies": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Movies" }, "required": true }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Movies" }, "required": true }
+        }
+      }
+    ]
+  },
+  "List.Filter.TVShows": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.TVShows" }, "required": true }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.TVShows" }, "required": true }
+        }
+      }
+    ]
+  },
+  "List.Filter.Episodes": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Episodes" }, "required": true }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Episodes" }, "required": true }
+        }
+      }
+    ]
+  },
+  "List.Filter.MusicVideos": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.MusicVideos" }, "required": true }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.MusicVideos" }, "required": true }
+        }
+      }
+    ]
+  },
+  "List.Filter.Artists": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Artists" }, "required": true }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Artists" }, "required": true }
+        }
+      }
+    ]
+  },
+  "List.Filter.Albums": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Albums" }, "required": true }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Albums" }, "required": true }
+        }
+      }
+    ]
+  },
+  "List.Filter.Songs": {
+    "type": [
+      { "type": "object",
+        "properties": {
+          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Songs" }, "required": true }
+        }
+      },
+      { "type": "object",
+        "properties": {
+          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Songs" }, "required": true }
+        }
+      }
+    ]
+  },
   "List.Fields.All": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",

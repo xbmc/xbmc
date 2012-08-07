@@ -1371,3 +1371,22 @@ CStdString CSmartPlaylist::GetSaveLocation() const
   // all others are video
   return "video";
 }
+
+void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList)
+{
+  vector<Field> typeFields = CSmartPlaylistRule::GetFields(type);
+  for (vector<Field>::const_iterator field = typeFields.begin(); field != typeFields.end(); field++)
+  {
+    for (unsigned int i = 0; i < NUM_FIELDS; i++)
+    {
+      if (*field == fields[i].field)
+        fieldList.push_back(fields[i].string);
+    }
+  }
+}
+
+void CSmartPlaylist::GetAvailableOperators(std::vector<std::string> &operatorList)
+{
+  for (unsigned int index = 0; index < NUM_OPERATORS; index++)
+    operatorList.push_back(operators[index].string);
+}
