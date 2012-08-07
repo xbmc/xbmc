@@ -202,9 +202,6 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
       __FUNCTION__, GetName(), m_iControlList);
   m_bUpdateRequired = false;
 
-  g_EpgContainer.RegisterObserver(this);
-  g_PVRTimers->RegisterObserver(this);
-
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
 
