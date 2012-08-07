@@ -11,31 +11,34 @@ SRCS= \
   singlecolourfit.cpp \
   squish.cpp
 
-CXXFLAGS+=-I.
+LIB              = libsquish.a
+NATIVE_LIB       = libsquish-native.so
+CLEAN_FILES     += $(NATIVE_LIB)
+
+HOST_CXX        ?= g++
+CXXFLAGS        += -I.
+HOST_CXXFLAGS   += -I.
+
 ifeq ($(findstring powerpc,$(ARCH)),powerpc)
-  CXXFLAGS+=-DSQUISH_USE_ALTIVEC=1 -maltivec
+  CXXFLAGS      += -DSQUISH_USE_ALTIVEC=1 -maltivec
+  HOST_CXXFLAGS += -DSQUISH_USE_ALTIVEC=1 -maltivec
 else ifeq ($(findstring x86,$(ARCH)), x86)
-  CXXFLAGS+=-DSQUISH_USE_SSE=2 -msse2
+  CXXFLAGS      += -DSQUISH_USE_SSE=2 -msse2
+  HOST_CXXFLAGS += -DSQUISH_USE_SSE=2 -msse2
 endif
-
-LIB=libsquish.a
-
-ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
-NATIVE_LIB=libsquish-native.so
-CLEAN_FILES+=$(NATIVE_LIB)
 
 ifeq ($(findstring osx,$(ARCH)),osx)
-NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
+  HOST_CXXFLAGS += $(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
 endif
 
-all: $(LIB) $(NATIVE_LIB)
+$(LIB): $(SRCS)
+
 # TexturePacker links to libsquish and needs to run on build system, so make a native flavor.
 $(NATIVE_LIB): $(SRCS)
 ifeq ($(findstring osx,$(ARCH)),osx)
-	g++ $(NATIVE_ARCH) -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
+	$(HOST_CXX) $(HOST_CXXFLAGS) $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
 else
-	g++ -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
-endif
+	$(HOST_CXX) $(HOST_CXXFLAGS) $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
 endif
 
 include ../../Makefile.include

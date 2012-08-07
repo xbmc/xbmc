@@ -1,48 +1,51 @@
-DEFINES += -D_LINUX -DUSE_LZO_PACKING
+DEFINES       += -D_LINUX -DUSE_LZO_PACKING
 ifneq ($(or $(findstring powerpc,@ARCH@),$(findstring ppc, @ARCH@)),)
-DEFINES += -DHOST_BIGENDIAN
+DEFINES       += -DHOST_BIGENDIAN
 endif
 
-CXXFLAGS+= \
-  -I. \
-  -I@abs_top_srcdir@/lib \
-  -I@abs_top_srcdir@/xbmc \
-  -I@abs_top_srcdir@/xbmc/linux
-
-ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
-NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
-ifdef NATIVE_ROOT_PATH
-ifeq ($(findstring osx,@ARCH@),osx)
-DEFINES += -DTARGET_DARWIN
-NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
-endif
-CXXFLAGS+= -I$(NATIVE_ROOT_PATH)/include
-LIBS    += -L$(NATIVE_ROOT_PATH)/lib
-endif
-LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
-else
-LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish
-endif
-
-LIBS    += -lSDL_image -lSDL -llzo2
-
-SRCS = \
+SRCS           = \
   md5.cpp \
   SDL_anigif.cpp \
   XBTFWriter.cpp \
   XBMCTex.cpp \
   @abs_top_srcdir@/xbmc/guilib/XBTF.cpp
 
-
-TARGET = TexturePacker
-CLEAN_FILES=$(TARGET)
+TARGET         = TexturePacker
+CLEAN_FILES    = $(TARGET)
 
 all: $(TARGET)
+
+HOST_CXX      ?= g++
+HOST_ROOT_PATH = @USE_TEXTUREPACKER_NATIVE_ROOT@
+
+LIBS          += -lSDL_image -lSDL -llzo2
+LIBS          += -L@abs_top_srcdir@/lib/libsquish -lsquish
+HOST_LIBS     += -L$(HOST_ROOT_PATH)/lib -lSDL_image -lSDL -llzo2
+HOST_LIBS     += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
+
+CXXFLAGS      += \
+  -I. \
+  -I@abs_top_srcdir@/lib \
+  -I@abs_top_srcdir@/xbmc \
+  -I@abs_top_srcdir@/xbmc/linux
+
+HOST_CXXFLAGS += \
+  -I. \
+  -I@abs_top_srcdir@/lib \
+  -I@abs_top_srcdir@/xbmc \
+  -I@abs_top_srcdir@/xbmc/linux \
+  -I$(HOST_ROOT_PATH)/include
+
+ifeq ($(findstring osx,@ARCH@),osx)
+DEFINES       += -DTARGET_DARWIN
+HOST_CXXFLAGS += $(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
+endif
 
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 # TexturePacker run native on build system, build it with native tools
 $(TARGET): $(SRCS)
-	g++ $(DEFINES) $(NATIVE_ARCH) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
+	make -C @abs_top_srcdir@/lib/libsquish libsquish-native.so
+	$(HOST_CXX) $(DEFINES) $(HOST_CXXFLAGS) $(SRCS) $(HOST_LIBS) -o $(TARGET)
 clean:
 	rm -f $(TARGET)
 else
