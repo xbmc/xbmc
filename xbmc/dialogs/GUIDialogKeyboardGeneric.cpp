@@ -86,7 +86,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   }
 
   // set heading
-  if (!m_strHeading.IsEmpty())
+  if (!m_strHeading.empty())
   {
     SET_CONTROL_LABEL(CTL_LABEL_HEADING, m_strHeading);
     SET_CONTROL_VISIBLE(CTL_LABEL_HEADING);
@@ -616,12 +616,9 @@ void CGUIDialogKeyboardGeneric::OnOK()
   Close();
 }
 
-void CGUIDialogKeyboardGeneric::SetHeading(const CVariant &heading)
+void CGUIDialogKeyboardGeneric::SetHeading(const std::string &heading)
 {
-  if (heading.isString())
-    m_strHeading = heading.asString();
-  else if (heading.isInteger() && heading.asInteger())
-    m_strHeading = g_localizeStrings.Get((uint32_t)heading.asInteger());
+  m_strHeading = heading;
 }
 
 int CGUIDialogKeyboardGeneric::GetWindowId() const

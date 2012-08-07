@@ -78,6 +78,13 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
   bool confirmed = false;
   CGUIKeyboard *kb = NULL;
   bool needsFreeing = true;
+  //heading can be a string or a localization id
+  std::string headingStr;
+  if (heading.isString())
+    headingStr = heading.asString();
+  else if (heading.isInteger() && heading.asInteger())
+    headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
+
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
   kb = new CIOSKeyboard();
 #endif
@@ -88,7 +95,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
     needsFreeing = false;
   }
 
-  confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, heading.asString(), hiddenInput);
+  confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
   if(needsFreeing)
     delete kb;
 

@@ -80,6 +80,7 @@ from the step 3.1.
  $ make -C tools/darwin/depends/xbmc
  $ make clean
  $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode

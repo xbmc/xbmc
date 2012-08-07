@@ -95,8 +95,8 @@ public:
   std::vector<std::string> m_artist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
-  std::vector<std::string> m_set;
-  std::vector<int> m_setId;
+  CStdString m_strSet;
+  int m_iSetId;
   std::vector<std::string> m_tags;
   CStdString m_strRuntime;
   CStdString m_strFile;

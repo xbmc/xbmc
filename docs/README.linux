@@ -98,7 +98,9 @@ Tip: by adding -j<number> to the make command, you describe how many
 
     $ make -j2
 
-.3  $ make install
+.3  $ make -C lib/addons/script.module.pil
+
+.4  $ make install
 
 This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
 

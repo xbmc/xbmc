@@ -53,7 +53,6 @@ typedef enum {
   FieldBitrate,
   FieldListeners,
   FieldPlaylist,
-  FieldSet,
   FieldRandom,
 
   // fields retrievable from the database
@@ -87,6 +86,7 @@ typedef enum {
   FieldCountry,
   FieldMPAA,
   FieldTop250,
+  FieldSet,
   FieldNumberOfEpisodes,
   FieldNumberOfWatchedEpisodes,
   FieldWriter,

@@ -496,6 +496,8 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const C
   }
 
   editor->m_playlist = playlist;
+  if (editor->m_playlist.m_playlistRules.size() <= 0)
+    editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
   editor->m_path = path;
   editor->Initialize();
   editor->DoModal(g_windowManager.GetActiveWindow());

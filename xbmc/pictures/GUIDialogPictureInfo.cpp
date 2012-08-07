@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "PictureInfoTag.h"
 
 #define CONTROL_PICTURE_INFO 5
 
@@ -88,6 +89,11 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
   m_pictureInfo->Clear();
   for (int info = SLIDE_INFO_START; info <= SLIDE_INFO_END; ++info)
   {
+    // we don't need want to add both SLIDE_EXIF_DATE_TIME and SLIDE_EXIF_DATE
+    // so we skip one without time
+    if (info == SLIDE_EXIF_DATE)
+      continue;
+
     CStdString picInfo = g_infoManager.GetLabel(info);
     if (!picInfo.IsEmpty())
     {

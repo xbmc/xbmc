@@ -158,159 +158,32 @@ public:
 
   std::vector<CRect> SubtractRect(CRect splitterRect)
   {
-    #define ADD_RECT_ABOVE_INTERSECTION(add) \
-    { \
-      add = CRect(x1, y1, x2, intersection.y1);\
-      newRectaglesList.push_back(add);\
-    }
-    #define ADD_RECT_BELOW_INTERSECTION(add) \
-    {\
-      add = CRect(x1, intersection.y2, x2, y2);\
-      newRectaglesList.push_back(add);\
-    }
-    #define ADD_RECT_LEFT_OF_INTERSECTION(add) \
-    {\
-      add = CRect(x1, intersection.y1, intersection.x1, intersection.y2);\
-      newRectaglesList.push_back(add);\
-    }
-    #define ADD_RECT_RIGHT_OF_INTERSECTION(add) \
-    {\
-      add = CRect(intersection.x2, intersection.y1, x2, intersection.y2);\
-      newRectaglesList.push_back(add);\
-    }
-
     std::vector<CRect> newRectaglesList;
     CRect intersection = splitterRect.Intersect(*this);
 
     if (!intersection.IsEmpty())
     {
       CRect add;
-      // intersection rect upper edge
-      if (intersection.y1 == y1)          // y starts with baserect
-      {
-        // intersection rect lower edge
-        if (intersection.y2 == y2)        // y goes down to baserect
-        {
-          if (intersection.x1 == x1)      // x starts with baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { // result 100% covered
-              // add nothing
-            }
-            else // x ends in baserect
-            { // results in 1 rect
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-          else                            // x starts in baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { // results in 1 rect
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-            }
-            else                          // x ends in baserect
-            { //results in 2 rects
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-        }
-        else // y ends in baserect
-        {
-          if (intersection.x1 == x1)      // x starts with baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { //results in 1 rect, below intersection
-              ADD_RECT_BELOW_INTERSECTION(add);
-            }
-            else                          // x ends in baserect
-            { // results in 2 rects
-              ADD_RECT_BELOW_INTERSECTION(add);
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-          else // x starts in baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { //results in 2 rects
-              ADD_RECT_BELOW_INTERSECTION(add);
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-            }
-            else                          // x ends in baserect
-            { //results in 3 rects
-              ADD_RECT_BELOW_INTERSECTION(add);
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-        }
-      }
-      else // y starts in baserect
-      {
-        // intersection rect lower edge
-        if (intersection.y2 == y2)        // y goes down to baserect
-        {
-          if (intersection.x1 == x1)      // xstarts with baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { //results in 1 rect above intersection
-              ADD_RECT_ABOVE_INTERSECTION(add);
-            }
-            else                          // x ends in baserect
-            { // results in 2 rects
-              ADD_RECT_ABOVE_INTERSECTION(add);
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-          else                            // x starts in baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { // results in 2 rects
-              ADD_RECT_ABOVE_INTERSECTION(add);
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-            }
-            else                          // x ends in baserect
-            { // results in 3 rects
-              ADD_RECT_ABOVE_INTERSECTION(add);
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-        }
-        else                              // y ends in baserect
-        {
-          if (intersection.x1 == x1)      // x starts with baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { // results in 2 rects
-              ADD_RECT_ABOVE_INTERSECTION(add);
-              ADD_RECT_BELOW_INTERSECTION(add);
-            }
-            else                          // x ends in baserect
-            { // results in 3 rects
-              ADD_RECT_ABOVE_INTERSECTION(add);
-              ADD_RECT_BELOW_INTERSECTION(add);
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-          else                            // x starts in baserect
-          {
-            if (intersection.x2 == x2)    // x ends with baserect
-            { // results in 3 rects
-              ADD_RECT_ABOVE_INTERSECTION(add);
-              ADD_RECT_BELOW_INTERSECTION(add);
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-            }
-            else                          // x ends in baserect
-            { // results in 4 rects
-              ADD_RECT_ABOVE_INTERSECTION(add);
-              ADD_RECT_BELOW_INTERSECTION(add);
-              ADD_RECT_LEFT_OF_INTERSECTION(add);
-              ADD_RECT_RIGHT_OF_INTERSECTION(add);
-            }
-          }
-        }
-      }
+
+      // add rect above intersection if not empty
+      add = CRect(x1, y1, x2, intersection.y1);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
+
+      // add rect below intersection if not empty
+      add = CRect(x1, intersection.y2, x2, y2);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
+
+      // add rect left intersection if not empty
+      add = CRect(x1, intersection.y1, intersection.x1, intersection.y2);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
+
+      // add rect right intersection if not empty
+      add = CRect(intersection.x2, intersection.y1, x2, intersection.y2);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
     }
     else
     {

@@ -67,12 +67,11 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
           result["albumlabel"] = item->GetProperty("album_label");
           continue;
         }
-        /* This would break backwards compatibility to JSON-RPC API v4
         if (item->HasProperty("album_" + field + "_array"))
         {
           result[field] = item->GetProperty("album_" + field + "_array");
           continue;
-        }*/
+        }
         if (item->HasProperty("album_" + field))
         {
           result[field] = item->GetProperty("album_" + field);
@@ -80,12 +79,11 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         }
       }
 
-      /* This would break backwards compatibility to JSON-RPC API v4
       if (item->HasProperty("artist_" + field + "_array"))
       {
         result[field] = item->GetProperty("artist_" + field + "_array");
         continue;
-      }*/
+      }
       if (item->HasProperty("artist_" + field))
       {
         result[field] = item->GetProperty("artist_" + field);

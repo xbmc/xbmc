@@ -38,7 +38,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
 
     //CGUIDialog Interface
     virtual void FrameMove();
-    void SetHeading(const CVariant& heading);
+    void SetHeading(const std::string& heading);
     void SetText(const CStdString& aTextString);
     CStdString GetText() const;
     bool IsConfirmed() { return m_bIsConfirmed; };
@@ -78,7 +78,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     unsigned int m_lastRemoteClickTime;
     WORD m_lastRemoteKeyClicked;
     int m_indexInSeries;
-    CStdString m_strHeading;
+    std::string m_strHeading;
     static const char* s_charsSeries[10];
 
 
