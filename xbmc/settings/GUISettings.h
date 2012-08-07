@@ -503,9 +503,9 @@ public:
   void Clear();
 
 private:
-  typedef std::map<CStdString, CSetting*>::iterator mapIter;
-  typedef std::map<CStdString, CSetting*>::const_iterator constMapIter;
-  std::map<CStdString, CSetting*> settingsMap;
+  typedef std::map<std::string, CSetting*>::iterator mapIter;
+  typedef std::map<std::string, CSetting*>::const_iterator constMapIter;
+  std::map<std::string, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
   void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
 };
