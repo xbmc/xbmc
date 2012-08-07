@@ -141,7 +141,7 @@ namespace PYXBMC
 
   // shutdown() method
   PyDoc_STRVAR(shutdown__doc__,
-    "shutdown() -- Shutdown the xbox.\n"
+    "shutdown() -- Shutdown the system.\n"
     "\n"
     "example:\n"
     "  - xbmc.shutdown()\n");
@@ -157,7 +157,7 @@ namespace PYXBMC
 
   // restart() method
   PyDoc_STRVAR(restart__doc__,
-    "restart() -- Restart the xbox.\n"
+    "restart() -- Restart the system.\n"
     "\n"
     "example:\n"
     "  - xbmc.restart()\n");

@@ -107,16 +107,16 @@ typedef struct
 
 const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
-  { "Reboot",                     false,  "Reboot the xbox (power cycle)" },
-  { "Restart",                    false,  "Restart the xbox (power cycle)" },
-  { "ShutDown",                   false,  "Shutdown the xbox" },
+  { "Reboot",                     false,  "Reboot the system" },
+  { "Restart",                    false,  "Restart the system (same as reboot)" },
+  { "ShutDown",                   false,  "Shutdown the system" },
   { "Powerdown",                  false,  "Powerdown system" },
   { "Quit",                       false,  "Quit XBMC" },
   { "Hibernate",                  false,  "Hibernates the system" },
   { "Suspend",                    false,  "Suspends the system" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Minimize",                   false,  "Minimize XBMC" },
-  { "Reset",                      false,  "Reset the xbox (warm reboot)" },
+  { "Reset",                      false,  "Reset the system (same as reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
   { "ActivateWindow",             true,   "Activate the specified window" },
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
@@ -248,7 +248,7 @@ int CBuiltins::Execute(const CStdString& execString)
   CStdString parameter = params.size() ? params[0] : "";
   CStdString strParameterCaseIntact = parameter;
 
-  if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
+  if (execute.Equals("reboot") || execute.Equals("restart") || execute.Equals("reset"))  //Will reboot the system
   {
     CApplicationMessenger::Get().Restart();
   }
@@ -315,10 +315,6 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("takescreenshot"))
   {
     CUtil::TakeScreenshot();
-  }
-  else if (execute.Equals("reset")) //Will reset the xbox, aka soft reset
-  {
-    CApplicationMessenger::Get().Reset();
   }
   else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {

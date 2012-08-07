@@ -2394,7 +2394,7 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcCopyFile(int numParas, CStdString paras[])
 //parameter = srcFilename ; destFilename
-// both file names are relative to the XBox not the calling client
+// both file names are relative to the server, not the calling client
 {
   if (numParas<2)
     return SetResponse(openTag+"Error:Missing parameter");
@@ -3002,8 +3002,8 @@ int CXbmcHttp::xbmcHelp()
 {
   CStdString output;
   output="<p><b>XBMC HTTP API Commands</b></p><p>There are two alternative but equivalent syntax forms:</p>";
-  output+="<p><b>Syntax 1: http://xbox/xbmcCmds/xbmcHttp?command=</b>command<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p>";
-  output+="<p><b>Syntax 2: http://xbox/xbmcCmds/xbmcHttp?command=</b>command<b>(</b>first_parameter<b>;</b>second_parameter<b>;...</b><b>)</b></p>";
+  output+="<p><b>Syntax 1: http://xbmc-host/xbmcCmds/xbmcHttp?command=</b>command<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p>";
+  output+="<p><b>Syntax 2: http://xbmc-host/xbmcCmds/xbmcHttp?command=</b>command<b>(</b>first_parameter<b>;</b>second_parameter<b>;...</b><b>)</b></p>";
   output+="<p>Note the use of the semi colon to separate multiple parameters.</p><p>The commands are case insensitive.</p>";
   output+= "<p>The full documentation can be found here: <a  href=\"http://wiki.xbmc.org/index.php?title=WebServerHTTP-API\">http://wiki.xbmc.org/index.php?title=WebServerHTTP-API</a></p>";
   return SetResponse(output);
