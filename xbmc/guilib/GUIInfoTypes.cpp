@@ -56,7 +56,7 @@ void CGUIInfoBool::Parse(const CStdString &expression, int context)
   }
 }
 
-void CGUIInfoBool::Update(const CGUIListItem *item)
+void CGUIInfoBool::Update(const CGUIListItem *item /*= NULL*/)
 {
   if (m_info)
     m_value = g_infoManager.GetBoolValue(m_info, item);
@@ -128,18 +128,18 @@ CGUIInfoLabel::CGUIInfoLabel()
 {
 }
 
-CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback, int context)
+CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback /*= ""*/, int context /*= 0*/)
 {
   SetLabel(label, fallback, context);
 }
 
-void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback, int context)
+void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback, int context /*= 0*/)
 {
   m_fallback = fallback;
   Parse(label, context);
 }
 
-CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback) const
+CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback /*= NULL*/) const
 {
   CStdString label;
   for (unsigned int i = 0; i < m_info.size(); i++)
@@ -165,7 +165,7 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
   return label;
 }
 
-CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback) const
+CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback /*= NULL*/) const
 {
   if (!item->IsFileItem()) return "";
   CStdString label;
@@ -341,7 +341,7 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
     m_info.push_back(CInfoPortion(0, work, ""));
 }
 
-CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix, bool escaped)
+CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix, bool escaped /*= false */)
 {
   m_info = info;
   m_prefix = prefix;
@@ -365,7 +365,7 @@ CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
   return label;
 }
 
-CStdString CGUIInfoLabel::GetLabel(const CStdString &label, int contextWindow, bool preferImage)
+CStdString CGUIInfoLabel::GetLabel(const CStdString &label, int contextWindow /*= 0*/, bool preferImage /*= false */)
 { // translate the label
   CGUIInfoLabel info(label, "", contextWindow);
   return info.GetLabel(contextWindow, preferImage);
