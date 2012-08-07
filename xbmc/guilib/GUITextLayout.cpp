@@ -53,6 +53,7 @@ CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFon
   m_maxHeight = fHeight;
   m_textWidth = 0;
   m_textHeight = 0;
+  m_lastText = StringUtils::EmptyString;
 }
 
 void CGUITextLayout::SetWrap(bool bWrap)
