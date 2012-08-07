@@ -59,12 +59,6 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
   if (filter.isMember("songid"))
     songID = (int)filter["songid"].asInteger();
 
-  // Add "artist" to "properties" array by default
-  CVariant param = parameterObject;
-  if (!param.isMember("properties"))
-    param["properties"] = CVariant(CVariant::VariantTypeArray);
-  param["properties"].append("artist");
-
   bool albumArtistsOnly = !g_guiSettings.GetBool("musiclibrary.showcompilationartists");
   if (parameterObject["albumartistsonly"].isBoolean())
     albumArtistsOnly = parameterObject["albumartistsonly"].asBoolean();
@@ -72,6 +66,12 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
   CFileItemList items;
   if (!musicdatabase.GetArtistsNav(musicUrl.ToString(), items, albumArtistsOnly, genreID, albumID, songID))
     return InternalError;
+
+  // Add "artist" to "properties" array by default
+  CVariant param = parameterObject;
+  if (!param.isMember("properties"))
+    param["properties"] = CVariant(CVariant::VariantTypeArray);
+  param["properties"].append("artist");
 
   HandleFileItemList("artistid", false, "artists", items, param, result);
   return OK;
@@ -96,7 +96,13 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransp
   if (!musicdatabase.GetArtistsByWhere(musicUrl.ToString(), filter, items) || items.Size() != 1)
     return InvalidParams;
 
-  HandleFileItem("artistid", false, "artistdetails", items[0], parameterObject, parameterObject["properties"], result, false);
+  // Add "artist" to "properties" array by default
+  CVariant param = parameterObject;
+  if (!param.isMember("properties"))
+    param["properties"] = CVariant(CVariant::VariantTypeArray);
+  param["properties"].append("artist");
+
+  HandleFileItem("artistid", false, "artistdetails", items[0], parameterObject, param["properties"], result, false);
   return OK;
 }
 
