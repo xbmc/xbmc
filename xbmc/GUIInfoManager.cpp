@@ -1847,7 +1847,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
     bReturn = GetItemBool(item, condition);
   // Ethernet Link state checking
-  // Will check if the Xbox has a Ethernet Link connection! [Cable in!]
+  // Will check if system has a Ethernet Link connection! [Cable in!]
   // This can used for the skinner to switch off Network or Inter required functions
   else if ( condition == SYSTEM_ALWAYS_TRUE)
     bReturn = true;

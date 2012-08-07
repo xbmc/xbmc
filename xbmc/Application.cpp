@@ -1327,7 +1327,7 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  // if the user shutoff the xbox during music scan
+  // if the user shutoff the system during music scan
   // restore the settings
   if (g_settings.m_bMyMusicIsScanning)
   {
