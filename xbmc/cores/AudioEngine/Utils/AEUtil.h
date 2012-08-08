@@ -25,6 +25,10 @@
 #include "PlatformDefs.h"
 #include <math.h>
 
+#ifdef TARGET_WINDOWS
+#define __SSE__
+#endif
+
 #ifdef __SSE__
 #include <xmmintrin.h>
 #else
