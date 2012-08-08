@@ -185,6 +185,9 @@ public:
   bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; };
   SortOrder GetOrderDirection() const { return m_orderDirection; }
 
+  void SetGroup(const CStdString &group) { m_group = group; }
+  const CStdString& GetGroup() const { return m_group; }
+
   /*! \brief get the where clause for a playlist
    We handle playlists inside playlists separately in order to ensure we don't introduce infinite loops
    by playlist A including playlist B which also (perhaps via other playlists) then includes playlistA.
@@ -218,6 +221,7 @@ private:
   unsigned int m_limit;
   SortBy m_orderField;
   SortOrder m_orderDirection;
+  CStdString m_group;
 
   CXBMCTinyXML m_xmlDoc;
 };
