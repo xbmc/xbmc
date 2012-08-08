@@ -147,7 +147,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 #endif
 
   //Initialize COM
-  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+  CoInitializeEx(NULL, COINIT_MULTITHREADED | COINIT_SPEED_OVER_MEMORY);
 
   // Handle numeric values using the default/POSIX standard
   setlocale(LC_NUMERIC, "C");
