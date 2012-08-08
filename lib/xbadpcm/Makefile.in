@@ -12,7 +12,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o *.o $(BUNDLE1_O)
 	chmod +x $@
 else
-	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o $@ *.o -Wl,--unresolved-symbols=ignore-all \
+	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o $@ *.o -Wl,--unresolved-symbols=ignore-all -lm \
 		`cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
 endif
 

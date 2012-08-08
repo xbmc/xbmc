@@ -1,0 +1,19 @@
+--- src/CMakeLists.txt.orig	2011-04-28 04:48:41.000000000 +0200
++++ src/CMakeLists.txt	2012-06-22 21:07:59.000000000 +0200
+@@ -38,12 +38,16 @@
+ 
+ ADD_LIBRARY(yajl SHARED ${SRCS} ${HDRS} ${PUB_HDRS})
+ 
++TARGET_LINK_LIBRARIES(yajl_s m) 
++
+ #### setup shared library version number
+ SET_TARGET_PROPERTIES(yajl PROPERTIES
+                       DEFINE_SYMBOL YAJL_SHARED
+                       SOVERSION ${YAJL_MAJOR}
+                       VERSION ${YAJL_MAJOR}.${YAJL_MINOR}.${YAJL_MICRO})
+ 
++SET_TARGET_PROPERTIES(yajl_s PROPERTIES OUTPUT_NAME yajl) 
++
+ #### ensure a .dylib has correct absolute installation paths upon installation
+ IF(APPLE)
+   MESSAGE("INSTALL_NAME_DIR: ${CMAKE_INSTALL_PREFIX}/lib")

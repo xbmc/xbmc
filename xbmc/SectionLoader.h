@@ -45,12 +45,12 @@ public:
   static LibraryLoader* LoadDLL(const CStdString& strSection, bool bDelayUnload=true, bool bLoadSymbols=false);
   static void UnloadDLL(const CStdString& strSection);
   static void UnloadDelayed();
+  void UnloadAll();
+
 protected:
   std::vector<CDll> m_vecLoadedDLLs;
   CCriticalSection m_critSection;
 
-private:
-  void UnloadAll();
 };
 
 XBMC_GLOBAL_REF(CSectionLoader,g_sectionLoader);

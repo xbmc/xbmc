@@ -1,0 +1,64 @@
+--- include/afpfs-ng/afp.h	2012-06-03 22:47:49.014348648 -0400
++++ include/afpfs-ng/afp.h	2012-06-03 22:46:28.924348698 -0400
+@@ -5,7 +5,13 @@
+ #include <arpa/inet.h>
+ #include <pthread.h>
+ #include <netdb.h>
++#ifndef ANDROID
+ #include <sys/statvfs.h>
++#else
++#include <sys/vfs.h>
++#define statvfs statfs
++#define fstatvfs fstatfs
++#endif
+ #include <pwd.h>
+ #include <afpfs-ng/afp_protocol.h>
+ #include <afpfs-ng/libafpclient.h>
+--- lib/midlevel.c	2012-06-03 22:47:49.014348648 -0400
++++ lib/midlevel.c	2012-06-03 22:46:28.924348698 -0400
+@@ -1388,10 +1388,12 @@
+ 	stat->f_frsize=0;
+ 	stat->f_files=0;
+ 	stat->f_ffree=0;
++#ifndef ANDROID
+ 	stat->f_favail=0;
+ 	stat->f_fsid=0;
+ 	stat->f_flag=0;
+ 	stat->f_namemax=255;
++#endif
+ 	return 0;
+ 
+ }
+--- lib/lowlevel.c	2012-06-03 22:47:49.054348648 -0400
++++ lib/lowlevel.c	2012-06-03 22:46:28.914348698 -0400
+@@ -612,7 +612,7 @@
+ 		modification_date=fp.modification_date;
+ 	}
+ 
+-#ifdef __linux__
++#if defined(__linux__) && !defined(ANDROID)
+ 	stbuf->st_ctim.tv_sec=creation_date;
+ 	stbuf->st_mtim.tv_sec=modification_date;
+ #else
+--- lib/dsi.c	2012-06-03 23:24:15.454347269 -0400
++++ lib/dsi.c	2012-06-03 23:25:01.634347240 -0400
+@@ -610,7 +610,7 @@
+ 		afp_getsrvrmsg(server,AFPMESG_SERVER,
+ 			((server->using_version->av_number>=30)?1:0),
+ 			DSI_DEFAULT_TIMEOUT,mesg); 
+-		if(bcmp(mesg,"The server is going down for maintenance.",41)==0)
++		if(memcmp(mesg,"The server is going down for maintenance.",41)==0)
+ 			shutdown=1;
+ 	}
+ 
+--- lib/afp.c	2012-06-03 23:24:15.474347269 -0400
++++ lib/afp.c	2012-06-03 23:25:12.464347233 -0400
+@@ -205,7 +205,7 @@
+ {
+         struct afp_server *s;
+ 	for (s=server_base;s;s=s->next) {
+-                if (bcmp(&s->address,address,sizeof(struct sockaddr_in))==0)
++                if (memcmp(&s->address,address,sizeof(struct sockaddr_in))==0)
+                         return s;
+ 	}
+         return NULL;

@@ -1,0 +1,10 @@
+--- armeabi-v7a/configure.ac	2012-06-04 00:15:13.054345341 -0400
++++ armeabi-v7a-good/configure.ac	2012-06-04 00:15:28.624345331 -0400
+@@ -8,7 +8,6 @@
+ case "${host}" in
+   *-*-linux*)
+     PKG_CHECK_MODULES([UDEV],[libudev],,[has_libudev="no";AC_MSG_WARN("library 'udev' is missing - adapter detection will not be available")])
+-    LIBS+=" -lrt"
+     ;;
+   *-apple-darwin*)
+     has_libudev="no";

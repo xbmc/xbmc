@@ -35,6 +35,9 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "APKDirectory.h"
+#endif
 #include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
 #include "playlists/SmartPlayList.h"
@@ -111,6 +114,29 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
+#endif
+#if defined(TARGET_ANDROID)
+  if (strExtension.Equals(".apk"))
+  {
+    CStdString strUrl;
+    URIUtils::CreateArchivePath(strUrl, "apk", strPath, "");
+
+    CFileItemList items;
+    CDirectory::GetDirectory(strUrl, items, strMask);
+    if (items.Size() == 0) // no files
+      pItem->m_bIsFolder = true;
+    else if (items.Size() == 1 && items[0]->m_idepth == 0)
+    {
+      // one STORED file - collapse it down
+      *pItem = *items[0];
+    }
+    else
+    { // compressed or more than one file -> create a apk dir
+      pItem->SetPath(strUrl);
+      return new CAPKDirectory;
+    }
+    return NULL;
+  }
 #endif
   if (strExtension.Equals(".zip"))
   {

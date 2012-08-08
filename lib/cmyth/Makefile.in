@@ -16,8 +16,8 @@ $(CMYTH_LIB): libcmyth/libcmyth.a librefmem/librefmem.a
 	-Wl,-all_load libcmyth/libcmyth.a librefmem/librefmem.a 
 else
 $(CMYTH_LIB): libcmyth/libcmyth.a librefmem/librefmem.a
-	$(CC) $(LDFLAGS) -shared -fpic -o $@  @MYSQL_LIBS@ \
-	-Wl,--whole-archive libcmyth/libcmyth.a librefmem/librefmem.a -Wl,--no-whole-archive
+	$(CC) $(LDFLAGS) -shared -fpic -o $@ -Wl,--whole-archive \
+	libcmyth/libcmyth.a librefmem/librefmem.a -Wl,--no-whole-archive @MYSQL_LIBS@
 endif
 
 libcmyth/libcmyth.a: compile

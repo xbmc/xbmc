@@ -1,0 +1,61 @@
+diff --ignore-file-name-case -wuprN Python-2.6.2/Modules/pwdmodule.c python-src//Modules/pwdmodule.c
+--- Python-2.6.2/Modules/pwdmodule.c	2008-06-09 01:58:54.000000000 -0300
++++ python-src//Modules/pwdmodule.c	2011-01-05 17:09:37.000000000 -0300
+@@ -68,14 +68,14 @@ mkpwent(struct passwd *p)
+ #define SETS(i,val) sets(v, i, val)
+ 
+ 	SETS(setIndex++, p->pw_name);
+-#ifdef __VMS
++#if defined(__VMS) || defined(ANDROID)
+ 	SETS(setIndex++, "");
+ #else
+ 	SETS(setIndex++, p->pw_passwd);
+ #endif
+ 	SETI(setIndex++, p->pw_uid);
+ 	SETI(setIndex++, p->pw_gid);
+-#ifdef __VMS
++#if defined(__VMS) || defined(ANDROID)
+ 	SETS(setIndex++, "");
+ #else
+ 	SETS(setIndex++, p->pw_gecos);
+diff --ignore-file-name-case -wuprN Python-2.6.2/Modules/termios.c python-src//Modules/termios.c
+--- Python-2.6.2/Modules/termios.c	2008-06-09 01:58:54.000000000 -0300
++++ python-src//Modules/termios.c	2011-01-05 17:09:37.000000000 -0300
+@@ -227,6 +227,7 @@ termios_tcsendbreak(PyObject *self, PyOb
+ 	return Py_None;
+ }
+ 
++#if 0  // No tcdrain defined for Android.
+ PyDoc_STRVAR(termios_tcdrain__doc__,
+ "tcdrain(fd) -> None\n\
+ \n\
+@@ -246,6 +247,7 @@ termios_tcdrain(PyObject *self, PyObject
+ 	Py_INCREF(Py_None);
+ 	return Py_None;
+ }
++#endif
+ 
+ PyDoc_STRVAR(termios_tcflush__doc__,
+ "tcflush(fd, queue) -> None\n\
+@@ -301,8 +303,8 @@ static PyMethodDef termios_methods[] =
+ 	 METH_VARARGS, termios_tcsetattr__doc__},
+ 	{"tcsendbreak", termios_tcsendbreak, 
+ 	 METH_VARARGS, termios_tcsendbreak__doc__},
+-	{"tcdrain", termios_tcdrain, 
+-	 METH_VARARGS, termios_tcdrain__doc__},
++	// {"tcdrain", termios_tcdrain,
++	//  METH_VARARGS, termios_tcdrain__doc__},
+ 	{"tcflush", termios_tcflush, 
+ 	 METH_VARARGS, termios_tcflush__doc__},
+ 	{"tcflow", termios_tcflow, 
+--- Python-2.6.2/Modules/posixmodule.c	2012-06-20 14:20:07.833441645 -0400
++++ Python-2.6.2/Modules/posixmodule.c	2012-06-20 14:23:03.023441535 -0400
+@@ -3761,7 +3761,7 @@
+ 	slave_fd = open(slave_name, O_RDWR | O_NOCTTY); /* open slave */
+ 	if (slave_fd < 0)
+ 		return posix_error();
+-#if !defined(__CYGWIN__) && !defined(HAVE_DEV_PTC)
++#if !defined(__CYGWIN__) && !defined(HAVE_DEV_PTC) && !defined(ANDROID)
+ 	ioctl(slave_fd, I_PUSH, "ptem"); /* push ptem */
+ 	ioctl(slave_fd, I_PUSH, "ldterm"); /* push ldterm */
+ #ifndef __hpux

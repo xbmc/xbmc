@@ -44,6 +44,9 @@
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/TextureManager.h"
 
+#if defined(TARGET_ANDROID)
+#include "filesystem/AndroidAppDirectory.h"
+#endif
 using namespace std;
 using namespace ADDON;
 
@@ -100,6 +103,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (items.GetPath() == "special://musicplaylists/")
     return new CGUIViewStateWindowMusicSongs(items);
+
+  if (url.GetProtocol() == "androidapp")
+    return new CGUIViewStateWindowPrograms(items);
 
   if (windowId==WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
@@ -369,6 +375,25 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     m_sources.push_back(source);
   }
 }
+
+#if defined(TARGET_ANDROID)
+void CGUIViewState::AddAndroidSource(const CStdString &content, const CStdString &label, const CStdString &thumb)
+{
+  CFileItemList items;
+  XFILE::CAndroidAppDirectory apps;
+  if (apps.GetDirectory(content, items))
+  {
+    CMediaSource source;
+    source.strPath = "androidapp://sources/" + content + "/";
+    source.strName = label;
+    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+      source.m_strThumbnailImage = thumb;
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    source.m_ignore = true;
+    m_sources.push_back(source);
+  }
+}
+#endif
 
 void CGUIViewState::AddLiveTVSources()
 {

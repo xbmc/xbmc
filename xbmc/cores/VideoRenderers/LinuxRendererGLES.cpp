@@ -50,6 +50,7 @@
 
 #if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
+#include "utils/CPUInfo.h"
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
 #include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
@@ -187,6 +188,10 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
     m_buffers[i].image.flags = 0;
 
   m_iLastRenderBuffer = -1;
+
+  m_RenderUpdateCallBackFn = NULL;
+  m_RenderUpdateCallBackCtx = NULL;
+
   return true;
 }
 
@@ -398,14 +403,12 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     ManageDisplay();
     ManageTextures();
-    g_graphicsContext.BeginPaint();
+    // if running bypass, then the player might need the src/dst rects
+    // for sizing video playback on a layer other than the gles layer.
+    if (m_RenderUpdateCallBackFn)
+      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
 
-    // RENDER_BYPASS means we are rendering video
-    // outside the control of gles and on a different
-    // graphics plane that is under the gles layer.
-    // Clear a hole where video would appear so we do not see
-    // background images that have already been rendered.
-    g_graphicsContext.SetScissors(m_destRect);
+    g_graphicsContext.BeginPaint();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -413,7 +416,6 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClear(GL_COLOR_BUFFER_BIT);
 
     g_graphicsContext.EndPaint();
-    glFinish();
     return;
   }
 
@@ -479,9 +481,6 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
 
   g_graphicsContext.EndPaint();
-#if !defined(TARGET_DARWIN)
-  glFinish();
-#endif
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
@@ -732,6 +731,8 @@ void CLinuxRendererGLES::UnInit()
   m_bValidated = false;
   m_bImageReady = false;
   m_bConfigured = false;
+  m_RenderUpdateCallBackFn = NULL;
+  m_RenderUpdateCallBackCtx = NULL;
 }
 
 inline void CLinuxRendererGLES::ReorderDrawPoints()
@@ -1374,20 +1375,25 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     }
 
 #if defined(__ARM_NEON__)
-    yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],
-      m_sourceWidth, m_sourceHeight, im->stride[0], im->stride[1], m_sourceWidth * 4);
-#else
-    m_sw_context = m_dllSwScale->sws_getCachedContext(m_sw_context,
-      im->width, im->height, PIX_FMT_YUV420P,
-      im->width, im->height, PIX_FMT_RGBA,
-      SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
-    uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
-    int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
-    uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
-    int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
-    m_dllSwScale->sws_scale(m_sw_context, src, srcStride, 0, im->height, dst, dstStride);
+    if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
+    {
+      yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],
+        m_sourceWidth, m_sourceHeight, im->stride[0], im->stride[1], m_sourceWidth * 4);
+    }
+    else
 #endif
+    {
+      m_sw_context = m_dllSwScale->sws_getCachedContext(m_sw_context,
+        im->width, im->height, PIX_FMT_YUV420P,
+        im->width, im->height, PIX_FMT_RGBA,
+        SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+      uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
+      int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+      uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
+      int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
+      m_dllSwScale->sws_scale(m_sw_context, src, srcStride, 0, im->height, dst, dstStride);
+    }
   }
 
   bool deinterlacing;
@@ -1923,7 +1929,6 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
   CVBufferRetain(buf.cvBufferRef);
 }
 #endif
-
 
 #endif
 

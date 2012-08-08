@@ -655,6 +655,7 @@ bool CFileItem::IsFileFolder() const
   return (
     IsSmartPlayList() ||
    (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
+    IsAPK() ||
     IsZIP() ||
     IsRAR() ||
     IsRSS() ||
@@ -737,6 +738,11 @@ bool CFileItem::IsRAR() const
   return URIUtils::IsRAR(m_strPath);
 }
 
+bool CFileItem::IsAPK() const
+{
+  return URIUtils::IsAPK(m_strPath);
+}
+
 bool CFileItem::IsZIP() const
 {
   return URIUtils::IsZIP(m_strPath);
@@ -759,6 +765,11 @@ bool CFileItem::IsRSS() const
 
   return URIUtils::GetExtension(m_strPath).Equals(".rss")
       || GetMimeType() == "application/rss+xml";
+}
+
+bool CFileItem::IsAndroidApp() const
+{
+  return URIUtils::IsAndroidApp(m_strPath);
 }
 
 bool CFileItem::IsStack() const

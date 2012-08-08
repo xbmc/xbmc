@@ -97,7 +97,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   SpawnThread(stacksize);
 }
 
-bool CThread::IsRunning()
+bool CThread::IsRunning() const
 {
   return m_ThreadId ? true : false;
 }

@@ -27,6 +27,7 @@ config.log
 *.rej
 *.orig
 *.bak
+*.apk
 
 # Windows specific generated files
 *.exp
@@ -112,6 +113,11 @@ config.log
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
+
+# /xbmc/android
+/xbmc/android/Makefile
+/xbmc/android/activity/Makefile
+/xbmc/android/loader/Makefile
 
 # /xbmc/guilib/
 /xbmc/guilib/Makefile
@@ -497,6 +503,7 @@ lib/cmyth/Makefile
 
 # /xbmc/
 /xbmc/DllPaths_generated.h
+/xbmc/DllPaths_generated_android.h
 /xbmc/Makefile
 
 # /xbmc/addons/
@@ -522,12 +529,14 @@ lib/cmyth/Makefile
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
 /xbmc/cores/DllLoader/Makefile
+/xbmc/cores/DllLoader/exports/Makefile
 
 /xbmc/cores/Makefile
 
 /xbmc/cores/VideoRenderers/Makefile
 
 /xbmc/cores/dvdplayer/Makefile
+/xbmc/cores/amlplayer/Makefile
 
 # /lib/ffmpeg/
 /lib/ffmpeg/config.h
@@ -1190,6 +1199,8 @@ lib/cmyth/Makefile
 
 /xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)
+
+xbmc/visualizations/EGLHelpers/Makefile
 
 /xbmc/visualizations/Goom/Makefile
 /xbmc/visualizations/Goom/goom2k4-0/aclocal.m4

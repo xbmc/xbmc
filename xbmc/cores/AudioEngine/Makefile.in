@@ -35,17 +35,21 @@ SRCS += Engines/CoreAudio/CoreAudioMixMap.cpp
 SRCS += Engines/CoreAudio/CoreAudioStream.cpp
 SRCS += Engines/CoreAudio/CoreAudioUnit.cpp
 else
-SRCS += Sinks/AESinkALSA.cpp
-SRCS += Sinks/AESinkOSS.cpp
 SRCS += Sinks/AESinkProfiler.cpp
 
 SRCS += Engines/SoftAE/SoftAE.cpp
 SRCS += Engines/SoftAE/SoftAEStream.cpp
 SRCS += Engines/SoftAE/SoftAESound.cpp
 
+ifeq (@USE_ANDROID@,1)
+SRCS += Sinks/AESinkAUDIOTRACK.cpp
+else
+SRCS += Sinks/AESinkALSA.cpp
+SRCS += Sinks/AESinkOSS.cpp
 SRCS += Engines/PulseAE/PulseAE.cpp
 SRCS += Engines/PulseAE/PulseAEStream.cpp
 SRCS += Engines/PulseAE/PulseAESound.cpp
+endif
 endif
 
 SRCS += Utils/AEChannelInfo.cpp

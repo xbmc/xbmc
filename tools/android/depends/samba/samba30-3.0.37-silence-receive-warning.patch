@@ -1,0 +1,11 @@
+--- samba-3.0.37-clean/source/libsmb/clientgen.c	2009-09-30 05:21:56.000000000 -0700
++++ samba-3.0.37/source/libsmb/clientgen.c	2010-11-18 21:56:06.874516928 -0800
+@@ -108,7 +108,7 @@
+ 
+ 	/* If the server is not responding, note that now */
+ 	if (!ret) {
+-                DEBUG(0, ("Receiving SMB: Server stopped responding\n"));
++    DEBUG(1, ("Receiving SMB: Server stopped responding\n"));
+ 		cli->smb_rw_error = smb_read_error;
+ 		close(cli->fd);
+ 		cli->fd = -1;

@@ -35,6 +35,10 @@
 #include <CoreVideo/CVHostTime.h>
 #endif
 
+#if defined(__ANDROID__)
+#include <time64.h>
+#endif
+
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
 /*
@@ -108,7 +112,12 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
 #if defined(TARGET_DARWIN)
   CAtomicSpinLock lock(timegm_lock);
 #endif
+
+#if defined(__ANDROID__)
+  time64_t t = timegm64(&sysTime);
+#else
   time_t t = timegm(&sysTime);
+#endif
 
   LARGE_INTEGER result;
   result.QuadPart = (long long) t * 10000000 + (long long) lpSystemTime->wMilliseconds * 10000;

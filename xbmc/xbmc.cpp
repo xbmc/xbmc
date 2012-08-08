@@ -26,7 +26,16 @@ extern "C" int XBMC_Run(bool renderGUI)
   int status = -1;
 
   if (!g_advancedSettings.Initialized())
+  {
+#ifdef _DEBUG
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+#else
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
+#endif
     g_advancedSettings.Initialize();
+  }
 
   if (!g_application.Create())
   {

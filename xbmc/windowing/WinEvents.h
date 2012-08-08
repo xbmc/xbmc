@@ -47,6 +47,10 @@ public:
 #include "osx/WinEventsIOS.h"
 #define CWinEvents CWinEventsIOS
 
+#elif defined(TARGET_ANDROID)
+#include "android/WinEventsAndroid.h"
+#define CWinEvents CWinEventsAndroid
+
 #elif defined(TARGET_FREEBSD) && defined(HAS_SDL_WIN_EVENTS)
 #include "WinEventsSDL.h"
 #define CWinEvents CWinEventsSDL

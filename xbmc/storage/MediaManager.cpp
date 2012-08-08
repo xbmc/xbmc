@@ -55,6 +55,8 @@
 
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinStorageProvider.h"
+#elif defined(TARGET_ANDROID)
+#include "android/AndroidStorageProvider.h"
 #elif defined(_LINUX)
 #include "linux/LinuxStorageProvider.h"
 #elif _WIN32
@@ -88,6 +90,8 @@ void CMediaManager::Initialize()
   {
     #if defined(TARGET_DARWIN)
       m_platformStorage = new CDarwinStorageProvider();
+    #elif defined(TARGET_ANDROID)
+      m_platformStorage = new CAndroidStorageProvider();
     #elif defined(_LINUX)
       m_platformStorage = new CLinuxStorageProvider();
     #elif _WIN32
