@@ -75,7 +75,23 @@ public:
   CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "", int context = 0);
 
   void SetLabel(const CStdString &label, const CStdString &fallback, int context = 0);
+  /*!
+   \brief Gets label or filename of image for given contextWindows
+   \param contextWindow the context in which to evaluate the expression
+   \param preferImage return filename of the image if available instead of label
+   \param fallback returns an alternate value for this label should the main return value prove not  
+                   appropriate. Used primarily for alternate images (eg icon image rather than thumb
+                   image).
+   \return label or filename of image for given contextWindows.
+   */  
   CStdString GetLabel(int contextWindow, bool preferImage = false, CStdString *fallback = NULL) const;
+  /*!
+   \brief Gets label or filename of image for given listitem
+   \param item listitem on which value is returned 
+   \param preferImage return filename of the image if available instead of label
+   \param fallback returns alternative value for given listitem
+   \return label or filename of image for given listitem.
+   */
   CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false, CStdString *fallback = NULL) const;
   bool IsConstant() const;
   bool IsEmpty() const;
