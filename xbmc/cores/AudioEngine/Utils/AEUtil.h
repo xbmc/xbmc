@@ -26,7 +26,9 @@
 #include <math.h>
 
 #ifdef TARGET_WINDOWS
+#if _M_IX86_FP>0 && !defined(__SSE__)
 #define __SSE__
+#endif
 #endif
 
 #ifdef __SSE__
