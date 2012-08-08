@@ -46,7 +46,6 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
        action.GetButtonCode() <= KEY_BUTTON_RIGHT_TRIGGER) ||
       (action.GetButtonCode() >= KEY_BUTTON_DPAD_UP &&
        action.GetButtonCode() <= KEY_BUTTON_DPAD_RIGHT) || 
-      // AppleTV Remote Control Actions 
       (action.GetID() >= ACTION_MOVE_LEFT && 
        action.GetID() <= ACTION_MOVE_DOWN) || 
       action.GetID() == ACTION_PLAYER_PLAY 
@@ -69,7 +68,6 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     default :  
       switch (action.GetID())  
       { 
-      // AppleTV Remote Control actions 
       case ACTION_MOVE_LEFT: m_strUserInput += "L"; break; 
       case ACTION_MOVE_RIGHT: m_strUserInput += "R"; break; 
       case ACTION_MOVE_UP: m_strUserInput += "U"; break; 
