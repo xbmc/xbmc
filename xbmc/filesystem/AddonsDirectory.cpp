@@ -295,10 +295,19 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
 
   for (unsigned i=0; i<addons.size(); i++)
   {
-    if (addons[i]->Type() == ADDON_PLUGIN)
-      items.Add(FileItemFromAddon(addons[i], "plugin://", true));
-    else
-      items.Add(FileItemFromAddon(addons[i], "script://", false));
+    CFileItemPtr item(FileItemFromAddon(addons[i], 
+                      addons[i]->Type()==ADDON_PLUGIN?"plugin://":"script://",
+                      addons[i]->Type() == ADDON_PLUGIN));
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    if (plugin->ProvidesSeveral())
+    {
+      CURL url = item->GetAsUrl();
+      CStdString opt;
+      opt.Format("?content_type=%s",content.c_str());
+      url.SetOptions(opt);
+      item->SetPath(url.Get());
+    }
+    items.Add(item);
   }
 
   items.Add(GetMoreItem(content));
