@@ -35,8 +35,10 @@ public:
   CPluginSource(const AddonProps &props);
   virtual ~CPluginSource() {}
   virtual bool IsType(TYPE type) const;
-  bool Provides(const Content& content) const {
-    return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
+  bool Provides(const Content& content) const
+  {
+    return content == UNKNOWN ? false : m_providedContent.count(content) > 0;
+  }
 
   static Content Translate(const CStdString &content);
 private:
