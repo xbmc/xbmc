@@ -132,6 +132,7 @@ bool CVideoDbUrl::parse()
       break;
 
     case VIDEODATABASEDIRECTORY::NODE_TYPE_MUSICVIDEOS_ALBUM:
+      m_type = "musicvideos";
       m_itemType = "albums";
       break;
 
