@@ -148,6 +148,10 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
   m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
 
+  m_useSimpleStacking = false;
+
+  m_stackDvds = true;
+
   m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
 
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
@@ -820,6 +824,16 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
                                         m_trailerMatchRegExps.begin(),
                                         m_trailerMatchRegExps.end());
+
+  XMLUtils::GetBoolean(pRootElement, "usesimplestacking", m_useSimpleStacking);
+
+  if (m_useSimpleStacking)
+    CLog::Log(LOGDEBUG, "Simple file stacking enabled.");
+
+  XMLUtils::GetBoolean(pRootElement, "stackdvds", m_stackDvds);
+
+  if (!m_stackDvds)
+    CLog::Log(LOGDEBUG, "Dvd stacking disabled.");
 
   // video stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
