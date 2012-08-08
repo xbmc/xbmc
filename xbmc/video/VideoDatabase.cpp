@@ -9156,8 +9156,12 @@ bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
     if (!xsp.LoadFromJson(option->second.asString()))
       return false;
 
-    std::set<CStdString> playlists;
-    filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
+    // check if the filter playlist matches the item type
+    if (xsp.GetType() == itemType)
+    {
+      std::set<CStdString> playlists;
+      filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
+    }
   }
 
   return true;
