@@ -821,7 +821,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       if (g_application.m_pPlayer && g_application.m_pPlayer->GetTotalTime())
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
-        responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime(), position);
+        responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime() / 1000, position);
       }
       else 
       {
@@ -921,9 +921,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       if (g_application.m_pPlayer->GetTotalTime())
       {
         position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
-        duration = (float) g_application.m_pPlayer->GetTotalTime();
+        duration = ((float) g_application.m_pPlayer->GetTotalTime()) / 1000;
         playing = g_application.m_pPlayer ? !g_application.m_pPlayer->IsPaused() : false;
-        cacheDuration = (float) g_application.m_pPlayer->GetTotalTime() * g_application.GetCachePercentage()/100.0f;
+        cacheDuration = (float) g_application.m_pPlayer->GetTotalTime() / 1000 * g_application.GetCachePercentage()/100.0f;
       }
 
       responseBody.Format(PLAYBACK_INFO, duration, cacheDuration, position, (playing ? 1 : 0), duration);
