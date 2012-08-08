@@ -10,8 +10,12 @@ all: $(TARGET)
 .PHONY: force
 
 $(TARGET): $(XBMCTEX) $(IMAGES)
+ifeq (@USE_ANDROID@,1)
+	$(XBMCTEX) -use_none -input . -output $(TARGET)
+else
 	$(XBMCTEX) -input . -output $(TARGET)
 
+endif
 $(XBMCTEX): force
 	$(MAKE) -C @abs_top_srcdir@/tools/TexturePacker
 

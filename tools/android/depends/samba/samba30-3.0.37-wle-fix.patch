@@ -1,0 +1,101 @@
+diff -r -u samba-3.0.37-clean/source/libsmb/asn1.c samba-3.0.37/source/libsmb/asn1.c
+--- samba-3.0.37-clean/source/libsmb/asn1.c	2009-09-30 05:21:56.000000000 -0700
++++ samba-3.0.37/source/libsmb/asn1.c	2010-11-18 12:40:06.981517350 -0800
+@@ -261,6 +261,36 @@
+ 	return asn1_read(data, v, 1);
+ }
+ 
++/* peek to see if a tag is present */
++/* this was not ported from samba and may not be identical to libsmb mainline */
++BOOL asn1_peek_tag(ASN1_DATA *data, uint8 tag)
++{
++  uint8 curtag;
++
++  if (data->has_error)
++    return False;
++
++  // overflow checking
++  if (data->ofs + 1 < data->ofs || data->ofs + 1 < 1) {
++    return False;
++  }
++
++  // boundary checking
++  if (data->ofs + 1 > data->length) {
++    return False;
++  }
++
++  memcpy( (void*)&curtag, data->data + data->ofs, 1);
++
++  // don't move cursor
++  // don't set error
++
++  if( tag != curtag )
++    return False;
++
++  return True;
++}
++
+ /* start reading a nested asn1 structure */
+ BOOL asn1_start_tag(ASN1_DATA *data, uint8 tag)
+ {
+diff -r -u samba-3.0.37-clean/source/libsmb/clispnego.c samba-3.0.37/source/libsmb/clispnego.c
+--- samba-3.0.37-clean/source/libsmb/clispnego.c	2009-09-30 05:21:56.000000000 -0700
++++ samba-3.0.37/source/libsmb/clispnego.c	2010-11-18 12:52:54.833518134 -0800
+@@ -135,9 +135,16 @@
+ 
+ 	asn1_start_tag(&data,ASN1_APPLICATION(0));
+ 	asn1_check_OID(&data,OID_SPNEGO);
++
++	/* negTokenInit  [0]  NegTokenInit */
+ 	asn1_start_tag(&data,ASN1_CONTEXT(0));
+ 	asn1_start_tag(&data,ASN1_SEQUENCE(0));
+ 
++	/* mechTypes [0] MechTypeList  OPTIONAL */
++
++	/* Not really optional, we depend on this to decide
++	 * what mechanisms we have to work with. */
++
+ 	asn1_start_tag(&data,ASN1_CONTEXT(0));
+ 	asn1_start_tag(&data,ASN1_SEQUENCE(0));
+ 	for (i=0; asn1_tag_remaining(&data) > 0 && i < ASN1_MAX_OIDS-1; i++) {
+@@ -150,7 +157,39 @@
+ 	asn1_end_tag(&data);
+ 
+ 	*principal = NULL;
+-	if (asn1_tag_remaining(&data) > 0) {
++
++  /*
++	   Win7 + Live Sign-in Assistant attaches a mechToken
++	   ASN1_CONTEXT(2) to the negTokenInit packet
++	   which breaks our negotiation if we just assume
++	   the next tag is ASN1_CONTEXT(3).
++	 */
++
++	 if (asn1_peek_tag(&data, ASN1_CONTEXT(1))) {
++	         uint8 flags;
++
++    /* reqFlags [1] ContextFlags  OPTIONAL */
++    asn1_start_tag(&data, ASN1_CONTEXT(1));
++    asn1_start_tag(&data, ASN1_BITFIELD);
++    while (asn1_tag_remaining(&data) > 0) {
++      asn1_read_uint8(&data, &flags);
++    }
++    asn1_end_tag(&data);
++    asn1_end_tag(&data);
++  }
++
++  if (asn1_peek_tag(&data, ASN1_CONTEXT(2))) {
++    /* mechToken [2] OCTET STRING  OPTIONAL */
++    DATA_BLOB token;
++    asn1_start_tag(&data, ASN1_CONTEXT(2));
++    asn1_read_OctetString(&data, &token);
++    asn1_end_tag(&data);
++    /* Throw away the token - not used. */
++    data_blob_free(&token);
++  }
++
++  if (asn1_peek_tag(&data, ASN1_CONTEXT(3))) {
++	     /* mechListMIC [3] OCTET STRING  OPTIONAL */
+ 		asn1_start_tag(&data, ASN1_CONTEXT(3));
+ 		asn1_start_tag(&data, ASN1_SEQUENCE(0));
+ 		asn1_start_tag(&data, ASN1_CONTEXT(0));

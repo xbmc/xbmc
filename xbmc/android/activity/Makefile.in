@@ -1,0 +1,34 @@
+include @abs_top_srcdir@/tools/android/depends/Makefile.include
+
+GLUEPATH   = $(NDKROOT)/sources/android/native_app_glue
+APP_GLUE   = android_native_app_glue.o
+
+CPUPATH    = $(NDKROOT)/sources/android/cpufeatures
+CPU_OBJ    = cpu-features.o
+
+INCLUDES += -I$(GLUEPATH) -I$(CPUPATH)
+
+SRCS       = android_main.cpp
+SRCS      += AndroidFeatures.cpp
+SRCS      += AndroidKey.cpp
+SRCS      += AndroidTouch.cpp
+SRCS      += AndroidMouse.cpp
+SRCS      += GraphicBuffer.cpp
+SRCS      += EventLoop.cpp
+SRCS      += unzip.cpp
+SRCS      += XBMCApp.cpp
+
+OBJS      += $(APP_GLUE) $(CPU_OBJ)
+
+LIB        = activity.a
+
+$(LIB): $(OBJS)
+
+$(APP_GLUE):
+	$(CC) -c -I$(GLUEPATH) -o $@ $(GLUEPATH)/$(APP_GLUE:.o=.c)
+
+$(CPU_OBJ):
+	$(CC) -c -I$(CPUPATH) -o $@ $(CPUPATH)/$(CPU_OBJ:.o=.c)
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -1,0 +1,24 @@
+diff -ruN libgcrypt-1.4.0/Makefile.am libgcrypt-1.4.0-good//Makefile.am
+--- libgcrypt-1.4.0/Makefile.am	2007-05-04 06:11:28.000000000 -0400
++++ libgcrypt-1.4.0-good//Makefile.am	2012-04-27 15:13:42.526381700 -0400
+@@ -23,7 +23,7 @@
+   --enable-ciphers=arcfour:blowfish:cast5:des:aes:twofish:serpent:rfc2268:seed:camellia
+ 
+ DIST_SUBDIRS = m4 mpi cipher src doc tests
+-SUBDIRS = mpi cipher src doc tests
++SUBDIRS = mpi cipher src
+ EXTRA_DIST = BUGS autogen.sh README.SVN
+ DISTCLEANFILES = 
+ 
+diff -ruN libgcrypt-1.4.0/Makefile.in libgcrypt-1.4.0-good//Makefile.in
+--- libgcrypt-1.4.0/Makefile.in	2007-12-10 04:05:13.000000000 -0500
++++ libgcrypt-1.4.0-good//Makefile.in	2012-04-27 15:14:14.186381680 -0400
+@@ -237,7 +237,7 @@
+   --enable-ciphers=arcfour:blowfish:cast5:des:aes:twofish:serpent:rfc2268:seed:camellia
+ 
+ DIST_SUBDIRS = m4 mpi cipher src doc tests
+-SUBDIRS = mpi cipher src doc tests
++SUBDIRS = mpi cipher src
+ EXTRA_DIST = BUGS autogen.sh README.SVN
+ DISTCLEANFILES = 
+ all: config.h

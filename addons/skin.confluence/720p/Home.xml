@@ -644,7 +644,8 @@
 					</item>
 					<item id="1">
 						<label>0</label>
-						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
+						<onclick condition="!System.Platform.Android">ActivateWindow(Programs,Addons,return)</onclick>
+						<onclick condition="System.Platform.Android">ActivateWindow(Programs)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>

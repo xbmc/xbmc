@@ -84,7 +84,9 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   // if library attribute isn't present, look for a system-dependent one
   if (ext && m_strLibName.IsEmpty())
   {
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_ANDROID)
+  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");
+#elif defined(_LINUX) && !defined(TARGET_DARWIN)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
@@ -148,6 +150,15 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   }
 
   /* Check if lib being loaded exists, else check in XBMC binary location */
+#if defined(TARGET_ANDROID)
+  // Android libs MUST live in this path, else multi-arch will break.
+  // The usual soname requirements apply. no subdirs, and filename is ^lib.*\.so$
+  if (!CFile::Exists(strFileName))
+  {
+    CStdString tempbin = getenv("XBMC_ANDROID_LIBS");
+    strFileName = tempbin + "/" + m_strLibName;
+  }
+#endif
   if (!CFile::Exists(strFileName))
   {
     CStdString temp = CSpecialProtocol::TranslatePath("special://xbmc/");

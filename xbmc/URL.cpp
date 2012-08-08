@@ -97,9 +97,14 @@ void CURL::Parse(const CStdString& strURL1)
     // example: filename /foo/bar.zip/alice.rar/bob.avi
     // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
     iPos = 0;
+    bool is_apk = (strURL.Find(".apk/", iPos) > 0);
     while (1)
     {
-      iPos = strURL.Find(".zip/", iPos);
+      if (is_apk)
+        iPos = strURL.Find(".apk/", iPos);
+      else
+        iPos = strURL.Find(".zip/", iPos);
+
       int extLen = 3;
       if (iPos < 0)
       {
@@ -119,8 +124,16 @@ void CURL::Parse(const CStdString& strURL1)
 #endif
         {
           Encode(archiveName);
-          CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
-          *this = c;
+          if (is_apk)
+          {
+            CURL c((CStdString)"apk" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            *this = c;
+          }
+          else
+          {
+            CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            *this = c;
+          }
           return;
         }
       }
@@ -163,7 +176,8 @@ void CURL::Parse(const CStdString& strURL1)
      m_strProtocol.Equals("addons") ||
      m_strProtocol.Equals("image") ||
      m_strProtocol.Equals("videodb") ||
-     m_strProtocol.Equals("musicdb"))
+     m_strProtocol.Equals("musicdb") ||
+     m_strProtocol.Equals("androidapp"))
     sep = "?";
   else
   if(strProtocol2.Equals("http")
@@ -171,6 +185,7 @@ void CURL::Parse(const CStdString& strURL1)
     || strProtocol2.Equals("plugin")
     || strProtocol2.Equals("hdhomerun")
     || strProtocol2.Equals("rtsp")
+    || strProtocol2.Equals("apk")
     || strProtocol2.Equals("zip"))
     sep = "?;#|";
   else if(strProtocol2.Equals("ftp")
@@ -456,7 +471,10 @@ const CStdString& CURL::GetProtocolOptions() const
 const CStdString CURL::GetFileNameWithoutPath() const
 {
   // *.zip and *.rar store the actual zip/rar path in the hostname of the url
-  if ((m_strProtocol == "rar" || m_strProtocol == "zip") && m_strFileName.IsEmpty())
+  if ((m_strProtocol == "rar"  || 
+       m_strProtocol == "zip"  ||
+       m_strProtocol == "apk") &&
+       m_strFileName.IsEmpty())
     return URIUtils::GetFileName(m_strHostName);
 
   // otherwise, we've already got the filepath, so just grab the filename portion

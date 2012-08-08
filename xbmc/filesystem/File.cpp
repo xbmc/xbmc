@@ -84,7 +84,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 
   // special case for zips - ignore caching
   CURL url(strFileName);
-  if (URIUtils::IsInZIP(strFileName))
+  if (URIUtils::IsInZIP(strFileName) || URIUtils::IsInAPK(strFileName))
     url.SetOptions("?cache=no");
   if (file.Open(url.Get(), READ_TRUNCATED))
   {
@@ -217,6 +217,8 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   {
     bool bPathInCache;
     CURL url2(strFileName);
+    if (url2.GetProtocol() == "apk")
+      url2.SetOptions("");
     if (url2.GetProtocol() == "zip")
       url2.SetOptions("");
     if (!g_directoryCache.FileExists(url2.Get(), bPathInCache) )

@@ -280,6 +280,13 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     paplayer->m_bPlaysAudio = true;
     s_vecCoreConfigs.push_back(paplayer);
 
+#if defined(HAS_AMLPLAYER)
+    CPlayerCoreConfig* amlplayer = new CPlayerCoreConfig("AMLPlayer", EPC_AMLPLAYER, NULL);
+    amlplayer->m_bPlaysAudio = true;
+    amlplayer->m_bPlaysVideo = true;
+    s_vecCoreConfigs.push_back(amlplayer);
+#endif
+
     for(std::vector<CPlayerSelectionRule *>::iterator it = s_vecCoreSelectionRules.begin(); it != s_vecCoreSelectionRules.end(); it++)
       delete *it;
     s_vecCoreSelectionRules.clear();

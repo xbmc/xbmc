@@ -1,0 +1,21 @@
+--- configure.in	2012-06-03 23:09:30.024347827 -0400
++++ configure.in	2012-06-03 23:11:37.494347747 -0400
+@@ -14,7 +14,7 @@
+ AC_CHECK_LIB([m],   [main])
+ AC_CHECK_LIB([ssl], [main],, AC_MSG_ERROR($missing_library))
+ AC_CHECK_LIB([crypto], [main],, AC_MSG_ERROR($missing_library))
+-AC_CHECK_LIB([pthread], [main],, AC_MSG_ERROR($missing_library))
++#AC_CHECK_LIB([pthread], [main],, AC_MSG_ERROR($missing_library))
+ 
+ OUTPUT_FILES="Makefile"
+ 
+--- src/hairtunes.c	2012-06-03 23:15:47.944347589 -0400
++++ src/hairtunes.c	2012-06-03 23:16:23.044347567 -0400
+@@ -42,7 +42,6 @@
+ #include <sys/stat.h>
+ 
+ #include "hairtunes.h"
+-#include <sys/signal.h>
+ #include <fcntl.h>
+ #ifdef HAS_AO
+ #include "ao.h"

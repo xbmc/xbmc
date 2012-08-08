@@ -6,13 +6,19 @@ CC=@CC@
 CXX=@CXX@
 SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
 
-AVFORMAT_SO=avformat-53-$(ARCH).so
-AVCODEC_SO=avcodec-53-$(ARCH).so
-AVUTIL_SO=avutil-51-$(ARCH).so
-AVFILTER_SO=avfilter-2-$(ARCH).so
-SWSCALE_SO=swscale-2-$(ARCH).so
-POSTPROC_SO=postproc-52-$(ARCH).so
-SWRESAMPLE_SO=swresample-0-$(ARCH).so
+ifeq (@USE_ANDROID@,1)
+AVPREFIX=lib
+else
+AVPREFIX=
+endif
+
+AVFORMAT_SO=$(AVPREFIX)avformat-53-$(ARCH).so
+AVCODEC_SO=$(AVPREFIX)avcodec-53-$(ARCH).so
+AVUTIL_SO=$(AVPREFIX)avutil-51-$(ARCH).so
+AVFILTER_SO=$(AVPREFIX)avfilter-2-$(ARCH).so
+SWSCALE_SO=$(AVPREFIX)swscale-2-$(ARCH).so
+POSTPROC_SO=$(AVPREFIX)postproc-52-$(ARCH).so
+SWRESAMPLE_SO=$(AVPREFIX)swresample-0-$(ARCH).so
 
 DIRS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)

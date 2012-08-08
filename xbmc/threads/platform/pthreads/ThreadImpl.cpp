@@ -20,7 +20,11 @@
  */
 
 #include <limits.h>
+#if defined(TARGET_ANDROID)
+#include <unistd.h>
+#else
 #include <sys/syscall.h>
+#endif
 #include <sys/resource.h>
 #include <string.h>
 #ifdef __FreeBSD__
@@ -38,8 +42,10 @@ void CThread::SpawnThread(unsigned stacksize)
 {
   pthread_attr_t attr;
   pthread_attr_init(&attr);
+#if !defined(TARGET_ANDROID) // http://code.google.com/p/android/issues/detail?id=7808
   if (stacksize > PTHREAD_STACK_MIN)
     pthread_attr_setstacksize(&attr, stacksize);
+#endif
   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
   if (pthread_create(&m_ThreadId, &attr, (void*(*)(void*))staticThread, this) != 0)
   {
@@ -60,6 +66,8 @@ void CThread::SetThreadInfo()
 #else
   m_ThreadOpaque.LwpId = pthread_getthreadid_np();
 #endif
+#elif defined(TARGET_ANDROID)
+  m_ThreadOpaque.LwpId = gettid();
 #else
   m_ThreadOpaque.LwpId = syscall(SYS_gettid);
 #endif

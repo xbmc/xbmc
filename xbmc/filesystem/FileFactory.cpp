@@ -55,6 +55,9 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPFile.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "APKFile.h"
+#endif
 #include "ZipFile.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarFile.h"
@@ -67,6 +70,9 @@
 #endif
 #ifdef HAS_FILESYSTEM_AFP
 #include "AFPFile.h"
+#endif
+#if defined(TARGET_ANDROID)
+#include "AndroidAppFile.h"
 #endif
 #include "UPnPFile.h"
 #include "PipesManager.h"
@@ -105,6 +111,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
+#if defined(TARGET_ANDROID)
+  if (strProtocol == "apk") return new CAPKFile();
+#endif
   if (strProtocol == "zip") return new CZipFile();
   else if (strProtocol == "rar")
   {
@@ -177,6 +186,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
     else if (strProtocol == "pipe") return new CPipeFile();    
     else if (strProtocol == "upnp") return new CUPnPFile();
+#if defined(TARGET_ANDROID)
+    else if (strProtocol == "androidapp") return new CFileAndroidApp();
+#endif
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

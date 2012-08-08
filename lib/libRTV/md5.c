@@ -31,7 +31,7 @@
     (b)[(i) + 3] = (uint8) ( (n) >> 24 );       \
 }
 
-void md5_starts( md5_context *ctx )
+void rtv_md5_starts( rtv_md5_context *ctx )
 {
     ctx->total[0] = 0;
     ctx->total[1] = 0;
@@ -42,7 +42,7 @@ void md5_starts( md5_context *ctx )
     ctx->state[3] = 0x10325476;
 }
 
-void md5_process( md5_context *ctx, const uint8 data[64] )
+void rtv_md5_process( rtv_md5_context *ctx, const uint8 data[64] )
 {
     uint32 X[16], A, B, C, D;
 
@@ -165,7 +165,7 @@ void md5_process( md5_context *ctx, const uint8 data[64] )
     ctx->state[3] += D;
 }
 
-void md5_update( md5_context *ctx, const uint8 *input, uint32 length )
+void rtv_md5_update( rtv_md5_context *ctx, const uint8 *input, uint32 length )
 {
     uint32 left, fill;
 
@@ -184,7 +184,7 @@ void md5_update( md5_context *ctx, const uint8 *input, uint32 length )
     {
         memcpy( (void *) (ctx->buffer + left),
                 (void *) input, fill );
-        md5_process( ctx, ctx->buffer );
+        rtv_md5_process( ctx, ctx->buffer );
         length -= fill;
         input  += fill;
         left = 0;
@@ -192,7 +192,7 @@ void md5_update( md5_context *ctx, const uint8 *input, uint32 length )
 
     while( length >= 64 )
     {
-        md5_process( ctx, input );
+        rtv_md5_process( ctx, input );
         length -= 64;
         input  += 64;
     }
@@ -204,7 +204,7 @@ void md5_update( md5_context *ctx, const uint8 *input, uint32 length )
     }
 }
 
-static uint8 md5_padding[64] =
+static uint8 rtv_md5_padding[64] =
 {
  0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -212,7 +212,7 @@ static uint8 md5_padding[64] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-void md5_finish( md5_context *ctx, uint8 digest[16] )
+void rtv_md5_finish( rtv_md5_context *ctx, uint8 digest[16] )
 {
     uint32 last, padn;
     uint32 high, low;
@@ -228,8 +228,8 @@ void md5_finish( md5_context *ctx, uint8 digest[16] )
     last = ctx->total[0] & 0x3F;
     padn = ( last < 56 ) ? ( 56 - last ) : ( 120 - last );
 
-    md5_update( ctx, md5_padding, padn );
-    md5_update( ctx, msglen, 8 );
+    rtv_md5_update( ctx, rtv_md5_padding, padn );
+    rtv_md5_update( ctx, msglen, 8 );
 
     PUT_UINT32( ctx->state[0], digest,  0 );
     PUT_UINT32( ctx->state[1], digest,  4 );
@@ -274,7 +274,7 @@ int main( int argc, char *argv[] )
     FILE *f;
     int i, j;
     char output[33];
-    md5_context ctx;
+    rtv_md5_context ctx;
     unsigned char buf[1000];
     unsigned char md5sum[16];
 
@@ -286,9 +286,9 @@ int main( int argc, char *argv[] )
         {
             //printf( " Test %d ", i + 1 );
 
-            md5_starts( &ctx );
-            md5_update( &ctx, (uint8 *) msg[i], strlen( msg[i] ) );
-            md5_finish( &ctx, md5sum );
+            rtv_md5_starts( &ctx );
+            rtv_md5_update( &ctx, (uint8 *) msg[i], strlen( msg[i] ) );
+            rtv_md5_finish( &ctx, md5sum );
 
             for( j = 0; j < 16; j++ )
             {
@@ -314,14 +314,14 @@ int main( int argc, char *argv[] )
             return( 1 );
         }
 
-        md5_starts( &ctx );
+        rtv_md5_starts( &ctx );
 
         while( ( i = fread( buf, 1, sizeof( buf ), f ) ) > 0 )
         {
-            md5_update( &ctx, buf, i );
+            rtv_md5_update( &ctx, buf, i );
         }
 
-        md5_finish( &ctx, md5sum );
+        rtv_md5_finish( &ctx, md5sum );
 
         for( j = 0; j < 16; j++ )
         {

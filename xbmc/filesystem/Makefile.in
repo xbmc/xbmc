@@ -3,6 +3,8 @@ ARCH=@ARCH@
 CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
 SRCS=AddonsDirectory.cpp \
+     AndroidAppFile.cpp \
+     AndroidAppDirectory.cpp \
      ASAPFileDirectory.cpp \
      CacheStrategy.cpp \
      CircularCache.cpp \
@@ -91,6 +93,11 @@ SRCS=AddonsDirectory.cpp \
      ZipDirectory.cpp \
      ZipFile.cpp \
      ZipManager.cpp
+
+ifeq (@USE_ANDROID@,1)
+SRCS+=APKDirectory.cpp
+SRCS+=APKFile.cpp
+endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=RarFile.cpp

@@ -373,6 +373,7 @@ void CRenderSystemGLES::ApplyStateBlock()
   glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);  
+  glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)

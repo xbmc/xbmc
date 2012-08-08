@@ -92,6 +92,7 @@ typedef unsigned long kernel_ulong_t;
 #endif
 
 #include <linux/keyboard.h>
+#include <linux/kd.h>
 
 #include <string.h>
 #include <unistd.h>
@@ -101,7 +102,6 @@ typedef unsigned long kernel_ulong_t;
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
-#include <sys/kd.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -759,6 +759,53 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
   return devt;
 }
 
+void CLinuxInputDevice::SetupKeyboardAutoRepeat(int fd)
+{
+  bool enable = true;
+
+#if defined(HAS_AMLPLAYER)
+  // ignore the native aml driver named 'key_input',
+  //  it is the dedicated power key handler (am_key_input)
+  if (strncmp(m_deviceName, "key_input", strlen("key_input")) == 0)
+    return;
+  // ignore the native aml driver named 'aml_keypad',
+  //  it is the dedicated IR remote handler (amremote)
+  else if (strncmp(m_deviceName, "aml_keypad", strlen("aml_keypad")) == 0)
+    return;
+
+  // turn off any keyboard autorepeat, there is a kernel bug
+  // where if the cpu is max'ed then key up is missed and
+  // we get a flood of EV_REP that never stop until next
+  // key down/up. Very nasty when seeking during video playback.
+  enable = false;
+#endif
+
+  if (enable)
+  {
+    int kbdrep[2] = { 400, 80 };
+    ioctl(fd, EVIOCSREP, kbdrep);
+  }
+  else
+  {
+    struct input_event event;
+    memset(&event, 0, sizeof(event));
+
+    gettimeofday(&event.time, NULL);
+    event.type  = EV_REP;
+    event.code  = REP_DELAY;
+    event.value = 0;
+    write(fd, &event, sizeof(event));
+
+    gettimeofday(&event.time, NULL);
+    event.type  = EV_REP;
+    event.code  = REP_PERIOD;
+    event.value = 0;
+    write(fd, &event, sizeof(event));
+
+    CLog::Log(LOGINFO, "CLinuxInputDevice: auto key repeat disabled on device '%s'\n", m_deviceName);
+  }
+}
+
 /*
  * Fill device information.
  * Queries the input device and tries to classify it.
@@ -980,9 +1027,6 @@ bool CLinuxInputDevice::Open()
     return false;
   }
 
-  int kbdrep[2] = { 400, 80 };
-  ioctl(fd, EVIOCSREP, kbdrep);
-
   // Set the socket to non-blocking
   int opts = 0;
   if ((opts = fcntl(fd, F_GETFL)) < 0)
@@ -1002,6 +1046,9 @@ bool CLinuxInputDevice::Open()
 
   /* fill device info structure */
   GetInfo(fd);
+
+  if (m_deviceType & LI_DEVICE_KEYBOARD)
+    SetupKeyboardAutoRepeat(fd);
 
   m_fd = fd;
   m_vt_fd = -1;

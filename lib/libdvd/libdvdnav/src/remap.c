@@ -25,10 +25,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 #ifndef _MSC_VER
 #include <sys/param.h>
-#include <sys/fcntl.h>
 #else
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 255

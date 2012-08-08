@@ -39,6 +39,8 @@
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
+#elif defined(TARGET_ANDROID)
+#include "android/AndroidPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
@@ -68,6 +70,8 @@ void CPowerManager::Initialize()
 {
 #if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
+#elif defined(TARGET_ANDROID)
+  m_instance = new CAndroidPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleUPowerSyscall();

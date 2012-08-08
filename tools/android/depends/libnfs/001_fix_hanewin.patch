@@ -1,0 +1,12 @@
+--- lib/libnfs.c	2011-09-02 12:45:30.000000000 +0200
++++ lib/libnfs.c	2011-12-04 21:16:07.000000000 +0100
+@@ -666,6 +666,9 @@
+ 	if (res->GETATTR3res_u.resok.obj_attributes.type == NF3DIR) {
+ 		st.st_mode |= S_IFDIR ;
+ 	}
++       if (res->GETATTR3res_u.resok.obj_attributes.type == NF3REG) {                                                                                                                                            
++    		st.st_mode |= S_IFREG ;                                                                                                                                                                          
++        } 
+         st.st_nlink   = res->GETATTR3res_u.resok.obj_attributes.nlink;
+         st.st_uid     = res->GETATTR3res_u.resok.obj_attributes.uid;
+         st.st_gid     = res->GETATTR3res_u.resok.obj_attributes.gid;

@@ -565,7 +565,14 @@ bool URIUtils::IsRAR(const CStdString& strFile)
 
 bool URIUtils::IsInArchive(const CStdString &strFile)
 {
-  return IsInZIP(strFile) || IsInRAR(strFile);
+  return IsInZIP(strFile) || IsInRAR(strFile) || IsInAPK(strFile);
+}
+
+bool URIUtils::IsInAPK(const CStdString& strFile)
+{
+  CURL url(strFile);
+
+  return url.GetProtocol() == "apk" && url.GetFileName() != "";
 }
 
 bool URIUtils::IsInZIP(const CStdString& strFile)
@@ -580,6 +587,17 @@ bool URIUtils::IsInRAR(const CStdString& strFile)
   CURL url(strFile);
 
   return url.GetProtocol() == "rar" && url.GetFileName() != "";
+}
+
+bool URIUtils::IsAPK(const CStdString& strFile)
+{
+  CStdString strExtension;
+  GetExtension(strFile,strExtension);
+
+  if (strExtension.CompareNoCase(".apk") == 0)
+    return true;
+
+  return false;
 }
 
 bool URIUtils::IsZIP(const CStdString& strFile) // also checks for comic books!
@@ -792,6 +810,11 @@ bool URIUtils::IsLastFM(const CStdString& strFile)
 bool URIUtils::IsBluray(const CStdString& strFile)
 {
   return strFile.Left(7).Equals("bluray:");
+}
+
+bool URIUtils::IsAndroidApp(const CStdString &path)
+{
+  return path.Left(11).Equals("androidapp:");
 }
 
 bool URIUtils::IsDOSPath(const CStdString &path)

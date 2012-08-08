@@ -27,6 +27,9 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StdString.h"
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#endif
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
 #define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
@@ -118,6 +121,11 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData += LINE_ENDING;
 
     strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), levelNames[loglevel]);
+
+//print to adb
+#if defined(TARGET_ANDROID) && defined(_DEBUG)
+  CXBMCApp::android_printf("%s%s",strPrefix.c_str(), strData.c_str());
+#endif
 
     fputs(strPrefix.c_str(), m_file);
     fputs(strData.c_str(), m_file);

@@ -97,6 +97,7 @@ endif
 ifeq (@USE_OPENGLES@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
 DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
+DIRECTORY_ARCHIVES += xbmc/visualizations/EGLHelpers/eglhelpers.a
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
@@ -107,11 +108,19 @@ DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
 DIRECTORY_ARCHIVES += xbmc/storage/osx/storage.a
 DIRECTORY_ARCHIVES += xbmc/windowing/osx/windowing_osx.a
 else
+ifeq (@USE_ANDROID@,1)
+DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
+DIRECTORY_ARCHIVES += xbmc/powermanagement/android/powermanagement_android.a
+DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
+DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
+else
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/linux/powermanagement_linux.a
 DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
+endif
 endif
 
 ifeq ($(findstring freebsd,@ARCH@),freebsd)
@@ -123,6 +132,16 @@ DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
 endif
 
 BIN_DIRS = $(dir $(DIRECTORY_ARCHIVES)) $(dir $(NWAOBJSXBMC))
+
+ifeq (@USE_ANDROID@,1)
+DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
+DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
+DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
+endif
+
+ifeq (@USE_AMLPLAYER@,1)
+DIRECTORY_ARCHIVES += xbmc/cores/amlplayer/amlplayer.a
+endif
 
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
@@ -197,6 +216,9 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
 
 ifeq (@USE_LIBXBMC@,1)
 FINAL_TARGETS+=libxbmc.so
+ifeq (@USE_ANDROID@,1)
+FINAL_TARGETS+=skins
+endif
 else
 FINAL_TARGETS=xbmc.bin skins xbmc-xrandr
 endif
@@ -255,7 +277,7 @@ lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
-system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a
+system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a exports
 ifeq ($(findstring osx,@ARCH@), osx)
   ifeq (@ARCH@, arm-osx)
 	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -o $@ $<
@@ -263,14 +285,23 @@ ifeq ($(findstring osx,@ARCH@), osx)
 	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -lexpat $(BUNDLE1_O) -o $@ $<
   endif
 else
-	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
+	$(CXX) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $< \
+		-Wl,--no-whole-archive  \
+		`cat xbmc/cores/DllLoader/exports/wrapper.def` xbmc/cores/DllLoader/exports/wrapper.o -lexpat -ldl
 endif
 
 exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/util/exports_utils.a
 	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
 dllloader: exports xbmc/cores/DllLoader/dllloader.a
 
-$(VIS_DIRS) $(SS_DIRS): force exports
+ifeq (@USE_OPENGLES@,1)
+EGLHELPERS=xbmc/visualizations/EGLHelpers/eglhelpers.a
+endif
+
+$(VIS_DIRS): force exports $(EGLHELPERS)
+	$(MAKE) -C $@
+
+$(SS_DIRS): force exports
 	$(MAKE) -C $@
 
 visualizations: $(VIS_DIRS)
@@ -354,13 +385,11 @@ endif
 
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
-LIBS += @PYTHON_LDFLAGS@
-
 libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS)
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
@@ -400,16 +429,19 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 install: install-binaries install-arch install-datas
 
+apk: install
+	make -C tools/android/packaging
+
 install-binaries: install-scripts
-	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
+	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/"
 	@install -d $(DESTDIR)$(libdir)/xbmc
-	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
 ifeq (1,@USE_XRANDR@)
 	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
 endif
 ifeq (@USE_LIBXBMC@,1)
 	@install libxbmc.so $(DESTDIR)$(libdir)/xbmc/libxbmc.so
 else
+	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 endif
@@ -424,7 +456,16 @@ ifeq ($(findstring freebsd,@ARCH@), freebsd)
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
+	@find -E system addons -type f -not -iregex ".*svn.*" \
+		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
+		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-and \
+		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
+		-exec printf " -- %-75.75s\r" "{}" \;
+else
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*\.so|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+endif
 endif
 
 install-scripts:
@@ -454,7 +495,16 @@ ifeq ($(findstring bsd,@ARCH@), bsd)
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
+	@find -E addons language media sounds userdata system -type f \
+		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" \
+		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-and \
+		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
+		-exec printf " -- %-75.75s\r" "{}" \;
+else
 	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+endif
 endif
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications

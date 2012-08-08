@@ -1,0 +1,11 @@
+--- configure.ac	2012-05-27 15:06:13.044747493 -0400
++++ configure.ac	2012-05-27 15:05:52.364747505 -0400
+@@ -378,7 +378,7 @@
+      ;;
+      linux*|uclinux)
+         AC_CHECK_HEADERS(linux/version.h linux/major.h)
+-        AC_CHECK_HEADERS(linux/cdrom.h, [have_linux_cdrom_h="yes"])
++        AC_CHECK_HEADERS(linux/cdrom.h, [have_linux_cdrom_h="no"])
+ 	if test "x$have_linux_cdrom_h" = "xyes" ; then
+ 	   AC_TRY_COMPILE(,[
+ #include <linux/cdrom.h>

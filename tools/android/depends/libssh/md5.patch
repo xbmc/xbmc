@@ -1,0 +1,72 @@
+diff -ruN include/libssh/wrapper.h include/libssh/wrapper.h
+--- include/libssh/wrapper.h	2011-05-31 10:29:52.000000000 -0400
++++ include/libssh/wrapper.h	2012-07-26 00:21:16.021511996 -0400
+@@ -26,7 +26,7 @@
+ #include "libssh/libcrypto.h"
+ #include "libssh/libgcrypt.h"
+ 
+-MD5CTX md5_init(void);
++MD5CTX ssh_md5_init(void);
+ void md5_update(MD5CTX c, const void *data, unsigned long len);
+ void md5_final(unsigned char *md,MD5CTX c);
+ SHACTX sha1_init(void);
+diff -ruN src/dh.c src/dh.c
+--- src/dh.c	2011-05-31 10:29:52.000000000 -0400
++++ src/dh.c	2012-07-26 00:19:52.961512049 -0400
+@@ -854,7 +854,7 @@
+     return SSH_ERROR;
+   }
+ 
+-  ctx = md5_init();
++  ctx = ssh_md5_init();
+   if (ctx == NULL) {
+     SAFE_FREE(h);
+     return SSH_ERROR;
+diff -ruN src/kex.c src/kex.c
+--- src/kex.c	2011-05-31 10:29:52.000000000 -0400
++++ src/kex.c	2012-07-26 00:20:37.671512021 -0400
+@@ -509,7 +509,7 @@
+     ssh_string hostn) {
+   MD5CTX md5 = NULL;
+ 
+-  md5 = md5_init();
++  md5 = ssh_md5_init();
+   if (md5 == NULL) {
+     return -1;
+   }
+diff -ruN src/keyfiles.c src/keyfiles.c
+--- src/keyfiles.c	2011-05-31 10:29:52.000000000 -0400
++++ src/keyfiles.c	2012-07-26 00:20:51.801512011 -0400
+@@ -223,7 +223,7 @@
+   unsigned int md_not_empty;
+ 
+   for (j = 0, md_not_empty = 0; j < keylen; ) {
+-    md = md5_init();
++    md = ssh_md5_init();
+     if (md == NULL) {
+       return -1;
+     }
+diff -ruN src/libcrypto.c src/libcrypto.c
+--- src/libcrypto.c	2011-05-31 10:29:52.000000000 -0400
++++ src/libcrypto.c	2012-07-26 00:20:07.061512022 -0400
+@@ -89,7 +89,7 @@
+   SHA1(digest, len, hash);
+ }
+ 
+-MD5CTX md5_init(void) {
++MD5CTX ssh_md5_init(void) {
+   MD5CTX c = malloc(sizeof(*c));
+   if (c == NULL) {
+     return NULL;
+diff -ruN src/libgcrypt.c src/libgcrypt.c
+--- src/libgcrypt.c	2011-05-31 10:29:52.000000000 -0400
++++ src/libgcrypt.c	2012-07-26 00:20:19.401512036 -0400
+@@ -62,7 +62,7 @@
+   gcry_md_hash_buffer(GCRY_MD_SHA1, hash, digest, len);
+ }
+ 
+-MD5CTX md5_init(void) {
++MD5CTX ssh_md5_init(void) {
+   MD5CTX c = NULL;
+   gcry_md_open(&c, GCRY_MD_MD5, 0);
+ 
