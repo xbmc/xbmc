@@ -5232,30 +5232,21 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     CStdString strIn = PrepareSQL("= %i", idShow);
     GetStackedTvShowList(idShow, strIn);
 
-    CStdString strSQL = PrepareSQL("SELECT episode.c%02d,"
-                                   "       path.strPath,"
-                                   "       tvshow.c%02d,"
-                                   "       tvshow.c%02d,"
-                                   "       tvshow.c%02d,"
-                                   "       tvshow.c%02d,"
-                                   "       seasons.idSeason,"
-                                   "       count(1),"
-                                   "       count(files.playCount) "
-                                   "FROM episode ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
+    CStdString strSQL = PrepareSQL("SELECT episodeview.c%02d, "
+                                          "path.strPath, "
+                                          "tvshowview.c%02d, tvshowview.c%02d, tvshowview.c%02d, tvshowview.c%02d, "
+                                          "seasons.idSeason, "
+                                          "count(1), count(files.playCount) "
+                                          "FROM episodeview ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
     
     Filter filter;
-    filter.join = PrepareSQL("JOIN tvshow ON"
-                             "   tvshow.idShow=episode.idShow"
-                             " JOIN seasons ON"
-                             "   (seasons.idShow=tvshow.idShow AND seasons.season=episode.c%02d)"
-                             " JOIN files ON"
-                             "   files.idFile=episode.idFile"
-                             " JOIN tvshowlinkpath ON"
-                             "    tvshowlinkpath.idShow = tvshow.idShow"
-                             "  JOIN path ON"
-                             "    path.idPath = tvshowlinkpath.idPath", VIDEODB_ID_EPISODE_SEASON);
-    filter.where = PrepareSQL("tvshow.idShow %s", strIn.c_str());
-    filter.group = PrepareSQL("episode.c%02d", VIDEODB_ID_EPISODE_SEASON);
+    filter.join = PrepareSQL("JOIN tvshowview ON tvshowview.idShow = episodeview.idShow "
+                             "JOIN seasons ON (seasons.idShow = tvshowview.idShow AND seasons.season = episodeview.c%02d) "
+                             "JOIN files ON files.idFile = episodeview.idFile "
+                             "JOIN tvshowlinkpath ON tvshowlinkpath.idShow = tvshowview.idShow "
+                             "JOIN path ON path.idPath = tvshowlinkpath.idPath", VIDEODB_ID_EPISODE_SEASON);
+    filter.where = PrepareSQL("tvshowview.idShow %s", strIn.c_str());
+    filter.group = PrepareSQL("episodeview.c%02d", VIDEODB_ID_EPISODE_SEASON);
 
     videoUrl.AddOption("tvshowid", idShow);
 
@@ -5268,10 +5259,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     else if (idYear != -1)
       videoUrl.AddOption("year", idYear);
 
-    if (!GetFilter(videoUrl, filter))
+    if (!BuildSQL(strBaseDir, strSQL, filter, strSQL, videoUrl))
       return false;
-
-    strSQL += filter.join + " WHERE " + filter.where + " GROUP BY " + filter.group;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
@@ -8961,25 +8950,25 @@ bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
       option = options.find("genreid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow = tvshow.idShow"));
+        filter.AppendJoin(PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow = tvshowview.idShow"));
         filter.AppendWhere(PrepareSQL("genrelinktvshow.idGenre = %i", (int)option->second.asInteger()));
       }
 
       option = options.find("directorid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = tvshow.idShow"));
+        filter.AppendJoin(PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow = tvshowview.idShow"));
         filter.AppendWhere(PrepareSQL("directorlinktvshow.idDirector = %i", (int)option->second.asInteger()));
       }
       
       option = options.find("year");
       if (option != options.end())
-        filter.AppendWhere(PrepareSQL("tvshow.c%02d like '%%%i%%'", VIDEODB_ID_TV_PREMIERED, (int)option->second.asInteger()));
+        filter.AppendWhere(PrepareSQL("tvshowview.c%02d like '%%%i%%'", VIDEODB_ID_TV_PREMIERED, (int)option->second.asInteger()));
 
       option = options.find("actorid");
       if (option != options.end())
       {
-        filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = tvshow.idShow"));
+        filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = tvshowview.idShow"));
         filter.AppendWhere(PrepareSQL("actorlinktvshow.idActor = %i", (int)option->second.asInteger()));
       }
     }
