@@ -83,7 +83,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     return;
 
   if (it->second)
-    it->second->Play();;
+    it->second->Play();
 }
 
 // \brief Play a sound associated with a window and its event
