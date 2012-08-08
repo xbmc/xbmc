@@ -5581,7 +5581,11 @@ float CApplication::GetPercentage() const
     }
 
     if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
-      return (float)(GetTime() / GetTotalTime() * 100);
+    {
+      double totalTime = GetTotalTime();
+      if (totalTime > 0.0f)
+        return (float)(GetTime() / totalTime * 100);
+    }
     else
       return m_pPlayer->GetPercentage();
   }
@@ -5593,10 +5597,15 @@ float CApplication::GetCachePercentage() const
   if (IsPlaying() && m_pPlayer)
   {
     // Note that the player returns a relative cache percentage and we want an absolute percentage
-    // We also need to take into account the stack's total time vs. currently playing file's total time
-    float stackedTotalTime = (float) GetTotalTime();
-    if (stackedTotalTime > 0.0f)
-      return min( 100.0f, GetPercentage() + (m_pPlayer->GetCachePercentage() * m_pPlayer->GetTotalTime() / stackedTotalTime ) );
+    if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
+    {
+      float stackedTotalTime = (float) GetTotalTime();
+      // We need to take into account the stack's total time vs. currently playing file's total time
+      if (stackedTotalTime > 0.0f)
+        return min( 100.0f, GetPercentage() + (m_pPlayer->GetCachePercentage() * m_pPlayer->GetTotalTime() / stackedTotalTime ) );
+    }
+    else
+      return min( 100.0f, m_pPlayer->GetPercentage() + m_pPlayer->GetCachePercentage() );
   }
   return 0.0f;
 }
