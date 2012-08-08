@@ -40,6 +40,11 @@ public:
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0;
   }
 
+  bool ProvidesSeveral() const
+  {
+    return m_providedContent.size() > 1;
+  }
+
   static Content Translate(const CStdString &content);
 private:
   /*! \brief Set the provided content for this plugin
