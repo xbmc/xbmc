@@ -3122,7 +3122,20 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
   details.m_iDbId = idMovie;
   details.m_type = "movie";
-  GetCommonDetails(record, details);
+  
+  details.m_iSetId = record->at(VIDEODB_DETAILS_MOVIE_SET_ID).get_asInt();
+  details.m_strSet = record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString();
+  details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
+  details.m_strPath = record->at(VIDEODB_DETAILS_MOVIE_PATH).get_asString();
+  CStdString strFileName = record->at(VIDEODB_DETAILS_MOVIE_FILE).get_asString();
+  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
+  details.m_playCount = record->at(VIDEODB_DETAILS_MOVIE_PLAYCOUNT).get_asInt();
+  details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MOVIE_LASTPLAYED).get_asString());
+  details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MOVIE_DATEADDED).get_asString());
+  details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_RESUME_TIME).get_asInt();
+  details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_TOTAL_TIME).get_asInt();
+  details.m_resumePoint.type = CBookmark::RESUME;
+
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   if (needsCast)
@@ -3264,32 +3277,22 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   GetDetailsFromDB(record, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets, details);
   details.m_iDbId = idMovie;
   details.m_type = "musicvideo";
-  GetCommonDetails(record, details);
+  
+  details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
+  details.m_strPath = record->at(VIDEODB_DETAILS_MUSICVIDEO_PATH).get_asString();
+  CStdString strFileName = record->at(VIDEODB_DETAILS_MUSICVIDEO_FILE).get_asString();
+  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
+  details.m_playCount = record->at(VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT).get_asInt();
+  details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED).get_asString());
+  details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MUSICVIDEO_DATEADDED).get_asString());
+  details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME).get_asInt();
+  details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME).get_asInt();
+  details.m_resumePoint.type = CBookmark::RESUME;
+
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   details.m_strPictureURL.Parse();
   return details;
-}
-
-void CVideoDatabase::GetCommonDetails(auto_ptr<Dataset> &pDS, CVideoInfoTag &details)
-{
-  GetCommonDetails(pDS->get_sql_record(), details);
-}
-
-void CVideoDatabase::GetCommonDetails(const dbiplus::sql_record* const record, CVideoInfoTag &details)
-{
-  details.m_iSetId = record->at(VIDEODB_DETAILS_SET_ID).get_asInt();
-  details.m_strSet = record->at(VIDEODB_DETAILS_SET_NAME).get_asString();
-  details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
-  details.m_strPath = record->at(VIDEODB_DETAILS_PATH).get_asString();
-  CStdString strFileName = record->at(VIDEODB_DETAILS_FILE).get_asString();
-  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
-  details.m_playCount = record->at(VIDEODB_DETAILS_PLAYCOUNT).get_asInt();
-  details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_LASTPLAYED).get_asString());
-  details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_DATEADDED).get_asString());
-  details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_RESUME_TIME).get_asInt();
-  details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_TOTAL_TIME).get_asInt();
-  details.m_resumePoint.type = CBookmark::RESUME;
 }
 
 void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id, int type_id, vector<SActorInfo> &cast)
