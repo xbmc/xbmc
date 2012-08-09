@@ -150,7 +150,7 @@ extern "C" void Render()
     //ver[i][0] = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
     //ver[i][1] = g_viewport.Y + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
     ver[i][0] = -1.0f + ((i / 255.0f) * 2.0f);
-    ver[i][1] = 0.5f + (g_fWaveform[0][i] * 0.000015f);
+    ver[i][1] = 0.5f + g_fWaveform[0][i];
     ver[i][2] = 1.0f;
     idx[i] = i;
   }
@@ -166,7 +166,7 @@ extern "C" void Render()
     //ver[i][0] = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
     //ver[i][1] = g_viewport.Y + g_viewport.Height * 0.66f + (g_fWaveform[1][i] * g_viewport.Height * 0.15f);
     ver[i][0] = -1.0f + ((i / 255.0f) * 2.0f);
-    ver[i][1] = -0.5f + (g_fWaveform[1][i] * 0.000015f);
+    ver[i][1] = -0.5f + g_fWaveform[1][i];
     ver[i][2] = 1.0f;
     idx[i] = i;
 

@@ -56,11 +56,11 @@ else
 
 $(SYSDIR)/libdvdcss-$(ARCH).so: $(WRAPPER) libdvdcss/src/.libs/libdvdcss.a
 	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ \
-		libdvdcss/src/*.o -Wl,--unresolved-symbols=ignore-all \
+		libdvdcss/src/*.o -Wl,--unresolved-symbols=ignore-all -lm \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_A) libdvdread/obj/libdvdread.a libdvdnav/obj/libdvdnav.a
-	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ $(DVDCSS_O) libdvdread/obj/*.o libdvdnav/obj/*.o \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ $(DVDCSS_O) libdvdread/obj/*.o libdvdnav/obj/*.o -lm \
 		-Wl,--unresolved-symbols=ignore-all \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 

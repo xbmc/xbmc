@@ -158,6 +158,7 @@ public:
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
 #endif
+
 protected:
   virtual void Render(DWORD flags, int index);
 

@@ -312,11 +312,11 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldArtist) index =  VIDEODB_ID_MUSICVIDEO_ARTIST;
     else if (field == FieldGenre) index =  VIDEODB_ID_MUSICVIDEO_GENRE;
     else if (field == FieldTrackNumber) index =  VIDEODB_ID_MUSICVIDEO_TRACK;
-    else if (field == FieldFilename) return VIDEODB_DETAILS_FILE;
-    else if (field == FieldPath) return VIDEODB_DETAILS_PATH;
-    else if (field == FieldPlaycount) return VIDEODB_DETAILS_PLAYCOUNT;
-    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_LASTPLAYED;
-    else if (field == FieldDateAdded) return VIDEODB_DETAILS_DATEADDED;
+    else if (field == FieldFilename) return VIDEODB_DETAILS_MUSICVIDEO_FILE;
+    else if (field == FieldPath) return VIDEODB_DETAILS_MUSICVIDEO_PATH;
+    else if (field == FieldPlaycount) return VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT;
+    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED;
+    else if (field == FieldDateAdded) return VIDEODB_DETAILS_MUSICVIDEO_DATEADDED;
 
     if (index < 0)
       return index;
@@ -341,17 +341,17 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldTime) index = VIDEODB_ID_RUNTIME;
     else if (field == FieldMPAA) index = VIDEODB_ID_MPAA;
     else if (field == FieldTop250) index = VIDEODB_ID_TOP250;
-    else if (field == FieldSet) return VIDEODB_DETAILS_SET_NAME;
+    else if (field == FieldSet) return VIDEODB_DETAILS_MOVIE_SET_NAME;
     else if (field == FieldGenre) index = VIDEODB_ID_GENRE;
     else if (field == FieldDirector) index = VIDEODB_ID_DIRECTOR;
     else if (field == FieldStudio) index = VIDEODB_ID_STUDIOS;
     else if (field == FieldTrailer) index = VIDEODB_ID_TRAILER;
     else if (field == FieldCountry) index = VIDEODB_ID_COUNTRY;
-    else if (field == FieldFilename) index = VIDEODB_DETAILS_FILE;
-    else if (field == FieldPath) return VIDEODB_DETAILS_PATH;
-    else if (field == FieldPlaycount) return VIDEODB_DETAILS_PLAYCOUNT;
-    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_LASTPLAYED;
-    else if (field == FieldDateAdded) return VIDEODB_DETAILS_DATEADDED;
+    else if (field == FieldFilename) index = VIDEODB_DETAILS_MOVIE_FILE;
+    else if (field == FieldPath) return VIDEODB_DETAILS_MOVIE_PATH;
+    else if (field == FieldPlaycount) return VIDEODB_DETAILS_MOVIE_PLAYCOUNT;
+    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MOVIE_LASTPLAYED;
+    else if (field == FieldDateAdded) return VIDEODB_DETAILS_MOVIE_DATEADDED;
 
     if (index < 0)
       return index;

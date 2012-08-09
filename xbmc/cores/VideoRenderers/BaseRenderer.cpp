@@ -47,10 +47,19 @@ CBaseRenderer::CBaseRenderer()
     m_rotatedDestCoords[i].x = 0;
     m_rotatedDestCoords[i].y = 0;    
   }
+
+  m_RenderUpdateCallBackFn = NULL;
+  m_RenderUpdateCallBackCtx = NULL;
 }
 
 CBaseRenderer::~CBaseRenderer()
 {
+}
+
+void CBaseRenderer::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn)
+{
+  m_RenderUpdateCallBackFn = fn;
+  m_RenderUpdateCallBackCtx = ctx;
 }
 
 void CBaseRenderer::ChooseBestResolution(float fps)

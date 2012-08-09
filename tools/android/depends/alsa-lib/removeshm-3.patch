@@ -1,0 +1,11 @@
+--- src/Makefile.am	2011-01-12 17:02:37.000000000 -0500
++++ src/Makefile.am	2012-05-25 00:10:22.184890354 -0400
+@@ -14,7 +14,7 @@
+ endif
+ 
+ lib_LTLIBRARIES = libasound.la
+-libasound_la_SOURCES = conf.c confmisc.c input.c output.c async.c error.c dlmisc.c socket.c shmarea.c userfile.c names.c
++libasound_la_SOURCES = conf.c confmisc.c input.c output.c async.c error.c dlmisc.c socket.c userfile.c names.c
+ 
+ SUBDIRS=control
+ libasound_la_LIBADD = control/libcontrol.la

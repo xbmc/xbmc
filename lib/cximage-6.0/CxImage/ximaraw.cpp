@@ -14,6 +14,23 @@
 
 #if CXIMAGE_SUPPORT_RAW
 
+#if defined(__ANDROID__)
+#include <stdint.h>
+#include <asm/byteorder.h>
+
+extern "C" void swab(const void *from, void*to, ssize_t n)
+{
+  ssize_t i;
+
+  if (n < 0)
+    return;
+
+  for (i = 0; i < (n/2)*2; i += 2)
+    *((uint16_t*)to+i) = __arch__swab16(*((uint16_t*)from+i));
+}
+
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +208,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
 				for (c=0; c < dcr.colors; c++) ppm2[col*dcr.colors+c] = dcr.image[soff][c];
 		}
 		if (dcr.opt.output_bps == 16 && !dcr.opt.output_tiff && htons(0x55aa) != 0x55aa)
-#if defined(_LINUX) || defined(__APPLE__)
+#if defined(_LINUX) || defined(__APPLE__) || defined(__ANDROID__)
 			swab ((char*)ppm2, (char*)ppm2, dcr.width*dcr.colors*2);
 #else
 			_swab ((char*)ppm2, (char*)ppm2, dcr.width*dcr.colors*2);

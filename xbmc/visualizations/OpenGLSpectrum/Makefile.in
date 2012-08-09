@@ -1,15 +1,16 @@
 ARCH=@ARCH@
 CXXFLAGS=-fPIC
-
+ifeq (@USE_ANDROID@,1)
+SLIB = @abs_top_srcdir@/system/libvisopengl_spectrum.so
+else
 SLIB = @abs_top_srcdir@/addons/visualization.glspectrum/opengl_spectrum.vis
+endif
 OBJS = opengl_spectrum.o
 
 ifeq (@USE_OPENGLES@,1)
   DEFINES += -DHAS_GLES=2
   INCLUDES+= -I@abs_top_srcdir@/xbmc/visualizations/EGLHelpers
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisMatrixGLES.o
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisGUIShader.o
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisShader.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/eglhelpers.a
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS += -framework OpenGLES
   else

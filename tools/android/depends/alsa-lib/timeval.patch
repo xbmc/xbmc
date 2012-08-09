@@ -1,0 +1,11 @@
+--- include/global.h	2010-04-16 07:11:05.000000000 -0400
++++ include/global.h	2012-05-25 15:38:15.494855247 -0400
+@@ -133,7 +133,7 @@
+ 
+ int snd_user_file(const char *file, char **result);
+ 
+-#if !defined(_POSIX_C_SOURCE) && !defined(_POSIX_SOURCE)
++#if 0
+ struct timeval {
+ 	time_t		tv_sec;		/* seconds */
+ 	long		tv_usec;	/* microseconds */

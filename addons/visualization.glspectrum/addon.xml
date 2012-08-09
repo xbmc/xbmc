@@ -7,7 +7,8 @@
   <extension
     point="xbmc.player.musicviz"
     library_linux="opengl_spectrum.vis"
-    library_osx="opengl_spectrum.vis" />
+    library_osx="opengl_spectrum.vis"
+    library_android="libvisopengl_spectrum.so" />
   <extension point="xbmc.addon.metadata">
     <summary lang="bg">Визуализация представяща ротиращ се 3D спектрален анализатор</summary>
     <summary lang="en">Visualisation showing a rotating 3D Spectrum Analyzer</summary>
@@ -48,6 +49,6 @@ Det har också inställningar för att justera spektrumhöjden, hastigheten och 
     <description lang="zh">Opengl Spectrum可视化效果是Opengl渲染的一个旋转的三维频谱分析图像，频谱矩阵随着音乐节拍而象波浪起伏。
 你还可以设置频谱棒的高度、变换速度、以及呈现效果（固体、点、框架）。这是一个不错的轻量级，低CPU使用率的可视化效果。</description>
     <disclaimer></disclaimer>
-    <platform>linux osx ios</platform>
+    <platform>linux osx ios android</platform>
   </extension>
 </addon>

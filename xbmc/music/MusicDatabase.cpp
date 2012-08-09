@@ -2930,12 +2930,23 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
   {
     int total = -1;
 
-    CStdString strSQL = "select %s from albumview ";
+    CStdString strSQL = "SELECT %s FROM albumview ";
 
-    CMusicDbUrl musicUrl;
-    CStdString strSQLExtra;
     Filter extFilter = filter;
-    if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, musicUrl))
+    CMusicDbUrl musicUrl;
+    if (!musicUrl.FromString(baseDir) || !GetFilter(musicUrl, extFilter))
+      return false;
+
+    // if there are extra WHERE conditions we might need access
+    // to songview for these conditions
+    if (extFilter.where.find("songview") != string::npos)
+    {
+      extFilter.AppendJoin("JOIN songview ON songview.idAlbum = albumview.idAlbum");
+      extFilter.AppendGroup("albumview.idAlbum");
+    }
+
+    CStdString strSQLExtra;
+    if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
     // Apply the limiting directly here if there's no special sorting but limiting
@@ -2947,7 +2958,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "albumview.*") + strSQLExtra;
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -3021,12 +3032,23 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
     unsigned int time = XbmcThreads::SystemClockMillis();
     int total = -1;
 
-    CStdString strSQL = "select %s from songview ";
+    CStdString strSQL = "SELECT %s FROM songview ";
 
-    CMusicDbUrl musicUrl;
-    CStdString strSQLExtra;
     Filter extFilter = filter;
-    if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, musicUrl))
+    CMusicDbUrl musicUrl;
+    if (!musicUrl.FromString(baseDir) || !GetFilter(musicUrl, extFilter))
+      return false;
+
+    // if there are extra WHERE conditions we might need access
+    // to songview for these conditions
+    if (extFilter.where.find("albumview") != string::npos)
+    {
+      extFilter.AppendJoin("JOIN albumview ON albumview.idAlbum = songview.idAlbum");
+      extFilter.AppendGroup("songview.idSong");
+    }
+
+    CStdString strSQLExtra;
+    if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
     // Apply the limiting directly here if there's no special sorting but limiting
@@ -3038,7 +3060,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    strSQL = PrepareSQL(strSQL, !filter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*") + strSQLExtra;
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -5025,7 +5047,7 @@ string CMusicDatabase::GetArtistArtForItem(int mediaId, const string &mediaType,
   return GetSingleValue(query, m_pDS2);
 }
 
-bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
+bool CMusicDatabase::GetFilter(const CDbUrl &musicUrl, Filter &filter)
 {
   if (!musicUrl.IsValid())
     return false;
@@ -5071,7 +5093,7 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
     if (option != options.end())
       albumArtistsOnly = option->second.asBoolean();
 
-    CStdString strSQL = "(idArtist IN ";
+    CStdString strSQL = "(artistview.idArtist IN ";
     if (idArtist > 0)
       strSQL += PrepareSQL("(%d)", idArtist);
     else if (idAlbum > 0)
@@ -5095,7 +5117,7 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
     {
       if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
         strSQL += "(SELECT song_artist.idArtist FROM song_artist)"
-                  " OR idArtist IN ";
+                  " OR artistview.idArtist IN ";
 
       // and always show any artists linked to an album (may be different from above due to album artist tag)
       strSQL +=   "(SELECT album_artist.idArtist FROM album_artist"; // All artists linked to an album
@@ -5105,7 +5127,7 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
     }
 
     // remove the null string
-    strSQL += ") and strArtist != ''";
+    strSQL += ") and artistview.strArtist != ''";
 
     // and the various artist entry if applicable
     if (!albumArtistsOnly)
@@ -5121,31 +5143,31 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
   {
     option = options.find("year");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("iYear = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("albumview.iYear = %i", (int)option->second.asInteger()));
     
     option = options.find("compilation");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("bCompilation = %i", option->second.asBoolean() ? 1 : 0));
+      filter.AppendWhere(PrepareSQL("albumview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
 
     option = options.find("genreid");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("albumview.idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
 
     option = options.find("genre");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
+      filter.AppendWhere(PrepareSQL("albumview.idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
 
     option = options.find("artistid");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong WHERE song_artist.idArtist = %i)" // All albums linked to this artist via songs
-                                    " OR idAlbum IN (SELECT album_artist.idAlbum FROM album_artist WHERE album_artist.idArtist = %i)", // All albums where album artists fit
+      filter.AppendWhere(PrepareSQL("albumview.idAlbum IN (SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong WHERE song_artist.idArtist = %i)" // All albums linked to this artist via songs
+                                    " OR albumview.idAlbum IN (SELECT album_artist.idAlbum FROM album_artist WHERE album_artist.idArtist = %i)", // All albums where album artists fit
                                     (int)option->second.asInteger(), (int)option->second.asInteger()));
     else
     {
       option = options.find("artist");
       if (option != options.end())
-        filter.AppendWhere(PrepareSQL("idAlbum IN (SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong JOIN artist ON artist.idArtist = song_artist.idArtist WHERE artist.strArtist like '%s')" // All albums linked to this artist via songs
-                                      " OR idAlbum IN (SELECT album_artist.idAlbum FROM album_artist JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // All albums where album artists fit
+        filter.AppendWhere(PrepareSQL("albumview.idAlbum IN (SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong JOIN artist ON artist.idArtist = song_artist.idArtist WHERE artist.strArtist like '%s')" // All albums linked to this artist via songs
+                                      " OR albumview.idAlbum IN (SELECT album_artist.idAlbum FROM album_artist JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // All albums where album artists fit
                                       option->second.asString().c_str(), option->second.asString().c_str()));
       // no artist given, so exclude any single albums (aka empty tagged albums)
       else
@@ -5156,38 +5178,38 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
   {
     option = options.find("year");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("iYear = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("songview.iYear = %i", (int)option->second.asInteger()));
     
     option = options.find("compilation");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("bCompilation = %i", option->second.asBoolean() ? 1 : 0));
+      filter.AppendWhere(PrepareSQL("songview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
 
     option = options.find("albumid");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idAlbum = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("songview.idAlbum = %i", (int)option->second.asInteger()));
     
     option = options.find("album");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("strAlbum like '%s'", option->second.asString().c_str()));
+      filter.AppendWhere(PrepareSQL("songview.strAlbum like '%s'", option->second.asString().c_str()));
 
     option = options.find("genreid");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_genre.idSong FROM song_genre WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_genre.idSong FROM song_genre WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
 
     option = options.find("genre");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_genre.idSong FROM song_genre JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
+      filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_genre.idSong FROM song_genre JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
 
     option = options.find("artistid");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_artist.idSong FROM song_artist WHERE song_artist.idArtist = %i)" // song artists
-                                    " OR idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum WHERE album_artist.idArtist = %i)", // album artists
+      filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_artist.idSong FROM song_artist WHERE song_artist.idArtist = %i)" // song artists
+                                    " OR songview.idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum WHERE album_artist.idArtist = %i)", // album artists
                                     (int)option->second.asInteger(), (int)option->second.asInteger()));
 
     option = options.find("artist");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("idSong IN (SELECT song_artist.idSong FROM song_artist JOIN artist ON artist.idArtist = song_artist.idArtist WHERE artist.strArtist like '%s')" // song artists
-                                    " OR idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // album artists
+      filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_artist.idSong FROM song_artist JOIN artist ON artist.idArtist = song_artist.idArtist WHERE artist.strArtist like '%s')" // song artists
+                                    " OR songview.idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // album artists
                                     option->second.asString().c_str(), option->second.asString().c_str()));
   }
   else
@@ -5205,14 +5227,4 @@ bool CMusicDatabase::GetFilter(const CMusicDbUrl &musicUrl, Filter &filter)
   }
 
   return true;
-}
-
-bool CMusicDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CMusicDbUrl &musicUrl)
-{
-  // parse the base path to get additional filters
-  musicUrl.Reset();
-  if (!musicUrl.FromString(strBaseDir) || !GetFilter(musicUrl, filter))
-    return false;
-
-  return CDatabase::BuildSQL(strQuery, filter, strSQL);
 }

@@ -32,6 +32,18 @@
 #endif
 #endif
 
+#if defined(TARGET_LINUX) && defined(__ARM_NEON__) && !defined(TARGET_ANDROID)
+#include <fcntl.h>
+#include <unistd.h>
+#include <elf.h>
+#include <linux/auxvec.h>
+#include <asm/hwcap.h>
+#endif
+
+#if defined(TARGET_ANDROID)
+#include "android/activity/AndroidFeatures.h"
+#endif
+
 #ifdef _WIN32
 #include <intrin.h>
 
@@ -248,6 +260,9 @@ CCPUInfo::CCPUInfo(void)
   // Set MMX2 when SSE is present as SSE is a superset of MMX2 and Intel doesn't set the MMX2 cap
   if (m_cpuFeatures & CPU_FEATURE_SSE)
     m_cpuFeatures |= CPU_FEATURE_MMX2;
+
+  if (HasNeon())
+    m_cpuFeatures |= CPU_FEATURE_NEON;
 
 }
 
@@ -605,4 +620,50 @@ void CCPUInfo::ReadCPUFeatures()
 #endif
 }
 
+bool CCPUInfo::HasNeon()
+{
+  static int has_neon = -1;
+#if defined (TARGET_ANDROID)
+  if (has_neon == -1)
+    has_neon = (CAndroidFeatures::HasNeon()) ? 1 : 0;
+
+#elif defined(TARGET_DARWIN_IOS)
+  has_neon = 1;
+
+#elif defined(TARGET_LINUX) && defined(__ARM_NEON__)
+  if (has_neon == -1)
+  {
+    has_neon = 0;
+    // why are we not looking at the Features in
+    // /proc/cpuinfo for neon ?
+    int fd = open("/proc/self/auxv", O_RDONLY);
+    if (fd >= 0)
+    {
+      Elf32_auxv_t auxv;
+      while (read(fd, &auxv, sizeof(Elf32_auxv_t)) == sizeof(Elf32_auxv_t))
+      {
+        if (auxv.a_type == AT_HWCAP)
+        {
+          has_neon = (auxv.a_un.a_val & HWCAP_NEON) ? 1 : 0;
+          break;
+        }
+      }
+      close(fd);
+    }
+  }
+
+#endif
+
+  return has_neon == 1;
+}
+
 CCPUInfo g_cpuInfo;
+/*
+int main()
+{
+  CCPUInfo c;
+  usleep(...);
+  int r = c.getUsedPercentage();
+  printf("%d\n", r);
+}
+*/

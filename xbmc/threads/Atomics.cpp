@@ -177,7 +177,7 @@ long AtomicIncrement(volatile long* pAddr)
     : "cc", "xer", "memory");
   return val;
 
-#elif defined(__arm__)
+#elif defined(__arm__) && !defined(__ARM_ARCH_5__)
   register long val;
   asm volatile (
     "dmb      ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
@@ -255,7 +255,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
     : "cc", "memory");
   return val;
 
-#elif defined(__arm__)
+#elif defined(__arm__) && !defined(__ARM_ARCH_5__)
   register long val;
   asm volatile (
     "dmb      ish           \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after

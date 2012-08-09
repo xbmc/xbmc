@@ -18,7 +18,7 @@ else
 $(SLIB): libid3tag/.libs/libid3tag.so
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -fPIC -Wl,--unresolved-symbols=ignore-all -o $@ libid3tag/.libs/*.o \
 		`cat ../../xbmc/cores/DllLoader/exports/wrapper.def` \
-		../../xbmc/cores/DllLoader/exports/wrapper.o
+		../../xbmc/cores/DllLoader/exports/wrapper.o -lz
 endif
 
 ifeq ($(findstring osx,$(ARCH)), osx)

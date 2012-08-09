@@ -1124,6 +1124,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
       else if (platform == "ios")  return SYSTEM_PLATFORM_DARWIN_IOS;
       else if (platform == "atv2") return SYSTEM_PLATFORM_DARWIN_ATV2;
+      else if (platform == "android") return SYSTEM_PLATFORM_ANDROID;
     }
     if (info[0].name == "musicplayer")
     { // TODO: these two don't allow duration(foo) and also don't allow more than this number of levels...
@@ -2038,7 +2039,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_application.IsMusicScanning();
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(TARGET_ANDROID)
     bReturn = true;
 #else
     bReturn = false;
@@ -2069,6 +2070,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
   else if (condition == SYSTEM_PLATFORM_DARWIN_ATV2)
 #ifdef TARGET_DARWIN_IOS_ATV2
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_ANDROID)
+#if defined(TARGET_ANDROID)
     bReturn = true;
 #else
     bReturn = false;

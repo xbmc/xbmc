@@ -24,7 +24,6 @@
 #include "utils/StdString.h"
 
 #define FLOFSIZE 4
-#define PAGESIZE (40*25)
 #define SUBTITLE_CACHESIZE 50
 
 #define number2char(c) ((c) + (((c) <= 9) ? '0' : ('A' - 10)))

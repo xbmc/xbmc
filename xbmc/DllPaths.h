@@ -24,6 +24,8 @@
 
 #ifdef _WIN32
 #include "DllPaths_win32.h"
+#elif defined (__ANDROID__)
+#include "DllPaths_generated_android.h"
 #else
 #include "DllPaths_generated.h"
 #endif

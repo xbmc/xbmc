@@ -25,6 +25,8 @@
 #include <vector>
 #include "utils/StdString.h"
 #include "network/Network.h"
+#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
 
 class CNetworkLinux;
 
@@ -89,6 +91,7 @@ private:
    void queryInterfaceList();
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;
+   CCriticalSection m_critSection;
 };
 
 #endif
