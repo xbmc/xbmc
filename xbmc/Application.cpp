@@ -4282,6 +4282,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  //resets to res_desktop or look&feel resolution (including refreshrate)
+  g_graphicsContext.SetFullScreenVideo(false);
+
   if(m_bPlaybackStarting)
     return;
 
@@ -4567,6 +4570,9 @@ void CApplication::StopPlaying()
 
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
+    //resets to res_desktop or look&feel resolution (including refreshrate)
+    g_graphicsContext.SetFullScreenVideo(false);
 
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION

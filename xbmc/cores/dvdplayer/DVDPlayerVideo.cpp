@@ -223,7 +223,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
-                     g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+                     g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;

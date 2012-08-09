@@ -683,11 +683,19 @@ void CGUISettings::Initialize()
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
+
+  map<int, int> adjustTypes;
+  adjustTypes.insert(make_pair(351, ADJUST_REFRESHRATE_OFF));
+  adjustTypes.insert(make_pair(36035, ADJUST_REFRESHRATE_ALWAYS));
+  adjustTypes.insert(make_pair(36036, ADJUST_REFRESHRATE_ON_STARTSTOP));
+
 #if !defined(TARGET_DARWIN_IOS)
-  AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(vp, "videoplayer.adjustrefreshrate", 170, ADJUST_REFRESHRATE_OFF, adjustTypes, SPIN_CONTROL_TEXT);
+//  AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
 #else
-  AddBool(NULL, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(NULL, "videoplayer.adjustrefreshrate", 170, ADJUST_REFRESHRATE_OFF, adjustTypes, SPIN_CONTROL_TEXT);
+  //AddBool(NULL, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(NULL, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
 #endif
   //sync settings not available on windows gl build

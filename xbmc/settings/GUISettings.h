@@ -163,6 +163,12 @@ class TiXmlElement;
 #define SYNC_SKIPDUP 1
 #define SYNC_RESAMPLE 2
 
+//adjust refreshrate options
+#define ADJUST_REFRESHRATE_OFF            0
+#define ADJUST_REFRESHRATE_ALWAYS         1
+#define ADJUST_REFRESHRATE_ON_STARTSTOP   2
+
+
 //resampler quality
 #define RESAMPLE_LOW 0
 #define RESAMPLE_MID 1
