@@ -2153,7 +2153,6 @@ namespace JSONRPC
         "{ \"name\": \"title\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"playcount\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"studio\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
-        "{ \"name\": \"year\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"plot\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"genre\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
         "{ \"name\": \"rating\", \"$ref\": \"Optional.Number\" },"
