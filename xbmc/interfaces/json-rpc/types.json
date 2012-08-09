@@ -740,98 +740,147 @@
     "type": [
       { "type": "object",
         "properties": {
-          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Movies" }, "required": true }
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Movies" },
+            "minItems": 1, "required": true
+          }
         }
       },
       { "type": "object",
         "properties": {
-          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Movies" }, "required": true }
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Movies" },
+            "minItems": 1, "required": true
+          }
         }
-      }
+      },
+      { "$ref": "List.Filter.Rule.Movies" }
     ]
   },
   "List.Filter.TVShows": {
     "type": [
       { "type": "object",
         "properties": {
-          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.TVShows" }, "required": true }
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.TVShows" },
+            "minItems": 1, "required": true
+          }
         }
       },
       { "type": "object",
         "properties": {
-          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.TVShows" }, "required": true }
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.TVShows" },
+            "minItems": 1, "required": true
+          }
         }
-      }
+      },
+      { "$ref": "List.Filter.Rule.TVShows" }
     ]
   },
   "List.Filter.Episodes": {
     "type": [
       { "type": "object",
         "properties": {
-          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Episodes" }, "required": true }
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Episodes" },
+            "minItems": 1, "required": true
+          }
         }
       },
       { "type": "object",
         "properties": {
-          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Episodes" }, "required": true }
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Episodes" },
+            "minItems": 1, "required": true
+          }
         }
-      }
+      },
+      { "$ref": "List.Filter.Rule.Episodes" }
     ]
   },
   "List.Filter.MusicVideos": {
     "type": [
       { "type": "object",
         "properties": {
-          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.MusicVideos" }, "required": true }
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.MusicVideos" },
+            "minItems": 1, "required": true
+          }
         }
       },
       { "type": "object",
         "properties": {
-          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.MusicVideos" }, "required": true }
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.MusicVideos" },
+            "minItems": 1, "required": true
+          }
         }
-      }
+      },
+      { "$ref": "List.Filter.Rule.MusicVideos" }
     ]
   },
   "List.Filter.Artists": {
     "type": [
       { "type": "object",
         "properties": {
-          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Artists" }, "required": true }
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Artists" },
+            "minItems": 1, "required": true
+          }
         }
       },
       { "type": "object",
         "properties": {
-          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Artists" }, "required": true }
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Artists" },
+            "minItems": 1, "required": true
+          }
         }
-      }
+      },
+      { "$ref": "List.Filter.Rule.Artists" }
     ]
   },
   "List.Filter.Albums": {
     "type": [
       { "type": "object",
         "properties": {
-          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Albums" }, "required": true }
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Albums" },
+            "minItems": 1, "required": true
+          }
         }
       },
       { "type": "object",
         "properties": {
-          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Albums" }, "required": true }
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Albums" },
+            "minItems": 1, "required": true
+          }
         }
-      }
+      },
+      { "$ref": "List.Filter.Rule.Albums" }
     ]
   },
   "List.Filter.Songs": {
     "type": [
       { "type": "object",
         "properties": {
-          "and": { "type": "array", "items": { "$ref": "List.Filter.Rule.Songs" }, "required": true }
+          "and": { "type": "array",
+            "items": { "$ref": "List.Filter.Songs" },
+            "minItems": 1, "required": true
+          }
         }
       },
       { "type": "object",
         "properties": {
-          "or": { "type": "array", "items": { "$ref": "List.Filter.Rule.Songs" }, "required": true }
+          "or": { "type": "array",
+            "items": { "$ref": "List.Filter.Songs" },
+            "minItems": 1, "required": true
+          }
         }
-      }
+      },
+      { "$ref": "List.Filter.Rule.Songs" }
     ]
   },
   "List.Fields.All": {

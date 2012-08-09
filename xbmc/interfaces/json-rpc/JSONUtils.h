@@ -404,7 +404,14 @@ namespace JSONRPC
 
       CVariant xspObj(CVariant::VariantTypeObject);
       xspObj["type"] = type;
-      xspObj["rules"] = filter;
+
+      if (filter.isMember("field"))
+      {
+        xspObj["rules"]["and"] = CVariant(CVariant::VariantTypeArray);
+        xspObj["rules"]["and"].push_back(filter);
+      }
+      else
+        xspObj["rules"] = filter;
 
       CSmartPlaylist playlist;
       return playlist.Load(xspObj) && playlist.SaveAsJson(xsp, false);
