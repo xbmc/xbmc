@@ -19,6 +19,11 @@
  *
  */
 
+#include "system.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
 #include "Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
@@ -30,14 +35,22 @@
 #include "DllSwScale.h"
 #include "guilib/JpegIO.h"
 #include "guilib/Texture.h"
+#if defined(HAVE_OMXLIB)
+#include "cores/omxplayer/OMXImage.h"
+#endif
 
 using namespace XFILE;
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
 {
   CLog::Log(LOGDEBUG, "cached image '%s' size %dx%d", thumbFile.c_str(), width, height);
-  if (URIUtils::GetExtension(thumbFile).Equals(".jpg"))
+  if (URIUtils::GetExtension(thumbFile).Equals(".jpg") || URIUtils::GetExtension(thumbFile).Equals(".tbn"))
   {
+#if defined(HAVE_OMXLIB)
+    COMXImage omxImage;
+    if (omxImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
+      return true;
+#endif
     CJpegIO jpegImage;
     if (jpegImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
       return true;
@@ -104,6 +117,7 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
 
     dest_width = std::min(width, dest_width);
     dest_height = std::min(height, dest_height);
+
     // create a buffer large enough for the resulting image
     GetScale(width, height, dest_width, dest_height);
     uint32_t *buffer = new uint32_t[dest_width * dest_height];
