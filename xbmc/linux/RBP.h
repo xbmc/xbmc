@@ -37,7 +37,7 @@
 
 #if defined(TARGET_RASPBERRY_PI)
 #include "DllBCM.h"
-#include "cores/omxplayer/OMXCore.h"
+#include "OMXCore.h"
 
 class CRBP
 {
