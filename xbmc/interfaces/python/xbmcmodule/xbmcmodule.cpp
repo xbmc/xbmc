@@ -542,30 +542,6 @@ namespace PYXBMC
     return Py_BuildValue((char*)"i", g_application.GlobalIdleTime());
   }
 
-  // getCacheThumbName function
-  PyDoc_STRVAR(getCacheThumbName__doc__,
-    "getCacheThumbName(path) -- Returns a thumb cache filename.\n"
-    "\n"
-    "path           : string or unicode - path to file\n"
-    "\n"
-    "example:\n"
-    "  - thumb = xbmc.getCacheThumbName('f:\\\\videos\\\\movie.avi')\n");
-
-  PyObject* XBMC_GetCacheThumbName(PyObject *self, PyObject *args)
-  {
-    PyObject *pObjectText;
-    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
-
-    string strText;
-    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
-
-    Crc32 crc;
-    CStdString strPath;
-    crc.ComputeFromLowerCase(strText);
-    strPath.Format("%08x.tbn", (unsigned __int32)crc);
-    return Py_BuildValue((char*)"s", strPath.c_str());
-  }
-
   // makeLegalFilename function
   PyDoc_STRVAR(makeLegalFilename__doc__,
     "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a unicode string.\n"
@@ -920,8 +896,6 @@ namespace PYXBMC
 
     {(char*)"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
     {(char*)"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
-
-    {(char*)"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
 
     {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS|METH_KEYWORDS, makeLegalFilename__doc__},
     {(char*)"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
