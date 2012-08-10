@@ -1042,8 +1042,10 @@ int CBuiltins::Execute(const CStdString& execString)
 
     g_guiSettings.SetString("lookandfeel.skintheme", strSkinTheme);
     // also set the default color theme
-    g_guiSettings.SetString("lookandfeel.skincolors", URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
-
+    CStdString colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
+    if (colorTheme.Equals("Textures.xml"))
+      colorTheme = "defaults.xml";
+    g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
     g_application.ReloadSkin();
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
