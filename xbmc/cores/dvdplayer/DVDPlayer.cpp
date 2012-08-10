@@ -47,6 +47,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "DVDPerformanceCounter.h"
 #include "filesystem/File.h"
 #include "pictures/Picture.h"
@@ -3718,7 +3719,7 @@ void CDVDPlayer::UpdateApplication(double timeout)
     if(pStream->UpdateItem(item))
     {
       g_application.CurrentFileItem() = item;
-      g_infoManager.SetCurrentItem(item);
+      CApplicationMessenger::Get().SetCurrentItem(item);
     }
   }
   m_UpdateApplication = CDVDClock::GetAbsoluteClock();
