@@ -120,6 +120,27 @@ namespace XFILE
         db.Close();
       }
     }
+    else if (playlist.GetType().Equals("artists"))
+    {
+      CMusicDatabase db;
+      if (db.Open())
+      {
+        CMusicDbUrl musicUrl;
+        CStdString xsp;
+
+        if (!musicUrl.FromString("musicdb://2/") || !playlist.SaveAsJson(xsp, false))
+          return false;
+
+        // store the smartplaylist as JSON in the URL as well
+        musicUrl.AddOption("xsp", xsp);
+
+        CDatabase::Filter filter;
+        success = db.GetArtistsByWhere(musicUrl.ToString(), filter, items, sorting);
+        items.SetContent("albums");
+        db.Close();
+      }
+    }
+
     if (playlist.GetType().Equals("songs") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;
