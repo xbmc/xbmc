@@ -907,7 +907,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   {
     float position = 0.0f;
     float duration = 0.0f;
-    float cacheDuration = 0.0f;
+    float cachePosition = 0.0f;
     bool playing = false;
 
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
@@ -923,10 +923,10 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
         duration = ((float) g_application.m_pPlayer->GetTotalTime()) / 1000;
         playing = g_application.m_pPlayer ? !g_application.m_pPlayer->IsPaused() : false;
-        cacheDuration = (float) g_application.m_pPlayer->GetTotalTime() / 1000 * g_application.GetCachePercentage()/100.0f;
+        cachePosition = position + (duration * g_application.m_pPlayer->GetCachePercentage() / 100.0f);
       }
 
-      responseBody.Format(PLAYBACK_INFO, duration, cacheDuration, position, (playing ? 1 : 0), duration);
+      responseBody.Format(PLAYBACK_INFO, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
 
       if (g_application.m_pPlayer->IsCaching())
@@ -944,7 +944,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     }
     else
     {
-      responseBody.Format(PLAYBACK_INFO_NOT_READY, duration, cacheDuration, position, (playing ? 1 : 0), duration);
+      responseBody.Format(PLAYBACK_INFO_NOT_READY, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";     
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
     }
