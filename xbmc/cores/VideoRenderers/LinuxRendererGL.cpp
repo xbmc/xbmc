@@ -65,6 +65,7 @@
 #endif
 
 #ifdef TARGET_DARWIN
+  #include "osx/CocoaInterface.h"
   #include <CoreVideo/CoreVideo.h>
   #include <OpenGL/CGLIOSurface.h>
 #endif
@@ -2451,29 +2452,52 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
     YUVFIELDS &fields = m_buffers[index].fields;
     YUVPLANE  &plane  = fields[0][0];
 
-    // It is the fastest way to render a CVPixelBuffer backed
-    // with an IOSurface as there is no CPU -> GPU upload.
-    CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
-    IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
-    GLsizei       texWidth = IOSurfaceGetWidth(surface);
-    GLsizei       texHeight= IOSurfaceGetHeight(surface);
-    OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
-    size_t        rowbytes = CVPixelBufferGetBytesPerRow(cvBufferRef);
+    if (Cocoa_GetOSVersion() >= 0x1080)
+    {
+      // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
+      // upload the old way.
+      CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
 
-    glEnable(m_textureTarget);
-    glBindTexture(m_textureTarget, plane.id);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, rowbytes);
+      GLsizei       texWidth    = CVPixelBufferGetWidth(cvBufferRef);
+      GLsizei       texHeight   = CVPixelBufferGetHeight(cvBufferRef);
+      //size_t        rowbytes    = CVPixelBufferGetBytesPerRow(cvBufferRef);
+      unsigned char *bufferBase = (unsigned char*)CVPixelBufferGetBaseAddress(cvBufferRef);
 
-    if (format_type == kCVPixelFormatType_422YpCbCr8)
-      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGB8,
-        texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, surface, 0);
-    else if (format_type == kCVPixelFormatType_32BGRA)
-      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
-        texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
+      glEnable(m_textureTarget);
+      glBindTexture(m_textureTarget, plane.id);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
+      glBindTexture(m_textureTarget, 0);
+      glDisable(m_textureTarget);
 
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glBindTexture(m_textureTarget, 0);
-    glDisable(m_textureTarget);
+      CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
+    }
+    else
+    {
+      // It is the fastest way to render a CVPixelBuffer backed
+      // with an IOSurface as there is no CPU -> GPU upload.
+      CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
+      IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
+      GLsizei       texWidth = IOSurfaceGetWidth(surface);
+      GLsizei       texHeight= IOSurfaceGetHeight(surface);
+      OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
+      size_t        rowbytes = CVPixelBufferGetBytesPerRow(cvBufferRef);
+
+      glEnable(m_textureTarget);
+      glBindTexture(m_textureTarget, plane.id);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, rowbytes);
+
+      if (format_type == kCVPixelFormatType_422YpCbCr8)
+        CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGB8,
+          texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, surface, 0);
+      else if (format_type == kCVPixelFormatType_32BGRA)
+        CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
+          texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
+
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+      glBindTexture(m_textureTarget, 0);
+      glDisable(m_textureTarget);
+    }
 
     CVBufferRelease(cvBufferRef);
     m_buffers[index].cvBufferRef = NULL;
@@ -2515,8 +2539,11 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   memset(&im    , 0, sizeof(im));
   memset(&fields, 0, sizeof(fields));
 
-  im.height = m_sourceHeight;
+  im.bpp    = 1;
   im.width  = m_sourceWidth;
+  im.height = m_sourceHeight;
+  im.cshift_x = 0;
+  im.cshift_y = 0;
 
   plane.texwidth  = im.width;
   plane.texheight = im.height;
@@ -2530,6 +2557,21 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   }
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
+  if (Cocoa_GetOSVersion() >= 0x1080)
+  {
+    // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
+    // upload the old way.
+    glBindTexture(m_textureTarget, plane.id);
+    // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
+    //glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // This is necessary for non-power-of-two textures
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
+    glBindTexture(m_textureTarget, 0);
+  }
   glDisable(m_textureTarget);
 
   m_eventTexturesDone[index]->Set();
