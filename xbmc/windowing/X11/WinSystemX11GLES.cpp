@@ -83,8 +83,8 @@ CWinSystemX11GLES::CWinSystemX11GLES() : CWinSystemBase()
   m_eglDisplay = NULL;
   m_eglContext = NULL;
   m_eglSurface = NULL;
-  m_eglWindow  = NULL;
-  m_wmWindow   = NULL;
+  m_eglWindow  = 0;
+  m_wmWindow   = 0;
   m_dpy        = NULL;
   
   m_iVSyncErrors = 0;
