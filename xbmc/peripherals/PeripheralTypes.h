@@ -35,7 +35,8 @@ namespace PERIPHERALS
   {
     PERIPHERAL_BUS_UNKNOWN = 0,
     PERIPHERAL_BUS_USB,
-    PERIPHERAL_BUS_PCI
+    PERIPHERAL_BUS_PCI,
+    PERIPHERAL_BUS_RPI
   };
 
   enum PeripheralFeature
@@ -135,6 +136,8 @@ namespace PERIPHERALS
         return "usb";
       case PERIPHERAL_BUS_PCI:
         return "pci";
+      case PERIPHERAL_BUS_RPI:
+        return "rpi";
       default:
         return "unknown";
       }
@@ -149,6 +152,8 @@ namespace PERIPHERALS
         return PERIPHERAL_BUS_USB;
       else if (strTypeLowerCase.Equals("pci"))
         return PERIPHERAL_BUS_PCI;
+      else if (strTypeLowerCase.Equals("rpi"))
+        return PERIPHERAL_BUS_RPI;
 
       return PERIPHERAL_BUS_UNKNOWN;
     };

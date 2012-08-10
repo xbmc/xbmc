@@ -31,6 +31,10 @@
 #include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
 
+#ifdef HAVE_CEC_RPI_API
+#include "bus/linux/PeripheralBusRPi.h"
+#endif
+
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
@@ -79,6 +83,9 @@ void CPeripherals::Initialise(void)
 
 #if defined(HAVE_PERIPHERAL_BUS_USB)
     m_busses.push_back(new CPeripheralBusUSB(this));
+#endif
+#ifdef HAVE_CEC_RPI_API
+    m_busses.push_back(new CPeripheralBusRPi(this));
 #endif
 
     /* initialise all known busses */
