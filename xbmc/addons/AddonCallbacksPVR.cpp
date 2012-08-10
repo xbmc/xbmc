@@ -109,7 +109,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
     return;
   }
 
-  CPVRChannelPtr channel  = g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
+  CPVRChannelPtr channel  = g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetID());
   if (!channel)
   {
     CLog::Log(LOGERROR, "PVR - %s - cannot find group '%s' or channel '%d'", __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
@@ -145,7 +145,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVR_HAND
   }
 
   /* transfer this entry to the internal channels group */
-  xbmcChannels->UpdateFromClient(CPVRChannel(*channel, client->GetClientID()));
+  xbmcChannels->UpdateFromClient(CPVRChannel(*channel, client->GetID()));
 }
 
 void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVR_HANDLE handle, const PVR_RECORDING *recording)
@@ -159,7 +159,7 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVR_HA
   }
 
   /* transfer this entry to the recordings container */
-  xbmcRecordings->UpdateFromClient(CPVRRecording(*recording, client->GetClientID()));
+  xbmcRecordings->UpdateFromClient(CPVRRecording(*recording, client->GetID()));
 }
 
 void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE handle, const PVR_TIMER *timer)
@@ -172,15 +172,15 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE
     return;
   }
 
-  CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
+  CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetID());
   if (!channel)
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot find channel %d on client %d", __FUNCTION__, timer->iClientChannelUid, client->GetClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find channel %d on client %d", __FUNCTION__, timer->iClientChannelUid, client->GetID());
     return;
   }
 
   /* transfer this entry to the timers container */
-  xbmcTimers->UpdateFromClient(CPVRTimerInfoTag(*timer, channel, client->GetClientID()));
+  xbmcTimers->UpdateFromClient(CPVRTimerInfoTag(*timer, channel, client->GetID()));
 }
 
 void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)

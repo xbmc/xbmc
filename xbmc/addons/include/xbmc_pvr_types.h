@@ -136,9 +136,8 @@ extern "C" {
    */
   typedef struct PVR_PROPERTIES
   {
-    int         iClientId;             /*!< @brief (required) database ID of the client */
-    const char *strUserPath;           /*!< @brief (required) path to the user profile */
-    const char *strClientPath;         /*!< @brief (required) path to this add-on */
+    const char *strUserPath;           /*!< @brief path to the user profile */
+    const char *strClientPath;         /*!< @brief path to this add-on */
   } PVR_PROPERTIES;
 
   /*!

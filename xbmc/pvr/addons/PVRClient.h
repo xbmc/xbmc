@@ -41,6 +41,7 @@ namespace PVR
   class CPVREpgContainer;
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
+  #define PVR_INVALID_CLIENT_ID (-1)
 
   /*!
    * Interface from XBMC to a PVR add-on.
@@ -149,11 +150,6 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR if the channel scan has been started successfully.
      */
     PVR_ERROR StartChannelScan(void);
-
-    /*!
-     * @return The ID of the client.
-     */
-    int GetClientID(void) const;
 
     /*!
      * @return True if this add-on has menu hooks, false otherwise.
@@ -466,6 +462,7 @@ namespace PVR
     bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
     CStdString             m_strHostName;          /*!< the host name */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
+    int                    m_iClientId;            /*!< database ID of the client */
 
     /* cached data */
     CStdString             m_strBackendName;       /*!< the cached backend version */
@@ -501,22 +498,20 @@ namespace PVR
     void SetFriendlyName(void);
 
     /*!
-     * @brief Get the backend properties from the server and store it locally.
-     */
-    PVR_ERROR SetAddonCapabilities(void);
-
-    /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
-    void ResetProperties(void);
+    void ResetProperties(int iClientId = PVR_INVALID_CLIENT_ID);
 
     /*!
      * @brief Reset all add-on capabilities to false.
      */
-    void ResetAddonCapabilities(void);
+    void ResetAddonCapabilities(PVR_ADDON_CAPABILITIES &addonCapabilities);
+
+    bool GetAddonProperties(void);
 
   private:
     const char *ToString(const PVR_ERROR error) const;
     bool LogError(const PVR_ERROR error, const char *strMethod);
+    void LogException(const std::exception &e, const char *strFunctionName);
   };
 }

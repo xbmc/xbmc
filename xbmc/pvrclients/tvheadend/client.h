@@ -37,7 +37,6 @@ extern std::string               g_strUsername;
 extern std::string               g_strPassword;
 extern int                       g_iConnectTimeout;
 extern int                       g_iResponseTimeout;
-extern int                       g_iClientId;
 extern unsigned int              g_iPacketSequence;
 extern bool                      g_bShowTimerNotifications;
 extern std::string               g_szUserPath;

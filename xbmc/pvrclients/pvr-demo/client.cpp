@@ -28,7 +28,6 @@ using namespace ADDON;
 
 bool           m_bCreated       = false;
 ADDON_STATUS   m_CurStatus      = ADDON_STATUS_UNKNOWN;
-int            g_iClientId      = -1;
 PVRDemoData   *m_data           = NULL;
 bool           m_bIsPlaying     = false;
 PVRDemoChannel m_currentChannel;
@@ -68,7 +67,6 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   XBMC->Log(LOG_DEBUG, "%s - Creating the PVR demo add-on", __FUNCTION__);
 
   m_CurStatus     = ADDON_STATUS_UNKNOWN;
-  g_iClientId     = pvrprops->iClientId;
   g_strUserPath   = pvrprops->strUserPath;
   g_strClientPath = pvrprops->strClientPath;
 
