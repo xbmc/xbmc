@@ -1014,7 +1014,8 @@ int CBuiltins::Execute(const CStdString& execString)
     int iTheme = -1;
 
     // find current theme
-    if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
+    if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("SKINDEFAULT"))
+    {
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
         CStdString strTmpTheme(g_guiSettings.GetString("lookandfeel.skintheme"));
@@ -1025,6 +1026,7 @@ int CBuiltins::Execute(const CStdString& execString)
           break;
         }
       }
+    }
 
     int iParam = atoi(parameter.c_str());
     if (iParam == 0 || iParam == 1)
