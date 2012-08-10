@@ -30,10 +30,6 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#ifdef HAS_HTTPAPI
-#include "interfaces/http-api/XBMChttp.h"
-#include "interfaces/http-api/HttpApi.h"
-#endif
 #include "pyjsonrpc.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -222,59 +218,6 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
-
-#ifdef HAS_HTTPAPI
-  // executehttpapi() method
-  PyDoc_STRVAR(executeHttpApi__doc__,
-    "executehttpapi(httpcommand) -- Execute an HTTP API command.\n"
-    "\n"
-    "httpcommand    : string - http command to execute.\n"
-    "\n"
-    "List of commands - http://wiki.xbmc.org/?title=WebServerHTTP-API#The_Commands \n"
-    "\n"
-    "example:\n"
-    "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
-
-  PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
-  {
-    char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
-
-    CPyThreadState pyLock;
-
-    if (!m_pXbmcHttp)
-      m_pXbmcHttp = new CXbmcHttp();
-    CStdString method = cLine;
-
-    int open, close;
-    CStdString parameter="", cmd=cLine, execute;
-    open = cmd.Find("(");
-    if (open>0)
-    {
-      close=cmd.length();
-      while (close>open && cmd.Mid(close,1)!=")")
-        close--;
-      if (close>open)
-      {
-        parameter = cmd.Mid(open + 1, close - open - 1);
-        parameter.Replace(",",";");
-        execute = cmd.Left(open);
-      }
-      else //open bracket but no close
-      {
-        pyLock.Restore();
-        return PyString_FromString("");
-      }
-    }
-    else //no parameters
-      execute = cmd;
-
-    CURL::Decode(parameter);
-
-    pyLock.Restore();
-    return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
-  }
-#endif
 
 #ifdef HAS_JSONRPC
   // executeJSONRPC() method
@@ -979,10 +922,6 @@ namespace PYXBMC
     {(char*)"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
     {(char*)"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
     //{(char*)"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
-
-#ifdef HAS_HTTPAPI
-    {(char*)"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
-#endif
 #ifdef HAS_JSONRPC
     {(char*)"executeJSONRPC", (PyCFunction)XBMC_ExecuteJSONRPC, METH_VARARGS, executeJSONRPC__doc__},
 #endif
