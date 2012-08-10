@@ -789,9 +789,9 @@ int64_t PAPlayer::GetTotalTime64()
   return total;
 }
 
-int PAPlayer::GetTotalTime()
+int64_t PAPlayer::GetTotalTime()
 {
-  return (int)m_playerGUIData.m_totalTime;
+  return m_playerGUIData.m_totalTime;
 }
 
 int PAPlayer::GetCacheLevel() const

@@ -144,7 +144,7 @@ bool CDummyVideoPlayer::CanSeek()
 
 void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2000*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     int seek = 0;
     if (bLargeStep)
@@ -191,14 +191,13 @@ void CDummyVideoPlayer::SwitchToNextAudioLanguage()
 
 void CDummyVideoPlayer::SeekPercentage(float iPercent)
 {
-  int64_t iTotalMsec = GetTotalTime() * 1000;
-  int64_t iTime = (int64_t)(iTotalMsec * iPercent / 100);
+  int64_t iTime = (int64_t)(GetTotalTime() * iPercent / 100);
   SeekTime(iTime);
 }
 
 float CDummyVideoPlayer::GetPercentage()
 {
-  int64_t iTotalTime = GetTotalTime() * 1000;
+  int64_t iTotalTime = GetTotalTime();
 
   if (iTotalTime != 0)
   {
@@ -240,10 +239,10 @@ int64_t CDummyVideoPlayer::GetTime()
   return m_clock;
 }
 
-// return length in seconds.. this should be changed to return in milleseconds throughout xbmc
-int CDummyVideoPlayer::GetTotalTime()
+// return length in milliseconds
+int64_t CDummyVideoPlayer::GetTotalTime()
 {
-  return 1000;
+  return 1000000;
 }
 
 void CDummyVideoPlayer::ToFFRW(int iSpeed)

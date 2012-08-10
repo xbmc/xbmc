@@ -716,7 +716,7 @@ void CAMLPlayer::Seek(bool bPlus, bool bLargeStep)
   int64_t seek_ms;
   if (g_advancedSettings.m_videoUseTimeSeeking)
   {
-    if (bLargeStep && (GetTotalTime() > (2 * g_advancedSettings.m_videoTimeSeekForwardBig)))
+    if (bLargeStep && (GetTotalTime() > (2000 * g_advancedSettings.m_videoTimeSeekForwardBig)))
       seek_ms = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
     else
       seek_ms = bPlus ? g_advancedSettings.m_videoTimeSeekForward    : g_advancedSettings.m_videoTimeSeekBackward;
@@ -1101,9 +1101,9 @@ __int64 CAMLPlayer::GetTime()
   return m_elapsed_ms;
 }
 
-int CAMLPlayer::GetTotalTime()
+__int64 CAMLPlayer::GetTotalTime()
 {
-  return m_duration_ms / 1000;
+  return m_duration_ms;
 }
 
 int CAMLPlayer::GetAudioBitrate()

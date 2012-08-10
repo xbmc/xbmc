@@ -63,7 +63,7 @@ public:
   virtual void Update(bool bPauseDrawing = false) {}
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
-  virtual int GetTotalTime();
+  virtual int64_t GetTotalTime();
   virtual int GetAudioBitrate();
   virtual int GetChannels();
   virtual int GetBitsPerSample();

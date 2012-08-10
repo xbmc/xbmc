@@ -221,7 +221,17 @@ public:
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
   bool WakeUpScreenSaver(bool bPowerOffKeyPressed = false);
+  /*!
+   \brief Returns the total time in fractional seconds of the currently playing media
+
+   Beware that this method returns fractional seconds whereas IPlayer::GetTotalTime() returns milliseconds.
+   */
   double GetTotalTime() const;
+  /*!
+   \brief Returns the current time in fractional seconds of the currently playing media
+
+   Beware that this method returns fractional seconds whereas IPlayer::GetTime() returns milliseconds.
+   */
   double GetTime() const;
   float GetPercentage() const;
 
