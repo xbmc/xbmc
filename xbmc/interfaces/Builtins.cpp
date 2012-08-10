@@ -418,6 +418,10 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Equals("ntsc")) res = RES_NTSC_4x3;
     else if (parameter.Equals("ntsc16x9")) res = RES_NTSC_16x9;
     else if (parameter.Equals("720p")) res = RES_HDTV_720p;
+    else if (parameter.Equals("720pSBS")) res = RES_HDTV_720pSBS;
+    else if (parameter.Equals("720pTB")) res = RES_HDTV_720pTB;
+    else if (parameter.Equals("1080pSBS")) res = RES_HDTV_1080pSBS;
+    else if (parameter.Equals("1080pTB")) res = RES_HDTV_1080pTB;
     else if (parameter.Equals("1080i")) res = RES_HDTV_1080i;
     if (g_graphicsContext.IsValidResolution(res))
     {

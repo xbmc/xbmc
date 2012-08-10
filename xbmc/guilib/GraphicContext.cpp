@@ -417,6 +417,18 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     overscan.right = 1920;
     overscan.bottom = 1080;
     break;
+  case RES_HDTV_720pSBS:
+    overscan.right = 640;
+    overscan.bottom = 720;
+    break;
+  case RES_HDTV_720pTB:
+    overscan.right = 1280;
+    overscan.bottom = 360;
+    break;
+  case RES_HDTV_1080pSBS:
+    overscan.right = 960;
+    overscan.bottom = 1080;
+    break;
   case RES_HDTV_720p:
     overscan.right = 1280;
     overscan.bottom = 720;
@@ -457,6 +469,38 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
     g_settings.m_ResInfo[res].strMode ="1080i 16:9";
+    break;
+  case RES_HDTV_720pSBS:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 720);
+    g_settings.m_ResInfo[res].iWidth = 640;
+    g_settings.m_ResInfo[res].iHeight = 720;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "720pSBS 16:9";
+    break;
+  case RES_HDTV_720pTB:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 360);
+    g_settings.m_ResInfo[res].iWidth = 1280;
+    g_settings.m_ResInfo[res].iHeight = 360;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "720pTB 16:9";
+    break;
+  case RES_HDTV_1080pSBS:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 1080);
+    g_settings.m_ResInfo[res].iWidth = 960;
+    g_settings.m_ResInfo[res].iHeight = 1080;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "1080pSBS 16:9";
+    break;
+  case RES_HDTV_1080pTB:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 540);
+    g_settings.m_ResInfo[res].iWidth = 1920;
+    g_settings.m_ResInfo[res].iHeight = 540;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "1080pTB 16:9";
     break;
   case RES_HDTV_720p:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 720);

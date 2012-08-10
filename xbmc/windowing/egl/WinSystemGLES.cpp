@@ -93,8 +93,7 @@ bool CWinSystemGLES::CreateNewWindow(const CStdString& name, bool fullScreen, RE
 
   // temp until split gui/display res comes in
   //m_eglplatform->SetDisplayResolution(res.iScreenWidth, res.iScreenHeight,
-  m_eglplatform->SetDisplayResolution(res.iWidth, res.iHeight,
-    res.fRefreshRate, res.dwFlags & D3DPRESENTFLAG_INTERLACED);
+  m_eglplatform->SetDisplayResolution(res);
     
   // If we previously destroyed an existing window we need to create a new one
   // (otherwise this is taken care of by InitWindowSystem())
@@ -140,76 +139,71 @@ bool CWinSystemGLES::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool b
 
 void CWinSystemGLES::UpdateResolutions()
 {
-  std::vector<CStdString> resolutions;
+  CWinSystemBase::UpdateResolutions();
+
+  //std::vector<CStdString> resolutions;
+  std::vector<RESOLUTION_INFO> resolutions;
 
   m_eglplatform->ProbeDisplayResolutions(resolutions);
 
-  bool got_display_rez = false;
-  RESOLUTION Res720p60 = RES_INVALID;
-  RESOLUTION res_index = RES_DESKTOP;
+  RESOLUTION_INFO resDesktop = m_eglplatform->GetDesktopRes();
+
+  RESOLUTION ResDesktop = RES_INVALID;
+  RESOLUTION res_index  = RES_DESKTOP;
+
+  // Clear old resolutions
+  //g_settings.m_ResInfo.clear();
 
   for (size_t i = 0; i < resolutions.size(); i++)
   {
-    //   1280x720p50Hz
-    //   1280x720p60Hz
-    //   1920x1080i50Hz
-    //   1920x1080i60Hz
-    //   1920x1080p24Hz
-    //   1920x1080p50Hz
-    //   1920x1080p60Hz
+    int gui_width  = resolutions[i].iWidth;
+    int gui_height = resolutions[i].iHeight;
 
-    char interlacing;
-    int  refresh, width, height;
-    if (sscanf(resolutions[i].c_str(), "%dx%d%c%dHz", &width, &height, &interlacing, &refresh) == 4)
+    m_eglplatform->ClampToGUIDisplayLimits(gui_width, gui_height);
+
+    resolutions[i].iWidth = gui_width;
+    resolutions[i].iHeight = gui_height;
+
+    // if this is a new setting,
+    // create a new empty setting to fill in.
+    if ((int)g_settings.m_ResInfo.size() <= res_index)
     {
-      got_display_rez = true;
-      // if this is a new setting,
-      // create a new empty setting to fill in.
-      if ((int)g_settings.m_ResInfo.size() <= res_index)
-      {
-        RESOLUTION_INFO res;
-        g_settings.m_ResInfo.push_back(res);
-      }
-      int gui_width  = width;
-      int gui_height = height;
-      float gui_refresh = refresh;
-      m_eglplatform->ClampToGUIDisplayLimits(gui_width, gui_height);
+      RESOLUTION_INFO res;
 
-      g_settings.m_ResInfo[res_index].iScreen       = 0;
-      g_settings.m_ResInfo[res_index].bFullScreen   = true;
-      g_settings.m_ResInfo[res_index].iSubtitles    = (int)(0.965 * gui_height);
-      g_settings.m_ResInfo[res_index].dwFlags       = D3DPRESENTFLAG_PROGRESSIVE;
-      g_settings.m_ResInfo[res_index].fRefreshRate  = gui_refresh;
-      g_settings.m_ResInfo[res_index].fPixelRatio   = 1.0f;
-      g_settings.m_ResInfo[res_index].iWidth        = gui_width;
-      g_settings.m_ResInfo[res_index].iHeight       = gui_height;
-      // temp until split gui/display res comes in
-      //g_settings.m_ResInfo[res_index].iScreenWidth  = width;
-      //g_settings.m_ResInfo[res_index].iScreenHeight = height;
-      g_settings.m_ResInfo[res_index].strMode.Format("%dx%d @ %.2f - Full Screen", width, height, gui_refresh);
-      g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[res_index]);
-      /*
-      CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz\n",
-        g_settings.m_ResInfo[res_index].iScreen,
-        g_settings.m_ResInfo[res_index].iScreenWidth,
-        g_settings.m_ResInfo[res_index].iScreenHeight,
-        g_settings.m_ResInfo[res_index].fRefreshRate);
-      */
-
-      if (width == 1280 && height == 720 && refresh == 60)
-        Res720p60 = res_index;
-
-      res_index = (RESOLUTION)((int)res_index + 1);
+      g_settings.m_ResInfo.push_back(res);
     }
+
+    g_graphicsContext.ResetOverscan(resolutions[i]);
+    g_settings.m_ResInfo[res_index] = resolutions[i];
+
+    CLog::Log(LOGNOTICE, "Found resolution for display %d with %d x %d @ %f Hz\n",
+      resolutions[i].iScreen,
+      resolutions[i].iWidth,
+      resolutions[i].iHeight,
+      resolutions[i].fRefreshRate);
+
+    if(m_eglplatform->FixedDesktop())
+    {
+      if(resDesktop.iWidth == resolutions[i].iWidth &&
+         resDesktop.iHeight == resolutions[i].iHeight &&
+         resDesktop.fRefreshRate == resolutions[i].fRefreshRate)
+      {
+        ResDesktop = res_index;
+      }
+    }
+
+    res_index = (RESOLUTION)((int)res_index + 1);
   }
-  // swap desktop index for 720p if available
-  if (Res720p60 != RES_INVALID)
+
+  // swap desktop index for desktop res if available
+  if (ResDesktop != RES_INVALID)
   {
-    CLog::Log(LOGINFO, "Found 720p at %d, setting to RES_DESKTOP at %d", (int)Res720p60, (int)RES_DESKTOP);
+    CLog::Log(LOGNOTICE, "Found (%dx%d@%f) at %d, setting to RES_DESKTOP at %d",
+              resDesktop.iWidth, resDesktop.iHeight, resDesktop.fRefreshRate, (int)ResDesktop, (int)RES_DESKTOP);
 
     RESOLUTION_INFO desktop = g_settings.m_ResInfo[RES_DESKTOP];
-    g_settings.m_ResInfo[RES_DESKTOP] = g_settings.m_ResInfo[Res720p60];
-    g_settings.m_ResInfo[Res720p60] = desktop;
+    g_settings.m_ResInfo[RES_DESKTOP] = g_settings.m_ResInfo[ResDesktop];
+    g_settings.m_ResInfo[ResDesktop] = desktop;
   }
 }
 
@@ -282,6 +276,37 @@ EGLDisplay CWinSystemGLES::GetEGLDisplay()
 EGLContext CWinSystemGLES::GetEGLContext()
 {
   return m_eglplatform->GetEGLContext();
+}
+
+bool CWinSystemGLES::Support3D(int width, int height, uint32_t mode) const
+{
+  bool bFound = false;
+  int searchMode = 0;
+  int searchWidth = width;
+  int searchHeight = height;
+
+  if(mode & D3DPRESENTFLAG_MODE3DSBS)
+  {
+    searchWidth /= 2;
+    searchMode = D3DPRESENTFLAG_MODE3DSBS;
+  }
+  else if(mode & D3DPRESENTFLAG_MODE3DTB)
+  {
+    searchHeight /= 2;
+    searchMode = D3DPRESENTFLAG_MODE3DTB;
+  }
+
+  for(int i = 0; i < g_settings.m_ResInfo.size(); i++)
+  {
+    RESOLUTION_INFO res = g_settings.m_ResInfo[i];
+
+    if(res.iWidth == searchWidth && res.iHeight == searchHeight && (res.dwFlags & searchMode))
+    {
+      return true;
+    }
+  }
+
+  return bFound;
 }
 
 #endif
