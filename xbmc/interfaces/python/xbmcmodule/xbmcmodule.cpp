@@ -277,7 +277,7 @@ namespace PYXBMC
 #endif
 
 #ifdef HAS_JSONRPC
-  // executehttpapi() method
+  // executeJSONRPC() method
   PyDoc_STRVAR(executeJSONRPC__doc__,
     "executeJSONRPC(jsonrpccommand) -- Execute an JSONRPC command.\n"
     "\n"
@@ -448,39 +448,6 @@ namespace PYXBMC
     GlobalMemoryStatusEx(&stat);
     return PyInt_FromLong( (long)(stat.ullAvailPhys  / ( 1024 * 1024 )) );
   }
-
-  // getCpuTemp() method
-  // ## Doesn't work right, use getInfoLabel('System.CPUTemperature') instead.
-  /*PyDoc_STRVAR(getCpuTemp__doc__,
-    "getCpuTemp() -- Returns the current cpu temperature as an integer.\n"
-    "\n"
-    "example:\n"
-    "  - cputemp = xbmc.getCpuTemp()\n");
-
-  PyObject* XBMC_GetCpuTemp(PyObject *self, PyObject *args)
-  {
-    unsigned short cputemp;
-    unsigned short cpudec;
-
-    _outp(0xc004, (0x4c<<1)|0x01);
-    _outp(0xc008, 0x01);
-    _outpw(0xc000, _inpw(0xc000));
-    _outp(0xc002, (0) ? 0x0b : 0x0a);
-    while ((_inp(0xc000) & 8));
-    cputemp = _inpw(0xc006);
-
-    _outp(0xc004, (0x4c<<1)|0x01);
-    _outp(0xc008, 0x10);
-    _outpw(0xc000, _inpw(0xc000));
-    _outp(0xc002, (0) ? 0x0b : 0x0a);
-    while ((_inp(0xc000) & 8));
-    cpudec = _inpw(0xc006);
-
-    if (cpudec<10) cpudec = cpudec * 100;
-    if (cpudec<100) cpudec = cpudec *10;
-
-    return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
-  }*/
 
   // getInfolabel() method
   PyDoc_STRVAR(getInfoLabel__doc__,
