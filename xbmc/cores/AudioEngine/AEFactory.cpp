@@ -115,10 +115,6 @@ void CAEFactory::UnLoadEngine()
 
 bool CAEFactory::StartEngine()
 {
-#if defined(TARGET_RASPBERRY_PI)
-  return true;
-#endif
-
   if (!AE)
     return false;
 
