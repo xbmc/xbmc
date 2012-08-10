@@ -163,7 +163,7 @@ int CPVRClient::GetID(void) const
  * @param xbmcGroup The group on XBMC's side.
  * @param addonGroup The group on the addon's side.
  */
-inline void PVRWriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
+void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
 {
   addonGroup.bIsRadio     = xbmcGroup.IsRadio();
   addonGroup.strGroupName = xbmcGroup.GroupName();
@@ -174,7 +174,7 @@ inline void PVRWriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANN
  * @param xbmcRecording The recording on XBMC's side.
  * @param addonRecording The recording on the addon's side.
  */
-inline void PVRWriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording)
+void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording)
 {
   time_t recTime;
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
@@ -197,7 +197,7 @@ inline void PVRWriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_
  * @param xbmcTimer The timer on XBMC's side.
  * @param addonTimer The timer on the addon's side.
  */
-inline void PVRWriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER &addonTimer)
+void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER &addonTimer)
 {
   time_t start, end, firstDay;
   xbmcTimer.StartAsUTC().GetAsTime(start);
@@ -231,7 +231,7 @@ inline void PVRWriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER
  * @param xbmcChannel The channel on XBMC's side.
  * @param addonChannel The channel on the addon's side.
  */
-inline void PVRWriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel)
+void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel)
 {
   addonChannel.iUniqueId         = xbmcChannel.UniqueID();
   addonChannel.iChannelNumber    = xbmcChannel.ClientChannelNumber();
@@ -404,7 +404,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, ti
   try
   {
     PVR_CHANNEL addonChannel;
-    PVRWriteClientChannelInfo(channel, addonChannel);
+    WriteClientChannelInfo(channel, addonChannel);
 
     PVR_HANDLE_STRUCT handle;
     handle.callerAddress = this;
@@ -491,7 +491,7 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
     handle.dataAddress = group;
 
     PVR_CHANNEL_GROUP tag;
-    PVRWriteClientGroupInfo(*group, tag);
+    WriteClientGroupInfo(*group, tag);
 
     CLog::Log(LOGDEBUG, "PVRClient - %s - get group members for group '%s' from add-on '%s'",
         __FUNCTION__, tag.strGroupName, GetFriendlyName().c_str());
@@ -616,7 +616,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
   try
   {
     PVR_RECORDING tag;
-    PVRWriteClientRecordingInfo(recording, tag);
+    WriteClientRecordingInfo(recording, tag);
 
     retVal = m_pStruct->DeleteRecording(tag);
 
@@ -643,7 +643,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
   try
   {
     PVR_RECORDING tag;
-    PVRWriteClientRecordingInfo(recording, tag);
+    WriteClientRecordingInfo(recording, tag);
 
     retVal = m_pStruct->RenameRecording(tag);
 
@@ -670,7 +670,7 @@ PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording &recording, int 
   try
   {
     PVR_RECORDING tag;
-    PVRWriteClientRecordingInfo(recording, tag);
+    WriteClientRecordingInfo(recording, tag);
 
     retVal = m_pStruct->SetRecordingPlayCount(tag, count);
 
@@ -697,7 +697,7 @@ PVR_ERROR CPVRClient::SetRecordingLastPlayedPosition(const CPVRRecording &record
   try
   {
     PVR_RECORDING tag;
-    PVRWriteClientRecordingInfo(recording, tag);
+    WriteClientRecordingInfo(recording, tag);
 
     retVal = m_pStruct->SetRecordingLastPlayedPosition(tag, lastplayedposition);
 
@@ -724,7 +724,7 @@ int CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
   try
   {
     PVR_RECORDING tag;
-    PVRWriteClientRecordingInfo(recording, tag);
+    WriteClientRecordingInfo(recording, tag);
 
     iReturn = m_pStruct->GetRecordingLastPlayedPosition(tag);
   }
@@ -798,7 +798,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
   try
   {
     PVR_TIMER tag;
-    PVRWriteClientTimerInfo(timer, tag);
+    WriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->AddTimer(tag);
 
@@ -825,7 +825,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
   try
   {
     PVR_TIMER tag;
-    PVRWriteClientTimerInfo(timer, tag);
+    WriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->DeleteTimer(tag, bForce);
 
@@ -852,7 +852,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timer, const CStdStrin
   try
   {
     PVR_TIMER tag;
-    PVRWriteClientTimerInfo(timer, tag);
+    WriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->UpdateTimer(tag);
 
@@ -879,7 +879,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
   try
   {
     PVR_TIMER tag;
-    PVRWriteClientTimerInfo(timer, tag);
+    WriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->UpdateTimer(tag);
 
@@ -907,7 +907,7 @@ bool CPVRClient::OpenLiveStream(const CPVRChannel &channel)
   try
   {
     PVR_CHANNEL tag;
-    PVRWriteClientChannelInfo(channel, tag);
+    WriteClientChannelInfo(channel, tag);
     bReturn = m_pStruct->OpenLiveStream(tag);
   }
   catch (exception &e)
@@ -963,7 +963,7 @@ int CPVRClient::GetCurrentClientChannel(void)
 bool CPVRClient::SwitchChannel(const CPVRChannel &channel)
 {
   PVR_CHANNEL tag;
-  PVRWriteClientChannelInfo(channel, tag);
+  WriteClientChannelInfo(channel, tag);
   return m_pStruct->SwitchChannel(tag);
 }
 
@@ -997,7 +997,7 @@ CStdString CPVRClient::GetLiveStreamURL(const CPVRChannel &channel)
   try
   {
     PVR_CHANNEL tag;
-    PVRWriteClientChannelInfo(channel, tag);
+    WriteClientChannelInfo(channel, tag);
     strReturn = m_pStruct->GetLiveStreamURL(tag);
   }
   catch (exception &e)
@@ -1015,7 +1015,7 @@ bool CPVRClient::OpenRecordedStream(const CPVRRecording &recording)
     return false;
 
   PVR_RECORDING tag;
-  PVRWriteClientRecordingInfo(recording, tag);
+  WriteClientRecordingInfo(recording, tag);
   return m_pStruct->OpenRecordedStream(tag);
 }
 
