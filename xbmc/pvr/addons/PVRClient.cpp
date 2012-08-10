@@ -355,28 +355,6 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *iTotal, long long *iUsed)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-//PVR_ERROR CPVRClient::GetBackendTime(time_t *localTime, int *iGmtOffset)
-//{
-//  if (!m_bReadyToUse)
-//    return PVR_ERROR_UNKNOWN;
-//
-//  try
-//  {
-//    return m_pStruct->GetBackendTime(localTime, iGmtOffset);
-//  }
-//  catch (exception &e)
-//  {
-//    CLog::Log(LOGERROR, "PVRClient - %s - exception '%s' caught while trying to call GetBackendTime() on addon '%s'. please contact the developer of this addon: %s",
-//        __FUNCTION__, e.what(), GetFriendlyName(), Author().c_str());
-//  }
-//
-//  /* default to 0 on error */
-//  *localTime = 0;
-//  *iGmtOffset = 0;
-//
-//  return PVR_ERROR_NOT_IMPLEMENTED;
-//}
-
 PVR_ERROR CPVRClient::StartChannelScan(void)
 {
   if (!m_bReadyToUse)

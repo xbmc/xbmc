@@ -137,14 +137,6 @@ namespace PVR
      */
     PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed);
 
-  //  /*!
-  //   * @brief Get the time reported by the backend.
-  //   * @param localTime The local time.
-  //   * @param iGmtOffset The GMT offset used.
-  //   * @return PVR_ERROR_NO_ERROR if the time has been fetched successfully.
-  //   */
-  //  PVR_ERROR GetBackendTime(time_t *localTime, int *iGmtOffset);
-
     /*!
      * @brief Start a channel scan on the server.
      * @return PVR_ERROR_NO_ERROR if the channel scan has been started successfully.
