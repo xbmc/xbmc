@@ -1036,12 +1036,11 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme < -1)
       iTheme = vecTheme.size()-1;
 
-    CStdString strSkinTheme;
-    if (iTheme==-1)
-      g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
-    else
-      g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
+    CStdString strSkinTheme = "SKINDEFAULT";
+    if (iTheme != -1 && iTheme < (int)vecTheme.size())
+      strSkinTheme = vecTheme[iTheme];
 
+    g_guiSettings.SetString("lookandfeel.skintheme", strSkinTheme);
     // also set the default color theme
     g_guiSettings.SetString("lookandfeel.skincolors", URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
 
