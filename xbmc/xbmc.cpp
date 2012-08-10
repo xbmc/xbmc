@@ -21,9 +21,20 @@
 
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
+
+#ifdef TARGET_RASPBERRY_PI
+#include "linux/RBP.h"
+#endif
+
 extern "C" int XBMC_Run(bool renderGUI)
 {
   int status = -1;
+
+#ifdef TARGET_RASPBERRY_PI
+  if(!g_RBP.Initialize())
+    return false;
+  g_RBP.LogFirmwareVerison();
+#endif
 
   if (!g_advancedSettings.Initialized())
   {
@@ -62,6 +73,10 @@ extern "C" int XBMC_Run(bool renderGUI)
     fprintf(stderr, "ERROR: Exception caught on main loop. Exiting\n");
     status = -1;
   }
+
+#ifdef TARGET_RASPBERRY_PI
+  g_RBP.Deinitialize();
+#endif
 
   return status;
 }
