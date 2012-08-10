@@ -107,22 +107,26 @@ namespace PYXBMC
       "level",
       NULL};
 
-    char *s_line = NULL;
+    PyObject *s_line = NULL;
     int iLevel = LOGNOTICE;
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"s|i",
+      (char*)"O|i",
       (char**)keywords,
       &s_line,
       &iLevel))
     {
       return NULL;
     }
+    CStdString uText;
+    if (!PyXBMCGetUnicodeString(uText, s_line, 1))
+      return NULL;
+
     // check for a valid loglevel
     if (iLevel < LOGDEBUG || iLevel > LOGNONE)
       iLevel = LOGNOTICE;
-    CLog::Log(iLevel, "%s", s_line);
+    CLog::Log(iLevel, "%s", uText.c_str());
 
     Py_INCREF(Py_None);
     return Py_None;
