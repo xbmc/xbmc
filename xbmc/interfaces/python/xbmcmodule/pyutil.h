@@ -32,6 +32,8 @@ extern "C" {
 #define PY_XBMC_CREDITS   "Team XBMC"
 #define PY_XBMC_PLATFORM  "ALL"
 
+class CVariant;
+
 namespace PYXBMC
 {
   int   PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, int pos = -1);
@@ -44,6 +46,10 @@ namespace PYXBMC
   void  PyXBMCWaitForThreadMessage(int message, int param1, int param2);
  
   bool  PyXBMCGetAddonId(std::string &addonId);
+
+  /*! \brief convert CVariant into a python object
+   */
+  PyObject *PyVariantToObject(const CVariant &value);
 }
 
 // Python doesn't play nice with PyXBMC_AddPendingCall

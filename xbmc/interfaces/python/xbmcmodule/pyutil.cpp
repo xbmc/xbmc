@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/CharsetConverter.h"
+#include "utils/Variant.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "ApplicationMessenger.h"
@@ -159,6 +160,26 @@ namespace PYXBMC
     
     addonId = PyString_AsString(pyid);
     return true;
+  }
+  
+  PyObject *PyVariantToObject(const CVariant &value)
+  {
+    switch (value.type())
+    {
+      case CVariant::VariantTypeBoolean:
+        return Py_BuildValue((char*)"b", value.asBoolean());
+      case CVariant::VariantTypeInteger:
+      case CVariant::VariantTypeUnsignedInteger:
+        return Py_BuildValue((char*)"i", value.asInteger());
+      case CVariant::VariantTypeDouble:
+        return Py_BuildValue((char*)"f", value.asDouble());
+      case CVariant::VariantTypeString:
+      default:
+      {
+        std::string svalue = value.asString();
+        return PyUnicode_DecodeUTF8(svalue.c_str(), svalue.size(), "replace");
+      }
+    }
   }
 }
 
