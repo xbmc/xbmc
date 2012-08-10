@@ -2052,7 +2052,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
 
     // and insert the new row
     CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
-    sql += PrepareSQL("where idShow=%i", idTvShow);
+    sql += PrepareSQL(" where idShow=%i", idTvShow);
     m_pDS->exec(sql.c_str());
 
     CommitTransaction();
@@ -2127,7 +2127,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
 
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
-    sql += PrepareSQL("where idEpisode=%i", idEpisode);
+    sql += PrepareSQL(" where idEpisode=%i", idEpisode);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
@@ -8765,22 +8765,22 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   if (content == "movies")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_PARENTPATHID, pathID));
-    GetMoviesByWhere("", filter, items);
+    GetMoviesByWhere("videodb://1/2/", filter, items);
   }
   else if (content == "episodes")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_EPISODE_PARENTPATHID, pathID));
-    GetEpisodesByWhere("", filter, items);
+    GetEpisodesByWhere("videodb://2/2/", filter, items);
   }
   else if (content == "tvshows")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_TV_PARENTPATHID, pathID));
-    GetTvShowsByWhere("", filter, items);
+    GetTvShowsByWhere("videodb://2/2/", filter, items);
   }
   else if (content == "musicvideos")
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_MUSICVIDEO_PARENTPATHID, pathID));
-    GetMusicVideosByWhere("", filter, items);
+    GetMusicVideosByWhere("videodb://3/2/", filter, items);
   }
   for (int i = 0; i < items.Size(); i++)
     items[i]->SetPath(items[i]->GetVideoInfoTag()->m_basePath);
