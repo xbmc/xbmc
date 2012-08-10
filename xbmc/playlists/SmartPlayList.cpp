@@ -810,6 +810,13 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       else if (m_field == FieldAlbumArtist)
         query = GetField(FieldId, strType) + negate + " IN (SELECT album_artist.idAlbum FROM album_artist, artist WHERE album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     }
+    else if (strType == "artists")
+    {
+      table = "artistview";
+
+      if (m_field == FieldGenre)
+        query = GetField(FieldId, strType) + negate + " IN (SELECT song_artist.idArtist FROM song_artist, song_genre, genre WHERE song_artist.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
+    }
     else if (strType == "movies")
     {
       table = "movieview";
