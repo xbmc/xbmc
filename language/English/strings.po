@@ -9497,3 +9497,14 @@ msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr ""
 
+#. adjust refreshrate  
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#36035"
+msgid "Always"
+msgstr ""
+
+#. adjust refreshrate  
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr ""

@@ -2492,7 +2492,7 @@ bool CApplication::OnKey(const CKey& key)
 
   bool bResult = false;
 
-  // play sound before the action unless the button is held, 
+  // play sound before the action unless the button is held,
   // where we execute after the action as held actions aren't fired every time.
   if(action.GetHoldTime())
   {
@@ -3335,7 +3335,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
      CAction action(actionID, fAmount, 0.0f, actionName, holdTime);
      bool bResult = false;
 
-     // play sound before the action unless the button is held, 
+     // play sound before the action unless the button is held,
      // where we execute after the action as held actions aren't fired every time.
      if(action.GetHoldTime())
      {
@@ -4282,6 +4282,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  //resets to res_desktop or look&feel resolution (including refreshrate)
+  g_graphicsContext.SetFullScreenVideo(false);
+
   if(m_bPlaybackStarting)
     return;
 
@@ -4567,6 +4570,9 @@ void CApplication::StopPlaying()
 
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
+    //resets to res_desktop or look&feel resolution (including refreshrate)
+    g_graphicsContext.SetFullScreenVideo(false);
 
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION

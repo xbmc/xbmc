@@ -45,7 +45,7 @@ CBaseRenderer::CBaseRenderer()
   for(int i=0; i < 4; i++)
   {
     m_rotatedDestCoords[i].x = 0;
-    m_rotatedDestCoords[i].y = 0;    
+    m_rotatedDestCoords[i].y = 0;
   }
 
   m_RenderUpdateCallBackFn = NULL;
@@ -68,7 +68,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 
   // Adjust refreshrate to match source fps
 #if !defined(TARGET_DARWIN_IOS)
-  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
   {
     float weight;
     if (!FindResolutionFromOverride(fps, weight, false)) //find a refreshrate from overrides
@@ -253,7 +253,7 @@ void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
 inline void CBaseRenderer::ReorderDrawPoints()
 {
   // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
-  float origMat[4][2] = {{m_destRect.x1, m_destRect.y1}, 
+  float origMat[4][2] = {{m_destRect.x1, m_destRect.y1},
                          {m_destRect.x2, m_destRect.y1},
                          {m_destRect.x2, m_destRect.y2},
                          {m_destRect.x1, m_destRect.y2}};
@@ -274,7 +274,7 @@ inline void CBaseRenderer::ReorderDrawPoints()
       changeAspect = true;
       break;
   }
-  
+
   // if renderer doesn't support rotation
   // treat orientation as 0 degree so that
   // ffmpeg might handle it.
@@ -283,7 +283,7 @@ inline void CBaseRenderer::ReorderDrawPoints()
     pointOffset = 0;
     changeAspect = false;
   }
-  
+
 
   int diff = (int) ((m_destRect.Height() - m_destRect.Width()) / 2);
 
