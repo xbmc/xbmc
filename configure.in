@@ -1538,10 +1538,19 @@ if test "x$use_vaapi" != "xno"; then
     fi
     USE_VAAPI=0
   else
+    has_va_x11="no"
+    has_va_glx="no"
     initial_val=$use_vaapi
-    AC_CHECK_LIB([va], main, :, use_vaapi=no)
+    PKG_CHECK_MODULES([LIBVA], [libva], [
+      INCLUDES="$INCLUDES $LIBVA_CFLAGS"
+      LIBS="$LIBS $LIBVA_LIBS"], [use_vaapi="no"])
     if test "x$use_vaapi" != "xno"; then
-      AC_CHECK_LIB([va-glx], main, LIBS="-lva -lva-glx $LIBS", use_vaapi=no, -lva)
+      if test "$use_gl" = "yes"; then
+        PKG_CHECK_MODULES([LIBVA_GLX], [libva-glx], [
+          INCLUDES="$INCLUDES $LIBVA_GLX_CFLAGS"
+          LIBS="$LIBS $LIBVA_GLX_LIBS"
+          has_va_glx="yes"], [use_vaapi="no"])
+      fi
     fi
 
     if test "x$use_vaapi" = "xno"; then
@@ -1552,7 +1561,10 @@ if test "x$use_vaapi" != "xno"; then
       fi
       USE_VAAPI=0
     else
-      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries (-lva AND -lva-glx)])
+      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries])
+      if test "$has_va_glx" = "yes"; then
+        AC_DEFINE([HAVE_VA_GLX], [1], [Defined to 1 if VA/GLX API is available])
+      fi
       USE_VAAPI=1
     fi
   fi

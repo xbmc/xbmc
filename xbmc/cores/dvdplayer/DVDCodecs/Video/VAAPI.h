@@ -26,11 +26,12 @@
 #include "DVDVideoCodecFFmpeg.h"
 #include <libavcodec/vaapi.h>
 #include <va/va.h>
-#include <va/va_x11.h>
-#include <va/va_glx.h>
 #include <list>
 #include <boost/shared_ptr.hpp>
 
+#ifdef HAVE_VA_GLX
+# include <va/va_glx.h>
+#endif
 
 namespace VAAPI {
 

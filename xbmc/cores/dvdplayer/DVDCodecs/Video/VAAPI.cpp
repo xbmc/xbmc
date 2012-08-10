@@ -89,7 +89,9 @@ static CDisplayPtr GetGlobalDisplay()
   }
 
   VADisplay disp;
+#ifdef HAVE_VA_GLX
   disp = vaGetDisplayGLX(g_Windowing.GetDisplay());
+#endif
 
   int major_version, minor_version;
   VAStatus res = vaInitialize(disp, &major_version, &minor_version);
@@ -139,7 +141,9 @@ CSurfaceGL::~CSurfaceGL()
 {
   CLog::Log(LOGDEBUG, "VAAPI - destroying glx surface %p", m_id);
   CSingleLock lock(*m_display);
+#ifdef HAVE_VA_GLX
   WARN(vaDestroySurfaceGLX(m_display->get(), m_id))
+#endif
 }
 
 CDecoder::CDecoder()
