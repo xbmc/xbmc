@@ -979,6 +979,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 #if defined(HAS_AMLPLAYER)
        g_application.GetCurrentPlayer() == EPC_AMLPLAYER ||
 #endif
+#if defined(HAS_OMXPLAYER)
+       g_application.GetCurrentPlayer() == EPC_OMXPLAYER ||
+#endif
        g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
       CUtil::IsUsingTTFSubtitles() && (g_application.m_pPlayer->GetSubtitleVisible()))
   {

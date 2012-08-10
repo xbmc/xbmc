@@ -287,6 +287,13 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     s_vecCoreConfigs.push_back(amlplayer);
 #endif
 
+#if defined(HAS_OMXPLAYER)
+    CPlayerCoreConfig* omxplayer = new CPlayerCoreConfig("OMXPlayer", EPC_OMXPLAYER, NULL);
+    omxplayer->m_bPlaysAudio = true;
+    omxplayer->m_bPlaysVideo = true;
+    s_vecCoreConfigs.push_back(omxplayer);
+#endif
+
     for(std::vector<CPlayerSelectionRule *>::iterator it = s_vecCoreSelectionRules.begin(); it != s_vecCoreSelectionRules.end(); it++)
       delete *it;
     s_vecCoreSelectionRules.clear();

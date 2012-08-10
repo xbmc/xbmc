@@ -163,7 +163,9 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
   if(m_list.empty() && m_bEmptied == false && priority == 0 && m_owner != "teletext")
   {
+#if !defined(TARGET_RASPBERRY_PI)
     CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - asked for new data packet, with nothing available", m_owner.c_str());
+#endif
     m_bEmptied = true;
   }
 
