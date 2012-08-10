@@ -25,6 +25,8 @@
 #include "system.h"
 #endif
 
+#if defined(HAVE_OMXLIB)
+
 #include "video/VideoReferenceClock.h"
 #include "settings/GUISettings.h"
 
@@ -1059,3 +1061,5 @@ double OMXClock::NormalizeFrameduration(double frameduration)
   else
     return frameduration;
 }
+
+#endif

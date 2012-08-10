@@ -22,6 +22,8 @@
 #ifndef _AVCLOCK_H_
 #define _AVCLOCK_H_
 
+#if defined(HAVE_OMXLIB)
+
 #include "OMXCore.h"
 #include "DVDClock.h"
 #include "linux/XTimeUtils.h"
@@ -150,5 +152,7 @@ public:
 
   static double NormalizeFrameduration(double frameduration);
 };
+
+#endif
 
 #endif
