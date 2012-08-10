@@ -161,6 +161,8 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
+  m_source.IoControl(IOCTRL_SET_CACHE,this);
+
   // check if source can seek
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
   m_chunkSize = CFile::GetChunkSize(m_source.GetChunkSize(), READ_CACHE_CHUNK_SIZE);
