@@ -41,6 +41,7 @@
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "music/tags/MusicInfoTag.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -68,6 +69,7 @@
 #include "ThumbLoader.h"
 
 using namespace std;
+using namespace MUSIC_INFO;
 
 CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("CDelayedMessage")
 {
@@ -783,6 +785,21 @@ case TMSG_POWERDOWN:
       *((bool*)pMsg->lpVoid) = g_application.DestroyWindow();
     }
     break;
+
+    case TMSG_UPDATE_CURRENT_ITEM:
+    {
+      CFileItem* item = (CFileItem*)pMsg->lpVoid;
+      if (!item)
+        return;
+      if (pMsg->dwParam1 == 1 && item->HasMusicInfoTag()) // only grab music tag
+        g_infoManager.SetCurrentSongTag(*item->GetMusicInfoTag());
+      else if (pMsg->dwParam1 == 2 && item->HasVideoInfoTag()) // only grab video tag
+        g_infoManager.SetCurrentVideoTag(*item->GetVideoInfoTag());
+      else
+        g_infoManager.SetCurrentItem(*item);
+      delete item;
+      break;
+    }
   }
 }
 
@@ -1243,4 +1260,30 @@ bool CApplicationMessenger::DestroyDisplay()
   SendMessage(tMsg, true);
   
   return result;
+}
+
+void CApplicationMessenger::SetCurrentSongTag(const CMusicInfoTag& tag)
+{
+  CFileItem* item = new CFileItem(tag);
+  ThreadMessage tMsg = {TMSG_UPDATE_CURRENT_ITEM};
+  tMsg.dwParam1 = 1;
+  tMsg.lpVoid = (void*)item;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetCurrentVideoTag(const CVideoInfoTag& tag)
+{
+  CFileItem* item = new CFileItem(tag);
+  ThreadMessage tMsg = {TMSG_UPDATE_CURRENT_ITEM};
+  tMsg.dwParam1 = 2;
+  tMsg.lpVoid = (void*)item;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetCurrentItem(const CFileItem& item)
+{
+  CFileItem* item2 = new CFileItem(item);
+  ThreadMessage tMsg = {TMSG_UPDATE_CURRENT_ITEM};
+  tMsg.lpVoid = (void*)item2;
+  SendMessage(tMsg, false);
 }

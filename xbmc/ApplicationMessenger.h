@@ -37,6 +37,12 @@ class CFileItemList;
 class CGUIDialog;
 class CGUIWindow;
 class CGUIMessage;
+class CVideoInfoTag;
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
 
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
@@ -62,6 +68,7 @@ class CGUIMessage;
 #define TMSG_PLAYLISTPLAYER_REMOVE 219
 #define TMSG_PLAYLISTPLAYER_SWAP 223
 #define TMSG_PLAYLISTPLAYER_REPEAT 224
+#define TMSG_UPDATE_CURRENT_ITEM 225
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
@@ -188,6 +195,12 @@ public:
   void Minimize(bool wait = false);
   void ExecOS(const CStdString command, bool waitExit = false);
   void UserEvent(int code);
+  //! \brief Set the tag for the currently playing song
+  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag& tag);
+  //! \brief Set the tag for the currently playing video
+  void SetCurrentVideoTag(const CVideoInfoTag& tag);
+  //! \brief Set the currently currently item
+  void SetCurrentItem(const CFileItem& item);
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
