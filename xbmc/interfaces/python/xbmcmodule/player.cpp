@@ -413,7 +413,7 @@ namespace PYXBMC
 
   // Player_GetPlayingFile
   PyDoc_STRVAR(getPlayingFile__doc__,
-    "getPlayingFile() -- returns the current playing file as a string.\n"
+    "getPlayingFile() -- returns the current playing file as a unicode string.\n"
     "\n"
     "Throws: Exception, if player is not playing a file.\n"
     "");
@@ -425,7 +425,7 @@ namespace PYXBMC
       PyErr_SetString(PyExc_Exception, "XBMC is not playing any file");
       return NULL;
     }
-    return Py_BuildValue((char*)"s", g_application.CurrentFile().c_str());
+    return PyUnicode_DecodeUTF8(g_application.CurrentFile().c_str(), g_application.CurrentFile().size(), "replace");
   }
 
   // Player_GetVideoInfoTag
@@ -576,7 +576,7 @@ namespace PYXBMC
 
   // Player_GetSubtitles
   PyDoc_STRVAR(getSubtitles__doc__,
-    "getSubtitles() -- get subtitle stream name\n");
+    "getSubtitles() -- get subtitle stream name as a unicode string\n");
 
   PyObject* Player_GetSubtitles(PyObject *self)
   {
@@ -588,7 +588,7 @@ namespace PYXBMC
 
       if (strName == "Unknown(Invalid)")
         strName = "";
-      return Py_BuildValue((char*)"s", strName.c_str());
+      return PyUnicode_DecodeUTF8(strName.c_str(), strName.size(), "replace");
     }
 
     Py_INCREF(Py_None);
