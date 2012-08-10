@@ -852,21 +852,20 @@ namespace PYXBMC
 
     PyXBMCGUILock();
     CStdString lowerKey = key;
-    CStdString value;
+    CVariant value;
     if (lowerKey.CompareNoCase("startoffset") == 0)
     { // special case for start offset - don't actually store in a property,
       // we store it in item.m_lStartOffset instead
-      value.Format("%f", self->item->m_lStartOffset / 75.0);
+      value = self->item->m_lStartOffset / 75.0;
     }
     else if (lowerKey.CompareNoCase("totaltime") == 0)
-      value.Format("%f", self->item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+      value = self->item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds;
     else if (lowerKey.CompareNoCase("resumetime") == 0)
-      value.Format("%f", self->item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+      value = self->item->GetVideoInfoTag()->m_resumePoint.timeInSeconds;
     else
-      value = self->item->GetProperty(lowerKey.ToLower()).asString();
+      value = self->item->GetProperty(lowerKey.ToLower());
     PyXBMCGUIUnlock();
-
-    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
+    return PyVariantToObject(value);
   }
 
   // addContextMenuItems() method

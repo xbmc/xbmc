@@ -1067,9 +1067,7 @@ namespace PYXBMC
 
     GilSafeSingleLock lock(g_graphicsContext);
     CStdString lowerKey = key;
-    string value = self->pWindow->GetProperty(lowerKey.ToLower()).asString();
-
-    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
+    return PyVariantToObject(self->pWindow->GetProperty(lowerKey.ToLower()));
   }
 
   PyDoc_STRVAR(clearProperty__doc__,
