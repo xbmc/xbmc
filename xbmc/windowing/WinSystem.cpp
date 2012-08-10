@@ -107,19 +107,21 @@ static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addi
 {
   int width = g_settings.m_ResInfo[addindex].iWidth;
   int height = g_settings.m_ResInfo[addindex].iHeight;
+  int refresh = g_settings.m_ResInfo[addindex].fRefreshRate + 0.5;
 
   for (unsigned int idx = 0; idx < resolutions.size(); idx++)
-    if (resolutions[idx].width == width && resolutions[idx].height == height)
+    if (resolutions[idx].width == width && resolutions[idx].height == height && resolutions[idx].refresh == refresh)
       return; // already taken care of.
 
-  RESOLUTION_WHR res = {width, height, addindex};
+  RESOLUTION_WHR res = {width, height, refresh, addindex};
   resolutions.push_back(res);
 }
 
 static bool resSortPredicate (RESOLUTION_WHR i, RESOLUTION_WHR j)
 {
   return (    i.width < j.width
-          || (i.width == j.width && i.height < j.height));
+          || (i.width == j.width && i.height < j.height)
+          || (i.width == j.width && i.height == j.height && i.refresh < j.refresh));
 }
 
 vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)

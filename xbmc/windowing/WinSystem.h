@@ -41,6 +41,7 @@ struct RESOLUTION_WHR
 {
   int width;
   int height;
+  int refresh;
   int ResInfo_Index;
 };
 
