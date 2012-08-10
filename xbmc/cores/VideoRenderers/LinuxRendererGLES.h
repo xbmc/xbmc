@@ -86,7 +86,8 @@ enum RenderMethod
   RENDER_POT    = 0x010,
   RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
-  RENDER_BYPASS = 0x100
+  RENDER_BYPASS = 0x100,
+  RENDER_VAAPI  = 0x200
 };
 
 enum RenderQuality
@@ -152,6 +153,9 @@ public:
 
   virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
+#ifdef HAVE_LIBVA
+  virtual void         AddProcessor(VAAPI::CHolder& holder);
+#endif
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
 #endif
@@ -178,6 +182,10 @@ protected:
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
 
+  void UploadVAAPITexture(int index);
+  void DeleteVAAPITexture(int index);
+  bool CreateVAAPITexture(int index);
+
   void UploadCVRefTexture(int index);
   void DeleteCVRefTexture(int index);
   bool CreateCVRefTexture(int index);
@@ -192,6 +200,7 @@ protected:
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
+  void RenderVAAPI(int index, int field);         // VA-API surface
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
 
@@ -235,6 +244,8 @@ protected:
   typedef YUVPLANE           YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
 
+  void RenderRGB(const YUVPLANE& plane);
+
   struct YUVBUFFER
   {
     YUVBUFFER();
@@ -244,6 +255,9 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
+#ifdef HAVE_LIBVA
+    VAAPI::CHolder& vaapi;
+#endif
 #ifdef HAVE_LIBOPENMAX
     OpenMaxVideoBuffer *openMaxBuffer;
 #endif

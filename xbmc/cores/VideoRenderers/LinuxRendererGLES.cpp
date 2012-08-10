@@ -59,10 +59,72 @@
 #ifdef TARGET_DARWIN_IOS
 #include "osx/DarwinUtils.h"
 #endif
+#ifdef HAVE_LIBVA
+#include <va/va.h>
+#include "cores/dvdplayer/DVDCodecs/Video/VAAPI.h"
+#endif
 
 using namespace Shaders;
 
+class CGLESVTable
+{
+  bool  m_gotSymbols;
+
+  bool  GetSymbol(void *fnptr, const char *name);
+  bool  GetSymbols();
+
+public:
+        CGLESVTable();
+
+  static const CGLESVTable *            Get();
+
+  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC   gl_egl_image_target_texture2d_oes;
+};
+
+CGLESVTable::CGLESVTable()
+  : m_gotSymbols(false)
+{
+}
+
+bool CGLESVTable::GetSymbol(void *arg, const char *name)
+{
+  typedef void (*GenericFunc)(void);
+  GenericFunc func, *func_ptr = (GenericFunc *)arg;
+
+  func = static_cast<GenericFunc>(eglGetProcAddress(name));
+  if (!func)
+  {
+    CLog::Log(LOGERROR, "GLES: Failed to load symbol %s", name);
+    return false;
+  }
+
+  *func_ptr = func;
+  return true;
+}
+
+bool CGLESVTable::GetSymbols()
+{
+  if (m_gotSymbols)
+    return true;
+  if (!GetSymbol(&gl_egl_image_target_texture2d_oes, "glEGLImageTargetTexture2DOES"))
+    return false;
+  m_gotSymbols = true;
+  return true;
+}
+
+const CGLESVTable *CGLESVTable::Get()
+{
+  static CGLESVTable g_vtable;
+
+  if (!g_vtable.GetSymbols())
+    return NULL;
+  return &g_vtable;
+}
+
 CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
+#ifdef HAVE_LIBVA
+  : vaapi(*(new VAAPI::CHolder()))
+#endif
 {
   memset(&fields, 0, sizeof(fields));
   memset(&image , 0, sizeof(image));
@@ -71,6 +133,9 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
 
 CLinuxRendererGLES::YUVBUFFER::~YUVBUFFER()
 {
+#ifdef HAVE_LIBVA
+  delete &vaapi;
+#endif
 }
 
 CLinuxRendererGLES::CLinuxRendererGLES()
@@ -627,6 +692,12 @@ void CLinuxRendererGLES::LoadShaders(int field)
         m_renderMethod = RENDER_CVREF;
         break;
       }
+      else if (m_format == RENDER_FMT_VAAPI)
+      {
+        CLog::Log(LOGNOTICE, "GL: Using VAAPI render method");
+        m_renderMethod = RENDER_VAAPI;
+        break;
+      }
       #if defined(TARGET_DARWIN_IOS)
       else if (ios_version < 5.0 && m_format == RENDER_FMT_YUV420P)
       {
@@ -677,7 +748,13 @@ void CLinuxRendererGLES::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
   // Now that we now the render method, setup texture function handlers
-  if (m_format == RENDER_FMT_CVBREF)
+  if (m_format == RENDER_FMT_VAAPI)
+  {
+    m_textureUpload = &CLinuxRendererGLES::UploadVAAPITexture;
+    m_textureCreate = &CLinuxRendererGLES::CreateVAAPITexture;
+    m_textureDelete = &CLinuxRendererGLES::DeleteVAAPITexture;
+  }
+  else if (m_format == RENDER_FMT_CVBREF)
   {
     m_textureUpload = &CLinuxRendererGLES::UploadCVRefTexture;
     m_textureCreate = &CLinuxRendererGLES::CreateCVRefTexture;
@@ -792,6 +869,11 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
       VerifyGLState();
       break;
     }
+  }
+  else if (m_renderMethod & RENDER_VAAPI)
+  {
+    RenderVAAPI(index, m_currentField);
+    VerifyGLState();
   }
   else if (m_renderMethod & RENDER_OMXEGL)
   {
@@ -1166,6 +1248,93 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 
   glDisable(m_textureTarget);
   VerifyGLState();
+}
+
+void CLinuxRendererGLES::RenderRGB(const YUVPLANE& plane)
+{
+  glDisable(GL_DEPTH_TEST);
+
+  glEnable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, plane.id);
+
+  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLfloat ver[4][4];
+  GLfloat tex[4][2];
+  float col[4][3];
+
+  for (int index = 0;index < 4;++index)
+    col[index][0] = col[index][1] = col[index][2] = 1.0;
+
+  GLint   posLoc = g_Windowing.GUIShaderGetPos();
+  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
+  GLint   colLoc = g_Windowing.GUIShaderGetCol();
+
+  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
+  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(texLoc);
+  glEnableVertexAttribArray(colLoc);
+
+  // Set vertex coordinates
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
+
+  // Set texture coordinates
+  // FIXME: populate plane.rect correctly
+  tex[0][0] = tex[3][0] = 0;
+  tex[0][1] = tex[1][1] = 0;
+  tex[1][0] = tex[2][0] = 1;
+  tex[2][1] = tex[3][1] = 1;
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(texLoc);
+  glDisableVertexAttribArray(colLoc);
+
+  g_Windowing.DisableGUIShader();
+
+  VerifyGLState();
+
+  glDisable(m_textureTarget);
+  VerifyGLState();
+}
+
+void CLinuxRendererGLES::RenderVAAPI(int index, int field)
+{
+#if defined(HAVE_LIBVA)
+  VAAPI::CHolder &va    = m_buffers[index].vaapi;
+  YUVPLANES &planes     = m_buffers[index].fields[0];
+
+  if (!va.surface)
+  {
+    CLog::Log(LOGINFO, "GLES: VAAPI - No VA surface");
+    return;
+  }
+
+  if (!va.surfegl)
+  {
+    CLog::Log(LOGINFO, "GLES: VAAPI - No VA/EGL surface");
+    return;
+  }
+
+  switch (va.surfegl->m_format)
+  {
+  case EGL_TEXTURE_RGBA:
+    RenderRGB(planes[0]);
+    break;
+  }
+#endif
 }
 
 void CLinuxRendererGLES::RenderOpenMax(int index, int field)
@@ -1639,6 +1808,173 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 }
 
 //********************************************************************************************************
+// VAAPI Texture creation, deletion, copying + clearing
+//********************************************************************************************************
+void CLinuxRendererGLES::UploadVAAPITexture(int index)
+{
+#ifdef HAVE_LIBVA
+  VAAPI::CHolder &va    = m_buffers[index].vaapi;
+  YV12Image &im         = m_buffers[index].image;
+  YUVPLANES &planes     = m_buffers[index].fields[0];
+
+  if (!va.surface)
+    return;
+
+  if (va.display && va.surface->m_display != va.display)
+  {
+    CLog::Log(LOGDEBUG, "GLES: VAAPI - Context changed");
+    va.surfegl.reset();
+  }
+  va.display = va.surface->m_display;
+
+  CSingleLock lock(*va.display);
+
+  if (va.display->lost())
+    return;
+
+  if (!va.surfegl)
+  {
+    VAAPI::CSurfaceEGL *surface = NULL;
+#ifdef HAVE_VA_X11
+    if (!surface)
+      surface = VAAPI::CSurfaceEGLPixmap::Create(va.display, im.width, im.height);
+#endif
+    if (!surface)
+    {
+      CLog::Log(LOGERROR, "GLES: VAAPI - Failed to create VA/EGL surface");
+      return;
+    }
+    va.surfegl.reset(surface);
+  }
+  else if (!va.surfegl->EnsureSize(im.width, im.height))
+  {
+    CLog::Log(LOGERROR, "GLES: VAAPI - Failed to resize VA/EGL surface");
+    return;
+  }
+
+  unsigned int flags = 0;
+  if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
+    flags |= VA_SRC_BT709;
+  else
+    flags |= VA_SRC_BT601;
+
+  if (m_currentField == FIELD_TOP)
+    flags |= VA_TOP_FIELD;
+  else if (m_currentField == FIELD_BOT)
+    flags |= VA_BOTTOM_FIELD;
+  else
+    flags |= VA_FRAME_PICTURE;
+
+  if (!va.surfegl->Upload(va.surface, flags))
+  {
+    CLog::Log(LOGERROR, "GLES: VAAPI - Failed to update VA/EGL surface");
+    return;
+  }
+
+  unsigned int i, numPlanes;
+  switch (va.surfegl->m_format) {
+  case EGL_TEXTURE_RGBA:
+    numPlanes = 1;
+    break;
+  default:
+    CLog::Log(LOGERROR, "GLES: VAAPI - Unsupported VA/EGL surface format");
+    return;
+  }
+  ASSERT(numPlanes == va.surfegl->m_numPlanes);
+
+  const CGLESVTable * const gles_vtable = CGLESVTable::Get();
+  for (i = 0; i < numPlanes; i++)
+  {
+    glBindTexture(m_textureTarget, planes[i].id);
+    gles_vtable->gl_egl_image_target_texture2d_oes(m_textureTarget, va.surfegl->m_images[i]);
+    glBindTexture(m_textureTarget, 0);
+  }
+
+  CLog::Log(LOGNOTICE, "GLES: VAAPI - Texture uploaded");
+
+  m_eventTexturesDone[index]->Set();
+#endif
+}
+
+void CLinuxRendererGLES::DeleteVAAPITexture(int index)
+{
+#ifdef HAVE_LIBVA
+  VAAPI::CHolder &va    = m_buffers[index].vaapi;
+  YUVPLANES &planes     = m_buffers[index].fields[0];
+  unsigned int i;
+
+  va.display.reset();
+  va.surface.reset();
+  va.surfegl.reset();
+
+  for (i = 0; i < MAX_PLANES; i++)
+  {
+    if (planes[i].id && glIsTexture(planes[i].id))
+      glDeleteTextures(1, &planes[i].id);
+    planes[i].id = 0;
+  }
+
+  CLog::Log(LOGNOTICE, "GLES: VAAPI - Texture destroyed");
+#endif
+}
+
+bool CLinuxRendererGLES::CreateVAAPITexture(int index)
+{
+#ifdef HAVE_LIBVA
+  VAAPI::CHolder &va    = m_buffers[index].vaapi;
+  YV12Image &im         = m_buffers[index].image;
+  YUVFIELDS &fields     = m_buffers[index].fields;
+  YUVPLANES &planes     = fields[0];
+  VAAPI::CSurfaceEGL* surface = NULL;
+  unsigned int i;
+
+  DeleteVAAPITexture(index);
+
+  memset(&im    , 0, sizeof(im));
+  memset(&fields, 0, sizeof(fields));
+
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+
+  CLog::Log(LOGNOTICE, "GLES: VAAPI - Image size %dx%d", im.width, im.height);
+
+#ifdef HAVE_VA_X11
+  if (!surface)
+    surface = VAAPI::CSurfaceEGLPixmap::Create(va.display, im.width, im.height);
+#endif
+  if (!surface)
+  {
+    CLog::Log(LOGERROR, "GLES: VAAPI - Failed to create VA/EGL surface");
+    return false;
+  }
+  va.surfegl.reset(surface);
+
+  glEnable(m_textureTarget);
+  for (i = 0; i < surface->m_numPlanes; i++)
+  {
+    glGenTextures(1, &planes[i].id);
+    VerifyGLState();
+    glBindTexture(m_textureTarget, planes[i].id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    glBindTexture(m_textureTarget, 0);
+  }
+  glDisable(m_textureTarget);
+  m_eventTexturesDone[index]->Set();
+
+  // Ensure we have the necessary GLES extensions
+  if (!CGLESVTable::Get())
+    return false;
+
+  CLog::Log(LOGNOTICE, "GLES: VAAPI - Texture created");
+#endif
+  return true;
+}
+
+//********************************************************************************************************
 // CoreVideoRef Texture creation, deletion, copying + clearing
 //********************************************************************************************************
 void CLinuxRendererGLES::UploadCVRefTexture(int index)
@@ -1912,6 +2248,14 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   return VS_INTERLACEMETHOD_SW_BLEND;
 #endif
 }
+
+#ifdef HAVE_LIBVA
+void CLinuxRendererGLES::AddProcessor(VAAPI::CHolder& holder)
+{
+  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  buf.vaapi.surface = holder.surface;
+}
+#endif
 
 #ifdef HAVE_LIBOPENMAX
 void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *picture)

@@ -1545,6 +1545,13 @@ if test "x$use_vaapi" != "xno"; then
       INCLUDES="$INCLUDES $LIBVA_CFLAGS"
       LIBS="$LIBS $LIBVA_LIBS"], [use_vaapi="no"])
     if test "x$use_vaapi" != "xno"; then
+      if test "$use_gles" = "yes"; then
+        dnl XXX: necessary for texture-from-pixmap
+        PKG_CHECK_MODULES([LIBVA_X11], [libva-x11], [
+          INCLUDES="$INCLUDES $LIBVA_X11_CFLAGS"
+          LIBS="$LIBS $LIBVA_X11_LIBS"
+          has_va_x11="yes"], [use_vaapi="no"])
+      fi
       if test "$use_gl" = "yes"; then
         PKG_CHECK_MODULES([LIBVA_GLX], [libva-glx], [
           INCLUDES="$INCLUDES $LIBVA_GLX_CFLAGS"
@@ -1562,6 +1569,9 @@ if test "x$use_vaapi" != "xno"; then
       USE_VAAPI=0
     else
       AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries])
+      if test "$has_va_x11" = "yes"; then
+        AC_DEFINE([HAVE_VA_X11], [1], [Defined to 1 if VA/X11 API is available])
+      fi
       if test "$has_va_glx" = "yes"; then
         AC_DEFINE([HAVE_VA_GLX], [1], [Defined to 1 if VA/GLX API is available])
       fi
