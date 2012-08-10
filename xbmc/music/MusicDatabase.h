@@ -152,14 +152,14 @@ public:
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, bool albumArtistsOnly = false, int idGenre = -1, int idAlbum = -1, int idSong = -1);
+  bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, bool albumArtistsOnly = false, int idGenre = -1, int idAlbum = -1, int idSong = -1, const SortDescription &sortDescription = SortDescription());
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre = -1, int idArtist = -1, const SortDescription &sortDescription = SortDescription());
   bool GetAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, int year);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
   bool GetAlbumsByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription());
-  bool GetArtistsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items);
+  bool GetArtistsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
   bool GetRandomSong(CFileItem* item, int& idSong, const Filter &filter);
   int GetKaraokeSongsCount();
   int GetSongsCount(const Filter &filter = Filter());
@@ -299,7 +299,8 @@ private:
 
   void SplitString(const CStdString &multiString, std::vector<std::string> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
-  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb=true);
+  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb = true);
+  CArtist GetArtistFromDataset(const dbiplus::sql_record* const record, bool needThumb = true);
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL=false);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);

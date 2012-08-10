@@ -117,7 +117,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     if (m_type.Equals("tvshows") || m_type.Equals("episodes") || m_type.Equals("movies"))
       videodatabase.GetGenresNav("videodb://2/1/",items,type);
-    else if (m_type.Equals("songs") || m_type.Equals("albums") || m_type.Equals("mixed"))
+    else if (m_type.Equals("songs") || m_type.Equals("albums") || m_type.Equals("artists") || m_type.Equals("mixed"))
       database.GetGenresNav("musicdb://1/",items);
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
@@ -134,7 +134,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldArtist || m_rule.m_field == FieldAlbumArtist)
   {
-    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
+    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums") || m_type.Equals("artists"))
       database.GetArtistsNav("musicdb://2/", items, m_rule.m_field == FieldAlbumArtist, -1);
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
