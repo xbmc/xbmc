@@ -140,10 +140,10 @@ namespace PYXBMC
     "  2 : ShowAndGetImage\n"
     "  3 : ShowAndGetWriteableDirectory\n"
     "\n"
-    "*Note, If enableMultiple is False (default): returns filename and/or path as a string\n"
+    "*Note, If enableMultiple is False (default): returns filename and/or path as a unicode string\n"
     "       to the location of the highlighted item, if user pressed 'Ok' or a masked item\n"
     "       was selected. Returns the default value if dialog was canceled.\n"
-    "       If enableMultiple is True: returns tuple of marked filenames as a string,"
+    "       If enableMultiple is True: returns tuple of marked filenames as unicode strings,"
     "       if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.\n"
     "\n"
     "       If type is 0 or 3 the enableMultiple parameter is ignored."
@@ -216,12 +216,12 @@ namespace PYXBMC
         return NULL;
 
       for (unsigned int i = 0; i < valuelist.size(); i++)
-        PyTuple_SetItem(result, i, PyString_FromString(valuelist.at(i).c_str()));
+        PyTuple_SetItem(result, i, PyUnicode_DecodeUTF8(valuelist.at(i).c_str(), valuelist.at(i).size(), "replace"));
 
       return result;
     }
     else
-      return Py_BuildValue((char*)"s", value.c_str());
+      return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyDoc_STRVAR(numeric__doc__,
@@ -237,7 +237,7 @@ namespace PYXBMC
     "  2 : ShowAndGetTime      (default format: HH:MM)\n"
     "  3 : ShowAndGetIPAddress (default format: #.#.#.#)\n"
     "\n"
-    "*Note, Returns the entered data as a string.\n"
+    "*Note, Returns the entered data as a unicode string.\n"
     "       Returns the default value if dialog was canceled.\n"
     "\n"
     "example:\n"
@@ -325,7 +325,7 @@ namespace PYXBMC
         }
       }
     }
-    return Py_BuildValue((char*)"s", value.c_str());
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyDoc_STRVAR(yesno__doc__,

@@ -173,7 +173,7 @@ namespace PYXBMC
 
   // getLabel() Method
   PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the text heading for this edit control.\n"
+    "getLabel() -- Returns the unicode text heading for this edit control.\n"
     "\n"
     "example:\n"
     "  - label = self.edit.getLabel()\n");
@@ -181,7 +181,7 @@ namespace PYXBMC
   PyObject* ControlEdit_GetLabel(ControlLabel *self, PyObject *args)
   {
     if (!self->pGUIControl) return NULL;
-    return Py_BuildValue((char*)"s", self->strText.c_str());
+    return PyUnicode_DecodeUTF8(self->strText.c_str(), self->strText.size(), "replace");
   }
 
   // setLabel() Method
@@ -211,7 +211,7 @@ namespace PYXBMC
 
     // getText() Method
   PyDoc_STRVAR(getText__doc__,
-    "getText() -- Returns the text value for this edit control.\n"
+    "getText() -- Returns the unicode text value for this edit control.\n"
     "\n"
     "example:\n"
     "  - value = self.edit.getText()\n");
@@ -224,7 +224,7 @@ namespace PYXBMC
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, pControl->iParentId, pControl->iControlId);
     g_windowManager.SendMessage(msg, pControl->iParentId);
 
-    return Py_BuildValue((char*)"s", msg.GetLabel().c_str());
+    return PyUnicode_DecodeUTF8(msg.GetLabel().c_str(), msg.GetLabel().size(), "replace");
   }
 
   PyMethodDef ControlEdit_methods[] = {

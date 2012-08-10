@@ -207,7 +207,7 @@ namespace PYXBMC
 
   // getText() Method
   PyDoc_STRVAR(getText__doc__,
-    "getText() -- Returns the user input as a string.\n"
+    "getText() -- Returns the user input as a unicode string.\n"
     "\n"
     "*Note, This will always return the text entry even if you cancel the keyboard.\n"
     "       Use the isConfirmed() method to check if user cancelled the keyboard.\n"
@@ -227,7 +227,7 @@ namespace PYXBMC
     PyXBMCGUILock();
     CStdString result = pKeyboard->GetText();
     PyXBMCGUIUnlock();
-    return Py_BuildValue((char*)"s", result.c_str());
+    return PyUnicode_DecodeUTF8(result.c_str(), result.size(), "replace");
   }
 
   // isConfirmed() Method

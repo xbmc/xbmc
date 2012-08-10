@@ -1038,7 +1038,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getProperty__doc__,
-    "getProperty(key) -- Returns a window property as a string, similar to an infolabel.\n"
+    "getProperty(key) -- Returns a window property as a unicode string, similar to an infolabel.\n"
     "\n"
     "key            : string - property name.\n"
     "\n"
@@ -1069,7 +1069,7 @@ namespace PYXBMC
     CStdString lowerKey = key;
     string value = self->pWindow->GetProperty(lowerKey.ToLower()).asString();
 
-    return Py_BuildValue((char*)"s", value.c_str());
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyDoc_STRVAR(clearProperty__doc__,

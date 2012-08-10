@@ -154,7 +154,7 @@ namespace PYXBMC
 
   // getLabel() Method
   PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the text value for this label.\n"
+    "getLabel() -- Returns the unicode text value for this label.\n"
     "\n"
     "example:\n"
     "  - label = self.label.getLabel()\n");
@@ -162,7 +162,7 @@ namespace PYXBMC
   PyObject* ControlLabel_GetLabel(ControlLabel *self, PyObject *args)
   {
     if (!self->pGUIControl) return NULL;
-    return Py_BuildValue((char*)"s", self->strText.c_str());
+    return PyUnicode_DecodeUTF8(self->strText.c_str(), self->strText.size(), "replace");
   }
 
   PyMethodDef ControlLabel_methods[] = {
