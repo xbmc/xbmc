@@ -124,7 +124,7 @@ public:
   virtual float GetActualFPS();
   virtual void  SeekTime(__int64 iTime = 0);
   virtual __int64 GetTime();
-  virtual int   GetTotalTime();
+  virtual __int64 GetTotalTime();
   virtual int   GetAudioBitrate();
   virtual int   GetVideoBitrate();
   virtual int   GetSourceBitrate();

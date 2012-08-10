@@ -135,8 +135,14 @@ public:
 
   virtual float GetActualFPS() { return 0.0f; };
   virtual void SeekTime(int64_t iTime = 0){};
-  virtual int64_t GetTime(){ return 0;};
-  virtual int GetTotalTime(){ return 0;};
+  /*!
+   \brief current time in milliseconds
+   */
+  virtual int64_t GetTime() { return 0; }
+  /*!
+   \brief total time in milliseconds
+   */
+  virtual int64_t GetTotalTime() { return 0; }
   virtual int GetAudioBitrate(){ return 0;}
   virtual int GetVideoBitrate(){ return 0;}
   virtual int GetSourceBitrate(){ return 0;}

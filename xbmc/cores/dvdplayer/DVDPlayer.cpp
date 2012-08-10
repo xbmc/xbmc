@@ -2241,7 +2241,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   int64_t seek;
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2000*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
@@ -2587,9 +2587,9 @@ int64_t CDVDPlayer::GetTotalTimeInMsec()
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc
-int CDVDPlayer::GetTotalTime()
+int64_t CDVDPlayer::GetTotalTime()
 {
-  return (int)(GetTotalTimeInMsec() / 1000);
+  return GetTotalTimeInMsec();
 }
 
 void CDVDPlayer::ToFFRW(int iSpeed)
@@ -3803,7 +3803,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
-      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime();
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime() / 1000;
     }
     return result;
   }
