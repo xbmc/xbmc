@@ -79,7 +79,7 @@ void CGUIFontTTFGL::Begin()
     }
 
     // Turn Blending On
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
     glEnable(GL_BLEND);
 #ifdef HAS_GL
     glEnable(GL_TEXTURE_2D);
