@@ -368,7 +368,7 @@ namespace PYXBMC
 
   // getSkinDir() method
   PyDoc_STRVAR(getSkinDir__doc__,
-    "getSkinDir() -- Returns the active skin directory as a string.\n"
+    "getSkinDir() -- Returns the active skin directory as a unicode string.\n"
     "\n"
     "*Note, This is not the full path like 'special://home/addons/MediaCenter', but only 'MediaCenter'.\n"
     "\n"
@@ -377,37 +377,39 @@ namespace PYXBMC
 
   PyObject* XBMC_GetSkinDir(PyObject *self, PyObject *args)
   {
-    return PyString_FromString(g_guiSettings.GetString("lookandfeel.skin"));
+    CStdString value = g_guiSettings.GetString("lookandfeel.skin");
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // getLanguage() method
   PyDoc_STRVAR(getLanguage__doc__,
-    "getLanguage() -- Returns the active language as a string.\n"
+    "getLanguage() -- Returns the active language as a unicode string.\n"
     "\n"
     "example:\n"
     "  - language = xbmc.getLanguage()\n");
 
   PyObject* XBMC_GetLanguage(PyObject *self, PyObject *args)
   {
-    return PyString_FromString(g_guiSettings.GetString("locale.language"));
+    CStdString value = g_guiSettings.GetString("locale.language");
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // getIPAddress() method
   PyDoc_STRVAR(getIPAddress__doc__,
-    "getIPAddress() -- Returns the current ip address as a string.\n"
+    "getIPAddress() -- Returns the current ip address as a unicode string.\n"
     "\n"
     "example:\n"
     "  - ip = xbmc.getIPAddress()\n");
 
   PyObject* XBMC_GetIPAddress(PyObject *self, PyObject *args)
   {
-    char cTitleIP[32];
-    sprintf(cTitleIP, "127.0.0.1");
     CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
     if (iface)
-      return PyString_FromString(iface->GetCurrentIPAddress().c_str());
-
-    return PyString_FromString(cTitleIP);
+    {
+      CStdString value = iface->GetCurrentIPAddress();
+      return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
+    }
+    return PyUnicode_DecodeUTF8("127.0.0.1", 9, "replace");
   }
 
   // getDVDState() method
@@ -478,7 +480,7 @@ namespace PYXBMC
 
   // getInfolabel() method
   PyDoc_STRVAR(getInfoLabel__doc__,
-    "getInfoLabel(infotag) -- Returns an InfoLabel as a string.\n"
+    "getInfoLabel(infotag) -- Returns an InfoLabel as a unicode string.\n"
     "\n"
     "infotag        : string - infoTag for value you want returned.\n"
     "                 Also multiple InfoLabels are possible e.x.:\n"
@@ -512,13 +514,13 @@ namespace PYXBMC
         cret = g_infoManager.GetLabel(ret);
       }
     }
-    return Py_BuildValue((char*)"s", cret.c_str());
+    return PyUnicode_DecodeUTF8(cret.c_str(), cret.size(), "replace");
   }
 
   // getInfoImage() method
   PyDoc_STRVAR(getInfoImage__doc__,
     "getInfoImage(infotag) -- Returns a filename including path to the InfoImage's\n"
-    "                         thumbnail as a string.\n"
+    "                         thumbnail as a unicode string.\n"
     "\n"
     "infotag        : string - infotag for value you want returned.\n"
     "\n"
@@ -541,7 +543,7 @@ namespace PYXBMC
       cret = g_infoManager.GetImage(ret, WINDOW_INVALID);
     }
 
-    return Py_BuildValue((char*)"s", cret.c_str());
+    return PyUnicode_DecodeUTF8(cret.c_str(), cret.size(), "replace");
   }
 
   // playSFX() method
@@ -663,7 +665,7 @@ namespace PYXBMC
 
   // makeLegalFilename function
   PyDoc_STRVAR(makeLegalFilename__doc__,
-    "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a string.\n"
+    "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a unicode string.\n"
     "\n"
     "filename       : string or unicode - filename/path to make legal\n"
     "fatX           : [opt] bool - True=Xbox file system(Default)\n"
@@ -700,12 +702,12 @@ namespace PYXBMC
 
     CStdString strFilename;
     strFilename = CUtil::MakeLegalPath(strText);
-    return Py_BuildValue((char*)"s", strFilename.c_str());
+    return PyUnicode_DecodeUTF8(strFilename.c_str(), strFilename.size(), "replace");
   }
 
   // translatePath function
   PyDoc_STRVAR(translatePath__doc__,
-    "translatePath(path) -- Returns the translated path.\n"
+    "translatePath(path) -- Returns the translated path as a unicode string.\n"
     "\n"
     "path           : string or unicode - Path to format\n"
     "\n"
@@ -727,12 +729,12 @@ namespace PYXBMC
     CStdString strPath;
     strPath = CSpecialProtocol::TranslatePath(strText);
 
-    return Py_BuildValue((char*)"s", strPath.c_str());
+    return PyUnicode_DecodeUTF8(strPath.c_str(), strPath.size(), "replace");
   }
 
   // getcleanmovietitle function
   PyDoc_STRVAR(getCleanMovieTitle__doc__,
-    "getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year string if available.\n"
+    "getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year unicode string if available.\n"
     "\n"
     "path           : string or unicode - String to clean\n"
     "bool           : [opt] bool - use folder names (defaults to false)\n"
@@ -767,12 +769,13 @@ namespace PYXBMC
     CStdString strTitle, strTitleAndYear, strYear;
     CUtil::CleanString(strName, strTitle, strTitleAndYear, strYear, bUseFolderName);
 
-    return Py_BuildValue((char*)"s,s", strTitle.c_str(), strYear.c_str());
+    return Py_BuildValue((char*)"O,O", PyUnicode_DecodeUTF8(strTitle.c_str(), strTitle.size(), "replace"),
+                                       PyUnicode_DecodeUTF8(strYear.c_str(), strYear.size(), "replace"));
   }
 
   // validatePath function
   PyDoc_STRVAR(validatePath__doc__,
-    "validatePath(path) -- Returns the validated path.\n"
+    "validatePath(path) -- Returns the validated path as a unicode string.\n"
     "\n"
     "path           : string or unicode - Path to format\n"
     "\n"
@@ -790,12 +793,13 @@ namespace PYXBMC
     CStdString strText;
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
-    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText, true).c_str());
+    CStdString validated = CUtil::ValidatePath(strText, true);
+    return PyUnicode_DecodeUTF8(validated.c_str(), validated.size(), "replace");
   }
 
   // getRegion function
   PyDoc_STRVAR(getRegion__doc__,
-    "getRegion(id) -- Returns your regions setting as a string for the specified id.\n"
+    "getRegion(id) -- Returns your regions setting as a unicode string for the specified id.\n"
     "\n"
     "id             : string - id of setting to return\n"
     "\n"
@@ -855,12 +859,12 @@ namespace PYXBMC
     else if (strcmpi(id, "meridiem") == 0)
       result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
 
-    return Py_BuildValue((char*)"s", result.c_str());
+    return PyUnicode_DecodeUTF8(result.c_str(), result.size(), "replace");
   }
 
   // getSupportedMedia function
   PyDoc_STRVAR(getSupportedMedia__doc__,
-    "getSupportedMedia(media) -- Returns the supported file types for the specific media as a string.\n"
+    "getSupportedMedia(media) -- Returns the supported file types for the specific media as a unicode string.\n"
     "\n"
     "media          : string - media type\n"
     "\n"
@@ -902,7 +906,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    return Py_BuildValue((char*)"s", result.c_str());
+    return PyUnicode_DecodeUTF8(result.c_str(), result.size(), "replace");
   }
 
   // skinHasImage function
