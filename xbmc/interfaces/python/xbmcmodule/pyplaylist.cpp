@@ -62,11 +62,11 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getDescription__doc__,
-    "getdescription() -- Returns the description of this PlayListItem.\n");
+    "getdescription() -- Returns the description of this PlayListItem as a unicode string.\n");
 
   PyObject* PlayListItem_GetDescription(PlayListItem *self, PyObject *key)
   {
-    return Py_BuildValue((char*)"s", self->item->GetLabel().c_str());
+    return PyUnicode_DecodeUTF8(self->item->GetLabel().c_str(), self->item->GetLabel().size(), "replace");
   }
 
   PyDoc_STRVAR(getDuration__doc__,
@@ -78,17 +78,17 @@ namespace PYXBMC
       return Py_BuildValue((char*)"l", self->item->GetMusicInfoTag()->GetDuration());
 
     if (self->item->HasVideoInfoTag())
-      return Py_BuildValue((char*)"s", self->item->GetVideoInfoTag()->m_strRuntime.c_str());
+      return PyUnicode_DecodeUTF8(self->item->GetVideoInfoTag()->m_strRuntime.c_str(), self->item->GetVideoInfoTag()->m_strRuntime.size(), "replace");
 
     return Py_BuildValue((char*)"l", 0);
   }
 
   PyDoc_STRVAR(getFilename__doc__,
-    "getfilename() -- Returns the filename of this PlayListItem.\n");
+    "getfilename() -- Returns the filename of this PlayListItem as a unicode string.\n");
 
   PyObject* PlayListItem_GetFileName(PlayListItem *self, PyObject *key)
   {
-    return Py_BuildValue((char*)"s", self->item->GetPath().c_str());
+    return PyUnicode_DecodeUTF8(self->item->GetPath().c_str(), self->item->GetPath().size(), "replace");
   }
 
 /* PlayList Fucntions */
