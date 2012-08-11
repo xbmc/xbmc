@@ -77,6 +77,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
   m_TotalTime = 4*60*1000;
+  m_DataFormat = AE_FMT_S16NE;
 
   return true;
 }
