@@ -23,6 +23,7 @@
 #include "WAVcodec.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #if defined(WIN32)
 #include <mmreg.h>
@@ -270,4 +271,17 @@ int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool WAVCodec::CanInit()
 {
   return true;
+}
+
+CAEChannelInfo WAVCodec::GetChannelInfo()
+{
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR  , AE_CH_NULL}
+  };
+
+  if (m_Channels > 2)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }

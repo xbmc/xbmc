@@ -27,6 +27,7 @@ typedef int32_t lsn_t;
 #define CDIO_CD_FRAMESIZE_RAW   2352
 #define CDIO_CD_FRAMES_PER_SEC   75
 #endif
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define SECTOR_COUNT 55 // max. sectors that can be read at once
 #define MAX_BUFFER_SIZE 2*SECTOR_COUNT*CDIO_CD_FRAMESIZE_RAW
@@ -140,4 +141,17 @@ int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool CDDACodec::CanInit()
 {
   return true;
+}
+
+CAEChannelInfo CDDACodec::GetChannelInfo()
+{
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR  , AE_CH_NULL}
+  };
+
+  if (m_Channels > 2)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }
