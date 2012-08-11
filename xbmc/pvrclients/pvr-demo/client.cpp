@@ -119,18 +119,10 @@ void ADDON_FreeSettings()
 
 PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
-  pCapabilities->bSupportsChannelSettings = false;
-  pCapabilities->bSupportsTimeshift       = false;
   pCapabilities->bSupportsEPG             = true;
   pCapabilities->bSupportsTV              = true;
   pCapabilities->bSupportsRadio           = true;
-  pCapabilities->bSupportsRecordings      = false;
-  pCapabilities->bSupportsTimers          = false;
   pCapabilities->bSupportsChannelGroups   = true;
-  pCapabilities->bSupportsChannelScan     = false;
-  pCapabilities->bHandlesInputStream      = false;
-  pCapabilities->bHandlesDemuxing         = false;
-  pCapabilities->bSupportsLastPlayedPosition = false;
 
   return PVR_ERROR_NO_ERROR;
 }
