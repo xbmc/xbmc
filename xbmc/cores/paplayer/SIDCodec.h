@@ -36,6 +36,7 @@ public:
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
+  virtual CAEChannelInfo GetChannelInfo();
 
   virtual void SetTotalTime(int64_t totaltime)
   {
