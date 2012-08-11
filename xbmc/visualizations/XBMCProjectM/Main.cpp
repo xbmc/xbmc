@@ -78,7 +78,7 @@ bool g_UserPackFolder;
 char lastPresetDir[1024];
 bool lastLockStatus;
 int lastPresetIdx;
-int lastLoggedPresetIdx;
+unsigned int lastLoggedPresetIdx;
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
