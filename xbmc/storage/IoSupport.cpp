@@ -129,10 +129,14 @@ DWORD CIoSupport::GetTrayState()
 
 HRESULT CIoSupport::ToggleTray()
 {
+#if defined(TARGET_WINDOWS)
+  return CWIN32Util::ToggleTray();
+#else
   if (GetTrayState() == TRAY_OPEN || GetTrayState() == DRIVE_OPEN)
     return CloseTray();
   else
     return EjectTray();
+#endif
 }
 
 HANDLE CIoSupport::OpenCDROM()
