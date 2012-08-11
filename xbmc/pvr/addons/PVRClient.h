@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -84,14 +84,6 @@ namespace PVR
      */
     int GetID(void) const;
 
-    /*!
-     * @brief Change a setting in the add-on.
-     * @param settingName The name of the setting.
-     * @param settingValue The new value.
-     * @return The status reported by the add-on.
-     */
-    virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
-
     //@}
     /** @name PVR server methods */
     //@{
@@ -112,22 +104,22 @@ namespace PVR
     /*!
      * @return The name reported by the backend.
      */
-    CStdString GetBackendName(void);
+    CStdString GetBackendName(void) const;
 
     /*!
      * @return The version string reported by the backend.
      */
-    CStdString GetBackendVersion(void);
+    CStdString GetBackendVersion(void) const;
 
     /*!
      * @return The connection string reported by the backend.
      */
-    CStdString GetConnectionString(void);
+    CStdString GetConnectionString(void) const;
 
     /*!
      * @return A friendly name for this add-on that can be used in log messages.
      */
-    CStdString GetFriendlyName(void);
+    CStdString GetFriendlyName(void) const;
 
     /*!
      * @brief Get the disk space reported by the server.
@@ -450,54 +442,11 @@ namespace PVR
 
     //@}
 
-  protected:
-    bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
-    CStdString             m_strHostName;          /*!< the host name */
-    PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
-    int                    m_iClientId;            /*!< database ID of the client */
-
-    /* cached data */
-    CStdString             m_strBackendName;       /*!< the cached backend version */
-    bool                   m_bGotBackendName;      /*!< true if the backend name has already been fetched */
-    CStdString             m_strBackendVersion;    /*!< the cached backend version */
-    bool                   m_bGotBackendVersion;   /*!< true if the backend version has already been fetched */
-    CStdString             m_strConnectionString;  /*!< the cached connection string */
-    bool                   m_bGotConnectionString; /*!< true if the connection string has already been fetched */
-    CStdString             m_strFriendlyName;      /*!< the cached friendly name */
-    bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
-    PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
-    bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
-
   private:
-    /*!
-     * @brief Get the backend name from the server and store it locally.
-     */
-    void SetBackendName(void);
-
-    /*!
-     * @brief Get the backend version from the server and store it locally.
-     */
-    void SetBackendVersion(void);
-
-    /*!
-     * @brief Get the connection string from the server and store it locally.
-     */
-    void SetConnectionString(void);
-
-    /*!
-     * @brief Get the friendly from the server and store it locally.
-     */
-    void SetFriendlyName(void);
-
     /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
     void ResetProperties(int iClientId = PVR_INVALID_CLIENT_ID);
-
-    /*!
-     * @brief Reset all add-on capabilities to false.
-     */
-    void ResetAddonCapabilities(PVR_ADDON_CAPABILITIES &addonCapabilities);
 
     bool GetAddonProperties(void);
 
@@ -529,10 +478,32 @@ namespace PVR
      */
     static void WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel);
 
+    /*!
+     * @brief Whether a channel can be played by this add-on
+     * @param channel The channel to check.
+     * @return True when it can be played, false otherwise.
+     */
+    bool CanPlayChannel(const CPVRChannel &channel) const;
 
-  private:
     const char *ToString(const PVR_ERROR error) const;
     bool LogError(const PVR_ERROR error, const char *strMethod);
     void LogException(const std::exception &e, const char *strFunctionName);
+
+    bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
+    CStdString             m_strHostName;          /*!< the host name */
+    PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
+    int                    m_iClientId;            /*!< database ID of the client */
+
+    /* cached data */
+    CStdString             m_strBackendName;       /*!< the cached backend version */
+    bool                   m_bGotBackendName;      /*!< true if the backend name has already been fetched */
+    CStdString             m_strBackendVersion;    /*!< the cached backend version */
+    bool                   m_bGotBackendVersion;   /*!< true if the backend version has already been fetched */
+    CStdString             m_strConnectionString;  /*!< the cached connection string */
+    bool                   m_bGotConnectionString; /*!< true if the connection string has already been fetched */
+    CStdString             m_strFriendlyName;      /*!< the cached friendly name */
+    bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
+    PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
+    bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
   };
 }
