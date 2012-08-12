@@ -91,7 +91,7 @@ bool CCoreAudioAE::Initialize()
 
   Deinitialize();
 
-  bool ret = OpenCoreAudio();
+  bool ret = OpenCoreAudio(44100, false, AE_FMT_FLOAT);
 
   Start();
 
@@ -432,7 +432,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   else if (/* wasEmpty || */ m_rawPassthrough)
   {
     Deinitialize();
-    m_Initialized = OpenCoreAudio(sampleRate);
+    m_Initialized = OpenCoreAudio(sampleRate, COREAUDIO_IS_RAW(dataFormat), dataFormat);
   }
 
   /* if the stream was not initialized, do it now */

@@ -150,8 +150,7 @@ private:
 
   enum AEStdChLayout m_stdChLayout;
   
-  bool              OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false,
-                      enum AEDataFormat rawDataFormat = AE_FMT_AC3);
+  bool              OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AEDataFormat rawDataFormat);
   void              Deinitialize();
   void              Start();
   void              Stop();
