@@ -717,6 +717,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
 
   // If we're already fullscreen then we must be moving to a different display.
+  // or if we are still on the same display - it might be only a refreshrate/resolution
+  // change request.
   // Recurse to reset fullscreen mode and then continue.
   if (was_fullscreen && fullScreen && lastDisplayNr != res.iScreen)
   {
@@ -733,6 +735,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   cur_context = [NSOpenGLContext currentContext];
   
+  //handle resolution/refreshrate switching early here
   if (m_bFullScreen)
   {
     if (m_can_display_switch)
@@ -749,7 +752,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     }
   }
 
-  
+  //no context? done.
   if (!cur_context)
   {
     DisplayFadeFromBlack(fade_token, needtoshowme);
