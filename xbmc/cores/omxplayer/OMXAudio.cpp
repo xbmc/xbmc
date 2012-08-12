@@ -921,7 +921,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
           }
         }
 
-        if (g_guiSettings.GetBool("audiooutput.normalizelevels"))
+        if ((m_pcm_input.nChannels > m_pcm_output.nChannels) &&g_guiSettings.GetBool("audiooutput.normalizelevels"))
         {
           OMX_AUDIO_CONFIG_VOLUMETYPE volume;
           OMX_INIT_STRUCTURE(volume);
