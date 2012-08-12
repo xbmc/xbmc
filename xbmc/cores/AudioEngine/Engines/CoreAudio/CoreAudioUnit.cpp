@@ -47,7 +47,7 @@ CCoreAudioUnit::~CCoreAudioUnit()
   Close();
 }
 
-bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
+bool CCoreAudioUnit::Open(AUGraph audioGraph, AudioComponentDescription desc)
 {
   if (m_audioUnit)
     Close();
@@ -56,7 +56,7 @@ bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
 
   m_Initialized = false;
 
-  ret = AUGraphNewNode(audioGraph, &desc, 0, NULL, &m_audioNode);
+  ret = AUGraphAddNode(audioGraph, &desc, &m_audioNode);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
@@ -64,7 +64,7 @@ bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
     return false;
   }
 
-  ret = AUGraphGetNodeInfo(audioGraph, m_audioNode, 0, 0, 0, &m_audioUnit);
+  ret = AUGraphNodeInfo(audioGraph, m_audioNode, 0, &m_audioUnit);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
@@ -80,12 +80,10 @@ bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
 
 bool CCoreAudioUnit::Open(AUGraph audioGraph, OSType type, OSType subType, OSType manufacturer)
 {
-  ComponentDescription desc;
+  AudioComponentDescription desc = {0};
   desc.componentType = type;
   desc.componentSubType = subType;
   desc.componentManufacturer = manufacturer;
-  desc.componentFlags = 0;
-  desc.componentFlagsMask = 0;
 
   return Open(audioGraph, desc);
 }
