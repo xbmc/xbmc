@@ -303,6 +303,8 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
 
   // Attach our output object to the device
   m_AudioDevice->Open(outputDevice);
+  m_AudioDevice->SetHogStatus(false);
+  m_AudioDevice->SetMixingSupport(true);
 
   // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
   if (m_Passthrough)
