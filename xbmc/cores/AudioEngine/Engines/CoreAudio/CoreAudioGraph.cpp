@@ -88,6 +88,7 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   if (!m_audioUnit->Open(m_audioGraph,
     kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
     return false;
+  m_audioUnit->SetBus(GetFreeBus());
 
   m_audioUnit->GetFormatDesc(format, &inputFormat, &fmt);
 
@@ -303,6 +304,7 @@ bool CCoreAudioGraph::Close()
     CAUOutputDevice *d = m_auUnitList.front();
     m_auUnitList.pop_front();
     ReleaseBus(d->GetBus());
+    d->SetInputSource(NULL);
     d->Close();
     delete d;
   }
