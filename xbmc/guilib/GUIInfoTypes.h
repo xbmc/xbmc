@@ -75,8 +75,25 @@ public:
   CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "", int context = 0);
 
   void SetLabel(const CStdString &label, const CStdString &fallback, int context = 0);
+
+  /*!
+   \brief Gets a label (or image) for a given window context from the info manager.
+   \param contextWindow the context in which to evaluate the expression.
+   \param preferImage caller is specifically wanting an image rather than a label. Defaults to false.
+   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
+   \return label (or image).
+   */  
   CStdString GetLabel(int contextWindow, bool preferImage = false, CStdString *fallback = NULL) const;
+
+  /*!
+   \brief Gets a label (or image) for a given listitem from the info manager.
+   \param item listitem in question.
+   \param preferImage caller is specifically wanting an image rather than a label. Defaults to false.
+   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
+   \return label (or image).
+   */
   CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false, CStdString *fallback = NULL) const;
+
   bool IsConstant() const;
   bool IsEmpty() const;
 

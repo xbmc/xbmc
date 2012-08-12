@@ -42,6 +42,8 @@ public:
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio);
   virtual void         Drain           ();
+  virtual bool         HasVolume       ();
+  virtual void         SetVolume       (float volume);
   static void          EnumerateDevicesEx(AEDeviceInfoList &list);
 
 private:
@@ -49,6 +51,8 @@ private:
 
   static CAEDeviceInfo m_info;
   AEAudioFormat      m_format;
+  double             m_volume;
+  bool               m_volume_changed;
   volatile int       m_min_frames;
   int16_t           *m_alignedS16LE;
   AERingBuffer      *m_sinkbuffer;

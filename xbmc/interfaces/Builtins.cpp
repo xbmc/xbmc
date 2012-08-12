@@ -1055,7 +1055,8 @@ int CBuiltins::Execute(const CStdString& execString)
     int iTheme = -1;
 
     // find current theme
-    if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
+    if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("SKINDEFAULT"))
+    {
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
         CStdString strTmpTheme(g_guiSettings.GetString("lookandfeel.skintheme"));
@@ -1066,6 +1067,7 @@ int CBuiltins::Execute(const CStdString& execString)
           break;
         }
       }
+    }
 
     int iParam = atoi(parameter.c_str());
     if (iParam == 0 || iParam == 1)
@@ -1077,15 +1079,16 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme < -1)
       iTheme = vecTheme.size()-1;
 
-    CStdString strSkinTheme;
-    if (iTheme==-1)
-      g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
-    else
-      g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
+    CStdString strSkinTheme = "SKINDEFAULT";
+    if (iTheme != -1 && iTheme < (int)vecTheme.size())
+      strSkinTheme = vecTheme[iTheme];
 
+    g_guiSettings.SetString("lookandfeel.skintheme", strSkinTheme);
     // also set the default color theme
-    g_guiSettings.SetString("lookandfeel.skincolors", URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
-
+    CStdString colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
+    if (colorTheme.Equals("Textures.xml"))
+      colorTheme = "defaults.xml";
+    g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
     g_application.ReloadSkin();
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||

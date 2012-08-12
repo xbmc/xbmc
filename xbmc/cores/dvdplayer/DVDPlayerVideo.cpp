@@ -223,7 +223,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
-                     g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+                     g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;
@@ -526,7 +526,7 @@ void CDVDPlayerVideo::Process()
         if (mDeintMode == VS_DEINTERLACEMODE_AUTO && mFilters)
           mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
       }
-      
+
       if (!g_renderManager.Supports(RENDERFEATURE_ROTATION))
         mFilters |= CDVDVideoCodec::FILTER_ROTATE;
 
@@ -538,7 +538,7 @@ void CDVDPlayerVideo::Process()
       if(m_pVideoCodec->GetConvergeCount() > 0)
       {
         m_packets.push_back(DVDMessageListItem(pMsg, 0));
-        if(m_packets.size() > m_pVideoCodec->GetConvergeCount() 
+        if(m_packets.size() > m_pVideoCodec->GetConvergeCount()
         || m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
           m_packets.pop_front();
       }
@@ -609,7 +609,7 @@ void CDVDPlayerVideo::Process()
               m_iNrOfPicturesNotToSkip--;
             }
 
-            // validate picture timing, 
+            // validate picture timing,
             // if both dts/pts invalid, use pts calulated from picture.iDuration
             // if pts invalid use dts, else use picture.pts as passed
             if (picture.dts == DVD_NOPTS_VALUE && picture.pts == DVD_NOPTS_VALUE)

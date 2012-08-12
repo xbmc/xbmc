@@ -43,19 +43,18 @@ extern bool g_fullScreen;
 static CSettingInt* g_guiSkinzoom = NULL;
 
 CGraphicContext::CGraphicContext(void) :
-  m_iScreenHeight(576), 
-  m_iScreenWidth(720), 
-  m_iScreenId(0), 
-  m_strMediaDir(""), 
-  /*m_videoRect,*/ 
-  m_bFullScreenRoot(false), 
+  m_iScreenHeight(576),
+  m_iScreenWidth(720),
+  m_iScreenId(0),
+  /*m_videoRect,*/
+  m_bFullScreenRoot(false),
   m_bFullScreenVideo(false),
-  m_bCalibrating(false), 
-  m_Resolution(RES_INVALID), 
+  m_bCalibrating(false),
+  m_Resolution(RES_INVALID),
   /*m_windowResolution,*/
-  m_guiScaleX(1.0f), 
-  m_guiScaleY(1.0f) 
-  /*,m_cameras, */ 
+  m_guiScaleX(1.0f),
+  m_guiScaleY(1.0f)
+  /*,m_cameras, */
   /*m_origins, */
   /*m_clipRegions,*/
   /*m_guiTransform,*/
@@ -280,7 +279,8 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 #if defined(HAS_VIDEO_PLAYBACK)
   if(m_bFullScreenRoot)
   {
-    if(m_bFullScreenVideo)
+    bool allowDesktopRes = g_guiSettings.GetInt("videoplayer.adjustrefreshrate") == ADJUST_REFRESHRATE_ALWAYS;
+    if(m_bFullScreenVideo || (!allowDesktopRes && g_application.IsPlayingVideo()))
       SetVideoResolution(g_renderManager.GetResolution());
     else if(g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
@@ -341,7 +341,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   {
     //pause the player during the refreshrate change
     int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
-    if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+    if (delay > 0 && g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.IsPlayingVideo() && !g_application.IsPaused())
     {
       g_application.m_pPlayer->Pause();
       ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};

@@ -504,7 +504,7 @@ void CExternalPlayer::SeekPercentage(float iPercent)
 float CExternalPlayer::GetPercentage()
 {
   int64_t iTime = GetTime();
-  int64_t iTotalTime = GetTotalTime() * 1000;
+  int64_t iTotalTime = GetTotalTime();
 
   if (iTotalTime != 0)
   {
@@ -547,9 +547,9 @@ int64_t CExternalPlayer::GetTime() // in millis
   return m_time;
 }
 
-int CExternalPlayer::GetTotalTime() // in seconds
+int64_t CExternalPlayer::GetTotalTime() // in milliseconds
 {
-  return m_totalTime;
+  return m_totalTime * 1000;
 }
 
 void CExternalPlayer::ToFFRW(int iSpeed)

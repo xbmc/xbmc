@@ -107,7 +107,7 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
   return flat;
 }
 
-int CWIN32Util::GetDriveStatus(const CStdString &strPath)
+int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
 {
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
@@ -129,6 +129,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
     return -1;
   }
 
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting media status for drive %s.", strPath.c_str());
   iResult = DeviceIoControl((HANDLE) hDevice,             // handle to device
                              IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode
                              NULL,                        // lpInBuffer
@@ -142,6 +143,10 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 
   if(iResult == 1)
     return 2;
+
+  // don't request the tray status as we often doesn't need it
+  if(!bStatusEx)
+    return 0;
 
   hDevice = CreateFile( strPath.c_str(),
                         GENERIC_READ | GENERIC_WRITE,
@@ -189,6 +194,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
 
   //Send the command to drive
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting tray status for drive %s.", strPath.c_str());
   iResult = DeviceIoControl((HANDLE) hDevice,
                             IOCTL_SCSI_PASS_THROUGH_DIRECT,
                             (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
@@ -515,7 +521,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
       ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
   {
     DWORD dwDummy;
-    dwReq = (GetDriveStatus(strVolFormat) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
+    dwReq = (GetDriveStatus(strVolFormat, true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
     bRet = DeviceIoControl( hDrive, dwReq, NULL, 0, NULL, 0, &dwDummy, NULL);
     CloseHandle( hDrive );
   }
@@ -546,7 +552,7 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
 
-  if(GetDriveStatus(strVolFormat) != 1)
+  if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
   else
     return S_OK;
@@ -566,7 +572,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
 
-  if(GetDriveStatus(strVolFormat) == 1)
+  if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
   else
     return S_OK;

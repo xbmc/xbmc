@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace MUSIC_INFO;
 
@@ -77,6 +78,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
   m_TotalTime = 4*60*1000;
+  m_DataFormat = AE_FMT_S16NE;
 
   return true;
 }
@@ -142,4 +144,16 @@ int SIDCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool SIDCodec::CanInit()
 {
   return m_dll.CanLoad();
+}
+
+CAEChannelInfo SIDCodec::GetChannelInfo()
+{
+  static enum AEChannel map[1][2] = {
+    {AE_CH_FC, AE_CH_NULL}
+  };
+
+  if (m_Channels > 1)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }

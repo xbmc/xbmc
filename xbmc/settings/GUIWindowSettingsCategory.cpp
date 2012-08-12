@@ -72,7 +72,7 @@
 #include "HALManager.h"
 #endif
 #endif
-#if defined(TARGET_DARWIN_OSX) 
+#if defined(TARGET_DARWIN_OSX)
 #include "XBMCHelper.h"
 #endif
 #include "network/GUIDialogAccessPoints.h"
@@ -729,7 +729,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("audiocds.bitrate"))
     { // only visible if we are ripping to CBR
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV && 
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV &&
                                          g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_FLAC &&
                                          g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_CBR);
     }
@@ -786,7 +786,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 #endif
 #ifdef HAS_AIRPLAY
-    else if ( strSetting.Equals("services.airplaypassword") || 
+    else if ( strSetting.Equals("services.airplaypassword") ||
               strSetting.Equals("services.useairplaypassword"))
     {
       if (strSetting.Equals("services.airplaypassword"))
@@ -797,19 +797,19 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
       else//useairplaypassword
       {
-        CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(pSettingControl->GetID());    
+        CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(pSettingControl->GetID());
         if (pControl)
-          pControl->SetEnabled(g_guiSettings.GetBool("services.airplay"));      
+          pControl->SetEnabled(g_guiSettings.GetBool("services.airplay"));
       }
 
       //set credentials to airplay server
       if (g_guiSettings.GetBool("services.airplay"))
       {
         CStdString password = g_guiSettings.GetString("services.airplaypassword");
-        CAirPlayServer::SetCredentials(g_guiSettings.GetBool("services.useairplaypassword"), 
+        CAirPlayServer::SetCredentials(g_guiSettings.GetBool("services.useairplaypassword"),
                                        password);
-      }      
-    }  
+      }
+    }
 #endif//HAS_AIRPLAY
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
@@ -955,7 +955,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
@@ -1281,8 +1281,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
   }
   else if (strSetting.Equals("services.airplay"))
-  {  
-#ifdef HAS_AIRPLAY  
+  {
+#ifdef HAS_AIRPLAY
     if (g_guiSettings.GetBool("services.airplay"))
     {
 #ifdef HAS_ZEROCONF
@@ -1297,8 +1297,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartAirplayServer();//will stop the server before internal
     }
     else
-      g_application.StopAirplayServer(true);//will stop the server before internal    
-#endif//HAS_AIRPLAY      
+      g_application.StopAirplayServer(true);//will stop the server before internal
+#endif//HAS_AIRPLAY
   }
   else if (strSetting.Equals("network.ipaddress"))
   {
@@ -1928,7 +1928,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
     }
 #endif
-    
+
     CAEFactory::OnSettingsChange(strSetting);
   }
   else if (strSetting.Equals("pvrparental.enabled"))
@@ -2210,9 +2210,9 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
         if (idAttr != NULL && isAllowed)
         {
-          if (idLocAttr) 
+          if (idLocAttr)
           {
-            pControl->AddLabel(g_localizeStrings.Get(atoi(idLocAttr)), iSkinFontSet); 
+            pControl->AddLabel(g_localizeStrings.Get(atoi(idLocAttr)), iSkinFontSet);
             m_SkinFontSetIDs[g_localizeStrings.Get(atoi(idLocAttr))] = idAttr;
           }
           else

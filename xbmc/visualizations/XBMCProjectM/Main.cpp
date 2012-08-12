@@ -78,7 +78,7 @@ bool g_UserPackFolder;
 char lastPresetDir[1024];
 bool lastLockStatus;
 int lastPresetIdx;
-int lastLoggedPresetIdx;
+unsigned int lastLoggedPresetIdx;
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
@@ -381,6 +381,10 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
 
   if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file
   {
+    if (!globalPM)
+    {
+      return ADDON_STATUS_UNKNOWN;
+    }
     if (strcmp((char*)value, "0") == 0)
     {
       strcpy((char*)id, "lastpresetfolder");

@@ -419,7 +419,7 @@ void CGUISettings::Initialize()
 #endif
   AddBool(showSetting ? vs : NULL, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
 #ifdef TARGET_DARWIN_IOS
-  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);  
+  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);
 #else
   AddBool(vs, "videoscreen.blankdisplays", 13130, false);
 #endif
@@ -688,11 +688,19 @@ void CGUISettings::Initialize()
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
+
+  map<int, int> adjustTypes;
+  adjustTypes.insert(make_pair(351, ADJUST_REFRESHRATE_OFF));
+  adjustTypes.insert(make_pair(36035, ADJUST_REFRESHRATE_ALWAYS));
+  adjustTypes.insert(make_pair(36036, ADJUST_REFRESHRATE_ON_STARTSTOP));
+
 #if !defined(TARGET_DARWIN_IOS)
-  AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(vp, "videoplayer.adjustrefreshrate", 170, ADJUST_REFRESHRATE_OFF, adjustTypes, SPIN_CONTROL_TEXT);
+//  AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
 #else
-  AddBool(NULL, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(NULL, "videoplayer.adjustrefreshrate", 170, ADJUST_REFRESHRATE_OFF, adjustTypes, SPIN_CONTROL_TEXT);
+  //AddBool(NULL, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(NULL, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
 #endif
   //sync settings not available on windows gl build
@@ -744,7 +752,7 @@ void CGUISettings::Initialize()
   myVideosSelectActions.insert(make_pair(208,   SELECT_ACTION_PLAY_OR_RESUME));
   myVideosSelectActions.insert(make_pair(13404, SELECT_ACTION_RESUME));
   myVideosSelectActions.insert(make_pair(22081, SELECT_ACTION_INFO));
-  
+
   AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
   AddBool(vid, "myvideos.extractflags",20433, true);
   AddBool(vid, "myvideos.replacelabels", 20419, true);
@@ -825,7 +833,7 @@ void CGUISettings::Initialize()
   CSettingsCategory* srvAirplay = AddCategory(6, "airplay", 1273);
   AddBool(srvAirplay, "services.airplay", 1270, false);
   AddBool(srvAirplay, "services.useairplaypassword", 1272, false);
-  AddString(srvAirplay, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733); 
+  AddString(srvAirplay, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733);
 #endif
 
 #ifndef _WIN32
@@ -852,21 +860,21 @@ void CGUISettings::Initialize()
   AddString(loc, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  
+
   bool use_timezone = false;
-  
+
 #if defined(_LINUX)
 #if defined(TARGET_DARWIN)
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
-    use_timezone = true;  
-  
+    use_timezone = true;
+
   if (use_timezone)
-  {  
+  {
     AddSeparator(loc, "locale.sep1");
     AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
     AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
-  }	
+  }
 #endif
 #ifdef HAS_TIME_SERVER
   AddSeparator(loc, "locale.sep2");
@@ -1345,24 +1353,24 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-  
+
   bool use_timezone = false;
-  
+
 #if defined(_LINUX)
-#if defined(TARGET_DARWIN) 
+#if defined(TARGET_DARWIN)
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
     use_timezone = true;
-  
+
   if (use_timezone)
-  {  
+  {
     CStdString timezone = GetString("locale.timezone");
     if(timezone == "0" || timezone.IsEmpty())
     {
       timezone = g_timezone.GetOSConfiguredTimezone();
       SetString("locale.timezone", timezone);
     }
-    g_timezone.SetTimezone(timezone);	
+    g_timezone.SetTimezone(timezone);
   }
 #endif
 
