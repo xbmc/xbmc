@@ -1275,6 +1275,7 @@ if test "$use_airplay" != "no"; then
   if test "$use_airplay" != "no"; then
     XB_FIND_SONAME([PLIST], [plist], [use_airplay])
     USE_AIRPLAY=1
+    AC_DEFINE([HAVE_LIBPLIST],[1],["Define to 1 if you have libplist."])
   fi
 fi
 
@@ -1295,6 +1296,7 @@ if test "x$use_airtunes" != "xno"; then
     USE_AIRTUNES=1
     AC_CHECK_MEMBERS([struct AudioOutput.ao_set_metadata],,,
                      [[#include <shairport/shairport.h>]])
+    AC_DEFINE([HAVE_LIBSHAIRPORT],[1],["Define to 1 if you have libshairport."])
   fi
 fi
 
