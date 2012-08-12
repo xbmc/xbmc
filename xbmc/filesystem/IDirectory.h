@@ -70,6 +70,11 @@ public:
    */
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items) = 0;
   /*!
+   \brief Cancel the current directory fetch (if possible).
+   \sa GetDirectory
+   */
+  virtual void CancelDirectory() { };
+  /*!
   \brief Create the directory
   \param strPath Directory to create.
   \return Returns \e true, if directory is created or if it already exists
