@@ -19,13 +19,12 @@
 
     <!-- Internet streams -->
     <rule name="streams" internetstream="true">
-      <rule name="flv/aacp/sdp" mimetypes="video/x-flv|video-flv|audio/aacp|application/sdp" player="DVDPlayer" />
+      <rule name="aacp/sdp" mimetypes="audio/aacp|application/sdp" player="DVDPlayer" />
       <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
     </rule>
 
     <!-- DVDs -->
     <rule name="dvd" dvd="true" player="DVDPlayer" />
-    <rule name="dvdfile" dvdfile="true" player="DVDPlayer" />
     <rule name="dvdimage" dvdimage="true" player="DVDPlayer" />
 
     <!-- Only dvdplayer can handle these normally -->
