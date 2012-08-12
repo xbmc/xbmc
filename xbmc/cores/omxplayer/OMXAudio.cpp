@@ -910,6 +910,17 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
 
       if(!m_Passthrough)
       {
+        if(m_HWDecode)
+        {
+          OMX_INIT_STRUCTURE(m_pcm_input);
+          m_pcm_input.nPortIndex      = m_omx_decoder.GetOutputPort();
+          omx_err = m_omx_decoder.GetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
+          if(omx_err != OMX_ErrorNone)
+          {
+            CLog::Log(LOGERROR, "COMXAudio::AddPackets error GetParameter 1 omx_err(0x%08x)\n", omx_err);
+          }
+        }
+
         if (g_guiSettings.GetBool("audiooutput.normalizelevels"))
         {
           OMX_AUDIO_CONFIG_VOLUMETYPE volume;
