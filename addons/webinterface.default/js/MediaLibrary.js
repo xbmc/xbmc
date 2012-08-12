@@ -454,7 +454,7 @@ MediaLibrary.prototype = {
     }
   },
   getThumbnailPath: function(thumbnail) {
-    return thumbnail ? ('/image/' + encodeURI(thumbnail)) : DEFAULT_ALBUM_COVER;
+    return thumbnail ? ('image/' + encodeURI(thumbnail)) : DEFAULT_ALBUM_COVER;
   },
   generateThumb: function(type, thumbnail, title, artist) {
     var floatableAlbum = $('<div>');
@@ -752,7 +752,7 @@ MediaLibrary.prototype = {
 
   displayEpisodeDetails: function(event) {
     var episodeDetails = $('<div>').attr('id', 'episode-' + event.data.episode.episodeid).addClass('episodePopoverContainer');
-    episodeDetails.append($('<img>').attr('src', '/images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
+    episodeDetails.append($('<img>').attr('src', 'images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
     episodeDetails.append($('<img>').attr('src', this.getThumbnailPath(event.data.episode.thumbnail)).addClass('episodeCover'));
     episodeDetails.append($('<div>').addClass('playIcon').bind('click', {episode: event.data.episode}, jQuery.proxy(this.playTVShow, this)));
     var episodeTitle = $('<p>').addClass('episodeTitle');
@@ -838,7 +838,7 @@ MediaLibrary.prototype = {
   },
   displayMovieDetails: function(event) {
     var movieDetails = $('<div>').attr('id', 'movie-' + event.data.movie.movieid).addClass('moviePopoverContainer');
-    movieDetails.append($('<img>').attr('src', '/images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
+    movieDetails.append($('<img>').attr('src', 'images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
     movieDetails.append($('<img>').attr('src', this.getThumbnailPath(event.data.movie.thumbnail)).addClass('movieCover'));
     movieDetails.append($('<div>').addClass('playIcon').bind('click', {movie: event.data.movie}, jQuery.proxy(this.playMovie, this)));
     var movieTitle = $('<p>').addClass('movieTitle');
