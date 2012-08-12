@@ -174,13 +174,13 @@ void CCoreAudioHardware::ResetAudioDevices()
 
   for (int i = 0; i < numDevices; i++)
   {
-    AudioStreamID *streams;
-
-    streams = StreamsList(devices[i]);
-    for (int j = 0; streams[j] != kAudioHardwareBadStreamError; j++)
-      ResetStream(streams[j]);
-
-    free(streams);
+    AudioStreamID *streams = StreamsList(devices[i]);
+    if (streams)
+    {
+      for (int j = 0; streams[j] != kAudioHardwareBadStreamError; j++)
+        ResetStream(streams[j]);
+      free(streams);
+    }
   }
   free(devices);
 }
