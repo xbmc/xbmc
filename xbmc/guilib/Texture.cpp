@@ -244,8 +244,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
 
     if(omx_image.ReadFile(texturePath))
     {
-      //if(omx_image.Decode(maxWidth, maxHeight))
-      if(omx_image.Decode(omx_image.GetWidth(), omx_image.GetHeight()))
+      // TODO: we only decode as half width and height. this is a workaround for the PI memory limitation
+      if(omx_image.Decode(omx_image.GetWidth() / 2, omx_image.GetHeight() / 2))
       {
         if (originalWidth)
           *originalWidth  = omx_image.GetOriginalWidth();
@@ -268,8 +268,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
 
         if(omx_image.GetDecodedData())
         {
-          int size = ( (GetPitch() * GetRows() * 4 ) < omx_image.GetDecodedSize() ) ?
-                           GetPitch() * GetRows() * 4 : omx_image.GetDecodedSize();
+          int size = ( (GetPitch() * GetRows() ) < omx_image.GetDecodedSize() ) ?
+                           GetPitch() * GetRows() : omx_image.GetDecodedSize();
 
           memcpy(m_pixels, (unsigned char *)omx_image.GetDecodedData(), size);
         }
