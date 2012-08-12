@@ -86,6 +86,9 @@ bool CDVDDemuxPVRClient::Open(CDVDInputStream* pInput)
 {
   Abort();
   m_pInput = pInput;
+  if (!g_PVRClients->GetPlayingClient(m_pvrClient))
+    return false;
+
   RequestStreams();
   return true;
 }
@@ -108,7 +111,7 @@ void CDVDDemuxPVRClient::Dispose()
 void CDVDDemuxPVRClient::Reset()
 {
   if(m_pInput && g_PVRManager.IsStarted())
-    g_PVRClients->DemuxReset();
+    m_pvrClient->DemuxReset();
 
   CDVDInputStream* pInputStream = m_pInput;
   Dispose();
@@ -118,13 +121,13 @@ void CDVDDemuxPVRClient::Reset()
 void CDVDDemuxPVRClient::Abort()
 {
   if(m_pInput)
-    g_PVRClients->DemuxAbort();
+    m_pvrClient->DemuxAbort();
 }
 
 void CDVDDemuxPVRClient::Flush()
 {
   if(m_pInput && g_PVRManager.IsStarted())
-    g_PVRClients->DemuxFlush();
+    m_pvrClient->DemuxFlush();
 }
 
 DemuxPacket* CDVDDemuxPVRClient::Read()
@@ -132,7 +135,7 @@ DemuxPacket* CDVDDemuxPVRClient::Read()
   if (!g_PVRManager.IsStarted())
     return CDVDDemuxUtils::AllocateDemuxPacket(0);
 
-  DemuxPacket* pPacket = g_PVRClients->ReadDemuxStream();
+  DemuxPacket* pPacket = m_pvrClient->DemuxRead();
   if (!pPacket)
   {
     if (m_pInput)
@@ -165,55 +168,56 @@ void CDVDDemuxPVRClient::RequestStreams()
   if (!g_PVRManager.IsStarted())
     return;
 
-  PVR_STREAM_PROPERTIES *props = g_PVRClients->GetCurrentStreamProperties();
+  PVR_STREAM_PROPERTIES props;
+  m_pvrClient->GetStreamProperties(&props);
 
-  for (unsigned int i = 0; i < props->iStreamCount; ++i)
+  for (unsigned int i = 0; i < props.iStreamCount; ++i)
   {
-    if (props->stream[i].iCodecType == AVMEDIA_TYPE_AUDIO)
+    if (props.stream[i].iCodecType == AVMEDIA_TYPE_AUDIO)
     {
       CDemuxStreamAudioPVRClient* st = new CDemuxStreamAudioPVRClient(this);
-      st->iChannels       = props->stream[i].iChannels;
-      st->iSampleRate     = props->stream[i].iSampleRate;
-      st->iBlockAlign     = props->stream[i].iBlockAlign;
-      st->iBitRate        = props->stream[i].iBitRate;
-      st->iBitsPerSample  = props->stream[i].iBitsPerSample;
-      m_streams[props->stream[i].iStreamIndex] = st;
+      st->iChannels       = props.stream[i].iChannels;
+      st->iSampleRate     = props.stream[i].iSampleRate;
+      st->iBlockAlign     = props.stream[i].iBlockAlign;
+      st->iBitRate        = props.stream[i].iBitRate;
+      st->iBitsPerSample  = props.stream[i].iBitsPerSample;
+      m_streams[props.stream[i].iStreamIndex] = st;
     }
-    else if (props->stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
+    else if (props.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
     {
       CDemuxStreamVideoPVRClient* st = new CDemuxStreamVideoPVRClient(this);
-      st->iFpsScale       = props->stream[i].iFPSScale;
-      st->iFpsRate        = props->stream[i].iFPSRate;
-      st->iHeight         = props->stream[i].iHeight;
-      st->iWidth          = props->stream[i].iWidth;
-      st->fAspect         = props->stream[i].fAspect;
-      m_streams[props->stream[i].iStreamIndex] = st;
+      st->iFpsScale       = props.stream[i].iFPSScale;
+      st->iFpsRate        = props.stream[i].iFPSRate;
+      st->iHeight         = props.stream[i].iHeight;
+      st->iWidth          = props.stream[i].iWidth;
+      st->fAspect         = props.stream[i].fAspect;
+      m_streams[props.stream[i].iStreamIndex] = st;
     }
-    else if (props->stream[i].iCodecId == CODEC_ID_DVB_TELETEXT)
+    else if (props.stream[i].iCodecId == CODEC_ID_DVB_TELETEXT)
     {
-      m_streams[props->stream[i].iStreamIndex] = new CDemuxStreamTeletext();
+      m_streams[props.stream[i].iStreamIndex] = new CDemuxStreamTeletext();
     }
-    else if (props->stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
+    else if (props.stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
     {
       CDemuxStreamSubtitlePVRClient* st = new CDemuxStreamSubtitlePVRClient(this);
-      st->identifier      = props->stream[i].iIdentifier;
-      m_streams[props->stream[i].iStreamIndex] = st;
+      st->identifier      = props.stream[i].iIdentifier;
+      m_streams[props.stream[i].iStreamIndex] = st;
     }
     else
-      m_streams[props->stream[i].iStreamIndex] = new CDemuxStream();
+      m_streams[props.stream[i].iStreamIndex] = new CDemuxStream();
 
-    m_streams[props->stream[i].iStreamIndex]->codec       = (CodecID)props->stream[i].iCodecId;
-    m_streams[props->stream[i].iStreamIndex]->iId         = props->stream[i].iStreamIndex;
-    m_streams[props->stream[i].iStreamIndex]->iPhysicalId = props->stream[i].iPhysicalId;
-    m_streams[props->stream[i].iStreamIndex]->language[0] = props->stream[i].strLanguage[0];
-    m_streams[props->stream[i].iStreamIndex]->language[1] = props->stream[i].strLanguage[1];
-    m_streams[props->stream[i].iStreamIndex]->language[2] = props->stream[i].strLanguage[2];
-    m_streams[props->stream[i].iStreamIndex]->language[3] = props->stream[i].strLanguage[3];
+    m_streams[props.stream[i].iStreamIndex]->codec       = (CodecID)props.stream[i].iCodecId;
+    m_streams[props.stream[i].iStreamIndex]->iId         = props.stream[i].iStreamIndex;
+    m_streams[props.stream[i].iStreamIndex]->iPhysicalId = props.stream[i].iPhysicalId;
+    m_streams[props.stream[i].iStreamIndex]->language[0] = props.stream[i].strLanguage[0];
+    m_streams[props.stream[i].iStreamIndex]->language[1] = props.stream[i].strLanguage[1];
+    m_streams[props.stream[i].iStreamIndex]->language[2] = props.stream[i].strLanguage[2];
+    m_streams[props.stream[i].iStreamIndex]->language[3] = props.stream[i].strLanguage[3];
 
     CLog::Log(LOGDEBUG,"CDVDDemuxPVRClient::RequestStreams(): added stream %d:%d with codec_id %d",
-        m_streams[props->stream[i].iStreamIndex]->iId,
-        m_streams[props->stream[i].iStreamIndex]->iPhysicalId,
-        m_streams[props->stream[i].iStreamIndex]->codec);
+        m_streams[props.stream[i].iStreamIndex]->iId,
+        m_streams[props.stream[i].iStreamIndex]->iPhysicalId,
+        m_streams[props.stream[i].iStreamIndex]->codec);
   }
 }
 

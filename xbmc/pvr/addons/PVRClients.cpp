@@ -606,36 +606,6 @@ bool CPVRClients::GetPlayingRecording(CPVRRecording &recording) const
   return m_bIsPlayingRecording;
 }
 
-void CPVRClients::DemuxReset(void)
-{
-  /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_bIsPlayingLiveTV)
-    m_clientMap[m_currentChannel.ClientID()]->DemuxReset();
-}
-
-void CPVRClients::DemuxAbort(void)
-{
-  /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_bIsPlayingLiveTV)
-    m_clientMap[m_currentChannel.ClientID()]->DemuxAbort();
-}
-
-void CPVRClients::DemuxFlush(void)
-{
-  /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_bIsPlayingLiveTV)
-    m_clientMap[m_currentChannel.ClientID()]->DemuxFlush();
-}
-
-DemuxPacket* CPVRClients::ReadDemuxStream(void)
-{
-  /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_bIsPlayingLiveTV)
-    return m_clientMap[m_currentChannel.ClientID()]->DemuxRead();
-
-  return NULL;
-}
-
 void CPVRClients::GetQualityData(PVR_SIGNAL_STATUS *status) const
 {
   CSingleLock lock(m_critSection);

@@ -320,33 +320,6 @@ namespace PVR
 
     //@}
 
-    /*! @name Stream demux methods */
-    //@{
-
-    /*!
-     * @brief Reset the demuxer.
-     */
-    void DemuxReset(void);
-
-    /*!
-     * @brief Abort any internal reading that might be stalling main thread.
-     *        NOTICE - this can be called from another thread.
-     */
-    void DemuxAbort(void);
-
-    /*!
-     * @brief Flush the demuxer. If any data is kept in buffers, this should be freed now.
-     */
-    void DemuxFlush(void);
-
-    /*!
-     * @brief Read the stream from the demuxer.
-     * @return An allocated demuxer packet.
-     */
-    DemuxPacket* ReadDemuxStream(void);
-
-    //@}
-
     /*! @name Signal status methods */
     //@{
 
