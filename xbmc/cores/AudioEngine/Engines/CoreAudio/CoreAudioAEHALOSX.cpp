@@ -92,7 +92,12 @@ bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
   if (!m_audioGraph)
     return false;
 
-  if (!m_audioGraph->Open(pSource, format, outputDevice, allowMixing, g_LayoutMap[ g_guiSettings.GetInt("audiooutput.channellayout") ] ))
+  AudioChannelLayoutTag layout = g_LayoutMap[ g_guiSettings.GetInt("audiooutput.channellayout") ];
+  // force optical/coax to 2.0 output channels
+  if (!m_Passthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+    layout = g_LayoutMap[1];
+
+  if (!m_audioGraph->Open(pSource, format, outputDevice, allowMixing, layout ))
   {
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: "
       "Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
