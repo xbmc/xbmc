@@ -233,6 +233,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device)
   memset(m_output_channels, 0x0, sizeof(m_output_channels));
   memset(&m_wave_header, 0x0, sizeof(m_wave_header));
 
+  for(int i = 0; i < OMX_MAX_CHANNELS; i++)
+    m_pcm_input.eChannelMapping[i] = OMX_AUDIO_ChannelNone;
+
   m_output_channels[0] = OMX_AUDIO_ChannelLF;
   m_output_channels[1] = OMX_AUDIO_ChannelRF;
   m_output_channels[2] = OMX_AUDIO_ChannelMax;
@@ -907,14 +910,6 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
 
       if(!m_Passthrough)
       {
-        OMX_INIT_STRUCTURE(m_pcm_input);
-        m_pcm_input.nPortIndex      = m_omx_decoder.GetOutputPort();
-        omx_err = m_omx_decoder.GetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
-        if(omx_err != OMX_ErrorNone)
-        {
-          CLog::Log(LOGERROR, "COMXAudio::AddPackets error GetParameter 1 omx_err(0x%08x)\n", omx_err);
-        }
-
         if (g_guiSettings.GetBool("audiooutput.normalizelevels"))
         {
           OMX_AUDIO_CONFIG_VOLUMETYPE volume;
