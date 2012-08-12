@@ -145,9 +145,8 @@ void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERA
 
 CPeripheralBus *CPeripherals::GetBusByType(const PeripheralBusType type) const
 {
-  CPeripheralBus *bus(NULL);
-
   CSingleLock lock(m_critSection);
+  CPeripheralBus *bus(NULL);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
     if (m_busses.at(iBusPtr)->Type() == type)
@@ -162,8 +161,8 @@ CPeripheralBus *CPeripherals::GetBusByType(const PeripheralBusType type) const
 
 CPeripheral *CPeripherals::GetPeripheralAtLocation(const CStdString &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
-  CPeripheral *peripheral(NULL);
   CSingleLock lock(m_critSection);
+  CPeripheral *peripheral(NULL);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
     /* check whether the bus matches if a bus type other than unknown was passed */
@@ -198,8 +197,8 @@ CPeripheralBus *CPeripherals::GetBusWithDevice(const CStdString &strLocation) co
 
 int CPeripherals::GetPeripheralsWithFeature(vector<CPeripheral *> &results, const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
-  int iReturn(0);
   CSingleLock lock(m_critSection);
+  int iReturn(0);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
     /* check whether the bus matches if a bus type other than unknown was passed */
