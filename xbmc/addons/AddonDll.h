@@ -240,7 +240,11 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
       {
         strcpy(str_id, "###GetSavedSettings");
         sprintf (str_value, "%i", i);
-        m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
+        ADDON_STATUS status = m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
+
+        if (status == ADDON_STATUS_UNKNOWN)
+          break;
+
         if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
       }
       CAddon::SaveSettings();
