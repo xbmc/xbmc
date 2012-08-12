@@ -220,7 +220,7 @@ typedef void (*XBMCPVRLib_UnRegisterMe)(void *addonData, CB_PVRLib *cbTable);
 
 typedef struct AddonCB
 {
-  const char                *libBasePath;                  ///> Never, never change this!!!
+  char                      *libBasePath;                  ///> Never, never change this!!!
   void                      *addonData;
   XBMCAddOnLib_RegisterMe    AddOnLib_RegisterMe;
   XBMCAddOnLib_UnRegisterMe  AddOnLib_UnRegisterMe;
