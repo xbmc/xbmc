@@ -33,6 +33,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -242,18 +243,15 @@ void CPVRGUIInfo::UpdateQualityData(void)
 {
   PVR_SIGNAL_STATUS qualityInfo;
   ClearQualityInfo(qualityInfo);
-  g_PVRClients->GetQualityData(&qualityInfo);
 
-  CSingleLock lock(m_critSection);
-  m_qualityInfo.dAudioBitrate = qualityInfo.dAudioBitrate;
-  m_qualityInfo.dDolbyBitrate = qualityInfo.dDolbyBitrate;
-  m_qualityInfo.dVideoBitrate = qualityInfo.dVideoBitrate;
-  m_qualityInfo.iBER          = qualityInfo.iBER;
-  m_qualityInfo.iSNR          = qualityInfo.iSNR;
-  m_qualityInfo.iSignal       = qualityInfo.iSignal;
-  m_qualityInfo.iUNC          = qualityInfo.iUNC;
-  strncpy(m_qualityInfo.strAdapterName, qualityInfo.strAdapterName, 1024);
-  strncpy(m_qualityInfo.strAdapterStatus, qualityInfo.strAdapterStatus, 1024);
+  PVR_CLIENT client;
+  if (g_guiSettings.GetBool("pvrplayback.signalquality") &&
+      g_PVRClients->GetPlayingClient(client))
+  {
+    client->SignalQuality(qualityInfo);
+  }
+
+  memcpy(&m_qualityInfo, &qualityInfo, sizeof(m_qualityInfo));
 }
 
 void CPVRGUIInfo::UpdateMisc(void)
@@ -644,11 +642,11 @@ void CPVRGUIInfo::UpdateBackendCache(void)
     return;
 
   CPVRClients *clients = g_PVRClients;
-  CLIENTMAP activeClients;
-  iActiveClients = clients->GetConnectedClients(&activeClients);
+  PVR_CLIENTMAP activeClients;
+  iActiveClients = clients->GetConnectedClients(activeClients);
   if (iActiveClients > 0)
   {
-    CLIENTMAPITR activeClient = activeClients.begin();
+    PVR_CLIENTMAP_CITR activeClient = activeClients.begin();
     /* safe to read unlocked */
     for (unsigned int i = 0; i < m_iAddonInfoToggleCurrent; i++)
       activeClient++;

@@ -39,9 +39,9 @@ namespace PVR
 {
   class CPVRGUIInfo;
 
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >                 CLIENTMAP;
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator       CLIENTMAPITR;
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >::const_iterator CLIENTMAPCITR;
+  typedef std::map< int, boost::shared_ptr<CPVRClient> >                 PVR_CLIENTMAP;
+  typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator       PVR_CLIENTMAP_ITR;
+  typedef std::map< int, boost::shared_ptr<CPVRClient> >::const_iterator PVR_CLIENTMAP_CITR;
   typedef std::map< int, PVR_STREAM_PROPERTIES >                         STREAMPROPS;
   typedef boost::shared_ptr<CPVRClient> PVR_CLIENT;
 
@@ -115,11 +115,6 @@ namespace PVR
     int GetFirstConnectedClientID(void);
 
     /*!
-     * @return True when all clients are connected, false otherwise.
-     */
-    bool AllClientsConnected(void) const;
-
-    /*!
      * @return True when at least one client is known and enabled, false otherwise.
      */
     bool HasEnabledClients(void) const;
@@ -161,7 +156,7 @@ namespace PVR
      * @param clients Store the active clients in this map.
      * @return The amount of added clients.
      */
-    int GetConnectedClients(CLIENTMAP *clients);
+    int GetConnectedClients(PVR_CLIENTMAP &clients) const;
 
     /*!
      * @return The client ID of the client that is currently playing a stream or -1 if no client is playing.
@@ -196,7 +191,7 @@ namespace PVR
      *        Limited to recordings playback at the moment.
      * @return The size of the stream.
      */
-    int64_t LengthStream(void);
+    int64_t GetStreamLength(void);
 
     /*!
      * @brief Seek to a position in a stream.
@@ -669,7 +664,6 @@ namespace PVR
     int GetClientId(const ADDON::AddonPtr client) const;
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
-    bool                  m_bAllClientsConnected;        /*!< true when all clients are loaded, false otherwise */
     bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     bool                  m_bIsValidChannelSettings;  /*!< true if current channel settings are valid and can be saved */
     CPVRChannel           m_currentChannel;           /*!< the channel that is currently playing or NULL if nothing is playing */
@@ -679,7 +673,7 @@ namespace PVR
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     CStdString            m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     ADDON::VECADDONS      m_addons;
-    CLIENTMAP             m_clientMap;                /*!< a map of all known clients */
+    PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
     PVR_SIGNAL_STATUS     m_qualityInfo;              /*!< stream quality information */
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
     CCriticalSection      m_critSection;

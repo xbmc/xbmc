@@ -483,10 +483,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
   pDlgSelect->Add(g_localizeStrings.Get(19209));
   clients.push_back(XBMC_VIRTUAL_CLIENTID);
 
-  CLIENTMAP clientMap;
-  if (g_PVRClients->GetConnectedClients(&clientMap) > 0)
+  PVR_CLIENTMAP clientMap;
+  if (g_PVRClients->GetConnectedClients(clientMap) > 0)
   {
-    CLIENTMAPITR itr;
+    PVR_CLIENTMAP_ITR itr;
     for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
     {
       clients.push_back((*itr).first);
