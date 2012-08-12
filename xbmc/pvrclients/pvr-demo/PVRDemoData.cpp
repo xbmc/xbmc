@@ -222,11 +222,11 @@ PVR_ERROR PVRDemoData::GetChannels(PVR_HANDLE handle, bool bRadio)
       xbmcChannel.iUniqueId         = channel.iUniqueId;
       xbmcChannel.bIsRadio          = channel.bRadio;
       xbmcChannel.iChannelNumber    = channel.iChannelNumber;
-      xbmcChannel.strChannelName    = channel.strChannelName.c_str();
-      xbmcChannel.strInputFormat    = ""; // unused
-      xbmcChannel.strStreamURL      = channel.strStreamURL.c_str();
+      memcpy(xbmcChannel.strChannelName, channel.strChannelName.c_str(), sizeof(xbmcChannel.strChannelName));
+      memset(xbmcChannel.strInputFormat, 0, sizeof(xbmcChannel.strInputFormat));
+      memcpy(xbmcChannel.strStreamURL, channel.strStreamURL.c_str(), sizeof(xbmcChannel.strStreamURL));
       xbmcChannel.iEncryptionSystem = channel.iEncryptionSystem;
-      xbmcChannel.strIconPath       = channel.strIconPath.c_str();
+      memcpy(xbmcChannel.strIconPath, channel.strIconPath.c_str(), sizeof(xbmcChannel.strIconPath));
       xbmcChannel.bIsHidden         = false;
 
       PVR->TransferChannelEntry(handle, &xbmcChannel);
@@ -274,7 +274,7 @@ PVR_ERROR PVRDemoData::GetChannelGroups(PVR_HANDLE handle, bool bRadio)
       memset(&xbmcGroup, 0, sizeof(PVR_CHANNEL_GROUP));
 
       xbmcGroup.bIsRadio = bRadio;
-      xbmcGroup.strGroupName = group.strGroupName.c_str();
+      memcpy(xbmcGroup.strGroupName, group.strGroupName.c_str(), sizeof(xbmcGroup.strGroupName));
 
       PVR->TransferChannelGroup(handle, &xbmcGroup);
     }
@@ -288,7 +288,7 @@ PVR_ERROR PVRDemoData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANN
   for (unsigned int iGroupPtr = 0; iGroupPtr < m_groups.size(); iGroupPtr++)
   {
     PVRDemoChannelGroup &myGroup = m_groups.at(iGroupPtr);
-    if (myGroup.strGroupName == group.strGroupName)
+    if (!strcmp(myGroup.strGroupName.c_str(),group.strGroupName))
     {
       for (unsigned int iChannelPtr = 0; iChannelPtr < myGroup.members.size(); iChannelPtr++)
       {
@@ -299,7 +299,7 @@ PVR_ERROR PVRDemoData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANN
         PVR_CHANNEL_GROUP_MEMBER xbmcGroupMember;
         memset(&xbmcGroupMember, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER));
 
-        xbmcGroupMember.strGroupName     = group.strGroupName;
+        memcpy(xbmcGroupMember.strGroupName, group.strGroupName, sizeof(xbmcGroupMember.strGroupName));
         xbmcGroupMember.iChannelUniqueId = channel.iUniqueId;
         xbmcGroupMember.iChannelNumber   = channel.iChannelNumber;
 

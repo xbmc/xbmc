@@ -151,7 +151,7 @@ int CPVRClient::GetID(void) const
 void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
 {
   addonGroup.bIsRadio     = xbmcGroup.IsRadio();
-  addonGroup.strGroupName = xbmcGroup.GroupName();
+  memcpy(addonGroup.strGroupName, xbmcGroup.GroupName().c_str(), sizeof(addonGroup.strGroupName));
 }
 
 /*!
@@ -165,16 +165,16 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
   addonRecording.recordingTime  = recTime - g_advancedSettings.m_iPVRTimeCorrection;
-  addonRecording.strRecordingId = xbmcRecording.m_strRecordingId.c_str();
-  addonRecording.strTitle       = xbmcRecording.m_strTitle.c_str();
-  addonRecording.strPlotOutline = xbmcRecording.m_strPlotOutline.c_str();
-  addonRecording.strPlot        = xbmcRecording.m_strPlot.c_str();
-  addonRecording.strChannelName = xbmcRecording.m_strChannelName.c_str();
+  memcpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(), sizeof(addonRecording.strRecordingId));
+  memcpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(), sizeof(addonRecording.strTitle));
+  memcpy(addonRecording.strPlotOutline, xbmcRecording.m_strPlotOutline.c_str(), sizeof(addonRecording.strPlotOutline));
+  memcpy(addonRecording.strPlot, xbmcRecording.m_strPlot.c_str(), sizeof(addonRecording.strPlot));
+  memcpy(addonRecording.strChannelName, xbmcRecording.m_strChannelName.c_str(), sizeof(addonRecording.strChannelName));
   addonRecording.iDuration      = xbmcRecording.GetDuration();
   addonRecording.iPriority      = xbmcRecording.m_iPriority;
   addonRecording.iLifetime      = xbmcRecording.m_iLifetime;
-  addonRecording.strDirectory   = xbmcRecording.m_strDirectory.c_str();
-  addonRecording.strStreamURL   = xbmcRecording.m_strStreamURL.c_str();
+  memcpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory));
+  memcpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL));
 }
 
 /*!
@@ -194,8 +194,8 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.state             = xbmcTimer.m_state;
   addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
   addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
-  addonTimer.strTitle          = xbmcTimer.m_strTitle;
-  addonTimer.strDirectory      = xbmcTimer.m_strDirectory;
+  memcpy(addonTimer.strTitle, xbmcTimer.m_strTitle.c_str(), sizeof(addonTimer.strTitle));
+  memcpy(addonTimer.strDirectory, xbmcTimer.m_strDirectory.c_str(), sizeof(addonTimer.strDirectory));
   addonTimer.iPriority         = xbmcTimer.m_iPriority;
   addonTimer.iLifetime         = xbmcTimer.m_iLifetime;
   addonTimer.bIsRepeating      = xbmcTimer.m_bIsRepeating;
@@ -204,7 +204,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.endTime           = end - g_advancedSettings.m_iPVRTimeCorrection;
   addonTimer.firstDay          = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
   addonTimer.iEpgUid           = epgTag ? epgTag->UniqueBroadcastID() : -1;
-  addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
+  memcpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary));
   addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;
   addonTimer.iMarginEnd        = xbmcTimer.m_iMarginEnd;
   addonTimer.iGenreType        = xbmcTimer.m_iGenreType;
@@ -220,13 +220,13 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHAN
 {
   addonChannel.iUniqueId         = xbmcChannel.UniqueID();
   addonChannel.iChannelNumber    = xbmcChannel.ClientChannelNumber();
-  addonChannel.strChannelName    = xbmcChannel.ClientChannelName().c_str();
-  addonChannel.strIconPath       = xbmcChannel.IconPath().c_str();
+  memcpy(addonChannel.strChannelName, xbmcChannel.ClientChannelName().c_str(), sizeof(addonChannel.strChannelName));
+  memcpy(addonChannel.strIconPath, xbmcChannel.IconPath().c_str(), sizeof(addonChannel.strIconPath));
   addonChannel.iEncryptionSystem = xbmcChannel.EncryptionSystem();
   addonChannel.bIsRadio          = xbmcChannel.IsRadio();
   addonChannel.bIsHidden         = xbmcChannel.IsHidden();
-  addonChannel.strInputFormat    = xbmcChannel.InputFormat().c_str();
-  addonChannel.strStreamURL      = xbmcChannel.StreamURL().c_str();
+  memcpy(addonChannel.strInputFormat, xbmcChannel.InputFormat().c_str(), sizeof(addonChannel.strInputFormat));
+  memcpy(addonChannel.strStreamURL, xbmcChannel.StreamURL().c_str(), sizeof(addonChannel.strStreamURL));
 }
 
 bool CPVRClient::GetAddonProperties(void)

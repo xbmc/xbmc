@@ -103,8 +103,8 @@ void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
   else
     tag.state           = PVR_TIMER_STATE_CANCELLED;
   tag.iClientChannelUid = m_channel;
-  tag.strTitle          = m_title.c_str();
-  tag.strDirectory      = m_directory.c_str();
+  memcpy(tag.strTitle, m_title.c_str(), sizeof(tag.strTitle));
+  memcpy(tag.strDirectory, m_directory.c_str(), sizeof(tag.strDirectory));
   tag.startTime         = m_starttime ;
   tag.endTime           = m_endtime ;
   // From the VDR manual

@@ -224,15 +224,15 @@ bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
     memset(&tag, 0 , sizeof(tag));
 
     tag.iChannelNumber    = vresp->extract_U32();
-    tag.strChannelName    = vresp->extract_String();
+    memcpy(tag.strChannelName, vresp->extract_String(), sizeof(tag.strChannelName));
     tag.iUniqueId         = vresp->extract_U32();
                             vresp->extract_U32(); // still here for compatibility
     tag.iEncryptionSystem = vresp->extract_U32();
                             vresp->extract_U32(); // uint32_t vtype - currently unused
     tag.bIsRadio          = radio;
-    tag.strInputFormat    = "";
-    tag.strStreamURL      = "";
-    tag.strIconPath       = "";
+    memset(tag.strInputFormat, 0, sizeof(tag.strInputFormat));
+    memset(tag.strStreamURL, 0, sizeof(tag.strStreamURL));
+    memset(tag.strIconPath, 0, sizeof(tag.strIconPath));
     tag.bIsHidden         = false;
 
     PVR->TransferChannelEntry(handle, &tag);
@@ -366,10 +366,9 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
   tag.firstDay          = vresp->extract_U32();
   tag.iWeekdays         = vresp->extract_U32();
   tag.bIsRepeating      = tag.iWeekdays == 0 ? false : true;
-  tag.strTitle          = vresp->extract_String();
-  tag.strDirectory            = "";
+  memcpy(tag.strTitle, vresp->extract_String(), sizeof(tag.strTitle));
+  memset(tag.strDirectory, 0, sizeof(tag.strDirectory));
 
-  delete[] tag.strTitle;
   delete vresp;
   return PVR_ERROR_NO_ERROR;
 }
@@ -416,13 +415,12 @@ bool cVNSIData::GetTimersList(PVR_HANDLE handle)
       tag.firstDay          = vresp->extract_U32();
       tag.iWeekdays         = vresp->extract_U32();
       tag.bIsRepeating      = tag.iWeekdays == 0 ? false : true;
-      tag.strTitle          = vresp->extract_String();
-      tag.strDirectory      = "";
+      memcpy(tag.strTitle, vresp->extract_String(), sizeof(tag.strTitle));
+      memset(tag.strDirectory, 0, sizeof(tag.strDirectory));
       tag.iMarginStart      = 0;
       tag.iMarginEnd        = 0;
 
       PVR->TransferTimerEntry(handle, &tag);
-      delete[] tag.strTitle;
     }
   }
   delete vresp;
@@ -440,7 +438,7 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
 
   // add directory in front of the title
   std::string path;
-  if(timerinfo.strDirectory != NULL && strlen(timerinfo.strDirectory) > 0) {
+  if(strlen(timerinfo.strDirectory) > 0) {
     path += timerinfo.strDirectory;
     if(path == "/") {
       path.clear();
@@ -456,7 +454,7 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
     }
   }
 
-  if(timerinfo.strTitle != NULL) {
+  if(strlen(timerinfo.strTitle) > 0) {
     path += timerinfo.strTitle;
   }
 
@@ -547,7 +545,7 @@ PVR_ERROR cVNSIData::RenameTimer(const PVR_TIMER &timerinfo, const char *newname
   if (ret != PVR_ERROR_NO_ERROR)
     return ret;
 
-  timerinfo1.strTitle = newname;
+  memcpy(timerinfo1.strTitle, newname, sizeof(timerinfo1.strTitle));
   return UpdateTimer(timerinfo1);
 }
 
@@ -635,19 +633,18 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVR_HANDLE handle)
     tag.iDuration       = vresp->extract_U32();
     tag.iPriority       = vresp->extract_U32();
     tag.iLifetime       = vresp->extract_U32();
-    tag.strChannelName  = vresp->extract_String();
-    tag.strTitle        = vresp->extract_String();
-    tag.strPlotOutline  = vresp->extract_String();
-    tag.strPlot         = vresp->extract_String();
-    tag.strDirectory    = vresp->extract_String();
+    memcpy(tag.strChannelName, vresp->extract_String(), sizeof(tag.strChannelName));
+    memcpy(tag.strTitle, vresp->extract_String(), sizeof(tag.strTitle));
+    memcpy(tag.strPlotOutline, vresp->extract_String(), sizeof(tag.strPlotOutline));
+    memcpy(tag.strPlot, vresp->extract_String(), sizeof(tag.strPlot));
+    memcpy(tag.strDirectory, vresp->extract_String(), sizeof(tag.strDirectory));
     strRecordingId.Format("%i", vresp->extract_U32());
-    tag.strRecordingId  = strRecordingId.c_str();
-    tag.strStreamURL    = "";
+    memcpy(tag.strRecordingId, strRecordingId.c_str(), sizeof(tag.strRecordingId));
+    memset(tag.strStreamURL, 0, sizeof(tag.strStreamURL));
 
     PVR->TransferRecordingEntry(handle, &tag);
 
     delete[] tag.strChannelName;
-    delete[] tag.strTitle;
     delete[] tag.strPlotOutline;
     delete[] tag.strPlot;
     delete[] tag.strDirectory;
@@ -920,7 +917,7 @@ bool cVNSIData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
   {
     PVR_CHANNEL_GROUP tag;
 
-    tag.strGroupName = vresp->extract_String();
+    memcpy(tag.strGroupName, vresp->extract_String(), sizeof(tag.strGroupName));
     tag.bIsRadio = vresp->extract_U8()!=0?true:false;
     PVR->TransferChannelGroup(handle, &tag);
 
@@ -953,7 +950,7 @@ bool cVNSIData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROU
   while (!vresp->end())
   {
     PVR_CHANNEL_GROUP_MEMBER tag;
-    tag.strGroupName = group.strGroupName;
+    memcpy(tag.strGroupName, group.strGroupName, sizeof(tag.strGroupName));
     tag.iChannelUniqueId = vresp->extract_U32();
     tag.iChannelNumber = vresp->extract_U32();
 

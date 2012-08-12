@@ -661,7 +661,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     {
       tag.iUniqueId = channel.UID();
       tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
-      tag.strChannelName = channel.Name();
+      memcpy(tag.strChannelName, channel.Name(), sizeof(tag.strChannelName));
 #ifdef TARGET_WINDOWS
       if (bCheckForThumbs)
       {
@@ -676,7 +676,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
         }
       }
 #else
-      tag.strIconPath = "";
+      memset(tag.strIconPath, 0, sizeof(tag.strIconPath));
 #endif
       tag.iEncryptionSystem = channel.Encrypted();
       tag.bIsRadio = bRadio; //TODO:(channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
@@ -684,7 +684,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
 
       if(channel.IsWebstream())
       {
-        tag.strStreamURL = channel.URL();
+        memcpy(tag.strStreamURL, channel.URL(), sizeof(tag.strStreamURL));
       }
       else
       {
@@ -693,9 +693,9 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
           stream.Format("pvr://stream/radio/%i.ts", tag.iUniqueId);
         else
           stream.Format("pvr://stream/tv/%i.ts", tag.iUniqueId);
-        tag.strStreamURL = stream.c_str();
+        memcpy(tag.strStreamURL, stream.c_str(), sizeof(tag.strStreamURL));
       }
-      tag.strInputFormat = "";
+      memset(tag.strInputFormat, 0, sizeof(tag.strInputFormat));
 
       if( (!g_bOnlyFTA) || (tag.iEncryptionSystem==0))
       {
@@ -769,7 +769,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
     uri::decode(data);
 
     tag.bIsRadio = bRadio;
-    tag.strGroupName = data.c_str();
+    memcpy(tag.strGroupName, data.c_str(), sizeof(tag.strGroupName));
     XBMC->Log(LOG_DEBUG, "Adding %s group: %s", ((bRadio) ? "radio" : "tv"), tag.strGroupName);
     PVR->TransferChannelGroup(handle, &tag);
   }
@@ -832,7 +832,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
     {
       tag.iChannelUniqueId = channel.UID();
       tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
-      tag.strGroupName = group.strGroupName;
+      memcpy(tag.strGroupName, group.strGroupName, sizeof(tag.strGroupName));
 
 
       // Don't add encrypted channels when FTA only option is turned on
@@ -909,11 +909,11 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     {
       strRecordingId.Format("%i", recording.Index());
 
-      tag.strRecordingId = strRecordingId.c_str();
-      tag.strTitle       = recording.Title();
-      tag.strPlotOutline = g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : tag.strTitle;
-      tag.strPlot        = recording.Description();
-      tag.strChannelName = recording.ChannelName();
+      memcpy(tag.strRecordingId, strRecordingId.c_str(), sizeof(tag.strRecordingId));
+      memcpy(tag.strTitle, recording.Title(), sizeof(tag.strTitle));
+      memcpy(tag.strPlotOutline, g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : tag.strTitle, sizeof(tag.strPlotOutline));
+      memcpy(tag.strPlot, recording.Description(), sizeof(tag.strPlot));
+      memcpy(tag.strChannelName, recording.ChannelName(), sizeof(tag.strChannelName));
       tag.recordingTime  = recording.StartTime();
       tag.iDuration      = (int) recording.Duration();
       tag.iPriority      = 0; // only available for schedules, not for recordings
@@ -923,7 +923,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
       strDirectory = recording.Directory();
       strDirectory.Replace("\\", " - "); // XBMC supports only 1 sublevel below Recordings, so flatten the MediaPortal directory structure
-      tag.strDirectory   = strDirectory.c_str(); // used in XBMC as directory structure below "Recordings"
+      memcpy(tag.strDirectory, strDirectory.c_str(), sizeof(tag.strDirectory)); // used in XBMC as directory structure below "Recordings"
 
       if (g_bUseRecordingsDir == true)
       {
@@ -931,17 +931,17 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
         if (g_szRecordingsDir.length() > 0)
         {
           recording.SetDirectory(g_szRecordingsDir);
-          tag.strStreamURL  = recording.FilePath();
+          memcpy(tag.strStreamURL, recording.FilePath(), sizeof(tag.strStreamURL));
         }
         else
         {
-          tag.strStreamURL  = recording.FilePath();
+          memcpy(tag.strStreamURL, recording.FilePath(), sizeof(tag.strStreamURL));
         }
       }
       else
       {
         // Use rtsp url
-        tag.strStreamURL    = recording.Stream();
+        memcpy(tag.strStreamURL, recording.Stream(), sizeof(tag.strStreamURL));
       }
       PVR->TransferRecordingEntry(handle, &tag);
     }

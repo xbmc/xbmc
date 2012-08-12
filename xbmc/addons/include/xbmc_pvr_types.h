@@ -61,6 +61,11 @@ struct DemuxPacket;
 #define PRAGMA_PACK 1
 #endif
 
+#define PVR_ADDON_NAME_STRING_LENGTH         1024
+#define PVR_ADDON_URL_STRING_LENGTH          1024
+#define PVR_ADDON_DESC_STRING_LENGTH         1024
+#define PVR_ADDON_INPUT_FORMAT_STRING_LENGTH 32
+
 /*! @name PVR entry content event types */
 //@{
 /* These IDs come from the DVB-SI EIT table "content descriptor"
@@ -191,15 +196,15 @@ extern "C" {
    */
   typedef struct PVR_SIGNAL_STATUS
   {
-    char   strAdapterName[1024];       /*!< @brief (optional) name of the adapter that's being used */
-    char   strAdapterStatus[1024];     /*!< @brief (optional) status of the adapter that's being used */
-    int    iSNR;                       /*!< @brief (optional) signal/noise ratio */
-    int    iSignal;                    /*!< @brief (optional) signal strength */
-    long   iBER;                       /*!< @brief (optional) bit error rate */
-    long   iUNC;                       /*!< @brief (optional) uncorrected blocks */
-    double dVideoBitrate;              /*!< @brief (optional) video bitrate */
-    double dAudioBitrate;              /*!< @brief (optional) audio bitrate */
-    double dDolbyBitrate;              /*!< @brief (optional) dolby bitrate */
+    char   strAdapterName[PVR_ADDON_NAME_STRING_LENGTH];   /*!< @brief (optional) name of the adapter that's being used */
+    char   strAdapterStatus[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (optional) status of the adapter that's being used */
+    int    iSNR;                                           /*!< @brief (optional) signal/noise ratio */
+    int    iSignal;                                        /*!< @brief (optional) signal strength */
+    long   iBER;                                           /*!< @brief (optional) bit error rate */
+    long   iUNC;                                           /*!< @brief (optional) uncorrected blocks */
+    double dVideoBitrate;                                  /*!< @brief (optional) video bitrate */
+    double dAudioBitrate;                                  /*!< @brief (optional) audio bitrate */
+    double dDolbyBitrate;                                  /*!< @brief (optional) dolby bitrate */
   } ATTRIBUTE_PACKED PVR_SIGNAL_STATUS;
 
   /*!
@@ -216,31 +221,31 @@ extern "C" {
    */
   typedef struct PVR_CHANNEL
   {
-    unsigned int iUniqueId;            /*!< @brief (required) unique identifier for this channel */
-    bool         bIsRadio;             /*!< @brief (required) true if this is a radio channel, false if it's a TV channel */
-    unsigned int iChannelNumber;       /*!< @brief (optional) channel number of this channel on the backend */
-    const char * strChannelName;       /*!< @brief (optional) channel name given to this channel */
-    const char * strInputFormat;       /*!< @brief (optional) input format type. types can be found in ffmpeg/libavformat/allformats.c
-                                                              leave empty if unknown */
-    const char * strStreamURL;         /*!< @brief (optional) the URL to use to access this channel.
-                                                              leave empty to use this add-on to access the stream.
-                                                              set to a path that's supported by XBMC otherwise. */
-    unsigned int iEncryptionSystem;    /*!< @brief (optional) the encryption ID or CaID of this channel */
-    const char * strIconPath;          /*!< @brief (optional) path to the channel icon (if present) */
-    bool         bIsHidden;            /*!< @brief (optional) true if this channel is marked as hidden */
+    unsigned int iUniqueId;                                            /*!< @brief (required) unique identifier for this channel */
+    bool         bIsRadio;                                             /*!< @brief (required) true if this is a radio channel, false if it's a TV channel */
+    unsigned int iChannelNumber;                                       /*!< @brief (optional) channel number of this channel on the backend */
+    char         strChannelName[PVR_ADDON_NAME_STRING_LENGTH];         /*!< @brief (optional) channel name given to this channel */
+    char         strInputFormat[PVR_ADDON_INPUT_FORMAT_STRING_LENGTH]; /*!< @brief (optional) input format type. types can be found in ffmpeg/libavformat/allformats.c
+                                                                                   leave empty if unknown */
+    char         strStreamURL[PVR_ADDON_URL_STRING_LENGTH];            /*!< @brief (optional) the URL to use to access this channel.
+                                                                                   leave empty to use this add-on to access the stream.
+                                                                                   set to a path that's supported by XBMC otherwise. */
+    unsigned int iEncryptionSystem;                                    /*!< @brief (optional) the encryption ID or CaID of this channel */
+    char         strIconPath[PVR_ADDON_URL_STRING_LENGTH];             /*!< @brief (optional) path to the channel icon (if present) */
+    bool         bIsHidden;                                            /*!< @brief (optional) true if this channel is marked as hidden */
   } ATTRIBUTE_PACKED PVR_CHANNEL;
 
   typedef struct PVR_CHANNEL_GROUP
   {
-    const char * strGroupName;         /*!< @brief (required) name of this channel group */
-    bool         bIsRadio;             /*!< @brief (required) true if this is a radio channel group, false otherwise. */
+    char         strGroupName[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) name of this channel group */
+    bool         bIsRadio;                                   /*!< @brief (required) true if this is a radio channel group, false otherwise. */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP;
 
   typedef struct PVR_CHANNEL_GROUP_MEMBER
   {
-    const char * strGroupName;         /*!< @brief (required) name of the channel group to add the channel to */
-    unsigned int iChannelUniqueId;     /*!< @brief (required) unique id of the member */
-    unsigned int iChannelNumber;       /*!< @brief (optional) channel number within the group */
+    char         strGroupName[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) name of the channel group to add the channel to */
+    unsigned int iChannelUniqueId;                           /*!< @brief (required) unique id of the member */
+    unsigned int iChannelNumber;                             /*!< @brief (optional) channel number within the group */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
 
   /*!
@@ -272,44 +277,43 @@ extern "C" {
    * @brief Representation of a timer event.
    */
   typedef struct PVR_TIMER {
-    unsigned int    iClientIndex;      /*!< @brief (required) the index of this timer given by the client */
-    int             iClientChannelUid; /*!< @brief (required) unique identifier of the channel to record on */
-    time_t          startTime;         /*!< @brief (required) start time of the recording in UTC. instant timers that are sent to the add-on by xbmc will have this value set to 0 */
-    time_t          endTime;           /*!< @brief (required) end time of the recording in UTC */
-    PVR_TIMER_STATE state;             /*!< @brief (required) the state of this timer */
-    const char *    strTitle;          /*!< @brief (optional) title of this timer */
-    const char *    strDirectory;      /*!< @brief (optional) the directory where the recording will be stored in */
-    const char *    strSummary;        /*!< @brief (optional) the summary for this timer */
-    int             iPriority;         /*!< @brief (optional) the priority of this timer */
-    int             iLifetime;         /*!< @brief (optional) lifetimer of this timer in days */
-    bool            bIsRepeating;      /*!< @brief (optional) true if this is a recurring timer */
-    time_t          firstDay;          /*!< @brief (optional) the first day this recording is active in case of a repeating event */
-    int             iWeekdays;         /*!< @brief (optional) weekday mask */
-    int             iEpgUid;           /*!< @brief (optional) epg event id */
-    unsigned int    iMarginStart;      /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
-    unsigned int    iMarginEnd;        /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
-    int             iGenreType;        /*!< @brief (optional) genre type */
-    int             iGenreSubType;     /*!< @brief (optional) genre sub type */
+    unsigned int    iClientIndex;                              /*!< @brief (required) the index of this timer given by the client */
+    int             iClientChannelUid;                         /*!< @brief (required) unique identifier of the channel to record on */
+    time_t          startTime;                                 /*!< @brief (required) start time of the recording in UTC. instant timers that are sent to the add-on by xbmc will have this value set to 0 */
+    time_t          endTime;                                   /*!< @brief (required) end time of the recording in UTC */
+    PVR_TIMER_STATE state;                                     /*!< @brief (required) the state of this timer */
+    char            strTitle[PVR_ADDON_NAME_STRING_LENGTH];    /*!< @brief (optional) title of this timer */
+    char            strDirectory[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) the directory where the recording will be stored in */
+    char            strSummary[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) the summary for this timer */
+    int             iPriority;                                 /*!< @brief (optional) the priority of this timer */
+    int             iLifetime;                                 /*!< @brief (optional) lifetimer of this timer in days */
+    bool            bIsRepeating;                              /*!< @brief (optional) true if this is a recurring timer */
+    time_t          firstDay;                                  /*!< @brief (optional) the first day this recording is active in case of a repeating event */
+    int             iWeekdays;                                 /*!< @brief (optional) weekday mask */
+    int             iEpgUid;                                   /*!< @brief (optional) epg event id */
+    unsigned int    iMarginStart;                              /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
+    unsigned int    iMarginEnd;                                /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
+    int             iGenreType;                                /*!< @brief (optional) genre type */
+    int             iGenreSubType;                             /*!< @brief (optional) genre sub type */
   } ATTRIBUTE_PACKED PVR_TIMER;
-
   /*!
    * @brief Representation of a recording.
    */
   typedef struct PVR_RECORDING {
-    const char *  strRecordingId;       /*!< @brief (required) unique id of the recording on the client. */
-    const char *  strTitle;             /*!< @brief (required) the title of this recording */
-    const char *  strStreamURL;         /*!< @brief (required) stream URL to access this recording */
-    const char *  strDirectory;         /*!< @brief (optional) directory of this recording on the client */
-    const char *  strPlotOutline;       /*!< @brief (optional) plot outline */
-    const char *  strPlot;              /*!< @brief (optional) plot */
-    const char *  strChannelName;       /*!< @brief (optional) channel name */
-    time_t        recordingTime;        /*!< @brief (optional) start time of the recording */
-    int           iDuration;            /*!< @brief (optional) duration of the recording in seconds */
-    int           iPriority;            /*!< @brief (optional) priority of this recording (from 0 - 100) */
-    int           iLifetime;            /*!< @brief (optional) life time in days of this recording */
-    int           iGenreType;           /*!< @brief (optional) genre type */
-    int           iGenreSubType;        /*!< @brief (optional) genre sub type */
-    int           iPlayCount;           /*!< @brief (optional) play count of this recording on the client */
+    char   strRecordingId[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) unique id of the recording on the client. */
+    char   strTitle[PVR_ADDON_NAME_STRING_LENGTH];       /*!< @brief (required) the title of this recording */
+    char   strStreamURL[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (required) stream URL to access this recording */
+    char   strDirectory[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (optional) directory of this recording on the client */
+    char   strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH]; /*!< @brief (optional) plot outline */
+    char   strPlot[PVR_ADDON_DESC_STRING_LENGTH];        /*!< @brief (optional) plot */
+    char   strChannelName[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (optional) channel name */
+    time_t recordingTime;                                /*!< @brief (optional) start time of the recording */
+    int    iDuration;                                    /*!< @brief (optional) duration of the recording in seconds */
+    int    iPriority;                                    /*!< @brief (optional) priority of this recording (from 0 - 100) */
+    int    iLifetime;                                    /*!< @brief (optional) life time in days of this recording */
+    int    iGenreType;                                   /*!< @brief (optional) genre type */
+    int    iGenreSubType;                                /*!< @brief (optional) genre sub type */
+    int    iPlayCount;                                   /*!< @brief (optional) play count of this recording on the client */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
