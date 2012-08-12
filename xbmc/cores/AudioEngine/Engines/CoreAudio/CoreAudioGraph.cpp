@@ -54,9 +54,9 @@ CCoreAudioGraph::~CCoreAudioGraph()
 bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag)
 {
-  AudioStreamBasicDescription fmt;
-  AudioStreamBasicDescription inputFormat;
-  AudioStreamBasicDescription outputFormat;
+  AudioStreamBasicDescription fmt = {0};
+  AudioStreamBasicDescription inputFormat = {0};
+  AudioStreamBasicDescription outputFormat = {0};
 
   m_deviceId = deviceId;
   m_allowMixing = allowMixing;
@@ -476,9 +476,9 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
   if (!m_audioUnit || !m_mixerUnit)
     return NULL;
 
-  AudioStreamBasicDescription fmt;
-  AudioStreamBasicDescription inputFormat;
-  AudioStreamBasicDescription outputFormat;
+  AudioStreamBasicDescription fmt = {0};
+  AudioStreamBasicDescription inputFormat = {0};
+  AudioStreamBasicDescription outputFormat = {0};
 
   int busNumber = GetFreeBus();
   if (busNumber == INVALID_BUS)
@@ -566,7 +566,7 @@ int CCoreAudioGraph::GetMixerChannelOffset(int busNumber)
     return 0;
 
   int offset = 0;
-  AudioStreamBasicDescription fmt;
+  AudioStreamBasicDescription fmt = {0};
 
   for (int i = 0; i < busNumber; i++)
   {
