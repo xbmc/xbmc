@@ -734,7 +734,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
       CLog::Log(LOGINFO, "%s - channel not found, can't update", __FUNCTION__);
     else if (!channel->EPGEnabled())
       CLog::Log(LOGINFO, "%s - EPG updating disabled in the channel configuration", __FUNCTION__);
-    else if (!g_PVRClients->GetAddonCapabilities(channel->ClientID()).bSupportsEPG)
+    else if (!g_PVRClients->SupportsEPG(channel->ClientID()))
       CLog::Log(LOGINFO, "%s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
     else
     {

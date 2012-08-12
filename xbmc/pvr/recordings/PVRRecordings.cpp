@@ -109,7 +109,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->SetPath(current->m_strFileNameAndPath);
 
     // Set the play count either directly from client (if supported) or from video db
-    if (g_PVRClients->GetAddonCapabilities(pFileItem->GetPVRRecordingInfoTag()->m_iClientId).bSupportsRecordingPlayCount)
+    if (g_PVRClients->SupportsRecordingPlayCount(pFileItem->GetPVRRecordingInfoTag()->m_iClientId))
     {
       pFileItem->GetPVRRecordingInfoTag()->m_playCount=pFileItem->GetPVRRecordingInfoTag()->m_iRecPlayCount;
     }
@@ -155,7 +155,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
       // Initialize folder overlay from play count (either directly from client or from video database)
       CVideoDatabase db;
-      bool supportsPlayCount = g_PVRClients->GetAddonCapabilities(current->m_iClientId).bSupportsRecordingPlayCount;
+      bool supportsPlayCount = g_PVRClients->SupportsRecordingPlayCount(current->m_iClientId);
       if ((supportsPlayCount && current->m_iRecPlayCount > 0) ||
           (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) > 0))
       {
@@ -178,7 +178,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       // Unset folder overlay if recording is unwatched
       if (unwatchedFolders.find(strFilePath) == unwatchedFolders.end()) {
         CVideoDatabase db;
-        bool supportsPlayCount = g_PVRClients->GetAddonCapabilities(current->m_iClientId).bSupportsRecordingPlayCount;
+        bool supportsPlayCount = g_PVRClients->SupportsRecordingPlayCount(current->m_iClientId);
         if ((supportsPlayCount && current->m_iRecPlayCount == 0) || (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) == 0))
         {
           pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
@@ -410,7 +410,7 @@ void CPVRRecordings::GetAll(CFileItemList &items)
     pFileItem->SetPath(current->m_strFileNameAndPath);
 
     // Set the play count either directly from client (if supported) or from video db
-    if (g_PVRClients->GetAddonCapabilities(pFileItem->GetPVRRecordingInfoTag()->m_iClientId).bSupportsRecordingPlayCount)
+    if (g_PVRClients->SupportsRecordingPlayCount(pFileItem->GetPVRRecordingInfoTag()->m_iClientId))
     {
       pFileItem->GetPVRRecordingInfoTag()->m_playCount=pFileItem->GetPVRRecordingInfoTag()->m_iRecPlayCount;
     }

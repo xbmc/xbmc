@@ -518,7 +518,7 @@ bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
   if (!item.m_channel)
     return false;
 
-  if (!g_PVRClients->GetAddonCapabilities(item.m_iClientId).bSupportsTimers)
+  if (!g_PVRClients->SupportsTimers(item.m_iClientId))
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;

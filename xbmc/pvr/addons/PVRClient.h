@@ -442,6 +442,19 @@ namespace PVR
 
     //@}
 
+    bool SupportsChannelGroups(void) const;
+    bool SupportsChannelScan(void) const;
+    bool SupportsEPG(void) const;
+    bool SupportsLastPlayedPosition(void) const;
+    bool SupportsRadio(void) const;
+    bool SupportsRecordings(void) const;
+    bool SupportsRecordingFolders(void) const;
+    bool SupportsRecordingPlayCount(void) const;
+    bool SupportsTimers(void) const;
+    bool SupportsTV(void) const;
+    bool HandlesDemuxing(void) const;
+    bool HandlesInputStream(void) const;
+
   private:
     /*!
      * @brief Resets all class members to their defaults. Called by the constructors.

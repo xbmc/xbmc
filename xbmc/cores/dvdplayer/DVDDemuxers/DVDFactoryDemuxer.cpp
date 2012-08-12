@@ -33,6 +33,7 @@
 #endif
 #include "DVDDemuxPVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace std;
 using namespace PVR;
@@ -87,7 +88,9 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
     /* Use PVR demuxer only for live streams */
     if (filename.substr(0, 14) == "pvr://channels")
     {
-      if (g_PVRManager.GetCurrentAddonCapabilities().bHandlesDemuxing)
+      boost::shared_ptr<CPVRClient> client;
+      if (g_PVRClients->GetPlayingClient(client) &&
+          client->HandlesDemuxing())
       {
         auto_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
         if(demuxer->Open(pInputStream))

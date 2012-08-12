@@ -549,7 +549,7 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(void) const
 
 bool CPVRTimerInfoTag::SupportsFolders() const
 {
-  return g_PVRClients->GetAddonCapabilities(m_iClientId).bSupportsRecordingFolders;
+  return g_PVRClients->SupportsRecordingFolders(m_iClientId);
 }
 
 void CPVRTimerInfoTag::ClearEpgTag(void)

@@ -43,6 +43,7 @@ namespace PVR
   typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator       CLIENTMAPITR;
   typedef std::map< int, boost::shared_ptr<CPVRClient> >::const_iterator CLIENTMAPCITR;
   typedef std::map< int, PVR_STREAM_PROPERTIES >                         STREAMPROPS;
+  typedef boost::shared_ptr<CPVRClient> PVR_CLIENT;
 
   #define XBMC_VIRTUAL_CLIENTID -1
 
@@ -84,7 +85,7 @@ namespace PVR
      * @param iClientId The client ID.
      * @return True when the client ID is valid and connected, false otherwise.
      */
-    bool IsConnectedClient(int iClientId);
+    bool IsConnectedClient(int iClientId) const;
 
     bool IsConnectedClient(const ADDON::AddonPtr addon);
 
@@ -166,19 +167,6 @@ namespace PVR
      * @return The client ID of the client that is currently playing a stream or -1 if no client is playing.
      */
     int GetPlayingClientID(void) const;
-
-    /*!
-     * @brief Get the capabilities for a specific client.
-     * @param clientID The ID of the client.
-     * @return The add-on's capabilities.
-     */
-    PVR_ADDON_CAPABILITIES GetAddonCapabilities(int iClientId) const;
-
-    /*!
-     * @brief Get the capabilities of the current playing client.
-     * @return The add-on's capabilities.
-     */
-    PVR_ADDON_CAPABILITIES GetCurrentAddonCapabilities(void);
 
     //@}
 
@@ -441,7 +429,7 @@ namespace PVR
      * @param iClientId The id of the client to check.
      * @return True if the supports recordings, false otherwise.
      */
-    bool HasRecordingsSupport(int iClientId);
+    bool SupportsRecordings(int iClientId) const;
 
     /*!
      * @brief Get all recordings from clients
@@ -513,7 +501,7 @@ namespace PVR
      * @param iClientId The id of the client to check.
      * @return True if the supports EPG transfer, false otherwise.
      */
-    bool HasEPGSupport(int iClientId);
+    bool SupportsEPG(int iClientId) const;
 
     /*!
      * @brief Get the EPG table for a channel.
@@ -544,7 +532,7 @@ namespace PVR
      * @param iClientId The id of the client to check.
      * @return True if the supports channel groups, false otherwise.
      */
-    bool HasChannelGroupSupport(int iClientId);
+    bool SupportsChannelGroups(int iClientId) const;
 
     /*!
      * @brief Get all channel groups from backends.
@@ -605,6 +593,19 @@ namespace PVR
     void Notify(const Observable &obs, const CStdString& msg);
 
     bool GetClient(const CStdString &strId, ADDON::AddonPtr &addon) const;
+
+    bool SupportsChannelScan(int iClientId) const;
+    bool SupportsLastPlayedPosition(int iClientId) const;
+    bool SupportsRadio(int iClientId) const;
+    bool SupportsRecordingFolders(int iClientId) const;
+    bool SupportsRecordingPlayCount(int iClientId) const;
+    bool SupportsTimers(int iClientId) const;
+    bool SupportsTV(int iClientId) const;
+    bool HandlesDemuxing(int iClientId) const;
+    bool HandlesInputStream(int iClientId) const;
+
+    bool GetPlayingClient(PVR_CLIENT &client) const;
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager

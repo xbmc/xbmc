@@ -1099,3 +1099,63 @@ bool CPVRClient::CanPlayChannel(const CPVRChannel &channel) const
            ((m_addonCapabilities.bSupportsTV && !channel.IsRadio()) ||
             (m_addonCapabilities.bSupportsRadio && channel.IsRadio())));
 }
+
+bool CPVRClient::SupportsChannelGroups(void) const
+{
+  return m_addonCapabilities.bSupportsChannelGroups;
+}
+
+bool CPVRClient::SupportsChannelScan(void) const
+{
+  return m_addonCapabilities.bSupportsChannelScan;
+}
+
+bool CPVRClient::SupportsEPG(void) const
+{
+  return m_addonCapabilities.bSupportsEPG;
+}
+
+bool CPVRClient::SupportsLastPlayedPosition(void) const
+{
+  return m_addonCapabilities.bSupportsLastPlayedPosition;
+}
+
+bool CPVRClient::SupportsRadio(void) const
+{
+  return m_addonCapabilities.bSupportsRadio;
+}
+
+bool CPVRClient::SupportsRecordings(void) const
+{
+  return m_addonCapabilities.bSupportsRecordings;
+}
+
+bool CPVRClient::SupportsRecordingFolders(void) const
+{
+  return m_addonCapabilities.bSupportsRecordingFolders;
+}
+
+bool CPVRClient::SupportsRecordingPlayCount(void) const
+{
+  return m_addonCapabilities.bSupportsRecordingPlayCount;
+}
+
+bool CPVRClient::SupportsTimers(void) const
+{
+  return m_addonCapabilities.bSupportsTimers;
+}
+
+bool CPVRClient::SupportsTV(void) const
+{
+  return m_addonCapabilities.bSupportsTV;
+}
+
+bool CPVRClient::HandlesDemuxing(void) const
+{
+  return m_addonCapabilities.bHandlesDemuxing;
+}
+
+bool CPVRClient::HandlesInputStream(void) const
+{
+  return m_addonCapabilities.bHandlesInputStream;
+}
