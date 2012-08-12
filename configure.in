@@ -660,10 +660,10 @@ case $use_platform in
      use_texturepacker_native=yes
      use_arch="arm"
      use_cpu=arm1176jzf-s
-     use_armv5te="yes"
+     use_armv5te="no"
      use_armv6t2="no"
-     use_armv6="yes"
-     use_armvfp="yes"
+     use_armv6="no"
+     use_armvfp="no"
      use_hardcoded_tables="yes"
      use_alsa="yes"
      USE_TEXTUREPACKER_NATIVE_ROOT="$TEXTUREPACKER_NATIVE_ROOT"
@@ -673,6 +673,7 @@ case $use_platform in
      USE_OMXLIB=1; AC_DEFINE([HAVE_OMXLIB],[1],["Define to 1 if OMX libs is enabled"])
      CFLAGS="$CFLAGS"
      CXXFLAGS="$CXXFLAGS"
+     ffmpeg_target_os=linux
      ;;
   *)
      use_alsa="yes"
@@ -710,8 +711,13 @@ CXXFLAGS="$CXXFLAGS $DEBUG_FLAGS"
 
 if test "$use_optimizations" = "yes"; then
   final_message="$final_message\n  Optimization:\tYes"
-  CXXFLAGS="$CXXFLAGS -O2"
-  CFLAGS="$CFLAGS -O2"
+  if test "$target_platform" = "target_raspberry_pi"; then
+    CXXFLAGS="$CXXFLAGS"
+    CFLAGS="$CFLAGS"
+  else
+    CXXFLAGS="$CXXFLAGS -O2"
+    CFLAGS="$CFLAGS -O2"
+  fi
 else
   final_message="$final_message\n  Optimization:\tNo"
 fi
