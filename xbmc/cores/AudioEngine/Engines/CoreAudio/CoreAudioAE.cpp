@@ -424,12 +424,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
 
   Stop();
 
-  if (COREAUDIO_IS_RAW(dataFormat))
-  {
-    Deinitialize();
-    m_Initialized = OpenCoreAudio(sampleRate, true, dataFormat);
-  }
-  else if (/* wasEmpty || */ m_rawPassthrough)
+  if (m_Initialized)
   {
     Deinitialize();
     m_Initialized = OpenCoreAudio(sampleRate, COREAUDIO_IS_RAW(dataFormat), dataFormat);
