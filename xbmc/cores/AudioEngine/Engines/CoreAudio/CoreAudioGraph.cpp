@@ -236,18 +236,6 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
     }
   }
 
-/*
-// WTF is this an why is it in CoreAudioAEHALOSX ?
-#ifdef TAGRGET_IOS
-  if (!m_audioUnit->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
-  {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
-      "Error setting Device Output Stream Format %s",
-      StreamDescriptionToString(inputFormat, formatString));
-  }
-#endif
-*/
-
   ret = AUGraphUpdate(m_audioGraph, NULL);
   if (ret)
   {
