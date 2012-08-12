@@ -441,6 +441,8 @@ namespace PVR
     bool SetEPGScraper(const CStdString &strScraper);
 
     void SetCachedChannelNumber(unsigned int iChannelNumber);
+
+    bool CanRecord(void) const;
     //@}
   private:
     /*!

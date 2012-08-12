@@ -739,9 +739,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
     else
     {
       CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-      PVR_ERROR error;
-      g_PVRClients->GetEPGForChannel(*channel, this, start, end, &error);
-      bGrabSuccess = error == PVR_ERROR_NO_ERROR;
+      bGrabSuccess = (g_PVRClients->GetEPGForChannel(*channel, this, start, end) == PVR_ERROR_NO_ERROR);
     }
   }
   else if (m_strScraperName.IsEmpty()) /* no grabber defined */

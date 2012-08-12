@@ -56,10 +56,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
   if (! g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
     return true;
 
-  PVR_ERROR error;
-  g_PVRClients->GetChannelGroups(this, &error);
-
-  return error == PVR_ERROR_NO_ERROR;
+  return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)

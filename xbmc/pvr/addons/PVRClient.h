@@ -23,6 +23,8 @@
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
 #include "addons/DllPVRClient.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/recordings/PVRRecordings.h"
 
 namespace EPG
 {
@@ -37,11 +39,13 @@ namespace PVR
   class CPVRTimers;
   class CPVRTimerInfoTag;
   class CPVRRecordings;
-  class CPVRRecording;
   class CPVREpgContainer;
+  class CPVRClient;
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
-  #define PVR_INVALID_CLIENT_ID (-1)
+  typedef boost::shared_ptr<CPVRClient> PVR_CLIENT;
+  #define PVR_INVALID_CLIENT_ID (-2)
+  #define PVR_VIRTUAL_CLIENT_ID (-1)
 
   /*!
    * Interface from XBMC to a PVR add-on.
@@ -314,12 +318,12 @@ namespace PVR
      * @param channel The channel to stream.
      * @return True if the stream opened successfully, false otherwise.
      */
-    bool OpenLiveStream(const CPVRChannel &channel);
+    bool OpenStream(const CPVRChannel &channel);
 
     /*!
      * @brief Close an open live stream.
      */
-    void CloseLiveStream(void);
+    void CloseStream(void);
 
     /*!
      * @brief Read from an open live stream.
@@ -327,7 +331,7 @@ namespace PVR
      * @param uiBufSize The amount of bytes to read.
      * @return The amount of bytes that were actually read from the stream.
      */
-    int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
+    int ReadStream(void* lpBuf, int64_t uiBufSize);
 
     /*!
      * @brief Seek in a live stream on a backend that supports timeshifting.
@@ -335,17 +339,17 @@ namespace PVR
      * @param iWhence ?
      * @return The new position.
      */
-    int64_t SeekLiveStream(int64_t iFilePosition, int iWhence = SEEK_SET);
+    int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
 
     /*!
      * @return The position in the stream that's currently being read.
      */
-    int64_t PositionLiveStream(void);
+    int64_t GetStreamPosition(void);
 
     /*!
      * @return The total length of the stream that's currently being read.
      */
-    int64_t LengthLiveStream(void);
+    int64_t GetStreamLength(void);
 
     /*!
      * @return The channel number on the server of the live stream that's currently being read.
@@ -382,38 +386,7 @@ namespace PVR
      * @param recording The recording to open.
      * @return True if the stream has been opened succesfully, false otherwise.
      */
-    bool OpenRecordedStream(const CPVRRecording &recording);
-
-    /*!
-     * @brief Close an open stream from a recording.
-     */
-    void CloseRecordedStream(void);
-
-    /*!
-     * @brief Read from a recording.
-     * @param lpBuf The buffer to store the data in.
-     * @param uiBufSize The amount of bytes to read.
-     * @return The amount of bytes that were actually read from the stream.
-     */
-    int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
-
-    /*!
-     * @brief Seek in a recorded stream.
-     * @param iFilePosition The position to seek to.
-     * @param iWhence ?
-     * @return The new position.
-     */
-    int64_t SeekRecordedStream(int64_t iFilePosition, int iWhence = SEEK_SET);
-
-    /*!
-     * @return The position in the stream that's currently being read.
-     */
-    int64_t PositionRecordedStream(void);
-
-    /*!
-     * @return The total length of the stream that's currently being read.
-     */
-    int64_t LengthRecordedStream(void);
+    bool OpenStream(const CPVRRecording &recording);
 
     //@}
     /** @name PVR demultiplexer methods */
@@ -455,7 +428,49 @@ namespace PVR
     bool HandlesDemuxing(void) const;
     bool HandlesInputStream(void) const;
 
+    bool IsPlayingLiveStream(void) const;
+    bool IsPlayingLiveTV(void) const;
+    bool IsPlayingLiveRadio(void) const;
+    bool IsPlayingEncryptedChannel(void) const;
+    bool IsPlayingRecording(void) const;
+    bool IsPlaying(void) const;
+    bool GetPlayingChannel(CPVRChannel &channel) const;
+    bool GetPlayingRecording(CPVRRecording &recording) const;
+
+    /*! @name Signal status methods */
+    //@{
+
+    /*!
+     * @brief Get the quality data for the live stream that is currently playing.
+     * @param status A copy of the quality data.
+     */
+    void GetQualityData(PVR_SIGNAL_STATUS *status) const;
+
+    /*!
+     * @return The current signal quality level.
+     */
+    int GetSignalLevel(void) const;
+
+    /*!
+     * @return The current signal/noise ratio.
+     */
+    int GetSNR(void) const;
+
+    /*!
+     * @brief Update the signal status for the tv stream that's currently being read.
+     */
+    void UpdateCharInfoSignalStatus(void);
+
+    //@}
+
+    static const char *ToString(const PVR_ERROR error);
+
   private:
+    /*!
+     * @brief Reset the signal quality data to the initial values.
+     */
+    void ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo);
+
     /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
@@ -498,7 +513,6 @@ namespace PVR
      */
     bool CanPlayChannel(const CPVRChannel &channel) const;
 
-    const char *ToString(const PVR_ERROR error) const;
     bool LogError(const PVR_ERROR error, const char *strMethod);
     void LogException(const std::exception &e, const char *strFunctionName);
 
@@ -518,5 +532,13 @@ namespace PVR
     bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
     PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
     bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
+    PVR_SIGNAL_STATUS      m_qualityInfo;           /*!< stream quality information */
+
+    CCriticalSection m_critSection;
+
+    bool          m_bIsPlayingTV;
+    CPVRChannel   m_playingChannel;
+    bool          m_bIsPlayingRecording;
+    CPVRRecording m_playingRecording;
   };
 }

@@ -778,7 +778,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
   if (!CheckParentalLock(*channel.GetPVRChannelInfoTag()))
     return bReturn;
 
-  if ((bReturn = m_addons->OpenLiveStream(*channel.GetPVRChannelInfoTag())) != false)
+  if ((bReturn = m_addons->OpenStream(*channel.GetPVRChannelInfoTag())) != false)
   {
     CSingleLock lock(m_critSection);
     if(m_currentFile)
@@ -797,7 +797,7 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecording &tag)
   CLog::Log(LOGDEBUG,"PVRManager - %s - opening recorded stream '%s'",
       __FUNCTION__, tag.m_strFile.c_str());
 
-  if ((bReturn = m_addons->OpenRecordedStream(tag)) != false)
+  if ((bReturn = m_addons->OpenStream(tag)) != false)
   {
     delete m_currentFile;
     m_currentFile = new CFileItem(tag);

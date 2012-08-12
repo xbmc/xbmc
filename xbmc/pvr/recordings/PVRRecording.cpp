@@ -106,8 +106,8 @@ int CPVRRecording::GetDuration() const
 
 bool CPVRRecording::Delete(void)
 {
-  PVR_ERROR error;
-  if (!g_PVRClients->DeleteRecording(*this, &error))
+  PVR_ERROR error = g_PVRClients->DeleteRecording(*this);
+  if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -118,9 +118,9 @@ bool CPVRRecording::Delete(void)
 
 bool CPVRRecording::Rename(const CStdString &strNewName)
 {
-  PVR_ERROR error;
   m_strTitle.Format("%s", strNewName);
-  if (!g_PVRClients->RenameRecording(*this, &error))
+  PVR_ERROR error = g_PVRClients->RenameRecording(*this);
+  if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
     return false;

@@ -248,8 +248,8 @@ CStdString CPVRTimerInfoTag::GetStatus() const
 
 bool CPVRTimerInfoTag::AddToClient(void) const
 {
-  PVR_ERROR error;
-  if (!g_PVRClients->AddTimer(*this, &error))
+  PVR_ERROR error = g_PVRClients->AddTimer(*this);
+  if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -260,18 +260,17 @@ bool CPVRTimerInfoTag::AddToClient(void) const
 
 bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 {
-  PVR_ERROR error;
-  bool bRemoved = g_PVRClients->DeleteTimer(*this, bForce, &error);
-  if (!bRemoved && error == PVR_ERROR_RECORDING_RUNNING)
+  PVR_ERROR error = g_PVRClients->DeleteTimer(*this, bForce);
+  if (error == PVR_ERROR_RECORDING_RUNNING)
   {
     // recording running. ask the user if it should be deleted anyway
     if (!CGUIDialogYesNo::ShowAndGetInput(122,0,19122,0))
       return false;
 
-    bRemoved = g_PVRClients->DeleteTimer(*this, true, &error);
+    error = g_PVRClients->DeleteTimer(*this, true);
   }
 
-  if (!bRemoved)
+  if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -283,13 +282,13 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 
 bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 {
-  PVR_ERROR error;
   {
     CSingleLock lock(m_critSection);
     m_strTitle = strNewName;
   }
 
-  if (!g_PVRClients->RenameTimer(*this, strNewName, &error))
+  PVR_ERROR error = g_PVRClients->RenameTimer(*this, strNewName);
+  if (error != PVR_ERROR_NO_ERROR)
   {
     if (error == PVR_ERROR_NOT_IMPLEMENTED)
       return UpdateOnClient();
@@ -336,8 +335,8 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
-  PVR_ERROR error;
-  if (!g_PVRClients->UpdateTimer(*this, &error))
+  PVR_ERROR error = g_PVRClients->UpdateTimer(*this);
+  if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
     return false;

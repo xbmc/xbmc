@@ -33,6 +33,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -857,4 +858,9 @@ CStdString CPVRChannel::EPGScraper(void) const
   CSingleLock lock(m_critSection);
   CStdString strReturn(m_strEPGScraper);
   return strReturn;
+}
+
+bool CPVRChannel::CanRecord(void) const
+{
+  return g_PVRClients->SupportsRecordings(m_iClientId);
 }

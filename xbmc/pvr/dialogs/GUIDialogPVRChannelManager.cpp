@@ -481,7 +481,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
 
   pDlgSelect->SetHeading(19213); // Select Client
   pDlgSelect->Add(g_localizeStrings.Get(19209));
-  clients.push_back(XBMC_VIRTUAL_CLIENTID);
+  clients.push_back(PVR_VIRTUAL_CLIENT_ID);
 
   PVR_CLIENTMAP clientMap;
   if (g_PVRClients->GetConnectedClients(clientMap) > 0)
@@ -499,7 +499,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
   if (selection >= 0 && selection <= (int) clients.size())
   {
     int clientID = clients[selection];
-    if (clientID == XBMC_VIRTUAL_CLIENTID)
+    if (clientID == PVR_VIRTUAL_CLIENT_ID)
     {
       CStdString strURL = "";
       if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
@@ -511,7 +511,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
           newchannel->SetEPGEnabled(false);
           newchannel->SetVirtual(true);
           newchannel->SetStreamURL(strURL);
-          newchannel->SetClientID(XBMC_VIRTUAL_CLIENTID);
+          newchannel->SetClientID(PVR_VIRTUAL_CLIENT_ID);
           if (g_PVRChannelGroups->CreateChannel(*newchannel))
             g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->Persist();
 
@@ -741,7 +741,7 @@ void CGUIDialogPVRChannelManager::Update()
     }
 
     CStdString clientName;
-    if (channel->ClientID() == XBMC_VIRTUAL_CLIENTID) /* XBMC internal */
+    if (channel->ClientID() == PVR_VIRTUAL_CLIENT_ID) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
       g_PVRClients->GetClientName(channel->ClientID(), clientName);

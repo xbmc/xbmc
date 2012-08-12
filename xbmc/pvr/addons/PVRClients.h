@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -44,8 +44,6 @@ namespace PVR
   typedef std::map< int, boost::shared_ptr<CPVRClient> >::const_iterator PVR_CLIENTMAP_CITR;
   typedef std::map< int, PVR_STREAM_PROPERTIES >                         STREAMPROPS;
   typedef boost::shared_ptr<CPVRClient> PVR_CLIENT;
-
-  #define XBMC_VIRTUAL_CLIENTID -1
 
   class CPVRClients : public ADDON::IAddonMgrCallback,
                       public Observer,
@@ -135,13 +133,13 @@ namespace PVR
     /*!
      * @return The amount of connected clients.
      */
-    int ConnectedClientAmount(void);
+    int ConnectedClientAmount(void) const;
 
     /*!
      * @brief Check whether there are any connected clients.
      * @return True if at least one client is connected.
      */
-    bool HasConnectedClients(void);
+    bool HasConnectedClients(void) const;
 
     /*!
      * @brief Get the friendly name for the client with the given id.
@@ -149,7 +147,7 @@ namespace PVR
      * @param strName The friendly name of the client or an empty string when it wasn't found.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClientName(int iClientId, CStdString &strName);
+    bool GetClientName(int iClientId, CStdString &strName) const;
 
     /*!
      * @bried Get all connected clients.
@@ -217,17 +215,13 @@ namespace PVR
      * @brief Get the properties of the current playing stream content.
      * @return A pointer to the properties or NULL if no stream is playing.
      */
-    PVR_STREAM_PROPERTIES *GetCurrentStreamProperties(void);
+    PVR_STREAM_PROPERTIES GetCurrentStreamProperties(void);
 
     /*!
      * @brief Get the input format name of the current playing stream content.
      * @return A pointer to the properties or NULL if no stream is playing.
      */
     CStdString GetCurrentInputFormat(void) const;
-    //@}
-
-    /*! @name Live TV stream methods */
-    //@{
 
     /*!
      * @return True if a live stream is playing, false otherwise.
@@ -254,13 +248,7 @@ namespace PVR
      * @param tag The channel to start playing.
      * @return True if the stream was opened successfully, false otherwise.
      */
-    bool OpenLiveStream(const CPVRChannel &tag);
-
-    /*!
-     * @brief Close an opened live stream.
-     * @return True if the stream was closed successfully, false otherwise.
-     */
-    bool CloseLiveStream(void);
+    bool OpenStream(const CPVRChannel &tag);
 
     /*!
      * @brief Get the URL for the stream to the given channel.
@@ -283,11 +271,6 @@ namespace PVR
      */
     bool GetPlayingChannel(CPVRChannel &channel) const;
 
-    //@}
-
-    /*! @name Recording stream methods */
-    //@{
-
     /*!
      * @return True if a recording is playing, false otherwise.
      */
@@ -298,13 +281,7 @@ namespace PVR
      * @param tag The recording to start playing.
      * @return True if the stream was opened successfully, false otherwise.
      */
-    bool OpenRecordedStream(const CPVRRecording &tag);
-
-    /*!
-     * @brief Close an opened stream from a recording.
-     * @return True if the stream was closed successfully, false otherwise.
-     */
-    bool CloseRecordedStream(void);
+    bool OpenStream(const CPVRRecording &tag);
 
     /*!
      * @brief Get the recordings that is currently playing.
@@ -312,27 +289,6 @@ namespace PVR
      * @return True if a recording is playing, false otherwise.
      */
     bool GetPlayingRecording(CPVRRecording &recording) const;
-
-    //@}
-
-    /*! @name Signal status methods */
-    //@{
-
-    /*!
-     * @brief Get the quality data for the live stream that is currently playing.
-     * @param status A copy of the quality data.
-     */
-    void GetQualityData(PVR_SIGNAL_STATUS *status) const;
-
-    /*!
-     * @return The current signal quality level.
-     */
-    int GetSignalLevel(void) const;
-
-    /*!
-     * @return The current signal/noise ratio.
-     */
-    int GetSNR(void) const;
 
     //@}
 
@@ -351,7 +307,7 @@ namespace PVR
      * @param timers Store the timers in this container.
      * @return The amount of timers that were added.
      */
-    int GetTimers(CPVRTimers *timers);
+    PVR_ERROR GetTimers(CPVRTimers *timers);
 
     /*!
      * @brief Add a new timer to a backend.
@@ -359,7 +315,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was added successfully, false otherwise.
      */
-    bool AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
+    PVR_ERROR AddTimer(const CPVRTimerInfoTag &timer);
 
     /*!
      * @brief Update a timer on the backend.
@@ -367,7 +323,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was updated successfully, false otherwise.
      */
-    bool UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
+    PVR_ERROR UpdateTimer(const CPVRTimerInfoTag &timer);
 
     /*!
      * @brief Delete a timer from the backend.
@@ -376,7 +332,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    bool DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ERROR *error);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
 
     /*!
      * @brief Rename a timer on the backend.
@@ -385,7 +341,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was renamed successfully, false otherwise.
      */
-    bool RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error);
+    PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName);
 
     //@}
 
@@ -404,7 +360,7 @@ namespace PVR
      * @param recordings Store the recordings in this container.
      * @return The amount of recordings that were added.
      */
-    int GetRecordings(CPVRRecordings *recordings);
+    PVR_ERROR GetRecordings(CPVRRecordings *recordings);
 
     /*!
      * @brief Rename a recordings on the backend.
@@ -412,7 +368,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the recording was renamed successfully, false otherwise.
      */
-    bool RenameRecording(const CPVRRecording &recording, PVR_ERROR *error);
+    PVR_ERROR RenameRecording(const CPVRRecording &recording);
 
     /*!
      * @brief Delete a recording from the backend.
@@ -420,7 +376,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the recordings was deleted successfully, false otherwise.
      */
-    bool DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error);
+    PVR_ERROR DeleteRecording(const CPVRRecording &recording);
 
     /*!
      * @brief Set play count of a recording on the backend.
@@ -480,7 +436,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the EPG was transfered successfully, false otherwise.
      */
-    bool GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start, time_t end, PVR_ERROR *error);
+    PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start, time_t end);
 
     //@}
 
@@ -493,7 +449,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return The amount of channels that were added.
      */
-    int GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error);
+    PVR_ERROR GetChannels(CPVRChannelGroupInternal *group);
 
     /*!
      * @brief Check whether a client supports channel groups.
@@ -508,7 +464,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return The amount of groups that were added.
      */
-    int GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error);
+    PVR_ERROR GetChannelGroups(CPVRChannelGroups *groups);
 
     /*!
      * @brief Get all group members of a channel group.
@@ -516,7 +472,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return The amount of channels that were added.
      */
-    int GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error);
+    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group);
 
     //@}
 
@@ -589,38 +545,12 @@ namespace PVR
     int AddClientToDb(const ADDON::AddonPtr client);
 
     /*!
-     * @brief Read from a livetv stream.
-     * @param lpBuf The buffer to store the data in.
-     * @param uiBufSize The length to read.
-     * @return The number of bytes read.
-     */
-    int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
-
-    /*!
-     * @brief Read from a recorded tv stream.
-     * @param lpBuf The buffer to store the data in.
-     * @param uiBufSize The length to read.
-     * @return The number of bytes read.
-     */
-    int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
-
-    /*!
      * @brief Get the menu hooks for a client.
      * @param iClientID The client to get the hooks for.
      * @param hooks The container to add the hooks to.
      * @return True if the hooks were added successfully (if any), false otherwise.
      */
     bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
-
-    /*!
-     * @brief Update the signal status for the tv stream that's currently being read.
-     */
-    void UpdateCharInfoSignalStatus(void);
-
-    /*!
-     * @brief Reset the signal quality data to the initial values.
-     */
-    void ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo);
 
     /*!
      * @brief Updates the backend information
@@ -666,15 +596,13 @@ namespace PVR
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     bool                  m_bIsValidChannelSettings;  /*!< true if current channel settings are valid and can be saved */
-    CPVRChannel           m_currentChannel;           /*!< the channel that is currently playing or NULL if nothing is playing */
+    int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
-    CPVRRecording         m_currentRecording;         /*!< the recording that is currently playing or NULL if nothing is playing */
     bool                  m_bIsPlayingRecording;
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     CStdString            m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     ADDON::VECADDONS      m_addons;
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
-    PVR_SIGNAL_STATUS     m_qualityInfo;              /*!< stream quality information */
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
     CCriticalSection      m_critSection;
   };
