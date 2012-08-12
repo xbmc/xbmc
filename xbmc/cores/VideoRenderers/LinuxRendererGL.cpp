@@ -2456,7 +2456,7 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
     YUVFIELDS &fields = m_buffers[index].fields;
     YUVPLANE  &plane  = fields[0][0];
 
-    if (Cocoa_GetOSVersion() >= 0x1080)
+    if (Cocoa_GetOSVersion() >= 0x1070)
     {
       // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
       // upload the old way.
@@ -2561,7 +2561,7 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   }
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
-  if (Cocoa_GetOSVersion() >= 0x1080)
+  if (Cocoa_GetOSVersion() >= 0x1070)
   {
     // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
     // upload the old way.
