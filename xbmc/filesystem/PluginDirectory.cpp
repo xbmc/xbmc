@@ -535,21 +535,21 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         m_cancelled = true;
       }
     }
-        if (!cancelled && m_cancelled)
-        {
-          cancelled = true;
-          startTime = XbmcThreads::SystemClockMillis();
-        }
-        if (cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript)
-        { // cancel our script
+    if (!cancelled && m_cancelled)
+    {
+      cancelled = true;
+      startTime = XbmcThreads::SystemClockMillis();
+    }
+    if (cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript)
+    { // cancel our script
 #ifdef HAS_PYTHON
-          int id = g_pythonParser.getScriptId(scriptPath.c_str());
-          if (id != -1 && g_pythonParser.isRunning(id))
-          {
-            CLog::Log(LOGDEBUG, "%s- cancelling plugin %s", __FUNCTION__, scriptName.c_str());
-            g_pythonParser.stopScript(id);
-            break;
-          }
+      int id = g_pythonParser.getScriptId(scriptPath.c_str());
+      if (id != -1 && g_pythonParser.isRunning(id))
+      {
+        CLog::Log(LOGDEBUG, "%s- cancelling plugin %s", __FUNCTION__, scriptName.c_str());
+        g_pythonParser.stopScript(id);
+        break;
+      }
 #endif
     }
   }
