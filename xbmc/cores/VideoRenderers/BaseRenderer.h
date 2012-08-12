@@ -98,6 +98,9 @@ protected:
   void       ManageDisplay();
 
   virtual void       ReorderDrawPoints();//might be overwritten (by egl e.x.)
+  void       saveRotatedCoords();//saves the current state of m_rotatedDestCoords
+  void       syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
+  void       restoreRotatedCoords();//restore the current state of m_rotatedDestCoords from saveRotatedCoords 
 
   RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;
@@ -111,6 +114,7 @@ protected:
   // with correct orientation based on m_renderOrientation
   // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
   CPoint m_rotatedDestCoords[4];
+  CPoint m_savedRotatedDestCoords[4];//saved points from saveRotatedCoords call
 
   CRect m_destRect;
   CRect m_oldDestRect; // destrect of the previous frame

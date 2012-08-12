@@ -1704,9 +1704,12 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
   // save current video rect
   CRect saveSize = m_destRect;
-
+  
+  saveRotatedCoords();//backup current m_rotatedDestCoords
+      
   // new video rect is capture size
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+  syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
 
   //invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
@@ -1731,6 +1734,7 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
   // restore original video rect
   m_destRect = saveSize;
+  restoreRotatedCoords();//restores the previous state of the rotated dest coords
 
   return true;
 }
