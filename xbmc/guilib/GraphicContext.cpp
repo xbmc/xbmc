@@ -429,6 +429,10 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     overscan.right = 960;
     overscan.bottom = 1080;
     break;
+  case RES_HDTV_1080pTB:
+    overscan.right = 1920;
+    overscan.bottom = 540;
+    break;
   case RES_HDTV_720p:
     overscan.right = 1280;
     overscan.bottom = 720;
