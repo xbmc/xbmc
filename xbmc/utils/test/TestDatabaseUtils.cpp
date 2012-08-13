@@ -1065,23 +1065,23 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMusicVideo)
   varindex = DatabaseUtils::GetFieldIndex(FieldTrackNumber, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_FILE;
+  refindex = VIDEODB_DETAILS_MUSICVIDEO_FILE;
   varindex = DatabaseUtils::GetFieldIndex(FieldFilename, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_PATH;
+  refindex = VIDEODB_DETAILS_MUSICVIDEO_PATH;
   varindex = DatabaseUtils::GetFieldIndex(FieldPath, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_PLAYCOUNT;
+  refindex = VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT;
   varindex = DatabaseUtils::GetFieldIndex(FieldPlaycount, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_LASTPLAYED;
+  refindex = VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED;
   varindex = DatabaseUtils::GetFieldIndex(FieldLastPlayed, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_DATEADDED;
+  refindex = VIDEODB_DETAILS_MUSICVIDEO_DATEADDED;
   varindex = DatabaseUtils::GetFieldIndex(FieldDateAdded, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
@@ -1166,23 +1166,23 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMovie)
   varindex = DatabaseUtils::GetFieldIndex(FieldCountry, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_FILE + 2;
+  refindex = VIDEODB_DETAILS_MOVIE_FILE + 2;
   varindex = DatabaseUtils::GetFieldIndex(FieldFilename, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_PATH;
+  refindex = VIDEODB_DETAILS_MOVIE_PATH;
   varindex = DatabaseUtils::GetFieldIndex(FieldPath, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_PLAYCOUNT;
+  refindex = VIDEODB_DETAILS_MOVIE_PLAYCOUNT;
   varindex = DatabaseUtils::GetFieldIndex(FieldPlaycount, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_LASTPLAYED;
+  refindex = VIDEODB_DETAILS_MOVIE_LASTPLAYED;
   varindex = DatabaseUtils::GetFieldIndex(FieldLastPlayed, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_DATEADDED;
+  refindex = VIDEODB_DETAILS_MOVIE_DATEADDED;
   varindex = DatabaseUtils::GetFieldIndex(FieldDateAdded, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
