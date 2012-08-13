@@ -173,13 +173,15 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   // Guess Bitrate and obtain replayGain information etc.
+  length = m_file.GetLength();
+  if (length != 0)
+  {
   CTagLoaderTagLib tagLoaderTagLib(strFile); //opens the file so needs to be after m_file.Open or lastfm radio breaks.
   bTags = tagLoaderTagLib.Load(strFile, m_tag);
 
   if (bTags)
     ReadDuration();
 
-  length = m_file.GetLength();
   if (bTags)
     m_TotalTime = (int64_t)( m_fTotalDuration * 1000.0f);
 
@@ -204,6 +206,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   if ( m_TotalTime && (length - id3v2Size > 0) )
   {
     m_Bitrate = (int)(((length - id3v2Size) / m_fTotalDuration) * 8);  // average bitrate
+  }
   }
 
   m_eof = false;
