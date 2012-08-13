@@ -675,8 +675,6 @@ case $use_platform in
      CXXFLAGS="$CXXFLAGS"
      ffmpeg_target_os=linux
      ;;
-  *)
-     use_alsa="yes"
 esac
 
 if test "$build_shared_lib" = "yes"; then
@@ -1075,10 +1073,6 @@ AS_CASE([x$use_libvorbisenc],
 
 # WebServer
 if test "$use_webserver" = "yes"; then
-if test "$target_platform" = "target_raspberry_pi"; then
-  AC_CHECK_LIB([gpg-error],   [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([gcrypt],      [main],, AC_MSG_ERROR($missing_library))
-fi
   AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
 fi
 
