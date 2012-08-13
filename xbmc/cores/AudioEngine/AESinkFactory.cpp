@@ -122,8 +122,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 #endif
 
   // complete failure.
-  if (driver.empty())
-    TRY_SINK(NULL);
+  TRY_SINK(NULL);
 
   // should never get here
   ASSERT(false);
