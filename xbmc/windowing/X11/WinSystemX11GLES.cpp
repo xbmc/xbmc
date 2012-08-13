@@ -42,15 +42,15 @@ using namespace std;
 #define GSIZE	8
 #define BSIZE	8
 #define ASIZE	8
-#define DEPTH	8
-#define BPP		32
+#define DEPTH	24
+#define BPP	32
 #elif defined(RGB565)
 #define RSIZE	5
 #define GSIZE	6
 #define BSIZE	5
 #define ASIZE	0
 #define DEPTH	16
-#define BPP		16
+#define BPP	16
 #endif
 
 static int configAttributes[] =
