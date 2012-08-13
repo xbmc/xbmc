@@ -26,34 +26,36 @@
 
 void win32_exception::install_handler()
 {
-    _set_se_translator(win32_exception::translate);
+  _set_se_translator(win32_exception::translate);
 }
 
 void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info)
 {
-    // Windows guarantees that *(info->ExceptionRecord) is valid
-    switch (code) {
+  switch (code) 
+  {
     case EXCEPTION_ACCESS_VIOLATION:
-        throw access_violation(*(info->ExceptionRecord));
-        break;
+      throw access_violation(info);
+      break;
     default:
-        throw win32_exception(*(info->ExceptionRecord));
-    }
+      throw win32_exception(info);
+  }
 }
 
-win32_exception::win32_exception(const EXCEPTION_RECORD& info, const char* classname) : 
+win32_exception::win32_exception(EXCEPTION_POINTERS* info, const char* classname) :
   XbmcCommons::Exception(classname ? classname : "win32_exception"),
-mWhat("Win32 exception"), mWhere(info.ExceptionAddress), mCode(info.ExceptionCode)
+  mWhat("Win32 exception"), mWhere(info->ExceptionRecord->ExceptionAddress), mCode(info->ExceptionRecord->ExceptionCode), mExceptionPointers(info)
 {
-    switch (info.ExceptionCode) {
-    case EXCEPTION_ACCESS_VIOLATION:
-        mWhat = "Access violation";
-        break;
-    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-    case EXCEPTION_INT_DIVIDE_BY_ZERO:
-        mWhat = "Division by zero";
-        break;
-    }
+  // Windows guarantees that *(info->ExceptionRecord) is valid
+  switch (info->ExceptionRecord->ExceptionCode)
+  {
+  case EXCEPTION_ACCESS_VIOLATION:
+    mWhat = "Access violation";
+    break;
+  case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+  case EXCEPTION_INT_DIVIDE_BY_ZERO:
+    mWhat = "Division by zero";
+    break;
+  }
 }
 
 void win32_exception::LogThrowMessage(const char *prefix)  const
@@ -64,22 +66,22 @@ void win32_exception::LogThrowMessage(const char *prefix)  const
     LOG(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
 }
 
-access_violation::access_violation(const EXCEPTION_RECORD& info)
-: win32_exception(info,"access_voilation"), mAccessType(Invalid), mBadAddress(0)
+access_violation::access_violation(EXCEPTION_POINTERS* info) : 
+  win32_exception(info,"access_voilation"), mAccessType(Invalid), mBadAddress(0)
 {
-    switch(info.ExceptionInformation[0])
-    {
-    case 0:
-      mAccessType = Read;
-      break;
-    case 1:
-      mAccessType = Write;
-      break;
-    case 8:
-      mAccessType = DEP;
-      break;
-    }
-    mBadAddress = reinterpret_cast<win32_exception ::Address>(info.ExceptionInformation[1]);
+  switch(info->ExceptionRecord->ExceptionInformation[0])
+  {
+  case 0:
+    mAccessType = Read;
+    break;
+  case 1:
+    mAccessType = Write;
+    break;
+  case 8:
+    mAccessType = DEP;
+    break;
+  }
+  mBadAddress = reinterpret_cast<win32_exception ::Address>(info->ExceptionRecord->ExceptionInformation[1]);
 }
 
 void access_violation::LogThrowMessage(const char *prefix) const
