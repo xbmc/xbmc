@@ -70,6 +70,8 @@ void CThread::SetThreadInfo()
   __except(EXCEPTION_EXECUTE_HANDLER)
   {
   }
+
+    win32_exception::install_handler();
 }
 
 ThreadIdentifier CThread::GetCurrentThreadId()

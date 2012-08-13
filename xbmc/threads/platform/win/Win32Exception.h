@@ -25,7 +25,7 @@
 #include <exception>
 #include "commons/Exception.h"
 
-class win32_exception: public XbmcCommons::Exception
+class win32_exception: public XbmcCommons::UncheckedException
 {
 public:
     typedef const void* Address; // OK on Win32 platform
@@ -40,6 +40,8 @@ public:
 protected:
     win32_exception(EXCEPTION_POINTERS*, const char* classname = NULL);
     static void translate(unsigned code, EXCEPTION_POINTERS* info);
+
+    inline bool write_minidump() const { return write_minidump(mExceptionPointers); };
 private:
     const char* mWhat;
     Address mWhere;

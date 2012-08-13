@@ -52,7 +52,7 @@ void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info)
 }
 
 win32_exception::win32_exception(EXCEPTION_POINTERS* info, const char* classname) :
-  XbmcCommons::Exception(classname ? classname : "win32_exception"),
+  XbmcCommons::UncheckedException(classname ? classname : "win32_exception"),
   mWhat("Win32 exception"), mWhere(info->ExceptionRecord->ExceptionAddress), mCode(info->ExceptionRecord->ExceptionCode), mExceptionPointers(info)
 {
   // Windows guarantees that *(info->ExceptionRecord) is valid
@@ -71,15 +71,15 @@ win32_exception::win32_exception(EXCEPTION_POINTERS* info, const char* classname
 void win32_exception::LogThrowMessage(const char *prefix)  const
 {
   if( prefix )
-    LOG(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, (unsigned int) what(), code(), where());
+    LOG(LOGERROR, "Unhandled exception in %s : %s (code:0x%08x) at 0x%08x", prefix, (unsigned int) what(), code(), where());
   else
-    LOG(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
+    LOG(LOGERROR, "Unhandled exception in %s (code:0x%08x) at 0x%08x", what(), code(), where());
+  write_minidump();
 }
 
 bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
 {
   // Create the dump file where the xbmc.exe resides
-  CStdString errorMsg;
   bool returncode = false;
   CStdString dumpFileName;
   SYSTEMTIME stLocalTime;
@@ -166,20 +166,22 @@ void access_violation::LogThrowMessage(const char *prefix) const
 {
   if( prefix )
     if( mAccessType == Write)
-      LOG(LOGERROR, "%s : %s at 0x%08x: Writing location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: Writing location 0x%08x", prefix, what(), where(), address());
     else if( mAccessType == Read)
-      LOG(LOGERROR, "%s : %s at 0x%08x: Reading location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: Reading location 0x%08x", prefix, what(), where(), address());
     else if( mAccessType == DEP)
-      LOG(LOGERROR, "%s : %s at 0x%08x: DEP violation, location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: DEP violation, location 0x%08x", prefix, what(), where(), address());
     else
-      LOG(LOGERROR, "%s : %s at 0x%08x: unknown access type, location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: unknown access type, location 0x%08x", prefix, what(), where(), address());
   else
     if( mAccessType == Write)
-      LOG(LOGERROR, "%s at 0x%08x: Writing location 0x%08x", what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: Writing location 0x%08x", what(), where(), address());
     else if( mAccessType == Read)
-      LOG(LOGERROR, "%s at 0x%08x: Reading location 0x%08x", what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: Reading location 0x%08x", what(), where(), address());
     else if( mAccessType == DEP)
-      LOG(LOGERROR, "%s at 0x%08x: DEP violation, location 0x%08x", what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: DEP violation, location 0x%08x", what(), where(), address());
     else
-      LOG(LOGERROR, "%s at 0x%08x: unknown access type, location 0x%08x", what(), where(), address());
+      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: unknown access type, location 0x%08x", what(), where(), address());
+
+  write_minidump();
 }
