@@ -76,24 +76,37 @@ typedef boost::shared_ptr<CSurface> CSurfacePtr;
 
 struct CSurfaceGL
 {
-  CSurfaceGL(void* id, CDisplayPtr& display)
-    : m_id(id)
-    , m_display(display)
+  CSurfaceGL(CDisplayPtr& display)
+    : m_display(display)
   {}
- ~CSurfaceGL();
- 
-  void*       m_id;
+  virtual ~CSurfaceGL() = 0;
+
   CDisplayPtr m_display;
 };
 
-typedef boost::shared_ptr<CSurfaceGL> CSurfaceGLPtr;
+#ifdef HAVE_VA_GLX
+struct CSurfaceGLX : public CSurfaceGL
+{
+  CSurfaceGLX(CDisplayPtr& display, void *surface)
+    : CSurfaceGL(display)
+    , m_id(surface)
+  {}
+  virtual ~CSurfaceGLX();
+
+  void*       m_id;
+};
+
+typedef boost::shared_ptr<CSurfaceGLX> CSurfaceGLXPtr;
+#endif
 
 // silly type to avoid includes
 struct CHolder
 {
-  CDisplayPtr   display;
-  CSurfacePtr   surface;
-  CSurfaceGLPtr surfglx;
+  CDisplayPtr    display;
+  CSurfacePtr    surface;
+#ifdef HAVE_VA_GLX
+  CSurfaceGLXPtr surfglx;
+#endif
 
   CHolder()
   {}

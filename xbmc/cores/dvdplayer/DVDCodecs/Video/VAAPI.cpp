@@ -139,12 +139,16 @@ CSurface::~CSurface()
 
 CSurfaceGL::~CSurfaceGL()
 {
+}
+
+#ifdef HAVE_VA_GLX
+CSurfaceGLX::~CSurfaceGLX()
+{
   CLog::Log(LOGDEBUG, "VAAPI - destroying glx surface %p", m_id);
   CSingleLock lock(*m_display);
-#ifdef HAVE_VA_GLX
   WARN(vaDestroySurfaceGLX(m_display->get(), m_id))
-#endif
 }
+#endif
 
 CDecoder::CDecoder()
 {

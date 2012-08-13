@@ -2394,7 +2394,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
       CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to create vaapi glx surface (%d)", status);
       return;
     }
-    va.surfglx = VAAPI::CSurfaceGLPtr(new VAAPI::CSurfaceGL(surface, va.display));
+    va.surfglx = VAAPI::CSurfaceGLXPtr(new VAAPI::CSurfaceGLX(va.display, surface));
   }
   int colorspace;
   if(CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
