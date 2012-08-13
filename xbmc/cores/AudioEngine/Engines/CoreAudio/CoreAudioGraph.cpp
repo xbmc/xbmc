@@ -54,9 +54,9 @@ CCoreAudioGraph::~CCoreAudioGraph()
 bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag)
 {
-  AudioStreamBasicDescription fmt;
-  AudioStreamBasicDescription inputFormat;
-  AudioStreamBasicDescription outputFormat;
+  AudioStreamBasicDescription fmt = {0};
+  AudioStreamBasicDescription inputFormat = {0};
+  AudioStreamBasicDescription outputFormat = {0};
 
   m_deviceId = deviceId;
   m_allowMixing = allowMixing;
@@ -88,6 +88,7 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   if (!m_audioUnit->Open(m_audioGraph,
     kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
     return false;
+  m_audioUnit->SetBus(GetFreeBus());
 
   m_audioUnit->GetFormatDesc(format, &inputFormat, &fmt);
 
@@ -236,18 +237,6 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
     }
   }
 
-/*
-// WTF is this an why is it in CoreAudioAEHALOSX ?
-#ifdef TAGRGET_IOS
-  if (!m_audioUnit->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
-  {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
-      "Error setting Device Output Stream Format %s",
-      StreamDescriptionToString(inputFormat, formatString));
-  }
-#endif
-*/
-
   ret = AUGraphUpdate(m_audioGraph, NULL);
   if (ret)
   {
@@ -315,6 +304,7 @@ bool CCoreAudioGraph::Close()
     CAUOutputDevice *d = m_auUnitList.front();
     m_auUnitList.pop_front();
     ReleaseBus(d->GetBus());
+    d->SetInputSource(NULL);
     d->Close();
     delete d;
   }
@@ -488,9 +478,9 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
   if (!m_audioUnit || !m_mixerUnit)
     return NULL;
 
-  AudioStreamBasicDescription fmt;
-  AudioStreamBasicDescription inputFormat;
-  AudioStreamBasicDescription outputFormat;
+  AudioStreamBasicDescription fmt = {0};
+  AudioStreamBasicDescription inputFormat = {0};
+  AudioStreamBasicDescription outputFormat = {0};
 
   int busNumber = GetFreeBus();
   if (busNumber == INVALID_BUS)
@@ -578,7 +568,7 @@ int CCoreAudioGraph::GetMixerChannelOffset(int busNumber)
     return 0;
 
   int offset = 0;
-  AudioStreamBasicDescription fmt;
+  AudioStreamBasicDescription fmt = {0};
 
   for (int i = 0; i < busNumber; i++)
   {

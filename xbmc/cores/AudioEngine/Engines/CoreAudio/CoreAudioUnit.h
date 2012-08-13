@@ -41,7 +41,7 @@ public:
   CCoreAudioUnit();
   virtual ~CCoreAudioUnit();
   
-  virtual bool      Open(AUGraph audioGraph, ComponentDescription desc);
+  virtual bool      Open(AUGraph audioGraph, AudioComponentDescription desc);
   virtual bool      Open(AUGraph audioGraph, OSType type, OSType subType, OSType manufacturer);
   virtual void      Close();
   virtual bool      SetInputSource(ICoreAudioSource *pSource);

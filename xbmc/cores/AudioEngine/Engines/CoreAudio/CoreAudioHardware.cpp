@@ -24,16 +24,17 @@
 #include "CoreAudioAEHAL.h"
 #include "utils/log.h"
 
-// AudioHardwareGetProperty and friends are deprecated,
-// turn off the warning spew.
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
 bool CCoreAudioHardware::GetAutoHogMode()
 {
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioHardwarePropertyHogModeIsAllowed; 
+
   UInt32 val = 0;
   UInt32 size = sizeof(val);
-  OSStatus ret = AudioHardwareGetProperty(kAudioHardwarePropertyHogModeIsAllowed, &size, &val);
-  if (ret)
+  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, &val); 
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioHardware::GetAutoHogMode: "
       "Unable to get auto 'hog' mode. Error = %s", GetError(ret).c_str());
@@ -44,22 +45,30 @@ bool CCoreAudioHardware::GetAutoHogMode()
 
 void CCoreAudioHardware::SetAutoHogMode(bool enable)
 {
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioHardwarePropertyHogModeIsAllowed; 
+
   UInt32 val = enable ? 1 : 0;
-  OSStatus ret = AudioHardwareSetProperty(kAudioHardwarePropertyHogModeIsAllowed, sizeof(val), &val);
-  if (ret)
+  UInt32 size = sizeof(val);
+  OSStatus ret = AudioObjectSetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, size, &val); 
+  if (ret != noErr)
     CLog::Log(LOGERROR, "CCoreAudioHardware::SetAutoHogMode: "
       "Unable to set auto 'hog' mode. Error = %s", GetError(ret).c_str());
 }
 
 AudioStreamBasicDescription* CCoreAudioHardware::FormatsList(AudioStreamID stream)
 {
-  // This is deprecated for kAudioStreamPropertyAvailablePhysicalFormats,
-  // but compiling on 10.3 requires the older constant
-  AudioDevicePropertyID p = kAudioStreamPropertyPhysicalFormats;
-
-  UInt32 listSize;
   // Retrieve all the stream formats supported by this output stream
-  OSStatus ret = AudioStreamGetPropertyInfo(stream, 0, p, &listSize, NULL);
+
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioStreamPropertyPhysicalFormats; 
+
+  UInt32 listSize = 0;
+  OSStatus ret = AudioObjectGetPropertyDataSize(stream, &propertyAddress, 0, NULL, &listSize); 
   if (ret != noErr)
   {
     CLog::Log(LOGDEBUG, "CCoreAudioHardware::FormatsList: "
@@ -76,7 +85,7 @@ AudioStreamBasicDescription* CCoreAudioHardware::FormatsList(AudioStreamID strea
     return NULL;
   }
 
-  ret = AudioStreamGetProperty(stream, 0, p, &listSize, list);
+  ret = AudioObjectGetPropertyData(stream, &propertyAddress, 0, NULL, &listSize, list); 
   if (ret != noErr)
   {
     CLog::Log(LOGDEBUG, "CCoreAudioHardware::FormatsList: "
@@ -94,9 +103,13 @@ AudioStreamBasicDescription* CCoreAudioHardware::FormatsList(AudioStreamID strea
 AudioStreamID* CCoreAudioHardware::StreamsList(AudioDeviceID device)
 {
   // Get a list of all the streams on this device
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioDevicePropertyStreams;
+
   UInt32 listSize;
-  OSStatus ret = AudioDeviceGetPropertyInfo(device, 0, FALSE,
-    kAudioDevicePropertyStreams, &listSize, NULL);
+  OSStatus ret = AudioObjectGetPropertyDataSize(device, &propertyAddress, 0, NULL, &listSize); 
   if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
@@ -113,10 +126,7 @@ AudioStreamID* CCoreAudioHardware::StreamsList(AudioDeviceID device)
     return NULL;
   }
 
-  AudioObjectPropertyAddress  propertyAddress;
-  propertyAddress.mScope    = kAudioDevicePropertyScopeInput;
-  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioDevicePropertyStreams;
+  propertyAddress.mScope = kAudioDevicePropertyScopeInput;
   ret = AudioObjectGetPropertyData(device, &propertyAddress, 0, NULL, &listSize, list);
   if (ret != noErr)
   {
@@ -135,8 +145,19 @@ void CCoreAudioHardware::ResetAudioDevices()
 {
   // Reset any devices with an AC3 stream back to a Linear PCM
   // so that they can become a default output device
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioHardwarePropertyDevices; 
+
   UInt32 size;
-  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
+  OSStatus ret = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size); 
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::ResetAudioDevices: ResetAudioDevices - unknown size");
+    return;
+  }
+
   AudioDeviceID *devices = (AudioDeviceID*)malloc(size);
   if (!devices)
   {
@@ -144,17 +165,22 @@ void CCoreAudioHardware::ResetAudioDevices()
     return;
   }
   int numDevices = size / sizeof(AudioDeviceID);
-  AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, devices);
+  ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, devices); 
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::ResetAudioDevices: ResetAudioDevices - cannot get device list");
+    return;
+  }
 
   for (int i = 0; i < numDevices; i++)
   {
-    AudioStreamID *streams;
-
-    streams = StreamsList(devices[i]);
-    for (int j = 0; streams[j] != kAudioHardwareBadStreamError; j++)
-      ResetStream(streams[j]);
-
-    free(streams);
+    AudioStreamID *streams = StreamsList(devices[i]);
+    if (streams)
+    {
+      for (int j = 0; streams[j] != kAudioHardwareBadStreamError; j++)
+        ResetStream(streams[j]);
+      free(streams);
+    }
   }
   free(devices);
 }
@@ -162,10 +188,16 @@ void CCoreAudioHardware::ResetAudioDevices()
 void CCoreAudioHardware::ResetStream(AudioStreamID stream)
 {
   // Find the streams current physical format
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioStreamPropertyPhysicalFormat; 
+
   AudioStreamBasicDescription currentFormat;
   UInt32 paramSize = sizeof(currentFormat);
-  AudioStreamGetProperty(stream, 0, kAudioStreamPropertyPhysicalFormat,
-    &paramSize, &currentFormat);
+  OSStatus ret = AudioObjectGetPropertyData(stream, &propertyAddress, 0, NULL, &paramSize, &currentFormat);
+  if (ret != noErr)
+    return;
 
   // If it's currently AC-3/SPDIF then reset it to some mixable format
   if (currentFormat.mFormatID == 'IAC3' ||
@@ -181,7 +213,7 @@ void CCoreAudioHardware::ResetStream(AudioStreamID stream)
     {
       if (formats[i].mFormatID == kAudioFormatLinearPCM)
       {
-        OSStatus ret = AudioStreamSetProperty(stream, NULL, 0, kAudioStreamPropertyPhysicalFormat, sizeof(formats[i]), &(formats[i]));
+        ret = AudioObjectSetPropertyData(stream, &propertyAddress, 0, NULL, sizeof(formats[i]), &(formats[i])); 
         if (ret != noErr)
         {
           CLog::Log(LOGDEBUG, "CCoreAudioHardware::ResetStream: "
@@ -219,12 +251,24 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     "Searching for device - %s.", searchName.c_str());
 
   // Obtain a list of all available audio devices
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioHardwarePropertyDevices; 
+
   UInt32 size = 0;
-  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
+  OSStatus ret = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size); 
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::FindAudioDevice: "
+      "Unable to retrieve the size of the list of available devices. Error = %s", GetError(ret).c_str());
+    return 0;
+  }
+
   size_t deviceCount = size / sizeof(AudioDeviceID);
   AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
-  OSStatus ret = AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, pDevices);
-  if (ret)
+  ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, pDevices);
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioHardware::FindAudioDevice: "
       "Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
@@ -262,17 +306,17 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
 
 AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
 {
-  UInt32 size = sizeof(AudioDeviceID);
-  AudioDeviceID deviceId = 0;
   AudioObjectPropertyAddress  propertyAddress;
   propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
   propertyAddress.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject,
-    &propertyAddress, 0, NULL, &size, &deviceId);
+
+  AudioDeviceID deviceId = 0;
+  UInt32 size = sizeof(AudioDeviceID);
+  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, &deviceId);
   // outputDevice is set to 0 if there is no audio device available
   // or if the default device is set to an encoded format
-  if (ret || !deviceId) 
+  if (ret != noErr || !deviceId) 
   {
     CLog::Log(LOGERROR, "CCoreAudioHardware::GetDefaultOutputDevice:"
       " Unable to identify default output device. Error = %s", GetError(ret).c_str());
@@ -284,31 +328,26 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
 
 void CCoreAudioHardware::GetOutputDeviceName(std::string& name)
 {
+  name = "Default";
   AudioDeviceID deviceId = GetDefaultOutputDevice();
 
-  if(deviceId)
+  if (deviceId)
   {
-    UInt32 size = 0;
-    // TODO: Change to kAudioObjectPropertyObjectName
-    AudioDeviceGetPropertyInfo(deviceId,0, false,
-      kAudioDevicePropertyDeviceName, &size, NULL);
-    char *m_buffer = (char*)malloc(size);
+    AudioObjectPropertyAddress  propertyAddress;
+    propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
+    propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+    propertyAddress.mSelector = kAudioObjectPropertyName;
 
-    OSStatus ret = AudioDeviceGetProperty(deviceId, 0, false,
-      kAudioDevicePropertyDeviceName, &size, m_buffer);
-    if (ret && !m_buffer)
-    {
-      name ="Default";
-    }
-    else
-    {
-      name = m_buffer;
-      free(m_buffer);
-    }
-  }
-  else
-  {
-    name = "Default";
+    CFStringRef theDeviceName = NULL;
+    UInt32 propertySize = sizeof(CFStringRef);
+    OSStatus ret = AudioObjectGetPropertyData(deviceId, &propertyAddress, 0, NULL, &propertySize, &theDeviceName); 
+    if (ret != noErr)
+      return;
+
+    const char *cstr = CFStringGetCStringPtr(theDeviceName, kCFStringEncodingUTF8);
+    if (cstr)
+      name = cstr;
+    CFRelease(theDeviceName);
   }
 }
 
@@ -319,18 +358,24 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList *pList)
     return found;
 
   // Obtain a list of all available audio devices
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
+  propertyAddress.mSelector = kAudioHardwarePropertyDevices; 
+
   UInt32 size = 0;
-  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
+  OSStatus ret = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size); 
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::GetOutputDevices:"
+      " Unable to retrieve the size of the list of available devices. Error = %s", GetError(ret).c_str());
+    return found;
+  }
+
   size_t deviceCount = size / sizeof(AudioDeviceID);
   AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
-
-  AudioObjectPropertyAddress  propertyAddress;
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
-  propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioHardwarePropertyDevices;
-  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject,
-    &propertyAddress, 0, NULL, &size, pDevices);
-  if (ret)
+  ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, pDevices);
+  if (ret != noErr)
     CLog::Log(LOGERROR, "CCoreAudioHardware::GetOutputDevices:"
       " Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
   else

@@ -91,7 +91,7 @@ bool CCoreAudioAE::Initialize()
 
   Deinitialize();
 
-  bool ret = OpenCoreAudio();
+  bool ret = OpenCoreAudio(44100, false, AE_FMT_FLOAT);
 
   Start();
 
@@ -155,6 +155,9 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
     case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
 #endif
+  // force optical/coax to 2.0 output channels
+  if (!m_rawPassthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+    m_stdChLayout = AE_CH_LAYOUT_2_0;
 
   // setup the desired format
   m_format.m_channelLayout = CAEChannelInfo(m_stdChLayout);
@@ -421,15 +424,10 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
 
   Stop();
 
-  if (COREAUDIO_IS_RAW(dataFormat))
+  if (m_Initialized)
   {
     Deinitialize();
-    m_Initialized = OpenCoreAudio(sampleRate, true, dataFormat);
-  }
-  else if (/* wasEmpty || */ m_rawPassthrough)
-  {
-    Deinitialize();
-    m_Initialized = OpenCoreAudio(sampleRate);
+    m_Initialized = OpenCoreAudio(sampleRate, COREAUDIO_IS_RAW(dataFormat), dataFormat);
   }
 
   /* if the stream was not initialized, do it now */

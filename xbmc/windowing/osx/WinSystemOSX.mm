@@ -710,14 +710,17 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   static NSSize last_view_size;
   static NSPoint last_view_origin;
   bool was_fullscreen = m_bFullScreen;
+  static int lastDisplayNr = res.iScreen;
   NSOpenGLContext* cur_context;
 
   // Fade to black to hide resolution-switching flicker and garbage.
   CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
 
   // If we're already fullscreen then we must be moving to a different display.
+  // or if we are still on the same display - it might be only a refreshrate/resolution
+  // change request.
   // Recurse to reset fullscreen mode and then continue.
-  if (was_fullscreen && fullScreen)
+  if (was_fullscreen && fullScreen && lastDisplayNr != res.iScreen)
   {
     needtoshowme = false;
     ShowHideNSWindow([last_view window], needtoshowme);
@@ -731,6 +734,25 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_bFullScreen = fullScreen;
 
   cur_context = [NSOpenGLContext currentContext];
+  
+  //handle resolution/refreshrate switching early here
+  if (m_bFullScreen)
+  {
+    if (m_can_display_switch)
+    {
+      // send pre-configuration change now and do not
+      //  wait for switch videomode callback. This gives just
+      //  a little more advanced notice of the display pre-change.
+      if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+        CheckDisplayChanging(kCGDisplayBeginConfigurationFlag);
+
+      // switch videomode
+      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
+      lastDisplayNr = res.iScreen;
+    }
+  }
+
+  //no context? done.
   if (!cur_context)
   {
     DisplayFadeFromBlack(fade_token, needtoshowme);
@@ -749,18 +771,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   {
     // FullScreen Mode
     NSOpenGLContext* newContext = NULL;
-
-    if (m_can_display_switch)
-    {
-      // send pre-configuration change now and do not
-      //  wait for switch videomode callback. This gives just
-      //  a little more advanced notice of the display pre-change.
-      if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
-        CheckDisplayChanging(kCGDisplayBeginConfigurationFlag);
-
-      // switch videomode
-      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-    }
 
     // Save info about the windowed context so we can restore it when returning to windowed.
     last_view = [cur_context view];

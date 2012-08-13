@@ -32,6 +32,7 @@ class CGUIKeyboard
   public:
 
     CGUIKeyboard(){};
+    virtual ~CGUIKeyboard(){};
 
     //entrypoint
     virtual bool ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput = false) = 0;

@@ -46,6 +46,8 @@ CBaseRenderer::CBaseRenderer()
   {
     m_rotatedDestCoords[i].x = 0;
     m_rotatedDestCoords[i].y = 0;
+    m_savedRotatedDestCoords[i].x = 0;
+    m_savedRotatedDestCoords[i].y = 0;    
   }
 
   m_RenderUpdateCallBackFn = NULL;
@@ -317,6 +319,30 @@ inline void CBaseRenderer::ReorderDrawPoints()
     srcIdx++;
     srcIdx = srcIdx % 4;
   }
+}
+
+void CBaseRenderer::saveRotatedCoords()
+{
+  for (int i = 0; i < 4; i++)
+    m_savedRotatedDestCoords[i] = m_rotatedDestCoords[i];
+}
+
+void CBaseRenderer::syncDestRectToRotatedPoints()
+{
+  m_rotatedDestCoords[0].x = m_destRect.x1;
+  m_rotatedDestCoords[0].y = m_destRect.y1;  
+  m_rotatedDestCoords[1].x = m_destRect.x2;
+  m_rotatedDestCoords[1].y = m_destRect.y1;
+  m_rotatedDestCoords[2].x = m_destRect.x2;
+  m_rotatedDestCoords[2].y = m_destRect.y2;  
+  m_rotatedDestCoords[3].x = m_destRect.x1;
+  m_rotatedDestCoords[3].y = m_destRect.y2; 
+}
+
+void CBaseRenderer::restoreRotatedCoords()
+{
+  for (int i = 0; i < 4; i++)
+    m_rotatedDestCoords[i] = m_savedRotatedDestCoords[i];
 }
 
 void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift)
