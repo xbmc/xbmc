@@ -20,6 +20,7 @@
  */
 
 #include "utils/CPUInfo.h"
+#include "Temperature.h"
 
 #include "gtest/gtest.h"
 
@@ -40,7 +41,8 @@ TEST(TestCPUInfo, getCPUFrequency)
 
 TEST(TestCPUInfo, getTemperature)
 {
-  CTemperature t = g_cpuInfo.getTemperature();
+  CTemperature t;
+  EXPECT_TRUE(g_cpuInfo.getTemperature(t));
   EXPECT_TRUE(t.IsValid());
 }
 
