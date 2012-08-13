@@ -90,8 +90,7 @@ public:
 #else
 class DllOMX : public DllDynamic, DllOMXInterface
 {
-  //DECLARE_DLL_WRAPPER(DllLibOpenMax, "/usr/lib/libnvomx.so")
-  DECLARE_DLL_WRAPPER(DllOMX, "/opt/vc/lib/libopenmaxil.so")
+  DECLARE_DLL_WRAPPER(DllOMX, "libopenmaxil.so")
 
   DEFINE_METHOD0(OMX_ERRORTYPE, OMX_Init)
   DEFINE_METHOD0(OMX_ERRORTYPE, OMX_Deinit)
