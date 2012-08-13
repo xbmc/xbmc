@@ -312,7 +312,7 @@ libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
 dvdpcodecs: dllloader
-	$(MAKE) -C lib 
+	$(MAKE) -C lib
 	$(MAKE) -C lib/libdvd
 eventclients:
 ifeq ($(findstring osx,@ARCH@), osx)
@@ -335,16 +335,16 @@ papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C lib/xbadpcm
 	$(MAKE) -C lib/vgmstream
 	$(MAKE) -C lib/timidity
-	$(MAKE) -C lib/nosefart 
+	$(MAKE) -C lib/nosefart
 ifneq ($(findstring arm-osx,@ARCH@), arm-osx)
-	$(MAKE) -C lib/libsidplay2 
+	$(MAKE) -C lib/libsidplay2
 endif
 ifeq (@USE_ASAP_CODEC@,1)
   ifneq ($(findstring osx,@ARCH@), osx)
 	$(MAKE) -C lib/asap asap-xbmc
   endif
 endif
-	$(MAKE) -C lib/stsound/StSoundLibrary	
+	$(MAKE) -C lib/stsound/StSoundLibrary
 ifeq ($(or $(findstring powerpc,@ARCH@),$(findstring x86_64-linux,@ARCH@),$(findstring arm, @ARCH@),$(findstring freebsd,@ARCH@)),)
 	$(MAKE) -C lib/snesapu/SNES/SNESAPU
 endif
@@ -530,13 +530,13 @@ clean-eventclients:
 	for d in $(EC_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-xbmctex:
 	for d in $(XBMCTEX_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
-clean-dvdpcodecs: 
+clean-dvdpcodecs:
 	for d in $(DVDPCODECS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-papcodecs:
 	for d in $(PAPCODECS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
-clean-libs: 
+clean-libs:
 	for d in $(LIB_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
-clean-screensavers: 
+clean-screensavers:
 	for d in $(SS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
