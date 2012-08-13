@@ -21,8 +21,18 @@
 
 #include "Win32Exception.h"
 #include <eh.h>
+#include <dbghelp.h>
+#include "Util.h"
+#include "WIN32Util.h"
 
 #define LOG if(logger) logger->Log
+
+typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
+                                        CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
+                                        CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
+                                        CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
+
+std::string win32_exception::mVersion;
 
 void win32_exception::install_handler()
 {
@@ -64,6 +74,74 @@ void win32_exception::LogThrowMessage(const char *prefix)  const
     LOG(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, (unsigned int) what(), code(), where());
   else
     LOG(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
+}
+
+bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
+{
+  // Create the dump file where the xbmc.exe resides
+  CStdString errorMsg;
+  bool returncode = false;
+  CStdString dumpFileName;
+  SYSTEMTIME stLocalTime;
+  GetLocalTime(&stLocalTime);
+
+  dumpFileName.Format("xbmc_crashlog-%s-%04d%02d%02d-%02d%02d%02d.dmp",
+                      mVersion.c_str(),
+                      stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
+                      stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
+
+  dumpFileName.Format("%s\\%s", CWIN32Util::GetProfilePath().c_str(), CUtil::MakeLegalFileName(dumpFileName));
+
+  HANDLE hDumpFile = CreateFile(dumpFileName.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+
+  if (hDumpFile == INVALID_HANDLE_VALUE)
+  {
+    LOG(LOGERROR, "CreateFile '%s' failed with error id %d", dumpFileName.c_str(), GetLastError());
+    goto cleanup;
+  }
+
+  // Load the DBGHELP DLL
+  HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
+  if (!hDbgHelpDll)
+  {
+    LOG(LOGERROR, "LoadLibrary 'DBGHELP.DLL' failed with error id %d", GetLastError());
+    goto cleanup;
+  }
+
+  MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
+  if (!pDump)
+  {
+    LOG(LOGERROR, "Failed to locate MiniDumpWriteDump with error id %d", GetLastError());
+    goto cleanup;
+  }
+
+  // Initialize minidump structure
+  MINIDUMP_EXCEPTION_INFORMATION mdei;
+  mdei.ThreadId = GetCurrentThreadId();
+  mdei.ExceptionPointers = pEp;
+  mdei.ClientPointers = FALSE;
+
+  // Call the minidump api with normal dumping
+  // We can get more detail information by using other minidump types but the dump file will be
+  // extremely large.
+  BOOL bMiniDumpSuccessful = pDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &mdei, 0, NULL);
+  if( !bMiniDumpSuccessful )
+  {
+    LOG(LOGERROR, "MiniDumpWriteDump failed with error id %d", GetLastError());
+    goto cleanup;
+  }
+
+  returncode = true;
+
+cleanup:
+
+  if (hDumpFile != INVALID_HANDLE_VALUE)
+    CloseHandle(hDumpFile);
+
+  if (hDbgHelpDll)
+    FreeLibrary(hDbgHelpDll);
+
+  return returncode;
 }
 
 access_violation::access_violation(EXCEPTION_POINTERS* info) : 
