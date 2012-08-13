@@ -38,7 +38,6 @@
 #include "cores/paplayer/BXAcodec.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
-#include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Variant.h"
 #include "settings/AdvancedSettings.h"
@@ -88,7 +87,7 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
     tag.SetTitle(metadata["minm"]);//title
   if(metadata["asar"].length())    
     tag.SetArtist(metadata["asar"]);//artist
-  g_infoManager.SetCurrentSongTag(tag);
+  CApplicationMessenger::Get().SetCurrentSongTag(tag);
 }
 
 void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int size)
