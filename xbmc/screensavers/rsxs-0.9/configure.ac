@@ -96,6 +96,7 @@ MAC_PKG_OPENGL
 if test "$HAVE_PKG_OPENGL" != yes; then
 	AC_MSG_ERROR([can't compile without OpenGL support])
 fi
+AC_SUBST(OPENGL_CFLAGS)
 AC_SUBST(OPENGL_LIBS)
 
 HAVE_SOUND=no

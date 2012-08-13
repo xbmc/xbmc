@@ -344,11 +344,19 @@ AC_DEFUN([MAC_PKG_OPENGL], [
 
 	_MAC_SAVE([LIBS], [
 		HAVE_PKG_OPENGL=yes
-		AC_SEARCH_LIBS(glXChooseVisual, [MesaGL GL GLX],
-			[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
-		AC_SEARCH_LIBS(gluErrorString, [MesaGLU GL GLU],
-			[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
-		OPENGL_LIBS="$LIBS"
+		PKG_CHECK_MODULES([GL],  [gl],  [], [HAVE_PKG_OPENGL=no])
+		PKG_CHECK_MODULES([GLU], [glu], [], [HAVE_PKG_OPENGL=no])
+		if test "$HAVE_PKG_OPENGL" = "yes"; then
+			OPENGL_CFLAGS="$GL_CFLAGS $GLU_CFLAGS"
+			OPENGL_LIBS="$GL_LIBS $GLU_LIBS"
+		else
+			AC_SEARCH_LIBS(glXChooseVisual, [MesaGL GL GLX],
+				[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
+			AC_SEARCH_LIBS(gluErrorString, [MesaGLU GL GLU],
+				[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
+			OPENGL_CFLAGS=""
+			OPENGL_LIBS="$LIBS"
+		fi
 		_MAC_SAVE([CPPFLAGS], [
 			CPPFLAGS="$CPPFLAGS $X_CPPFLAGS"
 			AC_CHECK_HEADERS([GL/gl.h], , , [#])

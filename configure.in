@@ -806,6 +806,9 @@ else
       AC_MSG_RESULT(== WARNING: OpenGLU support is assumed.)
       AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
     else
+      PKG_CHECK_MODULES([GL], [gl],
+        [INCLUDES="$INCLUDES $GL_CFLAGS" LIBS="$LIBS $GL_LIBS"],
+        [GL_LIBS="-lGL"])
       AC_CHECK_LIB([GL],  [main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR($missing_library))
