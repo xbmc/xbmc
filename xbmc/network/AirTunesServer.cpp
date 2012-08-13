@@ -38,6 +38,7 @@
 #include "cores/paplayer/BXAcodec.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Variant.h"
 #include "settings/AdvancedSettings.h"
