@@ -853,7 +853,7 @@ bool CLastFmManager::Love(const CMusicInfoTag& musicinfotag)
     //update the rating to 5, we loved it.
     CMusicInfoTag newTag(musicinfotag);
     newTag.SetRating('5');
-    g_infoManager.SetCurrentSongTag(newTag);
+    CApplicationMessenger::Get().SetCurrentSongTag(newTag);
     //try updating the rating in the database if it's a local file.
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
