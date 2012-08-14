@@ -24,6 +24,7 @@
   #include "config.h"
 #endif
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 extern "C" {
 #ifndef HAVE_MMX
@@ -40,6 +41,8 @@ extern "C" {
     #include <libswresample/swresample.h>
   #elif HAVE_LIBAVRESAMPLE_AVRESAMPLE_H
     #include <libavresample/avresample.h>
+    #include <libavutil/opt.h>
+    #include <libavutil/samplefmt.h>
     #define SwrContext AVAudioResampleContext
   #else
     #error "Either libswresample or libavresample is needed!"
