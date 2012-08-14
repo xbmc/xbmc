@@ -32,7 +32,7 @@ class CAUOutputDevice;
  */
 class ICoreAudioAEHAL
 {
-protected:  
+protected:
   ICoreAudioAEHAL() {}
   virtual ~ICoreAudioAEHAL() {}
 

@@ -68,7 +68,7 @@ protected:
   // Give the HAL access to the engine
   friend class CCoreAudioAEHAL;
   CCoreAudioAEHAL  *HAL;
-  
+
 public:
   virtual void      Shutdown();
 
@@ -88,19 +88,19 @@ public:
   virtual void      SetMute(const bool enabled);
   virtual bool      IsMuted();
   virtual void      SetSoundMode(const int mode);
-  
+
 
   virtual bool      SupportsRaw();
-  
+
   CCoreAudioAEHAL*  GetHAL();
-  
+
   // returns a new stream for data in the specified format
-  virtual IAEStream* MakeStream(enum AEDataFormat dataFormat, 
+  virtual IAEStream* MakeStream(enum AEDataFormat dataFormat,
     unsigned int sampleRate,unsigned int encodedSamplerate,
     CAEChannelInfo channelLayout, unsigned int options = 0);
-  
+
   virtual IAEStream* FreeStream(IAEStream *stream);
-    
+
   // returns a new sound object
   virtual IAESound* MakeSound(const std::string& file);
   void              StopAllSounds();
@@ -114,17 +114,17 @@ public:
 
   virtual void      EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
 
-  virtual OSStatus  Render(AudioUnitRenderActionFlags* actionFlags, 
-    const AudioTimeStamp* pTimeStamp, UInt32 busNumber, 
+  virtual OSStatus  Render(AudioUnitRenderActionFlags* actionFlags,
+    const AudioTimeStamp* pTimeStamp, UInt32 busNumber,
     UInt32 frameCount, AudioBufferList* pBufList);
-  
+
 
 private:
   CCriticalSection  m_callbackLock;
   CCriticalSection  m_streamLock;
   CCriticalSection  m_soundLock;
   CCriticalSection  m_soundSampleLock;
-  
+
   // currently playing sounds
   typedef struct {
     CCoreAudioAESound *owner;
@@ -139,29 +139,29 @@ private:
   StreamList        m_streams;
   SoundList         m_sounds;
   SoundStateList    m_playing_sounds;
-  
+
   // Prevent multiple init/deinit
   bool              m_Initialized;
   bool              m_callbackRunning;
-    
+
   AEAudioFormat     m_format;
   unsigned int      m_chLayoutCount;
   bool              m_rawPassthrough;
 
   enum AEStdChLayout m_stdChLayout;
-  
+
   bool              OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AEDataFormat rawDataFormat);
   void              Deinitialize();
   void              Start();
   void              Stop();
 
-  OSStatus          OnRender(AudioUnitRenderActionFlags *actionFlags, 
-                      const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, 
+  OSStatus          OnRender(AudioUnitRenderActionFlags *actionFlags,
+                      const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
                       UInt32 inNumberFrames, AudioBufferList *ioData);
 
   float             m_volume;
-  float             m_volumeBeforeMute;  
+  float             m_volumeBeforeMute;
   bool              m_muted;
   int               m_soundMode;
-  bool              m_streamsPlaying;  
+  bool              m_streamsPlaying;
 };

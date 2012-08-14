@@ -164,7 +164,7 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
       {
         // check pcm output formats
         unsigned int bps = CAEUtil::DataFormatToBits(AE_FMT_S16NE);
-        if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() && 
+        if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() &&
             desc.mFormat.mBitsPerChannel == bps &&
             desc.mFormat.mSampleRate == m_initformat.m_sampleRate )
         {
@@ -179,7 +179,7 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
         // check encoded formats
         if (desc.mFormat.mFormatID == kAudioFormat60958AC3 || desc.mFormat.mFormatID == 'IAC3')
         {
-          if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() && 
+          if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() &&
               desc.mFormat.mSampleRate == m_initformat.m_sampleRate )
           {
             outputFormat = desc.mFormat; // Select this format
@@ -206,7 +206,7 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
-    "Selected stream[%u] - id: 0x%04X, Physical Format: %s", 
+    "Selected stream[%u] - id: 0x%04X, Physical Format: %s",
     m_OutputBufferIndex, (uint)outputStream, StreamDescriptionToString(outputFormat, formatString));
 
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
