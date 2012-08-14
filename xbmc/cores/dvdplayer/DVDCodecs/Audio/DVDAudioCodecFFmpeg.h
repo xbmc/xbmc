@@ -25,6 +25,7 @@
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
 #include "DllAvUtil.h"
+#include "DllSwResample.h"
 
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
@@ -47,7 +48,7 @@ public:
 
 protected:
   AVCodecContext*     m_pCodecContext;
-  AVAudioConvert*     m_pConvert;
+  SwrContext*         m_pConvert;
   enum AVSampleFormat m_iSampleFormat;  
   CAEChannelInfo      m_channelLayout;
   int                 m_iMapChannels;
@@ -66,6 +67,7 @@ protected:
 
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
+  DllSwResample m_dllSwResample;
 
   void BuildChannelMap();
   void ConvertToFloat();  
