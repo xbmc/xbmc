@@ -332,7 +332,21 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
 
 double CAESinkWASAPI::GetDelay()
 {
-  return GetCacheTime();
+  HRESULT hr;
+  if (!m_initialized)
+    return 0.0;
+
+  hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
+
+  if (FAILED(hr))
+  {
+#ifdef _DEBUG
+    CLog::Log(LOGERROR, __FUNCTION__": GetBufferSize Failed : %s", WASAPIErrToStr(hr));
+#endif
+    return 0.0;
+  }
+
+  return (double) m_uiBufferLen / (double) m_format.m_sampleRate;
 }
 
 double CAESinkWASAPI::GetCacheTime()
