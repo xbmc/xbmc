@@ -245,10 +245,12 @@ GTEST_DIR = lib/gtest
 GTEST_INCLUDES = -I$(GTEST_DIR)/include
 GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 
-CHECK_DIRS = xbmc/utils/test \
+CHECK_DIRS = xbmc/filesystem/test \
+             xbmc/utils/test \
              xbmc/threads/test \
              xbmc/test
-CHECK_LIBS = xbmc/utils/test/utilsTest.a \
+CHECK_LIBS = xbmc/filesystem/test/filesystemTest.a \
+             xbmc/utils/test/utilsTest.a \
              xbmc/threads/test/threadTest.a \
              xbmc/test/xbmc-test.a
 CHECK_PROGRAMS = xbmc-test
