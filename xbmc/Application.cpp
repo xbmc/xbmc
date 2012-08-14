@@ -5025,7 +5025,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else
         {
-		  CSingleLock lock(g_graphicsContext);
+          CSingleLock lock(g_graphicsContext);
           //  resets to res_desktop or look&feel resolution (including refreshrate)
           g_graphicsContext.SetFullScreenVideo(false);
         }
