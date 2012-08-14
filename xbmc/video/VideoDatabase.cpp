@@ -9163,7 +9163,7 @@ bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
     if (xsp.GetType() == itemType ||
         // handle episode listings with videodb://2/2/ which get the rest
         // of the path (season and episodeid) appended later
-        xsp.GetType() == "episodes" && itemType == "tvshows")
+        (xsp.GetType() == "episodes" && itemType == "tvshows"))
     {
       std::set<CStdString> playlists;
       filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
