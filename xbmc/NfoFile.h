@@ -32,6 +32,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
+#include "utils/XMLUtils.h"
 
 class CNfoFile
 {
@@ -59,11 +60,18 @@ public:
       strDoc = document;
     else
       strDoc = m_headofdoc;
-    // try to load using string charset
-    if (strDoc.Find("encoding=") == -1)
-      g_charsetConverter.unknownToUTF8(strDoc);
 
-    doc.Parse(strDoc.c_str());
+    CStdString encoding;
+    XMLUtils::GetEncoding(&doc, encoding);
+
+    CStdString strUtf8(strDoc);
+    if (encoding.IsEmpty())
+      g_charsetConverter.unknownToUTF8(strUtf8);
+    else
+      g_charsetConverter.stringCharsetToUtf8(encoding, strDoc, strUtf8);
+
+    doc.Clear();
+    doc.Parse(strUtf8.c_str(),0,TIXML_ENCODING_UTF8);
     return details.Load(doc.RootElement(), true, prioritise);
   }
 
