@@ -59,7 +59,7 @@ public:
   std::vector<CStdString> &getTestDownloadQueueUrls();
 
   /* Functions to get variables used in the TestFileFactory tests. */
-  std::vector<CStdString> &getTestFileFactoryUrls();
+  std::vector<CStdString> &getTestFileFactoryReadUrls();
 
   /* Function to get advanced settings files. */
   std::vector<CStdString> &getAdvancedSettingsFiles();
@@ -75,7 +75,7 @@ private:
   void operator=(CXBMCTestUtils const&);
 
   std::vector<CStdString> TestDownloadQueueUrls;
-  std::vector<CStdString> TestFileFactoryUrls;
+  std::vector<CStdString> TestFileFactoryReadUrls;
 
   std::vector<CStdString> AdvancedSettingsFiles;
   std::vector<CStdString> GUISettingsFiles;

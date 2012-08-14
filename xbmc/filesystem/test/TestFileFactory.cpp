@@ -69,7 +69,7 @@ TEST_F(TestFileFactory, Read)
   int64_t count = 0;
 
   std::vector<CStdString> urls =
-    CXBMCTestUtils::Instance().getTestFileFactoryUrls();
+    CXBMCTestUtils::Instance().getTestFileFactoryReadUrls();
 
   std::vector<CStdString>::iterator it;
   for (it = urls.begin(); it < urls.end(); it++)

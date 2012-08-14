@@ -148,9 +148,9 @@ std::vector<CStdString> &CXBMCTestUtils::getTestDownloadQueueUrls()
   return TestDownloadQueueUrls;
 }
 
-std::vector<CStdString> &CXBMCTestUtils::getTestFileFactoryUrls()
+std::vector<CStdString> &CXBMCTestUtils::getTestFileFactoryReadUrls()
 {
-  return TestFileFactoryUrls;
+  return TestFileFactoryReadUrls;
 }
 
 std::vector<CStdString> &CXBMCTestUtils::getAdvancedSettingsFiles()
@@ -176,12 +176,12 @@ static const char usage[] =
 "    Add multiple urls from a ',' delimited string of urls. to be used\n"
 "    in the TestDownloadQueue tests.\n"
 "\n"
-"  --add-testfilefactory-url [URL]\n"
-"    Add a url to be used int the TestFileFactory tests.\n"
+"  --add-testfilefactory-readurl [URL]\n"
+"    Add a url to be used int the TestFileFactory read tests.\n"
 "\n"
-"  --add-testfilefactory-urls [URLS]\n"
+"  --add-testfilefactory-readurls [URLS]\n"
 "    Add multiple urls from a ',' delimited string of urls to be used\n"
-"    in the TestFileFactory tests.\n"
+"    in the TestFileFactory read tests.\n"
 "\n"
 "  --add-advancedsettings-file [FILE]\n"
 "    Add an advanced settings file to be loaded in test cases that use them.\n"
@@ -217,17 +217,17 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
       for (it = urls.begin(); it < urls.end(); it++)
         TestDownloadQueueUrls.push_back(*it);
     }
-    else if (arg == "--add-testfilefactory-url")
+    else if (arg == "--add-testfilefactory-readurl")
     {
-      TestFileFactoryUrls.push_back(argv[++i]);
+      TestFileFactoryReadUrls.push_back(argv[++i]);
     }
-    else if (arg == "--add-testfilefactory-urls")
+    else if (arg == "--add-testfilefactory-readurls")
     {
       arg = argv[++i];
       std::vector<std::string> urls = StringUtils::Split(arg, ",");
       std::vector<std::string>::iterator it;
       for (it = urls.begin(); it < urls.end(); it++)
-        TestFileFactoryUrls.push_back(*it);
+        TestFileFactoryReadUrls.push_back(*it);
     }
     else if (arg == "--add-advancedsettings-file")
     {
