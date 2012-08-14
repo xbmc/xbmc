@@ -33,6 +33,8 @@ all: $(LIB) $(NATIVE_LIB)
 $(NATIVE_LIB): $(SRCS)
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 	g++ $(NATIVE_ARCH) -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
+else ifeq ($(findstring arm,$(ARCH)),arm)
+	g++ -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
 else
 	g++ -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
 endif
