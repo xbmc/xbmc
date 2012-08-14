@@ -148,7 +148,7 @@ public:
   CCoreAudioGraph();
   ~CCoreAudioGraph();
 
-  bool Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing);
+  bool Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, float initVolume);
   bool Close();
   bool Start();
   bool Stop();
@@ -174,6 +174,7 @@ protected:
   bool              m_allowMixing;
   bool              m_encoded;
   AEDataFormat      m_rawDataFormat;
+  float             m_initVolume;
 public:
   unsigned int      m_NumLatencyFrames;
   unsigned int      m_OutputBufferIndex;
@@ -184,7 +185,7 @@ public:
 
   virtual bool   InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing);
   virtual bool   InitializePCMEncoded(ICoreAudioSource *pSource, AEAudioFormat &format);
-  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device);
+  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume);
   virtual void   Deinitialize();
   virtual void   EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual void   SetDirectInput(ICoreAudioSource *pSource, AEAudioFormat &format);

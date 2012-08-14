@@ -44,6 +44,7 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   m_Passthrough       (false  ),
   m_allowMixing       (false  ),
   m_encoded           (false  ),
+  m_initVolume        (1.0f   ),
   m_NumLatencyFrames  (0      ),
   m_OutputBufferIndex (0      )
 {
@@ -97,7 +98,7 @@ bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
   if (!m_Passthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
     layout = g_LayoutMap[1];
 
-  if (!m_audioGraph->Open(pSource, format, outputDevice, allowMixing, layout ))
+  if (!m_audioGraph->Open(pSource, format, outputDevice, allowMixing, layout, m_initVolume ))
   {
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: "
       "Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
@@ -262,7 +263,7 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
   return true;
 }
 
-bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device)
+bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume)
 {
   // Reset all the devices to a default 'non-hog' and mixable format.
   // If we don't do this we may be unable to find the Default Output device.
@@ -279,6 +280,7 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
   m_Passthrough         = passThrough;
   m_encoded             = false;
   m_OutputBufferIndex   = 0;
+  m_initVolume          = initVolume;
 
   if (format.m_channelLayout.Count() == 0)
   {

@@ -37,7 +37,7 @@ protected:
   virtual ~ICoreAudioAEHAL() {}
 
 public:
-  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device) = 0;
+  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume) = 0;
   virtual void   Deinitialize() = 0;
   virtual void   EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
   //virtual CAUOutputDevice *DestroyUnit(CAUOutputDevice *outputUnit);

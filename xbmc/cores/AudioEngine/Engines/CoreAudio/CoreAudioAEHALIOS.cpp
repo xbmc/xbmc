@@ -607,7 +607,7 @@ CCoreAudioGraph::~CCoreAudioGraph()
   Close();
 }
 
-bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing)
+bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, float initVolume)
 {
   OSStatus ret;
 
@@ -776,6 +776,8 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format, boo
     CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error initialize graph. Error = %s", GetError(ret).c_str());
     return false;
   }
+
+  SetCurrentVolume(initVolume);
 
   UInt32 bufferFrames = m_audioUnit->GetBufferFrameSize();
 
@@ -1100,6 +1102,7 @@ m_Initialized       (false  ),
 m_Passthrough       (false  ),
 m_allowMixing       (false  ),
 m_encoded           (false  ),
+m_initVolume        (1.0f   ),
 m_NumLatencyFrames  (0      ),
 m_OutputBufferIndex (0      )
 {
@@ -1125,7 +1128,7 @@ bool CCoreAudioAEHALIOS::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
   if (!m_audioGraph)
     return false;
 
-  if (!m_audioGraph->Open(pSource, format, allowMixing))
+  if (!m_audioGraph->Open(pSource, format, allowMixing, m_initVolume))
   {
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALIOS::Initialize: Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
     return false;
@@ -1146,7 +1149,7 @@ bool CCoreAudioAEHALIOS::InitializePCMEncoded(ICoreAudioSource *pSource, AEAudio
   return true;
 }
 
-bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device)
+bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume)
 {
   m_ae = (CCoreAudioAE *)ae;
 
@@ -1158,6 +1161,7 @@ bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
   m_encoded             = false;
   m_OutputBufferIndex   = 0;
   m_rawDataFormat       = rawDataFormat;
+  m_initVolume          = initVolume;
 
   if (format.m_channelLayout.Count() == 0)
   {
