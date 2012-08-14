@@ -22,6 +22,7 @@
 #include "CoreAudioDevice.h"
 #include "CoreAudioAEHAL.h"
 #include "CoreAudioChannelLayout.h"
+#include "CoreAudioHardware.h"
 #include "utils/log.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +38,8 @@ CCoreAudioDevice::CCoreAudioDevice()  :
   m_SampleRateRestore   (0.0f     ),
   m_HogPid              (-1       ),
   m_frameSize           (0        ),
-  m_OutputBufferIndex   (0        )
+  m_OutputBufferIndex   (0        ),
+  m_BufferSizeRestore   (0        )
 {
 }
 
@@ -51,7 +53,8 @@ CCoreAudioDevice::CCoreAudioDevice(AudioDeviceID deviceId) :
   m_SampleRateRestore   (0.0f     ),
   m_HogPid              (-1       ),
   m_frameSize           (0        ),
-  m_OutputBufferIndex   (0        )
+  m_OutputBufferIndex   (0        ),
+  m_BufferSizeRestore   (0        )
 {
 }
 
@@ -63,8 +66,9 @@ CCoreAudioDevice::~CCoreAudioDevice()
 bool CCoreAudioDevice::Open(AudioDeviceID deviceId)
 {
   m_DeviceId = deviceId;
-  return true;
+  m_BufferSizeRestore = GetBufferSize();
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::Open: Opened device 0x%04x", (uint)m_DeviceId);
+  return true;
 }
 
 void CCoreAudioDevice::Close()
@@ -80,6 +84,8 @@ void CCoreAudioDevice::Close()
     SetInputSource(NULL, 0, 0);
 
   SetHogStatus(false);
+  CCoreAudioHardware::SetAutoHogMode(false);
+
   if (m_MixerRestore > -1) // We changed the mixer status
     SetMixingSupport((m_MixerRestore ? true : false));
   m_MixerRestore = -1;
@@ -88,6 +94,12 @@ void CCoreAudioDevice::Close()
   {
     CLog::Log(LOGDEBUG,  "CCoreAudioDevice::Close: Restoring original nominal samplerate.");
     SetNominalSampleRate(m_SampleRateRestore);
+  }
+
+  if (m_BufferSizeRestore && m_BufferSizeRestore != GetBufferSize())
+  {
+    SetBufferSize(m_BufferSizeRestore);
+    m_BufferSizeRestore = 0;
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::Close: Closed device 0x%04x", (uint)m_DeviceId);
