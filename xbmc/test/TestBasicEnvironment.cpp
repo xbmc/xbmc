@@ -24,7 +24,9 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -43,6 +45,12 @@ void TestBasicEnvironment::SetUp()
 
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();
+
+  /* TODO: Something should be done about all the asserts in GUISettings so
+   * that the initialization of these components won't be needed.
+   */
+  g_powerManager.Initialize();
+  g_guiSettings.Initialize();
 
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.

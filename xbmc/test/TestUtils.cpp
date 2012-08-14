@@ -148,6 +148,21 @@ std::vector<CStdString> &CXBMCTestUtils::getTestDownloadQueueUrls()
   return TestDownloadQueueUrls;
 }
 
+std::vector<CStdString> &CXBMCTestUtils::getTestFileFactoryUrls()
+{
+  return TestFileFactoryUrls;
+}
+
+std::vector<CStdString> &CXBMCTestUtils::getAdvancedSettingsFiles()
+{
+  return AdvancedSettingsFiles;
+}
+
+std::vector<CStdString> &CXBMCTestUtils::getGUISettingsFiles()
+{
+  return GUISettingsFiles;
+}
+
 static const char usage[] =
 "XBMC Test Suite\n"
 "Usage: xbmc-test [options]\n"
@@ -159,7 +174,29 @@ static const char usage[] =
 "\n"
 "  --add-testdownloadqueue-urls [URLS]\n"
 "    Add multiple urls from a ',' delimited string of urls. to be used\n"
-"    in the TestDownloadQueue tests.\n";
+"    in the TestDownloadQueue tests.\n"
+"\n"
+"  --add-testfilefactory-url [URL]\n"
+"    Add a url to be used int the TestFileFactory tests.\n"
+"\n"
+"  --add-testfilefactory-urls [URLS]\n"
+"    Add multiple urls from a ',' delimited string of urls to be used\n"
+"    in the TestFileFactory tests.\n"
+"\n"
+"  --add-advancedsettings-file [FILE]\n"
+"    Add an advanced settings file to be loaded in test cases that use them.\n"
+"\n"
+"  --add-advancedsettings-files [FILES]\n"
+"    Add multiple advanced settings files from a ',' delimited string of\n"
+"    files to be loaded in test cases that use them.\n"
+"\n"
+"  --add-guisettings-file [FILE]\n"
+"    Add a GUI settings file to be loaded in test cases that use them.\n"
+"\n"
+"  --add-guisettings-files [FILES]\n"
+"    Add multiple GUI settings files from a ',' delimited string of\n"
+"    files to be loaded in test cases that use them.\n"
+;
 
 void CXBMCTestUtils::ParseArgs(int argc, char **argv)
 {
@@ -179,6 +216,42 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
       std::vector<std::string>::iterator it;
       for (it = urls.begin(); it < urls.end(); it++)
         TestDownloadQueueUrls.push_back(*it);
+    }
+    else if (arg == "--add-testfilefactory-url")
+    {
+      TestFileFactoryUrls.push_back(argv[++i]);
+    }
+    else if (arg == "--add-testfilefactory-urls")
+    {
+      arg = argv[++i];
+      std::vector<std::string> urls = StringUtils::Split(arg, ",");
+      std::vector<std::string>::iterator it;
+      for (it = urls.begin(); it < urls.end(); it++)
+        TestFileFactoryUrls.push_back(*it);
+    }
+    else if (arg == "--add-advancedsettings-file")
+    {
+      AdvancedSettingsFiles.push_back(argv[++i]);
+    }
+    else if (arg == "--add-advancedsettings-files")
+    {
+      arg = argv[++i];
+      std::vector<std::string> urls = StringUtils::Split(arg, ",");
+      std::vector<std::string>::iterator it;
+      for (it = urls.begin(); it < urls.end(); it++)
+        AdvancedSettingsFiles.push_back(*it);
+    }
+    else if (arg == "--add-guisettings-file")
+    {
+      GUISettingsFiles.push_back(argv[++i]);
+    }
+    else if (arg == "--add-guisettings-files")
+    {
+      arg = argv[++i];
+      std::vector<std::string> urls = StringUtils::Split(arg, ",");
+      std::vector<std::string>::iterator it;
+      for (it = urls.begin(); it < urls.end(); it++)
+        GUISettingsFiles.push_back(*it);
     }
     else
     {

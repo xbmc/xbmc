@@ -1,6 +1,7 @@
 SRCS= \
   TestDirectory.cpp \
-  TestFile.cpp
+  TestFile.cpp \
+  TestFileFactory.cpp
 
 LIB=filesystemTest.a
 

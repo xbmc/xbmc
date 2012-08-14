@@ -58,6 +58,15 @@ public:
   /* Functions to get variables used in the TestDownloadQueue tests. */
   std::vector<CStdString> &getTestDownloadQueueUrls();
 
+  /* Functions to get variables used in the TestFileFactory tests. */
+  std::vector<CStdString> &getTestFileFactoryUrls();
+
+  /* Function to get advanced settings files. */
+  std::vector<CStdString> &getAdvancedSettingsFiles();
+
+  /* Function to get GUI settings files. */
+  std::vector<CStdString> &getGUISettingsFiles();
+
   /* Function to parse command line options */
   void ParseArgs(int argc, char **argv);
 private:
@@ -66,6 +75,10 @@ private:
   void operator=(CXBMCTestUtils const&);
 
   std::vector<CStdString> TestDownloadQueueUrls;
+  std::vector<CStdString> TestFileFactoryUrls;
+
+  std::vector<CStdString> AdvancedSettingsFiles;
+  std::vector<CStdString> GUISettingsFiles;
 };
 
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
