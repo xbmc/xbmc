@@ -72,8 +72,6 @@ public:
   static CBaseTexture *LoadFromFileInMemory(unsigned char* buffer, size_t bufferSize, const std::string& mimeType,
                                             unsigned int idealWidth = 0, unsigned int idealHeight = 0);
 
-  bool LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
-                    bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight);
   bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels);
   bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
@@ -113,6 +111,7 @@ private:
 protected:
   bool LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType,
                          unsigned int maxWidth, unsigned int maxHeight);
+  bool LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate);
   void LoadFromImage(ImageInfo &image, bool autoRotate = false);
   // helpers for computation of texture parameters for compressed textures
   unsigned int GetPitch(unsigned int width) const;

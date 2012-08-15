@@ -199,7 +199,7 @@ CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned
   }
 #endif
   CTexture *texture = new CTexture();
-  if (texture->LoadFromFile(texturePath, idealWidth, idealHeight, autoRotate, NULL, NULL))
+  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, autoRotate))
     return texture;
   delete texture;
   return NULL;
@@ -214,8 +214,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
-                                bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
+bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate)
 {
 #ifdef TARGET_RASPBERRY_PI
   if (URIUtils::GetExtension(texturePath).Equals(".jpg") || 
@@ -315,11 +314,6 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
     return false;
   }
-
-  if (originalWidth)
-    *originalWidth = image.originalwidth;
-  if (originalHeight)
-    *originalHeight = image.originalheight;
 
   LoadFromImage(image, autoRotate);
   dll.ReleaseImage(&image);
