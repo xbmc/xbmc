@@ -73,6 +73,15 @@ public:
   /* Function to get GUI settings files. */
   std::vector<CStdString> &getGUISettingsFiles();
 
+  /* Function used in creating a corrupted file. The parameters are a URL
+   * to the original file to be corrupted and a suffix to append to the
+   * path of the newly created file. This will return a XFILE::CFile
+   * object which is itself a tempfile object which can be used with the
+   * tempfile functions of this utility class.
+   */
+  XFILE::CFile *CreateCorruptedFile(CStdString const& strFileName,
+                                    CStdString const& suffix);
+
   /* Function to parse command line options */
   void ParseArgs(int argc, char **argv);
 private:
@@ -87,9 +96,13 @@ private:
 
   std::vector<CStdString> AdvancedSettingsFiles;
   std::vector<CStdString> GUISettingsFiles;
+
+  double probability;
 };
 
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
 #define XBMC_CREATETEMPFILE(a) CXBMCTestUtils::Instance().CreateTempFile(a)
 #define XBMC_DELETETEMPFILE(a) CXBMCTestUtils::Instance().DeleteTempFile(a)
 #define XBMC_TEMPFILEPATH(a) CXBMCTestUtils::Instance().TempFilePath(a)
+#define XBMC_CREATECORRUPTEDFILE(a, b) \
+  CXBMCTestUtils::Instance().CreateCorruptedFile(a, b)

@@ -30,6 +30,7 @@
 #else
 #include <cstdlib>
 #include <climits>
+#include <ctime>
 #endif
 
 class CTempFile : public XFILE::CFile
@@ -89,7 +90,10 @@ private:
   CStdString m_ptempFilePath;
 };
 
-CXBMCTestUtils::CXBMCTestUtils(){}
+CXBMCTestUtils::CXBMCTestUtils()
+{
+  probability = 0.01;
+}
 
 CXBMCTestUtils &CXBMCTestUtils::Instance()
 {
@@ -142,6 +146,46 @@ CStdString CXBMCTestUtils::TempFilePath(XFILE::CFile const* const tempfile)
   CTempFile const* const f = static_cast<CTempFile const* const>(tempfile);
   return f->getTempFilePath();
 }
+
+XFILE::CFile *CXBMCTestUtils::CreateCorruptedFile(CStdString const& strFileName,
+  CStdString const& suffix)
+{
+  XFILE::CFile inputfile, *tmpfile = CreateTempFile(suffix);
+  unsigned char buf[20], tmpchar;
+  unsigned int size, i;
+
+  if (tmpfile && inputfile.Open(strFileName))
+  {
+    srand(time(NULL));
+    while ((size = inputfile.Read(buf, sizeof(buf))) > 0)
+    {
+      for (i = 0; i < size; i++)
+      {
+        if ((rand() % RAND_MAX) < (probability * RAND_MAX))
+        {
+          tmpchar = buf[i];
+          do
+          {
+            buf[i] = (rand() % 256);
+          } while (buf[i] == tmpchar);
+        }
+      }
+      if (tmpfile->Write(buf, size) < 0)
+      {
+        inputfile.Close();
+        tmpfile->Close();
+        DeleteTempFile(tmpfile);
+        return NULL;
+      }
+    }
+    inputfile.Close();
+    tmpfile->Close();
+    return tmpfile;
+  }
+  delete tmpfile;
+  return NULL;
+}
+
 
 std::vector<CStdString> &CXBMCTestUtils::getTestDownloadQueueUrls()
 {
@@ -217,6 +261,12 @@ static const char usage[] =
 "  --add-guisettings-files [FILES]\n"
 "    Add multiple GUI settings files from a ',' delimited string of\n"
 "    files to be loaded in test cases that use them.\n"
+"\n"
+"  --set-probability [PROBABILITY]\n"
+"    Set the probability variable used by the file corrupting functions.\n"
+"    The variable should be a double type from 0.0 to 1.0. Values given\n"
+"    less than 0.0 are treated as 0.0. Values greater than 1.0 are treated\n"
+"    as 1.0. The default probability is 0.01.\n"
 ;
 
 void CXBMCTestUtils::ParseArgs(int argc, char **argv)
@@ -289,6 +339,14 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
       std::vector<std::string>::iterator it;
       for (it = urls.begin(); it < urls.end(); it++)
         GUISettingsFiles.push_back(*it);
+    }
+    else if (arg == "--set-probability")
+    {
+      probability = atof(argv[++i]);
+      if (probability < 0.0)
+        probability = 0.0;
+      else if (probability > 1.0)
+        probability = 1.0;
     }
     else
     {
