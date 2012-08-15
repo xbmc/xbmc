@@ -2,6 +2,7 @@ SRCS= \
   TestDirectory.cpp \
   TestFile.cpp \
   TestFileFactory.cpp \
+  TestRarFile.cpp \
   TestZipFile.cpp
 
 LIB=filesystemTest.a
