@@ -862,7 +862,9 @@ void CGUISettings::Initialize()
 #if defined(TARGET_DARWIN)
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
+#if !defined(TARGET_ANDROID)
     use_timezone = true;
+#endif
 
   if (use_timezone)
   {
@@ -1274,7 +1276,9 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
 #if defined(TARGET_DARWIN)
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
+#if !defined(TARGET_ANDROID)
     use_timezone = true;
+#endif
 
   if (use_timezone)
   {
