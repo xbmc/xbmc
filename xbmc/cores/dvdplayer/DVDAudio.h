@@ -48,12 +48,16 @@ extern "C" {
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
 class CSingleLock;
+class IAudioCallback;
 
 class CDVDAudio
 {
 public:
   CDVDAudio(volatile bool& bStop);
   ~CDVDAudio();
+
+  void RegisterAudioCallback(IAudioCallback* pCallback);
+  void UnRegisterAudioCallback();
 
   void SetVolume(float fVolume);
   void SetDynamicRangeCompression(long drc);

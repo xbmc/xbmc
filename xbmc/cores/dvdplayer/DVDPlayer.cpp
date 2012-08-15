@@ -410,7 +410,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_errorCount = 0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
-  
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
@@ -449,11 +449,11 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_filename = file.GetPath();
 
     m_ready.Reset();
-	
+
 #if defined(HAS_VIDEO_PLAYBACK)
     g_renderManager.PreInit();
 #endif
-	
+
     Create();
     if(!m_ready.WaitMSec(100))
     {
@@ -576,7 +576,7 @@ retry:
         int title = (int)m_item.GetProperty("BlurayStartingTitle").asInteger();
         if( title )
           filename.AppendFormat("?title=%d",title);
-        
+
         m_filename = filename;
         goto retry;
       }
@@ -600,21 +600,21 @@ retry:
 
     for(unsigned int i=0;i<filenames.size();i++)
     {
-      // if vobsub subtitle:		
+      // if vobsub subtitle:
       if (URIUtils::GetExtension(filenames[i]) == ".idx")
       {
         CStdString strSubFile;
         if ( CUtil::FindVobSubPair( filenames, filenames[i], strSubFile ) )
           AddSubtitleFile(filenames[i], strSubFile);
       }
-      else 
+      else
       {
         if ( !CUtil::IsVobSub(filenames, filenames[i] ) )
         {
           AddSubtitleFile(filenames[i]);
         }
-      }   
-    } // end loop over all subtitle files    
+      }
+    } // end loop over all subtitle files
 
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
@@ -947,10 +947,10 @@ void CDVDPlayer::Process()
       starttime = m_Edl.RestoreCutTime(playerStartTime);
     }
     else
-    {  
+    {
       starttime = m_Edl.RestoreCutTime((int64_t)m_PlayerOptions.starttime * 1000); // s to ms
     }
-    CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);          
+    CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
   }
   else if(m_Edl.InCut(0, &cut)
       && (cut.action == CEdl::CUT || cut.action == CEdl::COMM_BREAK))
@@ -2310,7 +2310,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   int64_t time = GetTime();
-  if(g_application.CurrentFileItem().IsStack() 
+  if(g_application.CurrentFileItem().IsStack()
   && (seek > GetTotalTimeInMsec() || seek < 0))
   {
     g_application.SeekTime((seek - time) * 0.001 + g_application.GetTime());
@@ -3445,13 +3445,13 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
     return false;
 
   m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
-  
+
   // In case we stalled, don't output any subs
   if ((m_dvdPlayerVideo.IsStalled() && HasVideo()) || (m_dvdPlayerAudio.IsStalled() && HasAudio()))
     strSubtitle = m_lastSub;
   else
     m_lastSub = strSubtitle;
-  
+
   return !strSubtitle.IsEmpty();
 }
 
@@ -3554,7 +3554,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   {
     if (vobsubfile.empty())
       vobsubfile = URIUtils::ReplaceExtension(filename, ".sub");
-   
+
     CDVDDemuxVobsub v;
     if(!v.Open(filename, vobsubfile))
       return -1;
