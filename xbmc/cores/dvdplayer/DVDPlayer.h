@@ -105,7 +105,7 @@ typedef struct
   StreamType   type;
   int          type_index;
   std::string  filename;
-  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub) 
+  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
   std::string  language;
   std::string  name;
   CDemuxStream::EFlags flags;
@@ -177,6 +177,8 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
+  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
   virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio.SetVolume(nVolume); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
@@ -364,7 +366,7 @@ protected:
   CDVDDemux* m_pSubtitleDemuxer;
 
   CStdString m_lastSub;
-  
+
   struct SDVDInfo
   {
     void Clear()

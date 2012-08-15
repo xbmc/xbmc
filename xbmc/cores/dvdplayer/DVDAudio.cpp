@@ -233,6 +233,20 @@ void CDVDAudio::Drain()
     m_pAudioStream->Drain();
 }
 
+void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+  CSingleLock lock (m_critSection);
+  if (m_pAudioStream)
+    m_pAudioStream->RegisterAudioCallback(pCallback);
+}
+
+void CDVDAudio::UnRegisterAudioCallback()
+{
+  CSingleLock lock (m_critSection);
+  if (m_pAudioStream)
+    m_pAudioStream->UnRegisterAudioCallback();
+}
+
 void CDVDAudio::SetVolume(float volume)
 {
   CSingleLock lock (m_critSection);
