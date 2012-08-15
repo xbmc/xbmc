@@ -45,6 +45,9 @@ void TestBasicEnvironment::SetUp()
 
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();
+  CXBMCTestUtils::Instance().setTestFileFactoryWriteInputFile(
+    XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt")
+  );
 
   /* TODO: Something should be done about all the asserts in GUISettings so
    * that the initialization of these components won't be needed.

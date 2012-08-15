@@ -207,6 +207,10 @@ CStdString &CXBMCTestUtils::getTestFileFactoryWriteInputFile()
   return TestFileFactoryWriteInputFile;
 }
 
+void CXBMCTestUtils::setTestFileFactoryWriteInputFile(CStdString const& file)
+{
+  TestFileFactoryWriteInputFile = file;
+}
 
 std::vector<CStdString> &CXBMCTestUtils::getAdvancedSettingsFiles()
 {

@@ -120,12 +120,6 @@ TEST_F(TestFileFactory, Write)
   int64_t count = 0;
 
   str = CXBMCTestUtils::Instance().getTestFileFactoryWriteInputFile();
-  if (str == "")
-  {
-    std::cerr << "An input file must be set for the TestFileFactory.Write "
-      << "test case.\n";
-    FAIL();
-  }
   ASSERT_TRUE(inputfile.Open(str));
 
   std::vector<CStdString> urls =

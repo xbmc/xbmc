@@ -67,6 +67,9 @@ public:
   /* Function to get the input file used in the TestFileFactory.Write tests. */
   CStdString &getTestFileFactoryWriteInputFile();
 
+  /* Function to set the input file used in the TestFileFactory.Write tests */
+  void setTestFileFactoryWriteInputFile(CStdString const& file);
+
   /* Function to get advanced settings files. */
   std::vector<CStdString> &getAdvancedSettingsFiles();
 
