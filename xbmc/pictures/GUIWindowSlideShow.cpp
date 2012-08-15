@@ -98,23 +98,24 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         unsigned int start = XbmcThreads::SystemClockMillis();
-        CBaseTexture* texture = new CTexture();
-        unsigned int originalWidth = 0;
-        unsigned int originalHeight = 0;
-        texture->LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"), &originalWidth, &originalHeight);
+        CBaseTexture* texture = CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"));
         totalTime += XbmcThreads::SystemClockMillis() - start;
         count++;
         // tell our parent
-        bool bFullSize = ((int)texture->GetWidth() < m_maxWidth) && ((int)texture->GetHeight() < m_maxHeight);
-        if (!bFullSize)
+        bool bFullSize = false;
+        if (texture)
         {
-          int iSize = texture->GetWidth() * texture->GetHeight() - MAX_PICTURE_SIZE;
-          if ((iSize + (int)texture->GetWidth() > 0) || (iSize + (int)texture->GetHeight() > 0))
-            bFullSize = true;
-          if (!bFullSize && texture->GetWidth() == g_Windowing.GetMaxTextureSize())
-            bFullSize = true;
-          if (!bFullSize && texture->GetHeight() == g_Windowing.GetMaxTextureSize())
-            bFullSize = true;
+          bFullSize = ((int)texture->GetWidth() < m_maxWidth) && ((int)texture->GetHeight() < m_maxHeight);
+          if (!bFullSize)
+          {
+            int iSize = texture->GetWidth() * texture->GetHeight() - MAX_PICTURE_SIZE;
+            if ((iSize + (int)texture->GetWidth() > 0) || (iSize + (int)texture->GetHeight() > 0))
+              bFullSize = true;
+            if (!bFullSize && texture->GetWidth() == g_Windowing.GetMaxTextureSize())
+              bFullSize = true;
+            if (!bFullSize && texture->GetHeight() == g_Windowing.GetMaxTextureSize())
+              bFullSize = true;
+          }
         }
         m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, texture, bFullSize);
         m_isLoading = false;
