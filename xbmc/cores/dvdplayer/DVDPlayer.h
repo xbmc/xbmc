@@ -105,7 +105,7 @@ typedef struct
   StreamType   type;
   int          type_index;
   std::string  filename;
-  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub) 
+  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
   std::string  language;
   std::string  name;
   CDemuxStream::EFlags flags;
@@ -364,7 +364,7 @@ protected:
   CDVDDemux* m_pSubtitleDemuxer;
 
   CStdString m_lastSub;
-  
+
   struct SDVDInfo
   {
     void Clear()
