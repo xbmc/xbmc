@@ -44,7 +44,6 @@ class CBaseTexture
 
 public:
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
-  CBaseTexture(const CBaseTexture &copy);
 
   virtual ~CBaseTexture();
 
@@ -101,6 +100,10 @@ public:
 
   static unsigned int PadPow2(unsigned int x);
   bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
+
+private:
+  // no copy constructor
+  CBaseTexture(const CBaseTexture &copy);
 
 protected:
   bool LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType,

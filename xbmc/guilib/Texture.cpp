@@ -52,24 +52,6 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
   Allocate(width, height, format);
 }
 
-CBaseTexture::CBaseTexture(const CBaseTexture &copy)
-{
-  m_imageWidth = copy.m_imageWidth;
-  m_imageHeight = copy.m_imageHeight;
-  m_textureWidth = copy.m_textureWidth;
-  m_textureHeight = copy.m_textureHeight;
-  m_format = copy.m_format;
-  m_orientation = copy.m_orientation;
-  m_hasAlpha = copy.m_hasAlpha;
-  m_pixels = NULL;
-  m_loadedToGPU = false;
-  if (copy.m_pixels)
-  {
-    m_pixels = new unsigned char[GetPitch() * GetRows()];
-    memcpy(m_pixels, copy.m_pixels, GetPitch() * GetRows());
-  }
-}
-
 CBaseTexture::~CBaseTexture()
 {
   delete[] m_pixels;
