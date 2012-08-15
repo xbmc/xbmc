@@ -30,6 +30,7 @@
 #endif
 #ifdef TARGET_ANDROID
 #include "linux/getdelim.h"
+#include "sys/system_properties.h"
 #endif
 #include <errno.h>
 #include <resolv.h>
@@ -460,7 +461,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 {
    std::vector<CStdString> result;
 
-#if defined(TARGET_DARWIN) || defined(__ANDROID__)
+#if defined(TARGET_DARWIN)
   //only finds the primary dns (0 :)
   FILE* pipe = popen("scutil --dns | grep \"nameserver\\[0\\]\" | tail -n1", "r");
   if (pipe)
@@ -478,6 +479,18 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
     }
     pclose(pipe);
   } 
+#elif defined(TARGET_ANDROID)
+  char nameserver[PROP_VALUE_MAX];
+
+  if (__system_property_get("net.dns1",nameserver))
+    result.push_back(nameserver);
+  if (__system_property_get("net.dns2",nameserver))
+    result.push_back(nameserver);
+  if (__system_property_get("net.dns3",nameserver))
+    result.push_back(nameserver);
+
+  if (!result.size())
+       CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #else
    res_init();
 
