@@ -685,7 +685,7 @@ bool CApplication::Create()
   CUtil::GetHomePath(strExecutablePath);
 
   // if we are running from DVD our UserData location will be TDATA
-  if (URIUtils::IsDVD(strExecutablePath))
+  if (URIUtils::IsOnDVD(strExecutablePath))
   {
     // TODO: Should we copy over any UserData folder from the DVD?
     if (!CFile::Exists("special://masterprofile/guisettings.xml")) // first run - cache userdata folder
