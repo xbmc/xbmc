@@ -153,6 +153,17 @@ std::vector<CStdString> &CXBMCTestUtils::getTestFileFactoryReadUrls()
   return TestFileFactoryReadUrls;
 }
 
+std::vector<CStdString> &CXBMCTestUtils::getTestFileFactoryWriteUrls()
+{
+  return TestFileFactoryWriteUrls;
+}
+
+CStdString &CXBMCTestUtils::getTestFileFactoryWriteInputFile()
+{
+  return TestFileFactoryWriteInputFile;
+}
+
+
 std::vector<CStdString> &CXBMCTestUtils::getAdvancedSettingsFiles()
 {
   return AdvancedSettingsFiles;
@@ -182,6 +193,16 @@ static const char usage[] =
 "  --add-testfilefactory-readurls [URLS]\n"
 "    Add multiple urls from a ',' delimited string of urls to be used\n"
 "    in the TestFileFactory read tests.\n"
+"\n"
+"  --add-testfilefactory-writeurl [URL]\n"
+"    Add a url to be used int the TestFileFactory write tests.\n"
+"\n"
+"  --add-testfilefactory-writeurls [URLS]\n"
+"    Add multiple urls from a ',' delimited string of urls to be used\n"
+"    in the TestFileFactory write tests.\n"
+"\n"
+"  --set-testfilefactory-writeinputfile [FILE]\n"
+"    Set the path to the input file used in the TestFileFactory write tests.\n"
 "\n"
 "  --add-advancedsettings-file [FILE]\n"
 "    Add an advanced settings file to be loaded in test cases that use them.\n"
@@ -228,6 +249,22 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
       std::vector<std::string>::iterator it;
       for (it = urls.begin(); it < urls.end(); it++)
         TestFileFactoryReadUrls.push_back(*it);
+    }
+    else if (arg == "--add-testfilefactory-writeurl")
+    {
+      TestFileFactoryWriteUrls.push_back(argv[++i]);
+    }
+    else if (arg == "--add-testfilefactory-writeurls")
+    {
+      arg = argv[++i];
+      std::vector<std::string> urls = StringUtils::Split(arg, ",");
+      std::vector<std::string>::iterator it;
+      for (it = urls.begin(); it < urls.end(); it++)
+        TestFileFactoryWriteUrls.push_back(*it);
+    }
+    else if (arg == "--set-testfilefactory-writeinputfile")
+    {
+      TestFileFactoryWriteInputFile = argv[++i];
     }
     else if (arg == "--add-advancedsettings-file")
     {

@@ -61,6 +61,12 @@ public:
   /* Functions to get variables used in the TestFileFactory tests. */
   std::vector<CStdString> &getTestFileFactoryReadUrls();
 
+  /* Function to get variables used in the TestFileFactory tests. */
+  std::vector<CStdString> &getTestFileFactoryWriteUrls();
+
+  /* Function to get the input file used in the TestFileFactory.Write tests. */
+  CStdString &getTestFileFactoryWriteInputFile();
+
   /* Function to get advanced settings files. */
   std::vector<CStdString> &getAdvancedSettingsFiles();
 
@@ -76,6 +82,8 @@ private:
 
   std::vector<CStdString> TestDownloadQueueUrls;
   std::vector<CStdString> TestFileFactoryReadUrls;
+  std::vector<CStdString> TestFileFactoryWriteUrls;
+  CStdString TestFileFactoryWriteInputFile;
 
   std::vector<CStdString> AdvancedSettingsFiles;
   std::vector<CStdString> GUISettingsFiles;

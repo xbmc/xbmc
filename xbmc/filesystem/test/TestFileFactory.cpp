@@ -110,3 +110,72 @@ TEST_F(TestFileFactory, Read)
     file.Close();
   }
 }
+
+TEST_F(TestFileFactory, Write)
+{
+  XFILE::CFile file, inputfile;
+  CStdString str;
+  unsigned int size, i;
+  unsigned char buf[16];
+  int64_t count = 0;
+
+  str = CXBMCTestUtils::Instance().getTestFileFactoryWriteInputFile();
+  if (str == "")
+  {
+    std::cerr << "An input file must be set for the TestFileFactory.Write "
+      << "test case.\n";
+    FAIL();
+  }
+  ASSERT_TRUE(inputfile.Open(str));
+
+  std::vector<CStdString> urls =
+    CXBMCTestUtils::Instance().getTestFileFactoryWriteUrls();
+
+  std::vector<CStdString>::iterator it;
+  for (it = urls.begin(); it < urls.end(); it++)
+  {
+    std::cout << "Testing URL: " << *it << "\n";
+    std::cout << "Writing...";
+    ASSERT_TRUE(file.OpenForWrite(*it, true));
+    while ((size = inputfile.Read(buf, sizeof(buf))) > 0)
+    {
+      EXPECT_GE(file.Write(buf, size), 0);
+    }
+    file.Close();
+    std::cout << "done.\n";
+    std::cout << "Reading...\n";
+    ASSERT_TRUE(file.Open(*it));
+    EXPECT_EQ(inputfile.GetLength(), file.GetLength());
+    std::cout << "file.Seek(file.GetLength() / 2, SEEK_CUR) return value: " <<
+      testing::PrintToString(file.Seek(file.GetLength() / 2, SEEK_CUR)) << "\n";
+    std::cout << "file.Seek(0, SEEK_END) return value: " <<
+      testing::PrintToString(file.Seek(0, SEEK_END)) << "\n";
+    std::cout << "file.Seek(0, SEEK_SET) return value: " <<
+      testing::PrintToString(file.Seek(0, SEEK_SET)) << "\n";
+    std::cout << "File contents:\n";
+    while ((size = file.Read(buf, sizeof(buf))) > 0)
+    {
+      str.Format("  %08X", count);
+      std::cout << str << "  ";
+      count += size;
+      for (i = 0; i < size; i++)
+      {
+        str.Format("%02X ", buf[i]);
+        std::cout << str;
+      }
+      while (i++ < sizeof(buf))
+        std::cout << "   ";
+      std::cout << " [";
+      for (i = 0; i < size; i++)
+      {
+        if (buf[i] >= ' ' && buf[i] <= '~')
+          std::cout << buf[i];
+        else
+          std::cout << ".";
+      }
+      std::cout << "]\n";
+    }
+    file.Close();
+  }
+  inputfile.Close();
+}
