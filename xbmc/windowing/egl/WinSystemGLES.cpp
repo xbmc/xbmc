@@ -77,7 +77,7 @@ bool CWinSystemGLES::DestroyWindowSystem()
 
 bool CWinSystemGLES::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  if (m_bWindowCreated && m_nWidth == res.iWidth && m_nHeight == res.iHeight && m_bFullScreen == fullScreen)
+  if (m_bWindowCreated && m_nWidth == res.iWidth && m_nHeight == res.iHeight && m_fRefreshRate == res.fRefreshRate && m_bFullScreen == fullScreen)
   {
     CLog::Log(LOGDEBUG, "CWinSystemGLES::CreateNewWindow: No need to create a new window");
     return true;
@@ -86,6 +86,7 @@ bool CWinSystemGLES::CreateNewWindow(const CStdString& name, bool fullScreen, RE
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
+  m_fRefreshRate = res.fRefreshRate;
   
   // Destroy any existing window
   if (m_bWindowCreated)
