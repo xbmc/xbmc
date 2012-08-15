@@ -91,6 +91,11 @@ public:
   unsigned int GetTextureHeight() const { return m_textureHeight; }
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
+  /*! \brief return the original width of the image, before scaling/cropping */
+  unsigned int GetOriginalWidth() const { return m_originalWidth; }
+  /*! \brief return the original height of the image, before scaling/cropping */
+  unsigned int GetOriginalHeight() const { return m_originalHeight; }
+
   int GetOrientation() const { return m_orientation; }
   void SetOrientation(int orientation) { m_orientation = orientation; }
 
@@ -118,6 +123,8 @@ protected:
   unsigned int m_imageHeight;
   unsigned int m_textureWidth;
   unsigned int m_textureHeight;
+  unsigned int m_originalWidth;   ///< original image width before scaling or cropping
+  unsigned int m_originalHeight;  ///< original image height before scaling or cropping
 
   unsigned char* m_pixels;
   bool m_loadedToGPU;
