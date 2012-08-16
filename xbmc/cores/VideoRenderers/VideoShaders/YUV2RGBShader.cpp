@@ -261,8 +261,18 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 {
   // set shader attributes once enabled
   glUniform1i(m_hYTex, 0);
-  glUniform1i(m_hUTex, 1);
-  glUniform1i(m_hVTex, 2);
+  switch (m_format)
+  {
+//case RENDER_FMT_NV12:
+  case RENDER_FMT_Y_UV:
+    glUniform1i(m_hUTex, 1);
+    glUniform1i(m_hVTex, 1);
+    break;
+  default:
+    glUniform1i(m_hUTex, 1);
+    glUniform1i(m_hVTex, 2);
+    break;
+  }
   glUniform1f(m_hStretch, m_stretch);
   glUniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
 
