@@ -27,6 +27,47 @@
 using namespace std;
 using namespace ADDON;
 
+#ifdef TARGET_WINDOWS
+bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue)
+{
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  if (!pNode || !pNode->FirstChild()) return false;
+  iIntValue = atoi(pNode->FirstChild()->Value());
+  return true;
+}
+
+bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue)
+{
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  if (!pNode || !pNode->FirstChild()) return false;
+  CStdString strEnabled = pNode->FirstChild()->Value();
+  strEnabled.ToLower();
+  if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false" || strEnabled == "0" )
+    bBoolValue = false;
+  else
+  {
+    bBoolValue = true;
+    if (strEnabled != "on" && strEnabled != "yes" && strEnabled != "enabled" && strEnabled != "true")
+      return false; // invalid bool switch - it's probably some other string.
+  }
+  return true;
+}
+
+bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
+{
+  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag );
+  if (!pElement) return false;
+  const TiXmlNode* pNode = pElement->FirstChild();
+  if (pNode != NULL)
+  {
+    strStringValue = pNode->Value();
+    return true;
+  }
+  strStringValue.Empty();
+  return false;
+}
+#endif
+
 PVRDemoData::PVRDemoData(void)
 {
   m_iEpgStart = -1;
@@ -44,7 +85,17 @@ PVRDemoData::~PVRDemoData(void)
 
 std::string PVRDemoData::GetSettingsFile() const
 {
+#ifdef TARGET_WINDOWS
+  string settingFile = getenv("XBMC_HOME");
+  if (settingFile.at(settingFile.size() - 1) == '\\' ||
+      settingFile.at(settingFile.size() - 1) == '/')
+    settingFile.append("system/PVRDemoAddonSettings.xml");
+  else
+    settingFile.append("/system/PVRDemoAddonSettings.xml");
+  return settingFile;
+#elif
   return CSpecialProtocol::TranslatePath("special://xbmc/system/PVRDemoAddonSettings.xml");
+#endif
 }
 
 bool PVRDemoData::LoadDemoData(void)

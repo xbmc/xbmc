@@ -26,6 +26,10 @@
 using namespace std;
 using namespace ADDON;
 
+#ifdef TARGET_WINDOWS
+#define snprintf _snprintf
+#endif
+
 bool           m_bCreated       = false;
 ADDON_STATUS   m_CurStatus      = ADDON_STATUS_UNKNOWN;
 PVRDemoData   *m_data           = NULL;
