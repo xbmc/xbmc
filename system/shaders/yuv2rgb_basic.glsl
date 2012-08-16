@@ -70,6 +70,30 @@ void main()
   rgb.a = gl_Color.a;
   gl_FragColor = rgb;
 
+#elif defined(XBMC_Y_UV)
+
+  vec4 yuv, rgb;
+  yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r
+                 , texture2D(m_sampU, stretch(m_cordU)).r
+                 , texture2D(m_sampV, stretch(m_cordV)).g
+                 , 1.0 );
+
+  rgb   = m_yuvmat * yuv;
+  rgb.a = gl_Color.a;
+  gl_FragColor = rgb;
+
+#elif defined(XBMC_Y_U_V)
+
+  vec4 yuv, rgb;
+  yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r
+                 , texture2D(m_sampU, stretch(m_cordU)).r
+                 , texture2D(m_sampV, stretch(m_cordV)).r
+                 , 1.0 );
+
+  rgb   = m_yuvmat * yuv;
+  rgb.a = gl_Color.a;
+  gl_FragColor = rgb;
+
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
 
 #if(XBMC_texture_rectangle)

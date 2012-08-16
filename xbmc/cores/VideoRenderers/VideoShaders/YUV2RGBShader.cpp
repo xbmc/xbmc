@@ -201,6 +201,10 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
     m_defines += "#define XBMC_YUY2\n";
   else if (m_format == RENDER_FMT_UYVY422)
     m_defines += "#define XBMC_UYVY\n";
+  else if (m_format == RENDER_FMT_Y_UV)
+    m_defines += "#define XBMC_Y_UV";
+  else if (m_format == RENDER_FMT_Y_U_V)
+    m_defines += "#define XBMC_Y_U_V";
   else
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
