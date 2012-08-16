@@ -668,11 +668,11 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
         strIconName = strThumbPath + ToThumbFileName(channel.Name()) + ".png";
         if ( OS::CFile::Exists(strIconName) )
         {
-          tag.strIconPath = strIconName.c_str();
+          memcpy(tag.strIconPath, strIconName.c_str(), sizeof(tag.strIconPath));
         }
         else
         {
-          tag.strIconPath = "";
+          memset(tag.strIconPath, 0, sizeof(tag.strIconPath));
         }
       }
 #else
