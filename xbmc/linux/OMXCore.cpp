@@ -1247,7 +1247,7 @@ OMX_ERRORTYPE COMXCoreComponent::EnablePort(unsigned int port,  bool wait)
     else
     {
       if(wait)
-        omx_err = WaitForEvent(OMX_EventCmdComplete);
+        omx_err = WaitForCommand(OMX_EventCmdComplete, port);
   
       for(int i = 0; i < OMX_MAX_PORTS; i++)
       {
@@ -1296,7 +1296,7 @@ OMX_ERRORTYPE COMXCoreComponent::DisablePort(unsigned int port, bool wait)
     else
     {
       if(wait)
-        omx_err = WaitForEvent(OMX_EventCmdComplete);
+        omx_err = WaitForCommand(OMX_EventCmdComplete, port);
   
       for(int i = 0; i < OMX_MAX_PORTS; i++)
       {
