@@ -1095,7 +1095,7 @@ bool CPVRClients::OpenStream(const CPVRChannel &tag)
 
     if (tag.ClientID() == PVR_VIRTUAL_CLIENT_ID)
       m_strPlayingClientName = g_localizeStrings.Get(19209);
-    else if (!tag.IsVirtual())
+    else if (!tag.IsVirtual() && client.get())
       m_strPlayingClientName = client->GetFriendlyName();
     else
       m_strPlayingClientName = g_localizeStrings.Get(13205);
