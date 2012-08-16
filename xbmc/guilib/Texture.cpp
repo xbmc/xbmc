@@ -247,13 +247,6 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
       // TODO: we only decode as half width and height. this is a workaround for the PI memory limitation
       if(omx_image.Decode(omx_image.GetWidth() / 2, omx_image.GetHeight() / 2))
       {
-        if (originalWidth)
-          *originalWidth  = omx_image.GetOriginalWidth();
-        if (originalHeight)
-          *originalHeight = omx_image.GetOriginalHeight();
-
-        m_hasAlpha = omx_image.IsAlpha();
-
         Allocate(omx_image.GetDecodedWidth(), omx_image.GetDecodedHeight(), XB_FMT_A8R8G8B8);
 
         if(!m_pixels)
@@ -262,6 +255,13 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
           omx_image.Close();
           return false;
         }
+
+        if (originalWidth)
+          *originalWidth  = omx_image.GetOriginalWidth();
+        if (originalHeight)
+          *originalHeight = omx_image.GetOriginalHeight();
+
+        m_hasAlpha = omx_image.IsAlpha();
 
         if (autoRotate && omx_image.GetOrientation())
           m_orientation = omx_image.GetOrientation() - 1;
