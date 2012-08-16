@@ -962,11 +962,11 @@ if test "x$use_alsa" != "xno"; then
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"; use_alsa=yes],
     AC_MSG_NOTICE($alsa_not_found); use_alsa=no)
+fi
   PKG_CHECK_MODULES([DBUS],    [dbus-1],
     [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"; use_dbus=yes]; \
     AC_DEFINE([HAVE_DBUS],[1],["Define to 1 if dbus is installed"]),
     AC_MSG_NOTICE($missing_library); use_dbus=no)
-fi
   if test "x$use_sdl" != "xno"; then
     PKG_CHECK_MODULES([SDL],   [sdl],
       [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
@@ -2404,8 +2404,8 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-pthreads \
       --enable-runtime-cpudetect \
       `if test "$target_platform" = "target_android" && test "$host_cpu" = "i686"; then echo --disable-mmx; fi #workaround for gcc 4.6 bug` \
-      `if test "$target_platform" = "target_android"; then echo '--custom-libname-with-major="\$(SLIBPREF)\$(FULLNAME)-\$(LIBMAJOR)-${ARCH}\$(SLIBSUF)"'; \
-       else echo '--custom-libname-with-major="\$(FULLNAME)-\$(LIBMAJOR)-${ARCH}\$(SLIBSUF)"'; fi` \
+      `if test "$target_platform" = "target_android"; then echo "--custom-libname-with-major=\\$(SLIBPREF)\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; \
+       else echo "--custom-libname-with-major=\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; fi` \
       `case $host_cpu in i?86*) echo --disable-pic ;; *) echo --enable-pic ;; esac` \
       --cc="$CC" &&
       sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&

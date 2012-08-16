@@ -470,7 +470,7 @@ void CXbmcHttp::SetCurrentMediaItem(CFileItem& newItem)
   //  If we have tag information, ...
   if (newItem.HasMusicInfoTag() && newItem.GetMusicInfoTag()->Loaded())
   {
-    g_infoManager.SetCurrentSongTag(*newItem.GetMusicInfoTag());
+    CApplicationMessenger::Get().SetCurrentSongTag(*newItem.GetMusicInfoTag());
   }
 }
 

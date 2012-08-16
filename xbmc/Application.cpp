@@ -4362,9 +4362,6 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
-  //resets to res_desktop or look&feel resolution (including refreshrate)
-  g_graphicsContext.SetFullScreenVideo(false);
-
   if(m_bPlaybackStarting)
     return;
 
@@ -4653,9 +4650,6 @@ void CApplication::StopPlaying()
 
     if (m_pPlayer)
       m_pPlayer->CloseFile();
-
-    //resets to res_desktop or look&feel resolution (including refreshrate)
-    g_graphicsContext.SetFullScreenVideo(false);
 
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION
@@ -5120,9 +5114,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
         DimLCDOnPlayback(false);
       }
 
-      if (!IsPlayingVideo() && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      if (!IsPlayingVideo())
       {
-        g_windowManager.PreviousWindow();
+        if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+        {
+          g_windowManager.PreviousWindow();
+        }
+        else
+        {
+          CSingleLock lock(g_graphicsContext);
+          //  resets to res_desktop or look&feel resolution (including refreshrate)
+          g_graphicsContext.SetFullScreenVideo(false);
+        }
       }
 
       if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)

@@ -174,7 +174,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
 
   /* Prefer dmix for non-passthrough stereo when sample rate matches */
-  if (!OpenPCMDevice(device, AESParams, m_channelLayout.Count(), &m_pcm, config, format.m_sampleRate == dmixRate && !m_passthrough))
+  if (!OpenPCMDevice(device, AESParams, m_channelLayout.Count(), &m_pcm, config, format.m_sampleRate == (unsigned int) dmixRate && !m_passthrough))
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to initialize device \"%s\"", device.c_str());
     snd_config_delete(config);

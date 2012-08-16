@@ -214,7 +214,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   AEAudioFormat initformat = m_format;
 
   // initialize audio hardware
-  m_Initialized = HAL->Initialize(this, m_rawPassthrough, initformat, rawDataFormat, m_outputDevice);
+  m_Initialized = HAL->Initialize(this, m_rawPassthrough, initformat, rawDataFormat, m_outputDevice, m_volume);
 
   unsigned int bps         = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   m_chLayoutCount          = m_format.m_channelLayout.Count();
@@ -366,7 +366,7 @@ void CCoreAudioAE::SetVolume(float volume)
   // we need this because m_volume is init'ed via
   // SetVolume and need to also init m_volumeBeforeMute.
   if (!m_muted)
-    m_volumeBeforeMute = volume;  
+    m_volumeBeforeMute = volume;
 
   HAL->SetVolume(m_volume);
 }
@@ -376,7 +376,7 @@ void CCoreAudioAE::SetMute(const bool enabled)
   m_muted = enabled;
   if(m_muted)
   {
-    m_volumeBeforeMute = m_volume;  
+    m_volumeBeforeMute = m_volume;
     SetVolume(VOLUME_MINIMUM);
   }
   else
@@ -393,10 +393,10 @@ bool CCoreAudioAE::IsMuted()
 void CCoreAudioAE::SetSoundMode(const int mode)
 {
   m_soundMode = mode;
-  
+
   /* stop all currently playing sounds if they are being turned off */
   if (mode == AE_SOUND_OFF || (mode == AE_SOUND_IDLE && m_streamsPlaying))
-    StopAllSounds();  
+    StopAllSounds();
 }
 
 bool CCoreAudioAE::SupportsRaw()
@@ -436,7 +436,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
 
   Start();
 
-  m_streamsPlaying = true;  
+  m_streamsPlaying = true;
 
   return stream;
 }
@@ -467,7 +467,7 @@ IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
   m_streamsPlaying = !m_streams.empty();
 
   streamLock.Leave();
-  
+
   // When we have been in passthrough mode, reinit the hardware to come back to anlog out
   if (/*m_streams.empty() || */ m_rawPassthrough)
   {
@@ -633,7 +633,7 @@ OSStatus CCoreAudioAE::OnRender(AudioUnitRenderActionFlags *actionFlags,
   //int size = frames * HAL->m_BytesPerFrame;
 
   for (UInt32 i = 0; i < ioData->mNumberBuffers; i++)
-    bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);	
+    bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
 
   if (!m_Initialized)
   {

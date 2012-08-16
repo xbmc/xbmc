@@ -89,6 +89,7 @@ protected:
   pid_t             m_HogPid;
   unsigned int      m_frameSize;
   unsigned int      m_OutputBufferIndex;
+  unsigned int      m_BufferSizeRestore;
 };
 
 #endif

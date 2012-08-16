@@ -1619,9 +1619,12 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
   }
 
   if(node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS)
+  {
     // the watched filter may change the "numepisodes" property which is reflected in the TV_SHOWS and SEASONS nodes
     // therefore, the items labels have to be refreshed, and possibly the list needs resorting as well.
-    FormatAndSort(items); 
+    items.ClearSortState(); // this is needed to force resorting even if sort method did not change
+    FormatAndSort(items);
+  }
 
   return listchanged;
 }

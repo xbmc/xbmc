@@ -41,9 +41,9 @@ class CCoreAudioGraph
 public:
   CCoreAudioGraph();
   ~CCoreAudioGraph();
-  
+
   bool             Open(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID deviceId,
-                     bool allowMixing, AudioChannelLayoutTag layoutTag);
+                     bool allowMixing, AudioChannelLayoutTag layoutTag, float initVolume);
   bool             Close();
   bool             Start();
   bool             Stop();
@@ -59,11 +59,11 @@ public:
 
 private:
   AUGraph           m_audioGraph;
-  
+
   CAUOutputDevice  *m_inputUnit;
   CAUOutputDevice  *m_audioUnit;
   CAUMatrixMixer   *m_mixerUnit;
-  
+
   int               m_reservedBusNumber[MAX_CONNECTION_LIMIT];
   bool              m_initialized;
   AudioDeviceID     m_deviceId;

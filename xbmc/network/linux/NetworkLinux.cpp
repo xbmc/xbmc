@@ -30,6 +30,7 @@
 #endif
 #ifdef TARGET_ANDROID
 #include "linux/getdelim.h"
+#include "sys/system_properties.h"
 #endif
 #include <errno.h>
 #include <resolv.h>
@@ -51,6 +52,7 @@
 #include "NetworkLinux.h"
 #include "Util.h"
 #include "utils/log.h"
+
 using namespace std;
 
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, char interfaceMacAddrRaw[6])
@@ -478,25 +480,17 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
     pclose(pipe);
   } 
 #elif defined(TARGET_ANDROID)
-  CSingleLock lock(m_critSection);
-  //only finds the primary dns (0 :)
-  FILE* pipe = popen("getprop net.dns1 | tail -n1", "r");
-  if (pipe)
-  {
-    CStdString tmpStr;
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
-    {
-      tmpStr = buffer;
-      CLog::Log(LOGWARNING, "CNetworkLinux::GetNameServers: Got server: %s", tmpStr.c_str());
-      result.push_back(tmpStr);
-    }
-    else
-    {
-      CLog::Log(LOGWARNING, "Unable to determine nameserver");
-    }
-    pclose(pipe);
-  }
+  char nameserver[PROP_VALUE_MAX];
+
+  if (__system_property_get("net.dns1",nameserver))
+    result.push_back(nameserver);
+  if (__system_property_get("net.dns2",nameserver))
+    result.push_back(nameserver);
+  if (__system_property_get("net.dns3",nameserver))
+    result.push_back(nameserver);
+
+  if (!result.size())
+       CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #else
    res_init();
 

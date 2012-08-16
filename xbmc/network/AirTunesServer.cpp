@@ -88,7 +88,7 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
     tag.SetTitle(metadata["minm"]);//title
   if(metadata["asar"].length())    
     tag.SetArtist(metadata["asar"]);//artist
-  g_infoManager.SetCurrentSongTag(tag);
+  CApplicationMessenger::Get().SetCurrentSongTag(tag);
 }
 
 void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int size)

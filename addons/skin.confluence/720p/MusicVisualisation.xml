@@ -246,7 +246,7 @@
 				<posy>40</posy>
 				<label>-</label>
 				<align>left</align>
-				<label>$INFO[Visualisation.Name] [I][COLOR=orange]($LOCALIZE[20166])[/COLOR][/I] · fps: $INFO[System.FPS]</label>
+				<label>$INFO[Visualisation.Name,, [I][COLOR=orange]($LOCALIZE[20166])[/COLOR][/I] · ]fps: $INFO[System.FPS]</label>
 				<font>font12</font>
 				<visible>Visualisation.Locked</visible>
 			</control>
@@ -256,7 +256,7 @@
 				<posy>40</posy>
 				<label>-</label>
 				<align>left</align>
-				<label>$INFO[Visualisation.Name] · fps: $INFO[System.FPS]</label>
+				<label>$INFO[Visualisation.Name,, · ]fps: $INFO[System.FPS]</label>
 				<font>font12</font>
 				<visible>!Visualisation.Locked</visible>
 			</control>
@@ -266,7 +266,7 @@
 				<posy>70</posy>
 				<label>-</label>
 				<align>left</align>
-				<label>$LOCALIZE[13388]: $INFO[Visualisation.Preset]</label>
+				<label>$INFO[Visualisation.Preset,$LOCALIZE[13388]: ]</label>
 				<font>font12</font>
 			</control>
 		</control>

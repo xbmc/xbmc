@@ -101,6 +101,9 @@ public:
   void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
   void CloseStream(bool bWaitForBuffers);
 
+  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
+  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
+
   void SetSpeed(int speed);
   void Flush();
 
