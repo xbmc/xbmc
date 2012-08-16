@@ -490,7 +490,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   int index = m_iYV12RenderBuffer;
   YUVBUFFER& buf =  m_buffers[index];
 
-  if (m_format != RENDER_FMT_OMXEGL)
+  if (m_format != RENDER_FMT_OMXEGL && m_format != RENDER_FMT_VAAPI)
   {
     if (!buf.fields[FIELD_FULL][0].id) return;
   }
@@ -1882,6 +1882,25 @@ void CLinuxRendererGLES::UploadVAAPITexture(int index)
   }
   ASSERT(numPlanes == va.surfegl->m_numPlanes);
 
+  if (!planes[0].id || !glIsTexture(planes[0].id))
+  {
+    glEnable(m_textureTarget);
+    for (i = 0; i < numPlanes; i++)
+    {
+      glGenTextures(1, &planes[i].id);
+      VerifyGLState();
+      glBindTexture(m_textureTarget, planes[i].id);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+      glBindTexture(m_textureTarget, 0);
+    }
+    glDisable(m_textureTarget);
+    m_eventTexturesDone[index]->Set();
+  }
+
   const CGLESVTable * const gles_vtable = CGLESVTable::Get();
   for (i = 0; i < numPlanes; i++)
   {
@@ -1924,9 +1943,7 @@ bool CLinuxRendererGLES::CreateVAAPITexture(int index)
   VAAPI::CHolder &va    = m_buffers[index].vaapi;
   YV12Image &im         = m_buffers[index].image;
   YUVFIELDS &fields     = m_buffers[index].fields;
-  YUVPLANES &planes     = fields[0];
   VAAPI::CSurfaceEGL* surface = NULL;
-  unsigned int i;
 
   DeleteVAAPITexture(index);
 
@@ -1948,22 +1965,6 @@ bool CLinuxRendererGLES::CreateVAAPITexture(int index)
     return false;
   }
   va.surfegl.reset(surface);
-
-  glEnable(m_textureTarget);
-  for (i = 0; i < surface->m_numPlanes; i++)
-  {
-    glGenTextures(1, &planes[i].id);
-    VerifyGLState();
-    glBindTexture(m_textureTarget, planes[i].id);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-    glBindTexture(m_textureTarget, 0);
-  }
-  glDisable(m_textureTarget);
-  m_eventTexturesDone[index]->Set();
 
   // Ensure we have the necessary GLES extensions
   if (!CGLESVTable::Get())
