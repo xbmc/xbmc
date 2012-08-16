@@ -676,6 +676,10 @@ bool CDVDPlayer::OpenDemuxStream()
 
 void CDVDPlayer::OpenDefaultStreams()
 {
+  // bypass for DVDs. The DVD Navigator has already dictated which streams to open.
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    return;
+
   SelectionStreams streams;
   bool valid;
 
