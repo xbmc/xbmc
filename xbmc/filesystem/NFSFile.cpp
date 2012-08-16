@@ -751,6 +751,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
     if(ret == 0)
     {
       gNfsConnection.GetImpl()->nfs_close(m_pNfsContext,m_pFileHandle);
+      m_pFileHandle = NULL;          
     }
   }
 
