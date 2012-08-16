@@ -162,6 +162,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_flipindex = 0;
   m_currentField = FIELD_FULL;
   m_reloadShaders = 0;
+  m_YUVShaderFormat = RENDER_FMT_NONE;
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
@@ -668,6 +669,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_pYUVShader->Free();
     delete m_pYUVShader;
     m_pYUVShader = NULL;
+    m_YUVShaderFormat = RENDER_FMT_NONE;
   }
 
   switch(requestedMethod)
@@ -715,6 +717,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
         if (m_pYUVShader && m_pYUVShader->CompileAndLink())
         {
+          m_YUVShaderFormat = m_format;
           m_renderMethod = RENDER_GLSL;
           UpdateVideoFilter();
           break;
@@ -724,6 +727,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
           m_pYUVShader->Free();
           delete m_pYUVShader;
           m_pYUVShader = NULL;
+          m_YUVShaderFormat = RENDER_FMT_NONE;
           CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
           // drop through and try SW
         }
@@ -1310,10 +1314,91 @@ void CLinuxRendererGLES::RenderRGB(const YUVPLANE& plane)
   VerifyGLState();
 }
 
+void CLinuxRendererGLES::RenderYUV(const YUVPLANES& planes, int numPlanes)
+{
+  int i;
+
+  glDisable(GL_DEPTH_TEST);
+
+  for (i = 0; i < numPlanes; i++)
+  {
+    glActiveTexture(GL_TEXTURE0 + i);
+    glEnable(m_textureTarget);
+    glBindTexture(m_textureTarget, planes[i].id);
+  }
+
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+
+  m_pYUVShader->SetMatrices(g_matrices.GetMatrix(MM_PROJECTION), g_matrices.GetMatrix(MM_MODELVIEW));
+  m_pYUVShader->Enable();
+
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLfloat m_vert[4][3];
+  GLfloat m_tex[3][4][2];
+
+  GLint vertLoc = m_pYUVShader->GetVertexLoc();
+  GLint Yloc    = m_pYUVShader->GetYcoordLoc();
+  GLint Uloc    = m_pYUVShader->GetUcoordLoc();
+  GLint Vloc    = m_pYUVShader->GetVcoordLoc();
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, m_vert);
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, m_tex[0]);
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, m_tex[1]);
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, m_tex[2]);
+
+  glEnableVertexAttribArray(vertLoc);
+  glEnableVertexAttribArray(Yloc);
+  glEnableVertexAttribArray(Uloc);
+  glEnableVertexAttribArray(Vloc);
+
+  // Setup vertex position values
+  for(int i = 0; i < 4; i++)
+  {
+    m_vert[i][0] = m_rotatedDestCoords[i].x;
+    m_vert[i][1] = m_rotatedDestCoords[i].y;
+    m_vert[i][2] = 0.0f;// set z to 0
+  }
+
+  // Setup texture coordinates
+  for (int i=0; i<3; i++)
+  {
+    // FIXME: populate plane.rect correctly
+    m_tex[i][0][0] = m_tex[i][3][0] = 0;
+    m_tex[i][0][1] = m_tex[i][1][1] = 0;
+    m_tex[i][1][0] = m_tex[i][2][0] = 1;
+    m_tex[i][2][1] = m_tex[i][3][1] = 1;
+  }
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  VerifyGLState();
+
+  m_pYUVShader->Disable();
+  VerifyGLState();
+
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(Yloc);
+  glDisableVertexAttribArray(Uloc);
+  glDisableVertexAttribArray(Vloc);
+
+  for (i = 0; i < numPlanes; i++)
+  {
+    glActiveTexture(GL_TEXTURE0 + i);
+    glDisable(m_textureTarget);
+  }
+  glActiveTexture(GL_TEXTURE0);
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+
+  VerifyGLState();
+}
+
 void CLinuxRendererGLES::RenderVAAPI(int index, int field)
 {
 #if defined(HAVE_LIBVA)
   VAAPI::CHolder &va    = m_buffers[index].vaapi;
+  YV12Image &im         = m_buffers[index].image;
   YUVPLANES &planes     = m_buffers[index].fields[0];
 
   if (!va.surface)
@@ -1328,11 +1413,59 @@ void CLinuxRendererGLES::RenderVAAPI(int index, int field)
     return;
   }
 
+  ERenderFormat format = RENDER_FMT_NONE;
   switch (va.surfegl->m_format)
   {
   case EGL_TEXTURE_RGBA:
     RenderRGB(planes[0]);
     break;
+#ifdef HAVE_VA_EGL
+  case VA_EGL_BUFFER_STRUCTURE_Y_UV:
+    format = RENDER_FMT_Y_UV;
+    break;
+  case VA_EGL_BUFFER_STRUCTURE_Y_U_V:
+    format = RENDER_FMT_Y_U_V;
+    break;
+#endif
+  }
+
+  if (format && format != m_YUVShaderFormat)
+  {
+    if (m_pYUVShader)
+    {
+      m_pYUVShader->Free();
+      delete m_pYUVShader;
+      m_pYUVShader = NULL;
+      m_YUVShaderFormat = RENDER_FMT_NONE;
+    }
+
+    // Create regular progressive scan shader
+    m_pYUVShader = new YUV2RGBProgressiveShader(false, m_iFlags, format);
+    CLog::Log(LOGNOTICE, "GLES: VAAPI - Selecting Single Pass YUV2RGB shader");
+
+    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+    {
+      m_YUVShaderFormat = format;
+      UpdateVideoFilter();
+    }
+    else
+    {
+      m_pYUVShader->Free();
+      delete m_pYUVShader;
+      m_pYUVShader = NULL;
+      m_YUVShaderFormat = RENDER_FMT_NONE;
+      CLog::Log(LOGERROR, "GLES: VAAPI - Error enabling YUV2RGB GLSL shader");
+    }
+  }
+
+  if (m_pYUVShader && m_YUVShaderFormat != RENDER_FMT_NONE)
+  {
+    UpdateVideoFilter();
+    m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+    m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+    m_pYUVShader->SetWidth(im.width);
+    m_pYUVShader->SetHeight(im.height);
+    RenderYUV(planes, va.surfegl->m_numPlanes);
   }
 #endif
 }
@@ -1835,6 +1968,10 @@ void CLinuxRendererGLES::UploadVAAPITexture(int index)
   if (!va.surfegl)
   {
     VAAPI::CSurfaceEGL *surface = NULL;
+#ifdef HAVE_VA_EGL
+    if (!surface)
+      surface = VAAPI::CSurfaceEGLBuffer::Create(va.display, im.width, im.height);
+#endif
 #ifdef HAVE_VA_X11
     if (!surface)
       surface = VAAPI::CSurfaceEGLPixmap::Create(va.display, im.width, im.height);
@@ -1876,6 +2013,14 @@ void CLinuxRendererGLES::UploadVAAPITexture(int index)
   case EGL_TEXTURE_RGBA:
     numPlanes = 1;
     break;
+#ifdef HAVE_VA_EGL
+  case VA_EGL_BUFFER_STRUCTURE_Y_UV:
+    numPlanes = 2;
+    break;
+  case VA_EGL_BUFFER_STRUCTURE_Y_U_V:
+    numPlanes = 3;
+    break;
+#endif
   default:
     CLog::Log(LOGERROR, "GLES: VAAPI - Unsupported VA/EGL surface format");
     return;
@@ -1955,6 +2100,10 @@ bool CLinuxRendererGLES::CreateVAAPITexture(int index)
 
   CLog::Log(LOGNOTICE, "GLES: VAAPI - Image size %dx%d", im.width, im.height);
 
+#ifdef HAVE_VA_EGL
+  if (!surface)
+    surface = VAAPI::CSurfaceEGLBuffer::Create(va.display, im.width, im.height);
+#endif
 #ifdef HAVE_VA_X11
   if (!surface)
     surface = VAAPI::CSurfaceEGLPixmap::Create(va.display, im.width, im.height);

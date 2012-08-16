@@ -245,6 +245,7 @@ protected:
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
 
   void RenderRGB(const YUVPLANE& plane);
+  void RenderYUV(const YUVPLANES& planes, int numPlanes);
 
   struct YUVBUFFER
   {
@@ -277,6 +278,7 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
+  ERenderFormat                   m_YUVShaderFormat;
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;

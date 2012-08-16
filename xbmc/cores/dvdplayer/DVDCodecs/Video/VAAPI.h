@@ -35,6 +35,9 @@
 #ifdef HAVE_VA_GLX
 # include <va/va_glx.h>
 #endif
+#ifdef HAVE_VA_EGL
+# include <va/va_egl.h>
+#endif
 #ifdef HAS_EGL
 # include <EGL/egl.h>
 # include <EGL/eglext.h>
@@ -146,6 +149,24 @@ struct CSurfaceEGLPixmap : public CSurfaceEGL
   Pixmap        m_pixmap;
   int           m_pixmapWidth;
   int           m_pixmapHeight;
+};
+#endif
+
+#ifdef HAVE_VA_EGL
+struct CSurfaceEGLBuffer : public CSurfaceEGL
+{
+                CSurfaceEGLBuffer(CDisplayPtr& display);
+  virtual      ~CSurfaceEGLBuffer();
+
+  virtual bool  Upload(CSurfacePtr surface, unsigned int flags);
+  virtual bool  EnsureSize(int width, int height);
+
+  static CSurfaceEGL *Create(CDisplayPtr& display, int width, int height);
+
+  CSurfacePtr   m_surface;
+  void*         m_surfaceBuffer;
+  int           m_surfaceWidth;
+  int           m_surfaceHeight;
 };
 #endif
 #endif

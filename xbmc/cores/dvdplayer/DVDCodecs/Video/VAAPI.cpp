@@ -761,6 +761,99 @@ CSurfaceEGL *CSurfaceEGLPixmap::Create(CDisplayPtr& display, int width, int heig
   return NULL;
 }
 #endif /* HAVE_VA_X11 */
+
+#ifdef HAVE_VA_EGL
+CSurfaceEGLBuffer::CSurfaceEGLBuffer(CDisplayPtr& display)
+  : CSurfaceEGL(display)
+  , m_surfaceBuffer(0)
+  , m_surfaceWidth(0)
+  , m_surfaceHeight(0)
+{
+}
+
+CSurfaceEGLBuffer::~CSurfaceEGLBuffer()
+{
+}
+
+bool CSurfaceEGLBuffer::Upload(CSurfacePtr surface, unsigned int flags)
+{
+  EGLint structure;
+  unsigned int i;
+
+  DestroyImages();
+  m_surface.reset();
+  m_surfaceBuffer = NULL;
+
+  if (surface->m_width  != m_surfaceWidth ||
+      surface->m_height != m_surfaceHeight)
+  {
+    CLog::Log(LOGERROR, "VAAPI - EGL: failed to upload surface with size mismatch");
+    return false;
+  }
+
+  CHECK(vaGetSurfaceBufferEGL(surface->m_display->get(), surface->m_id,
+                              &m_surfaceBuffer));
+
+  CHECK(vaGetBufferAttributeEGL(surface->m_display->get(), m_surfaceBuffer,
+                                EGL_VA_BUFFER_STRUCTURE_INTEL, &structure));
+
+  switch (structure) {
+  case VA_EGL_BUFFER_STRUCTURE_RGBA:
+    m_numPlanes = 1;
+    break;
+  case VA_EGL_BUFFER_STRUCTURE_Y_UV:
+    m_numPlanes = 2;
+    break;
+  case VA_EGL_BUFFER_STRUCTURE_Y_U_V:
+    m_numPlanes = 3;
+    break;
+  default:
+    CLog::Log(LOGERROR, "VAAPI - EGL: unsupported buffer structure 0x%04x", structure);
+    return false;
+  };
+  m_format = structure;
+
+  const CEGLVTable * const egl_vtable = CEGLVTable::Get();
+  if (!egl_vtable)
+    return false;
+
+  EGLint attribs[3];
+  for (i = 0; i < m_numPlanes; i++)
+  {
+    attribs[0] = EGL_VA_BUFFER_PLANE_INTEL;
+    attribs[1] = i;
+    attribs[2] = EGL_NONE;
+    m_images[i] = egl_vtable->create_image(m_eglDisplay, EGL_NO_CONTEXT,
+        EGL_VA_PIXEL_BUFFER_INTEL, m_surfaceBuffer, attribs);
+    if (!m_images[i])
+    {
+      CLog::Log(LOGERROR, "VAAPI - EGL: failed to create EGLImage from VA surface plane %d", i);
+      return false;
+    }
+  }
+
+  m_surface = surface;
+  return true;
+}
+
+bool CSurfaceEGLBuffer::EnsureSize(int width, int height)
+{
+  m_surfaceWidth  = width;
+  m_surfaceHeight = height;
+  return true;
+}
+
+CSurfaceEGL *CSurfaceEGLBuffer::Create(CDisplayPtr& display, int width, int height)
+{
+  CSurfaceEGL *surface;
+
+  surface = new CSurfaceEGLBuffer(display);
+  if (surface->EnsureSize(width, height))
+    return surface;
+  delete surface;
+  return NULL;
+}
+#endif /* HAVE_VA_EGL */
 #endif /* HAS_EGL */
 
 #endif

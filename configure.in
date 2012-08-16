@@ -1551,6 +1551,33 @@ if test "x$use_vaapi" != "xno"; then
           INCLUDES="$INCLUDES $LIBVA_X11_CFLAGS"
           LIBS="$LIBS $LIBVA_X11_LIBS"
           has_va_x11="yes"], [use_vaapi="no"])
+
+        dnl Check for new VA/EGL API, i.e. vaGetSurfaceBufferEGL()
+        PKG_CHECK_MODULES([LIBVA_EGL], [libva-egl], [has_va_egl="yes"], [:])
+        if test "$has_va_egl" = "yes"; then
+          AC_CACHE_CHECK([for new VA/EGL API],
+            ac_cv_has_va_egl, [
+            saved_CFLAGS="$CFLAGS"
+            CFLAGS="$CFLAGS $LIBVA_EGL_CFLAGS"
+            saved_LIBS="$LIBS"
+            LIBS="$LIBS $LIBVA_EGL_LIBS"
+            AC_LINK_IFELSE(
+              [AC_LANG_PROGRAM(
+                [[#include <va/va_egl.h>]],
+                [[EGLClientBuffer buf; vaGetSurfaceBufferEGL(NULL,0,&buf);]])],
+              [ac_cv_has_va_egl="yes"],
+              [ac_cv_has_va_egl="no"]
+            )
+            CFLAGS="$saved_CFLAGS"
+            LIBS="$saved_LIBS"
+          ])
+          if test "$ac_cv_has_va_egl" = "yes"; then
+            INCLUDES="$INCLUDES $LIBVA_EGL_CFLAGS"
+            LIBS="$LIBS $LIBVA_EGL_LIBS"
+          else
+            has_va_egl="no"
+          fi
+        fi
       fi
       if test "$use_gl" = "yes"; then
         PKG_CHECK_MODULES([LIBVA_GLX], [libva-glx], [
@@ -1574,6 +1601,9 @@ if test "x$use_vaapi" != "xno"; then
       fi
       if test "$has_va_glx" = "yes"; then
         AC_DEFINE([HAVE_VA_GLX], [1], [Defined to 1 if VA/GLX API is available])
+      fi
+      if test "$has_va_egl" = "yes"; then
+        AC_DEFINE([HAVE_VA_EGL], [1], [Defined to 1 if VA/EGL API is available])
       fi
       USE_VAAPI=1
     fi
