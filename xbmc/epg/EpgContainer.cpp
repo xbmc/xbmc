@@ -46,7 +46,7 @@ typedef std::map<int, CEpg*>::iterator EPGITR;
 CEpgContainer::CEpgContainer(void) :
     CThread("EPG updater")
 {
-  m_progressDialog = NULL;
+  m_progressHandle = NULL;
   m_bStop = true;
   m_bIsUpdating = false;
   m_bIsInitialising = true;
@@ -396,33 +396,32 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
 
 void CEpgContainer::CloseProgressDialog(void)
 {
-  if (m_progressDialog)
+  if (m_progressHandle)
   {
-    m_progressDialog->Close(true, 0, true, false);
-    m_progressDialog = NULL;
+    m_progressHandle->MarkFinished();
+    m_progressHandle = NULL;
   }
 }
 
 void CEpgContainer::ShowProgressDialog(bool bUpdating /* = true */)
 {
-  if (!m_progressDialog)
+  if (!m_progressHandle)
   {
-    m_progressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-    m_progressDialog->Show();
-    m_progressDialog->SetHeader(bUpdating ? g_localizeStrings.Get(19004) : g_localizeStrings.Get(19250));
+    CGUIDialogExtendedProgressBar *progressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    if (progressDialog)
+      m_progressHandle = progressDialog->GetHandle(bUpdating ? g_localizeStrings.Get(19004) : g_localizeStrings.Get(19250));
   }
 }
 
 void CEpgContainer::UpdateProgressDialog(int iCurrent, int iMax, const CStdString &strText)
 {
-  if (!m_progressDialog)
+  if (!m_progressHandle)
     ShowProgressDialog();
 
-  if (m_progressDialog)
+  if (m_progressHandle)
   {
-    m_progressDialog->SetProgress(iCurrent, iMax);
-    m_progressDialog->SetTitle(strText);
-    m_progressDialog->UpdateState();
+    m_progressHandle->SetProgress(iCurrent, iMax);
+    m_progressHandle->SetText(strText);
   }
 }
 

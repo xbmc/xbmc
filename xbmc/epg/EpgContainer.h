@@ -32,7 +32,7 @@
 #include <map>
 
 class CFileItemList;
-class CGUIDialogExtendedProgressBar;
+class CGUIDialogProgressBarHandle;
 
 namespace EPG
 {
@@ -285,7 +285,7 @@ namespace EPG
     std::map<unsigned int, CEpg*> m_epgs;  /*!< the EPGs in this container */
     //@}
 
-    CGUIDialogExtendedProgressBar *m_progressDialog; /*!< the progress dialog that is visible when updating the first time */
+    CGUIDialogProgressBarHandle *  m_progressHandle; /*!< the progress dialog that is visible when updating the first time */
     CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
     CEvent                         m_updateEvent;    /*!< trigger when an update finishes */
   };

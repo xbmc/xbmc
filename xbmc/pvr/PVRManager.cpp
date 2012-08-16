@@ -68,7 +68,7 @@ CPVRManager::CPVRManager(void) :
     m_currentFile(NULL),
     m_database(NULL),
     m_bFirstStart(true),
-    m_loadingProgressDialog(NULL),
+    m_progressHandle(NULL),
     m_managerState(ManagerStateStopped)
 {
   ResetProperties();
@@ -346,24 +346,22 @@ bool CPVRManager::Load(void)
 
 void CPVRManager::ShowProgressDialog(const CStdString &strText, int iProgress)
 {
-  if (!m_loadingProgressDialog)
+  if (!m_progressHandle)
   {
-    m_loadingProgressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-    m_loadingProgressDialog->Show();
-    m_loadingProgressDialog->SetHeader(g_localizeStrings.Get(19235));
+    CGUIDialogExtendedProgressBar *loadingProgressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    m_progressHandle = loadingProgressDialog->GetHandle(g_localizeStrings.Get(19235));
   }
 
-  m_loadingProgressDialog->SetProgress(iProgress, 100);
-  m_loadingProgressDialog->SetTitle(strText);
-  m_loadingProgressDialog->UpdateState();
+  m_progressHandle->SetPercentage((float)iProgress);
+  m_progressHandle->SetText(strText);
 }
 
 void CPVRManager::HideProgressDialog(void)
 {
-  if (m_loadingProgressDialog)
+  if (m_progressHandle)
   {
-    m_loadingProgressDialog->Close(true, 0, true, false);
-    m_loadingProgressDialog = NULL;
+    m_progressHandle->MarkFinished();
+    m_progressHandle = NULL;
   }
 }
 

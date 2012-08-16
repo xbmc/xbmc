@@ -25,7 +25,7 @@
 #include "threads/Event.h"
 #include "addons/include/xbmc_pvr_types.h"
 
-class CGUIDialogExtendedProgressBar;
+class CGUIDialogProgressBarHandle;
 class CStopWatch;
 
 namespace EPG
@@ -569,7 +569,7 @@ namespace PVR
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
-    CGUIDialogExtendedProgressBar * m_loadingProgressDialog;       /*!< progress dialog that is displayed while the pvrmanager is loading */
+    CGUIDialogProgressBarHandle *   m_progressHandle;              /*!< progress dialog that is displayed while the pvrmanager is loading */
 
     int                             m_PreviousChannel[2];
     int                             m_PreviousChannelIndex;
