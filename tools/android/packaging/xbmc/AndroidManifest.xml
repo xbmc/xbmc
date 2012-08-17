@@ -7,7 +7,8 @@
 
     <!-- This is the platform API where NativeActivity was introduced. -->
     <uses-sdk android:minSdkVersion="10" />
-
+    <!-- cause the navigationbar to hide the action overflow minor annoyance and doesnt do anything any --> 
+    <uses-sdk android:minSdkVersion="14" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
