@@ -57,12 +57,12 @@ public:
   CGUIDialogExtendedProgressBar(void);
   virtual ~CGUIDialogExtendedProgressBar(void) {};
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void Render();
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   CGUIDialogProgressBarHandle *GetHandle(const std::string &strTitle);
 
 protected:
-  void UpdateState();
+  void UpdateState(unsigned int currentTime);
 
   CCriticalSection                           m_critSection;
   unsigned int                               m_iCurrentItem;

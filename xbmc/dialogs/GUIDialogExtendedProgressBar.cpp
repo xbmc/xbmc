@@ -85,7 +85,7 @@ bool CGUIDialogExtendedProgressBar::OnMessage(CGUIMessage& message)
       m_iLastSwitchTime = XbmcThreads::SystemClockMillis();
       CGUIDialog::OnMessage(message);
 
-      UpdateState();
+      UpdateState(0);
       return true;
     }
     break;
@@ -94,15 +94,15 @@ bool CGUIDialogExtendedProgressBar::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogExtendedProgressBar::Render()
+void CGUIDialogExtendedProgressBar::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (m_active)
-    UpdateState();
+    UpdateState(currentTime);
 
-  CGUIDialog::Render();
+  CGUIDialog::Process(currentTime, dirtyregions);
 }
 
-void CGUIDialogExtendedProgressBar::UpdateState()
+void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
 {
   bool   bNoItemsLeft(false);
   string strHeader;
@@ -127,10 +127,10 @@ void CGUIDialogExtendedProgressBar::UpdateState()
     }
 
     // update the current item ptr
-    unsigned int iNow = XbmcThreads::SystemClockMillis();
-    if (iNow - m_iLastSwitchTime >= ITEM_SWITCH_TIME_MS)
+    if (currentTime > m_iLastSwitchTime &&
+        currentTime - m_iLastSwitchTime >= ITEM_SWITCH_TIME_MS)
     {
-      m_iLastSwitchTime = iNow;
+      m_iLastSwitchTime = currentTime;
 
       // select next item
       if (++m_iCurrentItem > m_handles.size() - 1)
@@ -149,7 +149,7 @@ void CGUIDialogExtendedProgressBar::UpdateState()
     }
     else
     {
-        bNoItemsLeft = true;
+      bNoItemsLeft = true;
     }
   }
 
