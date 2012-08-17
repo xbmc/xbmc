@@ -93,7 +93,7 @@ std::string PVRDemoData::GetSettingsFile() const
   else
     settingFile.append("/system/PVRDemoAddonSettings.xml");
   return settingFile;
-#elif
+#else
   return CSpecialProtocol::TranslatePath("special://xbmc/system/PVRDemoAddonSettings.xml");
 #endif
 }
