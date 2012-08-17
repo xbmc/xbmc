@@ -500,7 +500,10 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
       coreIO -= iter->second.m_io;
 
       double total = (double)(coreUser + coreNice + coreSystem + coreIdle + coreIO);
-      iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / total;
+      if(total == 0.0f)
+        iter->second.m_fPct = 0.0f;
+      else
+        iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / total;
 
       iter->second.m_user += coreUser;
       iter->second.m_nice += coreNice;
