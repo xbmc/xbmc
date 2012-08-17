@@ -284,10 +284,14 @@ void CCoreAudioAEStream::Initialize()
   {
     // get the conversion function and allocate a buffer for the data
     CLog::Log(LOGDEBUG, "CCoreAudioAEStream::CCoreAudioAEStream - Converting from %s to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(m_StreamFormat.m_dataFormat));
-    m_convertFn = CAEConvert::ToFloat(m_StreamFormat.m_dataFormat);
+    m_convertFn = new CAEToFloatConv(m_StreamFormat.m_dataFormat);
 
-    if (!m_convertFn)
+    if (!m_convertFn || !m_convertFn->is_valid())
+    {
       m_valid = false;
+      delete m_convertFn;
+      m_convertFn = NULL;
+    }
   }
 
   // if we need to resample, set it up
@@ -320,6 +324,8 @@ void CCoreAudioAEStream::Destroy()
 {
   m_valid  = false;
   m_delete = true;
+  delete m_convertFn;
+  m_convertFn = NULL;
   InternalFlush();
 }
 
@@ -349,7 +355,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   {
     CheckOutputBufferSize((void **)&m_convertBuffer, &m_convertBufferSize, frames * channelsInBuffer  * m_OutputBytesPerSample);
 
-    samples = m_convertFn(adddata, size / m_StreamBytesPerSample, m_convertBuffer);
+    samples = m_convertFn->convert(adddata, size / m_StreamBytesPerSample, m_convertBuffer);
     frames  = samples / channelsInBuffer;
     addsize = frames * channelsInBuffer * m_OutputBytesPerSample;
     adddata = (uint8_t *)m_convertBuffer;
