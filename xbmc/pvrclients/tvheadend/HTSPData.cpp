@@ -218,11 +218,9 @@ PVR_ERROR CHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
     tag.iUniqueId         = channel.id;
     tag.bIsRadio          = channel.radio;
     tag.iChannelNumber    = channel.num;
-    memcpy(tag.strChannelName, channel.name.c_str(), sizeof(tag.strChannelName));
-    memset(tag.strInputFormat, 0, sizeof(tag.strInputFormat)); // unused
-    memset(tag.strStreamURL, 0, sizeof(tag.strStreamURL));     // unused
+    strncpy(tag.strChannelName, channel.name.c_str(), sizeof(tag.strChannelName) - 1);
     tag.iEncryptionSystem = channel.caid;
-    memcpy(tag.strIconPath, channel.icon.c_str(), sizeof(tag.strIconPath));
+    strncpy(tag.strIconPath, channel.icon.c_str(), sizeof(tag.strIconPath) - 1);
     tag.bIsHidden         = false;
 
     PVR->TransferChannelEntry(handle, &tag);
@@ -354,19 +352,14 @@ PVR_ERROR CHTSPData::GetRecordings(PVR_HANDLE handle)
     PVR_RECORDING tag;
     memset(&tag, 0, sizeof(PVR_RECORDING));
 
-    memcpy(tag.strRecordingId, strRecordingId.c_str(), sizeof(tag.strRecordingId));
-    memcpy(tag.strTitle, recording.title.c_str(), sizeof(tag.strTitle));
-    memcpy(tag.strStreamURL, strStreamURL.c_str(), sizeof(tag.strStreamURL));
-    memcpy(tag.strDirectory, "/", sizeof(tag.strStreamURL));
-    memset(tag.strPlotOutline, 0, sizeof(tag.strPlotOutline));
-    memcpy(tag.strPlot, recording.description.c_str(), sizeof(tag.strPlot));
-    memcpy(tag.strChannelName, strChannelName.c_str(), sizeof(tag.strChannelName));
+    strncpy(tag.strRecordingId, strRecordingId.c_str(), sizeof(tag.strRecordingId) - 1);
+    strncpy(tag.strTitle, recording.title.c_str(), sizeof(tag.strTitle) - 1);
+    strncpy(tag.strStreamURL, strStreamURL.c_str(), sizeof(tag.strStreamURL) - 1);
+    tag.strDirectory[0] = '/';
+    strncpy(tag.strPlot, recording.description.c_str(), sizeof(tag.strPlot) - 1);
+    strncpy(tag.strChannelName, strChannelName.c_str(), sizeof(tag.strChannelName) - 1);
     tag.recordingTime  = recording.start;
     tag.iDuration      = recording.stop - recording.start;
-    tag.iPriority      = 0;
-    tag.iLifetime      = 0;
-    tag.iGenreType     = 0;
-    tag.iGenreSubType  = 0;
 
     PVR->TransferRecordingEntry(handle, &tag);
   }
@@ -419,7 +412,7 @@ PVR_ERROR CHTSPData::GetChannelGroups(PVR_HANDLE handle)
     memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
 
     tag.bIsRadio     = false;
-    memcpy(tag.strGroupName, m_tags[iTagPtr].name.c_str(), sizeof(tag.strGroupName));
+    strncpy(tag.strGroupName, m_tags[iTagPtr].name.c_str(), sizeof(tag.strGroupName) - 1);
 
     PVR->TransferChannelGroup(handle, &tag);
   }
@@ -447,7 +440,7 @@ PVR_ERROR CHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL
       PVR_CHANNEL_GROUP_MEMBER tag;
       memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
 
-      memcpy(tag.strGroupName, group.strGroupName, sizeof(tag.strGroupName));
+      strncpy(tag.strGroupName, group.strGroupName, sizeof(tag.strGroupName) - 1);
       tag.iChannelUniqueId = channel.id;
       tag.iChannelNumber   = channel.num;
 
@@ -476,9 +469,8 @@ PVR_ERROR CHTSPData::GetTimers(PVR_HANDLE handle)
     tag.iClientChannelUid = recording.channel;
     tag.startTime         = recording.start;
     tag.endTime           = recording.stop;
-    memcpy(tag.strTitle, recording.title.c_str(), sizeof(tag.strTitle));
-    memset(tag.strDirectory, 0, sizeof(tag.strDirectory)); // unused
-    memcpy(tag.strSummary, recording.description.c_str(), sizeof(tag.strSummary));
+    strncpy(tag.strTitle, recording.title.c_str(), sizeof(tag.strTitle) - 1);
+    strncpy(tag.strSummary, recording.description.c_str(), sizeof(tag.strSummary) - 1);
     tag.state             = (PVR_TIMER_STATE) recording.state;
     tag.iPriority         = 0;     // unused
     tag.iLifetime         = 0;     // unused

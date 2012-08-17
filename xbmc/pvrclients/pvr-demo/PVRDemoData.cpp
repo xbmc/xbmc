@@ -273,11 +273,10 @@ PVR_ERROR PVRDemoData::GetChannels(PVR_HANDLE handle, bool bRadio)
       xbmcChannel.iUniqueId         = channel.iUniqueId;
       xbmcChannel.bIsRadio          = channel.bRadio;
       xbmcChannel.iChannelNumber    = channel.iChannelNumber;
-      memcpy(xbmcChannel.strChannelName, channel.strChannelName.c_str(), sizeof(xbmcChannel.strChannelName));
-      memset(xbmcChannel.strInputFormat, 0, sizeof(xbmcChannel.strInputFormat));
-      memcpy(xbmcChannel.strStreamURL, channel.strStreamURL.c_str(), sizeof(xbmcChannel.strStreamURL));
+      strncpy(xbmcChannel.strChannelName, channel.strChannelName.c_str(), sizeof(xbmcChannel.strChannelName) - 1);
+      strncpy(xbmcChannel.strStreamURL, channel.strStreamURL.c_str(), sizeof(xbmcChannel.strStreamURL) - 1);
       xbmcChannel.iEncryptionSystem = channel.iEncryptionSystem;
-      memcpy(xbmcChannel.strIconPath, channel.strIconPath.c_str(), sizeof(xbmcChannel.strIconPath));
+      strncpy(xbmcChannel.strIconPath, channel.strIconPath.c_str(), sizeof(xbmcChannel.strIconPath) - 1);
       xbmcChannel.bIsHidden         = false;
 
       PVR->TransferChannelEntry(handle, &xbmcChannel);
@@ -325,7 +324,7 @@ PVR_ERROR PVRDemoData::GetChannelGroups(PVR_HANDLE handle, bool bRadio)
       memset(&xbmcGroup, 0, sizeof(PVR_CHANNEL_GROUP));
 
       xbmcGroup.bIsRadio = bRadio;
-      memcpy(xbmcGroup.strGroupName, group.strGroupName.c_str(), sizeof(xbmcGroup.strGroupName));
+      strncpy(xbmcGroup.strGroupName, group.strGroupName.c_str(), sizeof(xbmcGroup.strGroupName) - 1);
 
       PVR->TransferChannelGroup(handle, &xbmcGroup);
     }
@@ -350,7 +349,7 @@ PVR_ERROR PVRDemoData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANN
         PVR_CHANNEL_GROUP_MEMBER xbmcGroupMember;
         memset(&xbmcGroupMember, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER));
 
-        memcpy(xbmcGroupMember.strGroupName, group.strGroupName, sizeof(xbmcGroupMember.strGroupName));
+        strncpy(xbmcGroupMember.strGroupName, group.strGroupName, sizeof(xbmcGroupMember.strGroupName) - 1);
         xbmcGroupMember.iChannelUniqueId = channel.iUniqueId;
         xbmcGroupMember.iChannelNumber   = channel.iChannelNumber;
 
