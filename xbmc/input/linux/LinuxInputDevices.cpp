@@ -302,7 +302,7 @@ int ext_keycodes[] = { DIKS_OK, DIKS_SELECT, DIKS_GOTO, DIKS_CLEAR,
 
 typedef enum
 {
-  LI_DEVICE_ANY      = 0,
+  LI_DEVICE_NONE     = 0,
   LI_DEVICE_MOUSE    = 1,
   LI_DEVICE_JOYSTICK = 2,
   LI_DEVICE_KEYBOARD = 4,
@@ -726,8 +726,13 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
 
   while (1)
   {
+    bzero(&levt, sizeof(levt));
+
     bzero(&devt, sizeof(devt));
     devt.type = XBMC_NOEVENT;
+
+    if(m_devicePreferredId == LI_DEVICE_NONE)
+      return devt;
 
     readlen = read(m_fd, &levt, sizeof(levt));
 
@@ -735,6 +740,13 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
       break;
 
     //printf("read event readlen = %d device name %s m_fileName %s\n", readlen, m_deviceName, m_fileName.c_str());
+
+    // sanity check if we realy read the event
+    if(readlen != sizeof(levt))
+    {
+      printf("CLinuxInputDevice: read error : %s\n", strerror(errno));
+      break;
+    }
 
     if (!TranslateEvent(levt, devt))
       continue;
@@ -937,7 +949,7 @@ void CLinuxInputDevice::GetInfo(int fd)
   else if (m_deviceType & LI_DEVICE_MOUSE)
     m_devicePreferredId = LI_DEVICE_MOUSE;
   else
-    m_devicePreferredId = LI_DEVICE_ANY;
+    m_devicePreferredId = LI_DEVICE_NONE;
 
   //printf("type: %d\n", m_deviceType);
   //printf("caps: %d\n", m_deviceCaps);

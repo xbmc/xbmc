@@ -50,6 +50,7 @@ public:
   virtual int  GetNumScreens() { return 1; }
   virtual void ShowOSMouse(bool show);
   virtual void ResetOSScreensaver();
+  virtual bool EnableFrameLimiter();
 
   virtual void NotifyAppActiveChange(bool bActivated);
 
@@ -75,6 +76,7 @@ protected:
   Window       m_wmWindow;
   Display*     m_dpy;
   bool         m_bWasFullScreenBeforeMinimize;
+  bool         m_minimized;
   int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;

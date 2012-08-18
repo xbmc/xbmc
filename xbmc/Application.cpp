@@ -529,14 +529,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   return true;
 }
 
-// This function does not return!
-void CApplication::FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork)
-{
-  fprintf(stderr, "Fatal error encountered, aborting\n");
-  fprintf(stderr, "Error log at %sxbmc.log\n", g_settings.m_logFolder.c_str());
-  abort();
-}
-
 extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 
@@ -688,7 +680,7 @@ bool CApplication::Create()
   if (!CAEFactory::LoadEngine())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Failed to load an AudioEngine");
-    FatalErrorHandler(true, true, true);
+    return false;
   }
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -696,7 +688,10 @@ bool CApplication::Create()
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
   if (!g_settings.Load())
-    FatalErrorHandler(true, true, true);
+  {
+    CLog::Log(LOGFATAL, "%s: Failed to reset settings", __FUNCTION__);
+    return false;
+  }
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
@@ -725,13 +720,16 @@ bool CApplication::Create()
 
   CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath, strLanguage))
-    FatalErrorHandler(false, false, true);
+  {
+    CLog::Log(LOGFATAL, "%s: Failed to load %s language file, from path: %s", __FUNCTION__, strLanguage.c_str(), strLanguagePath.c_str());
+    return false;
+  }
 
   // start the AudioEngine
   if (!CAEFactory::StartEngine())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Failed to start the AudioEngine");
-    FatalErrorHandler(true, true, true);
+    return false;
   }
 
   // restore AE's previous volume state
@@ -747,7 +745,7 @@ bool CApplication::Create()
   if (!CAddonMgr::Get().Init())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
-    FatalErrorHandler(true, true, true);
+    return false;
   }
 
   g_peripherals.Initialise();
@@ -879,7 +877,7 @@ bool CApplication::CreateGUI()
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
   if (!CButtonTranslator::GetInstance().Load())
-      FatalErrorHandler(false, false, true);
+    return false;
 
   int iResolution = g_graphicsContext.GetVideoResolution();
   CLog::Log(LOGINFO, "GUI format %ix%i %s",
@@ -1337,7 +1335,7 @@ bool CApplication::Initialize()
     if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
     {
         CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
-        FatalErrorHandler(true, true, true);
+        return false;
     }
 
     StartEPGManager();
