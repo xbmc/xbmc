@@ -667,7 +667,7 @@ bool CApplication::Create()
   g_powerManager.SetDefaults();
   if (!g_settings.Load())
   {
-    CLog::Log(LOGFATAL, __FUNCTION__": Failed to reset settings");
+    CLog::Log(LOGFATAL, "%s: Failed to reset settings", __FUNCTION__);
     return false;
   }
 
@@ -699,7 +699,7 @@ bool CApplication::Create()
   CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath, strLanguage))
   {
-    CLog::Log(LOGFATAL, __FUNCTION__": Failed to load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
+    CLog::Log(LOGFATAL, "%s: Failed to load %s language file, from path: %s", __FUNCTION__, strLanguage.c_str(), strLanguagePath.c_str());
     return false;
   }
 
