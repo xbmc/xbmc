@@ -101,14 +101,16 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
       bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, NULL);
       if (bDetailResult)
       {
-        CStdString strVendorId(StringUtils::EmptyString);
-        CStdString strProductId(StringUtils::EmptyString);
-        CStdString strTmp(devicedetailData->DevicePath);
-        strVendorId = strTmp.substr(strTmp.Find("vid_") + 4, 4);
-        strProductId = strTmp.substr(strTmp.Find("pid_") + 4, 4);
+        std::string strTmp(devicedetailData->DevicePath);
 
-        if ((strTmp.Find("&mi_") < 0) || (strTmp.Find("&mi_00") >= 0))
+        StringUtils::ToLower(strTmp);
+        size_t posVid, posPid;
+        if (((posVid = strTmp.find("#vid_")) != std::string::npos || (posVid = strTmp.find("&vid_")) != std::string::npos) &&
+            ((posPid = strTmp.find("#pid_")) != std::string::npos || (posPid = strTmp.find("&pid_")) != std::string::npos) &&
+            (strTmp.find("&mi_") == std::string::npos) || (strTmp.find("&mi_00") != std::string::npos))
         {
+          std::string strVendorId(strTmp, posVid + 5, 4);
+          std::string strProductId(strTmp, posPid + 5, 4);
           PeripheralScanResult prevDevice(m_type);
           if (!results.GetDeviceOnLocation(devicedetailData->DevicePath, &prevDevice))
           {
