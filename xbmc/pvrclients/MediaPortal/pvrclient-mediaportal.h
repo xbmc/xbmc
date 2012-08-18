@@ -52,26 +52,26 @@ public:
   PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
 
   /* EPG handling */
-  PVR_ERROR GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart = NULL, time_t iEnd = NULL);
+  PVR_ERROR GetEpg(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart = NULL, time_t iEnd = NULL);
 
   /* Channel handling */
   int GetNumChannels(void);
-  PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio);
+  PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
 
   /* Channel group handling */
   int GetChannelGroupsAmount(void);
-  PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio);
-  PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
+  PVR_ERROR GetChannelGroups(ADDON_HANDLE handle, bool bRadio);
+  PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group);
 
   /* Record handling **/
   int GetNumRecordings(void);
-  PVR_ERROR GetRecordings(PVR_HANDLE handle);
+  PVR_ERROR GetRecordings(ADDON_HANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDING &recording);
   PVR_ERROR RenameRecording(const PVR_RECORDING &recording);
 
   /* Timer handling */
   int GetNumTimers(void);
-  PVR_ERROR GetTimers(PVR_HANDLE handle);
+  PVR_ERROR GetTimers(ADDON_HANDLE handle);
   PVR_ERROR GetTimerInfo(unsigned int timernumber, PVR_TIMER &timer);
   PVR_ERROR AddTimer(const PVR_TIMER &timer);
   PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete = false);

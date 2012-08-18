@@ -260,7 +260,7 @@ int PVRDemoData::GetChannelsAmount(void)
   return m_channels.size();
 }
 
-PVR_ERROR PVRDemoData::GetChannels(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR PVRDemoData::GetChannels(ADDON_HANDLE handle, bool bRadio)
 {
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_channels.size(); iChannelPtr++)
   {
@@ -313,7 +313,7 @@ int PVRDemoData::GetChannelGroupsAmount(void)
   return m_groups.size();
 }
 
-PVR_ERROR PVRDemoData::GetChannelGroups(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR PVRDemoData::GetChannelGroups(ADDON_HANDLE handle, bool bRadio)
 {
   for (unsigned int iGroupPtr = 0; iGroupPtr < m_groups.size(); iGroupPtr++)
   {
@@ -333,7 +333,7 @@ PVR_ERROR PVRDemoData::GetChannelGroups(PVR_HANDLE handle, bool bRadio)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRDemoData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+PVR_ERROR PVRDemoData::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
   for (unsigned int iGroupPtr = 0; iGroupPtr < m_groups.size(); iGroupPtr++)
   {
@@ -361,7 +361,7 @@ PVR_ERROR PVRDemoData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANN
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRDemoData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
+PVR_ERROR PVRDemoData::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
   if (m_iEpgStart == -1)
     m_iEpgStart = iStart;

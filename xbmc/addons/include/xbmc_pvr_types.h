@@ -35,6 +35,8 @@
 #endif
 #include <string.h>
 
+#include "xbmc_addon_types.h"
+
 /*! @note Define "USE_DEMUX" on compile time if demuxing inside pvr
  *        addon is used. Also XBMC's "DVDDemuxPacket.h" file must be inside
  *        the include path of the pvr addon.
@@ -94,17 +96,6 @@ struct DemuxPacket;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-  /*!
-   * @brief Handle used to return data from the PVR add-on to CPVRClient
-   */
-  struct PVR_HANDLE_STRUCT
-  {
-    void *callerAddress;  /*!< address of the caller */
-    void *dataAddress;    /*!< address to store data in */
-    int   dataIdentifier; /*!< parameter to pass back when calling the callback */
-  };
-  typedef PVR_HANDLE_STRUCT *PVR_HANDLE;
 
   /*! \brief PVR Client Error Codes
    */
@@ -335,20 +326,20 @@ extern "C" {
 
     /** @name PVR EPG methods */
     //@{
-    PVR_ERROR    (__cdecl* GetEpg)(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
+    PVR_ERROR    (__cdecl* GetEpg)(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
     //@}
 
     /** @name PVR channel group methods */
     //@{
     int          (__cdecl* GetChannelGroupsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannelGroups)(PVR_HANDLE handle, bool bRadio);
-    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
+    PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE handle, bool bRadio);
+    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group);
     //@}
 
     /** @name PVR channel methods */
     //@{
     int          (__cdecl* GetChannelsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannels)(PVR_HANDLE handle, bool bRadio);
+    PVR_ERROR    (__cdecl* GetChannels)(ADDON_HANDLE handle, bool bRadio);
     PVR_ERROR    (__cdecl* DeleteChannel)(const PVR_CHANNEL &channel);
     PVR_ERROR    (__cdecl* RenameChannel)(const PVR_CHANNEL &channel);
     PVR_ERROR    (__cdecl* MoveChannel)(const PVR_CHANNEL &channel);
@@ -359,7 +350,7 @@ extern "C" {
     /** @name PVR recording methods */
     //@{
     int          (__cdecl* GetRecordingsAmount)(void);
-    PVR_ERROR    (__cdecl* GetRecordings)(PVR_HANDLE handle);
+    PVR_ERROR    (__cdecl* GetRecordings)(ADDON_HANDLE handle);
     PVR_ERROR    (__cdecl* DeleteRecording)(const PVR_RECORDING &recording);
     PVR_ERROR    (__cdecl* RenameRecording)(const PVR_RECORDING &recording);
     PVR_ERROR    (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING &recording, int count);
@@ -370,7 +361,7 @@ extern "C" {
     /** @name PVR timer methods */
     //@{
     int          (__cdecl* GetTimersAmount)(void);
-    PVR_ERROR    (__cdecl* GetTimers)(PVR_HANDLE handle);
+    PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE handle);
     PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER &timer);
     PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER &timer, bool bForceDelete);
     PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER &timer);

@@ -203,7 +203,7 @@ unsigned int CHTSPData::GetNumChannels()
   return GetChannels().size();
 }
 
-PVR_ERROR CHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR CHTSPData::GetChannels(ADDON_HANDLE handle, bool bRadio)
 {
   SChannels channels = GetChannels();
   for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
@@ -229,7 +229,7 @@ PVR_ERROR CHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
+PVR_ERROR CHTSPData::GetEpg(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
   PVR_ERROR retVal = PVR_ERROR_NO_ERROR;
   SChannels channels = GetChannels();
@@ -315,7 +315,7 @@ unsigned int CHTSPData::GetNumRecordings()
   return recordings.size();
 }
 
-PVR_ERROR CHTSPData::GetRecordings(PVR_HANDLE handle)
+PVR_ERROR CHTSPData::GetRecordings(ADDON_HANDLE handle)
 {
   SRecordings recordings = GetDVREntries(true, false);
 
@@ -404,7 +404,7 @@ unsigned int CHTSPData::GetNumChannelGroups(void)
   return m_tags.size();
 }
 
-PVR_ERROR CHTSPData::GetChannelGroups(PVR_HANDLE handle)
+PVR_ERROR CHTSPData::GetChannelGroups(ADDON_HANDLE handle)
 {
   for(unsigned int iTagPtr = 0; iTagPtr < m_tags.size(); iTagPtr++)
   {
@@ -420,7 +420,7 @@ PVR_ERROR CHTSPData::GetChannelGroups(PVR_HANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR CHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+PVR_ERROR CHTSPData::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
   XBMC->Log(LOG_DEBUG, "%s - group '%s'", __FUNCTION__, group.strGroupName);
 
@@ -454,7 +454,7 @@ PVR_ERROR CHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR CHTSPData::GetTimers(PVR_HANDLE handle)
+PVR_ERROR CHTSPData::GetTimers(ADDON_HANDLE handle)
 {
   SRecordings recordings = GetDVREntries(false, true);
 

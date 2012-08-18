@@ -329,7 +329,7 @@ PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
   return PVR_ERROR_SERVER_ERROR;
 }
 
-PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
+PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
   if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
@@ -345,7 +345,7 @@ int GetChannelsAmount(void)
   return HTSPData->GetNumChannels();
 }
 
-PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio)
 {
   if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
@@ -361,7 +361,7 @@ int GetRecordingsAmount(void)
   return HTSPData->GetNumRecordings();
 }
 
-PVR_ERROR GetRecordings(PVR_HANDLE handle)
+PVR_ERROR GetRecordings(ADDON_HANDLE handle)
 {
   if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
@@ -393,7 +393,7 @@ int GetTimersAmount(void)
   return HTSPData->GetNumTimers();
 }
 
-PVR_ERROR GetTimers(PVR_HANDLE handle)
+PVR_ERROR GetTimers(ADDON_HANDLE handle)
 {
   if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
@@ -502,7 +502,7 @@ int GetChannelGroupsAmount(void)
   return HTSPData->GetNumChannelGroups();
 }
 
-PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR GetChannelGroups(ADDON_HANDLE handle, bool bRadio)
 {
   /* tvheadend doesn't support separated groups, so we only support TV groups */
   if (bRadio)
@@ -514,7 +514,7 @@ PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
   return HTSPData->GetChannelGroups(handle);
 }
 
-PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
   /* tvheadend doesn't support separated groups, so we only support TV groups */
   if (group.bIsRadio)

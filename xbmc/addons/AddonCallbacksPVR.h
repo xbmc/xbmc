@@ -53,7 +53,7 @@ public:
    * @param handle The handle containing a pointer to the CPVRChannelGroups instance that this group needs to be added to.
    * @param group The entry to transfer.
    */
-  static void PVRTransferChannelGroup(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group);
+  static void PVRTransferChannelGroup(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
 
   /*!
    * @brief Transfer a channel group member from the add-on to XBMC. The channel will be added to the group if the group can be found.
@@ -61,7 +61,7 @@ public:
    * @param handle The handle that initiated this action.
    * @param member The entry to transfer.
    */
-  static void PVRTransferChannelGroupMember(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+  static void PVRTransferChannelGroupMember(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
 
   /*!
    * @brief Transfer an EPG entry from the add-on to XBMC.
@@ -69,7 +69,7 @@ public:
    * @param handle The handle that initiated this action.
    * @param epgentry The entry to transfer.
    */
-  static void PVRTransferEpgEntry(void *addonData, const PVR_HANDLE handle, const EPG_TAG *epgentry);
+  static void PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
 
   /*!
    * @brief Transfer a channel entry from the add-on to XBMC.
@@ -77,7 +77,7 @@ public:
    * @param handle The handle that initiated this action.
    * @param channel The entry to transfer.
    */
-  static void PVRTransferChannelEntry(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL *channel);
+  static void PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel);
 
   /*!
    * @brief Transfer a timer entry from the add-on to XBMC.
@@ -85,7 +85,7 @@ public:
    * @param handle The handle that initiated this action.
    * @param timer The entry to transfer.
    */
-  static void PVRTransferTimerEntry(void *addonData, const PVR_HANDLE handle, const PVR_TIMER *timer);
+  static void PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer);
 
   /*!
    * @brief Transfer a recording entry from the add-on to XBMC.
@@ -93,7 +93,7 @@ public:
    * @param handle The handle that initiated this action.
    * @param recording The entry to transfer.
    */
-  static void PVRTransferRecordingEntry(void *addonData, const PVR_HANDLE handle, const PVR_RECORDING *recording);
+  static void PVRTransferRecordingEntry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
 
   /*!
    * @brief Add a menu hook to this add-on table.

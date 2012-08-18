@@ -44,14 +44,14 @@ public:
   bool        GetDriveSpace(long long *total, long long *used);
 
   int         GetChannelsCount();
-  bool        GetChannelsList(PVR_HANDLE handle, bool radio = false);
-  bool        GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+  bool        GetChannelsList(ADDON_HANDLE handle, bool radio = false);
+  bool        GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
 
   int         GetChannelGroupCount(bool automatic);
-  bool        GetChannelGroupList(PVR_HANDLE handle, bool bRadio);
-  bool        GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
+  bool        GetChannelGroupList(ADDON_HANDLE handle, bool bRadio);
+  bool        GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group);
 
-  bool        GetTimersList(PVR_HANDLE handle);
+  bool        GetTimersList(ADDON_HANDLE handle);
   int         GetTimersCount();
   PVR_ERROR   AddTimer(const PVR_TIMER &timerinfo);
   PVR_ERROR   GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag);
@@ -60,7 +60,7 @@ public:
   PVR_ERROR   UpdateTimer(const PVR_TIMER &timerinfo);
 
   int         GetRecordingsCount();
-  PVR_ERROR   GetRecordingsList(PVR_HANDLE handle);
+  PVR_ERROR   GetRecordingsList(ADDON_HANDLE handle);
   PVR_ERROR   RenameRecording(const PVR_RECORDING& recinfo, const char* newname);
   PVR_ERROR   DeleteRecording(const PVR_RECORDING& recinfo);
 

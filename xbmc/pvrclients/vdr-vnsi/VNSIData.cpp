@@ -197,7 +197,7 @@ int cVNSIData::GetChannelsCount()
   return count;
 }
 
-bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
+bool cVNSIData::GetChannelsList(ADDON_HANDLE handle, bool radio)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_CHANNELS_GETCHANNELS))
@@ -240,7 +240,7 @@ bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
   return true;
 }
 
-bool cVNSIData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
+bool cVNSIData::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_EPG_GETFORCHANNEL))
@@ -372,7 +372,7 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
   return PVR_ERROR_NO_ERROR;
 }
 
-bool cVNSIData::GetTimersList(PVR_HANDLE handle)
+bool cVNSIData::GetTimersList(ADDON_HANDLE handle)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_TIMER_GETLIST))
@@ -612,7 +612,7 @@ int cVNSIData::GetRecordingsCount()
   return count;
 }
 
-PVR_ERROR cVNSIData::GetRecordingsList(PVR_HANDLE handle)
+PVR_ERROR cVNSIData::GetRecordingsList(ADDON_HANDLE handle)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_RECORDINGS_GETLIST))
@@ -910,7 +910,7 @@ int cVNSIData::GetChannelGroupCount(bool automatic)
   return count;
 }
 
-bool cVNSIData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
+bool cVNSIData::GetChannelGroupList(ADDON_HANDLE handle, bool bRadio)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_CHANNELGROUP_LIST))
@@ -946,7 +946,7 @@ bool cVNSIData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
   return true;
 }
 
-bool cVNSIData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+bool cVNSIData::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_CHANNELGROUP_MEMBERS))

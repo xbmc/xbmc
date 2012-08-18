@@ -66,7 +66,7 @@ DLLEXPORT void PVR_unregister_me()
     m_Handle->PVRLib_UnRegisterMe(m_Handle->addonData, m_cb);
 }
 
-DLLEXPORT void PVR_transfer_epg_entry(const PVR_HANDLE handle, const EPG_TAG *epgentry)
+DLLEXPORT void PVR_transfer_epg_entry(const ADDON_HANDLE handle, const EPG_TAG *epgentry)
 {
   if (m_cb == NULL)
     return;
@@ -74,7 +74,7 @@ DLLEXPORT void PVR_transfer_epg_entry(const PVR_HANDLE handle, const EPG_TAG *ep
   m_cb->TransferEpgEntry(m_Handle->addonData, handle, epgentry);
 }
 
-DLLEXPORT void PVR_transfer_channel_entry(const PVR_HANDLE handle, const PVR_CHANNEL *chan)
+DLLEXPORT void PVR_transfer_channel_entry(const ADDON_HANDLE handle, const PVR_CHANNEL *chan)
 {
   if (m_cb == NULL)
     return;
@@ -82,7 +82,7 @@ DLLEXPORT void PVR_transfer_channel_entry(const PVR_HANDLE handle, const PVR_CHA
   m_cb->TransferChannelEntry(m_Handle->addonData, handle, chan);
 }
 
-DLLEXPORT void PVR_transfer_timer_entry(const PVR_HANDLE handle, const PVR_TIMER *timer)
+DLLEXPORT void PVR_transfer_timer_entry(const ADDON_HANDLE handle, const PVR_TIMER *timer)
 {
   if (m_cb == NULL)
     return;
@@ -90,7 +90,7 @@ DLLEXPORT void PVR_transfer_timer_entry(const PVR_HANDLE handle, const PVR_TIMER
   m_cb->TransferTimerEntry(m_Handle->addonData, handle, timer);
 }
 
-DLLEXPORT void PVR_transfer_recording_entry(const PVR_HANDLE handle, const PVR_RECORDING *recording)
+DLLEXPORT void PVR_transfer_recording_entry(const ADDON_HANDLE handle, const PVR_RECORDING *recording)
 {
   if (m_cb == NULL)
     return;
@@ -162,7 +162,7 @@ DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(int iDataSize)
   return m_cb->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
 }
 
-DLLEXPORT void PVR_transfer_channel_group(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+DLLEXPORT void PVR_transfer_channel_group(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
   if (m_cb == NULL)
     return;
@@ -170,7 +170,7 @@ DLLEXPORT void PVR_transfer_channel_group(const PVR_HANDLE handle, const PVR_CHA
   m_cb->TransferChannelGroup(m_Handle->addonData, handle, group);
 }
 
-DLLEXPORT void PVR_transfer_channel_group_member(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+DLLEXPORT void PVR_transfer_channel_group_member(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
   if (m_cb == NULL)
     return;

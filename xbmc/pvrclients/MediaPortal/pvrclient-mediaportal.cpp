@@ -441,7 +441,7 @@ PVR_ERROR cPVRClientMediaPortal::GetBackendTime(time_t *localTime, int *gmtOffse
 /************************************************************/
 /** EPG handling */
 
-PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
+PVR_ERROR cPVRClientMediaPortal::GetEpg(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
   vector<string> lines;
   char           command[256];
@@ -557,7 +557,7 @@ int cPVRClientMediaPortal::GetNumChannels(void)
   return atol(result.c_str());
 }
 
-PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR cPVRClientMediaPortal::GetChannels(ADDON_HANDLE handle, bool bRadio)
 {
   vector<string>  lines;
   CStdString      command;
@@ -720,7 +720,7 @@ int cPVRClientMediaPortal::GetChannelGroupsAmount(void)
   //return -1; // not implemented
 }
 
-PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(ADDON_HANDLE handle, bool bRadio)
 {
   vector<string>  lines;
   int code;
@@ -773,7 +773,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
   //TODO: code below is similar to GetChannels code. Refactor and combine...
   vector<string>           lines;
@@ -859,7 +859,7 @@ int cPVRClientMediaPortal::GetNumRecordings(void)
   return atol(result.c_str());
 }
 
-PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
+PVR_ERROR cPVRClientMediaPortal::GetRecordings(ADDON_HANDLE handle)
 {
   vector<string>  lines;
   string          result;
@@ -1016,7 +1016,7 @@ int cPVRClientMediaPortal::GetNumTimers(void)
   return atol(result.c_str());
 }
 
-PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
+PVR_ERROR cPVRClientMediaPortal::GetTimers(ADDON_HANDLE handle)
 {
   vector<string>  lines;
   string          result;

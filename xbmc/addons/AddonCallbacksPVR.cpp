@@ -80,7 +80,7 @@ CPVRClient *CAddonCallbacksPVR::GetPVRClient(void *addonData)
   return dynamic_cast<CPVRClient *>(addon->GetHelperPVR()->m_addon);
 }
 
-void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
   CPVRChannelGroups *xbmcGroups = static_cast<CPVRChannelGroups *>(handle->dataAddress);
   if (!handle || !group || !xbmcGroups)
@@ -99,7 +99,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HAND
   xbmcGroups->UpdateFromClient(CPVRChannelGroup(*group));
 }
 
-void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
   CPVRClient *client      = GetPVRClient(addonData);
   CPVRChannelGroup *group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
@@ -121,7 +121,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
   }
 }
 
-void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVR_HANDLE handle, const EPG_TAG *epgentry)
+void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
 {
   CEpg *xbmcEpg = static_cast<CEpg *>(handle->dataAddress);
   if (!handle || !xbmcEpg)
@@ -134,7 +134,7 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVR_HANDLE h
   xbmcEpg->UpdateEntry(epgentry, handle->dataIdentifier == 1 /* update db */);
 }
 
-void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL *channel)
+void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
 {
   CPVRClient *client                     = GetPVRClient(addonData);
   CPVRChannelGroupInternal *xbmcChannels = static_cast<CPVRChannelGroupInternal *>(handle->dataAddress);
@@ -148,7 +148,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVR_HAND
   xbmcChannels->UpdateFromClient(CPVRChannel(*channel, client->GetID()));
 }
 
-void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVR_HANDLE handle, const PVR_RECORDING *recording)
+void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
 {
   CPVRClient *client             = GetPVRClient(addonData);
   CPVRRecordings *xbmcRecordings = static_cast<CPVRRecordings *>(handle->dataAddress);
@@ -162,7 +162,7 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVR_HA
   xbmcRecordings->UpdateFromClient(CPVRRecording(*recording, client->GetID()));
 }
 
-void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE handle, const PVR_TIMER *timer)
+void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer)
 {
   CPVRClient *client     = GetPVRClient(addonData);
   CPVRTimers *xbmcTimers = static_cast<CPVRTimers *>(handle->dataAddress);
