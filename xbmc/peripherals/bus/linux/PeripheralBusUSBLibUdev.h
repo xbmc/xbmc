@@ -50,5 +50,6 @@ namespace PERIPHERALS
 
     struct udev *        m_udev;
     struct udev_monitor *m_udevMon;
+    PeripheralScanResults m_results;
   };
 }
