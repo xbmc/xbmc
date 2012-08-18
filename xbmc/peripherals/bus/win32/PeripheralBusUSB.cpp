@@ -52,7 +52,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 {
   bool     bReturn(false);
   DWORD    required = 0, iMemberIndex = 0;
-  int      nBufferSize = 0;
+  int      nBufferSize = 200;  // Just initial guess, will be increased if required
 
   SP_DEVICE_INTERFACE_DATA deviceInterfaceData;
   deviceInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
@@ -67,8 +67,14 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
     return bReturn;
   }
 
+  PSP_DEVICE_INTERFACE_DETAIL_DATA devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(nBufferSize);
+  if (devicedetailData == NULL)
+  {
+    CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
+    return false;
+  }
+
   bReturn = true;
-  PSP_DEVICE_INTERFACE_DETAIL_DATA devicedetailData = NULL;
   for (iMemberIndex = 0; bReturn && iMemberIndex < MAX_BUS_DEVICES; iMemberIndex++)
   {
     bReturn = SetupDiEnumDeviceInfo(hDevHandle, iMemberIndex, &devInfoData) == TRUE;
@@ -86,17 +92,12 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 
     if (bReturn)
     {
-      BOOL bDetailResult = false;
+      devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
+
+      BOOL bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize, &required, NULL);
+      if (!bDetailResult && GetLastError() == ERROR_INSUFFICIENT_BUFFER)
       {
-        // As per MSDN, Get the required buffer size. Call SetupDiGetDeviceInterfaceDetail with a 
-        // NULL DeviceInterfaceDetailData pointer, a DeviceInterfaceDetailDataSize of zero, 
-        // and a valid RequiredSize variable. In response to such a call, this function returns 
-        // the required buffer size at RequiredSize and fails with GetLastError returning 
-        // ERROR_INSUFFICIENT_BUFFER. 
-        // Allocate an appropriately sized buffer and call the function again to get the interface details. 
-
-        SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, NULL, 0, &required, NULL);
-
+        free(devicedetailData);
         devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(required * sizeof(TCHAR));
         if (!devicedetailData)
         {
@@ -105,9 +106,9 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
         }
         devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
         nBufferSize = required;
+        bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize, &required, NULL);
       }
 
-      bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, NULL);
       if (bDetailResult)
       {
         std::string strTmp(devicedetailData->DevicePath);
@@ -135,16 +136,12 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
           }
         }
       }
-
-      if (devicedetailData)
-      {
-        free(devicedetailData);
-        devicedetailData = NULL;
-      } 
     }
   }
 
   SetupDiDestroyDeviceInfoList(hDevHandle);
+  if (devicedetailData)
+    free(devicedetailData);
 
   return bReturn;
 }
