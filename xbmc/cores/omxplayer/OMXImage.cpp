@@ -633,7 +633,6 @@ bool COMXImage::Decode(unsigned width, unsigned height)
     return false;
   }
 
-
   port_def.format.image.eCompressionFormat = OMX_IMAGE_CodingUnused;
   port_def.format.image.eColorFormat = OMX_COLOR_Format32bitABGR8888;
   if((((width + 15)&~15) > width) || (((height + 15)&~15) > height))
@@ -705,9 +704,8 @@ bool COMXImage::Decode(unsigned width, unsigned height)
     {
       m_firstFrame = false;
 
-      m_omx_decoder.DisablePort(m_omx_decoder.GetOutputPort(), NULL);
-      m_omx_resize.DisablePort(m_omx_resize.GetInputPort(), NULL);
-      //m_omx_resize.DisablePort(m_omx_resize.GetOutputPort(), NULL);
+      m_omx_decoder.DisablePort(m_omx_decoder.GetOutputPort(), false);
+      m_omx_resize.DisablePort(m_omx_resize.GetInputPort(), false);
 
       OMX_PARAM_PORTDEFINITIONTYPE port_image;
       OMX_INIT_STRUCTURE(port_image);
@@ -718,8 +716,7 @@ bool COMXImage::Decode(unsigned width, unsigned height)
       port_image.nPortIndex = m_omx_resize.GetInputPort();
       m_omx_resize.SetParameter(OMX_IndexParamPortDefinition, &port_image);
 
-      m_omx_decoder.EnablePort(m_omx_decoder.GetOutputPort(), NULL);
-      //m_omx_decoder.EnablePort(m_omx_decoder.GetInputPort(), NULL);
+      m_omx_decoder.EnablePort(m_omx_decoder.GetOutputPort(), false);
       omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged);
       if(omx_err == OMX_ErrorStreamCorrupt)
       {
@@ -727,7 +724,7 @@ bool COMXImage::Decode(unsigned width, unsigned height)
         return false;
       }
 
-      m_omx_resize.EnablePort(m_omx_resize.GetInputPort(), NULL);
+      m_omx_resize.EnablePort(m_omx_resize.GetInputPort(), false);
       omx_err = m_omx_resize.WaitForEvent(OMX_EventPortSettingsChanged);
       if(omx_err == OMX_ErrorStreamCorrupt)
       {
@@ -737,15 +734,6 @@ bool COMXImage::Decode(unsigned width, unsigned height)
     }
   }
 
-  /*
-  omx_err = m_omx_resize.EnablePort(m_omx_resize.GetOutputPort(), NULL);
-  if(omx_err != OMX_ErrorNone)
-  {
-    CLog::Log(LOGERROR, "%s::%s m_omx_resize.EnablePort result(0x%x)\n", CLASSNAME, __func__, omx_err);
-    return false;
-  }
-  */
-
   omx_err = m_omx_decoder.WaitForEvent(OMX_EventBufferFlag, 1000);
   if(omx_err != OMX_ErrorNone)
   {
@@ -753,7 +741,7 @@ bool COMXImage::Decode(unsigned width, unsigned height)
     return false;
   }
 
-  m_decoded_buffer = m_omx_resize.GetOutputBuffer(2000);
+  m_decoded_buffer = m_omx_resize.GetOutputBuffer();
 
   if(!m_decoded_buffer)
   {
@@ -935,7 +923,7 @@ bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned
 
   if(internalBuffer) free(internalBuffer);
 
-  m_encoded_buffer = m_omx_encoder.GetOutputBuffer(2000);
+  m_encoded_buffer = m_omx_encoder.GetOutputBuffer();
 
   if(!m_encoded_buffer)
   {

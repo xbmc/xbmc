@@ -149,10 +149,10 @@ public:
   void FlushOutput();
 
   OMX_BUFFERHEADERTYPE *GetInputBuffer(long timeout=200);
-  OMX_BUFFERHEADERTYPE *GetOutputBuffer(long timeout=200);
+  OMX_BUFFERHEADERTYPE *GetOutputBuffer();
 
-  OMX_ERRORTYPE AllocInputBuffers(void);
-  OMX_ERRORTYPE AllocOutputBuffers(void);
+  OMX_ERRORTYPE AllocInputBuffers(bool use_buffers = false);
+  OMX_ERRORTYPE AllocOutputBuffers(bool use_buffers = false);
 
   OMX_ERRORTYPE FreeInputBuffers(bool wait);
   OMX_ERRORTYPE FreeOutputBuffers(bool wait);
@@ -163,7 +163,6 @@ private:
   OMX_HANDLETYPE m_handle;
   unsigned int   m_input_port;
   unsigned int   m_output_port;
-  int            m_ports_enabled[OMX_MAX_PORTS];
   std::string    m_componentName;
   pthread_mutex_t   m_omx_event_mutex;
   pthread_mutex_t   m_lock;
@@ -178,6 +177,7 @@ private:
   unsigned int  m_input_alignment;
   unsigned int  m_input_buffer_size;
   unsigned int  m_input_buffer_count;
+  bool          m_omx_input_use_buffers;
 
   // OMXCore output buffers (video frames)
   pthread_mutex_t   m_omx_output_mutex;
@@ -186,6 +186,8 @@ private:
   unsigned int  m_output_alignment;
   unsigned int  m_output_buffer_size;
   unsigned int  m_output_buffer_count;
+  bool          m_omx_output_use_buffers;
+  sem_t         m_omx_fill_buffer_done;
 
   bool          m_exit;
   DllOMX        *m_DllOMX;

@@ -629,13 +629,16 @@ bool OMXClock::OMXReset(bool lock /* = true */)
 
   OMXSetClockPorts(&clock);
 
-  omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
-  if(omx_err != OMX_ErrorNone)
+  if(clock.nWaitMask)
   {
-    CLog::Log(LOGERROR, "OMXClock::OMXReset error setting OMX_IndexConfigTimeClockState\n");
-    if(lock)
-      UnLock();
-    return false;
+    omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
+    if(omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "OMXClock::OMXReset error setting OMX_IndexConfigTimeClockState\n");
+      if(lock)
+        UnLock();
+      return false;
+    }
   }
 
   if(lock)
