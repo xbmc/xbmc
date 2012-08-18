@@ -89,6 +89,11 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
         SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, NULL, 0, &required, NULL);
 
         devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(required * sizeof(TCHAR));
+        if (!devicedetailData)
+        {
+          CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
+          return false;
+        }
         devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
         nBufferSize = required;
       }
