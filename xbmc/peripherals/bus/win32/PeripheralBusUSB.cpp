@@ -30,6 +30,9 @@ const static GUID USB_NIC_GUID = { 0xAD498944, 0x762F, 0x11D0, { 0x8D, 0xCB, 0x0
 
 using namespace PERIPHERALS;
 
+// Only to avoid endless loops while scanning for devices
+#define MAX_BUS_DEVICES 2000
+
 CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
     CPeripheralBus("PeripBusUSB", manager, PERIPHERAL_BUS_USB)
 {
@@ -65,18 +68,24 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
   }
 
   bReturn = true;
-  BOOL bResult = true;
   PSP_DEVICE_INTERFACE_DETAIL_DATA devicedetailData = NULL;
-  while(bResult)
+  for (iMemberIndex = 0; bReturn && iMemberIndex < MAX_BUS_DEVICES; iMemberIndex++)
   {
-    bResult = SetupDiEnumDeviceInfo(hDevHandle, iMemberIndex, &devInfoData);
+    bReturn = SetupDiEnumDeviceInfo(hDevHandle, iMemberIndex, &devInfoData) == TRUE;
 
-    if (bResult)
-      bResult = SetupDiEnumDeviceInterfaces(hDevHandle, 0, guid, iMemberIndex, &deviceInterfaceData);
-
-    if (bResult)
+    if (bReturn)
+      bReturn = SetupDiEnumDeviceInterfaces(hDevHandle, 0, guid, iMemberIndex, &deviceInterfaceData) == TRUE;
+    else
     {
-      iMemberIndex++;
+      bReturn = true;
+      if (GetLastError() == ERROR_NO_MORE_ITEMS)
+        break; // no more USB devices, nothing more to scan
+      else
+        continue; // try to get other USB devices
+    }
+
+    if (bReturn)
+    {
       BOOL bDetailResult = false;
       {
         // As per MSDN, Get the required buffer size. Call SetupDiGetDeviceInterfaceDetail with a 
