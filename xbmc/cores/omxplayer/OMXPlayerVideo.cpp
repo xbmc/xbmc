@@ -805,7 +805,8 @@ void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     dst_rect.y2 *= yscale;
   }
 
-  m_omxVideo.SetVideoRect(SrcRect, m_dst_rect);
+  if(!(m_flags & CONF_FLAGS_FORMAT_SBS) && !!(m_flags & CONF_FLAGS_FORMAT_TB))
+    m_omxVideo.SetVideoRect(SrcRect, m_dst_rect);
 }
 
 void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
