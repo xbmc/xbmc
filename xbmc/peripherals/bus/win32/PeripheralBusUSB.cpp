@@ -68,12 +68,17 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
   }
 
   PSP_DEVICE_INTERFACE_DETAIL_DATA devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(nBufferSize);
-  if (devicedetailData == NULL)
+  const int nPropertyBufferSize = 100;
+  char* deviceProperty = (char*)malloc(nPropertyBufferSize);
+  if (!devicedetailData || !deviceProperty)
   {
+    free(devicedetailData);
+    free(deviceProperty);
     CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
     return false;
   }
 
+  SP_DEVINFO_DATA deviceInfo;
   bReturn = true;
   for (iMemberIndex = 0; bReturn && iMemberIndex < MAX_BUS_DEVICES; iMemberIndex++)
   {
@@ -93,20 +98,22 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
     if (bReturn)
     {
       devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
+      deviceInfo.cbSize = sizeof(SP_DEVINFO_DATA);
 
-      BOOL bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize, &required, NULL);
+      BOOL bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, &deviceInfo);
       if (!bDetailResult && GetLastError() == ERROR_INSUFFICIENT_BUFFER)
       {
         free(devicedetailData);
         devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(required * sizeof(TCHAR));
         if (!devicedetailData)
         {
+          free(deviceProperty);
           CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
           return false;
         }
         devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
         nBufferSize = required;
-        bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize, &required, NULL);
+        bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, &deviceInfo);
       }
 
       if (bDetailResult)
@@ -126,10 +133,16 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
           {
             PeripheralScanResult result(m_type);
             result.m_strLocation  = devicedetailData->DevicePath;
-            result.m_type         = defaultType;
             result.m_iVendorId    = PeripheralTypeTranslator::HexStringToInt(strVendorId.c_str());
             result.m_iProductId   = PeripheralTypeTranslator::HexStringToInt(strProductId.c_str());
             result.m_iSequence    = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
+
+            // Assume that buffer is more then enough (we need only 8 chars, allocation is 100 chars). If not - just skip type detection.
+            if (SetupDiGetDeviceRegistryProperty(hDevHandle, &devInfoData, SPDRP_CLASS, NULL, (PBYTE)deviceProperty, nPropertyBufferSize, &required) &&
+                strcmp("HIDClass", deviceProperty) == 0)
+              result.m_type = PERIPHERAL_HID;
+            else
+              result.m_type = defaultType;
 
             if (!results.ContainsResult(result))
               results.m_results.push_back(result);
@@ -142,6 +155,8 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
   SetupDiDestroyDeviceInfoList(hDevHandle);
   if (devicedetailData)
     free(devicedetailData);
+  if (deviceProperty)
+    free(deviceProperty);
 
   return bReturn;
 }
