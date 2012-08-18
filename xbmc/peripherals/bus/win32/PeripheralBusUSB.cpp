@@ -133,12 +133,9 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
         devicedetailData = NULL;
       } 
     }
-    else
-    {
-      SetupDiDestroyDeviceInfoList(hDevHandle);
-      return bReturn;
-    }
   }
+
+  SetupDiDestroyDeviceInfoList(hDevHandle);
 
   return bReturn;
 }
