@@ -443,7 +443,6 @@ protected:
 
   void SetHardwareVolume(float hardwareVolume);
   void UpdateLCD();
-  void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);
 
   void VolumeChanged() const;
 
