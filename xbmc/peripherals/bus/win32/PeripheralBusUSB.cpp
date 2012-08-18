@@ -68,7 +68,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
   }
 
   PSP_DEVICE_INTERFACE_DETAIL_DATA devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(nBufferSize);
-  const int nPropertyBufferSize = 100;
+  int nPropertyBufferSize = 100; // Just initial guess, will be increased if required
   char* deviceProperty = (char*)malloc(nPropertyBufferSize);
   if (!devicedetailData || !deviceProperty)
   {
@@ -118,13 +118,30 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 
       if (bDetailResult)
       {
-        std::string strTmp(devicedetailData->DevicePath);
+        bDetailResult = SetupDiGetDeviceRegistryProperty(hDevHandle, &deviceInfo, SPDRP_HARDWAREID, NULL, (PBYTE)deviceProperty, nPropertyBufferSize, &required);
+        if (!bDetailResult && GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+        {
+          free(deviceProperty);
+          deviceProperty = (char*)malloc(required);
+          if (!deviceProperty)
+          {
+            free(devicedetailData);
+            CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
+            return false;
+          }
+          nPropertyBufferSize = required;
+          bDetailResult = SetupDiGetDeviceRegistryProperty(hDevHandle, &deviceInfo, SPDRP_HARDWAREID, NULL, (PBYTE)deviceProperty, nPropertyBufferSize, &required);
+        }
+      }
+
+      if (bDetailResult)
+      {
+        std::string strTmp(deviceProperty);
 
         StringUtils::ToLower(strTmp);
         size_t posVid, posPid;
-        if (((posVid = strTmp.find("#vid_")) != std::string::npos || (posVid = strTmp.find("&vid_")) != std::string::npos) &&
-            ((posPid = strTmp.find("#pid_")) != std::string::npos || (posPid = strTmp.find("&pid_")) != std::string::npos) &&
-            (strTmp.find("&mi_") == std::string::npos) || (strTmp.find("&mi_00") != std::string::npos))
+        if (((posVid=strTmp.find("\\vid_")) != std::string::npos || (posVid=strTmp.find("&vid_")) != std::string::npos) &&
+              ((posPid=strTmp.find("\\pid_")) != std::string::npos || (posPid=strTmp.find("&pid_")) != std::string::npos))
         {
           std::string strVendorId(strTmp, posVid + 5, 4);
           std::string strProductId(strTmp, posPid + 5, 4);
@@ -137,7 +154,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
             result.m_iProductId   = PeripheralTypeTranslator::HexStringToInt(strProductId.c_str());
             result.m_iSequence    = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
 
-            // Assume that buffer is more then enough (we need only 8 chars, allocation is 100 chars). If not - just skip type detection.
+            // Assume that buffer is more then enough (we need only 8 chars, initial allocation is 100 chars). If not - just skip type detection.
             if (SetupDiGetDeviceRegistryProperty(hDevHandle, &devInfoData, SPDRP_CLASS, NULL, (PBYTE)deviceProperty, nPropertyBufferSize, &required) &&
                 strcmp("HIDClass", deviceProperty) == 0)
               result.m_type = PERIPHERAL_HID;
