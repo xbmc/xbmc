@@ -1046,6 +1046,7 @@ void COMXPlayer::Process()
     // stop thumb jobs
     CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
 
+    /*
     if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
     {
       if (!WaitForPausedThumbJobs(20000))
@@ -1054,6 +1055,7 @@ void COMXPlayer::Process()
         CLog::Log(LOGINFO, "COMXPlayer::Process:thumbgen jobs still running !!!");
       }
     }
+    */
 
     while (!m_bAbortRequest)
     {
