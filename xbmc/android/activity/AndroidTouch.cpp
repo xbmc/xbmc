@@ -24,9 +24,11 @@
 #include "windowing/WinEvents.h"
 #include "ApplicationMessenger.h"
 
-CAndroidTouch::CAndroidTouch()
+CAndroidTouch::CAndroidTouch(uint32_t dpi) : m_dpi(dpi)
 {
   CTouchInput::Get().RegisterHandler(this);
+  if (!m_dpi)
+    m_dpi = 160; // sensible default
 }
 
 CAndroidTouch::~CAndroidTouch()
