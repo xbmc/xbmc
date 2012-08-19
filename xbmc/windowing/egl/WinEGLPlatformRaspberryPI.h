@@ -36,15 +36,17 @@ public:
   CWinEGLPlatformRaspberryPI();
   virtual ~CWinEGLPlatformRaspberryPI();
 
-  virtual EGLNativeWindowType InitWindowSystem(EGLNativeDisplayType nativeDisplay, int width, int height, int bpp);
-  virtual void DestroyWindowSystem(EGLNativeWindowType native_window);
   virtual bool SetDisplayResolution(RESOLUTION_INFO &res);
   virtual bool ClampToGUIDisplayLimits(int &width, int &height);
   virtual bool ProbeDisplayResolutions(std::vector<RESOLUTION_INFO> &resolutions);
 
-  virtual bool InitializeDisplay() { return true; };
+  virtual EGLNativeWindowType InitWindowSystem(EGLNativeDisplayType nativeDisplay, int width, int height, int bpp);
+  virtual void DestroyWindowSystem(EGLNativeWindowType native_window);
+
+  virtual bool InitializeDisplay();
+  virtual bool UninitializeDisplay();
   virtual bool BindSurface();
-  virtual bool CreateWindow() { return true; };
+  virtual bool CreateWindow();
   virtual bool DestroyWindow();
   virtual bool ShowWindow(bool show);
   virtual bool ReleaseSurface();
@@ -53,14 +55,15 @@ public:
   virtual bool SetVSync(bool enable);
   virtual bool IsExtSupported(const char* extension);
 
-  virtual EGLDisplay            GetEGLDisplay();
-  virtual EGLSurface            GetEGLSurface();
-  virtual EGLContext            GetEGLContext();
-  virtual bool                  FixedDesktop() { return true; }
-  virtual RESOLUTION_INFO       GetDesktopRes() { return m_desktopRes; }
+  virtual EGLDisplay        GetEGLDisplay();
+  virtual EGLSurface        GetEGLSurface();
+  virtual EGLContext        GetEGLContext();
+  virtual bool              FixedDesktop()  { return true; }
+  virtual RESOLUTION_INFO   GetDesktopRes() { return m_desktopRes; }
 
 protected:
-  virtual bool setConfiguration();
+  virtual EGLNativeWindowType getNativeWindow();
+  void DestroyDispmaxWindow();
 
   EGL_DISPMANX_WINDOW_T *m_nativeWindow;
   EGLNativeDisplayType  m_nativeDisplay;
@@ -72,9 +75,6 @@ protected:
   int                   m_width;
   int                   m_height;
 
-  int                   m_fb_width;
-  int                   m_fb_height;
-  int                   m_fb_bpp;
   DllBcmHost            m_DllBcmHost;
 
   DISPMANX_ELEMENT_HANDLE_T m_dispman_element;

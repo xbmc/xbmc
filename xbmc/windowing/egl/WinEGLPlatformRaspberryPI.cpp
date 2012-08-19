@@ -41,71 +41,72 @@
 
 #define __VCCOREVER__ 0x04000000
 
-#define IS_WIDESCREEN(m) (m==3||m==7||m==9||m==11||m==13||m==15||m==18||m==22||m==24||m==26||m==28||m==30||m==36||m==38||m==43||m==45||m==49||m==51||m==53||m==55||m==57||m==59)
+#define IS_WIDESCREEN(m) ( m == 3 || m == 7 || m == 9 || \
+    m == 11 || m == 13 || m == 15 || m == 18 || m == 22 || \
+    m == 24 || m == 26 || m == 28 || m == 30 || m == 36 || \
+    m == 38 || m == 43 || m == 45 || m == 49 || m == 51 || \
+    m == 53 || m == 55 || m == 57 || m == 59)
 
-#define MAKEFLAGS(group, mode, interlace, mode3d) (((mode)<<24)|((group)<<16)|((interlace)!=0?D3DPRESENTFLAG_INTERLACED:D3DPRESENTFLAG_PROGRESSIVE)| \
-   (((group)==HDMI_RES_GROUP_CEA && IS_WIDESCREEN(mode))?D3DPRESENTFLAG_WIDESCREEN:0)|((mode3d)!=0?D3DPRESENTFLAG_MODE3DSBS:0))
-#define GETFLAGS_INTERLACE(f) (((f)&D3DPRESENTFLAG_INTERLACED)!=0)
-#define GETFLAGS_WIDESCREEN(f) (((f)&D3DPRESENTFLAG_WIDESCREEN)!=0)
-#define GETFLAGS_GROUP(f) ((HDMI_RES_GROUP_T)(((f)>>16)&0xff))
-#define GETFLAGS_MODE(f) (((f)>>24)&0xff)
-#define GETFLAGS_MODE3D(f) (((f)&D3DPRESENTFLAG_MODE3DSBS)!=0)
+#define MAKEFLAGS(group, mode, interlace, mode3d) \
+  ( ( (mode)<<24 ) | ( (group)<<16 ) | \
+   ( (interlace) != 0 ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE) | \
+   ( ((group) == HDMI_RES_GROUP_CEA && IS_WIDESCREEN(mode) ) ? D3DPRESENTFLAG_WIDESCREEN : 0) | \
+   ( (mode3d) != 0 ? D3DPRESENTFLAG_MODE3DSBS : 0 ))
+
+#define GETFLAGS_INTERLACE(f)   ( ( (f) & D3DPRESENTFLAG_INTERLACED ) != 0)
+#define GETFLAGS_WIDESCREEN(f)  ( ( (f) & D3DPRESENTFLAG_WIDESCREEN ) != 0)
+#define GETFLAGS_GROUP(f)       ( (HDMI_RES_GROUP_T)( ((f) >> 16) & 0xff ))
+#define GETFLAGS_MODE(f)        ( ( (f) >>24 ) & 0xff )
+#define GETFLAGS_MODE3D(f)      ( ( (f) & D3DPRESENTFLAG_MODE3DSBS ) !=0 )
+
+#define TV_MAX_SUPPORTED_MODES 60
 
 CWinEGLPlatformRaspberryPI::CWinEGLPlatformRaspberryPI()
 {
-  m_surface = EGL_NO_SURFACE;
-  m_context = EGL_NO_CONTEXT;
-  m_display = EGL_NO_DISPLAY;
+  m_surface                 = EGL_NO_SURFACE;
+  m_context                 = EGL_NO_CONTEXT;
+  m_display                 = EGL_NO_DISPLAY;
 
-  m_nativeWindow = NULL;
-
-  m_desktopRes.iScreen = 0;
-  m_desktopRes.iWidth  = 1280;
-  m_desktopRes.iHeight = 720;
-  //m_desktopRes.iScreenWidth  = 1280;
-  //m_desktopRes.iScreenHeight = 720;
+  m_desktopRes.iScreen      = 0;
+  m_desktopRes.iWidth       = 1280;
+  m_desktopRes.iHeight      = 720;
   m_desktopRes.fRefreshRate = 60.0f;
-  m_desktopRes.bFullScreen = true;
-  m_desktopRes.iSubtitles = (int)(0.965 * 720);
-  m_desktopRes.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-  m_desktopRes.fPixelRatio = 1.0f;
-  m_desktopRes.strMode = "720p 16:9";
-  m_sdMode = false;
+  m_desktopRes.bFullScreen  = true;
+  m_desktopRes.iSubtitles   = (int)(0.965 * 720);
+  m_desktopRes.dwFlags      = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
+  m_desktopRes.fPixelRatio  = 1.0f;
+  m_desktopRes.strMode      = "720p 16:9";
+  m_sdMode                  = false;
+
+  m_dispman_element         = DISPMANX_NO_HANDLE;
+  m_dispman_element2        = DISPMANX_NO_HANDLE;
+  m_dispman_display         = DISPMANX_NO_HANDLE;
+
+  m_DllBcmHost.Load();
+
+  // get current display settings state
+  memset(&m_tv_state, 0, sizeof(TV_GET_STATE_RESP_T));
+  m_DllBcmHost.vc_tv_get_state(&m_tv_state);
+
+  m_nativeWindow = (EGL_DISPMANX_WINDOW_T *)malloc(sizeof(EGL_DISPMANX_WINDOW_T));
+  memset(m_nativeWindow, 0x0, sizeof(EGL_DISPMANX_WINDOW_T));
 }
 
 CWinEGLPlatformRaspberryPI::~CWinEGLPlatformRaspberryPI()
 {
-  DestroyWindow();
-}
+  UninitializeDisplay();
 
-EGLNativeWindowType CWinEGLPlatformRaspberryPI::InitWindowSystem(EGLNativeDisplayType nativeDisplay, int width, int height, int bpp)
-{
-  m_nativeDisplay = nativeDisplay;
-  m_width = width;
-  m_height = height;
+  free(m_nativeWindow);
 
-  m_dispman_element = DISPMANX_NO_HANDLE;
-  m_dispman_element2 = DISPMANX_NO_HANDLE;
-  m_dispman_display = DISPMANX_NO_HANDLE;
-
-  if (!m_DllBcmHost.Load())
-    return NULL;
-
-  memset(&m_tv_state, 0, sizeof(TV_GET_STATE_RESP_T));
-  m_DllBcmHost.vc_tv_get_state(&m_tv_state);
-
-  m_nativeWindow  = (EGL_DISPMANX_WINDOW_T*)calloc(1, sizeof(EGL_DISPMANX_WINDOW_T));
-
-  return (EGLNativeWindowType)m_nativeWindow;
+  if(m_DllBcmHost.IsLoaded())
+    m_DllBcmHost.Unload();
 }
 
 bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 {
-  EGL_DISPMANX_WINDOW_T *nativeWindow = (EGL_DISPMANX_WINDOW_T *)m_nativeWindow;
-
-  DestroyWindow();
-
   bool bFound = false;
+
+  DestroyDispmaxWindow();
 
   RESOLUTION_INFO resSearch;
 
@@ -138,14 +139,14 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 
     if (success == 0) 
     {
-      CLog::Log(LOGNOTICE, "CWinEGLPlatformRaspberryPI::SetDisplayResolution set HDMI mode (%d,%d,%d)=%d\n", 
+      CLog::Log(LOGDEBUG, "EGL set HDMI mode (%d,%d,%d)=%d\n", 
                           GETFLAGS_MODE3D(resSearch.dwFlags) ? HDMI_MODE_3D:HDMI_MODE_HDMI, GETFLAGS_GROUP(resSearch.dwFlags), 
                           GETFLAGS_MODE(resSearch.dwFlags), success);
       sem_wait(&m_tv_synced);
     } 
     else 
     {
-      CLog::Log(LOGERROR, "CWinEGLPlatformRaspberryPI::SetDisplayResolution failed to set HDMI mode (%d,%d,%d)=%d\n", 
+      CLog::Log(LOGERROR, "EGL failed to set HDMI mode (%d,%d,%d)=%d\n", 
                           GETFLAGS_MODE3D(resSearch.dwFlags) ? HDMI_MODE_3D:HDMI_MODE_HDMI, GETFLAGS_GROUP(resSearch.dwFlags), 
                           GETFLAGS_MODE(resSearch.dwFlags), success);
     }
@@ -157,24 +158,19 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 
   m_width   = res.iWidth;
   m_height  = res.iHeight;
-  //m_bFullScreen = fullScreen;
-  m_fb_width  = res.iWidth;
-  m_fb_height = res.iHeight;
-
-  m_fb_bpp    = 8;
 
   VC_RECT_T dst_rect;
   VC_RECT_T src_rect;
 
-  dst_rect.x = 0;
-  dst_rect.y = 0;
-  dst_rect.width = res.iWidth;
+  dst_rect.x      = 0;
+  dst_rect.y      = 0;
+  dst_rect.width  = res.iWidth;
   dst_rect.height = res.iHeight;
 
-  src_rect.x = 0;
-  src_rect.y = 0;
-  src_rect.width = m_fb_width << 16;
-  src_rect.height = m_fb_height << 16;
+  src_rect.x      = 0;
+  src_rect.y      = 0;
+  src_rect.width  = m_width << 16;
+  src_rect.height = m_height << 16;
 
   VC_DISPMANX_ALPHA_T alpha;
   memset(&alpha, 0x0, sizeof(VC_DISPMANX_ALPHA_T));
@@ -185,18 +181,18 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 
   DISPMANX_TRANSFORM_T transform = DISPMANX_NO_ROTATE;
   DISPMANX_UPDATE_HANDLE_T dispman_update = m_DllBcmHost.vc_dispmanx_update_start(0);
-  CLog::Log(LOGDEBUG, "CWinEGLPlatformRaspberryPI::SetDisplayResolution %dx%d->%dx%d\n", m_fb_width, m_fb_height, dst_rect.width, dst_rect.height);
 
-  // width < height => half SBS
-  if (src_rect.width < src_rect.height)
+  CLog::Log(LOGDEBUG, "EGL set resolution %dx%d -> %dx%d @ %.2f fps\n", 
+      m_width, m_height, dst_rect.width, dst_rect.height, bFound ? resSearch.fRefreshRate : res.fRefreshRate);
+
+  // The trick for SBS is that we stick two dispman elements together 
+  // and the PI firmware knows that we are in SBS mode and it renders the gui in SBS
+  if(bFound && (resSearch.dwFlags & D3DPRESENTFLAG_MODE3DSBS))
   {
     // right side
-    /*
-    dst_rect.x = m_width;
-    dst_rect.width = m_width;
-    */
     dst_rect.x = res.iWidth;
     dst_rect.width >>= dst_rect.width - dst_rect.x;
+
     m_dispman_element2 = m_DllBcmHost.vc_dispmanx_element_add(dispman_update,
       m_dispman_display,
       1,                              // layer
@@ -204,22 +200,17 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
       (DISPMANX_RESOURCE_HANDLE_T)0,  // src
       &src_rect,
       DISPMANX_PROTECTION_NONE,
-      //(VC_DISPMANX_ALPHA_T*)0,        // alpha
-      &alpha,
-      //(DISPMANX_CLAMP_T*)0,           // clamp
-      &clamp,
-      //(DISPMANX_TRANSFORM_T)0);       // transform
-      transform);       // transform
+      &alpha,                         // alpha
+      &clamp,                         // clamp
+      transform);                     // transform
       assert(m_dispman_element2 != DISPMANX_NO_HANDLE);
       assert(m_dispman_element2 != (unsigned)DISPMANX_INVALID);
+
     // left side - fall through
-    /*
-    dst_rect.x = 0;
-    dst_rect.width = m_width;
-    */
     dst_rect.x = 0;
     dst_rect.width = res.iWidth - dst_rect.x;
   }
+
   m_dispman_element = m_DllBcmHost.vc_dispmanx_element_add(dispman_update,
     m_dispman_display,
     1,                              // layer
@@ -227,40 +218,27 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
     (DISPMANX_RESOURCE_HANDLE_T)0,  // src
     &src_rect,
     DISPMANX_PROTECTION_NONE,
-    //(VC_DISPMANX_ALPHA_T*)0,        // alpha
-    &alpha,
-    //(DISPMANX_CLAMP_T*)0,           // clamp
-    &clamp,
-    //(DISPMANX_TRANSFORM_T)0);       // transform
-    transform);       // transform
-    assert(m_dispman_element != DISPMANX_NO_HANDLE);
-    assert(m_dispman_element != (unsigned)DISPMANX_INVALID);
+    &alpha,                         //alphe
+    &clamp,                         //clamp
+    transform);                     // transform
 
-  memset(nativeWindow, 0, sizeof(EGL_DISPMANX_WINDOW_T));
-  nativeWindow->element = m_dispman_element;
-  nativeWindow->width   = m_fb_width;
-  nativeWindow->height  = m_fb_height;
+  assert(m_dispman_element != DISPMANX_NO_HANDLE);
+  assert(m_dispman_element != (unsigned)DISPMANX_INVALID);
+
+  memset(m_nativeWindow, 0, sizeof(EGL_DISPMANX_WINDOW_T));
+
+  m_nativeWindow->element = m_dispman_element;
+  m_nativeWindow->width   = m_width;
+  m_nativeWindow->height  = m_height;
+
   m_DllBcmHost.vc_dispmanx_display_set_background(dispman_update, m_dispman_display, 0x00, 0x00, 0x00);
   m_DllBcmHost.vc_dispmanx_update_submit_sync(dispman_update);
-
-  CLog::Log(LOGDEBUG, "CWinEGLPlatformRaspberryPI::SetDisplayResolution(%dx%d) (%dx%d)\n", nativeWindow->width, nativeWindow->height, m_width, m_height);
-
-  if (!setConfiguration())
-  {
-    free(m_nativeWindow);
-    m_nativeWindow = NULL;
-    return false;
-  }
 
   return true;
 }
 
 bool CWinEGLPlatformRaspberryPI::ClampToGUIDisplayLimits(int &width, int &height)
 {
-  /*
-  width   = m_tv_state.width;
-  height  = m_tv_state.height;
-  */
   return true;
 }
 
@@ -280,23 +258,26 @@ bool CWinEGLPlatformRaspberryPI::ProbeDisplayResolutions(std::vector<RESOLUTION_
     m_DllBcmHost.vc_tv_get_state(&tv);
 
     RESOLUTION_INFO res;
-    CLog::Log(LOGNOTICE, "%dx%d@%d %s:%x\n", tv.width, tv.height, tv.frame_rate, tv.scan_mode?"I":"");
+    CLog::Log(LOGDEBUG, "EGL probe resolution %dx%d@%d %s:%x\n",
+       tv.width, tv.height, tv.frame_rate, tv.scan_mode?"I":"");
 
-    res.iScreen = 0;
-    res.bFullScreen = true;
-    res.iSubtitles = (int)(0.965 * tv.height);
-    res.dwFlags = tv.scan_mode ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE;
-    res.fRefreshRate = (float)tv.frame_rate;
-    res.fPixelRatio = 1.0f;
-    res.iWidth = tv.width;
-    res.iHeight = tv.height;
-    //res.iScreenWidth = tv.width;
+    res.iScreen       = 0;
+    res.bFullScreen   = true;
+    res.iSubtitles    = (int)(0.965 * tv.height);
+    res.dwFlags       = tv.scan_mode ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE;
+    res.fRefreshRate  = (float)tv.frame_rate;
+    res.fPixelRatio   = 1.0f;
+    res.iWidth        = tv.width;
+    res.iHeight       = tv.height;
+    //res.iScreenWidth  = tv.width;
     //res.iScreenHeight = tv.height;
     res.strMode.Format("%dx%d", tv.width, tv.height);
-    if ((float)tv.frame_rate > 1)
-        res.strMode.Format("%s @ %.2f%s - Full Screen", res.strMode, (float)tv.frame_rate, res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+    if((float)tv.frame_rate > 1)
+    {
+        res.strMode.Format("%s @ %.2f%s - Full Screen", res.strMode, (float)tv.frame_rate, 
+            res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+    }
 
-    CStdString resolution;
     resolutions.push_back(res);
     m_desktopRes = res;
     m_res.push_back(res);
@@ -305,45 +286,21 @@ bool CWinEGLPlatformRaspberryPI::ProbeDisplayResolutions(std::vector<RESOLUTION_
   return true;
 }
 
-void CWinEGLPlatformRaspberryPI::DestroyWindowSystem(EGLNativeWindowType native_window)
+EGLNativeWindowType CWinEGLPlatformRaspberryPI::InitWindowSystem(EGLNativeDisplayType nativeDisplay, int width, int height, int bpp)
 {
-  DestroyWindow();
+  m_nativeDisplay = nativeDisplay;
+  m_width         = width;
+  m_height        = height;
 
-  EGLBoolean eglStatus;
-  if (m_context != EGL_NO_CONTEXT)
-  {
-    eglStatus = eglDestroyContext(m_display, m_context);
-    if (!eglStatus)
-      CLog::Log(LOGERROR, "Error destroying EGL context");
-    m_context = EGL_NO_CONTEXT;
-  }
-
-  if (m_surface != EGL_NO_SURFACE)
-  {
-    eglStatus = eglDestroySurface(m_display, m_surface);
-    if (!eglStatus)
-      CLog::Log(LOGERROR, "Error destroying EGL surface");
-    m_surface = EGL_NO_SURFACE;
-  }
-
-  if (m_display != EGL_NO_DISPLAY)
-  {
-    eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-
-    eglStatus = eglTerminate(m_display);
-    if (!eglStatus)
-      CLog::Log(LOGERROR, "Error terminating EGL");
-    m_display = EGL_NO_DISPLAY;
-  }
-
-  free(m_nativeWindow);
-  m_nativeWindow = NULL;
-
-  if(m_DllBcmHost.IsLoaded())
-    m_DllBcmHost.Unload();
+  return getNativeWindow();
 }
 
-bool CWinEGLPlatformRaspberryPI::setConfiguration()
+void CWinEGLPlatformRaspberryPI::DestroyWindowSystem(EGLNativeWindowType native_window)
+{
+  UninitializeDisplay();
+}
+
+bool CWinEGLPlatformRaspberryPI::InitializeDisplay()
 {
   EGLBoolean eglStatus;
   EGLint     configCount;
@@ -378,7 +335,7 @@ bool CWinEGLPlatformRaspberryPI::setConfiguration()
   eglStatus = eglChooseConfig(m_display, configAttrs, NULL, 0, &configCount);
   if (!eglStatus || !configCount)
   {
-    CLog::Log(LOGERROR, "EGL failed to return any matching configurations: %d", eglStatus);
+    CLog::Log(LOGERROR, "EGL failed to return any matching configurations: %d error : 0x%08x", eglStatus, eglGetError());
     return false;
   }
 
@@ -386,7 +343,7 @@ bool CWinEGLPlatformRaspberryPI::setConfiguration()
   configList = (EGLConfig*)malloc(configCount * sizeof(EGLConfig));
   if (!configList)
   {
-    CLog::Log(LOGERROR, "kdMalloc failure obtaining configuration list");
+    CLog::Log(LOGERROR, "EGL malloc failure obtaining configuration list");
     return false;
   }
 
@@ -395,7 +352,7 @@ bool CWinEGLPlatformRaspberryPI::setConfiguration()
                                 configList, configCount, &configCount);
   if (!eglStatus || !configCount)
   {
-    CLog::Log(LOGERROR, "EGL failed to populate configuration list: %d", eglStatus);
+    CLog::Log(LOGERROR, "EGL failed to populate configuration list: %d error : 0x%08x", eglStatus, eglGetError());
     return false;
   }
 
@@ -403,9 +360,56 @@ bool CWinEGLPlatformRaspberryPI::setConfiguration()
   m_config = configList[0];
 
   if (m_surface != EGL_NO_SURFACE)
-  {
     ReleaseSurface();
+
+  free(configList);
+
+  return true;
+}
+
+bool CWinEGLPlatformRaspberryPI::UninitializeDisplay()
+{
+  EGLBoolean eglStatus;
+
+  // Recreate a new rendering context doesn't work on the PI.
+  // We have to keep the first created context alive until we exit.
+  if (m_context != EGL_NO_CONTEXT)
+  {
+    eglStatus = eglDestroyContext(m_display, m_context);
+    if (!eglStatus)
+      CLog::Log(LOGERROR, "EGL destroy context error : 0x%08x", eglGetError());
+    m_context = EGL_NO_CONTEXT;
   }
+
+  DestroyWindow();
+
+  DestroyDispmaxWindow();
+
+  if (m_display != EGL_NO_DISPLAY)
+  {
+    eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+
+    eglStatus = eglTerminate(m_display);
+    if (!eglStatus)
+      CLog::Log(LOGERROR, "EGL terminate error 0x%08x", eglGetError());
+    m_display = EGL_NO_DISPLAY;
+  }
+
+  return true;
+}
+
+bool CWinEGLPlatformRaspberryPI::CreateWindow()
+{
+  if (m_display == EGL_NO_DISPLAY || m_config == NULL)
+  {
+    if (!InitializeDisplay())
+      return false;
+  }
+
+  if (m_surface != EGL_NO_SURFACE)
+    return true;
+
+  m_nativeWindow = (EGL_DISPMANX_WINDOW_T *)getNativeWindow();
 
   m_surface = eglCreateWindowSurface(m_display, m_config, m_nativeWindow, NULL);
   if (!m_surface)
@@ -426,7 +430,51 @@ bool CWinEGLPlatformRaspberryPI::setConfiguration()
   m_width = width;
   m_height = height;
 
-  free(configList);
+  return true;
+}
+
+void CWinEGLPlatformRaspberryPI::DestroyDispmaxWindow()
+{
+  DISPMANX_UPDATE_HANDLE_T dispman_update = m_DllBcmHost.vc_dispmanx_update_start(0);
+
+  if (m_dispman_element != DISPMANX_NO_HANDLE)
+  {
+    m_DllBcmHost.vc_dispmanx_element_remove(dispman_update, m_dispman_element);
+    m_dispman_element = DISPMANX_NO_HANDLE;
+  }
+  if (m_dispman_element2 != DISPMANX_NO_HANDLE)
+  {
+    m_DllBcmHost.vc_dispmanx_element_remove(dispman_update, m_dispman_element2);
+    m_dispman_element2 = DISPMANX_NO_HANDLE;
+  }
+  m_DllBcmHost.vc_dispmanx_update_submit_sync(dispman_update);
+
+  if (m_dispman_display != DISPMANX_NO_HANDLE)
+  {
+    m_DllBcmHost.vc_dispmanx_display_close(m_dispman_display);
+    m_dispman_display = DISPMANX_NO_HANDLE;
+  }
+}
+
+bool CWinEGLPlatformRaspberryPI::DestroyWindow()
+{
+  EGLBoolean eglStatus;
+
+  ReleaseSurface();
+
+  if (m_surface == EGL_NO_SURFACE)
+    return true;
+
+  eglStatus = eglDestroySurface(m_display, m_surface);
+  if (!eglStatus)
+  {
+    CLog::Log(LOGERROR, "EGL destroy surface error : 0x%08x", eglGetError());
+    return false;
+  }
+
+  m_surface = EGL_NO_SURFACE;
+  m_width = 0;
+  m_height = 0;
 
   return true;
 }
@@ -437,8 +485,8 @@ bool CWinEGLPlatformRaspberryPI::BindSurface()
 
   if (m_display == EGL_NO_DISPLAY || m_surface == EGL_NO_SURFACE || m_config == NULL)
   {
-    CLog::Log(LOGNOTICE, "EGL not configured correctly. Let's try to do that now...");
-    if (!setConfiguration())
+    CLog::Log(LOGINFO, "EGL not configured correctly. Let's try to do that now...");
+    if (!CreateWindow())
     {
       CLog::Log(LOGERROR, "EGL not configured correctly to create a surface");
       return false;
@@ -448,7 +496,7 @@ bool CWinEGLPlatformRaspberryPI::BindSurface()
   eglStatus = eglBindAPI(EGL_OPENGL_ES_API);
   if (!eglStatus)
   {
-    CLog::Log(LOGERROR, "EGL failed to bind API: %d", eglStatus);
+    CLog::Log(LOGERROR, "EGL failed to bind API: %d error 0x%08x", eglStatus, eglGetError());
     return false;
   }
 
@@ -461,7 +509,7 @@ bool CWinEGLPlatformRaspberryPI::BindSurface()
   // Create an EGL context
   if (m_context == EGL_NO_CONTEXT)
   {
-    m_context = eglCreateContext(m_display, m_config, NULL, contextAttrs);
+    m_context = eglCreateContext(m_display, m_config, EGL_NO_CONTEXT, contextAttrs);
     if (!m_context)
     {
       CLog::Log(LOGERROR, "EGL couldn't create context");
@@ -473,7 +521,7 @@ bool CWinEGLPlatformRaspberryPI::BindSurface()
   eglStatus = eglMakeCurrent(m_display, m_surface, m_surface, m_context);
   if (!eglStatus)
   {
-    CLog::Log(LOGERROR, "EGL couldn't make context/surface current: %d", eglStatus);
+    CLog::Log(LOGERROR, "EGL couldn't make context/surface current: %d error : 0x%08x", eglStatus, eglGetError());
     return false;
   }
 
@@ -501,40 +549,8 @@ bool CWinEGLPlatformRaspberryPI::BindSurface()
   // setup for vsync disabled
   eglSwapInterval(m_display, 0);
 
-  CLog::Log(LOGNOTICE, "EGL window and context creation complete");
+  CLog::Log(LOGINFO, "EGL window and context creation complete");
 
-  return true;
-}
-
-bool CWinEGLPlatformRaspberryPI::DestroyWindow()
-{
-  CLog::Log(LOGDEBUG, "CWinEGLPlatformRaspberryPI::DestroyWindow()\n");
-
-  DISPMANX_UPDATE_HANDLE_T dispman_update = m_DllBcmHost.vc_dispmanx_update_start(0);
-
-  if (m_dispman_element != DISPMANX_NO_HANDLE)
-  {
-    m_DllBcmHost.vc_dispmanx_element_remove(dispman_update, m_dispman_element);
-    m_dispman_element = DISPMANX_NO_HANDLE;
-  }
-  if (m_dispman_element2 != DISPMANX_NO_HANDLE)
-  {
-    m_DllBcmHost.vc_dispmanx_element_remove(dispman_update, m_dispman_element2);
-    m_dispman_element2 = DISPMANX_NO_HANDLE;
-  }
-  m_DllBcmHost.vc_dispmanx_update_submit_sync(dispman_update);
-
-  if (m_dispman_display != DISPMANX_NO_HANDLE)
-  {
-    m_DllBcmHost.vc_dispmanx_display_close(m_dispman_display);
-    m_dispman_display = DISPMANX_NO_HANDLE;
-  }
-
-  return true;
-}
-
-bool CWinEGLPlatformRaspberryPI::ShowWindow(bool show)
-{
   return true;
 }
 
@@ -542,22 +558,26 @@ bool CWinEGLPlatformRaspberryPI::ReleaseSurface()
 {
   EGLBoolean eglStatus;
 
-  if (m_surface == EGL_NO_SURFACE)
+  if (m_display != EGL_NO_DISPLAY)
+    eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+
+  // Recreate a new rendering context doesn't work on the PI.
+  // We have to keep the first created context alive until we exit.
+  /*
+  if (m_context != EGL_NO_CONTEXT)
   {
-    return true;
+    eglStatus = eglDestroyContext(m_display, m_context);
+    if (!eglStatus)
+      CLog::Log(LOGERROR, "Error destroying EGL context 0x%08x", eglGetError());
+    m_context = EGL_NO_CONTEXT;
   }
+  */
 
-  eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+  return true;
+}
 
-  eglStatus = eglDestroySurface(m_display, m_surface);
-  if (!eglStatus)
-  {
-    CLog::Log(LOGERROR, "Error destroying EGL surface");
-    return false;
-  }
-
-  m_surface = EGL_NO_SURFACE;
-
+bool CWinEGLPlatformRaspberryPI::ShowWindow(bool show)
+{
   return true;
 }
 
@@ -584,6 +604,11 @@ bool CWinEGLPlatformRaspberryPI::IsExtSupported(const char* extension)
   return m_eglext.find(name) != std::string::npos;
 }
 
+EGLNativeWindowType CWinEGLPlatformRaspberryPI::getNativeWindow()
+{
+  return (EGLNativeWindowType)m_nativeWindow;
+}
+
 EGLDisplay CWinEGLPlatformRaspberryPI::GetEGLDisplay()
 {
   return m_display;
@@ -601,7 +626,7 @@ EGLContext CWinEGLPlatformRaspberryPI::GetEGLContext()
 
 void CWinEGLPlatformRaspberryPI::TvServiceCallback(uint32_t reason, uint32_t param1, uint32_t param2)
 {
-  CLog::Log(LOGDEBUG, "tvservice_callback(%d,%d,%d)\n", reason, param1, param2);
+  CLog::Log(LOGDEBUG, "EGL tv_service_callback (%d,%d,%d)\n", reason, param1, param2);
   switch(reason)
   {
   case VC_HDMI_UNPLUGGED:
@@ -622,14 +647,13 @@ void CWinEGLPlatformRaspberryPI::TvServiceCallback(uint32_t reason, uint32_t par
 
 void CWinEGLPlatformRaspberryPI::CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2)
 {
-   CWinEGLPlatformRaspberryPI *omx = static_cast<CWinEGLPlatformRaspberryPI*>(userdata);
-   omx->TvServiceCallback(reason, param1, param2);
+   CWinEGLPlatformRaspberryPI *callback = static_cast<CWinEGLPlatformRaspberryPI*>(userdata);
+   callback->TvServiceCallback(reason, param1, param2);
 }
 
 void CWinEGLPlatformRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION_INFO> &resolutions)
 {
   //Supported HDMI CEA/DMT resolutions, first one will be preferred resolution
-  #define TV_MAX_SUPPORTED_MODES 60
   TV_SUPPORTED_MODE_T supported_modes[TV_MAX_SUPPORTED_MODES];
   int32_t num_modes;
   HDMI_RES_GROUP_T prefer_group;
@@ -637,46 +661,38 @@ void CWinEGLPlatformRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::
   int i;
 
   num_modes = m_DllBcmHost.vc_tv_hdmi_get_supported_modes(group,
-                                           supported_modes,
-                                           TV_MAX_SUPPORTED_MODES,
-                                           &prefer_group,
-                                           &prefer_mode);
-  CLog::Log(LOGNOTICE, "CWinEGLPlatformRaspberryPI::GetSupportedModes (%d) = %d, prefer_group=%x, prefer_mode=%x\n", group, num_modes, prefer_group, prefer_mode);
+      supported_modes, TV_MAX_SUPPORTED_MODES, &prefer_group, &prefer_mode);
+
+  CLog::Log(LOGDEBUG, "EGL get supported modes (%d) = %d, prefer_group=%x, prefer_mode=%x\n", 
+      group, num_modes, prefer_group, prefer_mode);
 
   if (num_modes > 0 && prefer_group != HDMI_RES_GROUP_INVALID)
   {
     TV_SUPPORTED_MODE_T *tv = supported_modes;
     for (i=0; i < num_modes; i++, tv++)
     {
-      /* filter out interlaced modes */
-      /*
-      if(tv->scan_mode && group != HDMI_RES_GROUP_CEA_3D)
-        continue;
-      */
-
       // treat 3D modes as half-width SBS
-      unsigned int width = group==HDMI_RES_GROUP_CEA_3D ? tv->width>>1:tv->width;
+      unsigned int width = (group == HDMI_RES_GROUP_CEA_3D) ? tv->width>>1 : tv->width;
       RESOLUTION_INFO res;
-      CLog::Log(LOGNOTICE, "%d: %dx%d@%d %s%s:%x\n", i, width, tv->height, tv->frame_rate, tv->native?"N":"", tv->scan_mode?"I":"", tv->code);
+      CLog::Log(LOGDEBUG, "EGL mode %d: %dx%d@%d %s%s:%x\n", i, width, tv->height, tv->frame_rate, 
+          tv->native ? "N" : "", tv->scan_mode ? "I" : "", tv->code);
 
-      res.iScreen = 0;
-      res.bFullScreen = true;
-      res.iSubtitles = (int)(0.965 * tv->height);
-      res.dwFlags = MAKEFLAGS(group, tv->code, tv->scan_mode, group==HDMI_RES_GROUP_CEA_3D);
-      res.fRefreshRate = (float)tv->frame_rate;
-      res.fPixelRatio = 1.0f;
-      res.iWidth = width;
-      res.iHeight = tv->height;
-      //res.iScreenWidth = width;
+      res.iScreen       = 0;
+      res.bFullScreen   = true;
+      res.iSubtitles    = (int)(0.965 * tv->height);
+      res.dwFlags       = MAKEFLAGS(group, tv->code, tv->scan_mode, group==HDMI_RES_GROUP_CEA_3D);
+      res.fRefreshRate  = (float)tv->frame_rate;
+      res.fPixelRatio   = 1.0f;
+      res.iWidth        = width;
+      res.iHeight       = tv->height;
+      //res.iScreenWidth  = width;
       //res.iScreenHeight = tv->height;
       res.strMode.Format("%dx%d", width, tv->height);
-      if ((float)tv->frame_rate > 1)
-        res.strMode.Format("%s @ %.2f%s - Full Screen", res.strMode, (float)tv->frame_rate, res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-
-      CStdString resolution;
-
-      //resolution.Format("%dx%d%s%dHz", width, tv->height, tv->scan_mode ? "i" :"p", tv->frame_rate);
-      //resolutions.push_back(resolution);
+      if((float)tv->frame_rate > 1)
+      {
+        res.strMode.Format("%s @ %.2f%s - Full Screen", res.strMode, (float)tv->frame_rate, 
+            res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+      }
 
       resolutions.push_back(res);
 

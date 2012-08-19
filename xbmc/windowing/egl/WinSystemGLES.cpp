@@ -58,8 +58,10 @@ bool CWinSystemGLES::InitWindowSystem()
   // Create a window to get valid width and height values
   // This needs to happen before the call to CWinSystemBase::InitWindowSystem()
   // (at least for Android)
-  if (!m_eglplatform->CreateWindow())
+#if defined(TARGET_ANDROID)
+  if(!m_eglplatform->CreateWindow())
     return false;
+#endif
 
   if (!CWinSystemBase::InitWindowSystem())
     return false;
@@ -92,8 +94,6 @@ bool CWinSystemGLES::CreateNewWindow(const CStdString& name, bool fullScreen, RE
   if (m_bWindowCreated)
     m_eglplatform->DestroyWindow();
 
-  // temp until split gui/display res comes in
-  //m_eglplatform->SetDisplayResolution(res.iScreenWidth, res.iScreenHeight,
   m_eglplatform->SetDisplayResolution(res);
     
   // If we previously destroyed an existing window we need to create a new one
@@ -130,11 +130,8 @@ bool CWinSystemGLES::ResizeWindow(int newWidth, int newHeight, int newLeft, int 
 
 bool CWinSystemGLES::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CLog::Log(LOGDEBUG, "CWinSystemGLES::SetFullScreen");
   CreateNewWindow("", fullScreen, res, NULL);
-
-  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, true, 0);
-
+  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   return true;
 }
 
