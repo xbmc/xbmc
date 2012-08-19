@@ -863,6 +863,9 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_SETUP_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TITLE;
+    PushCecKeypress(xbmcKey);
+    break;
   case CEC_USER_CONTROL_CODE_CONTENTS_MENU:
   case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
   case CEC_USER_CONTROL_CODE_ROOT_MENU:
