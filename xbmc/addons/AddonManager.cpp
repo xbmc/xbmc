@@ -408,8 +408,10 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
     const cp_extension_t *props = exts[i];
     bool bIsPVRAddon(TranslateType(props->ext_point_id) == ADDON_PVRDLL);
 
-    if (((bGetDisabledPVRAddons && bIsPVRAddon) || m_database.IsAddonDisabled(props->plugin->identifier) != enabled))
+    if (((bGetDisabledPVRAddons && bIsPVRAddon) ||
+        m_database.IsAddonDisabled(props->plugin->identifier) != enabled))
     {
+      // get a pointer to a running pvrclient if it's already started, or we won't be able to change settings
       if (bIsPVRAddon && g_PVRManager.IsStarted())
       {
         AddonPtr pvrAddon;
