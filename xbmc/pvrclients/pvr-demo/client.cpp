@@ -121,6 +121,12 @@ void ADDON_FreeSettings()
  * PVR Client AddOn specific public library functions
  ***********************************************************/
 
+const char* GetPVRAPIVersion(void)
+{
+  static const char *strApiVersion = XBMC_PVR_API_VERSION;
+  return strApiVersion;
+}
+
 PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
   pCapabilities->bSupportsEPG             = true;

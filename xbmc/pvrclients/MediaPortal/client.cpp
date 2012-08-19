@@ -382,6 +382,12 @@ void ADDON_FreeSettings()
  * PVR Client AddOn specific public library functions
  ***********************************************************/
 
+const char* GetPVRAPIVersion(void)
+{
+  static const char *strApiVersion = XBMC_PVR_API_VERSION;
+  return strApiVersion;
+}
+
 //-- GetAddonCapabilities ------------------------------------------------------------
 // Tell XBMC our requirements
 //-----------------------------------------------------------------------------

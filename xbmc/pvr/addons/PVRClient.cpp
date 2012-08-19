@@ -237,10 +237,30 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHAN
   strncpy(addonChannel.strStreamURL, xbmcChannel.StreamURL().c_str(), sizeof(addonChannel.strStreamURL) - 1);
 }
 
+bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &version)
+{
+  AddonVersion currentVersion = AddonVersion(XBMC_PVR_API_VERSION);
+
+  // initially it just needs to match
+  return (version >= currentVersion);
+}
+
 bool CPVRClient::GetAddonProperties(void)
 {
   CStdString strHostName, strBackendName, strConnectionString, strFriendlyName, strBackendVersion;
   PVR_ADDON_CAPABILITIES addonCapabilities;
+
+  /* check the API version */
+  AddonVersion APIVersion("0.0.0");
+  try { APIVersion = AddonVersion(m_pStruct->GetPVRAPIVersion()); }
+  catch (exception &e) { LogException(e, "GetPVRAPIVersion()"); return false;  }
+
+  AddonVersion currentVersion = AddonVersion(XBMC_PVR_API_VERSION);
+  if (!IsCompatibleAPIVersion(APIVersion))
+  {
+    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
+    return false;
+  }
 
   /* get the capabilities */
   try

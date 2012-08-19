@@ -29,6 +29,8 @@ extern "C"
 {
   // Functions that your PVR client must implement
 
+  const char *GetPVRAPIVersion(void);
+
   /** @name PVR server methods */
   //@{
 
@@ -402,6 +404,7 @@ extern "C"
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient *pClient)
   {
+    pClient->GetPVRAPIVersion        = GetPVRAPIVersion;
     pClient->GetAddonCapabilities    = GetAddonCapabilities;
     pClient->GetStreamProperties     = GetStreamProperties;
     pClient->GetConnectionString     = GetConnectionString;

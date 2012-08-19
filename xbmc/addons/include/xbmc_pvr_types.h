@@ -72,6 +72,8 @@ struct DemuxPacket;
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
 
+#define XBMC_PVR_API_VERSION "1.0.0"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -266,6 +268,8 @@ extern "C" {
    */
   typedef struct PVRClient
   {
+    const char * (__cdecl* GetPVRAPIVersion)(void);
+
     /** @name PVR server methods */
     //@{
     PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES *pCapabilities);

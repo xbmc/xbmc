@@ -467,6 +467,13 @@ namespace PVR
 
   private:
     /*!
+     * @brief Checks whether the provided API version is compatible with XBMC
+     * @param version The version to check
+     * @return True when compatible, false otherwise
+     */
+    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &version);
+
+    /*!
      * @brief Reset the signal quality data to the initial values.
      */
     void ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo);
