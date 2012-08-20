@@ -99,6 +99,7 @@ public:
   DemuxPacket* Read();
 
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
+  bool SeekTimeDiscont(int64_t pts, bool backwards);
   bool SeekByte(int64_t pos);
   int GetStreamLength();
   CDemuxStream* GetStream(int iStreamId);
@@ -153,5 +154,8 @@ protected:
     AVPacket pkt;       // packet ffmpeg returned
     int      result;    // result from av_read_packet
   }m_pkt;
+
+  bool m_bPtsWrap, m_bPtsWrapChecked;
+  int64_t m_iStartTime, m_iMaxTime, m_iEndTime;
 };
 

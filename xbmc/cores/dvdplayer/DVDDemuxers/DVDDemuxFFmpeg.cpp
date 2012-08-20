@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
@@ -26,6 +25,7 @@
 #define __STDC_LIMIT_MACROS
 #endif
 #ifdef TARGET_POSIX
+#include "system.h"
 #include "stdint.h"
 #endif
 #include "DVDDemuxFFmpeg.h"
@@ -417,6 +417,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   CreateStreams();
 
+  m_bPtsWrapChecked = false;
+  m_bPtsWrap = false;
+
   return true;
 }
 
@@ -558,6 +561,12 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   if (pts == (int64_t)AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
 
+  if (m_bPtsWrap)
+  {
+    if (pts < m_iStartTime && pts < m_iEndTime)
+      pts += m_iMaxTime;
+  }
+
   // do calculations in floats as they can easily overflow otherwise
   // we don't care for having a completly exact timestamp anyway
   double timestamp = (double)pts * num  / den;
@@ -697,6 +706,24 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           m_pkt.pkt.pts = AV_NOPTS_VALUE;
         }
 
+        if (!m_bPtsWrapChecked && m_pFormatContext->iformat->flags & AVFMT_TS_DISCONT)
+        {
+          int defaultStream = av_find_default_stream_index(m_pFormatContext);
+          int64_t duration = m_pFormatContext->streams[defaultStream]->duration * 1.5;
+          m_iMaxTime = 1LL<<m_pFormatContext->streams[defaultStream]->pts_wrap_bits;
+          m_iStartTime = m_pFormatContext->streams[defaultStream]->start_time;
+          if (m_iStartTime != DVD_NOPTS_VALUE)
+          {
+            m_iEndTime = (m_iStartTime + duration) & ~m_iMaxTime;
+            if (m_iEndTime < m_iStartTime)
+            {
+              CLog::Log(LOGNOTICE,"CDVDDemuxFFmpeg::Read - file contains pts overflow");
+              m_bPtsWrap = true;
+            }
+          }
+          m_bPtsWrapChecked = true;
+        }
+
         // copy contents into our own packet
         pPacket->iSize = m_pkt.pkt.size;
 
@@ -829,7 +856,16 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     ret = av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
 
     if(ret >= 0)
+    {
       UpdateCurrentPTS();
+
+      // seek may fail silently on streams which allow discontinuity
+      // if current timestamp is way off asume a pts overflow and try bisect seek
+      if (m_bPtsWrap && fabs(time - m_iCurrentPts/1000) > 10000)
+      {
+        ret = SeekTimeDiscont(seek_pts, backwords) ? 1 : -1;
+      }
+    }
   }
 
   if(m_iCurrentPts == DVD_NOPTS_VALUE)
@@ -846,6 +882,165 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return true;
 
   return (ret >= 0);
+}
+
+bool CDVDDemuxFFmpeg::SeekTimeDiscont(int64_t pts, bool backwards)
+{
+  // this code is taken from ffmpeg function ff_gen_search
+  // it is modified to assume a pts overflow if timestamp < start_time
+  if (!m_pFormatContext->iformat->read_timestamp)
+    return false;
+
+  int defaultStream = av_find_default_stream_index(m_pFormatContext);
+
+  if (defaultStream < 0)
+  {
+    return false;
+  }
+
+  // timestamp for default must be expressed in AV_TIME_BASE units
+  pts = av_rescale_rnd(pts, m_pFormatContext->streams[defaultStream]->time_base.den,
+                      AV_TIME_BASE * (int64_t)m_pFormatContext->streams[defaultStream]->time_base.num,
+                      AV_ROUND_NEAR_INF);
+
+  int64_t pos, pos_min, pos_max, pos_limit, ts, ts_min, ts_max;
+  int64_t start_pos, filesize;
+  int no_change;
+
+  pos_min = m_pFormatContext->data_offset;
+  ts_min = m_pFormatContext->iformat->read_timestamp(m_pFormatContext, defaultStream,
+                                                     &pos_min, INT64_MAX);
+  if (ts_min == AV_NOPTS_VALUE)
+    return false;
+
+  if(ts_min >= pts)
+  {
+    pos = pos_min;
+    return true;
+  }
+
+  int step= 1024;
+  filesize = m_pInput->GetLength();
+  pos_max = filesize - 1;
+  do
+  {
+    pos_max -= step;
+    ts_max = m_pFormatContext->iformat->read_timestamp(m_pFormatContext, defaultStream,
+                                                       &pos_max, pos_max + step);
+    step += step;
+  }while (ts_max == AV_NOPTS_VALUE && pos_max >= step);
+
+  if (ts_max == AV_NOPTS_VALUE)
+    return false;
+
+  if (ts_max < m_iStartTime && ts_max < m_iEndTime)
+    ts_max += m_iMaxTime;
+
+  for(;;)
+  {
+    int64_t tmp_pos = pos_max + 1;
+    int64_t tmp_ts = m_pFormatContext->iformat->read_timestamp(m_pFormatContext, defaultStream,
+                                                               &tmp_pos, INT64_MAX);
+    if(tmp_ts == AV_NOPTS_VALUE)
+      break;
+
+    if (tmp_ts < m_iStartTime && tmp_ts < m_iEndTime)
+      tmp_ts += m_iMaxTime;
+
+    ts_max = tmp_ts;
+    pos_max = tmp_pos;
+    if (tmp_pos >= filesize)
+      break;
+  }
+  pos_limit = pos_max;
+
+  if(ts_max <= pts)
+  {
+    bool ret = SeekByte(pos_max);
+    if (ret)
+    {
+      m_iCurrentPts = ConvertTimestamp(ts_max, m_pFormatContext->streams[defaultStream]->time_base.den,
+                                       m_pFormatContext->streams[defaultStream]->time_base.num);
+    }
+    return ret;
+  }
+
+  if(ts_min > ts_max)
+  {
+    return false;
+  }
+  else if (ts_min == ts_max)
+  {
+    pos_limit = pos_min;
+  }
+
+  no_change=0;
+  while (pos_min < pos_limit)
+  {
+    if (no_change == 0)
+    {
+      int64_t approximate_keyframe_distance= pos_max - pos_limit;
+      // interpolate position (better than dichotomy)
+      pos = av_rescale_rnd(pts - ts_min, pos_max - pos_min,
+                                       ts_max - ts_min, AV_ROUND_NEAR_INF)
+          + pos_min - approximate_keyframe_distance;
+    }
+    else if (no_change == 1)
+    {
+      // bisection, if interpolation failed to change min or max pos last time
+      pos = (pos_min + pos_limit) >> 1;
+    }
+    else
+    {
+      /* linear search if bisection failed, can only happen if there
+         are very few or no keyframes between min/max */
+      pos = pos_min;
+    }
+    if (pos <= pos_min)
+      pos= pos_min + 1;
+    else if (pos > pos_limit)
+      pos= pos_limit;
+    start_pos = pos;
+
+    ts = m_pFormatContext->iformat->read_timestamp(m_pFormatContext, defaultStream,
+                                                   &pos, INT64_MAX);
+    if (pos == pos_max)
+      no_change++;
+    else
+      no_change=0;
+
+    if (ts == AV_NOPTS_VALUE)
+    {
+      return false;
+    }
+
+    if (ts < m_iStartTime && ts < m_iEndTime)
+      ts += m_iMaxTime;
+
+    if (pts <= ts)
+    {
+      pos_limit = start_pos - 1;
+      pos_max = pos;
+      ts_max = ts;
+    }
+    if (pts >= ts)
+    {
+      pos_min = pos;
+      ts_min = ts;
+    }
+  }
+
+  pos = (backwards) ? pos_min : pos_max;
+  ts  = (backwards) ?  ts_min :  ts_max;
+
+  bool ret = SeekByte(pos);
+  if (ret)
+  {
+    m_iCurrentPts = ConvertTimestamp(ts, m_pFormatContext->streams[defaultStream]->time_base.den,
+                                     m_pFormatContext->streams[defaultStream]->time_base.num);
+  }
+
+  return ret;
 }
 
 bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
