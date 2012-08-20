@@ -2807,12 +2807,20 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filte
     // to songview or albumview for these conditions
     if (extFilter.where.size() > 0)
     {
+      bool extended = false;
       if (extFilter.where.find("songview") != string::npos)
+      {
+        extended = true;
         extFilter.AppendJoin("JOIN song_artist ON song_artist.idArtist = artistview.idArtist JOIN songview ON songview.idSong = song_artist.idSong");
+      }
       else if (extFilter.where.find("albumview") != string::npos)
+      {
+        extended = true;
         extFilter.AppendJoin("JOIN album_artist ON album_artist.idArtist = artistview.idArtist JOIN albumview ON albumview.idAlbum = album_artist.idAlbum");
+      }
 
-      extFilter.AppendGroup("artistview.idArtist");
+      if (extended)
+        extFilter.AppendGroup("artistview.idArtist");
     }
     
     CStdString strSQLExtra;

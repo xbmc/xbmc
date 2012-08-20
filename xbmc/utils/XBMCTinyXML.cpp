@@ -30,20 +30,18 @@ CXBMCTinyXML::CXBMCTinyXML()
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
-: TiXmlDocument()
+: TiXmlDocument(documentName)
 {
-  LoadFile(documentName);
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const CStdString &documentName)
-: TiXmlDocument()
+: TiXmlDocument(documentName)
 {
-  LoadFile(documentName);
 }
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
 {
-  return TiXmlDocument::LoadFile(encoding);
+  return LoadFile(value, encoding);
 }
 
 bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)

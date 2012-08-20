@@ -644,9 +644,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     case WM_MEDIA_CHANGE:
       {
-        // There may be multiple notifications for one event
-        // There are also a few events we're not interested in, but they cause no harm
-        // For example SD card reader insertion/removal
+        // This event detects media changes of usb, sd card and optical media.
+        // It only works if the explorer.exe process is started. Because this
+        // isn't the case for all setups we use WM_DEVICECHANGE for usb and 
+        // optical media because this event is also triggered without the 
+        // explorer process. Since WM_DEVICECHANGE doesn't detect sd card changes
+        // we still use this event only for sd.
         long lEvent;
         PIDLIST_ABSOLUTE *ppidl;
         HANDLE hLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &ppidl, &lEvent);
@@ -661,25 +664,20 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           {
             case SHCNE_DRIVEADD:
             case SHCNE_MEDIAINSERTED:
-              CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", drivePath);
-              if (GetDriveType(drivePath) == DRIVE_CDROM)
-                CJobManager::GetInstance().AddJob(new CDetectDisc(drivePath, true), NULL);
-              else
+              if (GetDriveType(drivePath) != DRIVE_CDROM)
+              {
+                CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", drivePath);
                 CWin32StorageProvider::SetEvent();
+              }
               break;
 
             case SHCNE_DRIVEREMOVED:
             case SHCNE_MEDIAREMOVED:
-              CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", drivePath);
-              if (GetDriveType(drivePath) == DRIVE_CDROM)
+              if (GetDriveType(drivePath) != DRIVE_CDROM)
               {
-                CMediaSource share;
-                share.strPath = drivePath;
-                share.strName = share.strPath;
-                g_mediaManager.RemoveAutoSource(share);
-              }
-              else
+                CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", drivePath);
                 CWin32StorageProvider::SetEvent();
+              }
               break;
           }
           SHChangeNotification_Unlock(hLock);
@@ -711,6 +709,32 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
               g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
               g_Joystick.Reinitialize();
+            }
+            // check if an usb or optical media was inserted or removed
+            if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_VOLUME)
+            {
+              PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)((_DEV_BROADCAST_HEADER*) lParam);
+              // optical medium
+              if (lpdbv -> dbcv_flags & DBTF_MEDIA)
+              {
+                CStdString strdrive;
+                strdrive.Format("%c:\\", CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                if(wParam == DBT_DEVICEARRIVAL)
+                {
+                  CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", strdrive.c_str());
+                  CJobManager::GetInstance().AddJob(new CDetectDisc(strdrive, true), NULL);
+                }
+                else
+                {
+                  CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", strdrive.c_str());
+                  CMediaSource share;
+                  share.strPath = strdrive;
+                  share.strName = share.strPath;
+                  g_mediaManager.RemoveAutoSource(share);
+                }
+              }
+              else
+                CWin32StorageProvider::SetEvent();
             }
         }
         break;

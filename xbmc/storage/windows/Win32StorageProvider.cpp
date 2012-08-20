@@ -25,7 +25,7 @@
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 
-bool CWin32StorageProvider::event = false;
+bool CWin32StorageProvider::xbevent = false;
 
 void CWin32StorageProvider::Initialize()
 {
@@ -76,8 +76,8 @@ std::vector<CStdString> CWin32StorageProvider::GetDiskUsage()
 
 bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
-  bool b = event;
-  event = false;
+  bool b = xbevent;
+  xbevent = false;
   return b;
 }
 

@@ -35,6 +35,7 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)
 {
   m_pAudioStream = NULL;
+  m_pAudioCallback = NULL;
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
@@ -91,6 +92,9 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
 
   m_iBufferSize = 0;
   SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
+
+  if (m_pAudioCallback)
+    RegisterAudioCallback(m_pAudioCallback);
 
   return true;
 }
@@ -236,6 +240,7 @@ void CDVDAudio::Drain()
 void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock (m_critSection);
+  m_pAudioCallback = pCallback;
   if (m_pAudioStream)
     m_pAudioStream->RegisterAudioCallback(pCallback);
 }
@@ -245,6 +250,7 @@ void CDVDAudio::UnRegisterAudioCallback()
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
     m_pAudioStream->UnRegisterAudioCallback();
+  m_pAudioCallback = NULL;
 }
 
 void CDVDAudio::SetVolume(float volume)

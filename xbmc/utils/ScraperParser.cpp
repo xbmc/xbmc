@@ -84,14 +84,14 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 {
   Clear();
 
-  m_document = new CXBMCTinyXML(strXMLFile);
+  m_document = new CXBMCTinyXML();
 
   if (!m_document)
     return false;
 
   m_strFile = strXMLFile;
 
-  if (m_document->LoadFile())
+  if (m_document->LoadFile(strXMLFile))
     return LoadFromXML();
 
   delete m_document;
