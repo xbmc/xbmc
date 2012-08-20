@@ -226,7 +226,7 @@ void CPeripheralBusUSB::Clear(void)
 
 bool CPeripheralBusUSB::WaitForUpdate()
 {
-  if (m_udevFd == -1)
+  if (m_udevFd < 0)
     return false;
 
   /* poll for udev changes */
