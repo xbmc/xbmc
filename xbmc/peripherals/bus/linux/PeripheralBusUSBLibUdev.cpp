@@ -85,7 +85,6 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
 
   m_udev          = NULL;
   m_udevMon       = NULL;
-  m_udevFd        = -1;
 
   if (!(m_udev = udev_new()))
   {
@@ -96,9 +95,8 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
   /* set up a devices monitor that listen for any device change */
   m_udevMon = udev_monitor_new_from_netlink(m_udev, "udev");
   udev_monitor_enable_receiving(m_udevMon);
-  m_udevFd = udev_monitor_get_fd(m_udevMon);
 
-  CLog::Log(LOGDEBUG, "%s - initialised udev monitor: %d", __FUNCTION__, m_udevFd);
+  CLog::Log(LOGDEBUG, "%s - initialised udev monitor", __FUNCTION__);
 }
 
 CPeripheralBusUSB::~CPeripheralBusUSB(void)
@@ -218,18 +216,19 @@ void CPeripheralBusUSB::Process(void)
 void CPeripheralBusUSB::Clear(void)
 {
   StopThread(false);
-  if (m_udevFd != -1)
-    close(m_udevFd);
-
-  udev_unref(m_udev);
 
   CPeripheralBus::Clear();
 }
 
 bool CPeripheralBusUSB::WaitForUpdate()
 {
-  if (!m_udevFd)
+  int m_udevFd = udev_monitor_get_fd(m_udevMon);
+
+  if (m_udevFd < 0)
+  {
+    CLog::Log(LOGERROR, "%s - get udev monitor", __FUNCTION__);
     return false;
+  }
 
   /* poll for udev changes */
   struct pollfd pollFd;

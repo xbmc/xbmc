@@ -51,6 +51,5 @@ namespace PERIPHERALS
 
     struct udev *        m_udev;
     struct udev_monitor *m_udevMon;
-    int                  m_udevFd;
   };
 }
