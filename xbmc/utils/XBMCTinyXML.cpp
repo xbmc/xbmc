@@ -41,7 +41,7 @@ CXBMCTinyXML::CXBMCTinyXML(const CStdString &documentName)
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
 {
-  return TiXmlDocument::LoadFile(encoding);
+  return LoadFile(value, encoding);
 }
 
 bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
