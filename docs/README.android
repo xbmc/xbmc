@@ -121,7 +121,7 @@ the libc.so there. (where <android-toolchain>/android-<x>/ is the path you have 
 -----------------------------------------------------------------------------
 
    # cd $HOME
-   # git clone git://github.com/xbmc/android.git xbmc-android
+   # git clone git://github.com/xbmc/xbmc.git xbmc-android
    # cd xbmc-android
    # git submodule update --init addons/skin.touched
 
