@@ -581,6 +581,23 @@
       }
     }
   },
+  "Files.GetFileDetails": {
+    "type": "method",
+    "description": "Get details for a specific file",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "file", "type": "string", "required": true, "description": "Full path to the file" },
+      { "name": "media", "$ref": "Files.Media", "default": "files" },
+      { "name": "properties", "$ref": "List.Fields.Files" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "filedetails": { "$ref": "List.Item.File", "required": true }
+      }
+    }
+  },
   "AudioLibrary.GetArtists": {
     "type": "method",
     "description": "Retrieve all artists",
