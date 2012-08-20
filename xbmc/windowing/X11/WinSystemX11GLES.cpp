@@ -157,16 +157,13 @@ bool CWinSystemX11GLES::CreateNewWindow(const CStdString& name, bool fullScreen,
 
   CBaseTexture *pIconTexture;
   pIconTexture = CBaseTexture::LoadFromFile("special://xbmc/media/icon.png");
-  if (!pIconTexture)
+  if (pIconTexture)
   {
-    CLog::Log(LOGERROR, "Failed to load XBMC icon");
-    return false;
+    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(pIconTexture->GetPixels(), pIconTexture->GetWidth(), pIconTexture->GetHeight(), BPP, pIconTexture->GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+    delete pIconTexture;
   }
 
-  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(pIconTexture->GetPixels(), pIconTexture->GetWidth(), pIconTexture->GetHeight(), BPP, pIconTexture->GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
   SDL_WM_SetCaption("XBMC Media Center", NULL);
-
-  delete pIconTexture;
   m_bWindowCreated = true;
 
   m_eglext  = " ";
