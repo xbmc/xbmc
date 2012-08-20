@@ -700,14 +700,8 @@ bool CSurfaceEGLPixmap::Upload(CSurfacePtr surface, unsigned int flags)
   if (!egl_vtable)
     return false;
 
-  static const EGLint attribs[] =
-  {
-    EGL_IMAGE_PRESERVED_KHR,    EGL_TRUE,
-    EGL_NONE
-  };
-
   m_images[0] = egl_vtable->create_image(m_eglDisplay, EGL_NO_CONTEXT,
-      EGL_NATIVE_PIXMAP_KHR, (EGLClientBuffer)m_pixmap, attribs);
+      EGL_NATIVE_PIXMAP_KHR, (EGLClientBuffer)m_pixmap, NULL);
   if (!m_images[0])
   {
     CLog::Log(LOGERROR, "VAAPI - EGL: failed to create EGLImage from pixmap");
