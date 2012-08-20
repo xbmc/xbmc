@@ -39,8 +39,8 @@ public:
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
-  static void SetEvent() { event = true; }
-  static bool event;
+  static void SetEvent() { xbevent = true; }
+  static bool xbevent;
 };
 
 class CDetectDisc : public CJob
