@@ -170,7 +170,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
     bool hasFileField = false;
     for (CVariant::const_iterator_array itr = param["properties"].begin_array(); itr != param["properties"].end_array(); itr++)
     {
-      if (*itr == CVariant("file"))
+      if (itr->asString().compare("file") == 0)
       {
         hasFileField = true;
         break;
