@@ -31,6 +31,7 @@
   #include <sstream>
   #include <X11/extensions/Xrandr.h>
   #include "windowing/WindowingFactory.h"
+  #include "guilib/GraphicContext.h"
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
 #elif defined(TARGET_DARWIN_OSX)
   #include <QuartzCore/CVDisplayLink.h>
@@ -1255,7 +1256,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   }
 
   CSingleLock SingleLock(m_CritSection);
-  m_RefreshRate = GetRandRRate();
+  m_RefreshRate = MathUtils::round_int(g_graphicsContext.GetFPS());
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
 
