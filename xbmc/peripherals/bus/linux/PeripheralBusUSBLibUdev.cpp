@@ -218,17 +218,15 @@ void CPeripheralBusUSB::Process(void)
 void CPeripheralBusUSB::Clear(void)
 {
   StopThread(false);
-  if (m_udevFd != -1)
-    close(m_udevFd);
 
-  udev_unref(m_udev);
+  m_udevFd = -1;
 
   CPeripheralBus::Clear();
 }
 
 bool CPeripheralBusUSB::WaitForUpdate()
 {
-  if (!m_udevFd)
+  if (m_udevFd == -1)
     return false;
 
   /* poll for udev changes */
