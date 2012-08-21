@@ -120,6 +120,18 @@ AEDeviceInfoList DeviceInfoList;
 
 DEFINE_PROPERTYKEY(PKEY_Device_FriendlyName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 14);
 
+CStdStringA localWideToUtf(LPCWSTR wstr)
+{
+  if (wstr == NULL)
+    return "";
+  int bufSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+  CStdStringA strA ("", bufSize);
+  if ( bufSize == 0 || WideCharToMultiByte(CP_UTF8, 0, wstr, -1, strA.GetBuf(bufSize), bufSize, NULL, NULL) != bufSize )
+    strA.clear();
+  strA.RelBuf();
+  return strA;
+}
+
 CAESinkWASAPI::CAESinkWASAPI() :
   m_pAudioClient(NULL),
   m_pRenderClient(NULL),
@@ -191,9 +203,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
       goto failed;
     }
 
-    std::wstring strRawDevName(varName.pwszVal);
-    std::string strDevName = std::string(strRawDevName.begin(), strRawDevName.end());
-    //g_charsetConverter.ucs2CharsetToStringCharset(strRawDevName, strDevName.c_str());
+    std::string strDevName = localWideToUtf(varName.pwszVal);
 
     if (device == strDevName)
       i = uiCount;
@@ -220,9 +230,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
 
-    std::wstring strRawDevName(varName.pwszVal);
-    std::string strDevName = std::string(strRawDevName.begin(), strRawDevName.end());
-
+    std::string strDevName = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
     SAFE_RELEASE(pProperty);
   }
@@ -520,9 +528,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       goto failed;
     }
 
-    std::wstring strRawFriendlyName(varName.pwszVal);
-    std::string strFriendlyName = std::string(strRawFriendlyName.begin(), strRawFriendlyName.end());
-
+    std::string strFriendlyName = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
@@ -534,9 +540,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       goto failed;
     }
 
-    std::wstring strRawDevName(varName.pwszVal);
-    std::string strDevName = std::string(strRawDevName.begin(), strRawDevName.end());
-
+    std::string strDevName = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
