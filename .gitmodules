@@ -2,3 +2,6 @@
 	path = addons/skin.touched
 	url = git://github.com/xbmc/skin.touched.git
 	ignore = all
+[submodule "pvr-addons"]
+	path = pvr-addons
+	url = git://github.com/opdenkamp/xbmc-pvr-addons.git

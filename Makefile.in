@@ -368,11 +368,16 @@ endif
 imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
+pvraddons: exports
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons
+endif
+
 codecs: papcodecs dvdpcodecs
 
 libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
-externals: libaddon codecs libs visualizations screensavers
+externals: libaddon codecs libs visualizations screensavers pvraddons
 
 xcode_depends: \
 	codecs libs visualizations screensavers eventclients libaddon skins \
@@ -467,6 +472,9 @@ endif
 
 install-arch:
 	@# Arch dependent files
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons install
+endif
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
 	@find -E system addons -type f -not -iregex ".*svn.*" \
 		-iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs" \
@@ -564,11 +572,15 @@ clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-libaddons:
 	for d in $(LIBADDON_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-pvraddons:
+ifeq (@USE_PVR_ADDONS@,1)
+	if test -f pvr-addons/Makefile; then $(MAKE) -C pvr-addons clean; fi;
+endif
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-screensavers clean-visualisations clean-libaddons
+	clean-screensavers clean-visualisations clean-libaddons clean-pvraddons
 
 check:
 	for d in $(CHECK_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d $@; fi; done

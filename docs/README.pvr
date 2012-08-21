@@ -1,0 +1,6 @@
+PVR add-ons are not included in XBMC's tree by default, but are referenced as
+git submodule. To include the PVR add-ons, execute the following command:
+
+git submodule update --init pvr-addons
+
+Then (re)start the build as is documented in the README file for your platform.
