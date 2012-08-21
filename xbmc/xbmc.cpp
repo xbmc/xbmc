@@ -30,12 +30,6 @@ extern "C" int XBMC_Run(bool renderGUI)
 {
   int status = -1;
 
-#ifdef TARGET_RASPBERRY_PI
-  if(!g_RBP.Initialize())
-    return false;
-  g_RBP.LogFirmwareVerison();
-#endif
-
   if (!g_advancedSettings.Initialized())
   {
 #ifdef _DEBUG
@@ -53,6 +47,13 @@ extern "C" int XBMC_Run(bool renderGUI)
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
     return status;
   }
+
+#ifdef TARGET_RASPBERRY_PI
+  if(!g_RBP.Initialize())
+    return false;
+  g_RBP.LogFirmwareVerison();
+#endif
+
   if (renderGUI && !g_application.CreateGUI())
   {
     fprintf(stderr, "ERROR: Unable to create GUI. Exiting\n");
