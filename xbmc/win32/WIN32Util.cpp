@@ -501,7 +501,7 @@ void CWIN32Util::ExtendDllPath()
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
   BOOL bRet= FALSE;
-  DWORD dwReq;
+  DWORD dwReq = 0;
   char cDL = cDriveLetter;
   if( !cDL )
   {
