@@ -268,7 +268,11 @@ failed:
   SAFE_RELEASE(m_pRenderClient);
   SAFE_RELEASE(m_pAudioClient);
   SAFE_RELEASE(m_pDevice);
-  CloseHandle(m_needDataEvent);
+  if(m_needDataEvent)
+  {
+    CloseHandle(m_needDataEvent);
+    m_needDataEvent = 0;
+  }
 
   return false;
 }
