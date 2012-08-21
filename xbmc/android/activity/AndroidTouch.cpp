@@ -117,9 +117,8 @@ bool CAndroidTouch::OnTouchGesturePanEnd(float x, float y, float offsetX, float 
 {
   XBMC_TouchGesture(ACTION_GESTURE_END, velocityX, velocityY, x, y);
 
-  // Send a mouse motion event pointing off the screen
-  // to deselect the selected gui item
-  XBMC_Touch(XBMC_MOUSEMOTION, 0, -1, -1);
+  // unfocus the focused GUI item
+  g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
 
   return true;
 }
