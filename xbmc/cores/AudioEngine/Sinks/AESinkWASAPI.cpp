@@ -560,7 +560,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       SAFE_RELEASE(pProperty);
       goto failed;
     }
-    unsigned int uiChannelMask = std::max(varName.uintVal, (unsigned int) AE_CH_FL | AE_CH_FR);
+    unsigned int uiChannelMask = std::max(varName.uintVal, (unsigned int) KSAUDIO_SPEAKER_STEREO);
 
     deviceChannels.Reset();
 
@@ -630,7 +630,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
       /* Test format for PCM format iteration */
       wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
-      wfxex.dwChannelMask               = AE_CH_FL | AE_CH_FR;
+      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_STEREO;
       wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
       wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
 
@@ -657,7 +657,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
       /* Test format for sample rate iteration */
       wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
-      wfxex.dwChannelMask               = AE_CH_FL | AE_CH_FR;
+      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_STEREO;
       wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
       wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
       wfxex.Format.wBitsPerSample       = 16;
@@ -677,7 +677,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
       /* Test format for channels iteration */
       wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
-      wfxex.dwChannelMask               = AE_CH_FL | AE_CH_FR;
+      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_STEREO;
       wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
       wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
       wfxex.Format.nSamplesPerSec       = 48000;
