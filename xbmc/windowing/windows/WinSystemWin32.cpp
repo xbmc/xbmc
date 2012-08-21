@@ -269,6 +269,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   {
     // save position of windowed mode
     WINDOWINFO wi;
+    wi.cbSize = sizeof(WINDOWINFO);
     GetWindowInfo(m_hWnd, &wi);
     m_nLeft = wi.rcClient.left;
     m_nTop = wi.rcClient.top;
@@ -385,6 +386,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   }
 
   WINDOWINFO wi;
+  wi.cbSize = sizeof (WINDOWINFO);
   GetWindowInfo(m_hWnd, &wi);
   RECT wr = wi.rcWindow;
 
