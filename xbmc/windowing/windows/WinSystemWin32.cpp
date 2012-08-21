@@ -113,9 +113,13 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   SetProp(hWnd, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>(dwHwndTabletProperty));
 
   // setup our touch pointers
-  PtrGetGestureInfo = (pGetGestureInfo) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "GetGestureInfo" );
-  PtrSetGestureConfig = (pSetGestureConfig) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "SetGestureConfig" );
-  PtrCloseGestureInfoHandle = (pCloseGestureInfoHandle) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "CloseGestureInfoHandle" );
+  HMODULE hUser32 = GetModuleHandleA( "user32" );
+  if (hUser32)
+  {
+    PtrGetGestureInfo = (pGetGestureInfo) GetProcAddress( hUser32, "GetGestureInfo" );
+    PtrSetGestureConfig = (pSetGestureConfig) GetProcAddress( hUser32, "SetGestureConfig" );
+    PtrCloseGestureInfoHandle = (pCloseGestureInfoHandle) GetProcAddress( hUser32, "CloseGestureInfoHandle" );
+  }
 
   m_hWnd = hWnd;
   m_hDC = GetDC(m_hWnd);
