@@ -130,6 +130,9 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
     }
   }
 
+  if(m_res.size() < 2)
+    bFound = false;
+
   if(bFound && !m_sdMode)
   {
     sem_init(&m_tv_synced, 0, 0);
