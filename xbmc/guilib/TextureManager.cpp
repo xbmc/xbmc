@@ -393,7 +393,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   int width = 0, height = 0;
   if (bundle >= 0)
   {
-    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, width, height)))
+    if (!m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, width, height))
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
       return 0;
