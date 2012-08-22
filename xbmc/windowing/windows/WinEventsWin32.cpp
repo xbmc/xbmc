@@ -867,7 +867,8 @@ void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
     // You have encountered an unknown gesture
     break;
   }
-  g_Windowing.PtrCloseGestureInfoHandle((HGESTUREINFO)lParam);
+  if(g_Windowing.PtrCloseGestureInfoHandle)
+    g_Windowing.PtrCloseGestureInfoHandle((HGESTUREINFO)lParam);
 }
 
 #endif
