@@ -8965,29 +8965,29 @@ msgstr "Посылать команду \"источник неактивен\" 
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Перевести устройство в режим ожидания, если компьютер находится в режиме ожидания"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Это устройство нуждается в обслуживании"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Игнорировать"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Когда телевизор выключен"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Соединение потеряно"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "Этот пользователь не имеет прав для открытия адаптера CEC"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Порт занят. Только одна программа может получить доступ к адаптеру CEC"
 
