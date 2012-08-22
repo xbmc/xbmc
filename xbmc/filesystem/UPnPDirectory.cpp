@@ -23,6 +23,7 @@
 #include "UPnPDirectory.h"
 #include "URL.h"
 #include "network/upnp/UPnP.h"
+#include "network/upnp/UPnPInternal.h"
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
 #include "video/VideoInfoTag.h"
@@ -404,14 +405,14 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 // look for metadata
                 if( ObjectClass.StartsWith("object.container.album.videoalbum") ) {
                     pItem->SetLabelPreformated(false);
-                    CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), NULL);
+                    UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), NULL);
 
                 } else if( ObjectClass.StartsWith("object.container.album.photoalbum")) {
                   //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
 
                 } else if( ObjectClass.StartsWith("object.container.album") ) {
                     pItem->SetLabelPreformated(false);
-                    CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), NULL);
+                    UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), NULL);
                 }
 
             } else {
@@ -435,11 +436,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     // look for metadata
                     if( ObjectClass.StartsWith("object.item.videoitem") ) {
                         pItem->SetLabelPreformated(false);
-                        CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
+                        UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
 
                     } else if( ObjectClass.StartsWith("object.item.audioitem") ) {
                         pItem->SetLabelPreformated(false);
-                        CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
+                        UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
 
                     } else if( ObjectClass.StartsWith("object.item.imageitem") ) {
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
