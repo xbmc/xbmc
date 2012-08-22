@@ -624,6 +624,8 @@ case $host in
      ARCH="arm"
      use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
+     CFLAGS="$CFLAGS -Wno-psabi -Wa,-mno-warn-deprecated"
+     CXXFLAGS="$CXXFLAGS -Wno-psabi -Wa,-mno-warn-deprecated"
      ;;
   arm*-*linux-android*)
      target_platform=target_android
