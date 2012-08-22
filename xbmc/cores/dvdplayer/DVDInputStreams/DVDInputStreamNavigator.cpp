@@ -263,7 +263,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   if (!m_dvdnav) return -1;
 
   int result;
-  int len;
+  int len = 2048;
   int iNavresult = NAVRESULT_NOP;
 
   // m_tempbuffer will be used for anything that isn't a normal data block
