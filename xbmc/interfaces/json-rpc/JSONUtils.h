@@ -263,7 +263,10 @@ namespace JSONRPC
       }
 
       if (jsonObject.size() == 1)
-        jsonObject = jsonObject[0];
+      {
+        CVariant jsonType = jsonObject[0];
+        jsonObject = jsonType;
+      }
     }
 
     static inline const char *ValueTypeToString(CVariant::VariantType valueType)
