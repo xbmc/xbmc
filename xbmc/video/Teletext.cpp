@@ -1384,7 +1384,7 @@ void CTeletextDecoder::DoFlashing(int startrow)
               case 3: if (flashphase>=500 && flashphase<750) doflash = true;
             }
             break;
-          case 0x11 :  // decremental flash
+          case 0x14 :  // decremental flash
             decflash--;
             if (decflash<1) decflash = 3;
             switch (decflash)
