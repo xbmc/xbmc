@@ -75,4 +75,5 @@ private:
 
     unsigned int        m_uiBufferLen;    /* wasapi endpoint buffer size, in frames */
     double              m_avgTimeWaiting; /* time between next buffer of data from SoftAE and driver call for data */
+    double              m_sinkLatency;    /* time in seconds of total duration of the two WASAPI buffers */
 };
