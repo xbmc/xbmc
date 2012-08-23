@@ -155,7 +155,7 @@ private:
   AEAudioFormat             m_encoderFormat;
   float                     m_encoderFrameSizeMul;
   unsigned int              m_bytesPerSample;
-  CAEConvert::AEConvertFrFn m_convertFn;
+  CAEFrFloatConv           *m_convertFn;
 
   /* currently playing sounds */
   typedef struct {

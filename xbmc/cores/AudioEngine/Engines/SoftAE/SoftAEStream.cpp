@@ -177,11 +177,15 @@ void CSoftAEStream::Initialize()
   {
     /* get the conversion function and allocate a buffer for the data */
     CLog::Log(LOGDEBUG, "CSoftAEStream::CSoftAEStream - Converting from %s to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(m_initDataFormat));
-    m_convertFn = CAEConvert::ToFloat(m_initDataFormat);
-    if (m_convertFn)
+    m_convertFn = new CAEToFloatConv(m_initDataFormat);
+    if (m_convertFn && m_convertFn->is_valid())
       m_convertBuffer = (float*)_aligned_malloc(m_format.m_frameSamples * sizeof(float), 16);
     else
-      m_valid         = false;
+    {
+      m_valid = false;
+      delete m_convertFn;
+      m_convertFn = NULL;
+    }
   }
   else
     m_convertBuffer = (float*)m_inputBuffer.Raw(m_format.m_frames * m_format.m_frameSize);
@@ -217,6 +221,9 @@ CSoftAEStream::~CSoftAEStream()
   InternalFlush();
   if (m_convert)
     _aligned_free(m_convertBuffer);
+
+  delete m_convertFn;
+  m_convertFn = NULL;
 
   if (m_resample)
   {
@@ -298,8 +305,8 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   if (m_convert)
   {
     data       = (uint8_t*)m_convertBuffer;
-    samples    = m_convertFn(
-      (uint8_t*)m_inputBuffer.Raw(m_inputBuffer.Used()),
+    samples    = m_convertFn->convert(
+      (const uint8_t*)m_inputBuffer.Raw(m_inputBuffer.Used()),
       m_inputBuffer.Used() / m_bytesPerSample,
       m_convertBuffer
     );

@@ -43,6 +43,9 @@
 #include <arm_neon.h>
 #endif
 
+typedef unsigned int (*ConvertToFn)(const uint8_t *data, unsigned int samples, float   *dest);
+typedef unsigned int (*ConvertFrFn)(const float   *data, unsigned int samples, uint8_t *dest);
+
 #define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
 
 #ifndef INT24_MAX
@@ -66,73 +69,7 @@ static inline int safeRound(double f)
   return MathUtils::round_int(f);
 }
 
-CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
-{
-  switch (dataFormat)
-  {
-    case AE_FMT_U8    : return &U8_Float;
-    case AE_FMT_S8    : return &S8_Float;
-#ifdef __BIG_ENDIAN__
-    case AE_FMT_S16NE : return &S16BE_Float;
-    case AE_FMT_S32NE : return &S32BE_Float;
-    case AE_FMT_S24NE4: return &S24BE4_Float;
-    case AE_FMT_S24NE3: return &S24BE3_Float;
-#else
-    case AE_FMT_S16NE : return &S16LE_Float;
-    case AE_FMT_S32NE : return &S32LE_Float;
-    case AE_FMT_S24NE4: return &S24LE4_Float;
-    case AE_FMT_S24NE3: return &S24LE3_Float;
-#endif
-    case AE_FMT_S16LE : return &S16LE_Float;
-    case AE_FMT_S16BE : return &S16BE_Float;
-    case AE_FMT_S24LE4: return &S24LE4_Float;
-    case AE_FMT_S24BE4: return &S24BE4_Float;
-    case AE_FMT_S24LE3: return &S24LE3_Float;
-    case AE_FMT_S24BE3: return &S24BE3_Float;
-#if defined(__ARM_NEON__)
-    case AE_FMT_S32LE : return &S32LE_Float_Neon;
-    case AE_FMT_S32BE : return &S32BE_Float_Neon;
-#else
-    case AE_FMT_S32LE : return &S32LE_Float;
-    case AE_FMT_S32BE : return &S32BE_Float;
-#endif
-    case AE_FMT_DOUBLE: return &DOUBLE_Float;
-    default:
-      return NULL;
-  }
-}
-
-CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
-{
-  switch (dataFormat)
-  {
-    case AE_FMT_U8    : return &Float_U8;
-    case AE_FMT_S8    : return &Float_S8;
-#ifdef __BIG_ENDIAN__
-    case AE_FMT_S16NE : return &Float_S16BE;
-    case AE_FMT_S32NE : return &Float_S32BE;
-#else
-    case AE_FMT_S16NE : return &Float_S16LE;
-    case AE_FMT_S32NE : return &Float_S32LE;
-#endif
-    case AE_FMT_S16LE : return &Float_S16LE;
-    case AE_FMT_S16BE : return &Float_S16BE;
-    case AE_FMT_S24NE4: return &Float_S24NE4;
-    case AE_FMT_S24NE3: return &Float_S24NE3;
-#if defined(__ARM_NEON__)
-    case AE_FMT_S32LE : return &Float_S32LE_Neon;
-    case AE_FMT_S32BE : return &Float_S32BE_Neon;
-#else
-    case AE_FMT_S32LE : return &Float_S32LE;
-    case AE_FMT_S32BE : return &Float_S32BE;
-#endif
-    case AE_FMT_DOUBLE: return &Float_DOUBLE;
-    default:
-      return NULL;
-  }
-}
-
-unsigned int CAEConvert::U8_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int U8_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   const float mul = 2.0f / UINT8_MAX;
 
@@ -142,7 +79,7 @@ unsigned int CAEConvert::U8_Float(uint8_t *data, const unsigned int samples, flo
   return samples;
 }
 
-unsigned int CAEConvert::S8_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int S8_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   const float mul = 1.0f / (INT8_MAX + 0.5f);
 
@@ -152,7 +89,7 @@ unsigned int CAEConvert::S8_Float(uint8_t *data, const unsigned int samples, flo
   return samples;
 }
 
-unsigned int CAEConvert::S16LE_Float(uint8_t* data, const unsigned int samples, float *dest)
+static unsigned int S16LE_Float(const uint8_t* data, unsigned int samples, float *dest)
 {
   static const float mul = 1.0f / (INT16_MAX + 0.5f);
 
@@ -183,7 +120,7 @@ unsigned int CAEConvert::S16LE_Float(uint8_t* data, const unsigned int samples, 
   return samples;
 }
 
-unsigned int CAEConvert::S16BE_Float(uint8_t* data, const unsigned int samples, float *dest)
+static unsigned int S16BE_Float(const uint8_t* data, unsigned int samples, float *dest)
 {
   static const float mul = 1.0f / (INT16_MAX + 0.5f);
 
@@ -214,7 +151,7 @@ unsigned int CAEConvert::S16BE_Float(uint8_t* data, const unsigned int samples, 
   return samples;
 }
 
-unsigned int CAEConvert::S24LE4_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int S24LE4_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   for (unsigned int i = 0; i < samples; ++i, data += 4)
   {
@@ -224,7 +161,7 @@ unsigned int CAEConvert::S24LE4_Float(uint8_t *data, const unsigned int samples,
   return samples;
 }
 
-unsigned int CAEConvert::S24BE4_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int S24BE4_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   for (unsigned int i = 0; i < samples; ++i, data += 4)
   {
@@ -234,7 +171,7 @@ unsigned int CAEConvert::S24BE4_Float(uint8_t *data, const unsigned int samples,
   return samples;
 }
 
-unsigned int CAEConvert::S24LE3_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int S24LE3_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   for (unsigned int i = 0; i < samples; ++i, data += 3)
   {
@@ -244,7 +181,7 @@ unsigned int CAEConvert::S24LE3_Float(uint8_t *data, const unsigned int samples,
   return samples;
 }
 
-unsigned int CAEConvert::S24BE3_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int S24BE3_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   for (unsigned int i = 0; i < samples; ++i, data += 3)
   {
@@ -254,7 +191,7 @@ unsigned int CAEConvert::S24BE3_Float(uint8_t *data, const unsigned int samples,
   return samples;
 }
 
-unsigned int CAEConvert::S32LE_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int S32LE_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   static const float factor = 1.0f / (float)INT32_MAX;
   int32_t *src = (int32_t*)data;
@@ -275,9 +212,9 @@ unsigned int CAEConvert::S32LE_Float(uint8_t *data, const unsigned int samples, 
   return samples;
 }
 
-unsigned int CAEConvert::S32LE_Float_Neon(uint8_t *data, const unsigned int samples, float *dest)
-{
 #if defined(__ARM_NEON__)
+static unsigned int S32LE_Float_Neon(const uint8_t *data, unsigned int samples, float *dest)
+{
   static const float factor = 1.0f / (float)INT32_MAX;
   int32_t *src = (int32_t*)data;
 
@@ -309,11 +246,11 @@ unsigned int CAEConvert::S32LE_Float_Neon(uint8_t *data, const unsigned int samp
   if (samples & 0x1)
     dest[0] = (float)src[0] * factor;
 
-#endif /* !defined(__ARM_NEON__) */
   return samples;
 }
+#endif /* !defined(__ARM_NEON__) */
 
-unsigned int CAEConvert::S32BE_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int S32BE_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   static const float factor = 1.0f / (float)INT32_MAX;
   int32_t *src = (int32_t*)data;
@@ -334,9 +271,9 @@ unsigned int CAEConvert::S32BE_Float(uint8_t *data, const unsigned int samples, 
   return samples;
 }
 
-unsigned int CAEConvert::S32BE_Float_Neon(uint8_t *data, const unsigned int samples, float *dest)
-{
 #if defined(__ARM_NEON__)
+static unsigned int S32BE_Float_Neon(const uint8_t *data, unsigned int samples, float *dest)
+{
   static const float factor = 1.0f / (float)INT32_MAX;
   int32_t *src = (int32_t*)data;
 
@@ -368,11 +305,11 @@ unsigned int CAEConvert::S32BE_Float_Neon(uint8_t *data, const unsigned int samp
   if (samples & 0x1)
     dest[0] = (float)src[0] * factor;
 
-#endif /* !defined(__ARM_NEON__) */
   return samples;
 }
+#endif /* !defined(__ARM_NEON__) */
 
-unsigned int CAEConvert::DOUBLE_Float(uint8_t *data, const unsigned int samples, float *dest)
+static unsigned int DOUBLE_Float(const uint8_t *data, unsigned int samples, float *dest)
 {
   double *src = (double*)data;
   for (unsigned int i = 0; i < samples; ++i)
@@ -381,7 +318,7 @@ unsigned int CAEConvert::DOUBLE_Float(uint8_t *data, const unsigned int samples,
   return samples;
 }
 
-unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_U8(const float *data, unsigned int samples, uint8_t *dest)
 {
   #ifdef __SSE__
   const __m128 mul = _mm_set_ps1((float)INT8_MAX+.5f);
@@ -456,7 +393,7 @@ unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8
   return samples;
 }
 
-unsigned int CAEConvert::Float_S8(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_S8(const float *data, unsigned int samples, uint8_t *dest)
 {
   #ifdef __SSE__
   const __m128 mul = _mm_set_ps1((float)INT8_MAX+.5f);
@@ -515,7 +452,7 @@ unsigned int CAEConvert::Float_S8(float *data, const unsigned int samples, uint8
   return samples;
 }
 
-unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_S16LE(const float *data, unsigned int samples, uint8_t *dest)
 {
   int16_t *dst = (int16_t*)dest;
   #ifdef __SSE__
@@ -649,7 +586,7 @@ unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, ui
   return samples << 1;
 }
 
-unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_S16BE(const float *data, unsigned int samples, uint8_t *dest)
 {
   int16_t *dst = (int16_t*)dest;
   #ifdef __SSE__
@@ -783,7 +720,7 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
   return samples << 1;
 }
 
-unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_S24NE4(const float *data, unsigned int samples, uint8_t *dest)
 {
   int32_t *dst = (int32_t*)dest;
   #ifdef __SSE__
@@ -844,7 +781,7 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
   return samples << 2;
 }
 
-unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_S24NE3(const float *data, unsigned int samples, uint8_t *dest)
 {
   /* We do not want to shift for S24LE3, since left-shifting would actually
    * push the MSB to the 4th byte. */
@@ -923,7 +860,7 @@ unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, u
   return samples * 3;
 }
 
-unsigned int CAEConvert::Float_S32LE(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_S32LE(const float *data, unsigned int samples, uint8_t *dest)
 {
   int32_t *dst = (int32_t*)dest;
   #ifdef __SSE__
@@ -997,9 +934,9 @@ unsigned int CAEConvert::Float_S32LE(float *data, const unsigned int samples, ui
 }
 
 
-unsigned int CAEConvert::Float_S32LE_Neon(float *data, const unsigned int samples, uint8_t *dest)
-{
 #if defined(__ARM_NEON__)
+static unsigned int Float_S32LE_Neon(const float *data, unsigned int samples, uint8_t *dest)
+{
   int32_t *dst = (int32_t*)dest;
   for (float *end = data + (samples & ~0x3); data < end; data += 4, dst += 4)
   {
@@ -1028,11 +965,11 @@ unsigned int CAEConvert::Float_S32LE_Neon(float *data, const unsigned int sample
     dst[0] = safeRound(data[0] * (float)INT32_MAX);
     dst[0] = Endian_SwapLE32(dst[0]);
   }
-#endif
   return samples << 2;
 }
+#endif
 
-unsigned int CAEConvert::Float_S32BE(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_S32BE(const float *data, unsigned int samples, uint8_t *dest)
 {
   int32_t *dst = (int32_t*)dest;
   #ifdef __SSE__
@@ -1105,9 +1042,9 @@ unsigned int CAEConvert::Float_S32BE(float *data, const unsigned int samples, ui
   return samples << 2;
 }
 
-unsigned int CAEConvert::Float_S32BE_Neon(float *data, const unsigned int samples, uint8_t *dest)
-{
 #if defined(__ARM_NEON__)
+static unsigned int Float_S32BE_Neon(const float *data, unsigned int samples, uint8_t *dest)
+{
   int32_t *dst = (int32_t*)dest;
   for (float *end = data + (samples & ~0x3); data < end; data += 4, dst += 4)
   {
@@ -1136,11 +1073,11 @@ unsigned int CAEConvert::Float_S32BE_Neon(float *data, const unsigned int sample
     dst[0] = safeRound(data[0] * (float)INT32_MAX);
     dst[0] = Endian_SwapBE32(dst[0]);
   }
-#endif
   return samples << 2;
 }
+#endif
 
-unsigned int CAEConvert::Float_DOUBLE(float *data, const unsigned int samples, uint8_t *dest)
+static unsigned int Float_DOUBLE(const float *data, unsigned int samples, uint8_t *dest)
 {
   double *dst = (double*)dest;
   for (unsigned int i = 0; i < samples; ++i)
@@ -1149,3 +1086,108 @@ unsigned int CAEConvert::Float_DOUBLE(float *data, const unsigned int samples, u
   return samples * sizeof(double);
 }
 
+static ConvertToFn GetToFloatConv(enum AEDataFormat dataFormat)
+{
+  switch (dataFormat)
+  {
+    case AE_FMT_U8    : return &U8_Float;
+    case AE_FMT_S8    : return &S8_Float;
+#ifdef __BIG_ENDIAN__
+    case AE_FMT_S16NE : return &S16BE_Float;
+    case AE_FMT_S32NE : return &S32BE_Float;
+    case AE_FMT_S24NE4: return &S24BE4_Float;
+    case AE_FMT_S24NE3: return &S24BE3_Float;
+#else
+    case AE_FMT_S16NE : return &S16LE_Float;
+    case AE_FMT_S32NE : return &S32LE_Float;
+    case AE_FMT_S24NE4: return &S24LE4_Float;
+    case AE_FMT_S24NE3: return &S24LE3_Float;
+#endif
+    case AE_FMT_S16LE : return &S16LE_Float;
+    case AE_FMT_S16BE : return &S16BE_Float;
+    case AE_FMT_S24LE4: return &S24LE4_Float;
+    case AE_FMT_S24BE4: return &S24BE4_Float;
+    case AE_FMT_S24LE3: return &S24LE3_Float;
+    case AE_FMT_S24BE3: return &S24BE3_Float;
+#if defined(__ARM_NEON__)
+    case AE_FMT_S32LE : return &S32LE_Float_Neon;
+    case AE_FMT_S32BE : return &S32BE_Float_Neon;
+#else
+    case AE_FMT_S32LE : return &S32LE_Float;
+    case AE_FMT_S32BE : return &S32BE_Float;
+#endif
+    case AE_FMT_DOUBLE: return &DOUBLE_Float;
+    default:
+      return NULL;
+  }
+}
+
+CAEToFloatConv::CAEToFloatConv(enum AEDataFormat dataFormat)
+{
+  this->priv_data = (void*)(GetToFloatConv(dataFormat));
+}
+
+CAEToFloatConv::~CAEToFloatConv()
+{
+}
+
+bool CAEToFloatConv::is_valid()
+{
+  return (this->priv_data != NULL);
+}
+
+unsigned int CAEToFloatConv::convert(const uint8_t *data, unsigned int samples, float   *dest){
+  if(this->priv_data)
+    return ((ConvertToFn)(this->priv_data))(data, samples, dest);
+  else return 0;
+}
+
+static ConvertFrFn GetFrFloatConv(enum AEDataFormat dataFormat)
+{
+  switch (dataFormat)
+  {
+    case AE_FMT_U8    : return &Float_U8;
+    case AE_FMT_S8    : return &Float_S8;
+#ifdef __BIG_ENDIAN__
+    case AE_FMT_S16NE : return &Float_S16BE;
+    case AE_FMT_S32NE : return &Float_S32BE;
+#else
+    case AE_FMT_S16NE : return &Float_S16LE;
+    case AE_FMT_S32NE : return &Float_S32LE;
+#endif
+    case AE_FMT_S16LE : return &Float_S16LE;
+    case AE_FMT_S16BE : return &Float_S16BE;
+    case AE_FMT_S24NE4: return &Float_S24NE4;
+    case AE_FMT_S24NE3: return &Float_S24NE3;
+#if defined(__ARM_NEON__)
+    case AE_FMT_S32LE : return &Float_S32LE_Neon;
+    case AE_FMT_S32BE : return &Float_S32BE_Neon;
+#else
+    case AE_FMT_S32LE : return &Float_S32LE;
+    case AE_FMT_S32BE : return &Float_S32BE;
+#endif
+    case AE_FMT_DOUBLE: return &Float_DOUBLE;
+    default:
+      return NULL;
+  }
+}
+
+CAEFrFloatConv::CAEFrFloatConv(enum AEDataFormat dataFormat)
+{
+  this->priv_data = (void*)(GetFrFloatConv(dataFormat));
+}
+
+CAEFrFloatConv::~CAEFrFloatConv()
+{
+}
+
+bool CAEFrFloatConv::is_valid()
+{
+  return (this->priv_data != NULL);
+}
+
+unsigned int CAEFrFloatConv::convert(const float *data, unsigned int samples, uint8_t   *dest){
+  if(this->priv_data)
+    return ((ConvertFrFn)(this->priv_data))(data, samples, dest);
+  else return 0;
+}

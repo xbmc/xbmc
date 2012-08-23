@@ -132,7 +132,7 @@ private:
   float                   m_rgain;         /* replay gain level */
   IAEStream               *m_slave;        /* slave aestream */
 
-  CAEConvert::AEConvertToFn m_convertFn;
+  CAEToFloatConv         *m_convertFn;
 
   CoreAudioRingBuffer    *m_Buffer;
   float                  *m_convertBuffer;      /* buffer for converted data */

@@ -161,12 +161,12 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
        isDATA        = m_frameCount > 0;
 
        /* get the conversion function */
-       CAEConvert::AEConvertToFn convertFn;
+       CAEToFloatConv *convertFn = NULL;
        switch (bitsPerSample)
        {
-         case 8 : convertFn = CAEConvert::ToFloat(AE_FMT_U8   ); break;
-         case 16: convertFn = CAEConvert::ToFloat(AE_FMT_S16LE); break;
-         case 32: convertFn = CAEConvert::ToFloat(AE_FMT_S32LE); break;
+         case 8 : convertFn = new CAEToFloatConv(AE_FMT_U8   ); break;
+         case 16: convertFn = new CAEToFloatConv(AE_FMT_S16LE); break;
+         case 32: convertFn = new CAEToFloatConv(AE_FMT_S32LE); break;
          default:
            CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Unsupported data format in wav: %s", m_filename.c_str());
            file.Close();
@@ -190,9 +190,10 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
          }
 
          /* convert the sample to float */
-         convertFn(raw, 1, &m_samples[s]);
+         convertFn->convert(raw, 1, &m_samples[s]);
        }
        _aligned_free(raw);
+       delete convertFn;
     }
     else
     {

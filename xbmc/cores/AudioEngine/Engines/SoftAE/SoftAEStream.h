@@ -115,8 +115,8 @@ private:
   float                   m_rgain;         /* replay gain level */
   unsigned int            m_waterLevel;    /* the fill level to fall below before calling the data callback */
   unsigned int            m_refillBuffer;  /* how many frames that need to be buffered before we return any frames */
+  CAEToFloatConv         *m_convertFn;
 
-  CAEConvert::AEConvertToFn m_convertFn;
 
   CAEBuffer           m_inputBuffer;
   unsigned int        m_bytesPerSample;
