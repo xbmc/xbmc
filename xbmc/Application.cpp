@@ -4254,6 +4254,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #if !defined(TARGET_DARWIN) && !defined(_LINUX)
     g_audioManager.Enable(false);
 #endif
+
+    if (item.HasPVRChannelInfoTag())
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
   m_bPlaybackStarting = false;
 
