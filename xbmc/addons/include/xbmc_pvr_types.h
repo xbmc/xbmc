@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -38,9 +38,9 @@
 #include "xbmc_addon_types.h"
 #include "xbmc_epg_types.h"
 
-/*! @note Define "USE_DEMUX" on compile time if demuxing inside pvr
- *        addon is used. Also XBMC's "DVDDemuxPacket.h" file must be inside
- *        the include path of the pvr addon.
+/*! @note Define "USE_DEMUX" at compile time if demuxing in the PVR add-on is used.
+ *        Also XBMC's "DVDDemuxPacket.h" file must be in the include path of the add-on,
+ *        and the add-on should set bHandlesDemuxing to true.
  */
 #ifdef USE_DEMUX
 #include "DVDDemuxPacket.h"
@@ -78,21 +78,21 @@ struct DemuxPacket;
 extern "C" {
 #endif
 
-  /*! \brief PVR Client Error Codes
+  /*!
+   * @brief PVR add-on error codes
    */
   typedef enum
   {
-    PVR_ERROR_NO_ERROR          = 0,
-    PVR_ERROR_UNKNOWN           = -1,
-    PVR_ERROR_NOT_IMPLEMENTED   = -2,
-    PVR_ERROR_SERVER_ERROR      = -3,
-    PVR_ERROR_SERVER_TIMEOUT    = -4,
-    PVR_ERROR_NOT_SYNC          = -5,
-    PVR_ERROR_NOT_DELETED       = -6,
-    PVR_ERROR_NOT_SAVED         = -7,
-    PVR_ERROR_RECORDING_RUNNING = -8,
-    PVR_ERROR_ALREADY_PRESENT   = -9,
-    PVR_ERROR_NOT_POSSIBLE      = -10
+    PVR_ERROR_NO_ERROR           = 0,  /*!< @brief no error occurred */
+    PVR_ERROR_UNKNOWN            = -1, /*!< @brief an unknown error occurred */
+    PVR_ERROR_NOT_IMPLEMENTED    = -2, /*!< @brief the method that XBMC called is not implemented by the add-on */
+    PVR_ERROR_SERVER_ERROR       = -3, /*!< @brief the backend reported an error, or the add-on isn't connected */
+    PVR_ERROR_SERVER_TIMEOUT     = -4, /*!< @brief the command was sent to the backend, but the response timed out */
+    PVR_ERROR_REJECTED           = -5, /*!< @brief the command was rejected by the backend */
+    PVR_ERROR_ALREADY_PRESENT    = -6, /*!< @brief the requested item can not be added, because it's already present */
+    PVR_ERROR_INVALID_PARAMETERS = -7, /*!< @brief the parameters of the method that was called are invalid for this operation */
+    PVR_ERROR_RECORDING_RUNNING  = -8, /*!< @brief a recording is running, so the timer can't be deleted without doing a forced delete */
+    PVR_ERROR_FAILED             = -9, /*!< @brief the command failed */
   } PVR_ERROR;
 
   /*!
@@ -100,12 +100,12 @@ extern "C" {
    */
   typedef enum
   {
-    PVR_TIMER_STATE_INVALID   = 0,
+    PVR_TIMER_STATE_NEW       = 0, /*!< @brief a new, unsaved timer */
     PVR_TIMER_STATE_SCHEDULED = 1, /*!< @brief the timer is scheduled for recording */
     PVR_TIMER_STATE_RECORDING = 2, /*!< @brief the timer is currently recordings */
     PVR_TIMER_STATE_COMPLETED = 3, /*!< @brief the recording completed successfully */
     PVR_TIMER_STATE_ABORTED   = 4, /*!< @brief recording started, but was aborted */
-    PVR_TIMER_STATE_CANCELLED = 5  /*!< @brief the timer was scheduled, but was cancelled */
+    PVR_TIMER_STATE_CANCELLED = 5  /*!< @brief the timer was scheduled, but was canceled */
   } PVR_TIMER_STATE;
 
   /*!
@@ -113,27 +113,28 @@ extern "C" {
    */
   typedef struct PVR_PROPERTIES
   {
-    const char *strUserPath;           /*!< @brief path to the user profile */
-    const char *strClientPath;         /*!< @brief path to this add-on */
+    const char* strUserPath;           /*!< @brief path to the user profile */
+    const char* strClientPath;         /*!< @brief path to this add-on */
   } PVR_PROPERTIES;
 
   /*!
    * @brief PVR add-on capabilities. All capabilities are set to "false" as default.
+   * If a capabilty is set to true, then the corresponding methods from xbmc_pvr_dll.h need to be implemented.
    */
   typedef struct PVR_ADDON_CAPABILITIES
   {
-    bool bSupportsEPG;                  /*!< @brief (optional) true if the add-on provides EPG information */
-    bool bSupportsTV;                   /*!< @brief (optional) true if this add-on provides TV channels */
-    bool bSupportsRadio;                /*!< @brief (optional) true if this add-on supports radio channels */
-    bool bSupportsRecordings;           /*!< @brief (optional) true if this add-on supports playback of recordings stored on the backend */
-    bool bSupportsTimers;               /*!< @brief (optional) true if this add-on supports the creation and editing of timers */
-    bool bSupportsChannelGroups;        /*!< @brief (optional) true if this add-on supports channel groups */
-    bool bSupportsChannelScan;          /*!< @brief (optional) true if this add-on support scanning for new channels on the backend */
-    bool bHandlesInputStream;           /*!< @brief (optional) true if this add-on provides an input stream. false if XBMC handles the stream. */
-    bool bHandlesDemuxing;              /*!< @brief (optional) true if this add-on demultiplexes packets. */
-    bool bSupportsRecordingFolders;     /*!< @brief (optional) true if the backend supports timers / recordings in folders. */
-    bool bSupportsRecordingPlayCount;   /*!< @brief (optional) true if the backend supports play count for recordings. */
-    bool bSupportsLastPlayedPosition;   /*!< @brief (optional) true if the backend supports store/retrieve of last played position for recordings. */
+    bool bSupportsEPG;                  /*!< @brief true if the add-on provides EPG information */
+    bool bSupportsTV;                   /*!< @brief true if this add-on provides TV channels */
+    bool bSupportsRadio;                /*!< @brief true if this add-on supports radio channels */
+    bool bSupportsRecordings;           /*!< @brief true if this add-on supports playback of recordings stored on the backend */
+    bool bSupportsTimers;               /*!< @brief true if this add-on supports the creation and editing of timers */
+    bool bSupportsChannelGroups;        /*!< @brief true if this add-on supports channel groups */
+    bool bSupportsChannelScan;          /*!< @brief true if this add-on support scanning for new channels on the backend */
+    bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if XBMC handles the stream. */
+    bool bHandlesDemuxing;              /*!< @brief true if this add-on demultiplexes packets. */
+    bool bSupportsRecordingFolders;     /*!< @brief true if the backend supports timers / recordings in folders. */
+    bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
+    bool bSupportsLastPlayedPosition;   /*!< @brief true if the backend supports store/retrieve of last played position for recordings. */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!
@@ -264,99 +265,62 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
-   * @brief Structure to transfer the PVR functions to XBMC
+   * @brief Structure to transfer the methods from xbmc_pvr_dll.h to XBMC
    */
   typedef struct PVRClient
   {
-    const char * (__cdecl* GetPVRAPIVersion)(void);
-
-    /** @name PVR server methods */
-    //@{
-    PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES *pCapabilities);
-    PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES *pProperties);
-    const char * (__cdecl* GetBackendName)(void);
-    const char * (__cdecl* GetBackendVersion)(void);
-    const char * (__cdecl* GetConnectionString)(void);
-    PVR_ERROR    (__cdecl* GetDriveSpace)(long long *iTotal, long long *iUsed);
-    PVR_ERROR    (__cdecl* DialogChannelScan)(void);
-    PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK &menuhook);
-    //@}
-
-    /** @name PVR EPG methods */
-    //@{
-    PVR_ERROR    (__cdecl* GetEpg)(ADDON_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
-    //@}
-
-    /** @name PVR channel group methods */
-    //@{
+    const char*  (__cdecl* GetPVRAPIVersion)(void);
+    PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
+    PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
+    const char*  (__cdecl* GetBackendName)(void);
+    const char*  (__cdecl* GetBackendVersion)(void);
+    const char*  (__cdecl* GetConnectionString)(void);
+    PVR_ERROR    (__cdecl* GetDriveSpace)(long long*, long long*);
+    PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK&);
+    PVR_ERROR    (__cdecl* GetEpg)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
     int          (__cdecl* GetChannelGroupsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE handle, bool bRadio);
-    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group);
-    //@}
-
-    /** @name PVR channel methods */
-    //@{
+    PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
+    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
+    PVR_ERROR    (__cdecl* DialogChannelScan)(void);
     int          (__cdecl* GetChannelsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannels)(ADDON_HANDLE handle, bool bRadio);
-    PVR_ERROR    (__cdecl* DeleteChannel)(const PVR_CHANNEL &channel);
-    PVR_ERROR    (__cdecl* RenameChannel)(const PVR_CHANNEL &channel);
-    PVR_ERROR    (__cdecl* MoveChannel)(const PVR_CHANNEL &channel);
-    PVR_ERROR    (__cdecl* DialogChannelSettings)(const PVR_CHANNEL &channel);
-    PVR_ERROR    (__cdecl* DialogAddChannel)(const PVR_CHANNEL &channel);
-    //@}
-
-    /** @name PVR recording methods */
-    //@{
+    PVR_ERROR    (__cdecl* GetChannels)(ADDON_HANDLE, bool);
+    PVR_ERROR    (__cdecl* DeleteChannel)(const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* RenameChannel)(const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* MoveChannel)(const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* DialogChannelSettings)(const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* DialogAddChannel)(const PVR_CHANNEL&);
     int          (__cdecl* GetRecordingsAmount)(void);
-    PVR_ERROR    (__cdecl* GetRecordings)(ADDON_HANDLE handle);
-    PVR_ERROR    (__cdecl* DeleteRecording)(const PVR_RECORDING &recording);
-    PVR_ERROR    (__cdecl* RenameRecording)(const PVR_RECORDING &recording);
-    PVR_ERROR    (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING &recording, int count);
-    PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING &recording, int lastplayedposition);
-    int          (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING &recording);
-    //@}
-
-    /** @name PVR timer methods */
-    //@{
+    PVR_ERROR    (__cdecl* GetRecordings)(ADDON_HANDLE);
+    PVR_ERROR    (__cdecl* DeleteRecording)(const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* RenameRecording)(const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
+    PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
+    int          (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
     int          (__cdecl* GetTimersAmount)(void);
-    PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE handle);
-    PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER &timer);
-    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER &timer, bool bForceDelete);
-    PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER &timer);
-    //@}
-
-    /** @name PVR live stream methods */
-    //@{
-    bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL &channel);
+    PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
+    PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);
+    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
+    PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER&);
+    bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
     void         (__cdecl* CloseLiveStream)(void);
-    int          (__cdecl* ReadLiveStream)(unsigned char *pBuffer, unsigned int iBufferSize);
-    long long    (__cdecl* SeekLiveStream)(long long iPosition, int iWhence /* = SEEK_SET */);
+    int          (__cdecl* ReadLiveStream)(unsigned char*, unsigned int);
+    long long    (__cdecl* SeekLiveStream)(long long, int);
     long long    (__cdecl* PositionLiveStream)(void);
     long long    (__cdecl* LengthLiveStream)(void);
     int          (__cdecl* GetCurrentClientChannel)(void);
-    bool         (__cdecl* SwitchChannel)(const PVR_CHANNEL &channel);
-    PVR_ERROR    (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS &signalStatus);
-    const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL &channel);
-    //@}
-
-    /** @name PVR recording stream methods */
-    //@{
-    bool         (__cdecl* OpenRecordedStream)(const PVR_RECORDING &recording);
+    bool         (__cdecl* SwitchChannel)(const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
+    const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
+    bool         (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
     void         (__cdecl* CloseRecordedStream)(void);
-    int          (__cdecl* ReadRecordedStream)(unsigned char *pBuffer, unsigned int iBufferSize);
-    long long    (__cdecl* SeekRecordedStream)(long long iPosition, int iWhence /* = SEEK_SET */);
+    int          (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
+    long long    (__cdecl* SeekRecordedStream)(long long, int);
     long long    (__cdecl* PositionRecordedStream)(void);
     long long    (__cdecl* LengthRecordedStream)(void);
-    //@}
-
-    /** @name PVR demultiplexer methods */
-    //@{
     void         (__cdecl* DemuxReset)(void);
     void         (__cdecl* DemuxAbort)(void);
     void         (__cdecl* DemuxFlush)(void);
     DemuxPacket* (__cdecl* DemuxRead)(void);
-    //@}
-
   } PVRClient;
 
 #ifdef __cplusplus

@@ -147,9 +147,7 @@ void CPVRRecording::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
     CGUIDialogOK::ShowAndGetInput(19033,19111,19110,0); /* print info dialog "Server error!" */
-  else if (err == PVR_ERROR_NOT_SYNC)
-    CGUIDialogOK::ShowAndGetInput(19033,19108,19110,0); /* print info dialog "Recordings not in sync!" */
-  else if (err == PVR_ERROR_NOT_DELETED)
+  else if (err == PVR_ERROR_REJECTED)
     CGUIDialogOK::ShowAndGetInput(19033,19068,19110,0); /* print info dialog "Couldn't delete recording!" */
   else
     CGUIDialogOK::ShowAndGetInput(19033,19147,19110,0); /* print info dialog "Unknown error!" */
