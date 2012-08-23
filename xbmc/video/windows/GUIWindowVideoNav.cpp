@@ -403,8 +403,8 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
     Similarly, we assign the "clean" library labels to the item only if the "Replace filenames with library titles"
     setting is enabled.
     */
-  bool stackItems    = items.GetProperty("isstacked").asBoolean() || (StackingAvailable(items) && g_settings.m_videoStacking);
-  bool replaceLabels = g_guiSettings.GetBool("myvideos.replacelabels");
+  const bool stackItems    = items.GetProperty("isstacked").asBoolean() || (StackingAvailable(items) && g_settings.m_videoStacking);
+  const bool replaceLabels = g_guiSettings.GetBool("myvideos.replacelabels");
 
   CFileItemList dbItems;
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
