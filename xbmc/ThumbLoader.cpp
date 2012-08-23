@@ -198,13 +198,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   m_database->Open();
 
-  // resume point
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_resumePoint.IsSet())
-  {
-    if (m_database->GetResumePoint(*pItem->GetVideoInfoTag()))
-      pItem->SetInvalid();
-  }
-
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails() &&
      (pItem->GetVideoInfoTag()->m_type == "movie" || pItem->GetVideoInfoTag()->m_type == "episode" || pItem->GetVideoInfoTag()->m_type == "musicvideo"))
   {
