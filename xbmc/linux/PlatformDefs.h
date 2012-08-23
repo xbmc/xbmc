@@ -155,7 +155,6 @@
 #define ZeroMemory(dst,size) memset(dst, 0, size)
 
 #define VOID    void
-#define byte    unsigned char
 #define __int8    char
 #define __int16   short
 #define __int32   int
