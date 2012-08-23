@@ -2104,6 +2104,16 @@ if test "$host_vendor" = "apple" ; then
   LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libswscale -lswscale"
 fi
 
+USE_PVR_ADDONS=0
+DISABLE_PVR_ADDON_CONFIG=1
+if [[ -f "pvr-addons/Makefile.am" ]]; then
+  final_message="$final_message\n  PVR add-ons:\t\tYes"
+  USE_PVR_ADDONS=1
+  DISABLE_PVR_ADDON_CONFIG=0
+else
+  final_message="$final_message\n  PVR add-ons:\t\tNo"
+fi
+
 OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.confluence/media/Makefile \
@@ -2162,11 +2172,6 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/OpenGLSpectrum/Makefile \
     xbmc/visualizations/WaveForm/Makefile \
     xbmc/visualizations/iTunes/Makefile \
-    xbmc/pvrclients/Makefile.include \
-    xbmc/pvrclients/MediaPortal/Makefile \
-    xbmc/pvrclients/pvr-demo/Makefile \
-    xbmc/pvrclients/tvheadend/Makefile \
-    xbmc/pvrclients/vdr-vnsi/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
     lib/addons/library.xbmc.gui/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \
@@ -2241,7 +2246,7 @@ AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_MYSQL)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_ANDROID)
-
+AC_SUBST(USE_PVR_ADDONS)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
@@ -2550,6 +2555,18 @@ XB_CONFIG_MODULE([lib/cpluff], [
     --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS" LIBS=""
     #LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
 ], [0])
+
+XB_CONFIG_MODULE([pvr-addons], [
+  ./configure \
+    --prefix="${prefix}/share/xbmc/addons" --includedir="${includedir}" --libdir="${prefix}/share/xbmc/addons" --datadir="${prefix}/share/xbmc/addons" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \
+    CC="$CC" \
+    CXX="$CXX" \
+    CFLAGS="$CFLAGS" \
+    CXXFLAGS="$CXXFLAGS"
+], [$DISABLE_PVR_ADDON_CONFIG])
 
 AC_OUTPUT
 

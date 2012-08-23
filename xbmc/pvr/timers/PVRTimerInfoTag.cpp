@@ -349,9 +349,7 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
     CGUIDialogOK::ShowAndGetInput(19033,19111,19110,0); /* print info dialog "Server error!" */
-  else if (err == PVR_ERROR_NOT_SYNC)
-    CGUIDialogOK::ShowAndGetInput(19033,19112,19110,0); /* print info dialog "Timers not in sync!" */
-  else if (err == PVR_ERROR_NOT_SAVED)
+  else if (err == PVR_ERROR_REJECTED)
     CGUIDialogOK::ShowAndGetInput(19033,19109,19110,0); /* print info dialog "Couldn't delete timer!" */
   else if (err == PVR_ERROR_ALREADY_PRESENT)
     CGUIDialogOK::ShowAndGetInput(19033,19109,0,19067); /* print info dialog */

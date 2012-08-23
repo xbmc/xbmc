@@ -199,12 +199,6 @@ ifneq (@DISABLE_GOOM@,1)
   VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
-PVR_DIRS=\
-	xbmc/pvrclients/MediaPortal \
-	xbmc/pvrclients/vdr-vnsi \
-	xbmc/pvrclients/tvheadend \
-	xbmc/pvrclients/pvr-demo
-
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
 	lib/addons/library.xbmc.pvr \
@@ -219,7 +213,7 @@ SKIN_DIRS+=$(TOUCHED_MEDIA)
 endif
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -253,7 +247,7 @@ all : $(FINAL_TARGETS)
 
 include Makefile.include
 
-.PHONY : dllloader exports pvrclients visualizations screensavers eventclients \
+.PHONY : dllloader exports visualizations screensavers eventclients \
 	papcodecs dvdpcodecs imagelib codecs externals force libaddon skins
 
 # hack targets to keep build system up to date
@@ -327,11 +321,6 @@ visualizations: $(VIS_DIRS)
 
 screensavers: $(SS_DIRS)
 
-pvrclients: exports
-	$(MAKE) -C xbmc/pvrclients/MediaPortal
-	$(MAKE) -C xbmc/pvrclients/vdr-vnsi
-	$(MAKE) -C xbmc/pvrclients/tvheadend
-	$(MAKE) -C xbmc/pvrclients/pvr-demo
 libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.addon
 	$(MAKE) -C lib/addons/library.xbmc.gui
@@ -379,14 +368,19 @@ endif
 imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
+pvraddons: exports
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons
+endif
+
 codecs: papcodecs dvdpcodecs
 
 libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
-externals: libaddon codecs libs pvrclients visualizations screensavers
+externals: libaddon codecs libs visualizations screensavers pvraddons
 
 xcode_depends: \
-	codecs libs pvrclients visualizations screensavers eventclients libaddon skins \
+	codecs libs visualizations screensavers eventclients libaddon skins \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
@@ -478,6 +472,9 @@ endif
 
 install-arch:
 	@# Arch dependent files
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons install
+endif
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
 	@find -E system addons -type f -not -iregex ".*svn.*" \
 		-iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs" \
@@ -573,15 +570,17 @@ clean-screensavers:
 	for d in $(SS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
-clean-pvrclients:
-	for d in $(PVR_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-libaddons:
 	for d in $(LIBADDON_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-pvraddons:
+ifeq (@USE_PVR_ADDONS@,1)
+	if test -f pvr-addons/Makefile; then $(MAKE) -C pvr-addons clean; fi;
+endif
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-pvrclients clean-screensavers clean-visualisations clean-libaddons
+	clean-screensavers clean-visualisations clean-libaddons clean-pvraddons
 
 check:
 	for d in $(CHECK_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d $@; fi; done
