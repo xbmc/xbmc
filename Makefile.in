@@ -380,7 +380,7 @@ libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH
 externals: libaddon codecs libs visualizations screensavers pvraddons
 
 xcode_depends: \
-	codecs libs visualizations screensavers eventclients libaddon skins \
+	codecs libs visualizations screensavers eventclients libaddon skins pvraddons \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
