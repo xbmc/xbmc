@@ -3068,7 +3068,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
   }
   else if (info == VIDEOPLAYER_COVER)
   {
-    if (!g_application.IsPlayingVideo()) return "";
+    if (!g_application.IsPlayingVideo() && !m_currentFile->HasPVRChannelInfoTag()) return "";
     if (fallback)
       *fallback = "DefaultVideoCover.png";
     if(m_currentMovieThumb.IsEmpty())
@@ -3520,7 +3520,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
 
 CStdString CGUIInfoManager::GetVideoLabel(int item)
 {
-  if (!g_application.IsPlayingVideo())
+  if (!g_application.IsPlayingVideo() && !m_currentFile->HasPVRChannelInfoTag())
     return "";
 
   if (item == VIDEOPLAYER_TITLE)
