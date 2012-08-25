@@ -26,6 +26,8 @@
 #include "utils/Observer.h"
 #include "ThumbLoader.h"
 
+#define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
+
 namespace PVR
 {
   class CPVRRecordings : public Observable
@@ -43,6 +45,10 @@ namespace PVR
     virtual bool IsDirectoryMember(const CStdString &strDirectory, const CStdString &strEntryDirectory, bool bDirectMember = true) const;
     virtual void GetContents(const CStdString &strDirectory, CFileItemList *results);
     virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true);
+
+    bool HasAllRecordingsPathExtension(const CStdString &strDirectory);
+    CStdString AddAllRecordingsPathExtension(const CStdString &strDirectory);
+    CStdString RemoveAllRecordingsPathExtension(const CStdString &strDirectory);
 
   public:
     CPVRRecordings(void);

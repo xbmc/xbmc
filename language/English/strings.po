@@ -7108,6 +7108,10 @@ msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr ""
 
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr ""
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr ""

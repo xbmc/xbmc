@@ -100,7 +100,8 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
     CPVRRecording *current = m_recordings.at(iRecordingPtr);
-    if (!IsDirectoryMember(strDirectory, current->m_strDirectory, true))
+    bool directMember = !HasAllRecordingsPathExtension(strDirectory);
+    if (!IsDirectoryMember(RemoveAllRecordingsPathExtension(strDirectory), current->m_strDirectory, directMember))
       continue;
 
     CFileItemPtr pFileItem(new CFileItem(*current));
@@ -188,6 +189,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     }
   }
 
+  int subDirectories = results->Size();
   CFileItemList files;
   GetContents(strBase, &files);
 
@@ -206,6 +208,29 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
   results->Append(files);
 
+  // Add 'All Recordings' item (if we have at least one subdirectory in the list)
+  if (subDirectories > 0)
+  {
+    CStdString strLabel(g_localizeStrings.Get(19270)); // "* All recordings"
+    CFileItemPtr pItem(new CFileItem(strLabel));
+    CStdString strAllPath;
+    if(strUseBase.empty())
+      strAllPath = "pvr://recordings";
+    else
+      strAllPath.Format("pvr://recordings/%s", strUseBase.c_str());
+    pItem->SetPath(AddAllRecordingsPathExtension(strAllPath));
+    pItem->SetSpecialSort(SortSpecialOnTop);
+    pItem->SetLabelPreformated(true);
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    for(int i=0; i<results->Size(); ++i)
+    {
+      if(pItem->m_dateTime < results->Get(i)->m_dateTime)
+        pItem->m_dateTime = results->Get(i)->m_dateTime;
+    }
+    results->AddFront(pItem, 0);
+  }
+
   if (!strUseBase.IsEmpty())
   {
     CStdString strLabel("..");
@@ -216,6 +241,40 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     results->AddFront(pItem, 0);
   }
   m_strDirectoryHistory.Format("pvr://recordings/%s", strUseBase.c_str());
+}
+
+bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirectory)
+{
+  CStdString strUseDir = TrimSlashes(strDirectory);
+  CStdString strAllRecordingsPathExtension(PVR_ALL_RECORDINGS_PATH_EXTENSION);
+
+  if (strUseDir.GetLength() < strAllRecordingsPathExtension.GetLength())
+    return false;
+
+  if (strUseDir.GetLength() == strAllRecordingsPathExtension.GetLength())
+    return strUseDir.Equals(strAllRecordingsPathExtension);
+
+  return strUseDir.Right(strAllRecordingsPathExtension.GetLength() + 1).Equals("/" + strAllRecordingsPathExtension);
+}
+
+CStdString CPVRRecordings::AddAllRecordingsPathExtension(const CStdString &strDirectory)
+{
+  if (HasAllRecordingsPathExtension(strDirectory))
+    return strDirectory;
+
+  CStdString strResult = strDirectory;
+  if (!strDirectory.Right(1).Equals("/"))
+    strResult = strResult + "/";
+
+  return strResult + PVR_ALL_RECORDINGS_PATH_EXTENSION + "/";
+}
+
+CStdString CPVRRecordings::RemoveAllRecordingsPathExtension(const CStdString &strDirectory)
+{
+  if (!HasAllRecordingsPathExtension(strDirectory))
+    return strDirectory;
+
+  return strDirectory.Left(strDirectory.GetLength() - strlen(PVR_ALL_RECORDINGS_PATH_EXTENSION) - 1);
 }
 
 int CPVRRecordings::Load(void)
