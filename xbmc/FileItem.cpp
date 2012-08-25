@@ -110,6 +110,10 @@ CFileItem::CFileItem(const CMusicInfoTag& music)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(music.GetTitle());
