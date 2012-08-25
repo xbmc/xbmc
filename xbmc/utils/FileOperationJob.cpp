@@ -299,9 +299,9 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
   double current = data->current + ((double)ipercent * data->opWeight * (double)m_time)/ 100.0;
 
   if (avgSpeed > 1000000.0f)
-    data->base->m_avgSpeed.Format("%.1f Mb/s", avgSpeed / 1000000.0f);
+    data->base->m_avgSpeed.Format("%.1f MB/s", avgSpeed / 1000000.0f);
   else
-    data->base->m_avgSpeed.Format("%.1f Kb/s", avgSpeed / 1000.0f);
+    data->base->m_avgSpeed.Format("%.1f KB/s", avgSpeed / 1000.0f);
 
   return !data->base->ShouldCancel((unsigned)current, 100);
 }

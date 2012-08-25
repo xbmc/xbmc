@@ -814,7 +814,7 @@ void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
   if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
     return;
 
-  strAudioInfo.Format("Audio stream (%s) [kB/s:%.2f]",
+  strAudioInfo.Format("Audio stream (%s) [Kb/s:%.2f]",
     AudioCodecName(m_audio_streams[m_audio_index]->format),
     (double)m_audio_streams[m_audio_index]->bit_rate / 1024.0);
 }
