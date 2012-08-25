@@ -344,7 +344,6 @@ protected:
   std::string  m_mimetype;  // hold a hint to what content file contains (mime type)
   ECacheState  m_caching;
   CFileItem    m_item;
-  unsigned int m_scanStart;
   unsigned int m_iChannelEntryTimeOut;
 
 

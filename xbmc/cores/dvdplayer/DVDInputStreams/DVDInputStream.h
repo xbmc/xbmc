@@ -137,6 +137,7 @@ public:
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
+  virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should

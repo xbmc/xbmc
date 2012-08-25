@@ -82,13 +82,20 @@ public:
   /* returns m_pOtherStream */
   CDVDInputStream* GetOtherStream();
 
+  void ResetScanTimeout(unsigned int iTimeoutMs);
 protected:
+  bool CloseAndOpen(const char* strFile);
+  bool SupportsChannelSwitch(void) const;
+
   IDVDPlayer*               m_pPlayer;
   CDVDInputStream*          m_pOtherStream;
   XFILE::IFile*             m_pFile;
   XFILE::ILiveTVInterface*  m_pLiveTV;
   XFILE::IRecordable*       m_pRecordable;
   bool                      m_eof;
+  std::string               m_strContent;
+  bool                      m_bReopened;
+  unsigned int              m_iScanTimeout;
 };
 
 
