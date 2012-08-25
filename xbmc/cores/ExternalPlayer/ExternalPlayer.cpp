@@ -290,7 +290,7 @@ void CExternalPlayer::Process()
   BOOL ret = TRUE;
 #if defined(_WIN32)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
-#elif defined(_LINUX)
+#elif defined(_LINUX) || defined(TARGET_DARWIN_OSX)
   ret = ExecuteAppLinux(strFArgs.c_str());
 #endif
   int64_t elapsedMillis = XbmcThreads::SystemClockMillis() - m_playbackStartTime;
@@ -416,7 +416,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 }
 #endif
 
-#if defined(_LINUX)
+#if defined(_LINUX) || defined(TARGET_DARWIN_OSX)
 BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
