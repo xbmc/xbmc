@@ -309,6 +309,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   if (items.GetObjectCount() <= 1)
     return;
 
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(BuildPath()))
+    return;
+
   // hack - as the season node might return episodes
   auto_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
 
@@ -318,7 +322,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
       {
         CStdString strLabel = g_localizeStrings.Get(20366);
         pItem.reset(new CFileItem(strLabel));  // "All Seasons"
-        pItem->SetPath(BuildPath() + "-1/");
+        videoUrl.AppendPath("-1/");
+        pItem->SetPath(videoUrl.ToString());
         // set the number of watched and unwatched items accordingly
         int watched = 0;
         int unwatched = 0;
