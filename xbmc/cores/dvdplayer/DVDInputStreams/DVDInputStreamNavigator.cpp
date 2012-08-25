@@ -314,10 +314,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
-
-        /* if user didn't care for action, just skip it */
-        if(iNavresult == NAVRESULT_NOP)
-          SkipStill();
+        //  SkipStill() is called by DVDPlayer
       }
       break;
 
