@@ -1627,11 +1627,29 @@ void CGUIEPGGridContainer::Reset()
 void CGUIEPGGridContainer::GoToBegin()
 {
   ScrollToBlockOffset(0);
+  SetBlock(0);
 }
 
 void CGUIEPGGridContainer::GoToEnd()
 {
-  ScrollToBlockOffset(m_blocks - m_blocksPerPage);
+  int blocksEnd = 0;   // the end block of the last epg element for the selected channel
+  int blocksStart = 0; // the start block of the last epg element for the selected channel
+  int blockOffset = 0; // the block offset to scroll to
+  for (int blockIndex = m_blocks; blockIndex >= 0 && (!blocksEnd || !blocksStart); blockIndex--)
+  {
+    if (!blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item != NULL)
+      blocksEnd = blockIndex;
+    if (blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blocksEnd].item != 
+                     m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item)
+      blocksStart = blockIndex + 1;
+  }
+  if (blocksEnd - blocksStart > m_blocksPerPage)
+    blockOffset = blocksStart;
+  else if (blocksEnd > m_blocksPerPage)
+    blockOffset = blocksEnd - m_blocksPerPage;
+
+  ScrollToBlockOffset(blockOffset); // scroll to the start point of the last epg element
+  SetBlock(m_blocksPerPage - 1);    // select the last epg element
 }
 
 void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
