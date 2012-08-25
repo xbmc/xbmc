@@ -167,4 +167,5 @@ private:
   bool              m_muted;
   int               m_soundMode;
   bool              m_streamsPlaying;
+  bool              m_isSuspended;
 };
