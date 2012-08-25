@@ -1635,15 +1635,13 @@ void CGUIEPGGridContainer::GoToEnd()
   int blocksEnd = 0;   // the end block of the last epg element for the selected channel
   int blocksStart = 0; // the start block of the last epg element for the selected channel
   int blockOffset = 0; // the block offset to scroll to
-  for (int blockIndex = m_blocks; blockIndex>=0; blockIndex--)
+  for (int blockIndex = m_blocks; blockIndex >= 0 && (!blocksEnd || !blocksStart); blockIndex--)
   {
     if (!blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item != NULL)
       blocksEnd = blockIndex;
     if (blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blocksEnd].item != 
                      m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item)
       blocksStart = blockIndex + 1;
-    if (blocksEnd && blocksStart)
-      break;
   }
   if (blocksEnd - blocksStart > m_blocksPerPage)
     blockOffset = blocksStart;
