@@ -2463,15 +2463,14 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
       // upload the old way.
       CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
 
-      GLsizei       texWidth    = CVPixelBufferGetWidth(cvBufferRef);
       GLsizei       texHeight   = CVPixelBufferGetHeight(cvBufferRef);
-      //size_t        rowbytes    = CVPixelBufferGetBytesPerRow(cvBufferRef);
+      size_t        rowbytes    = CVPixelBufferGetBytesPerRow(cvBufferRef);
       unsigned char *bufferBase = (unsigned char*)CVPixelBufferGetBaseAddress(cvBufferRef);
 
       glEnable(m_textureTarget);
       glBindTexture(m_textureTarget, plane.id);
       glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, rowbytes/2, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
       glBindTexture(m_textureTarget, 0);
       glDisable(m_textureTarget);
 
@@ -2550,16 +2549,11 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   im.cshift_x = 0;
   im.cshift_y = 0;
 
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
+  plane.texwidth  = NP2(im.width);
+  plane.texheight = NP2(im.height);
   plane.pixpertex_x = 1;
   plane.pixpertex_y = 1;
 
-  if(m_renderMethod & RENDER_POT)
-  {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
-  }
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
   if (Cocoa_GetOSVersion() >= 0x1074)
