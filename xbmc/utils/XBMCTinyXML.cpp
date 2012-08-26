@@ -74,7 +74,8 @@ bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
   location.Clear();
 
   CStdString data;
-  data.reserve(8 * 1000);
+  int64_t fileSize = file.GetLength();
+  data.reserve( (fileSize > 0) ? fileSize : 8*1000);
   StreamIn(&file, &data);
   file.Close();
 
