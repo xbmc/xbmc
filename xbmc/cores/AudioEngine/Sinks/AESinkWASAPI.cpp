@@ -127,7 +127,6 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_needDataEvent(0),
   m_pDevice(NULL),
   m_initialized(false),
-  m_isSuspended(false),
   m_running(false),
   m_encodedFormat(AE_FMT_INVALID),
   m_encodedChannels(0),
@@ -279,10 +278,6 @@ void CAESinkWASAPI::Deinitialize()
 {
   if (!m_initialized)
     return;
-
-  m_isSuspended = true;
-
-  Sleep((DWORD)(m_sinkLatency * 1100)); //TODO: remove when Drain() added
 
   if (m_running)
     m_pAudioClient->Stop();

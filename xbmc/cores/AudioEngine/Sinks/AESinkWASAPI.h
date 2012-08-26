@@ -72,7 +72,6 @@ private:
     bool                m_running;
     bool                m_initialized;
     bool                m_isDirty;        /* sink output failed - needs re-init or new device */
-    bool                m_isSuspended;    /* sink has been flagged to suspend output and shut down */
 
     unsigned int        m_uiBufferLen;    /* wasapi endpoint buffer size, in frames */
     double              m_avgTimeWaiting; /* time between next buffer of data from SoftAE and driver call for data */

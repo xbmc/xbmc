@@ -872,25 +872,12 @@ bool CSoftAE::Suspend()
   CLog::Log(LOGDEBUG, "CSoftAE::Suspend - Suspending AE processing");
   m_isSuspended = true;
 
-  /* De-init sink to allow external players access to device */
-  if (m_sink)
-  {
-    /* take the sink lock */
-    CExclusiveLock sinkLock(m_sinkLock);
-    //m_sink->Drain(); TODO: implement
-    m_sink->Deinitialize();
-    delete m_sink;
-    m_sink = NULL;
-  }
-
   return true;
 }
 
 bool CSoftAE::Resume()
 {
   CLog::Log(LOGDEBUG, "CSoftAE::Resume - Resuming AE processing");
-  InternalOpenSink();
-
   m_isSuspended = false;
 
   return true;
@@ -905,10 +892,23 @@ void CSoftAE::Run()
   bool hasAudio = false;
   while (m_running)
   {
-    /* idle while in suspended state until Resume() called */
-    while (m_isSuspended)
+    /* idle while in Suspend() state until Resume() called */
+    /* idle if nothing to play and user hasn't enabled     */
+    /* continuous streaming (silent stream) in as.xml      */
+    while (m_isSuspended ||
+          (m_playingStreams.empty() && m_playing_sounds.empty() && !g_advancedSettings.m_streamSilence) &&
+           m_running && !m_reOpen)
     {
-      Sleep(100);
+      if (m_sink)
+      {
+        /* take the sink lock */
+        CExclusiveLock sinkLock(m_sinkLock);
+        //m_sink->Drain(); TODO: implement
+        m_sink->Deinitialize();
+        delete m_sink;
+        m_sink = NULL;
+      }
+      m_wake.WaitMSec(50);
     }
 
     bool restart = false;
@@ -937,17 +937,9 @@ void CSoftAE::Run()
     if (m_reOpen || restart)
     {
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
+      m_isSuspended = false; // exit Suspend state
       InternalOpenSink();
     }
-#if defined(TARGET_ANDROID)
-    else if (m_playingStreams.empty() && m_playing_sounds.empty())
-    {
-      // if we have nothing to do, take a dirt nap.
-      // we do not have to take a lock just to check empty.
-      // this keeps AE from sucking CPU if nothing is going on.
-      m_wake.WaitMSec(100);
-    }
-#endif
   }
 }
 
