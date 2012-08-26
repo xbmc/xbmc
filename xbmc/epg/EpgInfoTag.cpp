@@ -410,7 +410,7 @@ CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
     CSingleLock lock(m_critSection);
     strTitle = m_strTitle;
     if (m_pvrChannel)
-      bParentalLocked = m_pvrChannel->IsLocked();
+      bParentalLocked = g_PVRManager.IsParentalLocked(*m_pvrChannel);
   }
 
   if (!bOverrideParental && bParentalLocked)

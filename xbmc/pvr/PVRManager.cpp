@@ -561,7 +561,7 @@ bool CPVRManager::IsPlaying(void) const
 
 bool CPVRManager::GetCurrentChannel(CPVRChannel &channel) const
 {
-  return IsPlaying() && m_addons && m_addons->GetPlayingChannel(channel);
+  return m_addons && m_addons->GetPlayingChannel(channel);
 }
 
 int CPVRManager::GetCurrentEpg(CFileItemList &results) const
@@ -659,23 +659,11 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 
 bool CPVRManager::CheckParentalLock(const CPVRChannel &channel)
 {
-  bool bReturn(true);
+  bool bReturn = !IsParentalLocked(channel) ||
+      CheckParentalPIN();
 
-  if (IsParentalLocked(channel))
-  {
-    // check the pin code
-    if (!CheckParentalPIN())
-    {
-      CLog::Log(LOGERROR, "PVRManager - %s - parental lock verification failed for channel '%s': wrong PIN entered.",
-          __FUNCTION__, channel.ChannelName().c_str());
-      bReturn = false;
-    }
-    else if (m_parentalTimer)
-    {
-      // reset the timer
-      m_parentalTimer->StartZero();
-    }
-  }
+  if (!bReturn)
+    CLog::Log(LOGERROR, "PVRManager - %s - parental lock verification failed for channel '%s': wrong PIN entered.", __FUNCTION__, channel.ChannelName().c_str());
 
   return bReturn;
 }
@@ -712,6 +700,11 @@ bool CPVRManager::CheckParentalPIN(const char *strTitle /* = NULL */)
   if (!bValidPIN)
     // display message: The entered PIN number was incorrect
     CGUIDialogOK::ShowAndGetInput(19264,0,19265,0);
+  else if (m_parentalTimer)
+  {
+    // reset the timer
+    m_parentalTimer->StartZero();
+  }
 
   return bValidPIN;
 }
@@ -773,7 +766,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
       __FUNCTION__, channel.GetPVRChannelInfoTag()->ChannelName().c_str());
 
   // check if we're allowed to play this file
-  if (!CheckParentalLock(*channel.GetPVRChannelInfoTag()))
+  if (IsParentalLocked(*channel.GetPVRChannelInfoTag()))
     return bReturn;
 
   if ((bReturn = m_addons->OpenStream(*channel.GetPVRChannelInfoTag())) != false)
@@ -972,7 +965,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 {
   bool bSwitched(false);
 
-  if (!CheckParentalLock(channel))
+  if (IsParentalLocked(channel))
     return false;
 
   CSingleLock lock(m_critSection);

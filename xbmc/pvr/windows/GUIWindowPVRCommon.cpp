@@ -529,7 +529,8 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
     return bReturn;
 
   CPVRChannelPtr channel = epgTag->ChannelTag();
-  if (!channel || channel->ChannelNumber() > 0)
+  if (!channel || channel->ChannelNumber() > 0 ||
+      !g_PVRManager.CheckParentalLock(*channel))
     return bReturn;
 
   bReturn = g_application.PlayFile(CFileItem(*channel));
@@ -689,18 +690,21 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
     CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
 
-    /* try a fast switch */
-    if (channel && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-        (channel->IsRadio() == g_PVRManager.IsPlayingRadio()) && g_application.m_pPlayer)
+    if (g_PVRManager.CheckParentalLock(*channel))
     {
-      if (channel->StreamURL().IsEmpty())
-        bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*channel);
-    }
+      /* try a fast switch */
+      if (channel && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
+         (channel->IsRadio() == g_PVRManager.IsPlayingRadio()) && g_application.m_pPlayer)
+      {
+        if (channel->StreamURL().IsEmpty())
+          bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*channel);
+      }
 
-    if (!bSwitchSuccessful)
-    {
-      CApplicationMessenger::Get().PlayFile(*item, false);
-      return true;
+      if (!bSwitchSuccessful)
+      {
+        CApplicationMessenger::Get().PlayFile(*item, false);
+        return true;
+      }
     }
 
     if (!bSwitchSuccessful)

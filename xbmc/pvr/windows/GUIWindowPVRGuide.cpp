@@ -423,7 +423,8 @@ bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
   CPVRChannelPtr channel;
   if (item && item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
     channel = item->GetEPGInfoTag()->ChannelTag();
-  if (!channel)
+
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
 
   CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());

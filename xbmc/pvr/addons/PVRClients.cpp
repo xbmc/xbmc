@@ -1075,7 +1075,6 @@ bool CPVRClients::HandlesInputStream(int iClientId) const
 
 bool CPVRClients::GetPlayingClient(PVR_CLIENT &client) const
 {
-  CSingleLock lock(m_critSection);
   return GetConnectedClient(GetPlayingClientID(), client);
 }
 

@@ -4039,6 +4039,9 @@ CStdString CDVDPlayer::GetPlayingTitle()
 
 bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
 {
+  if (!g_PVRManager.CheckParentalLock(channel))
+    return false;
+
   /* set GUI info */
   if (!g_PVRManager.PerformChannelSwitch(channel, true))
     return false;
