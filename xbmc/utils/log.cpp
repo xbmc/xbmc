@@ -213,7 +213,18 @@ int CLog::GetLogLevel()
 void CLog::OutputDebugString(const std::string& line)
 {
 #if defined(_DEBUG) || defined(PROFILE)
-  ::OutputDebugString(line.c_str());
+#if defined(TARGET_WINDOWS)
+  // we can't use charsetconverter here as it's initialized later than CLog and deinitialized early
+  int bufSize = MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, NULL, 0);
+  CStdStringW wstr (L"", bufSize);
+  if ( MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, wstr.GetBuf(bufSize), bufSize) == bufSize )
+  {
+    wstr.RelBuf();
+    ::OutputDebugStringW(wstr.c_str());
+  }
+  else
+#endif // TARGET_WINDOWS
+    ::OutputDebugString(line.c_str());
   ::OutputDebugString("\n");
 #endif
 }

@@ -181,7 +181,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   // There might be data to copy from the previous texture
   if ((newSpeedupTexture && m_speedupTexture) || (newTexture && m_texture))
   {
-    if (m_speedupTexture)
+    if (m_speedupTexture && newSpeedupTexture)
     {
       m_speedupTexture->GetSurfaceLevel(0, &pSource);
       newSpeedupTexture->GetSurfaceLevel(0, &pTarget);

@@ -115,6 +115,9 @@ CGUILabel::COLOR CGUIButtonControl::GetTextColor() const
 
 void CGUIButtonControl::ProcessText(unsigned int currentTime)
 {
+  CRect labelRenderRect = m_label.GetRenderRect();
+  CRect label2RenderRect = m_label2.GetRenderRect();
+
   bool changed = m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
   changed |= m_label.SetText(m_info.GetLabel(m_parentID));
   changed |= m_label.SetScrolling(HasFocus());
@@ -128,7 +131,11 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
     changed |= m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
     changed |= m_label2.SetScrolling(HasFocus());
 
-    changed |= CGUILabel::CheckAndCorrectOverlap(m_label, m_label2);
+    // If overlapping was corrected - compare render rects to determine
+    // if they changed since last frame.
+    if (CGUILabel::CheckAndCorrectOverlap(m_label, m_label2))
+      changed |= (m_label.GetRenderRect()  != labelRenderRect ||
+                  m_label2.GetRenderRect() != label2RenderRect);
 
     changed |= m_label2.SetColor(GetTextColor());
   }

@@ -268,7 +268,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
       m_pDS2->query(sql.c_str());
       while (!m_pDS2->eof())
       {
-        props.dependencies.insert(make_pair(m_pDS2->fv(0).get_asString(), make_pair(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asBool())));
+        props.dependencies.insert(make_pair(m_pDS2->fv(0).get_asString(), make_pair(AddonVersion(m_pDS2->fv(1).get_asString()), m_pDS2->fv(2).get_asBool())));
         m_pDS2->next();
       }
 

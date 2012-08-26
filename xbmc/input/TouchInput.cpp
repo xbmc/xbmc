@@ -215,7 +215,8 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
           m_gestureState == TouchGestureMultiTouchDone)
         break;
 
-      m_holdTimer->Stop();
+      if (m_pointers[pointer].moving)
+        m_holdTimer->Stop();
 
       if (m_gestureState == TouchGestureSingleTouch)
       {

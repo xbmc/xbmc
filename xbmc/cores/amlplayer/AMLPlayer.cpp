@@ -814,7 +814,7 @@ void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
   if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
     return;
 
-  strAudioInfo.Format("Audio stream (%s) [kB/s:%.2f]",
+  strAudioInfo.Format("Audio stream (%s) [Kb/s:%.2f]",
     AudioCodecName(m_audio_streams[m_audio_index]->format),
     (double)m_audio_streams[m_audio_index]->bit_rate / 1024.0);
 }
@@ -1463,7 +1463,7 @@ void CAMLPlayer::Process()
         CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",
           __FUNCTION__, width, height, fFrameRate, formatstr.c_str());
         g_renderManager.IsConfigured();
-        if (!g_renderManager.Configure(width, height, width, height, fFrameRate, flags, RENDER_FMT_BYPASS, 0))
+        if (!g_renderManager.Configure(width, height, width, height, fFrameRate, flags, RENDER_FMT_BYPASS, 0, 0))
         {
           CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
         }

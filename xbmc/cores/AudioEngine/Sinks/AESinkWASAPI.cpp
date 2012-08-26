@@ -332,22 +332,26 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
 
 double CAESinkWASAPI::GetDelay()
 {
-  return GetCacheTime();
+  if (!m_initialized)
+    return 0.0;
+
+  return m_sinkLatency;
 }
 
 double CAESinkWASAPI::GetCacheTime()
 {
+  /* This function deviates from the defined usage due to the event-driven */
+  /* mode of WASAPI utilizing twin buffers which are written to in single  */
+  /* buffer chunks. Therefore the buffers are either 100% full or 50% full */
+  /* At 50% issues arise with water levels in the stream and player. For   */
+  /* this reason the cache is shown as 100% full at all times, and control */
+  /* of the buffer filling is assumed in AddPackets() and by the WASAPI    */
+  /* implementation of the WaitforSingleObject event indicating one of the */
+  /* buffers is ready for filling via AddPackets                           */
   if (!m_initialized)
     return 0.0;
 
-  unsigned int numPaddingFrames;
-  HRESULT hr = m_pAudioClient->GetCurrentPadding(&numPaddingFrames);
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": GetCurrentPadding Failed : %s", WASAPIErrToStr(hr));
-    return 0.0;
-  }
-  return (double)numPaddingFrames / (double)m_format.m_sampleRate;
+  return m_sinkLatency;
 }
 
 double CAESinkWASAPI::GetCacheTotal()
@@ -355,11 +359,7 @@ double CAESinkWASAPI::GetCacheTotal()
   if (!m_initialized)
     return 0.0;
 
-  REFERENCE_TIME hnsLatency;
-  HRESULT hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
-
-  /** returns buffer duration in seconds */
-  return hnsLatency / 10.0;
+  return m_sinkLatency;
 }
 
 unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
@@ -1084,7 +1084,15 @@ initialize:
     CLog::Log(LOGERROR, __FUNCTION__": Unable to initialize WASAPI in exclusive mode %d - (%s).", HRESULT(hr), WASAPIErrToStr(hr));
     return false;
   }
+
+  /* Latency of WASAPI buffers in event-driven mode is equal to the returned value */
+  /* of GetStreamLatency converted from 100ns intervals to seconds then multiplied */
+  /* by two as there are two equally-sized buffers and playback starts when the    */
+  /* second buffer is filled. Multiplying the returned 100ns intervals by 0.0000002*/
+  /* is handles both the unit conversion and twin buffers.                         */
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
+  m_sinkLatency = hnsLatency * 0.0000002;
+
   CLog::Log(LOGDEBUG,  __FUNCTION__": Requested Duration of Buffer : %fmsec", hnsLatency / 10000.0);
   CLog::Log(LOGNOTICE, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized Successfully!!!");
   return true;

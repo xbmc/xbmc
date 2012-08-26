@@ -665,7 +665,7 @@ void CPartyModeManager::AddToHistory(int type, int songID)
 {
   while (m_history.size() >= m_songsInHistory && m_songsInHistory)
     m_history.erase(m_history.begin());
-  m_history.push_back(make_pair<int,int>(type,songID));
+  m_history.push_back(make_pair(type,songID));
 }
 
 void CPartyModeManager::GetRandomSelection(vector< pair<int,int> >& in, unsigned int number, vector< pair<int,int> >& out)

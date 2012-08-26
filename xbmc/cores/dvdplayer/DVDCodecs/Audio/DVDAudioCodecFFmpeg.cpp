@@ -43,6 +43,8 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   m_layout = 0;
   
   m_bLpcmMode = false;
+
+  m_pFrame1 = NULL;
 }
 
 CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()

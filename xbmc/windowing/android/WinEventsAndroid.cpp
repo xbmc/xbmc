@@ -27,6 +27,7 @@
 #include "windowing/WindowingFactory.h"
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
+#include "guilib/GUIWindowManager.h"
 
 static CCriticalSection g_inputCond;
 
@@ -61,6 +62,9 @@ bool CWinEventsAndroid::MessagePump()
   for (std::vector<XBMC_Event>::iterator iter = copy_events.begin(); iter != copy_events.end(); iter++)
   {
     ret |= g_application.OnEvent(*iter);
+
+    if (iter->type == XBMC_MOUSEBUTTONUP)
+      g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
   }
 
   return ret;

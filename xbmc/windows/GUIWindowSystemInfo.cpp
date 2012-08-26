@@ -57,7 +57,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       ResetLabels();
       SET_CONTROL_LABEL(52, "XBMC " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) +
-                            " (Compiled : " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
+                            " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
       return true;
     }
     break;

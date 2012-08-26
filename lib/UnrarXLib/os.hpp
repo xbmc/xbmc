@@ -55,7 +55,7 @@
   #include <dir.h>
 #endif
 #ifdef _MSC_VER
-  #define for if (0) ; else for
+//  #define for if (0) ; else for
 #ifndef _WIN_CE
   #include <direct.h>
 #endif

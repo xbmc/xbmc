@@ -55,7 +55,10 @@ static HMODULE             g_D3D9ExHandle;
 
 static bool LoadD3D9Ex()
 {
-  g_Direct3DCreate9Ex = (LPDIRECT3DCREATE9EX)GetProcAddress( GetModuleHandle("d3d9.dll"), "Direct3DCreate9Ex" );
+  HMODULE hD3d9Dll =  GetModuleHandle("d3d9.dll");
+  if (!hD3d9Dll)
+    return false;
+  g_Direct3DCreate9Ex = (LPDIRECT3DCREATE9EX)GetProcAddress(hD3d9Dll, "Direct3DCreate9Ex" );
   if(g_Direct3DCreate9Ex == NULL)
     return false;
   return true;
