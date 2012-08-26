@@ -58,16 +58,12 @@ CPVRClient::~CPVRClient(void)
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 {
-   CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
-
   /* initialise members */
   SAFE_DELETE(m_pInfo);
-  m_pInfo                 = new PVR_PROPERTIES;
   CStdString userpath     = CSpecialProtocol::TranslatePath(Profile());
   m_pInfo->strUserPath    = userpath.c_str();
   CStdString clientpath   = CSpecialProtocol::TranslatePath(Path());
   m_pInfo->strClientPath  = clientpath.c_str();
-
   m_menuhooks.clear();
   m_bReadyToUse           = false;
   m_iClientId             = iClientId;
@@ -91,6 +87,7 @@ bool CPVRClient::Create(int iClientId)
 
   /* reset all properties to defaults */
   ResetProperties(iClientId);
+  m_pInfo = new PVR_PROPERTIES;
 
   /* initialise the add-on */
   bool bReadyToUse(false);
