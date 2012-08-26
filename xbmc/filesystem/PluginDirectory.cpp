@@ -634,3 +634,10 @@ void CPluginDirectory::CancelDirectory()
 {
   m_cancelled = true;
 }
+
+float CPluginDirectory::GetProgress() const
+{
+  if (m_totalItems > 0)
+    return (m_listItems->Size() * 100.0f) / m_totalItems;
+  return 0.0f;
+}

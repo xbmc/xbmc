@@ -70,6 +70,12 @@ public:
    */
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items) = 0;
   /*!
+   \brief Retrieve the progress of the current directory fetch (if possible).
+   \return the progress as a float in the range 0..100.
+   \sa GetDirectory, CancelDirectory
+   */
+  virtual float GetProgress() const { return 0.0f; };
+  /*!
    \brief Cancel the current directory fetch (if possible).
    \sa GetDirectory
    */
