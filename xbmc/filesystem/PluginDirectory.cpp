@@ -516,19 +516,6 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
     if (progressBar)
     { // update the progress bar and check for user cancel
-      if (retrievingDir)
-      {
-        CStdString label;
-        if (m_totalItems > 0)
-        {
-          label.Format(g_localizeStrings.Get(1042).c_str(), m_listItems->Size(), m_totalItems);
-          progressBar->SetPercentage((int)((m_listItems->Size() * 100 ) / m_totalItems));
-          progressBar->ShowProgressBar(true);
-        }
-        else
-          label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems->Size());
-        progressBar->SetLine(2, label);
-      }
       progressBar->Progress();
       if (progressBar->IsCanceled())
       { // user has cancelled our process - cancel our process
