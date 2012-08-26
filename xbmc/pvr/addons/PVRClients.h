@@ -269,7 +269,7 @@ namespace PVR
      * @param channel A copy of the channel that is currently playing.
      * @return True if a channel is playing, false otherwise.
      */
-    bool GetPlayingChannel(CPVRChannel &channel) const;
+    bool GetPlayingChannel(CPVRChannelPtr &channel) const;
 
     /*!
      * @return True if a recording is playing, false otherwise.

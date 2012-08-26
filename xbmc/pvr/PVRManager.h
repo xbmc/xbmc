@@ -37,6 +37,7 @@ namespace PVR
 {
   class CPVRClients;
   class CPVRChannel;
+  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
   class CPVRRecording;
@@ -193,7 +194,7 @@ namespace PVR
      * @param channel The channel or NULL if none is playing.
      * @return True if a channel is playing, false otherwise.
      */
-    bool GetCurrentChannel(CPVRChannel &channel) const;
+    bool GetCurrentChannel(CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Return the EPG for the channel that is currently playing.
@@ -570,11 +571,6 @@ namespace PVR
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     CGUIDialogProgressBarHandle *   m_progressHandle;              /*!< progress dialog that is displayed while the pvrmanager is loading */
-
-    int                             m_PreviousChannel[2];
-    int                             m_PreviousChannelIndex;
-    int                             m_LastChannel;
-    unsigned int                    m_LastChannelChanged;
 
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;

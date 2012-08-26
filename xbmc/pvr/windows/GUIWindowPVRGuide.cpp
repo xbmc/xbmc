@@ -135,7 +135,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVRGuide::UpdateViewChannel(bool bUpdateSelectedFile)
 {
-  CPVRChannel CurrentChannel;
+  CPVRChannelPtr CurrentChannel;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
 
   m_parent->m_guideGrid = NULL;
@@ -143,12 +143,12 @@ void CGUIWindowPVRGuide::UpdateViewChannel(bool bUpdateSelectedFile)
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19029));
   if (bGotCurrentChannel)
-    m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel.ChannelName().c_str());
+    m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel->ChannelName().c_str());
 
   if (!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_parent->m_vecItems) == 0)
   {
     CFileItemPtr item;
-    item.reset(new CFileItem("pvr://guide/" + CurrentChannel.ChannelName() + "/empty.epg", false));
+    item.reset(new CFileItem("pvr://guide/" + CurrentChannel->ChannelName() + "/empty.epg", false));
     item->SetLabel(g_localizeStrings.Get(19028));
     item->SetLabelPreformated(true);
     m_parent->m_vecItems->Add(item);
@@ -158,9 +158,9 @@ void CGUIWindowPVRGuide::UpdateViewChannel(bool bUpdateSelectedFile)
 
 void CGUIWindowPVRGuide::UpdateViewNow(bool bUpdateSelectedFile)
 {
-  CPVRChannel CurrentChannel;
+  CPVRChannelPtr CurrentChannel;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-  bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
+  bool bRadio = bGotCurrentChannel ? CurrentChannel->IsRadio() : false;
 
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
@@ -186,9 +186,9 @@ void CGUIWindowPVRGuide::UpdateViewNow(bool bUpdateSelectedFile)
 
 void CGUIWindowPVRGuide::UpdateViewNext(bool bUpdateSelectedFile)
 {
-  CPVRChannel CurrentChannel;
+  CPVRChannelPtr CurrentChannel;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-  bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
+  bool bRadio = bGotCurrentChannel ? CurrentChannel->IsRadio() : false;
 
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
@@ -218,9 +218,9 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   if (!m_parent->m_guideGrid)
     return;
 
-  CPVRChannel CurrentChannel;
+  CPVRChannelPtr CurrentChannel;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
-  bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
+  bool bRadio = bGotCurrentChannel ? CurrentChannel->IsRadio() : false;
 
   if (m_bUpdateRequired || m_cachedTimeline->IsEmpty() ||
       *m_cachedChannelGroup != *g_PVRManager.GetPlayingGroup(bRadio))

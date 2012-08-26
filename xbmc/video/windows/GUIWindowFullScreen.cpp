@@ -447,13 +447,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       if (g_application.CurrentFileItem().IsLiveTV())
       {
-        CPVRChannel channel;
+          CPVRChannelPtr channel;
         int iChannelNumber = -1;
         g_PVRManager.GetCurrentChannel(channel);
 
         if (action.GetID() == REMOTE_0)
         {
           iChannelNumber = g_PVRManager.GetPreviousChannel();
+          if (iChannelNumber > 0)
+            CLog::Log(LOGDEBUG, "switch to channel number %d", iChannelNumber);
+          else
+            CLog::Log(LOGDEBUG, "no previous channel number found");
         }
         else
         {
@@ -464,9 +468,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
             iChannelNumber = atoi(strChannel.c_str());
         }
 
-        if (iChannelNumber > 0 && iChannelNumber != channel.ChannelNumber()) 
+        if (iChannelNumber > 0 && iChannelNumber != channel->ChannelNumber())
         {
-          CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(channel.IsRadio());
+          CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(channel->IsRadio());
           CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
           if (!channel || !channel->HasPVRChannelInfoTag())
             return false;
@@ -826,18 +830,19 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         OnMessage(msg);
         CStdString strLabel = msg.GetLabel();
 
-        CPVRChannel playingChannel;
+        CPVRChannelPtr playingChannel;
         if (g_PVRManager.GetCurrentChannel(playingChannel))
         {
-          CPVRChannelGroupPtr selectedGroup = g_PVRChannelGroups->Get(playingChannel.IsRadio())->GetByName(strLabel);
+          CPVRChannelGroupPtr selectedGroup = g_PVRChannelGroups->Get(playingChannel->IsRadio())->GetByName(strLabel);
           if (selectedGroup)
           {
             g_PVRManager.SetPlayingGroup(selectedGroup);
             CLog::Log(LOGDEBUG, "%s - switched to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());
 
-            if (!selectedGroup->IsGroupMember(playingChannel))
+            if (!selectedGroup->IsGroupMember(*playingChannel))
             {
-              CLog::Log(LOGDEBUG, "%s - channel '%s' is not a member of '%s', switching to channel 1 of the new group", __FUNCTION__, playingChannel.ChannelName().c_str(), selectedGroup->GroupName().c_str());
+              CLog::Log(LOGDEBUG, "%s - channel '%s' is not a member of '%s', switching to channel 1 of the new group",
+                  __FUNCTION__, playingChannel->ChannelName().c_str(), selectedGroup->GroupName().c_str());
               CFileItemPtr switchChannel = selectedGroup->GetByChannelNumber(1);
 
               if (switchChannel && switchChannel->HasPVRChannelInfoTag())

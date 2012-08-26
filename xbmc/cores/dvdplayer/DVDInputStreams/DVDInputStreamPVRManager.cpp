@@ -234,9 +234,9 @@ bool CDVDInputStreamPVRManager::NextChannel(bool preview/* = false*/)
   PVR_CLIENT client;
   if (!preview && !SupportsChannelSwitch())
   {
-    CPVRChannel channel;
+    CPVRChannelPtr channel;
     g_PVRManager.GetCurrentChannel(channel);
-    CFileItemPtr item = g_PVRChannelGroups->Get(channel.IsRadio())->GetSelectedGroup()->GetByChannelUp(channel);
+    CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelUp(*channel);
     if (item.get())
       return CloseAndOpen(item->GetPath().c_str());
   }
@@ -250,9 +250,9 @@ bool CDVDInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
   PVR_CLIENT client;
   if (!preview && !SupportsChannelSwitch())
   {
-    CPVRChannel channel;
+    CPVRChannelPtr channel;
     g_PVRManager.GetCurrentChannel(channel);
-    CFileItemPtr item = g_PVRChannelGroups->Get(channel.IsRadio())->GetSelectedGroup()->GetByChannelDown(channel);
+    CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelDown(*channel);
     if (item.get())
       return CloseAndOpen(item->GetPath().c_str());
   }
@@ -266,9 +266,9 @@ bool CDVDInputStreamPVRManager::SelectChannelByNumber(unsigned int iChannelNumbe
   PVR_CLIENT client;
   if (!SupportsChannelSwitch())
   {
-    CPVRChannel channel;
+    CPVRChannelPtr channel;
     g_PVRManager.GetCurrentChannel(channel);
-    CFileItemPtr item = g_PVRChannelGroups->Get(channel.IsRadio())->GetSelectedGroup()->GetByChannelNumber(iChannelNumber);
+    CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelNumber(iChannelNumber);
     if (item.get())
       return CloseAndOpen(item->GetPath().c_str());
   }
@@ -294,7 +294,7 @@ bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::GetSelectedChannel(CPVRChannel &channel) const
+bool CDVDInputStreamPVRManager::GetSelectedChannel(CPVRChannelPtr& channel) const
 {
   return g_PVRManager.GetCurrentChannel(channel);
 }

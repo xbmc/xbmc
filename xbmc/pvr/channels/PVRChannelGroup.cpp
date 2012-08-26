@@ -355,34 +355,40 @@ CPVRChannelPtr CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
   return empty;
 }
 
-CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(void) const
+CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(unsigned int iCurrentChannel /* = -1 */) const
 {
-  CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
+  time_t tCurrentLastWatched(0), tMaxLastWatched(0);
+  if (iCurrentChannel > 0)
+  {
+    CPVRChannelPtr channel = GetByChannelID(iCurrentChannel);
+    if (channel.get())
+    {
+      CDateTime::GetCurrentDateTime().GetAsTime(tMaxLastWatched);
+      channel->SetLastWatched(tMaxLastWatched);
+      channel->Persist();
+    }
+  }
+
+  CPVRChannelPtr returnChannel;
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
     PVRChannelGroupMember groupMember = m_members.at(iChannelPtr);
 
-    /* check whether the client is loaded */
-    if (!g_PVRClients->IsConnectedClient(groupMember.channel->ClientID()))
-      continue;
-
-    /* always get the first channel */
-    if (!channel)
+    if (g_PVRClients->IsConnectedClient(groupMember.channel->ClientID()) &&
+        groupMember.channel->LastWatched() > 0 &&
+        (tMaxLastWatched == 0 || groupMember.channel->LastWatched() < tMaxLastWatched) &&
+        (tCurrentLastWatched == 0 || groupMember.channel->LastWatched() > tCurrentLastWatched))
     {
-      channel = groupMember.channel;
-      continue;
+      returnChannel = groupMember.channel;
+      tCurrentLastWatched = returnChannel->LastWatched();
     }
-
-    /* check whether this channel has a later LastWatched time */
-    if (groupMember.channel->LastWatched() > channel->LastWatched())
-      channel = groupMember.channel;
   }
 
-  if (channel)
+  if (returnChannel)
   {
-    CFileItemPtr retVal = CFileItemPtr(new CFileItem(*channel));
+    CFileItemPtr retVal = CFileItemPtr(new CFileItem(*returnChannel));
     return retVal;
   }
 

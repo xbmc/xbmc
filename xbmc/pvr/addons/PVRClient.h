@@ -434,7 +434,7 @@ namespace PVR
     bool IsPlayingEncryptedChannel(void) const;
     bool IsPlayingRecording(void) const;
     bool IsPlaying(void) const;
-    bool GetPlayingChannel(CPVRChannel &channel) const;
+    bool GetPlayingChannel(CPVRChannelPtr &channel) const;
     bool GetPlayingRecording(CPVRRecording &recording) const;
 
     /*! @name Signal status methods */
@@ -543,9 +543,9 @@ namespace PVR
 
     CCriticalSection m_critSection;
 
-    bool          m_bIsPlayingTV;
-    CPVRChannel   m_playingChannel;
-    bool          m_bIsPlayingRecording;
-    CPVRRecording m_playingRecording;
+    bool           m_bIsPlayingTV;
+    CPVRChannelPtr m_playingChannel;
+    bool           m_bIsPlayingRecording;
+    CPVRRecording  m_playingRecording;
   };
 }

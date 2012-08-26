@@ -53,8 +53,8 @@ JSONRPC_STATUS CPVROperations::ChannelSwitch(const CStdString &method, ITranspor
   if (!channel || !channel->HasPVRChannelInfoTag())
     return InternalError;
 
-  CPVRChannel currentChannel;
-  if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.IsRadio() == channel->GetPVRChannelInfoTag()->IsRadio())
+  CPVRChannelPtr currentChannel;
+  if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel->IsRadio() == channel->GetPVRChannelInfoTag()->IsRadio())
     CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)channel->GetPVRChannelInfoTag()->ChannelNumber()));
   else
     CApplicationMessenger::Get().MediaPlay(*channel);
@@ -95,10 +95,10 @@ JSONRPC_STATUS CPVROperations::RecordCurrentChannel(const CStdString &method, IT
     return FailedToExecute;
   }
 
-  CPVRChannel currentChannel;
+  CPVRChannelPtr currentChannel;
   if (g_PVRManager.GetCurrentChannel(currentChannel))
   {
-    bool bOnOff = !currentChannel.IsRecording();
+    bool bOnOff = !currentChannel->IsRecording();
     if (g_PVRManager.StartRecordingOnPlayingChannel(bOnOff))
     {
       CLog::Log(LOGDEBUG, "JSONRPC: set recording on currently playing channel to '%s'", bOnOff ? "on" : "off" );
