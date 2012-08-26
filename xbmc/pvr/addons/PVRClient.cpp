@@ -1256,6 +1256,7 @@ void CPVRClient::CloseStream(void)
 
 void CPVRClient::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
 {
+  memset(&qualityInfo, 0, sizeof(qualityInfo));
   if (g_guiSettings.GetBool("pvrplayback.signalquality"))
   {
     strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), 1024);
@@ -1266,13 +1267,6 @@ void CPVRClient::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
     strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
     strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
   }
-  qualityInfo.iSNR          = 0;
-  qualityInfo.iSignal       = 0;
-  qualityInfo.iSNR          = 0;
-  qualityInfo.iUNC          = 0;
-  qualityInfo.dVideoBitrate = 0;
-  qualityInfo.dAudioBitrate = 0;
-  qualityInfo.dDolbyBitrate = 0;
 }
 
 void CPVRClient::GetQualityData(PVR_SIGNAL_STATUS *status) const
