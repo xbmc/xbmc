@@ -372,6 +372,12 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: "
         "Setting 'hog' status on device 0x%04x", (unsigned int)m_DeviceId);
       OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(m_HogPid), &m_HogPid);
+
+      // even if setting hogmode was successfull our PID might not get written
+      // into m_HogPid (so it stays -1). Readback hogstatus for judging if we
+      // had success on getting hog status
+      m_HogPid = GetHogStatus();
+
       if (ret || m_HogPid != getpid())
       {
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: "
