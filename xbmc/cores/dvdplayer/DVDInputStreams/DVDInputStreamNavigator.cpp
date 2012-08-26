@@ -313,6 +313,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // user input to make menus and other interactive stills work.
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
+        m_holdmode = HOLDMODE_NONE;
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
 
         /* if user didn't care for action, just skip it */
