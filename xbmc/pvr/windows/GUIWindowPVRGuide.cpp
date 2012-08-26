@@ -238,8 +238,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
   }
 
   m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
-  m_parent->m_vecItems->Clear();
-  m_parent->m_vecItems->Copy(*m_cachedTimeline);
+  m_parent->m_vecItems->Assign(*m_cachedTimeline, false);
 
   CDateTime gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   CDateTime firstDate(g_EpgContainer.GetFirstEPGDate());
