@@ -314,10 +314,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
-
-        /* if user didn't care for action, just skip it */
-        if(iNavresult == NAVRESULT_NOP)
-          SkipStill();
+        //  SkipStill() is called by DVDPlayer
       }
       break;
 
@@ -337,10 +334,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         }
         else
           iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_WAIT);
-
-        /* if user didn't care for action, just skip it */
-        if(iNavresult == NAVRESULT_NOP)
-          SkipWait();
+        //  SkipWait() is called by DVDPlayer via NextStream
       }
       break;
 
@@ -782,12 +776,17 @@ void CDVDInputStreamNavigator::SkipWait()
 {
   if (!m_dvdnav) return ;
   m_dll.dvdnav_wait_skip(m_dvdnav);
+  m_holdmode = HOLDMODE_NONE;
+  m_lastevent = DVDNAV_NOP;
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamNavigator::NextStream()
 {
   if(m_holdmode == HOLDMODE_HELD)
     m_holdmode = HOLDMODE_SKIP;
+
+  if(m_lastevent == DVDNAV_WAIT)
+    SkipWait();
 
   if(m_bEOF)
     return NEXTSTREAM_NONE;
