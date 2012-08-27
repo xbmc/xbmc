@@ -60,6 +60,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 {
   /* initialise members */
   SAFE_DELETE(m_pInfo);
+  m_pInfo = new PVR_PROPERTIES;
   CStdString userpath     = CSpecialProtocol::TranslatePath(Profile());
   m_pInfo->strUserPath    = userpath.c_str();
   CStdString clientpath   = CSpecialProtocol::TranslatePath(Path());
@@ -87,7 +88,6 @@ bool CPVRClient::Create(int iClientId)
 
   /* reset all properties to defaults */
   ResetProperties(iClientId);
-  m_pInfo = new PVR_PROPERTIES;
 
   /* initialise the add-on */
   bool bReadyToUse(false);
