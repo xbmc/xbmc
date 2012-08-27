@@ -36,6 +36,7 @@ public:
   int GetSelectedFile() const;
   void SetNumberOfFiles(int iFiles);
 protected:
+  virtual void OnInitWindow();
   int m_iSelectedFile;
   int m_iNumberOfFiles;
   CFileItemList* m_stackItems;
