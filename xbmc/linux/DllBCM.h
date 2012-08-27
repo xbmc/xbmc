@@ -37,6 +37,8 @@ extern "C" {
 #include "DynamicDll.h"
 #include "utils/log.h"
 
+#define USE_EXTERNAL_LIBBCM_HOST 1
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 class DllBcmHostInterface
@@ -80,7 +82,7 @@ public:
                                                   EDID_AudioSampleRate fs, uint32_t bitrate) = 0;
 };
 
-#if (defined USE_EXTERNAL_LIBBCM_HOST)
+#if defined(USE_EXTERNAL_LIBBCM_HOST)
 class DllBcmHost : public DllDynamic, DllBcmHostInterface
 {
 public:

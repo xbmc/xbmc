@@ -63,10 +63,10 @@ void CRBP::LogFirmwareVerison()
 
 void CRBP::Deinitialize()
 {
-  m_DllBcmHost->bcm_host_deinit();
-
   if(m_omx_initialized)
     m_OMX->Deinitialize();
+
+  m_DllBcmHost->bcm_host_deinit();
 
   if(m_initialized)
     m_DllBcmHost->Unload();
