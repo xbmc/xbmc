@@ -53,19 +53,6 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
       m_iSelectedFile = -1;
-      if (GetControl(STACK_LIST))
-      { // have the new stack list instead - fill it up
-        SendMessage(GUI_MSG_LABEL_RESET, GetID(), STACK_LIST);
-        for (int i = 0; i < m_iNumberOfFiles; i++)
-        {
-          CStdString label;
-          label.Format(g_localizeStrings.Get(23051).c_str(), i+1);
-          CFileItemPtr item(new CFileItem(label));
-          m_stackItems->Add(item);
-        }
-        CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), STACK_LIST, 0, 0, m_stackItems);
-        OnMessage(msg);
-      }
       return true;
     }
     break;
@@ -96,4 +83,23 @@ int CGUIDialogFileStacking::GetSelectedFile() const
 void CGUIDialogFileStacking::SetNumberOfFiles(int iFiles)
 {
   m_iNumberOfFiles = iFiles;
+}
+
+void CGUIDialogFileStacking::OnInitWindow()
+{
+  if (GetControl(STACK_LIST))
+  { 
+    // have the new stack list instead - fill it up
+    SendMessage(GUI_MSG_LABEL_RESET, GetID(), STACK_LIST);
+    for (int i = 0; i < m_iNumberOfFiles; i++)
+    {
+      CStdString label;
+      label.Format(g_localizeStrings.Get(23051).c_str(), i+1);
+      CFileItemPtr item(new CFileItem(label));
+      m_stackItems->Add(item);
+    }
+    CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), STACK_LIST, 0, 0, m_stackItems);
+    OnMessage(msg);
+  }
+  CGUIDialog::OnInitWindow();
 }
