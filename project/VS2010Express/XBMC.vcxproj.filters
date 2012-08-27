@@ -4996,12 +4996,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryHistory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\DllHDHomeRunDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\DllHDHomeRunFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\DllLibAfp.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5513,9 +5507,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\sqlitedataset.h">
       <Filter>dbwrappers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h">
-      <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\system_gl.h" />
     <ClInclude Include="..\..\xbmc\PlayListPlayer.h" />

@@ -525,6 +525,10 @@ void CSoftAE::LoadSettings()
     case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
 
+  // force optical/coax to 2.0 output channels
+  if (!m_rawPassthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+    m_stdChLayout = AE_CH_LAYOUT_2_0;
+
   /* get the output devices and ensure they exist */
   m_device            = g_guiSettings.GetString("audiooutput.audiodevice");
   m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
