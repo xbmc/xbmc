@@ -252,7 +252,6 @@ bool CPVRClient::GetAddonProperties(void)
   try { APIVersion = AddonVersion(m_pStruct->GetPVRAPIVersion()); }
   catch (exception &e) { LogException(e, "GetPVRAPIVersion()"); return false;  }
 
-  AddonVersion currentVersion = AddonVersion(XBMC_PVR_API_VERSION);
   if (!IsCompatibleAPIVersion(APIVersion))
   {
     CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
@@ -1198,9 +1197,9 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
 
     // the Njoy N7 sometimes doesn't switch channels, but opens a stream to the previous channel
     // when not waiting for a short period.
-    // TODO temporary - create a callback or setting for this delay on the pvr api
-    if (bIsSwitchingChannel)
-      XbmcThreads::ThreadSleep(1000);
+    unsigned int iWaitTimeMs = m_pStruct->GetChannelSwitchDelay();
+    if (iWaitTimeMs > 0)
+      XbmcThreads::ThreadSleep(iWaitTimeMs);
   }
   else
   {

@@ -498,6 +498,14 @@ extern "C"
   //@}
 
   /*!
+   * Delay to use when using switching channels for add-ons not providing an input stream.
+   * If the add-on does provide an input stream, then this method will not be called.
+   * Those add-ons can do that in OpenLiveStream() if needed.
+   * @return The delay in milliseconds.
+   */
+  unsigned int GetChannelSwitchDelay(void);
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -551,6 +559,7 @@ extern "C"
     pClient->SwitchChannel                  = SwitchChannel;
     pClient->SignalStatus                   = SignalStatus;
     pClient->GetLiveStreamURL               = GetLiveStreamURL;
+    pClient->GetChannelSwitchDelay          = GetChannelSwitchDelay;
 
     pClient->OpenRecordedStream             = OpenRecordedStream;
     pClient->CloseRecordedStream            = CloseRecordedStream;
