@@ -239,6 +239,22 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
+  /* find the number we need to open to access the channels we need */
+  bool found = false;
+  int oss_ch = 0;
+  for (int ch = format.m_channelLayout.Count(); ch < 9; ++ch)
+  {
+    oss_ch = ch;
+    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= (int)format.m_channelLayout.Count())
+    {
+      found = true;
+      break;
+    }
+  }
+
+  if (!found)
+    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to access the number of channels required, falling back");
+
 #ifndef OSS4
 #ifndef __FreeBSD__
   int mask = 0;
@@ -305,22 +321,6 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
   }
 
 #endif
-
-  /* find the number we need to open to access the channels we need */
-  bool found = false;
-  int oss_ch = 0;
-  for (int ch = format.m_channelLayout.Count(); ch < 9; ++ch)
-  {
-    oss_ch = ch;
-    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= (int)format.m_channelLayout.Count())
-    {
-      found = true;
-      break;
-    }
-  }
-
-  if (!found)
-    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to access the number of channels required, falling back");
 
   int tmp = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelLayout.Count() * OSS_FRAMES;
   int pos = 0;
