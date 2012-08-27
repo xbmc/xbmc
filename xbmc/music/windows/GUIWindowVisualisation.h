@@ -36,9 +36,20 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
+  void ChangetheTimeCode(int remote);
+
+  /*! \brief Convert the current timecode into a time in milliseconds to seek
+   */
+  double GetTimeCodeStamp();
+
   CStopWatch m_initTimer;
   CStopWatch m_lockedTimer;
   bool m_bShowPreset;
   MUSIC_INFO::CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
+
+  bool m_timeCodeShow;
+  unsigned int m_timeCodeTimeout;
+  int m_timeCodeStamp[6];
+  int m_timeCodePosition;
 };
 
