@@ -85,10 +85,11 @@ struct sampleFormat
   AEDataFormat subFormatType;
 };
 
-//Sample formats go from float -> 32 bit int -> 24 bit int (packed in 32) -> 16 bit int
+//Sample formats go from float -> 32 bit int -> 24 bit int (packed in 32) -> -> 24 bit int -> 16 bit int
 static const sampleFormat testFormats[] = { {KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, AE_FMT_FLOAT},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 32, 32, AE_FMT_S32NE},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 32, 24, AE_FMT_S24NE4},
+                                            {KSDATAFORMAT_SUBTYPE_PCM, 24, 24, AE_FMT_S24NE3},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 16, 16, AE_FMT_S16NE} };
 
 struct winEndpointsToAEDeviceType
