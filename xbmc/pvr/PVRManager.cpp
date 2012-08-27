@@ -759,7 +759,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
   if (IsParentalLocked(*channel.GetPVRChannelInfoTag()))
     return bReturn;
 
-  if ((bReturn = m_addons->OpenStream(*channel.GetPVRChannelInfoTag())) != false)
+  if ((bReturn = m_addons->OpenStream(*channel.GetPVRChannelInfoTag(), false)) != false)
   {
     CSingleLock lock(m_critSection);
     if(m_currentFile)

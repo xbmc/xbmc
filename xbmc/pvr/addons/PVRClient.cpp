@@ -1182,7 +1182,7 @@ bool CPVRClient::GetPlayingRecording(CPVRRecording &recording) const
   return false;
 }
 
-bool CPVRClient::OpenStream(const CPVRChannel &channel)
+bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel)
 {
   bool bReturn(false);
   CloseStream();
@@ -1195,10 +1195,16 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel)
   {
     CLog::Log(LOGDEBUG, "opening live stream on url '%s'", channel.StreamURL().c_str());
     bReturn = true;
+
+    // the Njoy N7 sometimes doesn't switch channels, but opens a stream to the previous channel
+    // when not waiting for a short period.
+    // TODO temporary - create a callback or setting for this delay on the pvr api
+    if (bIsSwitchingChannel)
+      XbmcThreads::ThreadSleep(1000);
   }
   else
   {
-    CLog::Log(LOGDEBUG, "opening live stream on for channel '%s'", channel.ChannelName().c_str());
+    CLog::Log(LOGDEBUG, "opening live stream for channel '%s'", channel.ChannelName().c_str());
     PVR_CHANNEL tag;
     WriteClientChannelInfo(channel, tag);
 

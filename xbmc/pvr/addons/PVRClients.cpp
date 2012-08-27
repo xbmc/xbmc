@@ -300,7 +300,8 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     CloseStream();
     if (channel.StreamURL().IsEmpty())
     {
-      bSwitchSuccessful = OpenStream(channel);
+      Sleep(500);
+      bSwitchSuccessful = OpenStream(channel, true);
     }
     else
     {
@@ -1078,14 +1079,15 @@ bool CPVRClients::GetPlayingClient(PVR_CLIENT &client) const
   return GetConnectedClient(GetPlayingClientID(), client);
 }
 
-bool CPVRClients::OpenStream(const CPVRChannel &tag)
+bool CPVRClients::OpenStream(const CPVRChannel &tag, bool bIsSwitchingChannel)
 {
   bool bReturn(false);
   CloseStream();
 
   /* try to open the stream on the client */
   PVR_CLIENT client;
-  if (GetConnectedClient(tag.ClientID(), client) && client->OpenStream(tag))
+  if (GetConnectedClient(tag.ClientID(), client) &&
+      client->OpenStream(tag, bIsSwitchingChannel))
   {
     CSingleLock lock(m_critSection);
     m_playingClientId = tag.ClientID();
