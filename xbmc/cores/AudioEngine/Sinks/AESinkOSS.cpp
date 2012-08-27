@@ -31,7 +31,7 @@
 
 #include <sys/ioctl.h>
 
-#if defined(OSS4) || defined(__FreeBSD__)
+#if defined(OSS4) || defined(TARGET_FREEBSD)
   #include <sys/soundcard.h>
 #else
   #include <linux/soundcard.h>
@@ -255,46 +255,18 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
   if (!found)
     CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to access the number of channels required, falling back");
 
-#ifndef OSS4
-#ifndef __FreeBSD__
-  int mask = 0;
-  for (unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
-    switch (format.m_channelLayout[i])
-    {
-      case AE_CH_FL:
-      case AE_CH_FR:
-        mask |= DSP_BIND_FRONT;
-        break;
-
-      case AE_CH_BL:
-      case AE_CH_BR:
-        mask |= DSP_BIND_SURR;
-        break;
-
-      case AE_CH_FC:
-      case AE_CH_LFE:
-        mask |= DSP_BIND_CENTER_LFE;
-        break;
-
-      default:
-        break;
-    }
-
-  /* try to set the channel mask, not all cards support this */
-  if (ioctl(m_fd, SNDCTL_DSP_BIND_CHANNEL, &mask) == -1)
+#if defined(TARGET_FREEBSD)
+  /* fix hdmi 8 channels order */
+  if (!AE_IS_RAW(format.m_dataFormat) && 8 == oss_ch)
   {
-    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set the channel mask");
-    /* get the configured channel mask */
-    if (ioctl(m_fd, SNDCTL_DSP_GETCHANNELMASK, &mask) == -1)
-    {
-      /* as not all cards support this so we just assume stereo if it fails */
-      CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to get the channel mask, assuming stereo");
-      mask = DSP_BIND_FRONT;
-    }
+    unsigned long long order = 0x0000000087346521ULL;
+
+    if (ioctl(m_fd, SNDCTL_DSP_SET_CHNORDER, &order) == -1)
+      CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set the channel order");
   }
-#endif
-#else /* OSS4 */
+#elif defined(OSS4)
   unsigned long long order = 0;
+
   for (unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
     switch (format.m_channelLayout[i])
     {
@@ -319,7 +291,6 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
       order = CHNORDER_NORMAL;
     }
   }
-
 #endif
 
   int tmp = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelLayout.Count() * OSS_FRAMES;
