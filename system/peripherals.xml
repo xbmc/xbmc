@@ -49,4 +49,11 @@
     <setting key="device_name" type="string" value="XBMC" configurable="0" />
     <setting key="device_type" type="int" value="1" configurable="0" />
   </peripheral>
+  
+  <peripheral bus="ip" name="AmbiPi" mapTo="ambipi">
+    <setting key="enabled" type="bool" value="0" label="37000" order="1" />
+    <setting key="address" value="" label="37001" order="2" />
+    <setting key="port" type="string" value="20434" label="37002" order="3" />
+  </peripheral>
+  
 </peripherals>

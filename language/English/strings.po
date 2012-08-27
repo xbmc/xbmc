@@ -10997,3 +10997,15 @@ msgstr ""
 msgctxt "#36036"
 msgid "On start/stop"
 msgstr ""
+
+msgctxt "#37000"
+msgid "AmbiPi enabled"
+msgstr ""
+
+msgctxt "#37001"
+msgid "IP Address"
+msgstr ""
+
+msgctxt "#37002"
+msgid "IP Port"
+msgstr ""
