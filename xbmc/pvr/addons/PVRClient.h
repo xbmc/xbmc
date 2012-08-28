@@ -548,5 +548,6 @@ namespace PVR
     CPVRChannelPtr m_playingChannel;
     bool           m_bIsPlayingRecording;
     CPVRRecording  m_playingRecording;
+    ADDON::AddonVersion m_apiVersion;
   };
 }
