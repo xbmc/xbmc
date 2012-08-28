@@ -96,7 +96,8 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HA
   }
 
   /* transfer this entry to the groups container */
-  xbmcGroups->UpdateFromClient(CPVRChannelGroup(*group));
+  CPVRChannelGroup transferGroup(*group);
+  xbmcGroups->UpdateFromClient(transferGroup);
 }
 
 void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
@@ -145,7 +146,8 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
   }
 
   /* transfer this entry to the internal channels group */
-  xbmcChannels->UpdateFromClient(CPVRChannel(*channel, client->GetID()));
+  CPVRChannel transferChannel(*channel, client->GetID());
+  xbmcChannels->UpdateFromClient(transferChannel);
 }
 
 void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
@@ -159,7 +161,8 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
   }
 
   /* transfer this entry to the recordings container */
-  xbmcRecordings->UpdateFromClient(CPVRRecording(*recording, client->GetID()));
+  CPVRRecording transferRecording(*recording, client->GetID());
+  xbmcRecordings->UpdateFromClient(transferRecording);
 }
 
 void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer)
@@ -180,7 +183,8 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
   }
 
   /* transfer this entry to the timers container */
-  xbmcTimers->UpdateFromClient(CPVRTimerInfoTag(*timer, channel, client->GetID()));
+  CPVRTimerInfoTag transferTimer(*timer, channel, client->GetID());
+  xbmcTimers->UpdateFromClient(transferTimer);
 }
 
 void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
