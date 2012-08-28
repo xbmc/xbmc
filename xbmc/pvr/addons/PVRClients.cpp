@@ -300,7 +300,6 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     CloseStream();
     if (channel.StreamURL().IsEmpty())
     {
-      Sleep(500);
       bSwitchSuccessful = OpenStream(channel, true);
     }
     else
