@@ -887,6 +887,17 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
   }
 }
 
+std::string CWIN32Util::GetFirstOpticalDrive()
+{
+  VECSOURCES vShare;
+  std::string strdevice = "\\\\.\\";
+  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    return strdevice.append(vShare.front().strPath);
+  else
+    return "";
+}
+
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)
 {
   CStdString strDrive = strPath;

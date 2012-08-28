@@ -100,7 +100,11 @@ void CMediaManager::Initialize()
     #endif
   }
 #ifdef HAS_DVD_DRIVE
+#if defined(TARGET_WINDOWS)
+  strFirstAvailDrive = CWIN32Util::GetFirstOpticalDrive();
+#else
   strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+#endif
 #endif
   m_platformStorage->Initialize();
 }

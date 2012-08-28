@@ -73,6 +73,7 @@ public:
 #endif
   static BOOL IsCurrentUserLocalAdministrator();
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
+  static std::string GetFirstOpticalDrive();
   static bool IsAudioCD(const CStdString& strPath);
   static CStdString GetDiskLabel(const CStdString& strPath);
 
