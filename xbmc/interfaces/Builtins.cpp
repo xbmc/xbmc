@@ -944,7 +944,7 @@ int CBuiltins::Execute(const CStdString& execString)
 #ifdef HAS_DVD_DRIVE
   else if (execute.Equals("ejecttray"))
   {
-    CIoSupport::ToggleTray();
+    g_mediaManager.ToggleTray();
   }
 #endif
   else if( execute.Equals("alarmclock") && params.size() > 1 )
