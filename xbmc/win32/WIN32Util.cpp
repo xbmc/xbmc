@@ -116,6 +116,8 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
   byte DataBuf[8];  //Buffer for holding data to/from drive.
 
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting status for drive %s.", strPath.c_str());
+
   hDevice = CreateFile( strPath.c_str(),                  // drive
                         0,                                // no access to the drive
                         FILE_SHARE_READ,                  // share mode
@@ -126,6 +128,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
 
   if (hDevice == INVALID_HANDLE_VALUE)                    // cannot open the drive
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile for %s.", strPath.c_str());
     return -1;
   }
 
@@ -158,6 +161,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
 
   if (hDevice == INVALID_HANDLE_VALUE)
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile2 for %s.", strPath.c_str());
     return -1;
   }
 

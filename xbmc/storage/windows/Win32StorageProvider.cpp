@@ -24,6 +24,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 
 bool CWin32StorageProvider::xbevent = false;
 
@@ -34,6 +35,8 @@ void CWin32StorageProvider::Initialize()
   CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
   if(!vShare.empty())
     g_mediaManager.SetHasOpticalDrive(true);
+  else
+    CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
 
   // Can be removed once the StorageHandler supports optical media
   VECSOURCES::const_iterator it;
@@ -88,6 +91,7 @@ CDetectDisc::CDetectDisc(const CStdString &strPath, const bool bautorun)
 
 bool CDetectDisc::DoWork()
 {
+  CLog::Log(LOGDEBUG, "%s: Optical media found in drive %s", __FUNCTION__, m_strPath.c_str());
   CMediaSource share;
   share.strPath = m_strPath;
   share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
