@@ -878,10 +878,12 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
     case PIX_FMT_VDPAU_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      break;
 #endif
     default:
       vdp_decoder_profile = 0;
       vdp_chroma_type     = 0;
+      break;
   }
 }
 
