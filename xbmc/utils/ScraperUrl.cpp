@@ -208,14 +208,16 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
-      file.Open(strCachePath);
-      char* temp = new char[(int)file.GetLength()];
-      file.Read(temp,file.GetLength());
-      strHTML.clear();
-      strHTML.append(temp,temp+file.GetLength());
-      file.Close();
-      delete[] temp;
-      return true;
+      if (file.Open(strCachePath))
+      {
+        char* temp = new char[(int)file.GetLength()];
+        file.Read(temp,file.GetLength());
+        strHTML.clear();
+        strHTML.append(temp,temp+file.GetLength());
+        file.Close();
+        delete[] temp;
+        return true;
+      }
     }
   }
 
