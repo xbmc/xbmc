@@ -269,6 +269,7 @@ CPictureBuffer::CPictureBuffer(ERenderFormat format, int width, int height)
   m_color_range = 0;
   m_color_matrix = 4;
   m_format = format;
+  m_framerate = 0;
   
   switch(m_format)
   {
@@ -332,10 +333,20 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_timeout(20),
   m_format_valid(false),
   m_is_live_stream(false),
+  m_width(0),
+  m_height(0),
+  m_timestamp(0),
+  m_PictureNumber(0),
+  m_color_space(0),
+  m_color_range(0),
+  m_color_matrix(0),
+  m_interlace(0),
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
-  m_framerate(0.0)
+  m_framerate(0.0),
+  m_aspectratio_x(1),
+  m_aspectratio_y(1)
 {
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
@@ -1086,8 +1097,25 @@ CCrystalHD::CCrystalHD() :
   m_has_bcm70015(false),
   m_color_space(BCM::MODE420),
   m_drop_state(false),
-  m_pOutputThread(NULL)
+  m_skip_state(false),
+  m_timeout(0),
+  m_wait_timeout(0),
+  m_field(0),
+  m_width(0),
+  m_height(0),
+  m_reset(0),
+  m_last_pict_num(0),
+  m_last_demuxer_pts(0.0),
+  m_last_decoder_pts(0.0),
+  m_pOutputThread(NULL),
+  m_sps_pps_size(0),
+  m_convert_bitstream(false)
 {
+#if (HAVE_LIBCRYSTALHD == 2)
+  memset(&m_bc_info_crystal, 0, sizeof(m_bc_info_crystal));
+#endif
+
+  memset(&m_chd_params, 0, sizeof(m_chd_params));
 
   m_dll = new DllLibCrystalHD;
 #ifdef _WIN32

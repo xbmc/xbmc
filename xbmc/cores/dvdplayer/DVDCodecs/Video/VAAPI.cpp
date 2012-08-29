@@ -149,6 +149,7 @@ CDecoder::CDecoder()
   m_config          = 0;
   m_context         = 0;
   m_hwaccel         = (vaapi_context*)calloc(1, sizeof(vaapi_context));
+  memset(m_surfaces, 0, sizeof(*m_surfaces));
 }
 
 CDecoder::~CDecoder()

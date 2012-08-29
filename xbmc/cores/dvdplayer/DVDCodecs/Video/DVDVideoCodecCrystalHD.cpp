@@ -40,7 +40,8 @@ CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Codec(NULL),
   m_DropPictures(false),
   m_Duration(0.0),
-  m_pFormatName("")
+  m_pFormatName(""),
+  m_CodecType(CRYSTALHD_CODEC_ID_MPEG2)
 {
 }
 
