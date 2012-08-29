@@ -157,7 +157,6 @@ protected:
   omx_bitstream_ctx m_sps_pps_context;
   bool              m_convert_bitstream;
   bool              m_to_annexb;
-  bool              m_convert_vc1;
 
   uint8_t           *m_extradata;
   int               m_extrasize;

@@ -425,7 +425,6 @@ CBitstreamConverter::CBitstreamConverter()
   m_dllAvUtil         = NULL;
   m_dllAvFormat       = NULL;
   m_convert_bytestream = false;
-  m_convert_vc1       = false;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -436,23 +435,11 @@ CBitstreamConverter::~CBitstreamConverter()
 bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb)
 {
   m_to_annexb = to_annexb;
-  m_convert_vc1 = false;
 
   m_codec = codec;
 
   switch(codec)
   {
-    case CODEC_ID_VC1:
-      m_extradata = (uint8_t *)malloc(in_extrasize);
-      memcpy(m_extradata, in_extradata, in_extrasize);
-      m_extrasize = in_extrasize;
-      m_dllAvUtil = new DllAvUtil;
-      m_dllAvFormat = new DllAvFormat;
-      if (!m_dllAvUtil->Load() || !m_dllAvFormat->Load())
-        return false;
-
-      return true;
-      break;
     case CODEC_ID_H264:
       if (in_extrasize < 7 || in_extradata == NULL)
       {
@@ -553,7 +540,7 @@ void CBitstreamConverter::Close(void)
     m_convertSize       = 0;
   }
 
-  if (m_convert_bytestream || m_convert_vc1)
+  if (m_convert_bytestream)
   {
     if(m_convertBuffer)
     {
@@ -688,43 +675,6 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
         return true;
       }
     }
-    else if (m_codec == CODEC_ID_VC1)
-    {
-      if(!(iSize >= 3 && !pData[0] && !pData[1] && pData[2] == 1) && !m_convert_vc1)
-        m_convert_vc1 = true;
-
-      if(m_convert_vc1)
-      {
-
-        m_inputBuffer = pData;
-        m_inputSize   = iSize;
-
-        if(m_convertBuffer)
-        {
-          m_dllAvUtil->av_free(m_convertBuffer);
-          m_convertBuffer = NULL;
-        }
-        m_convertSize = 0;
-
-        AVIOContext *pb;
-        if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
-          return false;
-
-        m_dllAvFormat->avio_w8(pb, 0);
-        m_dllAvFormat->avio_w8(pb, 0);
-        m_dllAvFormat->avio_w8(pb, !m_convert_vc1 ? 0 : 1);
-        m_dllAvFormat->avio_w8(pb, !m_convert_vc1 ? 0 : 0xd);
-        m_dllAvFormat->avio_write(pb, pData, iSize);
-        m_convertSize = m_dllAvFormat->avio_close_dyn_buf(pb, &m_convertBuffer);
-        return true;
-      }
-      else
-      {
-        m_inputBuffer = pData;
-        m_inputSize   = iSize;
-        return true;
-      }
-    }
   }
 
   return false;
@@ -733,7 +683,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 
 uint8_t *CBitstreamConverter::GetConvertBuffer()
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize || m_convert_vc1) && m_convertBuffer != NULL)
+  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
     return m_convertBuffer;
   else
     return m_inputBuffer;
@@ -741,7 +691,7 @@ uint8_t *CBitstreamConverter::GetConvertBuffer()
 
 int CBitstreamConverter::GetConvertSize()
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize || m_convert_vc1) && m_convertBuffer != NULL)
+  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
     return m_convertSize;
   else
     return m_inputSize; 
