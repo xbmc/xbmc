@@ -143,32 +143,33 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
 
       //stat to check for dir type (reiserfs fix)
       std::string fileN = fullPath + "/" + dp->d_name;
-      stat(fileN.c_str(), &stat_p);
-
-      if (dp->d_type == DT_DIR || stat_p.st_mode & S_IFDIR)
+      if (stat(fileN.c_str(), &stat_p) == 0)
       {
-        std::string tmpPath = relativePath;
-        if (tmpPath.size() > 0)
+        if (dp->d_type == DT_DIR || stat_p.st_mode & S_IFDIR)
         {
-          tmpPath += "/";
-        }
+          std::string tmpPath = relativePath;
+          if (tmpPath.size() > 0)
+          {
+            tmpPath += "/";
+          }
 
-        CreateSkeletonHeaderImpl(xbtf, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
-      }
-      else if (IsGraphicsFile(dp->d_name))
-      {
-        std::string fileName = "";
-        if (relativePath.size() > 0)
+          CreateSkeletonHeaderImpl(xbtf, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
+        }
+        else if (IsGraphicsFile(dp->d_name))
         {
-          fileName += relativePath;
-          fileName += "/";
+          std::string fileName = "";
+          if (relativePath.size() > 0)
+          {
+            fileName += relativePath;
+            fileName += "/";
+          }
+
+          fileName += dp->d_name;
+
+          CXBTFFile file;
+          file.SetPath(fileName);
+          xbtf.GetFiles().push_back(file);
         }
-
-        fileName += dp->d_name;
-
-        CXBTFFile file;
-        file.SetPath(fileName);
-        xbtf.GetFiles().push_back(file);
       }
     }
 
