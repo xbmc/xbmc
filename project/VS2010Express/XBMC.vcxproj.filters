@@ -2023,6 +2023,9 @@
     <ClCompile Include="..\..\xbmc\peripherals\devices\Peripheral.cpp">
       <Filter>peripherals\devices</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralAmbiPi.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.cpp">
       <Filter>peripherals\devices</Filter>
     </ClCompile>
@@ -2039,6 +2042,9 @@
       <Filter>peripherals\devices</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusUSB.cpp">
+      <Filter>peripherals\bus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusIP.cpp">
       <Filter>peripherals\bus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralBluetooth.cpp">
@@ -4945,6 +4951,9 @@
     <ClInclude Include="..\..\xbmc\peripherals\devices\Peripheral.h">
       <Filter>peripherals\devices</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralAmbiPi.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.h">
       <Filter>peripherals\devices</Filter>
     </ClInclude>
@@ -4961,6 +4970,9 @@
       <Filter>peripherals\devices</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusUSB.h">
+      <Filter>peripherals\bus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusIP.h">
       <Filter>peripherals\bus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\PeripheralTypes.h">
