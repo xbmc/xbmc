@@ -192,6 +192,7 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 CAddonMgr::CAddonMgr()
 {
   m_cpluff = NULL;
+  m_bInitialized = false;
 }
 
 CAddonMgr::~CAddonMgr()
@@ -231,6 +232,8 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 
 bool CAddonMgr::Init()
 {
+  CSingleLock lock(m_critSection);
+
   m_cpluff = new DllLibCPluff;
   m_cpluff->Load();
 
@@ -273,12 +276,19 @@ bool CAddonMgr::Init()
     return false;
   }
 
+  lock.unlock();
+
   FindAddons();
+
+  m_bInitialized = true;
   return true;
 }
 
 void CAddonMgr::DeInit()
 {
+  CSingleLock lock(m_critSection);
+
+  m_bInitialized = true;
   if (m_cpluff)
     m_cpluff->destroy();
   delete m_cpluff;
@@ -353,6 +363,10 @@ bool CAddonMgr::ReloadSettings(const CStdString &id)
 bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
 {
   CSingleLock lock(m_critSection);
+
+  if(!m_bInitialized)
+    return false;
+
   for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
   {
     VECADDONS temp;
@@ -383,6 +397,10 @@ bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
 {
   CSingleLock lock(m_critSection);
+
+  if(!m_bInitialized)
+    return false;
+
   addons.clear();
   cp_status_t status;
   int num;
@@ -401,6 +419,9 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
 bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
+
+  if(!m_bInitialized)
+    return false;
 
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
