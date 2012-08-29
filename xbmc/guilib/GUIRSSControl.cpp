@@ -52,6 +52,7 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
   m_channelColor = from.m_channelColor;
   m_strRSSTags = from.m_strRSSTags;
   m_pReader = NULL;
+  m_rtl = from.m_rtl;
   ControlType = GUICONTROL_RSS;
 }
 

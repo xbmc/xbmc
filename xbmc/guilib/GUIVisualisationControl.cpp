@@ -41,7 +41,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, 
 }
 
 CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationControl &from)
-: CGUIRenderingControl(from)
+: CGUIRenderingControl(from), m_bAttemptedLoad(false)
 {
   ControlType = GUICONTROL_VISUALISATION;
 }

@@ -60,6 +60,7 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_focusedLayout = NULL;
   m_cacheItems = preloadItems;
   m_scrollItemsPerFrame = 0.0f;
+  m_type = VIEW_TYPE_NONE;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)

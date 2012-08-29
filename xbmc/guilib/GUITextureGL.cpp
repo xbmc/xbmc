@@ -32,6 +32,7 @@
 CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
+  memset(m_col, 0, sizeof(m_col));
 }
 
 void CGUITextureGL::Begin(color_t color)

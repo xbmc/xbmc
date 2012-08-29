@@ -40,6 +40,7 @@ CGUIResizeControl::CGUIResizeControl(int parentID, int controlID, float posX, fl
   m_fMaxSpeed = 10.0;  // TODO: implement correct computation of maxspeed
   ControlType = GUICONTROL_RESIZE;
   SetLimits(0, 0, 720, 576); // defaults
+  m_nDirection = DIRECTION_NONE;
 }
 
 CGUIResizeControl::~CGUIResizeControl(void)

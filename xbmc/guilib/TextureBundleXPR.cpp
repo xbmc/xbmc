@@ -101,6 +101,7 @@ CTextureBundleXPR::CTextureBundleXPR(void)
 {
   m_hFile = NULL;
   m_themeBundle = false;
+  m_TimeStamp = 0;
 }
 
 CTextureBundleXPR::~CTextureBundleXPR(void)
