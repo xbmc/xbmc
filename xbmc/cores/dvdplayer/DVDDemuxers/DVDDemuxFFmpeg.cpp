@@ -771,7 +771,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   if (!pPacket) return NULL;
 
   // check streams, can we make this a bit more simple?
-  if (pPacket && pPacket->iStreamId >= 0 && pPacket->iStreamId <= MAX_STREAMS)
+  if (pPacket && pPacket->iStreamId >= 0 && pPacket->iStreamId < MAX_STREAMS)
   {
     if (!m_streams[pPacket->iStreamId] ||
         m_streams[pPacket->iStreamId]->pPrivate != m_pFormatContext->streams[pPacket->iStreamId] ||
