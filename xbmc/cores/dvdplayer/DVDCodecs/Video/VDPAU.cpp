@@ -1035,7 +1035,7 @@ bool CVDPAU::FiniOutputMethod()
   {
     vdp_st = vdp_video_mixer_destroy(videoMixer);
     videoMixer = VDP_INVALID_HANDLE;
-    if (CheckStatus(vdp_st, __LINE__));
+    CheckStatus(vdp_st, __LINE__);
   }
 
   if (m_BlackBar)
