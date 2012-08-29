@@ -292,22 +292,24 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       // nasty hack #1 - & means \0 in a replace string
       strCurOutput.Replace("&","!!!AMPAMP!!!");
       char* result = reg.GetReplaceString(strCurOutput.c_str());
-      if (result && strlen(result))
+      if (result)
       {
-        CStdString strResult(result);
-        strResult.Replace("!!!AMPAMP!!!","&");
-        Clean(strResult);
-        ReplaceBuffers(strResult);
-        if (iCompare > -1)
+        if (strlen(result))
         {
-          CStdString strResultNoCase = strResult;
-          strResultNoCase.ToLower();
-          if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
+          CStdString strResult(result);
+          strResult.Replace("!!!AMPAMP!!!","&");
+          Clean(strResult);
+          ReplaceBuffers(strResult);
+          if (iCompare > -1)
+          {
+            CStdString strResultNoCase = strResult;
+            strResultNoCase.ToLower();
+            if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
+              dest += strResult;
+          }
+          else
             dest += strResult;
         }
-        else
-          dest += strResult;
-
         free(result);
       }
       if (bRepeat && iLen > 0)
