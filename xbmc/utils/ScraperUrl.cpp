@@ -157,7 +157,11 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb() const
     if (iter->m_type == URL_TYPE_GENERAL)
       return *iter;
   }
+
   SUrlEntry result;
+  result.m_type = URL_TYPE_GENERAL;
+  result.m_post = false;
+  result.m_isgz = false;
   result.m_season = -1;
   return result;
 }
@@ -169,7 +173,11 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
     if (iter->m_type == URL_TYPE_SEASON && iter->m_season == season)
       return *iter;
   }
+
   SUrlEntry result;
+  result.m_type = URL_TYPE_GENERAL;
+  result.m_post = false;
+  result.m_isgz = false;
   result.m_season = -1;
   return result;
 }
