@@ -23,6 +23,10 @@
 #include "PeripheralAmbiPi.h"
 #include "utils/log.h"
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
 //#include "threads/SingleLock.h"
 
 #include "cores/VideoRenderers/RenderManager.h"
@@ -33,6 +37,7 @@
 extern CXBMCRenderManager g_renderManager;
 
 using namespace PERIPHERALS;
+using namespace AUTOPTR;
 
 CPeripheralAmbiPi::CPeripheralAmbiPi(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
   CPeripheral(type, busType, strLocation, strDeviceName, iVendorId, iProductId),
@@ -158,6 +163,8 @@ void CPeripheralAmbiPi::UpdateSampleRectangles(unsigned int imageWidth, unsigned
 void CPeripheralAmbiPi::ConnectToDevice()
 {
   CLog::Log(LOGINFO, "%s - Connecting to AmbiPi on %s:%d", __FUNCTION__, m_address.c_str(), m_port);  
+
+  m_connection.Connect(m_address, m_port);
 
   // TODO connect ambi (TCP)
 }
@@ -428,4 +435,112 @@ void CImageConversion::ConvertYuvToRgb(const YUV *pYuv, RGB *pRgb)
   pRgb->r = pYuv->y + 1.4075 * (pYuv->v - 128);
   pRgb->g = pYuv->y - 0.3455 * (pYuv->u - 128) - (0.7169 * (pYuv->v - 128));
   pRgb->b = pYuv->y + 1.7790 * (pYuv->u - 128);
+}
+
+
+CAmbiPiConnection::CAmbiPiConnection(void) :
+  m_socket(INVALID_SOCKET)
+{
+}
+
+CAmbiPiConnection::~CAmbiPiConnection(void)
+{
+  if (m_socket.isValid())
+  {
+    m_socket.reset();
+  }
+}
+
+void CAmbiPiConnection::Connect(const CStdString ip_address_or_name, unsigned int port)
+{
+  struct addrinfo *pAddressInfo;
+
+  BYTE *helloMessage = (BYTE *)"ambipi\n";
+  try
+  {
+    pAddressInfo = GetAddressInfo(ip_address_or_name, port);
+    AttemptConnection(pAddressInfo);
+    Send(helloMessage, strlen((char *)helloMessage));
+    freeaddrinfo(pAddressInfo);
+  } 
+  catch (...) 
+  {
+    CLog::Log(LOGERROR, "%s - connection to AmbiPi failed", __FUNCTION__);
+  }
+}
+
+struct CAmbiPiConnectionException : std::exception { char const* what() const throw() { return "Connection exception"; }; };
+struct CAmbiPiSendException : std::exception { char const* what() const throw() { return "Send exception"; }; };
+
+struct addrinfo *CAmbiPiConnection::GetAddressInfo(const CStdString ip_address_or_name, unsigned int port)
+{
+  struct   addrinfo hints, *pAddressInfo;
+  char service[33];
+  
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family   = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_protocol = IPPROTO_TCP;
+
+  sprintf(service, "%d", port);
+
+  int res = getaddrinfo(ip_address_or_name.c_str(), service, &hints, &pAddressInfo);
+  if(res)
+  {
+    CLog::Log(LOGERROR, "%s - failed to lookup %s, error: '%s'", __FUNCTION__, ip_address_or_name.c_str(), gai_strerror(res));
+    throw CAmbiPiConnectionException();
+  }
+  return pAddressInfo;
+}
+
+void CAmbiPiConnection::AttemptConnection(struct addrinfo *pAddressInfo)
+{
+  char     nameBuffer[NI_MAXHOST], portBuffer[NI_MAXSERV];
+
+  SOCKET   socketHandle = INVALID_SOCKET;
+  struct addrinfo *pCurrentAddressInfo;
+
+  for (pCurrentAddressInfo = pAddressInfo; pCurrentAddressInfo; pCurrentAddressInfo = pCurrentAddressInfo->ai_next)
+  {
+    if (getnameinfo(
+      pCurrentAddressInfo->ai_addr, 
+      pCurrentAddressInfo->ai_addrlen,
+      nameBuffer, sizeof(nameBuffer),
+      portBuffer, sizeof(portBuffer),
+      NI_NUMERICHOST)
+    )
+    {
+      strcpy(nameBuffer, "[unknown]");
+      strcpy(portBuffer, "[unknown]");
+  	}
+    CLog::Log(LOGDEBUG, "%s - connecting to: %s:%s ...", __FUNCTION__, nameBuffer, portBuffer);
+
+    socketHandle = socket(pCurrentAddressInfo->ai_family, pCurrentAddressInfo->ai_socktype, pCurrentAddressInfo->ai_protocol);
+    if (socketHandle == INVALID_SOCKET)
+      continue;
+
+    if (connect(socketHandle, pCurrentAddressInfo->ai_addr, pCurrentAddressInfo->ai_addrlen) != SOCKET_ERROR)
+      break;
+
+    closesocket(socketHandle);
+    socketHandle = INVALID_SOCKET;
+  }
+
+  if(socketHandle == INVALID_SOCKET)
+  {
+    CLog::Log(LOGERROR, "%s - failed to connect", __FUNCTION__);
+    throw CAmbiPiConnectionException();
+  }
+
+  m_socket.attach(socketHandle);
+  CLog::Log(LOGINFO, "%s - connected to: %s:%s ...", __FUNCTION__, nameBuffer, portBuffer);
+}
+
+void CAmbiPiConnection::Send(const BYTE *buffer, int length)
+{
+  int iErr = send((SOCKET)m_socket, (const char *)buffer, length, 0);
+  if (iErr <= 0)
+  {
+    throw CAmbiPiSendException();
+  }
 }

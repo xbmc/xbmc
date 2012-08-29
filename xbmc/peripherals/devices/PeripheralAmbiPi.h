@@ -29,6 +29,8 @@
 
 #include "cores/VideoRenderers/BaseRenderer.h"
 
+#include "utils/AutoPtrHandle.h"
+
 namespace PERIPHERALS
 {
   struct AverageYUV {
@@ -88,6 +90,20 @@ namespace PERIPHERALS
   };
 
 
+  class CAmbiPiConnection  
+  {
+  public:
+    CAmbiPiConnection(void);
+    ~CAmbiPiConnection(void);
+    void Connect(const CStdString ip_address_or_name, unsigned int port);
+    void Send(const BYTE *buffer, int length);
+
+  private:
+    struct addrinfo *GetAddressInfo(const CStdString ip_address_or_name, unsigned int port);
+    void AttemptConnection(struct addrinfo *pAddressInfo);
+    AUTOPTR::CAutoPtrSocket m_socket;
+  };
+
   class CPeripheralAmbiPi : public CPeripheral, private CThread
   {
   public:
@@ -122,5 +138,6 @@ namespace PERIPHERALS
     static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
 
     void UpdateSampleRectangles(unsigned int imageWidth, unsigned int imageHeight);
+    CAmbiPiConnection                 m_connection;
   };
 }
