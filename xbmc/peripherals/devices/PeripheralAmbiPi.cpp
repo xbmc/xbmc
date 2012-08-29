@@ -337,12 +337,12 @@ void CAmbiPiGrid::UpdateTilesFromImage(const YV12Image* pImage)
   while (tileIndex < m_numTiles) {
 
     pTile = m_tiles + tileIndex;
-    UpdateAverageColorForTile(pImage, pTile);
+    CalculateAverageColorForTile(pImage, pTile);
     tileIndex++;
   }  
 }
 
-void CAmbiPiGrid::UpdateAverageColorForTile(const YV12Image* pImage, Tile *pTile) {
+void CAmbiPiGrid::CalculateAverageColorForTile(const YV12Image* pImage, Tile *pTile) {
 
   if (pImage->bpp != 1)
   {
@@ -354,28 +354,16 @@ void CAmbiPiGrid::UpdateAverageColorForTile(const YV12Image* pImage, Tile *pTile
   BYTE *pLineU = pImage->plane[PLANE_U];
   BYTE *pLineV = pImage->plane[PLANE_V];
 
-  BYTE *pY;
-  BYTE *pU;
-  BYTE *pV;
+  BYTE *pY, *pU, *pV;
 
-  float aR = 0;
-  float aG = 0;
-  float aB = 0;
+  RGB rgb;
+  YUV yuv;
 
-  BYTE r;
-  BYTE g;
-  BYTE b;
+  AverageRGB averageRgb = { 0, 0, 0 };
+  AverageYUV averageYuv = { 0, 0, 0 };
 
-  BYTE lumaY;
-  BYTE chromaU;
-  BYTE chromaV;
-
-  float aY = 0;
-  float aU = 0;
-  float aV = 0;
-
-  int pixelsInTile = (pTile->m_sampleRect.y2 - pTile->m_sampleRect.y1) * (pTile->m_sampleRect.x2 - pTile->m_sampleRect.x1);
-
+  unsigned long int pixelsInTile = (pTile->m_sampleRect.y2 - pTile->m_sampleRect.y1) * (pTile->m_sampleRect.x2 - pTile->m_sampleRect.x1);
+  
   for (int y = pTile->m_sampleRect.y1; y < pTile->m_sampleRect.y2; y++) 
   {
     pY = pLineY;
@@ -383,46 +371,61 @@ void CAmbiPiGrid::UpdateAverageColorForTile(const YV12Image* pImage, Tile *pTile
     pV = pLineV;
     for (int x = pTile->m_sampleRect.x1; x < pTile->m_sampleRect.x2; x++) 
     {
-      lumaY = *(pY++);
-      chromaU = *(pU++);
-      chromaV = *(pV++);
+      yuv.y = *(pY++);
+      yuv.u = *(pU++);
+      yuv.v = *(pV++);
 
-      aY += ((float)lumaY / pixelsInTile);
-      aU += ((float)chromaU / pixelsInTile);
-      aV += ((float)chromaV / pixelsInTile);
+      CImageConversion::ConvertYuvToRgb(&yuv, &rgb);
 
-      r = lumaY + 1.4075 * (chromaV - 128);
-      g = lumaY - 0.3455 * (chromaU - 128) - (0.7169 * (chromaV - 128));
-      b = lumaY + 1.7790 * (chromaU - 128);
-
-      aR += ((float)r / pixelsInTile);
-      aG += ((float)g / pixelsInTile);
-      aB += ((float)b / pixelsInTile);
-
-
+      UpdateAverageYuv(&yuv, pixelsInTile, &averageYuv);
+      UpdateAverageRgb(&rgb, pixelsInTile, &averageRgb);
     }
     pLineY += pImage->stride[PLANE_Y];
     pLineU += pImage->stride[PLANE_U];
     pLineV += pImage->stride[PLANE_V];
   }
-
-  pTile->m_yuv.y = aY;
-  pTile->m_yuv.u = aU;
-  pTile->m_yuv.v = aV;
+  UpdateAverageColorForTile(pTile, &averageYuv);
 
   /*
   CLog::Log(LOGDEBUG, "%s - average color for tile, x: %d, y: %d, RGB: #%02x%02x%02x, YUV: #%02x%02x%02x",
     __FUNCTION__, 
     pTile->m_x, 
     pTile->m_y, 
-    (BYTE)aR, 
-    (BYTE)aG,
-    (BYTE)aB,
-    (BYTE)aY, 
-    (BYTE)aU,
-    (BYTE)aV
+    (BYTE)averageRgb->r, 
+    (BYTE)averageRgb->g,
+    (BYTE)averageRgb->b,
+    (BYTE)averageYuv->y, 
+    (BYTE)averageYuv->u,
+    (BYTE)averageYuv->v
   );
   */
 
 }
 
+void CAmbiPiGrid::UpdateAverageYuv(const YUV *pYuv, unsigned long int numPixels, AverageYUV *pAverageYuv)
+{
+  pAverageYuv->y += ((float)pYuv->y / numPixels);
+  pAverageYuv->u += ((float)pYuv->u / numPixels);
+  pAverageYuv->v += ((float)pYuv->v / numPixels);
+}
+
+void CAmbiPiGrid::UpdateAverageRgb(const RGB *pRgb, unsigned long int numPixels, AverageRGB *pAverageRgb)
+{
+  pAverageRgb->r += ((float)pRgb->r / numPixels);
+  pAverageRgb->g += ((float)pRgb->g / numPixels);
+  pAverageRgb->b += ((float)pRgb->b / numPixels);
+}
+
+void CAmbiPiGrid::UpdateAverageColorForTile(Tile *pTile, const AverageYUV *pAverageYuv)
+{
+  pTile->m_yuv.y = pAverageYuv->y;
+  pTile->m_yuv.u = pAverageYuv->u;
+  pTile->m_yuv.v = pAverageYuv->v;
+}
+
+void CImageConversion::ConvertYuvToRgb(const YUV *pYuv, RGB *pRgb)
+{
+  pRgb->r = pYuv->y + 1.4075 * (pYuv->v - 128);
+  pRgb->g = pYuv->y - 0.3455 * (pYuv->u - 128) - (0.7169 * (pYuv->v - 128));
+  pRgb->b = pYuv->y + 1.7790 * (pYuv->u - 128);
+}

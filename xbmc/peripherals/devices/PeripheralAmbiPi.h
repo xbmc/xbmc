@@ -31,11 +31,22 @@
 
 namespace PERIPHERALS
 {
-  struct YUV {
-    BYTE y;
-    BYTE u;
-    BYTE v;
+  struct AverageYUV {
+    float y,u,v;
   };
+
+  struct AverageRGB {
+    float r,g,b;
+  };
+
+  struct YUV {
+    BYTE y,u,v;
+  };
+
+  struct RGB {
+    BYTE r,g,b;
+  };
+
 
   struct Tile
   {
@@ -64,7 +75,16 @@ namespace PERIPHERALS
   private:
     void UpdateSingleTileCoordinates(unsigned int leftTileIndex, unsigned int x, unsigned int y);
     void DumpCoordinates(void);
-    void UpdateAverageColorForTile(const YV12Image* pImage, Tile *pTile);
+    void CalculateAverageColorForTile(const YV12Image* pImage, Tile *pTile);
+    void UpdateAverageColorForTile(Tile *pTile, const AverageYUV *pAverageYuv);
+    void UpdateAverageYuv(const YUV *pYuv, unsigned long int numPixels, AverageYUV *pAverageYuv);
+    void UpdateAverageRgb(const RGB *pRgb, unsigned long int numPixels, AverageRGB *pAverageRgb);
+  };
+
+  class CImageConversion
+  {
+  public:
+    static void ConvertYuvToRgb(const YUV *pYuv, RGB *pRgb);
   };
 
 
