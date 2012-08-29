@@ -212,6 +212,7 @@ void CSysInfo::Reset()
 
 CSysInfo::CSysInfo(void) : CInfoLoader(15 * 1000)
 {
+  memset(MD5_Sign, 0, sizeof(MD5_Sign));
 }
 
 CSysInfo::~CSysInfo()
@@ -280,7 +281,14 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
     iTotal = (int)( ULTotal.QuadPart / MB );
     iTotalFree = (int)( ULTotalFree.QuadPart / MB );
     iTotalUsed = iTotal - iTotalFree;
-    iPercentUsed = (int)( 100.0f * ( ULTotal.QuadPart - ULTotalFree.QuadPart ) / ULTotal.QuadPart + 0.5f );
+    if( ULTotal.QuadPart > 0 )
+    {
+      iPercentUsed = (int)( 100.0f * ( ULTotal.QuadPart - ULTotalFree.QuadPart ) / ULTotal.QuadPart + 0.5f );
+    }
+    else
+    {
+      iPercentUsed = 0;
+    }
     iPercentFree = 100 - iPercentUsed;
   }
 

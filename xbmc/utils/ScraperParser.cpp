@@ -42,6 +42,7 @@ CScraperParser::CScraperParser()
   m_pRootElement = NULL;
   m_document = NULL;
   m_SearchStringEncoding = "UTF-8";
+  m_scraper = NULL;
 }
 
 CScraperParser::CScraperParser(const CScraperParser& parser)
@@ -62,6 +63,8 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
       m_document = new CXBMCTinyXML(*parser.m_document);
       LoadFromXML();
     }
+    else
+      m_scraper = NULL;
   }
   return *this;
 }
