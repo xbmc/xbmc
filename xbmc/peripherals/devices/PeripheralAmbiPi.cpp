@@ -131,6 +131,7 @@ void CPeripheralAmbiPi::ProcessImage()
 {
   UpdateImage();  
   GenerateDataStreamFromImage();
+  SendData();
 }
 
 void CPeripheralAmbiPi::UpdateImage()
@@ -158,6 +159,11 @@ void CPeripheralAmbiPi::UpdateSampleRectangles(unsigned int imageWidth, unsigned
   m_previousImageHeight = imageHeight;
 
   m_pGrid->UpdateSampleRectangles(imageWidth, imageHeight);
+}
+
+void CPeripheralAmbiPi::SendData(void) {
+  TileData *pTileData = m_pGrid->GetTileData();
+  m_connection.Send(pTileData->stream, pTileData->streamLength);
 }
 
 void CPeripheralAmbiPi::ConnectToDevice()
@@ -206,8 +212,10 @@ void CPeripheralAmbiPi::Process(void)
 CAmbiPiGrid::~CAmbiPiGrid()
 {
   free(m_tiles);
+  free(m_tileData.stream);
 }
 
+#define SIZE_OF_X_AND_Y_COORDINATE 2
 CAmbiPiGrid::CAmbiPiGrid(unsigned int width, unsigned int height) :
   m_width(width),
   m_height(height)
@@ -218,8 +226,46 @@ CAmbiPiGrid::CAmbiPiGrid(unsigned int width, unsigned int height) :
   m_tiles = (Tile*)malloc(allocSize);
   ZeroMemory(m_tiles, allocSize);
 
+
+  m_tileData.streamLength = sizeof(m_tileData.streamLength) + (m_numTiles * (SIZE_OF_X_AND_Y_COORDINATE + sizeof(YUV)));
+  m_tileData.stream = (BYTE *)malloc(m_tileData.streamLength);
+
   UpdateTileCoordinates(width, height);
   DumpCoordinates();
+}
+
+TileData *CAmbiPiGrid::GetTileData(void)
+{
+  BYTE *pStream = m_tileData.stream;
+
+  ZeroMemory(pStream, m_tileData.streamLength);
+
+  unsigned int tileIndex = 0;
+  Tile* pTile;
+
+  *pStream++ = (BYTE) (m_tileData.streamLength >> 24 & 0xFF);
+  *pStream++ = (BYTE) (m_tileData.streamLength >> 16 & 0xFF);
+  *pStream++ = (BYTE) (m_tileData.streamLength >> 8 & 0xFF);
+  *pStream++ = (BYTE) (m_tileData.streamLength >> 0 & 0xFF);
+
+  while (tileIndex < m_numTiles) {
+    pTile = m_tiles + tileIndex;
+
+    // coordinates
+    *pStream++ = (BYTE)pTile->m_x;
+    *pStream++ = (BYTE)pTile->m_y;
+
+    // yuv
+    *pStream++ = pTile->m_yuv.y;
+    *pStream++ = pTile->m_yuv.u;
+    *pStream++ = pTile->m_yuv.v;
+
+    tileIndex++;
+  }  
+
+  unsigned int bytesAddedToStream = pStream - m_tileData.stream;
+
+  return &m_tileData;
 }
 
 void CAmbiPiGrid::UpdateTileCoordinates(unsigned int width, unsigned int height)

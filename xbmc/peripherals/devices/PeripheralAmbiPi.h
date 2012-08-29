@@ -58,6 +58,11 @@ namespace PERIPHERALS
     YUV               m_yuv;
   };
 
+  struct TileData {
+    BYTE *stream;
+    DWORD streamLength; 
+  };
+
   class CAmbiPiGrid
   {
   public:
@@ -65,12 +70,14 @@ namespace PERIPHERALS
     ~CAmbiPiGrid(void);
     void UpdateSampleRectangles(unsigned int imageWidth, unsigned int imageHeight);
     void UpdateTilesFromImage(const YV12Image* pImage);
+    TileData *GetTileData(void);
 
   protected:
     unsigned int m_width;
     unsigned int m_height;
     unsigned int m_numTiles;
     Tile* m_tiles;
+    TileData m_tileData;
 
     void UpdateTileCoordinates(unsigned int width, unsigned int height);    
 
@@ -113,15 +120,16 @@ namespace PERIPHERALS
   protected:
 	  bool InitialiseFeature(const PeripheralFeature feature);
 
-    void ConnectToDevice();
-    void LoadAddressFromConfiguration();
-    bool ConfigureRenderCallback();
+    void ConnectToDevice(void);
+    void LoadAddressFromConfiguration(void);
+    bool ConfigureRenderCallback(void);
     void Process(void);
 
-    void ProcessImage();
-    void UpdateImage();
-    void GenerateDataStreamFromImage();
-    void UpdateGridFromConfiguration();
+    void ProcessImage(void);
+    void UpdateImage(void);
+    void GenerateDataStreamFromImage(void);
+    void UpdateGridFromConfiguration(void);
+    void SendData(void);
 
     bool                              m_bStarted;
     bool                              m_bIsRunning;
