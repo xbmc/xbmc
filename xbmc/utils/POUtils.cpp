@@ -215,7 +215,7 @@ std::string CPODocument::UnescapeString(const std::string &strInput)
                   "POParser: warning, unhandled escape character "
                   "at line-end. Problematic entry: %s",
                   m_Entry.Content.c_str());
-        continue;
+        break;
       }
       switch (*it++)
       {
