@@ -45,6 +45,7 @@ CDVDClock::CDVDClock()
   m_speedadjust = false;
 
   m_ismasterclock = true;
+  m_startClock = 0;
 }
 
 CDVDClock::~CDVDClock()

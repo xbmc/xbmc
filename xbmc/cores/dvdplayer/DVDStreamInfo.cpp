@@ -59,6 +59,7 @@ void CDVDStreamInfo::Clear()
   level    = 0;
   profile  = 0;
   ptsinvalid = false;
+  forced_aspect = false;
 
   channels   = 0;
   samplerate = 0;

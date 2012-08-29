@@ -186,6 +186,8 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
         int iDecoderState = VC_ERROR;
         DVDVideoPicture picture;
 
+        memset(&picture, 0, sizeof(picture));
+
         // num streams * 80 frames, should get a valid frame, if not abort.
         int abort_index = pDemuxer->GetNrOfStreams() * 80;
         do
@@ -374,8 +376,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
-      if (stream->language)
-        p->m_strLanguage = stream->language;
+      p->m_strLanguage = stream->language;
       pDemux->GetStreamCodecName(iStream, p->m_strCodec);
       details.AddStream(p);
       retVal = true;
