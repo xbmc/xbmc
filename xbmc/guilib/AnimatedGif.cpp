@@ -516,8 +516,8 @@ int LZWDecoder (char * bufIn, char * bufOut,
   short OutCode;      // Code to output
 
   // Translation Table:
-  short Prefix[4096];    // Prefix: index of another Code
-  unsigned char Suffix[4096];    // Suffix: terminating character
+  short Prefix[4096] = {};    // Prefix: index of another Code
+  unsigned char Suffix[4096] = {};    // Suffix: terminating character
   short FirstEntry;     // Index of first free entry in table
   short NextEntry;     // Index of next free entry in table
 
