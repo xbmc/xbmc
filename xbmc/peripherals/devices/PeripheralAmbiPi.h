@@ -31,12 +31,18 @@
 
 namespace PERIPHERALS
 {
-  struct SGridPoint
-  {
-    unsigned int     m_x;
-    unsigned int     m_y;
+  struct YUV {
+    BYTE y;
+    BYTE u;
+    BYTE v;
+  };
 
-    CRect sampleRect;
+  struct Tile
+  {
+    unsigned int      m_x;
+    unsigned int      m_y;
+    CRect             m_sampleRect;
+    YUV               m_yuv;
   };
 
   class CAmbiPiGrid
@@ -45,18 +51,20 @@ namespace PERIPHERALS
     CAmbiPiGrid(unsigned int width, unsigned int height);
     ~CAmbiPiGrid(void);
     void UpdateSampleRectangles(unsigned int imageWidth, unsigned int imageHeight);
+    void UpdateTilesFromImage(const YV12Image* pImage);
 
   protected:
     unsigned int m_width;
     unsigned int m_height;
-    unsigned int m_numGridPoints;
-    SGridPoint* m_gridPoints;
+    unsigned int m_numTiles;
+    Tile* m_tiles;
 
-    void UpdateGridPoints(unsigned int width, unsigned int height);    
+    void UpdateTileCoordinates(unsigned int width, unsigned int height);    
 
   private:
-    void UpdateGridPoint(unsigned int leftGridPointIndex, unsigned int x, unsigned int y);
+    void UpdateSingleTileCoordinates(unsigned int leftTileIndex, unsigned int x, unsigned int y);
     void DumpCoordinates(void);
+    void UpdateAverageColorForTile(const YV12Image* pImage, Tile *pTile);
   };
 
 

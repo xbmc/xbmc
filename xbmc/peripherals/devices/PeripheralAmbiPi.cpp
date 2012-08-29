@@ -140,6 +140,8 @@ void CPeripheralAmbiPi::GenerateDataStreamFromImage()
   //CLog::Log(LOGDEBUG, "%s - Processing image", __FUNCTION__);  
 
   UpdateSampleRectangles(m_image.width, m_image.height);
+
+  m_pGrid->UpdateTilesFromImage(&m_image);
 }
 
 void CPeripheralAmbiPi::UpdateSampleRectangles(unsigned int imageWidth, unsigned int imageHeight)
@@ -196,7 +198,7 @@ void CPeripheralAmbiPi::Process(void)
 
 CAmbiPiGrid::~CAmbiPiGrid()
 {
-  free(m_gridPoints);
+  free(m_tiles);
 }
 
 CAmbiPiGrid::CAmbiPiGrid(unsigned int width, unsigned int height) :
@@ -204,16 +206,16 @@ CAmbiPiGrid::CAmbiPiGrid(unsigned int width, unsigned int height) :
   m_height(height)
 {  
   
-  m_numGridPoints = (m_width * 2) + ((m_height - 2) * 2);
-  unsigned int allocSize = m_numGridPoints * sizeof(SGridPoint);
-  m_gridPoints = (SGridPoint*)malloc(allocSize);
-  ZeroMemory(m_gridPoints, allocSize);
+  m_numTiles = (m_width * 2) + ((m_height - 2) * 2);
+  unsigned int allocSize = m_numTiles * sizeof(Tile);
+  m_tiles = (Tile*)malloc(allocSize);
+  ZeroMemory(m_tiles, allocSize);
 
-  UpdateGridPoints(width, height);
+  UpdateTileCoordinates(width, height);
   DumpCoordinates();
 }
 
-void CAmbiPiGrid::UpdateGridPoints(unsigned int width, unsigned int height)
+void CAmbiPiGrid::UpdateTileCoordinates(unsigned int width, unsigned int height)
 {
   unsigned int start_position_x = width / 2;
 
@@ -224,8 +226,8 @@ void CAmbiPiGrid::UpdateGridPoints(unsigned int width, unsigned int height)
   unsigned int x;
   unsigned int y;
 
-  unsigned int leftGridPointIndex = 0;
-  unsigned int rightGridPointIndex = m_numGridPoints / 2;
+  unsigned int leftTileIndex = 0;
+  unsigned int rightTileIndex = m_numTiles / 2;
 
   for (y = 1; y <= height; y++)
   {
@@ -238,8 +240,8 @@ void CAmbiPiGrid::UpdateGridPoints(unsigned int width, unsigned int height)
       {
         leftHalfZeroBasedX = x - 1;
         rightHalfZeroBasedX = width - x;
-        UpdateGridPoint(leftGridPointIndex++, leftHalfZeroBasedX, zeroBasedY);
-        UpdateGridPoint(rightGridPointIndex++, rightHalfZeroBasedX, zeroBasedY);
+        UpdateSingleTileCoordinates(leftTileIndex++, leftHalfZeroBasedX, zeroBasedY);
+        UpdateSingleTileCoordinates(rightTileIndex++, rightHalfZeroBasedX, zeroBasedY);
       }
     } 
     else if (y == height)
@@ -250,8 +252,8 @@ void CAmbiPiGrid::UpdateGridPoints(unsigned int width, unsigned int height)
       {
         leftHalfZeroBasedX = x - 1;
         rightHalfZeroBasedX = width - x;
-        UpdateGridPoint(leftGridPointIndex++, leftHalfZeroBasedX, zeroBasedY);
-        UpdateGridPoint(rightGridPointIndex++, rightHalfZeroBasedX, zeroBasedY);
+        UpdateSingleTileCoordinates(leftTileIndex++, leftHalfZeroBasedX, zeroBasedY);
+        UpdateSingleTileCoordinates(rightTileIndex++, rightHalfZeroBasedX, zeroBasedY);
       }
     }
     else
@@ -260,67 +262,167 @@ void CAmbiPiGrid::UpdateGridPoints(unsigned int width, unsigned int height)
 
       leftHalfZeroBasedX = 0;
       rightHalfZeroBasedX = width - 1;
-      UpdateGridPoint(leftGridPointIndex++, leftHalfZeroBasedX, y - 1);
-      UpdateGridPoint(rightGridPointIndex++, rightHalfZeroBasedX, y - 1);
+      UpdateSingleTileCoordinates(leftTileIndex++, leftHalfZeroBasedX, y - 1);
+      UpdateSingleTileCoordinates(rightTileIndex++, rightHalfZeroBasedX, y - 1);
     }
   }
-  CLog::Log(LOGDEBUG, "%s - current indexes, left: %d, right: %d", __FUNCTION__, leftGridPointIndex, rightGridPointIndex);  
+  CLog::Log(LOGDEBUG, "%s - current indexes, left: %d, right: %d", __FUNCTION__, leftTileIndex, rightTileIndex);  
 }
 
-void CAmbiPiGrid::UpdateGridPoint(unsigned int gridPointIndex, unsigned int x, unsigned int y)
+void CAmbiPiGrid::UpdateSingleTileCoordinates(unsigned int tileIndex, unsigned int x, unsigned int y)
 {
-  SGridPoint* pGridPoint = m_gridPoints + gridPointIndex;
-  pGridPoint->m_x = x;
-  pGridPoint->m_y = y;
+  Tile* pTile = m_tiles + tileIndex;
+  pTile->m_x = x;
+  pTile->m_y = y;
 }
 
 void CAmbiPiGrid::DumpCoordinates(void)
 {
-  unsigned int gridPointIndex = 0;
-  SGridPoint* pGridPoint;
+  unsigned int tileIndex = 0;
+  Tile* pTile;
 
-  while (gridPointIndex < m_numGridPoints) {
+  while (tileIndex < m_numTiles) {
 
-    pGridPoint = m_gridPoints + gridPointIndex;
-    CLog::Log(LOGDEBUG, "%s - Coordinates, index: %d, x: %d, y: %d", __FUNCTION__, gridPointIndex, pGridPoint->m_x, pGridPoint->m_y);  
+    pTile = m_tiles + tileIndex;
+    CLog::Log(LOGDEBUG, "%s - Coordinates, index: %d, x: %d, y: %d", __FUNCTION__, tileIndex, pTile->m_x, pTile->m_y);  
 
-    gridPointIndex++;
+    tileIndex++;
   }  
 }
 
 void CAmbiPiGrid::UpdateSampleRectangles(unsigned int imageWidth, unsigned int imageHeight)
 {
-
-  unsigned int gridPointIndex = 0;
-  SGridPoint* pGridPoint;
+  unsigned int tileIndex = 0;
+  Tile* pTile;
 
   unsigned int sampleWidth = imageWidth / m_width;
   unsigned int sampleHeight = imageHeight / m_height;
 
   CLog::Log(LOGDEBUG, "%s - Updating grid sample rectangles for image, width: %d, height: %d, sampleWidth: %d, sampleHeight: %d", __FUNCTION__, imageWidth, imageHeight, sampleWidth, sampleHeight);  
 
-  while (gridPointIndex < m_numGridPoints) {
+  while (tileIndex < m_numTiles) {
 
-    pGridPoint = m_gridPoints + gridPointIndex;
+    pTile = m_tiles + tileIndex;
 
-    pGridPoint->sampleRect.SetRect(
-      pGridPoint->m_x * sampleWidth,
-      pGridPoint->m_y * sampleHeight,
-      std::min(imageWidth, (pGridPoint->m_x * sampleWidth) + sampleWidth),
-      std::min(imageHeight, (pGridPoint->m_y * sampleHeight) + sampleHeight)
+    pTile->m_sampleRect.SetRect(
+      pTile->m_x * sampleWidth,
+      pTile->m_y * sampleHeight,
+      std::min(imageWidth, (pTile->m_x * sampleWidth) + sampleWidth),
+      std::min(imageHeight, (pTile->m_y * sampleHeight) + sampleHeight)
     );
 
     CLog::Log(LOGDEBUG, "%s - updated rectangle, x: %d, y: %d, rect: (left: %f, top: %f, right: %f, bottom: %f)",
       __FUNCTION__, 
-      pGridPoint->m_x,
-      pGridPoint->m_y,
-      pGridPoint->sampleRect.x1,
-      pGridPoint->sampleRect.y1,
-      pGridPoint->sampleRect.x2,
-      pGridPoint->sampleRect.y2
+      pTile->m_x,
+      pTile->m_y,
+      pTile->m_sampleRect.x1,
+      pTile->m_sampleRect.y1,
+      pTile->m_sampleRect.x2,
+      pTile->m_sampleRect.y2
     );  
 
-    gridPointIndex++;
+    tileIndex++;
   }
+}
+
+#define PLANE_Y 0
+#define PLANE_U 1
+#define PLANE_V 2
+
+void CAmbiPiGrid::UpdateTilesFromImage(const YV12Image* pImage)
+{
+  unsigned int tileIndex = 0;
+  Tile* pTile;
+
+  while (tileIndex < m_numTiles) {
+
+    pTile = m_tiles + tileIndex;
+    UpdateAverageColorForTile(pImage, pTile);
+    tileIndex++;
+  }  
+}
+
+void CAmbiPiGrid::UpdateAverageColorForTile(const YV12Image* pImage, Tile *pTile) {
+
+  if (pImage->bpp != 1)
+  {
+    ZeroMemory(&pTile->m_yuv, sizeof(YUV));
+    return; // TODO implement support for 2bpp images
+  }
+
+  BYTE *pLineY = pImage->plane[PLANE_Y];
+  BYTE *pLineU = pImage->plane[PLANE_U];
+  BYTE *pLineV = pImage->plane[PLANE_V];
+
+  BYTE *pY;
+  BYTE *pU;
+  BYTE *pV;
+
+  float aR = 0;
+  float aG = 0;
+  float aB = 0;
+
+  BYTE r;
+  BYTE g;
+  BYTE b;
+
+  BYTE lumaY;
+  BYTE chromaU;
+  BYTE chromaV;
+
+  float aY = 0;
+  float aU = 0;
+  float aV = 0;
+
+  int pixelsInTile = (pTile->m_sampleRect.y2 - pTile->m_sampleRect.y1) * (pTile->m_sampleRect.x2 - pTile->m_sampleRect.x1);
+
+  for (int y = pTile->m_sampleRect.y1; y < pTile->m_sampleRect.y2; y++) 
+  {
+    pY = pLineY;
+    pU = pLineU;
+    pV = pLineV;
+    for (int x = pTile->m_sampleRect.x1; x < pTile->m_sampleRect.x2; x++) 
+    {
+      lumaY = *(pY++);
+      chromaU = *(pU++);
+      chromaV = *(pV++);
+
+      aY += ((float)lumaY / pixelsInTile);
+      aU += ((float)chromaU / pixelsInTile);
+      aV += ((float)chromaV / pixelsInTile);
+
+      r = lumaY + 1.4075 * (chromaV - 128);
+      g = lumaY - 0.3455 * (chromaU - 128) - (0.7169 * (chromaV - 128));
+      b = lumaY + 1.7790 * (chromaU - 128);
+
+      aR += ((float)r / pixelsInTile);
+      aG += ((float)g / pixelsInTile);
+      aB += ((float)b / pixelsInTile);
+
+
+    }
+    pLineY += pImage->stride[PLANE_Y];
+    pLineU += pImage->stride[PLANE_U];
+    pLineV += pImage->stride[PLANE_V];
+  }
+
+  pTile->m_yuv.y = aY;
+  pTile->m_yuv.u = aU;
+  pTile->m_yuv.v = aV;
+
+  /*
+  CLog::Log(LOGDEBUG, "%s - average color for tile, x: %d, y: %d, RGB: #%02x%02x%02x, YUV: #%02x%02x%02x",
+    __FUNCTION__, 
+    pTile->m_x, 
+    pTile->m_y, 
+    (BYTE)aR, 
+    (BYTE)aG,
+    (BYTE)aB,
+    (BYTE)aY, 
+    (BYTE)aU,
+    (BYTE)aV
+  );
+  */
+
 }
 
