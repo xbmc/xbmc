@@ -327,6 +327,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
       if (!nImages)
       {
         CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
+        delete [] pTextures;
+        delete [] Delay;
         return 0;
       }
 
