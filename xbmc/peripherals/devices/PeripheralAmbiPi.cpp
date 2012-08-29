@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,15 +19,12 @@
  *
  */
 
-//#include "system.h"
 #include "PeripheralAmbiPi.h"
 #include "utils/log.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-
-//#include "threads/SingleLock.h"
 
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/WinRenderer.h"
@@ -122,7 +119,6 @@ bool CPeripheralAmbiPi::ConfigureRenderCallback()
 void CPeripheralAmbiPi::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
 {
   CPeripheralAmbiPi *peripheralAmbiPi = (CPeripheralAmbiPi*)ctx;
-  //CLog::Log(LOGINFO, "%s - AmbiPi callback hit", __FUNCTION__);  
 
   peripheralAmbiPi->ProcessImage();
 }
@@ -143,8 +139,6 @@ void CPeripheralAmbiPi::UpdateImage()
 
 void CPeripheralAmbiPi::GenerateDataStreamFromImage()
 {
-  //CLog::Log(LOGDEBUG, "%s - Processing image", __FUNCTION__);  
-
   UpdateSampleRectangles(m_image.width, m_image.height);
 
   m_pGrid->UpdateTilesFromImage(&m_image);
@@ -171,8 +165,6 @@ void CPeripheralAmbiPi::ConnectToDevice()
   CLog::Log(LOGINFO, "%s - Connecting to AmbiPi on %s:%d", __FUNCTION__, m_address.c_str(), m_port);  
 
   m_connection.Connect(m_address, m_port);
-
-  // TODO connect ambi (TCP)
 }
 
 #define RETRY_DELAY_WHEN_UNCONFIGURED 1
@@ -251,11 +243,9 @@ TileData *CAmbiPiGrid::GetTileData(void)
   while (tileIndex < m_numTiles) {
     pTile = m_tiles + tileIndex;
 
-    // coordinates
     *pStream++ = (BYTE)pTile->m_x;
     *pStream++ = (BYTE)pTile->m_y;
 
-    // yuv
     *pStream++ = pTile->m_yuv.y;
     *pStream++ = pTile->m_yuv.u;
     *pStream++ = pTile->m_yuv.v;
