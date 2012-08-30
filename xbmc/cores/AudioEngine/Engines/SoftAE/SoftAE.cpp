@@ -689,6 +689,7 @@ void CSoftAE::ResumeStream(CSoftAEStream *stream)
 void CSoftAE::Stop()
 {
   m_running = false;
+  m_isSuspended = false;
   m_wake.Set();
 
   /* wait for the thread to stop */
@@ -812,7 +813,7 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
 
   /* if it was the master stream we need to reopen before deletion */
   if (m_masterStream == stream)
-    OpenSink();
+    InternalOpenSink();
 
   delete (CSoftAEStream*)stream;
   return NULL;
@@ -889,6 +890,14 @@ bool CSoftAE::Suspend()
   CLog::Log(LOGDEBUG, "CSoftAE::Suspend - Suspending AE processing");
   m_isSuspended = true;
 
+  CSingleLock streamLock(m_streamLock);
+  
+  for (StreamList::iterator itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
+  {
+    CSoftAEStream *stream = *itt;
+    stream->Flush();
+  }
+
   return true;
 }
 
@@ -896,6 +905,7 @@ bool CSoftAE::Resume()
 {
   CLog::Log(LOGDEBUG, "CSoftAE::Resume - Resuming AE processing");
   m_isSuspended = false;
+  m_reOpen = true;
 
   return true;
 }
