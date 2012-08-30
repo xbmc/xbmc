@@ -672,7 +672,7 @@ void CSoftAE::PauseStream(CSoftAEStream *stream)
   stream->m_paused = true;
   streamLock.Leave();
 
-  OpenSink();
+  InternalOpenSink();
 }
 
 void CSoftAE::ResumeStream(CSoftAEStream *stream)
@@ -683,7 +683,7 @@ void CSoftAE::ResumeStream(CSoftAEStream *stream)
   streamLock.Leave();
 
   m_streamsPlaying = true;
-  OpenSink();
+  InternalOpenSink();
 }
 
 void CSoftAE::Stop()
@@ -721,7 +721,7 @@ IAEStream *CSoftAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sample
   m_newStreams.push_back(stream);
   streamLock.Leave();
 
-  OpenSink();
+  InternalOpenSink();
   return stream;
 }
 
