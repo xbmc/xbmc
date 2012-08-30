@@ -28,6 +28,9 @@ extern "C" {
 
 using namespace PERIPHERALS;
 
+#define RPI_PERIPHERAL_BUS_VID 0x2708
+#define RPI_PERIPHERAL_CEC_PID 0x1001
+
 CPeripheralBusRPi::CPeripheralBusRPi(CPeripherals *manager) :
     CPeripheralBus(manager, PERIPHERAL_BUS_RPI)
 {
@@ -39,10 +42,10 @@ bool CPeripheralBusRPi::PerformDeviceScan(PeripheralScanResults &results)
   if (FindAdapter())
   {
     PeripheralScanResult result;
-    result.m_iVendorId   = 0x2708;
-    result.m_iProductId  = 0x1001;
+    result.m_iVendorId   = RPI_PERIPHERAL_BUS_VID;
+    result.m_iProductId  = RPI_PERIPHERAL_CEC_PID;
     result.m_type        = PERIPHERAL_CEC;
-    result.m_strLocation = "RPI";
+    result.m_strLocation = "RPI/CEC";
 
     if (!results.ContainsResult(result))
       results.m_results.push_back(result);
