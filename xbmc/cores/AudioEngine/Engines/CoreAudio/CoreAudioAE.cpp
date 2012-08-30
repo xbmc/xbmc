@@ -395,6 +395,11 @@ bool CCoreAudioAE::IsMuted()
   return m_muted;
 }
 
+bool CCoreAudioAE::IsSuspended()
+{
+  return m_isSuspended;
+}
+
 void CCoreAudioAE::SetSoundMode(const int mode)
 {
   m_soundMode = mode;

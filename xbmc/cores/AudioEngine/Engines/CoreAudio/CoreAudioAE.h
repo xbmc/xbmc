@@ -77,6 +77,7 @@ public:
 
   virtual bool      Suspend(); /* Suspend output and de-initialize "hog-mode" sink for external players and power savings */
   virtual bool      Resume();  /* Resume ouput and re-initialize sink after Suspend() above */
+  virtual bool      IsSuspended(); /* Returns true if in Suspend mode - used by players */
 
   unsigned int      GetSampleRate();
   unsigned int      GetEncodedSampleRate();

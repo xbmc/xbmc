@@ -852,6 +852,11 @@ double CSoftAE::GetCacheTotal()
   return total;
 }
 
+bool CSoftAE::IsSuspended()
+{
+  return m_isSuspended;
+}
+
 float CSoftAE::GetVolume()
 {
   return m_volume;

@@ -59,6 +59,7 @@ public:
   virtual void   Stop();
   virtual bool   Suspend();
   virtual bool   Resume();
+  virtual bool   IsSuspended();
   virtual double GetDelay();
 
   virtual float GetVolume();

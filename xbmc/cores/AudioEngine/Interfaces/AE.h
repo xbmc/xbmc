@@ -76,6 +76,14 @@ public:
    * @return True if successful
    */
   virtual bool Resume() = 0;
+
+  /**
+   * Get the current Suspend() state
+   * Used by players to determine if audio is being processed
+   * Default is true so players drop audio or pause if engine unloaded
+   * @return True if processing suspended
+   */
+  virtual bool IsSuspended() {return true;}
   
   /**
    * Callback to alert the AudioEngine of setting changes
