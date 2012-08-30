@@ -43,6 +43,18 @@
 
 using namespace std;
 
+/* Define idle wait time based on platform in milliseconds */
+/* Higher wait times reduce thread CPU overhead when in    */
+/* idle or Suspend() modes                                 */
+#if defined (TARGET_WINDOWS) || defined (TARGET_LINUX) || \
+  defined (TARGET_DARWIN_OSX) || defined (TARGET_FREEBSD)
+#define SOFTAE_IDLE_WAIT_MSEC 50  // shorter sleep for HTPC's
+#elif defined (TARGET_RASPBERRY_PI) || defined (TARGET_ANDROID)
+#define SOFTAE_IDLE_WAIT_MSEC 100 // longer for R_PI and Android
+#else
+#define SOFTAE_IDLE_WAIT_MSEC 100 // catchall for undefined platforms
+#endif
+
 CSoftAE::CSoftAE():
   m_thread             (NULL        ),
   m_audiophile         (true        ),
@@ -908,7 +920,7 @@ void CSoftAE::Run()
         delete m_sink;
         m_sink = NULL;
       }
-      m_wake.WaitMSec(50);
+      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
     }
 
     bool restart = false;
