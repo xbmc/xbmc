@@ -41,6 +41,7 @@
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "music/tags/MusicInfoTag.h"
 
 #include "powermanagement/PowerManager.h"
@@ -511,11 +512,22 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_EXECUTE_OS:
+      /* Suspend AE temporarily so exclusive or hog-mode sinks */
+      /* don't block external player's access to audio device  */
+      if (!CAEFactory::Suspend())
+      {
+        CLog::Log(LOGNOTICE, __FUNCTION__, "Failed to suspend AudioEngine before launching external program");
+      }
 #if defined( _LINUX) && !defined(TARGET_DARWIN)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #elif defined(_WIN32)
       CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #endif
+      /* Resume AE processing of XBMC native audio */
+      if (!CAEFactory::Resume())
+      {
+        CLog::Log(LOGFATAL, __FUNCTION__, "Failed to restart AudioEngine after return from external player");
+      }
       break;
 
     case TMSG_HTTPAPI:

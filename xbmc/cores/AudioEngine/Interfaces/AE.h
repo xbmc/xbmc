@@ -62,6 +62,20 @@ public:
    * Called when the application needs to terminate the engine
    */
   virtual void Shutdown() { }
+
+  /**
+   * Suspends output and de-initializes sink
+   * Used to avoid conflicts with external players or to reduce power consumption
+   * @return True if successful
+   */
+  virtual bool Suspend() = 0;
+
+  /**
+   * Resumes output and re-initializes sink
+   * Used to resume output from Suspend() state above
+   * @return True if successful
+   */
+  virtual bool Resume() = 0;
   
   /**
    * Callback to alert the AudioEngine of setting changes

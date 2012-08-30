@@ -48,6 +48,7 @@ CSoftAE::CSoftAE():
   m_audiophile         (true        ),
   m_running            (false       ),
   m_reOpen             (false       ),
+  m_isSuspended        (false       ),
   m_sink               (NULL        ),
   m_transcode          (false       ),
   m_rawPassthrough     (false       ),
@@ -866,6 +867,35 @@ void CSoftAE::StopAllSounds()
   }
 }
 
+bool CSoftAE::Suspend()
+{
+  CLog::Log(LOGDEBUG, "CSoftAE::Suspend - Suspending AE processing");
+  m_isSuspended = true;
+
+  /* De-init sink to allow external players access to device */
+  if (m_sink)
+  {
+    /* take the sink lock */
+    CExclusiveLock sinkLock(m_sinkLock);
+    //m_sink->Drain(); TODO: implement
+    m_sink->Deinitialize();
+    delete m_sink;
+    m_sink = NULL;
+  }
+
+  return true;
+}
+
+bool CSoftAE::Resume()
+{
+  CLog::Log(LOGDEBUG, "CSoftAE::Resume - Resuming AE processing");
+  InternalOpenSink();
+
+  m_isSuspended = false;
+
+  return true;
+}
+
 void CSoftAE::Run()
 {
   /* we release this when we exit the thread unblocking anyone waiting on "Stop" */
@@ -875,6 +905,12 @@ void CSoftAE::Run()
   bool hasAudio = false;
   while (m_running)
   {
+    /* idle while in suspended state until Resume() called */
+    while (m_isSuspended)
+    {
+      Sleep(100);
+    }
+
     bool restart = false;
 
     if ((this->*m_outputStageFn)(hasAudio) > 0)
@@ -1028,7 +1064,7 @@ int CSoftAE::RunOutputStage(bool hasAudio)
   void *data = m_buffer.Raw(needBytes);
   hasAudio = FinalizeSamples((float*)data, needSamples, hasAudio);
 
-  int wroteFrames;
+  int wroteFrames = 0;
   if (m_convertFn)
   {
     const unsigned int convertedBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
@@ -1038,7 +1074,9 @@ int CSoftAE::RunOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames, hasAudio);
+  /* Output frames to sink */
+  if (m_sink)
+    wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames, hasAudio);
 
   /* Return value of INT_MAX signals error in sink - restart */
   if (wroteFrames == INT_MAX)
@@ -1048,7 +1086,9 @@ int CSoftAE::RunOutputStage(bool hasAudio)
     m_reOpen = true;
   }
 
-  m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
+  if (wroteFrames)
+    m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
+
   return wroteFrames;
 }
 

@@ -620,6 +620,23 @@ void CCoreAudioAE::Stop()
   HAL->Stop();
 }
 
+bool CCoreAudioAE::Suspend()
+{
+  /* TODO: add implementation in CA. See SoftAE for example. Code should */
+  /* release exclusive or hog mode and sleep each time packets would     */
+  /* normally be written to sink if m_isSuspended = true. False return   */
+  /* here will simply generate a debug log entry in externalplayer.cpp   */
+
+  return false;
+}
+
+bool CCoreAudio::Resume()
+{
+  /* TODO: see comments in Suspend() above */
+
+  return false;
+}
+
 //***********************************************************************************************
 // Rendering Methods
 //***********************************************************************************************

@@ -75,6 +75,9 @@ public:
   virtual bool      Initialize();
   virtual void      OnSettingsChange(std::string setting);
 
+  virtual bool      Suspend(); /* Suspend output and de-initialize "hog-mode" sink for external players and power savings */
+  virtual bool      Resume();  /* Resume ouput and re-initialize sink after Suspend() above */
+
   unsigned int      GetSampleRate();
   unsigned int      GetEncodedSampleRate();
   CAEChannelInfo    GetChannelLayout();

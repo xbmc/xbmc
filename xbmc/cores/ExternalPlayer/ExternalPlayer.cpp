@@ -37,6 +37,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "cores/AudioEngine/AEFactory.h"
 #if defined(_WIN32)
   #include "Windows.h"
   #ifdef HAS_IRSERVERSUITE
@@ -287,6 +288,15 @@ void CExternalPlayer::Process()
 #endif
 
   m_playbackStartTime = XbmcThreads::SystemClockMillis();
+
+  /* Suspend AE temporarily so exclusive or hog-mode sinks */
+  /* don't block external player's access to audio device  */
+  if (!CAEFactory::Suspend())
+  {
+    CLog::Log(LOGNOTICE, __FUNCTION__, "Failed to suspend AudioEngine before launching external player");
+  }
+
+
   BOOL ret = TRUE;
 #if defined(_WIN32)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
@@ -348,6 +358,12 @@ void CExternalPlayer::Process()
     SetCursorPos(m_xPos,m_yPos);
   }
 #endif
+
+  /* Resume AE processing of XBMC native audio */
+  if (!CAEFactory::Resume())
+  {
+    CLog::Log(LOGFATAL, __FUNCTION__, "Failed to restart AudioEngine after return from external player");
+  }
 
   // We don't want to come back to an active screensaver
   g_application.ResetScreenSaver();

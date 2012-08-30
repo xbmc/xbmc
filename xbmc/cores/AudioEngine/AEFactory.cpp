@@ -130,6 +130,22 @@ bool CAEFactory::StartEngine()
   return false;
 }
 
+bool CAEFactory::Suspend()
+{
+  if(AE)
+    return AE->Suspend();
+
+  return false;
+}
+
+bool CAEFactory::Resume()
+{
+  if(AE)
+    return AE->Resume();
+
+  return false;
+}
+
 /* engine wrapping */
 IAESound *CAEFactory::MakeSound(const std::string &file)
 {

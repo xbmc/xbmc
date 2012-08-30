@@ -38,6 +38,8 @@ public:
   static bool LoadEngine();
   static void UnLoadEngine();
   static bool StartEngine();
+  static bool Suspend(); /** Suspends output and de-initializes output sink - used for external players or power saving */
+  static bool Resume(); /** Resumes output after Suspend - re-initializes sink */
   /* wrapp engine interface */
   static IAESound *MakeSound(const std::string &file);
   static void FreeSound(IAESound *sound);
