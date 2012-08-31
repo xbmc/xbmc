@@ -210,6 +210,10 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   m_ioContext = NULL;
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
   m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_bMatroska = false;
+  m_bAVI = false;
+  m_speed = DVD_PLAYSPEED_NORMAL;
+  m_program = UINT_MAX;
 }
 
 CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()

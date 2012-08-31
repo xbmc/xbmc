@@ -221,6 +221,10 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
   }
   m_content = "video/x-mpegts";
   m_player  = player;
+  m_title_playing = false;
+  m_navmode = false;
+  m_hold = HOLD_NONE;
+  memset(&m_event, 0, sizeof(m_event));
 }
 
 CDVDInputStreamBluray::~CDVDInputStreamBluray()

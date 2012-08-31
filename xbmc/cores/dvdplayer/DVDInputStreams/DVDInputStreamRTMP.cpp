@@ -90,6 +90,7 @@ CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP
   m_eof = true;
   m_bPaused = false;
   m_sStreamPlaying = NULL;
+  m_rtmp = NULL;
 }
 
 CDVDInputStreamRTMP::~CDVDInputStreamRTMP()

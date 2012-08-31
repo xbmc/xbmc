@@ -35,6 +35,7 @@ CDVDInputStreamStack::CDVDInputStreamStack() : CDVDInputStream(DVDSTREAM_TYPE_FI
 {
   m_eof = true;
   m_pos = 0;
+  m_length = 0;
 }
 
 CDVDInputStreamStack::~CDVDInputStreamStack()
