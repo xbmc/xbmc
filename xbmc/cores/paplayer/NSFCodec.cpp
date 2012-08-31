@@ -26,11 +26,14 @@
 
 NSFCodec::NSFCodec()
 {
+  m_iTrack = 0;
   m_CodecName = "NSF";
-  m_nsf = 0;
+  m_nsf = NULL;
   m_bIsPlaying = false;
-  m_iDataInBuffer = 0;
   m_szBuffer = NULL;
+  m_szStartOfBuffer = NULL;
+  m_iDataInBuffer = 0;
+  m_iDataPos = 0;
 }
 
 NSFCodec::~NSFCodec()
