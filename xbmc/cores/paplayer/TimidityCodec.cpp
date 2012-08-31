@@ -40,6 +40,7 @@ TimidityCodec::TimidityCodec()
   m_iTrack = -1;
   m_iDataPos = -1;
   m_loader = NULL;
+  memset(&m_dll, 0, sizeof(m_dll));
 }
 
 TimidityCodec::~TimidityCodec()
