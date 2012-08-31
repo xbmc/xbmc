@@ -24,7 +24,7 @@
 
 #include "CoreAudioAEHALIOS.h"
 
-#include "AEUtil.h"
+#include "xbmc/cores/AudioEngine/Utils/AEUtil.h"
 #include "AEFactory.h"
 #include "CoreAudioAE.h"
 #include "utils/log.h"
