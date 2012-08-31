@@ -50,8 +50,9 @@ WAVCodec::WAVCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_DataFormat = AE_FMT_INVALID;
-  m_iDataStart=0;
-  m_iDataLen=0;
+  m_iDataStart = 0;
+  m_iDataLen = 0;
+  m_ChannelMask = 0;
   m_Bitrate = 0;
   m_CodecName = "WAV";
 }
