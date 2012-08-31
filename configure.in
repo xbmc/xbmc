@@ -2558,7 +2558,7 @@ XB_CONFIG_MODULE([lib/cpluff], [
 
 XB_CONFIG_MODULE([pvr-addons], [
   ./configure \
-    --prefix="${prefix}/share/xbmc/addons" --includedir="${includedir}" --libdir="${prefix}/share/xbmc/addons" --datadir="${prefix}/share/xbmc/addons" \
+    --prefix="${prefix}" \
     --host=$host_alias \
     --build=$build_alias \
     --target=$target_alias \
