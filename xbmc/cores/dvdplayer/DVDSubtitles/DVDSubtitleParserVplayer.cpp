@@ -28,7 +28,7 @@
 using namespace std;
 
 CDVDSubtitleParserVplayer::CDVDSubtitleParserVplayer(CDVDSubtitleStream* pStream, const string& strFile)
-    : CDVDSubtitleParserText(pStream, strFile)
+    : CDVDSubtitleParserText(pStream, strFile), m_framerate(DVD_TIME_BASE)
 {
 }
 
