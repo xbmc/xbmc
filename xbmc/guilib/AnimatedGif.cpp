@@ -283,11 +283,15 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
       GlobalColorMap[n].r = getbyte(fd);
       GlobalColorMap[n].g = getbyte(fd);
       GlobalColorMap[n].b = getbyte(fd);
+      GlobalColorMap[n].x = 0;
     }
 
   else // GIF standard says to provide an internal default Palette:
     for (n = 0;n < 256;n++)
+    {
       GlobalColorMap[n].r = GlobalColorMap[n].g = GlobalColorMap[n].b = n;
+      GlobalColorMap[n].x = 0;
+    }
 
   // *4* NOW WE HAVE 3 POSSIBILITIES:
   //  4a) Get and Extension Block (Blocks with additional information)
