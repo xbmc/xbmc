@@ -343,7 +343,8 @@ bool CZeroconfBrowserOSX::doResolveService(CZeroconfBrowser::ZeroconfService &fr
   CFNetServiceRef service = CFNetServiceCreate (NULL, domain, type, name, 0);
   if (CFNetServiceResolveWithTimeout(service, f_timeout, NULL) )
   {
-    CStdString ip; int port;
+    CStdString ip; 
+    int port = 0;
     ret = CopyFirstIPv4Address(service, ip, port);
     fr_service.SetIP(ip);
     fr_service.SetPort(port);
