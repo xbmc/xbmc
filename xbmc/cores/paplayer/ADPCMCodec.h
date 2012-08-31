@@ -42,7 +42,6 @@ private:
   bool m_bIsPlaying;
 
   DllADPCM m_dll;
-  int64_t m_iDataPos;
 };
 
 #endif
