@@ -39,6 +39,7 @@ DVDPlayerCodec::DVDPlayerCodec()
   m_pDemuxer = NULL;
   m_pInputStream = NULL;
   m_pAudioCodec = NULL;
+  m_nAudioStream = -1;
   m_audioPos = 0;
   m_pPacket = NULL;
   m_decoded = NULL;;
