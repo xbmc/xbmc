@@ -2231,11 +2231,13 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   //strExtensionCached = "";
   
   CFileItem item(strMovie, false);
-  if (item.IsInternetStream()) return ;
-  if (item.IsHDHomeRun()) return ;
-  if (item.IsSlingbox()) return ;
-  if (item.IsPlayList()) return ;
-  if (!item.IsVideo()) return ;
+  if ( item.IsInternetStream()
+    || item.IsHDHomeRun()
+    || item.IsSlingbox()
+    || item.IsPlayList()
+    || item.IsLiveTV()
+    || !item.IsVideo())
+    return;
   
   vector<CStdString> strLookInPaths;
   
