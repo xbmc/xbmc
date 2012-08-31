@@ -116,6 +116,8 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
   byte DataBuf[8];  //Buffer for holding data to/from drive.
 
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting status for drive %s.", strPath.c_str());
+
   hDevice = CreateFile( strPath.c_str(),                  // drive
                         0,                                // no access to the drive
                         FILE_SHARE_READ,                  // share mode
@@ -126,6 +128,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
 
   if (hDevice == INVALID_HANDLE_VALUE)                    // cannot open the drive
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile for %s.", strPath.c_str());
     return -1;
   }
 
@@ -158,6 +161,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
 
   if (hDevice == INVALID_HANDLE_VALUE)
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile2 for %s.", strPath.c_str());
     return -1;
   }
 
@@ -881,6 +885,17 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     } while( wcslen( pcBuffer + iPos ) > 0 );
     delete[] pcBuffer;
   }
+}
+
+std::string CWIN32Util::GetFirstOpticalDrive()
+{
+  VECSOURCES vShare;
+  std::string strdevice = "\\\\.\\";
+  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    return strdevice.append(vShare.front().strPath);
+  else
+    return "";
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)
