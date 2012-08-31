@@ -1269,9 +1269,6 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
-
-  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
-  return -1;
 }
 
 int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
@@ -1343,7 +1340,4 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
-
-  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
-  return -1;
 }
