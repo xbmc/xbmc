@@ -1116,6 +1116,7 @@ CCrystalHD::CCrystalHD() :
 #endif
 
   memset(&m_chd_params, 0, sizeof(m_chd_params));
+  memset(&m_sps_pps_context, 0, sizeof(m_sps_pps_context));
 
   m_dll = new DllLibCrystalHD;
 #ifdef _WIN32
