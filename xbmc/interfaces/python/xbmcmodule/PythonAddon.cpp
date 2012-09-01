@@ -161,7 +161,7 @@ namespace PYXBMC
     "*Note, You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
-    "  - locstr = self.Addon.getLocalizedString(id=6)\n");
+    "  - locstr = self.Addon.getLocalizedString(id=30000)\n");
 
   PyObject* Addon_GetLocalizedString(Addon *self, PyObject *args, PyObject *kwds)
   {
@@ -184,11 +184,13 @@ namespace PYXBMC
   }
 
     PyDoc_STRVAR(getSetting__doc__,
-    "getSetting(id) -- Returns the value of a setting as a unicode string.\n"
+    "getSetting(id) -- Returns the value of a setting.\n"
     "\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "\n"
-    "*Note, You can use the above as a keyword.\n"
+    "*Note, Strings are returned as unicode strings.\n"
+    "\n"
+    "       You can use the above as a keyword.\n"
     "\n"
     "example:\n"
     "  - apikey = self.Addon.getSetting('apikey')\n");
@@ -208,7 +210,9 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", self->pAddon->GetSetting(id).c_str());
+    CStdString label = self->pAddon->GetSetting(id);
+
+    return PyUnicode_DecodeUTF8(label.c_str(), label.size(), "replace");
   }
 
   PyDoc_STRVAR(setSetting__doc__,
@@ -295,13 +299,15 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getAddonInfo__doc__,
-    "getAddonInfo(id) -- Returns the value of an addon property as a string.\n"
+    "getAddonInfo(id) -- Returns the value of an addon property.\n"
     "\n"
     "id        : string - id of the property that the module needs to access.\n"
     "\n"
     // Handle all props available
-    "*Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, name, path\n"
-    "                    profile, stars, summary, type, version)\n"
+    "*Note, choices are (author, changelog, description, disclaimer, fanart, icon, id,\n"
+    "                    name, path, profile, stars, summary, type, version)\n"
+    "\n"
+    "       Strings are returned as unicode strings.\n"
     "\n"
     "       You can use the above as keywords for arguments.\n"
     "\n"
@@ -323,34 +329,36 @@ namespace PYXBMC
       return NULL;
     };
 
+    CStdString label;
+
     if (strcmpi(id, "author") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Author().c_str());
+      label = self->pAddon->Author();
     else if (strcmpi(id, "changelog") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->ChangeLog().c_str());
+      label = self->pAddon->ChangeLog();
     else if (strcmpi(id, "description") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Description().c_str());
+      label = self->pAddon->Description();
     else if (strcmpi(id, "disclaimer") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Disclaimer().c_str());
+      label = self->pAddon->Disclaimer();
     else if (strcmpi(id, "fanart") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->FanArt().c_str());
+      label = self->pAddon->FanArt();
     else if (strcmpi(id, "icon") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Icon().c_str());
+      label = self->pAddon->Icon();
     else if (strcmpi(id, "id") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->ID().c_str());
+      label = self->pAddon->ID();
     else if (strcmpi(id, "name") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Name().c_str());
+      label = self->pAddon->Name();
     else if (strcmpi(id, "path") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Path().c_str());
+      label = self->pAddon->Path();
     else if (strcmpi(id, "profile") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Profile().c_str());
+      label = self->pAddon->Profile();
     else if (strcmpi(id, "stars") == 0)
       return Py_BuildValue((char*)"i", self->pAddon->Stars());
     else if (strcmpi(id, "summary") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Summary().c_str());
+      label = self->pAddon->Summary();
     else if (strcmpi(id, "type") == 0)
-      return Py_BuildValue((char*)"s", ADDON::TranslateType(self->pAddon->Type()).c_str());
+      label = ADDON::TranslateType(self->pAddon->Type());
     else if (strcmpi(id, "version") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Version().c_str());
+      label = self->pAddon->Version().c_str();
     else
     {
       CStdString error;
@@ -358,6 +366,8 @@ namespace PYXBMC
       PyErr_SetString(PyExc_ValueError, error.c_str());
       return NULL;
     }
+
+    return PyUnicode_DecodeUTF8(label.c_str(), label.size(), "replace");
   }
 
   PyMethodDef Addon_methods[] = {
