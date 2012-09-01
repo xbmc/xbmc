@@ -249,7 +249,6 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
       CLog::Log(LOGERROR, "Invalid RegExp:[%s]", regexps[i].c_str());
       continue;
     }
-//    CLog::Log(LOGDEBUG, "Regexp:[%s]", regexps[i].c_str());
 
     int iFoundToken = reg.RegFind(strFileName.c_str());
     if (iFoundToken >= 0)
@@ -1413,8 +1412,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   if (strPath1.IsEmpty())
     return -1;
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing original path/name [%s]", strPath1.c_str());
-
   // copy as we may change strPath
   CStdString strPath = strPath1;
 
@@ -1436,7 +1433,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   if (checkURL.GetProtocol() == "multipath")
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing for matching name [%s]", strPath.c_str());
   bIsSourceName = false;
   int iIndex = -1;
   int iLength = -1;
@@ -1459,7 +1455,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       if (iPos > 1)
         strName = strName.Mid(0, iPos - 1);
     }
-    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing name [%s]", strName.c_str());
     if (strPath.Equals(strName))
     {
       bIsSourceName = true;
@@ -1478,8 +1473,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   if (!URIUtils::HasSlashAtEnd(strDest))
     strDest += "/";
   int iLenPath = strDest.size();
-
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing url [%s]", strDest.c_str());
 
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
@@ -1515,12 +1508,9 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       if (!URIUtils::HasSlashAtEnd(strShare))
         strShare += "/";
       int iLenShare = strShare.size();
-      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing url [%s]", strShare.c_str());
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
-        //CLog::Log(LOGDEBUG,"Found matching source at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
-
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
         {
@@ -2228,14 +2218,15 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     NULL};
   
   vector<CStdString> vecExtensionsCached;
-  //strExtensionCached = "";
   
   CFileItem item(strMovie, false);
-  if (item.IsInternetStream()) return ;
-  if (item.IsHDHomeRun()) return ;
-  if (item.IsSlingbox()) return ;
-  if (item.IsPlayList()) return ;
-  if (!item.IsVideo()) return ;
+  if ( item.IsInternetStream()
+    || item.IsHDHomeRun()
+    || item.IsSlingbox()
+    || item.IsPlayList()
+    || item.IsLiveTV()
+    || !item.IsVideo())
+    return;
   
   vector<CStdString> strLookInPaths;
   
