@@ -6300,9 +6300,7 @@ msgctxt "#19065"
 msgid "Default EPG window"
 msgstr ""
 
-msgctxt "#19066"
-msgid "Loading recordings from clients"
-msgstr ""
+#empty string with id 19066
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6316,9 +6314,7 @@ msgctxt "#19069"
 msgid "EPG"
 msgstr ""
 
-msgctxt "#19070"
-msgid "EPG scan timeout"
-msgstr ""
+#empty string with id 19070
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6432,17 +6428,7 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr ""
 
-msgctxt "#19099"
-msgid "Timer present"
-msgstr ""
-
-msgctxt "#19100"
-msgid "Are you sure you want to delete this channel, including all timers on this channel?"
-msgstr ""
-
-msgctxt "#19101"
-msgid "This channel is currently being used for playback."
-msgstr ""
+#empty strings from id 19099 to 19100
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -6456,9 +6442,7 @@ msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr ""
 
-msgctxt "#19105"
-msgid "Size:"
-msgstr ""
+#empty string with id 19105
 
 msgctxt "#19106"			
 msgid "Next timer on"
@@ -6468,9 +6452,7 @@ msgctxt "#19107"
 msgid "at"
 msgstr ""
 
-msgctxt "#19108"
-msgid "Recordings not in sync. Check the log for details."
-msgstr ""
+#empty string with id 19108
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
@@ -6484,13 +6466,7 @@ msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr ""
 
-msgctxt "#19112"
-msgid "Timers not in sync. Check the log for details."
-msgstr ""
-
-msgctxt "#19113"
-msgid "Next"
-msgstr ""
+#empty strings from id 19112 to 19113
 
 msgctxt "#19114"
 msgid "Version"
@@ -6973,19 +6949,19 @@ msgid "PVR manager is starting up"
 msgstr ""
 
 msgctxt "#19236"
-msgid "importing channels"
+msgid "Loading channels from clients"
 msgstr ""
 
 msgctxt "#19237"
-msgid "importing timers"
+msgid "Loading timers from clients"
 msgstr ""
 
 msgctxt "#19238"
-msgid "importing recordings"
+msgid "Loading recordings from clients"
 msgstr ""
 
 msgctxt "#19239"
-msgid "starting background threads"
+msgid "Starting background threads"
 msgstr ""
 
 msgctxt "#19240"
@@ -7111,6 +7087,8 @@ msgstr ""
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr ""
+
+#empty strings from id 19271 to 19499
 
 msgctxt "#19499"
 msgid "Other/Unknown"
