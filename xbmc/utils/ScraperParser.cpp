@@ -47,8 +47,10 @@ CScraperParser::CScraperParser()
 
 CScraperParser::CScraperParser(const CScraperParser& parser)
 {
+  m_pRootElement = NULL;
   m_document = NULL;
   m_SearchStringEncoding = "UTF-8";
+  m_scraper = NULL;
   *this = parser;
 }
 
