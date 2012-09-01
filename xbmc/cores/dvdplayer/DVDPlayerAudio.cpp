@@ -182,6 +182,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_prevskipped = false;
   m_maxspeedadjust = 0.0;
 
+  m_errortime = 0;
   m_freq = CurrentHostFrequency();
 
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
