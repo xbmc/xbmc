@@ -27,6 +27,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 namespace PYXBMC
 {
@@ -300,8 +301,8 @@ namespace PYXBMC
     "id        : string - id of the property that the module needs to access.\n"
     "\n"
     // Handle all props available
-    "*Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, name, path\n"
-    "                    profile, stars, summary, type, version)\n"
+    "*Note, choices are (author, changelog, description, disclaimer, fanart. icon, id,\n"
+    "                    library, name, path, profile, stars, summary, type, version)\n"
     "\n"
     "       You can use the above as keywords for arguments.\n"
     "\n"
@@ -337,6 +338,8 @@ namespace PYXBMC
       return Py_BuildValue((char*)"s", self->pAddon->Icon().c_str());
     else if (strcmpi(id, "id") == 0)
       return Py_BuildValue((char*)"s", self->pAddon->ID().c_str());
+    else if (strcmpi(id, "library") == 0)
+      return Py_BuildValue((char*)"s", URIUtils::GetFileName(self->pAddon->LibPath()).c_str());
     else if (strcmpi(id, "name") == 0)
       return Py_BuildValue((char*)"s", self->pAddon->Name().c_str());
     else if (strcmpi(id, "path") == 0)
