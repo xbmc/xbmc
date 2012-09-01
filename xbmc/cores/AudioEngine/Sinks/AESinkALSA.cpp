@@ -257,8 +257,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   /* ensure we opened X channels or more */
   if (format.m_channelLayout.Count() > channelCount)
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Unable to open the required number of channels");
-    return false;
+    CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Unable to open the required number of channels");
   }
 
   /* update the channelLayout to what we managed to open */
