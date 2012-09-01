@@ -124,10 +124,9 @@ protected:
   /*!
    * @brief Send a message to all observer when m_bObservableChanged is true.
    * @param obs The observer that sends the message.
-   * @param observers The observers to send the message to.
    * @param strMessage The message to send.
    */
-  static void SendMessage(Observable *obs, const std::vector<Observer *> *observers, const CStdString &strMessage);
+  static void SendMessage(const Observable& obs, const CStdString &strMessage);
 
   bool                    m_bObservableChanged; /*!< true when the observable is marked as changed, false otherwise */
   std::vector<Observer *> m_observers;          /*!< all observers */
