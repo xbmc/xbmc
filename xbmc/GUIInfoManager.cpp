@@ -97,6 +97,11 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_frameCounter = 0;
   m_lastFPSTime = 0;
   m_updateTime = 1;
+  m_MusicBitrate = 0;
+  m_playerShowTime = false;
+  m_playerShowCodec = false;
+  m_playerShowInfo = false;
+  m_fps = 0.0f;
   ResetLibraryBools();
 }
 
