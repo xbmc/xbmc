@@ -53,7 +53,7 @@ private:
   {
   public:
     CStream(CDVDDemuxVobsub* parent)
-      : m_parent(parent)
+      : m_discard(AVDISCARD_NONE), m_parent(parent)
     {}
     virtual void      SetDiscard(AVDiscard discard) { m_discard = discard; }
     virtual AVDiscard GetDiscard()                  { return m_discard; }
@@ -75,11 +75,6 @@ private:
   std::vector<STimestamp>            m_Timestamps;
   std::vector<STimestamp>::iterator  m_Timestamp;
   std::vector<CStream*> m_Streams;
-
-  int m_width;
-  int m_height;
-  int m_left;
-  int m_top;
 
   typedef struct SState
   {

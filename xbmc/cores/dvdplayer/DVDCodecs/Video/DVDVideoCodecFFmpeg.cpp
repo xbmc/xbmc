@@ -137,6 +137,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
+  m_iOrientation = 0;
   m_bSoftware = false;
   m_pHardware = NULL;
   m_iLastKeyframe = 0;

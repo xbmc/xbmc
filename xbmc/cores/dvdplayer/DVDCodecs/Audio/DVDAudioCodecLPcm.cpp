@@ -26,6 +26,7 @@ CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
 {
   m_codecID = CODEC_ID_NONE;
   m_bufferSize = LPCM_BUFFER_SIZE;
+  memset(m_buffer, 0, sizeof(m_buffer));
 }
 
 bool CDVDAudioCodecLPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)

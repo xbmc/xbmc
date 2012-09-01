@@ -62,6 +62,7 @@ CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
     m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   ControlType = GUICONTROL_MULTI_IMAGE;
+  m_jobID = 0;
 }
 
 CGUIMultiImage::~CGUIMultiImage(void)

@@ -40,6 +40,7 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner) : m_hEvent(true)
   m_TimeBack      = DVD_NOPTS_VALUE;
   m_TimeFront     = DVD_NOPTS_VALUE;
   m_TimeSize      = 1.0 / 4.0; /* 4 seconds */
+  m_iMaxDataSize  = 0;
 }
 
 CDVDMessageQueue::~CDVDMessageQueue()

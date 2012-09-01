@@ -114,8 +114,11 @@ CDVDAudioCodecPcm::CDVDAudioCodecPcm() : CDVDAudioCodec()
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
   m_decodedDataSize = 0;
-  m_pInputBuffer = NULL;
   m_codecID = CODEC_ID_NONE;
+  m_iOutputChannels = 0;
+
+  memset(m_decodedData, 0, sizeof(m_decodedData));
+  memset(table, 0, sizeof(table));
 }
 
 CDVDAudioCodecPcm::~CDVDAudioCodecPcm()
@@ -275,7 +278,6 @@ int CDVDAudioCodecPcm::GetData(BYTE** dst)
 
 void CDVDAudioCodecPcm::SetDefault()
 {
-  m_pInputBuffer = m_inputBuffer;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;

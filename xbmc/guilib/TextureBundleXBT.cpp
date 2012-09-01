@@ -40,6 +40,7 @@
 CTextureBundleXBT::CTextureBundleXBT(void)
 {
   m_themeBundle = false;
+  m_TimeStamp = 0;
 }
 
 CTextureBundleXBT::~CTextureBundleXBT(void)

@@ -129,11 +129,9 @@ static int UDFPartition( uint8_t *data, uint16_t *Flags, uint16_t *Number,
 
 static int UDFLogVolume( uint8_t *data, char *VolumeDescriptor )
 {
-  uint32_t lbsize, MT_L, N_PM;
+  uint32_t lbsize;
   Unicodedecode(&data[84], 128, VolumeDescriptor);
   lbsize = GETN4(212);  /* should be 2048 */
-  MT_L = GETN4(264);    /* should be 6 */
-  N_PM = GETN4(268);    /* should be 1 */
   if (lbsize != DVD_VIDEO_LB_LEN) return 1;
   return 0;
 }

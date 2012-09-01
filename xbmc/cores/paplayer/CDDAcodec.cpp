@@ -89,7 +89,7 @@ int64_t CDDACodec::Seek(int64_t iSeekTime)
 
   // ... and look if we really got there.
   int iNewSeekTime=(iNewOffset/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  return iNewSeekTime*1000; // ms
+  return iNewSeekTime*(int64_t)1000; // ms
 }
 
 int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)

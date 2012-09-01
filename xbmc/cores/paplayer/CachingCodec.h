@@ -28,7 +28,7 @@ class CachingCodec : public ICodec
 {
 public:
   virtual ~CachingCodec() {}
-  virtual int GetCacheLevel() { return -1; }
+  virtual int GetCacheLevel() const { return -1; }
 
 protected:
   XFILE::CFile m_file;

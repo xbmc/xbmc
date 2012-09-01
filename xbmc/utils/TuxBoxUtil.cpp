@@ -58,6 +58,8 @@ CTuxBoxService::~CTuxBoxService()
 CTuxBoxUtil::CTuxBoxUtil(void)
 {
   sCurSrvData.requested_audio_channel = 0;
+  sZapstream.initialized = false;
+  sZapstream.available = false;
 }
 CTuxBoxUtil::~CTuxBoxUtil(void)
 {
@@ -797,9 +799,9 @@ bool CTuxBoxUtil::StreamInformations(TiXmlElement *pRootElement)
 
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  CStdString strRoot = pRootElement->Value();
-  if(pRootElement !=NULL)
+  if(pRootElement != NULL)
   {
+    CStdString strRoot = pRootElement->Value();
     pNode = pRootElement->FirstChild("frontend");
     if (pNode)
     {

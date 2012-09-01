@@ -237,6 +237,7 @@ CJpegIO::CJpegIO()
   m_inputBuffSize = 0;
   m_inputBuff = NULL;
   m_texturePath = "";
+  memset(&m_cinfo, 0, sizeof(m_cinfo));
 }
 
 CJpegIO::~CJpegIO()
@@ -487,6 +488,7 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   else
   {
     CLog::Log(LOGWARNING, "JpegIO::CreateThumbnailFromSurface Unsupported format");
+    free(result);
     return false;
   }
 

@@ -95,9 +95,12 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
     needsFreeing = false;
   }
 
-  confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
-  if(needsFreeing)
-    delete kb;
+  if(kb)
+  {
+    confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
+    if(needsFreeing)
+      delete kb;
+  }
 
   if (confirmed)
   {

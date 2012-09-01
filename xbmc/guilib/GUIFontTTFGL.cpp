@@ -178,6 +178,7 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   if (!newTexture || newTexture->GetPixels() == NULL)
   {
     CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);
+    delete newTexture;
     return NULL;
   }
   m_textureHeight = newTexture->GetHeight();
