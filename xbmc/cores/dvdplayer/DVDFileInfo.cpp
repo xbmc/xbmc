@@ -384,13 +384,10 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
 
     else if (stream->type == STREAM_SUBTITLE)
     {
-      if (stream->language)
-      {
-        CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
-        p->m_strLanguage = stream->language;
-        details.AddStream(p);
-        retVal = true;
-      }
+      CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+      p->m_strLanguage = stream->language;
+      details.AddStream(p);
+      retVal = true;
     }
   }  /* for iStream */
 
