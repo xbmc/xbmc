@@ -40,6 +40,7 @@ enum DVDStreamType
   DVDSTREAM_TYPE_HTSP   = 8,
   DVDSTREAM_TYPE_MPLS   = 10,
   DVDSTREAM_TYPE_BLURAY = 11,
+  DVDSTREAM_TYPE_PVRMANAGER = 12,
 };
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
@@ -49,6 +50,12 @@ enum DVDStreamType
 
 class CPoint;
 
+namespace PVR
+{
+  class CPVRChannel;
+  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+}
+
 class CDVDInputStream
 {
 public:
@@ -56,10 +63,15 @@ public:
   {
     public:
     virtual ~IChannel() {};
-    virtual bool NextChannel() = 0;
-    virtual bool PrevChannel() = 0;
-    virtual bool SelectChannel(unsigned int channel) = 0;
+    virtual bool NextChannel(bool preview = false) = 0;
+    virtual bool PrevChannel(bool preview = false) = 0;
+    virtual bool SelectChannelByNumber(unsigned int channel) = 0;
+    virtual bool SelectChannel(const PVR::CPVRChannel &channel) { return false; };
+    virtual bool GetSelectedChannel(PVR::CPVRChannelPtr&) { return false; };
     virtual bool UpdateItem(CFileItem& item) = 0;
+    virtual bool CanRecord() = 0;
+    virtual bool IsRecording() = 0;
+    virtual bool Record(bool bOnOff) = 0;
   };
 
   class IDisplayTime
@@ -129,6 +141,7 @@ public:
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
+  virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should

@@ -50,8 +50,8 @@ namespace XFILE
     
     virtual ILiveTVInterface * GetLiveTV()                     { return (ILiveTVInterface *)this; }
     
-    virtual bool NextChannel();
-    virtual bool PrevChannel();
+    virtual bool NextChannel(bool bPreview = false); // TODO bPreview is not implemented
+    virtual bool PrevChannel(bool bPreview = false); // TODO bPreview is not implemented
     virtual bool SelectChannel(unsigned int uiChannel);
     
   protected:

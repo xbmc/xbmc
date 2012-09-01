@@ -55,6 +55,9 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPFile.h"
 #endif
+#ifdef HAS_PVRCLIENTS
+#include "PVRFile.h"
+#endif
 #if defined(TARGET_ANDROID)
 #include "APKFile.h"
 #endif
@@ -177,6 +180,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_VTP
     else if (strProtocol == "vtp") return new CVTPFile();
+#endif
+#ifdef HAS_PVRCLIENTS
+    else if (strProtocol == "pvr") return new CPVRFile();
 #endif
 #ifdef HAS_FILESYSTEM_NFS
     else if (strProtocol == "nfs") return new CNFSFile();

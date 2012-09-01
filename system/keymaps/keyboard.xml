@@ -94,6 +94,12 @@
       <backslash>ToggleFullScreen</backslash>
       <home>FirstPage</home>
       <end>LastPage</end>
+      <!-- PVR windows -->
+      <e>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</e>
+      <h>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</h>
+      <j>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</j>
+      <k>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</k>
+      <b>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</b>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -159,6 +165,13 @@
       <backspace>Backspace</backspace>
     </keyboard>
   </VirtualKeyboard>
+  <MyTV>
+    <keyboard>
+      <delete>Delete</delete>
+      <m>Move</m>
+      <r>Rename</r>
+    </keyboard>
+  </MyTV>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>
@@ -220,6 +233,7 @@
       <down>BigStepBack</down>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
+      <c>Playlist</c>
       <v>XBMC.ActivateWindow(Teletext)</v>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
@@ -269,6 +283,8 @@
       <o>CodecInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>
+      <g>XBMC.ActivateWindow(PVROSDGuide)</g>
+      <c>XBMC.ActivateWindow(PVROSDChannels)</c>
     </keyboard>
   </Visualisation>
   <MusicOSD>
@@ -458,6 +474,46 @@
       <v>Back</v>
     </keyboard>
   </Teletext>
+  <Favourites>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </Favourites>
+  <NumericInput>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </NumericInput>
+  <PVROSDChannels>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+      <c>Close</c>
+    </keyboard>
+  </PVROSDChannels>
+  <PVROSDGuide>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </PVROSDGuide>
+  <PVROSDDirector>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </PVROSDDirector>
+  <PVROSDCutter>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </PVROSDCutter>
+  <MyTVSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </MyTVSettings>
   <FileBrowser>
     <keyboard>
       <space>Highlight</space>

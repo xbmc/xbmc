@@ -77,5 +77,6 @@ protected:
   int m_iInfoCode;
   float m_fPercent;
   bool m_bReveal;
+  bool m_bChanged;
 };
 #endif

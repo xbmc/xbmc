@@ -45,6 +45,9 @@
 #include "network/libscrobbler/lastfmscrobbler.h"
 #include "network/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
+#include "GUIInfoManager.h"
+#include "dialogs/GUIDialogGamepad.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
@@ -101,6 +104,9 @@
 #include "utils/URIUtils.h"
 #include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
+#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
@@ -117,6 +123,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
+using namespace PVR;
 using namespace PERIPHERALS;
 
 #define CONTROL_GROUP_BUTTONS           0
@@ -143,7 +150,17 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalImage = NULL;
   m_pOriginalEdit = NULL;
   // set the correct ID range...
-  m_idRange = 8;
+  m_idRange.clear();
+  m_idRange.push_back(WINDOW_SETTINGS_MYPICTURES);
+  m_idRange.push_back(WINDOW_SETTINGS_MYPROGRAMS);
+  m_idRange.push_back(WINDOW_SETTINGS_MYWEATHER);
+  m_idRange.push_back(WINDOW_SETTINGS_MYMUSIC);
+  m_idRange.push_back(WINDOW_SETTINGS_SYSTEM);
+  m_idRange.push_back(WINDOW_SETTINGS_MYVIDEOS);
+  m_idRange.push_back(WINDOW_SETTINGS_SERVICE);
+  m_idRange.push_back(WINDOW_SETTINGS_APPEARANCE);
+  m_idRange.push_back(WINDOW_SETTINGS_MYPVR);
+
   m_iScreen = 0;
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";
@@ -197,6 +214,15 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
             return false;
           }
         }
+        if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "pvrparental")
+        {
+          if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
+          { // unable to go to this category - focus the previous one
+            SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iSection, 0);
+            return false;
+          }
+        }
+
         m_iSection = focusedControl - CONTROL_START_BUTTONS;
 
         CreateSettings();
@@ -379,6 +405,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
         FillInScreens(strSetting, g_guiSettings.GetResolution());
       else if (strSetting.Equals("videoscreen.resolution"))
         FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
+      else if (strSetting.Equals("epg.defaultguideview"))
+        FillInEpgGuideView(pSetting);
+      else if (strSetting.Equals("pvrplayback.startlast"))
+        FillInPvrStartLastChannel(pSetting);
       continue;
     }
 #ifdef HAS_WEB_SERVER
@@ -678,6 +708,22 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
+    else if (strSetting.Equals("pvrmanager.channelscan"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled") && g_PVRClients->GetClientsSupportingChannelScan().size() > 0);
+    }
+    else if (strSetting.Equals("pvrmanager.channelmanager") || strSetting.Equals("pvrmenu.searchicons"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
+    }
+    else if (!strSetting.Equals("pvrparental.enabled") &&
+        (strSetting.Equals("pvrparental.pin") || strSetting.Equals("pvrparental.duration")))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrparental.enabled"));
+    }
     else if (!strSetting.Equals("services.esenabled")
              && strSetting.Left(11).Equals("services.es"))
     {
@@ -963,6 +1009,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_peripherals.GetNumberOfPeripherals() > 0);
     }
   }
+
+  g_guiSettings.SetChanged();
+  g_guiSettings.NotifyObservers(ObservableMessageGuiSettings, true);
 }
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
@@ -1538,7 +1587,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
-  else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath"))
+  else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath") || strSetting.Equals("pvrmenu.iconpath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -1546,7 +1595,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     bool bWriteOnly = true;
 
-    if (strSetting.Equals("subtitles.custompath"))
+    if (strSetting.Equals("pvrmenu.iconpath"))
+    {
+      bWriteOnly = false;
+    }
+    else if (strSetting.Equals("subtitles.custompath"))
     {
       bWriteOnly = false;
       shares = g_settings.m_videoSources;
@@ -1705,6 +1758,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   }
+  else if (strSetting.Equals("pvrmanager.enabled"))
+  {
+    if (g_guiSettings.GetBool("pvrmanager.enabled"))
+      g_application.StartPVRManager();
+    else
+      g_application.StopPVRManager();
+  }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
     // Now Prompt User to enter the old and then the new MasterCode!
@@ -1832,6 +1892,34 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
+  else if (strSetting.Equals("pvrmenu.searchicons") && g_PVRManager.IsStarted())
+  {
+    g_PVRManager.SearchMissingChannelIcons();
+  }
+  else if (strSetting.Equals("pvrmanager.resetdb"))
+  {
+    if (g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()) &&
+        CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
+      g_PVRManager.ResetDatabase();
+  }
+  else if (strSetting.Equals("epg.resetepg"))
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
+      g_PVRManager.ResetEPG();
+  }
+  else if (strSetting.Equals("pvrmanager.channelscan") && g_PVRManager.IsStarted())
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
+      g_PVRManager.StartChannelScan();
+  }
+  else if (strSetting.Equals("pvrmanager.channelmanager") && g_PVRManager.IsStarted())
+  {
+    CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+    if (dialog)
+    {
+       dialog->DoModal();
+    }
+  }
   else if (strSetting.compare(0, 12, "audiooutput.") == 0)
   {
     if (strSetting.Equals("audiooutput.audiodevice"))
@@ -1852,6 +1940,24 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
 
     CAEFactory::OnSettingsChange(strSetting);
+  }
+  else if (strSetting.Equals("pvrparental.enabled"))
+  {
+    if (g_guiSettings.GetBool("pvrparental.enabled") && g_guiSettings.GetString("pvrparental.pin").GetLength() == 0)
+    {
+      CStdString newPassword = "";
+      bool bNewPassword = CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword);
+      if (bNewPassword)
+      {
+        // password set... save it
+        g_guiSettings.SetString("pvrparental.pin", newPassword);
+      }
+      else
+      {
+        // password not set... disable parental
+        g_guiSettings.SetBool("pvrparental.enabled", false);
+      }
+    }
   }
 
   UpdateSettings();
@@ -1919,7 +2025,8 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
            pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT ||
            pSetting->GetControlType() == EDIT_CONTROL_MD5_INPUT ||
            pSetting->GetControlType() == EDIT_CONTROL_NUMBER_INPUT ||
-           pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
+           pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT ||
+           pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW )
   {
     pControl = new CGUIEditControl(*m_pOriginalEdit);
     if (!pControl) return NULL;
@@ -2679,6 +2786,33 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting, flo
   int iInterface = 0;
   for (unsigned int i = 0; i < vecInterfaces.size(); ++i)
     pControl->AddLabel(vecInterfaces[i], iInterface++);
+}
+
+void CGUIWindowSettingsCategory::FillInEpgGuideView(CSetting *pSetting)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  pControl->AddLabel(g_localizeStrings.Get(19029), GUIDE_VIEW_CHANNEL);
+  pControl->AddLabel(g_localizeStrings.Get(19030), GUIDE_VIEW_NOW);
+  pControl->AddLabel(g_localizeStrings.Get(19031), GUIDE_VIEW_NEXT);
+  pControl->AddLabel(g_localizeStrings.Get(19032), GUIDE_VIEW_TIMELINE);
+
+  pControl->SetValue(pSettingInt->GetData());
+}
+
+void CGUIWindowSettingsCategory::FillInPvrStartLastChannel(CSetting *pSetting)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  pControl->AddLabel(g_localizeStrings.Get(106),   START_LAST_CHANNEL_OFF);
+  pControl->AddLabel(g_localizeStrings.Get(19190), START_LAST_CHANNEL_MIN);
+  pControl->AddLabel(g_localizeStrings.Get(107),   START_LAST_CHANNEL_ON);
+
+  pControl->SetValue(pSettingInt->GetData());
 }
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)

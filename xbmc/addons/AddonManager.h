@@ -22,6 +22,7 @@
 #include "Addon.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
+#include "utils/Observer.h"
 #include <vector>
 #include <map>
 #include <deque>
@@ -44,6 +45,7 @@ namespace ADDON
   const CStdString ADDON_PYTHON_EXT           = "*.py";
   const CStdString ADDON_SCRAPER_EXT          = "*.xml";
   const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
+  const CStdString ADDON_PVRDLL_EXT           = "*.pvr"; 
   const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
   const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
@@ -67,7 +69,7 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr
+  class CAddonMgr : public Observable
   {
   public:
     static CAddonMgr &Get();
