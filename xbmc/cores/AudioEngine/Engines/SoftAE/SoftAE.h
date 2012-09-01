@@ -57,6 +57,9 @@ public:
 
   virtual void   Run();
   virtual void   Stop();
+  virtual bool   Suspend();
+  virtual bool   Resume();
+  virtual bool   IsSuspended();
   virtual double GetDelay();
 
   virtual float GetVolume();
@@ -128,7 +131,7 @@ private:
   bool m_stereoUpmix;
 
   /* internal vars */
-  bool             m_running, m_reOpen;
+  bool             m_running, m_reOpen, m_isSuspended;
   CEvent           m_reOpenEvent;
   CEvent           m_wake;
 

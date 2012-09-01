@@ -109,6 +109,7 @@ class CAdvancedSettings
     bool m_audioForceDirectSound;
     bool m_audioAudiophile;
     bool m_allChannelStereo;
+    bool m_streamSilence;
     int m_audioSinkBufferDurationMsec;
     CStdString m_audioTranscodeTo;
     float m_limiterHold;

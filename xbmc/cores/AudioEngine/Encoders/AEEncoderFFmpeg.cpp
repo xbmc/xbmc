@@ -207,7 +207,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   m_OutputRatio   = (double)m_NeededFrames / m_OutputSize;
   m_SampleRateMul = 1.0 / (double)m_CodecCtx->sample_rate;
 
-  CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - %s encoder ready", m_CodecName.c_str());
+  CLog::Log(LOGNOTICE, "CAEEncoderFFmpeg::Initialize - %s encoder ready", m_CodecName.c_str());
   return true;
 }
 
