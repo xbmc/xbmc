@@ -20,11 +20,10 @@
 */
 
 #include "system.h"
-#include "WinEvents.h"
 #include "WinEventsIOS.h"
-#include "XBMC_vkeys.h"
+#include "input/XBMC_vkeys.h"
 #include "Application.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "threads/CriticalSection.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

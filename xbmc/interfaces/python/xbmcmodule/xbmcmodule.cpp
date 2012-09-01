@@ -60,6 +60,7 @@
 #include "pyrendercapture.h"
 #include "monitor.h"
 #include "URL.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 // include for constants
 #include "pyutil.h"
@@ -988,7 +989,37 @@ namespace PYXBMC
 
     return Py_BuildValue((char*)"b", ret);
   }
+  
+  // AudioSuspend() method
+  PyDoc_STRVAR(audioSuspend__doc__,
+    "AudioSuspend() -- Suspend Audio engine.\n"
+    "\n"
+    "example:\n"
+    "  xbmc.AudioSuspend()");
+  
+  PyObject* XBMC_AudioSuspend(PyObject *self)
+  {  
+    CAEFactory::Suspend();
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
+  // AudioResume() method
+  PyDoc_STRVAR(audioResume__doc__,
+    "AudioResume() -- Resume Audio engine.\n"
+    "\n"
+    "example:\n"
+    "  xbmc.AudioResume()");
+  
+  PyObject* XBMC_AudioResume(PyObject *self)
+  { 
+    CAEFactory::Resume();
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS|METH_KEYWORDS, output__doc__},
@@ -1036,6 +1067,9 @@ namespace PYXBMC
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
 
     {(char*)"startServer", (PyCFunction)XBMC_StartServer, METH_VARARGS|METH_KEYWORDS, startServer__doc__},
+    
+    {(char*)"AudioSuspend", (PyCFunction)XBMC_AudioSuspend, METH_VARARGS, audioSuspend__doc__},
+    {(char*)"AudioResume", (PyCFunction)XBMC_AudioResume, METH_VARARGS, audioResume__doc__},
 
     {NULL, NULL, 0, NULL}
   };

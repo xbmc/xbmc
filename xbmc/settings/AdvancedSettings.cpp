@@ -55,6 +55,7 @@ void CAdvancedSettings::Initialize()
   m_audioForceDirectSound = false;
   m_audioAudiophile = false;
   m_allChannelStereo = false;
+  m_streamSilence = false;
   m_audioSinkBufferDurationMsec = 50;
 
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
@@ -386,6 +387,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement, "forceDirectSound", m_audioForceDirectSound);
     XMLUtils::GetBoolean(pElement, "audiophile", m_audioAudiophile);
     XMLUtils::GetBoolean(pElement, "allchannelstereo", m_allChannelStereo);
+    XMLUtils::GetBoolean(pElement, "streamsilence", m_streamSilence);
     XMLUtils::GetString(pElement, "transcodeto", m_audioTranscodeTo);
     XMLUtils::GetInt(pElement, "audiosinkbufferdurationmsec", m_audioSinkBufferDurationMsec);
 

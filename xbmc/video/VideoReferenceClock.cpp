@@ -36,7 +36,7 @@
   #include <QuartzCore/CVDisplayLink.h>
   #include "CocoaInterface.h"
 #elif defined(TARGET_DARWIN_IOS)
-  #include "WindowingFactory.h"
+  #include "windowing/WindowingFactory.h"
 #elif defined(_WIN32) && defined(HAS_DX)
   #pragma comment (lib,"d3d9.lib")
   #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up there is no dxerr9 anymore
