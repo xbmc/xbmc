@@ -42,17 +42,7 @@ using namespace std;
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
 
-/**
- * A CSingleLock that will relinquish the GIL during the time
- *  it takes to obtain the CriticalSection
- */
-class GilSafeSingleLock : public CPyThreadState, public CSingleLock
-{
-public:
-  GilSafeSingleLock(const CCriticalSection& critSec) : CPyThreadState(true), CSingleLock(critSec) { CPyThreadState::Restore(); }
-};
-
-#ifdef __cplusplus
+#ifdef __cplusplus  
 extern "C" {
 #endif
 
@@ -63,8 +53,9 @@ namespace PYXBMC
   // used by Dialog to to create a new dialogWindow
   bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog)
   {
-    GilSafeSingleLock lock(g_graphicsContext);
-
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     if (pWindow->iWindowId != -1)
     {
       // user specified window id, use this one if it exists
@@ -72,6 +63,8 @@ namespace PYXBMC
       pWindow->pWindow = g_windowManager.GetWindow(pWindow->iWindowId);
       if (!pWindow->pWindow)
       {
+        lock.Leave();
+        state.Restore();
         PyErr_SetString(PyExc_ValueError, "Window id does not exist");
         return false;
       }
@@ -85,6 +78,8 @@ namespace PYXBMC
       // if window 13099 is in use it means python can't create more windows
       if (g_windowManager.GetWindow(WINDOW_PYTHON_END))
       {
+        lock.Leave();
+        state.Restore();
         PyErr_SetString(PyExc_Exception, "maximum number of windows reached");
         return false;
       }
@@ -112,6 +107,9 @@ namespace PYXBMC
 
       g_windowManager.Add(pWindow->pWindow);
     }
+    lock.Leave();
+    state.Restore();
+
     pWindow->iOldWindowId = 0;
     pWindow->bModal = false;
     pWindow->iCurrentControlId = 3000;
@@ -140,13 +138,16 @@ namespace PYXBMC
     }
 
     // lock xbmc GUI before accessing data from it
-    GilSafeSingleLock lock(g_graphicsContext);
+    CPyThreadState state;    
+    CSingleLock lock(g_graphicsContext);
 
     // check if control exists
     CGUIControl* pGUIControl = (CGUIControl*)self->pWindow->GetControl(iControlId);
     if (!pGUIControl)
     {
       // control does not exist.
+      lock.Leave();
+      state.Restore();
       CStdString error;
       error.Format("Non-Existent Control %d",iControlId);
       PyErr_SetString(PyExc_TypeError, error.c_str());
@@ -283,6 +284,9 @@ namespace PYXBMC
       break;
     }
 
+    lock.Leave();
+    state.Restore();
+
     if (!pControl)
     {
       // throw an exeption
@@ -343,7 +347,9 @@ namespace PYXBMC
 
   void Window_Dealloc(Window* self)
   {
-    GilSafeSingleLock lock(g_graphicsContext);
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     if (self->bIsPythonWindow)
     {
       // first change to an existing window
@@ -400,6 +406,8 @@ namespace PYXBMC
     }
 
     lock.Leave();
+    state.Restore();
+
     self->vecControls.clear();
     self->vecControls.~vector();
     self->sFallBackPath.~string();
@@ -641,9 +649,13 @@ namespace PYXBMC
     pControl->iParentId = self->iWindowId;
 
     { // assign control id, if id is already in use, try next id
-      GilSafeSingleLock lock(g_graphicsContext);
+      CPyThreadState state;
+    
+      CSingleLock lock(g_graphicsContext);
       do pControl->iControlId = ++self->iCurrentControlId;
       while (self->pWindow->GetControl(pControl->iControlId));
+      lock.Leave();
+      state.Restore();
     }
 
     // Control Label
@@ -839,15 +851,18 @@ namespace PYXBMC
 
   PyObject* Window_GetFocus(Window *self, PyObject *args)
   {
-    GilSafeSingleLock lock(g_graphicsContext);
-
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     int iControlId = self->pWindow->GetFocusedControlID();
+    lock.Leave();
+
+    state.Restore();
     if(iControlId == -1)
     {
       PyErr_SetString(PyExc_RuntimeError, "No control in this window has focus");
       return NULL;
     }
-    lock.Leave();
 
     return (PyObject*)Window_GetControlById(self, iControlId);
   }
@@ -860,8 +875,13 @@ namespace PYXBMC
 
   PyObject* Window_GetFocusId(Window *self, PyObject *args)
   {
-    GilSafeSingleLock lock(g_graphicsContext);
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     int iControlId = self->pWindow->GetFocusedControlID();
+    lock.Leave();
+
+    state.Restore();
     if(iControlId == -1)
     {
       PyErr_SetString(PyExc_RuntimeError, "No control in this window has focus");
@@ -981,8 +1001,13 @@ namespace PYXBMC
       return NULL;
     }
 
-    GilSafeSingleLock lock(g_graphicsContext);
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     self->pWindow->SetCoordsRes(g_settings.m_ResInfo[res]);
+    lock.Leave();
+
+    state.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -1065,9 +1090,14 @@ namespace PYXBMC
       return NULL;    }
     if (!key) return NULL;
 
-    GilSafeSingleLock lock(g_graphicsContext);
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     CStdString lowerKey = key;
     string value = self->pWindow->GetProperty(lowerKey.ToLower()).asString();
+    lock.Leave();
+
+    state.Restore();
 
     return Py_BuildValue((char*)"s", value.c_str());
   }
@@ -1100,10 +1130,15 @@ namespace PYXBMC
       return NULL;
     }
     if (!key) return NULL;
-    GilSafeSingleLock lock(g_graphicsContext);
 
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     CStdString lowerKey = key;
     self->pWindow->SetProperty(lowerKey.ToLower(), "");
+    lock.Leave();
+
+    state.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -1118,8 +1153,13 @@ namespace PYXBMC
 
   PyObject* Window_ClearProperties(Window *self, PyObject *args)
   {
-    GilSafeSingleLock lock(g_graphicsContext);
+    CPyThreadState state;
+    
+    CSingleLock lock(g_graphicsContext);
     self->pWindow->ClearProperties();
+    lock.Leave();
+
+    state.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
