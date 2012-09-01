@@ -415,6 +415,15 @@ CApplication::CApplication(void)
 #ifdef HAS_DVD_DRIVE
   m_Autorun = new CAutorun();
 #endif
+
+  m_splash = NULL;
+  m_threadID = 0;
+  m_eCurrentPlayer = EPC_NONE;
+  m_progressTrackingPlayCountUpdate = false;
+  m_currentStackPosition = 0;
+  m_lastFrameTime = 0;
+  m_lastRenderTime = 0;
+  m_bTestMode = false;
 }
 
 CApplication::~CApplication(void)
