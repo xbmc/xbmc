@@ -276,11 +276,20 @@ failed:
 
 void CAESinkWASAPI::Deinitialize()
 {
-  if (!m_initialized)
+  if (!m_initialized & !m_isDirty)
     return;
 
   if (m_running)
+  {
+    try
+    {
     m_pAudioClient->Stop();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__, "Invalidated AudioClient - Releasing");
+    }
+  }
   m_running = false;
 
   SAFE_RELEASE(m_pRenderClient);
@@ -417,13 +426,16 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
 
   if (eventAudioCallback != WAIT_OBJECT_0)
   {
-    // Event handle timed out - stop audio device
-    m_pAudioClient->Stop(); //stop processing - we're timed out or triggered error
+    // Event handle timed out - flag sink as dirty for re-initializing
     CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
-    m_running = false;
     m_isDirty = true; //flag new device or re-init needed
+    Deinitialize();
+    m_running = false;
     return INT_MAX;
   }
+
+  if (!m_running)
+    return 0;
 
 #ifndef _DEBUG
   QueryPerformanceCounter(&timerStop);
