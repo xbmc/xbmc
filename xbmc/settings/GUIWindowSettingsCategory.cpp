@@ -1949,8 +1949,8 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
   {
     pControl->AllocResources();
     group->AddControl(pControl);
-    m_vecSettings.push_back(pSettingControl);
   }
+  m_vecSettings.push_back(pSettingControl);
   return pControl;
 }
 
