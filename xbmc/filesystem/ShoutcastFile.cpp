@@ -142,7 +142,11 @@ void CShoutcastFile::ExtractTagInfo(const char* buf)
   reTitle.RegComp("StreamTitle=\'(.*?)\';");
 
   if (reTitle.RegFind(strBuffer.c_str()) != -1)
-    m_tag.SetTitle(reTitle.GetReplaceString("\\1"));
+  {
+    char* title = reTitle.GetReplaceString("\\1");
+    m_tag.SetTitle(title);
+    free(title);
+  }
 }
 
 void CShoutcastFile::ReadTruncated(char* buf2, int size)
