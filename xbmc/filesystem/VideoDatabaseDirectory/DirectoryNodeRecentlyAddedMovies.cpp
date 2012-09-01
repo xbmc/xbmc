@@ -20,7 +20,6 @@
  */
 
 #include "DirectoryNodeRecentlyAddedMovies.h"
-#include "QueryParams.h"
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -29,11 +28,6 @@ CDirectoryNodeRecentlyAddedMovies::CDirectoryNodeRecentlyAddedMovies(const CStdS
   : CDirectoryNode(NODE_TYPE_RECENTLY_ADDED_MOVIES, strName, pParent)
 {
 
-}
-
-NODE_TYPE CDirectoryNodeRecentlyAddedMovies::GetChildType() const
-{
-  return NODE_TYPE_TITLE_MOVIES;
 }
 
 bool CDirectoryNodeRecentlyAddedMovies::GetContent(CFileItemList& items) const
