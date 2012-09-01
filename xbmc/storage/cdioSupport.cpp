@@ -850,6 +850,8 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       ti.isofs_size = m_nIsofsSize;
       ti.nJolietLevel = m_nJolietLevel;
       ti.nFrames = ::cdio_get_track_lba(cdio, i);
+      ti.nMins = 0;
+      ti.nSecs = 0;
       info->SetDiscLabel(m_strDiscLabel);
 
 
