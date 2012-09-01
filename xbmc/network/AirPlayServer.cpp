@@ -347,6 +347,7 @@ CAirPlayServer::CTCPClient::~CTCPClient()
     m_pLibPlist->Unload();
   }
   delete m_pLibPlist;
+  delete m_httpParser;
 }
 
 CAirPlayServer::CTCPClient& CAirPlayServer::CTCPClient::operator=(const CTCPClient& client)
@@ -457,6 +458,7 @@ void CAirPlayServer::CTCPClient::Disconnect()
     close(m_socket);
     m_socket = INVALID_SOCKET;
     delete m_httpParser;
+    m_httpParser = NULL;
   }
 }
 
