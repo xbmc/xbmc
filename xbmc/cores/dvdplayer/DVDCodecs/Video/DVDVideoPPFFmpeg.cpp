@@ -28,6 +28,7 @@ CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
   m_pMode = m_pContext = NULL;
   m_pSource = m_pTarget = NULL;
   m_iInitWidth = m_iInitHeight = 0;
+  m_deinterlace = false;
   memset(&m_FrameBuffer, 0, sizeof(DVDVideoPicture));
 }
 CDVDVideoPPFFmpeg::~CDVDVideoPPFFmpeg()

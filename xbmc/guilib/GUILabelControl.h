@@ -75,7 +75,6 @@ protected:
   unsigned int m_dwCounter;
 
   // stuff for autowidth
-  bool m_autoWidth;
   float m_minWidth;
 
   // multi-info stuff

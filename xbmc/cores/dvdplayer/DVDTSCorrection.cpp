@@ -47,6 +47,7 @@ void CPullupCorrection::Flush()
   m_patternlength = 0;
   m_frameduration = DVD_NOPTS_VALUE;
   m_trackingpts   = DVD_NOPTS_VALUE;
+  memset(m_diffring, 0, sizeof(m_diffring));
 }
 
 void CPullupCorrection::Add(double pts)

@@ -29,6 +29,7 @@ CXBTFFrame::CXBTFFrame()
   m_unpackedSize = 0;
   m_offset = 0;
   m_format = XB_FMT_UNKNOWN;
+  m_duration = 0;
 }
 
 uint32_t CXBTFFrame::GetWidth() const

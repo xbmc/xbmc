@@ -182,7 +182,7 @@ const std::vector<std::string>& CMusicInfoTag::GetAlbumArtist() const
   return m_albumArtist;
 }
 
-const std::vector<std::string> CMusicInfoTag::GetGenre() const
+const std::vector<std::string>& CMusicInfoTag::GetGenre() const
 {
   return m_genre;
 }

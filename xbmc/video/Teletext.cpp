@@ -1662,7 +1662,7 @@ void CTeletextDecoder::Decode_ADIP() /* additional information table */
     m_txtCache->ADIP_Pg[i] = 0; /* completely decoded: clear entry */
   } /* next adip page i */
 
-  while (!m_txtCache->ADIP_Pg[m_txtCache->ADIP_PgMax] && (m_txtCache->ADIP_PgMax >= 0)) /* and shrink table */
+  while ((m_txtCache->ADIP_PgMax >= 0) && !m_txtCache->ADIP_Pg[m_txtCache->ADIP_PgMax]) /* and shrink table */
     m_txtCache->ADIP_PgMax--;
 }
 

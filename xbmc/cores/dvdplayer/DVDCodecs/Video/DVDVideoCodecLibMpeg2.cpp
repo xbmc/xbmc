@@ -63,6 +63,7 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_irffpattern = 0;
   m_bFilm = false;
   m_bIs422 = false;
+  m_hurry = 0;
   m_dts = DVD_NOPTS_VALUE;
   m_dts2 = DVD_NOPTS_VALUE;
 }

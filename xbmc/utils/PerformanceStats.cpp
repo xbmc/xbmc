@@ -55,7 +55,7 @@ void CPerformanceStats::AddSample(const string &strStatName, const PerformanceCo
 
 void CPerformanceStats::AddSample(const string &strStatName, double dTime)
 {
-  AddSample(strStatName, *(new PerformanceCounter(dTime)));
+  AddSample(strStatName, PerformanceCounter(dTime));
 }
 
 void CPerformanceStats::DumpStats()

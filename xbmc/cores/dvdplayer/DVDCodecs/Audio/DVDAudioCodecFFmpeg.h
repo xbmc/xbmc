@@ -50,7 +50,6 @@ protected:
   AVAudioConvert*     m_pConvert;
   enum AVSampleFormat m_iSampleFormat;  
   CAEChannelInfo      m_channelLayout;
-  int                 m_iMapChannels;
   bool                m_bLpcmMode;  
 
   AVFrame* m_pFrame1;

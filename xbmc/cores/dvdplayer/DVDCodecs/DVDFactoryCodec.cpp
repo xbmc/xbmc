@@ -353,6 +353,7 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
     case CODEC_ID_TEXT:
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
       if( pCodec ) return pCodec;
+      break;
 
     case CODEC_ID_SSA:
       pCodec = OpenCodec(new CDVDOverlayCodecSSA(), hint, options);
@@ -360,14 +361,17 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
 
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
       if( pCodec ) return pCodec;
+      break;
 
     case CODEC_ID_MOV_TEXT:
       pCodec = OpenCodec(new CDVDOverlayCodecTX3G(), hint, options);
       if( pCodec ) return pCodec;
+      break;
 
     default:
       pCodec = OpenCodec(new CDVDOverlayCodecFFmpeg(), hint, options);
       if( pCodec ) return pCodec;
+      break;
   }
 
   return NULL;

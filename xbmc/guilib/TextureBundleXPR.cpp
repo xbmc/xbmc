@@ -101,6 +101,7 @@ CTextureBundleXPR::CTextureBundleXPR(void)
 {
   m_hFile = NULL;
   m_themeBundle = false;
+  m_TimeStamp = 0;
 }
 
 CTextureBundleXPR::~CTextureBundleXPR(void)
@@ -300,12 +301,17 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   }
 
   // read the file into our buffer
-  DWORD n;
-  fseek(m_hFile, file->second.Offset, SEEK_SET);
-  n = fread(buffer, 1, ReadSize, m_hFile);
+  if (fseek(m_hFile, file->second.Offset, SEEK_SET) != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading texture: %s: %s: Seek error", Filename.c_str(), strerror(ferror(m_hFile)));
+    free(buffer);
+    return false;            
+  }
+  
+  DWORD n = fread(buffer, 1, ReadSize, m_hFile);
   if (n < ReadSize && !feof(m_hFile))
   {
-    CLog::Log(LOGERROR, "Error loading texture: %s: %s", Filename.c_str(), strerror(ferror(m_hFile)));
+    CLog::Log(LOGERROR, "Error loading texture: %s: %s: Read error", Filename.c_str(), strerror(ferror(m_hFile)));
     free(buffer);
     return false;
   }

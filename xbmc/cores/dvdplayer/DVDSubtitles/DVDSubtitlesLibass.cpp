@@ -43,6 +43,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 
   m_track = NULL;
   m_library = NULL;
+  m_renderer = NULL;
   m_references = 1;
 
   if(!m_dll.Load())

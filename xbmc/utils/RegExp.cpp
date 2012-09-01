@@ -36,6 +36,8 @@ CRegExp::CRegExp(bool caseless)
 
   m_bMatched    = false;
   m_iMatchCount = 0;
+
+  memset(m_iOvector, 0, sizeof(m_iOvector));
 }
 
 CRegExp::CRegExp(const CRegExp& re)
