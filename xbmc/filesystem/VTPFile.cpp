@@ -40,6 +40,7 @@ CVTPFile::CVTPFile()
 CVTPFile::~CVTPFile()
 {
   Close();
+  delete m_session;
 }
 void CVTPFile::Close()
 {
