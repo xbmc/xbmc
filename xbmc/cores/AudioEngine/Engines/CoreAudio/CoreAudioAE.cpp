@@ -47,7 +47,8 @@ CCoreAudioAE::CCoreAudioAE() :
   m_volumeBeforeMute   (1.0f          ),
   m_muted              (false         ),
   m_soundMode          (AE_SOUND_OFF  ),
-  m_streamsPlaying     (false         )
+  m_streamsPlaying     (false         ),
+  m_isSuspended        (false         )
 {
   HAL = new CCoreAudioAEHAL;
 }
@@ -312,7 +313,11 @@ void CCoreAudioAE::OnSettingsChange(std::string setting)
       setting == "audiooutput.channellayout"     ||
       setting == "audiooutput.multichannellpcm")
   {
-    Initialize();
+    // only reinit the engine if we not
+    // suspended (resume will initialize
+    // us again in that case)
+    if (!m_isSuspended)
+      Initialize();
   }
 }
 
@@ -390,6 +395,11 @@ bool CCoreAudioAE::IsMuted()
   return m_muted;
 }
 
+bool CCoreAudioAE::IsSuspended()
+{
+  return m_isSuspended;
+}
+
 void CCoreAudioAE::SetSoundMode(const int mode)
 {
   m_soundMode = mode;
@@ -412,6 +422,11 @@ CCoreAudioAEHAL* CCoreAudioAE::GetHAL()
 IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options)
 {
+  // if we are suspended we don't
+  // want anyone to mess with us
+  if (m_isSuspended)
+    return NULL;
+
   CAEChannelInfo channelInfo(channelLayout);
   CLog::Log(LOGINFO, "CCoreAudioAE::MakeStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat), sampleRate, encodedSamplerate, ((std::string)channelInfo).c_str());
@@ -468,8 +483,9 @@ IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
 
   streamLock.Leave();
 
-  // When we have been in passthrough mode, reinit the hardware to come back to anlog out
-  if (/*m_streams.empty() || */ m_rawPassthrough)
+  // When we have been in passthrough mode and are not suspended,
+  // reinit the hardware to come back to anlog out
+  if (/*m_streams.empty() || */ m_rawPassthrough && !m_isSuspended)
   {
     CLog::Log(LOGINFO, "CCoreAudioAE::FreeStream Reinit, no streams left" );
     Initialize();
@@ -480,7 +496,7 @@ IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
 
 void CCoreAudioAE::PlaySound(IAESound *sound)
 {
-  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying))
+  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying) || m_isSuspended)
     return;
 
   float *samples = ((CCoreAudioAESound*)sound)->GetSamples();
@@ -514,6 +530,11 @@ void CCoreAudioAE::StopSound(IAESound *sound)
 
 IAESound *CCoreAudioAE::MakeSound(const std::string& file)
 {
+  // we don't make sounds
+  // when suspended
+  if (m_isSuspended)
+    return NULL;
+
   CSingleLock soundLock(m_soundLock);
 
   // first check if we have the file cached
@@ -601,6 +622,9 @@ void CCoreAudioAE::GarbageCollect()
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
+  if (m_isSuspended)
+    return;
+
   HAL->EnumerateOutputDevices(devices, passthrough);
 }
 
@@ -618,6 +642,28 @@ void CCoreAudioAE::Stop()
     return;
 
   HAL->Stop();
+}
+
+bool CCoreAudioAE::Suspend()
+{
+  CLog::Log(LOGDEBUG, "CCoreAudioAE::Suspend - Suspending AE processing");
+  m_isSuspended = true;
+  // stop all gui sounds
+  StopAllSounds();
+  // stop the CA thread
+  Stop();
+
+  return true;
+}
+
+bool CCoreAudioAE::Resume()
+{
+  // fire up the engine again
+  bool ret = Initialize();
+  CLog::Log(LOGDEBUG, "CCoreAudioAE::Resume - Resuming AE processing");
+  m_isSuspended = false;
+
+  return ret;
 }
 
 //***********************************************************************************************

@@ -108,7 +108,7 @@ public:
   /**
    * Returns true if the is stream has finished draining
    */
-  virtual bool IsDrained() { return true; } /*FIXME: this should = 0 when done */
+  virtual bool IsDrained() = 0;
   
   /**
    * Flush all buffers dropping the audio data

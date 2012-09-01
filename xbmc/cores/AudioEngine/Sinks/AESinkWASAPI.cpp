@@ -279,11 +279,9 @@ void CAESinkWASAPI::Deinitialize()
   if (!m_initialized)
     return;
 
-
   if (m_running)
     m_pAudioClient->Stop();
   m_running = false;
-
 
   SAFE_RELEASE(m_pRenderClient);
   SAFE_RELEASE(m_pAudioClient);
@@ -416,13 +414,13 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
 
   /* Wait for Audio Driver to tell us it's got a buffer available */
   DWORD eventAudioCallback = WaitForSingleObject(m_needDataEvent, 1100);
+
   if (eventAudioCallback != WAIT_OBJECT_0)
   {
     // Event handle timed out - stop audio device
-    m_pAudioClient->Stop();
+    m_pAudioClient->Stop(); //stop processing - we're timed out or triggered error
     CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
     m_running = false;
-    m_pAudioClient->Stop(); //stop processing - we're done
     m_isDirty = true; //flag new device or re-init needed
     return INT_MAX;
   }
