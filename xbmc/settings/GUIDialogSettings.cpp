@@ -178,9 +178,9 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
   else if (setting.type == SettingInfo::SLIDER)
   {
     CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
-    float value = *(float *)setting.data;
     if (pControl && setting.data)
     {
+      float value = *(float *)setting.data;
       pControl->SetFloatValue(value);
       if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(value, setting.interval));
     }
