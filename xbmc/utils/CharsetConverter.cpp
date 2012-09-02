@@ -177,7 +177,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
 
   if (strSource.IsEmpty())
   {
-    strDest.Empty(); //empty strings are easy
+    strDest.clear(); //empty strings are easy
     return true;
   }
 
@@ -496,7 +496,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
   if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
-    strDest.Empty();
+    strDest.clear();
   iconv_close(iconvString);
 }
 
@@ -505,7 +505,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
   if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
-    strDest.Empty();
+    strDest.clear();
   iconv_close(iconvString);
 }
 
@@ -537,7 +537,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdString16& strSource, CStdStringA
 {
   CSingleLock lock(m_critSection);
   if(!convert_checked(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest))
-    strDest.empty();
+    strDest.clear();
 }
 
 void CCharsetConverter::utf16LEtoUTF8(const CStdString16& strSource,
@@ -545,21 +545,21 @@ void CCharsetConverter::utf16LEtoUTF8(const CStdString16& strSource,
 {
   CSingleLock lock(m_critSection);
   if(!convert_checked(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest))
-    strDest.empty();
+    strDest.clear();
 }
 
 void CCharsetConverter::ucs2ToUTF8(const CStdString16& strSource, CStdStringA& strDest)
 {
   CSingleLock lock(m_critSection);
   if(!convert_checked(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",strSource,strDest))
-    strDest.empty();
+    strDest.clear();
 }
 
 void CCharsetConverter::utf16LEtoW(const CStdString16& strSource, CStdStringW &strDest)
 {
   CSingleLock lock(m_critSection);
   if(!convert_checked(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,strSource,strDest))
-    strDest.empty();
+    strDest.clear();
 }
 
 void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap)
