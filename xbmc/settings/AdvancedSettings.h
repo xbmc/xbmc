@@ -397,6 +397,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
     CStdString m_discStubExtensions;
+    CStdString m_subtitlesExtensions;
 
     CStdString m_stereoscopicflags_sbs;
     CStdString m_stereoscopicflags_tab;
