@@ -53,6 +53,15 @@ struct sortstringbyname
   }
 };
 
+struct ExternalStreamInfo
+{
+  std::string name;
+  std::string language;
+  unsigned int flag;
+
+  ExternalStreamInfo() : flag(0x1111){};
+};
+
 class CUtil
 {
 public:
@@ -86,6 +95,7 @@ public:
   static void ClearSubtitles();
   static void ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles );
   static int ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles );
+  static void GetExternalStreamDetailsFromFilename(const CStdString& strMovie, const CStdString& strSubtitles, ExternalStreamInfo& info); 
   static bool FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath );
   static bool IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath );  
   static int64_t ToInt64(uint32_t high, uint32_t low);
