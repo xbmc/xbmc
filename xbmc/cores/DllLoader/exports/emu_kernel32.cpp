@@ -903,10 +903,12 @@ extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCST
       ret--;
 
       memcpy(lpWideCharStr, destinationBuffer, ret * sizeof(WCHAR));
-      free(destinationBuffer);
     }
   }
 
+  if (cbMultiByte > 0 && cbMultiByte == cchWideChar)
+    free(destinationBuffer);
+  
   return ret;
 }
 
@@ -945,9 +947,11 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
       ret--;
 
       memcpy(lpMultiByteStr, destinationBuffer, ret);
-      free(destinationBuffer);
     }
   }
+  
+  if (cchWideChar > 0 && cchWideChar == cbMultiByte)
+    free(destinationBuffer);
 
   return ret;
 }
