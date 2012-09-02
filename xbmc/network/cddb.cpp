@@ -491,7 +491,7 @@ void Xcddb::parseData(const char *buffer)
   // the data contained on those lines should be concatenated
   char *line;
   const char trenner[3] = {'\n', '\r', '\0'};
-  line = strtok((char*)buffer, trenner); // skip first line
+  strtok((char*)buffer, trenner); // skip first line
   while ((line = strtok(0, trenner)))
   {
     // Lines that begin with # are comments, should be ignored
