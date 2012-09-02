@@ -69,7 +69,7 @@ CFileItem::CFileItem(const CSong& song)
   m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
-  m_lStartPartNumber = 0;
+  m_lStartPartNumber = 1;
   SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = song.strThumb;
@@ -325,7 +325,7 @@ void CFileItem::Reset()
   m_dateTime.Reset();
   m_iDriveType = CMediaSource::SOURCE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
-  m_lStartPartNumber = 0;
+  m_lStartPartNumber = 1;
   m_lEndOffset = 0;
   m_iprogramCount = 0;
   m_idepth = 1;
