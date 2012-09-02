@@ -94,7 +94,7 @@ CDownloadQueue* CDownloadQueueManager::GetNextDownloadQueue()
   }
 
   // if we picked a queue with pending items and we haven't reached out max pool limit
-  if (pQueueAvailable->Size() > 0 && m_queues.size() < MAX_DOWNLOAD_QUEUES)
+  if (pQueueAvailable && pQueueAvailable->Size() > 0 && m_queues.size() < MAX_DOWNLOAD_QUEUES)
   {
     // spawn a new queue
     pQueueAvailable = new CDownloadQueue();
