@@ -77,7 +77,7 @@ config.log
 /Makefile
 /Makefile.include
 /aclocal.m4
-autom4te.cache
+/autom4te.cache/
 /build-aux/config.guess
 /build-aux/config.sub
 /build-aux/install-sh
@@ -120,7 +120,6 @@ autom4te.cache
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
-/addons/pvr.*/*.pvr
 
 # /xbmc/android
 /xbmc/android/Makefile
@@ -1169,11 +1168,6 @@ lib/cmyth/Makefile
 # /portable_data
 /portable_data
 
-# /xbmc/pvrclients
-/xbmc/pvrclients/Makefile.include
-/xbmc/pvrclients/*/.dependencies
-/xbmc/pvrclients/*/Makefile
-
 /xbmc/screensavers/Makefile
 
 /xbmc/screensavers/rsxs-0.9/Makefile
@@ -1280,14 +1274,3 @@ xbmc/visualizations/EGLHelpers/Makefile
 /addons/library.xbmc.gui/libXBMC_gui.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
-
-/addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.lib
-/addons/pvr.hts/XBMC_Tvheadend_win32.lib
-/addons/pvr.vdr.streamdev/XBMC_VDR_win32.lib
-
-/xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug
-/xbmc/pvrclients/MediaPortal/project/VS2010Express/Release
-/xbmc/pvrclients/tvheadend/project/VS2010Express/Debug
-/xbmc/pvrclients/tvheadend/project/VS2010Express/Release
-/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Debug
-/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Release
