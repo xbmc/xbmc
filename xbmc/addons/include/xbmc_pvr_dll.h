@@ -44,6 +44,14 @@ extern "C"
   const char* GetPVRAPIVersion(void);
 
   /*!
+   * Get the XBMC_PVR_MIN_API_VERSION that was used to compile this add-on.
+   * Used to check if this add-on is compatible with XBMC.
+   * @return The XBMC_PVR_MIN_API_VERSION that was used to compile this add-on.
+   * @remarks Valid implementation required.
+   */
+  const char* GetMininumPVRAPIVersion(void);
+
+  /*!
    * Get the list of features that this add-on provides.
    * Called by XBMC to query the add-on's capabilities.
    * Used to check which options should be presented in the UI, which methods to call, etc.
@@ -512,6 +520,7 @@ extern "C"
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
+    pClient->GetMininumPVRAPIVersion        = GetMininumPVRAPIVersion;
     pClient->GetAddonCapabilities           = GetAddonCapabilities;
     pClient->GetStreamProperties            = GetStreamProperties;
     pClient->GetConnectionString            = GetConnectionString;

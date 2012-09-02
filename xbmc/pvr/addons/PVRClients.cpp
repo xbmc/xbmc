@@ -798,6 +798,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
 {
   bool bReturn(true);
   ADDON::VECADDONS map;
+  ADDON::VECADDONS disableAddons;
   {
     CSingleLock lock(m_critSection);
     map = m_addons;
@@ -815,8 +816,31 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
     {
       /* register the new client and initialise it */
-      bReturn &= InitialiseClient(clientAddon);
+      if (!InitialiseClient(clientAddon))
+      {
+        // failed to initialise, disable the add-on
+        disableAddons.push_back(clientAddon);
+      }
     }
+  }
+
+  // disable add-ons that failed to initialise
+  if (disableAddons.size() > 0)
+  {
+    CAddonDatabase database;
+    database.Open();
+    CSingleLock lock(m_critSection);
+    for (ADDON::VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); it++)
+    {
+      // disable in the add-on db
+      database.DisableAddon((*it)->ID(), true);
+
+      // remove from the pvr add-on list
+      ADDON::VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), *it);
+      if (addonPtr != m_addons.end())
+        m_addons.erase(addonPtr);
+    }
+    database.Close();
   }
 
   return bReturn;

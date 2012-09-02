@@ -274,6 +274,7 @@ extern "C" {
   typedef struct PVRClient
   {
     const char*  (__cdecl* GetPVRAPIVersion)(void);
+    const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
     PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
     PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
     const char*  (__cdecl* GetBackendName)(void);

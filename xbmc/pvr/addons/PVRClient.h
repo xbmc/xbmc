@@ -469,10 +469,11 @@ namespace PVR
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC
-     * @param version The version to check
+     * @param minVersion The add-on's XBMC_PVR_MIN_API_VERSION version
+     * @param version The add-on's XBMC_PVR_API_VERSION version
      * @return True when compatible, false otherwise
      */
-    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &version);
+    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
 
     /*!
      * @brief Reset the signal quality data to the initial values.
