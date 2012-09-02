@@ -486,8 +486,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list)
     }
     list.push_back(info);
   }
-
-  close(mixerfd);
 #endif
+  close(mixerfd);
 }
 

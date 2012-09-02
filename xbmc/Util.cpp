@@ -2180,9 +2180,12 @@ CStdString CUtil::ResolveExecutablePath()
   snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
 
   /* Now read the symbolic link */
-  char buf[PATH_MAX];
-  int ret = readlink(linkname, buf, PATH_MAX);
-  buf[ret] = 0;
+  char buf[PATH_MAX + 1];
+  buf[0] = 0;
+
+  int ret = readlink(linkname, buf, sizeof(buf) - 1);
+  if (ret != -1)
+    buf[ret] = 0;
 
   strExecutablePath = buf;
 #endif
