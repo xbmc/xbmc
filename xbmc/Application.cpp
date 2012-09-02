@@ -478,6 +478,8 @@ CApplication::~CApplication(void)
 #endif
 
   delete m_dpms;
+  delete m_videoInfoScanner;
+  delete m_musicInfoScanner;
   delete m_seekHandler;
   delete m_pInertialScrollingHandler;
 }
