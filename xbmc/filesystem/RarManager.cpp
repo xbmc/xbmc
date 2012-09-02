@@ -160,7 +160,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     }
 
 
-    if (iOffset == -1)  // grab from list
+    if (iOffset == -1 && j != m_ExFiles.end())  // grab from list
     {
       for( ArchiveList_struct* pIterator = j->second.first; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
       {
