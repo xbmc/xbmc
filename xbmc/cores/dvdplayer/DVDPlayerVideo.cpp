@@ -1275,22 +1275,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   else
     iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
 
-#ifdef PROFILE /* during profiling, try to play as fast as possible */
-  iSleepTime = 0;
-#endif
-
-  // present the current pts of this frame to user, and include the actual
-  // presentation delay, to allow him to adjust for it
-  if( m_stalled )
-    m_iCurrentPts = DVD_NOPTS_VALUE;
-  else
-    m_iCurrentPts = pts - max(0.0, iSleepTime);
-
-  // timestamp when we think next picture should be displayed based on current duration
-  m_FlipTimeStamp  = iCurrentClock;
-  m_FlipTimeStamp += max(0.0, iSleepTime);
-  m_FlipTimeStamp += iFrameDuration;
-
   if ((m_droppingStats.m_requestOutputDrop && !(pPicture->iFlags & DVP_FLAG_NOSKIP))
      || (pPicture->iFlags & DVP_FLAG_DROPPED))
   {
@@ -1595,6 +1579,22 @@ void CDVDPlayerVideo::ResetFrameRateCalc()
                         g_advancedSettings.m_videoFpsDetect == 0;
 }
 
+double CDVDPlayerVideo::GetCurrentPts()
+{
+  double iSleepTime, iRenderPts;
+  int iBufferLevel;
+
+  // get render stats
+  g_renderManager.GetStats(iSleepTime, iRenderPts, iBufferLevel);
+
+  if( m_stalled )
+    iRenderPts = DVD_NOPTS_VALUE;
+  else
+    iRenderPts = iRenderPts - max(0.0, iSleepTime);
+
+  return iRenderPts;
+}
+
 #define MAXFRAMERATEDIFF   0.01
 #define MAXFRAMESERR    1000
 
@@ -1712,6 +1712,15 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
     iInterval = 2/m_fFrameRate*(double)DVD_TIME_BASE;
   else
     iInterval = 1/m_fFrameRate*(double)DVD_TIME_BASE;
+
+
+  m_FlipTimeStamp = m_pClock->GetAbsoluteClock() + max(0.0, iSleepTime) + iInterval;
+
+  if( m_stalled )
+    m_iCurrentPts = DVD_NOPTS_VALUE;
+  else
+    m_iCurrentPts = iRenderPts - max(0.0, iSleepTime);
+
 
   if (m_droppingStats.m_lastDecoderPts > 0
       && bNewFrame

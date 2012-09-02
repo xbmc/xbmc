@@ -108,7 +108,7 @@ public:
 
   bool InitializedOutputDevice();
 
-  double GetCurrentPts()                           { return m_iCurrentPts; }
+  double GetCurrentPts();
   int    GetPullupCorrection()                     { return m_pullupCorrection.GetPatternLength(); }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
