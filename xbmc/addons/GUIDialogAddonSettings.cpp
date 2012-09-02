@@ -151,27 +151,30 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
 {
   if (action.GetID() == ACTION_DELETE_ITEM)
   {
-    int iControl = GetFocusedControl()->GetID();
-    int controlId = CONTROL_START_SETTING;
-    const TiXmlElement* setting = GetFirstSetting();
-    UpdateFromControls();
-    while (setting)
+    CGUIControl* pControl = GetFocusedControl();
+    if (pControl)
     {
-      if (controlId == iControl)
+      int iControl = pControl->GetID();
+      int controlId = CONTROL_START_SETTING;
+      const TiXmlElement* setting = GetFirstSetting();
+      UpdateFromControls();
+      while (setting)
       {
-        const char* id = setting->Attribute("id");
-        const char* value = setting->Attribute("default");
-        m_settings[id] = value;
-        CreateControls();
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
-        OnMessage(msg);
-        return true;
+        if (controlId == iControl)
+        {
+          const char* id = setting->Attribute("id");
+          const char* value = setting->Attribute("default");
+          m_settings[id] = value;
+          CreateControls();
+          CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
+          OnMessage(msg);
+          return true;
+        }
+        setting = setting->NextSiblingElement("setting");
+        controlId++;
       }
-      setting = setting->NextSiblingElement("setting");
-      controlId++;
     }
   }
-
   return CGUIDialogBoxBase::OnAction(action);
 }
 
