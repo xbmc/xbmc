@@ -76,18 +76,21 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
 
   while (!m_Downloaded)
   {
-    m_dlgProgress->Progress();
-
-    if (m_dlgProgress->IsCanceled())
+    if (m_dlgProgress)
     {
-      m_http.Cancel();
-      thread.StopThread();
-      m_dlgProgress->Close();
-      return false;
+      m_dlgProgress->Progress();
+
+      if (m_dlgProgress->IsCanceled())
+      {
+        m_http.Cancel();
+        thread.StopThread();
+        m_dlgProgress->Close();
+        return false;
+      }
     }
   }
 
-  if (!m_dlgProgress->IsCanceled() && m_Error)
+  if (m_dlgProgress && !m_dlgProgress->IsCanceled() && m_Error)
   {
     if (m_dlgProgress) m_dlgProgress->Close();
     SetErrorDialog(257, 15280, 0, 0);
@@ -104,7 +107,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
     return false;
   }
 
-  m_dlgProgress->Close();
+  if (m_dlgProgress) m_dlgProgress->Close();
 
   return true;
 }
@@ -220,15 +223,16 @@ bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)
     if (!count) count = pEntry->FirstChild("match");
     if (!count && pEntry->Attribute("count"))
       countstr = pEntry->Attribute("count");
-    else
+    else if (count)
       countstr = count->FirstChild()->Value();
+    
     if (name)
       namestr = name->FirstChild()->Value();
     else
       namestr = pEntry->Attribute("name");
 
 
-    if (namestr)
+    if (namestr && countstr)
       AddListEntry(namestr, NULL, countstr, NULL, NULL,
           "lastfm://xbmc/artist/" + (CStdString)namestr + "/", items);
 
@@ -344,7 +348,7 @@ bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
     if (!count) count = pEntry->FirstChild("match");
     if (!count && pEntry->Attribute("count"))
       countstr = pEntry->Attribute("count");
-    else if (count->FirstChild())
+    else if (count && count->FirstChild())
       countstr = count->FirstChild()->Value();
 
     if (name && name->FirstChild())
@@ -352,7 +356,7 @@ bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
     else
       namestr = pEntry->Attribute("name");
 
-    if (namestr)
+    if (namestr && countstr)
     {
       AddListEntry(namestr, NULL, countstr, NULL, NULL,
           "lastfm://xbmc/tag/" + (CStdString)namestr + "/", items);
@@ -388,8 +392,8 @@ bool CLastFMDirectory::ParseTrackList(CStdString url, CFileItemList &items)
     if (name)
     {
       if (artist)
-        AddListEntry((name) ? name->FirstChild()->Value() : NULL,
-            (artist) ? artist->FirstChild()->Value() : NULL,
+        AddListEntry(name->FirstChild()->Value(),
+            artist->FirstChild()->Value(),
             (count) ? count->FirstChild()->Value() : ((date) ? date->FirstChild()->Value() : NULL),
             (date) ? date->Attribute("uts") : NULL,
             NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
