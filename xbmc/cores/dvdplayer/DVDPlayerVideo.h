@@ -98,7 +98,7 @@ public:
   bool IsEOS()                                      { return false; }
   bool SubmittedEOS() const                         { return false; }
 
-  double GetCurrentPts()                           { return m_iCurrentPts; }
+  double GetCurrentPts();
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   int GetDecoderFreeSpace() { return 0; }

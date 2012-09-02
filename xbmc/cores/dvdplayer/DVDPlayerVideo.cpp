@@ -1451,6 +1451,22 @@ void CDVDPlayerVideo::ResetFrameRateCalc()
                         g_advancedSettings.m_videoFpsDetect == 0;
 }
 
+double CDVDPlayerVideo::GetCurrentPts()
+{
+  double iSleepTime, iRenderPts;
+  int iBufferLevel;
+
+  // get render stats
+  g_renderManager.GetStats(iSleepTime, iRenderPts, iBufferLevel);
+
+  if( m_stalled )
+    iRenderPts = DVD_NOPTS_VALUE;
+  else
+    iRenderPts = iRenderPts - max(0.0, iSleepTime);
+
+  return iRenderPts;
+}
+
 #define MAXFRAMERATEDIFF   0.01
 #define MAXFRAMESERR    1000
 
