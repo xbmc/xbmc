@@ -203,6 +203,12 @@ namespace PVR
      */
     bool Delete(const CPVRClient &client);
 
+    /*!
+     * @brief Get the database ID of a client.
+     * @param strClientUid The unique ID of the client.
+     * @return The database ID of the client or -1 if it wasn't found.
+     */
+    int GetClientId(const CStdString &strClientUid);
     //@}
 
   private:
@@ -214,13 +220,6 @@ namespace PVR
 
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group);
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
-
-    /*!
-     * @brief Get the database ID of a client.
-     * @param strClientUid The unique ID of the client.
-     * @return The database ID of the client or -1 if it wasn't found.
-     */
-    int GetClientId(const CStdString &strClientUid);
 
     bool GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members);
     int GetLastChannelId(void);

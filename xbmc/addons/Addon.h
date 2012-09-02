@@ -168,6 +168,8 @@ public:
   bool MeetsVersion(const AddonVersion &version) const;
   virtual bool ReloadSettings();
 
+  void MarkAsDisabled() { m_enabled = false; }
+
 protected:
   friend class CAddonCallbacksAddon;
 
