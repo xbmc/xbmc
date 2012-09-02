@@ -2530,6 +2530,7 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameters");
   else
   {
+    paras[1].MakeLower();
     CStdString tmp;
     if (numParas<3)
       switch (atoi(paras[0])) 
