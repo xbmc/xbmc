@@ -185,6 +185,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   WSADATA wd;
   WSAStartup(MAKEWORD(2,2), &wd);
 
+  // use 1 ms timer precision - like SDL initialization used to do
+  timeBeginPeriod(1);
+
   // Create and run the app
   if(!g_application.Create())
   {
@@ -216,6 +219,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   }
 
   g_application.Run(true);
+
+  // clear previously set timer resolution
+  timeEndPeriod(1);		
 
   // the end
   WSACleanup();
