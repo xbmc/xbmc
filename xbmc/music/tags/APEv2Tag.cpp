@@ -79,7 +79,10 @@ bool CAPEv2Tag::ReadTag(const char* filename)
 
   CFile file;
   if (!file.Open(filename))
+  {
+    m_dll.apetag_free(tag);
     return false;
+  }
 
   // Create our file reading class
   ape_file file_api;
