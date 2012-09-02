@@ -29,8 +29,9 @@
 
 using namespace std;
 
-CAERemap::CAERemap()
+CAERemap::CAERemap() : m_inChannels(0), m_outChannels(0) 
 {
+  memset(m_mixInfo, 0, sizeof(m_mixInfo));
 }
 
 CAERemap::~CAERemap()
