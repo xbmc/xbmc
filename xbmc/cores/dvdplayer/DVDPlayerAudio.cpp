@@ -772,9 +772,21 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     {
       //check how many packets to skip/duplicate
       m_skipdupcount = (int)(m_syncError.m_error / duration);
-      //if less than one frame off, see if it's more than two thirds of a frame, so we can get better in sync
-      if (m_skipdupcount == 0 && fabs(m_syncError.m_error) > duration / 3 * 2)
-        m_skipdupcount = (int)(m_syncError.m_error / (duration / 3 * 2));
+
+      if (m_skipdupcount == 0)
+      {
+        double delay;
+        if ( m_syncError.m_error < 0)
+        {
+          m_skipdupcount -= 1;
+          delay = ((double)DVD_TIME_TO_MSEC(duration +  m_syncError.m_error)) / 1000;
+        }
+        else
+        {
+          delay = ((double)DVD_TIME_TO_MSEC( m_syncError.m_error)) / 1000;
+        }
+        m_dvdAudio.AddSilence(delay);
+      }
 
       if (m_skipdupcount > 0)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating %i packet(s) of %.2f ms duration",
@@ -959,9 +971,12 @@ void CDVDPlayerAudio::SyncError::CalcAverage(int64_t time)
   }
   else
   {
-    if (fabs(m_error-m_histError) < DVD_MSEC_TO_TIME(2))
+    if (fabs(m_error-m_histError) < DVD_MSEC_TO_TIME(5))
       m_histErrorCount++;
     else
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::SyncError - error variance: %d ms", DVD_TIME_TO_MSEC(m_error-m_histError));
       m_histErrorCount = -1;
+    }
   }
 }
