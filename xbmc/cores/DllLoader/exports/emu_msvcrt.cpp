@@ -1489,9 +1489,6 @@ extern "C"
       return 0;
     else
       return ferror(stream);
-
-    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return -1;
   }
 
   int dllvprintf(const char *format, va_list va)
@@ -1766,6 +1763,8 @@ extern "C"
   int dll_stati64(const char *path, struct _stati64 *buffer)
   {
     struct __stat64 a;
+    memset(&a, 0, sizeof(a));
+
     if(dll_stat64(path, &a) == 0)
     {
       CUtil::Stat64ToStatI64(buffer, &a);
