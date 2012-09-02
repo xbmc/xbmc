@@ -139,7 +139,7 @@ bool CZeroconfBrowserAvahi::doRemoveServiceType ( const CStdString& fcr_service_
 {
   ScopedEventLoopBlock lock ( mp_poll );
   tBrowserMap::iterator it = m_browsers.find ( fcr_service_type );
-  if ( it != m_browsers.end() )
+  if ( it == m_browsers.end() )
     return false;
   else
   {
