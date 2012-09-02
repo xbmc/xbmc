@@ -432,11 +432,11 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
         dialog->SetLine( 1, 21335);
         dialog->SetLine( 2, "" );
         dialog->DoModal();
-      }
-      if (!dialog->IsConfirmed())
-      {
-        //DialogYN = NO -> Return false!
-        return false;
+        if (!dialog->IsConfirmed())
+        {
+          //DialogYN = NO -> Return false!
+          return false;
+        }
       }
     }
   }
