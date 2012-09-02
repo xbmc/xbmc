@@ -750,7 +750,6 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
 
 int CPVRClients::RegisterClient(AddonPtr client)
 {
-  bool bIsNew(false);
   int iClientId(-1);
   if (!client->Enabled())
     return -1;
@@ -765,14 +764,10 @@ int CPVRClients::RegisterClient(AddonPtr client)
   iClientId = database->GetClientId(client->ID());
 
   // try to register the new client in the db
-  if (iClientId < 0)
+  if (iClientId < 0 && (iClientId = database->Persist(client)) < 0)
   {
-    bIsNew = true;
-    if ((iClientId = database->Persist(client)) < 0)
-    {
-      CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database", __FUNCTION__, client->Name().c_str());
-      return -1;
-    }
+    CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database", __FUNCTION__, client->Name().c_str());
+    return -1;
   }
 
   PVR_CLIENT addon;
@@ -790,13 +785,6 @@ int CPVRClients::RegisterClient(AddonPtr client)
       // create a new client instance
       addon = boost::dynamic_pointer_cast<CPVRClient>(client);
       m_clientMap.insert(std::make_pair(iClientId, addon));
-
-      // register new add-ons as disabled, since they need to be set up first
-      if (bIsNew)
-      {
-        m_addonDb.DisableAddon(client->ID(), true);
-        addon->MarkAsDisabled();
-      }
     }
   }
 

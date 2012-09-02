@@ -157,6 +157,9 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
       sql = PrepareSQL("insert into dependencies(id, addon, version, optional) values (%i, '%s', '%s', %i)", idAddon, i->first.c_str(), i->second.first.c_str(), i->second.second ? 1 : 0);
       m_pDS->exec(sql.c_str());
     }
+    // these need to be configured
+    if (addon->Type() == ADDON_PVRDLL)
+      DisableAddon(addon->ID(), true);
     return idAddon;
   }
   catch (...)
