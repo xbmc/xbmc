@@ -196,7 +196,6 @@ void CThread::Sleep(unsigned int milliseconds)
 
 void CThread::Action()
 {
-
   try
   {
     OnStartup();
@@ -237,7 +236,7 @@ void CThread::Action()
   }
   catch (...)
   {
-    LOG(LOGERROR, "%s - thread %s, Unhandled exception caught in thread process, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+    LOG(LOGERROR, "%s - thread %s, Unhandled exception caught in thread OnExit, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
   }
 }
 
