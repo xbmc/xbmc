@@ -75,6 +75,7 @@ XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPyThread")
   m_argv        = NULL;
   m_source      = NULL;
   m_argc        = 0;
+  m_type        = 0;
 }
 
 XBPyThread::~XBPyThread()

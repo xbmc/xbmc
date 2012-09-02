@@ -276,17 +276,29 @@ failed:
 
 void CAESinkWASAPI::Deinitialize()
 {
-  if (!m_initialized)
+  if (!m_initialized && !m_isDirty)
     return;
 
   if (m_running)
+  {
+    try
+    {
     m_pAudioClient->Stop();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__, "Invalidated AudioClient - Releasing");
+    }
+  }
   m_running = false;
+
+  CloseHandle(m_needDataEvent);
+
+  Sleep((DWORD)(m_sinkLatency * 1.1 * 1000.0)); //let buffers drain
 
   SAFE_RELEASE(m_pRenderClient);
   SAFE_RELEASE(m_pAudioClient);
   SAFE_RELEASE(m_pDevice);
-  CloseHandle(m_needDataEvent);
 
   m_initialized = false;
 }
@@ -415,15 +427,23 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   /* Wait for Audio Driver to tell us it's got a buffer available */
   DWORD eventAudioCallback = WaitForSingleObject(m_needDataEvent, 1100);
 
-  if (eventAudioCallback != WAIT_OBJECT_0)
+  if (eventAudioCallback != WAIT_OBJECT_0 || !&buf)
   {
-    // Event handle timed out - stop audio device
-    m_pAudioClient->Stop(); //stop processing - we're timed out or triggered error
+    // Event handle timed out - flag sink as dirty for re-initializing
     CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
+    if (g_advancedSettings.m_streamSilence)
+    {
+      m_isDirty = true; //flag new device or re-init needed
+      Deinitialize();
+      m_running = false;
+      return INT_MAX;
+    }
     m_running = false;
-    m_isDirty = true; //flag new device or re-init needed
-    return INT_MAX;
+    return 0;
   }
+
+  if (!m_running)
+    return 0;
 
 #ifndef _DEBUG
   QueryPerformanceCounter(&timerStop);

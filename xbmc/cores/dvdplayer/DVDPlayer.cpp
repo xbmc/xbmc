@@ -412,12 +412,16 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 
   m_dvd.Clear();
   m_State.Clear();
+  m_EdlAutoSkipMarkers.Clear();
   m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
   m_errorCount = 0;
+  m_offset_pts = 0.0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
+
+  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
@@ -466,10 +470,13 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     if(!m_ready.WaitMSec(100))
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-      dialog->Show();
-      while(!m_ready.WaitMSec(1))
-        g_windowManager.ProcessRenderLoop(false);
-      dialog->Close();
+      if(dialog)
+      {
+        dialog->Show();
+        while(!m_ready.WaitMSec(1))
+          g_windowManager.ProcessRenderLoop(false);
+        dialog->Close();
+      }
     }
 
     // Playback might have been stopped due to some error
@@ -808,16 +815,19 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     if(packet->iStreamId < 0)
       return true;
 
-    stream = m_pDemuxer->GetStream(packet->iStreamId);
-    if (!stream)
+    if(m_pDemuxer)
     {
-      CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);
-      return false;
-    }
-    if(stream->source == STREAM_SOURCE_NONE)
-    {
-      m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
-      m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+      stream = m_pDemuxer->GetStream(packet->iStreamId);
+      if (!stream)
+      {
+        CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);
+        return false;
+      }
+      if(stream->source == STREAM_SOURCE_NONE)
+      {
+        m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
+        m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+      }
     }
     return true;
   }
@@ -3868,7 +3878,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   }
 
   state.player_state = "";
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     state.time_offset = DVD_MSEC_TO_TIME(state.time) - state.dts;
     if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(state.player_state))

@@ -83,6 +83,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
+  m_controlIsDirty = false;
 }
 
 

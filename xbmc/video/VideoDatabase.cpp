@@ -5518,7 +5518,9 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
       }
 
       CVideoDbUrl setUrl;
-      setUrl.FromString("videodb://1/7/");
+      if (!setUrl.FromString("videodb://1/7/"))
+        return false;
+ 
       setUrl.AddOptions(videoUrl.GetOptionsString());
       GetSetsByWhere(setUrl.ToString(), setsFilter, setItems);
 
@@ -8503,9 +8505,9 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
               int seasonNum = -1;
               season->Attribute("num", &seasonNum);
               map<string, string> artwork;
-              ImportArtFromXML(season, artwork);
+              
               int seasonID = AddSeason(showID, seasonNum);
-              if (seasonID > -1)
+              if (ImportArtFromXML(season, artwork) &&  seasonID > -1)
                 SetArtForItem(seasonID, "season", artwork);
             }
             season = season->NextSiblingElement("season");

@@ -49,6 +49,7 @@ CDVDDemuxShoutcast::CDVDDemuxShoutcast() : CDVDDemux()
 {
   m_pInput = NULL;
   m_pDemuxStream = NULL;
+  m_iMetaStreamInterval = 0;
 }
 
 CDVDDemuxShoutcast::~CDVDDemuxShoutcast()

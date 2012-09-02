@@ -329,7 +329,10 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     }
 
     if((lang = htsmsg_get_str(sub, "language")))
+    {
       strncpy(st.g->language, lang, sizeof(st.g->language));
+      st.g->language[sizeof(st.g->language) - 1] = '\0';
+    }
 
     st.g->iId         = m_Streams.size();
     st.g->iPhysicalId = index;

@@ -944,8 +944,8 @@ namespace VIDEO
             offset += regexp2pos + reg2.GetFindLen();
           }
         }
-        free(remainder);
       }
+      free(remainder);
       return true;
     }
     return false;
@@ -1592,7 +1592,10 @@ namespace VIDEO
             art.insert(make_pair(0, items[i]->GetPath()));
           else if (reg.RegFind(name) > -1)
           {
-            int season = atoi(reg.GetReplaceString("\\1"));
+            char* seasonStr = reg.GetReplaceString("\\1");
+            int season = atoi(seasonStr);
+            free(seasonStr);
+
             art.insert(make_pair(season, items[i]->GetPath()));
           }
         }

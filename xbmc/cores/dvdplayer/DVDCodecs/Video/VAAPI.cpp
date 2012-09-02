@@ -149,6 +149,7 @@ CDecoder::CDecoder()
   m_config          = 0;
   m_context         = 0;
   m_hwaccel         = (vaapi_context*)calloc(1, sizeof(vaapi_context));
+  memset(m_surfaces, 0, sizeof(*m_surfaces));
 }
 
 CDecoder::~CDecoder()
@@ -185,7 +186,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   {
     /* reget call */
     for(; it != m_surfaces_free.end(); it++)
-    {    
+    {
       if((*it)->m_id == surface)
       {
         wrapper = it->get();
@@ -194,10 +195,10 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
         break;
       }
     }
-    if(it == m_surfaces_free.end())
+    if(!wrapper)
     {
       CLog::Log(LOGERROR, "VAAPI - unable to find requested surface");
-      return -1;      
+      return -1; 
     }
   }
   else

@@ -102,8 +102,13 @@ CVDPAU::CVDPAU()
   vdp_flip_target = VDP_INVALID_HANDLE;
   vdp_flip_queue = VDP_INVALID_HANDLE;
   vid_width = vid_height = OutWidth = OutHeight = 0;
-  memset(&outRect, 0, sizeof(VdpRect));
-  memset(&outRectVid, 0, sizeof(VdpRect));
+  surface_width = surface_height = 0;
+  
+  memset(&decoder, 0, sizeof(decoder));
+  memset(&outRect, 0, sizeof(outRect));
+  memset(&outRectVid, 0, sizeof(outRectVid));
+
+  m_Display = NULL;
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
@@ -118,7 +123,31 @@ CVDPAU::CVDPAU()
   videoMixer = VDP_INVALID_HANDLE;
   m_BlackBar = NULL;
 
+  memset(m_features, 0, sizeof(m_features));
+  m_feature_count = 0;
+  m_vdpauOutputMethod = OUTPUT_NONE;
+
   upScale = g_advancedSettings.m_videoVDPAUScaling;
+
+  vdp_video_mixer_set_attribute_values = NULL;
+  vdp_generate_csc_matrix = NULL;
+  vdp_presentation_queue_target_destroy = NULL;
+  vdp_presentation_queue_create = NULL;
+  vdp_presentation_queue_destroy = NULL;
+  vdp_presentation_queue_display = NULL;
+  vdp_presentation_queue_block_until_surface_idle = NULL;
+  vdp_presentation_queue_target_create_x11 = NULL;
+  vdp_presentation_queue_query_surface_status = NULL;
+  vdp_presentation_queue_get_time = NULL;
+  vdp_get_error_string = NULL;
+  vdp_decoder_create = NULL;
+  vdp_decoder_destroy = NULL;
+  vdp_decoder_render = NULL;
+  vdp_decoder_query_caps = NULL;
+  vdp_preemption_callback_register = NULL;
+  dl_vdp_device_create_x11 = NULL;
+  dl_vdp_get_proc_address = NULL;
+  dl_vdp_preemption_callback_register = NULL;
 }
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
@@ -720,6 +749,12 @@ void CVDPAU::InitVDPAUProcs()
     CSingleLock lock(g_graphicsContext);
     m_Display = g_Windowing.GetDisplay();
   }
+  else
+  {
+    CLog::Log(LOGERROR,"(VDPAU) - Unable to get dl_vdp_device_create_x11 in %s", __FUNCTION__);
+    vdp_device = VDP_INVALID_HANDLE;
+    return;
+  }
 
   int mScreen = DefaultScreen(m_Display);
   VdpStatus vdp_st;
@@ -741,12 +776,6 @@ void CVDPAU::InitVDPAUProcs()
     return;
   }
 
-  if (vdp_st != VDP_STATUS_OK)
-  {
-    CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
-    vdp_device = VDP_INVALID_HANDLE;
-    return;
-  }
 #define VDP_PROC(id, proc) \
   do { \
     vdp_st = vdp_get_proc_address(vdp_device, id, (void**)&proc); \
@@ -892,10 +921,12 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
     case PIX_FMT_VDPAU_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      break;
 #endif
     default:
       vdp_decoder_profile = 0;
       vdp_chroma_type     = 0;
+      break;
   }
 }
 
@@ -1047,7 +1078,7 @@ bool CVDPAU::FiniOutputMethod()
   {
     vdp_st = vdp_video_mixer_destroy(videoMixer);
     videoMixer = VDP_INVALID_HANDLE;
-    if (CheckStatus(vdp_st, __LINE__));
+    CheckStatus(vdp_st, __LINE__);
   }
 
   if (m_BlackBar)

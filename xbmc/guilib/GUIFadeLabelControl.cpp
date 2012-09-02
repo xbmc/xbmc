@@ -53,6 +53,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
   m_currentLabel = 0;
   m_lastLabel = -1;
   ControlType = GUICONTROL_FADELABEL;
+  m_shortText = from.m_shortText;
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)

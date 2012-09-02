@@ -244,7 +244,7 @@ void GUIFontManager::Unload(const CStdString& strFontName)
 {
   for (vector<CGUIFont*>::iterator iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
   {
-    if ((*iFont)->GetFontName() == strFontName)
+    if ((*iFont)->GetFontName().Equals(strFontName))
     {
       delete (*iFont);
       m_vecFonts.erase(iFont);
@@ -271,7 +271,7 @@ CGUIFontTTFBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
   {
     CGUIFontTTFBase* pFont = (CGUIFontTTFBase *)m_vecFontFiles[i];
-    if (pFont->GetFileName() == strFileName)
+    if (pFont->GetFileName().Equals(strFileName))
       return pFont;
   }
   return NULL;
@@ -282,7 +282,7 @@ CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName, bool fallback /
   for (int i = 0; i < (int)m_vecFonts.size(); ++i)
   {
     CGUIFont* pFont = m_vecFonts[i];
-    if (pFont->GetFontName() == strFontName)
+    if (pFont->GetFontName().Equals(strFontName))
       return pFont;
   }
   // fall back to "font13" if we have none
@@ -420,7 +420,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
         if (pNode)
         {
           CStdString strFontFileName = pNode->FirstChild()->Value();
-          if (strFontFileName.Find(".ttf") >= 0)
+          if (strFontFileName.ToLower().Find(".ttf") >= 0)
           {
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;

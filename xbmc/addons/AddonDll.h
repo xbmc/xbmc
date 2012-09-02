@@ -188,10 +188,16 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     new CAddonStatusHandler(ID(), ADDON_STATUS_UNKNOWN, "Can't load Dll", false);
     return false;
   }
+
   m_pStruct = (TheStruct*)malloc(sizeof(TheStruct));
-  ZeroMemory(m_pStruct, sizeof(TheStruct));
-  m_pDll->GetAddon(m_pStruct);
-  return (m_pStruct != NULL);
+  if (m_pStruct)
+  {
+    ZeroMemory(m_pStruct, sizeof(TheStruct));
+    m_pDll->GetAddon(m_pStruct);
+    return true;
+  }
+
+  return false;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

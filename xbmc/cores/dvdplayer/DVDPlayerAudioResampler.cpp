@@ -32,8 +32,10 @@ CDVDPlayerResampler::CDVDPlayerResampler()
 {
   m_nrchannels = -1;
   m_converter = NULL;
-  m_converterdata.end_of_input = 0;
+  
+  memset(&m_converterdata, 0, sizeof(m_converterdata));
   m_converterdata.src_ratio = 1.0;
+  
   m_quality = SRC_LINEAR;
   m_ratio = 1.0;
 

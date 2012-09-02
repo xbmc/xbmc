@@ -150,8 +150,19 @@ protected:
   double m_audioClock;
 
   // data for audio decoding
-  struct
+  struct PacketStatus
   {
+    PacketStatus()
+    {
+        msg = NULL;
+        Release();
+    }
+
+   ~PacketStatus()
+    {
+        Release();
+    }
+
     CDVDMsgDemuxerPacket*  msg;
     BYTE*                  data;
     int                    size;
@@ -159,6 +170,7 @@ protected:
 
     void Attach(CDVDMsgDemuxerPacket* msg2)
     {
+      if(msg) msg->Release();
       msg = msg2;
       msg->Acquire();
       DemuxPacket* p = msg->GetPacket();

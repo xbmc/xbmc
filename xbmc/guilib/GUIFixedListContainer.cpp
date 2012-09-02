@@ -249,7 +249,6 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
     SetCursor(cursor);
     return true;
   }
-  return InsideLayout(m_focusedLayout, point);
 }
 
 void CGUIFixedListContainer::SelectItem(int item)

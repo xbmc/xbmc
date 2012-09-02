@@ -26,7 +26,7 @@
 bool CGUIControlProfiler::m_bIsRunning = false;
 
 CGUIControlProfilerItem::CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl)
-: m_pProfiler(pProfiler), m_pParent(pParent), m_pControl(pControl), m_visTime(0), m_renderTime(0)
+: m_pProfiler(pProfiler), m_pParent(pParent), m_pControl(pControl), m_visTime(0), m_renderTime(0), m_i64VisStart(0), m_i64RenderStart(0)
 {
   if (m_pControl)
   {
@@ -239,7 +239,7 @@ CGUIControlProfilerItem *CGUIControlProfilerItem::FindOrAddControl(CGUIControl *
 }
 
 CGUIControlProfiler::CGUIControlProfiler(void)
-: m_ItemHead(NULL, NULL, NULL), m_pLastItem(NULL), m_iMaxFrameCount(200)
+: m_ItemHead(NULL, NULL, NULL), m_pLastItem(NULL), m_iMaxFrameCount(200), m_iFrameCount(0)
 // m_bIsRunning(false), no isRunning because it is static
 {
   m_fPerfScale = 100000.0f / CurrentHostFrequency();

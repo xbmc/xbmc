@@ -350,7 +350,8 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
 #endif
   {
     dbSettings.type = "sqlite3";
-    dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
+    if (dbSettings.host.IsEmpty())
+      dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
   }
 
   // use separate, versioned database

@@ -84,6 +84,7 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
   } \
   sink->Deinitialize(); \
   delete sink; \
+  sink = NULL; \
 }
 
 IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough)

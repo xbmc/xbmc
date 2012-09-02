@@ -80,9 +80,7 @@ private:
   int Read(int size, bool init = false);
 
   /* TODO decoder vars */
-  int m_BytesDecoded;
   bool m_HaveData;
-  unsigned int m_formatdata[8];
   unsigned char  flushcnt;
 
   madx_house mxhouse;

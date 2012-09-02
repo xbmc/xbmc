@@ -220,7 +220,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
         StringUtils::SplitString(strFields[i], ".", fieldParts);
         if (fieldParts.size() == 1) // No ms
         {
-          iCutStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) * 1000; // seconds to ms
+          iCutStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) * (int64_t)1000; // seconds to ms
         }
         else if (fieldParts.size() == 2) // Has ms. Everything after the dot (.) is ms
         {

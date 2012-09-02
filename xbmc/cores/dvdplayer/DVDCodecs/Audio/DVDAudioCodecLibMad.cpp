@@ -25,6 +25,18 @@
 CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
 {
   m_bInitialized = false;
+  
+  memset(&m_synth, 0, sizeof(m_synth));
+  memset(&m_stream, 0, sizeof(m_stream));
+  memset(&m_frame, 0, sizeof(m_frame));
+  
+  m_iDecodedDataSize = 0;
+  
+  m_iSourceSampleRate = 0;
+  m_iSourceChannels = 0;
+  m_iSourceBitrate = 0;
+  
+  m_iInputBufferSize = 0;
 }
 
 CDVDAudioCodecLibMad::~CDVDAudioCodecLibMad()

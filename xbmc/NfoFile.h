@@ -36,7 +36,7 @@
 class CNfoFile
 {
 public:
-  CNfoFile() : m_doc(NULL), m_headofdoc(NULL) {}
+  CNfoFile() : m_doc(NULL), m_headofdoc(NULL), m_type(ADDON::ADDON_UNKNOWN) {}
   virtual ~CNfoFile() { Close(); }
 
   enum NFOResult

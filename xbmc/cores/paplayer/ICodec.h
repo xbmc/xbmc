@@ -38,7 +38,9 @@ public:
   {
     m_TotalTime = 0;
     m_SampleRate = 0;
+    m_EncodedSampleRate = 0;
     m_BitsPerSample = 0;
+    m_DataFormat = AE_FMT_INVALID;
     m_Channels = 0;
     m_Bitrate = 0;
     m_CodecName = "";

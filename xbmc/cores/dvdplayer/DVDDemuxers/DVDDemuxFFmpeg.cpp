@@ -211,6 +211,10 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   m_ioContext = NULL;
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
   m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_bMatroska = false;
+  m_bAVI = false;
+  m_speed = DVD_PLAYSPEED_NORMAL;
+  m_program = UINT_MAX;
 }
 
 CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
@@ -772,7 +776,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   if (!pPacket) return NULL;
 
   // check streams, can we make this a bit more simple?
-  if (pPacket && pPacket->iStreamId >= 0 && pPacket->iStreamId <= MAX_STREAMS)
+  if (pPacket && pPacket->iStreamId >= 0 && pPacket->iStreamId < MAX_STREAMS)
   {
     if (!m_streams[pPacket->iStreamId] ||
         m_streams[pPacket->iStreamId]->pPrivate != m_pFormatContext->streams[pPacket->iStreamId] ||
@@ -1046,8 +1050,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           m_streams[iId] = st;
-          if(pStream->codec)
-            st->identifier = pStream->codec->sub_id;
+          st->identifier = pStream->codec->sub_id;
 	    
           if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
             st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;

@@ -50,6 +50,7 @@ MP3Codec::MP3Codec()
 
   // mp3 related
   m_CallAgainWithSameBuffer = false;
+  m_readRetries = 5;
   m_lastByteOffset = 0;
   m_InputBufferSize = 64*1024;         // 64k is a reasonable amount, considering that we actual are
                                        // using a background reader thread now that caches in advance.
@@ -71,6 +72,7 @@ MP3Codec::MP3Codec()
   
   memset(&mxhouse, 0, sizeof(madx_house));
   memset(&mxstat,  0, sizeof(madx_stat));
+  mxsig = ERROR_OCCURED;
   
   m_HaveData = false;
   flushcnt = 0;

@@ -219,7 +219,7 @@ public:
   bool Supports(EINTERLACEMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod();
 
-  VdpVideoMixerFeature m_features[10];
+  VdpVideoMixerFeature m_features[13];
   int                  m_feature_count;
 
   static bool IsVDPAUFormat(PixelFormat fmt);

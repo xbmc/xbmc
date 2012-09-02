@@ -134,9 +134,10 @@ public:
       memcpy(dst, m_buffer, size);
     // we can just reset m_bufferPos
     // if there is nothing else inside.
-    if (m_bufferPos != size)
+    if ((m_bufferPos != size) && size <= m_bufferPos)
       memmove(m_buffer, m_buffer + size, m_bufferSize - size);
-    m_bufferPos -= size;
+    if (size <= m_bufferPos)
+      m_bufferPos -= size;
   }
 
   /* cursor methods */

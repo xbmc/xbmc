@@ -437,6 +437,15 @@ CApplication::CApplication(void)
 #ifdef HAS_DVD_DRIVE
   m_Autorun = new CAutorun();
 #endif
+
+  m_splash = NULL;
+  m_threadID = 0;
+  m_eCurrentPlayer = EPC_NONE;
+  m_progressTrackingPlayCountUpdate = false;
+  m_currentStackPosition = 0;
+  m_lastFrameTime = 0;
+  m_lastRenderTime = 0;
+  m_bTestMode = false;
 }
 
 CApplication::~CApplication(void)
@@ -1892,16 +1901,24 @@ void CApplication::ReloadSkin()
   m_skinReloading = false;
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
   g_windowManager.SendMessage(msg);
+  
   // Reload the skin, restoring the previously focused control.  We need this as
   // the window unload will reset all control states.
+  int iCtrlID = -1;
   CGUIWindow* pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-  int iCtrlID = pWindow->GetFocusedControlID();
+  if (pWindow)
+    iCtrlID = pWindow->GetFocusedControlID();
+  
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-  pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-  if (pWindow && pWindow->HasSaveLastControl())
+ 
+  if (iCtrlID != -1)
   {
-    CGUIMessage msg3(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), iCtrlID, 0);
-    pWindow->OnMessage(msg3);
+    pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+    if (pWindow && pWindow->HasSaveLastControl())
+    {
+      CGUIMessage msg3(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), iCtrlID, 0);
+      pWindow->OnMessage(msg3);
+    }
   }
 }
 
@@ -4752,7 +4769,10 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
-        g_windowManager.GetWindow(WINDOW_SCREENSAVER)->OnMessage(msg);
+
+        CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_SCREENSAVER);
+        if (pWindow)
+          pWindow->OnMessage(msg);
       }
     if (m_iScreenSaveLock == -1)
     {
