@@ -154,7 +154,9 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
 
   struct stat64 fileStat;
   memset(&fileStat, 0, sizeof(fileStat));
-  stat64(strFileNameTest, &fileStat);
+ 
+  if (stat64(strFileNameTest, &fileStat) == -1)
+    return FALSE;
 
   bool bIsDir = false;
   if (S_ISDIR(fileStat.st_mode))
