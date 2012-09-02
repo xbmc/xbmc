@@ -52,7 +52,8 @@ CPVRClients::CPVRClients(void) :
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
-    m_scanStart(0)
+    m_scanStart(0),
+    m_bNoAddonWarningDisplayed(false)
 {
 }
 
@@ -804,6 +805,9 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     map = m_addons;
   }
 
+  if (map.size() == 0)
+    return false;
+
   for (unsigned iClientPtr = 0; iClientPtr < map.size(); iClientPtr++)
   {
     const AddonPtr clientAddon = map.at(iClientPtr);
@@ -887,7 +891,7 @@ void CPVRClients::Process(void)
     if (!bCheckedEnabledClientsOnStartup)
     {
       bCheckedEnabledClientsOnStartup = true;
-      if (!HasEnabledClients())
+      if (!HasEnabledClients() && !m_bNoAddonWarningDisplayed)
         ShowDialogNoClientsEnabled();
     }
 
@@ -1022,6 +1026,15 @@ bool CPVRClients::UpdateAddons(void)
   {
     CSingleLock lock(m_critSection);
     m_addons = addons;
+  }
+
+  if ((!bReturn || addons.size() == 0) && !m_bNoAddonWarningDisplayed)
+  {
+    // No PVR add-ons could be found
+    // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
+    //Please visit xbmc.org/PVR to learn more.
+    m_bNoAddonWarningDisplayed = true;
+    CGUIDialogOK::ShowAndGetInput(19271, 19272, 19273, 19274);
   }
 
   return bReturn;

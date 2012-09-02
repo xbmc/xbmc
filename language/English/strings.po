@@ -7088,7 +7088,23 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr ""
 
-#empty strings from id 19271 to 19499
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr ""
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr ""
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr ""
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/PVR to learn more."
+msgstr ""
+
+#empty strings from id 19275 to 19499
 
 msgctxt "#19499"
 msgid "Other/Unknown"
