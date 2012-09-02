@@ -69,6 +69,11 @@ namespace PVR
     bool Create(int iClientId);
 
     /*!
+     * @return True when the dll for this add-on was loaded, false otherwise (e.g. unresolved symbols)
+     */
+    bool DllLoaded(void) const;
+
+    /*!
      * @brief Destroy the instance of this add-on.
      */
     void Destroy(void);
@@ -522,8 +527,8 @@ namespace PVR
      */
     bool CanPlayChannel(const CPVRChannel &channel) const;
 
-    bool LogError(const PVR_ERROR error, const char *strMethod);
-    void LogException(const std::exception &e, const char *strFunctionName);
+    bool LogError(const PVR_ERROR error, const char *strMethod) const;
+    void LogException(const std::exception &e, const char *strFunctionName) const;
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
     CStdString             m_strHostName;          /*!< the host name */

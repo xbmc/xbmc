@@ -109,6 +109,14 @@ bool CPVRClient::Create(int iClientId)
   return bReadyToUse;
 }
 
+bool CPVRClient::DllLoaded(void) const
+{
+  try { return CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::DllLoaded(); }
+  catch (exception &e) { LogException(e, __FUNCTION__); }
+
+  return false;
+}
+
 void CPVRClient::Destroy(void)
 {
   if (!m_bReadyToUse)
@@ -1047,7 +1055,7 @@ const char *CPVRClient::ToString(const PVR_ERROR error)
   }
 }
 
-bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod)
+bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod) const
 {
   if (error != PVR_ERROR_NO_ERROR)
   {
@@ -1058,7 +1066,7 @@ bool CPVRClient::LogError(const PVR_ERROR error, const char *strMethod)
   return true;
 }
 
-void CPVRClient::LogException(const exception &e, const char *strFunctionName)
+void CPVRClient::LogException(const exception &e, const char *strFunctionName) const
 {
   CLog::Log(LOGERROR, "PVR - exception '%s' caught while trying to call '%s' on add-on '%s'. Please contact the developer of this add-on: %s", e.what(), strFunctionName, GetFriendlyName().c_str(), Author().c_str());
 }
