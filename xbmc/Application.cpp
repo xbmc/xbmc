@@ -1827,7 +1827,8 @@ void CApplication::StartEPGManager(void)
 void CApplication::StopPVRManager()
 {
   CLog::Log(LOGINFO, "stopping PVRManager");
-  StopPlaying();
+  if (g_PVRManager.IsPlaying())
+    StopPlaying();
   g_PVRManager.Stop();
 }
 
