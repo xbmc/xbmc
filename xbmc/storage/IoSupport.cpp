@@ -239,12 +239,13 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 
   for (int i = 0; i < 5; i++)
   {
-    SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN);
-
-    if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
+    if (SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN) != -1)
     {
-      memcpy(lpczBuffer, m_rawXferBuffer, dwSectorSize);
-      return dwRead;
+      if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
+      {
+        memcpy(lpczBuffer, m_rawXferBuffer, dwSectorSize);
+        return dwRead;
+      }
     }
   }
 
