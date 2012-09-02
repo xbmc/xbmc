@@ -261,6 +261,86 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
 }
 #endif
 
+bool CLangCodeExpander::ConvertToTwoCharCode(const CStdString& lang, CStdString& code)
+{
+  if (lang.length() == 2)
+  {
+    CStdString tmp;
+    if (Lookup(tmp, lang))
+    {
+      code = lang;
+      return true;
+    }
+  }
+  else if (lang.length() == 3)
+  {
+    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    {
+      if (lang.Equals(CharCode2To3[index].id) || (CharCode2To3[index].win_id && lang.Equals(CharCode2To3[index].win_id)))
+      {
+        code = CharCode2To3[index].old;
+        return true;
+      }
+    }
+
+    for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+    {
+      if (lang.Equals(RegionCode2To3[index].id))
+      {
+        code = RegionCode2To3[index].old;
+        return true;
+      }
+    }
+  }
+
+  // check if lang is full language name
+  CStdString tmp;
+  if (ReverseLookup(lang, tmp))
+  {
+    if (tmp.length() == 2)
+    {
+      code = tmp;
+      return true;
+    }
+    else if (tmp.length() == 3)
+      return ConvertToTwoCharCode(tmp, code);
+  }
+
+  return false;
+}
+
+bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
+{
+  CStdString descTmp(desc);
+  descTmp.Trim();
+  STRINGLOOKUPTABLE::iterator it;
+  for (it = m_mapUser.begin(); it != m_mapUser.end() ; it++)
+  {
+    if (descTmp.Equals(it->second))
+    {
+      code = it->first;
+      return true;
+    }
+  }
+  for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+  {
+    if (descTmp.Equals(g_iso639_1[i].name))
+    {
+      CodeToString(g_iso639_1[i].code, code);
+      return true;
+    }
+  }
+  for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+  {
+    if (descTmp.Equals(g_iso639_2[i].name))
+    {
+      CodeToString(g_iso639_2[i].code, code);
+      return true;
+    }
+  }
+  return false;
+}
+
 bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 {
   STRINGLOOKUPTABLE::iterator it;
@@ -310,6 +390,19 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
     }
   }
   return false;
+}
+
+void CLangCodeExpander::CodeToString(long code, CStdString& ret)
+{
+  ret.Empty();
+  for (unsigned int j = 0 ; j < 4 ; j++)
+  {
+    char c = (char) code & 0xFF;
+    if (c == '\0')
+      return;
+    ret.Insert(0, c);
+    code >>= 8;
+  }
 }
 
 extern const LCENTRY g_iso639_1[144] =
