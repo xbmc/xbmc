@@ -672,7 +672,7 @@ void CSoftAE::PauseStream(CSoftAEStream *stream)
   stream->m_paused = true;
   streamLock.Leave();
 
-  InternalOpenSink();
+  OpenSink();
 }
 
 void CSoftAE::ResumeStream(CSoftAEStream *stream)
@@ -683,7 +683,7 @@ void CSoftAE::ResumeStream(CSoftAEStream *stream)
   streamLock.Leave();
 
   m_streamsPlaying = true;
-  InternalOpenSink();
+  OpenSink();
 }
 
 void CSoftAE::Stop()
@@ -721,7 +721,7 @@ IAEStream *CSoftAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sample
   m_newStreams.push_back(stream);
   streamLock.Leave();
 
-  InternalOpenSink();
+  OpenSink();
   return stream;
 }
 
@@ -813,7 +813,7 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
 
   /* if it was the master stream we need to reopen before deletion */
   if (m_masterStream == stream)
-    InternalOpenSink();
+    OpenSink();
 
   delete (CSoftAEStream*)stream;
   return NULL;
@@ -937,6 +937,8 @@ void CSoftAE::Run()
       }
       m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
     }
+
+    m_wake.Reset();
 
     bool restart = false;
 
@@ -1136,7 +1138,9 @@ int CSoftAE::RunRawOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  int wroteFrames = m_sink->AddPackets((uint8_t *)data, m_sinkFormat.m_frames, hasAudio);
+  int wroteFrames = 0;
+  if (m_sink)
+    wroteFrames = m_sink->AddPackets((uint8_t *)data, m_sinkFormat.m_frames, hasAudio);
 
   /* Return value of INT_MAX signals error in sink - restart */
   if (wroteFrames == INT_MAX)
