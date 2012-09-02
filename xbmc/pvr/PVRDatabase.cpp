@@ -171,7 +171,7 @@ bool CPVRDatabase::CreateTables()
   {
     // disable all PVR add-on when started the first time
     ADDON::VECADDONS addons;
-    if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false)) == false)
+    if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true)) == false)
       CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
     else
     {
@@ -243,7 +243,7 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
       {
         // bit of a hack, but we need to keep the version/contents of the non-pvr databases the same to allow clean upgrades
         ADDON::VECADDONS addons;
-        if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false)) == false)
+        if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true)) == false)
           CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
         else
         {

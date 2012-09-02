@@ -907,7 +907,7 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
   CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
 
   vector<CStdString> params;
-  params.push_back("addons://enabled/xbmc.pvrclient");
+  params.push_back("addons://disabled/xbmc.pvrclient");
   params.push_back("return");
   g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
 }
@@ -1020,7 +1020,7 @@ void CPVRClients::LoadCurrentChannelSettings(void)
 bool CPVRClients::UpdateAddons(void)
 {
   ADDON::VECADDONS addons;
-  bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false));
+  bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true));
 
   if (bReturn)
   {
@@ -1028,11 +1028,12 @@ bool CPVRClients::UpdateAddons(void)
     m_addons = addons;
   }
 
-  if ((!bReturn || addons.size() == 0) && !m_bNoAddonWarningDisplayed)
+  if ((!bReturn || addons.size() == 0) && !m_bNoAddonWarningDisplayed &&
+      !CAddonMgr::Get().HasAddons(ADDON_PVRDLL, false))
   {
     // No PVR add-ons could be found
     // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
-    //Please visit xbmc.org/PVR to learn more.
+    // Please visit xbmc.org/PVR to learn more.
     m_bNoAddonWarningDisplayed = true;
     CGUIDialogOK::ShowAndGetInput(19271, 19272, 19273, 19274);
   }

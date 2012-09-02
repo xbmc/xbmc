@@ -68,7 +68,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else if (path.GetHostName().Equals("disabled"))
   { // grab all disabled addons, including disabled repositories
     reposAsFolders = false;
-    CAddonMgr::Get().GetAllAddons(addons, false, true, false);
+    CAddonMgr::Get().GetAllAddons(addons, false, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24039));
     items.SetLabel(g_localizeStrings.Get(24039));
   }
