@@ -492,7 +492,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
     ret = 0;
   }
 
-  if ((unsigned int)ret < frames);
+  if ((unsigned int)ret < frames)
   {
     ret = snd_pcm_wait(m_pcm, m_timeout);
     if (ret < 0)
