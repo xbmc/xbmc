@@ -99,7 +99,7 @@ int CPVRClients::GetClientId(const AddonPtr client) const
   return -1;
 }
 
-bool CPVRClients::GetConnectedClient(int iClientId, PVR_CLIENT &addon) const
+bool CPVRClients::GetClient(int iClientId, PVR_CLIENT &addon) const
 {
   bool bReturn(false);
   if (iClientId <= PVR_INVALID_CLIENT_ID || iClientId == PVR_VIRTUAL_CLIENT_ID)
@@ -108,17 +108,20 @@ bool CPVRClients::GetConnectedClient(int iClientId, PVR_CLIENT &addon) const
   CSingleLock lock(m_critSection);
 
   PVR_CLIENTMAP_CITR itr = m_clientMap.find(iClientId);
-  if (itr != m_clientMap.end() && itr->second->ReadyToUse())
+  if (itr != m_clientMap.end())
   {
     addon = itr->second;
     bReturn = true;
   }
-  else
-  {
-    CLog::Log(LOGDEBUG, "%s - client %d is not connected", __FUNCTION__, iClientId);
-  }
 
   return bReturn;
+}
+
+bool CPVRClients::GetConnectedClient(int iClientId, PVR_CLIENT &addon) const
+{
+  if (GetClient(iClientId, addon))
+    return addon->ReadyToUse();
+  return false;
 }
 
 bool CPVRClients::RequestRestart(AddonPtr addon, bool bDataChanged)
@@ -756,21 +759,21 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
   return GetClientId(client) > 0;
 }
 
-bool CPVRClients::InitialiseClient(AddonPtr client)
+int CPVRClients::RegisterClient(AddonPtr client)
 {
-  bool bReturn(false);
+  bool iClientId(-1);
   if (!client->Enabled())
-    return bReturn;
+    return iClientId;
 
-  CLog::Log(LOGDEBUG, "%s - initialising add-on '%s'", __FUNCTION__, client->Name().c_str());
+  CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
 
   /* register this client in the db */
-  int iClientId = AddClientToDb(client);
+  iClientId = AddClientToDb(client);
   if (iClientId == -1)
-    return bReturn;
+    return iClientId;
 
-  /* load and initialise the client libraries */
   PVR_CLIENT addon;
+  /* load and initialise the client libraries */
   {
     CSingleLock lock(m_critSection);
     PVR_CLIENTMAP_ITR existingClient = m_clientMap.find(iClientId);
@@ -785,13 +788,10 @@ bool CPVRClients::InitialiseClient(AddonPtr client)
     }
   }
 
-  if (addon)
-    bReturn = addon->Create(iClientId);
+  if (iClientId < 0)
+    CLog::Log(LOGERROR, "PVR - %s - can't register add-on '%s'", __FUNCTION__, client->Name().c_str());
 
-  if (!bReturn)
-    CLog::Log(LOGERROR, "PVR - %s - can't initialise add-on '%s'", __FUNCTION__, client->Name().c_str());
-
-  return bReturn;
+  return iClientId;
 }
 
 bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = false */)
@@ -815,12 +815,37 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     }
     else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
     {
-      /* register the new client and initialise it */
-      if (!InitialiseClient(clientAddon))
+      bool bDisabled(false);
+
+      // register the add-on in the pvr db, and create the CPVRClient instance
+      int iClientId = RegisterClient(clientAddon);
+      if (iClientId < 0)
       {
-        // failed to initialise, disable the add-on
+        // failed to register or create the add-on, disable it
+        CLog::Log(LOGWARNING, "%s - failed to register add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
         disableAddons.push_back(clientAddon);
+        bDisabled = true;
       }
+      else
+      {
+        PVR_CLIENT addon;
+
+        // try to initialise the add-on
+        if (!GetClient(iClientId, addon) || !addon->Create(iClientId))
+        {
+          CLog::Log(LOGWARNING, "%s - failed to create add-on %s", __FUNCTION__, clientAddon->Name().c_str());
+          if (!addon.get() || !addon->DllLoaded())
+          {
+            // failed to load the dll of this add-on, disable it
+            CLog::Log(LOGWARNING, "%s - failed to load the dll for add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
+            disableAddons.push_back(clientAddon);
+            bDisabled = true;
+          }
+        }
+      }
+
+      if (bDisabled)
+        CGUIDialogOK::ShowAndGetInput(24070, 24071, 16029, 0);
     }
   }
 

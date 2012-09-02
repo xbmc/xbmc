@@ -564,6 +564,14 @@ namespace PVR
     void ShowDialogNoClientsEnabled(void);
 
     /*!
+     * @brief Get the instance of the client.
+     * @param iClientId The id of the client to get.
+     * @param addon The client.
+     * @return True if the client was found, false otherwise.
+     */
+    bool GetClient(int iClientId, boost::shared_ptr<CPVRClient> &addon) const;
+
+    /*!
      * @brief Get the instance of the client, if it's connected.
      * @param iClientId The id of the client to get.
      * @param addon The client.
@@ -588,9 +596,9 @@ namespace PVR
     /*!
      * @brief Initialise and connect a client.
      * @param client The client to initialise.
-     * @return True if the client was initialised successfully, false otherwise.
+     * @return The id of the client if it was created or found in the existing client map, -1 otherwise.
      */
-    bool InitialiseClient(ADDON::AddonPtr client);
+    int RegisterClient(ADDON::AddonPtr client);
 
     int GetClientId(const ADDON::AddonPtr client) const;
 
