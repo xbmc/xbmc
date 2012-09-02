@@ -45,7 +45,7 @@ namespace PVR
     void Start(void);
     void Stop(void);
 
-    void Notify(const Observable &obs, const CStdString& msg);
+    void Notify(const Observable &obs, const ObservableMessage msg);
 
     bool TranslateBoolInfo(DWORD dwInfo) const;
     bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;

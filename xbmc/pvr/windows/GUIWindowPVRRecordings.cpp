@@ -220,16 +220,16 @@ void CGUIWindowPVRRecordings::UpdateData(bool bUpdateSelectedFile /* = true */)
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
 }
 
-void CGUIWindowPVRRecordings::Notify(const Observable &obs, const CStdString& msg)
+void CGUIWindowPVRRecordings::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg.Equals("recordings") || msg.Equals("timers") || msg.Equals("current-item"))
+  if (msg == ObservableMessageRecordings || msg == ObservableMessageTimers || msg == ObservableMessageCurrentItem)
   {
     if (IsVisible())
       SetInvalid();
     else
       m_bUpdateRequired = true;
   }
-  else if (msg.Equals("recordings-reset") || msg.Equals("timers-reset"))
+  else if (msg == ObservableMessageRecordings || msg == ObservableMessageTimersReset)
   {
     if (IsVisible())
       UpdateData(false);

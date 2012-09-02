@@ -1001,7 +1001,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
   }
 
   g_guiSettings.SetChanged();
-  g_guiSettings.NotifyObservers("settings", true);
+  g_guiSettings.NotifyObservers(ObservableMessageGuiSettings, true);
 }
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)

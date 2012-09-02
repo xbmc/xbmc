@@ -652,7 +652,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
     SetChanged();
     lock.Leave();
 
-    NotifyObservers(HasNewChannels() || bRemoved || bRenumbered ? "channelgroup-reset" : "channelgroup");
+    NotifyObservers(HasNewChannels() || bRemoved || bRenumbered ? ObservableMessageChannelGroup : ObservableMessageChannelGroupReset);
 
     bReturn = Persist();
   }
@@ -943,9 +943,9 @@ void CPVRChannelGroup::ResetChannelNumbers(void)
     m_members.at(iChannelPtr).channel->SetCachedChannelNumber(0);
 }
 
-void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
+void CPVRChannelGroup::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg.Equals("settings"))
+  if (msg == ObservableMessageGuiSettings)
   {
     CSingleLock lock(m_critSection);
     bool bUsingBackendChannelOrder   = g_guiSettings.GetBool("pvrmanager.backendchannelorder");

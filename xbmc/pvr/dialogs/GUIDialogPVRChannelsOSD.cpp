@@ -255,9 +255,9 @@ CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
   return CGUIWindow::GetFirstFocusableControl(id);
 }
 
-void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const CStdString& msg)
+void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg.Equals("current-item"))
+  if (msg == ObservableMessageCurrentItem)
   {
     g_graphicsContext.Lock();
     m_viewControl.SetItems(*m_vecItems);

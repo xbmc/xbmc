@@ -258,7 +258,7 @@ bool CEpg::CheckPlayingEvent(void)
 
   if (!bGotPreviousTag || (bGotCurrentTag && previousTag != newTag))
   {
-    NotifyObservers("epg-current-event");
+    NotifyObservers(ObservableMessageEpgActiveItem);
     bReturn = true;
   }
 
@@ -441,7 +441,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
       bReturn = true;
   }
 
-  NotifyObservers("epg");
+  NotifyObservers(ObservableMessageEpg);
 
   return bReturn;
 }

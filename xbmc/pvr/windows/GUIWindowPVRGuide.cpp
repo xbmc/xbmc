@@ -63,9 +63,9 @@ void CGUIWindowPVRGuide::ResetObservers(void)
   g_EpgContainer.RegisterObserver(this);
 }
 
-void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
+void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg.Equals("epg"))
+  if (msg == ObservableMessageEpg)
   {
     m_bUpdateRequired = true;
 
@@ -73,7 +73,7 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
     if (IsFocused() && m_iGuideView == GUIDE_VIEW_TIMELINE)
       UpdateData(false);
   }
-  else if (msg.Equals("epg-now"))
+  else if (msg == ObservableMessageEpgActiveItem)
   {
     if (IsVisible() && m_iGuideView != GUIDE_VIEW_TIMELINE)
       SetInvalid();

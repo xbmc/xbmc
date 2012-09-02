@@ -550,7 +550,7 @@ void CAddonMgr::FindAddons()
       SetChanged();
     }
   }
-  NotifyObservers("addons");
+  NotifyObservers(ObservableMessageAddons);
 }
 
 void CAddonMgr::RemoveAddon(const CStdString& ID)
@@ -559,7 +559,7 @@ void CAddonMgr::RemoveAddon(const CStdString& ID)
   {
     m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
     SetChanged();
-    NotifyObservers("addons");
+    NotifyObservers(ObservableMessageAddons);
   }
 }
 

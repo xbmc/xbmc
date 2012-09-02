@@ -226,7 +226,7 @@ namespace PVR
 
     //@}
 
-    void Notify(const Observable &obs, const CStdString& msg);
+    void Notify(const Observable &obs, const ObservableMessage msg);
 
     /*!
      * @brief Get a channel given it's EPG ID.

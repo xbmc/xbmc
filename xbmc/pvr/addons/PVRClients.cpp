@@ -978,9 +978,9 @@ bool CPVRClients::UpdateAddons(void)
   return bReturn;
 }
 
-void CPVRClients::Notify(const Observable &obs, const CStdString& msg)
+void CPVRClients::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg.Equals("addons"))
+  if (msg == ObservableMessageAddons)
   {
     UpdateAddons();
     UpdateAndInitialiseClients();

@@ -114,7 +114,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   }
 
   SetChanged();
-  NotifyObservers("epg", true);
+  NotifyObservers(ObservableMessageEpgContainer, true);
 
   if (bThreadRunning)
     Start();
@@ -150,12 +150,12 @@ bool CEpgContainer::Stop(void)
   return true;
 }
 
-void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
+void CEpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
 {
   /* settings were updated */
-  if (msg.Equals("settings"))
+  if (msg == ObservableMessageGuiSettings)
     LoadSettings();
-  else if (msg.Equals("epg"))
+  else
   {
     SetChanged();
     NotifyObservers(msg);
@@ -320,7 +320,7 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
 
-  NotifyObservers("epg");
+  NotifyObservers(ObservableMessageEpgContainer);
 
   return epg;
 }
@@ -538,7 +538,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   if (iUpdatedTables > 0)
   {
     SetChanged();
-    NotifyObservers("epg", true);
+    NotifyObservers(ObservableMessageEpgContainer, true);
   }
 
   CSingleLock lock(m_critSection);
@@ -631,7 +631,7 @@ bool CEpgContainer::CheckPlayingEvents(void)
     if (bFoundChanges)
     {
       SetChanged();
-      NotifyObservers("epg-now", true);
+      NotifyObservers(ObservableMessageEpgActiveItem, true);
     }
 
     /* pvr tags always start on the full minute */

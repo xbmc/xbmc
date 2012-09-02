@@ -106,7 +106,7 @@ namespace EPG
      * @param obs The observable that sent the update.
      * @param msg The update message.
      */
-    virtual void Notify(const Observable &obs, const CStdString& msg);
+    virtual void Notify(const Observable &obs, const ObservableMessage msg);
 
     CEpg *CreateChannelEpg(PVR::CPVRChannelPtr channel);
 

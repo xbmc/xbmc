@@ -21,12 +21,27 @@
  *
  */
 
-#include "StdString.h"
 #include "threads/CriticalSection.h"
 #include "interfaces/AnnouncementManager.h"
 
 class Observable;
 class ObservableMessageJob;
+
+typedef enum
+{
+  ObservableMessageNone,
+  ObservableMessageCurrentItem,
+  ObservableMessageGuiSettings,
+  ObservableMessageAddons,
+  ObservableMessageEpg,
+  ObservableMessageEpgContainer,
+  ObservableMessageEpgActiveItem,
+  ObservableMessageChannelGroup,
+  ObservableMessageChannelGroupReset,
+  ObservableMessageTimers,
+  ObservableMessageTimersReset,
+  ObservableMessageRecordings,
+} ObservableMessage;
 
 class Observer
 {
@@ -53,7 +68,7 @@ public:
    * @param obs The observable that sends the message.
    * @param msg The message.
    */
-  virtual void Notify(const Observable &obs, const CStdString& msg) = 0;
+  virtual void Notify(const Observable &obs, const ObservableMessage msg) = 0;
 
 protected:
   /*!
@@ -100,10 +115,10 @@ public:
 
   /*!
    * @brief Send a message to all observers when m_bObservableChanged is true.
-   * @param strMessage The message to send.
+   * @param message The message to send.
    * @param bAsync True to send the message async, using the jobmanager.
    */
-  virtual void NotifyObservers(const CStdString& strMessage = "", bool bAsync = false);
+  virtual void NotifyObservers(const ObservableMessage message = ObservableMessageNone, bool bAsync = false);
 
   /*!
    * @brief Mark an observable changed.
@@ -124,9 +139,9 @@ protected:
   /*!
    * @brief Send a message to all observer when m_bObservableChanged is true.
    * @param obs The observer that sends the message.
-   * @param strMessage The message to send.
+   * @param message The message to send.
    */
-  static void SendMessage(const Observable& obs, const CStdString &strMessage);
+  static void SendMessage(const Observable& obs, const ObservableMessage message);
 
   bool                    m_bObservableChanged; /*!< true when the observable is marked as changed, false otherwise */
   std::vector<Observer *> m_observers;          /*!< all observers */

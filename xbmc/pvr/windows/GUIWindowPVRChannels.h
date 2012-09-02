@@ -44,7 +44,7 @@ namespace PVR
     void SetSelectedGroup(CPVRChannelGroupPtr group);
     CPVRChannelGroupPtr SelectNextGroup(void);
     void UpdateData(bool bUpdateSelectedFile = true);
-    void Notify(const Observable &obs, const CStdString& msg);
+    void Notify(const Observable &obs, const ObservableMessage msg);
     void ResetObservers(void);
     void UnregisterObservers(void);
 

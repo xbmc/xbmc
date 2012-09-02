@@ -252,7 +252,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
     SetChanged();
     lock.Leave();
 
-    NotifyObservers(bAddedOrDeleted ? "timers-reset" : "timers", false);
+    NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers, false);
 
     if (g_guiSettings.GetBool("pvrrecord.timernotifications"))
     {
@@ -643,7 +643,7 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
   return fileItem;
 }
 
-void CPVRTimers::Notify(const Observable &obs, const CStdString& msg)
+void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
 {
   g_PVRManager.TriggerTimersUpdate();
 }

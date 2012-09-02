@@ -43,7 +43,7 @@ namespace PVR
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     void OnWindowUnload(void);
     void UpdateData(bool bUpdateSelectedFile = true);
-    void Notify(const Observable &obs, const CStdString& msg);
+    void Notify(const Observable &obs, const ObservableMessage msg);
     void UnregisterObservers(void);
     void ResetObservers(void);
 

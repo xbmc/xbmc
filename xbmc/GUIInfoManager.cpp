@@ -3818,7 +3818,7 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
     SetCurrentMovie(item);
 
   SetChanged();
-  NotifyObservers("current-item", true);
+  NotifyObservers(ObservableMessageCurrentItem, true);
 }
 
 void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)

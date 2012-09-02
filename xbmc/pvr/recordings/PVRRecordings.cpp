@@ -305,7 +305,7 @@ void CPVRRecordings::Update(void)
   SetChanged();
   lock.Leave();
 
-  NotifyObservers("recordings-reset");
+  NotifyObservers(ObservableMessageRecordings);
 }
 
 int CPVRRecordings::GetNumRecordings()

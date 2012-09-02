@@ -165,7 +165,7 @@ namespace PVR
      */
     void UpdateChannels(void);
 
-    void Notify(const Observable &obs, const CStdString& msg);
+    void Notify(const Observable &obs, const ObservableMessage msg);
 
   private:
     void Unload(void);
