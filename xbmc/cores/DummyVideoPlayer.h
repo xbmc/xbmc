@@ -36,8 +36,8 @@ public:
   virtual bool IsPlaying() const;
   virtual void Pause();
   virtual bool IsPaused() const;
-  virtual bool HasVideo();
-  virtual bool HasAudio();
+  virtual bool HasVideo() const;
+  virtual bool HasAudio() const;
   virtual void ToggleOSD() { }; // empty
   virtual void SwitchToNextLanguage();
   virtual void ToggleSubtitles();

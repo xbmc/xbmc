@@ -119,12 +119,12 @@ bool CDummyVideoPlayer::IsPaused() const
   return m_paused;
 }
 
-bool CDummyVideoPlayer::HasVideo()
+bool CDummyVideoPlayer::HasVideo() const
 {
   return true;
 }
 
-bool CDummyVideoPlayer::HasAudio()
+bool CDummyVideoPlayer::HasAudio() const
 {
   return true;
 }
