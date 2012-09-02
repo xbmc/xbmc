@@ -184,7 +184,8 @@ CZeroconfBrowser::ZeroconfService::ZeroconfService():m_port(0){}
 
 CZeroconfBrowser::ZeroconfService::ZeroconfService(const CStdString& fcr_name, const CStdString& fcr_type, const CStdString& fcr_domain):
   m_name(fcr_name),
-  m_domain(fcr_domain)
+  m_domain(fcr_domain),
+  m_port(0)
 {
   SetType(fcr_type);
 }
