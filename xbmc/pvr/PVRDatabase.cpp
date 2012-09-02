@@ -867,23 +867,11 @@ int CPVRDatabase::Persist(const AddonPtr client)
     return iReturn;
   }
 
-  /* only add this client if it's not already in the database */
-  iReturn = GetClientId(client->ID());
-  if (iReturn <= 0)
-  {
-    CStdString strQuery = FormatSQL("INSERT INTO clients (sName, sUid) VALUES ('%s', '%s');",
-        client->Name().c_str(), client->ID().c_str());
+  CStdString strQuery = FormatSQL("REPLACE INTO clients (sName, sUid) VALUES ('%s', '%s');",
+      client->Name().c_str(), client->ID().c_str());
 
-    if (ExecuteQuery(strQuery))
-    {
-      iReturn = (int) m_pDS->lastinsertid();
-
-      CAddonDatabase database;
-      database.Open();
-      database.DisableAddon(client->ID());
-      database.Close();
-    }
-  }
+  if (ExecuteQuery(strQuery))
+    iReturn = (int) m_pDS->lastinsertid();
 
   return iReturn;
 }

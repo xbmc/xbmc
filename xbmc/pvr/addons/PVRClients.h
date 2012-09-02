@@ -540,13 +540,6 @@ namespace PVR
     bool UpdateAddons(void);
 
     /*!
-     * @brief Register a client in the db if it's not been registered yet.
-     * @param client The client to register.
-     * @return The database id of the client or -1 if an error occured.
-     */
-    int AddClientToDb(const ADDON::AddonPtr client);
-
-    /*!
      * @brief Get the menu hooks for a client.
      * @param iClientID The client to get the hooks for.
      * @param hooks The container to add the hooks to.

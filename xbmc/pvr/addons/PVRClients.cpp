@@ -742,20 +742,6 @@ void CPVRClients::StartChannelScan(void)
   m_bChannelScanRunning = false;
 }
 
-int CPVRClients::AddClientToDb(const AddonPtr client)
-{
-  /* add this client to the database if it's not in there yet */
-  CPVRDatabase *database = GetPVRDatabase();
-  int iClientDbId = database ? database->Persist(client) : -1;
-  if (iClientDbId <= 0)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database",
-        __FUNCTION__, client->Name().c_str());
-  }
-
-  return iClientDbId;
-}
-
 bool CPVRClients::IsKnownClient(const AddonPtr client) const
 {
   // database IDs start at 1
