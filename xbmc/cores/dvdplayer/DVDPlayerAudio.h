@@ -150,15 +150,15 @@ protected:
   double m_audioClock;
 
   // data for audio decoding
-  struct PacktetStatus
+  struct PacketStatus
   {
-    PacktetStatus()
+    PacketStatus()
     {
         msg = NULL;
         Release();
     }
 
-   ~PacktetStatus()
+   ~PacketStatus()
     {
         Release();
     }
