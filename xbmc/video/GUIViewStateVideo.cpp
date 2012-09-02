@@ -413,6 +413,7 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
       break;
     case NODE_TYPE_TITLE_MUSICVIDEOS:
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavMusicVideos);
+      break;
     default:
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV);
       break;
