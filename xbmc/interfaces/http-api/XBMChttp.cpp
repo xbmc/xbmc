@@ -183,6 +183,8 @@ bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString
   unsigned int ptr=0;
   FILE *outfile;
 
+  memset(in, 0, sizeof(in));
+
 // Translation Table to decode
   static const char cd64[]="|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$XYZ[\\]^_`abcdefghijklmnopq";
 
