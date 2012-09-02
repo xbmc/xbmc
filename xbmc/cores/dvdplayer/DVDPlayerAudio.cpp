@@ -184,7 +184,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
 
   m_freq = CurrentHostFrequency();
 
-  m_decode.msg = NULL;
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
@@ -545,7 +544,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
 void CDVDPlayerAudio::OnStartup()
 {
-  m_decode.msg = NULL;
   m_decode.Release();
 
   g_dvdPerformanceCounter.EnableAudioDecodePerformance(this);
