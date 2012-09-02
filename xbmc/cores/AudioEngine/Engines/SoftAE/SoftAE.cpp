@@ -197,7 +197,11 @@ void CSoftAE::InternalOpenSink()
   AEAudioFormat newFormat;
   newFormat.m_dataFormat    = AE_FMT_FLOAT;
   newFormat.m_sampleRate    = 44100;
+  newFormat.m_encodedRate   = 0;
   newFormat.m_channelLayout = m_stereoUpmix ? m_stdChLayout : AE_CH_LAYOUT_2_0;
+  newFormat.m_frames        = 0;
+  newFormat.m_frameSamples  = 0;
+  newFormat.m_frameSize     = 0;
 
   CSingleLock streamLock(m_streamLock);
 
@@ -379,9 +383,14 @@ void CSoftAE::InternalOpenSink()
 
       /* configure the encoder */
       AEAudioFormat encoderFormat;
-      encoderFormat.m_sampleRate    = m_sinkFormat.m_sampleRate;
       encoderFormat.m_dataFormat    = AE_FMT_FLOAT;
+      encoderFormat.m_sampleRate    = m_sinkFormat.m_sampleRate;
+      encoderFormat.m_encodedRate   = 0;
       encoderFormat.m_channelLayout = m_chLayout;
+      encoderFormat.m_frames        = 0;
+      encoderFormat.m_frameSamples  = 0;
+      encoderFormat.m_frameSize     = 0;
+      
       if (!m_encoder || !m_encoder->IsCompatible(encoderFormat))
       {
         m_buffer.Empty();
