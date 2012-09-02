@@ -378,7 +378,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "lastplayed",       VIDEOPLAYER_LASTPLAYED },
                                   { "playcount",        VIDEOPLAYER_PLAYCOUNT },
                                   { "hassubtitles",     VIDEOPLAYER_HASSUBTITLES },
-                                  { "subtitlesenabled", VIDEOPLAYER_SUBTITLESENABLED }};
+                                  { "subtitlesenabled", VIDEOPLAYER_SUBTITLESENABLED },
+                                  { "subtitleslanguage",VIDEOPLAYER_SUBTITLES_LANG }};
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasfolders",       CONTAINER_HASFOLDERS },
@@ -1291,6 +1292,16 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel.Format("%i", g_application.m_pPlayer->GetChannels());
+    break;
+  case VIDEOPLAYER_SUBTITLES_LANG:
+    // use g_settings.m_currentVideoSettings.m_SubtitleOn and g_settings.m_currentVideoSettings.m_SubtitleStream
+    // instead of g_application.m_pPlayer->GetSubtitleVisible and g_application.m_pPlayer->GetSubtitle()
+    // because when we switch subtitles there is few frames when weird things happen on subtitles switch with latter:
+    //  - when we switch from one sub to another, for few frames (time to handle message, close old and open new subs)
+    //    g_application.m_pPlayer->GetSubtitle() will return last of sub streams (that's how CSelectionStreams::IndexOf work for -1 index)
+    //  - when we toggle disable/enable subs there will be few frames before message will be handled
+    if(g_application.IsPlaying() && g_application.m_pPlayer && g_settings.m_currentVideoSettings.m_SubtitleOn)
+       g_application.m_pPlayer->GetSubtitleLanguage(g_settings.m_currentVideoSettings.m_SubtitleStream, strLabel);
     break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:
