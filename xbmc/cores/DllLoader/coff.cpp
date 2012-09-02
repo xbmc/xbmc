@@ -290,7 +290,10 @@ int CoffLoader::LoadSymTable(FILE *fp)
     return 0;
   }
   if (!fread((void *)tmp, CoffFileHeader->NumberOfSymbols, sizeof(SymbolTable_t), fp))
+  {
+    delete[] tmp;
     return 0;
+  }
   NumberOfSymbols = CoffFileHeader->NumberOfSymbols;
   SymTable = tmp;
   fseek(fp, Offset, SEEK_SET);
