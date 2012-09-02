@@ -203,6 +203,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       }
       return true;
     }
+    break;
   case GUI_MSG_LOAD_SKIN:
     {
       if (IsActive())
@@ -231,6 +232,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_delayedSetting = NULL;
       return true;
     }
+    break;
   case GUI_MSG_UPDATE:
     if (HasID(message.GetSenderId()))
       UpdateSettings();
