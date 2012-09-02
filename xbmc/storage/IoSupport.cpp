@@ -356,35 +356,3 @@ VOID CIoSupport::CloseCDROM(HANDLE hDevice)
   CloseHandle(hDevice);
 }
 
-VOID CIoSupport::GetXbePath(char* szDest)
-{
-
-#if WIN32
-  wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
-  CStdStringW strPathW = szAppPathW;
-  CStdString strPath;
-  g_charsetConverter.wToUTF8(strPathW,strPath);
-  strncpy(szDest,strPath.c_str(),strPath.length()+1);
-#elif defined(TARGET_DARWIN)
-  int      result = -1;
-  char     given_path[2*MAXPATHLEN];
-  uint32_t path_size = 2*MAXPATHLEN;
-
-  result = _NSGetExecutablePath(given_path, &path_size);
-  if (result == 0)
-    realpath(given_path, szDest);
-#else
-  /* Get our PID and build the name of the link in /proc */
-  pid_t pid = getpid();
-  char linkname[64]; /* /proc/<pid>/exe */
-  snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
-
-  /* Now read the symbolic link */
-  char buf[1024];
-  int ret = readlink(linkname, buf, 1024);
-  buf[ret] = 0;
-	
-  strcpy(szDest, buf);
-#endif
-}
