@@ -660,10 +660,10 @@ case $use_platform in
      use_texturepacker_native=yes
      use_arch="arm"
      use_cpu=arm1176jzf-s
-     use_armv5te="no"
+     use_armv5te="yes"
      use_armv6t2="no"
-     use_armv6="no"
-     use_armvfp="no"
+     use_armv6="yes"
+     use_armvfp="yes"
      use_hardcoded_tables="yes"
      use_alsa="yes"
      USE_TEXTUREPACKER_NATIVE_ROOT="$TEXTUREPACKER_NATIVE_ROOT"
