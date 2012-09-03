@@ -291,7 +291,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
         if ( metatype == 3 )
         {
           // Track title metatype
-          if ( metalength > sizeof( tempbuf ) )
+          if ( metalength >= sizeof( tempbuf ) )
             throw( "Meta event too long" );
 
           readData( tempbuf, metalength );
@@ -303,7 +303,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
         else if ( metatype == 5 || metatype == 1 )
         {
           // Lyrics metatype
-          if ( metalength > sizeof( tempbuf ) )
+          if ( metalength >= sizeof( tempbuf ) )
             throw( "Meta event too long" );
 
           readData( tempbuf, metalength );
