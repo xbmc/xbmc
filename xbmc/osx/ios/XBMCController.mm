@@ -37,6 +37,13 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include "threads/Event.h"
+#include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832795028842
+#endif
+#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
+
 #undef BOOL
 
 #import "IOSEAGLView.h"
@@ -68,8 +75,6 @@ extern NSString* kBRScreenSaverDismissed;
 @implementation XBMCController
 @synthesize animating;
 @synthesize lastGesturePoint;
-@synthesize lastPinchScale;
-@synthesize currentPinchScale;
 @synthesize screenScale;
 @synthesize lastEvent;
 @synthesize touchBeginSignaled;
@@ -144,6 +149,15 @@ extern NSString* kBRScreenSaverDismissed;
   CWinEventsIOS::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+  if ([gestureRecognizer isKindOfClass:[UIRotationGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
+    return YES;
+  }
+
+  return NO;
+}
+//--------------------------------------------------------------
 - (void)createGestureRecognizers 
 {
   //2 finger single tab - right mouse
@@ -191,10 +205,18 @@ extern NSString* kBRScreenSaverDismissed;
     initWithTarget:self action:@selector(handlePinch:)];
 
   pinch.delaysTouchesBegan = YES;
+  pinch.delegate = self;
   [self.view addGestureRecognizer:pinch];
   [pinch release];
-  lastPinchScale = 1.0;
-  currentPinchScale = lastPinchScale;
+
+  //for rotate gesture
+  UIRotationGestureRecognizer *rotate = [[UIRotationGestureRecognizer alloc]
+                                         initWithTarget:self action:@selector(handleRotate:)];
+
+  rotate.delaysTouchesBegan = YES;
+  rotate.delegate = self;
+  [self.view addGestureRecognizer:rotate];
+  [rotate release];
 }
 //--------------------------------------------------------------
 - (void) activateKeyboard:(UIView *)view
@@ -214,21 +236,49 @@ extern NSString* kBRScreenSaverDismissed;
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
     point.x *= screenScale;
     point.y *= screenScale;
-    currentPinchScale += [sender scale] - lastPinchScale;
-    lastPinchScale = [sender scale];  
   
     switch(sender.state)
     {
       case UIGestureRecognizerStateBegan:  
-      break;
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_BEGIN, 0, (float)point.x, (float)point.y,
+                                                        0, 0), WINDOW_INVALID,false);
+        break;
       case UIGestureRecognizerStateChanged:
         CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_ZOOM, 0, (float)point.x, (float)point.y, 
-          currentPinchScale, 0), WINDOW_INVALID,false);    
-      break;
+                                                                   [sender scale], 0), WINDOW_INVALID,false);
+        break;
       case UIGestureRecognizerStateEnded:
-      break;
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_END, 0, 0, 0,
+                                                        0, 0), WINDOW_INVALID,false);
+        break;
       default:
-      break;
+        break;
+    }
+  }
+}
+//--------------------------------------------------------------
+-(void)handleRotate:(UIRotationGestureRecognizer*)sender
+{
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+    point.x *= screenScale;
+    point.y *= screenScale;
+
+    switch(sender.state)
+    {
+      case UIGestureRecognizerStateBegan:
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_BEGIN, 0, (float)point.x, (float)point.y,
+                                                        0, 0), WINDOW_INVALID,false);
+        break;
+      case UIGestureRecognizerStateChanged:
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_ROTATE, 0, (float)point.x, (float)point.y,
+                                                        RADIANS_TO_DEGREES([sender rotation]), 0), WINDOW_INVALID,false);
+        break;
+      case UIGestureRecognizerStateEnded:
+        break;
+      default:
+        break;
     }
   }
 }

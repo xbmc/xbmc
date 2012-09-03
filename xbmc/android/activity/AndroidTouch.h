@@ -34,6 +34,9 @@ public:
 protected:
   virtual bool OnSingleTouchStart(float x, float y);
 
+  virtual bool OnMultiTouchStart(float x, float y, int32_t pointers = 2);
+  virtual bool OnMultiTouchEnd(float x, float y, int32_t pointers = 2);
+
   virtual bool OnTouchGesturePanStart(float x, float y);
   virtual bool OnTouchGesturePan(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY);
   virtual bool OnTouchGesturePanEnd(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY);
@@ -41,6 +44,7 @@ protected:
   virtual void OnSingleTap(float x, float y);
   virtual void OnSingleLongPress(float x, float y);
   virtual void OnZoomPinch(float centerX, float centerY, float zoomFactor);
+  virtual void OnRotate(float centerX, float centerY, float angle);
 
 private:
   void XBMC_Touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y);

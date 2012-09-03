@@ -441,7 +441,10 @@ JSONRPC_STATUS CPlayerOperations::Rotate(const CStdString &method, ITransportLay
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Picture:
-      SendSlideshowAction(ACTION_ROTATE_PICTURE);
+      if (parameterObject["value"].asString().compare("clockwise") == 0)
+        SendSlideshowAction(ACTION_ROTATE_PICTURE_CW);
+      else
+        SendSlideshowAction(ACTION_ROTATE_PICTURE_CCW);
       return ACK;
 
     case Video:
