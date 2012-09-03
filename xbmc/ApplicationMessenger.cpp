@@ -253,7 +253,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
-case TMSG_POWERDOWN:
+      case TMSG_POWERDOWN:
       {
         g_application.Stop(EXITCODE_POWERDOWN);
         g_powerManager.Powerdown();
