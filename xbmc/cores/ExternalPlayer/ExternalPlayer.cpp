@@ -565,7 +565,7 @@ int64_t CExternalPlayer::GetTime() // in millis
 
 int64_t CExternalPlayer::GetTotalTime() // in milliseconds
 {
-  return m_totalTime * 1000;
+  return (int64_t)m_totalTime * 1000;
 }
 
 void CExternalPlayer::ToFFRW(int iSpeed)
