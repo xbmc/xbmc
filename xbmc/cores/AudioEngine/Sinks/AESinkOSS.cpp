@@ -101,10 +101,10 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
 #ifdef __linux__
   /* try to open in exclusive mode first (no software mixing) */
   m_fd = open(device.c_str(), O_WRONLY | O_EXCL, 0);
-  if (!m_fd)
+  if (m_fd == -1)
 #endif
     m_fd = open(device.c_str(), O_WRONLY, 0);
-  if (!m_fd)
+  if (m_fd == -1)
   {
     CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to open the audio device: %s", device.c_str());
     return false;
@@ -335,7 +335,7 @@ void CAESinkOSS::Deinitialize()
 {
   Stop();
 
-  if (m_fd)
+  if (m_fd != -1)
     close(m_fd);
 }
 
@@ -384,16 +384,19 @@ bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const std::string devi
 void CAESinkOSS::Stop()
 {
 #ifdef SNDCTL_DSP_RESET
-  if (m_fd)
+  if (m_fd != -1)
     ioctl(m_fd, SNDCTL_DSP_RESET, NULL);
 #endif
 }
 
 double CAESinkOSS::GetDelay()
 {
+  if (m_fd == -1)
+    return 0.0;
+  
   int delay;
   if (ioctl(m_fd, SNDCTL_DSP_GETODELAY, &delay) == -1)
-    return 0.0f;
+    return 0.0;
 
   return (double)delay / (m_format.m_frameSize * m_format.m_sampleRate);
 }
@@ -401,6 +404,12 @@ double CAESinkOSS::GetDelay()
 unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
   int size = frames * m_format.m_frameSize;
+  if (m_fd == -1)
+  {
+    CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");
+    return frames;
+  }
+
   int wrote = write(m_fd, data, size);
   if (wrote < 0)
   {
@@ -413,7 +422,7 @@ unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool has
 
 void CAESinkOSS::Drain()
 {
-  if (!m_fd)
+  if (m_fd == -1)
     return;
 
   // ???
