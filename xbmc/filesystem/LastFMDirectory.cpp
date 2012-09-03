@@ -399,7 +399,7 @@ bool CLastFMDirectory::ParseTrackList(CStdString url, CFileItemList &items)
             NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
       else
         // no artist in xml, assuming we're retrieving track list for the artist in m_objname...
-        AddListEntry((name) ? name->FirstChild()->Value() : NULL,
+        AddListEntry(name->FirstChild()->Value(),
             m_objname.c_str(),
             (count) ? count->FirstChild()->Value() : NULL,
             NULL, NULL, "lastfm://xbmc/artist/" + m_objname + "/", items);
