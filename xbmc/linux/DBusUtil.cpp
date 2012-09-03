@@ -79,7 +79,8 @@ CVariant CDBusUtil::GetAll(const char *destination, const char *object, const ch
               const char * key = NULL;
 
               dbus_message_iter_get_basic(&dict, &key);
-              dbus_message_iter_next(&dict);
+              if (!dbus_message_iter_next(&dict))
+                break;
 
               CVariant value = ParseVariant(&dict);
 
