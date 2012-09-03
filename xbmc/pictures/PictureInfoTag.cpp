@@ -307,7 +307,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     break;
   case SLIDE_EXIF_DATE_TIME:
   case SLIDE_EXIF_DATE:
-    if (m_exifInfo.DateTime && strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
+    if (strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
     {
       CStdString dateTime = m_exifInfo.DateTime;
       int year  = atoi(dateTime.Mid(0, 4).c_str());

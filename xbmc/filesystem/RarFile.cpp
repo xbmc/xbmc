@@ -697,7 +697,7 @@ bool CRarFile::OpenInArchive()
       {
         CStdString strFileName;
 
-        if (m_pArc->NewLhd.FileNameW && wcslen(m_pArc->NewLhd.FileNameW) > 0)
+        if (wcslen(m_pArc->NewLhd.FileNameW) > 0)
         {
           g_charsetConverter.wToUTF8(m_pArc->NewLhd.FileNameW, strFileName);
         }
