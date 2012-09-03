@@ -13,8 +13,8 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-This is a platform port of XBMC for the Apple OSX operating system. Both 10.6
-and 10.7 Intel development platforms are supported. Xcode 3.2.6 and 4.3 and newer
+This is a platform port of XBMC for the Apple OSX operating system. 10.6, 10.7
+and 10.8 Intel development platforms are supported. Xcode 3.2.6 and 4.3 and newer
 are the recommended versions.
 There are 3 ways to build XBMC for Mac, from command-line with make, from command-line
 using xcodebuild or from Xcode.
@@ -27,6 +27,7 @@ codecs that support a multitude of music and video formats.
 
 On Snow Leopard (OSX 10.6.x) we recommend using Xcode 3.2.6.
 On Lion (OSX 10.7.x) we recommend using Xcode 4.3.x.
+On Mountain Lion (OSX 10.8.1) we recommend using Xcode 4.4.
 
 NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
 commands that need to be typed into a Terminal window. Note that the '$'
@@ -73,13 +74,6 @@ Xcode 4.4 only runs on 10.8.x (Mountain Lion).
  $ ./bootstrap
  $ ./configure --with-darwin=osx --with-arch=x86_64
  $ make
-
-IMPORTANT!! for Mountain Lion users. In Xcode 4.4 there is only SDK 10.7 and 10.8
-available. The XBMC buildsystem defaults to 10.6. So for compiling with ML
-you have to specify the 10.7 SDK explicitly on configure:
-
- $ ./configure --with-darwin=osx --with-sdk=10.7
-
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -133,9 +127,6 @@ OSX application.
 Set the build target to "XBMC" or "XBMC.app" and be sure to select the same 
 architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 for 64Bit), 
 then build. 
-
-Mountain Lion users have to ensure to build against 10.7 SDK not 10.8 (which is
-selected in Xcode 4.4 by default).
 
 The build process will take a long time when building the first time. 
 You can see the progress in "Build Results". There are a large number of static 
