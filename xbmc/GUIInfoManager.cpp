@@ -336,7 +336,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "hasprevious",      MUSICPLAYER_HASPREVIOUS },
                                   { "hasnext",          MUSICPLAYER_HASNEXT },
                                   { "playcount",        MUSICPLAYER_PLAYCOUNT },
-                                  { "lastplayed",       MUSICPLAYER_LASTPLAYED }};
+                                  { "lastplayed",       MUSICPLAYER_LASTPLAYED },
+                                  { "filenameandpath",  MUSICPLAYER_FILEPATH }};
 
 const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "genre",            VIDEOPLAYER_GENRE },
@@ -1236,6 +1237,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_PLAYCOUNT:
   case MUSICPLAYER_LASTPLAYED:
+  case MUSICPLAYER_FILEPATH:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -2793,7 +2795,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(atoi(m_stringParameters[info.GetData1()].c_str())).m_fPct);
     return strCpu;
   }
-  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
+  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_FILEPATH)
     return GetMusicPlaylistInfo(info);
   else if (info.m_info == CONTAINER_PROPERTY)
   {
@@ -3291,7 +3293,11 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     break;
   case MUSICPLAYER_LYRICS:
     if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
-  break;
+    break;
+  case MUSICPLAYER_FILEPATH:
+    if (!tag.GetURL().IsEmpty())
+      return tag.GetURL();
+    break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
