@@ -134,8 +134,8 @@ bool XLCDproc::Connect()
   }
 
   // Receive LCDproc data to determine row and column information
-  char reply[1024];
-  if (read(m_sockfd,reply,1024) == -1)
+  char reply[1024] = {};
+  if (read(m_sockfd,reply,sizeof(reply) - 1) == -1)
   {
     CLog::Log(LOGERROR, "XLCDproc::%s - Unable to read from socket", __FUNCTION__);
     return false;
