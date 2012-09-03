@@ -2151,7 +2151,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     {
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
-        pSlideShow->OnAction(CAction(ACTION_ROTATE_PICTURE));
+        pSlideShow->OnAction(CAction(ACTION_ROTATE_PICTURE_CW));
         return SetResponse(openTag+"OK");
       }
       else

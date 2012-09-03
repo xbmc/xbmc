@@ -219,6 +219,16 @@ public:
    \sa 
    */
   virtual void OnZoomPinch(float centerX, float centerY, float zoomFactor) { }
+  /*!
+   \brief Two simultaneous touches have been held down and moved to perform a rotating gesture
+
+   \param centerX       The x coordinate (with sub-pixel) of the center of the two touches
+   \param centerY       The y coordinate (with sub-pixel) of the center of the two touches
+   \param angle         The clockwise angle in degrees of the rotation
+   \return True if the event was handled otherwise false
+   \sa
+   */
+  virtual void OnRotate(float centerX, float centerY, float angle) { }
 };
 
 class CTouchInput : private ITouchHandler, private ITimerCallback
@@ -306,6 +316,7 @@ private:
 
   void handleMultiTouchGesture();
   void handleZoomPinch();
+  void handleRotation();
 
   // implementation of ITimerCallback
   virtual void OnTimeout();
@@ -335,12 +346,15 @@ private:
   virtual void OnDoubleTap(float x1, float y1, float x2, float y2);
   virtual void OnDoubleLongPress(float x1, float y1, float x2, float y2);
   virtual void OnZoomPinch(float centerX, float centerY, float zoomFactor);
+  virtual void OnRotate(float centerX, float centerY, float angle);
 
   CCriticalSection m_critical;
 
   int32_t m_holdTimeout;
   ITouchHandler *m_handler;
   CTimer *m_holdTimer;
+
+  float m_fRotateAngle;
 
   class Touch : public CVector {
     public:
