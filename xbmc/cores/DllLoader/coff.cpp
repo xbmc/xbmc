@@ -182,12 +182,16 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
   if (!fread(Sig, 1, 2, fp) || strncmp(Sig, "MZ", 2) != 0)
     return 0;
 
+  if (fseek(fp, 0x3c, SEEK_SET) != 0)
+    return 0;
+  
   int Offset = 0;
-  fseek(fp, 0x3c, SEEK_SET);
   if (!fread(&Offset, sizeof(int), 1, fp) || (Offset <= 0))
     return 0;
 
-  fseek(fp, Offset, SEEK_SET);
+  if (fseek(fp, Offset, SEEK_SET) != 0)
+    return 0;
+
   memset(Sig, 0, sizeof(Sig));
   if (!fread(Sig, 1, 4, fp) || strncmp(Sig, "PE\0\0", 4) != 0)
     return 0;
@@ -278,11 +282,15 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
 int CoffLoader::LoadSymTable(FILE *fp)
 {
   int Offset = ftell(fp);
+  if (Offset < 0)
+    return 0;
 
   if ( CoffFileHeader->PointerToSymbolTable == 0 )
     return 1;
 
-  fseek(fp, CoffFileHeader->PointerToSymbolTable /* + CoffBeginOffset*/, SEEK_SET);
+  if (fseek(fp, CoffFileHeader->PointerToSymbolTable /* + CoffBeginOffset*/, SEEK_SET) != 0)
+    return 0;
+
   SymbolTable_t *tmp = new SymbolTable_t[CoffFileHeader->NumberOfSymbols];
   if (!tmp)
   {
@@ -296,7 +304,8 @@ int CoffLoader::LoadSymTable(FILE *fp)
   }
   NumberOfSymbols = CoffFileHeader->NumberOfSymbols;
   SymTable = tmp;
-  fseek(fp, Offset, SEEK_SET);
+  if (fseek(fp, Offset, SEEK_SET) != 0)
+    return 0;
   return 1;
 }
 
@@ -304,14 +313,18 @@ int CoffLoader::LoadStringTable(FILE *fp)
 {
   int StringTableSize;
   char *tmp = NULL;
+  
   int Offset = ftell(fp);
+  if (Offset < 0)
+    return 0;
 
   if ( CoffFileHeader->PointerToSymbolTable == 0 )
     return 1;
 
-  fseek(fp, CoffFileHeader->PointerToSymbolTable +
+  if (fseek(fp, CoffFileHeader->PointerToSymbolTable +
         CoffFileHeader->NumberOfSymbols * sizeof(SymbolTable_t),
-        SEEK_SET);
+        SEEK_SET) != 0)
+    return 0;
 
   if (!fread(&StringTableSize, 1, sizeof(int), fp))
     return 0;
@@ -332,7 +345,8 @@ int CoffLoader::LoadStringTable(FILE *fp)
   }
   SizeOfStringTable = StringTableSize;
   StringTable = tmp;
-  fseek(fp, Offset, SEEK_SET);
+  if (fseek(fp, Offset, SEEK_SET) != 0)
+    return 0;
   return 1;
 }
 
@@ -363,7 +377,9 @@ int CoffLoader::LoadSections(FILE *fp)
     SectionHeader_t *ScnHdr = (SectionHeader_t *)(SectionHeader + SctnCnt);
     SectionData[SctnCnt] = ((char*)hModule + ScnHdr->VirtualAddress);
 
-    fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
+    if (fseek(fp, ScnHdr->PtrToRawData, SEEK_SET) != 0)
+      return 0;
+
     if (!fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp))
       return 0;
 
