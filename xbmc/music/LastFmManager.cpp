@@ -277,8 +277,8 @@ bool CLastFmManager::RequestRadioTracks()
     CCurlFile http;
     if (!http.Get(url, html))
     {
-      m_RadioSession.empty();
       CLog::Log(LOGERROR, "LastFmManager: Connect to Last.fm to request tracks failed.");
+      m_RadioSession.clear();
       return false;
     }
   }
@@ -290,8 +290,8 @@ bool CLastFmManager::RequestRadioTracks()
   xmlDoc.Parse(html);
   if (xmlDoc.Error())
   {
-    m_RadioSession.empty();
     CLog::Log(LOGERROR, "LastFmManager: Unable to parse tracklist Error: %s", xmlDoc.ErrorDesc());
+    m_RadioSession.clear();
     return false;
   }
 
@@ -299,7 +299,7 @@ bool CLastFmManager::RequestRadioTracks()
   if (!pRootElement )
   {
     CLog::Log(LOGWARNING, "LastFmManager: No more tracks received");
-    m_RadioSession.empty();
+    m_RadioSession.clear();
     return false;
   }
 
@@ -307,7 +307,7 @@ bool CLastFmManager::RequestRadioTracks()
   if (!pBodyElement )
   {
     CLog::Log(LOGWARNING, "LastFmManager: No more tracks received, no tracklist");
-    m_RadioSession.empty();
+    m_RadioSession.clear();
     return false;
   }
 
@@ -316,7 +316,7 @@ bool CLastFmManager::RequestRadioTracks()
   if (!pTrackElement)
   {
     CLog::Log(LOGWARNING, "LastFmManager: No more tracks received, empty tracklist");
-    m_RadioSession.empty();
+    m_RadioSession.clear();
     return false;
   }
   while (pTrackElement)
