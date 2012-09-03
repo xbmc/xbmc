@@ -396,7 +396,10 @@ void CSoftAE::InternalOpenSink()
         m_buffer.Empty();
         SetupEncoder(encoderFormat);
         m_encoderFormat       = encoderFormat;
-        m_encoderFrameSizeMul = 1.0 / (float)encoderFormat.m_frameSize;
+        if (encoderFormat.m_frameSize > 0)
+          m_encoderFrameSizeMul = 1.0 / (float)encoderFormat.m_frameSize;
+        else
+          m_encoderFrameSizeMul = 1.0;
       }
 
       /* remap directly to the format we need for encode */
