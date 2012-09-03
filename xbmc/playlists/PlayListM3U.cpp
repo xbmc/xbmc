@@ -233,7 +233,9 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
         if ((maxBandwidth < streamBandwidth) && (streamBandwidth <= bandwidth))
         {
           // read the next line
-          file.ReadString(szLine, 1024);
+          if (!file.ReadString(szLine, 1024))
+            continue;
+
           strLine = szLine;
           strLine.TrimRight(" \t\r\n");
           strLine.TrimLeft(" \t");

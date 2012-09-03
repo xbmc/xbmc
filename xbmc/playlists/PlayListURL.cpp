@@ -63,13 +63,15 @@ bool CPlayListURL::Load(const CStdString& strFileName)
 
     if (strLine.Left(18) == "[InternetShortcut]")
     {
-      file.ReadString(szLine,1024);
-      strLine  = szLine;
-      StringUtils::RemoveCRLF(strLine);
-      if (strLine.Left(4) == "URL=")
+      if (file.ReadString(szLine,1024))
       {
-        CFileItemPtr newItem(new CFileItem(strLine.Mid(4),false));
-        Add(newItem);
+        strLine  = szLine;
+        StringUtils::RemoveCRLF(strLine);
+        if (strLine.Left(4) == "URL=")
+        {
+          CFileItemPtr newItem(new CFileItem(strLine.Mid(4),false));
+          Add(newItem);
+        }
       }
     }
   }
