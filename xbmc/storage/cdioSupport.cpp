@@ -757,10 +757,14 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       if ( -1 == m_nFirstData)
         m_nFirstData = i;
     }
+    ti.nfsInfo = FS_NO_DATA;
     ti.ms_offset = 0;
     ti.isofs_size = 0;
     ti.nJolietLevel = 0;
     ti.nFrames = ::cdio_get_track_lba(cdio, i);
+    ti.nMins = 0;
+    ti.nSecs = 0;
+
     info->SetTrackInformation( i, ti );
     /* skip to leadout? */
     if (i == m_nNumTracks)
@@ -822,6 +826,8 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
           ti.isofs_size = 0;
           ti.nJolietLevel = 0;
           ti.nFrames = ::cdio_get_track_lba(cdio, i);
+          ti.nMins = 0;
+          ti.nSecs = 0;
           info->SetTrackInformation( i + 1, ti );
         }
       case TRACK_FORMAT_ERROR:
