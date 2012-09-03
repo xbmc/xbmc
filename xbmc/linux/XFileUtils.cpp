@@ -451,25 +451,27 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
     }
   }
 
-  // Read and write chunks of 16K
-  char buf[16384];
-  int64_t bytesRead = 1;
-  int64_t bytesWritten = 1;
-
-  while (bytesRead > 0 && bytesWritten > 0)
+  if (sf != -1 && df != -1)
   {
-    bytesRead = read(sf, buf, sizeof(buf));
-    if (bytesRead > 0)
-      bytesWritten = write(df, buf, bytesRead);
+    // Read and write chunks of 16K
+    char buf[16384];
+    int64_t bytesRead = 1;
+    int64_t bytesWritten = 1;
+
+    while (bytesRead > 0 && bytesWritten > 0)
+    {
+      bytesRead = read(sf, buf, sizeof(buf));
+      if (bytesRead > 0)
+        bytesWritten = write(df, buf, bytesRead);
+    }
+
+    // Done
+    close(sf);
+    close(df);
+    
+    if (bytesRead == -1 || bytesWritten == -1)
+      return 0;
   }
-
-  // Done
-  close(sf);
-  close(df);
-
-  if (bytesRead == -1 || bytesWritten == -1)
-    return 0;
-
   return 1;
 }
 
@@ -643,7 +645,10 @@ BOOL SetEndOfFile(HANDLE hFile)
 #else
   off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
 #endif
-  return (ftruncate(hFile->fd, currOff) == 0);
+  if (currOff >= 0)
+    return (ftruncate(hFile->fd, currOff) == 0);
+
+  return false;
 }
 
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable)
