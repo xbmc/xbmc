@@ -92,17 +92,20 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
 {
   CSingleLock lock(m_critSection);
   CFile file;
-  file.Open(url);
   try
   {
-    // we intentionally avoid using file.GetLength() for 
-    // Transfer-Encoding: chunked servers.
-    std::stringstream str;
-    char temp[1024];
-    int read;
-    while ((read=file.Read(temp, sizeof(temp))) > 0)
-      str.write(temp, read);
-    return str.str();
+    if (file.Open(url))
+    {    
+      // we intentionally avoid using file.GetLength() for 
+      // Transfer-Encoding: chunked servers.
+      std::stringstream str;
+      char temp[1024];
+      int read;
+      while ((read=file.Read(temp, sizeof(temp))) > 0)
+        str.write(temp, read);
+      return str.str();
+    }
+    return "";
   }
   catch (...)
   {
@@ -147,8 +150,7 @@ VECADDONS CRepository::Parse()
     file = url.Get();
   }
 
-  doc.LoadFile(file);
-  if (doc.RootElement())
+  if (doc.LoadFile(file) && doc.RootElement())
   {
     CAddonMgr::Get().AddonsFromRepoXML(doc.RootElement(), result);
     for (IVECADDONS i = result.begin(); i != result.end(); ++i)

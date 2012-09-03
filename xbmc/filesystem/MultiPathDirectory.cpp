@@ -161,7 +161,7 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
 
 bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
 {
-  vecPaths.empty();
+  vecPaths.clear();
   CStdString strPath1 = strPath;
 
   // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
