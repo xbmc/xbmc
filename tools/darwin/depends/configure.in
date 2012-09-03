@@ -42,7 +42,7 @@ case $use_darwin in
      10.5);;
      10.6);;
      10.7);;
-     10.8) use_sdk=10.7;;
+     10.8);;
      *)
        AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
      esac

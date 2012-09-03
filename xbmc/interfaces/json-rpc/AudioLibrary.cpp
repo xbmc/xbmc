@@ -50,14 +50,22 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
     genreID = (int)filter["genreid"].asInteger();
-  if (filter.isMember("genre"))
+  else if (filter.isMember("genre"))
     musicUrl.AddOption("genre", filter["genre"].asString());
-  if (filter.isMember("albumid"))
+  else if (filter.isMember("albumid"))
     albumID = (int)filter["albumid"].asInteger();
-  if (filter.isMember("album"))
+  else if (filter.isMember("album"))
     musicUrl.AddOption("album", filter["album"].asString());
-  if (filter.isMember("songid"))
+  else if (filter.isMember("songid"))
     songID = (int)filter["songid"].asInteger();
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("artists", filter, xsp))
+      return InvalidParams;
+
+    musicUrl.AddOption("xsp", xsp);
+  }
 
   bool albumArtistsOnly = !g_guiSettings.GetBool("musiclibrary.showcompilationartists");
   if (parameterObject["albumartistsonly"].isBoolean())
@@ -78,7 +86,10 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     param["properties"] = CVariant(CVariant::VariantTypeArray);
   param["properties"].append("artist");
 
-  HandleFileItemList("artistid", false, "artists", items, param, result, false);
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  HandleFileItemList("artistid", false, "artists", items, param, result, size, false);
   return OK;
 }
 
@@ -123,12 +134,20 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("artistid"))
     artistID = (int)filter["artistid"].asInteger();
-  if (filter.isMember("artist"))
+  else if (filter.isMember("artist"))
     musicUrl.AddOption("artist", filter["artist"].asString());
-  if (filter.isMember("genreid"))
+  else if (filter.isMember("genreid"))
     genreID = (int)filter["genreid"].asInteger();
-  if (filter.isMember("genre"))
+  else if (filter.isMember("genre"))
     musicUrl.AddOption("genre", filter["genre"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("albums", filter, xsp))
+      return InvalidParams;
+
+    musicUrl.AddOption("xsp", xsp);
+  }
 
   SortDescription sorting;
   ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
@@ -182,16 +201,24 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("artistid"))
     artistID = (int)filter["artistid"].asInteger();
-  if (filter.isMember("artist"))
+  else if (filter.isMember("artist"))
     musicUrl.AddOption("artist", filter["artist"].asString());
-  if (filter.isMember("genreid"))
+  else if (filter.isMember("genreid"))
     genreID = (int)filter["genreid"].asInteger();
-  if (filter.isMember("genre"))
+  else if (filter.isMember("genre"))
     musicUrl.AddOption("genre", filter["genre"].asString());
-  if (filter.isMember("albumid"))
+  else if (filter.isMember("albumid"))
     albumID = (int)filter["albumid"].asInteger();
-  if (filter.isMember("album"))
+  else if (filter.isMember("album"))
     musicUrl.AddOption("album", filter["album"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("songs", filter, xsp))
+      return InvalidParams;
+
+    musicUrl.AddOption("xsp", xsp);
+  }
 
   SortDescription sorting;
   ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);

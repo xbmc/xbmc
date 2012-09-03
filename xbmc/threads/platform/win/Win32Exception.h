@@ -25,23 +25,29 @@
 #include <exception>
 #include "commons/Exception.h"
 
-class win32_exception: public XbmcCommons::Exception
+class win32_exception: public XbmcCommons::UncheckedException
 {
 public:
     typedef const void* Address; // OK on Win32 platform
 
     static void install_handler();
+    static void set_version(std::string version) { mVersion = version; };
     virtual const char* what() const { return mWhat; };
     Address where() const { return mWhere; };
     unsigned code() const { return mCode; };
     virtual void LogThrowMessage(const char *prefix) const;
+    static bool write_minidump(EXCEPTION_POINTERS* pEp);
 protected:
-    win32_exception(const EXCEPTION_RECORD& info, const char* classname = NULL);
+    win32_exception(EXCEPTION_POINTERS*, const char* classname = NULL);
     static void translate(unsigned code, EXCEPTION_POINTERS* info);
+
+    inline bool write_minidump() const { return write_minidump(mExceptionPointers); };
 private:
     const char* mWhat;
     Address mWhere;
     unsigned mCode;
+    EXCEPTION_POINTERS *mExceptionPointers;
+    static std::string mVersion;
 };
 
 class access_violation: public win32_exception
@@ -62,5 +68,5 @@ protected:
 private:
     access_type mAccessType;
     Address mBadAddress;
-    access_violation(const EXCEPTION_RECORD& info);
+    access_violation(EXCEPTION_POINTERS* info);
 };

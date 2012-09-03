@@ -213,7 +213,7 @@ const BUILT_IN commands[] = {
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
-  { "toggledebug",                false,  "Enables/disables debug mode" },
+  { "ToggleDebug",                false,  "Enables/disables debug mode" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)

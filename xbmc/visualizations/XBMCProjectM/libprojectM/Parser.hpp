@@ -109,7 +109,7 @@ typedef enum {
     tSemiColon, /* ; */
     tStringTooLong, /* special token to indicate an invalid string length */
     tStringBufferFilled /* the string buffer for this line is maxed out */
-  } token_t;
+  } token_type;
 
 class CustomShape;
 class CustomWave;
@@ -148,9 +148,9 @@ public:
     static int get_string_prefix_len(char * string);
     static TreeExpr * insert_gen_expr(GenExpr * gen_expr, TreeExpr ** root);
     static TreeExpr * insert_infix_op(InfixOp * infix_op, TreeExpr ** root);
-    static token_t parseToken(std::istream & fs, char * string);
+    static token_type parseToken(std::istream & fs, char * string);
     static GenExpr ** parse_prefix_args(std::istream & fs, int num_args, Preset * preset);
-    static GenExpr * parse_infix_op(std::istream & fs, token_t token, TreeExpr * tree_expr, Preset * preset);
+    static GenExpr * parse_infix_op(std::istream & fs, token_type token, TreeExpr * tree_expr, Preset * preset);
     static GenExpr * parse_sign_arg(std::istream & fs);
     static int parse_float(std::istream & fs, float * float_ptr);
     static int parse_int(std::istream & fs, int * int_ptr);
