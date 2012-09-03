@@ -310,7 +310,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
     else
       lfeon = ((data[6] >> pos) & 0x1) ? 1 : 0;
 
-    if (bsid > 0x11 || acmod > 8)
+    if (bsid > 0x11 || acmod > 7)
       continue;
 
     if (bsid <= 10)

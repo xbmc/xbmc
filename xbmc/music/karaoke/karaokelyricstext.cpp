@@ -70,7 +70,7 @@ CKaraokeLyricsText::CKaraokeLyricsText()
   m_karaokeFont = 0;
 
   int coloridx = g_guiSettings.GetInt("karaoke.fontcolors");
-  if ( coloridx < KARAOKE_COLOR_START || coloridx > KARAOKE_COLOR_END )
+  if ( coloridx < KARAOKE_COLOR_START || coloridx >= KARAOKE_COLOR_END )
     coloridx = 0;
 
   m_colorLyrics = gLyricColors[coloridx].text;

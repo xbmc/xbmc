@@ -545,7 +545,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
 void CGUIWindowFileManager::OnClick(int iList, int iItem)
 {
-  if ( iList < 0 || iList > 2) return ;
+  if ( iList < 0 || iList >= 2) return ;
   if ( iItem < 0 || iItem >= m_vecItems[iList]->Size() ) return ;
 
   CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
@@ -964,7 +964,7 @@ int CGUIWindowFileManager::GetFocusedList() const
 
 void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven /* = true */)
 {
-  if (list < 0 || list > 2) return ;
+  if (list < 0 || list >= 2) return ;
   bool bDeselect = SelectItem(list, item);
   // calculate the position for our menu
   float posX = 200;

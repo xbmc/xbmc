@@ -247,10 +247,12 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
           int i;
           for (i = 0; i < 10; i++)
           {
-            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01 * zoomamount[i])
+            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01*zoomamount[i])
+            {
+              m_fZoomAmount = zoomamount[i];
               break;
+            }
           }
-          m_fZoomAmount = zoomamount[i];
           m_bNoEffect = (m_fZoomAmount != 1.0f); // turn effect rendering back on.
         }
         /* not really needed anymore as we support arbitrary rotations
