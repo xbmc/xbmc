@@ -259,8 +259,11 @@ bool CCDDARipJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(),GetType()) == 0)
   {
     const CCDDARipJob* rjob = dynamic_cast<const CCDDARipJob*>(job);
-    return m_input  == rjob->m_input &&
-           m_output == rjob->m_output;
+    if (rjob)
+    {
+      return m_input  == rjob->m_input &&
+             m_output == rjob->m_output;
+    }
   }
   return false;
 }
