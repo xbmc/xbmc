@@ -110,14 +110,12 @@ JSONRPC_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLaye
         params["item"]["media"] = "video";
       else if (playlist == PLAYLIST_MUSIC)
         params["item"]["media"] = "music";
-      else
-        return FailedToExecute;
 
       if (!FillFileItemList(params["item"], list))
         return InvalidParams;
 
       CApplicationMessenger::Get().PlayListPlayerAdd(playlist, list);
-
+      
       break;
 
     case PLAYLIST_PICTURE:
