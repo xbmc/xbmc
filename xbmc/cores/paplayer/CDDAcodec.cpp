@@ -65,7 +65,10 @@ bool CDDACodec::Init(const CStdString &strFile, unsigned int filecache)
 
   //  Calculate total time of the track
   m_TotalTime=(m_file.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime);
+  if (m_TotalTime > 0)
+    m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime);
+  else
+    m_Bitrate = 0;
   m_TotalTime*=1000; // ms
   return true;
 }
