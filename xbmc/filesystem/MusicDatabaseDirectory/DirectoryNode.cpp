@@ -90,7 +90,8 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
   }
 
   // Add all the additional URL options to the last node
-  pNode->AddOptions(url.GetOptions());
+  if (pNode)
+    pNode->AddOptions(url.GetOptions());
 
   return pNode;
 }
