@@ -68,8 +68,8 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
           strIpAddress = nmb_ip;
       }
     }
+    pclose(fp);
   }
-  pclose(fp);
 
   if (!strIpAddress.IsEmpty())
   {
