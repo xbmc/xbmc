@@ -70,9 +70,9 @@ namespace JSONRPC
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
 
   private:
-    static JSONRPC_STATUS GetAdditionalMovieDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase);
-    static JSONRPC_STATUS GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase);
-    static JSONRPC_STATUS GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase);
+    static JSONRPC_STATUS GetAdditionalMovieDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit = true);
+    static JSONRPC_STATUS GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit = true);
+    static JSONRPC_STATUS GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit = true);
     static JSONRPC_STATUS RemoveVideo(const CVariant &parameterObject);
     static void UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork);
   };
