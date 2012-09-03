@@ -78,7 +78,10 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     param["properties"] = CVariant(CVariant::VariantTypeArray);
   param["properties"].append("artist");
 
-  HandleFileItemList("artistid", false, "artists", items, param, result, false);
+  int size = items.Size();
+  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+    size = (int)items.GetProperty("total").asInteger();
+  HandleFileItemList("artistid", false, "artists", items, param, result, size, false);
   return OK;
 }
 
