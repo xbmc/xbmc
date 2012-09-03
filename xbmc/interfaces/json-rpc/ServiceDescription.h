@@ -683,8 +683,8 @@ namespace JSONRPC
     "\"List.Limits\": {"
       "\"type\": \"object\","
       "\"properties\": {"
-        "\"start\": { \"type\": \"integer\", \"minimum\": 0, \"default\": 0 },"
-        "\"end\": { \"type\": \"integer\", \"minimum\": 0, \"default\": -1, \"description\": \"The number of items in the list being returned\" }"
+        "\"start\": { \"type\": \"integer\", \"minimum\": 0, \"default\": 0, \"description\": \"Index of the first item to return\" },"
+        "\"end\": { \"type\": \"integer\", \"minimum\": 0, \"default\": -1, \"description\": \"Index of the last item to return\" }"
       "},"
       "\"additionalProperties\": false"
     "}",
