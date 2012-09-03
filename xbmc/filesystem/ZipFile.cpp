@@ -447,7 +447,7 @@ void CZipFile::DestroyBuffer(void* lpBuffer, int iBufSize)
 {
   if (!m_bFlush)
     return;
-  int iMessage = Z_STREAM_END; // whatever != Z_OK
+  int iMessage = Z_OK;
   while ((iMessage == Z_OK) && (m_ZStream.avail_out == 0))
   {
     m_ZStream.next_out = (Bytef*)lpBuffer;

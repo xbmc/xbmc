@@ -291,8 +291,6 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
      * Initialise() will make sure that each device is only initialised once */
     if (peripheral->Initialise())
     {
-      if (!bHasMapping)
-        peripheral->SetHidden(true);
       bus.Register(peripheral);
     }
     else

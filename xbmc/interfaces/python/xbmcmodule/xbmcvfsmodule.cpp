@@ -327,7 +327,7 @@ extern "C" {
       if (bForce)
       {
         CPyThreadState pyState;
-        bResult = CFileUtils::DeleteItem(strSource, bForce ? true : false);
+        bResult = CFileUtils::DeleteItem(strSource, bForce);
         pyState.Restore();
       }
       else

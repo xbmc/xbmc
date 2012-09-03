@@ -162,10 +162,6 @@ BOOL WINAPI DuplicateHandle(
   if (hSourceHandle == INVALID_HANDLE_VALUE)
     return FALSE;
 
-  /* psuevdo handles re not supported */
-  if (hSourceHandle == (HANDLE)-1)
-    return FALSE;
-
   {
     CSingleLock lock(*(hSourceHandle->m_internalLock));
     hSourceHandle->m_nRefCount++;
