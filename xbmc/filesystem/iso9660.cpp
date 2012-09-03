@@ -715,6 +715,8 @@ HANDLE iso9660::OpenFile(const char *filename)
   if (hContext == INVALID_HANDLE_VALUE) return hContext;
 
   iso9660::isofile* pContext = GetFileContext(hContext);
+  if (!pContext)
+    return INVALID_HANDLE_VALUE;
 
   WIN32_FIND_DATA fileinfo;
   char *pointer, *pointer2;
