@@ -217,10 +217,8 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
       switch (iControl)
       {
       case CTL_BUTTON_DONE:
-        {
-          OnOK();
-          break;
-        }
+        OnOK();
+        break;
       case CTL_BUTTON_CANCEL:
         Close();
         break;
@@ -238,19 +236,14 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
         OnSymbols();
         break;
       case CTL_BUTTON_LEFT:
-        {
-          MoveCursor( -1);
-        }
+        MoveCursor( -1);
         break;
       case CTL_BUTTON_RIGHT:
-        {
-          MoveCursor(1);
-        }
+        MoveCursor(1);
         break;
       case CTL_BUTTON_IP_ADDRESS:
-        {
-          OnIPAddress();
-        }
+        OnIPAddress();
+        break;
       default:
         m_lastRemoteKeyClicked = 0;
         OnClickButton(iControl);
