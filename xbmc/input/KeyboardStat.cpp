@@ -55,14 +55,15 @@ void CKeyboardStat::Initialize()
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
   vector<CPeripheral *> hidDevices;
-  g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID);
-  for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
+  if (g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
   {
-    CPeripheralHID *hidDevice = (CPeripheralHID *) hidDevices.at(iDevicePtr);
-    if (hidDevice && hidDevice->LookupSymAndUnicode(keysym, key, unicode))
-      return true;
+    for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
+    {
+      CPeripheralHID *hidDevice = (CPeripheralHID *) hidDevices.at(iDevicePtr);
+      if (hidDevice && hidDevice->LookupSymAndUnicode(keysym, key, unicode))
+        return true;
+    }
   }
-
   return false;
 }
 
