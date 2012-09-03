@@ -249,7 +249,8 @@ CStdString CCDDARipJob::SetupTempFile()
   strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
   if ((fd = mkstemp(tmp)) == -1)
    tmp[0] = '\0'; 
-  close(fd);
+  if (fd != -1)
+    close(fd);
 #endif
   return tmp;
 }
