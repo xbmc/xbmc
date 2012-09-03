@@ -101,44 +101,46 @@ void CSMB::Init()
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
     char smb_conf[MAX_PATH];
     snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", getenv("HOME"));
-    mkdir(smb_conf, 0755);
-    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
-    FILE* f = fopen(smb_conf, "w");
-    if (f != NULL)
+    if (mkdir(smb_conf, 0755) == 0)
     {
-      fprintf(f, "[global]\n");
-
-      // make sure we're not acting like a server
-      fprintf(f, "\tpreferred master = no\n");
-      fprintf(f, "\tlocal master = no\n");
-      fprintf(f, "\tdomain master = no\n");
-
-      // use the weaker LANMAN password hash in order to be compatible with older servers
-      fprintf(f, "\tclient lanman auth = yes\n");
-      fprintf(f, "\tlanman auth = yes\n");
-
-      fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
-      fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
-
-      // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
-      // if no WINS server has been specified the wins method will be ignored.
-      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
+      FILE* f = fopen(smb_conf, "w");
+      if (f != NULL)
       {
-        fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
-        fprintf(f, "\tname resolve order = bcast wins host\n");
+        fprintf(f, "[global]\n");
+
+        // make sure we're not acting like a server
+        fprintf(f, "\tpreferred master = no\n");
+        fprintf(f, "\tlocal master = no\n");
+        fprintf(f, "\tdomain master = no\n");
+
+        // use the weaker LANMAN password hash in order to be compatible with older servers
+        fprintf(f, "\tclient lanman auth = yes\n");
+        fprintf(f, "\tlanman auth = yes\n");
+
+        fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
+        fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
+
+        // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
+        // if no WINS server has been specified the wins method will be ignored.
+        if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+        {
+          fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
+          fprintf(f, "\tname resolve order = bcast wins host\n");
+        }
+        else
+          fprintf(f, "\tname resolve order = bcast host\n");
+
+        // use user-configured charset. if no charset is specified,
+        // samba tries to use charset 850 but falls back to ASCII in case it is not available
+        if (g_advancedSettings.m_sambadoscodepage.length() > 0)
+          fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
+
+        // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
+        if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
+          fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
+        fclose(f);
       }
-      else
-        fprintf(f, "\tname resolve order = bcast host\n");
-
-      // use user-configured charset. if no charset is specified,
-      // samba tries to use charset 850 but falls back to ASCII in case it is not available
-      if (g_advancedSettings.m_sambadoscodepage.length() > 0)
-        fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
-
-      // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
-      if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
-        fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
-      fclose(f);
     }
 #endif
 
