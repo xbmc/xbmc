@@ -115,7 +115,8 @@ namespace PYXBMC
       TiXmlNode *pNode = pTexture->FirstChild();
       if (pNode && pNode->Value()[0] != '-')
       {
-        strncpy(defaultImage, pNode->Value(), 1024);
+        strncpy(defaultImage, pNode->Value(), sizeof(defaultImage));
+        defaultImage[sizeof(defaultImage) - 1] = '\0';
         return defaultImage;
       }
     }
