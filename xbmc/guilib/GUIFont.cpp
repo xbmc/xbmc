@@ -27,7 +27,19 @@
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
 
+#include "utils/CharsetConverter.h"
+
 #define ROUND(x) (float)(MathUtils::round_int(x))
+
+CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */, float pos /* = 0 */,
+  int speed /* = defaultSpeed */, const CStdString &scrollSuffix /* = " | " */)
+{
+    initialWait = wait;
+    initialPos = pos;
+    SetSpeed(speed ? speed : defaultSpeed);
+    g_charsetConverter.utf8ToW(scrollSuffix, suffix);
+    Reset();
+}
 
 float CScrollInfo::GetPixelsPerFrame()
 {

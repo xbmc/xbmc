@@ -56,14 +56,8 @@ class CGUIFontTTFBase;
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdString &scrollSuffix = " | ")
-  {
-    initialWait = wait;
-    initialPos = pos;
-    SetSpeed(speed ? speed : defaultSpeed);
-    suffix = scrollSuffix;
-    Reset();
-  };
+  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdString &scrollSuffix = " | ");
+
   void SetSpeed(int speed)
   {
     pixelSpeed = speed * 0.001f;
@@ -97,7 +91,7 @@ public:
   unsigned int characterPos;
   unsigned int initialWait;
   float initialPos;
-  CStdString suffix;
+  CStdStringW suffix;
 
   static const int defaultSpeed = 60;
 private:
