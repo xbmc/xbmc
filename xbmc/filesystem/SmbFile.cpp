@@ -100,9 +100,9 @@ void CSMB::Init()
     // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
     char smb_conf[MAX_PATH];
-    sprintf(smb_conf, "%s/.smb", getenv("HOME"));
+    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", getenv("HOME"));
     mkdir(smb_conf, 0755);
-    sprintf(smb_conf, "%s/.smb/smb.conf", getenv("HOME"));
+    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
     FILE* f = fopen(smb_conf, "w");
     if (f != NULL)
     {
