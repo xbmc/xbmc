@@ -150,7 +150,17 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalImage = NULL;
   m_pOriginalEdit = NULL;
   // set the correct ID range...
-  m_idRange = 9;
+  m_idRange.clear();
+  m_idRange.push_back(WINDOW_SETTINGS_MYPICTURES);
+  m_idRange.push_back(WINDOW_SETTINGS_MYPROGRAMS);
+  m_idRange.push_back(WINDOW_SETTINGS_MYWEATHER);
+  m_idRange.push_back(WINDOW_SETTINGS_MYMUSIC);
+  m_idRange.push_back(WINDOW_SETTINGS_SYSTEM);
+  m_idRange.push_back(WINDOW_SETTINGS_MYVIDEOS);
+  m_idRange.push_back(WINDOW_SETTINGS_SERVICE);
+  m_idRange.push_back(WINDOW_SETTINGS_APPEARANCE);
+  m_idRange.push_back(WINDOW_SETTINGS_MYPVR);
+
   m_iScreen = 0;
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";

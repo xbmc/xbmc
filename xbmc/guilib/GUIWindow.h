@@ -125,9 +125,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   bool ControlGroupHasFocus(int groupID, int controlID);
-  virtual bool HasID(int controlID) const { return controlID >= m_controlID && controlID < m_controlID + m_idRange; };
-  void SetIDRange(int range) { m_idRange = range; };
-  int GetIDRange() const { return m_idRange; };
+  virtual bool HasID(int controlID) const;
+  const std::vector<int>& GetIDRange() const { return m_idRange; };
   int GetPreviousWindow() { return m_previousWindow; };
   CRect GetScaledBounds() const;
   virtual void ClearAll();
@@ -231,7 +230,7 @@ protected:
   void ChangeButtonToEdit(int id, bool singleLabel = false);
 //#endif
 
-  int m_idRange;
+  std::vector<int> m_idRange;
   OVERLAY_STATE m_overlayState;
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
