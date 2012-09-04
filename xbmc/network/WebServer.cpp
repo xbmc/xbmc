@@ -382,12 +382,14 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       MHD_add_response_header(response, "Content-Length", contentLength);
     }
 
+    // set the Content-Type header
     CStdString ext = URIUtils::GetExtension(strURL);
     ext = ext.ToLower();
     const char *mime = CreateMimeTypeFromExtension(ext.c_str());
     if (mime)
       MHD_add_response_header(response, "Content-Type", mime);
 
+    // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
     expiryTime += CDateTimeSpan(1, 0, 0, 0);
     MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
