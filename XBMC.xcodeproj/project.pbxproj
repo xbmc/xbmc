@@ -242,7 +242,6 @@
 		43BF09241080C6BA00E25290 /* NptZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08E91080C6BA00E25290 /* NptZip.cpp */; };
 		43BF09331080C71700E25290 /* NptBsdNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF092F1080C71700E25290 /* NptBsdNetwork.cpp */; };
 		43BF09341080C71700E25290 /* NptBsdSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09301080C71700E25290 /* NptBsdSockets.cpp */; };
-		43BF09491080C76E00E25290 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF093D1080C76E00E25290 /* NptPosixFile.cpp */; };
 		43BF094A1080C76E00E25290 /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF093E1080C76E00E25290 /* NptPosixNetwork.cpp */; };
 		43BF094B1080C76E00E25290 /* NptPosixQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF093F1080C76E00E25290 /* NptPosixQueue.cpp */; };
 		43BF094C1080C76E00E25290 /* NptPosixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09401080C76E00E25290 /* NptPosixSystem.cpp */; };
@@ -1556,7 +1555,6 @@
 		43BF092E1080C6F600E25290 /* SConstruct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SConstruct; path = Neptune/SConstruct; sourceTree = "<group>"; };
 		43BF092F1080C71700E25290 /* NptBsdNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptBsdNetwork.cpp; path = ../../Neptune/Source/System/Bsd/NptBsdNetwork.cpp; sourceTree = "<group>"; };
 		43BF09301080C71700E25290 /* NptBsdSockets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptBsdSockets.cpp; path = ../../Neptune/Source/System/Bsd/NptBsdSockets.cpp; sourceTree = "<group>"; };
-		43BF093D1080C76E00E25290 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixFile.cpp; path = ../../Neptune/Source/System/Posix/NptPosixFile.cpp; sourceTree = "<group>"; };
 		43BF093E1080C76E00E25290 /* NptPosixNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixNetwork.cpp; path = ../../Neptune/Source/System/Posix/NptPosixNetwork.cpp; sourceTree = "<group>"; };
 		43BF093F1080C76E00E25290 /* NptPosixQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixQueue.cpp; path = ../../Neptune/Source/System/Posix/NptPosixQueue.cpp; sourceTree = "<group>"; };
 		43BF09401080C76E00E25290 /* NptPosixSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixSystem.cpp; path = ../../Neptune/Source/System/Posix/NptPosixSystem.cpp; sourceTree = "<group>"; };
@@ -6468,7 +6466,6 @@
 				43BF08C51080C6B900E25290 /* NptNetwork.cpp */,
 				43BF08C61080C6B900E25290 /* NptNetwork.h */,
 				43BF094F1080C79900E25290 /* NptPosixDynamicLibraries.cpp */,
-				43BF093D1080C76E00E25290 /* NptPosixFile.cpp */,
 				43BF093E1080C76E00E25290 /* NptPosixNetwork.cpp */,
 				43BF093F1080C76E00E25290 /* NptPosixQueue.cpp */,
 				43BF09401080C76E00E25290 /* NptPosixSystem.cpp */,
@@ -7268,7 +7265,6 @@
 				43BF09241080C6BA00E25290 /* NptZip.cpp in Sources */,
 				43BF09331080C71700E25290 /* NptBsdNetwork.cpp in Sources */,
 				43BF09341080C71700E25290 /* NptBsdSockets.cpp in Sources */,
-				43BF09491080C76E00E25290 /* NptPosixFile.cpp in Sources */,
 				43BF094A1080C76E00E25290 /* NptPosixNetwork.cpp in Sources */,
 				43BF094B1080C76E00E25290 /* NptPosixQueue.cpp in Sources */,
 				43BF094C1080C76E00E25290 /* NptPosixSystem.cpp in Sources */,

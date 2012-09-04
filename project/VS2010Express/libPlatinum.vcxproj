@@ -241,7 +241,6 @@
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptXml.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptZip.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdSockets.cpp" />
-    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixFile.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcEnvironment.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcFile.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Debug.cpp" />

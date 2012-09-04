@@ -479,9 +479,6 @@
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdSockets.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixFile.cpp">
-      <Filter>Neptune\System</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcEnvironment.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
