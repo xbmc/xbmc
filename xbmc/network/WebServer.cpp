@@ -391,7 +391,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
-    expiryTime += CDateTimeSpan(1, 0, 0, 0);
+    expiryTime += CDateTimeSpan(365, 0, 0, 0);
     MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
   }
   else
