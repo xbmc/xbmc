@@ -78,7 +78,13 @@
 //#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "xbmc/ThumbLoader.h"
 
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/windows/GUIWindowPVR.h"
+#include "filesystem/PVRFile.h"
+
 using namespace XFILE;
+using namespace PVR;
 
 // ****************************************************************
 void COMXSelectionStreams::Clear(StreamType type, StreamSource source)
@@ -2151,13 +2157,27 @@ void COMXPlayer::HandleMessages()
         {
           g_infoManager.SetDisplayAfterSeek(100000);
 
+          bool bShowPreview(g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0);
           bool result;
+
           if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
-            result = input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value);
+          {
+            CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+            if(input)
+              result = input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value);
+          }
           else if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
-            result = input->NextChannel();
+          {
+            CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+            if(input)
+              result = input->NextChannel(bShowPreview);
+          }
           else
-            result = input->PrevChannel();
+          {
+            CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+            if(input)
+              result = input->PrevChannel(bShowPreview);
+          }
 
           if(result)
           {
