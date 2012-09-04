@@ -226,7 +226,7 @@ int CDVDInputStreamPVRManager::GetTotalTime()
   return 0;
 }
 
-int CDVDInputStreamPVRManager::GetStartTime()
+int CDVDInputStreamPVRManager::GetTime()
 {
   if (m_pLiveTV)
     return m_pLiveTV->GetStartTime();

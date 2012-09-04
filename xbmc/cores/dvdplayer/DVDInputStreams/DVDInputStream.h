@@ -68,8 +68,6 @@ public:
     virtual bool SelectChannelByNumber(unsigned int channel) = 0;
     virtual bool SelectChannel(const PVR::CPVRChannel &channel) { return false; };
     virtual bool GetSelectedChannel(PVR::CPVRChannelPtr&) { return false; };
-    virtual int GetTotalTime() = 0;
-    virtual int GetStartTime() = 0;
     virtual bool UpdateItem(CFileItem& item) = 0;
     virtual bool CanRecord() = 0;
     virtual bool IsRecording() = 0;

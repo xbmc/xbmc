@@ -39,6 +39,7 @@ class IDVDPlayer;
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
+  , public CDVDInputStream::IDisplayTime
 {
 public:
   CDVDInputStreamPVRManager(IDVDPlayer* pPlayer);
@@ -60,7 +61,7 @@ public:
   bool            GetSelectedChannel(PVR::CPVRChannelPtr& channel) const;
 
   int             GetTotalTime();
-  int             GetStartTime();
+  int             GetTime();
 
   bool            CanRecord();
   bool            IsRecording();
