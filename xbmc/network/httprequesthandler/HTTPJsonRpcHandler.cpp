@@ -20,13 +20,14 @@
  */
 
 #include "HTTPJsonRpcHandler.h"
-#include "network/WebServer.h"
-#include "utils/log.h"
 #include "interfaces/json-rpc/JSONRPC.h"
+#include "interfaces/json-rpc/JSONServiceDescription.h"
 #include "interfaces/json-rpc/JSONUtils.h"
+#include "network/WebServer.h"
+#include "utils/JSONVariantWriter.h"
+#include "utils/log.h"
 
 #define MAX_STRING_POST_SIZE 20000
-#define PAGE_JSONRPC_INFO   "<html><head><title>JSONRPC</title></head><body>JSONRPC active and working</body></html>"
 
 using namespace std;
 using namespace JSONRPC;
@@ -38,6 +39,7 @@ bool CHTTPJsonRpcHandler::CheckHTTPRequest(const HTTPRequest &request)
 
 int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
+  CHTTPClient client;
   if (request.method == POST)
   {
     string contentType = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
@@ -49,15 +51,19 @@ int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
       return MHD_YES;
     }
 
-    CHTTPClient client;
     m_response = CJSONRPC::MethodCall(m_request, request.webserver, &client);
-
-    m_responseHeaderFields.insert(pair<string, string>("Content-Type", "application/json"));
-
-    m_request.clear();
   }
   else
-    m_response = PAGE_JSONRPC_INFO;
+  {
+    // get the whole output of JSONRPC.Introspect
+    CVariant result;
+    CJSONServiceDescription::Print(result, request.webserver, &client);
+    m_response = CJSONVariantWriter::Write(result, false);
+  }
+
+  m_responseHeaderFields.insert(pair<string, string>("Content-Type", "application/json"));
+
+  m_request.clear();
   
   m_responseType = HTTPMemoryDownloadNoFreeCopy;
   m_responseCode = MHD_HTTP_OK;
