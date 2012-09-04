@@ -12,6 +12,10 @@ ifeq ($(findstring osx,@ARCH@),osx)
 SRCS+=osx/PeripheralBusUSB.cpp
 endif
 
+ifeq (@USE_CEC_RPI_API@,1)
+SRCS+=linux/PeripheralBusRPi.cpp
+endif
+
 LIB=peripheral-bus.a
 
 include ../../../Makefile.include

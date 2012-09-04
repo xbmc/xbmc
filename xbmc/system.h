@@ -166,6 +166,8 @@
 #define HAS_SDL_OPENGL
 #endif
 #define HAS_SDL_WIN_EVENTS
+#else
+#define HAS_LINUX_EVENTS
 #endif
 #define HAS_LINUX_NETWORK
 #define HAS_LIRC

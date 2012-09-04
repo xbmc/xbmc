@@ -35,6 +35,7 @@ CWinSystemBase::CWinSystemBase()
   m_bFullScreen = false;
   m_nScreen = 0;
   m_bBlankOtherDisplay = false;
+  m_fRefreshRate = 0.0f;
 }
 
 CWinSystemBase::~CWinSystemBase()

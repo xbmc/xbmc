@@ -114,6 +114,7 @@ protected:
   bool              m_bFullScreen;
   int               m_nScreen;
   bool              m_bBlankOtherDisplay;
+  float             m_fRefreshRate;
 };
 
 

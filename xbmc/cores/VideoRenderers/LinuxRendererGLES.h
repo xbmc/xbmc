@@ -205,7 +205,6 @@ protected:
   bool m_bValidated;
   std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
-  unsigned m_iFlags;
   ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;

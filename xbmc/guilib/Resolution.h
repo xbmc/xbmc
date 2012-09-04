@@ -34,19 +34,23 @@ typedef int DisplayMode;
 enum RESOLUTION {
   RES_INVALID        = -1,
   RES_HDTV_1080i     =  0,
-  RES_HDTV_720p      =  1,
-  RES_HDTV_480p_4x3  =  2,
-  RES_HDTV_480p_16x9 =  3,
-  RES_NTSC_4x3       =  4,
-  RES_NTSC_16x9      =  5,
-  RES_PAL_4x3        =  6,
-  RES_PAL_16x9       =  7,
-  RES_PAL60_4x3      =  8,
-  RES_PAL60_16x9     =  9,
-  RES_AUTORES        = 10,
-  RES_WINDOW         = 11,
-  RES_DESKTOP        = 12,          // Desktop resolution for primary screen
-  RES_CUSTOM         = 12 + 1,      // Desktop resolution for screen #2
+  RES_HDTV_720pSBS   =  1,
+  RES_HDTV_720pTB    =  2,
+  RES_HDTV_1080pSBS  =  3,
+  RES_HDTV_1080pTB   =  4,
+  RES_HDTV_720p      =  5,
+  RES_HDTV_480p_4x3  =  6,
+  RES_HDTV_480p_16x9 =  7,
+  RES_NTSC_4x3       =  8,
+  RES_NTSC_16x9      =  9,
+  RES_PAL_4x3        = 10,
+  RES_PAL_16x9       = 11,
+  RES_PAL60_4x3      = 12,
+  RES_PAL60_16x9     = 13,
+  RES_AUTORES        = 14,
+  RES_WINDOW         = 15,
+  RES_DESKTOP        = 16,          // Desktop resolution for primary screen
+  RES_CUSTOM         = 17 + 1,      // Desktop resolution for screen #2
 //                     ...
 //                     12 + N - 1   // Desktop resolution for screen N
 //                     12 + N       // First additional resolution, in a N screen configuration.

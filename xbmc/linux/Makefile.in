@@ -15,6 +15,9 @@ SRCS=ConvUtils.cpp \
      XLCDproc.cpp \
      XMemUtils.cpp \
      XTimeUtils.cpp \
+		 RBP.cpp \
+		 OMXClock.cpp \
+		 OMXCore.cpp \
 
 ifeq (@USE_ANDROID@,1)
 SRCS+=getdelim.c

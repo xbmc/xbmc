@@ -1,0 +1,10 @@
+<advancedsettings>
+  <video>
+    <defaultplayer>omxplayer</defaultplayer>
+    <defaultdvdplayer>omxplayer</defaultdvdplayer>
+  </video>
+  <audio>
+    <defaultplayer>omxplayer</defaultplayer>
+    <streamsilence>false</streamsilence>
+  </audio>
+</advancedsettings>

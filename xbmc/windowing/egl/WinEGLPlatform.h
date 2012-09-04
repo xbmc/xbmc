@@ -24,7 +24,11 @@
 
 #include "system.h"
 
-#if   defined(TARGET_ANDROID)
+#if   defined(TARGET_RASPBERRY_PI)
+  #include "xbmc/windowing/egl/WinEGLPlatformRaspberryPI.h"
+  class CWinEGLPlatformRaspberryPI;
+    #define CWinEGLPlatform CWinEGLPlatformRaspberryPI
+#elif   defined(TARGET_ANDROID)
   #include "xbmc/windowing/egl/WinEGLPlatformAndroid.h"
   class CWinEGLPlatformAndroid;
   #define CWinEGLPlatform CWinEGLPlatformAndroid

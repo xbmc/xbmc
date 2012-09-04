@@ -36,14 +36,16 @@
 #if defined(__ppc__) || \
     defined(__powerpc__) || \
    (defined(__APPLE__) && defined(__arm__) && defined(__llvm__)) || \
-   (defined(__ANDROID__) && defined(__arm__))
+   (defined(__ANDROID__) && defined(__arm__)) || \
+   defined(TARGET_RASPBERRY_PI)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 
 #if defined(__ppc__) || \
     defined(__powerpc__) || \
    (defined(__APPLE__) && defined(__llvm__)) || \
-   (defined(__ANDROID__) && defined(__arm__))
+   (defined(__ANDROID__) && defined(__arm__)) || \
+   defined(TARGET_RASPBERRY_PI)
   #define DISABLE_MATHUTILS_ASM_TRUNCATE_INT
 #endif
 

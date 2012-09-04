@@ -40,6 +40,18 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
   // default to 720p
   m_width  = 1280;
   m_height = 720;
+
+  m_desktopRes.iScreen = 0;
+  m_desktopRes.iWidth  = 1280;
+  m_desktopRes.iHeight = 720;
+  //m_desktopRes.iScreenWidth  = 1280;
+  //m_desktopRes.iScreenHeight = 720;
+  m_desktopRes.fRefreshRate = 60.0f;
+  m_desktopRes.bFullScreen = true;
+  m_desktopRes.iSubtitles = (int)(0.965 * 720);
+  m_desktopRes.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
+  m_desktopRes.fPixelRatio = 1.0f;
+  m_desktopRes.strMode = "720p 16:9";
 }
 
 CWinEGLPlatformGeneric::~CWinEGLPlatformGeneric()
@@ -61,7 +73,7 @@ void CWinEGLPlatformGeneric::DestroyWindowSystem(EGLNativeWindowType native_wind
   UninitializeDisplay();
 }
 
-bool CWinEGLPlatformGeneric::SetDisplayResolution(int width, int height, float refresh, bool interlace)
+bool CWinEGLPlatformGeneric::SetDisplayResolution(RESOLUTION_INFO& res)
 {
   return false;
 }
@@ -73,13 +85,32 @@ bool CWinEGLPlatformGeneric::ClampToGUIDisplayLimits(int &width, int &height)
   return true;
 }
 
-bool CWinEGLPlatformGeneric::ProbeDisplayResolutions(std::vector<CStdString> &resolutions)
+bool CWinEGLPlatformGeneric::ProbeDisplayResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
-  resolutions.clear();
-  
-  CStdString resolution;
-  resolution.Format("%dx%dp60Hz", m_width, m_height);
-  resolutions.push_back(resolution);
+  int gui_width  = m_width;
+  int gui_height = m_height;
+  float gui_refresh = 60.0f;
+  RESOLUTION_INFO res;
+
+  ClampToGUIDisplayLimits(gui_width, gui_height);
+
+  res.iScreen       = 0;
+  res.bFullScreen   = true;
+  res.iSubtitles    = (int)(0.965 * gui_height);
+  res.dwFlags       = D3DPRESENTFLAG_PROGRESSIVE;
+  res.fRefreshRate  = gui_refresh;
+  res.fPixelRatio   = 1.0f;
+  res.iWidth        = gui_width;
+  res.iHeight       = gui_height;
+  //res.iScreenWidth  = gui_width;
+  //res.iScreenHeight = gui_height;
+  res.dwFlags       = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
+  // temp until split gui/display res comes in
+  //res.iScreenWidth  = width;
+  //res.iScreenHeight = height;
+  res.strMode.Format("%dx%d @ %.2f - Full Screen", gui_width, gui_height, gui_refresh);
+
+  resolutions.push_back(res);
   return true;
 }
 
@@ -361,6 +392,11 @@ EGLNativeWindowType CWinEGLPlatformGeneric::getNativeWindow()
 EGLDisplay CWinEGLPlatformGeneric::GetEGLDisplay()
 {
   return m_display;
+}
+
+EGLSurface CWinEGLPlatformGeneric::GetEGLSurface()
+{
+  return m_surface;
 }
 
 EGLContext CWinEGLPlatformGeneric::GetEGLContext()
