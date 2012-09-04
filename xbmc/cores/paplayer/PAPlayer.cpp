@@ -731,11 +731,13 @@ void PAPlayer::Pause()
   {
     m_isPaused = false;
     SoftStart();
+    m_callback.OnPlayBackResumed();
   }
   else
   {
     m_isPaused = true;    
     SoftStop(true, false);
+    m_callback.OnPlayBackPaused();
   }
 }
 
