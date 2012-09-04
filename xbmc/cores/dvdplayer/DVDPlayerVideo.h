@@ -147,6 +147,7 @@ protected:
                              //this is increased exponentially from CDVDPlayerVideo::CalcFrameRate()
 
   bool   m_bFpsInvalid;      // needed to ignore fps (e.g. dvd stills)
+  bool   m_bFpsChanged;
 
   struct SOutputConfiguration
   {
