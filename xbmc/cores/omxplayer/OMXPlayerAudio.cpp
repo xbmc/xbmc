@@ -31,7 +31,6 @@
 #include <unistd.h>
 #include <iomanip>
 
-#include "FileItem.h"
 #include "linux/XMemUtils.h"
 #include "utils/BitstreamStats.h"
 #include "settings/GUISettings.h"
@@ -40,9 +39,7 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/MathUtils.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
-#include "video/VideoReferenceClock.h"
 #include "utils/TimeUtils.h"
 
 #include "OMXPlayer.h"
@@ -100,11 +97,6 @@ OMXPlayerAudio::~OMXPlayerAudio()
 
 bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints)
 {
-  /*
-  if(IsRunning())
-    CloseStream(false);
-  */
-
   if(!m_DllBcmHost.Load())
     return false;
 
@@ -121,26 +113,16 @@ bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints)
     m_messageQueue.Put(new COMXMsgAudioCodecChange(hints, codec), 0);
   else
   {
-    if(!OpenStream(hints, codec))
-      return false;
-    CLog::Log(LOGNOTICE, "Creating audio thread");
+    OpenStream(hints, codec);
     m_messageQueue.Init();
+    CLog::Log(LOGNOTICE, "Creating audio thread");
     Create();
   }
-
-  /*
-  if(!OpenStream(hints, codec))
-    return false;
-
-  CLog::Log(LOGNOTICE, "Creating audio thread");
-  m_messageQueue.Init();
-  Create();
-  */
 
   return true;
 }
 
-bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
+void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
 {
   SAFE_DELETE(m_pAudioCodec);
 
@@ -169,8 +151,6 @@ bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_use_passthrough = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI) ? true : false ;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
-
-  return true /*OpenDecoder()*/;
 }
 
 bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
@@ -774,6 +754,7 @@ bool OMXPlayerAudio::OpenDecoder()
   m_av_clock->HasAudio(true);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
+
   return true;
 }
 
@@ -814,11 +795,6 @@ void OMXPlayerAudio::UnRegisterAudioCallback()
   m_omxAudio.UnRegisterAudioCallback();
 }
 
-void OMXPlayerAudio::DoAudioWork()
-{
-  m_omxAudio.DoAudioWork();
-}
-
 void OMXPlayerAudio::SetCurrentVolume(float fVolume)
 {
   m_omxAudio.SetCurrentVolume(fVolume);
@@ -841,7 +817,7 @@ std::string OMXPlayerAudio::GetPlayerInfo()
 {
   std::ostringstream s;
   s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*GetCacheTime())) << "%";
-  s << ", kB/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+  s << ", Kb/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
 
   return s.str();
 }

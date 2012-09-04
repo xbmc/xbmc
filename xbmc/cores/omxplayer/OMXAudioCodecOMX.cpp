@@ -84,6 +84,7 @@ COMXAudioCodecOMX::COMXAudioCodecOMX()
   m_channels = 0;
   m_layout = 0;
   m_pFrame1 = NULL;
+  m_iSampleFormat = AV_SAMPLE_FMT_NONE;
 }
 
 COMXAudioCodecOMX::~COMXAudioCodecOMX()

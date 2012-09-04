@@ -32,12 +32,12 @@
 #include "cores/AudioEngine/Utils/AERemap.h"
 #include "cores/IAudioCallback.h"
 #include "linux/PlatformDefs.h"
+#include "DVDStreamInfo.h"
+
+#include "OMXClock.h"
+#include "OMXCore.h"
 #include "DllAvCodec.h"
 #include "DllAvUtil.h"
-#include "OMXCore.h"
-#include "OMXClock.h"
-#include "DVDStreamInfo.h"
-#include "BitstreamConverter.h"
 
 #define AUDIO_BUFFER_SECONDS 2
 #define VIS_PACKET_SIZE 512
@@ -47,8 +47,6 @@
   (x) == AE_FMT_AC3   ||    \
   (x) == AE_FMT_DTS         \
 )
-
-class CAERemap;
 
 class COMXAudio
 {
@@ -81,7 +79,6 @@ public:
   void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   void Flush();
-  void DoAudioWork();
 
   void Process();
 

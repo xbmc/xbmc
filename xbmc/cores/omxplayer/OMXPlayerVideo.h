@@ -22,15 +22,15 @@
 #ifndef _OMX_PLAYERVIDEO_H_
 #define _OMX_PLAYERVIDEO_H_
 
+#include <deque>
+#include <sys/types.h>
+
 #include "utils/StdString.h"
 
 #include "OMXClock.h"
 #include "DVDStreamInfo.h"
 #include "OMXVideo.h"
 #include "threads/Thread.h"
-
-#include <deque>
-#include <sys/types.h>
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDStreamInfo.h"

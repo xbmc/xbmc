@@ -105,7 +105,7 @@ COMXAudio::COMXAudio() :
   m_extrasize       (0      ),
   m_last_pts        (DVD_NOPTS_VALUE)
 {
-  m_vizBufferSize   = m_vizRemapBufferSize = 4096;
+  m_vizBufferSize   = m_vizRemapBufferSize = VIS_PACKET_SIZE * sizeof(float);
   m_vizRemapBuffer  = (uint8_t *)_aligned_malloc(m_vizRemapBufferSize,16);
   m_vizBuffer       = (uint8_t *)_aligned_malloc(m_vizBufferSize,16);
 }
@@ -767,9 +767,9 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
 
   m_vizBufferSamples = 0;
 
-  if (!m_Passthrough && m_pCallback && len)
+  if (m_pCallback && len)
   {
-    /* unput samples */
+    /* input samples */
     m_vizBufferSamples = len / (CAEUtil::DataFormatToBits(AE_FMT_S16LE) >> 3);
     CAEConvert::AEConvertToFn m_convertFn = CAEConvert::ToFloat(AE_FMT_S16LE);
     /* input frames */
@@ -1104,23 +1104,21 @@ int COMXAudio::SetPlaySpeed(int iSpeed)
 
 void COMXAudio::RegisterAudioCallback(IAudioCallback *pCallback)
 {
-  m_pCallback = pCallback;
-  if (m_pCallback && !m_Passthrough && !m_HWDecode)
-    m_pCallback->OnInitialize(m_OutputChannels, m_SampleRate, m_BitsPerSample);
+  m_vizBufferSamples = 0;
+  if(!m_Passthrough && !m_HWDecode)
+  {
+    m_pCallback = pCallback;
+    if (m_pCallback)
+      m_pCallback->OnInitialize(2, m_SampleRate, 32);
+  }
+  else
+    m_pCallback = NULL;
 }
 
 void COMXAudio::UnRegisterAudioCallback()
 {
   m_pCallback = NULL;
-}
-
-void COMXAudio::DoAudioWork()
-{
-  if (m_pCallback && m_vizBufferSamples)
-  {
-    m_pCallback->OnAudioData((float*)m_vizBuffer, m_vizBufferSamples);
-    m_vizBufferSamples = 0;
-  }
+  m_vizBufferSamples = 0;
 }
 
 void COMXAudio::WaitCompletion()

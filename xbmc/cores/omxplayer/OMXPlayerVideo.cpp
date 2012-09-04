@@ -25,14 +25,15 @@
 #include "system.h"
 #endif
 
-#include "OMXPlayerVideo.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <iomanip>
+#include <iostream>
+#include <sstream>
 
-#include "FileItem.h"
+#include "OMXPlayerVideo.h"
+
 #include "linux/XMemUtils.h"
 #include "utils/BitstreamStats.h"
 
@@ -46,9 +47,6 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 
 #include "OMXPlayer.h"
-
-#include <iostream>
-#include <sstream>
 
 class COMXMsgAudioCodecChange : public CDVDMsg
 {
@@ -86,6 +84,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_stalled               = false;
   m_codecname             = "";
   m_iSubtitleDelay        = 0;
+  m_FlipTimeStamp         = 0.0;
   m_bRenderSubs           = false;
   m_width                 = 0;
   m_height                = 0;
@@ -95,6 +94,9 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_iCurrentPts           = DVD_NOPTS_VALUE;
   m_fFrameRate            = 25.0f;
   m_iVideoDelay           = 0;
+  m_droptime              = 0.0;
+  m_dropbase              = 0.0;
+  m_autosync              = 1;
   m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
@@ -608,7 +610,7 @@ void OMXPlayerVideo::Process()
           break;
         }
 
-        if((unsigned long)m_omxVideo.GetFreeSpace() < pPacket->iSize)
+        if((int)m_omxVideo.GetFreeSpace() < pPacket->iSize)
         {
           Sleep(10);
           continue;

@@ -22,6 +22,9 @@
 #ifndef _OMX_PLAYERAUDIO_H_
 #define _OMX_PLAYERAUDIO_H_
 
+#include <deque>
+#include <sys/types.h>
+
 #include "utils/StdString.h"
 
 #include "OMXClock.h"
@@ -29,9 +32,6 @@
 #include "OMXAudio.h"
 #include "OMXAudioCodecOMX.h"
 #include "threads/Thread.h"
-
-#include <deque>
-#include <sys/types.h>
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageQueue.h"
@@ -98,7 +98,7 @@ public:
   OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent);
   ~OMXPlayerAudio();
   bool OpenStream(CDVDStreamInfo &hints);
-  bool OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec);
+  void OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
   bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
@@ -121,7 +121,6 @@ public:
   void WaitCompletion();
   void  RegisterAudioCallback(IAudioCallback* pCallback);
   void  UnRegisterAudioCallback();
-  void  DoAudioWork();
   void SetCurrentVolume(float fVolume);
   void SetSpeed(int iSpeed);
   int  GetAudioBitrate();

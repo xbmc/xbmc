@@ -25,37 +25,26 @@
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 
+#include <semaphore.h>
+#include <deque>
+
 #include "FileItem.h"
 #include "cores/IPlayer.h"
 #include "cores/dvdplayer/IDVDPlayer.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "threads/Thread.h"
-#include <semaphore.h>
-
 #include "threads/SingleLock.h"
 
 #include "OMXCore.h"
 #include "OMXClock.h"
 #include "OMXPlayerAudio.h"
 #include "OMXPlayerVideo.h"
-//#include "OMXPlayerSubtitle.h"
 #include "DVDPlayerSubtitle.h"
 
 #include "utils/BitstreamStats.h"
 
 #include "linux/DllBCM.h"
-
-#include "DVDStreamInfo.h"
-#include "DVDInputStreams/DVDInputStream.h"
-#include "DVDInputStreams/DVDFactoryInputStream.h"
-#include "DVDDemuxers/DVDDemuxFFmpeg.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
-#include "DVDDemuxers/DVDFactoryDemuxer.h"
-#include "DVDMessageQueue.h"
-#include "DVDSubtitles/DVDFactorySubtitle.h"
 #include "Edl.h"
-
-#include <deque>
 
 #define MAX_CHAPTERS 64
 
