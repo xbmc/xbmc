@@ -131,7 +131,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the listitem label.\n"
+    "getLabel() -- Returns the listitem label as a unicode string.\n"
     "\n"
     "example:\n"
     "  - label = self.list.getSelectedItem().getLabel()\n");
@@ -141,14 +141,14 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyXBMCGUILock();
-    const char *cLabel = self->item->GetLabel().c_str();
+    std::string value = self->item->GetLabel();
     PyXBMCGUIUnlock();
 
-    return Py_BuildValue((char*)"s", cLabel);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyDoc_STRVAR(getLabel2__doc__,
-    "getLabel2() -- Returns the listitem's second label.\n"
+    "getLabel2() -- Returns the listitem's second label as a unicode string.\n"
     "\n"
     "example:\n"
     "  - label2 = self.list.getSelectedItem().getLabel2()\n");
@@ -158,10 +158,10 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyXBMCGUILock();
-    const char *cLabel = self->item->GetLabel2().c_str();
+    std::string value = self->item->GetLabel2();
     PyXBMCGUIUnlock();
 
-    return Py_BuildValue((char*)"s", cLabel);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyDoc_STRVAR(setLabel__doc__,
@@ -821,7 +821,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getProperty__doc__,
-    "getProperty(key) -- Returns a listitem property as a string, similar to an infolabel.\n"
+    "getProperty(key) -- Returns a listitem property as a unicode string, similar to an infolabel.\n"
     "\n"
     "key            : string - property name.\n"
     "\n"
@@ -852,21 +852,20 @@ namespace PYXBMC
 
     PyXBMCGUILock();
     CStdString lowerKey = key;
-    CStdString value;
+    CVariant value;
     if (lowerKey.CompareNoCase("startoffset") == 0)
     { // special case for start offset - don't actually store in a property,
       // we store it in item.m_lStartOffset instead
-      value.Format("%f", self->item->m_lStartOffset / 75.0);
+      value = self->item->m_lStartOffset / 75.0;
     }
     else if (lowerKey.CompareNoCase("totaltime") == 0)
-      value.Format("%f", self->item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+      value = self->item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds;
     else if (lowerKey.CompareNoCase("resumetime") == 0)
-      value.Format("%f", self->item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+      value = self->item->GetVideoInfoTag()->m_resumePoint.timeInSeconds;
     else
-      value = self->item->GetProperty(lowerKey.ToLower()).asString();
+      value = self->item->GetProperty(lowerKey.ToLower());
     PyXBMCGUIUnlock();
-
-    return Py_BuildValue((char*)"s", value.c_str());
+    return PyVariantToObject(value);
   }
 
   // addContextMenuItems() method

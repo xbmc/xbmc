@@ -76,6 +76,12 @@ namespace ADDON
   typedef std::map<CStdString, CStdString> InfoMap;
   class AddonProps;
 
+  enum SETTINGS_TYPE { SETTINGS_UNKNOWN = 0,
+                       SETTINGS_STRING,
+                       SETTINGS_INT,
+                       SETTINGS_FLOAT,
+                       SETTINGS_BOOL };
+
   class IAddon : public boost::enable_shared_from_this<IAddon>
   {
   public:
@@ -107,6 +113,7 @@ namespace ADDON
     virtual void SaveSettings() =0;
     virtual void UpdateSetting(const CStdString& key, const CStdString& value) =0;
     virtual CStdString GetSetting(const CStdString& key) =0;
+    virtual SETTINGS_TYPE GetSettingType(const CStdString &key) =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
     virtual const ADDONDEPS &GetDeps() const =0;

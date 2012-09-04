@@ -46,7 +46,6 @@ namespace ADDON
 
     // addon settings
     virtual void SaveSettings();
-    virtual CStdString GetSetting(const CStdString& key);
 
     bool Create();
     virtual void Stop();
@@ -396,12 +395,6 @@ void CAddonDll<TheDll, TheStruct, TheProps>::SaveSettings()
   CAddon::SaveSettings();
   if (m_initialized)
     TransferSettings();
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-CStdString CAddonDll<TheDll, TheStruct, TheProps>::GetSetting(const CStdString& key)
-{
-  return CAddon::GetSetting(key);
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

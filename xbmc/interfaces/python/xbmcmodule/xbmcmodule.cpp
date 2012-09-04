@@ -30,10 +30,6 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#ifdef HAS_HTTPAPI
-#include "interfaces/http-api/XBMChttp.h"
-#include "interfaces/http-api/HttpApi.h"
-#endif
 #include "pyjsonrpc.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -108,36 +104,29 @@ namespace PYXBMC
       "level",
       NULL};
 
-    char *s_line = NULL;
+    PyObject *s_line = NULL;
     int iLevel = LOGNOTICE;
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"s|i",
+      (char*)"O|i",
       (char**)keywords,
       &s_line,
       &iLevel))
     {
       return NULL;
     }
+    CStdString uText;
+    if (!PyXBMCGetUnicodeString(uText, s_line, 1))
+      return NULL;
+
     // check for a valid loglevel
     if (iLevel < LOGDEBUG || iLevel > LOGNONE)
       iLevel = LOGNOTICE;
-    CLog::Log(iLevel, "%s", s_line);
+    CLog::Log(iLevel, "%s", uText.c_str());
 
     Py_INCREF(Py_None);
     return Py_None;
-  }
-
-  // output() method
-  PyDoc_STRVAR(output__doc__,
-    "'xbmc.output()' is depreciated and will be removed in future releases,\n"
-    "please use 'xbmc.log()' instead");
-
-  PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
-  {
-    CLog::Log(LOGWARNING,"'xbmc.output()' is depreciated and will be removed in future releases, please use 'xbmc.log()' instead");
-    return XBMC_Log(self, args, kwds);
   }
 
   // shutdown() method
@@ -220,61 +209,8 @@ namespace PYXBMC
     return Py_None;
   }
 
-#ifdef HAS_HTTPAPI
-  // executehttpapi() method
-  PyDoc_STRVAR(executeHttpApi__doc__,
-    "executehttpapi(httpcommand) -- Execute an HTTP API command.\n"
-    "\n"
-    "httpcommand    : string - http command to execute.\n"
-    "\n"
-    "List of commands - http://wiki.xbmc.org/?title=WebServerHTTP-API#The_Commands \n"
-    "\n"
-    "example:\n"
-    "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
-
-  PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
-  {
-    char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
-
-    CPyThreadState pyLock;
-
-    if (!m_pXbmcHttp)
-      m_pXbmcHttp = new CXbmcHttp();
-    CStdString method = cLine;
-
-    int open, close;
-    CStdString parameter="", cmd=cLine, execute;
-    open = cmd.Find("(");
-    if (open>0)
-    {
-      close=cmd.length();
-      while (close>open && cmd.Mid(close,1)!=")")
-        close--;
-      if (close>open)
-      {
-        parameter = cmd.Mid(open + 1, close - open - 1);
-        parameter.Replace(",",";");
-        execute = cmd.Left(open);
-      }
-      else //open bracket but no close
-      {
-        pyLock.Restore();
-        return PyString_FromString("");
-      }
-    }
-    else //no parameters
-      execute = cmd;
-
-    CURL::Decode(parameter);
-
-    pyLock.Restore();
-    return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
-  }
-#endif
-
 #ifdef HAS_JSONRPC
-  // executehttpapi() method
+  // executeJSONRPC() method
   PyDoc_STRVAR(executeJSONRPC__doc__,
     "executeJSONRPC(jsonrpccommand) -- Execute an JSONRPC command.\n"
     "\n"
@@ -369,7 +305,7 @@ namespace PYXBMC
 
   // getSkinDir() method
   PyDoc_STRVAR(getSkinDir__doc__,
-    "getSkinDir() -- Returns the active skin directory as a string.\n"
+    "getSkinDir() -- Returns the active skin directory as a unicode string.\n"
     "\n"
     "*Note, This is not the full path like 'special://home/addons/MediaCenter', but only 'MediaCenter'.\n"
     "\n"
@@ -378,37 +314,39 @@ namespace PYXBMC
 
   PyObject* XBMC_GetSkinDir(PyObject *self, PyObject *args)
   {
-    return PyString_FromString(g_guiSettings.GetString("lookandfeel.skin"));
+    CStdString value = g_guiSettings.GetString("lookandfeel.skin");
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // getLanguage() method
   PyDoc_STRVAR(getLanguage__doc__,
-    "getLanguage() -- Returns the active language as a string.\n"
+    "getLanguage() -- Returns the active language as a unicode string.\n"
     "\n"
     "example:\n"
     "  - language = xbmc.getLanguage()\n");
 
   PyObject* XBMC_GetLanguage(PyObject *self, PyObject *args)
   {
-    return PyString_FromString(g_guiSettings.GetString("locale.language"));
+    CStdString value = g_guiSettings.GetString("locale.language");
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // getIPAddress() method
   PyDoc_STRVAR(getIPAddress__doc__,
-    "getIPAddress() -- Returns the current ip address as a string.\n"
+    "getIPAddress() -- Returns the current ip address as a unicode string.\n"
     "\n"
     "example:\n"
     "  - ip = xbmc.getIPAddress()\n");
 
   PyObject* XBMC_GetIPAddress(PyObject *self, PyObject *args)
   {
-    char cTitleIP[32];
-    sprintf(cTitleIP, "127.0.0.1");
     CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
     if (iface)
-      return PyString_FromString(iface->GetCurrentIPAddress().c_str());
-
-    return PyString_FromString(cTitleIP);
+    {
+      CStdString value = iface->GetCurrentIPAddress();
+      return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
+    }
+    return PyUnicode_DecodeUTF8("127.0.0.1", 9, "replace");
   }
 
   // getDVDState() method
@@ -444,42 +382,9 @@ namespace PYXBMC
     return PyInt_FromLong( (long)(stat.ullAvailPhys  / ( 1024 * 1024 )) );
   }
 
-  // getCpuTemp() method
-  // ## Doesn't work right, use getInfoLabel('System.CPUTemperature') instead.
-  /*PyDoc_STRVAR(getCpuTemp__doc__,
-    "getCpuTemp() -- Returns the current cpu temperature as an integer.\n"
-    "\n"
-    "example:\n"
-    "  - cputemp = xbmc.getCpuTemp()\n");
-
-  PyObject* XBMC_GetCpuTemp(PyObject *self, PyObject *args)
-  {
-    unsigned short cputemp;
-    unsigned short cpudec;
-
-    _outp(0xc004, (0x4c<<1)|0x01);
-    _outp(0xc008, 0x01);
-    _outpw(0xc000, _inpw(0xc000));
-    _outp(0xc002, (0) ? 0x0b : 0x0a);
-    while ((_inp(0xc000) & 8));
-    cputemp = _inpw(0xc006);
-
-    _outp(0xc004, (0x4c<<1)|0x01);
-    _outp(0xc008, 0x10);
-    _outpw(0xc000, _inpw(0xc000));
-    _outp(0xc002, (0) ? 0x0b : 0x0a);
-    while ((_inp(0xc000) & 8));
-    cpudec = _inpw(0xc006);
-
-    if (cpudec<10) cpudec = cpudec * 100;
-    if (cpudec<100) cpudec = cpudec *10;
-
-    return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
-  }*/
-
   // getInfolabel() method
   PyDoc_STRVAR(getInfoLabel__doc__,
-    "getInfoLabel(infotag) -- Returns an InfoLabel as a string.\n"
+    "getInfoLabel(infotag) -- Returns an InfoLabel as a unicode string.\n"
     "\n"
     "infotag        : string - infoTag for value you want returned.\n"
     "                 Also multiple InfoLabels are possible e.x.:\n"
@@ -513,13 +418,13 @@ namespace PYXBMC
         cret = g_infoManager.GetLabel(ret);
       }
     }
-    return Py_BuildValue((char*)"s", cret.c_str());
+    return PyUnicode_DecodeUTF8(cret.c_str(), cret.size(), "replace");
   }
 
   // getInfoImage() method
   PyDoc_STRVAR(getInfoImage__doc__,
     "getInfoImage(infotag) -- Returns a filename including path to the InfoImage's\n"
-    "                         thumbnail as a string.\n"
+    "                         thumbnail as a unicode string.\n"
     "\n"
     "infotag        : string - infotag for value you want returned.\n"
     "\n"
@@ -542,7 +447,7 @@ namespace PYXBMC
       cret = g_infoManager.GetImage(ret, WINDOW_INVALID);
     }
 
-    return Py_BuildValue((char*)"s", cret.c_str());
+    return PyUnicode_DecodeUTF8(cret.c_str(), cret.size(), "replace");
   }
 
   // playSFX() method
@@ -638,33 +543,9 @@ namespace PYXBMC
     return Py_BuildValue((char*)"i", g_application.GlobalIdleTime());
   }
 
-  // getCacheThumbName function
-  PyDoc_STRVAR(getCacheThumbName__doc__,
-    "getCacheThumbName(path) -- Returns a thumb cache filename.\n"
-    "\n"
-    "path           : string or unicode - path to file\n"
-    "\n"
-    "example:\n"
-    "  - thumb = xbmc.getCacheThumbName('f:\\\\videos\\\\movie.avi')\n");
-
-  PyObject* XBMC_GetCacheThumbName(PyObject *self, PyObject *args)
-  {
-    PyObject *pObjectText;
-    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
-
-    string strText;
-    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
-
-    Crc32 crc;
-    CStdString strPath;
-    crc.ComputeFromLowerCase(strText);
-    strPath.Format("%08x.tbn", (unsigned __int32)crc);
-    return Py_BuildValue((char*)"s", strPath.c_str());
-  }
-
   // makeLegalFilename function
   PyDoc_STRVAR(makeLegalFilename__doc__,
-    "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a string.\n"
+    "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a unicode string.\n"
     "\n"
     "filename       : string or unicode - filename/path to make legal\n"
     "fatX           : [opt] bool - True=Xbox file system(Default)\n"
@@ -701,12 +582,12 @@ namespace PYXBMC
 
     CStdString strFilename;
     strFilename = CUtil::MakeLegalPath(strText);
-    return Py_BuildValue((char*)"s", strFilename.c_str());
+    return PyUnicode_DecodeUTF8(strFilename.c_str(), strFilename.size(), "replace");
   }
 
   // translatePath function
   PyDoc_STRVAR(translatePath__doc__,
-    "translatePath(path) -- Returns the translated path.\n"
+    "translatePath(path) -- Returns the translated path as a unicode string.\n"
     "\n"
     "path           : string or unicode - Path to format\n"
     "\n"
@@ -728,12 +609,12 @@ namespace PYXBMC
     CStdString strPath;
     strPath = CSpecialProtocol::TranslatePath(strText);
 
-    return Py_BuildValue((char*)"s", strPath.c_str());
+    return PyUnicode_DecodeUTF8(strPath.c_str(), strPath.size(), "replace");
   }
 
   // getcleanmovietitle function
   PyDoc_STRVAR(getCleanMovieTitle__doc__,
-    "getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year string if available.\n"
+    "getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year unicode string if available.\n"
     "\n"
     "path           : string or unicode - String to clean\n"
     "bool           : [opt] bool - use folder names (defaults to false)\n"
@@ -768,12 +649,13 @@ namespace PYXBMC
     CStdString strTitle, strTitleAndYear, strYear;
     CUtil::CleanString(strName, strTitle, strTitleAndYear, strYear, bUseFolderName);
 
-    return Py_BuildValue((char*)"s,s", strTitle.c_str(), strYear.c_str());
+    return Py_BuildValue((char*)"O,O", PyUnicode_DecodeUTF8(strTitle.c_str(), strTitle.size(), "replace"),
+                                       PyUnicode_DecodeUTF8(strYear.c_str(), strYear.size(), "replace"));
   }
 
   // validatePath function
   PyDoc_STRVAR(validatePath__doc__,
-    "validatePath(path) -- Returns the validated path.\n"
+    "validatePath(path) -- Returns the validated path as a unicode string.\n"
     "\n"
     "path           : string or unicode - Path to format\n"
     "\n"
@@ -791,12 +673,13 @@ namespace PYXBMC
     CStdString strText;
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
-    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText, true).c_str());
+    CStdString validated = CUtil::ValidatePath(strText, true);
+    return PyUnicode_DecodeUTF8(validated.c_str(), validated.size(), "replace");
   }
 
   // getRegion function
   PyDoc_STRVAR(getRegion__doc__,
-    "getRegion(id) -- Returns your regions setting as a string for the specified id.\n"
+    "getRegion(id) -- Returns your regions setting as a unicode string for the specified id.\n"
     "\n"
     "id             : string - id of setting to return\n"
     "\n"
@@ -856,12 +739,12 @@ namespace PYXBMC
     else if (strcmpi(id, "meridiem") == 0)
       result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
 
-    return Py_BuildValue((char*)"s", result.c_str());
+    return PyUnicode_DecodeUTF8(result.c_str(), result.size(), "replace");
   }
 
   // getSupportedMedia function
   PyDoc_STRVAR(getSupportedMedia__doc__,
-    "getSupportedMedia(media) -- Returns the supported file types for the specific media as a string.\n"
+    "getSupportedMedia(media) -- Returns the supported file types for the specific media as a unicode string.\n"
     "\n"
     "media          : string - media type\n"
     "\n"
@@ -903,7 +786,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    return Py_BuildValue((char*)"s", result.c_str());
+    return PyUnicode_DecodeUTF8(result.c_str(), result.size(), "replace");
   }
 
   // skinHasImage function
@@ -1019,7 +902,6 @@ namespace PYXBMC
   
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
-    {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS|METH_KEYWORDS, output__doc__},
     {(char*)"log", (PyCFunction)XBMC_Log, METH_VARARGS|METH_KEYWORDS, log__doc__},
     {(char*)"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
     {(char*)"executebuiltin", (PyCFunction)XBMC_ExecuteBuiltIn, METH_VARARGS, executeBuiltIn__doc__},
@@ -1035,10 +917,6 @@ namespace PYXBMC
     {(char*)"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
     {(char*)"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
     //{(char*)"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
-
-#ifdef HAS_HTTPAPI
-    {(char*)"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
-#endif
 #ifdef HAS_JSONRPC
     {(char*)"executeJSONRPC", (PyCFunction)XBMC_ExecuteJSONRPC, METH_VARARGS, executeJSONRPC__doc__},
 #endif
@@ -1049,8 +927,6 @@ namespace PYXBMC
 
     {(char*)"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
     {(char*)"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
-
-    {(char*)"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
 
     {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS|METH_KEYWORDS, makeLegalFilename__doc__},
     {(char*)"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},

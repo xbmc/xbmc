@@ -184,7 +184,7 @@ namespace PYXBMC
   }
 
     PyDoc_STRVAR(getSetting__doc__,
-    "getSetting(id) -- Returns the value of a setting as a unicode string.\n"
+    "getSetting(id) -- Returns the value of a setting as a boolean, integer, float or unicode string.\n"
     "\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "\n"
@@ -208,7 +208,20 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", self->pAddon->GetSetting(id).c_str());
+    std::string value = self->pAddon->GetSetting(id);
+    ADDON::SETTINGS_TYPE type = self->pAddon->GetSettingType(id);
+    switch (type)
+    {
+    case ADDON::SETTINGS_BOOL:
+      return Py_BuildValue((char*)"b", value == "true");
+    case ADDON::SETTINGS_INT:
+      return Py_BuildValue((char*)"i", strtol(value.c_str(), NULL, 10));
+    case ADDON::SETTINGS_FLOAT:
+      return Py_BuildValue((char*)"f", strtod(value.c_str(), NULL));
+    case ADDON::SETTINGS_STRING:
+    default:
+      return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
+    }
   }
 
   PyDoc_STRVAR(setSetting__doc__,
@@ -295,7 +308,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getAddonInfo__doc__,
-    "getAddonInfo(id) -- Returns the value of an addon property as a string.\n"
+    "getAddonInfo(id) -- Returns the value of an addon property as a unicode string.\n"
     "\n"
     "id        : string - id of the property that the module needs to access.\n"
     "\n"
@@ -323,34 +336,35 @@ namespace PYXBMC
       return NULL;
     };
 
+    CStdString value;
     if (strcmpi(id, "author") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Author().c_str());
+      value = self->pAddon->Author();
     else if (strcmpi(id, "changelog") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->ChangeLog().c_str());
+      value = self->pAddon->ChangeLog();
     else if (strcmpi(id, "description") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Description().c_str());
+      value = self->pAddon->Description();
     else if (strcmpi(id, "disclaimer") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Disclaimer().c_str());
+      value = self->pAddon->Disclaimer();
     else if (strcmpi(id, "fanart") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->FanArt().c_str());
+      value = self->pAddon->FanArt();
     else if (strcmpi(id, "icon") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Icon().c_str());
+      value = self->pAddon->Icon();
     else if (strcmpi(id, "id") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->ID().c_str());
+      value = self->pAddon->ID();
     else if (strcmpi(id, "name") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Name().c_str());
+      value = self->pAddon->Name();
     else if (strcmpi(id, "path") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Path().c_str());
+      value = self->pAddon->Path();
     else if (strcmpi(id, "profile") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Profile().c_str());
+      value = self->pAddon->Profile();
     else if (strcmpi(id, "stars") == 0)
-      return Py_BuildValue((char*)"i", self->pAddon->Stars());
+      value = self->pAddon->Stars();
     else if (strcmpi(id, "summary") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Summary().c_str());
+      value = self->pAddon->Summary();
     else if (strcmpi(id, "type") == 0)
-      return Py_BuildValue((char*)"s", ADDON::TranslateType(self->pAddon->Type()).c_str());
+      value = ADDON::TranslateType(self->pAddon->Type());
     else if (strcmpi(id, "version") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Version().c_str());
+      value = self->pAddon->Version().c_str();
     else
     {
       CStdString error;
@@ -358,6 +372,7 @@ namespace PYXBMC
       PyErr_SetString(PyExc_ValueError, error.c_str());
       return NULL;
     }
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyMethodDef Addon_methods[] = {

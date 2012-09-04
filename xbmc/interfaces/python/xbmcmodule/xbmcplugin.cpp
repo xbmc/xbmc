@@ -299,7 +299,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getSetting__doc__,
-    "getSetting(handle, id) -- Returns the value of a setting as a string.\n"
+    "getSetting(handle, id) -- Returns the value of a setting as a unicode string.\n"
     "\n"
     "handle    : integer - handle the plugin was started with.\n"
     "id        : string - id of the setting that the module needs to access.\n"
@@ -326,7 +326,8 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", XFILE::CPluginDirectory::GetSetting(handle, id).c_str());
+    CStdString value = XFILE::CPluginDirectory::GetSetting(handle, id);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyDoc_STRVAR(setSetting__doc__,

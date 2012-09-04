@@ -53,128 +53,142 @@ namespace PYXBMC
 
   // InfoTagVideo_GetDirector
   PyDoc_STRVAR(getDirector__doc__,
-    "getDirector() -- returns a string.\n");
+    "getDirector() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetDirector(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s",  StringUtils::Join(self->infoTag.m_director, g_advancedSettings.m_videoItemSeparator).c_str());
+    std::string value = StringUtils::Join(self->infoTag.m_director, g_advancedSettings.m_videoItemSeparator);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetWritingCredits
   PyDoc_STRVAR(getWritingCredits__doc__,
-    "getWritingCredits() -- returns a string.\n");
+    "getWritingCredits() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetWritingCredits(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.m_writingCredits, g_advancedSettings.m_videoItemSeparator).c_str());
+    std::string value = StringUtils::Join(self->infoTag.m_writingCredits, g_advancedSettings.m_videoItemSeparator);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetGenre
   PyDoc_STRVAR(getGenre__doc__,
-    "getGenre() -- returns a string.\n");
+    "getGenre() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetGenre(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.m_genre, g_advancedSettings.m_videoItemSeparator).c_str());
+    std::string value = StringUtils::Join(self->infoTag.m_genre, g_advancedSettings.m_videoItemSeparator);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetTagLine
   PyDoc_STRVAR(getTagLine__doc__,
-    "getTagLine() -- returns a string.\n");
+    "getTagLine() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetTagLine(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strTagLine.c_str());
+    std::string value = self->infoTag.m_strTagLine;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetPlotOutline
   PyDoc_STRVAR(getPlotOutline__doc__,
-    "getPlotOutline() -- returns a string.\n");
+    "getPlotOutline() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetPlotOutline(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strPlotOutline.c_str());
+    std::string value = self->infoTag.m_strPlotOutline;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetPlot
   PyDoc_STRVAR(getPlot__doc__,
-    "getPlot() -- returns a string.\n");
+    "getPlot() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetPlot(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strPlot.c_str());
+    std::string value = self->infoTag.m_strPlot;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetPictureURL
   PyDoc_STRVAR(getPictureURL__doc__,
-    "getPictureURL() -- returns a string.\n");
+    "getPictureURL() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetPictureURL(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strPictureURL.GetFirstThumb().m_url.c_str());
+    std::string value = self->infoTag.m_strPictureURL.GetFirstThumb().m_url;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetTitle
   PyDoc_STRVAR(getTitle__doc__,
-    "getTitle() -- returns a string.\n");
+    "getTitle() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetTitle(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strTitle.c_str());
+    std::string value = self->infoTag.m_strTitle;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetOriginalTitle
   PyDoc_STRVAR(getOriginalTitle__doc__,
-    "getOriginalTitle() -- returns a string.\n");
+    "getOriginalTitle() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetOriginalTitle(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strOriginalTitle.c_str());
+    std::string value = self->infoTag.m_strOriginalTitle;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetVotes
   PyDoc_STRVAR(getVotes__doc__,
-    "getVotes() -- returns a string.\n");
+    "getVotes() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetVotes(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strVotes.c_str());
+    std::string value = self->infoTag.m_strVotes;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetCast
   PyDoc_STRVAR(getCast__doc__,
-    "getCast() -- returns a string.\n");
+    "getCast() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetCast(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetCast(true).c_str());
+    std::string value = self->infoTag.GetCast(true);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetFile
   PyDoc_STRVAR(getFile__doc__,
-    "getFile() -- returns a string.\n");
+    "getFile() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetFile(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strFile.c_str());
+    std::string value = self->infoTag.m_strFile;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetPath
   PyDoc_STRVAR(getPath__doc__,
-    "getPath() -- returns a string.\n");
+    "getPath() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetPath(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strPath.c_str());
+    std::string value = self->infoTag.m_strPath;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetIMDBNumber
   PyDoc_STRVAR(getIMDBNumber__doc__,
-    "getIMDBNumber() -- returns a string.\n");
+    "getIMDBNumber() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetIMDBNumber(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strIMDBNumber.c_str());
+    std::string value = self->infoTag.m_strIMDBNumber;
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetYear
@@ -188,20 +202,22 @@ namespace PYXBMC
 
   // InfoTagVideo_GetPremiered
   PyDoc_STRVAR(getPremiered__doc__,
-    "getPremiered() -- returns a string.\n");
+    "getPremiered() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetPremiered(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_premiered.GetAsLocalizedDate().c_str());
+    std::string value = self->infoTag.m_premiered.GetAsLocalizedDate();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetFirstAired
   PyDoc_STRVAR(getFirstAired__doc__,
-    "getFirstAired() -- returns a string.\n");
+    "getFirstAired() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetFirstAired(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_firstAired.GetAsLocalizedDate().c_str());
+    std::string value = self->infoTag.m_firstAired.GetAsLocalizedDate();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagVideo_GetRating
@@ -224,11 +240,12 @@ namespace PYXBMC
 
   // InfoTagVideo_GetLastPlayed
   PyDoc_STRVAR(getLastPlayed__doc__,
-    "getLastPlayed() -- returns a string.\n");
+    "getLastPlayed() -- returns a unicode string.\n");
 
   PyObject* InfoTagVideo_GetLastPlayed(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_lastPlayed.GetAsLocalizedDateTime().c_str());
+    std::string value = self->infoTag.m_lastPlayed.GetAsLocalizedDateTime();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyMethodDef InfoTagVideo_methods[] = {

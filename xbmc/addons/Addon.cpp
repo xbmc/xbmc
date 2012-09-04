@@ -463,6 +463,53 @@ CStdString CAddon::GetSetting(const CStdString& key)
   return "";
 }
 
+SETTINGS_TYPE TypeFromSetting(const char *type)
+{
+  if (!type)
+    return SETTINGS_UNKNOWN;
+  if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+      strcmpi(type, "video") == 0 || strcmpi(type, "audio") == 0 ||
+      strcmpi(type, "image") == 0 || strcmpi(type, "folder") == 0 ||
+      strcmpi(type, "executable") == 0 || strcmpi(type, "file") == 0 ||
+      strcmpi(type, "date") == 0 || strcmpi(type, "time") == 0 ||
+      strcmpi(type, "action") == 0 || strcmpi(type, "addon") == 0 ||
+      strcmpi(type, "select") == 0) // select ??
+  { // normally in a button control
+    return SETTINGS_STRING;
+  }
+  else if (strcmpi(type, "number") == 0 || strcmpi(type, "enum") == 0 || strcmpi(type, "rangeofnum") == 0)
+    return SETTINGS_INT;
+  else if (strcmpi(type, "slider") == 0) // This could potentially hold an integer (or percent) depending on option type
+    return SETTINGS_FLOAT;
+  else if (strcmpi(type, "bool") == 0)
+    return SETTINGS_BOOL;
+  return SETTINGS_UNKNOWN;
+}
+
+SETTINGS_TYPE CAddon::GetSettingType(const CStdString& key)
+{
+  if (!LoadSettings() || !m_addonXmlDoc.RootElement())
+    return SETTINGS_UNKNOWN; // no settings available
+
+  // run through the XML and get the setting type
+  const TiXmlElement* category = m_addonXmlDoc.RootElement()->FirstChildElement("category");
+  if (!category)
+    category = m_addonXmlDoc.RootElement();
+  while (category)
+  {
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
+    {
+      const char *id = setting->Attribute("id");
+      if (key == id)
+        return TypeFromSetting(setting->Attribute("type"));
+      setting = setting->NextSiblingElement("setting");
+    }
+    category = category->NextSiblingElement("category");
+  }
+  return SETTINGS_UNKNOWN;
+}
+
 void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
 {
   LoadSettings();

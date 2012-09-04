@@ -55,56 +55,62 @@ namespace PYXBMC
 
   // InfoTagMusic_GetURL
   PyDoc_STRVAR(getURL__doc__,
-    "getURL() -- returns a string.\n");
+    "getURL() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetURL(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetURL().c_str());
+    std::string value = self->infoTag.GetURL();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetTitle
   PyDoc_STRVAR(getTitle__doc__,
-    "getTitle() -- returns a string.\n");
+    "getTitle() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetTitle(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetTitle().c_str());
+    std::string value = self->infoTag.GetTitle();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetArtist
   PyDoc_STRVAR(getArtist__doc__,
-    "getArtist() -- returns a string.\n");
+    "getArtist() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetArtist(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
+    std::string value = StringUtils::Join(self->infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetAlbumArtist
   PyDoc_STRVAR(getAlbumArtist__doc__,
-    "getAlbumArtist() -- returns a string.\n");
+    "getAlbumArtist() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetAlbumArtist(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
+    std::string value = StringUtils::Join(self->infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetAlbum
   PyDoc_STRVAR(getAlbum__doc__,
-    "getAlbum() -- returns a string.\n");
+    "getAlbum() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetAlbum(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetAlbum().c_str());
+    std::string value = self->infoTag.GetAlbum();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetGenre
   PyDoc_STRVAR(getGenre__doc__,
-    "getAlbum() -- returns a string.\n");
+    "getAlbum() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetGenre(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str());
+    std::string value = StringUtils::Join(self->infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator);
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetDuration
@@ -145,11 +151,12 @@ namespace PYXBMC
 
   // InfoTagMusic_ReleaseDate
   PyDoc_STRVAR(getReleaseDate__doc__,
-    "getReleaseDate() -- returns a string.\n");
+    "getReleaseDate() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetReleaseDate(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetYearString().c_str());
+    std::string value = self->infoTag.GetYearString();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetListeners
@@ -172,29 +179,32 @@ namespace PYXBMC
 
   // InfoTagMusic_GetLastPlayed
   PyDoc_STRVAR(getLastPlayed__doc__,
-    "getLastPlayed() -- returns a string.\n");
+    "getLastPlayed() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetLastPlayed(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetLastPlayed().GetAsLocalizedDate().c_str());
+    std::string value = self->infoTag.GetLastPlayed().GetAsLocalizedDate();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetComment
   PyDoc_STRVAR(getComment__doc__,
-    "getComment() -- returns a string.\n");
+    "getComment() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetComment(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetComment().c_str());
+    std::string value = self->infoTag.GetComment();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   // InfoTagMusic_GetLyrics
   PyDoc_STRVAR(getLyrics__doc__,
-    "getLyrics() -- returns a string.\n");
+    "getLyrics() -- returns a unicode string.\n");
 
   PyObject* InfoTagMusic_GetLyrics(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetLyrics().c_str());
+    std::string value = self->infoTag.GetLyrics();
+    return PyUnicode_DecodeUTF8(value.c_str(), value.size(), "replace");
   }
 
   PyMethodDef InfoTagMusic_methods[] = {
