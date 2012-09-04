@@ -1123,6 +1123,12 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       case RENDER_FMT_BYPASS:
         formatstr = "BYPASS";
         break;
+      case RENDER_FMT_Y_UV:
+        formatstr = "GL:Y:UV";
+        break;
+      case RENDER_FMT_Y_U_V:
+        formatstr = "GL:Y:U:V";
+        break;
       case RENDER_FMT_NONE:
         formatstr = "NONE";
         break;

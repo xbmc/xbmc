@@ -26,6 +26,7 @@
 #include "DVDVideoCodec.h"
 #include <boost/scoped_array.hpp>
 #include <boost/weak_ptr.hpp>
+#include "utils/MathUtils.h"
 
 #define CHECK(a) \
 do { \
@@ -89,7 +90,12 @@ static CDisplayPtr GetGlobalDisplay()
   }
 
   VADisplay disp;
+#ifdef HAVE_VA_GLX
   disp = vaGetDisplayGLX(g_Windowing.GetDisplay());
+#endif
+#ifdef HAVE_VA_X11
+  disp = vaGetDisplay(g_Windowing.GetDisplay());
+#endif
 
   int major_version, minor_version;
   VAStatus res = vaInitialize(disp, &major_version, &minor_version);
@@ -137,10 +143,16 @@ CSurface::~CSurface()
 
 CSurfaceGL::~CSurfaceGL()
 {
+}
+
+#ifdef HAVE_VA_GLX
+CSurfaceGLX::~CSurfaceGLX()
+{
   CLog::Log(LOGDEBUG, "VAAPI - destroying glx surface %p", m_id);
   CSingleLock lock(*m_display);
   WARN(vaDestroySurfaceGLX(m_display->get(), m_id))
 }
+#endif
 
 CDecoder::CDecoder()
 {
@@ -412,7 +424,12 @@ bool CDecoder::EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count)
                        , 0))
 
   for(unsigned i = old_surfaces_count; i < m_surfaces_count; i++)
-    m_surfaces_free.push_back(CSurfacePtr(new CSurface(m_surfaces[i], m_display)));
+  {
+    CSurfacePtr surface(new CSurface(m_surfaces[i], m_display));
+    surface->m_width  = avctx->width;
+    surface->m_height = avctx->height;
+    m_surfaces_free.push_back(surface);
+  }
 
   //shared_ptr<VASurfaceID const> test = VASurfaceIDPtr(m_surfaces[0], m_display);
 
@@ -511,5 +528,327 @@ int CDecoder::Check(AVCodecContext* avctx)
   m_holder.surface.reset();
   return 0;
 }
+
+static void GetPixmapSize(int width, int height, int& outWidth, int& outHeight)
+{
+  // Pick the smallest dimensions so that to save GPU memory bandwidth
+  // XXX: code derived from VDPAU.cpp:MakePixmap()
+  if (g_graphicsContext.GetWidth()  < width ||
+      g_graphicsContext.GetHeight() < height)
+  {
+    if ((double)height * g_graphicsContext.GetWidth() / width <= (double)
+        g_graphicsContext.GetHeight())
+    {
+      // Scale width to the desktop size if the aspect ratio is the
+      // same or bigger than the desktop
+      outWidth  = g_graphicsContext.GetWidth();
+      outHeight = MathUtils::round_int(
+          (double)height * g_graphicsContext.GetWidth() / width);
+    }
+    else
+    {
+      // Scale height to the desktop size if the aspect ratio is
+      // smaller than the desktop
+      outHeight = g_graphicsContext.GetHeight();
+      outWidth  = MathUtils::round_int(
+          (double)width * g_graphicsContext.GetHeight() / height);
+    }
+  }
+  else
+  {
+    // Let OpenGL scale
+    outWidth  = width;
+    outHeight = height;
+  }
+}
+
+#ifdef HAS_EGL
+class CEGLVTable
+{
+  bool                          m_gotSymbols;
+
+  bool                          GetSymbol(void *fnptr, const char *name);
+  bool                          GetSymbols();
+
+public:
+                                CEGLVTable();
+  static const CEGLVTable *     Get();
+
+  PFNEGLCREATEIMAGEKHRPROC      create_image;
+  PFNEGLDESTROYIMAGEKHRPROC     destroy_image;
+};
+
+CEGLVTable::CEGLVTable()
+  : m_gotSymbols(false)
+{
+}
+
+bool CEGLVTable::GetSymbol(void *arg, const char *name)
+{
+  typedef void (*GenericFunc)(void);
+  GenericFunc func, *func_ptr = (GenericFunc *)arg;
+
+  func = static_cast<GenericFunc>(eglGetProcAddress(name));
+  if (!func)
+  {
+    CLog::Log(LOGERROR, "VAAPI - EGL: failed to load symbol %s", name);
+    return false;
+  }
+
+  *func_ptr = func;
+  return true;
+}
+
+bool CEGLVTable::GetSymbols()
+{
+  if (m_gotSymbols)
+    return true;
+  if (!GetSymbol(&create_image, "eglCreateImageKHR"))
+    return false;
+  if (!GetSymbol(&destroy_image, "eglDestroyImageKHR"))
+    return false;
+  m_gotSymbols = true;
+  return true;
+}
+
+const CEGLVTable *CEGLVTable::Get()
+{
+  static CEGLVTable g_vtable;
+
+  if (!g_vtable.GetSymbols())
+    return NULL;
+  return &g_vtable;
+}
+
+CSurfaceEGL::CSurfaceEGL(CDisplayPtr& display)
+  : CSurfaceGL(display)
+  , m_eglDisplay(g_Windowing.GetEGLDisplay())
+  , m_format(0)
+  , m_numPlanes(0)
+{
+  for (unsigned int i = 0; i < kMaxPlanes; i++)
+    m_images[i] = EGL_NO_IMAGE_KHR;
+}
+
+CSurfaceEGL::~CSurfaceEGL()
+{
+  DestroyImages();
+}
+
+void CSurfaceEGL::DestroyImage(unsigned int index)
+{
+  const CEGLVTable * const egl_vtable = CEGLVTable::Get();
+
+  if (m_images[index] != EGL_NO_IMAGE_KHR)
+  {
+    if (egl_vtable)
+      egl_vtable->destroy_image(m_eglDisplay, m_images[index]);
+    m_images[index] = EGL_NO_IMAGE_KHR;
+  }
+}
+
+void CSurfaceEGL::DestroyImages()
+{
+  for (unsigned int i = 0; i < m_numPlanes; i++)
+    DestroyImage(i);
+  m_numPlanes = 0;
+}
+
+bool CSurfaceEGL::Upload(CSurfacePtr surface, unsigned int flags)
+{
+  return false;
+}
+
+bool CSurfaceEGL::EnsureSize(int width, int height)
+{
+  return false;
+}
+
+#ifdef HAVE_VA_X11
+CSurfaceEGLPixmap::CSurfaceEGLPixmap(CDisplayPtr& display)
+  : CSurfaceEGL(display)
+  , m_display(g_Windowing.GetDisplay())
+  , m_pixmap(None)
+  , m_pixmapWidth(0)
+  , m_pixmapHeight(0)
+{
+  m_format = EGL_TEXTURE_RGBA;
+  m_numPlanes = 1;
+}
+
+CSurfaceEGLPixmap::~CSurfaceEGLPixmap()
+{
+  if (m_pixmap)
+  {
+    XFreePixmap(m_display, m_pixmap);
+    m_pixmap = None;
+  }
+}
+
+bool CSurfaceEGLPixmap::Upload(CSurfacePtr surface, unsigned int flags)
+{
+  if (!m_pixmap)
+    return false;
+
+  DestroyImages();
+
+  CHECK(vaPutSurface(surface->m_display->get(), surface->m_id, m_pixmap,
+                     0, 0, surface->m_width, surface->m_height,
+                     0, 0, m_pixmapWidth, m_pixmapHeight,
+                     NULL, 0, flags));
+
+  const CEGLVTable * const egl_vtable = CEGLVTable::Get();
+  if (!egl_vtable)
+    return false;
+
+  m_images[0] = egl_vtable->create_image(m_eglDisplay, EGL_NO_CONTEXT,
+      EGL_NATIVE_PIXMAP_KHR, (EGLClientBuffer)m_pixmap, NULL);
+  if (!m_images[0])
+  {
+    CLog::Log(LOGERROR, "VAAPI - EGL: failed to create EGLImage from pixmap");
+    return false;
+  }
+  m_numPlanes = 1;
+  return true;
+}
+
+bool CSurfaceEGLPixmap::EnsureSize(int width, int height)
+{
+  int pixmapWidth, pixmapHeight;
+
+  GetPixmapSize(width, height, pixmapWidth, pixmapHeight);
+  if (m_pixmapWidth == pixmapWidth && m_pixmapHeight == pixmapHeight)
+    return true;
+
+  XWindowAttributes win_attrs;
+  XGetWindowAttributes(m_display, g_Windowing.GetWindow(), &win_attrs);
+
+  if (m_pixmap)
+  {
+    XFreePixmap(m_display, m_pixmap);
+    m_pixmap = None;
+  }
+
+  m_pixmap = XCreatePixmap(m_display, DefaultRootWindow(m_display),
+      pixmapWidth, pixmapHeight, win_attrs.depth);
+  if (!m_pixmap)
+  {
+    CLog::Log(LOGERROR, "VAAPI - EGL: failed to create Pixmap");
+    return false;
+  }
+
+  CLog::Log(LOGNOTICE, "VAAPI - EGL: created %dx%d pixmap 0x%08lx",
+            pixmapWidth, pixmapHeight, m_pixmap);
+
+  m_pixmapWidth  = pixmapWidth;
+  m_pixmapHeight = pixmapHeight;
+  return true;
+}
+
+CSurfaceEGL *CSurfaceEGLPixmap::Create(CDisplayPtr& display, int width, int height)
+{
+  CSurfaceEGL *surface;
+
+  surface = new CSurfaceEGLPixmap(display);
+  if (surface->EnsureSize(width, height))
+    return surface;
+  delete surface;
+  return NULL;
+}
+#endif /* HAVE_VA_X11 */
+
+#ifdef HAVE_VA_EGL
+CSurfaceEGLBuffer::CSurfaceEGLBuffer(CDisplayPtr& display)
+  : CSurfaceEGL(display)
+  , m_surfaceBuffer(0)
+  , m_surfaceWidth(0)
+  , m_surfaceHeight(0)
+{
+}
+
+CSurfaceEGLBuffer::~CSurfaceEGLBuffer()
+{
+}
+
+bool CSurfaceEGLBuffer::Upload(CSurfacePtr surface, unsigned int flags)
+{
+  EGLint structure;
+  unsigned int i;
+
+  DestroyImages();
+  m_surface.reset();
+  m_surfaceBuffer = NULL;
+
+  if (surface->m_width  != m_surfaceWidth ||
+      surface->m_height != m_surfaceHeight)
+  {
+    CLog::Log(LOGERROR, "VAAPI - EGL: failed to upload surface with size mismatch");
+    return false;
+  }
+
+  CHECK(vaGetSurfaceBufferEGL(surface->m_display->get(), surface->m_id,
+                              &m_surfaceBuffer));
+
+  CHECK(vaGetBufferAttributeEGL(surface->m_display->get(), m_surfaceBuffer,
+                                EGL_VA_BUFFER_STRUCTURE_INTEL, &structure));
+
+  switch (structure) {
+  case VA_EGL_BUFFER_STRUCTURE_RGBA:
+    m_numPlanes = 1;
+    break;
+  case VA_EGL_BUFFER_STRUCTURE_Y_UV:
+    m_numPlanes = 2;
+    break;
+  case VA_EGL_BUFFER_STRUCTURE_Y_U_V:
+    m_numPlanes = 3;
+    break;
+  default:
+    CLog::Log(LOGERROR, "VAAPI - EGL: unsupported buffer structure 0x%04x", structure);
+    return false;
+  };
+  m_format = structure;
+
+  const CEGLVTable * const egl_vtable = CEGLVTable::Get();
+  if (!egl_vtable)
+    return false;
+
+  EGLint attribs[3];
+  for (i = 0; i < m_numPlanes; i++)
+  {
+    attribs[0] = EGL_VA_BUFFER_PLANE_INTEL;
+    attribs[1] = i;
+    attribs[2] = EGL_NONE;
+    m_images[i] = egl_vtable->create_image(m_eglDisplay, EGL_NO_CONTEXT,
+        EGL_VA_PIXEL_BUFFER_INTEL, m_surfaceBuffer, attribs);
+    if (!m_images[i])
+    {
+      CLog::Log(LOGERROR, "VAAPI - EGL: failed to create EGLImage from VA surface plane %d", i);
+      return false;
+    }
+  }
+
+  m_surface = surface;
+  return true;
+}
+
+bool CSurfaceEGLBuffer::EnsureSize(int width, int height)
+{
+  m_surfaceWidth  = width;
+  m_surfaceHeight = height;
+  return true;
+}
+
+CSurfaceEGL *CSurfaceEGLBuffer::Create(CDisplayPtr& display, int width, int height)
+{
+  CSurfaceEGL *surface;
+
+  surface = new CSurfaceEGLBuffer(display);
+  if (surface->EnsureSize(width, height))
+    return surface;
+  delete surface;
+  return NULL;
+}
+#endif /* HAVE_VA_EGL */
+#endif /* HAS_EGL */
 
 #endif

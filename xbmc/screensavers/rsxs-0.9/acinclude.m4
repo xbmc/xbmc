@@ -165,14 +165,14 @@ AC_DEFUN([MAC_PKG_X], [
 AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 	AC_REQUIRE([MAC_PKG_X])dnl
 
-	PKG_XSCREENSAVER_SYMLINKS=yes
+	HAVE_PKG_XSCREENSAVER_SYMLINKS=yes
 
 	AC_ARG_WITH(xscreensaver,
 		AC_HELP_STRING([--without-xscreensaver], [do not integrate with XScreenSaver]))dnl
 	case "$with_xscreensaver" in
 	nosymlinks)
 		with_xscreensaver=
-		PKG_XSCREENSAVER_SYMLINKS=no
+		HAVE_PKG_XSCREENSAVER_SYMLINKS=no
 		;;
 	yes)
 		with_xscreensaver=force
@@ -187,7 +187,7 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 	HAVE_PKG_XSCREENSAVER=no
 	HAVE_PKG_XSCREENSAVER_4=no
 	if test "$with_xscreensaver" != no; then
-		PKG_XSCREENSAVER_DEFAULTDIR=
+		pkg_XSCREENSAVER_DEFAULTDIR=
 		AC_ARG_WITH(defaultdir,
 			AC_HELP_STRING([--with-defaultdir],
 				[where application defaults files are stored [[guessed]]]))dnl
@@ -198,11 +198,11 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 			yes | "")
 				;;
 			*)
-				PKG_XSCREENSAVER_DEFAULTDIR="$with_defaultdir"
+				pkg_XSCREENSAVER_DEFAULTDIR="$with_defaultdir"
 				;;
 		esac
 
-		PKG_XSCREENSAVER_HACKDIR=
+		pkg_XSCREENSAVER_HACKDIR=
 		AC_ARG_WITH(hackdir,
 			AC_HELP_STRING([--with-hackdir],
 				[where XScreenSaver hacks are installed [[guessed]]]))dnl
@@ -213,11 +213,11 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 			yes | "")
 				;;
 			*)
-				PKG_XSCREENSAVER_HACKDIR="$with_hackdir"
+				pkg_XSCREENSAVER_HACKDIR="$with_hackdir"
 				;;
 		esac
 
-		PKG_XSCREENSAVER_CONFIGDIR=
+		pkg_XSCREENSAVER_CONFIGDIR=
 		mac_xss_use_configdir=yes
 		AC_ARG_WITH(configdir,
 			AC_HELP_STRING([--with-configdir],
@@ -229,14 +229,14 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 			no | yes | "")
 				;;
 			*)
-				PKG_XSCREENSAVER_CONFIGDIR="$with_configdir"
+				pkg_XSCREENSAVER_CONFIGDIR="$with_configdir"
 				;;
 		esac
 	fi
 
 	if test "$with_xscreensaver" != no; then
 		AC_MSG_CHECKING([for X11 application defaults directory])
-		if test -z "$PKG_XSCREENSAVER_DEFAULTDIR"; then
+		if test -z "$pkg_XSCREENSAVER_DEFAULTDIR"; then
 			AC_CACHE_VAL(mac_cv_xss_defaultdir, [
 				if test -d "$x_libraries/X11/app-defaults"; then
 					mac_cv_xss_defaultdir="$x_libraries/X11/app-defaults"
@@ -256,17 +256,17 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 					AC_MSG_ERROR([try using the --with-defaultdir=DIR option])
 				fi
 			else
-				PKG_XSCREENSAVER_DEFAULTDIR="$mac_cv_xss_defaultdir"
-				AC_MSG_RESULT($PKG_XSCREENSAVER_DEFAULTDIR)
+				pkg_XSCREENSAVER_DEFAULTDIR="$mac_cv_xss_defaultdir"
+				AC_MSG_RESULT($pkg_XSCREENSAVER_DEFAULTDIR)
 			fi
 		else
-			AC_MSG_RESULT($PKG_XSCREENSAVER_DEFAULTDIR)
+			AC_MSG_RESULT($pkg_XSCREENSAVER_DEFAULTDIR)
 		fi
 	fi
 
 	if test "$with_xscreensaver" != no; then
 		AC_MSG_CHECKING([for XScreenSaver hacks directory])
-		if test -z "$PKG_XSCREENSAVER_HACKDIR"; then
+		if test -z "$pkg_XSCREENSAVER_HACKDIR"; then
 			AC_CACHE_VAL(mac_cv_xss_hackdir, [
 				if test -d "$x_libraries/xscreensaver"; then
 					mac_cv_xss_hackdir="$x_libraries/xscreensaver"
@@ -286,21 +286,21 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 					AC_MSG_ERROR([try using the --with-hackdir=DIR option])
 				fi
 			else
-				PKG_XSCREENSAVER_HACKDIR="$mac_cv_xss_hackdir"
-				AC_MSG_RESULT($PKG_XSCREENSAVER_HACKDIR)
+				pkg_XSCREENSAVER_HACKDIR="$mac_cv_xss_hackdir"
+				AC_MSG_RESULT($pkg_XSCREENSAVER_HACKDIR)
 			fi
 		else
-			AC_MSG_RESULT($PKG_XSCREENSAVER_HACKDIR)
+			AC_MSG_RESULT($pkg_XSCREENSAVER_HACKDIR)
 		fi
 	fi
 
 	if test "$with_xscreensaver" != no; then
 		AC_MSG_CHECKING([for XScreenSaver config directory])
-		if test -z "$PKG_XSCREENSAVER_CONFIGDIR"; then
+		if test -z "$pkg_XSCREENSAVER_CONFIGDIR"; then
 			if test "$mac_xss_use_configdir" = yes; then
 				AC_CACHE_VAL(mac_cv_xss_configdir, [
-					if test -d "$PKG_XSCREENSAVER_HACKDIR/config"; then
-						mac_cv_xss_configdir="$PKG_XSCREENSAVER_HACKDIR/config"
+					if test -d "$pkg_XSCREENSAVER_HACKDIR/config"; then
+						mac_cv_xss_configdir="$pkg_XSCREENSAVER_HACKDIR/config"
 					elif test -d /usr/share/control-center/screensavers; then
 						mac_cv_xss_configdir=/usr/share/control-center/screensavers
 					elif test -d /usr/share/xscreensaver/config; then
@@ -317,12 +317,12 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 				else
 					AC_MSG_RESULT($mac_cv_xss_configdir)
 				fi
-				PKG_XSCREENSAVER_CONFIGDIR="$mac_cv_xss_configdir"
+				pkg_XSCREENSAVER_CONFIGDIR="$mac_cv_xss_configdir"
 			else
 				AC_MSG_RESULT(disabled)
 			fi
 		else
-			AC_MSG_RESULT($PKG_XSCREENSAVER_CONFIGDIR)
+			AC_MSG_RESULT($pkg_XSCREENSAVER_CONFIGDIR)
 		fi
 	fi
 
@@ -332,10 +332,10 @@ AC_DEFUN([MAC_PKG_XSCREENSAVER], [
 		fi
 		HAVE_PKG_XSCREENSAVER=yes
 	else
-		PKG_XSCREENSAVER_DEFAULTDIR=
-		PKG_XSCREENSAVER_HACKDIR="$bindir"
-		PKG_XSCREENSAVER_CONFIGDIR=
-		PKG_XSCREENSAVER_SYMLINKS=no
+		pkg_XSCREENSAVER_DEFAULTDIR=
+		pkg_XSCREENSAVER_HACKDIR="$bindir"
+		pkg_XSCREENSAVER_CONFIGDIR=
+		HAVE_PKG_XSCREENSAVER_SYMLINKS=no
 	fi
 ])
 
@@ -344,11 +344,19 @@ AC_DEFUN([MAC_PKG_OPENGL], [
 
 	_MAC_SAVE([LIBS], [
 		HAVE_PKG_OPENGL=yes
-		AC_SEARCH_LIBS(glXChooseVisual, [MesaGL GL GLX],
-			[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
-		AC_SEARCH_LIBS(gluErrorString, [MesaGLU GL GLU],
-			[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
-		OPENGL_LIBS="$LIBS"
+		PKG_CHECK_MODULES([GL],  [gl],  [], [HAVE_PKG_OPENGL=no])
+		PKG_CHECK_MODULES([GLU], [glu], [], [HAVE_PKG_OPENGL=no])
+		if test "$HAVE_PKG_OPENGL" = "yes"; then
+			OPENGL_CFLAGS="$GL_CFLAGS $GLU_CFLAGS"
+			OPENGL_LIBS="$GL_LIBS $GLU_LIBS"
+		else
+			AC_SEARCH_LIBS(glXChooseVisual, [MesaGL GL GLX],
+				[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
+			AC_SEARCH_LIBS(gluErrorString, [MesaGLU GL GLU],
+				[], [HAVE_PKG_OPENGL=no], [[$X_LIBS]])dnl
+			OPENGL_CFLAGS=""
+			OPENGL_LIBS="$LIBS"
+		fi
 		_MAC_SAVE([CPPFLAGS], [
 			CPPFLAGS="$CPPFLAGS $X_CPPFLAGS"
 			AC_CHECK_HEADERS([GL/gl.h], , , [#])

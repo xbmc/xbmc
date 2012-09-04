@@ -7,8 +7,7 @@ rs_euphoria_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) euphoria.cc \
 
 AM_CPPFLAGS += $(IMAGE_CPPFLAGS)
 AM_CXXFLAGS += $(IMAGE_CXXFLAGS)
-AM_LDFLAGS += $(IMAGE_LDFLAGS)
-rs_euphoria_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS) $(IMAGE_LIBS)
+rs_euphoria_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS) $(IMAGE_LIBS) $(IMAGE_LDFLAGS)
 
 hack_PROGRAMS = rs-euphoria
 

@@ -26,11 +26,22 @@
 #include "DVDVideoCodecFFmpeg.h"
 #include <libavcodec/vaapi.h>
 #include <va/va.h>
-#include <va/va_x11.h>
-#include <va/va_glx.h>
 #include <list>
 #include <boost/shared_ptr.hpp>
 
+#ifdef HAVE_VA_X11
+# include <va/va_x11.h>
+#endif
+#ifdef HAVE_VA_GLX
+# include <va/va_glx.h>
+#endif
+#ifdef HAVE_VA_EGL
+# include <va/va_egl.h>
+#endif
+#ifdef HAS_EGL
+# include <EGL/egl.h>
+# include <EGL/eglext.h>
+#endif
 
 namespace VAAPI {
 
@@ -68,6 +79,8 @@ struct CSurface
  ~CSurface();
 
   VASurfaceID m_id;
+  int         m_width;
+  int         m_height;
   CDisplayPtr m_display;
 };
 
@@ -75,24 +88,100 @@ typedef boost::shared_ptr<CSurface> CSurfacePtr;
 
 struct CSurfaceGL
 {
-  CSurfaceGL(void* id, CDisplayPtr& display)
-    : m_id(id)
-    , m_display(display)
+  CSurfaceGL(CDisplayPtr& display)
+    : m_display(display)
   {}
- ~CSurfaceGL();
- 
-  void*       m_id;
+  virtual ~CSurfaceGL() = 0;
+
   CDisplayPtr m_display;
 };
 
-typedef boost::shared_ptr<CSurfaceGL> CSurfaceGLPtr;
+#ifdef HAVE_VA_GLX
+struct CSurfaceGLX : public CSurfaceGL
+{
+  CSurfaceGLX(CDisplayPtr& display, void *surface)
+    : CSurfaceGL(display)
+    , m_id(surface)
+  {}
+  virtual ~CSurfaceGLX();
+
+  void*       m_id;
+};
+
+typedef boost::shared_ptr<CSurfaceGLX> CSurfaceGLXPtr;
+#endif
+
+#ifdef HAS_EGL
+struct CSurfaceEGL : public CSurfaceGL
+{
+                CSurfaceEGL(CDisplayPtr& display);
+  virtual      ~CSurfaceEGL() = 0;
+
+  static const unsigned int kMaxPlanes = 3;
+
+  virtual bool  Upload(CSurfacePtr surface, unsigned int flags) = 0;
+  virtual bool  EnsureSize(int width, int height) = 0;
+
+  EGLDisplay    m_eglDisplay;
+  GLenum        m_format;
+  unsigned int  m_numPlanes;
+  EGLImageKHR   m_images[kMaxPlanes];
+
+protected:
+  void          DestroyImage(unsigned int index);
+  void          DestroyImages();
+};
+
+typedef boost::shared_ptr<CSurfaceEGL> CSurfaceEGLPtr;
+
+#ifdef HAVE_VA_X11
+struct CSurfaceEGLPixmap : public CSurfaceEGL
+{
+                CSurfaceEGLPixmap(CDisplayPtr& display);
+  virtual      ~CSurfaceEGLPixmap();
+
+  virtual bool  Upload(CSurfacePtr surface, unsigned int flags);
+  virtual bool  EnsureSize(int width, int height);
+
+  static CSurfaceEGL *Create(CDisplayPtr& display, int width, int height);
+
+  Display*      m_display;
+  Pixmap        m_pixmap;
+  int           m_pixmapWidth;
+  int           m_pixmapHeight;
+};
+#endif
+
+#ifdef HAVE_VA_EGL
+struct CSurfaceEGLBuffer : public CSurfaceEGL
+{
+                CSurfaceEGLBuffer(CDisplayPtr& display);
+  virtual      ~CSurfaceEGLBuffer();
+
+  virtual bool  Upload(CSurfacePtr surface, unsigned int flags);
+  virtual bool  EnsureSize(int width, int height);
+
+  static CSurfaceEGL *Create(CDisplayPtr& display, int width, int height);
+
+  CSurfacePtr   m_surface;
+  void*         m_surfaceBuffer;
+  int           m_surfaceWidth;
+  int           m_surfaceHeight;
+};
+#endif
+#endif
 
 // silly type to avoid includes
 struct CHolder
 {
-  CDisplayPtr   display;
-  CSurfacePtr   surface;
-  CSurfaceGLPtr surfglx;
+  CDisplayPtr    display;
+  CSurfacePtr    surface;
+#ifdef HAVE_VA_GLX
+  CSurfaceGLXPtr surfglx;
+#endif
+#ifdef HAS_EGL
+  CSurfaceEGLPtr surfegl;
+#endif
 
   CHolder()
   {}

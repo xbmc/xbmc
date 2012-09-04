@@ -16,7 +16,7 @@ LIBLTDL = $(top_builddir)/libltdl/libltdl.a
 LIBLTDL_CPPFLAGS = -I$(top_builddir)/libltdl
 endif DLOPEN
 
-AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. -I$(top_srcdir)/lib $(X_CPPFLAGS) -D_LINUX -DXBMC
+AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. -I$(top_srcdir)/lib $(X_CPPFLAGS) $(OPENGL_CFLAGS) -D_LINUX -DXBMC
 AM_LDFLAGS =
 AM_CXXFLAGS =
 

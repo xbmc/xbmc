@@ -35,6 +35,27 @@ enum ERenderFormat {
   RENDER_FMT_OMXEGL,
   RENDER_FMT_CVBREF,
   RENDER_FMT_BYPASS,
+
+  /*
+   * Generic OpenGL planar formats.
+   *
+   * This depends on the following extensions:
+   * - EXT_texture_rg
+   * - OES_texture_npot (GLESv2), or ARB_texture_non_power_of_two (GL)
+   *
+   * The naming convention separates planes by '_' and within each
+   * plane, the order of R, G, B, A, Y, U and V indicates how those
+   * components map to the rgba value returned by the sampler. X
+   * indicates that the corresponding component in the rgba value is
+   * not used.
+   *
+   * For example, RENDER_FMT_Y_UV means:
+   * - texture[0].r = 'Y' component
+   * - texture[1].r = 'U' component
+   * - texture[1].g = 'V' component
+   */
+  RENDER_FMT_Y_UV,      // 1 plane for Y and 1 plane for UV
+  RENDER_FMT_Y_U_V      // 3 planes for Y U V
 };
 
 #endif

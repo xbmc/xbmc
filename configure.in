@@ -510,6 +510,7 @@ CFLAGS="$PASSED_CFLAGS $DEFAULT_COMPILE_FLAGS"
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+PKG_PROG_PKG_CONFIG
 MAKE="${MAKE:-make}"
 OBJDUMP="${OBJDUMP:-objdump}"
 
@@ -792,6 +793,12 @@ if test "$use_gles" = "yes"; then
     AC_DEFINE([HAVE_LIBGLESV2],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv2)."])
     AC_MSG_RESULT(== WARNING: OpenGLES support is assumed.)
   else
+    PKG_CHECK_MODULES([EGL], [egl], [
+      INCLUDES="$INCLUDES $EGL_CFLAGS"
+      LIBS="$LIBS $EGL_LIBS"], [EGL_LIBS="-lEGL"])
+    PKG_CHECK_MODULES([GLES2], [glesv2], [
+      INCLUDES="$INCLUDES $GLES2_CFLAGS"
+      LIBS="$LIBS $GLES2_LIBS"], [GLES2_LIBS="-lGLESv2"])
     AC_CHECK_LIB([EGL],   [main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([GLESv2],[main],, AC_MSG_ERROR($missing_library))
   fi
@@ -806,6 +813,9 @@ else
       AC_MSG_RESULT(== WARNING: OpenGLU support is assumed.)
       AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
     else
+      PKG_CHECK_MODULES([GL], [gl],
+        [INCLUDES="$INCLUDES $GL_CFLAGS" LIBS="$LIBS $GL_LIBS"],
+        [GL_LIBS="-lGL"])
       AC_CHECK_LIB([GL],  [main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR($missing_library))
@@ -1528,10 +1538,53 @@ if test "x$use_vaapi" != "xno"; then
     fi
     USE_VAAPI=0
   else
+    has_va_x11="no"
+    has_va_glx="no"
     initial_val=$use_vaapi
-    AC_CHECK_LIB([va], main, :, use_vaapi=no)
+    PKG_CHECK_MODULES([LIBVA], [libva], [
+      INCLUDES="$INCLUDES $LIBVA_CFLAGS"
+      LIBS="$LIBS $LIBVA_LIBS"], [use_vaapi="no"])
     if test "x$use_vaapi" != "xno"; then
-      AC_CHECK_LIB([va-glx], main, LIBS="-lva -lva-glx $LIBS", use_vaapi=no, -lva)
+      if test "$use_gles" = "yes"; then
+        dnl XXX: necessary for texture-from-pixmap
+        PKG_CHECK_MODULES([LIBVA_X11], [libva-x11], [
+          INCLUDES="$INCLUDES $LIBVA_X11_CFLAGS"
+          LIBS="$LIBS $LIBVA_X11_LIBS"
+          has_va_x11="yes"], [use_vaapi="no"])
+
+        dnl Check for new VA/EGL API, i.e. vaGetSurfaceBufferEGL()
+        PKG_CHECK_MODULES([LIBVA_EGL], [libva-egl], [has_va_egl="yes"], [:])
+        if test "$has_va_egl" = "yes"; then
+          AC_CACHE_CHECK([for new VA/EGL API],
+            ac_cv_has_va_egl, [
+            saved_CFLAGS="$CFLAGS"
+            CFLAGS="$CFLAGS $LIBVA_EGL_CFLAGS"
+            saved_LIBS="$LIBS"
+            LIBS="$LIBS $LIBVA_EGL_LIBS"
+            AC_LINK_IFELSE(
+              [AC_LANG_PROGRAM(
+                [[#include <va/va_egl.h>]],
+                [[EGLClientBuffer buf; vaGetSurfaceBufferEGL(NULL,0,&buf);]])],
+              [ac_cv_has_va_egl="yes"],
+              [ac_cv_has_va_egl="no"]
+            )
+            CFLAGS="$saved_CFLAGS"
+            LIBS="$saved_LIBS"
+          ])
+          if test "$ac_cv_has_va_egl" = "yes"; then
+            INCLUDES="$INCLUDES $LIBVA_EGL_CFLAGS"
+            LIBS="$LIBS $LIBVA_EGL_LIBS"
+          else
+            has_va_egl="no"
+          fi
+        fi
+      fi
+      if test "$use_gl" = "yes"; then
+        PKG_CHECK_MODULES([LIBVA_GLX], [libva-glx], [
+          INCLUDES="$INCLUDES $LIBVA_GLX_CFLAGS"
+          LIBS="$LIBS $LIBVA_GLX_LIBS"
+          has_va_glx="yes"], [use_vaapi="no"])
+      fi
     fi
 
     if test "x$use_vaapi" = "xno"; then
@@ -1542,7 +1595,16 @@ if test "x$use_vaapi" != "xno"; then
       fi
       USE_VAAPI=0
     else
-      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries (-lva AND -lva-glx)])
+      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries])
+      if test "$has_va_x11" = "yes"; then
+        AC_DEFINE([HAVE_VA_X11], [1], [Defined to 1 if VA/X11 API is available])
+      fi
+      if test "$has_va_glx" = "yes"; then
+        AC_DEFINE([HAVE_VA_GLX], [1], [Defined to 1 if VA/GLX API is available])
+      fi
+      if test "$has_va_egl" = "yes"; then
+        AC_DEFINE([HAVE_VA_EGL], [1], [Defined to 1 if VA/EGL API is available])
+      fi
       USE_VAAPI=1
     fi
   fi

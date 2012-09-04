@@ -3111,7 +3111,7 @@ done
 
 check_lib math.h sin -lm && LIBM="-lm"
 disabled crystalhd || check_lib libcrystalhd/libcrystalhd_if.h DtsCrystalHDVersion -lcrystalhd || disable crystalhd
-enabled vaapi && require vaapi va/va.h vaInitialize -lva
+enabled vaapi && require_pkg_config libva va/va.h vaInitialize -lva
 
 check_mathfunc cbrtf
 check_mathfunc exp2
@@ -3256,7 +3256,7 @@ check_func XShmCreateImage -lX11 -lXext &&
 check_func XFixesGetCursorImage -lX11 -lXext -lXfixes
 
 if ! disabled vaapi; then
-    check_lib va/va.h vaInitialize -lva && {
+    check_pkg_config libva va/va.h vaInitialize && {
         check_cpp_condition va/va_version.h "VA_CHECK_VERSION(0,32,0)" ||
         warn "Please upgrade to VA-API >= 0.32 if you would like full VA-API support.";
     } || disable vaapi

@@ -83,8 +83,8 @@ CWinSystemX11GLES::CWinSystemX11GLES() : CWinSystemBase()
   m_eglDisplay = NULL;
   m_eglContext = NULL;
   m_eglSurface = NULL;
-  m_eglWindow  = NULL;
-  m_wmWindow   = NULL;
+  m_eglWindow  = 0;
+  m_wmWindow   = 0;
   m_dpy        = NULL;
   
   m_iVSyncErrors = 0;
@@ -155,12 +155,15 @@ bool CWinSystemX11GLES::CreateNewWindow(const CStdString& name, bool fullScreen,
   if(!SetFullScreen(fullScreen, res, false))
 	return false;
 
-  CTexture iconTexture;
-  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
+  CBaseTexture *pIconTexture;
+  pIconTexture = CBaseTexture::LoadFromFile("special://xbmc/media/icon.png");
+  if (pIconTexture)
+  {
+    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(pIconTexture->GetPixels(), pIconTexture->GetWidth(), pIconTexture->GetHeight(), BPP, pIconTexture->GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+    delete pIconTexture;
+  }
 
-  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), BPP, iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
   SDL_WM_SetCaption("XBMC Media Center", NULL);
-
   m_bWindowCreated = true;
 
   m_eglext  = " ";

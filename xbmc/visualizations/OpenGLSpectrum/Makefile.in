@@ -14,7 +14,8 @@ ifeq (@USE_OPENGLES@,1)
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS += -framework OpenGLES
   else
-    LDFLAGS += -lGLESv2
+    INCLUDES += @GLES2_CFLAGS@
+    LDFLAGS += @GLES2_LIBS@
   endif
 else
   DEFINES += -DHAS_SDL

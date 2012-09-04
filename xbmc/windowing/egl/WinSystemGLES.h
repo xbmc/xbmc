@@ -60,7 +60,7 @@ public:
 protected:
   virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
   virtual void  SetVSyncImpl(bool enable);
-  void                  *m_display;
+  EGLNativeDisplayType  m_display;
   EGLNativeWindowType   m_window;
   CWinEGLPlatform       *m_eglplatform;
 };

@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 CWinSystemGLES::CWinSystemGLES() : CWinSystemBase()
 {
-  m_window = NULL;
+  m_window = 0;
   m_eglplatform = new CWinEGLPlatform();
   m_eWindowSystem = WINDOW_SYSTEM_EGL;
 }
@@ -70,7 +70,7 @@ bool CWinSystemGLES::InitWindowSystem()
 bool CWinSystemGLES::DestroyWindowSystem()
 {
   m_eglplatform->DestroyWindowSystem(m_window);
-  m_window = NULL;
+  m_window = 0;
 
   return true;
 }
