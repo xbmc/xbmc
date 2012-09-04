@@ -373,12 +373,14 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     {
       CStdString contentLength;
       contentLength.Format("%I64d", file->GetLength());
-      file->Close();
-      delete file;
 
       response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
       if (response == NULL)
+      {
+        file->Close();
+        delete file;
         return MHD_NO;
+      }
       MHD_add_response_header(response, "Content-Length", contentLength);
     }
 
@@ -389,10 +391,25 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     if (mime)
       MHD_add_response_header(response, "Content-Type", mime);
 
+    // set the Last-Modified header
+    struct __stat64 statBuffer;
+    if (file->Stat(&statBuffer) == 0)
+    {
+      struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
+      if (time != NULL)
+      {
+        CDateTime lastModified = *time;
+        MHD_add_response_header(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
+      }
+    }
+
     // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
     expiryTime += CDateTimeSpan(365, 0, 0, 0);
     MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+
+    file->Close();
+    delete file;
   }
   else
   {
