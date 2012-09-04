@@ -481,6 +481,7 @@ void CGUISettings::Initialize()
   AddBool(aocat, "audiooutput.dtshdpassthrough" , 347, true );
 #endif
 
+#if !defined(TARGET_RASPBERRY_PI)
 #if defined(TARGET_DARWIN)
   #if defined(TARGET_DARWIN_IOS)
     CStdString defaultDeviceName = "Default";
@@ -496,12 +497,15 @@ void CGUISettings::Initialize()
   AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
   AddSeparator(ao, "audiooutput.sep2");
 #endif
+#endif
 
+#if !defined(TARGET_RASPBERRY_PI)
   map<int,int> guimode;
   guimode.insert(make_pair(34121, AE_SOUND_IDLE  ));
   guimode.insert(make_pair(34122, AE_SOUND_ALWAYS));
   guimode.insert(make_pair(34123, AE_SOUND_OFF   ));
   AddInt(ao, "audiooutput.guisoundmode", 34120, AE_SOUND_IDLE, guimode, SPIN_CONTROL_TEXT);
+#endif
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
   AddString(in, "input.peripherals", 35000, "", BUTTON_CONTROL_STANDARD);
