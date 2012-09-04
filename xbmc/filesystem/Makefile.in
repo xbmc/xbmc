@@ -60,6 +60,8 @@ SRCS=AddonsDirectory.cpp \
      PipeFile.cpp \
      PipesManager.cpp \
      PluginDirectory.cpp \
+     PVRFile.cpp \
+     PVRDirectory.cpp \
      RSSDirectory.cpp \
      RTVDirectory.cpp \
      RTVFile.cpp \

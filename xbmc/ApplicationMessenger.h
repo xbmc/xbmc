@@ -87,6 +87,7 @@ namespace MUSIC_INFO
 #define TMSG_TOGGLEFULLSCREEN     310
 #define TMSG_SETLANGUAGE          311
 #define TMSG_RENDERER_FLUSH       312
+#define TMSG_INHIBITIDLESHUTDOWN  313
 
 #define TMSG_HTTPAPI              400
 
@@ -100,7 +101,8 @@ namespace MUSIC_INFO
 #define TMSG_GUI_ACTION               607
 #define TMSG_GUI_INFOLABEL            608
 #define TMSG_GUI_INFOBOOL             609
-#define TMSG_GUI_MESSAGE              610
+#define TMSG_GUI_ADDON_DIALOG         610
+#define TMSG_GUI_MESSAGE              611
 
 #define TMSG_CALLBACK             800
 
@@ -159,7 +161,7 @@ public:
   void MediaPlay(const CFileItem &item);
   void MediaPlay(const CFileItemList &item, int song = 0);
   void MediaPlay(int playlistid, int song = -1);
-  void MediaStop();
+  void MediaStop(bool bWait = true);
   void MediaPause();
   void MediaRestart(bool bWait);
 
@@ -191,6 +193,7 @@ public:
   void Restart();
   void RestartApp();
   void Reset();
+  void InhibitIdleShutdown(bool inhibit);
   void SwitchToFullscreen(); //
   void Minimize(bool wait = false);
   void ExecOS(const CStdString command, bool waitExit = false);

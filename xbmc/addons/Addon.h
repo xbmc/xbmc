@@ -26,6 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 
 class TiXmlElement;
+class CAddonCallbacksAddon;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;
 typedef struct cp_extension_t cp_extension_t;
@@ -167,7 +168,11 @@ public:
   bool MeetsVersion(const AddonVersion &version) const;
   virtual bool ReloadSettings();
 
+  void MarkAsDisabled() { m_enabled = false; }
+
 protected:
+  friend class CAddonCallbacksAddon;
+
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
   const AddonPtr Parent() const { return m_parent; }
@@ -206,7 +211,7 @@ protected:
   bool              m_userSettingsLoaded;
 
 private:
-  friend class AddonMgr;
+  friend class CAddonMgr;
   AddonProps m_props;
   const AddonPtr    m_parent;
   CStdString        m_userSettingsPath;

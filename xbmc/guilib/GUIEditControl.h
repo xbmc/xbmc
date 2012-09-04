@@ -45,12 +45,14 @@ public:
                     INPUT_TYPE_TEXT = 0,
                     INPUT_TYPE_NUMBER,
                     INPUT_TYPE_SECONDS,
+                    INPUT_TYPE_TIME,
                     INPUT_TYPE_DATE,
                     INPUT_TYPE_IPADDRESS,
                     INPUT_TYPE_PASSWORD,
                     INPUT_TYPE_PASSWORD_MD5,
                     INPUT_TYPE_SEARCH,
-                    INPUT_TYPE_FILTER
+                    INPUT_TYPE_FILTER,
+                    INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW
                   };
 
   CGUIEditControl(int parentID, int controlID, float posX, float posY,

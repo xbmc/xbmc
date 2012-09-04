@@ -77,6 +77,9 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "HTSPDirectory.h"
 #endif
+#ifdef HAS_PVRCLIENTS
+#include "PVRDirectory.h"
+#endif
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
@@ -205,6 +208,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_FILESYSTEM_HTSP
     if (strProtocol == "htsp") return new CHTSPDirectory();
+#endif
+#ifdef HAS_PVRCLIENTS
+    if (strProtocol == "pvr") return new CPVRDirectory();
 #endif
 #ifdef HAS_ZEROCONF
     if (strProtocol == "zeroconf") return new CZeroconfDirectory();

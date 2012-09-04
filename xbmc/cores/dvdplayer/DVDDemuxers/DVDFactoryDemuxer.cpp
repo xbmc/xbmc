@@ -24,14 +24,19 @@
 
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamHttp.h"
+#include "DVDInputStreams/DVDInputStreamPVRManager.h"
 
 #include "DVDDemuxFFmpeg.h"
 #include "DVDDemuxShoutcast.h"
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDDemuxHTSP.h"
 #endif
+#include "DVDDemuxPVRClient.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace std;
+using namespace PVR;
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 {
@@ -61,6 +66,40 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
       return NULL;
   }
 #endif
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
+    CDVDInputStreamPVRManager* pInputStreamPVR = (CDVDInputStreamPVRManager*)pInputStream;
+    CDVDInputStream* pOtherStream = pInputStreamPVR->GetOtherStream();
+    if(pOtherStream)
+    {
+      /* Used for MediaPortal PVR addon (uses PVR otherstream for playback of rtsp streams) */
+      if (pOtherStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+      {
+        auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
+        if(demuxer->Open(pOtherStream))
+          return demuxer.release();
+        else
+          return NULL;
+      }
+    }
+
+    std::string filename = pInputStream->GetFileName();
+    /* Use PVR demuxer only for live streams */
+    if (filename.substr(0, 14) == "pvr://channels")
+    {
+      boost::shared_ptr<CPVRClient> client;
+      if (g_PVRClients->GetPlayingClient(client) &&
+          client->HandlesDemuxing())
+      {
+        auto_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
+        if(demuxer->Open(pInputStream))
+          return demuxer.release();
+        else
+          return NULL;
+      }
+    }
+  }
 
   auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
   if(demuxer->Open(pInputStream))

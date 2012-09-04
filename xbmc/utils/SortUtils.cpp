@@ -399,6 +399,11 @@ string ByRandom(SortAttribute attributes, const SortItem &values)
   return label;
 }
 
+string ByChannel(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldChannelName).asString();
+}
+
 bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFolder, bool &result, std::wstring &labelLeft, std::wstring &labelRight)
 {
   // make sure both items have the necessary data to do the sorting
@@ -553,6 +558,7 @@ map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByListeners]                = ByListeners;
   preparators[SortByBitrate]                  = ByBitrate;
   preparators[SortByRandom]                   = ByRandom;
+  preparators[SortByChannel]                  = ByChannel;
 
   return preparators;
 }
@@ -619,6 +625,7 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByPlaycount].insert(FieldPlaycount);
   sortingFields[SortByListeners].insert(FieldListeners);
   sortingFields[SortByBitrate].insert(FieldBitrate);
+  sortingFields[SortByChannel].insert(FieldChannelName);
   sortingFields.insert(pair<SortBy, Fields>(SortByRandom, Fields()));
 
   return sortingFields;
