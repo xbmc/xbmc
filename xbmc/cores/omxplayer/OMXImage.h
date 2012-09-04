@@ -46,6 +46,7 @@ public:
 
   // Required overrides
   void Close(void);
+  void SetHardwareSizeLimits();
   bool ReadFile(const CStdString& inputFile);
   bool IsProgressive() { return m_progressive; };
   bool IsAlpha() { return m_alpha; };

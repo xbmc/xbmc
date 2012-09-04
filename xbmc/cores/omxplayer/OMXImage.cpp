@@ -449,6 +449,22 @@ OMX_IMAGE_CODINGTYPE COMXImage::GetCodingType()
   return m_omx_image.eCompressionFormat;
 }
 
+void COMXImage::SetHardwareSizeLimits()
+{
+  // ensure not too big for hardware
+  while (m_width > 2048 || m_height > 2048)
+    m_width >>= 1, m_height >>= 1;
+  // ensure not too small
+  while (m_width <= 32 || m_height <= 32)
+    m_width <<= 1, m_height <<= 1;
+  // surely not going to happen?
+  if (m_width > 2048 || m_height > 2048)
+    m_width = 256, m_height = 256;
+  
+  m_width  = (m_width + 15)  & ~15;
+  m_height = (m_height + 15) & ~15;
+}
+
 bool COMXImage::ReadFile(const CStdString& inputFile)
 {
   if(!m_pFile.Open(inputFile, 0))
@@ -477,18 +493,7 @@ bool COMXImage::ReadFile(const CStdString& inputFile)
   if(m_width < 1 || m_height < 1)
     return false;
 
-  // ensure not too big for hardware
-  while (m_width > 2048 || m_height > 2048)
-    m_width >>= 1, m_height >>= 1;
-  // ensure not too small
-  while (m_width <= 32 || m_height <= 32)
-    m_width <<= 1, m_height <<= 1;
-  // surely not going to happen?
-  if (m_width > 2048 || m_height > 2048)
-    m_width = 256, m_height = 256;
-  
-  m_width  = (m_width + 15)  & ~15;
-  m_height = (m_height + 15) & ~15;
+  SetHardwareSizeLimits();
 
   m_is_open = true;
 
@@ -1023,18 +1028,7 @@ bool COMXImage::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bu
 
     GetCodingType();
 
-    // ensure not too big for hardware
-    while (m_width > 2048 || m_height > 2048)
-      m_width >>= 1, m_height >>= 1;
-    // ensure not too small
-    while (m_width <= 32 || m_height <= 32)
-      m_width <<= 1, m_height <<= 1;
-    // surely not going to happen?
-    if (m_width > 2048 || m_height > 2048)
-      m_width = 256, m_height = 256;
-
-    m_width  = (m_width + 15)  & ~15;
-    m_height = (m_height + 15) & ~15;
+    SetHardwareSizeLimits();
 
     m_is_open = true;
   }
