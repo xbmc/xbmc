@@ -2,17 +2,17 @@
 
 set -e
 
-autoreconf -vif
-autoreconf -vif lib/libid3tag/libid3tag
-autoreconf -vif xbmc/screensavers/rsxs-0.9
-autoreconf -vif xbmc/visualizations/Goom/goom2k4-0
-autoreconf -vif lib/libapetag
-autoreconf -vif lib/cpluff
+autoreconf -i
+autoreconf -i lib/libid3tag/libid3tag
+autoreconf -i xbmc/screensavers/rsxs-0.9
+autoreconf -i xbmc/visualizations/Goom/goom2k4-0
+autoreconf -i lib/libapetag
+autoreconf -i lib/cpluff
 # order matters with libdvd and friends
 [ -d lib/libdvd/libdvdcss ] && \
-  autoreconf -vif lib/libdvd/libdvdcss
-autoreconf -vif lib/libdvd/libdvdread
-autoreconf -vif lib/libdvd/libdvdnav
+  autoreconf -i lib/libdvd/libdvdcss
+autoreconf -i lib/libdvd/libdvdread
+autoreconf -i lib/libdvd/libdvdnav
 
 # Clean the generated files
 find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
