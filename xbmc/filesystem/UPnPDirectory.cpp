@@ -41,7 +41,7 @@ class CProtocolFinder {
 public:
     CProtocolFinder(const char* protocol) : m_Protocol(protocol) {}
     bool operator()(const PLT_MediaItemResource& resource) const {
-        return (resource.m_ProtocolInfo.ToString().Compare(m_Protocol, true) == 0);
+        return (resource.m_ProtocolInfo.GetProtocol().Compare(m_Protocol, true) == 0);
     }
 private:
     NPT_String m_Protocol;
