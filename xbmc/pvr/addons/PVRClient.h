@@ -548,6 +548,10 @@ namespace PVR
     bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
     PVR_SIGNAL_STATUS      m_qualityInfo;           /*!< stream quality information */
 
+    /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
+    std::string m_strUserPath;    /*!< @brief translated path to the user profile */
+    std::string m_strClientPath;  /*!< @brief translated path to this add-on */
+
     CCriticalSection m_critSection;
 
     bool           m_bIsPlayingTV;
