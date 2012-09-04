@@ -2504,6 +2504,7 @@ void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
 
 void CDVDPlayer::SetSubtitle(int iStream)
 {
+  g_settings.m_currentVideoSettings.m_SubtitleStream = iStream;
   m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
 }
 
@@ -3594,8 +3595,8 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   s.type     = STREAM_SUBTITLE;
   s.id       = 0;
   s.filename = filename;
-  s.name     = URIUtils::GetFileName(filename);
   s.flags    = flags;
+  CUtil::GetExternalStreamNameAndLangFromFilename(m_filename, filename, s.name, s.language);
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }
