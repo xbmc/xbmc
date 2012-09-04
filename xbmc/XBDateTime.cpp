@@ -29,6 +29,9 @@
 #define SECONDS_PER_MINUTE 60UL
 #define SECONDS_TO_FILETIME 10000000UL
 
+static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
 /////////////////////////////////////////////////
 //
 // CDateTimeSpan
@@ -994,6 +997,38 @@ void CDateTime::SetFromDBTime(const CStdString &time)
   SetTime(hour, minute, second);
 }
 
+void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
+{
+  CStdString date = dateTime;
+  date.Trim();
+
+  if (date.size() != 29)
+    return;
+
+  int day  = strtol(date.Mid(5, 2).c_str(), NULL, 10);
+
+  CStdString strMonth = date.Mid(8, 3);
+  int month = 0;
+  for (unsigned int index = 0; index < 12; index++)
+  {
+    if (strMonth.Equals(MONTH_NAMES[index]))
+    {
+      month = index + 1;
+      break;
+    }
+  }
+
+  if (month < 1)
+    return;
+
+  int year = strtol(date.Mid(12, 4).c_str(), NULL, 10);
+  int hour = strtol(date.Mid(17, 2).c_str(), NULL, 10);
+  int min  = strtol(date.Mid(20, 2).c_str(), NULL, 10);
+  int sec  = strtol(date.Mid(23, 2).c_str(), NULL, 10);
+
+  SetDateTime(year, month, day, hour, min, sec);
+}
+
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
 {
   CStdString strOut;
@@ -1312,9 +1347,6 @@ CDateTime CDateTime::GetAsUTCDateTime() const
 
   return time;
 }
-
-static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 CStdString CDateTime::GetAsRFC1123DateTime() const
 {
