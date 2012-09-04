@@ -43,6 +43,10 @@ IAE *CAEFactory::GetEngine()
 
 bool CAEFactory::LoadEngine()
 {
+#if defined(TARGET_RASPBERRY_PI)
+  return true;
+#endif
+
   bool loaded = false;
 
   std::string engine;
@@ -115,6 +119,10 @@ void CAEFactory::UnLoadEngine()
 
 bool CAEFactory::StartEngine()
 {
+#if defined(TARGET_RASPBERRY_PI)
+  return true;
+#endif
+
   if (!AE)
     return false;
 
