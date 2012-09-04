@@ -173,7 +173,7 @@ void Observable::SendMessage(const Observable& obs, const ObservableMessage mess
   CSingleLock lock(obs.m_obsCritSection);
   for(int ptr = obs.m_observers.size() - 1; ptr >= 0; ptr--)
   {
-    if (ptr < obs.m_observers.size())
+    if (ptr < (int)obs.m_observers.size())
     {
       Observer *observer = obs.m_observers.at(ptr);
       if (observer)

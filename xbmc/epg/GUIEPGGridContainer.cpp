@@ -248,7 +248,7 @@ void CGUIEPGGridContainer::Render()
 
     pos -= missingSection * m_blockSize;
   }
-  while (pos < end && (rulerOffset/m_rulerUnit+1) < m_rulerItems.size())
+  while (pos < end && (rulerOffset/m_rulerUnit+1) < (int)m_rulerItems.size())
   {
     item = m_rulerItems[rulerOffset/m_rulerUnit+1];
     if (m_orientation == VERTICAL)
@@ -1156,7 +1156,7 @@ void CGUIEPGGridContainer::SetChannel(const CPVRChannel &channel)
   int iChannelIndex(-1);
   for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
   {
-    int iChannelId = m_channelItems[iIndex]->GetProperty("channelid").asInteger(-1);
+    int iChannelId = (int)m_channelItems[iIndex]->GetProperty("channelid").asInteger(-1);
     if (iChannelId == channel.ChannelID())
     {
       iChannelIndex = iIndex;

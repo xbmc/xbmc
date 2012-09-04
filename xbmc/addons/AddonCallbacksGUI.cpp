@@ -647,7 +647,7 @@ int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle,
 
   Lock();
   CStdString lowerKey = key;
-  int value = pWindow->GetProperty(lowerKey.ToLower()).asInteger();
+  int value = (int)pWindow->GetProperty(lowerKey.ToLower()).asInteger();
   Unlock();
 
   return value;

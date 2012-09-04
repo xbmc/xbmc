@@ -907,7 +907,7 @@ void CPVRClients::Process(void)
 
 void CPVRClients::ShowDialogNoClientsEnabled(void)
 {
-  if (g_PVRManager.GetState() != ManagerStateStarted && !g_PVRManager.GetState() == ManagerStateStarting)
+  if (g_PVRManager.GetState() != ManagerStateStarted && g_PVRManager.GetState() != ManagerStateStarting)
     return;
 
   CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
