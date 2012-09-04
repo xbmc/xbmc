@@ -23,7 +23,13 @@
 #include "guilib/GUISliderControl.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
+#include "utils/TimeUtils.h"
+#include "FileItem.h"
+#include "settings/GUISettings.h"
 #include "utils/SeekHandler.h"
+
+#define SEEK_BAR_DISPLAY_TIME 2000L
+#define SEEK_BAR_SEEK_TIME     500L
 
 #define POPUP_SEEK_SLIDER       401
 #define POPUP_SEEK_LABEL        402

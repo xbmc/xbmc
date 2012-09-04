@@ -567,6 +567,46 @@ msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selecteer uw XBMC-gebruikersprofiel[CR]om in te loggen"
 
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr "Geplande opnames"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Opname starttijd"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "Televisie"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Groep toevoegen"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Groep hernoemen"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Groep verwijderen"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Beschikbare[CR]Groepen"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Groep"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Geplande opname ingesteld"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Kanaal opties"
+
 msgctxt "#31900"
 msgid "Weather Maps"
 msgstr "Weer Kaarten"

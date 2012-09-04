@@ -195,7 +195,7 @@ bool CDVDInputStreamHTSP::GetChannels(SChannelV &channels, SChannelV::iterator &
   return false;
 }
 
-bool CDVDInputStreamHTSP::NextChannel()
+bool CDVDInputStreamHTSP::NextChannel(bool preview/* = false*/)
 {
   SChannelV channels;
   SChannelV::iterator it;
@@ -209,7 +209,7 @@ bool CDVDInputStreamHTSP::NextChannel()
     return SetChannel(circ->id);
 }
 
-bool CDVDInputStreamHTSP::PrevChannel()
+bool CDVDInputStreamHTSP::PrevChannel(bool preview/* = false*/)
 {
   SChannelV channels;
   SChannelV::iterator it;
@@ -223,7 +223,7 @@ bool CDVDInputStreamHTSP::PrevChannel()
     return SetChannel(circ->id);
 }
 
-bool CDVDInputStreamHTSP::SelectChannel(unsigned int channel)
+bool CDVDInputStreamHTSP::SelectChannelByNumber(unsigned int channel)
 {
   return SetChannel(channel);
 }
@@ -253,9 +253,9 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
 
 int CDVDInputStreamHTSP::GetTotalTime()
 {
-  if(m_event.id == 0)
-    return 0;
-  return (m_event.stop - m_event.start) * 1000;
+    if(m_event.id == 0)
+        return 0;
+    return (m_event.stop - m_event.start) * 1000;
 }
 
 int CDVDInputStreamHTSP::GetTime()

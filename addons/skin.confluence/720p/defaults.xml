@@ -125,6 +125,7 @@
 		<disabledcolor>grey3</disabledcolor>
 		<textoffsetx>7</textoffsetx>
 		<aligny>center</aligny>
+		<pulseonselect>no</pulseonselect>
 	</default>
 	<default type="selectbutton">
 		<posx>490</posx>

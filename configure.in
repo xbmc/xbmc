@@ -2162,6 +2162,9 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/OpenGLSpectrum/Makefile \
     xbmc/visualizations/WaveForm/Makefile \
     xbmc/visualizations/iTunes/Makefile \
+    lib/addons/library.xbmc.addon/Makefile \
+    lib/addons/library.xbmc.gui/Makefile \
+    lib/addons/library.xbmc.pvr/Makefile \
     xbmc/visualizations/EGLHelpers/Makefile \
     tools/Linux/xbmc.sh \
     tools/Linux/xbmc-standalone.sh \

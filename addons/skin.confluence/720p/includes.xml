@@ -6,6 +6,7 @@
 	<include file="ViewsPictures.xml" />
 	<include file="ViewsAddonBrowser.xml" />
 	<include file="ViewsLiveTV.xml" />
+	<include file="ViewsPVR.xml" />
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
 	<include file="IncludesHomeMenuItems.xml" />
@@ -28,7 +29,7 @@
 			<texture>black-back.png</texture>
 			<animation effect="fade" time="400">Visible</animation>
 			<animation effect="fade" time="200">Hidden</animation>
-			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(TextViewer) | Window.IsActive(AddonSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(FileStackingDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml) | Window.IsActive(AddonInformation) | Window.IsActive(Peripherals) | Window.IsActive(PeripheralSettings) | Window.IsActive(script-XBMC_Lyrics-main.xml)</visible>
+			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(TextViewer) | Window.IsActive(AddonSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(FileStackingDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml) | Window.IsActive(AddonInformation) | Window.IsActive(Peripherals) | Window.IsActive(PeripheralSettings) | Window.IsActive(script-XBMC_Lyrics-main.xml) | Window.IsActive(PVRChannelManager)</visible>
 		</control>
 	</include>
 	<include name="WindowTitleCommons">
@@ -302,6 +303,19 @@
 				<shadowcolor>black</shadowcolor>
 				<visible>Player.HasVideo + VideoPlayer.Content(MusicVideos)</visible>
 			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumber, - ([COLOR=blue],[/COLOR])]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasVideo + VideoPlayer.Content(LiveTV)</visible>
+			</control>
 		</control>
 	</include>
 	<include name="CommonPageCount">
@@ -572,8 +586,74 @@
 			<description>Fake Button to fix Player Controls Navigation</description>
 			<visible>false</visible>
 		</control>
+		<control type="group" id="9006">
+			<width>250</width>
+			<height>45</height>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="button" id="600">
+				<posx>20</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>601</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>XBMC.PlayerControl(Previous)</onclick>
+			</control>
+			<control type="button" id="601">
+				<posx>60</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onleft>600</onleft>
+				<onright>603</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>XBMC.PlayerControl(Next)</onclick>
+			</control>
+			<control type="button" id="603">
+				<posx>100</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDStopFO.png</texturefocus>
+				<texturenofocus>OSDStopNF.png</texturenofocus>
+				<onleft>601</onleft>
+				<onright>604</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>down</onclick>
+				<onclick>XBMC.PlayerControl(Stop)</onclick>
+			</control>
+			<control type="button" id="604">
+				<posx>180</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
+				<onleft>603</onleft>
+				<onright>50</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>XBMC.PlayerControl(record)</onclick>
+				<enable>Player.CanRecord</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
+			</control>
+		</control>
 		<control type="group" id="9005">
 			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
 			<width>250</width>
 			<height>45</height>

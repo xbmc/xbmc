@@ -105,6 +105,8 @@ void CSettings::Initialize()
   m_discStubExtensions = ".disc";
   // internal music extensions
   m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
+  // internal video extensions
+  m_videoExtensions += "|.pvr";
 
   #if defined(TARGET_DARWIN)
     CStdString logDir = getenv("HOME");

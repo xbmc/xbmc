@@ -7,3 +7,6 @@ XBMC related classes or functions.
 
 Also this headers are never changed without a API Version
 change.
+
+The current PVR API version can be found in xbmc_pvr_types.h:
+XBMC_PVR_API_VERSION

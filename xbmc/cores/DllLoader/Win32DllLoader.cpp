@@ -331,6 +331,9 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
   CStdStringW strdllNameW;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(dllName), strdllNameW, false);
   HMODULE hModule = GetModuleHandleW(strdllNameW.c_str());
+  if (hModule == NULL)
+    return false;
+
   wchar_t filepathW[MAX_PATH];
   GetModuleFileNameW(hModule, filepathW, MAX_PATH);
   CStdString dllPath;

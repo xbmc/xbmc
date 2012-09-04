@@ -37,6 +37,10 @@
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
+#ifdef HAS_PVRCLIENTS
+#include "DllPVRClient.h"
+#include "pvr/addons/PVRClient.h"
+#endif
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
@@ -44,9 +48,12 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "Util.h"
 
 using namespace std;
+using namespace PVR;
 
 namespace ADDON
 {
@@ -108,6 +115,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CScraper(props));
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
+    case ADDON_PVRDLL:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -142,6 +150,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         {
 #if defined(HAS_VISUALISATION)
           return AddonPtr(new CVisualisation(props));
+#endif
+        }
+        else if (type == ADDON_PVRDLL)
+        {
+#ifdef HAS_PVRCLIENTS
+          return AddonPtr(new CPVRClient(props));
 #endif
         }
         else
@@ -390,9 +404,26 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
-    AddonPtr addon(Factory(exts[i]));
-    if (addon && m_database.IsAddonDisabled(addon->ID()) != enabled)
-      addons.push_back(addon);
+    const cp_extension_t *props = exts[i];
+    if (m_database.IsAddonDisabled(props->plugin->identifier) != enabled)
+    {
+      // get a pointer to a running pvrclient if it's already started, or we won't be able to change settings
+      if (TranslateType(props->ext_point_id) == ADDON_PVRDLL &&
+          enabled &&
+          g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(props->plugin->identifier, pvrAddon))
+        {
+          addons.push_back(pvrAddon);
+          continue;
+        }
+      }
+
+      AddonPtr addon(Factory(props));
+      if (addon)
+        addons.push_back(addon);
+    }
   }
   m_cpluff->release_info(m_cp_context, exts);
   return addons.size() > 0;
@@ -408,8 +439,19 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    if (addon.get() && enabledOnly && m_database.IsAddonDisabled(addon->ID()))
-      return false;
+
+    if (addon && addon.get())
+    {
+      if (enabledOnly && m_database.IsAddonDisabled(addon->ID()))
+        return false;
+
+      if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(addon->ID(), pvrAddon))
+          addon = pvrAddon;
+      }
+    }
     return NULL != addon.get();
   }
   if (cpaddon)
@@ -497,15 +539,25 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
 
 void CAddonMgr::FindAddons()
 {
-  CSingleLock lock(m_critSection);
-  if (m_cpluff && m_cp_context)
-    m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_cpluff && m_cp_context)
+    {
+      m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+      SetChanged();
+    }
+  }
+  NotifyObservers(ObservableMessageAddons);
 }
 
 void CAddonMgr::RemoveAddon(const CStdString& ID)
 {
   if (m_cpluff && m_cp_context)
+  {
     m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
+    SetChanged();
+    NotifyObservers(ObservableMessageAddons);
+  }
 }
 
 const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
@@ -562,6 +614,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
+    case ADDON_PVRDLL:
+      return AddonPtr(new CPVRClient(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     default:
