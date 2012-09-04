@@ -49,6 +49,10 @@
 
 
 
+#ifdef TARGET_RASPBERRY_PI
+#include "linux/RBP.h"
+#endif
+
   CGUISettings       g_guiSettings;
   CSettings          g_settings;
 
@@ -80,3 +84,7 @@
   CAlarmClock        g_alarmClock;
   PLAYLIST::CPlayListPlayer g_playlistPlayer;
   CApplication       g_application;
+
+#ifdef TARGET_RASPBERRY_PI
+  CRBP               g_RBP;
+#endif

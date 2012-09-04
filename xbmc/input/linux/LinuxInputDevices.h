@@ -44,6 +44,7 @@ public:
   XBMC_Event ReadEvent();
  
 private:
+  void SetupKeyboardAutoRepeat(int fd);
   XBMCKey TranslateKey(unsigned short code);
   bool KeyEvent(const struct input_event& levt, XBMC_Event& devt);
   bool RelEvent(const struct input_event& levt, XBMC_Event& devt);

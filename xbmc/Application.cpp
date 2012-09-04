@@ -4194,7 +4194,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // one of the players that allows gapless playback (paplayer, dvdplayer)
   if (m_pPlayer)
   {
-    if ( !(m_eCurrentPlayer == eNewCore && (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer  == EPC_PAPLAYER)) )
+    if ( !(m_eCurrentPlayer == eNewCore && (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer  == EPC_PAPLAYER
+#if defined(HAS_OMXPLAYER)
+            || m_eCurrentPlayer == EPC_OMXPLAYER
+#endif            
+            )) )
     {
       delete m_pPlayer;
       m_pPlayer = NULL;
@@ -5550,6 +5554,10 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
     value = 1.0f;
 
   CAEFactory::SetVolume(value);
+
+  /* for platforms where we do not have AE */
+  if (m_pPlayer)
+    m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
 }
 
 int CApplication::GetVolume() const

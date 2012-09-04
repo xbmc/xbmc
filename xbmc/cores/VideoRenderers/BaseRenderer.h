@@ -120,6 +120,9 @@ protected:
   CRect m_oldDestRect; // destrect of the previous frame
   CRect m_sourceRect;
 
+  // rendering flags
+  unsigned m_iFlags;
+
   const void* m_RenderUpdateCallBackCtx;
   RenderUpdateCallBackFn m_RenderUpdateCallBackFn;
 };

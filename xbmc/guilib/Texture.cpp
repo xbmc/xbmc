@@ -36,6 +36,11 @@
 #include "URL.h"
 #include "filesystem/AndroidAppFile.h"
 #endif
+
+#ifdef TARGET_RASPBERRY_PI
+#include "xbmc/cores/omxplayer/OMXImage.h"
+#endif
+
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
@@ -230,6 +235,56 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
 bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
                                 bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
 {
+#ifdef TARGET_RASPBERRY_PI
+  if (URIUtils::GetExtension(texturePath).Equals(".jpg") || 
+      URIUtils::GetExtension(texturePath).Equals(".tbn") 
+      /*|| URIUtils::GetExtension(texturePath).Equals(".png")*/)
+  {
+    COMXImage omx_image;
+
+    if(omx_image.ReadFile(texturePath))
+    {
+      // TODO: we only decode as half width and height. this is a workaround for the PI memory limitation
+      if(omx_image.Decode(omx_image.GetWidth() / 2, omx_image.GetHeight() / 2))
+      {
+        Allocate(omx_image.GetDecodedWidth(), omx_image.GetDecodedHeight(), XB_FMT_A8R8G8B8);
+
+        if(!m_pixels)
+        {
+          CLog::Log(LOGERROR, "Texture manager (OMX) out of memory");
+          omx_image.Close();
+          return false;
+        }
+
+        if (originalWidth)
+          *originalWidth  = omx_image.GetOriginalWidth();
+        if (originalHeight)
+          *originalHeight = omx_image.GetOriginalHeight();
+
+        m_hasAlpha = omx_image.IsAlpha();
+
+        if (autoRotate && omx_image.GetOrientation())
+          m_orientation = omx_image.GetOrientation() - 1;
+
+        if(omx_image.GetDecodedData())
+        {
+          int size = ( ( GetPitch() * GetRows() ) > omx_image.GetDecodedSize() ) ?
+                           omx_image.GetDecodedSize() : ( GetPitch() * GetRows() );
+
+          memcpy(m_pixels, (unsigned char *)omx_image.GetDecodedData(), size);
+        }
+
+        omx_image.Close();
+
+        return true;
+      }
+      else
+      {
+        omx_image.Close();
+      }
+    }
+  }
+#endif
   if (URIUtils::GetExtension(texturePath).Equals(".dds"))
   { // special case for DDS images
     CDDSImage image;

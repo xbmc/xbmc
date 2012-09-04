@@ -21,6 +21,11 @@
 
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
+
+#ifdef TARGET_RASPBERRY_PI
+#include "linux/RBP.h"
+#endif
+
 extern "C" int XBMC_Run(bool renderGUI)
 {
   int status = -1;
@@ -42,6 +47,13 @@ extern "C" int XBMC_Run(bool renderGUI)
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
     return status;
   }
+
+#ifdef TARGET_RASPBERRY_PI
+  if(!g_RBP.Initialize())
+    return false;
+  g_RBP.LogFirmwareVerison();
+#endif
+
   if (renderGUI && !g_application.CreateGUI())
   {
     fprintf(stderr, "ERROR: Unable to create GUI. Exiting\n");
@@ -62,6 +74,10 @@ extern "C" int XBMC_Run(bool renderGUI)
     fprintf(stderr, "ERROR: Exception caught on main loop. Exiting\n");
     status = -1;
   }
+
+#ifdef TARGET_RASPBERRY_PI
+  g_RBP.Deinitialize();
+#endif
 
   return status;
 }

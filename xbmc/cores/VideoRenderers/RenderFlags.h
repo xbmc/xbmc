@@ -70,4 +70,8 @@
 #define CONF_FLAGS_TRC_GAMMA22    0x0800
 #define CONF_FLAGS_TRC_GAMMA28    0x0c00
 
+/* defines 3d modes */
+#define CONF_FLAGS_FORMAT_SBS     0x001000
+#define CONF_FLAGS_FORMAT_TB      0x002000
+
 #endif

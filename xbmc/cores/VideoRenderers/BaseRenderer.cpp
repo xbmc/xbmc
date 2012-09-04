@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "cores/VideoRenderers/RenderFlags.h"
 
 
 CBaseRenderer::CBaseRenderer()
@@ -191,30 +192,84 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 
 RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight)
 {
+  RESOLUTION_INFO &curr = g_settings.m_ResInfo[current];
+
+  int iWidth  = curr.iWidth;
+  int iHeight = curr.iHeight;
+  float fRefreshRate = fps;
+
+  /*
+   * For 3D modes the following is assumed :
+   *
+   * fps is fps * 2 : 25 fps -> 50 fps
+   *
+   * side-by-side :
+   *
+   * width is width / 2 : 1920 -> 960
+   *
+   * tob-bottom :
+   *
+   * height is height / 2 : 1080 -> 540
+   *
+   */
+
+  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
+  {
+    iWidth /= 2;
+    fRefreshRate *= 2;
+  }
+  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
+  {
+    iHeight /= 2;
+    fRefreshRate *= 2;
+  }
+
+  float last_diff = fRefreshRate;
+
   // Find closest refresh rate
   for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
   {
-    RESOLUTION_INFO &curr = g_settings.m_ResInfo[current];
     RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
 
     //discard resolutions that are not the same width and height
     //or have a too low refreshrate
-    if (info.iWidth  != curr.iWidth
-    ||  info.iHeight != curr.iHeight
+    if (info.iWidth  != iWidth
+    ||  info.iHeight != iHeight
     ||  info.iScreen != curr.iScreen
-    ||  info.fRefreshRate < (fps * multiplier / 1.001) - 0.001)
+    ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
       continue;
 
-    int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fps * multiplier) * 1000.0);
-    int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fps * multiplier) * 1000.0);
+    // For 3D choose the closest refresh rate 
+    if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+    {
+      float diff = (info.fRefreshRate - fRefreshRate);
+      if(diff < 0)
+        diff *= -1.0f;
 
-    // Closer the better, prefer higher refresh rate if the same
-    if ((i_weight <  c_weight)
-    ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
-      current = (RESOLUTION)i;
+      if(diff < last_diff)
+      {
+        last_diff = diff;
+        current = (RESOLUTION)i;
+      }
+    }
+    else
+    {
+      //discard resolutions that are not the same width and height
+      int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
+      int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
+
+      // Closer the better, prefer higher refresh rate if the same
+      if ((i_weight <  c_weight)
+      ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
+        current = (RESOLUTION)i;
+    }
   }
 
-  weight = RefreshWeight(g_settings.m_ResInfo[current].fRefreshRate, fps * multiplier);
+  // For 3D overwrite weight
+  if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+    weight = 0;
+  else
+    weight = RefreshWeight(g_settings.m_ResInfo[current].fRefreshRate, fRefreshRate * multiplier);
 
   return current;
 }
@@ -444,6 +499,11 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 //***************************************************************************************
 void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height)
 {
+  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
+    desired_width /= 2;
+  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
+    desired_height /= 2;
+
   m_sourceFrameRatio = (float)desired_width / desired_height;
 
   // Check whether mplayer has decided that the size of the video file should be changed
@@ -522,6 +582,10 @@ void CBaseRenderer::SetViewMode(int viewMode)
   RESOLUTION res = GetResolution();
   float screenWidth = (float)(g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left);
   float screenHeight = (float)(g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
+  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
+    screenWidth /= 2;
+  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
+    screenHeight /= 2;
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
 
