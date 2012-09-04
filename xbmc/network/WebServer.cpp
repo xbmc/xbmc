@@ -436,7 +436,10 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
-    expiryTime += CDateTimeSpan(365, 0, 0, 0);
+    if (mime && strncmp(mime, "text/html", 9) == 0)
+      expiryTime += CDateTimeSpan(1, 0, 0, 0);
+    else
+      expiryTime += CDateTimeSpan(365, 0, 0, 0);
     MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
 
     // only close the CFile instance if libmicrohttpd doesn't have to grab the data of the file
