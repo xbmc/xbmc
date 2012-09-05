@@ -161,6 +161,19 @@
 		DFB662FB15376810006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB662D815376810006B8FF1 /* AEUtil.cpp */; };
 		DFB662FC15376810006B8FF1 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB662DA15376810006B8FF1 /* AEWAVLoader.cpp */; };
 		DFB6631115376991006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6630F15376991006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
+		DFBE7F7415F7CF7500D7D102 /* PltXbox360.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7F7215F7CF7500D7D102 /* PltXbox360.cpp */; };
+		DFBE7FE415F7D11D00D7D102 /* PltDownloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FBF15F7D11D00D7D102 /* PltDownloader.cpp */; };
+		DFBE7FE515F7D11D00D7D102 /* PltFrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FC115F7D11D00D7D102 /* PltFrameBuffer.cpp */; };
+		DFBE7FE615F7D11D00D7D102 /* PltFrameServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FC315F7D11D00D7D102 /* PltFrameServer.cpp */; };
+		DFBE7FE715F7D11D00D7D102 /* PltFrameStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FC515F7D11D00D7D102 /* PltFrameStream.cpp */; };
+		DFBE7FE815F7D11D00D7D102 /* PltLeaks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FC715F7D11D00D7D102 /* PltLeaks.cpp */; };
+		DFBE7FE915F7D11D00D7D102 /* PltMetadataHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FC915F7D11D00D7D102 /* PltMetadataHandler.cpp */; };
+		DFBE7FEA15F7D11D00D7D102 /* PltRingBufferStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FCB15F7D11D00D7D102 /* PltRingBufferStream.cpp */; };
+		DFBE7FEB15F7D11D00D7D102 /* PltStreamPump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FCD15F7D11D00D7D102 /* PltStreamPump.cpp */; };
+		DFBE7FFC15F7D1A100D7D102 /* PltMimeType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FF815F7D1A100D7D102 /* PltMimeType.cpp */; };
+		DFBE7FFD15F7D1A100D7D102 /* PltProtocolInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FFA15F7D1A100D7D102 /* PltProtocolInfo.cpp */; };
+		DFBE7FFF15F7D1B900D7D102 /* NptAppleAutoreleasePool.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FFE15F7D1B900D7D102 /* NptAppleAutoreleasePool.mm */; };
+		DFBE800215F7D1EE00D7D102 /* NptCocoaEnviroment.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFBE800115F7D1EE00D7D102 /* NptCocoaEnviroment.mm */; };
 		DFC5393A1526659D00D5FD5C /* AppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = DFC539391526659D00D5FD5C /* AppIcon.png */; };
 		DFCA6B0B15224684000BFAAE /* HTTPApiHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AFE15224684000BFAAE /* HTTPApiHandler.cpp */; };
 		DFCA6B0C15224684000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6B0015224684000BFAAE /* HTTPJsonRpcHandler.cpp */; };
@@ -923,9 +936,7 @@
 		F56C7D9E131EF8D9000AD0F6 /* NptConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CF4131EF8D9000AD0F6 /* NptConsole.cpp */; };
 		F56C7D9F131EF8D9000AD0F6 /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CF7131EF8D9000AD0F6 /* NptStdcDebug.cpp */; };
 		F56C7DA0131EF8D9000AD0F6 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CF8131EF8D9000AD0F6 /* NptStdcEnvironment.cpp */; };
-		F56C7DA1131EF8D9000AD0F6 /* NptStdCTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CF9131EF8D9000AD0F6 /* NptStdCTime.cpp */; };
 		F56C7DA2131EF8D9000AD0F6 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CFA131EF8D9000AD0F6 /* NptPosixDynamicLibraries.cpp */; };
-		F56C7DA3131EF8D9000AD0F6 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CFB131EF8D9000AD0F6 /* NptPosixFile.cpp */; };
 		F56C7DA4131EF8D9000AD0F6 /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CFC131EF8D9000AD0F6 /* NptPosixNetwork.cpp */; };
 		F56C7DA5131EF8D9000AD0F6 /* NptPosixQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CFD131EF8D9000AD0F6 /* NptPosixQueue.cpp */; };
 		F56C7DA6131EF8D9000AD0F6 /* NptPosixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CFE131EF8D9000AD0F6 /* NptPosixSystem.cpp */; };
@@ -936,7 +947,6 @@
 		F56C7DAB131EF8D9000AD0F6 /* MediaCrawler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D05131EF8D9000AD0F6 /* MediaCrawler.cpp */; };
 		F56C7DAC131EF8D9000AD0F6 /* PltMicroMediaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D09131EF8D9000AD0F6 /* PltMicroMediaController.cpp */; };
 		F56C7DAD131EF8D9000AD0F6 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D0C131EF8D9000AD0F6 /* Neptune.cpp */; };
-		F56C7DAE131EF8D9000AD0F6 /* PltTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D0F131EF8D9000AD0F6 /* PltTime.cpp */; };
 		F56C7DAF131EF8D9000AD0F6 /* PltConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D10131EF8D9000AD0F6 /* PltConstants.cpp */; };
 		F56C7DB0131EF8D9000AD0F6 /* PltIconsData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D12131EF8D9000AD0F6 /* PltIconsData.cpp */; };
 		F56C7DB1131EF8D9000AD0F6 /* PltAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D13131EF8D9000AD0F6 /* PltAction.cpp */; };
@@ -946,19 +956,14 @@
 		F56C7DB5131EF8D9000AD0F6 /* PltDatagramStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D1B131EF8D9000AD0F6 /* PltDatagramStream.cpp */; };
 		F56C7DB6131EF8D9000AD0F6 /* PltDeviceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D1D131EF8D9000AD0F6 /* PltDeviceData.cpp */; };
 		F56C7DB7131EF8D9000AD0F6 /* PltDeviceHost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D1F131EF8D9000AD0F6 /* PltDeviceHost.cpp */; };
-		F56C7DB8131EF8D9000AD0F6 /* PltDownloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D21131EF8D9000AD0F6 /* PltDownloader.cpp */; };
 		F56C7DB9131EF8D9000AD0F6 /* PltEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D23131EF8D9000AD0F6 /* PltEvent.cpp */; };
 		F56C7DBA131EF8D9000AD0F6 /* PltHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D25131EF8D9000AD0F6 /* PltHttp.cpp */; };
 		F56C7DBB131EF8D9000AD0F6 /* PltHttpClientTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D27131EF8D9000AD0F6 /* PltHttpClientTask.cpp */; };
 		F56C7DBC131EF8D9000AD0F6 /* PltHttpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D29131EF8D9000AD0F6 /* PltHttpServer.cpp */; };
 		F56C7DBD131EF8D9000AD0F6 /* PltHttpServerTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D2C131EF8D9000AD0F6 /* PltHttpServerTask.cpp */; };
-		F56C7DBE131EF8D9000AD0F6 /* PltLeaks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D2E131EF8D9000AD0F6 /* PltLeaks.cpp */; };
-		F56C7DBF131EF8D9000AD0F6 /* PltMetadataHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D30131EF8D9000AD0F6 /* PltMetadataHandler.cpp */; };
-		F56C7DC0131EF8D9000AD0F6 /* PltRingBufferStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D32131EF8D9000AD0F6 /* PltRingBufferStream.cpp */; };
 		F56C7DC1131EF8D9000AD0F6 /* PltService.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D34131EF8D9000AD0F6 /* PltService.cpp */; };
 		F56C7DC2131EF8D9000AD0F6 /* PltSsdp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D36131EF8D9000AD0F6 /* PltSsdp.cpp */; };
 		F56C7DC3131EF8D9000AD0F6 /* PltStateVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D39131EF8D9000AD0F6 /* PltStateVariable.cpp */; };
-		F56C7DC4131EF8D9000AD0F6 /* PltStreamPump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D3B131EF8D9000AD0F6 /* PltStreamPump.cpp */; };
 		F56C7DC5131EF8D9000AD0F6 /* PltTaskManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D3D131EF8D9000AD0F6 /* PltTaskManager.cpp */; };
 		F56C7DC6131EF8D9000AD0F6 /* PltThreadTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D3F131EF8D9000AD0F6 /* PltThreadTask.cpp */; };
 		F56C7DC7131EF8D9000AD0F6 /* PltUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D41131EF8D9000AD0F6 /* PltUPnP.cpp */; };
@@ -977,7 +982,6 @@
 		F56C7DDC131EF8D9000AD0F6 /* PltMediaBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D62131EF8D9000AD0F6 /* PltMediaBrowser.cpp */; };
 		F56C7DDD131EF8D9000AD0F6 /* PltMediaCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D64131EF8D9000AD0F6 /* PltMediaCache.cpp */; };
 		F56C7DDE131EF8D9000AD0F6 /* PltMediaItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D66131EF8D9000AD0F6 /* PltMediaItem.cpp */; };
-		F56C7DDF131EF8D9000AD0F6 /* PltMediaPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D68131EF8D9000AD0F6 /* PltMediaPlaylist.cpp */; };
 		F56C7DE0131EF8D9000AD0F6 /* PltMediaServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D6A131EF8D9000AD0F6 /* PltMediaServer.cpp */; };
 		F56C7DE1131EF8D9000AD0F6 /* PltSyncMediaBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D6C131EF8D9000AD0F6 /* PltSyncMediaBrowser.cpp */; };
 		F56C7DE2131EF8D9000AD0F6 /* PltLightSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7D72131EF8D9000AD0F6 /* PltLightSample.cpp */; };
@@ -1358,6 +1362,32 @@
 		DFB662DB15376810006B8FF1 /* AEWAVLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEWAVLoader.h; sourceTree = "<group>"; };
 		DFB6630F15376991006B8FF1 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		DFB6631015376991006B8FF1 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
+		DFBE7F7215F7CF7500D7D102 /* PltXbox360.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltXbox360.cpp; path = MediaConnect/PltXbox360.cpp; sourceTree = "<group>"; };
+		DFBE7F7315F7CF7500D7D102 /* PltXbox360.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltXbox360.h; path = MediaConnect/PltXbox360.h; sourceTree = "<group>"; };
+		DFBE7FBF15F7D11D00D7D102 /* PltDownloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDownloader.cpp; sourceTree = "<group>"; };
+		DFBE7FC015F7D11D00D7D102 /* PltDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDownloader.h; sourceTree = "<group>"; };
+		DFBE7FC115F7D11D00D7D102 /* PltFrameBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltFrameBuffer.cpp; sourceTree = "<group>"; };
+		DFBE7FC215F7D11D00D7D102 /* PltFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltFrameBuffer.h; sourceTree = "<group>"; };
+		DFBE7FC315F7D11D00D7D102 /* PltFrameServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltFrameServer.cpp; sourceTree = "<group>"; };
+		DFBE7FC415F7D11D00D7D102 /* PltFrameServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltFrameServer.h; sourceTree = "<group>"; };
+		DFBE7FC515F7D11D00D7D102 /* PltFrameStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltFrameStream.cpp; sourceTree = "<group>"; };
+		DFBE7FC615F7D11D00D7D102 /* PltFrameStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltFrameStream.h; sourceTree = "<group>"; };
+		DFBE7FC715F7D11D00D7D102 /* PltLeaks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltLeaks.cpp; sourceTree = "<group>"; };
+		DFBE7FC815F7D11D00D7D102 /* PltLeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltLeaks.h; sourceTree = "<group>"; };
+		DFBE7FC915F7D11D00D7D102 /* PltMetadataHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMetadataHandler.cpp; sourceTree = "<group>"; };
+		DFBE7FCA15F7D11D00D7D102 /* PltMetadataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMetadataHandler.h; sourceTree = "<group>"; };
+		DFBE7FCB15F7D11D00D7D102 /* PltRingBufferStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltRingBufferStream.cpp; sourceTree = "<group>"; };
+		DFBE7FCC15F7D11D00D7D102 /* PltRingBufferStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltRingBufferStream.h; sourceTree = "<group>"; };
+		DFBE7FCD15F7D11D00D7D102 /* PltStreamPump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltStreamPump.cpp; sourceTree = "<group>"; };
+		DFBE7FCE15F7D11D00D7D102 /* PltStreamPump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltStreamPump.h; sourceTree = "<group>"; };
+		DFBE7FF815F7D1A100D7D102 /* PltMimeType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMimeType.cpp; sourceTree = "<group>"; };
+		DFBE7FF915F7D1A100D7D102 /* PltMimeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMimeType.h; sourceTree = "<group>"; };
+		DFBE7FFA15F7D1A100D7D102 /* PltProtocolInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltProtocolInfo.cpp; sourceTree = "<group>"; };
+		DFBE7FFB15F7D1A100D7D102 /* PltProtocolInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltProtocolInfo.h; sourceTree = "<group>"; };
+		DFBE7FFE15F7D1B900D7D102 /* NptAppleAutoreleasePool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptAppleAutoreleasePool.mm; path = lib/libUPnP/Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm; sourceTree = SOURCE_ROOT; };
+		DFBE800015F7D1D100D7D102 /* NptAutoreleasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptAutoreleasePool.h; path = lib/libUPnP/Neptune/Source/Core/NptAutoreleasePool.h; sourceTree = SOURCE_ROOT; };
+		DFBE800115F7D1EE00D7D102 /* NptCocoaEnviroment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptCocoaEnviroment.mm; path = lib/libUPnP/Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm; sourceTree = SOURCE_ROOT; };
+		DFBE800C15F7D2B000D7D102 /* PltUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltUtilities.h; sourceTree = "<group>"; };
 		DFC539391526659D00D5FD5C /* AppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = AppIcon.png; path = media/AppIcon.png; sourceTree = "<group>"; };
 		DFCA6AFE15224684000BFAAE /* HTTPApiHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPApiHandler.cpp; sourceTree = "<group>"; };
 		DFCA6AFF15224684000BFAAE /* HTTPApiHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPApiHandler.h; sourceTree = "<group>"; };
@@ -2952,9 +2982,8 @@
 		F56C7CAA131EF8D8000AD0F6 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		F56C7CAB131EF8D8000AD0F6 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		F56C7CAC131EF8D8000AD0F6 /* SConstruct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConstruct; sourceTree = "<group>"; };
-		F56C7CAE131EF8D8000AD0F6 /* Platinum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Platinum.h; path = Platinum/Platinum.h; sourceTree = "<group>"; };
-		F56C7CAF131EF8D8000AD0F6 /* PltVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltVersion.h; path = Platinum/PltVersion.h; sourceTree = "<group>"; };
-		F56C7CB0131EF8D8000AD0F6 /* PltSvnVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltSvnVersion.h; path = Platinum/PltSvnVersion.h; sourceTree = "<group>"; };
+		F56C7CAE131EF8D8000AD0F6 /* Platinum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Platinum.h; path = Source/Platinum/Platinum.h; sourceTree = "<group>"; };
+		F56C7CAF131EF8D8000AD0F6 /* PltVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltVersion.h; path = Source/Platinum/PltVersion.h; sourceTree = "<group>"; };
 		F56C7CB2131EF8D8000AD0F6 /* NptZip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptZip.cpp; path = ../../Neptune/Source/Core/NptZip.cpp; sourceTree = "<group>"; };
 		F56C7CB3131EF8D8000AD0F6 /* NptZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptZip.h; path = ../../Neptune/Source/Core/NptZip.h; sourceTree = "<group>"; };
 		F56C7CB4131EF8D8000AD0F6 /* NptStreams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStreams.cpp; path = ../../Neptune/Source/Core/NptStreams.cpp; sourceTree = "<group>"; };
@@ -3026,9 +3055,7 @@
 		F56C7CF6131EF8D9000AD0F6 /* NptConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptConstants.h; path = ../../Neptune/Source/Core/NptConstants.h; sourceTree = "<group>"; };
 		F56C7CF7131EF8D9000AD0F6 /* NptStdcDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcDebug.cpp; path = ../../Neptune/Source/System/StdC/NptStdcDebug.cpp; sourceTree = "<group>"; };
 		F56C7CF8131EF8D9000AD0F6 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcEnvironment.cpp; path = ../../Neptune/Source/System/StdC/NptStdcEnvironment.cpp; sourceTree = "<group>"; };
-		F56C7CF9131EF8D9000AD0F6 /* NptStdCTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdCTime.cpp; path = ../../Neptune/Source/System/StdC/NptStdCTime.cpp; sourceTree = "<group>"; };
 		F56C7CFA131EF8D9000AD0F6 /* NptPosixDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixDynamicLibraries.cpp; path = ../../Neptune/Source/System/Posix/NptPosixDynamicLibraries.cpp; sourceTree = "<group>"; };
-		F56C7CFB131EF8D9000AD0F6 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixFile.cpp; path = ../../Neptune/Source/System/Posix/NptPosixFile.cpp; sourceTree = "<group>"; };
 		F56C7CFC131EF8D9000AD0F6 /* NptPosixNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixNetwork.cpp; path = ../../Neptune/Source/System/Posix/NptPosixNetwork.cpp; sourceTree = "<group>"; };
 		F56C7CFD131EF8D9000AD0F6 /* NptPosixQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixQueue.cpp; path = ../../Neptune/Source/System/Posix/NptPosixQueue.cpp; sourceTree = "<group>"; };
 		F56C7CFE131EF8D9000AD0F6 /* NptPosixSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixSystem.cpp; path = ../../Neptune/Source/System/Posix/NptPosixSystem.cpp; sourceTree = "<group>"; };
@@ -3043,8 +3070,6 @@
 		F56C7D0A131EF8D9000AD0F6 /* PltMicroMediaController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMicroMediaController.h; sourceTree = "<group>"; };
 		F56C7D0C131EF8D9000AD0F6 /* Neptune.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Neptune.cpp; path = ../../../Neptune/Source/Core/Neptune.cpp; sourceTree = "<group>"; };
 		F56C7D0D131EF8D9000AD0F6 /* Neptune.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Neptune.h; path = ../../../Neptune/Source/Core/Neptune.h; sourceTree = "<group>"; };
-		F56C7D0E131EF8D9000AD0F6 /* PltTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltTime.h; sourceTree = "<group>"; };
-		F56C7D0F131EF8D9000AD0F6 /* PltTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltTime.cpp; sourceTree = "<group>"; };
 		F56C7D10131EF8D9000AD0F6 /* PltConstants.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltConstants.cpp; sourceTree = "<group>"; };
 		F56C7D11131EF8D9000AD0F6 /* PltConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltConstants.h; sourceTree = "<group>"; };
 		F56C7D12131EF8D9000AD0F6 /* PltIconsData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltIconsData.cpp; sourceTree = "<group>"; };
@@ -3062,8 +3087,6 @@
 		F56C7D1E131EF8D9000AD0F6 /* PltDeviceData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDeviceData.h; sourceTree = "<group>"; };
 		F56C7D1F131EF8D9000AD0F6 /* PltDeviceHost.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDeviceHost.cpp; sourceTree = "<group>"; };
 		F56C7D20131EF8D9000AD0F6 /* PltDeviceHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDeviceHost.h; sourceTree = "<group>"; };
-		F56C7D21131EF8D9000AD0F6 /* PltDownloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDownloader.cpp; sourceTree = "<group>"; };
-		F56C7D22131EF8D9000AD0F6 /* PltDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDownloader.h; sourceTree = "<group>"; };
 		F56C7D23131EF8D9000AD0F6 /* PltEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltEvent.cpp; sourceTree = "<group>"; };
 		F56C7D24131EF8D9000AD0F6 /* PltEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltEvent.h; sourceTree = "<group>"; };
 		F56C7D25131EF8D9000AD0F6 /* PltHttp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltHttp.cpp; sourceTree = "<group>"; };
@@ -3072,32 +3095,20 @@
 		F56C7D28131EF8D9000AD0F6 /* PltHttpClientTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpClientTask.h; sourceTree = "<group>"; };
 		F56C7D29131EF8D9000AD0F6 /* PltHttpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltHttpServer.cpp; sourceTree = "<group>"; };
 		F56C7D2A131EF8D9000AD0F6 /* PltHttpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpServer.h; sourceTree = "<group>"; };
-		F56C7D2B131EF8D9000AD0F6 /* PltHttpServerListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpServerListener.h; sourceTree = "<group>"; };
 		F56C7D2C131EF8D9000AD0F6 /* PltHttpServerTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltHttpServerTask.cpp; sourceTree = "<group>"; };
 		F56C7D2D131EF8D9000AD0F6 /* PltHttpServerTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpServerTask.h; sourceTree = "<group>"; };
-		F56C7D2E131EF8D9000AD0F6 /* PltLeaks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltLeaks.cpp; sourceTree = "<group>"; };
-		F56C7D2F131EF8D9000AD0F6 /* PltLeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltLeaks.h; sourceTree = "<group>"; };
-		F56C7D30131EF8D9000AD0F6 /* PltMetadataHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMetadataHandler.cpp; sourceTree = "<group>"; };
-		F56C7D31131EF8D9000AD0F6 /* PltMetadataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMetadataHandler.h; sourceTree = "<group>"; };
-		F56C7D32131EF8D9000AD0F6 /* PltRingBufferStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltRingBufferStream.cpp; sourceTree = "<group>"; };
-		F56C7D33131EF8D9000AD0F6 /* PltRingBufferStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltRingBufferStream.h; sourceTree = "<group>"; };
 		F56C7D34131EF8D9000AD0F6 /* PltService.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltService.cpp; sourceTree = "<group>"; };
 		F56C7D35131EF8D9000AD0F6 /* PltService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltService.h; sourceTree = "<group>"; };
 		F56C7D36131EF8D9000AD0F6 /* PltSsdp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltSsdp.cpp; sourceTree = "<group>"; };
 		F56C7D37131EF8D9000AD0F6 /* PltSsdp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltSsdp.h; sourceTree = "<group>"; };
-		F56C7D38131EF8D9000AD0F6 /* PltSsdpListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltSsdpListener.h; sourceTree = "<group>"; };
 		F56C7D39131EF8D9000AD0F6 /* PltStateVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltStateVariable.cpp; sourceTree = "<group>"; };
 		F56C7D3A131EF8D9000AD0F6 /* PltStateVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltStateVariable.h; sourceTree = "<group>"; };
-		F56C7D3B131EF8D9000AD0F6 /* PltStreamPump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltStreamPump.cpp; sourceTree = "<group>"; };
-		F56C7D3C131EF8D9000AD0F6 /* PltStreamPump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltStreamPump.h; sourceTree = "<group>"; };
 		F56C7D3D131EF8D9000AD0F6 /* PltTaskManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltTaskManager.cpp; sourceTree = "<group>"; };
 		F56C7D3E131EF8D9000AD0F6 /* PltTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltTaskManager.h; sourceTree = "<group>"; };
 		F56C7D3F131EF8D9000AD0F6 /* PltThreadTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltThreadTask.cpp; sourceTree = "<group>"; };
 		F56C7D40131EF8D9000AD0F6 /* PltThreadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltThreadTask.h; sourceTree = "<group>"; };
 		F56C7D41131EF8D9000AD0F6 /* PltUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltUPnP.cpp; sourceTree = "<group>"; };
 		F56C7D42131EF8D9000AD0F6 /* PltUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltUPnP.h; sourceTree = "<group>"; };
-		F56C7D43131EF8D9000AD0F6 /* PltUPnPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltUPnPHelper.h; sourceTree = "<group>"; };
-		F56C7D44131EF8D9000AD0F6 /* PltXmlHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltXmlHelper.h; sourceTree = "<group>"; };
 		F56C7D47131EF8D9000AD0F6 /* X_MS_MediaReceiverRegistrarSCPD.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = X_MS_MediaReceiverRegistrarSCPD.xml; path = MediaConnect/X_MS_MediaReceiverRegistrarSCPD.xml; sourceTree = "<group>"; };
 		F56C7D48131EF8D9000AD0F6 /* X_MS_MediaReceiverRegistrarSCPD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = X_MS_MediaReceiverRegistrarSCPD.cpp; path = MediaConnect/X_MS_MediaReceiverRegistrarSCPD.cpp; sourceTree = "<group>"; };
 		F56C7D49131EF8D9000AD0F6 /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
@@ -3129,8 +3140,6 @@
 		F56C7D65131EF8D9000AD0F6 /* PltMediaCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaCache.h; sourceTree = "<group>"; };
 		F56C7D66131EF8D9000AD0F6 /* PltMediaItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaItem.cpp; sourceTree = "<group>"; };
 		F56C7D67131EF8D9000AD0F6 /* PltMediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaItem.h; sourceTree = "<group>"; };
-		F56C7D68131EF8D9000AD0F6 /* PltMediaPlaylist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaPlaylist.cpp; sourceTree = "<group>"; };
-		F56C7D69131EF8D9000AD0F6 /* PltMediaPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaPlaylist.h; sourceTree = "<group>"; };
 		F56C7D6A131EF8D9000AD0F6 /* PltMediaServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaServer.cpp; sourceTree = "<group>"; };
 		F56C7D6B131EF8D9000AD0F6 /* PltMediaServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaServer.h; sourceTree = "<group>"; };
 		F56C7D6C131EF8D9000AD0F6 /* PltSyncMediaBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltSyncMediaBrowser.cpp; sourceTree = "<group>"; };
@@ -3541,6 +3550,29 @@
 				DFB662DB15376810006B8FF1 /* AEWAVLoader.h */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		DFBE7F8E15F7D11D00D7D102 /* Extras */ = {
+			isa = PBXGroup;
+			children = (
+				DFBE7FBF15F7D11D00D7D102 /* PltDownloader.cpp */,
+				DFBE7FC015F7D11D00D7D102 /* PltDownloader.h */,
+				DFBE7FC115F7D11D00D7D102 /* PltFrameBuffer.cpp */,
+				DFBE7FC215F7D11D00D7D102 /* PltFrameBuffer.h */,
+				DFBE7FC315F7D11D00D7D102 /* PltFrameServer.cpp */,
+				DFBE7FC415F7D11D00D7D102 /* PltFrameServer.h */,
+				DFBE7FC515F7D11D00D7D102 /* PltFrameStream.cpp */,
+				DFBE7FC615F7D11D00D7D102 /* PltFrameStream.h */,
+				DFBE7FC715F7D11D00D7D102 /* PltLeaks.cpp */,
+				DFBE7FC815F7D11D00D7D102 /* PltLeaks.h */,
+				DFBE7FC915F7D11D00D7D102 /* PltMetadataHandler.cpp */,
+				DFBE7FCA15F7D11D00D7D102 /* PltMetadataHandler.h */,
+				DFBE7FCB15F7D11D00D7D102 /* PltRingBufferStream.cpp */,
+				DFBE7FCC15F7D11D00D7D102 /* PltRingBufferStream.h */,
+				DFBE7FCD15F7D11D00D7D102 /* PltStreamPump.cpp */,
+				DFBE7FCE15F7D11D00D7D102 /* PltStreamPump.h */,
+			);
+			path = Extras;
 			sourceTree = "<group>";
 		};
 		DFCA6AFD15224684000BFAAE /* httprequesthandler */ = {
@@ -5977,6 +6009,8 @@
 				F56C7CA9131EF8D8000AD0F6 /* CHANGELOG.txt */,
 				F56C7CAA131EF8D8000AD0F6 /* LICENSE.txt */,
 				F56C7CAB131EF8D8000AD0F6 /* README.txt */,
+				F56C7CAE131EF8D8000AD0F6 /* Platinum.h */,
+				F56C7CAF131EF8D8000AD0F6 /* PltVersion.h */,
 				F56C7CAC131EF8D8000AD0F6 /* SConstruct */,
 			);
 			path = Platinum;
@@ -5988,12 +6022,10 @@
 				F56C7D03131EF8D9000AD0F6 /* Apps */,
 				F56C7D0B131EF8D9000AD0F6 /* Core */,
 				F56C7D45131EF8D9000AD0F6 /* Devices */,
+				DFBE7F8E15F7D11D00D7D102 /* Extras */,
 				F56C7CB1131EF8D8000AD0F6 /* System */,
 				F56C7D6E131EF8D9000AD0F6 /* Tests */,
 				F56C7D76131EF8D9000AD0F6 /* Tools */,
-				F56C7CAE131EF8D8000AD0F6 /* Platinum.h */,
-				F56C7CB0131EF8D8000AD0F6 /* PltSvnVersion.h */,
-				F56C7CAF131EF8D8000AD0F6 /* PltVersion.h */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -6001,8 +6033,66 @@
 		F56C7CB1131EF8D8000AD0F6 /* System */ = {
 			isa = PBXGroup;
 			children = (
-				F56C7CB2131EF8D8000AD0F6 /* NptZip.cpp */,
-				F56C7CB3131EF8D8000AD0F6 /* NptZip.h */,
+				DFBE7FFE15F7D1B900D7D102 /* NptAppleAutoreleasePool.mm */,
+				F56C7CEC131EF8D9000AD0F6 /* NptArray.h */,
+				DFBE800015F7D1D100D7D102 /* NptAutoreleasePool.h */,
+				F56C7CED131EF8D9000AD0F6 /* NptBase64.cpp */,
+				F56C7CEE131EF8D9000AD0F6 /* NptBase64.h */,
+				F56C7D01131EF8D9000AD0F6 /* NptBsdNetwork.cpp */,
+				F56C7D02131EF8D9000AD0F6 /* NptBsdSockets.cpp */,
+				F56C7CEF131EF8D9000AD0F6 /* NptBufferedStreams.cpp */,
+				F56C7CF0131EF8D9000AD0F6 /* NptBufferedStreams.h */,
+				DFBE800115F7D1EE00D7D102 /* NptCocoaEnviroment.mm */,
+				F56C7CF1131EF8D9000AD0F6 /* NptCommon.cpp */,
+				F56C7CF2131EF8D9000AD0F6 /* NptCommon.h */,
+				F56C7CF3131EF8D9000AD0F6 /* NptConfig.h */,
+				F56C7CF4131EF8D9000AD0F6 /* NptConsole.cpp */,
+				F56C7CF5131EF8D9000AD0F6 /* NptConsole.h */,
+				F56C7CF6131EF8D9000AD0F6 /* NptConstants.h */,
+				F56C7CDA131EF8D8000AD0F6 /* NptDataBuffer.cpp */,
+				F56C7CDB131EF8D9000AD0F6 /* NptDataBuffer.h */,
+				F56C7CDC131EF8D9000AD0F6 /* NptDebug.cpp */,
+				F56C7CDD131EF8D9000AD0F6 /* NptDebug.h */,
+				F56C7CDE131EF8D9000AD0F6 /* NptDefs.h */,
+				F56C7CDF131EF8D9000AD0F6 /* NptDynamicCast.h */,
+				F56C7CE0131EF8D9000AD0F6 /* NptDynamicLibraries.cpp */,
+				F56C7CE1131EF8D9000AD0F6 /* NptDynamicLibraries.h */,
+				F56C7CE2131EF8D9000AD0F6 /* NptFile.cpp */,
+				F56C7CE3131EF8D9000AD0F6 /* NptFile.h */,
+				F56C7CE4131EF8D9000AD0F6 /* NptHttp.cpp */,
+				F56C7CE5131EF8D9000AD0F6 /* NptHttp.h */,
+				F56C7CE6131EF8D9000AD0F6 /* NptInterfaces.h */,
+				F56C7CE7131EF8D9000AD0F6 /* NptList.cpp */,
+				F56C7CE8131EF8D9000AD0F6 /* NptList.h */,
+				F56C7CE9131EF8D9000AD0F6 /* NptLogging.cpp */,
+				F56C7CEA131EF8D9000AD0F6 /* NptLogging.h */,
+				F56C7CEB131EF8D9000AD0F6 /* NptMap.h */,
+				F56C7CC8131EF8D8000AD0F6 /* NptMessaging.cpp */,
+				F56C7CC9131EF8D8000AD0F6 /* NptMessaging.h */,
+				F56C7CCA131EF8D8000AD0F6 /* NptNetwork.cpp */,
+				F56C7CCB131EF8D8000AD0F6 /* NptNetwork.h */,
+				F56C7CFA131EF8D9000AD0F6 /* NptPosixDynamicLibraries.cpp */,
+				F56C7CFC131EF8D9000AD0F6 /* NptPosixNetwork.cpp */,
+				F56C7CFD131EF8D9000AD0F6 /* NptPosixQueue.cpp */,
+				F56C7CFE131EF8D9000AD0F6 /* NptPosixSystem.cpp */,
+				F56C7CFF131EF8D9000AD0F6 /* NptPosixThreads.cpp */,
+				F56C7CCC131EF8D8000AD0F6 /* NptQueue.cpp */,
+				F56C7CCD131EF8D8000AD0F6 /* NptQueue.h */,
+				F56C7CCE131EF8D8000AD0F6 /* NptReferences.h */,
+				F56C7CCF131EF8D8000AD0F6 /* NptResults.cpp */,
+				F56C7CD0131EF8D8000AD0F6 /* NptResults.h */,
+				F56C7CD1131EF8D8000AD0F6 /* NptRingBuffer.cpp */,
+				F56C7CD2131EF8D8000AD0F6 /* NptRingBuffer.h */,
+				F56C7D00131EF8D9000AD0F6 /* NptSelectableMessageQueue.cpp */,
+				F56C7CD3131EF8D8000AD0F6 /* NptSelectableMessageQueue.h */,
+				F56C7CD4131EF8D8000AD0F6 /* NptSerialPort.h */,
+				F56C7CD5131EF8D8000AD0F6 /* NptSimpleMessageQueue.cpp */,
+				F56C7CD6131EF8D8000AD0F6 /* NptSimpleMessageQueue.h */,
+				F56C7CD7131EF8D8000AD0F6 /* NptSockets.cpp */,
+				F56C7CD8131EF8D8000AD0F6 /* NptSockets.h */,
+				F56C7CD9131EF8D8000AD0F6 /* NptStack.h */,
+				F56C7CF7131EF8D9000AD0F6 /* NptStdcDebug.cpp */,
+				F56C7CF8131EF8D9000AD0F6 /* NptStdcEnvironment.cpp */,
 				F56C7CB4131EF8D8000AD0F6 /* NptStreams.cpp */,
 				F56C7CB5131EF8D8000AD0F6 /* NptStreams.h */,
 				F56C7CB6131EF8D8000AD0F6 /* NptStrings.cpp */,
@@ -6023,65 +6113,8 @@
 				F56C7CC5131EF8D8000AD0F6 /* NptVersion.h */,
 				F56C7CC6131EF8D8000AD0F6 /* NptXml.cpp */,
 				F56C7CC7131EF8D8000AD0F6 /* NptXml.h */,
-				F56C7CC8131EF8D8000AD0F6 /* NptMessaging.cpp */,
-				F56C7CC9131EF8D8000AD0F6 /* NptMessaging.h */,
-				F56C7CCA131EF8D8000AD0F6 /* NptNetwork.cpp */,
-				F56C7CCB131EF8D8000AD0F6 /* NptNetwork.h */,
-				F56C7CCC131EF8D8000AD0F6 /* NptQueue.cpp */,
-				F56C7CCD131EF8D8000AD0F6 /* NptQueue.h */,
-				F56C7CCE131EF8D8000AD0F6 /* NptReferences.h */,
-				F56C7CCF131EF8D8000AD0F6 /* NptResults.cpp */,
-				F56C7CD0131EF8D8000AD0F6 /* NptResults.h */,
-				F56C7CD1131EF8D8000AD0F6 /* NptRingBuffer.cpp */,
-				F56C7CD2131EF8D8000AD0F6 /* NptRingBuffer.h */,
-				F56C7CD3131EF8D8000AD0F6 /* NptSelectableMessageQueue.h */,
-				F56C7CD4131EF8D8000AD0F6 /* NptSerialPort.h */,
-				F56C7CD5131EF8D8000AD0F6 /* NptSimpleMessageQueue.cpp */,
-				F56C7CD6131EF8D8000AD0F6 /* NptSimpleMessageQueue.h */,
-				F56C7CD7131EF8D8000AD0F6 /* NptSockets.cpp */,
-				F56C7CD8131EF8D8000AD0F6 /* NptSockets.h */,
-				F56C7CD9131EF8D8000AD0F6 /* NptStack.h */,
-				F56C7CDA131EF8D8000AD0F6 /* NptDataBuffer.cpp */,
-				F56C7CDB131EF8D9000AD0F6 /* NptDataBuffer.h */,
-				F56C7CDC131EF8D9000AD0F6 /* NptDebug.cpp */,
-				F56C7CDD131EF8D9000AD0F6 /* NptDebug.h */,
-				F56C7CDE131EF8D9000AD0F6 /* NptDefs.h */,
-				F56C7CDF131EF8D9000AD0F6 /* NptDynamicCast.h */,
-				F56C7CE0131EF8D9000AD0F6 /* NptDynamicLibraries.cpp */,
-				F56C7CE1131EF8D9000AD0F6 /* NptDynamicLibraries.h */,
-				F56C7CE2131EF8D9000AD0F6 /* NptFile.cpp */,
-				F56C7CE3131EF8D9000AD0F6 /* NptFile.h */,
-				F56C7CE4131EF8D9000AD0F6 /* NptHttp.cpp */,
-				F56C7CE5131EF8D9000AD0F6 /* NptHttp.h */,
-				F56C7CE6131EF8D9000AD0F6 /* NptInterfaces.h */,
-				F56C7CE7131EF8D9000AD0F6 /* NptList.cpp */,
-				F56C7CE8131EF8D9000AD0F6 /* NptList.h */,
-				F56C7CE9131EF8D9000AD0F6 /* NptLogging.cpp */,
-				F56C7CEA131EF8D9000AD0F6 /* NptLogging.h */,
-				F56C7CEB131EF8D9000AD0F6 /* NptMap.h */,
-				F56C7CEC131EF8D9000AD0F6 /* NptArray.h */,
-				F56C7CED131EF8D9000AD0F6 /* NptBase64.cpp */,
-				F56C7CEE131EF8D9000AD0F6 /* NptBase64.h */,
-				F56C7CEF131EF8D9000AD0F6 /* NptBufferedStreams.cpp */,
-				F56C7CF0131EF8D9000AD0F6 /* NptBufferedStreams.h */,
-				F56C7CF1131EF8D9000AD0F6 /* NptCommon.cpp */,
-				F56C7CF2131EF8D9000AD0F6 /* NptCommon.h */,
-				F56C7CF3131EF8D9000AD0F6 /* NptConfig.h */,
-				F56C7CF4131EF8D9000AD0F6 /* NptConsole.cpp */,
-				F56C7CF5131EF8D9000AD0F6 /* NptConsole.h */,
-				F56C7CF6131EF8D9000AD0F6 /* NptConstants.h */,
-				F56C7CF7131EF8D9000AD0F6 /* NptStdcDebug.cpp */,
-				F56C7CF8131EF8D9000AD0F6 /* NptStdcEnvironment.cpp */,
-				F56C7CF9131EF8D9000AD0F6 /* NptStdCTime.cpp */,
-				F56C7CFA131EF8D9000AD0F6 /* NptPosixDynamicLibraries.cpp */,
-				F56C7CFB131EF8D9000AD0F6 /* NptPosixFile.cpp */,
-				F56C7CFC131EF8D9000AD0F6 /* NptPosixNetwork.cpp */,
-				F56C7CFD131EF8D9000AD0F6 /* NptPosixQueue.cpp */,
-				F56C7CFE131EF8D9000AD0F6 /* NptPosixSystem.cpp */,
-				F56C7CFF131EF8D9000AD0F6 /* NptPosixThreads.cpp */,
-				F56C7D00131EF8D9000AD0F6 /* NptSelectableMessageQueue.cpp */,
-				F56C7D01131EF8D9000AD0F6 /* NptBsdNetwork.cpp */,
-				F56C7D02131EF8D9000AD0F6 /* NptBsdSockets.cpp */,
+				F56C7CB2131EF8D8000AD0F6 /* NptZip.cpp */,
+				F56C7CB3131EF8D8000AD0F6 /* NptZip.h */,
 			);
 			name = System;
 			sourceTree = "<group>";
@@ -6119,15 +6152,12 @@
 			children = (
 				F56C7D0C131EF8D9000AD0F6 /* Neptune.cpp */,
 				F56C7D0D131EF8D9000AD0F6 /* Neptune.h */,
-				F56C7D0E131EF8D9000AD0F6 /* PltTime.h */,
-				F56C7D0F131EF8D9000AD0F6 /* PltTime.cpp */,
-				F56C7D10131EF8D9000AD0F6 /* PltConstants.cpp */,
-				F56C7D11131EF8D9000AD0F6 /* PltConstants.h */,
-				F56C7D12131EF8D9000AD0F6 /* PltIconsData.cpp */,
 				F56C7D13131EF8D9000AD0F6 /* PltAction.cpp */,
 				F56C7D14131EF8D9000AD0F6 /* PltAction.h */,
 				F56C7D15131EF8D9000AD0F6 /* PltArgument.cpp */,
 				F56C7D16131EF8D9000AD0F6 /* PltArgument.h */,
+				F56C7D10131EF8D9000AD0F6 /* PltConstants.cpp */,
+				F56C7D11131EF8D9000AD0F6 /* PltConstants.h */,
 				F56C7D17131EF8D9000AD0F6 /* PltCtrlPoint.cpp */,
 				F56C7D18131EF8D9000AD0F6 /* PltCtrlPoint.h */,
 				F56C7D19131EF8D9000AD0F6 /* PltCtrlPointTask.cpp */,
@@ -6138,8 +6168,6 @@
 				F56C7D1E131EF8D9000AD0F6 /* PltDeviceData.h */,
 				F56C7D1F131EF8D9000AD0F6 /* PltDeviceHost.cpp */,
 				F56C7D20131EF8D9000AD0F6 /* PltDeviceHost.h */,
-				F56C7D21131EF8D9000AD0F6 /* PltDownloader.cpp */,
-				F56C7D22131EF8D9000AD0F6 /* PltDownloader.h */,
 				F56C7D23131EF8D9000AD0F6 /* PltEvent.cpp */,
 				F56C7D24131EF8D9000AD0F6 /* PltEvent.h */,
 				F56C7D25131EF8D9000AD0F6 /* PltHttp.cpp */,
@@ -6148,32 +6176,26 @@
 				F56C7D28131EF8D9000AD0F6 /* PltHttpClientTask.h */,
 				F56C7D29131EF8D9000AD0F6 /* PltHttpServer.cpp */,
 				F56C7D2A131EF8D9000AD0F6 /* PltHttpServer.h */,
-				F56C7D2B131EF8D9000AD0F6 /* PltHttpServerListener.h */,
 				F56C7D2C131EF8D9000AD0F6 /* PltHttpServerTask.cpp */,
 				F56C7D2D131EF8D9000AD0F6 /* PltHttpServerTask.h */,
-				F56C7D2E131EF8D9000AD0F6 /* PltLeaks.cpp */,
-				F56C7D2F131EF8D9000AD0F6 /* PltLeaks.h */,
-				F56C7D30131EF8D9000AD0F6 /* PltMetadataHandler.cpp */,
-				F56C7D31131EF8D9000AD0F6 /* PltMetadataHandler.h */,
-				F56C7D32131EF8D9000AD0F6 /* PltRingBufferStream.cpp */,
-				F56C7D33131EF8D9000AD0F6 /* PltRingBufferStream.h */,
+				F56C7D12131EF8D9000AD0F6 /* PltIconsData.cpp */,
+				DFBE7FF815F7D1A100D7D102 /* PltMimeType.cpp */,
+				DFBE7FF915F7D1A100D7D102 /* PltMimeType.h */,
+				DFBE7FFA15F7D1A100D7D102 /* PltProtocolInfo.cpp */,
+				DFBE7FFB15F7D1A100D7D102 /* PltProtocolInfo.h */,
 				F56C7D34131EF8D9000AD0F6 /* PltService.cpp */,
 				F56C7D35131EF8D9000AD0F6 /* PltService.h */,
 				F56C7D36131EF8D9000AD0F6 /* PltSsdp.cpp */,
 				F56C7D37131EF8D9000AD0F6 /* PltSsdp.h */,
-				F56C7D38131EF8D9000AD0F6 /* PltSsdpListener.h */,
 				F56C7D39131EF8D9000AD0F6 /* PltStateVariable.cpp */,
 				F56C7D3A131EF8D9000AD0F6 /* PltStateVariable.h */,
-				F56C7D3B131EF8D9000AD0F6 /* PltStreamPump.cpp */,
-				F56C7D3C131EF8D9000AD0F6 /* PltStreamPump.h */,
 				F56C7D3D131EF8D9000AD0F6 /* PltTaskManager.cpp */,
 				F56C7D3E131EF8D9000AD0F6 /* PltTaskManager.h */,
 				F56C7D3F131EF8D9000AD0F6 /* PltThreadTask.cpp */,
 				F56C7D40131EF8D9000AD0F6 /* PltThreadTask.h */,
 				F56C7D41131EF8D9000AD0F6 /* PltUPnP.cpp */,
 				F56C7D42131EF8D9000AD0F6 /* PltUPnP.h */,
-				F56C7D43131EF8D9000AD0F6 /* PltUPnPHelper.h */,
-				F56C7D44131EF8D9000AD0F6 /* PltXmlHelper.h */,
+				DFBE800C15F7D2B000D7D102 /* PltUtilities.h */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -6191,10 +6213,12 @@
 		F56C7D46131EF8D9000AD0F6 /* MediaConnect */ = {
 			isa = PBXGroup;
 			children = (
-				F56C7D47131EF8D9000AD0F6 /* X_MS_MediaReceiverRegistrarSCPD.xml */,
-				F56C7D48131EF8D9000AD0F6 /* X_MS_MediaReceiverRegistrarSCPD.cpp */,
 				F56C7D49131EF8D9000AD0F6 /* PltMediaConnect.cpp */,
 				F56C7D4A131EF8D9000AD0F6 /* PltMediaConnect.h */,
+				DFBE7F7215F7CF7500D7D102 /* PltXbox360.cpp */,
+				DFBE7F7315F7CF7500D7D102 /* PltXbox360.h */,
+				F56C7D48131EF8D9000AD0F6 /* X_MS_MediaReceiverRegistrarSCPD.cpp */,
+				F56C7D47131EF8D9000AD0F6 /* X_MS_MediaReceiverRegistrarSCPD.xml */,
 			);
 			name = MediaConnect;
 			sourceTree = "<group>";
@@ -6236,8 +6260,6 @@
 				F56C7D65131EF8D9000AD0F6 /* PltMediaCache.h */,
 				F56C7D66131EF8D9000AD0F6 /* PltMediaItem.cpp */,
 				F56C7D67131EF8D9000AD0F6 /* PltMediaItem.h */,
-				F56C7D68131EF8D9000AD0F6 /* PltMediaPlaylist.cpp */,
-				F56C7D69131EF8D9000AD0F6 /* PltMediaPlaylist.h */,
 				F56C7D6A131EF8D9000AD0F6 /* PltMediaServer.cpp */,
 				F56C7D6B131EF8D9000AD0F6 /* PltMediaServer.h */,
 				F56C7D6C131EF8D9000AD0F6 /* PltSyncMediaBrowser.cpp */,
@@ -7348,9 +7370,7 @@
 				F56C7D9E131EF8D9000AD0F6 /* NptConsole.cpp in Sources */,
 				F56C7D9F131EF8D9000AD0F6 /* NptStdcDebug.cpp in Sources */,
 				F56C7DA0131EF8D9000AD0F6 /* NptStdcEnvironment.cpp in Sources */,
-				F56C7DA1131EF8D9000AD0F6 /* NptStdCTime.cpp in Sources */,
 				F56C7DA2131EF8D9000AD0F6 /* NptPosixDynamicLibraries.cpp in Sources */,
-				F56C7DA3131EF8D9000AD0F6 /* NptPosixFile.cpp in Sources */,
 				F56C7DA4131EF8D9000AD0F6 /* NptPosixNetwork.cpp in Sources */,
 				F56C7DA5131EF8D9000AD0F6 /* NptPosixQueue.cpp in Sources */,
 				F56C7DA6131EF8D9000AD0F6 /* NptPosixSystem.cpp in Sources */,
@@ -7361,7 +7381,6 @@
 				F56C7DAB131EF8D9000AD0F6 /* MediaCrawler.cpp in Sources */,
 				F56C7DAC131EF8D9000AD0F6 /* PltMicroMediaController.cpp in Sources */,
 				F56C7DAD131EF8D9000AD0F6 /* Neptune.cpp in Sources */,
-				F56C7DAE131EF8D9000AD0F6 /* PltTime.cpp in Sources */,
 				F56C7DAF131EF8D9000AD0F6 /* PltConstants.cpp in Sources */,
 				F56C7DB0131EF8D9000AD0F6 /* PltIconsData.cpp in Sources */,
 				F56C7DB1131EF8D9000AD0F6 /* PltAction.cpp in Sources */,
@@ -7371,19 +7390,14 @@
 				F56C7DB5131EF8D9000AD0F6 /* PltDatagramStream.cpp in Sources */,
 				F56C7DB6131EF8D9000AD0F6 /* PltDeviceData.cpp in Sources */,
 				F56C7DB7131EF8D9000AD0F6 /* PltDeviceHost.cpp in Sources */,
-				F56C7DB8131EF8D9000AD0F6 /* PltDownloader.cpp in Sources */,
 				F56C7DB9131EF8D9000AD0F6 /* PltEvent.cpp in Sources */,
 				F56C7DBA131EF8D9000AD0F6 /* PltHttp.cpp in Sources */,
 				F56C7DBB131EF8D9000AD0F6 /* PltHttpClientTask.cpp in Sources */,
 				F56C7DBC131EF8D9000AD0F6 /* PltHttpServer.cpp in Sources */,
 				F56C7DBD131EF8D9000AD0F6 /* PltHttpServerTask.cpp in Sources */,
-				F56C7DBE131EF8D9000AD0F6 /* PltLeaks.cpp in Sources */,
-				F56C7DBF131EF8D9000AD0F6 /* PltMetadataHandler.cpp in Sources */,
-				F56C7DC0131EF8D9000AD0F6 /* PltRingBufferStream.cpp in Sources */,
 				F56C7DC1131EF8D9000AD0F6 /* PltService.cpp in Sources */,
 				F56C7DC2131EF8D9000AD0F6 /* PltSsdp.cpp in Sources */,
 				F56C7DC3131EF8D9000AD0F6 /* PltStateVariable.cpp in Sources */,
-				F56C7DC4131EF8D9000AD0F6 /* PltStreamPump.cpp in Sources */,
 				F56C7DC5131EF8D9000AD0F6 /* PltTaskManager.cpp in Sources */,
 				F56C7DC6131EF8D9000AD0F6 /* PltThreadTask.cpp in Sources */,
 				F56C7DC7131EF8D9000AD0F6 /* PltUPnP.cpp in Sources */,
@@ -7402,7 +7416,6 @@
 				F56C7DDC131EF8D9000AD0F6 /* PltMediaBrowser.cpp in Sources */,
 				F56C7DDD131EF8D9000AD0F6 /* PltMediaCache.cpp in Sources */,
 				F56C7DDE131EF8D9000AD0F6 /* PltMediaItem.cpp in Sources */,
-				F56C7DDF131EF8D9000AD0F6 /* PltMediaPlaylist.cpp in Sources */,
 				F56C7DE0131EF8D9000AD0F6 /* PltMediaServer.cpp in Sources */,
 				F56C7DE1131EF8D9000AD0F6 /* PltSyncMediaBrowser.cpp in Sources */,
 				F56C7DE2131EF8D9000AD0F6 /* PltLightSample.cpp in Sources */,
@@ -7609,6 +7622,19 @@
 				36A9468815CF214300727135 /* VideoDbUrl.cpp in Sources */,
 				36A9468B15CF215300727135 /* UrlOptions.cpp in Sources */,
 				36A9468E15CF217400727135 /* MusicDbUrl.cpp in Sources */,
+				DFBE7F7415F7CF7500D7D102 /* PltXbox360.cpp in Sources */,
+				DFBE7FE415F7D11D00D7D102 /* PltDownloader.cpp in Sources */,
+				DFBE7FE515F7D11D00D7D102 /* PltFrameBuffer.cpp in Sources */,
+				DFBE7FE615F7D11D00D7D102 /* PltFrameServer.cpp in Sources */,
+				DFBE7FE715F7D11D00D7D102 /* PltFrameStream.cpp in Sources */,
+				DFBE7FE815F7D11D00D7D102 /* PltLeaks.cpp in Sources */,
+				DFBE7FE915F7D11D00D7D102 /* PltMetadataHandler.cpp in Sources */,
+				DFBE7FEA15F7D11D00D7D102 /* PltRingBufferStream.cpp in Sources */,
+				DFBE7FEB15F7D11D00D7D102 /* PltStreamPump.cpp in Sources */,
+				DFBE7FFC15F7D1A100D7D102 /* PltMimeType.cpp in Sources */,
+				DFBE7FFD15F7D1A100D7D102 /* PltProtocolInfo.cpp in Sources */,
+				DFBE7FFF15F7D1B900D7D102 /* NptAppleAutoreleasePool.mm in Sources */,
+				DFBE800215F7D1EE00D7D102 /* NptCocoaEnviroment.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
