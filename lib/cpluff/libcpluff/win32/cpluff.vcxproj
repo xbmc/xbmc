@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug Testsuite|Win32">
-      <Configuration>Debug Testsuite</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -29,10 +25,6 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -44,24 +36,16 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\..\project\VS2010Express\XBMC for Windows.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\..\project\VS2010Express\XBMC for Windows.props" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Build</CustomBuildAfterTargets>
-    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Build</CustomBuildAfterTargets>
     <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -77,36 +61,6 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>libexpat.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
-      <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
-    <CustomBuildStep>
-      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\$(TargetFileName)"</Command>
-      <Message>Copy Output</Message>
-      <Outputs>$(SolutionDir)..\..\system\$(TargetFileName)</Outputs>
-      <Inputs>$(TargetPath)</Inputs>
-    </CustomBuildStep>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;CP_C_API=CP_EXPORT;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libexpat.lib;%(AdditionalDependencies)</AdditionalDependencies>
