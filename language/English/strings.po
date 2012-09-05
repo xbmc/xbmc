@@ -7101,7 +7101,7 @@ msgid "add-on for the backend to be able to use PVR."
 msgstr ""
 
 msgctxt "#19274"
-msgid "Please visit xbmc.org/PVR to learn more."
+msgid "Please visit xbmc.org/pvr to learn more."
 msgstr ""
 
 #empty strings from id 19275 to 19499
