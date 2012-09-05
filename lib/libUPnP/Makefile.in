@@ -60,7 +60,6 @@ SRCS= Platinum/Source/Core/PltAction.cpp \
       Neptune/Source/System/Bsd/NptBsdNetwork.cpp \
       Neptune/Source/System/Posix/NptPosixSystem.cpp \
       Neptune/Source/System/Posix/NptSelectableMessageQueue.cpp \
-      Neptune/Source/System/Posix/NptPosixEnvironment.cpp \
       Neptune/Source/System/Posix/NptPosixQueue.cpp \
       Neptune/Source/System/Posix/NptPosixThreads.cpp \
       Neptune/Source/System/Posix/NptPosixTime.cpp \
@@ -78,8 +77,12 @@ ifeq ($(findstring osx,$(ARCH)),osx)
 
 .SUFFIXES : .m .mm
 
-SRCS+= Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm \
-       Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm \
+SRCS+= Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm
+SRCS+= Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm
+
+else
+
+SRCS+= Neptune/Source/System/Posix/NptPosixEnvironment.cpp
 
 endif
 
