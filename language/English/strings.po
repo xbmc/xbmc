@@ -6985,11 +6985,11 @@ msgid "Backend idle time"
 msgstr ""
 
 msgctxt "#19245"
-msgid "Set wakup command (cmd [timestamp])"
+msgid "Set wakeup command (cmd [timestamp])"
 msgstr ""
 
 msgctxt "#19246"
-msgid "Wakup before recording"
+msgid "Wakeup before recording"
 msgstr ""
 
 msgctxt "#19247"
