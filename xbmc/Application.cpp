@@ -1304,18 +1304,18 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
 
     /* Load PVR related Windows and Dialogs */
-    g_windowManager.Add(new CGUIWindowPVR);                    // window id = 600
-    g_windowManager.Add(new CGUIDialogPVRGuideInfo);           // window id = 601
-    g_windowManager.Add(new CGUIDialogPVRRecordingInfo);       // window id = 602
-    g_windowManager.Add(new CGUIDialogPVRTimerSettings);       // window id = 603
-    g_windowManager.Add(new CGUIDialogPVRGroupManager);        // window id = 604
-    g_windowManager.Add(new CGUIDialogPVRChannelManager);      // window id = 605
-    g_windowManager.Add(new CGUIDialogPVRGuideSearch);         // window id = 606
-    g_windowManager.Add(new CGUIDialogPVRChannelsOSD);         // window id = 609
-    g_windowManager.Add(new CGUIDialogPVRGuideOSD);            // window id = 610
-    g_windowManager.Add(new CGUIDialogPVRDirectorOSD);         // window id = 611
-    g_windowManager.Add(new CGUIDialogPVRCutterOSD);           // window id = 612
-    g_windowManager.Add(new CGUIDialogTeletext);               // window id = 613
+    g_windowManager.Add(new CGUIDialogTeletext);               // window id = 600
+    g_windowManager.Add(new CGUIWindowPVR);                    // window id = 601
+    g_windowManager.Add(new CGUIDialogPVRGuideInfo);           // window id = 602
+    g_windowManager.Add(new CGUIDialogPVRRecordingInfo);       // window id = 603
+    g_windowManager.Add(new CGUIDialogPVRTimerSettings);       // window id = 604
+    g_windowManager.Add(new CGUIDialogPVRGroupManager);        // window id = 605
+    g_windowManager.Add(new CGUIDialogPVRChannelManager);      // window id = 606
+    g_windowManager.Add(new CGUIDialogPVRGuideSearch);         // window id = 607
+    g_windowManager.Add(new CGUIDialogPVRChannelsOSD);         // window id = 610
+    g_windowManager.Add(new CGUIDialogPVRGuideOSD);            // window id = 611
+    g_windowManager.Add(new CGUIDialogPVRDirectorOSD);         // window id = 612
+    g_windowManager.Add(new CGUIDialogPVRCutterOSD);           // window id = 613
 
     g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
     g_windowManager.Add(new CGUIDialogMusicInfo);          // window id = 2001
