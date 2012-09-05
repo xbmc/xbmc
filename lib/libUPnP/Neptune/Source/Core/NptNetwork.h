@@ -80,6 +80,7 @@ public:
     // constructors and destructor
     NPT_IpAddress();
     NPT_IpAddress(unsigned long address);
+    NPT_IpAddress(unsigned char a, unsigned char b, unsigned char c, unsigned char d);
 
     // methods
     NPT_Result       ResolveName(const char* name, 
@@ -90,7 +91,7 @@ public:
     const unsigned char* AsBytes() const;
     unsigned long    AsLong() const;
     NPT_String       ToString() const;
-
+    
     // operators
     bool             operator==(const NPT_IpAddress& other) const;
     
@@ -165,10 +166,10 @@ public:
         return m_NetMask;
     }
     
-    bool IsAddressInNetwork(const NPT_IpAddress& adress) {
-        if (m_PrimaryAddress.AsLong() == adress.AsLong()) return true;
+    bool IsAddressInNetwork(const NPT_IpAddress& address) {
+        if (m_PrimaryAddress.AsLong() == address.AsLong()) return true;
         if (m_NetMask.AsLong() == 0) return false;
-        return (m_PrimaryAddress.AsLong() & m_NetMask.AsLong()) == (adress.AsLong() & m_NetMask.AsLong());
+        return (m_PrimaryAddress.AsLong() & m_NetMask.AsLong()) == (address.AsLong() & m_NetMask.AsLong());
     }
 
 private:
@@ -192,6 +193,8 @@ public:
     NPT_NetworkInterface(const char*           name,
                          const NPT_MacAddress& mac,
                          NPT_Flags             flags);
+    NPT_NetworkInterface(const char*           name,
+                         NPT_Flags             flags);
    ~NPT_NetworkInterface() {}
 
     // methods
@@ -201,6 +204,11 @@ public:
     }
     const NPT_MacAddress& GetMacAddress() const {
         return m_MacAddress;
+    }
+    void SetMacAddress(NPT_MacAddress::Type type,
+                       const unsigned char* addr, 
+                       unsigned int         length) {
+        m_MacAddress.SetAddress(type, addr, length);
     }
     NPT_Flags GetFlags() const { return m_Flags; }
     const NPT_List<NPT_NetworkInterfaceAddress>& GetAddresses() const {
@@ -224,5 +232,16 @@ private:
     NPT_List<NPT_NetworkInterfaceAddress> m_Addresses;
 };
 
+/*----------------------------------------------------------------------
+|   NPT_NetworkNameResolver
++---------------------------------------------------------------------*/
+class NPT_NetworkNameResolver
+{
+public:
+    // class methods
+    static NPT_Result Resolve(const char*              name, 
+                              NPT_List<NPT_IpAddress>& addresses,
+                              NPT_Timeout              timeout = NPT_TIMEOUT_INFINITE);
+};
 
 #endif // _NPT_NETWORK_H_

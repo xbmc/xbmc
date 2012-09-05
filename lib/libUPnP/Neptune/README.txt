@@ -3,7 +3,7 @@ Neptune C++ Runtime System
 
 This software is provided under the following license:
 
-* Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+* Copyright (c) 2002-2010, Axiomatic Systems, LLC.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -13,14 +13,18 @@
 			buildPhases = (
 			);
 			dependencies = (
+				CA261074127EB817008E2D29 /* PBXTargetDependency */,
+				CA9DDC5110AE2820008B871E /* PBXTargetDependency */,
+				CA9DDC6E10AE3DFD008B871E /* PBXTargetDependency */,
+				CA9958A81046FFF60073F34A /* PBXTargetDependency */,
 				CA197D270E1AE4540018E87C /* PBXTargetDependency */,
 				CAE417710E0DC10600A530D1 /* PBXTargetDependency */,
+				CA8066511187BD20009D099D /* PBXTargetDependency */,
 				CAE417730E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE417750E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE417770E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE417790E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE4177B0E0DC10600A530D1 /* PBXTargetDependency */,
-				CA30B77A0F0DCEFE0085B46E /* PBXTargetDependency */,
 				CAE4177D0E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE4177F0E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE417810E0DC10600A530D1 /* PBXTargetDependency */,
@@ -32,6 +36,11 @@
 				CAE4178D0E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE4178F0E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE417910E0DC10600A530D1 /* PBXTargetDependency */,
+				CAE063D71241479100E5AFC4 /* PBXTargetDependency */,
+				CAE063D91241479800E5AFC4 /* PBXTargetDependency */,
+				CAE063DB124147A100E5AFC4 /* PBXTargetDependency */,
+				CA30B77A0F0DCEFE0085B46E /* PBXTargetDependency */,
+				CAE063DD124147B300E5AFC4 /* PBXTargetDependency */,
 			);
 			name = Tests;
 			productName = Tests;
@@ -60,6 +69,8 @@
 				CAE417E60E0DC1FD00A530D1 /* PBXTargetDependency */,
 				CAE417E80E0DC1FD00A530D1 /* PBXTargetDependency */,
 				CAE417EA0E0DC1FD00A530D1 /* PBXTargetDependency */,
+				CA451F731252BE430045CF69 /* PBXTargetDependency */,
+				CAAAA08412FF827D00ABC84B /* PBXTargetDependency */,
 			);
 			name = Apps;
 			productName = Apps;
@@ -67,6 +78,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		CA057AB011BC27F200C90519 /* NptTlsDefaultTrustAnchorsBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA057AAE11BC27F200C90519 /* NptTlsDefaultTrustAnchorsBase.cpp */; };
+		CA057AB111BC27F200C90519 /* NptTlsDefaultTrustAnchorsExtended.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA057AAF11BC27F200C90519 /* NptTlsDefaultTrustAnchorsExtended.cpp */; };
 		CA197D250E1AE4400018E87C /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA197D280E1AE4790018E87C /* QueueTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA197D1A0E1AE4200018E87C /* QueueTest1.cpp */; };
 		CA1A5EAF0EC0154D00A9040C /* x509.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E850EC0145900A9040C /* x509.c */; };
@@ -79,7 +92,6 @@
 		CA1A5EB60EC0155200A9040C /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E720EC0145900A9040C /* sha1.c */; };
 		CA1A5EB70EC0155300A9040C /* rsa.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E710EC0145900A9040C /* rsa.c */; };
 		CA1A5EB80EC0155300A9040C /* rc4.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E700EC0145900A9040C /* rc4.c */; };
-		CA1A5EB90EC0155400A9040C /* private_key.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E7E0EC0145900A9040C /* private_key.h */; };
 		CA1A5EBA0EC0155400A9040C /* p12.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E7D0EC0145900A9040C /* p12.c */; };
 		CA1A5EBE0EC0155700A9040C /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6F0EC0145900A9040C /* md5.c */; };
 		CA1A5EBF0EC0155800A9040C /* md2.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6E0EC0145900A9040C /* md2.c */; };
@@ -89,42 +101,42 @@
 		CA1A5EC30EC0155A00A9040C /* crypto_misc.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E770EC0145900A9040C /* crypto_misc.h */; };
 		CA1A5EC40EC0155B00A9040C /* crypto_misc.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6C0EC0145900A9040C /* crypto_misc.c */; };
 		CA1A5EC50EC0155C00A9040C /* crypto.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E6B0EC0145900A9040C /* crypto.h */; };
-		CA1A5EC60EC0155D00A9040C /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E640EC0145900A9040C /* config.h */; };
 		CA1A5EC70EC0155E00A9040C /* cert.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E760EC0145900A9040C /* cert.h */; };
 		CA1A5EC80EC0155F00A9040C /* bigint_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E6A0EC0145900A9040C /* bigint_impl.h */; };
 		CA1A5EC90EC0155F00A9040C /* bigint.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E690EC0145900A9040C /* bigint.h */; };
 		CA1A5ECA0EC0156000A9040C /* bigint.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E680EC0145900A9040C /* bigint.c */; };
 		CA1A5ECB0EC0156100A9040C /* asn1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E750EC0145900A9040C /* asn1.c */; };
 		CA1A5ECC0EC0156100A9040C /* aes.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E670EC0145900A9040C /* aes.c */; };
-		CA1A5F090EC01A0600A9040C /* asn1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5EFA0EC01A0600A9040C /* asn1.c */; };
-		CA1A5F0A0EC01A0600A9040C /* cert.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5EFB0EC01A0600A9040C /* cert.h */; };
-		CA1A5F0B0EC01A0600A9040C /* crypto_misc.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5EFC0EC01A0600A9040C /* crypto_misc.h */; };
-		CA1A5F0C0EC01A0600A9040C /* gen_cert.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5EFD0EC01A0600A9040C /* gen_cert.c */; };
-		CA1A5F0D0EC01A0600A9040C /* loader.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5EFE0EC01A0600A9040C /* loader.c */; };
-		CA1A5F0E0EC01A0600A9040C /* os_port.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5EFF0EC01A0600A9040C /* os_port.h */; };
-		CA1A5F0F0EC01A0600A9040C /* p12.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5F000EC01A0600A9040C /* p12.c */; };
-		CA1A5F100EC01A0600A9040C /* private_key.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5F010EC01A0600A9040C /* private_key.h */; };
-		CA1A5F110EC01A0600A9040C /* ssl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5F020EC01A0600A9040C /* ssl.h */; };
-		CA1A5F120EC01A0600A9040C /* tls1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5F030EC01A0600A9040C /* tls1.c */; };
-		CA1A5F130EC01A0600A9040C /* tls1.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5F040EC01A0600A9040C /* tls1.h */; };
-		CA1A5F140EC01A0600A9040C /* tls1_clnt.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5F050EC01A0600A9040C /* tls1_clnt.c */; };
-		CA1A5F150EC01A0600A9040C /* tls1_svr.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5F060EC01A0600A9040C /* tls1_svr.c */; };
-		CA1A5F160EC01A0600A9040C /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5F070EC01A0600A9040C /* version.h */; };
-		CA1A5F170EC01A0600A9040C /* x509.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5F080EC01A0600A9040C /* x509.c */; };
 		CA1D056F0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA1D056C0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp */; };
 		CA1D05700E68E29C00E3DEE8 /* NptDynamicLibraries.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056D0E68E29C00E3DEE8 /* NptDynamicLibraries.h */; };
 		CA1D05710E68E29C00E3DEE8 /* NptSerialPort.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056E0E68E29C00E3DEE8 /* NptSerialPort.h */; };
 		CA1D05730E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA1D05720E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp */; };
+		CA289B6B10E16150001BC817 /* NptCocoaMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA289B6810E16150001BC817 /* NptCocoaMessageQueue.h */; };
+		CA289B6C10E16150001BC817 /* NptCocoaMessageQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA289B6910E16150001BC817 /* NptCocoaMessageQueue.mm */; };
+		CA289DBD10E31618001BC817 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA289DC010E31637001BC817 /* SocketsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA289DBF10E31637001BC817 /* SocketsTest1.cpp */; };
 		CA2B1E210FC22DBA00B9E79F /* NptResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA096EF10ED0DBCE00A5103D /* NptResults.cpp */; };
 		CA2F54340EC1165700AEBC12 /* TlsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA2F54330EC1165700AEBC12 /* TlsTest1.cpp */; };
 		CA2F54390EC1203A00AEBC12 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA2F543A0EC1203A00AEBC12 /* libaxTLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA1A5EA90EC0152A00A9040C /* libaxTLS.a */; };
 		CA30B7720F0DCEA70085B46E /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA40905C10AA10A800ED81C5 /* NptPosixTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA40905B10AA10A800ED81C5 /* NptPosixTime.cpp */; };
+		CA4090CA10AA259600ED81C5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA4090CE10AA25BE00ED81C5 /* TimeTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA4090CD10AA25BE00ED81C5 /* TimeTest1.cpp */; };
 		CA5041AF0C5AE2180060E6FE /* NptNullSerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA5041AA0C5AE2180060E6FE /* NptNullSerialPort.cpp */; };
 		CA550D500D20A37E00B22D72 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA550D580D20A3AC00B22D72 /* HttpServerTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979DD0CF1648300C01909 /* HttpServerTest1.cpp */; };
 		CA7848450F3B6E9B009E84AD /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA7848480F3B6EB8009E84AD /* MiniHttpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA7848470F3B6EB8009E84AD /* MiniHttpServer.cpp */; };
+		CA790DAF1233BDF100875081 /* libaxTLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA1A5EA90EC0152A00A9040C /* libaxTLS.a */; };
+		CA790DB01233BDF100875081 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA790DB31233BE1000875081 /* NetGet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA790DA51233BDAA00875081 /* NetGet.cpp */; };
+		CA80664F1187BD14009D099D /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA8066521187BD42009D099D /* DigestsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA8066451187BCF3009D099D /* DigestsTest1.cpp */; };
+		CA806989118A602B009D099D /* NptCrypto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA806987118A602B009D099D /* NptCrypto.cpp */; };
+		CA80698A118A602B009D099D /* NptCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = CA806988118A602B009D099D /* NptCrypto.h */; };
+		CA8069DF118B578C009D099D /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA8069E5118B57BE009D099D /* CryptoTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA8069E4118B57BE009D099D /* CryptoTest1.cpp */; };
 		CA84EC5E0C7E540900CC9622 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4A0C7E540900CC9622 /* adler32.c */; };
 		CA84EC5F0C7E540900CC9622 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4B0C7E540900CC9622 /* crc32.c */; };
 		CA84EC600C7E540900CC9622 /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC4C0C7E540900CC9622 /* crc32.h */; };
@@ -145,16 +157,25 @@
 		CA84EC700C7E540900CC9622 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC5C0C7E540900CC9622 /* zutil.c */; };
 		CA84EC710C7E540900CC9622 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5D0C7E540900CC9622 /* zutil.h */; };
 		CA84EC7B0C7E5A7000CC9622 /* NptZip.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC7A0C7E5A7000CC9622 /* NptZip.h */; };
-		CA8961850E7689AF00FD1BE1 /* NptCocoaMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */; };
-		CA8961860E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */; };
+		CA87F23F1148401E0082AAFC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = CA87F23E1148401E0082AAFC /* config.h */; };
 		CA926A500F8BEB50003CB74E /* NptDynamicCast.h in Headers */ = {isa = PBXBuildFile; fileRef = CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */; };
 		CA97E0250E2FDFDD0090CC9B /* StreamsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA97E01C0E2FDFA10090CC9B /* StreamsTest1.cpp */; };
 		CA97E0320E2FEA540090CC9B /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA9958A61046FFD20073F34A /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA9958AB1047001B0073F34A /* HttpClientTest2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA9958AA1047001B0073F34A /* HttpClientTest2.cpp */; };
+		CA9DDC6C10AE3DE8008B871E /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA9DDC7210AE3E52008B871E /* FileTest2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA9DDC7110AE3E52008B871E /* FileTest2.cpp */; };
 		CAA97A070CF164E000C01909 /* XmlTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979F80CF1648300C01909 /* XmlTest1.cpp */; };
 		CAA97A080CF164E300C01909 /* XmlTest1Data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979F90CF1648300C01909 /* XmlTest1Data.cpp */; };
 		CAA97A0C0CF164FC00C01909 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CAA97A170CF1654A00C01909 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CAA97A1D0CF1659200C01909 /* StringsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979ED0CF1648300C01909 /* StringsTest1.cpp */; };
+		CAAAA08212FF825800ABC84B /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CAAAA08512FF828A00ABC84B /* NetResolve.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAAAA07612FF823200ABC84B /* NetResolve.cpp */; };
+		CAC029DE139D84D10034427F /* LoggingTest2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAC029DD139D84D10034427F /* LoggingTest2.cpp */; };
+		CAC5048312FFB7EF00FEB1D8 /* NptBsdResolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAC5048212FFB7EF00FEB1D8 /* NptBsdResolver.cpp */; };
+		CAD78DD312A99DC500D7EBA7 /* NptHash.h in Headers */ = {isa = PBXBuildFile; fileRef = CAD78DD212A99DC500D7EBA7 /* NptHash.h */; };
+		CAD78E0412A9C42000D7EBA7 /* NptHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAD78E0312A9C42000D7EBA7 /* NptHash.cpp */; };
 		CAE416A20E0DBD7400A530D1 /* MiscTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979E90CF1648300C01909 /* MiscTest1.cpp */; };
 		CAE416A50E0DBD8800A530D1 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CAE416C00E0DBE0C00A530D1 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
@@ -192,6 +213,8 @@
 		CAE417D00E0DC1C600A530D1 /* NetConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAE417A70E0DC16300A530D1 /* NetConfig.cpp */; };
 		CAE417DC0E0DC1DF00A530D1 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CAE417DD0E0DC1EA00A530D1 /* NetPing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAE417AB0E0DC16300A530D1 /* NetPing.cpp */; };
+		CAEB8EC511864F0B00B4AF01 /* NptDigest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAEB8EC111864F0B00B4AF01 /* NptDigest.cpp */; };
+		CAEB8EC611864F0B00B4AF01 /* NptDigest.h in Headers */ = {isa = PBXBuildFile; fileRef = CAEB8EC211864F0B00B4AF01 /* NptDigest.h */; };
 		CAF03CB60C7E7F15002C470F /* NptZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF03CB50C7E7F15002C470F /* NptZip.cpp */; };
 		CAF03DB40C7F9243002C470F /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = CAF03DB30C7F9243002C470F /* compress.c */; };
 		CAF2EFB60E64881E00948C04 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF2EFB50E64881E00948C04 /* NptPosixFile.cpp */; };
@@ -200,6 +223,302 @@
 		CAF2EFDF0E64A2B700948C04 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CAFB23700EC760FE009C3459 /* NptTls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAFB236E0EC760FE009C3459 /* NptTls.cpp */; };
 		CAFB23710EC760FE009C3459 /* NptTls.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB236F0EC760FE009C3459 /* NptTls.h */; };
+		E412ABB114478A430078A367 /* libaxTLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA1A5EA90EC0152A00A9040C /* libaxTLS.a */; };
+		E445E4071449794000F221B3 /* libaxTLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E488DCDC14479D86005E84BD /* libaxTLS.a */; };
+		E445E5101449818000F221B3 /* NptCocoaConsole.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA289B6710E16150001BC817 /* NptCocoaConsole.mm */; };
+		E46E9574153F8C4500ED95D5 /* NptAppleAutoreleasePool.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46E9572153F8C2A00ED95D5 /* NptAppleAutoreleasePool.mm */; };
+		E46E9575153F8C4500ED95D5 /* NptAppleAutoreleasePool.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46E9572153F8C2A00ED95D5 /* NptAppleAutoreleasePool.mm */; };
+		E46E95B2153F91D000ED95D5 /* NptNullAutoreleasePool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46E95B0153F91C900ED95D5 /* NptNullAutoreleasePool.cpp */; };
+		E46E95C3153F9F8200ED95D5 /* NptCocoaEnviroment.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46E95C2153F9F7C00ED95D5 /* NptCocoaEnviroment.mm */; };
+		E46E95C4153F9F8300ED95D5 /* NptCocoaEnviroment.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46E95C2153F9F7C00ED95D5 /* NptCocoaEnviroment.mm */; };
+		E46E95C6153F9F9E00ED95D5 /* NptPosixEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46E95C5153F9F9B00ED95D5 /* NptPosixEnvironment.cpp */; };
+		E488DC3D14479D2E005E84BD /* Neptune.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B10B8EB27400C1E90D /* Neptune.h */; };
+		E488DC3E14479D2E005E84BD /* NptArray.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B20B8EB27400C1E90D /* NptArray.h */; };
+		E488DC3F14479D2E005E84BD /* NptBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B40B8EB27400C1E90D /* NptBase64.h */; };
+		E488DC4014479D2E005E84BD /* NptBufferedStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B60B8EB27400C1E90D /* NptBufferedStreams.h */; };
+		E488DC4114479D2E005E84BD /* NptCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B80B8EB27400C1E90D /* NptCommon.h */; };
+		E488DC4214479D2E005E84BD /* NptConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B90B8EB27400C1E90D /* NptConfig.h */; };
+		E488DC4314479D2E005E84BD /* NptConsole.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6BB0B8EB27400C1E90D /* NptConsole.h */; };
+		E488DC4414479D2E005E84BD /* NptConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6BC0B8EB27400C1E90D /* NptConstants.h */; };
+		E488DC4514479D2E005E84BD /* NptDataBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6BE0B8EB27400C1E90D /* NptDataBuffer.h */; };
+		E488DC4614479D2E005E84BD /* NptDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C00B8EB27400C1E90D /* NptDebug.h */; };
+		E488DC4714479D2E005E84BD /* NptDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C10B8EB27400C1E90D /* NptDefs.h */; };
+		E488DC4814479D2E005E84BD /* NptFile.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C30B8EB27400C1E90D /* NptFile.h */; };
+		E488DC4914479D2E005E84BD /* NptHttp.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C50B8EB27400C1E90D /* NptHttp.h */; };
+		E488DC4A14479D2E005E84BD /* NptInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C60B8EB27400C1E90D /* NptInterfaces.h */; };
+		E488DC4B14479D2E005E84BD /* NptList.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C80B8EB27400C1E90D /* NptList.h */; };
+		E488DC4C14479D2E005E84BD /* NptLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CA0B8EB27400C1E90D /* NptLogging.h */; };
+		E488DC4D14479D2E005E84BD /* NptMap.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CB0B8EB27400C1E90D /* NptMap.h */; };
+		E488DC4E14479D2E005E84BD /* NptMessaging.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CD0B8EB27400C1E90D /* NptMessaging.h */; };
+		E488DC4F14479D2E005E84BD /* NptNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CF0B8EB27400C1E90D /* NptNetwork.h */; };
+		E488DC5014479D2E005E84BD /* NptQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D10B8EB27400C1E90D /* NptQueue.h */; };
+		E488DC5114479D2E005E84BD /* NptReferences.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D20B8EB27400C1E90D /* NptReferences.h */; };
+		E488DC5214479D2E005E84BD /* NptResults.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D30B8EB27400C1E90D /* NptResults.h */; };
+		E488DC5314479D2E005E84BD /* NptRingBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D50B8EB27400C1E90D /* NptRingBuffer.h */; };
+		E488DC5414479D2E005E84BD /* NptSelectableMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D60B8EB27400C1E90D /* NptSelectableMessageQueue.h */; };
+		E488DC5514479D2E005E84BD /* NptSimpleMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D80B8EB27400C1E90D /* NptSimpleMessageQueue.h */; };
+		E488DC5614479D2E005E84BD /* NptSockets.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DA0B8EB27400C1E90D /* NptSockets.h */; };
+		E488DC5714479D2E005E84BD /* NptStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DB0B8EB27400C1E90D /* NptStack.h */; };
+		E488DC5814479D2E005E84BD /* NptStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DD0B8EB27400C1E90D /* NptStreams.h */; };
+		E488DC5914479D2E005E84BD /* NptStrings.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DF0B8EB27400C1E90D /* NptStrings.h */; };
+		E488DC5A14479D2E005E84BD /* NptSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E10B8EB27400C1E90D /* NptSystem.h */; };
+		E488DC5B14479D2E005E84BD /* NptThreads.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E30B8EB27400C1E90D /* NptThreads.h */; };
+		E488DC5C14479D2E005E84BD /* NptTime.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E50B8EB27400C1E90D /* NptTime.h */; };
+		E488DC5D14479D2E005E84BD /* NptTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E60B8EB27400C1E90D /* NptTypes.h */; };
+		E488DC5E14479D2E005E84BD /* NptUri.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E80B8EB27400C1E90D /* NptUri.h */; };
+		E488DC5F14479D2E005E84BD /* NptUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6EA0B8EB27400C1E90D /* NptUtils.h */; };
+		E488DC6014479D2E005E84BD /* NptVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6EB0B8EB27400C1E90D /* NptVersion.h */; };
+		E488DC6114479D2E005E84BD /* NptXml.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6ED0B8EB27400C1E90D /* NptXml.h */; };
+		E488DC6214479D2E005E84BD /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC4C0C7E540900CC9622 /* crc32.h */; };
+		E488DC6314479D2E005E84BD /* deflate.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC4E0C7E540900CC9622 /* deflate.h */; };
+		E488DC6414479D2E005E84BD /* inffast.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC510C7E540900CC9622 /* inffast.h */; };
+		E488DC6514479D2E005E84BD /* inffixed.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC520C7E540900CC9622 /* inffixed.h */; };
+		E488DC6614479D2E005E84BD /* inflate.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC540C7E540900CC9622 /* inflate.h */; };
+		E488DC6714479D2E005E84BD /* inftrees.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC560C7E540900CC9622 /* inftrees.h */; };
+		E488DC6814479D2E005E84BD /* trees.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC580C7E540900CC9622 /* trees.h */; };
+		E488DC6914479D2E005E84BD /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5A0C7E540900CC9622 /* zconf.h */; };
+		E488DC6A14479D2E005E84BD /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5B0C7E540900CC9622 /* zlib.h */; };
+		E488DC6B14479D2E005E84BD /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5D0C7E540900CC9622 /* zutil.h */; };
+		E488DC6C14479D2E005E84BD /* NptZip.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC7A0C7E5A7000CC9622 /* NptZip.h */; };
+		E488DC6D14479D2E005E84BD /* NptDynamicLibraries.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056D0E68E29C00E3DEE8 /* NptDynamicLibraries.h */; };
+		E488DC6E14479D2E005E84BD /* NptSerialPort.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056E0E68E29C00E3DEE8 /* NptSerialPort.h */; };
+		E488DC6F14479D2E005E84BD /* NptTls.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB236F0EC760FE009C3459 /* NptTls.h */; };
+		E488DC7014479D2E005E84BD /* NptDynamicCast.h in Headers */ = {isa = PBXBuildFile; fileRef = CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */; };
+		E488DC7114479D2E005E84BD /* NptCocoaMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA289B6810E16150001BC817 /* NptCocoaMessageQueue.h */; };
+		E488DC7214479D2E005E84BD /* NptDigest.h in Headers */ = {isa = PBXBuildFile; fileRef = CAEB8EC211864F0B00B4AF01 /* NptDigest.h */; };
+		E488DC7314479D2E005E84BD /* NptCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = CA806988118A602B009D099D /* NptCrypto.h */; };
+		E488DC7414479D2E005E84BD /* NptHash.h in Headers */ = {isa = PBXBuildFile; fileRef = CAD78DD212A99DC500D7EBA7 /* NptHash.h */; };
+		E488DC7614479D2E005E84BD /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B00B8EB27400C1E90D /* Neptune.cpp */; };
+		E488DC7714479D2E005E84BD /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B30B8EB27400C1E90D /* NptBase64.cpp */; };
+		E488DC7814479D2E005E84BD /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B50B8EB27400C1E90D /* NptBufferedStreams.cpp */; };
+		E488DC7914479D2E005E84BD /* NptCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B70B8EB27400C1E90D /* NptCommon.cpp */; };
+		E488DC7A14479D2E005E84BD /* NptConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6BA0B8EB27400C1E90D /* NptConsole.cpp */; };
+		E488DC7B14479D2E005E84BD /* NptDataBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6BD0B8EB27400C1E90D /* NptDataBuffer.cpp */; };
+		E488DC7C14479D2E005E84BD /* NptDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6BF0B8EB27400C1E90D /* NptDebug.cpp */; };
+		E488DC7D14479D2E005E84BD /* NptFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C20B8EB27400C1E90D /* NptFile.cpp */; };
+		E488DC7E14479D2E005E84BD /* NptHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C40B8EB27400C1E90D /* NptHttp.cpp */; };
+		E488DC7F14479D2E005E84BD /* NptList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C70B8EB27400C1E90D /* NptList.cpp */; };
+		E488DC8014479D2E005E84BD /* NptLogging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C90B8EB27400C1E90D /* NptLogging.cpp */; };
+		E488DC8114479D2E005E84BD /* NptMessaging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6CC0B8EB27400C1E90D /* NptMessaging.cpp */; };
+		E488DC8214479D2E005E84BD /* NptNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6CE0B8EB27400C1E90D /* NptNetwork.cpp */; };
+		E488DC8314479D2E005E84BD /* NptQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D00B8EB27400C1E90D /* NptQueue.cpp */; };
+		E488DC8414479D2E005E84BD /* NptRingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D40B8EB27400C1E90D /* NptRingBuffer.cpp */; };
+		E488DC8514479D2E005E84BD /* NptSimpleMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D70B8EB27400C1E90D /* NptSimpleMessageQueue.cpp */; };
+		E488DC8614479D2E005E84BD /* NptSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D90B8EB27400C1E90D /* NptSockets.cpp */; };
+		E488DC8714479D2E005E84BD /* NptStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6DC0B8EB27400C1E90D /* NptStreams.cpp */; };
+		E488DC8814479D2E005E84BD /* NptStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6DE0B8EB27400C1E90D /* NptStrings.cpp */; };
+		E488DC8914479D2E005E84BD /* NptSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E00B8EB27400C1E90D /* NptSystem.cpp */; };
+		E488DC8A14479D2E005E84BD /* NptThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E20B8EB27400C1E90D /* NptThreads.cpp */; };
+		E488DC8B14479D2E005E84BD /* NptTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E40B8EB27400C1E90D /* NptTime.cpp */; };
+		E488DC8C14479D2E005E84BD /* NptUri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E70B8EB27400C1E90D /* NptUri.cpp */; };
+		E488DC8D14479D2E005E84BD /* NptUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E90B8EB27400C1E90D /* NptUtils.cpp */; };
+		E488DC8E14479D2E005E84BD /* NptXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6EC0B8EB27400C1E90D /* NptXml.cpp */; };
+		E488DC8F14479D2E005E84BD /* NptBsdNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F00B8EB27400C1E90D /* NptBsdNetwork.cpp */; };
+		E488DC9014479D2E005E84BD /* NptBsdSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F10B8EB27400C1E90D /* NptBsdSockets.cpp */; };
+		E488DC9114479D2E005E84BD /* NptPosixQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F80B8EB27400C1E90D /* NptPosixQueue.cpp */; };
+		E488DC9214479D2E005E84BD /* NptPosixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F90B8EB27400C1E90D /* NptPosixSystem.cpp */; };
+		E488DC9314479D2E005E84BD /* NptPosixThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6FA0B8EB27400C1E90D /* NptPosixThreads.cpp */; };
+		E488DC9414479D2E005E84BD /* NptSelectableMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6FB0B8EB27400C1E90D /* NptSelectableMessageQueue.cpp */; };
+		E488DC9514479D2E005E84BD /* NptStdcConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6FF0B8EB27400C1E90D /* NptStdcConsole.cpp */; };
+		E488DC9614479D2E005E84BD /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B7000B8EB27400C1E90D /* NptStdcDebug.cpp */; };
+		E488DC9714479D2E005E84BD /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B7010B8EB27400C1E90D /* NptStdcEnvironment.cpp */; };
+		E488DC9814479D2E005E84BD /* NptStdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B7020B8EB27400C1E90D /* NptStdcFile.cpp */; };
+		E488DC9914479D2E005E84BD /* NptNullSerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA5041AA0C5AE2180060E6FE /* NptNullSerialPort.cpp */; };
+		E488DC9A14479D2E005E84BD /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4A0C7E540900CC9622 /* adler32.c */; };
+		E488DC9B14479D2E005E84BD /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4B0C7E540900CC9622 /* crc32.c */; };
+		E488DC9C14479D2E005E84BD /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4D0C7E540900CC9622 /* deflate.c */; };
+		E488DC9D14479D2E005E84BD /* infback.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4F0C7E540900CC9622 /* infback.c */; };
+		E488DC9E14479D2E005E84BD /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC500C7E540900CC9622 /* inffast.c */; };
+		E488DC9F14479D2E005E84BD /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC530C7E540900CC9622 /* inflate.c */; };
+		E488DCA014479D2E005E84BD /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC550C7E540900CC9622 /* inftrees.c */; };
+		E488DCA114479D2E005E84BD /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC570C7E540900CC9622 /* trees.c */; };
+		E488DCA214479D2E005E84BD /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC5C0C7E540900CC9622 /* zutil.c */; };
+		E488DCA314479D2E005E84BD /* NptZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF03CB50C7E7F15002C470F /* NptZip.cpp */; };
+		E488DCA414479D2E005E84BD /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = CAF03DB30C7F9243002C470F /* compress.c */; };
+		E488DCA514479D2E005E84BD /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF2EFB50E64881E00948C04 /* NptPosixFile.cpp */; };
+		E488DCA614479D2E005E84BD /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF2EFB70E64882900948C04 /* NptPosixNetwork.cpp */; };
+		E488DCA714479D2E005E84BD /* NptDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA1D056C0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp */; };
+		E488DCA814479D2E005E84BD /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA1D05720E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp */; };
+		E488DCA914479D2E005E84BD /* NptTls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAFB236E0EC760FE009C3459 /* NptTls.cpp */; };
+		E488DCAA14479D2E005E84BD /* NptResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA096EF10ED0DBCE00A5103D /* NptResults.cpp */; };
+		E488DCAB14479D2E005E84BD /* NptPosixTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA40905B10AA10A800ED81C5 /* NptPosixTime.cpp */; };
+		E488DCAC14479D2E005E84BD /* NptCocoaMessageQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA289B6910E16150001BC817 /* NptCocoaMessageQueue.mm */; };
+		E488DCAD14479D2E005E84BD /* NptDigest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAEB8EC111864F0B00B4AF01 /* NptDigest.cpp */; };
+		E488DCAE14479D2E005E84BD /* NptCrypto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA806987118A602B009D099D /* NptCrypto.cpp */; };
+		E488DCAF14479D2E005E84BD /* NptTlsDefaultTrustAnchorsBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA057AAE11BC27F200C90519 /* NptTlsDefaultTrustAnchorsBase.cpp */; };
+		E488DCB014479D2E005E84BD /* NptTlsDefaultTrustAnchorsExtended.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA057AAF11BC27F200C90519 /* NptTlsDefaultTrustAnchorsExtended.cpp */; };
+		E488DCB214479D2E005E84BD /* NptHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAD78E0312A9C42000D7EBA7 /* NptHash.cpp */; };
+		E488DCB314479D2E005E84BD /* NptBsdResolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAC5048212FFB7EF00FEB1D8 /* NptBsdResolver.cpp */; };
+		E488DCBD14479D86005E84BD /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E840EC0145900A9040C /* version.h */; };
+		E488DCBE14479D86005E84BD /* tls1.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E810EC0145900A9040C /* tls1.h */; };
+		E488DCBF14479D86005E84BD /* ssl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E7F0EC0145900A9040C /* ssl.h */; };
+		E488DCC014479D86005E84BD /* crypto_misc.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E770EC0145900A9040C /* crypto_misc.h */; };
+		E488DCC114479D86005E84BD /* crypto.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E6B0EC0145900A9040C /* crypto.h */; };
+		E488DCC214479D86005E84BD /* cert.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E760EC0145900A9040C /* cert.h */; };
+		E488DCC314479D86005E84BD /* bigint_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E6A0EC0145900A9040C /* bigint_impl.h */; };
+		E488DCC414479D86005E84BD /* bigint.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E690EC0145900A9040C /* bigint.h */; };
+		E488DCC514479D86005E84BD /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = CA87F23E1148401E0082AAFC /* config.h */; };
+		E488DCC714479D86005E84BD /* x509.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E850EC0145900A9040C /* x509.c */; };
+		E488DCC814479D86005E84BD /* tls1_svr.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E830EC0145900A9040C /* tls1_svr.c */; };
+		E488DCC914479D86005E84BD /* tls1_clnt.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E820EC0145900A9040C /* tls1_clnt.c */; };
+		E488DCCA14479D86005E84BD /* tls1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E800EC0145900A9040C /* tls1.c */; };
+		E488DCCB14479D86005E84BD /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E720EC0145900A9040C /* sha1.c */; };
+		E488DCCC14479D86005E84BD /* rsa.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E710EC0145900A9040C /* rsa.c */; };
+		E488DCCD14479D86005E84BD /* rc4.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E700EC0145900A9040C /* rc4.c */; };
+		E488DCCE14479D86005E84BD /* p12.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E7D0EC0145900A9040C /* p12.c */; };
+		E488DCCF14479D86005E84BD /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6F0EC0145900A9040C /* md5.c */; };
+		E488DCD014479D86005E84BD /* md2.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6E0EC0145900A9040C /* md2.c */; };
+		E488DCD114479D86005E84BD /* loader.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E790EC0145900A9040C /* loader.c */; };
+		E488DCD214479D86005E84BD /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6D0EC0145900A9040C /* hmac.c */; };
+		E488DCD314479D86005E84BD /* gen_cert.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E780EC0145900A9040C /* gen_cert.c */; };
+		E488DCD414479D86005E84BD /* crypto_misc.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6C0EC0145900A9040C /* crypto_misc.c */; };
+		E488DCD514479D86005E84BD /* bigint.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E680EC0145900A9040C /* bigint.c */; };
+		E488DCD614479D86005E84BD /* asn1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E750EC0145900A9040C /* asn1.c */; };
+		E488DCD714479D86005E84BD /* aes.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E670EC0145900A9040C /* aes.c */; };
+		E4A5B5CA14476955000F3F6A /* Neptune.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B10B8EB27400C1E90D /* Neptune.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5CB14476955000F3F6A /* NptArray.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B20B8EB27400C1E90D /* NptArray.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5CC14476955000F3F6A /* NptBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B40B8EB27400C1E90D /* NptBase64.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5CD14476955000F3F6A /* NptBufferedStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B60B8EB27400C1E90D /* NptBufferedStreams.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5CE14476955000F3F6A /* NptCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B80B8EB27400C1E90D /* NptCommon.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5CF14476955000F3F6A /* NptConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B90B8EB27400C1E90D /* NptConfig.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D014476955000F3F6A /* NptConsole.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6BB0B8EB27400C1E90D /* NptConsole.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D114476955000F3F6A /* NptConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6BC0B8EB27400C1E90D /* NptConstants.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D214476955000F3F6A /* NptDataBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6BE0B8EB27400C1E90D /* NptDataBuffer.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D314476955000F3F6A /* NptDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C00B8EB27400C1E90D /* NptDebug.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D414476955000F3F6A /* NptDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C10B8EB27400C1E90D /* NptDefs.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D514476955000F3F6A /* NptFile.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C30B8EB27400C1E90D /* NptFile.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D614476955000F3F6A /* NptHttp.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C50B8EB27400C1E90D /* NptHttp.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D714476955000F3F6A /* NptInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C60B8EB27400C1E90D /* NptInterfaces.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D814476955000F3F6A /* NptList.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6C80B8EB27400C1E90D /* NptList.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5D914476955000F3F6A /* NptLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CA0B8EB27400C1E90D /* NptLogging.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5DA14476955000F3F6A /* NptMap.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CB0B8EB27400C1E90D /* NptMap.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5DB14476955000F3F6A /* NptMessaging.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CD0B8EB27400C1E90D /* NptMessaging.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5DC14476955000F3F6A /* NptNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6CF0B8EB27400C1E90D /* NptNetwork.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5DD14476955000F3F6A /* NptQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D10B8EB27400C1E90D /* NptQueue.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5DE14476955000F3F6A /* NptReferences.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D20B8EB27400C1E90D /* NptReferences.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5DF14476955000F3F6A /* NptResults.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D30B8EB27400C1E90D /* NptResults.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E014476955000F3F6A /* NptRingBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D50B8EB27400C1E90D /* NptRingBuffer.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E114476955000F3F6A /* NptSelectableMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D60B8EB27400C1E90D /* NptSelectableMessageQueue.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E214476955000F3F6A /* NptSimpleMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6D80B8EB27400C1E90D /* NptSimpleMessageQueue.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E314476955000F3F6A /* NptSockets.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DA0B8EB27400C1E90D /* NptSockets.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E414476955000F3F6A /* NptStack.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DB0B8EB27400C1E90D /* NptStack.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E514476955000F3F6A /* NptStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DD0B8EB27400C1E90D /* NptStreams.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E614476955000F3F6A /* NptStrings.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6DF0B8EB27400C1E90D /* NptStrings.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E714476955000F3F6A /* NptSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E10B8EB27400C1E90D /* NptSystem.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E814476955000F3F6A /* NptThreads.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E30B8EB27400C1E90D /* NptThreads.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5E914476955000F3F6A /* NptTime.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E50B8EB27400C1E90D /* NptTime.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5EA14476955000F3F6A /* NptTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E60B8EB27400C1E90D /* NptTypes.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5EB14476955000F3F6A /* NptUri.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6E80B8EB27400C1E90D /* NptUri.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5EC14476955000F3F6A /* NptUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6EA0B8EB27400C1E90D /* NptUtils.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5ED14476955000F3F6A /* NptVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6EB0B8EB27400C1E90D /* NptVersion.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5EE14476955000F3F6A /* NptXml.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6ED0B8EB27400C1E90D /* NptXml.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5EF14476955000F3F6A /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC4C0C7E540900CC9622 /* crc32.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F014476955000F3F6A /* deflate.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC4E0C7E540900CC9622 /* deflate.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F114476955000F3F6A /* inffast.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC510C7E540900CC9622 /* inffast.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F214476955000F3F6A /* inffixed.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC520C7E540900CC9622 /* inffixed.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F314476955000F3F6A /* inflate.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC540C7E540900CC9622 /* inflate.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F414476955000F3F6A /* inftrees.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC560C7E540900CC9622 /* inftrees.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F514476955000F3F6A /* trees.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC580C7E540900CC9622 /* trees.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F614476955000F3F6A /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5A0C7E540900CC9622 /* zconf.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F714476955000F3F6A /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5B0C7E540900CC9622 /* zlib.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F814476955000F3F6A /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5D0C7E540900CC9622 /* zutil.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5F914476955000F3F6A /* NptZip.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC7A0C7E5A7000CC9622 /* NptZip.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5FA14476955000F3F6A /* NptDynamicLibraries.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056D0E68E29C00E3DEE8 /* NptDynamicLibraries.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5FB14476955000F3F6A /* NptSerialPort.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056E0E68E29C00E3DEE8 /* NptSerialPort.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5FC14476955000F3F6A /* NptTls.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB236F0EC760FE009C3459 /* NptTls.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5FD14476955000F3F6A /* NptDynamicCast.h in Headers */ = {isa = PBXBuildFile; fileRef = CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5FE14476955000F3F6A /* NptCocoaMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA289B6810E16150001BC817 /* NptCocoaMessageQueue.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B5FF14476955000F3F6A /* NptDigest.h in Headers */ = {isa = PBXBuildFile; fileRef = CAEB8EC211864F0B00B4AF01 /* NptDigest.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B60014476955000F3F6A /* NptCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = CA806988118A602B009D099D /* NptCrypto.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B60114476955000F3F6A /* NptHash.h in Headers */ = {isa = PBXBuildFile; fileRef = CAD78DD212A99DC500D7EBA7 /* NptHash.h */; settings = {ATTRIBUTES = (); }; };
+		E4A5B60314476955000F3F6A /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B00B8EB27400C1E90D /* Neptune.cpp */; };
+		E4A5B60414476955000F3F6A /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B30B8EB27400C1E90D /* NptBase64.cpp */; };
+		E4A5B60514476955000F3F6A /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B50B8EB27400C1E90D /* NptBufferedStreams.cpp */; };
+		E4A5B60614476955000F3F6A /* NptCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B70B8EB27400C1E90D /* NptCommon.cpp */; };
+		E4A5B60714476955000F3F6A /* NptConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6BA0B8EB27400C1E90D /* NptConsole.cpp */; };
+		E4A5B60814476955000F3F6A /* NptDataBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6BD0B8EB27400C1E90D /* NptDataBuffer.cpp */; };
+		E4A5B60914476955000F3F6A /* NptDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6BF0B8EB27400C1E90D /* NptDebug.cpp */; };
+		E4A5B60A14476955000F3F6A /* NptFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C20B8EB27400C1E90D /* NptFile.cpp */; };
+		E4A5B60B14476955000F3F6A /* NptHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C40B8EB27400C1E90D /* NptHttp.cpp */; };
+		E4A5B60C14476955000F3F6A /* NptList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C70B8EB27400C1E90D /* NptList.cpp */; };
+		E4A5B60D14476955000F3F6A /* NptLogging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6C90B8EB27400C1E90D /* NptLogging.cpp */; };
+		E4A5B60E14476955000F3F6A /* NptMessaging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6CC0B8EB27400C1E90D /* NptMessaging.cpp */; };
+		E4A5B60F14476955000F3F6A /* NptNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6CE0B8EB27400C1E90D /* NptNetwork.cpp */; };
+		E4A5B61014476955000F3F6A /* NptQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D00B8EB27400C1E90D /* NptQueue.cpp */; };
+		E4A5B61114476955000F3F6A /* NptRingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D40B8EB27400C1E90D /* NptRingBuffer.cpp */; };
+		E4A5B61214476955000F3F6A /* NptSimpleMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D70B8EB27400C1E90D /* NptSimpleMessageQueue.cpp */; };
+		E4A5B61314476955000F3F6A /* NptSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6D90B8EB27400C1E90D /* NptSockets.cpp */; };
+		E4A5B61414476955000F3F6A /* NptStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6DC0B8EB27400C1E90D /* NptStreams.cpp */; };
+		E4A5B61514476955000F3F6A /* NptStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6DE0B8EB27400C1E90D /* NptStrings.cpp */; };
+		E4A5B61614476955000F3F6A /* NptSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E00B8EB27400C1E90D /* NptSystem.cpp */; };
+		E4A5B61714476955000F3F6A /* NptThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E20B8EB27400C1E90D /* NptThreads.cpp */; };
+		E4A5B61814476955000F3F6A /* NptTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E40B8EB27400C1E90D /* NptTime.cpp */; };
+		E4A5B61914476955000F3F6A /* NptUri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E70B8EB27400C1E90D /* NptUri.cpp */; };
+		E4A5B61A14476955000F3F6A /* NptUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6E90B8EB27400C1E90D /* NptUtils.cpp */; };
+		E4A5B61B14476955000F3F6A /* NptXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6EC0B8EB27400C1E90D /* NptXml.cpp */; };
+		E4A5B61C14476955000F3F6A /* NptBsdNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F00B8EB27400C1E90D /* NptBsdNetwork.cpp */; };
+		E4A5B61D14476955000F3F6A /* NptBsdSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F10B8EB27400C1E90D /* NptBsdSockets.cpp */; };
+		E4A5B61E14476955000F3F6A /* NptPosixQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F80B8EB27400C1E90D /* NptPosixQueue.cpp */; };
+		E4A5B61F14476955000F3F6A /* NptPosixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6F90B8EB27400C1E90D /* NptPosixSystem.cpp */; };
+		E4A5B62014476955000F3F6A /* NptPosixThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6FA0B8EB27400C1E90D /* NptPosixThreads.cpp */; };
+		E4A5B62114476955000F3F6A /* NptSelectableMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6FB0B8EB27400C1E90D /* NptSelectableMessageQueue.cpp */; };
+		E4A5B62214476955000F3F6A /* NptStdcConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6FF0B8EB27400C1E90D /* NptStdcConsole.cpp */; };
+		E4A5B62314476955000F3F6A /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B7000B8EB27400C1E90D /* NptStdcDebug.cpp */; };
+		E4A5B62414476955000F3F6A /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B7010B8EB27400C1E90D /* NptStdcEnvironment.cpp */; };
+		E4A5B62514476955000F3F6A /* NptStdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B7020B8EB27400C1E90D /* NptStdcFile.cpp */; };
+		E4A5B62614476955000F3F6A /* NptNullSerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA5041AA0C5AE2180060E6FE /* NptNullSerialPort.cpp */; };
+		E4A5B62714476955000F3F6A /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4A0C7E540900CC9622 /* adler32.c */; };
+		E4A5B62814476955000F3F6A /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4B0C7E540900CC9622 /* crc32.c */; };
+		E4A5B62914476955000F3F6A /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4D0C7E540900CC9622 /* deflate.c */; };
+		E4A5B62A14476955000F3F6A /* infback.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4F0C7E540900CC9622 /* infback.c */; };
+		E4A5B62B14476955000F3F6A /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC500C7E540900CC9622 /* inffast.c */; };
+		E4A5B62C14476955000F3F6A /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC530C7E540900CC9622 /* inflate.c */; };
+		E4A5B62D14476955000F3F6A /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC550C7E540900CC9622 /* inftrees.c */; };
+		E4A5B62E14476955000F3F6A /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC570C7E540900CC9622 /* trees.c */; };
+		E4A5B62F14476955000F3F6A /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC5C0C7E540900CC9622 /* zutil.c */; };
+		E4A5B63014476955000F3F6A /* NptZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF03CB50C7E7F15002C470F /* NptZip.cpp */; };
+		E4A5B63114476955000F3F6A /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = CAF03DB30C7F9243002C470F /* compress.c */; };
+		E4A5B63214476955000F3F6A /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF2EFB50E64881E00948C04 /* NptPosixFile.cpp */; };
+		E4A5B63314476955000F3F6A /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAF2EFB70E64882900948C04 /* NptPosixNetwork.cpp */; };
+		E4A5B63414476955000F3F6A /* NptDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA1D056C0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp */; };
+		E4A5B63514476955000F3F6A /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA1D05720E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp */; };
+		E4A5B63614476955000F3F6A /* NptTls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAFB236E0EC760FE009C3459 /* NptTls.cpp */; };
+		E4A5B63714476955000F3F6A /* NptResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA096EF10ED0DBCE00A5103D /* NptResults.cpp */; };
+		E4A5B63814476955000F3F6A /* NptPosixTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA40905B10AA10A800ED81C5 /* NptPosixTime.cpp */; };
+		E4A5B63914476955000F3F6A /* NptCocoaMessageQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA289B6910E16150001BC817 /* NptCocoaMessageQueue.mm */; };
+		E4A5B63A14476955000F3F6A /* NptDigest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAEB8EC111864F0B00B4AF01 /* NptDigest.cpp */; };
+		E4A5B63B14476955000F3F6A /* NptCrypto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA806987118A602B009D099D /* NptCrypto.cpp */; };
+		E4A5B63C14476955000F3F6A /* NptTlsDefaultTrustAnchorsBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA057AAE11BC27F200C90519 /* NptTlsDefaultTrustAnchorsBase.cpp */; };
+		E4A5B63D14476955000F3F6A /* NptTlsDefaultTrustAnchorsExtended.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA057AAF11BC27F200C90519 /* NptTlsDefaultTrustAnchorsExtended.cpp */; };
+		E4A5B63F14476955000F3F6A /* NptHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAD78E0312A9C42000D7EBA7 /* NptHash.cpp */; };
+		E4A5B64014476955000F3F6A /* NptBsdResolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAC5048212FFB7EF00FEB1D8 /* NptBsdResolver.cpp */; };
+		E4A5B64A144769A8000F3F6A /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E840EC0145900A9040C /* version.h */; };
+		E4A5B64B144769A8000F3F6A /* tls1.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E810EC0145900A9040C /* tls1.h */; };
+		E4A5B64C144769A8000F3F6A /* ssl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E7F0EC0145900A9040C /* ssl.h */; };
+		E4A5B64D144769A8000F3F6A /* crypto_misc.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E770EC0145900A9040C /* crypto_misc.h */; };
+		E4A5B64E144769A8000F3F6A /* crypto.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E6B0EC0145900A9040C /* crypto.h */; };
+		E4A5B64F144769A8000F3F6A /* cert.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E760EC0145900A9040C /* cert.h */; };
+		E4A5B650144769A8000F3F6A /* bigint_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E6A0EC0145900A9040C /* bigint_impl.h */; };
+		E4A5B651144769A8000F3F6A /* bigint.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1A5E690EC0145900A9040C /* bigint.h */; };
+		E4A5B652144769A8000F3F6A /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = CA87F23E1148401E0082AAFC /* config.h */; };
+		E4A5B654144769A8000F3F6A /* x509.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E850EC0145900A9040C /* x509.c */; };
+		E4A5B655144769A8000F3F6A /* tls1_svr.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E830EC0145900A9040C /* tls1_svr.c */; };
+		E4A5B656144769A8000F3F6A /* tls1_clnt.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E820EC0145900A9040C /* tls1_clnt.c */; };
+		E4A5B657144769A8000F3F6A /* tls1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E800EC0145900A9040C /* tls1.c */; };
+		E4A5B658144769A8000F3F6A /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E720EC0145900A9040C /* sha1.c */; };
+		E4A5B659144769A8000F3F6A /* rsa.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E710EC0145900A9040C /* rsa.c */; };
+		E4A5B65A144769A8000F3F6A /* rc4.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E700EC0145900A9040C /* rc4.c */; };
+		E4A5B65B144769A8000F3F6A /* p12.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E7D0EC0145900A9040C /* p12.c */; };
+		E4A5B65C144769A8000F3F6A /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6F0EC0145900A9040C /* md5.c */; };
+		E4A5B65D144769A8000F3F6A /* md2.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6E0EC0145900A9040C /* md2.c */; };
+		E4A5B65E144769A8000F3F6A /* loader.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E790EC0145900A9040C /* loader.c */; };
+		E4A5B65F144769A8000F3F6A /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6D0EC0145900A9040C /* hmac.c */; };
+		E4A5B660144769A8000F3F6A /* gen_cert.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E780EC0145900A9040C /* gen_cert.c */; };
+		E4A5B661144769A8000F3F6A /* crypto_misc.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E6C0EC0145900A9040C /* crypto_misc.c */; };
+		E4A5B662144769A8000F3F6A /* bigint.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E680EC0145900A9040C /* bigint.c */; };
+		E4A5B663144769A8000F3F6A /* asn1.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E750EC0145900A9040C /* asn1.c */; };
+		E4A5B664144769A8000F3F6A /* aes.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E670EC0145900A9040C /* aes.c */; };
+		E4A5B67314476AEB000F3F6A /* libaxTLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4A5B669144769A8000F3F6A /* libaxTLS.a */; };
 		F912B7480B8EB27400C1E90D /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F912B6B00B8EB27400C1E90D /* Neptune.cpp */; };
 		F912B7490B8EB27400C1E90D /* Neptune.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B10B8EB27400C1E90D /* Neptune.h */; };
 		F912B74A0B8EB27400C1E90D /* NptArray.h in Headers */ = {isa = PBXBuildFile; fileRef = F912B6B20B8EB27400C1E90D /* NptArray.h */; };
@@ -289,7 +608,14 @@
 			remoteGlobalIDString = CA197D1D0E1AE4360018E87C;
 			remoteInfo = QueueTest1;
 		};
-		CA1A5EAD0EC0153600A9040C /* PBXContainerItemProxy */ = {
+		CA261073127EB817008E2D29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA2F54230EC115E600AEBC12;
+			remoteInfo = TlsTest1;
+		};
+		CA289DBB10E31613001BC817 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
 			proxyType = 1;
@@ -324,6 +650,20 @@
 			remoteGlobalIDString = CA30B76A0F0DCE990085B46E;
 			remoteInfo = LoggingTest2;
 		};
+		CA4090C810AA259200ED81C5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CA451F721252BE430045CF69 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA790DA81233BDC100875081;
+			remoteInfo = NetGet;
+		};
 		CA550D4C0D20A37E00B22D72 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
@@ -345,12 +685,82 @@
 			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
 			remoteInfo = Neptune;
 		};
+		CA790DAD1233BDE900875081 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CA790DB11233BDF500875081 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA1A5EA80EC0152A00A9040C;
+			remoteInfo = axTLS;
+		};
+		CA80664D1187BD0F009D099D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CA8066501187BD20009D099D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA8066481187BD08009D099D;
+			remoteInfo = DigestsTest1;
+		};
+		CA8069DD118B5786009D099D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
 		CA97E0480E2FEB6F0090CC9B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
 			remoteInfo = Neptune;
+		};
+		CA9958A41046FFCD0073F34A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CA9958A71046FFF60073F34A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA99589F1046FFC70073F34A;
+			remoteInfo = HttpClientTest2;
+		};
+		CA9DDC5010AE2820008B871E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAF2EFD60E64A27200948C04;
+			remoteInfo = FileTest1;
+		};
+		CA9DDC6A10AE3DE3008B871E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CA9DDC6D10AE3DFD008B871E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA9DDC6510AE3DD6008B871E;
+			remoteInfo = FileTest2;
 		};
 		CAA97A050CF164B500C01909 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -365,6 +775,48 @@
 			proxyType = 1;
 			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
 			remoteInfo = Neptune;
+		};
+		CAAAA08012FF825300ABC84B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CAAAA08312FF827D00ABC84B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAAAA07B12FF824E00ABC84B;
+			remoteInfo = NetResolve;
+		};
+		CAE063D61241479100E5AFC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA8069D8118B577E009D099D;
+			remoteInfo = CryptoTest1;
+		};
+		CAE063D81241479800E5AFC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA289DB610E31600001BC817;
+			remoteInfo = SocketsTest1;
+		};
+		CAE063DA124147A100E5AFC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA4090C310AA257B00ED81C5;
+			remoteInfo = TimeTest1;
+		};
+		CAE063DC124147B300E5AFC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA97E01F0E2FDFB30090CC9B;
+			remoteInfo = StreamsTest1;
 		};
 		CAE416A00E0DBD6B00A530D1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -667,13 +1119,37 @@
 			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
 			remoteInfo = Neptune;
 		};
+		E412ABAF14478A380078A367 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA1A5EA80EC0152A00A9040C;
+			remoteInfo = axTLS;
+		};
+		E445E4051449793400F221B3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E488DCBB14479D86005E84BD;
+			remoteInfo = "axTLS-iPhone";
+		};
+		E4A5B66A144769E0000F3F6A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E4A5B648144769A8000F3F6A;
+			remoteInfo = "axTLS-MacOSX";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA057AAE11BC27F200C90519 /* NptTlsDefaultTrustAnchorsBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptTlsDefaultTrustAnchorsBase.cpp; sourceTree = "<group>"; };
+		CA057AAF11BC27F200C90519 /* NptTlsDefaultTrustAnchorsExtended.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptTlsDefaultTrustAnchorsExtended.cpp; sourceTree = "<group>"; };
 		CA096EF10ED0DBCE00A5103D /* NptResults.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptResults.cpp; sourceTree = "<group>"; };
+		CA16FE6111C6C882006E2A86 /* NptAppleLogConfig.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptAppleLogConfig.mm; sourceTree = "<group>"; };
+		CA16FE6511C6C954006E2A86 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		CA197D1A0E1AE4200018E87C /* QueueTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QueueTest1.cpp; sourceTree = "<group>"; };
 		CA197D1E0E1AE4360018E87C /* QueueTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = QueueTest1; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA1A5E640EC0145900A9040C /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		CA1A5E670EC0145900A9040C /* aes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aes.c; sourceTree = "<group>"; };
 		CA1A5E680EC0145900A9040C /* bigint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bigint.c; sourceTree = "<group>"; };
 		CA1A5E690EC0145900A9040C /* bigint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bigint.h; sourceTree = "<group>"; };
@@ -693,7 +1169,6 @@
 		CA1A5E790EC0145900A9040C /* loader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = loader.c; sourceTree = "<group>"; };
 		CA1A5E7C0EC0145900A9040C /* os_port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_port.h; sourceTree = "<group>"; };
 		CA1A5E7D0EC0145900A9040C /* p12.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = p12.c; sourceTree = "<group>"; };
-		CA1A5E7E0EC0145900A9040C /* private_key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = private_key.h; sourceTree = "<group>"; };
 		CA1A5E7F0EC0145900A9040C /* ssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl.h; sourceTree = "<group>"; };
 		CA1A5E800EC0145900A9040C /* tls1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tls1.c; sourceTree = "<group>"; };
 		CA1A5E810EC0145900A9040C /* tls1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tls1.h; sourceTree = "<group>"; };
@@ -702,32 +1177,33 @@
 		CA1A5E840EC0145900A9040C /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		CA1A5E850EC0145900A9040C /* x509.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x509.c; sourceTree = "<group>"; };
 		CA1A5EA90EC0152A00A9040C /* libaxTLS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libaxTLS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA1A5EFA0EC01A0600A9040C /* asn1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = asn1.c; sourceTree = "<group>"; };
-		CA1A5EFB0EC01A0600A9040C /* cert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cert.h; sourceTree = "<group>"; };
-		CA1A5EFC0EC01A0600A9040C /* crypto_misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypto_misc.h; sourceTree = "<group>"; };
-		CA1A5EFD0EC01A0600A9040C /* gen_cert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gen_cert.c; sourceTree = "<group>"; };
-		CA1A5EFE0EC01A0600A9040C /* loader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = loader.c; sourceTree = "<group>"; };
-		CA1A5EFF0EC01A0600A9040C /* os_port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_port.h; sourceTree = "<group>"; };
-		CA1A5F000EC01A0600A9040C /* p12.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = p12.c; sourceTree = "<group>"; };
-		CA1A5F010EC01A0600A9040C /* private_key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = private_key.h; sourceTree = "<group>"; };
-		CA1A5F020EC01A0600A9040C /* ssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl.h; sourceTree = "<group>"; };
-		CA1A5F030EC01A0600A9040C /* tls1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tls1.c; sourceTree = "<group>"; };
-		CA1A5F040EC01A0600A9040C /* tls1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tls1.h; sourceTree = "<group>"; };
-		CA1A5F050EC01A0600A9040C /* tls1_clnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tls1_clnt.c; sourceTree = "<group>"; };
-		CA1A5F060EC01A0600A9040C /* tls1_svr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tls1_svr.c; sourceTree = "<group>"; };
-		CA1A5F070EC01A0600A9040C /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
-		CA1A5F080EC01A0600A9040C /* x509.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x509.c; sourceTree = "<group>"; };
 		CA1D056C0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptDynamicLibraries.cpp; sourceTree = "<group>"; };
 		CA1D056D0E68E29C00E3DEE8 /* NptDynamicLibraries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDynamicLibraries.h; sourceTree = "<group>"; };
 		CA1D056E0E68E29C00E3DEE8 /* NptSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptSerialPort.h; sourceTree = "<group>"; };
 		CA1D05720E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixDynamicLibraries.cpp; sourceTree = "<group>"; };
+		CA289B6710E16150001BC817 /* NptCocoaConsole.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptCocoaConsole.mm; sourceTree = "<group>"; };
+		CA289B6810E16150001BC817 /* NptCocoaMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptCocoaMessageQueue.h; sourceTree = "<group>"; };
+		CA289B6910E16150001BC817 /* NptCocoaMessageQueue.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptCocoaMessageQueue.mm; sourceTree = "<group>"; };
+		CA289DB710E31600001BC817 /* SocketsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SocketsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA289DBF10E31637001BC817 /* SocketsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SocketsTest1.cpp; sourceTree = "<group>"; };
 		CA2F54240EC115E600AEBC12 /* TlsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TlsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA2F54330EC1165700AEBC12 /* TlsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TlsTest1.cpp; sourceTree = "<group>"; };
 		CA30B76B0F0DCE990085B46E /* LoggingTest2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LoggingTest2; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA40905B10AA10A800ED81C5 /* NptPosixTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixTime.cpp; sourceTree = "<group>"; };
+		CA4090C410AA257B00ED81C5 /* TimeTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TimeTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA4090CD10AA25BE00ED81C5 /* TimeTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeTest1.cpp; sourceTree = "<group>"; };
 		CA5041AA0C5AE2180060E6FE /* NptNullSerialPort.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptNullSerialPort.cpp; sourceTree = "<group>"; };
 		CA550D550D20A37E00B22D72 /* HttpServerTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HttpServerTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA78483D0F3B6E69009E84AD /* minihttpserver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = minihttpserver; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA7848470F3B6EB8009E84AD /* MiniHttpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MiniHttpServer.cpp; sourceTree = "<group>"; };
+		CA790DA51233BDAA00875081 /* NetGet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetGet.cpp; sourceTree = "<group>"; };
+		CA790DA91233BDC100875081 /* NetGet */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetGet; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA8066451187BCF3009D099D /* DigestsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DigestsTest1.cpp; sourceTree = "<group>"; };
+		CA8066491187BD08009D099D /* DigestsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DigestsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA806987118A602B009D099D /* NptCrypto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptCrypto.cpp; sourceTree = "<group>"; };
+		CA806988118A602B009D099D /* NptCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptCrypto.h; sourceTree = "<group>"; };
+		CA8069D9118B577E009D099D /* CryptoTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CryptoTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA8069E4118B57BE009D099D /* CryptoTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptoTest1.cpp; sourceTree = "<group>"; };
 		CA84EC4A0C7E540900CC9622 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = adler32.c; path = "../../../ThirdParty/zlib-1.2.3/adler32.c"; sourceTree = SOURCE_ROOT; };
 		CA84EC4B0C7E540900CC9622 /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = "../../../ThirdParty/zlib-1.2.3/crc32.c"; sourceTree = SOURCE_ROOT; };
 		CA84EC4C0C7E540900CC9622 /* crc32.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = crc32.h; path = "../../../ThirdParty/zlib-1.2.3/crc32.h"; sourceTree = SOURCE_ROOT; };
@@ -748,11 +1224,14 @@
 		CA84EC5C0C7E540900CC9622 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = "../../../ThirdParty/zlib-1.2.3/zutil.c"; sourceTree = SOURCE_ROOT; };
 		CA84EC5D0C7E540900CC9622 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = "../../../ThirdParty/zlib-1.2.3/zutil.h"; sourceTree = SOURCE_ROOT; };
 		CA84EC7A0C7E5A7000CC9622 /* NptZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptZip.h; sourceTree = "<group>"; };
-		CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptCocoaMessageQueue.h; path = Cocoa/NptCocoaMessageQueue.h; sourceTree = "<group>"; };
-		CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptCocoaMessageQueue.mm; path = Cocoa/NptCocoaMessageQueue.mm; sourceTree = "<group>"; };
+		CA87F23E1148401E0082AAFC /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDynamicCast.h; sourceTree = "<group>"; };
 		CA97E01C0E2FDFA10090CC9B /* StreamsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamsTest1.cpp; sourceTree = "<group>"; };
 		CA97E0200E2FDFB30090CC9B /* StreamsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StreamsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA9958A01046FFC70073F34A /* HttpClientTest2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HttpClientTest2; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA9958AA1047001B0073F34A /* HttpClientTest2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpClientTest2.cpp; sourceTree = "<group>"; };
+		CA9DDC6610AE3DD6008B871E /* FileTest2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FileTest2; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA9DDC7110AE3E52008B871E /* FileTest2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileTest2.cpp; sourceTree = "<group>"; };
 		CAA979D70CF1648300C01909 /* ArraysTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArraysTest1.cpp; sourceTree = "<group>"; };
 		CAA979D90CF1648300C01909 /* BufferedStreamsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BufferedStreamsTest1.cpp; sourceTree = "<group>"; };
 		CAA979DB0CF1648300C01909 /* HttpClientTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpClientTest1.cpp; sourceTree = "<group>"; };
@@ -778,6 +1257,12 @@
 		CAA979FD0CF1648300C01909 /* ZipTestData1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipTestData1.cpp; sourceTree = "<group>"; };
 		CAA97A010CF164A700C01909 /* XmlTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XmlTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAA97A1B0CF1654A00C01909 /* StringsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StringsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAAAA07612FF823200ABC84B /* NetResolve.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetResolve.cpp; sourceTree = "<group>"; };
+		CAAAA07C12FF824E00ABC84B /* NetResolve */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetResolve; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAC029DD139D84D10034427F /* LoggingTest2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LoggingTest2.cpp; sourceTree = "<group>"; };
+		CAC5048212FFB7EF00FEB1D8 /* NptBsdResolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptBsdResolver.cpp; sourceTree = "<group>"; };
+		CAD78DD212A99DC500D7EBA7 /* NptHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptHash.h; sourceTree = "<group>"; };
+		CAD78E0312A9C42000D7EBA7 /* NptHash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptHash.cpp; sourceTree = "<group>"; };
 		CAE4169B0E0DBD6600A530D1 /* MiscTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MiscTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE416B90E0DBDF800A530D1 /* ArraysTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ArraysTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE416C60E0DBE2F00A530D1 /* BufferedStreamsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BufferedStreamsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -800,6 +1285,8 @@
 		CAE417BB0E0DC19400A530D1 /* NetEcho */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetEcho; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE417C80E0DC1B400A530D1 /* NetConfig */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetConfig; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE417D50E0DC1D600A530D1 /* NetPing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetPing; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAEB8EC111864F0B00B4AF01 /* NptDigest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptDigest.cpp; sourceTree = "<group>"; };
+		CAEB8EC211864F0B00B4AF01 /* NptDigest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDigest.h; sourceTree = "<group>"; };
 		CAF03CB50C7E7F15002C470F /* NptZip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptZip.cpp; sourceTree = "<group>"; };
 		CAF03DB30C7F9243002C470F /* compress.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = compress.c; path = "../../../ThirdParty/zlib-1.2.3/compress.c"; sourceTree = SOURCE_ROOT; };
 		CAF2EFB50E64881E00948C04 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
@@ -808,6 +1295,17 @@
 		CAF2EFD70E64A27200948C04 /* FileTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FileTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFB236E0EC760FE009C3459 /* NptTls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptTls.cpp; sourceTree = "<group>"; };
 		CAFB236F0EC760FE009C3459 /* NptTls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptTls.h; sourceTree = "<group>"; };
+		E46E9572153F8C2A00ED95D5 /* NptAppleAutoreleasePool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptAppleAutoreleasePool.mm; sourceTree = "<group>"; };
+		E46E95AD153F903300ED95D5 /* NptAutoreleasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptAutoreleasePool.h; sourceTree = "<group>"; };
+		E46E95AE153F903300ED95D5 /* NptTlsDefaultTrustAnchorsBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptTlsDefaultTrustAnchorsBase.h; sourceTree = "<group>"; };
+		E46E95AF153F903300ED95D5 /* NptTlsDefaultTrustAnchorsExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptTlsDefaultTrustAnchorsExtended.h; sourceTree = "<group>"; };
+		E46E95B0153F91C900ED95D5 /* NptNullAutoreleasePool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptNullAutoreleasePool.cpp; sourceTree = "<group>"; };
+		E46E95C2153F9F7C00ED95D5 /* NptCocoaEnviroment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptCocoaEnviroment.mm; sourceTree = "<group>"; };
+		E46E95C5153F9F9B00ED95D5 /* NptPosixEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixEnvironment.cpp; sourceTree = "<group>"; };
+		E488DCBA14479D2E005E84BD /* libNeptune.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNeptune.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E488DCDC14479D86005E84BD /* libaxTLS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libaxTLS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4A5B64714476955000F3F6A /* libNeptune.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNeptune.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4A5B669144769A8000F3F6A /* libaxTLS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libaxTLS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F912B69F0B8EB1C700C1E90D /* libNeptune.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNeptune.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F912B6B00B8EB27400C1E90D /* Neptune.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Neptune.cpp; sourceTree = "<group>"; };
 		F912B6B10B8EB27400C1E90D /* Neptune.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Neptune.h; sourceTree = "<group>"; };
@@ -899,6 +1397,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA289DB510E31600001BC817 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA289DBD10E31618001BC817 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA2F54220EC115E600AEBC12 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -913,6 +1419,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA30B7720F0DCEA70085B46E /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA4090C210AA257B00ED81C5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA4090CA10AA259600ED81C5 /* libNeptune.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -932,11 +1446,52 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA790DA71233BDC100875081 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA790DAF1233BDF100875081 /* libaxTLS.a in Frameworks */,
+				CA790DB01233BDF100875081 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA8066471187BD08009D099D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA80664F1187BD14009D099D /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA8069D7118B577E009D099D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA8069DF118B578C009D099D /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA97E01E0E2FDFB30090CC9B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CA97E0320E2FEA540090CC9B /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA99589E1046FFC70073F34A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA9958A61046FFD20073F34A /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA9DDC6410AE3DD6008B871E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA9DDC6C10AE3DE8008B871E /* libNeptune.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -953,6 +1508,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CAA97A170CF1654A00C01909 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAAAA07A12FF824E00ABC84B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAAAA08212FF825800ABC84B /* libNeptune.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1108,16 +1671,56 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F912B69D0B8EB1C700C1E90D /* Frameworks */ = {
+		E488DCB514479D2E005E84BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E445E4071449794000F221B3 /* libaxTLS.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E488DCD814479D86005E84BD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E4A5B64214476955000F3F6A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4A5B67314476AEB000F3F6A /* libaxTLS.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4A5B665144769A8000F3F6A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F912B69D0B8EB1C700C1E90D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E412ABB114478A430078A367 /* libaxTLS.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CA16FE6011C6C882006E2A86 /* Apple */ = {
+			isa = PBXGroup;
+			children = (
+				E46E9572153F8C2A00ED95D5 /* NptAppleAutoreleasePool.mm */,
+				CA16FE6111C6C882006E2A86 /* NptAppleLogConfig.mm */,
+			);
+			path = Apple;
+			sourceTree = "<group>";
+		};
 		CA197D190E1AE4200018E87C /* Queue1 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1140,7 +1743,7 @@
 		CA1A5E630EC0145900A9040C /* config */ = {
 			isa = PBXGroup;
 			children = (
-				CA1A5E640EC0145900A9040C /* config.h */,
+				CA87F23D1148401E0082AAFC /* Generic */,
 			);
 			path = config;
 			sourceTree = "<group>";
@@ -1167,7 +1770,6 @@
 		CA1A5E730EC0145900A9040C /* ssl */ = {
 			isa = PBXGroup;
 			children = (
-				CA1A5EF90EC01A0600A9040C /* ssl */,
 				CA1A5E750EC0145900A9040C /* asn1.c */,
 				CA1A5E760EC0145900A9040C /* cert.h */,
 				CA1A5E770EC0145900A9040C /* crypto_misc.h */,
@@ -1175,7 +1777,6 @@
 				CA1A5E790EC0145900A9040C /* loader.c */,
 				CA1A5E7C0EC0145900A9040C /* os_port.h */,
 				CA1A5E7D0EC0145900A9040C /* p12.c */,
-				CA1A5E7E0EC0145900A9040C /* private_key.h */,
 				CA1A5E7F0EC0145900A9040C /* ssl.h */,
 				CA1A5E800EC0145900A9040C /* tls1.c */,
 				CA1A5E810EC0145900A9040C /* tls1.h */,
@@ -1187,26 +1788,23 @@
 			path = ssl;
 			sourceTree = "<group>";
 		};
-		CA1A5EF90EC01A0600A9040C /* ssl */ = {
+		CA289B6610E16150001BC817 /* Cocoa */ = {
 			isa = PBXGroup;
 			children = (
-				CA1A5EFA0EC01A0600A9040C /* asn1.c */,
-				CA1A5EFB0EC01A0600A9040C /* cert.h */,
-				CA1A5EFC0EC01A0600A9040C /* crypto_misc.h */,
-				CA1A5EFD0EC01A0600A9040C /* gen_cert.c */,
-				CA1A5EFE0EC01A0600A9040C /* loader.c */,
-				CA1A5EFF0EC01A0600A9040C /* os_port.h */,
-				CA1A5F000EC01A0600A9040C /* p12.c */,
-				CA1A5F010EC01A0600A9040C /* private_key.h */,
-				CA1A5F020EC01A0600A9040C /* ssl.h */,
-				CA1A5F030EC01A0600A9040C /* tls1.c */,
-				CA1A5F040EC01A0600A9040C /* tls1.h */,
-				CA1A5F050EC01A0600A9040C /* tls1_clnt.c */,
-				CA1A5F060EC01A0600A9040C /* tls1_svr.c */,
-				CA1A5F070EC01A0600A9040C /* version.h */,
-				CA1A5F080EC01A0600A9040C /* x509.c */,
+				E46E95C2153F9F7C00ED95D5 /* NptCocoaEnviroment.mm */,
+				CA289B6710E16150001BC817 /* NptCocoaConsole.mm */,
+				CA289B6810E16150001BC817 /* NptCocoaMessageQueue.h */,
+				CA289B6910E16150001BC817 /* NptCocoaMessageQueue.mm */,
 			);
-			name = ssl;
+			path = Cocoa;
+			sourceTree = "<group>";
+		};
+		CA289DBE10E31637001BC817 /* Sockets1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA289DBF10E31637001BC817 /* SocketsTest1.cpp */,
+			);
+			path = Sockets1;
 			sourceTree = "<group>";
 		};
 		CA2F54320EC1165700AEBC12 /* Tls1 */ = {
@@ -1217,9 +1815,18 @@
 			path = Tls1;
 			sourceTree = "<group>";
 		};
+		CA4090CC10AA25BE00ED81C5 /* Time1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA4090CD10AA25BE00ED81C5 /* TimeTest1.cpp */,
+			);
+			path = Time1;
+			sourceTree = "<group>";
+		};
 		CA5041A70C5AE2180060E6FE /* Null */ = {
 			isa = PBXGroup;
 			children = (
+				E46E95B0153F91C900ED95D5 /* NptNullAutoreleasePool.cpp */,
 				CA5041AA0C5AE2180060E6FE /* NptNullSerialPort.cpp */,
 			);
 			path = Null;
@@ -1231,6 +1838,30 @@
 				CA7848470F3B6EB8009E84AD /* MiniHttpServer.cpp */,
 			);
 			path = MiniHttpServer;
+			sourceTree = "<group>";
+		};
+		CA790DA41233BDAA00875081 /* NetGet */ = {
+			isa = PBXGroup;
+			children = (
+				CA790DA51233BDAA00875081 /* NetGet.cpp */,
+			);
+			path = NetGet;
+			sourceTree = "<group>";
+		};
+		CA8066441187BCF3009D099D /* Digests1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA8066451187BCF3009D099D /* DigestsTest1.cpp */,
+			);
+			path = Digests1;
+			sourceTree = "<group>";
+		};
+		CA8069E3118B57BE009D099D /* Crypto1 */ = {
+			isa = PBXGroup;
+			children = (
+				CA8069E4118B57BE009D099D /* CryptoTest1.cpp */,
+			);
+			path = Crypto1;
 			sourceTree = "<group>";
 		};
 		CA84EC460C7E517E00CC9622 /* Zlib */ = {
@@ -1269,6 +1900,14 @@
 			name = ThirdParty;
 			sourceTree = "<group>";
 		};
+		CA87F23D1148401E0082AAFC /* Generic */ = {
+			isa = PBXGroup;
+			children = (
+				CA87F23E1148401E0082AAFC /* config.h */,
+			);
+			path = Generic;
+			sourceTree = "<group>";
+		};
 		CA97E01B0E2FDFA10090CC9B /* Streams1 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1277,26 +1916,49 @@
 			path = Streams1;
 			sourceTree = "<group>";
 		};
+		CA9958A91047001B0073F34A /* HttpClient2 */ = {
+			isa = PBXGroup;
+			children = (
+				CA9958AA1047001B0073F34A /* HttpClientTest2.cpp */,
+			);
+			path = HttpClient2;
+			sourceTree = "<group>";
+		};
+		CA9DDC7010AE3E52008B871E /* FileTest2 */ = {
+			isa = PBXGroup;
+			children = (
+				CA9DDC7110AE3E52008B871E /* FileTest2.cpp */,
+			);
+			path = FileTest2;
+			sourceTree = "<group>";
+		};
 		CAA979D50CF1648300C01909 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				CA2F54320EC1165700AEBC12 /* Tls1 */,
-				CAF2EFD20E64A25700948C04 /* FileTest1 */,
-				CA197D190E1AE4200018E87C /* Queue1 */,
 				CAA979D60CF1648300C01909 /* Arrays1 */,
 				CAA979D80CF1648300C01909 /* BufferedStreams1 */,
+				CA8069E3118B57BE009D099D /* Crypto1 */,
+				CA8066441187BCF3009D099D /* Digests1 */,
+				CAF2EFD20E64A25700948C04 /* FileTest1 */,
+				CA9DDC7010AE3E52008B871E /* FileTest2 */,
 				CAA979DA0CF1648300C01909 /* HttpClient1 */,
+				CA9958A91047001B0073F34A /* HttpClient2 */,
 				CAA979DC0CF1648300C01909 /* HttpServer1 */,
 				CAA979DE0CF1648300C01909 /* Lists1 */,
 				CAA979E00CF1648300C01909 /* Logging1 */,
+				CAC029DC139D84D10034427F /* Logging2 */,
 				CAA979E20CF1648300C01909 /* Maps1 */,
 				CAA979E40CF1648300C01909 /* Messages1 */,
 				CAA979E60CF1648300C01909 /* Messages2 */,
 				CAA979E80CF1648300C01909 /* Misc1 */,
+				CA197D190E1AE4200018E87C /* Queue1 */,
 				CAA979EA0CF1648300C01909 /* RingBuffer1 */,
+				CA289DBE10E31637001BC817 /* Sockets1 */,
 				CA97E01B0E2FDFA10090CC9B /* Streams1 */,
 				CAA979EC0CF1648300C01909 /* Strings1 */,
 				CAA979EE0CF1648300C01909 /* Threads1 */,
+				CA4090CC10AA25BE00ED81C5 /* Time1 */,
+				CA2F54320EC1165700AEBC12 /* Tls1 */,
 				CAA979F00CF1648300C01909 /* Udp1 */,
 				CAA979F20CF1648300C01909 /* Url1 */,
 				CAA979F40CF1648300C01909 /* Xml1 */,
@@ -1448,6 +2110,22 @@
 			path = Zip1;
 			sourceTree = "<group>";
 		};
+		CAAAA07512FF823200ABC84B /* NetResolve */ = {
+			isa = PBXGroup;
+			children = (
+				CAAAA07612FF823200ABC84B /* NetResolve.cpp */,
+			);
+			path = NetResolve;
+			sourceTree = "<group>";
+		};
+		CAC029DC139D84D10034427F /* Logging2 */ = {
+			isa = PBXGroup;
+			children = (
+				CAC029DD139D84D10034427F /* LoggingTest2.cpp */,
+			);
+			path = Logging2;
+			sourceTree = "<group>";
+		};
 		CAE417A50E0DC16300A530D1 /* Apps */ = {
 			isa = PBXGroup;
 			children = (
@@ -1456,6 +2134,8 @@
 				CAE417A80E0DC16300A530D1 /* NetEcho */,
 				CAE417AA0E0DC16300A530D1 /* NetPing */,
 				CAE417AC0E0DC16300A530D1 /* NetPump */,
+				CA790DA41233BDAA00875081 /* NetGet */,
+				CAAAA07512FF823200ABC84B /* NetResolve */,
 			);
 			name = Apps;
 			path = ../../../Source/Apps;
@@ -1493,6 +2173,23 @@
 			path = NetPump;
 			sourceTree = "<group>";
 		};
+		CAE4F7661157C3A000DD82F9 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				CAE4F7671157C3A000DD82F9 /* TLS */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		CAE4F7671157C3A000DD82F9 /* TLS */ = {
+			isa = PBXGroup;
+			children = (
+				CA057AAE11BC27F200C90519 /* NptTlsDefaultTrustAnchorsBase.cpp */,
+				CA057AAF11BC27F200C90519 /* NptTlsDefaultTrustAnchorsExtended.cpp */,
+			);
+			path = TLS;
+			sourceTree = "<group>";
+		};
 		CAF2EFD20E64A25700948C04 /* FileTest1 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1508,6 +2205,7 @@
 				CAE417A50E0DC16300A530D1 /* Apps */,
 				CAA979D50CF1648300C01909 /* Tests */,
 				F912B6A00B8EB1C700C1E90D /* Products */,
+				CA16FE6511C6C954006E2A86 /* CoreFoundation.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1543,6 +2241,18 @@
 				CA2F54240EC115E600AEBC12 /* TlsTest1 */,
 				CA30B76B0F0DCE990085B46E /* LoggingTest2 */,
 				CA78483D0F3B6E69009E84AD /* minihttpserver */,
+				CA9958A01046FFC70073F34A /* HttpClientTest2 */,
+				CA4090C410AA257B00ED81C5 /* TimeTest1 */,
+				CA9DDC6610AE3DD6008B871E /* FileTest2 */,
+				CA289DB710E31600001BC817 /* SocketsTest1 */,
+				CA8066491187BD08009D099D /* DigestsTest1 */,
+				CA8069D9118B577E009D099D /* CryptoTest1 */,
+				CA790DA91233BDC100875081 /* NetGet */,
+				CAAAA07C12FF824E00ABC84B /* NetResolve */,
+				E4A5B64714476955000F3F6A /* libNeptune.a */,
+				E4A5B669144769A8000F3F6A /* libaxTLS.a */,
+				E488DCBA14479D2E005E84BD /* libNeptune.a */,
+				E488DCDC14479D86005E84BD /* libaxTLS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1550,6 +2260,7 @@
 		F912B6A50B8EB27400C1E90D /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				CAE4F7661157C3A000DD82F9 /* Data */,
 				F912B6AF0B8EB27400C1E90D /* Core */,
 				F912B6EE0B8EB27400C1E90D /* System */,
 				CA84EC470C7E51A500CC9622 /* ThirdParty */,
@@ -1561,16 +2272,10 @@
 		F912B6AF0B8EB27400C1E90D /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */,
-				CA096EF10ED0DBCE00A5103D /* NptResults.cpp */,
-				CAFB236E0EC760FE009C3459 /* NptTls.cpp */,
-				CAFB236F0EC760FE009C3459 /* NptTls.h */,
-				CA1D056C0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp */,
-				CA1D056D0E68E29C00E3DEE8 /* NptDynamicLibraries.h */,
-				CA1D056E0E68E29C00E3DEE8 /* NptSerialPort.h */,
 				F912B6B00B8EB27400C1E90D /* Neptune.cpp */,
 				F912B6B10B8EB27400C1E90D /* Neptune.h */,
 				F912B6B20B8EB27400C1E90D /* NptArray.h */,
+				E46E95AD153F903300ED95D5 /* NptAutoreleasePool.h */,
 				F912B6B30B8EB27400C1E90D /* NptBase64.cpp */,
 				F912B6B40B8EB27400C1E90D /* NptBase64.h */,
 				F912B6B50B8EB27400C1E90D /* NptBufferedStreams.cpp */,
@@ -1581,13 +2286,22 @@
 				F912B6BA0B8EB27400C1E90D /* NptConsole.cpp */,
 				F912B6BB0B8EB27400C1E90D /* NptConsole.h */,
 				F912B6BC0B8EB27400C1E90D /* NptConstants.h */,
+				CA806987118A602B009D099D /* NptCrypto.cpp */,
+				CA806988118A602B009D099D /* NptCrypto.h */,
 				F912B6BD0B8EB27400C1E90D /* NptDataBuffer.cpp */,
 				F912B6BE0B8EB27400C1E90D /* NptDataBuffer.h */,
 				F912B6BF0B8EB27400C1E90D /* NptDebug.cpp */,
 				F912B6C00B8EB27400C1E90D /* NptDebug.h */,
 				F912B6C10B8EB27400C1E90D /* NptDefs.h */,
+				CAEB8EC111864F0B00B4AF01 /* NptDigest.cpp */,
+				CAEB8EC211864F0B00B4AF01 /* NptDigest.h */,
+				CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */,
+				CA1D056C0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp */,
+				CA1D056D0E68E29C00E3DEE8 /* NptDynamicLibraries.h */,
 				F912B6C20B8EB27400C1E90D /* NptFile.cpp */,
 				F912B6C30B8EB27400C1E90D /* NptFile.h */,
+				CAD78E0312A9C42000D7EBA7 /* NptHash.cpp */,
+				CAD78DD212A99DC500D7EBA7 /* NptHash.h */,
 				F912B6C40B8EB27400C1E90D /* NptHttp.cpp */,
 				F912B6C50B8EB27400C1E90D /* NptHttp.h */,
 				F912B6C60B8EB27400C1E90D /* NptInterfaces.h */,
@@ -1603,10 +2317,12 @@
 				F912B6D00B8EB27400C1E90D /* NptQueue.cpp */,
 				F912B6D10B8EB27400C1E90D /* NptQueue.h */,
 				F912B6D20B8EB27400C1E90D /* NptReferences.h */,
+				CA096EF10ED0DBCE00A5103D /* NptResults.cpp */,
 				F912B6D30B8EB27400C1E90D /* NptResults.h */,
 				F912B6D40B8EB27400C1E90D /* NptRingBuffer.cpp */,
 				F912B6D50B8EB27400C1E90D /* NptRingBuffer.h */,
 				F912B6D60B8EB27400C1E90D /* NptSelectableMessageQueue.h */,
+				CA1D056E0E68E29C00E3DEE8 /* NptSerialPort.h */,
 				F912B6D70B8EB27400C1E90D /* NptSimpleMessageQueue.cpp */,
 				F912B6D80B8EB27400C1E90D /* NptSimpleMessageQueue.h */,
 				F912B6D90B8EB27400C1E90D /* NptSockets.cpp */,
@@ -1622,6 +2338,10 @@
 				F912B6E30B8EB27400C1E90D /* NptThreads.h */,
 				F912B6E40B8EB27400C1E90D /* NptTime.cpp */,
 				F912B6E50B8EB27400C1E90D /* NptTime.h */,
+				CAFB236E0EC760FE009C3459 /* NptTls.cpp */,
+				CAFB236F0EC760FE009C3459 /* NptTls.h */,
+				E46E95AE153F903300ED95D5 /* NptTlsDefaultTrustAnchorsBase.h */,
+				E46E95AF153F903300ED95D5 /* NptTlsDefaultTrustAnchorsExtended.h */,
 				F912B6E60B8EB27400C1E90D /* NptTypes.h */,
 				F912B6E70B8EB27400C1E90D /* NptUri.cpp */,
 				F912B6E80B8EB27400C1E90D /* NptUri.h */,
@@ -1630,8 +2350,8 @@
 				F912B6EB0B8EB27400C1E90D /* NptVersion.h */,
 				F912B6EC0B8EB27400C1E90D /* NptXml.cpp */,
 				F912B6ED0B8EB27400C1E90D /* NptXml.h */,
-				CA84EC7A0C7E5A7000CC9622 /* NptZip.h */,
 				CAF03CB50C7E7F15002C470F /* NptZip.cpp */,
+				CA84EC7A0C7E5A7000CC9622 /* NptZip.h */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1639,8 +2359,8 @@
 		F912B6EE0B8EB27400C1E90D /* System */ = {
 			isa = PBXGroup;
 			children = (
-				CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */,
-				CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */,
+				CA16FE6011C6C882006E2A86 /* Apple */,
+				CA289B6610E16150001BC817 /* Cocoa */,
 				CA5041A70C5AE2180060E6FE /* Null */,
 				F912B6EF0B8EB27400C1E90D /* Bsd */,
 				F912B6F70B8EB27400C1E90D /* Posix */,
@@ -1652,6 +2372,7 @@
 		F912B6EF0B8EB27400C1E90D /* Bsd */ = {
 			isa = PBXGroup;
 			children = (
+				CAC5048212FFB7EF00FEB1D8 /* NptBsdResolver.cpp */,
 				F912B6F00B8EB27400C1E90D /* NptBsdNetwork.cpp */,
 				F912B6F10B8EB27400C1E90D /* NptBsdSockets.cpp */,
 			);
@@ -1661,6 +2382,8 @@
 		F912B6F70B8EB27400C1E90D /* Posix */ = {
 			isa = PBXGroup;
 			children = (
+				E46E95C5153F9F9B00ED95D5 /* NptPosixEnvironment.cpp */,
+				CA40905B10AA10A800ED81C5 /* NptPosixTime.cpp */,
 				CA1D05720E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp */,
 				CAF2EFB70E64882900948C04 /* NptPosixNetwork.cpp */,
 				CAF2EFB50E64881E00948C04 /* NptPosixFile.cpp */,
@@ -1693,20 +2416,170 @@
 				CA1A5EB00EC0154D00A9040C /* version.h in Headers */,
 				CA1A5EB30EC0155000A9040C /* tls1.h in Headers */,
 				CA1A5EB50EC0155100A9040C /* ssl.h in Headers */,
-				CA1A5EB90EC0155400A9040C /* private_key.h in Headers */,
 				CA1A5EC30EC0155A00A9040C /* crypto_misc.h in Headers */,
 				CA1A5EC50EC0155C00A9040C /* crypto.h in Headers */,
-				CA1A5EC60EC0155D00A9040C /* config.h in Headers */,
 				CA1A5EC70EC0155E00A9040C /* cert.h in Headers */,
 				CA1A5EC80EC0155F00A9040C /* bigint_impl.h in Headers */,
 				CA1A5EC90EC0155F00A9040C /* bigint.h in Headers */,
-				CA1A5F0A0EC01A0600A9040C /* cert.h in Headers */,
-				CA1A5F0B0EC01A0600A9040C /* crypto_misc.h in Headers */,
-				CA1A5F0E0EC01A0600A9040C /* os_port.h in Headers */,
-				CA1A5F100EC01A0600A9040C /* private_key.h in Headers */,
-				CA1A5F110EC01A0600A9040C /* ssl.h in Headers */,
-				CA1A5F130EC01A0600A9040C /* tls1.h in Headers */,
-				CA1A5F160EC01A0600A9040C /* version.h in Headers */,
+				CA87F23F1148401E0082AAFC /* config.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E488DC3C14479D2E005E84BD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E488DC3D14479D2E005E84BD /* Neptune.h in Headers */,
+				E488DC3E14479D2E005E84BD /* NptArray.h in Headers */,
+				E488DC3F14479D2E005E84BD /* NptBase64.h in Headers */,
+				E488DC4014479D2E005E84BD /* NptBufferedStreams.h in Headers */,
+				E488DC4114479D2E005E84BD /* NptCommon.h in Headers */,
+				E488DC4214479D2E005E84BD /* NptConfig.h in Headers */,
+				E488DC4314479D2E005E84BD /* NptConsole.h in Headers */,
+				E488DC4414479D2E005E84BD /* NptConstants.h in Headers */,
+				E488DC4514479D2E005E84BD /* NptDataBuffer.h in Headers */,
+				E488DC4614479D2E005E84BD /* NptDebug.h in Headers */,
+				E488DC4714479D2E005E84BD /* NptDefs.h in Headers */,
+				E488DC4814479D2E005E84BD /* NptFile.h in Headers */,
+				E488DC4914479D2E005E84BD /* NptHttp.h in Headers */,
+				E488DC4A14479D2E005E84BD /* NptInterfaces.h in Headers */,
+				E488DC4B14479D2E005E84BD /* NptList.h in Headers */,
+				E488DC4C14479D2E005E84BD /* NptLogging.h in Headers */,
+				E488DC4D14479D2E005E84BD /* NptMap.h in Headers */,
+				E488DC4E14479D2E005E84BD /* NptMessaging.h in Headers */,
+				E488DC4F14479D2E005E84BD /* NptNetwork.h in Headers */,
+				E488DC5014479D2E005E84BD /* NptQueue.h in Headers */,
+				E488DC5114479D2E005E84BD /* NptReferences.h in Headers */,
+				E488DC5214479D2E005E84BD /* NptResults.h in Headers */,
+				E488DC5314479D2E005E84BD /* NptRingBuffer.h in Headers */,
+				E488DC5414479D2E005E84BD /* NptSelectableMessageQueue.h in Headers */,
+				E488DC5514479D2E005E84BD /* NptSimpleMessageQueue.h in Headers */,
+				E488DC5614479D2E005E84BD /* NptSockets.h in Headers */,
+				E488DC5714479D2E005E84BD /* NptStack.h in Headers */,
+				E488DC5814479D2E005E84BD /* NptStreams.h in Headers */,
+				E488DC5914479D2E005E84BD /* NptStrings.h in Headers */,
+				E488DC5A14479D2E005E84BD /* NptSystem.h in Headers */,
+				E488DC5B14479D2E005E84BD /* NptThreads.h in Headers */,
+				E488DC5C14479D2E005E84BD /* NptTime.h in Headers */,
+				E488DC5D14479D2E005E84BD /* NptTypes.h in Headers */,
+				E488DC5E14479D2E005E84BD /* NptUri.h in Headers */,
+				E488DC5F14479D2E005E84BD /* NptUtils.h in Headers */,
+				E488DC6014479D2E005E84BD /* NptVersion.h in Headers */,
+				E488DC6114479D2E005E84BD /* NptXml.h in Headers */,
+				E488DC6214479D2E005E84BD /* crc32.h in Headers */,
+				E488DC6314479D2E005E84BD /* deflate.h in Headers */,
+				E488DC6414479D2E005E84BD /* inffast.h in Headers */,
+				E488DC6514479D2E005E84BD /* inffixed.h in Headers */,
+				E488DC6614479D2E005E84BD /* inflate.h in Headers */,
+				E488DC6714479D2E005E84BD /* inftrees.h in Headers */,
+				E488DC6814479D2E005E84BD /* trees.h in Headers */,
+				E488DC6914479D2E005E84BD /* zconf.h in Headers */,
+				E488DC6A14479D2E005E84BD /* zlib.h in Headers */,
+				E488DC6B14479D2E005E84BD /* zutil.h in Headers */,
+				E488DC6C14479D2E005E84BD /* NptZip.h in Headers */,
+				E488DC6D14479D2E005E84BD /* NptDynamicLibraries.h in Headers */,
+				E488DC6E14479D2E005E84BD /* NptSerialPort.h in Headers */,
+				E488DC6F14479D2E005E84BD /* NptTls.h in Headers */,
+				E488DC7014479D2E005E84BD /* NptDynamicCast.h in Headers */,
+				E488DC7114479D2E005E84BD /* NptCocoaMessageQueue.h in Headers */,
+				E488DC7214479D2E005E84BD /* NptDigest.h in Headers */,
+				E488DC7314479D2E005E84BD /* NptCrypto.h in Headers */,
+				E488DC7414479D2E005E84BD /* NptHash.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E488DCBC14479D86005E84BD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E488DCBD14479D86005E84BD /* version.h in Headers */,
+				E488DCBE14479D86005E84BD /* tls1.h in Headers */,
+				E488DCBF14479D86005E84BD /* ssl.h in Headers */,
+				E488DCC014479D86005E84BD /* crypto_misc.h in Headers */,
+				E488DCC114479D86005E84BD /* crypto.h in Headers */,
+				E488DCC214479D86005E84BD /* cert.h in Headers */,
+				E488DCC314479D86005E84BD /* bigint_impl.h in Headers */,
+				E488DCC414479D86005E84BD /* bigint.h in Headers */,
+				E488DCC514479D86005E84BD /* config.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4A5B5C914476955000F3F6A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4A5B5CA14476955000F3F6A /* Neptune.h in Headers */,
+				E4A5B5CB14476955000F3F6A /* NptArray.h in Headers */,
+				E4A5B5CC14476955000F3F6A /* NptBase64.h in Headers */,
+				E4A5B5CD14476955000F3F6A /* NptBufferedStreams.h in Headers */,
+				E4A5B5CE14476955000F3F6A /* NptCommon.h in Headers */,
+				E4A5B5CF14476955000F3F6A /* NptConfig.h in Headers */,
+				E4A5B5D014476955000F3F6A /* NptConsole.h in Headers */,
+				E4A5B5D114476955000F3F6A /* NptConstants.h in Headers */,
+				E4A5B5D214476955000F3F6A /* NptDataBuffer.h in Headers */,
+				E4A5B5D314476955000F3F6A /* NptDebug.h in Headers */,
+				E4A5B5D414476955000F3F6A /* NptDefs.h in Headers */,
+				E4A5B5D514476955000F3F6A /* NptFile.h in Headers */,
+				E4A5B5D614476955000F3F6A /* NptHttp.h in Headers */,
+				E4A5B5D714476955000F3F6A /* NptInterfaces.h in Headers */,
+				E4A5B5D814476955000F3F6A /* NptList.h in Headers */,
+				E4A5B5D914476955000F3F6A /* NptLogging.h in Headers */,
+				E4A5B5DA14476955000F3F6A /* NptMap.h in Headers */,
+				E4A5B5DB14476955000F3F6A /* NptMessaging.h in Headers */,
+				E4A5B5DC14476955000F3F6A /* NptNetwork.h in Headers */,
+				E4A5B5DD14476955000F3F6A /* NptQueue.h in Headers */,
+				E4A5B5DE14476955000F3F6A /* NptReferences.h in Headers */,
+				E4A5B5DF14476955000F3F6A /* NptResults.h in Headers */,
+				E4A5B5E014476955000F3F6A /* NptRingBuffer.h in Headers */,
+				E4A5B5E114476955000F3F6A /* NptSelectableMessageQueue.h in Headers */,
+				E4A5B5E214476955000F3F6A /* NptSimpleMessageQueue.h in Headers */,
+				E4A5B5E314476955000F3F6A /* NptSockets.h in Headers */,
+				E4A5B5E414476955000F3F6A /* NptStack.h in Headers */,
+				E4A5B5E514476955000F3F6A /* NptStreams.h in Headers */,
+				E4A5B5E614476955000F3F6A /* NptStrings.h in Headers */,
+				E4A5B5E714476955000F3F6A /* NptSystem.h in Headers */,
+				E4A5B5E814476955000F3F6A /* NptThreads.h in Headers */,
+				E4A5B5E914476955000F3F6A /* NptTime.h in Headers */,
+				E4A5B5EA14476955000F3F6A /* NptTypes.h in Headers */,
+				E4A5B5EB14476955000F3F6A /* NptUri.h in Headers */,
+				E4A5B5EC14476955000F3F6A /* NptUtils.h in Headers */,
+				E4A5B5ED14476955000F3F6A /* NptVersion.h in Headers */,
+				E4A5B5EE14476955000F3F6A /* NptXml.h in Headers */,
+				E4A5B5EF14476955000F3F6A /* crc32.h in Headers */,
+				E4A5B5F014476955000F3F6A /* deflate.h in Headers */,
+				E4A5B5F114476955000F3F6A /* inffast.h in Headers */,
+				E4A5B5F214476955000F3F6A /* inffixed.h in Headers */,
+				E4A5B5F314476955000F3F6A /* inflate.h in Headers */,
+				E4A5B5F414476955000F3F6A /* inftrees.h in Headers */,
+				E4A5B5F514476955000F3F6A /* trees.h in Headers */,
+				E4A5B5F614476955000F3F6A /* zconf.h in Headers */,
+				E4A5B5F714476955000F3F6A /* zlib.h in Headers */,
+				E4A5B5F814476955000F3F6A /* zutil.h in Headers */,
+				E4A5B5F914476955000F3F6A /* NptZip.h in Headers */,
+				E4A5B5FA14476955000F3F6A /* NptDynamicLibraries.h in Headers */,
+				E4A5B5FB14476955000F3F6A /* NptSerialPort.h in Headers */,
+				E4A5B5FC14476955000F3F6A /* NptTls.h in Headers */,
+				E4A5B5FD14476955000F3F6A /* NptDynamicCast.h in Headers */,
+				E4A5B5FE14476955000F3F6A /* NptCocoaMessageQueue.h in Headers */,
+				E4A5B5FF14476955000F3F6A /* NptDigest.h in Headers */,
+				E4A5B60014476955000F3F6A /* NptCrypto.h in Headers */,
+				E4A5B60114476955000F3F6A /* NptHash.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4A5B649144769A8000F3F6A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4A5B64A144769A8000F3F6A /* version.h in Headers */,
+				E4A5B64B144769A8000F3F6A /* tls1.h in Headers */,
+				E4A5B64C144769A8000F3F6A /* ssl.h in Headers */,
+				E4A5B64D144769A8000F3F6A /* crypto_misc.h in Headers */,
+				E4A5B64E144769A8000F3F6A /* crypto.h in Headers */,
+				E4A5B64F144769A8000F3F6A /* cert.h in Headers */,
+				E4A5B650144769A8000F3F6A /* bigint_impl.h in Headers */,
+				E4A5B651144769A8000F3F6A /* bigint.h in Headers */,
+				E4A5B652144769A8000F3F6A /* config.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1764,9 +2637,12 @@
 				CA84EC7B0C7E5A7000CC9622 /* NptZip.h in Headers */,
 				CA1D05700E68E29C00E3DEE8 /* NptDynamicLibraries.h in Headers */,
 				CA1D05710E68E29C00E3DEE8 /* NptSerialPort.h in Headers */,
-				CA8961850E7689AF00FD1BE1 /* NptCocoaMessageQueue.h in Headers */,
 				CAFB23710EC760FE009C3459 /* NptTls.h in Headers */,
 				CA926A500F8BEB50003CB74E /* NptDynamicCast.h in Headers */,
+				CA289B6B10E16150001BC817 /* NptCocoaMessageQueue.h in Headers */,
+				CAEB8EC611864F0B00B4AF01 /* NptDigest.h in Headers */,
+				CA80698A118A602B009D099D /* NptCrypto.h in Headers */,
+				CAD78DD312A99DC500D7EBA7 /* NptHash.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1801,12 +2677,28 @@
 			buildRules = (
 			);
 			dependencies = (
-				CA1A5EAE0EC0153600A9040C /* PBXTargetDependency */,
 			);
 			name = axTLS;
 			productName = axTLS;
 			productReference = CA1A5EA90EC0152A00A9040C /* libaxTLS.a */;
 			productType = "com.apple.product-type.library.static";
+		};
+		CA289DB610E31600001BC817 /* SocketsTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA289DC110E31637001BC817 /* Build configuration list for PBXNativeTarget "SocketsTest1" */;
+			buildPhases = (
+				CA289DB410E31600001BC817 /* Sources */,
+				CA289DB510E31600001BC817 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA289DBC10E31613001BC817 /* PBXTargetDependency */,
+			);
+			name = SocketsTest1;
+			productName = SocketsTest1;
+			productReference = CA289DB710E31600001BC817 /* SocketsTest1 */;
+			productType = "com.apple.product-type.tool";
 		};
 		CA2F54230EC115E600AEBC12 /* TlsTest1 */ = {
 			isa = PBXNativeTarget;
@@ -1843,6 +2735,23 @@
 			productReference = CA30B76B0F0DCE990085B46E /* LoggingTest2 */;
 			productType = "com.apple.product-type.tool";
 		};
+		CA4090C310AA257B00ED81C5 /* TimeTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA4090CB10AA25BE00ED81C5 /* Build configuration list for PBXNativeTarget "TimeTest1" */;
+			buildPhases = (
+				CA4090C110AA257B00ED81C5 /* Sources */,
+				CA4090C210AA257B00ED81C5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA4090C910AA259200ED81C5 /* PBXTargetDependency */,
+			);
+			name = TimeTest1;
+			productName = TimeTest1;
+			productReference = CA4090C410AA257B00ED81C5 /* TimeTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
 		CA550D4A0D20A37E00B22D72 /* HttpServerTest1 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA550D510D20A37E00B22D72 /* Build configuration list for PBXNativeTarget "HttpServerTest1" */;
@@ -1877,6 +2786,58 @@
 			productReference = CA78483D0F3B6E69009E84AD /* minihttpserver */;
 			productType = "com.apple.product-type.tool";
 		};
+		CA790DA81233BDC100875081 /* NetGet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA790DB51233BE2F00875081 /* Build configuration list for PBXNativeTarget "NetGet" */;
+			buildPhases = (
+				CA790DA61233BDC100875081 /* Sources */,
+				CA790DA71233BDC100875081 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA790DAE1233BDE900875081 /* PBXTargetDependency */,
+				CA790DB21233BDF500875081 /* PBXTargetDependency */,
+			);
+			name = NetGet;
+			productName = NetGet;
+			productReference = CA790DA91233BDC100875081 /* NetGet */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA8066481187BD08009D099D /* DigestsTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA8066541187BD60009D099D /* Build configuration list for PBXNativeTarget "DigestsTest1" */;
+			buildPhases = (
+				CA8066461187BD08009D099D /* Sources */,
+				CA8066471187BD08009D099D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA80664E1187BD0F009D099D /* PBXTargetDependency */,
+			);
+			name = DigestsTest1;
+			productName = DigestsTest1;
+			productReference = CA8066491187BD08009D099D /* DigestsTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA8069D8118B577E009D099D /* CryptoTest1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA8069E6118B57BE009D099D /* Build configuration list for PBXNativeTarget "CryptoTest1" */;
+			buildPhases = (
+				CA8069D6118B577E009D099D /* Sources */,
+				CA8069D7118B577E009D099D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA8069DE118B5786009D099D /* PBXTargetDependency */,
+			);
+			name = CryptoTest1;
+			productName = CryptoTest1;
+			productReference = CA8069D9118B577E009D099D /* CryptoTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
 		CA97E01F0E2FDFB30090CC9B /* StreamsTest1 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA97E0270E2FDFFB0090CC9B /* Build configuration list for PBXNativeTarget "StreamsTest1" */;
@@ -1892,6 +2853,40 @@
 			name = StreamsTest1;
 			productName = StreamsTest1;
 			productReference = CA97E0200E2FDFB30090CC9B /* StreamsTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA99589F1046FFC70073F34A /* HttpClientTest2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA9958AC1047001B0073F34A /* Build configuration list for PBXNativeTarget "HttpClientTest2" */;
+			buildPhases = (
+				CA99589D1046FFC70073F34A /* Sources */,
+				CA99589E1046FFC70073F34A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA9958A51046FFCD0073F34A /* PBXTargetDependency */,
+			);
+			name = HttpClientTest2;
+			productName = HttpClientTest2;
+			productReference = CA9958A01046FFC70073F34A /* HttpClientTest2 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA9DDC6510AE3DD6008B871E /* FileTest2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA9DDC6F10AE3E29008B871E /* Build configuration list for PBXNativeTarget "FileTest2" */;
+			buildPhases = (
+				CA9DDC6310AE3DD6008B871E /* Sources */,
+				CA9DDC6410AE3DD6008B871E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA9DDC6B10AE3DE3008B871E /* PBXTargetDependency */,
+			);
+			name = FileTest2;
+			productName = FileTest2;
+			productReference = CA9DDC6610AE3DD6008B871E /* FileTest2 */;
 			productType = "com.apple.product-type.tool";
 		};
 		CAA97A000CF164A700C01909 /* XmlTest1 */ = {
@@ -1926,6 +2921,23 @@
 			name = StringsTest1;
 			productName = XmlTest1;
 			productReference = CAA97A1B0CF1654A00C01909 /* StringsTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CAAAA07B12FF824E00ABC84B /* NetResolve */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAAAA08812FF82A900ABC84B /* Build configuration list for PBXNativeTarget "NetResolve" */;
+			buildPhases = (
+				CAAAA07912FF824E00ABC84B /* Sources */,
+				CAAAA07A12FF824E00ABC84B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CAAAA08112FF825300ABC84B /* PBXTargetDependency */,
+			);
+			name = NetResolve;
+			productName = NetResolve;
+			productReference = CAAAA07C12FF824E00ABC84B /* NetResolve */;
 			productType = "com.apple.product-type.tool";
 		};
 		CAE4169A0E0DBD6600A530D1 /* MiscTest1 */ = {
@@ -2251,6 +3263,76 @@
 			productReference = CAF2EFD70E64A27200948C04 /* FileTest1 */;
 			productType = "com.apple.product-type.tool";
 		};
+		E488DC3914479D2E005E84BD /* Neptune-iPhone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E488DCB714479D2E005E84BD /* Build configuration list for PBXNativeTarget "Neptune-iPhone" */;
+			buildPhases = (
+				E488DC3C14479D2E005E84BD /* Headers */,
+				E488DC7514479D2E005E84BD /* Sources */,
+				E488DCB514479D2E005E84BD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E445E4061449793400F221B3 /* PBXTargetDependency */,
+			);
+			name = "Neptune-iPhone";
+			productName = Neptune;
+			productReference = E488DCBA14479D2E005E84BD /* libNeptune.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		E488DCBB14479D86005E84BD /* axTLS-iPhone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E488DCD914479D86005E84BD /* Build configuration list for PBXNativeTarget "axTLS-iPhone" */;
+			buildPhases = (
+				E488DCBC14479D86005E84BD /* Headers */,
+				E488DCC614479D86005E84BD /* Sources */,
+				E488DCD814479D86005E84BD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "axTLS-iPhone";
+			productName = axTLS;
+			productReference = E488DCDC14479D86005E84BD /* libaxTLS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		E4A5B5C614476955000F3F6A /* Neptune-MacOSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4A5B64414476955000F3F6A /* Build configuration list for PBXNativeTarget "Neptune-MacOSX" */;
+			buildPhases = (
+				E4A5B5C914476955000F3F6A /* Headers */,
+				E4A5B60214476955000F3F6A /* Sources */,
+				E4A5B64214476955000F3F6A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E4A5B66B144769E0000F3F6A /* PBXTargetDependency */,
+			);
+			name = "Neptune-MacOSX";
+			productName = Neptune;
+			productReference = E4A5B64714476955000F3F6A /* libNeptune.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		E4A5B648144769A8000F3F6A /* axTLS-MacOSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4A5B666144769A8000F3F6A /* Build configuration list for PBXNativeTarget "axTLS-MacOSX" */;
+			buildPhases = (
+				E4A5B649144769A8000F3F6A /* Headers */,
+				E4A5B653144769A8000F3F6A /* Sources */,
+				E4A5B665144769A8000F3F6A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "axTLS-MacOSX";
+			productName = axTLS;
+			productReference = E4A5B669144769A8000F3F6A /* libaxTLS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		F912B69E0B8EB1C700C1E90D /* Neptune */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F912B6A10B8EB1C800C1E90D /* Build configuration list for PBXNativeTarget "Neptune" */;
@@ -2262,6 +3344,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E412ABB014478A380078A367 /* PBXTargetDependency */,
 			);
 			name = Neptune;
 			productName = Neptune;
@@ -2273,9 +3356,19 @@
 /* Begin PBXProject section */
 		F912B6870B8EB12700C1E90D /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
 			buildConfigurationList = F912B6880B8EB12700C1E90D /* Build configuration list for PBXProject "Neptune" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = F912B6850B8EB12700C1E90D;
 			productRefGroup = F912B6A00B8EB1C700C1E90D /* Products */;
 			projectDirPath = "";
@@ -2285,7 +3378,18 @@
 				CAE417DF0E0DC1F600A530D1 /* Apps */,
 				CAE4176C0E0DC0FE00A530D1 /* Tests */,
 				F912B69E0B8EB1C700C1E90D /* Neptune */,
+				E488DC3914479D2E005E84BD /* Neptune-iPhone */,
+				E4A5B5C614476955000F3F6A /* Neptune-MacOSX */,
 				CA1A5EA80EC0152A00A9040C /* axTLS */,
+				E488DCBB14479D86005E84BD /* axTLS-iPhone */,
+				E4A5B648144769A8000F3F6A /* axTLS-MacOSX */,
+				CA78483C0F3B6E69009E84AD /* MiniHttpServer */,
+				CAE4179C0E0DC13A00A530D1 /* NetPump */,
+				CAE417BA0E0DC19400A530D1 /* NetEcho */,
+				CAE417C70E0DC1B400A530D1 /* NetConfig */,
+				CAE417D40E0DC1D600A530D1 /* NetPing */,
+				CA790DA81233BDC100875081 /* NetGet */,
+				CAAAA07B12FF824E00ABC84B /* NetResolve */,
 				CAE416B80E0DBDF800A530D1 /* ArraysTest1 */,
 				CAE416C50E0DBE2F00A530D1 /* BufferedStreamsTest1 */,
 				CA550D4A0D20A37E00B22D72 /* HttpServerTest1 */,
@@ -2305,14 +3409,15 @@
 				CAE417530E0DC0A800A530D1 /* UrlTest1 */,
 				CAA97A000CF164A700C01909 /* XmlTest1 */,
 				CAE417600E0DC0D200A530D1 /* ZipTest1 */,
-				CAE4179C0E0DC13A00A530D1 /* NetPump */,
-				CAE417BA0E0DC19400A530D1 /* NetEcho */,
-				CAE417C70E0DC1B400A530D1 /* NetConfig */,
-				CAE417D40E0DC1D600A530D1 /* NetPing */,
 				CA97E01F0E2FDFB30090CC9B /* StreamsTest1 */,
 				CAF2EFD60E64A27200948C04 /* FileTest1 */,
 				CA2F54230EC115E600AEBC12 /* TlsTest1 */,
-				CA78483C0F3B6E69009E84AD /* MiniHttpServer */,
+				CA99589F1046FFC70073F34A /* HttpClientTest2 */,
+				CA4090C310AA257B00ED81C5 /* TimeTest1 */,
+				CA9DDC6510AE3DD6008B871E /* FileTest2 */,
+				CA289DB610E31600001BC817 /* SocketsTest1 */,
+				CA8066481187BD08009D099D /* DigestsTest1 */,
+				CA8069D8118B577E009D099D /* CryptoTest1 */,
 			);
 		};
 /* End PBXProject section */
@@ -2347,14 +3452,14 @@
 				CA1A5ECA0EC0156000A9040C /* bigint.c in Sources */,
 				CA1A5ECB0EC0156100A9040C /* asn1.c in Sources */,
 				CA1A5ECC0EC0156100A9040C /* aes.c in Sources */,
-				CA1A5F090EC01A0600A9040C /* asn1.c in Sources */,
-				CA1A5F0C0EC01A0600A9040C /* gen_cert.c in Sources */,
-				CA1A5F0D0EC01A0600A9040C /* loader.c in Sources */,
-				CA1A5F0F0EC01A0600A9040C /* p12.c in Sources */,
-				CA1A5F120EC01A0600A9040C /* tls1.c in Sources */,
-				CA1A5F140EC01A0600A9040C /* tls1_clnt.c in Sources */,
-				CA1A5F150EC01A0600A9040C /* tls1_svr.c in Sources */,
-				CA1A5F170EC01A0600A9040C /* x509.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA289DB410E31600001BC817 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA289DC010E31637001BC817 /* SocketsTest1.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2370,6 +3475,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAC029DE139D84D10034427F /* LoggingTest2.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA4090C110AA257B00ED81C5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA4090CE10AA25BE00ED81C5 /* TimeTest1.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2389,11 +3503,51 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA790DA61233BDC100875081 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA790DB31233BE1000875081 /* NetGet.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA8066461187BD08009D099D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA8066521187BD42009D099D /* DigestsTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA8069D6118B577E009D099D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA8069E5118B57BE009D099D /* CryptoTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA97E01D0E2FDFB30090CC9B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CA97E0250E2FDFDD0090CC9B /* StreamsTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA99589D1046FFC70073F34A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA9958AB1047001B0073F34A /* HttpClientTest2.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA9DDC6310AE3DD6008B871E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA9DDC7210AE3E52008B871E /* FileTest2.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2411,6 +3565,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CAA97A1D0CF1659200C01909 /* StringsTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAAAA07912FF824E00ABC84B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAAAA08512FF828A00ABC84B /* NetResolve.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2567,6 +3729,195 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E488DC7514479D2E005E84BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E488DC7614479D2E005E84BD /* Neptune.cpp in Sources */,
+				E488DC7714479D2E005E84BD /* NptBase64.cpp in Sources */,
+				E488DC7814479D2E005E84BD /* NptBufferedStreams.cpp in Sources */,
+				E488DC7914479D2E005E84BD /* NptCommon.cpp in Sources */,
+				E488DC7A14479D2E005E84BD /* NptConsole.cpp in Sources */,
+				E488DC7B14479D2E005E84BD /* NptDataBuffer.cpp in Sources */,
+				E488DC7C14479D2E005E84BD /* NptDebug.cpp in Sources */,
+				E488DC7D14479D2E005E84BD /* NptFile.cpp in Sources */,
+				E488DC7E14479D2E005E84BD /* NptHttp.cpp in Sources */,
+				E488DC7F14479D2E005E84BD /* NptList.cpp in Sources */,
+				E488DC8014479D2E005E84BD /* NptLogging.cpp in Sources */,
+				E488DC8114479D2E005E84BD /* NptMessaging.cpp in Sources */,
+				E488DC8214479D2E005E84BD /* NptNetwork.cpp in Sources */,
+				E488DC8314479D2E005E84BD /* NptQueue.cpp in Sources */,
+				E488DC8414479D2E005E84BD /* NptRingBuffer.cpp in Sources */,
+				E488DC8514479D2E005E84BD /* NptSimpleMessageQueue.cpp in Sources */,
+				E488DC8614479D2E005E84BD /* NptSockets.cpp in Sources */,
+				E488DC8714479D2E005E84BD /* NptStreams.cpp in Sources */,
+				E488DC8814479D2E005E84BD /* NptStrings.cpp in Sources */,
+				E488DC8914479D2E005E84BD /* NptSystem.cpp in Sources */,
+				E488DC8A14479D2E005E84BD /* NptThreads.cpp in Sources */,
+				E488DC8B14479D2E005E84BD /* NptTime.cpp in Sources */,
+				E488DC8C14479D2E005E84BD /* NptUri.cpp in Sources */,
+				E488DC8D14479D2E005E84BD /* NptUtils.cpp in Sources */,
+				E488DC8E14479D2E005E84BD /* NptXml.cpp in Sources */,
+				E488DC8F14479D2E005E84BD /* NptBsdNetwork.cpp in Sources */,
+				E488DC9014479D2E005E84BD /* NptBsdSockets.cpp in Sources */,
+				E488DC9114479D2E005E84BD /* NptPosixQueue.cpp in Sources */,
+				E488DC9214479D2E005E84BD /* NptPosixSystem.cpp in Sources */,
+				E488DC9314479D2E005E84BD /* NptPosixThreads.cpp in Sources */,
+				E488DC9414479D2E005E84BD /* NptSelectableMessageQueue.cpp in Sources */,
+				E488DC9514479D2E005E84BD /* NptStdcConsole.cpp in Sources */,
+				E488DC9614479D2E005E84BD /* NptStdcDebug.cpp in Sources */,
+				E488DC9714479D2E005E84BD /* NptStdcEnvironment.cpp in Sources */,
+				E488DC9814479D2E005E84BD /* NptStdcFile.cpp in Sources */,
+				E488DC9914479D2E005E84BD /* NptNullSerialPort.cpp in Sources */,
+				E488DC9A14479D2E005E84BD /* adler32.c in Sources */,
+				E488DC9B14479D2E005E84BD /* crc32.c in Sources */,
+				E488DC9C14479D2E005E84BD /* deflate.c in Sources */,
+				E488DC9D14479D2E005E84BD /* infback.c in Sources */,
+				E488DC9E14479D2E005E84BD /* inffast.c in Sources */,
+				E488DC9F14479D2E005E84BD /* inflate.c in Sources */,
+				E488DCA014479D2E005E84BD /* inftrees.c in Sources */,
+				E488DCA114479D2E005E84BD /* trees.c in Sources */,
+				E488DCA214479D2E005E84BD /* zutil.c in Sources */,
+				E488DCA314479D2E005E84BD /* NptZip.cpp in Sources */,
+				E488DCA414479D2E005E84BD /* compress.c in Sources */,
+				E488DCA514479D2E005E84BD /* NptPosixFile.cpp in Sources */,
+				E488DCA614479D2E005E84BD /* NptPosixNetwork.cpp in Sources */,
+				E488DCA714479D2E005E84BD /* NptDynamicLibraries.cpp in Sources */,
+				E488DCA814479D2E005E84BD /* NptPosixDynamicLibraries.cpp in Sources */,
+				E488DCA914479D2E005E84BD /* NptTls.cpp in Sources */,
+				E488DCAA14479D2E005E84BD /* NptResults.cpp in Sources */,
+				E488DCAB14479D2E005E84BD /* NptPosixTime.cpp in Sources */,
+				E488DCAC14479D2E005E84BD /* NptCocoaMessageQueue.mm in Sources */,
+				E488DCAD14479D2E005E84BD /* NptDigest.cpp in Sources */,
+				E488DCAE14479D2E005E84BD /* NptCrypto.cpp in Sources */,
+				E488DCAF14479D2E005E84BD /* NptTlsDefaultTrustAnchorsBase.cpp in Sources */,
+				E488DCB014479D2E005E84BD /* NptTlsDefaultTrustAnchorsExtended.cpp in Sources */,
+				E488DCB214479D2E005E84BD /* NptHash.cpp in Sources */,
+				E488DCB314479D2E005E84BD /* NptBsdResolver.cpp in Sources */,
+				E46E9574153F8C4500ED95D5 /* NptAppleAutoreleasePool.mm in Sources */,
+				E46E95C3153F9F8200ED95D5 /* NptCocoaEnviroment.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E488DCC614479D86005E84BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E488DCC714479D86005E84BD /* x509.c in Sources */,
+				E488DCC814479D86005E84BD /* tls1_svr.c in Sources */,
+				E488DCC914479D86005E84BD /* tls1_clnt.c in Sources */,
+				E488DCCA14479D86005E84BD /* tls1.c in Sources */,
+				E488DCCB14479D86005E84BD /* sha1.c in Sources */,
+				E488DCCC14479D86005E84BD /* rsa.c in Sources */,
+				E488DCCD14479D86005E84BD /* rc4.c in Sources */,
+				E488DCCE14479D86005E84BD /* p12.c in Sources */,
+				E488DCCF14479D86005E84BD /* md5.c in Sources */,
+				E488DCD014479D86005E84BD /* md2.c in Sources */,
+				E488DCD114479D86005E84BD /* loader.c in Sources */,
+				E488DCD214479D86005E84BD /* hmac.c in Sources */,
+				E488DCD314479D86005E84BD /* gen_cert.c in Sources */,
+				E488DCD414479D86005E84BD /* crypto_misc.c in Sources */,
+				E488DCD514479D86005E84BD /* bigint.c in Sources */,
+				E488DCD614479D86005E84BD /* asn1.c in Sources */,
+				E488DCD714479D86005E84BD /* aes.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4A5B60214476955000F3F6A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E445E5101449818000F221B3 /* NptCocoaConsole.mm in Sources */,
+				E4A5B60314476955000F3F6A /* Neptune.cpp in Sources */,
+				E4A5B60414476955000F3F6A /* NptBase64.cpp in Sources */,
+				E4A5B60514476955000F3F6A /* NptBufferedStreams.cpp in Sources */,
+				E4A5B60614476955000F3F6A /* NptCommon.cpp in Sources */,
+				E4A5B60714476955000F3F6A /* NptConsole.cpp in Sources */,
+				E4A5B60814476955000F3F6A /* NptDataBuffer.cpp in Sources */,
+				E4A5B60914476955000F3F6A /* NptDebug.cpp in Sources */,
+				E4A5B60A14476955000F3F6A /* NptFile.cpp in Sources */,
+				E4A5B60B14476955000F3F6A /* NptHttp.cpp in Sources */,
+				E4A5B60C14476955000F3F6A /* NptList.cpp in Sources */,
+				E4A5B60D14476955000F3F6A /* NptLogging.cpp in Sources */,
+				E4A5B60E14476955000F3F6A /* NptMessaging.cpp in Sources */,
+				E4A5B60F14476955000F3F6A /* NptNetwork.cpp in Sources */,
+				E4A5B61014476955000F3F6A /* NptQueue.cpp in Sources */,
+				E4A5B61114476955000F3F6A /* NptRingBuffer.cpp in Sources */,
+				E4A5B61214476955000F3F6A /* NptSimpleMessageQueue.cpp in Sources */,
+				E4A5B61314476955000F3F6A /* NptSockets.cpp in Sources */,
+				E4A5B61414476955000F3F6A /* NptStreams.cpp in Sources */,
+				E4A5B61514476955000F3F6A /* NptStrings.cpp in Sources */,
+				E4A5B61614476955000F3F6A /* NptSystem.cpp in Sources */,
+				E4A5B61714476955000F3F6A /* NptThreads.cpp in Sources */,
+				E4A5B61814476955000F3F6A /* NptTime.cpp in Sources */,
+				E4A5B61914476955000F3F6A /* NptUri.cpp in Sources */,
+				E4A5B61A14476955000F3F6A /* NptUtils.cpp in Sources */,
+				E4A5B61B14476955000F3F6A /* NptXml.cpp in Sources */,
+				E4A5B61C14476955000F3F6A /* NptBsdNetwork.cpp in Sources */,
+				E4A5B61D14476955000F3F6A /* NptBsdSockets.cpp in Sources */,
+				E4A5B61E14476955000F3F6A /* NptPosixQueue.cpp in Sources */,
+				E4A5B61F14476955000F3F6A /* NptPosixSystem.cpp in Sources */,
+				E4A5B62014476955000F3F6A /* NptPosixThreads.cpp in Sources */,
+				E4A5B62114476955000F3F6A /* NptSelectableMessageQueue.cpp in Sources */,
+				E4A5B62214476955000F3F6A /* NptStdcConsole.cpp in Sources */,
+				E4A5B62314476955000F3F6A /* NptStdcDebug.cpp in Sources */,
+				E4A5B62414476955000F3F6A /* NptStdcEnvironment.cpp in Sources */,
+				E4A5B62514476955000F3F6A /* NptStdcFile.cpp in Sources */,
+				E4A5B62614476955000F3F6A /* NptNullSerialPort.cpp in Sources */,
+				E4A5B62714476955000F3F6A /* adler32.c in Sources */,
+				E4A5B62814476955000F3F6A /* crc32.c in Sources */,
+				E4A5B62914476955000F3F6A /* deflate.c in Sources */,
+				E4A5B62A14476955000F3F6A /* infback.c in Sources */,
+				E4A5B62B14476955000F3F6A /* inffast.c in Sources */,
+				E4A5B62C14476955000F3F6A /* inflate.c in Sources */,
+				E4A5B62D14476955000F3F6A /* inftrees.c in Sources */,
+				E4A5B62E14476955000F3F6A /* trees.c in Sources */,
+				E4A5B62F14476955000F3F6A /* zutil.c in Sources */,
+				E4A5B63014476955000F3F6A /* NptZip.cpp in Sources */,
+				E4A5B63114476955000F3F6A /* compress.c in Sources */,
+				E4A5B63214476955000F3F6A /* NptPosixFile.cpp in Sources */,
+				E4A5B63314476955000F3F6A /* NptPosixNetwork.cpp in Sources */,
+				E4A5B63414476955000F3F6A /* NptDynamicLibraries.cpp in Sources */,
+				E4A5B63514476955000F3F6A /* NptPosixDynamicLibraries.cpp in Sources */,
+				E4A5B63614476955000F3F6A /* NptTls.cpp in Sources */,
+				E4A5B63714476955000F3F6A /* NptResults.cpp in Sources */,
+				E4A5B63814476955000F3F6A /* NptPosixTime.cpp in Sources */,
+				E4A5B63914476955000F3F6A /* NptCocoaMessageQueue.mm in Sources */,
+				E4A5B63A14476955000F3F6A /* NptDigest.cpp in Sources */,
+				E4A5B63B14476955000F3F6A /* NptCrypto.cpp in Sources */,
+				E4A5B63C14476955000F3F6A /* NptTlsDefaultTrustAnchorsBase.cpp in Sources */,
+				E4A5B63D14476955000F3F6A /* NptTlsDefaultTrustAnchorsExtended.cpp in Sources */,
+				E4A5B63F14476955000F3F6A /* NptHash.cpp in Sources */,
+				E4A5B64014476955000F3F6A /* NptBsdResolver.cpp in Sources */,
+				E46E9575153F8C4500ED95D5 /* NptAppleAutoreleasePool.mm in Sources */,
+				E46E95C4153F9F8300ED95D5 /* NptCocoaEnviroment.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4A5B653144769A8000F3F6A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4A5B654144769A8000F3F6A /* x509.c in Sources */,
+				E4A5B655144769A8000F3F6A /* tls1_svr.c in Sources */,
+				E4A5B656144769A8000F3F6A /* tls1_clnt.c in Sources */,
+				E4A5B657144769A8000F3F6A /* tls1.c in Sources */,
+				E4A5B658144769A8000F3F6A /* sha1.c in Sources */,
+				E4A5B659144769A8000F3F6A /* rsa.c in Sources */,
+				E4A5B65A144769A8000F3F6A /* rc4.c in Sources */,
+				E4A5B65B144769A8000F3F6A /* p12.c in Sources */,
+				E4A5B65C144769A8000F3F6A /* md5.c in Sources */,
+				E4A5B65D144769A8000F3F6A /* md2.c in Sources */,
+				E4A5B65E144769A8000F3F6A /* loader.c in Sources */,
+				E4A5B65F144769A8000F3F6A /* hmac.c in Sources */,
+				E4A5B660144769A8000F3F6A /* gen_cert.c in Sources */,
+				E4A5B661144769A8000F3F6A /* crypto_misc.c in Sources */,
+				E4A5B662144769A8000F3F6A /* bigint.c in Sources */,
+				E4A5B663144769A8000F3F6A /* asn1.c in Sources */,
+				E4A5B664144769A8000F3F6A /* aes.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F912B69C0B8EB1C700C1E90D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2622,9 +3973,18 @@
 				CAF2EFB80E64882900948C04 /* NptPosixNetwork.cpp in Sources */,
 				CA1D056F0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp in Sources */,
 				CA1D05730E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp in Sources */,
-				CA8961860E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm in Sources */,
 				CAFB23700EC760FE009C3459 /* NptTls.cpp in Sources */,
 				CA2B1E210FC22DBA00B9E79F /* NptResults.cpp in Sources */,
+				CA40905C10AA10A800ED81C5 /* NptPosixTime.cpp in Sources */,
+				CA289B6C10E16150001BC817 /* NptCocoaMessageQueue.mm in Sources */,
+				CAEB8EC511864F0B00B4AF01 /* NptDigest.cpp in Sources */,
+				CA806989118A602B009D099D /* NptCrypto.cpp in Sources */,
+				CA057AB011BC27F200C90519 /* NptTlsDefaultTrustAnchorsBase.cpp in Sources */,
+				CA057AB111BC27F200C90519 /* NptTlsDefaultTrustAnchorsExtended.cpp in Sources */,
+				CAD78E0412A9C42000D7EBA7 /* NptHash.cpp in Sources */,
+				CAC5048312FFB7EF00FEB1D8 /* NptBsdResolver.cpp in Sources */,
+				E46E95B2153F91D000ED95D5 /* NptNullAutoreleasePool.cpp in Sources */,
+				E46E95C6153F9F9E00ED95D5 /* NptPosixEnvironment.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2641,10 +4001,15 @@
 			target = CA197D1D0E1AE4360018E87C /* QueueTest1 */;
 			targetProxy = CA197D260E1AE4540018E87C /* PBXContainerItemProxy */;
 		};
-		CA1A5EAE0EC0153600A9040C /* PBXTargetDependency */ = {
+		CA261074127EB817008E2D29 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA2F54230EC115E600AEBC12 /* TlsTest1 */;
+			targetProxy = CA261073127EB817008E2D29 /* PBXContainerItemProxy */;
+		};
+		CA289DBC10E31613001BC817 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
-			targetProxy = CA1A5EAD0EC0153600A9040C /* PBXContainerItemProxy */;
+			targetProxy = CA289DBB10E31613001BC817 /* PBXContainerItemProxy */;
 		};
 		CA2F542A0EC115EE00AEBC12 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2666,6 +4031,16 @@
 			target = CA30B76A0F0DCE990085B46E /* LoggingTest2 */;
 			targetProxy = CA30B7790F0DCEFE0085B46E /* PBXContainerItemProxy */;
 		};
+		CA4090C910AA259200ED81C5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA4090C810AA259200ED81C5 /* PBXContainerItemProxy */;
+		};
+		CA451F731252BE430045CF69 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA790DA81233BDC100875081 /* NetGet */;
+			targetProxy = CA451F721252BE430045CF69 /* PBXContainerItemProxy */;
+		};
 		CA550D4B0D20A37E00B22D72 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
@@ -2681,10 +4056,60 @@
 			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
 			targetProxy = CA7848430F3B6E95009E84AD /* PBXContainerItemProxy */;
 		};
+		CA790DAE1233BDE900875081 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA790DAD1233BDE900875081 /* PBXContainerItemProxy */;
+		};
+		CA790DB21233BDF500875081 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA1A5EA80EC0152A00A9040C /* axTLS */;
+			targetProxy = CA790DB11233BDF500875081 /* PBXContainerItemProxy */;
+		};
+		CA80664E1187BD0F009D099D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA80664D1187BD0F009D099D /* PBXContainerItemProxy */;
+		};
+		CA8066511187BD20009D099D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA8066481187BD08009D099D /* DigestsTest1 */;
+			targetProxy = CA8066501187BD20009D099D /* PBXContainerItemProxy */;
+		};
+		CA8069DE118B5786009D099D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA8069DD118B5786009D099D /* PBXContainerItemProxy */;
+		};
 		CA97E0490E2FEB6F0090CC9B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
 			targetProxy = CA97E0480E2FEB6F0090CC9B /* PBXContainerItemProxy */;
+		};
+		CA9958A51046FFCD0073F34A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA9958A41046FFCD0073F34A /* PBXContainerItemProxy */;
+		};
+		CA9958A81046FFF60073F34A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA99589F1046FFC70073F34A /* HttpClientTest2 */;
+			targetProxy = CA9958A71046FFF60073F34A /* PBXContainerItemProxy */;
+		};
+		CA9DDC5110AE2820008B871E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAF2EFD60E64A27200948C04 /* FileTest1 */;
+			targetProxy = CA9DDC5010AE2820008B871E /* PBXContainerItemProxy */;
+		};
+		CA9DDC6B10AE3DE3008B871E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA9DDC6A10AE3DE3008B871E /* PBXContainerItemProxy */;
+		};
+		CA9DDC6E10AE3DFD008B871E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA9DDC6510AE3DD6008B871E /* FileTest2 */;
+			targetProxy = CA9DDC6D10AE3DFD008B871E /* PBXContainerItemProxy */;
 		};
 		CAA97A060CF164B500C01909 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2695,6 +4120,36 @@
 			isa = PBXTargetDependency;
 			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
 			targetProxy = CAA97A120CF1654A00C01909 /* PBXContainerItemProxy */;
+		};
+		CAAAA08112FF825300ABC84B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CAAAA08012FF825300ABC84B /* PBXContainerItemProxy */;
+		};
+		CAAAA08412FF827D00ABC84B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAAAA07B12FF824E00ABC84B /* NetResolve */;
+			targetProxy = CAAAA08312FF827D00ABC84B /* PBXContainerItemProxy */;
+		};
+		CAE063D71241479100E5AFC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA8069D8118B577E009D099D /* CryptoTest1 */;
+			targetProxy = CAE063D61241479100E5AFC4 /* PBXContainerItemProxy */;
+		};
+		CAE063D91241479800E5AFC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA289DB610E31600001BC817 /* SocketsTest1 */;
+			targetProxy = CAE063D81241479800E5AFC4 /* PBXContainerItemProxy */;
+		};
+		CAE063DB124147A100E5AFC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA4090C310AA257B00ED81C5 /* TimeTest1 */;
+			targetProxy = CAE063DA124147A100E5AFC4 /* PBXContainerItemProxy */;
+		};
+		CAE063DD124147B300E5AFC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA97E01F0E2FDFB30090CC9B /* StreamsTest1 */;
+			targetProxy = CAE063DC124147B300E5AFC4 /* PBXContainerItemProxy */;
 		};
 		CAE416A10E0DBD6B00A530D1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2911,6 +4366,21 @@
 			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
 			targetProxy = CAF2EFDC0E64A28000948C04 /* PBXContainerItemProxy */;
 		};
+		E412ABB014478A380078A367 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA1A5EA80EC0152A00A9040C /* axTLS */;
+			targetProxy = E412ABAF14478A380078A367 /* PBXContainerItemProxy */;
+		};
+		E445E4061449793400F221B3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E488DCBB14479D86005E84BD /* axTLS-iPhone */;
+			targetProxy = E445E4051449793400F221B3 /* PBXContainerItemProxy */;
+		};
+		E4A5B66B144769E0000F3F6A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E4A5B648144769A8000F3F6A /* axTLS-MacOSX */;
+			targetProxy = E4A5B66A144769E0000F3F6A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -2920,11 +4390,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = QueueTest1;
 			};
 			name = Debug;
@@ -2935,10 +4403,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = QueueTest1;
 				ZERO_LINK = NO;
 			};
@@ -2947,15 +4413,15 @@
 		CA1A5EAA0EC0152C00A9040C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				"ARCHS[sdk=iphoneos*]" = (
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
@@ -2965,9 +4431,8 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
 				PRODUCT_NAME = axTLS;
+				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = "";
 			};
 			name = Debug;
@@ -2975,14 +4440,15 @@
 		CA1A5EAC0EC0152C00A9040C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				"ARCHS[sdk=iphoneos*]" = (
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
@@ -2992,10 +4458,34 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
 				PRODUCT_NAME = axTLS;
+				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = "";
+			};
+			name = Release;
+		};
+		CA289DB910E31601001BC817 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = SocketsTest1;
+			};
+			name = Debug;
+		};
+		CA289DBA10E31601001BC817 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = SocketsTest1;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -3006,11 +4496,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = TlsTest1;
 			};
 			name = Debug;
@@ -3021,10 +4509,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = TlsTest1;
 				ZERO_LINK = NO;
 			};
@@ -3036,11 +4522,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = LoggingTest2;
 			};
 			name = Debug;
@@ -3051,11 +4535,35 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = LoggingTest2;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA4090C610AA257C00ED81C5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = TimeTest1;
+			};
+			name = Debug;
+		};
+		CA4090C710AA257C00ED81C5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = TimeTest1;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -3065,11 +4573,9 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = HttpServerTest1;
 				ZERO_LINK = YES;
 			};
@@ -3080,10 +4586,8 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = HttpServerTest1;
 				ZERO_LINK = NO;
 			};
@@ -3095,11 +4599,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = minihttpserver;
 			};
 			name = Debug;
@@ -3110,11 +4612,87 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = minihttpserver;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA790DAB1233BDC100875081 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = NetGet;
+			};
+			name = Debug;
+		};
+		CA790DAC1233BDC100875081 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = NetGet;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA80664B1187BD09009D099D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = DigestsTest1;
+			};
+			name = Debug;
+		};
+		CA80664C1187BD09009D099D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = DigestsTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA8069DB118B5780009D099D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = CryptoTest1;
+			};
+			name = Debug;
+		};
+		CA8069DC118B5780009D099D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = CryptoTest1;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -3125,11 +4703,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = StreamsTest1;
 			};
 			name = Debug;
@@ -3140,11 +4716,61 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = StreamsTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA9958A21046FFC80073F34A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = HttpClientTest2;
+			};
+			name = Debug;
+		};
+		CA9958A31046FFC80073F34A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = HttpClientTest2;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA9DDC6810AE3DD7008B871E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = FileTest2;
+			};
+			name = Debug;
+		};
+		CA9DDC6910AE3DD7008B871E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = FileTest2;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -3154,11 +4780,9 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = XmlTest1;
 				ZERO_LINK = YES;
 			};
@@ -3169,10 +4793,8 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = XmlTest1;
 				ZERO_LINK = NO;
 			};
@@ -3183,11 +4805,9 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = StringsTest1;
 				ZERO_LINK = YES;
 			};
@@ -3198,11 +4818,35 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = StringsTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CAAAA07E12FF824F00ABC84B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = NetResolve;
+			};
+			name = Debug;
+		};
+		CAAAA07F12FF824F00ABC84B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = NetResolve;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -3213,11 +4857,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MiscTest1;
 			};
 			name = Debug;
@@ -3228,10 +4870,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MiscTest1;
 				ZERO_LINK = NO;
 			};
@@ -3240,14 +4880,6 @@
 		CAE416BB0E0DBDF800A530D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ArraysTest1;
 			};
 			name = Debug;
@@ -3255,15 +4887,7 @@
 		CAE416BD0E0DBDF800A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ArraysTest1;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -3273,11 +4897,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = BufferedStreamsTest1;
 			};
 			name = Debug;
@@ -3288,10 +4910,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = BufferedStreamsTest1;
 				ZERO_LINK = NO;
 			};
@@ -3303,11 +4923,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = HttpClientTest1;
 			};
 			name = Debug;
@@ -3318,10 +4936,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = HttpClientTest1;
 				ZERO_LINK = NO;
 			};
@@ -3333,11 +4949,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ListsTest1;
 			};
 			name = Debug;
@@ -3348,10 +4962,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ListsTest1;
 				ZERO_LINK = NO;
 			};
@@ -3363,11 +4975,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = LoggingTest1;
 			};
 			name = Debug;
@@ -3378,10 +4988,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = LoggingTest1;
 				ZERO_LINK = NO;
 			};
@@ -3393,11 +5001,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MapsTest1;
 			};
 			name = Debug;
@@ -3408,10 +5014,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MapsTest1;
 				ZERO_LINK = NO;
 			};
@@ -3423,11 +5027,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MessagesTest1;
 			};
 			name = Debug;
@@ -3438,10 +5040,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MessagesTest1;
 				ZERO_LINK = NO;
 			};
@@ -3453,11 +5053,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MessagesTest2;
 			};
 			name = Debug;
@@ -3468,10 +5066,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = MessagesTest2;
 				ZERO_LINK = NO;
 			};
@@ -3483,11 +5079,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = RingBufferTest1;
 			};
 			name = Debug;
@@ -3498,10 +5092,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = RingBufferTest1;
 				ZERO_LINK = NO;
 			};
@@ -3513,11 +5105,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ThreadsTest1;
 			};
 			name = Debug;
@@ -3528,10 +5118,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ThreadsTest1;
 				ZERO_LINK = NO;
 			};
@@ -3543,11 +5131,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = UdpTest1;
 			};
 			name = Debug;
@@ -3558,10 +5144,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = UdpTest1;
 				ZERO_LINK = NO;
 			};
@@ -3573,11 +5157,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = UrlTest1;
 			};
 			name = Debug;
@@ -3588,10 +5170,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = UrlTest1;
 				ZERO_LINK = NO;
 			};
@@ -3603,11 +5183,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ZipTest1;
 			};
 			name = Debug;
@@ -3618,10 +5196,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = ZipTest1;
 				ZERO_LINK = NO;
 			};
@@ -3642,7 +5218,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = Tests;
 				ZERO_LINK = NO;
 			};
@@ -3663,7 +5238,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = All;
 				ZERO_LINK = NO;
 			};
@@ -3675,11 +5249,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetPump;
 			};
 			name = Debug;
@@ -3690,10 +5262,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetPump;
 				ZERO_LINK = NO;
 			};
@@ -3705,11 +5275,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetEcho;
 			};
 			name = Debug;
@@ -3720,10 +5288,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetEcho;
 				ZERO_LINK = NO;
 			};
@@ -3735,11 +5301,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetConfig;
 			};
 			name = Debug;
@@ -3750,10 +5314,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetConfig;
 				ZERO_LINK = NO;
 			};
@@ -3765,11 +5327,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetPing;
 			};
 			name = Debug;
@@ -3780,10 +5340,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = NetPing;
 				ZERO_LINK = NO;
 			};
@@ -3804,7 +5362,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = Apps;
 				ZERO_LINK = NO;
 			};
@@ -3816,11 +5373,9 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = FileTest1;
 			};
 			name = Debug;
@@ -3831,32 +5386,215 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
 				PRODUCT_NAME = FileTest1;
 				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E488DCB814479D2E005E84BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NPT_DEBUG,
+					NPT_CONFIG_ENABLE_LOGGING,
+					NPT_CONFIG_ENABLE_ZIP,
+					NPT_CONFIG_ENABLE_TLS,
+				);
+				PRELINK_LIBS = "";
+				PRODUCT_NAME = Neptune;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "i386 armv6 armv7";
+			};
+			name = Debug;
+		};
+		E488DCB914479D2E005E84BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NPT_CONFIG_ENABLE_LOGGING,
+					NPT_CONFIG_ENABLE_ZIP,
+					NPT_CONFIG_ENABLE_TLS,
+				);
+				PRELINK_LIBS = "";
+				PRODUCT_NAME = Neptune;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "i386 armv6 armv7";
+			};
+			name = Release;
+		};
+		E488DCDA14479D86005E84BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				PRODUCT_NAME = axTLS;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "i386 armv6 armv7";
+				WARNING_CFLAGS = "";
+			};
+			name = Debug;
+		};
+		E488DCDB14479D86005E84BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				PRODUCT_NAME = axTLS;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "i386 armv6 armv7";
+				WARNING_CFLAGS = "";
+			};
+			name = Release;
+		};
+		E4A5B64514476955000F3F6A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NPT_DEBUG,
+					NPT_CONFIG_ENABLE_LOGGING,
+					NPT_CONFIG_ENABLE_ZIP,
+					NPT_CONFIG_ENABLE_TLS,
+				);
+				PRODUCT_NAME = Neptune;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				VALID_ARCHS = "i386 x86_64";
+			};
+			name = Debug;
+		};
+		E4A5B64614476955000F3F6A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NPT_CONFIG_ENABLE_LOGGING,
+					NPT_CONFIG_ENABLE_ZIP,
+					NPT_CONFIG_ENABLE_TLS,
+				);
+				PRODUCT_NAME = Neptune;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				VALID_ARCHS = "i386 x86_64";
+			};
+			name = Release;
+		};
+		E4A5B667144769A8000F3F6A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				PRODUCT_NAME = axTLS;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				VALID_ARCHS = "i386 x86_64";
+				WARNING_CFLAGS = "";
+			};
+			name = Debug;
+		};
+		E4A5B668144769A8000F3F6A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				PRODUCT_NAME = axTLS;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				VALID_ARCHS = "i386 x86_64";
+				WARNING_CFLAGS = "";
 			};
 			name = Release;
 		};
 		F912B6890B8EB12700C1E90D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NPT_DEBUG,
 					NPT_CONFIG_ENABLE_LOGGING,
 					NPT_CONFIG_ENABLE_ZIP,
+					NPT_CONFIG_ENABLE_TLS,
 				);
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
@@ -3876,9 +5614,10 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator";
+				VALID_ARCHS = "i386 ppc x86_64 armv6 armv7";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -3890,19 +5629,20 @@
 		F912B68A0B8EB12700C1E90D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				COPY_PHASE_STRIP = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NPT_CONFIG_ENABLE_LOGGING,
 					NPT_CONFIG_ENABLE_ZIP,
+					NPT_CONFIG_ENABLE_TLS,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
@@ -3915,16 +5655,17 @@
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator";
+				VALID_ARCHS = "i386 ppc x86_64 armv6 armv7";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -3936,45 +5677,39 @@
 		F912B6A20B8EB1C800C1E90D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				"ARCHS[sdk=iphoneos*]" = (
+					armv6,
+					armv7,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NPT_DEBUG,
 					NPT_CONFIG_ENABLE_LOGGING,
 					NPT_CONFIG_ENABLE_ZIP,
 					NPT_CONFIG_ENABLE_TLS,
 				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
+				PRELINK_LIBS = "";
 				PRODUCT_NAME = Neptune;
-				ZERO_LINK = YES;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		F912B6A30B8EB1C800C1E90D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_MODEL_TUNING = G5;
+				"ARCHS[sdk=iphoneos*]" = (
+					armv6,
+					armv7,
+				);
+				"ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NPT_CONFIG_ENABLE_LOGGING,
 					NPT_CONFIG_ENABLE_ZIP,
 					NPT_CONFIG_ENABLE_TLS,
 				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
+				PRELINK_LIBS = "";
 				PRODUCT_NAME = Neptune;
-				ZERO_LINK = NO;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -3999,6 +5734,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CA289DC110E31637001BC817 /* Build configuration list for PBXNativeTarget "SocketsTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA289DB910E31601001BC817 /* Debug */,
+				CA289DBA10E31601001BC817 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CA2F54310EC1160800AEBC12 /* Build configuration list for PBXNativeTarget "TlsTest1" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -4013,6 +5757,15 @@
 			buildConfigurations = (
 				CA30B76D0F0DCE9A0085B46E /* Debug */,
 				CA30B76F0F0DCE9A0085B46E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA4090CB10AA25BE00ED81C5 /* Build configuration list for PBXNativeTarget "TimeTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA4090C610AA257C00ED81C5 /* Debug */,
+				CA4090C710AA257C00ED81C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4035,11 +5788,56 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CA790DB51233BE2F00875081 /* Build configuration list for PBXNativeTarget "NetGet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA790DAB1233BDC100875081 /* Debug */,
+				CA790DAC1233BDC100875081 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA8066541187BD60009D099D /* Build configuration list for PBXNativeTarget "DigestsTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA80664B1187BD09009D099D /* Debug */,
+				CA80664C1187BD09009D099D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA8069E6118B57BE009D099D /* Build configuration list for PBXNativeTarget "CryptoTest1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA8069DB118B5780009D099D /* Debug */,
+				CA8069DC118B5780009D099D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CA97E0270E2FDFFB0090CC9B /* Build configuration list for PBXNativeTarget "StreamsTest1" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA97E0220E2FDFB30090CC9B /* Debug */,
 				CA97E0240E2FDFB30090CC9B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA9958AC1047001B0073F34A /* Build configuration list for PBXNativeTarget "HttpClientTest2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA9958A21046FFC80073F34A /* Debug */,
+				CA9958A31046FFC80073F34A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA9DDC6F10AE3E29008B871E /* Build configuration list for PBXNativeTarget "FileTest2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA9DDC6810AE3DD7008B871E /* Debug */,
+				CA9DDC6910AE3DD7008B871E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4058,6 +5856,15 @@
 			buildConfigurations = (
 				CAA97A190CF1654A00C01909 /* Debug */,
 				CAA97A1A0CF1654A00C01909 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAAAA08812FF82A900ABC84B /* Build configuration list for PBXNativeTarget "NetResolve" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAAAA07E12FF824F00ABC84B /* Debug */,
+				CAAAA07F12FF824F00ABC84B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4256,6 +6063,42 @@
 			buildConfigurations = (
 				CAF2EFD90E64A27300948C04 /* Debug */,
 				CAF2EFDB0E64A27300948C04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E488DCB714479D2E005E84BD /* Build configuration list for PBXNativeTarget "Neptune-iPhone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E488DCB814479D2E005E84BD /* Debug */,
+				E488DCB914479D2E005E84BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E488DCD914479D86005E84BD /* Build configuration list for PBXNativeTarget "axTLS-iPhone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E488DCDA14479D86005E84BD /* Debug */,
+				E488DCDB14479D86005E84BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4A5B64414476955000F3F6A /* Build configuration list for PBXNativeTarget "Neptune-MacOSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4A5B64514476955000F3F6A /* Debug */,
+				E4A5B64614476955000F3F6A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4A5B666144769A8000F3F6A /* Build configuration list for PBXNativeTarget "axTLS-MacOSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4A5B667144769A8000F3F6A /* Debug */,
+				E4A5B668144769A8000F3F6A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

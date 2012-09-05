@@ -77,7 +77,8 @@ class LibraryModule(Module):
                  environment           = None,
                  excluded_files        = [],
                  extra_cpp_defines     = [],
-                 shared                = False) :
+                 shared                = False,
+                 install               = False) :
         build_source_dirs = [source_root+'/'+drct for drct in build_source_dirs]
         Module.__init__(self, 
                         name, 
@@ -119,24 +120,30 @@ class LibraryModule(Module):
             libs = GetLibraries(Split(linked_modules))
             self.product = self.env.SharedLibrary(target=name, LIBS=libs, source=sources)
         self.env.Alias(name, self.product)
+            
+        # copy to Targets folder
+        if install is True:
+            inst = env.Install(dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=self.product)
+            if env['build_config'] == 'Release' and env.has_key('STRIP'):
+                env.AddPostAction(inst, env['STRIP']+' $TARGETS');
         
-        
-def Application(name, dir, deps):
+def Application(name, dir, deps, install = False):
     DeclareBuildDir(dir)
     libs = GetLibraries(deps)
     cpp_path = GetIncludeDirs(deps)
     
     prog = env.Program(name, 
-                       GlobSources(dir, ['*.c', '*.cpp']), 
+                       GlobSources(dir, ['*.c', '*.cpp']) + env['NPT_EXTRA_EXECUTABLE_OBJECTS'],
                        LIBS=libs, CPPPATH=cpp_path)
     #env.Alias(name, prog)
     if env.has_key('NPT_EXECUTABLE_POST_PROCESSOR'):
         env.AddPostAction(prog, env['NPT_EXECUTABLE_POST_PROCESSOR'])
     
     # copy to Targets folder
-    inst = env.Install (dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=prog)
-    if env['build_config'] == 'Release' and env.has_key('STRIP'):
-       env.AddPostAction(inst, env['STRIP']+' $TARGETS');
+    if install is True:
+        inst = env.Install(dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=prog)
+        if env['build_config'] == 'Release' and env.has_key('STRIP'):
+            env.AddPostAction(inst, env['STRIP']+' $TARGETS');
 
 #######################################################
 # Main Build
@@ -145,9 +152,12 @@ Import("env")
 
 ### defaults
 env['NPT_EXTRA_LIBS'] = []
+env['NPT_EXTRA_EXECUTABLE_OBJECTS'] = []
 
 if (env['build_config'] == 'Debug'):
     env.AppendUnique(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
+else:
+    env.AppendUnique(CPPDEFINES=['NDEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
 
 ### try to read in any target specific configuration
 target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
@@ -157,6 +167,28 @@ if os.path.exists(target_config_file):
 
 #######################################################
 # modules
+#
+# Usage:
+#
+# The LibraryModule() function declares a code module
+# The included_modules parameter is a list of all the modules and/or directories
+# that will be added to the include path when building this module AND to
+# the include path of any other module that depends on this one.
+# The linked_modules parameter is a list of all the modules and/or directories
+# that are necessary to build this module. These modules will be added to
+# the include path of this module, but not to that of the modules that depend
+# on this module. The modules that depend on this module, however, will 
+# automatically link with the linked_modules. 
+# Note that the included_modules list is automatically added to the 
+# linked_modules list, so that you do not need to list in linked_modules
+# the modules that are already listed in included_modules.
+# If a module needs to export an include path to its dependents that
+# is not a module that the dependent can link with (ex: an include dir),
+# list it in the included_only_modules.
+# To summarize: included_modules should list all the modules that users
+# of the public interface should depend on; linked_modules should list
+# all the modules not listed in included_modules that are used by the
+# module's implementation only.
 #######################################################
 # Neptune
 NPT_SOURCE_ROOT = '../Neptune'
@@ -165,64 +197,71 @@ LibraryModule(name                  = 'Zlib',
               source_root           = NPT_SOURCE_ROOT,
               build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
               
+LibraryModule(name                  = 'axTLS',
+              source_root           = NPT_SOURCE_ROOT,
+              build_source_dirs     = ['ThirdParty/axTLS/crypto', 'ThirdParty/axTLS/ssl', 'ThirdParty/axTLS/config/Generic'])
+              
 extra_cpp_flags = []
 if not env.has_key('NPT_CONFIG_NO_ZIP'):
     extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
-
+    
+if not env.has_key('NPT_CONFIG_NO_SSL'):
+    extra_cpp_flags += ['NPT_CONFIG_ENABLE_TLS']
+    
 LibraryModule(name                  = 'Neptune',
-              build_source_dirs     = ['Core'],
+              build_source_dirs     = ['Core', 'Data/TLS'],
               build_source_files    = env['NPT_SYSTEM_SOURCES'],
               extra_cpp_defines     = extra_cpp_flags,
-              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'],
+              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib']+['axTLS'],
               source_root           = NPT_SOURCE_ROOT + '/Source')
                  
 # Platinum        
 LibraryModule(name               = 'Platinum',
-              build_source_dirs  = ['Core'],
+              build_source_dirs  = ['Core', 'Extras'],
               build_include_dirs = ['Source/Platinum'],
-              included_modules   = ['Neptune'],
-              linked_modules     = ['Neptune'])
-                 
+              included_modules   = ['Neptune'])
+
+# Platinum (jni)
+if env['target'] == 'arm-android-linux':
+     LibraryModule(name               = 'PlatinumJNI', 
+                   build_source_dirs  = ['Extras/JNI/C++'],
+                   linked_modules     = ['Platinum'],
+                   shared             = True,
+                   install            = True)
+
 # Platinum MediaServer         
 LibraryModule(name               = 'PltMediaServer',
               build_source_dirs  = ['MediaServer'],
-              included_modules   = ['Neptune', 'Platinum'],
-              linked_modules     = ['Neptune', 'Platinum'],
+              included_modules   = ['Platinum'],
               source_root        = 'Source/Devices')
 
 # Platinum MediaRenderer         
 LibraryModule(name               = 'PltMediaRenderer',
               build_source_dirs  = ['MediaRenderer'],
-              included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
-              linked_modules     = ['Neptune', 'Platinum'],
+              included_modules   = ['Platinum', 'PltMediaServer'],
               source_root        = 'Source/Devices')
                  
 # Platinum MediaConnect         
 LibraryModule(name               = 'PltMediaConnect',
               build_source_dirs  = ['MediaConnect'],
-              included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
-              linked_modules     = ['Neptune', 'Platinum'],
-              excluded_files	    = ['MACFromIP.cpp'],
-              source_root        = 'Source/Devices')
-
-# FrameStreamer         
-LibraryModule(name               = 'PltFrameStreamer',
-              build_source_dirs  = ['FrameStreamer'],
-              included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
-              linked_modules     = ['Neptune', 'Platinum'],
+              included_modules   = ['Platinum', 'PltMediaServer', 'PltMediaRenderer'],
+              excluded_files	 = ['MACFromIP.cpp'],
               source_root        = 'Source/Devices')
                                            
 for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect', 'FrameStreamer']:
-    Application(name = app, 
-                dir = 'Source/Apps/' + app, 
-                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect', 'PltFrameStreamer'])
+    Application(name    = app, 
+                dir     = 'Source/Apps/' + app, 
+                deps    = ['Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'],
+              	install = True)
     
 for test in ['FileMediaServer', 'MediaRenderer', 'LightSample', 'Http', 'Time']:
-    Application(name = test+'Test', 
-                dir = 'Source/Tests/' + test, 
-                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer'])
+    Application(name    = test+'Test', 
+                dir     = 'Source/Tests/' + test, 
+                deps    = ['Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'],
+              	install = True)
     		 
 for tool in ['TextToHeader']:
-    Application(name = tool, 
-                dir = 'Source/Tools/' + tool, 
-                deps = ['Neptune', 'Platinum'])
+    Application(name    = tool, 
+                dir     = 'Source/Tools/' + tool, 
+                deps    = ['Platinum'],
+             	install = True)

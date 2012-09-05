@@ -57,6 +57,20 @@ NPT_IpAddress::NPT_IpAddress(unsigned long address)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_IpAddress::NPT_IpAddress
++---------------------------------------------------------------------*/
+NPT_IpAddress::NPT_IpAddress(unsigned char a, 
+                             unsigned char b, 
+                             unsigned char c, 
+                             unsigned char d)
+{
+    m_Address[0] = a;
+    m_Address[1] = b;
+    m_Address[2] = c;
+    m_Address[3] = d;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_IpAddress::Parse
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -240,6 +254,16 @@ NPT_NetworkInterface::NPT_NetworkInterface(const char*           name,
                                            NPT_Flags             flags) :
     m_Name(name),
     m_MacAddress(mac),
+    m_Flags(flags)
+{
+}
+
+/*----------------------------------------------------------------------
+|   NPT_NetworkInterface::NPT_NetworkInterface
++---------------------------------------------------------------------*/ 
+NPT_NetworkInterface::NPT_NetworkInterface(const char* name,
+                                           NPT_Flags   flags) :
+    m_Name(name),
     m_Flags(flags)
 {
 }
