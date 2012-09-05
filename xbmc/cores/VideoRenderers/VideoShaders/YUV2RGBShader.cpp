@@ -261,7 +261,6 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1i(m_hYTex, 0);
   switch (m_format)
   {
-//case RENDER_FMT_NV12:
   case RENDER_FMT_Y_UV:
     glUniform1i(m_hUTex, 1);
     glUniform1i(m_hVTex, 1);
