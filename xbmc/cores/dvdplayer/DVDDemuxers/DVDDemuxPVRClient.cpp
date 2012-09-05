@@ -190,7 +190,7 @@ bool CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pPacket)
       if (pParser->parser->split)
       {
         AVCodec *codec;
-        AVCodecContext *pCodecContext;
+        AVCodecContext *pCodecContext = NULL;
         codec = m_dllAvCodec.avcodec_find_decoder(st->codec);
         if (!codec)
         {
