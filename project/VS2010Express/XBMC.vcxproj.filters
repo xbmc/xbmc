@@ -268,6 +268,9 @@
     <Filter Include="utils\test">
       <UniqueIdentifier>{216a634b-e689-418c-aca8-a3abbd2c0387}</UniqueIdentifier>
     </Filter>
+    <Filter Include="filesystem\test">
+      <UniqueIdentifier>{6a33362b-e68d-45ec-8bcc-057d8caf5de6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2947,6 +2950,21 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestGlobalsHandlingPattern1.h">
       <Filter>utils\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestDirectory.cpp">
+      <Filter>filesystem\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestFile.cpp">
+      <Filter>filesystem\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestFileFactory.cpp">
+      <Filter>filesystem\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestRarFile.cpp">
+      <Filter>filesystem\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestZipFile.cpp">
+      <Filter>filesystem\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
