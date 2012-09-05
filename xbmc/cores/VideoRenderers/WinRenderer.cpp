@@ -132,7 +132,7 @@ void CWinRenderer::SelectRenderMethod()
   {
     CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA2 processor");
     m_renderMethod = RENDER_DXVA;
-    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format, m_extended_format))
+    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
     {
       CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
       m_processor.Close();
@@ -147,7 +147,7 @@ void CWinRenderer::SelectRenderMethod()
     {
       case RENDER_METHOD_DXVA:
         m_renderMethod = RENDER_DXVA;
-        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format, m_extended_format))
+        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
             break;
         else
         {
@@ -226,7 +226,6 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   }
 
   m_fps = fps;
-  m_flags = flags;
   m_iFlags = flags;
   m_format = format;
   m_extended_format = extended_format;
@@ -865,7 +864,7 @@ void CWinRenderer::Stage1()
       m_colorShader->Render(m_sourceRect, m_destRect,
                             g_settings.m_currentVideoSettings.m_Contrast,
                             g_settings.m_currentVideoSettings.m_Brightness,
-                            m_flags,
+                            m_iFlags,
                             (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   }
   else
@@ -883,7 +882,7 @@ void CWinRenderer::Stage1()
     m_colorShader->Render(srcRect, rtRect,
                           g_settings.m_currentVideoSettings.m_Contrast,
                           g_settings.m_currentVideoSettings.m_Brightness,
-                          m_flags,
+                          m_iFlags,
                           (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
 
     // Restore the render target

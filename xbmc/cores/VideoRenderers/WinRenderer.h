@@ -239,7 +239,6 @@ protected:
 
   // clear colour for "black" bars
   DWORD                m_clearColour;
-  unsigned int         m_flags;
   ERenderFormat        m_format;
   unsigned int         m_extended_format;
 
