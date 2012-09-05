@@ -453,6 +453,7 @@
 		DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		DFB65FD415373AE7006B8FF1 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */; };
 		DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
+		DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */; };
 		DFCA6AC6152245CD000BFAAE /* HTTPApiHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AB9152245CD000BFAAE /* HTTPApiHandler.cpp */; };
 		DFCA6AC7152245CD000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */; };
 		DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */; };
@@ -1997,6 +1998,7 @@
 		DFB65FB415373AE7006B8FF1 /* AEWAVLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEWAVLoader.h; sourceTree = "<group>"; };
 		DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		DFB6610715374E80006B8FF1 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
+		DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DFCA6AB9152245CD000BFAAE /* HTTPApiHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPApiHandler.cpp; sourceTree = "<group>"; };
 		DFCA6ABA152245CD000BFAAE /* HTTPApiHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPApiHandler.h; sourceTree = "<group>"; };
 		DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPJsonRpcHandler.cpp; sourceTree = "<group>"; };
@@ -3308,6 +3310,7 @@
 				E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */,
+				DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3357,6 +3360,7 @@
 				F5364E04155B3CAF0016D00B /* IOSurface.framework */,
 				E38E23910D2626E600618676 /* OpenGL.framework */,
 				F59879070FBAA0C3008EF4FB /* QuartzCore.framework */,
+				DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */,
 			);
 			name = "System Libs and Frameworks";
 			sourceTree = "<group>";
