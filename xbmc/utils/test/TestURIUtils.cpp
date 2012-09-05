@@ -117,8 +117,30 @@ TEST_F(TestURIUtils, SplitPath)
 {
   CStdStringArray strarray;
 
-  strarray = URIUtils::SplitPath("/path/to/movie.avi");
+  strarray = URIUtils::SplitPath("http://www.test.com/path/to/movie.avi");
+
+  EXPECT_STREQ("http://www.test.com/", strarray.at(0).c_str());
+  EXPECT_STREQ("path", strarray.at(1).c_str());
+  EXPECT_STREQ("to", strarray.at(2).c_str());
+  EXPECT_STREQ("movie.avi", strarray.at(3).c_str());
+}
+
+TEST_F(TestURIUtils, SplitPathLocal)
+{
+#ifndef TARGET_LINUX
+  const char *path = "C:\\path\\to\\movie.avi";
+#else
+  const char *path = "/path/to/movie.avi";
+#endif
+  CStdStringArray strarray;
+
+  strarray = URIUtils::SplitPath(path);
+
+#ifndef TARGET_LINUX
+  EXPECT_STREQ("C:", strarray.at(0).c_str());
+#else
   EXPECT_STREQ("", strarray.at(0).c_str());
+#endif
   EXPECT_STREQ("path", strarray.at(1).c_str());
   EXPECT_STREQ("to", strarray.at(2).c_str());
   EXPECT_STREQ("movie.avi", strarray.at(3).c_str());
