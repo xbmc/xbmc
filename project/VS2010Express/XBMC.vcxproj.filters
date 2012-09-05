@@ -5616,7 +5616,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h">
       <Filter>music</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\test\TestBasicEnvironment.h">
       <Filter>test</Filter>
     </ClInclude>
