@@ -142,10 +142,10 @@ void CGUIWindowPVRGuide::UpdateViewChannel(bool bUpdateSelectedFile)
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19029));
-  if (bGotCurrentChannel)
+  if (bGotCurrentChannel && CurrentChannel.get())
     m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel->ChannelName().c_str());
 
-  if (!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_parent->m_vecItems) == 0)
+  if ((!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_parent->m_vecItems) == 0) && CurrentChannel.get())
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/" + CurrentChannel->ChannelName() + "/empty.epg", false));
