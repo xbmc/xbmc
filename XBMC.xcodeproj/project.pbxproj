@@ -266,7 +266,6 @@
 		5538432B15F3646C00CE061B /* NptPosixTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5538432A15F3646C00CE061B /* NptPosixTime.cpp */; };
 		5538433115F3678900CE061B /* NptCocoaEnviroment.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5538432D15F3678900CE061B /* NptCocoaEnviroment.mm */; };
 		5538433415F3685C00CE061B /* NptAppleAutoreleasePool.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5538433315F3685C00CE061B /* NptAppleAutoreleasePool.mm */; };
-		5538433615F36E4600CE061B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5538433515F36E4600CE061B /* SystemConfiguration.framework */; };
 		7C0A7EC013A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */; };
 		7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		7C1A492315A962EE004AF4A4 /* SeekHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */; };
@@ -1597,7 +1596,6 @@
 		5538432A15F3646C00CE061B /* NptPosixTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixTime.cpp; path = lib/libUPnP/Neptune/Source/System/Posix/NptPosixTime.cpp; sourceTree = SOURCE_ROOT; };
 		5538432D15F3678900CE061B /* NptCocoaEnviroment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptCocoaEnviroment.mm; path = lib/libUPnP/Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm; sourceTree = SOURCE_ROOT; };
 		5538433315F3685C00CE061B /* NptAppleAutoreleasePool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptAppleAutoreleasePool.mm; path = lib/libUPnP/Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm; sourceTree = SOURCE_ROOT; };
-		5538433515F36E4600CE061B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -3307,7 +3305,6 @@
 				F5ED9A15155EBE0000842059 /* DiskArbitration.framework in Frameworks */,
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
 				F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */,
-				5538433615F36E4600CE061B /* SystemConfiguration.framework in Frameworks */,
 				E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */,
@@ -3320,7 +3317,6 @@
 		08FB7794FE84155DC02AAC07 /* XBMC */ = {
 			isa = PBXGroup;
 			children = (
-				5538433515F36E4600CE061B /* SystemConfiguration.framework */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				F57E1ED20E36E8FD00700C9D /* internal libs */,
@@ -4320,10 +4316,10 @@
 		810C9F5F0D67BCC80095F5DD /* MediaConnect */ = {
 			isa = PBXGroup;
 			children = (
-				43BF09A51080D2CB00E25290 /* X_MS_MediaReceiverRegistrarSCPD.xml */,
-				43BF099B1080D17600E25290 /* X_MS_MediaReceiverRegistrarSCPD.cpp */,
 				810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */,
 				810C9F610D67BD2F0095F5DD /* PltMediaConnect.h */,
+				43BF099B1080D17600E25290 /* X_MS_MediaReceiverRegistrarSCPD.cpp */,
+				43BF09A51080D2CB00E25290 /* X_MS_MediaReceiverRegistrarSCPD.xml */,
 			);
 			name = MediaConnect;
 			sourceTree = "<group>";
@@ -5657,7 +5653,6 @@
 			isa = PBXGroup;
 			children = (
 				E38E1AB90D25F9FB00618676 /* Source */,
-				E38E1B310D25F9FB00618676 /* Targets */,
 				E4DF6CD80EFF85EB00C28243 /* CHANGELOG.txt */,
 				E4DF6CD90EFF85EB00C28243 /* LICENSE.txt */,
 				E4DF6CDA0EFF85EB00C28243 /* README.txt */,
@@ -5777,17 +5772,17 @@
 		E38E1AFD0D25F9FB00618676 /* MediaRenderer */ = {
 			isa = PBXGroup;
 			children = (
+				43BF099E1080D1E900E25290 /* AVTransportSCPD.cpp */,
 				43BF09A61080D2ED00E25290 /* AVTransportSCPD.xml */,
 				43BF09A71080D2ED00E25290 /* AVTransportSCPDFull.xml */,
-				43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */,
-				43BF09A91080D2ED00E25290 /* RenderingControlSCPD_Full.xml */,
-				43BF099E1080D1E900E25290 /* AVTransportSCPD.cpp */,
-				43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */,
 				E38E1B000D25F9FB00618676 /* PltMediaController.cpp */,
 				E38E1B010D25F9FB00618676 /* PltMediaController.h */,
 				E38E1B030D25F9FB00618676 /* PltMediaRenderer.cpp */,
 				E38E1B040D25F9FB00618676 /* PltMediaRenderer.h */,
+				43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */,
+				43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */,
 				E38E1B060D25F9FB00618676 /* RenderingControlSCPD.xml */,
+				43BF09A91080D2ED00E25290 /* RenderingControlSCPD_Full.xml */,
 			);
 			path = MediaRenderer;
 			sourceTree = "<group>";
@@ -5796,10 +5791,10 @@
 			isa = PBXGroup;
 			children = (
 				43BF09921080D13F00E25290 /* ConnectionManagerSCPD.cpp */,
-				43BF09931080D13F00E25290 /* ContentDirectorySCPD.cpp */,
-				43BF09941080D13F00E25290 /* ContentDirectorywSearchSCPD.cpp */,
 				E38E1B080D25F9FB00618676 /* ConnectionManagerSCPD.xml */,
+				43BF09931080D13F00E25290 /* ContentDirectorySCPD.cpp */,
 				E38E1B090D25F9FB00618676 /* ContentDirectorySCPD.xml */,
+				43BF09941080D13F00E25290 /* ContentDirectorywSearchSCPD.cpp */,
 				E38E1B0A0D25F9FB00618676 /* ContentDirectorywSearchSCPD.xml */,
 				E38E1B0B0D25F9FB00618676 /* PltDidl.cpp */,
 				E38E1B0C0D25F9FB00618676 /* PltDidl.h */,
@@ -5890,21 +5885,6 @@
 			children = (
 			);
 			path = TextToHeader;
-			sourceTree = "<group>";
-		};
-		E38E1B310D25F9FB00618676 /* Targets */ = {
-			isa = PBXGroup;
-			children = (
-				E38E1B320D25F9FB00618676 /* x86-microsoft-win32-vs2003 */,
-			);
-			path = Targets;
-			sourceTree = "<group>";
-		};
-		E38E1B320D25F9FB00618676 /* x86-microsoft-win32-vs2003 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "x86-microsoft-win32-vs2003";
 			sourceTree = "<group>";
 		};
 		E38E1C840D25F9FC00618676 /* libXDAAP */ = {
