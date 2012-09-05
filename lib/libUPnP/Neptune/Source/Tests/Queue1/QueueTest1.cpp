@@ -85,7 +85,7 @@ public:
         NPT_Debug("READER %s starting =====================\n", (const char*)m_Name);
         NPT_Timeout timeout = NPT_TIMEOUT_INFINITE;
         for (;;) {
-            if (m_SleepTime.m_NanoSeconds != 0) {
+            if (m_SleepTime.ToNanos() != 0) {
                 NPT_Debug("READER %s sleeping...\n", (const char*)m_Name);
                 NPT_System::Sleep(m_SleepTime);
                 NPT_Debug("READER %s woke up!\n", (const char*)m_Name);

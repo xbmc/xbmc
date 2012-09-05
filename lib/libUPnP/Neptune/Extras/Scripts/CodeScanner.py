@@ -54,7 +54,7 @@ def ScanErrorCodes(top):
         #print key,"==>",Errors[key]
         if (key.find("ERROR_BASE") > 1): continue
         if Codes.has_key(Errors[key]):
-            raise "duplicate error code: "+ str(key) +" --> " + str(Errors[key]) + "=" + Codes[Errors[key]]
+            raise Exception("duplicate error code: "+ str(key) +" --> " + str(Errors[key]) + "=" + Codes[Errors[key]])
         Codes[Errors[key]] = key
         
     sorted_keys = Codes.keys()
@@ -62,6 +62,8 @@ def ScanErrorCodes(top):
     sorted_keys.reverse()
     last = 0
     for code in sorted_keys:
+        if type(code) != int:
+        	continue
         if code != last-1:
             print 
         print code,"==>", Codes[code]

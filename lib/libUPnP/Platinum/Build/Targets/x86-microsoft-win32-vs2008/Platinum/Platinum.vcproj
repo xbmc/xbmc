@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="Debug"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\..\Neptune\Source\Core"
+				AdditionalIncludeDirectories="..\..\..\..\..\Neptune\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Extras;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\Source\Devices\MediaConnect"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -79,13 +79,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;xcopy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="Release"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -107,8 +107,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\..\Neptune\Source\Core"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\..\..\..\..\Neptune\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Extras;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\Source\Devices\MediaConnect"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -141,7 +141,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;xcopy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -153,10 +153,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{D5F7DD40-709C-455b-A225-F1917F8750A3}"
 			>
-			<File
-				RelativePath="..\..\..\..\Source\Core\PltTime.cpp"
-				>
-			</File>
 			<Filter
 				Name="Core"
 				>
@@ -193,10 +189,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Core\PltDownloader.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Core\PltEvent.cpp"
 					>
 				</File>
@@ -221,15 +213,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Core\PltLeaks.cpp"
+					RelativePath="..\..\..\..\Source\Core\PltMimeType.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Core\PltMetadataHandler.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltRingBufferStream.cpp"
+					RelativePath="..\..\..\..\Source\Core\PltProtocolInfo.cpp"
 					>
 				</File>
 				<File
@@ -242,10 +230,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltStateVariable.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltStreamPump.cpp"
 					>
 				</File>
 				<File
@@ -297,10 +281,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaPlaylist.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServer.cpp"
 					>
 				</File>
@@ -341,7 +321,47 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltXbox360.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Extras"
+				>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltDownloader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltFrameBuffer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltFrameServer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltFrameStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltLeaks.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltMetadataHandler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltRingBufferStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltStreamPump.cpp"
 					>
 				</File>
 			</Filter>
@@ -391,10 +411,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Core\PltDownloader.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Core\PltEvent.h"
 					>
 				</File>
@@ -411,23 +427,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Core\PltHttpServerListener.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Core\PltHttpServerTask.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltLeaks.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltMetadataHandler.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltRingBufferStream.h"
 					>
 				</File>
 				<File
@@ -439,15 +439,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Core\PltSsdpListener.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Core\PltStateVariable.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltStreamPump.h"
 					>
 				</File>
 				<File
@@ -460,10 +452,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltThreadTask.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltTime.h"
 					>
 				</File>
 				<File
@@ -499,10 +487,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaBrowserListener.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaCache.h"
 					>
 				</File>
@@ -511,11 +495,15 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaPlaylist.h"
+					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServer.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServer.h"
+					RelativePath="..\..\..\..\Source\Core\PltMimeType.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltProtocolInfo.h"
 					>
 				</File>
 				<File
@@ -531,10 +519,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaControllerListener.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.h"
 					>
 				</File>
@@ -546,32 +530,44 @@
 					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnect.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltXbox360.h"
+					>
+				</File>
 			</Filter>
 			<Filter
-				Name="FrameStreamer"
+				Name="Extras"
 				>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameBuffer.cpp"
+					RelativePath="..\..\..\..\Source\Extras\PltDownloader.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameBuffer.h"
+					RelativePath="..\..\..\..\Source\Extras\PltFrameBuffer.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameServer.cpp"
+					RelativePath="..\..\..\..\Source\Extras\PltFrameServer.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameServer.h"
+					RelativePath="..\..\..\..\Source\Extras\PltFrameStream.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameStream.cpp"
+					RelativePath="..\..\..\..\Source\Extras\PltLeaks.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameStream.h"
+					RelativePath="..\..\..\..\Source\Extras\PltMetadataHandler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltRingBufferStream.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Extras\PltStreamPump.h"
 					>
 				</File>
 			</Filter>

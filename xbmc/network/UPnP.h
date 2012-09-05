@@ -93,5 +93,4 @@ private:
 
 
     static CUPnP* upnp;
-    static bool   broadcast;
 };

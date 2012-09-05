@@ -2,7 +2,7 @@
 |
 |      Platinum - AV Media Connect Device
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,9 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,76 +43,68 @@
 #include "PltFileMediaServer.h"
 
 /*----------------------------------------------------------------------
-|   PLT_MediaConnectInfo
-+---------------------------------------------------------------------*/
-class PLT_MediaConnectInfo
-{
-public:
-    PLT_MediaConnectInfo(bool authorized = false) : 
-        m_Authorized(authorized), m_Validated(false) {}
-
-    bool       m_Authorized;
-    bool       m_Validated;
-    NPT_String m_UDN;
-};
-
-/*----------------------------------------------------------------------
-|   defines
-+---------------------------------------------------------------------*/
-typedef NPT_Map<NPT_String, PLT_MediaConnectInfo>        PLT_MediaConnectDeviceInfoMap;
-typedef NPT_Map<NPT_String, PLT_MediaConnectInfo>::Entry PLT_MediaConnectDeviceInfoMapEntry;
-typedef NPT_Map<NPT_String, NPT_String>                  PLT_UDNtoMACMap;
-typedef NPT_Map<NPT_String, NPT_String>::Entry           PLT_UDNtoMACMapEntry;
-
-/*----------------------------------------------------------------------
 |   PLT_MediaConnect
 +---------------------------------------------------------------------*/
-class PLT_MediaConnect : public PLT_FileMediaServer
+class PLT_MediaConnect : public PLT_MediaServer
 {
 public:
-    PLT_MediaConnect(const char*  path, 
-                     const char*  friendly_name,
-                     bool         show_ip = false,
+    // class methods
+    static NPT_Result GetMappedObjectId(const char* object_id, 
+                                        NPT_String& mapped_object_id);
+    
+    // constructor
+    PLT_MediaConnect(const char*  friendly_name,
+                     bool         add_hostname = true,
                      const char*  udn = NULL,
                      NPT_UInt16   port = 0,
                      bool         port_rebind = false);
 
-    NPT_Result Authorize(PLT_MediaConnectInfo* info, bool state);
-    NPT_Result Validate(PLT_MediaConnectInfo* info, bool state);
-
 protected:
     virtual ~PLT_MediaConnect();
-
-
+    
     // PLT_DeviceHost methods
-    virtual NPT_Result SetupServices(PLT_DeviceData& data);
+    virtual NPT_Result SetupServices();
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
                                 const PLT_HttpRequestContext& context);
     virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
                                              NPT_HttpResponse&             response);
-
-    // PLT_FileMediaServer methods
-    virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
+    virtual NPT_Result ProcessGetSCPD(PLT_Service*                  service,
+                                      NPT_HttpRequest&              request,
+                                      const NPT_HttpRequestContext& context,
+                                      NPT_HttpResponse&             response);
 
     // X_MS_MediaReceiverRegistrar
-    virtual NPT_Result OnIsAuthorized(PLT_ActionReference&  action, 
-                                      PLT_MediaConnectInfo* mediaConnectInfo);
-    virtual NPT_Result OnRegisterDevice(PLT_ActionReference&  action, 
-                                        PLT_MediaConnectInfo* mediaConnectInfo);
-    virtual NPT_Result OnIsValidated(PLT_ActionReference&  action, 
-                                     PLT_MediaConnectInfo* mediaConnectInfo);
-
-private:
-    NPT_Result LookUpMediaConnectInfo(NPT_String             deviceID, 
-                                      PLT_MediaConnectInfo*& mediaConnectInfo);
+    virtual NPT_Result OnIsAuthorized(PLT_ActionReference&  action);
+    virtual NPT_Result OnRegisterDevice(PLT_ActionReference&  action);
+    virtual NPT_Result OnIsValidated(PLT_ActionReference&  action);
 
 protected:
-    PLT_MediaConnectDeviceInfoMap m_MediaConnectDeviceInfoMap;
-    PLT_UDNtoMACMap               m_MediaConnectUDNMap;
+	NPT_Mutex   m_Lock;
+    bool        m_AddHostname;
+};
 
-private:
-    PLT_Service*                  m_RegistrarService;
+/*----------------------------------------------------------------------
+ |   PLT_FileMediaConnectDelegate class
+ +---------------------------------------------------------------------*/
+class PLT_FileMediaConnectDelegate : public PLT_FileMediaServerDelegate
+{
+public:
+    // constructor & destructor
+    PLT_FileMediaConnectDelegate(const char* url_root, const char* file_root) :
+        PLT_FileMediaServerDelegate(url_root, file_root) {}
+    virtual ~PLT_FileMediaConnectDelegate() {}
+    
+    // PLT_FileMediaServerDelegate methods
+    virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
+    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
+                                         const char*                   object_id, 
+                                         const char*                   search_criteria,
+                                         const char*                   filter,
+                                         NPT_UInt32                    starting_index,
+                                         NPT_UInt32                    requested_count,
+                                         const char*                   sort_criteria, 
+                                         const PLT_HttpRequestContext& context);
 };
 
 #endif /* _PLT_MEDIA_CONNECT_H_ */

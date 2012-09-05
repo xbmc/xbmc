@@ -111,7 +111,7 @@ UdpPing(const char* hostname, int port)
         return;
     }
     sender.GetInfo(socket_info);
-    printf("RESPONSE: %ld bytes from %s:%d\n", 
+    printf("RESPONSE: %d bytes from %s:%d\n", 
            response.GetDataSize(),
            socket_info.remote_address.GetIpAddress().ToString().GetChars(),
            socket_info.remote_address.GetPort());
