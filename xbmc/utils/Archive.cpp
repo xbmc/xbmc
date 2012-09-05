@@ -184,7 +184,7 @@ CArchive& CArchive::operator<<(const CStdStringW& str)
 {
   *this << str.GetLength();
 
-  int size = str.GetLength();
+  int size = str.GetLength() * sizeof(wchar_t);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -356,7 +356,7 @@ CArchive& CArchive::operator>>(CStdStringW& str)
   int iLength = 0;
   *this >> iLength;
 
-  m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength);
+  m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength * sizeof(wchar_t));
   str.ReleaseBuffer();
 
 

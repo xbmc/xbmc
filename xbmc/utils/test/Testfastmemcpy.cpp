@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,27 +19,22 @@
  *
  */
 
-#include "TestHelpers.h"
+#include <stddef.h> // TODO: This should go in fastmemcpy.h instead.
+#include "utils/fastmemcpy.h"
 
-#include "threads/Thread.h"
-#include "commons/ilog.h"
+#include "gtest/gtest.h"
 
-class NullLogger : public XbmcCommons::ILogger
+static const char refdata[] = "\x01\x02\x03\x04\x05\x06\x07\x08"
+                              "\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10"
+                              "\x11\x12\x13\x14\x15\x16\x17\x18"
+                              "\x19\x1a\x1b\x1c\x1d\x1e\x1f\x20"
+                              "\x21\x22\x23\x24\x25\x26\x27\x28"
+                              "\x29\x2a\x2b\x2c\x2d\x2e\x2f\x30";
+
+TEST(Testfastmemcpy, General)
 {
-public:
-  void log(int loglevel, const char* message) {}
-};
-
-int main()
-{
-  // we need to configure CThread to use a dummy logger
-  NullLogger* nullLogger = new NullLogger();
-  CThread::SetLogger(nullLogger);
-
-  int ret = UnitTest::RunAllTests();
-
-  delete nullLogger;
-
-  return ret;
+  char vardata[sizeof(refdata)];
+  memset(vardata, 0, sizeof(vardata));
+  EXPECT_TRUE(fast_memcpy(vardata, refdata, sizeof(refdata)));
+  EXPECT_TRUE(!memcmp(refdata, vardata, sizeof(refdata)));
 }
-

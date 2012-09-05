@@ -48,7 +48,7 @@ void CHttpHeader::Parse(CStdString strData)
 
     if (iValueStart > 0)
     {
-      strParam = strData.substr(iIter, iValueStart);
+      strParam = strData.substr(iIter, iValueStart - iIter);
       strValue = strData.substr(iValueStart + 1, iValueEnd - iValueStart - 1);
 
       /*
