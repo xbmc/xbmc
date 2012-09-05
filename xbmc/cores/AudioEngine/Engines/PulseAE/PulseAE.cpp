@@ -161,7 +161,7 @@ bool CPulseAE::Suspend()
   return false;
 }
 
-bool CPulse::Resume()
+bool CPulseAE::Resume()
 {
   /* TODO: see comments in Suspend() above */
 

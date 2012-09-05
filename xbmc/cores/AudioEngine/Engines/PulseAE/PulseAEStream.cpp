@@ -351,6 +351,11 @@ bool CPulseAEStream::IsDraining()
   return false;
 }
 
+bool CPulseAEStream::IsDrained()
+{
+  return m_DrainOperation == NULL;
+}
+
 bool CPulseAEStream::IsDestroyed()
 {
   return m_Destroyed;

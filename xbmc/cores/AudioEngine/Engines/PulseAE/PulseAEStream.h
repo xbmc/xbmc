@@ -43,6 +43,7 @@ public:
 
   virtual bool IsPaused     ();
   virtual bool IsDraining   ();
+  virtual bool IsDrained    ();
   virtual bool IsDestroyed  ();
   virtual bool IsBuffering() { return false; }
 
