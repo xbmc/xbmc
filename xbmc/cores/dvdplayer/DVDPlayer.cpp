@@ -3851,15 +3851,6 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         state.time_total = m_dvd.iDVDStillTime;
       }
     }
-
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      if(((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime() > 0)
-      {
-        state.time      -= ((CDVDInputStreamTV*)m_pInputStream)->GetStartTime();
-        state.time_total = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
-      }
-    }
   }
 
   if (m_Edl.HasCut())

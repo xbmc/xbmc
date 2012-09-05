@@ -133,7 +133,7 @@ int CDVDInputStreamTV::GetTotalTime()
   return m_pLiveTV->GetTotalTime();
 }
 
-int CDVDInputStreamTV::GetStartTime()
+int CDVDInputStreamTV::GetTime()
 {
   if(!m_pLiveTV) return -1;
   return m_pLiveTV->GetStartTime();

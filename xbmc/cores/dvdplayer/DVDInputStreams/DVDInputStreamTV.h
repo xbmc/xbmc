@@ -32,6 +32,7 @@ class IRecordable;
 class CDVDInputStreamTV
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
+  , public CDVDInputStream::IDisplayTime
 {
 public:
   CDVDInputStreamTV();
@@ -52,7 +53,7 @@ public:
   bool            SelectChannelByNumber(unsigned int channel);
 
   int             GetTotalTime();
-  int             GetStartTime();
+  int             GetTime();
 
   bool            SeekTime(int iTimeInMsec);
 

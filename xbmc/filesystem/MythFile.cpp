@@ -257,8 +257,6 @@ bool CMythFile::SetupLiveTV(const CURL& url)
 
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
   m_timestamp = XbmcThreads::SystemClockMillis();
-  if(m_program)
-    m_starttime = m_dll->proginfo_rec_start(m_program);
 
   if(m_recording)
   {
@@ -345,11 +343,6 @@ void CMythFile::Close()
   if(!m_dll)
     return;
 
-  if(m_starttime)
-  {
-    m_dll->ref_release(m_starttime);
-    m_starttime = NULL;
-  }
   if(m_program)
   {
     m_dll->ref_release(m_program);
@@ -377,7 +370,6 @@ void CMythFile::Close()
 CMythFile::CMythFile()
 {
   m_dll         = NULL;
-  m_starttime   = NULL;
   m_program     = NULL;
   m_recorder    = NULL;
   m_control     = NULL;
@@ -570,15 +562,19 @@ int CMythFile::GetTotalTime()
 
 int CMythFile::GetStartTime()
 {
-  if(m_program && m_recorder && m_starttime)
+  if(m_program && m_recorder)
   {
     cmyth_timestamp_t start = m_dll->proginfo_start(m_program);
-
-    double diff = difftime(m_dll->timestamp_to_unixtime(start), m_dll->timestamp_to_unixtime(m_starttime));
+      
+    CDateTimeSpan time;
+    time  = CDateTime::GetCurrentDateTime()
+          - CDateTime(m_dll->timestamp_to_unixtime(start));
 
     m_dll->ref_release(start);
-
-    return (int)(diff * 1000);
+    return time.GetDays()    * 1000 * 60 * 60 * 24
+         + time.GetHours()   * 1000 * 60 * 60
+         + time.GetMinutes() * 1000 * 60
+         + time.GetSeconds() * 1000;
   }
   return 0;
 }
