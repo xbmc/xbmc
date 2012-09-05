@@ -148,7 +148,7 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
           m_AND.push_back(strTerm);
         else if (bNextOR)
           m_OR.push_back(strTerm);
-        else
+        else if (bNextNOT)
           m_NOT.push_back(strTerm);
       }
       else
