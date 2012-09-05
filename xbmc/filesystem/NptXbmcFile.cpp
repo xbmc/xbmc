@@ -45,6 +45,12 @@
 #include "NptStrings.h"
 #include "NptDebug.h"
 
+#ifdef TARGET_WINDOWS
+#define S_IWUSR _S_IWRITE
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
+
 using namespace XFILE;
 
 typedef NPT_Reference<IFile> NPT_XbmcFileReference;
