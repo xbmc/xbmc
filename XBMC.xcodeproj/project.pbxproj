@@ -257,6 +257,7 @@
 		43BF09A21080D1E900E25290 /* AVTransportSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099E1080D1E900E25290 /* AVTransportSCPD.cpp */; };
 		43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */; };
 		43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
+		552A226915F7E14B0015C0D0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 552A226815F7E14B0015C0D0 /* main.cpp */; };
 		553840F215F360B400CE061B /* PltMimeType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 553840ED15F360B400CE061B /* PltMimeType.cpp */; };
 		553840F315F360B400CE061B /* PltProtocolInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 553840EF15F360B400CE061B /* PltProtocolInfo.cpp */; };
 		5538431D15F3626C00CE061B /* PltDownloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5538431B15F3626C00CE061B /* PltDownloader.cpp */; };
@@ -1005,7 +1006,6 @@
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
-		F5DA82D915803129003EE43C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DA82D815803129003EE43C /* main.cpp */; };
 		F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		F5DC8801110A46C700EE1B15 /* ModplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */; };
 		F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
@@ -1578,6 +1578,7 @@
 		43BF09A91080D2ED00E25290 /* RenderingControlSCPD_Full.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RenderingControlSCPD_Full.xml; sourceTree = "<group>"; };
 		43BF09DD1080D39300E25290 /* fastmemcpy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fastmemcpy.h; sourceTree = "<group>"; };
 		43FAC87112D6349400F67914 /* IStorageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IStorageProvider.h; sourceTree = "<group>"; };
+		552A226815F7E14B0015C0D0 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = main/main.cpp; sourceTree = "<group>"; };
 		553840ED15F360B400CE061B /* PltMimeType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMimeType.cpp; sourceTree = "<group>"; };
 		553840EE15F360B400CE061B /* PltMimeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMimeType.h; sourceTree = "<group>"; };
 		553840EF15F360B400CE061B /* PltProtocolInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltProtocolInfo.cpp; sourceTree = "<group>"; };
@@ -3180,7 +3181,6 @@
 		F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRenderer.cpp; sourceTree = "<group>"; };
 		F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserVplayer.cpp; sourceTree = "<group>"; };
 		F5D8EF5A103912A4004A11AB /* DVDSubtitleParserVplayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserVplayer.h; sourceTree = "<group>"; };
-		F5DA82D815803129003EE43C /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F5DC87E0110A287400EE1B15 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RingBuffer.cpp; sourceTree = "<group>"; };
 		F5DC87FF110A46C700EE1B15 /* ModplugCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModplugCodec.h; sourceTree = "<group>"; };
@@ -4297,6 +4297,14 @@
 			path = osx;
 			sourceTree = "<group>";
 		};
+		552A226615F7E11B0015C0D0 /* main */ = {
+			isa = PBXGroup;
+			children = (
+				552A226815F7E14B0015C0D0 /* main.cpp */,
+			);
+			name = main;
+			sourceTree = "<group>";
+		};
 		7C5608C30F1754930056433A /* ExternalPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -4618,6 +4626,7 @@
 				18B7C8C61294252E009E7A26 /* input */,
 				4367217312D6640E002508E6 /* interfaces */,
 				E38E1D690D25F9FD00618676 /* linux */,
+				552A226615F7E11B0015C0D0 /* main */,
 				18B7C853129423A7009E7A26 /* music */,
 				431376F212D6449100680C15 /* network */,
 				E37D5CB40D3023BB0081D327 /* osx */,
@@ -4673,7 +4682,6 @@
 				E38E184F0D25F9FA00618676 /* IProgressCallback.h */,
 				E38E18580D25F9FA00618676 /* LangInfo.cpp */,
 				E38E18590D25F9FA00618676 /* LangInfo.h */,
-				F5DA82D815803129003EE43C /* main.cpp */,
 				880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */,
 				880DBE4C0DC223FF00E26B71 /* MediaSource.h */,
 				E38E1DC10D25F9FD00618676 /* NfoFile.cpp */,
@@ -7663,7 +7671,6 @@
 				C848291C156CFFE7005A996F /* AddonCallbacksPVR.cpp in Sources */,
 				C848291F156D003E005A996F /* TextSearch.cpp in Sources */,
 				18E7CACB1578C26D001D4554 /* CDDARipJob.cpp in Sources */,
-				F5DA82D915803129003EE43C /* main.cpp in Sources */,
 				36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */,
 				36A9444115821E7C00727135 /* SortUtils.cpp in Sources */,
 				1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */,
@@ -7685,6 +7692,7 @@
 				5538432B15F3646C00CE061B /* NptPosixTime.cpp in Sources */,
 				5538433115F3678900CE061B /* NptCocoaEnviroment.mm in Sources */,
 				5538433415F3685C00CE061B /* NptAppleAutoreleasePool.mm in Sources */,
+				552A226915F7E14B0015C0D0 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
