@@ -34,6 +34,12 @@ using namespace MEDIA_DETECT;
 using namespace CDDB;
 #endif
 
+#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 83)
+#define CDTEXT_TITLE CDTEXT_FIELD_TITLE
+#define CDTEXT_PERFORMER CDTEXT_FIELD_PERFORMER
+#define CDTEXT_GENRE CDTEXT_FIELD_GENRE
+#endif
+
 CMusicInfoTagLoaderCDDA::CMusicInfoTagLoaderCDDA(void)
 {
 }
