@@ -227,6 +227,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 
   m_fps = fps;
   m_flags = flags;
+  m_iFlags = flags;
   m_format = format;
   m_extended_format = extended_format;
 

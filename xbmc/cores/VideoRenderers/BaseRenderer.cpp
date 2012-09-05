@@ -42,6 +42,7 @@ CBaseRenderer::CBaseRenderer()
   m_renderOrientation = 0;
   m_oldRenderOrientation = 0;
   m_oldDestRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
+  m_iFlags = 0;
 
   for(int i=0; i < 4; i++)
   {
