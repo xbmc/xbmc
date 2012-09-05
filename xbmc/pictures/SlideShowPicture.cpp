@@ -439,6 +439,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     }
     float w = maxx - minx;
     float h = maxy - miny;
+    m_bCanMoveHorizontally = (w >= fScreenWidth);
     if (w >= fScreenWidth)
     { // must have no black bars
       if (minx + m_fZoomLeft*w > fOffsetX)
