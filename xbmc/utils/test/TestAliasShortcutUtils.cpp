@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,6 +19,27 @@
  *
  */
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE "ThreadingTest"
-#include <boost/test/unit_test.hpp>
+#include "utils/AliasShortcutUtils.h"
+
+#include "gtest/gtest.h"
+
+TEST(TestAliasShortcutUtils, IsAliasShortcut)
+{
+  CStdString a = "";
+#if defined(TARGET_DARWIN_OSX)
+  /* TODO: Write test case for OSX */
+#else
+  EXPECT_FALSE(IsAliasShortcut(a));
+#endif
+}
+
+TEST(TestAliasShortcutUtils, TranslateAliasShortcut)
+{
+  CStdString a = "";
+  TranslateAliasShortcut(a);
+#if defined(TARGET_DARWIN_OSX)
+  /* TODO: Write test case for OSX */
+#else
+  EXPECT_STREQ("", a.c_str());
+#endif
+}

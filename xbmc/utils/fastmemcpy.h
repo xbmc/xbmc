@@ -18,6 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#pragma once
+
 #ifdef __cplusplus
 extern "C" {
 #endif

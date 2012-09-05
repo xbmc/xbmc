@@ -314,7 +314,7 @@ void XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
 void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
 {
   CStdString strValue;
-  strValue.Format("%l", value);
+  strValue.Format("%ld", value);
   SetString(pRootNode, strTag, strValue);
 }
 

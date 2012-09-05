@@ -465,6 +465,8 @@ CApplication::~CApplication(void)
   delete &m_httpWebinterfaceAddonsHandler;
 #endif
 #endif
+  delete m_musicInfoScanner;
+  delete m_videoInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
 #ifdef HAS_DVD_DRIVE
   delete m_Autorun;
