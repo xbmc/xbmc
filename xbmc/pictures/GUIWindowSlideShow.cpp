@@ -557,10 +557,12 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
       // "snap" to nearest of 0, 90, 180 and 270 if the
       // difference in angle is +/-10 degrees
       float reminder = fmodf(m_fRotate, 90.0f);
-      if (reminder < ROTATION_SNAP_RANGE)
+      if (fabs(reminder) < ROTATION_SNAP_RANGE)
         Rotate(-reminder);
       else if (reminder > 90.0f - ROTATION_SNAP_RANGE)
         Rotate(90.0f - reminder);
+      else if (-reminder > 90.0f - ROTATION_SNAP_RANGE)
+        Rotate(-90.0f - reminder);
     }
 
     m_fInitialZoom = 0.0f;
