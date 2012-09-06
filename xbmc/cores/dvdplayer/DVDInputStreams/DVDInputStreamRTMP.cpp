@@ -86,11 +86,14 @@ CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP
     m_rtmp = m_libRTMP.Alloc();
     m_libRTMP.Init(m_rtmp);
   }
+  else
+  {
+    m_rtmp = NULL;
+  }
 
   m_eof = true;
   m_bPaused = false;
   m_sStreamPlaying = NULL;
-  m_rtmp = NULL;
 }
 
 CDVDInputStreamRTMP::~CDVDInputStreamRTMP()
