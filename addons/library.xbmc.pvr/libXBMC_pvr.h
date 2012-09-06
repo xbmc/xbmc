@@ -31,7 +31,7 @@
 #ifdef _WIN32
 #define PVR_HELPER_DLL "\\library.xbmc.pvr\\libXBMC_pvr" ADDON_HELPER_EXT
 #else
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-" ADDON_HELPER_ARCH "-" ADDON_HELPER_PLATFORM ADDON_HELPER_EXT
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
 #endif
 
 #define DVD_TIME_BASE 1000000

@@ -32,7 +32,7 @@ typedef void* GUIHANDLE;
 #ifdef _WIN32
 #define GUI_HELPER_DLL "\\library.xbmc.gui\\libXBMC_gui" ADDON_HELPER_EXT
 #else
-#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-" ADDON_HELPER_ARCH "-" ADDON_HELPER_PLATFORM ADDON_HELPER_EXT
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
 #endif
 
 #define ADDON_ACTION_PREVIOUS_MENU          10
