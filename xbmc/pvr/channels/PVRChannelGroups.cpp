@@ -199,7 +199,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
   }
 
   // go through the groups list and check for new groups
-  for (std::vector<CPVRChannelGroupPtr>::const_iterator it = groups.m_groups.begin(); it != m_groups.end(); it++)
+  for (std::vector<CPVRChannelGroupPtr>::const_iterator it = groups.m_groups.begin(); it != groups.m_groups.end(); it++)
   {
     // check if this group is present in this container
     CPVRChannelGroupPtr existingGroup = GetByName((*it)->GroupName());
