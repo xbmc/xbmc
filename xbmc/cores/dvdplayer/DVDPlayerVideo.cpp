@@ -158,7 +158,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iFrameRateErr = 0;
   m_iFrameRateLength = 0;
   m_bFpsInvalid = false;
-  m_bFpsChanged = false;
   m_bAllowFullscreen = false;
   m_droptime = 0.0;
   m_dropbase = 0.0;
@@ -196,7 +195,6 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   formats  = g_renderManager.SupportedFormats();
 #endif
 
-  m_bFpsChanged = false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
   CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces, formats);
@@ -235,7 +233,6 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
     m_fFrameRate = 25;
 
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
-  m_bFpsChanged = false;
 
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
                      g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
@@ -1600,49 +1597,34 @@ void CDVDPlayerVideo::CalcFrameRate()
     m_iFrameRateCount++;
   }
   //check if the current detected framerate matches with the stored ones
-  else
+  else if (fabs(m_fStableFrameRate / m_iFrameRateCount - framerate) <= MAXFRAMERATEDIFF)
   {
-    if (fabs(m_fStableFrameRate / m_iFrameRateCount - framerate) <= MAXFRAMERATEDIFF)
-    {
-      m_fStableFrameRate += framerate; //store the calculated framerate
-      m_iFrameRateCount++;
+    m_fStableFrameRate += framerate; //store the calculated framerate
+    m_iFrameRateCount++;
 
-      //if we've measured m_iFrameRateLength seconds of framerates,
-      if (m_iFrameRateCount >= MathUtils::round_int(framerate) * m_iFrameRateLength)
+    //if we've measured m_iFrameRateLength seconds of framerates,
+    if (m_iFrameRateCount >= MathUtils::round_int(framerate) * m_iFrameRateLength)
+    {
+      //store the calculated framerate if it differs too much from m_fFrameRate
+      if (fabs(m_fFrameRate - (m_fStableFrameRate / m_iFrameRateCount)) > MAXFRAMERATEDIFF || m_bFpsInvalid)
       {
-		double newframerate = m_fStableFrameRate / m_iFrameRateCount;
-        //store the calculated framerate if it differs too much from m_fFrameRate
-        if (fabs(m_fFrameRate - newframerate) > MAXFRAMERATEDIFF || m_bFpsInvalid)
-        {
-          CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, newframerate);
-		  if (m_bFpsInvalid)
-		  {
-            m_fFrameRate = newframerate;
-            m_bFpsInvalid = false;
-		  }
-		  else
-		  {
-		    if ((!m_bFpsChanged) || (newframerate>m_fFrameRate))
-			{
-			  m_fFrameRate = newframerate;
-			  m_bFpsChanged=true;
-			}
-		  }
-        }
-
-        //reset the stored framerates
-        m_fStableFrameRate = 0.0;
-        m_iFrameRateCount = 0;
-        m_iFrameRateLength *= 2; //double the length we should measure framerates
-
-        //we're allowed to drop frames because we calculated a good framerate
-        m_bAllowDrop = true;
+        CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
+        m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
+        m_bFpsInvalid = false;
       }
-    }
-    else //the calculated framerate didn't match, reset the stored ones
-    {
+
+      //reset the stored framerates
       m_fStableFrameRate = 0.0;
       m_iFrameRateCount = 0;
+      m_iFrameRateLength *= 2; //double the length we should measure framerates
+
+      //we're allowed to drop frames because we calculated a good framerate
+      m_bAllowDrop = true;
     }
+  }
+  else //the calculated framerate didn't match, reset the stored ones
+  {
+    m_fStableFrameRate = 0.0;
+    m_iFrameRateCount = 0;
   }
 }
