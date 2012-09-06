@@ -79,7 +79,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_fFrameRate            = 25.0f;
   m_flush                 = false;
   m_hdmi_clock_sync       = false;
-  m_iVideoDelay           = 0;
   m_speed                 = DVD_PLAYSPEED_NORMAL;
   m_stalled               = false;
   m_codecname             = "";

@@ -62,6 +62,11 @@ class COMXPlayer;
 class OMXPlayerVideo;
 class OMXPlayerAudio;
 
+namespace PVR
+{
+  class CPVRChannel;
+}
+
 class COMXCurrentStream
 {
 public:
@@ -171,6 +176,7 @@ public:
 
   virtual bool  IsValidStream(COMXCurrentStream& stream);
   virtual bool  IsBetterStream(COMXCurrentStream& current, CDemuxStream* stream);
+  virtual bool  CheckDelayedChannelEntry(void);
   virtual bool  ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   virtual bool  CloseAudioStream(bool bWaitForBuffers);
   virtual bool  CloseVideoStream(bool bWaitForBuffers);
@@ -281,10 +287,14 @@ public:
   virtual bool  SetPlayerState(CStdString state);
   
   virtual CStdString GetPlayingTitle();
+
+  virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
+  virtual bool CachePVRStream(void) const;
   
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
+  , CACHESTATE_PVR      // player is waiting for some data in each buffer
   , CACHESTATE_INIT     // player is waiting for first packet of each stream
   , CACHESTATE_PLAY     // player is waiting for players to not be stalled
   , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
@@ -422,6 +432,8 @@ protected:
 
   } m_EdlAutoSkipMarkers;
 
+  bool ShowPVRChannelInfo();
+
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
   virtual void UpdatePlayState(double timeout);
 
@@ -438,6 +450,7 @@ private:
   bool                    m_bAbortRequest;
   CFileItem               m_item;
   CPlayerOptions          m_PlayerOptions;
+  unsigned int            m_iChannelEntryTimeOut;
 
   std::string             m_lastSub;
 
