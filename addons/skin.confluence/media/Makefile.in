@@ -10,7 +10,7 @@ all: $(TARGET)
 .PHONY: force
 
 $(TARGET): $(XBMCTEX) $(IMAGES)
-ifeq (@USE_ANDROID@,1)
+ifeq (@ARCH@,arm)
 	$(XBMCTEX) -use_none -input . -output $(TARGET)
 else
 	$(XBMCTEX) -input . -output $(TARGET)
