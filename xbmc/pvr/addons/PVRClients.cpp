@@ -1259,6 +1259,8 @@ PVR_STREAM_PROPERTIES CPVRClients::GetCurrentStreamProperties(void)
 {
   PVR_STREAM_PROPERTIES props;
   PVR_CLIENT client;
+  
+  memset(&props, 0, sizeof(props));
   if (GetPlayingClient(client))
     client->GetStreamProperties(&props);
 
