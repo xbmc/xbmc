@@ -312,7 +312,11 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
     CFileItemList items;
     CDirectory::GetDirectory(realPath, items, g_settings.m_pictureExtensions + "|.tbn|.dds", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
     for (int i=0; i < items.Size(); i++)
-      m_files.push_back(items[i]->GetPath());
+    {
+      CFileItem* pItem = items[i].get();
+      if (pItem && (pItem->IsPicture() || pItem->GetMimeType().Left(6).Equals("image/")))
+        m_files.push_back(pItem->GetPath());
+    }
   }
   return true;
 }
