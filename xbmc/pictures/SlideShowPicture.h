@@ -79,6 +79,7 @@ public:
   float GetZoom() const { return m_fZoomAmount;};
 
   bool m_bIsComic;
+  bool m_bCanMoveHorizontally;
 private:
   void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
   void Render(float *x, float *y, CBaseTexture* pTexture, color_t color);
