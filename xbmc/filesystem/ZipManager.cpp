@@ -36,8 +36,6 @@
 using namespace XFILE;
 using namespace std;
 
-CZipManager g_ZipManager;
-
 CZipManager::CZipManager()
 {
 }
