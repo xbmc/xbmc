@@ -223,14 +223,17 @@ bool CRemoteControl::CheckDevice() {
   int bufsize = sizeof(struct inotify_event) + PATH_MAX;
   char buf[bufsize];
   int ret = read(m_inotify_fd, buf, bufsize);
-  for (int i = 0; i + (int)sizeof(struct inotify_event) <= ret;) {
-    struct inotify_event* e = (struct inotify_event*)(buf+i);
-    if (e->mask & IN_DELETE_SELF) {
-      CLog::Log(LOGDEBUG, "LIRC device removed, disconnecting...");
-      Disconnect();
-      return false;
+  if (ret >= 0)
+  {
+    for (size_t i = 0; i + sizeof(struct inotify_event) <= (size_t)ret;) {
+      struct inotify_event* e = (struct inotify_event*)(buf+i);
+      if (e->mask & IN_DELETE_SELF) {
+        CLog::Log(LOGDEBUG, "LIRC device removed, disconnecting...");
+        Disconnect();
+        return false;
+      }
+      i += sizeof(struct inotify_event)+e->len;
     }
-    i += sizeof(struct inotify_event)+e->len;
   }
 #endif
   return true;
