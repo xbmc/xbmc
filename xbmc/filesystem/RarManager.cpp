@@ -41,8 +41,6 @@
 using namespace std;
 using namespace XFILE;
 
-CRarManager g_RarManager;
-
 CFileInfo::CFileInfo()
 {
   m_strCachedPath.Empty();
