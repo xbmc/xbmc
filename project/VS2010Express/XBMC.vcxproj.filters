@@ -2945,9 +2945,6 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestXBMCTinyXML.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestCryptThreading.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestGlobalsHandlingPattern1.h">
       <Filter>utils\test</Filter>
     </ClCompile>
