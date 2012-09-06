@@ -313,8 +313,7 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
     epg->RegisterObserver(this);
   }
 
-  if (epg)
-    epg->SetChannel(channel);
+  epg->SetChannel(channel);
 
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
