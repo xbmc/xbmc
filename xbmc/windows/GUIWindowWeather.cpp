@@ -66,7 +66,7 @@ FIXME'S
 */
 
 CGUIWindowWeather::CGUIWindowWeather(void)
-    : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
+    : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml"), m_maxLocation(0)
 {
 }
 
@@ -116,7 +116,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_MOVE_OFFSET:
     {
-      if (message.GetSenderId() == 0) //handle only message from builtin
+      if (message.GetSenderId() == 0 && m_maxLocation > 0) //handle only message from builtin
       {
         // Clamp location between 1 and m_maxLocation 
         int v = (g_weatherManager.GetArea() + message.GetParam1() - 1) % m_maxLocation + 1;

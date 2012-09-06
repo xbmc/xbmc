@@ -70,7 +70,6 @@ bool CWeatherJob::m_imagesOkay = false;
 CWeatherJob::CWeatherJob(int location)
 {
   m_location = location;
-  m_info.Reset();
 }
 
 bool CWeatherJob::DoWork()
