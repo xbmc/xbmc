@@ -132,6 +132,8 @@
 
 #define GUI_MSG_SET_TEXT        42
 
+#define GUI_MSG_WINDOW_LOAD 43
+
 #define GUI_MSG_USER         1000
 
 /*!

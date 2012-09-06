@@ -506,6 +506,13 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_WINDOW_LOAD:
+    {
+      Initialize();
+      return true;
+    }
+    break;
+      
   case GUI_MSG_WINDOW_INIT:
     {
       CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
@@ -728,7 +735,15 @@ bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
-  return Load(GetProperty("xmlfile").asString());
+  if(m_windowLoaded)
+    return false;
+  if(g_application.IsCurrentThread())
+    return Load(GetProperty("xmlfile").asString());
+  else
+  {
+    CGUIMessage msg(GUI_MSG_WINDOW_LOAD, 0, 0);
+    g_windowManager.SendThreadMessage(msg, GetID());
+  }
 }
 
 void CGUIWindow::SetInitialVisibility()
