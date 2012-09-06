@@ -410,14 +410,14 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 
     {
       CSingleLock lock(m_critSection);
-      CLog::Log(LOGDEBUG, "%s - %lu entries in memory before merging", __FUNCTION__, m_tags.size());
+      CLog::Log(LOGDEBUG, "%s - %zu entries in memory before merging", __FUNCTION__, m_tags.size());
       /* copy over tags */
       for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
         UpdateEntry(*it->second, bStoreInDb, false);
 
-      CLog::Log(LOGDEBUG, "%s - %lu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+      CLog::Log(LOGDEBUG, "%s - %zu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
       FixOverlappingEvents(bStoreInDb);
-      CLog::Log(LOGDEBUG, "%s - %lu entries in memory after fixing", __FUNCTION__, m_tags.size());
+      CLog::Log(LOGDEBUG, "%s - %zu entries in memory after fixing", __FUNCTION__, m_tags.size());
       /* update the last scan time of this table */
       m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
 
