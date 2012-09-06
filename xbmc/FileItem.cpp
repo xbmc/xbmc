@@ -198,7 +198,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
         StringUtils::EmptyString :
         g_localizeStrings.Get(19055); // no information available
 
-  if (channel.IsRadio() && bHasEpgNow)
+  if (channel.IsRadio())
   {
     CMusicInfoTag* musictag = GetMusicInfoTag();
     if (musictag)
