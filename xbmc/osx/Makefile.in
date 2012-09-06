@@ -7,7 +7,6 @@ INCLUDES=-I$(abs_top_srcdir) \
 .SUFFIXES : .m .mm
 
 SRCS = \
-	SDLMain.mm \
 	XBMCHelper.m \
 	AutoPool.mm \
 	DarwinUtils.mm \
