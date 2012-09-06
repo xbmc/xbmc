@@ -231,6 +231,7 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
   for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
   {
     RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
+    RESOLUTION_INFO &best = g_settings.m_ResInfo[current];
 
     //discard resolutions that are not the same width and height
     //or have a too low refreshrate
@@ -255,13 +256,12 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
     }
     else
     {
-      //discard resolutions that are not the same width and height
-      int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
+      int c_weight = MathUtils::round_int(RefreshWeight(best.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
       int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
 
       // Closer the better, prefer higher refresh rate if the same
       if ((i_weight <  c_weight)
-      ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
+      ||  (i_weight == c_weight && info.fRefreshRate > best.fRefreshRate))
         current = (RESOLUTION)i;
     }
   }

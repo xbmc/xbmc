@@ -50,7 +50,7 @@ enum RESOLUTION {
   RES_AUTORES        = 14,
   RES_WINDOW         = 15,
   RES_DESKTOP        = 16,          // Desktop resolution for primary screen
-  RES_CUSTOM         = 17 + 1,      // Desktop resolution for screen #2
+  RES_CUSTOM         = 16 + 1,      // Desktop resolution for screen #2
 //                     ...
 //                     12 + N - 1   // Desktop resolution for screen N
 //                     12 + N       // First additional resolution, in a N screen configuration.
