@@ -22,6 +22,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "FileItem.h"
+#include "utils/URIUtils.h"
 #include "test/TestUtils.h"
 
 #include "gtest/gtest.h"
@@ -32,9 +33,9 @@ TEST(TestDirectory, General)
   CFileItemList items;
   CFileItemPtr itemptr;
   tmppath1 = CSpecialProtocol::TranslatePath("special://temp/");
-  tmppath1 += "TestDirectory";
+  tmppath1 = URIUtils::AddFileToFolder(tmppath1, "TestDirectory");
   tmppath2 = tmppath1;
-  tmppath2 += "/subdir";
+  tmppath2 = URIUtils::AddFileToFolder(tmppath2, "subdir");
   EXPECT_TRUE(XFILE::CDirectory::Create(tmppath1));
   EXPECT_TRUE(XFILE::CDirectory::Exists(tmppath1));
   EXPECT_FALSE(XFILE::CDirectory::Exists(tmppath2));
@@ -43,7 +44,7 @@ TEST(TestDirectory, General)
   EXPECT_TRUE(XFILE::CDirectory::GetDirectory(tmppath1, items));
   XFILE::CDirectory::FilterFileDirectories(items, "");
   tmppath3 = tmppath2;
-  tmppath3 += "/";
+  URIUtils::AddSlashAtEnd(tmppath3);
   itemptr = items[0];
   EXPECT_STREQ(tmppath3.c_str(), itemptr->GetPath());
   EXPECT_TRUE(XFILE::CDirectory::Remove(tmppath2));
