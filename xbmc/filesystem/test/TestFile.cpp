@@ -186,7 +186,12 @@ TEST(TestFile, SetHidden)
   ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
   file->Close();
   EXPECT_TRUE(XFILE::CFile::Exists(XBMC_TEMPFILEPATH(file)));
-  EXPECT_FALSE(XFILE::CFile::SetHidden(XBMC_TEMPFILEPATH(file), true));
+  bool result = XFILE::CFile::SetHidden(XBMC_TEMPFILEPATH(file), true);
+#ifdef TARGET_WINDOWS
+  EXPECT_TRUE(result);
+#else
+  EXPECT_FALSE(result);
+#endif
   EXPECT_TRUE(XFILE::CFile::Exists(XBMC_TEMPFILEPATH(file)));
   EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
 }
