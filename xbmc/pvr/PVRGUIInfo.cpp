@@ -94,8 +94,8 @@ void CPVRGUIInfo::ResetProperties(void)
 void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo)
 {
   memset(&qualityInfo, 0, sizeof(qualityInfo));
-  strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
-  strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
+  strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
+  strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
 }
 
 void CPVRGUIInfo::Start(void)
