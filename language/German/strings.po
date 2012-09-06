@@ -10039,29 +10039,29 @@ msgstr "Sende 'inaktive Quelle' wenn XBMC beendet wird"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Geräte in den Standby versetzen, wenn der PC in den Standby-Modus wechselt"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Dieses Gerät muss gewartet werden"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorieren"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Wenn der TV ausgeschaltet ist"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Verbindung verloren"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "Dieser Benutzer hat keine Berechtigung den CEC-Adapater zu öffnen"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Der Port ist in Benutzung. Immer nur ein Programm hat Zugriff auf den CEC-Adapater"
 
