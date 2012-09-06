@@ -36,6 +36,7 @@ $(LIBDYLIB): $(SOURCE)
 	  mkdir -p $(XBMC_ADDONSDIR)/$$ADDON ; \
 	  cp -PRf $(SOURCE)/addons/$$ADDON/addon/* $(XBMC_ADDONSDIR)/$$ADDON ; \
 	  cp -Pf $(SOURCE)/addons/$$ADDON/*.pvr $(XBMC_ADDONSDIR)/$$ADDON ; \
+	  install_name_tool -id "$$ADDON" `find "$(XBMC_ADDONSDIR)/$$ADDON" -type f -name "*.pvr"` ; \
 	done
 	touch .installed
 
