@@ -29,37 +29,34 @@
 #ifdef _WIN32                   // windows
 #include "dlfcn-win32.h"
 #define ADDON_DLL               "\\library.xbmc.addon\\libXBMC_addon" ADDON_HELPER_EXT
-#define ADDON_HELPER_PLATFORM   "win32"
 #define ADDON_HELPER_EXT        ".dll"
 #else
 #if defined(__APPLE__)          // osx
-#define ADDON_HELPER_PLATFORM   "osx"
 #if defined(__POWERPC__)
-#define ADDON_HELPER_ARCH       "powerpc"
+#define ADDON_HELPER_ARCH       "powerpc-osx"
 #elif defined(__arm__)
-#define ADDON_HELPER_ARCH       "arm"
+#define ADDON_HELPER_ARCH       "arm-osx"
 #else
-#define ADDON_HELPER_ARCH       "x86"
+#define ADDON_HELPER_ARCH       "x86-osx"
 #endif
 #else                           // linux
-#define ADDON_HELPER_PLATFORM   "linux"
 #if defined(__x86_64__)
-#define ADDON_HELPER_ARCH       "x86_64"
+#define ADDON_HELPER_ARCH       "x86_64-linux"
 #elif defined(_POWERPC)
-#define ADDON_HELPER_ARCH       "powerpc"
+#define ADDON_HELPER_ARCH       "powerpc-linux"
 #elif defined(_POWERPC64)
-#define ADDON_HELPER_ARCH       "powerpc64"
+#define ADDON_HELPER_ARCH       "powerpc64-linux"
 #elif defined(__ARMEL__)
 #define ADDON_HELPER_ARCH       "arm"
 #elif defined(_MIPSEL)
-#define ADDON_HELPER_ARCH       "mipsel"
+#define ADDON_HELPER_ARCH       "mipsel-linux"
 #else
-#define ADDON_HELPER_ARCH       "i486"
+#define ADDON_HELPER_ARCH       "i486-linux"
 #endif
 #endif
 #include <dlfcn.h>              // linux+osx
 #define ADDON_HELPER_EXT        ".so"
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-" ADDON_HELPER_ARCH "-" ADDON_HELPER_PLATFORM ADDON_HELPER_EXT
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
 #endif
 
 #ifdef LOG_DEBUG
