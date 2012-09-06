@@ -284,7 +284,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (!videodatabase.GetEpisodesNav(videoUrl.ToString(), items, genreID, year, -1, -1, tvshowID, season, sorting))
-    return InternalError;
+    return InvalidParams;
 
   return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase, false);
 }
