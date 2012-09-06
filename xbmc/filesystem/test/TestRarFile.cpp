@@ -67,7 +67,7 @@ TEST(TestRarFile, Read)
   file.Flush();
   EXPECT_EQ(240, file.GetPosition());
   EXPECT_TRUE(!memcmp("rs, XBMC is a non-pr", buf, sizeof(buf) - 1));
-  EXPECT_EQ(1596, file.Seek(-sizeof(buf), SEEK_END));
+  EXPECT_EQ(1596, file.Seek(-(int64_t)sizeof(buf), SEEK_END));
   EXPECT_EQ(1596, file.GetPosition());
   EXPECT_EQ(sizeof(buf), file.Read(buf, sizeof(buf)));
   file.Flush();
