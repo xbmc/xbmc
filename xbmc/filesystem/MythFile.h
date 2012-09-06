@@ -101,7 +101,6 @@ protected:
   cmyth_recorder_t  m_recorder;
   cmyth_proginfo_t  m_program;
   cmyth_file_t      m_file;
-  cmyth_timestamp_t m_starttime;
   CStdString        m_filename;
   CVideoInfoTag     m_infotag;
 
