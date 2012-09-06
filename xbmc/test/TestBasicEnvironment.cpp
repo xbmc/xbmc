@@ -27,6 +27,7 @@
 #include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "Util.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -49,6 +50,12 @@ void TestBasicEnvironment::SetUp()
     XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt")
   );
 
+//for darwin set framework path - else we get assert
+//in guisettings init below
+#ifdef TARGET_DARWIN
+  CStdString frameworksPath = CUtil::GetFrameworksPath();
+  CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);    
+#endif
   /* TODO: Something should be done about all the asserts in GUISettings so
    * that the initialization of these components won't be needed.
    */
