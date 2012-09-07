@@ -70,12 +70,7 @@ public:
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
-#if defined(TARGET_DARWIN_IOS)
-   // on iOS, overwrite the GetFirstConnectedInterface and requery
-   // the interface list if no connected device is found
-   // this fixes a bug when no network is available after first start of xbmc after reboot
    virtual CNetworkInterface* GetFirstConnectedInterface(void);        
-#endif
     
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void);

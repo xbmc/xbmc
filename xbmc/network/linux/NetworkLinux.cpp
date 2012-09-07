@@ -322,10 +322,10 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
    return m_interfaces;
 }
 
-#if defined(TARGET_DARWIN_IOS)
-// on iOS, overwrite the GetFirstConnectedInterface and requery
+// Overwrite the GetFirstConnectedInterface and requery
 // the interface list if no connected device is found
-// this fixes a bug when no network is available after first start of xbmc after reboot
+// this fixes a bug when no network is available after first start of xbmc
+// and the interface comes up during runtime
 CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 {
     CNetworkInterface *pNetIf=CNetwork::GetFirstConnectedInterface();
@@ -333,7 +333,7 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
     // no connected Interfaces found? - requeryInterfaceList
     if (!pNetIf)
     {
-        CLog::Log(LOGDEBUG,"%s no connected if found - requery if list",__FUNCTION__);        
+        CLog::Log(LOGDEBUG,"%s no connected interface found - requery list",__FUNCTION__);        
         queryInterfaceList();        
         //retry finding a connected if
         pNetIf = CNetwork::GetFirstConnectedInterface();
@@ -341,7 +341,6 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
     
     return pNetIf;
 }
-#endif
 
 
 void CNetworkLinux::GetMacAddress(CStdString interfaceName, char rawMac[6])
