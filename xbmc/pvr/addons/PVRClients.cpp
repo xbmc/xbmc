@@ -186,16 +186,15 @@ bool CPVRClients::HasEnabledClients(void) const
 
 bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
 {
+  CSingleLock lock(m_critSection);  
   int iId = GetClientId(client);
   PVR_CLIENT mappedClient;
   if (GetConnectedClient(iId, mappedClient))
   {
-    g_PVRManager.StopUpdateThreads();
     if (bRestart)
       mappedClient->ReCreate();
     else
       mappedClient->Destroy();
-    g_PVRManager.StartUpdateThreads();
 
     return true;
   }
@@ -815,8 +814,13 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
 
     if (!bEnabled && IsKnownClient(clientAddon))
     {
+      CSingleLock lock(m_critSection);
       /* stop the client and remove it from the db */
       StopClient(clientAddon, false);
+      ADDON::VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), clientAddon);
+      if (addonPtr != m_addons.end())
+        m_addons.erase(addonPtr);
+
     }
     else if (bEnabled && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
     {
