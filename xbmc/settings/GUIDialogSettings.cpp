@@ -201,7 +201,7 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
       if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(value, setting.interval));
     }
   }
-  else if (setting.type == SettingInfo::BUTTON || setting.type == SettingInfo::BUTTON_DIALOG)
+  else if (setting.type == SettingInfo::BUTTON_DIALOG)
   {
     SET_CONTROL_LABEL(controlID,setting.name);
     CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(controlID);
