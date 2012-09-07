@@ -74,7 +74,7 @@ TEST_F(TestDownloadQueue, RequestContent)
   count = 0;
   for (it = urls.begin(); it < urls.end(); it++)
   {
-    std::cout << "Testing URL: " << *it << "\n";
+    std::cout << "Testing URL: " << *it << std::endl;
     TICKET t = queue.RequestContent(*it, &observer);
     EXPECT_EQ(count, t.dwItemId);
     count++;
@@ -99,7 +99,7 @@ TEST_F(TestDownloadQueue, RequestFile)
   count = 0;
   for (it = urls.begin(); it < urls.end(); it++)
   {
-    std::cout << "Testing URL: " << *it << "\n";
+    std::cout << "Testing URL: " << *it << std::endl;
     TICKET t = queue.RequestFile(*it, &observer);
     EXPECT_EQ(count, t.dwItemId);
     count++;

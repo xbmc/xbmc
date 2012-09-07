@@ -152,8 +152,7 @@ TEST_F(TestZipFile, CorruptedFile)
 
   reffilepath = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.zip");
   ASSERT_TRUE((file = XBMC_CREATECORRUPTEDFILE(reffilepath, ".zip")) != NULL);
-  std::cout << "Reference file generated at '" << XBMC_TEMPFILEPATH(file) <<
-    "'\n";
+  std::cout << "Reference file generated at '" << XBMC_TEMPFILEPATH(file) << "'" << std::endl;
 
   URIUtils::CreateArchivePath(strzippath, "zip", XBMC_TEMPFILEPATH(file), "");
   if (!XFILE::CDirectory::GetDirectory(strzippath, itemlist, "",
@@ -178,14 +177,14 @@ TEST_F(TestZipFile, CorruptedFile)
     return;
   }
   std::cout << "file->GetLength(): " <<
-    testing::PrintToString(file->GetLength()) << "\n";
+    testing::PrintToString(file->GetLength()) << std::endl;
   std::cout << "file->Seek(file->GetLength() / 2, SEEK_CUR) return value: " <<
-    testing::PrintToString(file->Seek(file->GetLength() / 2, SEEK_CUR)) << "\n";
+    testing::PrintToString(file->Seek(file->GetLength() / 2, SEEK_CUR)) << std::endl;
   std::cout << "file->Seek(0, SEEK_END) return value: " <<
-    testing::PrintToString(file->Seek(0, SEEK_END)) << "\n";
+    testing::PrintToString(file->Seek(0, SEEK_END)) << std::endl;
   std::cout << "file->Seek(0, SEEK_SET) return value: " <<
-    testing::PrintToString(file->Seek(0, SEEK_SET)) << "\n";
-  std::cout << "File contents:\n";
+    testing::PrintToString(file->Seek(0, SEEK_SET)) << std::endl;
+  std::cout << "File contents:" << std::endl;
   while ((size = file->Read(buf, sizeof(buf))) > 0)
   {
     str.Format("  %08X", count);
@@ -206,7 +205,7 @@ TEST_F(TestZipFile, CorruptedFile)
       else
         std::cout << ".";
     }
-    std::cout << "]\n";
+    std::cout << "]" << std::endl;
   }
   file->Close();
   XBMC_DELETETEMPFILE(file);

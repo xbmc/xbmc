@@ -98,5 +98,5 @@ TEST(TestCPUInfo, getUsedPercentage_output)
   CCPUInfo c;
   Sleep(1); /* TODO: Support option from main that sets this parameter */
   int r = c.getUsedPercentage();
-  std::cout << "Percentage: " << testing::PrintToString(r) << "\n";
+  std::cout << "Percentage: " << testing::PrintToString(r) << std::endl;
 }
