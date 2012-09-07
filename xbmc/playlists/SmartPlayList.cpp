@@ -238,7 +238,7 @@ bool CSmartPlaylistRule::Load(const TiXmlNode *node, const std::string &encoding
   return true;
 }
 
-bool CSmartPlaylistRule::Load(const CVariant &obj)
+bool CSmartPlaylistRule::Load(const CVariant &obj)  
 {
   if (!obj.isObject() ||
       !obj.isMember("field") || !obj["field"].isString() ||
