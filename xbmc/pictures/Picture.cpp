@@ -163,18 +163,18 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
     int x = i % num_across;
     int y = i / num_across;
     // load in the image
-    CTexture texture;
     unsigned int width = tile_width - 2*tile_gap, height = tile_height - 2*tile_gap;
-    if (texture.LoadFromFile(files[i], width, height, g_guiSettings.GetBool("pictures.useexifrotation")) && texture.GetWidth() && texture.GetHeight())
+    CBaseTexture *texture = CTexture::LoadFromFile(files[i], width, height, g_guiSettings.GetBool("pictures.useexifrotation"));
+    if (texture && texture->GetWidth() && texture->GetHeight())
     {
-      GetScale(texture.GetWidth(), texture.GetHeight(), width, height);
+      GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
       uint32_t *scaled = new uint32_t[width * height];
-      if (ScaleImage(texture.GetPixels(), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(),
+      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
                      (uint8_t *)scaled, width, height, width * 4))
       {
-        if (!texture.GetOrientation() || OrientateImage(scaled, width, height, texture.GetOrientation()))
+        if (!texture->GetOrientation() || OrientateImage(scaled, width, height, texture->GetOrientation()))
         {
           // drop into the texture
           unsigned int posX = x*tile_width + (tile_width - width)/2;
@@ -190,6 +190,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
         }
       }
       delete[] scaled;
+      delete texture;
     }
   }
   // now save to a file
