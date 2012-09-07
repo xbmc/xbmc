@@ -219,6 +219,11 @@ void CAdvancedSettings::Initialize()
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
+  m_recentlyAddedJobMusicPath = "musicdb://4/";
+  m_recentlyAddedJobMoviePath = "videodb://4/";
+  m_recentlyAddedJobEpisodePath = "videodb://5/";
+  m_recentlyAddedJobMusicVideoPath = "videodb://6/";
+
   m_iTuxBoxStreamtsPort = 31339;
   m_bTuxBoxAudioChannelSelection = false;
   m_bTuxBoxSubMenuSelection = false;
@@ -659,6 +664,15 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "ignoreerrors", m_bVideoScannerIgnoreErrors);
+  }
+
+  pElement = pRootElement->FirstChildElement("recentlyaddedjob");
+  if (pElement)
+  {
+    XMLUtils::GetString(pElement, "musicpath", m_recentlyAddedJobMusicPath);
+    XMLUtils::GetString(pElement, "moviepath", m_recentlyAddedJobMoviePath);
+    XMLUtils::GetString(pElement, "episodepath", m_recentlyAddedJobEpisodePath);
+    XMLUtils::GetString(pElement, "musicvideopath", m_recentlyAddedJobMusicVideoPath);
   }
 
   // Backward-compatibility of ExternalPlayer config
