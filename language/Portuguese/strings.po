@@ -131,79 +131,79 @@ msgstr "Dezembro"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "Segunda"
+msgstr "Seg"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "Terça"
+msgstr "Ter"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "Quarta"
+msgstr "Qua"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "Quinta"
+msgstr "Qui"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "Sexta"
+msgstr "Sex"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "Sábado"
+msgstr "Sáb"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "Domingo"
+msgstr "Dom"
 
 msgctxt "#51"
 msgid "Jan"
-msgstr "Janeiro"
+msgstr "Jan"
 
 msgctxt "#52"
 msgid "Feb"
-msgstr "Fevereiro"
+msgstr "Fev"
 
 msgctxt "#53"
 msgid "Mar"
-msgstr "Março"
+msgstr "Mar"
 
 msgctxt "#54"
 msgid "Apr"
-msgstr "Abril"
+msgstr "Abr"
 
 msgctxt "#55"
 msgid "May"
-msgstr "Maio"
+msgstr "Mai"
 
 msgctxt "#56"
 msgid "Jun"
-msgstr "Junho"
+msgstr "Jun"
 
 msgctxt "#57"
 msgid "Jul"
-msgstr "Julho"
+msgstr "Jul"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "Agosto"
+msgstr "Ago"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "Setembro"
+msgstr "Set"
 
 msgctxt "#60"
 msgid "Oct"
-msgstr "Outubro"
+msgstr "Out"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "Novembro"
+msgstr "Nov"
 
 msgctxt "#62"
 msgid "Dec"
-msgstr "Dezembro"
+msgstr "Dez"
 
 msgctxt "#71"
 msgid "N"
@@ -8639,7 +8639,7 @@ msgstr ""
 
 msgctxt "#33200"
 msgid "Detected New Connection"
-msgstr ""
+msgstr "Nova ligação detectada"
 
 msgctxt "#34000"
 msgid "Lame"
@@ -8711,11 +8711,11 @@ msgstr "7.1"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
-msgstr ""
+msgstr "Não consigo encontrar o item seguinte para reprodução"
 
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
-msgstr ""
+msgstr "Não consigo encontrar o item anterior para reprodução"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
@@ -8763,19 +8763,19 @@ msgstr ""
 
 msgctxt "#35000"
 msgid "Peripherals"
-msgstr ""
+msgstr "Periféricos"
 
 msgctxt "#35001"
 msgid "Generic HID device"
-msgstr ""
+msgstr "Dispositivo HID genérico"
 
 msgctxt "#35002"
 msgid "Generic network adapter"
-msgstr ""
+msgstr "Adaptador de rede genérico"
 
 msgctxt "#35003"
 msgid "Generic disk"
-msgstr ""
+msgstr "Disco genérico"
 
 msgctxt "#35004"
 msgid "There are no settings available\nfor this peripheral."
@@ -8811,7 +8811,7 @@ msgstr ""
 
 msgctxt "#35502"
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 msgctxt "#35503"
 msgid "Vendor"
@@ -8923,25 +8923,25 @@ msgstr ""
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Este dispositivo necessita de intervenção técnica"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorar"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Quando a TV está desligada"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Ligação perdida"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "Este utilizador não tem permissões para abrir o adaptador CEC"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "A porta está ocupada. Apenas um programa pode aceder ao adaptador CEC"
 
