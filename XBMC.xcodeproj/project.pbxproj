@@ -388,6 +388,10 @@
 		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
+		DF2345E115FA639500A934F6 /* UPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2345D915FA639500A934F6 /* UPnP.cpp */; };
+		DF2345E215FA639500A934F6 /* UPnPInternal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2345DB15FA639500A934F6 /* UPnPInternal.cpp */; };
+		DF2345E315FA639500A934F6 /* UPnPRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2345DD15FA639500A934F6 /* UPnPRenderer.cpp */; };
+		DF2345E415FA639500A934F6 /* UPnPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2345DF15FA639500A934F6 /* UPnPServer.cpp */; };
 		DF24A6B41406C7C500C7721E /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */; };
 		DF3488E713FD958F0026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF3488E513FD958F0026A711 /* GUIAction.cpp */; };
 		DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34892813FD9C780026A711 /* AirPlayServer.cpp */; };
@@ -815,7 +819,6 @@
 		E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E160D25F9FD00618676 /* Temperature.cpp */; };
 		E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */; };
 		E38E22C00D25F9FE00618676 /* ThumbnailCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */; };
-		E38E22C10D25F9FE00618676 /* UPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E1C0D25F9FD00618676 /* UPnP.cpp */; settings = {COMPILER_FLAGS = "-Ixbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core -Ixbmc/lib/libUPnP/Platinum/Source/Core -Ixbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer -Ixbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix -Ixbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect -Ixbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
 		E38E22C20D25F9FE00618676 /* URL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E1E0D25F9FD00618676 /* URL.cpp */; };
 		E38E22C30D25F9FE00618676 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E200D25F9FD00618676 /* Util.cpp */; };
 		E38E22C40D25F9FE00618676 /* AlarmClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E230D25F9FD00618676 /* AlarmClock.cpp */; };
@@ -1858,6 +1861,14 @@
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF2345D915FA639500A934F6 /* UPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnP.cpp; sourceTree = "<group>"; };
+		DF2345DA15FA639500A934F6 /* UPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnP.h; sourceTree = "<group>"; };
+		DF2345DB15FA639500A934F6 /* UPnPInternal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPInternal.cpp; sourceTree = "<group>"; };
+		DF2345DC15FA639500A934F6 /* UPnPInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPInternal.h; sourceTree = "<group>"; };
+		DF2345DD15FA639500A934F6 /* UPnPRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPRenderer.cpp; sourceTree = "<group>"; };
+		DF2345DE15FA639500A934F6 /* UPnPRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPRenderer.h; sourceTree = "<group>"; };
+		DF2345DF15FA639500A934F6 /* UPnPServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPServer.cpp; sourceTree = "<group>"; };
+		DF2345E015FA639500A934F6 /* UPnPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPServer.h; sourceTree = "<group>"; };
 		DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPDirectory.cpp; sourceTree = "<group>"; };
 		DF24A6B11406C7C500C7721E /* AFPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPDirectory.h; sourceTree = "<group>"; };
 		DF3488E513FD958F0026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
@@ -2841,8 +2852,6 @@
 		E38E1E190D25F9FD00618676 /* ThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbLoader.h; sourceTree = "<group>"; };
 		E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThumbnailCache.cpp; sourceTree = "<group>"; };
 		E38E1E1B0D25F9FD00618676 /* ThumbnailCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCache.h; sourceTree = "<group>"; };
-		E38E1E1C0D25F9FD00618676 /* UPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnP.cpp; sourceTree = "<group>"; };
-		E38E1E1D0D25F9FD00618676 /* UPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnP.h; sourceTree = "<group>"; };
 		E38E1E1E0D25F9FD00618676 /* URL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = URL.cpp; sourceTree = "<group>"; };
 		E38E1E1F0D25F9FD00618676 /* URL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URL.h; sourceTree = "<group>"; };
 		E38E1E200D25F9FD00618676 /* Util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
@@ -3991,6 +4000,7 @@
 				4313772B12D6474F00680C15 /* libscrobbler */,
 				432D7CE112D86D4900CE4C49 /* linux */,
 				4313772312D646E300680C15 /* osx */,
+				DF2345D715FA639500A934F6 /* upnp */,
 				DF527729151BAF4C00B5B63B /* websocket */,
 				DF34892813FD9C780026A711 /* AirPlayServer.cpp */,
 				DF34892913FD9C780026A711 /* AirPlayServer.h */,
@@ -4017,8 +4027,6 @@
 				432D7CF512D870D600CE4C49 /* TCPServer.h */,
 				E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */,
 				E38E1E8C0D25F9FD00618676 /* UdpClient.h */,
-				E38E1E1C0D25F9FD00618676 /* UPnP.cpp */,
-				E38E1E1D0D25F9FD00618676 /* UPnP.h */,
 				F5A7A859112908F00059D6AA /* WebServer.cpp */,
 				F5A7A85A112908F00059D6AA /* WebServer.h */,
 				E46F7C280F77217400C25D29 /* Zeroconf.cpp */,
@@ -4481,6 +4489,21 @@
 				C84828F3156CFD5E005A996F /* GUIEPGGridContainer.h */,
 			);
 			path = epg;
+			sourceTree = "<group>";
+		};
+		DF2345D715FA639500A934F6 /* upnp */ = {
+			isa = PBXGroup;
+			children = (
+				DF2345D915FA639500A934F6 /* UPnP.cpp */,
+				DF2345DA15FA639500A934F6 /* UPnP.h */,
+				DF2345DB15FA639500A934F6 /* UPnPInternal.cpp */,
+				DF2345DC15FA639500A934F6 /* UPnPInternal.h */,
+				DF2345DD15FA639500A934F6 /* UPnPRenderer.cpp */,
+				DF2345DE15FA639500A934F6 /* UPnPRenderer.h */,
+				DF2345DF15FA639500A934F6 /* UPnPServer.cpp */,
+				DF2345E015FA639500A934F6 /* UPnPServer.h */,
+			);
+			path = upnp;
 			sourceTree = "<group>";
 		};
 		DF527729151BAF4C00B5B63B /* websocket */ = {
@@ -7034,7 +7057,6 @@
 				E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */,
 				E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */,
 				E38E22C00D25F9FE00618676 /* ThumbnailCache.cpp in Sources */,
-				E38E22C10D25F9FE00618676 /* UPnP.cpp in Sources */,
 				E38E22C20D25F9FE00618676 /* URL.cpp in Sources */,
 				E38E22C30D25F9FE00618676 /* Util.cpp in Sources */,
 				E38E22C40D25F9FE00618676 /* AlarmClock.cpp in Sources */,
@@ -7702,6 +7724,10 @@
 				5538433415F3685C00CE061B /* NptAppleAutoreleasePool.mm in Sources */,
 				552A226915F7E14B0015C0D0 /* main.cpp in Sources */,
 				DFB15B2215F8FB8100CDF0DE /* SDLMain.mm in Sources */,
+				DF2345E115FA639500A934F6 /* UPnP.cpp in Sources */,
+				DF2345E215FA639500A934F6 /* UPnPInternal.cpp in Sources */,
+				DF2345E315FA639500A934F6 /* UPnPRenderer.cpp in Sources */,
+				DF2345E415FA639500A934F6 /* UPnPServer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

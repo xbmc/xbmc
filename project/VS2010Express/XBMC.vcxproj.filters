@@ -271,6 +271,9 @@
     <Filter Include="filesystem\test">
       <UniqueIdentifier>{6a33362b-e68d-45ec-8bcc-057d8caf5de6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\upnp">
+      <UniqueIdentifier>{89c1ccdb-5d9b-447c-91e9-7c61e5cee042}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -1400,9 +1403,6 @@
       <Filter>network</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\UdpClient.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\network\UPnP.cpp">
       <Filter>network</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\WebServer.cpp">
@@ -2963,6 +2963,18 @@
     <ClCompile Include="..\..\xbmc\filesystem\test\TestZipFile.cpp">
       <Filter>filesystem\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\upnp\UPnP.cpp">
+      <Filter>network\upnp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\upnp\UPnPInternal.cpp">
+      <Filter>network\upnp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\upnp\UPnPRenderer.cpp">
+      <Filter>network\upnp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\upnp\UPnPServer.cpp">
+      <Filter>network\upnp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4309,9 +4321,6 @@
       <Filter>network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\UdpClient.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\network\UPnP.h">
       <Filter>network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\WebServer.h">
@@ -5751,6 +5760,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\test\TestUtils.h">
       <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\upnp\UPnP.h">
+      <Filter>network\upnp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\upnp\UPnPInternal.h">
+      <Filter>network\upnp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\upnp\UPnPRenderer.h">
+      <Filter>network\upnp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\upnp\UPnPServer.h">
+      <Filter>network\upnp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

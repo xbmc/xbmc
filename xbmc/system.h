@@ -36,7 +36,6 @@
 #define HAS_SCREENSAVER
 #define HAS_PYTHON
 #define HAS_SYSINFO
-#define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
 #define HAS_PVRCLIENTS
@@ -85,6 +84,10 @@
   #define HAS_MYSQL
 #endif
 
+#if defined(USE_UPNP)
+  #define HAS_UPNP
+#endif
+
 /**********************
  * Non-free Components
  **********************/
@@ -124,6 +127,7 @@
 #define HAVE_LIBMP3LAME
 #define HAVE_LIBVORBISENC
 #define HAS_MYSQL
+#define HAS_UPNP
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
