@@ -22,7 +22,6 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/SlingboxLib/SlingboxLib.a \
                    lib/libRTV/librtv.a \
-                   lib/libUPnP/libupnp.a \
                    lib/libXDAAP/libxdaap.a \
                    lib/libhts/libhts.a \
                    lib/libsquish/libsquish.a \
@@ -106,6 +105,11 @@ ifeq (@USE_OPENGLES@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
 DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
 DIRECTORY_ARCHIVES += xbmc/visualizations/EGLHelpers/eglhelpers.a
+endif
+
+ifeq (@USE_UPNP@,1)
+DIRECTORY_ARCHIVES += lib/libUPnP/libupnp.a \
+                      xbmc/network/upnp/upnp.a
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
