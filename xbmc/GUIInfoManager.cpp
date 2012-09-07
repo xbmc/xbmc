@@ -55,6 +55,7 @@
 #include "utils/MathUtils.h"
 #include "utils/SeekHandler.h"
 #include "URL.h"
+#include "addons/Skin.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -558,7 +559,8 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
 const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
                                   { "currentcolourtheme",SKIN_COLOUR_THEME },
                                   {"hasvideooverlay",   SKIN_HAS_VIDEO_OVERLAY},
-                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY}};
+                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY},
+                                  {"aspectratio",       SKIN_ASPECT_RATIO}};
 
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "isactive",         WINDOW_IS_ACTIVE },
@@ -1714,6 +1716,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     break;
   case SKIN_COLOUR_THEME:
     strLabel = g_guiSettings.GetString("lookandfeel.skincolors");
+    break;
+  case SKIN_ASPECT_RATIO:
+    if (g_SkinInfo)
+      strLabel = g_SkinInfo->GetCurrentAspect();
     break;
 #ifdef HAS_LCD
   case LCD_PROGRESS_BAR:
