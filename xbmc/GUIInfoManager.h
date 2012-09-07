@@ -361,6 +361,7 @@ namespace INFO
 #define SKIN_THEME                  604
 #define SKIN_COLOUR_THEME           605
 #define SKIN_HAS_THEME              606
+#define SKIN_ASPECT_RATIO           607
 
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645
