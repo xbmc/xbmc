@@ -322,8 +322,6 @@ bool CGUITextureBase::AllocResources()
 
         m_texture = texture;
 
-        m_info.orientation = m_texture.m_orientation;
-
         changed = true;
       }
       else
