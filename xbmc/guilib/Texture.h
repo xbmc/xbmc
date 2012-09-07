@@ -44,7 +44,6 @@ class CBaseTexture
 
 public:
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
-  CBaseTexture(const CBaseTexture &copy);
 
   virtual ~CBaseTexture();
 
@@ -73,8 +72,6 @@ public:
   static CBaseTexture *LoadFromFileInMemory(unsigned char* buffer, size_t bufferSize, const std::string& mimeType,
                                             unsigned int idealWidth = 0, unsigned int idealHeight = 0);
 
-  bool LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
-                    bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight);
   bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels);
   bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
@@ -92,6 +89,11 @@ public:
   unsigned int GetTextureHeight() const { return m_textureHeight; }
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
+  /*! \brief return the original width of the image, before scaling/cropping */
+  unsigned int GetOriginalWidth() const { return m_originalWidth; }
+  /*! \brief return the original height of the image, before scaling/cropping */
+  unsigned int GetOriginalHeight() const { return m_originalHeight; }
+
   int GetOrientation() const { return m_orientation; }
   void SetOrientation(int orientation) { m_orientation = orientation; }
 
@@ -102,9 +104,14 @@ public:
   static unsigned int PadPow2(unsigned int x);
   bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
 
+private:
+  // no copy constructor
+  CBaseTexture(const CBaseTexture &copy);
+
 protected:
   bool LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType,
                          unsigned int maxWidth, unsigned int maxHeight);
+  bool LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate);
   void LoadFromImage(ImageInfo &image, bool autoRotate = false);
   // helpers for computation of texture parameters for compressed textures
   unsigned int GetPitch(unsigned int width) const;
@@ -115,6 +122,8 @@ protected:
   unsigned int m_imageHeight;
   unsigned int m_textureWidth;
   unsigned int m_textureHeight;
+  unsigned int m_originalWidth;   ///< original image width before scaling or cropping
+  unsigned int m_originalHeight;  ///< original image height before scaling or cropping
 
   unsigned char* m_pixels;
   bool m_loadedToGPU;

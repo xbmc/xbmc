@@ -52,24 +52,6 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
   Allocate(width, height, format);
 }
 
-CBaseTexture::CBaseTexture(const CBaseTexture &copy)
-{
-  m_imageWidth = copy.m_imageWidth;
-  m_imageHeight = copy.m_imageHeight;
-  m_textureWidth = copy.m_textureWidth;
-  m_textureHeight = copy.m_textureHeight;
-  m_format = copy.m_format;
-  m_orientation = copy.m_orientation;
-  m_hasAlpha = copy.m_hasAlpha;
-  m_pixels = NULL;
-  m_loadedToGPU = false;
-  if (copy.m_pixels)
-  {
-    m_pixels = new unsigned char[GetPitch() * GetRows()];
-    memcpy(m_pixels, copy.m_pixels, GetPitch() * GetRows());
-  }
-}
-
 CBaseTexture::~CBaseTexture()
 {
   delete[] m_pixels;
@@ -77,8 +59,8 @@ CBaseTexture::~CBaseTexture()
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
+  m_imageWidth = m_originalWidth = width;
+  m_imageHeight = m_originalHeight = height;
   m_format = format;
   m_orientation = 0;
 
@@ -217,7 +199,7 @@ CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned
   }
 #endif
   CTexture *texture = new CTexture();
-  if (texture->LoadFromFile(texturePath, idealWidth, idealHeight, autoRotate, NULL, NULL))
+  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, autoRotate))
     return texture;
   delete texture;
   return NULL;
@@ -232,8 +214,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
-                                bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
+bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate)
 {
 #ifdef TARGET_RASPBERRY_PI
   if (URIUtils::GetExtension(texturePath).Equals(".jpg") || 
@@ -334,11 +315,6 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
-  if (originalWidth)
-    *originalWidth = image.originalwidth;
-  if (originalHeight)
-    *originalHeight = image.originalheight;
-
   LoadFromImage(image, autoRotate);
   dll.ReleaseImage(&image);
 
@@ -401,6 +377,8 @@ void CBaseTexture::LoadFromImage(ImageInfo &image, bool autoRotate)
   Allocate(image.width, image.height, XB_FMT_A8R8G8B8);
   if (autoRotate && image.exifInfo.Orientation)
     m_orientation = image.exifInfo.Orientation - 1;
+  m_originalWidth = image.originalwidth;
+  m_originalHeight = image.originalheight;
 
   unsigned int dstPitch = GetPitch();
   unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
@@ -444,8 +422,8 @@ void CBaseTexture::LoadFromImage(ImageInfo &image, bool autoRotate)
 
 bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
+  m_imageWidth = m_originalWidth = width;
+  m_imageHeight = m_originalHeight = height;
   m_format = format;
   m_hasAlpha = hasAlpha;
   Update(width, height, pitch, format, pixels, false);

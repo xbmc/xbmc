@@ -98,25 +98,26 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         unsigned int start = XbmcThreads::SystemClockMillis();
-        CBaseTexture* texture = new CTexture();
-        unsigned int originalWidth = 0;
-        unsigned int originalHeight = 0;
-        texture->LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"), &originalWidth, &originalHeight);
+        CBaseTexture* texture = CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"));
         totalTime += XbmcThreads::SystemClockMillis() - start;
         count++;
         // tell our parent
-        bool bFullSize = ((int)texture->GetWidth() < m_maxWidth) && ((int)texture->GetHeight() < m_maxHeight);
-        if (!bFullSize)
+        bool bFullSize = false;
+        if (texture)
         {
-          int iSize = texture->GetWidth() * texture->GetHeight() - MAX_PICTURE_SIZE;
-          if ((iSize + (int)texture->GetWidth() > 0) || (iSize + (int)texture->GetHeight() > 0))
-            bFullSize = true;
-          if (!bFullSize && texture->GetWidth() == g_Windowing.GetMaxTextureSize())
-            bFullSize = true;
-          if (!bFullSize && texture->GetHeight() == g_Windowing.GetMaxTextureSize())
-            bFullSize = true;
+          bFullSize = ((int)texture->GetWidth() < m_maxWidth) && ((int)texture->GetHeight() < m_maxHeight);
+          if (!bFullSize)
+          {
+            int iSize = texture->GetWidth() * texture->GetHeight() - MAX_PICTURE_SIZE;
+            if ((iSize + (int)texture->GetWidth() > 0) || (iSize + (int)texture->GetHeight() > 0))
+              bFullSize = true;
+            if (!bFullSize && texture->GetWidth() == g_Windowing.GetMaxTextureSize())
+              bFullSize = true;
+            if (!bFullSize && texture->GetHeight() == g_Windowing.GetMaxTextureSize())
+              bFullSize = true;
+          }
         }
-        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, texture, originalWidth, originalHeight, bFullSize);
+        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, texture, bFullSize);
         m_isLoading = false;
       }
     }
@@ -899,7 +900,7 @@ void CGUIWindowSlideShow::Move(float fX, float fY)
   }
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iOriginalWidth, int iOriginalHeight, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, bool bFullSize)
 {
   if (pTexture)
   {
@@ -919,7 +920,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pT
         return;
       }
       m_Image[m_iCurrentPic].UpdateTexture(pTexture);
-      m_Image[m_iCurrentPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
+      m_Image[m_iCurrentPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
       m_bReloadImage = false;
     }
     else
@@ -928,7 +929,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pT
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, g_guiSettings.GetBool("slideshow.displayeffects") ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE);
       else
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, CSlideShowPic::EFFECT_NO_TIMEOUT);
-      m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
+      m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
 
       m_Image[iPic].m_bIsComic = false;
       if (URIUtils::IsInRAR(m_slides->Get(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
