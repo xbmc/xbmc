@@ -145,6 +145,9 @@ config.log
 /xbmc/peripherals/bus/Makefile
 /xbmc/peripherals/devices/Makefile
 
+# /xbmc/main/
+/xbmc/main/Makefile
+
 # /lib/
 /lib/Makefile
 
