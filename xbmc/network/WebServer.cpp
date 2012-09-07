@@ -275,6 +275,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
   }
 
   struct MHD_Response *response = NULL;
+  int responseCode = handler->GetHTTPResonseCode();
   switch (handler->GetHTTPResponseType())
   {
     case HTTPNone:
@@ -286,7 +287,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
       break;
 
     case HTTPFileDownload:
-      ret = CreateFileDownloadResponse(request.connection, handler->GetHTTPResponseFile(), request.method, response);
+      ret = CreateFileDownloadResponse(request.connection, handler->GetHTTPResponseFile(), request.method, response, responseCode);
       break;
 
     case HTTPMemoryDownloadNoFreeNoCopy:
@@ -324,7 +325,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
   for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
     MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
 
-  MHD_queue_response(request.connection, handler->GetHTTPResonseCode(), response);
+  MHD_queue_response(request.connection, responseCode, response);
   MHD_destroy_response(response);
   delete handler;
 
@@ -354,15 +355,43 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &
   return MHD_NO;
 }
 
-int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const string &strURL, HTTPMethod methodType, struct MHD_Response *&response)
+int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const string &strURL, HTTPMethod methodType, struct MHD_Response *&response, int &responseCode)
 {
   CFile *file = new CFile();
 
   if (file->Open(strURL, READ_NO_CACHE))
   {
+    bool getData = true;
     if (methodType != HEAD)
     {
-      response = MHD_create_response_from_callback ( file->GetLength(),
+      if (methodType == GET)
+      {
+        string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
+        if (!ifModifiedSince.empty())
+        {
+          CDateTime ifModifiedSinceDate;
+          ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince);
+
+          struct __stat64 statBuffer;
+          if (file->Stat(&statBuffer) == 0)
+          {
+            struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
+            if (time != NULL)
+            {
+              CDateTime lastModified = *time;
+              if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
+              {
+                getData = false;
+                response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+                responseCode = MHD_HTTP_NOT_MODIFIED;
+              }
+            }
+          }
+        }
+      }
+
+      if (getData)
+        response = MHD_create_response_from_callback(file->GetLength(),
                                                      2048,
                                                      &CWebServer::ContentReaderCallback, file,
                                                      &CWebServer::ContentReaderFreeCallback);
@@ -371,26 +400,54 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     }
     else
     {
+      getData = false;
+
       CStdString contentLength;
       contentLength.Format("%I64d", file->GetLength());
-      file->Close();
-      delete file;
 
       response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
       if (response == NULL)
+      {
+        file->Close();
+        delete file;
         return MHD_NO;
+      }
       MHD_add_response_header(response, "Content-Length", contentLength);
     }
 
+    // set the Content-Type header
     CStdString ext = URIUtils::GetExtension(strURL);
     ext = ext.ToLower();
     const char *mime = CreateMimeTypeFromExtension(ext.c_str());
     if (mime)
       MHD_add_response_header(response, "Content-Type", mime);
 
+    // set the Last-Modified header
+    struct __stat64 statBuffer;
+    if (file->Stat(&statBuffer) == 0)
+    {
+      struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
+      if (time != NULL)
+      {
+        CDateTime lastModified = *time;
+        MHD_add_response_header(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
+      }
+    }
+
+    // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
-    expiryTime += CDateTimeSpan(1, 0, 0, 0);
+    if (mime && strncmp(mime, "text/html", 9) == 0)
+      expiryTime += CDateTimeSpan(1, 0, 0, 0);
+    else
+      expiryTime += CDateTimeSpan(365, 0, 0, 0);
     MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+
+    // only close the CFile instance if libmicrohttpd doesn't have to grab the data of the file
+    if (!getData)
+    {
+      file->Close();
+      delete file;
+    }
   }
   else
   {
