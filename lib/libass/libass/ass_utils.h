@@ -34,6 +34,12 @@
 
 #ifdef _WIN32
 #include "config.h"
+// This is needed in debug build. Without those defines, those 3 symbols are taken from msvcr100.dll, and free() from msvcr100d.dll
+// This cause a heap corruption each time a strdup is freed
+// See http://www.altdevblogaday.com/2011/08/02/a-journey-into-linker-hell-and-a-mistake/
+#define strdup _strdup
+#define stricmp _stricmp
+#define strnicmp _strnicmp
 #endif
 
 #define MSGL_FATAL 0
