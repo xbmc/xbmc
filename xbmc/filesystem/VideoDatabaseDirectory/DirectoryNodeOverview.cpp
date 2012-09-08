@@ -21,7 +21,6 @@
 
 #include "video/VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
@@ -92,7 +91,6 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     else
       vec.push_back(make_pair("3", 20389)); // Music Videos
   }
-  if (!g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems)
   {
     if (hasMovies)
       vec.push_back(make_pair("4", 20386));  // Recently Added Movies

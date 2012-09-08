@@ -408,6 +408,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
     fields.push_back(FieldStudio);
     fields.push_back(FieldMPAA);
     fields.push_back(FieldDateAdded);
+    fields.push_back(FieldInProgress);
   }
   else if (type == "episodes")
   {
@@ -722,6 +723,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     {
       if (m_field == FieldInProgress)
         return "episodeview.idFile " + negate + " IN (select idFile from bookmark where type = 1)";
+    }
+    else if (strType == "tvshows")
+    {
+      if (m_field == FieldInProgress)
+        return GetField(FieldId, strType) + negate + " IN (select idShow from tvshowview where watchedcount > 0 AND watchedcount < totalCount)";
     }
   }
 
