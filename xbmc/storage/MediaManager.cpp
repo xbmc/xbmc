@@ -57,6 +57,8 @@
 #include "osx/DarwinStorageProvider.h"
 #elif defined(TARGET_ANDROID)
 #include "android/AndroidStorageProvider.h"
+#elif defined(TARGET_FREEBSD)
+#include "linux/LinuxStorageProvider.h"
 #elif defined(_LINUX)
 #include "linux/LinuxStorageProvider.h"
 #include <sys/ioctl.h>
