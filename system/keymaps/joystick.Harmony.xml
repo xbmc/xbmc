@@ -114,7 +114,7 @@
       <!-- Info  	-->      <button id="31">XBMC.ActivateWindow(Settings)</button>
       <!-- Exit 	-->      <button id="51">XBMC.ActivateWindow(ShutdownMenu)</button>
       <!-- #enter	-->      <button id="36">XBMC.ActivateWindow(SystemInfo)</button>
-      <!-- 1 		-->      <button id="11">ToggleFullScreen</button>
+      <!-- 1 		-->      <button id="11" standalone="false">ToggleFullScreen</button>
     </joystick>
   </Home>
   <MyFiles>
