@@ -294,8 +294,6 @@ void CAESinkWASAPI::Deinitialize()
 
   CloseHandle(m_needDataEvent);
 
-  Sleep((DWORD)(m_sinkLatency * 1.1 * 1000.0)); //let buffers drain
-
   SAFE_RELEASE(m_pRenderClient);
   SAFE_RELEASE(m_pAudioClient);
   SAFE_RELEASE(m_pDevice);
@@ -392,6 +390,12 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
 
   if (!m_running) //first time called, pre-fill buffer then start audio client
   {
+    hr = m_pAudioClient->Reset();
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__ " AudioClient reset failed due to %s", WASAPIErrToStr(hr));
+      return 0;
+    }
     hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
     if (FAILED(hr))
     {
@@ -401,7 +405,14 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
     }
-    memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer
+
+    /* Inject one buffer of silence if sink has just opened */
+    /* to avoid losing start of stream or GUI sound         */
+    if (g_advancedSettings.m_streamSilence)
+      memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer with audio
+    else
+      memset(buf,    0, NumFramesRequested * m_format.m_frameSize); //fill buffer with silence
+
     hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
     if (FAILED(hr))
     {
@@ -415,7 +426,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     if FAILED(hr)
       CLog::Log(LOGERROR, __FUNCTION__": AudioClient Start Failed");
     m_running = true; //signal that we're processing frames
-    return NumFramesRequested;
+    return g_advancedSettings.m_streamSilence ? NumFramesRequested : 0U;
   }
 
 #ifndef _DEBUG
@@ -463,7 +474,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     #ifdef _DEBUG
       CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed due to %s", WASAPIErrToStr(hr));
     #endif
-    return 0;
+    return INT_MAX;
   }
   memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer
   hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
@@ -472,7 +483,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     #ifdef _DEBUG
     CLog::Log(LOGDEBUG, __FUNCTION__": ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
     #endif
-    return 0;
+    return INT_MAX;
   }
 
   return NumFramesRequested;
