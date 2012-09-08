@@ -5277,3 +5277,13 @@ CStdString CGUIInfoManager::GetSkinVariableString(int info,
 
   return "";
 }
+
+bool CGUIInfoManager::ConditionsChangedValues(const std::map<int, bool>& map)
+{
+  for (std::map<int, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
+  {
+    if (GetBoolValue(it->first) != it->second)
+      return true;
+  }
+  return false;
+}

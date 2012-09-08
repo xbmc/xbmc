@@ -28,7 +28,7 @@
 CGUIDialogMuteBug::CGUIDialogMuteBug(void)
     : CGUIDialog(WINDOW_DIALOG_MUTE_BUG, "DialogMuteBug.xml")
 {
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
 }
 
 CGUIDialogMuteBug::~CGUIDialogMuteBug(void)

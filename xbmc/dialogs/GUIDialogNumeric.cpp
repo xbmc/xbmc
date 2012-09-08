@@ -49,6 +49,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
   m_block = 0;
   memset(&m_datetime, 0, sizeof(SYSTEMTIME));
   m_dirty = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogNumeric::~CGUIDialogNumeric(void)

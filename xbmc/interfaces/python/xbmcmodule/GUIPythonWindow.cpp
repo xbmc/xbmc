@@ -60,7 +60,7 @@ CGUIPythonWindow::CGUIPythonWindow(int id)
 {
   pCallbackWindow = NULL;
   m_threadState = NULL;
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
   m_destroyAfterDeinit = false;
 }
 

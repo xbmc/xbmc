@@ -58,6 +58,7 @@ CGUIWindowLoginScreen::CGUIWindowLoginScreen(void)
   watch.StartZero();
   m_vecItems = new CFileItemList;
   m_iSelectedItem = -1;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIWindowLoginScreen::~CGUIWindowLoginScreen(void)

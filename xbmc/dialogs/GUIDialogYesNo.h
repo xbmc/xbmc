@@ -38,5 +38,7 @@ public:
   static bool ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2, const CStdString& noLabel="", const CStdString& yesLabel="");
   static bool ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2, bool &bCanceled, const CStdString& noLabel="", const CStdString& yesLabel="");
 protected:
+  virtual int GetDefaultLabelID(int controlId) const;
+
   bool m_bCanceled;
 };

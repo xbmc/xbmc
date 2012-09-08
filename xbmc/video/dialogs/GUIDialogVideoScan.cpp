@@ -41,6 +41,7 @@ using namespace VIDEO;
 CGUIDialogVideoScan::CGUIDialogVideoScan(void)
 : CGUIDialog(WINDOW_DIALOG_VIDEO_SCAN, "DialogVideoScan.xml")
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogVideoScan::~CGUIDialogVideoScan(void)
@@ -167,12 +168,17 @@ void CGUIDialogVideoScan::UpdateState()
       CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_CURRENT_PROGRESS);
       if (pProgressCtrl) pProgressCtrl->SetPercentage(m_fCurrentPercentDone);
     }
+    else
+      SET_CONTROL_HIDDEN(CONTROL_CURRENT_PROGRESS);
+
     if (m_fPercentDone>-1.0f)
     {
       SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
       CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
       if (pProgressCtrl) pProgressCtrl->SetPercentage(m_fPercentDone);
     }
+    else
+      SET_CONTROL_HIDDEN(CONTROL_PROGRESS);
   }
   else
   {

@@ -40,6 +40,7 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
       m_initTimer(true), m_lockedTimer(true)
 {
   m_bShowPreset = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)

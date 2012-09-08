@@ -72,6 +72,7 @@ CGUIDialogVideoInfo::CGUIDialogVideoInfo(void)
   m_bRefresh = false;
   m_hasUpdatedThumb = false;
   m_castList = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogVideoInfo::~CGUIDialogVideoInfo(void)

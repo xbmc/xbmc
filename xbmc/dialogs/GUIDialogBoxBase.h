@@ -24,6 +24,9 @@
 #include "guilib/GUIDialog.h"
 #include "utils/Variant.h"
 
+#define DIALOG_MAX_LINES 3
+#define DIALOG_MAX_CHOICES 2
+
 class CGUIDialogBoxBase :
       public CGUIDialog
 {
@@ -36,6 +39,8 @@ public:
   void SetHeading(const CVariant &heading);
   void SetChoice(int iButton, const CVariant &choice);
 protected:
+  CStdString GetDefaultLabel(int controlId) const;
+  virtual int GetDefaultLabelID(int controlId) const;
   /*! \brief Get a localized string from a variant
    If the varaint is already a string we return directly, else if it's an integer we return the corresponding
    localized string.
@@ -44,5 +49,12 @@ protected:
   CStdString GetLocalized(const CVariant &var) const;
 
   virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
+
   bool m_bConfirmed;
+
+  // actual strings
+  std::string m_strHeading;
+  std::string m_strLines[DIALOG_MAX_LINES];
+  std::string m_strChoices[DIALOG_MAX_CHOICES];
 };

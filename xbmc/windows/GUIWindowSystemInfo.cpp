@@ -44,6 +44,7 @@ CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
   m_section = CONTROL_BT_DEFAULT;
+  m_loadType = KEEP_IN_MEMORY;
 }
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
@@ -65,6 +66,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
       m_diskUsage.clear();
+      ResetLabels();
       return true;
     }
     break;

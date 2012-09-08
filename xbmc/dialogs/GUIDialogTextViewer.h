@@ -34,6 +34,8 @@ public:
   void SetText(const CStdString& strText) { m_strText = strText; }
   void SetHeading(const CStdString& strHeading) { m_strHeading = strHeading; }
 protected:
+  virtual void OnDeinitWindow(int nextWindowID);
+
   CStdString m_strText;
   CStdString m_strHeading;
 

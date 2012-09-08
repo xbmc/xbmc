@@ -29,6 +29,7 @@
 CGUIDialogButtonMenu::CGUIDialogButtonMenu(int id, const CStdString &xmlFile)
 : CGUIDialog(id, xmlFile)
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogButtonMenu::~CGUIDialogButtonMenu(void)

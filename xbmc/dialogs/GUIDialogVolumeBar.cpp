@@ -27,7 +27,7 @@
 CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
     : CGUIDialog(WINDOW_DIALOG_VOLUME_BAR, "DialogVolumeBar.xml")
 {
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
   SetAutoClose(VOLUME_BAR_DISPLAY_TIME);
 }
 

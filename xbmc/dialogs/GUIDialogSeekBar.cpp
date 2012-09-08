@@ -37,7 +37,7 @@
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
     : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekBar.xml")
 {
-  m_loadOnDemand = false;    // the application class handles our resources
+  m_loadType = LOAD_ON_GUI_INIT;    // the application class handles our resources
 }
 
 CGUIDialogSeekBar::~CGUIDialogSeekBar(void)

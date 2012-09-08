@@ -41,8 +41,6 @@ public:
   void SetPercentage(int iPercentage);
   int GetPercentage() const { return m_percentage; };
   void ShowProgressBar(bool bOnOff);
-  void SetHeading(const std::string& strLine);
-  void SetHeading(int iString);             // for convenience to lookup in strings.xml
 
   // Implements IProgressCallback
   virtual void SetProgressMax(int iMax);
@@ -52,9 +50,10 @@ public:
   void SetCanCancel(bool bCanCancel);
 
 protected:
+  virtual int GetDefaultLabelID(int controlId) const;
+
   bool m_bCanCancel;
   bool m_bCanceled;
-  std::string m_strHeading;
 
   int  m_iCurrent;
   int  m_iMax;

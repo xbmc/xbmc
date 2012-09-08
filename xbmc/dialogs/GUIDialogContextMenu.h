@@ -179,13 +179,16 @@ protected:
   virtual float GetHeight() const;
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
+  virtual void OnDeinitWindow(int nextWindowID);
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
   static void ClearDefault(const CStdString &strType);
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 
 private:
+  float m_coordX, m_coordY;
+  /// \brief Stored size of background image (height or width depending on grouplist orientation)
+  float m_backgroundImageSize;
   int m_clickedButton;
   CContextButtons m_buttons;
 };
