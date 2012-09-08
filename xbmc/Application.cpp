@@ -4030,7 +4030,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
     }
     else
-      CGUIDialogOK::ShowAndGetInput(435, NULL, 436, NULL);
+      CGUIDialogOK::ShowAndGetInput(435, 0, 436, 0);
 
     return true;
   }
