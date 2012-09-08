@@ -338,6 +338,7 @@ CAirPlayServer::CTCPClient::CTCPClient()
 CAirPlayServer::CTCPClient::CTCPClient(const CTCPClient& client)
 {
   Copy(client);
+  m_httpParser = new HttpParser();
   m_pLibPlist = new DllLibPlist();
 }
 
