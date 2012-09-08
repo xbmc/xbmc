@@ -40,7 +40,10 @@ public:
   virtual void SetBackLight(int iLight);
   virtual void SetContrast(int iContrast);
   virtual int  GetColumns();
-  virtual int  GetRows(); 
+  virtual int  GetRows();
+
+  bool         SendLCDd(const CStdString &command);
+  void         ReadAndFlushSocket();
 
 protected:
   virtual void Process();
