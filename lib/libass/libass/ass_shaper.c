@@ -349,9 +349,11 @@ static hb_font_t *get_hb_font(ASS_Shaper *shaper, GlyphInfo *info)
 {
     ASS_Font *font = info->font;
     hb_font_t **hb_fonts;
+    struct ass_shaper_metrics_data *metrics;
+    hb_font_funcs_t *funcs;
 
     if (!font->shaper_priv)
-        font->shaper_priv = calloc(sizeof(ASS_ShaperFontData), 1);
+        font->shaper_priv = (ASS_ShaperFontData *) calloc(sizeof(ASS_ShaperFontData), 1);
 
 
     hb_fonts = font->shaper_priv->fonts;
@@ -360,14 +362,13 @@ static hb_font_t *get_hb_font(ASS_Shaper *shaper, GlyphInfo *info)
             hb_ft_font_create(font->faces[info->face_index], NULL);
 
         // set up cached metrics access
-        font->shaper_priv->metrics_data[info->face_index] =
+        font->shaper_priv->metrics_data[info->face_index] = (struct ass_shaper_metrics_data *)
             calloc(sizeof(struct ass_shaper_metrics_data), 1);
-        struct ass_shaper_metrics_data *metrics =
-            font->shaper_priv->metrics_data[info->face_index];
+        metrics = font->shaper_priv->metrics_data[info->face_index];
         metrics->metrics_cache = shaper->metrics_cache;
         metrics->vertical = info->font->desc.vertical;
 
-        hb_font_funcs_t *funcs = hb_font_funcs_create();
+        funcs = hb_font_funcs_create();
         font->shaper_priv->font_funcs[info->face_index] = funcs;
         hb_font_funcs_set_glyph_func(funcs, get_glyph,
                 metrics, NULL);
@@ -395,8 +396,7 @@ static hb_font_t *get_hb_font(ASS_Shaper *shaper, GlyphInfo *info)
     update_hb_size(hb_fonts[info->face_index], font->faces[info->face_index]);
 
     // update hash key for cached metrics
-    struct ass_shaper_metrics_data *metrics =
-        font->shaper_priv->metrics_data[info->face_index];
+    metrics = font->shaper_priv->metrics_data[info->face_index];
     metrics->hash_key.font = info->font;
     metrics->hash_key.face_index = info->face_index;
     metrics->hash_key.size = info->font_size;
