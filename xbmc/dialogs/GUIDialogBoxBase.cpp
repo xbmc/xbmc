@@ -94,11 +94,11 @@ void CGUIDialogBoxBase::OnInitWindow()
   m_lastControlID = m_defaultControl;
 
   // set control labels
-  SET_CONTROL_LABEL(CONTROL_HEADING, m_strHeading);
+  SET_CONTROL_LABEL(CONTROL_HEADING, !m_strHeading.empty() ? m_strHeading : GetDefaultLabel(CONTROL_HEADING));
   for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
-    SET_CONTROL_LABEL(CONTROL_LINES_START + i, m_strLines[i]);
+    SET_CONTROL_LABEL(CONTROL_LINES_START + i, !m_strLines[i].empty() ? m_strLines[i] : GetDefaultLabel(CONTROL_LINES_START + i));
   for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
-    SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, m_strChoices[i]);
+    SET_CONTROL_LABEL(CONTROL_CHOICES_START + i, !m_strChoices[i].empty() ? m_strChoices[i] : GetDefaultLabel(CONTROL_CHOICES_START + i));
 
   CGUIDialog::OnInitWindow();
 }
@@ -106,11 +106,11 @@ void CGUIDialogBoxBase::OnInitWindow()
 void CGUIDialogBoxBase::OnDeinitWindow(int nextWindowID)
 {
   // make sure we set default labels for heading, lines and choices
-  SetHeading(GetDefaultLabel(CONTROL_HEADING));
+  SetHeading(m_strHeading = "");
   for (int i = 0 ; i < DIALOG_MAX_LINES ; ++i)
-    SetLine(i, GetDefaultLabel(CONTROL_LINES_START + i));
+    SetLine(i, m_strLines[i] = "");
   for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
-    SetChoice(i, GetDefaultLabel(CONTROL_CHOICES_START + i));
+    SetChoice(i, m_strChoices[i] = "");
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
