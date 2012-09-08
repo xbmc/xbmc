@@ -2273,7 +2273,11 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr ""
 
-#empty strings from id 626 to 628
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr ""
+
+#empty strings from id 627 to 628
 
 msgctxt "#629"
 msgid "View mode"
