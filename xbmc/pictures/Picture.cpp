@@ -44,7 +44,7 @@ using namespace XFILE;
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
 {
   CLog::Log(LOGDEBUG, "cached image '%s' size %dx%d", thumbFile.c_str(), width, height);
-  if (URIUtils::GetExtension(thumbFile).Equals(".jpg") || URIUtils::GetExtension(thumbFile).Equals(".tbn"))
+  if (URIUtils::GetExtension(thumbFile).Equals(".jpg"))
   {
 #if defined(TARGET_RASPBERRY_PI)
     COMXImage omxImage;
