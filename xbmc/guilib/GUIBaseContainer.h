@@ -56,6 +56,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources(bool immediately = false);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
+  virtual void SetInitialVisibility();
 
   virtual unsigned int GetRows() const;
 
@@ -85,7 +86,7 @@ public:
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
 
-  void SetStaticContent(const std::vector<CGUIListItemPtr> &items);
+  void SetStaticContent(const std::vector<CGUIListItemPtr> &items, bool forceUpdate = true);
   
   /*! \brief Set the offset of the first item in the container from the container's position
    Useful for lists/panels where the focused item may be larger than the non-focused items and thus

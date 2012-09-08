@@ -2185,6 +2185,7 @@ bool CApplication::LoadUserWindows()
             continue;
           }
           pWindow->SetVisibleCondition(visibleCondition);
+          pWindow->SetLoadType(CGUIWindow::KEEP_IN_MEMORY);
           g_windowManager.AddCustomWindow(pWindow);
         }
       }

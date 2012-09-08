@@ -80,6 +80,7 @@ class CGUIWindow : public CGUIControlGroup, protected CCriticalSection
 public:
 
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
+  enum LOAD_TYPE { LOAD_EVERY_TIME, LOAD_ON_GUI_INIT, KEEP_IN_MEMORY };
 
   CGUIWindow(int id, const CStdString &xmlFile);
   virtual ~CGUIWindow(void);
@@ -144,8 +145,8 @@ public:
   virtual bool IsActive() const;
   void SetCoordsRes(const RESOLUTION_INFO &res) { m_coordsRes = res; };
   const RESOLUTION_INFO &GetCoordsRes() const { return m_coordsRes; };
-  void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
-  bool GetLoadOnDemand() { return m_loadOnDemand; }
+  void SetLoadType(LOAD_TYPE loadType) { m_loadType = loadType; };
+  LOAD_TYPE GetLoadType() { return m_loadType; } const
   int GetRenderOrder() { return m_renderOrder; };
   virtual void SetInitialVisibility();
   virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
@@ -193,7 +194,7 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
-  bool Load(CXBMCTinyXML &xmlDoc);                 ///< Loads from the given XML document
+  bool Load(TiXmlElement *pRootElement);                 ///< Loads from the given XML root element
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();
@@ -235,7 +236,7 @@ protected:
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   bool m_windowLoaded;  // true if the window's xml file has been loaded
-  bool m_loadOnDemand;  // true if the window should be loaded only as needed
+  LOAD_TYPE m_loadType;
   bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
   bool m_closing;
@@ -269,13 +270,15 @@ protected:
   CGUIAction m_loadActions;
   CGUIAction m_unloadActions;
 
+  TiXmlElement* m_windowXMLRootElement;
+
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 
 private:
   std::map<CStdString, CVariant, icompare> m_mapProperties;
-
+  std::map<int, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 
 #endif

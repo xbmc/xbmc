@@ -1234,7 +1234,7 @@ CGUIAddonWindow::CGUIAddonWindow(int id, CStdString strXML, CAddon* addon)
  , m_actionEvent(true)
  , m_addon(addon)
 {
-  m_loadOnDemand  = false;
+  m_loadType = LOAD_ON_GUI_INIT;
   CBOnInit        = NULL;
   CBOnFocus       = NULL;
   CBOnClick       = NULL;
@@ -1482,7 +1482,6 @@ CGUIAddonWindowDialog::CGUIAddonWindowDialog(int id, CStdString strXML, CAddon* 
 : CGUIAddonWindow(id,strXML,addon)
 {
   m_bRunning = false;
-  m_loadOnDemand = false;
   m_bIsDialog = true;
 }
 

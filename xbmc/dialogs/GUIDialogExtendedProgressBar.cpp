@@ -58,7 +58,7 @@ void CGUIDialogProgressBarHandle::SetProgress(int currentItem, int itemCount)
 CGUIDialogExtendedProgressBar::CGUIDialogExtendedProgressBar(void)
   : CGUIDialog(WINDOW_DIALOG_EXT_PROGRESS, "DialogExtendedProgressBar.xml")
 {
-  m_loadOnDemand    = false;
+  m_loadType        = LOAD_ON_GUI_INIT;
   m_iLastSwitchTime = 0;
   m_iCurrentItem    = 0;
 }

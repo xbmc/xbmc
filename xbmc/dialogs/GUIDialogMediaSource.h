@@ -33,6 +33,7 @@ public:
   CGUIDialogMediaSource(void);
   virtual ~CGUIDialogMediaSource(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnDeinitWindow(int nextWindowID);
   virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
   static bool ShowAndAddMediaSource(const CStdString &type);

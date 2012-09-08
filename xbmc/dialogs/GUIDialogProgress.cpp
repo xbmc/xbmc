@@ -199,15 +199,9 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
     g_windowManager.SendThreadMessage(msg, GetID());
 }
 
-void CGUIDialogProgress::SetHeading(const string& strLine)
+int CGUIDialogProgress::GetDefaultLabelID(int controlId) const
 {
-  m_strHeading = strLine;
-  CGUIDialogBoxBase::SetHeading(m_strHeading);
+  if (controlId == CONTROL_CANCEL_BUTTON)
+    return 222;
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }
-
-void CGUIDialogProgress::SetHeading(int iString)
-{
-  m_strHeading = g_localizeStrings.Get(iString);
-  CGUIDialogBoxBase::SetHeading(m_strHeading);
-}
-

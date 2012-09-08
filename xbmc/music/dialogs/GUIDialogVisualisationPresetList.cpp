@@ -39,6 +39,7 @@ CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
   m_currentPreset = 0;
   m_vecPresets = new CFileItemList;
   m_viz = NULL;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogVisualisationPresetList::~CGUIDialogVisualisationPresetList(void)

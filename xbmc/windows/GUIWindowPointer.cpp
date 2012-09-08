@@ -29,7 +29,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
     : CGUIDialog(WINDOW_DIALOG_POINTER, "Pointer.xml")
 {
   m_pointer = 0;
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
   m_needsScaling = false;
   m_active = false;
   m_renderOrder = INT_MAX - 1;

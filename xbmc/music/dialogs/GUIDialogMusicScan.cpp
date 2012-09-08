@@ -40,6 +40,7 @@ using namespace MUSIC_INFO;
 CGUIDialogMusicScan::CGUIDialogMusicScan(void)
 : CGUIDialog(WINDOW_DIALOG_MUSIC_SCAN, "DialogMusicScan.xml")
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMusicScan::~CGUIDialogMusicScan(void)

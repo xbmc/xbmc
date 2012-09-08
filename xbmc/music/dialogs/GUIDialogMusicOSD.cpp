@@ -33,6 +33,7 @@
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)
