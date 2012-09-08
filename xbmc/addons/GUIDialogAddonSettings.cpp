@@ -1168,3 +1168,15 @@ CStdString CGUIDialogAddonSettings::GetCurrentID() const
     return m_addon->ID();
   return "";
 }
+
+int CGUIDialogAddonSettings::GetDefaultLabelID(int controlId) const
+{
+  if (controlId == ID_BUTTON_OK)
+    return 186;
+  else if (controlId == ID_BUTTON_CANCEL)
+    return 222;
+  else if (controlId == ID_BUTTON_DEFAULT)
+    return 409;
+
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
+}

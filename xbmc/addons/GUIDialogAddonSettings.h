@@ -41,6 +41,7 @@ public:
   CStdString GetCurrentID() const;
 protected:
   virtual void OnInitWindow();
+  virtual int GetDefaultLabelID(int controlId) const;
 
 private:
   /*! \brief return a (localized) addon string.
