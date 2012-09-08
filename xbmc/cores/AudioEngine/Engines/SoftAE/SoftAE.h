@@ -132,6 +132,8 @@ private:
 
   /* internal vars */
   bool             m_running, m_reOpen, m_isSuspended;
+  bool             m_softSuspend;      /* latches after last stream or sound played for timer below */
+  unsigned int     m_softSuspendTimer; /* time in milliseconds to hold sink open before soft suspend */
   CEvent           m_reOpenEvent;
   CEvent           m_wake;
 

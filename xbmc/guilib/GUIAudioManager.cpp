@@ -340,8 +340,7 @@ IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdSt
 void CGUIAudioManager::Enable(bool bEnable)
 {
   // always deinit audio when we don't want gui sounds
-  if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
-    bEnable = false;
+  bEnable = (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF") ? false : true;
 
   CSingleLock lock(m_cs);
   m_bEnabled = bEnable;

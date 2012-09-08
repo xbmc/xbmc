@@ -61,6 +61,8 @@ CSoftAE::CSoftAE():
   m_running            (false       ),
   m_reOpen             (false       ),
   m_isSuspended        (false       ),
+  m_softSuspend        (false       ),
+  m_softSuspendTimer   (0           ),
   m_sink               (NULL        ),
   m_transcode          (false       ),
   m_rawPassthrough     (false       ),
@@ -429,7 +431,6 @@ void CSoftAE::InternalOpenSink()
     if (!m_rawPassthrough)
     {
       CSingleLock soundLock(m_soundLock);
-      StopAllSounds();
       for (SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
         (*itt)->Initialize();
     }
@@ -451,6 +452,8 @@ void CSoftAE::InternalOpenSink()
   }
   m_newStreams.clear();
   m_streamsPlaying = !m_playingStreams.empty();
+
+  m_softSuspend = false;
 
   /* notify any event listeners that we are done */
   m_reOpen = false;
@@ -769,7 +772,6 @@ void CSoftAE::PlaySound(IAESound *sound)
       ((CSoftAESound*)sound)->GetSampleCount()
    };
    m_playing_sounds.push_back(ss);
-   m_wake.Set();
 }
 
 void CSoftAE::FreeSound(IAESound *sound)
@@ -931,27 +933,6 @@ void CSoftAE::Run()
   bool hasAudio = false;
   while (m_running)
   {
-    /* idle while in Suspend() state until Resume() called */
-    /* idle if nothing to play and user hasn't enabled     */
-    /* continuous streaming (silent stream) in as.xml      */
-    while (m_isSuspended ||
-          (m_playingStreams.empty() && m_playing_sounds.empty() && !g_advancedSettings.m_streamSilence) &&
-           m_running && !m_reOpen)
-    {
-      if (m_sink)
-      {
-        /* take the sink lock */
-        CExclusiveLock sinkLock(m_sinkLock);
-        //m_sink->Drain(); TODO: implement
-        m_sink->Deinitialize();
-        delete m_sink;
-        m_sink = NULL;
-      }
-      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
-    }
-
-    m_wake.Reset();
-
     bool restart = false;
 
     if ((this->*m_outputStageFn)(hasAudio) > 0)
@@ -974,12 +955,41 @@ void CSoftAE::Run()
         restart = true;
     }
 
+    if (m_playingStreams.empty() && m_playing_sounds.empty() && m_streams.empty() && 
+       !m_softSuspend && !g_advancedSettings.m_streamSilence)
+    {
+      m_softSuspend = true;
+      m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+    }
+
+    unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
+
+    /* idle while in Suspend() state until Resume() called */
+    /* idle if nothing to play and user hasn't enabled     */
+    /* continuous streaming (silent stream) in as.xml      */
+    while ((m_isSuspended || (m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
+            m_running     && !m_reOpen      && !restart)
+    {
+      if (m_sink)
+      {
+        /* take the sink lock */
+        CExclusiveLock sinkLock(m_sinkLock);
+        //m_sink->Drain(); TODO: implement
+        m_sink->Deinitialize();
+        delete m_sink;
+        m_sink = NULL;
+      }
+      if (!m_playingStreams.empty() || !m_playing_sounds.empty() || m_sounds.empty())
+        m_softSuspend = false;
+      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
+    }
+
     /* if we are told to restart */
-    if (m_reOpen || restart)
+    if (m_reOpen || restart || !m_sink)
     {
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
-      m_isSuspended = false; // exit Suspend state
       InternalOpenSink();
+      m_isSuspended = false; // exit Suspend state
     }
   }
 }
@@ -1000,7 +1010,7 @@ unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
 {
   // no point doing anything if we have no sounds,
   // we do not have to take a lock just to check empty
-  if (m_playing_sounds.empty())
+  if (m_playing_sounds.empty() || m_reOpen || !m_sink)
     return 0;
 
   SoundStateList::iterator itt;
@@ -1042,7 +1052,7 @@ unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
 bool CSoftAE::FinalizeSamples(float *buffer, unsigned int samples, bool hasAudio)
 {
   if (m_soundMode != AE_SOUND_OFF)
-    hasAudio |= MixSounds(buffer, samples) > 0;
+    hasAudio |= ((MixSounds(buffer, samples) > 0) || !m_playing_sounds.empty());
 
   /* no need to process if we don't have audio (buffer is memset to 0) */
   if (!hasAudio)
