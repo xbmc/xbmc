@@ -167,7 +167,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 
   for (int i = 0; i < 5; i++)
   {
-    if (SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN) != -1)
+    if (SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN) != (DWORD)-1)
     {
       if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
       {
