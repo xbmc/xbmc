@@ -408,11 +408,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false); // resume
 
   case CONTEXT_BUTTON_EJECT_DISC:
-#ifdef _WIN32
-    CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
-#else
-    CIoSupport::ToggleTray();
-#endif
+    g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
 #endif
     return true;
   default:

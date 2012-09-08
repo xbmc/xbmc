@@ -23,7 +23,6 @@
 #include "GUIDialogPlayEject.h"
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
-#include "storage/IoSupport.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -58,7 +57,7 @@ bool CGUIDialogPlayEject::OnMessage(CGUIMessage& message)
     }
     if (iControl == ID_BUTTON_EJECT)
     {
-      CIoSupport::ToggleTray();
+      g_mediaManager.ToggleTray();
       return true;
     }
   }

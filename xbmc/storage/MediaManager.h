@@ -22,9 +22,6 @@
 
 #include "MediaSource.h" // for VECSOURCES
 #include <map>
-#ifdef HAS_DVD_DRIVE
-#include "cdioSupport.h"
-#endif
 #include "utils/Job.h"
 #include "IStorageProvider.h"
 #include "threads/CriticalSection.h"
@@ -32,6 +29,17 @@
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
 #endif
+
+#define TRAY_OPEN     16
+#define TRAY_CLOSED_NO_MEDIA  64
+#define TRAY_CLOSED_MEDIA_PRESENT 96
+
+#define DRIVE_OPEN      0 // Open...
+#define DRIVE_NOT_READY     1 // Opening.. Closing...
+#define DRIVE_READY      2
+#define DRIVE_CLOSED_NO_MEDIA   3 // CLOSED...but no media in drive
+#define DRIVE_CLOSED_MEDIA_PRESENT  4 // Will be send once when the drive just have closed
+#define DRIVE_NONE  5 // system doesn't have an optical drive
 
 class CNetworkLocation
 {
@@ -77,6 +85,9 @@ public:
   void SetHasOpticalDrive(bool bstatus);
 
   bool Eject(CStdString mountpath);
+  void EjectTray( const bool bEject=true, const char cDriveLetter='\0' );
+  void CloseTray(const char cDriveLetter='\0');
+  void ToggleTray(const char cDriveLetter='\0');
 
   void ProcessEvents();
 

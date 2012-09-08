@@ -32,6 +32,7 @@ public:
 
   virtual void GetLocalDrives(VECSOURCES &localDrives);
   virtual void GetRemovableDrives(VECSOURCES &removableDrives);
+  virtual std::string GetFirstOpticalDeviceFileName();
 
   virtual bool Eject(CStdString mountpath);
 

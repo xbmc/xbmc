@@ -63,6 +63,11 @@ void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   CWIN32Util::GetDrivesByType(removableDrives, REMOVABLE_DRIVES, true);
 }
 
+std::string CWin32StorageProvider::GetFirstOpticalDeviceFileName()
+{
+  return CWIN32Util::GetFirstOpticalDrive();
+}
+
 bool CWin32StorageProvider::Eject(CStdString mountpath)
 {
   if (!mountpath.IsEmpty())
