@@ -744,6 +744,7 @@ bool CGUIWindow::Initialize()
     CGUIMessage msg(GUI_MSG_WINDOW_LOAD, 0, 0);
     g_windowManager.SendThreadMessage(msg, GetID());
   }
+  return true;
 }
 
 void CGUIWindow::SetInitialVisibility()
