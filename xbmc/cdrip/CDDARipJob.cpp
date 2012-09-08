@@ -39,8 +39,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
-#include "storage/IoSupport.h"
 #include "settings/GUISettings.h"
+#include "storage/MediaManager.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -156,7 +156,7 @@ bool CCDDARipJob::DoWork()
     if (m_eject)
     {
       CLog::Log(LOGINFO, "Ejecting CD");
-      CIoSupport::EjectTray();
+      g_mediaManager.EjectTray();
     }
   }
 

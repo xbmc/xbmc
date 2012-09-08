@@ -49,6 +49,7 @@
 #include "Application.h"
 #include "IoSupport.h"
 #include "cdioSupport.h"
+#include "storage/MediaManager.h"
 
 
 using namespace XFILE;
