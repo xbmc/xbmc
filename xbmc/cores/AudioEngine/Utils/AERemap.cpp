@@ -344,21 +344,24 @@ void CAERemap::Remap(float * const in, float * const out, const unsigned int fra
 
         /* the compiler has a better chance of optimizing this if it is done in parallel */
         int i = 0;
+        float f1 = 0.0, f2 = 0.0, f3 = 0.0, f4 = 0.0;
         for (; i < blocks; i += 4)
         {
-          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
-          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
-          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
-          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
+          f1 += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level;
+          f2 += inOffset[info->srcIndex[i+1].index] * info->srcIndex[i+1].level;
+          f3 += inOffset[info->srcIndex[i+2].index] * info->srcIndex[i+2].level;
+          f4 += inOffset[info->srcIndex[i+3].index] * info->srcIndex[i+3].level;
         }
 
         /* unrolled loop for higher performance */
         switch (info->srcCount & 0x3)
         {
-          case 3: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
-          case 2: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level, i++;
-          case 1: *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level;
+          case 3: f3 += inOffset[info->srcIndex[i+2].index] * info->srcIndex[i+2].level;
+          case 2: f2 += inOffset[info->srcIndex[i+1].index] * info->srcIndex[i+1].level;
+          case 1: f1 += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level;
         }
+
+        *outOffset += (f1+f2+f3+f4);
       }
     }
   }
