@@ -90,7 +90,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      FreeControls();
       FreeSections();
     }
     break;
@@ -546,7 +545,7 @@ void CGUIDialogAddonSettings::SaveSettings(void)
 
 void CGUIDialogAddonSettings::FreeSections()
 {
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
   if (group)
   {
     group->FreeResources();
@@ -554,6 +553,7 @@ void CGUIDialogAddonSettings::FreeSections()
   }
   m_settings.clear();
   m_buttonValues.clear();
+  FreeControls();
 }
 
 void CGUIDialogAddonSettings::FreeControls()
