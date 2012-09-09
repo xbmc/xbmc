@@ -35,8 +35,8 @@
 using namespace std;
 using namespace ANNOUNCEMENT;
 
-CCriticalSection CAnnouncementManager::m_critSection;
-vector<IAnnouncer *> CAnnouncementManager::m_announcers;
+#define m_announcers XBMC_GLOBAL_USE(ANNOUNCEMENT::CAnnouncementManager::Globals).m_announcers
+#define m_critSection XBMC_GLOBAL_USE(ANNOUNCEMENT::CAnnouncementManager::Globals).m_critSection
 
 void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
 {
