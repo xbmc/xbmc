@@ -70,6 +70,7 @@ protected:
   bool                      m_bRenderSubs;
   bool                      m_bAllowFullscreen;
 
+  float                     m_fForcedAspectRatio;
   unsigned int              m_width;
   unsigned int              m_height;
   unsigned int              m_video_width;
