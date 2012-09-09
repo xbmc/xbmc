@@ -1615,7 +1615,7 @@ OMX_ERRORTYPE COMXCoreComponent::DecoderEventHandler(
       switch(nData2)
       {
         case OMX_BUFFERFLAG_EOS:
-          m_eos = true;
+          comp->m_eos = true;
           break;
         default:
           break;
