@@ -237,6 +237,9 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
           return false;
         }
 
+        m_originalWidth  = omx_image.GetOriginalWidth();
+        m_originalHeight = omx_image.GetOriginalHeight();
+
         m_hasAlpha = omx_image.IsAlpha();
 
         if (autoRotate && omx_image.GetOrientation())
