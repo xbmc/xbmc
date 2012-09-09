@@ -164,7 +164,9 @@ void CPeripheralAmbiPi::ConnectToDevice()
 {
   CLog::Log(LOGINFO, "%s - Connecting to AmbiPi on %s:%d", __FUNCTION__, m_address.c_str(), m_port);  
 
-  m_connection.Connect(m_address, m_port);
+  m_connection.Disconnect();
+  m_connection.ConfigureAddress(m_address, m_port);
+  m_connection.Connect();
 }
 
 #define RETRY_DELAY_WHEN_UNCONFIGURED 1
@@ -475,26 +477,73 @@ void CImageConversion::ConvertYuvToRgb(const YUV *pYuv, RGB *pRgb)
 
 
 CAmbiPiConnection::CAmbiPiConnection(void) :
+  CThread("AmbiPi"),
   m_socket(INVALID_SOCKET)
+  m_bConnected(false),
+  m_bConnecting(false),
 {
 }
 
 CAmbiPiConnection::~CAmbiPiConnection(void)
 {
+  Disconnect();
+}
+
+void CAmbiPiConnection::Connect(const CStdString ip_address_or_name, unsigned int port)
+{
+  Disconnect();
+  m_ip_address_or_name = ip_address_or_name;
+  m_port = port;
+  Create();
+}
+
+void CAmbiPiConnection::Disconnect()
+{
+  if (m_bConnecting)
+  {
+    StopThread(true);
+  }
+
+  if (!m_bConnected)
+  {
+    return;
+  }
+
   if (m_socket.isValid())
   {
     m_socket.reset();
   }
 }
 
-void CAmbiPiConnection::Connect(const CStdString ip_address_or_name, unsigned int port)
+void CAmbiPiConnection::Process(void)
+{
+  {
+    CSingleLock lock(m_critSection);
+    m_bConnecting = true;
+  }
+
+  while (!m_bStop && !m_bConnected)
+  {
+    AttemptConnection();
+
+    if (!m_bConnected && !m_bStop)
+      Sleep(5);
+  }
+
+  {
+    CSingleLock lock(m_critSection);
+    m_bConnecting = false;
+  }
+}
+
+void CAmbiPiConnection::AttemptConnection()
 {
   struct addrinfo *pAddressInfo;
 
   BYTE *helloMessage = (BYTE *)"ambipi\n";
   try
   {
-    pAddressInfo = GetAddressInfo(ip_address_or_name, port);
+    pAddressInfo = GetAddressInfo(m_ip_address_or_name, m_port);
     AttemptConnection(pAddressInfo);
     Send(helloMessage, strlen((char *)helloMessage));
     freeaddrinfo(pAddressInfo);
@@ -502,6 +551,12 @@ void CAmbiPiConnection::Connect(const CStdString ip_address_or_name, unsigned in
   catch (...) 
   {
     CLog::Log(LOGERROR, "%s - connection to AmbiPi failed", __FUNCTION__);
+    return;
+  }
+
+  {
+    CSingleLock lock(m_critSection);
+    m_bConnected = true;
   }
 }
 

@@ -97,18 +97,31 @@ namespace PERIPHERALS
   };
 
 
-  class CAmbiPiConnection  
+  class CAmbiPiConnection : private CThread
   {
   public:
     CAmbiPiConnection(void);
     ~CAmbiPiConnection(void);
     void Connect(const CStdString ip_address_or_name, unsigned int port);
+    void Disconnect(void);
     void Send(const BYTE *buffer, int length);
+
+  protected:
+    void Process(void);
 
   private:
     struct addrinfo *GetAddressInfo(const CStdString ip_address_or_name, unsigned int port);
+
+    void AttemptConnection(void);
     void AttemptConnection(struct addrinfo *pAddressInfo);
-    AUTOPTR::CAutoPtrSocket m_socket;
+
+    AUTOPTR::CAutoPtrSocket           m_socket;
+    CStdString                        m_ip_address_or_name;
+    unsigned int                      m_port;
+
+    bool                              m_bConnected;
+    bool                              m_bConnecting;
+    CCriticalSection                  m_critSection;
   };
 
   class CPeripheralAmbiPi : public CPeripheral, private CThread
