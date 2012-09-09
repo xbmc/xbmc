@@ -32,6 +32,7 @@
 #include "network/Network.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
@@ -56,10 +57,6 @@
 #include "storage/MediaManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/xbmcmodule/GUIPythonWindowDialog.h"
-#include "interfaces/python/xbmcmodule/GUIPythonWindowXMLDialog.h"
-#endif
 
 #ifdef HAS_HTTPAPI
 #include "interfaces/http-api/XBMChttp.h"
@@ -723,13 +720,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_GUI_PYTHON_DIALOG:
       {
-        if (pMsg->lpVoid)
-        { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
-          if (pMsg->dwParam1)
-            ((CGUIPythonWindowXMLDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
-          else
-            ((CGUIPythonWindowDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
-        }
+        // This hack is not much better but at least I don't need to make ApplicationMessenger
+        //  know about Addon (Python) specific classes.
+        CAction caction(pMsg->dwParam1);
+        ((CGUIWindow*)pMsg->lpVoid)->OnAction(caction);
       }
       break;
 

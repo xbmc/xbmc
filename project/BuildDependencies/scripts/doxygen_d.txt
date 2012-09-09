@@ -1,0 +1,2 @@
+; filename                          source of the file
+doxygen-1.8.2-win32.7z              http://mirrors.xbmc.org/build-deps/win32/

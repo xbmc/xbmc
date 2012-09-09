@@ -22,6 +22,7 @@
 #include "IAnnouncer.h"
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
+#include "utils/GlobalsHandling.h"
 #include <vector>
 
 namespace ANNOUNCEMENT
@@ -29,6 +30,14 @@ namespace ANNOUNCEMENT
   class CAnnouncementManager
   {
   public:
+
+     class Globals
+     {
+     public:
+       CCriticalSection m_critSection;
+       std::vector<IAnnouncer *> m_announcers;
+     };
+
     static void AddAnnouncer(IAnnouncer *listener);
     static void RemoveAnnouncer(IAnnouncer *listener);
     static void Announce(AnnouncementFlag flag, const char *sender, const char *message);
@@ -36,7 +45,7 @@ namespace ANNOUNCEMENT
     static void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item);
     static void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data);
   private:
-    static std::vector<IAnnouncer *> m_announcers;
-    static CCriticalSection m_critSection;
   };
 }
+
+XBMC_GLOBAL_REF(ANNOUNCEMENT::CAnnouncementManager::Globals,g_announcementManager_globals);
