@@ -130,13 +130,19 @@ namespace PERIPHERALS
     CPeripheralAmbiPi(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
     virtual ~CPeripheralAmbiPi(void);
 
+    void OnSettingChanged(const CStdString &strChangedSetting);
+
   protected:
 	  bool InitialiseFeature(const PeripheralFeature feature);
 
     void ConnectToDevice(void);
+    void DisconnectFromDevice(void);
+
     void LoadAddressFromConfiguration(void);
     bool ConfigureRenderCallback(void);
+
     void Process(void);
+    bool IsRunning(void) const;
 
     void ProcessImage(void);
     void UpdateImage(void);

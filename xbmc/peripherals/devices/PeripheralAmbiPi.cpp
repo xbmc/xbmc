@@ -52,7 +52,7 @@ CPeripheralAmbiPi::~CPeripheralAmbiPi(void)
 {
   CLog::Log(LOGDEBUG, "%s - Removing AmbiPi on %s", __FUNCTION__, m_strLocation.c_str());
 
-  StopThread(true);
+  DisconnectFromDevice();
 
   delete m_pGrid;
 }
@@ -64,7 +64,7 @@ bool CPeripheralAmbiPi::InitialiseFeature(const PeripheralFeature feature)
   }
 
   CLog::Log(LOGDEBUG, "%s - Initialising AmbiPi on %s", __FUNCTION__, m_strLocation.c_str());
-  
+
   LoadAddressFromConfiguration();
   UpdateGridFromConfiguration();
 
@@ -200,6 +200,30 @@ void CPeripheralAmbiPi::Process(void)
     m_bIsRunning = false;
   }
 
+}
+
+void CAmbiPi::OnSettingChanged(const CStdString &strChangedSetting)
+{
+  CLog::Log(LOGDEBUG, "%s - handling configuration change, setting: '%s'", __FUNCTION__, strChangedSetting.c_str());
+
+  DisconnectFromDevice();
+  InitialiseFeature(FEATURE_AMBIPI);
+}
+
+void CAmbiPi::DisconnectFromDevice(void)
+{
+  CLog::Log(LOGDEBUG, "%s - disconnecting from the AmbiPi", __FUNCTION__);
+  if (IsRunning())
+  {
+    StopThread(true);
+  }
+  m_connection->Disconnect();
+}
+
+bool CAmbiPi::IsRunning(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bIsRunning;
 }
 
 
