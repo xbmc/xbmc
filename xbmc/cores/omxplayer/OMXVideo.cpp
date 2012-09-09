@@ -889,17 +889,34 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
   OMX_CONFIG_DISPLAYREGIONTYPE configDisplay;
   OMX_INIT_STRUCTURE(configDisplay);
   configDisplay.nPortIndex = m_omx_render.GetInputPort();
+  float sx1 = SrcRect.x1, sy1 = SrcRect.y1, sx2 = SrcRect.x2, sy2 = SrcRect.y2;
+  float dx1 = DestRect.x1, dy1 = DestRect.y1, dx2 = DestRect.x2, dy2 = DestRect.y2;
+  float sw = SrcRect.Width() / DestRect.Width();
+  float sh = SrcRect.Height() / DestRect.Height();
 
-  configDisplay.set     = OMX_DISPLAY_SET_FULLSCREEN;
+  // doesn't like negative coordinates on dest_rect. So adjust by increasing src_rect
+  if (dx1 < 0.0f) {
+    sx1 -= dx1 * sw;
+    dx1 -= dx1;
+  }
+  if (dy1 < 0.0f) {
+    sy1 -= dy1 * sh;
+    dy1 -= dy1;
+  }
+
   configDisplay.fullscreen = OMX_FALSE;
+  configDisplay.noaspect   = OMX_TRUE;
 
-  m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
+  configDisplay.set                 = (OMX_DISPLAYSETTYPE)(OMX_DISPLAY_SET_DEST_RECT|OMX_DISPLAY_SET_SRC_RECT|OMX_DISPLAY_SET_FULLSCREEN|OMX_DISPLAY_SET_NOASPECT);
+  configDisplay.dest_rect.x_offset  = (int)(dx1+0.5f);
+  configDisplay.dest_rect.y_offset  = (int)(dy1+0.5f);
+  configDisplay.dest_rect.width     = (int)(dx2-dx1+0.5f);
+  configDisplay.dest_rect.height    = (int)(dy2-dy1+0.5f);
 
-  configDisplay.set     = OMX_DISPLAY_SET_DEST_RECT;
-  configDisplay.dest_rect.x_offset  = DestRect.x1;
-  configDisplay.dest_rect.y_offset  = DestRect.y1;
-  configDisplay.dest_rect.width     = DestRect.Width();
-  configDisplay.dest_rect.height    = DestRect.Height();
+  configDisplay.src_rect.x_offset   = (int)(sx1+0.5f);
+  configDisplay.src_rect.y_offset   = (int)(sy1+0.5f);
+  configDisplay.src_rect.width      = (int)(sx2-sx1+0.5f);
+  configDisplay.src_rect.height     = (int)(sy2-sy1+0.5f);
 
   m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
 
