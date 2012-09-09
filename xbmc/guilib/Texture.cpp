@@ -37,7 +37,7 @@
 #include "filesystem/AndroidAppFile.h"
 #endif
 
-#ifdef TARGET_RASPBERRY_PI
+#if defined(HAS_OMXPLAYER)
 #include "xbmc/cores/omxplayer/OMXImage.h"
 #endif
 
