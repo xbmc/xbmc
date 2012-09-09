@@ -1574,6 +1574,31 @@ else
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
+echo "Checking for SWIG installation"
+AC_PATH_PROG(SWIG_EXE, swig, "none")
+if test "$SWIG_EXE" = "none"; then
+  AC_MSG_ERROR($missing_program)
+fi
+final_message="$final_message\n  SWIG Available:\tYes"
+
+echo "Checking for a jre installation"
+AC_PATH_PROG(JAVA_EXE, java, "none")
+if test "$JAVE_EXE" = "none"; then
+  AC_MSG_ERROR($missing_program)
+fi
+final_message="$final_message\n  JRE Available:\tYes"
+
+echo "Checking for doxygen installation"
+AC_PATH_PROG(DOXYGEN_EXE, doxygen, "none")
+if test "$DOXYGEN_EXE" = "none"; then
+  AC_MSG_WARN([Unable to find doxygen installation. Will not be able to make docstrings for the python api])
+  final_message="$final_message\n  Doxygen Available:\tNo"
+  USE_DOXYGEN=0
+else
+  final_message="$final_message\n  Doxygen Available:\tYes"
+  USE_DOXYGEN=1
+fi
+
 # VDPAU
 if test "x$use_vdpau" != "xno"; then
   if test "$host_vendor" = "apple" ; then
@@ -2269,8 +2294,6 @@ OUTPUT_FILES="Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
     lib/addons/script.module.pil/Makefile \
-    xbmc/interfaces/python/Makefile \
-    xbmc/interfaces/python/xbmcmodule/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
     xbmc/DllPaths_generated_android.h \
@@ -2300,6 +2323,9 @@ OUTPUT_FILES="Makefile \
 if test "$use_skin_touched" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.touched/media/Makefile"
 fi
+
+OUTPUT_FILES="$OUTPUT_FILES \
+  xbmc/interfaces/python/Makefile"
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
@@ -2362,6 +2388,7 @@ AC_SUBST(USE_UPNP)
 AC_SUBST(USE_OMXLIB)
 AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
+AC_SUBST(USE_DOXYGEN)
 
 
 # pushd and popd are not available in other shells besides bash, so implement

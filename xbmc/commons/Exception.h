@@ -55,7 +55,7 @@ namespace XbmcCommons
   protected:
     static ILogger* logger;
 
-	inline Exception(const char* classname_) : classname(classname_) { }
+    inline Exception(const char* classname_) : classname(classname_) { }
     inline Exception(const char* classname_, const char* message_) : classname(classname_), message(message_) { }
     inline Exception(const Exception& other) : classname(other.classname), message(other.message) { }
 
@@ -77,6 +77,8 @@ namespace XbmcCommons
       // calls 'set'
       XBMCCOMMONS_COPYVARARGS(fmt);
     }
+
+    inline void setClassname(const char* cn) { classname = cn; }
 
   public:
     virtual ~Exception();
