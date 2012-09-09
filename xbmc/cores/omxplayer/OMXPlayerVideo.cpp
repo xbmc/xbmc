@@ -90,11 +90,11 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_flags                 = 0;
   m_bAllowFullscreen      = false;
   m_iCurrentPts           = DVD_NOPTS_VALUE;
-  m_fFrameRate            = 25.0f;
   m_iVideoDelay           = 0;
   m_droptime              = 0.0;
   m_dropbase              = 0.0;
   m_autosync              = 1;
+  m_fForcedAspectRatio    = 0.0f;
   m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
@@ -343,8 +343,14 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: BYPASS",
         __FUNCTION__, m_width, m_height, m_fps);
 
-    if(!g_renderManager.Configure(m_video_width, m_video_height, 
-          m_video_width, m_video_height, m_fps, flags, format, 0,
+    unsigned int iDisplayWidth  = m_hints.width;
+    unsigned int iDisplayHeight = m_hints.height;
+    /* use forced aspect if any */
+    if( m_fForcedAspectRatio != 0.0f )
+      iDisplayWidth = (int) (iDisplayHeight * m_fForcedAspectRatio);
+
+    if(!g_renderManager.Configure(m_hints.width, m_hints.height,
+          iDisplayWidth, iDisplayHeight, m_fps, flags, format, 0,
           m_hints.orientation))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
@@ -542,6 +548,11 @@ void OMXPlayerVideo::Process()
           Sleep(1);
       }
     }
+    else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
+    {
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
+      m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
       CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESET");
@@ -682,6 +693,11 @@ bool OMXPlayerVideo::OpenDecoder()
     CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder : Invalid framerate %d, using forced 25fps and just trust timestamps\n", (int)m_fFrameRate);
     m_fFrameRate = 25;
   }
+  // use aspect in stream if available
+  if (m_hints.forced_aspect)
+    m_fForcedAspectRatio = m_hints.aspect;
+  else
+    m_fForcedAspectRatio = 0.0;
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
@@ -805,7 +821,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     dst_rect.y2 *= yscale;
   }
 
-  if(!(m_flags & CONF_FLAGS_FORMAT_SBS) && !!(m_flags & CONF_FLAGS_FORMAT_TB))
+  if(!(m_flags & CONF_FLAGS_FORMAT_SBS) && !(m_flags & CONF_FLAGS_FORMAT_TB))
     m_omxVideo.SetVideoRect(SrcRect, m_dst_rect);
 }
 
