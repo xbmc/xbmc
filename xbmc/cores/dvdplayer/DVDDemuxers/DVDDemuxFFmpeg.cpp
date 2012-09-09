@@ -1060,7 +1060,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
-        if(pStream->codec->codec_id == CODEC_ID_TTF || pStream->codec->codec_id == CODEC_ID_OTF)
+        if(pStream->codec->codec_id == CODEC_ID_TTF
+#if (!defined USE_EXTERNAL_FFMPEG)
+          || pStream->codec->codec_id == CODEC_ID_OTF
+#endif
+          )
         {
           std::string fileName = "special://temp/fonts/";
           XFILE::CDirectory::Create(fileName);
