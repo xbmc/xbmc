@@ -4021,6 +4021,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsDiscStub())
   {
+#ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog if there is any optical disc drive
     if (g_mediaManager.HasOpticalDrive())
     {
@@ -4030,6 +4031,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
     }
     else
+#endif
       CGUIDialogOK::ShowAndGetInput(435, 0, 436, 0);
 
     return true;
