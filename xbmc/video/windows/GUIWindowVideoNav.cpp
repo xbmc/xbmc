@@ -241,6 +241,8 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     return "MusicVideoArtists";
   else if (strPath.Equals("videodb://3/5/"))
     return "MusicVideoDirectors";
+  else if (strPath.Equals("videodb://3/9/"))
+    return "MusicVideoTags";
   else if (strPath.Equals("videodb://3/"))
     return "MusicVideos";
   else if (strPath.Equals("videodb://4/"))
@@ -1561,6 +1563,8 @@ CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
     return "videodb://3/6/";
   else if (dir.Equals("MusicVideoStudios"))
     return "videodb://3/7/";
+  else if (dir.Equals("MusicVideoTags"))
+    return "videodb://3/9/";
   else if (dir.Equals("MusicVideos"))
     return "videodb://3/";
   else if (dir.Equals("RecentlyAddedMovies"))
@@ -1659,6 +1663,12 @@ bool CGUIWindowVideoNav::GetItemsForTag(const CStdString &strHeading, const std:
     mediaType = MediaTypeTvShow;
     baseDir += "2";
     idColumn = "idShow";
+  }
+  else if (type.compare("musicvideo") == 0)
+  {
+    mediaType = MediaTypeMusicVideo;
+    baseDir += "3";
+    idColumn = "idMVideo";
   }
 
   baseDir += "/2/";

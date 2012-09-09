@@ -2951,6 +2951,8 @@ void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
       type = "movie";
     else if (mediaType == VIDEODB_CONTENT_TVSHOWS)
       type = "tvshow";
+    else if (mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
+      type = "musicvideo";
     else
       return;
 
@@ -4560,6 +4562,8 @@ bool CVideoDatabase::GetTagsNav(const CStdString& strBaseDir, CFileItemList& ite
     mediaType = "movie";
   else if (idContent == VIDEODB_CONTENT_TVSHOWS)
     mediaType = "tvshow";
+  else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+    mediaType = "musicvideo";
   else
     return false;
 
@@ -6091,7 +6095,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
   return false;
 }
 
-bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum, const SortDescription &sortDescription /* = SortDescription() */)
+bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum, int idTag /* = -1 */, const SortDescription &sortDescription /* = SortDescription() */)
 {
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strBaseDir))
@@ -6107,6 +6111,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     videoUrl.AddOption("year", idYear);
   else if (idArtist != -1)
     videoUrl.AddOption("artistid", idArtist);
+  else if (idTag != -1)
+    videoUrl.AddOption("tagid", idTag);
   if (idAlbum != -1)
     videoUrl.AddOption("albumid", idAlbum);
 
@@ -9221,6 +9227,20 @@ bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
     option = options.find("albumid");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("musicvideoview.c%02d = (select c%02d from musicvideo where idMVideo = %i)", VIDEODB_ID_MUSICVIDEO_ALBUM, VIDEODB_ID_MUSICVIDEO_ALBUM, (int)option->second.asInteger()));
+
+    option = options.find("tagid");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = musicvideoview.idMVideo AND taglinks.media_type = 'musicvideo'"));
+      filter.AppendWhere(PrepareSQL("taglinks.idTag = %i", (int)option->second.asInteger()));
+    }
+
+    option = options.find("tag");
+    if (option != options.end())
+    {
+      filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = musicvideoview.idMVideo AND taglinks.media_type = 'musicvideo' join tag on tag.idTag = taglinks.idTag"));
+      filter.AppendWhere(PrepareSQL("tag.strTag like '%s'", option->second.asString().c_str()));
+    }
   }
   else
     return false;
