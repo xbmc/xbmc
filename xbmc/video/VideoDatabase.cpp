@@ -2077,6 +2077,13 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     for (i = 0; i < vecStudios.size(); ++i)
       AddStudioToTvShow(idTvShow, vecStudios[i]);
 
+    // add tags...
+    for (unsigned int i = 0; i < details.m_tags.size(); i++)
+    {
+      int idTag = AddTag(details.m_tags[i]);
+      AddTagToItem(idTvShow, idTag, "tvshow");
+    }
+
     // add "all seasons" - the rest are added in SetDetailsForEpisode
     AddSeason(idTvShow, -1);
 
@@ -2253,6 +2260,13 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     for (i = 0; i < vecStudios.size(); ++i)
     {
       AddStudioToMusicVideo(idMVideo, vecStudios[i]);
+    }
+
+    // add tags...
+    for (unsigned int i = 0; i < details.m_tags.size(); i++)
+    {
+      int idTag = AddTag(details.m_tags[i]);
+      AddTagToItem(idMVideo, idTag, "musicvideo");
     }
 
     if (details.HasStreamDetails())
@@ -3252,6 +3266,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   {
     GetCast("tvshow", "idShow", details.m_iDbId, details.m_cast);
 
+    // get tags
+    CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'tvshow' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idTvShow);
+    m_pDS2->query(strSQL.c_str());
+    while (!m_pDS2->eof())
+    {
+      details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
+      m_pDS2->next();
+    }
+
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
   }
@@ -3323,10 +3346,10 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   CVideoInfoTag details;
 
   unsigned int time = XbmcThreads::SystemClockMillis();
-  int idMovie = record->at(0).get_asInt();
+  int idMVideo = record->at(0).get_asInt();
 
   GetDetailsFromDB(record, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets, details);
-  details.m_iDbId = idMovie;
+  details.m_iDbId = idMVideo;
   details.m_type = "musicvideo";
   
   details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
@@ -3341,6 +3364,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   details.m_resumePoint.type = CBookmark::RESUME;
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
+
+  // get tags
+  CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'musicvideo' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idMVideo);
+  m_pDS2->query(strSQL.c_str());
+  while (!m_pDS2->eof())
+  {
+    details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
+    m_pDS2->next();
+  }
 
   details.m_strPictureURL.Parse();
   return details;

@@ -170,6 +170,8 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
     videoUrl.AddOption("actor", filter["actor"].asString());
   else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
   else if (filter.isObject())
   {
     CStdString xsp;
@@ -187,7 +189,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast")
+    if (fieldValue == "cast" || fieldValue == "tag")
       additionalInfo = true;
   }
 
@@ -351,6 +353,8 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITranspor
     videoUrl.AddOption("director", filter["director"].asString());
   else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
   else if (filter.isObject())
   {
     CStdString xsp;
