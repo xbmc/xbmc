@@ -33,7 +33,14 @@ CDirectoryNodeTags::CDirectoryNodeTags(const CStdString& strName, CDirectoryNode
 
 NODE_TYPE CDirectoryNodeTags::GetChildType() const
 {
-  return NODE_TYPE_TITLE_MOVIES;
+  CQueryParams params;
+  CollectQueryParams(params);
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+    return NODE_TYPE_TITLE_MOVIES;
+  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+    return NODE_TYPE_TITLE_MUSICVIDEOS;
+
+  return NODE_TYPE_TITLE_TVSHOWS;
 }
 
 CStdString CDirectoryNodeTags::GetLocalizedName() const

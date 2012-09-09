@@ -2939,15 +2939,23 @@ void CVideoDatabase::DeleteSet(int idSet)
   }
 }
 
-void CVideoDatabase::DeleteTag(int idTag, const std::string &mediaType)
+void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
 {
   try
   {
     if (m_pDB.get() == NULL || m_pDS.get() == NULL)
       return;
 
+    std::string type;
+    if (mediaType == VIDEODB_CONTENT_MOVIES)
+      type = "movie";
+    else if (mediaType == VIDEODB_CONTENT_TVSHOWS)
+      type = "tvshow";
+    else
+      return;
+
     CStdString strSQL;
-    strSQL = PrepareSQL("DELETE FROM taglinks WHERE idTag = %i AND media_type = '%s'", idTag, mediaType.c_str());
+    strSQL = PrepareSQL("DELETE FROM taglinks WHERE idTag = %i AND media_type = '%s'", idTag, type.c_str());
     m_pDS->exec(strSQL.c_str());
 
     // check if the tag is used for another media type as well before deleting it completely
@@ -4550,6 +4558,8 @@ bool CVideoDatabase::GetTagsNav(const CStdString& strBaseDir, CFileItemList& ite
   CStdString mediaType;
   if (idContent == VIDEODB_CONTENT_MOVIES)
     mediaType = "movie";
+  else if (idContent == VIDEODB_CONTENT_TVSHOWS)
+    mediaType = "tvshow";
   else
     return false;
 
@@ -5657,7 +5667,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
 }
 
 bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items,
-                                  int idGenre /* = -1 */, int idYear /* = -1 */, int idActor /* = -1 */, int idDirector /* = -1 */, int idStudio /* = -1 */,
+                                  int idGenre /* = -1 */, int idYear /* = -1 */, int idActor /* = -1 */, int idDirector /* = -1 */, int idStudio /* = -1 */, int idTag /* = -1 */,
                                   const SortDescription &sortDescription /* = SortDescription() */)
 {
   CVideoDbUrl videoUrl;
@@ -5674,6 +5684,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
     videoUrl.AddOption("year", idYear);
   else if (idActor != -1)
     videoUrl.AddOption("actorid", idActor);
+  else if (idTag != -1)
+    videoUrl.AddOption("tagid", idTag);
 
   Filter filter;
   return GetTvShowsByWhere(videoUrl.ToString(), filter, items, sortDescription);
@@ -8993,6 +9005,20 @@ bool CVideoDatabase::GetFilter(const CDbUrl &videoUrl, Filter &filter)
       {
         filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = tvshowview.idShow join actors on actors.idActor = actorlinktvshow.idActor"));
         filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
+      }
+
+      option = options.find("tagid");
+      if (option != options.end())
+      {
+        filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = tvshowview.idShow AND taglinks.media_type = 'tvshow'"));
+        filter.AppendWhere(PrepareSQL("taglinks.idTag = %i", (int)option->second.asInteger()));
+      }
+
+      option = options.find("tag");
+      if (option != options.end())
+      {
+        filter.AppendJoin(PrepareSQL("join taglinks on taglinks.idMedia = tvshowview.idShow AND taglinks.media_type = 'tvshow' join tag on tag.idTag = taglinks.idTag"));
+        filter.AppendWhere(PrepareSQL("tag.strTag like '%s'", option->second.asString().c_str()));
       }
     }
     else if (itemType == "seasons")
