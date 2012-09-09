@@ -2,7 +2,7 @@
  * Many concepts and protocol are taken from
  * the Boxee project. http://www.boxee.tv
  * 
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify

@@ -2,7 +2,7 @@
 #define AFX_XMLDOCUMENT_H__D68461F7_E0CE_4FA0_B1C9_0541610164E9__INCLUDED_
 
 /*
- *      Copyright (C) 2004-2010 Team XBMC
+ *      Copyright (C) 2004-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify

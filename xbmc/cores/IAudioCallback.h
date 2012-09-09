@@ -6,7 +6,7 @@
 #define AFX_IAUDIOCALLBACK_H__5A6AC7CF_C60E_45B9_8113_599F036FBBF8__INCLUDED_
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
