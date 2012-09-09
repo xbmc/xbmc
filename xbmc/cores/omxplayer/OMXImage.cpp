@@ -488,7 +488,8 @@ bool COMXImage::ReadFile(const CStdString& inputFile)
   
   m_pFile.Read(m_image_buffer, m_image_size);
 
-  GetCodingType();
+  if(GetCodingType() != OMX_IMAGE_CodingJPEG)
+    return false;
 
   if(m_width < 1 || m_height < 1)
     return false;
@@ -639,17 +640,11 @@ bool COMXImage::Decode(unsigned width, unsigned height)
   }
 
   port_def.format.image.eCompressionFormat = OMX_IMAGE_CodingUnused;
-  port_def.format.image.eColorFormat = OMX_COLOR_Format32bitABGR8888;
-  if((((width + 15)&~15) > width) || (((height + 15)&~15) > height))
-  {
-    port_def.format.image.nFrameWidth = (width + 15)&~15;
-    port_def.format.image.nFrameHeight = (height + 15)&~15;
-  }
-  else
-  {
-    port_def.format.image.nFrameWidth = width;
-    port_def.format.image.nFrameHeight = height;
-  }
+  port_def.format.image.eColorFormat = OMX_COLOR_Format32bitARGB8888;
+
+  port_def.format.image.nFrameWidth = (width + 15)&~15;
+  port_def.format.image.nFrameHeight = (height + 15)&~15;
+
   port_def.format.image.nStride = 0;
   port_def.format.image.nSliceHeight = 0;
   port_def.format.image.bFlagErrorConcealment = OMX_FALSE;
@@ -773,8 +768,6 @@ bool COMXImage::Decode(unsigned width, unsigned height)
 
   m_omx_tunnel_decode.Deestablish();
 
-  SwapBlueRed(m_decoded_buffer->pBuffer, GetDecodedHeight(), GetDecodedWidth() * 4);
-  
   return true;
 }
 
@@ -817,7 +810,7 @@ bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned
   }
 
   port_def.format.image.eCompressionFormat = OMX_IMAGE_CodingUnused;
-  port_def.format.image.eColorFormat = OMX_COLOR_Format32bitABGR8888;
+  port_def.format.image.eColorFormat = OMX_COLOR_Format32bitARGB8888;
   port_def.format.image.nFrameWidth = width;
   port_def.format.image.nFrameHeight = height;
   port_def.format.image.nStride = width * 4;
@@ -893,7 +886,6 @@ bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned
   memcpy(internalBuffer, buffer, size);
   demuxer_bytes   = size;
   demuxer_content = internalBuffer;
-  SwapBlueRed(internalBuffer, height, width * 4);
   
   if(!demuxer_bytes || !demuxer_content)
     return false;
@@ -1026,7 +1018,8 @@ bool COMXImage::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bu
 
     memcpy(m_image_buffer, buffer, m_image_size);
 
-    GetCodingType();
+    if(GetCodingType() != OMX_IMAGE_CodingJPEG)
+     return false;
 
     SetHardwareSizeLimits();
 
