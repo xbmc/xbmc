@@ -380,7 +380,9 @@ parseh264_sps(uint8_t *sps, uint32_t sps_size, int *level, int *profile, bool *i
   sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
   if (sps_info.log2_max_frame_num_minus4 > 12)
   { // must be between 0 and 12
-    return;
+    // don't early return here - the bits we are using (profile/level/interlaced/ref frames)
+    // might still be valid - let the parser go on and pray.
+    //return;
   }
 
   sps_info.pic_order_cnt_type = nal_bs_read_ue(&bs);
