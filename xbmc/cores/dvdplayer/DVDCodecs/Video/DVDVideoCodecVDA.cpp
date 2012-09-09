@@ -700,7 +700,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         // valid avcC atom data always starts with the value 1 (version)
         if ( *extradata != 1 )
         {
-          if (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1)
+          if ( (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1) ||
+               (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 1) )
           {
             // video content is from x264 or from bytestream h264 (AnnexB format)
             // NAL reformating to bitstream format needed
