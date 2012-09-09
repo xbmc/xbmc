@@ -20,6 +20,7 @@
  */
 
 #include "AEChannelInfo.h"
+#include <string.h>
 
 CAEChannelInfo::CAEChannelInfo()
 {
