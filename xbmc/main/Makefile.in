@@ -1,14 +1,12 @@
-abs_top_srcdir=@abs_top_srcdir@
-
 .SUFFIXES : .m .mm
 
-SRCS=main.cpp
+SRCS  = main.cpp
 
 ifeq ($(findstring osx,@ARCH@),osx)
-SRCS+=osx/SDLMain.mm
+SRCS += osx/SDLMain.mm
 endif
 
 LIB=main.a
 
-include $(abs_top_srcdir)/Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS))))

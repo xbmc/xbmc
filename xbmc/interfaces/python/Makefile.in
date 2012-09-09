@@ -1,9 +1,9 @@
-SRCS=XBPython.cpp \
-     XBPyThread.cpp
+INCLUDES += @PYTHON_CPPFLAGS@
 
-LIB=python.a
+SRCS  = XBPython.cpp
+SRCS += XBPyThread.cpp
 
-INCLUDES+= @PYTHON_CPPFLAGS@
+LIB = python.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(pathsubst %.S,,$(SRCS))))

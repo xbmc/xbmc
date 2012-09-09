@@ -1,16 +1,16 @@
-SRCS=GUIDialogKaraokeSongSelector.cpp \
-     GUIWindowKaraokeLyrics.cpp \
-     karaokelyrics.cpp	\
-     karaokelyricscdg.cpp \
-     karaokelyricsfactory.cpp \
-     karaokelyricsmanager.cpp \
-     karaokelyricstext.cpp \
-     karaokelyricstextkar.cpp \
-     karaokelyricstextlrc.cpp \
-     karaokelyricstextustar.cpp \
-     karaokewindowbackground.cpp \
+SRCS  = GUIDialogKaraokeSongSelector.cpp
+SRCS += GUIWindowKaraokeLyrics.cpp
+SRCS += karaokelyrics.cpp
+SRCS += karaokelyricscdg.cpp
+SRCS += karaokelyricsfactory.cpp
+SRCS += karaokelyricsmanager.cpp
+SRCS += karaokelyricstext.cpp
+SRCS += karaokelyricstextkar.cpp
+SRCS += karaokelyricstextlrc.cpp
+SRCS += karaokelyricstextustar.cpp
+SRCS += karaokewindowbackground.cpp
 
-LIB=karaoke.a
+LIB = karaoke.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
