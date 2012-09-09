@@ -563,11 +563,20 @@ void CGUIDialogMediaFilter::UpdateControls()
     {
       CFileItemList items;
       OnBrowse(itFilter->second, items, true);
-      if (items.Size() <= 0 ||
-         (items.Size() == 1 && items[0]->HasProperty("total") && items[0]->GetProperty("total").asInteger() <= 1))
+
+      int size = items.Size();
+      if (items.Size() == 1 && items[0]->HasProperty("total"))
+        size = (int)items[0]->GetProperty("total").asInteger();
+
+      CStdString label = g_localizeStrings.Get(itFilter->second.label);
+      if (size <= 1)
         CONTROL_DISABLE(itFilter->second.controlIndex);
       else
+      {
         CONTROL_ENABLE(itFilter->second.controlIndex);
+        label.Format("%s [%d]", label, size);
+      }
+      SET_CONTROL_LABEL(itFilter->second.controlIndex, label);
     }
   }
 }
