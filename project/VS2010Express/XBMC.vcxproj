@@ -113,6 +113,8 @@
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">xbmc-test</TargetName>
+    <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
+    </CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">
     <ClCompile>
@@ -139,6 +141,7 @@
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
@@ -181,6 +184,7 @@
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
@@ -272,6 +276,7 @@
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
@@ -312,6 +317,7 @@
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
@@ -712,130 +718,42 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\SystemOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\VideoLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\XBMCOperations.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\action.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\control.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlbutton.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlcheckmark.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controledit.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlfadelabel.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlgroup.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlimage.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controllabel.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controllist.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlprogress.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlradiobutton.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlslider.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlspin.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controltextbox.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\dialog.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindow.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindowDialog.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindowXML.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindowXMLDialog.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\infotagmusic.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\infotagvideo.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\keyboard.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\player.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyplaylist.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonAddon.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyutil.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\window.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\winxml.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\winxmldialog.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcaddonmodule.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcguimodule.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcmodule.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcplugin.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcvfsmodule.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\XBPython.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\XBPyThread.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\Addon.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\AddonCallback.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\AddonClass.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\AddonUtils.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\CallbackFunction.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\CallbackHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\Control.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\Dialog.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\File.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagMusic.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagVideo.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\Keyboard.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\LanguageHook.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\ListItem.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\ModuleXbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\ModuleXbmcgui.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\ModuleXbmcplugin.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\ModuleXbmcvfs.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\Monitor.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\Player.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\PlayList.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\String.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\Window.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\WindowDialog.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\WindowDialogMixin.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\WindowXML.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\CallbackHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcaddon.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcgui.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcplugin.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcvfs.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\LanguageHook.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\swig.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\XBPython.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\XBPyThread.cpp" />
     <ClCompile Include="..\..\xbmc\LangInfo.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
@@ -1105,7 +1023,49 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Addon.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\AddonCallback.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\AddonClass.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\AddonString.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\AddonUtils.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Alternative.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\aojsonrpc.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\CallbackFunction.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\CallbackHandler.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Control.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Dialog.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Dictionary.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Exception.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\File.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagMusic.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagVideo.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Keyboard.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\LanguageHook.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\List.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\ListItem.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\ModuleXbmc.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\ModuleXbmcgui.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\ModuleXbmcplugin.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\ModuleXbmcvfs.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Monitor.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Player.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\PlayList.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\RenderCapture.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\swighelper.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Tuple.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\Window.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowDialog.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowDialogMixin.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowException.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowInterceptor.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\WindowXML.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\CallbackHandler.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\LanguageHook.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\preamble.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\swig.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h" />
     <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h" />
     <ClInclude Include="..\..\xbmc\network\AirTunesServer.h" />
@@ -2185,30 +2145,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\SystemOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\VideoLibrary.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\XBMCOperations.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\action.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\control.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\dialog.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindow.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindowDialog.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindowXML.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\GUIPythonWindowXMLDialog.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\infotagmusic.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\infotagvideo.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\keyboard.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\player.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyjsonrpc.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyplaylist.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonAddon.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyutil.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\window.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\winxml.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h" />
     <ClInclude Include="..\..\xbmc\IProgressCallback.h" />
     <ClInclude Include="..\..\xbmc\LangInfo.h" />
     <ClInclude Include="..\..\xbmc\MediaSource.h" />
@@ -2878,6 +2814,115 @@
     <ProjectReference Include="XbmcThreads.vcxproj">
       <Project>{034b1d02-ca92-455d-8866-db95bee49c10}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmc.i">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL $(SolutionDir)..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcaddon.i">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL $(SolutionDir)..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcgui.i">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL $(SolutionDir)..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcplugin.i">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL $(SolutionDir)..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcvfs.i">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CALL $(SolutionDir)..\..\tools\codegenerator\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">%(RelativeDir)..\python\generated\%(Filename).cpp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Generating SWIG bindings</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CALL $(SolutionDir)..\BuildDependencies\GenerateSWIGBindings.bat %(RelativeDir) %(Filename)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Generating SWIG bindings</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(RelativeDir)python\generated\%(Filename).cpp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmc.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcaddon.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcgui.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcplugin.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcvfs.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

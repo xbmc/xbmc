@@ -182,6 +182,14 @@ namespace xbmcutil
 
   template <class T> typename GlobalsSingleton<T>::template Deleter<boost::shared_ptr<T> > GlobalsSingleton<T>::instance;
   template <class T> T* GlobalsSingleton<T>::quick;
+
+  /**
+   * This is another bit of hackery that will act as a flag for 
+   *  whether or not a global/static has been initialized yet. An instance
+   *  should be placed in the cpp file after the static/global it's meant to
+   *  monitor. 
+   */
+  class InitFlag {  public:  InitFlag(bool& flag) { flag = true; }  };
 }
 
 /**

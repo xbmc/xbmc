@@ -191,6 +191,7 @@ public:
 
   bool HasSaveLastControl() const { return !m_defaultAlways; };
 
+  virtual void OnDeinitWindow(int nextWindowID);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
@@ -201,7 +202,6 @@ protected:
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
   void Close_Internal(bool forceClose = false, int nextWindowID = 0, bool enableSound = true);
   EVENT_RESULT OnMouseAction(const CAction &action);
   virtual bool Animate(unsigned int currentTime);
