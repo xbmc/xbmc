@@ -2,7 +2,7 @@
 
 SCRIPT_PATH=$(cd `dirname $0` && pwd)
 
-USE_BUILDROOT=1
+USE_BUILDROOT=0
 
 if [ "$USE_BUILDROOT" = "1" ]; then
   BUILDROOT=/opt/xbmc-bcm/buildroot
@@ -17,12 +17,12 @@ else
   SDKSTAGE=/opt/bcm-rootfs
   XBMCPREFIX=/opt/xbmc-bcm/xbmc-bin
   TARGETFS=/opt/bcm-rootfs
-  TOOLCHAIN=/usr/local/bcm-gcc
+  TOOLCHAIN=/toolchain/arm-bcm2708hardfp-linux-gnueabi
   BUILDROOT=/opt/bcm-rootfs
 fi
 
-sudo mkdir -p $XBMCPREFIX
-sudo chmod 777 $XBMCPREFIX
+mkdir -p $XBMCPREFIX
+chmod 777 $XBMCPREFIX
 mkdir -p $XBMCPREFIX/lib
 mkdir -p $XBMCPREFIX/include
 
