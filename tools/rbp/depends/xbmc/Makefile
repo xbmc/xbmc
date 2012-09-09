@@ -12,7 +12,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) --build=$(BUILD) --host=$(HOST) \
 	--disable-optical-drive --disable-dvdcss --disable-joystick --disable-debug \
 	--disable-crystalhd --disable-vtbdecoder --disable-vaapi --disable-vdpau \
 	--disable-pulse --disable-projectm --with-platform=raspberry-pi --enable-optimizations \
-	--enable-rpi-cec-api --enable-player=omxplayer
+	--enable-libcec --enable-player=omxplayer
 
 all: configure
 
