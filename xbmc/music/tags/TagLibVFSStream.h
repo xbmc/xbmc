@@ -50,7 +50,7 @@ namespace MUSIC_INFO
     /*!
      * Reads a block of size \a length at the current get pointer.
      */
-    ByteVector readBlock(ulong length);
+    ByteVector readBlock(TagLib::ulong length);
 
     /*!
      * Attempts to write the block \a data at the current get pointer.  If the
@@ -70,7 +70,7 @@ namespace MUSIC_INFO
      * \note This method is slow since it requires rewriting all of the file
      * after the insertion point.
      */
-    void insert(const ByteVector &data, ulong start = 0, ulong replace = 0);
+    void insert(const ByteVector &data, TagLib::ulong start = 0, TagLib::ulong replace = 0);
 
     /*!
      * Removes a block of the file starting a \a start and continuing for
@@ -79,7 +79,7 @@ namespace MUSIC_INFO
      * \note This method is slow since it involves rewriting all of the file
      * after the removed portion.
      */
-    void removeBlock(ulong start = 0, ulong length = 0);
+    void removeBlock(TagLib::ulong start = 0, TagLib::ulong length = 0);
 
     /*!
      * Returns true if the file is read only (or if the file can not be opened).

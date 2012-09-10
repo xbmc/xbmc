@@ -73,7 +73,7 @@ FileName TagLibVFSStream::name() const
 /*!
  * Reads a block of size \a length at the current get pointer.
  */
-ByteVector TagLibVFSStream::readBlock(ulong length)
+ByteVector TagLibVFSStream::readBlock(TagLib::ulong length)
 {
   ByteVector byteVector(static_cast<TagLib::uint>(length));
   byteVector.resize(m_file.Read(byteVector.data(), length));
@@ -101,7 +101,7 @@ void TagLibVFSStream::writeBlock(const ByteVector &data)
  * \note This method is slow since it requires rewriting all of the file
  * after the insertion point.
  */
-void TagLibVFSStream::insert(const ByteVector &data, ulong start, ulong replace)
+void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib::ulong replace)
 {
   if (data.size() == replace)
   {
@@ -125,7 +125,7 @@ void TagLibVFSStream::insert(const ByteVector &data, ulong start, ulong replace)
   // First, make sure that we're working with a buffer that is longer than
   // the *differnce* in the tag sizes.  We want to avoid overwriting parts
   // that aren't yet in memory, so this is necessary.
-  ulong bufferLength = bufferSize();
+  TagLib::ulong bufferLength = bufferSize();
 
   while (data.size() - replace > bufferLength)
     bufferLength += bufferSize();
@@ -165,7 +165,7 @@ void TagLibVFSStream::insert(const ByteVector &data, ulong start, ulong replace)
 
     // Check to see if we just read the last block.  We need to call clear()
     // if we did so that the last write succeeds.
-    if (ulong(bytesRead) < bufferLength)
+    if (TagLib::ulong(bytesRead) < bufferLength)
       clear();
 
     // Seek to the write position and write our buffer.  Increment the
@@ -186,16 +186,16 @@ void TagLibVFSStream::insert(const ByteVector &data, ulong start, ulong replace)
  * \note This method is slow since it involves rewriting all of the file
  * after the removed portion.
  */
-void TagLibVFSStream::removeBlock(ulong start, ulong length)
+void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
 {
-  ulong bufferLength = bufferSize();
+  TagLib::ulong bufferLength = bufferSize();
 
   long readPosition = start + length;
   long writePosition = start;
 
   ByteVector buffer(static_cast<TagLib::uint>(bufferLength));
 
-  ulong bytesRead = 1;
+  TagLib::ulong bytesRead = 1;
 
   while(bytesRead != 0)
   {
