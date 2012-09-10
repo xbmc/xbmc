@@ -1500,6 +1500,13 @@ if test "$use_external_ffmpeg" = "yes"; then
   # libavcore is optional
   PKG_CHECK_EXISTS([libavcore], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavcore")
 
+  # one of libswresample or libavresample is needed
+  PKG_CHECK_EXISTS([libswresample], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libswresample",
+                   [PKG_CHECK_EXISTS([libavresample],
+                                     FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavresample",
+                                     AC_MSG_ERROR([You need either libswresample
+                                                   or libavresample.]))])
+
   PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
                     [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
                     AC_MSG_ERROR($missing_library))
@@ -1532,6 +1539,9 @@ if test "$use_external_ffmpeg" = "yes"; then
   # We'll support the use of rgb2rgb.h if it exists.
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
   AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
+
+  # Check for libswresample or libavresample headers.
+  AC_CHECK_HEADERS([libswresample/swresample.h libavresample/avresample.h])
 
   # Check if AVFilterBufferRefVideoProps AVRational member is named
   # 'pixel_aspect' or 'sample_aspect_ratio'.
