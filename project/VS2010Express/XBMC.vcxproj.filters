@@ -5725,7 +5725,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h">
       <Filter>interfaces\python</Filter>
     </ClInclude>
-   <ClInclude Include="..\..\xbmc\music\tags\TagLibVFSStream.h">
+    <ClInclude Include="..\..\xbmc\music\tags\TagLibVFSStream.h">
       <Filter>music\tags</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\tags\TagLoaderTagLib.h">
@@ -5734,6 +5734,7 @@
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.h">
       <Filter>music\tags</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
