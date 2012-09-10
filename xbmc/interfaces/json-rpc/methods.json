@@ -117,6 +117,15 @@
               "random": { "type": "boolean", "default": true, "description": "Deprecated, use the shuffled property of the options parameter instead" },
               "recursive": { "type": "boolean", "default": true }
             }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "partymode": { "type": [
+                  { "type": "string", "required": true, "enum": [ "music", "video" ] },
+                  { "type": "string", "required": true, "minLength": 5, "description": "Path to a smartplaylist (*.xsp) file" }
+                ]
+              }
+            }
           }
         ]
       },

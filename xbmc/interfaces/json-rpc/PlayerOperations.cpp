@@ -34,6 +34,8 @@
 #include "video/VideoDatabase.h"
 #include "AudioLibrary.h"
 #include "GUIInfoManager.h"
+#include "filesystem/File.h"
+#include "PartyModeManager.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -494,6 +496,13 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
     bool random = (optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
                   (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean());
     return StartSlideshow(parameterObject["item"]["path"].asString(), parameterObject["item"]["recursive"].asBoolean(), random);
+  }
+  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("partymode"))
+  {
+    if (g_partyModeManager.IsEnabled())
+      g_partyModeManager.Disable();
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
+    return ACK;
   }
   else
   {
