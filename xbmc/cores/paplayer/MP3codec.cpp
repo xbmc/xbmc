@@ -168,16 +168,16 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int64_t length = 0;
   bool bTags = false;
 
-  CTagLoaderTagLib tagLoaderTagLib(strFile);
-
   if (!m_file.Open(strFile, READ_CACHED))
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
-    goto error;
+    return false;
   }
 
   // Guess Bitrate and obtain replayGain information etc.
+  CTagLoaderTagLib tagLoaderTagLib(strFile); //opens the file so needs to be after m_file.Open or lastfm radio breaks.
   bTags = tagLoaderTagLib.Load(strFile, m_tag);
+
   if (bTags)
     ReadDuration();
 
