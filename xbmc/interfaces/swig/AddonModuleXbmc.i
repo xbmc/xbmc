@@ -109,6 +109,10 @@ using namespace xbmc;
     return Py_None;
   }
 
+%feature("python:nokwds") XBMCAddon::xbmc::Keyboard::Keyboard "true"
+%feature("python:nokwds") XBMCAddon::xbmc::Player::Player "true"
+%feature("python:nokwds") XBMCAddon::xbmc::PlayList::PlayList "true"
+
 %include "interfaces/legacy/Player.h"
 
  // TODO: This needs to be done with a class that holds the Image

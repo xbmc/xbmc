@@ -98,6 +98,7 @@ void doMethod(method, MethodType methodType)
   String returns = constructor ? 'p.' + clazz : (destructor ? 'void' : Helper.getReturnSwigType(method))
   Node classnode = Helper.findClassNode(method)
   String classNameAsVariable = clazz == null ? null : PythonTools.getClassNameAsVariable(classnode)
+  boolean useKeywordParsing = !('true' == classnode?.@feature_python_nokwds || 'true' == method?.@feature_python_nokwds) 
 
   // do the docs
   if (!constructor && !destructor)
@@ -116,13 +117,15 @@ void doMethod(method, MethodType methodType)
   {
     CLog::Log(LOGDEBUG, "NEWADDON Entering the Python method \\"${PythonTools.getPyMethodName(method,methodType)}\\"");
 <%  if (numParams > 0)
-    { %>
+    { 
+      if (useKeywordParsing)
+      { %>
     static const char *keywords[] = {<%
           params.each { %>
           "${it.@name}",<% } %>
           NULL};
-
-<%    params.each { 
+<%    }
+      params.each { 
 %>         
     ${SwigTypeParser.SwigType_str(SwigTypeParser.convertTypeToLTypeForParam(it.@type))} ${it.@name} ${it.@value != null ? ' = ' + it.@value : ''};<%
         if (!PythonTools.parameterCanBeUsedDirectly(it))
@@ -130,11 +133,11 @@ void doMethod(method, MethodType methodType)
     PyObject* py${it.@name} = NULL;<%
         }
      } %>
-    if (!PyArg_ParseTupleAndKeywords(
+    if (!${useKeywordParsing ? 'PyArg_ParseTupleAndKeywords' : 'PyArg_ParseTuple'}(
        args,
-       kwds,
+       <% if (useKeywordParsing) { %>kwds,<% } %>
        (char*)"<%= PythonTools.makeFormatStringFromParameters(method) %>",
-       (char**)keywords,<%    params.eachWithIndex { param,i -> %>
+       <% if (useKeywordParsing) { %>(char**)keywords,<% } %><%    params.eachWithIndex { param,i -> %>
          &${PythonTools.parameterCanBeUsedDirectly(param) ? '' : 'py'}${param.@name}${i < params.size() - 1 ? "," : ""}<% } %>
        ))
     {

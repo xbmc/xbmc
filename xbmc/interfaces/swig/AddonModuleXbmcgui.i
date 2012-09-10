@@ -117,11 +117,19 @@ using namespace xbmcgui;
   return result; 
  } 
 
+%feature("ref") Control "${ths}->Acquire();"
+%feature("unref") Control "${ths}->Release();"
 %feature("python:coerceToUnicode") XBMCAddon::xbmcgui::ControlButton::getLabel "true"
 %feature("python:coerceToUnicode") XBMCAddon::xbmcgui::ControlButton::getLabel2 "true"
 %include "interfaces/legacy/Control.h"
 
 %include "interfaces/legacy/Dialog.h"
+
+%feature("python:nokwds") XBMCAddon::xbmcgui::Dialog::Dialog "true"
+%feature("python:nokwds") XBMCAddon::xbmcgui::Window::Window "true"
+%feature("python:nokwds") XBMCAddon::xbmcgui::WindowXML::WindowXML "true"
+%feature("python:nokwds") XBMCAddon::xbmcgui::WindowXMLDialog::WindowXMLDialog "true"
+%feature("python:nokwds") XBMCAddon::xbmcgui::WindowDialog::WindowDialog "true"
 
 %feature("director") Window;
 %feature("ref") Window "${ths}->Acquire();"
