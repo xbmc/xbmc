@@ -133,6 +133,8 @@ namespace XFILE
     virtual int64_t GetLength();
     virtual int64_t GetPosition();
     virtual int Write(const void* lpBuf, int64_t uiBufSize);
+    virtual int Truncate(int64_t iSize);
+
     //implement iocontrol for seek_possible for preventing the stat in File class for
     //getting this info ...
     virtual int IoControl(EIoControl request, void* param){ if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};    

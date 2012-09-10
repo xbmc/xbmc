@@ -20,9 +20,9 @@
  *
  */
 
-#include "ReplayGain.h"
 #include "utils/StdString.h"
 #include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
 
 #include "cores/AudioEngine/AEAudioFormat.h"
 
@@ -104,7 +104,7 @@ public:
   enum AEDataFormat m_DataFormat;
   int m_Bitrate;
   CStdString m_CodecName;
-  CReplayGain m_replayGain;
+  MUSIC_INFO::CMusicInfoTag m_tag;
   XFILE::CFile m_file;
 
 protected:

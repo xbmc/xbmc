@@ -14,7 +14,7 @@ SUBDIRS := \
 	libgpg-error libgcrypt afpfs-ng \
 	libplist libshairport libcec tinyxml \
         samba python26 distribute distutilscross \
-	mysqlclient boost \
+	mysqlclient boost taglib \
 
 ifeq ($(DARWIN), ios)
   EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image

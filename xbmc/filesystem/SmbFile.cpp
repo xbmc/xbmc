@@ -565,6 +565,25 @@ int CSmbFile::Stat(const CURL& url, struct __stat64* buffer)
   return iResult;
 }
 
+int CSmbFile::Truncate(int64_t size)
+{
+  if (m_fd == -1) return 0;
+/* 
+ * This would force us to be dependant on SMBv3.2 which is GPLv3
+ * This is only used by the TagLib writers, which are not currently in use
+ * So log and warn until we implement TagLib writing & can re-implement this better.
+  CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+
+#if defined(TARGET_ANDROID)
+  int iResult = 0;
+#else
+  int iResult = smbc_ftruncate(m_fd, size);
+#endif
+*/
+  CLog::Log(LOGWARNING, "%s - Warning(smbc_ftruncate called and not implemented)", __FUNCTION__);
+  return 0;
+}
+
 unsigned int CSmbFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return 0;

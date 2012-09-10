@@ -19,7 +19,8 @@
  */
 
 #include "OGGFileDirectory.h"
-#include "music/tags/OggTag.h"
+#include "cores/paplayer/OggCallback.h"
+#include "File.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -35,6 +36,23 @@ COGGFileDirectory::~COGGFileDirectory(void)
 
 int COGGFileDirectory::GetTrackCount(const CStdString& strPath)
 {
-  COggTag tag;
-  return tag.GetStreamCount(strPath);
+  if (!m_dll.Load())
+    return 0;
+  
+  CFile file;
+  if (!file.Open(strPath))
+    return 0;
+  
+  COggCallback callback(file);
+  ov_callbacks oggIOCallbacks = callback.Get(strPath);
+  OggVorbis_File vf;
+  //  open ogg file with decoder
+  if (m_dll.ov_open_callbacks(&callback, &vf, NULL, 0, oggIOCallbacks)!=0)
+    return 0;
+  
+  int iStreams=m_dll.ov_streams(&vf);
+  
+  m_dll.ov_clear(&vf);
+  
+  return iStreams;
 }

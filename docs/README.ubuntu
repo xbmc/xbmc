@@ -58,6 +58,12 @@ In this case you will have to manually compile the latest version.
    # make
    # sudo make install
 
+We currently need an unreleased version of taglib. We supply a Makefile in
+lib/taglib to make it easy to install into /usr/local until taglib makes a release.
+
+   # make -C lib/taglib
+   # sudo make -C lib/taglib install
+
 --------------------------------------------------------------
 3.2. Use a single command to get all build dependencies
 --------------------------------------------------------------
