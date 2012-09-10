@@ -33,6 +33,7 @@ Node MusicVideoChildren[] = {
                               { NODE_TYPE_MUSICVIDEOS_ALBUM, 5, 132 },
                               { NODE_TYPE_DIRECTOR,          6, 20348 },
                               { NODE_TYPE_STUDIO,            7, 20388 },
+                              { NODE_TYPE_TAGS,              9, 20459 }
                             };
 
 CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const CStdString& strName, CDirectoryNode* pParent)

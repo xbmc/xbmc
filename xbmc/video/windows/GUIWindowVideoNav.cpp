@@ -226,6 +226,8 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     return "TvShowYears";
   else if (strPath.Equals("videodb://2/4/"))
     return "TvShowActors";
+  else if (strPath.Equals("videodb://2/9/"))
+    return "TvShowTags";
   else if (strPath.Equals("videodb://2/"))
     return "TvShows";
   else if (strPath.Equals("videodb://3/1/"))
@@ -238,6 +240,8 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     return "MusicVideoArtists";
   else if (strPath.Equals("videodb://3/5/"))
     return "MusicVideoDirectors";
+  else if (strPath.Equals("videodb://3/9/"))
+    return "MusicVideoTags";
   else if (strPath.Equals("videodb://3/"))
     return "MusicVideos";
   else if (strPath.Equals("videodb://4/"))
@@ -364,9 +368,11 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         LoadVideoInfo(items);
     }
 
-    if (items.GetPath() == "videodb://1/9/" && !items.Contains("newtag://movie"))
+    CVideoDbUrl videoUrl;
+    if (videoUrl.FromString(items.GetPath()) && items.GetContent() == "tags" &&
+       !items.Contains("newtag://" + videoUrl.GetType()))
     {
-      CFileItemPtr newTag(new CFileItem("newtag://movie", false));
+      CFileItemPtr newTag(new CFileItem("newtag://" + videoUrl.GetType(), false));
       newTag->SetLabel(g_localizeStrings.Get(20462));
       newTag->SetLabelPreformated(true);
       newTag->SetSpecialSort(SortSpecialOnTop);
@@ -671,22 +677,22 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
       m_database.DeleteSet(params.GetSetId());
     }
   }
-  else if (pItem->GetPath().Left(14).Equals("videodb://1/9/") &&
+  else if (m_vecItems->GetContent() == "tags" &&
            pItem->GetPath().size() > 14 && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     pDialog->SetHeading(432);
     CStdString strLabel;
-    strLabel.Format(g_localizeStrings.Get(433),pItem->GetLabel());
+    strLabel.Format(g_localizeStrings.Get(433), pItem->GetLabel());
     pDialog->SetLine(1, strLabel);
-    pDialog->SetLine(2, "");;
+    pDialog->SetLine(2, "");
     pDialog->DoModal();
     if (pDialog->IsConfirmed())
     {
       CVideoDatabaseDirectory dir;
       CQueryParams params;
       dir.GetQueryParams(pItem->GetPath(), params);
-      m_database.DeleteTag(params.GetTagId(), "movie");
+      m_database.DeleteTag(params.GetTagId(), (VIDEODB_CONTENT_TYPE)params.GetContentType());
     }
   }
   else if (m_vecItems->GetPath().Equals(CUtil::VideoPlaylistsLocation()) ||
@@ -965,13 +971,19 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
         }
 
-        if (item->GetPath().Left(14).Equals("videodb://1/9/") && item->GetPath().size() > 14 && item->m_bIsFolder) // tags
+        if (m_vecItems->GetContent() == "tags" && item->GetPath().size() > 14 && item->m_bIsFolder) // tags
         {
-          CStdString strLabelAdd; strLabelAdd.Format(g_localizeStrings.Get(20460), g_localizeStrings.Get(20342).c_str());
-          CStdString strLabelRemove; strLabelRemove.Format(g_localizeStrings.Get(20461), g_localizeStrings.Get(20342).c_str());
-          buttons.Add(CONTEXT_BUTTON_TAGS_ADD_ITEMS, strLabelAdd);
-          buttons.Add(CONTEXT_BUTTON_TAGS_REMOVE_ITEMS, strLabelRemove);
-          buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+          CVideoDbUrl videoUrl;
+          if (videoUrl.FromString(item->GetPath()))
+          {
+            std::string mediaType = videoUrl.GetItemType();
+
+            CStdString strLabelAdd; strLabelAdd.Format(g_localizeStrings.Get(20460), GetLocalizedType(videoUrl.GetItemType()).c_str());
+            CStdString strLabelRemove; strLabelRemove.Format(g_localizeStrings.Get(20461), GetLocalizedType(videoUrl.GetItemType()).c_str());
+            buttons.Add(CONTEXT_BUTTON_TAGS_ADD_ITEMS, strLabelAdd);
+            buttons.Add(CONTEXT_BUTTON_TAGS_REMOVE_ITEMS, strLabelRemove);
+            buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+          }
         }
 
         if (node == NODE_TYPE_ACTOR && !dir.IsAllItem(item->GetPath()) && item->m_bIsFolder)
@@ -1247,14 +1259,12 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_TAGS_ADD_ITEMS:
     {
-      if (!item->GetPath().Left(10).Equals("videodb://"))
+      CVideoDbUrl videoUrl;
+      if (!videoUrl.FromString(item->GetPath()))
         return false;
       
-      std::string mediaType;
-      if (item->GetPath().Mid(9, 3).Equals("/1/"))
-        mediaType = "movie";
-      else
-        return false;
+      std::string mediaType = videoUrl.GetItemType();
+      mediaType = mediaType.substr(0, mediaType.length() - 1);
 
       CFileItemList items;
       CStdString localizedType = GetLocalizedType(mediaType);
@@ -1281,14 +1291,12 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_TAGS_REMOVE_ITEMS:
     {
-      if (!item->GetPath().Left(10).Equals("videodb://"))
+      CVideoDbUrl videoUrl;
+      if (!videoUrl.FromString(item->GetPath()))
         return false;
       
-      std::string mediaType;
-      if (item->GetPath().Mid(9, 3).Equals("/1/"))
-        mediaType = "movie";
-      else
-        return false;
+      std::string mediaType = videoUrl.GetItemType();
+      mediaType = mediaType.substr(0, mediaType.length() - 1);
 
       CFileItemList items;
       CStdString localizedType = GetLocalizedType(mediaType);
@@ -1468,7 +1476,9 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     if (!videodb.Open())
       return true;
 
+    // get the media type and convert from plural to singular (by removing the trailing "s")
     CStdString mediaType = item->GetPath().Mid(9);
+    mediaType = mediaType.Left(mediaType.size() - 1);
     CStdString localizedType = GetLocalizedType(mediaType);
     if (localizedType.empty())
       return true;
@@ -1476,7 +1486,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     if (!videodb.GetSingleValue("tag", "tag.idTag", videodb.PrepareSQL("tag.strTag = '%s' AND tag.idTag IN (SELECT taglinks.idTag FROM taglinks WHERE taglinks.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
       CStdString strError; strError.Format(g_localizeStrings.Get(20463), strTag.c_str());
-      CGUIDialogOK::ShowAndGetInput(20462, strError, "", "");
+      CGUIDialogOK::ShowAndGetInput(20462, "", strError, "");
       return true;
     }
 
@@ -1534,6 +1544,8 @@ CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
     return "videodb://2/4/";
   else if (dir.Equals("TvShowStudios"))
     return "videodb://2/5/";
+  else if (dir.Equals("TvShowTags"))
+    return "videodb://2/9/";
   else if (dir.Equals("TvShows"))
     return "videodb://2/";
   else if (dir.Equals("MusicVideoGenres"))
@@ -1550,6 +1562,8 @@ CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
     return "videodb://3/6/";
   else if (dir.Equals("MusicVideoStudios"))
     return "videodb://3/7/";
+  else if (dir.Equals("MusicVideoTags"))
+    return "videodb://3/9/";
   else if (dir.Equals("MusicVideos"))
     return "videodb://3/";
   else if (dir.Equals("RecentlyAddedMovies"))
@@ -1634,23 +1648,44 @@ bool CGUIWindowVideoNav::GetItemsForTag(const CStdString &strHeading, const std:
   if (!videodb.Open())
     return false;
 
-  CFileItemList listItems;
-  bool result = false;
-  if (idTag <= 0)
-    result = videodb.GetMoviesNav("videodb://1/2/", listItems);
-  else
+  MediaType mediaType;
+  std::string baseDir = "videodb://";
+  std::string idColumn;
+  if (type.compare("movie") == 0)
   {
-    if (showAll)
-    {
-      CVideoDatabase::Filter filter;
-      filter.where = videodb.PrepareSQL("movieview.idMovie NOT IN (SELECT taglinks.idMedia FROM taglinks WHERE taglinks.idTag = %d AND taglinks.media_type = '%s')", idTag, type.c_str());
-      result = videodb.GetMoviesByWhere("videodb://1/2/", filter, listItems);
-    }
-    else
-      result = videodb.GetMoviesNav("videodb://1/9/", listItems, -1, -1, -1, -1, -1, -1, -1, idTag);
+    mediaType = MediaTypeMovie;
+    baseDir += "1";
+    idColumn = "idMovie";
+  }
+  else if (type.compare("tvshow") == 0)
+  {
+    mediaType = MediaTypeTvShow;
+    baseDir += "2";
+    idColumn = "idShow";
+  }
+  else if (type.compare("musicvideo") == 0)
+  {
+    mediaType = MediaTypeMusicVideo;
+    baseDir += "3";
+    idColumn = "idMVideo";
   }
 
-  if (!result || listItems.Size() <= 0)
+  baseDir += "/2/";
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(baseDir))
+    return false;
+
+  CVideoDatabase::Filter filter;
+  if (idTag > 0)
+  {
+    if (!showAll)
+      videoUrl.AddOption("tagid", idTag);
+    else
+      filter.where = videodb.PrepareSQL("%sview.%s NOT IN (SELECT taglinks.idMedia FROM taglinks WHERE taglinks.idTag = %d AND taglinks.media_type = '%s')", type.c_str(), idColumn.c_str(), idTag, type.c_str());
+  }
+
+  CFileItemList listItems;
+  if (!videodb.GetSortedVideos(mediaType, videoUrl.ToString(), SortDescription(), listItems, filter) || listItems.Size() <= 0)
     return false;
 
   CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -1672,13 +1707,13 @@ bool CGUIWindowVideoNav::GetItemsForTag(const CStdString &strHeading, const std:
 
 CStdString CGUIWindowVideoNav::GetLocalizedType(const std::string &strType)
 {
-  if (strType == "movie")
+  if (strType == "movie" || strType == "movies")
     return g_localizeStrings.Get(20342);
-  else if (strType == "tvshow")
+  else if (strType == "tvshow" || strType == "tvshows")
     return g_localizeStrings.Get(20343);
-  else if (strType == "episode")
+  else if (strType == "episode" || strType == "episodes")
     return g_localizeStrings.Get(20359);
-  else if (strType == "musicvideo")
+  else if (strType == "musicvideo" || strType == "musicvideos")
     return g_localizeStrings.Get(20391);
   else
     return "";

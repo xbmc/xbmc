@@ -31,6 +31,7 @@ Node TvShowChildren[] = {
                           { NODE_TYPE_YEAR,          3, 562 },
                           { NODE_TYPE_ACTOR,         4, 344 },
                           { NODE_TYPE_STUDIO,        5, 20388 },
+                          { NODE_TYPE_TAGS,          9, 20459 }
                         };
 
 CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const CStdString& strName, CDirectoryNode* pParent)

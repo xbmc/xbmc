@@ -1051,6 +1051,7 @@
           { "type": "object", "properties": { "year": { "type": "integer", "minimum": 0, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "actor": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "studio": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "tag": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "$ref": "List.Filter.TVShows" }
         ]
       }
@@ -1162,6 +1163,7 @@
           { "type": "object", "properties": { "year": { "type": "integer", "minimum": 0, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "director": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "studio": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "tag": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "$ref": "List.Filter.MusicVideos" }
         ]
       }
@@ -1326,7 +1328,8 @@
       { "name": "sorttitle", "$ref": "Optional.String" },
       { "name": "episodeguide", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" },
-      { "name": "fanart", "$ref": "Optional.String" }
+      { "name": "fanart", "$ref": "Optional.String" },
+      { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1376,7 +1379,8 @@
       { "name": "track", "$ref": "Optional.Integer" },
       { "name": "lastplayed", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" },
-      { "name": "fanart", "$ref": "Optional.String" }
+      { "name": "fanart", "$ref": "Optional.String" },
+      { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
