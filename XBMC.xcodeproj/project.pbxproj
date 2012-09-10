@@ -7663,7 +7663,6 @@
 					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
 					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
 					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
-					"\"$(SRCROOT)/xbmc/interfaces/bindings\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -7703,9 +7702,9 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
-					"-ltag",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -7786,7 +7785,6 @@
 					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
 					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
 					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
-					"\"$(SRCROOT)/xbmc/interfaces/bindings\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -7826,9 +7824,9 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
-					"-ltag",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
