@@ -161,8 +161,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_CallAgainWithSameBuffer = false;
   m_readRetries = 5;
 
-  CFileItem item(strFile, false);
-
   int id3v2Size = 0;
   int result = -1;
   int64_t length = 0;
