@@ -1,0 +1,8 @@
+aux_source_directory(. linux_SRCS)
+if(APPLE)
+	list(REMOVE_ITEM linux_SRCS ./DBusMessage.cpp)
+	list(REMOVE_ITEM linux_SRCS ./DBusReserve.cpp)
+	list(REMOVE_ITEM linux_SRCS ./DBusUtil.cpp)
+	list(REMOVE_ITEM linux_SRCS ./HALManager.cpp)
+endif()
+add_library(xbmc_linux STATIC ${linux_SRCS})

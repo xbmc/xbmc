@@ -1,0 +1,7 @@
+aux_source_directory(. storage_SRCS)
+if(APPLE)
+	aux_source_directory(osx storage_os_SRCS)
+elseif(UNIX)
+	aux_source_directory(linux storage_os_SRCS)
+endif()
+add_library(storage STATIC ${storage_SRCS} ${storage_os_SRCS})

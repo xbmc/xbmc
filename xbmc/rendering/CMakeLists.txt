@@ -1,0 +1,5 @@
+aux_source_directory(. rendering_SRCS)
+if(UNIX)
+	aux_source_directory(gl system_SRCS)
+endif(UNIX)
+add_library(rendering STATIC ${rendering_SRCS} ${system_SRCS})

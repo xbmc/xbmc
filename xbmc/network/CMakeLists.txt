@@ -1,0 +1,11 @@
+add_subdirectory(libscrobbler)
+if(APPLE)
+    add_subdirectory(osx)
+endif(APPLE)
+if(UNIX)
+    add_subdirectory(linux)
+endif(UNIX)
+
+aux_source_directory(. network_SRCS)
+list(REMOVE_ITEM network_SRCS ./UPnP.cpp)
+add_library(network STATIC ${network_SRCS})

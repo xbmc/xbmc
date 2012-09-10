@@ -1,0 +1,5 @@
+set(common_SRCS AudioRendererFactory.cpp NullDirectSound.cpp)
+if(APPLE)
+	set(os_SRCS CoreAudioRenderer.cpp)
+endif()
+add_library(audiorenderers STATIC ${common_SRCS} ${os_SRCS})

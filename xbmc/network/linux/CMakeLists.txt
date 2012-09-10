@@ -1,0 +1,6 @@
+aux_source_directory(. network_linux_SRCS)
+if(APPLE)
+	list(REMOVE_ITEM network_linux_SRCS ./ZeroconfAvahi.cpp)
+	list(REMOVE_ITEM network_linux_SRCS ./ZeroconfBrowserAvahi.cpp)
+endif(APPLE)
+add_library(network_linux STATIC ${network_linux_SRCS})

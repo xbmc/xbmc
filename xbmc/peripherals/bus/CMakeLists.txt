@@ -1,0 +1,7 @@
+aux_source_directory(. bus_SRCS)
+if(APPLE)
+	aux_source_directory(osx bus_os_SRCS)
+elseif(UNIX)
+	aux_source_directory(linux bus_os_SRCS)
+endif(APPLE)
+add_library(peripherals_bus STATIC ${bus_SRCS} ${bus_os_SRCS})
