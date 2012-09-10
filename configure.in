@@ -1583,7 +1583,7 @@ final_message="$final_message\n  SWIG Available:\tYes"
 
 echo "Checking for a jre installation"
 AC_PATH_PROG(JAVA_EXE, java, "none")
-if test "$JAVE_EXE" = "none"; then
+if test "$JAVA_EXE" = "none"; then
   AC_MSG_ERROR($missing_program)
 fi
 final_message="$final_message\n  JRE Available:\tYes"
