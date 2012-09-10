@@ -213,7 +213,7 @@ void CDVDAudioCodecFFmpeg::ConvertToFloat()
     }
 
     m_iBufferSize1 = 0;
-    m_iBufferSize2 = len * av_get_bytes_per_sample(AV_SAMPLE_FMT_FLT);
+    m_iBufferSize2 = len * m_dllAvUtil.av_get_bytes_per_sample(AV_SAMPLE_FMT_FLT);
   }
 }
 
