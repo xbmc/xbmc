@@ -98,6 +98,7 @@ public:
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual int Stat(struct __stat64* buffer);
+  virtual int Truncate(int64_t size);
   virtual int64_t GetLength();
   virtual int64_t GetPosition();
   virtual int Write(const void* lpBuf, int64_t uiBufSize);

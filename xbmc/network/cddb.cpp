@@ -30,6 +30,7 @@
 
 #ifdef HAS_DVD_DRIVE
 
+#include <taglib/id3v1genres.h>
 #include "cddb.h"
 #include "network/DNSNameCache.h"
 #include "music/tags/Id3Tag.h"
@@ -574,8 +575,8 @@ void Xcddb::parseData(const char *buffer)
           strGenre.TrimLeft(' ');
           if (StringUtils::IsNaturalNumber(strGenre))
           {
-            CID3Tag tag;
-            m_strGenre=tag.ParseMP3Genre(strGenre);
+            int iGenre = strtol(strGenre, NULL, 10);
+            m_strGenre = TagLib::ID3v1::genre(iGenre).toCString();
           }
         }
       }

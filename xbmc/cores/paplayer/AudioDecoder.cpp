@@ -243,28 +243,28 @@ float CAudioDecoder::GetReplayGain()
   float peak = 0.0f;
   if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_ALBUM)
   {
-    if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
+    if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_ALBUM_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain * 0.01f;
-      peak = m_codec->m_replayGain.fAlbumPeak;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainAlbumGain() * 0.01f;
+      peak = m_codec->m_tag.GetReplayGainAlbumPeak();
     }
-    else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
+    else if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_TRACK_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain * 0.01f;
-      peak = m_codec->m_replayGain.fTrackPeak;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainTrackGain() * 0.01f;
+      peak = m_codec->m_tag.GetReplayGainTrackPeak();
     }
   }
   else if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_TRACK)
   {
-    if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
+    if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_TRACK_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain * 0.01f;
-      peak = m_codec->m_replayGain.fTrackPeak;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainTrackGain() * 0.01f;
+      peak = m_codec->m_tag.GetReplayGainTrackPeak();
     }
-    else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
+    else if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_ALBUM_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain * 0.01f;
-      peak = m_codec->m_replayGain.fAlbumPeak;
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainAlbumGain() * 0.01f;
+      peak = m_codec->m_tag.GetReplayGainAlbumPeak();
     }
   }
   // convert to a gain type

@@ -619,6 +619,23 @@ int64_t CNFSFile::Seek(int64_t iFilePosition, int iWhence)
   return (int64_t)offset;
 }
 
+int CNFSFile::Truncate(int64_t iSize)
+{
+  int ret = 0;
+  
+  CSingleLock lock(gNfsConnection);  
+  if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
+  
+  
+  ret = (int)gNfsConnection.GetImpl()->nfs_ftruncate(m_pNfsContext, m_pFileHandle, iSize);
+  if (ret < 0) 
+  {
+    CLog::Log(LOGERROR, "%s - Error( ftruncate: %"PRId64", fsize: %"PRId64", %s)", __FUNCTION__, iSize, m_fileSize, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
+    return -1;
+  }
+  return ret;
+}
+
 void CNFSFile::Close()
 {
   CSingleLock lock(gNfsConnection);

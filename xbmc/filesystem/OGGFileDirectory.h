@@ -21,6 +21,7 @@
 
 
 #include "MusicFileDirectory.h"
+#include "DllVorbisfile.h"
 
 namespace XFILE
 {
@@ -31,5 +32,7 @@ namespace XFILE
       virtual ~COGGFileDirectory(void);
     protected:
       virtual int GetTrackCount(const CStdString& strPath);
+  private:
+    DllVorbisfile m_dll;
   };
 }

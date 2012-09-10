@@ -13,7 +13,7 @@ SUBDIRS = \
 	python26-native python26 samba alsa-lib libcdio afpfs-ng libshairport \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc libsdl \
 	liblzo2-native libjpeg-turbo-native libpng-native tiff-native libsdl_image rpl \
-	libamplayer libssh
+	libamplayer libssh taglib
 
 .PHONY: buildtools $(BUILDTOOLS) subdirs $(SUBDIRS) arm
 
@@ -59,6 +59,7 @@ libpng-native: buildtools
 tiff-native: buildtools libjpeg-turbo-native 
 liblzo2-native: buildtools
 libssh: openssl cmake rpl
+taglib: cmake
 
 
 X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)

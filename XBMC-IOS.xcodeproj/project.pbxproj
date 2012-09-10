@@ -146,6 +146,8 @@
 		DFA6BE4313FECA010048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE4113FECA010048CC11 /* AirPlayServer.cpp */; };
 		DFA6BE7713FED09C0048CC11 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE7513FED09C0048CC11 /* HttpParser.cpp */; };
 		DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */; };
+		DFAB4BE615FCCA5000E1BAF6 /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4BE215FCCA5000E1BAF6 /* TagLibVFSStream.cpp */; };
+		DFAB4BE715FCCA5000E1BAF6 /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4BE415FCCA5000E1BAF6 /* TagLoaderTagLib.cpp */; };
 		DFB6625615376791006B8FF1 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6620615376791006B8FF1 /* AEFactory.cpp */; };
 		DFB6625815376791006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6620B15376791006B8FF1 /* AEEncoderFFmpeg.cpp */; };
 		DFB6625915376791006B8FF1 /* CoreAudioAE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6620E15376791006B8FF1 /* CoreAudioAE.cpp */; };
@@ -466,7 +468,6 @@
 		F56C892C131F42ED000AD0F6 /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8320131F42E7000AD0F6 /* OggCallback.cpp */; };
 		F56C892D131F42ED000AD0F6 /* OGGcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8322131F42E7000AD0F6 /* OGGcodec.cpp */; };
 		F56C892E131F42ED000AD0F6 /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8324131F42E7000AD0F6 /* PAPlayer.cpp */; };
-		F56C892F131F42ED000AD0F6 /* ReplayGain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8326131F42E7000AD0F6 /* ReplayGain.cpp */; };
 		F56C8930131F42ED000AD0F6 /* SIDCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8328131F42E7000AD0F6 /* SIDCodec.cpp */; };
 		F56C8931131F42ED000AD0F6 /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832A131F42E7000AD0F6 /* SPCCodec.cpp */; };
 		F56C8932131F42ED000AD0F6 /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832C131F42E7000AD0F6 /* TimidityCodec.cpp */; };
@@ -726,32 +727,18 @@
 		F56C8A7C131F42ED000AD0F6 /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85D0131F42EA000AD0F6 /* karaokelyricstextlrc.cpp */; };
 		F56C8A7D131F42ED000AD0F6 /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85D2131F42EA000AD0F6 /* karaokelyricstextustar.cpp */; };
 		F56C8A7E131F42ED000AD0F6 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85D4131F42EA000AD0F6 /* karaokewindowbackground.cpp */; };
-		F56C8A7F131F42ED000AD0F6 /* APEv2Tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85D8131F42EA000AD0F6 /* APEv2Tag.cpp */; };
-		F56C8A80131F42ED000AD0F6 /* FlacTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85DB131F42EA000AD0F6 /* FlacTag.cpp */; };
 		F56C8A81131F42ED000AD0F6 /* Id3Tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85DD131F42EA000AD0F6 /* Id3Tag.cpp */; };
 		F56C8A82131F42ED000AD0F6 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E1131F42EA000AD0F6 /* MusicInfoTag.cpp */; };
-		F56C8A83131F42ED000AD0F6 /* MusicInfoTagLoaderAAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E3131F42EA000AD0F6 /* MusicInfoTagLoaderAAC.cpp */; };
-		F56C8A84131F42ED000AD0F6 /* MusicInfoTagLoaderApe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E5131F42EA000AD0F6 /* MusicInfoTagLoaderApe.cpp */; };
 		F56C8A85131F42ED000AD0F6 /* MusicInfoTagLoaderASAP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E7131F42EA000AD0F6 /* MusicInfoTagLoaderASAP.cpp */; };
 		F56C8A86131F42ED000AD0F6 /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E9131F42EA000AD0F6 /* MusicInfoTagLoaderCDDA.cpp */; };
 		F56C8A87131F42ED000AD0F6 /* MusicInfoTagLoaderDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85EB131F42EA000AD0F6 /* MusicInfoTagLoaderDatabase.cpp */; };
 		F56C8A88131F42ED000AD0F6 /* MusicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85ED131F42EA000AD0F6 /* MusicInfoTagLoaderFactory.cpp */; };
-		F56C8A89131F42ED000AD0F6 /* MusicInfoTagLoaderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85EF131F42EA000AD0F6 /* MusicInfoTagLoaderFlac.cpp */; };
 		F56C8A8A131F42ED000AD0F6 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85F1131F42EA000AD0F6 /* MusicInfoTagLoaderMidi.cpp */; };
-		F56C8A8B131F42ED000AD0F6 /* MusicInfoTagLoaderMod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85F3131F42EA000AD0F6 /* MusicInfoTagLoaderMod.cpp */; };
-		F56C8A8C131F42ED000AD0F6 /* MusicInfoTagLoaderMP3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85F5131F42EA000AD0F6 /* MusicInfoTagLoaderMP3.cpp */; };
-		F56C8A8D131F42ED000AD0F6 /* MusicInfoTagLoaderMP4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85F7131F42EA000AD0F6 /* MusicInfoTagLoaderMP4.cpp */; };
-		F56C8A8E131F42ED000AD0F6 /* MusicInfoTagLoaderMPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85F9131F42EA000AD0F6 /* MusicInfoTagLoaderMPC.cpp */; };
 		F56C8A8F131F42ED000AD0F6 /* MusicInfoTagLoaderNSF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85FB131F42EA000AD0F6 /* MusicInfoTagLoaderNSF.cpp */; };
-		F56C8A90131F42ED000AD0F6 /* MusicInfoTagLoaderOgg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85FD131F42EA000AD0F6 /* MusicInfoTagLoaderOgg.cpp */; };
 		F56C8A91131F42ED000AD0F6 /* MusicInfoTagLoaderShn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85FF131F42EA000AD0F6 /* MusicInfoTagLoaderShn.cpp */; };
 		F56C8A92131F42ED000AD0F6 /* MusicInfoTagLoaderSPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8601131F42EA000AD0F6 /* MusicInfoTagLoaderSPC.cpp */; };
 		F56C8A93131F42ED000AD0F6 /* MusicInfoTagLoaderWav.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8603131F42EA000AD0F6 /* MusicInfoTagLoaderWav.cpp */; };
-		F56C8A94131F42ED000AD0F6 /* MusicInfoTagLoaderWavPack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8605131F42EA000AD0F6 /* MusicInfoTagLoaderWavPack.cpp */; };
-		F56C8A95131F42ED000AD0F6 /* MusicInfoTagLoaderWMA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8607131F42EA000AD0F6 /* MusicInfoTagLoaderWMA.cpp */; };
 		F56C8A96131F42ED000AD0F6 /* MusicInfoTagLoaderYM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8609131F42EA000AD0F6 /* MusicInfoTagLoaderYM.cpp */; };
-		F56C8A97131F42ED000AD0F6 /* OggTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C860B131F42EA000AD0F6 /* OggTag.cpp */; };
-		F56C8A98131F42ED000AD0F6 /* VorbisTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C860D131F42EA000AD0F6 /* VorbisTag.cpp */; };
 		F56C8A99131F42ED000AD0F6 /* GUIWindowMusicBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8610131F42EA000AD0F6 /* GUIWindowMusicBase.cpp */; };
 		F56C8A9A131F42ED000AD0F6 /* GUIWindowMusicNav.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8612131F42EA000AD0F6 /* GUIWindowMusicNav.cpp */; };
 		F56C8A9B131F42ED000AD0F6 /* GUIWindowMusicPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8614131F42EA000AD0F6 /* GUIWindowMusicPlaylist.cpp */; };
@@ -1354,6 +1341,10 @@
 		DFA6BE7613FED09C0048CC11 /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
 		DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
 		DFAB04AF13F8383300B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
+		DFAB4BE215FCCA5000E1BAF6 /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
+		DFAB4BE315FCCA5000E1BAF6 /* TagLibVFSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibVFSStream.h; sourceTree = "<group>"; };
+		DFAB4BE415FCCA5000E1BAF6 /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
+		DFAB4BE515FCCA5000E1BAF6 /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
 		DFB6620515376791006B8FF1 /* AEAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAudioFormat.h; sourceTree = "<group>"; };
 		DFB6620615376791006B8FF1 /* AEFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEFactory.cpp; sourceTree = "<group>"; };
 		DFB6620715376791006B8FF1 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
@@ -2117,8 +2108,6 @@
 		F56C8323131F42E7000AD0F6 /* OGGcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGGcodec.h; sourceTree = "<group>"; };
 		F56C8324131F42E7000AD0F6 /* PAPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PAPlayer.cpp; sourceTree = "<group>"; };
 		F56C8325131F42E7000AD0F6 /* PAPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAPlayer.h; sourceTree = "<group>"; };
-		F56C8326131F42E7000AD0F6 /* ReplayGain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReplayGain.cpp; sourceTree = "<group>"; };
-		F56C8327131F42E7000AD0F6 /* ReplayGain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplayGain.h; sourceTree = "<group>"; };
 		F56C8328131F42E7000AD0F6 /* SIDCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SIDCodec.cpp; sourceTree = "<group>"; };
 		F56C8329131F42E7000AD0F6 /* SIDCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIDCodec.h; sourceTree = "<group>"; };
 		F56C832A131F42E7000AD0F6 /* SPCCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SPCCodec.cpp; sourceTree = "<group>"; };
@@ -2655,22 +2644,13 @@
 		F56C85D3131F42EA000AD0F6 /* karaokelyricstextustar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricstextustar.h; sourceTree = "<group>"; };
 		F56C85D4131F42EA000AD0F6 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F56C85D5131F42EA000AD0F6 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
-		F56C85D7131F42EA000AD0F6 /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
-		F56C85D8131F42EA000AD0F6 /* APEv2Tag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = APEv2Tag.cpp; sourceTree = "<group>"; };
-		F56C85D9131F42EA000AD0F6 /* APEv2Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APEv2Tag.h; sourceTree = "<group>"; };
 		F56C85DA131F42EA000AD0F6 /* DllLibid3tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibid3tag.h; sourceTree = "<group>"; };
-		F56C85DB131F42EA000AD0F6 /* FlacTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FlacTag.cpp; sourceTree = "<group>"; };
-		F56C85DC131F42EA000AD0F6 /* FlacTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlacTag.h; sourceTree = "<group>"; };
 		F56C85DD131F42EA000AD0F6 /* Id3Tag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Id3Tag.cpp; sourceTree = "<group>"; };
 		F56C85DE131F42EA000AD0F6 /* Id3Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Id3Tag.h; sourceTree = "<group>"; };
 		F56C85DF131F42EA000AD0F6 /* id3v1genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = id3v1genre.h; sourceTree = "<group>"; };
 		F56C85E0131F42EA000AD0F6 /* ImusicInfoTagLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImusicInfoTagLoader.h; sourceTree = "<group>"; };
 		F56C85E1131F42EA000AD0F6 /* MusicInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTag.cpp; sourceTree = "<group>"; };
 		F56C85E2131F42EA000AD0F6 /* MusicInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTag.h; sourceTree = "<group>"; };
-		F56C85E3131F42EA000AD0F6 /* MusicInfoTagLoaderAAC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderAAC.cpp; sourceTree = "<group>"; };
-		F56C85E4131F42EA000AD0F6 /* MusicInfoTagLoaderAAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderAAC.h; sourceTree = "<group>"; };
-		F56C85E5131F42EA000AD0F6 /* MusicInfoTagLoaderApe.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderApe.cpp; sourceTree = "<group>"; };
-		F56C85E6131F42EA000AD0F6 /* MusicInfoTagLoaderApe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderApe.h; sourceTree = "<group>"; };
 		F56C85E7131F42EA000AD0F6 /* MusicInfoTagLoaderASAP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderASAP.cpp; sourceTree = "<group>"; };
 		F56C85E8131F42EA000AD0F6 /* MusicInfoTagLoaderASAP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderASAP.h; sourceTree = "<group>"; };
 		F56C85E9131F42EA000AD0F6 /* MusicInfoTagLoaderCDDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderCDDA.cpp; sourceTree = "<group>"; };
@@ -2679,38 +2659,18 @@
 		F56C85EC131F42EA000AD0F6 /* MusicInfoTagLoaderDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderDatabase.h; sourceTree = "<group>"; };
 		F56C85ED131F42EA000AD0F6 /* MusicInfoTagLoaderFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFactory.cpp; sourceTree = "<group>"; };
 		F56C85EE131F42EA000AD0F6 /* MusicInfoTagLoaderFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFactory.h; sourceTree = "<group>"; };
-		F56C85EF131F42EA000AD0F6 /* MusicInfoTagLoaderFlac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFlac.cpp; sourceTree = "<group>"; };
-		F56C85F0131F42EA000AD0F6 /* MusicInfoTagLoaderFlac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFlac.h; sourceTree = "<group>"; };
 		F56C85F1131F42EA000AD0F6 /* MusicInfoTagLoaderMidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderMidi.cpp; sourceTree = "<group>"; };
 		F56C85F2131F42EA000AD0F6 /* MusicInfoTagLoaderMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderMidi.h; sourceTree = "<group>"; };
-		F56C85F3131F42EA000AD0F6 /* MusicInfoTagLoaderMod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderMod.cpp; sourceTree = "<group>"; };
-		F56C85F4131F42EA000AD0F6 /* MusicInfoTagLoaderMod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderMod.h; sourceTree = "<group>"; };
-		F56C85F5131F42EA000AD0F6 /* MusicInfoTagLoaderMP3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderMP3.cpp; sourceTree = "<group>"; };
-		F56C85F6131F42EA000AD0F6 /* MusicInfoTagLoaderMP3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderMP3.h; sourceTree = "<group>"; };
-		F56C85F7131F42EA000AD0F6 /* MusicInfoTagLoaderMP4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderMP4.cpp; sourceTree = "<group>"; };
-		F56C85F8131F42EA000AD0F6 /* MusicInfoTagLoaderMP4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderMP4.h; sourceTree = "<group>"; };
-		F56C85F9131F42EA000AD0F6 /* MusicInfoTagLoaderMPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderMPC.cpp; sourceTree = "<group>"; };
-		F56C85FA131F42EA000AD0F6 /* MusicInfoTagLoaderMPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderMPC.h; sourceTree = "<group>"; };
 		F56C85FB131F42EA000AD0F6 /* MusicInfoTagLoaderNSF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderNSF.cpp; sourceTree = "<group>"; };
 		F56C85FC131F42EA000AD0F6 /* MusicInfoTagLoaderNSF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderNSF.h; sourceTree = "<group>"; };
-		F56C85FD131F42EA000AD0F6 /* MusicInfoTagLoaderOgg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderOgg.cpp; sourceTree = "<group>"; };
-		F56C85FE131F42EA000AD0F6 /* MusicInfoTagLoaderOgg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderOgg.h; sourceTree = "<group>"; };
 		F56C85FF131F42EA000AD0F6 /* MusicInfoTagLoaderShn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderShn.cpp; sourceTree = "<group>"; };
 		F56C8600131F42EA000AD0F6 /* MusicInfoTagLoaderShn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderShn.h; sourceTree = "<group>"; };
 		F56C8601131F42EA000AD0F6 /* MusicInfoTagLoaderSPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderSPC.cpp; sourceTree = "<group>"; };
 		F56C8602131F42EA000AD0F6 /* MusicInfoTagLoaderSPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderSPC.h; sourceTree = "<group>"; };
 		F56C8603131F42EA000AD0F6 /* MusicInfoTagLoaderWav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderWav.cpp; sourceTree = "<group>"; };
 		F56C8604131F42EA000AD0F6 /* MusicInfoTagLoaderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderWav.h; sourceTree = "<group>"; };
-		F56C8605131F42EA000AD0F6 /* MusicInfoTagLoaderWavPack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderWavPack.cpp; sourceTree = "<group>"; };
-		F56C8606131F42EA000AD0F6 /* MusicInfoTagLoaderWavPack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderWavPack.h; sourceTree = "<group>"; };
-		F56C8607131F42EA000AD0F6 /* MusicInfoTagLoaderWMA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderWMA.cpp; sourceTree = "<group>"; };
-		F56C8608131F42EA000AD0F6 /* MusicInfoTagLoaderWMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderWMA.h; sourceTree = "<group>"; };
 		F56C8609131F42EA000AD0F6 /* MusicInfoTagLoaderYM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderYM.cpp; sourceTree = "<group>"; };
 		F56C860A131F42EA000AD0F6 /* MusicInfoTagLoaderYM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderYM.h; sourceTree = "<group>"; };
-		F56C860B131F42EA000AD0F6 /* OggTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OggTag.cpp; sourceTree = "<group>"; };
-		F56C860C131F42EA000AD0F6 /* OggTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OggTag.h; sourceTree = "<group>"; };
-		F56C860D131F42EA000AD0F6 /* VorbisTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VorbisTag.cpp; sourceTree = "<group>"; };
-		F56C860E131F42EA000AD0F6 /* VorbisTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VorbisTag.h; sourceTree = "<group>"; };
 		F56C8610131F42EA000AD0F6 /* GUIWindowMusicBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowMusicBase.cpp; sourceTree = "<group>"; };
 		F56C8611131F42EA000AD0F6 /* GUIWindowMusicBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowMusicBase.h; sourceTree = "<group>"; };
 		F56C8612131F42EA000AD0F6 /* GUIWindowMusicNav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowMusicNav.cpp; sourceTree = "<group>"; };
@@ -4913,8 +4873,6 @@
 				F56C8325131F42E7000AD0F6 /* PAPlayer.h */,
 				7CCFD9971514950700211D82 /* PCMCodec.cpp */,
 				7CCFD9981514950700211D82 /* PCMCodec.h */,
-				F56C8326131F42E7000AD0F6 /* ReplayGain.cpp */,
-				F56C8327131F42E7000AD0F6 /* ReplayGain.h */,
 				F56C8328131F42E7000AD0F6 /* SIDCodec.cpp */,
 				F56C8329131F42E7000AD0F6 /* SIDCodec.h */,
 				F56C832A131F42E7000AD0F6 /* SPCCodec.cpp */,
@@ -5693,21 +5651,13 @@
 		F56C85D6131F42EA000AD0F6 /* tags */ = {
 			isa = PBXGroup;
 			children = (
-				F56C85D8131F42EA000AD0F6 /* APEv2Tag.cpp */,
-				F56C85D9131F42EA000AD0F6 /* APEv2Tag.h */,
 				F56C85DA131F42EA000AD0F6 /* DllLibid3tag.h */,
-				F56C85DB131F42EA000AD0F6 /* FlacTag.cpp */,
-				F56C85DC131F42EA000AD0F6 /* FlacTag.h */,
 				F56C85DD131F42EA000AD0F6 /* Id3Tag.cpp */,
 				F56C85DE131F42EA000AD0F6 /* Id3Tag.h */,
 				F56C85DF131F42EA000AD0F6 /* id3v1genre.h */,
 				F56C85E0131F42EA000AD0F6 /* ImusicInfoTagLoader.h */,
 				F56C85E1131F42EA000AD0F6 /* MusicInfoTag.cpp */,
 				F56C85E2131F42EA000AD0F6 /* MusicInfoTag.h */,
-				F56C85E3131F42EA000AD0F6 /* MusicInfoTagLoaderAAC.cpp */,
-				F56C85E4131F42EA000AD0F6 /* MusicInfoTagLoaderAAC.h */,
-				F56C85E5131F42EA000AD0F6 /* MusicInfoTagLoaderApe.cpp */,
-				F56C85E6131F42EA000AD0F6 /* MusicInfoTagLoaderApe.h */,
 				F56C85E7131F42EA000AD0F6 /* MusicInfoTagLoaderASAP.cpp */,
 				F56C85E8131F42EA000AD0F6 /* MusicInfoTagLoaderASAP.h */,
 				F56C85E9131F42EA000AD0F6 /* MusicInfoTagLoaderCDDA.cpp */,
@@ -5716,39 +5666,22 @@
 				F56C85EC131F42EA000AD0F6 /* MusicInfoTagLoaderDatabase.h */,
 				F56C85ED131F42EA000AD0F6 /* MusicInfoTagLoaderFactory.cpp */,
 				F56C85EE131F42EA000AD0F6 /* MusicInfoTagLoaderFactory.h */,
-				F56C85EF131F42EA000AD0F6 /* MusicInfoTagLoaderFlac.cpp */,
-				F56C85F0131F42EA000AD0F6 /* MusicInfoTagLoaderFlac.h */,
 				F56C85F1131F42EA000AD0F6 /* MusicInfoTagLoaderMidi.cpp */,
 				F56C85F2131F42EA000AD0F6 /* MusicInfoTagLoaderMidi.h */,
-				F56C85F3131F42EA000AD0F6 /* MusicInfoTagLoaderMod.cpp */,
-				F56C85F4131F42EA000AD0F6 /* MusicInfoTagLoaderMod.h */,
-				F56C85F5131F42EA000AD0F6 /* MusicInfoTagLoaderMP3.cpp */,
-				F56C85F6131F42EA000AD0F6 /* MusicInfoTagLoaderMP3.h */,
-				F56C85F7131F42EA000AD0F6 /* MusicInfoTagLoaderMP4.cpp */,
-				F56C85F8131F42EA000AD0F6 /* MusicInfoTagLoaderMP4.h */,
-				F56C85F9131F42EA000AD0F6 /* MusicInfoTagLoaderMPC.cpp */,
-				F56C85FA131F42EA000AD0F6 /* MusicInfoTagLoaderMPC.h */,
 				F56C85FB131F42EA000AD0F6 /* MusicInfoTagLoaderNSF.cpp */,
 				F56C85FC131F42EA000AD0F6 /* MusicInfoTagLoaderNSF.h */,
-				F56C85FD131F42EA000AD0F6 /* MusicInfoTagLoaderOgg.cpp */,
-				F56C85FE131F42EA000AD0F6 /* MusicInfoTagLoaderOgg.h */,
 				F56C85FF131F42EA000AD0F6 /* MusicInfoTagLoaderShn.cpp */,
 				F56C8600131F42EA000AD0F6 /* MusicInfoTagLoaderShn.h */,
 				F56C8601131F42EA000AD0F6 /* MusicInfoTagLoaderSPC.cpp */,
 				F56C8602131F42EA000AD0F6 /* MusicInfoTagLoaderSPC.h */,
 				F56C8603131F42EA000AD0F6 /* MusicInfoTagLoaderWav.cpp */,
 				F56C8604131F42EA000AD0F6 /* MusicInfoTagLoaderWav.h */,
-				F56C8605131F42EA000AD0F6 /* MusicInfoTagLoaderWavPack.cpp */,
-				F56C8606131F42EA000AD0F6 /* MusicInfoTagLoaderWavPack.h */,
-				F56C8607131F42EA000AD0F6 /* MusicInfoTagLoaderWMA.cpp */,
-				F56C8608131F42EA000AD0F6 /* MusicInfoTagLoaderWMA.h */,
 				F56C8609131F42EA000AD0F6 /* MusicInfoTagLoaderYM.cpp */,
 				F56C860A131F42EA000AD0F6 /* MusicInfoTagLoaderYM.h */,
-				F56C860B131F42EA000AD0F6 /* OggTag.cpp */,
-				F56C860C131F42EA000AD0F6 /* OggTag.h */,
-				F56C85D7131F42EA000AD0F6 /* Tag.h */,
-				F56C860D131F42EA000AD0F6 /* VorbisTag.cpp */,
-				F56C860E131F42EA000AD0F6 /* VorbisTag.h */,
+				DFAB4BE215FCCA5000E1BAF6 /* TagLibVFSStream.cpp */,
+				DFAB4BE315FCCA5000E1BAF6 /* TagLibVFSStream.h */,
+				DFAB4BE415FCCA5000E1BAF6 /* TagLoaderTagLib.cpp */,
+				DFAB4BE515FCCA5000E1BAF6 /* TagLoaderTagLib.h */,
 			);
 			path = tags;
 			sourceTree = "<group>";
@@ -6924,7 +6857,6 @@
 				F56C892C131F42ED000AD0F6 /* OggCallback.cpp in Sources */,
 				F56C892D131F42ED000AD0F6 /* OGGcodec.cpp in Sources */,
 				F56C892E131F42ED000AD0F6 /* PAPlayer.cpp in Sources */,
-				F56C892F131F42ED000AD0F6 /* ReplayGain.cpp in Sources */,
 				F56C8930131F42ED000AD0F6 /* SIDCodec.cpp in Sources */,
 				F56C8931131F42ED000AD0F6 /* SPCCodec.cpp in Sources */,
 				F56C8932131F42ED000AD0F6 /* TimidityCodec.cpp in Sources */,
@@ -7184,32 +7116,18 @@
 				F56C8A7C131F42ED000AD0F6 /* karaokelyricstextlrc.cpp in Sources */,
 				F56C8A7D131F42ED000AD0F6 /* karaokelyricstextustar.cpp in Sources */,
 				F56C8A7E131F42ED000AD0F6 /* karaokewindowbackground.cpp in Sources */,
-				F56C8A7F131F42ED000AD0F6 /* APEv2Tag.cpp in Sources */,
-				F56C8A80131F42ED000AD0F6 /* FlacTag.cpp in Sources */,
 				F56C8A81131F42ED000AD0F6 /* Id3Tag.cpp in Sources */,
 				F56C8A82131F42ED000AD0F6 /* MusicInfoTag.cpp in Sources */,
-				F56C8A83131F42ED000AD0F6 /* MusicInfoTagLoaderAAC.cpp in Sources */,
-				F56C8A84131F42ED000AD0F6 /* MusicInfoTagLoaderApe.cpp in Sources */,
 				F56C8A85131F42ED000AD0F6 /* MusicInfoTagLoaderASAP.cpp in Sources */,
 				F56C8A86131F42ED000AD0F6 /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				F56C8A87131F42ED000AD0F6 /* MusicInfoTagLoaderDatabase.cpp in Sources */,
 				F56C8A88131F42ED000AD0F6 /* MusicInfoTagLoaderFactory.cpp in Sources */,
-				F56C8A89131F42ED000AD0F6 /* MusicInfoTagLoaderFlac.cpp in Sources */,
 				F56C8A8A131F42ED000AD0F6 /* MusicInfoTagLoaderMidi.cpp in Sources */,
-				F56C8A8B131F42ED000AD0F6 /* MusicInfoTagLoaderMod.cpp in Sources */,
-				F56C8A8C131F42ED000AD0F6 /* MusicInfoTagLoaderMP3.cpp in Sources */,
-				F56C8A8D131F42ED000AD0F6 /* MusicInfoTagLoaderMP4.cpp in Sources */,
-				F56C8A8E131F42ED000AD0F6 /* MusicInfoTagLoaderMPC.cpp in Sources */,
 				F56C8A8F131F42ED000AD0F6 /* MusicInfoTagLoaderNSF.cpp in Sources */,
-				F56C8A90131F42ED000AD0F6 /* MusicInfoTagLoaderOgg.cpp in Sources */,
 				F56C8A91131F42ED000AD0F6 /* MusicInfoTagLoaderShn.cpp in Sources */,
 				F56C8A92131F42ED000AD0F6 /* MusicInfoTagLoaderSPC.cpp in Sources */,
 				F56C8A93131F42ED000AD0F6 /* MusicInfoTagLoaderWav.cpp in Sources */,
-				F56C8A94131F42ED000AD0F6 /* MusicInfoTagLoaderWavPack.cpp in Sources */,
-				F56C8A95131F42ED000AD0F6 /* MusicInfoTagLoaderWMA.cpp in Sources */,
 				F56C8A96131F42ED000AD0F6 /* MusicInfoTagLoaderYM.cpp in Sources */,
-				F56C8A97131F42ED000AD0F6 /* OggTag.cpp in Sources */,
-				F56C8A98131F42ED000AD0F6 /* VorbisTag.cpp in Sources */,
 				F56C8A99131F42ED000AD0F6 /* GUIWindowMusicBase.cpp in Sources */,
 				F56C8A9A131F42ED000AD0F6 /* GUIWindowMusicNav.cpp in Sources */,
 				F56C8A9B131F42ED000AD0F6 /* GUIWindowMusicPlaylist.cpp in Sources */,
@@ -7629,6 +7547,8 @@
 				DF23462315FA675200A934F6 /* UPnPInternal.cpp in Sources */,
 				DF23462415FA675200A934F6 /* UPnPRenderer.cpp in Sources */,
 				DF23462515FA675200A934F6 /* UPnPServer.cpp in Sources */,
+				DFAB4BE615FCCA5000E1BAF6 /* TagLibVFSStream.cpp in Sources */,
+				DFAB4BE715FCCA5000E1BAF6 /* TagLoaderTagLib.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7750,6 +7670,7 @@
 					"-lavutil",
 					"-lswresample",
 					"-lswscale",
+					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -7871,6 +7792,7 @@
 					"-lavutil",
 					"-lswresample",
 					"-lswscale",
+					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);

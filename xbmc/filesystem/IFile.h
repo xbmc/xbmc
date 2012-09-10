@@ -63,6 +63,7 @@ public:
   virtual int64_t GetPosition() = 0;
   virtual int64_t GetLength() = 0;
   virtual void Flush() { }
+  virtual int Truncate(int64_t size) { return -1;};
 
   /* Returns the minium size that can be read from input stream.   *
    * For example cdrom access where access could be sector based.  *
