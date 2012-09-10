@@ -537,7 +537,7 @@ bool CAUOutputDevice::EnableInputOuput()
   if (hasio)
   {
     UInt32 enable;
-    enable = 1;
+    enable = 0;
     ret =  AudioUnitSetProperty(m_audioUnit,
       kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, kInputBus, &enable, sizeof(enable));
     if (ret != noErr)
