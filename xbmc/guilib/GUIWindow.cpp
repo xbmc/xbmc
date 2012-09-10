@@ -788,7 +788,7 @@ bool CGUIWindow::Initialize()
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
   if(m_windowLoaded)
-    return false;
+    return true;
   if(g_application.IsCurrentThread())
     return Load(GetProperty("xmlfile").asString());
   else
