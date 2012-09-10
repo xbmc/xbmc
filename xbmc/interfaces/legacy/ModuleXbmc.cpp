@@ -64,8 +64,7 @@
 #include "cores/VideoRenderers/RenderCapture.h"
 
 #include "threads/SystemClock.h"
-
-
+#include "Exception.h"
 #include <vector>
 
 namespace XBMCAddon
@@ -117,10 +116,10 @@ namespace XBMCAddon
       CApplicationMessenger::Get().ExecBuiltIn(function,wait);
     }
 
-#ifdef HAS_HTTPAPI
     String executehttpapi(const char* httpcommand) 
     {
       TRACE;
+#ifdef HAS_HTTPAPI
       String ret;
       if (! httpcommand)
         return ret;
@@ -150,13 +149,15 @@ namespace XBMCAddon
 
       CURL::Decode(parameter);
       return CHttpApi::MethodCall(execute, parameter);
-    }
+#else
+      THROW_UNIMP("executehttpapi");
 #endif
+    }
 
-#ifdef HAS_JSONRPC
     String executeJSONRPC(const char* jsonrpccommand)
     {
       TRACE;
+#ifdef HAS_JSONRPC
       String ret;
 
       if (! jsonrpccommand)
@@ -168,8 +169,10 @@ namespace XBMCAddon
       CAddOnTransport::CAddOnClient client;
 
       return JSONRPC::CJSONRPC::MethodCall(/*method*/ jsonrpccommand, &transport, &client);
-    }
+#else
+      THROW_UNIMP("executeJSONRPC");
 #endif
+    }
 
     void sleep(long timemillis)
     {

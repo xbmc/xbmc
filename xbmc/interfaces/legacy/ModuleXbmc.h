@@ -93,7 +93,7 @@ namespace XBMCAddon
      *   - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')
      */
     void executebuiltin(const char* function, bool wait = false);
-#ifdef HAS_HTTPAPI
+
     /**
      * executehttpapi(httpcommand) -- Execute an HTTP API command.
      * 
@@ -105,9 +105,7 @@ namespace XBMCAddon
      *   - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')
      */
     String executehttpapi(const char* httpcommand);
-#endif
 
-#ifdef HAS_JSONRPC
     /**
      * executeJSONRPC(jsonrpccommand) -- Execute an JSONRPC command.
      * 
@@ -119,7 +117,6 @@ namespace XBMCAddon
      *   - response = xbmc.executeJSONRPC('{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Introspect\", \"id\": 1 }')
      */
     String executeJSONRPC(const char* jsonrpccommand);
-#endif
 
     /**
      * sleep(time) -- Sleeps for 'time' msec.
