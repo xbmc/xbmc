@@ -5761,21 +5761,4 @@
       <Filter>interfaces\swig</Filter>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmc.xml">
-      <Filter>interfaces\python\generated</Filter>
-    </None>
-    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcaddon.xml">
-      <Filter>interfaces\python\generated</Filter>
-    </None>
-    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcgui.xml">
-      <Filter>interfaces\python\generated</Filter>
-    </None>
-    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcplugin.xml">
-      <Filter>interfaces\python\generated</Filter>
-    </None>
-    <None Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmcvfs.xml">
-      <Filter>interfaces\python\generated</Filter>
-    </None>
-  </ItemGroup>
 </Project>
