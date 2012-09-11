@@ -132,6 +132,7 @@ void CDVDAudioCodecFFmpeg::Dispose()
 
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
+  m_dllSwResample.Unload();
 
   m_iBufferSize1 = 0;
   m_iBufferSize2 = 0;
