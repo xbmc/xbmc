@@ -836,6 +836,8 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       }
       else
       {
+        CSingleLock lock(m_critSection);
+        
         PVR_CLIENT addon;
         if (!GetClient(iClientId, addon))
         {
