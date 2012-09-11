@@ -24,6 +24,7 @@
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
 #include "DllAvUtil.h"
+#include "DllSwResample.h"
 
 #include "DVDStreamInfo.h"
 #include "linux/PlatformDefs.h"
@@ -50,7 +51,7 @@ public:
 
 protected:
   AVCodecContext* m_pCodecContext;
-  AVAudioConvert* m_pConvert;;
+  SwrContext*     m_pConvert;
   enum AVSampleFormat m_iSampleFormat;
   CAEChannelInfo      m_channelLayout;
 
@@ -71,6 +72,7 @@ protected:
 
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
+  DllSwResample m_dllSwResample;
 
   void BuildChannelMap();
 };
