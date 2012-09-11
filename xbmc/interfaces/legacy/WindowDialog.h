@@ -41,6 +41,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool OnAction(const CAction &action);
       SWIGHIDDENVIRTUAL void OnDeinitWindow(int nextWindowID);
 
+      SWIGHIDDENVIRTUAL bool IsDialogRunning() const { return WindowDialogMixin::IsDialogRunning(); }
       SWIGHIDDENVIRTUAL bool IsModalDialog() const { TRACE; return true; };
       SWIGHIDDENVIRTUAL bool IsDialog() const { TRACE; return true; };
 #endif

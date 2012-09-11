@@ -65,6 +65,9 @@ namespace XBMCAddon
       { TRACE; if(up()) CGUIMediaWindow::FreeResources(forceUnLoad); else checkedv(FreeResources(forceUnLoad)); }
       virtual bool OnClick(int iItem) { TRACE; return up() ? CGUIMediaWindow::OnClick(iItem) : checkedb(OnClick(iItem)); }
 
+      virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+      { TRACE; if(up()) CGUIMediaWindow::Process(currentTime,dirtyregions); else checkedv(Process(currentTime,dirtyregions)); }
+
       // this is a hack to SKIP the CGUIMediaWindow
       virtual bool OnAction(const CAction &action) 
       { TRACE; return up() ? CGUIWindow::OnAction(action) : checkedb(OnAction(action)); }
@@ -79,6 +82,7 @@ namespace XBMCAddon
       { TRACE; if (up()) CGUIMediaWindow::GetContextButtons(itemNumber,buttons); else xwin->GetContextButtons(itemNumber,buttons); }
       virtual bool Update(const CStdString &strPath)
       { TRACE; return up() ? CGUIMediaWindow::Update(strPath) : xwin->Update(strPath); }
+      virtual void SetupShares() { TRACE; if(up()) CGUIMediaWindow::SetupShares(); else checkedv(SetupShares()); }
 
       friend class WindowXML;
       friend class WindowXMLDialog;
@@ -515,15 +519,16 @@ namespace XBMCAddon
       g_localizeStrings.ClearBlock(m_scriptPath);
     }
 
+    void WindowXML::SetupShares()
+    {
+      TRACE;
+      A(UpdateButtons());
+    }
+
     bool WindowXML::Update(const String &strPath)
     {
       TRACE;
       return true;
-    }
-
-    bool WindowXML::IsDialogRunning() const
-    { 
-      return window->isActive();
     }
 
     WindowXMLDialog::WindowXMLDialog(const String& xmlFilename, const String& scriptPath,
@@ -557,7 +562,7 @@ namespace XBMCAddon
       case HACK_CUSTOM_ACTION_OPENING:
         {
           // This is from the CGUIPythonWindowXMLDialog::Show_Internal
-          g_windowManager.RouteToWindow(ref(window).get());
+          g_windowManager.RouteToWindow(window->get());
           // active this dialog...
           CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
           OnMessage(msg);

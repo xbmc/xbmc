@@ -44,6 +44,10 @@ namespace XBMCAddon
     public:
       SWIGHIDDENVIRTUAL void show();
       SWIGHIDDENVIRTUAL void close();
+
+#ifndef SWIG
+      SWIGHIDDENVIRTUAL bool IsDialogRunning() const;
+#endif
     };
   }
 }

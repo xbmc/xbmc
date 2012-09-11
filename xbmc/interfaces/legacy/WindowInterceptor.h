@@ -89,10 +89,10 @@ namespace XBMCAddon
     {
       InterceptorBase* w;
     public:
-      ref(InterceptorBase* b) : w(b) { w->upcallTls.set(this); }
-      ~ref() { w->upcallTls.set(NULL); }
-      CGUIWindow* operator->() { return w->get(); }
-      CGUIWindow* get() { return w->get(); }
+      inline ref(InterceptorBase* b) : w(b) { w->upcallTls.set(this); }
+      inline ~ref() { w->upcallTls.set(NULL); }
+      inline CGUIWindow* operator->() { return w->get(); }
+      inline CGUIWindow* get() { return w->get(); }
     };
 
     /**
@@ -158,6 +158,7 @@ namespace XBMCAddon
 
       virtual bool    IsModalDialog() const { TRACE; return checkedb(IsModalDialog()); };
 
+      virtual bool    IsDialogRunning() const { TRACE; return checkedb(IsDialogRunning()); };
       virtual bool    IsDialog() const { TRACE; return checkedb(IsDialog()); };
       virtual bool    IsMediaWindow() const { return checkedb(IsMediaWindow());; };
 

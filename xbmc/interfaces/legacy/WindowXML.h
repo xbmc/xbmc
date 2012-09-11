@@ -85,11 +85,10 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool      OnAction(const CAction &action);
       SWIGHIDDENVIRTUAL void      AllocResources(bool forceLoad = false);
       SWIGHIDDENVIRTUAL void      FreeResources(bool forceUnLoad = false);
-                        void      Process(unsigned int currentTime, CDirtyRegionList &regions);
       SWIGHIDDENVIRTUAL bool      OnClick(int iItem);
+      SWIGHIDDENVIRTUAL void      Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
       SWIGHIDDENVIRTUAL bool IsMediaWindow() const { TRACE; return true; };
-      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const;
 
     protected:
       // CGUIWindow
@@ -101,8 +100,7 @@ namespace XBMCAddon
 
       unsigned int     LoadScriptStrings();
       void             ClearScriptStrings();
-// see bug #10575.
-//      void             SetupShares();
+      void             SetupShares();
       String       m_scriptPath;
       String       m_mediaDir;
 
@@ -136,6 +134,7 @@ namespace XBMCAddon
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool    OnMessage(CGUIMessage &message);
+      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { return WindowDialogMixin::IsDialogRunning(); }
       SWIGHIDDENVIRTUAL bool    IsDialog() const { TRACE; return true;};
       SWIGHIDDENVIRTUAL bool    IsModalDialog() const { TRACE; return true; };
       SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { TRACE; return false; };

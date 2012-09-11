@@ -50,6 +50,9 @@ namespace XBMCAddon
       CApplicationMessenger::Get().SendMessage(tMsg, true);
 
     }
+
+    bool WindowDialogMixin::IsDialogRunning() const { return w->window->isActive(); }
+
   }
 }
 
