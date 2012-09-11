@@ -60,7 +60,7 @@ Helper.setup(classes,
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.outtm'),
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm')
-    ], '${result} = makePythonInstance(${api},&Py${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,"${type}");',
+    ], '${result} = makePythonInstance(${api},&Py${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,"${type}",true);',
     /**
      * This is meant to contain mini-templates for converting the parameter types
      * of the native call to be converted from the python types provided by the caller.
@@ -115,7 +115,7 @@ void doMethod(method, MethodType methodType)
                    (constructor ? "PyTypeObject" : 'PyHolder')) %>* ${constructor ? 'pytype' : 'self'} <% 
                    if (methodType != MethodType.destructor) { %> , PyObject *args, PyObject *kwds <%} %> )
   {
-    CLog::Log(LOGDEBUG, "NEWADDON Entering the Python method \\"${PythonTools.getPyMethodName(method,methodType)}\\"");
+    TRACE;
 <%  if (numParams > 0)
     { 
       if (useKeywordParsing)
@@ -141,7 +141,6 @@ void doMethod(method, MethodType methodType)
          &${PythonTools.parameterCanBeUsedDirectly(param) ? '' : 'py'}${param.@name}${i < params.size() - 1 ? "," : ""}<% } %>
        ))
     {
-      CLog::Log(LOGDEBUG, "NEWADDON Leaving Python method \\"${PythonTools.getPyMethodName(method,methodType)}\\" ... returning NULL");
       return NULL;
     }
 
@@ -197,7 +196,6 @@ void doMethod(method, MethodType methodType)
     }
     catch (const XbmcCommons::Exception& e)
     { 
-      CLog::Log(LOGERROR,"Leaving Python method \\"${PythonTools.getPyMethodName(method,methodType)}\\". Exception from call to \"${Helper.callingName(method)}\" \"%s\" ... returning NULL", e.GetMessage());
       PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); <%
       if (!destructor) {  %>
       return NULL; <%
@@ -205,7 +203,6 @@ void doMethod(method, MethodType methodType)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR,"Unknown exception thrown from the call \"${Helper.callingName(method)}\"");
       PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${Helper.callingName(method)}\""); <%
       if (!destructor) {  %>
       return NULL; <%
@@ -218,7 +215,7 @@ void doMethod(method, MethodType methodType)
     // transform the result
 <%
     if (constructor) {
-%>    result = makePythonInstance(apiResult,pytype,"${returns}");<%
+      %>    result = makePythonInstance(apiResult,pytype,"${returns}",false);<%
     }
     else { 
 %>    ${Helper.getOutConversion(returns,'result',method)}<%

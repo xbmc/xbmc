@@ -96,6 +96,9 @@ namespace XBMCAddon
       m_isDeallocating = true;
     }
 
+    // no copying
+    inline AddonClass(const AddonClass& other) {}
+
   public:
     AddonClass(const char* classname);
     virtual ~AddonClass();

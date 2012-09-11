@@ -24,7 +24,7 @@
  */
 #pragma once
 
-%feature("python:method:addItem") ControlList
+%feature("python:method:addItem") Control
 {
   TRACE;
 
@@ -46,8 +46,14 @@
   const char* callName = "addItem";
   try
   {
-    XBMCAddon::xbmcgui::ControlList* apiobj = ((XBMCAddon::xbmcgui::ControlList*)retrieveApiInstance((PyObject*)self,
-                                           &PyXBMCAddon_xbmcgui_ControlList_Type,"addItem","XBMCAddon::xbmcgui::Control"));
+    XBMCAddon::xbmcgui::Control* tmp = ((XBMCAddon::xbmcgui::Control*)retrieveApiInstance((PyObject*)self,
+                                        &PyXBMCAddon_xbmcgui_Control_Type,"addItem","XBMCAddon::xbmcgui::Control"));
+
+    XBMCAddon::xbmcgui::ControlList* apiobj = dynamic_cast<XBMCAddon::xbmcgui::ControlList*>(tmp);
+
+    if (apiobj == NULL)
+      throw WrongTypeException("Incorrect type passed to '%s', was expecting a '%s'.",callName,"XBMCAddon::xbmcgui::Control");
+
 
     if (PyUnicode_Check(pyitem) || PyString_Check(pyitem))
     {
@@ -86,7 +92,7 @@
   return result; 
 } 
 
-%feature("python:method:addItems") ControlList
+%feature("python:method:addItems") Control
 {
   TRACE;
 
@@ -108,8 +114,13 @@
   const char* callName = "addItems";
   try
   {
-    XBMCAddon::xbmcgui::ControlList* apiobj = ((XBMCAddon::xbmcgui::ControlList*)retrieveApiInstance((PyObject*)self,
-                                           &PyXBMCAddon_xbmcgui_ControlList_Type,"addItem","XBMCAddon::xbmcgui::Control"));
+    XBMCAddon::xbmcgui::Control* tmp = ((XBMCAddon::xbmcgui::Control*)retrieveApiInstance((PyObject*)self,
+                                        &PyXBMCAddon_xbmcgui_Control_Type,"addItem","XBMCAddon::xbmcgui::Control"));
+
+    XBMCAddon::xbmcgui::ControlList* apiobj = dynamic_cast<XBMCAddon::xbmcgui::ControlList*>(tmp);
+
+    if (apiobj == NULL)
+      throw WrongTypeException("Incorrect type passed to '%s', was expecting a '%s'.",callName,"XBMCAddon::xbmcgui::Control");
 
     CGUIListItemPtr items(new CFileItemList());
     int listSize = PyList_Size(pyitems);
