@@ -23,6 +23,7 @@
 
 #include "filesystem/File.h"
 #include "AddonString.h"
+#include "AddonClass.h"
 #include "LanguageHook.h"
 
 namespace XBMCAddon
@@ -38,11 +39,11 @@ namespace XBMCAddon
      * example:
      *  f = xbmcvfs.File(file, ['w'])
      */
-    class File
+    class File : public AddonClass
     {
       XFILE::CFile* file;
     public:
-      inline File(const String& filepath, const char* mode = NULL) : file(new XFILE::CFile())
+      inline File(const String& filepath, const char* mode = NULL) : AddonClass("File"), file(new XFILE::CFile())
       {
         DelayedCallGuard dg;
         if (mode && strncmp(mode, "w", 1) == 0)

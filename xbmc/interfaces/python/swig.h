@@ -25,6 +25,7 @@
 
 #include "utils/StdString.h"
 #include "interfaces/legacy/Exception.h"
+#include "interfaces/legacy/AddonClass.h"
 #include "threads/ThreadLocal.h"
 
 namespace PythonBindings
@@ -82,6 +83,10 @@ namespace PythonBindings
                                methodNameForErrorString,swigType,((PyHolder*)pythonType)->swigType);
     return ((PyHolder*)pythonType)->pSelf;
   }
+
+  inline void prepareForReturn(XBMCAddon::AddonClass* c) { if(c) c->Acquire(); }
+
+  inline void cleanForDealloc(XBMCAddon::AddonClass* c) { if(c) c->Release(); }
 
   /**
    * This method allows for conversion of the native api Type to the Python type

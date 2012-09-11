@@ -177,19 +177,12 @@ void doMethod(method, MethodType methodType)
     if (isDirectorCall){ %>${clazz}::<% }
     %>${Helper.callingName(method)}( <% params.eachWithIndex { param, i -> %> ${param.@name}${i < params.size() - 1 ? "," : ""} <% } %> );
 <%
-      if (constructor && classnode.@feature_ref != null) {  %>      ${new SimpleTemplateEngine().createTemplate(classnode.@feature_ref).make(['ths' : 'apiResult']).toString()} <% }
+      if (constructor) {  %>      prepareForReturn(apiResult);<% }
     } // close the 'if method is not a destructor'
     else {  // it is a destructor
 %>
       ${clazz}* theObj = (${clazz}*)retrieveApiInstance((PyObject*)self,&Py${classNameAsVariable}_Type,"~${Helper.callingName(method)}","${clazz}");
-      if (theObj != NULL)
-      { <%
-        if (classnode != null && classnode && classnode.@feature_unref != null) 
-        {  %>
-          ${new SimpleTemplateEngine().createTemplate(classnode.@feature_unref).make(['ths' : 'theObj']).toString()}<%
-        }
-%>
-      }
+      cleanForDealloc(theObj);
 <%
     }
 %>
