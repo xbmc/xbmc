@@ -519,7 +519,8 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldTrackNumber] = m_iTrack;
   sortable[FieldTag] = m_tags;
 
-  sortable[FieldTime] = m_streamDetails.GetVideoDuration();
+  if (m_streamDetails.HasItems() && m_streamDetails.GetVideoDuration() > 0)
+    sortable[FieldTime] = m_streamDetails.GetVideoDuration();
   sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight();
   sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect();
   sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec();
