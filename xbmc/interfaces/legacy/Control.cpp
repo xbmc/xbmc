@@ -1181,12 +1181,12 @@ namespace XBMCAddon
       return pGUIControl;
     }
 
-    void ControlList::addItemStream(const String& fileOrUrl) throw(UnimplementedException,WindowException)
+    void ControlList::addItemStream(const String& fileOrUrl, bool sendMessage) throw(UnimplementedException,WindowException)
     {
-      addListItem(ListItem::fromString(fileOrUrl));
+      addListItem(ListItem::fromString(fileOrUrl),sendMessage);
     }
 
-    void ControlList::addListItem(const XBMCAddon::xbmcgui::ListItem* pListItem) throw(UnimplementedException,WindowException)
+    void ControlList::addListItem(const XBMCAddon::xbmcgui::ListItem* pListItem, bool sendMessage) throw(UnimplementedException,WindowException)
     {
       if (pListItem == NULL)
         throw WindowException("NULL ListItem passed to ControlList::addListItem");
@@ -1194,9 +1194,16 @@ namespace XBMCAddon
       // add item to objects vector
       vecItems.push_back(pListItem);
 
+      // send all of the items ... this is what it did before.
+      if (sendMessage)
+        sendLabelBind(vecItems.size());
+    }
+
+    void ControlList::sendLabelBind(int tail)
+    {
       // construct a CFileItemList to pass 'em on to the list
       CGUIListItemPtr items(new CFileItemList());
-      for (unsigned int i = 0; i < vecItems.size(); i++)
+      for (unsigned int i = vecItems.size() - tail; i < vecItems.size(); i++)
         ((CFileItemList*)items.get())->Add(vecItems[i]->item);
 
       CGUIMessage msg(GUI_MSG_LABEL_BIND, iParentId, iControlId, 0, 0, items);

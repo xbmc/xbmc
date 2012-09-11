@@ -134,8 +134,8 @@ namespace XBMCAddon
 
       // These need to be here for the stubbed out addItem
       //   and addItems methods
-      virtual void addItemStream(const String& fileOrUrl) DECL_UNIMP2("Control",WindowException);
-      virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem) DECL_UNIMP2("Control",WindowException);
+      virtual void addItemStream(const String& fileOrUrl, bool sendMessage = true) DECL_UNIMP2("Control",WindowException);
+      virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) DECL_UNIMP2("Control",WindowException);
 
       /**
        * getId() -- Returns the control's current id as an integer.
@@ -635,8 +635,8 @@ namespace XBMCAddon
        * example:
        *   - cList.addItem('Reboot XBMC')
        */
-      virtual void addItemStream(const String& fileOrUrl) throw(UnimplementedException,WindowException);
-      virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem) throw(UnimplementedException,WindowException);
+      virtual void addItemStream(const String& fileOrUrl, bool sendMessage = true) throw(UnimplementedException,WindowException);
+      virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) throw(UnimplementedException,WindowException);
 
       /**
        * selectItem(item) -- Select an item by index number.
@@ -790,6 +790,8 @@ namespace XBMCAddon
       virtual void setStaticContent(const ListItemList* items) throw (UnimplementedException);
 
 #ifndef SWIG
+      void sendLabelBind(int tail);
+
       SWIGHIDDENVIRTUAL bool canAcceptMessages(int actionId) 
       { return ((actionId == ACTION_SELECT_ITEM) | (actionId == ACTION_MOUSE_LEFT_CLICK)); }
 
