@@ -122,7 +122,8 @@ int64_t CPVRFile::GetPosition()
 
 int CPVRFile::GetTotalTime()
 {
-  return g_PVRManager.GetTotalTime();
+  // for recordings leave this to demuxer
+  return m_isPlayRecording ? 0 : g_PVRManager.GetTotalTime();
 }
 
 int CPVRFile::GetStartTime()
