@@ -56,9 +56,9 @@ namespace XFILE
     } NODE_TYPE;
 
     typedef struct {
-      NODE_TYPE node;
-      int       id;
-      int       label;
+      NODE_TYPE   node;
+      std::string id;
+      int         label;
     } Node;
 
     class CDirectoryNode

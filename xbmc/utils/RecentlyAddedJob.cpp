@@ -217,7 +217,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   musicdatabase.Open();
   
-  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://4/", musicItems, NUM_ITEMS))
+  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", musicItems, NUM_ITEMS))
   {
     long idAlbum = -1;
     CStdString strAlbumThumb;
@@ -289,7 +289,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       value.Format("%i", i + 1);
       strThumb = musicdatabase.GetArtForItem(album.idAlbum, "album", "thumb");
       strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, "album", "fanart");
-      strDBpath.Format("musicdb://3/%i/", album.idAlbum);
+      strDBpath.Format("musicdb://albums/%i/", album.idAlbum);
       strSQLAlbum.Format("idAlbum=%i", album.idAlbum);
       
       CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);

@@ -45,7 +45,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  musicUrl.FromString("musicdb://2/");
+  musicUrl.FromString("musicdb://artists/");
   int genreID = -1, albumID = -1, songID = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
@@ -98,7 +98,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransp
   int artistID = (int)parameterObject["artistid"].asInteger();
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://2/"))
+  if (!musicUrl.FromString("musicdb://artists/"))
     return InternalError;
 
   CMusicDatabase musicdatabase;
@@ -129,7 +129,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  musicUrl.FromString("musicdb://3/");
+  musicUrl.FromString("musicdb://albums/");
   int artistID = -1, genreID = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("artistid"))
@@ -207,7 +207,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  musicUrl.FromString("musicdb://4/");
+  musicUrl.FromString("musicdb://songs/");
   int genreID = -1, albumID = -1, artistID = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("artistid"))
@@ -288,7 +288,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, I
   for (unsigned int index = 0; index < albums.size(); index++)
   {
     CStdString path;
-    path.Format("musicdb://6/%i/", albums[index].idAlbum);
+    path.Format("musicdb://recentlyaddedalbums/%i/", albums[index].idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(albums[index], path, item);
@@ -339,7 +339,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const CStdString &method, 
   for (unsigned int index = 0; index < albums.size(); index++)
   {
     CStdString path;
-    path.Format("musicdb://7/%i/", albums[index].idAlbum);
+    path.Format("musicdb://recentlyplayedalbums/%i/", albums[index].idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(albums[index], path, item);
@@ -379,7 +379,7 @@ JSONRPC_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLaye
     return InternalError;
 
   CFileItemList items;
-  if (!musicdatabase.GetGenresNav("musicdb://1/", items))
+  if (!musicdatabase.GetGenresNav("musicdb://genres/", items))
     return InternalError;
 
   /* need to set strTitle in each item*/
@@ -620,7 +620,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   }
 
   if (artistID != -1 || albumID != -1 || genreID != -1)
-    success |= musicdatabase.GetSongsNav("musicdb://4/", list, genreID, artistID, albumID);
+    success |= musicdatabase.GetSongsNav("musicdb://songs/", list, genreID, artistID, albumID);
 
   int songID = (int)parameterObject["songid"].asInteger(-1);
   if (songID != -1)
