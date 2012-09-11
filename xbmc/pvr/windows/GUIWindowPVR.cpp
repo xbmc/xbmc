@@ -48,6 +48,7 @@ CGUIWindowPVR::CGUIWindowPVR(void) :
   m_windowSearch(NULL),
   m_windowTimers(NULL)
 {
+  m_loadType = LOAD_EVERY_TIME;
 }
 
 CGUIWindowPVR::~CGUIWindowPVR(void)
