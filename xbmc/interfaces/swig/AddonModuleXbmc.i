@@ -48,8 +48,6 @@ using namespace xbmc;
 %include "interfaces/legacy/ModuleXbmc.h"
 
 %feature("director") Player;
-%feature("ref") Player "${ths}->Acquire();"
-%feature("unref") Player "${ths}->Release();"
 
 %feature("python:method:play") Player
 {
@@ -139,8 +137,6 @@ using namespace xbmc;
 %include "interfaces/legacy/PlayList.h"
 
 %feature("director") Monitor;
-%feature("ref") Monitor "${ths}->Acquire();"
-%feature("unref") Monitor "${ths}->Release();"
 
 %include "interfaces/legacy/Monitor.h"
 

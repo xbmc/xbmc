@@ -47,9 +47,6 @@ using namespace xbmcgui;
 
 %include "interfaces/legacy/ModuleXbmcgui.h"
 
-%feature("ref") ListItem "${ths}->Acquire();"
-%feature("unref") ListItem "${ths}->Release();"
-
 %include "interfaces/legacy/Exception.h"
 
 %include "interfaces/legacy/ListItem.h"
@@ -68,8 +65,6 @@ using namespace xbmcgui;
 %feature("python:nokwds") XBMCAddon::xbmcgui::WindowDialog::WindowDialog "true"
 
 %feature("director") Window;
-%feature("ref") Window "${ths}->Acquire();"
-%feature("unref") Window "${ths}->Release();"
 %feature("director") WindowDialog;
 %feature("director") WindowXML;
 %feature("director") WindowXMLDialog;

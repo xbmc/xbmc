@@ -39,9 +39,6 @@ using namespace xbmcaddon;
 
 %include "interfaces/legacy/swighelper.h"
 
-%feature("ref") Addon "${ths}->Acquire();"
-%feature("unref") Addon "${ths}->Release();"
-
 %feature("python:coerceToUnicode") XBMCAddon::xbmcaddon::Addon::getLocalizedString "true"
 %include "interfaces/legacy/Addon.h"
 
