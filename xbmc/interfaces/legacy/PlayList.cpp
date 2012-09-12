@@ -92,7 +92,7 @@ namespace XBMCAddon
             return false;
 
           // clear current playlist
-          g_playlistPlayer.ClearPlaylist(iPlayList);
+          g_playlistPlayer.ClearPlaylist(this->iPlayList);
 
           // add each item of the playlist to the playlistplayer
           for (int i=0; i < (int)pPlayList->size(); ++i)
@@ -101,7 +101,7 @@ namespace XBMCAddon
             if (playListItem->GetLabel().IsEmpty())
               playListItem->SetLabel(URIUtils::GetFileName(playListItem->GetPath()));
 
-            pPlayList->Add(playListItem);
+            this->pPlayList->Add(playListItem);
           }
         }
       }
