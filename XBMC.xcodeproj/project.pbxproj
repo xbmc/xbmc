@@ -132,7 +132,6 @@
 		18B7C7FB1294222E009E7A26 /* VisibleEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A61294222E009E7A26 /* VisibleEffect.cpp */; };
 		18B7C7FC1294222E009E7A26 /* XBTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A71294222E009E7A26 /* XBTF.cpp */; };
 		18B7C7FD1294222E009E7A26 /* XBTFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A81294222E009E7A26 /* XBTFReader.cpp */; };
-		18B7C88E129423A7009E7A26 /* Id3Tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C859129423A7009E7A26 /* Id3Tag.cpp */; };
 		18B7C890129423A7009E7A26 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C85E129423A7009E7A26 /* MusicInfoTag.cpp */; };
 		18B7C893129423A7009E7A26 /* MusicInfoTagLoaderASAP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C864129423A7009E7A26 /* MusicInfoTagLoaderASAP.cpp */; };
 		18B7C894129423A7009E7A26 /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C866129423A7009E7A26 /* MusicInfoTagLoaderCDDA.cpp */; };
@@ -1258,9 +1257,6 @@
 		18B7C7A61294222E009E7A26 /* VisibleEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VisibleEffect.cpp; sourceTree = "<group>"; };
 		18B7C7A71294222E009E7A26 /* XBTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBTF.cpp; sourceTree = "<group>"; };
 		18B7C7A81294222E009E7A26 /* XBTFReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBTFReader.cpp; sourceTree = "<group>"; };
-		18B7C859129423A7009E7A26 /* Id3Tag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Id3Tag.cpp; sourceTree = "<group>"; };
-		18B7C85A129423A7009E7A26 /* Id3Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Id3Tag.h; sourceTree = "<group>"; };
-		18B7C85B129423A7009E7A26 /* id3v1genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = id3v1genre.h; sourceTree = "<group>"; };
 		18B7C85C129423A7009E7A26 /* ImusicInfoTagLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImusicInfoTagLoader.h; sourceTree = "<group>"; };
 		18B7C85E129423A7009E7A26 /* MusicInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTag.cpp; sourceTree = "<group>"; };
 		18B7C85F129423A7009E7A26 /* MusicInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTag.h; sourceTree = "<group>"; };
@@ -1385,7 +1381,6 @@
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		430C881312D64A730098821A /* IPowerSyscall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPowerSyscall.h; sourceTree = "<group>"; };
 		431376FF12D6455C00680C15 /* GUIDialogCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogCache.h; sourceTree = "<group>"; };
-		4313777F12D648E900680C15 /* DllLibid3tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibid3tag.h; sourceTree = "<group>"; };
 		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
 		431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererUtil.h; sourceTree = "<group>"; };
 		432D7CE212D86D8B00CE4C49 /* NetworkLinux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkLinux.h; sourceTree = "<group>"; };
@@ -3601,10 +3596,6 @@
 		18B7C854129423A7009E7A26 /* tags */ = {
 			isa = PBXGroup;
 			children = (
-				4313777F12D648E900680C15 /* DllLibid3tag.h */,
-				18B7C859129423A7009E7A26 /* Id3Tag.cpp */,
-				18B7C85A129423A7009E7A26 /* Id3Tag.h */,
-				18B7C85B129423A7009E7A26 /* id3v1genre.h */,
 				18B7C85C129423A7009E7A26 /* ImusicInfoTagLoader.h */,
 				18B7C85E129423A7009E7A26 /* MusicInfoTag.cpp */,
 				18B7C85F129423A7009E7A26 /* MusicInfoTag.h */,
@@ -7395,7 +7386,6 @@
 				18B7C7FB1294222E009E7A26 /* VisibleEffect.cpp in Sources */,
 				18B7C7FC1294222E009E7A26 /* XBTF.cpp in Sources */,
 				18B7C7FD1294222E009E7A26 /* XBTFReader.cpp in Sources */,
-				18B7C88E129423A7009E7A26 /* Id3Tag.cpp in Sources */,
 				18B7C890129423A7009E7A26 /* MusicInfoTag.cpp in Sources */,
 				18B7C893129423A7009E7A26 /* MusicInfoTagLoaderASAP.cpp in Sources */,
 				18B7C894129423A7009E7A26 /* MusicInfoTagLoaderCDDA.cpp in Sources */,

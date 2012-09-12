@@ -19,7 +19,6 @@
  */
 
 #include "EncoderLame.h"
-#include "music/tags/Id3Tag.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 
