@@ -31,7 +31,7 @@ $(LIBDYLIB): $(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/build install
 	rm -f $(PREFIX)/lib/libtag_c.* $(PREFIX)/lib/libtag.so $(PREFIX)/lib/libtag.so.1
-	mv -f $(PREFIX)/lib/libtag.so.1.11.0 $(PREFIX)/lib/libxbtag.so
+	mv -f $(PREFIX)/lib/libtag.so.1.12.0 $(PREFIX)/lib/libxbtag.so
 	ln -sf $(PREFIX)/lib/libxbtag.so $(PREFIX)/lib/libtag.so
 	$(RPL) -e "libtag.so.1" "libxbtag.so" $(PREFIX)/lib/libxbtag.so
 	-$(READELF) --dynamic $(PREFIX)/lib/libxbtag.so | grep ibrary
