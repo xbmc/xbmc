@@ -339,6 +339,12 @@ float CCPUInfo::getCPUFrequency()
     return float(dwMHz);
   else
     return 0.f;
+#elif defined(TARGET_FREEBSD)
+  int hz = 0;
+  size_t len = sizeof(hz);
+  if (sysctlbyname("dev.cpu.0.freq", &hz, &len, NULL, 0) != 0)
+    hz = 0;
+  return (float)hz;
 #else
   float mhz = 0.f;
   char buf[256],
