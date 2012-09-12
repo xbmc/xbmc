@@ -27,12 +27,12 @@ namespace XBMCAddon
   {
   }
 
-  void AddonCallback::handleCallback(Callback* callback)
+  void AddonCallback::invokeCallback(Callback* callback)
   {
     if (callback)
     {
       if (hasHandler())
-        handler->handleCallback(callback);
+        handler->invokeCallback(callback);
       else
         callback->executeCallback();
     }

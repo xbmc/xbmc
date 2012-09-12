@@ -37,7 +37,7 @@ namespace XBMCAddon
     inline CallbackHandler(const char* classname):AddonClass(classname) {}
 
   public:
-    virtual void handleCallback(Callback* cb) = 0;
+    virtual void invokeCallback(Callback* cb) = 0;
   };
 
   /**
@@ -60,7 +60,7 @@ namespace XBMCAddon
 
     virtual ~RetardedAsynchCallbackHandler();
 
-    virtual void handleCallback(Callback* cb);
+    virtual void invokeCallback(Callback* cb);
     static void makePendingCalls();
     static void clearPendingCalls(void* userData);
 

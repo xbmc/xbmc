@@ -45,7 +45,7 @@ namespace XBMCAddon
   static CCriticalSection critSection;
   static CallbackQueue g_callQueue;
 
-  void RetardedAsynchCallbackHandler::handleCallback(Callback* cb)
+  void RetardedAsynchCallbackHandler::invokeCallback(Callback* cb)
   {
     TRACE;
     CSingleLock lock(critSection);

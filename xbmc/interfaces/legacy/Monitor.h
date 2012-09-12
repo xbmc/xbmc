@@ -40,11 +40,11 @@ namespace XBMCAddon
       Monitor();
 
 #ifndef SWIG
-      inline void    OnSettingsChanged() { TRACE; handleCallback(new CallbackFunction<Monitor>(this,&Monitor::onSettingsChanged)); }
-      inline void    OnScreensaverActivated() { TRACE; handleCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverActivated)); }
-      inline void    OnScreensaverDeactivated() { TRACE; handleCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverDeactivated)); }
-      inline void    OnDatabaseUpdated(const String &database) { TRACE; handleCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,database)); }
-      inline void    OnAbortRequested() { TRACE; handleCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
+      inline void    OnSettingsChanged() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onSettingsChanged)); }
+      inline void    OnScreensaverActivated() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverActivated)); }
+      inline void    OnScreensaverDeactivated() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverDeactivated)); }
+      inline void    OnDatabaseUpdated(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,database)); }
+      inline void    OnAbortRequested() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
 #endif
 
       /**

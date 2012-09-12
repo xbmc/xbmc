@@ -50,6 +50,6 @@ namespace XBMCAddon
     virtual ~AddonCallback();
 
     void setHandler(CallbackHandler* _handler) { handler = _handler; }
-    void handleCallback(Callback* callback);
+    void invokeCallback(Callback* callback);
   };
 }
