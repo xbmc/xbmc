@@ -154,6 +154,27 @@ CCPUInfo::CCPUInfo(void)
   CoreInfo core;
   m_cores[0] = core;
 
+#elif defined(TARGET_FREEBSD)
+  size_t len;
+  int i;
+  char cpumodel[512];
+
+  len = sizeof(m_cpuCount);
+  if (sysctlbyname("hw.ncpu", &m_cpuCount, &len, NULL, 0) != 0)
+    m_cpuCount = 1;
+
+  len = sizeof(cpumodel);
+  if (sysctlbyname("hw.model", &cpumodel, &len, NULL, 0) != 0)
+    (void)strncpy(cpumodel, "Unknown", 8);
+  m_cpuModel = cpumodel;
+
+  for (i = 0; i < m_cpuCount; i++)
+  {
+    CoreInfo core;
+    core.m_id = i;
+    core.m_strModel = m_cpuModel;
+    m_cores[core.m_id] = core;
+  }
 #else
   m_fProcStat = fopen("/proc/stat", "r");
   m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
