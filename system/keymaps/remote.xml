@@ -159,7 +159,6 @@
       <star>NextSubtitle</star>
       <language>AudioNextLanguage</language>
       <playlist>Playlist</playlist>
-      <language>Language</language>
       <hash>AudioNextLanguage</hash>
       <pageplus>SkipNext</pageplus>
       <pageminus>SkipPrevious</pageminus>
