@@ -1105,7 +1105,7 @@ initialize:
       else
         format.m_dataFormat = AE_FMT_S24NE4;
     }
-    else if (wfxex.Format.wBitsPerSample = 24)
+    else if (wfxex.Format.wBitsPerSample == 24)
       format.m_dataFormat = AE_FMT_S24NE3;
     else
       format.m_dataFormat = AE_FMT_S16NE;
