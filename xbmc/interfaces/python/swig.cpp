@@ -24,12 +24,13 @@
 
 namespace PythonBindings
 {
-  void PyXBMCInitializeTypeObject(PyTypeObject* type_object)
+  void PyXBMCInitializeTypeObject(PyTypeObject* type_object, TypeInfo* typeInfo)
   {
     static PyTypeObject py_type_object_header = { PyObject_HEAD_INIT(NULL) 0};
     int size = (long*)&(py_type_object_header.tp_name) - (long*)&py_type_object_header;
     memset(type_object, 0, sizeof(PyTypeObject));
     memcpy(type_object, &py_type_object_header, size);
+    memset(typeInfo, 0, sizeof(TypeInfo));
   }
 
   int PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,
@@ -173,5 +174,24 @@ namespace PythonBindings
 
     SetMessage("%s",msg.c_str());
   }
+
+  void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* swigType, 
+                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (WrongTypeException)
+  {
+    if (pythonType == NULL || pythonType->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
+      throw WrongTypeException("Non api type passed in place of the expected type \"%s.\"",swigType);
+    if (!isParameterRightType(typeInfo->swigType,swigType,methodNamespacePrefix))
+    {
+      // maybe it's a child class
+      if (typeInfo->parentType)
+        return doretrieveApiInstance(pythonType, typeInfo->parentType,swigType, 
+                                     methodNamespacePrefix, methodNameForErrorString);
+      else
+        throw WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
+                                 methodNameForErrorString,swigType,typeInfo->swigType);
+    }
+    return ((PyHolder*)pythonType)->pSelf;
+  }
+
 }
 

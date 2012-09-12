@@ -60,7 +60,7 @@ Helper.setup(classes,
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.outtm'),
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm')
-    ], '${result} = makePythonInstance(${api},&Py${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,"${type}",true);',
+    ], '${result} = makePythonInstance(${api},&Py${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,&Ty${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,true);',
     /**
      * This is meant to contain mini-templates for converting the parameter types
      * of the native call to be converted from the python types provided by the caller.
@@ -208,7 +208,7 @@ void doMethod(method, MethodType methodType)
     // transform the result
 <%
     if (constructor) {
-      %>    result = makePythonInstance(apiResult,pytype,"${returns}",false);<%
+      %>    result = makePythonInstance(apiResult,pytype,&Ty${SwigTypeParser.getRootType(returns).replaceAll('::','_')}_Type,false);<%
     }
     else { 
 %>    ${Helper.getOutConversion(returns,'result',method)}<%
@@ -235,8 +235,16 @@ void doClassTypeInfo(Node clazz, List classNameAsVariables = null)
   classNameAsVariables?.add(classNameAsVariable)
 %>
   //=========================================================================
-  // This variable will hold the Python Type information for ${fullClassName}
+  // These variables will hold the Python Type information for ${fullClassName}
   PyTypeObject Py${classNameAsVariable}_Type;
+  TypeInfo Ty${classNameAsVariable}_Type;<%
+
+    Node baseclass = PythonTools.findValidBaseClass(clazz, module)
+    if (baseclass)
+    {%>
+  TypeConverter<${Helper.findFullClassName(baseclass)},${fullClassName}> ${classNameAsVariable}_ParentConverter;<%
+    }
+%>
   //=========================================================================
 <%    
 }
@@ -282,34 +290,25 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
                  ${PythonTools.makeDocString(clazz.doc[0])}
                 );
 <%  } %>
-    PyXBMCInitializeTypeObject(&Py${classNameAsVariable}_Type);
+    PyXBMCInitializeTypeObject(&Py${classNameAsVariable}_Type,&Ty${classNameAsVariable}_Type);
 
     Py${classNameAsVariable}_Type.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
     Py${classNameAsVariable}_Type.tp_basicsize = sizeof(PyHolder);
     Py${classNameAsVariable}_Type.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc;
     Py${classNameAsVariable}_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
     Py${classNameAsVariable}_Type.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
-    Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods; <%
-    // I need to find the base type if there is a known class with it
-    assert clazz.baselist.size() < 2, "${clazz} has multiple baselists - need to write code to separate out the public one."
-    String baseclass = 'NULL'
-    List knownbases = []
-    if (clazz.baselist)
-    { 
-      if (clazz.baselist[0].base) clazz.baselist[0].base.each {
-          Node baseclassnode = Helper.findClassNodeByName(module,it.@name,clazz)
-          if (baseclassnode) knownbases.add(baseclassnode)
-          else if (!Helper.isKnownBaseType(it.@name,clazz))
-            System.out.println("WARNING: the base class ${it.@name} for ${fullClassName} is unrecognized within ${module.@name}.")
-        }
-    }
-    assert knownbases.size() < 2, 
-           "The class ${fullClassName} has too many known base classes. Multiple inheritance isn't supported in the code generator. Please \"#ifdef SWIG\" out all but one."
-    if (knownbases.size() > 0)
-      baseclass = "&Py${PythonTools.getClassNameAsVariable(knownbases[0])}_Type"
-%>
-    Py${classNameAsVariable}_Type.tp_base = ${baseclass};
+    Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods;
+<%
+    Node baseclass = PythonTools.findValidBaseClass(clazz, module)
+
+%>    Py${classNameAsVariable}_Type.tp_base = ${baseclass ? ('&Py' + PythonTools.getClassNameAsVariable(baseclass) + '_Type') : "NULL"};
     Py${classNameAsVariable}_Type.tp_new = <% Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
+
+    Ty${classNameAsVariable}_Type.swigType="p.${fullClassName}";<%
+  if (baseclass) { %>
+    Ty${classNameAsVariable}_Type.parentType=&Ty${PythonTools.getClassNameAsVariable(baseclass)}_Type;
+    Ty${classNameAsVariable}_Type.converter=&${classNameAsVariable}_ParentConverter;
+<%} %>  
   }
   //=========================================================================
 <%

@@ -30,23 +30,45 @@
 
 namespace PythonBindings
 {
-  void PyXBMCInitializeTypeObject(PyTypeObject* type_object);
   int PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
                              const char* pos = "unknown", 
                              const char* methodname = "unknown");
+
+  // This is for casting from child class to base class
+  struct TypeConverterBase
+  {
+    virtual void* convert(void* from) = 0;
+  };
+
+  /**
+   * Template to allow the instantiation of a particular type conversion
+   */
+  template<class T, class F> struct TypeConverter : public TypeConverterBase
+  {
+    inline virtual void* convert(void* from) { return static_cast<T*>((F*)from); }
+  };
+
+  struct TypeInfo
+  {
+    const char* swigType;
+    TypeInfo* parentType;
+    TypeConverterBase* converter;
+  };
 
   // This will hold the pointer to the api type, whether known or unknown
   struct PyHolder
   { 
     PyObject_HEAD
     int32_t magicNumber;
-    const char* swigType;
+    const TypeInfo* typeInfo;
     void* pSelf;
   };
 
   XBMCCOMMONS_STANDARD_EXCEPTION(WrongTypeException);
 
 #define XBMC_PYTHON_TYPE_MAGIC_NUMBER 0x58626D63
+
+  void PyXBMCInitializeTypeObject(PyTypeObject* type_object, TypeInfo* typeInfo);
 
   /**
    * This method retrieves the pointer from the PyHolder. The return value should
@@ -67,21 +89,19 @@ namespace PythonBindings
 
   bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix);
 
+  void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* swigType, 
+                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (WrongTypeException);
+
   /**
    * This method retrieves the pointer from the PyHolder. The return value should
    * be case to the appropriate type.
    *
    * Since the calls to this are generated there's no NULL pointer checks
    */
-  inline void* retrieveApiInstance(PyObject* pythonType, const char* swigType, const char* methodNamespacePrefix,
+  inline void* retrieveApiInstance(const PyObject* pythonType, const char* swigType, const char* methodNamespacePrefix,
                                    const char* methodNameForErrorString) throw (WrongTypeException)
   {
-    if (pythonType == NULL || ((PyHolder*)pythonType)->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
-      throw WrongTypeException("Non api type passed in place of the expected type \"%s.\"",swigType);
-    if (!isParameterRightType(((PyHolder*)pythonType)->swigType,swigType,methodNamespacePrefix))
-      throw WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
-                               methodNameForErrorString,swigType,((PyHolder*)pythonType)->swigType);
-    return ((PyHolder*)pythonType)->pSelf;
+    return doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, swigType, methodNamespacePrefix, methodNameForErrorString);
   }
 
   inline void prepareForReturn(XBMCAddon::AddonClass* c) { if(c) c->Acquire(); }
@@ -94,7 +114,7 @@ namespace PythonBindings
    * NOTE: swigTypeString must be in the data segment. That is, it should be an explicit string since
    * the const char* is stored in a PyHolder struct and never deleted.
    */
-  inline PyObject* makePythonInstance(void* api, PyTypeObject* typeObj, const char* swigTypeString, bool incrementRefCount)
+  inline PyObject* makePythonInstance(void* api, PyTypeObject* typeObj, TypeInfo* typeInfo, bool incrementRefCount)
   {
     // null api types result in Py_None
     if (!api)
@@ -106,7 +126,7 @@ namespace PythonBindings
     PyHolder* self = (PyHolder*)typeObj->tp_alloc(typeObj,0);
     if (!self) return NULL;
     self->magicNumber = XBMC_PYTHON_TYPE_MAGIC_NUMBER;
-    self->swigType = swigTypeString;
+    self->typeInfo = typeInfo;
     self->pSelf = api;
     if (incrementRefCount)
       Py_INCREF((PyObject*)self);

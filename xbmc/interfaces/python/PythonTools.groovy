@@ -116,4 +116,24 @@ public class PythonTools
 
     return ret
   }
+
+  public static Node findValidBaseClass(Node clazz, Node module, boolean warn = false)
+  {
+    // I need to find the base type if there is a known class with it
+    assert clazz.baselist.size() < 2, "${clazz} has multiple baselists - need to write code to separate out the public one."
+    String baseclass = 'NULL'
+    List knownbases = []
+    if (clazz.baselist)
+    { 
+      if (clazz.baselist[0].base) clazz.baselist[0].base.each {
+          Node baseclassnode = Helper.findClassNodeByName(module,it.@name,clazz)
+          if (baseclassnode) knownbases.add(baseclassnode)
+          else if (warn && !Helper.isKnownBaseType(it.@name,clazz))
+            System.out.println("WARNING: the base class ${it.@name} for ${Helper.findFullClassName(clazz)} is unrecognized within ${module.@name}.")
+        }
+    }
+    assert knownbases.size() < 2, 
+      "The class ${Helper.findFullClassName(clazz)} has too many known base classes. Multiple inheritance isn't supported in the code generator. Please \"#ifdef SWIG\" out all but one."
+    return knownbases.size() > 0 ? knownbases[0] : null
+  }
 }
