@@ -186,7 +186,7 @@ public class Helper
       Node classNode = null
       if (convertTemplate == null && apiType.startsWith('p.'))
       {
-        classNode = findClassNodeByName(parents(method)[0], SwigTypeParser.getBaseType(apiType),method)
+        classNode = findClassNodeByName(parents(method)[0], SwigTypeParser.getRootType(apiType),method)
         if (classNode) convertTemplate = defaultOutTypeConversion
       }
 
@@ -662,7 +662,7 @@ public class Helper
     */
    public static boolean isKnownApiType(String type, Node searchFrom) 
    {
-     String rootType = SwigTypeParser.getBaseType(type)
+     String rootType = SwigTypeParser.getRootType(type)
      return hasFeatureSetting(type,searchFrom,'feature_knownapitypes',{ it.split(',').find({ it == rootType }) != null })
    }
 

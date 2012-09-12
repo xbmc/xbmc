@@ -52,7 +52,7 @@ public class SwigTypeParser
    * if the type string is p.MyType you will get MyType. If the string is 
    * p.q(const).int you will get 'int'
    */
-  public static String getBaseType(String ty)
+  public static String getRootType(String ty)
   { 
     int li = ty.lastIndexOf('.')
     return li >= 0 ? ty.substring(li + 1) : ty
