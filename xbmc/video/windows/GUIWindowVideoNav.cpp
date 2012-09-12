@@ -1648,7 +1648,7 @@ bool CGUIWindowVideoNav::GetItemsForTag(const CStdString &strHeading, const std:
   if (!videodb.Open())
     return false;
 
-  MediaType mediaType;
+  MediaType mediaType = MediaTypeNone;
   std::string baseDir = "videodb://";
   std::string idColumn;
   if (type.compare("movie") == 0)
