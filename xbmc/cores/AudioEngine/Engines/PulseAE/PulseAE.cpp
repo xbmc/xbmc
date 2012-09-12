@@ -160,6 +160,11 @@ bool CPulseAE::Suspend()
   return false;
 }
 
+bool CPulseAE::IsSuspended()
+{
+  return false;
+}
+
 bool CPulseAE::Resume()
 {
   /* TODO: see comments in Suspend() above */
