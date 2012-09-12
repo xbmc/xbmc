@@ -88,7 +88,6 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
   TagLib::MPEG::File*        mpegFile = NULL;
   TagLib::Ogg::Vorbis::File* oggVorbisFile = NULL;
   TagLib::Ogg::FLAC::File*   oggFlacFile = NULL;
-  TagLib::RIFF::File*        riffFile = NULL;
   TagLib::S3M::File*         s3mFile = NULL;
   TagLib::TrueAudio::File*   ttaFile = NULL;
   TagLib::WavPack::File*     wvFile = NULL;
