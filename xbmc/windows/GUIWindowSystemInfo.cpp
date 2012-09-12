@@ -144,11 +144,21 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(i++, g_sysinfo.GetXBVerInfo());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUModel());
+#if defined(__arm__) && defined(TARGET_LINUX)
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUBogoMips());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUHardware());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPURevision());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUSerial());
+#endif
     SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
+#if !defined(__arm__)
     SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
 #endif
+#endif
+#if !(defined(__arm__) && defined(TARGET_LINUX))
     SetControlLabel(i++, "%s %s", 13271, SYSTEM_CPU_USAGE);
+#endif
     i++; // empty line
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);

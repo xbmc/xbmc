@@ -51,6 +51,30 @@ TEST(TestCPUInfo, getCPUModel)
   EXPECT_STRNE("", s.c_str());
 }
 
+TEST(TestCPUInfo, getCPUBogoMips)
+{
+  std::string s = g_cpuInfo.getCPUBogoMips();
+  EXPECT_STRNE("", s.c_str());
+}
+
+TEST(TestCPUInfo, getCPUHardware)
+{
+  std::string s = g_cpuInfo.getCPUHardware();
+  EXPECT_STRNE("", s.c_str());
+}
+
+TEST(TestCPUInfo, getCPURevision)
+{
+  std::string s = g_cpuInfo.getCPURevision();
+  EXPECT_STRNE("", s.c_str());
+}
+
+TEST(TestCPUInfo, getCPUSerial)
+{
+  std::string s = g_cpuInfo.getCPUSerial();
+  EXPECT_STRNE("", s.c_str());
+}
+
 TEST(TestCPUInfo, CoreInfo)
 {
   ASSERT_TRUE(g_cpuInfo.HasCoreId(0));
