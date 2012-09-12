@@ -25,14 +25,18 @@ namespace XFILE
 {
   namespace VIDEODATABASEDIRECTORY
   {
-    class CDirectoryNodeSets : public CDirectoryNode
+    class CDirectoryNodeGrouped : public CDirectoryNode
     {
     public:
-      CDirectoryNodeSets(const CStdString& strName, CDirectoryNode* pParent);
+      CDirectoryNodeGrouped(NODE_TYPE type, const CStdString& strName, CDirectoryNode* pParent);
     protected:
       virtual NODE_TYPE GetChildType() const;
       virtual bool GetContent(CFileItemList& items) const;
       virtual CStdString GetLocalizedName() const;
+
+    private:
+      std::string GetContentType() const;
+      std::string GetContentType(const CQueryParams &params) const;
     };
   }
 }
