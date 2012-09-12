@@ -153,6 +153,11 @@ namespace XBMCAddon
       { TRACE; return up() ? P::OnMessage(message) : checkedb(OnMessage(message)); }
       virtual bool    OnAction(const CAction &action) 
       { TRACE; return up() ? P::OnAction(action) : checkedb(OnAction(action)); }
+
+      // NOTE!!: This ALWAYS skips up to the CGUIWindow instance.
+      virtual bool    OnBack(int actionId) 
+      { TRACE; return up() ? CGUIWindow::OnBack(actionId) : checkedb(OnBack(actionId)); }
+
       virtual void OnDeinitWindow(int nextWindowID)
       { TRACE; if(up()) P::OnDeinitWindow(nextWindowID); else checkedv(OnDeinitWindow(nextWindowID)); }
 
