@@ -900,6 +900,9 @@ int CDVDDemuxFFmpeg::GetStreamLength()
   if (!m_pFormatContext)
     return 0;
 
+  if (m_pFormatContext->duration < 0)
+    return 0;
+
   return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
 }
 
