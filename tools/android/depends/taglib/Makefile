@@ -6,7 +6,7 @@ VERSION=1.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
-LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/libtag.so
+LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/libtag.a
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
@@ -17,6 +17,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
 	cd $(PLATFORM)/build; CC=$(CC) CXX=$(CXX) cmake        \
+	  -DENABLE_STATIC=1 \
 	  -DCMAKE_C_FLAGS:STRING="$(CPPFLAGS) $(CFLAGS)"     \
 	  -DCMAKE_CXX_FLAGS:STRING="$(CPPFLAGS) $(CXXFLAGS)" \
 	  -DCMAKE_INCLUDE_PATH=$(PREFIX)/include             \
@@ -30,11 +31,7 @@ $(LIBDYLIB): $(PLATFORM)
 	touch $@
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/build install
-	rm -f $(PREFIX)/lib/libtag_c.* $(PREFIX)/lib/libtag.so $(PREFIX)/lib/libtag.so.1
-	mv -f $(PREFIX)/lib/libtag.so.1.12.0 $(PREFIX)/lib/libxbtag.so
-	ln -sf $(PREFIX)/lib/libxbtag.so $(PREFIX)/lib/libtag.so
-	$(RPL) -e "libtag.so.1" "libxbtag.so" $(PREFIX)/lib/libxbtag.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libxbtag.so | grep ibrary
+	rm -f $(PREFIX)/lib/libtag_c.*
 	touch $@
 
 clean:
