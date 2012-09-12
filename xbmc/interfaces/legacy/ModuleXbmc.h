@@ -287,7 +287,7 @@ namespace XBMCAddon
      * example:
      *   - filename = xbmc.makeLegalFilename('F:\\Trailers\\Ice Age: The Meltdown.avi')
      */
-    String makeLegalFilename(const String& filename,bool fatX);
+    String makeLegalFilename(const String& filename,bool fatX = true);
 
     /**
      * translatePath(path) -- Returns the translated path.
