@@ -189,6 +189,7 @@ void doMethod(method, MethodType methodType)
     }
     catch (const XbmcCommons::Exception& e)
     { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
       PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); <%
       if (!destructor) {  %>
       return NULL; <%
@@ -196,6 +197,7 @@ void doMethod(method, MethodType methodType)
     }
     catch (...)
     {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${Helper.callingName(method)}\"");
       PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${Helper.callingName(method)}\""); <%
       if (!destructor) {  %>
       return NULL; <%
