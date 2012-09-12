@@ -19,7 +19,6 @@
  *
  */
 #include "MusicInfoTag.h"
-#include "DllLibid3tag.h"
 
 namespace MUSIC_INFO
 {
