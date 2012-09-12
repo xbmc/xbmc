@@ -278,7 +278,7 @@ long TagLibVFSStream::tell() const
  */
 long TagLibVFSStream::length()
 {
-  return m_file.GetLength();
+  return (long)m_file.GetLength();
 }
 
 /*!
