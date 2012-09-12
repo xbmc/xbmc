@@ -71,6 +71,7 @@
 #include "URL.h"
 #include "utils/EdenVideoArtUpdater.h"
 #include "GUIInfoManager.h"
+#include "utils/GroupUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1839,8 +1840,24 @@ bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
            url.GetProtocol() == "playlistvideo");
 }
 
-void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
+void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
 {
+  CGUIMediaWindow::GetGroupedItems(items);
+
+  CQueryParams params;
+  CVideoDatabaseDirectory dir;
+  dir.GetQueryParams(items.GetPath(), params);
+  if (items.GetContent().Equals("movies") && params.GetSetId() <= 0 &&
+      CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath()) != NODE_TYPE_RECENTLY_ADDED_MOVIES &&
+      g_guiSettings.GetBool("videolibrary.groupmoviesets"))
+  {
+    CFileItemList groupedItems;
+    if (GroupUtils::Group(GroupBySet, items, groupedItems, GroupAttributeIgnoreSingleItems))
+    {
+      items.ClearItems();
+      items.Append(groupedItems);
+    }
+  }
 }
 
 bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
