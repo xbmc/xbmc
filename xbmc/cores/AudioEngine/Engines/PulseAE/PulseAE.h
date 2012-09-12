@@ -46,6 +46,8 @@ public:
   virtual void  OnSettingsChange(std::string setting);
 
   virtual bool  Suspend(); /* Suspend output and de-initialize exclusive sink for external players and power savings */
+
+  virtual bool  IsSuspended();
   virtual bool  Resume();  /* Resume ouput and re-initialize sink after Suspend() above */
 
   virtual float GetVolume();
