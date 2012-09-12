@@ -31,6 +31,12 @@
 #endif
 #endif
 
+#if defined(TARGET_FREEBSD)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <sys/resource.h>
+#endif
+
 #if defined(TARGET_LINUX) && defined(__ARM_NEON__) && !defined(TARGET_ANDROID)
 #include <fcntl.h>
 #include <unistd.h>
@@ -493,6 +499,65 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
 
   io = 0;
 
+#elif defined(TARGET_FREEBSD)
+  long *cptimes;
+  size_t len;
+  int i;
+
+  len = sizeof(long) * 32 * CPUSTATES;
+  if (sysctlbyname("kern.cp_times", NULL, &len, NULL, 0) != 0)
+    return false;
+  cptimes = (long*)malloc(len);
+  if (cptimes == NULL)
+    return false;
+  if (sysctlbyname("kern.cp_times", cptimes, &len, NULL, 0) != 0)
+  {
+    free(cptimes);
+    return false;
+  }
+  user = 0;
+  nice = 0;
+  system = 0;
+  idle = 0;
+  io = 0;
+  for (i = 0; i < m_cpuCount; i++)
+  {
+    long coreUser, coreNice, coreSystem, coreIdle, coreIO;
+    double total;
+
+    coreUser   = cptimes[i * CPUSTATES + CP_USER];
+    coreNice   = cptimes[i * CPUSTATES + CP_NICE];
+    coreSystem = cptimes[i * CPUSTATES + CP_SYS];
+    coreIO     = cptimes[i * CPUSTATES + CP_INTR];
+    coreIdle   = cptimes[i * CPUSTATES + CP_IDLE];
+
+    map<int, CoreInfo>::iterator iter = m_cores.find(i);
+    if (iter != m_cores.end())
+    {
+      coreUser -= iter->second.m_user;
+      coreNice -= iter->second.m_nice;
+      coreSystem -= iter->second.m_system;
+      coreIdle -= iter->second.m_idle;
+      coreIO -= iter->second.m_io;
+
+      total = (double)(coreUser + coreNice + coreSystem + coreIdle + coreIO);
+      if(total != 0.0f)
+        iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / total;
+
+      iter->second.m_user += coreUser;
+      iter->second.m_nice += coreNice;
+      iter->second.m_system += coreSystem;
+      iter->second.m_idle += coreIdle;
+      iter->second.m_io += coreIO;
+
+      user   += coreUser;
+      nice   += coreNice;
+      system += coreSystem;
+      idle   += coreIdle;
+      io     += coreIO;
+    }
+  }
+  free(cptimes);
 #else
   if (m_fProcStat == NULL)
     return false;
