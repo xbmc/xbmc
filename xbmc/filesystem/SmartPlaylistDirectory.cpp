@@ -91,11 +91,16 @@ namespace XFILE
         }
 
         CVideoDbUrl videoUrl;
-        CStdString xsp;
-        if (!videoUrl.FromString(strBaseDir) || !playlist.SaveAsJson(xsp, false))
+        if (!videoUrl.FromString(baseDir))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
+        CStdString xsp;
+        if (!playlist.IsEmpty())
+        {
+          if (!playlist.SaveAsJson(xsp, false))
+            return false;
+        }
         videoUrl.AddOption("xsp", xsp);
         
         CDatabase::Filter dbfilter;
@@ -109,11 +114,16 @@ namespace XFILE
       if (db.Open())
       {
         CMusicDbUrl musicUrl;
-        CStdString xsp;
-        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://3/") || !playlist.SaveAsJson(xsp, false))
+        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://3/"))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
+        CStdString xsp;
+        if (!playlist.IsEmpty())
+        {
+          if (!playlist.SaveAsJson(xsp, false))
+            return false;
+        }
         musicUrl.AddOption("xsp", xsp);
 
         CDatabase::Filter dbfilter;
@@ -128,12 +138,16 @@ namespace XFILE
       if (db.Open())
       {
         CMusicDbUrl musicUrl;
-        CStdString xsp;
-
-        if (!musicUrl.FromString("musicdb://2/") || !playlist.SaveAsJson(xsp, false))
+        if (!musicUrl.FromString("musicdb://2/"))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
+        CStdString xsp;
+        if (!playlist.IsEmpty())
+        {
+          if (!playlist.SaveAsJson(xsp, false))
+            return false;
+        }
         musicUrl.AddOption("xsp", xsp);
 
         CDatabase::Filter filter;
@@ -153,11 +167,16 @@ namespace XFILE
           songPlaylist.SetType("songs");
         
         CMusicDbUrl musicUrl;
-        CStdString xsp;
-        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://4/") || !songPlaylist.SaveAsJson(xsp, false))
+        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://4/"))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
+        CStdString xsp;
+        if (!songPlaylist.IsEmpty())
+        {
+          if (!songPlaylist.SaveAsJson(xsp, false))
+            return false;
+        }
         musicUrl.AddOption("xsp", xsp);
 
         CDatabase::Filter dbfilter;
@@ -176,11 +195,16 @@ namespace XFILE
           mvidPlaylist.SetType("musicvideos");
 
         CVideoDbUrl videoUrl;
-        CStdString xsp;
-        if (!videoUrl.FromString(!strBaseDir.empty() ? strBaseDir : "videodb://3/2/") || !mvidPlaylist.SaveAsJson(xsp, false))
+        if (!videoUrl.FromString(!strBaseDir.empty() ? strBaseDir : "videodb://3/2/"))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
+        CStdString xsp;
+        if (!mvidPlaylist.IsEmpty())
+        {
+          if (!mvidPlaylist.SaveAsJson(xsp, false))
+            return false;
+        }
         videoUrl.AddOption("xsp", xsp);
         
         CFileItemList items2;
