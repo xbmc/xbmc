@@ -1055,7 +1055,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h" />
     <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h" />
-    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.h" />
     <ClInclude Include="..\..\xbmc\music\tags\TagLibVFSStream.h" />
     <ClInclude Include="..\..\xbmc\music\tags\TagLoaderTagLib.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h" />
@@ -2180,7 +2179,6 @@
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderNSF.h" />
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderShn.h" />
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderSPC.h" />
-    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.h" />
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderYM.h" />
     <ClInclude Include="..\..\xbmc\music\tags\Tag.h" />
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicBase.h" />
