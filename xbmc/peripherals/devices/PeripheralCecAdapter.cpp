@@ -175,6 +175,12 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     ReopenConnection();
   }
+  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
+  {
+    // activate the source when playback started, and the option is enabled
+    if (m_configuration.bActivateSource)
+      ActivateSource();
+  }
 }
 
 bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
