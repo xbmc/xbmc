@@ -654,7 +654,7 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
 #endif 
   
   if (pcdtext == NULL)
-    return ;
+    return;
 
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 83)
   for (int i=0; i < MAX_CDTEXT_FIELDS; i++) 
