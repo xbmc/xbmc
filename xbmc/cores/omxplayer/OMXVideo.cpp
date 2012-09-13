@@ -937,7 +937,6 @@ void COMXVideo::WaitCompletion()
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
-  struct timespec starttime, endtime;
   
   if(omx_buffer == NULL)
   {
@@ -958,19 +957,20 @@ void COMXVideo::WaitCompletion()
     return;
   }
 
-  clock_gettime(CLOCK_REALTIME, &starttime);
+  unsigned int nTimeOut = 5000;
 
-  while(true)
+  while(nTimeOut)
   {
     if(m_omx_render.IsEOS())
       break;
-    clock_gettime(CLOCK_REALTIME, &endtime);
-    if((endtime.tv_sec - starttime.tv_sec) > 5)
+
+    if(nTimeOut == 0)
     {
       CLog::Log(LOGERROR, "%s::%s - wait for eos timed out\n", CLASSNAME, __func__);
       break;
     }
     Sleep(50);
+    nTimeOut -= 50;
   }
 
   return;

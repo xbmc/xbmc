@@ -1121,6 +1121,25 @@ void COMXAudio::UnRegisterAudioCallback()
   m_vizBufferSamples = 0;
 }
 
+unsigned int COMXAudio::GetAudioRenderingLatency()
+{
+  OMX_PARAM_U32TYPE param;
+  OMX_INIT_STRUCTURE(param);
+  param.nPortIndex = m_omx_render.GetInputPort();
+
+  OMX_ERRORTYPE omx_err =
+    m_omx_render.GetConfig(OMX_IndexConfigAudioRenderingLatency, &param);
+
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s - error getting OMX_IndexConfigAudioRenderingLatency error 0x%08x\n",
+      CLASSNAME, __func__, omx_err);
+    return 0;
+  }
+
+  return param.nU32;
+}
+
 void COMXAudio::WaitCompletion()
 {
   if(!m_Initialized || m_Pause)
@@ -1128,7 +1147,6 @@ void COMXAudio::WaitCompletion()
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
-  struct timespec starttime, endtime;
 
   if(omx_buffer == NULL)
   {
@@ -1149,19 +1167,34 @@ void COMXAudio::WaitCompletion()
     return;
   }
 
-  clock_gettime(CLOCK_REALTIME, &starttime);
-
-  while(true)
+  unsigned int nTimeOut = AUDIO_BUFFER_SECONDS * 1000;
+  while(nTimeOut)
   {
     if(m_omx_render.IsEOS())
       break;
-    clock_gettime(CLOCK_REALTIME, &endtime);
-    if((endtime.tv_sec - starttime.tv_sec) > 2)
+
+    if(nTimeOut == 0)
     {
       CLog::Log(LOGERROR, "%s::%s - wait for eos timed out\n", CLASSNAME, __func__);
       break;
     }
     Sleep(50);
+    nTimeOut -= 50;
+  }
+
+  nTimeOut = AUDIO_BUFFER_SECONDS * 1000;
+  while(nTimeOut)
+  {
+    if(!GetAudioRenderingLatency())
+      break;
+
+    if(nTimeOut == 0)
+    {
+      CLog::Log(LOGERROR, "%s::%s - wait for GetAudioRenderingLatency timed out\n", CLASSNAME, __func__);
+      break;
+    }
+    Sleep(50);
+    nTimeOut -= 50;
   }
 
   return;
