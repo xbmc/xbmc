@@ -255,7 +255,9 @@ bool CEpg::CheckPlayingEvent(void)
   bool bGotPreviousTag = InfoTagNow(previousTag, false);
   bool bGotCurrentTag = InfoTagNow(newTag);
 
-  if (!bGotPreviousTag || (bGotCurrentTag && previousTag != newTag))
+  bool bTagChanged = bGotCurrentTag && (!bGotPreviousTag || previousTag != newTag);
+  bool bTagRemoved = !bGotCurrentTag && bGotPreviousTag;
+  if (bTagChanged || bTagRemoved)
   {
     NotifyObservers(ObservableMessageEpgActiveItem);
     bReturn = true;
