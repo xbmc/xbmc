@@ -463,7 +463,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
     m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
   }
 
-  if(!bDropPacket && m_speed == DVD_PLAYSPEED_NORMAL)
+  if(!bDropPacket && m_speed == DVD_PLAYSPEED_NORMAL && m_av_clock->HasVideo())
   {
     if(GetDelay() < 0.1f && !m_av_clock->OMXAudioBuffer())
     {
