@@ -22,6 +22,7 @@
 #include "XBDateTime.h"
 #include "Util.h"
 #include "utils/Variant.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 
@@ -64,7 +65,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << CStdString(m_exifInfo.CameraMake);
     ar << CStdString(m_exifInfo.CameraModel);
     ar << m_exifInfo.CCDWidth;
-    ar << CStdString(m_exifInfo.Comments);
+    ar << GetInfo(SLIDE_EXIF_COMMENT); // Store and restore the comment charset converted
     ar << CStdString(m_exifInfo.Description);
     ar << CStdString(m_exifInfo.DateTime);
     for (int i = 0; i < 10; i++)
@@ -128,6 +129,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     GetStringFromArchive(ar, m_exifInfo.CameraModel, sizeof(m_exifInfo.CameraModel));
     ar >> m_exifInfo.CCDWidth;
     GetStringFromArchive(ar, m_exifInfo.Comments, sizeof(m_exifInfo.Comments));
+    m_exifInfo.CommentsCharset = EXIF_COMMENT_CHARSET_CONVERTED; // Store and restore the comment charset converted
     GetStringFromArchive(ar, m_exifInfo.Description, sizeof(m_exifInfo.Description));
     GetStringFromArchive(ar, m_exifInfo.DateTime, sizeof(m_exifInfo.DateTime));
     for (int i = 0; i < 10; i++)
@@ -191,7 +193,7 @@ void CPictureInfoTag::Serialize(CVariant& value)
   value["cameramake"] = CStdString(m_exifInfo.CameraMake);
   value["cameramodel"] = CStdString(m_exifInfo.CameraModel);
   value["ccdwidth"] = m_exifInfo.CCDWidth;
-  value["comments"] = CStdString(m_exifInfo.Comments);
+  value["comments"] = GetInfo(SLIDE_EXIF_COMMENT); // Charset conversion
   value["description"] = CStdString(m_exifInfo.Description);
   value["datetime"] = CStdString(m_exifInfo.DateTime);
   for (int i = 0; i < 10; i++)
@@ -302,7 +304,20 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     break;
   case SLIDE_COMMENT:
   case SLIDE_EXIF_COMMENT:
-    value = m_exifInfo.Comments;
+    // The charset used for the UserComment is stored in CommentsCharset:
+    // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
+    if (m_exifInfo.CommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
+    {
+      g_charsetConverter.ucs2ToUTF8(CStdString16((uint16_t*)m_exifInfo.Comments), value);
+    }
+    else
+    {
+      // Ascii doesn't need to be converted (EXIF_COMMENT_CHARSET_ASCII)
+      // Archived data is already converted (EXIF_COMMENT_CHARSET_CONVERTED)
+      // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
+      // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
+      value = m_exifInfo.Comments;
+    }
     break;
   case SLIDE_EXIF_DATE_TIME:
   case SLIDE_EXIF_DATE:
