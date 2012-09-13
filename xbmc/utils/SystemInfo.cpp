@@ -294,9 +294,29 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   return bRet;
 }
 
-CStdString CSysInfo::GetXBVerInfo()
+CStdString CSysInfo::GetCPUModel()
 {
   return "CPU: " + g_cpuInfo.getCPUModel();
+}
+
+CStdString CSysInfo::GetCPUBogoMips()
+{
+  return "BogoMips: " + g_cpuInfo.getCPUBogoMips();
+}
+
+CStdString CSysInfo::GetCPUHardware()
+{
+  return "Hardware: " + g_cpuInfo.getCPUHardware();
+}
+
+CStdString CSysInfo::GetCPURevision()
+{
+  return "Revision: " + g_cpuInfo.getCPURevision();
+}
+
+CStdString CSysInfo::GetCPUSerial()
+{
+  return "Serial: " + g_cpuInfo.getCPUSerial();
 }
 
 bool CSysInfo::IsAeroDisabled()

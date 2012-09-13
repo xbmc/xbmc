@@ -198,6 +198,61 @@ CCPUInfo::CCPUInfo(void)
           m_cores[nCurrId].m_strVendor.Trim();
         }
       }
+      else if (strncmp(buffer, "Processor", strlen("Processor"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuModel = needle;
+          m_cores[nCurrId].m_strModel = m_cpuModel;
+          m_cores[nCurrId].m_strModel.Trim();
+        }
+      }
+      else if (strncmp(buffer, "BogoMIPS", strlen("BogoMIPS"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuBogoMips = needle;
+          m_cores[nCurrId].m_strBogoMips = m_cpuBogoMips;
+          m_cores[nCurrId].m_strBogoMips.Trim();
+        }
+      }
+      else if (strncmp(buffer, "Hardware", strlen("Hardware"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuHardware = needle;
+          m_cores[nCurrId].m_strHardware = m_cpuHardware;
+          m_cores[nCurrId].m_strHardware.Trim();
+        }
+      }
+      else if (strncmp(buffer, "Revision", strlen("Revision"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuRevision = needle;
+          m_cores[nCurrId].m_strRevision = m_cpuRevision;
+          m_cores[nCurrId].m_strRevision.Trim();
+        }
+      }
+      else if (strncmp(buffer, "Serial", strlen("Serial"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuSerial = needle;
+          m_cores[nCurrId].m_strSerial = m_cpuSerial;
+          m_cores[nCurrId].m_strSerial.Trim();
+        }
+      }
       else if (strncmp(buffer, "model name", strlen("model name"))==0)
       {
         char *needle = strstr(buffer, ":");
