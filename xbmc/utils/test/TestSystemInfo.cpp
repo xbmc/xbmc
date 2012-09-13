@@ -108,9 +108,29 @@ TEST_F(TestSystemInfo, GetKernelVersion)
   std::cout << "GetKernelVersion(): " << CSysInfo::GetKernelVersion() << "\n";
 }
 
-TEST_F(TestSystemInfo, GetXBVerInfo)
+TEST_F(TestSystemInfo, GetCPUModel)
 {
-  std::cout << "GetXBVerInfo(): " << g_sysinfo.GetXBVerInfo() << "\n";
+  std::cout << "GetCPUModel(): " << g_sysinfo.GetCPUModel() << "\n";
+}
+
+TEST_F(TestSystemInfo, GetCPUBogoMips)
+{
+  std::cout << "GetCPUBogoMips(): " << g_sysinfo.GetCPUBogoMips() << "\n";
+}
+
+TEST_F(TestSystemInfo, GetCPUHardware)
+{
+  std::cout << "GetCPUHardware(): " << g_sysinfo.GetCPUHardware() << "\n";
+}
+
+TEST_F(TestSystemInfo, GetCPURevision)
+{
+  std::cout << "GetCPURevision(): " << g_sysinfo.GetCPURevision() << "\n";
+}
+
+TEST_F(TestSystemInfo, GetCPUSerial)
+{
+  std::cout << "GetCPUSerial(): " << g_sysinfo.GetCPUSerial() << "\n";
 }
 
 TEST_F(TestSystemInfo, GetDiskSpace)

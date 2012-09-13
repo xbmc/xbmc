@@ -55,6 +55,10 @@ struct CoreInfo
   unsigned long long m_io;
   CStdString m_strVendor;
   CStdString m_strModel;
+  CStdString m_strBogoMips;
+  CStdString m_strHardware;
+  CStdString m_strRevision;
+  CStdString m_strSerial;
   CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_idle(0LL), m_io(0LL) {}
 };
 
@@ -69,6 +73,10 @@ public:
   float getCPUFrequency();
   bool getTemperature(CTemperature& temperature);
   std::string& getCPUModel() { return m_cpuModel; }
+  std::string& getCPUBogoMips() { return m_cpuBogoMips; }
+  std::string& getCPUHardware() { return m_cpuHardware; }
+  std::string& getCPURevision() { return m_cpuRevision; }
+  std::string& getCPUSerial() { return m_cpuSerial; }
 
   const CoreInfo &GetCoreInfo(int nCoreId);
   bool HasCoreId(int nCoreId) const;
@@ -96,6 +104,10 @@ private:
   int          m_lastUsedPercentage;
   XbmcThreads::EndTime m_nextUsedReadTime; 
   std::string  m_cpuModel;
+  std::string  m_cpuBogoMips;
+  std::string  m_cpuHardware;
+  std::string  m_cpuRevision;
+  std::string  m_cpuSerial;
   int          m_cpuCount;
   unsigned int m_cpuFeatures;
 

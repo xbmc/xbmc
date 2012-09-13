@@ -105,7 +105,11 @@ public:
   bool IsAeroDisabled();
   bool IsVistaOrHigher();
   static CStdString GetKernelVersion();
-  CStdString GetXBVerInfo();
+  CStdString GetCPUModel();
+  CStdString GetCPUBogoMips();
+  CStdString GetCPUHardware();
+  CStdString GetCPURevision();
+  CStdString GetCPUSerial();
   bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
