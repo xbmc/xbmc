@@ -156,4 +156,25 @@ namespace PythonBindings
      */
     PythonToCppException();
   };
+
+  template<class T> struct PythonCompare
+  {
+    static inline int compare(PyObject* obj1, PyObject* obj2, const char* swigType, const char* methodNamespacePrefix, const char* methodNameForErrorString)
+      throw(WrongTypeException)
+    {
+      try
+      {
+        T* o1 = (T*)retrieveApiInstance(obj1, swigType, methodNamespacePrefix, methodNameForErrorString);
+        T* o2 = (T*)retrieveApiInstance(obj1, swigType, methodNamespacePrefix, methodNameForErrorString);
+        return ((*o1) < (*o2) ? -1 : 
+                ((*o1) > (*o2) ? 1 : 0));
+      }
+      catch (const WrongTypeException& e)
+      {
+        CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+        PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      }
+      return -1;
+    }
+  };
 }

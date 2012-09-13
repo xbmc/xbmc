@@ -145,6 +145,10 @@ namespace XBMCAddon
        */
       virtual int getId() { return iControlId; }
 
+      inline bool operator==(const Control& other) const { return iControlId == other.iControlId; }
+      inline bool operator>(const Control& other) const { return iControlId > other.iControlId; }
+      inline bool operator<(const Control& other) const { return iControlId < other.iControlId; }
+
       // hack this because it returns a tuple
       /**
        * getPosition() -- Returns the control's current position as a x,y integer tuple.
@@ -1090,7 +1094,7 @@ namespace XBMCAddon
                     const char* focusTexture = NULL, const char* noFocusTexture = NULL, 
                     long textOffsetX = CONTROL_TEXT_OFFSET_X, 
                     long textOffsetY = CONTROL_TEXT_OFFSET_Y, 
-                    long _alignment = (XBFONT_LEFT | XBFONT_CENTER_Y), 
+                    long alignment = (XBFONT_LEFT | XBFONT_CENTER_Y), 
                     const char* font = NULL, const char* textColor = NULL,
                     const char* disabledColor = NULL, long angle = 0,
                     const char* shadowColor = NULL, const char* focusedColor = NULL);

@@ -85,6 +85,11 @@ Helper.setup(classes,
 
 void doMethod(method, MethodType methodType)
 {
+  boolean isOperator = method.@name.startsWith("operator ")
+
+  if (isOperator)
+    return;
+
   boolean constructor = methodType == MethodType.constructor
 
   // if we're a constructor, but we're private, then we're outta here
@@ -257,6 +262,44 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
   String fullClassName = Helper.findFullClassName(clazz)
   String initTypeCall = "initPy${classNameAsVariable}_Type"
   initTypeCalls?.add(initTypeCall)
+
+  // see if we have any valid (or invalid) operators
+  boolean doComparator = false
+  boolean hasEquivalenceOp = false
+  boolean hasLtOp = false
+  boolean hasGtOp = false
+
+  List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") }
+  List operators =  clazz.function.findAll { it.@name.startsWith("operator ") }
+
+  operators.each {
+    // we have an operator. The only one we can handle is ==
+    if (it.@name.substring(9).startsWith("=="))
+      hasEquivalenceOp = true
+    else if (it.@name.substring(9) == "<")
+    hasLtOp = true;
+    else if (it.@name.substring(9) == ">")
+    hasGtOp = true;
+    else
+      System.err.println ("Warning: class ${fullClassName} has an operator \"${it.@name}\" that is being ignored.");
+  }
+
+  if (hasGtOp || hasLtOp || hasEquivalenceOp)
+  {
+    if (!(hasLtOp && hasGtOp && hasEquivalenceOp))
+      System.err.println ("Warning: class ${fullClassName} has an inconsistent operator set. To get a comparator you must implement all 3 operators >,<,==.")
+    else
+      doComparator = true
+  }
+
+  if (doComparator){ 
+%>
+  int ${classNameAsVariable}_cmp(PyObject* obj1, PyObject* obj2)
+  {
+    return PythonCompare<${fullClassName}>::compare(obj1,obj2,"p.${fullClassName}","${Helper.findNamespace(clazz)}","compare on ${fullClassName}");
+  }
+<%
+  }
 %>
   //=========================================================================
   // This section contains the initialization for the
@@ -264,7 +307,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
   //=========================================================================
   // All of the methods on this class
   static PyMethodDef ${classNameAsVariable}_methods[] = { <%
-    clazz.function.each {  %>
+    normalMethods.each {  %>
     {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
 
     // now do all of the explcit feature:python:method's that may be in this class
@@ -296,7 +339,10 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
 
     Py${classNameAsVariable}_Type.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
     Py${classNameAsVariable}_Type.tp_basicsize = sizeof(PyHolder);
-    Py${classNameAsVariable}_Type.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc;
+    Py${classNameAsVariable}_Type.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
+ if (doComparator) { %>
+    Py${classNameAsVariable}_Type.tp_compare=${classNameAsVariable}_cmp;<%
+ } %>
     Py${classNameAsVariable}_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
     Py${classNameAsVariable}_Type.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods;
