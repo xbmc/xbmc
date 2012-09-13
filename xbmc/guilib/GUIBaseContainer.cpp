@@ -884,7 +884,7 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
       SetPageControlRange();
       if (reselect >= 0 && reselect < (int)m_items.size())
         SelectItem(reselect);
-      MarkDirtyRegion();
+      SetInvalid();
     }
     UpdateScrollByLetter();
   }
