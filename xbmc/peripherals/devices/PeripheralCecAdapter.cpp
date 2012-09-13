@@ -88,7 +88,8 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bIsMuted(false), // TODO fetch the correct initial value when system audiostatus is implemented in libCEC
   m_bGoingToStandby(false),
   m_bIsRunning(false),
-  m_bDeviceRemoved(false)
+  m_bDeviceRemoved(false),
+  m_bActiveSourcePending(false)
 {
   m_currentButton.iButton = 0;
   m_currentButton.iDuration = 0;
@@ -369,6 +370,9 @@ void CPeripheralCecAdapter::Process(void)
   {
     if (!m_bStop)
       ProcessVolumeChange();
+
+    if (!m_bStop)
+      ProcessActivateSource();
 
     if (!m_bStop)
       Sleep(5);
@@ -1608,6 +1612,26 @@ void CPeripheralCecAdapter::ReopenConnection(void)
 
   StopThread();
   Create();
+}
+
+void CPeripheralCecAdapter::ActivateSource(void)
+{
+  CSingleLock lock(m_critSection);
+  m_bActiveSourcePending = true;
+}
+
+void CPeripheralCecAdapter::ProcessActivateSource(void)
+{
+  bool bActivate(false);
+
+  {
+    CSingleLock lock(m_critSection);
+    bActivate = m_bActiveSourcePending;
+    m_bActiveSourcePending = false;
+  }
+
+  if (bActivate)
+    m_cecAdapter->SetActiveSource();
 }
 
 #endif
