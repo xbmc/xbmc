@@ -1564,7 +1564,30 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
     if (!m_canFilterAdvanced)
       SetProperty("filter", filter);
     else
+    {
       m_vecItems->SetPath(items.GetPath());
+
+      // to be able to select the same item as before we need to adjust
+      // the path of the item i.e. add or remove the "filter=" URL option
+      CURL curUrl(currentItem), newUrl(items.GetPath());
+      CUrlOptions curOptions(curUrl.GetOptions()), newOptions(newUrl.GetOptions());
+
+      if (newOptions.HasOption("filter"))
+      {
+        CVariant filter;
+        if (newOptions.GetOption("filter", filter) && filter.isString())
+          curOptions.AddOption("filter", filter.asString());
+      }
+      else if (curOptions.HasOption("filter"))
+        curOptions.AddOption("filter", "");
+
+      string options = curOptions.GetOptionsString();
+      if (!options.empty())
+        curUrl.SetOptions("?" + options);
+      else
+        curUrl.SetOptions("");
+      currentItem = curUrl.Get();
+    }
   }
   
   // and update our view control + buttons
@@ -1627,9 +1650,6 @@ bool CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &
 bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items, bool &hasNewItems)
 {
   hasNewItems = false;
-
-  if (m_filter.IsEmpty())
-    return true;
 
   CFileItemList resultItems;
   XFILE::CSmartPlaylistDirectory::GetDirectory(m_filter, resultItems, m_vecItems->GetPath(), true);
