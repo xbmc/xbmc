@@ -203,6 +203,7 @@ namespace ADDON
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
+    bool m_bInitialized;
   };
 
 }; /* namespace ADDON */
