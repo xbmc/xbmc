@@ -198,6 +198,9 @@ protected:
     int64_t m_freq;
     double m_errorbuff; //place to store average errors
     int    m_errorcount;//number of errors stored
+
+    double m_histError;
+    int    m_histErrorCount;
   } m_syncError;
 
   CDVDAudio m_dvdAudio; // audio output device

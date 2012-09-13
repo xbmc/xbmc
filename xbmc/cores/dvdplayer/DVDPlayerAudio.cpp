@@ -736,7 +736,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   {
     m_syncError.CalcAverage(now);
 
-    if (m_synctype == SYNC_DISCON)
+    if (m_synctype == SYNC_DISCON || ((m_synctype == SYNC_SKIPDUP) && m_syncError.m_histErrorCount < 0))
     {
       double limit, error;
       if (g_VideoReferenceClock.GetRefreshRate(&limit) > 0)
@@ -763,8 +763,12 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         if(m_speed == DVD_PLAYSPEED_NORMAL)
           CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
       }
+
+      m_syncError.m_histErrorCount = 0;
     }
-    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_syncError.m_error) > DVD_MSEC_TO_TIME(10))
+    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 &&
+             fabs(m_syncError.m_error) > DVD_MSEC_TO_TIME(10) &&
+             m_syncError.m_histErrorCount > 10)
     {
       //check how many packets to skip/duplicate
       m_skipdupcount = (int)(m_syncError.m_error / duration);
@@ -778,6 +782,8 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
       else if (m_skipdupcount < 0)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Skipping %i packet(s) of %.2f ms duration ",
                   m_skipdupcount * -1,  duration / DVD_TIME_BASE * 1000.0);
+
+      m_syncError.m_histErrorCount = 0;
     }
     else if (m_synctype == SYNC_RESAMPLE)
     {
@@ -929,6 +935,8 @@ void CDVDPlayerAudio::SyncError::Reset()
   m_errorcount = 0;
   m_errortime = 0;
   m_freq = CurrentHostFrequency();
+  m_histError = 0;
+  m_histErrorCount = 0;
 }
 
 void CDVDPlayerAudio::SyncError::AddCurrent(double error)
@@ -943,4 +951,17 @@ void CDVDPlayerAudio::SyncError::CalcAverage(int64_t time)
   m_error = m_errorbuff / m_errorcount;
   m_errorbuff = 0;
   m_errorcount = 0;
+
+  if (m_histErrorCount <= 0)
+  {
+    m_histError = m_error;
+    m_histErrorCount = 1;
+  }
+  else
+  {
+    if (fabs(m_error-m_histError) < DVD_MSEC_TO_TIME(2))
+      m_histErrorCount++;
+    else
+      m_histErrorCount = -1;
+  }
 }
