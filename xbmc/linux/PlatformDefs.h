@@ -362,7 +362,8 @@ typedef fpos_t fpos64_t;
 #define statfs64 statfs
 #define fstat64 fstat
 #else
-#define fstat64 fstat
+//#define fstat64 fstat
+#define __stat64 stat64
 #endif
 #else
 #define __stat64 stat64
