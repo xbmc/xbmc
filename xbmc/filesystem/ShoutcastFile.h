@@ -28,10 +28,15 @@
 #include "CurlFile.h"
 #include "utils/StdString.h"
 #include "music/tags/MusicInfoTag.h"
+#include "threads/Thread.h"
 
 namespace XFILE
 {
-class CShoutcastFile : public IFile
+
+class CFileCache;
+class CTagUpdaterThread;
+
+class CShoutcastFile : public IFile, public CThread
 {
 public:
   CShoutcastFile();
@@ -44,17 +49,23 @@ public:
   virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
+  int IoControl(EIoControl request, void* param);
+
+  void Process();
 protected:
-  void ExtractTagInfo(const char* buf);
+  bool ExtractTagInfo(const char* buf);
   void ReadTruncated(char* buf2, int size);
 
-  unsigned int m_lastTime;
   CCurlFile m_file;
   int m_metaint;
   int m_discarded; // data used for tags
   int m_currint;
   char* m_buffer; // buffer used for tags
   MUSIC_INFO::CMusicInfoTag m_tag;
+
+  CFileCache* m_cacheReader;
+  CEvent m_tagChange;
+  int64_t m_tagPos;
 };
 }
 

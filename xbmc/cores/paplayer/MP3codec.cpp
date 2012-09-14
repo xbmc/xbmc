@@ -173,37 +173,40 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   // Guess Bitrate and obtain replayGain information etc.
-  CTagLoaderTagLib tagLoaderTagLib(strFile); //opens the file so needs to be after m_file.Open or lastfm radio breaks.
-  bTags = tagLoaderTagLib.Load(strFile, m_tag);
-
-  if (bTags)
-    ReadDuration();
-
   length = m_file.GetLength();
-  if (bTags)
-    m_TotalTime = (int64_t)( m_fTotalDuration * 1000.0f);
+  if (length != 0)
+  {
+    CTagLoaderTagLib tagLoaderTagLib(strFile); //opens the file so needs to be after m_file.Open or lastfm radio breaks.
+    bTags = tagLoaderTagLib.Load(strFile, m_tag);
 
-  // Read in some data so we can determine the sample size and so on
-  // This needs to be made more intelligent - possibly use a temp output buffer
-  // and cycle around continually reading until we have the necessary data
-  // as a first workaround skip the id3v2 tag at the beginning of the file
-  if (bTags)
-  {
-    if (m_iSeekOffsets > 0)
+    if (bTags)
+      ReadDuration();
+
+    if (bTags)
+      m_TotalTime = (int64_t)( m_fTotalDuration * 1000.0f);
+
+    // Read in some data so we can determine the sample size and so on
+    // This needs to be made more intelligent - possibly use a temp output buffer
+    // and cycle around continually reading until we have the necessary data
+    // as a first workaround skip the id3v2 tag at the beginning of the file
+    if (bTags)
     {
-      id3v2Size=(int)m_SeekOffset[0];
-      m_file.Seek(id3v2Size);
+      if (m_iSeekOffsets > 0)
+      {
+        id3v2Size=(int)m_SeekOffset[0];
+        m_file.Seek(id3v2Size);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "MP3Codec: Seek info unavailable for file <%s> (corrupt?)", strFile.c_str());
+        goto error;
+      }
     }
-    else
+    
+    if ( m_TotalTime && (length - id3v2Size > 0) )
     {
-      CLog::Log(LOGERROR, "MP3Codec: Seek info unavailable for file <%s> (corrupt?)", strFile.c_str());
-      goto error;
+      m_Bitrate = (int)(((length - id3v2Size) / m_fTotalDuration) * 8);  // average bitrate
     }
-  }
-  
-  if ( m_TotalTime && (length - id3v2Size > 0) )
-  {
-    m_Bitrate = (int)(((length - id3v2Size) / m_fTotalDuration) * 8);  // average bitrate
   }
 
   m_eof = false;
@@ -217,7 +220,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     }
     if (bTags && !m_Bitrate) //use tag bitrate if average bitrate is not available
       m_Bitrate = m_Formatdata[4];
-  } ;
+  }
 
   return true;
 
