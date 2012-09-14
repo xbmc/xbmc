@@ -3634,6 +3634,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
+#ifdef HAS_UPNP
   if (URIUtils::IsUPnP(item.GetPath()))
   {
     CFileItem item_new(item);
@@ -3641,6 +3642,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       return PlayFile(item_new, false);
     return false;
   }
+#endif
 
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
@@ -4884,9 +4886,11 @@ void CApplication::ProcessSlow()
     m_Autorun->HandleAutorun();
 #endif
 
+#ifdef HAS_UPNP
   // update upnp server/renderer states
   if(CUPnP::IsInstantiated())
     CUPnP::GetInstance()->UpdateState();
+#endif
 
   //Check to see if current playing Title has changed and whether we should broadcast the fact
   CheckForTitleChange();
