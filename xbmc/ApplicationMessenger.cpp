@@ -675,6 +675,7 @@ case TMSG_POWERDOWN:
       }
       break;
 
+#ifdef HAS_PYTHON
     case TMSG_GUI_PYTHON_DIALOG:
       {
         if (pMsg->lpVoid)
@@ -686,6 +687,7 @@ case TMSG_POWERDOWN:
         }
       }
       break;
+#endif
 
     case TMSG_GUI_ACTION:
       {
