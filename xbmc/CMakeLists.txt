@@ -51,36 +51,6 @@ set(osx_frameworks
 	SystemConfiguration
 )
 
-set(external_libs
-	z
-#	bz2
-	xml2
-	iconv
-#	ncurses
-	freetype
-	SDL
-	SDL_mixer
-	SDL_image
-	microhttpd
-	tinyXML
-#	boost_thread
-#	boost_date_time
-	GLEW
-	sqlite3
-	yajl
-	ssh
-	ssh2
-	cdio
-	pcre
-	pcrecpp
-	jpeg
-	lzo2
-	samplerate
-	fribidi
-)
-set(system_libs
-	stdc++
-)
 
 add_executable(XBMC ${xbmc_SRCS})
 target_link_libraries(XBMC
@@ -151,13 +121,11 @@ target_link_libraries(XBMC
 )
 
 foreach(lib ${external_libs})
-	find_library(${lib}_LIBRARY ${lib} ${dependdir}/lib NO_DEFAULT_PATH)
 	get_property(l VARIABLE PROPERTY ${lib}_LIBRARY)
 	target_link_libraries(XBMC ${l})
 endforeach()
 
 foreach(lib ${system_libs})
-	find_library(${lib}_LIBRARY ${lib})
 	get_property(l VARIABLE PROPERTY ${lib}_LIBRARY)
 	target_link_libraries(XBMC ${l})
 endforeach()
