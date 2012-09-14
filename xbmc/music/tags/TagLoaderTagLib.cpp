@@ -116,18 +116,18 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
   else if (strExtension == "tta")
     file = ttaFile = new TrueAudio::File(&m_tagLibVFSStream, ID3v2::FrameFactory::instance());
   else if (strExtension == "wv")
-    file = wvFile = new WavPack::File(&m_tagLibVFSStream, ID3v2::FrameFactory::instance());
+    file = wvFile = new WavPack::File(&m_tagLibVFSStream);
   else if (strExtension == "xm")
     file = xmFile = new XM::File(&m_tagLibVFSStream);
   else if (strExtension == "ogg")
-    file = oggVorbisFile = new Ogg::Vorbis::File(&m_tagLibVFSStream, ID3v2::FrameFactory::instance());
+    file = oggVorbisFile = new Ogg::Vorbis::File(&m_tagLibVFSStream);
   else if (strExtension == "oga") // Leave this madness until last - oga container can have Vorbis or FLAC
   {
-    file = oggFlacFile = new Ogg::FLAC::File(&m_tagLibVFSStream, ID3v2::FrameFactory::instance());
+    file = oggFlacFile = new Ogg::FLAC::File(&m_tagLibVFSStream);
     if (!file || !file->isValid())
     {
       delete file;
-      file = oggVorbisFile = new Ogg::Vorbis::File(&m_tagLibVFSStream, ID3v2::FrameFactory::instance());
+      file = oggVorbisFile = new Ogg::Vorbis::File(&m_tagLibVFSStream);
     }
   }
 
