@@ -908,7 +908,7 @@ int MP3Codec::ReadDuration()
       double tpfbs[] = { 0, 384.0f, 1152.0f, 1152.0f };
       frequency = freqtab[version][freqindex];
       tpf = tpfbs[layer] / (double) frequency;
-      if (version == MPEG_VERSION2_5 && version == MPEG_VERSION2)
+      if (version == MPEG_VERSION2_5 || version == MPEG_VERSION2)
         tpf /= 2;
 
       if (frequency == 0)
