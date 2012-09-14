@@ -124,13 +124,13 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   /* override the sample rate based on the oldest stream if there is one */
   if (!m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
-  streamLock.Leave();
 
   if (forceRaw)
     m_rawPassthrough = true;
   else
     m_rawPassthrough = !m_streams.empty() && m_streams.front()->IsRaw();
-
+  streamLock.Leave();
+    
   if (m_rawPassthrough)
     CLog::Log(LOGINFO, "CCoreAudioAE::OpenCoreAudio - RAW passthrough enabled");
 
