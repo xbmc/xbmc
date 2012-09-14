@@ -27,7 +27,9 @@
 #include "threads/CriticalSection.h"
 #include <SDL/SDL_video.h>
 
-typedef struct _CGDirectDisplayID *CGDirectDisplayID;
+/* PLEX CHANGE */
+typedef u_int32_t CGDirectDisplayID;
+/* END PLEX CHANGE */
 typedef u_int32_t CGDisplayChangeSummaryFlags;
 
 class IDispResource;

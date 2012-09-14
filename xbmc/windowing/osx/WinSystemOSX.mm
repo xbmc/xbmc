@@ -21,6 +21,11 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
+#import <Cocoa/Cocoa.h>
+#import <QuartzCore/QuartzCore.h>
+#import <IOKit/graphics/IOGraphicsLib.h>
+#import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar
+
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
@@ -37,14 +42,9 @@
 #include "XBMCHelper.h"
 #include "utils/SystemInfo.h"
 #include "CocoaInterface.h"
-#undef BOOL
 
 #include <SDL/SDL_events.h>
-
-#import <Cocoa/Cocoa.h>
-#import <QuartzCore/QuartzCore.h>
-#import <IOKit/graphics/IOGraphicsLib.h>
-#import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar
+#undef BOOL
 
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the NSWindowDidMoveNotification callback.
@@ -1037,7 +1037,7 @@ void CWinSystemOSX::EnableVSync(bool enable)
   GLint swapInterval;
   
   swapInterval = enable ? 1 : 0;
-  [[NSOpenGLContext currentContext] setValues:(const long int*)&swapInterval forParameter:NSOpenGLCPSwapInterval];
+  [[NSOpenGLContext currentContext] setValues:(const GLint*)&swapInterval forParameter:NSOpenGLCPSwapInterval];
 }
 
 bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx)
