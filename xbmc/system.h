@@ -32,11 +32,11 @@
 #define HAS_DVD_SWSCALE
 #define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
-#define HAS_KARAOKE
+//#define HAS_KARAOKE
 #define HAS_SCREENSAVER
-#define HAS_PYTHON
+//#define HAS_PYTHON
 #define HAS_SYSINFO
-#define HAS_UPNP
+//#define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
 
@@ -54,10 +54,10 @@
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_CDDA
-#define HAS_FILESYSTEM_RTV
-#define HAS_FILESYSTEM_DAAP
-#define HAS_FILESYSTEM_SAP
-#define HAS_FILESYSTEM_VTP
+//#define HAS_FILESYSTEM_RTV
+//#define HAS_FILESYSTEM_DAAP
+//#define HAS_FILESYSTEM_SAP
+//#define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
 #ifdef HAVE_LIBSMBCLIENT
@@ -85,10 +85,10 @@
  **********************/
 
 #if defined(TARGET_WINDOWS)
-  #define HAS_FILESYSTEM_RAR
+  //#define HAS_FILESYSTEM_RAR
 #else
   #if defined(HAVE_XBMC_NONFREE)
-    #define HAS_FILESYSTEM_RAR
+    //#define HAS_FILESYSTEM_RAR
   #endif
 #endif
 
@@ -252,7 +252,9 @@
 #include <GL/glu.h>
 //#include <GL/wglext.h>
 #elif defined(TARGET_DARWIN)
+#if !defined(__gltypes_h_)
 #include <GL/glew.h>
+#endif
 #include <OpenGL/gl.h>
 #elif defined(TARGET_LINUX)
 #include <GL/glew.h>
