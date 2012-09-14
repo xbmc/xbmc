@@ -294,10 +294,17 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
 
   if (doComparator){ 
 %>
-  int ${classNameAsVariable}_cmp(PyObject* obj1, PyObject* obj2)
+  static int ${module.@name}_${classNameAsVariable}_cmp(PyObject* obj1, PyObject* obj2)
   {
     return PythonCompare<${fullClassName}>::compare(obj1,obj2,"p.${fullClassName}","${Helper.findNamespace(clazz)}","compare on ${fullClassName}");
   }
+<%
+  }
+
+  if (clazz.@feature_python_rcmp)
+  { %>
+  static PyObject* ${module.@name}_${classNameAsVariable}_rcmp(PyObject* obj1, PyObject *obj2, int method)
+  ${Helper.unescape(clazz.@feature_python_rcmp)}
 <%
   }
 %>
@@ -341,8 +348,12 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
     Py${classNameAsVariable}_Type.tp_basicsize = sizeof(PyHolder);
     Py${classNameAsVariable}_Type.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
  if (doComparator) { %>
-    Py${classNameAsVariable}_Type.tp_compare=${classNameAsVariable}_cmp;<%
+    Py${classNameAsVariable}_Type.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
+ }
+ if (clazz.@feature_python_rcmp) { %>
+    Py${classNameAsVariable}_Type.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
  } %>
+
     Py${classNameAsVariable}_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
     Py${classNameAsVariable}_Type.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods;

@@ -69,6 +69,43 @@ using namespace xbmcgui;
 %feature("director") WindowXML;
 %feature("director") WindowXMLDialog;
 
+// This is such a damn hack it makes me nauseous
+%feature("python:rcmp") XBMCAddon::xbmcgui::Action
+  { TRACE;
+    if (method == Py_EQ)
+    {
+      XBMCAddon::xbmcgui::Action* a1 = (Action*)retrieveApiInstance(obj1,&PyXBMCAddon_xbmcgui_Action_Type,"rcmp","XBMCAddon::xbmcgui::Action");
+      if (PyObject_TypeCheck(obj2, &PyXBMCAddon_xbmcgui_Action_Type))
+      {
+        // both are Action objects
+        XBMCAddon::xbmcgui::Action* a2 = (Action*)retrieveApiInstance(obj2,&PyXBMCAddon_xbmcgui_Action_Type,"rcmp","XBMCAddon::xbmcgui::Action");
+
+        if (a1->id == a2->id &&
+            a1->buttonCode == a2->buttonCode &&
+            a1->fAmount1 == a2->fAmount1 &&
+            a1->fAmount2 == a2->fAmount2 &&
+            a1->fRepeat == a2->fRepeat &&
+            a1->strAction == a2->strAction)
+        {
+          Py_RETURN_TRUE;
+        }
+        else
+        {
+          Py_RETURN_FALSE;
+        }
+      }
+      else
+      {
+        // for backwards compatability in python scripts
+        PyObject* o1 = PyLong_FromLong(a1->id);
+        return PyObject_RichCompare(o1, obj2, method);
+      }
+    }
+    Py_INCREF(Py_NotImplemented);
+    return Py_NotImplemented;
+  }
+
+
 %include "interfaces/legacy/Window.h"
 %include "interfaces/legacy/WindowDialog.h"
 %include "interfaces/legacy/Dialog.h"
