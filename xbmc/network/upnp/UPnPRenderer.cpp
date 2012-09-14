@@ -286,7 +286,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
 {
     NPT_Result res = NPT_FAILURE;
     const CFileItem &item = g_application.CurrentFileItem();
-    NPT_String file_path;
+    NPT_String file_path, tmp;
     PLT_MediaObject* object = BuildObject(item, file_path, false);
     if (object) {
         // fetch the path to the thumbnail
@@ -308,7 +308,8 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
         art.dlna_profile = "JPEG_TN";
 	object->m_ExtraInfo.album_arts.Add(art);
 
-        res = PLT_Didl::ToDidl(*object, "*", meta);
+        res = PLT_Didl::ToDidl(*object, "*", tmp);
+        meta = didl_header + tmp + didl_footer;
         delete object;
     }
     return res;
