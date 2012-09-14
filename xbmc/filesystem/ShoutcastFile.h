@@ -34,7 +34,6 @@ namespace XFILE
 {
 
 class CFileCache;
-class CTagUpdaterThread;
 
 class CShoutcastFile : public IFile, public CThread
 {
