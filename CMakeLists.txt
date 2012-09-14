@@ -42,6 +42,27 @@ add_definitions(
 	-D__PLEX__
 )
 
+#### Frameworks for MacOSX
+if(APPLE)
+	set(osx_frameworks
+		AudioToolbox
+		AudioUnit
+		Cocoa
+		CoreAudio
+		CoreServices
+		Foundation
+		OpenGL
+		AppKit
+		ApplicationServices
+		IOKit
+		QuickTime
+		Carbon
+		DiskArbitration
+		QuartzCore
+		SystemConfiguration
+	)
+endif()
+
 #### libraries we want to link to
 set(external_libs
 	z
@@ -131,7 +152,6 @@ set(VORBIS_SONAME ${vorbis_FNAME})
 set(VORBISENC_SONAME ${vorbisenc_FNAME})
 set(OGG_SONAME ${ogg_FNAME})
 
-
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${root}/xbmc/DllPaths_generated.h)
 
 set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
@@ -140,5 +160,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")
 
 add_subdirectory(lib)
 add_subdirectory(xbmc)
-#add_subdirectory(plex)
-#add_subdirectory(lib)
+add_subdirectory(plex)

@@ -119,6 +119,9 @@
 /* Define to 1 if you have the `ftruncate' function. */
 #define HAVE_FTRUNCATE 1
 
+/* Define if we have gcrypt */
+//#define HAVE_GCRYPT 0
+
 /* Define to 1 if you have the `getcwd' function. */
 #define HAVE_GETCWD 1
 
@@ -220,6 +223,9 @@
 
 /* Define to 1 if you have the `EGL' library (-lEGL). */
 /* #undef HAVE_LIBEGL */
+
+/* Define to 1 if you have the `gcrypt' library (-lgcrypt). */
+#define HAVE_LIBGCRYPT 0
 
 /* Define to 1 if you have the `GL' library (-lGL). */
 #define HAVE_LIBGL 1

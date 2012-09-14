@@ -19,63 +19,14 @@ include_directories(
 add_subdirectory(FileSystem)
 add_subdirectory(GUI)
 add_subdirectory(Network)
-add_subdirectory(Owned)
+#add_subdirectory(Owned)
 add_subdirectory(Players)
 add_subdirectory(Utility)
-add_subdirectory(Windows)
-
-set(osx_frameworks
-	AudioToolbox
-	AudioUnit
-	Cocoa
-	CoreAudio
-	CoreServices
-	Foundation
-	OpenGL
-	AppKit
-	ApplicationServices
-	IOKit
-	QuickTime
-	Carbon
-	DiskArbitration
-	QuartzCore
-	SystemConfiguration
-)
-
-set(external_libs
-	z
-#	bz2
-	xml2
-	iconv
-#	ncurses
-	freetype
-	SDL
-	SDL_mixer
-	SDL_image
-	microhttpd
-	tinyXML
-#	boost_thread
-#	boost_date_time
-	GLEW
-	sqlite3
-	yajl
-	ssh
-	ssh2
-	cdio
-	pcre
-	pcrecpp
-	jpeg
-	lzo2
-	samplerate
-)
+#add_subdirectory(Windows)
 
 aux_source_directory(. plex_SRCS)
-if(UNIX)
-	list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
-	list(REMOVE_ITEM plex_SRCS ./PlexApplicationWin.cpp)
-endif(UNIX)
-
 add_executable(Plex ${plex_SRCS})
+
 target_link_libraries(Plex
 	utils
 	dllloader
@@ -139,17 +90,24 @@ target_link_libraries(Plex
 	videorenderers_shaders
 	xbmc_linux
 	xbmc
-
+	
 	plex_filesystem
 	plex_gui
 	plex_network
-	plex_owned
 	plex_players
 	plex_utility
+	
+	lib_squish
+	lib_apetag
+	lib_hts
 )
 
 foreach(lib ${external_libs})
-	find_library(${lib}_LIBRARY ${lib} ${dependdir}/lib NO_DEFAULT_PATH)
+	get_property(l VARIABLE PROPERTY ${lib}_LIBRARY)
+	target_link_libraries(Plex ${l})
+endforeach()
+
+foreach(lib ${system_libs})
 	get_property(l VARIABLE PROPERTY ${lib}_LIBRARY)
 	target_link_libraries(Plex ${l})
 endforeach()
