@@ -62,6 +62,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      g_PVRManager.SetPlayingGroup(m_group);
       Clear();
     }
     break;
@@ -74,8 +75,12 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
         Close();
         return true;
       }
+
+      m_group = GetPlayingGroup();
+
       CGUIWindow::OnMessage(message);
-      Update();
+      Update(true);
+
       return true;
     }
     break;
@@ -111,12 +116,8 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 
       if (iAction == ACTION_MOVE_RIGHT || iAction == ACTION_MOVE_LEFT)
       {
-          CPVRChannelPtr channel;
-        g_PVRManager.GetCurrentChannel(channel);
-
-        CPVRChannelGroupPtr group = g_PVRManager.GetPlayingGroup(channel->IsRadio());
+        CPVRChannelGroupPtr group = GetPlayingGroup();
         CPVRChannelGroupPtr nextGroup = iAction == ACTION_MOVE_RIGHT ? group->GetNextGroup() : group->GetPreviousGroup();
-
         g_PVRManager.SetPlayingGroup(nextGroup);
 
         Clear();
@@ -131,7 +132,19 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
+{
+  CPVRChannelPtr channel;
+  g_PVRManager.GetCurrentChannel(channel);
+  return g_PVRManager.GetPlayingGroup(channel->IsRadio());
+}
+
 void CGUIDialogPVRChannelsOSD::Update()
+{
+  CGUIDialogPVRChannelsOSD::Update(false);
+}
+
+void CGUIDialogPVRChannelsOSD::Update(bool selectPlayingChannel)
 {
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
@@ -152,7 +165,7 @@ void CGUIDialogPVRChannelsOSD::Update()
   {
     group->GetMembers(*m_vecItems);
     m_viewControl.SetItems(*m_vecItems);
-    m_viewControl.SetSelectedItem(group->GetIndex(*channel));
+    m_viewControl.SetSelectedItem(selectPlayingChannel ? group->GetIndex(*channel) : 0);
   }
 
   g_graphicsContext.Unlock();
@@ -196,6 +209,8 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   }
   else
     CApplicationMessenger::Get().PlayFile(*pItem);
+
+  m_group = GetPlayingGroup();
 
   CloseOrSelect(item);
 }
