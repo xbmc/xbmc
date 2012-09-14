@@ -19,6 +19,7 @@
  *
  */
 
+#ifndef __PLEX__
 #ifndef _MYSQLDATASET_H
 #define _MYSQLDATASET_H
 
@@ -179,4 +180,5 @@ or insert() operations default = false) */
   virtual bool dropIndex(const char *table, const char *index);
 };
 } //namespace
+#endif
 #endif

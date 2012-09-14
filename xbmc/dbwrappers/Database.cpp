@@ -369,10 +369,12 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
   {
     m_pDB.reset( new SqliteDatabase() ) ;
   }
+#ifndef __PLEX__
   else if (dbSettings.type.Equals("mysql"))
   {
     m_pDB.reset( new MysqlDatabase() ) ;
   }
+#endif
   else
   {
     CLog::Log(LOGERROR, "Unable to determine database type: %s", dbSettings.type.c_str());
