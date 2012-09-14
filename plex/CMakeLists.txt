@@ -44,10 +44,10 @@ set(osx_frameworks
 
 set(external_libs
 	z
-	bz2
+#	bz2
 	xml2
 	iconv
-	ncurses
+#	ncurses
 	freetype
 	SDL
 	SDL_mixer
