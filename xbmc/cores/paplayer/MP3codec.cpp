@@ -730,7 +730,7 @@ int MP3Codec::ReadDuration()
   //*** find the first frame in the buffer, we do this by checking if the calculated framesize leads to the next frame a couple of times.
   //the first frame that leads to a valid next frame a couple of times is where we should start decoding.
   int firstValidFrameLocation = 0;
-  for(int i = 0; i < iScanSize; i++)
+  for(int i = 0; i + 3 < iScanSize; i++)
   {
     int j = i;
     int framesize = 1;
