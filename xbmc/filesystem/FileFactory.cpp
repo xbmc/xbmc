@@ -172,7 +172,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "afp") return new CFileAFP();
 #endif
     else if (strProtocol == "pipe") return new CFilePipe();    
+#ifndef __PLEX__
     else if (strProtocol == "upnp") return new CFileUPnP();
+#endif
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
