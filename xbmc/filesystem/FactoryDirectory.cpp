@@ -174,7 +174,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "upnp") return new CUPnPDirectory();
 #endif
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
+#ifndef __PLEX__
     if (strProtocol == "sling") return new CSlingboxDirectory();
+#endif
     if (strProtocol == "myth") return new CMythDirectory();
     if (strProtocol == "cmyth") return new CMythDirectory();
     if (strProtocol == "rss") return new CRSSDirectory();

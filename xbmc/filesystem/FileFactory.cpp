@@ -139,7 +139,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
     else if (strProtocol == "hdhomerun") return new CFileHomeRun();
+#ifndef __PLEX__
     else if (strProtocol == "sling") return new CSlingboxFile();
+#endif
     else if (strProtocol == "myth") return new CMythFile();
     else if (strProtocol == "cmyth") return new CMythFile();
 #ifdef HAS_FILESYSTEM_SMB
