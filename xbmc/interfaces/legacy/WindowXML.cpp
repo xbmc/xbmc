@@ -335,12 +335,8 @@ namespace XBMCAddon
           // check if our focused control is one of our category buttons
           int iControl=message.GetControlId();
 
-          AddonClass::Ref<Control> inf(GetControlById(iControl));
-          if (inf.isNotNull())
-          {
-            invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onFocus,iControl));
-            PulseActionEvent();
-          }
+          invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onFocus,iControl));
+          PulseActionEvent();
         }
         break;
 
