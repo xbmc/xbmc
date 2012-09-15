@@ -2932,6 +2932,10 @@ void CApplication::UpdateLCD()
   {
     if (g_application.NavigationIdleTime() < 5)
       g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);
+    else if (g_PVRManager.IsPlayingTV())
+      g_lcd->Render(ILCD::LCD_MODE_PVRTV);
+    else if (g_PVRManager.IsPlayingRadio())
+      g_lcd->Render(ILCD::LCD_MODE_PVRRADIO);
     else if (IsPlayingVideo())
       g_lcd->Render(ILCD::LCD_MODE_VIDEO);
     else if (IsPlayingAudio())

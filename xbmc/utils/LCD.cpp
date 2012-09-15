@@ -455,6 +455,14 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
     { // xbe launch mode
       LoadMode(mode, LCD_MODE_XBE_LAUNCH);
     }
+    else if (strcmpi(mode->Value(), "pvrtv") == 0)
+    { // pvr tv mode
+      LoadMode(mode, LCD_MODE_PVRTV);
+    }
+    else if (strcmpi(mode->Value(), "pvrradio") == 0)
+    { // pvr radio mode
+      LoadMode(mode, LCD_MODE_PVRRADIO);
+    }
     mode = mode->NextSiblingElement();
   }
   TiXmlBase::SetCondenseWhiteSpace(condensed);
