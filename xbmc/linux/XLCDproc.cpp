@@ -373,7 +373,7 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
     strLineLong.append(m_iColumns - strLineLong.size(), ' ');
   //else if the string doesn't fit the display, lcdproc will scroll it, so we need a space
   else if (strLineLong.size() > m_iColumns)
-    strLineLong += " ";
+    strLineLong += g_advancedSettings.m_lcdScrollSeparator;
 
   if (strLineLong != m_strLine[iLine])
   {

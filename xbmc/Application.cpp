@@ -2884,7 +2884,8 @@ void CApplication::UpdateLCD()
 
   if (!g_lcd || !g_guiSettings.GetBool("videoscreen.haslcd"))
     return ;
-  unsigned int lTimeOut = 1000;
+  // refreshrate == Hertz
+  unsigned int lTimeOut = 1000 / g_advancedSettings.m_lcdRefreshRate;
   if ( m_iPlaySpeed != 1)
     lTimeOut = 0;
   if ( (XbmcThreads::SystemClockMillis() - lTickCount) >= lTimeOut)
