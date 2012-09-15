@@ -48,11 +48,13 @@
 #include "Skin.h"
 #include "Service.h"
 #include "pvr/PVRManager.h"
+#include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
 #include "Util.h"
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
 namespace ADDON
 {
@@ -874,11 +876,14 @@ bool CAddonMgr::DisableAddon(const CStdString &addonID, bool disable /* = true *
           service->Start();
       }
     }
-    // if the add-on is a pvr add-on, restart the pvr manager if it was started
-    else if (g_PVRManager.IsStarted() &&
-              GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
+    // if the add-on is a pvr add-on, restart the pvr manager and epg updater if it was started
+    else if (GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
     {
-      g_PVRManager.Start();
+      g_EpgContainer.Stop();
+      g_EpgContainer.Start();
+
+      if (g_PVRManager.IsStarted())
+        g_PVRManager.Start();
     }
   }
 
