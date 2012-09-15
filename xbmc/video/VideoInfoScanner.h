@@ -136,6 +136,7 @@ namespace VIDEO
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory);
+    bool DoScan(const CFileItemPtr& filePtr);
 
     INFO_RET RetrieveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress);
     INFO_RET RetrieveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress);
@@ -201,7 +202,7 @@ namespace VIDEO
      \param directory folder to hash
      \return the hash of the folder of the form "fast<datetime>"
      */
-    CStdString GetFastHash(const CStdString &directory) const;
+    CStdString GetFastHash(const CFileItemPtr &filePtr) const;
 
     /*! \brief Decide whether a folder listing could use the "fast" hash
      Fast hashing can be done whenever the folder contains no scannable subfolders, as the
@@ -210,7 +211,7 @@ namespace VIDEO
      \param items the directory listing
      \return true if this directory listing can be fast hashed, false otherwise
      */
-    bool CanFastHash(const CFileItemList &items) const;
+    bool CanFastHash(const CFileItemList &items, static CONTENT_TYPE content) const;
 
     /*! \brief Process a series folder, filling in episode details and adding them to the database.
      TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes

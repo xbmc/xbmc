@@ -200,6 +200,8 @@ class CAdvancedSettings
     CStdStringArray m_audioExcludeFromListingRegExps;
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
+    bool m_useSimpleStacking;
+    bool m_stackDvds;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_folderStackRegExps;
     CStdStringArray m_trailerMatchRegExps;

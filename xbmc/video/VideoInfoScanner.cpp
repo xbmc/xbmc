@@ -192,6 +192,14 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
   {
+    CFileItemPtr filePtr = CFileItemPtr(new CFileItem(strDirectory, true));
+    return DoScan(filePtr);
+  }
+
+  bool CVideoInfoScanner::DoScan(const CFileItemPtr& filePtr)
+  {
+    CStdString strDirectory = filePtr->GetPath();
+
     if (m_pObserver)
     {
       m_pObserver->OnDirectoryChanged(strDirectory);
@@ -233,7 +241,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnStateChanged(content == CONTENT_MOVIES ? FETCHING_MOVIE_INFO : FETCHING_MUSICVIDEO_INFO);
 
-      CStdString fastHash = GetFastHash(strDirectory);
+      CStdString fastHash = GetFastHash(filePtr);
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.IsEmpty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change (fasthash)", strDirectory.c_str());
@@ -267,7 +275,7 @@ namespace VIDEO
             m_pObserver->OnDirectoryScanned(strDirectory);
         }
         // update the hash to a fast hash if needed
-        if (CanFastHash(items) && !fastHash.IsEmpty())
+        if (CanFastHash(items, content) && !fastHash.IsEmpty())
           hash = fastHash;
       }
     }
@@ -336,7 +344,7 @@ namespace VIDEO
       // do not recurse for tv shows - we have already looked recursively for episodes
       if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && content != CONTENT_TVSHOWS)
       {
-        if (!DoScan(pItem->GetPath()))
+        if (!DoScan(pItem))
         {
           m_bStop = true;
         }
@@ -1546,32 +1554,46 @@ namespace VIDEO
     return count;
   }
 
-  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items) const
+  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const CONTENT_TYPE content) const
   {
-    // TODO: Probably should account for excluded folders here (eg samples), though that then
-    //       introduces possible problems if the user then changes the exclude regexps and
-    //       expects excluded folders that are inside a fast-hashed folder to then be picked
-    //       up. The chances that the user has a folder which contains only excluded folders
-    //       where some of those folders should be scanned recursively is pretty small.
-    return items.GetFolderCount() == 0;
+    // exclude folders that match our exclude regexps
+    CStdStringArray regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps;
+
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr pItem = items[i];
+
+      if (pItem->m_bIsFolder && !CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
+        return false;
+    }
+    return true;
   }
 
-  CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory) const
+  CStdString CVideoInfoScanner::GetFastHash(const CFileItemPtr& filePtr) const
   {
-    struct __stat64 buffer;
-    if (XFILE::CFile::Stat(directory, &buffer) == 0)
+    CStdString hash = "";
+    if (filePtr->m_dateTime.IsValid())
     {
-      int64_t time = buffer.st_mtime;
-      if (!time)
-        time = buffer.st_ctime;
-      if (time)
+      time_t timet;
+      filePtr->m_dateTime.GetAsTime(timet);
+      hash.Format("fast%"PRIu32, timet);
+    }
+    else
+    {
+      struct __stat64 buffer;
+      if (XFILE::CFile::Stat(filePtr->GetPath(), &buffer) == 0)
       {
-        CStdString hash;
-        hash.Format("fast%"PRId64, time);
-        return hash;
+        int64_t time = buffer.st_mtime;
+        if (!time)
+          time = buffer.st_ctime;
+        if (time)
+        {
+          hash.Format("fast%"PRId64, time);
+        }
       }
     }
-    return "";
+    return hash;
   }
 
   void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show, map<int, string> &art, bool useLocal)

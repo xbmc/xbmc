@@ -138,6 +138,7 @@ public:
   bool IsHD() const;
   bool IsNfs() const;  
   bool IsAfp() const;    
+  bool IsHttp() const;
   bool IsRemote() const;
   bool IsSmb() const;
   bool IsURL() const;
@@ -542,6 +543,7 @@ private:
    \sa Stack
    */
   void StackFiles();
+  void StackFilesSimple();
 
   /*!
    \brief stack folders in a CFileItemList

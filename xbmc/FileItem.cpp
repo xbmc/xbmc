@@ -1103,6 +1103,11 @@ bool CFileItem::IsAfp() const
   return URIUtils::IsAfp(m_strPath);
 }
 
+bool CFileItem::IsHttp() const
+{
+  return URIUtils::IsHttp(m_strPath);
+}
+
 bool CFileItem::IsOnLAN() const
 {
   return URIUtils::IsOnLAN(m_strPath);
@@ -2310,7 +2315,12 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   StackFolders();
 
   if (stackFiles)
-    StackFiles();
+  {
+    if (g_advancedSettings.m_useSimpleStacking)
+      StackFilesSimple();
+    else
+      StackFiles();
+  }
 }
 
 void CFileItemList::StackFolders()
@@ -2341,10 +2351,12 @@ void CFileItemList::StackFolders()
       // only check known fast sources?
       // NOTES:
       // 1. rars and zips may be on slow sources? is this supposed to be allowed?
-      if( !item->IsRemote()
+      if(
+        !item->IsRemote()
         || item->IsSmb()
         || item->IsNfs() 
         || item->IsAfp()
+        || item->IsHttp()
         || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
         || URIUtils::IsOnLAN(item->GetPath())
@@ -2386,45 +2398,48 @@ void CFileItemList::StackFolders()
         }
 
         // check for dvd folders
-        if (!bMatch)
+        if (g_advancedSettings.m_stackDvds)
         {
-          CStdString path;
-          CStdString dvdPath;
-          URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS.IFO", path);
-          if (CFile::Exists(path))
-            dvdPath = path;
-          else
+          if (!bMatch)
           {
-            URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS", dvdPath);
-            URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO", path);
-            dvdPath.Empty();
-            if (CFile::Exists(path))
-              dvdPath = path;
-          }
-#ifdef HAVE_LIBBLURAY
-          if (dvdPath.IsEmpty())
-          {
-            URIUtils::AddFileToFolder(item->GetPath(), "index.bdmv", path);
+            CStdString path;
+            CStdString dvdPath;
+            URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS.IFO", path);
             if (CFile::Exists(path))
               dvdPath = path;
             else
             {
-              URIUtils::AddFileToFolder(item->GetPath(), "BDMV", dvdPath);
-              URIUtils::AddFileToFolder(dvdPath, "index.bdmv", path);
+              URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS", dvdPath);
+              URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO", path);
               dvdPath.Empty();
               if (CFile::Exists(path))
                 dvdPath = path;
             }
-          }
+#ifdef HAVE_LIBBLURAY
+            if (dvdPath.IsEmpty())
+            {
+              URIUtils::AddFileToFolder(item->GetPath(), "index.bdmv", path);
+              if (CFile::Exists(path))
+                dvdPath = path;
+              else
+              {
+                URIUtils::AddFileToFolder(item->GetPath(), "BDMV", dvdPath);
+                URIUtils::AddFileToFolder(dvdPath, "index.bdmv", path);
+                dvdPath.Empty();
+                if (CFile::Exists(path))
+                  dvdPath = path;
+              }
+            }
 #endif
-          if (!dvdPath.IsEmpty())
-          {
-            // NOTE: should this be done for the CD# folders too?
-            item->m_bIsFolder = false;
-            item->SetPath(dvdPath);
-            item->SetLabel2("");
-            item->SetLabelPreformated(true);
-            m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
+            if (!dvdPath.IsEmpty())
+            {
+              // NOTE: should this be done for the CD# folders too?
+              item->m_bIsFolder = false;
+              item->SetPath(dvdPath);
+              item->SetLabel2("");
+              item->SetLabelPreformated(true);
+              m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
+            }
           }
         }
       }
@@ -2607,6 +2622,60 @@ void CFileItemList::StackFiles()
       }
     }
     i++;
+  }
+}
+
+void CFileItemList::StackFilesSimple()
+{
+  int64_t size = 0;
+  vector<int> stack;
+  CStdString stackName = "stack";
+
+  int i = 0;
+  while (i < Size())
+  {
+    CFileItemPtr item1 = Get(i);
+
+    // skip folders, nfo files, playlists
+    if (item1->m_bIsFolder
+        || item1->IsParentFolder()
+        || item1->IsNFO()
+        || item1->IsPlayList()
+       )
+    {
+      // increment index
+      i++;
+      continue;
+    }
+
+    stackName = stackName + "_" + item1->GetLabel();
+    size += item1->m_dwSize;
+    stack.push_back(i);
+
+    i++;
+  }
+
+  if (stack.size() > 1)
+  {
+    CFileItemPtr item1 = Get(stack[0]);
+
+    // dont actually stack a multipart rar set, just remove all items but the first
+    CStdString stackPath;
+    if (Get(stack[0])->IsRAR())
+      stackPath = Get(stack[0])->GetPath();
+    else
+    {
+      CStackDirectory dir;
+      stackPath = dir.ConstructStackPath(*this, stack);
+    }
+    item1->SetPath(stackPath);
+
+    // clean up list
+    for (unsigned k = stack.size(); k > 0; --k)
+      Remove(stack[k]);
+
+    item1->SetLabel(stackName);
+    item1->m_dwSize = size;
   }
 }
 

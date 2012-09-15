@@ -808,6 +808,16 @@ bool URIUtils::IsAfp(const CStdString& strFile)
   return strFile2.Left(4).Equals("afp:");
 }
 
+bool URIUtils::IsHttp(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return strFile2.Left(5).Equals("http:") || strFile2.Left(6).Equals("https:");
+}
+
 
 bool URIUtils::IsVideoDb(const CStdString& strFile)
 {
