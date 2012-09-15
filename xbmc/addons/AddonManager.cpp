@@ -851,6 +851,40 @@ void CAddonMgr::StopServices(const bool onlylogin)
   }
 }
 
+bool CAddonMgr::DisableAddon(const CStdString &addonID, bool disable /* = true */)
+{
+  CAddonDatabase database;
+  database.Open();
+  bool bToggled = database.DisableAddon(addonID, disable);
+  database.Close();
+
+  if (bToggled)
+  {
+    AddonPtr addon;
+
+    // if the add-on is a service, start/stop it
+    if (GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
+    {
+      boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
+      if (service)
+      {
+        if (disable)
+          service->Stop();
+        else
+          service->Start();
+      }
+    }
+    // if the add-on is a pvr add-on, restart the pvr manager if it was started
+    else if (g_PVRManager.IsStarted() &&
+              GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
+    {
+      g_PVRManager.Start();
+    }
+  }
+
+  return bToggled;
+}
+
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if (lvl >= CP_LOG_ERROR)

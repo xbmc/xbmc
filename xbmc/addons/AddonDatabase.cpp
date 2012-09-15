@@ -570,16 +570,6 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
         m_pDS->close();
         sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
         m_pDS->exec(sql);
-
-        AddonPtr addon;
-        // If the addon is a service, stop it
-        if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
-        {
-          boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-          if (service)
-            service->Stop();
-        }
-
         return true;
       }
       return false; // already disabled or failed query
@@ -588,16 +578,6 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
     {
       CStdString sql = PrepareSQL("delete from disabled where addonID='%s'", addonID.c_str());
       m_pDS->exec(sql);
-
-      AddonPtr addon;
-      // If the addon is a service, start it
-      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
-      {
-        boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-        if (service)
-          service->Start();
-      }
-
     }
     return true;
   }

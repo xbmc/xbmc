@@ -54,7 +54,6 @@
 #include "utils/URIUtils.h"
 #include "Util.h"
 #include "URL.h"
-#include "pvr/PVRManager.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -93,7 +92,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
-using namespace PVR;
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -1641,15 +1639,7 @@ int CBuiltins::Execute(const CStdString& execString)
       bool enable = !addon->Enabled();
       CLog::Log(LOGDEBUG, "%s - %s add-on '%s'", __FUNCTION__, enable ? "enabling" : "disabling", addon->Name().c_str());
 
-      // enable/disable in the addon db
-      CAddonDatabase database;
-      database.Open();
-      database.DisableAddon(addon->ID(), !enable);
-      database.Close();
-
-      // reset pvrmanager
-      if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
-        g_PVRManager.Start();
+      CAddonMgr::Get().DisableAddon(addon->ID(), !enable);
     }
     else
     {
