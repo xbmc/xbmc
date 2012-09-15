@@ -2328,7 +2328,21 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     {
       CStdString strPath2 = URIUtils::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j]);
       if (CDirectory::Exists(strPath2))
-        strLookInPaths.push_back(strPath2);
+      {
+        //check that no duplicate paths are added for case-insesitive sources e.g.
+        //subs and Subs would cause duplicate subtitles to be loaded.
+        bool bInsert = true;
+        for (int k=0; k<strLookInPaths.size(); k++)
+        {
+          if(0 == strLookInPaths[k].CompareNoCase(strPath2))
+          {
+            bInsert = false;
+            break;
+          }
+        }
+        if (bInsert)
+          strLookInPaths.push_back(strPath2);
+      }
     }
   }
   // .. done checking for common subdirs
