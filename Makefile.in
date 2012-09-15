@@ -388,11 +388,16 @@ endif
 imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
+pvraddons: exports
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons
+endif
+
 codecs: papcodecs dvdpcodecs
 
 libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
-externals: codecs libs visualizations screensavers libaddon
+externals: codecs libs visualizations screensavers libaddon pvraddons
 
 ADDON_BINDINGS = xbmc/interfaces/legacy/legacy.a
 ADDON_BINDINGS += xbmc/interfaces/python/python_binding.a
@@ -495,6 +500,9 @@ endif
 
 install-arch:
 	@# Arch dependent files
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons install
+endif
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
 	@find -E system addons -type f -not -iregex ".*svn.*" \
 		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
@@ -511,7 +519,7 @@ ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*\.so|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*\.so|.*\.vis|.*\.xbs|.*\.pvr" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 
@@ -550,7 +558,7 @@ ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pvr" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 	@# Icons and links
@@ -591,11 +599,15 @@ clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-libaddons:
 	for d in $(LIBADDON_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-pvraddons:
+ifeq (@USE_PVR_ADDONS@,1)
+	if test -f pvr-addons/Makefile; then $(MAKE) -C pvr-addons clean; fi;
+endif
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-screensavers clean-visualisations clean-libaddons
+	clean-screensavers clean-visualisations clean-libaddons clean-pvraddons
 
 ifeq (1,@GTEST_CONFIGURED@)
 check: testsuite
