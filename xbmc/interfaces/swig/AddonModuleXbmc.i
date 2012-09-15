@@ -83,12 +83,12 @@ using namespace xbmc;
         PyXBMCGetUnicodeString(item,pObject,"item","Player::play");
         XBMCAddon::xbmcgui::ListItem* pListItem = 
           (pObjectListItem ? 
-           (XBMCAddon::xbmcgui::ListItem *)retrieveApiInstance(pObjectListItem,"p.XBMCAddon::xbmcgui::ListItem","XBMCAddon::xbmcgui::","play") :
+           (XBMCAddon::xbmcgui::ListItem *)retrieveApiInstance(pObjectListItem,"p.XBMCAddon::xbmcgui::ListItem","XBMCAddon::xbmc::","play") :
            NULL);
         player->playStream(item,pListItem,windowed);
       }
       else // pObject must be a playlist
-        player->playPlaylist((PlayList *)retrieveApiInstance(pObject,"p.PlayList","XBMCAddon::xbmcgui::", "play"), windowed);
+        player->playPlaylist((PlayList *)retrieveApiInstance(pObject,"p.PlayList","XBMCAddon::xbmc::","play"), windowed);
     }
     catch (const XbmcCommons::Exception& e)
     { 
