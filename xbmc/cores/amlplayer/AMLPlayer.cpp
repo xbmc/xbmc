@@ -311,6 +311,12 @@ static const char* AudioCodecName(int aformat)
     case AFORMAT_VORBIS:
       format = "vorbis";
       break;
+    case AFORMAT_AAC_LATM:
+      format = "aac-latm";
+      break;
+    case AFORMAT_APE:
+      format = "ape";
+      break;
     default:
       format = "unknown";
       break;
@@ -534,7 +540,7 @@ CAMLPlayer::CAMLPlayer(IPlayerCallback &callback)
 #else
   m_log_level = 3;
 #endif
-  m_StopPlaying = false;
+  m_bAbortRequest = false;
 
   // for external subtitles
   m_dvdOverlayContainer = new CDVDOverlayContainer;
@@ -560,6 +566,8 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     if (IsRunning())
       CloseFile();
 
+    m_bAbortRequest = false;
+
     m_item = file;
     m_options = options;
 
@@ -567,7 +575,7 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     m_duration_ms =  0;
 
     m_audio_info  = "none";
-    m_audio_delay = g_settings.m_currentVideoSettings.m_AudioDelay;
+    m_audio_delay = 0;
     m_audio_passthrough_ac3 = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     m_audio_passthrough_dts = g_guiSettings.GetBool("audiooutput.dtspassthrough");
 
@@ -591,7 +599,6 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 
     ClearStreamInfos();
 
-    m_StopPlaying = false;
     // setup to spin the busy dialog until we are playing
     m_ready.Reset();
 
@@ -603,13 +610,13 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     {
       CGUIDialogBusy *dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
       dialog->Show();
-      while (!m_StopPlaying && !m_ready.WaitMSec(1))
+      while (!m_ready.WaitMSec(1))
         g_windowManager.ProcessRenderLoop(false);
       dialog->Close();
     }
 
     // Playback might have been stopped due to some error.
-    if (m_bStop || m_StopPlaying)
+    if (m_bStop || m_bAbortRequest)
       return false;
 
     return true;
@@ -626,7 +633,7 @@ bool CAMLPlayer::CloseFile()
   CLog::Log(LOGDEBUG, "CAMLPlayer::CloseFile");
 
   // set the abort request so that other threads can finish up
-  m_StopPlaying = true;
+  m_bAbortRequest = true;
 
   CLog::Log(LOGDEBUG, "CAMLPlayer: waiting for threads to exit");
   // wait for the main thread to finish up
@@ -651,7 +658,7 @@ void CAMLPlayer::Pause()
   CLog::Log(LOGDEBUG, "CAMLPlayer::Pause");
   CSingleLock lock(m_aml_csection);
 
-  if ((m_pid < 0) && m_StopPlaying)
+  if ((m_pid < 0) && m_bAbortRequest)
     return;
 
   if (m_paused)
@@ -876,6 +883,23 @@ void CAMLPlayer::SetAudioStream(int SetAudioStream)
   {
     m_dll->player_aid(m_pid, m_audio_streams[m_audio_index]->id);
   }
+}
+
+void CAMLPlayer::SetAVDelay(float fValue)
+{
+  CLog::Log(LOGDEBUG, "CAMLPlayer::SetAVDelay (%f)", fValue);
+  m_audio_delay = fValue * 1000.0;
+
+  if (m_audio_streams.size() && m_dll->check_pid_valid(m_pid))
+  {
+    CSingleLock lock(m_aml_csection);
+    m_dll->audio_set_delay(m_pid, m_audio_delay);
+  }
+}
+
+float CAMLPlayer::GetAVDelay()
+{
+  return (float)m_audio_delay / 1000.0;
 }
 
 void CAMLPlayer::SetSubTitleDelay(float fValue = 0.0f)
@@ -1110,7 +1134,7 @@ int CAMLPlayer::GetAudioBitrate()
   CSingleLock lock(m_aml_csection);
   if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
     return 0;
-  
+
   return m_audio_streams[m_audio_index]->bit_rate;
 }
 
@@ -1119,7 +1143,7 @@ int CAMLPlayer::GetVideoBitrate()
   CSingleLock lock(m_aml_csection);
   if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
     return 0;
-  
+
   return m_video_streams[m_video_index]->bit_rate;
 }
 
@@ -1198,7 +1222,7 @@ void CAMLPlayer::ToFFRW(int iSpeed)
   CLog::Log(LOGDEBUG, "CAMLPlayer::ToFFRW: iSpeed(%d), m_speed(%d)", iSpeed, m_speed);
   CSingleLock lock(m_aml_csection);
 
-  if (!m_dll->check_pid_valid(m_pid) && m_StopPlaying)
+  if (!m_dll->check_pid_valid(m_pid) && m_bAbortRequest)
     return;
 
   if (m_speed != iSpeed)
@@ -1263,13 +1287,13 @@ void CAMLPlayer::OnStartup()
 void CAMLPlayer::OnExit()
 {
   //CLog::Log(LOGNOTICE, "CAMLPlayer::OnExit()");
-  usleep(500 * 1000);
+  Sleep(1000);
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if (m_options.identify == false)
   {
-    if (m_StopPlaying)
+    if (m_bAbortRequest)
       m_callback.OnPlayBackStopped();
     else
       m_callback.OnPlayBackEnded();
@@ -1358,6 +1382,13 @@ void CAMLPlayer::Process()
       vfs_protocol.name = http_name;
       url = "xb-" + url;
     }
+    else if (url.Left(strlen("hdhomerun://")).Equals("hdhomerun://"))
+    {
+      // the name string needs to persist
+      static const char *http_name = "xb-hdhomerun";
+      vfs_protocol.name = http_name;
+      url = "xb-" + url;
+    }
     CLog::Log(LOGDEBUG, "CAMLPlayer::Process: URL=%s", url.c_str());
 
     if (m_dll->player_init() != PLAYER_SUCCESS)
@@ -1378,7 +1409,7 @@ void CAMLPlayer::Process()
     m_dll->player_register_update_callback(&play_control.callback_fn, &UpdatePlayerInfo, 1000);
     // amlplayer owns file_name and will release on exit
     play_control.file_name = (char*)strdup(url.c_str());
-    //play_control.nosound   = 1; // if disable audio...,must call this api
+    //play_control->nosound   = 1; // if disable audio...,must call this api
     play_control.video_index = -1; //MUST
     play_control.audio_index = -1; //MUST
     play_control.sub_index   = -1; //MUST
@@ -1445,6 +1476,8 @@ void CAMLPlayer::Process()
       // check for video in media content
       if (GetVideoStreamCount() > 0)
       {
+        SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
+
         // turn on/off subs
         SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
         SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
@@ -1480,7 +1513,8 @@ void CAMLPlayer::Process()
       if (m_options.identify == false)
         m_callback.OnPlayBackStarted();
 
-      while (!m_StopPlaying)
+      bool stopPlaying = false;
+      while (!m_bAbortRequest && !stopPlaying)
       {
         player_status pstatus = (player_status)GetPlayerSerializedState();
         switch(pstatus)
@@ -1526,6 +1560,14 @@ void CAMLPlayer::Process()
             break;
 
           case PLAYER_ERROR:
+            if (m_log_level > 5)
+            {
+              printf("CAMLPlayer::Process PLAYER_ERROR\n");
+              printf("CAMLPlayer::Process: %s\n", m_dll->player_status2str(pstatus));
+            }
+            m_bAbortRequest = true;
+            break;
+
           case PLAYER_STOPED:
           case PLAYER_EXIT:
             if (m_log_level > 5)
@@ -1533,7 +1575,7 @@ void CAMLPlayer::Process()
               CLog::Log(LOGDEBUG, "CAMLPlayer::Process PLAYER_STOPED");
               CLog::Log(LOGDEBUG, "CAMLPlayer::Process: %s", m_dll->player_status2str(pstatus));
             }
-            m_StopPlaying = true;
+            stopPlaying = true;
             break;
         }
         usleep(250 * 1000);
@@ -1603,6 +1645,7 @@ void CAMLPlayer::GetScalingMethods(Features* scalingMethods)
 
 void CAMLPlayer::GetAudioCapabilities(Features* audioCaps)
 {
+  audioCaps->push_back(IPC_AUD_OFFSET);
   audioCaps->push_back(IPC_AUD_SELECT_STREAM);
   return;
 }
@@ -1738,7 +1781,7 @@ bool CAMLPlayer::CheckPlaying()
 
 bool CAMLPlayer::WaitForStopped(int timeout_ms)
 {
-  while (!m_StopPlaying && (timeout_ms > 0))
+  while (!m_bAbortRequest && (timeout_ms > 0))
   {
     player_status pstatus = (player_status)GetPlayerSerializedState();
     if (m_log_level > 5)
@@ -1753,7 +1796,7 @@ bool CAMLPlayer::WaitForStopped(int timeout_ms)
       case PLAYER_STOPED:
       case PLAYER_ERROR:
       case PLAYER_EXIT:
-        m_StopPlaying = true;
+        m_bAbortRequest = true;
         return true;
         break;
     }
@@ -1764,7 +1807,7 @@ bool CAMLPlayer::WaitForStopped(int timeout_ms)
 
 bool CAMLPlayer::WaitForSearchOK(int timeout_ms)
 {
-  while (!m_StopPlaying && (timeout_ms > 0))
+  while (!m_bAbortRequest && (timeout_ms > 0))
   {
     player_status pstatus = (player_status)GetPlayerSerializedState();
     if (m_log_level > 5)
@@ -1779,7 +1822,7 @@ bool CAMLPlayer::WaitForSearchOK(int timeout_ms)
         return false;
       case PLAYER_ERROR:
       case PLAYER_EXIT:
-        m_StopPlaying = true;
+        m_bAbortRequest = true;
         return false;
         break;
       case PLAYER_SEARCHOK:
@@ -1793,7 +1836,7 @@ bool CAMLPlayer::WaitForSearchOK(int timeout_ms)
 
 bool CAMLPlayer::WaitForPlaying(int timeout_ms)
 {
-  while (!m_StopPlaying && (timeout_ms > 0))
+  while (!m_bAbortRequest && (timeout_ms > 0))
   {
     player_status pstatus = (player_status)GetPlayerSerializedState();
     if (m_log_level > 5)
@@ -1806,7 +1849,7 @@ bool CAMLPlayer::WaitForPlaying(int timeout_ms)
         break;
       case PLAYER_ERROR:
       case PLAYER_EXIT:
-        m_StopPlaying = true;
+        m_bAbortRequest = true;
         return false;
         break;
       case PLAYER_RUNNING:
@@ -1833,7 +1876,7 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
         break;
       case PLAYER_ERROR:
       case PLAYER_EXIT:
-        m_StopPlaying = true;
+        m_bAbortRequest = true;
         return false;
         break;
       case PLAYER_INITOK:
@@ -1877,6 +1920,8 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             info->type            = STREAM_VIDEO;
             info->width           = media_info.video_info[i]->width;
             info->height          = media_info.video_info[i]->height;
+            info->aspect_ratio_num= media_info.video_info[i]->aspect_ratio_num;
+            info->aspect_ratio_den= media_info.video_info[i]->aspect_ratio_den;
             info->frame_rate_num  = media_info.video_info[i]->frame_rate_num;
             info->frame_rate_den  = media_info.video_info[i]->frame_rate_den;
             info->bit_rate        = media_info.video_info[i]->bit_rate;
@@ -2189,7 +2234,6 @@ void CAMLPlayer::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   float zoom = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
   if ((int)(zoom * 1000) != (int)(m_zoom * 1000))
   {
-    SetVideoZoom(zoom);
     m_zoom = zoom;
   }
   // video contrast adjustment.
@@ -2238,24 +2282,19 @@ void CAMLPlayer::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     dst_rect.y1 *= yscale;
     dst_rect.y2 *= yscale;
   }
-  // destination rectangle cannot be outside display bounds
-  if (!display.PtInRect(CPoint(dst_rect.x1, dst_rect.y1)))
-    return;
-  if (!display.PtInRect(CPoint(dst_rect.x2, dst_rect.y2)))
-    return;
 
   ShowMainVideo(false);
 
   char video_axis[256] = {0};
   sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2, (int)dst_rect.y2);
   set_sysfs_str("/sys/class/video/axis", video_axis);
-
+/*
   CStdString rectangle;
   rectangle.Format("%i,%i,%i,%i",
     (int)dst_rect.x1, (int)dst_rect.y1,
     (int)dst_rect.Width(), (int)dst_rect.Height());
   CLog::Log(LOGDEBUG, "CAMLPlayer::SetVideoRect:dst_rect(%s)", rectangle.c_str());
-
+*/
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
   ShowMainVideo(true);

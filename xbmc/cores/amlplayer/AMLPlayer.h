@@ -92,8 +92,8 @@ public:
   virtual bool  IsRecording()                                     {return false;};
   virtual bool  Record(bool bOnOff)                               {return false;};
 
-  virtual void  SetAVDelay(float fValue = 0.0f)                   {return;}
-  virtual float GetAVDelay()                                      {return 0.0f;};
+  virtual void  SetAVDelay(float fValue = 0.0f);
+  virtual float GetAVDelay();
 
   virtual void  SetSubTitleDelay(float fValue);
   virtual float GetSubTitleDelay();
@@ -200,7 +200,7 @@ private:
   int                     m_cpu;
   int                     m_speed;
   bool                    m_paused;
-  bool                    m_StopPlaying;
+  bool                    m_bAbortRequest;
   CEvent                  m_ready;
   CFileItem               m_item;
   CPlayerOptions          m_options;

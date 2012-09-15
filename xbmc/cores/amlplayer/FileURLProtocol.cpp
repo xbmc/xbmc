@@ -56,7 +56,10 @@ int CFileURLProtocol::Open(AML_URLContext *h, const char *filename, int flags)
   {
     url = url.Right(url.size() - strlen("xb-"));
   }
-
+  else if (url.Left(strlen("xb-hdhomerun://")).Equals("xb-hdhomerun://"))
+  {
+    url = url.Right(url.size() - strlen("xb-"));
+  }
   CLog::Log(LOGDEBUG, "CFileURLProtocol::Open filename2(%s)", url.c_str());
   // open the file, always in read mode, calc bitrate
   unsigned int cflags = READ_BITRATE;
