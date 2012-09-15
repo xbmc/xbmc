@@ -2554,7 +2554,9 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr ""
 
-#empty string with id 714
+msgctxt "#714"
+msgid "- Network Connection"
+msgstr ""
 
 msgctxt "#715"
 msgid "- Assignment"
@@ -11014,8 +11016,20 @@ msgctxt "#33200"
 msgid "Detected New Connection"
 msgstr ""
 
-#empty strings from id 33201 to 33999
+msgctxt "#33201"
+msgid "Available connections"
+msgstr ""
+
+msgctxt "#33202"
+msgid "Disconnected"
+msgstr ""
+
+msgctxt "#33203"
+msgid "Connecting"
+msgstr ""
+
 #translators: no need to add these to your language files
+#empty strings from id 33204 to 33999
 
 msgctxt "#34000"
 msgid "Lame"

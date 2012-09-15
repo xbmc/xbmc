@@ -71,8 +71,8 @@ namespace MathUtils
   */
   inline int round_int(double x)
   {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast<double>(INT_MAX / 2) + 1.0);
+//    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
+//    assert(x < static_cast<double>(INT_MAX / 2) + 1.0);
     const float round_to_nearest = 0.5f;
     int i;
 

@@ -69,7 +69,6 @@ private:
   double GetCPUFrequency();
   CStdString GetSystemUpTime(bool bTotalUptime);
   CStdString GetCPUFreqInfo();
-  CStdString GetMACAddress();
   CStdString GetVideoEncoder();
   CStdString GetBatteryLevel();
 

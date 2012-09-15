@@ -1099,6 +1099,7 @@ lib/cmyth/Makefile
 
 # /xbmc/network/
 /xbmc/network/Makefile
+/xbmc/network/linux/Makefile
 /xbmc/network/upnp/Makefile
 
 # /lib/libRTV/

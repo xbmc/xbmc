@@ -183,6 +183,10 @@ class CAdvancedSettings
     int m_logLevelHint;
     CStdString m_cddbAddress;
 
+    // network manager
+    bool m_enableNetworkManager;
+    bool m_showNetworkPassPhrase;
+
     //airtunes + airplay
     bool m_logEnableAirtunes;
     int m_airTunesPort;

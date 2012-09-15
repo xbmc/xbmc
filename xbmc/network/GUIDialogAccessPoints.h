@@ -1,8 +1,6 @@
-#ifndef GUI_DIALOG_ACCES_POINTS
-#define GUI_DIALOG_ACCES_POINTS
-
+#pragma once
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,8 +14,9 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
@@ -25,29 +24,35 @@
 
 #include <vector>
 #include "guilib/GUIDialog.h"
-#include "Network.h"
+#include "IConnection.h"
+#include "utils/Job.h"
+
+
+const std::string EncodeAccessPointParam(const std::string name, const CIPConfig &ipconfig);
 
 class CFileItemList;
 
-class CGUIDialogAccessPoints : public CGUIDialog
+class CGUIDialogAccessPoints : public CGUIDialog, public IJobCallback
 {
 public:
   CGUIDialogAccessPoints(void);
   virtual ~CGUIDialogAccessPoints(void);
-  virtual void OnInitWindow();
   virtual bool OnAction(const CAction &action);
-  void SetInterfaceName(CStdString interfaceName);
-  CStdString GetSelectedAccessPointEssId();
-  EncMode GetSelectedAccessPointEncMode();
-  bool WasItemSelected();
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnBack(int actionID);
 
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 private:
-  std::vector<NetworkAccessPoint> m_aps;
-  CStdString m_interfaceName;
-  CStdString m_selectedAPEssId;
-  EncMode m_selectedAPEncMode;
-  bool m_wasItemSelected;
-  CFileItemList *m_accessPoints;
-};
+  void UpdateConnectionList();
+  void DecodeAccessPointParam(const std::string &param);
 
-#endif
+  static const char *ConnectionStateToString(ConnectionState state);
+  static const char *ConnectionTypeToString(ConnectionType type);
+  static const char *EncryptionToString(EncryptionType type);
+
+  std::string   m_ipname;
+  CIPConfig     m_ipconfig;
+  bool          m_use_ipconfig;
+  bool          m_doing_connection;
+  CFileItemList *m_connectionsFileList;
+};

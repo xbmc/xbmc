@@ -18,7 +18,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "system.h"
 #include "utils/AlarmClock.h"
 #include "utils/Screenshot.h"
@@ -1263,8 +1262,8 @@ int CBuiltins::Execute(const CStdString& execString)
       g_application.StopVideoScan();
 
     ADDON::CAddonMgr::Get().StopServices(true);
+    g_application.getNetworkManager().NetworkMessage(CNetworkManager::SERVICES_DOWN,1);
 
-    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadMasterForLogin();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
@@ -1519,7 +1518,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("wakeonlan"))
   {
-    g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
+    g_application.getNetworkManager().WakeOnLan((char*)params[0].c_str());
   }
   else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
   {

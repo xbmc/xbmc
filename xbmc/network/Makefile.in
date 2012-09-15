@@ -5,13 +5,16 @@ SRCS += EventPacket.cpp
 SRCS += EventServer.cpp
 SRCS += GUIDialogAccessPoints.cpp
 SRCS += GUIDialogNetworkSetup.cpp
-SRCS += Network.cpp
 SRCS += Socket.cpp
 SRCS += TCPServer.cpp
 SRCS += UdpClient.cpp
 SRCS += WebServer.cpp
 SRCS += ZeroconfBrowser.cpp
 SRCS += Zeroconf.cpp
+SRCS += NetworkManager.cpp
+SRCS += NetworkUtils.cpp
+SRCS += NullNetworkManager.cpp
+SRCS += ConnectionJob.cpp
 
 ifeq (@USE_AIRPLAY@, 1)
 SRCS += AirPlayServer.cpp

@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "network/Network.h"
 #if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 #endif
@@ -472,21 +471,13 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 {
   bool success = false;
   CStdString pw = password;
-  CNetworkInterface *net = g_application.getNetwork().GetFirstConnectedInterface();
   StopServer(true);
 
-  if (net)
+  m_macAddress = g_application.getNetworkManager().GetDefaultConnectionMacAddress();
+  m_macAddress.Replace(":","");
+  while (m_macAddress.size() < 12)
   {
-    m_macAddress = net->GetMacAddress();
-    m_macAddress.Replace(":","");
-    while (m_macAddress.size() < 12)
-    {
-      m_macAddress = CStdString("0") + m_macAddress;
-    }
-  }
-  else
-  {
-    m_macAddress = "000102030405";
+    m_macAddress = CStdString("0") + m_macAddress;
   }
 
   if (!usePassword)

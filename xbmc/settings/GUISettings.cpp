@@ -18,7 +18,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "GUISettings.h"
 #include <limits.h>
 #include <float.h>
@@ -549,36 +548,21 @@ void CGUISettings::Initialize()
 #endif
 
   CSettingsCategory* net = AddCategory(SETTINGS_SYSTEM, "network", 798);
-  if (g_application.IsStandAlone())
-  {
-#if !defined(TARGET_DARWIN)
-    AddString(NULL, "network.interface",775,"", SPIN_CONTROL_TEXT);
-
-    map<int, int> networkAssignments;
-    networkAssignments.insert(make_pair(716, NETWORK_DHCP));
-    networkAssignments.insert(make_pair(717, NETWORK_STATIC));
-    networkAssignments.insert(make_pair(787, NETWORK_DISABLED));
-    AddInt(NULL, "network.assignment", 715, NETWORK_DHCP, networkAssignments, SPIN_CONTROL_TEXT);
-    AddString(NULL, "network.ipaddress", 719, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.subnet", 720, "255.255.255.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
-    AddString(NULL, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
-
-    map<int, int> networkEncapsulations;
-    networkEncapsulations.insert(make_pair(780, ENC_NONE));
-    networkEncapsulations.insert(make_pair(781, ENC_WEP));
-    networkEncapsulations.insert(make_pair(782, ENC_WPA));
-    networkEncapsulations.insert(make_pair(783, ENC_WPA2));
-    AddInt(NULL, "network.enc", 778, ENC_NONE, networkEncapsulations, SPIN_CONTROL_TEXT);
-    AddString(NULL, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
-#ifndef _WIN32
-    AddString(NULL, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
-#endif
-    AddSeparator(NULL, "network.sep1");
-#endif
-  }
+  AddString(net,    "network.connection",            714, "",               BUTTON_CONTROL_STANDARD);
+  map<int, int> networkMethod;
+  networkMethod.insert(make_pair(                    716, IP_CONFIG_DHCP));
+  networkMethod.insert(make_pair(                    717, IP_CONFIG_STATIC));
+  AddInt(   net,    "network.method",                715, IP_CONFIG_DHCP, networkMethod, SPIN_CONTROL_TEXT);
+  AddString(net,    "network.address",               719, "0.0.0.0",        EDIT_CONTROL_IP_INPUT);
+  AddString(net,    "network.netmask",               720, "255.255.255.0",  EDIT_CONTROL_IP_INPUT);
+  AddString(net,    "network.gateway",               721, "0.0.0.0",        EDIT_CONTROL_IP_INPUT);
+  AddString(net,    "network.nameserver",            722, "0.0.0.0",        EDIT_CONTROL_IP_INPUT);
+  AddString(net,    "network.apply",                 779, "",               BUTTON_CONTROL_STANDARD);
+  // add hidden essid/passphrase so we can save/restore it
+  AddString(NULL,   "network.essid",                 776, "",               EDIT_CONTROL_INPUT);
+  AddString(NULL,   "network.passphrase",            777, "",               EDIT_CONTROL_INPUT);
+  //
+  AddSeparator(net, "network.sep1");
   AddBool(net, "network.usehttpproxy", 708, false);
   AddString(net, "network.httpproxyserver", 706, "", EDIT_CONTROL_INPUT);
   AddString(net, "network.httpproxyport", 730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);

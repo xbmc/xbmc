@@ -314,7 +314,7 @@
 #define ACTION_SUBTITLE_ALIGN         232 // toggle vertical alignment of subtitles
 
 #define ACTION_FILTER                 233
-
+#define ACTION_CONNECTIONS_REFRESH    300
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000

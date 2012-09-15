@@ -18,7 +18,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "MusicDatabase.h"
@@ -2390,7 +2389,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // check network connectivity
-  if (!g_application.getNetwork().IsAvailable())
+  if (!g_application.getNetworkManager().IsAvailable())
     return false;
 
   // Get information for the inserted disc

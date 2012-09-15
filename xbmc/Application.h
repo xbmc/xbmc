@@ -53,6 +53,8 @@ namespace MEDIA_DETECT
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
+#include "network/NetworkManager.h"
+#include "security/KeyringManager.h"
 #include "utils/Stopwatch.h"
 #include "utils/CharsetConverter.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -265,7 +267,10 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-  CNetwork& getNetwork();
+  CNetworkManager& getNetworkManager();
+
+  CKeyringManager& getKeyringManager();
+
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
@@ -460,7 +465,8 @@ protected:
 
   CSeekHandler *m_seekHandler;
   CInertialScrollingHandler *m_pInertialScrollingHandler;
-  CNetwork    *m_network;
+  CNetworkManager m_network;
+  CKeyringManager m_keyringManager;
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
 #endif
