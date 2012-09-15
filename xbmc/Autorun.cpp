@@ -207,7 +207,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         // Check if the current foldername indicates a HD DVD structure (default is "HVDVD_TS").
         // Most HD DVD will also include an "ADV_OBJ" folder for advanced content. This folder should be handled first.
         // ToDo: for the time beeing, the DVD autorun settings are used to determine if the HD DVD should be started automatically.
-        CFileItemList items;
+        CFileItemList items, sitems;
         
         // Advanced Content HD DVD (most discs?)
         if (name.Equals("ADV_OBJ"))
@@ -243,13 +243,41 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
               phddvdItem = pItem; 
               hddvdname = URIUtils::GetFileName(items[0]->GetPath());
               CLog::Log(LOGINFO,"HD DVD: " + items[0]->GetPath());
-			         }
+            }
           }
-          // Find *.evo files for internal playback.
+          // Find and sort *.evo files for internal playback.
+          // While this algorithm works for all of my HD DVDs, it may fail on other discs. If there are very large extras which are
+          // alphabetically before the main movie they will be sorted to the top of the playlist and get played first.
           CDirectory::GetDirectory(pItem->GetPath(), items, "*.evo");
-          // ToDo: add logic to identify main movie   
-          items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
-          	  
+          if (items.Size())
+          {
+            // Sort *.evo files in alphabetical order.
+            items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+            int64_t asize = 0;
+            int ecount = 0;
+            // calculate average size of elements above 1gb
+            for (int j = 0; j < items.Size(); j++)
+              if (items[j]->m_dwSize > 1000000000)
+              {
+                ecount++;
+                asize = asize + items[j]->m_dwSize;
+              }
+            asize = asize / ecount;
+            // Put largest files in alphabetical order to top of new list.
+            for (int j = 0; j < items.Size(); j++)
+              if (items[j]->m_dwSize >= asize)
+                sitems.Add (items[j]);
+            // Sort *.evo files by size.
+            items.Sort(SORT_METHOD_SIZE, SortOrderDescending);
+            // Add other files with descending size to bottom of new list.
+            for (int j = 0; j < items.Size(); j++)
+              if (items[j]->m_dwSize < asize)
+                sitems.Add (items[j]);
+            // Replace list with optimized list.
+            items.Clear();
+            items.Copy (sitems);
+            sitems.Clear();
+          }
           if (hddvdname != "")
           {
             CFileItem item(URIUtils::AddFileToFolder(phddvdItem->GetPath(), hddvdname), false);
