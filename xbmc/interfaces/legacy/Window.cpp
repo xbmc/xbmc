@@ -190,11 +190,6 @@ namespace XBMCAddon
     Control* Window::GetControlById(int iControlId) throw (WindowException)
     {
       TRACE;
-      CLog::Log(LOGDEBUG,"Window_GetControlById control id: %d",iControlId);
-      if (iControlId == 0)
-      {
-        int i = 12 + 1;
-      }
 
       // find in window vector first!!!
       // this saves us from creating a complete new control
