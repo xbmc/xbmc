@@ -666,6 +666,8 @@ void CWinSystemX11::NotifyXRREvent()
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
   m_windowDirty = true;
 
+  CSingleLock lock(g_graphicsContext);
+
   if (!g_xrandr.Query(true))
   {
     CLog::Log(LOGERROR, "WinSystemX11::RefreshWindow - failed to query xrandr");
