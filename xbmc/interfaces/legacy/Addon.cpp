@@ -69,12 +69,9 @@ namespace XBMCAddon
         }
         else
         {
-          CStdString errorMessage ("Could not get AddonPtr given a script id of ");
-          errorMessage += id;
-          errorMessage += ". If you are trying to use 'os.getcwd' to set the path, you cannot do that in a ";
-          errorMessage += version.Print();
-          errorMessage += " plugin.";
-          throw AddonException(errorMessage.c_str());
+          throw AddonException("Could not get AddonPtr given a script id of %s."
+                               "If you are trying to use 'os.getcwd' to set the path, you cannot do that in a %s plugin.", 
+                               id.c_str(), version.Print().c_str());
         }
       }
 

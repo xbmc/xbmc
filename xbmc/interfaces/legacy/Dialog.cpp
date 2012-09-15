@@ -135,7 +135,7 @@ namespace XBMCAddon
       std::string mask = maskparam;
       VECSOURCES *shares = g_settings.GetSourcesFromType(s_shares);
       if (!shares) 
-        throw WindowException(((std::string("Error: GetSourcesFromType given ") += s_shares) += " is NULL.").c_str());
+        throw WindowException("Error: GetSourcesFromType given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && (!maskparam.empty() && !maskparam.size() == 0))
         mask += "|.rar|.zip";
@@ -159,7 +159,7 @@ namespace XBMCAddon
       CStdStringArray tmpret;
       String lmask = mask;
       if (!shares) 
-        throw WindowException(((std::string("Error: GetSourcesFromType given ") += s_shares) += " is NULL.").c_str());
+        throw WindowException("Error: GetSourcesFromType given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && (!lmask.empty() && !(lmask.size() == 0)))
         lmask += "|.rar|.zip";
@@ -169,7 +169,7 @@ namespace XBMCAddon
       else if (type == 2)
         CGUIDialogFileBrowser::ShowAndGetImageList(*shares, heading, tmpret);
       else
-        throw WindowException(((std::string("Error: Cannot retreive multuple directories using browse ") += s_shares) += " is NULL.").c_str());
+        throw WindowException("Error: Cannot retreive multuple directories using browse %s is NULL.",s_shares.c_str());
 
       std::vector<String> valuelist;
       int index = 0;

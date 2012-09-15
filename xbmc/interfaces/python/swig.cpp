@@ -119,7 +119,7 @@ namespace PythonBindings
     return false;
   }
 
-  PythonToCppException::PythonToCppException() : XbmcCommons::UncheckedException("")
+  PythonToCppException::PythonToCppException() : XbmcCommons::UncheckedException(" ")
   {
     setClassname("PythonToCppException");
 

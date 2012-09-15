@@ -190,6 +190,12 @@ namespace XBMCAddon
     Control* Window::GetControlById(int iControlId) throw (WindowException)
     {
       TRACE;
+      CLog::Log(LOGDEBUG,"Window_GetControlById control id: %d",iControlId);
+      if (iControlId == 0)
+      {
+        int i = 12 + 1;
+      }
+
       // find in window vector first!!!
       // this saves us from creating a complete new control
       std::vector<AddonClass::Ref<Control> >::iterator it = vecControls.begin();
@@ -210,9 +216,7 @@ namespace XBMCAddon
       if (!pGUIControl)
       {
         // control does not exist.
-        CStdString error;
-        error.Format("Non-Existent Control %d",iControlId);
-        throw WindowException(error.c_str());
+        throw WindowException("Non-Existent Control %d",iControlId);
       }
 
       // allocate a new control with a new reference
@@ -644,10 +648,10 @@ namespace XBMCAddon
     {
       TRACE;
       if(pControl == NULL)
-        throw new WindowException("NULL Control passed to WindowBase::addControl");
+        throw WindowException("NULL Control passed to WindowBase::addControl");
 
       if(pControl->iControlId != 0)
-        throw new WindowException("Control is already used");
+        throw WindowException("Control is already used");
 
       // lock xbmc GUI before accessing data from it
       CSingleLock lock(g_graphicsContext);
