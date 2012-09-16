@@ -30,7 +30,7 @@
 TEST(TestFileOperationJob, ActionCopy)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath, destfile;
+  CStdString tmpfilepath, destpath;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -43,21 +43,19 @@ TEST(TestFileOperationJob, ActionCopy)
   item->Select(true);
   items.Add(item);
 
-  URIUtils::GetDirectory(tmpfilepath, destpath);
-  destpath = URIUtils::AddFileToFolder(destpath, "copy");
-  destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
-  ASSERT_FALSE(XFILE::CFile::Exists(destfile));
+  destpath = tmpfilepath;
+  destpath += ".copy";
+  ASSERT_FALSE(XFILE::CFile::Exists(destpath));
 
   job.SetFileOperation(CFileOperationJob::ActionCopy, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionCopy, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
   EXPECT_TRUE(XFILE::CFile::Exists(tmpfilepath));
-  EXPECT_TRUE(XFILE::CFile::Exists(destfile));
+  EXPECT_TRUE(XFILE::CFile::Exists(destpath));
 
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
-  EXPECT_TRUE(XFILE::CFile::Delete(destfile));
-  EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
+  EXPECT_TRUE(XFILE::CFile::Delete(tmpfilepath));
+  EXPECT_TRUE(XFILE::CFile::Delete(destpath));
 }
 
 TEST(TestFileOperationJob, ActionMove)
