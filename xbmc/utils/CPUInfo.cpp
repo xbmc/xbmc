@@ -107,7 +107,8 @@ CCPUInfo::CCPUInfo(void)
 
 #if defined(TARGET_DARWIN)
   size_t len = 4;
-
+  std::string cpuVendor;
+  
   // The number of cores.
   if (sysctlbyname("hw.activecpu", &m_cpuCount, &len, NULL, 0) == -1)
       m_cpuCount = 1;
@@ -123,13 +124,54 @@ CCPUInfo::CCPUInfo(void)
   len = 512;
   if (sysctlbyname("machdep.cpu.brand_string", &buffer, &len, NULL, 0) == 0)
     m_cpuModel = buffer;
+
+  // The CPU vendor
+  len = 512;
+  if (sysctlbyname("machdep.cpu.vendor", &buffer, &len, NULL, 0) == 0)
+    cpuVendor = buffer;
+  
 #endif
+  
+  // The CPU features
+  len = 512;
+  if (sysctlbyname("machdep.cpu.features", &buffer, &len, NULL, 0) == 0)
+  {
+    char* needle = buffer;
+    if (needle)
+    {
+      char* tok = NULL,
+      * save;
+      tok = strtok_r(needle, " ", &save);
+      while (tok)
+      {
+        if (0 == strcmp(tok, "MMX"))
+          m_cpuFeatures |= CPU_FEATURE_MMX;
+        else if (0 == strcmp(tok, "MMXEXT"))
+          m_cpuFeatures |= CPU_FEATURE_MMX2;
+        else if (0 == strcmp(tok, "SSE"))
+          m_cpuFeatures |= CPU_FEATURE_SSE;
+        else if (0 == strcmp(tok, "SSE2"))
+          m_cpuFeatures |= CPU_FEATURE_SSE2;
+        else if (0 == strcmp(tok, "SSE3"))
+          m_cpuFeatures |= CPU_FEATURE_SSE3;
+        else if (0 == strcmp(tok, "SSSE3"))
+          m_cpuFeatures |= CPU_FEATURE_SSSE3;
+        else if (0 == strcmp(tok, "SSE4.1"))
+          m_cpuFeatures |= CPU_FEATURE_SSE4;
+        else if (0 == strcmp(tok, "SSE4.2"))
+          m_cpuFeatures |= CPU_FEATURE_SSE42;
+        tok = strtok_r(NULL, " ", &save);
+      }
+    }
+  }
 
   // Go through each core.
   for (int i=0; i<m_cpuCount; i++)
   {
     CoreInfo core;
     core.m_id = i;
+    core.m_strModel = m_cpuModel;
+    core.m_strVendor = cpuVendor;
     m_cores[core.m_id] = core;
   }
 
@@ -283,8 +325,10 @@ CCPUInfo::CCPUInfo(void)
               m_cpuFeatures |= CPU_FEATURE_SSE;
             else if (0 == strcmp(tok, "sse2"))
               m_cpuFeatures |= CPU_FEATURE_SSE2;
-            else if (0 == strcmp(tok, "ssse3"))
+            else if (0 == strcmp(tok, "sse3"))
               m_cpuFeatures |= CPU_FEATURE_SSE3;
+            else if (0 == strcmp(tok, "ssse3"))
+              m_cpuFeatures |= CPU_FEATURE_SSSE3;
             else if (0 == strcmp(tok, "sse4_1"))
               m_cpuFeatures |= CPU_FEATURE_SSE4;
             else if (0 == strcmp(tok, "sse4_2"))
