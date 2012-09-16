@@ -449,7 +449,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       switch( wParam&0xFFF0 )
       {
         case SC_MONITORPOWER:
-          if(g_guiSettings.GetInt("powermanagement.displaysoff") == 0)
+          if (g_application.IsPlaying() || g_application.IsPaused())
+            return 0;
+          else if(g_guiSettings.GetInt("powermanagement.displaysoff") == 0)
             return 0;
           break;
         case SC_SCREENSAVE:
