@@ -36,6 +36,7 @@ TEST(TestFileOperationJob, ActionCopy)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
@@ -67,6 +68,7 @@ TEST(TestFileOperationJob, ActionMove)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
@@ -97,6 +99,7 @@ TEST(TestFileOperationJob, ActionDelete)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
@@ -144,6 +147,7 @@ TEST(TestFileOperationJob, ActionReplace)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
@@ -181,6 +185,7 @@ TEST(TestFileOperationJob, ActionCreateFolder)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
 
   destpath = tmpfilepath;
   destpath += ".createfolder";
@@ -211,6 +216,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
 
   destpath = tmpfilepath;
   destpath += ".deletefolder";
@@ -246,6 +252,7 @@ TEST(TestFileOperationJob, GetFunctions)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
