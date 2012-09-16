@@ -118,6 +118,7 @@ protected:
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   static int XErrorHandler(Display* dpy, XErrorEvent* error);
+  bool SetResolution(RESOLUTION_INFO& res, bool fullScreen);
 
   CStopWatch m_screensaverReset;
 };

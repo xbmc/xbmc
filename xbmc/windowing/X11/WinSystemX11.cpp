@@ -376,6 +376,9 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   /* figure out what the window manager support */
   ProbeWindowManager();
 
+  /* make sure our requsted output has the right resolution */
+  SetResolution(res, fullScreen);
+
   XSetWindowAttributes swa = {0};
 
 #if defined(HAS_XRANDR)
@@ -510,7 +513,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   return true;
 }
 
-bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemX11::SetResolution(RESOLUTION_INFO& res, bool fullScreen)
 {
   bool changed = false;
   /* if we switched outputs or went to desktop, restore old resolution */
@@ -523,11 +526,15 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if(changed)
   {
-    CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - modes changed, reset device");
+    CLog::Log(LOGNOTICE, "CWinSystemX11::SetResolution - modes changed, reset device");
     OnLostDevice();
     XSync(m_dpy, False);
   }
+  return changed;
+}
 
+bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+{
   if(res.iInternal != m_visual->screen)
   {
     CreateNewWindow("", fullScreen, res, NULL);
@@ -536,6 +543,8 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     m_outputIndex = res.iScreen;
     return true;
   }
+
+  SetResolution(res, fullScreen);
 
   int x = 0, y = 0;
 #if defined(HAS_XRANDR)
