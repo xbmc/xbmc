@@ -152,6 +152,7 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
     if (!file || !file->isValid())
     {
       delete file;
+      oggFlacFile = NULL;
       file = oggVorbisFile = new Ogg::Vorbis::File(stream);
     }
   }
