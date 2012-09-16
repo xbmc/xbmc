@@ -50,7 +50,7 @@ class CDemuxStreamVideoPVRClient : public CDemuxStreamVideo
   CDVDDemuxPVRClient *m_parent;
 public:
   CDemuxStreamVideoPVRClient(CDVDDemuxPVRClient *parent)
-    : m_parent(parent)
+    : m_parent(parent), m_pParser(NULL)
   {}
   virtual ~CDemuxStreamVideoPVRClient();
   virtual void GetStreamInfo(std::string& strInfo);

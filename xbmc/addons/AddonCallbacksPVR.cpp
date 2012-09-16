@@ -81,8 +81,14 @@ CPVRClient *CAddonCallbacksPVR::GetPVRClient(void *addonData)
 
 void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
+  if (!handle)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
   CPVRChannelGroups *xbmcGroups = static_cast<CPVRChannelGroups *>(handle->dataAddress);
-  if (!handle || !group || !xbmcGroups)
+  if (!group || !xbmcGroups)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
@@ -101,9 +107,15 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HA
 
 void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
+  if (!handle)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+  
   CPVRClient *client      = GetPVRClient(addonData);
   CPVRChannelGroup *group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
-  if (!handle || !member || !client || !group)
+  if (!member || !client || !group)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
@@ -123,8 +135,14 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
 
 void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
 {
+  if (!handle)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
   CEpg *xbmcEpg = static_cast<CEpg *>(handle->dataAddress);
-  if (!handle || !xbmcEpg)
+  if (!xbmcEpg)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
@@ -136,9 +154,15 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE
 
 void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
 {
+  if (!handle)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
   CPVRClient *client                     = GetPVRClient(addonData);
   CPVRChannelGroupInternal *xbmcChannels = static_cast<CPVRChannelGroupInternal *>(handle->dataAddress);
-  if (!handle || !channel || !client || !xbmcChannels)
+  if (!channel || !client || !xbmcChannels)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
@@ -151,9 +175,15 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
 
 void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
 {
+  if (!handle)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
   CPVRClient *client             = GetPVRClient(addonData);
   CPVRRecordings *xbmcRecordings = static_cast<CPVRRecordings *>(handle->dataAddress);
-  if (!handle || !recording || !client || !xbmcRecordings)
+  if (!recording || !client || !xbmcRecordings)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
@@ -166,9 +196,15 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
 
 void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer)
 {
+  if (!handle)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
   CPVRClient *client     = GetPVRClient(addonData);
   CPVRTimers *xbmcTimers = static_cast<CPVRTimers *>(handle->dataAddress);
-  if (!handle || !timer || !client || !xbmcTimers)
+  if (!timer || !client || !xbmcTimers)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;

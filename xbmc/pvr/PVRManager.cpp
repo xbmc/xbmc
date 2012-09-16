@@ -297,7 +297,8 @@ void CPVRManager::StopUpdateThreads(void)
 bool CPVRManager::Load(void)
 {
   /* start the add-on update thread */
-  m_addons->Start();
+  if (m_addons)
+    m_addons->Start();
 
   /* load at least one client */
   while (GetState() == ManagerStateStarting && m_addons && !m_addons->HasConnectedClients())

@@ -60,7 +60,7 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   g_infoManager.RegisterObserver(this);
 }
 
-CStdString CGUIWindowPVRRecordings::GetResumeString(CFileItem item)
+CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 {
   CStdString resumeString;
   if (item.IsPVRRecording())

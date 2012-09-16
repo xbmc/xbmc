@@ -178,9 +178,9 @@ bool CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pPacket)
   {
     CDemuxStream* st = m_streamsToParse[pPacket->iStreamId];
     AVCodecParserContext* pParser = NULL;
-    if (st->type == STREAM_VIDEO)
+    if (st && st->type == STREAM_VIDEO)
       pParser = ((CDemuxStreamVideoPVRClient*)st)->m_pParser;
-    else if (st->type == STREAM_AUDIO)
+    else if (st && st->type == STREAM_AUDIO)
       pParser = ((CDemuxStreamAudioPVRClient*)st)->m_pParser;
 
     if (st && pParser)

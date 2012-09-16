@@ -553,7 +553,7 @@ bool CGUIWindowPVRCommon::ActionDeleteChannel(CFileItem *item)
 
   /* show a confirmation dialog */
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*) g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (pDialog)
+  if (!pDialog)
     return false;
   pDialog->SetHeading(19039);
   pDialog->SetLine(0, "");
@@ -689,7 +689,7 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
     CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
 
-    if (g_PVRManager.CheckParentalLock(*channel))
+    if (channel && g_PVRManager.CheckParentalLock(*channel))
     {
       /* try a fast switch */
       if (channel && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
