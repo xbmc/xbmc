@@ -182,15 +182,15 @@ TEST(TestFileOperationJob, ActionCreateFolder)
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
-  item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
-  item->Select(true);
-  items.Add(item);
-
   destpath = tmpfilepath;
   destpath += ".createfolder";
   ASSERT_FALSE(XFILE::CFile::Exists(destpath));
+
+  CFileItemPtr item(new CFileItem(destpath));
+  item->SetPath(destpath);
+  item->m_bIsFolder = true;
+  item->Select(true);
+  items.Add(item);
 
   job.SetFileOperation(CFileOperationJob::ActionCreateFolder, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionCreateFolder, job.GetAction());
