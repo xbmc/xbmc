@@ -212,15 +212,15 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
-  item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
-  item->Select(true);
-  items.Add(item);
-
   destpath = tmpfilepath;
   destpath += ".deletefolder";
   ASSERT_FALSE(XFILE::CFile::Exists(destpath));
+
+  CFileItemPtr item(new CFileItem(destpath));
+  item->SetPath(destpath);
+  item->m_bIsFolder = true;
+  item->Select(true);
+  items.Add(item);
 
   job.SetFileOperation(CFileOperationJob::ActionCreateFolder, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionCreateFolder, job.GetAction());
@@ -228,14 +228,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
   EXPECT_TRUE(job.DoWork());
   EXPECT_TRUE(XFILE::CDirectory::Exists(destpath));
 
-  items.Clear();
-  CFileItemPtr item2(new CFileItem(destpath));
-  item->SetPath(destpath);
-  item->m_bIsFolder = true;
-  item->Select(true);
-  items.Add(item2);
-
-  job.SetFileOperation(CFileOperationJob::ActionDeleteFolder, items, "");
+  job.SetFileOperation(CFileOperationJob::ActionDeleteFolder, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionDeleteFolder, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
