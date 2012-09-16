@@ -622,7 +622,7 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
   string value = pWindow->GetProperty(lowerKey.ToLower()).asString();
   Unlock();
 
-  return value.c_str();
+  return strdup(value.c_str());
 }
 
 int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle, const char *key)

@@ -122,7 +122,7 @@ DLLEXPORT const char* XBMC_get_dvd_menu_language()
     return "";
 
   string buffer = m_cb->GetDVDMenuLanguage(m_Handle->addonData);
-  return buffer.c_str();
+  return strdup(buffer.c_str());
 }
 
 };

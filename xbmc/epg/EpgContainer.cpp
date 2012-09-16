@@ -313,8 +313,7 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
     epg->RegisterObserver(this);
   }
 
-  if (epg)
-    epg->SetChannel(channel);
+  epg->SetChannel(channel);
 
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
@@ -513,21 +512,18 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       ++iUpdatedTables;
   }
 
-  if (!bInterrupted)
+  if (bInterrupted)
   {
-    if (bInterrupted)
-    {
-      /* the update has been interrupted. try again later */
-      time_t iNow;
-      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-      m_iNextEpgUpdate = iNow + g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
-    }
-    else
-    {
-      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
-      m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
-      m_bHasPendingUpdates = false;
-    }
+    /* the update has been interrupted. try again later */
+    time_t iNow;
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+    m_iNextEpgUpdate = iNow + g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
+  }
+  else
+  {
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
+    m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
+    m_bHasPendingUpdates = false;
   }
 
   if (bShowProgress && !bOnlyPending)
