@@ -123,9 +123,9 @@ TEST(TestFileOperationJob, ActionDelete)
 
   items.Clear();
   CFileItemPtr item2(new CFileItem(destpath));
-  item->SetPath(destpath);
-  item->m_bIsFolder = false;
-  item->Select(true);
+  item2->SetPath(destpath);
+  item2->m_bIsFolder = false;
+  item2->Select(true);
   items.Add(item2);
 
   job.SetFileOperation(CFileOperationJob::ActionDelete, items, "");
