@@ -342,6 +342,16 @@ CCPUInfo::CCPUInfo(void)
         }
       }
     }
+
+    /* Set some default for empty string variables */
+    if (m_cpuBogoMips.empty())
+      m_cpuBogoMips = "N/A";
+    if (m_cpuHardware.empty())
+      m_cpuHardware = "N/A";
+    if (m_cpuRevision.empty())
+      m_cpuRevision = "N/A";
+    if (m_cpuSerial.empty())
+      m_cpuSerial = "N/A";
   }
   else
   {
