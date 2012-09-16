@@ -475,22 +475,24 @@ bool CCoreAudioDevice::GetMixingSupport()
   propertyAddress.mElement  = 0;
   propertyAddress.mSelector = kAudioDevicePropertySupportsMixing;
 
-  OSStatus ret = AudioObjectIsPropertySettable(m_DeviceId, &propertyAddress, &writable);
-  if (ret)
+  if( AudioObjectHasProperty( m_DeviceId, &propertyAddress ) )
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: "
-      "Unable to get propertyinfo mixing support. Error = %s", GetError(ret).c_str());
-    writable = false;
-  }
+    OSStatus ret = AudioObjectIsPropertySettable(m_DeviceId, &propertyAddress, &writable);
+    if (ret)
+    {
+      CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: "
+        "Unable to get propertyinfo mixing support. Error = %s", GetError(ret).c_str());
+      writable = false;
+    }
 
-  if (writable)
-  {
-    size = sizeof(mix);
-    ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &size, &mix);
-    if (ret != noErr)
-      mix = 0;
+    if (writable)
+    {
+      size = sizeof(mix);
+      ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &size, &mix);
+      if (ret != noErr)
+        mix = 0;
+    }
   }
-
   CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: "
     "Device mixing support : %s.", mix ? "'Yes'" : "'No'");
 
