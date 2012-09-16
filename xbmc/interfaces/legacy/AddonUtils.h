@@ -34,6 +34,10 @@
 
 #include <vector>
 
+#ifdef TARGET_WINDOWS
+#define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+
 /**
  * This file contains the public definitions for the Addon api. It's meant to be used
  * by those writing language bindings.

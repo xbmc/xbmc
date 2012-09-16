@@ -49,8 +49,6 @@
 
 #include "AddonUtils.h"
 
-#define __PRETTY_FUNCTION__ __FUNCTION__
-
 namespace XBMCAddon
 {
   class LanguageHook;

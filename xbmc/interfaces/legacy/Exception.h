@@ -28,8 +28,6 @@
 #include "utils/StdString.h"
 #include "commons/Exception.h"
 
-#define __PRETTY_FUNCTION__ __FUNCTION__
-
 #ifndef SWIG
 namespace XBMCAddon
 {
