@@ -7641,6 +7641,7 @@
 					"-lswresample",
 					"-lswscale",
 					"-lcrypto",
+					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -7764,6 +7765,7 @@
 					"-lavutil",
 					"-lswresample",
 					"-lswscale",
+					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
