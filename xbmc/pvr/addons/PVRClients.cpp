@@ -629,7 +629,7 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
   PVR_CLIENT client;
   if (GetConnectedClient(iClientID, client) && client->HaveMenuHooks())
   {
-    hooks = client->GetMenuHooks();
+    *hooks = *(client->GetMenuHooks());
     bReturn = true;
   }
 
