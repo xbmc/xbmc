@@ -990,13 +990,13 @@ bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param
   return OnMessage(msg);
 }
 
-#ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
+#ifdef _DEBUG
   CLog::Log(LOGDEBUG, "%s for window %u", __FUNCTION__, GetID());
   CGUIControlGroup::DumpTextureUse();
-}
 #endif
+}
 
 void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 {

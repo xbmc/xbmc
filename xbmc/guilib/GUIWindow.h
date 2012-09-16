@@ -184,9 +184,7 @@ public:
    */
   void ClearProperties();
 
-#ifdef _DEBUG
   void DumpTextureUse();
-#endif
 
   bool HasSaveLastControl() const { return !m_defaultAlways; };
 
