@@ -280,11 +280,24 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItem &
     else if (media.Equals("music"))
       status = CAudioLibrary::FillFileItem(strFilename, item);
 
-    if (!status)
+    if (status && item.GetLabel().empty())
     {
-      bool isDir = CDirectory::Exists(strFilename);
+      CStdString label = originalItem->GetLabel();
+      if (label.empty())
+      {
+        bool isDir = CDirectory::Exists(strFilename);
+        label = CUtil::GetTitleFromPath(strFilename, isDir);
+        if (label.empty())
+          label = URIUtils::GetFileName(strFilename);
+      }
+
+      item.SetLabel(label);
+    }
+    else if (!status)
+    {
       if (originalItem->GetLabel().empty())
       {
+        bool isDir = CDirectory::Exists(strFilename);
         CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
         if (label.empty())
           return false;
