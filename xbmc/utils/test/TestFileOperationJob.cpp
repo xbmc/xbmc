@@ -240,7 +240,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
 TEST(TestFileOperationJob, GetFunctions)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath, destfile;
+  CStdString tmpfilepath, destpath;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -253,17 +253,16 @@ TEST(TestFileOperationJob, GetFunctions)
   item->Select(true);
   items.Add(item);
 
-  URIUtils::GetDirectory(tmpfilepath, destpath);
-  destpath = URIUtils::AddFileToFolder(destpath, "getfunctions");
-  destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
-  ASSERT_FALSE(XFILE::CFile::Exists(destfile));
+  destpath = tmpfilepath;
+  destpath += ".getfunctions";
+  ASSERT_FALSE(XFILE::CFile::Exists(destpath));
 
   job.SetFileOperation(CFileOperationJob::ActionCopy, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionCopy, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
   EXPECT_TRUE(XFILE::CFile::Exists(tmpfilepath));
-  EXPECT_TRUE(XFILE::CFile::Exists(destfile));
+  EXPECT_TRUE(XFILE::CFile::Exists(destpath));
 
   fprintf(stdout, "GetAverageSpeed(): %s\n", job.GetAverageSpeed().c_str());
   fprintf(stdout, "GetCurrentOperation(): %s\n",
@@ -272,6 +271,5 @@ TEST(TestFileOperationJob, GetFunctions)
   EXPECT_FALSE(job.GetItems().IsEmpty());
 
   EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
-  EXPECT_TRUE(XFILE::CFile::Delete(destfile));
-  EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
+  EXPECT_TRUE(XFILE::CFile::Delete(destpath));
 }
