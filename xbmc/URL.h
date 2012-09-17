@@ -26,6 +26,10 @@
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
 #endif
 
+/* PLEX */
+#include <map>
+/* END PLEX */
+
 class CURL
 {
 public:
@@ -71,6 +75,11 @@ public:
   static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
   static void Decode(CStdString& strURLData);
   static void Encode(CStdString& strURLData);
+
+  /* PLEX */
+  const std::map<CStdString, CStdString> GetOptionsAsMap() const;
+  /* END PLEX */
+
 protected:
   int m_iPort;
   CStdString m_strHostName;

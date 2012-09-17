@@ -716,3 +716,36 @@ void CURL::Encode(CStdString& strURLData)
   }
   strURLData = strResult;
 }
+
+/* PLEX */
+const std::map<CStdString, CStdString> CURL::GetOptionsAsMap() const
+{
+  std::map<CStdString, CStdString> result;
+  CStdString options = m_strOptions;
+
+  if (m_strOptions.Left(1) == "?")
+  {
+    options = m_strOptions.Right(m_strOptions.size() - 1);
+  }
+
+  if (options == "")
+  {
+    return result;
+  }
+
+  int equalPos;
+  std::vector<CStdString> tokens;
+  CUtil::Tokenize(options, tokens, "&");
+
+  for (size_t i = 0; i < tokens.size(); i++)
+  {
+    equalPos = tokens[i].Find("=");
+    CStdString key = tokens[i].Left(equalPos);
+    CStdString value = tokens[i].Right(tokens[i].size() - equalPos - 1);
+    CURL::Decode(value);
+    result[key] = value;
+  }
+
+  return result;
+}
+/* END PLEX */
