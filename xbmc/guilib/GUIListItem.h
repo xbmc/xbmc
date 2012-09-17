@@ -54,6 +54,7 @@ public:
                         ICON_OVERLAY_TRAINED,
                         ICON_OVERLAY_UNWATCHED,
                         ICON_OVERLAY_WATCHED,
+                        ICON_OVERLAY_IN_PROGRESS, /* PLEX */
                         ICON_OVERLAY_HD};
 
   CGUIListItem(void);
@@ -125,6 +126,14 @@ public:
 
   CVariant   GetProperty(const CStdString &strKey) const;
 
+  /* PLEX */
+  void SetThumbnailImage(const CStdString &strThumbnail, size_t index);
+  void SetGrandparentThumbnailImage(const CStdString& strThumbnail);
+  const CStdString& GetThumbnailImage(size_t index) const;
+  const CStdString& GetGrandparentThumbnailImage() const;
+  size_t GetNumThumbnails() const { return m_strThumbnailImageList.size(); }
+  /* END PLEX */
+
 protected:
   CStdString m_strLabel2;     // text of column2
   CStdString m_strThumbnailImage; // filename of thumbnail
@@ -145,6 +154,12 @@ protected:
 
   typedef std::map<CStdString, CVariant, icompare> PropertyMap;
   PropertyMap m_mapProperties;
+
+  /* PLEX */
+  CStdString m_strGrandparentThumbnailImage;
+  std::vector<CStdString> m_strThumbnailImageList;
+  /* END PLEX */
+
 private:
   CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
   CStdString m_strLabel;      // text of column1

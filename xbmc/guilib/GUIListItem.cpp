@@ -375,3 +375,40 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
   for (PropertyMap::const_iterator i = item.m_mapProperties.begin(); i != item.m_mapProperties.end(); ++i)
     SetProperty(i->first, i->second);
 }
+
+/* PLEX */
+void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail, size_t index)
+{
+  if (m_strThumbnailImageList.size() < index+1)
+    m_strThumbnailImageList.resize(index+1);
+
+  if (m_strThumbnailImageList[index] != strThumbnail)
+  {
+    m_strThumbnailImageList[index] = strThumbnail;
+    SetInvalid();
+  }
+}
+
+void CGUIListItem::SetGrandparentThumbnailImage(const CStdString& strThumbnail)
+{
+  if (m_strGrandparentThumbnailImage == strThumbnail)
+    return;
+
+  m_strGrandparentThumbnailImage = strThumbnail;
+  SetInvalid();
+}
+
+const CStdString& CGUIListItem::GetThumbnailImage(size_t index) const
+{
+  if (index < m_strThumbnailImageList.size())
+    return m_strThumbnailImageList[index];
+
+  static CStdString blank;
+  return blank;
+}
+
+const CStdString& CGUIListItem::GetGrandparentThumbnailImage() const
+{
+  return m_strGrandparentThumbnailImage;
+}
+/* END PLEX */
