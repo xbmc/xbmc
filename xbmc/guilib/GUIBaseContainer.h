@@ -94,6 +94,11 @@ public:
    */
   void SetRenderOffset(const CPoint &offset);
 
+  /* PLEX */
+  std::vector<CGUIListItemPtr>& GetStaticItems() { return m_staticItems; }
+  std::vector<CGUIListItemPtr>& GetItems() { return m_items; }
+  /* END PLEX */
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
