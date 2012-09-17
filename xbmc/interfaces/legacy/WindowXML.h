@@ -90,6 +90,13 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL bool IsMediaWindow() const { TRACE; return true; };
 
+      // This method is identical to the Window::OnDeinitWindow method
+      //  except it passes the message on to their respective parents.
+      // Since the respective parent differences are handled by the 
+      // interceptor there's no reason to define this one here.
+      //SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
+
+
     protected:
       // CGUIWindow
       SWIGHIDDENVIRTUAL bool     LoadXML(const String &strPath, const String &strPathLower);
@@ -134,11 +141,12 @@ namespace XBMCAddon
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool    OnMessage(CGUIMessage &message);
-      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { return WindowDialogMixin::IsDialogRunning(); }
+      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { TRACE; return WindowDialogMixin::IsDialogRunning(); }
       SWIGHIDDENVIRTUAL bool    IsDialog() const { TRACE; return true;};
       SWIGHIDDENVIRTUAL bool    IsModalDialog() const { TRACE; return true; };
       SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { TRACE; return false; };
       SWIGHIDDENVIRTUAL bool    OnAction(const CAction &action);
+      SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 #endif
 
       SWIGHIDDENVIRTUAL inline void show() { WindowDialogMixin::show(); }

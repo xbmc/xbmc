@@ -120,8 +120,6 @@ namespace XBMCAddon
       RESOLUTION_INFO res;
       CStdString strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
 
-      CLog::Log(LOGDEBUG,"NEWADDON Skin Path1:%s",strSkinPath.c_str());
-
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         CStdString str("none");
@@ -302,7 +300,10 @@ namespace XBMCAddon
 
     bool WindowXML::OnMessage(CGUIMessage& message)
     {
+#ifdef ENABLE_TRACE_API
       TRACE;
+      CLog::Log(LOGDEBUG,"%sMessage id:%d",_tg.getSpaces(),(int)message.GetMessage());
+#endif
 
       // TODO: We shouldn't be dropping down to CGUIWindow in any of this ideally.
       //       We have to make up our minds about what python should be doing and
@@ -395,7 +396,7 @@ namespace XBMCAddon
         break;
       }
 
-      return ref(window)->OnMessage(message);
+      return A(CGUIMediaWindow::OnMessage(message));
     }
 
     void WindowXML::AllocResources(bool forceLoad /*= FALSE */)
@@ -546,7 +547,7 @@ namespace XBMCAddon
         CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
         if (pWindow)
           g_windowManager.ShowOverlay(pWindow->GetOverlayState());
-        return interceptor->skipLevelOnMessage(message);
+        return A(CGUIWindow::OnMessage(message));
       }
       return WindowXML::OnMessage(message);
     }
@@ -554,36 +555,16 @@ namespace XBMCAddon
     bool WindowXMLDialog::OnAction(const CAction &action)
     {
       TRACE;
-
-      switch (action.GetID())
-      {
-      case HACK_CUSTOM_ACTION_OPENING:
-        {
-          // This is from the CGUIPythonWindowXMLDialog::Show_Internal
-          g_windowManager.RouteToWindow(window->get());
-          // active this dialog...
-          CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
-          OnMessage(msg);
-          // TODO: Figure out how to clean up the CAction
-          window->setActive(true);
-          return true;
-        }
-        break;
-        
-      case HACK_CUSTOM_ACTION_CLOSING:
-        {
-          // This is from the CGUIPythonWindowXMLDialog::Show_Internal
-          CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-          OnMessage(msg);
-          g_windowManager.RemoveDialog(ref(window)->GetID());
-          // TODO: Figure out how to clean up the CAction
-          return true;
-        }
-        break;
-      }
-
-      return WindowXML::OnAction(action);
+      return WindowDialogMixin::OnAction(action) ? true : WindowXML::OnAction(action);
     }
     
+    void WindowXMLDialog::OnDeinitWindow(int nextWindowID)
+    {
+      TRACE;
+      g_windowManager.RemoveDialog(interceptor->GetID());
+      WindowXML::OnDeinitWindow(nextWindowID);
+    }
+  
   }
+
 }

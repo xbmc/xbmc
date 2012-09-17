@@ -47,6 +47,7 @@ namespace XBMCAddon
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool IsDialogRunning() const;
+      SWIGHIDDENVIRTUAL bool OnAction(const CAction &action);
 #endif
     };
   }

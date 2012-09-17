@@ -23,6 +23,7 @@
 #include "WindowInterceptor.h"
 
 #include "ApplicationMessenger.h"
+#include "guilib/GUIWindowManager.h"
 
 namespace XBMCAddon
 {
@@ -31,8 +32,6 @@ namespace XBMCAddon
     void WindowDialogMixin::show()
     {
       TRACE;
-      DelayedCallGuard dcguard(w->languageHook);
-
       ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, HACK_CUSTOM_ACTION_OPENING, 0};
       tMsg.lpVoid = w->window->get();
       CApplicationMessenger::Get().SendMessage(tMsg, true);
@@ -41,7 +40,6 @@ namespace XBMCAddon
     void WindowDialogMixin::close()
     {
       TRACE;
-      DelayedCallGuard dcguard(w->languageHook);
       w->bModal = false;
       w->PulseActionEvent();
 
@@ -49,10 +47,40 @@ namespace XBMCAddon
       tMsg.lpVoid = w->window->get();
       CApplicationMessenger::Get().SendMessage(tMsg, true);
 
+      w->iOldWindowId = 0;
     }
 
-    bool WindowDialogMixin::IsDialogRunning() const { return w->window->isActive(); }
+    bool WindowDialogMixin::IsDialogRunning() const { TRACE; return w->window->isActive(); }
 
+    bool WindowDialogMixin::OnAction(const CAction &action)
+    {
+      TRACE;
+      switch (action.GetID())
+      {
+      case HACK_CUSTOM_ACTION_OPENING:
+        {
+          // This is from the CGUIPythonWindowXMLDialog::Show_Internal
+          g_windowManager.RouteToWindow(w->window->get());
+          // active this dialog...
+          CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
+          w->OnMessage(msg);
+          w->window->setActive(true);
+          // TODO: Figure out how to clean up the CAction
+          return true;
+        }
+        break;
+        
+      case HACK_CUSTOM_ACTION_CLOSING:
+        {
+          // This is from the CGUIPythonWindowXMLDialog::Show_Internal
+          w->window->get()->Close();
+          return true;
+        }
+        break;
+      }
+
+      return false;
+    }
   }
 }
 

@@ -40,8 +40,10 @@ namespace XBMCAddon
 
     bool WindowDialog::OnMessage(CGUIMessage& message)
     {
+#ifdef ENABLE_TRACE_API
       TRACE;
-      CLog::Log(LOGDEBUG,"NEWADDON WindowDialog::OnMessage Message %d", message.GetMessage());
+      CLog::Log(LOGDEBUG,"%sNEWADDON WindowDialog::OnMessage Message %d", _tg.getSpaces(),message.GetMessage());
+#endif
 
       switch(message.GetMessage())
       {
@@ -66,32 +68,7 @@ namespace XBMCAddon
     bool WindowDialog::OnAction(const CAction &action)
     {
       TRACE;
-
-      switch (action.GetID())
-      {
-      case HACK_CUSTOM_ACTION_OPENING:
-        {
-          // This is from the CGUIPythonWindowXMLDialog::Show_Internal
-          g_windowManager.RouteToWindow(ref(window).get());
-          // active this dialog...
-          CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
-          OnMessage(msg);
-          // TODO: Figure out how to clean up the CAction
-          return true;
-        }
-        break;
-        
-      case HACK_CUSTOM_ACTION_CLOSING:
-        {
-          // This is from the CGUIPythonWindowXMLDialog::Show_Internal
-          close();
-          // TODO: Figure out how to clean up the CAction
-          return true;
-        }
-        break;
-      }
-
-      return Window::OnAction(action);
+      return WindowDialogMixin::OnAction(action) ? true : Window::OnAction(action);
     }
 
     void WindowDialog::OnDeinitWindow(int nextWindowID)
