@@ -155,6 +155,54 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
       if (GetDVDMenuLanguage == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      OpenFile = (void* (*)(const char* strFileName, unsigned int flags))
+        dlsym(m_libXBMC_addon, "XBMC_open_file");
+      if (OpenFile == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      OpenFileForWrite = (void* (*)(const char* strFileName, bool bOverWrite))
+        dlsym(m_libXBMC_addon, "XBMC_open_file_for_write");
+      if (OpenFileForWrite == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      ReadFile = (unsigned int (*)(void* file, void* lpBuf, int64_t uiBufSize))
+        dlsym(m_libXBMC_addon, "XBMC_read_file");
+      if (ReadFile == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      ReadFileString = (bool (*)(void* file, char *szLine, int iLineLength))
+        dlsym(m_libXBMC_addon, "XBMC_read_file_string");
+      if (ReadFileString == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      WriteFile = (int (*)(void* file, const void* lpBuf, int64_t uiBufSize))
+        dlsym(m_libXBMC_addon, "XBMC_write_file");
+      if (WriteFile == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      FlushFile = (void (*)(void* file))
+        dlsym(m_libXBMC_addon, "XBMC_flush_file");
+      if (FlushFile == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      SeekFile = (int64_t (*)(void* file, int64_t iFilePosition, int iWhence))
+        dlsym(m_libXBMC_addon, "XBMC_seek_file");
+      if (SeekFile == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      TruncateFile = (int (*)(void* file, int64_t iSize))
+        dlsym(m_libXBMC_addon, "XBMC_truncate_file");
+      if (TruncateFile == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      GetFilePosition = (int64_t (*)(void* file))
+        dlsym(m_libXBMC_addon, "XBMC_get_file_position");
+      if (GetFilePosition == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      GetFileLength = (int64_t (*)(void* file))
+        dlsym(m_libXBMC_addon, "XBMC_get_file_length");
+      if (GetFileLength == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      CloseFile = (void (*)(void* file))
+        dlsym(m_libXBMC_addon, "XBMC_close_file");
+      if (CloseFile == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      GetFileChunkSize = (int (*)(void* file))
+        dlsym(m_libXBMC_addon, "XBMC_get_file_chunk_size");
+      if (GetFileChunkSize == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       return XBMC_register_me(m_Handle) > 0;
     }
 
@@ -164,6 +212,19 @@ namespace ADDON
     void (*UnknownToUTF8)(std::string &str);
     const char* (*GetLocalizedString)(int dwCode);
     const char* (*GetDVDMenuLanguage)();
+
+    void* (*OpenFile)(const char* strFileName, unsigned int flags);
+    void* (*OpenFileForWrite)(const char* strFileName, bool bOverWrite);
+    unsigned int (*ReadFile)(void* file, void* lpBuf, int64_t uiBufSize);
+    bool (*ReadFileString)(void* file, char *szLine, int iLineLength);
+    int (*WriteFile)(void* file, const void* lpBuf, int64_t uiBufSize);
+    void (*FlushFile)(void* file);
+    int64_t (*SeekFile)(void* file, int64_t iFilePosition, int iWhence);
+    int (*TruncateFile)(void* file, int64_t iSize);
+    int64_t (*GetFilePosition)(void* file);
+    int64_t (*GetFileLength)(void* file);
+    void (*CloseFile)(void* file);
+    int (*GetFileChunkSize)(void* file);
 
   protected:
     int (*XBMC_register_me)(void *HANDLE);

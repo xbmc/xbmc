@@ -82,6 +82,19 @@ public:
    */
   static const char *GetDVDMenuLanguage(const void* addonData);
 
+  static void* OpenFile(const void* addonData, const char* strFileName, unsigned int flags);
+  static void* OpenFileForWrite(const void* addonData, const char* strFileName, bool bOverwrite);
+  static unsigned int ReadFile(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize);
+  static bool ReadFileString(const void* addonData, void* file, char *szLine, int iLineLength);
+  static int WriteFile(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize);
+  static void FlushFile(const void* addonData, void* file);
+  static int64_t SeekFile(const void* addonData, void* file, int64_t iFilePosition, int iWhence);
+  static int TruncateFile(const void* addonData, void* file, int64_t iSize);
+  static int64_t GetFilePosition(const void* addonData, void* file);
+  static int64_t GetFileLength(const void* addonData, void* file);
+  static void CloseFile(const void* addonData, void* file);
+  static int GetFileChunkSize(const void* addonData, void* file);
+
 private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
   CAddon       *m_addon;     /*!< the add-on */
