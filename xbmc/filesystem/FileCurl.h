@@ -84,6 +84,11 @@ namespace XFILE
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
       static bool GetMimeType(const CURL &url, CStdString &content, CStdString useragent="");
 
+      /* PLEX */
+      bool Put(const CStdString& strURL, CStdString& strHTML);
+      bool Delete(const CStdString& strURL, CStdString& strHTML);
+      /* END PLEX */
+
       class CReadState
       {
       public:
@@ -166,6 +171,10 @@ namespace XFILE
 
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
+
+      /* PLEX */
+      CStdString      m_verb;
+      /* END PLEX */
   };
 }
 
