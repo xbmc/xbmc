@@ -161,9 +161,15 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
             {
               CSingleLock lock(g_graphicsContext);
 
+              // update progress
+              float progress = pDirectory->GetProgress();
+              if (progress > 0)
+                dialog->SetProgress(progress);
+
               if(dialog->IsCanceled())
               {
                 cancel = true;
+                pDirectory->CancelDirectory();
                 break;
               }
 
