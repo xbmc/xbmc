@@ -290,6 +290,11 @@ void CAdvancedSettings::Initialize()
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
+
+  /* PLEX */
+  m_nowPlayingFlipTime = 120;
+  m_bEnableViewRestrictions = false;
+  /* END PLEX */
 }
 
 bool CAdvancedSettings::Load()
@@ -960,6 +965,11 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
   }
+
+  /* PLEX */
+  XMLUtils::GetInt(pRootElement, "nowplayingfliptime", m_nowPlayingFlipTime, 10, 6000);
+  XMLUtils::GetBoolean(pRootElement, "enableviewrestricitons", m_bEnableViewRestrictions);
+  /* END PLEX */
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in

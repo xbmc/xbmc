@@ -317,6 +317,12 @@ class CAdvancedSettings
     void ParseSettingsFile(const CStdString &file);
 
     float GetDisplayLatency(float refreshrate);
+
+
+    /* PLEX */
+    int m_nowPlayingFlipTime;
+    bool m_bEnableViewRestrictions;
+    /* END PLEX */
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
