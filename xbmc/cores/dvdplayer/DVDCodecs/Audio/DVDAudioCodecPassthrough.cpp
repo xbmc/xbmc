@@ -170,3 +170,7 @@ void CDVDAudioCodecPassthrough::Reset()
 {
 }
 
+int CDVDAudioCodecPassthrough::GetBufferSize()
+{
+  return (int)m_info.GetBufferSize();
+}

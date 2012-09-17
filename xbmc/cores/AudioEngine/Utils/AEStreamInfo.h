@@ -64,6 +64,7 @@ public:
   enum DataType             GetDataType      () { return m_dataType      ; }
   bool                      IsLittleEndian   () { return m_dataIsLE      ; }
   CAEPackIEC61937::PackFunc GetPackFunc      () { return m_packFunc      ; }
+  unsigned int              GetBufferSize    () { return m_bufferSize    ; }
 private:
   DllAvUtil m_dllAvUtil;
 

@@ -47,6 +47,7 @@ public:
   virtual enum AEDataFormat GetDataFormat();
   virtual bool NeedPassthrough           () { return true;          }
   virtual const char* GetName            () { return "passthrough"; }
+  virtual int  GetBufferSize();
 private:
   CAEStreamInfo      m_info;
   CAEBitstreamPacker m_packer;
