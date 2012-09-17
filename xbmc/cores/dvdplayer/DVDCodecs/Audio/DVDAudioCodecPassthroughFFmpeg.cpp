@@ -156,7 +156,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   muxer.m_WroteHeader = m_dllAvFormat.avformat_write_header(muxer.m_pFormat, NULL) == 0;
   if (!muxer.m_WroteHeader)
   {
-    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SetupMuxer - Failed to write the frame header");
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to write the frame header");
     return false;
   }
 
@@ -189,7 +189,7 @@ void CDVDAudioCodecPassthroughFFmpeg::WriteFrame(Muxer &muxer, uint8_t *pData, i
 
   muxer.m_Consumed += iSize;
   if (m_dllAvFormat.av_write_frame(muxer.m_pFormat, &pkt) < 0)
-    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::WriteFrame - Failed to write the frame data");
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::WriteFrame - Failed to write the frame data");
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetMuxerData(Muxer &muxer, uint8_t** dst)
@@ -309,7 +309,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // TODO - some soundcards do support other sample rates, but they are quite uncommon
   if( hints.samplerate > 0 && hints.samplerate != 48000 )
   {
-    CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to sample rate not being 48000");
+    CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Open - disabled passthrough due to sample rate not being 48000");
     return false;
   }
 
