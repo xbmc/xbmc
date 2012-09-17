@@ -156,7 +156,7 @@ void CBackgroundInfoLoader::StopThread()
 
   for (int i=0; i<(int)m_workers.size(); i++)
   {
-    m_workers[i]->StopThread();
+    m_workers[i]->StopThread(true);
     delete m_workers[i];
   }
 
