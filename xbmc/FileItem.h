@@ -344,7 +344,9 @@ public:
   static CStdString GetCachedPlexMediaServerFanart(const CStdString &path);
 
   CStdString GetCachedPlexMediaServerBanner() const;
+
   static CStdString GetCachedProgramFanart(const CStdString &path);
+  CStdString GetCachedProgramFanart() const;
 
   void SetDefaultViewMode(int viewMode) { m_defaultViewMode = viewMode; }
   int GetDefaultViewMode() const { return m_defaultViewMode; }

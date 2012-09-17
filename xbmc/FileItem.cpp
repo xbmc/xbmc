@@ -3289,4 +3289,63 @@ void CFileItem::SetEpisodeData(int total, int watchedCount)
     ClearProperty("zeroepisodecount");
 }
 
+CStdString CFileItem::GetCachedProgramFanart() const
+{
+  if (m_strFanartUrl.size() > 0)
+    return CFileItem::GetCachedProgramFanart(m_strFanartUrl);
+
+  return CFileItem::GetCachedProgramFanart(m_strPath);
+}
+
+CStdString CFileItem::GetCachedProgramFanart(const CStdString &path)
+{
+  return GetCachedThumb(path, g_settings.GetProgramFanartFolder());
+}
+
+void CFileItem::SetQuickFanart(const CStdString& fanartURL)
+{
+  m_strFanartUrl = fanartURL;
+
+  // See if it's already cached, and the cached version isn't too old.
+  if (CFile::Exists(GetCachedPlexMediaServerFanart()))
+    SetProperty("fanart_image", GetCachedPlexMediaServerFanart());
+}
+
+void CFileItem::SetQuickBanner(const CStdString& bannerURL)
+{
+  m_strBannerUrl = bannerURL;
+
+  // See if it's already cached, and the cached version isn't too old.
+  if (CFile::Exists(GetCachedPlexMediaServerBanner()))
+    SetProperty("banner_image", GetCachedPlexMediaServerBanner());
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerThumb() const
+{
+  if (m_strThumbnailImageList.size() > 0)
+    return GetCachedPlexMediaServerThumb(m_strThumbnailImageList[0]);
+
+  return "";
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerThumb(const CStdString& path)
+{
+  return GetCachedThumb(path, g_settings.GetPlexMediaServerThumbFolder(), true);
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerFanart() const
+{
+  return CFileItem::GetCachedPlexMediaServerFanart(m_strFanartUrl);
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerFanart(const CStdString &path)
+{
+  return GetCachedThumb(path, g_settings.GetPlexMediaServerThumbFolder(), true);
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerBanner() const
+{
+  return CFileItem::GetCachedPlexMediaServerThumb(m_strBannerUrl);
+}
+
 /* END PLEX */
