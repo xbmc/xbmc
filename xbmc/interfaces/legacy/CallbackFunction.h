@@ -126,6 +126,34 @@ namespace XBMCAddon
 
     virtual void executeCallback() { TRACE; ((*obj).*(meth))(param); }
   };
+
+
+  /**
+   * This is the template to carry a callback to a member function
+   *  that returns 'void' (has no return) and takes two parameters.
+   */
+  template<class M, typename P1, typename P2> class CallbackFunction<M,P1,P2, cb_null_type, cb_null_type, cb_null_type> : public Callback
+  { 
+  public:
+    typedef void (M::*MemberFunction)(P1,P2);
+
+  protected:
+    MemberFunction meth;
+    M* obj;
+    P1 param1;
+    P2 param2;
+
+  public:
+    CallbackFunction(M* object, MemberFunction method, P1 parameter, P2 parameter2) : 
+      Callback(object, "CallbackFunction<M,P1,P2>"), meth(method), obj(object),
+      param1(parameter), param2(parameter2) {}
+
+    virtual ~CallbackFunction() { deallocating(); }
+
+    virtual void executeCallback() { TRACE; ((*obj).*(meth))(param1,param2); }
+  };
+
+
 }
 
 

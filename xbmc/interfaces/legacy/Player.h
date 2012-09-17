@@ -142,13 +142,6 @@ namespace XBMCAddon
        */
       void playselected(int selected);
 
-      SWIGHIDDENVIRTUAL void OnPlayBackStarted();
-      SWIGHIDDENVIRTUAL void OnPlayBackEnded();
-      SWIGHIDDENVIRTUAL void OnPlayBackStopped();
-      SWIGHIDDENVIRTUAL void OnPlayBackPaused();
-      SWIGHIDDENVIRTUAL void OnPlayBackResumed();
-      SWIGHIDDENVIRTUAL void OnQueueNextItem();
-
       /**
        * onPlayBackStarted() -- onPlayBackStarted method.
        * 
@@ -196,6 +189,36 @@ namespace XBMCAddon
        * Will be called when user queues the next item
        */
       virtual void onQueueNextItem();
+
+      /**
+       * onPlayBackSpeedChanged(speed) -- onPlayBackSpeedChanged method.
+       * 
+       * speed          : integer - current speed of player.
+       * 
+       * *Note, negative speed means player is rewinding, 1 is normal playback speed.
+       * 
+       * Will be called when players speed changes. (eg. user FF/RW)
+       */
+      virtual void onPlayBackSpeedChanged(int speed);
+
+      /**
+       * onPlayBackSeek(time, seekOffset) -- onPlayBackSeek method.
+       * 
+       * time           : integer - time to seek to.
+       * seekOffset     : integer - ?.
+       * 
+       * Will be called when user seeks to a time
+       */
+      virtual void onPlayBackSeek(int time, int seekOffset);
+
+      /**
+       * onPlayBackSeekChapter(chapter) -- onPlayBackSeekChapter method.
+       * 
+       * chapter        : integer - chapter to seek to.
+       * 
+       * Will be called when user performs a chapter seek
+       */
+      virtual void onPlayBackSeekChapter(int chapter);
 
       /**
        * isPlaying() -- returns True is xbmc is playing a file.
@@ -320,6 +343,19 @@ namespace XBMCAddon
        *    - setAudioStream(1)
        */
       void setAudioStream(int iStream);
+
+#ifndef SWIG
+      SWIGHIDDENVIRTUAL void OnPlayBackStarted();
+      SWIGHIDDENVIRTUAL void OnPlayBackEnded();
+      SWIGHIDDENVIRTUAL void OnPlayBackStopped();
+      SWIGHIDDENVIRTUAL void OnPlayBackPaused();
+      SWIGHIDDENVIRTUAL void OnPlayBackResumed();
+      SWIGHIDDENVIRTUAL void OnQueueNextItem();
+      SWIGHIDDENVIRTUAL void    OnPlayBackSpeedChanged(int iSpeed);
+      SWIGHIDDENVIRTUAL void    OnPlayBackSeek(int iTime, int seekOffset);
+      SWIGHIDDENVIRTUAL void    OnPlayBackSeekChapter(int iChapter);
+#endif
+
     protected:
     };
   }
