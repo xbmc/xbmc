@@ -901,30 +901,6 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
     if(current.type == STREAM_VIDEO    && current.id < 0)
       return true;
   }
-  else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-  {
-    if(stream->source == current.source &&
-       stream->iId    == current.id)
-      return false;
-
-    if(stream->disabled)
-      return false;
-
-    if(stream->type != current.type)
-      return false;
-
-    if(current.type == STREAM_AUDIO    && stream->iPhysicalId == m_dvd.iSelectedAudioStream)
-      return true;
-
-    if(current.type == STREAM_SUBTITLE && stream->iPhysicalId == m_dvd.iSelectedSPUStream)
-      return true;
-
-    if(current.type == STREAM_TELETEXT)
-      return true;
-
-    if(current.id < 0)
-      return true;
-  }
   else
   {
     if(stream->source == current.source
