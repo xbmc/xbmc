@@ -389,6 +389,7 @@ public:
   /* PLEX */
   CStdString GetPlexMediaServerThumbFolder() const;
   CStdString GetPlexMediaServerFanartFolder() const;
+  CStdString GetProgramFanartFolder() const;
   /* END PLEX */
 
 protected:
