@@ -145,7 +145,7 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
   {
     // If we're going to reset the search time, then make sure we track time since the key.
     if (GetFocusedControlID() < 9000 && m_lastSearchUpdate != 0)
-      m_lastArrowKey = CTimeUtils::GetTimeMS();
+      m_lastArrowKey = XbmcThreads::SystemClockMillis();
     
     // Reset search time.
     m_lastSearchUpdate = 0;
@@ -213,7 +213,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
         g_charsetConverter.wToUTF8(m_strEdit, search);
 
         // Create a new worker.
-        m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(provider->m_strPath, search), 0);
+        m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(provider->GetPath(), search), 0);
       }
 
       // Put the items in the right category.
@@ -221,7 +221,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
       {
         // Get the item and the type.
         CFileItemPtr item = results->Get(i);
-        int type = boost::lexical_cast<int>(item->GetProperty("typeNumber"));
+        int type = item->GetProperty("typeNumber").asInteger();
 
         // Add it to the correct "bucket".
         if (m_categoryResults.find(type) != m_categoryResults.end())
@@ -305,11 +305,11 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
 void CGUIWindowPlexSearch::Render()
 {
   // Enough time has passed since a key was pressed.
-  if (m_lastSearchUpdate && m_lastSearchUpdate + SEARCH_DELAY < CTimeUtils::GetTimeMS())
+  if (m_lastSearchUpdate && m_lastSearchUpdate + SEARCH_DELAY < XbmcThreads::SystemClockMillis())
     UpdateLabel();
   
   // Enough time has passed since an arrow key was pressed after we had input.
-  if (m_lastArrowKey && m_lastArrowKey + SEARCH_DELAY < CTimeUtils::GetTimeMS())
+  if (m_lastArrowKey && m_lastArrowKey + SEARCH_DELAY < XbmcThreads::SystemClockMillis())
     UpdateLabel();
 
   CGUIWindow::Render();
@@ -350,7 +350,7 @@ void CGUIWindowPlexSearch::UpdateLabel()
     pEdit->SetLabel(utf8Edit);
 
     // Send off a search message if it's been SEARCH_DELAY since last search.
-    DWORD now = CTimeUtils::GetTimeMS();
+    DWORD now = XbmcThreads::SystemClockMillis();
     if (!m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
     {
       m_lastSearchUpdate = now;
@@ -560,7 +560,7 @@ string CGUIWindowPlexSearch::BuildSearchUrl(const string& theUrl, const string& 
 {
   // Escape the query.
   CStdString query = theQuery;
-  CUtil::URLEncode(query);
+  CURL::Encode(query);
 
   // Get the results.
   CPlexDirectory dir;

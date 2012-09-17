@@ -41,7 +41,7 @@ class PlexLibrarySectionManager
   {
     boost::mutex::scoped_lock lk(m_mutex);
     
-    dprintf("Adding %d local sections for %s", sections.size(), uuid.c_str());
+    dprintf("Adding %ld local sections for %s", sections.size(), uuid.c_str());
     map<string, CFileItemPtr>& map = ensureMap(uuid);
     map.clear();
     
@@ -49,7 +49,7 @@ class PlexLibrarySectionManager
     BOOST_FOREACH(CFileItemPtr& section, sections)
     {
       string key = uuid + "://" + string(section->GetProperty("unprocessedKey").c_str());
-      dprintf("Adding local owned section %s -> %s (%s)", key.c_str(), section->GetLabel().c_str(), section->m_strPath.c_str());
+      dprintf("Adding local owned section %s -> %s (%s)", key.c_str(), section->GetLabel().c_str(), section->GetPath().c_str());
       map[key] = section;
     }
   }
@@ -142,7 +142,7 @@ class PlexLibrarySectionManager
     map.clear();
     BOOST_FOREACH(const CFileItemPtr& section, sections)
     {
-      string key = section->GetProperty("unprocessedKey");
+      string key = section->GetProperty("unprocessedKey").asString();
       size_t lastSlash = key.rfind('/');
       key = key.substr(lastSlash+1);
       key = string(section->GetProperty("machineIdentifier").c_str()) + "://" + key;

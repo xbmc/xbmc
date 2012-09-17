@@ -19,6 +19,8 @@
 #include "GUIWindowManager.h"
 #include "Key.h"
 #include "PlexSourceScanner.h"
+#include "PlexLog.h"
+#include "PlexTypes.h"
 
 using namespace std;
 using namespace XFILE;
@@ -221,7 +223,7 @@ public:
       // See if anything actually changed.
       if (m_servers[server->key()]->updatedAt < updatedAt)
       {
-        dprintf("Plex Server Manager: the server '%s' was updated, rescanning (updated at %d)", name.c_str(), updatedAt);
+        dprintf("Plex Server Manager: the server '%s' was updated, rescanning (updated at %ld)", name.c_str(), updatedAt);
         m_servers[server->key()]->updatedAt = updatedAt;
         CPlexSourceScanner::ScanHost(uuid, addr, name, server->url());
       }
@@ -255,7 +257,7 @@ public:
     set<string> addedServers;
     set<PlexServerPtr> deletedServers;
     computeAddedAndRemoved(remoteServers, addedServers, deletedServers);
-    dprintf("Plex Server Manager: Setting %d remote servers (%d new, %d deleted)", remoteServers.size(), addedServers.size(), deletedServers.size());
+    dprintf("Plex Server Manager: Setting %ld remote servers (%ld new, %ld deleted)", remoteServers.size(), addedServers.size(), deletedServers.size());
     
     // Whack existing detected servers.
     set<string> detected;

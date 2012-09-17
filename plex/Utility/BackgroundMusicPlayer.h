@@ -12,8 +12,7 @@
 
 #include "IPlayer.h"
 #include "StdString.h"
-
-#define GUI_MSG_BG_MUSIC_THEME_UPDATED GUI_MSG_USER + 46
+#include "PlexTypes.h"
 
 class BackgroundMusicPlayer;
 typedef boost::shared_ptr<BackgroundMusicPlayer> BackgroundMusicPlayerPtr;

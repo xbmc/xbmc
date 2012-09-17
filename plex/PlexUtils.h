@@ -1,9 +1,17 @@
 #pragma once
 
 #include <string>
+#include <StdString.h>
 
+namespace PlexUtils
+{
 std::string GetHostName();
 bool IsValidIP(const std::string& address);
+int FileAge(const CStdString &strFileName);
+bool IsPlexMediaServer(const CStdString& strFile);
+bool IsPlexWebKit(const CStdString& strFile);
+bool IsStack(const CStdString& strFile);
+}
 
 #ifdef _WIN32
 

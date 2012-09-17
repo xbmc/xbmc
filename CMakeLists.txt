@@ -76,8 +76,9 @@ set(external_libs
 	SDL_image
 	microhttpd
 	tinyXML
-#	boost_thread
-#	boost_date_time
+  boost_thread
+  boost_date_time
+  boost_system
 	GLEW
 	sqlite3
 	yajl

@@ -2,6 +2,8 @@
 #include "GUIWindowManager.h"
 #include "guiImage.h"
 #include "Key.h"
+#include "PlexTypes.h"
+#include "threads/SingleLock.h"
 
 CGUIDialogRating::CGUIDialogRating(void)
 : CGUIDialog(WINDOW_DIALOG_RATING, "DialogRating.xml")
@@ -41,7 +43,8 @@ void CGUIDialogRating::SetHeading(int iHeading)
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
   msg.SetLabel(iHeading);
   
-  if(OwningCriticalSection(g_graphicsContext))
+  CSingleTryLock tryLock(g_graphicsContext);
+  if (tryLock.IsOwner())
     CGUIDialog::OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
@@ -52,8 +55,9 @@ void CGUIDialogRating::SetTitle(const CStdString& strTitle)
   Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 2);
   msg.SetLabel(strTitle);
-  
-  if(OwningCriticalSection(g_graphicsContext))
+
+  CSingleTryLock tryLock(g_graphicsContext);
+  if (tryLock.IsOwner())
     CGUIDialog::OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());

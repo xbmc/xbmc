@@ -30,12 +30,13 @@
 #include "AdvancedSettings.h"
 
 #include "GUIWindowNowPlaying.h"
+#include "PlexTypes.h"
 
 using namespace PLAYLIST;
 
 CGUIWindowNowPlaying::CGUIWindowNowPlaying() 
   : CGUIWindow(WINDOW_NOW_PLAYING, "NowPlaying.xml")
-  , m_thumbLoader(1, 200)
+//  , m_thumbLoader(1, 200) TODO: figure out if we need to modify thumloader or not.
   , m_isFlipped(false)
 {
 }

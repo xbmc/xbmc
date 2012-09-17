@@ -83,11 +83,11 @@ class PlexMediaServerQueue : public CThread
     if (item->HasProperty("ratingKey") && item->HasProperty("containerKey"))
     {
       // Encode the key.
-      CStdString encodedKey = item->GetProperty("ratingKey");
-      CUtil::URLEncode(encodedKey);
+      CStdString encodedKey = item->GetProperty("ratingKey").asString();
+      CURL::Encode(encodedKey);
       
       // Figure out the identifier.
-      string identifier = item->GetProperty("pluginIdentifier");
+      string identifier = item->GetProperty("pluginIdentifier").asString();
       
       string url = "/:/timeline";
       url = buildUrl(item, url);
@@ -153,11 +153,11 @@ class PlexMediaServerQueue : public CThread
     if (item->HasProperty("ratingKey") && item->HasProperty("containerKey"))
     {
       // Encode the key.
-      CStdString encodedKey = item->GetProperty("ratingKey");
-      CUtil::URLEncode(encodedKey);
+      CStdString encodedKey = item->GetProperty("ratingKey").asString();
+      CURL::Encode(encodedKey);
       
       // Figure out the identifier.
-      string identifier = item->GetProperty("pluginIdentifier");
+      string identifier = item->GetProperty("pluginIdentifier").asString();
       
       // Build the URL.
       string url = (identifier == "com.plexapp.plugins.myplex" ? "/pms/:/" : "/:/") + verb;
@@ -187,7 +187,7 @@ class PlexMediaServerQueue : public CThread
   string buildUrl(const CFileItemPtr& item, const string& url)
   {
     // Build the URL.
-    return CPlexDirectory::ProcessUrl(item->GetProperty("containerKey"), url, false);
+    return CPlexDirectory::ProcessUrl(item->GetProperty("containerKey").asString(), url, false);
   }
   
  private:

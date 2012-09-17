@@ -7,12 +7,57 @@
 #include <boost/lexical_cast.hpp>
 
 #include "PlexUtils.h"
+#include "File.h"
+#include "URIUtils.h"
+#include "StackDirectory.h"
 
 using namespace std;
 using namespace boost;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+string AppendPathToURL(const string& baseURL, const string& relativePath)
+{
+  string ret = baseURL;
+  string args;
+
+  // If there are arguments, strip them for now.
+  size_t q = ret.find("?");
+  if (q != string::npos)
+  {
+    args = ret.substr(q+1);
+    ret = ret.substr(0, q);
+  }
+
+  // Make sure there is a trailing slash.
+  if (boost::ends_with(ret, "/") == false)
+    ret += "/";
+
+  // Add the path.
+  ret += relativePath;
+
+  // Add arguments.
+  if (args.empty() == false)
+  {
+    if (ret.find("?") == string::npos)
+      ret += "?" + args;
+    else
+      ret += "&" + args;
+  }
+
+  return ret;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
-bool IsValidIP(const std::string& address)
+int PlexUtils::FileAge(const CStdString &strFileName)
+{
+  struct __stat64 stat;
+  if(XFILE::CFile::Stat(strFileName, &stat) == 0)
+    return time(0) - (int)stat.st_mtime;
+  return -1;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::IsValidIP(const std::string& address)
 {
   bool valid = false;
   
@@ -33,7 +78,7 @@ bool IsValidIP(const std::string& address)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-string GetHostName() 
+string PlexUtils::GetHostName()
 {
   char hostname[256];
   gethostname(hostname, 256);
@@ -42,6 +87,31 @@ string GetHostName()
   
   return friendlyName;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::IsPlexMediaServer(const CStdString& strFile)
+{
+  CURL url(strFile);
+  if (url.GetProtocol() == "plex" || url.GetPort() == 32400 || url.GetOptions().find("X-Plex-Token") != -1)
+    return true;
+
+  // A stack can also come from the Plex Media Servers.
+  if (URIUtils::IsStack(strFile))
+  {
+    XFILE::CStackDirectory dir;
+    CStdString firstFile = dir.GetFirstStackedFile(strFile);
+    return IsPlexMediaServer(firstFile);
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::IsPlexWebKit(const CStdString& strFile)
+{
+  return strFile.Find("/:/webkit") != -1;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32

@@ -14,6 +14,7 @@
 #include <boost/thread/mutex.hpp>
 
 #include "Log.h"
+#include "PlexLog.h"
 
 using namespace std;
 

@@ -1,6 +1,8 @@
 #ifndef __PLEX_LOG_H__
 #define __PLEX_LOG_H__
 
+#include "utils/Log.h"
+
 #ifdef _WIN32
 #define dprintf(format,  ...) \
   CLog::Log(LOGINFO, format, __VA_ARGS__)

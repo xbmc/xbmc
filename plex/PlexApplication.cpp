@@ -41,7 +41,7 @@ PlexApplication::PlexApplication()
   if (g_guiSettings.GetBool("plexmediaserver.manualaddress"))
   {
     string address = g_guiSettings.GetString("plexmediaserver.address");
-    if (IsValidIP(address))
+    if (PlexUtils::IsValidIP(address))
       ManualServerScanner::Get().addServer(address);
   }
 }

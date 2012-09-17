@@ -44,6 +44,7 @@
 #include "Util.h"
 #include "VideoInfoTag.h"
 #include "utils/SystemInfo.h"
+#include "GUIDialogKaiToast.h"
 
 #include <vector>
 #include <set>
@@ -96,14 +97,14 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   g_renderManager.PreInit();
   
   if (m_pDlgCache == 0)
-    m_pDlgCache = new CDlgCache(0, g_localizeStrings.Get(10214), file.GetLabel());
+    m_pDlgCache = new CGUIDialogCache(0, g_localizeStrings.Get(10214), file.GetLabel());
 
   // Construct the real URL.
-  CURL url(file.m_strPath);
+  CURL url(file.GetPath());
   url.SetProtocol("http");
   url.SetPort(32400);
 
-  printf("Opening [%s]\n", file.m_strPath.c_str());
+  printf("Opening [%s]\n", file.GetPath().c_str());
   int numTries = 20;
   
 retry:  
@@ -177,10 +178,7 @@ void CPlexMediaServerPlayer::ExecuteKeyCommand(char key, bool shift, bool contro
 
 bool CPlexMediaServerPlayer::CloseFile()
 {
-  int locks = ExitCriticalSection(g_graphicsContext);  
   StopThread();
-  if (locks > 0)
-    RestoreCriticalSection(g_graphicsContext, locks);
  
   m_http.WriteLine("STOP");
 
@@ -204,7 +202,7 @@ bool CPlexMediaServerPlayer::IsPlaying() const
 void CPlexMediaServerPlayer::Process()
 {
   m_clock = 0;
-  m_lastTime = CTimeUtils::GetTimeMS();
+  m_lastTime = XbmcThreads::SystemClockMillis();
 
   while (!m_bStop)
   {
@@ -219,8 +217,8 @@ void CPlexMediaServerPlayer::Process()
     if (m_playing)
     {      
       if (!m_paused)
-        m_clock += (CTimeUtils::GetTimeMS() - m_lastTime)*m_speed;
-      m_lastTime = CTimeUtils::GetTimeMS();      
+        m_clock += (XbmcThreads::SystemClockMillis() - m_lastTime)*m_speed;
+      m_lastTime = XbmcThreads::SystemClockMillis();      
     }
     else
     {
@@ -364,9 +362,8 @@ void CPlexMediaServerPlayer::SeekTime(__int64 iTime)
 {
 //  m_clock = iTime;
   CStdString caption = g_localizeStrings.Get(52050); 
-  CStdString description = g_localizeStrings.Get(52051); 
-  g_application.m_guiDialogKaiToast.QueueNotification(caption, description);
-  
+  CStdString description = g_localizeStrings.Get(52051);
+  CGUIDialogKaiToast::QueueNotification("", caption, description);
   return;
 }
 
@@ -407,7 +404,7 @@ void CPlexMediaServerPlayer::Render()
   {
     // Grab the new frame out of shared memory.
     ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
-    g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
+    //g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4); FIXME
   }
   
   g_application.NewFrame();
@@ -447,10 +444,10 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
     // Set the initial frame to all black.
     ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
     memset(m_mappedRegion->get_address(), 0, m_height*m_width*4);
-    g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
+    //g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
     
     // Configure renderer.
-    g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB);
+    //g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB);
     
     g_application.NewFrame();
   }

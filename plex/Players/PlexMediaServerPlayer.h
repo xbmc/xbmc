@@ -26,8 +26,8 @@
 
 #include "IPlayer.h"
 #include "HTTP.h"
-#include "utils/Thread.h"
-#include "../dlgcache.h"
+#include "Thread.h"
+#include "GUIDialogCache.h"
 
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
@@ -98,7 +98,7 @@ public:
   static void RequireServerRestart() { g_needToRestartMediaServer = true; }
   static bool IsRestartRequired() { return g_needToRestartMediaServer; }
   
-  void SetCacheDialog(CDlgCache* cacheDialog) { m_pDlgCache = cacheDialog; }
+  void SetCacheDialog(CGUIDialogCache* cacheDialog) { m_pDlgCache = cacheDialog; }
   
 private:
 
@@ -126,7 +126,7 @@ private:
   int          m_width;
   int          m_height;
   
-  CDlgCache* m_pDlgCache;
+  CGUIDialogCache* m_pDlgCache;
   CHTTP      m_http;
   
   int m_frameCount;

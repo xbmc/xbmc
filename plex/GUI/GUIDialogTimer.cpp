@@ -14,6 +14,8 @@
 #include "Key.h"
 #include <boost/lexical_cast.hpp>
 #include "Util.h"
+#include "PlexTypes.h"
+#include "threads/SingleLock.h"
 
 #define TIMER_MAX 720
 
@@ -35,7 +37,9 @@ CGUIDialogTimer::~CGUIDialogTimer(void)
 
 void CGUIDialogTimer::SendGUIMessage(CGUIMessage msg)
 {
-  if(OwningCriticalSection(g_graphicsContext))
+  CSingleTryLock tryLock(g_graphicsContext);
+
+  if(tryLock.IsOwner())
     CGUIDialog::OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());  

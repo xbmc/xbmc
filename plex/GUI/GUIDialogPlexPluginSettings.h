@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "tinyXML/tinyxml.h"
+#include "tinyxml.h"
 #include "URL.h"
 #include "GUIDialogBoxBase.h"
 

@@ -18,6 +18,7 @@
 #include "PlayListPlayer.h"
 #include "PlexDirectory.h"
 #include "StringUtils.h"
+#include "PlexTypes.h"
 
 class PlexContentPlayerMixin
 {
@@ -43,14 +44,14 @@ class PlexContentPlayerMixin
         CFileItem* file = (CFileItem* )item.get();
     
         // Now see what to do with it.
-        string type = file->GetProperty("type");
+        string type = file->GetProperty("type").asString();
         if (type == "show" || type == "person")
         {
-          ActivateWindow(WINDOW_VIDEO_FILES, file->m_strPath);
+          ActivateWindow(WINDOW_VIDEO_FILES, file->GetPath());
         }
         else if (type == "artist" || type == "album")
         {
-          ActivateWindow(WINDOW_MUSIC_FILES, file->m_strPath);
+          ActivateWindow(WINDOW_MUSIC_FILES, file->GetPath());
         }
         else if (type == "track")
         {
@@ -61,7 +62,7 @@ class PlexContentPlayerMixin
           {
             // Get album.
             CPlexDirectory plexDir;
-            plexDir.GetDirectory(file->GetProperty("parentPath"), fileItems);
+            plexDir.GetDirectory(file->GetProperty("parentPath").asString(), fileItems);
             
             for (int i=0; i < fileItems.Size(); ++i)
             {
@@ -103,7 +104,7 @@ class PlexContentPlayerMixin
             pSlideShow->Add((CFileItem *)child.get());
           
           // Set the currently selected photo
-          pSlideShow->Select(file->m_strPath);
+          pSlideShow->Select(file->GetPath());
           
           // Start the slideshow and show the window
           pSlideShow->StartSlideShow();
@@ -111,14 +112,14 @@ class PlexContentPlayerMixin
         }
         else if (type == "channel")
         {
-          if (file->m_strPath.find("/video/") != string::npos)
-            ActivateWindow(WINDOW_VIDEO_FILES, file->m_strPath);
-          else if (file->m_strPath.find("/music/") != string::npos)
-            ActivateWindow(WINDOW_MUSIC_FILES, file->m_strPath);
-          else if (file->m_strPath.find("/applications/") != string::npos)
-            ActivateWindow(WINDOW_PROGRAMS, file->m_strPath);
+          if (file->GetPath().find("/video/") != string::npos)
+            ActivateWindow(WINDOW_VIDEO_FILES, file->GetPath());
+          else if (file->GetPath().find("/music/") != string::npos)
+            ActivateWindow(WINDOW_MUSIC_FILES, file->GetPath());
+          else if (file->GetPath().find("/applications/") != string::npos)
+            ActivateWindow(WINDOW_PROGRAMS, file->GetPath());
           else
-            ActivateWindow(WINDOW_PICTURES, file->m_strPath);
+            ActivateWindow(WINDOW_PICTURES, file->GetPath());
         }
         else
         {
@@ -149,7 +150,7 @@ class PlexContentPlayerMixin
     if (!file->m_bIsFolder && file->HasProperty("viewOffset")) 
     {
       // Oh my god. Copy and paste code. We need a superclass which manages media.
-      float seconds = boost::lexical_cast<int>(file->GetProperty("viewOffset")) / 1000.0f;
+      float seconds = file->GetProperty("viewOffset").asInteger() / 1000.0f;
 
       CContextButtons choices;
       CStdString resumeString;
@@ -194,8 +195,8 @@ class PlexContentPlayerMixin
            CFileItemPtr item = file->m_mediaItems[i];
            
            CStdString label;
-           CStdString videoCodec = item->GetProperty("mediaTag-videoCodec").ToUpper();
-           CStdString videoRes = item->GetProperty("mediaTag-videoResolution").ToUpper();
+           CStdString videoCodec = CStdString(item->GetProperty("mediaTag-videoCodec").asString()).ToUpper();
+           CStdString videoRes = CStdString(item->GetProperty("mediaTag-videoResolution").asString()).ToUpper();
            
            if (videoCodec.size() == 0 && videoRes.size() == 0)
            {
@@ -216,7 +217,7 @@ class PlexContentPlayerMixin
          int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
          if (choice >= 0)
          {
-           file->m_strPath = file->m_mediaItems[choice]->m_strPath;
+           file->SetPath(file->m_mediaItems[choice]->GetPath());
            file->SetProperty("localPath", file->m_mediaItems[choice]->GetProperty("localPath"));
          }
          else
@@ -236,7 +237,7 @@ class PlexContentPlayerMixin
            for (size_t i=0; i < file->m_mediaItems.size(); i++)
            {
              CFileItemPtr item = file->m_mediaItems[i];
-             CStdString   videoRes = item->GetProperty("mediaTag-videoResolution").ToUpper();
+             CStdString   videoRes = CStdString(item->GetProperty("mediaTag-videoResolution").asString()).ToUpper();
 
              // Compute the quality, subsequent SDs get lesser values, assuming they're ordered descending.
              int q = sd;
@@ -259,7 +260,7 @@ class PlexContentPlayerMixin
              if (q <= onlineQuality)
              {
                pickedIndex = qualityMap[q];
-               file->m_strPath = file->m_mediaItems[pickedIndex]->m_strPath;
+               file->SetPath(file->m_mediaItems[pickedIndex]->GetPath());
                file->SetProperty("localPath", file->m_mediaItems[pickedIndex]->GetProperty("localPath"));
                break;
              }

@@ -10,7 +10,7 @@
 #pragma once
 #include "GUIDialog.h"
 #include "Stopwatch.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 class CGUIDialogTimer: public CGUIDialog
 {

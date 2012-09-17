@@ -128,10 +128,10 @@ class ManualServerScanner
         if (pair.second->deleted == false && dir.GetDirectory(pair.second->url(), list) && list.GetProperty("updatedAt").empty() == false)
         {
           // Update name and UUID.
-          pair.second->name = list.GetProperty("friendlyName");
-          pair.second->uuid = list.GetProperty("machineIdentifier");
+          pair.second->name = list.GetProperty("friendlyName").asString();
+          pair.second->uuid = list.GetProperty("machineIdentifier").asString();
           
-          time_t updatedAt = list.GetPropertyInt("updatedAt");
+          time_t updatedAt = list.GetProperty("updatedAt").asInteger();
           if (pair.second->updatedAt == 0)
           {
             dprintf("Manual Server Scanner: NEW SERVER: %s", pair.second->address.c_str());

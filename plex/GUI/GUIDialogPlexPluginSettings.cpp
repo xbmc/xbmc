@@ -165,8 +165,8 @@ bool CPlexPluginSettings::Save(const CStdString& path)
       CStdString strName = id;
       CStdString strValue = value;
       
-      CUtil::URLEncode(strName);
-      CUtil::URLEncode(strValue);
+      CURL::Encode(strName);
+      CURL::Encode(strValue);
       params += strName + "=" + strValue + "&";
     }
   }

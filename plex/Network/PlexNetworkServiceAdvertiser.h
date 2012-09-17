@@ -26,7 +26,7 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
   /// For subclasses to fill in.
   virtual void createReply(map<string, string>& headers) 
   {
-    headers["Name"] = GetHostName();
+    headers["Name"] = PlexUtils::GetHostName();
     headers["Port"] = g_guiSettings.GetString("services.webserverport");
 #ifndef _WIN32
     headers["Version"] = Cocoa_GetAppVersion();

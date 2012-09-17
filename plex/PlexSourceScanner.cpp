@@ -20,6 +20,7 @@
 #include "GUIUserMessages.h"
 #include "CocoaUtilsPlus.h"
 #include "PlexLibrarySectionManager.h"
+#include "URIUtils.h"
 
 map<std::string, HostSourcesPtr> CPlexSourceScanner::g_hostSourcesMap;
 boost::recursive_mutex CPlexSourceScanner::g_lock;
@@ -308,7 +309,7 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
   CPlexDirectory plexDir;
   plexDir.SetTimeout(2);
   
-  CUtil::AddSlashAtEnd(strPlexPath);
+  URIUtils::AddSlashAtEnd(strPlexPath);
   if (plexDir.GetDirectory(strPlexPath, *fileItems))
   {
     // Make sure all items in the PlexDirectory are added as sources
@@ -326,16 +327,16 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
         
         // Get special attributes for PMS sources
         if (item->HasProperty("hasPrefs"))
-          share.hasPrefs = item->GetPropertyBOOL("hasPrefs");
+          share.m_hasPrefs = item->GetProperty("hasPrefs").asBoolean();
         
         if (item->HasProperty("pluginIdentifer"))
-          share.strPluginIdentifer = item->GetProperty("pluginIdentifier");
+          share.m_strPluginIdentifier = item->GetProperty("pluginIdentifier").asString();
         
         if (item->HasProperty("hasStoreServices"))
-          share.hasStoreServices = item->GetPropertyBOOL("hasStoreServices");
+          share.m_hasStoreServices = item->GetProperty("hasStoreServices").asBoolean();
         
-        share.strPath = item->m_strPath;
-        share.m_strFanartUrl = item->GetQuickFanart();
+        share.strPath = item->GetPath();
+        share.m_strFanArtUrl = item->GetQuickFanart();
         share.m_ignore = true;
         
         // Download thumbnail if needed.

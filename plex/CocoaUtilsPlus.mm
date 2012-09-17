@@ -13,7 +13,9 @@
 #include "AdvancedSettings.h"
 #include "Application.h"
 #include "MediaSource.h"
+#define BOOL COCOA_BOOL
 #include <Cocoa/Cocoa.h>
+#undef BOOL
 #import <AddressBook/AddressBook.h>
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CoreFoundation.h>
