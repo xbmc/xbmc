@@ -206,24 +206,139 @@ namespace ADDON
       return XBMC_register_me(m_Handle) > 0;
     }
 
+    /*!
+     * @brief Add a message to XBMC's log.
+     * @param loglevel The log level of the message.
+     * @param format The format of the message to pass to XBMC.
+     */
     void (*Log)(const addon_log_t loglevel, const char *format, ... );
+
+    /*!
+     * @brief Get a settings value for this add-on.
+     * @param settingName The name of the setting to get.
+     * @param settingValue The value.
+     * @return True if the settings was fetched successfully, false otherwise.
+     */
     bool (*GetSetting)(const char* settingName, void *settingValue);
+
+    /*!
+     * @brief Queue a notification in the GUI.
+     * @param type The message type.
+     * @param format The format of the message to pass to display in XBMC.
+     */
     void (*QueueNotification)(const queue_msg_t type, const char *format, ... );
+
+    /*!
+     * @brief Translate a string with an unknown encoding to UTF8.
+     * @param sourceDest The string to translate.
+     */
     void (*UnknownToUTF8)(std::string &str);
+
+    /*!
+     * @brief Get a localised message.
+     * @param dwCode The code of the message to get.
+     * @return The message. Needs to be freed when done.
+     */
     const char* (*GetLocalizedString)(int dwCode);
+
+
+    /*!
+     * @brief Get the DVD menu language.
+     * @return The language. Needs to be freed when done.
+     */
     const char* (*GetDVDMenuLanguage)();
 
+    /*!
+     * @brief Open the file with filename via XBMC's CFile. Needs to be closed by calling CloseFile() when done.
+     * @param strFileName The filename to open.
+     * @param flags The flags to pass. Documented in XBMC's File.h
+     * @return A handle for the file, or NULL if it couldn't be opened.
+     */
     void* (*OpenFile)(const char* strFileName, unsigned int flags);
+
+    /*!
+     * @brief Open the file with filename via XBMC's CFile in write mode. Needs to be closed by calling CloseFile() when done.
+     * @param strFileName The filename to open.
+     * @param bOverWrite True to overwrite, false otherwise.
+     * @return A handle for the file, or NULL if it couldn't be opened.
+     */
     void* (*OpenFileForWrite)(const char* strFileName, bool bOverWrite);
+
+    /*!
+     * @brief Read from an open file.
+     * @param file The file handle to read from.
+     * @param lpBuf The buffer to store the data in.
+     * @param uiBufSize The size of the buffer.
+     * @return Number of bytes read.
+     */
     unsigned int (*ReadFile)(void* file, void* lpBuf, int64_t uiBufSize);
+
+    /*!
+     * @brief Read a string from an open file.
+     * @param file The file handle to read from.
+     * @param szLine The buffer to store the data in.
+     * @param iLineLength The size of the buffer.
+     * @return True when a line was read, false otherwise.
+     */
     bool (*ReadFileString)(void* file, char *szLine, int iLineLength);
+
+    /*!
+     * @brief Write to a file opened in write mode.
+     * @param file The file handle to write to.
+     * @param lpBuf The data to write.
+     * @param uiBufSize Size of the data to write.
+     * @return The number of bytes read.
+     */
     int (*WriteFile)(void* file, const void* lpBuf, int64_t uiBufSize);
+
+    /*!
+     * @brief Flush buffered data.
+     * @param file The file handle to flush the data for.
+     */
     void (*FlushFile)(void* file);
+
+    /*!
+     * @brief Seek in an open file.
+     * @param file The file handle to see in.
+     * @param iFilePosition The new position.
+     * @param iWhence Seek argument. See stdio.h for possible values.
+     * @return The new position.
+     */
     int64_t (*SeekFile)(void* file, int64_t iFilePosition, int iWhence);
+
+    /*!
+     * @brief Truncate a file to the requested size.
+     * @param file The file handle to truncate.
+     * @param iSize The new max size.
+     * @return New size?
+     */
     int (*TruncateFile)(void* file, int64_t iSize);
+
+    /*!
+     * @brief The current position in an open file.
+     * @param file The file handle to get the position for.
+     * @return The requested position.
+     */
     int64_t (*GetFilePosition)(void* file);
+
+    /*!
+     * @brief Get the file size of an open file.
+     * @param file The file to get the size for.
+     * @return The requested size.
+     */
     int64_t (*GetFileLength)(void* file);
+
+    /*!
+     * @brief Close an open file.
+     * @param file The file handle to close.
+     */
     void (*CloseFile)(void* file);
+
+    /*!
+     * @brief Get the chunk size for an open file.
+     * @param file the file handle to get the size for.
+     * @return The requested size.
+     */
     int (*GetFileChunkSize)(void* file);
 
   protected:

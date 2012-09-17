@@ -35,53 +35,14 @@ public:
    */
   CB_AddOnLib *GetCallbacks() { return m_callbacks; }
 
-  /*!
-   * @brief Add a message to XBMC's log.
-   * @param addonData A pointer to the add-on.
-   * @param addonLogLevel The log level of the message.
-   * @param strMessage The message itself.
-   */
   static void AddOnLog(void *addonData, const addon_log_t addonLogLevel, const char *strMessage);
-
-  /*!
-   * @brief Queue a notification in the GUI.
-   * @param addonData A pointer to the add-on.
-   * @param type The message type.
-   * @param strMessage The message to display.
-   */
-  static void QueueNotification(void *addonData, const queue_msg_t type, const char *strMessage);
-
-  /*!
-   * @brief Get a settings value for this add-on.
-   * @param addonData A pointer to the add-on.
-   * @param settingName The name of the setting to get.
-   * @param settingValue The value.
-   * @return True if the settings was fetched successfully, false otherwise.
-   */
   static bool GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue);
-
-  /*!
-   * @brief Translate a string with an unknown encoding to UTF8.
-   * @param sourceDest The source string.
-   * @return The converted string.
-   */
+  static void QueueNotification(void *addonData, const queue_msg_t type, const char *strMessage);
   static char *UnknownToUTF8(const char *strSource);
-
-  /*!
-   * @brief Get a localised message.
-   * @param addonData A pointer to the add-on.
-   * @param dwCode The code of the message to get.
-   * @return The message.
-   */
   static const char *GetLocalizedString(const void* addonData, long dwCode);
-
-  /*!
-   * @brief Get the DVD menu language.
-   * @param addonData A pointer to the add-on.
-   * @return The language.
-   */
   static const char *GetDVDMenuLanguage(const void* addonData);
 
+  // file operations
   static void* OpenFile(const void* addonData, const char* strFileName, unsigned int flags);
   static void* OpenFileForWrite(const void* addonData, const char* strFileName, bool bOverwrite);
   static unsigned int ReadFile(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize);
