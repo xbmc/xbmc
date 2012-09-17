@@ -1936,3 +1936,28 @@ void CSettings::LoadMasterForLogin()
   if (m_currentProfile != 0)
     LoadProfile(0);
 }
+
+/* PLEX */
+CStdString CSettings::GetPlexMediaServerThumbFolder() const
+{
+  CStdString folder;
+  if (GetCurrentProfile().hasDatabases())
+    URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\"), folder);
+  else
+    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\"), folder);
+
+  return folder;
+
+}
+
+CStdString CSettings::GetPlexMediaServerFanartFolder() const
+{
+  CStdString folder;
+  if (GetCurrentProfile().hasDatabases())
+    URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\", folder);
+  else
+    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\", folder);
+
+  return folder;
+}
+/* END PLEX */
