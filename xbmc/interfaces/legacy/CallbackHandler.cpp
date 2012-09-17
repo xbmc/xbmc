@@ -101,7 +101,9 @@ namespace XBMCAddon
           // we need to grab the object lock to see if the object of the call 
           //  is deallocating. holding this lock should prevent it from 
           //  deallocating durring the execution of this call.
-          CLog::Log(LOGDEBUG,"NEWADDON executing callback 0x%lx", (long)(p->cb.get()));
+#ifdef ENABLE_TRACE_API
+          CLog::Log(LOGDEBUG,"%sNEWADDON executing callback 0x%lx",_tg.getSpaces(),(long)(p->cb.get()));
+#endif
           Synchronize lock2(*(p->cb->getObject()));
           if (!p->cb->getObject()->isDeallocating())
           {
@@ -140,7 +142,9 @@ namespace XBMCAddon
 
       if(p->handler->shouldRemoveCallback(userData))
       {
-        CLog::Log(LOGDEBUG,"NEWADDON removing callback 0x%lx for PyThreadState 0x%lx from queue", (long)(p->cb.get()) ,(long)userData);
+#ifdef ENABLE_TRACE_API
+        CLog::Log(LOGDEBUG,"%sNEWADDON removing callback 0x%lx for PyThreadState 0x%lx from queue", _tg.getSpaces(),(long)(p->cb.get()) ,(long)userData);
+#endif
         g_callQueue.erase(iter);
       }
       else

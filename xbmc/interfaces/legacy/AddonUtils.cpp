@@ -92,6 +92,8 @@ namespace XBMCAddonUtils
 
   static char** spaces = getSpacesArray(256);
 
+  const char* TraceGuard::getSpaces() { return spaces[depth]; }
+
   TraceGuard::TraceGuard(const char* _function) :function(_function) 
   {
     parent = tlParent.get();
@@ -102,9 +104,18 @@ namespace XBMCAddonUtils
     CLog::Log(LOGDEBUG, "%sNEWADDON Entering %s", spaces[depth], function); 
   }
 
+  TraceGuard::TraceGuard() :function(NULL) 
+  {
+    parent = tlParent.get();
+    depth = parent == NULL ? 0 : parent->depth + 1;
+    tlParent.set(this);
+    // silent
+  }
+
   TraceGuard::~TraceGuard() 
   {
-    CLog::Log(LOGDEBUG, "%sNEWADDON Leaving %s", spaces[depth], function);
+    if (function)
+      CLog::Log(LOGDEBUG, "%sNEWADDON Leaving %s", spaces[depth], function);
 
     // need to pop the stack
     tlParent.set(this->parent);

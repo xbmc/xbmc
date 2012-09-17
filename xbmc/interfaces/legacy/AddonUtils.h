@@ -28,7 +28,7 @@
 
 #pragma once
 
-#define ENABLE_TRACE_API
+//#define ENABLE_TRACE_API
 
 #include "threads/SingleLock.h"
 
@@ -92,7 +92,10 @@ namespace XBMCAddonUtils
     TraceGuard* parent;
     int depth;
 
+    const char* getSpaces();
+
     TraceGuard(const char* _function);
+    TraceGuard();
     ~TraceGuard();
   };
 #endif

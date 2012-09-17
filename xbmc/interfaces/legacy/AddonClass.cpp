@@ -26,6 +26,8 @@
 #include "LanguageHook.h"
 #include "AddonUtils.h"
 
+using namespace XBMCAddonUtils;
+
 namespace XBMCAddon
 {
   // need a place to put the vtab
@@ -36,8 +38,9 @@ namespace XBMCAddon
     if (languageHook != NULL)
       languageHook->Release();
 
-#ifdef LOG_LIFECYCLE_EVENTS
-    CLog::Log(LOGDEBUG, "NEWADDON LIFECYCLE destroying %s 0x%lx", classname.c_str(), (long)(((void*)this)));
+#ifdef ENABLE_TRACE_API
+    TraceGuard tg_;
+    CLog::Log(LOGDEBUG, "%sNEWADDON destroying %s 0x%lx", tg_.getSpaces(), classname.c_str(), (long)(((void*)this)));
 #endif
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
@@ -48,8 +51,9 @@ namespace XBMCAddon
   AddonClass::AddonClass(const char* cname) : refs(0L), classname(cname), m_isDeallocating(false), 
                                               languageHook(NULL)
   {
-#ifdef LOG_LIFECYCLE_EVENTS
-    CLog::Log(LOGDEBUG, "NEWADDON LIFECYCLE constructing %s 0x%lx", classname.c_str(), (long)(((void*)this)));
+#ifdef ENABLE_TRACE_API
+    TraceGuard tg_;
+    CLog::Log(LOGDEBUG, "%sNEWADDON constructing %s 0x%lx", tg_.getSpaces(), classname.c_str(), (long)(((void*)this)));
 #endif
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
