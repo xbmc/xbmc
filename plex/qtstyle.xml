@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE QtCreatorCodeStyle>
+<!-- Written by Qt Creator 2.5.82, 2012-09-17T10:39:31. -->
+<qtcreator>
+ <data>
+  <variable>AlignAssignments</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>AutoSpacesForTabs</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>ExtraPaddingForConditionsIfConfusingAlign</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>IndentAccessSpecifiers</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>IndentBlockBody</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>IndentBlockBraces</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>IndentBlocksRelativeToSwitchLabels</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>IndentClassBraces</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>IndentControlFlowRelativeToSwitchLabels</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>IndentDeclarationsRelativeToAccessSpecifiers</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>IndentEnumBraces</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>IndentFunctionBody</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>IndentFunctionBraces</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>IndentNamespaceBody</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>IndentNamespaceBraces</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>IndentSize</variable>
+  <value type="int">2</value>
+ </data>
+ <data>
+  <variable>IndentStatementsRelativeToSwitchLabels</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>IndentSwitchLabels</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>PaddingMode</variable>
+  <value type="int">1</value>
+ </data>
+ <data>
+  <variable>SpacesForTabs</variable>
+  <value type="bool">true</value>
+ </data>
+ <data>
+  <variable>TabSize</variable>
+  <value type="int">2</value>
+ </data>
+</qtcreator>
