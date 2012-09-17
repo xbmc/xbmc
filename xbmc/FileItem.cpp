@@ -1,4 +1,4 @@
-/*
+ /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
@@ -230,6 +230,12 @@ CFileItem::~CFileItem(void)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+
+  /* PLEX */
+  m_contextItems.clear();
+  m_mediaItems.clear();
+  m_mediaParts.clear();
+  /* END PLEX */
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -295,6 +301,17 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
+
+  /* PLEX */
+  m_contextItems.clear();
+  for (unsigned int i = 0; i < item.m_contextItems.size(); ++i)
+  {
+    m_contextItems.push_back(item.m_contextItems[i]);
+  }
+  m_mediaParts = item.m_mediaParts;
+  m_mediaItems = item.m_mediaItems;
+  /* END PLEX */
+
   return *this;
 }
 
@@ -3166,3 +3183,110 @@ int CFileItem::GetVideoContentType() const
   return type;
 }
 
+/* PLEX */
+
+#include "PlexUtils.h"
+
+CStdString CFileItem::GetCachedVideoGrandparentThumb() const
+{
+  CStdString path = m_strPath;
+
+  if (IsPlexMediaServer() && m_strGrandparentThumbnailImage.size() > 0)
+    return GetCachedThumb(m_strGrandparentThumbnailImage, g_settings.GetPlexMediaServerThumbFolder(),true);
+
+  return "";
+}
+
+bool CFileItem::IsPlexMediaServer() const
+{
+  return PlexUtils::IsPlexMediaServer(m_strPath);
+}
+
+bool CFileItem::IsRemoteSharedPlexMediaServerLibrary() const
+{
+  if (IsRemotePlexMediaServerLibrary() &&                                              // It's a remote PMS
+      g_guiSettings.GetString("myplex.token").empty() == false &&                      // We're logged into myPlex
+      m_strPath.find(g_guiSettings.GetString("myplex.token")) == string::npos)  // Our token isn't there
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool CFileItem::IsRemotePlexMediaServerLibrary() const
+{
+  if (m_strPath.find("library/") != string::npos &&
+      m_strPath.find("X-Plex-Token") != string::npos)
+      return true;
+
+  return false;
+}
+
+bool CFileItem::IsPlexMediaServerLibrary() const
+{
+  if (IsPlexMediaServer() == false)
+    return false;
+
+  if (m_strPath.Find("/library/parts/") != -1 ||
+      m_strPath.Find("/library/metadata/") != -1 ||
+      m_strPath.Find("/library/sections/") != -1)
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool CFileItem::IsPlexMediaServerMusic() const
+{
+  bool ret = false;
+
+  if (IsPlexMediaServer() == false)
+  {
+    ret = false;
+  }
+  else
+  {
+    // Look for plex://xxx/music.
+    CStdString str = m_strPath;
+    int firstSlash = str.Find('/');
+    firstSlash = str.Find('/', firstSlash + 2);
+    if (firstSlash > 0)
+    {
+      str = str.substr(firstSlash);
+      if (str.Find("/music/") == 0)
+        ret = true;
+    }
+
+    if (GetProperty("type") == "track")
+      ret = true;
+  }
+
+  return ret;
+}
+
+bool CFileItem::IsPlexWebkit() const
+{
+  return PlexUtils::IsPlexWebKit(m_strPath);
+}
+
+void CFileItem::SetEpisodeData(int total, int watchedCount)
+{
+  SetProperty("watchedepisodes", watchedCount);
+  SetProperty("unwatchedepisodes", total - watchedCount);
+
+  if (total - watchedCount == 1)
+    SetProperty("singularepisodecount", 1);
+  else if (total == 1)
+    SetProperty("singularepisodecount", 1);
+  else
+    ClearProperty("singularepisodecount");
+
+  if (total - watchedCount == 0)
+    SetProperty("zeroepisodecount", 1);
+  else
+    ClearProperty("zeroepisodecount");
+}
+
+/* END PLEX */
