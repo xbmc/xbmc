@@ -19,6 +19,7 @@
  *
  */
 #include "PltMediaRenderer.h"
+#include "interfaces/IAnnouncer.h"
 
 namespace UPNP
 {
@@ -30,13 +31,17 @@ public:
 };
 
 class CUPnPRenderer : public PLT_MediaRenderer
+                    , public ANNOUNCEMENT::IAnnouncer
 {
 public:
     CUPnPRenderer(const char*  friendly_name,
                   bool         show_ip = false,
                   const char*  uuid = NULL,
-                  unsigned int port = 0) : PLT_MediaRenderer(friendly_name, show_ip, uuid, port) {}
+                  unsigned int port = 0);
 
+    virtual ~CUPnPRenderer();
+
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
     void UpdateState();
 
     // Http server handler
