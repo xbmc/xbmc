@@ -354,6 +354,18 @@ bool CWinEventsX11::ProcessKeyPress(XKeyEvent& xevent)
 
 bool CWinEventsX11::ProcessKeyRelease(XKeyEvent& xkey)
 {
+#if(0)
+  if( XEventsQueued( m_display, QueuedAfterReading ) )
+  {
+    XEvent next_event;
+    XPeekEvent( m_display, &next_event );
+    if(next_event.type == KeyPress
+    && next_event.xkey.window  == xkey.window
+    && next_event.xkey.keycode == xkey.keycode
+    && next_event.xkey.time    == xkey.time )
+      return false;
+  }
+#endif
   XBMC_Event newEvent = {0};
   newEvent.key.keysym.scancode = xkey.keycode;
   newEvent.key.keysym.sym      = LookupXbmcKeySym(XLookupKeysym(&xkey, 0));
@@ -524,6 +536,7 @@ bool CWinEventsX11::Process()
     switch (xevent.type)
     {
       case MapNotify:
+        CLog::Log(LOGDEBUG,"CWinEventsX11::map %ld", xevent.xmap.window);
         g_application.m_AppActive = true;
         break;
 
@@ -532,10 +545,12 @@ bool CWinEventsX11::Process()
         break;
 
       case FocusIn:
+        CLog::Log(LOGDEBUG,"CWinEventsX11::focus in %ld %d %d", xevent.xfocus.window, xevent.xfocus.mode, xevent.xfocus.detail);
         ret |= ProcessFocusIn(xevent.xfocus);
         break;
 
       case FocusOut:
+        CLog::Log(LOGDEBUG,"CWinEventsX11::focus out %ld %d %d", xevent.xfocus.window, xevent.xfocus.mode, xevent.xfocus.detail);
         ret |= ProcessFocusOut(xevent.xfocus);
         break;
 
@@ -560,10 +575,12 @@ bool CWinEventsX11::Process()
         break;
 
       case EnterNotify:
+        CLog::Log(LOGDEBUG,"CWinEventsX11::enter %ld %d", xevent.xcrossing.window, xevent.xcrossing.mode);
         ret |= ProcessEnter(xevent.xcrossing);
         break;
 
       case LeaveNotify:
+        CLog::Log(LOGDEBUG,"CWinEventsX11::leave %ld %d", xevent.xcrossing.window, xevent.xcrossing.mode);
         ret |= ProcessLeave(xevent.xcrossing);
         break;
 
