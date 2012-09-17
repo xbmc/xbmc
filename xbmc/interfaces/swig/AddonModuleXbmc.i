@@ -88,7 +88,7 @@ using namespace xbmc;
         player->playStream(item,pListItem,windowed);
       }
       else // pObject must be a playlist
-        player->playPlaylist((PlayList *)retrieveApiInstance(pObject,"p.PlayList","XBMCAddon::xbmc::","play"), windowed);
+        player->playPlaylist((PlayList *)retrieveApiInstance(pObject,"p.XBMCAddon::xbmc::PlayList","XBMCAddon::xbmc::","play"), windowed);
     }
     catch (const XbmcCommons::Exception& e)
     { 
