@@ -99,6 +99,14 @@ public:
 
   std::vector<CStdString> vecPaths;
   bool m_ignore; /// <Do not store in xml
+
+  /* PLEX */
+  bool m_autoDetected;
+  bool m_hasPrefs;
+  bool m_hasStoreServices;
+  CStdString m_strPluginIdentifier;
+  CStdString m_strFanArtUrl;
+  /* END PLEX */
 };
 
 /*!
