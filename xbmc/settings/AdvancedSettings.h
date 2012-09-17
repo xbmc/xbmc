@@ -322,6 +322,7 @@ class CAdvancedSettings
     /* PLEX */
     int m_nowPlayingFlipTime;
     bool m_bEnableViewRestrictions;
+    CStdString m_language;
     /* END PLEX */
 };
 
