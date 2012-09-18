@@ -236,7 +236,6 @@ static const ActionMapping windows[] =
         {"videos"                   , WINDOW_VIDEO_NAV},
         {"tv"                       , WINDOW_PVR}, // backward compat
         {"pvr"                      , WINDOW_PVR},
-
         {"pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO},
         {"pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO},
         {"pvrtimersetting"          , WINDOW_DIALOG_PVR_TIMER_SETTING},
@@ -250,7 +249,6 @@ static const ActionMapping windows[] =
         {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
         {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
         {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
-
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
@@ -278,10 +276,6 @@ static const ActionMapping windows[] =
         {"virtualkeyboard"          , WINDOW_DIALOG_KEYBOARD},
         {"volumebar"                , WINDOW_DIALOG_VOLUME_BAR},
         {"submenu"                  , WINDOW_DIALOG_SUB_MENU},
-        {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
-        {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
-        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
-        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
         {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU},
         {"infodialog"               , WINDOW_DIALOG_KAI_TOAST},
@@ -343,7 +337,8 @@ static const ActionMapping windows[] =
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
-        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS}};
+        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
+        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS}};
 
 static const ActionMapping mousecommands[] =
 {
