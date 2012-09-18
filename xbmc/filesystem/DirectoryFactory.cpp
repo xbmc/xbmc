@@ -82,10 +82,8 @@
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
+#include "ArchiveDirectory.h"
 #include "ZipDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarDirectory.h"
-#endif
 #include "TuxBoxDirectory.h"
 #include "HDHomeRunDirectory.h"
 #include "SlingboxDirectory.h"
@@ -149,10 +147,10 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") 
   {
-#ifdef HAS_FILESYSTEM_RAR
-    return new CRarDirectory();
+#ifdef HAVE_LIBARCHIVE
+    return new CArchiveDirectory();
 #else
-    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s - Compiled without libarchive, rar support is disabled", __FUNCTION__);
 #endif
   }
   if (strProtocol == "multipath") return new CMultiPathDirectory();

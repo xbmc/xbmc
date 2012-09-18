@@ -30,9 +30,6 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 
 using namespace std;
 using namespace XFILE;

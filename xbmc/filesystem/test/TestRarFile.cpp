@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#ifdef HAS_FILESYSTEM_RAR
+#ifdef HAVE_LIBARCHIVE
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
@@ -31,7 +31,36 @@
 
 #include "gtest/gtest.h"
 
-TEST(TestRarFile, Read)
+class TestRarFile : public testing::Test
+{
+protected:
+  TestRarFile()
+  {
+    /* Add default settings for locale.
+     * Settings here are taken from CGUISettings::Initialize()
+     */
+    CSettingsCategory *loc = g_guiSettings.AddCategory(7, "locale", 14090);
+    g_guiSettings.AddString(loc, "locale.language",248,"english",
+                            SPIN_CONTROL_TEXT);
+    g_guiSettings.AddString(loc, "locale.country", 20026, "USA",
+                            SPIN_CONTROL_TEXT);
+    g_guiSettings.AddString(loc, "locale.charset", 14091, "DEFAULT",
+                            SPIN_CONTROL_TEXT); // charset is set by the
+                                                // language file
+
+    /* Add default settings for subtitles */
+    CSettingsCategory *sub = g_guiSettings.AddCategory(5, "subtitles", 287);
+    g_guiSettings.AddString(sub, "subtitles.charset", 735, "DEFAULT",
+                            SPIN_CONTROL_TEXT);
+  }
+  ~TestRarFile()
+  {
+    g_guiSettings.Clear();
+  }
+};
+
+
+TEST_F(TestRarFile, Read)
 {
   XFILE::CFile file;
   char buf[20];
@@ -84,7 +113,7 @@ TEST(TestRarFile, Read)
   file.Close();
 }
 
-TEST(TestRarFile, Exists)
+TEST_F(TestRarFile, Exists)
 {
   CStdString reffile, strrarpath, strpathinrar;
   CFileItemList itemlist;
@@ -98,7 +127,7 @@ TEST(TestRarFile, Exists)
   EXPECT_TRUE(XFILE::CFile::Exists(strpathinrar));
 }
 
-TEST(TestRarFile, Stat)
+TEST_F(TestRarFile, Stat)
 {
   struct __stat64 buffer;
   CStdString reffile, strrarpath, strpathinrar;
@@ -118,7 +147,7 @@ TEST(TestRarFile, Stat)
  * NOTE: The test case is considered a "success" as long as the corrupted
  * file was successfully generated and the test case runs without a segfault.
  */
-TEST(TestRarFile, CorruptedFile)
+TEST_F(TestRarFile, CorruptedFile)
 {
   XFILE::CFile *file;
   char buf[16];
@@ -189,4 +218,4 @@ TEST(TestRarFile, CorruptedFile)
   file->Close();
   XBMC_DELETETEMPFILE(file);
 }
-#endif /*HAS_FILESYSTEM_RAR*/
+#endif /*HAVE_LIBARCHIVE*/
