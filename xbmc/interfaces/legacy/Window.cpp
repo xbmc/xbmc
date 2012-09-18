@@ -114,66 +114,67 @@ namespace XBMCAddon
 
       AddonCallback::deallocating();
 
-      CSingleLock lock(g_graphicsContext);
-
-      // no callbacks are possible any longer
-      //   - this will be handled by the parent constructor
-
-      // first change to an existing window
-      if (!existingWindow)
-      {
-        if (ACTIVE_WINDOW == iWindowId && !g_application.m_bStop)
-        {
-          if(g_windowManager.GetWindow(iOldWindowId))
-          {
-            g_windowManager.ActivateWindow(iOldWindowId);
-          }
-          // old window does not exist anymore, switch to home
-          else g_windowManager.ActivateWindow(WINDOW_HOME);
-        }
-
-      }
-      else
-      {
-        // BUG:
-        // This is an existing window, so no resources are free'd.  Note that
-        // THIS WILL FAIL for any controls newly created by python - they will
-        // remain after the script ends.  Ideally this would be remedied by
-        // a flag in Control that specifies that it was python created - any python
-        // created controls could then be removed + free'd from the window.
-        // how this works with controlgroups though could be a bit tricky.
-      }
-
-      // and free our list of controls
-      std::vector<AddonClass::Ref<Control> >::iterator it = vecControls.begin();
-      while (it != vecControls.end())
-      {
-        AddonClass::Ref<Control> pControl = *it;
-        // initialize control to zero
-        pControl->pGUIControl = NULL;
-        pControl->iControlId = 0;
-        pControl->iParentId = 0;
-        ++it;
-      }
-
-      if (!existingWindow)
-      {
-        if (window)
-        {
-          if (g_windowManager.IsWindowVisible(ref(window)->GetID()))
-          {
-            destroyAfterDeInit = true;
-            close();
-          }
-          else
-            g_windowManager.Delete(ref(window)->GetID());
-        }
-      }
-
-      vecControls.clear();
-
+      // if !window then we've been here already
       if (window)
       {
+        CSingleLock lock(g_graphicsContext);
+
+        // no callbacks are possible any longer
+        //   - this will be handled by the parent constructor
+
+        // first change to an existing window
+        if (!existingWindow)
+        {
+          if (ACTIVE_WINDOW == iWindowId && !g_application.m_bStop)
+          {
+            if(g_windowManager.GetWindow(iOldWindowId))
+            {
+              g_windowManager.ActivateWindow(iOldWindowId);
+            }
+            // old window does not exist anymore, switch to home
+            else g_windowManager.ActivateWindow(WINDOW_HOME);
+          }
+
+        }
+        else
+        {
+          // BUG:
+          // This is an existing window, so no resources are free'd.  Note that
+          // THIS WILL FAIL for any controls newly created by python - they will
+          // remain after the script ends.  Ideally this would be remedied by
+          // a flag in Control that specifies that it was python created - any python
+          // created controls could then be removed + free'd from the window.
+          // how this works with controlgroups though could be a bit tricky.
+        }
+
+        // and free our list of controls
+        std::vector<AddonClass::Ref<Control> >::iterator it = vecControls.begin();
+        while (it != vecControls.end())
+        {
+          AddonClass::Ref<Control> pControl = *it;
+          // initialize control to zero
+          pControl->pGUIControl = NULL;
+          pControl->iControlId = 0;
+          pControl->iParentId = 0;
+          ++it;
+        }
+
+        if (!existingWindow)
+        {
+          if (window)
+          {
+            if (g_windowManager.IsWindowVisible(ref(window)->GetID()))
+            {
+              destroyAfterDeInit = true;
+              close();
+            }
+            else
+              g_windowManager.Delete(ref(window)->GetID());
+          }
+        }
+
+        vecControls.clear();
+
         window->clear();
         window = NULL;
       }
