@@ -4384,6 +4384,7 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
+#ifndef __PLEX__
 void CApplication::SaveFileState()
 {
   if (!g_settings.GetCurrentProfile().canWriteDatabases())
@@ -4457,6 +4458,7 @@ void CApplication::UpdateFileState()
     }
   }
 }
+#endif
 
 void CApplication::StopPlaying()
 {
