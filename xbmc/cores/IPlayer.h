@@ -170,6 +170,14 @@ public:
   
   virtual CStdString GetPlayingTitle() { return ""; };
 
+  /* PLEX */
+  virtual int GetSubtitlePlexID() { return -1; };
+  virtual int GetAudioStreamPlexID() { return -1; };
+  virtual int GetPlexMediaPartID() { return -1; };
+  virtual bool CanOpenAsync() { return -1; };
+  virtual void Abort() {};
+  /* END PLEX */
+
 protected:
   IPlayerCallback& m_callback;
 };
