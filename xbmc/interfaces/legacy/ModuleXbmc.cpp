@@ -181,11 +181,17 @@ namespace XBMCAddon
       XbmcThreads::EndTime endTime(timemillis);
       while (!endTime.IsTimePast())
       {
-        DelayedCallGuard dcguard;
-        long nextSleep = endTime.MillisLeft();
-        if (nextSleep > 100)
-          nextSleep = 100; // only sleep for 100 millis
-        ::Sleep(nextSleep);
+        LanguageHook* lh = NULL;
+        {
+          DelayedCallGuard dcguard;
+          lh = dcguard.getLanguageHook(); // borrow this
+          long nextSleep = endTime.MillisLeft();
+          if (nextSleep > 100)
+            nextSleep = 100; // only sleep for 100 millis
+          ::Sleep(nextSleep);
+        }
+        if (lh != NULL)
+          lh->makePendingCalls();
       }
     }
 
