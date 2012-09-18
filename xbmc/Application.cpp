@@ -357,6 +357,7 @@ CApplication::CApplication(void)
   , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
+  , m_pLaunchHost(NULL) /* PLEX */
 {
   m_iPlaySpeed = 1;
   m_bScreenSave = false;
@@ -396,6 +397,10 @@ CApplication::CApplication(void)
 #ifdef HAS_DVD_DRIVE
   m_Autorun = new CAutorun();
 #endif
+
+  /* PLEX */
+  m_bPlaybackInFullScreen = false;
+  /* END PLEX */
 }
 
 CApplication::~CApplication(void)
@@ -415,6 +420,10 @@ CApplication::~CApplication(void)
 
   delete m_dpms;
   delete m_pInertialScrollingHandler;
+
+  /* PLEX */
+  delete m_pLaunchHost;
+  /* END PLEX */
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
