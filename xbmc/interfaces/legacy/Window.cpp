@@ -398,6 +398,9 @@ namespace XBMCAddon
 
     void Window::OnDeinitWindow(int nextWindowID /*= 0*/)
     {
+      // NOTE!: This handle child classes correctly. XML windows will call
+      // the OnDeinitWindow from CGUIMediaWindow while non-XML classes will
+      // call the OnDeinitWindow on CGUIWindow
       ref(window)->OnDeinitWindow(nextWindowID);
       if (destroyAfterDeInit)
         g_windowManager.Delete(window->get()->GetID());

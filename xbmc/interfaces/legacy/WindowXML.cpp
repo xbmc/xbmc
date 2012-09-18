@@ -107,16 +107,18 @@ namespace XBMCAddon
                          const String& defaultRes) throw(WindowException) :
       Window(classname)
     {
+      TRACE;
       initialize(xmlFilename,scriptPath,defaultSkin,defaultRes);
     }
 
-    WindowXML::~WindowXML() { deallocating();  }
+    WindowXML::~WindowXML() { TRACE; deallocating();  }
 
     void WindowXML::initialize(const String& xmlFilename,
                          const String& scriptPath,
                          const String& defaultSkin,
                          const String& defaultRes)
     {
+      TRACE;
       RESOLUTION_INFO res;
       CStdString strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
 
@@ -535,9 +537,9 @@ namespace XBMCAddon
                                      const String& defaultRes) throw(WindowException) :
       WindowXML("WindowXMLDialog",xmlFilename, scriptPath, defaultSkin, defaultRes),
       WindowDialogMixin(this)
-    { }
+    { TRACE; }
 
-    WindowXMLDialog::~WindowXMLDialog() { deallocating(); }
+    WindowXMLDialog::~WindowXMLDialog() { TRACE; deallocating(); }
 
     bool WindowXMLDialog::OnMessage(CGUIMessage &message)
     {

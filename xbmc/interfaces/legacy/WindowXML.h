@@ -94,7 +94,7 @@ namespace XBMCAddon
       //  except it passes the message on to their respective parents.
       // Since the respective parent differences are handled by the 
       // interceptor there's no reason to define this one here.
-      //SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
+//      SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 
 
     protected:
@@ -149,8 +149,8 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 #endif
 
-      SWIGHIDDENVIRTUAL inline void show() { WindowDialogMixin::show(); }
-      SWIGHIDDENVIRTUAL inline void close() { WindowDialogMixin::close(); }
+      SWIGHIDDENVIRTUAL inline void show() { TRACE; WindowDialogMixin::show(); }
+      SWIGHIDDENVIRTUAL inline void close() { TRACE; WindowDialogMixin::close(); }
 
       friend class DialogJumper;
     };

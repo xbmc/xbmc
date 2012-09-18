@@ -46,8 +46,8 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool IsDialog() const { TRACE; return true; };
 #endif
 
-      SWIGHIDDENVIRTUAL inline void show() { WindowDialogMixin::show(); }
-      SWIGHIDDENVIRTUAL inline void close() { WindowDialogMixin::close(); }
+      SWIGHIDDENVIRTUAL inline void show() { TRACE; WindowDialogMixin::show(); }
+      SWIGHIDDENVIRTUAL inline void close() { TRACE; WindowDialogMixin::close(); }
     };
   }
 }
