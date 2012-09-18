@@ -2078,6 +2078,10 @@ bool CApplication::WaitFrame(unsigned int timeout)
 
 void CApplication::NewFrame()
 {
+  /* PLEX */
+  HideBusyIndicator();
+  /* END PLEX */
+
   // We just posted another frame. Keep track and notify.
   {
     CSingleLock lock(m_frameMutex);
@@ -2116,7 +2120,12 @@ void CApplication::Render()
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
 
     m_bPresentFrame = false;
-    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
+    /* PLEX */
+    bool isBusyDialogShowing = ((CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY))->IsDialogRunning();
+
+    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused() && !isBusyDialogShowing)
+    /* END PLEX */
+    //if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
       CSingleLock lock(m_frameMutex);
 
@@ -2454,6 +2463,15 @@ bool CApplication::OnAction(const CAction &action)
     else
       return OnAction(CAction(ACTION_PLAYER_PLAY));
   }
+
+  /* PLEX */
+  if (action.GetID() == ACTION_PARENT_DIR && m_bPlaybackStarting)
+  {
+    HideBusyIndicator();
+    StopPlaying();
+    return true;
+  }
+  /* END PLEX */
 
   //if the action would start or stop inertial scrolling
   //by gesture - bypass the normal OnAction handler of current window
@@ -3648,14 +3666,38 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   // calculate the total time of the stack
   CStackDirectory dir;
   dir.GetDirectory(item.GetPath(), *m_currentStack);
+
+  /* PLEX */
+  // Move local paths in.
+  if (item.HasProperty("localPath"))
+  {
+    CFileItemList stackedItems;
+    dir.GetDirectory(item.GetProperty("localPath").asString(), stackedItems);
+    for (int i=0; i<stackedItems.Size(); i++)
+      (*m_currentStack)[i]->SetProperty("localPath", stackedItems[i]->GetPath());
+  }
+  /* END PLEX */
+
   long totalTime = 0;
   for (int i = 0; i < m_currentStack->Size(); i++)
   {
+    /* PLEX */
+    (*m_currentStack)[i]->SetProperty("partIndex", i);
+    /* END PLEX */
+
     if (haveTimes)
       (*m_currentStack)[i]->m_lEndOffset = times[i];
     else
     {
-      int duration;
+      //int duration;
+      /* PLEX */
+      int duration = 0;
+      if (item.m_mediaParts.size() > (unsigned int)i && item.m_mediaParts[i]->duration > 0)
+      {
+        duration = item.m_mediaParts[i]->duration;
+      }
+      /* END PLEX */
+
       if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
       {
         m_currentStack->Clear();
@@ -3669,6 +3711,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   double seconds = item.m_lStartOffset / 75.0;
 
+#ifndef __PLEX__
   if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
   {  // have our times now, so update the dB
     if (dbs.Open())
@@ -3688,6 +3731,18 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       dbs.Close();
     }
   }
+#endif
+
+  /* PLEX */
+  if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
+  {
+    // See if we have a view offset.
+    if (item.HasProperty("viewOffset") && item.GetProperty("viewOffset").empty() == false)
+      seconds = item.GetProperty("viewOffset").asInteger()/1000.0;
+    else
+      seconds = 0.0f;
+  }
+  /* END PLEX */
 
   *m_itemCurrentFile = item;
   m_currentStackPosition = 0;
@@ -3766,6 +3821,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 #endif
 
+  /* PLEX */
+  BackgroundMusicPlayer::SendThemeChangeMessage();
+  /* END PLEX */
+
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
@@ -3800,6 +3859,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
+  /* PLEX */
+  PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
+  /* END PLEX */
+
   CPlayerOptions options;
   
   if( item.HasProperty("StartPercent") )
@@ -3811,7 +3874,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
   
   PLAYERCOREID eNewCore = EPC_NONE;
-  if( bRestart )
+  /* PLEX */
+  if (bestServer && bestServer->local == false && item.IsPlexWebkit())
+  {
+    eNewCore = EPC_DVDPLAYER;
+  }
+  /* END PLEX */
+
+  //if( bRestart )
+  else if ( bRestart )
   {
     // have to be set here due to playstack using this for starting the file
     options.starttime = item.m_lStartOffset / 75.0;
@@ -3829,6 +3900,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     options.starttime = item.m_lStartOffset / 75.0;
 
+#ifndef __PLEX__
     if (item.IsVideo())
     {
       // open the d/b and retrieve the bookmarks for the current movie
@@ -3866,6 +3938,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
       dbs.Close();
     }
+#else
+    if (item.m_lStartOffset == STARTOFFSET_RESUME)
+    {
+      if (item.HasProperty("viewOffset"))
+        options.starttime = item.GetProperty("viewOffset").asInteger()/1000.0;
+    }
+#endif
 
     if (m_eForcedNextPlayer != EPC_NONE)
       eNewCore = m_eForcedNextPlayer;
@@ -3946,6 +4025,22 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     bResult = false;
   }
 
+  /* PLEX */
+  // If the player is opening asynchronously, we'll finish up with a callback.
+  // Otherwise complete the open synchronously.
+  //
+  if (m_pPlayer->CanOpenAsync() == false)
+    FinishPlayingFile(bResult);
+  else
+    ShowBusyIndicator();
+
+  return bResult;
+  /* END PLEX */
+}
+
+/* PLEX: note that we splitted the PlayFile method into two to handle the error above */
+void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
+{
   if(bResult)
   {
     if (m_iPlaySpeed != 1)
@@ -3968,10 +4063,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 
       // if player didn't manange to switch to fullscreen by itself do it here
-      if( options.fullscreen && g_renderManager.IsStarted()
+      //if( options.fullscreen && g_renderManager.IsStarted()
+      /* PLEX */
+      if(m_bPlaybackInFullScreen && g_renderManager.IsStarted()
+      /* END PLEX */
        && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
 
+#ifndef __PLEX__
       if (!item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
@@ -3989,6 +4088,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
           }
         }
       }
+#endif // __PLEX__
     }
 #endif
 
@@ -4015,7 +4115,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       OnPlayBackStopped();
   }
 
-  return bResult;
+  /* PLEX */
+  //return bResult;
+  /* END PLEX */
 }
 
 void CApplication::OnPlayBackEnded()
@@ -4351,7 +4453,15 @@ void CApplication::StopPlaying()
 #endif
 
     if (m_pPlayer)
-      m_pPlayer->CloseFile();
+      //m_pPlayer->CloseFile();
+    /* PLEX */
+    {
+      if (IsStartingPlayback())
+        m_pPlayer->Abort();
+      else
+        m_pPlayer->CloseFile();
+    }
+    /* END PLEX */
 
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION
@@ -4521,8 +4631,11 @@ void CApplication::CheckScreenSaverAndDPMS()
   // * Are we playing a video and it is not paused?
   if ((IsPlayingVideo() && !m_pPlayer->IsPaused())
       // * Are we playing some music in fullscreen vis?
-      || (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION 
-          && !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty()))
+      //|| (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION
+      //    && !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty()))
+      /* PLEX */
+      || (IsPlayingAudio() && IsVisualizerActive()))
+      /* END PLEX */
   {
     ResetScreenSaverTimer();
     return;
@@ -4818,12 +4931,19 @@ bool CApplication::OnMessage(CGUIMessage& message)
         DimLCDOnPlayback(false);
       }
 
-      if (!IsPlayingVideo() && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      //if (!IsPlayingVideo() && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      /* PLEX */
+      if ((IsPlayingVideo() == false && m_bPlaybackStarting == false) && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      /* END PLEX */
       {
         g_windowManager.PreviousWindow();
       }
 
-      if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+
+      //if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      /* PLEX */
+      if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && IsVisualizerActive())
+      /* END PLEX */
       {
         g_settings.Save();  // save vis settings
         WakeUpScreenSaverAndDPMS();
@@ -4831,7 +4951,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      //if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      /* PLEX */
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && IsVisualizerActive())
+      /* END PLEX */
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
