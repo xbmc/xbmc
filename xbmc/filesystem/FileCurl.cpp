@@ -141,6 +141,21 @@ size_t CFileCurl::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmem
 
   free(strData);
 
+  /* PLEX */
+  // See if we redirected to a player that CURL can't handle.
+  CStdString redirectUrl = m_httpheader.GetValue("Location");
+  if (redirectUrl.size() > 7)
+  {
+    if (redirectUrl.substr(0, 7) == "plex://" ||
+        redirectUrl.substr(0, 6) == "mms://"  ||
+        redirectUrl.Find("/video/:/webkit") != -1)
+    {
+      CLog::Log(LOGINFO, "We reached a non-CURL URL: %s", redirectUrl.c_str());
+      m_strDeadEndUrl = redirectUrl;
+    }
+  }
+  /* END PLEX */
+
   return iSize;
 }
 
@@ -895,7 +910,10 @@ bool CFileCurl::Open(const CURL& url)
   SetRequestHeaders(m_state);
 
   long response = m_state->Connect(m_bufferSize);
-  if( response < 0 || response >= 400)
+  //if( response < 0 || response >= 400)
+  /* PLEX */
+  if ((response < 0 || response >= 400) && m_state->m_strDeadEndUrl.empty())
+  /* END PLEX */
     return false;
 
   SetCorrectHeaders(m_state);
@@ -915,6 +933,15 @@ bool CFileCurl::Open(const CURL& url)
     CLog::Log(LOGDEBUG,"FileCurl - file <%s> is a shoutcast stream. re-opening", m_url.c_str());
     throw new CRedirectException(new CFileShoutcast);
   }
+
+  /* PLEX */
+  // Did we hit a dead end?
+  if (m_state->m_strDeadEndUrl.size() > 0)
+  {
+    /* FIXME: verify that this actually works */
+    throw new CRedirectException(new CFileCurl, new CURL(m_state->m_strDeadEndUrl));
+  }
+  /* END PLEX */
 
   m_multisession = false;
   if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))
@@ -1137,6 +1164,10 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
+  /* PLEX */
+  if (m_state->m_strDeadEndUrl.size() > 0)
+    throw new CRedirectException(new CFileCurl, new CURL(m_state->m_strDeadEndUrl));
+  /* END PLEX */
 
   if(result == CURLE_HTTP_RETURNED_ERROR)
   {

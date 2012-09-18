@@ -124,6 +124,10 @@ namespace XFILE
 
           long         Connect(unsigned int size);
           void         Disconnect();
+
+          /* PLEX */
+          CStdString    m_strDeadEndUrl; // If we can't redirect, this holds the last URL.
+          /* END PLEX */
       };
 
     protected:
