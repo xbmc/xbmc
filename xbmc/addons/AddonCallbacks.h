@@ -43,6 +43,7 @@ typedef int64_t (*AddOnGetFilePosition)(const void* addonData, void* file);
 typedef int64_t (*AddOnGetFileLength)(const void* addonData, void* file);
 typedef void (*AddOnCloseFile)(const void* addonData, void* file);
 typedef int (*AddOnGetFileChunkSize)(const void* addonData, void* file);
+typedef bool (*AddOnCanOpenDirectory)(const void* addonData, const char* strURL);
 
 typedef struct CB_AddOn
 {
@@ -65,6 +66,7 @@ typedef struct CB_AddOn
   AddOnGetFileLength      GetFileLength;
   AddOnCloseFile          CloseFile;
   AddOnGetFileChunkSize   GetFileChunkSize;
+  AddOnCanOpenDirectory   CanOpenDirectory;
 } CB_AddOnLib;
 
 typedef void (*GUILock)();

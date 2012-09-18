@@ -203,6 +203,10 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_get_file_chunk_size");
       if (GetFileChunkSize == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      CanOpenDirectory = (bool (*)(const char* strURL))
+        dlsym(m_libXBMC_addon, "XBMC_can_open_directory");
+      if (CanOpenDirectory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       return XBMC_register_me(m_Handle) > 0;
     }
 
@@ -340,6 +344,13 @@ namespace ADDON
      * @return The requested size.
      */
     int (*GetFileChunkSize)(void* file);
+
+    /*!
+     * @brief Checks whether a directory can be opened.
+     * @param strUrl The URL of the directory to check.
+     * @return True when it can be opened, false otherwise.
+     */
+    bool (*CanOpenDirectory)(const char* strUrl);
 
   protected:
     int (*XBMC_register_me)(void *HANDLE);

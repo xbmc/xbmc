@@ -55,6 +55,7 @@ public:
   static int64_t GetFileLength(const void* addonData, void* file);
   static void CloseFile(const void* addonData, void* file);
   static int GetFileChunkSize(const void* addonData, void* file);
+  static bool CanOpenDirectory(const void* addonData, const char* strURL);
 
 private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */

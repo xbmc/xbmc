@@ -221,4 +221,12 @@ DLLEXPORT int64_t XBMC_get_file_chunk_size(void* file)
   return m_cb->GetFileChunkSize(m_Handle->addonData, file);
 }
 
+DLLEXPORT bool XBMC_can_open_directory(const char* strURL)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->CanOpenDirectory(m_Handle->addonData, strURL);
+}
+
 };

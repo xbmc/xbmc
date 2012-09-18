@@ -25,6 +25,9 @@
 #include "LangInfo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
+#include "filesystem/Directory.h"
+#include "filesystem/SMBDirectory.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 
@@ -56,6 +59,8 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->GetFileLength      = GetFileLength;
   m_callbacks->CloseFile          = CloseFile;
   m_callbacks->GetFileChunkSize   = GetFileChunkSize;
+
+  m_callbacks->CanOpenDirectory   = CanOpenDirectory;
 }
 
 CAddonCallbacksAddon::~CAddonCallbacksAddon()
@@ -419,6 +424,26 @@ int CAddonCallbacksAddon::GetFileChunkSize(const void* addonData, void* file)
     return 0;
 
   return cfile->GetChunkSize();
+}
+
+bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* strURL)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  if (CDirectory::Exists(strURL))
+  {
+    // check permissions
+    if (URIUtils::IsSmb(strURL))
+    {
+      CSMBDirectory directory;
+      return directory.Open(CURL(strURL));
+    }
+
+    return true;
+  }
+  return false;
 }
 
 }; /* namespace ADDON */
