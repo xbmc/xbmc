@@ -15,6 +15,10 @@ autoreconf -vif lib/libdvd/libdvdread
 autoreconf -vif lib/libdvd/libdvdnav
 autoreconf -vif lib/gtest
 
+if [ -f pvr-addons/Makefile.am ]; then
+  autoreconf -vif pvr-addons
+fi
+
 # Clean the generated files
 find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
 

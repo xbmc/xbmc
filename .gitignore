@@ -1290,3 +1290,5 @@ xbmc/visualizations/EGLHelpers/Makefile
 /addons/library.xbmc.gui/libXBMC_gui.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
+
+/pvr-addons
