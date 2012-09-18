@@ -4773,6 +4773,11 @@ void CApplication::CheckShutdown()
 
 bool CApplication::OnMessage(CGUIMessage& message)
 {
+  /* PLEX */
+  if (m_plexApp->OnMessage(message))
+    return true;
+  /* END PLEX */
+
   switch ( message.GetMessage() )
   {
   case GUI_MSG_NOTIFY_ALL:
