@@ -192,6 +192,7 @@ namespace XFILE
       CStdString      m_basicUser;
       CStdString      m_basicPass;
       bool            m_basicAuth;
+      bool            m_post;
       bool            m_clearCookies;
       /* END PLEX */
   };

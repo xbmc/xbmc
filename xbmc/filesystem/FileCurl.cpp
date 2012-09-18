@@ -485,7 +485,10 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, FALSE);
 
   // setup POST data if it exists
-  if (!m_postdata.IsEmpty())
+  //if (!m_postdata.IsEmpty())
+  /* PLEX */
+  if (!m_postdata.IsEmpty() || m_post == true)
+  /* END PLEX */
   {
     g_curlInterface.easy_setopt(h, CURLOPT_POST, 1 );
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDSIZE, m_postdata.length());
@@ -808,6 +811,9 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
 bool CFileCurl::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
 {
+  /* PLEX */
+  m_post = true;
+  /* END PLEX */
   return Service(strURL, strPostData, strHTML);
 }
 
