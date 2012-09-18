@@ -814,14 +814,18 @@ bool CApplication::Create()
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+  //if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+  /* PLEX */
+  if (!g_Windowing.CreateNewWindow("Plex", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
   }
 #else
   bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+  //if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+  /* PLEX */
+  if (!g_Windowing.CreateNewWindow("Plex", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
@@ -938,10 +942,18 @@ bool CApplication::InitDirectoriesLinux()
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
+    //CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
+    //CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
+    /* PLEX */
+    CSpecialProtocol::SetHomePath(userHome + "/.plex");
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/.plex/userdata");
+    /* END PLEX */
 
+    //CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
+    /* PLEX */
     CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
+    /* END PLEX */
+
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1010,11 +1022,19 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
     #if defined(__arm__)
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Preferences/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/XBMC/userdata");
+      //CSpecialProtocol::SetHomePath(userHome + "/Library/Preferences/XBMC");
+      //CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/XBMC/userdata");
+      /* PLEX */
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Preferences/Plex");
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/Plex/userdata");
+      /* END PLEX */
     #else
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
+      //CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
+      //CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
+      /* PLEX */
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/Plex");
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/Plex/userdata");
+      /* END PLEX */
     #endif
 
     // location for temp files
