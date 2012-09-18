@@ -84,7 +84,7 @@ libid3tag_la_SOURCES =	version.c ucs4.c latin1.c utf16.c utf8.c  \
 			version.h ucs4.h latin1.h utf16.h utf8.h  \
 			parse.h render.h field.h frametype.h compat.h  \
 			genre.h frame.h crc.h util.h tag.h file.h  \
-			id3tag.h global.h metadata.h metadata.c \ 
+			id3tag.h global.h metadata.h metadata.c \
 			genre.dat $(debug)
 
 EXTRA_libid3tag_la_SOURCES =  \
