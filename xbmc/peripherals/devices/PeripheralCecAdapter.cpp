@@ -886,11 +886,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_PREVIOUS_CHANNEL:
-#if defined(XINPUT_IR_REMOTE_TELETEXT)
-    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT; // only supported by the pvr branch
-#else
-    xbmcKey.iButton = XINPUT_IR_REMOTE_BACK;
-#endif
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT;
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_SOUND_SELECT:
@@ -1018,16 +1014,12 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_ELECTRONIC_PROGRAM_GUIDE:
-#if defined(XINPUT_IR_REMOTE_GUIDE)
     xbmcKey.iButton = XINPUT_IR_REMOTE_GUIDE;
     PushCecKeypress(xbmcKey);
-#endif
     break;
   case CEC_USER_CONTROL_CODE_AN_CHANNELS_LIST:
-#if defined(XINPUT_IR_REMOTE_LIVE_TV)
     xbmcKey.iButton = XINPUT_IR_REMOTE_LIVE_TV;
     PushCecKeypress(xbmcKey);
-#endif
     break;
   case CEC_USER_CONTROL_CODE_NEXT_FAVORITE:
   case CEC_USER_CONTROL_CODE_DOT:
