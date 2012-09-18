@@ -17,7 +17,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
   --enable-neon --enable-gles --enable-debug \
   --disable-sdl --disable-x11 --disable-xrandr \
   --disable-optical-drive --disable-joystick --disable-optimizations \
-  --enable-shared-lib --enable-alsa
+  --enable-shared-lib --disable-alsa
 
 
 all: $(SOURCE)/libxbmc.so
