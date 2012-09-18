@@ -58,8 +58,8 @@
         function(i, s) {
           if (s.src.match(js)) {
             var path = s.src.replace(js, ''),
-            includes = s.src.match(/\?.*load=([a-z,]*)/);
-            $.each((includes ? includes[1] : 'jquery.lazyload,iscroll-min,Core,MediaLibrary,NowPlayingManager').split(','), function(i, include) {
+            includes = s.src.match(/\?.*load=([-.,a-zA-Z]*)/);
+            $.each((includes ? includes[1] : '').split(','), function(i, include) {
               Launcher.load(path + include + '.js')
             });
           }
