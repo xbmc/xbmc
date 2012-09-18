@@ -383,7 +383,8 @@ void CPeripheralCecAdapter::Process(void)
     bSendStandbyCommands = m_iExitCode != EXITCODE_REBOOT &&
                            m_iExitCode != EXITCODE_RESTARTAPP &&
                            !m_bDeviceRemoved &&
-                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby"));
+                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby")) &&
+                           GetSettingBool("enabled");
   }
 
   if (bSendStandbyCommands)
