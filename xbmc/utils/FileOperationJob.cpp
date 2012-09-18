@@ -157,7 +157,12 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       CStdString strnewDestFile;
       if(!strDestFile.IsEmpty()) // only do this if we have a destination
-        URIUtils::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
+      {
+        if (URIUtils::HasSlashAtEnd(pItem->GetPath()))
+          URIUtils::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
+        else
+          strnewDestFile = strDestFile;
+      }
 
       if (pItem->m_bIsFolder)
       {
@@ -166,13 +171,13 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         // processing those
         FileAction subdirAction = (action == ActionReplace) ? ActionCopy : action;
         // create folder on dest. drive
-        if (action != ActionDelete)
+        if (action != ActionDelete && action != ActionDeleteFolder)
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
         if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
           DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
         if (!DoProcessFolder(subdirAction, pItem->GetPath(), strnewDestFile, fileOperations, totalTime))
           return false;
-        if (action == ActionDelete)
+        if (action == ActionDelete || action == ActionDeleteFolder)
           DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
       }
       else
