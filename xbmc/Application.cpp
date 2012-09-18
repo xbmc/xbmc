@@ -791,7 +791,10 @@ bool CApplication::Create()
 
 #if defined(__APPLE__) && !defined(__arm__)
   // Configure and possible manually start the helper.
-  XBMCHelper::GetInstance().Configure();
+  //XBMCHelper::GetInstance().Configure();
+  /* PLEX */
+  PlexHelper::GetInstance().Configure();
+  /* END PLEX */
 #endif
 
   // update the window resolution
@@ -1301,7 +1304,10 @@ bool CApplication::Initialize()
   m_slowTimer.StartZero();
 
 #if defined(__APPLE__) && !defined(__arm__)
-  XBMCHelper::GetInstance().CaptureAllInput();
+  //XBMCHelper::GetInstance().CaptureAllInput();
+  /* PLEX */
+  PlexHelper::GetInstance().CaptureAllInput();
+  /* END PLEX */
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
   CCrystalHD::GetInstance();
@@ -3407,7 +3413,10 @@ void CApplication::Stop(int exitCode)
     //Sleep(5000);
 
 #if defined(__APPLE__) && !defined(__arm__)
-    XBMCHelper::GetInstance().ReleaseAllInput();
+    //XBMCHelper::GetInstance().ReleaseAllInput();
+    /* PLEX */
+    PlexHelper::GetInstance().ReleaseAllInput();
+    /* END PLEX */
 #endif
 
     if (m_pPlayer)
@@ -3447,8 +3456,12 @@ void CApplication::Stop(int exitCode)
     UnloadSkin();
 
 #if defined(__APPLE__) && !defined(__arm__)
-    if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
-      XBMCHelper::GetInstance().Stop();
+    //if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
+    //  XBMCHelper::GetInstance().Stop();
+    /* PLEX */
+    if (PlexHelper::GetInstance().IsAlwaysOn() == false)
+      PlexHelper::GetInstance().Stop();
+    /* END PLEX */
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
