@@ -127,6 +127,15 @@ namespace XFILE
 
           /* PLEX */
           CStdString    m_strDeadEndUrl; // If we can't redirect, this holds the last URL.
+          int           m_ticklePipe[2];
+
+          void Cancel()
+          {
+#ifndef _WIN32
+            write(m_ticklePipe[1], "Q", 1);
+#endif
+            m_cancelled = true;
+          }
           /* END PLEX */
       };
 
