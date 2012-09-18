@@ -320,9 +320,18 @@ class CAdvancedSettings
 
 
     /* PLEX */
-    int m_nowPlayingFlipTime;
-    bool m_bEnableViewRestrictions;
     CStdString m_language;
+    CStdString m_units;
+
+    int m_secondsToVisualizer;
+    bool m_bVisualizerOnPlay;
+    int m_nowPlayingFlipTime;
+    bool m_bBackgroundMusicOnlyWhenFocused;
+    bool m_bAutoShuffle;
+    bool m_bUseAnamorphicZoom;
+    bool m_bEnableViewRestrictions;
+    bool m_bEnableKeyboardBacklightControl;
+    bool m_bEnablePlexTokensInLogs;
     /* END PLEX */
 };
 
