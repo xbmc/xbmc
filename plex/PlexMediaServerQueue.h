@@ -9,9 +9,9 @@
 #include <queue>
 
 #include "FileItem.h"
-#include "Thread.h"
-#include "PlexDirectory.h"
-#include "StackDirectory.h"
+#include "threads/Thread.h"
+#include "FileSystem/PlexDirectory.h"
+#include "filesystem/StackDirectory.h"
 #include "URL.h"
 #include "Util.h"
 

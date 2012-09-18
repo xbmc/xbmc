@@ -14,10 +14,10 @@
 #include <boost/thread.hpp>
 
 #include "CocoaUtilsPlus.h"
-#include "FileCurl.h"
+#include "filesystem/FileCurl.h"
 #include "GUIUserMessages.h"
-#include "GUIWindowManager.h"
-#include "Key.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "PlexSourceScanner.h"
 #include "PlexLog.h"
 #include "PlexTypes.h"

@@ -14,11 +14,11 @@
 #include <boost/thread/recursive_mutex.hpp>
 
 #include "CocoaUtilsPlus.h"
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "FileItem.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 #include "Settings.h"
-#include "Thread.h"
+#include "threads/Thread.h"
 #include "URL.h"
 
 class HostSources

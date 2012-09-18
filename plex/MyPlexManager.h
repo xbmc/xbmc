@@ -9,16 +9,16 @@
 #include <boost/thread/mutex.hpp>
 #include <string>
 #include <vector>
-#include <tinyXML/tinyxml.h>
+#include <tinyxml.h>
 
-#include "GUIWindowManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "CocoaUtils.h"
 #include "CocoaUtilsPlus.h"
 #include "Log.h"
-#include "FileCurl.h"
-#include "PlexDirectory.h"
+#include "filesystem/FileCurl.h"
+#include "FileSystem/PlexDirectory.h"
 #include "PlexLibrarySectionManager.h"
 #include "PlexServerManager.h"
 
@@ -193,7 +193,7 @@ class MyPlexManager
         
         // Make sure it has the token.
         bool owned = false;
-        string token = section->GetProperty("accessToken");
+        string token = section->GetProperty("accessToken").asString();
         if (token.empty())
         {
           token = g_guiSettings.GetString("myplex.token");
@@ -201,28 +201,28 @@ class MyPlexManager
         }
         
         // Add token to path and to fanart.
-        section->m_strPath = addArgument(section->m_strPath, "X-Plex-Token=" + token);
+        section->SetPath(addArgument(section->GetPath(), "X-Plex-Token=" + token));
         section->SetQuickFanart(addArgument(section->GetQuickFanart(), "X-Plex-Token=" + token));
         
         // Separate 'em into shared and owned.
         if (section->GetProperty("owned") == "1")
         {
           ownedSections.push_back(section);
-          section->SetLabel2(section->GetProperty("serverName"));
+          section->SetLabel2(section->GetProperty("serverName").asString());
         }
         else
         {
           sharedSections.push_back(section);
-          section->SetLabel2(section->GetProperty("sourceTitle"));
+          section->SetLabel2(section->GetProperty("sourceTitle").asString());
         }
         
         // If we own it and the server hasn't been added, do so now.
-        if (uuids.count(section->GetProperty("machineIdentifier")) == 0)
+        if (uuids.count(section->GetProperty("machineIdentifier").asString()) == 0)
         {
-          string uuid = section->GetProperty("machineIdentifier");
-          string name = section->GetProperty("serverName");
-          string address = section->GetProperty("address");
-          unsigned short port = boost::lexical_cast<unsigned short>(section->GetProperty("port"));
+          string uuid = section->GetProperty("machineIdentifier").asString();
+          string name = section->GetProperty("serverName").asString();
+          string address = section->GetProperty("address").asString();
+          unsigned short port = boost::lexical_cast<unsigned short>(section->GetProperty("port").asString());
           
           PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, address, port, token));
           

@@ -23,8 +23,8 @@
 #include <map>
 
 #include "FileItem.h"
-#include "GUIWindow.h"
-#include "PictureThumbLoader.h"
+#include "guilib/GUIWindow.h"
+#include "pictures/PictureThumbLoader.h"
 #include "PlexContentPlayerMixin.h"
 #include "PlexContentWorker.h"
 #include "Stopwatch.h"

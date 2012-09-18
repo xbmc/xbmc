@@ -5,6 +5,7 @@
 #define WINDOW_NOW_PLAYING                10050
 #define WINDOW_PLEX_SEARCH                10051
 #define WINDOW_PLUGIN_SETTINGS            10140
+#define WINDOW_SHARED_CONTENT             10030
 
 // Dialogs.
 #define WINDOW_DIALOG_RATING              10200
@@ -43,5 +44,34 @@ typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
 #define MEDIA_QUALITY_720P        720
 #define MEDIA_QUALITY_480P        480
 #define MEDIA_QUALITY_SD          400
+
+// GUIInfoManager defines
+class CMusicThumbLoader;
+typedef boost::shared_ptr < CFileItem > CFileItemPtr;
+
+#define SYSTEM_SEARCH_IN_PROGRESS 180
+#define MUSICPLAYER_HAS_NEW_COVER_NEXT 227
+#define MUSICPLAYER_NEXT_NEW_COVER  228
+#define MUSICPLAYER_NOW_PLAYING_FLIPPED 229
+#define MUSICPLAYER_FANART          230
+#define CONTAINER_FIRST_TITLE       5000
+#define CONTAINER_SECOND_TITLE      5001
+
+#define SYSTEM_SELECTED_PLEX_MEDIA_SERVER      5002
+#define SLIDESHOW_SHOW_DESCRIPTION  990
+
+#define LISTITEM_STAR_DIFFUSE       (LISTITEM_START + 100)
+#define LISTITEM_BANNER             (LISTITEM_START + 101)
+#define LISTITEM_FIRST_GENRE        (LISTITEM_START + 102)
+
+#define LISTITEM_TYPE               (LISTITEM_START + 150)
+#define LISTITEM_GRANDPARENT_THUMB  (LISTITEM_START + 151)
+#define LISTITEM_STATUS             (LISTITEM_START + 152)
+
+#define LISTITEM_THUMB0             (LISTITEM_START + 170)
+#define LISTITEM_THUMB1             (LISTITEM_START + 171)
+#define LISTITEM_THUMB2             (LISTITEM_START + 172)
+#define LISTITEM_THUMB3             (LISTITEM_START + 173)
+#define LISTITEM_THUMB4             (LISTITEM_START + 174)
 
 #endif

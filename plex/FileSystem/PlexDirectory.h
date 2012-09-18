@@ -8,10 +8,10 @@
  */
 #include <string>
 
-#include "FileCurl.h"
+#include "filesystem/FileCurl.h"
 #include "FileItem.h"
-#include "IDirectory.h"
-#include "Thread.h"
+#include "filesystem/IDirectory.h"
+#include "threads/Thread.h"
 #include "SortFileItem.h"
 #include "PlexTypes.h"
 #include "PlexLog.h"

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "IMsgTargetCallback.h"
+#include "guilib/IMsgTargetCallback.h"
 
 class PlexApplication;
 class PlexServiceListener;

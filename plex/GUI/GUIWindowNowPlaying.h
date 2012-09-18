@@ -21,7 +21,7 @@
  *
  */
 
-#include "GUIWindow.h"
+#include "guilib/GUIWindow.h"
 #include "ThumbLoader.h"
 #include "Stopwatch.h"
 

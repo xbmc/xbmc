@@ -8,7 +8,7 @@
  */
 
 #pragma once
-#include "GUIDialog.h"
+#include "guilib/GUIDialog.h"
 #include "Stopwatch.h"
 #include "XBDateTime.h"
 

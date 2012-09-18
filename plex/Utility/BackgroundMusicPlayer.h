@@ -10,7 +10,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "IPlayer.h"
+#include "cores/IPlayer.h"
 #include "StdString.h"
 #include "PlexTypes.h"
 

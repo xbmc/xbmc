@@ -21,7 +21,8 @@
  *
  */
 
-#include "GUIWindowVideoBase.h"
+#include "video/windows/GUIWindowVideoBase.h"
+#include "PlexTypes.h"
 
 class CGUIWindowSharedContent : public CGUIWindowVideoBase
 {
@@ -38,10 +39,10 @@ class CGUIWindowSharedContent : public CGUIWindowVideoBase
       return true;
     
     CFileItemPtr pItem = m_vecItems->Get(iItem);
-    string type = pItem->GetProperty("type");
+    string type = pItem->GetProperty("type").asString();
     
     CStdString strWindow = (type == "movie" || type == "show") ? "MyVideoFiles" : (type == "artist") ? "MyMusicFiles" : "MyPictures";
-    CStdString cmd = "XBMC.ActivateWindow(" + strWindow + "," + pItem->m_strPath + ",return)";
+    CStdString cmd = "XBMC.ActivateWindow(" + strWindow + "," + pItem->GetPath() + ",return)";
     g_application.ExecuteXBMCAction(cmd);
 
     return true;

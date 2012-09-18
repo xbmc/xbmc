@@ -1,5 +1,5 @@
 #pragma once
-#include "GUIDialog.h"
+#include "guilib/GUIDialog.h"
 
 class CGUIDialogRating: public CGUIDialog
 {

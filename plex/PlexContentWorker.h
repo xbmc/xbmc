@@ -14,9 +14,9 @@
 
 #include "FileItem.h"
 #include "GUIUserMessages.h"
-#include "GUIWindowManager.h"
-#include "PlexDirectory.h"
-#include "PictureThumbLoader.h"
+#include "guilib/GUIWindowManager.h"
+#include "FileSystem/PlexDirectory.h"
+#include "pictures/PictureThumbLoader.h"
 #include "ThumbLoader.h"
 
 class PlexContentWorker;

@@ -24,10 +24,10 @@
 #include <string>
 #include <vector>
 
-#include "IPlayer.h"
+#include "cores/IPlayer.h"
 #include "HTTP.h"
-#include "Thread.h"
-#include "GUIDialogCache.h"
+#include "threads/Thread.h"
+#include "dialogs/GUIDialogCache.h"
 
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
