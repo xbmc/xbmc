@@ -14,7 +14,7 @@
     <setting key="activate_source" type="bool" value="1" label="36020" order="2" />
     <setting key="wake_devices" type="string" value="0" label="36007" order="3" />
     <setting key="standby_devices" type="string" value="0" label="36008" order="4" />
-    <setting key="cec_standby_screensaver" type="bool" value="1" label="36009" order="5" />
+    <setting key="cec_standby_screensaver" type="bool" value="0" label="36009" order="5" />
     <setting key="standby_pc_on_tv_standby" type="enum" value="13011" label="36029" order="6" lvalues="36028|13005|13011" />
     <setting key="standby_tv_on_pc_standby" type="bool" value="1" label="36026" order="7" />
     <setting key="send_inactive_source" type="bool" value="1" label="36025" order="8" />
@@ -34,7 +34,7 @@
     <setting key="activate_source" type="bool" value="1" label="36020" order="2" />
     <setting key="wake_devices" type="string" value="0" label="36007" order="3" />
     <setting key="standby_devices" type="string" value="0" label="36008" order="4" />
-    <setting key="cec_standby_screensaver" type="bool" value="1" label="36009" order="5" />
+    <setting key="cec_standby_screensaver" type="bool" value="0" label="36009" order="5" />
     <setting key="standby_pc_on_tv_standby" type="enum" value="13011" label="36029" order="6" lvalues="36028|13005|13011" />
     <setting key="standby_tv_on_pc_standby" type="bool" value="1" label="36026" order="7" />
     <setting key="send_inactive_source" type="bool" value="1" label="36025" order="8" />
