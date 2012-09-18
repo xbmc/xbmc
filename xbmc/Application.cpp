@@ -3444,6 +3444,16 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
 
+    /* PLEX */
+    // Make sure background loader threads are all dead.
+    CBackgroundRunner::StopAll();
+    for (int i=0; CBackgroundRunner::GetNumActive() != 0 && i<120; i++)
+    {
+      m_applicationMessenger.ProcessMessages();
+      Sleep(50);
+    }
+    /* END PLEX */
+
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))
     {
@@ -3513,8 +3523,10 @@ void CApplication::Stop(int exitCode)
     CSFTPSessionManager::DisconnectAllSessions();
 #endif
 
+#ifndef __PLEX__
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
+#endif
 
 #if defined(__APPLE__) && !defined(__arm__)
     //if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
@@ -3524,6 +3536,10 @@ void CApplication::Stop(int exitCode)
       PlexHelper::GetInstance().Stop();
     /* END PLEX */
 #endif
+
+    /* PLEX */
+    PlexMediaServerQueue::Get().StopThread();
+    /* END PLEX */
 
 #if defined(HAVE_LIBCRYSTALHD)
     CCrystalHD::RemoveInstance();
