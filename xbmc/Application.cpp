@@ -5333,6 +5333,10 @@ void CApplication::Mute()
   g_settings.m_iPreMuteVolumeLevel = GetVolume();
   SetVolume(0);
   g_settings.m_bMute = true;
+
+  /* PLEX */
+  m_plexApp->SetGlobalVolume(GetVolume());
+  /* END PLEX */
 }
 
 void CApplication::UnMute()
@@ -5604,9 +5608,13 @@ bool CApplication::SwitchToFullScreen()
     return true;
   }
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+  // if (IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+  /* PLEX */
+  if (IsPlayingAudio() && !IsVisualizerActive())
   { // then switch to visualisation
-    g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+    //g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+    ActivateVisualizer();
+    /* END PLEX */
     return true;
   }
   return false;
