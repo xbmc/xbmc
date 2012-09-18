@@ -171,6 +171,12 @@ namespace XBMCAddon
       }
 
       vecControls.clear();
+
+      if (window)
+      {
+        window->clear();
+        window = NULL;
+      }
     }
 
     void Window::setWindow(InterceptorBase* _window) 
