@@ -30,5 +30,10 @@ if(UNIX)
 	add_subdirectory(linux)
 endif(UNIX)
 
+set(PlexOwnedFiles BackgroundInfoLoader.cpp)
+
 aux_source_directory(. xbmc_SRCS)
+foreach(f ${PlexOwnedFiles})
+  list(REMOVE_ITEM xbmc_SRCS ./${f})
+endforeach()
 add_library(xbmc STATIC ${xbmc_SRCS})
