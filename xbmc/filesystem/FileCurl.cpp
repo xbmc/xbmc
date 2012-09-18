@@ -334,7 +334,9 @@ CFileCurl::CFileCurl()
   m_httpauth = "";
   m_state = new CReadState();
   m_skipshout = false;
+
   /* PLEX */
+  m_clearCookies = false;
   m_post = false;
   m_basicAuth = false;
   /* END PLEX */
@@ -408,6 +410,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
+#ifndef __PLEX__
   // Enable cookie engine for current handle to re-use them in future requests
   CStdString strCookieFile;
   CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
@@ -421,6 +424,20 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
 
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIELIST, "FLUSH");
+#else
+  /* PLEX */
+  if (m_clearCookies == false)
+  {
+    // Set custom cookie if requested
+    if (!m_cookie.IsEmpty())
+      g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
+  }
+  else
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_COOKIESESSION, 1);
+  }
+  /* END PLEX */
+#endif
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -544,6 +561,20 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
+
+  /* PLEX */
+  // See if we need to add any options from the FileItem.
+  if (g_application.CurrentFileItem().GetPath() == m_url)
+  {
+    CStdString cookies = g_application.CurrentFileItem().GetProperty("httpCookies").asString();
+    if (cookies.size() > 0)
+      g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, cookies.c_str());
+
+    CStdString userAgent = g_application.CurrentFileItem().GetProperty("userAgent").asString();
+    if (userAgent.size() > 0)
+      g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, userAgent.c_str());
+  }
+  /* END PLEX */
 }
 
 void CFileCurl::SetRequestHeaders(CReadState* state)
