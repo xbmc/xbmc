@@ -640,6 +640,11 @@ bool CApplication::Create()
   // Init our DllLoaders emu env
   init_emu_environ();
 
+  /* PLEX */
+  m_pLaunchHost = DetectLaunchHost();
+  if (m_pLaunchHost)
+    m_pLaunchHost->OnStartup();
+  /* END PLEX */
 
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
@@ -3263,6 +3268,12 @@ bool CApplication::Cleanup()
     g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
+    /* PLEX */
+    if (m_pLaunchHost)
+      m_pLaunchHost->OnShutdown();
+    /* END PLEX */
+
+#ifndef __PLEX__
     CAddonMgr::Get().DeInit();
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
