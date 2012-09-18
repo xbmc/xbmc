@@ -49,21 +49,24 @@
 
   var Launcher = {
     VERSION: '1.0.0',
+    JS_REGEX: /Launcher\.js(\?.*)?$/,
     load: function(libraryName) {
       document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? Math.random() : this.VERSION) + '"><\/script>');
     },
     init: function() {
-      var js = /Launcher\.js(\?.*)?$/;
-      $('html').find('script[src]').each(
-        function(i, s) {
-          if (s.src.match(js)) {
-            var path = s.src.replace(js, ''),
-            includes = s.src.match(/\?.*load=([-.,a-zA-Z]*)/);
-            $.each((includes ? includes[1] : '').split(','), function(i, include) {
-              Launcher.load(path + include + '.js')
-            });
+      var i, j, s, includes, load, path, scripts;
+      scripts = window.document.getElementsByTagName('script');
+      for (i = 0; i < scripts.length; i += 1) {
+        s = scripts[i];
+        if (s.src.match(this.JS_REGEX)) {
+          path = s.src.replace(this.JS_REGEX, '');
+          load = s.src.match(/\?.*load=([-.,a-zA-Z0-9]*)/);
+          includes = (load && load[1] || '').split(',');
+          for (j = 0; j < includes.length; j += 1) {
+            Launcher.load(path + includes[j] + '.js')
           }
-        });
+        }
+      }
     }
   }
 
