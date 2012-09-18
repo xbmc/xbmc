@@ -45,7 +45,7 @@
 
 (function()
 {
-  var DEBUG_MODE = true; /* Set to false to enable cached javascript */
+  var DEBUG_MODE = false; /* Set to true to disable cached javascript */
 
   var Launcher = {
     VERSION: '1.0.0',
