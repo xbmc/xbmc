@@ -60,15 +60,15 @@
         s = scripts[i];
         if (s.src.match(this.JS_REGEX)) {
           path = s.src.replace(this.JS_REGEX, '');
-          load = s.src.match(/\?.*load=([-.,a-zA-Z0-9]*)/);
+          load = s.src.match(/\?.*load=([a-zA-Z0-9.,\-]*)/);
           includes = (load && load[1] || '').split(',');
           for (j = 0; j < includes.length; j += 1) {
-            Launcher.load(path + includes[j] + '.js')
+            Launcher.load(path + includes[j] + '.js');
           }
         }
       }
     }
-  }
+  };
 
   Launcher.init();
 })();
