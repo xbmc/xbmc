@@ -1,0 +1,14 @@
+--- libcedarv.orig/vdecoder.c	2012-05-25 14:57:53.000000000 +0200
++++ libcedarv/vdecoder.c	2012-09-17 17:47:04.145473447 +0200
+@@ -716,9 +716,8 @@ get_frame_again:
+     picture->pts                    = frame->pts;
+     picture->pcr                    = frame->pcr;
+ 
+-	//* the CedarX player need we return physic address of display frame.
+-    picture->y                      = (unsigned char*)mem_get_phy_addr((unsigned int)frame->y);
+-    picture->u                      = (unsigned char*)mem_get_phy_addr((unsigned int)frame->u);
++    picture->y                      = frame->y;
++    picture->u                      = frame->u;
+ 
+     picture->v                      = NULL;
+     picture->alpha                  = NULL;

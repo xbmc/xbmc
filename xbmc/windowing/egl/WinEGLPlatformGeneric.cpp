@@ -19,6 +19,8 @@
  *
  */
 
+#define FIX1280
+
 #include "system.h"
 
 #include "system_gl.h"
@@ -70,6 +72,13 @@ bool CWinEGLPlatformGeneric::ClampToGUIDisplayLimits(int &width, int &height)
 {
   width  = m_width;
   height = m_height;
+
+  /*adi*/
+#ifdef FIX1280
+  if (width > 1280) width = 1280;
+  if (height > 720) height = 720;
+#endif
+
   return true;
 }
 
@@ -354,8 +363,21 @@ bool CWinEGLPlatformGeneric::IsExtSupported(const char* extension)
 
 EGLNativeWindowType CWinEGLPlatformGeneric::getNativeWindow()
 {
+  static fbdev_window win;
+
+#if 1 /*adi*/
+#ifdef FIX1280
+  win.width  = 1280;
+  win.height = 720;
+#else 
+  win.width  = 1920;
+  win.height = 1080;
+#endif
+  return (EGLNativeWindowType)&win;
+#else
   // most egl platforms can handle EGLNativeWindowType == 0
   return 0;
+#endif
 }
 
 EGLDisplay CWinEGLPlatformGeneric::GetEGLDisplay()

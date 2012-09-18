@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef ANDROID
+
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
@@ -69,3 +71,5 @@ EGLNativeWindowType CWinEGLPlatformAndroid::getNativeWindow()
 {
   return (EGLNativeWindowType)CXBMCApp::GetNativeWindow();
 }
+
+#endif

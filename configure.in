@@ -2114,6 +2114,8 @@ else
   final_message="$final_message\n  PVR add-ons:\t\tNo"
 fi
 
+LIBS="$LIBS $CEDARLIBS"
+
 OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.confluence/media/Makefile \

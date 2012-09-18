@@ -28,6 +28,8 @@ SRCS += OpenMax.cpp \
 
 endif
 
+SRCS += DVDVideoCodecA10.cpp
+
 LIB=Video.a
 
 include @abs_top_srcdir@/Makefile.include

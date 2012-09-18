@@ -37,6 +37,7 @@
 #if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
 #endif
+#include "Video/DVDVideoCodecA10.h"
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLibMad.h"
 #include "Audio/DVDAudioCodecPcm.h"
@@ -247,6 +248,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
     }
   }
 #endif
+
+  if ( (pCodec = OpenCodec(new CDVDVideoCodecA10(), hint, options)) ) return pCodec;
 
   // try to decide if we want to try halfres decoding
 #if !defined(_LINUX) && !defined(_WIN32)

@@ -178,6 +178,9 @@
 #ifdef HAVE_ALSA
 #define HAS_ALSA
 #endif
+#if !defined(HAVE_X11)
+#define HAS_LINUX_EVENTS
+#endif
 #endif
 
 #ifdef HAVE_LIBSSH

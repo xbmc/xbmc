@@ -1,6 +1,10 @@
 # global patterns
 testMain
 
+pvr-addons
+/pvr-addons
+/addons/pvr.*
+
 # commonly used editors
 # vim
 *.swp
