@@ -1045,7 +1045,10 @@ bool CFileCurl::Exists(const CURL& url)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+  //g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+  /* PLEX */
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 15);
+  /* END PLEX */
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
 
