@@ -50,15 +50,9 @@
   var Launcher = {
     VERSION: '1.0.0',
     load: function(libraryName) {
-      document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? this.randomValue() : this.VERSION) + '"><\/script>');
+      document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? Math.random() : this.VERSION) + '"><\/script>');
     },
     init: function() {
-      function convertVersionString(versionString) {
-        var v = versionString.replace(/_.*|\./g, '');
-        v = parseInt(v + (v.length == 4 ? '' : '0'));
-        return versionString.indexOf('_') > -1 ? v-1 : v;
-      }
-
       var js = /Launcher\.js(\?.*)?$/;
       $('html').find('script[src]').each(
         function(i, s) {
@@ -70,9 +64,6 @@
             });
           }
         });
-    },
-    randomValue: function() {
-      return Math.random();
     }
   }
 
