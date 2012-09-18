@@ -74,6 +74,8 @@ namespace XBMCAddon
      */
     virtual void delayedCallClose() { }
 
+    virtual void makePendingCalls() {}
+
     /**
      * For scripting languages that need a global callback handler, this
      *  method should be overloaded to supply one.
@@ -147,6 +149,8 @@ namespace XBMCAddon
       if (clearOnExit) LanguageHook::clearLanguageHook();
       if (languageHook) languageHook->delayedCallClose();
     }
+
+    inline LanguageHook* getLanguageHook() { return languageHook; }
   };
 
   class SetLanguageHookGuard

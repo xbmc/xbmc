@@ -45,10 +45,15 @@ namespace XBMCAddon
       int value;
     };
 
+    void LanguageHook::makePendingCalls()
+    {
+      PythonCallbackHandler::makePendingCalls();
+    }
+
     void LanguageHook::delayedCallOpen()
     {
       TRACE;
-      PythonCallbackHandler::makePendingCalls();
+
       // TODO: add a check for null of _save. If it's not null there's 
       //  a problem.
 
@@ -101,7 +106,6 @@ namespace XBMCAddon
         tlsCount.set(NULL);
         delete count;
       }
-      PythonCallbackHandler::makePendingCalls();
     }
 
     LanguageHook* LanguageHook::getInstance() 
