@@ -138,6 +138,10 @@ void CSettings::Initialize()
   m_lastUsedProfile = 0;
   m_currentProfile = 0;
   m_nextIdProfile = 0;
+
+  /* PLEX */
+  m_userAgent = "Plex Firefox/2.0.0.11";
+  /* END PLEX */
 }
 
 CSettings::~CSettings(void)
