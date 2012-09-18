@@ -897,6 +897,9 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 void CFileCurl::Cancel()
 {
   m_state->m_cancelled = true;
+  /* PLEX */
+  m_state->Cancel();
+  /* END PLEX */
   while (m_opened)
     Sleep(1);
 }
