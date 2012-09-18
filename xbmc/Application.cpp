@@ -4750,6 +4750,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_pKaraokeMgr )
         m_pKaraokeMgr->Stop();
 #endif
+
+      /* PLEX */
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED)
+        UpdateFileState("stopped");
+
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED || message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+        HideBusyIndicator();
+      /* END PLEX */
+
 #ifdef TARGET_DARWIN
       DarwinSetScheduling(message.GetMessage());
 #endif
@@ -4762,6 +4771,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
           return true;
         }
       }
+      /* PLEX */
+      else
+      {
+        UpdateFileState("stopped");
+      }
+      /* END PLEX */
       
       // In case playback ended due to user eg. skipping over the end, clear
       // our resume bookmark here
@@ -5102,7 +5117,10 @@ void CApplication::Restart(bool bSamePosition)
   if( !m_pPlayer )
     return ;
 
-  SaveFileState();
+  /* PLEX */
+  //SaveFileState();
+  UpdateFileState("playing");
+  /* END PLEX */
 
   // do we want to return to the current position in the file
   if (false == bSamePosition)
