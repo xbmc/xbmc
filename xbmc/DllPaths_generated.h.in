@@ -28,7 +28,6 @@
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif-@ARCH@.so"
-#define DLL_PATH_LIBID3TAG     "special://xbmcbin/system/libid3tag-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"

@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# Simply run autoreconf
-autoreconf -vif
