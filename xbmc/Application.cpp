@@ -1350,6 +1350,10 @@ bool CApplication::Initialize()
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
 
+  /* PLEX */
+  MyPlexManager::Get().scanAsync();
+  /* END PLEX */
+
   return true;
 }
 
