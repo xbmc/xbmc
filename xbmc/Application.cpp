@@ -307,6 +307,21 @@
   #include "input/windows/IRServerSuite.h"
 #endif
 
+/* PLEX */
+#include "plex/PlexApplication.h"
+#include "plex/Players/PlexMediaServerPlayer.h"
+#include "plex/PlexMediaServerQueue.h"
+#include "plex/MyPlexManager.h"
+#include "plex/PlexServerManager.h"
+#include "plex/Helper/PlexHelper.h"
+#include "plex/GUI/GUIDialogRating.h"
+#include "plex/GUI/GUIWindowSharedContent.h"
+#include "plex/GUI/GUIDialogTimer.h"
+#include "plex/GUI/GUIWindowNowPlaying.h"
+#include "plex/GUI/GUIWindowPlexSearch.h"
+#include "plex/Utility/BackgroundMusicPlayer.h"
+/* END PLEX */
+
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
@@ -5512,3 +5527,181 @@ CPerformanceStats &CApplication::GetPerformanceStats()
   return m_perfStats;
 }
 #endif
+
+/* PLEX */
+bool CApplication::IsBuffering() const
+{
+  if (!m_pPlayer)
+    return false;
+  if (m_pPlayer->IsCaching() && m_pPlayer->IsPaused() && g_infoManager.GetSeeking() == false)
+    return true;
+  return false;
+}
+
+void CApplication::UpdateFileState(const string& aState)
+{
+  if (!m_itemCurrentFile)
+    return;
+
+  // Update the media server as needed.
+  static time_t lastUpdated = 0;
+  static string lastState;
+  static double lastTime = 0.0;
+  static double latestTime = 0.0;
+  static bool   hasScrobbled = false;
+  static string lastKey;
+
+  // Compute the state if not passed on.
+  string state = aState;
+  if (state.empty())
+    state = IsBuffering() ? "buffering" : IsPaused() ? "paused" : "playing";
+
+  // Keep latest time.
+  double nowTime = GetTime();
+  if (nowTime > 0.0)
+    latestTime = nowTime;
+
+  // If the item changed, reset things.
+  if (lastKey != m_itemCurrentFile->GetProperty("key").asString())
+  {
+    hasScrobbled = false;
+    latestTime = 0.0;
+  }
+
+  // Every 5 seconds by default.
+  int cadence = 5;
+  if (m_itemCurrentFile->GetProperty("pluginIdentifier") == "com.plexapp.plugins.myplex")
+    cadence = 20;
+
+  if (state == "stopped" || IsPlayingVideo() || IsPlayingAudio())
+  {
+    // Enough time has passed, we changed state, we skipped, or we're playing something different.
+    time_t now = time(0);
+    if (now - lastUpdated > cadence        ||
+        lastState != state                 ||
+        fabs(lastTime-nowTime) > cadence*2 ||
+        lastKey != m_itemCurrentFile->GetProperty("key").asString())
+    {
+      // Update state.
+      lastUpdated = time(0);
+      lastState = state;
+      lastTime = nowTime;
+      lastKey = m_itemCurrentFile->GetProperty("key").asString();
+
+      // If we've stopped, use the most up to date time possible.
+      double t = nowTime;
+      if (state == "stopped")
+        t = latestTime;
+
+      // Update progress.
+      if (hasScrobbled == false)
+      {
+        if (t>5.0)
+        {
+          m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(t*1000)));
+          m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+        }
+
+        PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, int(t*1000), state);
+      }
+      else
+      {
+        PlexMediaServerQueue::Get().onPlayTimeline(m_itemCurrentFile, int(t*1000), state);
+      }
+    }
+
+    // See if we should scrobble.
+    if (hasScrobbled == false && GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent)
+    {
+      hasScrobbled = true;
+
+      // Scrobble.
+      m_itemCurrentFile->GetVideoInfoTag()->m_playCount++;
+      m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+      m_itemCurrentFile->ClearProperty("viewOffset");
+      PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
+    }
+
+    // Update the item in place.
+    CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
+    if (mediaWindow)
+      mediaWindow->UpdateSelectedItem(m_itemCurrentFile);
+  }
+}
+
+void CApplication::UpdateViewOffset()
+{
+  if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
+    m_progressTrackingItem->ClearProperty("viewOffset");
+
+  else if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
+    m_progressTrackingItem->SetProperty("viewOffset", boost::lexical_cast<string>((int)m_progressTrackingVideoResumeBookmark.timeInSeconds));
+}
+
+bool CApplication::IsVisualizerActive()
+{
+  return (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION ||
+          g_windowManager.GetActiveWindow() == WINDOW_NOW_PLAYING);
+}
+
+void CApplication::ActivateVisualizer()
+{
+  // See which visualizer to activate.
+  CStdString name = g_guiSettings.GetString("musicplayer.visualisation");
+  if (name == "Now Playing" || name == "Now Playing.vis" || name == "visualization.nowplaying")
+    g_windowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+  else
+    g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+}
+
+void CApplication::ShowBusyIndicator()
+{
+  CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  dialog->Show();
+}
+
+void CApplication::HideBusyIndicator()
+{
+  CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  if (dialog->IsDialogRunning())
+    dialog->Close();
+}
+
+void CApplication::RestartWithNewPlayer(CGUIDialogCache* cacheDlg, const CStdString& newURL)
+{
+  CFileItem newFile(newURL, false);
+  newFile.SetLabel(m_itemCurrentFile->GetLabel());
+  *m_itemCurrentFile = newFile;
+
+  // We're moving to a new player, so whack the old one.
+  delete m_pPlayer;
+  m_pPlayer = 0;
+
+  // Create the new player.
+  PLAYERCOREID eNewCore = CPlayerCoreFactory::GetDefaultPlayer(newFile);
+  m_eCurrentPlayer = eNewCore;
+  m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
+
+  // See if we're passing along the cache dialog.
+  if (cacheDlg)
+  {
+    if (eNewCore == EPC_PMSPLAYER)
+      ((CPlexMediaServerPlayer* )m_pPlayer)->SetCacheDialog(cacheDlg);
+    else
+      cacheDlg->Close();
+  }
+
+  PlayFile(*m_itemCurrentFile, false);
+}
+
+CFileItemPtr& CApplication::CurrentFileItemPtr()
+{
+  return m_itemCurrentFile;
+}
+
+void CApplication::Hide()
+{
+  g_Windowing.Hide();
+}
+
+/* END PLEX */

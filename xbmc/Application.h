@@ -62,6 +62,13 @@ namespace MEDIA_DETECT
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
+/* PLEX */
+#include "plex/LaunchHost.h"
+class CGUIDialogCache;
+class PlexApplication;
+typedef boost::shared_ptr<PlexApplication> PlexApplicationPtr;
+/* END PLEX */
+
 class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
 class CApplicationMessenger;
@@ -137,8 +144,10 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
+#ifndef __PLEX__
   void SaveFileState();
   void UpdateFileState();
+#endif
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -284,6 +293,29 @@ public:
   bool ToggleDPMS(bool manual);
 
   float GetDimScreenSaverLevel() const;
+
+  /* PLEX */
+  bool m_bPlaybackInFullScreen;
+
+  void Hide();
+
+  void ShowBusyIndicator();
+  void HideBusyIndicator();
+
+  void FinishPlayingFile(bool bResult, const CStdString& error="");
+
+  void UpdateFileState(const std::string& state="");
+  void UpdateViewOffset();
+
+  void RestartWithNewPlayer(CGUIDialogCache* cacheDlg, const CStdString& newURL);
+  CFileItemPtr& CurrentFileItemPtr();
+
+  bool IsBuffering() const;
+
+  bool IsVisualizerActive();
+  void ActivateVisualizer();
+  /* END PLEX */
+
 protected:
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
@@ -392,6 +424,11 @@ protected:
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
 
+
+  /* PLEX */
+  LaunchHost *m_pLaunchHost;
+  PlexApplicationPtr m_plexApp;
+  /* END PLEX */
 };
 
 extern CApplication g_application;
