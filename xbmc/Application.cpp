@@ -721,6 +721,21 @@ bool CApplication::Create()
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
+  /* PLEX */
+#ifdef _WIN32
+  // HACKHACK
+  // This is a workaround for what appears to be a bug in the Windows heap.
+  // See https://github.com/plexinc/plex/issues/47 for more details
+  if (!g_curlInterface.IsLoaded())
+    g_curlInterface.Load();
+  g_curlInterface.global_init(CURL_GLOBAL_ALL);
+#endif
+
+  // Create and initilize the plex application
+  m_plexApp = PlexApplication::Create();
+  m_plexApp->SetGlobalVolume(g_application.GetVolume());
+  /* END PLEX */
+
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
