@@ -1163,23 +1163,23 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
   g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
-  g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
+  //g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
   g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
-  g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
+  //g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
 #ifdef HAS_GL
   g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
 #endif
 #ifdef HAS_DX
   g_windowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
 #endif
-  g_windowManager.Add(new CGUIDialogTeletext);               // window id =
+  //g_windowManager.Add(new CGUIDialogTeletext);               // window id =
   g_windowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   g_windowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   g_windowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
   g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
-  g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
+  //g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
   g_windowManager.Add(new CGUIWindowScreensaverDim);            // window id = 97  
   g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
   g_windowManager.Add(new CGUIWindowPointer);            // window id = 99
@@ -1193,7 +1193,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogKaiToast);           // window id = 107
   g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
   g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
-  g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
+  //g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   g_windowManager.Add(new CGUIDialogMuteBug);            // window id = 113
   g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 114
@@ -1257,6 +1257,14 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   g_windowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
   g_windowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
+
+  /* PLEX */
+  g_windowManager.Add(new CGUIWindowSharedContent);
+  g_windowManager.Add(new CGUIWindowNowPlaying);         // window id = 50
+  g_windowManager.Add(new CGUIWindowPlexSearch);         // window id = 51
+  g_windowManager.Add(new CGUIDialogRating);                 // window id = 200
+  g_windowManager.Add(new CGUIDialogTimer);                 // window id = 201
+  /* END PLEX */
 
   /* window id's 3000 - 3100 are reserved for python */
 
