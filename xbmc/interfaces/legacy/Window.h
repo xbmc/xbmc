@@ -79,7 +79,6 @@ namespace XBMCAddon
       friend class WindowDialogMixin;
     protected:
 #ifndef SWIG
-      bool windowCleared;
       InterceptorBase* window;
       int iWindowId;
 
