@@ -3230,6 +3230,16 @@ bool CApplication::Cleanup()
 {
   try
   {
+    /* PLEX */
+    m_plexApp.reset();
+
+    g_windowManager.Delete(WINDOW_SHARED_CONTENT);
+    g_windowManager.Delete(WINDOW_NOW_PLAYING);
+    g_windowManager.Delete(WINDOW_PLEX_SEARCH);
+    g_windowManager.Delete(WINDOW_DIALOG_TIMER);
+    g_windowManager.Delete(WINDOW_DIALOG_RATING);
+    /* END PLEX */
+
     g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     g_windowManager.Delete(WINDOW_MUSIC_FILES);
@@ -3360,6 +3370,7 @@ bool CApplication::Cleanup()
     g_settings.Clear();
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
+#endif // __PLEX__
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();
