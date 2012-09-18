@@ -49,7 +49,6 @@
 
   var Launcher = {
     VERSION: '1.0.0',
-    REQUIRED_JQUERY: '1.5.2',
     load: function(libraryName) {
       document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? this.randomValue() : this.VERSION) + '"><\/script>');
     },
@@ -59,9 +58,6 @@
         v = parseInt(v + (v.length == 4 ? '' : '0'));
         return versionString.indexOf('_') > -1 ? v-1 : v;
       }
-
-      if(!jQuery || (convertVersionString(jQuery.fn.jquery) < convertVersionString(Launcher.REQUIRED_JQUERY)))
-        throw("XBMC Web Interface requires the jQuery JavaScript framework >= " + Launcher.REQUIRED_JQUERY);
 
       var js = /Launcher\.js(\?.*)?$/;
       $('html').find('script[src]').each(
