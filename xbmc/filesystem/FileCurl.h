@@ -87,6 +87,7 @@ namespace XFILE
       /* PLEX */
       bool Put(const CStdString& strURL, CStdString& strHTML);
       bool Delete(const CStdString& strURL, CStdString& strHTML);
+      void SetUserAndPassword(const CStdString& user, const CStdString& pass) { m_basicUser = user; m_basicPass = pass; m_basicAuth = true; }
       /* END PLEX */
 
       class CReadState
@@ -174,6 +175,9 @@ namespace XFILE
 
       /* PLEX */
       CStdString      m_verb;
+      CStdString      m_basicUser;
+      CStdString      m_basicPass;
+      bool            m_basicAuth;
       /* END PLEX */
   };
 }

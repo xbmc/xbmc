@@ -45,6 +45,12 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 
+/* PLEX */
+#include "Application.h"
+#include "FileItem.h"
+#include "Variant.h"
+/* END PLEX */
+
 using namespace XFILE;
 using namespace XCURL;
 
@@ -328,6 +334,10 @@ CFileCurl::CFileCurl()
   m_httpauth = "";
   m_state = new CReadState();
   m_skipshout = false;
+  /* PLEX */
+  m_post = false;
+  m_basicAuth = false;
+  /* END PLEX */
 }
 
 //Has to be called before Open()
@@ -371,8 +381,17 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
 
+  /* PLEX */
+  if (m_basicAuth)
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_basicUser.c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_basicPass.c_str());
+  }
+
   // set username and password for current handle
-  if (m_username.length() > 0 && m_password.length() > 0)
+  //if (m_username.length() > 0 && m_password.length() > 0)
+  else if (m_username.length() > 0 && m_password.length() > 0)
+  /* END PLEX */
   {
     CStdString userpwd = m_username + ":" + m_password;
     g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
