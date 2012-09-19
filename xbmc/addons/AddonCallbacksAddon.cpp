@@ -26,8 +26,9 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
-#include "filesystem/SMBDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "utils/URIUtils.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 
@@ -432,18 +433,8 @@ bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* s
   if (!helper)
     return false;
 
-  if (CDirectory::Exists(strURL))
-  {
-    // check permissions
-    if (URIUtils::IsSmb(strURL))
-    {
-      CSMBDirectory directory;
-      return directory.Open(CURL(strURL));
-    }
-
-    return true;
-  }
-  return false;
+  CFileItemList items;
+  return CDirectory::GetDirectory(strURL, items);
 }
 
 }; /* namespace ADDON */
