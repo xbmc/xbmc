@@ -125,4 +125,108 @@ DLLEXPORT const char* XBMC_get_dvd_menu_language()
   return strdup(buffer.c_str());
 }
 
+DLLEXPORT void* XBMC_open_file(const char* strFileName, unsigned int flags)
+{
+  if (m_cb == NULL)
+    return NULL;
+
+  return m_cb->OpenFile(m_Handle->addonData, strFileName, flags);
+}
+
+DLLEXPORT void* XBMC_open_file_for_write(const char* strFileName, bool bOverWrite)
+{
+  if (m_cb == NULL)
+    return NULL;
+
+  return m_cb->OpenFileForWrite(m_Handle->addonData, strFileName, bOverWrite);
+}
+
+DLLEXPORT unsigned int XBMC_read_file(void* file, void* lpBuf, int64_t uiBufSize)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->ReadFile(m_Handle->addonData, file, lpBuf, uiBufSize);
+}
+
+DLLEXPORT bool XBMC_read_file_string(void* file, char *szLine, int iLineLength)
+{
+  if (m_cb == NULL)
+    return false;
+
+  return m_cb->ReadFileString(m_Handle->addonData, file, szLine, iLineLength);
+}
+
+DLLEXPORT int XBMC_write_file(void* file, const void* lpBuf, int64_t uiBufSize)
+{
+  if (m_cb == NULL)
+    return false;
+
+  return m_cb->WriteFile(m_Handle->addonData, file, lpBuf, uiBufSize);
+}
+
+DLLEXPORT void XBMC_flush_file(void* file)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->FlushFile(m_Handle->addonData, file);
+}
+
+DLLEXPORT int64_t XBMC_seek_file(void* file, int64_t iFilePosition, int iWhence)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->SeekFile(m_Handle->addonData, file, iFilePosition, iWhence);
+}
+
+DLLEXPORT int XBMC_truncate_file(void* file, int64_t iSize)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->TruncateFile(m_Handle->addonData, file, iSize);
+}
+
+DLLEXPORT int64_t XBMC_get_file_position(void* file)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->GetFilePosition(m_Handle->addonData, file);
+}
+
+DLLEXPORT int64_t XBMC_get_file_length(void* file)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->GetFileLength(m_Handle->addonData, file);
+}
+
+DLLEXPORT void XBMC_close_file(void* file)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->CloseFile(m_Handle->addonData, file);
+}
+
+DLLEXPORT int64_t XBMC_get_file_chunk_size(void* file)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->GetFileChunkSize(m_Handle->addonData, file);
+}
+
+DLLEXPORT bool XBMC_can_open_directory(const char* strURL)
+{
+  if (m_cb == NULL)
+    return 0;
+
+  return m_cb->CanOpenDirectory(m_Handle->addonData, strURL);
+}
+
 };

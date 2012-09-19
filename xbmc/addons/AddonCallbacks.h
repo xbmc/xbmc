@@ -31,6 +31,20 @@ typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
 typedef const char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
 typedef const char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
 
+typedef void* (*AddOnOpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
+typedef void* (*AddOnOpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
+typedef unsigned int (*AddOnReadFile)(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize);
+typedef bool (*AddOnReadFileString)(const void* addonData, void* file, char *szLine, int iLineLength);
+typedef int (*AddOnWriteFile)(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize);
+typedef void (*AddOnFlushFile)(const void* addonData, void* file);
+typedef int64_t (*AddOnSeekFile)(const void* addonData, void* file, int64_t iFilePosition, int iWhence);
+typedef int (*AddOnTruncateFile)(const void* addonData, void* file, int64_t iSize);
+typedef int64_t (*AddOnGetFilePosition)(const void* addonData, void* file);
+typedef int64_t (*AddOnGetFileLength)(const void* addonData, void* file);
+typedef void (*AddOnCloseFile)(const void* addonData, void* file);
+typedef int (*AddOnGetFileChunkSize)(const void* addonData, void* file);
+typedef bool (*AddOnCanOpenDirectory)(const void* addonData, const char* strURL);
+
 typedef struct CB_AddOn
 {
   AddOnLogCallback        Log;
@@ -39,6 +53,20 @@ typedef struct CB_AddOn
   AddOnUnknownToUTF8      UnknownToUTF8;
   AddOnGetLocalizedString GetLocalizedString;
   AddOnGetDVDMenuLanguage GetDVDMenuLanguage;
+
+  AddOnOpenFile           OpenFile;
+  AddOnOpenFileForWrite   OpenFileForWrite;
+  AddOnReadFile           ReadFile;
+  AddOnReadFileString     ReadFileString;
+  AddOnWriteFile          WriteFile;
+  AddOnFlushFile          FlushFile;
+  AddOnSeekFile           SeekFile;
+  AddOnTruncateFile       TruncateFile;
+  AddOnGetFilePosition    GetFilePosition;
+  AddOnGetFileLength      GetFileLength;
+  AddOnCloseFile          CloseFile;
+  AddOnGetFileChunkSize   GetFileChunkSize;
+  AddOnCanOpenDirectory   CanOpenDirectory;
 } CB_AddOnLib;
 
 typedef void (*GUILock)();
