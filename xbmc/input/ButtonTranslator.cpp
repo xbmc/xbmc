@@ -35,6 +35,10 @@
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
 
+/* PLEX */
+#include "PlexTypes.h"
+/* END PLEX */
+
 using namespace std;
 using namespace XFILE;
 
@@ -311,6 +315,11 @@ static const ActionMapping windows[] =
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
+        /* PLEX */
+        {"sharedcontent"            , WINDOW_SHARED_CONTENT},
+        {"nowplaying"               , WINDOW_NOW_PLAYING},
+        {"plexsearch"               , WINDOW_PLEX_SEARCH},
+        /* END PLEX */
         {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS}};
 
 static const ActionMapping mousecommands[] =
