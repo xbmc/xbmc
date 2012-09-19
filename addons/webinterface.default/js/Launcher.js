@@ -23,8 +23,8 @@
 
   var i,
     script,
-    version = '1.0.0',
-    debug_mode = false, /* Set to true to disable cached javascript */
+    debug = false, /* Set to true to disable cached javascript */
+    version = (debug ? Math.random() : '1.0.0'),
     scripts = [
       "js/jquery-1.5.2.min.js",
       "js/jquery.lazyload.js",
@@ -36,7 +36,7 @@
 
   for (i = 0; i < scripts.length; i += 1) {
     script = '<script type="text/javascript" src="';
-    script += scripts[i] + '?' + (debug_mode ? Math.random() : version);
+    script += scripts[i] + '?' + version;
     script += '"><\/script>';
     document.write(script);
   }
