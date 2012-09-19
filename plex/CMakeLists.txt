@@ -25,12 +25,13 @@ add_subdirectory(Utility)
 #add_subdirectory(Windows)
 
 aux_source_directory(. plex_SRCS)
+set(Headers PlexTypes.h)
 if(UNIX)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtils.cpp)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
   list(REMOVE_ITEM plex_SRCS ./PlexApplicationWin.cpp)
 endif()
-add_executable(Plex ${plex_SRCS})
+add_executable(Plex ${plex_SRCS} ${Headers})
 
 target_link_libraries(Plex
 	utils
