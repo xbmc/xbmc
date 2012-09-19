@@ -221,9 +221,9 @@ void CPeripheralBusUSB::Clear(void)
 
 bool CPeripheralBusUSB::WaitForUpdate()
 {
-  int m_udevFd = udev_monitor_get_fd(m_udevMon);
+  int udevFd = udev_monitor_get_fd(m_udevMon);
 
-  if (m_udevFd < 0)
+  if (udevFd < 0)
   {
     CLog::Log(LOGERROR, "%s - get udev monitor", __FUNCTION__);
     return false;
@@ -231,7 +231,7 @@ bool CPeripheralBusUSB::WaitForUpdate()
 
   /* poll for udev changes */
   struct pollfd pollFd;
-  pollFd.fd = m_udevFd;
+  pollFd.fd = udevFd;
   pollFd.events = POLLIN;
   int iPollResult;
   while (!m_bStop && ((iPollResult = poll(&pollFd, 1, 100)) <= 0))
