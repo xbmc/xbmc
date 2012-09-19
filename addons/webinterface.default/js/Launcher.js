@@ -32,12 +32,9 @@
   
   var DEBUG_MODE = false; /* Set to true to disable cached javascript */
   var VERSION = '1.0.0';
-  var load_script = function(libraryName) {
-    document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? Math.random() : VERSION) + '"><\/script>');
-  };
-
   var i;
+
   for (i = 0; i < scripts.length; i += 1) {
-    load_script(scripts[i]);
+    document.write('<script type="text/javascript" src="' + scripts[i] + '?' + (DEBUG_MODE ? Math.random() : VERSION) + '"><\/script>');
   }
 })();
