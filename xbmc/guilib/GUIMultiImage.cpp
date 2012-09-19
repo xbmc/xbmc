@@ -187,6 +187,8 @@ void CGUIMultiImage::FreeResources(bool immediately)
 {
   m_image.FreeResources(immediately);
   m_currentImage = 0;
+  CancelLoading();
+  m_files.clear();
   CGUIControl::FreeResources(immediately);
 }
 
