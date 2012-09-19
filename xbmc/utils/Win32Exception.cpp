@@ -25,7 +25,9 @@
 #endif
 #include "log.h"
 
-#ifdef _LINUX
+/* PLEX: Disable this shit */
+#ifdef __PLEX__
+/* END PLEX */
 
 void win32_exception::writelog(const char *prefix)  const
 {
@@ -36,7 +38,6 @@ void win32_exception::writelog(const char *prefix)  const
     CLog::Log(LOGERROR, "%s (code:0x%08x) at %p",
               what(), (unsigned int) code(), where());
 }
-
 
 #else
 

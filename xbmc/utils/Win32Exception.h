@@ -26,7 +26,9 @@
 #endif
 #include <exception>
 
-#ifdef _LINUX
+/* PLEX - Short circuit this strange beast, see issue #7 */
+#ifdef __PLEX__
+/* END PLEX */
 
 class win32_exception: public std::exception
 {
@@ -39,6 +41,9 @@ private:
     const char* mWhat;
     void* mWhere;
     unsigned mCode;
+
+    /* PLEX */
+    static void install_handler() { };
 };
 
 #else
