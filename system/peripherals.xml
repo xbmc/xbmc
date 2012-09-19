@@ -29,7 +29,7 @@
     <setting key="port" type="string" value="" label="36022" configurable="0" />
   </peripheral>
 
-  <peripheral vendor_product="2548:1001" bus="usb" name="Pulse-Eight CEC Adapter" mapTo="cec">
+  <peripheral vendor_product="2548:1001,2548:1002" bus="usb" name="Pulse-Eight CEC Adapter" mapTo="cec">
     <setting key="enabled" type="bool" value="1" label="305" order="1" />
     <setting key="activate_source" type="bool" value="1" label="36020" order="2" />
     <setting key="wake_devices" type="string" value="0" label="36007" order="3" />
