@@ -54,7 +54,7 @@ namespace XBMCAddon
 
       inline ~File() { delete file; }
 
-      // TODO: use a reference counted buffer object with a void* and a size as the return
+#ifndef SWIG
       /**
        * read(bytes)
        * 
@@ -65,7 +65,8 @@ namespace XBMCAddon
        *  b = f.read()
        *  f.close()
        */
-      //      void* read(unsigned long numBytes = 0);
+      unsigned long read(void* buffer, unsigned long numBytes = 0);
+#endif
 
       /**
        * write(buffer)
@@ -109,6 +110,10 @@ namespace XBMCAddon
        *  f.close()
        */
       inline void close() { DelayedCallGuard dg; file->Close(); }
+
+#ifndef SWIG
+      inline const XFILE::CFile* getFile() const { return file; }
+#endif
 
     };
   }

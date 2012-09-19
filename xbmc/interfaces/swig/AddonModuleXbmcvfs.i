@@ -35,6 +35,41 @@ using namespace xbmcvfs;
 
 %}
 
+// TODO: replace this with a correct API
+%feature("python:method:read") File
+{
+    TRACE;
+    static const char *keywords[] = {
+      "bytes",
+      NULL};
+
+    unsigned long readBytes = 0;
+    if (!PyArg_ParseTupleAndKeywords(args,kwds,(char*)"|k",
+         (char**)keywords,
+           &readBytes
+         ))
+    {
+      return NULL;
+    }
+
+    XBMCAddon::xbmcvfs::File* file = ((XBMCAddon::xbmcvfs::File*)retrieveApiInstance((PyObject*)self,&PyXBMCAddon_xbmcvfs_File_Type,"read","XBMCAddon::xbmcvfs::File"));
+
+    XFILE::CFile* cfile = (XFILE::CFile*)file->getFile();
+    int64_t size = cfile->GetLength();
+    if (!readBytes || (((int64_t)readBytes) > size))
+      readBytes = (unsigned long) size;
+    char* buffer = new char[readBytes + 1];
+    PyObject* ret = NULL;
+    if (buffer)
+    {
+      unsigned long bytesRead = file->read(  buffer,  readBytes  );
+      buffer[std::min(bytesRead, readBytes)] = 0;
+      ret = Py_BuildValue((char*)"s#", buffer,bytesRead);
+      delete[] buffer;
+    }
+    return ret;
+}
+
 %include "interfaces/legacy/File.h"
 
 %rename ("delete") XBMCAddon::xbmcvfs::deleteFile;

@@ -26,21 +26,13 @@ namespace XBMCAddon
 
   namespace xbmcvfs
   {
-//    void* File::read(unsigned long numBytes)
-//    {
-//      DelayedCallGuard dg;
-//      int64_t size = file->GetLength();
-//      int64_t readBytes = numBytes;
-//      if (!numBytes || readBytes > size)
-//        readBytes = size;
-//      char* buffer = new char[readBytes + 1];
-//      if (buffer)
-//      {
-//        int64_t bytesRead = file->Read(buffer, readBytes);
-//        buffer[std::min(bytesRead, readBytes)] = 0;
-//      }
-//      return buffer;
-//    }
+    unsigned long File::read(void* buffer, unsigned long numBytes)
+    {
+      DelayedCallGuard dg;
+      if (!numBytes)
+        numBytes = file->GetLength();
+      return (unsigned long)file->Read(buffer, numBytes);
+    }
 
     bool File::write(const char* pBuffer)
     {
