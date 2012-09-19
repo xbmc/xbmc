@@ -455,7 +455,7 @@ namespace JSONRPC
                   "\"imdbnumber\", \"premiered\", \"votes\", \"lastplayed\","
                   "\"fanart\", \"thumbnail\", \"file\", \"originaltitle\","
                   "\"sorttitle\", \"episodeguide\", \"season\", \"watchedepisodes\","
-                  "\"dateadded\", \"tag\" ]"
+                  "\"dateadded\", \"tag\", \"lastplayed\" ]"
       "}"
     "}",
     "\"Video.Fields.Season\": {"
