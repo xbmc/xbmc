@@ -108,8 +108,10 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   }
 #endif
 
+#ifndef __PLEX__ // Disable this, since it causes a lot of stat() calls.
   if (pItem->IsRSS())
     return new CRSSDirectory();
+#endif
 
 #endif
   if (strExtension.Equals(".zip"))
