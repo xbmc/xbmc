@@ -37,6 +37,10 @@
 #include <list>
 #include <map>
 
+/* PLEX */
+#include "ThumbLoader.h"
+/* END PLEX */
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
@@ -521,7 +525,10 @@ class CGUIWindow;
 class GUIInfo
 {
 public:
-  GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
+  //GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
+  /* PLEX */
+  GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0, int secondCondition = 0)
+  /* END PLEX */
   {
     m_info = info;
     m_data1 = data1;
@@ -531,16 +538,27 @@ public:
   }
   bool operator ==(const GUIInfo &right) const
   {
-    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
+    //return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
+    /* PLEX */
+    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2 && m_secondCondition == right.m_secondCondition);
+    /* END PLEX */
   };
   uint32_t GetInfoFlag() const;
   uint32_t GetData1() const;
   int GetData2() const;
   int m_info;
+
+  /* PLEX */
+  int GetSecondCondition() const { return m_secondCondition; }
+  /* END PLEX */
 private:
   void SetInfoFlag(uint32_t flag);
   uint32_t m_data1;
   int m_data2;
+
+  /* PLEX */
+  int m_secondCondition;
+  /* END PLEX */
 };
 
 /*!
@@ -684,6 +702,13 @@ public:
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
   int TranslateSkinVariableString(const CStdString& name, int context);
   CStdString GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
+
+  /* PLEX */
+  bool GetSeeking() const { return m_playerSeeking; };
+  bool GetSlideshowShowDescription();
+  void SetSlideshowShowDescription(bool show);
+  /* END PLEX */
+
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
@@ -713,7 +738,9 @@ protected:
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
+#ifndef __PLEX__
   bool GetItemBool(const CGUIListItem *item, int condition) const;
+#endif
 
   /*! \brief Split an info string into it's constituent parts and parameters
    Format is:
@@ -745,7 +772,7 @@ protected:
   CStdString m_currentMovieDuration;
 
   // Current playing stuff
-  CFileItem* m_currentFile;
+  CFileItemPtr m_currentFile;
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
@@ -784,6 +811,12 @@ protected:
   int m_libraryHasMusicVideos;
 
   CCriticalSection m_critInfo;
+
+  /* PLEX */
+  bool GetItemBool(const CGUIListItem *item, int condition, int secondCondition=0) const;
+  bool m_slideshowShowDescription;
+  CMusicThumbLoader *m_musicThumbLoader;
+  /* END PLEX */
 };
 
 /*!
