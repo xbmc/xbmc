@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,24 +13,36 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
+#ifndef ARCHIVEDIRECTORY_H_
+#define ARCHIVEDIRECTORY_H_
+
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAVE_LIBARCHIVE
 
 #include "IFileDirectory.h"
 
 namespace XFILE
 {
-  class CRarDirectory : public IFileDirectory
+  class CArchiveDirectory : public IFileDirectory
   {
   public:
-    CRarDirectory();
-    ~CRarDirectory();
+    CArchiveDirectory();
+    ~CArchiveDirectory();
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
     virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Exists(const char* strPath);
     virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
   };
 }
+
+#endif // HAVE_LIBARCHIVE
+
+#endif

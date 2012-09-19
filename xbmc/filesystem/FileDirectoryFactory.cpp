@@ -31,12 +31,10 @@
 #include "RSSDirectory.h"
 #include "cores/paplayer/ASAPCodec.h"
 #endif
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarDirectory.h"
-#endif
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
+#include "ArchiveDirectory.h"
 #include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
 #include "playlists/SmartPlayList.h"
@@ -202,10 +200,10 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     }
     else
     {
-#ifdef HAS_FILESYSTEM_RAR
+#ifdef HAVE_LIBARCHIVE
       // compressed or more than one file -> create a rar dir
       pItem->SetPath(strUrl);
-      return new CRarDirectory;
+      return new CArchiveDirectory;
 #else
       return NULL;
 #endif

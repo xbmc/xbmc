@@ -92,9 +92,6 @@
 #include "TextureCache.h"
 #include "music/LastFmManager.h"
 #include "playlists/SmartPlayList.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 #include "playlists/PlayList.h"
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
@@ -3720,9 +3717,6 @@ void CApplication::Stop(int exitCode)
 #endif
 
     CLog::Log(LOGNOTICE, "clean cached files!");
-#ifdef HAS_FILESYSTEM_RAR
-    g_RarManager.ClearCache(true);
-#endif
 
 #ifdef HAS_FILESYSTEM_SFTP
     CSFTPSessionManager::DisconnectAllSessions();
