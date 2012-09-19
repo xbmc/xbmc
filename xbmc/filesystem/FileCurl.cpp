@@ -1529,4 +1529,11 @@ bool CFileCurl::Put(const CStdString& strURL, CStdString& strHTML)
   m_verb = "PUT";
   return Service(strURL, "", strHTML);
 }
+
+bool CFileCurl::Delete(const CStdString& strURL, CStdString& strHTML)
+{
+  m_verb = "DELETE";
+  return Service(strURL, "", strHTML);
+}
+
 /* END PLEX */
