@@ -58,8 +58,10 @@ bool CImageLoader::DoWork()
     CFileItem file(m_path, false);
 
     // Validate file URL to see if it is an image
-    if ((file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() )) 
+    /* PLEX */
+    if ((file.IsPlexMediaServer() && file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
        || file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
+    /* END PLEX */
     { 
       // Cache the image if necessary
       loadPath = CTextureCache::Get().CacheImageFile(texturePath);
