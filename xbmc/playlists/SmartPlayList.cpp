@@ -375,6 +375,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
     fields.push_back(FieldAlbumType);
     fields.push_back(FieldMusicLabel);
     fields.push_back(FieldRating);
+    fields.push_back(FieldPlaycount);
   }
   else if (type == "artists")
   {
@@ -529,6 +530,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const CStdString &type)
     orders.push_back(SortByAlbumType);
     //orders.push_back(SortByMusicLabel);
     orders.push_back(SortByRating);
+    orders.push_back(SortByPlaycount);
   }
   else if (type == "artists")
   {
