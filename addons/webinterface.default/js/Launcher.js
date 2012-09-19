@@ -18,23 +18,26 @@
  *
  */
 
-(function()
-{
-  var scripts =
-  [
-    "js/jquery-1.5.2.min.js",
-    "js/jquery.lazyload.js",
-    "js/iscroll-min.js",
-    "js/Core.js",
-    "js/MediaLibrary.js",
-    "js/NowPlayingManager.js"
-  ];
-  
-  var debug_mode = false; /* Set to true to disable cached javascript */
-  var version = '1.0.0';
-  var i;
+(function (document) {
+  "use strict";
+
+  var i,
+    script,
+    version = '1.0.0',
+    debug_mode = false, /* Set to true to disable cached javascript */
+    scripts = [
+      "js/jquery-1.5.2.min.js",
+      "js/jquery.lazyload.js",
+      "js/iscroll-min.js",
+      "js/Core.js",
+      "js/MediaLibrary.js",
+      "js/NowPlayingManager.js"
+    ];
 
   for (i = 0; i < scripts.length; i += 1) {
-    document.write('<script type="text/javascript" src="' + scripts[i] + '?' + (debug_mode ? Math.random() : version) + '"><\/script>');
+    script = '<script type="text/javascript" src="';
+    script += scripts[i] + '?' + (debug_mode ? Math.random() : version);
+    script += '"><\/script>';
+    document.write(script);
   }
-})();
+}(window.document));
