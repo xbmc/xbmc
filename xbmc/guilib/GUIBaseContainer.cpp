@@ -778,9 +778,8 @@ void CGUIBaseContainer::ValidateOffset()
 
 void CGUIBaseContainer::AllocResources()
 {
+  CGUIControl::AllocResources();
   CalculateLayout();
-  if (m_staticDefaultItem != -1) // select default item
-    SelectStaticItemById(m_staticDefaultItem);
 }
 
 void CGUIBaseContainer::FreeResources(bool immediately)
@@ -894,6 +893,8 @@ void CGUIBaseContainer::SetInitialVisibility()
 {
   UpdateStaticItems(true);
   CGUIControl::SetInitialVisibility();
+  if (m_staticDefaultItem != -1) // select default item
+    SelectStaticItemById(m_staticDefaultItem);
 }
 
 void CGUIBaseContainer::CalculateLayout()
