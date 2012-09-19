@@ -188,6 +188,21 @@ protected:
     }
   } m_decode;
 
+  struct SyncError
+  {
+    void Reset();
+    void AddCurrent(double error);
+    void CalcAverage(int64_t time);
+    double m_error;    //last average error
+    int64_t m_errortime; //timestamp of last time we measured
+    int64_t m_freq;
+    double m_errorbuff; //place to store average errors
+    int    m_errorcount;//number of errors stored
+
+    double m_histError;
+    int    m_histErrorCount;
+  } m_syncError;
+
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
@@ -207,15 +222,9 @@ protected:
   int    m_setsynctype;
   int    m_prevsynctype; //so we can print to the log
 
-  double m_error;    //last average error
-
-  int64_t m_errortime; //timestamp of last time we measured
-  int64_t m_freq;
-
   void   SetSyncType(bool passthrough);
   void   HandleSyncError(double duration);
-  double m_errorbuff; //place to store average errors
-  int    m_errorcount;//number of errors stored
+
   bool   m_syncclock;
 
   double m_integral; //integral correction for resampler

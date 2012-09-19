@@ -206,6 +206,19 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   return total;
 }
 
+double CDVDAudio::AddSilence(double delay)
+{
+  CLog::Log(LOGDEBUG, "CDVDAudio::AddSilence - %f seconds", delay);
+  DVDAudioFrame audioframe;
+  audioframe.size = delay / m_SecondsPerByte;;
+  audioframe.data = (BYTE*)calloc(1, audioframe.size);
+  if(audioframe.data == NULL)
+    return 0.0;
+  AddPackets(audioframe);
+  free(audioframe.data);
+  return delay;
+}
+
 void CDVDAudio::Finish()
 {
   CSingleLock lock (m_critSection);
