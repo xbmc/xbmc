@@ -406,14 +406,14 @@ unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool has
   if (m_fd == -1)
   {
     CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");
-    return frames;
+    return INT_MAX;
   }
 
   int wrote = write(m_fd, data, size);
   if (wrote < 0)
   {
     CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");
-    return frames;
+    return INT_MAX;
   }
 
   return wrote / m_format.m_frameSize;
