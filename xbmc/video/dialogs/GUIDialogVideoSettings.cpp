@@ -180,7 +180,9 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &g_settings.m_currentVideoSettings.m_CustomNonLinStretch);
 #endif
   AddSeparator(8);
+#ifndef __PLEX__
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
+#endif
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
 }
 
