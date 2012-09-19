@@ -347,8 +347,7 @@ namespace JSONRPC
         "\"enum\": [ \"title\", \"description\", \"artist\", \"genre\","
                   "\"theme\", \"mood\", \"style\", \"type\", \"albumlabel\","
                   "\"rating\", \"year\", \"musicbrainzalbumid\","
-                  "\"musicbrainzalbumartistid\", \"fanart\", \"thumbnail\","
-                  "\"artistid\" ]"
+                  "\"musicbrainzalbumartistid\", \"fanart\", \"thumbnail\" ]"
       "}"
     "}",
     "\"Audio.Fields.Song\": {"
@@ -358,7 +357,7 @@ namespace JSONRPC
                   "\"rating\", \"album\", \"track\", \"duration\", \"comment\","
                   "\"lyrics\", \"musicbrainztrackid\", \"musicbrainzartistid\","
                   "\"musicbrainzalbumid\", \"musicbrainzalbumartistid\","
-                  "\"playcount\", \"fanart\", \"thumbnail\", \"file\", \"artistid\","
+                  "\"playcount\", \"fanart\", \"thumbnail\", \"file\","
                   "\"albumid\", \"lastplayed\", \"disc\" ]"
       "}"
     "}",
