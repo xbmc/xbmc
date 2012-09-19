@@ -30,11 +30,11 @@
     "js/NowPlayingManager.js"
   ];
   
-  var DEBUG_MODE = false; /* Set to true to disable cached javascript */
-  var VERSION = '1.0.0';
+  var debug_mode = false; /* Set to true to disable cached javascript */
+  var version = '1.0.0';
   var i;
 
   for (i = 0; i < scripts.length; i += 1) {
-    document.write('<script type="text/javascript" src="' + scripts[i] + '?' + (DEBUG_MODE ? Math.random() : VERSION) + '"><\/script>');
+    document.write('<script type="text/javascript" src="' + scripts[i] + '?' + (debug_mode ? Math.random() : version) + '"><\/script>');
   }
 })();
