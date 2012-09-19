@@ -231,6 +231,8 @@ void CGUIImage::FreeTextures(bool immediately /* = false */)
     delete m_fadingTextures[i];
   m_fadingTextures.clear();
   m_currentTexture.Empty();
+  if (!m_info.IsConstant()) // constant textures never change
+    m_texture.SetFileName("");
 }
 
 void CGUIImage::FreeResources(bool immediately)
