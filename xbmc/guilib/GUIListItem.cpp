@@ -160,6 +160,10 @@ CStdString CGUIListItem::GetOverlayImage() const
     return "OverlayWatched.png";
   case ICON_OVERLAY_HD:
     return "OverlayHD.png";
+  /* PLEX */
+  case ICON_OVERLAY_IN_PROGRESS:
+    return "OverlayInProgress.png";
+  /* END PLEX */
   default:
     return "";
   }
@@ -175,11 +179,12 @@ bool CGUIListItem::HasIcon() const
   return (m_strIcon.size() != 0);
 }
 
-
+#ifndef __PLEX__
 bool CGUIListItem::HasThumbnail() const
 {
   return (m_strThumbnailImage.size() != 0);
 }
+#endif
 
 bool CGUIListItem::HasOverlay() const
 {
@@ -204,6 +209,11 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
+
+  /* PLEX */
+  m_strThumbnailImageList.assign(item.m_strThumbnailImageList.begin(), item.m_strThumbnailImageList.end());
+  /* END PLEX */
+
   SetInvalid();
   return *this;
 }
@@ -216,7 +226,9 @@ void CGUIListItem::Archive(CArchive &ar)
     ar << m_strLabel;
     ar << m_strLabel2;
     ar << m_sortLabel;
+#ifndef __PLEX__
     ar << m_strThumbnailImage;
+#endif
     ar << m_strIcon;
     ar << m_bSelected;
     ar << m_overlayIcon;
@@ -233,7 +245,9 @@ void CGUIListItem::Archive(CArchive &ar)
     ar >> m_strLabel;
     ar >> m_strLabel2;
     ar >> m_sortLabel;
+#ifndef __PLEX__
     ar >> m_strThumbnailImage;
+#endif
     ar >> m_strIcon;
     ar >> m_bSelected;
 
@@ -272,7 +286,11 @@ void CGUIListItem::Serialize(CVariant &value)
 void CGUIListItem::FreeIcons()
 {
   FreeMemory();
+#ifndef __PLEX__
   m_strThumbnailImage = "";
+#else
+  m_strThumbnailImageList.clear();
+#endif
   m_strIcon = "";
   SetInvalid();
 }
@@ -410,5 +428,15 @@ const CStdString& CGUIListItem::GetThumbnailImage(size_t index) const
 const CStdString& CGUIListItem::GetGrandparentThumbnailImage() const
 {
   return m_strGrandparentThumbnailImage;
+}
+
+bool CGUIListItem::HasGrandparentThumbnail() const
+{
+  return (m_strGrandparentThumbnailImage.size() != 0);
+}
+
+bool CGUIListItem::HasThumbnail(size_t index) const
+{
+  return (m_strThumbnailImageList.size() > index && m_strThumbnailImageList[index].size() != 0);
 }
 /* END PLEX */

@@ -87,7 +87,9 @@ public:
   bool IsSelected() const;
 
   bool HasIcon() const;
+#ifndef __PLEX__
   bool HasThumbnail() const;
+#endif
   bool HasOverlay() const;
   virtual bool IsFileItem() const { return false; };
 
@@ -132,6 +134,10 @@ public:
   const CStdString& GetThumbnailImage(size_t index) const;
   const CStdString& GetGrandparentThumbnailImage() const;
   size_t GetNumThumbnails() const { return m_strThumbnailImageList.size(); }
+  int GetOverlayImageID() const { return m_overlayIcon; }
+  bool HasThumbnail(size_t index) const;
+  bool HasThumbnail() const { return HasThumbnail(0); }
+  bool HasGrandparentThumbnail() const;
   /* END PLEX */
 
 protected:
