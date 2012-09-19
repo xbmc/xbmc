@@ -46,29 +46,23 @@
 (function()
 {
   var DEBUG_MODE = false; /* Set to true to disable cached javascript */
-
-  var Launcher = {
-    VERSION: '1.0.0',
-    JS_REGEX: /Launcher\.js(\?.*)?$/,
-    load: function(libraryName) {
-      document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? Math.random() : this.VERSION) + '"><\/script>');
-    },
-    init: function() {
-      var i, j, s, includes, load, path, scripts;
-      scripts = window.document.getElementsByTagName('script');
-      for (i = 0; i < scripts.length; i += 1) {
-        s = scripts[i];
-        if (s.src.match(this.JS_REGEX)) {
-          path = s.src.replace(this.JS_REGEX, '');
-          load = s.src.match(/\?.*load=([a-zA-Z0-9.,\-]*)/);
-          includes = (load && load[1] || '').split(',');
-          for (j = 0; j < includes.length; j += 1) {
-            Launcher.load(path + includes[j] + '.js');
-          }
-        }
-      }
-    }
+  var VERSION = '1.0.0';
+  var JS_REGEX = /Launcher\.js(\?.*)?$/;
+  var load_script = function(libraryName) {
+    document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? Math.random() : VERSION) + '"><\/script>');
   };
 
-  Launcher.init();
+  var i, j, s, includes, load, path, scripts;
+  scripts = window.document.getElementsByTagName('script');
+  for (i = 0; i < scripts.length; i += 1) {
+    s = scripts[i];
+    if (s.src.match(JS_REGEX)) {
+      path = s.src.replace(JS_REGEX, '');
+      load = s.src.match(/\?.*load=([a-zA-Z0-9.,\-]*)/);
+      includes = (load && load[1] || '').split(',');
+      for (j = 0; j < includes.length; j += 1) {
+        load_script(path + includes[j] + '.js');
+      }
+    }
+  }
 })();
