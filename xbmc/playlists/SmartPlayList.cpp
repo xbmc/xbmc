@@ -407,6 +407,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
     fields.push_back(FieldStudio);
     fields.push_back(FieldMPAA);
     fields.push_back(FieldDateAdded);
+    fields.push_back(FieldLastPlayed);
     fields.push_back(FieldInProgress);
   }
   else if (type == "episodes")
@@ -548,6 +549,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const CStdString &type)
     orders.push_back(SortByStudio);
     orders.push_back(SortByMPAA);
     orders.push_back(SortByDateAdded);
+    orders.push_back(SortByLastPlayed);
   }
   else if (type == "episodes")
   {
@@ -857,8 +859,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
         query = GetField(FieldId, strType) + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetField(m_field, strType) + parameter + ")";
       else if (m_field == FieldMPAA)
         query = GetField(FieldId, strType) + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetField(m_field, strType) + parameter + ")";
-      else if (m_field == FieldDateAdded && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
-        query = GetField(FieldDateAdded, strType) + " IS NULL OR " + GetField(FieldDateAdded, strType) + parameter;
+      else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+        query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     }
     else if (strType == "episodes")
     {
