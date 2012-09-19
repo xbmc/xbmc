@@ -50,7 +50,7 @@ public:
   static bool ShowAndGetSource(CStdString &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const CStdString& strType="");
   static bool ShowAndGetFileList(const VECSOURCES &shares, const CStdString &mask, const CStdString &heading, CStdStringArray &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetImage(const VECSOURCES &shares, const CStdString &heading, CStdString &path);
-  static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const CStdString &heading, CStdString &path, bool* flip=NULL, int label=21371);
+  static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const CStdString &heading, CStdString &path, bool* flip=NULL, int label=21371, bool addBrowse = true);
   static bool ShowAndGetImageList(const VECSOURCES &shares, const CStdString &heading, CStdStringArray &path);
 
   void SetSources(const VECSOURCES &shares);
@@ -60,6 +60,10 @@ public:
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
+
+  /* PLEX */
+  static bool ShowAndGetImageNoBrowse(const CFileItemList &items, const VECSOURCES &shares, const CStdString &heading, CStdString &path);
+  /* END PLEX */
 
 protected:
   void GoParentFolder();
