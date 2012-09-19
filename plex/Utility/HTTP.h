@@ -37,8 +37,6 @@
 
 #include "StdString.h"
 
-using namespace boost;
-
 class CHTTP
 {
 public:
@@ -107,7 +105,7 @@ private:
   bool m_cancelled;
   
   bool m_keepOpen;
-  circular_buffer<char> m_ringBuffer;
+  boost::circular_buffer<char> m_ringBuffer;
 };
 
 #endif // !defined(AFX_HTTP_H__A368CB6F_3D08_4966_9F9F_961A59CB4EC7__INCLUDED_)

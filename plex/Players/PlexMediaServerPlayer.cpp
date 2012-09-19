@@ -465,7 +465,7 @@ void CPlexMediaServerPlayer::OnFrameMap(const string& args)
 {
   // Parse arguments.
   vector<string> argList;
-  boost::split(argList, args, is_any_of(" "));
+  boost::split(argList, args, boost::is_any_of(" "));
   
   string file = argList[0];
   m_width = boost::lexical_cast<int>(argList[1]);

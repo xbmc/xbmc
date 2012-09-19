@@ -16,7 +16,6 @@
 #include "Util.h"
 
 using namespace std;
-using namespace boost;
 
 class PlexMediaServerQueue : public CThread
 {
@@ -94,7 +93,7 @@ class PlexMediaServerQueue : public CThread
       url = appendArgs(url, "ratingKey=" + encodedKey);
       url += "&identifier=" + identifier;
       url += "&state=" + state;
-      url += "&time=" + lexical_cast<string>(ms);
+      url += "&time=" + boost::lexical_cast<string>(ms);
       
       // Duration. TBD.
     }
@@ -193,8 +192,8 @@ class PlexMediaServerQueue : public CThread
  private:
   
   queue<pair<string, string> > m_queue;
-  condition     m_condition;
-  mutex         m_mutex;
+  boost::condition     m_condition;
+  boost::mutex         m_mutex;
   bool          m_allowScrobble;
   
   static PlexMediaServerQueue g_plexMediaServerQueue;

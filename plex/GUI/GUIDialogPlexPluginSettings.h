@@ -10,7 +10,7 @@
 
 #include "tinyxml.h"
 #include "URL.h"
-#include "GUIDialogBoxBase.h"
+#include "dialogs/GUIDialogBoxBase.h"
 
 class CPlexPluginSettings
 {
