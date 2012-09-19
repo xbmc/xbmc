@@ -102,6 +102,7 @@
 
 using namespace XFILE;
 
+#ifndef __PLEX__
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
  \param strPath Specifies the share type to access, can be a share or share with path.
@@ -203,4 +204,33 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
   return NULL;
 }
+#else
+
+#include "FileSystem/PlexDirectory.h"
+
+IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
+{
+  CURL url(strPath);
+
+  CFileItem item(strPath, false);
+  IFileDirectory* pDir=CFactoryFileDirectory::Create(strPath, &item);
+  if (pDir)
+    return pDir;
+
+  CStdString strProtocol = url.GetProtocol();
+
+  if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+  if (strProtocol == "special") return new CSpecialProtocolDirectory();
+
+  if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
+  {
+    if (strProtocol == "http" || strProtocol == "https" || strProtocol == "plex")
+    {
+      return new CPlexDirectory();
+    }
+  }
+  CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
+  return NULL;
+}
+#endif
 

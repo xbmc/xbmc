@@ -99,6 +99,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   return CreateLoader(url);
 }
 
+#ifndef __PLEX__
 IFile* CFileFactory::CreateLoader(const CURL& url)
 {
   CStdString strProtocol = url.GetProtocol();
@@ -180,3 +181,24 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
   return NULL;
 }
+#else
+IFile* CFileFactory::CreateLoader(const CURL& url)
+{
+  CStdString strProtocol = url.GetProtocol();
+  strProtocol.MakeLower();
+
+  if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
+  else if (strProtocol == "special") return new CFileSpecialProtocol();
+  else if (strProtocol == "filereader") return new CFileFileReader();
+  if( g_application.getNetwork().IsAvailable() )
+  {
+    if (strProtocol == "http" ||  strProtocol == "https")
+      return new CFileCurl();
+    else if (strProtocol == "shout") return new CFileShoutcast();
+  }
+
+  CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
+
+  return NULL;
+}
+#endif
