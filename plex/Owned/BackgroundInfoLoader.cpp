@@ -34,7 +34,6 @@ CCriticalSection        CBackgroundRunner::g_lock;
 set<CBackgroundRunner*> CBackgroundRunner::g_activeThreads;
 
 CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads, int pauseBetweenLoadsInMS)
-  : CThread("Background Runner")
 {
   m_bStop = true;
   m_pObserver = NULL;
@@ -71,7 +70,7 @@ void CBackgroundRunner::Process()
       {
         // Load the item.
         try { m_group.LoadItem(pItem); }
-        catch (...) { CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->m_strPath.c_str()); }
+        catch (...) { CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->GetPath().c_str()); }
       }
       else
       {
@@ -91,10 +90,10 @@ void CBackgroundRunner::Process()
 
 void CBackgroundInfoLoader::OnLoaderFinished()
 {
-  EnterCriticalSection(m_lock);
+  CSingleLock lock(m_lock);
   m_workerGroup = 0;
-  LeaveCriticalSection(m_lock);
-  
+  lock.Leave();
+
   OnLoaderFinish();
 }
 
@@ -105,7 +104,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (items.Size() == 0)
     return;
   
-  EnterCriticalSection(m_lock);
+  CSingleLock lock(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
     m_vecItems.push_back(items[nItem]);
@@ -126,13 +125,11 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   // Create a worker group.
   m_bStop = false;
   m_workerGroup = new CBackgroundRunnerGroup(this, items, nThreads, m_pauseBetweenLoadsInMS);
-      
-  LeaveCriticalSection(m_lock);
 }
 
 void CBackgroundInfoLoader::StopAsync()
 {
-  EnterCriticalSection(m_lock);
+  CSingleLock lock(m_lock);
   
   if (m_workerGroup)
   {
@@ -144,7 +141,6 @@ void CBackgroundInfoLoader::StopAsync()
  
   m_bStop = true;
   
-  LeaveCriticalSection(m_lock);
 }
 
 

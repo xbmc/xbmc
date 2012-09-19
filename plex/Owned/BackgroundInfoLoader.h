@@ -103,7 +103,8 @@ class CBackgroundRunner : public CThread
  public:
   
   CBackgroundRunner(CBackgroundRunnerGroup& group)
-    : m_group(group)
+    : CThread("Background Runner")
+      ,m_group(group)
   {
     CSingleLock lock(g_lock);
     g_activeThreads.insert(this);

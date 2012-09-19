@@ -19,7 +19,7 @@ include_directories(
 add_subdirectory(FileSystem)
 add_subdirectory(GUI)
 add_subdirectory(Network)
-#add_subdirectory(Owned)
+add_subdirectory(Owned)
 add_subdirectory(Players)
 add_subdirectory(Utility)
 #add_subdirectory(Windows)
