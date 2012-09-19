@@ -22,6 +22,7 @@ add_subdirectory(Network)
 add_subdirectory(Owned)
 add_subdirectory(Players)
 add_subdirectory(Utility)
+add_subdirectory(Helper)
 #add_subdirectory(Windows)
 
 aux_source_directory(. plex_SRCS)
@@ -102,6 +103,8 @@ target_link_libraries(Plex
 	plex_network
 	plex_players
 	plex_utility
+  plex_helper
+  plex_owned
 	
 	lib_squish
 	lib_apetag
