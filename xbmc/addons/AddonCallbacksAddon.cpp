@@ -26,7 +26,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
-#include "filesystem/DirectoryFactory.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 
