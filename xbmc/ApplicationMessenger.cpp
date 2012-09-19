@@ -761,6 +761,24 @@ case TMSG_POWERDOWN:
           g_application.m_splash->Show(pMsg->strParam);
       }
       break;
+
+    /* PLEX */
+    case TMSG_MEDIA_RESTART_WITH_NEW_PLAYER:
+      {
+        g_application.RestartWithNewPlayer((CGUIDialogCache* )pMsg->lpVoid, pMsg->strParam);
+      }
+      break;
+    case TMSG_MEDIA_OPEN_COMPLETE:
+      {
+        g_application.FinishPlayingFile(pMsg->dwParam1 != 0, pMsg->strParam);
+      }
+      break;
+    case TMSG_HIDE:
+      {
+        g_application.Hide();
+      }
+      break;
+    /* END PLEX */
   }
 }
 
@@ -1200,3 +1218,29 @@ void CApplicationMessenger::SetSplashMessage(int stringID)
 {
   SetSplashMessage(g_localizeStrings.Get(stringID));
 }
+
+/* PLEX */
+
+void CApplicationMessenger::MediaOpenComplete(bool bStatus, const CStdString& strErrorMsg)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_OPEN_COMPLETE};
+  tMsg.dwParam1 = bStatus;
+  tMsg.strParam = strErrorMsg;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_RESTART_WITH_NEW_PLAYER};
+  tMsg.strParam = newURL;
+  tMsg.lpVoid = dlg;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::Hide()
+{
+  ThreadMessage tMsg = {TMSG_HIDE};
+  SendMessage(tMsg, true);
+}
+
+/* END PLEX */

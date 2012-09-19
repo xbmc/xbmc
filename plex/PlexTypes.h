@@ -74,4 +74,9 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 #define LISTITEM_THUMB3             (LISTITEM_START + 173)
 #define LISTITEM_THUMB4             (LISTITEM_START + 174)
 
+// Message Ids for ApplicationMessenger
+#define TMSG_MEDIA_OPEN_COMPLETE  207
+#define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 208
+#define TMSG_HIDE                 911
+
 #endif

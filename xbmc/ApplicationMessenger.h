@@ -127,6 +127,11 @@ struct ThreadMessageCallback
   void *userptr;
 };
 
+/* PLEX */
+class CGUIDialogCache;
+#include "PlexTypes.h"
+/* END PLEX */
+
 class CApplicationMessenger
 {
 
@@ -209,6 +214,12 @@ public:
 
   void SetSplashMessage(const CStdString& message);
   void SetSplashMessage(int stringID);
+
+  /* PLEX */
+  void MediaOpenComplete(bool bStatus, const CStdString& error = "");
+  void Hide();
+  void RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL);
+  /* END PLEX */
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);
