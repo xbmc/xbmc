@@ -193,7 +193,7 @@
  * Git revision
  *****************/
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
 #include "../git_revision.h"
 #endif
 
