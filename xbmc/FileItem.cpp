@@ -2549,10 +2549,12 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   SetCachedMusicThumb();
 }
 
+#ifndef __PLEX__
 CStdString CFileItem::GetCachedVideoThumb() const
 {
   return CThumbnailCache::GetVideoThumb(*this);
 }
+#endif
 
 CStdString CFileItem::GetCachedEpisodeThumb() const
 {
@@ -3346,6 +3348,29 @@ CStdString CFileItem::GetCachedPlexMediaServerFanart(const CStdString &path)
 CStdString CFileItem::GetCachedPlexMediaServerBanner() const
 {
   return CFileItem::GetCachedPlexMediaServerThumb(m_strBannerUrl);
+}
+
+bool CFileItem::CacheBanner() const
+{
+  if (m_strBannerUrl.size() > 0)
+  {
+    CStdString localBanner = GetCachedPlexMediaServerBanner();
+    if (CFile::Exists(localBanner) == false)
+      return CPicture::CacheBanner(m_strBannerUrl, localBanner);
+  }
+  return false;
+}
+
+CStdString CFileItem::GetCachedVideoThumb(size_t i) const
+{
+  CStdString path = m_strPath;
+
+  if (IsPlexMediaServer() && m_strThumbnailImageList.size() > i)
+  {
+    return GetCachedThumb(m_strThumbnailImageList[i], g_settings.GetPlexMediaServerThumbFolder(),true);
+  }
+  else
+    return CThumbnailCache::GetVideoThumb(*this);
 }
 
 /* END PLEX */

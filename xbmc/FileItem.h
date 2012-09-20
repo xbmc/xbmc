@@ -198,7 +198,9 @@ public:
   CPictureInfoTag* GetPictureInfoTag();
 
   // Gets the cached thumb filename (no existence checks)
+#ifndef __PLEX__
   CStdString GetCachedVideoThumb() const;
+#endif
   CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedArtistThumb() const;
   CStdString GetCachedSeasonThumb() const;
@@ -394,6 +396,10 @@ public:
 
   void SetIsSettingsDir(bool issettings) { m_bIsSettingsDir = issettings; }
   bool IsSettingsDir() const { return m_bIsSettingsDir; }
+
+  bool CacheBanner() const;
+  CStdString GetCachedVideoThumb(size_t i) const;
+  CStdString GetCachedVideoThumb() const { return GetCachedVideoThumb(0); }
   /* END PLEX */
 
 private:
