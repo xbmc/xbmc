@@ -33,7 +33,6 @@
 #include <taglib/id3v1genres.h>
 #include "cddb.h"
 #include "network/DNSNameCache.h"
-#include "music/tags/Id3Tag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
