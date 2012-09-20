@@ -64,7 +64,7 @@ TEST(TestFileOperationJob, ActionCopy)
 TEST(TestFileOperationJob, ActionMove)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath;
+  CStdString tmpfilepath, destpath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -78,24 +78,27 @@ TEST(TestFileOperationJob, ActionMove)
   item->Select(true);
   items.Add(item);
 
-  destpath = tmpfilepath;
-  destpath += ".move";
-  ASSERT_FALSE(XFILE::CFile::Exists(destpath));
+  URIUtils::GetDirectory(tmpfilepath, destpath);
+  destpath = URIUtils::AddFileToFolder(destpath, "move");
+  destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
+  ASSERT_FALSE(XFILE::CFile::Exists(destfile));
+  ASSERT_TRUE(XFILE::CDirectory::Create(destpath));
 
   job.SetFileOperation(CFileOperationJob::ActionMove, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionMove, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
   EXPECT_FALSE(XFILE::CFile::Exists(tmpfilepath));
-  EXPECT_TRUE(XFILE::CFile::Exists(destpath));
+  EXPECT_TRUE(XFILE::CFile::Exists(destfile));
 
-  EXPECT_TRUE(XFILE::CFile::Delete(destpath));
+  EXPECT_TRUE(XFILE::CFile::Delete(destfile));
+  EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
 }
 
 TEST(TestFileOperationJob, ActionDelete)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath;
+  CStdString tmpfilepath, destpath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -109,16 +112,17 @@ TEST(TestFileOperationJob, ActionDelete)
   item->Select(true);
   items.Add(item);
 
-  destpath = tmpfilepath;
-  destpath += ".delete";
-  ASSERT_FALSE(XFILE::CFile::Exists(destpath));
+  URIUtils::GetDirectory(tmpfilepath, destpath);
+  destpath = URIUtils::AddFileToFolder(destpath, "delete");
+  destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
+  ASSERT_FALSE(XFILE::CFile::Exists(destfile));
 
   job.SetFileOperation(CFileOperationJob::ActionCopy, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionCopy, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
   EXPECT_TRUE(XFILE::CFile::Exists(tmpfilepath));
-  EXPECT_TRUE(XFILE::CFile::Exists(destpath));
+  EXPECT_TRUE(XFILE::CFile::Exists(destfile));
 
   job.SetFileOperation(CFileOperationJob::ActionDelete, items, "");
   EXPECT_EQ(CFileOperationJob::ActionDelete, job.GetAction());
@@ -127,8 +131,8 @@ TEST(TestFileOperationJob, ActionDelete)
   EXPECT_FALSE(XFILE::CFile::Exists(tmpfilepath));
 
   items.Clear();
-  CFileItemPtr item2(new CFileItem(destpath));
-  item2->SetPath(destpath);
+  CFileItemPtr item2(new CFileItem(destfile));
+  item2->SetPath(destfile);
   item2->m_bIsFolder = false;
   item2->Select(true);
   items.Add(item2);
@@ -137,13 +141,14 @@ TEST(TestFileOperationJob, ActionDelete)
   EXPECT_EQ(CFileOperationJob::ActionDelete, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
-  EXPECT_FALSE(XFILE::CFile::Exists(destpath));
+  EXPECT_FALSE(XFILE::CFile::Exists(destfile));
+  EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
 }
 
 TEST(TestFileOperationJob, ActionReplace)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath;
+  CStdString tmpfilepath, destpath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -157,25 +162,27 @@ TEST(TestFileOperationJob, ActionReplace)
   item->Select(true);
   items.Add(item);
 
-  destpath = tmpfilepath;
-  destpath += ".replace";
-  ASSERT_FALSE(XFILE::CFile::Exists(destpath));
+  URIUtils::GetDirectory(tmpfilepath, destpath);
+  destpath = URIUtils::AddFileToFolder(destpath, "replace");
+  destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
+  ASSERT_FALSE(XFILE::CFile::Exists(destfile));
 
   job.SetFileOperation(CFileOperationJob::ActionCopy, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionCopy, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
   EXPECT_TRUE(XFILE::CFile::Exists(tmpfilepath));
-  EXPECT_TRUE(XFILE::CFile::Exists(destpath));
+  EXPECT_TRUE(XFILE::CFile::Exists(destfile));
 
   job.SetFileOperation(CFileOperationJob::ActionReplace, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionReplace, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
-  EXPECT_TRUE(XFILE::CFile::Exists(destpath));
+  EXPECT_TRUE(XFILE::CFile::Exists(destfile));
 
   EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
-  EXPECT_TRUE(XFILE::CFile::Delete(destpath));
+  EXPECT_TRUE(XFILE::CFile::Delete(destfile));
+  EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
 }
 
 TEST(TestFileOperationJob, ActionCreateFolder)
@@ -248,7 +255,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
 TEST(TestFileOperationJob, GetFunctions)
 {
   XFILE::CFile *tmpfile;
-  CStdString tmpfilepath, destpath;
+  CStdString tmpfilepath, destpath, destfile;
   CFileItemList items;
   CFileOperationJob job;
 
@@ -262,16 +269,17 @@ TEST(TestFileOperationJob, GetFunctions)
   item->Select(true);
   items.Add(item);
 
-  destpath = tmpfilepath;
-  destpath += ".getfunctions";
-  ASSERT_FALSE(XFILE::CFile::Exists(destpath));
+  URIUtils::GetDirectory(tmpfilepath, destpath);
+  destpath = URIUtils::AddFileToFolder(destpath, "getfunctions");
+  destfile = URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
+  ASSERT_FALSE(XFILE::CFile::Exists(destfile));
 
   job.SetFileOperation(CFileOperationJob::ActionCopy, items, destpath);
   EXPECT_EQ(CFileOperationJob::ActionCopy, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
   EXPECT_TRUE(XFILE::CFile::Exists(tmpfilepath));
-  EXPECT_TRUE(XFILE::CFile::Exists(destpath));
+  EXPECT_TRUE(XFILE::CFile::Exists(destfile));
 
   fprintf(stdout, "GetAverageSpeed(): %s\n", job.GetAverageSpeed().c_str());
   fprintf(stdout, "GetCurrentOperation(): %s\n",
@@ -280,5 +288,6 @@ TEST(TestFileOperationJob, GetFunctions)
   EXPECT_FALSE(job.GetItems().IsEmpty());
 
   EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
-  EXPECT_TRUE(XFILE::CFile::Delete(destpath));
+  EXPECT_TRUE(XFILE::CFile::Delete(destfile));
+  EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
 }
