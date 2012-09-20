@@ -29,6 +29,13 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+/* PLEX */
+#include <boost/lexical_cast.hpp>
+#include "sha.h"
+#include "threads/Thread.h"
+#include "PlexUtils.h"
+/* END PLEX */
+
 using namespace XFILE;
 
 bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFile, bool checkExistence /*= false*/)
@@ -40,6 +47,7 @@ bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFi
   return CacheImage(file, thumbFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
 }
 
+#ifndef __PLEX__
 bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height)
 {
   if (width > 0 && height > 0)
@@ -78,6 +86,55 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
     return CFile::Cache(sourceUrl, destFile);
   }
 }
+#else
+bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height)
+{
+  // Short circuit if the file already exists.
+  if (CFile::Exists(destFile))
+    return true;
+
+  CStdString tmpFile = destFile + ".tmp." + boost::lexical_cast<CStdString>(CThread::GetCurrentThreadId());
+  if (GetMediaFromPlexMediaServerCache(sourceUrl, tmpFile) == false)
+  {
+    if (width > 0 && height > 0)
+    {
+      CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceUrl.c_str(), destFile.c_str(), width, height);
+
+      DllImageLib dll;
+      if (!dll.Load()) return false;
+
+      if (URIUtils::IsInternetStream(sourceUrl, true))
+      {
+        CFileCurl http;
+        CStdString data;
+        if (http.Get(sourceUrl, data))
+        {
+          if (!dll.CreateThumbnailFromMemory((BYTE *)data.c_str(), data.GetLength(), URIUtils::GetExtension(sourceUrl).c_str(), tmpFile.c_str(), width, height))
+          {
+            CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
+            return false;
+          }
+          return true;
+        }
+        return false;
+      }
+
+      if (!dll.CreateThumbnail(sourceUrl.c_str(), tmpFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+      {
+        CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
+        return false;
+      }
+      return true;
+    }
+  }
+
+  // Atomically rename.
+  if (CFile::Exists(tmpFile))
+    CFile::Rename(tmpFile, destFile);
+
+  return true;
+}
+#endif
 
 bool CPicture::CacheThumb(const CStdString& sourceUrl, const CStdString& destFile)
 {
@@ -87,6 +144,10 @@ bool CPicture::CacheThumb(const CStdString& sourceUrl, const CStdString& destFil
 bool CPicture::CacheFanart(const CStdString& sourceUrl, const CStdString& destFile)
 {
   int height = g_advancedSettings.m_fanartHeight;
+  /* PLEX */
+  if (height == 0)
+    height = 720;
+  /* END PLEX */
   // Assume 16:9 size
   int width = height * 16 / 9;
 
@@ -164,3 +225,65 @@ bool CThumbnailWriter::DoWork()
   return success;
 }
 
+/* PLEX */
+bool CPicture::CacheBanner(const CStdString& sourceUrl, const CStdString& destFile)
+{
+  return CacheImage(sourceUrl, destFile, 0, 0);
+}
+
+bool CPicture::GetMediaFromPlexMediaServerCache(const CStdString& strFileName, const CStdString& strThumbFileName)
+{
+  CFileItem fileItem(strFileName, false);
+  if (fileItem.IsPlexMediaServer() && (strFileName.Find("/photo/:/transcode") != -1))
+  {
+    CLog::Log(LOGDEBUG, "Asked to check media from PMS: %s", strFileName.c_str());
+
+    // First optimize by checking for the actual cached file; size requested is always 720p.
+    int start = fileItem.GetPath().Find("url=") + 4;
+    CStdString url = fileItem.GetPath().substr(start);
+    CURL::Decode(url);
+
+    if (url.Find("127.0.0.1") != -1)
+    {
+      // Bogus, needs to match PlexDirectory.
+      CStdString size = "1280-720";
+      if (url.Find("/poster") != -1 || url.Find("/thumb") != -1)
+        size = boost::lexical_cast<std::string>(g_advancedSettings.m_thumbSize) + "-" + boost::lexical_cast<std::string>(g_advancedSettings.m_thumbSize);
+      else if (url.Find("/banner") != -1)
+        size = "800-200";
+
+      std::string cacheToken = url + "-" + size;
+
+      // Compute SHA.
+      SHA_CTX m_ctx;
+      SHA1_Init(&m_ctx);
+      SHA1_Update(&m_ctx, (const u_int8_t* )cacheToken.c_str(), cacheToken.size());
+      char sha[SHA1_DIGEST_STRING_LENGTH];
+      SHA1_End(&m_ctx, sha);
+      std::string hash = sha;
+
+      // Compute cache file.
+      CStdString cacheFile = getenv("HOME");
+      cacheFile += "/Library/Caches/PlexMediaServer/PhotoTranscoder/";
+      cacheFile += hash.substr(0, 2) + "/";
+      cacheFile += hash + ".jpg";
+
+      // Copy it over
+      if (CFile::Exists(cacheFile))
+        return CFile::Cache(cacheFile, strThumbFileName);
+
+      // Otherwise, let's take exactly what we get from the Plex Media Server.
+      CLog::Log(LOGINFO, "Cache file didn't exist for %s (%s)", url.c_str(), cacheFile.c_str());
+    }
+  }
+
+  CFile::Cache(strFileName, strThumbFileName, 0);
+  if (PlexUtils::Size(strThumbFileName) == 0)
+  {
+    CFile::Delete(strThumbFileName);
+    return false;
+  }
+
+  return true;
+}
+/* END PLEX */
