@@ -35,7 +35,9 @@ public:
   CGUIDialogVideoInfo(void);
   virtual ~CGUIDialogVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
+#ifndef __PLEX__
   void SetMovie(const CFileItem *item);
+#endif
   bool NeedRefresh() const;
   bool RefreshAll() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
@@ -44,6 +46,10 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_movieItem; }
   const CFileItemList& CurrentDirectory() const { return *m_castList; };
   virtual bool HasListItems() const { return true; };
+
+  /* PLEX */
+  void SetMovie(const CFileItemPtr& item);
+  /* END PLEX */
 protected:
   void Refresh();
   void Update();
@@ -67,4 +73,11 @@ protected:
   bool m_hasUpdatedThumb;
   CGUIDialogProgress* m_dlgProgress;
   CVideoThumbLoader m_loader;
+
+  /* PLEX */
+  std::string OnGetMedia(const std::string& mediaType, const std::string& currentCachedMedia, int label);
+  bool AsyncDownloadMedia(const std::string& remoteFile, const std::string& localFile);
+  std::map<std::string, std::string> m_mediaMap;
+  /* END PLEX */
+
 };

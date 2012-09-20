@@ -47,6 +47,14 @@
 #include "GUIUserMessages.h"
 #include "TextureCache.h"
 
+/* PLEX */
+#include "filesystem/StackDirectory.h"
+#include "FileSystem/PlexDirectory.h"
+#include "HTTP.h"
+#include "PlexUtils.h"
+#include "CocoaUtilsPlus.h"
+/* END PLEX */
+
 using namespace std;
 using namespace XFILE;
 
@@ -221,6 +229,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+#ifndef __PLEX__
 void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;
@@ -334,6 +343,73 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   }
   m_loader.LoadItem(m_movieItem.get());
 }
+#else
+void CGUIDialogVideoInfo::SetMovie(const CFileItemPtr& item)
+{
+  m_movieItem = item;
+
+  ClearCastList();
+
+  // Set the cast list appropriately.
+  m_castList->SetContent(m_movieItem->GetProperty("mediaType").asString());
+
+  if (m_castList->GetContent() == "movies")
+  {
+    // Compute the URL for the movie information.
+    CURL url(item->GetPath());
+
+    // Is it a multipart item?
+    if (item->IsStack())
+    {
+      CStackDirectory dir;
+      url = dir.GetFirstStackedFile(item->GetPath());
+    }
+
+    url.SetFileName("library/metadata/" + item->GetProperty("ratingKey").asString());
+    url.SetOptions("?skipRefresh=1");
+
+    // Download the data.
+    CFileCurl set;
+    CStdString strData;
+    set.Get(url.Get(), strData);
+
+    // Parse document.
+    TiXmlDocument xmlDoc;
+    if (!xmlDoc.Parse(strData)) return;
+
+    // The container node.
+    TiXmlElement* root = xmlDoc.RootElement();
+    if (!root) return;
+
+    // The Video node.
+    TiXmlElement* video = root->FirstChildElement();
+    if (!video) return;
+
+    // The child nodes.
+    TiXmlElement* role = video->FirstChildElement("Role");
+    if (!role) return;
+
+    while (role)
+    {
+      const char* strActor = role->Attribute("tag");
+      const char* strRole  = role->Attribute("role");
+
+      CStdString character;
+      if (strRole == 0 || strlen(strRole) == 0)
+        character = strActor;
+      else
+        character.Format("%s %s %s", strActor, g_localizeStrings.Get(20347).c_str(), strRole);
+
+      CFileItemPtr item(new CFileItem(strActor));
+      item->SetIconImage("DefaultActor.png");
+      item->SetLabel(character);
+      m_castList->Add(item);
+
+      role = role->NextSiblingElement();
+    }
+  }
+}
+#endif
 
 void CGUIDialogVideoInfo::Update()
 {
@@ -552,6 +628,7 @@ void CGUIDialogVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 /// \param pItem Search result item
 void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
+#ifndef __PLEX__
   VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)pItem->GetVideoContentType();
 
   CVideoDatabase db;
@@ -575,6 +652,7 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   // refresh our window entirely
   Close();
   DoModal();
+#endif
 }
 
 void CGUIDialogVideoInfo::ClearCastList()
@@ -623,6 +701,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
 // 4.  No thumb (if no Local thumb is available)
 void CGUIDialogVideoInfo::OnGetThumb()
 {
+#ifndef __PLEX__
   CFileItemList items;
 
   // Current thumb
@@ -712,6 +791,21 @@ void CGUIDialogVideoInfo::OnGetThumb()
   { // have a folder thumb to set as well
     VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), cachedThumb);
   }
+#else
+  string newPoster = OnGetMedia("posters", m_movieItem->GetThumbnailImage(), 20016);
+  if (newPoster.size() > 0)
+  {
+    string newPosterFile = CFileItem::GetCachedPlexMediaServerThumb(newPoster);
+    bool   success = true;
+
+    if (CFile::Exists(newPosterFile) == false)
+      success = AsyncDownloadMedia(newPoster, newPosterFile);
+
+    if (success)
+      m_movieItem->SetThumbnailImage(newPosterFile);
+  }
+#endif
+
   m_hasUpdatedThumb = true;
 
   // Update our screen
@@ -721,6 +815,7 @@ void CGUIDialogVideoInfo::OnGetThumb()
 // Allow user to select a Fanart
 void CGUIDialogVideoInfo::OnGetFanart()
 {
+#ifndef __PLEX__
   CFileItemList items;
 
   CFileItem item(*m_movieItem->GetVideoInfoTag());
@@ -824,6 +919,23 @@ void CGUIDialogVideoInfo::OnGetFanart()
     m_movieItem->SetProperty("fanart_image", cachedThumb);
   else
     m_movieItem->ClearProperty("fanart_image");
+#else
+  string newFanart = OnGetMedia("arts", m_movieItem->GetCachedFanart(), 20035);
+  if (newFanart.size() > 0)
+  {
+    string newFanartFile = CFileItem::GetCachedPlexMediaServerFanart(newFanart);
+    bool   success = true;
+
+    if (CFile::Exists(newFanartFile) == false)
+      success = AsyncDownloadMedia(newFanart, newFanartFile);
+
+    if (success)
+    {
+      m_movieItem->SetQuickFanart(newFanart);
+      m_movieItem->SetProperty("fanart_image", newFanartFile);
+    }
+  }
+#endif
   m_hasUpdatedThumb = true;
 
   // Update our screen
@@ -866,3 +978,79 @@ const CStdString& CGUIDialogVideoInfo::GetThumbnail() const
 {
   return m_movieItem->GetThumbnailImage();
 }
+
+/* PLEX */
+string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& currentCachedMedia, int label)
+{
+  CFileItemList items;
+
+  // Current one.
+  if (currentCachedMedia.size() > 0 && CFile::Exists(currentCachedMedia))
+  {
+    CFileItemPtr itemCurrent(new CFileItem("media://Current", false));
+    itemCurrent->SetThumbnailImage(currentCachedMedia);
+    itemCurrent->SetLabel(g_localizeStrings.Get(label));
+    items.Add(itemCurrent);
+  }
+
+  // Get a list of available ones.
+  CFileItemList fileItems;
+  CPlexDirectory plexDir;
+  string url = m_movieItem->GetProperty("rootKey").c_str() + string("/") + mediaType;
+  plexDir.GetDirectory(url, fileItems);
+
+  m_mediaMap.clear();
+  for (int i=0; i<fileItems.Size(); i++)
+  {
+    CFileItemPtr item = fileItems.Get(i);
+    if (item->GetProperty("selected") == "0")
+    {
+      m_mediaMap[item->GetPath()] = item->GetProperty("ratingKey").asString();
+      item->SetLabel("");
+      items.Add(item);
+    }
+  }
+
+  // Have the user pick one.
+  CStdString result;
+  VECSOURCES sources(g_settings.m_videoSources);
+  g_mediaManager.GetLocalDrives(sources);
+  if (!CGUIDialogFileBrowser::ShowAndGetImageNoBrowse(items, sources, g_localizeStrings.Get(label), result))
+    return "";
+
+  if (result == "media://Current")
+    return "";
+
+  // Take the result and send it back, to the singular URL (e.g. PUT .../art)
+  CStdString selectedKey = m_mediaMap[result];
+  CURL::Encode(selectedKey);
+
+  CURL finalURL(CStdString(url.substr(0, url.size()-1)) + "?url=" + selectedKey);
+  finalURL.SetProtocol("http");
+  finalURL.SetPort(32400);
+
+  CHTTP set;
+  CStdString strData;
+  set.Open(finalURL.Get(), "PUT", 0);
+  set.ReadData(strData);
+  set.Close();
+
+  // Compute the new URL.
+  finalURL.SetFileName(strData.substr(1));
+  finalURL.SetOptions("");
+
+  bool local = Cocoa_IsHostLocal(finalURL.GetHostName());
+  return CPlexDirectory::BuildImageURL(url, finalURL.Get(), local);
+}
+
+bool CGUIDialogVideoInfo::AsyncDownloadMedia(const string& remoteFile, const string& localFile)
+{
+  CStdString tempFile = "special://temp/media_download.jpg";
+  CAsyncFileCopy downloader;
+  bool success = downloader.Copy(remoteFile, tempFile, g_localizeStrings.Get(13413));
+  CPicture::CacheImage(tempFile, localFile);
+  CFile::Delete(tempFile);
+
+  return success;
+}
+/* END PLEX */
