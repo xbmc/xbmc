@@ -15,6 +15,15 @@ using namespace std;
 using namespace boost;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+__int64 PlexUtils::Size(const CStdString& strFileName)
+{
+  struct __stat64 buffer;
+  if (XFILE::CFile::Stat(strFileName, &buffer) == 0)
+    return buffer.st_size;
+  return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 string PlexUtils::AppendPathToURL(const string& baseURL, const string& relativePath)
 {
   string ret = baseURL;

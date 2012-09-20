@@ -12,6 +12,7 @@ bool IsPlexMediaServer(const CStdString& strFile);
 bool IsPlexWebKit(const CStdString& strFile);
 bool IsStack(const CStdString& strFile);
 std::string AppendPathToURL(const std::string& baseURL, const std::string& relativePath);
+__int64_t Size(const CStdString& strFileName);
 }
 
 #ifdef _WIN32
