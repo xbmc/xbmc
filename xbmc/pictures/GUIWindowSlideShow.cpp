@@ -306,10 +306,12 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   {
     m_pBackgroundLoader = new CBackgroundPicLoader();
 
+#ifndef __PLEX__
     if (!m_pBackgroundLoader)
     {
       throw 1;
     }
+#endif
     m_pBackgroundLoader->Create(this);
   }
 
