@@ -130,7 +130,9 @@ public:
    \param notify notify the user with a Toast notification (defaults to false)
    \sa IsShuffled
    */
+#ifndef __PLEX__
   void SetShuffle(int playlist, bool shuffle, bool notify = false);
+#endif
   
   /*! \brief Return whether a playlist is shuffled.
    If partymode is enabled, this always returns false.
@@ -164,6 +166,12 @@ public:
   void Insert(int iPlaylist, CFileItemList& items, int iIndex);
   void Remove(int iPlaylist, int iPosition);
   void Swap(int iPlaylist, int indexItem1, int indexItem2);
+
+  /* PLEX */
+  bool QueuedFirstFile() const { return m_bQueuedFirstFile; }
+  void SetQueuedFirstFile() { m_bQueuedFirstFile = true; }
+  void SetShuffle(int playlist, bool shuffle, bool bNotify = false, bool bTemporary = false);
+  /* END PLEX */
 protected:
   /*! \brief Returns true if the given is set to repeat all
    \param playlist Playlist to be query
@@ -189,6 +197,12 @@ protected:
   CPlayList* m_PlaylistVideo;
   CPlayList* m_PlaylistEmpty;
   REPEAT_STATE m_repeatState[2];
+
+  /* PLEX */
+  bool m_bQueuedFirstFile;
+  bool m_bPreviousMusicShuffle;
+  bool m_bTemporaryShuffle;
+  /* END PLEX */
 };
 
 }
