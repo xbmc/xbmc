@@ -519,12 +519,21 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
         given_path[n] = '\0';
 
+#ifndef __PLEX__
       #if defined(__arm__)
         strcat(given_path, "/XBMCData/XBMCHome/");
       #else
         // Assume local path inside application bundle.
         strcat(given_path, "../Resources/XBMC/");
       #endif
+#else
+      #if defined(__arm__)
+        strcat(given_path, "/PlexData/PlexHome/");
+      #else
+      // Assume local path inside application bundle.
+        strcat(given_path, "../Resources/Plex/");
+      #endif
+#endif
 
       // Convert to real path.
       char real_path[2*MAXPATHLEN];
@@ -1303,7 +1312,11 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
 
 bool CUtil::IsUsingTTFSubtitles()
 {
+#ifndef __PLEX__
   return URIUtils::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
+#else
+  return true;
+#endif
 }
 
 #ifdef UNIT_TESTING
