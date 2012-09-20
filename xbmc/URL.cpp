@@ -189,7 +189,11 @@ void CURL::Parse(const CStdString& strURL1)
       else
         m_strOptions = strURL.substr(iOptions);
       iEnd = iOptions;
+      /* PLEX */
+      m_strWithoutOptions = strURL.substr(0,iOptions);
     }
+    m_strWithoutOptions = strURL;
+    /* END PLEX */
   }
 
   int iSlash = strURL.Find("/", iPos);
@@ -747,5 +751,10 @@ const std::map<CStdString, CStdString> CURL::GetOptionsAsMap() const
   }
 
   return result;
+}
+
+const CStdString& CURL::GetUrlWithoutOptions() const
+{
+  return m_strWithoutOptions;
 }
 /* END PLEX */

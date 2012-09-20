@@ -78,6 +78,7 @@ public:
 
   /* PLEX */
   const std::map<CStdString, CStdString> GetOptionsAsMap() const;
+  const CStdString& GetUrlWithoutOptions() const;
   /* END PLEX */
 
 protected:
@@ -92,4 +93,5 @@ protected:
   CStdString m_strFileType;
   CStdString m_strOptions;
   CStdString m_strProtocolOptions;
+  CStdString m_strWithoutOptions;
 };
