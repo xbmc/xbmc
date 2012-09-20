@@ -42,7 +42,11 @@ public:
     SOURCE_TYPE_VPATH        = 5,
     SOURCE_TYPE_REMOVABLE    = 6
   };
+#ifndef __PLEX__
   CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
+#else
+  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; m_strPluginIdentifier=""; m_hasPrefs = false; m_hasStoreServices = false; m_autoDetected=false; };
+#endif
   virtual ~CMediaSource() {};
 
   bool operator==(const CMediaSource &right) const;
