@@ -150,6 +150,8 @@ protected:
   CGUIListItemLayout *m_focusedLayout;
   bool m_bSelected;     // item is selected or not
 
+  /* PLEX */
+public:
   struct icompare
   {
     bool operator()(const CStdString &s1, const CStdString &s2) const
@@ -161,7 +163,9 @@ protected:
   typedef std::map<CStdString, CVariant, icompare> PropertyMap;
   PropertyMap m_mapProperties;
 
-  /* PLEX */
+  PropertyMap& GetPropertyDict() { return m_mapProperties; }
+
+protected:
   CStdString m_strGrandparentThumbnailImage;
   std::vector<CStdString> m_strThumbnailImageList;
   /* END PLEX */
