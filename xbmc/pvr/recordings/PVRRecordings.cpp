@@ -413,7 +413,10 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
 
       // Clear resume bookmark
       if (count > 0)
+      {
         database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+        pItem->GetPVRRecordingInfoTag()->SetLastPlayedPosition(0);
+      }
 
       database.SetPlayCount(*pItem, count);
     }
