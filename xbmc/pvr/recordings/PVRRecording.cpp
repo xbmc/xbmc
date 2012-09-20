@@ -131,6 +131,7 @@ bool CPVRRecording::Rename(const CStdString &strNewName)
 bool CPVRRecording::SetPlayCount(int count)
 {
   PVR_ERROR error;
+  m_playCount = count;
   m_iRecPlayCount = count;
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
       !g_PVRClients->SetRecordingPlayCount(*this, count, &error))
@@ -140,6 +141,35 @@ bool CPVRRecording::SetPlayCount(int count)
   }
 
   return true;
+}
+
+bool CPVRRecording::IncrementPlayCount()
+{
+  return SetPlayCount(m_iRecPlayCount + 1);
+}
+
+bool CPVRRecording::SetLastPlayedPosition(int lastplayedposition)
+{
+  PVR_ERROR error;
+  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
+      !g_PVRClients->SetRecordingLastPlayedPosition(*this, lastplayedposition, &error))
+  {
+    DisplayError(error);
+    return false;
+  }
+  return true;
+}
+
+int CPVRRecording::GetLastPlayedPosition() const
+{
+  int rc = 0;
+  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
+  {
+    rc = g_PVRClients->GetRecordingLastPlayedPosition(*this);
+    if (rc < 0)
+      DisplayError(PVR_ERROR_SERVER_ERROR);
+  }
+  return rc;
 }
 
 void CPVRRecording::DisplayError(PVR_ERROR err) const

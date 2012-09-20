@@ -122,7 +122,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
 
     // Set the resumePoint either directly from client (if supported) or from video db
-    int positionInSeconds = g_PVRManager.GetRecordingLastPlayedPosition(*current);
+    int positionInSeconds = current->GetLastPlayedPosition();
     if (positionInSeconds > 0)
     {
       // If the back-end does report a saved position then make sure there is a corresponding resume bookmark

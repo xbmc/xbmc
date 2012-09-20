@@ -67,8 +67,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
   {
 
     // First try to find the resume position on the back-end, if that fails use video database
-    CPVRRecording recording = *item.GetPVRRecordingInfoTag();
-    int positionInSeconds = g_PVRManager.GetRecordingLastPlayedPosition(recording);
+    int positionInSeconds = item.GetPVRRecordingInfoTag()->GetLastPlayedPosition();
     // If the back-end does report a saved position then make sure there is a corresponding resume bookmark
     if (positionInSeconds > 0)
     {
