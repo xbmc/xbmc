@@ -185,6 +185,7 @@ TEST(TestFileOperationJob, ActionReplace)
   EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
 }
 
+// This test will fail until ActionCreateFolder has a proper implementation
 TEST(TestFileOperationJob, ActionCreateFolder)
 {
   XFILE::CFile *tmpfile;
@@ -216,6 +217,7 @@ TEST(TestFileOperationJob, ActionCreateFolder)
   EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
 }
 
+// This test will fail until ActionDeleteFolder has a proper implementation
 TEST(TestFileOperationJob, ActionDeleteFolder)
 {
   XFILE::CFile *tmpfile;
