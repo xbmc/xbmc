@@ -289,7 +289,11 @@ bool CGUIViewState::HideExtensions()
 
 bool CGUIViewState::HideParentDirItems()
 {
+#ifndef __PLEX__
   return !g_guiSettings.GetBool("filelists.showparentdiritems");
+#else
+  return true;
+#endif
 }
 
 bool CGUIViewState::DisableAddSourceButtons()
@@ -302,7 +306,15 @@ bool CGUIViewState::DisableAddSourceButtons()
 
 int CGUIViewState::GetPlaylist()
 {
-  return m_playlist;
+  /* PLEX */
+  if (m_items.IsPlexMediaServer() == true)
+  {
+    if (m_items.IsPlexMediaServerMusic() == true)
+      return PLAYLIST_MUSIC;
+  }
+
+  return PLAYLIST_NONE;
+  /* END PLEX */
 }
 
 const CStdString& CGUIViewState::GetPlaylistDirectory()
@@ -330,6 +342,11 @@ bool CGUIViewState::IsCurrentPlaylistDirectory(const CStdString& strDirectory)
 
 bool CGUIViewState::AutoPlayNextItem()
 {
+  /* PLEX */
+  if (m_items.IsPlexMediaServer() == true && m_items.IsPlexMediaServerMusic() == true)
+    return true;
+  /* END PLEX */
+
   return false;
 }
 
