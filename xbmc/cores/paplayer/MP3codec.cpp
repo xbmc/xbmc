@@ -176,7 +176,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   length = m_file.GetLength();
   if (length != 0)
   {
-    CTagLoaderTagLib tagLoaderTagLib(strFile); //opens the file so needs to be after m_file.Open or lastfm radio breaks.
+    CTagLoaderTagLib tagLoaderTagLib; //opens the file so needs to be after m_file.Open or lastfm radio breaks.
     bTags = tagLoaderTagLib.Load(strFile, m_tag);
 
     if (bTags)

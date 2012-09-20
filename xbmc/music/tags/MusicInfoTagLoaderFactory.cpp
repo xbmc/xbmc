@@ -82,7 +82,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
 #endif
       strExtension == "wv")
   {
-    CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib(strFileName);
+    CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
 #ifdef HAS_DVD_DRIVE

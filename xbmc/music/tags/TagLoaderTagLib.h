@@ -54,7 +54,7 @@ namespace MUSIC_INFO
 class CTagLoaderTagLib
 {
 public:
-  CTagLoaderTagLib(const std::string& strFileName);
+  CTagLoaderTagLib();
   virtual ~CTagLoaderTagLib();
   virtual bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL);
 private:
@@ -68,6 +68,4 @@ private:
   bool                           ParseXiphComment(TagLib::Ogg::XiphComment *id3v2, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
   bool                           ParseMP4Tag(TagLib::MP4::Tag *mp4, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
   bool                           ParseGenericTag(TagLib::Tag *generic, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-
-  MUSIC_INFO::TagLibVFSStream    m_tagLibVFSStream;
 };

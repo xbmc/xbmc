@@ -135,7 +135,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   vorbis_comment* pComments=m_dll.ov_comment(&m_VorbisFile, m_CurrentStream);
   if (pComments)
   {
-    CTagLoaderTagLib tagLoaderTagLib(strFile);
+    CTagLoaderTagLib tagLoaderTagLib;
     tagLoaderTagLib.Load(strFile, m_tag);
   }
 
