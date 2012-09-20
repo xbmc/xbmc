@@ -33,6 +33,10 @@
 #include "guilib/TextureManager.h"
 #include "utils/URIUtils.h"
 
+/* PLEX */
+#include "PlexUtils.h"
+/* END PLEX */
+
 using namespace XFILE;
 
 CTextureCache::CCacheJob::CCacheJob(const CStdString &url, const CStdString &oldHash)
@@ -196,7 +200,13 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
       if (g_advancedSettings.m_useDDSFanart)
         AddJob(new CDDSJob(path));
     }
-    return path;
+    /* PLEX */
+    // We're not going to give up just yet for PMS-sourced images. This will result in the texture
+    // cache downloading the image, which seems just as good as the background loader.
+    //
+    if (!PlexUtils::IsPlexMediaServer(url))
+      return path;
+    /* END PLEX */
   }
   return "";
 }
