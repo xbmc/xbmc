@@ -96,8 +96,8 @@ export COPYFILE_DISABLE=true
 export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
 #
 dpkg-deb -b $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
-dpkg-deb --info $DIRNAME/$ARCHIVE
-dpkg-deb --contents $DIRNAME/$ARCHIVE
+#dpkg-deb --info $DIRNAME/$ARCHIVE
+#dpkg-deb --contents $DIRNAME/$ARCHIVE
 
 # clean up by removing package dir
 ${SUDO} rm -rf $DIRNAME/$PACKAGE
