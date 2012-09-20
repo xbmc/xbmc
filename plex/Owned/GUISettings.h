@@ -235,6 +235,10 @@ public:
   // in the config file.
   void SetVisible(bool visible) { m_visible = visible; }
   bool IsVisible() const { return m_visible; }
+
+  /* PLEX */
+  void SetLabel(int label) { m_iLabel = label; };
+  /* END PLEX */
 private:
   int m_iControlType;
   int m_iLabel;
