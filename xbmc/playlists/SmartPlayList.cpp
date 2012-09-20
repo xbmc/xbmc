@@ -740,7 +740,10 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     else if (strType == "tvshows")
     {
       if (m_field == FieldInProgress)
-        return GetField(FieldId, strType) + negate + " IN (select idShow from tvshowview where watchedcount > 0 AND watchedcount < totalCount)";
+        return GetField(FieldId, strType) + negate + " IN (select " + GetField(FieldId, strType) + " from tvshowview where "
+               "(watchedcount > 0 AND watchedcount < totalCount) OR "
+               "(watchedcount = 0 AND " + GetField(FieldId, strType) + " IN "
+               "(select episodeview.idShow from episodeview WHERE episodeview.idShow = " + GetField(FieldId, strType) + " AND episodeview.resumeTimeInSeconds > 0)))";
     }
   }
 
