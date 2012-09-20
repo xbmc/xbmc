@@ -82,6 +82,10 @@ public:
    \sa CheckAndCacheThumb
    */
   static CStdString GetCachedThumb(const CFileItem &item);
+
+  /* PLEX */
+  bool LoadRemoteGrandparentThumb(CFileItem *pItem);
+  /* END PLEX */
 };
 
 class CVideoThumbLoader : public CThumbLoader, public CJobQueue

@@ -38,6 +38,10 @@
 #include "video/VideoDatabase.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 
+/* PLEX */
+#include "PlexUtils.h"
+/* END PLEX */
+
 using namespace XFILE;
 using namespace std;
 
@@ -50,6 +54,7 @@ CThumbLoader::~CThumbLoader()
 {
 }
 
+#ifndef __PLEX__
 bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
 {
   // look for remote thumbs
@@ -69,6 +74,7 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
   }
   return pItem->HasThumbnail();
 }
+#endif
 
 CStdString CThumbLoader::GetCachedThumb(const CFileItem &item)
 {
@@ -207,6 +213,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
+#ifndef __PLEX__
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds == 0)
   {
     CVideoDatabase db;
@@ -215,15 +222,41 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       pItem->SetInvalid();
     db.Close();
   }
+#endif
 
   CStdString cachedThumb(pItem->GetCachedVideoThumb());
 
   if (!pItem->HasProperty("fanart_image"))
   {
+#ifndef __PLEX__
     if (pItem->CacheLocalFanart())
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
+#else
+    pItem->CacheLocalFanart();
+
+    if (pItem->GetQuickFanart().size() > 0)
+    {
+      if (CFile::Exists(pItem->GetCachedPlexMediaServerFanart()))
+        pItem->SetProperty("fanart_image", pItem->GetCachedPlexMediaServerFanart());
+    }
+    else
+    {
+      if (CFile::Exists(pItem->GetCachedFanart()))
+        pItem->SetProperty("fanart_image", pItem->GetCachedFanart());
+    }
   }
 
+  if (!pItem->HasProperty("banner_image"))
+  {
+    pItem->CacheBanner();
+    if (pItem->GetQuickBanner().size() > 0)
+    {
+      if (CFile::Exists(pItem->GetCachedPlexMediaServerBanner()))
+        pItem->SetProperty("banner_image", pItem->GetCachedPlexMediaServerBanner());
+    }
+  }
+
+#ifndef __PLEX__
   if (!pItem->HasThumbnail())
   {
     pItem->SetUserVideoThumb();
@@ -280,6 +313,30 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     CThumbExtractor* extract = new CThumbExtractor(item,path,false);
     AddJob(extract);
   }
+#else
+  // Walk through properties and see if there are any image resources to be loaded.
+  CGUIListItem::PropertyMap& properties = pItem->GetPropertyDict();
+  typedef pair<CStdString, CVariant> PropertyPair;
+  BOOST_FOREACH(PropertyPair pair, properties)
+  {
+    if (pair.first.substr(0, 6) == "cache$")
+    {
+      string name = pair.first.substr(6);
+      string url = pair.second.asString();
+
+      string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
+      if (CFile::Exists(localFile) == false)
+      {
+        if (CPicture::CreateThumbnail(url, localFile))
+          pItem->SetProperty(name, localFile);
+      }
+      else
+      {
+        pItem->SetProperty(name, localFile);
+      }
+    }
+  }
+#endif
 
   return true;
 }
@@ -390,6 +447,72 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
     pItem->SetUserMusicThumb();
   else
     LoadRemoteThumb(pItem);
+
+  /* PLEX */
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    pItem->CacheLocalFanart();
+
+    if (pItem->GetQuickFanart().size() > 0)
+    {
+      if (CFile::Exists(pItem->GetCachedPlexMediaServerFanart()))
+        pItem->SetProperty("fanart_image", pItem->GetCachedPlexMediaServerFanart());
+    }
+    else
+    {
+      if (CFile::Exists(pItem->GetCachedProgramFanart()))
+        pItem->SetProperty("fanart_image",pItem->GetCachedProgramFanart());
+    }
+  }
+  /* END PLEX */
+
   return true;
 }
 
+/* PLEX */
+bool CThumbLoader::LoadRemoteGrandparentThumb(CFileItem *pItem)
+{
+  // look for remote thumbs
+  CStdString thumb(pItem->GetGrandparentThumbnailImage());
+  if (!g_TextureManager.CanLoad(thumb) || PlexUtils::IsPlexMediaServer(thumb))
+  {
+    CStdString cachedThumb(pItem->GetCachedVideoGrandparentThumb());
+    if (CFile::Exists(cachedThumb))
+      pItem->SetGrandparentThumbnailImage(cachedThumb);
+    else
+    {
+      if (CPicture::CreateThumbnail(thumb, cachedThumb))
+        pItem->SetGrandparentThumbnailImage(cachedThumb);
+      else
+        pItem->SetGrandparentThumbnailImage("");
+    }
+  }
+  return pItem->HasGrandparentThumbnail();
+}
+
+bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
+{
+  for (size_t i=0; i<pItem->GetNumThumbnails(); i++)
+  {
+    // look for remote thumbs.
+    CStdString thumb(pItem->GetThumbnailImage(i));
+
+    if (!g_TextureManager.CanLoad(thumb) || PlexUtils::IsPlexMediaServer(thumb))
+    {
+      CStdString cachedThumb(pItem->GetCachedVideoThumb(i));
+
+      if (CFile::Exists(cachedThumb))
+        pItem->SetThumbnailImage(cachedThumb, i);
+      else
+      {
+        if (CPicture::CreateThumbnail(thumb, cachedThumb))
+          pItem->SetThumbnailImage(cachedThumb, i);
+        else
+          pItem->SetThumbnailImage("", i);
+      }
+    }
+  }
+
+  return pItem->HasThumbnail();
+}
+#endif
