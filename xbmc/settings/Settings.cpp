@@ -1362,7 +1362,9 @@ void CSettings::LoadSources()
   if (pRootElement)
   {
     CStdString dummy;
+#ifndef __PLEX__
     GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
+#endif
     GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
     GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
     GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
