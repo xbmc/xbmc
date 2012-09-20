@@ -89,7 +89,8 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bGoingToStandby(false),
   m_bIsRunning(false),
   m_bDeviceRemoved(false),
-  m_bActiveSourcePending(false)
+  m_bActiveSourcePending(false),
+  m_bStandbyPending(false)
 {
   m_currentButton.iButton = 0;
   m_currentButton.iDuration = 0;
@@ -374,6 +375,9 @@ void CPeripheralCecAdapter::Process(void)
 
     if (!m_bStop)
       ProcessActivateSource();
+
+    if (!m_bStop)
+      ProcessStandbyDevices();
 
     if (!m_bStop)
       Sleep(5);
@@ -1633,6 +1637,26 @@ void CPeripheralCecAdapter::ProcessActivateSource(void)
 
   if (bActivate)
     m_cecAdapter->SetActiveSource();
+}
+
+void CPeripheralCecAdapter::StandbyDevices(void)
+{
+  CSingleLock lock(m_critSection);
+  m_bStandbyPending = true;
+}
+
+void CPeripheralCecAdapter::ProcessStandbyDevices(void)
+{
+  bool bStandby(false);
+
+  {
+    CSingleLock lock(m_critSection);
+    bStandby = m_bStandbyPending;
+    m_bStandbyPending = false;
+  }
+
+  if (bStandby)
+    m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
 }
 
 #endif
