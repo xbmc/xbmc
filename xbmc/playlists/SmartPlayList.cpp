@@ -825,8 +825,6 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
         query = GetField(FieldId, strType) + negate + " IN (SELECT idMovie FROM countrylinkmovie JOIN country ON country.idCountry=countrylinkmovie.idCountry WHERE country.strCountry" + parameter + ")";
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
-      else if (m_field == FieldInProgress)
-        query = table + ".idFile " + negate + " IN (SELECT idFile FROM bookmark WHERE type = 1)";
       else if (m_field == FieldSet)
         query = GetField(FieldId, strType) + negate + " IN (SELECT idMovie FROM setlinkmovie JOIN sets ON sets.idSet=setlinkmovie.idSet WHERE sets.strSet" + parameter + ")";
       else if (m_field == FieldTag)
@@ -878,8 +876,6 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
         query = GetField(FieldId, strType) + negate + " IN (SELECT idEpisode FROM writerlinkepisode JOIN actors ON actors.idActor=writerlinkepisode.idWriter WHERE actors.strActor" + parameter + ")";
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
-      else if (m_field == FieldInProgress)
-        query = table + ".idFile " + negate + " IN (SELECT idFile FROM bookmark WHERE type = 1)";
       else if (m_field == FieldStudio)
         query = GetField(FieldId, strType) + negate + " IN (SELECT idEpisode FROM episodeview WHERE strStudio" + parameter + ")";
       else if (m_field == FieldMPAA)
