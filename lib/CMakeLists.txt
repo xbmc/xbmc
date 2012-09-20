@@ -7,7 +7,7 @@ include(ExternalProject)
 
 set(ffmpeg_cflags "-I${dependdir}/include -arch i386")
 set(ffmpeg_ldflags "-L${dependdir}/lib -arch i386")
-set(ffmpeg_conf_flags --prefix=${CMAKE_INSTALL_PREFIX}/ffmpeg --extra-cflags=${ffmpeg_cflags} --extra-ldflags=${ffmpeg_ldflags} --disable-amd3dnow --disable-armv5te --disable-armv6t2 --disable-static --disable-muxers --enable-muxer=spdif --enable-muxer=adts --disable-encoders --enable-encoder=ac3 --enable-encoder=aac --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis --disable-devices --disable-ffprobe --disable-ffplay --disable-ffserver --disable-ffmpeg --enable-shared --disable-doc --disable-decoder=mpeg_xvmc --enable-postproc --enable-gpl --enable-protocol=http --enable-pthreads --enable-runtime-cpudetect)
+set(ffmpeg_conf_flags --prefix=${CMAKE_BINARY_DIR}/ffmpeg --extra-cflags=${ffmpeg_cflags} --extra-ldflags=${ffmpeg_ldflags} --disable-amd3dnow --disable-armv5te --disable-armv6t2 --disable-static --disable-muxers --enable-muxer=spdif --enable-muxer=adts --disable-encoders --enable-encoder=ac3 --enable-encoder=aac --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis --disable-devices --disable-ffprobe --disable-ffplay --disable-ffserver --disable-ffmpeg --enable-shared --disable-doc --disable-decoder=mpeg_xvmc --enable-postproc --enable-gpl --enable-protocol=http --enable-pthreads --enable-runtime-cpudetect)
 if(APPLE)
   set(ffmpeg_conf_flags ${ffmpeg_conf_flags} --cc=clang)
 endif()

@@ -125,10 +125,10 @@ endforeach()
 #### Generate git_revision.h
 add_custom_target(git_revision.h ALL DEPENDS ${root}/git_revision.h)
 add_custom_command(
-    OUTPUT ${root}/git_revision.h
-    COMMAND ${plexdir}/scripts/generate_git.sh
-	DEPENDS ${plexdir}/scripts/generate_git.sh
-    WORKING_DIRECTORY ${root}
+  OUTPUT ${root}/git_revision.h
+  COMMAND ${plexdir}/scripts/generate_git.sh
+  DEPENDS ${plexdir}/scripts/generate_git.sh
+  WORKING_DIRECTORY ${root}
 )
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/git_revision.h PROPERTIES GENERATED TRUE HEADER_FILE_ONLY TRUE)
 

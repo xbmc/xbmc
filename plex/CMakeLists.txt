@@ -38,15 +38,26 @@ if(APPLE)
   set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.plexapp.plexmediacenter")
   set(MACOSX_BUNDLE_ICON_FILE Plex.icns)
   set(MACOSX_BUNDLE_COPYRIGHT "Plex inc")
+  set(resourcesdir ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources)
 else()
   add_executable(Plex ${plex_SRCS} ${Headers})
 endif()
 
+add_dependencies(Plex git_revision.h ffmpeg)
+
 install(TARGETS Plex BUNDLE DESTINATION .)
+
+install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})
+
+set(ffmpeglibs avcodec avformat avutil avcore avfilter avdevice postproc swscale)
+foreach(l ${ffmpeglibs})
+  install(FILES ${CMAKE_BINARY_DIR}/ffmpeg/lib/lib${l}.dylib DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/MacOS)
+endforeach()
+
 install(CODE "
 include(BundleUtilities)
 set(BU_CHMOD_BUNDLE_ITEMS ON)
-fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app \"\" ${dependdir}/lib)" COMPONENT RUNTIME)
+fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app ${ffmpeglibs} ${CMAKE_INSTALL_PREFIX}/ffmpeg/lib ${dependdir}/lib)" COMPONENT RUNTIME)
 
 target_link_libraries(Plex
 	utils
