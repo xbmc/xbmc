@@ -13,7 +13,7 @@
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 
-#include "PlexDirectory.h"
+#include "FileSystem/PlexDirectory.h"
 #include "PlexServerManager.h"
 
 using namespace std;
