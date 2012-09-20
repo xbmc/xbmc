@@ -66,6 +66,11 @@ public:
   virtual int GetNumScreens();
 
   void CheckDisplayChanging(u_int32_t flags);
+
+  /* PLEX */
+  virtual int GetCurrentScreen();
+  virtual void UpdateDisplayBlanking();
+  /* END PLEX */
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);

@@ -46,6 +46,10 @@
 #include <SDL/SDL_events.h>
 #undef BOOL
 
+/* PLEX */
+static BOOL displaysBlanked = NO;
+/* END PLEX */
+
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the NSWindowDidMoveNotification callback.
 @interface windowDidMoveNoteClass : NSObject
@@ -228,6 +232,11 @@ int GetDisplayIndex(CGDirectDisplayID display)
 
 void BlankOtherDisplays(int screen_index)
 {
+  /* PLEX */
+  if(displaysBlanked)
+    return;
+  /* END PLEX */
+
   int i;
   int numDisplays = [[NSScreen screens] count];
   
@@ -259,6 +268,10 @@ void BlankOtherDisplays(int screen_index)
       [blankingWindows[i] makeKeyAndOrderFront:nil];
     }
   } 
+
+  /* PLEX */
+  displaysBlanked = YES;
+  /* END PLEX */
 }
 
 void UnblankDisplays(void)
@@ -277,6 +290,10 @@ void UnblankDisplays(void)
       blankingWindows[i] = 0;
     }
   }
+
+  /* PLEX */
+  displaysBlanked = NO;
+  /* END PLEX */
 }
 
 CGDisplayFadeReservationToken DisplayFadeToBlack(bool fade)
@@ -560,7 +577,11 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 
   // set the window title
   NSString *string;
+#ifndef __PLEX__
   string = [ [ NSString alloc ] initWithUTF8String:"XBMC Media Center" ];
+#else
+  string = [ [ NSString alloc ] initWithUTF8String:"Plex Media Center" ];
+#endif
   [ [ [new_context view] window] setTitle:string ];
   [ string release ];
 
@@ -1366,5 +1387,32 @@ void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display,
     }
   }
 }
+
+/* PLEX */
+void CWinSystemOSX::UpdateDisplayBlanking()
+{
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  RESOLUTION_INFO resInfo = g_settings.m_ResInfo[res];
+  g_guiSettings.GetBool("videoscreen.blankdisplays") && resInfo.bFullScreen ? BlankOtherDisplays(resInfo.iScreen) : UnblankDisplays();
+}
+
+int CWinSystemOSX::GetCurrentScreen()
+{
+  NSOpenGLContext* context = (NSOpenGLContext* )m_glContext;
+  NSView* view = [context view];
+  NSScreen* screen = [[view window] screen];
+
+  int numDisplays = [[NSScreen screens] count];
+  int i = 0;
+
+  for (i=0; i<numDisplays; i++)
+  {
+    if ([[NSScreen screens] objectAtIndex:i] == screen)
+      return i;
+  }
+
+  return -1;
+}
+/* END PLEX */
 
 #endif
