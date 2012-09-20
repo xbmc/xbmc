@@ -4154,6 +4154,8 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   case LISTITEM_PERCENT_PLAYED:
     if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.IsPartWay())
       value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+    else if (item->IsFileItem() && ((const CFileItem *)item)->HasPVRRecordingInfoTag() && ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.IsPartWay())
+      value = (int)(100 * ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.totalTimeInSeconds);
     else
       value = 0;
     return true;
@@ -4886,7 +4888,15 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
   else if (condition == LISTITEM_IS_RESUMABLE)
-    return (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0);
+  {
+    if (item->IsFileItem())
+    {
+      if (((const CFileItem *)item)->HasVideoInfoTag())
+        return ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0;
+      else if (((const CFileItem *)item)->HasPVRRecordingInfoTag())
+        return ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds > 0;
+    }
+  }
   else if (item->IsFileItem())
   {
     const CFileItem *pItem = (const CFileItem *)item;

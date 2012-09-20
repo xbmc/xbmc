@@ -74,6 +74,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
     {
       CBookmark bookmark;
       bookmark.timeInSeconds = positionInSeconds;
+      bookmark.totalTimeInSeconds = (double)item.GetPVRRecordingInfoTag()->GetDuration();
       CVideoDatabase db;
       if (db.Open())
       {

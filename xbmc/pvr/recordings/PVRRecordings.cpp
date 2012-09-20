@@ -121,6 +121,28 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     }
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
 
+    // Set the resumePoint either directly from client (if supported) or from video db
+    int positionInSeconds = g_PVRManager.GetRecordingLastPlayedPosition(*current);
+    if (positionInSeconds > 0)
+    {
+      // If the back-end does report a saved position then make sure there is a corresponding resume bookmark
+      CBookmark bookmark;
+      bookmark.timeInSeconds = positionInSeconds;
+      bookmark.totalTimeInSeconds = (double)current->GetDuration();
+      pFileItem->GetPVRRecordingInfoTag()->m_resumePoint = bookmark;
+    }
+    else if (positionInSeconds < 0)
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        CBookmark bookmark;
+        if (db.GetResumeBookMark(current->m_strFileNameAndPath, bookmark))
+          pFileItem->GetPVRRecordingInfoTag()->m_resumePoint = bookmark;
+        db.Close();
+      }
+    }
+
     results->Add(pFileItem);
   }
 }
