@@ -61,6 +61,13 @@ protected:
   CGUIDialogProgress* m_dlgProgress;
   DllImageLib m_ImageLib;
 
+#ifndef __PLEX__
   CPictureThumbLoader m_thumbLoader;
+#endif
   bool m_slideShowStarted;
+
+  /* PLEX */
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return &m_thumbLoader; }
+  CVideoThumbLoader m_thumbLoader;
+  /* END PLEX */
 };
