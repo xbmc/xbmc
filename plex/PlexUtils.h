@@ -11,6 +11,7 @@ int FileAge(const CStdString &strFileName);
 bool IsPlexMediaServer(const CStdString& strFile);
 bool IsPlexWebKit(const CStdString& strFile);
 bool IsStack(const CStdString& strFile);
+std::string AppendPathToURL(const std::string& baseURL, const std::string& relativePath);
 }
 
 #ifdef _WIN32

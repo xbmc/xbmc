@@ -15,7 +15,7 @@ using namespace std;
 using namespace boost;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-string AppendPathToURL(const string& baseURL, const string& relativePath)
+string PlexUtils::AppendPathToURL(const string& baseURL, const string& relativePath)
 {
   string ret = baseURL;
   string args;

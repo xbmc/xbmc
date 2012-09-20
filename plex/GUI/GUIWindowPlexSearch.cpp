@@ -37,6 +37,7 @@
 #include "PlexServerManager.h"
 #include "Settings.h"
 #include "Util.h"
+#include "PlexUtils.h"
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8
@@ -44,8 +45,6 @@
 #define CTL_BUTTON_SPACE     32
 
 #define SEARCH_DELAY         750
-
-string AppendPathToURL(const string& baseURL, const string& relativePath);
 
 ///////////////////////////////////////////////////////////////////////////////
 CGUIWindowPlexSearch::CGUIWindowPlexSearch()
@@ -458,7 +457,7 @@ void CGUIWindowPlexSearch::StartSearch(const string& search)
       
       BOOST_FOREACH(PlexServerPtr server, sharedServers)
       {
-        string url = AppendPathToURL(server->url(), "search");
+        string url = PlexUtils::AppendPathToURL(server->url(), "search");
         m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(url, search), 0);
       }
     }

@@ -28,8 +28,6 @@ int CPlexSourceScanner::g_activeScannerCount = 0;
 
 using namespace XFILE; 
 
-string AppendPathToURL(const string& baseURL, const string& relativePath);
-
 /////////////////////////////////////////////////////////////////////////////////////
 void CPlexSourceScanner::Process()
 {
@@ -75,24 +73,24 @@ void CPlexSourceScanner::Process()
     CLog::Log(LOGNOTICE, "Scanning remote server: %s (remote: %d)", m_sources->host.c_str(), remoteOwned);
     
     // Scan the server.
-    path = AppendPathToURL(url, "music");
+    path = PlexUtils::AppendPathToURL(url, "music");
     AutodetectPlexSources(path, m_sources->musicSources, realHostLabel, onlyShared);
     dprintf("Plex Source Scanner for %s: found %d music channels.", m_sources->hostLabel.c_str(), m_sources->musicSources.size());
     
-    path = AppendPathToURL(url, "video");
+    path = PlexUtils::AppendPathToURL(url, "video");
     AutodetectPlexSources(path, m_sources->videoSources, realHostLabel, onlyShared);
     dprintf("Plex Source Scanner for %s: found %d video channels.", m_sources->hostLabel.c_str(), m_sources->videoSources.size());
     
-    path = AppendPathToURL(url, "photos");
+    path = PlexUtils::AppendPathToURL(url, "photos");
     AutodetectPlexSources(path, m_sources->pictureSources, realHostLabel, onlyShared);
     dprintf("Plex Source Scanner for %s: found %d photo channels.", m_sources->hostLabel.c_str(), m_sources->pictureSources.size());
       
-    path = AppendPathToURL(url, "applications");
+    path = PlexUtils::AppendPathToURL(url, "applications");
     AutodetectPlexSources(path, m_sources->applicationSources, realHostLabel, onlyShared);
     dprintf("Plex Source Scanner for %s: found %d application channels.", m_sources->hostLabel.c_str(), m_sources->applicationSources.size());
     
     // Library sections.
-    path = AppendPathToURL(url, "library/sections");
+    path = PlexUtils::AppendPathToURL(url, "library/sections");
     CPlexDirectory plexDir(true, false);
     plexDir.SetTimeout(5);
     m_sources->librarySections.ClearItems();
