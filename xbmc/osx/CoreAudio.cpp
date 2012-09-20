@@ -28,6 +28,10 @@
 #include "utils/log.h"
 #include "math.h"
 
+/* PLEX */
+#include <boost/thread.hpp>
+/* END PLEX */
+
 #define MAX_CHANNEL_LABEL 15
 const char* g_ChannelLabels[] =
 {
@@ -595,7 +599,12 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
   // the returned pid against getpid, if the match, you have hog mode, if not you don't.
   if (!m_DeviceId)
     return false;
-  
+
+  /* PLEX - Store current Hog status */
+  m_Hog = GetHogStatus();
+  /* END PLEX */
+
+#ifndef __PLEX__  // Let's just rewrite this whole function.
   if (hog)
   {
     if (m_Hog == -1) // Not already set
@@ -632,6 +641,61 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
       m_Hog = hogPid; // Reset internal state
     }
   }
+#else // Much better below.
+  if (hog)
+  {
+    if (m_Hog == getpid())
+    {
+      // Nothing to do.
+    }
+    else if (m_Hog == -1)
+    {
+      // Nobody owns it, let's hog away.
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Setting 'hog' status on device 0x%04x", m_DeviceId);
+      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(m_Hog), &m_Hog);
+      m_Hog = GetHogStatus();
+
+      if (ret || m_Hog != getpid())
+      {
+        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to set 'hog' status. Error = 0x%08x (%4.4s) or %d != %d", ret, CONVERT_OSSTATUS(ret), m_Hog, getpid());
+        return false;
+      }
+
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Successfully set 'hog' status on device 0x%04x", m_DeviceId);
+    }
+    else
+    {
+      // Somebody else owned it.
+      CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to set 'hog' status. Somebody else (%d) owned it.", m_Hog);
+    }
+  }
+  else
+  {
+    // If we own it, then reset it.
+    if (m_Hog == getpid())
+    {
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Releasing 'hog' status on device 0x%04x", m_DeviceId);
+      pid_t hogPid = -1;
+      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(hogPid), &hogPid);
+
+      m_Hog = GetHogStatus();
+      if (ret || hogPid == getpid())
+      {
+        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to release 'hog' status. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+        return false;
+      }
+      m_Hog = hogPid; // Reset internal state
+    }
+    else if (m_Hog == -1)
+    {
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: No need to release 'hog' status on device 0x%04x.");
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to release 'hog' status, it's owned by %d.", m_Hog);
+    }
+  }
+#endif
   return true;
 }
 
@@ -647,6 +711,12 @@ pid_t CCoreAudioDevice::GetHogStatus()
   return hogPid;
 }
 
+/* PLEX */
+static Boolean IsAudioPropertySettable(AudioObjectID id,
+                                       AudioObjectPropertySelector selector,
+                                       Boolean *outData);
+/* END PLEX */
+
 bool CCoreAudioDevice::SetMixingSupport(bool mix)
 {
   if (!m_DeviceId)
@@ -655,6 +725,8 @@ bool CCoreAudioDevice::SetMixingSupport(bool mix)
   if (m_MixerRestore == -1) // This is our first change to this setting. Store the original setting for restore
     restore = (GetMixingSupport() ? 1 : 0);
   UInt32 mixEnable = mix ? 1 : 0;
+
+#ifndef __PLEX__
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: "
     "%sabling mixing for device 0x%04x", mix ? "En" : "Dis", (unsigned int)m_DeviceId);
   OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertySupportsMixing, sizeof(mixEnable), &mixEnable);
@@ -665,7 +737,42 @@ bool CCoreAudioDevice::SetMixingSupport(bool mix)
       mix ? "'On'" : "'Off'", (unsigned int)ret, CONVERT_OSSTATUS(ret));
     return false;
   }
-  if (m_MixerRestore == -1) 
+#else
+  AudioObjectPropertyAddress prop;
+  prop.mSelector = kAudioDevicePropertySupportsMixing;
+  prop.mScope    = kAudioObjectPropertyScopeGlobal;
+  prop.mElement  = kAudioObjectPropertyElementMaster;
+
+  if (AudioObjectHasProperty(m_DeviceId, &prop))
+  {
+    Boolean writable = FALSE;
+    OSStatus ret = IsAudioPropertySettable(m_DeviceId, kAudioDevicePropertySupportsMixing, &writable);
+    if (ret == 0 && writable)
+    {
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: %sabling mixing for device 0x%04x",mix ? "En" : "Dis",  m_DeviceId);
+      ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertySupportsMixing, sizeof(mixEnable), &mixEnable);
+      if (ret)
+      {
+        CLog::Log(LOGERROR, "CCoreAudioDevice::SetMixingSupport: Unable to set MixingSupport to %s. Error = 0x%08x (%4.4s)", mix ? "'On'" : "'Off'", ret, CONVERT_OSSTATUS(ret));
+        return false;
+      }
+    }
+    else if (ret == 0)
+    {
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: Device Mixing property cannot be set.");
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CCoreAudioDevice::SetMixingSupport: Unable to check if writable. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: Device didn't have the property.");
+  }
+#endif
+
+  if (m_MixerRestore == -1)
     m_MixerRestore = restore;
   return true;
 }
@@ -850,6 +957,10 @@ m_StreamId(0)
 {
   m_OriginalVirtualFormat.mFormatID = 0;
   m_OriginalPhysicalFormat.mFormatID = 0;
+
+  /* PLEX */
+  m_formatChanged = false;
+  /* END PLEX */
 }
 
 CCoreAudioStream::~CCoreAudioStream()
@@ -861,6 +972,17 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
 {
   m_StreamId = streamId;
   CLog::Log(LOGDEBUG, "CCoreAudioStream::Open: Opened stream 0x%04x.", (unsigned int)m_StreamId);
+
+  /* PLEX */
+  // Watch for changes.
+  AudioObjectPropertyAddress propertyAOPA;
+  propertyAOPA.mElement = kAudioObjectPropertyElementMaster;
+  propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
+  propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
+  if (AudioObjectAddPropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, (void* )this) != noErr)
+    CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a property listener.", m_StreamId);
+  /* END PLEX */
+
   return true;
 }
 
@@ -887,6 +1009,16 @@ void CCoreAudioStream::Close()
       (unsigned int)m_StreamId, StreamDescriptionToString(m_OriginalPhysicalFormat, formatString));
     SetPhysicalFormat(&m_OriginalPhysicalFormat);
   }
+
+  /* PLEX */
+  // Remove the listener.
+  AudioObjectPropertyAddress propertyAOPA;
+  propertyAOPA.mElement = kAudioObjectPropertyElementMaster;
+  propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
+  propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
+  if (AudioObjectRemovePropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
+    CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Couldn't remove property listener.");
+  /* END PLEX */
   
   m_OriginalPhysicalFormat.mFormatID = 0;
   m_OriginalVirtualFormat.mFormatID = 0;
@@ -1000,6 +1132,11 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
       return false;
     }
   }  
+
+  /* PLEX */
+  m_formatChanged = false;
+  /* END PLEX */
+
   OSStatus ret = AudioStreamSetProperty(m_StreamId, NULL, 0,
     kAudioStreamPropertyPhysicalFormat, sizeof(AudioStreamBasicDescription), pDesc);
   if (ret)
@@ -1009,7 +1146,17 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
       (unsigned int)m_StreamId, (unsigned int)ret, CONVERT_OSSTATUS(ret));
     return false;
   }
+#ifndef __PLEX__
   sleep(1);   // For the change to take effect
+#else
+  // Wait for the format to take effect.
+  int i = 0;
+  for (; i<50 && m_formatChanged == false; i++)
+    boost::this_thread::sleep(boost::posix_time::milliseconds(25));
+
+  if (m_formatChanged == true)
+    CLog::Log(LOGERROR, "CCoreAudioStream::SetVirtualFormat: Changed physical format in %dms", i*50);
+#endif
   return true;   
 }
 
@@ -1967,5 +2114,46 @@ Float32 CAUDynamicsProcessor::GetFloatParam(UInt32 param, UInt32 element)
   return val;   
 }
 
+/* PLEX */
+static Boolean IsAudioPropertySettable(AudioObjectID id,
+                                       AudioObjectPropertySelector selector,
+                                       Boolean *outData)
+{
+  AudioObjectPropertyAddress property_address;
+  property_address.mSelector = selector;
+  property_address.mScope    = kAudioObjectPropertyScopeGlobal;
+  property_address.mElement  = kAudioObjectPropertyElementMaster;
+  return AudioObjectIsPropertySettable(id, &property_address, outData);
+}
+
+OSStatus CCoreAudioStream::HardwareStreamListener(AudioObjectID inObjectID,
+                    UInt32 inNumberAddresses,
+                    const AudioObjectPropertyAddress inAddresses[],
+                    void* inClientData)
+{
+  CCoreAudioStream* stream = (CCoreAudioStream* )inClientData;
+  OSStatus err = noErr;
+
+  for (int i=0; i<inNumberAddresses; i++)
+  {
+    if (inAddresses[i].mSelector == kAudioStreamPropertyPhysicalFormat)
+    {
+      // Hardware physical format has changed.
+      CStdString formatString;
+      AudioStreamBasicDescription actualFormat;
+      UInt32 propertySize = sizeof(AudioStreamBasicDescription);
+      if (AudioObjectGetPropertyData(stream->m_StreamId, &inAddresses[i], 0, NULL, &propertySize, &actualFormat) == noErr)
+      {
+        CLog::Log(LOGINFO, "CCoreAudioStream::HardwareStreamListener: Hardware format changed to %s", StreamDescriptionToString(actualFormat, formatString));
+        stream->m_formatChanged = true;
+      }
+    }
+  }
+
+  return err;
+}
+/* END PLEX */
+
 #endif
 #endif
+

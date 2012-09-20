@@ -30,6 +30,10 @@
 #include <list>
 #include <vector>
 
+/* PLEX */
+#include <CoreServices/CoreServices.h>
+/* END PLEX */
+
 // Forward declarations
 class CCoreAudioHardware;
 class CCoreAudioDevice;
@@ -155,6 +159,15 @@ protected:
   AudioStreamID m_StreamId;
   AudioStreamBasicDescription m_OriginalVirtualFormat;  
   AudioStreamBasicDescription m_OriginalPhysicalFormat;  
+
+  /* PLEX */
+  static OSStatus HardwareStreamListener(AudioObjectID inObjectID,
+                      UInt32 inNumberAddresses,
+                      const AudioObjectPropertyAddress inAddresses[],
+                      void* inClientData);
+
+  bool m_formatChanged;
+  /* END PLEX */
 };
 
 class ICoreAudioSource
