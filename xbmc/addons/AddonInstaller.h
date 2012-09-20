@@ -50,7 +50,7 @@ public:
    \return true on successful install, false on failure.
    \sa DoInstall
    */
-  bool Install(const CStdString &addonID, bool force = false, const CStdString &referer="", bool background = true);
+  bool Install(const CStdString &addonID, bool force = false, const CStdString &referer="", bool background = true, bool dependency = false);
 
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from
@@ -120,7 +120,7 @@ private:
    \param background whether to install in the background or not. Defaults to true.
    \return true on successful install, false on failure.
    */
-  bool DoInstall(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "", bool background = true);
+  bool DoInstall(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "", bool background = true, bool dependency = false);
 
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;
@@ -132,7 +132,7 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "");
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "", bool dependency = false);
 
   virtual bool DoWork();
 
@@ -167,6 +167,7 @@ private:
   CStdString m_hash;
   bool m_update;
   CStdString m_referer;
+  bool m_dependency;
 };
 
 class CAddonUnInstallJob : public CFileOperationJob

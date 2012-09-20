@@ -204,7 +204,7 @@ bool CAddonInstaller::PromptForInstall(const CStdString &addonID, AddonPtr &addo
   return false;
 }
 
-bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
+bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer /* = "" */, bool background /* = true */, bool dependency /* = false */)
 {
   AddonPtr addon;
   bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false);
@@ -224,12 +224,12 @@ bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdS
     CStdString hash;
     if (therepo)
       hash = therepo->GetAddonHash(addon);
-    return DoInstall(addon, hash, addonInstalled, referer, background);
+    return DoInstall(addon, hash, addonInstalled, referer, background, dependency);
   }
   return false;
 }
 
-bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer, bool background)
+bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer /* = "" */, bool background /* = true */, bool dependency /* = false */)
 {
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
@@ -248,14 +248,14 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, b
 
   if (background)
   {
-    unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, update, referer), this);
+    unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, update, referer, dependency), this);
     m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
   }
   else
   {
     m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
     lock.Leave();
-    CAddonInstallJob job(addon, hash, update, referer);
+    CAddonInstallJob job(addon, hash, update, referer, dependency);
     if (!job.DoWork())
     { // TODO: dump something to debug log?
       return false;
@@ -381,8 +381,8 @@ bool CAddonInstaller::HasJob(const CStdString& ID) const
   return m_downloadJobs.find(ID) != m_downloadJobs.end();
 }
 
-CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
-: m_addon(addon), m_hash(hash), m_update(update), m_referer(referer)
+CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer /* = "" */, bool dependency /* = false */)
+: m_addon(addon), m_hash(hash), m_update(update), m_referer(referer), m_dependency(dependency)
 {
 }
 
@@ -540,7 +540,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
         force = false;
       }
       // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-      if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
+      if (!CAddonInstaller::Get().Install(addonID, force, referer, false, true))
       {
         DeleteAddon(addonFolder);
         return false;
@@ -552,7 +552,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
 
 void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 {
-  if (m_addon->Type() < ADDON_VIZ_LIBRARY && g_settings.m_bAddonNotifications)
+  if (m_addon->Type() < ADDON_VIZ_LIBRARY && g_settings.m_bAddonNotifications && !m_dependency)
   {
     CGUIDialogKaiToast::QueueNotification(m_addon->Icon(),
                                           m_addon->Name(),
