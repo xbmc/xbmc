@@ -50,5 +50,10 @@ protected:
 
   int m_iRegionSet; // for cd stuff
 
+#ifndef __PLEX__
   CProgramThumbLoader m_thumbLoader;
+#else
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return &m_thumbLoader; }
+  CVideoThumbLoader m_thumbLoader;
+#endif
 };
