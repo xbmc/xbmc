@@ -241,9 +241,9 @@ void CGUIBaseContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        RenderItem(origin.x, focusedPos, focusedItem.get(), true);
+        RenderItem(origin.x, focusedPos, focusedItem.get(), m_bHasFocus); /* PLEX Changed to HasFocus */
       else
-        RenderItem(focusedPos, origin.y, focusedItem.get(), true);
+        RenderItem(focusedPos, origin.y, focusedItem.get(), m_bHasFocus); /* PLEX Changed to HasFocus */
     }
 
     g_graphicsContext.RestoreClipRegion();
@@ -425,6 +425,25 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
       return true;
     }
+    /* PLEX */
+    else if (message.GetMessage() == GUI_MSG_SETFOCUS)
+    {
+      if (message.GetParam1()) // subfocus item is specified, so set the offset appropriately
+      {
+        int newItem = (int)message.GetParam1() - 1;
+        if (newItem != GetSelectedItem())
+        {
+          SelectItem(newItem);
+
+          // Send another SETFOCUS message to ensure focused items are displayed correctly. A bit of a hack, but seems to work.
+          CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), 0, 0);
+          SendWindowMessage(msg);
+
+          return true;
+        }
+      }
+    }
+    /* END PLEX */
   }
   return CGUIControl::OnMessage(message);
 }
@@ -521,7 +540,11 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
   for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
   {
     CGUIListItemPtr item = m_items[i];
+#ifndef __PLEX__
     if (0 == strnicmp(SSortFileItem::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
+#else
+    if (0 == strnicmp((const char *)item->GetSortLabel().c_str(), m_match.c_str(), m_match.size()))
+#endif
     {
       SelectItem(i);
       return;
@@ -1233,3 +1256,12 @@ void CGUIBaseContainer::OnFocus()
 
   CGUIControl::OnFocus();
 }
+
+/* PLEX */
+int CGUIBaseContainer::GetSelectedItemID() const
+{
+  if (!m_items.size()) return -1;
+  CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_items[GetSelectedItem()]);
+  return item->m_iprogramCount;
+}
+/* END PLEX */

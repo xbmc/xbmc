@@ -95,6 +95,7 @@ public:
   void SetRenderOffset(const CPoint &offset);
 
   /* PLEX */
+  virtual int GetSelectedItemID() const;
   std::vector<CGUIListItemPtr>& GetStaticItems() { return m_staticItems; }
   std::vector<CGUIListItemPtr>& GetItems() { return m_items; }
   /* END PLEX */
