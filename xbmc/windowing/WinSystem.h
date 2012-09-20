@@ -100,6 +100,10 @@ public:
   std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height);
   REFRESHRATE DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates);
 
+  /* PLEX */
+  virtual void UpdateDisplayBlanking();
+  /* END PLEX */
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
 
