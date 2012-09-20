@@ -592,7 +592,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (pWindow)
         {
           ADDON::ScraperPtr info;
-          pWindow->OnInfo(item.get(),info);
+          pWindow->OnInfo(item,info);
           Update(m_vecItems->GetPath());
         }
       }
@@ -641,6 +641,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     }
 
+#ifndef __PLEX__ // FIXME: Port Plex functionallity.
   case CONTEXT_BUTTON_MARK_WATCHED:
     CGUIWindowVideoBase::MarkWatched(item,true);
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -652,6 +653,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems->GetPath());
     return true;
+#endif
 
   case CONTEXT_BUTTON_RENAME:
     CGUIWindowVideoBase::UpdateVideoTitle(item.get());

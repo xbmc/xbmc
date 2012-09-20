@@ -320,6 +320,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         return;
       if (!item->IsPlayList())
       {
+#ifndef __PLEX__
         if (item->IsAudio() && !item->IsLastFM())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
         else if (!item->IsParentFolder() && !item->IsLastFM() &&
@@ -330,6 +331,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 #endif
             buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
         }
+#endif
       }
 
 #ifdef HAS_DVD_DRIVE
@@ -361,6 +363,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       }
     }
 
+#ifndef __PLEX__ // Plex doesn't need any freaking scan!
     // Add the scan button(s)
     CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (pScanDlg)
@@ -376,11 +379,14 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
     }
+#endif
     if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
+#ifndef __PLEX__
   if (!m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+#endif
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 }
 
@@ -428,9 +434,11 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     OnRenameItem(itemNumber);
     return true;
 
+#ifndef __PLEX__
   case CONTEXT_BUTTON_SWITCH_MEDIA:
     CGUIDialogContextMenu::SwitchMedia("music", m_vecItems->GetPath());
     return true;
+#endif
   default:
     break;
   }
