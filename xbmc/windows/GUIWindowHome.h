@@ -21,6 +21,10 @@
  *
  */
 
+#ifdef __PLEX__
+#include "plex/Owned/GUIWindowHome.h"
+#else
+
 #include "guilib/GUIWindow.h"
 #include "interfaces/IAnnouncer.h"
 #include "utils/Job.h"
@@ -46,3 +50,4 @@ private:
   bool m_recentlyAddedRunning;
   int m_cumulativeUpdateFlag;
 };
+#endif
