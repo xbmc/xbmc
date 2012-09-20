@@ -662,6 +662,17 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
 {
   
   CStdString strProtocol = url.GetProtocol();
+
+  /* PLEX */
+  // PMS files always count as streams (needed for
+  // thumbnails on LAN, strangely enough).
+  //
+  if (url.GetPort() == 32400)
+    return true;
+
+  if (IsOnLAN( url.Get() ))
+    return false;
+  /* END PLEX */
   
   if (strProtocol.IsEmpty())
     return false;
