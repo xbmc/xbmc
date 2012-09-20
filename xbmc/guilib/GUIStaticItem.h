@@ -80,6 +80,10 @@ public:
   bool IsVisible() const;
 
   const CGUIAction &GetClickActions() const { return m_clickActions; };
+
+  /* PLEX */
+  CGUIStaticItem() {}
+  /* END PLEX */
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
   InfoVector m_info;
