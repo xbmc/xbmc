@@ -52,6 +52,10 @@
 #include "pictures/Picture.h"
 #include "TextureCache.h"
 
+/* PLEX */
+#include "BackgroundMusicPlayer.h"
+/* END PLEX */
+
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace std;
@@ -85,6 +89,11 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
+  /* PLEX */
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
+    BackgroundMusicPlayer::SendThemeChangeMessage();
+  /* END PLEX */
+
   if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
@@ -108,6 +117,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
       m_thumbLoader.StopThread();
+    /* PLEX */
+    BackgroundMusicPlayer::SendThemeChangeMessage();
+    /* END PLEX */
     break;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -629,7 +641,7 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
   CGUIWindowVideoBase::PlayItem(iItem);
 }
 
-void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
+void CGUIWindowVideoNav::OnInfo(const CFileItemPtr& pItem, ADDON::ScraperPtr& scraper)
 {
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
@@ -661,6 +673,7 @@ bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
 
 void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 {
+#ifndef __PLEX__
   if (m_vecItems->IsParentFolder())
     return;
 
@@ -732,6 +745,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
+#endif
 }
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
