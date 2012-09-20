@@ -32,7 +32,21 @@ if(UNIX)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
   list(REMOVE_ITEM plex_SRCS ./PlexApplicationWin.cpp)
 endif()
-add_executable(Plex ${plex_SRCS} ${Headers})
+
+if(APPLE)
+  add_executable(Plex MACOSX_BUNDLE ${plex_SRCS} ${Headers})
+  set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.plexapp.plexmediacenter")
+  set(MACOSX_BUNDLE_ICON_FILE Plex.icns)
+  set(MACOSX_BUNDLE_COPYRIGHT "Plex inc")
+else()
+  add_executable(Plex ${plex_SRCS} ${Headers})
+endif()
+
+install(TARGETS Plex BUNDLE DESTINATION .)
+install(CODE "
+include(BundleUtilities)
+set(BU_CHMOD_BUNDLE_ITEMS ON)
+fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app \"\" ${dependdir}/lib)" COMPONENT RUNTIME)
 
 target_link_libraries(Plex
 	utils
