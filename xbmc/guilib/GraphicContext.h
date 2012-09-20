@@ -207,6 +207,10 @@ public:
 
   CRect generateAABB(const CRect &rect) const;
 
+  /* PLEX */
+  void UpdateDisplayBlanking();
+  /* END PLEX */
+
 protected:
   std::stack<CRect> m_viewStack;
 

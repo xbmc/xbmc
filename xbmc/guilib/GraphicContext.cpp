@@ -832,3 +832,9 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
   }
 }
 
+/* PLEX */
+void CGraphicContext::UpdateDisplayBlanking()
+{
+  g_Windowing.UpdateDisplayBlanking();
+}
+/* END PLEX */
