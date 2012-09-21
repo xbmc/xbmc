@@ -28,6 +28,9 @@
 #include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "utils/log.h"
 
+/* PLEX */
+#include "Players/PlexMediaServerPlayer.h"
+
 class CPlayerCoreConfig
 {
 friend class CPlayerCoreFactory;
@@ -74,6 +77,9 @@ public:
       case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
+      /* PLEX */
+      case EPC_PMSPLAYER: pPlayer = new CPlexMediaServerPlayer(callback); break;
+      /* END PLEX */
       default: return NULL;
     }
 
