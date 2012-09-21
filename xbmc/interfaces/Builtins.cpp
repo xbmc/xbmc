@@ -206,6 +206,11 @@ const BUILT_IN commands[] = {
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
+  /* PLEX */
+  #if defined(__APPLE__) || defined(_WIN32)
+    { "ToggleDisplayBlanking",      false,  "Toggle display blanking"},
+  #endif
+  /* END PLEX */
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -354,7 +359,11 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("runscript") && params.size())
   {
 #if defined(__APPLE__) && !defined(__arm__)
+#ifndef __PLEX__
     if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript")
+#else
+    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript" ||
+        URIUtils::GetExtension(strParameterCaseIntact) == ".scpt")
     {
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
@@ -1567,6 +1576,18 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
   }
+#endif
+  /* PLEX */
+#if defined(__APPLE__) || defined(_WIN32)
+  else if (execute.Equals("toggledisplayblanking"))
+  {
+    g_guiSettings.SetBool("videoscreen.blankdisplays", !g_guiSettings.GetBool("videoscreen.blankdisplays"));
+    g_graphicsContext.UpdateDisplayBlanking();
+    //g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
+#endif
+  /* PLEX */
+
   else
     return -1;
   return 0;
