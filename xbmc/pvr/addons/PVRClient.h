@@ -174,6 +174,17 @@ namespace PVR
      */
     PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
 
+    /*!
+     * @brief Request an EPG incremental bulk update from the client.
+     * @param epg The table to write the data to.
+     * @param start The start time to use.
+     * @param end The end time to use.
+     * @param since The time since when obtain the data.
+     * @param bSaveInDb If true, tell the callback method to save any new entry in the database or not. see CAddonCallbacksPVR::PVRTransferEpgEntry()
+     * @return PVR_ERROR_NO_ERROR if the events has been fetched successfully.
+     */
+    PVR_ERROR IncrementalEPGUpdate(time_t start = 0, time_t end = 0, time_t since = 0, bool bSaveInDb = false);
+
     //@}
     /** @name PVR channel group methods */
     //@{
@@ -423,6 +434,7 @@ namespace PVR
     bool SupportsChannelGroups(void) const;
     bool SupportsChannelScan(void) const;
     bool SupportsEPG(void) const;
+    bool SupportsIncrementalEPG(void) const;
     bool SupportsLastPlayedPosition(void) const;
     bool SupportsRadio(void) const;
     bool SupportsRecordings(void) const;

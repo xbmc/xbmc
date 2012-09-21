@@ -429,6 +429,13 @@ namespace PVR
     bool SupportsEPG(int iClientId) const;
 
     /*!
+     * @brief Check whether a client supports incremental EPG bulk transfers.
+     * @param iClientId The id of the client to check.
+     * @return True if the client supports incremental EPG transfers, false otherwise.
+     */
+    bool SupportsIncrementalEPG(int iClientId) const;
+
+    /*!
      * @brief Get the EPG table for a channel.
      * @param channel The channel to get the EPG table for.
      * @param epg Store the EPG in this container.
@@ -439,6 +446,12 @@ namespace PVR
      */
     PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start, time_t end);
 
+    /*!
+     * @brief Do an incremental bulk epg update
+     * @param error An error if it occured.
+     * @return True if the EPG was transfered successfully, false otherwise.
+     */
+    PVR_ERROR IncrementalEPGUpdate(time_t start, time_t end, time_t since, bool bSaveInDb);
     //@}
 
     /*! @name Channel methods */

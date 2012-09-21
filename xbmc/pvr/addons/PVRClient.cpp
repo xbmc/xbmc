@@ -411,6 +411,35 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, ti
   return retVal;
 }
 
+PVR_ERROR CPVRClient::IncrementalEPGUpdate(time_t start /* = 0 */, time_t end /* = 0 */, time_t since /* = 0 */, bool bSaveInDb /* = false*/)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
+  if (!m_addonCapabilities.bSupportsIncrementalEPG)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    ADDON_HANDLE_STRUCT handle;
+    handle.callerAddress  = this;
+    handle.dataIdentifier = bSaveInDb ? 1 : 0; // used by the callback method CAddonCallbacksPVR::PVRTransferEpgEntry()
+    retVal = m_pStruct->IncrementalEpgUpdate(&handle,
+        start ? start - g_advancedSettings.m_iPVRTimeCorrection : 0,
+        end ? end - g_advancedSettings.m_iPVRTimeCorrection : 0,
+        since);
+
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
 int CPVRClient::GetChannelGroupsAmount(void)
 {
   int iReturn(-EINVAL);
@@ -1090,6 +1119,11 @@ bool CPVRClient::SupportsChannelScan(void) const
 bool CPVRClient::SupportsEPG(void) const
 {
   return m_addonCapabilities.bSupportsEPG;
+}
+
+bool CPVRClient::SupportsIncrementalEPG(void) const
+{
+  return m_addonCapabilities.bSupportsIncrementalEPG;
 }
 
 bool CPVRClient::SupportsLastPlayedPosition(void) const
