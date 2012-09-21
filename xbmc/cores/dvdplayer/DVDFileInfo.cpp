@@ -48,6 +48,9 @@
 #include "DllSwScale.h"
 #include "filesystem/File.h"
 
+/* PLEX */
+static DllAvFormat _dllAvFormat;
+/* END PLEX */
 
 bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
 {
@@ -61,7 +64,10 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
   if (!input->Open(path, ""))
     return false;
 
-  demux.reset(CDVDFactoryDemuxer::CreateDemuxer(input.get()));
+  /* PLEX */
+  CStdString error;
+  demux.reset(CDVDFactoryDemuxer::CreateDemuxer(input.get(), error));
+  /* END PLEX */
   if (!demux.get())
     return false;
 
@@ -101,7 +107,10 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
   try
   {
-    pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream);
+    /* PLEX */
+    CStdString error;
+    pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, error);
+    /* END PLEX */
     if(!pDemuxer)
     {
       delete pInputStream;
@@ -286,7 +295,10 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
     return false;
   }
 
-  CDVDDemux *pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream);
+  /* PLEX */
+  CStdString error;
+  CDVDDemux *pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, error);
+  /* END PLEX */
   if (pDemuxer)
   {
     bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
