@@ -3539,6 +3539,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
               StringUtils::EmptyString :
               g_localizeStrings.Get(19055); // no information available
     }
+    if (m_currentFile->HasPVRRecordingInfoTag() && !m_currentFile->GetPVRRecordingInfoTag()->m_strTitle.IsEmpty())
+      return m_currentFile->GetPVRRecordingInfoTag()->m_strTitle;
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return m_currentFile->GetVideoInfoTag()->m_strTitle;
     // don't have the title, so use dvdplayer, label, or drop down to title from path
