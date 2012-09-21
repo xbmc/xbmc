@@ -21,6 +21,9 @@
 #include "threads/Thread.h"
 #include "URL.h"
 
+#include <string>
+#include <set>
+
 class HostSources
 {
  public:
@@ -41,11 +44,11 @@ class HostSources
     librarySections.Clear();
   }
   
-  string url()
+  std::string url()
   {
-    string ret;
+    std::string ret;
     
-    BOOST_FOREACH(string url, urls)
+    BOOST_FOREACH(std::string url, urls)
     {
       CURL theURL(url);
       ret = url;
@@ -59,10 +62,10 @@ class HostSources
     return ret;
   }
   
-  string        uuid;
-  string        host;
-  string        hostLabel;
-  set<string>   urls;
+  std::string        uuid;
+  std::string        host;
+  std::string        hostLabel;
+  std::set<std::string>   urls;
   bool          localConnection;
   VECSOURCES    videoSources;
   VECSOURCES    musicSources;

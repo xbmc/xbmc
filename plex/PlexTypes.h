@@ -78,5 +78,4 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 #define TMSG_MEDIA_OPEN_COMPLETE  207
 #define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 208
 #define TMSG_HIDE                 911
-
 #endif

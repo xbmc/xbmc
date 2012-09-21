@@ -1,7 +1,7 @@
+#pragma once
+
 #include <boost/shared_ptr.hpp>
 #include <string>
-
-#pragma once
 
 class PlexMediaStream
 {
