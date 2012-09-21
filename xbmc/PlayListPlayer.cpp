@@ -35,6 +35,10 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 
+/* PLEX */
+#include "PlexAsyncUrlResolver.h"
+/* END PLEX */
+
 using namespace PLAYLIST;
 
 CPlayListPlayer::CPlayListPlayer(void)
