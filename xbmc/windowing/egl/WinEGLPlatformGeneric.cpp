@@ -92,6 +92,81 @@ bool CWinEGLPlatformGeneric::ProbeDisplayResolutions(std::vector<CStdString> &re
   return true;
 }
 
+#ifdef ES2INFO
+//es2_info.c
+static void
+print_extension_list(const char *ext)
+{
+   const char *indentString = "    ";
+   const int indent = 4;
+   const int max = 79;
+   int width, i, j;
+
+   if (!ext || !ext[0])
+      return;
+
+   width = indent;
+   printf(indentString);
+   i = j = 0;
+   while (1) {
+      if (ext[j] == ' ' || ext[j] == 0) {
+         /* found end of an extension name */
+         const int len = j - i;
+         if (width + len > max) {
+            /* start a new line */
+            printf("\n");
+            width = indent;
+            printf(indentString);
+         }
+         /* print the extension name between ext[i] and ext[j] */
+         while (i < j) {
+            printf("%c", ext[i]);
+            i++;
+         }
+         /* either we're all done, or we'll continue with next extension */
+         width += len + 1;
+         if (ext[j] == 0) {
+            break;
+         }
+         else {
+            i++;
+            j++;
+            if (ext[j] == 0)
+               break;
+            printf(", ");
+            width += 2;
+         }
+      }
+      j++;
+   }
+   printf("\n");
+}
+
+//es2_info.c
+static void
+info(EGLDisplay egl_dpy)
+{
+   const char *s;
+
+   s = eglQueryString(egl_dpy, EGL_VERSION);
+   printf("EGL_VERSION = %s\n", s);
+
+   s = eglQueryString(egl_dpy, EGL_VENDOR);
+   printf("EGL_VENDOR = %s\n", s);
+
+   s = eglQueryString(egl_dpy, EGL_EXTENSIONS);
+   printf("EGL_EXTENSIONS = %s\n", s);
+
+   s = eglQueryString(egl_dpy, EGL_CLIENT_APIS);
+   printf("EGL_CLIENT_APIS = %s\n", s);
+
+   printf("GL_VERSION: %s\n", (char *) glGetString(GL_VERSION));
+   printf("GL_RENDERER: %s\n", (char *) glGetString(GL_RENDERER));
+   printf("GL_EXTENSIONS:\n");
+   print_extension_list((char *) glGetString(GL_EXTENSIONS));
+}
+#endif
+
 bool CWinEGLPlatformGeneric::InitializeDisplay()
 {
   if (m_display != EGL_NO_DISPLAY && m_config != NULL)
@@ -112,7 +187,12 @@ bool CWinEGLPlatformGeneric::InitializeDisplay()
   {
     CLog::Log(LOGERROR, "EGL failed to initialize");
     return false;
-  } 
+  }
+
+#ifdef ES2INFO
+  //es2_info.c
+  info(m_display);
+#endif
   
   EGLint configAttrs[] = {
         EGL_RED_SIZE,        8,
