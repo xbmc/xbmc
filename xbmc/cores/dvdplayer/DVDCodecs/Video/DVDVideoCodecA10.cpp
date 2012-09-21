@@ -251,6 +251,7 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
       m_yuvdata = (u8*)mem_palloc(ysize + csize, 1024);
       if (!m_yuvdata) {
         CLog::Log(LOGERROR, "A10: can not alloc m_yuvdata!");
+        m_hcedarv->display_release(m_hcedarv, picture.id);
         return VC_ERROR;
       }
     }
@@ -308,6 +309,7 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
 
     if (!HardwarePictureScaler(&cdx_scaler_para)) {
       CLog::Log(LOGERROR, "hardware scaler failed.\n");
+      m_hcedarv->display_release(m_hcedarv, picture.id);
       return VC_ERROR;
     }
 
