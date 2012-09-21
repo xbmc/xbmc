@@ -53,6 +53,12 @@
 #include "TextureCache.h"
 #include "ThumbnailCache.h"
 
+/* PLEX */
+#include "FileSystem/PlexDirectory.h"
+#include "ThumbLoader.h"
+#include "pictures/PictureThumbLoader.h"
+/* END PLEX */
+
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
@@ -3214,6 +3220,9 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "setfile")                  retVal = xbmcSetFile(numParas, paras);
       else if (command == "setkey")                   retVal = xbmcSetKey(numParas, paras);
 
+      /* PLEX */
+      else if (command == "playmedia")                retVal = xbmcPlayerPlayMedia(numParas, paras);
+      /* END PLEX */
       else
         retVal = SetResponse(openTag+"Error:Unknown command");
 
@@ -3227,3 +3236,108 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   //CLog::Log(LOGDEBUG, "HttpApi Finished command: %s", command.c_str());
   return retVal;
 }
+
+/* PLEX */
+int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
+{
+  if (numParas<2)
+    return SetResponse(openTag+"Error:Missing parameter");
+
+  CStdString path = paras[0];
+  CStdString key = paras[1];
+
+  CFileItemList fileItems;
+  CPlexDirectory plexDir;
+  plexDir.GetDirectory(path, fileItems);
+  int itemIndex = -1;
+
+  for (int i=0; i < fileItems.Size(); ++i)
+  {
+    CFileItemPtr fileItem = fileItems[i];
+    if (fileItem->GetProperty("unprocessedKey") == key)
+    {
+      itemIndex = i;
+      break;
+    }
+  }
+
+  if (itemIndex == -1)
+    return SetResponse(openTag+"Key not found");
+
+  CFileItemPtr item = fileItems[itemIndex];
+  CStdString mediaType = item->GetProperty("type").asString();
+
+  if (numParas > 2 && paras[2] != "")
+    item->SetProperty("userAgent", paras[2]);
+
+  if (numParas > 3 && paras[3] != "")
+    item->SetProperty("httpCookies", paras[3]);
+
+  if (numParas > 4 && paras[4] != "")
+  {
+    item->SetProperty("viewOffset", paras[4]);
+    item->m_lStartOffset = STARTOFFSET_RESUME;
+  }
+
+  // See if it's a plug-in.
+  if (mediaType.size() == 0)
+  {
+    CURL url(path);
+    if (url.GetFileName().Find("video/") == 0)
+      mediaType = "video";
+    else if (url.GetFileName().Find("music/") == 0)
+      mediaType = "track";
+    else if (url.GetFileName().Find("photos/") == 0)
+      mediaType = "photo";
+  }
+
+  // Load thumbs.
+  if (mediaType == "episode" || mediaType == "movie" || mediaType == "video")
+  {
+    CVideoThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else if (mediaType == "track")
+  {
+    CMusicThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else if (mediaType == "photo")
+  {
+    CPictureThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "Unknown type: [%s] (path=%s)", mediaType.c_str(), path.c_str());
+  }
+
+  CKey emptyKey;
+  g_application.OnKey(emptyKey);
+
+  // Play the media.
+  if (mediaType == "track")
+  {
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, fileItems);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Play(itemIndex);
+  }
+  else if (mediaType == "photo")
+  {
+    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, false, itemIndex);
+    msg.SetStringParam(path);
+
+    CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (pWindow)
+      pWindow->OnMessage(msg);
+  }
+  else
+  {
+    g_application.getApplicationMessenger().PlayFile(*item);
+  }
+
+  return SetResponse(openTag+"OK");
+}
+/* END PLEX */

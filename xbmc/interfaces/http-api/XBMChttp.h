@@ -120,6 +120,10 @@ public:
   CStdString GetOpenTag();
   CStdString GetCloseTag();
 
+  /* PLEX */
+  int xbmcPlayerPlayMedia(int numParas, CStdString paras[]);
+  /* END PLEX */
+
 private:
   CKey key;
   CUdpBroadcast* pUdpBroadcast;
