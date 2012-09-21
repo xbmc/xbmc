@@ -596,7 +596,11 @@ CStdString CSysInfo::GetUAWindowsVersion()
 CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
+#ifndef __PLEX__
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
+#else
+  result = "Plex/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
+#endif
 #if defined(_WIN32)
   result += GetUAWindowsVersion();
 #elif defined(__APPLE__)
@@ -615,7 +619,11 @@ CStdString CSysInfo::GetUserAgent()
   result += "; ";
   result += GetUnameVersion();
 #endif
+#ifndef __PLEX__
   result += "; http://www.xbmc.org)";
+#else
+  result += "; http://www.plexapp.com)";
+#endif
 
   return result;
 }
