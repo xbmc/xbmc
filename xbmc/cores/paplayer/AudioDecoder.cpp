@@ -85,9 +85,33 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
     filecache = g_guiSettings.GetInt("cacheaudio.lan");
 
   // create our codec
+#ifndef __PLEX__
   m_codec=CodecFactory::CreateCodecDemux(file.GetPath(), file.GetMimeType(), filecache * 1024);
+#else
+  int totalData = 384*1024;
+  m_codec=CodecFactory::CreateCodecDemux(file.GetPath(), file.GetMimeType(), totalData);
 
+  // Compute cache size. FIXME, this needs work as codec doesn't seem to have information.
+  if (m_codec)
+  {
+    int bitrate = m_codec->m_Bitrate;
+    if (bitrate > 0)
+    {
+      int numSeconds = g_guiSettings.GetInt("cache.seconds");
+      totalData = (bitrate / 8) * numSeconds;
+
+      if (totalData/1024 < 384)
+        totalData = 1024 * 384;
+    }
+  }
+
+#endif
+
+#ifndef __PLEX__
   if (!m_codec || !m_codec->Init(file.GetPath(), filecache * 1024))
+#else
+  if (!m_codec || !m_codec->Init(file.GetPath(), totalData))
+#endif
   {
     CLog::Log(LOGERROR, "CAudioDecoder: Unable to Init Codec while loading file %s", file.GetPath().c_str());
     Destroy();
