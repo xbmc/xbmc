@@ -76,9 +76,9 @@ set(external_libs
 	SDL_image
 	microhttpd
 	tinyXML
-  boost_thread
-  boost_date_time
-  boost_system
+    boost_thread
+    boost_date_time
+    boost_system
 	GLEW
 	sqlite3
 	yajl
@@ -155,9 +155,13 @@ set(OGG_SONAME ${ogg_FNAME})
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${root}/xbmc/DllPaths_generated.h)
 
-set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
+if(APPLE)
+	set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
+endif()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")
+set(CMAKE_C_FLAGS_DEBUG "-g -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
 add_subdirectory(lib)
 add_subdirectory(xbmc)

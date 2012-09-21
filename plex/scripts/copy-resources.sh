@@ -2,12 +2,11 @@
 
 echo "copy root files"
 
-if [ "$ACTION" = build ] ; then
+TARGET_NAME=$1
+SRCROOT=$2
+TARGET_BUILD_DIR=$3
 
-# for external testing
-#TARGET_NAME=XBMC.app
-#SRCROOT=/Users/Shared/xbmc_svn/XBMC
-#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug
+echo "From $SRCROOT to $TARGET_BUILD_DIR/$TARGET_NAME"
 
 # rsync command with exclusions for items we don't want in the app package
 SYNC="rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *arm-osx.* --exclude *.zlib --exclude *.a"
@@ -61,4 +60,3 @@ touch "$TARGET_BUILD_DIR/$TARGET_NAME"
 # not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name
 #mv "$TARGET_BUILD_DIR/$TARGET_NAME" "$TARGET_BUILD_DIR/XBMC Media Center.app"
 
-fi

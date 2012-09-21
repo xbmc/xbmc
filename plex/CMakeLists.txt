@@ -49,15 +49,20 @@ install(TARGETS Plex BUNDLE DESTINATION .)
 
 install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})
 
-set(ffmpeglibs avcodec avformat avutil avcore avfilter avdevice postproc swscale)
-foreach(l ${ffmpeglibs})
-  install(FILES ${CMAKE_BINARY_DIR}/ffmpeg/lib/lib${l}.dylib DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/MacOS)
-endforeach()
+#set(ffmpeglibs avcodec avformat avutil avcore avfilter avdevice postproc swscale)
+#foreach(l ${ffmpeglibs})
+#  install(FILES ${CMAKE_BINARY_DIR}/ffmpeg/lib/lib${l}.dylib DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/MacOS)
+#endforeach()
 
 install(CODE "
-include(BundleUtilities)
-set(BU_CHMOD_BUNDLE_ITEMS ON)
-fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app ${ffmpeglibs} ${CMAKE_INSTALL_PREFIX}/ffmpeg/lib ${dependdir}/lib)" COMPONENT RUNTIME)
+	include(BundleUtilities)
+	set(BU_CHMOD_BUNDLE_ITEMS ON)
+	fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app \"\" ${dependdir}/lib)"
+COMPONENT RUNTIME)
+install(CODE "
+	execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh Plex.app \"${root}\" \"${CMAKE_INSTALL_PREFIX}\")
+")
+
 
 target_link_libraries(Plex
 	utils
