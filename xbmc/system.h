@@ -171,17 +171,18 @@
 #define HAS_GL
 #ifdef HAVE_X11
 #define HAS_GLX
+#define HAS_X11_WIN_EVENTS
 #endif
 #ifdef HAVE_SDL
 #define HAS_SDL
 #ifndef HAS_SDL_OPENGL
 #define HAS_SDL_OPENGL
 #endif
-#ifdef HAVE_X11
-#define HAS_X11_WIN_EVENTS
-#else
+#ifndef HAS_X11_WIN_EVENTS
 #define HAS_SDL_WIN_EVENTS
+#endif
 #else
+#ifndef HAS_X11_WIN_EVENTS
 #define HAS_LINUX_EVENTS
 #endif
 #endif
