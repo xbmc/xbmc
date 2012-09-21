@@ -1469,6 +1469,9 @@ void CAMLPlayer::Process()
       // restore system volume setting.
       SetVolume(g_settings.m_fVolumeLevel);
 
+      // the default staturation is to high, drop it
+      SetVideoSaturation(110);
+
       // drop CGUIDialogBusy dialog and release the hold in OpenFile.
       m_ready.Set();
 
@@ -1698,6 +1701,11 @@ void CAMLPlayer::SetVideoBrightness(int brightness)
   // output brightness range is -127 to 127 with default of 0.
   brightness = (127 * (brightness - 50)) / 50;
   set_sysfs_int("/sys/class/video/brightness", brightness);
+}
+void CAMLPlayer::SetVideoSaturation(int saturation)
+{
+  // output saturation range is -127 to 127 with default of 127.
+  set_sysfs_int("/sys/class/video/saturation", saturation);
 }
 
 void CAMLPlayer::SetAudioPassThrough(int format)

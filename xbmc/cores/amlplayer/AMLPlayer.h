@@ -176,6 +176,7 @@ private:
   void          SetVideoZoom(float zoom);
   void          SetVideoContrast(int contrast);
   void          SetVideoBrightness(int brightness);
+  void          SetVideoSaturation(int saturation);
   void          SetAudioPassThrough(int format);
   bool          WaitForPausedThumbJobs(int timeout_ms);
 
