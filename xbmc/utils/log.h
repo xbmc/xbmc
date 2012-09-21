@@ -74,6 +74,10 @@ public:
   static bool Init(const char* path);
   static void SetLogLevel(int level);
   static int  GetLogLevel();
+
+  /* PLEX */
+  static void FatalError(const char* format, ...);
+  /* END PLEX */
 private:
   static void OutputDebugString(const std::string& line);
 };

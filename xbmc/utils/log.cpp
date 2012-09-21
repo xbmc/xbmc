@@ -19,6 +19,12 @@
  *
  */
 
+/* PLEX */
+#include <boost/regex.hpp>
+#include <boost/xpressive/xpressive.hpp>
+#include "AdvancedSettings.h"
+/* END PLEX */
+
 #include "system.h"
 #include "log.h"
 #include "stdio_utf8.h"
@@ -27,6 +33,11 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StdString.h"
+
+/* PLEX */
+using namespace boost;
+using namespace xpressive;
+/* END PLEX */
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
 #define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
@@ -78,6 +89,15 @@ void CLog::Log(int loglevel, const char *format, ... )
     va_start(va, format);
     strData.FormatV(format,va);
     va_end(va);
+
+    /* PLEX */
+    // Take out tokens.
+    if (g_advancedSettings.m_bEnablePlexTokensInLogs == false)
+    {
+      static sregex reToken = sregex::compile("X-Plex-Token=[0-9a-z]+", xpressive::regex_constants::icase);
+      strData = regex_replace(strData, reToken, "X-Plex-Token=<secret>");
+    }
+    /* END PLEX */
 
     if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
     {
@@ -134,9 +154,13 @@ bool CLog::Init(const char* path)
     // and changed in CApplication::Create()
     CStdString strLogFile, strLogFileOld;
 
+#ifndef __PLEX__
     strLogFile.Format("%sxbmc.log", path);
     strLogFileOld.Format("%sxbmc.old.log", path);
-
+#else
+    strLogFile.Format("%sPlex.log", path);
+    strLogFileOld.Format("%sPlex.old.log", path);
+#endif
     struct stat64 info;
     if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&
         remove_utf8(strLogFileOld.c_str()) != 0)
@@ -209,3 +233,23 @@ void CLog::OutputDebugString(const std::string& line)
   ::OutputDebugString("\n");
 #endif
 }
+
+/* PLEX */
+void CLog::FatalError(const char* format, ...)
+{
+  char msg[2048];
+  va_list va;
+  va_start(va, format);
+  vsprintf(msg, format, va);
+  va_end(va);
+
+  Log(LOGFATAL, "FATAL ERROR: %s", msg);
+#ifdef _WIN32
+  // Terminate the process while generating a crash dump
+  const DWORD STATUS_FATAL_ERROR = 0xc0dedead;
+  RaiseException(STATUS_FATAL_ERROR, EXCEPTION_NONCONTINUABLE, 0, NULL);
+#else
+  throw std::runtime_error(msg);
+#endif
+}
+/* END PLEX */
