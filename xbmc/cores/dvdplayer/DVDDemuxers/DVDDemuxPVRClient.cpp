@@ -104,21 +104,22 @@ CDVDDemuxPVRClient::~CDVDDemuxPVRClient()
 
 bool CDVDDemuxPVRClient::Open(CDVDInputStream* pInput)
 {
-  Abort();
-  m_pInput = pInput;
-  if (!g_PVRClients->GetPlayingClient(m_pvrClient))
-    return false;
-
-  RequestStreams();
-
   if (!m_dllAvCodec.Load())
   {
     CLog::Log(LOGWARNING, "%s could not load ffmpeg", __FUNCTION__);
     return false;
   }
 
+  Abort();
+
   // register codecs
   m_dllAvCodec.avcodec_register_all();
+
+  m_pInput = pInput;
+  if (!g_PVRClients->GetPlayingClient(m_pvrClient))
+    return false;
+
+  RequestStreams();
   return true;
 }
 
