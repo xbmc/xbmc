@@ -171,7 +171,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
       }
     }
 
-    if (serialization.isMember(field) && (!result.isMember(field) || result[field].empty()))
+    if (serialization.isMember(field) && !serialization[field].isNull() && (!result.isMember(field) || result[field].empty()))
       result[field] = serialization[field];
   }
 }

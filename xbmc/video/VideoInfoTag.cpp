@@ -469,7 +469,8 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
   value["showlink"] = m_showLink;
-  m_streamDetails.Serialize(value["streamdetails"]);
+  if (m_streamDetails.HasItems())
+    m_streamDetails.Serialize(value["streamdetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
   resume["position"] = (float)m_resumePoint.timeInSeconds;
   resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
