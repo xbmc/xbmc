@@ -119,6 +119,9 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int result = -1;
   __int64 length = 0;
   bool bTags = false;
+  /* PLEX */
+  bool bIsInternetStream = item.IsInternetStream();
+  /* END PLEX */
 
   if (!m_file.Open(strFile, READ_CACHED))
   {
@@ -126,13 +129,17 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     goto error;
   }
 
-  bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
-  if(bTags)
+  /* PLEX - Wrap tag reading in this if statement. Improves performance */
+  if (!bIsInternetStream)
   {
-    // Guess Bitrate and obtain replayGain information etc.
-    mp3info.ReadSeekAndReplayGainInfo(strFile);
-    mp3info.GetSeekInfo(m_seekInfo);
-    mp3info.GetReplayGain(m_replayGain);
+    bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
+    if(bTags)
+    {
+      // Guess Bitrate and obtain replayGain information etc.
+      mp3info.ReadSeekAndReplayGainInfo(strFile);
+      mp3info.GetSeekInfo(m_seekInfo);
+      mp3info.GetReplayGain(m_replayGain);
+    }
   }
 
   length = m_file.GetLength();
