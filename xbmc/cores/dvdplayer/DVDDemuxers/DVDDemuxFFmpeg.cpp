@@ -45,6 +45,10 @@
 #include "threads/Thread.h"
 #include "utils/TimeUtils.h"
 
+/* PLEX */
+#include "guilib/LocalizeStrings.h"
+/* END PLEX */
+
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
@@ -293,6 +297,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
     if (result < 0 && m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
     {
+      /* PLEX */
+      m_pInput->SetError(GetErrorString(result));
+      /* END PLEX */
       CLog::Log(LOGDEBUG, "Error, could not open file %s", strFile.c_str());
       Dispose();
       return false;
@@ -344,6 +351,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
         if (pd.buf_size <= 0)
         {
+          /* PLEX */
+          SetError(g_localizeStrings.Get(42000));
+          /* END PLEX */
           CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
           return false;
         }
@@ -410,6 +420,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
       if (!iformat)
       {
+        /* PLEX */
+        SetError(g_localizeStrings.Get(42001));
+        /* END PLEX */
+
         CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
@@ -424,8 +438,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 
     // open the demuxer
+#ifndef __PLEX__
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
+#else
+    int res;
+    if ((res = m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0))
+#endif
     {
+      SetError(GetErrorString(res));
       CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
       Dispose();
       return false;
@@ -1036,6 +1056,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
+        st->iBitRate = pStream->codec->bit_rate;
 
         if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
         {
@@ -1343,3 +1364,72 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
       strName = codec->name;
   }
 }
+
+/* PLEX */
+int CDVDDemuxFFmpeg::GetStreamBitrate()
+{
+  if (!m_pFormatContext)
+    return 0;
+
+  // Get the bitrate of the file.
+  int overallBitrate = m_pFormatContext->bit_rate;
+
+  // Get the aggregate bitrate of the streams.
+  int  aggregateBitrate = 0;
+  int  numStreams = GetNrOfStreams();
+  bool missingStreamInfo = false;
+
+  for (int i=0; i<numStreams; i++)
+  {
+    CDemuxStream* stream = GetStream(i);
+    aggregateBitrate += stream->iBitRate;
+
+    if (stream->iBitRate == 0)
+      missingStreamInfo = true;
+  }
+
+  if (overallBitrate == 0 && aggregateBitrate == 0 && m_pFormatContext->file_size > 0 && m_pFormatContext->duration != (uint32_t)AV_NOPTS_VALUE)
+  {
+    int64_t seconds = m_pFormatContext->duration / AV_TIME_BASE;
+    int bitsPerSecond = (int)(m_pFormatContext->file_size / seconds * 8);
+
+    CLog::Log(LOGNOTICE, "Using file computed bitrate = %d", bitsPerSecond);
+    return (int)bitsPerSecond;
+  }
+
+  CLog::Log(LOGNOTICE, "Aggregate bitrate = %d, file bitrate = %d.", aggregateBitrate, overallBitrate);
+
+  if (missingStreamInfo)
+    return overallBitrate;
+  else
+    return aggregateBitrate;
+}
+
+CStdString CDVDDemuxFFmpeg::GetErrorString(int code)
+{
+  switch (code)
+  {
+    case AVERROR_INVALIDDATA:
+      return g_localizeStrings.Get(42002); // Could not read file header.
+      break;
+
+    case AVERROR(EIO):
+      return g_localizeStrings.Get(42004); // Could not read data from file.
+
+    case AVERROR(ENOMEM):
+      return g_localizeStrings.Get(42005); // Memory allocation error occurred.
+      break;
+
+    case AVERROR(ENOENT):
+      return g_localizeStrings.Get(42006); // No such file or directory.
+      break;
+
+    case AVERROR(EPROTONOSUPPORT):
+      return g_localizeStrings.Get(42007); // Unsupported network protocol.
+      break;
+
+    default:
+      return g_localizeStrings.Get(42008); // Error while opening file.
+  }
+}
+/* END PLEX */

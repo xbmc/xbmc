@@ -113,6 +113,11 @@ public:
 
   AVFormatContext* m_pFormatContext;
 
+  /* PLEX */
+  int GetStreamBitrate();
+  static CStdString GetErrorString(int error);
+  /* END PLEX */
+
 protected:
   friend class CDemuxStreamAudioFFmpeg;
   friend class CDemuxStreamVideoFFmpeg;
