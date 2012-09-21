@@ -130,6 +130,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   CLog::Log(LOGDEBUG,"Thread %s start, auto delete: %d", pThread->m_ThreadName.c_str(), pThread->IsAutoDelete());
 
   currentThread.set(pThread);
+
 #ifndef _LINUX
   /* install win32 exception translator */
   win32_exception::install_handler();
@@ -148,6 +149,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread->OnStartup();
   }
 #ifndef _LINUX
+#ifndef __PLEX__
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
@@ -158,6 +160,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
       return 0;
     }
   }
+#endif
 #endif
   catch(...)
   {
@@ -177,6 +180,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread->Process();
   }
 #ifndef _LINUX
+#ifndef __PLEX__
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
@@ -185,6 +189,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
 #endif
   catch(...)
   {
@@ -196,6 +201,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread->OnExit();
   }
 #ifndef _LINUX
+#ifndef __PLEX__
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
@@ -204,6 +210,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
 #endif
   catch(...)
   {
@@ -230,10 +237,17 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 
 void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
+#ifndef __PLEX__
   if (m_ThreadHandle != NULL)
   {
     throw 1; //ERROR should not b possible!!!
   }
+#else
+  if (m_ThreadHandle)
+  {
+    CLog::FatalError("CThread::Create - m_ThreadHandle should be NULL");
+  }
+#endif
   m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
@@ -381,6 +395,7 @@ int CThread::GetNormalPriority(void)
 void CThread::SetDebugCallStackName( const char *name )
 {
 #ifdef _WIN32
+#ifndef __PLEX__
   const unsigned int MS_VC_EXCEPTION = 0x406d1388;
   struct THREADNAME_INFO
   {
@@ -402,6 +417,32 @@ void CThread::SetDebugCallStackName( const char *name )
   catch(...)
   {
   }
+#else
+  if (IsDebuggerPresent())
+  {
+    const unsigned int MS_VC_EXCEPTION = 0x406d1388;
+    struct THREADNAME_INFO
+    {
+      DWORD dwType;     // must be 0x1000
+      LPCSTR szName;    // pointer to name (in same addr space)
+      DWORD dwThreadID; // thread ID (-1 caller thread)
+      DWORD dwFlags;    // reserved for future use, most be zero
+    } info;
+
+    info.dwType = 0x1000;
+    info.szName = szThreadName;
+    info.dwThreadID = m_ThreadId;
+    info.dwFlags = 0;
+
+    __try
+    {
+      RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
+    }
+    __except(EXCEPTION_EXECUTE_HANDLER)
+    {
+    }
+  }
+#endif
 #endif
 }
 
