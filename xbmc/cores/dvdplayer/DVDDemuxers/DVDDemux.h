@@ -100,6 +100,11 @@ public:
     memset(language, 0, sizeof(language));
     disabled = false;
     flags = FLAG_NONE;
+
+    /* PLEX */
+    iBitRate = 0;
+    /* END PLEX */
+
   }
 
   virtual ~CDemuxStream() {}
@@ -140,6 +145,10 @@ public:
   , FLAG_KARAOKE  = 0x0020
   , FLAG_FORCED   = 0x0040
   } flags;
+
+  /* PLEX */
+  int iBitRate;
+  /* END PLEX */
 };
 
 class CDemuxStreamVideo : public CDemuxStream
@@ -181,7 +190,9 @@ public:
     iChannels = 0;
     iSampleRate = 0;
     iBlockAlign = 0;
+#ifndef __PLEX__
     iBitRate = 0;
+#endif
     iBitsPerSample = 0;
     type = STREAM_AUDIO;
   }
@@ -193,7 +204,9 @@ public:
   int iChannels;
   int iSampleRate;
   int iBlockAlign;
+#ifndef __PLEX__
   int iBitRate;
+#endif
   int iBitsPerSample;
 };
 
@@ -357,4 +370,19 @@ public:
    * return a user-presentable codec name of the given stream
    */
   virtual void GetStreamCodecName(int iStreamId, CStdString &strName) {};
+
+  /* PLEX */
+  /*
+   * Get the total bitrate of the entire stream.
+   */
+  virtual int GetStreamBitrate() = 0;
+  /*
+   * Error string.
+   */
+  void SetError(const std::string& error) { m_strError = error; }
+  const std::string& GetError() const { return m_strError; }
+
+private:
+  std::string m_strError;
+  /* END PLEX */
 };
