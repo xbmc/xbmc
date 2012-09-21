@@ -59,8 +59,10 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnWindowUnload();
+  void SetupButton();
 
   bool m_bButtonEnabled;
+  int m_buttonString;
   bool m_bButtonPressed;
   int m_iSelected;
   bool m_useDetails;
