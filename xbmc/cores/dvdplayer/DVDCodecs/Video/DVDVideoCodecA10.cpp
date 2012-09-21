@@ -219,7 +219,11 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
 
   memset(&dinf, 0, sizeof(dinf));
   dinf.lengh = iSize;
+#ifdef CEDARV_FLAG_DECODE_NO_DELAY
   dinf.flags = CEDARV_FLAG_FIRST_PART | CEDARV_FLAG_LAST_PART | CEDARV_FLAG_DECODE_NO_DELAY;
+#else
+  dinf.flags = CEDARV_FLAG_FIRST_PART | CEDARV_FLAG_LAST_PART;
+#endif
   m_hcedarv->update_data(m_hcedarv, &dinf);
 
   ret = m_hcedarv->decode(m_hcedarv);
@@ -302,8 +306,8 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
       m_picture.data[2] = m_yuvdata+ysize+csize/2;
 
 #ifdef A10DEBUG
-      printf("p1=%d %d %d %d (%d)\n", picture.width, picture.height, picture.display_width, picture.display_height, picture.pixel_format);
-      printf("p2=%d %d %d %d\n", m_picture.iWidth, m_picture.iHeight, m_picture.iDisplayWidth, m_picture.iDisplayHeight);
+      CLog::Log(LOGDEBUG, "A10: p1=%d %d %d %d (%d)\n", picture.width, picture.height, picture.display_width, picture.display_height, picture.pixel_format);
+      CLog::Log(LOGDEBUG, "A10: p2=%d %d %d %d\n", m_picture.iWidth, m_picture.iHeight, m_picture.iDisplayWidth, m_picture.iDisplayHeight);
 #endif
     }
 

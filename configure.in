@@ -2549,6 +2549,9 @@ XB_CONFIG_MODULE([lib/libapetag], [
     --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
 ], [0])
 
+
+LIBS="$LIBS $CEDARLIBS"
+
 XB_CONFIG_MODULE([lib/cpluff], [
   ./configure --disable-nls \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \

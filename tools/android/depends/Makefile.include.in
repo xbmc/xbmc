@@ -43,6 +43,22 @@ CONFIG_GUESS=$(NATIVEPREFIX)/share/automake-1.11/config.guess
 RPL=$(NATIVEPREFIX)/bin/python $(NATIVEPREFIX)/bin/rpl
 YASM=$(NATIVEPREFIX)/bin/yasm
 
+CEDARDIR=$(shell pwd)/../cedarv
+
+export CEDARINCLUDES=\
+        -I$(CEDARDIR) \
+        -I$(CEDARDIR)/adapter \
+        -I$(CEDARDIR)/adapter/cdxalloc \
+        -I$(CEDARDIR)/fbm \
+        -I$(CEDARDIR)/libcedarv \
+        -I$(CEDARDIR)/libvecore \
+        -I$(CEDARDIR)/vbv
+
+export CEDARLIBS=\
+        -L$(CEDARDIR) -lcedarv \
+        -L$(CEDARDIR)/adapter/cdxalloc -lcedarxalloc \
+        -L$(CEDARDIR)/libvecore -lvecore
+
 ifneq ($(NATIVE_BUILD),1)
   export SYSROOT=$(TOOLCHAIN)/sysroot
   export CROSSTOOLS=$(TOOLCHAIN)/bin/$(HOST)-
@@ -56,10 +72,10 @@ ifneq ($(NATIVE_BUILD),1)
   export RANLIB=$(CROSSTOOLS)ranlib
   export OBJDUMP=$(CROSSTOOLS)objdump
   export READELF=$(CROSSTOOLS)readelf
-  export CFLAGS=$(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions
-  export LDFLAGS=$(PLATFORM_FLAGS) -L$(PREFIX)/lib -L$(PREFIX)/lib/$(SDK_PLATFORM)
+  export CFLAGS=$(CEDARINCLUDES) $(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions
+  export LDFLAGS=$(CEDARLIBS) $(PLATFORM_FLAGS) -L$(PREFIX)/lib -L$(PREFIX)/lib/$(SDK_PLATFORM)
   export CPPFLAGS=$(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions
-  export CXXFLAGS=$(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions -frtti
+  export CXXFLAGS=$(CEDARINCLUDES) $(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions -frtti
 
   export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
   export PKG_CONFIG=$(NATIVEPREFIX)/bin/pkg-config

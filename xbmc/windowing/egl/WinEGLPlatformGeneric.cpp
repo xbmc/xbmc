@@ -443,9 +443,9 @@ bool CWinEGLPlatformGeneric::IsExtSupported(const char* extension)
 
 EGLNativeWindowType CWinEGLPlatformGeneric::getNativeWindow()
 {
+#ifdef _FBDEV_WINDOW_H_ //mali sdk 1.2
   static fbdev_window win;
 
-#if 1 /*adi*/
 #ifdef FIX1280
   win.width  = 1280;
   win.height = 720;
