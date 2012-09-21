@@ -33,7 +33,11 @@
 
 using namespace std;
 
+#ifndef __PLEX__
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
+#else
+CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, CStdString& error)
+#endif
 {
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))
   {
@@ -66,6 +70,11 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
   if(demuxer->Open(pInputStream))
     return demuxer.release();
   else
+  {
+    /* PLEX */
+    error = demuxer->GetError();
+    /* END PLEX */
     return NULL;
+  }
 }
 
