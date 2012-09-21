@@ -37,6 +37,11 @@
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
 
+/* PLEX */
+#include "Players/PlexMediaServerPlayer.h"
+#include "PlexTypes.h"
+/* END PLEX */
+
 using namespace AUTOPTR;
 
 std::vector<CPlayerCoreConfig *> CPlayerCoreFactory::s_vecCoreConfigs;
@@ -280,6 +285,12 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     paplayer->m_bPlaysAudio = true;
     s_vecCoreConfigs.push_back(paplayer);
 
+    /* PLEX */
+    CPlayerCoreConfig* pmsplayer = new CPlayerCoreConfig("PMSPlayer", EPC_PMSPLAYER, NULL);
+    pmsplayer->m_bPlaysAudio = pmsplayer->m_bPlaysVideo = true;
+    s_vecCoreConfigs.push_back(pmsplayer);
+    /* END PLEX */
+
     for(std::vector<CPlayerSelectionRule *>::iterator it = s_vecCoreSelectionRules.begin(); it != s_vecCoreSelectionRules.end(); it++)
       delete *it;
     s_vecCoreSelectionRules.clear();
@@ -306,6 +317,9 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
       if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
+      /* PLEX */
+      if (type == "pmsplayer") eCore = EPC_PMSPLAYER;
+      /* END PLEX */
 
       if (eCore != EPC_NONE)
       {
