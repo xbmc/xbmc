@@ -204,6 +204,12 @@ void XBPyThread::Process()
   // add on any addon modules the user has installed
   ADDON::VECADDONS addons;
   ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
+  { // limit scope of temporary vector
+    ADDON::VECADDONS tempAddons;
+    ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SUBTITLE_MODULE, tempAddons);
+    // append subtitles modules to end of addons vector (there might be duplicates - should we care?)
+    addons.insert(addons.end(), tempAddons.begin(), tempAddons.end());
+  }
   for (unsigned int i = 0; i < addons.size(); ++i)
 #ifdef TARGET_WINDOWS
   {
