@@ -5,6 +5,11 @@
 #include "Job.h"
 #include "FileItem.h"
 
+/* PLEX */
+#include "PlexMediaServerQueue.h"
+#include <boost/make_shared.hpp>
+/* END PLEX */
+
 class CSaveFileStateJob : public CJob
 {
   CFileItem m_item;
@@ -36,8 +41,10 @@ bool CSaveFileStateJob::DoWork()
     {
       CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
 
+#ifndef __PLEX__
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
+#endif
       {
         bool updateListing = false;
         // No resume & watched status for livetv
@@ -48,20 +55,37 @@ bool CSaveFileStateJob::DoWork()
             CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, progressTrackingFile.c_str());
 
             // consider this item as played
+#ifndef __PLEX__
             videodatabase.IncrementPlayCount(m_item);
+#endif
             m_item.GetVideoInfoTag()->m_playCount++;
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
+            /* PLEX */
+            PlexMediaServerQueue::Get().onViewed(boost::make_shared<CFileItem>(m_item), true);
+            /* END PLEX */
           }
+#ifndef __PLEX__
           else
             videodatabase.UpdateLastPlayed(m_item);
+#endif
 
           if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
           {
+#ifndef __PLEX__
             if (m_bookmark.timeInSeconds < 0.0f)
               videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
             else if (m_bookmark.timeInSeconds > 0.0f)
               videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
+#else
+            if (m_bookmark.timeInSeconds < 0.0f)
+              PlexMediaServerQueue::Get().onClearPlayingProgress(boost::make_shared<CFileItem>(m_item));
+            else if (m_bookmark.timeInSeconds > 0.0f)
+            {
+              PlexMediaServerQueue::Get().onPlayingProgress(boost::make_shared<CFileItem>(m_item), m_bookmark.timeInSeconds*1000, "stopped");
+              m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+            }
+#endif
             if (m_item.HasVideoInfoTag())
               m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
             updateListing = true;
@@ -70,7 +94,9 @@ bool CSaveFileStateJob::DoWork()
 
         if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
         {
+#ifndef __PLEX__
           videodatabase.SetVideoSettings(progressTrackingFile, g_settings.m_currentVideoSettings);
+#endif
         }
 
         if ((m_item.IsDVDImage() ||
@@ -78,10 +104,14 @@ bool CSaveFileStateJob::DoWork()
              m_item.HasVideoInfoTag() &&
              m_item.GetVideoInfoTag()->HasStreamDetails())
         {
+#ifndef __PLEX__
           videodatabase.SetStreamDetailsForFile(m_item.GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
+#endif
           updateListing = true;
         }
+#ifndef __PLEX__
         videodatabase.Close();
+#endif
 
         if (updateListing)
         {
