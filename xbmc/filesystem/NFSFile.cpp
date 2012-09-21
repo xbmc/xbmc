@@ -97,6 +97,8 @@ std::list<CStdString> CNfsConnection::GetExportList(const CURL &url)
       }      
 
       gNfsConnection.GetImpl()->mount_free_export_list(exportlist);
+      retList.sort();
+      retList.reverse();
     }
     
     return retList;
