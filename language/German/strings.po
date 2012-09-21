@@ -6455,7 +6455,7 @@ msgstr "PVR-Datenbank zurücksetzen"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "Alle Daten in der PVR-Datenbank sind gelöscht."
+msgstr "Alle Daten in der PVR-Datenbank werden gelöscht."
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
@@ -6463,7 +6463,7 @@ msgstr "EPG-Datenbank zurücksetzen"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr "Alle Daten in der PVR-Datenbank sind gelöscht."
+msgstr "EPG-Datenbank wird zurückgesetzt."
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
