@@ -1156,6 +1156,7 @@ lib/cmyth/Makefile
 /xbmc/interfaces/Makefile
 /xbmc/interfaces/python/Makefile
 /xbmc/interfaces/python/generated/
+/xbmc/interfaces/python/test/Makefile
 
 # /xbmc/network/
 /xbmc/network/Makefile
