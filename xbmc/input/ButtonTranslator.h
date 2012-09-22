@@ -70,6 +70,7 @@ public:
   void Clear();
 
   static void GetActions(std::vector<std::string> &actionList);
+  static void GetWindows(std::vector<std::string> &windowList);
 
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 
