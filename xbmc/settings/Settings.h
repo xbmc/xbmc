@@ -31,7 +31,7 @@
 #if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #define DEFAULT_SKIN          "skin.touched"
 #else
-#define DEFAULT_SKIN          "skin.confluence"
+#define DEFAULT_SKIN          "skin.mediastream"
 #endif
 #define DEFAULT_FANART_HEIGHT 0
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
