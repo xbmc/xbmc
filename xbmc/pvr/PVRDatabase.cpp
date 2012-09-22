@@ -708,8 +708,18 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
         int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
         CPVRChannelPtr channel = g_PVRChannelGroups->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
 
-        if (channel && group.AddToGroup(*channel, iChannelNumber))
-          ++iReturn;
+        if (channel)
+        {
+          CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
+          PVRChannelGroupMember newMember = { channel, iChannelNumber };
+          group.m_members.push_back(newMember);
+          iReturn++;
+        }
+        else
+        {
+          // remove a channel that doesn't exist (anymore) from the table
+          DeleteValues("map_channelgroups_channels", FormatSQL("idGroup = %u AND idChannel = %u", group.GroupID(), iChannelId));
+        }
 
         m_pDS->next();
       }
@@ -720,6 +730,9 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
       CLog::Log(LOGERROR, "PVR - %s - failed to get channels", __FUNCTION__);
     }
   }
+
+  if (iReturn > 0)
+    group.SortByChannelNumber();
 
   return iReturn;
 }
