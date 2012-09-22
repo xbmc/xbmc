@@ -55,8 +55,14 @@ int CDVDOverlayCodecCC::DecodeFieldData(BYTE* pData, int iSize)
 }
 */
 
-int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize, double pts, double duration)
+int CDVDOverlayCodecCC::Decode(DemuxPacket *pPacket)
 {
+  if (!pPacket)
+    return OC_ERROR;
+
+  BYTE *pData = pPacket->pData;
+  int iSize = pPacket->iSize;
+
   // minimum amount of data is even more for cc
   decode_cc(m_cc_decoder, pData, iSize);
 

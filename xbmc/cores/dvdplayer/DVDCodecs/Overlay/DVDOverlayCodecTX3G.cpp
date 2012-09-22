@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "DVDClock.h"
 #include "DVDOverlayCodecTX3G.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
@@ -85,10 +86,15 @@ void CDVDOverlayCodecTX3G::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double duration)
+int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 {
   if (m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
+  
+  double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
+  double duration = pPacket->duration;
+  BYTE *data = pPacket->pData;
+  int size = pPacket->iSize;
 
   m_pOverlay = new CDVDOverlayText();
   m_pOverlay->iPTSStartTime = pts;

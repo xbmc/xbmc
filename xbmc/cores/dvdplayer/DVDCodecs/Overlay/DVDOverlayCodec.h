@@ -22,6 +22,7 @@
 
 #include "DVDOverlay.h"
 #include "PlatformDefs.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
 
 #include <string>
 
@@ -59,7 +60,7 @@ public:
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(BYTE* data, int size, double pts, double duration) = 0;
+  virtual int Decode(DemuxPacket *pPacket) = 0;
 
   /*
    * Reset the decoder.

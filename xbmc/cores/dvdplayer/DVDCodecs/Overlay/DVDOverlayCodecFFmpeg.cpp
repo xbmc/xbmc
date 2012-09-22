@@ -144,9 +144,9 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
   sub.num_rects = 0;
 }
 
-int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts, double duration)
+int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
 {
-  if (!m_pCodecContext)
+  if (!m_pCodecContext || !pPacket)
     return 1;
 
   int gotsub = 0, len = 0;
@@ -155,8 +155,8 @@ int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts, double dura
 
   AVPacket avpkt;
   m_dllAvCodec.av_init_packet(&avpkt);
-  avpkt.data = data;
-  avpkt.size = size;
+  avpkt.data = pPacket->pData;
+  avpkt.size = pPacket->iSize;
 
   len = m_dllAvCodec.avcodec_decode_subtitle2(m_pCodecContext, &m_Subtitle, &gotsub, &avpkt);
 
@@ -166,7 +166,7 @@ int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts, double dura
     return OC_ERROR;
   }
 
-  if (len != size)
+  if (len != avpkt.size)
     CLog::Log(LOGWARNING, "%s - avcodec_decode_subtitle didn't consume the full packet", __FUNCTION__);
 
   if (!gotsub)
