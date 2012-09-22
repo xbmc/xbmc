@@ -174,6 +174,8 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   codec = right.codec;
   type = right.type;
   codec_tag = right.codec_fourcc;
+  profile   = right.profile;
+  level     = right.level;
 
   if( withextradata && right.ExtraSize )
   {
@@ -200,8 +202,6 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     width     = stream->iWidth;
     aspect    = stream->fAspect;
     vfr       = stream->bVFR;
-    level     = stream->iLevel;
-    profile   = stream->iProfile;
     ptsinvalid = stream->bPTSInvalid;
     forced_aspect = stream->bForcedAspect;
     orientation = stream->iOrientation;
