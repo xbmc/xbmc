@@ -99,6 +99,7 @@ public:
     ExtraSize = 0;
     memset(language, 0, sizeof(language));
     disabled = false;
+    changes = 0;
     flags = FLAG_NONE;
   }
 
@@ -129,6 +130,8 @@ public:
 
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
+
+  int  changes; // increment on change which player may need to know about
 
   enum EFlags
   { FLAG_NONE     = 0x0000 

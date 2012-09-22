@@ -67,6 +67,7 @@ public:
   double           dur;    // last frame expected duration
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
+  int              changes; // remembered counter from stream to track codec changes
   bool             inited;
   bool             started; // has the player started
   const StreamType type;
@@ -89,6 +90,7 @@ public:
     dur    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
+    changes = 0;
     inited = false;
     started = false;
     startpts  = DVD_NOPTS_VALUE;
