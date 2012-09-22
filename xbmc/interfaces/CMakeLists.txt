@@ -3,4 +3,4 @@ add_subdirectory(info)
 add_subdirectory(json-rpc)
 
 aux_source_directory(. interfaces_SRCS)
-add_library(interfaces STATIC ${interfaces_SRCS})
+add_sources(${interfaces_SRCS})

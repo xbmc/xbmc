@@ -11,11 +11,9 @@ include_directories(
 
 aux_source_directory(. filesystem_SRCS)
 
-list(REMOVE_ITEM filesystem_SRCS ./FileSmb.cpp)
-list(REMOVE_ITEM filesystem_SRCS ./NptXbmcFile.cpp)
-list(REMOVE_ITEM filesystem_SRCS ./SMBDirectory.cpp)
-list(REMOVE_ITEM filesystem_SRCS ./UPnPDirectory.cpp)
-list(REMOVE_ITEM filesystem_SRCS ./FileUPnP.cpp)
-list(REMOVE_ITEM filesystem_SRCS ./Slingbox.cpp)
+set(removed_files FileSmb.cpp NptXbmcFile.cpp SMBDirectory.cpp UPnPDirectory.cpp FileUPnP.cpp Slingbox.cpp FileDAAP.cpp RTVDirectory.cpp FileRTV.cpp DAAPDirectory.cpp)
+foreach(r ${removed_files})
+	list(REMOVE_ITEM filesystem_SRCS ./${r})
+endforeach()
 
-add_library(filesystem STATIC ${filesystem_SRCS})
+add_sources(${filesystem_SRCS})

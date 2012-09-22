@@ -1223,3 +1223,4 @@ lib/cmyth/Makefile
 
 CmakeLists*.user*
 plex/Dependencies
+plex/build

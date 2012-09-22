@@ -1,5 +1,5 @@
 project("Plex")
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.8)
 
 set(root ${PROJECT_SOURCE_DIR})
 set(dependdir ${root}/plex/Dependencies/7deb2e8-darwin-i686)
@@ -19,6 +19,7 @@ include_directories(
 	${root}/xbmc/settings
 	${root}/lib
 	${root}/lib/ffmpeg
+	${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff
 
 	${dependdir}/include
 	${dependdir}/include/libcec
@@ -64,33 +65,32 @@ if(APPLE)
 endif()
 
 #### libraries we want to link to
-set(external_libs
-	z
-#	bz2
-	xml2
-	iconv
-#	ncurses
-	freetype
-	SDL
-	SDL_mixer
-	SDL_image
-	microhttpd
-	tinyXML
-    boost_thread
-    boost_date_time
-    boost_system
-	GLEW
-	sqlite3
-	yajl
+set(external_libs 
 	ssh
-	ssh2
-	cdio
+	lzo2
 	pcre
 	pcrecpp
-	jpeg
-	lzo2
-	samplerate
 	fribidi
+	cdio
+	freetype
+	fontconfig
+	sqlite3
+	samplerate
+	microhttpd
+	yajl
+	jpeg
+	crypto
+	GLEW
+	SDL
+	SDL_mixer
+	tinyxml
+	iconv
+	boost_thread
+	boost_system
+	z
+)
+
+set(find_libs
 	rtmp
 	plist
 	shairport
@@ -107,11 +107,12 @@ set(external_libs
 	mpeg2
 	bluray
 )
+
 set(system_libs
 	stdc++
 )
 
-foreach(lib ${external_libs})
+foreach(lib ${external_libs} ${find_libs})
 	find_library(${lib}_LIBRARY ${lib} ${dependdir}/lib NO_DEFAULT_PATH)
 	get_property(l VARIABLE PROPERTY ${lib}_LIBRARY)
 	get_filename_component(${lib}_FNAME ${l} NAME)
@@ -163,6 +164,37 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
+set(internal_libs
+	lib_squish
+	lib_apetag
+	lib_hts
+)
+
+# function to collect all the sources from sub-directories
+# into a single list
+function(add_sources)
+  get_property(is_defined GLOBAL PROPERTY SRCS_LIST DEFINED)
+  if(NOT is_defined)
+    define_property(GLOBAL PROPERTY SRCS_LIST
+      BRIEF_DOCS "List of source files"
+      FULL_DOCS "List of source files to be compiled in one library")
+  endif()
+  # make absolute paths
+  set(SRCS)
+  foreach(s IN LISTS ARGN)
+    if(NOT IS_ABSOLUTE "${s}")
+      get_filename_component(s "${s}" ABSOLUTE)
+    endif()
+    list(APPEND SRCS "${s}")
+  endforeach()
+  # append to global list
+  set_property(GLOBAL APPEND PROPERTY SRCS_LIST "${SRCS}")
+endfunction(add_sources)
+
 add_subdirectory(lib)
 add_subdirectory(xbmc)
+
+add_custom_target(internal_lib DEPENDS ${internal_libs})
+add_custom_target(xbmc_libs DEPENDS ${xbmc_libs} internal_libs wraplibs)
+
 add_subdirectory(plex)

@@ -8,4 +8,4 @@ endif(UNIX)
 
 aux_source_directory(. network_SRCS)
 list(REMOVE_ITEM network_SRCS ./UPnP.cpp)
-add_library(network STATIC ${network_SRCS})
+add_sources(${network_SRCS})
