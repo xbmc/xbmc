@@ -668,10 +668,6 @@ case $use_platform in
      use_texturepacker_native=yes
      use_arch="arm"
      use_cpu=arm1176jzf-s
-     use_armv5te="yes"
-     use_armv6t2="no"
-     use_armv6="yes"
-     use_armvfp="yes"
      use_hardcoded_tables="yes"
      use_alsa="no"
      USE_TEXTUREPACKER_NATIVE_ROOT="$TEXTUREPACKER_NATIVE_ROOT"
@@ -2549,10 +2545,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
       `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
-      `if test "$use_armv5te" = "yes"; then echo --enable-armv5te; else echo --disable-armv5te; fi`\
-      `if test "$use_armv6t2" = "yes"; then echo --enable-armv6t2; else echo --disable-armv6t2; fi`\
-      `if test "$use_armv6" = "yes"; then echo --enable-armv6; else echo --disable-armv6; fi`\
-      `if test "$use_armvfp" = "yes"; then echo --enable-armvfp; else echo --disable-armvfp; fi`\
       --target-os=$ffmpeg_target_os \
       --disable-muxers \
       --enable-muxer=spdif \
