@@ -161,9 +161,6 @@ void CURL::Parse(const CStdString& strURL1)
     return;
   }
 
-  // check for username/password - should occur before first /
-  if (iPos == -1) iPos = 0;
-
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
   int iEnd = strURL.length();
