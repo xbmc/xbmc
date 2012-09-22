@@ -253,10 +253,12 @@ GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 CHECK_DIRS = xbmc/filesystem/test \
              xbmc/utils/test \
              xbmc/threads/test \
+             xbmc/interfaces/python/test \
              xbmc/test
 CHECK_LIBS = xbmc/filesystem/test/filesystemTest.a \
              xbmc/utils/test/utilsTest.a \
              xbmc/threads/test/threadTest.a \
+             xbmc/interfaces/python/test/pythonSwigTest.a \
              xbmc/test/xbmc-test.a
 CHECK_PROGRAMS = xbmc-test
 
