@@ -280,6 +280,9 @@
     <Filter Include="interfaces\python\generated">
       <UniqueIdentifier>{4cc89394-6b5b-44db-86a2-8b71b65e85a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces\python\test">
+      <UniqueIdentifier>{0a84b5ee-2ad4-4ae2-9a8d-fc585c6d8aae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2923,6 +2926,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.cpp">
       <Filter>music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\test\TestSwig.cpp">
+      <Filter>interfaces\python\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
