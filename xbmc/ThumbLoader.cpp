@@ -152,9 +152,14 @@ CVideoThumbLoader::~CVideoThumbLoader()
   delete m_database;
 }
 
-void CVideoThumbLoader::OnLoaderStart()
+void CVideoThumbLoader::Initialize()
 {
   m_database->Open();
+}
+
+void CVideoThumbLoader::OnLoaderStart()
+{
+  Initialize();
 }
 
 void CVideoThumbLoader::OnLoaderFinish()
@@ -207,7 +212,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   // video db items normally have info in the database
   if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
   {
-    FillLibraryArt(pItem);
+    FillLibraryArt(*pItem);
 
     if (pItem->GetVideoInfoTag()->m_type == "set"      ||
         pItem->GetVideoInfoTag()->m_type == "actor"    ||
@@ -289,30 +294,30 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   return true;
 }
 
-bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
+bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
 {
-  CVideoInfoTag &tag = *pItem->GetVideoInfoTag();
+  CVideoInfoTag &tag = *item.GetVideoInfoTag();
   if (tag.m_iDbId > -1 && !tag.m_type.IsEmpty())
   {
     map<string, string> artwork;
     m_database->Open();
     if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
-      pItem->SetArt(artwork);
-    else if (pItem->GetVideoInfoTag()->m_type == "artist")
+      item.SetArt(artwork);
+    else if (tag.m_type == "artist")
     { // we retrieve music video art from the music database (no backward compat)
       CMusicDatabase database;
       database.Open();
-      int idArtist = database.GetArtistByName(pItem->GetLabel());
+      int idArtist = database.GetArtistByName(item.GetLabel());
       if (database.GetArtForItem(idArtist, "artist", artwork))
-        pItem->SetArt(artwork);
+        item.SetArt(artwork);
     }
-    else if (pItem->GetVideoInfoTag()->m_type == "album")
+    else if (tag.m_type == "album")
     { // we retrieve music video art from the music database (no backward compat)
       CMusicDatabase database;
       database.Open();
-      int idAlbum = database.GetAlbumByName(pItem->GetLabel(), pItem->GetVideoInfoTag()->m_artist);
+      int idAlbum = database.GetAlbumByName(item.GetLabel(), tag.m_artist);
       if (database.GetArtForItem(idAlbum, "album", artwork))
-        pItem->SetArt(artwork);
+        item.SetArt(artwork);
     }
     else
     {
@@ -323,11 +328,11 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
         ADDON::ScraperPtr info = m_database->GetScraperForPath(tag.m_strPath, settings);
         if (info)
         {
-          CFileItem item(*pItem);
-          item.SetPath(tag.GetPath());
+          CFileItem tmpItem(item);
+          tmpItem.SetPath(tag.GetPath());
           CVideoInfoScanner scanner;
-          scanner.GetArtwork(&item, info->Content(), tag.m_type != "episode" && settings.parent_name_root, true);
-          pItem->SetArt(item.GetArt());
+          scanner.GetArtwork(&tmpItem, info->Content(), tag.m_type != "episode" && settings.parent_name_root, true);
+          item.SetArt(tmpItem.GetArt());
         }
       }
       else if (tag.m_type == "set")
@@ -337,7 +342,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
         {
           LoadItem(items[0].get());
           if (!items[0]->GetArt().empty())
-            pItem->SetArt(items[0]->GetArt());
+            item.SetArt(items[0]->GetArt());
         }
       }
       else if (tag.m_type == "actor"  ||
@@ -350,10 +355,10 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
           tag.m_strPictureURL.Parse();
           CStdString thumb = CScraperUrl::GetThumbURL(tag.m_strPictureURL.GetFirstThumb());
           if (!thumb.IsEmpty())
-            pItem->SetThumbnailImage(thumb);
+            item.SetThumbnailImage(thumb);
         }
       }
-      else if (pItem->GetVideoInfoTag()->m_type == "season")
+      else if (tag.m_type == "season")
       {
         // season art is fetched on scan from the tvshow root path (m_strPath in the season info tag)
         // or from the show m_strPictureURL member of the tvshow, so grab the tvshow to get this.
@@ -363,10 +368,10 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
         CVideoInfoScanner::GetSeasonThumbs(show, seasons, true);
         map<int, string>::iterator season = seasons.find(tag.m_iSeason);
         if (season != seasons.end())
-          pItem->SetThumbnailImage(season->second);
+          item.SetThumbnailImage(season->second);
       }
       // add to the database for next time around
-      map<string, string> artwork = pItem->GetArt();
+      map<string, string> artwork = item.GetArt();
       if (!artwork.empty())
       {
         m_database->SetArtForItem(tag.m_iDbId, tag.m_type, artwork);
@@ -377,21 +382,21 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
         m_database->SetArtForItem(tag.m_iDbId, tag.m_type, "thumb", "");
     }
     // For episodes and seasons, we want to set fanart for that of the show
-    if (!pItem->HasProperty("fanart_image") && tag.m_iIdShow >= 0)
+    if (!item.HasProperty("fanart_image") && tag.m_iIdShow >= 0)
     {
       map<string, string> showArt;
       if (m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt))
       {
         map<string, string>::iterator i = showArt.find("fanart");
         if (i != showArt.end())
-          pItem->SetProperty("fanart_image", i->second);
+          item.SetProperty("fanart_image", i->second);
         if ((i = showArt.find("thumb")) != showArt.end())
-          pItem->SetProperty("tvshowthumb", i->second);
+          item.SetProperty("tvshowthumb", i->second);
       }
     }
     m_database->Close();
   }
-  return !pItem->GetArt().empty();
+  return !item.GetArt().empty();
 }
 
 bool CVideoThumbLoader::FillThumb(CFileItem &item)
@@ -504,9 +509,14 @@ CMusicThumbLoader::~CMusicThumbLoader()
   delete m_database;
 }
 
-void CMusicThumbLoader::OnLoaderStart()
+void CMusicThumbLoader::Initialize()
 {
   m_database->Open();
+}
+
+void CMusicThumbLoader::OnLoaderStart()
+{
+  Initialize();
 }
 
 void CMusicThumbLoader::OnLoaderFinish()

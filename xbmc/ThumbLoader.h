@@ -70,6 +70,14 @@ public:
   CThumbLoader(int nThreads=-1);
   virtual ~CThumbLoader();
 
+  virtual void Initialize() { };
+
+  /*! \brief helper function to fill the art for a library item
+   \param item a CFileItem
+   \return true if we fill art, false otherwise
+   */
+  virtual bool FillLibraryArt(CFileItem &item) { return false; }
+
   /*! \brief Checks whether the given item has an image listed in the texture database
    \param item CFileItem to check
    \param type the type of image to retrieve
@@ -90,6 +98,8 @@ class CVideoThumbLoader : public CThumbLoader, public CJobQueue
 public:
   CVideoThumbLoader();
   virtual ~CVideoThumbLoader();
+
+  virtual void Initialize();
   virtual bool LoadItem(CFileItem* pItem);
   void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
 
@@ -111,7 +121,7 @@ public:
    \param item a video CFileItem
    \return true if we fill art, false otherwise
    */
-  bool FillLibraryArt(CFileItem *item);
+ virtual bool FillLibraryArt(CFileItem &item);
 
   /*!
    \brief Callback from CThumbExtractor on completion of a generated image
@@ -123,8 +133,8 @@ public:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 protected:
-  virtual void OnLoaderStart() ;
-  virtual void OnLoaderFinish() ;
+  virtual void OnLoaderStart();
+  virtual void OnLoaderFinish();
 
   IStreamDetailsObserver *m_pStreamDetailsObs;
   CVideoDatabase *m_database;
@@ -165,13 +175,15 @@ class CMusicThumbLoader : public CThumbLoader
 public:
   CMusicThumbLoader();
   virtual ~CMusicThumbLoader();
+
+  virtual void Initialize();
   virtual bool LoadItem(CFileItem* pItem);
 
   /*! \brief helper function to fill the art for a video library item
    \param item a video CFileItem
    \return true if we fill art, false otherwise
    */
-  bool FillLibraryArt(CFileItem &item);
+  virtual bool FillLibraryArt(CFileItem &item);
 
   /*! \brief Fill the thumb of a music file/folder item
    First uses a cached thumb from a previous run, then checks for a local thumb

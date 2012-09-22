@@ -22,6 +22,7 @@
 #include "JSONRPC.h"
 #include "JSONUtils.h"
 #include "FileItem.h"
+#include "ThumbLoader.h"
 #include "utils/StdString.h"
 
 namespace JSONRPC
@@ -29,10 +30,10 @@ namespace JSONRPC
   class CFileItemHandler : public CJSONUtils
   {
   protected:
-    static void FillDetails(ISerializable* info, CFileItemPtr item, const CVariant& fields, CVariant &result);
+    static void FillDetails(ISerializable* info, CFileItemPtr item, const CVariant& fields, CVariant &result, CThumbLoader *thumbLoader = NULL);
     static void HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool sortLimit = true);
     static void HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, int size, bool sortLimit = true);
-    static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append = true);
+    static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append = true, CThumbLoader *thumbLoader = NULL);
 
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
 
