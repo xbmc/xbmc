@@ -45,6 +45,8 @@ private:
   AVCodecContext* m_pCodecContext;
   AVSubtitle      m_Subtitle;
   int             m_SubtitleIndex;
+  double          m_StartTime;
+  double          m_StopTime;
 
   int             m_width;
   int             m_height;

@@ -99,9 +99,9 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
           else
             pts = overlay->iPTSStartTime;
 
-          overlay->iPTSStartTime = pts;
+          overlay->iPTSStartTime += pts;
           if(duration)
-            overlay->iPTSStopTime = pts + duration;
+            overlay->iPTSStopTime += (pts + duration);
           else
           {
             overlay->iPTSStopTime = 0;
