@@ -105,7 +105,7 @@ namespace XBMCAddon
        * 
        * example:
        */
-      void playPlaylist(const PlayList* playlist = NULL, bool windowed = false);
+      void playPlaylist(const XBMCAddon::xbmc::PlayList* playlist = NULL, bool windowed = false);
 
       /**
        * play() -- try to play the current item in the current playlist.

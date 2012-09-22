@@ -104,7 +104,7 @@ namespace XBMCAddon
       CApplicationMessenger::Get().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
 
-    void Player::playPlaylist(const PlayList* playlist, bool windowed)
+    void Player::playPlaylist(const XBMCAddon::xbmc::PlayList* playlist, bool windowed)
     {
       TRACE;
       if (playlist != NULL)
