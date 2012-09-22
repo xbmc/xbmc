@@ -221,7 +221,7 @@ void CGUIWindowPVRRecordings::UpdateData(bool bUpdateSelectedFile /* = true */)
 
 void CGUIWindowPVRRecordings::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageRecordings || msg == ObservableMessageTimers || msg == ObservableMessageCurrentItem)
+  if (msg == ObservableMessageTimers || msg == ObservableMessageCurrentItem)
   {
     if (IsVisible())
       SetInvalid();
@@ -231,7 +231,7 @@ void CGUIWindowPVRRecordings::Notify(const Observable &obs, const ObservableMess
   else if (msg == ObservableMessageRecordings || msg == ObservableMessageTimersReset)
   {
     if (IsVisible())
-      UpdateData(false);
+      UpdateData();
     else
       m_bUpdateRequired = true;
   }
