@@ -107,19 +107,23 @@ static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addi
 {
   int width = g_settings.m_ResInfo[addindex].iWidth;
   int height = g_settings.m_ResInfo[addindex].iHeight;
+  int interlaced = g_settings.m_ResInfo[addindex].dwFlags & D3DPRESENTFLAG_INTERLACED;
 
   for (unsigned int idx = 0; idx < resolutions.size(); idx++)
-    if (resolutions[idx].width == width && resolutions[idx].height == height)
+    if (   resolutions[idx].width == width
+        && resolutions[idx].height == height
+        && resolutions[idx].interlaced == interlaced)
       return; // already taken care of.
 
-  RESOLUTION_WHR res = {width, height, addindex};
+  RESOLUTION_WHR res = {width, height, interlaced, addindex};
   resolutions.push_back(res);
 }
 
-static bool resSortPredicate (RESOLUTION_WHR i, RESOLUTION_WHR j)
+static bool resSortPredicate(RESOLUTION_WHR i, RESOLUTION_WHR j)
 {
   return (    i.width < j.width
-          || (i.width == j.width && i.height < j.height));
+          || (i.width == j.width && i.height < j.height)
+          || (i.width == j.width && i.height == j.height && i.interlaced != j.interlaced) );
 }
 
 vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
@@ -139,31 +143,29 @@ vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
 static void AddRefreshRate(vector<REFRESHRATE> &refreshrates, unsigned int addindex)
 {
   float RefreshRate = g_settings.m_ResInfo[addindex].fRefreshRate;
-  bool Interlaced = ((g_settings.m_ResInfo[addindex].dwFlags & D3DPRESENTFLAG_INTERLACED) == D3DPRESENTFLAG_INTERLACED);
 
   for (unsigned int idx = 0; idx < refreshrates.size(); idx++)
-    if (   refreshrates[idx].RefreshRate == RefreshRate
-        && refreshrates[idx].Interlaced  == Interlaced )
+    if (   refreshrates[idx].RefreshRate == RefreshRate)
       return; // already taken care of.
 
-  REFRESHRATE rr = {RefreshRate, Interlaced, addindex};
+  REFRESHRATE rr = {RefreshRate, addindex};
   refreshrates.push_back(rr);
 }
 
-static bool rrSortPredicate (REFRESHRATE i, REFRESHRATE j)
+static bool rrSortPredicate(REFRESHRATE i, REFRESHRATE j)
 {
-  return (   (i.RefreshRate < j.RefreshRate)
-          || (i.RefreshRate == j.RefreshRate && !i.Interlaced));
+  return (i.RefreshRate < j.RefreshRate);
 }
 
-vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height)
+vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height, uint32_t dwFlags)
 {
   vector<REFRESHRATE> refreshrates;
 
   for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
     if (   g_settings.m_ResInfo[idx].iScreen == screen
         && g_settings.m_ResInfo[idx].iWidth  == width
-        && g_settings.m_ResInfo[idx].iHeight == height)
+        && g_settings.m_ResInfo[idx].iHeight == height
+        && (g_settings.m_ResInfo[idx].dwFlags & D3DPRESENTFLAG_INTERLACED) == (dwFlags & D3DPRESENTFLAG_INTERLACED))
       AddRefreshRate(refreshrates, idx);
 
   // Can't assume a sort order

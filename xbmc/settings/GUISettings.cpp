@@ -1508,13 +1508,16 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     return RES_DESKTOP;
   else if (res == "WINDOW")
     return RES_WINDOW;
-  else if (res.GetLength()==20)
+  else if (res.GetLength() == 21)
   {
-    // format: SWWWWWHHHHHRRR.RRRRR, where S = screen, W = width, H = height, R = refresh
+    // format: SWWWWWHHHHHRRR.RRRRRP, where S = screen, W = width, H = height, R = refresh, P = interlace
     int screen = atol(res.Mid(0,1).c_str());
     int width = atol(res.Mid(1,5).c_str());
     int height = atol(res.Mid(6,5).c_str());
-    float refresh = (float)atof(res.Mid(11).c_str());
+    float refresh = (float)atof(res.Mid(11,9).c_str());
+    // look for 'i' and treat everything else as progressive,
+    // and use 100/200 to get a nice square_error.
+    int interlaced = (res.Right(1) == "i") ? 100:200;
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
     float bestScore = FLT_MAX;
@@ -1523,7 +1526,10 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
       if (info.iScreen != screen)
         continue;
-      float score = 10*(square_error((float)info.iWidth, (float)width) + square_error((float)info.iHeight, (float)height)) + square_error(info.fRefreshRate, refresh);
+      float score = 10 * (square_error((float)info.iWidth, (float)width) +
+        square_error((float)info.iHeight, (float)height) +
+        square_error(info.fRefreshRate, refresh) +
+        square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100:200), interlaced));
       if (score < bestScore)
       {
         bestScore = score;
@@ -1545,7 +1551,9 @@ void CGUISettings::SetResolution(RESOLUTION res)
   else if (res >= RES_CUSTOM && res < (RESOLUTION)g_settings.m_ResInfo.size())
   {
     const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
-    mode.Format("%1i%05i%05i%09.5f", info.iScreen, info.iWidth, info.iHeight, info.fRefreshRate);
+    mode.Format("%1i%05i%05i%09.5f%s", info.iScreen,
+      info.iWidth, info.iHeight, info.fRefreshRate,
+      (info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i":"p");
   }
   else
   {

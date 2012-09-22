@@ -40,13 +40,13 @@ struct RESOLUTION_WHR
 {
   int width;
   int height;
+  int interlaced;
   int ResInfo_Index;
 };
 
 struct REFRESHRATE
 {
   float RefreshRate;
-  bool  Interlaced;
   int   ResInfo_Index;
 };
 
@@ -98,7 +98,7 @@ public:
   void SetWindowResolution(int width, int height);
   int DesktopResolution(int screen);
   std::vector<RESOLUTION_WHR> ScreenResolutions(int screen);
-  std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height);
+  std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height, uint32_t dwFlags);
   REFRESHRATE DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates);
 
 protected:
