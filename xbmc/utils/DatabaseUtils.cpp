@@ -457,7 +457,9 @@ bool DatabaseUtils::GetSelectFields(const Fields &fields, MediaType mediaType, F
   Fields sortFields = fields;
 
   // add necessary fields to create the label
-  sortFields.insert(FieldTitle);
+  if (mediaType == MediaTypeSong || mediaType == MediaTypeVideo || mediaType == MediaTypeVideoCollection ||
+      mediaType == MediaTypeMusicVideo || mediaType == MediaTypeMovie || mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode)
+    sortFields.insert(FieldTitle);
   if (mediaType == MediaTypeEpisode)
   {
     sortFields.insert(FieldSeason);
