@@ -1,6 +1,7 @@
 add_subdirectory(libsquish)
 add_subdirectory(libapetag)
 add_subdirectory(libhts)
+add_subdirectory(cximage-6.0)
 
 # build our external projects
 include(ExternalProject)

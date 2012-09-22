@@ -1,0 +1,5 @@
+aux_source_directory(. cximage_srcs)
+include_directories(../jasper ../png)
+add_definitions(-DXBMC -D_DLL)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -fno-common")
+add_library(cximage OBJECT ${cximage_srcs})

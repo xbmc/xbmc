@@ -110,6 +110,7 @@ set(find_libs
 
 set(system_libs
 	stdc++
+	png
 )
 
 foreach(lib ${external_libs} ${find_libs})
