@@ -14,10 +14,10 @@ SUBDIRS := \
 	libgpg-error libgcrypt afpfs-ng \
 	libplist libshairport libcec tinyxml \
         samba python26 distribute distutilscross \
-	mysqlclient boost taglib \
+	mysqlclient boost taglib xbmc-pvr-addons \
 
 ifeq ($(DARWIN), ios)
-  EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
+  EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image xbmc-pvr-addons
 else
   EXCLUDED = Backrow
 endif
