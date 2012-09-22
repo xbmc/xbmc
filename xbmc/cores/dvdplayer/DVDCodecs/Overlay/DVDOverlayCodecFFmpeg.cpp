@@ -163,15 +163,8 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
   m_dllAvCodec.av_init_packet(&avpkt);
   avpkt.data = pPacket->pData;
   avpkt.size = pPacket->iSize;
-
-  // for PGS subtitles we have to satisfy the assumptions of ffmpeg
-  // introduced here:
-  // http://git.videolan.org/?p=ffmpeg.git;a=commit;h=9dd82724315d651891f2a1ed733c4de06e9cb07a
-  // these are - valid packet pts
-  if (m_pCodecContext->codec_id == CODEC_ID_HDMV_PGS_SUBTITLE)
-  {
-    avpkt.pts = pPacket->pts;
-  }
+  avpkt.pts = pPacket->pts == DVD_NOPTS_VALUE ? AV_NOPTS_VALUE : (int64_t)pPacket->pts;
+  avpkt.dts = pPacket->dts == DVD_NOPTS_VALUE ? AV_NOPTS_VALUE : (int64_t)pPacket->dts;
 
   len = m_dllAvCodec.avcodec_decode_subtitle2(m_pCodecContext, &m_Subtitle, &gotsub, &avpkt);
 
@@ -187,9 +180,8 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
   if (!gotsub)
     return OC_BUFFER;
 
-  m_StartTime   = DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
-  m_StopTime    = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);  
-  
+  double pts_offset = 0.0;
+ 
   if (m_pCodecContext->codec_id == CODEC_ID_HDMV_PGS_SUBTITLE && m_Subtitle.format == 0) 
   {
     // for pgs subtitles the packet pts of the end_segments are wrong
@@ -197,14 +189,16 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
     // see http://git.videolan.org/?p=ffmpeg.git;a=commit;h=2939e258f9d1fff89b3b68536beb931b54611585
     if (m_Subtitle.pts != DVD_NOPTS_VALUE)
     {
-      double pts_offset = m_Subtitle.pts - pPacket->pts;
-      m_StartTime = m_Subtitle.start_display_time + DVD_TIME_TO_MSEC(pts_offset);
-      m_StopTime  = m_Subtitle.end_display_time + DVD_TIME_TO_MSEC(pts_offset);
-      m_StartTime = DVD_MSEC_TO_TIME(m_StartTime);
-      m_StopTime  = DVD_MSEC_TO_TIME(m_StopTime);
+      pts_offset = m_Subtitle.pts - pPacket->pts ;
     }
   }
 
+  m_StartTime   = DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
+  m_StopTime    = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
+
+  //adapt start and stop time to our packet pts
+  bool dummy = false;
+  CDVDOverlayCodec::GetAbsoluteTimes(m_StartTime, m_StopTime, pPacket, dummy, pts_offset);
   m_SubtitleIndex = 0;
 
   return OC_OVERLAY;

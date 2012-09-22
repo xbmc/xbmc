@@ -1,6 +1,7 @@
 INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
-SRCS  = DVDOverlayCodecCC.cpp
+SRCS  = DVDOverlayCodec.cpp
+SRCS += DVDOverlayCodecCC.cpp
 SRCS += DVDOverlayCodecFFmpeg.cpp
 SRCS += DVDOverlayCodecSSA.cpp
 SRCS += DVDOverlayCodecText.cpp

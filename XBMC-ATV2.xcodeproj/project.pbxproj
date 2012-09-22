@@ -141,6 +141,7 @@
 		DF93D8331444B88B007C6459 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D82F1444B88B007C6459 /* HDHomeRunDirectory.cpp */; };
 		DF93D8341444B88B007C6459 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D8311444B88B007C6459 /* HDHomeRunFile.cpp */; };
 		DF98D9A81434F4B400A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D9A61434F4B400A6EBE1 /* SkinVariable.cpp */; };
+		DFA0F9551618E1CD00611CBB /* DVDOverlayCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA0F9541618E1CD00611CBB /* DVDOverlayCodec.cpp */; };
 		DFA6BE8713FED2A10048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */; };
 		DFA6BE8A13FED2B40048CC11 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */; };
 		DFAB04C113F8385F00B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04BF13F8385F00B70BFB /* InertialScrollingHandler.cpp */; };
@@ -1332,6 +1333,7 @@
 		DF93D8321444B88B007C6459 /* HDHomeRunFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDHomeRunFile.h; sourceTree = "<group>"; };
 		DF98D9A61434F4B400A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
 		DF98D9A71434F4B400A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
+		DFA0F9541618E1CD00611CBB /* DVDOverlayCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodec.cpp; sourceTree = "<group>"; };
 		DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
 		DFA6BE8613FED2A10048CC11 /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
 		DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
@@ -4303,6 +4305,7 @@
 			children = (
 				F56C727C131EC151000AD0F6 /* libspucc */,
 				F56C7271131EC151000AD0F6 /* DVDOverlay.h */,
+				DFA0F9541618E1CD00611CBB /* DVDOverlayCodec.cpp */,
 				F56C7272131EC151000AD0F6 /* DVDOverlayCodec.h */,
 				F56C7273131EC151000AD0F6 /* DVDOverlayCodecCC.cpp */,
 				F56C7274131EC151000AD0F6 /* DVDOverlayCodecCC.h */,
@@ -7580,6 +7583,7 @@
 				DFAB4C1015FCCB4300E1BAF6 /* TagLoaderTagLib.cpp in Sources */,
 				DFC0F8F51613A1960066D598 /* XLCDproc.cpp in Sources */,
 				DFC0F91C1613A3A00066D598 /* LCDFactory.cpp in Sources */,
+				DFA0F9551618E1CD00611CBB /* DVDOverlayCodec.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

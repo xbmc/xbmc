@@ -84,6 +84,15 @@ public:
    * return codecs name
    */
   virtual const char* GetName() { return m_codecName.c_str(); }
+  
+protected:
+  /*
+   * Adapts startTime, stopTIme from the subtitle stream (which is relative to stream pts)
+   * so that it returns the absolute start and stop timestamps.
+   * replace - will be set to true if the overlay should replace the former overlay
+   * offset - optional - offset will be added to start and stoptime
+   */
+  static void GetAbsoluteTimes(double &starttime, double &stoptime, DemuxPacket *pkt, bool &replace, double offset = 0.0);
 
 private:
   std::string m_codecName;
