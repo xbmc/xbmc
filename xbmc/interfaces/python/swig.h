@@ -87,9 +87,9 @@ namespace PythonBindings
     return ((PyHolder*)pythonType)->pSelf;
   }
 
-  bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix);
+  bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix, bool tryReverse = true);
 
-  void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* swigType, 
+  void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* expectedType, 
                               const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (WrongTypeException);
 
   /**
@@ -98,10 +98,10 @@ namespace PythonBindings
    *
    * Since the calls to this are generated there's no NULL pointer checks
    */
-  inline void* retrieveApiInstance(const PyObject* pythonType, const char* swigType, const char* methodNamespacePrefix,
+  inline void* retrieveApiInstance(const PyObject* pythonType, const char* expectedType, const char* methodNamespacePrefix,
                                    const char* methodNameForErrorString) throw (WrongTypeException)
   {
-    return doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, swigType, methodNamespacePrefix, methodNameForErrorString);
+    return doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
 
   inline void prepareForReturn(XBMCAddon::AddonClass* c) { if(c) c->Acquire(); }

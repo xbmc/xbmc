@@ -78,32 +78,36 @@ namespace PythonBindings
   }
 
   // need to compare the typestring
-  bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix)
+  bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix, bool tryReverse)
   {
     if (strcmp(expectedType,passedType) == 0)
       return true;
 
     // well now things are a bit more complicated. We need to see if the passed type
     // is a subset of the overall type
-    std::string pt(passedType);
-    bool isPointer = (pt[0] == 'p' && pt[1] == '.');
-    std::string baseType(pt,(isPointer ? 2 : 0));
-    std::string ns(methodNamespacePrefix);
+    std::string et(expectedType);
+    bool isPointer = (et[0] == 'p' && et[1] == '.');
+    std::string baseType(et,(isPointer ? 2 : 0)); // this may contain a namespace
 
+    std::string ns(methodNamespacePrefix);
     // cut off trailing '::'
     if (ns.size() > 2 && ns[ns.size() - 1] == ':' && ns[ns.size() - 2] == ':')
       ns = ns.substr(0,ns.size()-2);
-    
+
     bool done = false;
     while(! done)
     {
       done = true;
+
+      // now we need to see if the expected type can be munged
+      //  into the passed type by tacking on the namespace of
+      //  of the method.
       std::string check(isPointer ? "p." : "");
       check += ns;
       check += "::";
       check += baseType;
 
-      if (strcmp(expectedType,check.c_str()) == 0)
+      if (strcmp(check.c_str(),passedType) == 0)
         return true;
 
       // see if the namespace is nested.
@@ -115,6 +119,11 @@ namespace PythonBindings
         ns = ns.substr(posOfScopeOp + 2);
       }
     }
+
+    // so far we applied the namespace to the expected type. Now lets try
+    //  the reverse if we haven't already.
+    if (tryReverse)
+      return isParameterRightType(expectedType, passedType, methodNamespacePrefix, false);
 
     return false;
   }
@@ -175,20 +184,20 @@ namespace PythonBindings
     SetMessage("%s",msg.c_str());
   }
 
-  void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* swigType, 
+  void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* expectedType, 
                               const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (WrongTypeException)
   {
     if (pythonType == NULL || pythonType->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
-      throw WrongTypeException("Non api type passed in place of the expected type \"%s.\"",swigType);
-    if (!isParameterRightType(typeInfo->swigType,swigType,methodNamespacePrefix))
+      throw WrongTypeException("Non api type passed in place of the expected type \"%s.\"",expectedType);
+    if (!isParameterRightType(typeInfo->swigType,expectedType,methodNamespacePrefix))
     {
       // maybe it's a child class
       if (typeInfo->parentType)
-        return doretrieveApiInstance(pythonType, typeInfo->parentType,swigType, 
+        return doretrieveApiInstance(pythonType, typeInfo->parentType,expectedType, 
                                      methodNamespacePrefix, methodNameForErrorString);
       else
         throw WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
-                                 methodNameForErrorString,swigType,typeInfo->swigType);
+                                 methodNameForErrorString,expectedType,typeInfo->swigType);
     }
     return ((PyHolder*)pythonType)->pSelf;
   }
