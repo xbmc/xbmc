@@ -203,10 +203,14 @@ extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
   if (strncmp(lpFileName, "\\Device\\Cdrom0", 14) == 0)
   {
     // replace "\\Device\\Cdrom0" with "D:"
-    strcpy(str, "D:");
-    strcat(str, lpFileName + 14);
+    strncpy(str, "D:", sizeof(str) - 1);
+    strncat(str, lpFileName + 14, sizeof(str) - sizeof("D:") - 1);
   }
-  else strcpy(str, lpFileName);
+  else
+  {
+    strncpy(str, lpFileName, sizeof(str) - 1);
+    str[sizeof(str) - 1] = '\0';
+  }
 
 #ifndef _LINUX
   // convert '/' to '\\'

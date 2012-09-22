@@ -134,7 +134,8 @@ void CRemoteControl::Initialize()
   
   m_lastInitAttempt = now;
   addr.sun_family = AF_UNIX;
-  strcpy(addr.sun_path, m_deviceName.c_str());
+  strncpy(addr.sun_path, m_deviceName.c_str(), sizeof(addr.sun_path) - 1);
+  addr.sun_path[sizeof(addr.sun_path) - 1] = '\0';
 
   CLog::Log(LOGINFO, "LIRC %s: using: %s", __FUNCTION__, addr.sun_path);
 

@@ -642,7 +642,8 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
     if ( m_searchpointer )
     {
-      strcpy(wfdFile->cFileName, m_searchpointer->name );
+      strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1);
+      wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = '\0';
 
       if ( m_searchpointer->type == 2 )
         wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
@@ -668,8 +669,8 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
   if ( m_searchpointer )
   {
-    strcpy(wfdFile->cFileName, m_searchpointer->name );
-
+    strncpy(wfdFile->cFileName, m_searchpointer->name, sizeof(wfdFile->cFileName) - 1);
+    wfdFile->cFileName[sizeof(wfdFile->cFileName) - 1] = '\0';
     if ( m_searchpointer->type == 2 )
       wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
 
@@ -728,7 +729,8 @@ HANDLE iso9660::OpenFile(const char *filename)
   while ( strpbrk( pointer, "\\/" ) )
     pointer = strpbrk( pointer, "\\/" ) + 1;
 
-  strcpy(work, filename );
+  strncpy(work, filename, sizeof(work) - 1);
+  work[sizeof(work) - 1] = '\0';
   pointer2 = work;
 
   while ( strpbrk(pointer2 + 1, "\\" ) )

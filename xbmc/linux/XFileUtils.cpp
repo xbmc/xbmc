@@ -164,7 +164,8 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   memset(lpFindData,0,sizeof(WIN32_FIND_DATA));
 
   lpFindData->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
-  strcpy(lpFindData->cFileName, strFileName.c_str());
+  strncpy(lpFindData->cFileName, strFileName.c_str(), sizeof(lpFindData->cFileName) - 1);
+  lpFindData->cFileName[sizeof(lpFindData->cFileName) - 1] = '\0';
 
   if (bIsDir)
     lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;

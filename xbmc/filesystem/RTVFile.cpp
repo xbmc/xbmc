@@ -66,8 +66,10 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
   // Set up global variables.  Don't set m_filePos to 0 because we use it to SEEK!
   m_fileSize = 0;
   m_rtvd = NULL;
-  strcpy(m_hostName, strHostName);
-  strcpy(m_fileName, strFileName);
+  strncpy(m_hostName, strHostName, sizeof(m_hostName) - 1);
+  m_hostName[sizeof(m_hostName) - 1] = '\0';
+  strncpy(m_fileName, strFileName, sizeof(m_fileName) - 1);
+  m_fileName[sizeof(m_fileName) - 1] = '\0';
   m_iport = iport;
 
   // Allow for ReplayTVs on ports other than 80

@@ -595,7 +595,8 @@ void CPictureInfoTag::SetInfo(int info, const CStdString& value)
     }
   case SLIDE_EXIF_DATE_TIME:
     {
-      strcpy(m_exifInfo.DateTime, value.c_str());
+      strncpy(m_exifInfo.DateTime, value.c_str(), sizeof(m_exifInfo.DateTime) - 1);
+      m_exifInfo.DateTime[sizeof(m_exifInfo.DateTime) - 1] = '\0';
       break;
     }
   default:

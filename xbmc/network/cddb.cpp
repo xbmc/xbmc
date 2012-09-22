@@ -379,17 +379,20 @@ void Xcddb::addTitle(const char *buffer)
   if (buffer[7] == '=')
   { //Einstellig
     trk_nr = buffer[6] - 47;
-    strcpy(value, buffer + 8);
+    strncpy(value, buffer + 8, sizeof(value) - 1);
+    value[sizeof(value) - 1] = '\0';
   }
   else if (buffer[8] == '=')
   { //Zweistellig
     trk_nr = ((buffer[6] - 48) * 10) + buffer[7] - 47;
-    strcpy(value, buffer + 9);
+    strncpy(value, buffer + 9, sizeof(value) - 1);
+    value[sizeof(value) - 1] = '\0';
   }
   else if (buffer[9] == '=')
   { //Dreistellig
     trk_nr = ((buffer[6] - 48) * 100) + ((buffer[7] - 48) * 10) + buffer[8] - 47;
-    strcpy(value, buffer + 10);
+    strncpy(value, buffer + 10, sizeof(value) - 1);
+    value[sizeof(value) - 1] = '\0';
   }
   else
   {
@@ -595,17 +598,20 @@ void Xcddb::addExtended(const char *buffer)
   if (buffer[5] == '=')
   { //Einstellig
     trk_nr = buffer[4] - 47;
-    strcpy(value, buffer + 6);
+    strncpy(value, buffer + 6, sizeof(value) - 1);
+    value[sizeof(value) - 1] = '\0';
   }
   else if (buffer[6] == '=')
   { //Zweistellig
     trk_nr = ((buffer[4] - 48) * 10) + buffer[5] - 47;
-    strcpy(value, buffer + 7);
+    strncpy(value, buffer + 7, sizeof(value) - 1);
+    value[sizeof(value) - 1] = '\0';
   }
   else if (buffer[7] == '=')
   { //Dreistellig
     trk_nr = ((buffer[4] - 48) * 100) + ((buffer[5] - 48) * 10) + buffer[6] - 47;
-    strcpy(value, buffer + 8);
+    strncpy(value, buffer + 8, sizeof(value) - 1);
+    value[sizeof(value) - 1] = '\0';
   }
   else
   {

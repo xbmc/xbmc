@@ -81,10 +81,11 @@ CStdString& CNetworkInterfaceLinux::GetName(void)
 bool CNetworkInterfaceLinux::IsWireless()
 {
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-  return false;
+   return false;
 #else
-  struct iwreq wrq;
-   strcpy(wrq.ifr_name, m_interfaceName.c_str());
+   struct iwreq wrq;
+   strncpy(wrq.ifr_name, m_interfaceName.c_str(), sizeof(wrq.ifr_name) - 1);
+   wrq.ifr_name[sizeof(wrq.ifr_name) - 1] = '\0';
    if (ioctl(m_network->GetSocket(), SIOCGIWNAME, &wrq) < 0)
       return false;
 #endif
@@ -95,7 +96,9 @@ bool CNetworkInterfaceLinux::IsWireless()
 bool CNetworkInterfaceLinux::IsEnabled()
 {
    struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
+   strncpy(ifr.ifr_name, m_interfaceName.c_str(), sizeof(ifr.ifr_name) - 1);
+   ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
+
    if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
       return false;
 
@@ -107,7 +110,8 @@ bool CNetworkInterfaceLinux::IsConnected()
    struct ifreq ifr;
    int zero = 0;
    memset(&ifr,0,sizeof(struct ifreq));
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
+   strncpy(ifr.ifr_name, m_interfaceName.c_str(), sizeof(ifr.ifr_name) - 1);
+   ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
    if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
       return false;
 
@@ -136,7 +140,8 @@ CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
    CStdString result = "";
 
    struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
+   strncpy(ifr.ifr_name, m_interfaceName.c_str(), sizeof(ifr.ifr_name) - 1);
+   ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
    {
@@ -151,7 +156,8 @@ CStdString CNetworkInterfaceLinux::GetCurrentNetmask(void)
    CStdString result = "";
 
    struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
+   strncpy(ifr.ifr_name, m_interfaceName.c_str(), sizeof(ifr.ifr_name) - 1);
+   ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
    {
@@ -170,7 +176,9 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
    memset(&essid, 0, sizeof(essid));
 
    struct iwreq wrq;
-   strcpy(wrq.ifr_name,  m_interfaceName.c_str());
+   strncpy(wrq.ifr_name,  m_interfaceName.c_str(), sizeof(wrq.ifr_name) - 1);
+   wrq.ifr_name[sizeof(wrq.ifr_name) - 1] = '\0';
+ 
    wrq.u.essid.pointer = (caddr_t) essid;
    wrq.u.essid.length = IW_ESSID_MAX_SIZE;
    wrq.u.essid.flags = 0;
@@ -384,7 +392,8 @@ void CNetworkLinux::GetMacAddress(CStdString interfaceName, char rawMac[6])
 #else
 
    struct ifreq ifr;
-   strcpy(ifr.ifr_name, interfaceName.c_str());
+   strncpy(ifr.ifr_name, interfaceName.c_str(), sizeof(ifr.ifr_name) - 1);
+   ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
    if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
    {
       memcpy(rawMac, ifr.ifr_hwaddr.sa_data, 6);
@@ -538,7 +547,8 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    iwr.u.data.pointer = (caddr_t) rangebuffer;
    iwr.u.data.length = sizeof(rangebuffer);
    iwr.u.data.flags = 0;
-   strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
+   strncpy(iwr.ifr_name, GetName().c_str(), sizeof(iwr.ifr_name) - 1);
+   iwr.ifr_name[sizeof(iwr.ifr_name) - 1] = '\0';
    if (ioctl(m_network->GetSocket(), SIOCGIWRANGE, &iwr) < 0)
    {
       CLog::Log(LOGWARNING, "%-8.16s  Driver has no Wireless Extension version information.",
