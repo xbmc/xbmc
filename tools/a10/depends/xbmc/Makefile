@@ -11,10 +11,13 @@ CONFIGURE=./configure \
 	--disable-gl \
 	--disable-vdpau \
 	--disable-vaapi \
+	--disable-openmax \
 	--enable-neon \
 	--enable-gles \
 
 SRC=../../../../
 
-all :
+all:
+	(cd $(SRC); ./bootstrap)
 	(cd $(SRC); $(CONFIGURE))
+	(cd $(SRC); make)

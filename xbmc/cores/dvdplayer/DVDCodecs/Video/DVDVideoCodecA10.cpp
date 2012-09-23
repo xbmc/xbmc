@@ -164,7 +164,7 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 #ifndef A10DEBUG
   //*open scaler once
   if (!scaler_open) {
-    CLog::Log(LOGERROR, "A10: scale_open failed.\n");
+    CLog::Log(LOGERROR, "A10: scaler_open failed.\n");
     return false;
   }
 #endif

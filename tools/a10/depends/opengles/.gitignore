@@ -1,0 +1,6 @@
+/lib
+/include
+.lib
+.include
+.installed
+

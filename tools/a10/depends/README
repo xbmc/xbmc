@@ -1,0 +1,4 @@
+Please look at depends.mk.
+After adjusting run make && make -C xbmc.
+If configure is done you can compile from the source root directory.
+

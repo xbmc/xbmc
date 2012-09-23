@@ -3,7 +3,8 @@
 /libvecore
 /vbv
 /fbm
-.downloaded
+.installed
+.extracted
 cedardev_api.h
 drv_display_sun4i.h
 
