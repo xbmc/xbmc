@@ -57,7 +57,10 @@ namespace XBMCAddon
 
       // we're shutting down so unregister me.
       if (languageHook)
+      {
+        DelayedCallGuard dc;
         languageHook->unregisterPlayerCallback(this);
+      }
     }
 
     void Player::playStream(const String& item, const xbmcgui::ListItem* plistitem, bool windowed)
