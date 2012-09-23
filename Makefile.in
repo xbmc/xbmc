@@ -401,18 +401,13 @@ libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH
 
 externals: codecs libs visualizations screensavers libaddon pvraddons
 
-ADDON_BINDINGS = xbmc/interfaces/legacy/legacy.a
-ADDON_BINDINGS += xbmc/interfaces/python/python_binding.a
-
 xcode_depends: \
 	codecs libs visualizations screensavers eventclients skins libaddon \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
 	lib/libXDAAP/libxdaap.a \
-	lib/SlingboxLib/SlingboxLib.a \
-	$(ADDON_BINDINGS)
-	libtool -static -o xbmc/interfaces/addonbindings.a $(ADDON_BINDINGS)
+	lib/SlingboxLib/SlingboxLib.a
 
 OBJSXBMC =$(DIRECTORY_ARCHIVES)
 OBJSXBMC+=lib/libapetag/.libs/libapetag.a
