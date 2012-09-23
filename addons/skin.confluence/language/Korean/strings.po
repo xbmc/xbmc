@@ -3,43 +3,26 @@
 # Addon id: skin.confluence
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
+# Translators:
+#   <airplanez@gmail.com>, 2012.
+#   <piodio@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-07-18 07:22+0000\n"
+"Last-Translator: airplanez <airplanez@gmail.com>\n"
+"Language-Team: Korean (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ko\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr "Confluence 스킨 Jezz_X 만듬 (기본 스킨)"
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr "Confluence 는 XBMC 9.11 이상의 기본 스킨입니다. 많은 인기 스킨의 컨셉과 좋은 아이디어를 모아서 하나의 스킨으로 만들었으며 초보자도 사용하기 쉽습니다."
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr "Confluence는 XBMC의 기본스킨으로 제거시 문제가 야기될수 있습니다."
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr "변경"
-
-msgctxt "#31001"
-msgid "Love"
-msgstr "좋아함"
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr "싫어함"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -57,25 +40,13 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "보기 옵션"
 
-msgctxt "#31007"
-msgid "Plugins"
-msgstr "플러그인"
-
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "전체화면"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr ""
-
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr "최근 추가됨"
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr "비디오 - 파일"
+msgstr "총 재생시간"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -109,10 +80,6 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr "팬아트"
 
-msgctxt "#31030"
-msgid "Full list"
-msgstr "전체 목록"
-
 msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr "사진 미리보기"
@@ -135,23 +102,15 @@ msgstr "재생중"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "일시중지됨"
+msgstr "일시정지"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "빨리 감기"
+msgstr "빨리감기"
 
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "되감기"
-
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr "오디오 속성"
-
-msgctxt "#31047"
-msgid "Current Preset"
-msgstr "현재 사전설정"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -159,7 +118,7 @@ msgstr "시각화 사전설정"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "종료 시간"
+msgstr "종료 시각"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
@@ -207,7 +166,7 @@ msgstr "배경"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "사진 슬라이드쇼에 \"일시중지됨\" 보이기"
+msgstr "사진 슬라이드쇼에 \"일시정지됨\" 보기"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
@@ -226,12 +185,12 @@ msgid "Hide Main Menu Buttons"
 msgstr "메인 메뉴 버튼 숨기기"
 
 msgctxt "#31109"
-msgid "Media backgrounds"
-msgstr "미디어 배경"
+msgid "Enable Custom Background"
+msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
-msgstr "미디어 형식의 배경 수정"
+msgid "Background path:"
+msgstr ""
 
 msgctxt "#31111"
 msgid "Hide"
@@ -241,25 +200,13 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "옵션"
 
-msgctxt "#31113"
-msgid "Single Image"
-msgstr "단일 이미지"
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr "다중 이미지"
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr "사용자 지정"
-
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "최근 추가한 앨범 보기"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "최근 추가된 비디오 보이기"
+msgstr "최근 추가한 비디오 보기"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
@@ -268,10 +215,6 @@ msgstr "홈 페이지 프로그램 하위메뉴"
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "배경 팬아트 숨기기"
-
-msgctxt "#31120"
-msgid "BUTTON LABEL"
-msgstr "버튼 라벨"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -283,11 +226,11 @@ msgstr "TV 쇼에 \"배너\" 대신 \"포스터\" 사용"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "배경에 \"지금 재생중\" 비디오 보이기"
+msgstr "배경에 \"지금 재생중\" 비디오 보기"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
-msgstr "배경에 \"지금 재생중\" 시각화 보이기"
+msgstr "배경에 \"지금 재생중\" 시각화 보기"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -300,6 +243,10 @@ msgstr "TvTunes"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "가사"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -333,21 +280,9 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "바로가기"
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr "카테고리"
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr "배역 보이기"
-
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "노래 선택"
-
-msgctxt "#31204"
-msgid "Section Links"
-msgstr "섹션 링크"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -355,15 +290,15 @@ msgstr "가사 소스"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr ""
+msgstr "찾음"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr ""
+msgstr "더 찾아보기"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "방송 예정 에피소드"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -373,25 +308,9 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr "마지막 업데이트"
 
-msgctxt "#31302"
-msgid "Menu"
-msgstr "메뉴"
-
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "날씨 정보 제공"
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr "사진"
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr "디스크 미디어 감지되지 않음"
-
-msgctxt "#31306"
-msgid "Eject"
-msgstr "꺼내기"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -411,7 +330,7 @@ msgstr "트랙 번호"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "팬아트 이미지[CR][CR]사용할수 없음[CR][CR] 설정하려면 버튼을 누르세요"
+msgstr "팬아트 이미지[CR][CR]사용할 수 없음[CR][CR] 설정하려면 버튼을 누르세요"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -425,17 +344,9 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "컨텐츠 검색 옵션"
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr "기본"
-
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "팬아트 경로 설정"
-
-msgctxt "#31318"
-msgid "Small Fanart"
-msgstr "작은 팬아트"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -451,15 +362,7 @@ msgstr "노래방 노래 선택기"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "방영됨"
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr "최근 영화"
-
-msgctxt "#31324"
-msgid "Latest Episodes"
-msgstr "최근 에피소드"
+msgstr "방영"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -475,7 +378,7 @@ msgstr "해상도"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "최근 추가됨"
+msgstr "최근 추가"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
@@ -499,7 +402,7 @@ msgstr "정지"
 
 msgctxt "#31353"
 msgid "Fast Forward"
-msgstr "빨리 감기"
+msgstr "빨리감기"
 
 msgctxt "#31354"
 msgid "Rewind"
@@ -507,7 +410,7 @@ msgstr "되감기"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "영화 메뉴"
+msgstr "자막 추가기능"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -555,9 +458,13 @@ msgstr "[B]스킨 설정[/B][CR][CR]Confluence 스킨 설정 · 홈 메뉴 항�
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]추가기능 설정[/B][CR][CR]설치된 추가기능 관리 · xbmc.org 에서 추가기능 찾기 및 설치[CR]추가기능 설정 변경"
+msgstr "[B]애드온 설정[/B][CR][CR]설치한 추가기능 관리 · xbmc.org에서 추가기능 찾기 및 설치[CR]추가기능 설정 변경"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
@@ -565,9 +472,45 @@ msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "로그인할 XBMC 사용자 프로파일을[CR]선택하고 계속하세요"
 
-msgctxt "#31900"
-msgid "Weather Maps"
-msgstr "기상도"
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -592,10 +535,6 @@ msgstr "예보"
 msgctxt "#31906"
 msgid "Maps & Video"
 msgstr "지도와 비디오"
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
-msgstr "비디오예보 [COLOR=grey2](전체화면 재생)[/COLOR]"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"

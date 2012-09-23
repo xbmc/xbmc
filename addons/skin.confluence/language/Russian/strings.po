@@ -4,44 +4,25 @@
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
 # Translators:
+# Pavel Maryanov <acid@jack.kiev.ua>, 2012.
 # Roman Miroshnychenko <romanvm@yandex.ru>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-05-09 15:43+0000\n"
+"PO-Revision-Date: 2012-07-07 17:34+0000\n"
 "Last-Translator: Roman Miroshnychenko <romanvm@yandex.ru>\n"
-"Language-Team: Russian\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr ""
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr "Измените"
-
-msgctxt "#31001"
-msgid "Love"
-msgstr "Нравится"
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr "Не нравится"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -59,10 +40,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Настройки просмотра"
 
-msgctxt "#31007"
-msgid "Plugins"
-msgstr "Дополнения"
-
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Полный экран"
@@ -71,17 +48,9 @@ msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Общая длительность"
 
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr "Последние"
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr "Видео - файлы"
-
 msgctxt "#31022"
 msgid "Music - Files"
-msgstr "Музыка - файлы"
+msgstr "Музыка: файлы"
 
 msgctxt "#31023"
 msgid "Playing"
@@ -111,17 +80,13 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr "Фанарт"
 
-msgctxt "#31030"
-msgid "Full list"
-msgstr "Полный список"
-
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "Миниатюры"
+msgstr "Эскизы фото"
 
 msgctxt "#31032"
 msgid "Image Wrap"
-msgstr "Карусель картинок"
+msgstr "Карусель изображений"
 
 msgctxt "#31033"
 msgid "Info"
@@ -146,14 +111,6 @@ msgstr "ПЕРЕМОТКА ВПЕРЕД"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПЕРЕМОТКА НАЗАД"
-
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr "Свойства аудио"
-
-msgctxt "#31047"
-msgid "Current Preset"
-msgstr "Текущие настройки"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -193,7 +150,7 @@ msgstr "Текущий плейлист"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Составной файл; выберите часть для проигрывания."
+msgstr "Это составной файл. Выберите часть для проигрывания."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -209,7 +166,7 @@ msgstr "Фон"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Показывать \"Пауза\" в режиме слайдшоу"
+msgstr "Показывать \"Пауза\" в режиме слайд-шоу"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
@@ -228,12 +185,12 @@ msgid "Hide Main Menu Buttons"
 msgstr "Скрыть кнопки главного меню"
 
 msgctxt "#31109"
-msgid "Media backgrounds"
-msgstr "Фон разделов"
+msgid "Enable Custom Background"
+msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
-msgstr "Выбрать фон раздела"
+msgid "Background path:"
+msgstr ""
 
 msgctxt "#31111"
 msgid "Hide"
@@ -243,21 +200,9 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Параметры"
 
-msgctxt "#31113"
-msgid "Single Image"
-msgstr "Одна картинка"
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr "Набор картинок"
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr "Выбор"
-
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Показывать недавно добавленные альбомы"
+msgstr "Показывать последние добавленные альбомы"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -270,10 +215,6 @@ msgstr "Подменю программ главного экрана"
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Скрыть фоновый фанарт"
-
-msgctxt "#31120"
-msgid "BUTTON LABEL"
-msgstr "НАЗВАНИЕ КНОПКИ"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -303,6 +244,10 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Тексты"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Дополнение текстов песен"
@@ -325,31 +270,19 @@ msgstr "Подменю фото главного экрана"
 
 msgctxt "#31140"
 msgid "Music OSD"
-msgstr "OSD музыки"
+msgstr "Экранное меню музыки"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "OSD видео"
+msgstr "Экранное меню видео"
 
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Ярлыки"
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr "Категории"
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr "Показывать роли"
-
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "Выберите песню"
-
-msgctxt "#31204"
-msgid "Section Links"
-msgstr "Ссылки разделов"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -361,7 +294,7 @@ msgstr "Найдено"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr "Найти еще"
+msgstr "Найти ещё"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
@@ -375,25 +308,9 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Последнее обновление"
 
-msgctxt "#31302"
-msgid "Menu"
-msgstr "Меню"
-
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Источник данных"
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr "Фотография"
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr "Не вставлен диск"
-
-msgctxt "#31306"
-msgid "Eject"
-msgstr "Извлечь"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -409,7 +326,7 @@ msgstr "Использовано памяти:"
 
 msgctxt "#31310"
 msgid "Track Number"
-msgstr "Номер трека"
+msgstr "Номер композиции"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
@@ -427,17 +344,9 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "Параметры сканирования содержимого"
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr "Базовый"
-
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "Выбрать расположение фанарта"
-
-msgctxt "#31318"
-msgid "Small Fanart"
-msgstr "Маленький фанарт"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -454,14 +363,6 @@ msgstr "Выбор песен для караоке"
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Премьера"
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr "Последние фильмы"
-
-msgctxt "#31324"
-msgid "Latest Episodes"
-msgstr "Последние серии"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -481,11 +382,11 @@ msgstr "Последние"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Установлен таймер![/B] [COLOR=grey2] - Автоматическое отключение через[/COLOR]"
+msgstr "[B]Установлен таймер![/B] [COLOR=grey2] Автоматическое отключение через[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Нажмите кнопку,[CR][CR]чтобы посмотреть кино-трейлер"
+msgstr "Нажмите кнопку,[CR][CR]чтобы посмотреть трейлер к фильму"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -525,11 +426,11 @@ msgstr "Стандартные без ПРОПИСНЫХ"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Стиль Arial"
+msgstr "На основе Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]НАСТРОЙКА ВНЕШНЕГО ВИДА[/B][CR][CR]Изменение обложки • Выбор языка и региона • Изменение настроек списка файлов[CR]Настройка хранителя экрана"
+msgstr "[B]НАСТРОЙКА ВНЕШНЕГО ВИДА[/B][CR][CR]Изменение обложки • Выбор языка и региона • Настройка списка файлов[CR]Настройка заставки"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -545,7 +446,7 @@ msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ФОТО[/B][CR][CR]Пара�
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ПОГОДЫ[/B][CR][CR]Выбор трех городов для получения информации о погоде"
+msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ПОГОДЫ[/B][CR][CR]Выбор трёх городов для получения информации о погоде"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
@@ -557,23 +458,63 @@ msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ОБЛОЖКИ[/B][CR][CR]Н�
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]НАСТРОЙКА ДОПОЛНЕНИЙ[/B][CR][CR]Управление установленными дополнениями • Установка дополнений с xbmc.org[CR]Изменение настроек дополнений"
+msgstr "[B]НАСТРОЙКА ДОПОЛНЕНИЙ[/B][CR][CR]Управление установленными дополнениями • Установка дополнений с xbmc.org[CR]Настройка дополнений"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СЛУЖБ[/B][CR][CR]Настройки управления XBMC по UPnP и HTTP • Настройки доступа к файлам[CR]Включение Zeroconf • Настройка AirPlay"
+msgstr ""
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Выберите профиль пользователя XBMC,[CR]чтобы войти в систему"
 
-msgctxt "#31900"
-msgid "Weather Maps"
-msgstr "Карты погоды"
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
-msgstr "Прогноз на 36 ч."
+msgstr "Прогноз на 36 часов"
 
 msgctxt "#31902"
 msgid "Hourly Forecast"
@@ -594,10 +535,6 @@ msgstr "Прогноз"
 msgctxt "#31906"
 msgid "Maps & Video"
 msgstr "Карты и видео"
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
-msgstr "Видео-прогноз [COLOR=grey2](полный экран)[/COLOR]"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"

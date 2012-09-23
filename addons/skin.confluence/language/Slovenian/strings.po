@@ -7,41 +7,21 @@
 # Tadej Novak <tadej@tano.si>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-05-10 12:23+0000\n"
+"PO-Revision-Date: 2012-05-29 15:09+0000\n"
 "Last-Translator: Tadej Novak <tadej@tano.si>\n"
-"Language-Team: Slovenian\n"
+"Language-Team: Slovenian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sl\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr ""
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr ""
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr "Prilagodite vaše"
-
-msgctxt "#31001"
-msgid "Love"
-msgstr "Ljubim"
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr "Sovražim"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -59,10 +39,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Možnosti pogleda"
 
-msgctxt "#31007"
-msgid "Plugins"
-msgstr "Vtičniki"
-
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Celozaslonski način"
@@ -70,14 +46,6 @@ msgstr "Celozaslonski način"
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Celotno trajanje"
-
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr "Nazadnje dodano"
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr "Video - Datoteke"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -111,10 +79,6 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr "Ozadja"
 
-msgctxt "#31030"
-msgid "Full list"
-msgstr "Celoten seznam"
-
 msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr "Sličice"
@@ -146,14 +110,6 @@ msgstr "PREVIJANJE NAPREJ"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "NAZAJ"
-
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr "Zvočne lastnosti"
-
-msgctxt "#31047"
-msgid "Current Preset"
-msgstr "Trenutna prednastavitev"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -228,12 +184,12 @@ msgid "Hide Main Menu Buttons"
 msgstr "Skrij gumbe v glavnem menuju"
 
 msgctxt "#31109"
-msgid "Media backgrounds"
-msgstr "Ozadja medijev"
+msgid "Enable Custom Background"
+msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
-msgstr "Uredi ozadje za tip medija"
+msgid "Background path:"
+msgstr ""
 
 msgctxt "#31111"
 msgid "Hide"
@@ -242,18 +198,6 @@ msgstr "Skrij"
 msgctxt "#31112"
 msgid "Options"
 msgstr "Možnosti"
-
-msgctxt "#31113"
-msgid "Single Image"
-msgstr "Ena slika"
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr "Več slik"
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr "Poljubno"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
@@ -270,10 +214,6 @@ msgstr "Podmenu programov na domačem oknu"
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Skrij ozadja"
-
-msgctxt "#31120"
-msgid "BUTTON LABEL"
-msgstr "OZNAKA GUMBA"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -302,6 +242,10 @@ msgstr "TvTunes"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Besedilo pesmi"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -335,21 +279,9 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Bližnjice"
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr "Kategorije"
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr "Prikaži igralce"
-
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "Izberite svojo pesem"
-
-msgctxt "#31204"
-msgid "Section Links"
-msgstr "Povezave"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -375,25 +307,9 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Zadnja posodobitev"
 
-msgctxt "#31302"
-msgid "Menu"
-msgstr "Menu"
-
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Ponudnik"
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr "Slika"
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr "Ni zaznanega diska"
-
-msgctxt "#31306"
-msgid "Eject"
-msgstr "Izvrzi"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -427,17 +343,9 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "Možnosti iskanja"
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr "Osnovno"
-
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "Nastavi pot ozadij"
-
-msgctxt "#31318"
-msgid "Small Fanart"
-msgstr "Majhno ozadje"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -454,14 +362,6 @@ msgstr "Izbirnik pesmi za karaoke"
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Predvajano"
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr "Najnovejši filmi"
-
-msgctxt "#31324"
-msgid "Latest Episodes"
-msgstr "Najnovejše epizode"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -560,16 +460,56 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte nameščene dodatke • Brskajte in namestite nove dodatke iz xbmc.org[CR]Nastavite dodatke"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]PRILAGODITE NASTAVITVE STORITEV[/B][CR][CR]Nastavite upravljanje XBMC preko UPnP in HTTP · Nastavite deljenje datotek[CR]Vključite Zeroconf · Prilagodite AirPlay"
+msgstr ""
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Izberite vaš XBMC uporabniški profil[CR]za prijavo in nadaljujte"
 
-msgctxt "#31900"
-msgid "Weather Maps"
-msgstr "Vremenska slika"
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -594,10 +534,6 @@ msgstr "Napoved"
 msgctxt "#31906"
 msgid "Maps & Video"
 msgstr "Mape & Video"
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
-msgstr "Video napoved [COLOR=grey2](celozaslonsko predvajanje)[/COLOR]"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"

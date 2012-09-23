@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language locale="et">
+  <charsets>
+    <gui unicodefont="true">CP1252</gui>
+    <subtitle>CP1252</subtitle>
+  </charsets>
+  <dvd>
+    <menu>gl</menu>
+    <audio>gl</audio>
+    <subtitle>gl</subtitle>
+  </dvd>
+  <regions>
+    <region name="Santiago, Galicia" locale="GL">
+      <dateshort>D/M/YYYY</dateshort>
+      <datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+    <region name="La Coruna, Galicia" locale="GL">
+      <dateshort>D/M/YYYY</dateshort>
+      <datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions> 
+</language>
