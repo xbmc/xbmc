@@ -222,7 +222,7 @@
 				<font>font13</font>
 				<visible>System.HasLocks</visible>
 			</control>
-			<control type="group" id="10">
+			<control type="group" id="11">
 				<width>340</width>
 				<height>70</height>
 				<visible>System.HasAlarm(shutdowntimer)</visible>
@@ -246,7 +246,7 @@
 					<label>$LOCALIZE[31329] [B]$INFO[System.Alarmpos][/B]</label>
 				</control>
 			</control>
-			<control type="button" id="11">
+			<control type="button" id="12">
 				<description>Inhibit idle shutdown</description>
 				<width>340</width>
 				<height>40</height>
@@ -262,7 +262,7 @@
 				<label>13017</label>
 				<visible>System.HasShutdown +!System.IsInhibit</visible>
 			</control>
-			<control type="button" id="12">
+			<control type="button" id="13">
 				<description>Allow idle shutdown</description>
 				<width>340</width>
 				<height>40</height>
@@ -278,7 +278,7 @@
 				<label>13018</label>
 				<visible>System.HasShutdown + System.IsInhibit</visible>
 			</control>
-			<control type="image" id="13">
+			<control type="image" id="14">
 				<description>background bottom image</description>
 				<posx>0</posx>
 				<width>340</width>
