@@ -189,6 +189,16 @@ public:
   static CStdString GetFrameworksPath(bool forPython = false);
 
   static bool CanBindPrivileged();
+
+  /*!
+   * \brief Thread-safe random number generation
+   */
+  static int GetRandomNumber();
+
+#if !defined(TARGET_WINDOWS)
+private:
+  static unsigned int s_randomSeed;
+#endif
 };
 
 

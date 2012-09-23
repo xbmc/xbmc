@@ -32,10 +32,11 @@
 #ifdef _LINUX
 #include <sys/types.h>
 #include <dirent.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #endif
+
+#include <stdlib.h>
 
 #include "Application.h"
 #include "Util.h"
@@ -110,6 +111,10 @@ static uint16_t oldrampBlue[256];
 static uint16_t flashrampRed[256];
 static uint16_t flashrampGreen[256];
 static uint16_t flashrampBlue[256];
+#endif
+
+#if !defined(TARGET_WINDOWS)
+unsigned int CUtil::s_randomSeed = time(NULL);
 #endif
 
 CUtil::CUtil(void)
@@ -2605,5 +2610,18 @@ bool CUtil::CanBindPrivileged()
   return true;
 
 #endif //_LINUX
+}
+
+int CUtil::GetRandomNumber()
+{
+#ifdef TARGET_WINDOWS
+  unsigned int number;
+  if (rand_s(&number) == 0)
+    return (int)number;
+#else
+  return rand_r(&s_randomSeed);
+#endif
+
+  return rand();
 }
 
