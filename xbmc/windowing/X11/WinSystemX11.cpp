@@ -795,8 +795,11 @@ void CWinSystemX11::RefreshWindowState()
 
   m_nWidth    = attr.width;
   m_nHeight   = attr.height;
-  m_nLeft     = attr.x;
-  m_nTop      = attr.y;
+  if(!m_bFullScreen)
+  {
+    m_nLeft     = attr.x;
+    m_nTop      = attr.y;
+  }
 
   m_wm_controlled = attr.override_redirect == 0 && m_wm_name;
 }
