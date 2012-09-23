@@ -3,15 +3,13 @@
 # Addon id: screensaver.xbmc.builtin.dim
 # Addon version: 1.0.0
 # Addon Provider: Team XBMC
-# Translators:
-#   <joao.lnsa@netcabo.pt>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-28 15:37+0000\n"
 "PO-Revision-Date: 2012-06-28 04:12+0000\n"
-"Last-Translator: pingo.mister <joao.lnsa@netcabo.pt>\n"
+"Last-Translator: XBMC Translation Team\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

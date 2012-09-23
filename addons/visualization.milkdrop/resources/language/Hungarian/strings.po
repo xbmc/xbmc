@@ -3,14 +3,13 @@
 # Addon id: visualization.milkdrop
 # Addon version: 1.0.0
 # Addon Provider: Team XBMC
-# Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-28 15:15+0000\n"
 "PO-Revision-Date: 2012-05-30 12:26+0000\n"
-"Last-Translator: alanwww1 <attila.jakosa@gmail.com>\n"
+"Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

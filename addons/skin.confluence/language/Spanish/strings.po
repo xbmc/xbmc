@@ -3,16 +3,13 @@
 # Addon id: skin.confluence
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
-# Translators:
-# Héctor Cordobés <hector@filemon.dyndns.org>, 2012.
-# Osiris Magro <>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
 "PO-Revision-Date: 2012-06-11 22:48+0000\n"
-"Last-Translator: Héctor Cordobés <hector@filemon.dyndns.org>\n"
+"Last-Translator: XBMC Translation Team\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

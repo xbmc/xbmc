@@ -3,17 +3,13 @@
 # Addon id: skin.confluence
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
-# Translators:
-# Idan Bushari <bushari2003@hotmail.com>, 2012.
-#   <sagiben@gmail.com>, 2012.
-#   <zivads@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
 "PO-Revision-Date: 2012-07-30 16:22+0000\n"
-"Last-Translator: Idan Bushari <bushari2003@hotmail.com>\n"
+"Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
