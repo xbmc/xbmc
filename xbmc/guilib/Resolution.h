@@ -88,6 +88,8 @@ struct RESOLUTION_INFO
   int iScreen;
   int iWidth;
   int iHeight;
+  int iScreenWidth;
+  int iScreenHeight;
   int iSubtitles;
   uint32_t dwFlags;
   float fPixelRatio;
@@ -100,6 +102,8 @@ public:
   {
     iWidth = width;
     iHeight = height;
+    iScreenWidth = width;
+    iScreenHeight = height;
     fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
     strMode = mode;
     bFullScreen = true;
@@ -114,6 +118,7 @@ public:
   {
     Overscan = res.Overscan; bFullScreen = res.bFullScreen;
     iScreen = res.iScreen; iWidth = res.iWidth; iHeight = res.iHeight;
+    iScreenWidth = res.iScreenWidth; iScreenHeight = res.iScreenHeight;
     iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
     fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
     strMode = res.strMode; strOutput = res.strOutput; strId = res.strId;

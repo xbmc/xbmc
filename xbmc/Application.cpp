@@ -890,7 +890,7 @@ bool CApplication::CreateGUI()
     return false;
 
   int iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGINFO, "GUI format %ix%i %s",
+  CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
             g_settings.m_ResInfo[iResolution].iWidth,
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode.c_str());

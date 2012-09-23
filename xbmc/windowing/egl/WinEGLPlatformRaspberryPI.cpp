@@ -270,11 +270,11 @@ EGLNativeWindowType CWinEGLPlatformRaspberryPI::InitWindowSystem(EGLNativeDispla
   m_desktopRes.iSubtitles   = (int)(0.965 * m_tv_state.height);
   m_desktopRes.iWidth       = m_tv_state.width;
   m_desktopRes.iHeight      = m_tv_state.height;
+  m_desktopRes.iScreenWidth = m_tv_state.width;
+  m_desktopRes.iScreenHeight= m_tv_state.height;
   m_desktopRes.dwFlags      = m_tv_state.scan_mode ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE;
   m_desktopRes.fRefreshRate = (float)m_tv_state.frame_rate;
   m_sdMode                  = false;
-  //m_desktopRes.iScreenWidth  = m_tv_state.width;
-  //m_desktopRes.iScreenHeight = m_tv_state.height;
   m_desktopRes.strMode.Format("%dx%d", m_tv_state.width, m_tv_state.height);
   if((float)m_tv_state.frame_rate > 1)
   {
@@ -675,8 +675,8 @@ void CWinEGLPlatformRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::
       res.fPixelRatio   = 1.0f;
       res.iWidth        = width;
       res.iHeight       = tv->height;
-      //res.iScreenWidth  = width;
-      //res.iScreenHeight = tv->height;
+      res.iScreenWidth  = width;
+      res.iScreenHeight = tv->height;
       res.strMode.Format("%dx%d", width, tv->height);
       if((float)tv->frame_rate > 1)
       {

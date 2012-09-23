@@ -63,6 +63,8 @@ protected:
   void                  *m_display;
   EGLNativeWindowType   m_window;
   CWinEGLPlatform       *m_eglplatform;
+  int                   m_nScreenWidth;
+  int                   m_nScreenHeight;
 };
 
 XBMC_GLOBAL_REF(CWinSystemGLES,g_Windowing);
