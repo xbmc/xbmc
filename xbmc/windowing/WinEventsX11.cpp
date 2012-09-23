@@ -396,6 +396,18 @@ bool CWinEventsX11::ProcessConfigure (XConfigureEvent& xevent)
     ret |= g_application.OnEvent(newEvent);
   }
 
+  /* real events have position relative to parent */
+  if(!xevent.send_event) {
+    XWindowAttributes attr;
+    Window child;
+    XGetWindowAttributes(xevent.display, xevent.window, &attr);
+    XTranslateCoordinates(xevent.display
+                        , xevent.window, attr.root
+                        , xevent.x, xevent.x
+                        , &xevent.x, &xevent.y
+                        , &child);
+  }
+
   /* check for move */
   if(g_Windowing.GetLeft()  != xevent.x
   || g_Windowing.GetTop()   != xevent.y)
