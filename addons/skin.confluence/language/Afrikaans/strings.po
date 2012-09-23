@@ -3,43 +3,24 @@
 # Addon id: skin.confluence
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-28 23:22+0000\n"
+"Last-Translator: TeamXBMC <xbmctranslations@gmail.com>\n"
+"Language-Team: Afrikaans (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/af/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: af\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr ""
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr "Verander Jou"
-
-msgctxt "#31001"
-msgid "Love"
-msgstr "Lief Vir"
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr "Haat"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -57,10 +38,6 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr ""
 
-msgctxt "#31007"
-msgid "Plugins"
-msgstr "Inproppe"
-
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr ""
@@ -68,14 +45,6 @@ msgstr ""
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr ""
-
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr "Onlangs Bygevoeg"
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr "Video - Lêers"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -109,10 +78,6 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr "Ondersteunerkuns"
 
-msgctxt "#31030"
-msgid "Full list"
-msgstr "Vol lys"
-
 msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr "Prent Duime"
@@ -144,14 +109,6 @@ msgstr "VORENTOE SPOEL"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "TERUGSPOEL"
-
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr "Audio Eienskappe"
-
-msgctxt "#31047"
-msgid "Current Preset"
-msgstr "Huidige Instelling"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -226,12 +183,12 @@ msgid "Hide Main Menu Buttons"
 msgstr "Versteek Hoof Kieslys Knoppies"
 
 msgctxt "#31109"
-msgid "Media backgrounds"
-msgstr "Media Agtergronde"
+msgid "Enable Custom Background"
+msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
-msgstr "Redigeer Agtergrond vir Media Tipe"
+msgid "Background path:"
+msgstr ""
 
 msgctxt "#31111"
 msgid "Hide"
@@ -240,18 +197,6 @@ msgstr "Versteek"
 msgctxt "#31112"
 msgid "Options"
 msgstr "Opsies"
-
-msgctxt "#31113"
-msgid "Single Image"
-msgstr "Enkele Prentjie"
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr "Veelvuldige Prentjie"
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr "Verpersoonliker"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
@@ -268,10 +213,6 @@ msgstr "Tuis bladsy programme subkieslys"
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Stel verpersoonlikte byvoegsel knoppie in staat"
-
-msgctxt "#31120"
-msgid "BUTTON LABEL"
-msgstr "KNOPPIE ETIKET"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -300,6 +241,10 @@ msgstr "PAD NA LIRIEKE BYVOEGSEL"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lirieke"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -333,21 +278,9 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Kortpaaie"
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr "Kategorië"
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr "Wys Rolverdeling"
-
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "Kies Jou Liedjie"
-
-msgctxt "#31204"
-msgid "Section Links"
-msgstr "Seksie Skakels"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -373,25 +306,9 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Laas Opdateer"
 
-msgctxt "#31302"
-msgid "Menu"
-msgstr "Kieslys"
-
 msgctxt "#31303"
 msgid "Data provider"
 msgstr ""
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr "Prentjie"
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr "Geen Skyf Media Bespoor"
-
-msgctxt "#31306"
-msgid "Eject"
-msgstr "Haal Skyf Uit"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -425,17 +342,9 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "Inhoud Deursoek Opsies"
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr "Basies"
-
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "Stel Ondersteunerkuns Pad"
-
-msgctxt "#31318"
-msgid "Small Fanart"
-msgstr "Klein Ondersteunerkuns"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -452,14 +361,6 @@ msgstr "Karaoke Liedjie Selekteerder"
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Gelug"
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr "Nuutste Flieks"
-
-msgctxt "#31324"
-msgid "Latest Episodes"
-msgstr "Nuutste Episodes"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -558,6 +459,10 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr "[B]KONFIGUREER BYVOEGSELS[/B][CR][CR]Bestuur jou geïnstalleerde Byvoegsels · Soek en installeer Byvoegsels vanaf xbmc.org[CR]Verander Byvoeging verstellings"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
@@ -565,8 +470,44 @@ msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selekteer jou XBMC gebruiker Profiel[CR]om in te log en voort te gaan"
 
-msgctxt "#31900"
-msgid "Weather Maps"
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
 msgstr ""
 
 msgctxt "#31901"
@@ -591,10 +532,6 @@ msgstr ""
 
 msgctxt "#31906"
 msgid "Maps & Video"
-msgstr ""
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
 msgstr ""
 
 msgctxt "#31908"

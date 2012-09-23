@@ -4,185 +4,185 @@
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
 # Translators:
-#   <jenda.mek@centrum.cz>, 2012.
-# Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012.
+#   <d3b.null@gmail.com>, 2012.
+#   <monfero@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-08-26 12:07+0000\n"
-"Last-Translator: Tomáš Chvátal <tomas.chvatal@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cs/)\n"
+"PO-Revision-Date: 2012-07-08 15:35+0000\n"
+"Last-Translator: diegoXA <d3b.null@gmail.com>\n"
+"Language-Team: Galician (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/gl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Language: gl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Změnit"
+msgstr "Troca o teu"
 
 msgctxt "#31003"
 msgid "Power Options"
-msgstr "Možnosti napájení"
+msgstr "Opcións de enerxía"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Pracuji..."
+msgstr "A traballar..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Skrýt informace"
+msgstr "Ocultar información"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Zobrazit možnosti"
+msgstr "Ver opcións"
 
 msgctxt "#31008"
 msgid "Fullscreen"
-msgstr "Celá obrazovka"
+msgstr "Pantalla compelta"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr "Celková doba trvání"
+msgstr "Duración total"
 
 msgctxt "#31022"
 msgid "Music - Files"
-msgstr "Hudba - Soubory"
+msgstr "Música - Ficheiros"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "Přehrává se"
+msgstr "A reproducir"
 
 msgctxt "#31024"
 msgid "Page"
-msgstr "Strana"
+msgstr "Páxina"
 
 msgctxt "#31025"
 msgid "Items"
-msgstr "Položek"
+msgstr "Elementos"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Další možnosti"
+msgstr "Outras opcións"
 
 msgctxt "#31027"
 msgid "Location"
-msgstr "Umístění"
+msgstr "Localización"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Obaly"
+msgstr "Envoltorio de cartel"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Fanart"
+msgstr "Cartel"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "Náhledy obrázků"
+msgstr "Miniaturas"
 
 msgctxt "#31032"
 msgid "Image Wrap"
-msgstr "Obrázky"
+msgstr "Envoltorio de imaxe"
 
 msgctxt "#31033"
 msgid "Info"
-msgstr "Informace"
+msgstr "Info"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Nyní přehrávám"
+msgstr "Reproducindo"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "PŘEHRÁVÁ SE"
+msgstr "REPRODUCINDO"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "POZASTAVENO"
+msgstr "PAUSADO"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "RYCHLE VPŘED"
+msgstr "AXIÑA ADIANTE"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "PŘETÁČÍ SE ZPĚT"
+msgstr "REBOBINAR"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
-msgstr "Předvolby vizualizace"
+msgstr "Preconfiguracións de visualizacións"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Čas ukončení"
+msgstr "Tempo final"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Řazení: vzestupně"
+msgstr "Ordear: Ascendente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Řazení: sestupně"
+msgstr "Ordear: Descendente"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Otevřít seznam stop"
+msgstr "Abrir lista de reproducción"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Uložit seznam stop"
+msgstr "Gardar lista de reproducción"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Zavřít seznam stop"
+msgstr "Pechar lista de reproducción"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Hudební soubory systému"
+msgstr "Ficheiros de música do sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Aktuální seznam stop"
+msgstr "Lista de reproducción actual"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Tento soubor se skládá z více částí. Vyberte od které si přejete spustit přehrávání."
+msgstr "Este arquivo esta amontoado, selecione a parte que quere reproducir."
 
 msgctxt "#31061"
 msgid "Current Selected"
-msgstr "Aktuálně vybraný"
+msgstr "Seleccionado actualmente"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Možnosti úvodní obrazovky"
+msgstr "Opcións da pantalla de inicio"
 
 msgctxt "#31102"
 msgid "Background"
-msgstr "Pozadí"
+msgstr "Fondo"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Zobrazovat \"Pozastaveno\" při promítání obrázků"
+msgstr "Mostrar \"Pausado\" nunha diapositiva"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]"
+msgstr "Reproducir trailers nunha fiestra [COLOR=grey3](Só diálgo de información de video)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Různá nastavení"
+msgstr "Outras opcións"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Nezobrazovat ikony přečtené z názvu videa [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Agochar a lectura da marcaxe dende os nomes dos videos [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Skrýt tlačítka hlavního menu"
+msgstr "Ocultar botóns do menú principal"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
@@ -194,47 +194,47 @@ msgstr ""
 
 msgctxt "#31111"
 msgid "Hide"
-msgstr "Skrýt"
+msgstr "Ocultar"
 
 msgctxt "#31112"
 msgid "Options"
-msgstr "Možnosti"
+msgstr "Opcións"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Zobrazit nedávno přidaná alba"
+msgstr "Mostrar albumes engadidos recentemente"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Zobrazovat nedávno přidané filmy"
+msgstr "Mostrar vídeos engadidos recentemente"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
-msgstr "Úvodní obrazovka, podmenu programů"
+msgstr "Submenú de aplicativos da páxina de inicio"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Skrýt Fanart na pozadí"
+msgstr "Agochar o fondo do cartel"
 
 msgctxt "#31122"
 msgid "Weather Page"
-msgstr "Počasí"
+msgstr "Páxina do Tempo"
 
 msgctxt "#31123"
 msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "Použít u TV seriálů klasické náhledy místo bannerů"
+msgstr "Empregar \"Carteis\" en lugar de \"Banners\" para as series de TV"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Zobrazovat na pozadí právě přehrávané video"
+msgstr "Amosar o video reproducíndose actualmente no fondo"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Zobrazovat právě přehrávanou vizualizaci na pozadí"
+msgstr "Amosar a visualización reproducíndose actualmente no fondo"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Přehrát znělky v knihovně videí (doplněk TvTunes)"
+msgstr "Reproducir as cancións das series de TV na bibloteca de video (Engadido TVTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -242,7 +242,7 @@ msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
-msgstr "Texty písní"
+msgstr "Letras"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
@@ -250,215 +250,215 @@ msgstr ""
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Doplněk textů písní"
+msgstr "Complemento de letras"
 
 msgctxt "#31133"
 msgid "Subtitle Add-on"
-msgstr "Doplněk titulků"
+msgstr "Complemento de subtítulos"
 
 msgctxt "#31134"
 msgid "Home Page Videos Submenu"
-msgstr "Úvodní obrazovka, podmenu videí"
+msgstr "Submenú de Videos da páxina de inicio"
 
 msgctxt "#31135"
 msgid "Home Page Music Submenu"
-msgstr "Úvodní obrazovka, podmenu Hudba"
+msgstr "Submenú de Música da páxina de inicio"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Submenu"
-msgstr "Úvodní obrazovka, podmenu obrázků"
+msgstr "Submenú de Imaxes da páxina de inicio"
 
 msgctxt "#31140"
 msgid "Music OSD"
-msgstr "OSD hudby"
+msgstr "OSD de Música"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "OSD videa"
+msgstr "OSD de Video"
 
 msgctxt "#31200"
 msgid "Shortcuts"
-msgstr "Zkratky"
+msgstr "Atallos"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Vyberte Vaši skladbu"
+msgstr "Escolle a túa canción"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
-msgstr "Zdroj textu písní"
+msgstr "Fonte das letras"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr "Nalezeno"
+msgstr "Atopado"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr "Hledat další položky"
+msgstr "Atopar máis elementos"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr "Nadcházející epizody"
+msgstr "Vindeiros episodios"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Aktuální teplota"
+msgstr "Temperatura actual"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Naposledy aktualizováno"
+msgstr "Última actualización"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Poskytovatel dat"
+msgstr "Provedor de datos"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Skrýt Fanart"
+msgstr "Agochar cartel"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "Podrobnosti filmu"
+msgstr "Detalles da Película"
 
 msgctxt "#31309"
 msgid "Memory Used:"
-msgstr "Využitá paměť:"
+msgstr "Memoria empregada:"
 
 msgctxt "#31310"
 msgid "Track Number"
-msgstr "Číslo stopy"
+msgstr "Número de seguemento"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Fanart[CR][CR]není k dispozici[CR][CR] Nastavte jej kliknutím tlačítka"
+msgstr "Imaxe de cartel[CR][CR]Non dispoñible[CR][CR] Preme o botón para estabrecer"
 
 msgctxt "#31312"
 msgid "Current Scraper"
-msgstr "Současný stahovač"
+msgstr "Scraper actual"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Změnit stahovač"
+msgstr "Escoller scraper"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "Možnosti vyhledávání obsahu"
+msgstr "Opcións de escaneado de contidos"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Umístění Fanartu"
+msgstr "Estabrecer ruta de Carteis"
 
 msgctxt "#31319"
 msgid "Selected Profile"
-msgstr "Vybraný profil"
+msgstr "Selecionar perfíl"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Naposledy přihlášen"
+msgstr "Último ingreso"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "Výběr karaoke skladby"
+msgstr "Selecionador de cancións do Karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Odvysíláno"
+msgstr "Emitido"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "Možnosti seznamu skladeb"
+msgstr "Opcións da lista de reprodución"
 
 msgctxt "#31326"
 msgid "Created"
-msgstr "Vytvořeno"
+msgstr "Creado"
 
 msgctxt "#31327"
 msgid "Resolution"
-msgstr "Rozlišení"
+msgstr "Resolución"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Nedávno přidané"
+msgstr "Engadido recentemente"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Časovač byl nastaven![/B] [COLOR=grey2] - Systém se automaticky vypne za[/COLOR]"
+msgstr "[B]Temporizador estabrecido![/B] [COLOR=grey2] - Apagado automático de sistema en[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Pro přehrání upoutávky[CR][CR]stiskněte tlačítko"
+msgstr "Prema o botón para reproducir[CR][CR]Trailer da Película"
 
 msgctxt "#31331"
 msgid "Album Details"
-msgstr "Podrobnosti alba"
+msgstr "Detalles do Álbum"
 
 msgctxt "#31351"
 msgid "Pause"
-msgstr "Pozastavit"
+msgstr "Pausa"
 
 msgctxt "#31352"
 msgid "Stop"
-msgstr "Zastavit"
+msgstr "Parar"
 
 msgctxt "#31353"
 msgid "Fast Forward"
-msgstr "Rychle vpřed"
+msgstr "Axiña Adiante"
 
 msgctxt "#31354"
 msgid "Rewind"
-msgstr "Přetočit zpět"
+msgstr "Atrás"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Nabídka filmu"
+msgstr "Menú de Película"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Stáhnout titulky"
+msgstr "Descargar Subtítulos"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Výchozí vzhled"
+msgstr "Pel por defecto"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Výchozí vzhled bez velkých písmen"
+msgstr "Pel por defecto sen Maiúsculas"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Písmo Arial"
+msgstr "Baseado en Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ VZHLEDU PROSTŘEDÍ[/B][CR][CR]Změna vzhledu · Výběr jazyka a oblasti · Možnosti zobrazení souborů[CR]Nastavení spořiče obrazovky"
+msgstr "[B]CONFIGURAR PARÁMETROS DE APARIENCIA[/B][CR][CR]Trocar a pel · Estabrecer lingua e rexión · Trocar as opcións de listado de arquivos[CR]Estabrecer gardapantallas"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ VIDEA[/B][CR][CR]Správa knihovny videí · Možnosti přehrávání videa · Možnosti zobrazení video souborů[CR]Nastavení fontu titulků"
+msgstr "[B]CONFIGURAR PARÁMETROS DE VIDEO[/B][CR][CR]Xestionar a bibloteca de video · Estabrecer opcións da reprodución de video · Trocar opcións de listado de videos[CR]Estabrecer fontes dos subtítulos"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ HUDBY[/B][CR][CR]Správa knihovny hudby · Možnosti přehrávání hudby · Možnosti zobrazení hudebních souborů[CR] Nastavení služby odesílání informací o přehrávaných skladbách · Nastavení karaoke"
+msgstr "[B]CONFIGURAR PARÁMETROS DE MÚSICA[/B][CR][CR]Xestionar a bibloteca de música · Estabrecer as opcións de reprodución de música · Trocar opcións do listado da música[CR]Estabrecer a sumisión das cancións · Estabrecer as opcións do karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ OBRÁZKŮ[/B][CR][CR]Možnosti zobrazení obrázků · Nastavení prezentace"
+msgstr "[B]CONFIGURAR PARÁMETROS DE IMAXES[/B][CR][CR]Estabrecer opcións do listado de imaxes · Configurar presentacións"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ POČASÍ[/B][CR][CR]Nastavení tří měst pro sběr předpovědi počasí"
+msgstr "[B]CONFIGURAR PARÁMETROS DA METEOROLOXÍA[/B][CR][CR]Estabrecer tres cidade para a colleita de información meteorolóxica"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Nastavení úsporného režimu · Povolit informací o ladění · Rodičovský zámek"
+msgstr "[B]CONFIGURAR PARÁMETROS DO SISTEMA[/B][CR][CR]Configurar as pantallas · Configurar a saída de audio · Estabrecer mandos remotos[CR]Estabrecer opcións de aforro enerxético · Activar depuración · Estabrecer bloque mestre"
 
 msgctxt "#31407"
 msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ VZHLEDU[/B][CR][CR]Nastavení vzhledu Confluence · Správa sekcí úvodní obrazovky[CR]Změnit pozadí vzhledu"
+msgstr "[B]CONFIGURAR PARÁMETROS DA PEL[/B][CR][CR]Configurar a pel Confluence · Engadir e eliminar elementos do menú inicial[CR]Trocar fondos da pel"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných doplňků · Vyhledávání a instalace doplňků z xbmc.org[CR]Nastavení doplňků"
+msgstr "[B]CONFIGURAR ENGADIDOS[/B][CR][CR]Xestionar engadidos instalados · Buscar e instalar Engadidos de xbmc.org[CR]Modificar a configuración dos Engadidos"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
@@ -470,7 +470,7 @@ msgstr ""
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Vyberte preofil XBMC[CR]pro přihlášení a pokračování"
+msgstr "Selecione o seu perfíl de usuario de XBMC[CR]para ingresar e continuar"
 
 msgctxt "#31500"
 msgid "Recording Timers"
@@ -514,32 +514,32 @@ msgstr ""
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
-msgstr "Předpověď na 36 hodin"
+msgstr "Predición de 36 horas"
 
 msgctxt "#31902"
 msgid "Hourly Forecast"
-msgstr "Hodinová předpověď"
+msgstr "Predición de hora en hora"
 
 msgctxt "#31903"
 msgid "Weekend Forecast"
-msgstr "Předpověď na víkend"
+msgstr "Predición para a fin de semana"
 
 msgctxt "#31904"
 msgid "10 Day Forecast"
-msgstr "Předpověď na 10 dní"
+msgstr "Predición de 10 días"
 
 msgctxt "#31905"
 msgid "Forecast"
-msgstr "Předpověď"
+msgstr "Predición"
 
 msgctxt "#31906"
 msgid "Maps & Video"
-msgstr "Mapy a Video"
+msgstr "Mapas e Video"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"
-msgstr "Pravděpodobnost srážek"
+msgstr "Probabilidades de chuvia"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "Získávám informace předpovědi..."
+msgstr "Colleitando información da predición..."
