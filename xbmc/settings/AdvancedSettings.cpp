@@ -292,7 +292,7 @@ void CAdvancedSettings::Initialize()
   m_iPVRInfoToggleInterval         = 3000;
   m_bPVRShowEpgInfoOnEpgItemSelect = true;
   m_iPVRMinVideoCacheLevel         = 5;
-  m_iPVRMinAudioCacheLevel         = 5;
+  m_iPVRMinAudioCacheLevel         = 10;
   m_bPVRCacheInDvdPlayer           = true;
 
   m_measureRefreshrate = false;
