@@ -416,6 +416,7 @@ void XBPyThread::stop()
       CLog::Log(LOGERROR, "XBPyThread::stop - failed to set abortRequested");
 
     PyThreadState_Swap(old);
+    old = NULL;
     PyEval_ReleaseLock();
 
     XbmcThreads::EndTime timeout(PYTHON_SCRIPT_TIMEOUT);
@@ -440,19 +441,34 @@ void XBPyThread::stop()
       CLog::Log(LOGDEBUG, "XBPyThread::stop - script termination took %dms", PYTHON_SCRIPT_TIMEOUT - timeout.MillisLeft());
     
     //everything which didn't exit by now gets killed
-    PyEval_AcquireLock();
-    old = PyThreadState_Swap((PyThreadState*)m_threadState);    
-    for(PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
     {
-      // Raise a SystemExit exception in python threads
-      Py_XDECREF(state->async_exc);
-      state->async_exc = PyExc_SystemExit;
-      Py_XINCREF(state->async_exc);
+      // grabbing the PyLock while holding the XBPython m_critSection is asking for a deadlock
+      CSingleExit ex2(m_pExecuter->m_critSection);
+      PyEval_AcquireLock();
     }
-    // If a dialog entered its doModal(), we need to wake it to see the exception
-    g_pythonParser.PulseGlobalEvent();
 
-    PyThreadState_Swap(old);
+    // since we released the XBPython m_critSection it's possible that the state is cleaned up 
+    // so we need to recheck for m_threadState == NULL
+    if (m_threadState)
+    {
+      old = PyThreadState_Swap((PyThreadState*)m_threadState);    
+      for(PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
+      {
+        // Raise a SystemExit exception in python threads
+        Py_XDECREF(state->async_exc);
+        state->async_exc = PyExc_SystemExit;
+        Py_XINCREF(state->async_exc);
+      }
+
+      // If a dialog entered its doModal(), we need to wake it to see the exception
+      g_pythonParser.PulseGlobalEvent();
+
+    }
+
+    if (old != NULL)
+      PyThreadState_Swap(old);
+
+    lock.Leave();
     PyEval_ReleaseLock();
   }
 }

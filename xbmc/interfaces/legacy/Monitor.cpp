@@ -39,7 +39,10 @@ namespace XBMCAddon
       deallocating(); 
       // we're shutting down so unregister me.
       if (languageHook)
+      {
+        DelayedCallGuard dc;
         languageHook->unregisterMonitorCallback(this);
+      }
     }
   }
 }
