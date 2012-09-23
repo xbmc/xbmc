@@ -34,6 +34,7 @@
 #include "utils/CharsetConverter.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
+#include "ApplicationMessenger.h"
 
 #if defined(HAS_XRANDR)
 #include <X11/extensions/Xrandr.h>
@@ -470,7 +471,7 @@ bool CWinEventsX11::ProcessClientMessage(XClientMessageEvent& xclient)
   if ((Atom)(xclient.data.l[0]) == m_wmDeleteMessage)
   {
     if (!g_application.m_bStop)
-      g_application.getApplicationMessenger().Quit();
+      CApplicationMessenger::Get().Quit();
     return true;
   }
   return false;
