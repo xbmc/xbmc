@@ -465,7 +465,7 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
-tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish.a
+tools/TexturePacker/TexturePacker: lib/libsquish/libsquish.a xbmc/guilib/XBTF.h
 	$(MAKE) -C tools/TexturePacker/
 
 

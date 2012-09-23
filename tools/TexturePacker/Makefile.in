@@ -34,6 +34,8 @@ endif
 
 LIBS    += -lSDL_image -lSDL -llzo2
 
+@abs_top_srcdir@/xbmc/guilib/XBTF.o : @abs_top_srcdir@/xbmc/guilib/XBTF.h
+
 SRCS = \
   md5.cpp \
   SDL_anigif.cpp \
