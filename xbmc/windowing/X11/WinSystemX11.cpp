@@ -653,11 +653,11 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   XMapRaised(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
 
-  RefreshWindowState();
-
   m_bFullScreen = fullScreen;
   m_outputName  = res.strOutput;
   m_outputIndex = res.iScreen;
+
+  RefreshWindowState();
   return true;
 }
 
