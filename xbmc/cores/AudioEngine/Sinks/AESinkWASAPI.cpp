@@ -857,7 +857,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
 
   if (!AE_IS_RAW(format.m_dataFormat)) // PCM data
   {
-    wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
+    wfxex.dwChannelMask          = GetSpeakerMaskFromAEChannels(format.m_channelLayout);
     wfxex.Format.nChannels       = (WORD)format.m_channelLayout.Count();
     wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
     wfxex.Format.wBitsPerSample  = CAEUtil::DataFormatToBits((AEDataFormat) format.m_dataFormat);
@@ -1166,7 +1166,7 @@ void CAESinkWASAPI::AEChannelsFromSpeakerMask(DWORD speakers)
   }
 }
 
-DWORD CAESinkWASAPI::SpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
+DWORD CAESinkWASAPI::GetSpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
 {
   DWORD mask = 0;
 
