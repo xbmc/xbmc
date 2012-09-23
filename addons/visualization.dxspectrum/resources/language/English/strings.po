@@ -17,14 +17,6 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-msgctxt "Addon Summary"
-msgid "Visualisation showing a rotating 3D Spectrum Analyzer"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.\nIt also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great"
-msgstr ""
-
 #settings labels
 
 msgctxt "#30000"
