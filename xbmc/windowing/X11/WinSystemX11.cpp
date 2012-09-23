@@ -350,7 +350,10 @@ void CWinSystemX11::ProbeWindowManager()
 
 bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  int x = 0, y = 0;
+  int x = 0
+    , y = 0
+    , w = res.iWidth
+    , h = res.iHeight;
 
   if (m_wmWindow)
   {
@@ -394,11 +397,23 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   }
 #endif
 
-  if(m_wm_fullscreen)
+  if(m_wm_fullscreen || fullScreen == false)
+  {
+    /* center in display */
+    RESOLUTION_INFO& win = g_settings.m_ResInfo[RES_WINDOW];
+    w  = win.iWidth;
+    h  = win.iHeight;
+    x += res.iWidth   / 2 - w / 2;
+    y += res.iHeight  / 2 - w / 2;
+
     swa.override_redirect = 0;
+    swa.border_pixel      = 5;
+  }
   else
-    swa.override_redirect = fullScreen ? 1 : 0;
-  swa.border_pixel      = fullScreen ? 0 : 5;
+  {
+    swa.override_redirect = 1;
+    swa.border_pixel      = 0;
+  }
 
   if(m_visual->visual == DefaultVisual(m_dpy, m_visual->screen))
       swa.background_pixel = BlackPixel(m_dpy, m_visual->screen);
@@ -411,19 +426,14 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 
   m_wmWindow = XCreateWindow(m_dpy, RootWindow(m_dpy, m_visual->screen),
                   x, y,
-                  res.iWidth, res.iHeight,
+                  w, h,
                   0, m_visual->depth,
                   InputOutput, m_visual->visual,
                   CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWEventMask,
                   &swa);
 
-  if(m_wm_fullscreen)
-  {
-    if (fullScreen)
+  if(m_wm_fullscreen && fullScreen)
       XChangeProperty(m_dpy, m_wmWindow, m_NET_WM_STATE, XA_ATOM, 32, PropModeReplace, (unsigned char *) &m_NET_WM_STATE_FULLSCREEN, 1);
-    else
-      XDeleteProperty(m_dpy, m_wmWindow, m_NET_WM_STATE);
-  }
 
   m_invisibleCursor = AllocateInvisibleCursor(m_dpy, m_wmWindow);
   XDefineCursor(m_dpy, m_wmWindow, m_invisibleCursor);
