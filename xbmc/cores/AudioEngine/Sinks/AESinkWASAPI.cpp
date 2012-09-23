@@ -678,7 +678,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
       /* Test format DTS */
       wfxex.Format.nSamplesPerSec       = 48000;
-      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_5POINT1;
+      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_5POINT1_SURROUND;
       wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEC61937_DTS;
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
@@ -868,7 +868,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
     wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
     if (format.m_dataFormat == AE_FMT_AC3 || format.m_dataFormat == AE_FMT_DTS)
     {
-      wfxex.dwChannelMask          = bool (format.m_channelLayout.Count() == 2) ? KSAUDIO_SPEAKER_STEREO : KSAUDIO_SPEAKER_5POINT1;
+      wfxex.dwChannelMask          = bool (format.m_channelLayout.Count() == 2) ? KSAUDIO_SPEAKER_STEREO : KSAUDIO_SPEAKER_5POINT1_SURROUND;
 
       if (format.m_dataFormat == AE_FMT_AC3)
       {
@@ -897,7 +897,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
         case AE_FMT_EAC3:
           wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS;
           wfxex.Format.nChannels      = 2; // One IEC 60958 Line.
-          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
+          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1_SURROUND;
           break;
         case AE_FMT_TRUEHD:
           wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
@@ -914,7 +914,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
       if (format.m_channelLayout.Count() == 8)
         wfxex.dwChannelMask         = KSAUDIO_SPEAKER_7POINT1_SURROUND;
       else
-        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
+        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1_SURROUND;
     }
   }
 
