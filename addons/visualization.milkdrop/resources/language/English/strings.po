@@ -17,14 +17,6 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-msgctxt "Addon Summary"
-msgid "MilkDrop takes you flying through the soundwaves you're hearing"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "MilkDrop was originally a music visualizer \"plug-in\" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound."
-msgstr ""
-
 #settings labels
 
 msgctxt "#30000"

@@ -1,4 +1,5 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-ALPHA6
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
@@ -6438,7 +6439,7 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr ""
 
-#empty strings from id 19099 to 19100
+#empty strings from id 19099 to 19101
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -6454,7 +6455,7 @@ msgstr ""
 
 #empty string with id 19105
 
-msgctxt "#19106"			
+msgctxt "#19106"
 msgid "Next timer on"
 msgstr ""
 
@@ -6581,6 +6582,8 @@ msgstr ""
 msgctxt "#19139"
 msgid "Name of the new group"
 msgstr ""
+
+#empty string with id 19140
 
 msgctxt "#19141"
 msgid "Group"
@@ -6749,6 +6752,8 @@ msgstr ""
 msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr ""
+
+#empty string with id 19183
 
 msgctxt "#19184"
 msgid "Channel information duration"
@@ -7114,7 +7119,7 @@ msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
 msgstr ""
 
-#empty strings from id 19275 to 19499
+#empty strings from id 19275 to 19498
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -9191,7 +9196,7 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr ""
 
-#empty string id 21416
+#empty string with id 21416
 
 msgctxt "#21417"
 msgid "- Settings"
@@ -10979,13 +10984,15 @@ msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr ""
 
-#. adjust refreshrate  
+#empty string with id 36034
+
+#. adjust refreshrate
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#36035"
 msgid "Always"
 msgstr ""
 
-#. adjust refreshrate  
+#. adjust refreshrate
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#36036"
 msgid "On start/stop"

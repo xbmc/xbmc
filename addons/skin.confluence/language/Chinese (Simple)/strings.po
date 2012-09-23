@@ -3,43 +3,25 @@
 # Addon id: skin.confluence
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
+# Translators:
+#   <taxigps@sina.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-31 16:18+0000\n"
+"Last-Translator: taxigps <taxigps@sina.com>\n"
+"Language-Team: Chinese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr "Jezz_X开发的Confluence皮肤"
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr "在XBMC 9.11之后的版本中Confluence是默认皮肤。它集合了许多流行皮肤的创意，力求把这些优点融合到一个皮肤中，使得首次使用XBMC的用户能更容易上手。"
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr "Confluence是XMBC的默认皮肤，删除它可能导致故障。"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr "修改您的"
-
-msgctxt "#31001"
-msgid "Love"
-msgstr "喜欢"
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr "讨厌"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -57,25 +39,13 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "视图选项"
 
-msgctxt "#31007"
-msgid "Plugins"
-msgstr "插件"
-
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "全屏"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr ""
-
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr "最新增加"
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr "视频 - 文件"
+msgstr "总时长"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -109,10 +79,6 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr "同人画"
 
-msgctxt "#31030"
-msgid "Full list"
-msgstr "完整列表"
-
 msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr "图片缩略图"
@@ -144,14 +110,6 @@ msgstr "快进"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "回退"
-
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr "音频属性"
-
-msgctxt "#31047"
-msgid "Current Preset"
-msgstr "当前预设"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -226,12 +184,12 @@ msgid "Hide Main Menu Buttons"
 msgstr "隐藏主菜单按钮"
 
 msgctxt "#31109"
-msgid "Media backgrounds"
-msgstr "媒体背景"
+msgid "Enable Custom Background"
+msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
-msgstr "编辑媒体背景"
+msgid "Background path:"
+msgstr ""
 
 msgctxt "#31111"
 msgid "Hide"
@@ -241,21 +199,9 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "选项"
 
-msgctxt "#31113"
-msgid "Single Image"
-msgstr "单个图片"
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr "多个图片"
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr "自定义"
-
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "显示最新加入专辑"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -268,10 +214,6 @@ msgstr "主界面程序子菜单"
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "隐藏同人画背景"
-
-msgctxt "#31120"
-msgid "BUTTON LABEL"
-msgstr "按钮标签"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -300,6 +242,10 @@ msgstr "TvTunes"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "歌词"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -333,21 +279,9 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "快捷方式"
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr "分类"
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr "显示演员表"
-
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "选择歌曲"
-
-msgctxt "#31204"
-msgid "Section Links"
-msgstr "区块链接"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -355,15 +289,15 @@ msgstr "歌词来源"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr ""
+msgstr "找到"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr ""
+msgstr "查找更多项目"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "即将播出的分集"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -373,25 +307,9 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr "最近修改"
 
-msgctxt "#31302"
-msgid "Menu"
-msgstr "菜单"
-
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "数据来源"
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr "图片"
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr "未检测到光盘"
-
-msgctxt "#31306"
-msgid "Eject"
-msgstr "弹出"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -425,17 +343,9 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "内容扫描选项"
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr "基本信息"
-
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "设置同人画目录"
-
-msgctxt "#31318"
-msgid "Small Fanart"
-msgstr "小同人画"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -452,14 +362,6 @@ msgstr "卡拉OK歌曲选择器"
 msgctxt "#31322"
 msgid "Aired"
 msgstr "首播"
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr "最新电影"
-
-msgctxt "#31324"
-msgid "Latest Episodes"
-msgstr "最新剧集"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -558,6 +460,10 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr "[B]设置扩展功能[/B][CR][CR]管理你安装的扩展功能 · 在xbmc.org浏览并安装扩展功能 · 修改扩展功能设置"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
@@ -565,9 +471,45 @@ msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "选择您的用户配置文件[CR]登录并继续"
 
-msgctxt "#31900"
-msgid "Weather Maps"
-msgstr "气象图"
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -592,10 +534,6 @@ msgstr "天气预报"
 msgctxt "#31906"
 msgid "Maps & Video"
 msgstr "图像 & 视频"
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
-msgstr "视频预报 [COLOR=grey2]（全屏播放）[/COLOR]"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"

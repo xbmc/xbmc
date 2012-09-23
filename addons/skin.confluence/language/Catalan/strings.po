@@ -3,43 +3,26 @@
 # Addon id: skin.confluence
 # Addon version: 2.1.0
 # Addon Provider: Jezz_X, Team XBMC
+# Translators:
+# David Soms <dsoms.spam@gmail.com>, 2012.
+#   <regi24@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-07-29 10:03+0000\n"
+"Last-Translator: David Soms <dsoms.spam@gmail.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ca\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr "Aparença Confluence, per Jezz_X. (Aparença per defecte de l'XBMC)"
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr "Confluence és l'aparença per defecte de l'XBMC 9.11 i superior. És una combinació de conceptes de moltes aparences populars, i intenta adoptar i integrar les seves bones idees en una aparença que sigui senzilla d'entendre i utilitzar per els nous usuaris d'XBMC."
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr "Confluence és l'aparença per defecte de l'XBMC, la seva eliminació pot causar problemes."
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr "Canvia la"
-
-msgctxt "#31001"
-msgid "Love"
-msgstr "M'agrada"
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr "No m'agrada"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -47,7 +30,7 @@ msgstr "Opcions d'energia"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Treballant..."
+msgstr "Carregant..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -55,11 +38,7 @@ msgstr "Amaga la informació"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Veure les opcions"
-
-msgctxt "#31007"
-msgid "Plugins"
-msgstr "Connectors"
+msgstr "Opcions de la vista"
 
 msgctxt "#31008"
 msgid "Fullscreen"
@@ -67,15 +46,7 @@ msgstr "Pantalla completa"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr ""
-
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr "Afegits recentment"
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr "Fitxers - Vídeo"
+msgstr "Duració total"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -109,10 +80,6 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart"
 
-msgctxt "#31030"
-msgid "Full list"
-msgstr "Llista completa"
-
 msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr "Miniatures"
@@ -139,23 +106,15 @@ msgstr "EN PAUSA"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "AVANÇA RÀPID"
+msgstr "AVANÇ RÀPID"
 
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "REBOBINA"
 
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr "Propietats de l'àudio"
-
-msgctxt "#31047"
-msgid "Current Preset"
-msgstr "Predefinit actual"
-
 msgctxt "#31048"
 msgid "Visualization Presets"
-msgstr "Visualitzacions predefinides"
+msgstr "Visualitzacions preestablertes"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -207,7 +166,7 @@ msgstr "Fons"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Visualitza \"En pausa\" en mode de presentació d'imatges"
+msgstr "Mostra \"Pausa\" a la presentació d'imatges"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
@@ -219,19 +178,19 @@ msgstr "Opcions vàries"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Amaga les marques de lectura dels fitxers de vídeo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
 msgstr "Amaga els botons del menú principal"
 
 msgctxt "#31109"
-msgid "Media backgrounds"
-msgstr "Fons multimèdia"
+msgid "Enable Custom Background"
+msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
-msgstr "Edita el fons per els continguts multimèdia"
+msgid "Background path:"
+msgstr ""
 
 msgctxt "#31111"
 msgid "Hide"
@@ -241,21 +200,9 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Opcions"
 
-msgctxt "#31113"
-msgid "Single Image"
-msgstr "Una imatge"
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr "Múltiples imatges"
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr "Personalitzador"
-
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "Mostra els àlbums afegits recentment"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -269,17 +216,13 @@ msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Amaga el fanart del fons"
 
-msgctxt "#31120"
-msgid "BUTTON LABEL"
-msgstr "ETIQUETA DEL BOTÓ"
-
 msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Pàgina del temps"
 
 msgctxt "#31123"
 msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "Utilitza \"Cartells\" en lloc de \"Bàners\" per als programes de televisió"
+msgstr "Utilitza \"Cartells\" en lloc de \"Bàners\" per les sèries de televisió"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -291,7 +234,7 @@ msgstr "Mostra la visualització en reproducció en el fons"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Reprodueix les cançons de la temàtica TV a la llibreria de vídeo (complement TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -300,6 +243,10 @@ msgstr "TvTunes"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lletres"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -333,21 +280,9 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Dreceres de teclat"
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr "Categories"
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr "Mostra el repartiment"
-
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "Escull la teva cançó"
-
-msgctxt "#31204"
-msgid "Section Links"
-msgstr "Enllaços de secció"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -355,15 +290,15 @@ msgstr "Origen de les lletres"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr ""
+msgstr "Trobat"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr ""
+msgstr "Troba més elements"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "Propers episodis"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -371,27 +306,11 @@ msgstr "Temperatura actual"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Actualització més recent"
-
-msgctxt "#31302"
-msgid "Menu"
-msgstr "Menú"
+msgstr "Última actualització"
 
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Proveïdor de dades"
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr "Imatge"
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr "No s'ha detectat cap disc amb continguts multimèdia"
-
-msgctxt "#31306"
-msgid "Eject"
-msgstr "Expulsa"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -425,17 +344,9 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "Opcions d'escaneig de continguts"
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr "Bàsic"
-
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "Estableix el camí del fanart"
-
-msgctxt "#31318"
-msgid "Small Fanart"
-msgstr "Fanart petit"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -452,14 +363,6 @@ msgstr "Selector de cançons del karaoke"
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Emès"
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr "Pel·lícules més recents"
-
-msgctxt "#31324"
-msgid "Latest Episodes"
-msgstr "Episodis més recents"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -499,7 +402,7 @@ msgstr "Atura"
 
 msgctxt "#31353"
 msgid "Fast Forward"
-msgstr "Avança ràpid"
+msgstr "Avanç ràpid"
 
 msgctxt "#31354"
 msgid "Rewind"
@@ -511,7 +414,7 @@ msgstr "Menú de la pel·lícula"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Descarrega els subtítols"
+msgstr "Baixar-se els subtítols"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -558,16 +461,56 @@ msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse f
 msgstr "[B]CONFIGUREU ELS COMPLEMENTS[/B][CR][CR]Gestioneu els complements instal·lats · Cerqueu i instal·leu complements des de xbmc.org[CR]Modifiqueu els paràmetres dels complements"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Seleccioneu el vostre perfil d'usuari[CR]per iniciar la sessió i continuar"
+msgstr "Seleccioneu el vostre perfil d'usuari de l'XBMC[CR]per iniciar la sessió i continuar"
 
-msgctxt "#31900"
-msgid "Weather Maps"
-msgstr "Mapes del temps"
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -592,10 +535,6 @@ msgstr "Predicció"
 msgctxt "#31906"
 msgid "Maps & Video"
 msgstr "Mapes i vídeo"
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
-msgstr "Vídeo de la predicció [COLOR=grey2](Reproducció a pantalla completa)[/COLOR]"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"
