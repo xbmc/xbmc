@@ -228,6 +228,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     }
 
     CURL url(URIUtils::SubstitutePath(strFileName));
+    CUtil::WakeUpFileHost(url);
     if ( (flags & READ_NO_CACHE) == 0 && URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
@@ -314,6 +315,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
   try
   {
     CURL url(URIUtils::SubstitutePath(strFileName));
+    CUtil::WakeUpFileHost(url);
 
     m_pFile = CFileFactory::CreateLoader(url);
     if (m_pFile && m_pFile->OpenForWrite(url, bOverWrite))
@@ -352,6 +354,7 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
     }
 
     url = URIUtils::SubstitutePath(strFileName);
+    CUtil::WakeUpFileHost(url);
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return false;
@@ -413,6 +416,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
   try
   {
     url = URIUtils::SubstitutePath(strFileName);
+    CUtil::WakeUpFileHost(url);
     
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -709,6 +713,7 @@ bool CFile::Delete(const CStdString& strFileName)
   try
   {
     CURL url(URIUtils::SubstitutePath(strFileName));
+    CUtil::WakeUpFileHost(url);
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -736,6 +741,7 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
   {
     CURL url(URIUtils::SubstitutePath(strFileName));
     CURL urlnew(URIUtils::SubstitutePath(strNewFileName));
+    CUtil::WakeUpFileHost(url);
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -762,6 +768,7 @@ bool CFile::SetHidden(const CStdString& fileName, bool hidden)
   try
   {
     CURL url(URIUtils::SubstitutePath(fileName));
+    CUtil::WakeUpFileHost(url);
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())

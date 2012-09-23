@@ -33,6 +33,7 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
+#include "Util.h"
 
 using namespace std;
 using namespace XFILE;
@@ -137,6 +138,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
       items.SetPath(strPath);
     else
     {
+      CUtil::WakeUpFileHost(realPath);
+
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
       if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
@@ -237,6 +240,7 @@ bool CDirectory::Create(const CStdString& strPath)
   try
   {
     CStdString realPath = URIUtils::SubstitutePath(strPath);
+    CUtil::WakeUpFileHost(realPath);
     auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Create(realPath.c_str()))
@@ -256,6 +260,7 @@ bool CDirectory::Exists(const CStdString& strPath)
   try
   {
     CStdString realPath = URIUtils::SubstitutePath(strPath);
+    CUtil::WakeUpFileHost(realPath);
     auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       return pDirectory->Exists(realPath.c_str());
@@ -274,6 +279,7 @@ bool CDirectory::Remove(const CStdString& strPath)
   try
   {
     CStdString realPath = URIUtils::SubstitutePath(strPath);
+    CUtil::WakeUpFileHost(realPath);
     auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Remove(realPath.c_str()))
