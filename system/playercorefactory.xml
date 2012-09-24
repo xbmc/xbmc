@@ -11,7 +11,7 @@
 
   <rules name="system rules">
     <rule name="rtv" protocols="rtv" player="DVDPlayer" />
-    <rule name="hdhomerun/myth/mms/udp" protocols="hdhomerun|myth|cmyth|mms|mmsh|udp" player="DVDPlayer" />
+    <rule name="myth/mms" protocols="myth|cmyth|mms|mmsh" player="DVDPlayer" />
     <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />
     <rule name="rtmp" protocols="rtmp" player="videodefaultplayer" />
 
@@ -26,6 +26,7 @@
 
     <!-- DVDs -->
     <rule name="dvd" dvd="true" player="DVDPlayer" />
+    <rule name="ifo" dvdfile="true" player="DVDPlayer" />
     <rule name="dvdimage" dvdimage="true" player="DVDPlayer" />
 
     <!-- Only dvdplayer can handle these normally -->
