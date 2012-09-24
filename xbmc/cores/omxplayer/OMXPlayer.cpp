@@ -53,7 +53,6 @@
 #include "utils/LangCodeExpander.h"
 #include "guilib/LocalizeStrings.h"
 
-#include "BitstreamConverter.h"
 #include "storage/MediaManager.h"
 #include "GUIUserMessages.h"
 #include "utils/StreamUtils.h"
