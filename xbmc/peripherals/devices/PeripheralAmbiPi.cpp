@@ -165,8 +165,7 @@ void CPeripheralAmbiPi::ConnectToDevice()
   CLog::Log(LOGINFO, "%s - Connecting to AmbiPi on %s:%d", __FUNCTION__, m_address.c_str(), m_port);  
 
   m_connection.Disconnect();
-  m_connection.ConfigureAddress(m_address, m_port);
-  m_connection.Connect();
+  m_connection.Connect(m_address, m_port);
 }
 
 #define RETRY_DELAY_WHEN_UNCONFIGURED 1
@@ -202,7 +201,7 @@ void CPeripheralAmbiPi::Process(void)
 
 }
 
-void CAmbiPi::OnSettingChanged(const CStdString &strChangedSetting)
+void CPeripheralAmbiPi::OnSettingChanged(const CStdString &strChangedSetting)
 {
   CLog::Log(LOGDEBUG, "%s - handling configuration change, setting: '%s'", __FUNCTION__, strChangedSetting.c_str());
 
@@ -210,17 +209,17 @@ void CAmbiPi::OnSettingChanged(const CStdString &strChangedSetting)
   InitialiseFeature(FEATURE_AMBIPI);
 }
 
-void CAmbiPi::DisconnectFromDevice(void)
+void CPeripheralAmbiPi::DisconnectFromDevice(void)
 {
   CLog::Log(LOGDEBUG, "%s - disconnecting from the AmbiPi", __FUNCTION__);
   if (IsRunning())
   {
     StopThread(true);
   }
-  m_connection->Disconnect();
+  m_connection.Disconnect();
 }
 
-bool CAmbiPi::IsRunning(void) const
+bool CPeripheralAmbiPi::IsRunning(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsRunning;
@@ -499,12 +498,11 @@ void CImageConversion::ConvertYuvToRgb(const YUV *pYuv, RGB *pRgb)
   pRgb->b = pYuv->y + 1.7790 * (pYuv->u - 128);
 }
 
-
 CAmbiPiConnection::CAmbiPiConnection(void) :
   CThread("AmbiPi"),
-  m_socket(INVALID_SOCKET)
+  m_socket(INVALID_SOCKET),
   m_bConnected(false),
-  m_bConnecting(false),
+  m_bConnecting(false)
 {
 }
 
