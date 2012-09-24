@@ -1,0 +1,22 @@
+**WARNING: alpha version - use at your own risk.**
+
+I tested on 1GB mk802 with miniand lubuntu.
+Resolution is fixed to 1280x720.
+
+Installation:
+
+Get miniand lubuntu with 720p resolution for your device from here:
+
+https://www.miniand.com/forums/forums/development/topics/mk802-guides-and-images
+
+After that install xbmca10.deb with the following command:
+
+sudo gdebi xbmca10.deb
+
+Starting:
+
+sudo start xbmc
+
+(Attention: this stops lightdm/x11-session, so it is a good idea to have ssh server running)
+
+First start takes some time since xbmc creates the database and starts downloading plugins.
