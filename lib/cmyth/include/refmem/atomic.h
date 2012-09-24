@@ -24,15 +24,30 @@
 #pragma GCC optimization_level 0
 #endif
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #include <windows.h>
+#define inline __inline
 #endif
+
+#if defined __mips__
+#include <atomic.h>
+#endif
+
+#if defined(__APPLE__)
+#include <libkern/OSAtomic.h>
+
+typedef	volatile int32_t mvp_atomic_t;
+
+#define __mvp_atomic_increment(x)	OSAtomicIncrement32(x)
+#define __mvp_atomic_decrement(x)	OSAtomicDecrement32(x)
+#else
+typedef	volatile unsigned int mvp_atomic_t;
+
 /**
  * Atomically incremente a reference count variable.
  * \param valp address of atomic variable
  * \return incremented reference count
  */
-typedef	unsigned mvp_atomic_t;
 static inline unsigned
 __mvp_atomic_increment(mvp_atomic_t *valp)
 {
@@ -45,8 +60,8 @@ __mvp_atomic_increment(mvp_atomic_t *valp)
 		: "r" (valp), "0" (0x1)
 		: "cc", "memory"
 		);
-#elif defined __i386__
-	asm volatile (".byte 0xf0, 0x0f, 0xc1, 0x02" /*lock; xaddl %eax, (%edx) */
+#elif defined __i386__ || defined __x86_64__
+	__asm__ volatile (".byte 0xf0, 0x0f, 0xc1, 0x02" /*lock; xaddl %eax, (%edx) */
 		      : "=a" (__val)
 		      : "0" (1), "m" (*valp), "d" (valp)
 		      : "memory");
@@ -63,16 +78,35 @@ __mvp_atomic_increment(mvp_atomic_t *valp)
 		      : "r" (valp)
 		      : "cc", "memory");
 #elif defined _MSC_VER
-  __val = InterlockedIncrement(valp);
-#else
+	__val = InterlockedIncrement(valp);
+#elif defined ANDROID
+	__val = __atomic_inc(valp) + 1;
+#elif defined __arm__ && !defined __thumb__
+	int tmp1, tmp2;
+	int inc = 1;
+	__asm__ __volatile__ (
+		"\n"
+		"0:"
+		"ldr     %0, [%3]\n"
+		"add     %1, %0, %4\n"
+		"swp     %2, %1, [%3]\n"
+		"cmp     %0, %2\n"
+		"swpne   %0, %2, [%3]\n"
+		"bne     0b\n"
+		: "=&r"(tmp1), "=&r"(__val), "=&r"(tmp2) 
+		: "r" (valp), "r"(inc) 
+		: "cc", "memory");
+#elif defined __mips__
+	__val = atomic_increment_val(valp);
+#elif defined __GNUC__
 	/*
 	 * Don't know how to atomic increment for a generic architecture
-	 * so punt and just increment the value.
+	 * so try to use GCC builtin
 	 */
-#ifdef _WIN32
-  #pragma message("unknown architecture, atomic increment is not...");
+	__val = __sync_add_and_fetch(valp,1);
 #else
-  #warning unknown architecture, atomic increment is not...
+#if !defined(_MSC_VER)
+#warning unknown architecture, atomic increment is not...
 #endif
 	__val = ++(*valp);
 #endif
@@ -96,8 +130,8 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 		: "r" (valp), "0" (0x1)
 		: "cc", "memory"
 		);
-#elif defined __i386__
-	asm volatile (".byte 0xf0, 0x0f, 0xc1, 0x02" /*lock; xaddl %eax, (%edx) */
+#elif defined __i386__ || defined __x86_64__
+	__asm__ volatile (".byte 0xf0, 0x0f, 0xc1, 0x02" /*lock; xaddl %eax, (%edx) */
 		      : "=a" (__val)
 		      : "0" (-1), "m" (*valp), "d" (valp)
 		      : "memory");
@@ -113,6 +147,25 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 		      : "=&r" (__val)
 		      : "r" (valp)
 		      : "cc", "memory");
+#elif defined ANDROID
+	__val = __atomic_dec(valp) - 1;
+#elif defined __arm__ && !defined __thumb__
+	int tmp1, tmp2;
+	int inc = -1;
+	__asm__ __volatile__ (
+		"\n"
+		"0:"
+		"ldr     %0, [%3]\n"
+		"add     %1, %0, %4\n"
+		"swp     %2, %1, [%3]\n"
+		"cmp     %0, %2\n"
+		"swpne   %0, %2, [%3]\n"
+		"bne     0b\n"
+		: "=&r"(tmp1), "=&r"(__val), "=&r"(tmp2) 
+		: "r" (valp), "r"(inc) 
+		: "cc", "memory");
+#elif defined __mips__
+	__val = atomic_decrement_val(valp);
 #elif defined __sparcv9__
 	mvp_atomic_t __newval, __oldval = (*valp);
 	do
@@ -126,17 +179,23 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 	/*  The value for __val is in '__oldval' */
 	__val = __oldval;
 #elif defined _MSC_VER
-  __val = InterlockedDecrement(valp);
-#else
+	__val = InterlockedDecrement(valp);
+#elif defined __GNUC__
 	/*
 	 * Don't know how to atomic decrement for a generic architecture
-	 * so punt and just decrement the value.
+	 * so use GCC builtin
 	 */
-//#warning unknown architecture, atomic decrement is not...
+	__val = __sync_sub_and_fetch(valp,1);
+#else
+#if !defined(_MSC_VER)
+#warning unknown architecture, atomic deccrement is not...
+#endif
 	__val = --(*valp);
 #endif
 	return __val;
 }
+#endif
+
 #define mvp_atomic_inc __mvp_atomic_inc
 static inline int mvp_atomic_inc(mvp_atomic_t *a) {
 	return __mvp_atomic_increment(a);
@@ -155,6 +214,11 @@ static inline int mvp_atomic_dec_and_test(mvp_atomic_t *a) {
 #define mvp_atomic_set __mvp_atomic_set
 static inline void mvp_atomic_set(mvp_atomic_t *a, unsigned val) {
 	*a = val;
+};
+
+#define mvp_atomic_val __mvp_atomic_val
+static inline int mvp_atomic_val(mvp_atomic_t *a) {
+	return *a;
 };
 
 #ifdef __APPLE__

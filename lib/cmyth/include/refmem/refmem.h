@@ -24,11 +24,16 @@
 #ifndef __REFMEM_H
 #define __REFMEM_H
 
+#include "atomic.h"
+
 /*
  * -----------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------
  */
+
+/* Return current number of references outstanding for everything */
+extern int ref_get_refcount();
 
 /**
  * Release a reference to allocated memory.
@@ -94,5 +99,32 @@ extern void ref_set_destroy(void *block, ref_destroy_t func);
  * Print allocation information to stdout.
  */
 extern void ref_alloc_show(void);
+
+/*
+ * Debug level constants used to determine the level of debug tracing
+ * to be done and the debug level of any given message.
+ */
+
+#define REF_DBG_NONE    -1
+#define REF_DBG_ERRORS   0
+#define REF_DBG_COUNTERS 1
+#define REF_DBG_DEBUG    2
+#define REF_DBG_ALL      3
+
+/**
+ * Set librefmem debug level.
+ * \param l debugging level (-1 for none, 3 for all)
+ */
+void refmem_dbg_level(int l);
+
+/**
+ * Enable all librefmem debugging.
+ */
+void refmem_dbg_all();
+
+/**
+ * Disable all librefmem debugging.
+ */
+void refmem_dbg_none();
 
 #endif /* __REFMEM_H */
