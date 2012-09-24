@@ -128,8 +128,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       strData.TrimRight("\r");
     }
 
-    if (!length)
-      return;
+    if (!length) return;
     
     OutputDebugString(strData);
 

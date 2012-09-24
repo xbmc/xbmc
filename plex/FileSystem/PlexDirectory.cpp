@@ -653,7 +653,7 @@ class PlexMediaNode
 
      // Make sure we have the trailing slash.
      if (pItem->m_bIsFolder == true && pItem->GetPath()[pItem->GetPath().size()-1] != '/' && pItem->GetPath().find("?") == string::npos)
-       pItem->SetPath("/");
+       pItem->SetPath(pItem->GetPath() + "/");
 
      // Set up the context menu
      for (TiXmlElement* element = el.FirstChildElement(); element; element=element->NextSiblingElement())
