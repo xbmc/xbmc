@@ -573,6 +573,9 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 
     ClearStreamInfos();
 
+    if (m_item.IsDVDFile() || m_item.IsDVD())
+      return false;
+
     // setup to spin the busy dialog until we are playing
     m_ready.Reset();
 
@@ -1576,7 +1579,7 @@ void CAMLPlayer::Process()
           case PLAYER_EXIT:
             if (m_log_level > 5)
             {
-              CLog::Log(LOGDEBUG, "CAMLPlayer::Process PLAYER_STOPED");
+              CLog::Log(LOGDEBUG, "CAMLPlayer::Process PLAYER_STOPPED");
               CLog::Log(LOGDEBUG, "CAMLPlayer::Process: %s", m_dll->player_status2str(pstatus));
             }
             stopPlaying = true;
