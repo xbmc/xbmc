@@ -816,7 +816,7 @@ bool CApplication::Create()
   bool bFullScreen = false;
   //if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
   /* PLEX */
-  if (!g_Windowing.CreateNewWindow("Plex", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+  if (!g_Windowing.CreateNewWindow("PlexAlpha", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
@@ -1032,8 +1032,8 @@ bool CApplication::InitDirectoriesOSX()
       //CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
       //CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
       /* PLEX */
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/Plex");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/Plex/userdata");
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + PLEX_TARGET_NAME);
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/"+ PLEX_TARGET_NAME +"/userdata");
       /* END PLEX */
     #endif
 

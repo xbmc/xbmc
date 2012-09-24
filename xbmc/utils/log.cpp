@@ -158,8 +158,8 @@ bool CLog::Init(const char* path)
     strLogFile.Format("%sxbmc.log", path);
     strLogFileOld.Format("%sxbmc.old.log", path);
 #else
-    strLogFile.Format("%sPlex.log", path);
-    strLogFileOld.Format("%sPlex.old.log", path);
+    strLogFile.Format("%s%s.log", path, PLEX_TARGET_NAME);
+    strLogFileOld.Format("%s%s.old.log", path, PLEX_TARGET_NAME);
 #endif
     struct stat64 info;
     if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&

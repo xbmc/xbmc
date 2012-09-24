@@ -41,6 +41,7 @@ add_definitions(
 	-D_FILE_OFFSET_BITS=64
 	-D_LARGEFILE64_SOURCE
 	-D__PLEX__
+  -DPLEX_TARGET_NAME="PlexAlpha"
 )
 
 #### Frameworks for MacOSX
