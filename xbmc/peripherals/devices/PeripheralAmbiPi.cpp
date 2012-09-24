@@ -157,7 +157,12 @@ void CPeripheralAmbiPi::UpdateSampleRectangles(unsigned int imageWidth, unsigned
 
 void CPeripheralAmbiPi::SendData(void) {
   TileData *pTileData = m_pGrid->GetTileData();
-  m_connection.Send(pTileData->stream, pTileData->streamLength);
+  try {
+    m_connection.Send(pTileData->stream, pTileData->streamLength);
+  } catch (std::exception &e) {
+    CLog::Log(LOGINFO, "%s - Send exception", __FUNCTION__);  
+    // TODO reconnect?
+  }
 }
 
 void CPeripheralAmbiPi::ConnectToDevice()
@@ -190,7 +195,7 @@ void CPeripheralAmbiPi::Process(void)
     }
 
     if (!m_bStop)
-      Sleep(retryDelay);
+      Sleep(retryDelay * 1000);
   }
 
   {
@@ -418,10 +423,6 @@ void CAmbiPiGrid::CalculateAverageColorForTile(const YV12Image* pImage, Tile *pT
     return; // TODO implement support for 2bpp images
   }
 
-  BYTE *pLineY = pImage->plane[PLANE_Y];
-  BYTE *pLineU = pImage->plane[PLANE_U];
-  BYTE *pLineV = pImage->plane[PLANE_V];
-
   BYTE *pY, *pU, *pV;
 
   RGB rgb;
@@ -431,12 +432,18 @@ void CAmbiPiGrid::CalculateAverageColorForTile(const YV12Image* pImage, Tile *pT
   AverageYUV averageYuv = { 0, 0, 0 };
 
   unsigned long int pixelsInTile = (pTile->m_sampleRect.y2 - pTile->m_sampleRect.y1) * (pTile->m_sampleRect.x2 - pTile->m_sampleRect.x1);
-  
+
+  BYTE *pLineY = pImage->plane[PLANE_Y] + int((pImage->stride[PLANE_Y]/2) * pTile->m_sampleRect.y1);
+  BYTE *pLineU = pImage->plane[PLANE_U] + int((pImage->stride[PLANE_U]/2) * pTile->m_sampleRect.y1);
+  BYTE *pLineV = pImage->plane[PLANE_V] + int((pImage->stride[PLANE_V]/2) * pTile->m_sampleRect.y1);
+
+
   for (int y = pTile->m_sampleRect.y1; y < pTile->m_sampleRect.y2; y++) 
   {
-    pY = pLineY;
-    pU = pLineU;
-    pV = pLineV;
+    pY = pLineY + (int)pTile->m_sampleRect.x1;
+    pU = pLineU + (int)pTile->m_sampleRect.x1;
+    pV = pLineV + (int)pTile->m_sampleRect.x1;
+
     for (int x = pTile->m_sampleRect.x1; x < pTile->m_sampleRect.x2; x++) 
     {
       yuv.y = *(pY++);
@@ -448,26 +455,25 @@ void CAmbiPiGrid::CalculateAverageColorForTile(const YV12Image* pImage, Tile *pT
       UpdateAverageYuv(&yuv, pixelsInTile, &averageYuv);
       UpdateAverageRgb(&rgb, pixelsInTile, &averageRgb);
     }
-    pLineY += pImage->stride[PLANE_Y];
-    pLineU += pImage->stride[PLANE_U];
-    pLineV += pImage->stride[PLANE_V];
+    pLineY += (pImage->stride[PLANE_Y]/2);
+    pLineU += (pImage->stride[PLANE_U]/2);
+    pLineV += (pImage->stride[PLANE_V]/2);
   }
   UpdateAverageColorForTile(pTile, &averageYuv);
-
+ 
   /*
   CLog::Log(LOGDEBUG, "%s - average color for tile, x: %d, y: %d, RGB: #%02x%02x%02x, YUV: #%02x%02x%02x",
     __FUNCTION__, 
     pTile->m_x, 
     pTile->m_y, 
-    (BYTE)averageRgb->r, 
-    (BYTE)averageRgb->g,
-    (BYTE)averageRgb->b,
-    (BYTE)averageYuv->y, 
-    (BYTE)averageYuv->u,
-    (BYTE)averageYuv->v
+    (BYTE)averageRgb.r, 
+    (BYTE)averageRgb.g,
+    (BYTE)averageRgb.b,
+    (BYTE)averageYuv.y, 
+    (BYTE)averageYuv.u,
+    (BYTE)averageYuv.v
   );
   */
-
 }
 
 void CAmbiPiGrid::UpdateAverageYuv(const YUV *pYuv, unsigned long int numPixels, AverageYUV *pAverageYuv)
@@ -535,7 +541,10 @@ void CAmbiPiConnection::Disconnect()
   {
     m_socket.reset();
   }
+  m_bConnected = false;
 }
+
+#define CONNECT_RETRY_DELAY 5
 
 void CAmbiPiConnection::Process(void)
 {
@@ -549,7 +558,7 @@ void CAmbiPiConnection::Process(void)
     AttemptConnection();
 
     if (!m_bConnected && !m_bStop)
-      Sleep(5);
+      Sleep(CONNECT_RETRY_DELAY * 1000);
   }
 
   {
