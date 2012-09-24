@@ -293,53 +293,63 @@ void CAmbiPiGrid::UpdateTileCoordinates(unsigned int width, unsigned int height)
   unsigned int start_position_x = width / 2;
 
   unsigned int zeroBasedY;
-  unsigned int leftHalfZeroBasedX;
-  unsigned int rightHalfZeroBasedX;
+  unsigned int zeroBasedX;
 
   unsigned int x;
   unsigned int y;
 
-  unsigned int leftTileIndex = 0;
-  unsigned int rightTileIndex = m_numTiles / 2;
+  unsigned int tileIndex = 0;
 
   for (y = 1; y <= height; y++)
   {
     zeroBasedY = y - 1;
     if (y == 1) 
     {
-      // ProcessFromCenterToEdges
-
+      // ProcessTopEdgeFromCenterToLeft
       for (x = start_position_x; x > 0; x--)
       {
-        leftHalfZeroBasedX = x - 1;
-        rightHalfZeroBasedX = width - x;
-        UpdateSingleTileCoordinates(leftTileIndex++, leftHalfZeroBasedX, zeroBasedY);
-        UpdateSingleTileCoordinates(rightTileIndex++, rightHalfZeroBasedX, zeroBasedY);
+        zeroBasedX = x - 1;
+        UpdateSingleTileCoordinates(tileIndex++, zeroBasedX, zeroBasedY);
       }
     } 
     else if (y == height)
     {
-      // ProcessFromEdgesToCenter
-
-      for (x = 1; x <= start_position_x; x++)
+      // ProcessBottomEdge
+      for (x = 1; x < width; x++)
       {
-        leftHalfZeroBasedX = x - 1;
-        rightHalfZeroBasedX = width - x;
-        UpdateSingleTileCoordinates(leftTileIndex++, leftHalfZeroBasedX, zeroBasedY);
-        UpdateSingleTileCoordinates(rightTileIndex++, rightHalfZeroBasedX, zeroBasedY);
+        zeroBasedX = x - 1;
+        UpdateSingleTileCoordinates(tileIndex++, zeroBasedX, zeroBasedY);
       }
     }
     else
     {
-      // ProcessEdgesOnly
-
-      leftHalfZeroBasedX = 0;
-      rightHalfZeroBasedX = width - 1;
-      UpdateSingleTileCoordinates(leftTileIndex++, leftHalfZeroBasedX, y - 1);
-      UpdateSingleTileCoordinates(rightTileIndex++, rightHalfZeroBasedX, y - 1);
+      // ProcessLeftEdgeOnly
+      zeroBasedX = 0;
+      UpdateSingleTileCoordinates(tileIndex++, zeroBasedX, zeroBasedY);
     }
   }
-  CLog::Log(LOGDEBUG, "%s - current indexes, left: %d, right: %d", __FUNCTION__, leftTileIndex, rightTileIndex);  
+
+  for (y = height; y >= 1; y--)
+  {
+    zeroBasedY = y - 1;
+    if (y == 1)
+    {
+      // ProcessTopEdgeFromRightToCenter
+      for (x = width; x > start_position_x; x--)
+      {
+        zeroBasedX = x - 1;
+        UpdateSingleTileCoordinates(tileIndex++, zeroBasedX, zeroBasedY);
+      }
+    }
+    else
+    {
+      // ProcessRightEdgeOnly
+      zeroBasedX = width - 1;
+      UpdateSingleTileCoordinates(tileIndex++, zeroBasedX, zeroBasedY);
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "%s - leds positions processed: %d", __FUNCTION__, tileIndex);  
 }
 
 void CAmbiPiGrid::UpdateSingleTileCoordinates(unsigned int tileIndex, unsigned int x, unsigned int y)
