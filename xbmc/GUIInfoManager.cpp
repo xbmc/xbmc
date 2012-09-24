@@ -4921,6 +4921,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition, int s
   else if (condition == LISTITEM_TYPE)
   {
     uint32_t param = secondCondition > 0 ? secondCondition : condition;
+    if (param > m_stringParameters.size())
+      return false;
     return CStdString(item->GetProperty("type").asString()).Equals(m_stringParameters[param]);
   }
   else if (condition == LISTITEM_STATUS)
@@ -4935,6 +4937,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition, int s
     }
 
     uint32_t param = secondCondition > 0 ? secondCondition : condition;
+    if (param > m_stringParameters.size())
+      return false;
     return lhs.Equals(m_stringParameters[param]);
   }
   else if (condition == LISTITEM_ISSELECTED)

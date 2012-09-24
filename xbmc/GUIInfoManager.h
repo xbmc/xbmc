@@ -535,6 +535,9 @@ public:
     m_data2 = data2;
     if (flag)
       SetInfoFlag(flag);
+    /* PLEX */
+    m_secondCondition = secondCondition;
+    /* END PLEX */
   }
   bool operator ==(const GUIInfo &right) const
   {
