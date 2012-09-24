@@ -22,6 +22,7 @@ endforeach()
 
 get_property(ALL_SRCS GLOBAL PROPERTY SRCS_LIST)
 add_library(xbmc OBJECT ${xbmc_SRCS} ${ALL_SRCS})
+add_dependencies(xbmc cpluff ffmpeg cximage)
 
 # reset this so we can use add_sources later on.
 set_property(GLOBAL PROPERTY SRCS_LIST "")

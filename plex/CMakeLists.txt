@@ -70,6 +70,7 @@ endif()
 
 install(TARGETS Plex BUNDLE DESTINATION .)
 install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})
+install(FILES ${plexdir}/Splash.png DESTINATION ${resourcesdir}/XBMC/media)
 
 #set(ffmpeglibs avcodec avformat avutil avcore avfilter avdevice postproc swscale)
 #foreach(l ${ffmpeglibs})
