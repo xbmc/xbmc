@@ -125,6 +125,11 @@ void CPeripheralAmbiPi::RenderUpdateCallBack(const void *ctx, const CRect &SrcRe
 
 void CPeripheralAmbiPi::ProcessImage()
 {
+  if (!m_connection.IsConnected())
+  {
+    return;
+  }
+
   UpdateImage();  
   GenerateDataStreamFromImage();
   SendData();
@@ -675,4 +680,10 @@ void CAmbiPiConnection::Send(const BYTE *buffer, int length)
   {
     throw CAmbiPiSendException();
   }
+}
+
+bool CAmbiPiConnection::IsConnected(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bConnected;
 }
