@@ -711,6 +711,18 @@ void CGUISettings::Initialize()
   stringstream s;
   s << uuid;
 
+  // In standalone mode we default to another.
+  if (g_application.IsStandAlone())
+    AddInt(pwm, "powermanagement.shutdownstate", 13008, POWERSTATE_SHUTDOWN, shutdown, SPIN_CONTROL_TEXT);
+  else
+  {
+    shutdown.insert(make_pair(13009,POWERSTATE_QUIT));
+    shutdown.insert(make_pair(13014,POWERSTATE_MINIMIZE));
+    AddInt(pwm, "powermanagement.shutdownstate", 13008, POWERSTATE_QUIT, shutdown, SPIN_CONTROL_TEXT);
+  }
+
+  AddInt(laf, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+
   AddString(NULL, "system.uuid", 99999, s.str().c_str(), SPIN_CONTROL_TEXT);
 }
 
