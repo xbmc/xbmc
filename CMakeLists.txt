@@ -2,7 +2,7 @@ project("Plex")
 cmake_minimum_required(VERSION 2.8.8)
 
 set(root ${PROJECT_SOURCE_DIR})
-set(dependdir ${root}/plex/Dependencies/7deb2e8-darwin-i686)
+set(dependdir ${root}/plex/Dependencies/darwin-i686)
 set(plexdir ${root}/plex)
 
 include_directories(
@@ -79,13 +79,12 @@ set(external_libs
 	samplerate
 	microhttpd
 	yajl
-	jpeg
+  jpeg
 	crypto
 	GLEW
 	SDL
 	SDL_mixer
 	tinyxml
-	iconv
 	boost_thread
 	boost_system
 	z
@@ -111,7 +110,8 @@ set(find_libs
 
 set(system_libs
 	stdc++
-	png
+  iconv
+#	png
 )
 
 foreach(lib ${external_libs} ${find_libs})
