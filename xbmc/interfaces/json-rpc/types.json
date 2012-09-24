@@ -402,7 +402,7 @@
   "Video.Fields.Movie": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the cast, showlink and/or resume field will result in increased response times",
+      "description": "Requesting the cast, showlink and/or tag field will result in increased response times",
       "enum": [ "title", "genre", "year", "rating", "director", "trailer",
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
@@ -439,7 +439,7 @@
   "Video.Fields.Episode": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the cast and/or resume field will result in increased response times",
+      "description": "Requesting the cast field will result in increased response times",
       "enum": [ "title", "plot", "votes", "rating", "writer",
                 "firstaired", "playcount", "runtime", "director",
                 "productioncode", "season", "episode", "originaltitle",
@@ -450,7 +450,6 @@
   "Video.Fields.MusicVideo": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the resume field will result in increased response times",
       "enum": [ "title", "playcount", "runtime", "director",
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",

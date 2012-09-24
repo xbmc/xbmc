@@ -760,7 +760,7 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &paramete
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume" || fieldValue == "tag")
+    if (fieldValue == "cast" || fieldValue == "showlink" || fieldValue == "tag")
       additionalInfo = true;
     else if (fieldValue == "streamdetails")
       streamdetails = true;
@@ -795,7 +795,7 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parame
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "resume")
+    if (fieldValue == "cast")
       additionalInfo = true;
     else if (fieldValue == "streamdetails")
       streamdetails = true;
@@ -825,26 +825,17 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &par
   if (!videodatabase.Open())
     return InternalError;
 
-  bool additionalInfo = false;
   bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
-    CStdString fieldValue = itr->asString();
-    if (fieldValue == "resume")
-      additionalInfo = true;
-    else if (fieldValue == "streamdetails")
+    if (itr->asString() == "streamdetails")
       streamdetails = true;
   }
 
-  if (additionalInfo || streamdetails)
+  if (streamdetails)
   {
     for (int index = 0; index < items.Size(); index++)
-    {
-      if (additionalInfo)
-        videodatabase.GetMusicVideoInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      if (streamdetails)
-        videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
-    }
+      videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
   }
 
   int size = items.Size();
