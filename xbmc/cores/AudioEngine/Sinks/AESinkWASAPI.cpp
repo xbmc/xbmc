@@ -101,6 +101,15 @@ static const enum AEChannel layoutsList[][16] =
   {AE_CH_FL,  AE_CH_FR,  AE_CH_FC,  AE_CH_LFE, AE_CH_SL,  AE_CH_SR,  AE_CH_BL,  AE_CH_BR,  AE_CH_TFL, AE_CH_TFR, AE_CH_TFC, AE_CH_TBL, AE_CH_TBR, AE_CH_TBC, AE_CH_TC,  AE_CH_NULL} // Standard 7.1 + 3 front top + 3 back top + Top Center
 };
 
+static const unsigned int ac3bitrates[] = { 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000,
+                                            160000, 192000, 224000, 256000, 320000, 384000, 448000, 512000, 576000, 640000,
+                                            0 };
+
+static const unsigned int dtsbitrates[] = { 32000, 56000, 64000, 96000, 112000, 128000, 192000, 224000, 256000, 320000, 384000,
+                                            448000, 512000, 576000, 640000, 768000, 960000, 1024000, 1152000, 1280000, 1344000,
+                                            1408000, 1411200, 1472000, 1536000,
+                                            0 };
+
 struct sampleFormat
 {
   GUID subFormat;
@@ -948,7 +957,131 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   WAVEFORMATEXTENSIBLE_IEC61937 wfxex_iec61937;
   WAVEFORMATEXTENSIBLE &wfxex = wfxex_iec61937.FormatExt;
 
-  if (format.m_dataFormat <= AE_FMT_FLOAT)
+  if (format.m_dataFormat <= AE_FMT_INVALID || format.m_dataFormat >= AE_FMT_MAX)
+  {
+    const AEDataFormat defaultDataFormat = AE_FMT_S16NE;
+    CLog::Log(LOGWARNING, __FUNCTION__": Wrong input data format. Trying with default: %s.", CAEUtil::DataFormatToStr(defaultDataFormat));
+    format.m_dataFormat = defaultDataFormat;
+  } else if ( AE_IS_RAW(format.m_dataFormat) )
+  {
+    if (format.m_dataFormat == AE_FMT_AC3)
+    {
+      if (format.m_sampleRate != 44100 && format.m_sampleRate != 48000 && format.m_sampleRate != 32000)
+      {
+        const unsigned int defaultAC3SampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultAC3SampleRate);
+        format.m_sampleRate = defaultAC3SampleRate;
+      }
+
+      const unsigned int * bitrate = ac3bitrates;
+      while( *bitrate && *bitrate != format.m_encodedRate )
+        bitrate++;
+      if (bitrate == 0)
+      {
+        const unsigned int defaultAC3Bitrate = 448000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input bitrate for %s: %d kbps. Trying with default: %d kbps.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_encodedRate, defaultAC3Bitrate);
+        format.m_encodedRate = defaultAC3Bitrate;
+      }
+
+      static const CAEChannelInfo mono(AE_CH_LAYOUT_1_0), stereo(AE_CH_LAYOUT_2_0), front3(AE_CH_LAYOUT_3_0), 
+                    stereoPt1(AE_CH_LAYOUT_2_1), front3Pt1(AE_CH_LAYOUT_3_1), quard(AE_CH_LAYOUT_4_0), std5Pt1(AE_CH_LAYOUT_5_1);
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 6 ||
+          (format.m_channelLayout != mono && format.m_channelLayout != stereo && format.m_channelLayout != front3 &&
+            format.m_channelLayout != stereoPt1 && format.m_channelLayout != front3Pt1 && format.m_channelLayout != quard
+            && format.m_channelLayout != std5Pt1) )
+      {
+        const CAEChannelInfo & layout = (format.m_encodedRate <= 224)? stereo : std5Pt1;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout for %s. Trying with default: %s.", CAEUtil::DataFormatToStr(format.m_dataFormat), (format.m_encodedRate <= 224)?"stereo":"5.1");
+        format.m_channelLayout = layout;
+      }
+
+    }
+
+    if (format.m_dataFormat == AE_FMT_DTS)
+    {
+      /* DTS Standard for DTS Core audio specify one optional channel extension (up to 7.1 channels) OR one optional frequency extension for up to 5.1 channel */
+      if (!(format.m_sampleRate == 44100 || format.m_sampleRate == 48000 || format.m_sampleRate == 32000 ||
+            (format.m_channelLayout.Count() <=6 && 
+              (format.m_sampleRate == 96000 || format.m_sampleRate == 88200 || format.m_sampleRate == 64000) )) ) 
+      { 
+        const unsigned int defaultDTSSampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultDTSSampleRate);
+        format.m_sampleRate = defaultDTSSampleRate;
+      }
+
+      const unsigned int * bitrate = dtsbitrates;
+      while( *bitrate && *bitrate != format.m_encodedRate )
+        bitrate++;
+      if (bitrate == 0)
+      {
+        const unsigned int defaultDTSBitrate = 768000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input bitrate for %s: %d kbps. Trying with default: %d kbps.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_encodedRate, defaultDTSBitrate);
+        format.m_encodedRate = defaultDTSBitrate;
+      }
+
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 8)
+      {
+        const CAEChannelInfo defaultChannelLayout(AE_CH_LAYOUT_5_1);
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong channel layout for %s. Trying with default 5.1 layout.", CAEUtil::DataFormatToStr(format.m_dataFormat));
+        format.m_channelLayout = defaultChannelLayout;
+      }
+    }
+
+    if (format.m_dataFormat == AE_FMT_EAC3)
+    {
+      if (format.m_sampleRate != 44100 && format.m_sampleRate != 48000 && format.m_sampleRate != 32000 &&
+          format.m_sampleRate != 24000 && format.m_sampleRate != 22500 && format.m_sampleRate != 16000)
+      {
+        const unsigned int defaultAC3SampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultAC3SampleRate);
+        format.m_sampleRate = defaultAC3SampleRate;
+      }
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 14)
+      {
+        const CAEChannelInfo defaultEAC3layout(AE_CH_LAYOUT_5_1);
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout for %s. Trying with default: 5.1.", CAEUtil::DataFormatToStr(format.m_dataFormat));
+        format.m_channelLayout = defaultEAC3layout;
+      }
+    }
+
+    if (format.m_dataFormat == AE_FMT_DTSHD)
+    {
+      if (!(format.m_sampleRate == 44100 || format.m_sampleRate == 48000 || format.m_sampleRate == 32000 ||
+          format.m_sampleRate == 96000 || format.m_sampleRate == 88200 || format.m_sampleRate == 64000 ||
+          format.m_sampleRate == 192000 || format.m_sampleRate == 176400 || format.m_sampleRate == 128000 ||
+          format.m_sampleRate == 24000 || format.m_sampleRate == 22050 || format.m_sampleRate == 16000 ||
+          format.m_sampleRate == 12000 || format.m_sampleRate == 8000 || 
+          format.m_sampleRate == 352800 || format.m_sampleRate == 384000) )
+      {
+        const unsigned int defaultDTSSampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultDTSSampleRate);
+        format.m_sampleRate = defaultDTSSampleRate;
+      }
+
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 32)
+      {
+        const CAEChannelInfo defaultEAC3layout(AE_CH_LAYOUT_5_1);
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout for %s. Trying with default: 5.1.", CAEUtil::DataFormatToStr(format.m_dataFormat));
+        format.m_channelLayout = defaultEAC3layout;
+      }
+    }
+  }
+
+  if (format.m_sampleRate == 0 || format.m_sampleRate > WASAPISampleRates[0])
+  {
+    const unsigned int defaultSampleRate = 44100;
+    CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate: %d Hz. Trying with default: %d Hz", format.m_sampleRate, defaultSampleRate);
+    format.m_sampleRate = defaultSampleRate;
+  }
+
+  if (format.m_channelLayout.Count() == 0)
+  {
+    const CAEChannelInfo defaultChannelLayout(AE_CH_LAYOUT_2_0);
+    CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout. Trying with default: stereo");
+    format.m_channelLayout = defaultChannelLayout;
+  }
+
+  if (!AE_IS_RAW(format.m_dataFormat)) 
     BuildWaveFormatExtensible(format, wfxex);
   else
     BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
