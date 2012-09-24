@@ -2618,6 +2618,8 @@ int CUtil::GetRandomNumber()
   unsigned int number;
   if (rand_s(&number) == 0)
     return (int)number;
+#elif defined(TARGET_ANDROID)
+  srand(time(NULL));
 #else
   return rand_r(&s_randomSeed);
 #endif
