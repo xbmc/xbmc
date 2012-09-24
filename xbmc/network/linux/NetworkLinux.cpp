@@ -28,7 +28,7 @@
   #include <linux/sockios.h>
 #endif
 #ifdef TARGET_ANDROID
-#include "linux/getdelim.h"
+#include "android/bionic_supplement/bionic_supplement.h"
 #include "sys/system_properties.h"
 #endif
 #include <errno.h>

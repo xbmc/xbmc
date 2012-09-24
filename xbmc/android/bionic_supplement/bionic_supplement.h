@@ -19,11 +19,13 @@
  *
  */
 
+#include <stdio.h>
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 int rand_r (unsigned int *seed);
+ssize_t getdelim(char **lineptr, size_t *n, int delimiter, FILE *stream);
 
 #ifdef __cplusplus
 }
