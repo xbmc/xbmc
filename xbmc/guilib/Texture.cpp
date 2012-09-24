@@ -215,7 +215,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
 
 bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate)
 {
-#ifdef TARGET_RASPBERRY_PI
+#if defined(HAS_OMXPLAYER)
   if (URIUtils::GetExtension(texturePath).Equals(".jpg") || 
       URIUtils::GetExtension(texturePath).Equals(".tbn") 
       /*|| URIUtils::GetExtension(texturePath).Equals(".png")*/)
