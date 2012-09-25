@@ -77,6 +77,7 @@ public:
   bool ptsinvalid;  // pts cannot be trusted (avi's).
   bool forced_aspect; // aspect is forced from container
   int orientation; // orientation of the video in degress counter clockwise
+  int bitsperpixel;
 
   // AUDIO
   int channels;

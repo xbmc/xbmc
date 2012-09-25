@@ -162,6 +162,7 @@ public:
     bForcedAspect = false;
     type = STREAM_VIDEO;
     iOrientation = 0;
+    iBitsPerPixel = 0;
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -176,6 +177,7 @@ public:
   bool bPTSInvalid; // pts cannot be trusted (avi's).
   bool bForcedAspect; // aspect is forced from container
   int iOrientation; // orientation of the video in degress counter clockwise
+  int iBitsPerPixel;
 };
 
 class CDemuxStreamAudio : public CDemuxStream

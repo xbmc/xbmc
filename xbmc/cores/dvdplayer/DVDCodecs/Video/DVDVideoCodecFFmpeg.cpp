@@ -263,6 +263,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // if we don't do this, then some codecs seem to fail.
   m_pCodecContext->coded_height = hints.height;
   m_pCodecContext->coded_width = hints.width;
+  m_pCodecContext->bits_per_coded_sample = hints.bitsperpixel;
 
   if( hints.extradata && hints.extrasize > 0 )
   {

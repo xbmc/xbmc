@@ -1010,6 +1010,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
         st->iOrientation = 0;
+        st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
 
         AVDictionaryEntry *rtag = m_dllAvUtil.av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
