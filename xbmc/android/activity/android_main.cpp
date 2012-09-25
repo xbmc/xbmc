@@ -168,7 +168,7 @@ extern void android_main(struct android_app* state)
   CXBMCApp xbmcApp(state->activity);
   if (xbmcApp.isValid())
   {
-    IInputHandler inputHandler(xbmcApp.GetDPI());
+    IInputHandler inputHandler;
     eventLoop.run(xbmcApp, inputHandler);
   }
   else

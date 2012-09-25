@@ -27,7 +27,7 @@ class CAndroidTouch : protected ITouchHandler
 {
 
 public:
-  CAndroidTouch(uint32_t dpi = 0);
+  CAndroidTouch();
   virtual ~CAndroidTouch();
   bool onTouchEvent(AInputEvent* event);
 
@@ -45,6 +45,8 @@ protected:
   virtual void OnSingleLongPress(float x, float y);
   virtual void OnZoomPinch(float centerX, float centerY, float zoomFactor);
   virtual void OnRotate(float centerX, float centerY, float angle);
+
+  virtual void setDPI(uint32_t dpi);
 
 private:
   void XBMC_Touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y);

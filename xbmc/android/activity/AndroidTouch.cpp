@@ -24,11 +24,9 @@
 #include "windowing/WinEvents.h"
 #include "ApplicationMessenger.h"
 
-CAndroidTouch::CAndroidTouch(uint32_t dpi) : m_dpi(dpi)
+CAndroidTouch::CAndroidTouch() : m_dpi(160)
 {
   CTouchInput::Get().RegisterHandler(this);
-  if (!m_dpi)
-    m_dpi = 160; // sensible default
 }
 
 CAndroidTouch::~CAndroidTouch()
@@ -160,6 +158,12 @@ void CAndroidTouch::OnZoomPinch(float centerX, float centerY, float zoomFactor)
 void CAndroidTouch::OnRotate(float centerX, float centerY, float angle)
 {
   XBMC_TouchGesture(ACTION_GESTURE_ROTATE, centerX, centerY, angle, 0);
+}
+
+void CAndroidTouch::setDPI(uint32_t dpi)
+{
+  if (dpi != 0)
+    m_dpi = dpi;
 }
 
 void CAndroidTouch::XBMC_Touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y)
