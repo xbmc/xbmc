@@ -731,11 +731,6 @@ bool CApplication::Create()
   g_curlInterface.global_init(CURL_GLOBAL_ALL);
 #endif
 
-  // Create and initilize the plex application
-  m_plexApp = PlexApplication::Create();
-  m_plexApp->SetGlobalVolume(g_application.GetVolume());
-  /* END PLEX */
-
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
@@ -765,6 +760,11 @@ bool CApplication::Create()
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
+
+  // Create and initilize the plex application
+  m_plexApp = PlexApplication::Create();
+  m_plexApp->SetGlobalVolume(g_application.GetVolume());
+  /* END PLEX */
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
