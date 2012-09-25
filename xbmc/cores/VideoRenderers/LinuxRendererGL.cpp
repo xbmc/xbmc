@@ -700,18 +700,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glDisable(GL_POLYGON_STIPPLE);
 
   }
-  else if(m_format == RENDER_FMT_VDPAU_420
-      && !(flags & RENDER_FLAG_BOTH))
-  {
-    glDisable(GL_BLEND);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    Render(flags | RENDER_FLAG_TOP, index);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0f, 1.0f, 1.0f, 128 / 255.0f);
-    Render(flags | RENDER_FLAG_BOT , index);
-  }
   else
     Render(flags, index);
 
@@ -1209,13 +1197,21 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     {
     case RQ_LOW:
     case RQ_SINGLEPASS:
-      RenderSinglePass(renderBuffer, m_currentField);
+      if (m_format == RENDER_FMT_VDPAU_420 && m_currentField == FIELD_FULL)
+        RenderProgressiveWeave(renderBuffer, m_currentField);
+      else
+        RenderSinglePass(renderBuffer, m_currentField);
       VerifyGLState();
       break;
 
     case RQ_MULTIPASS:
-      RenderToFBO(renderBuffer, m_currentField);
-      RenderFromFBO();
+      if (m_format == RENDER_FMT_VDPAU_420 && m_currentField == FIELD_FULL)
+        RenderProgressiveWeave(renderBuffer, m_currentField);
+      else
+      {
+        RenderToFBO(renderBuffer, m_currentField);
+        RenderFromFBO();
+      }
       VerifyGLState();
       break;
     }
@@ -1338,7 +1334,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::RenderToFBO(int index, int field)
+void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];
 
@@ -1440,6 +1436,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field)
   }
   m_fbo.width  *= planes[0].pixpertex_x;
   m_fbo.height *= planes[0].pixpertex_y;
+  if (weave)
+    m_fbo.height *= 2;
 
   // 1st Pass to video frame size
   glBegin(GL_QUADS);
@@ -1556,6 +1554,31 @@ void CLinuxRendererGL::RenderFromFBO()
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
   VerifyGLState();
+}
+
+void CLinuxRendererGL::RenderProgressiveWeave(int index, int field)
+{
+  bool scaleUp = (int)m_sourceHeight < g_graphicsContext.GetHeight() || (int)m_sourceWidth < g_graphicsContext.GetWidth();
+
+  if (m_fbo.fbo.IsSupported() && (scaleUp || m_renderQuality == RQ_MULTIPASS))
+  {
+    glEnable(GL_POLYGON_STIPPLE);
+    glPolygonStipple(stipple_weave);
+    RenderToFBO(index, FIELD_TOP, true);
+    glPolygonStipple(stipple_weave+4);
+    RenderToFBO(index, FIELD_BOT, true);
+    glDisable(GL_POLYGON_STIPPLE);
+    RenderFromFBO();
+  }
+  else
+  {
+    glEnable(GL_POLYGON_STIPPLE);
+    glPolygonStipple(stipple_weave);
+    RenderSinglePass(index, FIELD_TOP);
+    glPolygonStipple(stipple_weave+4);
+    RenderSinglePass(index, FIELD_BOT);
+    glDisable(GL_POLYGON_STIPPLE);
+  }
 }
 
 void CLinuxRendererGL::RenderVDPAU(int index, int field)
