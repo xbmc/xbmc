@@ -256,7 +256,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }
   }
 
-#ifndef __PLEX__
   if (!pItem->HasThumbnail())
   {
     pItem->SetUserVideoThumb();
@@ -283,13 +282,15 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
           pItem->SetThumbnailImage(cachedThumb);
         }
       }
-      else if (!pItem->m_bIsFolder && pItem->IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb") &&
-               g_guiSettings.GetBool("myvideos.extractflags"))
+      else if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
         CFileItem item(*pItem);
         CStdString path(item.GetPath());
+
+#ifndef __PLEX__
         if (URIUtils::IsInRAR(item.GetPath()))
           SetupRarOptions(item,path);
+#endif
 
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, cachedThumb);
         AddJob(extract);
@@ -300,6 +301,35 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);
 
+  /* PLEX */
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    pItem->CacheLocalFanart();
+
+    if (pItem->GetQuickFanart().size() > 0)
+    {
+      if (CFile::Exists(pItem->GetCachedPlexMediaServerFanart()))
+        pItem->SetProperty("fanart_image", pItem->GetCachedPlexMediaServerFanart());
+    }
+    else
+    {
+      if (CFile::Exists(pItem->GetCachedFanart()))
+        pItem->SetProperty("fanart_image", pItem->GetCachedFanart());
+    }
+  }
+
+  if (!pItem->HasProperty("banner_image"))
+  {
+    pItem->CacheBanner();
+    if (pItem->GetQuickBanner().size() > 0)
+    {
+      if (CFile::Exists(pItem->GetCachedPlexMediaServerBanner()))
+        pItem->SetProperty("banner_image", pItem->GetCachedPlexMediaServerBanner());
+    }
+  }
+  /* END PLEX */
+
+#ifndef __PLEX__
   if (!pItem->m_bIsFolder &&
        pItem->HasVideoInfoTag() &&
        g_guiSettings.GetBool("myvideos.extractflags") &&
@@ -313,7 +343,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     CThumbExtractor* extract = new CThumbExtractor(item,path,false);
     AddJob(extract);
   }
-#else
+#endif
+
+
+  /* PLEX */
   // Walk through properties and see if there are any image resources to be loaded.
   CGUIListItem::PropertyMap& properties = pItem->GetPropertyDict();
   typedef pair<CStdString, CVariant> PropertyPair;
@@ -336,7 +369,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       }
     }
   }
-#endif
+  /* END PLEX */
 
   return true;
 }
