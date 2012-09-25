@@ -1,8 +1,10 @@
 #include "UPnPServer.h"
 #include "UPnPInternal.h"
+#include "Application.h"
 #include "GUIViewState.h"
 #include "Platinum.h"
 #include "ThumbLoader.h"
+#include "interfaces/AnnouncementManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
@@ -16,12 +18,35 @@
 #include "video/VideoDatabase.h"
 
 using namespace std;
+using namespace ANNOUNCEMENT;
 using namespace XFILE;
 
 namespace UPNP
 {
 
 NPT_UInt32 CUPnPServer::m_MaxReturnedItems = 0;
+
+const char* audio_containers[] = { "musicdb://1/", "musicdb://2/", "musicdb://3/",
+                                   "musicdb://4/", "musicdb://6/", "musicdb://9/",
+                                   "musicdb://10/" };
+
+const char* video_containers[] = { "videodb://1/2/", "videodb://2/2/", "videodb://4/",
+                                   "videodb://5/"  };
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::CUPnPServer
++---------------------------------------------------------------------*/
+CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/, int port /*= 0*/) :
+    PLT_MediaConnect(friendly_name, false, uuid, port),
+    PLT_FileMediaConnectDelegate("/", "/"),
+    m_scanning(g_application.IsMusicScanning() || g_application.IsVideoScanning())
+{
+}
+
+CUPnPServer::~CUPnPServer()
+{
+    ANNOUNCEMENT::CAnnouncementManager::RemoveAnnouncer(this);
+}
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::ProcessGetSCPD
@@ -42,12 +67,100 @@ CUPnPServer::ProcessGetSCPD(PLT_Service*                  service,
 NPT_Result
 CUPnPServer::SetupServices()
 {
-  PLT_MediaConnect::SetupServices();
-  PLT_Service* service = NULL;
-  NPT_Result result = FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service);
-  if (service)
-    service->SetStateVariable("SortCapabilities", "res@duration,res@size,res@bitrate,dc:date,dc:title,dc:size,upnp:album,upnp:artist,upnp:albumArtist,upnp:episodeNumber,upnp:genre,upnp:originalTrackNumber,upnp:rating");
-  return result;
+    PLT_MediaConnect::SetupServices();
+    PLT_Service* service = NULL;
+    NPT_Result result = FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service);
+    if (service)
+      service->SetStateVariable("SortCapabilities", "res@duration,res@size,res@bitrate,dc:date,dc:title,dc:size,upnp:album,upnp:artist,upnp:albumArtist,upnp:episodeNumber,upnp:genre,upnp:originalTrackNumber,upnp:rating");
+
+    m_scanning = true;
+    OnScanCompleted(AudioLibrary);
+    m_scanning = true;
+    OnScanCompleted(VideoLibrary);
+
+    // now safe to start passing on new notifications
+    ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
+
+    return result;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::OnScanCompleted
++---------------------------------------------------------------------*/
+void
+CUPnPServer::OnScanCompleted(int type)
+{
+    if (type == AudioLibrary) {
+        for (size_t i = 0; i < sizeof(audio_containers)/sizeof(audio_containers[0]); i++)
+            UpdateContainer(audio_containers[i]);
+    }
+    else if (type == VideoLibrary) {
+        for (size_t i = 0; i < sizeof(video_containers)/sizeof(video_containers[0]); i++)
+            UpdateContainer(video_containers[i]);
+    }
+    else
+        return;
+    m_scanning = false;
+    PropagateUpdates();
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::UpdateContainer
++---------------------------------------------------------------------*/
+void
+CUPnPServer::UpdateContainer(const string& id)
+{
+    map<string,pair<bool, unsigned long> >::iterator itr = m_UpdateIDs.find(id);
+    unsigned long count = 0;
+    if (itr != m_UpdateIDs.end())
+        count = ++itr->second.second;
+    m_UpdateIDs[id] = make_pair(true, count);
+    PropagateUpdates();
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::PropagateUpdates
++---------------------------------------------------------------------*/
+void
+CUPnPServer::PropagateUpdates()
+{
+    PLT_Service* service = NULL;
+    NPT_String current_ids;
+    string buffer;
+    map<string,pair<bool, unsigned long> >::iterator itr;
+
+    if (m_scanning)
+        return;
+
+    NPT_CHECK_LABEL(FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service), failed);
+
+    // we pause, and we must retain any changes which have not been
+    // broadcast yet
+    NPT_CHECK_LABEL(service->PauseEventing(), failed);
+    NPT_CHECK_LABEL(service->GetStateVariableValue("ContainerUpdateIDs", current_ids), failed);
+    buffer = (const char*)current_ids;
+    if (!buffer.empty())
+        buffer.append(",");
+
+    // only broadcast ids with modified bit set
+    for (itr = m_UpdateIDs.begin(); itr != m_UpdateIDs.end(); ++itr) {
+        if (itr->second.first) {
+            buffer.append(StringUtils::Format("%s,%ld,", itr->first.c_str(), itr->second.second).c_str());
+            itr->second.first = false;
+        }
+    }
+
+    // set the value, Platinum will clear ContainerUpdateIDs after sending
+    NPT_CHECK_LABEL(service->SetStateVariable("ContainerUpdateIDs", buffer.substr(0,buffer.size()-1).c_str(), true), failed);
+    NPT_CHECK_LABEL(service->IncStateVariable("SystemUpdateID"), failed);
+
+    service->PauseEventing(false);
+    return;
+
+failed:
+    // should attempt to start eventing on a failure
+    if (service) service->PauseEventing(false);
+    CLog::Log(LOGERROR, "UPNP: Unable to propagate updates");
 }
 
 /*----------------------------------------------------------------------
@@ -193,6 +306,79 @@ CUPnPServer::Build(CFileItemPtr                  item,
 failure:
     delete object;
     return NULL;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::Announce
++---------------------------------------------------------------------*/
+void
+CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+    NPT_String path;
+    int item_id;
+    string item_type;
+
+    if (strcmp(sender, "xbmc"))
+        return;
+
+    if (strcmp(message, "OnUpdate") && strcmp(message, "OnRemove")
+        && strcmp(message, "OnScanStarted") && strcmp(message, "OnScanFinished"))
+        return;
+
+    if (data.isNull()) {
+        if (!strcmp(message, "OnScanStarted")) {
+            m_scanning = true;
+        }
+        else if (!strcmp(message, "OnScanFinished")) {
+            OnScanCompleted(flag);
+        }
+    }
+    else {
+        // handle both updates & removals
+        if (!data["item"].isNull()) {
+            item_id = data["item"]["id"].asInteger();
+            item_type = data["item"]["type"].asString();
+        }
+        else {
+            item_id = data["id"].asInteger();
+            item_type = data["type"].asString();
+        }
+
+        // we always update 'recently added' nodes along with the specific container,
+        // as we don't differentiate 'updates' from 'adds' in RPC interface
+        if (flag == VideoLibrary) {
+            if(item_type == "episode") {
+                CVideoDatabase db;
+                if (!db.Open()) return;
+                int show_id = db.GetTvShowForEpisode(item_id);
+                UpdateContainer(StringUtils::Format("videodb://2/2/%d/", show_id));
+                UpdateContainer("videodb://5/");
+            }
+            else if(item_type == "tvshow") {
+                UpdateContainer("videodb://2/2/");
+                UpdateContainer("videodb://5/");
+            }
+            else if(item_type == "movie") {
+                UpdateContainer("videodb://1/2/");
+                UpdateContainer("videodb://4/");
+            }
+            else if(item_type == "musicvideo") {
+                UpdateContainer("videodb://4/");
+            }
+        }
+        else if (flag == AudioLibrary && item_type == "song") {
+            // we also update the 'songs' container is maybe a performance drop too
+            // high? would need to check if slow clients even cache at all anyway
+            CMusicDatabase db;
+            CAlbum album;
+            if (!db.Open()) return;
+            if (db.GetAlbumFromSong(item_id, album)) {
+                UpdateContainer(StringUtils::Format("musicdb://3/%ld", album.idAlbum));
+                UpdateContainer("musicdb://4/");
+                UpdateContainer("musicdb://6/");
+            }
+        }
+    }
 }
 
 /*----------------------------------------------------------------------
