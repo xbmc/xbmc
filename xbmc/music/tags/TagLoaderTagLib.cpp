@@ -185,7 +185,8 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
 
   if (ape && !g_advancedSettings.m_prioritiseAPEv2tags)
     ParseAPETag(ape, art, tag);
-  else if (asf)
+
+  if (asf)
     ParseASF(asf, art, tag);
   else if (id3v2)
     ParseID3v2Tag(id3v2, art, tag);
