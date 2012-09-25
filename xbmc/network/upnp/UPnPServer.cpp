@@ -105,7 +105,10 @@ CUPnPServer::Build(CFileItemPtr                  item,
             goto failure;
         }
 
-    } else {
+    } else if (path.StartsWith("addons://"))
+        // don't serve addon listings for now
+        goto failure;
+      else {
         // db path handling
         NPT_String file_path, share_name;
         file_path = item->GetPath();
@@ -128,8 +131,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     }
                 }
             }
-        } else if (file_path.StartsWith("videodb://")) {
-            if (path == "videodb://" ) {
+        } else if (file_path.StartsWith("library://") || file_path.StartsWith("videodb://")) {
+            if (path == "library://video" ) {
                 item->SetLabel("Video Library");
                 item->SetLabelPreformated(true);
             } else {
@@ -200,7 +203,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "videodb://";
+        id = "library://video";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
@@ -338,7 +341,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             items.Add(item);
 
             // video library
-            item.reset(new CFileItem("videodb://", true));
+            item.reset(new CFileItem("library://video", true));
             item->SetLabel("Video Library");
             item->SetLabelPreformated(true);
             items.Add(item);
