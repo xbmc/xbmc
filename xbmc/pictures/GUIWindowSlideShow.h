@@ -108,6 +108,10 @@ private:
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
   int  GetNextSlide();
 
+  void AnnouncePlayerPlay(const CFileItemPtr& item);
+  void AnnouncePlayerPause(const CFileItemPtr& item);
+  void AnnouncePlayerStop(const CFileItemPtr& item);
+
   int m_iCurrentSlide;
   int m_iNextSlide;
   int m_iDirection;

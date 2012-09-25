@@ -42,6 +42,8 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "interfaces/AnnouncementManager.h"
+#include "pictures/PictureInfoTag.h"
 
 using namespace XFILE;
 
@@ -151,6 +153,30 @@ CGUIWindowSlideShow::~CGUIWindowSlideShow(void)
 {
   Reset();
   delete m_slides;
+}
+
+void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
+{
+  CVariant param;
+  param["player"]["speed"] = 1;
+  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", item, param);
+}
+
+void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
+{
+  CVariant param;
+  param["player"]["speed"] = 0;
+  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPause", item, param);
+}
+
+void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
+{
+  CVariant param;
+  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  param["end"] = true;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", item, param);
 }
 
 bool CGUIWindowSlideShow::IsPlaying() const
@@ -396,7 +422,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom,
                    (float)g_settings.m_ResInfo[m_Resolution].iHeight * m_fZoom,
                     maxWidth, maxHeight);
-    if (!m_slides->Get(m_iCurrentSlide)->IsVideo())
+    if (!m_slides->Get(m_iCurrentSlide)->IsVideo()) 
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->GetPath(), maxWidth, maxHeight);
   }
 
@@ -502,6 +528,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
     m_iCurrentSlide = m_iNextSlide;
     m_iNextSlide    = GetNextSlide();
+    AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
 
     m_iZoomFactor = 1;
     m_fZoom = 1.0f;
@@ -630,6 +657,8 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_PREVIOUS_MENU:
   case ACTION_NAV_BACK:
   case ACTION_STOP:
+    if (m_bSlideShow && m_slides->Size())
+      AnnouncePlayerStop(m_slides->Get(m_iCurrentSlide));
     g_windowManager.PreviousWindow();
     break;
 
@@ -665,7 +694,16 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
 
   case ACTION_PAUSE:
     if (m_bSlideShow)
+    {
       m_bPause = !m_bPause;
+      if (m_slides->Size())
+      {
+        if (m_bPause)
+          AnnouncePlayerPause(m_slides->Get(m_iCurrentSlide));
+        else
+          AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
+      }
+    }
     break;
 
   case ACTION_PLAYER_PLAY:
@@ -675,7 +713,11 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       m_bPause = false;
     }
     else if (m_bPause)
+    {
       m_bPause = false;
+      if (m_slides->Size())
+        AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
+    }
     break;
 
   case ACTION_ZOOM_OUT:
