@@ -249,15 +249,9 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
     break;
   }
 
-  if(m_decoded_width <= 720 && m_decoded_height <=576 && deinterlace)
-  {
+  m_deinterlace = deinterlace;
+  if(m_deinterlace)
     CLog::Log(LOGDEBUG, "COMXVideo::Open : enable deinterlace\n");
-    m_deinterlace = true;
-  }
-  else
-  {
-    m_deinterlace = false;
-  }
 
   std::string componentName = "";
 
