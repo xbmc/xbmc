@@ -198,7 +198,7 @@ DLLEXPORT void XBMC_close_file(void *hdl, void* cb, void* file)
   ((CB_AddOnLib*)cb)->CloseFile(((AddonCB*)hdl)->addonData, file);
 }
 
-DLLEXPORT int64_t XBMC_get_file_chunk_size(void *hdl, void* cb, void* file)
+DLLEXPORT int XBMC_get_file_chunk_size(void *hdl, void* cb, void* file)
 {
   if (cb == NULL)
     return 0;
