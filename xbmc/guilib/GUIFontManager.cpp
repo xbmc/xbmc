@@ -33,6 +33,12 @@
 #include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
 
+/* PLEX */
+#ifdef __APPLE__
+#include "CocoaUtilsPlus.h"
+#endif
+/* END PLEX */
+
 using namespace std;
 
 GUIFontManager g_fontManager;
@@ -88,7 +94,11 @@ static bool CheckFont(CStdString& strPath, const CStdString& newPath,
   return true;
 }
 
+#ifndef __PLEX__
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border, float lineSpacing, float aspect, const RESOLUTION_INFO *sourceRes, bool preserveAspect)
+#else
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, int iStyle, bool border, float lineSpacing, float aspect, RESOLUTION_INFO *sourceRes, bool preserveAspect, const CStdString& variant)
+#endif
 {
   float originalAspect = aspect;
 
@@ -122,6 +132,17 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (!CheckFont(strPath,"special://home/media/Fonts",file))
     CheckFont(strPath,"special://xbmc/media/Fonts",file);
 
+  /* PLEX */
+  if (!FindSystemFontPath(URIUtils::GetFileName(strFilename), &strPath))
+  {
+    #ifdef __APPLE__
+    CStdString fontPath = Cocoa_GetSystemFontPathFromDisplayName(strFilename);
+    if (XFILE::CFile::Exists(fontPath))
+      strPath = fontPath;
+    #endif
+  }
+  /* END PLEX */
+
   // check if we already have this font file loaded (font object could differ only by color or style)
   CStdString TTFfontName;
   TTFfontName.Format("%s_%f_%f%s", strFilename, newSize, aspect, border ? "_border" : "");
@@ -130,11 +151,22 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
+#ifndef __PLEX__
     bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect, 1.0f, border);
+#else
+    bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect, 1.0f, border, variant);
+#endif
 
     if (!bFontLoaded)
     {
       delete pFontFile;
+
+      /* PLEX */
+      CStdString fontAlias;
+      CLog::Log(LOGINFO, "Looking for alias...");
+      if (GetFontAlias(strFilename, variant, fontAlias, iStyle))
+        return LoadTTF(strFontName, fontAlias, textColor, shadowColor, iSize, iStyle, border, lineSpacing, originalAspect);
+      /* END PLEX */
 
       // font could not be loaded - try Arial.ttf, which we distribute
       if (strFilename != "arial.ttf")
@@ -163,6 +195,9 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   fontInfo.sourceRes = *sourceRes;
   fontInfo.preserveAspect = preserveAspect;
   fontInfo.border = border;
+  /* PLEX */
+  fontInfo.variant = variant;
+  /* END PLEX */
   m_vecFontInfo.push_back(fontInfo);
 
   return pNewFont;
@@ -214,6 +249,9 @@ void GUIFontManager::ReloadTTFFonts(void)
     float newSize = (float)fontInfo.size;
     CStdString& strPath = fontInfo.fontFilePath;
     CStdString& strFilename = fontInfo.fileName;
+    /* PLEX */
+    CStdString& variant = fontInfo.variant;
+    /* END PLEX */
 
     RescaleFontSizeAndAspect(&newSize, &aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
 
@@ -223,7 +261,11 @@ void GUIFontManager::ReloadTTFFonts(void)
     if (!pFontFile)
     {
       pFontFile = new CGUIFontTTF(TTFfontName);
+#ifndef __PLEX__
       if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
+#else
+      if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border, variant))
+#endif
       {
         delete pFontFile;
         // font could not be loaded
@@ -335,6 +377,10 @@ void GUIFontManager::Clear()
   m_vecFontFiles.clear();
   m_vecFontInfo.clear();
   m_fontsetUnicode=false;
+
+  /* PLEX */
+  m_fontAliasMap.clear();
+  /* END PLEX */
 }
 
 void GUIFontManager::LoadFonts(const CStdString& strFontSet)
@@ -349,7 +395,11 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   // If there are no fontset's defined in the XML (old skin format) run in backward compatibility
   // and ignore the fontset request
   CStdString strValue = pChild->Value();
+#ifndef __PLEX__
   if (strValue == "fontset")
+#else
+  if (strValue == "fontset" || strValue == "aliases")
+#endif
   {
     CStdString foundTTF;
     while (pChild)
@@ -372,15 +422,55 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
           if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
             m_fontsetUnicode=true;
 
+#ifndef __PLEX__
           if (m_fontsetUnicode)
+#endif
           {
             LoadFonts(pChild->FirstChild());
             break;
           }
         }
-
       }
 
+      /* PLEX */
+      else if (strValue == "aliases")
+      {
+        const TiXmlNode* pAliasChild = pChild->FirstChild();
+        while (pAliasChild)
+        {
+          const TiXmlNode *pCheckAlias = pAliasChild;
+          pAliasChild = pAliasChild->NextSibling();
+
+          if (CStdString(pCheckAlias->Value()) == "alias")
+          {
+            const char* font = ((TiXmlElement*) pCheckAlias)->Attribute("font");
+            const char* variant = ((TiXmlElement*) pCheckAlias)->Attribute("variant");
+            const char* alias = ((TiXmlElement*) pCheckAlias)->Attribute("alias");
+            const char* aliasStyle = ((TiXmlElement *)pCheckAlias)->Attribute("aliasStyle");
+
+            if (font && variant && alias)
+            {
+              string key = string(font) + "/" + string(variant);
+
+              int iAliasStyle = FONT_STYLE_NORMAL;
+              if (aliasStyle)
+              {
+                CStdString style(aliasStyle);
+                if (style == "bold")
+                  iAliasStyle = FONT_STYLE_BOLD;
+                else if (style == "italics")
+                  iAliasStyle = FONT_STYLE_ITALICS;
+                else if (style == "bolditalics")
+                  iAliasStyle = FONT_STYLE_BOLD_ITALICS;
+              }
+
+              CLog::Log(LOGINFO, "Adding alias %s -> %s:%d", key.c_str(), alias, iAliasStyle);
+              m_fontAliasMap[key] = pair<string, int>(alias, iAliasStyle);
+            }
+          }
+        }
+      }
+      /* END PLEX */
       pChild = pChild->NextSibling();
     }
 
@@ -418,7 +508,18 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
         if (pNode)
         {
           CStdString strFontFileName = pNode->FirstChild()->Value();
+#ifndef __PLEX__
           if (strFontFileName.Find(".ttf") >= 0)
+#else
+          CStdString extension = URIUtils::GetExtension(strFontFileName);
+#endif
+          /* PLEX */
+#ifdef __APPLE__
+          if (extension.Equals(".ttf") || extension.Equals(".dfont") || extension.Equals(".otf") || extension.Equals(".ttc") || extension.length() == 0)
+#else
+          if (extension.Equals(".ttf") || extension.Equals(".dfont") || extension.Equals(".otf") || extension.length() == 0)
+#endif
+          /* END PLEX */
           {
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;
@@ -441,10 +542,21 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
                 iStyle = FONT_STYLE_BOLD_ITALICS;
             }
 
+            /* PLEX */
+            CStdString variant;
+            pNode = fontNode->FirstChild("variant");
+            if (pNode)
+              variant = pNode->FirstChild()->Value();
+            /* END PLEX */
+
             XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
             XMLUtils::GetFloat(fontNode, "aspect", aspect);
 
+#ifndef __PLEX__
             LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing, aspect);
+#else
+            LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing, aspect, NULL, false, variant);
+#endif
           }
         }
       }
@@ -560,3 +672,91 @@ bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)
 
   return false;
 }
+
+/* PLEX */
+bool GUIFontManager::FindSystemFontPath(const CStdString& strFilename, CStdString *fontPath)
+{
+  vector<string> systemPaths;
+  vector<string> fontExtensions;
+
+#ifdef __APPLE__
+  // TODO: Add all the sub folders in each of these system paths
+  string home = getenv("HOME");
+  if (*home.rbegin() == '/')
+    home.erase(home.end()-1, home.end());
+
+  systemPaths.push_back(home + "/Library/Fonts/");
+  systemPaths.push_back("/Library/Fonts/");
+  systemPaths.push_back("/System/Library/Fonts/");
+
+  fontExtensions.push_back("");
+#elif _WIN32
+  systemPaths.push_back("C:\\Windows\\Fonts\\");
+#endif
+
+  fontExtensions.push_back(".ttf");
+  fontExtensions.push_back(".dfont");
+  fontExtensions.push_back(".ttc");
+  fontExtensions.push_back(".otf");
+
+  string foundPath;
+  string foundFullPath;
+
+  bool iterateExtensions = (URIUtils::GetExtension(strFilename).length() == 0);
+  for (unsigned i = 0; i < systemPaths.size(); i++)
+  {
+    foundPath = systemPaths[i] + strFilename.c_str();
+    for (unsigned j = 0; j < fontExtensions.size(); j++)
+    {
+      foundFullPath = foundPath;
+      if (iterateExtensions && fontExtensions[j].size() != 0)
+        foundFullPath += fontExtensions[j];
+
+#ifdef _LINUX
+      foundFullPath = PTH_IC(foundFullPath);
+#endif
+
+      if (XFILE::CFile::Exists(foundFullPath))
+      {
+        *fontPath = foundFullPath.c_str();
+        return TRUE;
+      }
+
+      if (!iterateExtensions)
+        break;
+    }
+  }
+  return FALSE;
+}
+
+std::vector<std::string> GUIFontManager::GetSystemFontNames()
+{
+#ifndef __APPLE__
+#ifdef _MSC_VER
+#pragma message(__WARNING__"TODO: IMPLEMENT ME")
+#else
+#pragma message("TODO: IMPLEMENT ME")
+#endif
+  return std::vector<std::string>();
+#else
+  // should we add all the fonts found in the skin's path?
+  return Cocoa_GetSystemFonts();
+#endif
+}
+
+bool GUIFontManager::GetFontAlias(const CStdString& strFontName, const CStdString& strVariant, CStdString& strAlias, int& aliasStyle)
+{
+  string key = strFontName + "/" + strVariant;
+  if (m_fontAliasMap.find(key) != m_fontAliasMap.end())
+  {
+    pair<string, int> aliasPair = m_fontAliasMap[key];
+    strAlias = aliasPair.first;
+    aliasStyle = aliasPair.second;
+
+    return true;
+  }
+
+  return false;
+}
+
+/* END PLEX */

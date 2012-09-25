@@ -68,7 +68,11 @@ public:
       FT_Done_FreeType(m_library);
   }
 
+#ifndef __PLEX__
   FT_Face GetFont(const CStdString &filename, float size, float aspect)
+#else
+  FT_Face GetFont(const CStdString &filename, float size, float aspect, const CStdString& variant)
+#endif
   {
     // don't have it yet - create it
     if (!m_library)
@@ -79,11 +83,52 @@ public:
       return NULL;
     }
 
-    FT_Face face;
+    FT_Face face = NULL;
 
+#ifndef __PLEX__
     // ok, now load the font face
     if (FT_New_Face( m_library, _P(filename).c_str(), 0, &face ))
       return NULL;
+#else
+    // Iterate through the available faces if we're requesting a specific variant.
+    if (variant.size() > 0)
+    {
+      int numVariants = 0;
+      bool found = false;
+      if (FT_New_Face(m_library, filename, -1, &face) == 0)
+      {
+        numVariants = face->num_faces;
+        FT_Done_Face(face);
+      }
+      else
+        return NULL;
+
+      CLog::Log(LOGINFO, "We have %d variants to open for %s", numVariants, filename.c_str());
+      for (int i=0; i < numVariants; i++)
+      {
+        if (FT_New_Face(m_library, filename, i, &face) != 0)
+          break;
+
+        if (variant == face->style_name)
+        {
+          found = true;
+          break;
+        }
+
+        FT_Done_Face(face);
+      }
+
+      if (found == false)
+        return 0;
+    }
+    else
+    {
+      // ok, now load the font face
+     if (FT_New_Face( m_library, _P(filename), 0, &face ) != 0)
+        return NULL;
+    }
+#endif
+
 
     unsigned int ydpi = GetDPI();
     unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
@@ -97,6 +142,8 @@ public:
       FT_Done_Face(face);
       return NULL;
     }
+
+    CLog::Log(LOGINFO, "Loaded %s(%x) with %d variants", filename.c_str(), face, face->num_faces);
 
     return face;
   };
@@ -226,11 +273,19 @@ void CGUIFontTTFBase::Clear()
   m_vertex_count = 0;
 }
 
+#ifndef __PLEX__
 bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
+#else
+bool CGUIFontTTFBase::Load(const CStdString &strFilename, float height, float aspect, float lineSpacing, bool border, const CStdString &variant)
+#endif
 {
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
+#ifndef __PLEX__
   m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect);
+#else
+  m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect, variant);
+#endif
 
   if (!m_face)
     return false;
