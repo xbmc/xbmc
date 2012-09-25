@@ -47,6 +47,7 @@
     "type": "object",
     "properties": {
       "Player": { "type": "boolean", "required": true },
+      "Playlist": { "type": "boolean", "required": true },
       "GUI": { "type": "boolean", "required": true },
       "System": { "type": "boolean", "required": true },
       "VideoLibrary": { "type": "boolean", "required": true },
@@ -202,33 +203,33 @@
       "subtitles": { "type": "array", "items": { "$ref": "Player.Subtitle" } }
     }
   },
-  "Player.Notifications.Item.Type": {
+  "Notifications.Item.Type": {
     "type": "string",
-    "enum": [ "unknown", "movie", "episode", "musicvideo", "song" ]
+    "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture" ]
   },
-  "Player.Notifications.Item": {
+  "Notifications.Item": {
     "type": [
       { "type": "object", "description": "An unknown item does not have any additional information.",
         "properties": {
-          "type": { "$ref": "Player.Notifications.Item.Type", "required": true }
+          "type": { "$ref": "Notifications.Item.Type", "required": true }
         }
       },
       { "type": "object", "description": "An item known to the database has an identification.",
         "properties": {
-          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
           "id": { "$ref": "Library.Id", "required": true  }
         }
       },
       { "type": "object", "description": "A movie item has a title and may have a release year.",
         "properties": {
-          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
           "title": { "type": "string", "required": true },
           "year": { "type": "integer" }
         }
       },
       { "type": "object", "description": "A tv episode has a title and may have an episode number, season number and the title of the show it belongs to.",
         "properties": {
-          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
           "title": { "type": "string", "required": true },
           "episode": { "type": "integer" },
           "season": { "type": "integer" },
@@ -237,7 +238,7 @@
       },
       { "type": "object", "description": "A music video has a title and may have an album and an artist.",
         "properties": {
-          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
           "title": { "type": "string", "required": true },
           "album": { "type": "string" },
           "artist": { "type": "string" }
@@ -245,11 +246,16 @@
       },
       { "type": "object", "description": "A song has a title and may have an album, an artist and a track number.",
         "properties": {
-          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
           "title": { "type": "string", "required": true },
           "album": { "type": "string" },
           "artist": { "type": "string" },
           "track": { "type": "integer" }
+      },
+      { "type": "object", "description": "A picture has a file path.",
+        "properties": {
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
+          "file": { "type": "string", "required": true }
         }
       }
     ]
@@ -271,7 +277,7 @@
   "Player.Notifications.Data": {
     "type": "object",
     "properties": {
-      "item": { "$ref": "Player.Notifications.Item", "required": true },
+      "item": { "$ref": "Notifications.Item", "required": true },
       "player": { "$ref": "Player.Notifications.Player", "required": true }
     }
   },

@@ -111,6 +111,9 @@ private:
   void AnnouncePlayerPlay(const CFileItemPtr& item);
   void AnnouncePlayerPause(const CFileItemPtr& item);
   void AnnouncePlayerStop(const CFileItemPtr& item);
+  void AnnouncePlaylistRemove(int pos);
+  void AnnouncePlaylistClear();
+  void AnnouncePlaylistAdd(const CFileItemPtr& item, int pos);
 
   int m_iCurrentSlide;
   int m_iNextSlide;

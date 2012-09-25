@@ -179,6 +179,30 @@ void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", item, param);
 }
 
+void CGUIWindowSlideShow::AnnouncePlaylistRemove(int pos)
+{
+  CVariant data;
+  data["playlistid"] = PLAYLIST_PICTURE;
+  data["position"] = pos;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnRemove", data);
+}
+
+void CGUIWindowSlideShow::AnnouncePlaylistClear()
+{
+  CVariant data;
+  data["playlistid"] = PLAYLIST_PICTURE;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnClear", data);
+}
+
+void CGUIWindowSlideShow::AnnouncePlaylistAdd(const CFileItemPtr& item, int pos)
+{
+  CVariant data;
+  data["playlistid"] = PLAYLIST_PICTURE;
+  data["position"] = pos;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnAdd", item, data);
+}
+
+
 bool CGUIWindowSlideShow::IsPlaying() const
 {
   return m_Image[m_iCurrentPic].IsLoaded();
@@ -210,6 +234,7 @@ void CGUIWindowSlideShow::Reset()
   m_iDirection = 1;
   CSingleLock lock(m_slideSection);
   m_slides->Clear();
+  AnnouncePlaylistClear();
   m_Resolution = g_graphicsContext.GetVideoResolution();
 }
 
@@ -251,6 +276,13 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
 void CGUIWindowSlideShow::Add(const CFileItem *picture)
 {
   CFileItemPtr item(new CFileItem(*picture));
+  if (!item->HasVideoInfoTag() && !item->HasPictureInfoTag())
+  {
+    // item without tag; assume it is a picture and force tag generation
+    item->GetPictureInfoTag();
+  }
+  AnnouncePlaylistAdd(item, m_slides->Size());
+
   m_slides->Add(item);
 }
 

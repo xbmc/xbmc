@@ -73,6 +73,7 @@
       { "name": "notifications", "type": "object",
         "properties": {
           "Player": { "$ref": "Optional.Boolean" },
+          "Playlist": { "$ref": "Optional.Boolean" },
           "GUI": { "$ref": "Optional.Boolean" },
           "System": { "$ref": "Optional.Boolean" },
           "AudioLibrary": { "$ref": "Optional.Boolean" },
