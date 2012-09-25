@@ -72,7 +72,6 @@ public:
           m_eCurrentCharset(CUSTOM_CHARSET_DEFAULT) {}
 protected:
   virtual void Process() = 0;
-  void StringToLCDCharSet(CStdString& strText);
   unsigned char GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset=-1);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
 
