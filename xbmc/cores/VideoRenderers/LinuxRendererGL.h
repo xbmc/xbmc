@@ -217,7 +217,6 @@ protected:
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
-  void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
   void RenderToFBO(int renderBuffer, int field);
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
