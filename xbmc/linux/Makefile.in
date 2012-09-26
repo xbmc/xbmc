@@ -11,6 +11,8 @@ SRCS += PosixMountProvider.cpp
 SRCS += XFileUtils.cpp
 SRCS += XHandle.cpp
 SRCS += XLCDproc.cpp
+SRCS += XLCDproc_imon.cpp
+SRCS += XLCDproc_mdm166a.cpp
 SRCS += XMemUtils.cpp
 SRCS += XTimeUtils.cpp
 

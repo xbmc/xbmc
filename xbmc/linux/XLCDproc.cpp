@@ -25,6 +25,8 @@
 #include "../utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "XLCDproc_imon.h"
+#include "XLCDproc_mdm166a.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -46,10 +48,17 @@ XLCDproc::XLCDproc()
   m_lastInitAttempt = 0;
   m_initRetryInterval = INIT_RETRY_INTERVAL;
   m_used = true;
+  m_lcdprocIconDevice = NULL;
+  m_iCharsetTab = LCD_CHARSET_TAB_HD44780;
 }
 
 XLCDproc::~XLCDproc()
 {
+  if(m_lcdprocIconDevice != NULL)
+  {
+    delete m_lcdprocIconDevice;
+    m_lcdprocIconDevice = NULL;
+  }
 }
 
 void XLCDproc::ReadAndFlushSocket()
@@ -199,6 +208,9 @@ bool XLCDproc::Connect()
   if(sscanf(reply+i,"lcd wid %u hgt %u", &m_iColumns, &m_iRows))
     CLog::Log(LOGDEBUG, "XLCDproc::%s - LCDproc data: Columns %i - Rows %i.", __FUNCTION__, m_iColumns, m_iRows);
 
+  // Check for supported extra icon LCD driver
+  RecognizeAndSetIconDriver();
+
   //Build command to setup screen
   CStdString cmd;
   cmd = "screen_add xbmc\n";
@@ -228,8 +240,79 @@ bool XLCDproc::Connect()
   return true;
 }
 
+void XLCDproc::RecognizeAndSetIconDriver()
+{
+  // Get information about the driver
+  CStdString info;
+  info = "info\n";
+
+  if (write(m_sockfd,info.c_str(),info.size()) == -1)
+  {
+    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
+    return;
+  }
+
+  // Receive LCDproc data to determine the driver
+  char reply[1024] = {};
+
+  // Receive server's reply
+  if (read(m_sockfd, reply, 1024) < 0)
+  {
+    // Don't go any further if an error occured
+    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to read from socket", __FUNCTION__);
+    return;
+  }
+
+  // See if running LCDproc driver gave any useful reply.
+  // From lcdprocsrc/server/drivers.c on the info command:
+  // * Get information from loaded drivers.
+  // * \return  Pointer to information string of first driver with get_info() function defined,
+  // *          or the empty string if no driver has a get_info() function.
+  // "empty string" means "\n", the popular HD44780 is such a candidate...
+  if (strncmp(reply, "\n", 1) == 0)
+  {
+    // Empty (unusable) info reply, WARN that
+    CLog::Log(LOGWARNING, "XLCDproc::%s - No usable reply on 'info' command, no icon support!",
+      __FUNCTION__);
+    return;
+  }
+  else
+  {
+    // Log LCDproc 'info' reply
+    CLog::Log(LOGNOTICE, "XLCDproc::%s - Plain driver name is: %s", __FUNCTION__, reply);
+  }
+
+  // to support older and newer versions of the lcdproc driver for the imon-lcd:
+  CStdString driverStringImonLcd = "SoundGraph iMON";
+  CStdString driverStringImonLcd2 = "LCD";
+
+  CStdString driverStringMdm166a = "mdm166a";
+
+  if ((strstr(reply, driverStringImonLcd.c_str()) != NULL) && (strstr(reply,
+      driverStringImonLcd2.c_str()) != NULL))
+  {
+    CLog::Log(LOGINFO, "XLCDproc::%s - Driver is: %s", __FUNCTION__,
+        "SoundGraph iMON LCD driver");
+    m_lcdprocIconDevice = new XLCDproc_imon(m_sockfd);
+    m_iCharsetTab = LCD_CHARSET_TAB_IMONMDM;
+  }
+  else if (strstr(reply, driverStringMdm166a.c_str()) != NULL)
+  {
+    CLog::Log(LOGINFO, "XLCDproc::%s - Driver is: %s", __FUNCTION__,
+              "Targa USB Graphic Vacuum Fluorescent Display (mdm166a)");
+    m_lcdprocIconDevice = new XLCDproc_mdm166a(m_sockfd);
+    m_iCharsetTab = LCD_CHARSET_TAB_IMONMDM;
+  }
+}
+
 void XLCDproc::CloseSocket()
 {
+  if(m_lcdprocIconDevice != NULL)
+  {
+    delete m_lcdprocIconDevice;
+    m_lcdprocIconDevice = NULL;
+  }
+
   if (m_sockfd != -1)
   {
     shutdown(m_sockfd, SHUT_RDWR);
@@ -310,6 +393,12 @@ void XLCDproc::SetContrast(int iContrast)
 
 void XLCDproc::Stop()
 {
+  if (m_lcdprocIconDevice != NULL)
+  {
+    m_lcdprocIconDevice->HandleStop();
+    ReadAndFlushSocket();
+  }
+
   CloseSocket();
   m_bStop = true;
 }
@@ -366,7 +455,7 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 
   CStdString strLineLong = strLine;
   strLineLong.Trim();
-  StringToLCDCharSet(strLineLong);
+  StringToLCDCharSet(strLineLong, m_iCharsetTab);
 
   //make string fit the display if it's smaller than the width
   if (strLineLong.size() < m_iColumns)
@@ -398,4 +487,260 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 
 void XLCDproc::Process()
 {
+}
+
+bool XLCDproc::SendIconStatesToDisplay()
+{
+  if (m_lcdprocIconDevice != NULL)
+  {
+    if (m_lcdprocIconDevice->SendIconStatesToDisplay() == false)
+    {
+      CLog::Log(LOGERROR, "XLCDproc::%s - Icon state update failed, unable to write to socket", __FUNCTION__);
+      CloseSocket();
+      return false;
+    }
+
+    ReadAndFlushSocket();
+  }
+
+  return true;
+}
+
+void XLCDproc::HandleStop(void)
+{
+  if (m_lcdprocIconDevice != NULL)
+  {
+    m_lcdprocIconDevice->HandleStop();
+    ReadAndFlushSocket();
+  }
+}
+
+void XLCDproc::SetIconMovie(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconMovie(on);
+}
+
+void XLCDproc::SetIconMusic(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconMusic(on);
+}
+
+void XLCDproc::SetIconWeather(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconWeather(on);
+}
+
+void XLCDproc::SetIconTV(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconTV(on);
+}
+
+void XLCDproc::SetIconPhoto(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconPhoto(on);
+}
+
+void XLCDproc::SetIconResolution(LCD_RESOLUTION_INDICATOR resolution)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconResolution(resolution);
+}
+
+void XLCDproc::SetProgressBar1(double progress)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetProgressBar1(progress);
+}
+
+void XLCDproc::SetProgressBar2(double progress)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetProgressBar2(progress);
+}
+
+void XLCDproc::SetProgressBar3(double progress)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetProgressBar3(progress);
+}
+
+void XLCDproc::SetProgressBar4(double progress)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetProgressBar4(progress);
+}
+
+void XLCDproc::SetIconMute(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+      m_lcdprocIconDevice->SetIconMute(on);
+}
+
+void XLCDproc::SetIconPlaying(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconPlaying(on);
+}
+
+void XLCDproc::SetIconPause(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconPause(on);
+}
+
+void XLCDproc::SetIconRepeat(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconRepeat(on);
+}
+
+void XLCDproc::SetIconShuffle(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconShuffle(on);
+}
+
+void XLCDproc::SetIconAlarm(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconAlarm(on);
+}
+
+void XLCDproc::SetIconRecord(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconRecord(on);
+}
+
+void XLCDproc::SetIconVolume(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconVolume(on);
+}
+
+void XLCDproc::SetIconTime(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconTime(on);
+}
+
+void XLCDproc::SetIconSPDIF(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconSPDIF(on);
+}
+
+void XLCDproc::SetIconDiscIn(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconDiscIn(on);
+}
+
+void XLCDproc::SetIconSource(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconSource(on);
+}
+
+void XLCDproc::SetIconFit(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconFit(on);
+}
+
+void XLCDproc::SetIconSCR1(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconSCR1(on);
+}
+
+void XLCDproc::SetIconSCR2(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconSCR2(on);
+}
+
+// codec icons - video: video stream format ###################################
+void XLCDproc::SetIconMPEG(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconMPEG(on);
+}
+
+void XLCDproc::SetIconDIVX(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconDIVX(on);
+}
+
+void XLCDproc::SetIconXVID(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconXVID(on);
+}
+
+void XLCDproc::SetIconWMV(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconWMV(on);
+}
+
+// codec icons - video: audio stream format #################################
+void XLCDproc::SetIconMPGA(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconMPGA(on);
+}
+
+void XLCDproc::SetIconAC3(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconAC3(on);
+}
+
+void XLCDproc::SetIconDTS(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconDTS(on);
+}
+
+void XLCDproc::SetIconVWMA(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconVWMA(on);
+}
+// codec icons - audio format ###############################################
+void XLCDproc::SetIconMP3(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconMP3(on);
+}
+
+void XLCDproc::SetIconOGG(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconOGG(on);
+}
+
+void XLCDproc::SetIconAWMA(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconAWMA(on);
+}
+
+void XLCDproc::SetIconWAV(bool on)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconWAV(on);
+}
+
+void XLCDproc::SetIconAudioChannels(int channels)
+{
+  if (m_lcdprocIconDevice != NULL)
+    m_lcdprocIconDevice->SetIconAudioChannels(channels);
 }
