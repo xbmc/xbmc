@@ -6641,7 +6641,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "make -C ${SRCROOT}/xbmc/interfaces/python";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\nmake -C ${SRCROOT}/xbmc/interfaces/python\nfi";
 		};
 		F502C031160F39B300C96C76 /* Make interface-legacy */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6655,7 +6655,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "make -C ${SRCROOT}/xbmc/interfaces/legacy";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\nmake -C ${SRCROOT}/xbmc/interfaces/legacy\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
