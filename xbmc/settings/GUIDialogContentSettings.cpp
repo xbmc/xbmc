@@ -62,6 +62,9 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     {
       m_scrapers.clear();
       m_lastSelected.clear();
+      // save our current scraper (if any)
+      if (m_scraper)
+        m_lastSelected[m_content] = m_scraper;
       m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
@@ -113,15 +116,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
   }
   return CGUIDialogSettings::OnMessage(message);
-}
-
-void CGUIDialogContentSettings::OnWindowLoaded()
-{
-  // save our current scraper (if any)
-  m_lastSelected.clear();
-  m_lastSelected[m_content] = m_scraper;
-  FillContentTypes();
-  CGUIDialogSettings::OnWindowLoaded();
 }
 
 void CGUIDialogContentSettings::SetupPage()
@@ -235,6 +229,7 @@ void CGUIDialogContentSettings::OnCancel()
 
 void CGUIDialogContentSettings::OnInitWindow()
 {
+  FillContentTypes();
   m_bNeedSave = false;
   CGUIDialogSettings::OnInitWindow();
 }
