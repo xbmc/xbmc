@@ -243,7 +243,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
   if (m_BufferSize != m_OutputSize)
   {
     m_OutputSize  = m_BufferSize;
-    m_OutputRatio = (float)m_NeededFrames / m_OutputSize;
+    m_OutputRatio = (double)m_NeededFrames / m_OutputSize;
   }
 
   /* return the number of frames used */
