@@ -780,6 +780,7 @@ void CSoftAE::PlaySound(IAESound *sound)
   m_playing_sounds.push_back(ss);
 
   /* wake to play the sound */
+  m_softSuspend = false;
   m_wake.Set();
 }
 
