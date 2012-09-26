@@ -712,12 +712,16 @@ void CPVRManager::LoadCurrentChannelSettings()
 
 void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
 {
-  m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
+  if (m_channelGroups)
+    m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
 }
 
 CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
-  return m_channelGroups->GetSelectedGroup(bRadio);
+  if (m_channelGroups)
+    return m_channelGroups->GetSelectedGroup(bRadio);
+
+  return CPVRChannelGroupPtr();
 }
 
 bool CPVRRecordingsUpdateJob::DoWork(void)
