@@ -918,7 +918,7 @@ msgstr ""
 
 msgctxt "#264"
 msgid "Record"
-msgstr ""
+msgstr "Record"
 
 msgctxt "#265"
 msgid "Stop Rec."
