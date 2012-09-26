@@ -184,7 +184,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
     {
       if (hint.codec == CODEC_ID_H264 && !hint.ptsinvalid)
       {
-        CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
         if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
       }
     }
@@ -201,7 +200,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
         case CODEC_ID_H264:
           if (hint.codec == CODEC_ID_H264 && hint.ptsinvalid)
             break;
-          CLog::Log(LOGINFO, "Apple VideoToolBox Decoder...");
           if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
         break;
         default:
@@ -226,7 +224,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
             break;
           if (hint.codec == CODEC_ID_MPEG2VIDEO && hint.width <= 720)
             break;
-          CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
           if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
         break;
         default:
@@ -241,7 +238,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   {
       if (hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_VC1)
     {
-      CLog::Log(LOGINFO, "Trying OpenMax Decoder...");
       if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
     }
   }
