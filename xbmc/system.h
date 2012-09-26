@@ -144,6 +144,7 @@
   #endif
   #define HAS_ZEROCONF
   #define HAS_LINUX_NETWORK
+  #define HAS_LCD
 #endif
 
 /*****************
