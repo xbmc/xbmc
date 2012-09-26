@@ -37,6 +37,7 @@ CPulseAESound::CPulseAESound(const std::string &filename, pa_context *context, p
   m_op             (NULL    )
 {
   m_pulseName = StringUtils::CreateUUID();
+  m_wavLoader.Load(filename);
 }
 
 CPulseAESound::~CPulseAESound()
@@ -47,7 +48,7 @@ CPulseAESound::~CPulseAESound()
 bool CPulseAESound::Initialize()
 {
   /* we dont re-init the wav loader in PA as PA handles the samplerate */
-  if (!m_wavLoader.IsValid() && !m_wavLoader.Initialize(m_filename, 0))
+  if (!m_wavLoader.IsValid())
     return false;
 
   m_sampleSpec.format   = PA_SAMPLE_FLOAT32NE;
