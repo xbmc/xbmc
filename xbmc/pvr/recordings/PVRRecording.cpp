@@ -39,20 +39,20 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 {
   Reset();
 
-  m_strRecordingId = recording.strRecordingId;
-  m_strTitle       = recording.strTitle;
-  m_iClientId      = iClientId;
-  m_recordingTime  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
-  m_duration       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
-  m_iPriority      = recording.iPriority;
-  m_iLifetime      = recording.iLifetime;
-  m_strDirectory   = recording.strDirectory;
-  m_strPlot        = recording.strPlot;
-  m_strPlotOutline = recording.strPlotOutline;
-  m_strStreamURL   = recording.strStreamURL;
-  m_strChannelName = recording.strChannelName;
-  m_genre          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
-  m_iRecPlayCount  = recording.iPlayCount;
+  m_strRecordingId    = recording.strRecordingId;
+  m_strTitle          = recording.strTitle;
+  m_iClientId         = iClientId;
+  m_recordingTime     = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
+  m_duration          = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
+  m_iPriority         = recording.iPriority;
+  m_iLifetime         = recording.iLifetime;
+  m_strDirectory      = recording.strDirectory;
+  m_strPlot           = recording.strPlot;
+  m_strPlotOutline    = recording.strPlotOutline;
+  m_strStreamURL      = recording.strStreamURL;
+  m_strChannelName    = recording.strChannelName;
+  m_genre             = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  m_iRecPlayCount     = recording.iPlayCount;
   m_strIconPath       = recording.strIconPath;
   m_strThumbnailPath  = recording.strThumbnailPath;
   m_strFanartPath     = recording.strFanartPath;
@@ -195,20 +195,20 @@ void CPVRRecording::DisplayError(PVR_ERROR err) const
 
 void CPVRRecording::Update(const CPVRRecording &tag)
 {
-  m_strRecordingId = tag.m_strRecordingId;
-  m_iClientId      = tag.m_iClientId;
-  m_strTitle       = tag.m_strTitle;
-  m_recordingTime  = tag.m_recordingTime;
-  m_duration       = tag.m_duration;
-  m_iPriority      = tag.m_iPriority;
-  m_iLifetime      = tag.m_iLifetime;
-  m_strDirectory   = tag.m_strDirectory;
-  m_strPlot        = tag.m_strPlot;
-  m_strPlotOutline = tag.m_strPlotOutline;
-  m_strStreamURL   = tag.m_strStreamURL;
-  m_strChannelName = tag.m_strChannelName;
-  m_genre          = tag.m_genre;
-  m_iRecPlayCount  = tag.m_iRecPlayCount;
+  m_strRecordingId    = tag.m_strRecordingId;
+  m_iClientId         = tag.m_iClientId;
+  m_strTitle          = tag.m_strTitle;
+  m_recordingTime     = tag.m_recordingTime;
+  m_duration          = tag.m_duration;
+  m_iPriority         = tag.m_iPriority;
+  m_iLifetime         = tag.m_iLifetime;
+  m_strDirectory      = tag.m_strDirectory;
+  m_strPlot           = tag.m_strPlot;
+  m_strPlotOutline    = tag.m_strPlotOutline;
+  m_strStreamURL      = tag.m_strStreamURL;
+  m_strChannelName    = tag.m_strChannelName;
+  m_genre             = tag.m_genre;
+  m_iRecPlayCount     = tag.m_iRecPlayCount;
   m_strIconPath       = tag.m_strIconPath;
   m_strThumbnailPath  = tag.m_strThumbnailPath;
   m_strFanartPath     = tag.m_strFanartPath;
