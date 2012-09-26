@@ -334,9 +334,6 @@ bool CEpgContainer::LoadSettings(void)
 
 bool CEpgContainer::RemoveOldEntries(void)
 {
-  CLog::Log(LOGINFO, "EpgContainer - %s - removing old EPG entries",
-      __FUNCTION__);
-
   CDateTime now = CDateTime::GetUTCDateTime() -
       CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
 
