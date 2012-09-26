@@ -1347,7 +1347,6 @@ bool CApplication::Initialize()
         return false;
     }
 
-    StartEPGManager();
     StartPVRManager();
 
     if (g_advancedSettings.m_splashImage)
@@ -1825,12 +1824,10 @@ void CApplication::StopZeroconf()
 void CApplication::StartPVRManager()
 {
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    g_EpgContainer.Start();
     g_PVRManager.Start();
-}
-
-void CApplication::StartEPGManager(void)
-{
-  g_EpgContainer.Start();
+  }
 }
 
 void CApplication::StopPVRManager()
@@ -1839,10 +1836,6 @@ void CApplication::StopPVRManager()
   if (g_PVRManager.IsPlaying())
     StopPlaying();
   g_PVRManager.Stop();
-}
-
-void CApplication::StopEPGManager(void)
-{
   g_EpgContainer.Stop();
 }
 
@@ -3676,7 +3669,6 @@ void CApplication::Stop(int exitCode)
     CApplicationMessenger::Get().Cleanup();
 
     StopPVRManager();
-    StopEPGManager();
     StopServices();
     //Sleep(5000);
 
