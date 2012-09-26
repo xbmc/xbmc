@@ -1020,7 +1020,7 @@ unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
 {
   // no point doing anything if we have no sounds,
   // we do not have to take a lock just to check empty
-  if (m_playing_sounds.empty() || m_reOpen || !m_sink)
+  if (m_playing_sounds.empty())
     return 0;
 
   SoundStateList::iterator itt;
@@ -1046,7 +1046,7 @@ unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
     #else
       float *sample_buffer = ss->samples;
       for (unsigned int i = 0; i < mixSamples; ++i)
-        *out++ = *sample_buffer++ * volume;
+        *out++ += *sample_buffer++ * volume;
     #endif
 
     ss->sampleCount -= mixSamples;
@@ -1061,7 +1061,7 @@ unsigned int CSoftAE::MixSounds(float *buffer, unsigned int samples)
 bool CSoftAE::FinalizeSamples(float *buffer, unsigned int samples, bool hasAudio)
 {
   if (m_soundMode != AE_SOUND_OFF)
-    hasAudio |= ((MixSounds(buffer, samples) > 0) || !m_playing_sounds.empty());
+    hasAudio |= (MixSounds(buffer, samples) > 0);
 
   /* no need to process if we don't have audio (buffer is memset to 0) */
   if (!hasAudio)
