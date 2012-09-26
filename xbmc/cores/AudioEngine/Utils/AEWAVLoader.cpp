@@ -288,7 +288,7 @@ bool CAEWAVLoader::Initialize(unsigned int resampleRate, CAEChannelInfo channelL
     m_outputChannels    = channelLayout;
 
     float *remapped = (float*)_aligned_malloc(sizeof(float) * m_outputSampleCount, 16);
-    remap.Remap(m_outputSamples, remapped, m_frameCount);
+    remap.Remap(m_outputSamples, remapped, m_outputFrameCount);
 
     /* assign the remapped buffer */
     if (m_outputSamples != m_samples)
