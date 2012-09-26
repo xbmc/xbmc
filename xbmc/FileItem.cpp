@@ -717,7 +717,7 @@ void CFileItem::ToSortable(SortItem &sortable)
   sortable[FieldSize] = m_dwSize;
   sortable[FieldDriveType] = m_iDriveType;
   sortable[FieldStartOffset] = m_lStartOffset;
-  sortable[FieldStartOffset] = m_lEndOffset;
+  sortable[FieldEndOffset] = m_lEndOffset;
   sortable[FieldProgramCount] = m_iprogramCount;
   sortable[FieldBitrate] = m_dwSize;
   sortable[FieldTitle] = m_strTitle;
