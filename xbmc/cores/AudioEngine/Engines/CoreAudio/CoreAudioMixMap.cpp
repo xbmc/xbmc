@@ -147,7 +147,7 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   pInLayout = NULL;
 
   std::string strInLayout;
-  CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: Source Stream Layout: %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::CreateMixMap: Source Stream Layout: %s",
     CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)sourceLayout, strInLayout));
 
   // Get User-Configured (XBMC) Speaker Configuration
@@ -155,7 +155,7 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   guiLayout.mChannelLayoutTag = layoutTag;
   CCoreAudioChannelLayout userLayout(guiLayout);
   std::string strUserLayout;
-  CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: User-Configured Speaker Layout: %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::CreateMixMap: User-Configured Speaker Layout: %s",
     CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)userLayout, strUserLayout));
 
   // Get OS-Configured (Audio MIDI Setup) Speaker Configuration (Channel Layout)
@@ -170,7 +170,7 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   //  deviceLayout.CopyLayout(guiLayout);
 
   std::string strOutLayout;
-  CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: Output Device Layout: %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::CreateMixMap: Output Device Layout: %s",
     CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)deviceLayout, strOutLayout));
 
   // TODO:
@@ -211,7 +211,6 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
 
   // Configure the mixing matrix
   Float32* val = (Float32*)*mixMap;
-  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: Loading matrix mixer configuration");
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
     val = (Float32*)*mixMap + i*m_deviceChannels;
@@ -219,15 +218,10 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
     {
       OSStatus ret = AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
-      if (!ret)
-      {
-        CLog::Log(LOGINFO, "CCoreAudioGraph::Open: \t[%d][%d][%0.1f]",
-          (int)i + channelOffset, (int)j, *(val-1));
-      }
     }
   }
 
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: "
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: "
     "Mixer Output Format: %d channels, %0.1f kHz, %d bits, %d bytes per frame",
     (int)fmt->mChannelsPerFrame, fmt->mSampleRate / 1000.0f, (int)fmt->mBitsPerChannel, (int)fmt->mBytesPerFrame);
 

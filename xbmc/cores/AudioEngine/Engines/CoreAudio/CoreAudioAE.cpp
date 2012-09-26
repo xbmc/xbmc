@@ -287,8 +287,6 @@ void CCoreAudioAE::Deinitialize()
   */
 
   HAL->Deinitialize();
-
-  CLog::Log(LOGINFO, "CCoreAudioAE::Deinitialize: Audio device has been closed.");
 }
 
 void CCoreAudioAE::OnSettingsChange(std::string setting)

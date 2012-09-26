@@ -110,11 +110,7 @@ AudioStreamID* CCoreAudioHardware::StreamsList(AudioDeviceID device)
   UInt32 listSize;
   OSStatus ret = AudioObjectGetPropertyDataSize(device, &propertyAddress, 0, NULL, &listSize); 
   if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
-      "Unable to get list size. Error = %s", GetError(ret).c_str());
     return NULL;
-  }
 
   // Space for a terminating ID:
   listSize += sizeof(AudioStreamID);
@@ -283,15 +279,6 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     device.Open((pDevices[dev]));
     deviceName = device.GetName();
     UInt32 totalChannels = device.GetTotalOutputChannels();
-    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: "
-#if __LP64__
-      "Device[0x%04x]"
-#else
-      "Device[0x%04lx]"
-#endif
-      " - Name: '%s', Total Ouput Channels: %u. ",
-      pDevices[dev], deviceName.c_str(), (uint)totalChannels);
-
     std::transform( deviceName.begin(), deviceName.end(), deviceName.begin(), ::tolower );
     if (searchNameLowerCase.compare(deviceName) == 0)
       deviceId = pDevices[dev];

@@ -146,10 +146,6 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
     stream.Open(streams.front());
     streams.pop_front(); // We copied it, now we are done with it
 
-    CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
-      "Found %s stream - id: 0x%04X, Terminal Type: 0x%04X",
-      stream.GetDirection() ? "Input" : "Output", (uint)stream.GetId(), (uint)stream.GetTerminalType());
-
     // Probe physical formats
     StreamFormatList physicalFormats;
     stream.GetAvailablePhysicalFormats(&physicalFormats);
@@ -393,8 +389,6 @@ void CCoreAudioAEHALOSX::Deinitialize()
 
   m_Initialized = false;
   m_Passthrough = false;
-
-  CLog::Log(LOGINFO, "CCoreAudioAEHALOSX::Deinitialize: Audio device has been closed.");
 }
 
 void CCoreAudioAEHALOSX::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)

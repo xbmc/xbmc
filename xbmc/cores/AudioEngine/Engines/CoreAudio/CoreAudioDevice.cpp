@@ -66,7 +66,6 @@ bool CCoreAudioDevice::Open(AudioDeviceID deviceId)
 {
   m_DeviceId = deviceId;
   m_BufferSizeRestore = GetBufferSize();
-  CLog::Log(LOGDEBUG, "CCoreAudioDevice::Open: Opened device 0x%04x", (uint)m_DeviceId);
   return true;
 }
 
@@ -90,10 +89,7 @@ void CCoreAudioDevice::Close()
   m_MixerRestore = -1;
 
   if (m_SampleRateRestore != 0.0f)
-  {
-    CLog::Log(LOGDEBUG,  "CCoreAudioDevice::Close: Restoring original nominal samplerate.");
     SetNominalSampleRate(m_SampleRateRestore);
-  }
 
   if (m_BufferSizeRestore && m_BufferSizeRestore != GetBufferSize())
   {
@@ -101,7 +97,6 @@ void CCoreAudioDevice::Close()
     m_BufferSizeRestore = 0;
   }
 
-  CLog::Log(LOGDEBUG, "CCoreAudioDevice::Close: Closed device 0x%04x", (uint)m_DeviceId);
   m_IoProc = NULL;
   m_pSource = NULL;
   m_DeviceId = 0;
@@ -205,8 +200,6 @@ bool CCoreAudioDevice::AddIOProc()
 
   Start();
 
-  CLog::Log(LOGDEBUG, "CCoreAudioDevice::AddIOProc: "
-    "IOProc %p set for device 0x%04x", m_IoProc, (uint)m_DeviceId);
   return true;
 }
 
@@ -221,11 +214,8 @@ bool CCoreAudioDevice::RemoveIOProc()
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveIOProc: "
       "Unable to remove IOProc. Error = %s", GetError(ret).c_str());
-  else
-    CLog::Log(LOGDEBUG, "CCoreAudioDevice::RemoveIOProc: "
-      "IOProc %p removed for device 0x%04x", m_IoProc, (uint)m_DeviceId);
-  m_IoProc = NULL; // Clear the reference no matter what
 
+  m_IoProc = NULL; // Clear the reference no matter what
   m_pSource = NULL;
 
   Sleep(100);
@@ -298,8 +288,6 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
       (uint)m_DeviceId, GetError(ret).c_str());
   }
 
-  CLog::Log(LOGDEBUG, "CCoreAudioDevice::GetTotalOutputChannels: "
-    "Found %u channels in %u buffers", (uint)channels, (uint)pList->mNumberBuffers);
   free(pList);
 
   return channels;
@@ -368,8 +356,6 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
     // Not already set
     if (m_HogPid == -1)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: "
-        "Setting 'hog' status on device 0x%04x", (unsigned int)m_DeviceId);
       OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(m_HogPid), &m_HogPid);
 
       // even if setting hogmode was successfull our PID might not get written
@@ -383,8 +369,6 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
           "Unable to set 'hog' status. Error = %s", GetError(ret).c_str());
         return false;
       }
-      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: "
-                "Successfully set 'hog' status on device 0x%04x", (unsigned int)m_DeviceId);
     }
   }
   else
@@ -392,8 +376,6 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
     // Currently Set
     if (m_HogPid > -1)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: "
-                "Releasing 'hog' status on device 0x%04x", (unsigned int)m_DeviceId);
       pid_t hogPid = -1;
       OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(hogPid), &hogPid);
       if (ret || hogPid == getpid())
@@ -447,8 +429,6 @@ bool CCoreAudioDevice::SetMixingSupport(UInt32 mix)
   propertyAddress.mSelector = kAudioDevicePropertySupportsMixing;
 
   UInt32 mixEnable = mix ? 1 : 0;
-  CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: "
-            "%sabling mixing for device 0x%04x", mix ? "En" : "Dis", (unsigned int)m_DeviceId);
   OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(mixEnable), &mixEnable);
   if (ret != noErr)
   {
@@ -619,9 +599,6 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
       (float)sampleRate, GetError(ret).c_str());
     return false;
   }
-  CLog::Log(LOGDEBUG,  "CCoreAudioDevice::SetNominalSampleRate: "
-    "Changed device sample rate from %0.0f to %0.0f.",
-    (float)currentRate, (float)sampleRate);
   if (m_SampleRateRestore == 0.0f)
     m_SampleRateRestore = currentRate;
 
@@ -700,8 +677,6 @@ bool CCoreAudioDevice::SetBufferSize(UInt32 size)
 
   if (GetBufferSize() != size)
     CLog::Log(LOGERROR, "CCoreAudioDevice::SetBufferSize: Buffer size change not applied.");
-  else
-    CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetBufferSize: Set buffer size to %d", (int)size);
 
   return (ret == noErr);
 }

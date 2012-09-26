@@ -44,7 +44,6 @@ AudioComponentInstance CIOSCoreAudioHardware::FindAudioDevice(std::string search
     return 0;
 
   AudioComponentInstance defaultDevice = GetDefaultOutputDevice();
-  CLog::Log(LOGDEBUG, "CIOSCoreAudioHardware::FindAudioDevice: Returning default device [0x%04x].", (uint32_t)defaultDevice);
 
   return defaultDevice;
 }
@@ -228,8 +227,6 @@ bool CCoreAudioUnit::SetRenderProc()
 
   m_renderProc = RenderCallback;
 
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetRenderProc: Set RenderProc 0x%08x for unit 0x%08x.", (unsigned int)m_renderProc, (unsigned int)m_audioUnit);
-
   return true;
 }
 
@@ -249,8 +246,6 @@ bool CCoreAudioUnit::RemoveRenderProc()
     CLog::Log(LOGERROR, "CCoreAudioUnit::RemoveRenderProc: Unable to remove AudioUnit render callback. Error = %s", GetError(ret).c_str());
     return false;
   }
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::RemoveRenderProc: Remove RenderProc 0x%08x for unit 0x%08x.", (unsigned int)m_renderProc, (unsigned int)m_audioUnit);
 
   m_renderProc = NULL;
 
@@ -1129,7 +1124,7 @@ bool CCoreAudioAEHALIOS::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
 
   if (!m_audioGraph->Open(pSource, format, allowMixing, m_initVolume))
   {
-    CLog::Log(LOGDEBUG, "CCoreAudioAEHALIOS::Initialize: Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
+    CLog::Log(LOGERROR, "CCoreAudioAEHALIOS::Initialize: Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
     return false;
   }
 
@@ -1186,7 +1181,7 @@ bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
     bool configured = false;
     if (m_Passthrough)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioAEHALIOS::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
+      CLog::Log(LOGERROR, "CCoreAudioAEHALIOS::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
       configured = InitializePCMEncoded(ae, format);
     }
     else
@@ -1256,8 +1251,6 @@ void CCoreAudioAEHALIOS::Deinitialize()
 
   m_Initialized = false;
   m_Passthrough = false;
-
-  CLog::Log(LOGINFO, "CCoreAudioAEHALIOS::Deinitialize: Audio device has been closed.");
 }
 
 void CCoreAudioAEHALIOS::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
