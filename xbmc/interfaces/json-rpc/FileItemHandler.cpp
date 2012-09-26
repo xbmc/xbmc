@@ -251,29 +251,11 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
           else
             object["type"] = "song";
         }
-        else if (item->HasVideoInfoTag())
+        else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_type.empty())
         {
-          switch (item->GetVideoContentType())
-          {
-            case VIDEODB_CONTENT_EPISODES:
-              object["type"] = "episode";
-              break;
-
-            case VIDEODB_CONTENT_MUSICVIDEOS:
-              object["type"] = "musicvideo";
-              break;
-
-            case VIDEODB_CONTENT_MOVIES:
-              object["type"] = "movie";
-              break;
-
-            case VIDEODB_CONTENT_TVSHOWS:
-              object["type"] = "tvshow";
-              break;
-
-            default:
-              break;
-          }
+          std::string type = item->GetVideoInfoTag()->m_type;
+          if (type == "movie" || type == "tvshow" || type == "episode" || type == "musicvideo")
+            object["type"] = type;
         }
         else if (item->HasPictureInfoTag())
           object["type"] = "picture";
