@@ -860,7 +860,10 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 
 float PAPlayer::GetPercentage()
 {
-  return m_playerGUIData.m_time * 100.0f / m_playerGUIData.m_totalTime;
+  if (m_playerGUIData.m_totalTime > 0)
+    return m_playerGUIData.m_time * 100.0f / m_playerGUIData.m_totalTime;
+
+  return 0.0f;
 }
 
 bool PAPlayer::SkipNext()
