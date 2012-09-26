@@ -53,7 +53,7 @@ bool CPulseAESound::Initialize()
 
   m_sampleSpec.format   = PA_SAMPLE_FLOAT32NE;
   m_sampleSpec.rate     = m_wavLoader.GetSampleRate();
-  m_sampleSpec.channels = m_wavLoader.GetChannelLayout.Count();
+  m_sampleSpec.channels = m_wavLoader.GetChannelLayout().Count();
 
   if (!pa_sample_spec_valid(&m_sampleSpec))
   {
