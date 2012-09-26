@@ -24,9 +24,11 @@
 #include "windowing/WinEvents.h"
 #include "ApplicationMessenger.h"
 
-CAndroidTouch::CAndroidTouch()
+CAndroidTouch::CAndroidTouch(uint32_t dpi) : m_dpi(dpi)
 {
   CTouchInput::Get().RegisterHandler(this);
+  if (!m_dpi)
+    m_dpi = 160; // sensible default
 }
 
 CAndroidTouch::~CAndroidTouch()
@@ -79,13 +81,13 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
 
   float x = AMotionEvent_getX(event, touchPointer);
   float y = AMotionEvent_getY(event, touchPointer);
-  float size = AMotionEvent_getTouchMinor(event, touchPointer);
+  float size = m_dpi / 16.0f;
   int64_t time = AMotionEvent_getEventTime(event);
 
   // first update all touch pointers
   for (unsigned int pointer = 0; pointer < numPointers; pointer++)
     CTouchInput::Get().Update(pointer, AMotionEvent_getX(event, pointer), AMotionEvent_getY(event, pointer),
-    AMotionEvent_getEventTime(event), AMotionEvent_getTouchMinor(event, pointer));
+    AMotionEvent_getEventTime(event), m_dpi / 16.0f);
 
   // now send the event
   return CTouchInput::Get().Handle(touchEvent, x, y, time, touchPointer, size);

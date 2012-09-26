@@ -24,4 +24,7 @@
 #include "AndroidMouse.h"
 
 class IInputHandler : public CAndroidTouch, public CAndroidKey, public CAndroidMouse
-{};
+{
+public:
+  IInputHandler(uint32_t dpi) : CAndroidTouch(dpi), CAndroidKey(), CAndroidMouse() {}
+};
