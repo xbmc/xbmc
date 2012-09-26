@@ -184,24 +184,21 @@ bool CAEWAVLoader::Load(const std::string &filename)
        }
 
        /* read in each sample */
-       unsigned int s;
-       m_samples = (float*)_aligned_malloc(sizeof(float) * m_sampleCount, 16);
-       uint8_t *raw = (uint8_t *)_aligned_malloc(bytesPerSample, 16);
-       for (s = 0; s < m_sampleCount; ++s)
+       unsigned int size = bytesPerSample * m_sampleCount;
+       m_samples    = (float*   )_aligned_malloc(sizeof(float) * m_sampleCount, 16);
+       uint8_t *raw = (uint8_t *)_aligned_malloc(size, 16);
+       if (file.Read(raw, size) != size)
        {
-         if (file.Read(raw, bytesPerSample) != bytesPerSample)
-         {
-           CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
-           _aligned_free(m_samples);
-           _aligned_free(raw);
-           m_samples = NULL;
-           file.Close();
-           return false;
-         }
-
-         /* convert the sample to float */
-         convertFn(raw, 1, &m_samples[s]);
+         CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
+         _aligned_free(m_samples);
+         _aligned_free(raw);
+         m_samples = NULL;
+         file.Close();
+         return false;
        }
+
+       /* convert the samples to float */
+       convertFn(raw, m_sampleCount, m_samples);
        _aligned_free(raw);
     }
     else
@@ -242,7 +239,7 @@ bool CAEWAVLoader::Initialize(unsigned int resampleRate, CAEChannelInfo channelL
 
   DeInitialize();
 
-  /* resample the audio if needed */
+  /* if the sample rates do not match */
   if (m_sampleRate != resampleRate)
   {
     unsigned int space = (unsigned int)((((float)m_sampleCount / (float)m_sampleRate) * (float)resampleRate) * 2.0f);
@@ -279,19 +276,24 @@ bool CAEWAVLoader::Initialize(unsigned int resampleRate, CAEChannelInfo channelL
     m_outputSampleRate  = m_sampleRate;
   }
 
+  /* if the channel layouts do not match */
   if (m_channels != channelLayout)
   {
     CAERemap remap;
     if (!remap.Initialize(m_channels, channelLayout, false, false, stdChLayout))
       return false;
 
-    float *remapped = (float*)_aligned_malloc(sizeof(float) * m_outputFrameCount * channelLayout.Count(), 16);
+    /* adjust the output format parameters */
+    m_outputSampleCount = m_outputFrameCount * channelLayout.Count();
+    m_outputChannels    = channelLayout;
+
+    float *remapped = (float*)_aligned_malloc(sizeof(float) * m_outputSampleCount, 16);
     remap.Remap(m_outputSamples, remapped, m_frameCount);
 
-    _aligned_free(m_outputSamples);
-    m_outputSamples      = remapped;
-    m_outputSampleCount  = m_outputFrameCount * channelLayout.Count();
-    m_outputChannels     = channelLayout;
+    /* assign the remapped buffer */
+    if (m_outputSamples != m_samples)
+      _aligned_free(m_outputSamples);
+    m_outputSamples = remapped;
   }
 
   return true;
