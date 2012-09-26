@@ -40,6 +40,11 @@ void CPTSOutputQueue::Add(double pts, double delay, double duration)
 {
   CSingleLock lock(m_sync);
 
+  // don't accept a re-add, since that would cause time moving back
+  double last = m_queue.empty() ? m_current.pts : m_queue.back().pts;
+  if(last == pts)
+    return;
+
   TPTSItem item;
   item.pts = pts;
   item.timestamp = CDVDClock::GetAbsoluteClock() + delay;
