@@ -25,6 +25,7 @@
 #endif
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
+#include <queue>
 
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 class IAEStream;
@@ -45,6 +46,22 @@ extern "C" {
 }
 #endif
 typedef struct stDVDAudioFrame DVDAudioFrame;
+
+
+class CPTSOutputQueue
+{
+private:
+  typedef struct {double pts; double timestamp; double duration;} TPTSItem;
+  TPTSItem m_current;
+  std::queue<TPTSItem> m_queue;
+  CCriticalSection m_sync;
+
+public:
+  CPTSOutputQueue();
+  void Add(double pts, double delay, double duration);
+  void Flush();
+  double Current();
+};
 
 class CSingleLock;
 class IAudioCallback;
