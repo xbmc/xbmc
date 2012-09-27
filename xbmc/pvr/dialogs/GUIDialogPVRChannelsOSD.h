@@ -22,6 +22,7 @@
 #include "guilib/GUIDialog.h"
 #include "GUIViewControl.h"
 #include "utils/Observer.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 class CFileItemList;
 
@@ -43,10 +44,15 @@ namespace PVR
     void ShowInfo(int item);
     void Clear();
     void Update();
+    void Update(bool selectPlayingChannel);
+    CPVRChannelGroupPtr GetPlayingGroup();
     CGUIControl *GetFirstFocusableControl(int id);
 
     CFileItemList    *m_vecItems;
     CGUIViewControl   m_viewControl;
+
+  private:
+    CPVRChannelGroupPtr m_group;
   };
 }
 
