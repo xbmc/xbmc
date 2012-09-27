@@ -350,7 +350,7 @@ const int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *d
   if (len > 6)
   {
     /* check for h264 start code */
-    if (OMX_RB32(data) == 0x00000001 || OMX_RB24(data) == 0x000001)
+    if (BS_RB32(data) == 0x00000001 || BS_RB24(data) == 0x000001)
     {
       uint8_t *buf=NULL, *end, *start;
       uint32_t sps_size=0, pps_size=0;
@@ -367,7 +367,7 @@ const int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *d
       {
         uint32_t size;
         uint8_t  nal_type;
-        size = FFMIN(OMX_RB32(buf), end - buf - 4);
+        size = FFMIN(BS_RB32(buf), end - buf - 4);
         buf += 4;
         nal_type = buf[0] & 0x1f;
         if (nal_type == 7) /* SPS */
@@ -662,7 +662,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
           uint8_t *nal_start = pData;
           while (nal_start < end)
           {
-            nal_size = OMX_RB24(nal_start);
+            nal_size = BS_RB24(nal_start);
             m_dllAvFormat->avio_wb16(pb, nal_size);
             nal_start += 3;
             m_dllAvFormat->avio_write(pb, nal_start, nal_size);

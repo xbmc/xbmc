@@ -40,22 +40,22 @@ typedef struct {
 // This is part of FFmpeg
 //  * License as published by the Free Software Foundation; either
 //  * version 2.1 of the License, or (at your option) any later version.
-#define OMX_RB16(x)                          \
+#define BS_RB16(x)                          \
   ((((const uint8_t*)(x))[0] <<  8) |        \
    ((const uint8_t*)(x)) [1])
 
-#define OMX_RB24(x)                          \
+#define BS_RB24(x)                          \
   ((((const uint8_t*)(x))[0] << 16) |        \
    (((const uint8_t*)(x))[1] <<  8) |        \
    ((const uint8_t*)(x))[2])
 
-#define OMX_RB32(x)                          \
+#define BS_RB32(x)                          \
   ((((const uint8_t*)(x))[0] << 24) |        \
    (((const uint8_t*)(x))[1] << 16) |        \
    (((const uint8_t*)(x))[2] <<  8) |        \
    ((const uint8_t*)(x))[3])
 
-#define OMX_WB32(p, d) { \
+#define BS_WB32(p, d) { \
   ((uint8_t*)(p))[3] = (d); \
   ((uint8_t*)(p))[2] = (d) >> 8; \
   ((uint8_t*)(p))[1] = (d) >> 16; \
