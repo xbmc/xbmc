@@ -29,7 +29,7 @@
 #include "utils/log.h"
 #include "linux/XMemUtils.h"
 
-#include "BitstreamConverter.h"
+#include "utils/BitstreamConverter.h"
 
 #include <sys/time.h>
 #include <inttypes.h>
