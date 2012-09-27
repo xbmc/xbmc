@@ -935,7 +935,6 @@ bool CApplication::InitWindow()
 bool CApplication::DestroyWindow()
 {
   g_fontManager.UnloadTTFFonts();
-  g_Windowing.DestroyRenderSystem();
   return g_Windowing.DestroyWindow();
 }
 

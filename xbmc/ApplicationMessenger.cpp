@@ -803,7 +803,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_DISPLAY_SETUP:
     {
       *((bool*)pMsg->lpVoid) = g_application.InitWindow();
-      g_application.ReloadSkin();
     }
     break;
     
