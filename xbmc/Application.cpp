@@ -928,11 +928,13 @@ bool CApplication::InitWindow()
   }
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+  g_fontManager.ReloadTTFFonts();
   return true;
 }
 
 bool CApplication::DestroyWindow()
 {
+  g_fontManager.UnloadTTFFonts();
   g_Windowing.DestroyRenderSystem();
   return g_Windowing.DestroyWindow();
 }
