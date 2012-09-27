@@ -21,6 +21,7 @@
 #include "threads/Thread.h"
 #include "music/MusicDatabase.h"
 #include "MusicAlbumInfo.h"
+#include "MusicInfoScraper.h"
 
 class CAlbum;
 class CArtist;
@@ -38,6 +39,18 @@ public:
   virtual void OnDirectoryScanned(const CStdString& strDirectory) = 0;
   virtual void OnSetProgress(int currentItem, int itemCount)=0;
   virtual void OnFinished() = 0;
+};
+
+/*! \brief return values from the information lookup functions
+ */
+enum INFO_RET 
+{ 
+  INFO_CANCELLED,
+  INFO_ERROR,
+  INFO_NOT_NEEDED,
+  INFO_HAVE_ALREADY,
+  INFO_NOT_FOUND,
+  INFO_ADDED 
 };
 
 class CMusicInfoScanner : CThread, public IRunnable
@@ -61,7 +74,10 @@ public:
   void SetObserver(IMusicInfoScannerObserver* pObserver);
 
   /*! \brief Categorise songs into albums
-   Albums are defined uniquely by the album name and album artist.
+   For users that don't have correct tags, we need to provide some hints
+   to the DB about the correct album artist and compilation settings.
+
+   In this case, albums are defined uniquely by the album name and album artist.
 
    If albumartist is not available in a song, we determine it from the
    common portion of each song's artist list.
@@ -76,37 +92,21 @@ public:
     2. have at least two different primary artists
     3. have no album artist set
     4. and no track numbers overlap
-   we assume it is a various artists album, and set the albumartist field accordingly.
+   we assume it is a various artists album.
 
-   \param songs [in/out] list of songs to categorise - albumartist field may be altered.
-   \param albums [out] albums found within these songs.
+   \param items [in] list of file items (songs) to categorise.
+   \param albumHints [out] list of albums with our guess at artist and compilation flags.
    */
-  static void CategoriseAlbums(VECSONGS &songs, VECALBUMS &albums);
+  static void CategoriseAlbums(const CFileItemList& items, VECALBUMS& albumHints);
 
-  /*! \brief Find art for albums
-   Based on the albums in the folder, finds whether we have unique album art
-   and assigns to the album if we do.
-
-   In order of priority:
-    1. If there is a single album in the folder, then the folder art is assigned to the album.
-    2. We find the art for each song. A .tbn file takes priority over embedded art.
-    3. If we have a unique piece of art for all songs in the album, we assign that to the album
-       and remove that art from each song so that they inherit from the album.
-    4. If there is not a unique piece of art for each song, then no art is assigned
-       to the album.
-
-   \param albums [in/out] list of albums to categorise - art field may be altered.
-   \param path [in] path containing albums.
-   */
-  static void FindArtForAlbums(VECALBUMS &albums, const CStdString &path);
-
-  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& album, CGUIDialogProgress* pDialog=NULL);
-  bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
+  INFO_RET DownloadAlbumInfo(const CAlbum& album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, CGUIDialogProgress* pDialog = NULL);
+  INFO_RET DownloadArtistInfo(const CArtist& artist, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, CGUIDialogProgress* pDialog = NULL);
 
   std::map<std::string, std::string> GetArtistArtwork(long id, const CArtist *artist = NULL);
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
+  INFO_RET ScanTags(const CFileItemList& items, CFileItemList& scannedItems);
   int GetPathHash(const CFileItemList &items, CStdString &hash);
   void GetAlbumArtwork(long id, const CAlbum &artist);
 
@@ -115,6 +115,15 @@ protected:
   virtual void Run();
   int CountFiles(const CFileItemList& items, bool recursive);
   int CountFilesRecursively(const CStdString& strPath);
+
+  /*! \brief Resolve a MusicBrainzID to a URL
+   If we have a MusicBrainz ID for an artist or album, 
+   resolve it to an MB URL and set up the scrapers accordingly.
+   
+   \param preferredScraper [in] A ScraperPtr to the preferred album/artist scraper.
+   \param musicBrainzURL [out] will be populated with the MB URL for the artist/album.
+   */
+  bool ResolveMusicBrainz(const CStdString strMusicBrainzID, ADDON::ScraperPtr &preferredScraper, MUSIC_GRABBER::CMusicInfoScraper &musicInfoScraper, CScraperUrl &musicBrainzURL);
 
 protected:
   IMusicInfoScannerObserver* m_pObserver;
@@ -135,3 +144,4 @@ protected:
   int m_flags;
 };
 }
+

@@ -36,10 +36,6 @@ CSong::CSong(CMusicInfoTag& tag)
   strAlbum = tag.GetAlbum();
   albumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
-  strMusicBrainzArtistID = tag.GetMusicBrainzArtistID();
-  strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
-  strMusicBrainzAlbumArtistID = tag.GetMusicBrainzAlbumArtistID();
-  strMusicBrainzTRMID = tag.GetMusicBrainzTRMID();
   strComment = tag.GetComment();
   rating = tag.GetRating();
   iYear = stTime.wYear;
@@ -74,10 +70,6 @@ void CSong::Serialize(CVariant& value)
   value["track"] = iTrack;
   value["year"] = iYear;
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
-  value["musicbrainzartistid"] = strMusicBrainzArtistID;
-  value["musicbrainzalbumid"] = strMusicBrainzAlbumID;
-  value["musicbrainzalbumartistid"] = strMusicBrainzAlbumArtistID;
-  value["musicbrainztrmid"] = strMusicBrainzTRMID;
   value["comment"] = strComment;
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
@@ -96,10 +88,6 @@ void CSong::Clear()
   genre.clear();
   strThumb.Empty();
   strMusicBrainzTrackID.Empty();
-  strMusicBrainzArtistID.Empty();
-  strMusicBrainzAlbumID.Empty();
-  strMusicBrainzAlbumArtistID.Empty();
-  strMusicBrainzTRMID.Empty();
   strComment.Empty();
   rating = '0';
   iTrack = 0;
@@ -130,45 +118,3 @@ bool CSong::ArtMatches(const CSong &right) const
   return (right.strThumb == strThumb &&
           embeddedArt.matches(right.embeddedArt));
 }
-
-CSongMap::CSongMap()
-{
-}
-
-std::map<CStdString, CSong>::const_iterator CSongMap::Begin()
-{
-  return m_map.begin();
-}
-
-std::map<CStdString, CSong>::const_iterator CSongMap::End()
-{
-  return m_map.end();
-}
-
-void CSongMap::Add(const CStdString &file, const CSong &song)
-{
-  CStdString lower = file;
-  lower.ToLower();
-  m_map.insert(pair<CStdString, CSong>(lower, song));
-}
-
-CSong* CSongMap::Find(const CStdString &file)
-{
-  CStdString lower = file;
-  lower.ToLower();
-  map<CStdString, CSong>::iterator it = m_map.find(lower);
-  if (it == m_map.end())
-    return NULL;
-  return &(*it).second;
-}
-
-void CSongMap::Clear()
-{
-  m_map.erase(m_map.begin(), m_map.end());
-}
-
-int CSongMap::Size()
-{
-  return (int)m_map.size();
-}
-

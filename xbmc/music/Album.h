@@ -71,6 +71,7 @@ public:
 
   long idAlbum;
   CStdString strAlbum;
+  CStdString strMusicBrainzAlbumID;
   std::vector<std::string> artist;
   std::vector<std::string> genre;
   CScraperUrl thumbURL;

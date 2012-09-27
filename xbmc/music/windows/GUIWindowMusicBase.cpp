@@ -305,14 +305,11 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
     if (params.GetAlbumId() == -1)
     { // artist lookup
-      artist.idArtist = params.GetArtistId();
-      artist.strArtist = StringUtils::Join(pItem->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
+      m_musicdatabase.GetArtistInfo(params.GetArtistId(), artist);
     }
     else
     { // album lookup
-      album.idAlbum = params.GetAlbumId();
-      album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
-      album.artist = pItem->GetMusicInfoTag()->GetArtist();
+      m_musicdatabase.GetAlbumInfo(params.GetAlbumId(), album, NULL);
 
       // we're going to need it's path as well (we assume that there's only one) - this is for
       // assigning thumbs to folders, and obtaining the local folder.jpg
@@ -370,9 +367,9 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   }
 
   if (album.idAlbum == -1 && foundAlbum == false)
-    ShowArtistInfo(artist, pItem->GetPath(), false, bShowInfo);
+    ShowArtistInfo(artist, pItem->GetPath(), bShowInfo);
   else
-    ShowAlbumInfo(album, strPath, false, bShowInfo);
+    ShowAlbumInfo(album, strPath, bShowInfo);
 }
 
 void CGUIWindowMusicBase::OnManualAlbumInfo()
@@ -389,183 +386,112 @@ void CGUIWindowMusicBase::OnManualAlbumInfo()
   ShowAlbumInfo(album,"",true);
 }
 
-void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString& path, bool bRefresh, bool bShowInfo)
+void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString& path, bool bShowInfo /* = true */)
 {
   bool saveDb = artist.idArtist != -1;
   if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     saveDb = false;
 
-  // check cache
-  CArtist artistInfo;
-  if (!bRefresh && m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo))
+  CMusicArtistInfo artistInfo;
+  while (1)
   {
-    if (!bShowInfo)
-      return;
+    if (!m_musicdatabase.HasArtistInfo(artist.idArtist) ||
+        !m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo.GetArtist()))
+    {
+      if (g_application.IsMusicScanning())
+      {
+        CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+        break;
+      }
+
+      if (!FindArtistInfo(artist, artistInfo, bShowInfo ? SELECTION_ALLOWED : SELECTION_AUTO))
+        break;
+
+      if (!artistInfo.Loaded())
+      {
+        // Failed to download album info
+        CGUIDialogOK::ShowAndGetInput(21889, 0, 20199, 0);
+        break;
+      }
+
+      if (saveDb)
+        m_musicdatabase.SetArtistInfo(artist.idArtist, artistInfo.GetArtist());
+    }
 
     CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgArtistInfo)
     {
-      pDlgArtistInfo->SetArtist(artistInfo, path);
+      pDlgArtistInfo->SetArtist(artistInfo.GetArtist(), path);
+      pDlgArtistInfo->DoModal();
 
-      if (bShowInfo)
-        pDlgArtistInfo->DoModal();
-
-      if (!pDlgArtistInfo->NeedRefresh())
+      if (pDlgArtistInfo->NeedRefresh())
       {
-        if (pDlgArtistInfo->HasUpdatedThumb())
-          Update(m_vecItems->GetPath());
-
-        return;
-      }
-      bRefresh = true;
-      m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
-    }
-  }
-
-  // If we are scanning for music info in the background,
-  // other writing access to the database is prohibited.
-  if (g_application.IsMusicScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
-    return;
-  }
-
-  CMusicArtistInfo info;
-  if (FindArtistInfo(artist.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
-  {
-    // download the album info
-    if ( info.Loaded() )
-    {
-      if (saveDb)
+        m_musicdatabase.DeleteArtistInfo(artist.idArtist);
+        continue;
+      } 
+      else if (pDlgArtistInfo->HasUpdatedThumb()) 
       {
-        // save to database
-        m_musicdatabase.SetArtistInfo(artist.idArtist, info.GetArtist());
-      }
-      if (m_dlgProgress && bShowInfo)
-        m_dlgProgress->Close();
-
-      // ok, show album info
-      CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
-      if (pDlgArtistInfo)
-      {
-        pDlgArtistInfo->SetArtist(info.GetArtist(), path);
-        if (bShowInfo)
-          pDlgArtistInfo->DoModal();
-
-        CArtist artistInfo = info.GetArtist();
-        artistInfo.idArtist = artist.idArtist;
-/*
-        if (pDlgAlbumInfo->HasUpdatedThumb())
-          UpdateThumb(artistInfo, path);
-*/
-        // just update for now
         Update(m_vecItems->GetPath());
-        if (pDlgArtistInfo->NeedRefresh())
-        {
-          m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
-          ShowArtistInfo(artist, path, true, bShowInfo);
-          return;
-        }
       }
     }
-    else
-    {
-      // failed 2 download album info
-      CGUIDialogOK::ShowAndGetInput(21889, 0, 20199, 0);
-    }
+    break;
   }
-
-  if (m_dlgProgress && bShowInfo)
+  if (m_dlgProgress)
     m_dlgProgress->Close();
 }
 
-void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& path, bool bRefresh, bool bShowInfo)
+void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& path, bool bShowInfo /* = true */)
 {
   bool saveDb = album.idAlbum != -1;
   if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     saveDb = false;
 
-  // check cache
-  CAlbum albumInfo;
-  if (!bRefresh && m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo, &albumInfo.songs))
+  CMusicAlbumInfo albumInfo;
+  while (1)
   {
-    if (!bShowInfo)
-      return;
+    if (!m_musicdatabase.HasAlbumInfo(album.idAlbum) || 
+        !m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo.GetAlbum(), &albumInfo.GetAlbum().songs))
+    {
+      if (g_application.IsMusicScanning())
+      {
+        CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+        break;
+      }
+
+      if (!FindAlbumInfo(album, albumInfo, bShowInfo ? SELECTION_ALLOWED : SELECTION_AUTO))
+        break;
+      
+      if (!albumInfo.Loaded())
+      {
+        CGUIDialogOK::ShowAndGetInput(185, 0, 500, 0);
+        break;
+      }
+
+      albumInfo.GetAlbum().strAlbum = album.strAlbum;
+
+      if (saveDb)
+        m_musicdatabase.SetAlbumInfo(album.idAlbum, albumInfo.GetAlbum(), albumInfo.GetSongs());
+    }
 
     CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
-      pDlgAlbumInfo->SetAlbum(albumInfo, path);
-      if (bShowInfo)
-        pDlgAlbumInfo->DoModal();
+      pDlgAlbumInfo->SetAlbum(albumInfo.GetAlbum(), path);
+      pDlgAlbumInfo->DoModal();
 
-      if (!pDlgAlbumInfo->NeedRefresh())
+      if (pDlgAlbumInfo->NeedRefresh())
       {
-        if (pDlgAlbumInfo->HasUpdatedThumb())
-          UpdateThumb(albumInfo, path);
-        return;
+        m_musicdatabase.DeleteAlbumInfo(album.idAlbum);
+        continue;
       }
-      bRefresh = true;
-      m_musicdatabase.DeleteAlbumInfo(albumInfo.idAlbum);
-    }
-  }
-
-  // If we are scanning for music info in the background,
-  // other writing access to the database is prohibited.
-  if (g_application.IsMusicScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
-    return;
-  }
-
-  CMusicAlbumInfo info;
-  if (FindAlbumInfo(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator), info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
-  {
-    // download the album info
-    if ( info.Loaded() )
-    {
-      // set album title from musicinfotag, not the one we got from allmusic.com
-      info.SetTitle(album.strAlbum);
-
-      if (saveDb)
+      else if (pDlgAlbumInfo->HasUpdatedThumb())
       {
-        // save to database
-        m_musicdatabase.SetAlbumInfo(album.idAlbum, info.GetAlbum(), info.GetSongs());
-      }
-      if (m_dlgProgress && bShowInfo)
-        m_dlgProgress->Close();
-
-      UpdateThumb(album, path);
-
-      // ok, show album info
-      CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
-      if (pDlgAlbumInfo)
-      {
-        pDlgAlbumInfo->SetAlbum(info.GetAlbum(), path);
-        if (bShowInfo)
-          pDlgAlbumInfo->DoModal();
-
-        CAlbum albumInfo = info.GetAlbum();
-        albumInfo.idAlbum = album.idAlbum;
-        if (pDlgAlbumInfo->HasUpdatedThumb())
-          UpdateThumb(albumInfo, path);
-
-        if (pDlgAlbumInfo->NeedRefresh())
-        {
-          m_musicdatabase.DeleteAlbumInfo(albumInfo.idAlbum);
-          ShowAlbumInfo(album, path, true, bShowInfo);
-          return;
-        }
+        UpdateThumb(album, path);
       }
     }
-    else
-    {
-      // failed 2 download album info
-      CGUIDialogOK::ShowAndGetInput(185, 0, 500, 0);
-    }
+    break;
   }
-
-  if (m_dlgProgress && bShowInfo)
+  if (m_dlgProgress)
     m_dlgProgress->Close();
 }
 
@@ -764,97 +690,80 @@ void CGUIWindowMusicBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CAlbum& album, CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection)
 {
+  CStdString strTempAlbum(album.strAlbum);
+  CStdString strTempArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
     m_dlgProgress->SetHeading(185);
-    m_dlgProgress->SetLine(0, strAlbum);
-    m_dlgProgress->SetLine(1, strArtist);
+    m_dlgProgress->SetLine(0, strTempAlbum);
+    m_dlgProgress->SetLine(1, strTempArtist);
     m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal();
   }
 
   CMusicInfoScanner scanner;
-  CStdString strPath;
-  CStdString strTempAlbum(strAlbum);
-  CStdString strTempArtist(strArtist);
-  long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
-  strPath.Format("musicdb://3/%d/",idAlbum);
-
-  bool bCanceled(false);
   bool needsRefresh(true);
   do
   {
-    if (!scanner.DownloadAlbumInfo(strPath,strTempArtist,strTempAlbum,bCanceled,album,m_dlgProgress))
+    INFO_RET result = scanner.DownloadAlbumInfo(album, albumInfo, m_dlgProgress);
+    if (result == INFO_NOT_FOUND && m_dlgProgress && allowSelection != SELECTION_AUTO)
     {
-      if (bCanceled)
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
         return false;
-      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
-      {
-        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
-          return false;
-
-        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
-          return false;
-      }
-      else
-        needsRefresh = false;
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+        return false;
     }
+    else if (result == INFO_CANCELLED || result == INFO_ERROR)
+      return false;
     else
       needsRefresh = false;
   }
-  while (needsRefresh || bCanceled);
+  while (needsRefresh);
 
   // Read the album information from the database if we are dealing with a DB album.
-  if (idAlbum != -1)
-    m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
+  if (album.idAlbum != -1)
+    m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo.GetAlbum(),&albumInfo.GetAlbum().songs);
 
-  album.SetLoaded(true);
+  albumInfo.SetLoaded(true);
   return true;
 }
 
-bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindArtistInfo(const CArtist& artist, CMusicArtistInfo& artistInfo, ALLOW_SELECTION allowSelection)
 {
+  CStdString strTempArtist(artist.strArtist);
+
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
     m_dlgProgress->SetHeading(21889);
-    m_dlgProgress->SetLine(0, strArtist);
+    m_dlgProgress->SetLine(0, strTempArtist);
     m_dlgProgress->SetLine(1, "");
     m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal();
   }
 
   CMusicInfoScanner scanner;
-  CStdString strPath;
-  CStdString strTempArtist(strArtist);
-  long idArtist = m_musicdatabase.GetArtistByName(strArtist);
-  strPath.Format("musicdb://2/%u/",idArtist);
-
-  bool bCanceled(false);
   bool needsRefresh(true);
   do
   {
-    if (!scanner.DownloadArtistInfo(strPath,strTempArtist,bCanceled,m_dlgProgress))
+    INFO_RET result = scanner.DownloadArtistInfo(artist, artistInfo, m_dlgProgress);
+    if (result == INFO_NOT_FOUND && m_dlgProgress && allowSelection != SELECTION_AUTO)
     {
-      if (bCanceled)
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
         return false;
-      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
-      {
-        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
-          return false;
-      }
-      else
-        needsRefresh = false;
     }
+    else if (result == INFO_CANCELLED || result == INFO_ERROR)
+      return false;
     else
       needsRefresh = false;
   }
-  while (needsRefresh || bCanceled);
+  while (needsRefresh);
 
-  if (!m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist()))
+  if (!m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo.GetArtist()))
     return false;
 
   artist.SetLoaded();
@@ -1235,18 +1144,15 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     CFileItemList items;
     GetDirectory(albumPath, items);
     OnRetrieveMusicInfo(items);
-    VECSONGS songs;
+    CFileItemList scannedItems;
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
       if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->Loaded())
-      {
-        CSong song(*item->GetMusicInfoTag());
-        songs.push_back(song);
-      }
+        scannedItems.Add(item);
     }
     VECALBUMS albums;
-    CMusicInfoScanner::CategoriseAlbums(songs, albums);
+    CMusicInfoScanner::CategoriseAlbums(scannedItems, albums);
     if (albums.size() == 1)
     { // set as folder thumb as well
       CThumbLoader::SetCachedImage(items, "thumb", albumPath);
