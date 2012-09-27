@@ -230,8 +230,13 @@ void CDVDPlayerSubtitle::Process(double pts)
       return;
 
     CDVDOverlay* pOverlay = m_pSubtitleFileParser->Parse(pts);
-    if (pOverlay)
-      m_pOverlayContainer->Add(pOverlay);
+    // add all overlays which fit the pts
+    while(pOverlay)
+    {
+      if (pOverlay)
+        m_pOverlayContainer->Add(pOverlay);
+      pOverlay = m_pSubtitleFileParser->Parse(pts);
+    }
 
     m_lastPts = pts;
   }
