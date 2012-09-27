@@ -46,7 +46,6 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/Variant.h"
 #include "windowing/WindowingFactory.h"
-#include "windowing/egl/WinEGLPlatform.h"
 
 // for external subtitles
 #include "xbmc/cores/dvdplayer/DVDClock.h"
