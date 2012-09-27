@@ -854,6 +854,7 @@ bool CGUIWindowPVRCommon::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON bu
       m_parent->SetActiveView(m_parent->m_windowSearch);
       m_parent->m_windowSearch->UpdateData();
       m_parent->SetLabel(m_iControlList, 0);
+      m_parent->m_viewControl.SetFocused();
     }
   }
 
