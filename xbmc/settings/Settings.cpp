@@ -480,6 +480,8 @@ void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName,
 
 bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& strSettingsFile)
 {
+  m_Calibrations.clear();
+
   const TiXmlElement *pElement = pRoot->FirstChildElement("resolutions");
   if (!pElement)
   {
@@ -514,8 +516,18 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
     // we must not delete those, resolution just might not be available
     cal.iWidth = cal.iHeight = 0;
 
-    // store calibration
-    m_Calibrations.push_back(cal);
+    // store calibration, avoid adding duplicates
+    bool found = false;
+    for (std::vector<RESOLUTION_INFO>::iterator  it = m_Calibrations.begin(); it != m_Calibrations.end(); ++it)
+    {
+      if (it->strMode.Equals(cal.strMode))
+      {
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      m_Calibrations.push_back(cal);
 
     // iterate around
     pResolution = pResolution->NextSiblingElement("resolution");
