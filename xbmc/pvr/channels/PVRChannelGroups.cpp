@@ -304,6 +304,7 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
     strPath.Format("channels/%s/%i", m_bRadio ? "radio" : "tv", (*it)->GroupID());
     CFileItemPtr group(new CFileItem(strPath, true));
     group->m_strTitle = (*it)->GroupName();
+    group->SetLabel((*it)->GroupName());
     results->Add(group);
     ++iReturn;
   }
