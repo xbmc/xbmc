@@ -120,7 +120,6 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
         CPVRChannelGroupPtr nextGroup = iAction == ACTION_MOVE_RIGHT ? group->GetNextGroup() : group->GetPreviousGroup();
         g_PVRManager.SetPlayingGroup(nextGroup);
 
-        Clear();
         Update();
 
         return true;
@@ -152,6 +151,7 @@ void CGUIDialogPVRChannelsOSD::Update(bool selectPlayingChannel)
   if (!IsObserving(g_infoManager))
     g_infoManager.RegisterObserver(this);
 
+  int iSelectedItem = m_viewControl.GetSelectedItem();
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
 
   // empty the list ready for population
@@ -165,7 +165,7 @@ void CGUIDialogPVRChannelsOSD::Update(bool selectPlayingChannel)
   {
     group->GetMembers(*m_vecItems);
     m_viewControl.SetItems(*m_vecItems);
-    m_viewControl.SetSelectedItem(selectPlayingChannel ? group->GetIndex(*channel) : 0);
+    m_viewControl.SetSelectedItem(selectPlayingChannel ? group->GetIndex(*channel) : iSelectedItem);
   }
 
   g_graphicsContext.Unlock();
