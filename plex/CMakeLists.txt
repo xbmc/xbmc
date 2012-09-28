@@ -77,10 +77,12 @@ install(FILES ${plexdir}/Splash.png DESTINATION ${resourcesdir}/XBMC/media)
 #  install(FILES ${CMAKE_BINARY_DIR}/ffmpeg/lib/lib${l}.dylib DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/MacOS)
 #endforeach()
 
+set(plugins ${resourcesdir}/XBMC/system/ImageLib-x86-osx.so)
+
 install(CODE "
 	include(BundleUtilities)
 	set(BU_CHMOD_BUNDLE_ITEMS ON)
-	fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app \"\" ${dependdir}/lib)"
+	fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app ${plugins} ${dependdir}/lib)"
 COMPONENT RUNTIME)
 install(CODE "
 	execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh Plex.app \"${root}\" \"${CMAKE_INSTALL_PREFIX}\")

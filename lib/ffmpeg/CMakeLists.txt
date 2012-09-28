@@ -10,6 +10,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 externalproject_add(ffmpeg
+  DEPENDS dependencies
   URL ${root}/lib/ffmpeg
   CONFIGURE_COMMAND ${plexdir}/scripts/run_with_deps.sh ${dependdir}/bin ./configure ${ffmpeg_conf_flags}
   BUILD_COMMAND ${plexdir}/scripts/run_with_deps.sh ${dependdir}/bin make -j4
@@ -23,7 +24,7 @@ externalproject_add(ffmpeg
 macro(wrap_lib srcpath lib)
 	file(GLOB_RECURSE objects ${srcpath}/*.o)
 	add_library(${lib}-${ARCH} MODULE ${objects} $<TARGET_OBJECTS:wrapper>)
-#	add_custom_target(wrap_${lib} COMMAND ${CMAKE_C_COMPILER} ${ldflag} -o ${CMAKE_BINARY_DIR}/lib/${lib}-${ARCH}.so ${w} ${objects} DEPENDS ffmpeg wrapper)
+  add_dependencies(${lib}-${ARCH} ffmpeg)
 endmacro()
 
 set(pref ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg-prefix/src/ffmpeg)
@@ -34,3 +35,15 @@ wrap_lib(${pref}/libavformat avformat-52)
 wrap_lib(${pref}/libavfilter avfilter-1)
 wrap_lib(${pref}/libswscale swscale-0)
 wrap_lib(${pref}/libpostproc postproc-51)
+
+install(TARGETS
+  avcodec-52-${ARCH}
+  avutil-50-${ARCH}
+  avcore-0-${ARCH}
+  avformat-52-${ARCH}
+  avfilter-1-${ARCH} 
+  swscale-0-${ARCH} 
+  postproc-51-${ARCH}
+  
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system/players/dvdplayer
+)

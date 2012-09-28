@@ -1,5 +1,6 @@
 project("Plex")
 cmake_minimum_required(VERSION 2.8.8)
+include(ExternalProject)
 
 set(root ${PROJECT_SOURCE_DIR})
 set(dependdir ${root}/plex/Dependencies/darwin-i686)
@@ -18,8 +19,8 @@ include_directories(
 	${root}/xbmc/cores/dvdplayer
 	${root}/xbmc/settings
 	${root}/lib
-	${root}/lib/ffmpeg
 	${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff
+  ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg-prefix/src/ffmpeg
 
 	${dependdir}/include
 	${dependdir}/include/libcec
@@ -106,6 +107,8 @@ set(find_libs
 	mad
 	mpeg2
 	bluray
+  png
+  tiff
 )
 
 set(system_libs
@@ -197,10 +200,18 @@ function(add_sources)
   set_property(GLOBAL APPEND PROPERTY SRCS_LIST "${SRCS}")
 endfunction(add_sources)
 
+# MUST BE ADDED FIRST :)
+add_subdirectory(plex/Dependencies)
+
+macro(add_library _target)
+  _add_library(${_target} ${ARGN})
+  add_dependencies(${_target} dependencies)
+endmacro()
+
 add_subdirectory(lib)
 add_subdirectory(xbmc)
 
-add_custom_target(internal_lib DEPENDS ${internal_libs})
-add_custom_target(xbmc_libs DEPENDS ${xbmc_libs} internal_libs wraplibs)
+add_custom_target(internal_lib DEPENDS ${internal_libs} dependencies)
+add_custom_target(xbmc_libs DEPENDS ${xbmc_libs} internal_libs wraplibs dependencies)
 
 add_subdirectory(plex)

@@ -7,6 +7,9 @@ externalproject_add(cpluff
 	BUILD_COMMAND make -j4
 	BUILD_IN_SOURCE 1
 	INSTALL_COMMAND ""
+  LOG_CONFIGURE 1
+  LOG_BUILD 1
+  LOG_INSTALL 1
 )
 
 set(CMAKE_MODULE_LINKER_FLAGS "-arch i386 -undefined dynamic_lookup -read_only_relocs suppress")

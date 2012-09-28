@@ -1,11 +1,8 @@
 add_subdirectory(libsquish)
 add_subdirectory(libapetag)
 add_subdirectory(libhts)
-add_subdirectory(cximage-6.0)
 
 # build our external projects
-include(ExternalProject)
-
 set(CMAKE_SHARED_MODULE_PREFIX "")
 set(CMAKE_SHARED_MODULE_SUFFIX ".so")
 if(APPLE)
@@ -16,14 +13,19 @@ if(APPLE)
 	set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS "-bundle")
 endif()
 
+add_subdirectory(cximage-6.0)
 add_subdirectory(ffmpeg)
 add_subdirectory(cpluff)
 
 # wrap them
-add_custom_target(wraplibs ALL DEPENDS avcodec-52-${ARCH} avutil-50-${ARCH} avcore-0-${ARCH} avformat-52-${ARCH} avfilter-1-${ARCH} swscale-0-${ARCH} postproc-51-${ARCH} cpluff-${ARCH})
-
-set(ffmpeglibs avcodec-52 avutil-50 avcore-0 avformat-52 avfilter-1 swscale-0 postproc-51)
-#foreach(f ${ffmpeglibs})
-#	install(PROGRAMS ${CMAKE_BINARY_DIR}/lib/${f}-${ARCH}.so DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system/players/dvdplayer/)
-#endforeach()
-#install(PROGRAMS ${CMAKE_BINARY_DIR}/lib/libcpluff-${ARCH}.so DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system)
+add_custom_target(wraplibs ALL DEPENDS
+  avcodec-52-${ARCH}
+  avutil-50-${ARCH}
+  avcore-0-${ARCH}
+  avformat-52-${ARCH}
+  avfilter-1-${ARCH} 
+  swscale-0-${ARCH} 
+  postproc-51-${ARCH} 
+  cpluff-${ARCH}
+  ImageLib-${ARCH}
+)
