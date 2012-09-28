@@ -17,7 +17,7 @@ SUBDIRS := \
 	mysqlclient boost taglib xbmc-pvr-addons \
 
 ifeq ($(DARWIN), ios)
-  EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image xbmc-pvr-addons
+  EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
 else
   EXCLUDED = Backrow
 endif
