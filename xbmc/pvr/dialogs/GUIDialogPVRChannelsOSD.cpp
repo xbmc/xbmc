@@ -165,7 +165,14 @@ void CGUIDialogPVRChannelsOSD::Update(bool selectPlayingChannel)
   {
     group->GetMembers(*m_vecItems);
     m_viewControl.SetItems(*m_vecItems);
-    m_viewControl.SetSelectedItem(selectPlayingChannel ? group->GetIndex(*channel) : iSelectedItem);
+
+    if (selectPlayingChannel)
+      iSelectedItem = group->GetIndex(*channel);
+    if (iSelectedItem < 0)
+      iSelectedItem = 0;
+    else if (iSelectedItem > m_vecItems->Size())
+      iSelectedItem = m_vecItems->Size() - 1;
+    m_viewControl.SetSelectedItem(iSelectedItem);
   }
 
   g_graphicsContext.Unlock();
