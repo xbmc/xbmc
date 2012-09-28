@@ -1194,8 +1194,8 @@ void CGUIEPGGridContainer::SetBlock(int block)
 {
   if (block < 0)
     m_blockCursor = 0;
-  else if (block > m_blocksPerPage)
-    m_blockCursor = m_blocksPerPage;
+  else if (block > m_blocksPerPage - 1)
+    m_blockCursor = m_blocksPerPage - 1;
   else
     m_blockCursor = block;
   m_item        = GetItem(m_channelCursor);
