@@ -97,6 +97,16 @@ namespace PVR
     CPVRChannelGroupPtr GetGroupAll(void) const;
 
     /*!
+     * @return The first group in this container, which always is the group with all channels.
+     */
+    CPVRChannelGroupPtr GetFirstGroup(void) const { return GetGroupAll(); }
+
+    /*!
+     * @return The last group in this container.
+     */
+    CPVRChannelGroupPtr GetLastGroup(void) const;
+
+    /*!
      * @brief Get the list of groups.
      * @param results The file list to store the results in.
      * @return The amount of items that were added.

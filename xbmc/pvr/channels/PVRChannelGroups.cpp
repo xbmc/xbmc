@@ -307,6 +307,16 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetGroupAll(void) const
   return empty;
 }
 
+CPVRChannelGroupPtr CPVRChannelGroups::GetLastGroup(void) const
+{
+  CSingleLock lock(m_critSection);
+  if (m_groups.size() > 0)
+    return m_groups.at(m_groups.size() - 1);
+
+  CPVRChannelGroupPtr empty;
+  return empty;
+}
+
 int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
 {
   int iReturn(0);
