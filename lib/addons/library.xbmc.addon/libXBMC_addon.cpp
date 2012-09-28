@@ -206,12 +206,60 @@ DLLEXPORT int XBMC_get_file_chunk_size(void *hdl, void* cb, void* file)
   return ((CB_AddOnLib*)cb)->GetFileChunkSize(((AddonCB*)hdl)->addonData, file);
 }
 
+DLLEXPORT bool XBMC_file_exists(void *hdl, void* cb, const char *strFileName, bool bUseCache)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->FileExists(((AddonCB*)hdl)->addonData, strFileName, bUseCache);
+}
+
+DLLEXPORT int XBMC_stat_file(void *hdl, void* cb, const char *strFileName, struct ::__stat64* buffer)
+{
+  if (cb == NULL)
+    return -1;
+
+  return ((CB_AddOnLib*)cb)->StatFile(((AddonCB*)hdl)->addonData, strFileName, buffer);
+}
+
+DLLEXPORT bool XBMC_delete_file(void *hdl, void* cb, const char *strFileName)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->DeleteFile(((AddonCB*)hdl)->addonData, strFileName);
+}
+
 DLLEXPORT bool XBMC_can_open_directory(void *hdl, void* cb, const char* strURL)
 {
   if (cb == NULL)
     return 0;
 
   return ((CB_AddOnLib*)cb)->CanOpenDirectory(((AddonCB*)hdl)->addonData, strURL);
+}
+
+DLLEXPORT bool XBMC_create_directory(void *hdl, void* cb, const char *strPath)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->CreateDirectory(((AddonCB*)hdl)->addonData, strPath);
+}
+
+DLLEXPORT bool XBMC_directory_exists(void *hdl, void* cb, const char *strPath)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->DirectoryExists(((AddonCB*)hdl)->addonData, strPath);
+}
+
+DLLEXPORT bool XBMC_remove_directory(void *hdl, void* cb, const char *strPath)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->RemoveDirectory(((AddonCB*)hdl)->addonData, strPath);
 }
 
 };

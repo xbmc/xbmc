@@ -59,8 +59,14 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->GetFileLength      = GetFileLength;
   m_callbacks->CloseFile          = CloseFile;
   m_callbacks->GetFileChunkSize   = GetFileChunkSize;
+  m_callbacks->FileExists         = FileExists;
+  m_callbacks->StatFile           = StatFile;
+  m_callbacks->DeleteFile         = DeleteFile;
 
   m_callbacks->CanOpenDirectory   = CanOpenDirectory;
+  m_callbacks->CreateDirectory    = CreateDirectory;
+  m_callbacks->DirectoryExists    = DirectoryExists;
+  m_callbacks->RemoveDirectory    = RemoveDirectory;
 }
 
 CAddonCallbacksAddon::~CAddonCallbacksAddon()
@@ -426,6 +432,33 @@ int CAddonCallbacksAddon::GetFileChunkSize(const void* addonData, void* file)
   return cfile->GetChunkSize();
 }
 
+bool CAddonCallbacksAddon::FileExists(const void* addonData, const char *strFileName, bool bUseCache)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CFile::Exists(strFileName, bUseCache);
+}
+
+int CAddonCallbacksAddon::StatFile(const void* addonData, const char *strFileName, struct __stat64* buffer)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return -1;
+
+  return CFile::Stat(strFileName, buffer);
+}
+
+bool CAddonCallbacksAddon::DeleteFile(const void* addonData, const char *strFileName)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CFile::Delete(strFileName);
+}
+
 bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* strURL)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
@@ -434,6 +467,39 @@ bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* s
 
   CFileItemList items;
   return CDirectory::GetDirectory(strURL, items);
+}
+
+bool CAddonCallbacksAddon::CreateDirectory(const void* addonData, const char *strPath)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CDirectory::Create(strPath);
+}
+
+bool CAddonCallbacksAddon::DirectoryExists(const void* addonData, const char *strPath)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CDirectory::Exists(strPath);
+}
+
+bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *strPath)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  // Empty directory
+  CFileItemList fileItems;
+  CDirectory::GetDirectory(strPath, fileItems);
+  for (int i = 0; i < fileItems.Size(); ++i)
+    CFile::Delete(fileItems.Get(i)->GetPath());
+
+  return CDirectory::Remove(strPath);
 }
 
 }; /* namespace ADDON */

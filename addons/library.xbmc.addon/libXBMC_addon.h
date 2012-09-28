@@ -205,9 +205,33 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_get_file_chunk_size");
       if (XBMC_get_file_chunk_size == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      XBMC_file_exists = (bool (*)(void* HANDLE, void* CB, const char *strFileName, bool bUseCache))
+        dlsym(m_libXBMC_addon, "XBMC_file_exists");
+      if (XBMC_file_exists == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_stat_file = (int (*)(void* HANDLE, void* CB, const char *strFileName, struct __stat64* buffer))
+        dlsym(m_libXBMC_addon, "XBMC_stat_file");
+      if (XBMC_stat_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_delete_file = (bool (*)(void* HANDLE, void* CB, const char *strFileName))
+        dlsym(m_libXBMC_addon, "XBMC_delete_file");
+      if (XBMC_delete_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       XBMC_can_open_directory = (bool (*)(void* HANDLE, void* CB, const char* strURL))
         dlsym(m_libXBMC_addon, "XBMC_can_open_directory");
       if (XBMC_can_open_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_create_directory = (bool (*)(void* HANDLE, void* CB, const char* strPath))
+        dlsym(m_libXBMC_addon, "XBMC_create_directory");
+      if (XBMC_create_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_directory_exists = (bool (*)(void* HANDLE, void* CB, const char* strPath))
+        dlsym(m_libXBMC_addon, "XBMC_directory_exists");
+      if (XBMC_directory_exists == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_remove_directory = (bool (*)(void* HANDLE, void* CB, const char* strPath))
+        dlsym(m_libXBMC_addon, "XBMC_remove_directory");
+      if (XBMC_remove_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
       m_Callbacks = XBMC_register_me(m_Handle);
       return m_Callbacks != NULL;
@@ -413,6 +437,38 @@ namespace ADDON
     }
 
     /*!
+     * @brief Check if a file exists.
+     * @param strFileName The filename to check.
+     * @param bUseCache Check in file cache.
+     * @return true if the file exists false otherwise.
+     */
+    bool FileExists(const char *strFileName, bool bUseCache)
+    {
+      return XBMC_file_exists(m_Handle, m_Callbacks, strFileName, bUseCache);
+    }
+
+    /*!
+     * @brief Reads file status.
+     * @param strFileName The filename to read the status from.
+     * @param buffer The file status is written into this buffer.
+     * @return The file status was successfully read.
+     */
+    int StatFile(const char *strFileName, struct __stat64* buffer)
+    {
+      return XBMC_stat_file(m_Handle, m_Callbacks, strFileName, buffer);
+    }
+
+    /*!
+     * @brief Deletes a file.
+     * @param strFileName The filename to delete.
+     * @return The file was successfully deleted.
+     */
+    bool DeleteFile(const char *strFileName)
+    {
+      return XBMC_delete_file(m_Handle, m_Callbacks, strFileName);
+    }
+
+    /*!
      * @brief Checks whether a directory can be opened.
      * @param strUrl The URL of the directory to check.
      * @return True when it can be opened, false otherwise.
@@ -420,6 +476,36 @@ namespace ADDON
     bool CanOpenDirectory(const char* strUrl)
     {
       return XBMC_can_open_directory(m_Handle, m_Callbacks, strUrl);
+    }
+
+    /*!
+     * @brief Creates a directory.
+     * @param strPath Path to the directory.
+     * @return True when it was created, false otherwise.
+     */
+    bool CreateDirectory(const char *strPath)
+    {
+      return XBMC_create_directory(m_Handle, m_Callbacks, strPath);
+    }
+
+    /*!
+     * @brief Checks if a directory exists.
+     * @param strPath Path to the directory.
+     * @return True when it exists, false otherwise.
+     */
+    bool DirectoryExists(const char *strPath)
+    {
+      return XBMC_directory_exists(m_Handle, m_Callbacks, strPath);
+    }
+
+    /*!
+     * @brief Removes a directory.
+     * @param strPath Path to the directory.
+     * @return True when it was removed, false otherwise.
+     */
+    bool RemoveDirectory(const char *strPath)
+    {
+      return XBMC_remove_directory(m_Handle, m_Callbacks, strPath);
     }
 
   protected:
@@ -443,7 +529,13 @@ namespace ADDON
     int64_t (*XBMC_get_file_length)(void *HANDLE, void* CB, void* file);
     void (*XBMC_close_file)(void *HANDLE, void* CB, void* file);
     int (*XBMC_get_file_chunk_size)(void *HANDLE, void* CB, void* file);
+    bool (*XBMC_file_exists)(void *HANDLE, void* CB, const char *strFileName, bool bUseCache);
+    int (*XBMC_stat_file)(void *HANDLE, void* CB, const char *strFileName, struct __stat64* buffer);
+    bool (*XBMC_delete_file)(void *HANDLE, void* CB, const char *strFileName);
     bool (*XBMC_can_open_directory)(void *HANDLE, void* CB, const char* strURL);
+    bool (*XBMC_create_directory)(void *HANDLE, void* CB, const char* strPath);
+    bool (*XBMC_directory_exists)(void *HANDLE, void* CB, const char* strPath);
+    bool (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
 
   private:
     void *m_libXBMC_addon;
