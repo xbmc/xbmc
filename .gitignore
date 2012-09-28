@@ -1222,5 +1222,5 @@ lib/cmyth/Makefile
 /xbmc/win32/git_rev.h
 
 CmakeLists*.user*
-plex/Dependencies
+plex/Dependencies/darwin-i686
 plex/build
