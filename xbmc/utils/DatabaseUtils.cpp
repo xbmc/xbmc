@@ -232,6 +232,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
     else if (field == FieldSeason) return "tvshowview.totalSeasons";
     else if (field == FieldNumberOfEpisodes) return "tvshowview.totalCount";
     else if (field == FieldNumberOfWatchedEpisodes) return "tvshowview.watchedcount";
+    else if (field == FieldLastPlayed) return "tvshowview.lastPlayed";
 
     if (!result.empty())
       return result;
@@ -405,6 +406,7 @@ int DatabaseUtils::GetFieldIndex(Field field, MediaType mediaType)
     else if (field == FieldNumberOfEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_EPISODES;
     else if (field == FieldNumberOfWatchedEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_WATCHED;
     else if (field == FieldSeason) return VIDEODB_DETAILS_TVSHOW_NUM_SEASONS;
+    else if (field == FieldLastPlayed) return VIDEODB_DETAILS_TVSHOW_LASTPLAYED;
 
     if (index < 0)
       return index;
