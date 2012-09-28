@@ -420,25 +420,33 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     return false;
   }
 
-  // delete the group in this container
-  CSingleLock lock(m_critSection);
-  for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); it++)
-  {
-    if ((*it)->GroupID() == group.GroupID())
-    {
-      // update the selected group in the gui if it's deleted
-      CPVRChannelGroupPtr selectedGroup = GetSelectedGroup();
-      if (selectedGroup && *selectedGroup == group)
-        g_PVRManager.SetPlayingGroup(GetGroupAll());
+  bool bFound(false);
 
-      m_groups.erase(it);
-      break;
+  // delete the group in this container
+  {
+    CSingleLock lock(m_critSection);
+    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); !bFound && it != m_groups.end(); it++)
+    {
+      if ((*it)->GroupID() == group.GroupID())
+      {
+        // update the selected group in the gui if it's deleted
+        CPVRChannelGroupPtr selectedGroup = GetSelectedGroup();
+        if (selectedGroup && *selectedGroup == group)
+          g_PVRManager.SetPlayingGroup(GetGroupAll());
+
+        m_groups.erase(it);
+        bFound = true;
+      }
     }
   }
 
-  // delete the group from the database
-  CPVRDatabase *database = GetPVRDatabase();
-  return database ? database->Delete(group) : false;
+  if (group.GroupID() > 0)
+  {
+    // delete the group from the database
+    CPVRDatabase *database = GetPVRDatabase();
+    return database ? database->Delete(group) : false;
+  }
+  return bFound;
 }
 
 void CPVRChannelGroups::FillGroupsGUI(int iWindowId, int iControlId) const
