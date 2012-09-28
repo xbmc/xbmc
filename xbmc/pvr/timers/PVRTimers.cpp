@@ -646,7 +646,8 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
 
 void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  g_PVRManager.TriggerTimersUpdate();
+  if (msg == ObservableMessageEpgContainer)
+    g_PVRManager.TriggerTimersUpdate();
 }
 
 CDateTime CPVRTimers::GetNextEventTime(void) const
