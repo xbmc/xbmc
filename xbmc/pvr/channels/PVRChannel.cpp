@@ -846,6 +846,13 @@ int CPVRChannel::EpgID(void) const
   return m_iEpgId;
 }
 
+void CPVRChannel::SetEpgID(int iEpgId)
+{
+  CSingleLock lock(m_critSection);
+  m_iEpgId = iEpgId;
+  SetChanged();
+}
+
 bool CPVRChannel::EPGEnabled(void) const
 {
   CSingleLock lock(m_critSection);

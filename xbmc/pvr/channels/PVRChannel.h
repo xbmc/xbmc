@@ -368,6 +368,12 @@ namespace PVR
     int EpgID(void) const;
 
     /*!
+     * @brief Change the id of the epg that is linked to this channel
+     * @param iEpgId The new epg id
+     */
+    void SetEpgID(int iEpgId);
+
+    /*!
      * @brief Get the EPG table for this channel.
      * @return The EPG for this channel.
      */

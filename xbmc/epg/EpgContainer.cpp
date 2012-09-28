@@ -307,7 +307,8 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 
   if (!epg)
   {
-    epg = CreateEpg(NextEpgId());
+    channel->SetEpgID(NextEpgId());
+    epg = new CEpg(channel, true);
     m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));
     SetChanged();
     epg->RegisterObserver(this);
@@ -350,22 +351,6 @@ bool CEpgContainer::RemoveOldEntries(void)
   m_iLastEpgCleanup += g_advancedSettings.m_iEpgCleanupInterval;
 
   return true;
-}
-
-CEpg *CEpgContainer::CreateEpg(int iEpgId)
-{
-  if (g_PVRManager.IsStarted())
-  {
-    CPVRChannelPtr channel = g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
-    if (channel)
-    {
-      CEpg *epg = new CEpg(channel, true);
-      channel->Persist();
-      return epg;
-    }
-  }
-
-  return new CEpg(iEpgId);
 }
 
 bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = false */)
