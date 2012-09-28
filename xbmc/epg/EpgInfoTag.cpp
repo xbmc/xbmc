@@ -916,7 +916,11 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
   CSingleLock lock(m_critSection);
   if (!m_bChanged)
     return true;
+
+#if EPG_DEBUGGING
   CLog::Log(LOGDEBUG, "Epg - %s - Infotag '%s' %s, persisting...", __FUNCTION__, m_strTitle.c_str(), m_iBroadcastId > 0 ? "has changes" : "is new");
+#endif
+
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
   if (!database || (bSingleUpdate && !database->IsOpen()))
   {

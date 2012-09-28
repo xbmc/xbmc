@@ -34,6 +34,8 @@ using namespace dbiplus;
 using namespace PVR;
 using namespace ADDON;
 
+#define PVRDB_DEBUGGING 0
+
 bool CPVRDatabase::Open()
 {
   return CDatabase::Open(g_advancedSettings.m_databaseTV);
@@ -368,7 +370,9 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
         channel->m_iClientEncryptionSystem = m_pDS->fv("iEncryptionSystem").get_asInt();
         channel->m_iEpgId                  = m_pDS->fv("idEpg").get_asInt();
 
+#if PVRDB_DEBUGGING
         CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
+#endif
         PVRChannelGroupMember newMember = { channel, m_pDS->fv("iChannelNumber").get_asInt() };
         results.m_members.push_back(newMember);
 
@@ -710,7 +714,9 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
 
         if (channel)
         {
+#if PVRDB_DEBUGGING
           CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
+#endif
           PVRChannelGroupMember newMember = { channel, iChannelNumber };
           group.m_members.push_back(newMember);
           iReturn++;
