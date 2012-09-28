@@ -1529,7 +1529,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
       float score = 10 * (square_error((float)info.iWidth, (float)width) +
         square_error((float)info.iHeight, (float)height) +
         square_error(info.fRefreshRate, refresh) +
-        square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100:200), interlaced));
+        square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100:200), (float)interlaced));
       if (score < bestScore)
       {
         bestScore = score;
