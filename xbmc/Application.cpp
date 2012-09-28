@@ -2955,7 +2955,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
     if( frameTime > 0.5 ) frameTime = 0.5;
 
-    if (processGUI)
+    if (processGUI && m_renderGUI)
     {
       g_graphicsContext.Lock();
       // check if there are notifications to display
@@ -2985,13 +2985,13 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     ProcessGamepad(frameTime);
     ProcessEventServer(frameTime);
     ProcessPeripherals(frameTime);
-    if (processGUI)
+    if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
       m_seekHandler->Process();
     }
   }
-  if (processGUI)
+  if (processGUI && m_renderGUI)
   {
     if (!m_bStop)
       g_windowManager.Process(CTimeUtils::GetFrameTime());
@@ -6028,6 +6028,11 @@ bool CApplication::IsPresentFrame()
   bool ret = m_bPresentFrame;
 
   return ret;
+}
+
+void CApplication::SetRenderGUI(bool renderGUI)
+{
+  m_renderGUI = renderGUI;
 }
 
 #if defined(HAS_LINUX_NETWORK)

@@ -371,6 +371,7 @@ public:
   bool SwitchToFullScreen();
 
   CSplash* GetSplash() { return m_splash; }
+  void SetRenderGUI(bool renderGUI);
 protected:
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
