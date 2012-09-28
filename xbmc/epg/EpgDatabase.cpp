@@ -22,7 +22,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
-#include "threads/SingleLock.h"
 #include "addons/include/xbmc_pvr_types.h"
 
 #include "EpgDatabase.h"
@@ -34,14 +33,12 @@ using namespace EPG;
 
 bool CEpgDatabase::Open(void)
 {
-  CSingleLock lock(m_critSection);
   return CDatabase::Open(g_advancedSettings.m_databaseEpg);
 }
 
 bool CEpgDatabase::CreateTables(void)
 {
   bool bReturn(false);
-  CSingleLock lock(m_critSection);
 
   try
   {
@@ -154,7 +151,6 @@ bool CEpgDatabase::UpdateOldVersion(int iVersion)
 bool CEpgDatabase::DeleteEpg(void)
 {
   bool bReturn(false);
-  CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "EpgDB - %s - deleting all EPG data from the database", __FUNCTION__);
 
   bReturn = DeleteValues("epg") || bReturn;
@@ -183,7 +179,6 @@ bool CEpgDatabase::Delete(const CEpg &table, const time_t start /* = 0 */, const
   if (end != 0)
     strWhereClause.append(FormatSQL(" AND iEndTime <= %u", end).c_str());
 
-  CSingleLock lock(m_critSection);
   return DeleteValues("epgtags", strWhereClause);
 }
 
@@ -196,7 +191,6 @@ bool CEpgDatabase::DeleteOldEpgEntries(void)
 
   CStdString strWhereClause = FormatSQL("iEndTime < %u", iCleanupTime);
 
-  CSingleLock lock(m_critSection);
   return DeleteValues("epgtags", strWhereClause);
 }
 
@@ -208,14 +202,12 @@ bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
 
   CStdString strWhereClause = FormatSQL("idBroadcast = %u", tag.BroadcastId());
 
-  CSingleLock lock(m_critSection);
   return DeleteValues("epgtags", strWhereClause);
 }
 
 int CEpgDatabase::Get(CEpgContainer &container)
 {
   int iReturn(-1);
-  CSingleLock lock(m_critSection);
 
   CStdString strQuery = FormatSQL("SELECT idEpg, sName, sScraperName FROM epg;");
   if (ResultQuery(strQuery))
@@ -248,7 +240,6 @@ int CEpgDatabase::Get(CEpgContainer &container)
 int CEpgDatabase::Get(CEpg &epg)
 {
   int iReturn(-1);
-  CSingleLock lock(m_critSection);
 
   CStdString strQuery = FormatSQL("SELECT * FROM epgtags WHERE idEpg = %u;", epg.EpgID());
   if (ResultQuery(strQuery))
@@ -308,7 +299,6 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 {
   bool bReturn = false;
   CStdString strWhereClause = FormatSQL("idEpg = %u", iEpgId);
-  CSingleLock lock(m_critSection);
   CStdString strValue = GetSingleValue("lastepgscan", "sLastScan", strWhereClause);
 
   if (!strValue.IsEmpty())
@@ -329,7 +319,6 @@ bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite
   CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsDBDateTime().c_str());
 
-  CSingleLock lock(m_critSection);
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
@@ -357,7 +346,6 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
     strQuery = FormatSQL("INSERT INTO epg (sName, sScraperName) "
         "VALUES ('%s', '%s');", epg.Name().c_str(), epg.ScraperName().c_str());
 
-  CSingleLock lock(m_critSection);
   if (bQueueWrite)
   {
     if (QueueInsertQuery(strQuery))
@@ -388,7 +376,6 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   tag.FirstAiredAsUTC().GetAsTime(iFirstAired);
 
   int iBroadcastId = tag.BroadcastId();
-  CSingleLock lock(m_critSection);
   CStdString strQuery;
   
   /* Only store the genre string when needed */
