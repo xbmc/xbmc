@@ -121,6 +121,8 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
 
 void CEpgContainer::Start(void)
 {
+  Stop();
+
   CSingleLock lock(m_critSection);
 
   if (!m_database.IsOpen())
