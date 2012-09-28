@@ -723,12 +723,13 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 
       /* Create Ruler items */
       CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
+      CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
       CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
       CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true, true)));
       rulerItem->SetProperty("DateLabel", true);
       m_rulerItems.push_back(rulerItem);
 
-      for (; ruler < m_gridEnd; ruler += unit)
+      for (; ruler < rulerEnd; ruler += unit)
       {
         CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
         rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true, true));
