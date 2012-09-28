@@ -237,9 +237,23 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   else
     CLog::Log(LOGDEBUG, "PVR - %s - 'synchannelgroups' is disabled; skipping groups from clients", __FUNCTION__);
 
+  std::vector<CPVRChannelGroupPtr> emptyGroups;
+
   // load group members
   for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); it++)
+  {
     (*it)->Load();
+
+    // remove empty groups when sync with backend is enabled
+    if (bSyncWithBackends && !(*it)->IsInternalGroup() && (*it)->Size() == 0)
+      emptyGroups.push_back(*it);
+  }
+
+  for (std::vector<CPVRChannelGroupPtr>::iterator it = emptyGroups.begin(); it != emptyGroups.end(); it++)
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - deleting empty group '%s'", __FUNCTION__, (*it)->GroupName().c_str());
+    DeleteGroup(*(*it));
+  }
 
   // persist changes if we fetched groups from the backends
   return bSyncWithBackends ? PersistAll() : true;
