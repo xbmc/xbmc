@@ -547,6 +547,8 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
+  else 
+    CLog::Log(LOGNOTICE, "Running database version %s", dbName.c_str());
   return true;
 }
 
