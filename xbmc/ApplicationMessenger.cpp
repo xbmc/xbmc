@@ -803,12 +803,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_DISPLAY_SETUP:
     {
       *((bool*)pMsg->lpVoid) = g_application.InitWindow();
+      g_application.SetRenderGUI(true);
     }
     break;
     
     case TMSG_DISPLAY_DESTROY:
     {
       *((bool*)pMsg->lpVoid) = g_application.DestroyWindow();
+      g_application.SetRenderGUI(false);
     }
     break;
 
