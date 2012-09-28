@@ -1039,6 +1039,17 @@ bool CPVRClients::UpdateAddons(void)
     CSingleLock lock(m_critSection);
     m_addons = addons;
   }
+  
+  // handle "new" addons which aren't yet in the db - these have to be added first
+  for (unsigned iClientPtr = 0; iClientPtr < m_addons.size(); iClientPtr++)
+  {
+    const AddonPtr clientAddon = m_addons.at(iClientPtr);
+  
+    if (!m_addonDb.HasAddon(clientAddon->ID()))
+    {
+      m_addonDb.AddAddon(clientAddon, -1);
+    }
+  }
 
   if ((!bReturn || addons.size() == 0) && !m_bNoAddonWarningDisplayed &&
       !CAddonMgr::Get().HasAddons(ADDON_PVRDLL, false) &&

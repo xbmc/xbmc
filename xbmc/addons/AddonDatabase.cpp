@@ -632,6 +632,14 @@ bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& rea
   return false;
 }
 
+bool CAddonDatabase::HasAddon(const CStdString &addonID)
+{
+  CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+  CStdString strHasAddon = GetSingleValue("addon", "id", strWhereClause);
+  
+  return !strHasAddon.IsEmpty();
+}
+
 bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
 {
   try
