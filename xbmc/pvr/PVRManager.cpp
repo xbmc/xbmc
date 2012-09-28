@@ -239,9 +239,7 @@ void CPVRManager::Process(void)
   if (GetState() == ManagerStateStarted)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    Stop();
-    Start();
-    return;
+    CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
   }
 }
 
@@ -326,7 +324,6 @@ bool CPVRManager::Load(void)
   ShowProgressDialog(g_localizeStrings.Get(19238), 75); // Loading recordings from clients
   m_recordings->Load();
 
-  CSingleLock lock(m_critSection);
   if (GetState() != ManagerStateStarting)
     return false;
 
