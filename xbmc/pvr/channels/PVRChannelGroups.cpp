@@ -355,7 +355,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &
   }
 
   // no match
-  return GetGroupAll();
+  return GetLastGroup();
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &group) const
@@ -377,7 +377,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &grou
   }
 
   // no match
-  return GetGroupAll();
+  return GetFirstGroup();
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetSelectedGroup(void) const
