@@ -158,8 +158,12 @@ set(OGG_SONAME ${ogg_FNAME})
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${root}/xbmc/DllPaths_generated.h)
 
+if(NOT DEFINED OSX_SDK)
+     set(OSX_SDK /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk)
+endif()
+
 if(APPLE)
-	set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
+	set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot ${OSX_SDK}")
 endif()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")

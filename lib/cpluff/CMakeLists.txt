@@ -8,4 +8,6 @@ externalproject_add(cpluff
 	INSTALL_COMMAND ""
 )
 
-add_custom_target(wrap_cpluff COMMAND ${CMAKE_CXX_COMPILER} -arch i386 -all_load -bundle -flat_namespace -undefined dynamic_lookup -L${dependdir}/lib -lexpat -o ${CMAKE_BINARY_DIR}/lib/libcpluff-${ARCH}.so ${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff/.libs/libcpluff.a DEPENDS cpluff)
+set(ALIAS_LIST "")
+add_library(cpluff-${ARCH} MODULE ${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff/.libs/libcpluff.a ${expat_LIBRARY})
+set_target_properties(cpluff-${ARCH} PROPERTIES LINKER_LANGUAGE C)

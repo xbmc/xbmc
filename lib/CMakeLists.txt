@@ -6,13 +6,24 @@ add_subdirectory(cximage-6.0)
 # build our external projects
 include(ExternalProject)
 
+set(CMAKE_SHARED_MODULE_PREFIX "")
+set(CMAKE_SHARED_MODULE_SUFFIX ".so")
+if(APPLE)
+	set(ARCH x86-osx)
+	set(ALIAS_LIST "-Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+	set(CMAKE_MODULE_LINKER_FLAGS "-arch i386 -undefined dynamic_lookup -read_only_relocs suppress ${ALIAS_LIST}")
+	set(ARCH x86-osx)
+	set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS "-bundle")
+endif()
+
 add_subdirectory(ffmpeg)
 add_subdirectory(cpluff)
 
 # wrap them
-add_custom_target(wraplibs ALL DEPENDS wrap_avcodec-52 wrap_avutil-50 wrap_avcore-0 wrap_avformat-52 wrap_avfilter-1 wrap_swscale-0 wrap_postproc-51 wrap_cpluff)
+add_custom_target(wraplibs ALL DEPENDS avcodec-52-${ARCH} avutil-50-${ARCH} avcore-0-${ARCH} avformat-52-${ARCH} avfilter-1-${ARCH} swscale-0-${ARCH} postproc-51-${ARCH} cpluff-${ARCH})
+
 set(ffmpeglibs avcodec-52 avutil-50 avcore-0 avformat-52 avfilter-1 swscale-0 postproc-51)
-foreach(f ${ffmpeglibs})
-	install(PROGRAMS ${CMAKE_BINARY_DIR}/lib/${f}-${ARCH}.so DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system/players/dvdplayer/)
-endforeach()
-install(PROGRAMS ${CMAKE_BINARY_DIR}/lib/libcpluff-${ARCH}.so DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system)
+#foreach(f ${ffmpeglibs})
+#	install(PROGRAMS ${CMAKE_BINARY_DIR}/lib/${f}-${ARCH}.so DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system/players/dvdplayer/)
+#endforeach()
+#install(PROGRAMS ${CMAKE_BINARY_DIR}/lib/libcpluff-${ARCH}.so DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system)
