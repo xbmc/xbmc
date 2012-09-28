@@ -53,6 +53,9 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strChannelName = recording.strChannelName;
   m_genre          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_iRecPlayCount  = recording.iPlayCount;
+  m_strIconPath       = recording.strIconPath;
+  m_strThumbnailPath  = recording.strThumbnailPath;
+  m_strFanartPath     = recording.strFanartPath;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -71,7 +74,10 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strDirectory       == right.m_strDirectory &&
        m_strFileNameAndPath == right.m_strFileNameAndPath &&
        m_strTitle           == right.m_strTitle &&
-       m_iRecPlayCount      == right.m_iRecPlayCount);
+       m_iRecPlayCount      == right.m_iRecPlayCount &&
+       m_strIconPath        == right.m_strIconPath &&
+       m_strThumbnailPath   == right.m_strThumbnailPath &&
+       m_strFanartPath      == right.m_strFanartPath);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -90,6 +96,9 @@ void CPVRRecording::Reset(void)
   m_iLifetime          = -1;
   m_strFileNameAndPath = StringUtils::EmptyString;
   m_iRecPlayCount      = 0;
+  m_strIconPath        = StringUtils::EmptyString;
+  m_strThumbnailPath   = StringUtils::EmptyString;
+  m_strFanartPath      = StringUtils::EmptyString;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -200,6 +209,9 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strChannelName = tag.m_strChannelName;
   m_genre          = tag.m_genre;
   m_iRecPlayCount  = tag.m_iRecPlayCount;
+  m_strIconPath       = tag.m_strIconPath;
+  m_strThumbnailPath  = tag.m_strThumbnailPath;
+  m_strFanartPath     = tag.m_strFanartPath;
 
   CStdString strShow;
   strShow.Format("%s - ", g_localizeStrings.Get(20364).c_str());

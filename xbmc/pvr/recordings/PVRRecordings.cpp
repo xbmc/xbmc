@@ -108,6 +108,15 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
 
+    if (!current->m_strIconPath.IsEmpty())
+      pFileItem->SetIconImage(current->m_strIconPath);
+
+    if (!current->m_strThumbnailPath.IsEmpty())
+      pFileItem->SetThumbnailImage(current->m_strThumbnailPath);
+
+    if (!current->m_strFanartPath.IsEmpty())
+      pFileItem->SetProperty("Fanart_Image", current->m_strFanartPath);
+
     // Set the play count either directly from client (if supported) or from video db
     if (g_PVRClients->SupportsRecordingPlayCount(pFileItem->GetPVRRecordingInfoTag()->m_iClientId))
     {

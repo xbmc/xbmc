@@ -53,6 +53,9 @@ namespace PVR
     CStdString    m_strStreamURL;   /*!< stream URL. if empty use pvr client */
     CStdString    m_strDirectory;   /*!< directory of this recording on the client */
     int           m_iRecPlayCount;  /*!< play count of this recording on the client */
+    CStdString    m_strIconPath;      /*!< icon path */
+    CStdString    m_strThumbnailPath; /*!< thumbnail path */
+    CStdString    m_strFanartPath;    /*!< fanart path */
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
