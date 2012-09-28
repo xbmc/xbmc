@@ -213,6 +213,8 @@ const BUILT_IN commands[] = {
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
+  { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
+  { "StopPVRManager",             false,  "Stops the PVR manager" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1619,6 +1621,14 @@ int CBuiltins::Execute(const CStdString& execString)
     bool debug = g_guiSettings.GetBool("debug.showloginfo");
     g_guiSettings.SetBool("debug.showloginfo", !debug);
     g_advancedSettings.SetDebugMode(!debug);
+  }
+  else if (execute.Equals("startpvrmanager"))
+  {
+    g_application.StartPVRManager();
+  }
+  else if (execute.Equals("stoppvrmanager"))
+  {
+    g_application.StopPVRManager();
   }
   else
     return -1;
