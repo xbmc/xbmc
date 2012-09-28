@@ -2216,24 +2216,6 @@ bool CApplication::RenderNoPresent()
 
   bool hasRendered = g_windowManager.Render();
 
-  // if we're recording an audio stream then show blinking REC
-  if (!g_graphicsContext.IsFullScreenVideo())
-  {
-    if (m_pPlayer && m_pPlayer->IsRecording() )
-    {
-      static int iBlinkRecord = 0;
-      iBlinkRecord++;
-      if (iBlinkRecord > 25)
-      {
-        CGUIFont* pFont = g_fontManager.GetFont("font13");
-        CGUITextLayout::DrawText(pFont, 60, 50, 0xffff0000, 0, "REC", 0);
-      }
-
-      if (iBlinkRecord > 50)
-        iBlinkRecord = 0;
-    }
-  }
-
   g_graphicsContext.Unlock();
 
   return hasRendered;
