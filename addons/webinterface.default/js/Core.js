@@ -19,7 +19,7 @@
  */
 
 /* Global Paths */
-
+var commsErrorTimeout;
 var JSON_RPC = 'jsonrpc';
 var DEFAULT_ALBUM_COVER = 'images/DefaultAlbumCover.png';
 var DEFAULT_VIDEO_COVER = 'images/DefaultVideo.png';
@@ -83,8 +83,6 @@ function timeToDuration(time) {
 function applyDeviceFixes() {
   document.addEventListener('touchmove', function(e){ e.preventDefault(); });
 }
-
-var commsErrorTimeout;
 
 function displayCommunicationError(m) {
   clearTimeout(commsErrorTimeout);
