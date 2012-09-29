@@ -23,7 +23,7 @@
   var i,
     script,
     debug = false, /* Set to true to disable cached javascript */
-    version = (debug ? Math.random() : '1.0.0'),
+    version = (debug ? Math.random() : '2.0.2'),
     scripts = [
       "js/jquery-1.5.2.min.js",
       "js/jquery.lazyload.js",
