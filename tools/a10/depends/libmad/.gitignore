@@ -1,0 +1,5 @@
+.installed
+.builded
+.configured
+.extracted
+/libmad*
