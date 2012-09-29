@@ -271,7 +271,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   // stop PVR related services
   g_application.StopPVRManager();
-  g_application.StopEPGManager();
 
   if (profile != 0 || !g_settings.IsMasterUser())
   {
@@ -309,7 +308,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   ADDON::CAddonMgr::Get().StartServices(false);
 
   // start PVR related services
-  g_application.StartEPGManager();
   g_application.StartPVRManager();
 
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());

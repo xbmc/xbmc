@@ -74,7 +74,9 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
+#if !defined(TARGET_DARWIN)
     CLog::Log(LOGDEBUG, "DllAvFormat: Using libswresample system library");
+#endif
     return true;
   }
   virtual void Unload() {}
@@ -93,7 +95,9 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
+#if !defined(TARGET_DARWIN)
     CLog::Log(LOGDEBUG, "DllAvFormat: Using libavresample system library");
+#endif
     return true;
   }
   virtual void Unload() {}

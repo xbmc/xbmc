@@ -150,6 +150,7 @@ ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
+DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
 endif
 
 ifeq (@USE_AMLPLAYER@,1)
@@ -455,14 +456,6 @@ ifneq (1,@USE_XRANDR@)
 	@echo "excluding xbmc-xrandr"
 else
 	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 -lm
-endif
-
-tools/XBMCTex/XBMCTex:
-ifeq ($(findstring osx,@ARCH@), osx)
-	# hack this for now
-	$(MAKE) -C tools/XBMCTex -f Makefile.osx
-else
-	$(MAKE) -C tools/XBMCTex/
 endif
 
 tools/TexturePacker/TexturePacker: lib/libsquish/libsquish.a xbmc/guilib/XBTF.h

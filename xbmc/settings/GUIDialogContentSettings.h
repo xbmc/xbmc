@@ -46,7 +46,6 @@ public:
 protected:
   virtual void OnOkay();
   virtual void OnCancel();
-  virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings();

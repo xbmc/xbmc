@@ -228,9 +228,6 @@ bool CCoreAudioUnit::SetRenderProc()
 
   m_renderProc = RenderCallback;
 
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetRenderProc: "
-    "Set RenderProc %p for unit %p", m_renderProc, m_audioUnit);
-
   return true;
 }
 
@@ -252,9 +249,6 @@ bool CCoreAudioUnit::RemoveRenderProc()
       "Unable to remove AudioUnit render callback. Error = %s", GetError(ret).c_str());
     return false;
   }
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::RemoveRenderProc: "
-    "Remove RenderProc %p for unit %p", m_renderProc, m_audioUnit);
 
   m_renderProc = NULL;
   Sleep(100);
@@ -419,9 +413,6 @@ bool CAUOutputDevice::SetCurrentDevice(AudioDeviceID deviceId)
   }
 
   m_DeviceId = deviceId;
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetCurrentDevice: "
-    "Current device 0x%08x", (uint)m_DeviceId);
 
   return true;
 }

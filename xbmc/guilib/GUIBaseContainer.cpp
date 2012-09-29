@@ -780,6 +780,9 @@ void CGUIBaseContainer::AllocResources()
 {
   CGUIControl::AllocResources();
   CalculateLayout();
+  UpdateStaticItems(true);
+  if (m_staticDefaultItem != -1) // select default item
+    SelectStaticItemById(m_staticDefaultItem);
 }
 
 void CGUIBaseContainer::FreeResources(bool immediately)
@@ -887,14 +890,6 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
     }
     UpdateScrollByLetter();
   }
-}
-
-void CGUIBaseContainer::SetInitialVisibility()
-{
-  UpdateStaticItems(true);
-  CGUIControl::SetInitialVisibility();
-  if (m_staticDefaultItem != -1) // select default item
-    SelectStaticItemById(m_staticDefaultItem);
 }
 
 void CGUIBaseContainer::CalculateLayout()

@@ -239,9 +239,7 @@ void CPVRManager::Process(void)
   if (GetState() == ManagerStateStarted)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    Stop();
-    Start();
-    return;
+    CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
   }
 }
 
@@ -326,7 +324,6 @@ bool CPVRManager::Load(void)
   ShowProgressDialog(g_localizeStrings.Get(19238), 75); // Loading recordings from clients
   m_recordings->Load();
 
-  CSingleLock lock(m_critSection);
   if (GetState() != ManagerStateStarting)
     return false;
 
@@ -712,12 +709,16 @@ void CPVRManager::LoadCurrentChannelSettings()
 
 void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
 {
-  m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
+  if (m_channelGroups)
+    m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
 }
 
 CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
-  return m_channelGroups->GetSelectedGroup(bRadio);
+  if (m_channelGroups)
+    return m_channelGroups->GetSelectedGroup(bRadio);
+
+  return CPVRChannelGroupPtr();
 }
 
 bool CPVRRecordingsUpdateJob::DoWork(void)

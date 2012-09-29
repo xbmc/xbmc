@@ -66,26 +66,9 @@ CWinEGLPlatformRaspberryPI::CWinEGLPlatformRaspberryPI()
   m_context                 = EGL_NO_CONTEXT;
   m_display                 = EGL_NO_DISPLAY;
 
-  m_desktopRes.iScreen      = 0;
-  m_desktopRes.iWidth       = 1280;
-  m_desktopRes.iHeight      = 720;
-  m_desktopRes.fRefreshRate = 60.0f;
-  m_desktopRes.bFullScreen  = true;
-  m_desktopRes.iSubtitles   = (int)(0.965 * 720);
-  m_desktopRes.dwFlags      = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-  m_desktopRes.fPixelRatio  = 1.0f;
-  m_desktopRes.strMode      = "720p 16:9";
-  m_sdMode                  = false;
-
   m_dispman_element         = DISPMANX_NO_HANDLE;
   m_dispman_element2        = DISPMANX_NO_HANDLE;
   m_dispman_display         = DISPMANX_NO_HANDLE;
-
-  m_DllBcmHost.Load();
-
-  // get current display settings state
-  memset(&m_tv_state, 0, sizeof(TV_GET_STATE_RESP_T));
-  m_DllBcmHost.vc_tv_get_state(&m_tv_state);
 
   m_nativeWindow = (EGL_DISPMANX_WINDOW_T *)malloc(sizeof(EGL_DISPMANX_WINDOW_T));
   memset(m_nativeWindow, 0x0, sizeof(EGL_DISPMANX_WINDOW_T));
@@ -260,29 +243,11 @@ bool CWinEGLPlatformRaspberryPI::ProbeDisplayResolutions(std::vector<RESOLUTION_
     m_DllBcmHost.vc_tv_get_state(&tv);
 
     RESOLUTION_INFO res;
-    CLog::Log(LOGDEBUG, "EGL probe resolution %dx%d@%d %s:%x\n",
-       tv.width, tv.height, tv.frame_rate, tv.scan_mode?"I":"");
+    CLog::Log(LOGDEBUG, "EGL probe resolution %dx%d@%f %s:%x\n",
+        m_desktopRes.iWidth, m_desktopRes.iHeight, m_desktopRes.fRefreshRate,
+        m_desktopRes.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "p");
 
-    res.iScreen       = 0;
-    res.bFullScreen   = true;
-    res.iSubtitles    = (int)(0.965 * tv.height);
-    res.dwFlags       = tv.scan_mode ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE;
-    res.fRefreshRate  = (float)tv.frame_rate;
-    res.fPixelRatio   = 1.0f;
-    res.iWidth        = tv.width;
-    res.iHeight       = tv.height;
-    //res.iScreenWidth  = tv.width;
-    //res.iScreenHeight = tv.height;
-    res.strMode.Format("%dx%d", tv.width, tv.height);
-    if((float)tv.frame_rate > 1)
-    {
-        res.strMode.Format("%s @ %.2f%s - Full Screen", res.strMode, (float)tv.frame_rate, 
-            res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-    }
-
-    resolutions.push_back(res);
-    m_desktopRes = res;
-    m_res.push_back(res);
+    m_res.push_back(m_desktopRes);
   }
 
   return true;
@@ -293,6 +258,29 @@ EGLNativeWindowType CWinEGLPlatformRaspberryPI::InitWindowSystem(EGLNativeDispla
   m_nativeDisplay = nativeDisplay;
   m_width         = width;
   m_height        = height;
+
+  m_DllBcmHost.Load();
+
+  // get current display settings state
+  memset(&m_tv_state, 0, sizeof(TV_GET_STATE_RESP_T));
+  m_DllBcmHost.vc_tv_get_state(&m_tv_state);
+
+  m_desktopRes.iScreen      = 0;
+  m_desktopRes.bFullScreen  = true;
+  m_desktopRes.iSubtitles   = (int)(0.965 * m_tv_state.height);
+  m_desktopRes.iWidth       = m_tv_state.width;
+  m_desktopRes.iHeight      = m_tv_state.height;
+  m_desktopRes.dwFlags      = m_tv_state.scan_mode ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE;
+  m_desktopRes.fRefreshRate = (float)m_tv_state.frame_rate;
+  m_sdMode                  = false;
+  //m_desktopRes.iScreenWidth  = m_tv_state.width;
+  //m_desktopRes.iScreenHeight = m_tv_state.height;
+  m_desktopRes.strMode.Format("%dx%d", m_tv_state.width, m_tv_state.height);
+  if((float)m_tv_state.frame_rate > 1)
+  {
+      m_desktopRes.strMode.Format("%s @ %.2f%s - Full Screen", m_desktopRes.strMode, (float)m_tv_state.frame_rate, 
+          m_desktopRes.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+  }
 
   return getNativeWindow();
 }
@@ -697,10 +685,6 @@ void CWinEGLPlatformRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::
       }
 
       resolutions.push_back(res);
-
-      if(m_tv_state.width == width && m_tv_state.height == tv->height && 
-         m_tv_state.scan_mode == tv->scan_mode && m_tv_state.frame_rate == tv->frame_rate)
-        m_desktopRes = res;
 
       m_res.push_back(res);
     }

@@ -54,6 +54,7 @@
 #include "xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxVobsub.h"
 
 // amlogic libplayer
+#include "AMLUtils.h"
 #include "DllLibamplayer.h"
 
 struct AMLChapterInfo
@@ -104,33 +105,6 @@ struct AMLPlayerStreamInfo
   std::string   filename;
   std::string   filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub) 
 };
-
-
-static int set_sysfs_str(const char *path, const char *val)
-{
-  int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
-  if (fd >= 0)
-  {
-    write(fd, val, strlen(val));
-    close(fd);
-    return 0;
-  }
-  return -1;
-}
-
-static int set_sysfs_int(const char *path, const int val)
-{
-  char bcmd[16];
-  int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
-  if (fd >= 0)
-  {
-    sprintf(bcmd, "%d", val);
-    write(fd, bcmd, strlen(bcmd));
-    close(fd);
-    return 0;
-  }
-  return -1;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 static int media_info_dump(media_info_t* minfo)
@@ -1675,7 +1649,7 @@ void CAMLPlayer::ShowMainVideo(bool show)
   if (m_show_mainvideo == show)
     return;
 
-  set_sysfs_int("/sys/class/video/disable_video", show ? 0:1);
+  aml_set_sysfs_int("/sys/class/video/disable_video", show ? 0:1);
 
   m_show_mainvideo = show;
 }
@@ -1685,7 +1659,7 @@ void CAMLPlayer::SetVideoZoom(float zoom)
   // input zoom range is 0.5 to 2.0 with a default of 1.0.
   // output zoom range is 2 to 300 with default of 100.
   // we limit that to a range of 50 to 200 with default of 100.
-  set_sysfs_int("/sys/class/video/zoom", (int)(100 * zoom));
+  aml_set_sysfs_int("/sys/class/video/zoom", (int)(100 * zoom));
 }
 
 void CAMLPlayer::SetVideoContrast(int contrast)
@@ -1693,29 +1667,26 @@ void CAMLPlayer::SetVideoContrast(int contrast)
   // input contrast range is 0 to 100 with default of 50.
   // output contrast range is -255 to 255 with default of 0.
   contrast = (255 * (contrast - 50)) / 50;
-  set_sysfs_int("/sys/class/video/contrast", contrast);
+  aml_set_sysfs_int("/sys/class/video/contrast", contrast);
 }
 void CAMLPlayer::SetVideoBrightness(int brightness)
 {
   // input brightness range is 0 to 100 with default of 50.
   // output brightness range is -127 to 127 with default of 0.
   brightness = (127 * (brightness - 50)) / 50;
-  set_sysfs_int("/sys/class/video/brightness", brightness);
+  aml_set_sysfs_int("/sys/class/video/brightness", brightness);
 }
 void CAMLPlayer::SetVideoSaturation(int saturation)
 {
   // output saturation range is -127 to 127 with default of 127.
-  set_sysfs_int("/sys/class/video/saturation", saturation);
+  aml_set_sysfs_int("/sys/class/video/saturation", saturation);
 }
 
 void CAMLPlayer::SetAudioPassThrough(int format)
 {
-  if (m_audio_passthrough_ac3 && format == AFORMAT_AC3)
-    set_sysfs_int("/sys/class/audiodsp/digital_raw", 1);
-  else if (m_audio_passthrough_dts && format == AFORMAT_DTS)
-    set_sysfs_int("/sys/class/audiodsp/digital_raw", 1);
-  else
-    set_sysfs_int("/sys/class/audiodsp/digital_raw", 0);
+  aml_set_audio_passthrough(
+    (m_audio_passthrough_ac3 && format == AFORMAT_AC3) ||
+    (m_audio_passthrough_dts && format == AFORMAT_DTS));
 }
 
 bool CAMLPlayer::WaitForPausedThumbJobs(int timeout_ms)
@@ -2273,12 +2244,12 @@ void CAMLPlayer::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   CRect gui, display, dst_rect;
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  gui.SetRect(0, 0, g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+  gui = g_graphicsContext.GetViewWindow();
   // when display is at 1080p, we have freescale enabled
   // and that scales all layers into 1080p display including video,
   // so we have to setup video axis for 720p instead of 1080p... Boooo.
-  display.SetRect(0, 0, g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+  display = g_graphicsContext.GetViewWindow();
+  //RESOLUTION res = g_graphicsContext.GetVideoResolution();
   //display.SetRect(0, 0, g_settings.m_ResInfo[res].iScreenWidth, g_settings.m_ResInfo[res].iScreenHeight);
   dst_rect = m_dst_rect;
   if (gui != display)
@@ -2293,9 +2264,14 @@ void CAMLPlayer::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 
   ShowMainVideo(false);
 
+  // goofy 0/1 based difference in aml axis coordinates.
+  // fix them.
+  dst_rect.x2--;
+  dst_rect.y2--;
+
   char video_axis[256] = {0};
   sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2, (int)dst_rect.y2);
-  set_sysfs_str("/sys/class/video/axis", video_axis);
+  aml_set_sysfs_str("/sys/class/video/axis", video_axis);
 /*
   CStdString rectangle;
   rectangle.Format("%i,%i,%i,%i",

@@ -21,10 +21,6 @@ SRCS += OMXClock.cpp
 SRCS += OMXCore.cpp
 endif
 
-ifeq (@USE_ANDROID@,1)
-SRCS += getdelim.c
-endif
-
 LIB = linux.a
 
 include @abs_top_srcdir@/Makefile.include

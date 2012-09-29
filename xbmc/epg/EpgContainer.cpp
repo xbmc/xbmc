@@ -121,6 +121,8 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
 
 void CEpgContainer::Start(void)
 {
+  Stop();
+
   CSingleLock lock(m_critSection);
 
   if (!m_database.IsOpen())
@@ -307,7 +309,8 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 
   if (!epg)
   {
-    epg = CreateEpg(NextEpgId());
+    channel->SetEpgID(NextEpgId());
+    epg = new CEpg(channel, true);
     m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));
     SetChanged();
     epg->RegisterObserver(this);
@@ -334,9 +337,6 @@ bool CEpgContainer::LoadSettings(void)
 
 bool CEpgContainer::RemoveOldEntries(void)
 {
-  CLog::Log(LOGINFO, "EpgContainer - %s - removing old EPG entries",
-      __FUNCTION__);
-
   CDateTime now = CDateTime::GetUTCDateTime() -
       CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
 
@@ -353,22 +353,6 @@ bool CEpgContainer::RemoveOldEntries(void)
   m_iLastEpgCleanup += g_advancedSettings.m_iEpgCleanupInterval;
 
   return true;
-}
-
-CEpg *CEpgContainer::CreateEpg(int iEpgId)
-{
-  if (g_PVRManager.IsStarted())
-  {
-    CPVRChannelPtr channel = g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
-    if (channel)
-    {
-      CEpg *epg = new CEpg(channel, true);
-      channel->Persist();
-      return epg;
-    }
-  }
-
-  return new CEpg(iEpgId);
 }
 
 bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = false */)

@@ -3,6 +3,7 @@
 INCLUDES += -I$(prefix)/include/amlplayer
 
 SRCS = AMLPlayer.cpp
+SRCS+= AMLUtils.cpp
 SRCS+= FileURLProtocol.cpp
 
 LIB  = amlplayer.a

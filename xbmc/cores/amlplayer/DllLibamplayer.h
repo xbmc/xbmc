@@ -70,14 +70,7 @@ public:
   virtual int codec_get_sub_size_fd(int sub_fd)=0;
   virtual int codec_read_sub_data_fd(int sub_fd, char* buf, unsigned int length)=0;
 
-#if defined(TARGET_ANDROID)
-  // on android, libamplayer.so has ffmpeg built in and
-  // we need to use av_register_protocol2 from there.
   virtual int av_register_protocol2(AML_URLProtocol *protocol, int size)=0;
-#else
-  virtual int av_register_protocol2(AML_URLProtocol *protocol, int size)
-    { return ::av_register_protocol2(protocol, size);};
-#endif
 };
 
 class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
@@ -118,9 +111,7 @@ class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
   DEFINE_METHOD1(int,            codec_get_sub_size_fd, (int p1))
   DEFINE_METHOD3(int,            codec_read_sub_data_fd,(int p1, char *p2, unsigned int p3))
 
-#if defined(TARGET_ANDROID)
   DEFINE_METHOD2(int,            av_register_protocol2, (AML_URLProtocol *p1, int p2))
-#endif
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(player_init)
@@ -157,9 +148,7 @@ class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
     RESOLVE_METHOD(codec_get_sub_size_fd)
     RESOLVE_METHOD(codec_read_sub_data_fd)
 
-#if defined(TARGET_ANDROID)
     RESOLVE_METHOD(av_register_protocol2)
-#endif
 
   END_METHOD_RESOLVE()
 };

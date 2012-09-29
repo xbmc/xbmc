@@ -43,7 +43,7 @@
 
 using namespace std;
 
-#define OMX_MAX_CHANNELS 9
+#define OMX_MAX_CHANNELS 10
 
 static enum AEChannel OMXChannelMap[OMX_MAX_CHANNELS] = 
 {
@@ -51,7 +51,7 @@ static enum AEChannel OMXChannelMap[OMX_MAX_CHANNELS] =
   AE_CH_FC      , AE_CH_LFE, 
   AE_CH_BL      , AE_CH_BR,
   AE_CH_SL      , AE_CH_SR,
-  AE_CH_RAW
+  AE_CH_BC      , AE_CH_RAW
 };
 
 static enum OMX_AUDIO_CHANNELTYPE OMXChannels[OMX_MAX_CHANNELS] =
@@ -60,7 +60,7 @@ static enum OMX_AUDIO_CHANNELTYPE OMXChannels[OMX_MAX_CHANNELS] =
   OMX_AUDIO_ChannelCF, OMX_AUDIO_ChannelLFE,
   OMX_AUDIO_ChannelLR, OMX_AUDIO_ChannelRR,
   OMX_AUDIO_ChannelLS, OMX_AUDIO_ChannelRS,
-  OMX_AUDIO_ChannelNone
+  OMX_AUDIO_ChannelCS, OMX_AUDIO_ChannelNone
 };
 
 static unsigned int WAVEChannels[OMX_MAX_CHANNELS] =
@@ -69,7 +69,7 @@ static unsigned int WAVEChannels[OMX_MAX_CHANNELS] =
   SPEAKER_TOP_FRONT_CENTER, SPEAKER_LOW_FREQUENCY,
   SPEAKER_BACK_LEFT,        SPEAKER_BACK_RIGHT,
   SPEAKER_SIDE_LEFT,        SPEAKER_SIDE_RIGHT,
-  SPEAKER_SIDE_RIGHT
+  SPEAKER_BACK_CENTER,      SPEAKER_SIDE_RIGHT
 };
 
 static const uint16_t AC3Bitrates[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
@@ -233,7 +233,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device)
   memset(m_output_channels, 0x0, sizeof(m_output_channels));
   memset(&m_wave_header, 0x0, sizeof(m_wave_header));
 
-  for(int i = 0; i < OMX_MAX_CHANNELS; i++)
+  for(int i = 0; i < OMX_AUDIO_MAXCHANNELS; i++)
     m_pcm_input.eChannelMapping[i] = OMX_AUDIO_ChannelNone;
 
   m_output_channels[0] = OMX_AUDIO_ChannelLF;

@@ -243,13 +243,6 @@ namespace EPG
     virtual bool InterruptUpdate(void) const;
 
     /*!
-     * @brief Create a new EPG table.
-     * @param iEpgId The table ID or -1 to create a new one.
-     * @return The new table.
-     */
-    virtual CEpg *CreateEpg(int iEpgId);
-
-    /*!
      * @brief EPG update thread
      */
     virtual void Process(void);

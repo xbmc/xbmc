@@ -723,12 +723,13 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 
       /* Create Ruler items */
       CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
+      CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
       CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
       CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true, true)));
       rulerItem->SetProperty("DateLabel", true);
       m_rulerItems.push_back(rulerItem);
 
-      for (; ruler < m_gridEnd; ruler += unit)
+      for (; ruler < rulerEnd; ruler += unit)
       {
         CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
         rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true, true));
@@ -878,7 +879,7 @@ void CGUIEPGGridContainer::UpdateItems()
   m_channels = (int)m_epgItemsPtr.size();
   m_item = GetItem(m_channelCursor);
   if (m_item)
-    m_blockCursor = GetBlock(m_item->item, m_channelCursor);
+    SetBlock(GetBlock(m_item->item, m_channelCursor));
 
   SetInvalid();
 }
@@ -978,7 +979,7 @@ bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
     {
       // this is not first item on page
       m_item = GetPrevItem(m_channelCursor);
-      m_blockCursor = GetBlock(m_item->item, m_channelCursor);
+      SetBlock(GetBlock(m_item->item, m_channelCursor));
     }
     else if (m_blockCursor <= 0 && m_blockOffset)
     {
@@ -1027,7 +1028,7 @@ bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
     {
       // this is not last item on page
       m_item = GetNextItem(m_channelCursor);
-      m_blockCursor = GetBlock(m_item->item, m_channelCursor);
+      SetBlock(GetBlock(m_item->item, m_channelCursor));
     }
     else if ((m_blockOffset != m_blocks - m_blocksPerPage) && m_blocks > m_blocksPerPage)
     {
@@ -1174,7 +1175,7 @@ void CGUIEPGGridContainer::SetChannel(int channel)
     m_item          = GetItem(channel);
     if (m_item)
     {
-      m_blockCursor   = GetBlock(m_item->item, channel);
+      SetBlock(GetBlock(m_item->item, channel));
       m_channelCursor = channel;
     }
     return;
@@ -1185,13 +1186,18 @@ void CGUIEPGGridContainer::SetChannel(int channel)
   if (m_item)
   {
     m_channelCursor = channel;
-    m_blockCursor   = GetBlock(m_item->item, m_channelCursor);
+    SetBlock(GetBlock(m_item->item, m_channelCursor));
   }
 }
 
 void CGUIEPGGridContainer::SetBlock(int block)
 {
-  m_blockCursor = block;
+  if (block < 0)
+    m_blockCursor = 0;
+  else if (block > m_blocksPerPage - 1)
+    m_blockCursor = m_blocksPerPage - 1;
+  else
+    m_blockCursor = block;
   m_item        = GetItem(m_channelCursor);
 }
 

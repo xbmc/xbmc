@@ -55,7 +55,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources(bool immediately = false);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual void SetInitialVisibility();
 
   virtual unsigned int GetRows() const;
 

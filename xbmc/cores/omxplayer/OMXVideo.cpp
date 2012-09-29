@@ -249,15 +249,9 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
     break;
   }
 
-  if(m_decoded_width <= 720 && m_decoded_height <=576 && deinterlace)
-  {
+  m_deinterlace = deinterlace;
+  if(m_deinterlace)
     CLog::Log(LOGDEBUG, "COMXVideo::Open : enable deinterlace\n");
-    m_deinterlace = true;
-  }
-  else
-  {
-    m_deinterlace = false;
-  }
 
   std::string componentName = "";
 
@@ -685,17 +679,6 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
   {
     unsigned int demuxer_bytes = (unsigned int)iSize;
     uint8_t *demuxer_content = pData;
-
-    if(m_video_convert)
-    {
-      m_converter->Convert(pData, iSize);
-      demuxer_bytes = m_converter->GetConvertSize();
-      demuxer_content = m_converter->GetConvertBuffer();
-      if(!demuxer_bytes && demuxer_bytes < 1)
-      {
-        return false;
-      }
-    }
 
     while(demuxer_bytes)
     {

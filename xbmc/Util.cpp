@@ -35,7 +35,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #endif
-
+#if defined(TARGET_ANDROID)
+#include "android/bionic_supplement/bionic_supplement.h"
+#endif
 #include <stdlib.h>
 
 #include "Application.h"

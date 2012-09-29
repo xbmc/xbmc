@@ -67,6 +67,11 @@ public:
    \sa IsAddonDisabled, HasDisabledAddons */
   bool DisableAddon(const CStdString &addonID, bool disable = true);
 
+  /*! \brief Checks if an addon is in the database.
+   \param addonID id of the addon to be checked
+   \return true if addon is in database, false if addon is not in database yet */
+  bool HasAddon(const CStdString &addonID);
+  
   /*! \brief Check whether an addon has been disabled via DisableAddon.
    \param addonID id of the addon to check
    \return true if the addon is disabled, false otherwise

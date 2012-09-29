@@ -26,7 +26,7 @@
 
 #include <IL/OMX_Video.h>
 
-#include "BitstreamConverter.h"
+#include "utils/BitstreamConverter.h"
 
 #include "OMXClock.h"
 

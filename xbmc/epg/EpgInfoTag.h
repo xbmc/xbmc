@@ -28,6 +28,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+#define EPG_DEBUGGING 0
+
 /** an EPG info tag */
 namespace EPG
 {

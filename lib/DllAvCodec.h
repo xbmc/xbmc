@@ -177,7 +177,9 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
+#if !defined(TARGET_DARWIN)
     CLog::Log(LOGDEBUG, "DllAvCodec: Using libavcodec system library");
+#endif
     return true;
   }
   virtual void Unload() {}

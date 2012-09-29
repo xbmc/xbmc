@@ -42,6 +42,7 @@ CCoreAudioAESound::CCoreAudioAESound(const std::string &filename) :
   m_volume         (1.0f    ),
   m_inUse          (0       )
 {
+  m_wavLoader.Load(filename);
 }
 
 CCoreAudioAESound::~CCoreAudioAESound()
@@ -57,17 +58,18 @@ std::string CCoreAudioAESound::GetFileName()
 
 void CCoreAudioAESound::DeInitialize()
 {
-  m_wavLoader.DeInitialize();
 }
 
 bool CCoreAudioAESound::Initialize()
 {
-  DeInitialize();
-
-  if (!m_wavLoader.Initialize(m_filename, AE.GetSampleRate()))
+  if (!m_wavLoader.IsValid())
     return false;
 
-  return m_wavLoader.Remap(AE.GetChannelLayout());
+  return m_wavLoader.Initialize(
+    AE.GetSampleRate   (),
+    AE.GetChannelLayout(),
+    AE_CH_LAYOUT_INVALID
+  );
 }
 
 void CCoreAudioAESound::SetVolume(float volume)
