@@ -105,6 +105,7 @@ namespace PERIPHERALS
     void Connect(const CStdString ip_address_or_name, unsigned int port);
     void Disconnect(void);
     void Send(const BYTE *buffer, int length);
+    bool IsConnected(void) const;
 
   protected:
     void Process(void);
