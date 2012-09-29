@@ -47,17 +47,16 @@ platform_map={"build-linux-synology-i386":"synology-i686",
               "build-linux-debian-i386":"debian-i686",
               "build-linux-synology-arm":"synology-arm"}
 
-def platform_str():
-    if platform.system == "Linux":
-        if "BUILD_TAG" in os.environ:
-            for (k, v) in platform_map.iteritems():
-                if k in os.environ["BUILD_TAG"]:
-                    return "linux-"+v
+def platform_str(platform, arch):
+    if "BUILD_TAG" in os.environ:
+        for (k, v) in platform_map.iteritems():
+            if k in os.environ["BUILD_TAG"]:
+                return "linux-"+v
+    
+    if platform and arch:
+      return "%s-%s" % (platform, arch)
 
-        return "linux-%s-%s"%(platform.linux_distribution()[0].strip().lower(), platform.machine())
-        
-    if platform.system == "Darwin":
-        return "darwin-i686"
+    return "linux-%s-%s"%(platform.linux_distribution()[0].strip().lower(), platform.machine())
 
 if __name__=='__main__':
     parser=optparse.OptionParser()
@@ -69,6 +68,8 @@ if __name__=='__main__':
         default=".")
     parser.add_option("-p", "--platform", action="store", type="string",
         dest="platform", help="platform identifier", default=None)
+    parser.add_option("-a", "--arch", action="store", type="string",
+        dest="arch", help="arch identifier", default=None)
 
     (options, args)=parser.parse_args(sys.argv)
     config=ConfigParser.ConfigParser()
@@ -78,12 +79,11 @@ if __name__=='__main__':
 
     for depend in config.sections():
         print "Processing %s" % depend
-        dirname="%s-%s"%(config.get(depend, "version"), platform_str())
-        if options.platform:
-            dirname="%s-%s"%(config.get(depend, "version"), options.platform)
+        plat_str = platform_str(options.platform, options.arch)
+        dirname="%s-%s"%(config.get(depend, "version"), plat_str)
 
         dirpath=os.path.join(options.output, dirname)
-        print "Want file %s.tbz2->%s" % (dirname, dirname)
+        print "Want file %s.tar.bz2->%s" % (dirname, dirname)
 
         if os.path.exists(dirname):
             print "Looks like we have %s already" % dirpath
@@ -91,16 +91,16 @@ if __name__=='__main__':
             build=""
             if config.has_option(depend, "build"):
                 build="%s/"%config.get(depend, "build")
-            url="%s/%s%s.tbz2"%(config.get(depend, "root"), build, dirname)
+            url="%s/%s%s.tar.bz2"%(config.get(depend, "root"), build, dirname)
             checksum=None
-            if config.has_option(depend, platform_str()+"_chksum"):
-                checksum=config.get(depend, platform_str()+"_chksum")
+            if config.has_option(depend, plat_str+"_chksum"):
+                checksum=config.get(depend, plat_str+"_chksum")
             else:
                 print "No checksum for this platform, just skipping this dependency then"
                 continue
 
             print "Fetching: %s"%url
-            exec_cmd(["wget", "-O", "/tmp/%s.tbz2"%dirname, url])
+            exec_cmd(["curl", "-o", "/tmp/%s.tbz2"%dirname, url])
             computed=sha1_for_file("/tmp/"+dirname+".tbz2")
             if not computed==checksum:
                 print "checksum didn't match!"

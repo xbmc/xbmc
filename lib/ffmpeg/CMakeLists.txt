@@ -10,7 +10,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 externalproject_add(ffmpeg
-  DEPENDS dependencies
   URL ${root}/lib/ffmpeg
   CONFIGURE_COMMAND ${plexdir}/scripts/run_with_deps.sh ${dependdir}/bin ./configure ${ffmpeg_conf_flags}
   BUILD_COMMAND ${plexdir}/scripts/run_with_deps.sh ${dependdir}/bin make -j4

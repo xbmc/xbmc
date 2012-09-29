@@ -1,6 +1,5 @@
 # CPLUFF
 externalproject_add(cpluff
-  DEPENDS dependencies
 	LIST_SEPARATOR @
 	URL ${root}/lib/cpluff
 	CONFIGURE_COMMAND ${plexdir}/scripts/configure_cpluff.sh ${dependdir} ${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff
