@@ -78,3 +78,19 @@ int aml_get_sysfs_int(const char *path)
   }
   return val;
 }
+
+int aml_set_audio_passthrough(bool passthrough)
+{
+  static int has_aml = -1;
+  if (has_aml == -1)
+  {
+    if (aml_get_sysfs_int("/sys/class/audiodsp/digital_raw") != -1)
+      has_aml = 1;
+    else
+      has_aml = 0;
+  }
+  if (has_aml)
+    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? 1:0);
+
+  return has_aml;
+}

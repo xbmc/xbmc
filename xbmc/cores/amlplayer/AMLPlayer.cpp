@@ -1684,12 +1684,9 @@ void CAMLPlayer::SetVideoSaturation(int saturation)
 
 void CAMLPlayer::SetAudioPassThrough(int format)
 {
-  if (m_audio_passthrough_ac3 && format == AFORMAT_AC3)
-    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", 1);
-  else if (m_audio_passthrough_dts && format == AFORMAT_DTS)
-    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", 1);
-  else
-    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", 0);
+  aml_set_audio_passthrough(
+    (m_audio_passthrough_ac3 && format == AFORMAT_AC3) ||
+    (m_audio_passthrough_dts && format == AFORMAT_DTS));
 }
 
 bool CAMLPlayer::WaitForPausedThumbJobs(int timeout_ms)
