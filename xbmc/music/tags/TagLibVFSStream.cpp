@@ -23,7 +23,7 @@
 #include "filesystem/File.h"
 #include "utils/StdString.h"
 #include "utils/log.h"
-#include <taglib/tiostream.h>
+#include <tiostream.h>
 
 using namespace XFILE;
 using namespace TagLib;
