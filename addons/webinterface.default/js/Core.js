@@ -29,11 +29,11 @@
 
   String.prototype.startsWith = function (prefix) {
     return this.indexOf(prefix) === 0;
-  }
+  };
 
   String.prototype.endsWith = function (suffix) {
     return this.match(suffix + "$") == suffix;
-  }
+  };
 
   xbmc.core.durationToString = function (duration) {
     if (!duration) {
@@ -49,26 +49,26 @@
     }
     result += (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
     return result;
-  }
+  };
 
   xbmc.core.timeToDuration = function (time) {
     return time.hours * 3600 + time.minutes * 60 + time.seconds;
-  }
+  };
 
   xbmc.core.applyDeviceFixes = function () {
     document.addEventListener('touchmove', function(e){ e.preventDefault(); });
-  }
+  };
 
   xbmc.core.displayCommunicationError = function (m) {
     clearTimeout(xbmc.core.commsErrorTimeout);
     var message = m || 'Connection to server lost';
     $('#commsErrorPanel').html(message).show();
     xbmc.core.commsErrorTimeout = setTimeout('xbmc.core.hideCommunicationError()', 5000);
-  }
+  };
 
   xbmc.core.hideCommunicationError = function () {
     $('#commsErrorPanel').hide();
-  }
+  };
 
   xbmc.core.setCookie = function (name,value,days) {
     if (days) {
@@ -78,7 +78,7 @@
     }
     else var expires = "";
     document.cookie = name+"="+value+expires+"; path=/";
-  }
+  };
 
   xbmc.core.getCookie = function (name) {
     var nameEQ = name + "=";
@@ -89,7 +89,7 @@
       if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
     }
     return null;
-  }
+  };
 
   target.xbmc = xbmc;
 
