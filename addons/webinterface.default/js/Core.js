@@ -18,77 +18,80 @@
  *
  */
 
-var xbmc = xbmc || {};
-xbmc.core = {};
+(function (target) {
 
-/* Global Paths */
-xbmc.core.JSON_RPC = 'jsonrpc';
-xbmc.core.DEFAULT_ALBUM_COVER = 'images/DefaultAlbumCover.png';
-xbmc.core.DEFAULT_VIDEO_COVER = 'images/DefaultVideo.png';
+  var xbmc = target.xbmc || {};
+  xbmc.core = {};
 
-/* Prototypes */
+  xbmc.core.JSON_RPC = 'jsonrpc';
+  xbmc.core.DEFAULT_ALBUM_COVER = 'images/DefaultAlbumCover.png';
+  xbmc.core.DEFAULT_VIDEO_COVER = 'images/DefaultVideo.png';
 
-String.prototype.startsWith = function(prefix) {
-  return this.indexOf(prefix) === 0;
-}
-
-String.prototype.endsWith = function(suffix) {
-  return this.match(suffix + "$") == suffix;
-}
-
-xbmc.core.durationToString = function (duration) {
-  if (!duration) {
-    return '00:00';
+  String.prototype.startsWith = function (prefix) {
+    return this.indexOf(prefix) === 0;
   }
-  minutes = Math.floor(duration / 60);
-  hours = Math.floor(minutes / 60);
-  minutes = minutes % 60;
-  seconds = duration % 60;
-  var result = '';
-  if (hours) {
-    result += (hours < 10 ? '0' + hours : hours) + ':';
+
+  String.prototype.endsWith = function (suffix) {
+    return this.match(suffix + "$") == suffix;
   }
-  result += (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
-  return result;
-}
 
-xbmc.core.timeToDuration = function (time) {
-  return time.hours * 3600 + time.minutes * 60 + time.seconds;
-}
-
-xbmc.core.applyDeviceFixes = function () {
-  document.addEventListener('touchmove', function(e){ e.preventDefault(); });
-}
-
-xbmc.core.displayCommunicationError = function (m) {
-  clearTimeout(xbmc.core.commsErrorTimeout);
-  var message = m || 'Connection to server lost';
-  $('#commsErrorPanel').html(message).show();
-  xbmc.core.commsErrorTimeout = setTimeout('xbmc.core.hideCommunicationError()', 5000);
-}
-
-xbmc.core.hideCommunicationError = function () {
-  $('#commsErrorPanel').hide();
-}
-
-xbmc.core.setCookie = function (name,value,days) {
-  if (days) {
-    var date = new Date();
-    date.setTime(date.getTime()+(days*24*60*60*1000));
-    var expires = "; expires="+date.toGMTString();
+  xbmc.core.durationToString = function (duration) {
+    if (!duration) {
+      return '00:00';
+    }
+    minutes = Math.floor(duration / 60);
+    hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+    seconds = duration % 60;
+    var result = '';
+    if (hours) {
+      result += (hours < 10 ? '0' + hours : hours) + ':';
+    }
+    result += (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
+    return result;
   }
-  else var expires = "";
-  document.cookie = name+"="+value+expires+"; path=/";
-}
 
-xbmc.core.getCookie = function (name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie.split(';');
-  for(var i=0;i < ca.length;i++) {
-    var c = ca[i];
-    while (c.charAt(0)==' ') c = c.substring(1,c.length);
-    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  xbmc.core.timeToDuration = function (time) {
+    return time.hours * 3600 + time.minutes * 60 + time.seconds;
   }
-  return null;
-}
+
+  xbmc.core.applyDeviceFixes = function () {
+    document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+  }
+
+  xbmc.core.displayCommunicationError = function (m) {
+    clearTimeout(xbmc.core.commsErrorTimeout);
+    var message = m || 'Connection to server lost';
+    $('#commsErrorPanel').html(message).show();
+    xbmc.core.commsErrorTimeout = setTimeout('xbmc.core.hideCommunicationError()', 5000);
+  }
+
+  xbmc.core.hideCommunicationError = function () {
+    $('#commsErrorPanel').hide();
+  }
+
+  xbmc.core.setCookie = function (name,value,days) {
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  xbmc.core.getCookie = function (name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+  }
+
+  target.xbmc = xbmc;
+
+}(window));
 
