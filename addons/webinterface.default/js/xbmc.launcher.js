@@ -28,7 +28,7 @@
       "js/jquery-1.5.2.min.js",
       "js/jquery.lazyload.js",
       "js/iscroll-min.js",
-      "js/Core.js",
+      "js/xbmc.core.js",
       "js/MediaLibrary.js",
       "js/NowPlayingManager.js",
       "js/xbmc.init.js"
