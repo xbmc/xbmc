@@ -109,16 +109,6 @@ const CStdStringW& CGUIListItem::GetSortLabel() const
   return m_sortLabel;
 }
 
-void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
-{
-  SetArt("thumb", strThumbnail);
-}
-
-CStdString CGUIListItem::GetThumbnailImage() const
-{
-  return GetArt("thumb");
-}
-
 void CGUIListItem::SetArt(const std::string &type, const std::string &url)
 {
   ArtMap::iterator i = m_art.find(type);
@@ -208,12 +198,6 @@ void CGUIListItem::Select(bool bOnOff)
 bool CGUIListItem::HasIcon() const
 {
   return (m_strIcon.size() != 0);
-}
-
-
-bool CGUIListItem::HasThumbnail() const
-{
-  return HasArt("thumb");
 }
 
 bool CGUIListItem::HasOverlay() const

@@ -74,9 +74,6 @@ public:
   void SetIconImage(const CStdString& strIcon);
   const CStdString& GetIconImage() const;
 
-  void SetThumbnailImage(const CStdString& strThumbnail);
-  CStdString GetThumbnailImage() const;
-
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
 
@@ -120,7 +117,6 @@ public:
   bool IsSelected() const;
 
   bool HasIcon() const;
-  bool HasThumbnail() const;
   bool HasOverlay() const;
   virtual bool IsFileItem() const { return false; };
 
