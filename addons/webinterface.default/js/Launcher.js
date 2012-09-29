@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 (function (document) {
   "use strict";
 
@@ -31,7 +30,8 @@
       "js/iscroll-min.js",
       "js/Core.js",
       "js/MediaLibrary.js",
-      "js/NowPlayingManager.js"
+      "js/NowPlayingManager.js",
+      "js/xbmc.init.js"
     ];
 
   for (i = 0; i < scripts.length; i += 1) {
