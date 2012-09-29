@@ -21,14 +21,6 @@
 (function (window) {
     "use strict";
 
-    String.prototype.endsWith = function (suffix) {
-        return !!this.match(suffix + "$");
-    };
-
-    String.prototype.startsWith = function (prefix) {
-        return this.indexOf(prefix) === 0;
-    };
-
     var xbmc = window.xbmc || {};
 
     xbmc.core = {
@@ -91,7 +83,7 @@
         }
     };
 
-  window.xbmc = xbmc;
+    window.xbmc = xbmc;
 
 }(window));
 
