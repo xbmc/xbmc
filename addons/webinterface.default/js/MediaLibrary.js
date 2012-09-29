@@ -539,7 +539,7 @@ MediaLibrary.prototype = {
         type: 'POST',
         contentType: 'application/json',
         url: JSON_RPC + '?GetSongs',
-        data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}',
+        data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "filter": { "albumid" : ' + event.data.album.albumid + ' } }, "id": 1}',
         success: jQuery.proxy(function(data) {
           albumDetailsContainer = $('<div>');
           albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
@@ -550,7 +550,7 @@ MediaLibrary.prototype = {
           $('#content').append(albumDetailsContainer);
           var albumThumbnail = event.data.album.thumbnail;
           var albumTitle = event.data.album.title||'Unknown Album';
-          var albumArtist = event.data.album.artist||'Unknown Artist';
+          var albumArtist = event.data.album.artist.join(', ') || 'Unknown Artist';
           var trackCount = data.result.limits.total;
           $.each($(data.result.songs), jQuery.proxy(function(i, item) {
             if (i == 0) {
@@ -576,11 +576,11 @@ MediaLibrary.prototype = {
 
             trackRow.append(trackDurationTD);
             var trackArtistTD = $('<td>')
-              .html(item.artist);
+              .html(item.artist.join(', '));
 
             trackRow.append(trackArtistTD);
             var trackGenreTD = $('<td>')
-              .html(item.genre);
+              .html(item.genre.join(', '));
 
             trackRow.append(trackGenreTD);
             $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
