@@ -80,6 +80,20 @@ int aml_get_sysfs_int(const char *path)
   return val;
 }
 
+bool aml_present()
+{
+  static int has_aml = -1;
+  if (has_aml == -1)
+  {
+    if (aml_get_sysfs_int("/sys/class/amhdmitx/amhdmitx0/disp_cap") != -1)
+      has_aml = 1;
+    else
+      has_aml = 0;
+  }
+
+  return has_aml;
+}
+
 void aml_cpufreq_limit(bool limit)
 {
   static int audiotrack_cputype = -1;
@@ -127,18 +141,8 @@ void aml_cpufreq_limit(bool limit)
   }
 }
 
-int aml_set_audio_passthrough(bool passthrough)
+void aml_set_audio_passthrough(bool passthrough)
 {
-  static int has_aml = -1;
-  if (has_aml == -1)
-  {
-    if (aml_get_sysfs_int("/sys/class/audiodsp/digital_raw") != -1)
-      has_aml = 1;
-    else
-      has_aml = 0;
-  }
-  if (has_aml)
+  if (aml_present())
     aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? 1:0);
-
-  return has_aml;
 }
