@@ -21,38 +21,20 @@
 (function (window) {
     "use strict";
 
-    var xbmc = window.xbmc || {};
+    String.prototype.endsWith = function (suffix) {
+        return !!this.match(suffix + "$");
+    };
 
     String.prototype.startsWith = function (prefix) {
         return this.indexOf(prefix) === 0;
     };
 
-    String.prototype.endsWith = function (suffix) {
-        return !!this.match(suffix + "$");
-    };
+    var xbmc = window.xbmc || {};
 
     xbmc.core = {
-        'JSON_RPC': 'jsonrpc',
         'DEFAULT_ALBUM_COVER': 'images/DefaultAlbumCover.png',
         'DEFAULT_VIDEO_COVER': 'images/DefaultVideo.png',
-        'durationToString': function (duration) {
-            var total_seconds = duration || 0,
-                seconds = total_seconds % 60,
-                minutes = Math.floor(total_seconds / 60) % 60,
-                hours = Math.floor(total_seconds / 3600),
-                result = ((hours > 0 && ((hours < 10 ? '0' : '') + hours + ':')) || ''); 
-            result += (minutes < 10 ? '0' : '') + minutes + ':';
-            result += (seconds < 10 ? '0' : '') + seconds;
-            return result;
-        },
-        'timeToDuration': function (time) {
-            var duration;
-            time = time || {};
-            duration = ((time.hours || 0) * 3600);
-            duration += ((time.minutes || 0) * 60);
-            duration += (time.seconds || 0);
-            return duration;
-        },
+        'JSON_RPC': 'jsonrpc',
         'applyDeviceFixes': function () {
             window.document.addEventListener('touchmove', function (e) {
                 e.preventDefault();
@@ -63,6 +45,28 @@
             window.clearTimeout(xbmc.core.commsErrorTimeout);
             $('#commsErrorPanel').html(message).show();
             this.commsErrorTimeout = window.setTimeout(this.hideCommunicationError, 5000);
+        },
+        'durationToString': function (duration) {
+            var total_seconds = duration || 0,
+                seconds = total_seconds % 60,
+                minutes = Math.floor(total_seconds / 60) % 60,
+                hours = Math.floor(total_seconds / 3600),
+                result = ((hours > 0 && ((hours < 10 ? '0' : '') + hours + ':')) || ''); 
+            result += (minutes < 10 ? '0' : '') + minutes + ':';
+            result += (seconds < 10 ? '0' : '') + seconds;
+            return result;
+        },
+        'getCookie': function (name) {
+            var i,
+                match,
+                haystack = window.document.cookie.split(';');
+            for (i = 0; i < haystack.length; i += 1) {
+                match = haystack[i].match(/^\s*[\S\s]*=([\s\S]*)\s*$/);
+                if (match && match.length === 2) {
+                    return match[1];
+                }
+            }
+            return null;
         },
         'hideCommunicationError': function () {
             $('#commsErrorPanel').hide();
@@ -77,17 +81,13 @@
             }
             window.document.cookie = name + "=" + value + expires + "; path=/";
         },
-        'getCookie': function (name) {
-            var i,
-                match,
-                haystack = window.document.cookie.split(';');
-            for (i = 0; i < haystack.length; i += 1) {
-                match = haystack[i].match(/^\s*[\S\s]*=([\s\S]*)\s*$/);
-                if (match && match.length === 2) {
-                    return match[1];
-                }
-            }
-            return null;
+        'timeToDuration': function (time) {
+            var duration;
+            time = time || {};
+            duration = ((time.hours || 0) * 3600);
+            duration += ((time.minutes || 0) * 60);
+            duration += (time.seconds || 0);
+            return duration;
         }
     };
 
