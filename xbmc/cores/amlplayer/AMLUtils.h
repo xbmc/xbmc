@@ -24,4 +24,5 @@ int aml_get_sysfs_str(const char *path, char *valstr, const int size);
 int aml_set_sysfs_int(const char *path, const int val);
 int aml_get_sysfs_int(const char *path);
 
+void aml_cpufreq_limit(bool limit);
 void aml_set_audio_passthrough(bool passthrough);
