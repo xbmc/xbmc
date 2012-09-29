@@ -51,6 +51,11 @@ void CAmbiPiConnection::Connect(const CStdString ip_address_or_name, unsigned in
   Create();
 }
 
+void CAmbiPiConnection::Reconnect() {
+  Disconnect();
+  Create();
+}
+
 void CAmbiPiConnection::Disconnect()
 {
   if (m_bConnecting)
@@ -68,12 +73,14 @@ void CAmbiPiConnection::Disconnect()
     m_socket.reset();
   }
   m_bConnected = false;
+  CLog::Log(LOGINFO, "%s - disconnected", __FUNCTION__);
 }
 
 #define CONNECT_RETRY_DELAY 5
 
 void CAmbiPiConnection::Process(void)
 {
+  CLog::Log(LOGINFO, "%s - connecting", __FUNCTION__);
   {
     CSingleLock lock(m_critSection);
     m_bConnecting = true;
@@ -115,6 +122,7 @@ void CAmbiPiConnection::AttemptConnection()
     CSingleLock lock(m_critSection);
     m_bConnected = true;
   }
+  CLog::Log(LOGINFO, "%s - connected", __FUNCTION__);
 }
 
 struct CAmbiPiConnectionException : std::exception { char const* what() const throw() { return "Connection exception"; }; };
@@ -190,7 +198,10 @@ void CAmbiPiConnection::Send(const BYTE *buffer, int length)
   int iErr = send((SOCKET)m_socket, (const char *)buffer, length, 0);
   if (iErr <= 0)
   {
-    throw CAmbiPiSendException();
+    CLog::Log(LOGERROR, "%s - send failed", __FUNCTION__);
+    if (!m_bConnecting) {
+      Reconnect();
+    }
   }
 }
 

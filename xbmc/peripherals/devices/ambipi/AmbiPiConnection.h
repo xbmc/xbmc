@@ -35,7 +35,7 @@ namespace PERIPHERALS
     CAmbiPiConnection(void);
     ~CAmbiPiConnection(void);
     void Connect(const CStdString ip_address_or_name, unsigned int port);
-    void Disconnect(void);
+    void Disconnect(void);    
     void Send(const BYTE *buffer, int length);
     bool IsConnected(void) const;
 
@@ -43,6 +43,7 @@ namespace PERIPHERALS
     void Process(void);
 
   private:
+    void Reconnect(void);
     struct addrinfo *GetAddressInfo(const CStdString ip_address_or_name, unsigned int port);
 
     void AttemptConnection(void);
