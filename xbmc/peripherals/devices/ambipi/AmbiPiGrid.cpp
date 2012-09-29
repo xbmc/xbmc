@@ -236,7 +236,7 @@ void CAmbiPiGrid::CalculateAverageColorForTile(const YV12Image* pImage, Tile *pT
 
   unsigned long int pixelsInTile = (pTile->m_sampleRect.y2 - pTile->m_sampleRect.y1) * (pTile->m_sampleRect.x2 - pTile->m_sampleRect.x1);
 
-  BYTE *pLineY = pImage->plane[PLANE_Y] + int((pImage->stride[PLANE_Y]/2) * pTile->m_sampleRect.y1);
+  BYTE *pLineY = pImage->plane[PLANE_Y] + int(pImage->stride[PLANE_Y] * pTile->m_sampleRect.y1);
   BYTE *pLineU = pImage->plane[PLANE_U] + int((pImage->stride[PLANE_U]/2) * pTile->m_sampleRect.y1);
   BYTE *pLineV = pImage->plane[PLANE_V] + int((pImage->stride[PLANE_V]/2) * pTile->m_sampleRect.y1);
 
@@ -258,7 +258,7 @@ void CAmbiPiGrid::CalculateAverageColorForTile(const YV12Image* pImage, Tile *pT
       UpdateAverageYuv(&yuv, pixelsInTile, &averageYuv);
       UpdateAverageRgb(&rgb, pixelsInTile, &averageRgb);
     }
-    pLineY += (pImage->stride[PLANE_Y]/2);
+    pLineY += pImage->stride[PLANE_Y];
     pLineU += (pImage->stride[PLANE_U]/2);
     pLineV += (pImage->stride[PLANE_V]/2);
   }
