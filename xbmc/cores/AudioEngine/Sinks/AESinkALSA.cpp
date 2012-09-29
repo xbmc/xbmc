@@ -33,6 +33,9 @@
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #include "settings/GUISettings.h"
+#if defined(HAS_AMLPLAYER)
+#include "cores/amlplayer/AMLUtils.h"
+#endif
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 #define ALSA_PERIODS 16
@@ -141,6 +144,13 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     m_channelLayout = GetChannelLayout(format);
     m_passthrough   = false;
   }
+#if defined(HAS_AMLPLAYER)
+  if (aml_present())
+  {
+    aml_set_audio_passthrough(m_passthrough);
+    device = "default";
+  }
+#endif
 
   if (m_channelLayout.Count() == 0)
   {
