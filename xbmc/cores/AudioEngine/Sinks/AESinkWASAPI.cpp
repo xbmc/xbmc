@@ -202,8 +202,6 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   if (m_initialized)
     return false;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Initializing WASAPI Sink Rev. 1.0.5");
-
   m_device = device;
 
   /* Save requested format */
@@ -297,8 +295,6 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
   m_format              = format;
   sinkRetFormat         = format.m_dataFormat;
-
-  CLog::Log(LOGDEBUG, __FUNCTION__": Buffer Size     = %d Bytes", m_uiBufferLen * format.m_frameSize);
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, (void**)&m_pRenderClient);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI render client interface.")
@@ -980,41 +976,11 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
     wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
   }
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Checking IsFormatSupported with the following parameters:");
-  CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
-  CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
-  CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
-  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : %d", wfxex.Samples.wValidBitsPerSample);
-  CLog::Log(LOGDEBUG, "  Channel Count   : %d", wfxex.Format.nChannels);
-  CLog::Log(LOGDEBUG, "  Block Align     : %d", wfxex.Format.nBlockAlign);
-  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
-  CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
-  CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
-  CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
-  CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
-
-  if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
-    CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEEE_FLOAT");
-  else if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
-    CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_PCM");
-  else if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL)
-    CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL");
-  else if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEC61937_DTS)
-    CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEC61937_DTS");
-  else if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS)
-    CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS");
-  else if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP)
-    CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP");
-  else if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD)
-    CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD");
-  else
-    CLog::Log(LOGDEBUG, "  SubFormat       : NO SUBFORMAT SPECIFIED");
-
   HRESULT hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
 
   if (SUCCEEDED(hr))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Format is Supported - will attempt to Initialize");
+    CLog::Log(LOGINFO, __FUNCTION__": Format is Supported - will attempt to Initialize");
     goto initialize;
   }
   else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT) //It failed for a reason unrelated to an unsupported format.
@@ -1047,10 +1013,12 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
       wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
       /* Trace format match iteration loop via log */
+      #if 0
       CLog::Log(LOGDEBUG, "WASAPI: Trying Format: %s, %d, %d, %d", CAEUtil::DataFormatToStr(testFormats[j].subFormatType),
                                                                    wfxex.Format.nSamplesPerSec,
                                                                    wfxex.Format.wBitsPerSample,
                                                                    wfxex.Samples.wValidBitsPerSample);
+      #endif
 
       hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
 
@@ -1124,22 +1092,6 @@ initialize:
   audioSinkBufferDurationMsec = (REFERENCE_TIME)std::max(audioSinkBufferDurationMsec, (REFERENCE_TIME)500000);
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Initializing WASAPI exclusive mode with the following parameters:");
-  CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
-  CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
-  CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
-  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : %d", wfxex.Samples.wValidBitsPerSample);
-  CLog::Log(LOGDEBUG, "  Channel Count   : %d", wfxex.Format.nChannels);
-  CLog::Log(LOGDEBUG, "  Block Align     : %d", wfxex.Format.nBlockAlign);
-  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
-  CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
-  CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
-  CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
-  CLog::Log(LOGDEBUG, "  Enc. Channels   : %d", wfxex_iec61937.dwEncodedChannelCount);
-  CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: %d", wfxex_iec61937.dwEncodedSamplesPerSec);
-  CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
-  CLog::Log(LOGDEBUG, "  Periodicty      : %d", audioSinkBufferDurationMsec);
-
   if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
     CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEEE_FLOAT");
   else if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
@@ -1165,7 +1117,6 @@ initialize:
 
   if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Re-aligning WASAPI sink buffer due to %s.", WASAPIErrToStr(hr));
     // Get the next aligned frame.
     hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
     if (FAILED(hr))
@@ -1175,8 +1126,6 @@ initialize:
     }
 
     audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
-    CLog::Log(LOGDEBUG, __FUNCTION__": Number of Frames in Buffer   : %d", m_uiBufferLen);
-    CLog::Log(LOGDEBUG, __FUNCTION__": Requested Duration of Buffer : %d", audioSinkBufferDurationMsec);
 
     // Release the previous allocations.
     SAFE_RELEASE(m_pAudioClient);
@@ -1195,7 +1144,22 @@ initialize:
   }
   if (FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Unable to initialize WASAPI in exclusive mode %d - (%s).", HRESULT(hr), WASAPIErrToStr(hr));
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to initialize WASAPI in exclusive mode %d - (%s).", HRESULT(hr), WASAPIErrToStr(hr));
+    CLog::Log(LOGDEBUG, __FUNCTION__": Initializing WASAPI exclusive mode with the following parameters:");
+    CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
+    CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
+    CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
+    CLog::Log(LOGDEBUG, "  Valid Bits/Samp : %d", wfxex.Samples.wValidBitsPerSample);
+    CLog::Log(LOGDEBUG, "  Channel Count   : %d", wfxex.Format.nChannels);
+    CLog::Log(LOGDEBUG, "  Block Align     : %d", wfxex.Format.nBlockAlign);
+    CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
+    CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
+    CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
+    CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
+    CLog::Log(LOGDEBUG, "  Enc. Channels   : %d", wfxex_iec61937.dwEncodedChannelCount);
+    CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: %d", wfxex_iec61937.dwEncodedSamplesPerSec);
+    CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
+    CLog::Log(LOGDEBUG, "  Periodicty      : %d", audioSinkBufferDurationMsec);
     return false;
   }
 
@@ -1207,8 +1171,10 @@ initialize:
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
   m_sinkLatency = hnsLatency * 0.0000002;
 
-  CLog::Log(LOGDEBUG,  __FUNCTION__": Requested Duration of Buffer : %fmsec", hnsLatency / 10000.0);
-  CLog::Log(LOGNOTICE, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized Successfully!!!");
+  CLog::Log(LOGINFO, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized using: %s, %d, %d",
+                                     CAEUtil::DataFormatToStr(format.m_dataFormat),
+                                     wfxex.Format.nSamplesPerSec,
+                                     wfxex.Format.nChannels);
   return true;
 }
 
