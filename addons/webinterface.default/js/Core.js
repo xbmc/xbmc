@@ -18,11 +18,13 @@
  *
  */
 
+var xbmc = xbmc || {};
+xbmc.core = {};
+
 /* Global Paths */
-var commsErrorTimeout;
-var JSON_RPC = 'jsonrpc';
-var DEFAULT_ALBUM_COVER = 'images/DefaultAlbumCover.png';
-var DEFAULT_VIDEO_COVER = 'images/DefaultVideo.png';
+xbmc.core.JSON_RPC = 'jsonrpc';
+xbmc.core.DEFAULT_ALBUM_COVER = 'images/DefaultAlbumCover.png';
+xbmc.core.DEFAULT_VIDEO_COVER = 'images/DefaultVideo.png';
 
 /* Prototypes */
 
@@ -34,7 +36,7 @@ String.prototype.endsWith = function(suffix) {
   return this.match(suffix + "$") == suffix;
 }
 
-function durationToString(duration) {
+xbmc.core.durationToString = function (duration) {
   if (!duration) {
     return '00:00';
   }
@@ -50,25 +52,26 @@ function durationToString(duration) {
   return result;
 }
 
-function timeToDuration(time) {
+xbmc.core.timeToDuration = function (time) {
   return time.hours * 3600 + time.minutes * 60 + time.seconds;
 }
 
-function applyDeviceFixes() {
+xbmc.core.applyDeviceFixes = function () {
   document.addEventListener('touchmove', function(e){ e.preventDefault(); });
 }
 
-function displayCommunicationError(m) {
-  clearTimeout(commsErrorTimeout);
+xbmc.core.displayCommunicationError = function (m) {
+  clearTimeout(xbmc.core.commsErrorTimeout);
   var message = m || 'Connection to server lost';
   $('#commsErrorPanel').html(message).show();
-  commsErrorTimeout = setTimeout('hideCommunicationError()', 5000);
+  xbmc.core.commsErrorTimeout = setTimeout('xbmc.core.hideCommunicationError()', 5000);
 }
 
-function hideCommunicationError() {
+xbmc.core.hideCommunicationError = function () {
   $('#commsErrorPanel').hide();
 }
-function setCookie(name,value,days) {
+
+xbmc.core.setCookie = function (name,value,days) {
   if (days) {
     var date = new Date();
     date.setTime(date.getTime()+(days*24*60*60*1000));
@@ -78,7 +81,7 @@ function setCookie(name,value,days) {
   document.cookie = name+"="+value+expires+"; path=/";
 }
 
-function getCookie(name) {
+xbmc.core.getCookie = function (name) {
   var nameEQ = name + "=";
   var ca = document.cookie.split(';');
   for(var i=0;i < ca.length;i++) {
