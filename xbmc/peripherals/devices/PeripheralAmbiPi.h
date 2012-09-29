@@ -25,105 +25,11 @@
 #include "threads/CriticalSection.h"
 
 #include "Peripheral.h"
-#include "guilib/Geometry.h"
-
-#include "cores/VideoRenderers/BaseRenderer.h"
-
-#include "utils/AutoPtrHandle.h"
+#include "peripherals/devices/ambipi/AmbiPiConnection.h"
+#include "peripherals/devices/ambipi/AmbiPiGrid.h"
 
 namespace PERIPHERALS
 {
-  struct AverageYUV {
-    float y,u,v;
-  };
-
-  struct AverageRGB {
-    float r,g,b;
-  };
-
-  struct YUV {
-    BYTE y,u,v;
-  };
-
-  struct RGB {
-    BYTE r,g,b;
-  };
-
-
-  struct Tile
-  {
-    unsigned int      m_x;
-    unsigned int      m_y;
-    CRect             m_sampleRect;
-    YUV               m_yuv;
-  };
-
-  struct TileData {
-    BYTE *stream;
-    DWORD streamLength; 
-  };
-
-  class CAmbiPiGrid
-  {
-  public:
-    CAmbiPiGrid(unsigned int width, unsigned int height);
-    ~CAmbiPiGrid(void);
-    void UpdateSampleRectangles(unsigned int imageWidth, unsigned int imageHeight);
-    void UpdateTilesFromImage(const YV12Image* pImage);
-    TileData *GetTileData(void);
-
-  protected:
-    unsigned int m_width;
-    unsigned int m_height;
-    unsigned int m_numTiles;
-    Tile* m_tiles;
-    TileData m_tileData;
-
-    void UpdateTileCoordinates(unsigned int width, unsigned int height);    
-
-  private:
-    void UpdateSingleTileCoordinates(unsigned int leftTileIndex, unsigned int x, unsigned int y);
-    void DumpCoordinates(void);
-    void CalculateAverageColorForTile(const YV12Image* pImage, Tile *pTile);
-    void UpdateAverageColorForTile(Tile *pTile, const AverageYUV *pAverageYuv);
-    void UpdateAverageYuv(const YUV *pYuv, unsigned long int numPixels, AverageYUV *pAverageYuv);
-    void UpdateAverageRgb(const RGB *pRgb, unsigned long int numPixels, AverageRGB *pAverageRgb);
-  };
-
-  class CImageConversion
-  {
-  public:
-    static void ConvertYuvToRgb(const YUV *pYuv, RGB *pRgb);
-  };
-
-
-  class CAmbiPiConnection : private CThread
-  {
-  public:
-    CAmbiPiConnection(void);
-    ~CAmbiPiConnection(void);
-    void Connect(const CStdString ip_address_or_name, unsigned int port);
-    void Disconnect(void);
-    void Send(const BYTE *buffer, int length);
-    bool IsConnected(void) const;
-
-  protected:
-    void Process(void);
-
-  private:
-    struct addrinfo *GetAddressInfo(const CStdString ip_address_or_name, unsigned int port);
-
-    void AttemptConnection(void);
-    void AttemptConnection(struct addrinfo *pAddressInfo);
-
-    AUTOPTR::CAutoPtrSocket           m_socket;
-    CStdString                        m_ip_address_or_name;
-    unsigned int                      m_port;
-
-    bool                              m_bConnected;
-    bool                              m_bConnecting;
-    CCriticalSection                  m_critSection;
-  };
 
   class CPeripheralAmbiPi : public CPeripheral, private CThread
   {

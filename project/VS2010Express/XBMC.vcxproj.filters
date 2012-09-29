@@ -223,6 +223,9 @@
     <Filter Include="peripherals\devices">
       <UniqueIdentifier>{a3fe63d5-92eb-47e6-90f6-40b6e25d11d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="peripherals\devices\ambipi">
+      <UniqueIdentifier>{c0ffee15-600d-cafe-f00d-124312431243}</UniqueIdentifier>
+    </Filter>
     <Filter Include="peripherals\dialogs">
       <UniqueIdentifier>{9571e2bc-891d-4496-bcba-2ec3eed45704}</UniqueIdentifier>
     </Filter>
@@ -2025,6 +2028,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralAmbiPi.cpp">
       <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiConnection.cpp">
+      <Filter>peripherals\devices\ambipi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiGrid.cpp">
+      <Filter>peripherals\devices\ambipi</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.cpp">
       <Filter>peripherals\devices</Filter>
@@ -4953,6 +4962,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralAmbiPi.h">
       <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiConnection.h">
+      <Filter>peripherals\devices\ambipi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiGrid.h">
+      <Filter>peripherals\devices\ambipi</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.h">
       <Filter>peripherals\devices</Filter>

@@ -860,6 +860,8 @@
     <ClCompile Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusUSB.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\devices\Peripheral.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralAmbiPi.cpp" />
+    <ClCompile Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiConnection.cpp" />
+    <ClCompile Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiGrid.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralBluetooth.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralDisk.cpp" />
@@ -2230,6 +2232,8 @@
     <ClInclude Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusUSB.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\Peripheral.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralAmbiPi.h" />
+    <ClInclude Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiConnection.h" />
+    <ClInclude Include="..\..\xbmc\peripherals\devices\ambipi\AmbiPiGrid.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralBluetooth.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralDisk.h" />
