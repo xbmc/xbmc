@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -63,6 +62,9 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     {
       m_scrapers.clear();
       m_lastSelected.clear();
+      // save our current scraper (if any)
+      if (m_scraper)
+        m_lastSelected[m_content] = m_scraper;
       m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
@@ -114,15 +116,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
   }
   return CGUIDialogSettings::OnMessage(message);
-}
-
-void CGUIDialogContentSettings::OnWindowLoaded()
-{
-  // save our current scraper (if any)
-  m_lastSelected.clear();
-  m_lastSelected[m_content] = m_scraper;
-  FillContentTypes();
-  CGUIDialogSettings::OnWindowLoaded();
 }
 
 void CGUIDialogContentSettings::SetupPage()
@@ -236,6 +229,7 @@ void CGUIDialogContentSettings::OnCancel()
 
 void CGUIDialogContentSettings::OnInitWindow()
 {
+  FillContentTypes();
   m_bNeedSave = false;
   CGUIDialogSettings::OnInitWindow();
 }

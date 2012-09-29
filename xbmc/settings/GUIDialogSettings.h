@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,14 +27,16 @@ class CGUISpinControlEx;
 class CGUIButtonControl;
 class CGUIRadioButtonControl;
 class CGUISettingsSliderControl;
+class CGUIEditControl;
 class CGUIImage;
 
+typedef std::vector<CStdString> SETTINGSTRINGS;
 typedef CStdString (*FORMATFUNCTION) (float value, float min);
 
 class SettingInfo
 {
 public:
-  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR, STRING };
+  enum SETTING_TYPE { NONE=0, EDIT, EDIT_NUM, BUTTON, BUTTON_DIALOG, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR, STRING };
   SettingInfo()
   {
     id = 0;
@@ -83,8 +84,12 @@ protected:
 
   void AddSetting(SettingInfo &setting, float width, int iControlID);
 
+  void AddEdit(unsigned int id, int label, CStdString *str, bool enabled = true);
+  void AddNumEdit(unsigned int id, int label, int *current, bool enabled = true);
   void AddButton(unsigned int id, int label, float *current = NULL, float min = 0, float interval = 0, float max = 0, FORMATFUNCTION function = NULL);
+  void AddButton(unsigned int it, int label, CStdString *str, bool bOn=true);
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
+  void AddSpin(unsigned int id, int label, int *current, unsigned int max, const SETTINGSTRINGS &entries);
   void AddString(unsigned int id, int label, CStdString *current);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
@@ -93,6 +98,8 @@ protected:
   void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction, bool allowPopup = true);
   void AddSeparator(unsigned int id);
 
+  CGUIEditControl *m_pOriginalEdit;
+  CGUIEditControl *m_pOriginalEditNum;
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
   CGUIButtonControl *m_pOriginalSettingsButton;

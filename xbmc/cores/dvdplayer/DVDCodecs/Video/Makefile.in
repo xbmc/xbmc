@@ -1,31 +1,26 @@
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer \
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
-SRCS=	DVDVideoCodecFFmpeg.cpp \
-	DVDVideoCodecLibMpeg2.cpp \
-	DVDVideoPPFFmpeg.cpp \
+SRCS  = DVDVideoCodecFFmpeg.cpp
+SRCS += DVDVideoCodecLibMpeg2.cpp
+SRCS += DVDVideoPPFFmpeg.cpp
 
 ifeq (@USE_VDPAU@,1)
-SRCS+=  VDPAU.cpp \
-
+SRCS += VDPAU.cpp
 endif
 ifeq (@USE_VAAPI@,1)
-SRCS+=  VAAPI.cpp \
-
+SRCS += VAAPI.cpp
 endif
 ifeq (@USE_CRYSTALHD@,1)
-SRCS+=  CrystalHD.cpp \
-        DVDVideoCodecCrystalHD.cpp \
-
+SRCS += CrystalHD.cpp
+SRCS += DVDVideoCodecCrystalHD.cpp
 endif
 ifeq (@USE_VDA@,1)
-SRCS+=  DVDVideoCodecVDA.cpp \
-
+SRCS += DVDVideoCodecVDA.cpp
 endif
 ifeq (@USE_OPENMAX@,1)
-SRCS += OpenMax.cpp \
-        OpenMaxVideo.cpp \
-        DVDVideoCodecOpenMax.cpp \
-
+SRCS += OpenMax.cpp
+SRCS += OpenMaxVideo.cpp
+SRCS += DVDVideoCodecOpenMax.cpp
 endif
 
 LIB=Video.a

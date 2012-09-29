@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,7 @@
 #include "ServiceDescription.h"
 #include "input/ButtonTranslator.h"
 #include "interfaces/AnnouncementManager.h"
+#include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -44,6 +44,39 @@ void CJSONRPC::Initialize()
   vector<string> inputActions;
   CButtonTranslator::GetActions(inputActions);
   CJSONServiceDescription::AddEnum("Input.Action", inputActions);
+
+  // filter-related enums
+  vector<string> smartplaylistList;
+  CSmartPlaylist::GetAvailableOperators(smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Operators", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("movies", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Movies", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("tvshows", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.TVShows", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("episodes", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Episodes", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("musicvideos", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.MusicVideos", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("artists", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Artists", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("albums", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Albums", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("songs", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Songs", smartplaylistList);
 
   unsigned int size = sizeof(JSONRPC_SERVICE_TYPES) / sizeof(char*);
 

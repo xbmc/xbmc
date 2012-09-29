@@ -9,7 +9,7 @@ Terminal=false
 Type=Application
 Categories=AudioVideo;Video;Player;TV;
 
-Actions=Fullscreen;Standalone
+Actions=Fullscreen;Standalone;
 
 [Desktop Action Fullscreen]
 Name=Open in fullscreen

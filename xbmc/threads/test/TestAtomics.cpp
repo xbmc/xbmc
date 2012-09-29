@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,121 +22,155 @@
 #include "threads/Atomics.h"
 
 #include <boost/shared_array.hpp>
-#include <boost/bind.hpp>
 #include <iostream>
 
 #define TESTNUM 100000l
 #define NUMTHREADS 10l
 
-void doIncrement(long* number)
+class DoIncrement : public IRunnable
 {
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicIncrement(number);
-}
+  long* number;
+public:
+  inline DoIncrement(long* num) : number(num) {}
 
-void doDecrement(long* number)
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicIncrement(number);
+  }
+};
+
+class DoDecrement : public IRunnable
 {
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicDecrement(number);
-}
+  long* number;
+public:
+  inline DoDecrement(long* num) : number(num) {}
 
-void doAdd(long* number, long toAdd)
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicDecrement(number);
+  }
+};
+
+class DoAdd : public IRunnable
 {
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicAdd(number,toAdd);
-}
+  long* number;
+  long toAdd;
 
-void doSubtract(long* number, long toAdd)
+public:
+  inline DoAdd(long* num, long toAd) : number(num), toAdd(toAd) {}
+
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicAdd(number,toAdd);
+  }
+};
+
+class DoSubtract : public IRunnable
 {
-  for (long i = 0; i<TESTNUM; i++)
-    AtomicSubtract(number,toAdd);
-}
+  long* number;
+  long toAdd;
+public:
+  inline DoSubtract(long* num, long toAd) : number(num), toAdd(toAd) {}
 
-TEST(TestMassAtomicIncrement)
+  virtual void Run()
+  {
+    for (long i = 0; i<TESTNUM; i++)
+      AtomicSubtract(number,toAdd);
+  }
+};
+
+TEST(TestMassAtomic, Increment)
 {
   long lNumber = 0;
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoIncrement di(&lNumber);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doIncrement,&lNumber));
+    t[i] = thread(di);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL((NUMTHREADS * TESTNUM), lNumber);
+  EXPECT_EQ((NUMTHREADS * TESTNUM), lNumber);
  }
 
-TEST(TestMassAtomicDecrement)
+TEST(TestMassAtomic, Decrement)
 {
   long lNumber = (NUMTHREADS * TESTNUM);
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoDecrement dd(&lNumber);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doDecrement,&lNumber));
+    t[i] = thread(dd);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL(0, lNumber);
+  EXPECT_EQ(0, lNumber);
  }
 
-TEST(TestMassAtomicAdd)
+TEST(TestMassAtomic, Add)
 {
   long lNumber = 0;
   long toAdd = 10;
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoAdd da(&lNumber,toAdd);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doAdd,&lNumber,toAdd));
+    t[i] = thread(da);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL((NUMTHREADS * TESTNUM) * toAdd, lNumber);
+  EXPECT_EQ((NUMTHREADS * TESTNUM) * toAdd, lNumber);
  }
 
-TEST(TestMassAtomicSubtract)
+TEST(TestMassAtomic, Subtract)
 {
   long toSubtract = 10;
   long lNumber = (NUMTHREADS * TESTNUM) * toSubtract;
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
+  DoSubtract ds(&lNumber,toSubtract);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(boost::bind(&doSubtract,&lNumber,toSubtract));
+    t[i] = thread(ds);
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  CHECK_EQUAL(0, lNumber);
+  EXPECT_EQ(0, lNumber);
  }
 
 #define STARTVAL 767856l
 
-TEST(TestAtomicIncrement)
+TEST(TestAtomic, Increment)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL + 1l, AtomicIncrement(&check));
-  CHECK_EQUAL(STARTVAL + 1l,check);
+  EXPECT_EQ(STARTVAL + 1l, AtomicIncrement(&check));
+  EXPECT_EQ(STARTVAL + 1l,check);
 }
 
-TEST(TestAtomicDecrement)
+TEST(TestAtomic, Decrement)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL - 1l, AtomicDecrement(&check));
-  CHECK_EQUAL(STARTVAL - 1l,check);
+  EXPECT_EQ(STARTVAL - 1l, AtomicDecrement(&check));
+  EXPECT_EQ(STARTVAL - 1l,check);
 }
 
-TEST(TestAtomicAdd)
+TEST(TestAtomic, Add)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL + 123l, AtomicAdd(&check,123l));
-  CHECK_EQUAL(STARTVAL + 123l,check);
+  EXPECT_EQ(STARTVAL + 123l, AtomicAdd(&check,123l));
+  EXPECT_EQ(STARTVAL + 123l,check);
 }
 
-TEST(TestAtomicSubtract)
+TEST(TestAtomic, Subtract)
 {
   long check = STARTVAL;
-  CHECK_EQUAL(STARTVAL - 123l, AtomicSubtract(&check,123l));
-  CHECK_EQUAL(STARTVAL - 123l, check);
+  EXPECT_EQ(STARTVAL - 123l, AtomicSubtract(&check,123l));
+  EXPECT_EQ(STARTVAL - 123l, check);
 }
 

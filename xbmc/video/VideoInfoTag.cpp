@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -470,7 +469,8 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
   value["showlink"] = m_showLink;
-  m_streamDetails.Serialize(value["streamdetails"]);
+  if (m_streamDetails.HasItems())
+    m_streamDetails.Serialize(value["streamdetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
   resume["position"] = (float)m_resumePoint.timeInSeconds;
   resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
@@ -520,7 +520,8 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldTrackNumber] = m_iTrack;
   sortable[FieldTag] = m_tags;
 
-  sortable[FieldTime] = m_streamDetails.GetVideoDuration();
+  if (m_streamDetails.HasItems() && m_streamDetails.GetVideoDuration() > 0)
+    sortable[FieldTime] = m_streamDetails.GetVideoDuration();
   sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight();
   sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect();
   sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec();

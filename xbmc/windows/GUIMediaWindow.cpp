@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -81,6 +80,7 @@ using namespace ADDON;
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
+  m_loadType = KEEP_IN_MEMORY;
   m_vecItems = new CFileItemList;
   m_unfilteredItems = new CFileItemList;
   m_vecItems->SetPath("?");
@@ -835,7 +835,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
-  m_history.AddPath(m_vecItems->GetPath());
+  if (iWindow != WINDOW_PVR || (iWindow == WINDOW_PVR && m_vecItems->GetPath().Left(17) == "pvr://recordings/"))
+    m_history.AddPath(m_vecItems->GetPath());
 
   //m_history.DumpPathHistory();
 

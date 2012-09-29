@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -146,10 +145,6 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
     CCoreAudioStream stream;
     stream.Open(streams.front());
     streams.pop_front(); // We copied it, now we are done with it
-
-    CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
-      "Found %s stream - id: 0x%04X, Terminal Type: 0x%04X",
-      stream.GetDirection() ? "Input" : "Output", (uint)stream.GetId(), (uint)stream.GetTerminalType());
 
     // Probe physical formats
     StreamFormatList physicalFormats;
@@ -394,8 +389,6 @@ void CCoreAudioAEHALOSX::Deinitialize()
 
   m_Initialized = false;
   m_Passthrough = false;
-
-  CLog::Log(LOGINFO, "CCoreAudioAEHALOSX::Deinitialize: Audio device has been closed.");
 }
 
 void CCoreAudioAEHALOSX::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)

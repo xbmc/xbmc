@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #pragma once
 
-#include <unittest++/UnitTest++.h>
+#include "gtest/gtest.h"
 
 #include "threads/Thread.h"
 #include "threads/Atomics.h"
@@ -67,40 +66,27 @@ public:
 
 class thread
 {
-  template <class F> class FunctorRunnable : public IRunnable
-  {
-    F f;
-  public:
-    inline explicit FunctorRunnable(F f_) : f(f_) { }
-    inline virtual ~FunctorRunnable(){ }
-    inline virtual void Run() { f (); }
-  };
-
   IRunnable* f;
   CThread* cthread;
 
 //  inline thread(const thread& other) { }
 public:
-  template <class F> inline explicit thread(F functor) : 
-    f(new FunctorRunnable<F>(functor)), 
-    cthread(new CThread(f, "dumb thread"))
+  inline explicit thread(IRunnable& runnable) : 
+    f(&runnable), cthread(new CThread(f, "dumb thread"))
   {
     cthread->Create();
   }
 
   inline thread() : f(NULL), cthread(NULL) {}
 
-  inline thread(thread& other) : f(other.f), cthread(other.cthread) { other.f = NULL; other.cthread = NULL; }
+  /**
+   * Gcc-4.2 requires this to be 'const' to find the right constructor.
+   * It really shouldn't be since it modifies the parameter thread
+   * to ensure only one thread instance has control of the
+   * Runnable.a
+   */
+  inline thread(const thread& other) : f(other.f), cthread(other.cthread) { ((thread&)other).f = NULL; ((thread&)other).cthread = NULL; }
   inline thread& operator=(const thread& other) { f = other.f; ((thread&)other).f = NULL; cthread = other.cthread; ((thread&)other).cthread = NULL; return *this; }
-
-  virtual ~thread()
-  {
-//    if (cthread && cthread->IsRunning())
-//      cthread->StopThread();
-
-    if (f)
-      delete f;
-  }
 
   void join()
   {
@@ -113,17 +99,3 @@ public:
   }
 };
 
-template <class F> class FunctorReference
-{
-  F& f;
- public:
-  inline FunctorReference(F& f_) : f(f_) {}
-  inline FunctorReference(const FunctorReference<F>& fr) : f(fr.f) {}
-
-  inline void operator() ()
-  {
-    f ();
-  }
-};
-
-template<class F> inline FunctorReference<F> ref(F& f) { return FunctorReference<F>(f); }

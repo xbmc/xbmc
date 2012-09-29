@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -944,8 +943,8 @@ namespace VIDEO
             offset += regexp2pos + reg2.GetFindLen();
           }
         }
-        free(remainder);
       }
+      free(remainder);
       return true;
     }
     return false;
@@ -1357,8 +1356,13 @@ namespace VIDEO
         item.SetPath(file->strPath);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *item.GetVideoInfoTag(), pDlgProgress))
           return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
-        item.GetVideoInfoTag()->m_iSeason = guide->key.first;
-        item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
+          
+        // Only set season/epnum from filename when it is not already set by a scraper
+        if (item.GetVideoInfoTag()->m_iSeason == -1)
+          item.GetVideoInfoTag()->m_iSeason = guide->key.first;
+        if (item.GetVideoInfoTag()->m_iEpisode == -1)
+          item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
+          
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, idShow) < 0)
           return INFO_ERROR;
       }
@@ -1592,7 +1596,10 @@ namespace VIDEO
             art.insert(make_pair(0, items[i]->GetPath()));
           else if (reg.RegFind(name) > -1)
           {
-            int season = atoi(reg.GetReplaceString("\\1"));
+            char* seasonStr = reg.GetReplaceString("\\1");
+            int season = atoi(seasonStr);
+            free(seasonStr);
+
             art.insert(make_pair(season, items[i]->GetPath()));
           }
         }

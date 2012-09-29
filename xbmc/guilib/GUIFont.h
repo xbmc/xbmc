@@ -8,7 +8,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2003-2010 Team XBMC
+ *      Copyright (C) 2003-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,9 +22,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -56,14 +55,8 @@ class CGUIFontTTFBase;
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdString &scrollSuffix = " | ")
-  {
-    initialWait = wait;
-    initialPos = pos;
-    SetSpeed(speed ? speed : defaultSpeed);
-    suffix = scrollSuffix;
-    Reset();
-  };
+  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdString &scrollSuffix = " | ");
+
   void SetSpeed(int speed)
   {
     pixelSpeed = speed * 0.001f;
@@ -97,7 +90,7 @@ public:
   unsigned int characterPos;
   unsigned int initialWait;
   float initialPos;
-  CStdString suffix;
+  CStdStringW suffix;
 
   static const int defaultSpeed = 60;
 private:

@@ -317,7 +317,8 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "value", "type": "string", "enum": [ "clockwise", "counterclockwise" ], "default": "clockwise" }
     ],
     "returns": "string"
   },
@@ -581,6 +582,23 @@
       }
     }
   },
+  "Files.GetFileDetails": {
+    "type": "method",
+    "description": "Get details for a specific file",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "file", "type": "string", "required": true, "description": "Full path to the file" },
+      { "name": "media", "$ref": "Files.Media", "default": "files" },
+      { "name": "properties", "$ref": "List.Fields.Files" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "filedetails": { "$ref": "List.Item.File", "required": true }
+      }
+    }
+  },
   "AudioLibrary.GetArtists": {
     "type": "method",
     "description": "Retrieve all artists",
@@ -597,7 +615,8 @@
           { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false }
+          { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "$ref": "List.Filter.Artists" }
         ]
       }
     ],
@@ -640,7 +659,8 @@
           { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false }
+          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "$ref": "List.Filter.Albums" }
         ]
       }
     ],
@@ -685,7 +705,8 @@
           { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false }
+          { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "$ref": "List.Filter.Songs" }
         ]
       }
     ],
@@ -943,7 +964,8 @@
           { "type": "object", "properties": { "country": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "setid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "set": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "tag": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false }
+          { "type": "object", "properties": { "tag": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "$ref": "List.Filter.Movies" }
         ]
       }
     ],
@@ -1028,7 +1050,9 @@
           { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "year": { "type": "integer", "minimum": 0, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "actor": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "studio": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false }
+          { "type": "object", "properties": { "studio": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "tag": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "$ref": "List.Filter.TVShows" }
         ]
       }
     ],
@@ -1093,7 +1117,8 @@
           { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true, "description": "Requires tvshowid to be set" } }, "additionalProperties": false },
           { "type": "object", "properties": { "year": { "type": "integer", "minimum": 0, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "actor": { "type": "string", "minLength": 1, "required": true, "description": "Requires tvshowid to be set" } }, "additionalProperties": false },
-          { "type": "object", "properties": { "director": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false }
+          { "type": "object", "properties": { "director": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "$ref": "List.Filter.Episodes" }
         ]
       }
     ],
@@ -1137,7 +1162,9 @@
           { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "year": { "type": "integer", "minimum": 0, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "director": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "studio": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false }
+          { "type": "object", "properties": { "studio": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "tag": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "$ref": "List.Filter.MusicVideos" }
         ]
       }
     ],
@@ -1301,7 +1328,8 @@
       { "name": "sorttitle", "$ref": "Optional.String" },
       { "name": "episodeguide", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" },
-      { "name": "fanart", "$ref": "Optional.String" }
+      { "name": "fanart", "$ref": "Optional.String" },
+      { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1351,7 +1379,8 @@
       { "name": "track", "$ref": "Optional.Integer" },
       { "name": "lastplayed", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" },
-      { "name": "fanart", "$ref": "Optional.String" }
+      { "name": "fanart", "$ref": "Optional.String" },
+      { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null }
     ],
     "returns": "string"
   },

@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-ALPHA6
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-09-08 10:57+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sk\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -295,15 +296,15 @@ msgstr "Prezrieť"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Usporiadať: Názov"
+msgstr "Zoradiť podľa: Názvu"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Usporiadať: Dátum"
+msgstr "Zoradiť podľa: Dátumu"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Usporiadať: Veľkosť"
+msgstr "Zoradiť podľa: Veľkosti"
 
 msgctxt "#106"
 msgid "No"
@@ -331,11 +332,11 @@ msgstr "Skratky"
 
 msgctxt "#112"
 msgid "Paused"
-msgstr "PAUZA"
+msgstr "Pauza"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Akualizácia sa nepodarila"
+msgstr "Aktualizácia sa nepodarila"
 
 msgctxt "#114"
 msgid "Installation failed"
@@ -383,7 +384,7 @@ msgstr "Presunúť tieto súbory?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "Vymazať tieto súbory?"
+msgstr "Vymazať tieto súbory? - Vymazanie je nenávratné!"
 
 msgctxt "#126"
 msgid "Status"
@@ -415,7 +416,7 @@ msgstr "Albumy"
 
 msgctxt "#133"
 msgid "Artists"
-msgstr "Interpréti"
+msgstr "Interpreti"
 
 msgctxt "#134"
 msgid "Songs"
@@ -435,7 +436,7 @@ msgstr "Hľadať"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "SYSTÉMOVÉ INFORMÁCIE"
+msgstr "Systémové informácie"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -479,11 +480,11 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC"
+msgstr "MAC adresa"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "IP"
+msgstr "IP adresa"
 
 msgctxt "#151"
 msgid "Link:"
@@ -507,7 +508,7 @@ msgstr "Disk"
 
 msgctxt "#156"
 msgid "Free"
-msgstr "Voľné miesto"
+msgstr "Voľné"
 
 msgctxt "#157"
 msgid "Video"
@@ -519,7 +520,7 @@ msgstr "Voľná pamäť"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "Žiadne prepojenie"
+msgstr "Žiadne pripojenie"
 
 msgctxt "#160"
 msgid "Free"
@@ -855,7 +856,7 @@ msgstr "CDDB"
 
 msgctxt "#256"
 msgid "Fetching CD information"
-msgstr "Získavnie informácií o CD"
+msgstr "Získavanie informácií o CD"
 
 msgctxt "#257"
 msgid "Error"
@@ -879,7 +880,7 @@ msgstr "Prebieha príprava spustenia..."
 
 msgctxt "#262"
 msgid "Scripts output"
-msgstr "Výstup skript"
+msgstr "Výstup skriptu"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
@@ -907,7 +908,7 @@ msgstr "Zoradiť podľa: Názvu"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Zoradiť podľa: Interpréta"
+msgstr "Zoradiť podľa: Interpreta"
 
 msgctxt "#270"
 msgid "Sort by: Album"
@@ -939,7 +940,7 @@ msgstr "Šípkami nastavíte okraj"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
-msgstr "Posunutím čiari zmeníte pozíciu titulkov"
+msgstr "Posunutím čiary zmeníte pozíciu titulkov"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
@@ -959,7 +960,7 @@ msgstr "Prosím skontrolujte .xml súbory"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "nájdených %i položiek"
+msgstr "Nájdených %i položiek"
 
 msgctxt "#283"
 msgid "Search results"
@@ -968,6 +969,14 @@ msgstr "Výsledky hľadania"
 msgctxt "#284"
 msgid "No results found"
 msgstr "Žiadny výsledok"
+
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Preferovaný jazyk audia"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Preferovaný jazyk titulkov"
 
 msgctxt "#287"
 msgid "Subtitles"
@@ -1003,7 +1012,7 @@ msgstr "Vytvoriť záložku"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
-msgstr "Vymazať záložku"
+msgstr "Vymazať záložky"
 
 msgctxt "#297"
 msgid "Audio offset"
@@ -1045,6 +1054,14 @@ msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Neprekladané video"
 
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Originálny jazyk Streamu"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Jazyk používateľského prostredia"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -1079,11 +1096,11 @@ msgstr "Chyba pri čistení skladieb"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
-msgstr "Čistenie interprétov..."
+msgstr "Čistenie interpretov..."
 
 msgctxt "#321"
 msgid "Error cleaning artists"
-msgstr "Chyba pri čistení interprétov"
+msgstr "Chyba pri čistení interpretov"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
@@ -1155,11 +1172,11 @@ msgstr "Analógový"
 
 msgctxt "#339"
 msgid "Optical/Coax"
-msgstr "Digitálny"
+msgstr "Optický/Koax"
 
 msgctxt "#340"
 msgid "Various artists"
-msgstr "Rôzny interpréti"
+msgstr "Rôzny interpreti"
 
 msgctxt "#341"
 msgid "Play disc"
@@ -1175,7 +1192,7 @@ msgstr "Prispôsobenie snímkovania"
 
 msgctxt "#344"
 msgid "Actors"
-msgstr "Herec"
+msgstr "Herci"
 
 msgctxt "#345"
 msgid "Year"
@@ -1184,6 +1201,18 @@ msgstr "Rok"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Zvyšovať hlasitosť pri downmixe"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD kompatibilný receiver"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Viackanálový LPCM kompatibilný receiver"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD kompatibilný receiver"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1195,7 +1224,7 @@ msgstr "Vypnuté"
 
 msgctxt "#352"
 msgid "Dim"
-msgstr "Zahmliť"
+msgstr "Stlmiť"
 
 msgctxt "#353"
 msgid "Black"
@@ -1235,15 +1264,15 @@ msgstr "Rekurzívna prezentácia"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "Hladina blednutia šetriča obrazovky"
+msgstr "Úroveň stlmenia šetriča obrazovky"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Usporiadať: Súbor"
+msgstr "Zoradiť podľa: Súboru"
 
 msgctxt "#364"
 msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3) kompatibilný reciever"
+msgstr "- Dolby Digital (AC3) kompatibilný receiver"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1279,7 +1308,7 @@ msgstr "prevažne"
 
 msgctxt "#373"
 msgid "Sunny"
-msgstr "slnečno"
+msgstr "Slnečno"
 
 msgctxt "#374"
 msgid "Cloudy"
@@ -1371,7 +1400,7 @@ msgstr "mrholenie"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Vyberte mesto"
+msgstr "Vyberte polohu"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -1395,7 +1424,7 @@ msgstr "Teplota"
 
 msgctxt "#402"
 msgid "Feels like"
-msgstr "Zobrazenie"
+msgstr "Pocitová teplota:"
 
 msgctxt "#403"
 msgid "UV index"
@@ -1427,7 +1456,7 @@ msgstr "Získavam počasie pre:"
 
 msgctxt "#412"
 msgid "Unable to get weather data"
-msgstr "nepodarilo sa načítať dáta o počasí"
+msgstr "Nepodarilo sa načítať dáta o počasí"
 
 msgctxt "#413"
 msgid "Manual"
@@ -1467,7 +1496,7 @@ msgstr "Odstrániť informácie o albume"
 
 msgctxt "#423"
 msgid "Delete CD information"
-msgstr "Odstrániť CD info"
+msgstr "Odstrániť informácie o CD"
 
 msgctxt "#424"
 msgid "Select"
@@ -1479,7 +1508,7 @@ msgstr "Informácie pre album neboli nájdené."
 
 msgctxt "#426"
 msgid "No CD information found"
-msgstr "CD informácie neboli nájdené"
+msgstr "Informácie o CD neboli nájdené"
 
 msgctxt "#427"
 msgid "Disc"
@@ -1487,7 +1516,7 @@ msgstr "Disk"
 
 msgctxt "#428"
 msgid "Insert correct CD/DVD"
-msgstr "Vložte CD/DVD"
+msgstr "Vložte správne CD/DVD"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
@@ -1499,7 +1528,7 @@ msgstr "Zoradiť podľa: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
-msgstr "Žiadna medzipamäť"
+msgstr "Žiadna medzi-pamäť"
 
 msgctxt "#432"
 msgid "Remove movie from library"
@@ -1511,7 +1540,15 @@ msgstr "Naozaj chcete odstrániť '%s'?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
-msgstr "%s %i %s"
+msgstr "Z %s na %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr ""
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1523,7 +1560,7 @@ msgstr "Otváranie súboru"
 
 msgctxt "#439"
 msgid "Cache"
-msgstr "Medzipamäť"
+msgstr "Medzi-pamäť"
 
 msgctxt "#440"
 msgid "Harddisk"
@@ -1571,19 +1608,19 @@ msgstr "Stĺpcov"
 
 msgctxt "#451"
 msgid "Row 1 address"
-msgstr "Adresa 1 riadku"
+msgstr "Adresa 1. riadku"
 
 msgctxt "#452"
 msgid "Row 2 address"
-msgstr "Adresa 2 riadku"
+msgstr "Adresa 2. riadku"
 
 msgctxt "#453"
 msgid "Row 3 address"
-msgstr "Adresa 3 riadku"
+msgstr "Adresa 3. riadku"
 
 msgctxt "#454"
 msgid "Row 4 address"
-msgstr "Adresa 4 riadku"
+msgstr "Adresa 4. riadku"
 
 msgctxt "#455"
 msgid "Rows"
@@ -1591,7 +1628,7 @@ msgstr "Riadky"
 
 msgctxt "#456"
 msgid "Mode"
-msgstr "režim"
+msgstr "Režim"
 
 msgctxt "#457"
 msgid "Switch view"
@@ -1679,7 +1716,7 @@ msgstr "Prostredie"
 
 msgctxt "#481"
 msgid "Audio options"
-msgstr "Nastavenia zvuk"
+msgstr "Nastavenia zvuku"
 
 msgctxt "#482"
 msgid "About XBMC"
@@ -1711,7 +1748,7 @@ msgstr "- Používať veľké ikony"
 
 msgctxt "#492"
 msgid "Resize VobSubs"
-msgstr "Velkosť vobsubs"
+msgstr "Veľkosť Vobsubs"
 
 msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
@@ -1723,7 +1760,7 @@ msgstr "Celková hlasitosť"
 
 msgctxt "#495"
 msgid "Upsample videos to GUI resolution"
-msgstr "Prepočítavať videa do GUI rozlíšenia"
+msgstr "Prepočítavať videa do rozlíšenia GUI"
 
 msgctxt "#496"
 msgid "Calibration"
@@ -1731,7 +1768,7 @@ msgstr "Kalibrácia"
 
 msgctxt "#497"
 msgid "Show file extensions"
-msgstr "Zobrazovať prípony médií"
+msgstr "Zobrazovať prípony súborov"
 
 msgctxt "#498"
 msgid "Sort by: Type"
@@ -1739,7 +1776,7 @@ msgstr "Zoradiť podľa: Typu"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
-msgstr "Nedá sa pripojiť k www.allmusic.com"
+msgstr "Nedá sa pripojiť k službe online vyhľadávania "
 
 msgctxt "#500"
 msgid "Downloading album information failed"
@@ -1747,7 +1784,7 @@ msgstr "Sťahovanie informácií o albume zlyhalo"
 
 msgctxt "#501"
 msgid "Looking for album names..."
-msgstr "Hľadanie názvu albumov..."
+msgstr "Hľadanie názvov albumov..."
 
 msgctxt "#502"
 msgid "Open"
@@ -1803,7 +1840,7 @@ msgstr "Spustiť"
 
 msgctxt "#519"
 msgid "Launch in..."
-msgstr "Spustiť..."
+msgstr "Spustiť v ..."
 
 msgctxt "#521"
 msgid "Compilations"
@@ -1871,19 +1908,19 @@ msgstr "Ikony"
 
 msgctxt "#537"
 msgid "Big list"
-msgstr "Zoznam II"
+msgstr "Veľký zoznam"
 
 msgctxt "#538"
 msgid "Big icons"
-msgstr "Ikony II"
+msgstr "Veľké ikony"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "Stĺpce"
+msgstr "Široký"
 
 msgctxt "#540"
 msgid "Big wide"
-msgstr "Stĺpce II"
+msgstr "Veľmi široký"
 
 msgctxt "#541"
 msgid "Album icons"
@@ -1911,7 +1948,7 @@ msgstr "Zariadenie pre prestup zvuku"
 
 msgctxt "#547"
 msgid "No biography for this artist"
-msgstr "Životopis pre tohoto interpréta nie je dostupný"
+msgstr "Životopis pre tohoto interpreta nie je dostupný"
 
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
@@ -1947,7 +1984,7 @@ msgstr "Názov"
 
 msgctxt "#557"
 msgid "Artist"
-msgstr "Interprét"
+msgstr "Interpret"
 
 msgctxt "#558"
 msgid "Album"
@@ -2035,7 +2072,7 @@ msgstr "Spôsob usporiadania"
 
 msgctxt "#582"
 msgid "View mode"
-msgstr "režim zobrazenia"
+msgstr "Režim zobrazenia"
 
 msgctxt "#583"
 msgid "Remember views for different folders"
@@ -2043,11 +2080,11 @@ msgstr "Pamätať si zobrazenie pre každý priečinok"
 
 msgctxt "#584"
 msgid "Ascending"
-msgstr "Stúpajúci"
+msgstr "Vzostupný"
 
 msgctxt "#585"
 msgid "Descending"
-msgstr "Klesajúci"
+msgstr "Zostupný"
 
 msgctxt "#586"
 msgid "Edit playlist"
@@ -2091,7 +2128,7 @@ msgstr "Opakovať: Vypnuté"
 
 msgctxt "#596"
 msgid "Repeat: One"
-msgstr "Opakovať: 1"
+msgstr "Opakovať: Jeden"
 
 msgctxt "#597"
 msgid "Repeat: All"
@@ -2115,7 +2152,7 @@ msgstr "Extrémna"
 
 msgctxt "#604"
 msgid "Constant bitrate"
-msgstr "Konštantný datový tok"
+msgstr "Konštantný dátový tok"
 
 msgctxt "#605"
 msgid "Ripping..."
@@ -2163,7 +2200,7 @@ msgstr "Kvalita"
 
 msgctxt "#623"
 msgid "Bitrate"
-msgstr "Datový tok"
+msgstr "Dátový tok"
 
 msgctxt "#624"
 msgid "Include track number"
@@ -2172,6 +2209,10 @@ msgstr "Zahrnúť číslo stopy"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Všetky skladby od"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr ""
 
 msgctxt "#629"
 msgid "View mode"
@@ -2207,11 +2248,11 @@ msgstr "Vlastné"
 
 msgctxt "#637"
 msgid "Replay gain"
-msgstr "ReplayGain / stará sa o minimálny rozdiel hlasitosti v rôznych skladbách"
+msgstr "Normalizácia / stará sa o minimálny rozdiel hlasitosti v rôznych skladbách"
 
 msgctxt "#638"
 msgid "Replaygain volume adjustments"
-msgstr "ReplayGain úprava hlasitosti"
+msgstr "Normalizačné úpravy hlasitosti"
 
 msgctxt "#639"
 msgid "Use track levels"
@@ -2223,15 +2264,15 @@ msgstr "Použiť úroveň albumu"
 
 msgctxt "#641"
 msgid "PreAmp Level - Replay gained files"
-msgstr "Úroveň - ReplayGain súbory"
+msgstr "Úroveň - Súbory s normalizáciou"
 
 msgctxt "#642"
 msgid "PreAmp Level - Non replay gained files"
-msgstr "Úroveň - Súbory bez ReplayGain"
+msgstr "Úroveň - Súbory bez normalizácie"
 
 msgctxt "#643"
 msgid "Avoid clipping on replay gained files"
-msgstr "Zabrániť predimenzovaniu pri súboroch s ReplayGain"
+msgstr "Zabrániť predimenzovaniu pri normalizovaných súboroch"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2623,7 +2664,7 @@ msgstr "Názov bezdrôtovej siete (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "Diaľkové ovládanie"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2656,6 +2697,18 @@ msgstr "Maximálny počet klientov"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Internetový prístup"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr ""
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr ""
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr ""
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3001,37 +3054,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programy & Obrázky & Video"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Autodetekcia"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Autodetekcia systému"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Prezývka"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Opýtať sa na pripojenie"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Poslať FTP meno a heslo"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Ping interval"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Chcete sa pripojiť na autodetekovaný systém?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3051,7 +3076,7 @@ msgstr "- Použiť ochranu heslom"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3757,6 +3782,14 @@ msgctxt "#13016"
 msgid "Power off System"
 msgstr "Vypnúť systém"
 
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr ""
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr ""
+
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr "Existuje nejaké aktívne pripojenie, (napr. cez SSH) ?"
@@ -4315,7 +4348,7 @@ msgstr "Prehrať položku"
 
 msgctxt "#13359"
 msgid "Set artist thumb"
-msgstr "Nastaviť náhľad pre interpréta"
+msgstr "Nastaviť náhľad pre interpreta"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
@@ -4483,7 +4516,7 @@ msgstr "Sťahujem"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
-msgstr "Zobrazovať aj tých interprétov, ktorí sú iba na kompiláciach"
+msgstr "Zobrazovať aj tých interpretov, ktorí sú iba na kompiláciách"
 
 msgctxt "#13415"
 msgid "Render method"
@@ -4999,19 +5032,19 @@ msgstr "Napájanie"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Rip"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Akcia pri vložení Audio CD"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "Prehrať"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Vysunúť disk pri dokončení ripovania CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5043,7 +5076,7 @@ msgstr "* Všetky albumy"
 
 msgctxt "#15103"
 msgid "* All artists"
-msgstr "* Všetci interpréti"
+msgstr "* Všetci interpreti"
 
 msgctxt "#15104"
 msgid "* All songs"
@@ -5175,7 +5208,7 @@ msgstr "Nastavujem stanicu..."
 
 msgctxt "#15253"
 msgid "Search similar artists..."
-msgstr "Hľadať podobných interprétov..."
+msgstr "Hľadať podobných interpretov..."
 
 msgctxt "#15254"
 msgid "Search similar tags..."
@@ -5191,7 +5224,7 @@ msgstr "Najpoužívanejšie slová"
 
 msgctxt "#15257"
 msgid "Top artists for tag %name%"
-msgstr "Najlepší interpréti pre slovo %name%"
+msgstr "Najlepší interpreti pre označenie %name%"
 
 msgctxt "#15258"
 msgid "Top albums for tag %name%"
@@ -5207,7 +5240,7 @@ msgstr "Počúvať slovo %name% na Last.FM radiu"
 
 msgctxt "#15261"
 msgid "Similar artists as %name%"
-msgstr "Podobní interpréti ako %name%"
+msgstr "Podobní interpreti ako %name%"
 
 msgctxt "#15262"
 msgid "Top %name% albums"
@@ -5231,11 +5264,11 @@ msgstr "Počúvať %name% fanúškov Last.FM radiu"
 
 msgctxt "#15267"
 msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Počúvať %name% podobných interprétov na Last.FM radiu"
+msgstr "Počúvať %name% podobných interpretov na Last.FM rádiu"
 
 msgctxt "#15268"
 msgid "Top artists for user %name%"
-msgstr "Najlepší interpréti pre užívateľa %name%"
+msgstr "Najlepší interpreti pre užívateľa %name%"
 
 msgctxt "#15269"
 msgid "Top albums for user %name%"
@@ -5255,7 +5288,7 @@ msgstr "Susedia užívateľa %name%"
 
 msgctxt "#15273"
 msgid "Weekly artist chart for %name%"
-msgstr "Týždenné rebríčky interprétov pre %name%"
+msgstr "Týždenné rebríčky interpretov pre %name%"
 
 msgctxt "#15274"
 msgid "Weekly album chart for %name%"
@@ -5287,7 +5320,7 @@ msgstr "Nepodarilo sa stiahnuť zoznam z Last.FM..."
 
 msgctxt "#15281"
 msgid "Enter an artist name to find related ones"
-msgstr "Zadajte meno interpréta pre hľadanie podobných"
+msgstr "Zadajte meno interpreta pre hľadanie podobných"
 
 msgctxt "#15282"
 msgid "Enter a tag name to find similar ones"
@@ -5459,7 +5492,7 @@ msgstr "Prerušujem..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
-msgstr "Zadajte meno interpréta"
+msgstr "Zadajte meno interpreta"
 
 msgctxt "#16026"
 msgid "Playback failed"
@@ -5677,6 +5710,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr ""
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-processing"
@@ -5685,9 +5722,1429 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Zobraziť čas do vypnutia"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr ""
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr ""
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr ""
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Prepnúť na kanál"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr ""
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr ""
+
+msgctxt "#19003"
+msgid "Find similar programme"
+msgstr ""
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr ""
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr ""
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr ""
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr ""
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr ""
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr ""
+
+msgctxt "#19010"
+msgid "BER"
+msgstr ""
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr ""
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr ""
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr ""
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr ""
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr ""
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr ""
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr ""
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr ""
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#19020"
+msgid "TV"
+msgstr ""
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr ""
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr ""
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr ""
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr ""
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr ""
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr ""
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr ""
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr ""
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr ""
+
+msgctxt "#19030"
+msgid "Now"
+msgstr ""
+
+msgctxt "#19031"
+msgid "Next"
+msgstr ""
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr ""
+
+msgctxt "#19033"
+msgid "Information"
+msgstr ""
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr ""
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr ""
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr ""
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr ""
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr ""
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr ""
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr ""
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr ""
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr ""
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr ""
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr ""
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr ""
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr ""
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr ""
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr ""
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr ""
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr ""
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr ""
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr ""
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr ""
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr ""
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr ""
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr ""
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr ""
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr ""
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr ""
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr ""
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr ""
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr ""
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr ""
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr ""
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr ""
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr ""
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr ""
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr ""
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr ""
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr ""
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr ""
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr ""
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr ""
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr ""
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr ""
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr ""
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr ""
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr ""
+
+msgctxt "#19081"
+msgid "End:"
+msgstr ""
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr ""
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr ""
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr ""
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr ""
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr ""
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr ""
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr ""
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr ""
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr ""
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr ""
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr ""
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr ""
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr ""
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr ""
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr ""
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr ""
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr ""
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr ""
+
+msgctxt "#19103"
+msgid "Scan for missing icons"
+msgstr ""
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr ""
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr ""
+
+msgctxt "#19107"
+msgid "at"
+msgstr ""
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr ""
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr ""
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr ""
+
+msgctxt "#19114"
+msgid "Version"
+msgstr ""
+
+msgctxt "#19115"
+msgid "Address"
+msgstr ""
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr ""
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr ""
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr ""
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr ""
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr ""
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr ""
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr ""
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr ""
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr ""
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr ""
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr ""
+
+msgctxt "#19127"
+msgid "End time"
+msgstr ""
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr ""
+
+msgctxt "#19129"
+msgid "End date"
+msgstr ""
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr ""
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr ""
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr ""
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr ""
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr ""
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr ""
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr ""
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr ""
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr ""
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr ""
+
+msgctxt "#19141"
+msgid "Group"
+msgstr ""
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr ""
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr ""
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr ""
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr ""
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr ""
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr ""
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr ""
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr ""
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr ""
+
+msgctxt "#19151"
+msgid "We"
+msgstr ""
+
+msgctxt "#19152"
+msgid "Th"
+msgstr ""
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr ""
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr ""
+
+msgctxt "#19155"
+msgid "Su"
+msgstr ""
+
+msgctxt "#19156"
+msgid "from"
+msgstr ""
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr ""
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr ""
+
+msgctxt "#19159"
+msgid "from"
+msgstr ""
+
+msgctxt "#19160"
+msgid "to"
+msgstr ""
+
+msgctxt "#19161"
+msgid "On"
+msgstr ""
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr ""
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr ""
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr ""
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr ""
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr ""
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr ""
+
+msgctxt "#19168"
+msgid "Switch channel without pressing OK"
+msgstr ""
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr ""
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr ""
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr ""
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr ""
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr ""
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr ""
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr ""
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr ""
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr ""
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr ""
+
+msgctxt "#19180"
+msgid "TV"
+msgstr ""
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr ""
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr ""
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr ""
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr ""
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr ""
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr ""
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr ""
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr ""
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr ""
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr ""
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr ""
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr ""
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr ""
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr ""
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr ""
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr ""
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr ""
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr ""
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr ""
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr ""
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr ""
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr ""
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr ""
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr ""
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr ""
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr ""
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr ""
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr ""
+
+msgctxt "#19210"
+msgid "Client"
+msgstr ""
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr ""
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr ""
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr ""
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr ""
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr ""
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr ""
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr ""
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr ""
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr ""
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr ""
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr ""
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr ""
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr ""
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr ""
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr ""
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr ""
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr ""
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr ""
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr ""
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr ""
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr ""
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr ""
+
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr ""
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr ""
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr ""
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr ""
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr ""
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr ""
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr ""
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr ""
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr ""
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr ""
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr ""
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr ""
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr ""
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr ""
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr ""
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr ""
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr ""
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr ""
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr ""
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr ""
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr ""
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr ""
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr ""
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr ""
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr ""
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr ""
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr ""
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr ""
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr ""
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr ""
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr ""
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr ""
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr ""
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr ""
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr ""
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr ""
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr ""
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr ""
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr ""
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr ""
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr ""
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr ""
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr ""
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr ""
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr ""
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr ""
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr ""
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr ""
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr ""
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr ""
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr ""
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr ""
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr ""
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr ""
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr ""
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr ""
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr ""
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr ""
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr ""
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr ""
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr ""
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr ""
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr ""
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr ""
+
+msgctxt "#19551"
+msgid "Football"
+msgstr ""
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr ""
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr ""
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr ""
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr ""
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr ""
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr ""
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr ""
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr ""
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr ""
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr ""
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr ""
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr ""
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr ""
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr ""
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr ""
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr ""
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr ""
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr ""
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr ""
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr ""
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr ""
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr ""
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr ""
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr ""
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr ""
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr ""
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr ""
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr ""
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr ""
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr ""
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr ""
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr ""
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr ""
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr ""
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr ""
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr ""
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr ""
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr ""
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr ""
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr ""
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr ""
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr ""
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr ""
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr ""
+
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr ""
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr ""
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr ""
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr ""
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr ""
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr ""
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr ""
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr ""
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr ""
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr ""
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr ""
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr ""
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr ""
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr ""
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr ""
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr ""
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr ""
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr ""
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr ""
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr ""
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr ""
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr ""
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6371,7 +7828,7 @@ msgstr "Prosím čakajte"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6395,7 +7852,7 @@ msgstr "Predvolená služba pre získavanie informácií o albume"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Predvolená služba pre získavanie informácií o interprétovy"
+msgstr "Predvolená služba pre získavanie informácií o interpretovy"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -6411,11 +7868,31 @@ msgstr "Importovať hudbonú knižnicu"
 
 msgctxt "#20198"
 msgid "No artist found!"
-msgstr "Interprét nenájdený!"
+msgstr "Interpret nenájdený!"
 
 msgctxt "#20199"
 msgid "Downloading artist info failed"
-msgstr "Sťahovanie informácií o interprétovy zlyhalo"
+msgstr "Sťahovanie informácií o interpretovi zlyhalo"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr ""
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr ""
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr ""
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr ""
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr ""
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -6807,7 +8284,7 @@ msgstr "Zmiešané"
 
 msgctxt "#20396"
 msgid "Go to albums by artist"
-msgstr "Prejsť na albumy podľa interpréta"
+msgstr "Prejsť na albumy podľa interpreta"
 
 msgctxt "#20397"
 msgid "Go to album"
@@ -6823,7 +8300,7 @@ msgstr "Prejsť na videoklipy z albumu"
 
 msgctxt "#20400"
 msgid "Go to music videos by artist"
-msgstr "Prejsť na videoklipy od interpréta"
+msgstr "Prejsť na videoklipy od interpreta"
 
 msgctxt "#20401"
 msgid "Play music video"
@@ -7048,6 +8525,30 @@ msgstr "Kolekcia filmov"
 msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Zoskupovať filmy do kolekcií"
+
+msgctxt "#20459"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr ""
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr ""
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr ""
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr ""
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr ""
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7297,10 +8798,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Predvolený sťahovač pre klipy"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Aktivovať odpoveď na základe jazyka sťahovača"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Nastavenie"
@@ -7456,6 +8953,10 @@ msgstr "Medzipamäť plná"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Medzipamäť plná pred dosiahnutím potrebného množstva pre nepretržité prehrávanie"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr ""
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -7711,7 +9212,7 @@ msgstr "Uložená hudba"
 
 msgctxt "#21884"
 msgid "Query info for all artists"
-msgstr "Akualizovať informácie všetkých interprétov"
+msgstr "Aktualizovať informácie všetkých interpretov"
 
 msgctxt "#21885"
 msgid "Downloading album information"
@@ -7719,7 +9220,7 @@ msgstr "Sťahujem informácie o albume"
 
 msgctxt "#21886"
 msgid "Downloading artist information"
-msgstr "Sťahujem informácie o interprétovy"
+msgstr "Sťahujem informácie o interpretovi"
 
 msgctxt "#21887"
 msgid "Biography"
@@ -7731,15 +9232,15 @@ msgstr "Diskografia"
 
 msgctxt "#21889"
 msgid "Searching artist"
-msgstr "Hľadanie interpréta"
+msgstr "Hľadanie interpreta"
 
 msgctxt "#21890"
 msgid "Select artist"
-msgstr "Vyberte interpréta"
+msgstr "Vyberte interpreta"
 
 msgctxt "#21891"
 msgid "Artist information"
-msgstr "Informácie o interprétovy"
+msgstr "Informácie o interpretovi"
 
 msgctxt "#21892"
 msgid "Instruments"
@@ -8051,11 +9552,15 @@ msgstr "Informácie o albume"
 
 msgctxt "#24017"
 msgid "Artist information"
-msgstr "Informácie o interprétovy"
+msgstr "Informácie o interpretovi"
 
 msgctxt "#24018"
 msgid "Services"
 msgstr "Služby"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr ""
 
 msgctxt "#24020"
 msgid "Configure"
@@ -8293,33 +9798,41 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Prajete si stiahnuť tento doplnok?"
 
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr ""
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr ""
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notifikácie"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Skryť cudzie"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Vybrať zo všetkých titulov"
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Zobraziť Bluray menu"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Prehrať hlavný titul: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Názov: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Vyberte položku k prehraniu"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8709,6 +10222,22 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "Prehrať zvuky užívateľského prostredia"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Iba pri zastavenom prehrávaní"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Vždy"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Nikdy"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Nepodarilo sa nájsť ďalšiu položku"
@@ -8743,23 +10272,23 @@ msgstr "Skontrolujte Vaše audio nastavenia"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Použiť gestá k navigácii:"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "Prejsť jedným prstom vľavo, vpravo, hore, dolu pre kurzor"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Prejsť dvoma prstami vľavo pre backspace"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "Jeden \"klik\" jedným prstom pre enter"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Jeden \"klik\" dvoma prstami alebo jedno dlhé stlačenie jedným prstom pre kontextovú ponuku"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8799,6 +10328,10 @@ msgstr "Rozloženie kláves povolené"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
+msgstr "Nepoužívať vlastné klávesové mapy pre zariadenie"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
 msgstr ""
 
 msgctxt "#35500"
@@ -8891,31 +10424,31 @@ msgstr "Použiť nastavenia jazyku TV"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Pripojené k HDMI zariadeniu"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Nastaviť XBMC aktívnym zdrojom pri spustení"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Fyzická adresa (Ruší HDMI port)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "COM port (nechajte prázdne, ak je nepotrebný)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Nastavenie aktualizované"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Zlyhalo aplikovanie novej konfigurácie. Prosím skontrolujte nastavenia."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Poslať príkaz 'neaktívny zdroj' pri vypnutí XBMC"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -8945,3 +10478,14 @@ msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr ""
+
+msgctxt "#36035"
+msgid "Always"
+msgstr ""
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr ""

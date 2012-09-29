@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIViewStateVideo.h"
 #include "PlayListPlayer.h"
+#include "filesystem/PluginDirectory.h"
+#include "filesystem/PVRDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/Directory.h"
 #include "VideoDatabase.h"
@@ -411,6 +412,7 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
       break;
     case NODE_TYPE_TITLE_MUSICVIDEOS:
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavMusicVideos);
+      break;
     default:
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV);
       break;

@@ -31,17 +31,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#define TRAY_OPEN     16
-#define TRAY_CLOSED_NO_MEDIA  64
-#define TRAY_CLOSED_MEDIA_PRESENT 96
-
-#define DRIVE_OPEN      0 // Open...
-#define DRIVE_NOT_READY     1 // Opening.. Closing...
-#define DRIVE_READY      2
-#define DRIVE_CLOSED_NO_MEDIA   3 // CLOSED...but no media in drive
-#define DRIVE_CLOSED_MEDIA_PRESENT  4 // Will be send once when the drive just have closed
-#define DRIVE_NONE  5 // system doesn't have an optical drive
-
 #define MODE1_DATA_SIZE    2048 // Mode1 sector has 2048 bytes of data
 
 #define MODE2_DATA_START   24   // Mode2 raw sector has 24 bytes before the data payload
@@ -51,13 +40,6 @@
 class CIoSupport
 {
 public:
-  static VOID GetXbePath(char* szDest);
-
-  static DWORD   GetTrayState();
-  static HRESULT EjectTray( const bool bEject=true, const char cDriveLetter='\0' );
-  static HRESULT CloseTray();
-  static HRESULT ToggleTray();
-
   static void AllocReadBuffer();
   static void FreeReadBuffer();
 

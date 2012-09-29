@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -172,7 +171,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
       }
     }
 
-    if (serialization.isMember(field) && (!result.isMember(field) || result[field].empty()))
+    if (serialization.isMember(field) && !serialization[field].isNull() && (!result.isMember(field) || result[field].empty()))
       result[field] = serialization[field];
   }
 }
@@ -252,29 +251,11 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
           else
             object["type"] = "song";
         }
-        else if (item->HasVideoInfoTag())
+        else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_type.empty())
         {
-          switch (item->GetVideoContentType())
-          {
-            case VIDEODB_CONTENT_EPISODES:
-              object["type"] = "episode";
-              break;
-
-            case VIDEODB_CONTENT_MUSICVIDEOS:
-              object["type"] = "musicvideo";
-              break;
-
-            case VIDEODB_CONTENT_MOVIES:
-              object["type"] = "movie";
-              break;
-
-            case VIDEODB_CONTENT_TVSHOWS:
-              object["type"] = "tvshow";
-              break;
-
-            default:
-              break;
-          }
+          std::string type = item->GetVideoInfoTag()->m_type;
+          if (type == "movie" || type == "tvshow" || type == "episode" || type == "musicvideo")
+            object["type"] = type;
         }
         else if (item->HasPictureInfoTag())
           object["type"] = "picture";

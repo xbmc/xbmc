@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -30,11 +29,11 @@
 // is keeping the alignment to what is in amffmpeg, so we can forward
 // declare all pointers to stucts as we never ref them and the compiler is happy.
 
-struct AVClass;
+struct AML_AVClass;
 struct url_lpbuf;
 
 typedef struct AML_URLContext {
-  const  AVClass *av_class;
+  const  AML_AVClass *av_class;
   struct AML_URLProtocol *prot;
   struct url_lpbuf *lpbuf;
   int flags;
@@ -63,7 +62,7 @@ typedef struct AML_URLProtocol {
   int64_t (*url_read_seek)(AML_URLContext *h, int stream_index, int64_t timestamp, int flags);
   int (*url_get_file_handle)(AML_URLContext *h);
   int priv_data_size;
-  const AVClass *priv_data_class;
+  const AML_AVClass *priv_data_class;
   int flags;
   int (*url_check)(AML_URLContext *h, int mask);
 } AML_URLProtocol;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -266,9 +265,10 @@ extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HMODULE h)
 {
 #ifdef _WIN32
   return DisableThreadLibraryCalls(h);
-#endif
+#else
   not_implement("kernel32.dll fake function DisableThreadLibraryCalls called\n"); //warning
   return TRUE;
+#endif
 }
 
 #ifndef _LINUX
@@ -413,12 +413,9 @@ extern "C" HMODULE WINAPI dllTerminateProcess(HANDLE hProcess, UINT uExitCode)
 }
 extern "C" HANDLE WINAPI dllGetCurrentProcess()
 {
-#if !defined(_LINUX)
-  return GetCurrentProcess();
-#else
 #ifdef _WIN32
   return GetCurrentProcess();
-#endif
+#else
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetCurrentProcess(void) => 9375");
 #endif
@@ -504,34 +501,40 @@ extern "C" LPVOID WINAPI dllGetEnvironmentStrings()
 {
 #ifdef _WIN32
   return GetEnvironmentStrings();
-#endif
+#else
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetEnvironmentStrings() => 0x%x = %p", ch_envs, ch_envs);
 #endif
   return (LPVOID)ch_envs;
+#endif
 }
 
 extern "C" LPVOID WINAPI dllGetEnvironmentStringsW()
 {
 #ifdef _WIN32
   return GetEnvironmentStringsW();
-#endif
+#else  
   return 0;
+#endif
 }
 
 extern "C" int WINAPI dllGetEnvironmentVariableA(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize)
 {
 #ifdef _WIN32
   return GetEnvironmentVariableA(lpName, lpBuffer, nSize);
-#endif
-  if (lpBuffer) lpBuffer[0] = 0;
-
-  if (strcmp(lpName, "__MSVCRT_HEAP_SELECT") == 0)
-    strcpy(lpBuffer, "__GLOBAL_HEAP_SELECTED,1");
+#else
+  if (lpBuffer)
+  {
+    lpBuffer[0] = 0;
+    if (strcmp(lpName, "__MSVCRT_HEAP_SELECT") == 0)
+      strcpy(lpBuffer, "__GLOBAL_HEAP_SELECTED,1");
 #ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "GetEnvironmentVariableA('%s', 0x%x, %d) => %d", lpName, lpBuffer, nSize, strlen(lpBuffer));
+    CLog::Log(LOGDEBUG, "GetEnvironmentVariableA('%s', 0x%x, %d) => %d", lpName, lpBuffer, nSize, strlen(lpBuffer));
 #endif
-  return strlen(lpBuffer);
+    return strlen(lpBuffer);
+  }
+  return 0;
+#endif
 }
 
 extern "C" HMODULE WINAPI dllLCMapStringA(LCID Locale, DWORD dwMapFlags, LPCSTR lpSrcStr, int cchSrc, LPSTR lpDestStr, int cchDest)
@@ -664,8 +667,8 @@ extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst
   return ExpandEnvironmentStringsA(lpSrc, lpDst, nSize);
 #else
   not_implement("kernel32.dll fake function ExpandEnvironmentStringsA called\n"); //warning
-#endif
   return 0;
+#endif
 }
 
 extern "C" UINT WINAPI dllGetWindowsDirectoryA(LPTSTR lpBuffer, UINT uSize)
@@ -686,7 +689,7 @@ extern "C" UINT WINAPI dllGetSystemDirectoryA(LPTSTR lpBuffer, UINT uSize)
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetSystemDirectoryA(%p,%d)\n", lpBuffer, uSize);
 #endif
-  if (!lpBuffer) strcpy(lpBuffer, ".");
+  if (lpBuffer) strcpy(lpBuffer, ".");
   return 1;
 }
 
@@ -903,10 +906,12 @@ extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCST
       ret--;
 
       memcpy(lpWideCharStr, destinationBuffer, ret * sizeof(WCHAR));
-      free(destinationBuffer);
     }
   }
 
+  if (cbMultiByte > 0 && cbMultiByte == cchWideChar)
+    free(destinationBuffer);
+  
   return ret;
 }
 
@@ -945,9 +950,11 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
       ret--;
 
       memcpy(lpMultiByteStr, destinationBuffer, ret);
-      free(destinationBuffer);
     }
   }
+  
+  if (cchWideChar > 0 && cchWideChar == cbMultiByte)
+    free(destinationBuffer);
 
   return ret;
 }

@@ -111,6 +111,7 @@ typedef enum {
   FieldSubtitleLanguage,
   FieldProductionCode,
   FieldTag,
+  FieldChannelName,
   FieldInstruments,
   FieldBiography,
   FieldBorn,

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -30,7 +29,18 @@
 class CDatabase;
 class CVariant;
 
-class CSmartPlaylistRule
+class ISmartPlaylistRule
+{
+public:
+  virtual ~ISmartPlaylistRule() { }
+
+  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8") = 0;
+  virtual bool Load(const CVariant &obj) = 0;
+  virtual bool Save(TiXmlNode *parent) const = 0;
+  virtual bool Save(CVariant &obj) const = 0;
+};
+
+class CSmartPlaylistRule : public ISmartPlaylistRule
 {
 public:
   CSmartPlaylistRule();
@@ -63,10 +73,10 @@ public:
                     TEXTIN_FIELD
                   };
 
-  bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8");
-  bool Load(const CVariant &obj);
-  bool Save(TiXmlNode *parent) const;
-  bool Save(CVariant &obj) const;
+  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8");
+  virtual bool Load(const CVariant &obj);
+  virtual bool Save(TiXmlNode *parent) const;
+  virtual bool Save(CVariant &obj) const;
 
   CStdString                  GetWhereClause(const CDatabase &db, const CStdString& strType) const;
   static Field                TranslateField(const char *field);
@@ -95,6 +105,44 @@ private:
   CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
 };
 
+class CSmartPlaylistRuleCombination;
+
+typedef std::vector<CSmartPlaylistRule> CSmartPlaylistRules;
+typedef std::vector<CSmartPlaylistRuleCombination> CSmartPlaylistRuleCombinations;
+
+class CSmartPlaylistRuleCombination : public ISmartPlaylistRule
+{
+public:
+  CSmartPlaylistRuleCombination();
+
+  typedef enum {
+    CombinationOr = 0,
+    CombinationAnd
+  } Combination;
+
+  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8") { return false; }
+  virtual bool Load(const CVariant &obj);
+  virtual bool Save(TiXmlNode *parent) const { return false; }
+  virtual bool Save(CVariant &obj) const;
+
+  CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
+  std::string TranslateCombinationType() const;
+
+  Combination GetType() const { return m_type; }
+  void SetType(Combination combination) { m_type = combination; }
+
+  void AddRule(const CSmartPlaylistRule &rule);
+  void AddCombination(const CSmartPlaylistRuleCombination &rule);
+
+private:
+  friend class CSmartPlaylist;
+  friend class CGUIDialogSmartPlaylistEditor;
+
+  Combination m_type;
+  CSmartPlaylistRuleCombinations m_combinations;
+  CSmartPlaylistRules m_rules;
+};
+
 class CSmartPlaylist
 {
 public:
@@ -116,8 +164,8 @@ public:
   const CStdString& GetName() const { return m_playlistName; };
   const CStdString& GetType() const { return m_playlistType; };
 
-  void SetMatchAllRules(bool matchAll) { m_matchAllRules = matchAll; };
-  bool GetMatchAllRules() const { return m_matchAllRules; };
+  void SetMatchAllRules(bool matchAll) { m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr); }
+  bool GetMatchAllRules() const { return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd; }
 
   void SetLimit(unsigned int limit) { m_limit = limit; };
   unsigned int GetLimit() const { return m_limit; };
@@ -127,8 +175,6 @@ public:
 
   void SetOrderAscending(bool orderAscending) { m_orderAscending = orderAscending; };
   bool GetOrderAscending() const { return m_orderAscending; };
-
-  void AddRule(const CSmartPlaylistRule &rule);
 
   /*! \brief get the where clause for a playlist
    We handle playlists inside playlists separately in order to ensure we don't introduce infinite loops
@@ -140,9 +186,11 @@ public:
    */
   CStdString GetWhereClause(const CDatabase &db, std::set<CStdString> &referencedPlaylists) const;
 
-  const std::vector<CSmartPlaylistRule> &GetRules() const;
-
   CStdString GetSaveLocation() const;
+
+  static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
+  static void GetAvailableOperators(std::vector<std::string> &operatorList);
+
 private:
   friend class CGUIDialogSmartPlaylistEditor;
 
@@ -150,10 +198,10 @@ private:
   TiXmlElement *readNameFromXml(const CStdString &xml);
   bool load(TiXmlElement *root);
 
-  std::vector<CSmartPlaylistRule> m_playlistRules;
+  CSmartPlaylistRuleCombination m_ruleCombination;
   CStdString m_playlistName;
   CStdString m_playlistType;
-  bool m_matchAllRules;
+
   // order information
   unsigned int m_limit;
   SortBy m_orderField;

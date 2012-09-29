@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,6 +31,11 @@ class CAlbum;
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "XBDateTime.h"
+
+#define REPLAY_GAIN_HAS_TRACK_INFO 1
+#define REPLAY_GAIN_HAS_ALBUM_INFO 2
+#define REPLAY_GAIN_HAS_TRACK_PEAK 4
+#define REPLAY_GAIN_HAS_ALBUM_PEAK 8
 
 namespace MUSIC_INFO
 {
@@ -72,7 +76,7 @@ public:
   const CStdString& GetAlbum() const;
   int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;
-  const std::vector<std::string> GetGenre() const;
+  const std::vector<std::string>& GetGenre() const;
   int GetTrackNumber() const;
   int GetDiscNumber() const;
   int GetTrackAndDiskNumber() const;
@@ -96,6 +100,11 @@ public:
   int  GetListeners() const;
   int  GetPlayCount() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
+  int   GetReplayGainTrackGain() const;
+  int   GetReplayGainAlbumGain() const;
+  float GetReplayGainTrackPeak() const;
+  float GetReplayGainAlbumPeak() const;
+  int   HasReplayGainInfo() const;
 
   void SetURL(const CStdString& strURL);
   void SetTitle(const CStdString& strTitle);
@@ -131,6 +140,10 @@ public:
   void SetLastPlayed(const CDateTime& strLastPlayed);
   void SetCompilation(bool compilation);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
+  void SetReplayGainTrackGain(int trackGain);
+  void SetReplayGainAlbumGain(int albumGain);
+  void SetReplayGainTrackPeak(float trackPeak);
+  void SetReplayGainAlbumPeak(float albumPeak);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -188,6 +201,12 @@ protected:
   int m_iAlbumId;
   SYSTEMTIME m_dwReleaseDate;
 
+  // ReplayGain
+  int m_iTrackGain; // measured in milliBels
+  int m_iAlbumGain;
+  float m_fTrackPeak; // 1.0 == full digital scale
+  float m_fAlbumPeak;
+  int m_iHasGainInfo;   // valid info
   EmbeddedArtInfo m_coverArt; ///< art information
 };
 }

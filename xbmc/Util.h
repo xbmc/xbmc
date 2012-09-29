@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -65,6 +64,10 @@ public:
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
   static void GetHomePath(CStdString& strPath, const CStdString& strTarget = "XBMC_HOME");
+  static bool IsPVR(const CStdString& strFile);
+  static bool IsHTSP(const CStdString& strFile);
+  static bool IsLiveTV(const CStdString& strFile);
+  static bool IsTVRecording(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
@@ -186,6 +189,16 @@ public:
   static CStdString GetFrameworksPath(bool forPython = false);
 
   static bool CanBindPrivileged();
+
+  /*!
+   * \brief Thread-safe random number generation
+   */
+  static int GetRandomNumber();
+
+#if !defined(TARGET_WINDOWS)
+private:
+  static unsigned int s_randomSeed;
+#endif
 };
 
 

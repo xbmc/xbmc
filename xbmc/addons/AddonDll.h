@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,15 +14,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "Addon.h"
 #include "DllAddon.h"
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
+#include "AddonCallbacks.h"
 #include "settings/GUIDialogSettings.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
@@ -52,6 +52,8 @@ namespace ADDON
     virtual void Stop();
     void Destroy();
 
+    bool DllLoaded(void) const;
+
   protected:
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
@@ -59,6 +61,7 @@ namespace ADDON
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
+    CAddonCallbacks* m_pHelpers;
 
   private:
     TheDll* m_pDll;
@@ -112,6 +115,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
   m_initialized = false;
   m_pDll        = NULL;
   m_pInfo       = NULL;
+  m_pHelpers    = NULL;
   m_needsavedsettings = false;
 }
 
@@ -183,10 +187,16 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     new CAddonStatusHandler(ID(), ADDON_STATUS_UNKNOWN, "Can't load Dll", false);
     return false;
   }
+
   m_pStruct = (TheStruct*)malloc(sizeof(TheStruct));
-  ZeroMemory(m_pStruct, sizeof(TheStruct));
-  m_pDll->GetAddon(m_pStruct);
-  return (m_pStruct != NULL);
+  if (m_pStruct)
+  {
+    ZeroMemory(m_pStruct, sizeof(TheStruct));
+    m_pDll->GetAddon(m_pStruct);
+    return true;
+  }
+
+  return false;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -198,9 +208,15 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   if (!LoadDll())
     return false;
 
+  /* Allocate the helper function class to allow crosstalk over
+     helper libraries */
+  m_pHelpers = new CAddonCallbacks(this);
+
+  /* Call Create to make connections, initializing data or whatever is
+     needed to become the AddOn running */
   try
   {
-    ADDON_STATUS status = m_pDll->Create(NULL, m_pInfo);
+    ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status == ADDON_STATUS_OK)
       m_initialized = true;
     else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
@@ -221,6 +237,9 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   {
     HandleException(e, "m_pDll->Create");
   }
+
+  if  (!m_initialized)
+    SAFE_DELETE(m_pHelpers);
 
   return m_initialized;
 }
@@ -277,6 +296,8 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   {
     HandleException(e, "m_pDll->Unload");
   }
+  delete m_pHelpers;
+  m_pHelpers = NULL;
   free(m_pStruct);
   m_pStruct = NULL;
   if (m_pDll)
@@ -286,6 +307,12 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
   }
   m_initialized = false;
+}
+
+template<class TheDll, typename TheStruct, typename TheProps>
+bool CAddonDll<TheDll, TheStruct, TheProps>::DllLoaded(void) const
+{
+  return m_pDll != NULL;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -439,7 +466,8 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
         {
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
         }
-        else if ((strcmpi(type, "enum") == 0 || strcmpi(type,"integer") == 0))
+        else if ((strcmpi(type, "enum") == 0 || strcmpi(type,"integer") == 0) ||
+          strcmpi(type, "labelenum") == 0 || strcmpi(type, "rangeofnum") == 0)
         {
           int tmp = atoi(GetSetting(id));
           status = m_pDll->SetSetting(id, (int*) &tmp);

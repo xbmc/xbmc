@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -40,6 +39,7 @@ CVTPFile::CVTPFile()
 CVTPFile::~CVTPFile()
 {
   Close();
+  delete m_session;
 }
 void CVTPFile::Close()
 {
@@ -140,7 +140,7 @@ int64_t CVTPFile::Seek(int64_t pos, int whence)
   return -1;
 }
 
-bool CVTPFile::NextChannel()
+bool CVTPFile::NextChannel(bool preview/* = false*/)
 {
   if(m_session == NULL)
     return false;
@@ -166,7 +166,7 @@ bool CVTPFile::NextChannel()
   return false;
 }
 
-bool CVTPFile::PrevChannel()
+bool CVTPFile::PrevChannel(bool preview/* = false*/)
 {
   if(m_session == NULL)
     return false;

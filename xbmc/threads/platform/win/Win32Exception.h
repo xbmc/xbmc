@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,23 +24,29 @@
 #include <exception>
 #include "commons/Exception.h"
 
-class win32_exception: public XbmcCommons::Exception
+class win32_exception: public XbmcCommons::UncheckedException
 {
 public:
     typedef const void* Address; // OK on Win32 platform
 
     static void install_handler();
+    static void set_version(std::string version) { mVersion = version; };
     virtual const char* what() const { return mWhat; };
     Address where() const { return mWhere; };
     unsigned code() const { return mCode; };
     virtual void LogThrowMessage(const char *prefix) const;
+    static bool write_minidump(EXCEPTION_POINTERS* pEp);
 protected:
-    win32_exception(const EXCEPTION_RECORD& info, const char* classname = NULL);
+    win32_exception(EXCEPTION_POINTERS*, const char* classname = NULL);
     static void translate(unsigned code, EXCEPTION_POINTERS* info);
+
+    inline bool write_minidump() const { return write_minidump(mExceptionPointers); };
 private:
     const char* mWhat;
     Address mWhere;
     unsigned mCode;
+    EXCEPTION_POINTERS *mExceptionPointers;
+    static std::string mVersion;
 };
 
 class access_violation: public win32_exception
@@ -62,5 +67,5 @@ protected:
 private:
     access_type mAccessType;
     Address mBadAddress;
-    access_violation(const EXCEPTION_RECORD& info);
+    access_violation(EXCEPTION_POINTERS* info);
 };

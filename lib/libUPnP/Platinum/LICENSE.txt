@@ -26,7 +26,10 @@ Note that Platinum SDK links with Neptune C++ Runtime
 terms of the BSD license. This license is compatible with the GNU GPL.
 
 Platinum is copyrighted by Plutinosoft, LLC.
-http://www.plutinosoft.com <sylvain@plutinosoft.com>
+http://www.plutinosoft.com 
+
+For all commercial license inquiries, please contact us at 
+licensing@plutinosoft.com
 
 -------------------------------------------------------------------------
 		    GNU GENERAL PUBLIC LICENSE

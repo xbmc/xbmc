@@ -22,7 +22,8 @@
 
 #include "UPnPDirectory.h"
 #include "URL.h"
-#include "network/UPnP.h"
+#include "network/upnp/UPnP.h"
+#include "network/upnp/UPnPInternal.h"
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
 #include "video/VideoInfoTag.h"
@@ -31,6 +32,7 @@
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
+using namespace UPNP;
 
 namespace XFILE
 {
@@ -41,7 +43,7 @@ class CProtocolFinder {
 public:
     CProtocolFinder(const char* protocol) : m_Protocol(protocol) {}
     bool operator()(const PLT_MediaItemResource& resource) const {
-        return (resource.m_ProtocolInfo.ToString().Compare(m_Protocol, true) == 0);
+        return (resource.m_ProtocolInfo.GetProtocol().Compare(m_Protocol, true) == 0);
     }
 private:
     NPT_String m_Protocol;
@@ -106,7 +108,7 @@ static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReferenc
             return false;
 
         // sleep a bit and try again
-        NPT_System::Sleep(NPT_TimeInterval(1, 0));
+        NPT_System::Sleep(NPT_TimeInterval((double)1));
     }
 
     return !device.IsNull();
@@ -403,14 +405,14 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 // look for metadata
                 if( ObjectClass.StartsWith("object.container.album.videoalbum") ) {
                     pItem->SetLabelPreformated(false);
-                    CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), NULL);
+                    UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), NULL);
 
                 } else if( ObjectClass.StartsWith("object.container.album.photoalbum")) {
                   //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
 
                 } else if( ObjectClass.StartsWith("object.container.album") ) {
                     pItem->SetLabelPreformated(false);
-                    CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), NULL);
+                    UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), NULL);
                 }
 
             } else {
@@ -434,11 +436,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     // look for metadata
                     if( ObjectClass.StartsWith("object.item.videoitem") ) {
                         pItem->SetLabelPreformated(false);
-                        CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
+                        UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
 
                     } else if( ObjectClass.StartsWith("object.item.audioitem") ) {
                         pItem->SetLabelPreformated(false);
-                        CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
+                        UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
 
                     } else if( ObjectClass.StartsWith("object.item.imageitem") ) {
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
@@ -456,8 +458,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             }
 
             // if there is a thumbnail available set it here
-            if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
-                pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
+            if((*entry)->m_ExtraInfo.album_arts.GetItem(0))
+                // only considers first album art
+                pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_arts.GetItem(0)->uri);
             else if((*entry)->m_Description.icon_uri.GetLength())
                 pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
 

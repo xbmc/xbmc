@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -72,6 +71,7 @@ CGUIDialogSmartPlaylistEditor::CGUIDialogSmartPlaylistEditor(void)
 {
   m_cancelled = false;
   m_ruleLabels = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSmartPlaylistEditor::~CGUIDialogSmartPlaylistEditor()
@@ -122,21 +122,6 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-  case GUI_MSG_WINDOW_INIT:
-    {
-      m_cancelled = false;
-      UpdateButtons();
-    }
-    break;
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      CGUIDialog::OnMessage(message);
-      // clear the rule list
-      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
-      OnMessage(msg);
-      m_ruleLabels->Clear();
-    }
-    break;
   case GUI_MSG_FOCUSED:
     if (message.GetControlId() == CONTROL_RULE_REMOVE ||
         message.GetControlId() == CONTROL_RULE_EDIT)
@@ -150,12 +135,12 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
 
 void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 {
-  if (item < 0 || item >= (int)m_playlist.m_playlistRules.size()) return;
+  if (item < 0 || item >= (int)m_playlist.m_ruleCombination.m_rules.size()) return;
 
-  CSmartPlaylistRule rule = m_playlist.m_playlistRules[item];
+  CSmartPlaylistRule rule = m_playlist.m_ruleCombination.m_rules[item];
 
   if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
-    m_playlist.m_playlistRules[item] = rule;
+    m_playlist.m_ruleCombination.m_rules[item] = rule;
 
   UpdateButtons();
 }
@@ -213,7 +198,7 @@ void CGUIDialogSmartPlaylistEditor::OnMatch()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_MATCH);
   OnMessage(msg);
-  m_playlist.m_matchAllRules = (msg.GetParam1() == 0);
+  m_playlist.m_ruleCombination.SetType(msg.GetParam1() == 0 ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
   UpdateButtons();
 }
 
@@ -262,20 +247,20 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName);
   }
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_RULE_REMOVE, m_playlist.m_playlistRules.size() > 0);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_MATCH, m_playlist.m_playlistRules.size() > 1);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_RULE_REMOVE, m_playlist.m_ruleCombination.m_rules.size() > 0);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_MATCH, m_playlist.m_ruleCombination.m_rules.size() > 1);
 
   int currentItem = GetSelectedItem();
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
   OnMessage(msgReset);
   m_ruleLabels->Clear();
-  for (unsigned int i = 0; i < m_playlist.m_playlistRules.size(); i++)
+  for (unsigned int i = 0; i < m_playlist.m_ruleCombination.m_rules.size(); i++)
   {
     CFileItemPtr item(new CFileItem("", false));
-    if (m_playlist.m_playlistRules[i].m_field == FieldNone)
+    if (m_playlist.m_ruleCombination.m_rules[i].m_field == FieldNone)
       item->SetLabel(g_localizeStrings.Get(21423));
     else
-      item->SetLabel(m_playlist.m_playlistRules[i].GetLocalizedRule(m_playlist.GetType()));
+      item->SetLabel(m_playlist.m_ruleCombination.m_rules[i].GetLocalizedRule(m_playlist.GetType()));
     m_ruleLabels->Add(item);
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RULE_LIST, 0, 0, m_ruleLabels);
@@ -325,7 +310,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     msg.SetLabel(21426);
     OnMessage(msg);
   }
-  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_MATCH, m_playlist.m_matchAllRules ? 0 : 1);
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_MATCH, m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? 0 : 1);
   // and now the limit spinner
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIMIT, 0);
@@ -340,6 +325,13 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     msg.SetLabel(label);
     OnMessage(msg);
   }
+}
+
+void CGUIDialogSmartPlaylistEditor::OnInitWindow()
+{
+  m_cancelled = false;
+  UpdateButtons();
+
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
   vector<PLAYLIST_TYPE> allowedTypes;
@@ -386,6 +378,16 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
 
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_TYPE, type);
   m_playlist.SetType(ConvertType(type));
+
+  CGUIDialog::OnInitWindow();
+}
+
+void CGUIDialogSmartPlaylistEditor::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
+  OnMessage(msg);
+  m_ruleLabels->Clear();
 }
 
 CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::ConvertType(const CStdString &type)
@@ -434,8 +436,8 @@ void CGUIDialogSmartPlaylistEditor::HighlightItem(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnRuleRemove(int item)
 {
-  if (item < 0 || item >= (int)m_playlist.m_playlistRules.size()) return;
-  m_playlist.m_playlistRules.erase(m_playlist.m_playlistRules.begin() + item);
+  if (item < 0 || item >= (int)m_playlist.m_ruleCombination.m_rules.size()) return;
+  m_playlist.m_ruleCombination.m_rules.erase(m_playlist.m_ruleCombination.m_rules.begin() + item);
 
   UpdateButtons();
   if (item >= m_ruleLabels->Size())
@@ -453,10 +455,10 @@ void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
   CSmartPlaylistRule rule;
   if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
   {
-    if (m_playlist.m_playlistRules.size() == 1 && m_playlist.m_playlistRules[0].m_field == FieldNone)
-      m_playlist.m_playlistRules[0] = rule;
+    if (m_playlist.m_ruleCombination.m_rules.size() == 1 && m_playlist.m_ruleCombination.m_rules[0].m_field == FieldNone)
+      m_playlist.m_ruleCombination.m_rules[0] = rule;
     else
-      m_playlist.m_playlistRules.push_back(rule);
+      m_playlist.m_ruleCombination.m_rules.push_back(rule);
   }
   UpdateButtons();
 }
@@ -468,7 +470,7 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
 
   editor->m_path = "";
   editor->m_playlist = CSmartPlaylist();
-  editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
+  editor->m_playlist.m_ruleCombination.m_rules.push_back(CSmartPlaylistRule());
   editor->m_mode = type;
   editor->Initialize();
   editor->DoModal(g_windowManager.GetActiveWindow());
@@ -493,13 +495,13 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const C
     if (!editor->m_mode.Left(5).Equals("party"))
       return false; // only edit normal playlists that exist
     // party mode playlists can be editted even if they don't exist
-    playlist.m_playlistRules.push_back(CSmartPlaylistRule());
+    playlist.m_ruleCombination.m_rules.push_back(CSmartPlaylistRule());
     playlist.SetType(editor->m_mode == "partymusic" ? "songs" : "musicvideos");
   }
 
   editor->m_playlist = playlist;
-  if (editor->m_playlist.m_playlistRules.size() <= 0)
-    editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
+  if (editor->m_playlist.m_ruleCombination.m_rules.size() <= 0)
+    editor->m_playlist.m_ruleCombination.m_rules.push_back(CSmartPlaylistRule());
   editor->m_path = path;
   editor->Initialize();
   editor->DoModal(g_windowManager.GetActiveWindow());

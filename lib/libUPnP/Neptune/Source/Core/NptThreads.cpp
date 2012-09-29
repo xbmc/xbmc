@@ -35,6 +35,11 @@
 #include "NptThreads.h"
 
 /*----------------------------------------------------------------------
+|   NPT_SingletonLock
++---------------------------------------------------------------------*/
+NPT_Mutex NPT_SingletonLock::Instance;
+
+/*----------------------------------------------------------------------
 |   NPT_ThreadCallbackSlot::NPT_ThreadCallbackSlot
 +---------------------------------------------------------------------*/
 NPT_ThreadCallbackSlot::NPT_ThreadCallbackSlot() :

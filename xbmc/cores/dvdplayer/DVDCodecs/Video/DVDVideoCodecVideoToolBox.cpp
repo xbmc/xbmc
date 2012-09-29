@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -926,7 +925,7 @@ typedef struct
 } sps_info_struct;
 
 static void
-parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames)
+parseh264_sps(uint8_t *sps, uint32_t sps_size,  int *level, int *profile, bool *interlaced, int32_t *max_ref_frames)
 {
   nal_bitstream bs;
   sps_info_struct sps_info = {0};
@@ -966,7 +965,9 @@ parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_re
   sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
   if (sps_info.log2_max_frame_num_minus4 > 12)
   { // must be between 0 and 12
-    return;
+    // don't early return here - the bits we are using (profile/level/interlaced/ref frames)
+    // might still be valid - let the parser go on and pray.
+    //return;
   }
 
   sps_info.pic_order_cnt_type = nal_bs_read_ue(&bs);
@@ -1007,11 +1008,13 @@ parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_re
     sps_info.frame_crop_bottom_offset     = nal_bs_read_ue(&bs);
   }
 
+  *level = sps_info.level_idc;
+  *profile = sps_info.profile_idc;
   *interlaced = !sps_info.frame_mbs_only_flag;
   *max_ref_frames = sps_info.max_num_ref_frames;
 }
 
-bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_frames)
+bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_frames, int *level, int *profile)
 {
   // check the avcC atom's sps for number of reference frames and
   // bail if interlaced, VDA does not handle interlaced h264.
@@ -1019,9 +1022,9 @@ bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_
   uint8_t *spc = extradata + 6;
   uint32_t sps_size = VDA_RB16(spc);
   if (sps_size)
-    parseh264_sps(spc+3, sps_size-1, &interlaced, max_ref_frames);
-  //if (interlaced)
-  //  return false;
+    parseh264_sps(spc+3, sps_size-1, level, profile, &interlaced, max_ref_frames);
+  if (interlaced)
+    return false;
   return true;
 }
 
@@ -1055,21 +1058,19 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 {
   if (g_guiSettings.GetBool("videoplayer.usevideotoolbox") && !hints.software)
   {
-    int32_t width, height, profile, level;
-    uint8_t *extradata; // extra data for codec to use
-    unsigned int extrasize; // size of extra data
     m_dllAvUtil = new DllAvUtil;
     m_dllAvFormat = new DllAvFormat;
     if (!m_dllAvUtil->Load() || !m_dllAvFormat->Load())
       return false;
-    
-    //
-    width  = hints.width;
-    height = hints.height;
-    level  = hints.level;
-    profile = hints.profile;
-    extrasize = hints.extrasize;
-    extradata = (uint8_t*)hints.extradata;
+
+    int width  = hints.width;
+    int height = hints.height;
+    int level  = hints.level;
+    int profile = hints.profile;
+    int spsLevel = level;
+    int spsProfile = profile;
+    unsigned int extrasize = hints.extrasize; // extra data for codec to use
+    uint8_t *extradata = (uint8_t*)hints.extradata; // size of extra data
  
     switch(profile)
     {
@@ -1085,10 +1086,10 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         break;
     }
 
-    if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
+    if (width <= 0 || height <= 0)
     {
-      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
-        __FUNCTION__, width, height, profile, level);
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d)",
+        __FUNCTION__, width, height);
       return false;
     }
     
@@ -1142,8 +1143,16 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         if (extradata[0] == 1)
         {
           // check for interlaced and get number of ref frames
-          if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames))
+          if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames, &spsLevel, &spsProfile))
             return false;
+
+          // overwrite level and profile from the hints
+          // if we got something more valid from the extradata
+          if (level == 0 && spsLevel > 0)
+            level = spsLevel;
+          
+          if (profile == 0 && spsProfile > 0)
+            profile = spsProfile;
 
           // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
           // with a bogus m_fmt_desc returned that crashes on CFRelease.
@@ -1170,7 +1179,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         }
         else
         {
-          if (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1)
+          if ( (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1) ||
+               (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 1))
           {
             // video content is from x264 or from bytestream h264 (AnnexB format)
             // NAL reformating to bitstream format required
@@ -1188,11 +1198,19 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             extrasize = m_dllAvFormat->avio_close_dyn_buf(pb, &extradata);
 
             // check for interlaced and get number of ref frames
-            if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames))
+            if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames, &spsLevel, &spsProfile))
             {
               m_dllAvUtil->av_free(extradata);
               return false;
             }
+            
+            // overwrite level and profile from the hints
+            // if we got something more valid from the extradata
+            if (level == 0 && spsLevel > 0)
+              level = spsLevel;
+            
+            if (profile == 0 && spsProfile > 0)
+              profile = spsProfile;
 
             // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
             // with a bogus m_fmt_desc returned that crashes on CFRelease.

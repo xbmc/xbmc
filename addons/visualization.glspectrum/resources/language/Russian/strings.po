@@ -5,25 +5,17 @@
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC-Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-28 15:29+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-05-30 14:24+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-
-msgctxt "Addon Summary"
-msgid "Visualisation showing a rotating 3D Spectrum Analyzer"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "Opengl Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in Opengl that moves to the beat of the music creating a wave effect across the spectrum grid.\nIt also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great"
-msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "#30000"
 msgid "Mode"
@@ -31,11 +23,11 @@ msgstr "Режим"
 
 msgctxt "#30001"
 msgid "Filled"
-msgstr "Цельный"
+msgstr "Сплошной"
 
 msgctxt "#30002"
 msgid "Wireframe"
-msgstr "Скелет"
+msgstr "Каркас"
 
 msgctxt "#30003"
 msgid "Points"
@@ -43,11 +35,11 @@ msgstr "Точки"
 
 msgctxt "#30004"
 msgid "Bar Height"
-msgstr "Высота Бара"
+msgstr "Высота полос"
 
 msgctxt "#30005"
 msgid "Small"
-msgstr "Маленький"
+msgstr "Небольшие"
 
 msgctxt "#30006"
 msgid "Default"
@@ -55,11 +47,11 @@ msgstr "По-умолчанию"
 
 msgctxt "#30007"
 msgid "Big"
-msgstr "Большой"
+msgstr "Крупные"
 
 msgctxt "#30008"
 msgid "Very Big"
-msgstr "Очень Большой"
+msgstr "Огромные"
 
 msgctxt "#30009"
 msgid "Speed"
@@ -67,7 +59,7 @@ msgstr "Скорость"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "Очень Медленно"
+msgstr "Очень медленно"
 
 msgctxt "#30011"
 msgid "Slow"
@@ -83,4 +75,4 @@ msgstr "Быстро"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "Очень Быстро"
+msgstr "Очень быстро"

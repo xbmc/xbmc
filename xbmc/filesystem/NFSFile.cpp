@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -98,6 +97,8 @@ std::list<CStdString> CNfsConnection::GetExportList(const CURL &url)
       }      
 
       gNfsConnection.GetImpl()->mount_free_export_list(exportlist);
+      retList.sort();
+      retList.reverse();
     }
     
     return retList;
@@ -618,6 +619,23 @@ int64_t CNFSFile::Seek(int64_t iFilePosition, int iWhence)
     return -1;
   }
   return (int64_t)offset;
+}
+
+int CNFSFile::Truncate(int64_t iSize)
+{
+  int ret = 0;
+  
+  CSingleLock lock(gNfsConnection);  
+  if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
+  
+  
+  ret = (int)gNfsConnection.GetImpl()->nfs_ftruncate(m_pNfsContext, m_pFileHandle, iSize);
+  if (ret < 0) 
+  {
+    CLog::Log(LOGERROR, "%s - Error( ftruncate: %"PRId64", fsize: %"PRId64", %s)", __FUNCTION__, iSize, m_fileSize, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
+    return -1;
+  }
+  return ret;
 }
 
 void CNFSFile::Close()

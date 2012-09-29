@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -65,7 +64,10 @@ bool CDDACodec::Init(const CStdString &strFile, unsigned int filecache)
 
   //  Calculate total time of the track
   m_TotalTime=(m_file.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime);
+  if (m_TotalTime > 0)
+    m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime);
+  else
+    m_Bitrate = 0;
   m_TotalTime*=1000; // ms
   return true;
 }
@@ -89,7 +91,7 @@ int64_t CDDACodec::Seek(int64_t iSeekTime)
 
   // ... and look if we really got there.
   int iNewSeekTime=(iNewOffset/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  return iNewSeekTime*1000; // ms
+  return iNewSeekTime*(int64_t)1000; // ms
 }
 
 int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)

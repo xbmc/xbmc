@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -103,6 +102,18 @@ void CGUIListLabel::SetInvalid()
 {
   m_label.SetInvalid();
   CGUIControl::SetInvalid();
+}
+
+void CGUIListLabel::SetWidth(float width)
+{
+  m_width = width;
+  if (m_label.GetLabelInfo().align & XBFONT_RIGHT)
+    m_label.SetMaxRect(m_posX - m_width, m_posY, m_width, m_height);
+  else if (m_label.GetLabelInfo().align & XBFONT_CENTER_X)
+    m_label.SetMaxRect(m_posX - m_width*0.5f, m_posY, m_width, m_height);
+  else
+    m_label.SetMaxRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+  CGUIControl::SetWidth(m_width);
 }
 
 void CGUIListLabel::SetLabel(const CStdString &label)

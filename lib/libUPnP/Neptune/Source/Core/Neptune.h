@@ -76,6 +76,8 @@
 #include "NptVersion.h"
 #include "NptDynamicLibraries.h"
 #include "NptDynamicCast.h"
+#include "NptDigest.h"
+#include "NptCrypto.h"
 
 // optional modules
 #include "NptZip.h"

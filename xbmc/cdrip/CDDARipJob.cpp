@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -39,8 +38,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
-#include "storage/IoSupport.h"
 #include "settings/GUISettings.h"
+#include "storage/MediaManager.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -156,7 +155,7 @@ bool CCDDARipJob::DoWork()
     if (m_eject)
     {
       CLog::Log(LOGINFO, "Ejecting CD");
-      CIoSupport::EjectTray();
+      g_mediaManager.EjectTray();
     }
   }
 
@@ -249,7 +248,8 @@ CStdString CCDDARipJob::SetupTempFile()
   strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
   if ((fd = mkstemp(tmp)) == -1)
    tmp[0] = '\0'; 
-  close(fd);
+  if (fd != -1)
+    close(fd);
 #endif
   return tmp;
 }
@@ -259,8 +259,11 @@ bool CCDDARipJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(),GetType()) == 0)
   {
     const CCDDARipJob* rjob = dynamic_cast<const CCDDARipJob*>(job);
-    return m_input  == rjob->m_input &&
-           m_output == rjob->m_output;
+    if (rjob)
+    {
+      return m_input  == rjob->m_input &&
+             m_output == rjob->m_output;
+    }
   }
   return false;
 }

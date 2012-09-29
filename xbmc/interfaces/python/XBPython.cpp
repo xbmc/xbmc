@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,43 +29,32 @@
 #include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
-
 #include "XBPython.h"
 #include "settings/Settings.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
-#include "threads/SingleLock.h"
+#include "pythreadstate.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
 
 #include "threads/SystemClock.h"
 #include "addons/Addon.h"
 #include "interfaces/AnnouncementManager.h"
-#include "interfaces/python/xbmcmodule/PythonMonitor.h"
+
+#include "interfaces/legacy/Monitor.h"
 
 using namespace ANNOUNCEMENT;
 
-extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
-extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
-
-extern "C" {
-  void InitXBMCModule(void);
-  void InitXBMCTypes(void);
-  void DeinitXBMCModule(void);
-  void InitPluginModule(void);
-  void InitPluginTypes(void);
-  void DeinitPluginModule(void);
-  void InitGUIModule(void);
-  void InitGUITypes(void);
-  void DeinitGUIModule(void);
-  void InitAddonModule(void);
-  void InitAddonTypes(void);
-  void DeinitAddonModule(void);
-  void InitVFSModule(void);
-  void InitVFSTypes(void);
-  void DeinitVFSModule(void);
+namespace PythonBindings {
+  void initModule_xbmcgui(void);
+  void initModule_xbmc(void);
+  void initModule_xbmcplugin(void);
+  void initModule_xbmcaddon(void);
+  void initModule_xbmcvfs(void);
 }
+
+using namespace PythonBindings;
 
 XBPython::XBPython()
 {
@@ -75,8 +64,11 @@ XBPython::XBPython()
   m_mainThreadState   = NULL;
   m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
+  m_endtime           = 0;
+  m_pDll              = NULL;
   m_vecPlayerCallbackList.clear();
   m_vecMonitorCallbackList.clear();
+
   CAnnouncementManager::AddAnnouncer(this);
 }
 
@@ -260,13 +252,13 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
   }
 }
 
-void XBPython::RegisterPythonMonitorCallBack(CPythonMonitor* pCallback)
+void XBPython::RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   CSingleLock lock(m_critSection);
   m_vecMonitorCallbackList.push_back(pCallback);
 }
 
-void XBPython::UnregisterPythonMonitorCallBack(CPythonMonitor* pCallback)
+void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   CSingleLock lock(m_critSection);
   MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
@@ -287,8 +279,8 @@ void XBPython::OnSettingsChanged(const CStdString &ID)
     MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
     while (it != m_vecMonitorCallbackList.end())
     { 
-      if (((CPythonMonitor*)(*it))->Id == ID)  
-        ((CPythonMonitor*)(*it))->OnSettingsChanged();
+      if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)  
+        ((XBMCAddon::xbmc::Monitor*)(*it))->OnSettingsChanged();
       it++;
     }
   }  
@@ -302,7 +294,7 @@ void XBPython::OnScreensaverActivated()
     MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
     while (it != m_vecMonitorCallbackList.end())
     {
-      ((CPythonMonitor*)(*it))->OnScreensaverActivated();
+      ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverActivated();
       it++;
     }
   }  
@@ -316,7 +308,7 @@ void XBPython::OnScreensaverDeactivated()
     MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
     while (it != m_vecMonitorCallbackList.end())
     {
-      ((CPythonMonitor*)(*it))->OnScreensaverDeactivated();
+      ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverDeactivated();
       it++;
     }
   }  
@@ -330,7 +322,7 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
   MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
   while (it != m_vecMonitorCallbackList.end())
   {
-   ((CPythonMonitor*)(*it))->OnDatabaseUpdated(database);
+   ((XBMCAddon::xbmc::Monitor*)(*it))->OnDatabaseUpdated(database);
    it++;
   }
  }  
@@ -346,12 +338,12 @@ void XBPython::OnAbortRequested(const CStdString &ID)
     {
       if (ID.IsEmpty())
       {    
-        ((CPythonMonitor*)(*it))->OnAbortRequested();
+        ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
       }
       else
       {
-        if (((CPythonMonitor*)(*it))->Id == ID)
-          ((CPythonMonitor*)(*it))->OnAbortRequested();
+        if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)
+          ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
       }
       it++;
     }
@@ -417,21 +409,24 @@ void XBPython::UnloadExtensionLibs()
   m_extensions.clear();
 }
 
+#define MODULE "xbmc"
+
 #define RUNSCRIPT_PRAMBLE \
         "" \
-        "import xbmc\n" \
+        "import " MODULE "\n" \
+        "xbmc.abortRequested = False\n" \
         "class xbmcout:\n" \
-        "\tdef __init__(self, loglevel=xbmc.LOGNOTICE):\n" \
+        "\tdef __init__(self, loglevel=" MODULE ".LOGNOTICE):\n" \
         "\t\tself.ll=loglevel\n" \
         "\tdef write(self, data):\n" \
-        "\t\txbmc.log(data,self.ll)\n" \
+        "\t\t" MODULE ".log(data,self.ll)\n" \
         "\tdef close(self):\n" \
-        "\t\txbmc.log('.')\n" \
+        "\t\t" MODULE ".log('.')\n" \
         "\tdef flush(self):\n" \
-        "\t\txbmc.log('.')\n" \
+        "\t\t" MODULE ".log('.')\n" \
         "import sys\n" \
         "sys.stdout = xbmcout()\n" \
-        "sys.stderr = xbmcout(xbmc.LOGERROR)\n"
+        "sys.stderr = xbmcout(" MODULE ".LOGERROR)\n"
 
 #define RUNSCRIPT_OVERRIDE_HACK \
         "" \
@@ -466,12 +461,14 @@ void XBPython::UnloadExtensionLibs()
 
 void XBPython::InitializeInterpreter(ADDON::AddonPtr addon)
 {
-  InitXBMCModule(); // init xbmc modules
-  InitPluginModule(); // init xbmcplugin modules
-  InitGUIModule(); // init xbmcgui modules
-  InitAddonModule(); // init xbmcaddon modules
-  InitVFSModule(); // init xbmcvfs modules
-  InitVFSTypes();
+  {
+    GilSafeSingleLock lock(m_critSection);
+    initModule_xbmcgui();
+    initModule_xbmc();
+    initModule_xbmcplugin();
+    initModule_xbmcaddon();
+    initModule_xbmcvfs();
+  }
 
   CStdString addonVer = ADDON::GetXbmcApiVersionDependency(addon);
   bool bwcompatMode = (addon.get() == NULL || (ADDON::AddonVersion(addonVer) <= ADDON::AddonVersion("1.0")));
@@ -486,11 +483,6 @@ void XBPython::InitializeInterpreter(ADDON::AddonPtr addon)
 
 void XBPython::DeInitializeInterpreter()
 {
-  DeinitXBMCModule();
-  DeinitPluginModule();
-  DeinitGUIModule();
-  DeinitAddonModule();
-  DeinitVFSModule();
 }
 
 /**
@@ -577,12 +569,6 @@ void XBPython::Initialize()
       char* python_argv[1] = { (char*)"" } ;
       PySys_SetArgv(1, python_argv);
 
-      InitXBMCTypes();
-      InitGUITypes();
-      InitPluginTypes();
-      InitAddonTypes();
-      InitVFSTypes();
-
       if (!(m_mainThreadState = PyThreadState_Get()))
         CLog::Log(LOGERROR, "Python threadstate is NULL.");
       PyEval_ReleaseLock();
@@ -610,11 +596,14 @@ void XBPython::Finalize()
   {
     CLog::Log(LOGINFO, "Python, unloading python shared library because no scripts are running anymore");
 
-    PyEval_AcquireLock();
-    PyThreadState_Swap((PyThreadState*)m_mainThreadState);
+    {
+      CSingleExit exit(m_critSection);
+      PyEval_AcquireLock();
+      PyThreadState_Swap((PyThreadState*)m_mainThreadState);
 
-    Py_Finalize();
-    PyEval_ReleaseLock();
+      Py_Finalize();
+      PyEval_ReleaseLock();
+    }
 
 #if !(defined(TARGET_DARWIN) || defined(_WIN32))
     UnloadExtensionLibs();
@@ -630,7 +619,6 @@ void XBPython::Finalize()
     // The implementation for osx can never unload the python dylib.
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif
-    m_hModule         = NULL;
     m_mainThreadState = NULL;
     m_bInitialized    = false;
   }
@@ -679,7 +667,10 @@ void XBPython::Process()
       //delete scripts which are done
       if (it->bDone)
       {
-        delete it->pyThread;
+        {
+          CSingleExit exit(m_critSection);
+          delete it->pyThread;
+        }
         it = m_vecPyList.erase(it);
         FinalizeScript();
       }

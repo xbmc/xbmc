@@ -1,0 +1,25 @@
+Index: Modules/posixmodule.c
+===================================================================
+--- a/Modules/posixmodule.c	(revision 52827)
++++ b/Modules/posixmodule.c	(working copy)
+@@ -314,7 +314,7 @@
+ #endif
+ 
+ /* Return a dictionary corresponding to the POSIX environment table */
+-#ifdef WITH_NEXT_FRAMEWORK
++#ifdef __APPLE__
+ /* On Darwin/MacOSX a shared library or framework has no access to
+ ** environ directly, we must obtain it with _NSGetEnviron().
+ */
+@@ -332,7 +332,7 @@
+ 	d = PyDict_New();
+ 	if (d == NULL)
+ 		return NULL;
+-#ifdef WITH_NEXT_FRAMEWORK
++#ifdef __APPLE__
+ 	if (environ == NULL)
+ 		environ = *_NSGetEnviron();
+ #endif
+
+ 	  	 
+

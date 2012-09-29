@@ -58,20 +58,8 @@ extern "C" {
       #include <ffmpeg/avformat.h>
     #endif
   #endif
-
-  /* From non-public audioconvert.h */
-  struct AVAudioConvert;
-  typedef struct AVAudioConvert AVAudioConvert;
-  AVAudioConvert *av_audio_convert_alloc(enum AVSampleFormat out_fmt, int out_channels,
-                                         enum AVSampleFormat in_fmt, int in_channels,
-                                         const float *matrix, int flags);
-  void av_audio_convert_free(AVAudioConvert *ctx);
-  int av_audio_convert(AVAudioConvert *ctx,
-                             void * const out[6], const int out_stride[6],
-                       const void * const  in[6], const int  in_stride[6], int len);
 #else
   #include "libavcodec/avcodec.h"
-  #include "libavcodec/audioconvert.h"
 #endif
 }
 
@@ -115,13 +103,6 @@ public:
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual AVCodec *av_codec_next(AVCodec *c)=0;
-  virtual AVAudioConvert *av_audio_convert_alloc(enum AVSampleFormat out_fmt, int out_channels,
-                                                 enum AVSampleFormat in_fmt , int in_channels,
-                                                 const float *matrix        , int flags)=0;
-  virtual void av_audio_convert_free(AVAudioConvert *ctx)=0;
-  virtual int av_audio_convert(AVAudioConvert *ctx,
-                                     void * const out[6], const int out_stride[6],
-                               const void * const  in[6], const int  in_stride[6], int len)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
   virtual void av_init_packet(AVPacket *pkt)=0;
 };
@@ -189,17 +170,6 @@ public:
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic) { ::avcodec_default_release_buffer(s, pic); }
   virtual enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat *fmt) { return ::avcodec_default_get_format(s, fmt); }
   virtual AVCodec *av_codec_next(AVCodec *c) { return ::av_codec_next(c); }
-  virtual AVAudioConvert *av_audio_convert_alloc(enum AVSampleFormat out_fmt, int out_channels,
-                                                 enum AVSampleFormat in_fmt , int in_channels,
-                                                 const float *matrix        , int flags)
-          { return ::av_audio_convert_alloc(out_fmt, out_channels, in_fmt, in_channels, matrix, flags); }
-  virtual void av_audio_convert_free(AVAudioConvert *ctx)
-          { ::av_audio_convert_free(ctx); }
-
-  virtual int av_audio_convert(AVAudioConvert *ctx,
-                                     void * const out[6], const int out_stride[6],
-                               const void * const  in[6], const int  in_stride[6], int len)
-          { return ::av_audio_convert(ctx, out, out_stride, in, in_stride, len); }
 
   virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
   virtual void av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
@@ -207,7 +177,9 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
+#if !defined(TARGET_DARWIN)
     CLog::Log(LOGDEBUG, "DllAvCodec: Using libavcodec system library");
+#endif
     return true;
   }
   virtual void Unload() {}
@@ -251,13 +223,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(enum PixelFormat, avcodec_default_get_format, (struct AVCodecContext *p1, const enum PixelFormat *p2))
 
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
-  DEFINE_METHOD6(AVAudioConvert*, av_audio_convert_alloc, (enum AVSampleFormat p1, int p2,
-                                                           enum AVSampleFormat p3, int p4,
-                                                           const float *p5, int p6))
-  DEFINE_METHOD1(void, av_audio_convert_free, (AVAudioConvert *p1));
-  DEFINE_METHOD6(int,  av_audio_convert,      (AVAudioConvert *p1,
-                                                     void * const p2[6], const int p3[6],
-                                               const void * const p4[6], const int p5[6], int p6))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD_RENAME(avcodec_open2,avcodec_open2_dont_call)
@@ -288,9 +253,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_default_release_buffer)
     RESOLVE_METHOD(avcodec_default_get_format)
     RESOLVE_METHOD(av_codec_next)
-    RESOLVE_METHOD(av_audio_convert_alloc)
-    RESOLVE_METHOD(av_audio_convert_free)
-    RESOLVE_METHOD(av_audio_convert)
     RESOLVE_METHOD(av_dup_packet)
     RESOLVE_METHOD(av_init_packet)
   END_METHOD_RESOLVE()

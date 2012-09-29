@@ -270,6 +270,7 @@ bool CAirPlayServer::Initialize()
   Deinitialize();
 
   struct sockaddr_in myaddr;
+  memset(&myaddr, 0, sizeof(myaddr));
 
   myaddr.sin_family = AF_INET;
   myaddr.sin_port = htons(m_port);
@@ -337,6 +338,7 @@ CAirPlayServer::CTCPClient::CTCPClient()
 CAirPlayServer::CTCPClient::CTCPClient(const CTCPClient& client)
 {
   Copy(client);
+  m_httpParser = new HttpParser();
   m_pLibPlist = new DllLibPlist();
 }
 
@@ -347,11 +349,14 @@ CAirPlayServer::CTCPClient::~CTCPClient()
     m_pLibPlist->Unload();
   }
   delete m_pLibPlist;
+  delete m_httpParser;
 }
 
 CAirPlayServer::CTCPClient& CAirPlayServer::CTCPClient::operator=(const CTCPClient& client)
 {
   Copy(client);
+  m_httpParser = new HttpParser();
+  m_pLibPlist = new DllLibPlist();
   return *this;
 }
 
@@ -457,6 +462,7 @@ void CAirPlayServer::CTCPClient::Disconnect()
     close(m_socket);
     m_socket = INVALID_SOCKET;
     delete m_httpParser;
+    m_httpParser = NULL;
   }
 }
 

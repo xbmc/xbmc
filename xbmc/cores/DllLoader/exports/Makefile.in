@@ -1,13 +1,13 @@
-SRCS=emu_dummy.cpp \
-     emu_kernel32.cpp \
-     emu_msvcrt.cpp \
-     wrapper.c
+SRCS  = emu_dummy.cpp
+SRCS += emu_kernel32.cpp
+SRCS += emu_msvcrt.cpp
+SRCS += wrapper.c
 
-LIB=exports.a
+LIB = exports.a
 
-CLEAN_FILES=wrapper.def
+CLEAN_FILES = wrapper.def
 
-include ../../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 wrapper.o : wrapper.c

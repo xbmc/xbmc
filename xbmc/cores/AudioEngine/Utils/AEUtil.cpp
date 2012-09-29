@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #ifndef __STDC_LIMIT_MACROS
@@ -103,12 +102,12 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
     sizeof(double) << 3, /* DOUBLE */
     sizeof(float ) << 3, /* FLOAT  */
 
-    8,                   /* AAC    */
-    8,                   /* AC3    */
-    8,                   /* DTS    */
-    8,                   /* EAC3   */
-    8,                   /* TRUEHD */
-    8,                   /* DTS-HD */
+    16,                  /* AAC    */
+    16,                  /* AC3    */
+    16,                  /* DTS    */
+    16,                  /* EAC3   */
+    16,                  /* TRUEHD */
+    16,                  /* DTS-HD */
     32                   /* LPCM   */
   };
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,8 +31,10 @@ CDVDPlayerResampler::CDVDPlayerResampler()
 {
   m_nrchannels = -1;
   m_converter = NULL;
-  m_converterdata.end_of_input = 0;
+  
+  memset(&m_converterdata, 0, sizeof(m_converterdata));
   m_converterdata.src_ratio = 1.0;
+  
   m_quality = SRC_LINEAR;
   m_ratio = 1.0;
 

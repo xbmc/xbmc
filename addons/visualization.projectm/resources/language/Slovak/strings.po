@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon version: 1.0.1
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: 2012-09-03 20:18+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Kvalita vykreslovania"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Nízka"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "Stredná"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Vysoká"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maximálny"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Náhodný režim"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Doba trvania prechodu"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Trvanie nastavenia"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Citlivosť na rytmus"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Balík predvolieb"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Východzí balík"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "Užívateľom nastavený adresár Predvolieb"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "Užívateľský adresár Predvolieb"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f secs"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

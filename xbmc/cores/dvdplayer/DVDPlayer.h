@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,6 +48,11 @@ class CDemuxStreamVideo;
 class CDemuxStreamAudio;
 class CStreamInfo;
 
+namespace PVR
+{
+  class CPVRChannel;
+}
+
 #define DVDSTATE_NORMAL           0x00000001 // normal dvd state
 #define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
 #define DVDSTATE_WAIT             0x00000003 // waiting for demuxer read error
@@ -63,6 +67,7 @@ public:
   double           dur;    // last frame expected duration
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
+  int              changes; // remembered counter from stream to track codec changes
   bool             inited;
   bool             started; // has the player started
   const StreamType type;
@@ -85,6 +90,7 @@ public:
     dur    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
+    changes = 0;
     inited = false;
     started = false;
     startpts  = DVD_NOPTS_VALUE;
@@ -242,15 +248,19 @@ public:
 
   virtual CStdString GetPlayingTitle();
 
+  virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
+  virtual bool CachePVRStream(void) const;
+
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
+  , CACHESTATE_PVR      // player is waiting for some data in each buffer
   , CACHESTATE_INIT     // player is waiting for first packet of each stream
   , CACHESTATE_PLAY     // player is waiting for players to not be stalled
   , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
   };
 
-  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL; }
+  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR; }
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
@@ -281,6 +291,8 @@ protected:
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
+
+  bool ShowPVRChannelInfo();
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
 
@@ -317,6 +329,7 @@ protected:
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream);
   bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
+  bool CheckDelayedChannelEntry(void);
 
   bool OpenInputStream();
   bool OpenDemuxStream();
@@ -328,10 +341,11 @@ protected:
 
   bool m_bAbortRequest;
 
-  std::string m_filename; // holds the actual filename
-  std::string m_mimetype;  // hold a hint to what content file contains (mime type)
-  ECacheState m_caching;
-  CFileItem   m_item;
+  std::string  m_filename; // holds the actual filename
+  std::string  m_mimetype;  // hold a hint to what content file contains (mime type)
+  ECacheState  m_caching;
+  CFileItem    m_item;
+  unsigned int m_iChannelEntryTimeOut;
 
 
   CCurrentStream m_CurrentAudio;

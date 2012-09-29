@@ -32,6 +32,8 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	# http://bugs.python.org/issue6869
 	cd $(SOURCE); patch -p1 < ../Python-2.6-ctypes.patch
+	# http://bugs.python.org/issue1602133
+	cd $(SOURCE); patch -p1 < ../python-osx-environ-fix.patch
 	cd $(SOURCE); $(CONFIGURE_NATIVE)
 	cd $(SOURCE); make -j $(MAKE_JOBS)
 	cd $(SOURCE); make install

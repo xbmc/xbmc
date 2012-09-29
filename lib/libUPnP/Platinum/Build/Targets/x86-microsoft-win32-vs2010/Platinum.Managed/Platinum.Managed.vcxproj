@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2741799F-A60F-46D9-934D-6D351D6DFCB7}</ProjectGuid>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>PlatinumManaged</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\..\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Extras;..\..\..\..\Source\Extras\Managed;..\..\..\..\..\Neptune\Source\Core;..\..\..\..\..\Neptune\Source\Neptune;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaConnect;..\..\..\..\Source\Devices\MediaRenderer</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <ForceSymbolReferences>__DllMainCRTStartup@12</ForceSymbolReferences>
+      <KeyFile>Platinum.Managed.snk</KeyFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir "$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)"
+copy "$(TargetPath)" "$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)\$(TargetFileName)"
+copy "$(ProjectDir)\..\..\..\..\ThirdParty\log4net\log4net.*" "$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\..\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Extras;..\..\..\..\Source\Extras\Managed;..\..\..\..\..\Neptune\Source\Core;..\..\..\..\..\Neptune\Source\Neptune;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaConnect;..\..\..\..\Source\Devices\MediaRenderer</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <ForceSymbolReferences>__DllMainCRTStartup@12</ForceSymbolReferences>
+      <KeyFile>Platinum.Managed.snk</KeyFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir "$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)"
+copy "$(TargetPath)" "$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)\$(TargetFileName)"
+copy "$(ProjectDir)\..\..\..\..\ThirdParty\log4net\log4net.*" "$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
+      <HintPath>..\..\..\..\ThirdParty\log4net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\Action.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\ActionArgumentDescription.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\ActionDescription.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\Clix.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\ControlPoint.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\ControlPointEventBridge.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\DeviceData.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\DeviceHost.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\Didl.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\EnumerableNptArray.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\EnumerableNptList.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\Helpers.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\Http.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\MediaConnect.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\MediaObject.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\MediaServer.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\MediaServerEventBridge.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\NeptuneException.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\NeptuneLoggingBridge.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\Neptun_marshal_as.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\Service.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\StateVariable.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\Managed\UPnP.h" />
+    <ClInclude Include="Stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\Action.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\ActionArgumentDescription.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\ActionDescription.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\ControlPoint.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\ControlPointEventBridge.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\DeviceData.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\DeviceHost.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\Didl.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\Helpers.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\Http.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\MediaConnect.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\MediaObject.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\MediaServer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\MediaServerEventBridge.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\NeptuneException.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\NeptuneLoggingBridge.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\Service.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\StateVariable.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\Managed\UPnP.cpp" />
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="Stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Platinum.Managed.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Neptune\Build\Targets\x86-microsoft-win32-vs2010\Neptune\Neptune.vcxproj">
+      <Project>{12aff2e5-6d95-4809-9728-9551677c078a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Platinum\Platinum.vcxproj">
+      <Project>{568611d3-afa7-4294-99c1-e9aed0d8057e}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

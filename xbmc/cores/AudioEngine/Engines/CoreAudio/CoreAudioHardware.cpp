@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -111,11 +110,7 @@ AudioStreamID* CCoreAudioHardware::StreamsList(AudioDeviceID device)
   UInt32 listSize;
   OSStatus ret = AudioObjectGetPropertyDataSize(device, &propertyAddress, 0, NULL, &listSize); 
   if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
-      "Unable to get list size. Error = %s", GetError(ret).c_str());
     return NULL;
-  }
 
   // Space for a terminating ID:
   listSize += sizeof(AudioStreamID);
@@ -284,15 +279,6 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     device.Open((pDevices[dev]));
     deviceName = device.GetName();
     UInt32 totalChannels = device.GetTotalOutputChannels();
-    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: "
-#if __LP64__
-      "Device[0x%04x]"
-#else
-      "Device[0x%04lx]"
-#endif
-      " - Name: '%s', Total Ouput Channels: %u. ",
-      pDevices[dev], deviceName.c_str(), (uint)totalChannels);
-
     std::transform( deviceName.begin(), deviceName.end(), deviceName.begin(), ::tolower );
     if (searchNameLowerCase.compare(deviceName) == 0)
       deviceId = pDevices[dev];

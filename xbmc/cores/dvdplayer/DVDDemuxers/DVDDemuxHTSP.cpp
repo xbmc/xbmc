@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -284,6 +283,7 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
       CDemuxStreamAudio* a;
       CDemuxStreamVideo* v;
       CDemuxStreamSubtitle* s;
+      CDemuxStreamTeletext* t;
     } st;
 
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStart - id: %d, type: %s", index, type);
@@ -320,12 +320,18 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     } else if(!strcmp(type, "TEXTSUB")) {
       st.s = new CDemuxStreamSubtitle();
       st.s->codec = CODEC_ID_TEXT;
+    } else if(!strcmp(type, "TELETEXT")) {
+      st.t = new CDemuxStreamTeletext();
+      st.t->codec = CODEC_ID_DVB_TELETEXT;
     } else {
       continue;
     }
 
     if((lang = htsmsg_get_str(sub, "language")))
+    {
       strncpy(st.g->language, lang, sizeof(st.g->language));
+      st.g->language[sizeof(st.g->language) - 1] = '\0';
+    }
 
     st.g->iId         = m_Streams.size();
     st.g->iPhysicalId = index;

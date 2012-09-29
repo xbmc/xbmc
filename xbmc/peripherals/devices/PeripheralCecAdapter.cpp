@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -384,7 +383,8 @@ void CPeripheralCecAdapter::Process(void)
     bSendStandbyCommands = m_iExitCode != EXITCODE_REBOOT &&
                            m_iExitCode != EXITCODE_RESTARTAPP &&
                            !m_bDeviceRemoved &&
-                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby"));
+                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby")) &&
+                           GetSettingBool("enabled");
   }
 
   if (bSendStandbyCommands)
@@ -863,6 +863,9 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_SETUP_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TITLE;
+    PushCecKeypress(xbmcKey);
+    break;
   case CEC_USER_CONTROL_CODE_CONTENTS_MENU:
   case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
   case CEC_USER_CONTROL_CODE_ROOT_MENU:
@@ -886,11 +889,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_PREVIOUS_CHANNEL:
-#if defined(XINPUT_IR_REMOTE_TELETEXT)
-    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT; // only supported by the pvr branch
-#else
-    xbmcKey.iButton = XINPUT_IR_REMOTE_BACK;
-#endif
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT;
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_SOUND_SELECT:
@@ -1018,16 +1017,12 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_ELECTRONIC_PROGRAM_GUIDE:
-#if defined(XINPUT_IR_REMOTE_GUIDE)
     xbmcKey.iButton = XINPUT_IR_REMOTE_GUIDE;
     PushCecKeypress(xbmcKey);
-#endif
     break;
   case CEC_USER_CONTROL_CODE_AN_CHANNELS_LIST:
-#if defined(XINPUT_IR_REMOTE_LIVE_TV)
     xbmcKey.iButton = XINPUT_IR_REMOTE_LIVE_TV;
     PushCecKeypress(xbmcKey);
-#endif
     break;
   case CEC_USER_CONTROL_CODE_NEXT_FAVORITE:
   case CEC_USER_CONTROL_CODE_DOT:
@@ -1198,7 +1193,9 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message &m
 
 bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
 {
-  if (strLocation.Left(18).Equals("peripherals://usb/") && strLocation.Right(4).Equals(".dev"))
+  if ((strLocation.Left(18).Equals("peripherals://usb/") ||
+         strLocation.Left(18).Equals("peripherals://rpi/")) &&
+       strLocation.Right(4).Equals(".dev"))
   {
     strLocation = strLocation.Right(strLocation.length() - 18);
     strLocation = strLocation.Left(strLocation.length() - 4);

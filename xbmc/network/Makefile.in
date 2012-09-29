@@ -1,36 +1,27 @@
-INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect \
-          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaRenderer \
-          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
-          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
-
-SRCS=cddb.cpp \
-     DNSNameCache.cpp \
-     EventClient.cpp \
-     EventPacket.cpp \
-     EventServer.cpp \
-     GUIDialogAccessPoints.cpp \
-     GUIDialogNetworkSetup.cpp \
-     Network.cpp \
-     Socket.cpp \
-     TCPServer.cpp \
-     UdpClient.cpp \
-     UPnP.cpp \
-     WebServer.cpp \
-     ZeroconfBrowser.cpp \
-     Zeroconf.cpp \
+SRCS  = cddb.cpp
+SRCS += DNSNameCache.cpp
+SRCS += EventClient.cpp
+SRCS += EventPacket.cpp
+SRCS += EventServer.cpp
+SRCS += GUIDialogAccessPoints.cpp
+SRCS += GUIDialogNetworkSetup.cpp
+SRCS += Network.cpp
+SRCS += Socket.cpp
+SRCS += TCPServer.cpp
+SRCS += UdpClient.cpp
+SRCS += WebServer.cpp
+SRCS += ZeroconfBrowser.cpp
+SRCS += Zeroconf.cpp
 
 ifeq (@USE_AIRPLAY@, 1)
-SRCS+=AirPlayServer.cpp
+SRCS += AirPlayServer.cpp
 endif
 
 ifeq (@USE_AIRTUNES@, 1)
-SRCS+=AirTunesServer.cpp
+SRCS += AirTunesServer.cpp
 endif
 
-LIB=network.a
+LIB = network.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

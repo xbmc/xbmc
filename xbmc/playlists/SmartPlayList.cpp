@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -267,15 +266,13 @@ bool CSmartPlaylistRule::Save(CVariant &obj) const
   if (obj.isNull() || (m_parameter.empty() && m_operator != OPERATOR_TRUE && m_operator != OPERATOR_FALSE))
     return false;
 
-  CVariant rule(CVariant::VariantTypeObject);
-  rule["field"] = TranslateField(m_field);
-  rule["operator"] = TranslateOperator(m_operator);
+  obj["field"] = TranslateField(m_field);
+  obj["operator"] = TranslateOperator(m_operator);
 
-  rule["value"] = CVariant(CVariant::VariantTypeArray);
+  obj["value"] = CVariant(CVariant::VariantTypeArray);
   for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); it++)
-    rule["value"].push_back(*it);
+    obj["value"].push_back(*it);
 
-  obj.push_back(rule);
   return true;
 }
 
@@ -410,6 +407,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
     fields.push_back(FieldStudio);
     fields.push_back(FieldMPAA);
     fields.push_back(FieldDateAdded);
+    fields.push_back(FieldInProgress);
   }
   else if (type == "episodes")
   {
@@ -725,6 +723,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       if (m_field == FieldInProgress)
         return "episodeview.idFile " + negate + " IN (select idFile from bookmark where type = 1)";
     }
+    else if (strType == "tvshows")
+    {
+      if (m_field == FieldInProgress)
+        return GetField(FieldId, strType) + negate + " IN (select idShow from tvshowview where watchedcount > 0 AND watchedcount < totalCount)";
+    }
   }
 
   // now the query parameter
@@ -915,9 +918,160 @@ CStdString CSmartPlaylistRule::GetField(Field field, const CStdString& type)
   return DatabaseUtils::GetField(field, DatabaseUtils::MediaTypeFromString(type), DatabaseQueryPartWhere);
 }
 
+CSmartPlaylistRuleCombination::CSmartPlaylistRuleCombination()
+  : m_type(CombinationAnd)
+{ }
+
+CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const
+{
+  CStdString rule, currentRule;
+  
+  // translate the combinations into SQL
+  for (vector<CSmartPlaylistRuleCombination>::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
+  {
+    if (it != m_combinations.begin())
+      rule += m_type == CombinationAnd ? " AND " : " OR ";
+    rule += "(" + it->GetWhereClause(db, strType, referencedPlaylists) + ")";
+  }
+
+  // translate the rules into SQL
+  for (CSmartPlaylistRules::const_iterator it = m_rules.begin(); it != m_rules.end(); ++it)
+  {
+    if (!rule.empty())
+      rule += m_type == CombinationAnd ? " AND " : " OR ";
+    rule += "(";
+    CStdString currentRule;
+    if (it->m_field == FieldPlaylist)
+    {
+      CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(it->m_parameter.at(0), strType);
+      if (!playlistFile.IsEmpty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
+      {
+        referencedPlaylists.insert(playlistFile);
+        CSmartPlaylist playlist;
+        playlist.Load(playlistFile);
+        CStdString playlistQuery;
+        // only playlists of same type will be part of the query
+        if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
+        {
+          playlist.SetType(strType);
+          playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
+        }
+        if (playlist.GetType().Equals(strType))
+        {
+          if (it->m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL)
+            currentRule.Format("NOT (%s)", playlistQuery.c_str());
+          else
+            currentRule = playlistQuery;
+        }
+      }
+    }
+    else
+      currentRule = (*it).GetWhereClause(db, strType);
+    // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
+    if (currentRule.IsEmpty())
+      currentRule = m_type == CombinationAnd ? "'1'" : "'0'";
+    rule += currentRule;
+    rule += ")";
+  }
+
+  return rule;
+}
+
+bool CSmartPlaylistRuleCombination::Load(const CVariant &obj)
+{
+  if (!obj.isObject() && !obj.isArray())
+    return false;
+  
+  CVariant child;
+  if (obj.isObject())
+  {
+    if (obj.isMember("and") && obj["and"].isArray())
+    {
+      m_type = CombinationAnd;
+      child = obj["and"];
+    }
+    else if (obj.isMember("or") && obj["or"].isArray())
+    {
+      m_type = CombinationOr;
+      child = obj["or"];
+    }
+    else
+      return false;
+  }
+  else
+    child = obj;
+
+  for (CVariant::const_iterator_array it = child.begin_array(); it != child.end_array(); it++)
+  {
+    if (!it->isObject())
+      continue;
+
+    if (it->isMember("and") || it->isMember("or"))
+    {
+      CSmartPlaylistRuleCombination combo;
+      if (combo.Load(*it))
+        m_combinations.push_back(combo);
+    }
+    else
+    {
+      CSmartPlaylistRule rule;
+      if (rule.Load(*it))
+        m_rules.push_back(rule);
+    }
+  }
+
+  return true;
+}
+
+bool CSmartPlaylistRuleCombination::Save(CVariant &obj) const
+{
+  if (!obj.isObject() || (m_combinations.empty() && m_rules.empty()))
+    return false;
+
+  CVariant comboArray(CVariant::VariantTypeArray);
+  if (!m_combinations.empty())
+  {
+    for (CSmartPlaylistRuleCombinations::const_iterator combo = m_combinations.begin(); combo != m_combinations.end(); combo++)
+    {
+      CVariant comboObj(CVariant::VariantTypeObject);
+      if (combo->Save(comboObj))
+        comboArray.push_back(comboObj);
+    }
+
+  }
+  if (!m_rules.empty())
+  {
+    for (CSmartPlaylistRules::const_iterator rule = m_rules.begin(); rule != m_rules.end(); rule++)
+    {
+      CVariant ruleObj(CVariant::VariantTypeObject);
+      if (rule->Save(ruleObj))
+        comboArray.push_back(ruleObj);
+    }
+  }
+
+  obj[TranslateCombinationType()] = comboArray;
+
+  return true;
+}
+
+std::string CSmartPlaylistRuleCombination::TranslateCombinationType() const
+{
+  return m_type == CombinationAnd ? "and" : "or";
+}
+
+void CSmartPlaylistRuleCombination::AddRule(const CSmartPlaylistRule &rule)
+{
+  m_rules.push_back(rule);
+}
+
+void CSmartPlaylistRuleCombination::AddCombination(const CSmartPlaylistRuleCombination &combination)
+{
+  m_combinations.push_back(combination);
+}
+
 CSmartPlaylist::CSmartPlaylist()
 {
-  m_matchAllRules = true;
+  m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationAnd);
   m_limit = 0;
   m_orderField = SortByNone;
   m_orderAscending = true;
@@ -1003,15 +1157,14 @@ bool CSmartPlaylist::Load(const CStdString &path)
 
 bool CSmartPlaylist::Load(const CVariant &obj)
 {
-  if (!obj.isObject() ||
-      !obj.isMember("match") || !obj["match"].isString() ||
-      !obj.isMember("rules") || !obj["rules"].isArray())
+  if (!obj.isObject())
     return false;
 
   // load the playlist type
   if (obj.isMember("type") && obj["type"].isString())
     m_playlistType = obj["type"].asString();
-  // backward compatibility:
+
+  // backward compatibility
   if (m_playlistType == "music")
     m_playlistType = "songs";
   if (m_playlistType == "video")
@@ -1021,15 +1174,8 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   if (obj.isMember("name") && obj["name"].isString())
     m_playlistName = obj["name"].asString();
 
-  m_matchAllRules = strcmpi(obj["match"].asString().c_str(), "all") == 0;
-
-  // now the rules
-  for (CVariant::const_iterator_array it = obj["rules"].begin_array(); it != obj["rules"].end_array(); it++)
-  {
-    CSmartPlaylistRule rule;
-    if (rule.Load(*it))
-      m_playlistRules.push_back(rule);
-  }
+  if (obj.isMember("rules"))
+    m_ruleCombination.Load(obj["rules"]);
 
   // now any limits
   if (obj.isMember("limit") && (obj["limit"].isInteger() || obj["limit"].isUnsignedInteger()) && obj["limit"].asUnsignedInteger() > 0)
@@ -1072,7 +1218,7 @@ bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
 
   TiXmlHandle match = ((TiXmlHandle)root->FirstChild("match")).FirstChild();
   if (match.Node())
-    m_matchAllRules = strcmpi(match.Node()->Value(), "all") == 0;
+    m_ruleCombination.SetType(strcmpi(match.Node()->Value(), "all") == 0 ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
 
   // now the rules
   TiXmlElement *ruleElement = root->FirstChildElement("rule");
@@ -1080,7 +1226,7 @@ bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
   {
     CSmartPlaylistRule rule;
     if (rule.Load(ruleElement, encoding))
-      m_playlistRules.push_back(rule);
+      m_ruleCombination.AddRule(rule);
 
     ruleElement = ruleElement->NextSiblingElement("rule");
   }
@@ -1132,13 +1278,13 @@ bool CSmartPlaylist::Save(const CStdString &path) const
   pRoot->InsertEndChild(nodeName);
 
   // add the <match> tag
-  TiXmlText match(m_matchAllRules ? "all" : "one");
+  TiXmlText match(m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? "all" : "one");
   TiXmlElement nodeMatch("match");
   nodeMatch.InsertEndChild(match);
   pRoot->InsertEndChild(nodeMatch);
 
   // add <rule> tags
-  for (vector<CSmartPlaylistRule>::const_iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
+  for (CSmartPlaylistRules::const_iterator it = m_ruleCombination.m_rules.begin(); it != m_ruleCombination.m_rules.end(); ++it)
     it->Save(pRoot);
 
   // add <limit> tag
@@ -1170,17 +1316,16 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
     return false;
 
   obj.clear();
-  // add "type", "name" and "match"
+  // add "type" and "name"
   obj["type"] = m_playlistType;
-  obj["match"] = m_matchAllRules ? "all" : "one";
 
   if (full)
     obj["name"] = m_playlistName;
 
   // add "rules"
-  obj["rules"] = CVariant(CVariant::VariantTypeArray);
-  for (vector<CSmartPlaylistRule>::const_iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
-    it->Save(obj["rules"]);
+  CVariant rulesObj = CVariant(CVariant::VariantTypeObject);
+  if (m_ruleCombination.Save(rulesObj))
+    obj["rules"] = rulesObj;
 
   // add "limit"
   if (full && m_limit)
@@ -1217,58 +1362,9 @@ void CSmartPlaylist::SetType(const CStdString &type)
   m_playlistType = type;
 }
 
-void CSmartPlaylist::AddRule(const CSmartPlaylistRule &rule)
-{
-  m_playlistRules.push_back(rule);
-}
-
 CStdString CSmartPlaylist::GetWhereClause(const CDatabase &db, set<CStdString> &referencedPlaylists) const
 {
-  CStdString rule, currentRule;
-  for (vector<CSmartPlaylistRule>::const_iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
-  {
-    if (it != m_playlistRules.begin())
-      rule += m_matchAllRules ? " AND " : " OR ";
-    rule += "(";
-    CStdString currentRule;
-    if (it->m_field == FieldPlaylist)
-    {
-      CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(it->m_parameter.at(0), GetType());
-      if (!playlistFile.IsEmpty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
-      {
-        referencedPlaylists.insert(playlistFile);
-        CSmartPlaylist playlist;
-        playlist.Load(playlistFile);
-        CStdString playlistQuery;
-        // only playlists of same type will be part of the query
-        if (playlist.GetType().Equals(GetType()) || (playlist.GetType().Equals("mixed") && (GetType() == "songs" || GetType() == "musicvideos")) || playlist.GetType().IsEmpty())
-        {
-          playlist.SetType(GetType());
-          playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
-        }
-        if (playlist.GetType().Equals(GetType()))
-        {
-          if (it->m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL)
-            currentRule.Format("NOT (%s)", playlistQuery.c_str());
-          else
-            currentRule = playlistQuery;
-        }
-      }
-    }
-    else
-      currentRule = (*it).GetWhereClause(db, GetType());
-    // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
-    if (currentRule.IsEmpty())
-      currentRule = m_matchAllRules ? "'1'" : "'0'";
-    rule += currentRule;
-    rule += ")";
-  }
-  return rule;
-}
-
-const vector<CSmartPlaylistRule> &CSmartPlaylist::GetRules() const
-{
-  return m_playlistRules;
+  return m_ruleCombination.GetWhereClause(db, GetType(), referencedPlaylists);
 }
 
 CStdString CSmartPlaylist::GetSaveLocation() const
@@ -1279,4 +1375,23 @@ CStdString CSmartPlaylist::GetSaveLocation() const
     return "mixed";
   // all others are video
   return "video";
+}
+
+void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList)
+{
+  vector<Field> typeFields = CSmartPlaylistRule::GetFields(type);
+  for (vector<Field>::const_iterator field = typeFields.begin(); field != typeFields.end(); field++)
+  {
+    for (unsigned int i = 0; i < NUM_FIELDS; i++)
+    {
+      if (*field == fields[i].field)
+        fieldList.push_back(fields[i].string);
+    }
+  }
+}
+
+void CSmartPlaylist::GetAvailableOperators(std::vector<std::string> &operatorList)
+{
+  for (unsigned int index = 0; index < NUM_OPERATORS; index++)
+    operatorList.push_back(operators[index].string);
 }

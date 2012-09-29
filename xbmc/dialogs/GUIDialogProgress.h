@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,8 +40,6 @@ public:
   void SetPercentage(int iPercentage);
   int GetPercentage() const { return m_percentage; };
   void ShowProgressBar(bool bOnOff);
-  void SetHeading(const std::string& strLine);
-  void SetHeading(int iString);             // for convenience to lookup in strings.xml
 
   // Implements IProgressCallback
   virtual void SetProgressMax(int iMax);
@@ -52,9 +49,10 @@ public:
   void SetCanCancel(bool bCanCancel);
 
 protected:
+  virtual int GetDefaultLabelID(int controlId) const;
+
   bool m_bCanCancel;
   bool m_bCanceled;
-  std::string m_strHeading;
 
   int  m_iCurrent;
   int  m_iMax;

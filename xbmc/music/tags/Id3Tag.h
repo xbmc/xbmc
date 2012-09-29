@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,52 +14,25 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "Tag.h"
+#include "MusicInfoTag.h"
 #include "DllLibid3tag.h"
 
 namespace MUSIC_INFO
 {
 
-class CID3Tag : public CTag
+class CID3Tag
 {
 public:
   CID3Tag(void);
   virtual ~CID3Tag(void);
-  virtual bool Read(const CStdString& strFile);
   virtual bool Write(const CStdString& strFile);
-
-  CStdString ParseMP3Genre(const CStdString& str) const;
+  void SetMusicInfoTag(CMusicInfoTag& tag) { m_musicInfoTag=tag; }
 
 protected:
-  bool Parse();
-  void ParseReplayGainInfo();
-
-  CStdString GetArtist() const;
-  CStdString GetAlbum() const;
-  CStdString GetAlbumArtist() const;
-  CStdString GetTitle() const;
-  int GetTrack() const;
-  int GetPartOfSet() const;
-  CStdString GetYear() const;
-  CStdString GetGenre() const;
-  CStdString GetComment() const;
-  char       GetRating() const;
-  bool       GetCompilation() const;
-  CStdString GetEncodedBy() const;
-  CStdString GetLyrics() const;
-
-  bool HasPicture(id3_picture_type pictype) const;
-  CStdString GetPictureMimeType(id3_picture_type pictype) const;
-  const BYTE* GetPictureData(id3_picture_type pictype, id3_length_t* length) const;
-  const BYTE* GetUniqueFileIdentifier(const CStdString& strOwnerIdentifier, id3_length_t* length) const;
-  CStdString GetUserText(const CStdString& strDescription) const;
-  bool GetFirstNonStandardPictype(id3_picture_type* pictype) const;
-
   void SetArtist(const CStdString& strValue);
   void SetAlbum(const CStdString& strValue);
   void SetAlbumArtist(const CStdString& strValue);
@@ -77,7 +50,7 @@ protected:
   id3_ucs4_t* StringCharsetToUcs4(const CStdString& str) const;
 
   mutable DllLibID3Tag m_dll;
-
+  CMusicInfoTag m_musicInfoTag;
   id3_tag* m_tag;
 };
 }

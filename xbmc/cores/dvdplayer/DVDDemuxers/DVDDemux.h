@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,14 +15,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "utils/StdString.h"
 #include "system.h"
+#include "DVDDemuxPacket.h"
 
 class CDVDInputStream;
 
@@ -99,6 +99,7 @@ public:
     ExtraSize = 0;
     memset(language, 0, sizeof(language));
     disabled = false;
+    changes = 0;
     flags = FLAG_NONE;
   }
 
@@ -130,6 +131,8 @@ public:
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
 
+  int  changes; // increment on change which player may need to know about
+
   enum EFlags
   { FLAG_NONE     = 0x0000 
   , FLAG_DEFAULT  = 0x0001
@@ -159,6 +162,7 @@ public:
     bForcedAspect = false;
     type = STREAM_VIDEO;
     iOrientation = 0;
+    iBitsPerPixel = 0;
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -173,6 +177,7 @@ public:
   bool bPTSInvalid; // pts cannot be trusted (avi's).
   bool bForcedAspect; // aspect is forced from container
   int iOrientation; // orientation of the video in degress counter clockwise
+  int iBitsPerPixel;
 };
 
 class CDemuxStreamAudio : public CDemuxStream
@@ -220,19 +225,6 @@ public:
   }
   virtual void GetStreamInfo(std::string& strInfo);
 };
-
-typedef struct DemuxPacket
-{
-  BYTE* pData;   // data
-  int iSize;     // data size
-  int iStreamId; // integer representing the stream index
-  int iGroupId;  // the group this data belongs to, used to group data from different streams together
-
-  double pts; // pts in DVD_TIME_BASE
-  double dts; // dts in DVD_TIME_BASE
-  double duration; // duration in DVD_TIME_BASE if available
-} DemuxPacket;
-
 
 class CDVDDemux
 {

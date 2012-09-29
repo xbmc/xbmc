@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -68,6 +67,7 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
   m_keyType = LOWER;
   m_strHeading = "";
   m_lastRemoteClickTime = 0;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 void CGUIDialogKeyboardGeneric::OnInitWindow()
@@ -217,10 +217,8 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
       switch (iControl)
       {
       case CTL_BUTTON_DONE:
-        {
-          OnOK();
-          break;
-        }
+        OnOK();
+        break;
       case CTL_BUTTON_CANCEL:
         Close();
         break;
@@ -238,19 +236,14 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
         OnSymbols();
         break;
       case CTL_BUTTON_LEFT:
-        {
-          MoveCursor( -1);
-        }
+        MoveCursor( -1);
         break;
       case CTL_BUTTON_RIGHT:
-        {
-          MoveCursor(1);
-        }
+        MoveCursor(1);
         break;
       case CTL_BUTTON_IP_ADDRESS:
-        {
-          OnIPAddress();
-        }
+        OnIPAddress();
+        break;
       default:
         m_lastRemoteKeyClicked = 0;
         OnClickButton(iControl);

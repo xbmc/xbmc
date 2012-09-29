@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -64,20 +63,14 @@ public:
   virtual char* player_status2str(player_status status)=0;
 
   virtual int audio_set_volume(int pid,float val)=0;
+  virtual int audio_set_delay(int pid, int delay)=0;
   
   virtual int codec_open_sub_read(void)=0;
   virtual int codec_close_sub_fd(int sub_fd)=0;
   virtual int codec_get_sub_size_fd(int sub_fd)=0;
   virtual int codec_read_sub_data_fd(int sub_fd, char* buf, unsigned int length)=0;
 
-#if defined(TARGET_ANDROID)
-  // on android, libamplayer.so has ffmpeg built in and
-  // we need to use av_register_protocol2 from there.
   virtual int av_register_protocol2(AML_URLProtocol *protocol, int size)=0;
-#else
-  virtual int av_register_protocol2(AML_URLProtocol *protocol, int size)
-    { return ::av_register_protocol2(protocol, size);};
-#endif
 };
 
 class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
@@ -111,15 +104,14 @@ class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
   DEFINE_METHOD1(char*,          player_status2str,     (player_status p1))
 
   DEFINE_METHOD2(int,            audio_set_volume,      (int p1, float p2))
+  DEFINE_METHOD2(int,            audio_set_delay,       (int p1, int p2))
 
   DEFINE_METHOD0(int,            codec_open_sub_read)
   DEFINE_METHOD1(int,            codec_close_sub_fd,    (int p1))
   DEFINE_METHOD1(int,            codec_get_sub_size_fd, (int p1))
   DEFINE_METHOD3(int,            codec_read_sub_data_fd,(int p1, char *p2, unsigned int p3))
 
-#if defined(TARGET_ANDROID)
   DEFINE_METHOD2(int,            av_register_protocol2, (AML_URLProtocol *p1, int p2))
-#endif
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(player_init)
@@ -149,15 +141,14 @@ class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
     RESOLVE_METHOD(player_status2str)
 
     RESOLVE_METHOD(audio_set_volume)
+    RESOLVE_METHOD(audio_set_delay)
 
     RESOLVE_METHOD(codec_open_sub_read)
     RESOLVE_METHOD(codec_close_sub_fd)
     RESOLVE_METHOD(codec_get_sub_size_fd)
     RESOLVE_METHOD(codec_read_sub_data_fd)
 
-#if defined(TARGET_ANDROID)
     RESOLVE_METHOD(av_register_protocol2)
-#endif
 
   END_METHOD_RESOLVE()
 };

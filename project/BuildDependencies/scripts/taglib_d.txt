@@ -1,0 +1,2 @@
+; filename                          source of the file
+taglib-1.8-win32.7z        		http://mirrors.xbmc.org/build-deps/win32/

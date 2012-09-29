@@ -49,13 +49,13 @@ all: $(TARGET)
 
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 # TexturePacker run native on build system, build it with native tools
-$(TARGET): $(SRCS)
+$(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
 	g++ $(DEFINES) $(NATIVE_ARCH) $(NATIVE_CXXFLAGS) $(SRCS) $(NATIVE_LIBS) $(RPATH) -o $(TARGET)
 clean:
 	rm -f $(TARGET)
 else
 include @abs_top_srcdir@/Makefile.include
 
-$(TARGET): $(SRCS)
+$(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(SRCS) $(LDFLAGS) $(LIBS) -o $(TARGET)
 endif

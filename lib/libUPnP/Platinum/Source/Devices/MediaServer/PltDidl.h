@@ -2,7 +2,7 @@
 |
 |   Platinum - DIDL handling
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -30,6 +31,10 @@
 | http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
+
+/** @file
+ UPnP AV Didl
+ */
 
 #ifndef _PLT_DIDL_H_
 #define _PLT_DIDL_H_
@@ -60,6 +65,7 @@
 #define PLT_FILTER_MASK_PROGRAMTITLE                0x00001000
 #define PLT_FILTER_MASK_SERIESTITLE                 0x00002000
 #define PLT_FILTER_MASK_EPISODE                     0x00004000
+#define PLT_FILTER_MASK_TITLE                       0x00008000
 
 #define PLT_FILTER_MASK_RES                         0x00010000
 #define PLT_FILTER_MASK_RES_DURATION                0x00020000
@@ -71,8 +77,14 @@
 #define PLT_FILTER_MASK_RES_NRAUDIOCHANNELS			0x00800000
 #define PLT_FILTER_MASK_RES_SAMPLEFREQUENCY			0x01000000
 
-#define PLT_FILTER_MASK_TOC							0x02000000
+#define PLT_FILTER_MASK_LONGDESCRIPTION             0x02000000
+#define PLT_FILTER_MASK_ICON                        0x04000000
 
+#define PLT_FILTER_MASK_TOC							0x02000000
+#define PLT_FILTER_MASK_SEARCHCLASS					0x04000000
+#define PLT_FILTER_MASK_REFID                       0x08000000
+
+#define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
 #define PLT_FILTER_FIELD_DATE                       "dc:date"
 #define PLT_FILTER_FIELD_ARTIST                     "upnp:artist"
@@ -81,18 +93,24 @@
 #define PLT_FILTER_FIELD_ALBUM                      "upnp:album"
 #define PLT_FILTER_FIELD_GENRE                      "upnp:genre"
 #define PLT_FILTER_FIELD_ALBUMARTURI                "upnp:albumArtURI"
-#define PLT_FILTER_FIELD_DESCRIPTION                "upnp:longDescription"
+#define PLT_FILTER_FIELD_ALBUMARTURI_DLNAPROFILEID  "upnp:albumArtURI@dlna:profileID"
+#define PLT_FILTER_FIELD_DESCRIPTION                "dc:description"
+#define PLT_FILTER_FIELD_LONGDESCRIPTION            "upnp:longDescription"
+#define PLT_FILTER_FIELD_ICON                       "upnp:icon"
 #define PLT_FILTER_FIELD_ORIGINALTRACK              "upnp:originalTrackNumber"
 #define PLT_FILTER_FIELD_PROGRAMTITLE               "upnp:programTitle"
 #define PLT_FILTER_FIELD_SERIESTITLE                "upnp:seriesTitle"
 #define PLT_FILTER_FIELD_EPISODE                    "upnp:episodeNumber"
+#define PLT_FILTER_FIELD_SEARCHCLASS				"upnp:searchClass"
 #define PLT_FILTER_FIELD_SEARCHABLE                 "@searchable"
 #define PLT_FILTER_FIELD_CHILDCOUNT                 "@childcount"
 #define PLT_FILTER_FIELD_CONTAINER_CHILDCOUNT       "container@childCount"
 #define PLT_FILTER_FIELD_CONTAINER_SEARCHABLE       "container@searchable"
+#define PLT_FILTER_FIELD_REFID                      "@refID"
 
 #define PLT_FILTER_FIELD_RES                        "res"
 #define PLT_FILTER_FIELD_RES_DURATION               "res@duration"
+#define PLT_FILTER_FIELD_RES_DURATION_SHORT         "@duration"
 #define PLT_FILTER_FIELD_RES_SIZE                   "res@size"
 #define PLT_FILTER_FIELD_RES_PROTECTION             "res@protection"
 #define PLT_FILTER_FIELD_RES_RESOLUTION             "res@resolution"
@@ -105,32 +123,36 @@ extern const char* didl_header;
 extern const char* didl_footer;
 extern const char* didl_namespace_dc;
 extern const char* didl_namespace_upnp;
+extern const char* didl_namespace_dlna;
 
 /*----------------------------------------------------------------------
-|   PLT_Didl class
+|   PLT_Didl
 +---------------------------------------------------------------------*/
+/**
+ DIDL manipulation.
+ The PLT_Didl class provides a mechanism to (de)serialize a PLT_MediaObject or
+ list of PLT_MediaObject (PLT_MediaObjectList).
+ */
 class PLT_Didl
 {
 public:
-    static NPT_Result  ToDidl(PLT_MediaObject& object, 
-                              NPT_String       filter, 
-                              NPT_String&      didl);
+    static NPT_Result  ToDidl(PLT_MediaObject&  object, 
+                              const NPT_String& filter, 
+                              NPT_String&       didl);
     static NPT_Result  FromDidl(const char* didl, 
                                 PLT_MediaObjectListReference& objects);
-
     static void        AppendXmlEscape(NPT_String& out, const char* in);
     static void        AppendXmlUnEscape(NPT_String& out, const char* in);
-    static NPT_Result  ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds);
-    static void        FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds);
-
-    static NPT_Result  ParseTimeStamp(NPT_String in, NPT_TimeStamp& timestamp) {
+    static NPT_Result  ParseTimeStamp(const NPT_String& timestamp, NPT_UInt32& seconds);
+    static NPT_String  FormatTimeStamp(NPT_UInt32 seconds);
+    static NPT_Result  ParseTimeStamp(const NPT_String& in, NPT_TimeStamp& timestamp) {
         NPT_UInt32 seconds;
         NPT_Result res = ParseTimeStamp(in, seconds);
-        timestamp = NPT_TimeStamp(seconds, 0);
+        timestamp = NPT_TimeStamp((double)seconds);
         return res;
     }
 
-    static NPT_UInt32  ConvertFilterToMask(NPT_String filter);
+    static NPT_UInt32  ConvertFilterToMask(const NPT_String& filter);
 };
 
 #endif /* _PLT_DIDL_H_ */

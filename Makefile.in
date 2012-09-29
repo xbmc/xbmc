@@ -22,7 +22,6 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/SlingboxLib/SlingboxLib.a \
                    lib/libRTV/librtv.a \
-                   lib/libUPnP/libupnp.a \
                    lib/libXDAAP/libxdaap.a \
                    lib/libhts/libhts.a \
                    lib/libsquish/libsquish.a \
@@ -41,6 +40,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/cores/playercorefactory/playercorefactory.a \
                    xbmc/dbwrappers/dbwrappers.a \
                    xbmc/dialogs/dialogs.a \
+                   xbmc/epg/epg.a \
                    xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
@@ -50,8 +50,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/interfaces/info/info.a \
                    xbmc/interfaces/interfaces.a \
                    xbmc/interfaces/json-rpc/json-rpc.a \
-                   xbmc/interfaces/python/python.a \
-                   xbmc/interfaces/python/xbmcmodule/xbmcmodule.a \
                    xbmc/linux/linux.a \
                    xbmc/music/dialogs/musicdialogs.a \
                    xbmc/music/infoscanner/musicscanner.a \
@@ -70,6 +68,13 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/playlists/playlists.a \
                    xbmc/powermanagement/powermanagement.a \
                    xbmc/programs/programs.a \
+                   xbmc/pvr/addons/pvraddons.a \
+                   xbmc/pvr/channels/pvrchannels.a \
+                   xbmc/pvr/dialogs/pvrdialogs.a \
+                   xbmc/pvr/pvr.a \
+                   xbmc/pvr/recordings/pvrrecordings.a \
+                   xbmc/pvr/timers/pvrtimers.a \
+                   xbmc/pvr/windows/pvrwindows.a \
                    xbmc/rendering/rendering.a \
                    xbmc/settings/settings.a \
                    xbmc/storage/storage.a \
@@ -82,13 +87,16 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/xbmc.a \
 
 
-NWAOBJSXBMC=	xbmc/commons/commons.a \
-		xbmc/threads/threads.a \
+NWAOBJSXBMC=	xbmc/threads/threads.a \
+		xbmc/commons/commons.a
 
 
 ifeq (@USE_WEB_SERVER@,1)
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
 endif
+
+DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/legacy.a
+DIRECTORY_ARCHIVES += xbmc/interfaces/python/python_binding.a
 
 ifeq (@USE_OPENGL@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gl/rendering_gl.a
@@ -98,6 +106,11 @@ ifeq (@USE_OPENGLES@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
 DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
 DIRECTORY_ARCHIVES += xbmc/visualizations/EGLHelpers/eglhelpers.a
+endif
+
+ifeq (@USE_UPNP@,1)
+DIRECTORY_ARCHIVES += lib/libUPnP/libupnp.a \
+                      xbmc/network/upnp/upnp.a
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
@@ -137,10 +150,15 @@ ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
+DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
 endif
 
 ifeq (@USE_AMLPLAYER@,1)
 DIRECTORY_ARCHIVES += xbmc/cores/amlplayer/amlplayer.a
+endif
+
+ifeq (@USE_OMXPLAYER@,1)
+DIRECTORY_ARCHIVES += xbmc/cores/omxplayer/omxplayer.a
 endif
 
 PAPCODECS_DIRS= \
@@ -191,6 +209,11 @@ ifneq (@DISABLE_GOOM@,1)
   VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
+LIBADDON_DIRS=\
+	lib/addons/library.xbmc.addon \
+	lib/addons/library.xbmc.pvr \
+	lib/addons/library.xbmc.gui \
+
 CONFLUENCE_MEDIA=addons/skin.confluence/media
 SKIN_DIRS=$(CONFLUENCE_MEDIA)
 
@@ -200,7 +223,7 @@ SKIN_DIRS+=$(TOUCHED_MEDIA)
 endif
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(SKIN_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -224,8 +247,23 @@ FINAL_TARGETS=xbmc.bin skins xbmc-xrandr
 endif
 FINAL_TARGETS+=Makefile externals
 
-CHECK_DIRS = xbmc/utils/test \
-             xbmc/threads/test
+GTEST_DIR = lib/gtest
+GTEST_INCLUDES = -I$(GTEST_DIR)/include
+GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
+
+CHECK_DIRS = xbmc/filesystem/test \
+             xbmc/utils/test \
+             xbmc/threads/test \
+             xbmc/interfaces/python/test \
+             xbmc/test
+CHECK_LIBS = xbmc/filesystem/test/filesystemTest.a \
+             xbmc/utils/test/utilsTest.a \
+             xbmc/threads/test/threadTest.a \
+             xbmc/interfaces/python/test/pythonSwigTest.a \
+             xbmc/test/xbmc-test.a
+CHECK_PROGRAMS = xbmc-test
+
+CLEAN_FILES += $(CHECK_PROGRAMS)
 
 all : $(FINAL_TARGETS)
 	@echo '-----------------------'
@@ -235,7 +273,8 @@ all : $(FINAL_TARGETS)
 include Makefile.include
 
 .PHONY : dllloader exports visualizations screensavers eventclients papcodecs \
-	dvdpcodecs imagelib codecs externals force skins
+	dvdpcodecs imagelib codecs externals force skins libaddon check \
+	testframework testsuite
 
 # hack targets to keep build system up to date
 Makefile : config.status $(addsuffix .in, $(AUTOGENERATED_MAKEFILES))
@@ -308,9 +347,10 @@ visualizations: $(VIS_DIRS)
 
 screensavers: $(SS_DIRS)
 
-libpython: dllloader
-	$(MAKE) -C xbmc/interfaces/python
-	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
+libaddon: exports
+	$(MAKE) -C lib/addons/library.xbmc.addon
+	$(MAKE) -C lib/addons/library.xbmc.gui
+	$(MAKE) -C lib/addons/library.xbmc.pvr
 dvdpcodecs: dllloader
 	$(MAKE) -C lib
 	$(MAKE) -C lib/libdvd
@@ -351,14 +391,19 @@ endif
 imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
+pvraddons: exports
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons
+endif
+
 codecs: papcodecs dvdpcodecs
 
 libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
-externals: codecs libs visualizations screensavers
+externals: codecs libs visualizations screensavers libaddon pvraddons
 
 xcode_depends: \
-	codecs libs visualizations screensavers eventclients skins \
+	codecs libs visualizations screensavers eventclients skins libaddon \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
@@ -377,6 +422,8 @@ DYNOBJSXBMC= \
 	xbmc/cores/DllLoader/exports/exports.a \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
+	xbmc/pvr/addons/pvraddons.a \
+	xbmc/pvr/windows/pvrwindows.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
 ifeq ($(findstring freebsd,@ARCH@),freebsd)
@@ -392,13 +439,16 @@ else
 	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
+xbmc.bin: xbmc/main/main.a $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
 
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) xbmc/main/main.a $(LIBS) -rdynamic
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) xbmc/main/main.a -Wl,--no-whole-archive $(NWAOBJSXBMC) $(LIBS) -rdynamic
 endif
+
+xbmc/main/main.a: force
+	$(MAKE) -C xbmc/main
 
 xbmc-xrandr: xbmc-xrandr.c
 ifneq (1,@USE_XRANDR@)
@@ -408,15 +458,7 @@ else
 	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 -lm
 endif
 
-tools/XBMCTex/XBMCTex:
-ifeq ($(findstring osx,@ARCH@), osx)
-	# hack this for now
-	$(MAKE) -C tools/XBMCTex -f Makefile.osx
-else
-	$(MAKE) -C tools/XBMCTex/
-endif
-
-tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish.a
+tools/TexturePacker/TexturePacker: lib/libsquish/libsquish.a xbmc/guilib/XBTF.h
 	$(MAKE) -C tools/TexturePacker/
 
 
@@ -448,6 +490,9 @@ endif
 
 install-arch:
 	@# Arch dependent files
+ifeq (@USE_PVR_ADDONS@,1)
+	$(MAKE) -C pvr-addons install
+endif
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
 	@find -E system addons -type f -not -iregex ".*svn.*" \
 		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
@@ -464,7 +509,7 @@ ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*\.so|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*\.so|.*\.vis|.*\.xbs|.*\.pvr" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 
@@ -503,7 +548,7 @@ ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pvr" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 	@# Icons and links
@@ -521,6 +566,8 @@ uninstall:
 	@rm -rf $(DESTDIR)$(datarootdir)/xbmc $(DESTDIR)$(bindir)/xbmc
 	@rm -rf $(DESTDIR)$(bindir)/xbmc-standalone
 	@rm -rf $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
+	@rm -rf $(libdir)/libXBMC_*
+	@rm -rf $(prefix)/include/xbmc
 	@echo "Done!"
 
 clean-xbmc.bin:
@@ -540,11 +587,42 @@ clean-screensavers:
 	for d in $(SS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-libaddons:
+	for d in $(LIBADDON_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-pvraddons:
+ifeq (@USE_PVR_ADDONS@,1)
+	if test -f pvr-addons/Makefile; then $(MAKE) -C pvr-addons clean; fi;
+endif
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-screensavers clean-visualisations
+	clean-screensavers clean-visualisations clean-libaddons clean-pvraddons
 
-check:
-	for d in $(CHECK_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d $@; fi; done
+ifeq (1,@GTEST_CONFIGURED@)
+check: testsuite
+	for check_program in $(CHECK_PROGRAMS); do $(CURDIR)/$$check_program; done
+
+testsuite: $(CHECK_PROGRAMS)
+
+testframework: $(GTEST_LIBS)
+
+$(GTEST_LIBS): $(GTEST_DIR)/Makefile
+
+$(GTEST_DIR)/Makefile: force
+	$(MAKE) -C $(GTEST_DIR)
+
+$(CHECK_LIBS): force
+	@$(MAKE) $(if $(V),,-s) -C $(@D)
+
+xbmc-test: $(CHECK_LIBS) $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(GTEST_LIBS)
+ifeq ($(findstring osx,@ARCH@), osx)
+	$(SILENT_LD) $(CXX) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,-all_load,-ObjC $(CHECK_LIBS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(GTEST_LIBS) $(LIBS) -rdynamic
+else
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) $(GTEST_INCLUDES) -o $@ -Wl,--whole-archive $(CHECK_LIBS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(NWAOBJSXBMC) $(GTEST_LIBS) $(LIBS) -rdynamic
+endif
+else
+# Give a message that the framework is not configured, but don't fail.
+check testsuite testframework:
+	@echo "Google Test Framework not configured, skipping testsuite check."
+endif

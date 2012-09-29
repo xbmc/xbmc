@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -61,6 +60,9 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
+#include "interfaces/AnnouncementManager.h"
+#include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "utils/URIUtils.h"
 #include "GUIUserMessages.h"
 #include "addons/Skin.h"
@@ -74,6 +76,7 @@ using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace VIDEO;
 using namespace ADDON;
+using namespace PVR;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -1461,6 +1464,65 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
     item.SetProperty("original_listitem_url", pItem->GetPath());
   }
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, item.GetPath().c_str());
+
+  if (item.GetPath().Left(17) == "pvr://recordings/")
+  {
+    if (!g_PVRManager.IsStarted())
+      return false;
+
+    /* For recordings we check here for a available stream URL */
+    CFileItemPtr tag = g_PVRRecordings->GetByPath(item.GetPath());
+    if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.IsEmpty())
+    {
+      CStdString stream = tag->GetPVRRecordingInfoTag()->m_strStreamURL;
+
+      /* Isolate the folder from the filename */
+      size_t found = stream.find_last_of("/");
+      if (found == CStdString::npos)
+        found = stream.find_last_of("\\");
+
+      if (found != CStdString::npos)
+      {
+        /* Check here for asterix at the begin of the filename */
+        if (stream[found+1] == '*')
+        {
+          /* Create a "stack://" url with all files matching the extension */
+          CStdString ext = URIUtils::GetExtension(stream);
+          CStdString dir = stream.substr(0, found).c_str();
+
+          CFileItemList items;
+          CDirectory::GetDirectory(dir, items);
+          items.Sort(SORT_METHOD_FILE, SortOrderAscending);
+
+          vector<int> stack;
+          for (int i = 0; i < items.Size(); ++i)
+          {
+            if (URIUtils::GetExtension(items[i]->GetPath()) == ext)
+              stack.push_back(i);
+          }
+
+          if (stack.size() > 0)
+          {
+            /* If we have a stack change the path of the item to it */
+            CStackDirectory dir;
+            CStdString stackPath = dir.ConstructStackPath(items, stack);
+            item.SetPath(stackPath);
+          }
+        }
+        else
+        {
+          /* If no asterix is present play only the given stream URL */
+          item.SetPath(stream);
+        }
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording, no valid filename!");
+        CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
+        return false;
+      }
+    }
+  }
 
   PlayMovie(&item);
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -60,6 +59,7 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_focusedLayout = NULL;
   m_cacheItems = preloadItems;
   m_scrollItemsPerFrame = 0.0f;
+  m_type = VIEW_TYPE_NONE;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -532,7 +532,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
     return;
 
   // find the current letter we're focused on
-  unsigned int offset = CorrectOffset(GetOffset(), GetCursor());
+  unsigned int offset = CorrectOffset(GetOffset(), GetCursor()) - 1;
   for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
   {
     CGUIListItemPtr item = m_items[i];
@@ -778,7 +778,9 @@ void CGUIBaseContainer::ValidateOffset()
 
 void CGUIBaseContainer::AllocResources()
 {
+  CGUIControl::AllocResources();
   CalculateLayout();
+  UpdateStaticItems(true);
   if (m_staticDefaultItem != -1) // select default item
     SelectStaticItemById(m_staticDefaultItem);
 }
@@ -884,7 +886,7 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
       SetPageControlRange();
       if (reselect >= 0 && reselect < (int)m_items.size())
         SelectItem(reselect);
-      MarkDirtyRegion();
+      SetInvalid();
     }
     UpdateScrollByLetter();
   }
@@ -1040,16 +1042,17 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     }
     item = item->NextSiblingElement("item");
   }
-  SetStaticContent(items);
+  SetStaticContent(items, false);
 }
 
-void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
+void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items, bool forceUpdate /* = true */)
 {
   m_staticContent = true;
   m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
-  UpdateStaticItems(true);
+  if (forceUpdate)
+    UpdateStaticItems(true);
 }
 
 void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)

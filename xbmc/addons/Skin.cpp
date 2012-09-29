@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -62,12 +61,14 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
       CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
       float aspect = 0;
       CStdStringArray fracs;
-      StringUtils::SplitString(CAddonMgr::Get().GetExtValue(*i, "@aspect"), ":", fracs);
+      CStdString strAspect = CAddonMgr::Get().GetExtValue(*i, "@aspect");
+      StringUtils::SplitString(strAspect, ":", fracs);
       if (fracs.size() == 2)
         aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
       if (width > 0 && height > 0)
       {
         RESOLUTION_INFO res(width, height, aspect, folder);
+        res.strId = strAspect; // for skin usage, store aspect string in strId
         if (defRes)
           m_defaultRes = res;
         m_resolutions.push_back(res);
@@ -100,21 +101,6 @@ CSkinInfo::~CSkinInfo()
 {
 }
 
-void CSkinInfo::Start()
-{
-  if (!m_resolutions.size())
-  { // try falling back to whatever resolutions exist in the directory
-    CFileItemList items;
-    CDirectory::GetDirectory(Path(), items, "", DIR_FLAG_NO_FILE_DIRS);
-    for (int i = 0; i < items.Size(); i++)
-    {
-      RESOLUTION_INFO res;
-      if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
-        m_resolutions.push_back(res);
-    }
-  }
-}
-
 struct closestRes
 {
   closestRes(const RESOLUTION_INFO &target) : m_target(target) { };
@@ -130,6 +116,29 @@ struct closestRes
   }
   RESOLUTION_INFO m_target;
 };
+
+void CSkinInfo::Start()
+{
+  if (!m_resolutions.size())
+  { // try falling back to whatever resolutions exist in the directory
+    CFileItemList items;
+    CDirectory::GetDirectory(Path(), items, "", DIR_FLAG_NO_FILE_DIRS);
+    for (int i = 0; i < items.Size(); i++)
+    {
+      RESOLUTION_INFO res;
+      if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
+        m_resolutions.push_back(res);
+    }
+  }
+
+  if (!m_resolutions.empty())
+  {
+    // find the closest resolution
+    const RESOLUTION_INFO &target = g_graphicsContext.GetResInfo();
+    RESOLUTION_INFO& res = *std::min_element(m_resolutions.begin(), m_resolutions.end(), closestRes(target));
+    m_currentAspect = res.strId;
+  }
+}
 
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *res, const CStdString& strBaseDir /* = "" */) const
 {
@@ -180,9 +189,12 @@ void CSkinInfo::LoadIncludes()
   m_includes.LoadIncludes(includesPath);
 }
 
-void CSkinInfo::ResolveIncludes(TiXmlElement *node)
+void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions /* = NULL */)
 {
-  m_includes.ResolveIncludes(node);
+  if(xmlIncludeConditions)
+    xmlIncludeConditions->clear();
+
+  m_includes.ResolveIncludes(node, xmlIncludeConditions);
 }
 
 int CSkinInfo::GetStartWindow() const
@@ -202,6 +214,7 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
 {
   m_startupWindows.clear();
   m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_PVR, "19180"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));

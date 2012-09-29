@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -39,6 +38,7 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
   m_showStartTime = 0;
   m_showDuration = 0;
   m_enableSound = true;
+  m_bAutoClosed = false;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -239,7 +239,10 @@ void CGUIDialog::FrameMove()
     else
     {
       if (m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_closing)
+      {
+        m_bAutoClosed = true;
         Close();
+      }
     }
   }
   CGUIWindow::FrameMove();
@@ -263,8 +266,11 @@ void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
 {
    m_autoClosing = true;
    m_showDuration = timeoutMs;
-   if (m_active)
-     m_showStartTime = CTimeUtils::GetFrameTime();
+   ResetAutoClose();
 }
 
-
+void CGUIDialog::ResetAutoClose(void)
+{
+  if (m_autoClosing && m_active)
+    m_showStartTime = CTimeUtils::GetFrameTime();
+}

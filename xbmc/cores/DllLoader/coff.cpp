@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -182,12 +181,16 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
   if (!fread(Sig, 1, 2, fp) || strncmp(Sig, "MZ", 2) != 0)
     return 0;
 
+  if (fseek(fp, 0x3c, SEEK_SET) != 0)
+    return 0;
+  
   int Offset = 0;
-  fseek(fp, 0x3c, SEEK_SET);
   if (!fread(&Offset, sizeof(int), 1, fp) || (Offset <= 0))
     return 0;
 
-  fseek(fp, Offset, SEEK_SET);
+  if (fseek(fp, Offset, SEEK_SET) != 0)
+    return 0;
+
   memset(Sig, 0, sizeof(Sig));
   if (!fread(Sig, 1, 4, fp) || strncmp(Sig, "PE\0\0", 4) != 0)
     return 0;
@@ -278,11 +281,15 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
 int CoffLoader::LoadSymTable(FILE *fp)
 {
   int Offset = ftell(fp);
+  if (Offset < 0)
+    return 0;
 
   if ( CoffFileHeader->PointerToSymbolTable == 0 )
     return 1;
 
-  fseek(fp, CoffFileHeader->PointerToSymbolTable /* + CoffBeginOffset*/, SEEK_SET);
+  if (fseek(fp, CoffFileHeader->PointerToSymbolTable /* + CoffBeginOffset*/, SEEK_SET) != 0)
+    return 0;
+
   SymbolTable_t *tmp = new SymbolTable_t[CoffFileHeader->NumberOfSymbols];
   if (!tmp)
   {
@@ -290,10 +297,14 @@ int CoffLoader::LoadSymTable(FILE *fp)
     return 0;
   }
   if (!fread((void *)tmp, CoffFileHeader->NumberOfSymbols, sizeof(SymbolTable_t), fp))
+  {
+    delete[] tmp;
     return 0;
+  }
   NumberOfSymbols = CoffFileHeader->NumberOfSymbols;
   SymTable = tmp;
-  fseek(fp, Offset, SEEK_SET);
+  if (fseek(fp, Offset, SEEK_SET) != 0)
+    return 0;
   return 1;
 }
 
@@ -301,14 +312,18 @@ int CoffLoader::LoadStringTable(FILE *fp)
 {
   int StringTableSize;
   char *tmp = NULL;
+  
   int Offset = ftell(fp);
+  if (Offset < 0)
+    return 0;
 
   if ( CoffFileHeader->PointerToSymbolTable == 0 )
     return 1;
 
-  fseek(fp, CoffFileHeader->PointerToSymbolTable +
+  if (fseek(fp, CoffFileHeader->PointerToSymbolTable +
         CoffFileHeader->NumberOfSymbols * sizeof(SymbolTable_t),
-        SEEK_SET);
+        SEEK_SET) != 0)
+    return 0;
 
   if (!fread(&StringTableSize, 1, sizeof(int), fp))
     return 0;
@@ -329,7 +344,8 @@ int CoffLoader::LoadStringTable(FILE *fp)
   }
   SizeOfStringTable = StringTableSize;
   StringTable = tmp;
-  fseek(fp, Offset, SEEK_SET);
+  if (fseek(fp, Offset, SEEK_SET) != 0)
+    return 0;
   return 1;
 }
 
@@ -360,7 +376,9 @@ int CoffLoader::LoadSections(FILE *fp)
     SectionHeader_t *ScnHdr = (SectionHeader_t *)(SectionHeader + SctnCnt);
     SectionData[SctnCnt] = ((char*)hModule + ScnHdr->VirtualAddress);
 
-    fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
+    if (fseek(fp, ScnHdr->PtrToRawData, SEEK_SET) != 0)
+      return 0;
+
     if (!fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp))
       return 0;
 

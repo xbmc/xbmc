@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -157,7 +156,11 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb() const
     if (iter->m_type == URL_TYPE_GENERAL)
       return *iter;
   }
+
   SUrlEntry result;
+  result.m_type = URL_TYPE_GENERAL;
+  result.m_post = false;
+  result.m_isgz = false;
   result.m_season = -1;
   return result;
 }
@@ -169,7 +172,11 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
     if (iter->m_type == URL_TYPE_SEASON && iter->m_season == season)
       return *iter;
   }
+
   SUrlEntry result;
+  result.m_type = URL_TYPE_GENERAL;
+  result.m_post = false;
+  result.m_isgz = false;
   result.m_season = -1;
   return result;
 }
@@ -200,14 +207,16 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
-      file.Open(strCachePath);
-      char* temp = new char[(int)file.GetLength()];
-      file.Read(temp,file.GetLength());
-      strHTML.clear();
-      strHTML.append(temp,temp+file.GetLength());
-      file.Close();
-      delete[] temp;
-      return true;
+      if (file.Open(strCachePath))
+      {
+        char* temp = new char[(int)file.GetLength()];
+        file.Read(temp,file.GetLength());
+        strHTML.clear();
+        strHTML.append(temp,temp+file.GetLength());
+        file.Close();
+        delete[] temp;
+        return true;
+      }
     }
   }
 

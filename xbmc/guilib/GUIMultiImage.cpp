@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -62,6 +61,7 @@ CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
     m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   ControlType = GUICONTROL_MULTI_IMAGE;
+  m_jobID = 0;
 }
 
 CGUIMultiImage::~CGUIMultiImage(void)
@@ -187,6 +187,8 @@ void CGUIMultiImage::FreeResources(bool immediately)
 {
   m_image.FreeResources(immediately);
   m_currentImage = 0;
+  CancelLoading();
+  m_files.clear();
   CGUIControl::FreeResources(immediately);
 }
 
@@ -311,7 +313,11 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
     CFileItemList items;
     CDirectory::GetDirectory(realPath, items, g_settings.m_pictureExtensions + "|.tbn|.dds", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
     for (int i=0; i < items.Size(); i++)
-      m_files.push_back(items[i]->GetPath());
+    {
+      CFileItem* pItem = items[i].get();
+      if (pItem && (pItem->IsPicture() || pItem->GetMimeType().Left(6).Equals("image/")))
+        m_files.push_back(pItem->GetPath());
+    }
   }
   return true;
 }

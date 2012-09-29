@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -272,6 +271,9 @@ unsigned int CPulseAEStream::GetSpace()
   unsigned int size = pa_stream_writable_size(m_Stream);
   pa_threaded_mainloop_unlock(m_MainLoop);
 
+  if(size > m_cacheSize)
+    m_cacheSize = size;
+
   return size;
 }
 
@@ -321,7 +323,7 @@ double CPulseAEStream::GetCacheTime()
   if (!m_Initialized)
     return 0.0;
 
-  return (double)(m_cacheSize - GetSpace()) / (double)m_sampleRate;
+  return (double)(m_cacheSize - GetSpace()) / (double)(m_sampleRate * m_frameSize);
 }
 
 double CPulseAEStream::GetCacheTotal()
@@ -329,7 +331,7 @@ double CPulseAEStream::GetCacheTotal()
   if (!m_Initialized)
     return 0.0;
 
-  return (double)m_cacheSize / (double)m_sampleRate;
+  return (double)m_cacheSize / (double)(m_sampleRate * m_frameSize);
 }
 
 bool CPulseAEStream::IsPaused()
@@ -349,6 +351,11 @@ bool CPulseAEStream::IsDraining()
   }
 
   return false;
+}
+
+bool CPulseAEStream::IsDrained()
+{
+  return m_DrainOperation == NULL;
 }
 
 bool CPulseAEStream::IsDestroyed()

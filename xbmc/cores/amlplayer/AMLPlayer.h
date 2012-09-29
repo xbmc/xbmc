@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -93,8 +92,8 @@ public:
   virtual bool  IsRecording()                                     {return false;};
   virtual bool  Record(bool bOnOff)                               {return false;};
 
-  virtual void  SetAVDelay(float fValue = 0.0f)                   {return;}
-  virtual float GetAVDelay()                                      {return 0.0f;};
+  virtual void  SetAVDelay(float fValue = 0.0f);
+  virtual float GetAVDelay();
 
   virtual void  SetSubTitleDelay(float fValue);
   virtual float GetSubTitleDelay();
@@ -177,6 +176,7 @@ private:
   void          SetVideoZoom(float zoom);
   void          SetVideoContrast(int contrast);
   void          SetVideoBrightness(int brightness);
+  void          SetVideoSaturation(int saturation);
   void          SetAudioPassThrough(int format);
   bool          WaitForPausedThumbJobs(int timeout_ms);
 
@@ -201,7 +201,7 @@ private:
   int                     m_cpu;
   int                     m_speed;
   bool                    m_paused;
-  bool                    m_StopPlaying;
+  bool                    m_bAbortRequest;
   CEvent                  m_ready;
   CFileItem               m_item;
   CPlayerOptions          m_options;

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,7 +34,8 @@ namespace PERIPHERALS
   {
     PERIPHERAL_BUS_UNKNOWN = 0,
     PERIPHERAL_BUS_USB,
-    PERIPHERAL_BUS_PCI
+    PERIPHERAL_BUS_PCI,
+    PERIPHERAL_BUS_RPI
   };
 
   enum PeripheralFeature
@@ -135,6 +135,8 @@ namespace PERIPHERALS
         return "usb";
       case PERIPHERAL_BUS_PCI:
         return "pci";
+      case PERIPHERAL_BUS_RPI:
+        return "rpi";
       default:
         return "unknown";
       }
@@ -149,6 +151,8 @@ namespace PERIPHERALS
         return PERIPHERAL_BUS_USB;
       else if (strTypeLowerCase.Equals("pci"))
         return PERIPHERAL_BUS_PCI;
+      else if (strTypeLowerCase.Equals("rpi"))
+        return PERIPHERAL_BUS_RPI;
 
       return PERIPHERAL_BUS_UNKNOWN;
     };

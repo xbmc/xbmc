@@ -80,3 +80,4 @@ else
   export CXXFLAGS=-I$(PREFIX)/include
 endif
   export PATH:=$(NATIVEPREFIX)/bin:$(PATH)
+  export LD_LIBRARY_PATH:=$(NATIVEPREFIX)/lib:$(LD_LIBRARY_PATH)

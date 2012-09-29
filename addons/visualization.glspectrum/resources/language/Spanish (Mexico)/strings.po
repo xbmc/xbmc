@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:29+0000\n"
+"PO-Revision-Date: 2012-06-06 15:04+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es_MX/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Modo"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Lleno"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Malla de alambre"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Puntos"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Altura de Barra"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Chico"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Por defecto"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Grande"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Muy Grande"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Velocidad"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Muy Lento"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Lento"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Por defecto"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Rápido"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Muy Rápido"

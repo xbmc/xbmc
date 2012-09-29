@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "threads/SystemClock.h"
@@ -33,14 +32,18 @@
 #ifdef _LINUX
 #include <sys/types.h>
 #include <dirent.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #endif
+#if defined(TARGET_ANDROID)
+#include "android/bionic_supplement/bionic_supplement.h"
+#endif
+#include <stdlib.h>
 
 #include "Application.h"
 #include "Util.h"
 #include "addons/Addon.h"
+#include "filesystem/PVRDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -110,6 +113,10 @@ static uint16_t oldrampBlue[256];
 static uint16_t flashrampRed[256];
 static uint16_t flashrampGreen[256];
 static uint16_t flashrampBlue[256];
+#endif
+
+#if !defined(TARGET_WINDOWS)
+unsigned int CUtil::s_randomSeed = time(NULL);
 #endif
 
 CUtil::CUtil(void)
@@ -340,8 +347,12 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   {
     if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      strTitleAndYear = reYear.GetReplaceString("\\1");
-      strYear = reYear.GetReplaceString("\\2");
+      char* ty = reYear.GetReplaceString("\\1");
+      char* y = reYear.GetReplaceString("\\2");
+      strTitleAndYear = ty;
+      strYear = y;
+      free(ty);
+      free(y);
     }
   }
 
@@ -554,6 +565,39 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
     }
   }
 #endif
+}
+
+bool CUtil::IsPVR(const CStdString& strFile)
+{
+  return strFile.Left(4).Equals("pvr:");
+}
+
+bool CUtil::IsHTSP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("htsp:");
+}
+
+bool CUtil::IsLiveTV(const CStdString& strFile)
+{
+  if (strFile.Left(14).Equals("pvr://channels"))
+    return true;
+
+  if(URIUtils::IsTuxBox(strFile)
+  || URIUtils::IsVTP(strFile)
+  || URIUtils::IsHDHomeRun(strFile)
+  || URIUtils::IsHTSP(strFile)
+  || strFile.Left(4).Equals("sap:"))
+    return true;
+
+  if (URIUtils::IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
+    return true;
+
+  return false;
+}
+
+bool CUtil::IsTVRecording(const CStdString& strFile)
+{
+  return strFile.Left(15).Equals("pvr://recording");
 }
 
 bool CUtil::IsPicture(const CStdString& strFile)
@@ -1866,6 +1910,8 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (URIUtils::IsSmb(strPath))
     return true;
+  if (CUtil::IsTVRecording(strPath))
+    return CPVRDirectory::SupportsFileOperations(strPath);
   if (URIUtils::IsNfs(strPath))
     return true;
   if (URIUtils::IsAfp(strPath))
@@ -2176,9 +2222,12 @@ CStdString CUtil::ResolveExecutablePath()
   snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
 
   /* Now read the symbolic link */
-  char buf[PATH_MAX];
-  int ret = readlink(linkname, buf, PATH_MAX);
-  buf[ret] = 0;
+  char buf[PATH_MAX + 1];
+  buf[0] = 0;
+
+  int ret = readlink(linkname, buf, sizeof(buf) - 1);
+  if (ret != -1)
+    buf[ret] = 0;
 
   strExecutablePath = buf;
 #endif
@@ -2563,5 +2612,18 @@ bool CUtil::CanBindPrivileged()
   return true;
 
 #endif //_LINUX
+}
+
+int CUtil::GetRandomNumber()
+{
+#ifdef TARGET_WINDOWS
+  unsigned int number;
+  if (rand_s(&number) == 0)
+    return (int)number;
+#else
+  return rand_r(&s_randomSeed);
+#endif
+
+  return rand();
 }
 

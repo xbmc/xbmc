@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-ALPHA6
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-08-17 03:32+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Japanese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ja\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -19,7 +20,7 @@ msgstr "プログラム"
 
 msgctxt "#1"
 msgid "Pictures"
-msgstr "ピクチャ"
+msgstr "ピクチャー"
 
 msgctxt "#2"
 msgid "Music"
@@ -275,19 +276,19 @@ msgstr "不定"
 
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "表示: 自動"
+msgstr "表示：自動"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "表示: 自動 (大)"
+msgstr "表示：自動 (大)"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "表示: アイコン (小)"
+msgstr "表示：アイコン (小)"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "表示: リスト"
+msgstr "表示：リスト"
 
 msgctxt "#102"
 msgid "Scan"
@@ -295,15 +296,15 @@ msgstr "スキャン"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "並べ替え: 名前"
+msgstr "並べ替え：名前"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "並べ替え: 日付"
+msgstr "並べ替え：日付"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "並べ替え: サイズ"
+msgstr "並べ替え：サイズ"
 
 msgctxt "#106"
 msgid "No"
@@ -439,35 +440,35 @@ msgstr "システム情報"
 
 msgctxt "#139"
 msgid "Temperatures:"
-msgstr "温度:"
+msgstr "温度："
 
 msgctxt "#140"
 msgid "CPU:"
-msgstr "CPU:"
+msgstr "CPU："
 
 msgctxt "#141"
 msgid "GPU:"
-msgstr "GPU:"
+msgstr "GPU："
 
 msgctxt "#142"
 msgid "Time:"
-msgstr "時間:"
+msgstr "時間："
 
 msgctxt "#143"
 msgid "Current:"
-msgstr "現在:"
+msgstr "現在："
 
 msgctxt "#144"
 msgid "Build:"
-msgstr "ビルド:"
+msgstr "ビルド："
 
 msgctxt "#145"
 msgid "Network:"
-msgstr "ネットワーク:"
+msgstr "ネットワーク："
 
 msgctxt "#146"
 msgid "Type:"
-msgstr "タイプ:"
+msgstr "タイプ："
 
 msgctxt "#147"
 msgid "Static"
@@ -487,7 +488,7 @@ msgstr "IP アドレス"
 
 msgctxt "#151"
 msgid "Link:"
-msgstr "リンク: "
+msgstr "リンク："
 
 msgctxt "#152"
 msgid "Half duplex"
@@ -643,7 +644,7 @@ msgstr "情報が見付かりません!"
 
 msgctxt "#196"
 msgid "Select movie:"
-msgstr "ムービーの選択:"
+msgstr "ムービーの選択："
 
 msgctxt "#197"
 msgid "Querying %s info"
@@ -831,7 +832,7 @@ msgstr "ミュージック"
 
 msgctxt "#250"
 msgid "Visualization"
-msgstr "視覚エフェクト"
+msgstr "ビジュアライザー"
 
 msgctxt "#251"
 msgid "Select destination directory"
@@ -895,23 +896,23 @@ msgstr "録音停止"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "並べ替え: トラック番号"
+msgstr "並べ替え：トラック番号"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "並べ替え: 時間"
+msgstr "並べ替え：時間"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "並べ替え: タイトル名"
+msgstr "並べ替え：タイトル名"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "並べ替え: アーティスト名"
+msgstr "並べ替え：アーティスト名"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "並べ替え: アルバム名"
+msgstr "並べ替え：アルバム名"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -955,7 +956,7 @@ msgstr "設定の初期化"
 
 msgctxt "#281"
 msgid "Please check the XML files"
-msgstr ".xml ファイルをチェックして下さい"
+msgstr "XML ファイルをチェックして下さい"
 
 msgctxt "#282"
 msgid "Found %i items"
@@ -969,6 +970,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "見つかりませんでした"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "優先する音声言語"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "優先する字幕言語"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "字幕"
@@ -979,7 +988,7 @@ msgstr "フォント"
 
 msgctxt "#289"
 msgid "- Size"
-msgstr "- サイズ:"
+msgstr "- サイズ"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1044,6 +1053,14 @@ msgstr "有効"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "非インターリーブ"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "元ストリームの言語"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "インターフェースの言語"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1185,6 +1202,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "ダウンミックス時に音量ブースト"
 
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD 対応レシーバー"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- マルチチャンネル LPCM 対応レシーバー"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD 対応レシーバー"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "プログラム"
@@ -1239,7 +1268,7 @@ msgstr "スクリーンセーバーの暗さ(%)"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "並べ替え: ファイル名"
+msgstr "並べ替え：ファイル名"
 
 msgctxt "#364"
 msgid "- Dolby Digital (AC3) capable receiver"
@@ -1247,15 +1276,15 @@ msgstr "- Dolby Digital (AC3) 対応レシーバー"
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "並べ替え: 名前"
+msgstr "並べ替え：名前"
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "並べ替え: 公開年"
+msgstr "並べ替え：公開年"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "並べ替え: 評価"
+msgstr "並べ替え：評価"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1423,7 +1452,7 @@ msgstr "天気予報サービスに接続中"
 
 msgctxt "#411"
 msgid "Getting weather for:"
-msgstr "天気を取得中:"
+msgstr "天気を取得中："
 
 msgctxt "#412"
 msgid "Unable to get weather data"
@@ -1447,7 +1476,7 @@ msgstr "利用できません"
 
 msgctxt "#417"
 msgid "View: Big icons"
-msgstr "表示: アイコン(大)"
+msgstr "表示：アイコン(大)"
 
 msgctxt "#418"
 msgid "Low"
@@ -1491,11 +1520,11 @@ msgstr "正しい CD/DVD を入れて下さい"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "次の CD/DVD を挿入して下さい:"
+msgstr "次の CD/DVD を挿入して下さい："
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "並べ替え: DVD#"
+msgstr "並べ替え：DVD#"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1512,6 +1541,14 @@ msgstr "本当に '%s' を削除しますか?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "%s の風 %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr ""
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1735,7 +1772,7 @@ msgstr "拡張子を表示する"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "並べ替え: タイプ"
+msgstr "並べ替え：タイプ"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
@@ -1767,11 +1804,11 @@ msgstr "ファイルからメディア情報を読み込んでいます..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "並べ替え: 回数"
+msgstr "並べ替え：回数"
 
 msgctxt "#510"
 msgid "Enable visualizations"
-msgstr "視覚エフェクトを有効化"
+msgstr "ビジュアライザーを有効化"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -1839,7 +1876,7 @@ msgstr "タイトルを入力"
 
 msgctxt "#529"
 msgid "Error: Duplicate title"
-msgstr "エラー: タイトルが重複しています"
+msgstr "エラー：タイトルが重複しています"
 
 msgctxt "#530"
 msgid "Select genre"
@@ -1859,7 +1896,7 @@ msgstr "ジャンル名を入力"
 
 msgctxt "#534"
 msgid "View: %s"
-msgstr "表示: %s"
+msgstr "表示：%s"
 
 msgctxt "#535"
 msgid "List"
@@ -1915,11 +1952,11 @@ msgstr "このアーティストのバイオグラフィーがありません"
 
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
-msgstr ""
+msgstr "マルチチャンネルオーディオをステレオにダウンミックスする"
 
 msgctxt "#550"
 msgid "Sort by: %s"
-msgstr "並べ替え: %s"
+msgstr "並べ替え：%s"
 
 msgctxt "#551"
 msgid "Name"
@@ -2015,7 +2052,7 @@ msgstr "パス"
 
 msgctxt "#574"
 msgid "Country"
-msgstr ""
+msgstr "国"
 
 msgctxt "#575"
 msgid "In progress"
@@ -2087,15 +2124,15 @@ msgstr "Off"
 
 msgctxt "#595"
 msgid "Repeat: Off"
-msgstr "リピート: オフ"
+msgstr "リピート：オフ"
 
 msgctxt "#596"
 msgid "Repeat: One"
-msgstr "リピート: 1項目"
+msgstr "リピート：1項目"
 
 msgctxt "#597"
 msgid "Repeat: All"
-msgstr "リピート: すべて"
+msgstr "リピート：すべて"
 
 msgctxt "#600"
 msgid "Rip audio CD"
@@ -2123,7 +2160,7 @@ msgstr "リッピング中..."
 
 msgctxt "#607"
 msgid "To:"
-msgstr "保存先:"
+msgstr "保存先："
 
 msgctxt "#608"
 msgid "Could not rip CD or track"
@@ -2172,6 +2209,10 @@ msgstr "トラック番号を含む"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "すべての曲"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr ""
 
 msgctxt "#629"
 msgid "View mode"
@@ -2431,11 +2472,11 @@ msgstr "- 文字コード"
 
 msgctxt "#736"
 msgid "- Style"
-msgstr "- スタイル:"
+msgstr "- スタイル"
 
 msgctxt "#737"
 msgid "- Colour"
-msgstr "- カラー:"
+msgstr "- カラー"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2511,7 +2552,7 @@ msgstr "パスの階層の編集"
 
 msgctxt "#759"
 msgid "View: Big list"
-msgstr "表示: リスト(大)"
+msgstr "表示：リスト(大)"
 
 msgctxt "#760"
 msgid "Yellow"
@@ -2583,19 +2624,19 @@ msgstr "ネットワークインターフェース設定を保存して適用"
 
 msgctxt "#780"
 msgid "No encryption"
-msgstr ""
+msgstr "暗号化なし"
 
 msgctxt "#781"
 msgid "WEP"
-msgstr ""
+msgstr "WEP"
 
 msgctxt "#782"
 msgid "WPA"
-msgstr ""
+msgstr "WPA"
 
 msgctxt "#783"
 msgid "WPA2"
-msgstr ""
+msgstr "WPA2"
 
 msgctxt "#784"
 msgid "Applying network interface settings. Please wait."
@@ -2603,27 +2644,27 @@ msgstr "ネットワークインターフェース設定を適用しています
 
 msgctxt "#785"
 msgid "Network interface restarted successfully."
-msgstr ""
+msgstr "ネットワークインターフェースの再起動に成功しました"
 
 msgctxt "#786"
 msgid "Network interface did not start successfully."
-msgstr ""
+msgstr "ネットワークインターフェースの再起動に失敗しました"
 
 msgctxt "#787"
 msgid "Interface disabled"
-msgstr ""
+msgstr "インターフェースを無効化しました"
 
 msgctxt "#788"
 msgid "Network interface disabled successfully."
-msgstr ""
+msgstr "ネットワークインターフェースの無効化に成功しました"
 
 msgctxt "#789"
 msgid "Wireless network name (ESSID)"
-msgstr ""
+msgstr "ワイヤレスネットワーク名 (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "リモートコントロール"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2656,6 +2697,18 @@ msgstr "Maximum Number of Clients"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "インターネット接続"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr ""
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr ""
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr ""
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -2831,7 +2884,7 @@ msgstr "ミュージック アドオン"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "ピクチャ アドオン"
+msgstr "ピクチャーアドオン"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -2919,7 +2972,7 @@ msgstr "ビデオ"
 
 msgctxt "#1213"
 msgid "Pictures"
-msgstr "ピクチャ"
+msgstr "ピクチャー"
 
 msgctxt "#1214"
 msgid "Files"
@@ -3000,34 +3053,6 @@ msgstr "プログラム & ピクチャー & ミュージック"
 msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "プログラム & ピクチャー & ビデオ"
-
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "自動検出"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "システムにより自動検出"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "ニックネーム"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "接続を確認する"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "FTP ユーザー・パスワードを送る"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "PING をかける間隔"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "自動検出されたシステムに接続しますか?"
 
 msgctxt "#1259"
 msgid "Zeroconf"
@@ -3423,7 +3448,7 @@ msgstr "フルスクリーンビデオ"
 
 msgctxt "#12006"
 msgid "Audio visualization"
-msgstr "オーディオ視覚エフェクト"
+msgstr "オーディオビジュアライザー"
 
 msgctxt "#12008"
 msgid "File stacking dialog"
@@ -3757,6 +3782,14 @@ msgctxt "#13016"
 msgid "Power off System"
 msgstr "システム終了・電源を切る"
 
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr ""
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr ""
+
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr "別のセッションが動作中です（ssh 経由かも?)"
@@ -3811,11 +3844,11 @@ msgstr "常に有効"
 
 msgctxt "#13109"
 msgid "Test & apply resolution"
-msgstr ""
+msgstr "テスト＆解像度を適用"
 
 msgctxt "#13110"
 msgid "Save resolution?"
-msgstr ""
+msgstr "この解像度を保存しますか？"
 
 msgctxt "#13111"
 msgid "Would you like to keep this resolution?"
@@ -3867,15 +3900,15 @@ msgstr "VDPAU Studio level color conversion"
 
 msgctxt "#13130"
 msgid "Blank other displays"
-msgstr ""
+msgstr "他のディスプレイをブランクにする"
 
 msgctxt "#13131"
 msgid "Disabled"
-msgstr ""
+msgstr "無効"
 
 msgctxt "#13132"
 msgid "Blank displays"
-msgstr ""
+msgstr "ディスプレイをブランクにする"
 
 msgctxt "#13140"
 msgid "Active connections detected!"
@@ -4011,11 +4044,11 @@ msgstr "移動のキャンセル"
 
 msgctxt "#13270"
 msgid "Hardware:"
-msgstr "ハードウェア:"
+msgstr "ハードウェア："
 
 msgctxt "#13271"
 msgid "CPU Usage:"
-msgstr "CPU 使用率:"
+msgstr "CPU 使用率："
 
 msgctxt "#13274"
 msgid "Connected, but no DNS is available."
@@ -4051,31 +4084,31 @@ msgstr "ハードウェア"
 
 msgctxt "#13283"
 msgid "Operating system:"
-msgstr "オペレーティング システム:"
+msgstr "オペレーティングシステム："
 
 msgctxt "#13284"
 msgid "CPU speed:"
-msgstr "CPU 速度:"
+msgstr "CPU 速度："
 
 msgctxt "#13286"
 msgid "Video encoder:"
-msgstr "ビデオエンコーダー:"
+msgstr "ビデオエンコーダー："
 
 msgctxt "#13287"
 msgid "Screen resolution:"
-msgstr "画面解像度:"
+msgstr "画面解像度："
 
 msgctxt "#13292"
 msgid "A/V cable:"
-msgstr "A/V ケーブル:"
+msgstr "A/V ケーブル："
 
 msgctxt "#13294"
 msgid "DVD region:"
-msgstr "DVD リージョン(地域):"
+msgstr "DVD リージョン(地域)："
 
 msgctxt "#13295"
 msgid "Internet:"
-msgstr "インターネット:"
+msgstr "インターネット："
 
 msgctxt "#13296"
 msgid "Connected"
@@ -4215,7 +4248,7 @@ msgstr "％がロードできません"
 
 msgctxt "#13331"
 msgid "Error: Out of memory"
-msgstr "エラー: メモリー不足"
+msgstr "エラー：メモリー不足"
 
 msgctxt "#13332"
 msgid "Move up"
@@ -4295,7 +4328,7 @@ msgstr "スキャン停止"
 
 msgctxt "#13354"
 msgid "Render method"
-msgstr "描画方法:"
+msgstr "描画方法："
 
 msgctxt "#13355"
 msgid "Low quality pixel shader"
@@ -4383,11 +4416,11 @@ msgstr "プリセット"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
-msgstr "プリセットが有効な視覚エフェクトではありません"
+msgstr "このビジュアライザーにはプリセットがありません"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
-msgstr "設定が有効な視覚エフェクトではありません"
+msgstr "このビジュアライザーには設定がありません"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -4395,7 +4428,7 @@ msgstr "イジェクト/ロード"
 
 msgctxt "#13392"
 msgid "Use visualization if playing audio"
-msgstr "音楽再生時 視覚エフェクト使用"
+msgstr "音楽再生時にビジュアライザー使用"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4475,7 +4508,7 @@ msgstr "最低ファン速度"
 
 msgctxt "#13412"
 msgid "Play from here"
-msgstr ""
+msgstr "ここから再生"
 
 msgctxt "#13413"
 msgid "Downloading"
@@ -4603,19 +4636,19 @@ msgstr "ディスプレイ同期周波数に合わせて再生"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
-msgstr ""
+msgstr "リフレッシュレート変更時は一時停止"
 
 msgctxt "#13551"
 msgid "Off"
-msgstr ""
+msgstr "オフ"
 
 msgctxt "#13552"
 msgid "%.1f Second"
-msgstr ""
+msgstr "%.1f 秒"
 
 msgctxt "#13553"
 msgid "%.1f Seconds"
-msgstr ""
+msgstr "%.1f 秒"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -4643,7 +4676,7 @@ msgstr "汎用リモコン"
 
 msgctxt "#13613"
 msgid "Multi Remote (Harmony)"
-msgstr ""
+msgstr "マルチリモート (Harmony)"
 
 msgctxt "#13620"
 msgid "Apple Remote Error"
@@ -4707,11 +4740,11 @@ msgstr "- 割合(%)"
 
 msgctxt "#14015"
 msgid "No files and at least one thumb"
-msgstr ""
+msgstr "ファイルなし、少なくとも1つのサムネイル"
 
 msgctxt "#14016"
 msgid "At least one file and thumb"
-msgstr ""
+msgstr "少なくとも1ファイルと1つのサムネイル"
 
 msgctxt "#14017"
 msgid "Percentage of thumbs"
@@ -4863,7 +4896,7 @@ msgstr "フィルム粒子エフェクト"
 
 msgctxt "#14059"
 msgid "Search for thumbnails on remote shares"
-msgstr "リモート共有上でサムネールを使う"
+msgstr "リモート共有上でサムネイルを使う"
 
 msgctxt "#14060"
 msgid "Unknown type cache - Internet"
@@ -4999,19 +5032,19 @@ msgstr "省電力"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Rip"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "オーディオ CD 挿入時のアクション"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "再生"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "リッピング完了後に CD をイジェクト"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5091,7 +5124,7 @@ msgstr "Last.fm パスワード"
 
 msgctxt "#15204"
 msgid "Unable to handshake: sleeping..."
-msgstr "操作不可: 停止中..."
+msgstr "操作不可：停止中..."
 
 msgctxt "#15205"
 msgid "Please update XBMC"
@@ -5099,7 +5132,7 @@ msgstr "XBMC を更新してください"
 
 msgctxt "#15206"
 msgid "Bad authorization: Check username and password"
-msgstr "認証に失敗: ユーザー名とパスワードを確認してください"
+msgstr "認証に失敗：ユーザー名とパスワードを確認してください"
 
 msgctxt "#15207"
 msgid "Connected"
@@ -5143,7 +5176,7 @@ msgstr "パーティーモードで再生"
 
 msgctxt "#15217"
 msgid "Submit songs to Libre.fm"
-msgstr ""
+msgstr "楽曲を Libre.fm に送信"
 
 msgctxt "#15218"
 msgid "Libre.fm username"
@@ -5315,7 +5348,7 @@ msgstr "現在再生中のトラックを Last.fm ライブラリから削除し
 
 msgctxt "#15289"
 msgid "Added to your loved tracks: '%s'."
-msgstr "Love トラックに追加: '%s'"
+msgstr "Love トラックに追加：'%s'"
 
 msgctxt "#15290"
 msgid "Could not add '%s' to your loved tracks."
@@ -5323,7 +5356,7 @@ msgstr "'%s' を Love トラックに追加できませんでした。"
 
 msgctxt "#15291"
 msgid "Banned: '%s'."
-msgstr "Last.fm ライブラリから削除: '%s'."
+msgstr "Last.fm ライブラリから削除：'%s'."
 
 msgctxt "#15292"
 msgid "Could not ban '%s'."
@@ -5375,7 +5408,7 @@ msgstr "Opening multi-path source"
 
 msgctxt "#15311"
 msgid "Path:"
-msgstr "パス:"
+msgstr "パス："
 
 msgctxt "#16000"
 msgid "General"
@@ -5427,7 +5460,7 @@ msgstr "ディレクトリを入力"
 
 msgctxt "#16016"
 msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
-msgstr "使用可能オプション: %A, %T, %N, %B, %D, %G, %Y, %F"
+msgstr "使用可能オプション：%A, %T, %N, %B, %D, %G, %Y, %F, %S"
 
 msgctxt "#16017"
 msgid "Enter search string"
@@ -5677,6 +5710,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr ""
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "後処理"
@@ -5685,9 +5722,1429 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "ディスプレイスリープタイムアウト"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr ""
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr ""
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr ""
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "チャンネル切り替え"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr ""
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr ""
+
+msgctxt "#19003"
+msgid "Find similar programme"
+msgstr ""
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr ""
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr ""
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr ""
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr ""
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr ""
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr ""
+
+msgctxt "#19010"
+msgid "BER"
+msgstr ""
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr ""
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr ""
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr ""
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr ""
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr ""
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr ""
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr ""
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr ""
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#19020"
+msgid "TV"
+msgstr ""
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr ""
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr ""
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr ""
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr ""
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr ""
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr ""
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr ""
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr ""
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr ""
+
+msgctxt "#19030"
+msgid "Now"
+msgstr ""
+
+msgctxt "#19031"
+msgid "Next"
+msgstr ""
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr ""
+
+msgctxt "#19033"
+msgid "Information"
+msgstr ""
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr ""
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr ""
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr ""
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr ""
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr ""
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr ""
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr ""
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr ""
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr ""
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr ""
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr ""
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr ""
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr ""
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr ""
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr ""
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr ""
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr ""
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr ""
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr ""
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr ""
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr ""
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr ""
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr ""
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr ""
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr ""
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr ""
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr ""
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr ""
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr ""
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr ""
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr ""
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr ""
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr ""
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr ""
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr ""
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr ""
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr ""
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr ""
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr ""
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr ""
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr ""
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr ""
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr ""
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr ""
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr ""
+
+msgctxt "#19081"
+msgid "End:"
+msgstr ""
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr ""
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr ""
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr ""
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr ""
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr ""
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr ""
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr ""
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr ""
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr ""
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr ""
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr ""
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr ""
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr ""
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr ""
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr ""
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr ""
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr ""
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr ""
+
+msgctxt "#19103"
+msgid "Scan for missing icons"
+msgstr ""
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr ""
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr ""
+
+msgctxt "#19107"
+msgid "at"
+msgstr ""
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr ""
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr ""
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr ""
+
+msgctxt "#19114"
+msgid "Version"
+msgstr ""
+
+msgctxt "#19115"
+msgid "Address"
+msgstr ""
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr ""
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr ""
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr ""
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr ""
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr ""
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr ""
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr ""
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr ""
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr ""
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr ""
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr ""
+
+msgctxt "#19127"
+msgid "End time"
+msgstr ""
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr ""
+
+msgctxt "#19129"
+msgid "End date"
+msgstr ""
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr ""
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr ""
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr ""
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr ""
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr ""
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr ""
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr ""
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr ""
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr ""
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr ""
+
+msgctxt "#19141"
+msgid "Group"
+msgstr ""
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr ""
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr ""
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr ""
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr ""
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr ""
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr ""
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr ""
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr ""
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr ""
+
+msgctxt "#19151"
+msgid "We"
+msgstr ""
+
+msgctxt "#19152"
+msgid "Th"
+msgstr ""
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr ""
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr ""
+
+msgctxt "#19155"
+msgid "Su"
+msgstr ""
+
+msgctxt "#19156"
+msgid "from"
+msgstr ""
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr ""
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr ""
+
+msgctxt "#19159"
+msgid "from"
+msgstr ""
+
+msgctxt "#19160"
+msgid "to"
+msgstr ""
+
+msgctxt "#19161"
+msgid "On"
+msgstr ""
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr ""
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr ""
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr ""
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr ""
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr ""
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr ""
+
+msgctxt "#19168"
+msgid "Switch channel without pressing OK"
+msgstr ""
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr ""
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr ""
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr ""
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr ""
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr ""
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr ""
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr ""
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr ""
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr ""
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr ""
+
+msgctxt "#19180"
+msgid "TV"
+msgstr ""
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr ""
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr ""
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr ""
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr ""
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr ""
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr ""
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr ""
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr ""
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr ""
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr ""
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr ""
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr ""
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr ""
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr ""
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr ""
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr ""
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr ""
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr ""
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr ""
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr ""
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr ""
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr ""
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr ""
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr ""
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr ""
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr ""
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr ""
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr ""
+
+msgctxt "#19210"
+msgid "Client"
+msgstr ""
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr ""
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr ""
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr ""
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr ""
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr ""
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr ""
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr ""
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr ""
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr ""
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr ""
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr ""
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr ""
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr ""
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr ""
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr ""
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr ""
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr ""
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr ""
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr ""
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr ""
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr ""
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr ""
+
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr ""
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr ""
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr ""
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr ""
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr ""
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr ""
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr ""
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr ""
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr ""
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr ""
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr ""
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr ""
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr ""
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr ""
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr ""
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr ""
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr ""
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr ""
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr ""
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr ""
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr ""
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr ""
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr ""
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr ""
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr ""
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr ""
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr ""
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr ""
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr ""
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr ""
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr ""
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr ""
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr ""
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr ""
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr ""
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr ""
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr ""
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr ""
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr ""
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr ""
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr ""
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr ""
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr ""
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr ""
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr ""
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr ""
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr ""
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr ""
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr ""
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr ""
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr ""
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr ""
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr ""
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr ""
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr ""
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr ""
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr ""
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr ""
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr ""
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr ""
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr ""
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr ""
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr ""
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr ""
+
+msgctxt "#19551"
+msgid "Football"
+msgstr ""
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr ""
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr ""
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr ""
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr ""
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr ""
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr ""
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr ""
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr ""
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr ""
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr ""
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr ""
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr ""
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr ""
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr ""
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr ""
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr ""
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr ""
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr ""
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr ""
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr ""
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr ""
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr ""
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr ""
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr ""
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr ""
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr ""
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr ""
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr ""
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr ""
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr ""
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr ""
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr ""
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr ""
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr ""
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr ""
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr ""
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr ""
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr ""
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr ""
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr ""
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr ""
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr ""
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr ""
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr ""
+
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr ""
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr ""
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr ""
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr ""
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr ""
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr ""
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr ""
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr ""
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr ""
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr ""
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr ""
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr ""
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr ""
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr ""
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr ""
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr ""
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr ""
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr ""
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr ""
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr ""
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr ""
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr ""
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -5703,7 +7160,7 @@ msgstr "外部 DVD プレーヤーの指定"
 
 msgctxt "#20003"
 msgid "Trainers folder"
-msgstr ""
+msgstr "トレイナーフォルダー"
 
 msgctxt "#20004"
 msgid "Screenshot folder"
@@ -5739,7 +7196,7 @@ msgstr "ゲームを起動しますか?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "並べ替え: プレイリスト"
+msgstr "並べ替え：プレイリスト"
 
 msgctxt "#20015"
 msgid "Remote thumb"
@@ -5855,7 +7312,7 @@ msgstr "Allmusic.com サムネール"
 
 msgctxt "#20057"
 msgid "Remove thumbnail"
-msgstr "サムネールの削除"
+msgstr "サムネイルの削除"
 
 msgctxt "#20058"
 msgid "Add profile..."
@@ -6075,7 +7532,7 @@ msgstr "UPnP クライアントの自動起動"
 
 msgctxt "#20112"
 msgid "Last login: %s"
-msgstr "最終ログイン: %s"
+msgstr "最終ログイン：%s"
 
 msgctxt "#20113"
 msgid "Never logged on"
@@ -6127,7 +7584,7 @@ msgstr "Filling glasses"
 
 msgctxt "#20125"
 msgid "Logged on as"
-msgstr "ログイン済: "
+msgstr "ログイン済："
 
 msgctxt "#20126"
 msgid "Log off"
@@ -6195,7 +7652,7 @@ msgstr "ユーザー名"
 
 msgctxt "#20143"
 msgid "Enter password for"
-msgstr "パスワードを設定: "
+msgstr "パスワードを設定："
 
 msgctxt "#20144"
 msgid "Shutdown timer"
@@ -6417,6 +7874,26 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "アーティスト情報の取得に失敗しました"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr ""
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr ""
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr ""
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr ""
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr ""
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "パーティー開始！ (ビデオ)"
@@ -6475,7 +7952,7 @@ msgstr "Web サーバーディレクトリ (HTTPS)"
 
 msgctxt "#20302"
 msgid "Unable to write to folder:"
-msgstr "フォルダに書き込みできません:"
+msgstr "フォルダに書き込みできません："
 
 msgctxt "#20303"
 msgid "Do you want to skip and proceed?"
@@ -6491,7 +7968,7 @@ msgstr "セカンダリ DNS"
 
 msgctxt "#20308"
 msgid "DHCP server:"
-msgstr "DHCP サーバ:"
+msgstr "DHCP サーバ："
 
 msgctxt "#20309"
 msgid "Make new folder"
@@ -6515,7 +7992,7 @@ msgstr "ビデオ - ライブラリ"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
-msgstr "並べ替え: ID"
+msgstr "並べ替え：ID"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -6587,7 +8064,7 @@ msgstr "Do you want to remove all items within"
 
 msgctxt "#20341"
 msgid "this path from the XBMC library?"
-msgstr ""
+msgstr "このパスを XBMC ライブラリから削除しますか？"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -6647,7 +8124,7 @@ msgstr "ディレクトリ内のエピソード情報を読み込み中"
 
 msgctxt "#20356"
 msgid "Select TV show:"
-msgstr "テレビ番組を選択:"
+msgstr "テレビ番組を選択："
 
 msgctxt "#20357"
 msgid "Enter the TV show name"
@@ -6727,7 +8204,7 @@ msgstr "Unassign Content"
 
 msgctxt "#20376"
 msgid "Original title"
-msgstr ""
+msgstr "オリジナルのタイトル"
 
 msgctxt "#20377"
 msgid "Refresh TV show information"
@@ -6935,7 +8412,7 @@ msgstr "Separate"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "Export thumbs and fanart?"
+msgstr "サムネイルとファンアートを書き出しますか？"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
@@ -6947,19 +8424,19 @@ msgstr "ライブラリの更新から除外"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr ""
+msgstr "サムネイルとビデオ情報を抽出"
 
 msgctxt "#20434"
 msgid "Sets"
-msgstr ""
+msgstr "セット"
 
 msgctxt "#20435"
 msgid "Set movieset thumb"
-msgstr ""
+msgstr "映画セットサムネールを設定"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
-msgstr ""
+msgstr "俳優サムネールをエクスポートしますか?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
@@ -7049,6 +8526,30 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Group movies in sets"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr ""
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr ""
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr ""
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr ""
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr ""
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "隠しファイル/フォルダーを表示"
@@ -7059,7 +8560,7 @@ msgstr "TuxBox クライアント"
 
 msgctxt "#21332"
 msgid "WARNING: Target TuxBox device is in recording-mode!"
-msgstr "WARNING: Target TuxBox device is in Recording-Mode!"
+msgstr "警告：対象の TuxBox デバイスは現在録画中です!"
 
 msgctxt "#21333"
 msgid "The stream will be stopped!"
@@ -7075,7 +8576,7 @@ msgstr "Are you sure to start the stream?"
 
 msgctxt "#21336"
 msgid "Connecting to: %s"
-msgstr "Connecting to: %s"
+msgstr "接続中：%s"
 
 msgctxt "#21337"
 msgid "TuxBox device"
@@ -7119,7 +8620,7 @@ msgstr "再生時もナビゲーションサウンドを有効化"
 
 msgctxt "#21371"
 msgid "Thumbnail"
-msgstr "サムネール"
+msgstr "サムネイル"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
@@ -7297,17 +8798,13 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "規定の音楽ビデオ用スクレーパー"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr ""
-
 msgctxt "#21417"
 msgid "- Settings"
-msgstr ""
+msgstr "- 設定"
 
 msgctxt "#21418"
 msgid "Multilingual"
-msgstr ""
+msgstr "他言語"
 
 msgctxt "#21419"
 msgid "No scrapers present"
@@ -7395,7 +8892,7 @@ msgstr "パーティモードルールの編集"
 
 msgctxt "#21440"
 msgid "Home folder"
-msgstr ""
+msgstr "ホームフォルダー"
 
 msgctxt "#21441"
 msgid "Watched count"
@@ -7447,7 +8944,7 @@ msgstr "Get More..."
 
 msgctxt "#21453"
 msgid "Root filesystem"
-msgstr "Root filesystem"
+msgstr "ルートファイルシステム"
 
 msgctxt "#21454"
 msgid "Cache full"
@@ -7456,6 +8953,10 @@ msgstr "Cache full"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Cache filled before reaching required amount for continous playback"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr ""
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -7467,19 +8968,19 @@ msgstr "Fixed"
 
 msgctxt "#21462"
 msgid "Bottom of video"
-msgstr "Bottom of video"
+msgstr "映像の下側に重ねる"
 
 msgctxt "#21463"
 msgid "Below video"
-msgstr "Below video"
+msgstr "映像の下"
 
 msgctxt "#21464"
 msgid "Top of video"
-msgstr "Top of video"
+msgstr "映像の上側に重ねる"
 
 msgctxt "#21465"
 msgid "Above video"
-msgstr "Above video"
+msgstr "映像の上"
 
 msgctxt "#21800"
 msgid "File name"
@@ -7807,23 +9308,23 @@ msgstr "字幕オフセット"
 
 msgctxt "#22007"
 msgid "OpenGL vendor:"
-msgstr "OpenGL ベンダー:"
+msgstr "OpenGL ベンダー："
 
 msgctxt "#22008"
 msgid "OpenGL renderer:"
-msgstr "OpenGL レンダラー:"
+msgstr "OpenGL レンダラー："
 
 msgctxt "#22009"
 msgid "OpenGL version:"
-msgstr "OpenGL バージョン:"
+msgstr "OpenGL バージョン："
 
 msgctxt "#22010"
 msgid "GPU temperature:"
-msgstr "GPU 温度:"
+msgstr "GPU 温度："
 
 msgctxt "#22011"
 msgid "CPU temperature:"
-msgstr "CPU 温度:"
+msgstr "CPU 温度："
 
 msgctxt "#22012"
 msgid "Total memory"
@@ -7867,15 +9368,15 @@ msgstr "Allowed error in aspect ratio to minimize black bars"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
-msgstr "Show video files in listings"
+msgstr "リストでビデオファイルを表示"
 
 msgctxt "#22023"
 msgid "DirectX vendor:"
-msgstr "DirectX ベンダー:"
+msgstr "DirectX ベンダー："
 
 msgctxt "#22024"
 msgid "Direct3D version:"
-msgstr "Direct3D バージョン:"
+msgstr "Direct3D バージョン："
 
 msgctxt "#22030"
 msgid "Font"
@@ -8023,7 +9524,7 @@ msgstr "スクリプト"
 
 msgctxt "#24010"
 msgid "Visualization"
-msgstr "視覚エフェクト"
+msgstr "ビジュアライザー"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -8031,7 +9532,7 @@ msgstr "アドオン レポジトリ"
 
 msgctxt "#24012"
 msgid "Subtitles"
-msgstr ""
+msgstr "字幕"
 
 msgctxt "#24013"
 msgid "Lyrics"
@@ -8056,6 +9557,10 @@ msgstr "アーティスト情報"
 msgctxt "#24018"
 msgid "Services"
 msgstr "サービス"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr ""
 
 msgctxt "#24020"
 msgid "Configure"
@@ -8163,7 +9668,7 @@ msgstr "利用可能なアドオン"
 
 msgctxt "#24051"
 msgid "Version:"
-msgstr "バージョン:"
+msgstr "バージョン："
 
 msgctxt "#24052"
 msgid "Disclaimer"
@@ -8171,7 +9676,7 @@ msgstr "注意書き"
 
 msgctxt "#24053"
 msgid "License:"
-msgstr "ライセンス:"
+msgstr "ライセンス："
 
 msgctxt "#24054"
 msgid "Changelog"
@@ -8287,11 +9792,19 @@ msgstr "このスキンに切り替えますか?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "この機能を使うには以下のアドオンのダウンロードが必要です:"
+msgstr "この機能を使うには以下のアドオンのダウンロードが必要です："
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "このアドオンをダウンロードしますか?"
+
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr ""
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr ""
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -8299,27 +9812,27 @@ msgstr "通知"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Hide foreign"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "全タイトルから選択..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Blu-Ray メニューを表示"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "メインタイトルを再生：%d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "タイトル：%d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "再生アイテムの選択"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8495,15 +10008,15 @@ msgstr "アラート"
 
 msgctxt "#33051"
 msgid "Choose Your"
-msgstr "選択する: "
+msgstr "選択する："
 
 msgctxt "#33052"
 msgid "Check"
-msgstr "チェック: "
+msgstr "チェック："
 
 msgctxt "#33053"
 msgid "Configure the"
-msgstr "設定する: "
+msgstr "設定する："
 
 msgctxt "#33054"
 msgid "Seasons"
@@ -8511,23 +10024,23 @@ msgstr "シーズン"
 
 msgctxt "#33055"
 msgid "Use your"
-msgstr "使用: "
+msgstr "使用："
 
 msgctxt "#33056"
 msgid "Watch your"
-msgstr "観る: "
+msgstr "観る："
 
 msgctxt "#33057"
 msgid "Listen to"
-msgstr "聴く: "
+msgstr "聴く："
 
 msgctxt "#33058"
 msgid "View your"
-msgstr "見る: "
+msgstr "見る："
 
 msgctxt "#33059"
 msgid "Configure the"
-msgstr "設定する: "
+msgstr "設定する："
 
 msgctxt "#33060"
 msgid "Power"
@@ -8539,7 +10052,7 @@ msgstr "メニュー"
 
 msgctxt "#33062"
 msgid "Play the"
-msgstr "再生する: "
+msgstr "再生する："
 
 msgctxt "#33063"
 msgid "Options"
@@ -8623,7 +10136,7 @@ msgstr "カスタムスクリプト用ボタンを有効にする"
 
 msgctxt "#33100"
 msgid "Failed to start"
-msgstr "起動に失敗しました: "
+msgstr "起動に失敗しました："
 
 msgctxt "#33101"
 msgid "Webserver"
@@ -8643,27 +10156,27 @@ msgstr "新規コネクションを検出"
 
 msgctxt "#34000"
 msgid "Lame"
-msgstr ""
+msgstr "Lame"
 
 msgctxt "#34001"
 msgid "Vorbis"
-msgstr ""
+msgstr "Vorbis"
 
 msgctxt "#34002"
 msgid "Wav"
-msgstr ""
+msgstr "WAV"
 
 msgctxt "#34003"
 msgid "DXVA2"
-msgstr ""
+msgstr "DXGA2"
 
 msgctxt "#34004"
 msgid "VAAPI"
-msgstr ""
+msgstr "VAAPI"
 
 msgctxt "#34005"
 msgid "Flac"
-msgstr ""
+msgstr "FLAC"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -8709,6 +10222,22 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "GUI サウンドを再生"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "再生停止中の時のみ"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "常に使用"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "使用しない"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "次のアイテムがありません"
@@ -8743,23 +10272,23 @@ msgstr "オーディオ設定を見直してください"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "ナビゲーションにジェスチャーを使用："
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "1本指で上下左右にスワイプ ＝ カーソル移動"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "2本指で左スワイプ ＝ バックスペース"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "1本指で1回タップ ＝ エンター"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "2本指で1回タップ、または1本指で長押し ＝ コンテキストメニュー"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8800,6 +10329,10 @@ msgstr "キーマップ有効"
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "このデバイスではカスタムキーマップを使わないで下さい"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr ""
 
 msgctxt "#35500"
 msgid "Location"
@@ -8945,3 +10478,14 @@ msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr ""
+
+msgctxt "#36035"
+msgid "Always"
+msgstr ""
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr ""

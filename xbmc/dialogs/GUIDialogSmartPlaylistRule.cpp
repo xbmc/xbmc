@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -45,6 +44,7 @@ CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_RULE, "SmartPlaylistRule.xml")
 {
   m_cancelled = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule()
@@ -412,10 +412,17 @@ void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OP
   OnMessage(select);
 }
 
+void CGUIDialogSmartPlaylistRule::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
+}
+
 void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
-  ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
   CGUIDialog::OnInitWindow();
+
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_FIELD);
   // add the fields to the field spincontrol
   vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
   for (unsigned int i = 0; i < fields.size(); i++)
@@ -425,6 +432,16 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
     OnMessage(msg);
   }
   UpdateButtons();
+}
+
+void CGUIDialogSmartPlaylistRule::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  // reset field spincontrolex
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_FIELD);
+  // reset operator spincontrolex
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
 }
 
 bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdString& type)

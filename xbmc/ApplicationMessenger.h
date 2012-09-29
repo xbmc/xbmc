@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -87,6 +86,7 @@ namespace MUSIC_INFO
 #define TMSG_TOGGLEFULLSCREEN     310
 #define TMSG_SETLANGUAGE          311
 #define TMSG_RENDERER_FLUSH       312
+#define TMSG_INHIBITIDLESHUTDOWN  313
 
 #define TMSG_HTTPAPI              400
 
@@ -100,7 +100,8 @@ namespace MUSIC_INFO
 #define TMSG_GUI_ACTION               607
 #define TMSG_GUI_INFOLABEL            608
 #define TMSG_GUI_INFOBOOL             609
-#define TMSG_GUI_MESSAGE              610
+#define TMSG_GUI_ADDON_DIALOG         610
+#define TMSG_GUI_MESSAGE              611
 
 #define TMSG_CALLBACK             800
 
@@ -159,7 +160,7 @@ public:
   void MediaPlay(const CFileItem &item);
   void MediaPlay(const CFileItemList &item, int song = 0);
   void MediaPlay(int playlistid, int song = -1);
-  void MediaStop();
+  void MediaStop(bool bWait = true);
   void MediaPause();
   void MediaRestart(bool bWait);
 
@@ -191,6 +192,7 @@ public:
   void Restart();
   void RestartApp();
   void Reset();
+  void InhibitIdleShutdown(bool inhibit);
   void SwitchToFullscreen(); //
   void Minimize(bool wait = false);
   void ExecOS(const CStdString command, bool waitExit = false);

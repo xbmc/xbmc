@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -90,7 +89,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      FreeControls();
       FreeSections();
     }
     break;
@@ -151,27 +149,30 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
 {
   if (action.GetID() == ACTION_DELETE_ITEM)
   {
-    int iControl = GetFocusedControl()->GetID();
-    int controlId = CONTROL_START_SETTING;
-    const TiXmlElement* setting = GetFirstSetting();
-    UpdateFromControls();
-    while (setting)
+    CGUIControl* pControl = GetFocusedControl();
+    if (pControl)
     {
-      if (controlId == iControl)
+      int iControl = pControl->GetID();
+      int controlId = CONTROL_START_SETTING;
+      const TiXmlElement* setting = GetFirstSetting();
+      UpdateFromControls();
+      while (setting)
       {
-        const char* id = setting->Attribute("id");
-        const char* value = setting->Attribute("default");
-        m_settings[id] = value;
-        CreateControls();
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
-        OnMessage(msg);
-        return true;
+        if (controlId == iControl)
+        {
+          const char* id = setting->Attribute("id");
+          const char* value = setting->Attribute("default");
+          m_settings[id] = value;
+          CreateControls();
+          CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
+          OnMessage(msg);
+          return true;
+        }
+        setting = setting->NextSiblingElement("setting");
+        controlId++;
       }
-      setting = setting->NextSiblingElement("setting");
-      controlId++;
     }
   }
-
   return CGUIDialogBoxBase::OnAction(action);
 }
 
@@ -543,7 +544,7 @@ void CGUIDialogAddonSettings::SaveSettings(void)
 
 void CGUIDialogAddonSettings::FreeSections()
 {
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
   if (group)
   {
     group->FreeResources();
@@ -551,6 +552,7 @@ void CGUIDialogAddonSettings::FreeSections()
   }
   m_settings.clear();
   m_buttonValues.clear();
+  FreeControls();
 }
 
 void CGUIDialogAddonSettings::FreeControls()
@@ -1164,4 +1166,16 @@ CStdString CGUIDialogAddonSettings::GetCurrentID() const
   if (m_addon)
     return m_addon->ID();
   return "";
+}
+
+int CGUIDialogAddonSettings::GetDefaultLabelID(int controlId) const
+{
+  if (controlId == ID_BUTTON_OK)
+    return 186;
+  else if (controlId == ID_BUTTON_CANCEL)
+    return 222;
+  else if (controlId == ID_BUTTON_DEFAULT)
+    return 409;
+
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }

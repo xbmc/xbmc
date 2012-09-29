@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -267,6 +266,20 @@ void CGUIEditControl::OnClick()
     case INPUT_TYPE_SECONDS:
       textChanged = CGUIDialogNumeric::ShowAndGetSeconds(utf8, g_localizeStrings.Get(21420));
       break;
+    case INPUT_TYPE_TIME:
+    {
+      CDateTime dateTime;
+      dateTime.SetFromDBTime(utf8);
+      SYSTEMTIME time;
+      dateTime.GetAsSystemTime(time);
+      if (CGUIDialogNumeric::ShowAndGetTime(time, heading > 0 ? heading : g_localizeStrings.Get(21420)))
+      {
+        dateTime = CDateTime(time);
+        utf8 = dateTime.GetAsLocalizedTime("", false);
+        textChanged = true;
+      }
+      break;
+    }
     case INPUT_TYPE_DATE:
     {
       CDateTime dateTime;
@@ -275,7 +288,7 @@ void CGUIEditControl::OnClick()
         dateTime = CDateTime(2000, 1, 1, 0, 0, 0);
       SYSTEMTIME date;
       dateTime.GetAsSystemTime(date);
-      if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(21420)))
+      if (CGUIDialogNumeric::ShowAndGetDate(date, heading > 0 ? heading : g_localizeStrings.Get(21420)))
       {
         dateTime = CDateTime(date);
         utf8 = dateTime.GetAsDBDate();
@@ -291,6 +304,9 @@ void CGUIEditControl::OnClick()
       break;
     case INPUT_TYPE_FILTER:
       textChanged = CGUIKeyboardFactory::ShowAndGetFilter(utf8, false);
+      break;
+    case INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW:
+      textChanged = CGUIDialogNumeric::ShowAndVerifyNewPassword(utf8);
       break;
     case INPUT_TYPE_PASSWORD_MD5:
       utf8 = ""; // TODO: Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
@@ -458,7 +474,7 @@ void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
 {
-  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5)
+  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
   {
     CStdStringW text;
     text.append(m_text2.size(), L'*');
@@ -485,7 +501,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
   g_charsetConverter.utf8ToW(text, newText);
   if (newText != m_text2)
   {
-    m_isMD5 = m_inputType == INPUT_TYPE_PASSWORD_MD5;
+    m_isMD5 = (m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW);
     m_text2 = newText;
     m_cursorPos = m_text2.size();
     SetInvalid();
@@ -503,12 +519,13 @@ CStdString CGUIEditControl::GetLabel2() const
 
 bool CGUIEditControl::ClearMD5()
 {
-  if (m_inputType != INPUT_TYPE_PASSWORD_MD5 || !m_isMD5)
+  if (!(m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW) || !m_isMD5)
     return false;
   
   m_text2.Empty();
   m_cursorPos = 0;
-  m_isMD5 = false;
+  if (m_inputType != INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
+    m_isMD5 = false;
   return true;
 }
 

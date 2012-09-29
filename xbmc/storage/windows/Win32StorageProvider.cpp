@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "Win32StorageProvider.h"
@@ -61,6 +60,11 @@ void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
   CWIN32Util::GetDrivesByType(removableDrives, REMOVABLE_DRIVES, true);
+}
+
+std::string CWin32StorageProvider::GetFirstOpticalDeviceFileName()
+{
+  return CWIN32Util::GetFirstOpticalDrive();
 }
 
 bool CWin32StorageProvider::Eject(CStdString mountpath)

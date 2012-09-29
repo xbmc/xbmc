@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,7 @@
 
 #include "JSONRPCUtils.h"
 #include "interfaces/IAnnouncer.h"
+#include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
 
@@ -394,6 +394,26 @@ namespace JSONRPC
       stringArray.clear();
       for (CVariant::const_iterator_array it = jsonStringArray.begin_array(); it != jsonStringArray.end_array(); it++)
         stringArray.push_back(it->asString());
+    }
+
+    static bool GetXspFiltering(const CStdString &type, const CVariant &filter, CStdString &xsp)
+    {
+      if (type.empty() || !filter.isObject())
+        return false;
+
+      CVariant xspObj(CVariant::VariantTypeObject);
+      xspObj["type"] = type;
+
+      if (filter.isMember("field"))
+      {
+        xspObj["rules"]["and"] = CVariant(CVariant::VariantTypeArray);
+        xspObj["rules"]["and"].push_back(filter);
+      }
+      else
+        xspObj["rules"] = filter;
+
+      CSmartPlaylist playlist;
+      return playlist.Load(xspObj) && playlist.SaveAsJson(xsp, false);
     }
   };
 }

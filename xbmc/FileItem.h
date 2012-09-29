@@ -5,7 +5,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,9 +19,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -43,6 +42,16 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
+namespace EPG
+{
+  class CEpgInfoTag;
+}
+namespace PVR
+{
+  class CPVRChannel;
+  class CPVRRecording;
+  class CPVRTimerInfoTag;
+}
 class CPictureInfoTag;
 
 class CAlbum;
@@ -76,6 +85,10 @@ public:
   CFileItem(const CGenre& genre);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
+  CFileItem(const EPG::CEpgInfoTag& tag);
+  CFileItem(const PVR::CPVRChannel& channel);
+  CFileItem(const PVR::CPVRRecording& record);
+  CFileItem(const PVR::CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
@@ -133,6 +146,10 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
+  bool IsEPG() const;
+  bool IsPVRChannel() const;
+  bool IsPVRRecording() const;
+  bool IsPVRTimer() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -146,6 +163,7 @@ public:
   bool IsHDHomeRun() const;
   bool IsSlingbox() const;
   bool IsVTP() const;
+  bool IsPVR() const;
   bool IsLiveTV() const;
   bool IsRSS() const;
   bool IsAndroidApp() const;
@@ -155,6 +173,7 @@ public:
   void FillInDefaultIcon();
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
+  virtual void SetLabel2(const CStdString &strLabel);
   CURL GetAsUrl() const;
   int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
@@ -185,6 +204,54 @@ public:
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
     return m_videoInfoTag;
+  }
+
+  inline bool HasEPGInfoTag() const
+  {
+    return m_epgInfoTag != NULL;
+  }
+
+  EPG::CEpgInfoTag* GetEPGInfoTag();
+
+  inline const EPG::CEpgInfoTag* GetEPGInfoTag() const
+  {
+    return m_epgInfoTag;
+  }
+
+  inline bool HasPVRChannelInfoTag() const
+  {
+    return m_pvrChannelInfoTag != NULL;
+  }
+
+  PVR::CPVRChannel* GetPVRChannelInfoTag();
+
+  inline const PVR::CPVRChannel* GetPVRChannelInfoTag() const
+  {
+    return m_pvrChannelInfoTag;
+  }
+
+  inline bool HasPVRRecordingInfoTag() const
+  {
+    return m_pvrRecordingInfoTag != NULL;
+  }
+
+  PVR::CPVRRecording* GetPVRRecordingInfoTag();
+
+  inline const PVR::CPVRRecording* GetPVRRecordingInfoTag() const
+  {
+    return m_pvrRecordingInfoTag;
+  }
+
+  inline bool HasPVRTimerInfoTag() const
+  {
+    return m_pvrTimerInfoTag != NULL;
+  }
+
+  PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag();
+
+  inline const PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag() const
+  {
+    return m_pvrTimerInfoTag;
   }
 
   inline bool HasPictureInfoTag() const
@@ -300,6 +367,10 @@ private:
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
+  EPG::CEpgInfoTag* m_epgInfoTag;
+  PVR::CPVRChannel* m_pvrChannelInfoTag;
+  PVR::CPVRRecording* m_pvrRecordingInfoTag;
+  PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
 };

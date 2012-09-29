@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -229,9 +228,6 @@ bool CCoreAudioUnit::SetRenderProc()
 
   m_renderProc = RenderCallback;
 
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetRenderProc: "
-    "Set RenderProc %p for unit %p", m_renderProc, m_audioUnit);
-
   return true;
 }
 
@@ -253,9 +249,6 @@ bool CCoreAudioUnit::RemoveRenderProc()
       "Unable to remove AudioUnit render callback. Error = %s", GetError(ret).c_str());
     return false;
   }
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::RemoveRenderProc: "
-    "Remove RenderProc %p for unit %p", m_renderProc, m_audioUnit);
 
   m_renderProc = NULL;
   Sleep(100);
@@ -421,9 +414,6 @@ bool CAUOutputDevice::SetCurrentDevice(AudioDeviceID deviceId)
 
   m_DeviceId = deviceId;
 
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetCurrentDevice: "
-    "Current device 0x%08x", (uint)m_DeviceId);
-
   return true;
 }
 
@@ -538,7 +528,7 @@ bool CAUOutputDevice::EnableInputOuput()
   if (hasio)
   {
     UInt32 enable;
-    enable = 1;
+    enable = 0;
     ret =  AudioUnitSetProperty(m_audioUnit,
       kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, kInputBus, &enable, sizeof(enable));
     if (ret != noErr)

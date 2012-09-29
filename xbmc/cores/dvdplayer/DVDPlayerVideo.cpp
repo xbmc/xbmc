@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -139,6 +138,9 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_started = false;
   m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
+  m_FlipTimeStamp = 0.0;
+  m_iLateFrames = 0;
+  m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
@@ -148,8 +150,17 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
+  m_bCalcFrameRate = false;
+  m_fStableFrameRate = 0.0;
+  m_iFrameRateCount = 0;
+  m_bAllowDrop = false;
+  m_iFrameRateErr = 0;
+  m_iFrameRateLength = 0;
   m_bFpsInvalid = false;
   m_bAllowFullscreen = false;
+  m_droptime = 0.0;
+  m_dropbase = 0.0;
+  m_autosync = 1;
   memset(&m_output, 0, sizeof(m_output));
 }
 
@@ -1287,8 +1298,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
   else
   {
-    m_droptime = 0.0f;
-    m_dropbase = 0.0f;
+    m_droptime = 0.0;
+    m_dropbase = 0.0;
   }
 
   // set fieldsync if picture is interlaced

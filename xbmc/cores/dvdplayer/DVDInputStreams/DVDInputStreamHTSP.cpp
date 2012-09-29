@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -195,7 +194,7 @@ bool CDVDInputStreamHTSP::GetChannels(SChannelV &channels, SChannelV::iterator &
   return false;
 }
 
-bool CDVDInputStreamHTSP::NextChannel()
+bool CDVDInputStreamHTSP::NextChannel(bool preview/* = false*/)
 {
   SChannelV channels;
   SChannelV::iterator it;
@@ -209,7 +208,7 @@ bool CDVDInputStreamHTSP::NextChannel()
     return SetChannel(circ->id);
 }
 
-bool CDVDInputStreamHTSP::PrevChannel()
+bool CDVDInputStreamHTSP::PrevChannel(bool preview/* = false*/)
 {
   SChannelV channels;
   SChannelV::iterator it;
@@ -223,7 +222,7 @@ bool CDVDInputStreamHTSP::PrevChannel()
     return SetChannel(circ->id);
 }
 
-bool CDVDInputStreamHTSP::SelectChannel(unsigned int channel)
+bool CDVDInputStreamHTSP::SelectChannelByNumber(unsigned int channel)
 {
   return SetChannel(channel);
 }
@@ -253,9 +252,9 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
 
 int CDVDInputStreamHTSP::GetTotalTime()
 {
-  if(m_event.id == 0)
-    return 0;
-  return (m_event.stop - m_event.start) * 1000;
+    if(m_event.id == 0)
+        return 0;
+    return (m_event.stop - m_event.start) * 1000;
 }
 
 int CDVDInputStreamHTSP::GetTime()

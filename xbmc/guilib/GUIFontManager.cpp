@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -244,7 +243,7 @@ void GUIFontManager::Unload(const CStdString& strFontName)
 {
   for (vector<CGUIFont*>::iterator iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
   {
-    if ((*iFont)->GetFontName() == strFontName)
+    if ((*iFont)->GetFontName().Equals(strFontName))
     {
       delete (*iFont);
       m_vecFonts.erase(iFont);
@@ -271,7 +270,7 @@ CGUIFontTTFBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
   {
     CGUIFontTTFBase* pFont = (CGUIFontTTFBase *)m_vecFontFiles[i];
-    if (pFont->GetFileName() == strFileName)
+    if (pFont->GetFileName().Equals(strFileName))
       return pFont;
   }
   return NULL;
@@ -282,7 +281,7 @@ CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName, bool fallback /
   for (int i = 0; i < (int)m_vecFonts.size(); ++i)
   {
     CGUIFont* pFont = m_vecFonts[i];
-    if (pFont->GetFontName() == strFontName)
+    if (pFont->GetFontName().Equals(strFontName))
       return pFont;
   }
   // fall back to "font13" if we have none
@@ -420,7 +419,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
         if (pNode)
         {
           CStdString strFontFileName = pNode->FirstChild()->Value();
-          if (strFontFileName.Find(".ttf") >= 0)
+          if (strFontFileName.ToLower().Find(".ttf") >= 0)
           {
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;
