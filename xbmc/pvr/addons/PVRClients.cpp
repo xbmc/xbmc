@@ -302,9 +302,9 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
       // stream URL should always be opened as a new file
       !channel.StreamURL().IsEmpty() || !currentChannel->StreamURL().IsEmpty())
   {
-    CloseStream();
     if (channel.StreamURL().IsEmpty())
     {
+      CloseStream();
       bSwitchSuccessful = OpenStream(channel, true);
     }
     else
