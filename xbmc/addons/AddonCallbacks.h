@@ -43,7 +43,13 @@ typedef int64_t (*AddOnGetFilePosition)(const void* addonData, void* file);
 typedef int64_t (*AddOnGetFileLength)(const void* addonData, void* file);
 typedef void (*AddOnCloseFile)(const void* addonData, void* file);
 typedef int (*AddOnGetFileChunkSize)(const void* addonData, void* file);
+typedef bool (*AddOnFileExists)(const void* addonData, const char *strFileName, bool bUseCache);
+typedef int (*AddOnStatFile)(const void* addonData, const char *strFileName, struct __stat64* buffer);
+typedef bool (*AddOnDeleteFile)(const void* addonData, const char *strFileName);
 typedef bool (*AddOnCanOpenDirectory)(const void* addonData, const char* strURL);
+typedef bool (*AddOnCreateDirectory)(const void* addonData, const char *strPath);
+typedef bool (*AddOnDirectoryExists)(const void* addonData, const char *strPath);
+typedef bool (*AddOnRemoveDirectory)(const void* addonData, const char *strPath);
 
 typedef struct CB_AddOn
 {
@@ -66,7 +72,13 @@ typedef struct CB_AddOn
   AddOnGetFileLength      GetFileLength;
   AddOnCloseFile          CloseFile;
   AddOnGetFileChunkSize   GetFileChunkSize;
+  AddOnFileExists         FileExists;
+  AddOnStatFile           StatFile;
+  AddOnDeleteFile         DeleteFile;
   AddOnCanOpenDirectory   CanOpenDirectory;
+  AddOnCreateDirectory    CreateDirectory;
+  AddOnDirectoryExists    DirectoryExists;
+  AddOnRemoveDirectory    RemoveDirectory;
 } CB_AddOnLib;
 
 typedef void (*GUILock)();
