@@ -687,6 +687,7 @@ int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputForma
     }
 
     s->duration = s->start_time = AV_NOPTS_VALUE;
+    s->timestamp_mask = AV_PTS_MASK;
     av_strlcpy(s->filename, filename, sizeof(s->filename));
 
     /* allocate private data */
@@ -1699,6 +1700,8 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
         return pos_min;
     }
 
+    target_ts = (target_ts - ts_min) & s->timestamp_mask;
+
     if(ts_max == AV_NOPTS_VALUE){
         int step= 1024;
         filesize = avio_size(s->pb);
@@ -1706,6 +1709,8 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
         do{
             pos_max -= step;
             ts_max = read_timestamp(s, stream_index, &pos_max, pos_max + step);
+            if(ts_max != AV_NOPTS_VALUE)
+                ts_max = (ts_max - ts_min) & s->timestamp_mask;
             step += step;
         }while(ts_max == AV_NOPTS_VALUE && pos_max >= step);
         if (ts_max == AV_NOPTS_VALUE)
@@ -1716,13 +1721,17 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
             int64_t tmp_ts= read_timestamp(s, stream_index, &tmp_pos, INT64_MAX);
             if(tmp_ts == AV_NOPTS_VALUE)
                 break;
-            ts_max= tmp_ts;
+            ts_max= (tmp_ts - ts_min) & s->timestamp_mask;
             pos_max= tmp_pos;
             if(tmp_pos >= filesize)
                 break;
         }
         pos_limit= pos_max;
-    }
+    }else
+        ts_max = (ts_max - ts_min) & s->timestamp_mask;
+
+    int64_t ts_min_orig = ts_min;
+    ts_min = 0;
 
     if(ts_max <= target_ts){
         *ts_ret= ts_max;
@@ -1773,6 +1782,7 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
             return -1;
         }
         assert(ts != AV_NOPTS_VALUE);
+        ts = (ts - ts_min_orig) & s->timestamp_mask;
         if (target_ts <= ts) {
             pos_limit = start_pos - 1;
             pos_max = pos;
@@ -1786,6 +1796,7 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
 
     pos = (flags & AVSEEK_FLAG_BACKWARD) ? pos_min : pos_max;
     ts  = (flags & AVSEEK_FLAG_BACKWARD) ?  ts_min :  ts_max;
+    ts  = (ts + ts_min_orig) & s->timestamp_mask;
 #if 0
     pos_min = pos;
     ts_min = read_timestamp(s, stream_index, &pos_min, INT64_MAX);

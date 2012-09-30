@@ -1979,6 +1979,9 @@ static int mpegts_read_header(AVFormatContext *s,
     int len;
     int64_t pos;
 
+    /* set the MPEG TS specific timestamp mask */
+    s->timestamp_mask = TS_PCR_MASK;
+
     /* read the first 8192 bytes to get packet size */
     pos = avio_tell(pb);
     len = avio_read(pb, buf, sizeof(buf));

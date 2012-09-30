@@ -58,6 +58,8 @@
 #define STREAM_TYPE_AUDIO_AC3       0x81
 #define STREAM_TYPE_AUDIO_DTS       0x8a
 
+#define TS_PCR_MASK    INT64_C(0x00000001FFFFFFFF)
+
 typedef struct MpegTSContext MpegTSContext;
 
 MpegTSContext *ff_mpegts_parse_open(AVFormatContext *s);

@@ -1234,6 +1234,15 @@ typedef struct AVFormatContext {
     /* av_seek_frame() support */
     int64_t data_offset; /**< offset of the first packet */
 #endif
+
+    /**
+     * Mask for the timestamp, defines the maximum value in each
+     * video format. Added to support PCR wrapping in MPEG TS.
+     * Should be set in read_header of input format. Default is
+     * 0x7FFFFFFFFFFFFFFF.
+     */
+    int64_t timestamp_mask;
+
 } AVFormatContext;
 
 typedef struct AVPacketList {

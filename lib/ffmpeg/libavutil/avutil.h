@@ -280,6 +280,12 @@ const char *av_get_media_type_string(enum AVMediaType media_type);
 #define AV_NOPTS_VALUE          INT64_C(0x8000000000000000)
 
 /**
+ * @brief Default mask for valid timestamp values
+ */
+
+#define AV_PTS_MASK             INT64_C(0x7FFFFFFFFFFFFFFF)
+
+/**
  * Internal time base represented as integer
  */
 
