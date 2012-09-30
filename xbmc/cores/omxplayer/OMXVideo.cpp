@@ -205,6 +205,20 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
           m_video_codec_name = "omx-h264";
           break;
       }
+
+      /* check interlaced */
+      uint8_t *extradata = (uint8_t *)hints.extradata;
+      if(hints.extrasize > 9 && extradata[0] == 1)
+      {
+        int32_t  max_ref_frames = 0;
+        uint8_t  *spc = extradata + 6;
+        uint32_t sps_size = BS_RB16(spc);
+        bool     interlaced = true;
+        if (sps_size)
+          m_converter->parseh264_sps(spc+3, sps_size-1, &interlaced, &max_ref_frames);
+        if(!interlaced && deinterlace)
+          deinterlace = false;
+      }
     }
     break;
     case CODEC_ID_MPEG4:
@@ -249,7 +263,12 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
     break;
   }
 
-  m_deinterlace = deinterlace;
+  /* enable deintelace on SD and 1080i */
+  if(m_decoded_width <= 720 && m_decoded_height <=576 && deinterlace)
+    m_deinterlace = deinterlace;
+  else if(m_decoded_width >= 1920 && m_decoded_height >= 540 && deinterlace)
+    m_deinterlace = deinterlace;
+
   if(m_deinterlace)
     CLog::Log(LOGDEBUG, "COMXVideo::Open : enable deinterlace\n");
 
@@ -601,14 +620,6 @@ void COMXVideo::Close()
   if(!m_is_open)
     return;
 
-  /*
-  if(m_av_clock)
-  {
-    m_av_clock->Lock();
-    m_av_clock->OMXStop(false);
-  }
-  */
-
   m_omx_tunnel_decoder.Flush();
   if(m_deinterlace)
     m_omx_tunnel_image_fx.Flush();
@@ -628,14 +639,6 @@ void COMXVideo::Close()
     m_omx_image_fx.Deinitialize();
   m_omx_decoder.Deinitialize();
   m_omx_render.Deinitialize();
-
-  /*
-  if(m_av_clock)
-  {
-    m_av_clock->OMXReset(false);
-    m_av_clock->UnLock();
-  }
-  */
 
   m_is_open       = false;
 
