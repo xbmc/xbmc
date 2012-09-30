@@ -1824,10 +1824,7 @@ void CApplication::StopZeroconf()
 void CApplication::StartPVRManager()
 {
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
-  {
-    g_EpgContainer.Start();
-    g_PVRManager.Start();
-  }
+    g_PVRManager.Start(true);
 }
 
 void CApplication::StopPVRManager()

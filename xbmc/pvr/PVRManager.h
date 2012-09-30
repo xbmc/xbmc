@@ -112,8 +112,9 @@ namespace PVR
 
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
+     * @param bAsync True to (re)start the manager from another thread
      */
-    void Start(void);
+    void Start(bool bAsync = false);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.

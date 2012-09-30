@@ -39,6 +39,7 @@
 #include "utils/StringUtils.h"
 #include "threads/Atomics.h"
 #include "windows/GUIWindowPVRCommon.h"
+#include "utils/JobManager.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -124,8 +125,28 @@ void CPVRManager::ResetProperties(void)
   }
 }
 
-void CPVRManager::Start(void)
+class CPVRManagerStartJob : public CJob
 {
+public:
+  CPVRManagerStartJob(void) {}
+  ~CPVRManagerStartJob(void) {}
+
+  bool DoWork(void)
+  {
+    g_PVRManager.Start(false);
+    return true;
+  }
+};
+
+void CPVRManager::Start(bool bAsync /* = false */)
+{
+  if (bAsync)
+  {
+    CPVRManagerStartJob *job = new CPVRManagerStartJob;
+    CJobManager::GetInstance().AddJob(job, NULL);
+    return;
+  }
+
   CSingleLock lock(m_critSection);
 
   /* first stop and remove any clients */
