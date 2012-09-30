@@ -71,7 +71,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.GoNext",                                CPlayerOperations::GoNext },
   { "Player.GoTo",                                  CPlayerOperations::GoTo },
   { "Player.SetShuffle",                            CPlayerOperations::SetShuffle },
-  { "Player.Repeat",                                CPlayerOperations::Repeat },
+  { "Player.SetRepeat",                             CPlayerOperations::SetRepeat },
   { "Player.SetPartymode",                          CPlayerOperations::SetPartymode },
   
   { "Player.SetAudioStream",                        CPlayerOperations::SetAudioStream },

@@ -631,15 +631,33 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const CStdString &method, ITranspor
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::Repeat(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetRepeat(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
-      CApplicationMessenger::Get().PlayListPlayerRepeat(GetPlaylist(GetPlayer(parameterObject["playerid"])), (REPEAT_STATE)ParseRepeatState(parameterObject["state"]));
+    {
+      REPEAT_STATE repeat = REPEAT_NONE;
+      int playlistid = GetPlaylist(GetPlayer(parameterObject["playerid"]));
+      if (parameterObject["repeat"].asString() == "cycle")
+      {
+        REPEAT_STATE repeatPrev = g_playlistPlayer.GetRepeat(playlistid);
+        repeat = repeatPrev;
+        if (repeatPrev == REPEAT_NONE)
+          repeat = REPEAT_ALL;
+        else if (repeatPrev == REPEAT_ALL)
+          repeat = REPEAT_ONE;
+        else
+          repeat = REPEAT_NONE;
+      }
+      else
+        repeat = (REPEAT_STATE)ParseRepeatState(parameterObject["repeat"]);
+
+      CApplicationMessenger::Get().PlayListPlayerRepeat(playlistid, repeat);
       OnPlaylistChanged();
       break;
+    }
 
     case Picture:
     default:
