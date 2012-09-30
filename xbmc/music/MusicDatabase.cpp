@@ -1432,7 +1432,7 @@ bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& item
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
@@ -1477,7 +1477,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
     while (!m_pDS->eof())
     {
@@ -1512,7 +1512,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -1552,7 +1552,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
     while (!m_pDS->eof())
     {
@@ -1587,7 +1587,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -1628,7 +1628,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     while (!m_pDS->eof())
@@ -1664,7 +1664,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -2647,7 +2647,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -2702,7 +2702,7 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -2841,7 +2841,7 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filte
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // store the total value of items as a property
@@ -3029,7 +3029,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
     if (iRowsFound <= 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // store the total value of items as a property
@@ -3128,7 +3128,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // store the total value of items as a property
