@@ -325,64 +325,36 @@ JSONRPC_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::MoveLeft(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Move(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  std::string direction = parameterObject["direction"].asString();
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Picture:
-      SendSlideshowAction(ACTION_MOVE_LEFT);
+      if (direction == "left")
+        SendSlideshowAction(ACTION_MOVE_LEFT);
+      else if (direction == "right")
+        SendSlideshowAction(ACTION_MOVE_RIGHT);
+      else if (direction == "up")
+        SendSlideshowAction(ACTION_MOVE_UP);
+      else if (direction == "down")
+        SendSlideshowAction(ACTION_MOVE_DOWN);
+      else
+        return InvalidParams;
+
       return ACK;
 
     case Video:
     case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
+      if (direction == "left" || direction == "up")
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_PREV_ITEM));
+      else if (direction == "right" || direction == "down")
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_NEXT_ITEM));
+      else
+        return InvalidParams;
 
-JSONRPC_STATUS CPlayerOperations::MoveRight(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_MOVE_RIGHT);
       return ACK;
 
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::MoveDown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_MOVE_DOWN);
-      return ACK;
-
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::MoveUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_MOVE_UP);
-      return ACK;
-
-    case Video:
-    case Audio:
     case None:
     default:
       return FailedToExecute;
