@@ -67,8 +67,6 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.Rotate",                                CPlayerOperations::Rotate },
   
   { "Player.Open",                                  CPlayerOperations::Open },
-  { "Player.GoPrevious",                            CPlayerOperations::GoPrevious },
-  { "Player.GoNext",                                CPlayerOperations::GoNext },
   { "Player.GoTo",                                  CPlayerOperations::GoTo },
   { "Player.SetShuffle",                            CPlayerOperations::SetShuffle },
   { "Player.SetRepeat",                             CPlayerOperations::SetRepeat },

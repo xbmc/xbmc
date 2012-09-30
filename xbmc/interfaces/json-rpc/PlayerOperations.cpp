@@ -518,55 +518,50 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
   return InvalidParams;
 }
 
-JSONRPC_STATUS CPlayerOperations::GoPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Video:
-    case Audio:
-      CApplicationMessenger::Get().SendAction(CAction(ACTION_PREV_ITEM));
-      return ACK;
-
-    case Picture:
-      SendSlideshowAction(ACTION_PREV_PICTURE);
-      return ACK;
-
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::GoNext(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Video:
-    case Audio:
-      CApplicationMessenger::Get().SendAction(CAction(ACTION_NEXT_ITEM));
-      return ACK;
-
-    case Picture:
-      SendSlideshowAction(ACTION_NEXT_PICTURE);
-      return ACK;
-
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
 JSONRPC_STATUS CPlayerOperations::GoTo(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int position = (int)parameterObject["position"].asInteger();
+  CVariant to = parameterObject["to"];
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
-      CApplicationMessenger::Get().PlayListPlayerPlay(position);
+      if (to.isString())
+      {
+        std::string strTo = to.asString();
+        int actionID;
+        if (strTo == "previous")
+          actionID = ACTION_PREV_ITEM;
+        else if (strTo == "next")
+          actionID = ACTION_NEXT_ITEM;
+        else
+          return InvalidParams;
+
+        CApplicationMessenger::Get().SendAction(CAction(actionID));
+      }
+      else if (to.isInteger())
+        CApplicationMessenger::Get().PlayListPlayerPlay((int)to.asInteger());
+      else
+        return InvalidParams;
       break;
 
     case Picture:
+      if (to.isString())
+      {
+        std::string strTo = to.asString();
+        int actionID;
+        if (strTo == "previous")
+          actionID = ACTION_PREV_PICTURE;
+        else if (strTo == "next")
+          actionID = ACTION_NEXT_PICTURE;
+        else
+          return InvalidParams;
+
+        SendSlideshowAction(actionID);
+      }
+      else
+        return FailedToExecute;
+      break;
+
     case None:
     default:
       return FailedToExecute;
