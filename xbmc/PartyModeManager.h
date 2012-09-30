@@ -56,6 +56,7 @@ public:
   int GetMatchingSongsLeft();
   int GetRelaxedSongs();
   int GetRandomSongs();
+  PartyModeContext GetType() const;
 
 private:
   void Process();

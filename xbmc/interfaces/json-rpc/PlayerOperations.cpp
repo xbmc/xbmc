@@ -681,6 +681,56 @@ JSONRPC_STATUS CPlayerOperations::Repeat(const CStdString &method, ITransportLay
   return ACK;
 }
 
+JSONRPC_STATUS CPlayerOperations::SetPartymode(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  PlayerType player = GetPlayer(parameterObject["playerid"]);
+  switch (player)
+  {
+    case Video:
+    case Audio:
+    {
+      bool change = false;
+      PartyModeContext context = PARTYMODECONTEXT_UNKNOWN;
+      std::string strContext;
+      if (player == Video)
+      {
+        context = PARTYMODECONTEXT_VIDEO;
+        strContext = "video";
+      }
+      else if (player == Audio)
+      {
+        context = PARTYMODECONTEXT_MUSIC;
+        strContext = "music";
+      }
+
+      bool toggle = parameterObject["partymode"].isString();
+      if (g_partyModeManager.IsEnabled())
+      {
+        if (g_partyModeManager.GetType() != context)
+          return InvalidParams;
+
+        if (toggle || parameterObject["partymode"].asBoolean() == false)
+          change = true;
+      }
+      else
+      {
+        if (toggle || parameterObject["partymode"].asBoolean() == true)
+          change = true;
+      }
+
+      if (change)
+        CApplicationMessenger::Get().ExecBuiltIn("playercontrol(partymode(" + strContext + "))");
+      break;
+    }
+
+    case Picture:
+    default:
+      return FailedToExecute;
+  }
+
+  return ACK;
+}
+
 JSONRPC_STATUS CPlayerOperations::SetAudioStream(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   switch (GetPlayer(parameterObject["playerid"]))

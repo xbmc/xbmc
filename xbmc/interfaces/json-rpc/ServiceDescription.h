@@ -1457,6 +1457,17 @@ namespace JSONRPC
       "],"
       "\"returns\": \"string\""
     "}",
+    "\"Player.SetPartymode\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Turn partymode on or off\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlPlayback\","
+      "\"params\": ["
+        "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true },"
+        "{ \"name\": \"partymode\", \"$ref\": \"Global.Toggle\", \"required\": true }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
     "\"Player.SetAudioStream\": {"
       "\"type\": \"method\","
       "\"description\": \"Set the audio stream played by the player\","
