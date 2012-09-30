@@ -99,7 +99,7 @@ public:
   std::string       GetName()        { return m_componentName; };
 
   OMX_ERRORTYPE DisableAllPorts();
-  void          Remove(OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2);
+  void          RemoveEvent(OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2);
   OMX_ERRORTYPE AddEvent(OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2);
   OMX_ERRORTYPE WaitForEvent(OMX_EVENTTYPE event, long timeout = 300);
   OMX_ERRORTYPE WaitForCommand(OMX_U32 command, OMX_U32 nData2, long timeout = 2000);
@@ -133,6 +133,8 @@ public:
   OMX_ERRORTYPE DecoderFillBufferDone(
     OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBuffer);
 
+  void TransitionToStateLoaded();
+
   OMX_ERRORTYPE EmptyThisBuffer(OMX_BUFFERHEADERTYPE *omx_buffer);
   OMX_ERRORTYPE FillThisBuffer(OMX_BUFFERHEADERTYPE *omx_buffer);
   OMX_ERRORTYPE FreeOutputBuffer(OMX_BUFFERHEADERTYPE *omx_buffer);
@@ -153,8 +155,8 @@ public:
   OMX_ERRORTYPE AllocInputBuffers(bool use_buffers = false);
   OMX_ERRORTYPE AllocOutputBuffers(bool use_buffers = false);
 
-  OMX_ERRORTYPE FreeInputBuffers(bool wait);
-  OMX_ERRORTYPE FreeOutputBuffers(bool wait);
+  OMX_ERRORTYPE FreeInputBuffers();
+  OMX_ERRORTYPE FreeOutputBuffers();
 
   bool IsEOS() { return m_eos; };
 
@@ -186,7 +188,6 @@ private:
   unsigned int  m_output_buffer_size;
   unsigned int  m_output_buffer_count;
   bool          m_omx_output_use_buffers;
-  sem_t         m_omx_fill_buffer_done;
 
   bool          m_exit;
   DllOMX        *m_DllOMX;
