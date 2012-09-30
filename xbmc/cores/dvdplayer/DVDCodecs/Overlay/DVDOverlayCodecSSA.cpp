@@ -62,10 +62,18 @@ void CDVDOverlayCodecSSA::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duration)
+int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 {
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
+  
+  if(!pPacket)
+    return OC_ERROR;
+  
+  double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
+  BYTE *data = pPacket->pData;
+  int size = pPacket->iSize;
+  double duration = pPacket->duration;
 
   if(strncmp((const char*)data, "Dialogue:", 9) == 0)
   {

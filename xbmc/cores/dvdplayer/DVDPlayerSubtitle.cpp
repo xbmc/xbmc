@@ -70,43 +70,15 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
     if (m_pOverlayCodec)
     {
-      double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
-      double duration = pPacket->duration;
-      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize, pts, duration);
+      int result = m_pOverlayCodec->Decode(pPacket);
 
       if(result == OC_OVERLAY)
       {
         CDVDOverlay* overlay;
+
         while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
         {
           overlay->iGroupId = pPacket->iGroupId;
-
-          // we assume pts is better than what
-          // decoder gives us, only take duration
-          // from decoder if available
-          if(overlay->iPTSStopTime > overlay->iPTSStartTime)
-            duration = overlay->iPTSStopTime - overlay->iPTSStartTime;
-          else if(pPacket->duration != DVD_NOPTS_VALUE)
-            duration = pPacket->duration;
-          else
-            duration = 0.0;
-
-          if     (pPacket->pts != DVD_NOPTS_VALUE)
-            pts = pPacket->pts;
-          else if(pPacket->dts != DVD_NOPTS_VALUE)
-            pts = pPacket->dts;
-          else
-            pts = overlay->iPTSStartTime;
-
-          overlay->iPTSStartTime = pts;
-          if(duration)
-            overlay->iPTSStopTime = pts + duration;
-          else
-          {
-            overlay->iPTSStopTime = 0;
-            overlay->replace = true;
-          }
-
           m_pOverlayContainer->Add(overlay);
           overlay->Release();
         }
