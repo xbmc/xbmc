@@ -12,6 +12,37 @@ extern "C" {
 };
 
 #define A10DEBUG
+#define MEDIAINFO
+
+/*Cedar Decoder*/
+#define A10ENABLE_MPEG1
+#define A10ENABLE_MPEG2
+#define A10ENABLE_H264
+//#define A10ENABLE_H263
+//#define A10ENABLE_VC1_WVC1
+#define A10ENABLE_VP6
+#define A10ENABLE_VP8
+#define A10ENABLE_FLV1
+#define A10ENABLE_MJPEG
+#define A10ENABLE_WMV1
+//#define A10ENABLE_WMV2
+//#define A10ENABLE_WMV3
+//#define A10ENABLE_MPEG4V1
+//#define A10ENABLE_MPEG4V2
+//#define A10ENABLE_MPEG4V3
+//#define A10ENABLE_XVID
+//#define A10ENABLE_DIVX5
+
+/*
+TODO:- Finish adding MPEG4 codecs tags 
+     - Find out whats causing problems with several codecs, something is wrong or missing in the maping.
+     - Add RealVideo once .rm files can be opened.
+     - AVS and RMG2 codec support.
+
+Note: AllWinner doc says to add FLV container type to VP6 and FLV1, but if i do so they stop working.
+*/
+
+#define _4CC(c1,c2,c3,c4) (((u32)(c4)<<24)|((u32)(c3)<<16)|((u32)(c2)<<8)|(u32)(c1))
 
 CDVDVideoCodecA10::CDVDVideoCodecA10()
 {
@@ -43,95 +74,172 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   memset(&m_info, 0, sizeof(m_info));
   //m_info.frame_rate       = (double)hints.fpsrate / hints.fpsscale * 1000;
-  m_info.frame_duration   = 0;
-  m_info.video_width      = hints.width;
-  m_info.video_height     = hints.height;
-  m_info.aspect_ratio     = 1000;
-  m_info.sub_format       = CEDARV_SUB_FORMAT_UNKNOW;
+  m_info.frame_duration = 0;
+  m_info.video_width = hints.width;
+  m_info.video_height = hints.height;
+  m_info.aspect_ratio = 1000;
+  m_info.sub_format = CEDARV_SUB_FORMAT_UNKNOW;
+  m_info.container_format = CEDARV_CONTAINER_FORMAT_UNKNOW;
+  m_info.init_data_len = 0;
+  m_info.init_data = NULL;
+
+#ifdef MEDIAINFO
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: CodecID %d \n", hints.codec);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: StreamType %d \n", hints.type);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Level %d \n", hints.level);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Profile %d \n", hints.profile);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: PTS_invalid %d \n", hints.ptsinvalid);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Tag %d \n", hints.codec_tag);
+  { u8 *pb = (u8*)&hints.codec_tag;
+    if (isalnum(pb[0]) && isalnum(pb[1]) && isalnum(pb[2]) && isalnum(pb[3]))
+      CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Tag fourcc %c%c%c%c\n", pb[0], pb[1], pb[2], pb[3]);
+  }
+#endif
 
   switch(hints.codec) {
-  //TODO: all the mapping ...
-
-  //*CEDARV_STREAM_FORMAT_MPEG2
+  //MPEG1
+#ifdef A10ENABLE_MPEG1
   case CODEC_ID_MPEG1VIDEO:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG2;
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG2;
     m_info.sub_format = CEDARV_MPEG2_SUB_FORMAT_MPEG1;
     break;
+#endif
+    //MPEG2
+#ifdef A10ENABLE_MPEG2
   case CODEC_ID_MPEG2VIDEO:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG2;
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG2;
     m_info.sub_format = CEDARV_MPEG2_SUB_FORMAT_MPEG2;
     break;
-
-  //*CEDARV_STREAM_FORMAT_H264
+#endif
+    //H263
+#ifdef A10ENABLE_H263
+  case CODEC_ID_H263:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_H263;
+    break;
+#endif
+    //H264
+#ifdef A10ENABLE_H264
   case CODEC_ID_H264:
     m_info.format = CEDARV_STREAM_FORMAT_H264;
     m_info.init_data_len = hints.extrasize;
-    m_info.init_data     = (u8*)hints.extradata;
-    break;
-
-#if 0 //to be done
-  //*CEDARV_STREAM_FORMAT_MPEG4
-  case CODEC_ID_MPEG4:
-    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
-    break;
-
-    //DIVX4
-    //DIVX5
-    //SORENSSON_H263
-    //H263
-    //RMG2
-
-    //VP6
-  case CODEC_ID_VP6F:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG4;
-    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_VP6;
-    m_info.init_data_len = hints.extrasize;
-    m_info.init_data     = (u8*)hints.extradata;
-    break;
-    //WMV1
-  case CODEC_ID_WMV1:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG4;
-    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_WMV1;
-    break;
-    //WMV2
-  case CODEC_ID_WMV2:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG4;
-    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_WMV2;
-    break;
-    //DIVX1
-  case CODEC_ID_MSMPEG4V1:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG4;
-    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX1;
-    break;
-    //DIVX2
-  case CODEC_ID_MSMPEG4V2:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG4;
-    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX2;
-    break;
-    //DIVX3
-  case CODEC_ID_MSMPEG4V3:
-    m_info.format     = CEDARV_STREAM_FORMAT_MPEG4;
-    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX3;
-    break;
-
-  //*CEDARV_STREAM_FORMAT_REALVIDEO
-
-  //*CEDARV_STREAM_FORMAT_VC1
-
-  //*CEDARV_STREAM_FORMAT_AVS
-
-  //*CEDARV_STREAM_FORMAT_MJPEG
-  case CODEC_ID_MJPEG:
-    m_info.format = CEDARV_STREAM_FORMAT_MJPEG;
-    break;
-
-  //*CEDARV_STREAM_FORMAT_VP8
-  case CODEC_ID_VP8:
-    m_info.format = CEDARV_STREAM_FORMAT_VP8;
+    m_info.init_data = (u8*)hints.extradata;
+    if(hints.codec_tag==27) //M2TS and TS
+      m_info.container_format = CEDARV_CONTAINER_FORMAT_TS;
     break;
 #endif
+    //VP6
+#ifdef A10ENABLE_VP6
+  case CODEC_ID_VP6F:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_VP6;
+    //m_info.container_format = CEDARV_CONTAINER_FORMAT_FLV;
+    break;
+#endif
+    //WMV1
+#ifdef A10ENABLE_WMV1
+  case CODEC_ID_WMV1:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_WMV1;
+    break;
+#endif
+    //WMV2
+#ifdef A10ENABLE_WMV2
+  case CODEC_ID_WMV2:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_WMV2;
+    break;
+#endif
+    //WMV3
+#ifdef A10ENABLE_WMV3
+  case CODEC_ID_WMV3:
+    m_info.format = CEDARV_STREAM_FORMAT_VC1;
+    m_info.init_data_len = hints.extrasize;
+    m_info.init_data = (u8*)hints.extradata;
+    break;
+#endif
+    //VC1 and WVC1
+#ifdef A10ENABLE_VC1_WVC1
+  case CODEC_ID_VC1:
+    m_info.format = CEDARV_STREAM_FORMAT_VC1;
+    m_info.init_data_len = hints.extrasize;
+    m_info.init_data = (u8*)hints.extradata;
+    break;
+#endif
+    //MJPEG
+#ifdef A10ENABLE_MJPEG
+  case CODEC_ID_MJPEG:
+    m_info.format = CEDARV_STREAM_FORMAT_MJPEG;
+    m_info.init_data_len = hints.extrasize;
+    m_info.init_data = (u8*)hints.extradata;
+    break;
+#endif
+    //VP8
+#ifdef A10ENABLE_VP8
+  case CODEC_ID_VP8:
+    m_info.format = CEDARV_STREAM_FORMAT_VP8;
+    m_info.init_data_len = hints.extrasize;
+    m_info.init_data = (u8*)hints.extradata;
+    break;
+#endif
+    //MSMPEG4V1
+#ifdef A10ENABLE_MPEG4V1
+  case CODEC_ID_MSMPEG4V1:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX1;
+    break;
+#endif
+    //MSMPEG4V2
+#ifdef A10ENABLE_MPEG4V2
+  case CODEC_ID_MSMPEG4V2:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX2;
+    break;
+#endif
+    //MSMPEG4V3
+#ifdef A10ENABLE_MPEG4V3
+  case CODEC_ID_MSMPEG4V3:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX3;
+    break;
+#endif
+    //Sorensson Spark (FLV1)
+#ifdef A10ENABLE_FLV1
+  case CODEC_ID_FLV1:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_SORENSSON_H263;
+    //m_info.container_format = CEDARV_CONTAINER_FORMAT_FLV;
+    break;
+#endif
+    //Detected as MPEG4 (ID 13)
+  case CODEC_ID_MPEG4:
+    m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
+    switch(hints.codec_tag)
+    {
+    //XVID
+#ifdef A10ENABLE_XVID
+    case _4CC('X','V','I','D'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_XVID;
+      break;
+#endif
+    //MP42(MSMPEG4V2)
+#ifdef A10ENABLE_MPEG4V2
+    case _4CC('m','p','4','v'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX2;
+      break;
+#endif
+    //DX50/DIVX5
+#ifdef A10ENABLE_DIVX5
+    case _4CC('D','X','5','0'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX5;
+      break;
+#endif
+    default:
+      CLog::Log(LOGERROR, "A10: (MPEG4)Codec Tag %d is unknown.\n", hints.codec_tag);
+      return false;
+    }
+    break;
 
-  //*
   default:
     CLog::Log(LOGERROR, "A10: codecid %d is unknown.\n", hints.codec);
     return false;
@@ -145,12 +253,12 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   ret = m_hcedarv->set_vstream_info(m_hcedarv, &m_info);
   if (ret < 0) {
-    CLog::Log(LOGERROR, "A10: set_vstream_m_info failed. (%d)\n", ret);
+    CLog::Log(LOGERROR, "A10: set_vstream_info failed. (%d)\n", ret);
     return false;
   }
 
   ret = m_hcedarv->open(m_hcedarv);
-  if(ret < 0) {
+  if (ret < 0) {
     CLog::Log(LOGERROR, "A10: open failed. (%d)\n", ret);
     return false;
   }
@@ -170,7 +278,6 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 #endif
 
   CLog::Log(LOGDEBUG, "A10: cedar open.");
-
   return true;
 }
 
@@ -260,8 +367,8 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
       }
     }
 
-    cdx_scaler_para.width_in   = picture.width;
-    cdx_scaler_para.height_in  = picture.height;
+    cdx_scaler_para.width_in   = picture.display_width;
+    cdx_scaler_para.height_in  = picture.display_height;
     cdx_scaler_para.addr_y_in  = mem_get_phy_addr((u32)picture.y);
     cdx_scaler_para.addr_c_in  = mem_get_phy_addr((u32)picture.u);
     cdx_scaler_para.width_out  = picture.display_width;
@@ -270,8 +377,8 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
     cdx_scaler_para.addr_u_out = cdx_scaler_para.addr_y_out + ysize;
     cdx_scaler_para.addr_v_out = cdx_scaler_para.addr_u_out + csize/2;
 
-    m_picture.iWidth  = picture.width;
-    m_picture.iHeight = picture.height;
+    m_picture.iWidth  = picture.display_width;
+    m_picture.iHeight = picture.display_height;
 
     /* XXX: we suppose the screen has a 1.0 pixel ratio */ // CDVDVideo will compensate it.
     m_picture.iDisplayHeight = m_picture.iHeight;
