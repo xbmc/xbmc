@@ -946,7 +946,7 @@ namespace JSONRPC
         "\"studio\": { \"$ref\": \"Array.String\" },"
         "\"mpaa\": { \"type\": \"string\" },"
         "\"cast\": { \"$ref\": \"Video.Cast\" },"
-        "\"country\": { \"type\": \"string\" },"
+        "\"country\": { \"$ref\": \"Array.String\" },"
         "\"imdbnumber\": { \"type\": \"string\" },"
         "\"premiered\": { \"type\": \"string\" },"
         "\"productioncode\": { \"type\": \"string\" },"
