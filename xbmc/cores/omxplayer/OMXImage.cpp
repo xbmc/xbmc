@@ -99,9 +99,9 @@ void COMXImage::Close()
   if(m_decoder_open)
   {
     m_omx_decoder.FlushInput();
-    m_omx_decoder.FreeInputBuffers(true);
+    m_omx_decoder.FreeInputBuffers();
     m_omx_resize.FlushOutput();
-    m_omx_resize.FreeOutputBuffers(true);
+    m_omx_resize.FreeOutputBuffers();
 
     m_omx_tunnel_decode.Flush();
     m_omx_tunnel_decode.Flush();

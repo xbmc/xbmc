@@ -707,8 +707,6 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
 
 bool OMXPlayerAudio::OpenDecoder()
 {
-  bool bAudioRenderOpen = false;
-
   m_nChannels   = m_hints.channels;
   m_passthrough = false;
   m_hw_decode   = false;
@@ -717,7 +715,6 @@ bool OMXPlayerAudio::OpenDecoder()
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
-  m_av_clock->HasAudio(false);
 
   /* setup audi format for audio render */
   m_format.m_sampleRate    = m_hints.samplerate;
@@ -732,17 +729,14 @@ bool OMXPlayerAudio::OpenDecoder()
   else
     device = "local";
 
-  bAudioRenderOpen = m_omxAudio.Initialize(m_format, device, m_av_clock, m_hints, m_passthrough, m_hw_decode);
+  bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, device, m_av_clock, m_hints, m_passthrough, m_hw_decode);
 
   m_codec_name = "";
   
   if(!bAudioRenderOpen)
   {
     CLog::Log(LOGERROR, "OMXPlayerAudio : Error open audio output");
-    m_av_clock->HasAudio(false);
-    m_av_clock->OMXReset(false);
-    m_av_clock->UnLock();
-    return false;
+    m_omxAudio.Deinitialize();
   }
   else
   {
@@ -750,19 +744,19 @@ bool OMXPlayerAudio::OpenDecoder()
       m_codec_name.c_str(), m_nChannels, m_hints.samplerate, m_hints.bitspersample);
   }
 
-  m_av_clock->HasAudio(true);
+  m_av_clock->HasAudio(bAudioRenderOpen);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
 
-  return true;
+  return bAudioRenderOpen;
 }
 
 void OMXPlayerAudio::CloseDecoder()
 {
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
-  m_omxAudio.Deinitialize();
   m_av_clock->HasAudio(false);
+  m_omxAudio.Deinitialize();
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
 
