@@ -38,144 +38,139 @@
 
 using namespace std;
 
-AddonCB *m_Handle = NULL;
-CB_PVRLib *m_cb   = NULL;
-
 extern "C"
 {
 
-DLLEXPORT int PVR_register_me(void *hdl)
+DLLEXPORT void* PVR_register_me(void *hdl)
 {
+  CB_PVRLib *cb = NULL;
   if (!hdl)
     fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
   else
   {
-    m_Handle = (AddonCB*) hdl;
-    m_cb     = m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
-    if (!m_cb)
+    cb = ((AddonCB*)hdl)->PVRLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    if (!cb)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from XBMC !!!\n");
-    else
-      return 1;
   }
-  return 0;
+  return cb;
 }
 
-DLLEXPORT void PVR_unregister_me()
+DLLEXPORT void PVR_unregister_me(void *hdl, void* cb)
 {
-  if (m_Handle && m_cb)
-    m_Handle->PVRLib_UnRegisterMe(m_Handle->addonData, m_cb);
+  if (hdl && cb)
+    ((AddonCB*)hdl)->PVRLib_UnRegisterMe(((AddonCB*)hdl)->addonData, (CB_PVRLib*)cb);
 }
 
-DLLEXPORT void PVR_transfer_epg_entry(const ADDON_HANDLE handle, const EPG_TAG *epgentry)
+DLLEXPORT void PVR_transfer_epg_entry(void *hdl, void* cb, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TransferEpgEntry(m_Handle->addonData, handle, epgentry);
+  ((CB_PVRLib*)cb)->TransferEpgEntry(((AddonCB*)hdl)->addonData, handle, epgentry);
 }
 
-DLLEXPORT void PVR_transfer_channel_entry(const ADDON_HANDLE handle, const PVR_CHANNEL *chan)
+DLLEXPORT void PVR_transfer_channel_entry(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_CHANNEL *chan)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TransferChannelEntry(m_Handle->addonData, handle, chan);
+  ((CB_PVRLib*)cb)->TransferChannelEntry(((AddonCB*)hdl)->addonData, handle, chan);
 }
 
-DLLEXPORT void PVR_transfer_timer_entry(const ADDON_HANDLE handle, const PVR_TIMER *timer)
+DLLEXPORT void PVR_transfer_timer_entry(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_TIMER *timer)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TransferTimerEntry(m_Handle->addonData, handle, timer);
+  ((CB_PVRLib*)cb)->TransferTimerEntry(((AddonCB*)hdl)->addonData, handle, timer);
 }
 
-DLLEXPORT void PVR_transfer_recording_entry(const ADDON_HANDLE handle, const PVR_RECORDING *recording)
+DLLEXPORT void PVR_transfer_recording_entry(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TransferRecordingEntry(m_Handle->addonData, handle, recording);
+  ((CB_PVRLib*)cb)->TransferRecordingEntry(((AddonCB*)hdl)->addonData, handle, recording);
 }
 
-DLLEXPORT void PVR_add_menu_hook(PVR_MENUHOOK *hook)
+DLLEXPORT void PVR_add_menu_hook(void *hdl, void* cb, PVR_MENUHOOK *hook)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->AddMenuHook(m_Handle->addonData, hook);
+  ((CB_PVRLib*)cb)->AddMenuHook(((AddonCB*)hdl)->addonData, hook);
 }
 
-DLLEXPORT void PVR_recording(const char *Name, const char *FileName, bool On)
+DLLEXPORT void PVR_recording(void *hdl, void* cb, const char *Name, const char *FileName, bool On)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->Recording(m_Handle->addonData, Name, FileName, On);
+  ((CB_PVRLib*)cb)->Recording(((AddonCB*)hdl)->addonData, Name, FileName, On);
 }
 
-DLLEXPORT void PVR_trigger_channel_update()
+DLLEXPORT void PVR_trigger_channel_update(void *hdl, void* cb)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TriggerChannelUpdate(m_Handle->addonData);
+  ((CB_PVRLib*)cb)->TriggerChannelUpdate(((AddonCB*)hdl)->addonData);
 }
 
-DLLEXPORT void PVR_trigger_channel_groups_update()
+DLLEXPORT void PVR_trigger_channel_groups_update(void *hdl, void* cb)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TriggerChannelGroupsUpdate(m_Handle->addonData);
+  ((CB_PVRLib*)cb)->TriggerChannelGroupsUpdate(((AddonCB*)hdl)->addonData);
 }
 
-DLLEXPORT void PVR_trigger_timer_update()
+DLLEXPORT void PVR_trigger_timer_update(void *hdl, void* cb)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TriggerTimerUpdate(m_Handle->addonData);
+  ((CB_PVRLib*)cb)->TriggerTimerUpdate(((AddonCB*)hdl)->addonData);
 }
 
-DLLEXPORT void PVR_trigger_recording_update()
+DLLEXPORT void PVR_trigger_recording_update(void *hdl, void* cb)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TriggerRecordingUpdate(m_Handle->addonData);
+  ((CB_PVRLib*)cb)->TriggerRecordingUpdate(((AddonCB*)hdl)->addonData);
 }
 
-DLLEXPORT void PVR_free_demux_packet(DemuxPacket* pPacket)
+DLLEXPORT void PVR_free_demux_packet(void *hdl, void* cb, DemuxPacket* pPacket)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->FreeDemuxPacket(m_Handle->addonData, pPacket);
+  ((CB_PVRLib*)cb)->FreeDemuxPacket(((AddonCB*)hdl)->addonData, pPacket);
 }
 
-DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(int iDataSize)
+DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(void *hdl, void* cb, int iDataSize)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return NULL;
 
-  return m_cb->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
+  return ((CB_PVRLib*)cb)->AllocateDemuxPacket(((AddonCB*)hdl)->addonData, iDataSize);
 }
 
-DLLEXPORT void PVR_transfer_channel_group(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+DLLEXPORT void PVR_transfer_channel_group(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TransferChannelGroup(m_Handle->addonData, handle, group);
+  ((CB_PVRLib*)cb)->TransferChannelGroup(((AddonCB*)hdl)->addonData, handle, group);
 }
 
-DLLEXPORT void PVR_transfer_channel_group_member(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+DLLEXPORT void PVR_transfer_channel_group_member(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->TransferChannelGroupMember(m_Handle->addonData, handle, member);
+  ((CB_PVRLib*)cb)->TransferChannelGroupMember(((AddonCB*)hdl)->addonData, handle, member);
 }
 
 };
