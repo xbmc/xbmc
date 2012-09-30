@@ -63,9 +63,6 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.SetSpeed",                              CPlayerOperations::SetSpeed },
   { "Player.Seek",                                  CPlayerOperations::Seek },
   { "Player.Move",                                  CPlayerOperations::Move },
-
-  { "Player.ZoomOut",                               CPlayerOperations::ZoomOut },
-  { "Player.ZoomIn",                                CPlayerOperations::ZoomIn },
   { "Player.Zoom",                                  CPlayerOperations::Zoom },
   { "Player.Rotate",                                CPlayerOperations::Rotate },
   

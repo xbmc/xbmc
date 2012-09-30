@@ -361,44 +361,27 @@ JSONRPC_STATUS CPlayerOperations::Move(const CStdString &method, ITransportLayer
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::ZoomOut(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_ZOOM_OUT);
-      return ACK;
-
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::ZoomIn(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_ZOOM_IN);
-      return ACK;
-
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
 JSONRPC_STATUS CPlayerOperations::Zoom(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  CVariant zoom = parameterObject["zoom"];
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Picture:
-      SendSlideshowAction(ACTION_ZOOM_LEVEL_NORMAL + ((int)parameterObject["value"].asInteger() - 1));
+      if (zoom.isInteger())
+        SendSlideshowAction(ACTION_ZOOM_LEVEL_NORMAL + ((int)zoom.asInteger() - 1));
+      else if (zoom.isString())
+      {
+        std::string strZoom = zoom.asString();
+        if (strZoom == "in")
+          SendSlideshowAction(ACTION_ZOOM_IN);
+        else if (strZoom == "out")
+          SendSlideshowAction(ACTION_ZOOM_OUT);
+        else
+          return InvalidParams;
+      }
+      else
+        return InvalidParams;
+
       return ACK;
 
     case Video:

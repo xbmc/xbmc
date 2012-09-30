@@ -260,34 +260,18 @@
     ],
     "returns": "string"
   },
-  "Player.ZoomOut": {
-    "type": "method",
-    "description": "Zoom out once",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.ZoomIn": {
-    "type": "method",
-    "description": "Zoom in once",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
   "Player.Zoom": {
     "type": "method",
-    "description": "Zooms current picture",
+    "description": "Zoom current picture",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "value", "type": "integer", "required": true, "minimum": 1, "maximum": 10, "description": "Zoom level" }
+      { "name": "zoom", "type": [
+          { "type": "string", "enum": [ "in", "out" ], "required": true },
+          { "type": "integer", "minimum": 1, "maximum": 10, "description": "zoom level", "required": true }
+        ],
+      "required": true }
     ],
     "returns": "string"
   },
