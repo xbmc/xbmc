@@ -694,11 +694,21 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     case OPERATOR_AFTER:
     case OPERATOR_GREATER_THAN:
     case OPERATOR_IN_THE_LAST:
-      operatorString = " > '%s'"; break;
+      operatorString = " > ";
+      if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
+        operatorString += "%s";
+      else
+        operatorString += "'%s'";
+      break;
     case OPERATOR_BEFORE:
     case OPERATOR_LESS_THAN:
     case OPERATOR_NOT_IN_THE_LAST:
-      operatorString = " < '%s'"; break;
+      operatorString = " < ";
+      if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
+        operatorString += "%s";
+      else
+        operatorString += "'%s'";
+      break;
     case OPERATOR_TRUE:
       operatorString = " = 1"; break;
     case OPERATOR_FALSE:
@@ -897,7 +907,16 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     }
 
     if (query.IsEmpty() && m_field != FieldNone)
-      query = GetField(m_field,strType) + negate + parameter;
+    {
+      string fmt = "%s";
+      if (GetFieldType(m_field) == NUMERIC_FIELD)
+        fmt = "CAST(%s as DECIMAL(5,1))";
+      else if (GetFieldType(m_field) == SECONDS_FIELD)
+        fmt = "CAST(%s as INTEGER)";
+
+      query.Format(fmt.c_str(), GetField(m_field,strType).c_str());
+      query += negate + parameter;
+    }
     
     it++;
     if (query.Equals(negate + parameter))
