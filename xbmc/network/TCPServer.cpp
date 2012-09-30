@@ -134,6 +134,7 @@ void CTCPServer::Process()
           char buffer[RECEIVEBUFFER] = {};
           int  nread = 0;
           nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
+          bool close = false;
           if (nread > 0)
           {
             std::string response;
@@ -157,8 +158,12 @@ void CTCPServer::Process()
             if (response.size() <= 0)
               m_connections[i]->PushBuffer(this, buffer, nread);
 
+            close = m_connections[i]->Closing();
           }
-          if (nread <= 0)
+          else
+            close = true;
+
+          if (close)
           {
             CLog::Log(LOGINFO, "JSONRPC Server: Disconnection detected");
             m_connections[i]->Disconnect();

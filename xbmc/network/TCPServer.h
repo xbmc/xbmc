@@ -70,6 +70,7 @@ namespace JSONRPC
       virtual void Disconnect();
 
       virtual bool IsNew() const { return m_new; }
+      virtual bool Closing() const { return false; }
 
       SOCKET           m_socket;
       sockaddr_storage m_cliaddr;
@@ -100,6 +101,7 @@ namespace JSONRPC
       virtual void Disconnect();
 
       virtual bool IsNew() const { return m_websocket == NULL; }
+      virtual bool Closing() const { return m_websocket != NULL && m_websocket->GetState() == WebSocketStateClosed; }
 
     private:
       CWebSocket *m_websocket;
