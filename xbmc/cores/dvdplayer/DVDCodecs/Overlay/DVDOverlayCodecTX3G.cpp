@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "DVDClock.h"
 #include "DVDOverlayCodecTX3G.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
@@ -85,14 +86,16 @@ void CDVDOverlayCodecTX3G::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double duration)
+int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 {
   if (m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 
+  BYTE *data = pPacket->pData;
+  int size = pPacket->iSize;
+
   m_pOverlay = new CDVDOverlayText();
-  m_pOverlay->iPTSStartTime = pts;
-  m_pOverlay->iPTSStopTime  = pts + duration;
+  CDVDOverlayCodec::GetAbsoluteTimes(m_pOverlay->iPTSStartTime, m_pOverlay->iPTSStopTime, pPacket, m_pOverlay->replace);
 
   // do not move this. READ_XXXX macros modify pos.
   uint8_t  *pos = data;

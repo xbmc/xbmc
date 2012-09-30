@@ -1396,6 +1396,9 @@ int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub,
     avctx->pkt = avpkt;
     *got_sub_ptr = 0;
     avcodec_get_subtitle_defaults(sub);
+    if (avctx->time_base.den && avpkt->pts != AV_NOPTS_VALUE)
+        sub->pts = av_rescale_q(avpkt->pts,
+                                avctx->time_base, AV_TIME_BASE_Q);
     ret = avctx->codec->decode(avctx, sub, got_sub_ptr, avpkt);
     if (*got_sub_ptr)
         avctx->frame_number++;
