@@ -59,7 +59,9 @@ enum AEDataFormat
   AE_FMT_EAC3,
   AE_FMT_TRUEHD,
   AE_FMT_DTSHD,
-  AE_FMT_LPCM,
+#ifdef TARGET_DARWIN
+  AE_FMT_LPCM, /* used for the CoreAudio-specific multichannel hog mode; data is identical to AE_FMT_FLOAT */
+#endif
 
   AE_FMT_MAX
 };
