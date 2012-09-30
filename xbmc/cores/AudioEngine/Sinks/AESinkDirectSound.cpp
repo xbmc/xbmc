@@ -595,6 +595,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Activate device failed (%s)", WASAPIErrToStr(hr));
+      goto failed;
     }
 
     //hr = pClient->GetMixFormat(&pwfxex);

@@ -333,6 +333,9 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   ManageDisplay();
 
+  if (m_RenderUpdateCallBackFn)
+	  (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
+
   Render(flags);
 }
 
