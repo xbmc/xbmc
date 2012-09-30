@@ -603,9 +603,7 @@ CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket)
 
 CTCPServer::CWebSocketClient::CWebSocketClient(const CWebSocketClient& client)
 {
-  Copy(client);
-
-  m_websocket = client.m_websocket; // TODO
+  *this = client;
 }
 
 CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket, const CTCPClient& client)
@@ -624,7 +622,7 @@ CTCPServer::CWebSocketClient& CTCPServer::CWebSocketClient::operator=(const CWeb
 {
   Copy(client);
 
-  m_websocket = client.m_websocket; // TODO
+  m_websocket = client.m_websocket;
 
   return *this;
 }
