@@ -407,6 +407,11 @@ void CStreamDetails::Archive(CArchive& ar)
 }
 void CStreamDetails::Serialize(CVariant& value)
 {
+  // make sure these properties are always present
+  value["audio"] = CVariant(CVariant::VariantTypeArray);
+  value["video"] = CVariant(CVariant::VariantTypeArray);
+  value["subtitle"] = CVariant(CVariant::VariantTypeArray);
+
   std::vector<CStreamDetail *>::const_iterator iter;
   CVariant v;
   for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
