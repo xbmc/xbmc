@@ -576,42 +576,55 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const CStdString &method, ITransportLayer
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CGUIWindowSlideShow *slideshow = NULL;
+  CVariant shuffle = parameterObject["shuffle"];
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
-      CApplicationMessenger::Get().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), true);
-      OnPlaylistChanged();
+    {
+      int playlistid = GetPlaylist(GetPlayer(parameterObject["playerid"]));
+      if (g_playlistPlayer.IsShuffled(playlistid))
+      {
+        if ((shuffle.isBoolean() && !shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+        {
+          CApplicationMessenger::Get().PlayListPlayerShuffle(playlistid, false);
+          OnPlaylistChanged();
+        }
+      }
+      else
+      {
+        if ((shuffle.isBoolean() && shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+        {
+          CApplicationMessenger::Get().PlayListPlayerShuffle(playlistid, true);
+          OnPlaylistChanged();
+        }
+      }
       break;
+    }
 
     case Picture:
       slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-      if (slideshow && !slideshow->IsShuffled())
-        slideshow->Shuffle();
-      else if (!slideshow)
+      if (slideshow == NULL)
         return FailedToExecute;
+      if (slideshow->IsShuffled())
+      {
+        if ((shuffle.isBoolean() && !shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+          return FailedToExecute;
+      }
+      else
+      {
+        if ((shuffle.isBoolean() && shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+          slideshow->Shuffle();
+      }
       break;
 
-    default:
-      return FailedToExecute;
-  }
-  return ACK;
-}
-
-JSONRPC_STATUS CPlayerOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Video:
-    case Audio:
-      CApplicationMessenger::Get().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), false);
-      OnPlaylistChanged();
-      break;
-
-    case Picture:
     default:
       return FailedToExecute;
   }
