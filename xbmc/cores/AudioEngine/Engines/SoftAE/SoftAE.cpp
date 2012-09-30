@@ -336,8 +336,6 @@ void CSoftAE::InternalOpenSink()
     CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
     CLog::Log(LOGINFO, "  Channel Count : %d", newFormat.m_channelLayout.Count());
     CLog::Log(LOGINFO, "  Channel Layout: %s", ((std::string)newFormat.m_channelLayout).c_str());
-    CLog::Log(LOGINFO, "  Frames        : %d", newFormat.m_frames);
-    CLog::Log(LOGINFO, "  Frame Samples : %d", newFormat.m_frameSamples);
     CLog::Log(LOGINFO, "  Frame Size    : %d", newFormat.m_frameSize);
 
     m_sinkFormat              = newFormat;
@@ -424,7 +422,6 @@ void CSoftAE::InternalOpenSink()
     m_frameSize      = m_bytesPerSample * m_chLayout.Count();
   }
 
-  CLog::Log(LOGDEBUG, "CSoftAE::InternalOpenSink - Internal Buffer Size: %d", neededBufferSize);
   if (m_buffer.Size() < neededBufferSize)
     m_buffer.Alloc(neededBufferSize);
 
