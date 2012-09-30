@@ -315,6 +315,9 @@ void CSoftAE::InternalOpenSink()
       m_sink = NULL;
     }
 
+    /* get the display name of the device */
+    GetDeviceFriendlyName(device);
+
     /* if we already have a driver, prepend it to the device string */
     if (!driver.empty())
       device = driver + ":" + device;
@@ -331,7 +334,7 @@ void CSoftAE::InternalOpenSink()
     ASSERT(newFormat.m_sampleRate            > 0);
 
     CLog::Log(LOGINFO, "CSoftAE::InternalOpenSink - %s Initialized:", m_sink->GetName());
-    CLog::Log(LOGINFO, "  Output Device : %s", device.c_str());
+    CLog::Log(LOGINFO, "  Output Device : %s", m_deviceFriendlyName.c_str());
     CLog::Log(LOGINFO, "  Sample Rate   : %d", newFormat.m_sampleRate);
     CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
     CLog::Log(LOGINFO, "  Channel Count : %d", newFormat.m_channelLayout.Count());
@@ -604,6 +607,26 @@ void CSoftAE::VerifySoundDevice(std::string& device, bool passthrough)
 
   /* if the device wasnt found, set it to the first viable output */
   device = firstDevice;
+}
+
+inline void CSoftAE::GetDeviceFriendlyName(std::string &device)
+{
+  m_deviceFriendlyName = "Device not found";
+  /* Match the device and find its friendly name */
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    AESinkInfo sinkInfo = *itt;
+    for (AEDeviceInfoList::iterator itt2 = sinkInfo.m_deviceInfoList.begin(); itt2 != sinkInfo.m_deviceInfoList.end(); ++itt2)
+    {
+      CAEDeviceInfo& devInfo = *itt2;
+      if (devInfo.m_deviceName == device)
+      {
+        m_deviceFriendlyName = devInfo.m_displayName;
+        break;
+      }
+    }
+  }
+  return;
 }
 
 void CSoftAE::Deinitialize()
