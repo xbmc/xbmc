@@ -262,7 +262,11 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_UPDATE:
     if (HasID(message.GetSenderId()))
-      UpdateSettings();
+    {
+      int focusedControl = GetFocusedControlID();
+      CreateSettings();
+      SET_CONTROL_FOCUS(focusedControl, 0);
+    }
     break;
   case GUI_MSG_NOTIFY_ALL:
     {
