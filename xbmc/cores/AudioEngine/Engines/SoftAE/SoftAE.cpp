@@ -425,6 +425,7 @@ void CSoftAE::InternalOpenSink()
     m_frameSize      = m_bytesPerSample * m_chLayout.Count();
   }
 
+  CLog::Log(LOGDEBUG, "CSoftAE::InternalOpenSink - Internal Buffer Size: %d", neededBufferSize);
   if (m_buffer.Size() < neededBufferSize)
     m_buffer.Alloc(neededBufferSize);
 
