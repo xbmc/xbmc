@@ -45,19 +45,19 @@ int aml_get_sysfs_str(const char *path, char *valstr, const int size)
     read(fd, valstr, size - 1);
     valstr[strlen(valstr)] = '\0';
     close(fd);
-  } else {
-    sprintf(valstr, "%s", "fail");
-    return -1;
+    return 0;
   }
-  return 0;
+
+  sprintf(valstr, "%s", "fail");
+  return -1;
 }
 
 int aml_set_sysfs_int(const char *path, const int val)
 {
-  char bcmd[16];
   int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
   if (fd >= 0)
   {
+    char bcmd[16];
     sprintf(bcmd, "%d", val);
     write(fd, bcmd, strlen(bcmd));
     close(fd);
@@ -69,10 +69,10 @@ int aml_set_sysfs_int(const char *path, const int val)
 int aml_get_sysfs_int(const char *path)
 {
   int val = 0;
-  char bcmd[16];
   int fd = open(path, O_RDONLY);
   if (fd >= 0)
   {
+    char bcmd[16];
     read(fd, bcmd, sizeof(bcmd));
     val = strtol(bcmd, NULL, 16);
     close(fd);
@@ -90,7 +90,6 @@ bool aml_present()
     else
       has_aml = 0;
   }
-
   return has_aml;
 }
 
@@ -125,20 +124,11 @@ void aml_cpufreq_limit(bool limit)
   if (audiotrack_cputype == 3)
     return;
 
-  int cpufreq;
+  int cpufreq = 300000;
   if (limit)
     cpufreq = 600000;
-  else
-    cpufreq = 300000;
 
-  int fd = open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", O_CREAT | O_RDWR | O_TRUNC, 0644);
-  if (fd >= 0)
-  {
-    char bcmd[16];
-    sprintf(bcmd, "%d", cpufreq);
-    write(fd, bcmd, strlen(bcmd));
-    close(fd);
-  }
+  aml_set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", cpufreq);
 }
 
 void aml_set_audio_passthrough(bool passthrough)
