@@ -98,7 +98,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 item->SetLabel("Music Library");
                 item->SetLabelPreformated(true);
             } else {
-                if (!item->HasMusicInfoTag() || !item->GetMusicInfoTag()->Loaded() )
+                if (!item->HasMusicInfoTag())
                     item->LoadMusicTag();
 
                 if (!item->HasThumbnail() )
