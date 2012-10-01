@@ -1466,6 +1466,17 @@
     "params": [ ],
     "returns": "string"
   },
+  "GUI.ActivateWindow": {
+    "type": "method",
+    "description": "Activates the given window",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      { "name": "window", "$ref": "GUI.Window", "required": true },
+      { "name": "parameters", "type": "array", "items": { "type": "string", "minLength": 1, "required": true }, "minItems": 1 }
+    ],
+    "returns": "string"
+  },
   "GUI.ShowNotification": {
     "type": "method",
     "description": "Shows a GUI notification",

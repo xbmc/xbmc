@@ -41,9 +41,13 @@ void CJSONRPC::Initialize()
     return;
 
   // Add some types/enums at runtime
-  vector<string> inputActions;
-  CButtonTranslator::GetActions(inputActions);
-  CJSONServiceDescription::AddEnum("Input.Action", inputActions);
+  vector<string> enumList;
+  CButtonTranslator::GetActions(enumList);
+  CJSONServiceDescription::AddEnum("Input.Action", enumList);
+
+  enumList.clear();
+  CButtonTranslator::GetWindows(enumList);
+  CJSONServiceDescription::AddEnum("GUI.Window", enumList);
 
   // filter-related enums
   vector<string> smartplaylistList;
