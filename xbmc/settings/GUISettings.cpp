@@ -1526,8 +1526,8 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
       if (info.iScreen != screen)
         continue;
-      float score = 10 * (square_error((float)info.iWidth, (float)width) +
-        square_error((float)info.iHeight, (float)height) +
+      float score = 10 * (square_error((float)info.iScreenWidth, (float)width) +
+        square_error((float)info.iScreenHeight, (float)height) +
         square_error(info.fRefreshRate, refresh) +
         square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100:200), (float)interlaced));
       if (score < bestScore)
@@ -1552,7 +1552,7 @@ void CGUISettings::SetResolution(RESOLUTION res)
   {
     const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
     mode.Format("%1i%05i%05i%09.5f%s", info.iScreen,
-      info.iWidth, info.iHeight, info.fRefreshRate,
+      info.iScreenWidth, info.iScreenHeight, info.fRefreshRate,
       (info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i":"p");
   }
   else

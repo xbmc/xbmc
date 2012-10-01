@@ -541,6 +541,8 @@ void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
     if (g_settings.m_ResInfo[i].iScreen      == res.iScreen &&
         g_settings.m_ResInfo[i].iWidth       == res.iWidth &&
         g_settings.m_ResInfo[i].iHeight      == res.iHeight &&
+        g_settings.m_ResInfo[i].iScreenWidth == res.iScreenWidth &&
+        g_settings.m_ResInfo[i].iScreenHeight== res.iScreenHeight &&
         g_settings.m_ResInfo[i].fRefreshRate == res.fRefreshRate &&
         g_settings.m_ResInfo[i].dwFlags      == res.dwFlags)
       return; // already have this resolution

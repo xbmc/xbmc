@@ -269,6 +269,8 @@ void CWinSystemX11::UpdateResolutions()
       RESOLUTION_INFO res;
       res.iWidth  = mode.w;
       res.iHeight = mode.h;
+      res.iScreenWidth  = mode.w;
+      res.iScreenHeight = mode.h;
       if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
         res.fPixelRatio = ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
       else
