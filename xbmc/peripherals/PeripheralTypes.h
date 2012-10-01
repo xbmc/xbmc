@@ -47,7 +47,8 @@ namespace PERIPHERALS
     FEATURE_NYXBOARD,
     FEATURE_CEC,
     FEATURE_BLUETOOTH,
-    FEATURE_TUNER
+    FEATURE_TUNER,
+    FEATURE_IMON
   };
 
   enum PeripheralType
@@ -59,7 +60,8 @@ namespace PERIPHERALS
     PERIPHERAL_NYXBOARD,
     PERIPHERAL_CEC,
     PERIPHERAL_BLUETOOTH,
-    PERIPHERAL_TUNER
+    PERIPHERAL_TUNER,
+    PERIPHERAL_IMON 
   };
 
   struct PeripheralID
@@ -99,6 +101,8 @@ namespace PERIPHERALS
         return "nyxboard";
       case PERIPHERAL_TUNER:
         return "tuner";
+      case PERIPHERAL_IMON:
+        return "imon";
       default:
         return "unknown";
       }
@@ -123,6 +127,8 @@ namespace PERIPHERALS
         return PERIPHERAL_NYXBOARD;
       else if (strTypeLowerCase.Equals("tuner"))
         return PERIPHERAL_TUNER;
+      else if (strTypeLowerCase.Equals("imon"))
+        return PERIPHERAL_IMON;
 
       return PERIPHERAL_UNKNOWN;
     };
