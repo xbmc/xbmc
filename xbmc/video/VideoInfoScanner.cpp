@@ -84,6 +84,7 @@ namespace VIDEO
       m_bCanInterrupt = true;
 
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Starting scan ..");
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
 
       // Reset progress vars
       m_currentItem = 0;

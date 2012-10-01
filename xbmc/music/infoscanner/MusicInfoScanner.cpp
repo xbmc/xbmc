@@ -73,6 +73,7 @@ CMusicInfoScanner::~CMusicInfoScanner()
 
 void CMusicInfoScanner::Process()
 {
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
     unsigned int tick = XbmcThreads::SystemClockMillis();
