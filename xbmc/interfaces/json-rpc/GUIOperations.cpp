@@ -23,6 +23,7 @@
 #include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "interfaces/Builtins.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/AddonManager.h"
 #include "settings/GUISettings.h"
@@ -49,6 +50,21 @@ JSONRPC_STATUS CGUIOperations::GetProperties(const CStdString &method, ITranspor
   result = properties;
 
   return OK;
+}
+
+JSONRPC_STATUS CGUIOperations::ActivateWindow(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVariant params = parameterObject["parameters"];
+  std::string cmd = "ActivateWindow(" + parameterObject["window"].asString();
+  for (CVariant::iterator_array param = params.begin_array(); param != params.end_array(); param++)
+  {
+    if (param->isString() && !param->empty())
+      cmd += "," + param->asString();
+  }
+  cmd += ")";
+  CBuiltins::Execute(cmd);
+
+  return ACK;
 }
 
 JSONRPC_STATUS CGUIOperations::ShowNotification(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
