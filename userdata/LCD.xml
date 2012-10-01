@@ -37,4 +37,16 @@
       <line>Playing</line>
       <line>$INFO[System.LaunchXBE]</line>
    </xbelaunch>
+   <pvrtv>
+      <line>$INFO[VideoPlayer.ChannelName]</line>
+      <line>$INFO[VideoPlayer.Title]</line>
+      <line>$INFO[LCD.PlayIcon] $INFO[Player.Time]/$INFO[Player.Duration]</line>
+      <line>$INFO[LCD.ProgressBar]</line>
+   </pvrtv>
+   <pvrradio>
+      <line>$INFO[MusicPlayer.ChannelName]</line>
+      <line>$INFO[MusicPlayer.Title]</line>
+      <line>$INFO[LCD.PlayIcon] $INFO[Player.Time]/$INFO[Player.Duration]</line>
+      <line>$INFO[LCD.ProgressBar]</line>
+   </pvrradio>
 </lcd>
