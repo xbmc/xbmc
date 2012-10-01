@@ -444,7 +444,7 @@ namespace XBMCAddon
       ControlLabel(long x, long y, long width, long height, const String& label,
                   const char* font = NULL, const char* textColor = NULL, 
                   const char* disabledColor = NULL,
-                  long _alignment = XBFONT_LEFT, 
+                  long alignment = XBFONT_LEFT, 
                   bool hasPath = false, long angle = 0);
 
       virtual ~ControlLabel();

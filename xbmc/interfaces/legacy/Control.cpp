@@ -950,13 +950,13 @@ namespace XBMCAddon
     // ============================================================
     ControlLabel::ControlLabel(long x, long y, long width, long height, 
                                const String& label,
-                               const char* font, const char* _textColor, 
-                               const char* _disabledColor,
-                               long _alignment, 
+                               const char* font, const char* p_textColor, 
+                               const char* p_disabledColor,
+                               long p_alignment, 
                                bool hasPath, long angle) :
       Control("ControlLabel"), strFont("font13"), 
       textColor(0xffffffff), disabledColor(0x60ffffff),
-      align(_alignment), bHasPath(hasPath), iAngle(angle)
+      align(p_alignment), bHasPath(hasPath), iAngle(angle)
     {
       dwPosX = x;
       dwPosY = y;
@@ -967,11 +967,11 @@ namespace XBMCAddon
       if (font)
         strFont = font;
 
-      if (_textColor) 
-        sscanf(_textColor, "%x", &textColor);
+      if (p_textColor) 
+        sscanf(p_textColor, "%x", &textColor);
 
-      if (disabledColor)
-        sscanf( _disabledColor, "%x", &disabledColor );
+      if (p_disabledColor)
+        sscanf( p_disabledColor, "%x", &disabledColor );
     }
 
     ControlLabel::~ControlLabel() {}
