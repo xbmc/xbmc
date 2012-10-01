@@ -1377,6 +1377,8 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
 
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
+    else if( m_pvrChannelInfoTag )
+      m_ref = m_pvrChannelInfoTag->InputFormat();
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://"))
