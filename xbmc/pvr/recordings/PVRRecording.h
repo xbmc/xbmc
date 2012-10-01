@@ -93,6 +93,25 @@ namespace PVR
     bool SetPlayCount(int count);
 
     /*!
+     * @brief Increment this recording's play count on the client (if supported).
+     * @return True if play count was set successfully, false otherwise.
+     */
+    bool IncrementPlayCount();
+
+    /*!
+     * @brief Set the last watched position of a recording on the backend.
+     * @param position The last watched position in seconds
+     * @return True if the last played position was updated successfully, false otherwise
+     */
+    bool SetLastPlayedPosition(int lastplayedposition);
+
+    /*!
+     * @brief Retrieve the last watched position of a recording on the backend.
+     * @return The last watched position in seconds
+     */
+    int GetLastPlayedPosition() const;
+
+    /*!
      * @brief Update this tag with the contents of the given tag.
      * @param tag The new tag info.
      */
