@@ -162,7 +162,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   start = start > end ? end : start;
 
   if (sortLimit)
-    Sort(items, parameterObject["sort"]);
+    Sort(items, parameterObject);
 
   result["limits"]["start"] = start;
   result["limits"]["end"]   = end;
@@ -432,96 +432,11 @@ void CFileItemHandler::ParseLimits(const CVariant &parameterObject, int &limitSt
   limitEnd = (int)parameterObject["limits"]["end"].asInteger();
 }
 
-bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SortOrder &sortorder)
-{
-  if (order.Equals("ascending"))
-    sortorder = SortOrderAscending;
-  else if (order.Equals("descending"))
-    sortorder = SortOrderDescending;
-  else
-    return false;
-
-  if (method.Equals("none"))
-    sortmethod = SORT_METHOD_NONE;
-  else if (method.Equals("label"))
-    sortmethod = ignorethe ? SORT_METHOD_LABEL_IGNORE_THE : SORT_METHOD_LABEL;
-  else if (method.Equals("date"))
-    sortmethod = SORT_METHOD_DATE;
-  else if (method.Equals("size"))
-    sortmethod = SORT_METHOD_SIZE;
-  else if (method.Equals("file"))
-    sortmethod = SORT_METHOD_FILE;
-  else if (method.Equals("drivetype"))
-    sortmethod = SORT_METHOD_DRIVE_TYPE;
-  else if (method.Equals("track"))
-    sortmethod = SORT_METHOD_TRACKNUM;
-  else if (method.Equals("duration"))
-    sortmethod = SORT_METHOD_DURATION;
-  else if (method.Equals("title"))
-    sortmethod = ignorethe ? SORT_METHOD_TITLE_IGNORE_THE : SORT_METHOD_TITLE;
-  else if (method.Equals("artist"))
-    sortmethod = ignorethe ? SORT_METHOD_ARTIST_IGNORE_THE : SORT_METHOD_ARTIST;
-  else if (method.Equals("album"))
-    sortmethod = ignorethe ? SORT_METHOD_ALBUM_IGNORE_THE : SORT_METHOD_ALBUM;
-  else if (method.Equals("genre"))
-    sortmethod = SORT_METHOD_GENRE;
-  else if (method.Equals("country"))
-    sortmethod = SORT_METHOD_COUNTRY;
-  else if (method.Equals("year"))
-    sortmethod = SORT_METHOD_YEAR;
-  else if (method.Equals("videorating"))
-    sortmethod = SORT_METHOD_VIDEO_RATING;
-  else if (method.Equals("dateadded"))
-    sortmethod = SORT_METHOD_DATEADDED;
-  else if (method.Equals("programcount"))
-    sortmethod = SORT_METHOD_PROGRAM_COUNT;
-  else if (method.Equals("playlist"))
-    sortmethod = SORT_METHOD_PLAYLIST_ORDER;
-  else if (method.Equals("episode"))
-    sortmethod = SORT_METHOD_EPISODE;
-  else if (method.Equals("videotitle"))
-    sortmethod = SORT_METHOD_VIDEO_TITLE;
-  else if (method.Equals("sorttitle"))
-    sortmethod = ignorethe ? SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE : SORT_METHOD_VIDEO_SORT_TITLE;
-  else if (method.Equals("productioncode"))
-    sortmethod = SORT_METHOD_PRODUCTIONCODE;
-  else if (method.Equals("songrating"))
-    sortmethod = SORT_METHOD_SONG_RATING;
-  else if (method.Equals("mpaarating"))
-    sortmethod = SORT_METHOD_MPAA_RATING;
-  else if (method.Equals("videoruntime"))
-    sortmethod = SORT_METHOD_VIDEO_RUNTIME;
-  else if (method.Equals("studio"))
-    sortmethod = ignorethe ? SORT_METHOD_STUDIO_IGNORE_THE : SORT_METHOD_STUDIO;
-  else if (method.Equals("fullpath"))
-    sortmethod = SORT_METHOD_FULLPATH;
-  else if (method.Equals("lastplayed"))
-    sortmethod = SORT_METHOD_LASTPLAYED;
-  else if (method.Equals("playcount"))
-    sortmethod = SORT_METHOD_PLAYCOUNT;
-  else if (method.Equals("listeners"))
-    sortmethod = SORT_METHOD_LISTENERS;
-  else if (method.Equals("unsorted"))
-    sortmethod = SORT_METHOD_UNSORTED;
-  else if (method.Equals("bitrate"))
-    sortmethod = SORT_METHOD_BITRATE;
-  else
-    return false;
-
-  return true;
-}
-
 void CFileItemHandler::Sort(CFileItemList &items, const CVariant &parameterObject)
 {
-  CStdString method = parameterObject["method"].asString();
-  CStdString order  = parameterObject["order"].asString();
+  SortDescription sorting;
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return;
 
-  method = method.ToLower();
-  order  = order.ToLower();
-
-  SORT_METHOD sortmethod = SORT_METHOD_NONE;
-  SortOrder   sortorder  = SortOrderAscending;
-
-  if (ParseSortMethods(method, parameterObject["ignorearticle"].asBoolean(), order, sortmethod, sortorder))
-    items.Sort(sortmethod, sortorder);
+  items.Sort(sorting);
 }
