@@ -347,7 +347,8 @@ namespace JSONRPC
         "\"enum\": [ \"title\", \"description\", \"artist\", \"genre\","
                   "\"theme\", \"mood\", \"style\", \"type\", \"albumlabel\","
                   "\"rating\", \"year\", \"musicbrainzalbumid\","
-                  "\"musicbrainzalbumartistid\", \"fanart\", \"thumbnail\" ]"
+                  "\"musicbrainzalbumartistid\", \"fanart\", \"thumbnail\","
+                  "\"playcount\" ]"
       "}"
     "}",
     "\"Audio.Fields.Song\": {"
@@ -404,7 +405,8 @@ namespace JSONRPC
         "\"mood\": { \"$ref\": \"Array.String\" },"
         "\"style\": { \"$ref\": \"Array.String\" },"
         "\"type\": { \"type\": \"string\" },"
-        "\"albumlabel\": { \"type\": \"string\" }"
+        "\"albumlabel\": { \"type\": \"string\" },"
+        "\"playcount\": { \"type\": \"integer\" }"
       "}"
     "}",
     "\"Audio.Details.Song\": {"
@@ -453,7 +455,7 @@ namespace JSONRPC
                   "\"imdbnumber\", \"premiered\", \"votes\", \"lastplayed\","
                   "\"fanart\", \"thumbnail\", \"file\", \"originaltitle\","
                   "\"sorttitle\", \"episodeguide\", \"season\", \"watchedepisodes\","
-                  "\"dateadded\", \"tag\" ]"
+                  "\"dateadded\", \"tag\", \"lastplayed\" ]"
       "}"
     "}",
     "\"Video.Fields.Season\": {"

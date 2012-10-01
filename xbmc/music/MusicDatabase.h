@@ -279,7 +279,7 @@ protected:
   std::map<CStdString, CAlbum> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 27; };
+  virtual int GetMinVersion() const { return 28; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddSong(const CSong& song, bool bCheck = true, int idAlbum = -1);
@@ -372,7 +372,8 @@ private:
     album_strType,
     album_strThumbURL,
     album_iRating,
-    album_bCompilation
+    album_bCompilation,
+    album_iTimesPlayed
   } AlbumFields;
 
   enum _ArtistFields
