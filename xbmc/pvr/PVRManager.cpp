@@ -909,47 +909,6 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   return false;
 }
 
-
-bool CPVRManager::UpdateCurrentLastPlayedPosition(int lastplayedposition)
-{
-  // Only anything but recordings we fake success
-  if (!IsPlayingRecording())
-    return true;
-
-  bool rc = false;
-  CPVRRecording currentRecording;
-
-  if (m_addons)
-  {
-    PVR_ERROR error;
-    rc = m_addons->GetPlayingRecording(currentRecording) && m_addons->SetRecordingLastPlayedPosition(currentRecording, lastplayedposition, &error);
-  }
-  return rc;
-}
-
-bool CPVRManager::SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition)
-{
-  bool rc = false;
-
-  if (m_addons)
-  {
-    PVR_ERROR error;
-    rc = m_addons->SetRecordingLastPlayedPosition(recording, lastplayedposition, &error);
-  }
-  return rc;
-}
-
-int CPVRManager::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
-{
-  int rc = 0;
-
-  if (m_addons)
-  {
-    rc = m_addons->GetRecordingLastPlayedPosition(recording);
-  }
-  return rc;
-}
-
 bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)
 {
   g_settings.m_bStartVideoWindowed = bPreview;

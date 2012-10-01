@@ -1965,11 +1965,6 @@ void CDVDPlayer::OnExit()
     }
     m_pSubtitleDemuxer = NULL;
 
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && g_PVRManager.IsPlayingRecording())
-    {
-      g_PVRManager.UpdateCurrentLastPlayedPosition(m_State.time / 1000);
-    }
-
     // destroy the inputstream
     if (m_pInputStream)
     {
