@@ -2392,8 +2392,8 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
       RESOLUTION_INFO res1 = g_settings.m_ResInfo[res];
       RESOLUTION_INFO res2 = g_settings.m_ResInfo[resolutions[idx].ResInfo_Index];
       if (   res1.iScreen == res2.iScreen
-          && res1.iWidth  == res2.iWidth
-          && res1.iHeight == res2.iHeight
+          && res1.iScreenWidth  == res2.iScreenWidth
+          && res1.iScreenHeight == res2.iScreenHeight
           && (res1.dwFlags & D3DPRESENTFLAG_INTERLACED) == (res2.dwFlags & D3DPRESENTFLAG_INTERLACED))
         spinres = (RESOLUTION) resolutions[idx].ResInfo_Index;
     }
@@ -2430,13 +2430,13 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
 
 void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange)
 {
-  // The only meaningful parts of res here are iScreen, iWidth, iHeight
+  // The only meaningful parts of res here are iScreen, iScreenWidth, iScreenHeight
 
   vector<REFRESHRATE> refreshrates;
   if (res > RES_WINDOW)
     refreshrates = g_Windowing.RefreshRates(g_settings.m_ResInfo[res].iScreen,
-      g_settings.m_ResInfo[res].iWidth,
-      g_settings.m_ResInfo[res].iHeight,
+      g_settings.m_ResInfo[res].iScreenWidth,
+      g_settings.m_ResInfo[res].iScreenHeight,
       g_settings.m_ResInfo[res].dwFlags);
 
   // The control setting doesn't exist when not in standalone mode, don't manipulate it

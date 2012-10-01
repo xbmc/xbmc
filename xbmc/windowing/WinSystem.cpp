@@ -63,6 +63,8 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   newRes.fPixelRatio = 1.0f;
   newRes.iWidth = width;
   newRes.iHeight = height;
+  newRes.iScreenWidth = width;
+  newRes.iScreenHeight = height;
   newRes.strMode.Format("%dx%d", width, height);
   if (refreshRate > 1)
     newRes.strMode.Format("%s @ %.2f%s - Full Screen", newRes.strMode, refreshRate, dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
@@ -79,6 +81,8 @@ void CWinSystemBase::UpdateResolutions()
     window.iWidth = 720;
   if (window.iHeight == 0)
     window.iHeight = 480;
+  window.iScreenWidth  = window.iWidth;
+  window.iScreenHeight = window.iHeight;
   if (window.iSubtitles == 0)
     window.iSubtitles = (int)(0.965 * window.iHeight);
   window.fPixelRatio = 1.0f;
@@ -90,6 +94,8 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
   window.iWidth = width;
   window.iHeight = height;
+  window.iScreenWidth = width;
+  window.iScreenHeight = height;
   window.iSubtitles = (int)(0.965 * window.iHeight);
   g_graphicsContext.ResetOverscan(window);
 }
@@ -105,8 +111,8 @@ int CWinSystemBase::DesktopResolution(int screen)
 
 static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addindex)
 {
-  int width = g_settings.m_ResInfo[addindex].iWidth;
-  int height = g_settings.m_ResInfo[addindex].iHeight;
+  int width  = g_settings.m_ResInfo[addindex].iScreenWidth;
+  int height = g_settings.m_ResInfo[addindex].iScreenHeight;
   int interlaced = g_settings.m_ResInfo[addindex].dwFlags & D3DPRESENTFLAG_INTERLACED;
 
   for (unsigned int idx = 0; idx < resolutions.size(); idx++)
@@ -163,8 +169,8 @@ vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int heig
 
   for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
     if (   g_settings.m_ResInfo[idx].iScreen == screen
-        && g_settings.m_ResInfo[idx].iWidth  == width
-        && g_settings.m_ResInfo[idx].iHeight == height
+        && g_settings.m_ResInfo[idx].iScreenWidth  == width
+        && g_settings.m_ResInfo[idx].iScreenHeight == height
         && (g_settings.m_ResInfo[idx].dwFlags & D3DPRESENTFLAG_INTERLACED) == (dwFlags & D3DPRESENTFLAG_INTERLACED))
       AddRefreshRate(refreshrates, idx);
 

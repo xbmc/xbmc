@@ -580,6 +580,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   default:
     break;
   }
+  g_settings.m_ResInfo[res].iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
+  g_settings.m_ResInfo[res].iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
 }
 
