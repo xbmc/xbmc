@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "../DVDClock.h"
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
@@ -185,13 +186,6 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
   || pvr->m_parser == NULL)
     return;
 
-  if(pvr->m_parser->parser->split == NULL)
-  {
-    CLog::Log(LOGDEBUG, "%s - parser have not split function", __FUNCTION__);
-    pvr->DisposeParser();
-    return;
-  }
-
   if(pvr->m_context == NULL)
   {
     AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(st->codec);
@@ -209,24 +203,73 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
       pvr->DisposeParser();
       return;
     }
+    pvr->m_context->time_base.num = 1;
+    pvr->m_context->time_base.den = DVD_TIME_BASE;
   }
 
-  int len = pvr->m_parser->parser->split(pvr->m_context, pkt->pData, pkt->iSize);
-  if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
+  if(st->ExtraData == NULL && pvr->m_parser->parser->split)
   {
-    delete[] (uint8_t*)(st->ExtraData);
-    st->ExtraSize = len;
-    st->ExtraData = new uint8_t[len+FF_INPUT_BUFFER_PADDING_SIZE];
-    memcpy(st->ExtraData, pkt->pData, len);
-    memset((uint8_t*)st->ExtraData + len, 0 , FF_INPUT_BUFFER_PADDING_SIZE);
+    int len = pvr->m_parser->parser->split(pvr->m_context, pkt->pData, pkt->iSize);
+    if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
+    {
+      st->changes++;
+      st->disabled = false;
+      st->ExtraSize = len;
+      st->ExtraData = new uint8_t[len+FF_INPUT_BUFFER_PADDING_SIZE];
+      memcpy(st->ExtraData, pkt->pData, len);
+      memset((uint8_t*)st->ExtraData + len, 0 , FF_INPUT_BUFFER_PADDING_SIZE);
+    }
   }
 
-  if(st->ExtraData)
+
+  uint8_t *outbuf = NULL;
+  int      outbuf_size = 0;
+  int len = m_dllAvCodec.av_parser_parse2(pvr->m_parser
+                                        , pvr->m_context, &outbuf, &outbuf_size
+                                        , pkt->pData, pkt->iSize
+                                        , (int64_t)(pkt->pts * DVD_TIME_BASE)
+                                        , (int64_t)(pkt->dts * DVD_TIME_BASE)
+                                        , 0);
+  /* our parse is setup to parse complete frames, so we don't care about outbufs */
+  if(len >= 0)
   {
-    CLog::Log(LOGDEBUG, "%s - extradata found for %d:%d - closing parser", __FUNCTION__, st->iId, st->iPhysicalId);
-    pvr->DisposeParser();
-    st->changes++;
+#define CHECK_UPDATE(st, trg, src, invalid) do { \
+      if(src != invalid \
+      && src != st->trg) { \
+        CLog::Log(LOGDEBUG, "%s - {%d} " #trg " changed from %d to %d",  __FUNCTION__, st->iId, st->trg, src); \
+        st->trg = src; \
+        st->changes++; \
+        st->disabled = false; \
+      } \
+    } while(0)
+
+
+    CHECK_UPDATE(st, profile, pvr->m_context->profile , FF_PROFILE_UNKNOWN);
+    CHECK_UPDATE(st, level  , pvr->m_context->level   , 0);
+
+    switch (st->type)
+    {
+      case STREAM_AUDIO: {
+        CDemuxStreamAudioPVRClient* sta = static_cast<CDemuxStreamAudioPVRClient*>(st);
+        CHECK_UPDATE(sta, iChannels     , pvr->m_context->channels   , 0);
+        CHECK_UPDATE(sta, iSampleRate   , pvr->m_context->sample_rate, 0);
+        break;
+      }
+      case STREAM_VIDEO: {
+        CDemuxStreamVideoPVRClient* stv = static_cast<CDemuxStreamVideoPVRClient*>(st);
+        CHECK_UPDATE(stv, iWidth        , pvr->m_context->width , 0);
+        CHECK_UPDATE(stv, iHeight       , pvr->m_context->height, 0);
+        break;
+      }
+
+      default:
+        break;
+    }
+
+#undef CHECK_UPDATE
   }
+  else
+    CLog::Log(LOGDEBUG, "%s - parser returned error %d", __FUNCTION__, len);
 
   return;
 }
@@ -289,6 +332,8 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iBitRate        = props.stream[i].iBitRate;
       st->iBitsPerSample  = props.stream[i].iBitsPerSample;
       st->m_parser        = m_dllAvCodec.av_parser_init(props.stream[i].iCodecId);
+      if(st->m_parser)
+        st->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       m_streams[props.stream[i].iStreamIndex] = st;
     }
     else if (props.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
@@ -300,6 +345,8 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iWidth          = props.stream[i].iWidth;
       st->fAspect         = props.stream[i].fAspect;
       st->m_parser        = m_dllAvCodec.av_parser_init(props.stream[i].iCodecId);
+      if(st->m_parser)
+        st->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       m_streams[props.stream[i].iStreamIndex] = st;
     }
     else if (props.stream[i].iCodecId == CODEC_ID_DVB_TELETEXT)
