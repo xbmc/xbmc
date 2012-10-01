@@ -24,7 +24,7 @@
 #include "windowing/WinEvents.h"
 #include "ApplicationMessenger.h"
 
-CAndroidTouch::CAndroidTouch()
+CAndroidTouch::CAndroidTouch() : m_dpi(160)
 {
   CTouchInput::Get().RegisterHandler(this);
 }
@@ -79,13 +79,13 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
 
   float x = AMotionEvent_getX(event, touchPointer);
   float y = AMotionEvent_getY(event, touchPointer);
-  float size = AMotionEvent_getTouchMinor(event, touchPointer);
+  float size = m_dpi / 16.0f;
   int64_t time = AMotionEvent_getEventTime(event);
 
   // first update all touch pointers
   for (unsigned int pointer = 0; pointer < numPointers; pointer++)
     CTouchInput::Get().Update(pointer, AMotionEvent_getX(event, pointer), AMotionEvent_getY(event, pointer),
-    AMotionEvent_getEventTime(event), AMotionEvent_getTouchMinor(event, pointer));
+    AMotionEvent_getEventTime(event), m_dpi / 16.0f);
 
   // now send the event
   return CTouchInput::Get().Handle(touchEvent, x, y, time, touchPointer, size);
@@ -158,6 +158,12 @@ void CAndroidTouch::OnZoomPinch(float centerX, float centerY, float zoomFactor)
 void CAndroidTouch::OnRotate(float centerX, float centerY, float angle)
 {
   XBMC_TouchGesture(ACTION_GESTURE_ROTATE, centerX, centerY, angle, 0);
+}
+
+void CAndroidTouch::setDPI(uint32_t dpi)
+{
+  if (dpi != 0)
+    m_dpi = dpi;
 }
 
 void CAndroidTouch::XBMC_Touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y)

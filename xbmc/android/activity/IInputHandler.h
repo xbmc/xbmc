@@ -24,4 +24,9 @@
 #include "AndroidMouse.h"
 
 class IInputHandler : public CAndroidTouch, public CAndroidKey, public CAndroidMouse
-{};
+{
+public:
+  IInputHandler() : CAndroidTouch(), CAndroidKey(), CAndroidMouse() {}
+
+  virtual void setDPI(uint32_t dpi) { CAndroidTouch::setDPI(dpi); }
+};

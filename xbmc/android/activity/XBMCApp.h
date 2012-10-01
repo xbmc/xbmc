@@ -96,6 +96,7 @@ public:
   static bool GetExternalStorage(std::string &path, const std::string &type = "");
   static bool GetStorageUsage(const std::string &path, std::string &usage);
 
+  static int GetDPI();
 protected:
   // limit who can access AttachCurrentThread/DetachCurrentThread
   friend class CAESinkAUDIOTRACK;

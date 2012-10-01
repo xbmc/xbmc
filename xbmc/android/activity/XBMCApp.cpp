@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include <android/native_window.h>
+#include <android/configuration.h>
 #include <jni.h>
 
 #include "XBMCApp.h"
@@ -445,6 +446,21 @@ int CXBMCApp::android_printf(const char *format, ...)
   int result = __android_log_vprint(ANDROID_LOG_VERBOSE, "XBMC", format, args);
   va_end(args);
   return result;
+}
+
+int CXBMCApp::GetDPI()
+{
+  if (m_activity == NULL || m_activity->assetManager == NULL)
+    return 0;
+
+  // grab DPI from the current configuration - this is approximate
+  // but should be close enough for what we need
+  AConfiguration *config = AConfiguration_new();
+  AConfiguration_fromAssetManager(config, m_activity->assetManager);
+  int dpi = AConfiguration_getDensity(config);
+  AConfiguration_delete(config);
+
+  return dpi;
 }
 
 bool CXBMCApp::ListApplications(vector<androidPackage> *applications)
