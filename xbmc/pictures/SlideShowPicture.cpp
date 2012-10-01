@@ -96,7 +96,6 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
   float fadeTime = std::min(0.2f*g_guiSettings.GetInt("slideshow.staytime"), 3.0f);
   m_transistionStart.length = (int)(g_graphicsContext.GetFPS() * fadeTime); // transition time in frames
   m_transistionEnd.type = transEffect;
-  m_transistionEnd.start = m_transistionStart.length + max((int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
   m_transistionEnd.length = m_transistionStart.length;
   CLog::Log(LOGDEBUG,"Duration: %i (transistion out length %i)", m_transistionEnd.start, m_transistionEnd.length);
   m_transistionTemp.type = TRANSISTION_NONE;
@@ -118,15 +117,49 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
   m_fZoomAmount = 1;
   m_fZoomLeft = 0;
   m_fZoomTop = 0;
-  m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + max((int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
   // initialize our display effect
   if (dispEffect == EFFECT_RANDOM)
+  {
+    if (((m_fWidth / m_fHeight) > 1.9) || ((m_fHeight / m_fWidth) > 1.9))
+      m_displayEffect = EFFECT_PANORAMA;
+    else
     m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM - 1)) + 1);
+  }
   else
     m_displayEffect = dispEffect;
   m_fPosX = m_fPosY = 0.0f;
   m_fPosZ = 1.0f;
   m_fVelocityX = m_fVelocityY = m_fVelocityZ = 0.0f;
+  int iFrames = max((int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
+  if (m_displayEffect == EFFECT_PANORAMA)
+  {
+    RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+	float fScreenWidth = (float)g_settings.m_ResInfo[iRes].Overscan.right - g_settings.m_ResInfo[iRes].Overscan.left;
+    float fScreenHeight = (float)g_settings.m_ResInfo[iRes].Overscan.bottom - g_settings.m_ResInfo[iRes].Overscan.top;
+
+    if (m_fWidth > m_fHeight)
+    {
+        iFrames = (int)(iFrames * (m_fWidth - m_fHeight) / m_fHeight);
+        m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+
+        m_fPosX = 0.5f - (fScreenWidth / fScreenHeight) * (m_fHeight / m_fWidth) * 0.5f;
+        if (rand() % 2) m_fPosX = -m_fPosX;
+        m_fVelocityX = -m_fPosX * 2.0f / m_iTotalFrames;
+    }
+    else
+    {
+        iFrames = (int)(iFrames * (m_fHeight - (0.5f * m_fWidth)) / m_fWidth);
+        m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+
+        m_fPosY = 0.5f - (fScreenHeight / fScreenWidth) * (m_fWidth / m_fHeight) * 0.5f;
+        if (rand() % 2) m_fPosY = -m_fPosY;
+        m_fVelocityY = -m_fPosY * 2.0f / m_iTotalFrames;
+    }
+  }
+  else
+  {
+    m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+
   if (m_displayEffect == EFFECT_FLOAT)
   {
     // Calculate start and end positions
@@ -142,6 +175,9 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
     m_fPosZ = 1.0f;
     m_fVelocityZ = 0.0001f * g_advancedSettings.m_slideshowZoomAmount;
   }
+  }
+
+  m_transistionEnd.start = m_transistionStart.length + iFrames;
 
   m_bIsFinished = false;
   m_bDrawNextImage = false;
@@ -277,7 +313,12 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   // now just display
   if (!m_bNoEffect && !bPaused)
   {
-    if (m_displayEffect == EFFECT_FLOAT)
+    if (m_displayEffect == EFFECT_PANORAMA)
+    {
+      m_fPosX += m_fVelocityX;
+      m_fPosY += m_fVelocityY;
+    }
+    else if (m_displayEffect == EFFECT_FLOAT)
     {
       m_fPosX += m_fVelocityX;
       m_fPosY += m_fVelocityY;
@@ -408,6 +449,13 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   float fScale = si * si * (fScaleInv - fScaleNorm) + fScaleNorm;
   // scale if we need to due to the effect we're using
+  if (m_displayEffect == EFFECT_PANORAMA)
+  {
+      if (m_fWidth > m_fHeight)
+        fScale *= m_fWidth / fScreenWidth * fScreenHeight / m_fHeight;
+      else
+        fScale *= m_fHeight / fScreenHeight * fScreenWidth / m_fWidth;
+  }
   if (m_displayEffect == EFFECT_FLOAT)
     fScale *= (1.0f + g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.0001f);
   if (m_displayEffect == EFFECT_ZOOM)
