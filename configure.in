@@ -1586,6 +1586,12 @@ fi
 echo "Checking for SWIG installation"
 AC_PATH_PROG(SWIG_EXE, swig, "none")
 if test "$SWIG_EXE" = "none"; then
+  AC_CHECK_PROG(SWIG20_EXE, swig2.0, , "none")
+  if test "$SWIG20_EXE" != "none" ; then
+    SWIG_EXE=$SWIG20_EXE
+  fi
+fi
+if test "$SWIG_EXE" = "none"; then
   AC_MSG_ERROR($missing_program)
 fi
 final_message="$final_message\n  SWIG Available:\tYes"
