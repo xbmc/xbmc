@@ -2915,6 +2915,15 @@ namespace JSONRPC
       "],"
       "\"returns\": null"
     "}",
+    "\"AudioLibrary.OnScanStarted\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"An audio library scan has started.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
+      "],"
+      "\"returns\": null"
+    "}",
     "\"AudioLibrary.OnScanFinished\": {"
       "\"type\": \"notification\","
       "\"description\": \"Scanning the audio library has been finished.\","
@@ -2950,6 +2959,15 @@ namespace JSONRPC
             "\"type\": { \"$ref\": \"Notifications.Library.Video.Type\", \"required\": true }"
           "}"
         "}"
+      "],"
+      "\"returns\": null"
+    "}",
+    "\"VideoLibrary.OnScanStarted\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"A video library scan has started.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
       "],"
       "\"returns\": null"
     "}",
