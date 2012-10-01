@@ -1809,104 +1809,104 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
   if (sortMethod == m_sortMethod && m_sortOrder == sortOrder)
     return;
 
-  SortBy sortBy = SortByNone;
-  SortAttribute sortAttributes = SortAttributeNone;
+  SortDescription sorting;
+  sorting.sortOrder = sortOrder;
 
   switch (sortMethod)
   {
   case SORT_METHOD_LABEL:
   case SORT_METHOD_LABEL_IGNORE_FOLDERS:
   case SORT_METHOD_LABEL_IGNORE_THE:
-    sortBy = SortByLabel;
+    sorting.sortBy = SortByLabel;
     break;
   case SORT_METHOD_DATE:
-    sortBy = SortByDate;
+    sorting.sortBy = SortByDate;
     break;
   case SORT_METHOD_SIZE:
-    sortBy = SortBySize;
+    sorting.sortBy = SortBySize;
     break;
   case SORT_METHOD_BITRATE:
-    sortBy = SortByBitrate;
+    sorting.sortBy = SortByBitrate;
     break;      
   case SORT_METHOD_DRIVE_TYPE:
-    sortBy = SortByDriveType;
+    sorting.sortBy = SortByDriveType;
     break;
   case SORT_METHOD_TRACKNUM:
-    sortBy = SortByTrackNumber;
+    sorting.sortBy = SortByTrackNumber;
     break;
   case SORT_METHOD_EPISODE:
-    sortBy = SortByEpisodeNumber;
+    sorting.sortBy = SortByEpisodeNumber;
     break;
   case SORT_METHOD_DURATION:
   case SORT_METHOD_VIDEO_RUNTIME:
-    sortBy = SortByTime;
+    sorting.sortBy = SortByTime;
     break;
   case SORT_METHOD_TITLE:
   case SORT_METHOD_TITLE_IGNORE_THE:
   case SORT_METHOD_VIDEO_TITLE:
-    sortBy = SortByTitle;
+    sorting.sortBy = SortByTitle;
     break;
   case SORT_METHOD_ARTIST:
   case SORT_METHOD_ARTIST_IGNORE_THE:
-    sortBy = SortByArtist;
+    sorting.sortBy = SortByArtist;
     break;
   case SORT_METHOD_ALBUM:
   case SORT_METHOD_ALBUM_IGNORE_THE:
-    sortBy = SortByAlbum;
+    sorting.sortBy = SortByAlbum;
     break;
   case SORT_METHOD_GENRE:
-    sortBy = SortByGenre;
+    sorting.sortBy = SortByGenre;
     break;
   case SORT_METHOD_COUNTRY:
-    sortBy = SortByCountry;
+    sorting.sortBy = SortByCountry;
     break;
   case SORT_METHOD_DATEADDED:
-    sortBy = SortByDateAdded;
+    sorting.sortBy = SortByDateAdded;
     break;
   case SORT_METHOD_FILE:
-    sortBy = SortByFile;
+    sorting.sortBy = SortByFile;
     break;
   case SORT_METHOD_SONG_RATING:
   case SORT_METHOD_VIDEO_RATING:
-    sortBy = SortByRating;
+    sorting.sortBy = SortByRating;
     break;
   case SORT_METHOD_VIDEO_SORT_TITLE:
   case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
-    sortBy = SortBySortTitle;
+    sorting.sortBy = SortBySortTitle;
     break;
   case SORT_METHOD_YEAR:
-    sortBy = SortByYear;
+    sorting.sortBy = SortByYear;
     break;
   case SORT_METHOD_PRODUCTIONCODE:
-    sortBy = SortByProductionCode;
+    sorting.sortBy = SortByProductionCode;
     break;
   case SORT_METHOD_PROGRAM_COUNT:
-    sortBy = SortByProgramCount;
+    sorting.sortBy = SortByProgramCount;
     break;
   case SORT_METHOD_PLAYLIST_ORDER:
-    sortBy = SortByPlaylistOrder;
+    sorting.sortBy = SortByPlaylistOrder;
     break;
   case SORT_METHOD_MPAA_RATING:
-    sortBy = SortByMPAA;
+    sorting.sortBy = SortByMPAA;
     break;
   case SORT_METHOD_STUDIO:
   case SORT_METHOD_STUDIO_IGNORE_THE:
-    sortBy = SortByStudio;
+    sorting.sortBy = SortByStudio;
     break;
   case SORT_METHOD_FULLPATH:
-    sortBy = SortByPath;
+    sorting.sortBy = SortByPath;
     break;
   case SORT_METHOD_LASTPLAYED:
-    sortBy = SortByLastPlayed;
+    sorting.sortBy = SortByLastPlayed;
     break;
   case SORT_METHOD_PLAYCOUNT:
-    sortBy = SortByPlaycount;
+    sorting.sortBy = SortByPlaycount;
     break;
   case SORT_METHOD_LISTENERS:
-    sortBy = SortByListeners;
+    sorting.sortBy = SortByListeners;
     break;    
   case SORT_METHOD_CHANNEL:
-    sortBy = SortByChannel;
+    sorting.sortBy = SortByChannel;
     break;
   default:
     CLog::Log(LOGWARNING, "Unknown sort method %d", sortMethod);
@@ -1919,7 +1919,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
       sortMethod == SORT_METHOD_ALBUM_IGNORE_THE ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
       sortMethod == SORT_METHOD_STUDIO_IGNORE_THE)
-    sortAttributes = (SortAttribute)((int)sortAttributes | SortAttributeIgnoreArticle);
+    sorting.sortAttributes = (SortAttribute)((int)sorting.sortAttributes | SortAttributeIgnoreArticle);
 
   if (sortMethod == SORT_METHOD_FILE        ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
@@ -1932,10 +1932,31 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
       sortMethod == SORT_METHOD_LASTPLAYED ||
       sortMethod == SORT_METHOD_PLAYCOUNT ||
       m_sortIgnoreFolders)
-    sortAttributes = (SortAttribute)((int)sortAttributes | SortAttributeIgnoreFolders);
+    sorting.sortAttributes = (SortAttribute)((int)sorting.sortAttributes | SortAttributeIgnoreFolders);
 
-  if (sortBy == SortByNone)
+  Sort(sorting);
+
+  m_sortMethod = sortMethod;
+  m_sortOrder = sortOrder;
+}
+
+void CFileItemList::Sort(SortDescription sortDescription)
+{
+  if (sortDescription.sortBy == SortByNone)
     return;
+
+  if (sortDescription.sortBy == SortByFile ||
+      sortDescription.sortBy == SortBySortTitle ||
+      sortDescription.sortBy == SortByDateAdded ||
+      sortDescription.sortBy == SortByRating ||
+      sortDescription.sortBy == SortByYear ||
+      sortDescription.sortBy == SortByPlaylistOrder ||
+      sortDescription.sortBy == SortByLastPlayed ||
+      sortDescription.sortBy == SortByPlaycount)
+    sortDescription.sortAttributes = (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
+
+  if (m_sortIgnoreFolders)
+    sortDescription.sortAttributes = (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
 
   SortItems sortItems((size_t)Size());
   for (int index = 0; index < Size(); index++)
@@ -1945,7 +1966,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
   }
 
   // do the sorting
-  SortUtils::Sort(sortBy, sortOrder, sortAttributes, sortItems);
+  SortUtils::Sort(sortDescription, sortItems);
 
   // apply the new order to the existing CFileItems
   VECFILEITEMS sortedFileItems;
@@ -1961,9 +1982,6 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
 
   // replace the current list with the re-ordered one
   m_items.assign(sortedFileItems.begin(), sortedFileItems.end());
-
-  m_sortMethod = sortMethod;
-  m_sortOrder = sortOrder;
 }
 
 void CFileItemList::Randomize()
