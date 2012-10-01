@@ -41,7 +41,7 @@ using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 
-void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const CVariant& fields, CVariant &result)
+void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const CVariant& fields, CVariant &result, CThumbLoader *thumbLoader /* = NULL */)
 {
   if (info == NULL || fields.size() == 0)
     return;
@@ -91,61 +91,34 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
 
       if (field == "thumbnail")
       {
-        if (item->HasVideoInfoTag())
+        if (thumbLoader != NULL && !item->HasThumbnail() && !fetchedArt &&
+           ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
         {
-          if (!item->HasThumbnail() && !fetchedArt && item->GetVideoInfoTag()->m_iDbId > -1)
-          {
-            CVideoThumbLoader loader;
-            loader.FillLibraryArt(item.get());
-            fetchedArt = true;
-          }
+          thumbLoader->FillLibraryArt(*item);
+          fetchedArt = true;
         }
-        else if (item->HasPictureInfoTag())
-        {
-          if (!item->HasThumbnail())
-            item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
-        }
-        else if (item->HasMusicInfoTag())
-        {
-          if (!item->HasThumbnail() && !fetchedArt && item->GetMusicInfoTag()->GetDatabaseId() > -1)
-          {
-            CMusicThumbLoader loader;
-            loader.FillLibraryArt(*item);
-            fetchedArt = true;
-          }
-        }
+        else if (item->HasPictureInfoTag() && !item->HasThumbnail())
+          item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
+
         if (item->HasThumbnail())
           result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
-        if (!result.isMember("thumbnail"))
+        else
           result["thumbnail"] = "";
         continue;
       }
 
       if (field == "fanart")
       {
-        if (item->HasVideoInfoTag())
+        if (thumbLoader != NULL && !item->HasProperty("fanart_image") && !fetchedArt &&
+           ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
         {
-          if (!item->HasProperty("fanart_image") && !fetchedArt && item->GetVideoInfoTag()->m_iDbId > -1)
-          {
-            CVideoThumbLoader loader;
-            loader.FillLibraryArt(item.get());
-            fetchedArt = true;
-          }
-          if (item->HasProperty("fanart_image"))
-            result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
+          thumbLoader->FillLibraryArt(*item);
+          fetchedArt = true;
         }
-        else if (item->HasMusicInfoTag())
-        {
-          if (!item->HasProperty("fanart_image") && !fetchedArt && item->GetMusicInfoTag()->GetDatabaseId() > -1)
-          {
-            CMusicThumbLoader loader;
-            loader.FillLibraryArt(*item);
-            fetchedArt = true;
-          }
-          if (item->HasProperty("fanart_image"))
-            result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
-        }
-        if (!result.isMember("fanart"))
+
+        if (item->HasProperty("fanart_image"))
+          result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
+        else
           result["fanart"] = "";
         continue;
       }
@@ -201,15 +174,29 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
     end = items.Size();
   }
 
+  CThumbLoader *thumbLoader = NULL;
+  if (end - start > 0)
+  {
+    if (items.Get(start)->HasVideoInfoTag())
+      thumbLoader = new CVideoThumbLoader();
+    else if (items.Get(start)->HasMusicInfoTag())
+      thumbLoader = new CMusicThumbLoader();
+
+    if (thumbLoader != NULL)
+      thumbLoader->Initialize();
+  }
+
   for (int i = start; i < end; i++)
   {
     CVariant object;
     CFileItemPtr item = items.Get(i);
-    HandleFileItem(ID, allowFile, resultname, item, parameterObject, parameterObject["properties"], result);
+    HandleFileItem(ID, allowFile, resultname, item, parameterObject, parameterObject["properties"], result, true, thumbLoader);
   }
+
+  delete thumbLoader;
 }
 
-void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append /* = true */)
+void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append /* = true */, CThumbLoader *thumbLoader /* = NULL */)
 {
   CVariant object;
   bool hasFileField = false;
@@ -265,14 +252,28 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       }
     }
 
-    FillDetails(item.get(), item, validFields, object);
+    FillDetails(item.get(), item, validFields, object, thumbLoader);
 
     if (item->HasVideoInfoTag())
-      FillDetails(item->GetVideoInfoTag(), item, validFields, object);
+    {
+      if (thumbLoader == NULL)
+      {
+        thumbLoader = new CVideoThumbLoader();
+        thumbLoader->Initialize();
+      }
+      FillDetails(item->GetVideoInfoTag(), item, validFields, object, thumbLoader);
+    }
     if (item->HasMusicInfoTag())
-      FillDetails(item->GetMusicInfoTag(), item, validFields, object);
+    {
+      if (thumbLoader == NULL)
+      {
+        thumbLoader = new CMusicThumbLoader();
+        thumbLoader->Initialize();
+      }
+      FillDetails(item->GetMusicInfoTag(), item, validFields, object, thumbLoader);
+    }
     if (item->HasPictureInfoTag())
-      FillDetails(item->GetPictureInfoTag(), item, validFields, object);
+      FillDetails(item->GetPictureInfoTag(), item, validFields, object, thumbLoader);
 
     object["label"] = item->GetLabel().c_str();
   }
