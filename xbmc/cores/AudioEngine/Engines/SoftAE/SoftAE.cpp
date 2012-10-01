@@ -333,13 +333,15 @@ void CSoftAE::InternalOpenSink()
     ASSERT(newFormat.m_frameSize            == (CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3) * newFormat.m_channelLayout.Count());
     ASSERT(newFormat.m_sampleRate            > 0);
 
-    CLog::Log(LOGINFO, "CSoftAE::InternalOpenSink - %s Initialized:", m_sink->GetName());
-    CLog::Log(LOGINFO, "  Output Device : %s", m_deviceFriendlyName.c_str());
-    CLog::Log(LOGINFO, "  Sample Rate   : %d", newFormat.m_sampleRate);
-    CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
-    CLog::Log(LOGINFO, "  Channel Count : %d", newFormat.m_channelLayout.Count());
-    CLog::Log(LOGINFO, "  Channel Layout: %s", ((std::string)newFormat.m_channelLayout).c_str());
-    CLog::Log(LOGINFO, "  Frame Size    : %d", newFormat.m_frameSize);
+    CLog::Log(LOGDEBUG, "CSoftAE::InternalOpenSink - %s Initialized:", m_sink->GetName());
+    CLog::Log(LOGDEBUG, "  Output Device : %s", m_deviceFriendlyName.c_str());
+    CLog::Log(LOGDEBUG, "  Sample Rate   : %d", newFormat.m_sampleRate);
+    CLog::Log(LOGDEBUG, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
+    CLog::Log(LOGDEBUG, "  Channel Count : %d", newFormat.m_channelLayout.Count());
+    CLog::Log(LOGDEBUG, "  Channel Layout: %s", ((std::string)newFormat.m_channelLayout).c_str());
+    CLog::Log(LOGDEBUG, "  Frames        : %d", newFormat.m_frames);
+    CLog::Log(LOGDEBUG, "  Frame Samples : %d", newFormat.m_frameSamples);
+    CLog::Log(LOGDEBUG, "  Frame Size    : %d", newFormat.m_frameSize);
 
     m_sinkFormat              = newFormat;
     m_sinkFormatSampleRateMul = 1.0 / (double)newFormat.m_sampleRate;
