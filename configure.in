@@ -1586,7 +1586,7 @@ fi
 echo "Checking for SWIG installation"
 AC_PATH_PROG(SWIG_EXE, swig, "none")
 if test "$SWIG_EXE" = "none"; then
-  AC_CHECK_PROG(SWIG20_EXE, swig2.0, , "none")
+  AC_PATH_PROG(SWIG20_EXE, swig2.0, "none")
   if test "$SWIG20_EXE" != "none" ; then
     SWIG_EXE=$SWIG20_EXE
   fi
