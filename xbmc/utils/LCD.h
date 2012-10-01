@@ -41,6 +41,8 @@ public:
                         LCD_MODE_NAVIGATION,
                         LCD_MODE_SCREENSAVER,
                         LCD_MODE_XBE_LAUNCH,
+                        LCD_MODE_PVRTV,
+                        LCD_MODE_PVRRADIO,
                         LCD_MODE_MAX
                 };
   enum CUSTOM_CHARSET {
