@@ -550,6 +550,17 @@ int CPartyModeManager::GetRandomSongs()
   return m_iRandomSongs;
 }
 
+PartyModeContext CPartyModeManager::GetType() const
+{
+  if (!IsEnabled())
+    return PARTYMODECONTEXT_UNKNOWN;
+
+  if (m_bIsVideo)
+    return PARTYMODECONTEXT_VIDEO;
+
+  return PARTYMODECONTEXT_MUSIC;
+}
+
 void CPartyModeManager::ClearState()
 {
   m_iLastUserSong = -1;

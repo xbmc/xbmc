@@ -34,6 +34,8 @@
 #include "video/VideoDatabase.h"
 #include "AudioLibrary.h"
 #include "GUIInfoManager.h"
+#include "filesystem/File.h"
+#include "PartyModeManager.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -495,6 +497,13 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
                   (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean());
     return StartSlideshow(parameterObject["item"]["path"].asString(), parameterObject["item"]["recursive"].asBoolean(), random);
   }
+  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("partymode"))
+  {
+    if (g_partyModeManager.IsEnabled())
+      g_partyModeManager.Disable();
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
+    return ACK;
+  }
   else
   {
     CFileItemList list;
@@ -663,6 +672,56 @@ JSONRPC_STATUS CPlayerOperations::Repeat(const CStdString &method, ITransportLay
       CApplicationMessenger::Get().PlayListPlayerRepeat(GetPlaylist(GetPlayer(parameterObject["playerid"])), (REPEAT_STATE)ParseRepeatState(parameterObject["state"]));
       OnPlaylistChanged();
       break;
+
+    case Picture:
+    default:
+      return FailedToExecute;
+  }
+
+  return ACK;
+}
+
+JSONRPC_STATUS CPlayerOperations::SetPartymode(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  PlayerType player = GetPlayer(parameterObject["playerid"]);
+  switch (player)
+  {
+    case Video:
+    case Audio:
+    {
+      bool change = false;
+      PartyModeContext context = PARTYMODECONTEXT_UNKNOWN;
+      std::string strContext;
+      if (player == Video)
+      {
+        context = PARTYMODECONTEXT_VIDEO;
+        strContext = "video";
+      }
+      else if (player == Audio)
+      {
+        context = PARTYMODECONTEXT_MUSIC;
+        strContext = "music";
+      }
+
+      bool toggle = parameterObject["partymode"].isString();
+      if (g_partyModeManager.IsEnabled())
+      {
+        if (g_partyModeManager.GetType() != context)
+          return InvalidParams;
+
+        if (toggle || parameterObject["partymode"].asBoolean() == false)
+          change = true;
+      }
+      else
+      {
+        if (toggle || parameterObject["partymode"].asBoolean() == true)
+          change = true;
+      }
+
+      if (change)
+        CApplicationMessenger::Get().ExecBuiltIn("playercontrol(partymode(" + strContext + "))");
+      break;
+    }
 
     case Picture:
     default:
