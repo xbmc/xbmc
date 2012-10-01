@@ -109,5 +109,70 @@ using namespace xbmcgui;
 %include "interfaces/legacy/Window.h"
 %include "interfaces/legacy/WindowDialog.h"
 %include "interfaces/legacy/Dialog.h"
+
+%rename ("addItemString") XBMCAddon::xbmcgui::WindowXML::addItem;
+%feature("python:method:addItem") XBMCAddon::xbmcgui::WindowXML
+{
+  TRACE;
+
+  static const char *keywords[] = {
+    "item",
+    NULL};
+
+  String  item;
+  PyObject* pyitem = NULL;
+  if (!PyArg_ParseTupleAndKeywords(
+                                   args,
+                                   kwds,
+                                   (char*)"O",
+                                   (char**)keywords,
+                                   &pyitem
+                                   ))
+    return NULL;
+
+  const char* callName = "addItem";
+  try
+  {
+    XBMCAddon::xbmcgui::WindowXML* apiobj = ((XBMCAddon::xbmcgui::WindowXML*)retrieveApiInstance((PyObject*)self,
+                                        &PyXBMCAddon_xbmcgui_WindowXML_Type,"addItem","XBMCAddon::xbmcgui::WindowXML"));
+
+    if (PyUnicode_Check(pyitem) || PyString_Check(pyitem))
+    {
+      callName = "addItemString";
+      PyXBMCGetUnicodeString(item,pyitem,false,"item","addItem"); 
+      apiobj->addItem(item);
+    }
+    else
+    {
+      callName = "addListItem";
+      // assume it's a ListItem. retrieveApiInstance will throw an exception if it's not
+      XBMCAddon::xbmcgui::ListItem* listItem = ((XBMCAddon::xbmcgui::ListItem*)retrieveApiInstance((PyObject*)pyitem,
+                                              &PyXBMCAddon_xbmcgui_ListItem_Type,"addItem","XBMCAddon::xbmcgui::ListItem"));
+      apiobj->addListItem(listItem);
+    }
+  }
+  catch (const XbmcCommons::Exception& e)
+  { 
+    CLog::Log(LOGERROR,"EXCEPTION: from call to '%s' '%s' ... returning NULL", callName,e.GetMessage());
+    PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); 
+    return NULL; 
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call '%s'",callName);
+    PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call 'addItem'"); 
+    return NULL; 
+  }
+
+  PyObject* result;
+
+  // transform the result
+  Py_INCREF(Py_None);
+  result = Py_None;
+
+  return result; 
+} 
+
+
 %include "interfaces/legacy/WindowXML.h"
 

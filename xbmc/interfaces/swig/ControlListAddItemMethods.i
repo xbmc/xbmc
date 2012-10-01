@@ -72,13 +72,13 @@
   }
   catch (const XbmcCommons::Exception& e)
   { 
-    CLog::Log(LOGERROR,"Leaving Python method 'XBMCAddon_xbmcgui_Control_addItemStream'. Exception from call to '%s' '%s' ... returning NULL", callName,e.GetMessage());
+    CLog::Log(LOGERROR,"EXCEPTION: from call to '%s' '%s' ... returning NULL", callName,e.GetMessage());
     PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); 
     return NULL; 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR,"Unknown exception thrown from the call '%s'",callName);
+    CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call '%s'",callName);
     PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call 'addItem'"); 
     return NULL; 
   }
@@ -149,13 +149,13 @@
   }
   catch (const XbmcCommons::Exception& e)
   { 
-    CLog::Log(LOGERROR,"Leaving Python method 'XBMCAddon_xbmcgui_Control_addItemStream'. Exception from call to '%s' '%s' ... returning NULL", callName,e.GetMessage());
+    CLog::Log(LOGERROR,"EXCEPTION: from call to '%s' '%s' ... returning NULL", callName,e.GetMessage());
     PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); 
     return NULL; 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR,"Unknown exception thrown from the call '%s'",callName);
+    CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call '%s'",callName);
     PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call 'addItem'"); 
     return NULL; 
   }
