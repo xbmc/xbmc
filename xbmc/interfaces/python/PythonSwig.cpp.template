@@ -192,6 +192,14 @@ void doMethod(method, MethodType methodType)
     }
 %>
     }
+    catch (const XBMCAddon::WrongTypeException& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage()); <%
+      if (!destructor) {  %>
+      return NULL; <%
+      } %>
+    }
     catch (const XbmcCommons::Exception& e)
     { 
       CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
