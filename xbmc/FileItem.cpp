@@ -2848,6 +2848,89 @@ CStdString CFileItem::GetUserVideoThumb() const
   return "";
 }
 
+CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const
+{
+  // ignore a bunch that are meaningless
+  if (m_strPath.empty()
+   || m_bIsShareOrDrive
+   || IsInternetStream()
+   || URIUtils::IsUPnP(m_strPath)
+   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || IsPlugin()
+   || IsAddonsPath()
+   || IsParentFolder()
+   || IsLiveTV()
+   || IsDVD())
+    return "";
+
+  CStdString thumb;
+  if (!m_bIsFolder)
+  {
+    thumb = GetLocalArt(artFile, false);
+    if (!thumb.empty() && CFile::Exists(thumb))
+      return thumb;
+  }
+  if ((useFolder || (m_bIsFolder && !IsFileFolder())) && !artFile.empty())
+  {
+    thumb = GetLocalArt(artFile, true);
+    if (!thumb.empty() && CFile::Exists(thumb))
+      return thumb;
+  }
+  return "";
+}
+
+CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) const
+{
+  // no retrieving of empty art files from folders
+  if (useFolder && artFile.empty())
+    return "";
+
+  CStdString strFile = m_strPath;
+  if (IsStack())
+  {
+/*    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
+    CStdString localArt = item.GetLocalArt(artFile);
+    return localArt;
+    */
+    CStdString strPath;
+    URIUtils::GetParentPath(m_strPath,strPath);
+    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
+  }
+
+  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  {
+    CStdString strPath, strParent;
+    URIUtils::GetDirectory(strFile,strPath);
+    URIUtils::GetParentPath(strPath,strParent);
+    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(strFile),strFile);
+  }
+
+  if (IsMultiPath())
+    strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
+
+  if (useFolder)
+  {
+    if (IsOpticalMediaFile())
+      strFile = GetLocalMetadataPath();
+    else
+      strFile = URIUtils::GetDirectory(strFile);
+  }
+
+  if (strFile.empty()) // empty filepath -> nothing to find
+    return "";
+
+  if (useFolder)
+    return URIUtils::AddFileToFolder(strFile, artFile);
+  else
+  {
+    if (artFile.empty()) // old thumbnail matching
+      return URIUtils::ReplaceExtension(strFile, ".tbn");
+    else
+      return URIUtils::ReplaceExtension(strFile, "-" + artFile);
+  }
+  return "";
+}
+
 CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jpg" */) const
 {
   CStdString folderThumb;
