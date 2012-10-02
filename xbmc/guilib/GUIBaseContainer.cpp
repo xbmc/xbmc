@@ -518,7 +518,7 @@ void CGUIBaseContainer::OnPrevLetter()
   }
 }
 
-void CGUIBaseContainer::OnJumpLetter(char letter)
+void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
 {
   if (m_matchTimer.GetElapsedMilliseconds() < letter_match_timeout)
     m_match.push_back(letter);
@@ -533,7 +533,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
 
   // find the current letter we're focused on
   unsigned int offset = CorrectOffset(GetOffset(), GetCursor());
-  unsigned int i      = offset;
+  unsigned int i      = (offset + ((skip) ? 1 : 0)) % m_items.size();
   do
   {
     CGUIListItemPtr item = m_items[i];
@@ -548,7 +548,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
   if (m_match.size() > 1)
   {
     m_match.clear();
-    OnJumpLetter(letter);
+    OnJumpLetter(letter, true);
   }
 }
 
