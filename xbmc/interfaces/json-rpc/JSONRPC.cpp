@@ -153,6 +153,9 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const CStdString &method, ITransportLa
     if ((notifications["Player"].isNull() && (oldFlags & Player)) ||
         (notifications["Player"].isBoolean() && notifications["Player"].asBoolean()))
       flags |= Player;
+    if ((notifications["Playlist"].isNull() && (oldFlags & Playlist)) ||
+        (notifications["Playlist"].isBoolean() && notifications["Playlist"].asBoolean()))
+      flags |= Playlist;
     if ((notifications["GUI"].isNull() && (oldFlags & GUI)) ||
         (notifications["GUI"].isBoolean() && notifications["GUI"].asBoolean()))
       flags |= GUI;

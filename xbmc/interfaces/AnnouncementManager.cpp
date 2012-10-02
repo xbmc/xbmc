@@ -183,6 +183,11 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
         object["artist"] = item->GetMusicInfoTag()->GetArtist();
     }
   }
+  else if (item->HasPictureInfoTag())
+  {
+    type = "picture";
+    object["file"] = item->GetPath();
+  }
   else
     type = "unknown";
 
