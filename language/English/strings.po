@@ -9896,6 +9896,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr ""
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr ""
+
 #strings 23100 thru 23150 reserved for external player
 #empty strings from id 23055 to 23099
 
