@@ -489,7 +489,7 @@ BuildObject(const CFileItem&              item,
             if (object->m_ObjectID.StartsWith("virtualpath://")) {
                 NPT_LargeSize count = 0;
                 NPT_CHECK_LABEL(NPT_File::GetSize(file_path, count), failure);
-                container->m_ChildrenCount = count;
+                container->m_ChildrenCount = (NPT_Int32)count;
             } else {
                 /* this should be a standard path */
                 // TODO - get file count of this directory

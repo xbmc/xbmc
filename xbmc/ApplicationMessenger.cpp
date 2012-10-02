@@ -299,7 +299,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_INHIBITIDLESHUTDOWN:
       {
-        g_application.InhibitIdleShutdown((bool)pMsg->dwParam1);
+        g_application.InhibitIdleShutdown(pMsg->dwParam1 != 0);
       }
       break;
 
