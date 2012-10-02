@@ -157,7 +157,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
 void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, int size, bool sortLimit /* = true */)
 {
   int start, end;
-  HandleLimits(parameterObject, result, items.Size(), start, end);
+  HandleLimits(parameterObject, result, size, start, end);
 
   if (sortLimit)
     Sort(items, parameterObject);
