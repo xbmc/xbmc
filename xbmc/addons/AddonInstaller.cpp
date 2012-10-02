@@ -21,10 +21,12 @@
 #include "AddonInstaller.h"
 #include "Service.h"
 #include "utils/log.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "ApplicationMessenger.h"
@@ -84,6 +86,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
     if (i != m_downloadJobs.end())
       m_downloadJobs.erase(i);
+    PrunePackageCache();
   }
   lock.Leave();
 
@@ -379,6 +382,75 @@ bool CAddonInstaller::HasJob(const CStdString& ID) const
 {
   CSingleLock lock(m_critSection);
   return m_downloadJobs.find(ID) != m_downloadJobs.end();
+}
+
+void CAddonInstaller::PrunePackageCache()
+{
+  std::map<CStdString,CFileItemList*> packs;
+  int64_t size = EnumeratePackageFolder(packs);
+  if (size < g_advancedSettings.m_addonPackageFolderSize)
+    return;
+
+  // Prune packages
+  // 1. Remove the largest packages, leaving at least 2 for each add-on
+  CFileItemList items;
+  for (std::map<CStdString,CFileItemList*>::const_iterator it  = packs.begin();
+                                                          it != packs.end();++it)
+  {
+    it->second->Sort(SORT_METHOD_LABEL,SortOrderDescending);
+    for (int j=2;j<it->second->Size();++j)
+      items.Add(CFileItemPtr(new CFileItem(*it->second->Get(j))));
+  }
+  items.Sort(SORT_METHOD_SIZE,SortOrderDescending);
+  int i=0;
+  while (size > g_advancedSettings.m_addonPackageFolderSize && i < items.Size())
+  {
+    size -= items[i]->m_dwSize;
+    CFileUtils::DeleteItem(items[i++],true);
+  }
+
+  if (size > g_advancedSettings.m_addonPackageFolderSize)
+  {
+    // 2. Remove the oldest packages (leaving least 1 for each add-on)
+    items.Clear();
+    for (std::map<CStdString,CFileItemList*>::iterator it  = packs.begin();
+                                                       it != packs.end();++it)
+    {
+      if (it->second->Size() > 1)
+        items.Add(CFileItemPtr(new CFileItem(*it->second->Get(1))));
+    }
+    items.Sort(SORT_METHOD_DATE,SortOrderAscending);
+    i=0;
+    while (size > g_advancedSettings.m_addonPackageFolderSize && i < items.Size())
+    {
+      size -= items[i]->m_dwSize;
+      CFileUtils::DeleteItem(items[i++],true);
+    }
+  }
+  // clean up our mess
+  for (std::map<CStdString,CFileItemList*>::iterator it  = packs.begin();
+                                                     it != packs.end();++it)
+    delete it->second;
+}
+
+int64_t CAddonInstaller::EnumeratePackageFolder(std::map<CStdString,CFileItemList*>& result)
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",DIR_FLAG_NO_FILE_DIRS);
+  int64_t size=0;
+  for (int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+    size += items[i]->m_dwSize;
+    CStdString pack,dummy;
+    AddonVersion::SplitFileName(pack,dummy,items[i]->GetLabel());
+    if (result.find(pack) == result.end())
+      result[pack] = new CFileItemList;
+    result[pack]->Add(CFileItemPtr(new CFileItem(*items[i])));
+  }
+
+  return size;
 }
 
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
