@@ -166,6 +166,10 @@ namespace XBMCAddon
       { // special case for mime type - don't actually stored in a property,
         item->SetMimeType(value.c_str());
       }
+      else if (lowerKey.CompareNoCase("totaltime") == 0)
+        item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds = (float)atof(value.c_str());
+      else if (lowerKey.CompareNoCase("resumetime") == 0)
+        item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = (float)atof(value.c_str());
       else if (lowerKey.CompareNoCase("specialsort") == 0)
       {
         if (value == "bottom")
@@ -187,6 +191,10 @@ namespace XBMCAddon
         // we store it in item.m_lStartOffset instead
         value.Format("%f", item->m_lStartOffset / 75.0);
       }
+      else if (lowerKey.CompareNoCase("totaltime") == 0)
+        value.Format("%f", item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+      else if (lowerKey.CompareNoCase("resumetime") == 0)
+        value.Format("%f", item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
       else
         value = item->GetProperty(lowerKey.ToLower()).asString();
 
