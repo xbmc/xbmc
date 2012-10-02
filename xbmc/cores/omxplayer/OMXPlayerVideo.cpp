@@ -121,7 +121,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   m_hints       = hints;
   m_Deinterlace = ( g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
   m_flush       = false;
-  m_hdmi_clock_sync = g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+  m_hdmi_clock_sync = (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
   m_started     = false;
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_autosync    = 1;
