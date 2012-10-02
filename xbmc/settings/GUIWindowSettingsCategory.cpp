@@ -84,6 +84,7 @@
 #include "network/Zeroconf.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
+#include "peripherals/devices/PeripheralImon.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -1432,10 +1433,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
   }
-  else if (strSetting.Equals("input.enablejoystick"))
+  else if (strSetting.Equals("input.enablejoystick") || strSetting.Equals("input.disablejoystickwithimon"))
   {
 #if defined(HAS_SDL_JOYSTICK)
-    g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick"));
+    g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick")  
+        && (CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 || !g_guiSettings.GetBool("input.disablejoystickwithimon")) );
 #endif
   }
   else if (strSetting.Equals("videoscreen.screen"))
