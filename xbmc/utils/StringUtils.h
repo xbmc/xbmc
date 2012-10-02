@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
@@ -28,17 +29,32 @@
 //
 //------------------------------------------------------------------------
 
-#ifndef __STRINGUTILS_H_
-#define __STRINGUTILS_H_
+#include <vector>
+#include <stdint.h>
+#include <string>
 
 #include "XBDateTime.h"
 #include "utils/StdString.h"
-#include <vector>
-#include <stdint.h>
 
 class StringUtils
 {
 public:
+  static std::string Format(const std::string &fmt, ...);
+  static std::string FormatV(const std::string &fmt, va_list args);
+  static void ToUpper(std::string &str);
+  static void ToLower(std::string &str);
+  static bool EqualsNoCase(const std::string &str1, const std::string &str2);
+  static std::string Left(const std::string &str, size_t count);
+  static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
+  static std::string Right(const std::string &str, size_t count);
+  static std::string& Trim(std::string &str);
+  static std::string& TrimLeft(std::string &str);
+  static std::string& TrimRight(std::string &str);
+  static int Replace(std::string &str, char oldChar, char newChar);
+  static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
+  static bool StartsWith(const std::string &str, const std::string &str2, bool useCase = false);
+  static bool EndsWith(const std::string &str, const std::string &str2, bool useCase = false);
+
   static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
   static CStdString JoinString(const CStdStringArray &strings, const CStdString& delimiter);
   static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
@@ -92,5 +108,3 @@ public:
 private:
   static CStdString m_lastUUID;
 };
-
-#endif
