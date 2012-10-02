@@ -31,6 +31,8 @@
 #ifndef SWIG
 namespace XBMCAddon
 {
+  XBMCCOMMONS_STANDARD_EXCEPTION(WrongTypeException);
+
   /**
    * UnimplementedException Can be used in places like the 
    *  Control hierarchy where the

@@ -21,12 +21,10 @@
 
 #pragma once
 
-#include "commons/Exception.h"
+#include "Exception.h"
 
 namespace XBMCAddon
 {
-  XBMCCOMMONS_STANDARD_EXCEPTION(WrongTypeException);
-
   enum WhichAlternative { none, first, second };
 
   template<typename T1, typename T2> class Alternative
