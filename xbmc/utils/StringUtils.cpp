@@ -48,7 +48,7 @@ const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-
 const CStdString StringUtils::EmptyString = "";
 CStdString StringUtils::m_lastUUID = "";
 
-string StringUtils::Format(const string &fmt, ...)
+string StringUtils::Format(const char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -58,29 +58,47 @@ string StringUtils::Format(const string &fmt, ...)
   return str;
 }
 
-string StringUtils::FormatV(const string &fmt, va_list args)
+string StringUtils::FormatV(const char *fmt, va_list args)
 {
+  if (fmt == NULL)
+    return "";
+
   int size = FORMAT_BLOCK_SIZE;
-  string str;
   va_list argCopy;
+
+  char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+  if (cstr == NULL)
+    return "";
 
   while (1) 
   {
-    str.resize(size);
     va_copy(argCopy, args);
 
-    int nActual = vsnprintf((char *)str.c_str(), size, fmt.c_str(), argCopy);
+    int nActual = vsnprintf(cstr, size, fmt, argCopy);
     va_end(argCopy);
 
     if (nActual > -1 && nActual < size) // We got a valid result
+    {
+      string str(cstr, nActual);
+      free(cstr);
       return str;
+    }
     if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
     else                                // Let's try to double the size (glibc 2.0)
       size *= 2;
+
+    char *new_cstr = reinterpret_cast<char*>(realloc(cstr, sizeof(char) * size));
+    if (new_cstr == NULL)
+    {
+      free(cstr);
+      return "";
+    }
+
+    cstr = new_cstr;
   }
 
-  return str;
+  return "";
 }
 
 void StringUtils::ToUpper(string &str)

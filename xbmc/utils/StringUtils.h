@@ -39,8 +39,19 @@
 class StringUtils
 {
 public:
-  static std::string Format(const std::string &fmt, ...);
-  static std::string FormatV(const std::string &fmt, va_list args);
+  /*! \brief Get a formatted string similar to sprintf
+
+  Beware that this does not support directly passing in
+  std::string objects. You need to call c_str() to pass
+  the const char* buffer representing the value of the
+  std::string object.
+
+  \param fmt Format of the resulting string
+  \param ... variable number of value type arguments
+  \return Formatted string
+  */
+  static std::string Format(const char *fmt, ...);
+  static std::string FormatV(const char *fmt, va_list args);
   static void ToUpper(std::string &str);
   static void ToLower(std::string &str);
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
