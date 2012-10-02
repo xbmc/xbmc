@@ -663,10 +663,24 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
     m_fAngle += fRotateAngle;
     return;
   }
+
+  // if there is a rotation ongoing already
+  // add the animation duration which is left to
+  // the next animation (this calculation is only right
+  // when the fRotateAngle is the same as on the former call 
+  // which is the case atm (90 degrees).
+  float remainder =  0;
+  if (m_transistionTemp.type == TRANSISTION_ROTATE && 
+      m_transistionTemp.start + m_transistionTemp.length > m_iCounter)
+  {
+    remainder = m_transistionTemp.start + m_transistionTemp.length - m_iCounter;
+  }
+
   m_transistionTemp.type = TRANSISTION_ROTATE;
   m_transistionTemp.start = m_iCounter;
   m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
   m_fTransistionAngle = (float)fRotateAngle / (float)m_transistionTemp.length;
+  m_transistionTemp.length += remainder;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
 }
