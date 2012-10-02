@@ -70,8 +70,12 @@ CWinEGLPlatformRaspberryPI::CWinEGLPlatformRaspberryPI()
   m_dispman_element2        = DISPMANX_NO_HANDLE;
   m_dispman_display         = DISPMANX_NO_HANDLE;
 
+  m_fixedMode               = false;
+
   m_nativeWindow = (EGL_DISPMANX_WINDOW_T *)malloc(sizeof(EGL_DISPMANX_WINDOW_T));
   memset(m_nativeWindow, 0x0, sizeof(EGL_DISPMANX_WINDOW_T));
+
+  m_initDesktopRes          = true;
 }
 
 CWinEGLPlatformRaspberryPI::~CWinEGLPlatformRaspberryPI()
@@ -112,10 +116,7 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
     }
   }
 
-  if(m_res.size() < 2)
-    bFound = false;
-
-  if(bFound && !m_sdMode)
+  if(bFound && !m_fixedMode)
   {
     sem_init(&m_tv_synced, 0, 0);
     m_DllBcmHost.vc_tv_register_callback(CallbackTvServiceCallback, this);
@@ -137,6 +138,8 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
     }
     m_DllBcmHost.vc_tv_unregister_callback(CallbackTvServiceCallback);
     sem_destroy(&m_tv_synced);
+
+    m_desktopRes = resSearch; 
   }
 
   m_dispman_display = m_DllBcmHost.vc_dispmanx_display_open(0);
@@ -230,15 +233,50 @@ bool CWinEGLPlatformRaspberryPI::ClampToGUIDisplayLimits(int &width, int &height
 bool CWinEGLPlatformRaspberryPI::ProbeDisplayResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
   resolutions.clear();
+  m_res.clear();
   
+  m_fixedMode               = false;
+
+  /* read initial desktop resolution before probe resolutions.
+   * probing will replace the desktop resolution when it finds the same one.
+   * we raplace it because probing will generate more detailed 
+   * resolution flags we don't get with vc_tv_get_state.
+   */
+
+  if(m_initDesktopRes)
+  {
+    TV_GET_STATE_RESP_T tv_state;
+
+    // get current display settings state
+    memset(&tv_state, 0, sizeof(TV_GET_STATE_RESP_T));
+    m_DllBcmHost.vc_tv_get_state(&tv_state);
+
+    m_desktopRes.iScreen      = 0;
+    m_desktopRes.bFullScreen  = true;
+    m_desktopRes.iSubtitles   = (int)(0.965 * tv_state.height);
+    m_desktopRes.iWidth       = tv_state.width;
+    m_desktopRes.iHeight      = tv_state.height;
+    m_desktopRes.iScreenWidth = tv_state.width;
+    m_desktopRes.iScreenHeight= tv_state.height;
+    m_desktopRes.dwFlags      = tv_state.scan_mode ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE;
+    m_desktopRes.fRefreshRate = (float)tv_state.frame_rate;
+    m_desktopRes.strMode.Format("%dx%d", tv_state.width, tv_state.height);
+    if((float)tv_state.frame_rate > 1)
+    {
+        m_desktopRes.strMode.Format("%s @ %.2f%s - Full Screen", m_desktopRes.strMode, (float)tv_state.frame_rate, 
+            m_desktopRes.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+    }
+    m_initDesktopRes = false;
+
+    CLog::Log(LOGDEBUG, "EGL initial desktop resolution %s\n", m_desktopRes.strMode.c_str());
+  }
+
   GetSupportedModes(HDMI_RES_GROUP_CEA, resolutions);
   GetSupportedModes(HDMI_RES_GROUP_DMT, resolutions);
   GetSupportedModes(HDMI_RES_GROUP_CEA_3D, resolutions);
 
   if(resolutions.size() == 0)
   {
-    m_sdMode = true;
-
     TV_GET_STATE_RESP_T tv;
     m_DllBcmHost.vc_tv_get_state(&tv);
 
@@ -248,7 +286,11 @@ bool CWinEGLPlatformRaspberryPI::ProbeDisplayResolutions(std::vector<RESOLUTION_
         m_desktopRes.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "p");
 
     m_res.push_back(m_desktopRes);
+    resolutions.push_back(m_desktopRes);
   }
+
+  if(resolutions.size() < 2)
+    m_fixedMode = true;
 
   return true;
 }
@@ -260,27 +302,6 @@ EGLNativeWindowType CWinEGLPlatformRaspberryPI::InitWindowSystem(EGLNativeDispla
   m_height        = height;
 
   m_DllBcmHost.Load();
-
-  // get current display settings state
-  memset(&m_tv_state, 0, sizeof(TV_GET_STATE_RESP_T));
-  m_DllBcmHost.vc_tv_get_state(&m_tv_state);
-
-  m_desktopRes.iScreen      = 0;
-  m_desktopRes.bFullScreen  = true;
-  m_desktopRes.iSubtitles   = (int)(0.965 * m_tv_state.height);
-  m_desktopRes.iWidth       = m_tv_state.width;
-  m_desktopRes.iHeight      = m_tv_state.height;
-  m_desktopRes.iScreenWidth = m_tv_state.width;
-  m_desktopRes.iScreenHeight= m_tv_state.height;
-  m_desktopRes.dwFlags      = m_tv_state.scan_mode ? D3DPRESENTFLAG_INTERLACED : D3DPRESENTFLAG_PROGRESSIVE;
-  m_desktopRes.fRefreshRate = (float)m_tv_state.frame_rate;
-  m_sdMode                  = false;
-  m_desktopRes.strMode.Format("%dx%d", m_tv_state.width, m_tv_state.height);
-  if((float)m_tv_state.frame_rate > 1)
-  {
-      m_desktopRes.strMode.Format("%s @ %.2f%s - Full Screen", m_desktopRes.strMode, (float)m_tv_state.frame_rate, 
-          m_desktopRes.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-  }
 
   return getNativeWindow();
 }
@@ -685,6 +706,16 @@ void CWinEGLPlatformRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::
       }
 
       resolutions.push_back(res);
+
+      /* replace initial desktop resolution with probed hdmi resolution */
+      if(m_desktopRes.iWidth == res.iWidth && m_desktopRes.iHeight == res.iHeight &&
+          m_desktopRes.iScreenWidth == res.iScreenWidth && m_desktopRes.iScreenHeight == res.iScreenHeight &&
+          m_desktopRes.fRefreshRate == res.fRefreshRate)
+      {
+        m_desktopRes = res;
+        CLog::Log(LOGDEBUG, "EGL desktop replacement resolution %dx%d@%d %s%s:%x\n", 
+            width, tv->height, tv->frame_rate, tv->native ? "N" : "", tv->scan_mode ? "I" : "", tv->code);
+      }
 
       m_res.push_back(res);
     }

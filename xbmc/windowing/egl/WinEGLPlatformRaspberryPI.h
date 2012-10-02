@@ -89,9 +89,8 @@ protected:
 
   RESOLUTION_INFO m_desktopRes;
 
-  TV_GET_STATE_RESP_T m_tv_state;
-
-  bool                  m_sdMode;
+  bool                m_fixedMode;
+  bool                m_initDesktopRes;
 };
 
 #endif
