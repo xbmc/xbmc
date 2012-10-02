@@ -23,6 +23,7 @@
 
 #include "AddonString.h"
 #include "Tuple.h"
+#include "ListItem.h"
 #include <vector>
 
 namespace XBMCAddon
@@ -116,6 +117,16 @@ namespace XBMCAddon
      *  - dirs, files = xbmcvfs.listdir(path)
      */
     Tuple<std::vector<String>, std::vector<String> > listdir(const String& path);
+
+    /**
+     * listdirWithDetails(path) -- lists content of a folder as ListItemList.
+     *
+     * path        : folder
+     *
+     * example:
+     *  - ListItemList = xbmcvfs.listdirWithDetails(path)
+     */
+     xbmcgui::ListItemList listDirWithDetails(const String& path);
   }
 }
 
