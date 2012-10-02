@@ -982,6 +982,58 @@
       }
     }
   },
+  "Addon.Types": {
+    "type": "string",
+    "enum": [ "unknown", "xbmc.metadata.scraper.albums", "xbmc.metadata.scraper.artists", "xbmc.metadata.scraper.movies",
+              "xbmc.metadata.scraper.musicvideos", "xbmc.metadata.scraper.tvshows", "xbmc.ui.screensaver",
+              "xbmc.player.musicviz", "xbmc.python.pluginsource", "xbmc.python.script", "xbmc.python.weather",
+              "xbmc.python.subtitles", "xbmc.python.lyrics", "xbmc.gui.skin", "xbmc.gui.webinterface",
+              "xbmc.addon.video", "xbmc.addon.audio", "xbmc.addon.image", "xbmc.addon.executable", "xbmc.service" ],
+    "default": "unknown"
+  },
+  "Addon.Fields": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "name", "version", "summary", "description", "path", "author", "thumbnail", "disclaimer", "fanart",
+                "dependencies", "broken", "extrainfo", "rating", "enabled" ]
+    }
+  },
+  "Addon.Details": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "addonid": { "type": "string", "required": true },
+      "type": { "$ref": "Addon.Types", "required": true },
+      "name": { "type": "string" },
+      "version": { "type": "string" },
+      "summary": { "type": "string" },
+      "description": { "type": "string" },
+      "path": { "type": "string" },
+      "author": { "type": "string" },
+      "thumbnail": { "type": "string" },
+      "disclaimer": { "type": "string" },
+      "fanart": { "type": "string" },
+      "dependencies": { "type": "array",
+        "items": { "type": "object",
+          "properties": {
+            "addonid": { "type": "string", "required": true },
+            "version": { "type": "string", "required": true },
+            "optional": { "type": "boolean", "required": true }
+          }
+        }
+      },
+      "broken": { "type": [ "boolean", "string" ] },
+      "extrainfo": { "type": "array",
+        "items": { "type": "object",
+          "properties": {
+            "key": { "type": "string", "required": true },
+            "value": { "type": "string", "required": true }
+          }
+        }
+      },
+      "rating": { "type": "integer" },
+      "enabled": { "type": "boolean" }
+    }
+  },
   "GUI.Property.Name": {
     "type": "string",
     "enum": [ "currentwindow", "currentcontrol", "skin", "fullscreen" ]

@@ -36,11 +36,7 @@ namespace JSONRPC
     static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append = true, CThumbLoader *thumbLoader = NULL);
 
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
-
-    static bool ParseSorting(const CVariant &parameterObject, SortBy &sortBy, SortOrder &sortOrder, SortAttribute &sortAttributes);
-    static void ParseLimits(const CVariant &parameterObject, int &limitStart, int &limitEnd);
   private:
-    static bool ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SortOrder &sortorder);
     static void Sort(CFileItemList &items, const CVariant& parameterObject);
   };
 }
