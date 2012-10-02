@@ -33,8 +33,18 @@ namespace PythonBindings
     memset(typeInfo, 0, sizeof(TypeInfo));
   }
 
-  int PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,
-                             const char* argumentName, const char* methodname) throw (XBMCAddon::WrongTypeException)
+  class PyObjectDecrementor
+  {
+    PyObject* obj;
+  public:
+    inline PyObjectDecrementor(PyObject* pyobj) : obj(pyobj) {}
+    inline ~PyObjectDecrementor() { Py_XDECREF(obj); }
+
+    inline PyObject* get() { return obj; }
+  };
+
+  void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,
+                              const char* argumentName, const char* methodname) throw (XBMCAddon::WrongTypeException)
   {
     // TODO: UTF-8: Does python use UTF-16?
     //              Do we need to convert from the string charset to UTF-8
@@ -50,24 +60,24 @@ namespace PythonBindings
       {
         buf = PyString_AsString(utf8_pyString);
         Py_DECREF(utf8_pyString);
-        return 1;
+        return;
       }
     }
     if (PyString_Check(pObject))
     {
       buf = PyString_AsString(pObject);
-      return 1;
+      return;
     }
 
     // if we got here then we need to coerce the value to a string
     if (coerceToString)
     {
-      PyObject* pyStrCast = PyObject_Str(pObject);
+      PyObjectDecrementor dec(PyObject_Str(pObject));
+      PyObject* pyStrCast = dec.get();
       if (pyStrCast)
       {
-        int ret = PyXBMCGetUnicodeString(buf,pyStrCast,false,argumentName,methodname);
-        Py_DECREF(pyStrCast);
-        return ret;
+        PyXBMCGetUnicodeString(buf,pyStrCast,false,argumentName,methodname);
+        return;
       }
     }
 

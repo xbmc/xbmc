@@ -30,9 +30,9 @@
 
 namespace PythonBindings
 {
-  int PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
-                             const char* pos = "unknown", 
-                             const char* methodname = "unknown") throw (XBMCAddon::WrongTypeException);
+  void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
+                              const char* pos = "unknown", 
+                              const char* methodname = "unknown") throw (XBMCAddon::WrongTypeException);
 
   // This is for casting from child class to base class
   struct TypeConverterBase
