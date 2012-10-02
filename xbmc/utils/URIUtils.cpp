@@ -954,6 +954,13 @@ void URIUtils::AddFileToFolder(const CStdString& strFolder,
     strResult.Replace('/', '\\');
 }
 
+CStdString URIUtils::GetDirectory(const CStdString &filePath)
+{
+  CStdString directory;
+  GetDirectory(filePath, directory);
+  return directory;
+}
+
 void URIUtils::GetDirectory(const CStdString& strFilePath,
                             CStdString& strDirectoryPath)
 {
