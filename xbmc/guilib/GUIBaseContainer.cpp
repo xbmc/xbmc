@@ -532,8 +532,9 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
     return;
 
   // find the current letter we're focused on
-  unsigned int offset = CorrectOffset(GetOffset(), GetCursor()) - 1;
-  for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
+  unsigned int offset = CorrectOffset(GetOffset(), GetCursor());
+  unsigned int i      = offset;
+  do
   {
     CGUIListItemPtr item = m_items[i];
     if (0 == strnicmp(SortUtils::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
@@ -541,7 +542,8 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
       SelectItem(i);
       return;
     }
-  }
+    i = (i+1) % m_items.size();
+  } while (i != offset);
   // no match found - repeat with a single letter
   if (m_match.size() > 1)
   {
