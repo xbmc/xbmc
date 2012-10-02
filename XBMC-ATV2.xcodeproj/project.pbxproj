@@ -112,6 +112,7 @@
 		DF527789151BAFEE00B5B63B /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527786151BAFEE00B5B63B /* HttpResponse.cpp */; };
 		DF830D4815BB2CFC00602BE6 /* GUIKeyboardFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D4515BB2CFC00602BE6 /* GUIKeyboardFactory.cpp */; };
 		DF830D4B15BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D4915BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
+		DF91D899161B759B004E6637 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91D897161B759B004E6637 /* AddonsOperations.cpp */; };
 		DF93D7701444B09C007C6459 /* AFPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7381444B09C007C6459 /* AFPFile.cpp */; };
 		DF93D7731444B09C007C6459 /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D73E1444B09C007C6459 /* CDDAFile.cpp */; };
 		DF93D7741444B09C007C6459 /* CurlFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7401444B09C007C6459 /* CurlFile.cpp */; };
@@ -1275,6 +1276,8 @@
 		DF830D4615BB2CFC00602BE6 /* GUIKeyboardFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboardFactory.h; sourceTree = "<group>"; };
 		DF830D4915BB2D2300602BE6 /* GUIDialogKeyboardGeneric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboardGeneric.cpp; sourceTree = "<group>"; };
 		DF830D4A15BB2D2300602BE6 /* GUIDialogKeyboardGeneric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboardGeneric.h; sourceTree = "<group>"; };
+		DF91D897161B759B004E6637 /* AddonsOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonsOperations.cpp; sourceTree = "<group>"; };
+		DF91D898161B759B004E6637 /* AddonsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonsOperations.h; sourceTree = "<group>"; };
 		DF93D7381444B09C007C6459 /* AFPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPFile.cpp; sourceTree = "<group>"; };
 		DF93D7391444B09C007C6459 /* AFPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPFile.h; sourceTree = "<group>"; };
 		DF93D73E1444B09C007C6459 /* CDDAFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDAFile.cpp; sourceTree = "<group>"; };
@@ -6367,6 +6370,8 @@
 		F5AE40EC1341751E0004BD79 /* json-rpc */ = {
 			isa = PBXGroup;
 			children = (
+				DF91D897161B759B004E6637 /* AddonsOperations.cpp */,
+				DF91D898161B759B004E6637 /* AddonsOperations.h */,
 				18968DE614155E1D005BA742 /* ApplicationOperations.cpp */,
 				18968DE714155E1D005BA742 /* ApplicationOperations.h */,
 				F5AE40ED1341751E0004BD79 /* AudioLibrary.cpp */,
@@ -7584,6 +7589,7 @@
 				DFC0F8F51613A1960066D598 /* XLCDproc.cpp in Sources */,
 				DFC0F91C1613A3A00066D598 /* LCDFactory.cpp in Sources */,
 				DFA0F9551618E1CD00611CBB /* DVDOverlayCodec.cpp in Sources */,
+				DF91D899161B759B004E6637 /* AddonsOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
