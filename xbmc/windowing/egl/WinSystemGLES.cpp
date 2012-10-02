@@ -176,9 +176,9 @@ void CWinSystemGLES::UpdateResolutions()
     g_settings.m_ResInfo[res_index] = resolutions[i];
 
     CLog::Log(LOGNOTICE, "Found resolution %d x %d for display %d with %d x %d%s @ %f Hz\n",
-      resolutions[i].iScreen,
       resolutions[i].iWidth,
       resolutions[i].iHeight,
+      resolutions[i].iScreen,
       resolutions[i].iScreenWidth,
       resolutions[i].iScreenHeight,
       resolutions[i].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
