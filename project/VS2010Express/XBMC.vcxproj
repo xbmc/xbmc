@@ -708,6 +708,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\http-api\XBMChttp.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AudioLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\FileItemHandler.cpp" />
@@ -1194,6 +1195,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.h" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
     <ClCompile Include="..\..\xbmc\URL.cpp" />

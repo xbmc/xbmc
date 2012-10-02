@@ -44,7 +44,9 @@
         "Navigate": { "type": "boolean", "required": true },
         "WriteFile": { "type": "boolean", "required": true },
         "ControlSystem": { "type": "boolean", "required": true },
-        "ControlGUI": { "type": "boolean", "required": true }
+        "ControlGUI": { "type": "boolean", "required": true },
+        "ManageAddon": { "type": "boolean", "required": true },
+        "ExecuteAddon": { "type": "boolean", "required": true }
       }
     }
   },
@@ -1535,6 +1537,69 @@
       { "name": "fullscreen", "required": true, "$ref": "Global.Toggle" }
     ],
     "returns": { "type": "boolean", "description": "Fullscreen state" }
+  },
+  "Addons.GetAddons": {
+    "type": "method",
+    "description": "Gets all available addons",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "type", "$ref": "Addon.Types" },
+      { "name": "enabled", "type": [ { "type": "boolean" }, { "type": "string", "enum": [ "all" ] } ], "default": "all" },
+      { "name": "properties", "$ref": "Addon.Fields" },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "addons": { "type": "array",
+          "items": { "$ref": "Addon.Details" }
+        }
+      }
+    }
+  },
+  "Addons.GetAddonDetails": {
+    "type": "method",
+    "description": "Gets the details of a specific addon",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "addonid", "type": "string", "required": true },
+      { "name": "properties", "$ref": "Addon.Fields" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "addon": { "$ref": "Addon.Details", "required": true }
+      }
+    }
+  },
+  "Addons.SetAddonEnabled": {
+    "type": "method",
+    "description": "Enables/Disables a specific addon",
+    "transport": "Response",
+    "permission": "ManageAddon",
+    "params": [
+      { "name": "addonid", "type": "string", "required": true },
+      { "name": "enabled", "$ref": "Global.Toggle", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Addons.ExecuteAddon": {
+    "type": "method",
+    "description": "Executes the given addon with the given parameters (if possible)",
+    "transport": "Response",
+    "permission": "ExecuteAddon",
+    "params": [
+      { "name": "addonid", "type": "string", "required": true },
+      { "name": "params", "type": [
+          { "type": "object", "additionalProperties": { "type": "string" } },
+          { "type": "array", "items": { "type": "string" } }
+        ]
+      },
+      { "name": "wait", "type": "boolean", "default": false }
+    ],
+    "returns": "string"
   },
   "System.GetProperties": {
     "type": "method",

@@ -529,7 +529,9 @@ int CBuiltins::Execute(const CStdString& execString)
             cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
         }
         if (addon->Type() == ADDON_SCRIPT)
-          cmd.Format("RunScript(%s)",params[0]);
+          // Pass the script name (params[0]) and all the parameters
+          // (params[1] ... params[x]) separated by a comma to RunScript
+          cmd.Format("RunScript(%s)", StringUtils::JoinString(params, ","));
 
         return Execute(cmd);
       }

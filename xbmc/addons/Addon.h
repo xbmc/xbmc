@@ -23,6 +23,7 @@
 #include "addons/AddonVersion.h"
 #include "utils/XBMCTinyXML.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/ISerializable.h"
 
 class TiXmlElement;
 class CAddonCallbacksAddon;
@@ -42,7 +43,7 @@ const CStdString    GetIcon(const TYPE &type);
 const CStdString    UpdateVideoScraper(const CStdString &scraper);
 const CStdString    UpdateMusicScraper(const CStdString &scraper);
 
-class AddonProps
+class AddonProps : public ISerializable
 {
 public:
   AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr, const CStdString &minversionstr)
@@ -63,6 +64,8 @@ public:
            && (*this).type == rhs.type
            && (*this).version == rhs.version;
   }
+  
+  void Serialize(CVariant &variant);
 
   CStdString id;
   TYPE type;
