@@ -70,7 +70,7 @@ Helper.setup(classes,
      * call.
      */
     [ 
-      'String' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},false,"${api}","${method.@name}");',
+      'String' : 'if (${slarg}) if(!PyXBMCGetUnicodeString(${api},${slarg},false,"${api}","${method.@name}")) return NULL;',
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.intm'),
       (Pattern.compile('''(p.){0,1}Tuple(3){0,1}<\\(.*\\)>''')) : new File('typemaps/python.Tuple.intm'),
       // I shouldn't need both of these but my parser doesn't resolve namespaces within
