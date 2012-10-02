@@ -266,7 +266,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     // function pointer for texture might change in
     // call to LoadShaders
     glFinish();
-    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    for (int i = 0 ; i < NUM_BUFFERS ; i++)
       (this->*m_textureDelete)(i);
 
     // trigger update of video filters
