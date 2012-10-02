@@ -291,15 +291,6 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
           }
           m_bNoEffect = (m_fZoomAmount != 1.0f); // turn effect rendering back on.
         }
-        /* not really needed anymore as we support arbitrary rotations
-        else if (m_transistionTemp.type == TRANSISTION_ROTATE)
-        { // round to nearest of 0, 90, 180 and 270
-          float reminder = fmodf(m_fAngle, 90.0f);
-          if (reminder < 45.0f)
-            m_fAngle -= reminder;
-          else
-            m_fAngle += 90.0f - reminder;
-        }*/
         m_transistionTemp.type = TRANSISTION_NONE;
       }
       else
