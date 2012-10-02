@@ -54,6 +54,7 @@ namespace XBMCAddon
                const String& iconImage = emptyString,
                const String& thumbnailImage = emptyString,
                const String& path = emptyString);
+      ListItem(const CFileItem& item2);
       virtual ~ListItem();
 
       static inline ListItem* fromString(const String& str) 

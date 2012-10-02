@@ -61,6 +61,11 @@ namespace XBMCAddon
         item->SetPath(path);
     }
 
+    ListItem::ListItem(const CFileItem& item2): AddonClass("ListItem")
+    {
+      item.reset(new CFileItem(item2));
+    }
+
     ListItem::~ListItem()
     {
       item.reset();
