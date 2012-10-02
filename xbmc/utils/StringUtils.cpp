@@ -403,17 +403,20 @@ int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {
-  if(timeString.Right(4).Equals(" min"))
+  CStdString strCopy(timeString);
+  strCopy.TrimLeft(" \n\r\t");
+  strCopy.TrimRight(" \n\r\t");
+  if(strCopy.Right(4).Equals(" min"))
   {
     // this is imdb format of "XXX min"
-    return 60 * atoi(timeString.c_str());
+    return 60 * atoi(strCopy.c_str());
   }
   else
   {
     CStdStringArray secs;
-    StringUtils::SplitString(timeString, ":", secs);
+    StringUtils::SplitString(strCopy, ":", secs);
     int timeInSecs = 0;
-    for (unsigned int i = 0; i < secs.size(); i++)
+    for (unsigned int i = 0; i < 3 && i < secs.size(); i++)
     {
       timeInSecs *= 60;
       timeInSecs += atoi(secs[i]);
