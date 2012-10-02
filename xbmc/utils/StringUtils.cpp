@@ -255,7 +255,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     newPos = input.Find (delimiter, iPos + sizeS2);
   }
 
-  // numFound is the number of delimeters which is one less
+  // numFound is the number of delimiters which is one less
   // than the number of substrings
   unsigned int numFound = positions.size();
   if (iMaxStrings > 0 && numFound >= iMaxStrings)
@@ -308,7 +308,7 @@ vector<string> StringUtils::Split(const CStdString& input, const CStdString& del
   return strArray;
 }
 
-// returns the number of occurences of strFind in strInput.
+// returns the number of occurrences of strFind in strInput.
 int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind)
 {
   int pos = strInput.Find(strFind, 0);
@@ -690,8 +690,8 @@ size_t StringUtils::utf8_strlen(const char *s)
   size_t length = 0;
   while (*s)
   {
-		if ((*s++ & 0xC0) != 0x80)
-			length++;
-	}
-	return length;
+    if ((*s++ & 0xC0) != 0x80)
+      length++;
+  }
+  return length;
 }
