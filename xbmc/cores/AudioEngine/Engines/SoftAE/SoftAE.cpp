@@ -876,8 +876,7 @@ double CSoftAE::GetDelay()
   CSharedLock sinkLock(m_sinkLock);
   if (m_sink)
     delaySink = m_sink->GetDelay();
-  sinkLock.Leave();
-
+ 
   if (m_transcode && m_encoder && !m_rawPassthrough)
   {
     delayBuffer     = (double)m_buffer.Used() * m_encoderInitFrameSizeMul * m_encoderInitSampleRateMul;
@@ -885,9 +884,6 @@ double CSoftAE::GetDelay()
   }
   else
     delayBuffer = (double)m_buffer.Used() * m_sinkFormatFrameSizeMul *m_sinkFormatSampleRateMul;
-
-  //CLog::Log(LOGNOTICE, "Buffer:%f  Sink:%f  Transcoder:%f  Total:%f", (float)delaybuffer, (float)delaysink, (float)delaytranscoder,
-       //(float)(delaybuffer + delaysink + delaytranscoder));
 
   return delayBuffer + delaySink + delayTranscoder;
 }
@@ -899,7 +895,6 @@ double CSoftAE::GetCacheTime()
   CSharedLock sinkLock(m_sinkLock);
   if (m_sink)
     timeSink = m_sink->GetCacheTime();
-  sinkLock.Leave();
 
   if (m_transcode && m_encoder && !m_rawPassthrough)
   {
@@ -914,14 +909,21 @@ double CSoftAE::GetCacheTime()
 
 double CSoftAE::GetCacheTotal()
 {
-  double total = (double)m_buffer.Size() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
+  double timeBuffer = 0.0, timeSink = 0.0, timeTranscoder = 0.0;
 
   CSharedLock sinkLock(m_sinkLock);
   if (m_sink)
-    total += m_sink->GetCacheTotal();
-  sinkLock.Leave();
+    timeSink = m_sink->GetCacheTotal();
 
-  return total;
+  if (m_transcode && m_encoder && !m_rawPassthrough)
+  {
+    timeBuffer     = (double)m_buffer.Size() * m_encoderInitFrameSizeMul * m_encoderInitSampleRateMul;
+    timeTranscoder = m_encoder->GetDelay((double)m_encodedBuffer.Size() * m_encoderFrameSizeMul);
+  }
+  else
+    timeBuffer = (double)m_buffer.Size() * m_sinkFormatFrameSizeMul *m_sinkFormatSampleRateMul;
+
+  return timeBuffer + timeSink + timeTranscoder;
 }
 
 bool CSoftAE::IsSuspended()
