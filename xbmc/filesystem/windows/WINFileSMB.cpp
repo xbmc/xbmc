@@ -84,7 +84,7 @@ bool CWINFileSMB::Open(const CURL& url)
     m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
     if (!m_hFile.isValid())
     {
-      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
+      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file %s Error: %d", strFile.c_str(), GetLastError());
       return false;
     }
   }
