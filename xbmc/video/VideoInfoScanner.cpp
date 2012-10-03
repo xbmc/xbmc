@@ -958,11 +958,12 @@ namespace VIDEO
 
     if (season && episode)
     {
+      char* endptr = NULL;
       if (strlen(season) == 0 && strlen(episode) > 0)
       { // no season specified -> assume defaultSeason
         episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
-          episodeInfo.iEpisode = atoi(episode);
+          episodeInfo.iEpisode = strtol(episode, &endptr, 10);
       }
       else if (strlen(season) > 0 && strlen(episode) == 0)
       { // no episode specification -> assume defaultSeason
@@ -973,7 +974,14 @@ namespace VIDEO
       else
       { // season and episode specified
         episodeInfo.iSeason = atoi(season);
-        episodeInfo.iEpisode = atoi(episode);
+        episodeInfo.iEpisode = strtol(episode, &endptr, 10);
+      }
+      if (endptr)
+      {
+        if (isalpha(*endptr))
+          episodeInfo.iSubepisode = *endptr - (islower(*endptr) ? 'a' : 'A') + 1;
+        else if (*endptr == '.')
+          episodeInfo.iSubepisode = atoi(endptr+1);
       }
     }
     free(season);
@@ -1282,16 +1290,14 @@ namespace VIDEO
         continue;
       }
 
-      std::pair<int,int> key;
-      key.first = file->iSeason;
-      key.second = file->iEpisode;
+      struct EPISODE key(file->iSeason, file->iEpisode, file->iSubepisode);
       bool bFound = false;
       EPISODELIST::iterator guide = episodes.begin();;
       EPISODELIST matches;
 
       for (; guide != episodes.end(); ++guide )
       {
-        if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==guide->key))
+        if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==*guide))
         {
           bFound = true;
           break;
@@ -1360,17 +1366,17 @@ namespace VIDEO
           
         // Only set season/epnum from filename when it is not already set by a scraper
         if (item.GetVideoInfoTag()->m_iSeason == -1)
-          item.GetVideoInfoTag()->m_iSeason = guide->key.first;
+          item.GetVideoInfoTag()->m_iSeason = guide->iSeason;
         if (item.GetVideoInfoTag()->m_iEpisode == -1)
-          item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
+          item.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
           
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, idShow) < 0)
           return INFO_ERROR;
       }
       else
       {
-        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d, airdate: '%s', title: '%s'",
-                  __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode,
+        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d.%d, airdate: '%s', title: '%s'",
+                  __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode, file->iSubepisode,
                   file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
       }
     }
