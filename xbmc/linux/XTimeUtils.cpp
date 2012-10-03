@@ -19,24 +19,22 @@
  */
 
 #include "system.h"
-#include "LinuxTimezone.h"
 #include "XTimeUtils.h"
-#include "../utils/log.h"
-#include <errno.h>
-#include <time.h>
-#include <unistd.h>
-#include <sys/times.h>
-#include <sched.h>
+#include "LinuxTimezone.h"
 
 #if defined(TARGET_DARWIN)
 #include "threads/Atomics.h"
-#include <mach/mach_time.h>
-#include <CoreVideo/CVHostTime.h>
 #endif
 
 #if defined(__ANDROID__)
 #include <time64.h>
 #endif
+
+#include <errno.h>
+#include <time.h>
+#include <unistd.h>
+#include <sys/times.h>
+#include <sched.h>
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
