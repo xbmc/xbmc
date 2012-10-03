@@ -303,9 +303,12 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         float speed = std::min(1.0f, (float)(action.GetHoldTime() - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int frameDuration = std::min(CTimeUtils::GetFrameTime() - m_lastHoldTime, 50u); // max 20fps
 
-        // scrollrate is minimum 10 items/sec and timed to take around 10 seconds
-        // with ramp up (num_rows/7 items per second max speed) to traverse a long list
-        m_scrollItemsPerFrame += std::max(0.01f*(float)frameDuration, (float)(speed * 0.00015f * GetRows() * frameDuration));
+        // maximal scroll rate is at least 30 items per second, and at most (item_rows/7) items per second
+        //  i.e. timed to take 7 seconds to traverse the list at full speed.
+        // minimal scroll rate is at least 10 items per second
+        float maxSpeed = std::max(frameDuration * 0.001f * 30, frameDuration * 0.001f * GetRows() / 7);
+        float minSpeed = frameDuration * 0.001f * 10;
+        m_scrollItemsPerFrame += std::max(minSpeed, speed*maxSpeed); // accelerate to max speed
         m_lastHoldTime = CTimeUtils::GetFrameTime();
 
         if(m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
