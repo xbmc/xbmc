@@ -28,6 +28,7 @@
 #include "settings/GUISettings.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
 
 #include <errno.h>
 #include <string.h>
@@ -113,8 +114,7 @@ CPosixNetworkManager::~CPosixNetworkManager()
 
 bool CPosixNetworkManager::CanManageConnections()
 {
-  //return g_advancedSettings.m_enableNetworkManager;
-  return true;
+  return g_advancedSettings.m_enableNetworkManager;
 }
 
 ConnectionList CPosixNetworkManager::GetConnections()
