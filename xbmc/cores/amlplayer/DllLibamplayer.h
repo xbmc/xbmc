@@ -63,8 +63,9 @@ public:
   virtual char* player_status2str(player_status status)=0;
 
   virtual int audio_set_volume(int pid,float val)=0;
+#if !defined(TARGET_ANDROID)
   virtual int audio_set_delay(int pid, int delay)=0;
-  
+#endif
   virtual int codec_open_sub_read(void)=0;
   virtual int codec_close_sub_fd(int sub_fd)=0;
   virtual int codec_get_sub_size_fd(int sub_fd)=0;
@@ -104,7 +105,9 @@ class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
   DEFINE_METHOD1(char*,          player_status2str,     (player_status p1))
 
   DEFINE_METHOD2(int,            audio_set_volume,      (int p1, float p2))
+#if !defined(TARGET_ANDROID)
   DEFINE_METHOD2(int,            audio_set_delay,       (int p1, int p2))
+#endif
 
   DEFINE_METHOD0(int,            codec_open_sub_read)
   DEFINE_METHOD1(int,            codec_close_sub_fd,    (int p1))
@@ -141,8 +144,9 @@ class DllLibAmplayer : public DllDynamic, DllLibAmplayerInterface
     RESOLVE_METHOD(player_status2str)
 
     RESOLVE_METHOD(audio_set_volume)
+#if !defined(TARGET_ANDROID)
     RESOLVE_METHOD(audio_set_delay)
-
+#endif
     RESOLVE_METHOD(codec_open_sub_read)
     RESOLVE_METHOD(codec_close_sub_fd)
     RESOLVE_METHOD(codec_get_sub_size_fd)
