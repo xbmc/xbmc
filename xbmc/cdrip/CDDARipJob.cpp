@@ -31,7 +31,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "Util.h"
-#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
@@ -87,20 +87,16 @@ bool CCDDARipJob::DoWork()
   }
 
   // setup the progress dialog
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  CStdString strLine0, strLine1;
+  CGUIDialogExtendedProgressBar* pDlgProgress = 
+      (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
+  CStdString strLine0;
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
-  strLine0.Format("%s %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
-  strLine1.Format("%s %s", g_localizeStrings.Get(607).c_str(), m_output.c_str()); // To: %s
-  pDlgProgress->SetHeading(605); // Ripping
-  pDlgProgress->SetLine(0, strLine0);
-  pDlgProgress->SetLine(1, strLine1);
-  pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal();
-  pDlgProgress->ShowProgressBar(true);
-
-  // show progress dialog
-  pDlgProgress->Progress();
+  strLine0.Format("%02i. %s - %s", iTrack,
+                  StringUtils::Join(m_tag.GetArtist(),
+                              g_advancedSettings.m_musicItemSeparator).c_str(),
+                  m_tag.GetTitle().c_str());
+  handle->SetText(strLine0);
 
   // start ripping
   int percent=0;
@@ -110,16 +106,12 @@ bool CCDDARipJob::DoWork()
   while (!cancelled && (result=RipChunk(reader, encoder, percent)) == 0)
   {
     cancelled = ShouldCancel(percent,100);
-    cancelled |= pDlgProgress->IsCanceled();
     if (percent > oldpercent)
     {
       oldpercent = percent;
-      pDlgProgress->SetPercentage(percent);
-      pDlgProgress->Progress();
+      handle->SetPercentage(percent);
     }
   }
-
-  pDlgProgress->Close();
 
   // close encoder ripper
   encoder->Close();
@@ -158,6 +150,8 @@ bool CCDDARipJob::DoWork()
       g_mediaManager.EjectTray();
     }
   }
+
+  handle->MarkFinished();
 
   return !cancelled && result == 2;
 }
