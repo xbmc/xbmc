@@ -56,6 +56,7 @@ public:
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();
   virtual bool  Support3D(int width, int height, uint32_t mode)     const;
+  virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
 protected:
   virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
