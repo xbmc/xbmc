@@ -22,7 +22,6 @@ add_subdirectory(Owned)
 add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(Helper)
-#add_subdirectory(Windows)
 
 aux_source_directory(. plex_SRCS)
 set(Headers PlexTypes.h)
@@ -47,26 +46,7 @@ endif()
 
 add_dependencies(Plex git_revision.h ffmpeg)
 
-target_link_libraries(Plex ${internal_libs})
-
-foreach(lib ${external_libs})
-	get_property(l VARIABLE PROPERTY ${lib}_LIBRARY)
-	target_link_libraries(Plex ${l})
-endforeach()
-
-foreach(lib ${system_libs})
-	get_property(l VARIABLE PROPERTY ${lib}_LIBRARY)
-	target_link_libraries(Plex ${l})
-endforeach()
-
-if(APPLE)
-	foreach(framework ${osx_frameworks})
-		find_library(${framework}_LIBRARY ${framework})
-		get_property(f VARIABLE PROPERTY ${framework}_LIBRARY)
-		mark_as_advanced(${f})
-		target_link_libraries(Plex ${f})
-	endforeach()
-endif()
+target_link_libraries(Plex ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
 install(TARGETS Plex BUNDLE DESTINATION .)
 install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})

@@ -1,0 +1,258 @@
+include(CheckIncludeFiles)
+include(CheckFunctionExists)
+include(CheckSymbolExists)
+include(CheckLibraryExists)
+
+set(AC_APPLE_UNIVERSAL_BUILD 0)
+set(HAS_DVD_DRIVE 0)
+set(HAS_LIBRTMP 1)
+
+######################### CHECK HEADER 
+set(headers
+  arpa/inet
+  cdio/iso9660
+  dirent
+  fcntl
+  float
+  inttypes
+  limits
+  locale
+  malloc
+  memory
+  ndir
+  netdb
+  netinet/in
+  nfsc/libfs
+  stdbool
+  stddef
+  stdint
+  stdlib
+  strings
+  string
+  sys/dir
+  sys/file
+  sys/ioctl
+  sys/mount
+  sys/ndir
+  sys/param
+  sys/select
+  sys/socket
+  sys/stat
+  sys/timeb
+  sys/time
+  sys/types
+  sys/vfs
+  termios
+  unistd
+  utime
+  wchar
+  wctype
+)
+
+foreach(header ${headers})
+  set(_HAVE_VAR HAVE_${header}_H)
+  string(TOUPPER ${_HAVE_VAR} _HAVE_VAR)
+  string(REPLACE "/" "_" _HAVE_VAR ${_HAVE_VAR})
+  check_include_files(${header}.h ${_HAVE_VAR})
+endforeach()
+
+######################### CHECK FUNCTIONS 
+set(functions
+  alarm
+  atexit
+  chown
+  _doprnt
+  dup2
+  fdatasync
+  floor
+  fs_stat_dev
+  ftime
+  ftruncate
+  getcwd
+  gethostbyaddr
+  gethostbyname
+  getpagesize
+  getpass
+  gettimeofday
+  inet_ntoa
+  inotify
+  lchown
+  localeconv
+  memchr
+  memmove
+  mkdir
+  modf
+  mmap
+  munmap
+  pow
+  rmdir
+  select
+  setenv
+  setlocale
+  socket
+  sqrt
+  strcasecmp
+  strchr
+  strcoll
+  strcspn
+  strdup
+  strerror
+  strftime
+  strncasecmp
+  strpbrk
+  strrchr
+  strspn
+  strstr
+  strtol
+  strtoul
+  sysinfo
+  tzset
+  utime
+  vprintf
+)
+
+foreach(func ${functions})
+  set(_HAVE_VAR HAVE_${func})
+  string(TOUPPER ${_HAVE_VAR} _HAVE_VAR)
+  check_function_exists(${func} ${_HAVE_VAR})
+endforeach()
+
+######################### CHECK LIBRARIES / FRAMEWORKS
+#### Frameworks for MacOSX
+if(APPLE)
+	set(osx_frameworks
+		AudioToolbox
+		AudioUnit
+		Cocoa
+		CoreAudio
+		CoreServices
+		Foundation
+		OpenGL
+		AppKit
+		ApplicationServices
+		IOKit
+		QuickTime
+		Carbon
+		DiskArbitration
+		QuartzCore
+		SystemConfiguration
+	)
+endif()
+
+#### libraries we want to link to
+set(external_libs 
+	ssh
+	lzo2
+	pcre
+	pcrecpp
+	fribidi
+	cdio
+	freetype
+	fontconfig
+	sqlite3
+	samplerate
+	microhttpd
+	yajl
+  jpeg
+	crypto
+	GLEW
+	SDL
+	SDL_mixer
+	tinyxml
+	boost_thread
+	boost_system
+	z
+)
+
+set(non_link_libs
+	rtmp
+	plist
+	shairport
+	cec
+	curl
+	flac
+	modplug
+	vorbis
+	vorbisfile
+	vorbisenc
+	ogg
+	ass
+	mad
+	mpeg2
+	bluray
+  png
+  tiff
+)
+
+set(CONFIG_INTERNAL_LIBS
+  lib_hts
+  lib_squish
+  lib_apetag
+)
+
+set(system_libs stdc++)
+
+if(APPLE)
+  # on darwin we use the built in iconv
+  list(APPEND system_libs iconv)
+else()
+  # otherwise use our own version
+  list(APPEND system_libs iconv)
+endif()
+
+# empty list of libraries we want to link towards
+set(CONFIG_PLEX_LINK_LIBRARIES "")
+
+# function to find library and set the variables we need
+function(plex_find_library lib framework systemlib)
+  string(TOUPPER ${lib} LIBN)
+  
+  # find the library, just searching in our paths
+  if(${systemlib})
+    find_library(CONFIG_LIBRARY_${LIBN} ${lib})
+  else()
+	  find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${dependdir}/lib NO_DEFAULT_PATH)
+  endif()
+  
+  # get the actual value
+	get_property(l VARIABLE PROPERTY CONFIG_LIBRARY_${LIBN})
+  
+  # split out the library name
+	get_filename_component(FNAME ${l} NAME)
+  
+  # set the SONAME variable, needed for DllPaths_generated.h
+  set(${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
+  
+  # set the HAVE_LIBX variable
+  set(HAVE_LIB${LIBN} 1 CACHE string "the HAVE_LIBX variable")
+  
+  # if this is a framework we need to mark it as advanced
+  if(${framework})
+    mark_as_advanced(${l})
+  endif()
+  
+  list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
+endfunction()
+  
+
+# go through all the libs we need and find them plus set some good variables
+foreach(lib ${external_libs} ${find_libs})
+  plex_find_library(${lib} 0 0)
+endforeach()
+
+# find our system libs
+foreach(lib ${system_libs})
+  plex_find_library(${lib} 0 1)
+endforeach()
+
+foreach(lib ${system_libs})
+  plex_find_library(${lib} 1 0)
+endforeach()
+
+#### Deal with some generated files
+if(APPLE)
+	set(ARCH "x86-osx")
+endif()
+
+configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
+configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)

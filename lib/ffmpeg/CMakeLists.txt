@@ -20,6 +20,8 @@ externalproject_add(ffmpeg
   LOG_INSTALL 1
 )
 
+set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+
 macro(wrap_lib srcpath lib)
 	file(GLOB_RECURSE objects ${srcpath}/*.o)
 	add_library(${lib}-${ARCH} MODULE ${objects} $<TARGET_OBJECTS:wrapper>)
