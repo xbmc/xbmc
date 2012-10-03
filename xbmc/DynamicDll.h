@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -356,12 +355,10 @@ public: \
 #define BEGIN_METHOD_RESOLVE() \
   protected: \
   virtual bool ResolveExports() \
-  { \
-    return (
+  {
 
 #define END_METHOD_RESOLVE() \
-              1 \
-              ); \
+    return true; \
   }
 
 ///////////////////////////////////////////////////////////
@@ -374,10 +371,33 @@ public: \
 //          or DEFINE_METHOD_LINKAGE
 //
 #define RESOLVE_METHOD(method) \
-  m_dll->ResolveExport( #method , & m_##method##_ptr ) &&
+  if (!m_dll->ResolveExport( #method , & m_##method##_ptr )) \
+    return false;
 
 #define RESOLVE_METHOD_FP(method) \
-  m_dll->ResolveExport( #method , & method##_ptr ) &&
+  if (!m_dll->ResolveExport( #method , & method##_ptr )) \
+    return false;
+
+
+///////////////////////////////////////////////////////////
+//
+//  RESOLVE_METHOD_OPTIONAL
+//
+//  Resolves a method from a dll. does not abort if the
+//  method is missing
+//
+//  method: Name of the method defined with DEFINE_METHOD
+//          or DEFINE_METHOD_LINKAGE
+//
+
+#define RESOLVE_METHOD_OPTIONAL(method) \
+   m_dll->ResolveExport( #method , & m_##method##_ptr );
+
+#define RESOLVE_METHOD_OPTIONAL_FP(method) \
+   method##_ptr = NULL; \
+   m_dll->ResolveExport( #method , & method##_ptr );
+
+
 
 ///////////////////////////////////////////////////////////
 //
@@ -390,10 +410,12 @@ public: \
 //          or DEFINE_METHOD_LINKAGE
 //
 #define RESOLVE_METHOD_RENAME(dllmethod, method) \
-  m_dll->ResolveExport( #dllmethod , & m_##method##_ptr ) &&
+  if (!m_dll->ResolveExport( #dllmethod , & m_##method##_ptr )) \
+    return false;
 
 #define RESOLVE_METHOD_RENAME_FP(dllmethod, method) \
-  m_dll->ResolveExport( #dllmethod , & method##_ptr ) &&
+  if (!m_dll->ResolveExport( #dllmethod , & method##_ptr )) \
+    return false;
 
 
 ////////////////////////////////////////////////////////////////////
