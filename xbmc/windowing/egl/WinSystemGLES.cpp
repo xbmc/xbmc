@@ -317,4 +317,10 @@ bool CWinSystemGLES::Support3D(int width, int height, uint32_t mode) const
   return bFound;
 }
 
+bool CWinSystemGLES::ClampToGUIDisplayLimits(int &width, int &height)
+{
+  return m_eglplatform->ClampToGUIDisplayLimits(width, height);
+}
+
+
 #endif
