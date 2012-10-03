@@ -129,16 +129,12 @@ string StringUtils::Left(const string &str, size_t count)
 
 string StringUtils::Mid(const string &str, size_t first, size_t count /* = string::npos */)
 {
-  if (first < 0)
-    first = 0;
-  
   if (first + count > str.size())
     count = str.size() - first;
   
   if (first > str.size())
     return string();
   
-  ASSERT(first >= 0);
   ASSERT(first + count <= str.size());
   
   return str.substr(first, count);
