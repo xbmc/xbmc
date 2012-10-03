@@ -176,6 +176,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
+#include "peripherals/devices/PeripheralImon.h"
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
@@ -1417,7 +1418,8 @@ bool CApplication::Initialize()
   ResetScreenSaver();
 
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick"));
+  g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick") &&
+                    (CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 || !g_guiSettings.GetBool("input.disablejoystickwithimon")) );
 #endif
 
   return true;
