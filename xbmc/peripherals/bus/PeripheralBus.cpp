@@ -133,6 +133,7 @@ void CPeripheralBus::Clear(void)
 void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &results)
 {
   CSingleLock lock(m_critSection);
+  vector<CPeripheral *> removedPeripherals;
   for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
   {
     CPeripheral *peripheral = m_peripherals.at(iDevicePtr);
@@ -141,17 +142,26 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
         updatedDevice != *peripheral)
     {
       /* device removed */
-      if (peripheral->Type() != PERIPHERAL_UNKNOWN)
-      {
-        CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
-        peripheral->OnDeviceRemoved();
-      }
+      removedPeripherals.push_back(peripheral);
       m_peripherals.erase(m_peripherals.begin() + iDevicePtr);
-      lock.Leave();
-
-      m_manager->OnDeviceDeleted(*this, *peripheral);
-      delete peripheral;
     }
+  }
+  lock.Leave();
+
+  for (unsigned int iDevicePtr = 0; iDevicePtr < removedPeripherals.size(); iDevicePtr++)
+  {
+    CPeripheral *peripheral = removedPeripherals.at(iDevicePtr);
+    vector<PeripheralFeature> features;
+    peripheral->GetFeatures(features);
+    bool peripheralHasFeatures = features.size() > 1 || (features.size() == 1 && features.at(0) != FEATURE_UNKNOWN);
+    if (peripheral->Type() != PERIPHERAL_UNKNOWN || peripheralHasFeatures)
+    {
+      CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+      peripheral->OnDeviceRemoved();
+    }
+
+    m_manager->OnDeviceDeleted(*this, *peripheral);
+    delete peripheral;
   }
 }
 

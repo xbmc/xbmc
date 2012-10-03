@@ -10827,11 +10827,17 @@ msgstr ""
 
 #empty strings from id 35010 to 35099
 
+#: xbmc/settings/GUISettings.cpp
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr ""
 
-#empty strings from id 35101 to 35499
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
+msgstr ""
+
+#empty strings from id 35102 to 35499
 
 msgctxt "#35500"
 msgid "Location"

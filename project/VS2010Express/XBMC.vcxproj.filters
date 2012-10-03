@@ -2608,6 +2608,9 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralImon.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\VideoDbUrl.cpp">
       <Filter>video</Filter>
     </ClCompile>
@@ -5576,6 +5579,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h">
       <Filter>dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralImon.h">
+      <Filter>peripherals\devices</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\VideoDbUrl.h">
       <Filter>video</Filter>
