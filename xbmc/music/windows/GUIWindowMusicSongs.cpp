@@ -36,6 +36,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "cdrip/CDDARipper.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -302,7 +303,12 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
-          buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
+        {
+          if (CJobManager::GetInstance().IsProcessing("cdrip"))
+            buttons.Add(CONTEXT_BUTTON_CANCEL_RIP_CD, 14100);
+          else
+            buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
+        }
       }
 #endif
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -403,6 +409,10 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   case CONTEXT_BUTTON_RIP_CD:
     OnRipCD();
+    return true;
+
+  case CONTEXT_BUTTON_CANCEL_RIP_CD:
+    CCDDARipper::GetInstance().CancelJobs();
     return true;
 
   case CONTEXT_BUTTON_CDDB:

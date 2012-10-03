@@ -5315,7 +5315,11 @@ msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr ""
 
-#empty strings from id 14100 to 15014
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr ""
+
+#empty strings from id 14101 to 15014
 
 msgctxt "#15015"
 msgid "Remove"
