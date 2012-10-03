@@ -21,6 +21,7 @@
 
 #include "ModuleXbmcvfs.h"
 #include "LanguageHook.h"
+#include "ListItem.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "utils/FileUtils.h"
@@ -107,6 +108,21 @@ namespace XBMCAddon
         }
       }
 
+      return ret;
+    }
+    
+    xbmcgui::ListItemList listDirWithDetails(const String& path)
+    {
+      CFileItemList items;
+      CStdString strSource = path;
+      XFILE::CDirectory::GetDirectory(strSource, items);
+      
+      xbmcgui::ListItemList ret;
+      
+      for (int i=0; i < items.Size(); i++)
+      {
+        ret.push_back(new xbmcgui::ListItem(*items[i]));
+      }
       return ret;
     }
   }
