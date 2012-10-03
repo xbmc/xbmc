@@ -299,7 +299,7 @@ namespace PVR
     /*!
      * @brief Check whether a client supports timers.
      * @param iClientId The id of the client to check.
-     * @return True if the supports timers, false otherwise.
+     * @return True if the client supports timers, false otherwise.
      */
     bool HasTimerSupport(int iClientId);
 
@@ -352,7 +352,7 @@ namespace PVR
     /*!
      * @brief Check whether a client supports recordings.
      * @param iClientId The id of the client to check.
-     * @return True if the supports recordings, false otherwise.
+     * @return True if the client supports recordings, false otherwise.
      */
     bool SupportsRecordings(int iClientId) const;
 
@@ -424,9 +424,16 @@ namespace PVR
     /*!
      * @brief Check whether a client supports EPG transfer.
      * @param iClientId The id of the client to check.
-     * @return True if the supports EPG transfer, false otherwise.
+     * @return True if the client supports EPG transfer, false otherwise.
      */
     bool SupportsEPG(int iClientId) const;
+
+    /*!
+     * @brief Check whether a client supports incremental EPG bulk transfers.
+     * @param iClientId The id of the client to check.
+     * @return True if the client supports incremental EPG transfers, false otherwise.
+     */
+    bool SupportsIncrementalEPG(int iClientId) const;
 
     /*!
      * @brief Get the EPG table for a channel.
@@ -439,6 +446,12 @@ namespace PVR
      */
     PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start, time_t end);
 
+    /*!
+     * @brief Do an incremental bulk epg update
+     * @param error An error if it occured.
+     * @return True if the EPG was transfered successfully, false otherwise.
+     */
+    PVR_ERROR IncrementalEPGUpdate(time_t start, time_t end, time_t since, bool bSaveInDb);
     //@}
 
     /*! @name Channel methods */
@@ -455,7 +468,7 @@ namespace PVR
     /*!
      * @brief Check whether a client supports channel groups.
      * @param iClientId The id of the client to check.
-     * @return True if the supports channel groups, false otherwise.
+     * @return True if the client supports channel groups, false otherwise.
      */
     bool SupportsChannelGroups(int iClientId) const;
 

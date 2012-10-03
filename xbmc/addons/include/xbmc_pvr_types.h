@@ -127,6 +127,7 @@ extern "C" {
   typedef struct PVR_ADDON_CAPABILITIES
   {
     bool bSupportsEPG;                  /*!< @brief true if the add-on provides EPG information */
+    bool bSupportsIncrementalEPG;       /*!< @brief true if the backend supports timestamping epg events and thus updates since specified time */
     bool bSupportsTV;                   /*!< @brief true if this add-on provides TV channels */
     bool bSupportsRadio;                /*!< @brief true if this add-on supports radio channels */
     bool bSupportsRecordings;           /*!< @brief true if this add-on supports playback of recordings stored on the backend */
@@ -282,6 +283,7 @@ extern "C" {
     PVR_ERROR    (__cdecl* GetDriveSpace)(long long*, long long*);
     PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK&);
     PVR_ERROR    (__cdecl* GetEpg)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
+    PVR_ERROR    (__cdecl* IncrementalEpgUpdate)(ADDON_HANDLE, time_t, time_t, time_t);
     int          (__cdecl* GetChannelGroupsAmount)(void);
     PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
     PVR_ERROR    (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);

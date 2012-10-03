@@ -135,21 +135,22 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
 
 void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
 {
-  if (!handle)
+  CPVRClient *client     = GetPVRClient(addonData);
+  if (!handle || !client)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
   }
 
-  CEpg *xbmcEpg = static_cast<CEpg *>(handle->dataAddress);
-  if (!xbmcEpg)
+  CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(epgentry->iClientChannelUid, client->GetID());
+  if (!channel)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::Log(LOGERROR, "PVR - %s - cannot find channel %d on client %d", __FUNCTION__, epgentry->iClientChannelUid, client->GetID());
     return;
   }
 
   /* transfer this entry to the epg */
-  xbmcEpg->UpdateEntry(epgentry, handle->dataIdentifier == 1 /* update db */);
+  channel->GetEPG()->UpdateEntry(epgentry, handle->dataIdentifier == 1 /* update db */);
 }
 
 void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)

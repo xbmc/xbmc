@@ -548,6 +548,27 @@ PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, t
   return error;
 }
 
+PVR_ERROR CPVRClients::IncrementalEPGUpdate(time_t start, time_t end, time_t since, bool bSaveInDb)
+{
+  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  /* get the member list from each client */
+  for (PVR_CLIENTMAP_ITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
+  {
+    PVR_ERROR currentError = (*itrClients).second->IncrementalEPGUpdate(start, end, since, bSaveInDb);
+    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
+        currentError != PVR_ERROR_NO_ERROR)
+    {
+      error = currentError;
+      CLog::Log(LOGERROR, "PVR - %s - cannot incremental epg update from client '%d': %s",__FUNCTION__, (*itrClients).first, CPVRClient::ToString(error));
+    }
+  }
+
+  return error;
+}
+
 PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
 {
   PVR_ERROR error(PVR_ERROR_NO_ERROR);
@@ -1107,6 +1128,12 @@ bool CPVRClients::SupportsEPG(int iClientId) const
 {
   PVR_CLIENT client;
   return GetConnectedClient(iClientId, client) && client->SupportsEPG();
+}
+
+bool CPVRClients::SupportsIncrementalEPG(int iClientId) const
+{
+  PVR_CLIENT client;
+  return GetConnectedClient(iClientId, client) && client->SupportsIncrementalEPG();
 }
 
 bool CPVRClients::SupportsLastPlayedPosition(int iClientId) const

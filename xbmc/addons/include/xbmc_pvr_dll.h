@@ -113,6 +113,19 @@ extern "C"
    * @remarks Required if bSupportsEPG is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL& channel, time_t iStart, time_t iEnd);
+
+  /*!
+   * Request the all changed EPG events from the backend since specified time.
+   * EPG entries are added to XBMC by calling TransferEpgEntry() on the callback.
+   * @param handle Handle to pass to the callback method.
+   * @param iStart Get events after this time (UTC).
+   * @param iEnd Get events before this time (UTC).
+   * @param iSince Get events changed since this time (UTC).
+   * @return PVR_ERROR_NO_ERROR if the table has been fetched successfully.
+   * @remarks Required if bSupportsIncrementalEPG is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR IncrementalEpgUpdate(ADDON_HANDLE handle, time_t iStart, time_t iEnd, time_t iSince);
+
   //@}
 
   /*! @name PVR channel group methods
@@ -530,6 +543,7 @@ extern "C"
     pClient->MenuHook                       = CallMenuHook;
 
     pClient->GetEpg                         = GetEPGForChannel;
+    pClient->IncrementalEpgUpdate           = IncrementalEpgUpdate;
 
     pClient->GetChannelGroupsAmount         = GetChannelGroupsAmount;
     pClient->GetChannelGroups               = GetChannelGroups;

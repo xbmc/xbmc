@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -54,6 +55,7 @@ CEpgContainer::CEpgContainer(void) :
   m_updateEvent.Reset();
   m_bLoaded = false;
   m_bHasPendingUpdates = false;
+  m_iLastEpgUpdate = 0;
 }
 
 CEpgContainer::~CEpgContainer(void)
@@ -445,6 +447,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   /* set start and end time */
   time_t start;
   time_t end;
+  time_t iStarted;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(start);
   end = start + m_iDisplayTime;
   start -= g_advancedSettings.m_iEpgLingerTime * 60;
@@ -474,6 +477,8 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     return false;
   }
 
+  unsigned int iUpdateStarted = XbmcThreads::SystemClockMillis();
+
   /* load or update all EPG tables */
   CEpg *epg;
   unsigned int iCounter(0);
@@ -494,6 +499,16 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
     if ((!bOnlyPending || epg->UpdatePending()) && epg->Update(start, end, m_iUpdateTime, bOnlyPending))
       ++iUpdatedTables;
+  }
+
+  if (iUpdatedTables)
+  {
+    /* bulk incremental epg update for clients supporting it */
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iStarted);
+    g_PVRClients->IncrementalEPGUpdate(start, end, m_iLastEpgUpdate, bOnlyPending);
+    m_iLastEpgUpdate = iStarted;
+
+    CLog::Log(LOGDEBUG, "%s: EPG update process took %d ms", __FUNCTION__, XbmcThreads::SystemClockMillis() - iUpdateStarted);
   }
 
   if (bInterrupted)

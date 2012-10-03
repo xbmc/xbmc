@@ -72,6 +72,7 @@ extern "C" {
     unsigned int  iUniqueBroadcastId;  /*!< @brief (required) identifier for this event */
     const char *  strTitle;            /*!< @brief (required) this event's title */
     unsigned int  iChannelNumber;      /*!< @brief (required) the number of the channel this event occurs on */
+    int           iClientChannelUid;   /*!< @brief (required) unique identifier of the channel that will be updated */
     time_t        startTime;           /*!< @brief (required) start time in UTC */
     time_t        endTime;             /*!< @brief (required) end time in UTC */
     const char *  strPlotOutline;      /*!< @brief (optional) plot outline */
