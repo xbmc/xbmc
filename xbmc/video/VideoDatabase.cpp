@@ -1857,12 +1857,17 @@ bool CVideoDatabase::GetFileInfo(const CStdString& strFilenameAndPath, CVideoInf
     details.m_strPath = m_pDS->fv("path.strPath").get_asString();
     CStdString strFileName = m_pDS->fv("files.strFilename").get_asString();
     ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
-    details.m_playCount = m_pDS->fv("files.playCount").get_asInt();
-    details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
-    details.m_dateAdded.SetFromDBDateTime(m_pDS->fv("files.dateAdded").get_asString());
-    details.m_resumePoint.timeInSeconds = m_pDS->fv("bookmark.timeInSeconds").get_asInt();
-    details.m_resumePoint.totalTimeInSeconds = m_pDS->fv("bookmark.totalTimeInSeconds").get_asInt();
-    details.m_resumePoint.type = CBookmark::RESUME;
+    details.m_playCount = max(details.m_playCount, m_pDS->fv("files.playCount").get_asInt());
+    if (!details.m_lastPlayed.IsValid())
+      details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
+    if (!details.m_dateAdded.IsValid())
+      details.m_dateAdded.SetFromDBDateTime(m_pDS->fv("files.dateAdded").get_asString());
+    if (!details.m_resumePoint.IsSet())
+    {
+      details.m_resumePoint.timeInSeconds = m_pDS->fv("bookmark.timeInSeconds").get_asInt();
+      details.m_resumePoint.totalTimeInSeconds = m_pDS->fv("bookmark.totalTimeInSeconds").get_asInt();
+      details.m_resumePoint.type = CBookmark::RESUME;
+    }
 
     return !details.IsEmpty();
   }
