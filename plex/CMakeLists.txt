@@ -52,11 +52,6 @@ install(TARGETS Plex BUNDLE DESTINATION .)
 install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})
 install(FILES ${plexdir}/Splash.png DESTINATION ${resourcesdir}/XBMC/media)
 
-#set(ffmpeglibs avcodec avformat avutil avcore avfilter avdevice postproc swscale)
-#foreach(l ${ffmpeglibs})
-#  install(FILES ${CMAKE_BINARY_DIR}/ffmpeg/lib/lib${l}.dylib DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/MacOS)
-#endforeach()
-
 set(plugins ${resourcesdir}/XBMC/system/ImageLib-x86-osx.so)
 
 install(CODE "

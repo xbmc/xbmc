@@ -200,11 +200,8 @@ else()
   list(APPEND system_libs iconv)
 endif()
 
-# empty list of libraries we want to link towards
-set(CONFIG_PLEX_LINK_LIBRARIES "")
-
 # function to find library and set the variables we need
-function(plex_find_library lib framework systemlib)
+macro(plex_find_library lib framework systemlib)
   string(TOUPPER ${lib} LIBN)
   
   # find the library, just searching in our paths
@@ -228,11 +225,11 @@ function(plex_find_library lib framework systemlib)
   
   # if this is a framework we need to mark it as advanced
   if(${framework})
-    mark_as_advanced(${l})
+    mark_as_advanced(CONFIG_LIBRARY_${LIBN})
   endif()
   
   list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
-endfunction()
+endmacro()
   
 
 # go through all the libs we need and find them plus set some good variables
@@ -245,8 +242,8 @@ foreach(lib ${system_libs})
   plex_find_library(${lib} 0 1)
 endforeach()
 
-foreach(lib ${system_libs})
-  plex_find_library(${lib} 1 0)
+foreach(lib ${osx_frameworks})
+  plex_find_library(${lib} 1 1)
 endforeach()
 
 #### Deal with some generated files

@@ -23,7 +23,7 @@ add_custom_target(wraplibs ALL DEPENDS
   avformat-52-${ARCH}
   avfilter-1-${ARCH} 
   swscale-0-${ARCH} 
-  postproc-51-${ARCH} 
+  postproc-51-${ARCH}
   cpluff-${ARCH}
   ImageLib-${ARCH}
 )
