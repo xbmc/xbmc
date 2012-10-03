@@ -245,28 +245,32 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       }
     }
 
+    bool deleteThumbloader = false;
+    if (thumbLoader == NULL)
+    {
+      if (item->HasVideoInfoTag())
+        thumbLoader = new CVideoThumbLoader();
+      else if (item->HasMusicInfoTag())
+        thumbLoader = new CMusicThumbLoader();
+
+      if (thumbLoader != NULL)
+      {
+        deleteThumbloader = true;
+        thumbLoader->Initialize();
+      }
+    }
+
     FillDetails(item.get(), item, validFields, object, thumbLoader);
 
     if (item->HasVideoInfoTag())
-    {
-      if (thumbLoader == NULL)
-      {
-        thumbLoader = new CVideoThumbLoader();
-        thumbLoader->Initialize();
-      }
       FillDetails(item->GetVideoInfoTag(), item, validFields, object, thumbLoader);
-    }
     if (item->HasMusicInfoTag())
-    {
-      if (thumbLoader == NULL)
-      {
-        thumbLoader = new CMusicThumbLoader();
-        thumbLoader->Initialize();
-      }
       FillDetails(item->GetMusicInfoTag(), item, validFields, object, thumbLoader);
-    }
     if (item->HasPictureInfoTag())
       FillDetails(item->GetPictureInfoTag(), item, validFields, object, thumbLoader);
+
+    if (deleteThumbloader)
+      delete thumbLoader;
 
     object["label"] = item->GetLabel().c_str();
   }
