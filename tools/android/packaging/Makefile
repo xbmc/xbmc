@@ -54,6 +54,7 @@ extras: libs
 	rm -rf xbmc/assets/python2.6/lib/
 	mkdir -p xbmc/assets xbmc/res xbmc/assets/python2.6/lib/
 	cp -rfp $(PREFIX)/share/xbmc/* ./xbmc/assets
+	cpr -rfp $(PREFIX)/lib/xbmc/addons/* ./xbmc/assets/addons
 	find `pwd`/xbmc/assets/system/ -name "*.so" -exec rm {} \;
 	find `pwd`/xbmc/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
 	cp -rfp $(PREFIX)/lib/python2.6 xbmc/assets/python2.6/lib/
