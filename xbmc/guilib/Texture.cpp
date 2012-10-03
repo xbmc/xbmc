@@ -224,8 +224,13 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
 
     if(omx_image.ReadFile(texturePath))
     {
-      // TODO: we only decode as half width and height. this is a workaround for the PI memory limitation
-      if(omx_image.Decode(omx_image.GetWidth() / 2, omx_image.GetHeight() / 2))
+      int width = omx_image.GetWidth();
+      int height = omx_image.GetHeight();
+
+      // We restict textures to the maximum GUI size. This is a workaround for the PI memory limitation
+      g_Windowing.ClampToGUIDisplayLimits(width, height);
+
+      if(omx_image.Decode(width, height))
       {
         Allocate(omx_image.GetDecodedWidth(), omx_image.GetDecodedHeight(), XB_FMT_A8R8G8B8);
 

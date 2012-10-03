@@ -100,7 +100,7 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 
   for (size_t i = 0; i < m_res.size(); i++)
   {
-    if(m_res[i].iWidth == res.iWidth && m_res[i].iHeight == res.iHeight && m_res[i].fRefreshRate == res.fRefreshRate)
+    if(m_res[i].iScreenWidth == res.iScreenWidth && m_res[i].iScreenHeight == res.iScreenHeight && m_res[i].fRefreshRate == res.fRefreshRate)
     {
       int score = 0;
 
@@ -152,8 +152,8 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 
   dst_rect.x      = 0;
   dst_rect.y      = 0;
-  dst_rect.width  = res.iWidth;
-  dst_rect.height = res.iHeight;
+  dst_rect.width  = res.iScreenWidth;
+  dst_rect.height = res.iScreenHeight;
 
   src_rect.x      = 0;
   src_rect.y      = 0;
@@ -178,8 +178,8 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
   if(bFound && (resSearch.dwFlags & D3DPRESENTFLAG_MODE3DSBS))
   {
     // right side
-    dst_rect.x = res.iWidth;
-    dst_rect.width >>= dst_rect.width - dst_rect.x;
+    dst_rect.x = res.iScreenWidth;
+    dst_rect.width = res.iScreenWidth;
 
     m_dispman_element2 = m_DllBcmHost.vc_dispmanx_element_add(dispman_update,
       m_dispman_display,
@@ -196,7 +196,7 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 
     // left side - fall through
     dst_rect.x = 0;
-    dst_rect.width = res.iWidth - dst_rect.x;
+    dst_rect.width = res.iScreenWidth;
   }
 
   m_dispman_element = m_DllBcmHost.vc_dispmanx_element_add(dispman_update,
@@ -227,7 +227,23 @@ bool CWinEGLPlatformRaspberryPI::SetDisplayResolution(RESOLUTION_INFO& res)
 
 bool CWinEGLPlatformRaspberryPI::ClampToGUIDisplayLimits(int &width, int &height)
 {
-  return true;
+  const int max_width = 1280, max_height = 720;
+  float ar = (float)width/(float)height;
+  // bigger than maximum, so need to clamp
+  if (width > max_width || height > max_height) {
+    // wider than max, so clamp width first
+    if (ar > (float)max_width/(float)max_height)
+    {
+      width = max_width;
+      height = (float)max_width / ar + 0.5f;
+    // taller than max, so clamp height first
+    } else {
+      height = max_height;
+      width = (float)max_height * ar + 0.5f;
+    }
+    return true;
+  }
+  return false;
 }
 
 bool CWinEGLPlatformRaspberryPI::ProbeDisplayResolutions(std::vector<RESOLUTION_INFO> &resolutions)
