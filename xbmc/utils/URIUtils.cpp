@@ -1000,3 +1000,59 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
   strUrlPath += strBuffer;
 #endif
 }
+
+string URIUtils::GetRealPath(const string &path)
+{
+  if (path.empty())
+    return path;
+
+  CURL url(path);
+  url.SetHostName(GetRealPath(url.GetHostName()));
+  url.SetFileName(resolvePath(url.GetFileName()));
+  
+  return url.Get();
+}
+
+std::string URIUtils::resolvePath(const std::string &path)
+{
+  if (path.empty())
+    return path;
+
+  size_t posSlash = path.find('/');
+  size_t posBackslash = path.find('\\');
+  string delim = posSlash < posBackslash ? "/" : "\\";
+  vector<string> parts = StringUtils::Split(path, delim);
+  vector<string> realParts;
+
+  for (vector<string>::const_iterator part = parts.begin(); part != parts.end(); part++)
+  {
+    if (part->empty() || part->compare(".") == 0)
+      continue;
+
+    // go one level back up
+    if (part->compare("..") == 0)
+    {
+      if (!realParts.empty())
+        realParts.pop_back();
+      continue;
+    }
+
+    realParts.push_back(*part);
+  }
+
+  CStdString realPath;
+  int i = 0;
+  // re-add any / or \ at the beginning
+  while (path.at(i) == delim.at(0))
+  {
+    realPath += delim;
+    i++;
+  }
+  // put together the path
+  realPath += StringUtils::Join(realParts, delim);
+  // re-add any / or \ at the end
+  if (path.at(path.size() - 1) == delim.at(0) && realPath.at(realPath.size() - 1) != delim.at(0))
+    realPath += delim;
+
+  return realPath;
+}
