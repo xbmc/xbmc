@@ -1334,12 +1334,6 @@ void CFileItem::SetLabel(const CStdString &strLabel)
   CGUIListItem::SetLabel(strLabel);
 }
 
-void CFileItem::SetLabel2(const CStdString &strLabel)
-{
-  m_strLabel2 = strLabel;
-}
-
-
 void CFileItem::SetFileSizeLabel()
 {
   if( m_bIsFolder && m_dwSize == 0 )
