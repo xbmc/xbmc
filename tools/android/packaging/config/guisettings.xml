@@ -1,0 +1,17 @@
+<settings>
+    <lookandfeel>
+        <enablerssfeeds>false</enablerssfeeds>
+    </lookandfeel>
+    <audiooutput>
+        <ac3passthrough>false</ac3passthrough>
+        <dtspassthrough>false</dtspassthrough>
+        <mode>2</mode>
+    </audiooutput>
+    <videoscreen>
+        <vsync>2</vsync>
+    </videoscreen>
+    <input>
+        <enablemouse>false</enablemouse>
+        <remoteaskeyboard>true</remoteaskeyboard>
+    </input>
+</settings>

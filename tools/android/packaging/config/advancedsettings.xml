@@ -1,0 +1,34 @@
+<advancedsettings>
+  <video>
+    <defaultplayer>amlplayer</defaultplayer>
+  </video>
+
+  <hidesettings>
+    <setting>lookandfeel.soundskin</setting>
+    <setting>videoplayer.rendermethod</setting>
+    <setting>videoplayer.adjustrefreshrate</setting>
+    <setting>videoplayer.pauseafterrefreshchange</setting>
+    <setting>videoplayer.usedisplayasclock</setting>
+    <setting>videoplayer.synctype</setting>
+    <setting>videoplayer.teletextenabled</setting>
+    <setting>subtitles.charset</setting>
+    <setting>dvds.playerregion</setting>
+    <setting>dvds.automenu</setting>
+    <setting>audiocds</setting>
+    <setting>karaoke</setting>
+    <setting>videoscreen.screenmode</setting>
+    <setting>videoscreen.screen</setting>
+    <setting>videoscreen.vsync</setting>
+    <setting>videoscreen.testpattern</setting>
+    <setting>audiooutput.mode</setting>
+    <setting>audiooutput.channellayout</setting>
+    <setting>audiooutput.dontnormalizelevels</setting>
+    <setting>audiooutput.audiodevice</setting>
+    <setting>audiooutput.customdevice</setting>
+    <setting>audiooutput.passthroughdevice</setting>
+    <setting>audiooutput.custompassthrough</setting>
+    <setting>input.remoteaskeyboard</setting>
+    <setting>audiooutput.guisoundmode</setting>
+  </hidesettings>
+
+</advancedsettings>
