@@ -253,74 +253,29 @@
       }
     }
   },
-  "Player.MoveLeft": {
+  "Player.Move": {
     "type": "method",
-    "description": "If picture is zoomed move viewport left otherwise skip previous",
+    "description": "If picture is zoomed move viewport left/right/up/down otherwise skip previous/next",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.MoveRight": {
-    "type": "method",
-    "description": "If picture is zoomed move viewport right otherwise skip next",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.MoveDown": {
-    "type": "method",
-    "description": "If picture is zoomed move viewport down",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.MoveUp": {
-    "type": "method",
-    "description": "If picture is zoomed move viewport up",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.ZoomOut": {
-    "type": "method",
-    "description": "Zoom out once",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.ZoomIn": {
-    "type": "method",
-    "description": "Zoom in once",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "direction", "type": "string", "enum": [ "left", "right", "up", "down" ], "required": true }
     ],
     "returns": "string"
   },
   "Player.Zoom": {
     "type": "method",
-    "description": "Zooms current picture",
+    "description": "Zoom current picture",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "value", "type": "integer", "required": true, "minimum": 1, "maximum": 10, "description": "Zoom level" }
+      { "name": "zoom", "type": [
+          { "type": "string", "enum": [ "in", "out" ], "required": true },
+          { "type": "integer", "minimum": 1, "maximum": 10, "description": "zoom level", "required": true }
+        ],
+      "required": true }
     ],
     "returns": "string"
   },
@@ -335,65 +290,45 @@
     ],
     "returns": "string"
   },
-  "Player.GoPrevious": {
-    "type": "method",
-    "description": "Go to previous item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.GoNext": {
-    "type": "method",
-    "description": "Go to next item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
   "Player.GoTo": {
     "type": "method",
-    "description": "Go to item at the given position in the playlist",
+    "description": "Go to previous/next/specific item in the playlist",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "position", "$ref": "Playlist.Position", "required": true }
+      { "name": "to", "type": [
+          { "type": "string", "enum": [ "previous", "next" ], "required": true },
+          { "$ref": "Playlist.Position", "description": "position in playlist", "required": true }
+        ],
+      "required": true }
     ],
     "returns": "string"
   },
-  "Player.Shuffle": {
+  "Player.SetShuffle": {
     "type": "method",
-    "description": "Shuffle items in the player",
+    "description": "Shuffle/Unshuffle items in the player",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+  { "name": "shuffle", "$ref": "Global.Toggle", "required": true }
     ],
     "returns": "string"
   },
-  "Player.UnShuffle": {
-    "type": "method",
-    "description": "Unshuffle items in the player",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.Repeat": {
+  "Player.SetRepeat": {
     "type": "method",
     "description": "Set the repeat mode of the player",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "state", "$ref": "Player.Repeat", "required": true }
+      { "name": "repeat", "type": [
+          { "$ref": "Player.Repeat", "required": true },
+          { "type": "string", "enum": [ "cycle" ], "required": true }
+        ],
+        "required": true
+      }
     ],
     "returns": "string"
   },
