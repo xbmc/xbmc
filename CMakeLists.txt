@@ -20,6 +20,33 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
+add_definitions(
+#	-DAPI_DEBUG
+  -DNDEBUG=1
+  -DTARGET_POSIX
+  -DTARGET_DARWIN
+  -DTARGET_DARWIN_OSX
+  -D_LINUX
+  -D_REENTRANT
+  -D_FILE_DEFINED
+  -D__STDC_CONSTANT_MACROS
+  -DHAVE_CONFIG_H
+  -D_FILE_OFFSET_BITS=64
+  -D_LARGEFILE64_SOURCE
+  -D__PLEX__
+  -DPLEX_TARGET_NAME="PlexAlpha"
+)
+
+# We need to add these before we compile the dependencies,
+# since CxImage depends on libjpeg and friends
+# But we don't add our own include directories to avoid
+# header confusion when building the dependencies.
+include_directories(
+  ${dependdir}/include
+  ${dependdir}/include/libcec
+  ${dependdir}/include/freetype2
+  ${dependdir}/include/python2.6
+)
 include(CMakeConfig.txt)
 
 # MUST BE ADDED FIRST :)
@@ -49,29 +76,9 @@ include_directories(
 	${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff
   ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg-prefix/src/ffmpeg
 
-	${dependdir}/include
-	${dependdir}/include/libcec
-	${dependdir}/include/freetype2
-	${dependdir}/include/python2.6
 	${root}/tools/darwin/depends/libcrystalhd
 )
 
-add_definitions(
-#	-DAPI_DEBUG
-	-DNDEBUG=1
-	-DTARGET_POSIX
-	-DTARGET_DARWIN
-	-DTARGET_DARWIN_OSX
-	-D_LINUX
-	-D_REENTRANT
-	-D_FILE_DEFINED
-	-D__STDC_CONSTANT_MACROS
-	-DHAVE_CONFIG_H
-	-D_FILE_OFFSET_BITS=64
-	-D_LARGEFILE64_SOURCE
-	-D__PLEX__
-  -DPLEX_TARGET_NAME="PlexAlpha"
-)
 
 #### Generate git_revision.h
 add_custom_target(git_revision.h ALL DEPENDS ${root}/git_revision.h)
