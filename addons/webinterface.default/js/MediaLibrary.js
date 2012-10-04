@@ -370,7 +370,7 @@ MediaLibrary.prototype = {
             type: 'POST',
             contentType: 'application/json',
             url: JSON_RPC + '?SendRemoteKey',
-            data: '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + player + ' }, "id": 1}',
+            data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + player + ', "to": "next" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
             }, this),
@@ -381,7 +381,7 @@ MediaLibrary.prototype = {
             type: 'POST',
             contentType: 'application/json',
             url: JSON_RPC + '?SendRemoteKey',
-            data: '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + player + ' }, "id": 1}',
+            data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + player + ', "to": "previous" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
             }, this),

@@ -161,7 +161,7 @@ NowPlayingManager.prototype = {
         type: 'POST',
         contentType: 'application/json',
         url: JSON_RPC + '?SkipNext',
-        data: '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}',
+        data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": "next" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result == 'OK') {
             //this.updateAudioPlaylist(true);
@@ -176,7 +176,7 @@ NowPlayingManager.prototype = {
         type: 'POST',
         contentType: 'application/json',
         url: JSON_RPC + '?SkipPrevious',
-        data: '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}',
+        data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": "previous" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result == 'OK') {
             //this.updateAudioPlaylist(true);
@@ -253,7 +253,7 @@ NowPlayingManager.prototype = {
       type: 'POST',
       contentType: 'application/json',
       url: JSON_RPC + '?PlaylistItemPlay',
-      data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "item": ' + sequenceId + '}, "id": 1}',
+      data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": ' + sequenceId + '}, "id": 1}',
       success: jQuery.proxy(function(data) {
       
       }, this),
