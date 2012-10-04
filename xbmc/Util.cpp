@@ -2233,7 +2233,5 @@ int CUtil::GetRandomNumber()
 #else
   return rand_r(&s_randomSeed);
 #endif
-
-  return rand();
 }
 
