@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "utils/AlarmClock.h"
+#include "Screenshot.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "Autorun.h"
@@ -323,7 +324,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("takescreenshot"))
   {
-    CUtil::TakeScreenshot();
+    CScreenShot::TakeScreenshot();
   }
   else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {

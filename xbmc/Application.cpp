@@ -25,6 +25,7 @@
 #include "utils/Variant.h"
 #include "utils/Splash.h"
 #include "LangInfo.h"
+#include "Screenshot.h"
 #include "Util.h"
 #include "URL.h"
 #include "guilib/TextureManager.h"
@@ -2657,7 +2658,7 @@ bool CApplication::OnAction(const CAction &action)
   // screenshot : take a screenshot :)
   if (action.GetID() == ACTION_TAKE_SCREENSHOT)
   {
-    CUtil::TakeScreenshot();
+    CScreenShot::TakeScreenshot();
     return true;
   }
   // built in functions : execute the built-in

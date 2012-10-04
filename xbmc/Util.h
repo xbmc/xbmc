@@ -92,8 +92,6 @@ public:
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
-  static void TakeScreenshot();
-  static void TakeScreenshot(const CStdString &filename, bool sync);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
