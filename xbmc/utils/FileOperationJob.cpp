@@ -193,32 +193,38 @@ struct DataHolder
   double opWeight;
 };
 
+CStdString CFileOperationJob::GetActionString(FileAction action)
+{
+  CStdString result;
+  switch (action)
+  {
+    case ActionCopy:
+    case ActionReplace:
+      result = g_localizeStrings.Get(115);
+      break;
+    case ActionMove:
+      result = g_localizeStrings.Get(116);
+      break;
+    case ActionDelete:
+    case ActionDeleteFolder:
+      result = g_localizeStrings.Get(117);
+      break;
+    case ActionCreateFolder:
+      result = g_localizeStrings.Get(119);
+      break;
+    default:
+      break;
+  }
+
+  return result;
+}
+
 bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base, double &current, double opWeight)
 {
   bool bResult = true;
 
   base->m_currentFile = CURL(m_strFileA).GetFileNameWithoutPath();
-
-  switch (m_action)
-  {
-    case ActionCopy:
-    case ActionReplace:
-      base->m_currentOperation = g_localizeStrings.Get(115);
-      break;
-    case ActionMove:
-      base->m_currentOperation = g_localizeStrings.Get(116);
-      break;
-    case ActionDelete:
-    case ActionDeleteFolder:
-      base->m_currentOperation = g_localizeStrings.Get(117);
-      break;
-    case ActionCreateFolder:
-      base->m_currentOperation = g_localizeStrings.Get(119);
-      break;
-    default:
-      base->m_currentOperation = "";
-      break;
-  }
+  base->m_currentOperation = GetActionString(m_action);
 
   if (base->ShouldCancel((unsigned)current, 100))
     return false;
