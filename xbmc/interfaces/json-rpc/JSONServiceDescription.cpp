@@ -63,24 +63,14 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.Stop",                                  CPlayerOperations::Stop },
   { "Player.SetSpeed",                              CPlayerOperations::SetSpeed },
   { "Player.Seek",                                  CPlayerOperations::Seek },
-
-  { "Player.MoveLeft",                              CPlayerOperations::MoveLeft },
-  { "Player.MoveRight",                             CPlayerOperations::MoveRight },
-  { "Player.MoveDown",                              CPlayerOperations::MoveDown },
-  { "Player.MoveUp",                                CPlayerOperations::MoveUp },
-
-  { "Player.ZoomOut",                               CPlayerOperations::ZoomOut },
-  { "Player.ZoomIn",                                CPlayerOperations::ZoomIn },
+  { "Player.Move",                                  CPlayerOperations::Move },
   { "Player.Zoom",                                  CPlayerOperations::Zoom },
   { "Player.Rotate",                                CPlayerOperations::Rotate },
   
   { "Player.Open",                                  CPlayerOperations::Open },
-  { "Player.GoPrevious",                            CPlayerOperations::GoPrevious },
-  { "Player.GoNext",                                CPlayerOperations::GoNext },
   { "Player.GoTo",                                  CPlayerOperations::GoTo },
-  { "Player.Shuffle",                               CPlayerOperations::Shuffle },
-  { "Player.UnShuffle",                             CPlayerOperations::UnShuffle },
-  { "Player.Repeat",                                CPlayerOperations::Repeat },
+  { "Player.SetShuffle",                            CPlayerOperations::SetShuffle },
+  { "Player.SetRepeat",                             CPlayerOperations::SetRepeat },
   { "Player.SetPartymode",                          CPlayerOperations::SetPartymode },
   
   { "Player.SetAudioStream",                        CPlayerOperations::SetAudioStream },
