@@ -39,6 +39,7 @@
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -137,12 +138,12 @@ bool CScreenshotSurface::capture()
 #ifdef HAS_GLES
     // we need to save in BGRA order so XOR Swap RGBA -> BGRA
     unsigned char* swap_pixels = surface + (m_height - y - 1) * m_stride;
-    for (int x = 0; x < width; x++, swap_pixels+=4)
+    for (int x = 0; x < m_width; x++, swap_pixels+=4)
     {
       std::swap(swap_pixels[0], swap_pixels[2]);
     }   
 #endif
-    memcpy(m_buffer + y * m_stride, surface + (m_height - y - 1) *m_ stride, m_stride);
+    memcpy(m_buffer + y * m_stride, surface + (m_height - y - 1) *m_stride, m_stride);
   }
 
   delete [] surface;
