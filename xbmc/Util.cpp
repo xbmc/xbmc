@@ -1354,7 +1354,12 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
 
   // remove any whitespace, and the standard prefix (if it exists)
   function.Trim();
+#ifndef __PLEX__
   if( function.Left(5).Equals("xbmc.", false) )
+#else
+  if( function.Left(5).Equals("plex.", false) ||
+      function.Left(5).Equals("xbmc.", false))
+#endif
     function.Delete(0, 5);
 
   SplitParams(paramString, parameters);
