@@ -562,7 +562,11 @@ msgctxt "#166"
 msgid "Skin"
 msgstr ""
 
-#empty strings from id 167 to 168
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr ""
+
+#empty string with id 168
 
 msgctxt "#169"
 msgid "Resolution"

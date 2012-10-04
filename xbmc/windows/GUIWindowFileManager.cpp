@@ -1023,6 +1023,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   choices.Add(10, 5);     // Settings
   choices.Add(11, 20128); // Go To Root
   choices.Add(12, 523);     // switch media
+  if (CJobManager::GetInstance().IsProcessing("filemanager"))
+    choices.Add(13, 167);
 
   int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (btnid == 1)
@@ -1100,6 +1102,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->GetPath());
     return;
   }
+  if (btnid == 13)
+    CancelJobs();
 
   if (bDeselect && item >= 0 && item < m_vecItems[list]->Size())
   { // deselect item as we didn't do anything
