@@ -241,6 +241,11 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
         }
         return true;
       }
+      else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
+      {
+        Refresh();
+        return true;
+      }
     }
     break;
   case GUI_MSG_PLAYBACK_STARTED:
