@@ -16,6 +16,7 @@ add_library(ImageLib-${ARCH} MODULE
   $<TARGET_OBJECTS:cx_raw>
   $<TARGET_OBJECTS:cx_jasper>
 )
+add_dependencies(ImageLib-${ARCH} ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias)
 
 target_link_libraries(ImageLib-${ARCH} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
 

@@ -25,7 +25,7 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-alias_list ${ro
 macro(wrap_lib srcpath lib)
 	file(GLOB_RECURSE objects ${srcpath}/*.o)
 	add_library(${lib}-${ARCH} MODULE ${objects} $<TARGET_OBJECTS:wrapper>)
-  add_dependencies(${lib}-${ARCH} ffmpeg)
+  add_dependencies(${lib}-${ARCH} ffmpeg ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias)
 endmacro()
 
 set(pref ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg-prefix/src/ffmpeg)
