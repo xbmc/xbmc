@@ -282,22 +282,8 @@ CDateTime CDateTime::GetCurrentDateTime()
 
 CDateTime CDateTime::GetUTCDateTime()
 {
-  TIME_ZONE_INFORMATION tz;
-
   CDateTime time(GetCurrentDateTime());
-  switch(GetTimeZoneInformation(&tz))
-  {
-    case TIME_ZONE_ID_DAYLIGHT:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
-        break;
-    case TIME_ZONE_ID_STANDARD:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
-        break;
-    case TIME_ZONE_ID_UNKNOWN:
-        time += CDateTimeSpan(0, 0, tz.Bias, 0);
-        break;
-  }
-
+  time += GetTimezoneBias();
   return time;
 }
 
@@ -879,24 +865,43 @@ CStdString CDateTime::GetAsSaveString() const
 
 void CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
 {
-  TIME_ZONE_INFORMATION tz;
   CDateTime tmp(dateTime);
-
-  switch(GetTimeZoneInformation(&tz))
-  {
-    case TIME_ZONE_ID_DAYLIGHT:
-        tmp -= CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
-        break;
-    case TIME_ZONE_ID_STANDARD:
-        tmp -= CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
-        break;
-    case TIME_ZONE_ID_UNKNOWN:
-        tmp -= CDateTimeSpan(0, 0, tz.Bias, 0);
-        break;
-  }
+  tmp -= GetTimezoneBias();
 
   m_time = tmp.m_time;
   m_state = tmp.m_state;
+}
+
+static bool bGotTimezoneBias = false;
+
+void CDateTime::ResetTimezoneBias(void)
+{
+  bGotTimezoneBias = false;
+}
+
+CDateTimeSpan CDateTime::GetTimezoneBias(void)
+{
+  static CDateTimeSpan timezoneBias;
+
+  if (!bGotTimezoneBias)
+  {
+    bGotTimezoneBias = true;
+    TIME_ZONE_INFORMATION tz;
+    switch(GetTimeZoneInformation(&tz))
+    {
+      case TIME_ZONE_ID_DAYLIGHT:
+        timezoneBias = CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
+        break;
+      case TIME_ZONE_ID_STANDARD:
+        timezoneBias = CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
+        break;
+      case TIME_ZONE_ID_UNKNOWN:
+        timezoneBias = CDateTimeSpan(0, 0, tz.Bias, 0);
+        break;
+    }
+  }
+
+  return timezoneBias;
 }
 
 void CDateTime::SetFromUTCDateTime(const time_t &dateTime)
@@ -1328,22 +1333,8 @@ CStdString CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool withS
 
 CDateTime CDateTime::GetAsUTCDateTime() const
 {
-  TIME_ZONE_INFORMATION tz;
-
   CDateTime time(m_time);
-  switch(GetTimeZoneInformation(&tz))
-  {
-    case TIME_ZONE_ID_DAYLIGHT:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
-        break;
-    case TIME_ZONE_ID_STANDARD:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
-        break;
-    case TIME_ZONE_ID_UNKNOWN:
-        time += CDateTimeSpan(0, 0, tz.Bias, 0);
-        break;
-  }
-
+  time += GetTimezoneBias();
   return time;
 }
 

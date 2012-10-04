@@ -1880,6 +1880,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     CGUISpinControlEx *tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezone")->GetID());
     g_guiSettings.SetString("locale.timezone", tzControl->GetLabel().c_str());
+
+    CDateTime::ResetTimezoneBias();
   }
   else  if (strSetting.Equals("locale.timezone"))
   {
@@ -1889,6 +1891,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
      tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezonecountry")->GetID());
      g_guiSettings.SetString("locale.timezonecountry", tzControl->GetLabel().c_str());
+
+     CDateTime::ResetTimezoneBias();
   }
 #endif
   else if (strSetting.Equals("lookandfeel.skinzoom"))
@@ -1908,12 +1912,18 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()) &&
         CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
+    {
+      CDateTime::ResetTimezoneBias();
       g_PVRManager.ResetDatabase();
+    }
   }
   else if (strSetting.Equals("epg.resetepg"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
+    {
+      CDateTime::ResetTimezoneBias();
       g_PVRManager.ResetEPG();
+    }
   }
   else if (strSetting.Equals("pvrmanager.channelscan") && g_PVRManager.IsStarted())
   {
