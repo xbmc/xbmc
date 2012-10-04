@@ -2,53 +2,7 @@
 	<defaultcontrol>32</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<control type="image">
-			<description>Normal Default Background Image</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<aspectratio>scale</aspectratio>
-			<texture>$INFO[Skin.CurrentTheme,special://skin/backgrounds/,.jpg]</texture>
-			<visible>![Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))]</visible>
-			<include>VisibleFadeEffect</include>
-		</control>
-		<control type="image">
-			<description>User Set Background Image</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<aspectratio>scale</aspectratio>
-			<texture>$INFO[Skin.String(CustomBackgroundPath)]</texture>
-			<visible>Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))</visible>
-			<include>VisibleFadeEffect</include>
-		</control>
-		<control type="group">
-			<visible>!Control.IsVisible(11) + !Control.IsVisible(12)</visible>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<texture>special://skin/backgrounds/media-overlay.png</texture>
-				<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)</visible>
-			</control>
-			<control type="visualisation">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)</visible>
-			</control>
-			<control type="videowindow">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)</visible>
-			</control>
-		</control>
+		<include>CommonBackground</include>
 		<include>ContentPanelBackgroundsPVR</include>
 		<include>MainWindowMouseButtons</include>
 		<control type="image">
