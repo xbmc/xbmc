@@ -47,7 +47,7 @@ SRCS=AlarmClock.cpp \
      RssReader.cpp \
      ScraperParser.cpp \
      ScraperUrl.cpp \
-     ScreenShot.cpp \
+     Screenshot.cpp \
      SeekHandler.cpp \
      SortUtils.cpp \
      Splash.cpp \
