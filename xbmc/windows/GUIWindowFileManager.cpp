@@ -843,20 +843,6 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   Update(iList, strPath);
 }
 
-bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
-{
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetPercentage(ipercent);
-    CStdString speedString;
-    speedString.Format("%2.2f KB/s", avgSpeed / 1024);
-    m_dlgProgress->SetLine(0, speedString);
-    m_dlgProgress->Progress();
-    if (m_dlgProgress->IsCanceled()) return false;
-  }
-  return true;
-}
-
 /// \brief Build a directory history string
 /// \param pItem Item to build the history string from
 /// \param strHistoryString History string build as return value

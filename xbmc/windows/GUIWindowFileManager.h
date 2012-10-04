@@ -24,7 +24,6 @@
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 #include "threads/CriticalSection.h"
-#include "filesystem/File.h"
 #include "utils/Job.h"
 
 class CFileItem;
@@ -33,7 +32,6 @@ class CGUIDialogProgress;
 
 class CGUIWindowFileManager :
       public CGUIWindow,
-      public XFILE::IFileCallback,
       public IJobCallback
 {
 public:
@@ -43,7 +41,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual bool OnBack(int actionID);
-  virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
   const CFileItem &CurrentDirectory(int indx) const;
 
   void ResetProgressBar(bool showProgress = true);
