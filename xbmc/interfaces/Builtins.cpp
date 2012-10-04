@@ -20,7 +20,7 @@
 
 #include "system.h"
 #include "utils/AlarmClock.h"
-#include "Screenshot.h"
+#include "utils/Screenshot.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "Autorun.h"

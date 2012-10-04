@@ -25,7 +25,7 @@
 #include "utils/Variant.h"
 #include "utils/Splash.h"
 #include "LangInfo.h"
-#include "Screenshot.h"
+#include "utils/Screenshot.h"
 #include "Util.h"
 #include "URL.h"
 #include "guilib/TextureManager.h"

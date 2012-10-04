@@ -19,7 +19,7 @@
 
 #include "playlists/PlayListFactory.h"
 #include "Util.h"
-#include "Screenshot.h"
+#include "utils/Screenshot.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "filesystem/CurlFile.h" 
