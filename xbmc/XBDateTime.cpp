@@ -872,9 +872,15 @@ void CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
   m_state = tmp.m_state;
 }
 
+static bool bGotTimezoneBias = false;
+
+void CDateTime::ResetTimezoneBias(void)
+{
+  bGotTimezoneBias = false;
+}
+
 CDateTimeSpan CDateTime::GetTimezoneBias(void)
 {
-  static bool bGotTimezoneBias = false;
   static CDateTimeSpan timezoneBias;
 
   if (!bGotTimezoneBias)

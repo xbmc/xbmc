@@ -196,6 +196,7 @@ public:
   void SetValid(bool yesNo);
   bool IsValid() const;
 
+  static void ResetTimezoneBias(void);
   static CDateTimeSpan GetTimezoneBias(void);
 
 private:
