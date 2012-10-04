@@ -992,6 +992,11 @@
               "xbmc.addon.video", "xbmc.addon.audio", "xbmc.addon.image", "xbmc.addon.executable", "xbmc.service" ],
     "default": "unknown"
   },
+  "Addon.Content": {
+    "type": "string",
+    "enum": [ "unknown", "video", "audio", "image", "executable" ],
+    "default": "unknown"
+  },
   "Addon.Fields": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
