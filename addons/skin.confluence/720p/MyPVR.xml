@@ -24,6 +24,19 @@
 			<visible>Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio>scale</aspectratio>
+			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<include>backgroundfade</include>
+			<fadetime>FanartCrossfadeTime</fadetime>
+			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
+			<include>Window_OpenClose_Animation</include>
+			<visible>![Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] + ![Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)]</visible>
+		</control>
 		<control type="group">
 			<visible>!Control.IsVisible(11) + !Control.IsVisible(12)</visible>
 			<control type="image">
