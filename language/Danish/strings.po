@@ -6788,7 +6788,7 @@ msgstr ""
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr ""
+msgstr "Besøg xbmc.org/pvr for at læse mere."
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7096,11 +7096,11 @@ msgstr ""
 
 msgctxt "#19661"
 msgid "Original Language"
-msgstr ""
+msgstr "Original Sprog"
 
 msgctxt "#19662"
 msgid "Black &amp; White"
-msgstr ""
+msgstr "Sort &amp; Hvid"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -7108,7 +7108,7 @@ msgstr ""
 
 msgctxt "#19664"
 msgid "Live Broadcast"
-msgstr ""
+msgstr "Live Udsendelse"
 
 msgctxt "#19676"
 msgid "Drama"
@@ -7128,7 +7128,7 @@ msgstr ""
 
 msgctxt "#19680"
 msgid "Comedy"
-msgstr ""
+msgstr "Komedie"
 
 msgctxt "#19681"
 msgid "Soap/Melodrama/Folkloric"
@@ -7136,7 +7136,7 @@ msgstr ""
 
 msgctxt "#19682"
 msgid "Romance"
-msgstr ""
+msgstr "Romantik"
 
 msgctxt "#19683"
 msgid "Serious/ClassicalReligion/Historical"
@@ -7144,7 +7144,7 @@ msgstr ""
 
 msgctxt "#19684"
 msgid "Adult"
-msgstr ""
+msgstr "Voksen"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -7876,23 +7876,23 @@ msgstr "Fejl ved hentning af kunstnerinfo"
 
 msgctxt "#20240"
 msgid "Android music"
-msgstr ""
+msgstr "Android musik"
 
 msgctxt "#20241"
 msgid "Android videos"
-msgstr ""
+msgstr "Android videoer"
 
 msgctxt "#20242"
 msgid "Android pictures"
-msgstr ""
+msgstr "Android billeder"
 
 msgctxt "#20243"
 msgid "Android photos"
-msgstr ""
+msgstr "Android fotografier"
 
 msgctxt "#20244"
 msgid "Android Apps"
-msgstr ""
+msgstr "Android Apps"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -8528,27 +8528,27 @@ msgstr "Grupper film i samlinger"
 
 msgctxt "#20459"
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 msgctxt "#20460"
 msgid "Add %s"
-msgstr ""
+msgstr "Tilføj %s"
 
 msgctxt "#20461"
 msgid "Remove %s"
-msgstr ""
+msgstr "Fjern %s"
 
 msgctxt "#20462"
 msgid "New tag..."
-msgstr ""
+msgstr "Nyt tag..."
 
 msgctxt "#20463"
 msgid "A tag with the name '%s' already exists."
-msgstr ""
+msgstr "Et tag med navnet '%s' findes allerede."
 
 msgctxt "#20464"
 msgid "Select %s"
-msgstr ""
+msgstr "Vælg"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -8956,7 +8956,7 @@ msgstr "Cachen blev fyldt, før den nåede den påkrævede mængde, for at sikre
 
 msgctxt "#21456"
 msgid "External storage"
-msgstr ""
+msgstr "Ekstern lager"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9560,7 +9560,7 @@ msgstr "Tjenester"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr ""
+msgstr "PVR klienter"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9800,11 +9800,11 @@ msgstr "Vil du hente denne add-on?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
-msgstr ""
+msgstr "Kan ikke indlæse skin"
 
 msgctxt "#24103"
 msgid "Skin is missing some files"
-msgstr ""
+msgstr "Skin mangler nogle filer"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10332,7 +10332,7 @@ msgstr "Anvend ikke det brugerdefinerede tastaturkort \"keymap\" til denne enhed
 
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
-msgstr ""
+msgstr "Aktiver understøttelse af joystick og gamepad"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10396,11 +10396,11 @@ msgstr "Sæt enheder i standbytilstand, når pauseskærmen aktiveres"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
-msgstr ""
+msgstr "Kunne ikke finde CEC comport. Opsæt den manuelt."
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr ""
+msgstr "Kunne ikke initialisere CEC adapteren. Tjek dine indstillinger."
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
@@ -10416,7 +10416,7 @@ msgstr "Tilsluttet"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr ""
+msgstr "Kunne ikke initialisere CEC adapteren: libCEC blev ikke fundet på dit system"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10452,40 +10452,40 @@ msgstr "Send 'inaktiv kilde' kommando, når XBMC stoppes"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Sæt denne enhed i standby når PCen er i standby"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Denne enhed har brug for service"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorér"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Når fjernsynet er slukket"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Forbindelse mistet"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "Denne bruger har ikke adgang til at åbne CEC adapteren"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Porten er optaget. Kun et program kan få adgang til CEC adapteren"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
-msgstr ""
+msgstr "Sæt afspilning på pause ved skift af kilde"
 
 msgctxt "#36035"
 msgid "Always"
-msgstr ""
+msgstr "Altid"
 
 msgctxt "#36036"
 msgid "On start/stop"
-msgstr ""
+msgstr "Ved start/stop"
