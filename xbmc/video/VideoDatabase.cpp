@@ -1987,11 +1987,15 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     }
 
     // add set...
-    int idSet = AddSet(details.m_strSet);
-    // add art if not available
-    map<string, string> setArt;
-    if (!GetArtForItem(idSet, "set", setArt))
-      SetArtForItem(idSet, "set", artwork);
+    int idSet = -1;
+    if (!details.m_strSet.empty())
+    {
+      idSet = AddSet(details.m_strSet);
+      // add art if not available
+      map<string, string> setArt;
+      if (!GetArtForItem(idSet, "set", setArt))
+        SetArtForItem(idSet, "set", artwork);
+    }
 
     // add tags...
     for (unsigned int i = 0; i < details.m_tags.size(); i++)
