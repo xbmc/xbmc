@@ -30,6 +30,9 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
@@ -39,10 +42,19 @@ using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
 {
+  m_handle = NULL;
+  m_displayProgress = false;
 }
 
-CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile)
+CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
+                                    const CStdString& strDestFile,
+                                    bool displayProgress,
+                                    int heading, int line)
 {
+  m_handle = NULL;
+  m_displayProgress = displayProgress;
+  m_heading = heading;
+  m_line = line;
   SetFileOperation(action, items, strDestFile);
 }
 
@@ -60,6 +72,14 @@ bool CFileOperationJob::DoWork()
 {
   FileOperationList ops;
   double totalTime = 0.0;
+
+  if (m_displayProgress)
+  {
+    CGUIDialogExtendedProgressBar* dialog =
+      (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    m_handle = dialog->GetHandle(GetActionString(m_action));
+  }
+
   bool success = DoProcess(m_action, m_items, m_strDestFile, ops, totalTime);
 
   unsigned int size = ops.size();
@@ -69,6 +89,9 @@ bool CFileOperationJob::DoWork()
 
   for (unsigned int i = 0; i < size && success; i++)
     success &= ops[i].ExecuteOperation(this, current, opWeight);
+
+  if (m_handle)
+    m_handle->MarkFinished();
 
   return success;
 }
@@ -229,6 +252,12 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   if (base->ShouldCancel((unsigned)current, 100))
     return false;
 
+  if (base->m_handle)
+  {
+    base->m_handle->SetText(base->GetCurrentFile());
+    base->m_handle->SetPercentage(current);
+  }
+
   DataHolder data = {base, current, opWeight};
 
   switch (m_action)
@@ -307,6 +336,15 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
     data->base->m_avgSpeed.Format("%.1f MB/s", avgSpeed / 1000000.0f);
   else
     data->base->m_avgSpeed.Format("%.1f KB/s", avgSpeed / 1000.0f);
+
+  if (data->base->m_handle)
+  {
+    CStdString line;
+    line.Format("%s (%s)", data->base->GetCurrentFile().c_str(),
+                           data->base->GetAverageSpeed().c_str());
+    data->base->m_handle->SetText(line);
+    data->base->m_handle->SetPercentage(current);
+  }
 
   return !data->base->ShouldCancel((unsigned)current, 100);
 }

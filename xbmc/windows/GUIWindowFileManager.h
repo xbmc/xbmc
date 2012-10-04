@@ -24,7 +24,7 @@
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 #include "threads/CriticalSection.h"
-#include "utils/Job.h"
+#include "utils/JobManager.h"
 
 class CFileItem;
 class CFileItemList;
@@ -32,7 +32,7 @@ class CGUIDialogProgress;
 
 class CGUIWindowFileManager :
       public CGUIWindow,
-      public IJobCallback
+      public CJobQueue 
 {
 public:
 
@@ -43,11 +43,9 @@ public:
   virtual bool OnBack(int actionID);
   const CFileItem &CurrentDirectory(int indx) const;
 
-  void ResetProgressBar(bool showProgress = true);
   static int64_t CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-  virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 protected:
   virtual void OnInitWindow();
   void SetInitialPath(const CStdString &path);
@@ -95,7 +93,6 @@ protected:
   typedef std::vector <CFileItem*> ::iterator ivecItems;
   CFileItem* m_Directory[2];
   CStdString m_strParentPath[2];
-  CGUIDialogProgress* m_dlgProgress;
   CDirectoryHistory m_history[2];
 
   int m_errorHeading, m_errorLine;
