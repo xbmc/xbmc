@@ -42,12 +42,14 @@ public:
 
   void SetFileOperation(FileAction action, CFileItemList &items, const CStdString &strDestFile);
 
+  virtual bool operator==(const CJob *job) const;
+
   virtual bool DoWork();
   const CStdString &GetAverageSpeed()     { return m_avgSpeed; }
   const CStdString &GetCurrentOperation() { return m_currentOperation; }
   const CStdString &GetCurrentFile()      { return m_currentFile; }
   const CFileItemList &GetItems()         { return m_items; }
-  FileAction GetAction()                  { return m_action; }
+  FileAction GetAction() const            { return m_action; }
 private:
   class CFileOperation : public XFILE::IFileCallback
   {

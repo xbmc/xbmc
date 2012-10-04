@@ -304,3 +304,27 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
 
   return !data->base->ShouldCancel((unsigned)current, 100);
 }
+
+bool CFileOperationJob::operator==(const CJob* job) const
+{
+  if (strcmp(job->GetType(),GetType()) == 0)
+  {
+    const CFileOperationJob* rjob = dynamic_cast<const CFileOperationJob*>(job);
+    if (rjob)
+    {
+      if (GetAction() == rjob->GetAction() &&
+          m_strDestFile == rjob->m_strDestFile &&
+          m_items.Size() == rjob->m_items.Size())
+      {
+        for (int i=0;i<m_items.Size();++i)
+        {
+          if (m_items[i]->GetPath() != rjob->m_items[i]->GetPath() ||
+              m_items[i]->IsSelected() != rjob->m_items[i]->IsSelected())
+            return false;
+        }
+        return true;
+      }
+    }
+  }
+  return false;
+}
