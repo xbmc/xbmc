@@ -670,6 +670,11 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
 
 bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = false */)
 {
+  if (item->m_bIsFolder)
+  {
+    return false;
+  }
+
   if (item->GetPath() == g_application.CurrentFile())
   {
     CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, m_parent->GetID());
