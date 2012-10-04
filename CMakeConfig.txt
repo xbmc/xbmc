@@ -233,7 +233,7 @@ endmacro()
   
 
 # go through all the libs we need and find them plus set some good variables
-foreach(lib ${external_libs} ${find_libs})
+foreach(lib ${external_libs} ${non_link_libs})
   plex_find_library(${lib} 0 0)
 endforeach()
 

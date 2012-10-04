@@ -1,5 +1,8 @@
 # CPLUFF
 
+# XBMC expects it to be called libcpluff...
+set(CMAKE_SHARED_MODULE_PREFIX "lib")
+
 set(PACKAGE_VERSION "0.1.3")
 set(CP_VERSION_MAJOR "0")
 set(CP_VERSION_MINOR "1")
@@ -23,15 +26,25 @@ check_function_exists(dcgettext HAVE_DCGETTEXT)
 check_function_exists(iconv HAVE_ICONV)
 check_function_exists(stat HAVE_STAT)
 
-set(CP_FNAMESEP_CHAR "'/'")
 set(CP_ABI_COMPATIBILITY "\"0.1\"")
-set(CP_FNAMESEP_STR "\"/\"")
-set(CP_THREADS "\"Posix\"")
-set(CP_SHREXT "\"`test .$module = .yes && echo .so || echo .dylib`\"")
-set(DLOPEN_POSIX 1)
 
-add_definitions(-DCP_C_API=CP_EXPORT -DCP_HOST="darwin" -DHAVE_CONFIG_H)
+# TODO: set these correctly for windows
+if(UNIX)
+  set(CP_FNAMESEP_CHAR "'/'")
+  set(CP_FNAMESEP_STR "\"/\"")
+  set(CP_THREADS "\"Posix\"")
+  set(CP_SHREXT "\"`test .$module = .yes && echo .so || echo .dylib`\"")
+  set(DLOPEN_POSIX 1)
+  if(APPLE)
+    set(CP_HOST "darwin")
+  else()
+    set(CP_HOST "linux")
+  endif()
+endif()
+
+add_definitions(-DCP_C_API=CP_EXPORT -DCP_HOST="${CP_HOST}" -DHAVE_CONFIG_H)
 include_directories(. libcpluff)
+
 configure_file(libcpluff/cpluffdef.h.in ${root}/lib/cpluff/libcpluff/cpluffdef.h)
 configure_file(config_plex.h.in ${root}/lib/cpluff/config.h)
 
@@ -57,3 +70,4 @@ set(libcpluff_srcs
   libcpluff/thread_posix.c
 )
 add_library(cpluff-${ARCH} MODULE ${libcpluff_srcs})
+install(TARGETS cpluff-${ARCH} DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system)

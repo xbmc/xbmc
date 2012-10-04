@@ -17,6 +17,6 @@ add_library(ImageLib-${ARCH} MODULE
   $<TARGET_OBJECTS:cx_jasper>
 )
 
-target_link_libraries(ImageLib-${ARCH} ${z_LIBRARY} ${png_LIBRARY} ${jpeg_LIBRARY} ${tiff_LIBRARY})
+target_link_libraries(ImageLib-${ARCH} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
 
 install(TARGETS ImageLib-${ARCH} DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system)
