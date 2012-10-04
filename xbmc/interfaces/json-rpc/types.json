@@ -251,6 +251,7 @@
           "album": { "type": "string" },
           "artist": { "type": "string" },
           "track": { "type": "integer" }
+        }
       },
       { "type": "object", "description": "A picture has a file path.",
         "properties": {
