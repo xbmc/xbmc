@@ -58,6 +58,33 @@ def platform_str(platform, arch):
 
     return "linux-%s-%s"%(platform.linux_distribution()[0].strip().lower(), platform.machine())
 
+def fix_install_name(path):
+  for root, dirs, files in os.walk(path):
+    for f in files:
+      fpath = os.path.join(root, f)
+      if f.endswith(".dylib") and not os.path.islink(fpath) and os.path.exists(fpath):
+        
+        if not os.access(fpath, os.W_OK) or not os.access(fpath, os.R_OK):
+          os.chmod(fpath, 0o644)
+          
+        try:
+          exec_cmd(["install_name_tool", "-id", fpath, fpath], supress_output=True)
+          otoolout=exec_cmd(["otool", "-L", fpath], supress_output=True)
+        except:
+          print "Fail when running installname on %s" % f
+          continue
+        for l in otoolout.split("\n"):
+          l=l.rstrip().strip()
+          if l.startswith("/Users/plex/jenkins/workspace"):
+            # this needs to be changed then...
+            currentlib=l.split(" (compat")[0]
+            basename = os.path.basename(currentlib)
+            newname = os.path.join(path, basename)
+            try:
+              exec_cmd(["install_name_tool", "-change", currentlib, newname, fpath], supress_output=True)
+            except:
+              continue       
+
 if __name__=='__main__':
     parser=optparse.OptionParser()
     parser.add_option("-c", "--config", action="store", type="string",
@@ -120,7 +147,11 @@ if __name__=='__main__':
                 os.symlink(dirname, depend)
         else:
             os.symlink(dirname, depend)
-
+            
+        if platform.system() == "Darwin":
+          print "Fixing install names"
+          fix_install_name(os.path.realpath(dirname))
+        
         print "Done with %s" % depend
 
 
