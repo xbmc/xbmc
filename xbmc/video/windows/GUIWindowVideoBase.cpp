@@ -1788,7 +1788,9 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory, bool updateFilt
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
-  m_thumbLoader.Load(*m_unfilteredItems);
+  // might already be running from GetGroupedItems
+  if (!m_thumbLoader.IsLoading())
+    m_thumbLoader.Load(*m_vecItems);
 
   return true;
 }
@@ -1858,6 +1860,12 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
       items.Append(groupedItems);
     }
   }
+
+  // reload thumbs after filtering and grouping
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
+  m_thumbLoader.Load(items);
 }
 
 bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
