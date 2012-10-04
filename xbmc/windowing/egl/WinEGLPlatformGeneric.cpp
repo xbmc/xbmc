@@ -19,8 +19,6 @@
  *
  */
 
-#define FIX1280
-
 #include "system.h"
 
 #include "system_gl.h"
@@ -32,6 +30,14 @@
 
 #include <string>
 
+#ifdef ALLWINNERA10
+#include <sys/ioctl.h>
+extern "C" {
+#include "drv_display_sun4i.h"
+}
+static fbdev_window g_fbwin;
+#endif
+
 CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
 {
   m_surface = EGL_NO_SURFACE;
@@ -42,6 +48,22 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
   // default to 720p
   m_width  = 1280;
   m_height = 720;
+
+#ifdef ALLWINNERA10
+  int fd = open("/dev/disp", O_RDWR);
+
+  if (fd >= 0) {
+    unsigned long args[4] = { 0, 0, 0, 0 };
+
+    m_width  = g_fbwin.width  = ioctl(fd, DISP_CMD_SCN_GET_WIDTH , args);
+    m_height = g_fbwin.height = ioctl(fd, DISP_CMD_SCN_GET_HEIGHT, args);
+    close(fd);
+  }
+  else {
+    fprintf(stderr, "can not open /dev/disp (errno=%d)!\n", errno);
+    CLog::Log(LOGERROR, "can not open /dev/disp (errno=%d)!\n", errno);
+  }
+#endif
 }
 
 CWinEGLPlatformGeneric::~CWinEGLPlatformGeneric()
@@ -73,10 +95,9 @@ bool CWinEGLPlatformGeneric::ClampToGUIDisplayLimits(int &width, int &height)
   width  = m_width;
   height = m_height;
 
-  /*adi*/
-#ifdef FIX1280
-  if (width > 1280) width = 1280;
-  if (height > 720) height = 720;
+#ifdef ALLWINNERA10
+  if (width  > g_fbwin.width ) width  = g_fbwin.width;
+  if (height > g_fbwin.height) height = g_fbwin.height;
 #endif
 
   return true;
@@ -443,17 +464,8 @@ bool CWinEGLPlatformGeneric::IsExtSupported(const char* extension)
 
 EGLNativeWindowType CWinEGLPlatformGeneric::getNativeWindow()
 {
-#ifdef _FBDEV_WINDOW_H_ //mali sdk 1.2
-  static fbdev_window win;
-
-#ifdef FIX1280
-  win.width  = 1280;
-  win.height = 720;
-#else 
-  win.width  = 1920;
-  win.height = 1080;
-#endif
-  return (EGLNativeWindowType)&win;
+#ifdef ALLWINNERA10
+  return (EGLNativeWindowType)&g_fbwin;
 #else
   // most egl platforms can handle EGLNativeWindowType == 0
   return 0;
