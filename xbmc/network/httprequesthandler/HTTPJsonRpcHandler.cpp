@@ -39,6 +39,7 @@ bool CHTTPJsonRpcHandler::CheckHTTPRequest(const HTTPRequest &request)
 int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
   CHTTPClient client;
+  bool isRequest = false;
   if (request.method == POST)
   {
     string contentType = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
@@ -50,8 +51,24 @@ int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
       return MHD_YES;
     }
 
-    m_response = CJSONRPC::MethodCall(m_request, request.webserver, &client);
+    isRequest = true;
   }
+  else if (request.method == GET)
+  {
+    map<string, string> arguments;
+    if (CWebServer::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, arguments) > 0)
+    {
+      map<string, string>::const_iterator argument = arguments.find("request");
+      if (argument != arguments.end() && !argument->second.empty())
+      {
+        m_request = argument->second;
+        isRequest = true;
+      }
+    }
+  }
+
+  if (isRequest)
+    m_response = CJSONRPC::MethodCall(m_request, request.webserver, &client);
   else
   {
     // get the whole output of JSONRPC.Introspect
