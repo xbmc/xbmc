@@ -1,0 +1,360 @@
+<keymap>
+  <global>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="1">Select</button>
+      <button id="2">ParentDir</button>
+      <button id="3">FullScreen</button>
+      <button id="4">Queue</button>
+      <button id="5">ContextMenu</button>
+      <button id="6">PreviousMenu</button>
+      <button id="8">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="9">Screenshot</button>
+      <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <hat id="1" position="up">Up</hat>
+      <hat id="1" position="down">Down</hat>
+      <hat id="1" position="left">Left</hat>
+      <hat id="1" position="right">Right</hat>
+      <!--  <axis limit="-1" id="2">Up</axis>
+        <axis limit="+1" id="2">Down</axis>
+        <axis limit="-1" id="1">Left</axis>
+        <axis limit="+1" id="1">Right</axis> Left stick. Way too sensitive. -->
+      <axis limit="-1" id="4">VolumeUp</axis>
+      <axis limit="+1" id="4">VolumeDown</axis>
+      <axis limit="-1" id="5">AnalogSeekBack</axis>
+      <axis limit="+1" id="5">AnalogSeekForward</axis>
+      <axis limit="+1" id="3">ScrollUp</axis>
+      <axis limit="-1" id="3">ScrollDown</axis>
+    </joystick>
+  </global>
+  <Home>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="3">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+    </joystick>
+  </Home>
+  <MyFiles>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="4">Highlight</button>
+    </joystick>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="3">Playlist</button>
+      <button id="4">Delete</button>
+    </joystick>
+  </MyMusicPlaylist>
+  <MyMusicFiles>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="3">Playlist</button>
+      <button id="4">Queue</button>
+    </joystick>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="3">Playlist</button>
+      <button id="4">Queue</button>
+    </joystick>
+  </MyMusicLibrary>
+  <FullscreenVideo>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
+      <button id="4">AspectRatio</button>
+      <button id="5">Info</button>
+      <button id="6">CodecInfo</button>
+      <button id="8">OSD</button>
+      <hat id="1" position="up">BigStepForward</hat>
+      <hat id="1" position="right">StepForward</hat>
+      <hat id="1" position="down">BigStepBack</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <axis limit="+1" id="3">AnalogRewind</axis>
+      <axis limit="-1" id="3">AnalogFastForward</axis>
+    </joystick>
+  </FullscreenVideo>
+  <FullscreenInfo>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">Close</button>
+      <button id="3">CodecInfo</button>
+      <button id="6">Close</button>
+      <button id="8">OSD</button>
+      <axis limit="+1" id="3">AnalogRewind</axis>
+      <axis limit="-1" id="3">AnalogFastForward</axis>
+    </joystick>
+  </FullscreenInfo>
+  <PlayerControls>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="8">Close</button>
+    </joystick>
+  </PlayerControls>
+  <Visualisation>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
+      <button id="4">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="6">Info</button>
+      <button id="8">XBMC.ActivateWindow(MusicOSD)</button>
+      <hat id="1" position="up">NextPreset</hat>
+      <hat id="1" position="right">SkipNext</hat>
+      <hat id="1" position="down">PreviousPreset</hat>
+      <hat id="1" position="left">SkipPrevious</hat>
+      <axis limit="+1" id="3">AnalogRewind</axis>
+      <axis limit="-1" id="3">AnalogFastForward</axis>
+    </joystick>
+  </Visualisation>
+  <MusicOSD>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="3">CodecInfo</button>
+      <button id="6">Info</button>
+    </joystick>
+  </MusicOSD>
+  <VisualisationSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">Close</button>
+      <button id="3">Close</button>
+      <button id="8">Close</button>
+    </joystick>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">Close</button>
+      <button id="3">Close</button>
+      <button id="5">Close</button>
+      <button id="8">Close</button>
+    </joystick>
+  </VisualisationPresetList>
+  <SlideShow>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
+      <button id="4">ZoomNormal</button>
+      <button id="5">Rotate</button>
+      <button id="6">Info</button>
+      <hat id="1" position="up">ZoomIn</hat>
+      <hat id="1" position="right">NextPicture</hat>
+      <hat id="1" position="down">ZoomOut</hat>
+      <hat id="1" position="left">PreviousPicture</hat>
+    </joystick>
+  </SlideShow>
+  <ScreenCalibration>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="1">NextCalibration</button>
+      <button id="3">ResetCalibration</button>
+      <button id="6">NextResolution</button>
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </ScreenCalibration>
+  <GUICalibration>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="1">NextCalibration</button>
+      <button id="3">ResetCalibration</button>
+      <button id="6">NextResolution</button>
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </GUICalibration>
+  <SelectDialog>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="7">Close</button>
+    </joystick>
+  </SelectDialog>
+  <VideoOSD>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="8">Close</button>
+      <button id="7">PreviousMenu</button>
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </VideoOSD>
+  <VideoMenu>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="4">AspectRatio</button>
+      <button id="2">Stop</button>
+      <button id="8">OSD</button>
+      <button id="7">PreviousMenu</button>
+      <button id="6">Info</button>
+      <button id="3">CodecInfo</button>
+    </joystick>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="4">AspectRatio</button>
+      <button id="2">Close</button>
+      <button id="7">Close</button>
+      <button id="8">Close</button>
+    </joystick>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="4">AspectRatio</button>
+      <button id="2">Close</button>
+      <button id="7">Close</button>
+      <button id="8">Close</button>
+    </joystick>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="4">Delete</button>
+      <button id="2">Close</button>
+      <button id="7">Close</button>
+      <button id="8">Close</button>
+    </joystick>
+  </VideoBookmarks>
+  <MyVideoLibrary>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="3">Delete</button>
+    </joystick>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="4">Queue</button>
+      <button id="3">Playlist</button>
+    </joystick>
+  </MyVideoFiles>
+  <MyVideoPlaylist>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="4">Delete</button>
+      <button id="3">Playlist</button>
+      <button id="7">Playlist</button>
+      <button id="2">Playlist</button>
+    </joystick>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="8">Enter</button>
+      <button id="2">BackSpace</button>
+      <button id="5">Shift</button>
+      <button id="4">Symbols</button>
+    </joystick>
+  </VirtualKeyboard>
+  <ContextMenu>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="6">Close</button>
+      <button id="2">Close</button>
+    </joystick>
+  </ContextMenu>
+  <Scripts>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="3">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
+    </joystick>
+  </Scripts>
+  <NumericInput>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">BackSpace</button>
+      <button id="8">Enter</button>
+    </joystick>
+  </NumericInput>
+  <GamepadInput>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="8">Stop</button>   <!-- Enter Password -->
+    </joystick>
+  </GamepadInput>
+  <Weather>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </Weather>
+  <AddonInformation>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </AddonSettings>
+  <TextViewer>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </TextViewer>
+  <Settings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </Settings>
+  <MyPicturesSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </MyPicturesSettings>
+  <MyProgramsSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </MyProgramsSettings>
+  <MyWeatherSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </MyWeatherSettings>
+  <MyMusicSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </MyMusicSettings>
+  <SystemSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </SystemSettings>
+  <MyVideosSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </MyVideosSettings>
+  <NetworkSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </NetworkSettings>
+  <AppearanceSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </AppearanceSettings>
+  <Profiles>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </Profiles>
+  <systeminfo>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </systeminfo>
+  <shutdownmenu>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </shutdownmenu>
+  <submenu>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </submenu>
+  <MusicInformation>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">Close</button>
+    </joystick>
+  </MusicInformation>
+  <MovieInformation>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="2">Close</button>
+    </joystick>
+  </MovieInformation>
+  <LockSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="8">Close</button>
+      <button id="2">PreviousMenu</button>
+      <button id="7">PreviousMenu</button>
+    </joystick>
+  </LockSettings>
+  <ProfileSettings>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <button id="8">Close</button>
+      <button id="2">PreviousMenu</button>
+      <button id="7">PreviousMenu</button>
+    </joystick>
+  </ProfileSettings>
+</keymap>
