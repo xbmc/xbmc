@@ -46,6 +46,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
+using namespace VIDEO;
 
 namespace ADDON
 {

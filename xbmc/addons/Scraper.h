@@ -126,7 +126,7 @@ public:
     const CStdString &sAlbum, const CStdString &sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
     XFILE::CCurlFile &fcurl, const CStdString &sArtist);
-  EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
+  VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
 
   bool GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     bool fMovie/*else episode*/, CVideoInfoTag &video);
