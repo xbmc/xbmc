@@ -222,7 +222,7 @@ CFileCurl::CReadState::CReadState()
   m_headerdone = false;
 
   /* PLEX */
-#ifndef _WIN32
+#ifdef _WIN32
   ::shutdown(m_ticklePipe[0], 2);
   ::close(m_ticklePipe[0]);
   ::shutdown(m_ticklePipe[1], 2);
