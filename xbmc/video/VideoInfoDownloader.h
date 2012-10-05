@@ -66,15 +66,15 @@ protected:
                       GET_EPISODE_LIST = 3,
                       GET_EPISODE_DETAILS = 4 };
 
-  XFILE::CCurlFile* m_http;
-  CStdString        m_strMovie;
-  MOVIELIST         m_movieList;
-  CVideoInfoTag     m_movieDetails;
-  CScraperUrl       m_url;
-  VIDEO::EPISODELIST       m_episode;
-  LOOKUP_STATE      m_state;
-  int               m_found;
-  ADDON::ScraperPtr m_info;
+  XFILE::CCurlFile*   m_http;
+  CStdString          m_strMovie;
+  MOVIELIST           m_movieList;
+  CVideoInfoTag       m_movieDetails;
+  CScraperUrl         m_url;
+  VIDEO::EPISODELIST  m_episode;
+  LOOKUP_STATE        m_state;
+  int                 m_found;
+  ADDON::ScraperPtr   m_info;
 
   // threaded stuff
   void Process();
