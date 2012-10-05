@@ -173,6 +173,15 @@ bool CRenderSystemGLES::DestroyRenderSystem()
     m_pGUIshader = NULL;
   }
 
+  ResetScissors();
+  CDirtyRegionList dirtyRegions;
+  CDirtyRegion dirtyWindow(g_graphicsContext.GetViewWindow());
+  dirtyRegions.push_back(dirtyWindow);
+
+  ClearBuffers(0);
+  glFinish();
+  PresentRenderImpl(dirtyRegions);
+
   m_bRenderCreated = false;
 
   return true;
