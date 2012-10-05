@@ -23,6 +23,7 @@
 #include "JSONUtils.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonDatabase.h"
+#include "addons/PluginSource.h"
 #include "ApplicationMessenger.h"
 #include "TextureCache.h"
 
@@ -32,36 +33,81 @@ using namespace ADDON;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  vector<TYPE> addonTypes;
   TYPE addonType = TranslateType(parameterObject["type"].asString());
+  CPluginSource::Content content = CPluginSource::Translate(parameterObject["content"].asString());
   CVariant enabled = parameterObject["enabled"];
-  VECADDONS addons;
-  if (addonType == ADDON_UNKNOWN)
+
+  // ignore the "content" parameter if the type is specified but not a plugin or script
+  if (addonType != ADDON_UNKNOWN && addonType != ADDON_PLUGIN && addonType != ADDON_SCRIPT)
+    content = CPluginSource::UNKNOWN;
+
+  if (addonType >= ADDON_VIDEO && addonType <= ADDON_EXECUTABLE)
   {
-    if (!enabled.isBoolean())
+    addonTypes.push_back(ADDON_PLUGIN);
+    addonTypes.push_back(ADDON_SCRIPT);
+
+    switch (addonType)
     {
-      CAddonMgr::Get().GetAllAddons(addons, false);
-      CAddonMgr::Get().GetAllAddons(addons, true);
+    case ADDON_VIDEO:
+      content = CPluginSource::VIDEO;
+      break;
+    case ADDON_AUDIO:
+      content = CPluginSource::AUDIO;
+      break;
+    case ADDON_IMAGE:
+      content = CPluginSource::IMAGE;
+      break;
+    case ADDON_EXECUTABLE:
+      content = CPluginSource::EXECUTABLE;
+      break;
+
+    default:
+      break;
     }
-    else
-      CAddonMgr::Get().GetAllAddons(addons, enabled.asBoolean());
   }
   else
+    addonTypes.push_back(addonType);
+
+  VECADDONS addons;
+  for (vector<TYPE>::const_iterator typeIt = addonTypes.begin(); typeIt != addonTypes.end(); typeIt++)
   {
-    if (!enabled.isBoolean())
+    VECADDONS typeAddons;
+    if (*typeIt == ADDON_UNKNOWN)
     {
-      CAddonMgr::Get().GetAddons(addonType, addons, false);
-      VECADDONS enabledAddons;
-      CAddonMgr::Get().GetAddons(addonType, enabledAddons, true);
-      addons.insert(addons.begin(), enabledAddons.begin(), enabledAddons.end());
+      if (!enabled.isBoolean())
+      {
+        CAddonMgr::Get().GetAllAddons(typeAddons, false);
+        CAddonMgr::Get().GetAllAddons(typeAddons, true);
+      }
+      else
+        CAddonMgr::Get().GetAllAddons(typeAddons, enabled.asBoolean());
     }
     else
-      CAddonMgr::Get().GetAddons(addonType, addons, enabled.asBoolean());
+    {
+      if (!enabled.isBoolean())
+      {
+        CAddonMgr::Get().GetAddons(*typeIt, typeAddons, false);
+        VECADDONS enabledAddons;
+        CAddonMgr::Get().GetAddons(*typeIt, enabledAddons, true);
+        typeAddons.insert(typeAddons.end(), enabledAddons.begin(), enabledAddons.end());
+      }
+      else
+        CAddonMgr::Get().GetAddons(*typeIt, typeAddons, enabled.asBoolean());
+    }
+
+    addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
   }
 
   // remove library addons
   for (int index = 0; index < (int)addons.size(); index++)
   {
-    if (addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_VIZ_LIBRARY)
+    PluginPtr plugin;
+    if (content != CPluginSource::UNKNOWN)
+      plugin = boost::dynamic_pointer_cast<CPluginSource>(addons.at(index));
+
+    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_VIZ_LIBRARY) ||
+       ((content != CPluginSource::UNKNOWN && plugin == NULL) || (plugin != NULL && !plugin->Provides(content))))
     {
       addons.erase(addons.begin() + index);
       index--;
