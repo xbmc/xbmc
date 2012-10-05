@@ -6,6 +6,11 @@ set(root ${PROJECT_SOURCE_DIR})
 set(dependdir ${root}/plex/Dependencies/laika-depends)
 set(plexdir ${root}/plex)
 
+if(DEFINED XCODE_VERSION)
+  message("Building with XCode Generator")
+  set(USING_XCODE 1)
+endif()
+
 # Set some CFlags that is needed before we run our config tests.
 if(NOT DEFINED OSX_SDK)
      set(OSX_SDK /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk)
