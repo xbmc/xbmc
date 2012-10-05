@@ -570,6 +570,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         newItem->SetLabel(item->GetLabel());
         newItem->SetProperty("plex", "1");
         
+        newItem->SetProperty("visible", "1");
         if (item->GetProperty("key").asString().find("/library/sections") != string::npos)
           newItem->SetProperty("section", "1");
         
