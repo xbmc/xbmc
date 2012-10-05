@@ -2759,10 +2759,6 @@
       <Project>{d8097c41-605d-4917-8957-9df7f44a18cd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\lib\libapetag\libapetag.vcxproj">
-      <Project>{bdd2cb99-93c5-4a70-acbf-396ffb961ad3}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\..\lib\libhts\Win32\libhts_2010.vcxproj">
       <Project>{00700e12-a63b-4e54-b962-4011a90584bd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
