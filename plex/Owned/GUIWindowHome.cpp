@@ -582,13 +582,29 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         m_idToSectionTypeMap[id] = item->GetProperty("typeNumber").asInteger();
         
         if (item->GetProperty("key").asString().find("/shared") != string::npos)
-          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MySharedContent," + item->GetPath() + ",return)"));
+        {
+          CStdString path = "XBMC.ActivateWindow(MySharedContent," + item->GetPath() + ",return)";
+          newItem->SetClickActions(CGUIAction("", path));
+          newItem->SetPath(path);
+        }
         else if (item->GetProperty("type").asString() == "artist")
-          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MyMusicFiles," + item->GetPath() + ",return)"));
+        {
+          CStdString path = "XBMC.ActivateWindow(MyMusicFiles," + item->GetPath() + ",return)";
+          newItem->SetClickActions(CGUIAction("", path));
+          newItem->SetPath(path);
+        }
         else if (item->GetProperty("type").asString() == "photo")
-          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MyPictures," + item->GetPath() + ",return)"));
+        {
+          CStdString path = "XBMC.ActivateWindow(MyPictures," + item->GetPath() + ",return)";
+          newItem->SetClickActions(CGUIAction("", path));
+          newItem->SetPath(path);
+        }
         else
-          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MyVideoFiles," + item->GetPath() + ",return)"));
+        {
+          CStdString path = "XBMC.ActivateWindow(MyVideoFiles," + item->GetPath() + ",return)";
+          newItem->SetClickActions(CGUIAction("", path));
+          newItem->SetPath(path);
+        }
         
         newItem->m_idepth = 0;
         newItem->SetQuickFanart(item->GetQuickFanart());
