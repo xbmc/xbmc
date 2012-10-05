@@ -150,7 +150,7 @@ if __name__=='__main__':
             
         if platform.system() == "Darwin":
           print "Fixing install names"
-          fix_install_name(os.path.realpath(dirname))
+          fix_install_name(os.path.join(os.path.realpath(dirname), "lib"))
         
         print "Done with %s" % depend
 
