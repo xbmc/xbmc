@@ -75,19 +75,19 @@ void CPlexSourceScanner::Process()
     // Scan the server.
     path = PlexUtils::AppendPathToURL(url, "music");
     AutodetectPlexSources(path, m_sources->musicSources, realHostLabel, onlyShared);
-    dprintf("Plex Source Scanner for %s: found %d music channels.", m_sources->hostLabel.c_str(), m_sources->musicSources.size());
+    dprintf("Plex Source Scanner for %s: found %ld music channels.", m_sources->hostLabel.c_str(), m_sources->musicSources.size());
     
     path = PlexUtils::AppendPathToURL(url, "video");
     AutodetectPlexSources(path, m_sources->videoSources, realHostLabel, onlyShared);
-    dprintf("Plex Source Scanner for %s: found %d video channels.", m_sources->hostLabel.c_str(), m_sources->videoSources.size());
+    dprintf("Plex Source Scanner for %s: found %ld video channels.", m_sources->hostLabel.c_str(), m_sources->videoSources.size());
     
     path = PlexUtils::AppendPathToURL(url, "photos");
     AutodetectPlexSources(path, m_sources->pictureSources, realHostLabel, onlyShared);
-    dprintf("Plex Source Scanner for %s: found %d photo channels.", m_sources->hostLabel.c_str(), m_sources->pictureSources.size());
+    dprintf("Plex Source Scanner for %s: found %ld photo channels.", m_sources->hostLabel.c_str(), m_sources->pictureSources.size());
       
     path = PlexUtils::AppendPathToURL(url, "applications");
     AutodetectPlexSources(path, m_sources->applicationSources, realHostLabel, onlyShared);
-    dprintf("Plex Source Scanner for %s: found %d application channels.", m_sources->hostLabel.c_str(), m_sources->applicationSources.size());
+    dprintf("Plex Source Scanner for %s: found %ld application channels.", m_sources->hostLabel.c_str(), m_sources->applicationSources.size());
     
     // Library sections.
     path = PlexUtils::AppendPathToURL(url, "library/sections");
@@ -150,14 +150,14 @@ void CPlexSourceScanner::ScanHost(const std::string& uuid, const std::string& ho
     sources = g_hostSourcesMap[uuid];
     sources->urls.insert(url);
     
-    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %d)", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size());
+    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld)", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size());
   }
   else
   {
     // New one.
     sources = HostSourcesPtr(new HostSources(uuid, host, hostLabel, url));
     g_hostSourcesMap[uuid] = sources;
-    dprintf("Plex Source Scanner: got new server %s (local: %d count: %d)", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size());
+    dprintf("Plex Source Scanner: got new server %s (local: %d count: %ld)", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size());
   }
   
   new CPlexSourceScanner(sources);
@@ -175,7 +175,7 @@ void CPlexSourceScanner::RemoveHost(const std::string& uuid, const std::string& 
     {
       // Remove the URL, and if we still have routes to the sources, get out.
       sources->urls.erase(url);
-      dprintf("Plex Source Scanner: removing server %s (url: %s), %d urls left.", sources->hostLabel.c_str(), url.c_str(), sources->urls.size());
+      dprintf("Plex Source Scanner: removing server %s (url: %s), %ld urls left.", sources->hostLabel.c_str(), url.c_str(), sources->urls.size());
       if (sources->urls.size() > 0)
         return;
       

@@ -80,7 +80,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
   /// Handle network change.
   virtual void handleNetworkChange(const vector<NetworkInterface>& interfaces)
   {
-    dprintf("Network change for browser, closing %d browse sockets (%d interfaces)", m_sockets.size(), interfaces.size());
+    dprintf("Network change for browser, closing %ld browse sockets (%ld interfaces)", m_sockets.size(), interfaces.size());
 
     // Close the old one.
     BOOST_FOREACH(udp_socket_ptr socket, m_sockets)
