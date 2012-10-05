@@ -258,11 +258,28 @@ void CGUISettings::Initialize()
   // My Music Settings
   AddGroup(3, 2);
 
-  CSettingsCategory* mp = AddCategory(3, "musicplayer", 16000);
-  AddInt(mp, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddBool(mp, "musicplayer.crossfadealbumtracks", 13400, true);
-  AddSeparator(mp, "musicplayer.sep3");
-  AddDefaultAddon(mp, "musicplayer.visualisation", 250, "Now Playing.vis", ADDON_VIZ);
+  AddBool(NULL, "musicplayer.autoplaynextitem", 489, true);
+  AddBool(NULL, "musicplayer.queuebydefault", 14084, false);
+  AddSeparator(NULL, "musicplayer.sep1");
+  map<int,int> gain;
+  gain.insert(make_pair(351,REPLAY_GAIN_NONE));
+  gain.insert(make_pair(639,REPLAY_GAIN_TRACK));
+  gain.insert(make_pair(640,REPLAY_GAIN_ALBUM));
+
+  AddInt(NULL, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, gain, SPIN_CONTROL_TEXT);
+  AddInt(NULL, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(NULL, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(NULL, "musicplayer.replaygainavoidclipping", 643, false);
+
+  AddString(NULL, "musicfiles.nowplayingtrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(NULL, "musicfiles.nowplayingtrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(NULL, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(NULL, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
+
+  AddInt(NULL, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddBool(NULL, "musicplayer.crossfadealbumtracks", 13400, true);
+  AddSeparator(NULL, "musicplayer.sep3");
+  AddDefaultAddon(NULL, "musicplayer.visualisation", 250, "Now Playing.vis", ADDON_VIZ);
 
   CSettingsCategory* scr = AddCategory(3, "scrobbler", 15200);
   AddBool(scr, "scrobbler.lastfmsubmit", 15201, false);
@@ -457,6 +474,9 @@ void CGUISettings::Initialize()
   CSettingsCategory*cache = AddCategory(4, "cache", 439);
   AddInt(cache, "cache.seconds", 14029, 5, 3, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
+  AddBool(NULL, "debug.showloginfo", 20191, false);
+  AddPath(NULL, "debug.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+
   // video settings
   AddGroup(5, 3);
   // Videos > General
@@ -474,7 +494,7 @@ void CGUISettings::Initialize()
   quality.insert(make_pair(13185,MEDIA_QUALITY_SD));
   AddInt(vgen, "videogeneral.onlinemediaquality", 13180, MEDIA_QUALITY_ALWAYS_ASK, quality, SPIN_CONTROL_TEXT);
 
-  CSettingsCategory* vp = AddCategory(5, "videoplayer", 16003);
+  CSettingsCategory* vp = AddCategory(5, ".", 16003);
 
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
@@ -570,6 +590,18 @@ void CGUISettings::Initialize()
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
 
+  map<int, int> myVideosSelectActions;
+  myVideosSelectActions.insert(make_pair(22080, SELECT_ACTION_CHOOSE));
+  myVideosSelectActions.insert(make_pair(208,   SELECT_ACTION_PLAY_OR_RESUME));
+  myVideosSelectActions.insert(make_pair(13404, SELECT_ACTION_RESUME));
+  myVideosSelectActions.insert(make_pair(22081, SELECT_ACTION_INFO));
+
+  AddInt(NULL, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
+  AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
+  AddBool(NULL, "myvideos.extractflags",20433, true);
+  AddBool(NULL, "myvideos.replacelabels", 20419, true);
+  AddBool(NULL, "myvideos.extractthumb",20433, true);
+
   CSettingsCategory* sub = AddCategory(5, "subtitles", 287);
   AddString(sub, "subtitles.font", 288, "Arial", SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
@@ -614,6 +646,20 @@ void CGUISettings::Initialize()
 
   transcodeQualityMap.erase(43000-1);
   AddInt(pms, "plexmediaserver.localtranscodequality", 40214, -1, transcodeQualityMap, SPIN_CONTROL_TEXT);
+
+  AddBool(NULL,  "services.webserver",        263, false);
+  AddString(NULL,"services.webserverport",    730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+  AddString(NULL,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(NULL,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddDefaultAddon(NULL, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
+
+  AddBool(NULL,  "services.esenabled",         791, true);
+  AddString(NULL,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
+  AddInt(NULL,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddInt(NULL,   "services.esmaxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
+  AddBool(NULL,  "services.esallinterfaces",   794, false);
+  AddInt(NULL,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddInt(NULL,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 
   CSettingsCategory* net = AddCategory(6, "network", 798);
 #ifdef HAS_AIRPLAY
@@ -675,27 +721,34 @@ void CGUISettings::Initialize()
   AddString(loc, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  
+
   bool use_timezone = false;
-  
+
 #if defined(_LINUX)
 #if defined(__APPLE__)
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
-    use_timezone = true;  
-  
+    use_timezone = true;
+
   if (use_timezone)
-  {  
+  {
     AddSeparator(loc, "locale.sep1");
     AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
     AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
-  }	
+  }
 #endif
 #ifdef HAS_TIME_SERVER
   AddSeparator(loc, "locale.sep2");
   AddBool(loc, "locale.timeserver", 168, false);
   AddString(loc, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
+
+  AddBool(NULL, "filelists.showparentdiritems", 13306, true);
+  AddBool(NULL, "filelists.showextensions", 497, true);
+  AddBool(NULL, "filelists.ignorethewhensorting", 13399, true);
+  AddBool(NULL, "filelists.allowfiledeletion", 14071, false);
+  AddBool(NULL, "filelists.showaddsourcebuttons", 21382,  true);
+  AddBool(NULL, "filelists.showhidden", 21330, false);
 
   AddCategory(7, "window", 0);
   AddInt(NULL, "window.width",  0, 1280, 10, 1, INT_MAX, SPIN_CONTROL_INT);
@@ -1084,24 +1137,24 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-  
+
   bool use_timezone = false;
-  
+
 #if defined(_LINUX)
-#if defined(__APPLE__) 
+#if defined(__APPLE__)
   if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
     use_timezone = true;
-  
+
   if (use_timezone)
-  {  
+  {
     CStdString timezone = GetString("locale.timezone");
     if(timezone == "0" || timezone.IsEmpty())
     {
       timezone = g_timezone.GetOSConfiguredTimezone();
       SetString("locale.timezone", timezone);
     }
-    g_timezone.SetTimezone(timezone);	
+    g_timezone.SetTimezone(timezone);
   }
 #endif
 }
