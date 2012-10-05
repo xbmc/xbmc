@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,6 +40,7 @@ using namespace VIDEO;
 CGUIDialogVideoScan::CGUIDialogVideoScan(void)
 : CGUIDialog(WINDOW_DIALOG_VIDEO_SCAN, "DialogVideoScan.xml")
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogVideoScan::~CGUIDialogVideoScan(void)
@@ -167,12 +167,17 @@ void CGUIDialogVideoScan::UpdateState()
       CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_CURRENT_PROGRESS);
       if (pProgressCtrl) pProgressCtrl->SetPercentage(m_fCurrentPercentDone);
     }
+    else
+      SET_CONTROL_HIDDEN(CONTROL_CURRENT_PROGRESS);
+
     if (m_fPercentDone>-1.0f)
     {
       SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
       CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
       if (pProgressCtrl) pProgressCtrl->SetPercentage(m_fPercentDone);
     }
+    else
+      SET_CONTROL_HIDDEN(CONTROL_PROGRESS);
   }
   else
   {

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -78,7 +77,9 @@ void CGUIDialogVideoSettings::CreateSettings()
   {
     vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
+#ifndef TARGET_RASPBERRY_PI
     entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
+#endif
     entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
 
     /* remove unsupported methods */
@@ -92,6 +93,7 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_DeinterlaceMode, entries);
   }
+#ifndef TARGET_RASPBERRY_PI
   {
     vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO                 , 16019));
@@ -157,6 +159,7 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_settings.m_currentVideoSettings.m_ScalingMethod, entries);
   }
+#endif
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
   {
     const int entries[] = {630, 631, 632, 633, 634, 635, 636 };

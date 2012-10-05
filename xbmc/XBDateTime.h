@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -172,6 +171,7 @@ public:
   void SetFromW3CDate(const CStdString &date);
   void SetFromUTCDateTime(const CDateTime &dateTime);
   void SetFromUTCDateTime(const time_t &dateTime);
+  void SetFromRFC1123DateTime(const CStdString &dateTime);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()
@@ -195,6 +195,9 @@ public:
 
   void SetValid(bool yesNo);
   bool IsValid() const;
+
+  static void ResetTimezoneBias(void);
+  static CDateTimeSpan GetTimezoneBias(void);
 
 private:
   bool ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const;

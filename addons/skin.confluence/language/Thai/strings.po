@@ -1,0 +1,542 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-04 12:52+0000\n"
+"PO-Revision-Date: 2012-09-13 18:29+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Thai (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/th/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "ปรับเปลี่ยน"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "ตัวเลือก ด้านพลังงาน"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "ดำเนินการอยู่..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "ซ่อนข้อมูล"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "ตัวเลือก มุมมอง"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "เต็มหน้าจอ"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "รวม ระยะเวลา"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "แฟ้ม-เพลง"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "กำลังเล่น"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "หน้า"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "รายการ"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "ตัวเลือก อื่นๆ"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "ที่ตั้ง"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "เลื่อนโปสเตอร์"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "แฟนอาร์ต"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "รูปย่อ"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "ตัดส่วนภาพ"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "ข้อมูล"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "ขณะนี้กำลังเล่น"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "กำลังเล่น"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "หยุดชั่วขณะ"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ไปหน้าแบบเร็ว"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ย้อนกลับเร็ว"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "ชุดรูปแบบ การแสดงแสงสี"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "เวลาสิ้นสุด"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "เรียง: มากไปน้อย"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "เรียง: น้อยไปมาก"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "เปิด รายการเล่น"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "บันทึก รายการเล่น"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "ปิด รายการเล่น"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "แฟ้มเพลงของระบบ"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "รายการเล่น ปัจจุบัน"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "แฟ้มนี้ซ้อนกันอยู่เลือกส่วนที่คุณต้องการจะเล่นจาก"
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "ที่เลือกในปัจจุบัน"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "ตัวเลือก หน้าจอหลัก"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "พื้นหลัง"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "แสดง \"หยุดชั่วขณะ\" ในการนำเสนอภาพนิ่ง"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "เล่นตัวอย่างหนังในหน้าต่าง [COLOR=grey3](กล่องโต้ตอบ ข้อมูลวิดีโอเท่านั้น)[/COLOR]"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "ตัวเลือก อื่นๆ"
+
+msgctxt "#31107"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "ซ่อนป้ายกำกับ ที่อ่านได้จากชื่อไฟล์วิดีโอ [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "ซ่อนปุ่มของเมนูหลัก"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr ""
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr ""
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "ซ่อน"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "ตัวเลือก"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "แสดงอัลบัม ที่เพิ่งเพิ่ม"
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "แสดงวิดีโอ ที่เพิ่งเพิ่ม"
+
+msgctxt "#31118"
+msgid "Home Page Programs Submenu"
+msgstr "หน้าหลักของเมนูย่อย โปรแกรม"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "ซ่อน แฟนอาร์ตในพื้นหลัง"
+
+msgctxt "#31122"
+msgid "Weather Page"
+msgstr "หน้าแสดง สภาพอากาศ"
+
+msgctxt "#31123"
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "ใช้ \"โปสเตอร์\" แทน \"ป้ายรายการ\" สำหรับรายการทีวี"
+
+msgctxt "#31124"
+msgid "Show Background \"Now Playing\" Video"
+msgstr "แสดงพื้นหลังด้วยวิดีโอ \"ที่กำลังเล่น\""
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "แสดงพื้นหลังด้วยแสงสีประกอบเพลง \"ที่กำลังเล่น\""
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "เล่นเพลงธีมรายการทีวีในคลังข้อมูลวิดีโอ (ส่วนเสริม TvTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "เนื้อเพลง"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "ส่วนเสริม เนื้อเพลง"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "ส่วนเสริม คำบรรยาย"
+
+msgctxt "#31134"
+msgid "Home Page Videos Submenu"
+msgstr "หน้าหลักของเมนูย่อย วิดีโอ"
+
+msgctxt "#31135"
+msgid "Home Page Music Submenu"
+msgstr "หน้าหลักของเมนูย่อย เพลง"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Submenu"
+msgstr "หน้าหลักของเมนูย่อย รูปภาพ"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD เพลง"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD วิดีโอ"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "ปุ่มลัด"
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "เลือกเพลงของคุณ"
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr "แหล่งของเนื้อเพลง"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "ค้นพบ"
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr "ค้นหารายการเพิ่มเติม"
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "ตอนที่กำลังจะออก"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "อุณภูมิปัจจุบัน"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "ปรับปรุงล่าสุด"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "ผู้ให้บริการข้อมูล"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr "ซ่อน แฟนอาร์ต"
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr "รายละเอียดของภาพยนตร์"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "หน่วยความจำที่ใช้"
+
+msgctxt "#31310"
+msgid "Track Number"
+msgstr "หมายเลข แทรค"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "รูปภาพแฟนอาร์ต[CR][CR]ไม่มี[CR][CR] คลิกปุ่มเพื่อตั้งค่า"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "ตัวดึงข้อมูลปัจจุบัน"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "เลือก ตัวดึงข้อมูล"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "ตัวเลือกการสืบค้นเนื้อหา"
+
+msgctxt "#31317"
+msgid "Set Fanart Path"
+msgstr "ตั้งค่าเส้นทางของแฟนอาร์ต"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "เลือก โปรไฟล์"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "ที่เข้าใช้ ล่าสุด"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "ตัวเลือกเพลงคาราโอเกะ"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "ออกอากาศ"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "ตัวเลือกของรายการเล่น"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "สร้างเมื่อ"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "ความละเอียดจอ"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "ที่เพิ่งเพิ่ม"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]ตั้งค่า ตัวจับเวลา![/B] [COLOR=grey2] - ระบบจะปิดอัตโนมัติ ใน[/COLOR]"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "คลิกปุ่ม เพื่อเล่น[CR][CR]ตัวอย่างภาพยนตร์"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "รายละเอียด อัลบั้ม"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "หยุดชั่วขณะ"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "หยุด"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "ไปหน้าแบบเร็ว"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "ย้อนกลับเร็ว"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "เมนู ภาพยนต์"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "ดาวน์โหลด คำบรรยาย"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "หน้าตาพื้นฐาน"
+
+msgctxt "#31391"
+msgid "Skin default with no Caps"
+msgstr "ค่าเริ่มต้นของสกิน โดยไม่มีตัวพิมพ์ใหญ่"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "ใช้ฟ้อนท์ Arial เป็นหลัก"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]ปรับเปลี่ยนค่าการแสดงผล[/B][CR][CR]เปลี่ยนสกิน · ตั้งค่าภูมิภาคและภาษา · เปลี่ยนตัวเลือกการเรียงชื่อไฟล์ [CR] ตั้งค่าถนอมหน้าจอ"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]ปรับเปลี่ยนการตั้งค่าวิดีโอ[/B][CR][CR]จัดการคลังข้อมูลวิดีโอของคุณ · ตั้งค่าตัวเลือกการเล่นวิดีโอ · เปลี่ยนตัวเลือกจัดเรียงรายการวิดีโอ[CR]ตั้งค่าแบบอักษรคำบรรยาย"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]ปรับเปลี่ยนการตั้งค่าเพลง[/B][CR][CR]จัดการคลังข้อมูลเพลงของคุณ · ตั้งค่าตัวเลือกการเล่นเพลง · เปลี่ยนตัวเลือกจัดเรียงรายการเพลง[CR]ตั้งค่าการส่งเพลง · ตั้งค่าตัวเลือกคาราโอเกะ"
+
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
+msgstr "[B]กำหนดการตั้งค่ารูปภาพ[/B][CR][CR]ตั้งค่าตัวเลือกจัดเรียงรายการรูปภาพ · กำหนดค่าแสดงภาพสไลด์"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]ตั้งค่าสภาพอากาศ[/B][CR][CR]กำหนดสามเมืองในการเก็บรวบรวมข้อมูลสภาพอากาศ"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]ปรับเปลี่ยนการตั้งค่าระบบ[/B][CR][CR]การติดตั้งและปรับเทียบการแสดงผล · กำหนดค่าการส่งออกสัญญาณเสียง · การติดตั้งรีโมทคอนโทรล[CR]ตั้งค่าตัวเลือกการประหยัดพลังงาน · เปิดใช้งานการแก้จุดบกพร่อง · ติดตั้ง กุญแจหลัก"
+
+msgctxt "#31407"
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B]กำหนดการตั้งค่าชุดตกแต่ง[/B][CR][CR]ตั้งค่าชุดตกแต่ง Confluence · เพิ่มและลบรายการเมนูหลัก[CR]เปลี่ยนพื้นหลังชุดตกแต่ง"
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B]ปรับเปลี่ยน ส่วนเสริม[/B][CR][CR]จัดการส่วนเสริมที่ติดตั้งไว้ของคุณ · เรียกดูและติดตั้งส่วนเสริม จาก xbmc.org[CR]ปรับเปลี่ยน การตั้งค่าส่วนเสริม"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr ""
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "เลือกโปรไฟล์ ผู้ใช้ XBMC ของคุณ[CR]เพื่อเข้าสู่ระบบและดำเนินการต่อไป"
+
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "พยากรณ์ ใน 36 ชั่วโมง"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "พยากรณ์รายชั่วโมง"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "พยากรณ์สุดสัปดาห์"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "พยากรณ์ ใน 10 วัน"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "พยากรณ์"
+
+msgctxt "#31906"
+msgid "Maps & Video"
+msgstr "แผนที่และวิดีโอ"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "โอกาสเกิดฝน"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "กำลังเรียกข้อมูลการพยากรณ์ ..."

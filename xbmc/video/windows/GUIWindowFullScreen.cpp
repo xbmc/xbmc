@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -134,6 +133,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_subsLayout = NULL;
   m_bGroupSelectShow = false;
   m_sliderAction = 0;
+  m_loadType = KEEP_IN_MEMORY;
   // audio
   //  - language
   //  - volume
@@ -155,19 +155,6 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 {}
-
-void CGUIWindowFullScreen::AllocResources(bool forceLoad)
-{
-  CGUIWindow::AllocResources(forceLoad);
-  DynamicResourceAlloc(false);
-}
-
-void CGUIWindowFullScreen::FreeResources(bool forceUnload)
-{
-  g_settings.Save();
-  DynamicResourceAlloc(true);
-  CGUIWindow::FreeResources(forceUnload);
-}
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
@@ -779,8 +766,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIWindow::OnMessage(message);
-
       CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog) pDialog->Close(true);
       CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
@@ -798,7 +783,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CUTTER);
       if (pDialog) pDialog->Close(true);
 
-      FreeResources(true);
+      CGUIWindow::OnMessage(message);
+
+      g_settings.Save();
 
       CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(false);
@@ -1021,13 +1008,13 @@ void CGUIWindowFullScreen::FrameMove()
       CStdString strStatus;
       if (g_Windowing.IsFullScreen())
         strStatus.Format("%s %ix%i@%.2fHz - %s",
-          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
-          g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
+          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iScreenWidth,
+          g_settings.m_ResInfo[iResolution].iScreenHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
           g_localizeStrings.Get(244));
       else
         strStatus.Format("%s %ix%i - %s",
-          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
-          g_settings.m_ResInfo[iResolution].iHeight, g_localizeStrings.Get(242));
+          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iScreenWidth,
+          g_settings.m_ResInfo[iResolution].iScreenHeight, g_localizeStrings.Get(242));
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);
@@ -1115,6 +1102,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER ||
 #if defined(HAS_AMLPLAYER)
        g_application.GetCurrentPlayer() == EPC_AMLPLAYER ||
+#endif
+#if defined(HAS_OMXPLAYER)
+       g_application.GetCurrentPlayer() == EPC_OMXPLAYER ||
 #endif
        g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
       CUtil::IsUsingTTFSubtitles() && (g_application.m_pPlayer->GetSubtitleVisible()))

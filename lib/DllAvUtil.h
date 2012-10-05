@@ -159,7 +159,9 @@ public:
    // DLL faking.
    virtual bool ResolveExports() { return true; }
    virtual bool Load() {
+#if !defined(TARGET_DARWIN)
      CLog::Log(LOGDEBUG, "DllAvUtilBase: Using libavutil system library");
+#endif
      return true;
    }
    virtual void Unload() {}

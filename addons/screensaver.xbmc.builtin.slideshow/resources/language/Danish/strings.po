@@ -1,0 +1,42 @@
+# XBMC Media Center language file
+# Addon Name: Slideshow
+# Addon id: screensaver.xbmc.builtin.slideshow
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:38+0000\n"
+"PO-Revision-Date: 2012-06-04 10:01+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Danish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/da/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Source of slideshow images"
+msgstr "Kilde til slideshow billeder"
+
+msgctxt "#30001"
+msgid "Folder"
+msgstr "Mappe"
+
+msgctxt "#30002"
+msgid "Video Fanart"
+msgstr "Video fankunst"
+
+msgctxt "#30003"
+msgid "Music Fanart"
+msgstr "Musik fankunst"
+
+msgctxt "#30004"
+msgid "Image Folder"
+msgstr "Billedmappe"
+
+msgctxt "#30005"
+msgid "Dim level"
+msgstr "Dæmpningsniveau"

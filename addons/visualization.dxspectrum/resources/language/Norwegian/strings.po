@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:17+0000\n"
+"PO-Revision-Date: 2012-06-03 20:34+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Norwegian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/no/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: no\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Modus"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Fylt"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Trådramme"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Punkt"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Bar Høyde"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Liten"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Stor"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Veldig Stor"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Hastighet"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Veldig Sakte"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Sakte"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Rask"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Veldig Raskt"

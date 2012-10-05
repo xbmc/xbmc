@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -515,7 +514,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
           if (g_PVRChannelGroups->CreateChannel(*newchannel))
             g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->Persist();
 
-          CFileItemPtr channel(new CFileItem(newchannel));
+          CFileItemPtr channel(new CFileItem(*newchannel));
           if (channel)
           {
             channel->SetProperty("ActiveChannel", true);
@@ -781,7 +780,7 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
   bool bVirtual             = pItem->GetProperty("Virtual").asBoolean();
   bool bEPGEnabled          = pItem->GetProperty("UseEPG").asBoolean();
   bool bParentalLocked      = pItem->GetProperty("ParentalLocked").asBoolean();
-  int iEPGSource            = pItem->GetProperty("EPGSource").asInteger();
+  int iEPGSource            = (int)pItem->GetProperty("EPGSource").asInteger();
   CStdString strChannelName = pItem->GetProperty("Name").asString();
   CStdString strIconPath    = pItem->GetProperty("Icon").asString();
   CStdString strStreamURL   = pItem->GetProperty("StreamURL").asString();

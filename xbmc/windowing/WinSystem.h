@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -41,13 +40,13 @@ struct RESOLUTION_WHR
 {
   int width;
   int height;
+  int interlaced;
   int ResInfo_Index;
 };
 
 struct REFRESHRATE
 {
   float RefreshRate;
-  bool  Interlaced;
   int   ResInfo_Index;
 };
 
@@ -99,7 +98,7 @@ public:
   void SetWindowResolution(int width, int height);
   int DesktopResolution(int screen);
   std::vector<RESOLUTION_WHR> ScreenResolutions(int screen);
-  std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height);
+  std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height, uint32_t dwFlags);
   REFRESHRATE DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates);
 
 protected:
@@ -114,6 +113,7 @@ protected:
   bool              m_bFullScreen;
   int               m_nScreen;
   bool              m_bBlankOtherDisplay;
+  float             m_fRefreshRate;
 };
 
 

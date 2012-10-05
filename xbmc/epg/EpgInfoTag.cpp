@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -917,7 +916,11 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
   CSingleLock lock(m_critSection);
   if (!m_bChanged)
     return true;
+
+#if EPG_DEBUGGING
   CLog::Log(LOGDEBUG, "Epg - %s - Infotag '%s' %s, persisting...", __FUNCTION__, m_strTitle.c_str(), m_iBroadcastId > 0 ? "has changes" : "is new");
+#endif
+
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
   if (!database || (bSingleUpdate && !database->IsOpen()))
   {

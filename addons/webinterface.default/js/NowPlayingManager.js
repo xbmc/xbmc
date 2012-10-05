@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -162,7 +161,7 @@ NowPlayingManager.prototype = {
         type: 'POST',
         contentType: 'application/json',
         url: JSON_RPC + '?SkipNext',
-        data: '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}',
+        data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": "next" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result == 'OK') {
             //this.updateAudioPlaylist(true);
@@ -177,7 +176,7 @@ NowPlayingManager.prototype = {
         type: 'POST',
         contentType: 'application/json',
         url: JSON_RPC + '?SkipPrevious',
-        data: '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}',
+        data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": "previous" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result == 'OK') {
             //this.updateAudioPlaylist(true);
@@ -254,7 +253,7 @@ NowPlayingManager.prototype = {
       type: 'POST',
       contentType: 'application/json',
       url: JSON_RPC + '?PlaylistItemPlay',
-      data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "item": ' + sequenceId + '}, "id": 1}',
+      data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": ' + sequenceId + '}, "id": 1}',
       success: jQuery.proxy(function(data) {
       
       }, this),

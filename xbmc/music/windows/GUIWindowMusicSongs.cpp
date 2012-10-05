@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,6 +36,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "cdrip/CDDARipper.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -303,7 +303,12 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
-          buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
+        {
+          if (CJobManager::GetInstance().IsProcessing("cdrip"))
+            buttons.Add(CONTEXT_BUTTON_CANCEL_RIP_CD, 14100);
+          else
+            buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
+        }
       }
 #endif
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -405,6 +410,12 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   case CONTEXT_BUTTON_RIP_CD:
     OnRipCD();
     return true;
+
+#ifdef HAS_CDDA_RIPPER
+  case CONTEXT_BUTTON_CANCEL_RIP_CD:
+    CCDDARipper::GetInstance().CancelJobs();
+    return true;
+#endif
 
   case CONTEXT_BUTTON_CDDB:
     if (m_musicdatabase.LookupCDDBInfo(true))

@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -173,7 +172,7 @@ void Observable::SendMessage(const Observable& obs, const ObservableMessage mess
   CSingleLock lock(obs.m_obsCritSection);
   for(int ptr = obs.m_observers.size() - 1; ptr >= 0; ptr--)
   {
-    if (ptr < obs.m_observers.size())
+    if (ptr < (int)obs.m_observers.size())
     {
       Observer *observer = obs.m_observers.at(ptr);
       if (observer)

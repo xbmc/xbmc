@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -170,6 +169,8 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
     videoUrl.AddOption("actor", filter["actor"].asString());
   else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
   else if (filter.isObject())
   {
     CStdString xsp;
@@ -180,14 +181,14 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
   }
 
   CFileItemList items;
-  if (!videodatabase.GetTvShowsNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, sorting))
+  if (!videodatabase.GetTvShowsNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, sorting))
     return InvalidParams;
 
   bool additionalInfo = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast")
+    if (fieldValue == "cast" || fieldValue == "tag")
       additionalInfo = true;
   }
 
@@ -284,7 +285,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (!videodatabase.GetEpisodesNav(videoUrl.ToString(), items, genreID, year, -1, -1, tvshowID, season, sorting))
-    return InternalError;
+    return InvalidParams;
 
   return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase, false);
 }
@@ -351,6 +352,8 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITranspor
     videoUrl.AddOption("director", filter["director"].asString());
   else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
   else if (filter.isObject())
   {
     CStdString xsp;
@@ -361,7 +364,7 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITranspor
   }
 
   CFileItemList items;
-  if (!videodatabase.GetMusicVideosNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, sorting))
+  if (!videodatabase.GetMusicVideosNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, -1, sorting))
     return InternalError;
 
   return GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase, false);
@@ -757,7 +760,7 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &paramete
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume")
+    if (fieldValue == "cast" || fieldValue == "showlink" || fieldValue == "tag")
       additionalInfo = true;
     else if (fieldValue == "streamdetails")
       streamdetails = true;
@@ -792,7 +795,7 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parame
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "resume")
+    if (fieldValue == "cast")
       additionalInfo = true;
     else if (fieldValue == "streamdetails")
       streamdetails = true;
@@ -822,26 +825,17 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &par
   if (!videodatabase.Open())
     return InternalError;
 
-  bool additionalInfo = false;
   bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
-    CStdString fieldValue = itr->asString();
-    if (fieldValue == "resume")
-      additionalInfo = true;
-    else if (fieldValue == "streamdetails")
+    if (itr->asString() == "streamdetails")
       streamdetails = true;
   }
 
-  if (additionalInfo || streamdetails)
+  if (streamdetails)
   {
     for (int index = 0; index < items.Size(); index++)
-    {
-      if (additionalInfo)
-        videodatabase.GetMusicVideoInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      if (streamdetails)
-        videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
-    }
+      videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
   }
 
   int size = items.Size();

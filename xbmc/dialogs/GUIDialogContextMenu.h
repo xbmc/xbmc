@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,6 +36,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_PLAY_DISC,
                       CONTEXT_BUTTON_RESUME_DISC,
                       CONTEXT_BUTTON_RIP_CD,
+                      CONTEXT_BUTTON_CANCEL_RIP_CD,
                       CONTEXT_BUTTON_RIP_TRACK,
                       CONTEXT_BUTTON_EJECT_DISC,
                       CONTEXT_BUTTON_EJECT_DRIVE,
@@ -179,13 +179,16 @@ protected:
   virtual float GetHeight() const;
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
+  virtual void OnDeinitWindow(int nextWindowID);
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
   static void ClearDefault(const CStdString &strType);
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 
 private:
+  float m_coordX, m_coordY;
+  /// \brief Stored size of background image (height or width depending on grouplist orientation)
+  float m_backgroundImageSize;
   int m_clickedButton;
   CContextButtons m_buttons;
 };

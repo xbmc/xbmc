@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -189,6 +188,9 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   addonRecording.iLifetime      = xbmcRecording.m_iLifetime;
   strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory) - 1);
   strncpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL) - 1);
+  strncpy(addonRecording.strIconPath, xbmcRecording.m_strIconPath.c_str(), sizeof(addonRecording.strIconPath) - 1);
+  strncpy(addonRecording.strThumbnailPath, xbmcRecording.m_strThumbnailPath.c_str(), sizeof(addonRecording.strThumbnailPath) - 1);
+  strncpy(addonRecording.strFanartPath, xbmcRecording.m_strFanartPath.c_str(), sizeof(addonRecording.strFanartPath) - 1);
 }
 
 /*!
@@ -1293,13 +1295,13 @@ void CPVRClient::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
   memset(&qualityInfo, 0, sizeof(qualityInfo));
   if (g_guiSettings.GetBool("pvrplayback.signalquality"))
   {
-    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), 1024);
-    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), 1024);
+    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
+    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
   }
   else
   {
-    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
-    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
+    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
+    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
   }
 }
 

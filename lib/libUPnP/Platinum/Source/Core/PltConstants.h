@@ -2,7 +2,7 @@
 |
 |   Platinum - UPnP Constants
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,6 +32,10 @@
 |
 ****************************************************************/
 
+/** @file
+ UPnP Constants
+ */
+
 #ifndef _PLT_UPNP_CONSTANTS_H_
 #define _PLT_UPNP_CONSTANTS_H_
 
@@ -42,6 +47,10 @@
 /*----------------------------------------------------------------------
 |   PLT_Constants
 +---------------------------------------------------------------------*/
+/**
+ The PLT_Constants class provides a way to globally set or get certain 
+ UPnP constants.
+ */
 class PLT_Constants
 {
 public:
@@ -51,9 +60,21 @@ public:
     PLT_Constants();
     ~PLT_Constants() {};
     
+    void SetDefaultDeviceLease(NPT_TimeInterval lease) { m_DefaultDeviceLease = new NPT_TimeInterval(lease); }
+    NPT_Reference<NPT_TimeInterval> GetDefaultDeviceLease() { return m_DefaultDeviceLease; }
+  
+    void SetDefaultSubscribeLease(NPT_TimeInterval lease) { m_DefaultSubscribeLease = new NPT_TimeInterval(lease); }
+    NPT_Reference<NPT_TimeInterval> GetDefaultSubscribeLease() { return m_DefaultSubscribeLease; }
+    
+    void SetDefaultUserAgent(const char* agent) { m_DefaultUserAgent = new NPT_String(agent); }
+    NPT_Reference<NPT_String> GetDefaultUserAgent() { return m_DefaultUserAgent; }
+    
+    
+private:
     // members
-    NPT_TimeInterval m_DefaultDeviceLease;
-    NPT_TimeInterval m_DefaultSubscribeLease;
+    NPT_Reference<NPT_TimeInterval> m_DefaultDeviceLease;
+    NPT_Reference<NPT_TimeInterval> m_DefaultSubscribeLease;
+    NPT_Reference<NPT_String>       m_DefaultUserAgent;
 };
 
 #endif /* _PLT_UPNP_CONSTANTS_H_ */

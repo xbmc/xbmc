@@ -1,9 +1,61 @@
-SRCS=XBPython.cpp \
-     XBPyThread.cpp
+INCLUDES=-I../../.. -I. -I../../ -I../../linux -I../../../guilib -I.
 
-LIB=python.a
+INTERFACES = AddonModuleXbmc.i
+INTERFACES += AddonModuleXbmcgui.i
+INTERFACES += AddonModuleXbmcplugin.i
+INTERFACES += AddonModuleXbmcaddon.i
+INTERFACES += AddonModuleXbmcvfs.i
 
-INCLUDES+= @PYTHON_CPPFLAGS@
+GENDIR = generated
 
-include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(pathsubst %.S,,$(SRCS))))
+GENERATED = $(patsubst %.i,$(GENDIR)/%.cpp,$(INTERFACES))
+
+GENERATOR=@abs_top_srcdir@/tools/codegenerator
+
+SRCS=	CallbackHandler.cpp LanguageHook.cpp \
+	XBPyThread.cpp XBPython.cpp swig.cpp \
+	$(GENERATED)
+
+SWIG_INTERFACE_DIR=../swig
+
+ifeq (@USE_DOXYGEN@,1)
+DOXY_XML_PATH=$(GENDIR)/doxygenxml
+else
+DOXY_XML_PATH=
+endif
+
+SWIG_INC += -I@abs_top_srcdir@/xbmc
+INCLUDES += @PYTHON_CPPFLAGS@ $(SWIG_INC)
+
+CLEAN_FILES=$(GENDIR)
+
+LIB=python_binding.a
+
+CXXFLAGS+= -DSWIGRUNTIME_DEBUG -DSTATIC_LINKED
+
+# This prevents the removal of the intermediate files. Without
+#  this target the make will re-reun the generator a second time
+#  without any changes.
+.SECONDARY:
+
+include ../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
+$(GENDIR)/dummy: ../legacy/*.h
+	mkdir -p $(GENDIR)
+	touch $(GENDIR)/dummy
+
+$(GENDIR)/doxygenxml/dummy: $(GENDIR)/dummy ./Doxyfile
+ifeq (@USE_DOXYGEN@,1)
+	(@DOXYGEN_EXE@ > /dev/null) 2>&1 | grep -v " warning: "
+else
+	echo "Warning: No doxygen installed. The Api will not have any docstrings."
+	mkdir -p $(GENDIR)/doxygenxml
+endif
+	touch $(GENDIR)/doxygenxml/dummy
+
+$(GENDIR)/%.xml: $(SWIG_INTERFACE_DIR)/%.i $(GENDIR)/dummy $(GENDIR)/doxygenxml/dummy
+	@SWIG_EXE@ -w401 -c++ -outdir $(GENDIR) -o $@ -xml $(SWIG_INC) -xmllang python $<
+
+$(GENDIR)/%.cpp: $(GENDIR)/%.xml
+	@JAVA_EXE@ -cp "../../../lib/groovy/groovy-all-1.8.4.jar:../../../lib/groovy/commons-lang-2.6.jar:$(GENERATOR):./" groovy.ui.GroovyMain $(GENERATOR)/Generator.groovy $< PythonSwig.cpp.template $@ $(DOXY_XML_PATH)

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -30,6 +29,12 @@
 #ifdef __ppc__
 #include <mach-o/arch.h>
 #endif
+#endif
+
+#if defined(TARGET_FREEBSD)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <sys/resource.h>
 #endif
 
 #if defined(TARGET_LINUX) && defined(__ARM_NEON__) && !defined(TARGET_ANDROID)
@@ -108,7 +113,8 @@ CCPUInfo::CCPUInfo(void)
 
 #if defined(TARGET_DARWIN)
   size_t len = 4;
-
+  std::string cpuVendor;
+  
   // The number of cores.
   if (sysctlbyname("hw.activecpu", &m_cpuCount, &len, NULL, 0) == -1)
       m_cpuCount = 1;
@@ -124,13 +130,54 @@ CCPUInfo::CCPUInfo(void)
   len = 512;
   if (sysctlbyname("machdep.cpu.brand_string", &buffer, &len, NULL, 0) == 0)
     m_cpuModel = buffer;
+
+  // The CPU vendor
+  len = 512;
+  if (sysctlbyname("machdep.cpu.vendor", &buffer, &len, NULL, 0) == 0)
+    cpuVendor = buffer;
+  
 #endif
+  
+  // The CPU features
+  len = 512;
+  if (sysctlbyname("machdep.cpu.features", &buffer, &len, NULL, 0) == 0)
+  {
+    char* needle = buffer;
+    if (needle)
+    {
+      char* tok = NULL,
+      * save;
+      tok = strtok_r(needle, " ", &save);
+      while (tok)
+      {
+        if (0 == strcmp(tok, "MMX"))
+          m_cpuFeatures |= CPU_FEATURE_MMX;
+        else if (0 == strcmp(tok, "MMXEXT"))
+          m_cpuFeatures |= CPU_FEATURE_MMX2;
+        else if (0 == strcmp(tok, "SSE"))
+          m_cpuFeatures |= CPU_FEATURE_SSE;
+        else if (0 == strcmp(tok, "SSE2"))
+          m_cpuFeatures |= CPU_FEATURE_SSE2;
+        else if (0 == strcmp(tok, "SSE3"))
+          m_cpuFeatures |= CPU_FEATURE_SSE3;
+        else if (0 == strcmp(tok, "SSSE3"))
+          m_cpuFeatures |= CPU_FEATURE_SSSE3;
+        else if (0 == strcmp(tok, "SSE4.1"))
+          m_cpuFeatures |= CPU_FEATURE_SSE4;
+        else if (0 == strcmp(tok, "SSE4.2"))
+          m_cpuFeatures |= CPU_FEATURE_SSE42;
+        tok = strtok_r(NULL, " ", &save);
+      }
+    }
+  }
 
   // Go through each core.
   for (int i=0; i<m_cpuCount; i++)
   {
     CoreInfo core;
     core.m_id = i;
+    core.m_strModel = m_cpuModel;
+    core.m_strVendor = cpuVendor;
     m_cores[core.m_id] = core;
   }
 
@@ -155,6 +202,27 @@ CCPUInfo::CCPUInfo(void)
   CoreInfo core;
   m_cores[0] = core;
 
+#elif defined(TARGET_FREEBSD)
+  size_t len;
+  int i;
+  char cpumodel[512];
+
+  len = sizeof(m_cpuCount);
+  if (sysctlbyname("hw.ncpu", &m_cpuCount, &len, NULL, 0) != 0)
+    m_cpuCount = 1;
+
+  len = sizeof(cpumodel);
+  if (sysctlbyname("hw.model", &cpumodel, &len, NULL, 0) != 0)
+    (void)strncpy(cpumodel, "Unknown", 8);
+  m_cpuModel = cpumodel;
+
+  for (i = 0; i < m_cpuCount; i++)
+  {
+    CoreInfo core;
+    core.m_id = i;
+    core.m_strModel = m_cpuModel;
+    m_cores[core.m_id] = core;
+  }
 #else
   m_fProcStat = fopen("/proc/stat", "r");
   m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
@@ -199,6 +267,61 @@ CCPUInfo::CCPUInfo(void)
           m_cores[nCurrId].m_strVendor.Trim();
         }
       }
+      else if (strncmp(buffer, "Processor", strlen("Processor"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuModel = needle;
+          m_cores[nCurrId].m_strModel = m_cpuModel;
+          m_cores[nCurrId].m_strModel.Trim();
+        }
+      }
+      else if (strncmp(buffer, "BogoMIPS", strlen("BogoMIPS"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuBogoMips = needle;
+          m_cores[nCurrId].m_strBogoMips = m_cpuBogoMips;
+          m_cores[nCurrId].m_strBogoMips.Trim();
+        }
+      }
+      else if (strncmp(buffer, "Hardware", strlen("Hardware"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuHardware = needle;
+          m_cores[nCurrId].m_strHardware = m_cpuHardware;
+          m_cores[nCurrId].m_strHardware.Trim();
+        }
+      }
+      else if (strncmp(buffer, "Revision", strlen("Revision"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuRevision = needle;
+          m_cores[nCurrId].m_strRevision = m_cpuRevision;
+          m_cores[nCurrId].m_strRevision.Trim();
+        }
+      }
+      else if (strncmp(buffer, "Serial", strlen("Serial"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuSerial = needle;
+          m_cores[nCurrId].m_strSerial = m_cpuSerial;
+          m_cores[nCurrId].m_strSerial.Trim();
+        }
+      }
       else if (strncmp(buffer, "model name", strlen("model name"))==0)
       {
         char *needle = strstr(buffer, ":");
@@ -229,8 +352,10 @@ CCPUInfo::CCPUInfo(void)
               m_cpuFeatures |= CPU_FEATURE_SSE;
             else if (0 == strcmp(tok, "sse2"))
               m_cpuFeatures |= CPU_FEATURE_SSE2;
-            else if (0 == strcmp(tok, "ssse3"))
+            else if (0 == strcmp(tok, "sse3"))
               m_cpuFeatures |= CPU_FEATURE_SSE3;
+            else if (0 == strcmp(tok, "ssse3"))
+              m_cpuFeatures |= CPU_FEATURE_SSSE3;
             else if (0 == strcmp(tok, "sse4_1"))
               m_cpuFeatures |= CPU_FEATURE_SSE4;
             else if (0 == strcmp(tok, "sse4_2"))
@@ -252,6 +377,16 @@ CCPUInfo::CCPUInfo(void)
   }
 
 #endif
+  /* Set some default for empty string variables */
+  if (m_cpuBogoMips.empty())
+    m_cpuBogoMips = "N/A";
+  if (m_cpuHardware.empty())
+    m_cpuHardware = "N/A";
+  if (m_cpuRevision.empty())
+    m_cpuRevision = "N/A";
+  if (m_cpuSerial.empty())
+    m_cpuSerial = "N/A";
+
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
   m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 
@@ -340,6 +475,12 @@ float CCPUInfo::getCPUFrequency()
     return float(dwMHz);
   else
     return 0.f;
+#elif defined(TARGET_FREEBSD)
+  int hz = 0;
+  size_t len = sizeof(hz);
+  if (sysctlbyname("dev.cpu.0.freq", &hz, &len, NULL, 0) != 0)
+    hz = 0;
+  return (float)hz;
 #else
   float mhz = 0.f;
   char buf[256],
@@ -467,6 +608,65 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
 
   io = 0;
 
+#elif defined(TARGET_FREEBSD)
+  long *cptimes;
+  size_t len;
+  int i;
+
+  len = sizeof(long) * 32 * CPUSTATES;
+  if (sysctlbyname("kern.cp_times", NULL, &len, NULL, 0) != 0)
+    return false;
+  cptimes = (long*)malloc(len);
+  if (cptimes == NULL)
+    return false;
+  if (sysctlbyname("kern.cp_times", cptimes, &len, NULL, 0) != 0)
+  {
+    free(cptimes);
+    return false;
+  }
+  user = 0;
+  nice = 0;
+  system = 0;
+  idle = 0;
+  io = 0;
+  for (i = 0; i < m_cpuCount; i++)
+  {
+    long coreUser, coreNice, coreSystem, coreIdle, coreIO;
+    double total;
+
+    coreUser   = cptimes[i * CPUSTATES + CP_USER];
+    coreNice   = cptimes[i * CPUSTATES + CP_NICE];
+    coreSystem = cptimes[i * CPUSTATES + CP_SYS];
+    coreIO     = cptimes[i * CPUSTATES + CP_INTR];
+    coreIdle   = cptimes[i * CPUSTATES + CP_IDLE];
+
+    map<int, CoreInfo>::iterator iter = m_cores.find(i);
+    if (iter != m_cores.end())
+    {
+      coreUser -= iter->second.m_user;
+      coreNice -= iter->second.m_nice;
+      coreSystem -= iter->second.m_system;
+      coreIdle -= iter->second.m_idle;
+      coreIO -= iter->second.m_io;
+
+      total = (double)(coreUser + coreNice + coreSystem + coreIdle + coreIO);
+      if(total != 0.0f)
+        iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / total;
+
+      iter->second.m_user += coreUser;
+      iter->second.m_nice += coreNice;
+      iter->second.m_system += coreSystem;
+      iter->second.m_idle += coreIdle;
+      iter->second.m_io += coreIO;
+
+      user   += coreUser;
+      nice   += coreNice;
+      system += coreSystem;
+      idle   += coreIdle;
+      io     += coreIO;
+    }
+  }
+  free(cptimes);
 #else
   if (m_fProcStat == NULL)
     return false;

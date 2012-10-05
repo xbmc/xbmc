@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -121,17 +120,22 @@ private:
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
 
+  inline void GetDeviceFriendlyName(std::string &device);
+
   IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough, std::string &device);
   void StopAllSounds();
 
   enum AEStdChLayout m_stdChLayout;
   std::string m_device;
   std::string m_passthroughDevice;
+  std::string m_deviceFriendlyName;
   bool m_audiophile;
   bool m_stereoUpmix;
 
   /* internal vars */
   bool             m_running, m_reOpen, m_isSuspended;
+  bool             m_softSuspend;      /* latches after last stream or sound played for timer below */
+  unsigned int     m_softSuspendTimer; /* time in milliseconds to hold sink open before soft suspend */
   CEvent           m_reOpenEvent;
   CEvent           m_wake;
 
@@ -151,12 +155,14 @@ private:
   AESinkInfoList            m_sinkInfoList;
   IAESink                  *m_sink;
   AEAudioFormat             m_sinkFormat;
-  float                     m_sinkFormatSampleRateMul;
-  float                     m_sinkFormatFrameSizeMul;
+  double                    m_sinkFormatSampleRateMul;
+  double                    m_sinkFormatFrameSizeMul;
   unsigned int              m_sinkBlockSize;
   bool                      m_sinkHandlesVolume;
   AEAudioFormat             m_encoderFormat;
-  float                     m_encoderFrameSizeMul;
+  double                    m_encoderFrameSizeMul;
+  double                    m_encoderInitSampleRateMul;
+  double                    m_encoderInitFrameSizeMul;
   unsigned int              m_bytesPerSample;
   CAEConvert::AEConvertFrFn m_convertFn;
 

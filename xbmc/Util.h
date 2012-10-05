@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -93,8 +92,6 @@ public:
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
-  static void TakeScreenshot();
-  static void TakeScreenshot(const CStdString &filename, bool sync);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
@@ -190,6 +187,16 @@ public:
   static CStdString GetFrameworksPath(bool forPython = false);
 
   static bool CanBindPrivileged();
+
+  /*!
+   * \brief Thread-safe random number generation
+   */
+  static int GetRandomNumber();
+
+#if !defined(TARGET_WINDOWS)
+private:
+  static unsigned int s_randomSeed;
+#endif
 };
 
 

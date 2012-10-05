@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, see
  *  the Free Software Foundation, 51 Franklin Street, Suite 500, Boston, MA 02110, USA.
- *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
@@ -71,16 +70,18 @@ namespace JSONRPC
     Navigate        =  0x40,
     WriteFile       =  0x80,
     ControlSystem   = 0x100,
-    ControlGUI      = 0x200
+    ControlGUI      = 0x200,
+    ManageAddon     = 0x400,
+    ExecuteAddon    = 0x800
   };
 
   const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower |
                                         UpdateData | RemoveData | Navigate | WriteFile |
-                                        ControlSystem | ControlGUI);
+                                        ControlSystem | ControlGUI | ManageAddon | ExecuteAddon);
 
   const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData |
                                                  RemoveData | Navigate | WriteFile | ControlSystem |
-                                                 ControlGUI);
+                                                 ControlGUI | ManageAddon | ExecuteAddon);
 
   /*!
     \brief Returns a string representation for the 
@@ -112,6 +113,10 @@ namespace JSONRPC
       return "ControlSystem";
     case ControlGUI:
       return "ControlGUI";
+    case ManageAddon:
+      return "ManageAddon";
+    case ExecuteAddon:
+      return "ExecuteAddon";
     default:
       return "Unknown";
     }
@@ -143,6 +148,10 @@ namespace JSONRPC
       return ControlSystem;
     if (permission.compare("ControlGUI") == 0)
       return ControlGUI;
+    if (permission.compare("ManageAddon") == 0)
+      return ManageAddon;
+    if (permission.compare("ExecuteAddon") == 0)
+      return ExecuteAddon;
 
     return ReadData;
   }

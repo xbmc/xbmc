@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -55,6 +54,7 @@
 #include "utils/MathUtils.h"
 #include "utils/SeekHandler.h"
 #include "URL.h"
+#include "addons/Skin.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -558,7 +558,8 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
 const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
                                   { "currentcolourtheme",SKIN_COLOUR_THEME },
                                   {"hasvideooverlay",   SKIN_HAS_VIDEO_OVERLAY},
-                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY}};
+                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY},
+                                  {"aspectratio",       SKIN_ASPECT_RATIO}};
 
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "isactive",         WINDOW_IS_ACTIVE },
@@ -1492,14 +1493,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_SCREEN_RESOLUTION:
     if(g_Windowing.IsFullScreen())
       strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenHeight,
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].fRefreshRate,
         g_localizeStrings.Get(244), GetFPS());
     else
       strLabel.Format("%ix%i - %s (%02.2f fps)",
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenHeight,
         g_localizeStrings.Get(242), GetFPS());
     return strLabel;
     break;
@@ -1619,10 +1620,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].strMode;
     break;
   case SYSTEM_SCREEN_WIDTH:
-    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth);
+    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreenWidth);
     break;
   case SYSTEM_SCREEN_HEIGHT:
-    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight);
+    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());
@@ -1714,6 +1715,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     break;
   case SKIN_COLOUR_THEME:
     strLabel = g_guiSettings.GetString("lookandfeel.skincolors");
+    break;
+  case SKIN_ASPECT_RATIO:
+    if (g_SkinInfo)
+      strLabel = g_SkinInfo->GetCurrentAspect();
     break;
 #ifdef HAS_LCD
   case LCD_PROGRESS_BAR:
@@ -3534,6 +3539,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
               StringUtils::EmptyString :
               g_localizeStrings.Get(19055); // no information available
     }
+    if (m_currentFile->HasPVRRecordingInfoTag() && !m_currentFile->GetPVRRecordingInfoTag()->m_strTitle.IsEmpty())
+      return m_currentFile->GetPVRRecordingInfoTag()->m_strTitle;
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return m_currentFile->GetVideoInfoTag()->m_strTitle;
     // don't have the title, so use dvdplayer, label, or drop down to title from path
@@ -4149,6 +4156,8 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   case LISTITEM_PERCENT_PLAYED:
     if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.IsPartWay())
       value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+    else if (item->IsFileItem() && ((const CFileItem *)item)->HasPVRRecordingInfoTag() && ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.IsPartWay())
+      value = (int)(100 * ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.totalTimeInSeconds);
     else
       value = 0;
     return true;
@@ -4881,7 +4890,15 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
   else if (condition == LISTITEM_IS_RESUMABLE)
-    return (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0);
+  {
+    if (item->IsFileItem())
+    {
+      if (((const CFileItem *)item)->HasVideoInfoTag())
+        return ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0;
+      else if (((const CFileItem *)item)->HasPVRRecordingInfoTag())
+        return ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds > 0;
+    }
+  }
   else if (item->IsFileItem())
   {
     const CFileItem *pItem = (const CFileItem *)item;
@@ -5270,4 +5287,14 @@ CStdString CGUIInfoManager::GetSkinVariableString(int info,
     return m_skinVariableStrings[info].GetValue(preferImage, item);
 
   return "";
+}
+
+bool CGUIInfoManager::ConditionsChangedValues(const std::map<int, bool>& map)
+{
+  for (std::map<int, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
+  {
+    if (GetBoolValue(it->first) != it->second)
+      return true;
+  }
+  return false;
 }

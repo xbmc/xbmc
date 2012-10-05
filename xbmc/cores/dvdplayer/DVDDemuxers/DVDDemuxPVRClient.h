@@ -14,14 +14,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDDemux.h"
 #include <map>
+#include "DllAvCodec.h"
+#include "DllAvFormat.h"
 
 #ifndef _LINUX
 #include <libavformat/avformat.h>
@@ -44,32 +45,48 @@ extern "C" {
 class CDVDDemuxPVRClient;
 struct PVR_STREAM_PROPERTIES;
 
-class CDemuxStreamVideoPVRClient : public CDemuxStreamVideo
+class CDemuxStreamPVRInternal
 {
-  CDVDDemuxPVRClient *m_parent;
+public:
+  CDemuxStreamPVRInternal(CDVDDemuxPVRClient *parent);
+  ~CDemuxStreamPVRInternal();
+
+  void DisposeParser();
+
+  CDVDDemuxPVRClient  * m_parent;
+  AVCodecParserContext* m_parser;
+  AVCodecContext      * m_context;
+};
+
+class CDemuxStreamVideoPVRClient
+  : public CDemuxStreamVideo
+  , public CDemuxStreamPVRInternal
+{
 public:
   CDemuxStreamVideoPVRClient(CDVDDemuxPVRClient *parent)
-    : m_parent(parent)
+    : CDemuxStreamPVRInternal(parent)
   {}
   virtual void GetStreamInfo(std::string& strInfo);
 };
 
-class CDemuxStreamAudioPVRClient : public CDemuxStreamAudio
+class CDemuxStreamAudioPVRClient
+  : public CDemuxStreamAudio
+  , public CDemuxStreamPVRInternal
 {
-  CDVDDemuxPVRClient *m_parent;
 public:
   CDemuxStreamAudioPVRClient(CDVDDemuxPVRClient *parent)
-    : m_parent(parent)
+    : CDemuxStreamPVRInternal(parent)
   {}
   virtual void GetStreamInfo(std::string& strInfo);
 };
 
-class CDemuxStreamSubtitlePVRClient : public CDemuxStreamSubtitle
+class CDemuxStreamSubtitlePVRClient
+  : public CDemuxStreamSubtitle
+  , public CDemuxStreamPVRInternal
 {
-  CDVDDemuxPVRClient *m_parent;
 public:
   CDemuxStreamSubtitlePVRClient(CDVDDemuxPVRClient *parent)
-    : m_parent(parent)
+    : CDemuxStreamPVRInternal(parent)
   {}
   virtual void GetStreamInfo(std::string& strInfo);
 };
@@ -77,6 +94,8 @@ public:
 
 class CDVDDemuxPVRClient : public CDVDDemux
 {
+  friend class CDemuxStreamPVRInternal;
+
 public:
 
   CDVDDemuxPVRClient();
@@ -104,8 +123,11 @@ protected:
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
   boost::shared_ptr<PVR::CPVRClient> m_pvrClient;
 
+  DllAvCodec  m_dllAvCodec;
+
 private:
   void RequestStreams();
   void UpdateStreams(PVR_STREAM_PROPERTIES *props);
+  void ParsePacket(DemuxPacket* pPacket);
 };
 

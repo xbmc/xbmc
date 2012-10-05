@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -237,7 +236,6 @@ static const ActionMapping windows[] =
         {"videos"                   , WINDOW_VIDEO_NAV},
         {"tv"                       , WINDOW_PVR}, // backward compat
         {"pvr"                      , WINDOW_PVR},
-
         {"pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO},
         {"pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO},
         {"pvrtimersetting"          , WINDOW_DIALOG_PVR_TIMER_SETTING},
@@ -251,7 +249,6 @@ static const ActionMapping windows[] =
         {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
         {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
         {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
-
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
@@ -279,10 +276,6 @@ static const ActionMapping windows[] =
         {"virtualkeyboard"          , WINDOW_DIALOG_KEYBOARD},
         {"volumebar"                , WINDOW_DIALOG_VOLUME_BAR},
         {"submenu"                  , WINDOW_DIALOG_SUB_MENU},
-        {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
-        {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
-        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
-        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
         {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU},
         {"infodialog"               , WINDOW_DIALOG_KAI_TOAST},
@@ -344,7 +337,8 @@ static const ActionMapping windows[] =
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
-        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS}};
+        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
+        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS}};
 
 static const ActionMapping mousecommands[] =
 {
@@ -876,6 +870,15 @@ void CButtonTranslator::GetActions(std::vector<std::string> &actionList)
   actionList.reserve(size);
   for (unsigned int index = 0; index < size; index++)
     actionList.push_back(actions[index].name);
+}
+
+void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
+{
+  unsigned int size = sizeof(windows) / sizeof(ActionMapping);
+  windowList.clear();
+  windowList.reserve(size);
+  for (unsigned int index = 0; index < size; index++)
+    windowList.push_back(windows[index].name);
 }
 
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)

@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "system.h"
@@ -34,6 +33,9 @@
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #include "settings/GUISettings.h"
+#if defined(HAS_AMLPLAYER)
+#include "cores/amlplayer/AMLUtils.h"
+#endif
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 #define ALSA_PERIODS 16
@@ -142,6 +144,13 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     m_channelLayout = GetChannelLayout(format);
     m_passthrough   = false;
   }
+#if defined(HAS_AMLPLAYER)
+  if (aml_present())
+  {
+    aml_set_audio_passthrough(m_passthrough);
+    device = "default";
+  }
+#endif
 
   if (m_channelLayout.Count() == 0)
   {
@@ -492,7 +501,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
     ret = 0;
   }
 
-  if ((unsigned int)ret < frames);
+  if ((unsigned int)ret < frames)
   {
     ret = snd_pcm_wait(m_pcm, m_timeout);
     if (ret < 0)

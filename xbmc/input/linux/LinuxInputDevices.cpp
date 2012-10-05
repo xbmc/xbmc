@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  *  Portions copied from DirectFB:
 
@@ -771,6 +770,53 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
   return devt;
 }
 
+void CLinuxInputDevice::SetupKeyboardAutoRepeat(int fd)
+{
+  bool enable = true;
+
+#if defined(HAS_AMLPLAYER)
+  // ignore the native aml driver named 'key_input',
+  //  it is the dedicated power key handler (am_key_input)
+  if (strncmp(m_deviceName, "key_input", strlen("key_input")) == 0)
+    return;
+  // ignore the native aml driver named 'aml_keypad',
+  //  it is the dedicated IR remote handler (amremote)
+  else if (strncmp(m_deviceName, "aml_keypad", strlen("aml_keypad")) == 0)
+    return;
+
+  // turn off any keyboard autorepeat, there is a kernel bug
+  // where if the cpu is max'ed then key up is missed and
+  // we get a flood of EV_REP that never stop until next
+  // key down/up. Very nasty when seeking during video playback.
+  enable = false;
+#endif
+
+  if (enable)
+  {
+    int kbdrep[2] = { 400, 80 };
+    ioctl(fd, EVIOCSREP, kbdrep);
+  }
+  else
+  {
+    struct input_event event;
+    memset(&event, 0, sizeof(event));
+
+    gettimeofday(&event.time, NULL);
+    event.type  = EV_REP;
+    event.code  = REP_DELAY;
+    event.value = 0;
+    write(fd, &event, sizeof(event));
+
+    gettimeofday(&event.time, NULL);
+    event.type  = EV_REP;
+    event.code  = REP_PERIOD;
+    event.value = 0;
+    write(fd, &event, sizeof(event));
+
+    CLog::Log(LOGINFO, "CLinuxInputDevice: auto key repeat disabled on device '%s'\n", m_deviceName);
+  }
+}
+
 /*
  * Fill device information.
  * Queries the input device and tries to classify it.
@@ -1011,6 +1057,9 @@ bool CLinuxInputDevice::Open()
 
   /* fill device info structure */
   GetInfo(fd);
+
+  if (m_deviceType & LI_DEVICE_KEYBOARD)
+    SetupKeyboardAutoRepeat(fd);
 
   m_fd = fd;
   m_vt_fd = -1;

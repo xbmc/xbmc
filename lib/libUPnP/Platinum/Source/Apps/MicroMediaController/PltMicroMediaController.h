@@ -2,7 +2,7 @@
 |
 |   Platinum - Micro Media Controller
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,6 +17,7 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
+| licensing@plutinosoft.com
 | 
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -82,7 +83,10 @@ public:
 
     void ProcessCommandLoop();
 
-    // PLT_MediaControllerInterface
+    // PLT_MediaBrowserDelegate methods
+    bool OnMSAdded(PLT_DeviceDataReference& device);
+
+    // PLT_MediaControllerDelegate methods
     bool OnMRAdded(PLT_DeviceDataReference& device);
     void OnMRRemoved(PLT_DeviceDataReference& device);
     void OnMRStateVariablesChanged(PLT_Service* /* service */, 
@@ -104,7 +108,7 @@ private:
     void    HandleCmd_setms();
     void    HandleCmd_ls();
     void    HandleCmd_info();
-    void    HandleCmd_cd();
+    void    HandleCmd_cd(const char* command);
     void    HandleCmd_cdup();
     void    HandleCmd_pwd();
     void    HandleCmd_help();

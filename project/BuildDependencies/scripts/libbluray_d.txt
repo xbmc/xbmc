@@ -1,2 +1,2 @@
 ; filename                          source of the file
-libbluray-0.2.2-win32.7z            http://mirrors.xbmc.org/build-deps/win32/
+libbluray-0.2.3-win32.7z            http://mirrors.xbmc.org/build-deps/win32/

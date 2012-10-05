@@ -7,7 +7,7 @@
 #define GUIINFOMANAGER_H_
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,9 +21,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -361,6 +360,7 @@ namespace INFO
 #define SKIN_THEME                  604
 #define SKIN_COLOUR_THEME           605
 #define SKIN_HAS_THEME              606
+#define SKIN_ASPECT_RATIO           607
 
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645
@@ -405,7 +405,6 @@ namespace INFO
 #define LIBRARY_IS_SCANNING_VIDEO   727
 #define LIBRARY_IS_SCANNING_MUSIC   728
 
-#define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
 #define SYSTEM_PLATFORM_DARWIN      743
@@ -497,7 +496,7 @@ namespace INFO
 
 #define VERSION_MAJOR 12
 #define VERSION_MINOR 0
-#define VERSION_TAG "-ALPHA6"
+#define VERSION_TAG "-ALPHA7"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -802,6 +801,9 @@ public:
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
   int TranslateSkinVariableString(const CStdString& name, int context);
   CStdString GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
+
+  /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
+  bool ConditionsChangedValues(const std::map<int, bool>& map);
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);

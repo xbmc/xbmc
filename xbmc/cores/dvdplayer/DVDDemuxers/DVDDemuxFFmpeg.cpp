@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -901,6 +900,9 @@ int CDVDDemuxFFmpeg::GetStreamLength()
   if (!m_pFormatContext)
     return 0;
 
+  if (m_pFormatContext->duration < 0)
+    return 0;
+
   return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
 }
 
@@ -1005,9 +1007,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
         st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
-        st->iLevel = pStream->codec->level;
-        st->iProfile = pStream->codec->profile;
         st->iOrientation = 0;
+        st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
 
         AVDictionaryEntry *rtag = m_dllAvUtil.av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
@@ -1060,7 +1061,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
-        if(pStream->codec->codec_id == CODEC_ID_TTF)
+        if(pStream->codec->codec_id == CODEC_ID_TTF
+#if (!defined USE_EXTERNAL_FFMPEG)
+          || pStream->codec->codec_id == CODEC_ID_OTF
+#endif
+          )
         {
           std::string fileName = "special://temp/fonts/";
           XFILE::CDirectory::Create(fileName);
@@ -1104,6 +1109,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->codec_fourcc = pStream->codec->codec_tag;
     m_streams[iId]->profile = pStream->codec->profile;
+    m_streams[iId]->level   = pStream->codec->level;
+
     m_streams[iId]->iId = iId;
     m_streams[iId]->source = STREAM_SOURCE_DEMUX;
     m_streams[iId]->pPrivate = pStream;

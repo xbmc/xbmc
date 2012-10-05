@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -63,10 +62,18 @@ void CDVDOverlayCodecSSA::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duration)
+int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 {
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
+  
+  if(!pPacket)
+    return OC_ERROR;
+  
+  double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
+  BYTE *data = pPacket->pData;
+  int size = pPacket->iSize;
+  double duration = pPacket->duration;
 
   if(strncmp((const char*)data, "Dialogue:", 9) == 0)
   {

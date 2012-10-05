@@ -1,0 +1,42 @@
+# XBMC Media Center language file
+# Addon Name: Slideshow
+# Addon id: screensaver.xbmc.builtin.slideshow
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:38+0000\n"
+"PO-Revision-Date: 2012-06-26 09:23+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Source of slideshow images"
+msgstr "幻燈秀圖片來源"
+
+msgctxt "#30001"
+msgid "Folder"
+msgstr "資料夾"
+
+msgctxt "#30002"
+msgid "Video Fanart"
+msgstr "視訊 Fanart"
+
+msgctxt "#30003"
+msgid "Music Fanart"
+msgstr "音片 Fanart"
+
+msgctxt "#30004"
+msgid "Image Folder"
+msgstr "圖片資料夾"
+
+msgctxt "#30005"
+msgid "Dim level"
+msgstr "暗化等級"

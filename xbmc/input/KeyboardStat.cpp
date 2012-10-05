@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2007-2010 Team XBMC
+ *      Copyright (C) 2007-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -55,14 +54,15 @@ void CKeyboardStat::Initialize()
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
   vector<CPeripheral *> hidDevices;
-  g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID);
-  for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
+  if (g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
   {
-    CPeripheralHID *hidDevice = (CPeripheralHID *) hidDevices.at(iDevicePtr);
-    if (hidDevice && hidDevice->LookupSymAndUnicode(keysym, key, unicode))
-      return true;
+    for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
+    {
+      CPeripheralHID *hidDevice = (CPeripheralHID *) hidDevices.at(iDevicePtr);
+      if (hidDevice && hidDevice->LookupSymAndUnicode(keysym, key, unicode))
+        return true;
+    }
   }
-
   return false;
 }
 

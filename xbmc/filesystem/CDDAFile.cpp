@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -168,7 +167,7 @@ int64_t CFileCDDA::Seek(int64_t iFilePosition, int iWhence /*=SEEK_SET*/)
     return -1;
   }
 
-  return ((m_lsnCurrent -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);
+  return ((int64_t)(m_lsnCurrent -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);
 }
 
 void CFileCDDA::Close()
@@ -185,7 +184,7 @@ int64_t CFileCDDA::GetPosition()
   if (!m_pCdIo)
     return 0;
 
-  return ((m_lsnCurrent -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);
+  return ((int64_t)(m_lsnCurrent -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);
 }
 
 int64_t CFileCDDA::GetLength()
@@ -193,7 +192,7 @@ int64_t CFileCDDA::GetLength()
   if (!m_pCdIo)
     return 0;
 
-  return ((m_lsnEnd -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);
+  return ((int64_t)(m_lsnEnd -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);
 }
 
 bool CFileCDDA::IsValidFile(const CURL& url)

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -843,6 +842,12 @@ extern "C"
       URIUtils::GetExtension(url.GetFileName(),strMask);
       url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
     }
+    else if (url.GetFileName().Find("*") != string::npos)
+    {
+      CStdString strReplaced = url.GetFileName();
+      strReplaced.Replace("*","");
+      url.SetFileName(strReplaced);
+    }
     int iDirSlot=0; // locate next free directory
     while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
@@ -852,8 +857,6 @@ extern "C"
       CURL url2(url.GetFileName());
       url = url2;
     }
-    CStdString fName = url.GetFileName();
-    url.SetFileName("");
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
@@ -1489,9 +1492,6 @@ extern "C"
       return 0;
     else
       return ferror(stream);
-
-    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return -1;
   }
 
   int dllvprintf(const char *format, va_list va)
@@ -1766,6 +1766,8 @@ extern "C"
   int dll_stati64(const char *path, struct _stati64 *buffer)
   {
     struct __stat64 a;
+    memset(&a, 0, sizeof(a));
+
     if(dll_stat64(path, &a) == 0)
     {
       CUtil::Stat64ToStatI64(buffer, &a);

@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -57,7 +56,10 @@ int CFileURLProtocol::Open(AML_URLContext *h, const char *filename, int flags)
   {
     url = url.Right(url.size() - strlen("xb-"));
   }
-
+  else if (url.Left(strlen("xb-hdhomerun://")).Equals("xb-hdhomerun://"))
+  {
+    url = url.Right(url.size() - strlen("xb-"));
+  }
   CLog::Log(LOGDEBUG, "CFileURLProtocol::Open filename2(%s)", url.c_str());
   // open the file, always in read mode, calc bitrate
   unsigned int cflags = READ_BITRATE;

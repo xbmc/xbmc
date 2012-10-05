@@ -45,6 +45,7 @@ public:
   virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
   virtual int Write(const void* lpBuf, int64_t uiBufSize);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
+  virtual int Truncate(int64_t size);
   virtual void Close();
   virtual void Flush();
 

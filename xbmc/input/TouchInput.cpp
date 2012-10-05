@@ -286,7 +286,7 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
 
 bool CTouchInput::Update(int32_t pointer, float x, float y, int64_t time, float size /* = 0.0f */)
 {
-  if (pointer < 0 || pointer > TOUCH_MAX_POINTERS)
+  if (pointer < 0 || pointer >= TOUCH_MAX_POINTERS)
     return false;
 
   CSingleLock lock(m_critical);

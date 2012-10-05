@@ -14,15 +14,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "guilib/GUIDialog.h"
 #include "GUIViewControl.h"
 #include "utils/Observer.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 class CFileItemList;
 
@@ -44,10 +44,15 @@ namespace PVR
     void ShowInfo(int item);
     void Clear();
     void Update();
+    void Update(bool selectPlayingChannel);
+    CPVRChannelGroupPtr GetPlayingGroup();
     CGUIControl *GetFirstFocusableControl(int id);
 
     CFileItemList    *m_vecItems;
     CGUIViewControl   m_viewControl;
+
+  private:
+    CPVRChannelGroupPtr m_group;
   };
 }
 

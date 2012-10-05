@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -58,7 +57,7 @@ void CGUIDialogProgressBarHandle::SetProgress(int currentItem, int itemCount)
 CGUIDialogExtendedProgressBar::CGUIDialogExtendedProgressBar(void)
   : CGUIDialog(WINDOW_DIALOG_EXT_PROGRESS, "DialogExtendedProgressBar.xml")
 {
-  m_loadOnDemand    = false;
+  m_loadType        = LOAD_ON_GUI_INIT;
   m_iLastSwitchTime = 0;
   m_iCurrentItem    = 0;
 }

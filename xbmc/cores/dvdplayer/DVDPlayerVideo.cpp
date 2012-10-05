@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -806,7 +805,12 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
 
       if (m_pOverlayCodecCC)
       {
-        m_pOverlayCodecCC->Decode(data, size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+        DemuxPacket packet;
+        packet.pData = data;
+        packet.iSize = size;
+        packet.pts = DVD_NOPTS_VALUE;
+        packet.dts = DVD_NOPTS_VALUE;
+        m_pOverlayCodecCC->Decode(&packet);
 
         CDVDOverlay* overlay;
         while((overlay = m_pOverlayCodecCC->GetOverlay()) != NULL)

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,14 +48,25 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
   m_width  = 1280;
   m_height = 720;
 
+  m_desktopRes.iScreen = 0;
+  m_desktopRes.iWidth  = 1280;
+  m_desktopRes.iHeight = 720;
+  m_desktopRes.iScreenWidth  = 1280;
+  m_desktopRes.iScreenHeight = 720;
+  m_desktopRes.fRefreshRate = 60.0f;
+  m_desktopRes.bFullScreen = true;
+  m_desktopRes.iSubtitles = (int)(0.965 * 720);
+  m_desktopRes.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
+  m_desktopRes.fPixelRatio = 1.0f;
+  m_desktopRes.strMode = "720p 16:9";
 #ifdef ALLWINNERA10
   int fd = open("/dev/disp", O_RDWR);
 
   if (fd >= 0) {
     unsigned long args[4] = { 0, 0, 0, 0 };
 
-    m_width  = g_fbwin.width  = ioctl(fd, DISP_CMD_SCN_GET_WIDTH , args);
-    m_height = g_fbwin.height = ioctl(fd, DISP_CMD_SCN_GET_HEIGHT, args);
+    g_fbwin.width  = ioctl(fd, DISP_CMD_SCN_GET_WIDTH , args);
+    g_fbwin.height = ioctl(fd, DISP_CMD_SCN_GET_HEIGHT, args);
     close(fd);
   }
   else {
@@ -64,6 +74,7 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
     CLog::Log(LOGERROR, "can not open /dev/disp (errno=%d)!\n", errno);
   }
 #endif
+
 }
 
 CWinEGLPlatformGeneric::~CWinEGLPlatformGeneric()
@@ -85,7 +96,7 @@ void CWinEGLPlatformGeneric::DestroyWindowSystem(EGLNativeWindowType native_wind
   UninitializeDisplay();
 }
 
-bool CWinEGLPlatformGeneric::SetDisplayResolution(int width, int height, float refresh, bool interlace)
+bool CWinEGLPlatformGeneric::SetDisplayResolution(RESOLUTION_INFO& res)
 {
   return false;
 }
@@ -103,90 +114,31 @@ bool CWinEGLPlatformGeneric::ClampToGUIDisplayLimits(int &width, int &height)
   return true;
 }
 
-bool CWinEGLPlatformGeneric::ProbeDisplayResolutions(std::vector<CStdString> &resolutions)
+bool CWinEGLPlatformGeneric::ProbeDisplayResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
-  resolutions.clear();
-  
-  CStdString resolution;
-  resolution.Format("%dx%dp60Hz", m_width, m_height);
-  resolutions.push_back(resolution);
+  int gui_width  = m_width;
+  int gui_height = m_height;
+  float gui_refresh = 60.0f;
+  RESOLUTION_INFO res;
+
+  ClampToGUIDisplayLimits(gui_width, gui_height);
+
+  res.iScreen       = 0;
+  res.bFullScreen   = true;
+  res.iSubtitles    = (int)(0.965 * gui_height);
+  res.dwFlags       = D3DPRESENTFLAG_PROGRESSIVE;
+  res.fRefreshRate  = gui_refresh;
+  res.fPixelRatio   = 1.0f;
+  res.iWidth        = gui_width;
+  res.iHeight       = gui_height;
+  res.iScreenWidth  = gui_width;
+  res.iScreenHeight = gui_height;
+  res.dwFlags       = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
+  res.strMode.Format("%dx%d @ %.2f - Full Screen", gui_width, gui_height, gui_refresh);
+
+  resolutions.push_back(res);
   return true;
 }
-
-#ifdef ES2INFO
-//es2_info.c
-static void
-print_extension_list(const char *ext)
-{
-   const char *indentString = "    ";
-   const int indent = 4;
-   const int max = 79;
-   int width, i, j;
-
-   if (!ext || !ext[0])
-      return;
-
-   width = indent;
-   printf(indentString);
-   i = j = 0;
-   while (1) {
-      if (ext[j] == ' ' || ext[j] == 0) {
-         /* found end of an extension name */
-         const int len = j - i;
-         if (width + len > max) {
-            /* start a new line */
-            printf("\n");
-            width = indent;
-            printf(indentString);
-         }
-         /* print the extension name between ext[i] and ext[j] */
-         while (i < j) {
-            printf("%c", ext[i]);
-            i++;
-         }
-         /* either we're all done, or we'll continue with next extension */
-         width += len + 1;
-         if (ext[j] == 0) {
-            break;
-         }
-         else {
-            i++;
-            j++;
-            if (ext[j] == 0)
-               break;
-            printf(", ");
-            width += 2;
-         }
-      }
-      j++;
-   }
-   printf("\n");
-}
-
-//es2_info.c
-static void
-info(EGLDisplay egl_dpy)
-{
-   const char *s;
-
-   s = eglQueryString(egl_dpy, EGL_VERSION);
-   printf("EGL_VERSION = %s\n", s);
-
-   s = eglQueryString(egl_dpy, EGL_VENDOR);
-   printf("EGL_VENDOR = %s\n", s);
-
-   s = eglQueryString(egl_dpy, EGL_EXTENSIONS);
-   printf("EGL_EXTENSIONS = %s\n", s);
-
-   s = eglQueryString(egl_dpy, EGL_CLIENT_APIS);
-   printf("EGL_CLIENT_APIS = %s\n", s);
-
-   printf("GL_VERSION: %s\n", (char *) glGetString(GL_VERSION));
-   printf("GL_RENDERER: %s\n", (char *) glGetString(GL_RENDERER));
-   printf("GL_EXTENSIONS:\n");
-   print_extension_list((char *) glGetString(GL_EXTENSIONS));
-}
-#endif
 
 bool CWinEGLPlatformGeneric::InitializeDisplay()
 {
@@ -208,12 +160,7 @@ bool CWinEGLPlatformGeneric::InitializeDisplay()
   {
     CLog::Log(LOGERROR, "EGL failed to initialize");
     return false;
-  }
-
-#ifdef ES2INFO
-  //es2_info.c
-  info(m_display);
-#endif
+  } 
   
   EGLint configAttrs[] = {
         EGL_RED_SIZE,        8,
@@ -475,6 +422,11 @@ EGLNativeWindowType CWinEGLPlatformGeneric::getNativeWindow()
 EGLDisplay CWinEGLPlatformGeneric::GetEGLDisplay()
 {
   return m_display;
+}
+
+EGLSurface CWinEGLPlatformGeneric::GetEGLSurface()
+{
+  return m_surface;
 }
 
 EGLContext CWinEGLPlatformGeneric::GetEGLContext()

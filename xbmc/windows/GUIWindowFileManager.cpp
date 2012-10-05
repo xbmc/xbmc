@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -102,6 +101,7 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
   m_Directory[0]->m_bIsFolder = true;
   m_Directory[1]->m_bIsFolder = true;
   bCheckShareConnectivity = true;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIWindowFileManager::~CGUIWindowFileManager(void)
@@ -545,7 +545,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
 void CGUIWindowFileManager::OnClick(int iList, int iItem)
 {
-  if ( iList < 0 || iList > 2) return ;
+  if ( iList < 0 || iList >= 2) return ;
   if ( iItem < 0 || iItem >= m_vecItems[iList]->Size() ) return ;
 
   CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
@@ -964,7 +964,7 @@ int CGUIWindowFileManager::GetFocusedList() const
 
 void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven /* = true */)
 {
-  if (list < 0 || list > 2) return ;
+  if (list < 0 || list >= 2) return ;
   bool bDeselect = SelectItem(list, item);
   // calculate the position for our menu
   float posX = 200;

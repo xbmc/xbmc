@@ -1,7 +1,7 @@
-SRCS=PlayerCoreFactory.cpp \
-     PlayerSelectionRule.cpp
+SRCS  = PlayerCoreFactory.cpp
+SRCS += PlayerSelectionRule.cpp
 
-LIB=playercorefactory.a
+LIB = playercorefactory.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

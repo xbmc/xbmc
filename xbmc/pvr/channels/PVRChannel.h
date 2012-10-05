@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -367,6 +366,12 @@ namespace PVR
      * @return The ID of the EPG table to use for this channel or -1 if it isn't set.
      */
     int EpgID(void) const;
+
+    /*!
+     * @brief Change the id of the epg that is linked to this channel
+     * @param iEpgId The new epg id
+     */
+    void SetEpgID(int iEpgId);
 
     /*!
      * @brief Get the EPG table for this channel.

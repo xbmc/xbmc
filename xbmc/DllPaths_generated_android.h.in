@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -31,7 +30,6 @@
 #define DLL_PATH_CPLUFF        "libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "libImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
-#define DLL_PATH_LIBID3TAG     "libid3tag-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "libhdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "libmediainfo-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "libcmyth-@ARCH@.so"

@@ -19,6 +19,7 @@
 
 #include "playlists/PlayListFactory.h"
 #include "Util.h"
+#include "utils/Screenshot.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "filesystem/CurlFile.h" 
@@ -182,6 +183,8 @@ bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString
   int i, len ;
   unsigned int ptr=0;
   FILE *outfile;
+
+  memset(in, 0, sizeof(in));
 
 // Translation Table to decode
   static const char cd64[]="|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$XYZ[\\]^_`abcdefghijklmnopq";
@@ -933,13 +936,15 @@ int CXbmcHttp::xbmcQueryMusicDataBase(int numParas, CStdString paras[])
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
     {
+      int response;
       CStdString sql = musicdatabase.PrepareSQL(paras[0]);
       CStdString result;
       if (musicdatabase.GetArbitraryQuery(sql, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
-        return SetResponse(result);
+        response = SetResponse(result);
       else
-        return SetResponse(openTag+"Error:"+result);
+        response = SetResponse(openTag+"Error:"+result);
       musicdatabase.Close();
+      return response;
     }
     else
       return SetResponse(openTag+"Error:Could not open database");
@@ -956,13 +961,15 @@ int CXbmcHttp::xbmcQueryVideoDataBase(int numParas, CStdString paras[])
   CVideoDatabase videodatabase;
   if (videodatabase.Open())
   {
+    int response;
     CStdString result;
     CStdString sql = videodatabase.PrepareSQL(paras[0]);
     if (videodatabase.GetArbitraryQuery(sql, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
-      return SetResponse(result);
+      response = SetResponse(result);
     else
-      return SetResponse(openTag+"Error:"+result);
+      response = SetResponse(openTag+"Error:"+result);
     videodatabase.Close();
+    return response;
   }
   else
     return SetResponse(openTag+"Error:Could not open database");
@@ -979,13 +986,15 @@ int CXbmcHttp::xbmcExecVideoDataBase(int numParas, CStdString paras[])
     CVideoDatabase videodatabase;
     if (videodatabase.Open())
     {
+      int response;
       CStdString result;
       CStdString sql = videodatabase.PrepareSQL(paras[0]);
       if (videodatabase.ArbitraryExec(sql))
-        return SetResponse(openTag+"SQL Exec Done");
+        response = SetResponse(openTag+"SQL Exec Done");
       else
-        return SetResponse(openTag+"Error:SQL Exec Failed");
+        response = SetResponse(openTag+"Error:SQL Exec Failed");
       videodatabase.Close();
+      return response;
     }
     else
       return SetResponse(openTag+"Error:Could not open database");
@@ -1002,13 +1011,15 @@ int CXbmcHttp::xbmcExecMusicDataBase(int numParas, CStdString paras[])
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
     {
+      int response;
       CStdString result;
       CStdString sql = musicdatabase.PrepareSQL(paras[0]);
       if (musicdatabase.ArbitraryExec(sql))
-        return SetResponse(openTag+"SQL Exec Done");
+        response = SetResponse(openTag+"SQL Exec Done");
       else
-        return SetResponse(openTag+"Error:SQL Exec Failed");
+        response = SetResponse(openTag+"Error:SQL Exec Failed");
       musicdatabase.Close();
+      return response;
     }
     else
       return SetResponse(openTag+"Error:Could not open database");
@@ -2859,7 +2870,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
 //filename can be blank
 {
   if (numParas<1)
-    CUtil::TakeScreenshot();
+    CScreenShot::TakeScreenshot();
   else
     return SetResponse(openTag+"Error: xbmcTakeScreenshot with params depracated");
   return SetResponse(openTag+"OK");

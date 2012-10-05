@@ -149,7 +149,7 @@ public:
    \param args - va_list of variables for substitution in format string placeholders.
    \return escaped and formatted string.
    */
-  virtual std::string vprepare(const char *format, va_list args);
+  virtual std::string vprepare(const char *format, va_list args) = 0;
 
   virtual bool in_transaction() {return false;};
 

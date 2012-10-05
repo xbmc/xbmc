@@ -1,19 +1,18 @@
 # XBMC Media Center language file
-# Translators:
-#   <machine.sanctum@gmail.com>, 2012.
+# XBMC-core v12.0-ALPHA6
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-05-12 22:12+0000\n"
-"Last-Translator: Martijn <machine.sanctum@gmail.com>\n"
-"Language-Team: Dutch\n"
+"PO-Revision-Date: 2012-09-18 03:01+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -1057,7 +1056,7 @@ msgstr "Non-Interleaved"
 
 msgctxt "#308"
 msgid "Original stream's language"
-msgstr ""
+msgstr "Taal van originele spoor"
 
 msgctxt "#309"
 msgid "User Interface language"
@@ -1241,11 +1240,11 @@ msgstr "Schermbeveiliging inschakelen na:"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "Type schermbeveiliging"
+msgstr "Schermbeveiliging mode"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
-msgstr "Standaard afsluitmethode toepassen na"
+msgstr "Uitschakel timer functie"
 
 msgctxt "#358"
 msgid "All albums"
@@ -1273,7 +1272,7 @@ msgstr "Sorteer: Bestand"
 
 msgctxt "#364"
 msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Versterker ondersteunt AC3"
+msgstr "- Versterker ondersteunt Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1409,11 +1408,11 @@ msgstr "Vernieuwingstijd"
 
 msgctxt "#398"
 msgid "Temperature units"
-msgstr "Eenheid temperatuur"
+msgstr "Temperatuur eenheden"
 
 msgctxt "#399"
 msgid "Speed units"
-msgstr "Eenheid windsnelheid"
+msgstr "Windsnelheid eenheden"
 
 msgctxt "#400"
 msgid "Weather"
@@ -1542,6 +1541,14 @@ msgstr "'%s' zeker verwijderen?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "Uit het %s met %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr ""
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1749,7 +1756,7 @@ msgstr "Geavanceerde opties (alleen experts!)"
 
 msgctxt "#494"
 msgid "Overall audio headroom"
-msgstr "Algemene audio headroom"
+msgstr "Algemene audio hoofdruimte"
 
 msgctxt "#495"
 msgid "Upsample videos to GUI resolution"
@@ -2203,6 +2210,10 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "Alle nummers van"
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr ""
+
 msgctxt "#629"
 msgid "View mode"
 msgstr "Weergave"
@@ -2389,7 +2400,7 @@ msgstr "HTTP proxy"
 
 msgctxt "#715"
 msgid "- Assignment"
-msgstr "Toewijzing"
+msgstr "- Toewijzing"
 
 msgctxt "#716"
 msgid "Automatic (DHCP)"
@@ -2405,7 +2416,7 @@ msgstr "- IP-adres"
 
 msgctxt "#720"
 msgid "- Netmask"
-msgstr "- Netmask"
+msgstr "- Netmasker"
 
 msgctxt "#721"
 msgid "- Default gateway"
@@ -2501,7 +2512,7 @@ msgstr "Geen gescande informatie in deze weergave"
 
 msgctxt "#746"
 msgid "Please turn off library mode"
-msgstr "Wissel naar bestandsweergave"
+msgstr "Bibliotheek modus uitschakelen a.u.b."
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -2521,7 +2532,7 @@ msgstr "Weet u het zeker?"
 
 msgctxt "#751"
 msgid "Removing source"
-msgstr "Snelkoppeling verwijderen"
+msgstr "Locatie verwijderen"
 
 msgctxt "#754"
 msgid "Add program link"
@@ -2589,7 +2600,7 @@ msgstr "Zoeken"
 
 msgctxt "#774"
 msgid "Slideshow folder"
-msgstr "Map schermbeveiliging door diavoorstelling"
+msgstr "Map voor diavoorstelling"
 
 msgctxt "#775"
 msgid "Network interface"
@@ -2601,15 +2612,15 @@ msgstr "- Naam draadloos netwerk (ESSID)"
 
 msgctxt "#777"
 msgid "- Wireless password"
-msgstr "Wachtwoord draadloos netwerk"
+msgstr "- Wachtwoord draadloos netwerk"
 
 msgctxt "#778"
 msgid "- Wireless security"
-msgstr "Beveiligingsniveau draadloos netwerk"
+msgstr "- Beveiliging draadloos netwerk"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
-msgstr "Opslaan en Toepassen Netwerk Instellingen"
+msgstr "Opslaan en toepassen netwerk instellingen"
 
 msgctxt "#780"
 msgid "No encryption"
@@ -2633,7 +2644,7 @@ msgstr "Netwerkinstellingen toepassen. Een ogenblik geduld."
 
 msgctxt "#785"
 msgid "Network interface restarted successfully."
-msgstr "Netwerkverbinding herstart."
+msgstr "Netwerkverbinding succesvol herstart."
 
 msgctxt "#786"
 msgid "Network interface did not start successfully."
@@ -2657,19 +2668,19 @@ msgstr "Afstandbediening"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
-msgstr "Gebeurtenissen op afstand activeren"
+msgstr "Programma's op dit systeem toestaan XBMC te besturen"
 
 msgctxt "#792"
 msgid "Port"
-msgstr "Poort voor gebeurtenissen op afstand"
+msgstr "Poort"
 
 msgctxt "#793"
 msgid "Port range"
-msgstr "Poortbereik voor gebeurtenissen op afstand"
+msgstr "Poortbereik"
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control XBMC"
-msgstr "Gebeurtenissen van andere computers ontvangen"
+msgstr "Programma's op andere systemen toestaan XBMC te besturen"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2687,6 +2698,18 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr "Internettoegang"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr ""
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr ""
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr ""
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Ongeldig poortnummer ingevoerd"
@@ -2701,15 +2724,15 @@ msgstr "Geldig poortbereik is 1024-65535"
 
 msgctxt "#998"
 msgid "Add Music..."
-msgstr "Muziek Toevoegen..."
+msgstr "Muziek toevoegen..."
 
 msgctxt "#999"
 msgid "Add Videos..."
-msgstr "Videos Toevoegen..."
+msgstr "Videos toevoegen..."
 
 msgctxt "#1000"
 msgid "- Preview"
-msgstr "- Test schermbeveiliging"
+msgstr "- Voorbeeld"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2765,7 +2788,7 @@ msgstr "Gebruikersnaam"
 
 msgctxt "#1015"
 msgid "Browse for network server"
-msgstr "Netwerkserver"
+msgstr "Bladeren naar netwerkserver"
 
 msgctxt "#1016"
 msgid "Enter the network address of the server"
@@ -3031,34 +3054,6 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programma's, afbeeldingen en video's"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Systeem detecteren"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Aangesloten systemen automatisch detecteren"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Bijnaam"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Vragen om verbinding te maken"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "FTP-gebruikersnaam en -wachtwoord verzenden"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Pinginterval in sec."
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Verbinding maken met de gevonden systeem?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
 msgstr "Zeroconf"
@@ -3085,11 +3080,11 @@ msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
-msgstr "Aangepaste geluidskaart"
+msgstr "Aangepaste audio apparaat"
 
 msgctxt "#1301"
 msgid "Custom passthrough device"
-msgstr "Aangepast Passthrough apparaat"
+msgstr "Aangepast doorvoerapparaat"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -3265,7 +3260,7 @@ msgstr "Instellingen - Beeld"
 
 msgctxt "#10010"
 msgid "Settings - Appearance - GUI Calibration"
-msgstr "Instellingen - GUI-kalibratie"
+msgstr "Instellingen - Interface-kalibratie"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
@@ -3701,7 +3696,7 @@ msgstr "minuten"
 
 msgctxt "#12392"
 msgid "Hours"
-msgstr "uur"
+msgstr "uren"
 
 msgctxt "#12393"
 msgid "Days"
@@ -3785,7 +3780,15 @@ msgstr "Actie voor aan/uitknop"
 
 msgctxt "#13016"
 msgid "Power off System"
-msgstr "Systeem Uitschakelen"
+msgstr "Systeem uitschakelen"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr ""
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr ""
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -3809,7 +3812,7 @@ msgstr "Joystick aangesloten"
 
 msgctxt "#13025"
 msgid "Joystick unplugged"
-msgstr "Geen joystick aangesloten"
+msgstr "Joystick los gekoppeld"
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -3841,7 +3844,7 @@ msgstr "Altijd aan"
 
 msgctxt "#13109"
 msgid "Test & apply resolution"
-msgstr "Test resolutie"
+msgstr "Resolutie testen en toepassen"
 
 msgctxt "#13110"
 msgid "Save resolution?"
@@ -3853,7 +3856,7 @@ msgstr "Wilt u deze resolutie behouden?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
-msgstr "Softwarematige Hoge Kwaliteit Beeldverbetering"
+msgstr "Hoge kwaliteit beeldverbetering"
 
 msgctxt "#13113"
 msgid "Disabled"
@@ -3885,7 +3888,7 @@ msgstr "Sinc"
 
 msgctxt "#13120"
 msgid "VDPAU"
-msgstr "Strikte Pixmap-Texture Binding (vereist herstart)"
+msgstr "VDPAU"
 
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
@@ -4085,7 +4088,7 @@ msgstr "Besturingssysteem:"
 
 msgctxt "#13284"
 msgid "CPU speed:"
-msgstr "Kloksnelheid:"
+msgstr "CPU snelheid:"
 
 msgctxt "#13286"
 msgid "Video encoder:"
@@ -4145,7 +4148,7 @@ msgstr "RSS-feeds inschakelen"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
-msgstr "Hoofdmap tonen"
+msgstr "Hoofdmap items tonen"
 
 msgctxt "#13307"
 msgid "Track naming template"
@@ -4225,7 +4228,7 @@ msgstr "Doorzichtigheid voorgrond"
 
 msgctxt "#13326"
 msgid "A/V delay"
-msgstr "Synchronisatie"
+msgstr "A/V synchronisatie"
 
 msgctxt "#13327"
 msgid "Karaoke"
@@ -4509,7 +4512,7 @@ msgstr "Afspelen vanaf hier"
 
 msgctxt "#13413"
 msgid "Downloading"
-msgstr "Download"
+msgstr "Downloaden"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
@@ -4649,7 +4652,7 @@ msgstr "%.1f Seconden"
 
 msgctxt "#13600"
 msgid "Apple remote"
-msgstr "Type Apple afstandsbediening"
+msgstr "Apple afstandsbediening"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
@@ -4773,7 +4776,7 @@ msgstr "Geen TV"
 
 msgctxt "#14024"
 msgid "Enter the nearest large town"
-msgstr "De dichtstbijzijnde grote plaats"
+msgstr "Voer dichtstbijzijnde grote plaats in"
 
 msgctxt "#14025"
 msgid "Video/Audio/DVD cache - Harddisk"
@@ -4813,7 +4816,7 @@ msgstr "- Lokaal netwerk"
 
 msgctxt "#14036"
 msgid "Services"
-msgstr "Servers"
+msgstr "Diensten"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -4873,7 +4876,7 @@ msgstr "Datumnotatie"
 
 msgctxt "#14053"
 msgid "GUI filters"
-msgstr "GUI-filters"
+msgstr "Interface-filters"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -4929,7 +4932,7 @@ msgstr "Geef de datum in DD/MM/YYYY formaat"
 
 msgctxt "#14068"
 msgid "Enter the IP address"
-msgstr "Geef het IP-adres"
+msgstr "Voer IP-adres in"
 
 msgctxt "#14069"
 msgid "Apply these settings now?"
@@ -4977,7 +4980,7 @@ msgstr "Bestandlijsten"
 
 msgctxt "#14082"
 msgid "Show EXIF picture information"
-msgstr "EXIF-informatie uitlezen"
+msgstr "Toon EXIF foto informatie"
 
 msgctxt "#14083"
 msgid "Use a fullscreen window rather than true fullscreen"
@@ -5033,7 +5036,7 @@ msgstr "Rip"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Audio CD-Invoermelding"
 
 msgctxt "#14098"
 msgid "Play"
@@ -5041,7 +5044,7 @@ msgstr "Afspelen"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "CD uitwerpen nadat rippen voltooid is"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5121,11 +5124,11 @@ msgstr "Last.FM-wachtwoord"
 
 msgctxt "#15204"
 msgid "Unable to handshake: sleeping..."
-msgstr "Verbinding mislukt"
+msgstr "Verbinding maken mislukt: sluimer..."
 
 msgctxt "#15205"
 msgid "Please update XBMC"
-msgstr "Werk XBMC bij aub"
+msgstr "Werk XBMC bij a.u.b."
 
 msgctxt "#15206"
 msgid "Bad authorization: Check username and password"
@@ -5133,7 +5136,7 @@ msgstr "Authentificatie mislukt: controleer gebruikersnaam en wachtwoord"
 
 msgctxt "#15207"
 msgid "Connected"
-msgstr "Actief"
+msgstr "Verbonden"
 
 msgctxt "#15208"
 msgid "Not connected"
@@ -5173,7 +5176,7 @@ msgstr "Afspelen in feestmix"
 
 msgctxt "#15217"
 msgid "Submit songs to Libre.fm"
-msgstr "Afgespeelde nummers op Libre.fm bijhouden"
+msgstr "Afgespeelde nummers naar Libre.fm verzenden"
 
 msgctxt "#15218"
 msgid "Libre.fm username"
@@ -5189,7 +5192,7 @@ msgstr "Libre.fm"
 
 msgctxt "#15221"
 msgid "Song submission"
-msgstr "Nummers bijhouden"
+msgstr "Nummers verzenden"
 
 msgctxt "#15250"
 msgid "Submit Last.fm radio to Last.fm"
@@ -5341,7 +5344,7 @@ msgstr "Wilt u dit nummer toevoegen aan uw favoriete nummers?"
 
 msgctxt "#15288"
 msgid "Do you want to ban the current track?"
-msgstr "Wilt u dit nummer verbannen?"
+msgstr "Wilt u huidig nummer verbannen?"
 
 msgctxt "#15289"
 msgid "Added to your loved tracks: '%s'."
@@ -5401,7 +5404,7 @@ msgstr "Werkgroep niet gevonden"
 
 msgctxt "#15310"
 msgid "Opening multi-path source"
-msgstr "Openen multi-pad favoriet"
+msgstr "Openen multi-pad locatie"
 
 msgctxt "#15311"
 msgid "Path:"
@@ -5613,7 +5616,7 @@ msgstr "Videoschalingsmethode"
 
 msgctxt "#16301"
 msgid "Nearest neighbour"
-msgstr "Nearest neighbour"
+msgstr "Naaste buur"
 
 msgctxt "#16302"
 msgid "Bilinear"
@@ -5707,6 +5710,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software menging"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr ""
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Kwaliteitsverbetering video"
@@ -5715,1391 +5722,1431 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Uitschakeltijd beeldscherm"
 
-msgctxt "17998"
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr ""
+
+msgctxt "#17998"
 msgid "%i hours"
 msgstr "%i uren"
 
-msgctxt "17999"
+msgctxt "#17999"
 msgid "%i days"
 msgstr "%i dagen"
 
-msgctxt "19000"
+msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Kanaal wijzigen"
 
-msgctxt "19001"
+msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
 msgstr "Scheid de zoekwoorden door middel van AND, OR en/of NOT om de zoekopdracht te specificeren."
 
-msgctxt "19002"
+msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "Of gebruik zinnen om op een tekst te zoeken, bijv. \"Toen was geluk heel gewoon\"."
 
-msgctxt "19003"
+msgctxt "#19003"
 msgid "Find similar programme"
 msgstr "Zoek vergelijkbaar programma"
 
-msgctxt "19004"
+msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Gids van clients wordt geladen"
 
-msgctxt "19005"
+msgctxt "#19005"
 msgid "PVR stream information"
 msgstr "PVR stream informatie"
 
-msgctxt "19006"
+msgctxt "#19006"
 msgid "Receiving device"
 msgstr "Ontvanger"
 
-msgctxt "19007"
+msgctxt "#19007"
 msgid "Device status"
 msgstr "Status ontvanger"
 
-msgctxt "19008"
+msgctxt "#19008"
 msgid "Signal quality"
 msgstr "Signaalkwaliteit"
 
-msgctxt "19009"
+msgctxt "#19009"
 msgid "SNR"
 msgstr "SNR"
 
-msgctxt "19010"
+msgctxt "#19010"
 msgid "BER"
 msgstr "BER"
 
-msgctxt "19011"
+msgctxt "#19011"
 msgid "UNC"
 msgstr "UNC"
 
-msgctxt "19012"
+msgctxt "#19012"
 msgid "PVR Backend"
 msgstr "Server"
 
-msgctxt "19013"
+msgctxt "#19013"
 msgid "Free to air"
 msgstr "Ongecodeerd"
 
-msgctxt "19014"
+msgctxt "#19014"
 msgid "Fixed"
 msgstr "Vast"
 
-msgctxt "19015"
+msgctxt "#19015"
 msgid "Encryption"
 msgstr "Versleuteling"
 
-msgctxt "19016"
+msgctxt "#19016"
 msgid "PVR Backend %i - %s"
 msgstr "Server %i - %s"
 
-msgctxt "19017"
+msgctxt "#19017"
 msgid "TV recordings"
 msgstr "TV Opnames"
 
-msgctxt "19018"
+msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
 msgstr "Standaard map voor TV thumbnails"
 
-msgctxt "19019"
+msgctxt "#19019"
 msgid "Channels"
 msgstr "Kanalen"
 
-msgctxt "19020"
+msgctxt "#19020"
 msgid "TV"
 msgstr "TV"
 
-msgctxt "19021"
+msgctxt "#19021"
 msgid "Radio"
 msgstr "Radio"
 
-msgctxt "19022"
+msgctxt "#19022"
 msgid "Hidden"
 msgstr "Verborgen"
 
-msgctxt "19023"
+msgctxt "#19023"
 msgid "TV channels"
 msgstr "TV kanalen"
 
-msgctxt "19024"
+msgctxt "#19024"
 msgid "Radio channels"
 msgstr "Radio kanalen"
 
-msgctxt "19025"
+msgctxt "#19025"
 msgid "Upcoming recordings"
 msgstr "Toekomstige opnames"
 
-msgctxt "19026"
+msgctxt "#19026"
 msgid "Add timer..."
 msgstr "Voeg opname toe..."
 
-msgctxt "19027"
+msgctxt "#19027"
 msgid "No search results"
 msgstr "Geen zoekresultaten"
 
-msgctxt "19028"
+msgctxt "#19028"
 msgid "No EPG entries"
 msgstr "Geen gids aanwezig"
 
-msgctxt "19029"
+msgctxt "#19029"
 msgid "Channel"
 msgstr "TV gids"
 
-msgctxt "19030"
+msgctxt "#19030"
 msgid "Now"
 msgstr "Nu"
 
-msgctxt "19031"
+msgctxt "#19031"
 msgid "Next"
 msgstr "Straks"
 
-msgctxt "19032"
+msgctxt "#19032"
 msgid "Timeline"
 msgstr "Tijdslijn"
 
-msgctxt "19033"
+msgctxt "#19033"
 msgid "Information"
 msgstr "Informatie"
 
-msgctxt "19034"
+msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Opname is al gestart"
 
-msgctxt "19035"
+msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
 msgstr "Kanaal kan niet worden weergegeven"
 
-msgctxt "19036"
+msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
 msgstr "Opname kan niet worden weergegeven"
 
-msgctxt "19037"
+msgctxt "#19037"
 msgid "Show signal quality"
 msgstr "Toon signaal kwaliteit"
 
-msgctxt "19038"
+msgctxt "#19038"
 msgid "Not supported by the PVR backend."
 msgstr "Niet ondersteund door de server."
 
-msgctxt "19039"
+msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
 msgstr "Bevestig verbergen van het kanaal"
 
-msgctxt "19040"
+msgctxt "#19040"
 msgid "Timer"
 msgstr "Geplande opname"
 
-msgctxt "19041"
+msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
 msgstr "Hernoem opname?"
 
-msgctxt "19042"
+msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
 msgstr "Hernoem geplande opname?"
 
-msgctxt "19043"
+msgctxt "#19043"
 msgid "Recording"
 msgstr "Opname"
 
-msgctxt "19044"
+msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
 msgstr "Controleer de instellingen van de server"
 
-msgctxt "19045"
+msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
 msgstr "Geen PVR clients beschikbaar"
 
-msgctxt "19046"
+msgctxt "#19046"
 msgid "New channel"
 msgstr "Nieuw kanaal"
 
-msgctxt "19047"
+msgctxt "#19047"
 msgid "Programme info"
 msgstr "Programma info"
 
-msgctxt "19048"
+msgctxt "#19048"
 msgid "Group management"
 msgstr "Beheer groepen"
 
-msgctxt "19049"
+msgctxt "#19049"
 msgid "Show channel"
 msgstr "Toon kanaal"
 
-msgctxt "19050"
+msgctxt "#19050"
 msgid "Show visible channels"
 msgstr "Toon normale kanalen"
 
-msgctxt "19051"
+msgctxt "#19051"
 msgid "Show hidden channels"
 msgstr "Toon verborgen kanalen"
 
-msgctxt "19052"
+msgctxt "#19052"
 msgid "Move channel to:"
 msgstr "Verplaats kanaal naar:"
 
-msgctxt "19053"
+msgctxt "#19053"
 msgid "Recording information"
 msgstr "Opname informatie"
 
-msgctxt "19054"
+msgctxt "#19054"
 msgid "Hide channel"
 msgstr "Verberg kanaal"
 
-msgctxt "19055"
+msgctxt "#19055"
 msgid "No information available"
 msgstr "Geen informatie beschikbaar"
 
-msgctxt "19056"
+msgctxt "#19056"
 msgid "New timer"
 msgstr "Nieuwe geplande opname"
 
-msgctxt "19057"
+msgctxt "#19057"
 msgid "Edit timer"
 msgstr "Pas geplande opname aan"
 
-msgctxt "19058"
+msgctxt "#19058"
 msgid "Timer enabled"
 msgstr "Geplande opname aan/uit"
 
-msgctxt "19059"
+msgctxt "#19059"
 msgid "Stop recording"
 msgstr "Stop opname"
 
-msgctxt "19060"
+msgctxt "#19060"
 msgid "Delete timer"
 msgstr "Annuleer opname"
 
-msgctxt "19061"
+msgctxt "#19061"
 msgid "Add timer"
 msgstr "Opnemen"
 
-msgctxt "19062"
+msgctxt "#19062"
 msgid "Sort by: Channel"
 msgstr "Sorteer op: Kanaal"
 
-msgctxt "19063"
+msgctxt "#19063"
 msgid "Go to begin"
 msgstr "Ga naar begin"
 
-msgctxt "19064"
+msgctxt "#19064"
 msgid "Go to end"
 msgstr "Ga naar einde"
 
-msgctxt "19065"
+msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Standaardgids"
 
-msgctxt "19066"
-msgid "Loading recordings from clients"
-msgstr "Opname informatie wordt geladen"
-
-msgctxt "19067"
+msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr "Dit programma wordt al opgenomen"
 
-msgctxt "19068"
+msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
 msgstr "Kon de opname niet verwijderen"
 
-msgctxt "19069"
+msgctxt "#19069"
 msgid "EPG"
 msgstr "TV gids"
 
-msgctxt "19070"
-msgid "EPG scan timeout"
-msgstr "TV gids scan timeout"
-
-msgctxt "19071"
+msgctxt "#19071"
 msgid "EPG update interval"
 msgstr "TV gids update interval"
 
-msgctxt "19072"
+msgctxt "#19072"
 msgid "Do not store the EPG in the database"
 msgstr "TV gids niet opslaan in de database"
 
-msgctxt "19073"
+msgctxt "#19073"
 msgid "Delay channel switch"
 msgstr "Stel wisselen kanaal uit"
 
-msgctxt "19074"
+msgctxt "#19074"
 msgid "Active:"
 msgstr "Actief:"
 
-msgctxt "19075"
+msgctxt "#19075"
 msgid "Name:"
 msgstr "Naam:"
 
-msgctxt "19076"
+msgctxt "#19076"
 msgid "Folder:"
 msgstr "Map:"
 
-msgctxt "19077"
+msgctxt "#19077"
 msgid "Radio:"
 msgstr "Radio:"
 
-msgctxt "19078"
+msgctxt "#19078"
 msgid "Channel:"
 msgstr "Kanaal:"
 
-msgctxt "19079"
+msgctxt "#19079"
 msgid "Day:"
 msgstr "Dag:"
 
-msgctxt "19080"
+msgctxt "#19080"
 msgid "Begin:"
 msgstr "Begin:"
 
-msgctxt "19081"
+msgctxt "#19081"
 msgid "End:"
 msgstr "Einde:"
 
-msgctxt "19082"
+msgctxt "#19082"
 msgid "Priority:"
 msgstr "Prioriteit:"
 
-msgctxt "19083"
+msgctxt "#19083"
 msgid "Lifetime (days):"
 msgstr "Levensduur (dagen):"
 
-msgctxt "19084"
+msgctxt "#19084"
 msgid "First day:"
 msgstr "Eerste dag:"
 
-msgctxt "19085"
+msgctxt "#19085"
 msgid "Unknown channel %u"
 msgstr "Onbekend kanaal: %u"
 
-msgctxt "19086"
+msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
 msgstr "Ma-__-__-__-__-__-__"
 
-msgctxt "19087"
+msgctxt "#19087"
 msgid "__-Tu-__-__-__-__-__"
 msgstr "__-Di-__-__-__-__-__"
 
-msgctxt "19088"
+msgctxt "#19088"
 msgid "__-__-We-__-__-__-__"
 msgstr "__-__-Wo-__-__-__-__"
 
-msgctxt "19089"
+msgctxt "#19089"
 msgid "__-__-__-Th-__-__-__"
 msgstr "__-__-__-Do-__-__-__"
 
-msgctxt "19090"
+msgctxt "#19090"
 msgid "__-__-__-__-Fr-__-__"
 msgstr "__-__-__-__-Vr-__-__"
 
-msgctxt "19091"
+msgctxt "#19091"
 msgid "__-__-__-__-__-Sa-__"
 msgstr "__-__-__-__-__-Za-__"
 
-msgctxt "19092"
+msgctxt "#19092"
 msgid "__-__-__-__-__-__-Su"
 msgstr "__-__-__-__-__-__-Zo"
 
-msgctxt "19093"
+msgctxt "#19093"
 msgid "Mo-Tu-We-Th-Fr-__-__"
 msgstr "Ma-Di-Wo-Do-Vr-__-__"
 
-msgctxt "19094"
+msgctxt "#19094"
 msgid "Mo-Tu-We-Th-Fr-Sa-__"
 msgstr "Ma-Di-Wo-Do-Vr-Za-__"
 
-msgctxt "19095"
+msgctxt "#19095"
 msgid "Mo-Tu-We-Th-Fr-Sa-Su"
 msgstr "Ma-Di-Wo-Do-Vr-Za-Zo"
 
-msgctxt "19096"
+msgctxt "#19096"
 msgid "__-__-__-__-__-Sa-Su"
 msgstr "__-__-__-__-__-Za-Zo"
 
-msgctxt "19097"
+msgctxt "#19097"
 msgid "Enter the name for the recording"
 msgstr "Naam van de opname"
 
-msgctxt "19098"
+msgctxt "#19098"
 msgid "Warning"
 msgstr "Waarschuwing"
 
-msgctxt "19099"
-msgid "Timer present"
-msgstr "Opname aanwezig"
-
-msgctxt "19100"
-msgid "Are you sure you want to delete this channel, including all timers on this channel?"
-msgstr "Verwijder kanaal en opname?"
-
-msgctxt "19101"
-msgid "This channel is currently being used for playback."
-msgstr "Kanaal wordt afgespeeld"
-
-msgctxt "19102"
+msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Schakel over naar een ander kanaal"
 
-msgctxt "19103"
+msgctxt "#19103"
 msgid "Scan for missing icons"
 msgstr "Zoek missende iconen"
 
-msgctxt "19104"
+msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Geef naam van de opname map"
 
-msgctxt "19105"
-msgid "Size:"
-msgstr "Grootte:"
-
-msgctxt "19106"
+msgctxt "#19106"
 msgid "Next timer on"
 msgstr "Volgende opname op"
 
-msgctxt "19107"
+msgctxt "#19107"
 msgid "at"
 msgstr "om"
 
-msgctxt "19108"
-msgid "Recordings not in sync. Check the log for details."
-msgstr "Opnames niet gesynchroniseerd"
-
-msgctxt "19109"
+msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
 msgstr "Kon de opname niet opslaan"
 
-msgctxt "19110"
+msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
 msgstr "Er is een onverwachte fout opgetreden."
 
-msgctxt "19111"
+msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "Server fout"
 
-msgctxt "19112"
-msgid "Timers not in sync. Check the log for details."
-msgstr "Opnames niet gesynchroniseerd"
-
-msgctxt "19113"
-msgid "Next"
-msgstr "Volgende"
-
-msgctxt "19114"
+msgctxt "#19114"
 msgid "Version"
 msgstr "Versie"
 
-msgctxt "19115"
+msgctxt "#19115"
 msgid "Address"
 msgstr "Adres"
 
-msgctxt "19116"
+msgctxt "#19116"
 msgid "Disksize"
 msgstr "Schijf grootte"
 
-msgctxt "19117"
+msgctxt "#19117"
 msgid "Search for channels"
 msgstr "Zoek naar kanalen"
 
-msgctxt "19118"
+msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Kan de instellingen van de TV niet aanpassen tijdens het zoeken"
 
-msgctxt "19119"
+msgctxt "#19119"
 msgid "On which server you want to search?"
 msgstr "Op welke server wilt u zoeken?"
 
-msgctxt "19120"
+msgctxt "#19120"
 msgid "Client number"
 msgstr "Client nummer"
 
-msgctxt "19121"
+msgctxt "#19121"
 msgid "Avoid repeats"
 msgstr "Vermijd herhalingen"
 
-msgctxt "19122"
+msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
 msgstr "Opname loopt nog. Wilt u deze verwijderen?"
 
-msgctxt "19123"
+msgctxt "#19123"
 msgid "Free to air channels only"
 msgstr "Alleen ongecodeerd"
 
-msgctxt "19124"
+msgctxt "#19124"
 msgid "Ignore present timers"
 msgstr "Negeer lopende opnames"
 
-msgctxt "19125"
+msgctxt "#19125"
 msgid "Ignore present recordings"
 msgstr "Negeer opgenomen programma's"
 
-msgctxt "19126"
+msgctxt "#19126"
 msgid "Start time"
 msgstr "Starttijd"
 
-msgctxt "19127"
+msgctxt "#19127"
 msgid "End time"
 msgstr "Eindtijd"
 
-msgctxt "19128"
+msgctxt "#19128"
 msgid "Start date"
 msgstr "Startdatum"
 
-msgctxt "19129"
+msgctxt "#19129"
 msgid "End date"
 msgstr "Einddatum"
 
-msgctxt "19130"
+msgctxt "#19130"
 msgid "Minimum duration"
 msgstr "Minimale lengte"
 
-msgctxt "19131"
+msgctxt "#19131"
 msgid "Maximum duration"
 msgstr "Maximale lengte"
 
-msgctxt "19132"
+msgctxt "#19132"
 msgid "Include unknown genres"
 msgstr "Neem onbekende genres op"
 
-msgctxt "19133"
+msgctxt "#19133"
 msgid "Search string"
 msgstr "Zoekopdracht"
 
-msgctxt "19134"
+msgctxt "#19134"
 msgid "Include description"
 msgstr "Neem omschrijving op"
 
-msgctxt "19135"
+msgctxt "#19135"
 msgid "Case sensitive"
 msgstr "Hoofdlettergevoelig"
 
-msgctxt "19136"
+msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr "Kanaal niet beschikbaar"
 
-msgctxt "19137"
+msgctxt "#19137"
 msgid "No groups defined"
 msgstr "Geen groepen gedifinieerd"
 
-msgctxt "19138"
+msgctxt "#19138"
 msgid "Please create a group first"
 msgstr "Maak er eerst een aan"
 
-msgctxt "19139"
+msgctxt "#19139"
 msgid "Name of the new group"
 msgstr "Naam nieuwe groep"
 
-msgctxt "19141"
+msgctxt "#19141"
 msgid "Group"
 msgstr "Groep"
 
-msgctxt "19142"
+msgctxt "#19142"
 msgid "Search guide"
 msgstr "Zoek in gids"
 
-msgctxt "19143"
+msgctxt "#19143"
 msgid "Group management"
 msgstr "Beheer groepen"
 
-msgctxt "19144"
+msgctxt "#19144"
 msgid "No groups defined"
 msgstr "Geen groepen"
 
-msgctxt "19145"
+msgctxt "#19145"
 msgid "Grouped"
 msgstr "Gegroepeerd"
 
-msgctxt "19146"
+msgctxt "#19146"
 msgid "Groups"
 msgstr "Groepen"
 
-msgctxt "19147"
+msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
 msgstr "De PVR server ondersteunt deze actie niet."
 
-msgctxt "19148"
+msgctxt "#19148"
 msgid "Channel"
 msgstr "Kanaal"
 
-msgctxt "19149"
+msgctxt "#19149"
 msgid "Mo"
 msgstr "Ma"
 
-msgctxt "19150"
+msgctxt "#19150"
 msgid "Tu"
 msgstr "Di"
 
-msgctxt "19151"
+msgctxt "#19151"
 msgid "We"
 msgstr "Wo"
 
-msgctxt "19152"
+msgctxt "#19152"
 msgid "Th"
 msgstr "Do"
 
-msgctxt "19153"
+msgctxt "#19153"
 msgid "Fr"
 msgstr "Vr"
 
-msgctxt "19154"
+msgctxt "#19154"
 msgid "Sa"
 msgstr "Za"
 
-msgctxt "19155"
+msgctxt "#19155"
 msgid "Su"
 msgstr "Zo"
 
-msgctxt "19156"
+msgctxt "#19156"
 msgid "from"
 msgstr "van"
 
-msgctxt "19157"
+msgctxt "#19157"
 msgid "Next recording"
 msgstr "Volgende opname"
 
-msgctxt "19158"
+msgctxt "#19158"
 msgid "Currently recording"
 msgstr "Wordt nu opgenomen"
 
-msgctxt "19159"
+msgctxt "#19159"
 msgid "from"
 msgstr "van"
 
-msgctxt "19160"
+msgctxt "#19160"
 msgid "to"
 msgstr "tot"
 
-msgctxt "19161"
+msgctxt "#19161"
 msgid "On"
 msgstr "op"
 
-msgctxt "19162"
+msgctxt "#19162"
 msgid "Recording active"
 msgstr "Wordt opgenomen"
 
-msgctxt "19163"
+msgctxt "#19163"
 msgid "Recordings"
 msgstr "Opnames"
 
-msgctxt "19164"
+msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
 msgstr "Kan de opname niet starten"
 
-msgctxt "19165"
+msgctxt "#19165"
 msgid "Switch"
 msgstr "Wijzig kanaal"
 
-msgctxt "19166"
+msgctxt "#19166"
 msgid "PVR information"
 msgstr "PVR informatie"
 
-msgctxt "19167"
+msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Zoek missende iconen"
 
-msgctxt "19168"
+msgctxt "#19168"
 msgid "Switch channel without pressing OK"
 msgstr "Wijzig kanaal zonder op OK te drukken"
 
-msgctxt "19169"
+msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Verberg video lengte informatie"
 
-msgctxt "19170"
+msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Scan timeout voor kanaal afspelen"
 
-msgctxt "19171"
+msgctxt "#19171"
 msgid "Start playback minimized"
 msgstr "Start afspelen geminimaliseerd"
 
-msgctxt "19172"
+msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Lengte directe opname"
 
-msgctxt "19173"
+msgctxt "#19173"
 msgid "Default recording priority"
 msgstr "Standaard prioriteit"
 
-msgctxt "19174"
+msgctxt "#19174"
 msgid "Default recording lifetime"
 msgstr "Standaard levensduur"
 
-msgctxt "19175"
+msgctxt "#19175"
 msgid "Margin at the start of a recording"
 msgstr "Marge opname begin"
 
-msgctxt "19176"
+msgctxt "#19176"
 msgid "Margin at the end of a recording"
 msgstr "Marge opname einde"
 
-msgctxt "19177"
+msgctxt "#19177"
 msgid "Playback"
 msgstr "Afspelen"
 
-msgctxt "19178"
+msgctxt "#19178"
 msgid "Show channel information when switching channels"
 msgstr "Info bij wisselen kanaal"
 
-msgctxt "19179"
+msgctxt "#19179"
 msgid "Automatically hide channel information"
 msgstr "Timeout kanaal informatie"
 
-msgctxt "19180"
+msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
 
-msgctxt "19181"
+msgctxt "#19181"
 msgid "Menu/OSD"
 msgstr "Menu/OSD"
 
-msgctxt "19182"
+msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Weergegeven dagen in de TV gids"
 
-msgctxt "19184"
+msgctxt "#19184"
 msgid "Channel information duration"
 msgstr "Kanaal info tijd"
 
-msgctxt "19185"
+msgctxt "#19185"
 msgid "Reset the PVR database"
 msgstr "Wis TV database"
 
-msgctxt "19186"
+msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
 msgstr "Alle gegevens in de TV database worden gewist"
 
-msgctxt "19187"
+msgctxt "#19187"
 msgid "Reset the EPG database"
 msgstr "Wis TV gids en lees nieuwe in"
 
-msgctxt "19188"
+msgctxt "#19188"
 msgid "EPG is being reset"
 msgstr "TV gids wordt gewist"
 
-msgctxt "19189"
+msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Hervat laatste kanaal bij opstarten"
 
-msgctxt "19190"
+msgctxt "#19190"
 msgid "Minimized"
 msgstr "Geminimaliseerd"
 
-msgctxt "19191"
+msgctxt "#19191"
 msgid "PVR service"
 msgstr "PVR service"
 
-msgctxt "19192"
+msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr "Geen server ondersteunt het scannen naar kanalen"
 
-msgctxt "19193"
+msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
 msgstr "Kon het scannen naar kanalen niet starten"
 
-msgctxt "19194"
+msgctxt "#19194"
 msgid "Continue?"
 msgstr "Hervatten?"
 
-msgctxt "19195"
+msgctxt "#19195"
 msgid "Client actions"
 msgstr "Client acties"
 
-msgctxt "19196"
+msgctxt "#19196"
 msgid "PVR client specific actions"
 msgstr "PVR client specifieke acties"
 
-msgctxt "19197"
+msgctxt "#19197"
 msgid "Recording started on: %s"
 msgstr "Opname gestart om: %s"
 
-msgctxt "19198"
+msgctxt "#19198"
 msgid "Recording finished on: %s"
 msgstr "Opname beeindigd om: %s"
 
-msgctxt "19199"
+msgctxt "#19199"
 msgid "Channel manager"
 msgstr "Beheer kanalen"
 
-msgctxt "19200"
+msgctxt "#19200"
 msgid "EPG source:"
 msgstr "TV gids bron:"
 
-msgctxt "19201"
+msgctxt "#19201"
 msgid "Channel name:"
 msgstr "Naam kanaal:"
 
-msgctxt "19202"
+msgctxt "#19202"
 msgid "Channel icon:"
 msgstr "Kanaal icoon:"
 
-msgctxt "19203"
+msgctxt "#19203"
 msgid "Edit channel"
 msgstr "Pas kanaal aan"
 
-msgctxt "19204"
+msgctxt "#19204"
 msgid "New channel"
 msgstr "Nieuw kanaal"
 
-msgctxt "19205"
+msgctxt "#19205"
 msgid "Group management"
 msgstr "Beheer groepen"
 
-msgctxt "19206"
+msgctxt "#19206"
 msgid "Activate EPG:"
 msgstr "Activeer TV gids:"
 
-msgctxt "19207"
+msgctxt "#19207"
 msgid "Group:"
 msgstr "Groep:"
 
-msgctxt "19208"
+msgctxt "#19208"
 msgid "Enter the name of the new channel"
 msgstr "Voer de naam van het nieuwe kanaal in"
 
-msgctxt "19209"
+msgctxt "#19209"
 msgid "XBMC virtual backend"
 msgstr "XBMC intern virtueel kanaal"
 
-msgctxt "19210"
+msgctxt "#19210"
 msgid "Client"
 msgstr "Client"
 
-msgctxt "19211"
+msgctxt "#19211"
 msgid "Delete channel"
 msgstr "Verwijder kanaal"
 
-msgctxt "19212"
+msgctxt "#19212"
 msgid "This list contains changes"
 msgstr "Lijst bevat wijzigigen"
 
-msgctxt "19213"
+msgctxt "#19213"
 msgid "Select backend"
 msgstr "Selecteer client voor het kanaal"
 
-msgctxt "19214"
+msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
 msgstr "Voer een geldige URL in voor het kanaal"
 
-msgctxt "19215"
+msgctxt "#19215"
 msgid "The PVR backend does not support timers."
 msgstr "De PVR server ondersteunt geen timers."
 
-msgctxt "19216"
+msgctxt "#19216"
 msgid "All radio channels"
 msgstr "Alle radio kanalen"
 
-msgctxt "19217"
+msgctxt "#19217"
 msgid "All TV channels"
 msgstr "Alle TV kanalen"
 
-msgctxt "19218"
+msgctxt "#19218"
 msgid "Visible"
 msgstr "Zichtbare"
 
-msgctxt "19219"
+msgctxt "#19219"
 msgid "Ungrouped channels"
 msgstr "Ongegroepeerde kanalen"
 
-msgctxt "19220"
+msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanalen in"
 
-msgctxt "19221"
+msgctxt "#19221"
 msgid "Synchronise channel groups with backends"
 msgstr "Synchroniseer groepen met backends"
 
-msgctxt "19222"
+msgctxt "#19222"
 msgid "EPG"
 msgstr "Gids"
 
-msgctxt "19223"
+msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
 msgstr "Kon geen PVR client inschakelen. Kijk je instellingen of het logbestand na."
 
-msgctxt "19224"
+msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Opname geannuleerd"
 
-msgctxt "19225"
+msgctxt "#19225"
 msgid "Recording scheduled"
 msgstr "Opname gepland"
 
-msgctxt "19226"
+msgctxt "#19226"
 msgid "Recording started"
 msgstr "Opname gestart"
 
-msgctxt "19227"
+msgctxt "#19227"
 msgid "Recording completed"
 msgstr "Opname voltooid"
 
-msgctxt "19228"
+msgctxt "#19228"
 msgid "Recording deleted"
 msgstr "Opname verwijderd"
 
-msgctxt "19229"
+msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Sluit kanelen OSD na wijzigen kanaal"
 
-msgctxt "19230"
+msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
 msgstr "Geen EPG updates tijdens het afspelen van een TV stream"
 
-msgctxt "19231"
+msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Gebruik altijd de volgorde van kanalen van backend(s)"
 
-msgctxt "19232"
+msgctxt "#19232"
 msgid "Clear search results"
 msgstr "Zoekresultaten wissen"
 
-msgctxt "19233"
+msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Toon een melding bij timer updates"
 
-msgctxt "19234"
+msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
 msgstr "Gebruik kanaalnummers van de backend (werkt alleen als 1 PVR addon actief is)"
 
-msgctxt "19235"
+msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR manager is starting up"
 
-msgctxt "19236"
-msgid "importing channels"
-msgstr "importing channels"
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr ""
 
-msgctxt "19237"
-msgid "importing timers"
-msgstr "importing timers"
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr ""
 
-msgctxt "19238"
-msgid "importing recordings"
-msgstr "importing recordings"
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr ""
 
-msgctxt "19239"
-msgid "starting background threads"
-msgstr "starting background threads"
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr ""
 
-msgctxt "19240"
+msgctxt "#19240"
 msgid "No PVR add-on enabled"
 msgstr "No PVR add-on enabled"
 
-msgctxt "19241"
+msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "The PVR manager has been enabled without any"
 
-msgctxt "19242"
+msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
 msgstr "enabled PVR add-on. Enable at least one add-on"
 
-msgctxt "19243"
+msgctxt "#19243"
 msgid "in order to use the PVR functionality."
 msgstr "in order to use the PVR functionality."
 
-msgctxt "19244"
+msgctxt "#19244"
 msgid "Backend idle time"
 msgstr "Backend idle time"
 
-msgctxt "19245"
-msgid "Set wakup command (cmd [timestamp])"
-msgstr "Set wakup command (cmd [timestamp])"
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr ""
 
-msgctxt "19246"
-msgid "Wakup before recording"
-msgstr "Wakup before recording"
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr ""
 
-msgctxt "19247"
+msgctxt "#19247"
 msgid "Daily wakeup"
 msgstr "Daily wakeup"
 
-msgctxt "19248"
+msgctxt "#19248"
 msgid "Daily wakeup time (HH:MM:SS)"
 msgstr "Daily wakeup time (HH:MM:SS)"
 
-msgctxt "19249"
+msgctxt "#19249"
 msgid "Filter channels"
 msgstr "Filter channels"
 
-msgctxt "19250"
+msgctxt "#19250"
 msgid "Loading EPG from database"
 msgstr "Loading EPG from database"
 
-msgctxt "19251"
+msgctxt "#19251"
 msgid "Update EPG information"
 msgstr "Update EPG information"
 
-msgctxt "19252"
+msgctxt "#19252"
 msgid "Schedule EPG update for this channel?"
 msgstr "Schedule EPG update for this channel?"
 
-msgctxt "19253"
+msgctxt "#19253"
 msgid "EPG update scheduled for channel"
 msgstr "EPG update scheduled for channel"
 
-msgctxt "19254"
+msgctxt "#19254"
 msgid "EPG update failed for channel"
 msgstr "EPG update failed for channel"
 
-msgctxt "19255"
+msgctxt "#19255"
 msgid "Start recording"
 msgstr "Start recording"
 
-msgctxt "19256"
+msgctxt "#19256"
 msgid "Stop recording"
 msgstr "Stop recording"
 
-msgctxt "19499"
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr ""
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr ""
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr ""
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr ""
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr ""
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr ""
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr ""
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr ""
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr ""
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr ""
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr ""
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr ""
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr ""
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr ""
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr ""
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr ""
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr ""
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr ""
+
+msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Anders/Onbekend"
 
-msgctxt "19500"
+msgctxt "#19500"
 msgid "Movie/Drama"
 msgstr "Film/Drama"
 
-msgctxt "19501"
+msgctxt "#19501"
 msgid "Detective/Thriller"
 msgstr "Detective/Thriller"
 
-msgctxt "19502"
+msgctxt "#19502"
 msgid "Adventure/Western/War"
 msgstr "Avontuur/Western/Oorlog"
 
-msgctxt "19503"
+msgctxt "#19503"
 msgid "Science Fiction/Fantasy/Horror"
 msgstr "Science Fiction/Fantasie/Horror"
 
-msgctxt "19504"
+msgctxt "#19504"
 msgid "Comedy"
 msgstr "Komedie"
 
-msgctxt "19505"
+msgctxt "#19505"
 msgid "Soap/Melodrama/Folkloric"
 msgstr "Soap/Melodrama/Folklore"
 
-msgctxt "19506"
+msgctxt "#19506"
 msgid "Romance"
 msgstr "Romantisch"
 
-msgctxt "19507"
+msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
 msgstr "Serieus/Klassiek/Religie/Historische Film/Drama"
 
-msgctxt "19508"
+msgctxt "#19508"
 msgid "Adult Movie/Drama"
 msgstr "Volwassenen Film/Drama"
 
-msgctxt "19516"
+msgctxt "#19516"
 msgid "News/Current Affairs"
 msgstr "Nieuws/Actualiteiten"
 
-msgctxt "19517"
+msgctxt "#19517"
 msgid "News/Weather Report"
 msgstr "Nieuws/Weer"
 
-msgctxt "19518"
+msgctxt "#19518"
 msgid "News Magazine"
 msgstr "Nieuws magazine"
 
-msgctxt "19519"
+msgctxt "#19519"
 msgid "Documentary"
 msgstr "Documentaire"
 
-msgctxt "19520"
+msgctxt "#19520"
 msgid "Discussion/Interview/Debate"
 msgstr "Discussie/Interview/Debat"
 
-msgctxt "19532"
+msgctxt "#19532"
 msgid "Show/Game Show"
 msgstr "Show/Spelshow"
 
-msgctxt "19533"
+msgctxt "#19533"
 msgid "Game Show/Quiz/Contest"
 msgstr "Spelshow/Quiz/Wedstrijd"
 
-msgctxt "19534"
+msgctxt "#19534"
 msgid "Variety Show"
 msgstr "Variété"
 
-msgctxt "19535"
+msgctxt "#19535"
 msgid "Talk Show"
 msgstr "Praatprogramma"
 
-msgctxt "19548"
+msgctxt "#19548"
 msgid "Sports"
 msgstr "Sport"
 
-msgctxt "19549"
+msgctxt "#19549"
 msgid "Special Event"
 msgstr "Speciaal"
 
-msgctxt "19550"
+msgctxt "#19550"
 msgid "Sport Magazine"
 msgstr "Sport Magazine"
 
-msgctxt "19551"
+msgctxt "#19551"
 msgid "Football"
 msgstr "Voetbal"
 
-msgctxt "19552"
+msgctxt "#19552"
 msgid "Tennis/Squash"
 msgstr "Tennis/Squash"
 
-msgctxt "19553"
+msgctxt "#19553"
 msgid "Team Sports"
 msgstr "Team Sport"
 
-msgctxt "19554"
+msgctxt "#19554"
 msgid "Athletics"
 msgstr "Atletiek"
 
-msgctxt "19555"
+msgctxt "#19555"
 msgid "Motor Sport"
 msgstr "Motorsport"
 
-msgctxt "19556"
+msgctxt "#19556"
 msgid "Water Sport"
 msgstr "Watersport"
 
-msgctxt "19557"
+msgctxt "#19557"
 msgid "Winter Sports"
 msgstr "Wintersport"
 
-msgctxt "19558"
+msgctxt "#19558"
 msgid "Equestrian"
 msgstr "Ruitersport"
 
-msgctxt "19559"
+msgctxt "#19559"
 msgid "Martial Sports"
 msgstr "Vechtsport"
 
-msgctxt "19564"
+msgctxt "#19564"
 msgid "Children's/Youth Programmes"
 msgstr "Kinderen/jeugdprogramma's"
 
-msgctxt "19565"
+msgctxt "#19565"
 msgid "Pre-school Children's Programmes"
 msgstr "Peuter programma's"
 
-msgctxt "19566"
+msgctxt "#19566"
 msgid "Entertainment Programmes for 6 to 14"
 msgstr "Entertainment programma's voor 6 tot 14"
 
-msgctxt "19567"
+msgctxt "#19567"
 msgid "Entertainment Programmes for 10 to 16"
 msgstr "Entertainment programma's voor 10 tot 16"
 
-msgctxt "19568"
+msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
 msgstr "Informatie/Educatie/School programma's"
 
-msgctxt "19569"
+msgctxt "#19569"
 msgid "Cartoons/Puppets"
 msgstr "Tekenfilms/Marionetten"
 
-msgctxt "19580"
+msgctxt "#19580"
 msgid "Music/Ballet/Dance"
 msgstr "Muziek/Ballet/Dans"
 
-msgctxt "19581"
+msgctxt "#19581"
 msgid "Rock/Pop"
 msgstr "Rock/Pop"
 
-msgctxt "19582"
+msgctxt "#19582"
 msgid "Serious/Classical Music"
 msgstr "Serieus/Klassieke muziek"
 
-msgctxt "19583"
+msgctxt "#19583"
 msgid "Folk/Traditional Music"
 msgstr "Folklore/Tradionele muziek"
 
-msgctxt "19584"
+msgctxt "#19584"
 msgid "Musical/Opera"
 msgstr "Muziek/Opera"
 
-msgctxt "19585"
+msgctxt "#19585"
 msgid "Ballet"
 msgstr "Ballet"
 
-msgctxt "19596"
+msgctxt "#19596"
 msgid "Arts/Culture"
 msgstr "Kunst/Cultuur"
 
-msgctxt "19597"
+msgctxt "#19597"
 msgid "Performing Arts"
 msgstr "Uitvoerende kunsten"
 
-msgctxt "19598"
+msgctxt "#19598"
 msgid "Fine Arts"
 msgstr "Fijne kunsten"
 
-msgctxt "19599"
+msgctxt "#19599"
 msgid "Religion"
 msgstr "Religie"
 
-msgctxt "19600"
+msgctxt "#19600"
 msgid "Popular Culture/Traditional Arts"
 msgstr "Populaire cultuur/Tradionele kunst"
 
-msgctxt "19601"
+msgctxt "#19601"
 msgid "Literature"
 msgstr "Literatuur"
 
-msgctxt "19602"
+msgctxt "#19602"
 msgid "Film/Cinema"
 msgstr "Film/Cinema"
 
-msgctxt "19603"
+msgctxt "#19603"
 msgid "Experimental Film/Video"
 msgstr "Experimentele film/Video"
 
-msgctxt "19604"
+msgctxt "#19604"
 msgid "Broadcasting/Press"
 msgstr "Uitzending/Pers"
 
-msgctxt "19605"
+msgctxt "#19605"
 msgid "New Media"
 msgstr "Nieuwe media"
 
-msgctxt "19606"
+msgctxt "#19606"
 msgid "Arts/Culture Magazines"
 msgstr "Kunst/Cultuur magazines"
 
-msgctxt "19607"
+msgctxt "#19607"
 msgid "Fashion"
 msgstr "Mode"
 
-msgctxt "19612"
+msgctxt "#19612"
 msgid "Social/Political/Economics"
 msgstr "Sociaal/Politiek/Economisch"
 
-msgctxt "19613"
+msgctxt "#19613"
 msgid "Magazines/Reports/Documentary"
 msgstr "Magazines/Verslagen/Documentaires"
 
-msgctxt "19614"
+msgctxt "#19614"
 msgid "Economics/Social Advisory"
 msgstr "Economisch/Maatschappelijk advies"
 
-msgctxt "19615"
+msgctxt "#19615"
 msgid "Remarkable People"
 msgstr "Opmerkelijke personen"
 
-msgctxt "19628"
+msgctxt "#19628"
 msgid "Education/Science/Factual"
 msgstr "Educatie/Wetenschap/Feiten"
 
-msgctxt "19629"
+msgctxt "#19629"
 msgid "Nature/Animals/Environment"
 msgstr "Natuur/Dieren/Milieu"
 
-msgctxt "19630"
+msgctxt "#19630"
 msgid "Technology/Natural Sciences"
 msgstr "Technologie/Natuurwetenschappen"
 
-msgctxt "19631"
+msgctxt "#19631"
 msgid "Medicine/Physiology/Psychology"
 msgstr "Geneeskunde/Physiologie/Psychologie"
 
-msgctxt "19632"
+msgctxt "#19632"
 msgid "Foreign Countries/Expeditions"
 msgstr "Buitenland/Expedities"
 
-msgctxt "19633"
+msgctxt "#19633"
 msgid "Social/Spiritual Sciences"
 msgstr "Sociale/Spirituele wetenschap"
 
-msgctxt "19634"
+msgctxt "#19634"
 msgid "Further Education"
 msgstr "Verder leren"
 
-msgctxt "19635"
+msgctxt "#19635"
 msgid "Languages"
 msgstr "Talen"
 
-msgctxt "19644"
+msgctxt "#19644"
 msgid "Leisure/Hobbies"
 msgstr "Vrije tijd/Hobbies"
 
-msgctxt "19645"
+msgctxt "#19645"
 msgid "Tourism/Travel"
 msgstr "Tourisme/Reizen"
 
-msgctxt "19646"
+msgctxt "#19646"
 msgid "Handicraft"
 msgstr "Handwerk"
 
-msgctxt "19647"
+msgctxt "#19647"
 msgid "Motoring"
 msgstr "Autorijden"
 
-msgctxt "19648"
+msgctxt "#19648"
 msgid "Fitness &amp; Health"
 msgstr "Fitness &amp; Gezondheid"
 
-msgctxt "19649"
+msgctxt "#19649"
 msgid "Cooking"
 msgstr "Koken"
 
-msgctxt "19650"
+msgctxt "#19650"
 msgid "Advertisement/Shopping"
 msgstr "Reclame/Winkelen"
 
-msgctxt "19651"
+msgctxt "#19651"
 msgid "Gardening"
 msgstr "Tuinieren"
 
-msgctxt "19660"
+msgctxt "#19660"
 msgid "Special Characteristics"
 msgstr "Bijzondere kenmerken"
 
-msgctxt "19661"
+msgctxt "#19661"
 msgid "Original Language"
 msgstr "Oude talen"
 
-msgctxt "19662"
+msgctxt "#19662"
 msgid "Black &amp; White"
 msgstr "Zwart/Wit"
 
-msgctxt "19663"
+msgctxt "#19663"
 msgid "Unpublished"
 msgstr "Niet gepubliceerd"
 
-msgctxt "19664"
+msgctxt "#19664"
 msgid "Live Broadcast"
 msgstr "Live uitzending"
 
-msgctxt "19676"
+msgctxt "#19676"
 msgid "Drama"
 msgstr "Drama"
 
-msgctxt "19677"
+msgctxt "#19677"
 msgid "Detective/Thriller"
 msgstr "Detective/Thriller"
 
-msgctxt "19678"
+msgctxt "#19678"
 msgid "Adventure/Western/War"
 msgstr "Avontuur/Western/Oorlog"
 
-msgctxt "19679"
+msgctxt "#19679"
 msgid "Science Fiction/Fantasy/Horror"
 msgstr "Science Fiction/Fantasie/Horror"
 
-msgctxt "19680"
+msgctxt "#19680"
 msgid "Comedy"
 msgstr "Comedy"
 
-msgctxt "19681"
+msgctxt "#19681"
 msgid "Soap/Melodrama/Folkloric"
 msgstr "Soap/Melodrama/Folklore"
 
-msgctxt "19682"
+msgctxt "#19682"
 msgid "Romance"
 msgstr "Romantisch"
 
-msgctxt "19683"
+msgctxt "#19683"
 msgid "Serious/ClassicalReligion/Historical"
 msgstr "Serieus/Klassiek-Regionaal/Historisch"
 
-msgctxt "19684"
+msgctxt "#19684"
 msgid "Adult"
 msgstr "Volwassenen"
 
-msgctxt "20000"
+msgctxt "#20000"
 msgid "Saved music folder"
 msgstr "Opgeslagen muziek map..."
 
@@ -7237,7 +7284,7 @@ msgstr "Begin met standaardinstellingen"
 
 msgctxt "#20049"
 msgid "Best available"
-msgstr "Beste beschikbaar"
+msgstr "Best beschikbare"
 
 msgctxt "#20050"
 msgid "Auto-switch between 16x9 and 4x3"
@@ -7321,7 +7368,7 @@ msgstr "Profiellocatie"
 
 msgctxt "#20071"
 msgid "Start with fresh media sources"
-msgstr "Met verse mediabronnen beginnen"
+msgstr "Met verse medialocaties beginnen"
 
 msgctxt "#20072"
 msgid "Make sure the selected folder is writable"
@@ -7413,7 +7460,7 @@ msgstr "Profielnaam"
 
 msgctxt "#20094"
 msgid "Media sources"
-msgstr "Mediabronnen"
+msgstr "Medialocaties"
 
 msgctxt "#20095"
 msgid "Enter profile lock code"
@@ -7461,7 +7508,7 @@ msgstr "Wilt u deze gebruiken?"
 
 msgctxt "#20106"
 msgid "Old media sources found."
-msgstr "Oude mediabronnen gevonden."
+msgstr "Oude medialocaties gevonden."
 
 msgctxt "#20107"
 msgid "Separate (locked)"
@@ -7477,11 +7524,11 @@ msgstr "- Verschalen "
 
 msgctxt "#20110"
 msgid "UPnP settings"
-msgstr "UPnP-client"
+msgstr "UPnP instellingen"
 
 msgctxt "#20111"
 msgid "Autostart UPnP client"
-msgstr "Automatisch starten"
+msgstr "UPnP automatisch starten"
 
 msgctxt "#20112"
 msgid "Last login: %s"
@@ -7797,7 +7844,7 @@ msgstr "Foutregistratie inschakelen"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
-msgstr "Extra albuminformatie downloaden tijdens het scannen"
+msgstr "Extra informatie downloaden tijdens het scannen"
 
 msgctxt "#20193"
 msgid "Default service for album information"
@@ -7826,6 +7873,26 @@ msgstr "Geen artiest gevonden!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Downloaden van artiestinformatie mislukt"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr ""
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr ""
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr ""
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr ""
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr ""
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -7933,7 +8000,7 @@ msgstr "Afspelen deel..."
 
 msgctxt "#20325"
 msgid "Calibration reset"
-msgstr "Kalibratie opnieuw instellen"
+msgstr "Kalibratie herstellen"
 
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
@@ -7945,7 +8012,7 @@ msgstr "terug naar de standaardwaarden."
 
 msgctxt "#20328"
 msgid "Browse for destination"
-msgstr "een locatie om naar te kopiëren"
+msgstr "Bladeren naar een bestemming"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
@@ -7977,7 +8044,7 @@ msgstr "Ook in onderliggende mappen zoeken?"
 
 msgctxt "#20336"
 msgid "Unlock sources"
-msgstr "Bronnen vrijgeven"
+msgstr "Locaties vrijgeven"
 
 msgctxt "#20337"
 msgid "Actor"
@@ -7993,11 +8060,11 @@ msgstr "Regisseur"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "Wilt u alle items in deze map"
+msgstr "Wilt u alle ingesloten items verwijderen"
 
 msgctxt "#20341"
 msgid "this path from the XBMC library?"
-msgstr "verwijderen uit de bibliotheek?"
+msgstr "deze locatie van de XBMC bibliotheek?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -8069,11 +8136,11 @@ msgstr "Seizoen %i"
 
 msgctxt "#20359"
 msgid "Episode"
-msgstr "Afl."
+msgstr "Aflevering"
 
 msgctxt "#20360"
 msgid "Episodes"
-msgstr "Afl."
+msgstr "Afleveringen"
 
 msgctxt "#20361"
 msgid "Loading episode details"
@@ -8105,11 +8172,11 @@ msgstr "Bekeken verbergen"
 
 msgctxt "#20368"
 msgid "Prod code"
-msgstr "Prod."
+msgstr "Prod. code"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "Plot van niet-bekeken video's weergeven"
+msgstr "Plot van niet bekeken video's weergeven"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -8333,7 +8400,7 @@ msgstr "Exporteer naar 1 bestand of meerdere"
 
 msgctxt "#20427"
 msgid "files per entry?"
-msgstr "bestanden per entry?"
+msgstr "bestanden per invoer?"
 
 msgctxt "#20428"
 msgid "Single file"
@@ -8341,7 +8408,7 @@ msgstr "Enkel bestand"
 
 msgctxt "#20429"
 msgid "Separate"
-msgstr "Apart"
+msgstr "Aparte"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
@@ -8459,6 +8526,30 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Groepeer films in sets"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr ""
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr ""
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr ""
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr ""
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr ""
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Verborgen bestanden en mappen weergeven"
@@ -8477,7 +8568,7 @@ msgstr "De stream wordt gestopt!"
 
 msgctxt "#21334"
 msgid "Zap to channel: %s failed!"
-msgstr "Zappen naar kanaal %s mislukt!"
+msgstr "Schakelen naar kanaal %s mislukt!"
 
 msgctxt "#21335"
 msgid "Are you sure to start the stream?"
@@ -8497,7 +8588,7 @@ msgstr "Gedeelde media toevoegen..."
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
-msgstr "UPnP-server inschakelen"
+msgstr "Video en muziek delen met UPnP"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8609,23 +8700,23 @@ msgstr "Stroombeheerniveau"
 
 msgctxt "#21391"
 msgid "High power"
-msgstr "Hoog Energie"
+msgstr "Hoge energie"
 
 msgctxt "#21392"
 msgid "Low power"
-msgstr "Laag Energie"
+msgstr "Lage energie"
 
 msgctxt "#21393"
 msgid "High standby"
-msgstr "Hoog Standby"
+msgstr "Hoog standby"
 
 msgctxt "#21394"
 msgid "Low standby"
-msgstr "Laag Standby"
+msgstr "Laag standby"
 
 msgctxt "#21395"
 msgid "Unable to cache files bigger than 4GB"
-msgstr "Niet mogelijk bestanden groter dan 4 GiB te laden"
+msgstr "Niet mogelijk bestanden groter dan 4 GB te laden"
 
 msgctxt "#21396"
 msgid "Chapter"
@@ -8706,10 +8797,6 @@ msgstr "Standaard tv-serie scraper"
 msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Standaard muziekvideo scraper"
-
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Alternatieven toestaan op basis van originele scraper taal"
 
 msgctxt "#21417"
 msgid "- Settings"
@@ -8853,7 +8940,7 @@ msgstr "Internetverbinding vereist."
 
 msgctxt "#21452"
 msgid "Get More..."
-msgstr "Add-ons installeren"
+msgstr "Meer verkrijgen..."
 
 msgctxt "#21453"
 msgid "Root filesystem"
@@ -8866,6 +8953,10 @@ msgstr "Cache is vol"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Cache is vol voordat benodigde hoeveelheid is bereikt voor continu afspelen"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr ""
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9109,7 +9200,7 @@ msgstr "Brondiensten"
 
 msgctxt "#21881"
 msgid "Allow control of XBMC via UPnP"
-msgstr "UPnP-rendering inschakelen"
+msgstr "Besturing van XBMC via UPnP toestaan"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
@@ -9117,7 +9208,7 @@ msgstr "Direct naar het DVD-menu proberen te gaan"
 
 msgctxt "#21883"
 msgid "Saved music"
-msgstr "Geripte muziekalbums"
+msgstr "Opgeslagen muziek"
 
 msgctxt "#21884"
 msgid "Query info for all artists"
@@ -9153,7 +9244,7 @@ msgstr "Artiestinformatie"
 
 msgctxt "#21892"
 msgid "Instruments"
-msgstr "Instrumenten:"
+msgstr "Instrumenten"
 
 msgctxt "#21893"
 msgid "Born"
@@ -9173,11 +9264,11 @@ msgstr "Uit elkaar"
 
 msgctxt "#21897"
 msgid "Died"
-msgstr "Gestorven op:"
+msgstr "Gestorven op"
 
 msgctxt "#21898"
 msgid "Years active"
-msgstr "Periode:"
+msgstr "Periode"
 
 msgctxt "#21899"
 msgid "Label"
@@ -9197,7 +9288,7 @@ msgstr "Voortgang verbergen bij bibliotheek bijwerken"
 
 msgctxt "#22002"
 msgid "- DNS suffix"
-msgstr "- DNS-suffix"
+msgstr "- DNS-achtervoegsel"
 
 msgctxt "#22003"
 msgid "%2.3fs"
@@ -9417,7 +9508,7 @@ msgstr "Add-on informatie"
 
 msgctxt "#24005"
 msgid "Media sources"
-msgstr "Mediabronnen"
+msgstr "Medialocaties"
 
 msgctxt "#24007"
 msgid "Movie information"
@@ -9437,7 +9528,7 @@ msgstr "Visualisatie"
 
 msgctxt "#24011"
 msgid "Add-on repository"
-msgstr "Add-on repo"
+msgstr "Add-on opslagplaats"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -9467,7 +9558,7 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Processen"
 
-msgctxt "24019"
+msgctxt "#24019"
 msgid "PVR clients"
 msgstr "PVR clients"
 
@@ -9541,7 +9632,7 @@ msgstr "(Huidige instellingen wissen)"
 
 msgctxt "#24041"
 msgid "Install from zip file"
-msgstr "Add-ons installeren mbv zipbestand"
+msgstr "Add-ons installeren m.b.v. zipbestand"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
@@ -9707,17 +9798,25 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Wil U deze add-on downloaden?"
 
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr ""
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr ""
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Mededelingen"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Verberg onbekende"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Selecteer uit alle titels..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
@@ -10125,11 +10224,11 @@ msgstr "7.1"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr ""
+msgstr "Interface geluiden afspelen"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"
-msgstr ""
+msgstr "Alleen wanneer het afspelen gestopt is"
 
 msgctxt "#34122"
 msgid "Always"
@@ -10173,23 +10272,23 @@ msgstr "Controleer je audio-instellingen"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Gebruik gebaren voor navigatie"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "Sleep met 1 vinger links,rechts,omhoog en naar beneden voor de cursor"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Sleep met 2 vingers naar links voor backspace"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "Tik met 1 vinger voor enter"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Tik met 2 vingers kort of met 1 vinger lang voor het contextmenu"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -10197,7 +10296,7 @@ msgstr "Randapparatuur"
 
 msgctxt "#35001"
 msgid "Generic HID device"
-msgstr "Generiek HID apparaat"
+msgstr "Generiek invoer apparaat"
 
 msgctxt "#35002"
 msgid "Generic network adapter"
@@ -10229,7 +10328,11 @@ msgstr "Keymap ingeschakeld"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr "Gebruik geen aangepaste keymap voor dit apparaat"
+msgstr "Maak voor dit apparaat geen gebruik van aangepaste keymap"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr ""
 
 msgctxt "#35500"
 msgid "Location"
@@ -10261,11 +10364,11 @@ msgstr "Pulse-Eight Nyxboard"
 
 msgctxt "#36002"
 msgid "Switch to keyboard side command"
-msgstr "Wissel naar toetsenbord commando"
+msgstr "Wissel naar toetsenbord kant commando"
 
 msgctxt "#36003"
 msgid "Switch to remote side command"
-msgstr "Wissel naar afstandbediening commando"
+msgstr "Wissel naar afstandbediening kant commando"
 
 msgctxt "#36004"
 msgid "Press \"user\" button command"
@@ -10375,3 +10478,14 @@ msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr ""
+
+msgctxt "#36035"
+msgid "Always"
+msgstr ""
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr ""

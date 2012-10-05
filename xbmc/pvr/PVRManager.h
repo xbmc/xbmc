@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -113,8 +112,9 @@ namespace PVR
 
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
+     * @param bAsync True to (re)start the manager from another thread
      */
-    void Start(void);
+    void Start(bool bAsync = false);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -447,27 +447,6 @@ namespace PVR
      * @brief Executes "pvrpowermanagement.setwakeupcmd"
      */
     bool SetWakeupCommand(void);
-
-    /*!
-     * @brief Update the last played position for the current playing file
-     * @param lastplayedposition channel The channel to start to play.
-     */
-    bool UpdateCurrentLastPlayedPosition(int lastplayedposition);
-
-    /*!
-     * @brief Set the last watched position of a recording on the backend.
-     * @param recording The recording.
-     * @param position The last watched position in seconds
-     * @return True if the last played position was updated successfully, false otherwise
-    */
-    bool SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition);
-
-    /*!
-    * @brief Retrieve the last watched position of a recording on the backend.
-    * @param recording The recording.
-    * @return The last watched position in seconds
-    */
-    int GetRecordingLastPlayedPosition(const CPVRRecording &recording);
 
   protected:
     /*!

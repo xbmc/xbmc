@@ -2,7 +2,7 @@
 |
 |   Platinum - Datagram Stream
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -39,9 +40,12 @@
 /*----------------------------------------------------------------------
 |   PLT_InputDatagramStream::PLT_InputDatagramStream
 +---------------------------------------------------------------------*/
-PLT_InputDatagramStream::PLT_InputDatagramStream(NPT_UdpSocket* socket) : 
-    m_Socket(socket)
+PLT_InputDatagramStream::PLT_InputDatagramStream(NPT_UdpSocket* socket,
+                                                 NPT_Size       buffer_size) : 
+    m_Socket(socket),
+    m_BufferOffset(0)
 {
+    m_Buffer.SetBufferSize(buffer_size);
 }
 
 /*----------------------------------------------------------------------
@@ -59,24 +63,37 @@ PLT_InputDatagramStream::Read(void*     buffer,
                               NPT_Size  bytes_to_read, 
                               NPT_Size* bytes_read /*= 0*/)
 {
+    NPT_Result res = NPT_SUCCESS;
 
     if (bytes_read) *bytes_read = 0;
 
-    if (bytes_to_read == 0) {
-        return NPT_SUCCESS;
+    // always try to read from socket if needed even if bytes_to_read is 0
+    if (m_Buffer.GetDataSize() == 0) {        
+        // read data into it now
+        NPT_SocketAddress addr;
+        res = m_Socket->Receive(m_Buffer, &addr);
+        
+        // update info
+        m_Socket->GetInfo(m_Info);
+        m_Info.remote_address = addr;
     }
-
-    NPT_DataBuffer data_buffer(buffer, bytes_to_read, false);
-
-    // read data into it now
-    NPT_SocketAddress addr;
-    NPT_Result res = m_Socket->Receive(data_buffer, &addr);
-
-    // update info
-    m_Socket->GetInfo(m_Info);
-    m_Info.remote_address = addr;
-
-    if (bytes_read) *bytes_read = data_buffer.GetDataSize();
+        
+    if (bytes_to_read == 0) return res;
+    
+    if (NPT_SUCCEEDED(res)) {
+        NPT_Size available = m_Buffer.GetDataSize()-(NPT_Size)m_BufferOffset;
+        NPT_Size _bytes_to_read = bytes_to_read<available?bytes_to_read:available;
+        NPT_CopyMemory(buffer, m_Buffer.UseData()+m_BufferOffset, _bytes_to_read);
+        m_BufferOffset += _bytes_to_read;
+        
+        if (bytes_read) *bytes_read = _bytes_to_read;
+        
+        // read buffer entirety, reset for next time
+        if (m_BufferOffset == m_Buffer.GetDataSize()) {
+            m_BufferOffset = 0;
+            m_Buffer.SetDataSize(0);
+        }
+    }
 
     return res;
 }

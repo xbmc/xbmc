@@ -4,6 +4,8 @@
 
 #include "Job.h"
 #include "FileItem.h"
+#include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecordings.h"
 
 class CSaveFileStateJob : public CJob
 {
@@ -57,6 +59,11 @@ bool CSaveFileStateJob::DoWork()
             // consider this item as played
             videodatabase.IncrementPlayCount(m_item);
             m_item.GetVideoInfoTag()->m_playCount++;
+
+            // PVR: Set recording's play count on the backend (if supported)
+            if (m_item.HasPVRRecordingInfoTag())
+              m_item.GetPVRRecordingInfoTag()->IncrementPlayCount();
+
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
           }
@@ -71,6 +78,15 @@ bool CSaveFileStateJob::DoWork()
               videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
             if (m_item.HasVideoInfoTag())
               m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
+
+            // PVR: Set/clear recording's resume bookmark on the backend (if supported)
+            if (m_item.HasPVRRecordingInfoTag())
+            {
+              PVR::CPVRRecording *recording = m_item.GetPVRRecordingInfoTag();
+              recording->SetLastPlayedPosition(m_bookmark.timeInSeconds <= 0.0f ? 0 : (int)m_bookmark.timeInSeconds);
+              recording->m_resumePoint = m_bookmark;
+            }
+
             updateListing = true;
           }
         }
@@ -110,7 +126,7 @@ bool CSaveFileStateJob::DoWork()
 
     if (m_item.IsAudio())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, m_item.GetPath().c_str());
 
       if (m_updatePlayCount)
       {
@@ -128,9 +144,9 @@ bool CSaveFileStateJob::DoWork()
           else
           {
             // consider this item as played
-            CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
+            CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, m_item.GetPath().c_str());
 
-            musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
+            musicdatabase.IncrementPlayCount(m_item);
             musicdatabase.Close();
           }
         }

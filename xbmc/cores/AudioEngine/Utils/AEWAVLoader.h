@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,25 +28,52 @@ public:
   CAEWAVLoader();
   ~CAEWAVLoader();
 
-  bool Initialize  (const std::string &filename, unsigned int resampleRate = 0);
+  /**
+   * Load a WAV file into memory
+   * @param filename The filename to load
+   * @return         true on success
+   */
+  bool Load(const std::string &filename);
+
+  /**
+   * Unload and release the samples loaded by CAWEAVLoader::Load
+   */
+  void UnLoad();
+
+  /**
+   * Initialize the loaded file for the required output format
+   * @param sampleRate    The desired output sample rate
+   * @param channelLayout The desired output channel layout
+   * @param stdChLayout   The channels that are actually used in the layout
+   */
+  bool Initialize(unsigned int resampleRate, CAEChannelInfo channelLayout, enum AEStdChLayout stdChLayout = AE_CH_LAYOUT_INVALID);
+
+  /**
+   * DeInitialize the remapped/resampled output
+   */
   void DeInitialize();
 
+  /**
+   * Returns if the current sample buffer is valid
+   * @return true if the current sample buffer is valid
+   */
   bool IsValid() { return m_valid; }
-  bool Remap(CAEChannelInfo to, enum AEStdChLayout stdChLayout = AE_CH_LAYOUT_INVALID);
-  unsigned int GetChannelCount();
-  unsigned int GetSampleRate();
-  unsigned int GetSampleCount();
-  unsigned int GetFrameCount();
-  float* GetSamples();
+
+  CAEChannelInfo GetChannelLayout();
+  unsigned int   GetSampleRate();
+  unsigned int   GetSampleCount();
+  unsigned int   GetFrameCount();
+  float*         GetSamples();
+  bool           IsCompatible(const unsigned int sampleRate, const CAEChannelInfo &channelInfo);
 
 private:
   std::string  m_filename;
   bool         m_valid;
 
-  unsigned int m_sampleRate;
-  unsigned int m_channelCount;
-  unsigned int m_frameCount;
-  unsigned int m_sampleCount;
-  float       *m_samples;
+  CAEChannelInfo m_channels    ,  m_outputChannels;
+  unsigned int   m_sampleRate  ,  m_outputSampleRate;
+  unsigned int   m_frameCount  ,  m_outputFrameCount;
+  unsigned int   m_sampleCount ,  m_outputSampleCount;
+  float         *m_samples     , *m_outputSamples;
 };
 

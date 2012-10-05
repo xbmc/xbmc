@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -40,6 +39,7 @@
 #include "utils/StringUtils.h"
 #include "threads/Atomics.h"
 #include "windows/GUIWindowPVRCommon.h"
+#include "utils/JobManager.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -125,8 +125,28 @@ void CPVRManager::ResetProperties(void)
   }
 }
 
-void CPVRManager::Start(void)
+class CPVRManagerStartJob : public CJob
 {
+public:
+  CPVRManagerStartJob(void) {}
+  ~CPVRManagerStartJob(void) {}
+
+  bool DoWork(void)
+  {
+    g_PVRManager.Start(false);
+    return true;
+  }
+};
+
+void CPVRManager::Start(bool bAsync /* = false */)
+{
+  if (bAsync)
+  {
+    CPVRManagerStartJob *job = new CPVRManagerStartJob;
+    CJobManager::GetInstance().AddJob(job, NULL);
+    return;
+  }
+
   CSingleLock lock(m_critSection);
 
   /* first stop and remove any clients */
@@ -240,9 +260,7 @@ void CPVRManager::Process(void)
   if (GetState() == ManagerStateStarted)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    Stop();
-    Start();
-    return;
+    CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
   }
 }
 
@@ -298,7 +316,8 @@ void CPVRManager::StopUpdateThreads(void)
 bool CPVRManager::Load(void)
 {
   /* start the add-on update thread */
-  m_addons->Start();
+  if (m_addons)
+    m_addons->Start();
 
   /* load at least one client */
   while (GetState() == ManagerStateStarting && m_addons && !m_addons->HasConnectedClients())
@@ -326,7 +345,6 @@ bool CPVRManager::Load(void)
   ShowProgressDialog(g_localizeStrings.Get(19238), 75); // Loading recordings from clients
   m_recordings->Load();
 
-  CSingleLock lock(m_critSection);
   if (GetState() != ManagerStateStarting)
     return false;
 
@@ -712,12 +730,16 @@ void CPVRManager::LoadCurrentChannelSettings()
 
 void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
 {
-  m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
+  if (m_channelGroups && group)
+    m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
 }
 
 CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
-  return m_channelGroups->GetSelectedGroup(bRadio);
+  if (m_channelGroups)
+    return m_channelGroups->GetSelectedGroup(bRadio);
+
+  return CPVRChannelGroupPtr();
 }
 
 bool CPVRRecordingsUpdateJob::DoWork(void)
@@ -885,47 +907,6 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   return false;
-}
-
-
-bool CPVRManager::UpdateCurrentLastPlayedPosition(int lastplayedposition)
-{
-  // Only anything but recordings we fake success
-  if (!IsPlayingRecording())
-    return true;
-
-  bool rc = false;
-  CPVRRecording currentRecording;
-
-  if (m_addons)
-  {
-    PVR_ERROR error;
-    rc = m_addons->GetPlayingRecording(currentRecording) && m_addons->SetRecordingLastPlayedPosition(currentRecording, lastplayedposition, &error);
-  }
-  return rc;
-}
-
-bool CPVRManager::SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition)
-{
-  bool rc = false;
-
-  if (m_addons)
-  {
-    PVR_ERROR error;
-    rc = m_addons->SetRecordingLastPlayedPosition(recording, lastplayedposition, &error);
-  }
-  return rc;
-}
-
-int CPVRManager::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
-{
-  int rc = 0;
-
-  if (m_addons)
-  {
-    rc = m_addons->GetRecordingLastPlayedPosition(recording);
-  }
-  return rc;
 }
 
 bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)

@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -125,13 +124,13 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   /* override the sample rate based on the oldest stream if there is one */
   if (!m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
-  streamLock.Leave();
 
   if (forceRaw)
     m_rawPassthrough = true;
   else
     m_rawPassthrough = !m_streams.empty() && m_streams.front()->IsRaw();
-
+  streamLock.Leave();
+    
   if (m_rawPassthrough)
     CLog::Log(LOGINFO, "CCoreAudioAE::OpenCoreAudio - RAW passthrough enabled");
 
@@ -288,8 +287,6 @@ void CCoreAudioAE::Deinitialize()
   */
 
   HAL->Deinitialize();
-
-  CLog::Log(LOGINFO, "CCoreAudioAE::Deinitialize: Audio device has been closed.");
 }
 
 void CCoreAudioAE::OnSettingsChange(std::string setting)

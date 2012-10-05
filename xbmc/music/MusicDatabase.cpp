@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -244,10 +243,14 @@ void CMusicDatabase::CreateViews()
               "  album.iYear AS iYear,"
               "  idAlbumInfo, strMoods, strStyles, strThemes,"
               "  strReview, strLabel, strType, strImage, iRating, "
-              "  bCompilation "
+              "  bCompilation, "
+              "  sum(song.iTimesPlayed) AS iTimesPlayed "
               "FROM album "
               "  LEFT OUTER JOIN albuminfo ON"
-              "    album.idAlbum=albuminfo.idAlbum");
+              "    album.idAlbum=albuminfo.idAlbum"
+              "  LEFT OUTER JOIN song ON"
+              "    album.idAlbum=song.idAlbum "
+              "GROUP BY album.idAlbum");
 
   CLog::Log(LOGINFO, "create artist view");
   m_pDS->exec("DROP VIEW IF EXISTS artistview");
@@ -950,6 +953,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.strLabel = record->at(album_strLabel).get_asString();
   album.strType = record->at(album_strType).get_asString();
   album.bCompilation = record->at(album_bCompilation).get_asInt() == 1;
+  album.iTimesPlayed = record->at(album_iTimesPlayed).get_asInt();
   return album;
 }
 
@@ -1433,7 +1437,7 @@ bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& item
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
@@ -1465,11 +1469,9 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
 
     // NOTE: The song.idAlbum is needed for the group by, as for some reason group by albumview.idAlbum doesn't work
     //       consistently - possibly an SQLite bug, as it works fine in SQLiteSpy (v3.3.17)
-    CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total, song.idAlbum from song "
-                    "join albumview on albumview.idAlbum=song.idAlbum "
-                    "where song.iTimesPlayed>0 and albumview.strAlbum != '' "
-                    "group by song.idAlbum "
-                    "order by total desc "
+    CStdString strSQL = "select albumview.* from albumview "
+                    "where albumview.iTimesPlayed>0 and albumview.strAlbum != '' "
+                    "order by albumview.iTimesPlayed desc "
                     "limit 100 ";
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -1478,7 +1480,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
     while (!m_pDS->eof())
     {
@@ -1513,7 +1515,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -1553,7 +1555,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
     while (!m_pDS->eof())
     {
@@ -1588,7 +1590,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -1629,7 +1631,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     while (!m_pDS->eof())
@@ -1665,7 +1667,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -1689,25 +1691,22 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
   return false;
 }
 
-bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
+void CMusicDatabase::IncrementPlayCount(const CFileItem& item)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
 
-    int idSong = GetSongIDFromPath(strFileName);
+    int idSong = GetSongIDFromPath(item.GetPath());
 
     CStdString sql=PrepareSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%i", idSong);
     m_pDS->exec(sql.c_str());
-    return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strFileName.c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, item.GetPath().c_str());
   }
-
-  return false;
 }
 
 bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs, bool bAppendToMap)
@@ -2651,7 +2650,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -2706,7 +2705,7 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // get data from returned rows
@@ -2845,7 +2844,7 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const Filte
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // store the total value of items as a property
@@ -3033,7 +3032,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const Filter &f
     if (iRowsFound <= 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // store the total value of items as a property
@@ -3132,7 +3131,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const Filter &fi
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      return false;
+      return true;
     }
 
     // store the total value of items as a property

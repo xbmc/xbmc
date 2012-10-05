@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -89,12 +88,21 @@ static const winEndpointsToAEDeviceType winEndpoints[EndpointFormFactor_enum_cou
   {"Unknown - ",                AE_DEVTYPE_PCM},
 };
 
+// implemented in AESinkWASAPI.cpp
+extern CStdStringA localWideToUtf(LPCWSTR wstr);
+
 static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)
 {
   DSDevice dev;
   std::list<DSDevice> &enumerator = *static_cast<std::list<DSDevice>*>(lpContext);
 
-  dev.name = std::string(lpcstrDescription);
+  int bufSize = MultiByteToWideChar(CP_ACP, 0, lpcstrDescription, -1, NULL, 0);
+  CStdStringW strW (L"", bufSize);
+  if ( bufSize == 0 || MultiByteToWideChar(CP_ACP, 0, lpcstrDescription, -1, strW.GetBuf(bufSize), bufSize) != bufSize )
+    strW.clear();
+  strW.RelBuf();
+
+  dev.name = localWideToUtf(strW);
 
   dev.lpGuid = lpGuid;
 
@@ -553,9 +561,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       goto failed;
     }
 
-    std::wstring strRawFriendlyName(varName.pwszVal);
-    std::string strFriendlyName = std::string(strRawFriendlyName.begin(), strRawFriendlyName.end());
-
+    std::string strFriendlyName = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
@@ -567,8 +573,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       goto failed;
     }
 
-    std::wstring strRawDevName(varName.pwszVal);
-    std::string strDevName = std::string(strRawDevName.begin(), strRawDevName.end());
+    std::string strDevName = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);

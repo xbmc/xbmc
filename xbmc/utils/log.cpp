@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,6 +28,8 @@
 #include "utils/StdString.h"
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
+#elif defined(TARGET_WINDOWS)
+#include "win32/WIN32Util.h"
 #endif
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
@@ -144,6 +145,13 @@ bool CLog::Init(const char* path)
 
     strLogFile.Format("%sxbmc.log", path);
     strLogFileOld.Format("%sxbmc.old.log", path);
+
+#if defined(TARGET_WINDOWS)
+    // the appdata folder might be redirected to an unc share
+    // convert smb to unc path that stat and fopen can handle it
+    strLogFile = CWIN32Util::SmbToUnc(strLogFile);
+    strLogFileOld = CWIN32Util::SmbToUnc(strLogFileOld);
+#endif
 
     struct stat64 info;
     if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&

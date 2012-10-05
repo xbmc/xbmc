@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -45,15 +44,18 @@ namespace PVR
   class CPVRRecording : public CVideoInfoTag
   {
   public:
-    int           m_iClientId;      /*!< ID of the backend */
-    CStdString    m_strRecordingId; /*!< unique id of the recording on the client */
-    CStdString    m_strChannelName; /*!< name of the channel this was recorded from */
-    CDateTimeSpan m_duration;       /*!< duration of this recording */
-    int           m_iPriority;      /*!< priority of this recording */
-    int           m_iLifetime;      /*!< lifetime of this recording */
-    CStdString    m_strStreamURL;   /*!< stream URL. if empty use pvr client */
-    CStdString    m_strDirectory;   /*!< directory of this recording on the client */
-    int           m_iRecPlayCount;  /*!< play count of this recording on the client */
+    int           m_iClientId;        /*!< ID of the backend */
+    CStdString    m_strRecordingId;   /*!< unique id of the recording on the client */
+    CStdString    m_strChannelName;   /*!< name of the channel this was recorded from */
+    CDateTimeSpan m_duration;         /*!< duration of this recording */
+    int           m_iPriority;        /*!< priority of this recording */
+    int           m_iLifetime;        /*!< lifetime of this recording */
+    CStdString    m_strStreamURL;     /*!< stream URL. if empty use pvr client */
+    CStdString    m_strDirectory;     /*!< directory of this recording on the client */
+    int           m_iRecPlayCount;    /*!< play count of this recording on the client */
+    CStdString    m_strIconPath;      /*!< icon path */
+    CStdString    m_strThumbnailPath; /*!< thumbnail path */
+    CStdString    m_strFanartPath;    /*!< fanart path */
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
@@ -92,6 +94,25 @@ namespace PVR
      * @return True if play count was set successfully, false otherwise.
      */
     bool SetPlayCount(int count);
+
+    /*!
+     * @brief Increment this recording's play count on the client (if supported).
+     * @return True if play count was set successfully, false otherwise.
+     */
+    bool IncrementPlayCount();
+
+    /*!
+     * @brief Set the last watched position of a recording on the backend.
+     * @param position The last watched position in seconds
+     * @return True if the last played position was updated successfully, false otherwise
+     */
+    bool SetLastPlayedPosition(int lastplayedposition);
+
+    /*!
+     * @brief Retrieve the last watched position of a recording on the backend.
+     * @return The last watched position in seconds
+     */
+    int GetLastPlayedPosition() const;
 
     /*!
      * @brief Update this tag with the contents of the given tag.

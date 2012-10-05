@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -902,30 +901,6 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
     if(current.type == STREAM_VIDEO    && current.id < 0)
       return true;
   }
-  else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-  {
-    if(stream->source == current.source &&
-       stream->iId    == current.id)
-      return false;
-
-    if(stream->disabled)
-      return false;
-
-    if(stream->type != current.type)
-      return false;
-
-    if(current.type == STREAM_AUDIO    && stream->iPhysicalId == m_dvd.iSelectedAudioStream)
-      return true;
-
-    if(current.type == STREAM_SUBTITLE && stream->iPhysicalId == m_dvd.iSelectedSPUStream)
-      return true;
-
-    if(current.type == STREAM_TELETEXT)
-      return true;
-
-    if(current.id < 0)
-      return true;
-  }
   else
   {
     if(stream->source == current.source
@@ -1303,7 +1278,8 @@ void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentAudio.stream != (void*)pStream)
+  if (m_CurrentAudio.stream  != (void*)pStream
+  ||  m_CurrentAudio.changes != pStream->changes)
   {
     /* check so that dmuxer hints or extra data hasn't changed */
     /* if they have, reopen stream */
@@ -1351,7 +1327,8 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentVideo.stream != (void*)pStream)
+  if (m_CurrentVideo.stream  != (void*)pStream
+  ||  m_CurrentVideo.changes != pStream->changes)
   {
     /* check so that dmuxer hints or extra data hasn't changed */
     /* if they have reopen stream */
@@ -1383,7 +1360,8 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentSubtitle.stream != (void*)pStream)
+  if (m_CurrentSubtitle.stream  != (void*)pStream
+  ||  m_CurrentSubtitle.changes != pStream->changes)
   {
     /* check so that dmuxer hints or extra data hasn't changed */
     /* if they have reopen stream */
@@ -1411,7 +1389,8 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentTeletext.stream != (void*)pStream)
+  if (m_CurrentTeletext.stream  != (void*)pStream
+  ||  m_CurrentTeletext.changes != pStream->changes)
   {
     /* check so that dmuxer hints or extra data hasn't changed */
     /* if they have, reopen stream */
@@ -1985,11 +1964,6 @@ void CDVDPlayer::OnExit()
       delete m_pSubtitleDemuxer;
     }
     m_pSubtitleDemuxer = NULL;
-
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && g_PVRManager.IsPlayingRecording())
-    {
-      g_PVRManager.UpdateCurrentLastPlayedPosition(m_State.time / 1000);
-    }
 
     // destroy the inputstream
     if (m_pInputStream)
@@ -3824,16 +3798,11 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   if(m_pInputStream)
   {
     // override from input stream if needed
-
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+    CDVDInputStream::IChannel* pChannel = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+    if (pChannel)
     {
-      state.canrecord = static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
-      state.recording = static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
-    }
-    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-    {
-      state.canrecord = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->CanRecord();
-      state.recording = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->IsRecording();
+      state.canrecord = pChannel->CanRecord();
+      state.recording = pChannel->IsRecording();
     }
 
     CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
@@ -3849,15 +3818,6 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       {
         state.time       = XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime;
         state.time_total = m_dvd.iDVDStillTime;
-      }
-    }
-
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      if(((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime() > 0)
-      {
-        state.time      -= ((CDVDInputStreamTV*)m_pInputStream)->GetStartTime();
-        state.time_total = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
       }
     }
   }

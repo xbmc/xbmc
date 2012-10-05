@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -371,7 +370,7 @@ MediaLibrary.prototype = {
             type: 'POST',
             contentType: 'application/json',
             url: JSON_RPC + '?SendRemoteKey',
-            data: '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + player + ' }, "id": 1}',
+            data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + player + ', "to": "next" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
             }, this),
@@ -382,7 +381,7 @@ MediaLibrary.prototype = {
             type: 'POST',
             contentType: 'application/json',
             url: JSON_RPC + '?SendRemoteKey',
-            data: '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + player + ' }, "id": 1}',
+            data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + player + ', "to": "previous" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
             }, this),
@@ -540,7 +539,7 @@ MediaLibrary.prototype = {
         type: 'POST',
         contentType: 'application/json',
         url: JSON_RPC + '?GetSongs',
-        data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}',
+        data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "filter": { "albumid" : ' + event.data.album.albumid + ' } }, "id": 1}',
         success: jQuery.proxy(function(data) {
           albumDetailsContainer = $('<div>');
           albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
@@ -551,7 +550,7 @@ MediaLibrary.prototype = {
           $('#content').append(albumDetailsContainer);
           var albumThumbnail = event.data.album.thumbnail;
           var albumTitle = event.data.album.title||'Unknown Album';
-          var albumArtist = event.data.album.artist||'Unknown Artist';
+          var albumArtist = event.data.album.artist.join(', ') || 'Unknown Artist';
           var trackCount = data.result.limits.total;
           $.each($(data.result.songs), jQuery.proxy(function(i, item) {
             if (i == 0) {
@@ -577,11 +576,11 @@ MediaLibrary.prototype = {
 
             trackRow.append(trackDurationTD);
             var trackArtistTD = $('<td>')
-              .html(item.artist);
+              .html(item.artist.join(', '));
 
             trackRow.append(trackArtistTD);
             var trackGenreTD = $('<td>')
-              .html(item.genre);
+              .html(item.genre.join(', '));
 
             trackRow.append(trackGenreTD);
             $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);

@@ -25,6 +25,8 @@
 #include "NptLogging.h"
 #include "NptTime.h"
 #include "NptSystem.h"
+#include "NptUtils.h"
+#include "NptAutoreleasePool.h"
 
 /*----------------------------------------------------------------------
 |       logging
@@ -361,9 +363,15 @@ class NPT_PosixThread : public NPT_ThreadInterface
                ~NPT_PosixThread();
     NPT_Result  Start(); 
     NPT_Result  Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+    NPT_Result  SetPriority(int priority);
+    NPT_Result  GetPriority(int& priority);
+    
+    // class methods
+    static NPT_Result GetPriority(NPT_Thread::ThreadId thread_id, int& priority);
+    static NPT_Result SetPriority(NPT_Thread::ThreadId thread_id, int priority);
 
  private:
-    // methods
+    // class methods
     static void* EntryPoint(void* argument);
 
     // NPT_Runnable methods
@@ -403,7 +411,7 @@ NPT_PosixThread::NPT_PosixThread(NPT_Thread*   delegator,
 +---------------------------------------------------------------------*/
 NPT_PosixThread::~NPT_PosixThread()
 {
-    NPT_LOG_FINE_1("NPT_PosixThread::~NPT_PosixThread %d\n", m_ThreadId);
+    //NPT_Debug("NPT_PosixThread::~NPT_PosixThread %d\n", m_ThreadId);
 
     if (!m_Detached) {
         // we're not detached, and not in the Run() method, so we need to 
@@ -423,6 +431,24 @@ NPT_Thread::GetCurrentThreadId()
 }
 
 /*----------------------------------------------------------------------
+|   NPT_Thread::SetCurrentThreadPriority
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_Thread::SetCurrentThreadPriority(int priority)
+{
+    return NPT_PosixThread::SetPriority(GetCurrentThreadId(), priority);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_Thread::GetCurrentThreadPriority
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_Thread::GetCurrentThreadPriority(int& priority)
+{
+    return NPT_PosixThread::GetPriority(GetCurrentThreadId(), priority);
+}
+
+/*----------------------------------------------------------------------
 |       NPT_PosixThread::EntryPoint
 +---------------------------------------------------------------------*/
 void*
@@ -430,8 +456,13 @@ NPT_PosixThread::EntryPoint(void* argument)
 {
     NPT_PosixThread* thread = reinterpret_cast<NPT_PosixThread*>(argument);
 
-    NPT_LOG_FINE("NPT_PosixThread::EntryPoint - in =======================");
+    NPT_LOG_FINER("NPT_PosixThread::EntryPoint - in =======================");
 
+#if defined(NPT_CONFIG_HAVE_AUTORELEASE_POOL)
+    // ensure there is the top level autorelease pool for each thread
+    NPT_AutoreleasePool pool;
+#endif
+    
     // get the thread ID from this context, because m_ThreadId may not yet
     // have been set by the parent thread in the Start() method
     thread->m_ThreadId = pthread_self();
@@ -439,7 +470,7 @@ NPT_PosixThread::EntryPoint(void* argument)
     // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
-    NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + (long)thread->m_ThreadId));
+    NPT_System::SetRandomSeed((unsigned int)(now.ToNanos() + (long)thread->m_ThreadId));
 
     // run the thread 
     thread->Run();
@@ -466,7 +497,12 @@ NPT_PosixThread::EntryPoint(void* argument)
 NPT_Result
 NPT_PosixThread::Start()
 {
-    NPT_LOG_FINE("NPT_PosixThread::Start - creating thread");
+    NPT_LOG_FINER("---- Creating thread");
+    
+    // reset values
+    m_Joined = false;
+    m_ThreadId = 0;
+    m_Done.SetValue(0);
 
     pthread_attr_t *attributes = NULL;
 
@@ -486,11 +522,11 @@ NPT_PosixThread::Start()
     pthread_t thread_id;
     int result = pthread_create(&thread_id, attributes, EntryPoint, 
                                 static_cast<NPT_PosixThread*>(this));
-    NPT_LOG_FINE_2("NPT_PosixThread::Start - id = %d, res=%d", 
+    NPT_LOG_FINER_2("---- Thread Created: id = %d, res=%d", 
                    thread_id, result);
     if (result != 0) {
         // failed
-        return NPT_FAILURE;
+        return NPT_ERROR_ERRNO(result);
     } else {
         // detach the thread if we're not joinable
         if (detached) {
@@ -535,13 +571,10 @@ NPT_PosixThread::Wait(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
     // wait for the thread to finish
     m_JoinLock.Lock();
     if (m_Joined) {
-        //NPT_LOG_FINE_1("NPT_PosixThread::Wait - %d already joined", m_ThreadId);
         result = 0;
     } else {
-        //NPT_LOG_FINE_1("NPT_PosixThread::Wait - joining thread id %d", m_ThreadId);
         if (timeout != NPT_TIMEOUT_INFINITE) {
-            result = m_Done.WaitUntilEquals(1, timeout);
-            if (NPT_FAILED(result)) {
+            if (NPT_FAILED(m_Done.WaitUntilEquals(1, timeout))) {
                 result = -1;
                 goto timedout;
             }
@@ -558,6 +591,95 @@ timedout:
     } else {
         return NPT_SUCCESS;
     }
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixThread::SetPriority
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixThread::SetPriority(int priority)
+{
+    // check that we're started
+    if (m_ThreadId == 0) {
+        return NPT_FAILURE;
+    }
+    
+    return NPT_PosixThread::SetPriority((NPT_Thread::ThreadId)m_ThreadId, priority);
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixThread::SetPriority
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixThread::SetPriority(NPT_Thread::ThreadId thread_id, int priority)
+{
+    // check that we're started
+    if (thread_id == 0) {
+        return NPT_FAILURE;
+    }
+    
+    /* sched_priority will be the priority of the thread */
+    struct sched_param sp;
+    int policy;
+    int result = pthread_getschedparam((pthread_t)thread_id, &policy, &sp);
+    
+    NPT_LOG_FINER_3("Current thread policy: %d, priority: %d, new priority: %d", 
+                   policy, sp.sched_priority, priority);
+    NPT_LOG_FINER_4("Thread max(SCHED_OTHER): %d, max(SCHED_RR): %d \
+                   min(SCHED_OTHER): %d, min(SCHED_RR): %d",
+                   sched_get_priority_max(SCHED_OTHER),
+                   sched_get_priority_max(SCHED_RR),
+                   sched_get_priority_min(SCHED_OTHER),
+                   sched_get_priority_min(SCHED_RR));
+    
+    sp.sched_priority = priority;
+    
+    /*
+    if (sp.sched_priority <= 0)
+        sp.sched_priority += sched_get_priority_max (policy = SCHED_OTHER);
+    else
+        sp.sched_priority += sched_get_priority_min (policy = SCHED_RR);
+     */
+    
+    /* scheduling parameters of target thread */
+    result = pthread_setschedparam((pthread_t)thread_id, policy, &sp);
+    
+    return (result==0)?NPT_SUCCESS:NPT_ERROR_ERRNO(result);
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixThread::GetPriority
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixThread::GetPriority(int& priority)
+{
+    // check that we're started
+    if (m_ThreadId == 0) {
+        return NPT_FAILURE;
+    }
+    
+    return NPT_PosixThread::GetPriority((NPT_Thread::ThreadId)m_ThreadId, priority);
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixThread::GetPriority
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixThread::GetPriority(NPT_Thread::ThreadId thread_id, int& priority)
+{
+    // check that we're started
+    if (thread_id == 0) {
+        return NPT_FAILURE;
+    }
+ 
+    struct sched_param sp;
+    int policy;
+
+    int result = pthread_getschedparam((pthread_t)thread_id, &policy, &sp);
+    NPT_LOG_FINER_1("Current thread priority: %d", sp.sched_priority);
+    
+    priority = sp.sched_priority;
+    return (result==0)?NPT_SUCCESS:NPT_ERROR_ERRNO(result);
 }
 
 /*----------------------------------------------------------------------

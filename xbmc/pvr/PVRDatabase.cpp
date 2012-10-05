@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,6 +33,8 @@ using namespace std;
 using namespace dbiplus;
 using namespace PVR;
 using namespace ADDON;
+
+#define PVRDB_DEBUGGING 0
 
 bool CPVRDatabase::Open()
 {
@@ -369,7 +370,9 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
         channel->m_iClientEncryptionSystem = m_pDS->fv("iEncryptionSystem").get_asInt();
         channel->m_iEpgId                  = m_pDS->fv("idEpg").get_asInt();
 
+#if PVRDB_DEBUGGING
         CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
+#endif
         PVRChannelGroupMember newMember = { channel, m_pDS->fv("iChannelNumber").get_asInt() };
         results.m_members.push_back(newMember);
 
@@ -709,8 +712,20 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
         int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
         CPVRChannelPtr channel = g_PVRChannelGroups->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
 
-        if (channel && group.AddToGroup(*channel, iChannelNumber))
-          ++iReturn;
+        if (channel)
+        {
+#if PVRDB_DEBUGGING
+          CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
+#endif
+          PVRChannelGroupMember newMember = { channel, iChannelNumber };
+          group.m_members.push_back(newMember);
+          iReturn++;
+        }
+        else
+        {
+          // remove a channel that doesn't exist (anymore) from the table
+          DeleteValues("map_channelgroups_channels", FormatSQL("idGroup = %u AND idChannel = %u", group.GroupID(), iChannelId));
+        }
 
         m_pDS->next();
       }
@@ -721,6 +736,9 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
       CLog::Log(LOGERROR, "PVR - %s - failed to get channels", __FUNCTION__);
     }
   }
+
+  if (iReturn > 0)
+    group.SortByChannelNumber();
 
   return iReturn;
 }

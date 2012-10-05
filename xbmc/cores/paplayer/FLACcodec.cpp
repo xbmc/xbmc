@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,16 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "FLACcodec.h"
-#include "music/tags/FlacTag.h"
 #include "utils/log.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "music/tags/TagLoaderTagLib.h"
 
 using namespace MUSIC_INFO;
 
@@ -56,6 +55,10 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   if (!m_file.Open(strFile, READ_CACHED))
     return false;
+
+  //  Extract ReplayGain info
+  CTagLoaderTagLib tagLoaderTagLib;
+  tagLoaderTagLib.Load(strFile, m_tag);
 
   m_pFlacDecoder=m_dll.FLAC__stream_decoder_new();
 
@@ -95,11 +98,6 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
     FreeDecoder();
     return false;
   }
-
-  //  Extract ReplayGain info
-  CFlacTag tag;
-  if (tag.Read(strFile))
-    m_replayGain=tag.GetReplayGain();
 
   m_Bitrate = (int)(((float)m_file.GetLength() * 8) / ((float)m_TotalTime / 1000));
 

@@ -20,6 +20,7 @@
 
 #include "SortUtils.h"
 #include "URL.h"
+#include "Util.h"
 #include "XBDateTime.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/CharsetConverter.h"
@@ -395,7 +396,7 @@ string ByListeners(SortAttribute attributes, const SortItem &values)
 string ByRandom(SortAttribute attributes, const SortItem &values)
 {
   CStdString label;
-  label.Format("%i", rand());
+  label.Format("%i", CUtil::GetRandomNumber());
   return label;
 }
 

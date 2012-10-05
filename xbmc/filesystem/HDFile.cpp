@@ -329,3 +329,30 @@ int CHDFile::IoControl(EIoControl request, void* param)
 #endif
   return -1;
 }
+
+int CHDFile::Truncate(int64_t size)
+{
+#ifdef _WIN32
+  // Duplicate the handle, as retrieving and closing a matching crt handle closes the crt handle AND the original Windows handle.
+  HANDLE hFileDup;
+  if (0 == DuplicateHandle(GetCurrentProcess(), (HANDLE)m_hFile, GetCurrentProcess(), &hFileDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - DuplicateHandle()");
+    return -1;
+  }
+
+  int fd;
+  fd = _open_osfhandle((intptr_t)((HANDLE)hFileDup), 0);
+  if (fd == -1)
+  {
+    CLog::Log(LOGERROR, "Stat: fd == -1");
+    return -1;
+  }
+  int result = _chsize_s(fd, (long) size);
+  _close(fd);
+  return result;
+#else
+  return ftruncate((*m_hFile).fd, (off_t) size);
+#endif
+  return -1;
+}

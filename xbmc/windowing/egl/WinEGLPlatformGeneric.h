@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,9 @@
 #include <EGL/eglext.h>
 #endif
 
+#include "guilib/gui3d.h"
+#include "guilib/Resolution.h"
+
 class CWinEGLPlatformGeneric
 {
 public:
@@ -35,9 +37,9 @@ public:
 
   virtual EGLNativeWindowType InitWindowSystem(EGLNativeDisplayType nativeDisplay, int width, int height, int bpp);
   virtual void DestroyWindowSystem(EGLNativeWindowType native_window);
-  virtual bool SetDisplayResolution(int width, int height, float refresh, bool interlace);
+  virtual bool SetDisplayResolution(RESOLUTION_INFO& res);
   virtual bool ClampToGUIDisplayLimits(int &width, int &height);
-  virtual bool ProbeDisplayResolutions(std::vector<CStdString> &resolutions);
+  virtual bool ProbeDisplayResolutions(std::vector<RESOLUTION_INFO> &resolutions);
   
   virtual bool InitializeDisplay();
   virtual bool UninitializeDisplay();
@@ -52,7 +54,12 @@ public:
   virtual bool IsExtSupported(const char* extension);
 
   virtual EGLDisplay GetEGLDisplay();
+  virtual EGLSurface GetEGLSurface();
   virtual EGLContext GetEGLContext();
+
+  virtual bool                  FixedDesktop() { return true; }
+  virtual RESOLUTION_INFO       GetDesktopRes() { return m_desktopRes; }
+  virtual bool                  Support3D() { return false; }
 
 protected:
   virtual EGLNativeWindowType getNativeWindow();
@@ -66,4 +73,5 @@ protected:
   CStdString            m_eglext;
   int                   m_width;
   int                   m_height;
+  RESOLUTION_INFO       m_desktopRes;
 };

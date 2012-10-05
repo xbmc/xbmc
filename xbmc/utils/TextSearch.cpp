@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -148,7 +147,7 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
           m_AND.push_back(strTerm);
         else if (bNextOR)
           m_OR.push_back(strTerm);
-        else
+        else if (bNextNOT)
           m_NOT.push_back(strTerm);
       }
       else

@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,8 +24,37 @@
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "../DVDClock.h"
+
+#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
 using namespace PVR;
+
+CDemuxStreamPVRInternal::CDemuxStreamPVRInternal(CDVDDemuxPVRClient *parent)
+ : m_parent(parent)
+ , m_parser(NULL)
+ , m_context(NULL)
+{
+}
+
+CDemuxStreamPVRInternal::~CDemuxStreamPVRInternal()
+{
+  DisposeParser();
+}
+
+void CDemuxStreamPVRInternal::DisposeParser()
+{
+  if (m_parser)
+  {
+    m_parent->m_dllAvCodec.av_parser_close(m_parser);
+    m_parser = NULL;
+  }
+  if (m_context)
+  {
+    m_parent->m_dllAvCodec.avcodec_close(m_context);
+    m_context = NULL;
+  }
+}
 
 void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
 {
@@ -84,7 +112,17 @@ CDVDDemuxPVRClient::~CDVDDemuxPVRClient()
 
 bool CDVDDemuxPVRClient::Open(CDVDInputStream* pInput)
 {
+  if (!m_dllAvCodec.Load())
+  {
+    CLog::Log(LOGWARNING, "%s could not load ffmpeg", __FUNCTION__);
+    return false;
+  }
+
   Abort();
+
+  // register codecs
+  m_dllAvCodec.avcodec_register_all();
+
   m_pInput = pInput;
   if (!g_PVRClients->GetPlayingClient(m_pvrClient))
     return false;
@@ -105,7 +143,10 @@ void CDVDDemuxPVRClient::Dispose()
     }
     m_streams[i] = NULL;
   }
+
   m_pInput = NULL;
+
+  m_dllAvCodec.Unload();
 }
 
 void CDVDDemuxPVRClient::Reset()
@@ -130,6 +171,109 @@ void CDVDDemuxPVRClient::Flush()
     m_pvrClient->DemuxFlush();
 }
 
+void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
+{
+  CDemuxStream* st = m_streams[pkt->iStreamId];
+  if (st == NULL)
+    return;
+
+  if (st->ExtraSize)
+    return;
+
+  CDemuxStreamPVRInternal* pvr = dynamic_cast<CDemuxStreamPVRInternal*>(st);
+
+  if(pvr == NULL
+  || pvr->m_parser == NULL)
+    return;
+
+  if(pvr->m_context == NULL)
+  {
+    AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(st->codec);
+    if (codec == NULL)
+    {
+      CLog::Log(LOGERROR, "%s - can't find decoder", __FUNCTION__);
+      pvr->DisposeParser();
+      return;
+    }
+
+    pvr->m_context = m_dllAvCodec.avcodec_alloc_context3(codec);
+    if(pvr->m_context == NULL)
+    {
+      CLog::Log(LOGERROR, "%s - can't allocate context", __FUNCTION__);
+      pvr->DisposeParser();
+      return;
+    }
+    pvr->m_context->time_base.num = 1;
+    pvr->m_context->time_base.den = DVD_TIME_BASE;
+  }
+
+  if(st->ExtraData == NULL && pvr->m_parser->parser->split)
+  {
+    int len = pvr->m_parser->parser->split(pvr->m_context, pkt->pData, pkt->iSize);
+    if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
+    {
+      st->changes++;
+      st->disabled = false;
+      st->ExtraSize = len;
+      st->ExtraData = new uint8_t[len+FF_INPUT_BUFFER_PADDING_SIZE];
+      memcpy(st->ExtraData, pkt->pData, len);
+      memset((uint8_t*)st->ExtraData + len, 0 , FF_INPUT_BUFFER_PADDING_SIZE);
+    }
+  }
+
+
+  uint8_t *outbuf = NULL;
+  int      outbuf_size = 0;
+  int len = m_dllAvCodec.av_parser_parse2(pvr->m_parser
+                                        , pvr->m_context, &outbuf, &outbuf_size
+                                        , pkt->pData, pkt->iSize
+                                        , (int64_t)(pkt->pts * DVD_TIME_BASE)
+                                        , (int64_t)(pkt->dts * DVD_TIME_BASE)
+                                        , 0);
+  /* our parse is setup to parse complete frames, so we don't care about outbufs */
+  if(len >= 0)
+  {
+#define CHECK_UPDATE(st, trg, src, invalid) do { \
+      if(src != invalid \
+      && src != st->trg) { \
+        CLog::Log(LOGDEBUG, "%s - {%d} " #trg " changed from %d to %d",  __FUNCTION__, st->iId, st->trg, src); \
+        st->trg = src; \
+        st->changes++; \
+        st->disabled = false; \
+      } \
+    } while(0)
+
+
+    CHECK_UPDATE(st, profile, pvr->m_context->profile , FF_PROFILE_UNKNOWN);
+    CHECK_UPDATE(st, level  , pvr->m_context->level   , 0);
+
+    switch (st->type)
+    {
+      case STREAM_AUDIO: {
+        CDemuxStreamAudioPVRClient* sta = static_cast<CDemuxStreamAudioPVRClient*>(st);
+        CHECK_UPDATE(sta, iChannels     , pvr->m_context->channels   , 0);
+        CHECK_UPDATE(sta, iSampleRate   , pvr->m_context->sample_rate, 0);
+        break;
+      }
+      case STREAM_VIDEO: {
+        CDemuxStreamVideoPVRClient* stv = static_cast<CDemuxStreamVideoPVRClient*>(st);
+        CHECK_UPDATE(stv, iWidth        , pvr->m_context->width , 0);
+        CHECK_UPDATE(stv, iHeight       , pvr->m_context->height, 0);
+        break;
+      }
+
+      default:
+        break;
+    }
+
+#undef CHECK_UPDATE
+  }
+  else
+    CLog::Log(LOGDEBUG, "%s - parser returned error %d", __FUNCTION__, len);
+
+  return;
+}
+
 DemuxPacket* CDVDDemuxPVRClient::Read()
 {
   if (!g_PVRManager.IsStarted())
@@ -152,6 +296,12 @@ DemuxPacket* CDVDDemuxPVRClient::Read()
   else if (pPacket->iStreamId == DMX_SPECIALID_STREAMCHANGE)
   {
     Reset();
+  }
+  else if (pPacket->iStreamId >= 0
+        && pPacket->iStreamId < MAX_STREAMS
+        && m_streams[pPacket->iStreamId])
+  {
+    ParsePacket(pPacket);
   }
 
   return pPacket;
@@ -181,6 +331,9 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iBlockAlign     = props.stream[i].iBlockAlign;
       st->iBitRate        = props.stream[i].iBitRate;
       st->iBitsPerSample  = props.stream[i].iBitsPerSample;
+      st->m_parser        = m_dllAvCodec.av_parser_init(props.stream[i].iCodecId);
+      if(st->m_parser)
+        st->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       m_streams[props.stream[i].iStreamIndex] = st;
     }
     else if (props.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
@@ -191,6 +344,9 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iHeight         = props.stream[i].iHeight;
       st->iWidth          = props.stream[i].iWidth;
       st->fAspect         = props.stream[i].fAspect;
+      st->m_parser        = m_dllAvCodec.av_parser_init(props.stream[i].iCodecId);
+      if(st->m_parser)
+        st->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       m_streams[props.stream[i].iStreamIndex] = st;
     }
     else if (props.stream[i].iCodecId == CODEC_ID_DVB_TELETEXT)
@@ -227,7 +383,7 @@ void CDVDDemuxPVRClient::UpdateStreams(PVR_STREAM_PROPERTIES *props)
 
   for (unsigned int i = 0; i < props->iStreamCount; ++i)
   {
-    if (m_streams[props->stream[i].iStreamIndex] == NULL ||
+    if (m_streams[props->stream[i].iStreamIndex] == NULL &&
         m_streams[props->stream[i].iStreamIndex]->codec != (CodecID)props->stream[i].iCodecId)
     {
       CLog::Log(LOGERROR,"Invalid stream inside UpdateStreams");

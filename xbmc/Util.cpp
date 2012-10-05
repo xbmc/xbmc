@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "threads/SystemClock.h"
@@ -33,10 +32,13 @@
 #ifdef _LINUX
 #include <sys/types.h>
 #include <dirent.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #endif
+#if defined(TARGET_ANDROID)
+#include "android/bionic_supplement/bionic_supplement.h"
+#endif
+#include <stdlib.h>
 
 #include "Application.h"
 #include "Util.h"
@@ -53,9 +55,6 @@
 #include "filesystem/MythDirectory.h"
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
-#endif
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "utils/RegExp.h"
 #include "settings/GUISettings.h"
@@ -82,18 +81,16 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "pictures/Picture.h"
-#include "utils/JobManager.h"
+
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
-#include "windowing/WindowingFactory.h"
 #include "URL.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
 
 using namespace std;
-using namespace XFILE;
+
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const int64_t SECS_BETWEEN_EPOCHS = 11644473600LL;
@@ -111,6 +108,10 @@ static uint16_t oldrampBlue[256];
 static uint16_t flashrampRed[256];
 static uint16_t flashrampGreen[256];
 static uint16_t flashrampBlue[256];
+#endif
+
+#if !defined(TARGET_WINDOWS)
+unsigned int CUtil::s_randomSeed = time(NULL);
 #endif
 
 CUtil::CUtil(void)
@@ -341,8 +342,12 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   {
     if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      strTitleAndYear = reYear.GetReplaceString("\\1");
-      strYear = reYear.GetReplaceString("\\2");
+      char* ty = reYear.GetReplaceString("\\1");
+      char* y = reYear.GetReplaceString("\\2");
+      strTitleAndYear = ty;
+      strYear = y;
+      free(ty);
+      free(y);
     }
   }
 
@@ -854,202 +859,6 @@ void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const s
     lastPos = path.find_first_not_of(delimiters, pos);
     // Find next "non-delimiter"
     pos = path.find_first_of(delimiters, lastPos);
-  }
-}
-
-void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
-{
-  int            width;
-  int            height;
-  int            stride;
-  unsigned char* outpixels = NULL;
-
-#ifdef HAS_DX
-  LPDIRECT3DSURFACE9 lpSurface = NULL, lpBackbuffer = NULL;
-  g_graphicsContext.Lock();
-  if (g_application.IsPlayingVideo())
-  {
-#ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.SetupScreenshot();
-#endif
-  }
-  g_application.RenderNoPresent();
-
-  if (FAILED(g_Windowing.Get3DDevice()->CreateOffscreenPlainSurface(g_Windowing.GetWidth(), g_Windowing.GetHeight(), D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &lpSurface, NULL)))
-    return;
-
-  if (FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &lpBackbuffer)))
-    return;
-
-  // now take screenshot
-  if (SUCCEEDED(g_Windowing.Get3DDevice()->GetRenderTargetData(lpBackbuffer, lpSurface)))
-  {
-    D3DLOCKED_RECT lr;
-    D3DSURFACE_DESC desc;
-    lpSurface->GetDesc(&desc);
-    if (SUCCEEDED(lpSurface->LockRect(&lr, NULL, D3DLOCK_READONLY)))
-    {
-      width = desc.Width;
-      height = desc.Height;
-      stride = lr.Pitch;
-      outpixels = new unsigned char[height * stride];
-      memcpy(outpixels, lr.pBits, height * stride);
-      lpSurface->UnlockRect();
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "%s LockRect failed", __FUNCTION__);
-    }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "%s GetBackBuffer failed", __FUNCTION__);
-  }
-  lpSurface->Release();
-  lpBackbuffer->Release();
-
-  g_graphicsContext.Unlock();
-
-#elif defined(HAS_GL) || defined(HAS_GLES)
-
-  g_graphicsContext.BeginPaint();
-  if (g_application.IsPlayingVideo())
-  {
-#ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.SetupScreenshot();
-#endif
-  }
-  g_application.RenderNoPresent();
-#ifndef HAS_GLES
-  glReadBuffer(GL_BACK);
-#endif
-  //get current viewport
-  GLint viewport[4];
-  glGetIntegerv(GL_VIEWPORT, viewport);
-
-  width  = viewport[2] - viewport[0];
-  height = viewport[3] - viewport[1];
-  stride = width * 4;
-  unsigned char* pixels = new unsigned char[stride * height];
-
-  //read pixels from the backbuffer
-#if HAS_GLES == 2
-  glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
-#else
-  glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
-#endif
-  g_graphicsContext.EndPaint();
-
-  //make a new buffer and copy the read image to it with the Y axis inverted
-  outpixels = new unsigned char[stride * height];
-  for (int y = 0; y < height; y++)
-  {
-#ifdef HAS_GLES
-    // we need to save in BGRA order so XOR Swap RGBA -> BGRA
-    unsigned char* swap_pixels = pixels + (height - y - 1) * stride;
-    for (int x = 0; x < width; x++, swap_pixels+=4)
-    {
-      std::swap(swap_pixels[0], swap_pixels[2]);
-    }   
-#endif
-    memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
-  }
-
-  delete [] pixels;
-
-#else
-  //nothing to take a screenshot from
-  return;
-#endif
-
-  if (!outpixels)
-  {
-    CLog::Log(LOGERROR, "Screenshot %s failed", filename.c_str());
-    return;
-  }
-
-  CLog::Log(LOGDEBUG, "Saving screenshot %s", filename.c_str());
-
-  //set alpha byte to 0xFF
-  for (int y = 0; y < height; y++)
-  {
-    unsigned char* alphaptr = outpixels - 1 + y * stride;
-    for (int x = 0; x < width; x++)
-      *(alphaptr += 4) = 0xFF;
-  }
-
-  //if sync is true, the png file needs to be completely written when this function returns
-  if (sync)
-  {
-    if (!CPicture::CreateThumbnailFromSurface(outpixels, width, height, stride, filename))
-      CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
-
-    delete [] outpixels;
-  }
-  else
-  {
-    //make sure the file exists to avoid concurrency issues
-    FILE* fp = fopen(filename.c_str(), "w");
-    if (fp)
-      fclose(fp);
-    else
-      CLog::Log(LOGERROR, "Unable to create file %s", filename.c_str());
-
-    //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
-    //outpixels is deleted from CThumbnailWriter
-    CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(outpixels, width, height, stride, filename);
-    CJobManager::GetInstance().AddJob(thumbnailwriter, NULL);
-  }
-}
-
-void CUtil::TakeScreenshot()
-{
-  static bool savingScreenshots = false;
-  static vector<CStdString> screenShots;
-
-  bool promptUser = false;
-  // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("debug.screenshotpath", false);
-  if (strDir.IsEmpty())
-  {
-    strDir = "special://temp/";
-    if (!savingScreenshots)
-    {
-      promptUser = true;
-      savingScreenshots = true;
-      screenShots.clear();
-    }
-  }
-  URIUtils::RemoveSlashAtEnd(strDir);
-
-  if (!strDir.IsEmpty())
-  {
-    CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strDir, "screenshot%03d.png"), 999);
-
-    if (!file.IsEmpty())
-    {
-      TakeScreenshot(file, false);
-      if (savingScreenshots)
-        screenShots.push_back(file);
-      if (promptUser)
-      { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("debug.screenshotpath");
-        if (!newDir.IsEmpty())
-        {
-          for (unsigned int i = 0; i < screenShots.size(); i++)
-          {
-            CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(newDir, "screenshot%03d.png"), 999);
-            CFile::Cache(screenShots[i], file);
-          }
-          screenShots.clear();
-        }
-        savingScreenshots = false;
-      }
-    }
-    else
-    {
-      CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
-    }
   }
 }
 
@@ -2212,9 +2021,12 @@ CStdString CUtil::ResolveExecutablePath()
   snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
 
   /* Now read the symbolic link */
-  char buf[PATH_MAX];
-  int ret = readlink(linkname, buf, PATH_MAX);
-  buf[ret] = 0;
+  char buf[PATH_MAX + 1];
+  buf[0] = 0;
+
+  int ret = readlink(linkname, buf, sizeof(buf) - 1);
+  if (ret != -1)
+    buf[ret] = 0;
 
   strExecutablePath = buf;
 #endif
@@ -2599,5 +2411,18 @@ bool CUtil::CanBindPrivileged()
   return true;
 
 #endif //_LINUX
+}
+
+int CUtil::GetRandomNumber()
+{
+#ifdef TARGET_WINDOWS
+  unsigned int number;
+  if (rand_s(&number) == 0)
+    return (int)number;
+#else
+  return rand_r(&s_randomSeed);
+#endif
+
+  return rand();
 }
 

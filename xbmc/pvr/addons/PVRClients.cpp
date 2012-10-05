@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,7 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "GUIUserMessages.h"
 #include "settings/GUISettings.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -186,16 +186,15 @@ bool CPVRClients::HasEnabledClients(void) const
 
 bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
 {
+  CSingleLock lock(m_critSection);  
   int iId = GetClientId(client);
   PVR_CLIENT mappedClient;
   if (GetConnectedClient(iId, mappedClient))
   {
-    g_PVRManager.StopUpdateThreads();
     if (bRestart)
       mappedClient->ReCreate();
     else
       mappedClient->Destroy();
-    g_PVRManager.StartUpdateThreads();
 
     return true;
   }
@@ -303,9 +302,9 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
       // stream URL should always be opened as a new file
       !channel.StreamURL().IsEmpty() || !currentChannel->StreamURL().IsEmpty())
   {
-    CloseStream();
     if (channel.StreamURL().IsEmpty())
     {
+      CloseStream();
       bSwitchSuccessful = OpenStream(channel, true);
     }
     else
@@ -631,7 +630,7 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
   PVR_CLIENT client;
   if (GetConnectedClient(iClientID, client) && client->HaveMenuHooks())
   {
-    hooks = client->GetMenuHooks();
+    *hooks = *(client->GetMenuHooks());
     bReturn = true;
   }
 
@@ -815,8 +814,13 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
 
     if (!bEnabled && IsKnownClient(clientAddon))
     {
+      CSingleLock lock(m_critSection);
       /* stop the client and remove it from the db */
       StopClient(clientAddon, false);
+      ADDON::VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), clientAddon);
+      if (addonPtr != m_addons.end())
+        m_addons.erase(addonPtr);
+
     }
     else if (bEnabled && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
     {
@@ -833,6 +837,8 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       }
       else
       {
+        CSingleLock lock(m_critSection);
+        
         PVR_CLIENT addon;
         if (!GetClient(iClientId, addon))
         {
@@ -907,7 +913,7 @@ void CPVRClients::Process(void)
 
 void CPVRClients::ShowDialogNoClientsEnabled(void)
 {
-  if (g_PVRManager.GetState() != ManagerStateStarted && !g_PVRManager.GetState() == ManagerStateStarting)
+  if (g_PVRManager.GetState() != ManagerStateStarted && g_PVRManager.GetState() != ManagerStateStarting)
     return;
 
   CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
@@ -1033,6 +1039,17 @@ bool CPVRClients::UpdateAddons(void)
     CSingleLock lock(m_critSection);
     m_addons = addons;
   }
+  
+  // handle "new" addons which aren't yet in the db - these have to be added first
+  for (unsigned iClientPtr = 0; iClientPtr < m_addons.size(); iClientPtr++)
+  {
+    const AddonPtr clientAddon = m_addons.at(iClientPtr);
+  
+    if (!m_addonDb.HasAddon(clientAddon->ID()))
+    {
+      m_addonDb.AddAddon(clientAddon, -1);
+    }
+  }
 
   if ((!bReturn || addons.size() == 0) && !m_bNoAddonWarningDisplayed &&
       !CAddonMgr::Get().HasAddons(ADDON_PVRDLL, false) &&
@@ -1040,9 +1057,12 @@ bool CPVRClients::UpdateAddons(void)
   {
     // No PVR add-ons could be found
     // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
-    // Please visit xbmc.org/PVR to learn more.
+    // Please visit xbmc.org/pvr to learn more.
     m_bNoAddonWarningDisplayed = true;
+    g_guiSettings.SetBool("pvrmanager.enabled", false);
     CGUIDialogOK::ShowAndGetInput(19271, 19272, 19273, 19274);
+    CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_MYPVR, 0);
+    g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_MYPVR);
   }
 
   return bReturn;
@@ -1254,6 +1274,8 @@ PVR_STREAM_PROPERTIES CPVRClients::GetCurrentStreamProperties(void)
 {
   PVR_STREAM_PROPERTIES props;
   PVR_CLIENT client;
+  
+  memset(&props, 0, sizeof(props));
   if (GetPlayingClient(client))
     client->GetStreamProperties(&props);
 

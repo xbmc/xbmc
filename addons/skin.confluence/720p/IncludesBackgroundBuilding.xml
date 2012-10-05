@@ -41,14 +41,15 @@
 			<width>1280</width>
 			<height>720</height>
 			<texture>special://skin/backgrounds/media-overlay.jpg</texture>
-			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)</visible>
+			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] + ![Window.IsVisible(PVR) + [Control.IsVisible(11) | Control.IsVisible(12)]]</visible>
+			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="visualisation">
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)</visible>
+			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis) + ![Window.IsVisible(PVR) + [Control.IsVisible(11) | Control.IsVisible(12)]]</visible>
 			<visible>!SubString(Window(videolibrary).Property(TvTunesIsAlive),True)</visible>
 		</control>
 		<control type="videowindow">
@@ -56,7 +57,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)</visible>
+			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo) + ![Window.IsVisible(PVR) + [Control.IsVisible(11) | Control.IsVisible(12)]]</visible>
 		</control>
 		<control type="image">
 			<posx>0</posx>

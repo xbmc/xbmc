@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -117,5 +116,22 @@ public:
   static bool ProtocolHasParentInHostname(const CStdString& prot);
   static bool ProtocolHasEncodedHostname(const CStdString& prot);
   static bool ProtocolHasEncodedFilename(const CStdString& prot);
+
+  /*!
+   \brief Cleans up the given path by resolving "." and ".."
+   and returns it.
+
+   This methods goes through the given path and removes any "."
+   (as it states "this directory") and resolves any ".." by
+   removing the previous directory from the path. This is done
+   for file paths and host names (in case of VFS paths).
+
+   \param path Path to be cleaned up
+   \return Actual path without any "." or ".."
+   */
+  static std::string GetRealPath(const std::string &path);
+
+private:
+  static std::string resolvePath(const std::string &path);
 };
 

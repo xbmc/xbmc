@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,15 +31,15 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "Util.h"
-#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
-#include "storage/IoSupport.h"
 #include "settings/GUISettings.h"
+#include "storage/MediaManager.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -88,20 +87,16 @@ bool CCDDARipJob::DoWork()
   }
 
   // setup the progress dialog
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  CStdString strLine0, strLine1;
+  CGUIDialogExtendedProgressBar* pDlgProgress = 
+      (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
+  CStdString strLine0;
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
-  strLine0.Format("%s %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
-  strLine1.Format("%s %s", g_localizeStrings.Get(607).c_str(), m_output.c_str()); // To: %s
-  pDlgProgress->SetHeading(605); // Ripping
-  pDlgProgress->SetLine(0, strLine0);
-  pDlgProgress->SetLine(1, strLine1);
-  pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal();
-  pDlgProgress->ShowProgressBar(true);
-
-  // show progress dialog
-  pDlgProgress->Progress();
+  strLine0.Format("%02i. %s - %s", iTrack,
+                  StringUtils::Join(m_tag.GetArtist(),
+                              g_advancedSettings.m_musicItemSeparator).c_str(),
+                  m_tag.GetTitle().c_str());
+  handle->SetText(strLine0);
 
   // start ripping
   int percent=0;
@@ -111,16 +106,12 @@ bool CCDDARipJob::DoWork()
   while (!cancelled && (result=RipChunk(reader, encoder, percent)) == 0)
   {
     cancelled = ShouldCancel(percent,100);
-    cancelled |= pDlgProgress->IsCanceled();
     if (percent > oldpercent)
     {
       oldpercent = percent;
-      pDlgProgress->SetPercentage(percent);
-      pDlgProgress->Progress();
+      handle->SetPercentage(percent);
     }
   }
-
-  pDlgProgress->Close();
 
   // close encoder ripper
   encoder->Close();
@@ -156,9 +147,11 @@ bool CCDDARipJob::DoWork()
     if (m_eject)
     {
       CLog::Log(LOGINFO, "Ejecting CD");
-      CIoSupport::EjectTray();
+      g_mediaManager.EjectTray();
     }
   }
+
+  handle->MarkFinished();
 
   return !cancelled && result == 2;
 }
@@ -249,7 +242,8 @@ CStdString CCDDARipJob::SetupTempFile()
   strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
   if ((fd = mkstemp(tmp)) == -1)
    tmp[0] = '\0'; 
-  close(fd);
+  if (fd != -1)
+    close(fd);
 #endif
   return tmp;
 }
@@ -259,8 +253,11 @@ bool CCDDARipJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(),GetType()) == 0)
   {
     const CCDDARipJob* rjob = dynamic_cast<const CCDDARipJob*>(job);
-    return m_input  == rjob->m_input &&
-           m_output == rjob->m_output;
+    if (rjob)
+    {
+      return m_input  == rjob->m_input &&
+             m_output == rjob->m_output;
+    }
   }
   return false;
 }

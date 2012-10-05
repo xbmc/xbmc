@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -184,7 +183,7 @@ CArchive& CArchive::operator<<(const CStdStringW& str)
 {
   *this << str.GetLength();
 
-  int size = str.GetLength();
+  int size = str.GetLength() * sizeof(wchar_t);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -356,7 +355,7 @@ CArchive& CArchive::operator>>(CStdStringW& str)
   int iLength = 0;
   *this >> iLength;
 
-  m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength);
+  m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength * sizeof(wchar_t));
   str.ReleaseBuffer();
 
 

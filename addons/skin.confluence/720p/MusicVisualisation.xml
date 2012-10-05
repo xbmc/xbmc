@@ -94,7 +94,7 @@
 			</control>
 			<control type="group">
 				<posx>330</posx>
-				<posy>175r</posy>
+				<posy>185r</posy>
 				<control type="label" id="1">
 					<description>Heading label</description>
 					<posx>0</posx>
@@ -185,7 +185,7 @@
 			</control>
 			<control type="group">
 				<posx>330</posx>
-				<posy>85r</posy>
+				<posy>95r</posy>
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>

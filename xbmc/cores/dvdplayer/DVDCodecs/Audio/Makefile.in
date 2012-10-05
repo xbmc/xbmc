@@ -2,11 +2,11 @@ INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 CXXFLAGS+=-DHAVE_MMX
 
-SRCS=	DVDAudioCodecFFmpeg.cpp \
-	DVDAudioCodecLibMad.cpp \
-	DVDAudioCodecLPcm.cpp \
-	DVDAudioCodecPassthrough.cpp \
-	DVDAudioCodecPcm.cpp
+SRCS  = DVDAudioCodecFFmpeg.cpp
+SRCS += DVDAudioCodecLibMad.cpp
+SRCS += DVDAudioCodecLPcm.cpp
+SRCS += DVDAudioCodecPassthrough.cpp
+SRCS += DVDAudioCodecPcm.cpp
 
 ifeq ($(findstring osx,@ARCH@),osx)
 SRCS += DVDAudioCodecPassthroughFFmpeg.cpp

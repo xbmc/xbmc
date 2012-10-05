@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +32,14 @@ CDirectoryNodeTags::CDirectoryNodeTags(const CStdString& strName, CDirectoryNode
 
 NODE_TYPE CDirectoryNodeTags::GetChildType() const
 {
-  return NODE_TYPE_TITLE_MOVIES;
+  CQueryParams params;
+  CollectQueryParams(params);
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+    return NODE_TYPE_TITLE_MOVIES;
+  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+    return NODE_TYPE_TITLE_MUSICVIDEOS;
+
+  return NODE_TYPE_TITLE_TVSHOWS;
 }
 
 CStdString CDirectoryNodeTags::GetLocalizedName() const

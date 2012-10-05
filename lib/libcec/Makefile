@@ -7,7 +7,7 @@
 
 # lib name, version
 LIBNAME=libcec
-VERSION=1.7.1
+VERSION=1.8.1
 SOURCE=$(LIBNAME)-$(VERSION)
 
 # download location and format

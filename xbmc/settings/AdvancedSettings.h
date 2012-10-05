@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -114,6 +113,9 @@ class CAdvancedSettings
     CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
+
+    bool  m_omxHWAudioDecode;
+    bool  m_omxDecodeStartWithValidFrame;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -244,8 +246,6 @@ class CAdvancedSettings
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
-    int m_iVideoLibraryRecentlyAddedItems;
-    bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
@@ -346,6 +346,7 @@ class CAdvancedSettings
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
     int  m_guiDirtyRegionNoFlipTimeout;
+    unsigned int m_addonPackageFolderSize;
 
     unsigned int m_cacheMemBufferSize;
 

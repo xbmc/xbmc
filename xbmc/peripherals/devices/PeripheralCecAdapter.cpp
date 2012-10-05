@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -89,7 +88,9 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bIsMuted(false), // TODO fetch the correct initial value when system audiostatus is implemented in libCEC
   m_bGoingToStandby(false),
   m_bIsRunning(false),
-  m_bDeviceRemoved(false)
+  m_bDeviceRemoved(false),
+  m_bActiveSourcePending(false),
+  m_bStandbyPending(false)
 {
   m_currentButton.iButton = 0;
   m_currentButton.iDuration = 0;
@@ -139,15 +140,10 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       if (bIgnoreDeactivate)
         CLog::Log(LOGDEBUG, "%s - ignoring OnScreensaverDeactivated for power action", __FUNCTION__);
     }
-    if (m_configuration.bPowerOffScreensaver == 1 && !bIgnoreDeactivate)
+    if (m_configuration.bPowerOffScreensaver == 1 && !bIgnoreDeactivate &&
+        m_configuration.bActivateSource == 1)
     {
-      // power off/on on screensaver is set, and devices to wake are set
-      if (!m_configuration.wakeDevices.IsEmpty())
-        m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
-
-      // the option to make XBMC the active source is set
-      if (m_configuration.bActivateSource == 1)
-        m_cecAdapter->SetActiveSource();
+      ActivateSource();
     }
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
@@ -158,7 +154,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       m_screensaverLastActivated = CDateTime::GetCurrentDateTime();
       // only power off when we're the active source
       if (m_cecAdapter->IsLibCECActiveSource())
-        m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
+        StandbyDevices();
     }
   }
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
@@ -174,6 +170,12 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   {
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     ReopenConnection();
+  }
+  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
+  {
+    // activate the source when playback started, and the option is enabled
+    if (m_configuration.bActivateSource)
+      ActivateSource();
   }
 }
 
@@ -372,6 +374,12 @@ void CPeripheralCecAdapter::Process(void)
       ProcessVolumeChange();
 
     if (!m_bStop)
+      ProcessActivateSource();
+
+    if (!m_bStop)
+      ProcessStandbyDevices();
+
+    if (!m_bStop)
       Sleep(5);
   }
 
@@ -384,7 +392,8 @@ void CPeripheralCecAdapter::Process(void)
     bSendStandbyCommands = m_iExitCode != EXITCODE_REBOOT &&
                            m_iExitCode != EXITCODE_RESTARTAPP &&
                            !m_bDeviceRemoved &&
-                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby"));
+                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby")) &&
+                           GetSettingBool("enabled");
   }
 
   if (bSendStandbyCommands)
@@ -863,6 +872,9 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_SETUP_MENU:
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TITLE;
+    PushCecKeypress(xbmcKey);
+    break;
   case CEC_USER_CONTROL_CODE_CONTENTS_MENU:
   case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
   case CEC_USER_CONTROL_CODE_ROOT_MENU:
@@ -886,11 +898,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_PREVIOUS_CHANNEL:
-#if defined(XINPUT_IR_REMOTE_TELETEXT)
-    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT; // only supported by the pvr branch
-#else
-    xbmcKey.iButton = XINPUT_IR_REMOTE_BACK;
-#endif
+    xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT;
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_SOUND_SELECT:
@@ -1018,16 +1026,12 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_ELECTRONIC_PROGRAM_GUIDE:
-#if defined(XINPUT_IR_REMOTE_GUIDE)
     xbmcKey.iButton = XINPUT_IR_REMOTE_GUIDE;
     PushCecKeypress(xbmcKey);
-#endif
     break;
   case CEC_USER_CONTROL_CODE_AN_CHANNELS_LIST:
-#if defined(XINPUT_IR_REMOTE_LIVE_TV)
     xbmcKey.iButton = XINPUT_IR_REMOTE_LIVE_TV;
     PushCecKeypress(xbmcKey);
-#endif
     break;
   case CEC_USER_CONTROL_CODE_NEXT_FAVORITE:
   case CEC_USER_CONTROL_CODE_DOT:
@@ -1198,7 +1202,9 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message &m
 
 bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
 {
-  if (strLocation.Left(18).Equals("peripherals://usb/") && strLocation.Right(4).Equals(".dev"))
+  if ((strLocation.Left(18).Equals("peripherals://usb/") ||
+         strLocation.Left(18).Equals("peripherals://rpi/")) &&
+       strLocation.Right(4).Equals(".dev"))
   {
     strLocation = strLocation.Right(strLocation.length() - 18);
     strLocation = strLocation.Left(strLocation.length() - 4);
@@ -1614,6 +1620,46 @@ void CPeripheralCecAdapter::ReopenConnection(void)
 
   StopThread();
   Create();
+}
+
+void CPeripheralCecAdapter::ActivateSource(void)
+{
+  CSingleLock lock(m_critSection);
+  m_bActiveSourcePending = true;
+}
+
+void CPeripheralCecAdapter::ProcessActivateSource(void)
+{
+  bool bActivate(false);
+
+  {
+    CSingleLock lock(m_critSection);
+    bActivate = m_bActiveSourcePending;
+    m_bActiveSourcePending = false;
+  }
+
+  if (bActivate)
+    m_cecAdapter->SetActiveSource();
+}
+
+void CPeripheralCecAdapter::StandbyDevices(void)
+{
+  CSingleLock lock(m_critSection);
+  m_bStandbyPending = true;
+}
+
+void CPeripheralCecAdapter::ProcessStandbyDevices(void)
+{
+  bool bStandby(false);
+
+  {
+    CSingleLock lock(m_critSection);
+    bStandby = m_bStandbyPending;
+    m_bStandbyPending = false;
+  }
+
+  if (bStandby)
+    m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
 }
 
 #endif

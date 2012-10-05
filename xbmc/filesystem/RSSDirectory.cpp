@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -630,6 +629,11 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     ParseItem(item.get(), child, path);
 
     item->SetProperty("isrss", "1");
+    // Use channel image if item doesn't have one
+    if(item->GetThumbnailImage().IsEmpty() && !items.GetThumbnailImage().IsEmpty())
+    {
+      item->SetThumbnailImage(items.GetThumbnailImage());
+    }
 
     if (!item->GetPath().IsEmpty())
       items.Add(item);

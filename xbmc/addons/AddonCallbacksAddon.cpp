@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,12 @@
 #include "utils/log.h"
 #include "LangInfo.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/File.h"
+#include "filesystem/Directory.h"
+#include "utils/URIUtils.h"
+#include "FileItem.h"
+
+using namespace XFILE;
 
 namespace ADDON
 {
@@ -41,6 +46,27 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
   m_callbacks->GetLocalizedString = GetLocalizedString;
   m_callbacks->GetDVDMenuLanguage = GetDVDMenuLanguage;
+
+  m_callbacks->OpenFile           = OpenFile;
+  m_callbacks->OpenFileForWrite   = OpenFileForWrite;
+  m_callbacks->ReadFile           = ReadFile;
+  m_callbacks->ReadFileString     = ReadFileString;
+  m_callbacks->WriteFile          = WriteFile;
+  m_callbacks->FlushFile          = FlushFile;
+  m_callbacks->SeekFile           = SeekFile;
+  m_callbacks->TruncateFile       = TruncateFile;
+  m_callbacks->GetFilePosition    = GetFilePosition;
+  m_callbacks->GetFileLength      = GetFileLength;
+  m_callbacks->CloseFile          = CloseFile;
+  m_callbacks->GetFileChunkSize   = GetFileChunkSize;
+  m_callbacks->FileExists         = FileExists;
+  m_callbacks->StatFile           = StatFile;
+  m_callbacks->DeleteFile         = DeleteFile;
+
+  m_callbacks->CanOpenDirectory   = CanOpenDirectory;
+  m_callbacks->CreateDirectory    = CreateDirectory;
+  m_callbacks->DirectoryExists    = DirectoryExists;
+  m_callbacks->RemoveDirectory    = RemoveDirectory;
 }
 
 CAddonCallbacksAddon::~CAddonCallbacksAddon()
@@ -245,6 +271,235 @@ const char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
   return buffer;
+}
+
+void* CAddonCallbacksAddon::OpenFile(const void* addonData, const char* strFileName, unsigned int flags)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return NULL;
+
+  CFile* file = new CFile;
+  if (file->Open(strFileName, flags))
+    return ((void*)file);
+
+  delete file;
+  return NULL;
+}
+
+void* CAddonCallbacksAddon::OpenFileForWrite(const void* addonData, const char* strFileName, bool bOverwrite)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return NULL;
+
+  CFile* file = new CFile;
+  if (file->OpenForWrite(strFileName, bOverwrite))
+    return ((void*)file);
+
+  delete file;
+  return NULL;
+}
+
+unsigned int CAddonCallbacksAddon::ReadFile(const void* addonData, void* file, void* lpBuf, int64_t uiBufSize)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return 0;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0;
+
+  return cfile->Read(lpBuf, uiBufSize);
+}
+
+bool CAddonCallbacksAddon::ReadFileString(const void* addonData, void* file, char *szLine, int iLineLength)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return false;
+
+  return cfile->ReadString(szLine, iLineLength);
+}
+
+int CAddonCallbacksAddon::WriteFile(const void* addonData, void* file, const void* lpBuf, int64_t uiBufSize)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return -1;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return -1;
+
+  return cfile->Write(lpBuf, uiBufSize);
+}
+
+void CAddonCallbacksAddon::FlushFile(const void* addonData, void* file)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return;
+
+  cfile->Flush();
+}
+
+int64_t CAddonCallbacksAddon::SeekFile(const void* addonData, void* file, int64_t iFilePosition, int iWhence)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return 0;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0;
+
+  return cfile->Seek(iFilePosition, iWhence);
+}
+
+int CAddonCallbacksAddon::TruncateFile(const void* addonData, void* file, int64_t iSize)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return 0;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0;
+
+  return cfile->Truncate(iSize);
+}
+
+int64_t CAddonCallbacksAddon::GetFilePosition(const void* addonData, void* file)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return 0;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0;
+
+  return cfile->GetPosition();
+}
+
+int64_t CAddonCallbacksAddon::GetFileLength(const void* addonData, void* file)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return 0;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0;
+
+  return cfile->GetLength();
+}
+
+void CAddonCallbacksAddon::CloseFile(const void* addonData, void* file)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return;
+
+  CFile* cfile = (CFile*)file;
+  if (cfile)
+  {
+    cfile->Close();
+    delete cfile;
+  }
+}
+
+int CAddonCallbacksAddon::GetFileChunkSize(const void* addonData, void* file)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return 0;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0;
+
+  return cfile->GetChunkSize();
+}
+
+bool CAddonCallbacksAddon::FileExists(const void* addonData, const char *strFileName, bool bUseCache)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CFile::Exists(strFileName, bUseCache);
+}
+
+int CAddonCallbacksAddon::StatFile(const void* addonData, const char *strFileName, struct __stat64* buffer)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return -1;
+
+  return CFile::Stat(strFileName, buffer);
+}
+
+bool CAddonCallbacksAddon::DeleteFile(const void* addonData, const char *strFileName)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CFile::Delete(strFileName);
+}
+
+bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* strURL)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  CFileItemList items;
+  return CDirectory::GetDirectory(strURL, items);
+}
+
+bool CAddonCallbacksAddon::CreateDirectory(const void* addonData, const char *strPath)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CDirectory::Create(strPath);
+}
+
+bool CAddonCallbacksAddon::DirectoryExists(const void* addonData, const char *strPath)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  return CDirectory::Exists(strPath);
+}
+
+bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *strPath)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  // Empty directory
+  CFileItemList fileItems;
+  CDirectory::GetDirectory(strPath, fileItems);
+  for (int i = 0; i < fileItems.Size(); ++i)
+    CFile::Delete(fileItems.Get(i)->GetPath());
+
+  return CDirectory::Remove(strPath);
 }
 
 }; /* namespace ADDON */

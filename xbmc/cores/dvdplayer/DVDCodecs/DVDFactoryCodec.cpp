@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -186,7 +185,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
     {
       if (hint.codec == CODEC_ID_H264 && !hint.ptsinvalid)
       {
-        CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
         if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
       }
     }
@@ -203,7 +201,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
         case CODEC_ID_H264:
           if (hint.codec == CODEC_ID_H264 && hint.ptsinvalid)
             break;
-          CLog::Log(LOGINFO, "Apple VideoToolBox Decoder...");
           if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
         break;
         default:
@@ -228,7 +225,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
             break;
           if (hint.codec == CODEC_ID_MPEG2VIDEO && hint.width <= 720)
             break;
-          CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
           if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
         break;
         default:
@@ -243,7 +239,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   {
       if (hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_VC1)
     {
-      CLog::Log(LOGINFO, "Trying OpenMax Decoder...");
       if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
     }
   }

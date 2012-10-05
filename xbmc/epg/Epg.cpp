@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -256,7 +255,9 @@ bool CEpg::CheckPlayingEvent(void)
   bool bGotPreviousTag = InfoTagNow(previousTag, false);
   bool bGotCurrentTag = InfoTagNow(newTag);
 
-  if (!bGotPreviousTag || (bGotCurrentTag && previousTag != newTag))
+  bool bTagChanged = bGotCurrentTag && (!bGotPreviousTag || previousTag != newTag);
+  bool bTagRemoved = !bGotCurrentTag && bGotPreviousTag;
+  if (bTagChanged || bTagRemoved)
   {
     NotifyObservers(ObservableMessageEpgActiveItem);
     bReturn = true;
@@ -381,8 +382,9 @@ bool CEpg::Load(void)
   else
   {
     m_lastScanTime = GetLastScanTime();
-    CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.",
-        __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
+#if EPG_DEBUGGING
+    CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.", __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
+#endif
     bReturn = true;
   }
 
@@ -410,14 +412,21 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 
     {
       CSingleLock lock(m_critSection);
-      CLog::Log(LOGDEBUG, "%s - %u entries in memory before merging", __FUNCTION__, m_tags.size());
+#if EPG_DEBUGGING
+      CLog::Log(LOGDEBUG, "%s - %zu entries in memory before merging", __FUNCTION__, m_tags.size());
+#endif
       /* copy over tags */
       for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
         UpdateEntry(*it->second, bStoreInDb, false);
 
-      CLog::Log(LOGDEBUG, "%s - %u entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+#if EPG_DEBUGGING
+      CLog::Log(LOGDEBUG, "%s - %zu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+#endif
       FixOverlappingEvents(bStoreInDb);
-      CLog::Log(LOGDEBUG, "%s - %u entries in memory after fixing", __FUNCTION__, m_tags.size());
+
+#if EPG_DEBUGGING
+      CLog::Log(LOGDEBUG, "%s - %zu entries in memory after fixing", __FUNCTION__, m_tags.size());
+#endif
       /* update the last scan time of this table */
       m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
 

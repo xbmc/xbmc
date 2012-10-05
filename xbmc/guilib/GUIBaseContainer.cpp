@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -304,9 +303,12 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         float speed = std::min(1.0f, (float)(action.GetHoldTime() - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int frameDuration = std::min(CTimeUtils::GetFrameTime() - m_lastHoldTime, 50u); // max 20fps
 
-        // scrollrate is minimum 10 items/sec and timed to take around 10 seconds
-        // with ramp up (num_rows/7 items per second max speed) to traverse a long list
-        m_scrollItemsPerFrame += std::max(0.01f*(float)frameDuration, (float)(speed * 0.00015f * GetRows() * frameDuration));
+        // maximal scroll rate is at least 30 items per second, and at most (item_rows/7) items per second
+        //  i.e. timed to take 7 seconds to traverse the list at full speed.
+        // minimal scroll rate is at least 10 items per second
+        float maxSpeed = std::max(frameDuration * 0.001f * 30, frameDuration * 0.001f * GetRows() / 7);
+        float minSpeed = frameDuration * 0.001f * 10;
+        m_scrollItemsPerFrame += std::max(minSpeed, speed*maxSpeed); // accelerate to max speed
         m_lastHoldTime = CTimeUtils::GetFrameTime();
 
         if(m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
@@ -519,7 +521,7 @@ void CGUIBaseContainer::OnPrevLetter()
   }
 }
 
-void CGUIBaseContainer::OnJumpLetter(char letter)
+void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
 {
   if (m_matchTimer.GetElapsedMilliseconds() < letter_match_timeout)
     m_match.push_back(letter);
@@ -534,7 +536,8 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
 
   // find the current letter we're focused on
   unsigned int offset = CorrectOffset(GetOffset(), GetCursor());
-  for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
+  unsigned int i      = (offset + ((skip) ? 1 : 0)) % m_items.size();
+  do
   {
     CGUIListItemPtr item = m_items[i];
     if (0 == strnicmp(SortUtils::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
@@ -542,12 +545,13 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
       SelectItem(i);
       return;
     }
-  }
+    i = (i+1) % m_items.size();
+  } while (i != offset);
   // no match found - repeat with a single letter
   if (m_match.size() > 1)
   {
     m_match.clear();
-    OnJumpLetter(letter);
+    OnJumpLetter(letter, true);
   }
 }
 
@@ -779,7 +783,9 @@ void CGUIBaseContainer::ValidateOffset()
 
 void CGUIBaseContainer::AllocResources()
 {
+  CGUIControl::AllocResources();
   CalculateLayout();
+  UpdateStaticItems(true);
   if (m_staticDefaultItem != -1) // select default item
     SelectStaticItemById(m_staticDefaultItem);
 }
@@ -885,7 +891,7 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
       SetPageControlRange();
       if (reselect >= 0 && reselect < (int)m_items.size())
         SelectItem(reselect);
-      MarkDirtyRegion();
+      SetInvalid();
     }
     UpdateScrollByLetter();
   }
@@ -1041,16 +1047,17 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     }
     item = item->NextSiblingElement("item");
   }
-  SetStaticContent(items);
+  SetStaticContent(items, false);
 }
 
-void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
+void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items, bool forceUpdate /* = true */)
 {
   m_staticContent = true;
   m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
-  UpdateStaticItems(true);
+  if (forceUpdate)
+    UpdateStaticItems(true);
 }
 
 void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)

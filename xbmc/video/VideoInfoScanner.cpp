@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -85,6 +84,7 @@ namespace VIDEO
       m_bCanInterrupt = true;
 
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Starting scan ..");
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
 
       // Reset progress vars
       m_currentItem = 0;
@@ -756,7 +756,7 @@ namespace VIDEO
      */
     if (tag->m_iSeason > -1 && tag->m_iEpisode > 0)
     {
-      SEpisode episode;
+      SEpisode episode = {};
       episode.strPath = item->GetPath();
       episode.iSeason = tag->m_iSeason;
       episode.iEpisode = tag->m_iEpisode;
@@ -773,7 +773,7 @@ namespace VIDEO
      */
     if (tag->m_firstAired.IsValid())
     {
-      SEpisode episode;
+      SEpisode episode = {};
       episode.strPath = item->GetPath();
       episode.strTitle = tag->m_strTitle;
       episode.isFolder = false;
@@ -799,7 +799,7 @@ namespace VIDEO
      */
     if (!tag->m_strTitle.IsEmpty())
     {
-      SEpisode episode;
+      SEpisode episode = {};
       episode.strPath = item->GetPath();
       episode.strTitle = tag->m_strTitle;
       episode.isFolder = false;
@@ -849,7 +849,7 @@ namespace VIDEO
       if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
         continue;
 
-      SEpisode episode;
+      SEpisode episode = {};
       episode.strPath = item->GetPath();
       episode.iSeason = -1;
       episode.iEpisode = -1;
@@ -891,7 +891,7 @@ namespace VIDEO
 
       if (reg.RegFind(strBasePath.c_str()) > -1)
       {
-        SEpisode parent;
+        SEpisode parent = {};
         if (byDate)
         {
           GetAirDateFromRegExp(reg, parent);
@@ -958,11 +958,12 @@ namespace VIDEO
 
     if (season && episode)
     {
+      char* endptr = NULL;
       if (strlen(season) == 0 && strlen(episode) > 0)
       { // no season specified -> assume defaultSeason
         episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
-          episodeInfo.iEpisode = atoi(episode);
+          episodeInfo.iEpisode = strtol(episode, &endptr, 10);
       }
       else if (strlen(season) > 0 && strlen(episode) == 0)
       { // no episode specification -> assume defaultSeason
@@ -973,7 +974,14 @@ namespace VIDEO
       else
       { // season and episode specified
         episodeInfo.iSeason = atoi(season);
-        episodeInfo.iEpisode = atoi(episode);
+        episodeInfo.iEpisode = strtol(episode, &endptr, 10);
+      }
+      if (endptr)
+      {
+        if (isalpha(*endptr))
+          episodeInfo.iSubepisode = *endptr - (islower(*endptr) ? 'a' : 'A') + 1;
+        else if (*endptr == '.')
+          episodeInfo.iSubepisode = atoi(endptr+1);
       }
     }
     free(season);
@@ -1282,16 +1290,14 @@ namespace VIDEO
         continue;
       }
 
-      std::pair<int,int> key;
-      key.first = file->iSeason;
-      key.second = file->iEpisode;
+      struct EPISODE key(file->iSeason, file->iEpisode, file->iSubepisode);
       bool bFound = false;
       EPISODELIST::iterator guide = episodes.begin();;
       EPISODELIST matches;
 
       for (; guide != episodes.end(); ++guide )
       {
-        if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==guide->key))
+        if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==*guide))
         {
           bFound = true;
           break;
@@ -1357,15 +1363,20 @@ namespace VIDEO
         item.SetPath(file->strPath);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *item.GetVideoInfoTag(), pDlgProgress))
           return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
-        item.GetVideoInfoTag()->m_iSeason = guide->key.first;
-        item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
+          
+        // Only set season/epnum from filename when it is not already set by a scraper
+        if (item.GetVideoInfoTag()->m_iSeason == -1)
+          item.GetVideoInfoTag()->m_iSeason = guide->iSeason;
+        if (item.GetVideoInfoTag()->m_iEpisode == -1)
+          item.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
+          
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, idShow) < 0)
           return INFO_ERROR;
       }
       else
       {
-        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d, airdate: '%s', title: '%s'",
-                  __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode,
+        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d.%d, airdate: '%s', title: '%s'",
+                  __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode, file->iSubepisode,
                   file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
       }
     }

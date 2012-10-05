@@ -67,10 +67,11 @@ export CEDARINCLUDES=\
 #vecore,cedarxalloc taken from $(XBMCPREFIX)/lib	
 export CEDARLIBS=-L$(CEDARDIR) -lcedarv -lvecore -lcedarxalloc
 
-export RLINK_PATH=-Wl,-rpath,$(XBMCPREFIX)/lib -Wl,-rpath-link,${XBMCPREFIX}/lib:${SDKSTAGE}/lib:${SDKSTAGE}/lib/arm-linux-gnueabi:${SDKSTAGE}/usr/lib:${SDKSTAGE}/usr/lib/arm-linux-gnueabi
+export RLINK_PATH=-Wl,-rpath,$(XBMCPREFIX)/lib -Wl,-rpath-link,${XBMCPREFIX}/lib:$(SDKSTAGE)/usr/local/lib:${SDKSTAGE}/lib:${SDKSTAGE}/lib/arm-linux-gnueabi:${SDKSTAGE}/usr/lib:${SDKSTAGE}/usr/lib/arm-linux-gnueabi
 export LDFLAGS=\
 ${RLINK_PATH} \
 -L${XBMCPREFIX}/lib \
+-L$(SDKSTAGE)/usr/local/lib \
 -L${SDKSTAGE}/lib \
 -L${SDKSTAGE}/lib/arm-linux-gnueabi \
 -L${SDKSTAGE}/usr/lib \
@@ -80,6 +81,7 @@ export CFLAGS=-pipe -O3 -mtune=cortex-a8 -D__ARM_NEON__ -DALLWINNERA10
 export CFLAGS+=$(CEDARINCLUDES) $(GLESINCLUDES)
 export CFLAGS+=\
 -isystem${XBMCPREFIX}/include \
+-isystem$(SDKSTAGE)/usr/local/include \
 -isystem${SDKSTAGE}/usr/include \
 -isystem${SDKSTAGE}/usr/include/arm-linux-gnueabi 
 export CFLAGS+=${LDFLAGS}

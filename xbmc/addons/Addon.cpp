@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -177,6 +176,60 @@ AddonProps::AddonProps(const cp_plugin_info_t *plugin)
   , stars(0)
 {
   BuildDependencies(plugin);
+}
+
+void AddonProps::Serialize(CVariant &variant)
+{
+  variant["addonid"] = id;
+  variant["type"] = TranslateType(type);
+  variant["version"] = version.c_str();
+  variant["minversion"] = minversion.c_str();
+  variant["name"] = name;
+  variant["parent"] = parent;
+  variant["license"] = license;
+  variant["summary"] = summary;
+  variant["description"] = description;
+  variant["path"] = path;
+  variant["libname"] = libname;
+  variant["author"] = author;
+  variant["source"] = source;
+
+  if (CURL::IsFullPath(icon))
+    variant["icon"] = icon;
+  else
+    variant["icon"] = URIUtils::AddFileToFolder(path, icon);
+
+  variant["thumbnail"] = variant["icon"];
+  variant["disclaimer"] = disclaimer;
+  variant["changelog"] = changelog;
+
+  if (CURL::IsFullPath(fanart))
+    variant["fanart"] = fanart;
+  else
+    variant["fanart"] = URIUtils::AddFileToFolder(path, fanart);
+
+  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
+  for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); it++)
+  {
+    CVariant dep(CVariant::VariantTypeObject);
+    dep["addonid"] = it->first;
+    dep["version"] = it->second.first.c_str();
+    dep["optional"] = it->second.second;
+    variant["dependencies"].push_back(dep);
+  }
+  if (broken.empty())
+    variant["broken"] = false;
+  else
+    variant["broken"] = broken;
+  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
+  for (InfoMap::const_iterator it = extrainfo.begin(); it != extrainfo.end(); it++)
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["key"] = it->first;
+    info["value"] = it->second;
+    variant["extrainfo"].push_back(info);
+  }
+  variant["rating"] = stars;
 }
 
 void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)

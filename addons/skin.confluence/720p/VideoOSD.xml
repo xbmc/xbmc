@@ -29,7 +29,7 @@
 		<control type="slider" id="87">
 			<description>Seek Slider</description>
 			<posx>430</posx>
-			<posy>72r</posy>
+			<posy>82r</posy>
 			<width>720</width>
 			<height>16</height>
 			<onup>702</onup>
@@ -44,7 +44,7 @@
 		<!-- !LiveTV -->
 		<control type="group" id="100">
 			<posx>325</posx>
-			<posy>50r</posy>
+			<posy>60r</posy>
 			<defaultcontrol always="true">602</defaultcontrol>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
@@ -52,8 +52,8 @@
 			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>210</label>
 				<font>-</font>
 				<texturefocus>OSDPrevTrackFO.png</texturefocus>
@@ -65,10 +65,10 @@
 				<onclick>PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="601">
-				<posx>45</posx>
+				<posx>55</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31354</label>
 				<font>-</font>
 				<texturefocus>OSDRewindFO.png</texturefocus>
@@ -80,10 +80,10 @@
 				<onclick>PlayerControl(Rewind)</onclick>
 			</control>
 			<control type="togglebutton" id="602">
-				<posx>90</posx>
+				<posx>110</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31351</label>
 				<altlabel>208</altlabel>
 				<font>-</font>
@@ -99,10 +99,10 @@
 				<onclick>PlayerControl(Play)</onclick>
 			</control>
 			<control type="button" id="603">
-				<posx>135</posx>
+				<posx>165</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31352</label>
 				<font>-</font>
 				<texturefocus>OSDStopFO.png</texturefocus>
@@ -114,10 +114,10 @@
 				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="button" id="604">
-				<posx>180</posx>
+				<posx>220</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31353</label>
 				<font>-</font>
 				<texturefocus>OSDForwardFO.png</texturefocus>
@@ -129,10 +129,10 @@
 				<onclick>PlayerControl(Forward)</onclick>
 			</control>
 			<control type="button" id="605">
-				<posx>225</posx>
+				<posx>275</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>209</label>
 				<font>-</font>
 				<texturefocus>OSDNextTrackFO.png</texturefocus>
@@ -148,7 +148,7 @@
 		<!-- LiveTV -->
 		<control type="group" id="100">
 			<posx>325</posx>
-			<posy>50r</posy>
+			<posy>60r</posy>
 			<defaultcontrol always="true">601</defaultcontrol>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
@@ -156,8 +156,8 @@
 			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>210</label>
 				<font>-</font>
 				<texturefocus>OSDChannelUPFO.png</texturefocus>
@@ -169,10 +169,10 @@
 				<onclick>PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="601">
-				<posx>45</posx>
+				<posx>55</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31354</label>
 				<font>-</font>
 				<texturefocus>OSDChannelDownFO.png</texturefocus>
@@ -184,10 +184,10 @@
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
 			<control type="togglebutton" id="602">
-				<posx>90</posx>
+				<posx>110</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31351</label>
 				<altlabel>208</altlabel>
 				<font>-</font>
@@ -204,10 +204,10 @@
 				<visible>False</visible>
 			</control>
 			<control type="button" id="603">
-				<posx>135</posx>
+				<posx>165</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31351</label>
 				<altlabel>208</altlabel>
 				<font>-</font>
@@ -220,10 +220,10 @@
 				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="button" id="604">
-				<posx>180</posx>
+				<posx>220</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>19019</label>
 				<font>-</font>
 				<texturefocus>OSDChannelListFO.png</texturefocus>
@@ -236,10 +236,10 @@
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
 			<control type="button" id="605">
-				<posx>225</posx>
+				<posx>275</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>$LOCALIZE[19029]$INFO[VideoPlayer.ChannelName, - ]</label>
 				<font>-</font>
 				<texturefocus>OSDepgFO.png</texturefocus>
@@ -252,10 +252,10 @@
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
 			<control type="label" id="606">
-				<posx>290</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>450</width>
-				<height>45</height>
+				<width>385</width>
+				<height>55</height>
 				<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -267,16 +267,16 @@
 
 		<!-- !LiveTV -->
 		<control type="group">
-			<posx>250r</posx>
-			<posy>50r</posy>
+			<posx>300r</posx>
+			<posy>60r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<control type="togglebutton" id="701">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31356</label>
 				<font>-</font>
 				<texturefocus>OSDSubtitlesFO.png</texturefocus>
@@ -295,10 +295,10 @@
 				<usealttexture>IsEmpty(Skin.String(SubtitleScript_Path))</usealttexture>
 			</control>
 			<control type="button" id="702">
-				<posx>45</posx>
+				<posx>55</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>13395</label>
 				<font>-</font>
 				<texturefocus>OSDVideoFO.png</texturefocus>
@@ -310,10 +310,10 @@
 				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
 			</control>
 			<control type="button" id="703">
-				<posx>90</posx>
+				<posx>110</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>13396</label>
 				<font>-</font>
 				<texturefocus>OSDAudioFO.png</texturefocus>
@@ -325,10 +325,10 @@
 				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
 			</control>
 			<control type="button" id="704">
-				<posx>135</posx>
+				<posx>165</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31355</label>
 				<font>-</font>
 				<texturefocus>OSDBookmarksFO.png</texturefocus>
@@ -340,10 +340,10 @@
 				<onclick>ActivateWindow(VideoBookmarks)</onclick>
 			</control>
 			<control type="button" id="705">
-				<posx>180</posx>
+				<posx>220</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31355</label>
 				<font>-</font>
 				<texturefocus>OSDDvdFO.png</texturefocus>
@@ -360,16 +360,16 @@
 
 		<!-- LiveTV -->
 		<control type="group">
-			<posx>200r</posx>
-			<posy>50r</posy>
+			<posx>240r</posx>
+			<posy>60r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="701">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31356</label>
 				<font>-</font>
 				<texturefocus>OSDTeleTextFO.png</texturefocus>
@@ -381,10 +381,10 @@
 				<onclick>ActivateWindow(Teletext)</onclick>
 			</control>
 			<control type="button" id="702">
-				<posx>45</posx>
+				<posx>55</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>13395</label>
 				<font>-</font>
 				<texturefocus>OSDVideoFO.png</texturefocus>
@@ -396,10 +396,10 @@
 				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
 			</control>
 			<control type="button" id="703">
-				<posx>90</posx>
+				<posx>110</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>13396</label>
 				<font>-</font>
 				<texturefocus>OSDAudioFO.png</texturefocus>
@@ -411,10 +411,10 @@
 				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
 			</control>
 			<control type="togglebutton" id="704">
-				<posx>135</posx>
+				<posx>165</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31351</label>
 				<altlabel>208</altlabel>
 				<font>-</font>

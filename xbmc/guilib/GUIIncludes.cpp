@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -175,21 +174,21 @@ bool CGUIIncludes::HasIncludeFile(const CStdString &file) const
   return false;
 }
 
-void CGUIIncludes::ResolveIncludes(TiXmlElement *node)
+void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions /* = NULL */)
 {
   if (!node)
     return;
-  ResolveIncludesForNode(node);
+  ResolveIncludesForNode(node, xmlIncludeConditions);
 
   TiXmlElement *child = node->FirstChildElement();
   while (child)
   {
-    ResolveIncludes(child);
+    ResolveIncludes(child, xmlIncludeConditions);
     child = child->NextSiblingElement();
   }
 }
 
-void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
+void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions /* = NULL */)
 {
   // we have a node, find any <include file="fileName">tagName</include> tags and replace
   // recursively with their real includes
@@ -226,7 +225,13 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
     const char *condition = include->Attribute("condition");
     if (condition)
     { // check this condition
-      if (!g_infoManager.EvaluateBool(condition))
+      int conditionID = g_infoManager.Register(condition);
+      bool value = g_infoManager.GetBoolValue(conditionID);
+
+      if (xmlIncludeConditions)
+        (*xmlIncludeConditions)[conditionID] = value;
+
+      if (!value)
       {
         include = include->NextSiblingElement("include");
         continue;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,12 +33,14 @@ CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
+  m_buttonString = -1;
   m_useDetails = false;
   m_vecListInternal = new CFileItemList;
   m_selectedItems = new CFileItemList;
   m_multiSelection = false;
   m_vecList = m_vecListInternal;
   m_iSelected = -1;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
@@ -55,7 +56,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialog::OnMessage(message);
-      m_viewControl.Reset();
+      m_viewControl.Clear();
 
       m_bButtonEnabled = false;
       m_useDetails = false;
@@ -77,6 +78,9 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
       m_vecListInternal->Clear();
       m_vecList = m_vecListInternal;
+
+      m_buttonString = -1;
+      SET_CONTROL_LABEL(CONTROL_BUTTON, "");
       return true;
     }
     break;
@@ -208,9 +212,10 @@ const CFileItemList& CGUIDialogSelect::GetSelectedItems() const
 void CGUIDialogSelect::EnableButton(bool enable, int string)
 {
   m_bButtonEnabled = enable;
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BUTTON);
-  msg.SetLabel(string);
-  OnMessage(msg);
+  m_buttonString = string;
+
+  if (IsActive())
+    SetupButton();
 }
 
 bool CGUIDialogSelect::IsButtonPressed()
@@ -322,18 +327,26 @@ void CGUIDialogSelect::OnInitWindow()
   if (m_multiSelection)
     EnableButton(true, 186);
 
-  if (m_bButtonEnabled)
-  {
-    CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_BUTTON);
-    g_windowManager.SendMessage(msg2);
-  }
-  else
-  {
-    CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_BUTTON);
-    g_windowManager.SendMessage(msg2);
-  }
+  SetupButton();
   CGUIDialogBoxBase::OnInitWindow();
 
   if (m_iSelected >= 0)
     m_viewControl.SetSelectedItem(m_iSelected);
+}
+
+void CGUIDialogSelect::OnWindowUnload()
+{
+  CGUIDialog::OnWindowUnload();
+  m_viewControl.Reset();
+}
+
+void CGUIDialogSelect::SetupButton()
+{
+  if (m_bButtonEnabled)
+  {
+    SET_CONTROL_LABEL(CONTROL_BUTTON, g_localizeStrings.Get(m_buttonString));
+    SET_CONTROL_VISIBLE(CONTROL_BUTTON);
+  }
+  else
+    SET_CONTROL_HIDDEN(CONTROL_BUTTON);
 }

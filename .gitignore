@@ -1,16 +1,13 @@
 # global patterns
 testMain
 
-pvr-addons
-/pvr-addons
-/addons/pvr.*
-
 # commonly used editors
 # vim
 *.swp
 # Eclipse
 *.project
 *.cproject
+.classpath
 
 # generated files etc
 config.cache
@@ -32,6 +29,7 @@ config.log
 *.orig
 *.bak
 *.apk
+*.class
 
 # Windows specific generated files
 *.exp
@@ -100,6 +98,7 @@ config.log
 /configure
 /xbmc/stamp-h1
 /xbmc.bin
+/xbmc-test
 /xbmc-xrandr
 /git_revision.h
 /libtool
@@ -124,6 +123,7 @@ config.log
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
+/addons/pvr.*
 
 # /xbmc/android
 /xbmc/android/Makefile
@@ -147,6 +147,9 @@ config.log
 # /xbmc/peripherals/
 /xbmc/peripherals/bus/Makefile
 /xbmc/peripherals/devices/Makefile
+
+# /xbmc/main/
+/xbmc/main/Makefile
 
 # /lib/
 /lib/Makefile
@@ -220,6 +223,33 @@ lib/cmyth/Makefile
 # /lib/fribidi
 /lib/fribidi/libfridibidi/Debug
 /lib/fribidi/libfridibidi/Release
+
+# /lib/gtest
+/lib/gtest/Makefile.in
+/lib/gtest/aclocal.m4
+/lib/gtest/build-aux/config.guess
+/lib/gtest/build-aux/config.h.in
+/lib/gtest/build-aux/config.sub
+/lib/gtest/build-aux/depcomp
+/lib/gtest/build-aux/install-sh
+/lib/gtest/build-aux/ltmain.sh
+/lib/gtest/build-aux/missing
+/lib/gtest/configure
+/lib/gtest/m4/libtool.m4
+/lib/gtest/m4/ltoptions.m4
+/lib/gtest/m4/ltsugar.m4
+/lib/gtest/m4/ltversion.m4
+/lib/gtest/m4/lt~obsolete.m4
+/lib/gtest/Makefile
+/lib/gtest/build-aux/config.h
+/lib/gtest/build-aux/config.h.in~
+/lib/gtest/build-aux/stamp-h1
+/lib/gtest/fused-src/
+/lib/gtest/lib/
+/lib/gtest/libtool
+/lib/gtest/samples/.dirstamp
+/lib/gtest/scripts/gtest-config
+/lib/gtest/src/.dirstamp
 
 # /lib/jsoncpp
 /lib/jsoncpp/src/lib_json/Makefile
@@ -325,14 +355,6 @@ lib/cmyth/Makefile
 /lib/pcre/libpcre/Debug
 /lib/pcre/libpcre/Release
 
-# /lib/libapetag
-/lib/libapetag/Makefile
-/lib/libapetag/config.h
-/lib/libapetag/install-sh
-/lib/libapetag/libtool
-/lib/libapetag/m4/lt~obsolete.m4
-/lib/libapetag/stamp-h1
-
 # /project
 /project/obj
 /project/output
@@ -351,6 +373,8 @@ lib/cmyth/Makefile
 /project/BuildDependencies/lib
 /project/BuildDependencies/msys
 /project/BuildDependencies/scripts/tmp
+/project/BuildDependencies/bin/swig
+/project/BuildDependencies/bin/doxygen
 
 # /project/VS2008Express
 /project/VS2008Express/Debug
@@ -390,7 +414,6 @@ lib/cmyth/Makefile
 /system/librtmp.dll
 /system/libexif.dll
 /system/libexpat.dll
-/system/libid3tag.dll
 /system/libidn-11.dll
 /system/libssh2.dll
 /system/libssl32.dll
@@ -565,6 +588,7 @@ lib/cmyth/Makefile
 
 /xbmc/cores/dvdplayer/Makefile
 /xbmc/cores/amlplayer/Makefile
+/xbmc/cores/omxplayer/Makefile
 
 # /lib/ffmpeg/
 /lib/ffmpeg/config.h
@@ -1034,30 +1058,6 @@ lib/cmyth/Makefile
 # /xbmc/music/karaoke/
 /xbmc/music/karaoke/Makefile
 
-# /lib/libapetag/
-/lib/libapetag/Makefile
-/lib/libapetag/libtool
-/lib/libapetag/stamp-h1
-/lib/libapetag/config.h
-/lib/libapetag/Debug
-/lib/libapetag/Release
-/lib/libapetag/aclocal.m4
-/lib/libapetag/config.guess
-/lib/libapetag/config.h.in
-/lib/libapetag/config.h.in~
-/lib/libapetag/config.sub
-/lib/libapetag/configure
-/lib/libapetag/depcomp
-/lib/libapetag/INSTALL
-/lib/libapetag/ltmain.sh
-/lib/libapetag/m4/libtool.m4
-/lib/libapetag/m4/ltoptions.m4
-/lib/libapetag/m4/ltsugar.m4
-/lib/libapetag/m4/ltversion.m4
-/lib/libapetag/m4/lt~obsolete.m4
-/lib/libapetag/Makefile.in
-/lib/libapetag/missing
-
 # /lib/cmyth/
 /lib/cmyth/Makefile.depend
 /lib/cmyth/Win32/libcmyth.lib
@@ -1089,64 +1089,16 @@ lib/cmyth/Makefile
 /lib/libhts/Win32/Debug
 /lib/libhts/Win32/Release
 
-# /lib/libid3tag/
-/lib/libid3tag/Makefile
-/lib/libid3tag/libid3tag/autom4te.cache
-/lib/libid3tag/libid3tag/configure
-/lib/libid3tag/libid3tag/Makefile
-/lib/libid3tag/libid3tag/compat.c
-/lib/libid3tag/libid3tag/config.h
-/lib/libid3tag/libid3tag/frametype.c
-/lib/libid3tag/libid3tag/libid3tag.list
-/lib/libid3tag/libid3tag/libtool
-/lib/libid3tag/libid3tag/stamp-h1
-/lib/libid3tag/libid3tag/msvc++/Makefile
-/lib/libid3tag/libid3tag/msvc++/libid3tag.lib
-/lib/libid3tag/libid3tag/msvc++/Debug
-/lib/libid3tag/libid3tag/msvc++/Release
-/lib/libid3tag/libid3tag/aclocal.m4
-/lib/libid3tag/libid3tag/config.guess
-/lib/libid3tag/libid3tag/config.h.in
-/lib/libid3tag/libid3tag/config.h.in~
-/lib/libid3tag/libid3tag/config.sub
-/lib/libid3tag/libid3tag/depcomp
-/lib/libid3tag/libid3tag/INSTALL
-/lib/libid3tag/libid3tag/install-sh
-/lib/libid3tag/libid3tag/ltmain.sh
-/lib/libid3tag/libid3tag/Makefile.in
-/lib/libid3tag/libid3tag/missing
-/lib/libid3tag/libid3tag/mkinstalldirs
-/lib/libid3tag/libid3tag/msvc++/Makefile.in
-
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
 /xbmc/interfaces/python/Makefile
-/xbmc/interfaces/python/xbmcmodule/Makefile
-/xbmc/interfaces/python/linux/Makefile
-/xbmc/interfaces/python/linux/wrapper_python.def
+/xbmc/interfaces/python/generated/
+/xbmc/interfaces/python/test/Makefile
 
 # /xbmc/network/
 /xbmc/network/Makefile
-
-/lib/python/Makefile
-/lib/python/Include/pyconfig.h
-/lib/python/Makefile.pre
-/lib/python/Modules/Setup
-/lib/python/Modules/Setup.config
-/lib/python/Modules/Setup.local
-/lib/python/Modules/config.c
-/lib/python/Parser/pgen
-/lib/python/Parser/pgen.exe
-/lib/python/PC/pythonnt_rc.h
-/lib/python/build/
-/lib/python/buildno
-/lib/python/pyconfig.h
-/lib/python/pyconfig.hbak
-/lib/python/python
-/lib/python/python.exe
-/lib/python/Mac/Python/
-/lib/python/PC/pythonnt_rc_d.h
+/xbmc/network/upnp/Makefile
 
 # /lib/libRTV/
 /lib/libRTV/Makefile
@@ -1278,3 +1230,5 @@ xbmc/visualizations/EGLHelpers/Makefile
 /addons/library.xbmc.gui/libXBMC_gui.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
+
+/pvr-addons

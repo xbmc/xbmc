@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,8 +34,8 @@
 using namespace std;
 using namespace ANNOUNCEMENT;
 
-CCriticalSection CAnnouncementManager::m_critSection;
-vector<IAnnouncer *> CAnnouncementManager::m_announcers;
+#define m_announcers XBMC_GLOBAL_USE(ANNOUNCEMENT::CAnnouncementManager::Globals).m_announcers
+#define m_critSection XBMC_GLOBAL_USE(ANNOUNCEMENT::CAnnouncementManager::Globals).m_critSection
 
 void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
 {
@@ -183,6 +182,11 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       if (!item->GetMusicInfoTag()->GetArtist().empty())
         object["artist"] = item->GetMusicInfoTag()->GetArtist();
     }
+  }
+  else if (item->HasPictureInfoTag())
+  {
+    type = "picture";
+    object["file"] = item->GetPath();
   }
   else
     type = "unknown";

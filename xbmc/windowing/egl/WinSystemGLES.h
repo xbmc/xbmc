@@ -4,7 +4,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,9 +18,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -56,6 +55,8 @@ public:
 
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();
+  virtual bool  Support3D(int width, int height, uint32_t mode)     const;
+  virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
 protected:
   virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
@@ -63,6 +64,8 @@ protected:
   void                  *m_display;
   EGLNativeWindowType   m_window;
   CWinEGLPlatform       *m_eglplatform;
+  int                   m_nScreenWidth;
+  int                   m_nScreenHeight;
 };
 
 XBMC_GLOBAL_REF(CWinSystemGLES,g_Windowing);

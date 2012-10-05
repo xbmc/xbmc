@@ -86,12 +86,12 @@ NPT_Result NPT_ContainerFind(T&                   container,
 +---------------------------------------------------------------------*/
 template <typename T, typename P>
 NPT_Result NPT_ContainerFind(T&                    container, 
-							 const P&              predicate, 
-							 typename T::Iterator& iter, 
-							 NPT_Ordinal           n=0) 
+                             const P&              predicate, 
+                             typename T::Iterator& iter, 
+                             NPT_Ordinal           n=0) 
 {
-	iter = container.Find(predicate, n);
-	return iter?NPT_SUCCESS:NPT_ERROR_NO_SUCH_ITEM;
+    iter = container.Find(predicate, n);
+    return iter?NPT_SUCCESS:NPT_ERROR_NO_SUCH_ITEM;
 }
 
 /*----------------------------------------------------------------------

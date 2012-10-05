@@ -9,7 +9,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,9 +23,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -80,6 +79,7 @@ class CGUIWindow : public CGUIControlGroup, protected CCriticalSection
 public:
 
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
+  enum LOAD_TYPE { LOAD_EVERY_TIME, LOAD_ON_GUI_INIT, KEEP_IN_MEMORY };
 
   CGUIWindow(int id, const CStdString &xmlFile);
   virtual ~CGUIWindow(void);
@@ -144,8 +144,8 @@ public:
   virtual bool IsActive() const;
   void SetCoordsRes(const RESOLUTION_INFO &res) { m_coordsRes = res; };
   const RESOLUTION_INFO &GetCoordsRes() const { return m_coordsRes; };
-  void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
-  bool GetLoadOnDemand() { return m_loadOnDemand; }
+  void SetLoadType(LOAD_TYPE loadType) { m_loadType = loadType; };
+  LOAD_TYPE GetLoadType() { return m_loadType; } const
   int GetRenderOrder() { return m_renderOrder; };
   virtual void SetInitialVisibility();
   virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
@@ -184,23 +184,21 @@ public:
    */
   void ClearProperties();
 
-#ifdef _DEBUG
   void DumpTextureUse();
-#endif
 
   bool HasSaveLastControl() const { return !m_defaultAlways; };
 
+  virtual void OnDeinitWindow(int nextWindowID);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
-  bool Load(CXBMCTinyXML &xmlDoc);                 ///< Loads from the given XML document
+  bool Load(TiXmlElement *pRootElement);                 ///< Loads from the given XML root element
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
   void Close_Internal(bool forceClose = false, int nextWindowID = 0, bool enableSound = true);
   EVENT_RESULT OnMouseAction(const CAction &action);
   virtual bool Animate(unsigned int currentTime);
@@ -235,7 +233,7 @@ protected:
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   bool m_windowLoaded;  // true if the window's xml file has been loaded
-  bool m_loadOnDemand;  // true if the window should be loaded only as needed
+  LOAD_TYPE m_loadType;
   bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
   bool m_closing;
@@ -269,13 +267,15 @@ protected:
   CGUIAction m_loadActions;
   CGUIAction m_unloadActions;
 
+  TiXmlElement* m_windowXMLRootElement;
+
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 
 private:
   std::map<CStdString, CVariant, icompare> m_mapProperties;
-
+  std::map<int, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 
 #endif

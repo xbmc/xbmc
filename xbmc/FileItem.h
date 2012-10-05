@@ -5,7 +5,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,9 +19,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -449,6 +448,14 @@ public:
   bool Copy  (const CFileItemList& item);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SortOrder sortOrder);
+  /* \brief Sorts the items based on the given sorting options
+
+  In contrast to Sort (see above) this does not change the internal
+  state by storing the sorting method and order used and therefore
+  will always execute the sorting even if the list of items has
+  already been sorted with the same options before.
+  */
+  void Sort(SortDescription sortDescription);
   void Randomize();
   void FillInDefaultIcons();
   int GetFolderCount() const;

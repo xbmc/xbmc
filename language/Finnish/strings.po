@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-ALPHA6
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"PO-Revision-Date: 2012-06-24 13:42+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -969,6 +970,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "Nimikkeitä ei löytynyt"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Ensisijainen ääniraidan kieli"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Ensisijainen tekstityksen kieli"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Tekstitys"
@@ -1044,6 +1053,14 @@ msgstr "Käytössä"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Lomittamaton"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Alkuperäisen lähteen kieli"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Käyttöliittymän kieli"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1184,6 +1201,18 @@ msgstr "Vuosi"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Lisää äänenvoimakkuutta äänikanavia yhdistettäessä"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "DTS-HD vahvistin"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "Monikanavainen LPCM vahvistin"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "TrueHD vahvistin"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1512,6 +1541,14 @@ msgstr "Haluatko varmasti poistaa kohteen[CR]'%s'?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "%s %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr ""
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2173,6 +2210,10 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "Kaikki kappaleet"
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr ""
+
 msgctxt "#629"
 msgid "View mode"
 msgstr "Näyttötapa"
@@ -2623,7 +2664,7 @@ msgstr "Langattoman verkon nimi (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "Kaukosäätö"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2656,6 +2697,18 @@ msgstr "Yhteyksien enimmäismäärä"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Internet-yhteys"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr ""
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr ""
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr ""
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3001,37 +3054,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Ohjelmat ja kuvat ja videot"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Tunnistus"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Järjestelmän automaattitunnistus"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Lempinimi"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Kysy ennen yhdistämistä"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Lähetä FTP-käyttäjätunnus ja salasana"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Pingauksen väli"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Yhdistetäänkö havaittuun järjestelmään?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3051,7 +3076,7 @@ msgstr "- Käytä salasanaa"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -5007,19 +5032,19 @@ msgstr "Tehonsäästö"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Rippaus"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Toiminto Audio CD-levyn syötön yhteydessä"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "Toista"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Poista CD kun rippaus on valmis"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5973,10 +5998,6 @@ msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Ohjelmaoppaan oletusnäkymä"
 
-msgctxt "#19066"
-msgid "Loading recordings from clients"
-msgstr "Ladataan nauhoitusten tiedot asiakkailta"
-
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr "Tämän ohjelman nauhoitus on jo aloitettu."
@@ -5988,10 +6009,6 @@ msgstr "Tätä nauhoitusta ei voitu poistaa. Katso lokitiedostosta lisätietoja.
 msgctxt "#19069"
 msgid "EPG"
 msgstr "Ohjelmaopas"
-
-msgctxt "#19070"
-msgid "EPG scan timeout"
-msgstr "Ohjelmatietojen haun aikakatkaisu"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6105,18 +6122,6 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Varoitus"
 
-msgctxt "#19099"
-msgid "Timer present"
-msgstr "Ajastus on olemassa"
-
-msgctxt "#19100"
-msgid "Are you sure you want to delete this channel, including all timers on this channel?"
-msgstr "Haluatko varmasti poistaa tämän kanavan ja kaikki sen sisältämät ajastukset?"
-
-msgctxt "#19101"
-msgid "This channel is currently being used for playback."
-msgstr "Tätä kanavaa toistetaan tällä hetkellä."
-
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Vaihda toiselle kanavalle."
@@ -6129,10 +6134,6 @@ msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Anna nauhoituskansion nimi"
 
-msgctxt "#19105"
-msgid "Size:"
-msgstr "Koko:"
-
 msgctxt "#19106"
 msgid "Next timer on"
 msgstr "Seuraava ajastus"
@@ -6140,10 +6141,6 @@ msgstr "Seuraava ajastus"
 msgctxt "#19107"
 msgid "at"
 msgstr "klo"
-
-msgctxt "#19108"
-msgid "Recordings not in sync. Check the log for details."
-msgstr "Nauhoitustiedot ei ole ajan tasalla. Katso lokitiedostosta lisätietoja."
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
@@ -6156,14 +6153,6 @@ msgstr "Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen tai katso lokiti
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
 msgstr "PVR-taustaosan virhe. Katso lokitiedostosta lisätietoja."
-
-msgctxt "#19112"
-msgid "Timers not in sync. Check the log for details."
-msgstr "Ajastustiedot eivät ole ajan tasalla. Katso lokitiedostosta lisätietoja."
-
-msgctxt "#19113"
-msgid "Next"
-msgstr "Seuraavaksi"
 
 msgctxt "#19114"
 msgid "Version"
@@ -6646,20 +6635,20 @@ msgid "PVR manager is starting up"
 msgstr "PVR-hallinta käynnistyy"
 
 msgctxt "#19236"
-msgid "importing channels"
-msgstr "tuodaan kanavat"
+msgid "Loading channels from clients"
+msgstr ""
 
 msgctxt "#19237"
-msgid "importing timers"
-msgstr "tuodaan ajastukset"
+msgid "Loading timers from clients"
+msgstr ""
 
 msgctxt "#19238"
-msgid "importing recordings"
-msgstr "tuodaan nauhoitukset"
+msgid "Loading recordings from clients"
+msgstr ""
 
 msgctxt "#19239"
-msgid "starting background threads"
-msgstr "käynnistetään taustasäikeet"
+msgid "Starting background threads"
+msgstr ""
 
 msgctxt "#19240"
 msgid "No PVR add-on enabled"
@@ -6682,12 +6671,12 @@ msgid "Backend idle time"
 msgstr "Taustaosan toimettomuusaika"
 
 msgctxt "#19245"
-msgid "Set wakup command (cmd [timestamp])"
-msgstr "Herätyskomento (komento [aikaleima])"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr ""
 
 msgctxt "#19246"
-msgid "Wakup before recording"
-msgstr "Herätysaika ennen nauhoitusta"
+msgid "Wakeup before recording"
+msgstr ""
 
 msgctxt "#19247"
 msgid "Daily wakeup"
@@ -6772,6 +6761,34 @@ msgstr "Lapsilukko käytössä"
 msgctxt "#19267"
 msgid "Parental locked:"
 msgstr "Lapsilukko käytössä:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr ""
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr ""
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr ""
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr ""
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr ""
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr ""
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr ""
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7811,7 +7828,7 @@ msgstr "Odota hetki"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -7856,6 +7873,26 @@ msgstr "Esittäjää ei löydy!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Esittäjän tietojen nouto epäonnistui"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr ""
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr ""
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr ""
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr ""
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr ""
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -8489,6 +8526,30 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Ryhmittele elokuvat settien mukaan"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr ""
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr ""
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr ""
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr ""
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr ""
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Näytä piilotetut tiedostot ja kansiot"
@@ -8737,10 +8798,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Musiikkivideoiden tietojen hakupaikka"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Palaute pohjautuu hakupaikan kieleen"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Asetukset"
@@ -8896,6 +8953,10 @@ msgstr "Välimuisti täynnä"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Välimuisti täyttyi ennen toistoon tarvittavaa määrää"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr ""
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9737,33 +9798,41 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Haluatko ladata tämän lisäosan?"
 
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr ""
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr ""
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Ilmoitukset"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Piilota vieras"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Valitse kaikista otsakkeista"
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Näytä Blu-ray-valikot"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Toista pääotsikko: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Otsikko: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Valitse toistettavat tiedostot"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10153,6 +10222,22 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "Toista käyttöliittymän äänet"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Vain kun toisto on pysähtynyt"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Aina"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Ei koskaan"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Seuraavaa kohdetta ei löydy"
@@ -10187,23 +10272,23 @@ msgstr "Tarkista ääniasetukset"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Käytä eleitä navigoinnissa"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "1:n sormen pyyhkäisy vasen,oikea,ylös,alas kursoria varten"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "2:n sormen pyyhkäisy vasemmalle askelpalauttimelle"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "1:n sormen näpäytys Enter"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "2:n sormen näpäytys tai 1:n sormen pitkä näpäytys valikolle"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -10243,6 +10328,10 @@ msgstr "Näppäimistöasettelu käytössä"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
+msgstr "Älä käytä kustomoitua näppäinkarttaa tälle laitteellle"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
 msgstr ""
 
 msgctxt "#35500"
@@ -10335,31 +10424,31 @@ msgstr "Käytä TV:n kieliasetusta"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Yhdistetty HDMI-laitteeseen"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Tee XBMC:stä aktiivinen lähde käynnistyksen yhteydessä"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Fyysinen osoite (ohittaa HDMI portin)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "COM-portti (jätä tyhjäksi, jos ei tarvetta)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Asetukset päivitetty"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Päivitys epäonnistui, tarkasta asetukset."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Lähetä 'toimeton lähde' käsky kun pysäytetään XBMC "
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -10389,3 +10478,14 @@ msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr ""
+
+msgctxt "#36035"
+msgid "Always"
+msgstr ""
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr ""

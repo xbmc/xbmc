@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -481,6 +480,8 @@ void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName,
 
 bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& strSettingsFile)
 {
+  m_Calibrations.clear();
+
   const TiXmlElement *pElement = pRoot->FirstChildElement("resolutions");
   if (!pElement)
   {
@@ -515,8 +516,18 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
     // we must not delete those, resolution just might not be available
     cal.iWidth = cal.iHeight = 0;
 
-    // store calibration
-    m_Calibrations.push_back(cal);
+    // store calibration, avoid adding duplicates
+    bool found = false;
+    for (std::vector<RESOLUTION_INFO>::iterator  it = m_Calibrations.begin(); it != m_Calibrations.end(); ++it)
+    {
+      if (it->strMode.Equals(cal.strMode))
+      {
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      m_Calibrations.push_back(cal);
 
     // iterate around
     pResolution = pResolution->NextSiblingElement("resolution");

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -395,7 +394,7 @@ void CGUISettings::Initialize()
 
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains a DISPLAYMODE
-#if !defined(TARGET_DARWIN_IOS_ATV2)
+#if !defined(TARGET_DARWIN_IOS_ATV2) && !defined(TARGET_RASPBERRY_PI)
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, 32, SPIN_CONTROL_TEXT);
 #endif
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
@@ -458,9 +457,15 @@ void CGUISettings::Initialize()
 
   map<int,int> audiomode;
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
+#if !defined(TARGET_RASPBERRY_PI)
   audiomode.insert(make_pair(339,AUDIO_IEC958));
+#endif
   audiomode.insert(make_pair(420,AUDIO_HDMI  ));
+#if defined(TARGET_RASPBERRY_PI)
+  AddInt(ao, "audiooutput.mode", 337, AUDIO_HDMI, audiomode, SPIN_CONTROL_TEXT);
+#else
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
+#endif
 
   map<int,int> channelLayout;
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
@@ -479,17 +484,18 @@ void CGUISettings::Initialize()
   AddBool(aocat, "audiooutput.dtspassthrough"   , 254, true);
 
 
-#if !defined(TARGET_DARWIN)
+#if !defined(TARGET_DARWIN) && !defined(TARGET_RASPBERRY_PI)
   AddBool(aocat, "audiooutput.passthroughaac"   , 299, false);
 #endif
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_RASPBERRY_PI)
   AddBool(aocat, "audiooutput.multichannellpcm" , 348, true );
 #endif
-#if !defined(TARGET_DARWIN)
+#if !defined(TARGET_DARWIN) && !defined(TARGET_RASPBERRY_PI)
   AddBool(aocat, "audiooutput.truehdpassthrough", 349, true );
   AddBool(aocat, "audiooutput.dtshdpassthrough" , 347, true );
 #endif
 
+#if !defined(TARGET_RASPBERRY_PI)
 #if defined(TARGET_DARWIN)
   #if defined(TARGET_DARWIN_IOS)
     CStdString defaultDeviceName = "Default";
@@ -505,12 +511,15 @@ void CGUISettings::Initialize()
   AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
   AddSeparator(ao, "audiooutput.sep2");
 #endif
+#endif
 
+#if !defined(TARGET_RASPBERRY_PI)
   map<int,int> guimode;
   guimode.insert(make_pair(34121, AE_SOUND_IDLE  ));
   guimode.insert(make_pair(34122, AE_SOUND_ALWAYS));
   guimode.insert(make_pair(34123, AE_SOUND_OFF   ));
   AddInt(ao, "audiooutput.guisoundmode", 34120, AE_SOUND_IDLE, guimode, SPIN_CONTROL_TEXT);
+#endif
 
   CSettingsCategory* in = AddCategory(SETTINGS_SYSTEM, "input", 14094);
   AddString(in, "input.peripherals", 35000, "", BUTTON_CONTROL_STANDARD);
@@ -537,6 +546,8 @@ void CGUISettings::Initialize()
 #endif
 #if defined(HAS_SDL_JOYSTICK)
   AddBool(in, "input.enablejoystick", 35100, true);
+  AddBool(in, "input.disablejoystickwithimon", 35101, true);
+  GetSetting("input.disablejoystickwithimon")->SetVisible(false);
 #endif
 
   CSettingsCategory* net = AddCategory(SETTINGS_SYSTEM, "network", 798);
@@ -705,7 +716,11 @@ void CGUISettings::Initialize()
   adjustTypes.insert(make_pair(36036, ADJUST_REFRESHRATE_ON_STARTSTOP));
 
 #if !defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_RASPBERRY_PI)
+  AddBool(vp, "videoplayer.adjustrefreshrate", 170, true);
+#else
   AddInt(vp, "videoplayer.adjustrefreshrate", 170, ADJUST_REFRESHRATE_OFF, adjustTypes, SPIN_CONTROL_TEXT);
+#endif
 //  AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
 #else
@@ -754,6 +769,7 @@ void CGUISettings::Initialize()
 #endif
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
+  AddBool(vp, "Videoplayer.teletextscale", 23055, true);
 
   CSettingsCategory* vid = AddCategory(SETTINGS_VIDEOS, "myvideos", 14081);
 
@@ -1142,7 +1158,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.maxretries");
+  mapIter it = settingsMap.find("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
   it = settingsMap.find("masterlock.startuplock");
@@ -1495,13 +1511,16 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     return RES_DESKTOP;
   else if (res == "WINDOW")
     return RES_WINDOW;
-  else if (res.GetLength()==20)
+  else if (res.GetLength() == 21)
   {
-    // format: SWWWWWHHHHHRRR.RRRRR, where S = screen, W = width, H = height, R = refresh
+    // format: SWWWWWHHHHHRRR.RRRRRP, where S = screen, W = width, H = height, R = refresh, P = interlace
     int screen = atol(res.Mid(0,1).c_str());
     int width = atol(res.Mid(1,5).c_str());
     int height = atol(res.Mid(6,5).c_str());
-    float refresh = (float)atof(res.Mid(11).c_str());
+    float refresh = (float)atof(res.Mid(11,9).c_str());
+    // look for 'i' and treat everything else as progressive,
+    // and use 100/200 to get a nice square_error.
+    int interlaced = (res.Right(1) == "i") ? 100:200;
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
     float bestScore = FLT_MAX;
@@ -1510,7 +1529,10 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
       if (info.iScreen != screen)
         continue;
-      float score = 10*(square_error((float)info.iWidth, (float)width) + square_error((float)info.iHeight, (float)height)) + square_error(info.fRefreshRate, refresh);
+      float score = 10 * (square_error((float)info.iScreenWidth, (float)width) +
+        square_error((float)info.iScreenHeight, (float)height) +
+        square_error(info.fRefreshRate, refresh) +
+        square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100:200), (float)interlaced));
       if (score < bestScore)
       {
         bestScore = score;
@@ -1532,7 +1554,9 @@ void CGUISettings::SetResolution(RESOLUTION res)
   else if (res >= RES_CUSTOM && res < (RESOLUTION)g_settings.m_ResInfo.size())
   {
     const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
-    mode.Format("%1i%05i%05i%09.5f", info.iScreen, info.iWidth, info.iHeight, info.fRefreshRate);
+    mode.Format("%1i%05i%05i%09.5f%s", info.iScreen,
+      info.iScreenWidth, info.iScreenHeight, info.fRefreshRate,
+      (info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i":"p");
   }
   else
   {

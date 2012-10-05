@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -250,18 +249,18 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   AudioStreamBasicDescription inputDesc_end, outputDesc_end;
   m_audioUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
   m_audioUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kInputBus);
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: audioUnit, Input Stream Format  %s",
     StreamDescriptionToString(inputDesc_end, formatString));
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: audioUnit, Output Stream Format %s",
     StreamDescriptionToString(outputDesc_end, formatString));
 
   if (m_mixerUnit)
   {
     m_mixerUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
     m_mixerUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kOutputBus);
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: mixerUnit, Input Stream Format  %s",
       StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: mixerUnit, Output Stream Format %s",
       StreamDescriptionToString(outputDesc_end, formatString));
   }
 
@@ -269,9 +268,9 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   {
     m_inputUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
     m_inputUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kOutputBus);
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: inputUnit, Input Stream Format  %s",
       StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: inputUnit, Output Stream Format %s",
       StreamDescriptionToString(outputDesc_end, formatString));
   }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -87,8 +86,8 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
-  virtual void FreeResources();
-  void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iOriginalWidth, int iOriginalHeight, bool bFullSize);
+  virtual void OnDeinitWindow(int nextWindowID);
+  void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();
@@ -108,6 +107,13 @@ private:
   void Move(float fX, float fY);
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
   int  GetNextSlide();
+
+  void AnnouncePlayerPlay(const CFileItemPtr& item);
+  void AnnouncePlayerPause(const CFileItemPtr& item);
+  void AnnouncePlayerStop(const CFileItemPtr& item);
+  void AnnouncePlaylistRemove(int pos);
+  void AnnouncePlaylistClear();
+  void AnnouncePlaylistAdd(const CFileItemPtr& item, int pos);
 
   int m_iCurrentSlide;
   int m_iNextSlide;

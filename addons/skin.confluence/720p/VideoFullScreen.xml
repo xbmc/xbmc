@@ -87,7 +87,7 @@
 			</control>
 			<control type="group" id="1">
 				<posx>330</posx>
-				<posy>175r</posy>
+				<posy>185r</posy>
 				<control type="label" id="1">
 					<description>Heading label</description>
 					<posx>0</posx>
@@ -247,7 +247,7 @@
 			</control>
 			<control type="group" id="1">
 				<posx>330</posx>
-				<posy>85r</posy>
+				<posy>95r</posy>
 				<visible>!VideoPlayer.Content(LiveTV) | [VideoPlayer.Content(LiveTV) + VideoPlayer.HasEpg]</visible>
 				<control type="label" id="1">
 					<posx>0</posx>

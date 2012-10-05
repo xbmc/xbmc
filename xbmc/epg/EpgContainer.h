@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -242,13 +241,6 @@ namespace EPG
      * @return True if a running update should be interrupted, false otherwise.
      */
     virtual bool InterruptUpdate(void) const;
-
-    /*!
-     * @brief Create a new EPG table.
-     * @param iEpgId The table ID or -1 to create a new one.
-     * @return The new table.
-     */
-    virtual CEpg *CreateEpg(int iEpgId);
 
     /*!
      * @brief EPG update thread
