@@ -796,7 +796,6 @@
     <ClCompile Include="..\..\xbmc\music\MusicDbUrl.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\music\Song.cpp" />
-    <ClCompile Include="..\..\xbmc\music\tags\Id3Tag.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderASAP.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderCDDA.cpp" />
@@ -2183,9 +2182,6 @@
     <ClInclude Include="..\..\xbmc\music\MusicDatabase.h" />
     <ClInclude Include="..\..\xbmc\music\MusicInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\music\Song.h" />
-    <ClInclude Include="..\..\xbmc\music\tags\DllLibid3tag.h" />
-    <ClInclude Include="..\..\xbmc\music\tags\Id3Tag.h" />
-    <ClInclude Include="..\..\xbmc\music\tags\id3v1genre.h" />
     <ClInclude Include="..\..\xbmc\music\tags\ImusicInfoTagLoader.h" />
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTag.h" />
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderASAP.h" />

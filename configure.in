@@ -2316,7 +2316,6 @@ OUTPUT_FILES="Makefile \
     lib/cmyth/Makefile \
     lib/libhdhomerun/Makefile \
     lib/libsquish/Makefile \
-    lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
     lib/addons/script.module.pil/Makefile \
     lib/libUPnP/Makefile \
@@ -2633,20 +2632,6 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
     --cc="$CC"
 ], [0])
 
-XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
-  ./configure \
-    CC="$CC" \
-    CXX="$CXX" \
-    CFLAGS="$CFLAGS" \ 
-    CXXFLAGS="$CXXFLAGS" \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
-    --disable-static \
-    --with-pic
-], [0])
-
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set -x
   rm -f CMakeCache.txt &&                              \
@@ -2707,15 +2692,6 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
     sed -i.back "s;\(STDBOOL_H = \)stdbool.h;\1;" lib/Makefile
   fi
 ], [$DISABLE_RSXS])
-
-XB_CONFIG_MODULE([lib/libapetag], [
-  ./configure \
-    `if test "$host_vendor" = "apple"; then echo --disable-shared; fi` \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
-], [0])
 
 XB_CONFIG_MODULE([lib/cpluff], [
   ./configure --disable-nls \
