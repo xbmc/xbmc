@@ -591,6 +591,7 @@ void CFileItem::Reset()
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   m_specialSort = SortSpecialNone;
+  ClearProperties();
   SetInvalid();
 }
 
