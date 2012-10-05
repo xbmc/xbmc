@@ -120,6 +120,7 @@ public:
   int m_iYear;
   int m_iSeason;
   int m_iEpisode;
+  CStdString m_strUniqueId;
   int m_iDbId;
   int m_iFileId;
   int m_iSpecialSortSeason;
