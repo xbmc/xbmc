@@ -748,6 +748,9 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
     return false;
   }
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  g_RemoteControl.Initialize();
+#endif
 
   g_peripherals.Initialise();
 
@@ -757,9 +760,6 @@ bool CApplication::Create()
   g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
   g_Keyboard.Initialize();
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  g_RemoteControl.Initialize();
-#endif
 
 #if defined(TARGET_DARWIN_OSX)
   // Configure and possible manually start the helper.
