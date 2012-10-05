@@ -1,8 +1,6 @@
 BOOTSTRAP_SUBDIRS += configure.in
-BOOTSTRAP_SUBDIRS += lib/libid3tag/libid3tag/configure.ac
 BOOTSTRAP_SUBDIRS += xbmc/screensavers/rsxs-0.9/configure.ac
 BOOTSTRAP_SUBDIRS += xbmc/visualizations/Goom/goom2k4-0/configure.in
-BOOTSTRAP_SUBDIRS += lib/libapetag/configure.in
 BOOTSTRAP_SUBDIRS += lib/cpluff/configure.ac
 BOOTSTRAP_SUBDIRS += lib/gtest/configure.ac
 
