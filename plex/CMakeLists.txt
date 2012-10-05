@@ -50,7 +50,6 @@ target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRA
 
 install(TARGETS Plex BUNDLE DESTINATION .)
 install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})
-install(FILES ${plexdir}/Splash.png DESTINATION ${resourcesdir}/XBMC/media)
 
 set(plugins ${resourcesdir}/XBMC/system/ImageLib-x86-osx.so)
 
@@ -62,3 +61,5 @@ COMPONENT RUNTIME)
 install(CODE "
 	execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh Plex.app \"${root}\" \"${CMAKE_INSTALL_PREFIX}\")
 ")
+install(CODE "file(REMOVE ${resourcesdir}/XBMC/media/Splash.png)")
+install(FILES ${plexdir}/Splash.png DESTINATION ${resourcesdir}/XBMC/media)
