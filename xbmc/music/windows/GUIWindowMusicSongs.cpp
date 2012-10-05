@@ -411,9 +411,11 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     OnRipCD();
     return true;
 
+#ifdef HAS_CDDA_RIPPER
   case CONTEXT_BUTTON_CANCEL_RIP_CD:
     CCDDARipper::GetInstance().CancelJobs();
     return true;
+#endif
 
   case CONTEXT_BUTTON_CDDB:
     if (m_musicdatabase.LookupCDDBInfo(true))
