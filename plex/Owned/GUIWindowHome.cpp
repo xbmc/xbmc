@@ -566,7 +566,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       int id = 1000;
       BOOST_FOREACH(CFileItemPtr item, newSections)
       {
-        CFileItemPtr newItem = CFileItemPtr(new CGUIStaticItem());
+        CGUIStaticItemPtr newItem = CGUIStaticItemPtr(new CGUIStaticItem());
         newItem->SetLabel(item->GetLabel());
         newItem->SetProperty("plex", "1");
         
@@ -582,13 +582,13 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         m_idToSectionTypeMap[id] = item->GetProperty("typeNumber").asInteger();
         
         if (item->GetProperty("key").asString().find("/shared") != string::npos)
-          newItem->SetPath("XBMC.ActivateWindow(MySharedContent," + item->GetPath() + ",return)");
+          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MySharedContent," + item->GetPath() + ",return)"));
         else if (item->GetProperty("type").asString() == "artist")
-          newItem->SetPath("XBMC.ActivateWindow(MyMusicFiles," + item->GetPath() + ",return)");
+          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MyMusicFiles," + item->GetPath() + ",return)"));
         else if (item->GetProperty("type").asString() == "photo")
-          newItem->SetPath("XBMC.ActivateWindow(MyPictures," + item->GetPath() + ",return)");
+          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MyPictures," + item->GetPath() + ",return)"));
         else
-          newItem->SetPath("XBMC.ActivateWindow(MyVideoFiles," + item->GetPath() + ",return)");
+          newItem->SetClickActions(CGUIAction("", "XBMC.ActivateWindow(MyVideoFiles," + item->GetPath() + ",return)"));
         
         newItem->m_idepth = 0;
         newItem->SetQuickFanart(item->GetQuickFanart());

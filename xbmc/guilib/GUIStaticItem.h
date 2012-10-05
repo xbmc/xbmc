@@ -82,7 +82,8 @@ public:
   const CGUIAction &GetClickActions() const { return m_clickActions; };
 
   /* PLEX */
-  CGUIStaticItem() {}
+	CGUIStaticItem() {}
+	void SetClickActions(const CGUIAction& actions) { m_clickActions = actions; }
   /* END PLEX */
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
