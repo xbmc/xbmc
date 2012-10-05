@@ -1,2 +1,2 @@
-aux_source_directory(. devices_SRCS)
+find_all_sources(. devices_SRCS)
 add_sources(${devices_SRCS})

@@ -1,2 +1,2 @@
-aux_source_directory(. music_dialogs_SRCS)
+find_all_sources(. music_dialogs_SRCS)
 add_sources(${music_dialogs_SRCS})

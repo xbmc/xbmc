@@ -6,6 +6,6 @@ if(UNIX)
     add_subdirectory(linux)
 endif(UNIX)
 
-aux_source_directory(. network_SRCS)
+find_all_sources(. network_SRCS)
 list(REMOVE_ITEM network_SRCS ./UPnP.cpp)
 add_sources(${network_SRCS})

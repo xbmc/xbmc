@@ -1,2 +1,2 @@
-aux_source_directory(. playlists_SRCS)
+find_all_sources(. playlists_SRCS)
 add_sources(${playlists_SRCS})

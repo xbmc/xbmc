@@ -1,5 +1,5 @@
 if(WIN)
-	aux_source_directory(win threads_os_SRCS)
+	find_all_sources(win threads_os_SRCS)
 endif()
-aux_source_directory(. threads_platform_SRCS)
+find_all_sources(. threads_platform_SRCS)
 add_sources(${threads_platform_SRCS} ${threads_os_SRCS})

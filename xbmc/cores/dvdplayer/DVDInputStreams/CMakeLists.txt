@@ -1,2 +1,2 @@
-aux_source_directory(. dvdinputstreams_SRCS)
+find_all_sources(. dvdinputstreams_SRCS)
 add_sources(${dvdinputstreams_SRCS})

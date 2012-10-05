@@ -1,2 +1,2 @@
-aux_source_directory(. owned_SRCS)
+find_all_sources(. owned_SRCS)
 add_sources(${owned_SRCS})

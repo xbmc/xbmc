@@ -1,2 +1,2 @@
-aux_source_directory(. cdrip_SRCS)
+find_all_sources(. cdrip_SRCS)
 add_sources(${cdrip_SRCS})

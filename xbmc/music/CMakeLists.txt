@@ -4,5 +4,5 @@ add_subdirectory(karaoke)
 add_subdirectory(tags)
 add_subdirectory(windows)
 
-aux_source_directory(. music_SRCS)
+find_all_sources(. music_SRCS)
 add_sources(${music_SRCS})

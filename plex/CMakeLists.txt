@@ -23,7 +23,7 @@ add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(Helper)
 
-aux_source_directory(. plex_SRCS)
+find_all_sources(. plex_SRCS)
 set(Headers PlexTypes.h)
 if(UNIX)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtils.cpp)
@@ -32,7 +32,7 @@ if(UNIX)
 endif()
 
 get_property(PLEX_MODULE_SRCS GLOBAL PROPERTY SRCS_LIST)
-set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers} $<TARGET_OBJECTS:xbmc>)
+set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
 
 if(APPLE)
   add_executable(Plex MACOSX_BUNDLE ${PLEX_ALL_SRCS})
@@ -46,7 +46,7 @@ endif()
 
 add_dependencies(Plex git_revision.h ffmpeg)
 
-target_link_libraries(Plex ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
 install(TARGETS Plex BUNDLE DESTINATION .)
 install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})

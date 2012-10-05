@@ -1,5 +1,5 @@
-aux_source_directory(. rendering_SRCS)
+find_all_sources(. rendering_SRCS)
 if(UNIX)
-	aux_source_directory(gl system_SRCS)
+	find_all_sources(gl system_SRCS)
 endif(UNIX)
 add_sources(${rendering_SRCS} ${system_SRCS})

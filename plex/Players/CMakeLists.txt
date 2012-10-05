@@ -1,2 +1,2 @@
-aux_source_directory(. players_SRCS)
+find_all_sources(. players_SRCS)
 add_sources(${players_SRCS})

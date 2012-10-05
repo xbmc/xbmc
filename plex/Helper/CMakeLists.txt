@@ -1,2 +1,2 @@
-aux_source_directory(. help_SRCS)
+find_all_sources(. help_SRCS)
 add_sources(${help_SRCS})

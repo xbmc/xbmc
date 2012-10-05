@@ -1,2 +1,2 @@
-aux_source_directory(. guilib_SRCS)
+find_all_sources(. guilib_SRCS)
 add_sources(${guilib_SRCS})

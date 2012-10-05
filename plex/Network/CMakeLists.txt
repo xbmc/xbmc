@@ -1,2 +1,2 @@
-aux_source_directory(. net_SRCS)
+find_all_sources(. net_SRCS)
 add_sources(${net_SRCS})

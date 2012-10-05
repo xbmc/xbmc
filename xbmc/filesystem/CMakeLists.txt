@@ -9,7 +9,7 @@ include_directories(
 	${root}/lib/libUPnP/Neptune/Source/System/Posix
 )
 
-aux_source_directory(. filesystem_SRCS)
+find_all_sources(. filesystem_SRCS)
 
 set(removed_files FileSmb.cpp NptXbmcFile.cpp SMBDirectory.cpp UPnPDirectory.cpp FileUPnP.cpp Slingbox.cpp FileDAAP.cpp RTVDirectory.cpp FileRTV.cpp DAAPDirectory.cpp)
 foreach(r ${removed_files})

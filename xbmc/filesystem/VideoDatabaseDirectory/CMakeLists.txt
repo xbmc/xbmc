@@ -1,2 +1,2 @@
-aux_source_directory(. VideoDatabaseDirectory_SRCS)
+find_all_sources(. VideoDatabaseDirectory_SRCS)
 add_sources(${VideoDatabaseDirectory_SRCS})

@@ -15,13 +15,13 @@ endforeach()
 
 set(PlexOwnedFiles BackgroundInfoLoader.cpp)
 
-aux_source_directory(. xbmc_SRCS)
+find_all_sources(. xbmc_SRCS)
 foreach(f ${PlexOwnedFiles})
   list(REMOVE_ITEM xbmc_SRCS ./${f})
 endforeach()
 
 get_property(ALL_SRCS GLOBAL PROPERTY SRCS_LIST)
-add_library(xbmc OBJECT ${xbmc_SRCS} ${ALL_SRCS})
+add_library(xbmc STATIC ${xbmc_SRCS} ${ALL_SRCS})
 add_dependencies(xbmc cpluff ffmpeg cximage)
 
 # reset this so we can use add_sources later on.

@@ -1,5 +1,5 @@
-aux_source_directory(. exports_SRCS)
-aux_source_directory(util exports_util_SRCS)
+find_all_sources(. exports_SRCS)
+find_all_sources(util exports_util_SRCS)
 list(REMOVE_ITEM exports_SRCS ./win32-dirent.cpp)
 add_library(wrapper OBJECT wrapper.c)
 add_sources(${exports_SRCS} ${exports_util_SRCS})

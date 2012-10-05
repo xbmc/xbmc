@@ -1,2 +1,2 @@
-aux_source_directory(. gui_SRCS)
+find_all_sources(. gui_SRCS)
 add_sources(${gui_SRCS})

@@ -1,4 +1,4 @@
-aux_source_directory(. linux_SRCS)
+find_all_sources(. linux_SRCS)
 if(APPLE)
 	list(REMOVE_ITEM linux_SRCS ./DBusMessage.cpp)
 	list(REMOVE_ITEM linux_SRCS ./DBusReserve.cpp)

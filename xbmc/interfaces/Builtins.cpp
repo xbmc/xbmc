@@ -248,6 +248,8 @@ int CBuiltins::Execute(const CStdString& execString)
   CStdString parameter = params.size() ? params[0] : "";
   CStdString strParameterCaseIntact = parameter;
 
+  CLog::Log(LOGDEBUG, "Executing: %s", execString.c_str());
+
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
     g_application.getApplicationMessenger().Restart();

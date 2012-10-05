@@ -1,2 +1,2 @@
-aux_source_directory(. dvddemuxers_SRCS)
+find_all_sources(. dvddemuxers_SRCS)
 add_sources(${dvddemuxers_SRCS})

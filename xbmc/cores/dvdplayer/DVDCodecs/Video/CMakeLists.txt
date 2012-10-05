@@ -1,4 +1,4 @@
-aux_source_directory(. video_SRCS)
+find_all_sources(. video_SRCS)
 list(REMOVE_ITEM video_SRCS ./DVDVideoCodecOpenMax.cpp)
 list(REMOVE_ITEM video_SRCS ./DVDVideoCodecVideoToolBox.cpp)
 list(REMOVE_ITEM video_SRCS ./OpenMaxVideo.cpp)

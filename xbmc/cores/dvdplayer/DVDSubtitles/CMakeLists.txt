@@ -1,2 +1,2 @@
-aux_source_directory(. dvdsubtitles_SRCS)
+find_all_sources(. dvdsubtitles_SRCS)
 add_sources(${dvdsubtitles_SRCS})
