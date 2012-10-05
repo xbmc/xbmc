@@ -19,7 +19,7 @@
  */
 
 /* Global Paths */
-
+var commsErrorTimeout;
 var JSON_RPC = 'jsonrpc';
 var DEFAULT_ALBUM_COVER = 'images/DefaultAlbumCover.png';
 var DEFAULT_VIDEO_COVER = 'images/DefaultVideo.png';
@@ -50,32 +50,6 @@ function durationToString(duration) {
   return result;
 }
 
-function timeToString(duration, showMilliseconds) {
-  if (!duration) {
-    return '00:00';
-  }
-  milliseconds = duration.milliseconds
-  var result = '';
-  if (duration.hours) {
-    result += (duration.hours < 10 ? '0' + duration.hours : duration.hours) + ':';
-  }
-  result += (duration.minutes < 10 ? '0' + duration.minutes : duration.minutes) + ':' + (duration.seconds < 10 ? '0' + duration.seconds : duration.seconds);
-  if (showMilliseconds) {
-    result += '.';
-    if (duration.milliseconds < 1000) {
-      result += '.';
-      if (duration.milliseconds < 100) {
-        result += '0';
-        if (duration.milliseconds < 10) {
-          result += '0';
-        }
-      }
-    }
-    result += duration.milliseconds;
-  }
-  return result;
-}
-
 function timeToDuration(time) {
   return time.hours * 3600 + time.minutes * 60 + time.seconds;
 }
@@ -83,8 +57,6 @@ function timeToDuration(time) {
 function applyDeviceFixes() {
   document.addEventListener('touchmove', function(e){ e.preventDefault(); });
 }
-
-var commsErrorTimeout;
 
 function displayCommunicationError(m) {
   clearTimeout(commsErrorTimeout);
@@ -117,6 +89,3 @@ function getCookie(name) {
   return null;
 }
 
-function deleteCookie(name) {
-  setCookie(name,"",-1);
-}
