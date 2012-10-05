@@ -1019,6 +1019,11 @@ namespace JSONRPC
                 "\"xbmc.addon.video\", \"xbmc.addon.audio\", \"xbmc.addon.image\", \"xbmc.addon.executable\", \"xbmc.service\" ],"
       "\"default\": \"unknown\""
     "}",
+    "\"Addon.Content\": {"
+      "\"type\": \"string\","
+      "\"enum\": [ \"unknown\", \"video\", \"audio\", \"image\", \"executable\" ],"
+      "\"default\": \"unknown\""
+    "}",
     "\"Addon.Fields\": {"
       "\"extends\": \"Item.Fields.Base\","
       "\"items\": { \"type\": \"string\","
@@ -2606,6 +2611,7 @@ namespace JSONRPC
       "\"permission\": \"ReadData\","
       "\"params\": ["
         "{ \"name\": \"type\", \"$ref\": \"Addon.Types\" },"
+        "{ \"name\": \"content\", \"$ref\": \"Addon.Content\", \"description\": \"Content provided by the addon. Only considered for plugins and scripts.\" },"
         "{ \"name\": \"enabled\", \"type\": [ { \"type\": \"boolean\" }, { \"type\": \"string\", \"enum\": [ \"all\" ] } ], \"default\": \"all\" },"
         "{ \"name\": \"properties\", \"$ref\": \"Addon.Fields\" },"
         "{ \"name\": \"limits\", \"$ref\": \"List.Limits\" }"
