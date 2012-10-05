@@ -7,10 +7,10 @@
   <string id="3">Videos</string>
   <string id="4">TV-Guide</string>
   <string id="5">Settings</string>
-  <string id="6">XBMC SVN</string>
+  <!--<string id="6">XBMC SVN</string>-->
   <string id="7">File manager</string>
   <string id="8">Weather</string>
-  <string id="9">xbmc media center</string>
+  <!--<string id="9">xbmc media center</string>-->
 
   <string id="11">Monday</string>
   <string id="12">Tuesday</string>
@@ -231,7 +231,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Waiting for start...</string>
   <string id="262">Scripts output</string>
-  <string id="263">Allow control of XBMC via HTTP</string>
+  <!--<string id="263">Allow control of XBMC via HTTP</string>-->
   <string id="264">Record</string>
   <string id="265">Stop Rec.</string>
   <string id="266">Sort by: Track</string>
@@ -436,7 +436,7 @@
   <string id="479">Skin &amp; language</string>
   <string id="480">Appearance</string>
   <string id="481">Audio options</string>
-  <string id="482">About XBMC</string>
+  <!--<string id="482">About XBMC</string>-->
 
   <string id="485">Delete album</string>
   <string id="486">Repeat</string>
@@ -648,8 +648,8 @@
   <string id="742">White</string>
   <string id="743">Yellow</string>
   <string id="744">Files</string>
-  <string id="745">No scanned information for this view</string>
-  <string id="746">Please turn off library mode</string>
+  <!--<string id="745">No scanned information for this view</string>-->
+  <!--<string id="746">Please turn off library mode</string>-->
   <string id="747">Error loading image</string>
   <string id="748">Edit path</string>
   <string id="749">Mirror image</string>
@@ -693,10 +693,10 @@
   <string id="788">Network interface disabled successfully.</string>
   <string id="789">Wireless network name (ESSID)</string>
 
-  <string id="791">Allow programs on this system to control XBMC</string>
+  <!--<string id="791">Allow programs on this system to control XBMC</string>-->
   <string id="792">Port</string>
   <string id="793">Port range</string>
-  <string id="794">Allow programs on other systems to control XBMC</string>
+  <!--<string id="794">Allow programs on other systems to control XBMC</string>-->
   <string id="795">Initial repeat delay (ms)</string>
   <string id="796">Continuous repeat delay (ms)</string>
   <string id="797">Maximum number of clients</string>
@@ -710,7 +710,7 @@
   <string id="999">Add Videos...</string>
   <string id="1000">- Preview</string>
   <string id="1001">Unable to connect</string>
-  <string id="1002">XBMC was unable to connect to the network location.</string>
+  <!--<string id="1002">XBMC was unable to connect to the network location.</string>-->
   <string id="1003">This could be due to the network not being connected.</string>
   <string id="1004">Would you like to add it anyway?</string>
 
@@ -804,7 +804,7 @@
   <string id="1257">Would you like to connect to the auto-detected system?</string>
 
   <string id="1260">Announce these services to other systems via Zeroconf</string>
-  <string id="1270">Allow XBMC to receive AirPlay content</string>
+  <!--<string id="1270">Allow XBMC to receive AirPlay content</string>-->
   <string id="1271">Device name</string>
   <string id="1272">- Use password protection</string>
 
@@ -1047,12 +1047,12 @@
   <string id="13132">Blank displays</string>
 
   <string id="13140">Active connections detected!</string>
-  <string id="13141">If you proceed, you might not be able to control XBMC</string>
+  <!--<string id="13141">If you proceed, you might not be able to control XBMC</string>-->
   <string id="13142">any longer. Are you sure you want to stop the Event server?</string>
 
   <string id="13144">Change Apple Remote mode?</string>
   <string id="13145">If you are currently using the Apple Remote to control</string>
-  <string id="13146">XBMC, changing this setting might affect your ability</string>
+  <!--<string id="13146">XBMC, changing this setting might affect your ability</string>-->
   <string id="13147">to continue controlling it. Do you want to proceed?</string>
 
   <string id="13159">Subnet mask</string>
@@ -1122,7 +1122,7 @@
   <string id="13306">Show parent folder items</string>
   <string id="13307">Track naming template</string>
   <string id="13308">Do you wish to reboot your system</string>
-  <string id="13309">instead of just XBMC?</string>
+  <!--<string id="13309">instead of just XBMC?</string>-->
   <string id="13310">Zoom effect</string>
   <string id="13311">Float effect</string>
   <string id="13312">Black bar reduction</string>
@@ -1252,7 +1252,7 @@
 
   <string id="13600">Apple remote</string>
 
-  <string id="13602">Allow start of XBMC using the remote</string>
+  <!--<string id="13602">Allow start of XBMC using the remote</string>-->
   <string id="13603">Sequence delay time</string>
 
   <string id="13610">Disabled</string>
@@ -1296,10 +1296,10 @@
   <string id="14032">- Internet</string>
   <string id="14034">DVD cache - DVD-ROM</string>
   <string id="14035">- Local Network</string>
-  <string id="14036">Services</string>
+  <!--<string id="14036">Services</string>-->
 
   <string id="14038">Network settings changed</string>
-  <string id="14039">XBMC requires to restart to change your</string>
+  <!--<string id="14039">XBMC requires to restart to change your</string>-->
   <string id="14040">network setup.  Would you like to restart now?</string>
   <string id="14041">Internet connection bandwidth limitation</string>
 
@@ -1381,7 +1381,7 @@
   <string id="15202">Last.fm username</string>
   <string id="15203">Last.fm password</string>
   <string id="15204">Unable to handshake: sleeping...</string>
-  <string id="15205">Please update XBMC</string>
+  <!--<string id="15205">Please update XBMC</string>-->
   <string id="15206">Bad authorization: Check username and password</string>
   <string id="15207">Connected</string>
   <string id="15208">Not connected</string>
@@ -1554,7 +1554,7 @@
   <string id="20006">Playlists folder</string>
   <string id="20007">Recordings</string>
   <string id="20008">Screenshots</string>
-  <string id="20009">Use XBMC</string>
+  <!--<string id="20009">Use XBMC</string>-->
 
   <string id="20011">Music playlists</string>
   <string id="20012">Video playlists</string>
@@ -1786,7 +1786,7 @@
   <string id="20338">Movie</string>
   <string id="20339">Director</string>
   <string id="20340">Do you want to remove all items within</string>
-  <string id="20341">this path from the XBMC library?</string>
+  <!--<string id="20341">this path from the XBMC library?</string>-->
   <string id="20342">Movies</string>
   <string id="20343">TV shows</string>
   <string id="20344">This directory contains</string>
@@ -2078,7 +2078,7 @@
   <string id="21878">Copyright flag</string>
   <string id="21879">Country code</string>
   <string id="21880">Reference service</string>
-  <string id="21881">Allow control of XBMC via UPnP</string>
+  <!--<string id="21881">Allow control of XBMC via UPnP</string>-->
   <string id="21882">Attempt to skip introduction before DVD menu</string>
   <string id="21883">Saved music</string>
   <string id="21884">Query info for all artists</string>
@@ -2319,8 +2319,8 @@
   <string id="33072">View Readme</string>
   <string id="33073">View Changelog</string>
   <string id="33074">This version of %s requires an</string>
-  <string id="33075">XBMC revision of %s or greater to run.</string>
-  <string id="33076">Please update XBMC.</string>
+  <!--<string id="33075">XBMC revision of %s or greater to run.</string>-->
+  <!--<string id="33076">Please update XBMC.</string>-->
   <string id="33077">No data found!</string>
   <string id="33078">Next page</string>
   <string id="33079">Love</string>
@@ -2392,16 +2392,254 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Could not open the adapter</string>
-  <string id="36007">Power on the TV when starting XBMC</string>
-  <string id="36008">Power off devices when stopping XBMC</string>
+  <!--<string id="36007">Power on the TV when starting XBMC</string>-->
+  <!--<string id="36008">Power off devices when stopping XBMC</string>-->
   <string id="36009">Put devices in standby mode when activating screensaver</string>
   <string id="36010"></string>
   <string id="36011">Could not detect the CEC port. Set it up manually.</string>
   <string id="36012">Could not detect the CEC adapter.</string>
-  <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
+  <!--<string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>-->
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
   <string id="36015">HDMI port number</string>
   <string id="36016">Connected</string> <!-- max. 13 characters -->
   <string id="36017">Adapter found, but libcec is not available</string>
   <string id="36018">Use the TV's language setting</string>
+  
+  <!-- Plex Specific Strings -->
+  <string id="6">Plex Git</string>
+  <string id="9">Plex Media Center</string>
+  <string id="10">myPlex</string>
+  
+  <string id="263">Allow control of PLEX via HTTP</string>
+  
+  <string id="482">About Plex</string>
+  
+  <string id="745">Sorry, No items have been added yet. Please check the Help section </string>
+  <string id="746">for information on adding Movies and/or TV shows to Plex.</string>
+  
+  
+  <string id="791">Allow programs on this system to control PLEX</string>
+  <string id="794">Allow programs on other systems to control PLEX</string>
+  
+  <string id="1002">PLEX was unable to connect to the network location.</string>
+
+  <string id="1270">Allow PLEX to receive AirPlay content</string>
+  
+  <string id="21881">Allow control of PLEX via UPnP</string>
+
+  <string id="13138">Automatically Select Audio Stream</string>
+  <string id="13139">Automatically Select Subtitle Stream</string>
+  
+  <string id="13141">If you proceed, you might not be able to control PLEX</string>
+ 
+  <string id="13146">PLEX, changing this setting might affect your ability</string>
+
+  <string id="13148">Allow Picking Alternate Library Media</string>
+  <string id="13149">Quality From Remote Media Servers</string>
+  <string id="13143">Search Remote Libraries</string>
+
+  <string id="13180">Preferred Online Video Quality</string>
+  <string id="13181">Always ask</string>
+  <string id="13182">1080p</string>
+  <string id="13183">720p</string>
+  <string id="13184">480p</string>
+  <string id="13185">SD</string>
+  
+  <string id="13309">instead of just PLEX?</string>
+  
+  <string id="13602">Allow start of PLEX using the remote</string>
+  
+  <string id="13630">Media Server</string>
+  <string id="13631">Mode</string>
+  <string id="13632">- Always Running</string>
+
+  <string id="13633">Disabled</string>
+  <string id="13634">Enabled</string>
+
+  <string id="13635">Enable Scrobbling</string>
+
+  <string id="14036">Servers</string>
+  <string id="14037">Look and Feel</string>
+  
+  <string id="14039">PLEX requires a restart to change your</string>
+  
+  <string id="15150">Enable Global Slideshow</string>
+  
+  <string id="15205">Please update PLEX</string>
+  
+  <string id="16001">Configure Audio Hardware...</string>
+  
+  <string id="17501">Display Brightness</string>
+
+  <string id="17701">Low Battery</string>
+  <string id="17702">Connect to AC Power</string>
+
+  <string id="18000">Model</string>
+  <string id="18001">Power source</string>
+  <string id="18002">AC power</string>
+  <string id="18003">AC power (charging)</string>
+  <string id="18004">Battery power</string>
+  <string id="18005">Power level</string>
+  <string id="18006">until full</string>
+  <string id="18007">remaining</string>
+  <string id="18008">Calculating time</string>
+  <string id="18009">Enable low battery warning</string>
+  
+  <string id="18101">Background Music Volume</string>
+  <string id="18102">Enable Theme Music</string>
+  <string id="18103">- Automatically Download Theme Music</string>
+  <string id="18104">Enable Background Music</string>
+
+  <string id="19000">Email</string>
+  <string id="19001">Password</string>
+  <string id="19002">Sign in</string>
+  <string id="19003">Sign out</string>
+  
+  <string id="19010">Not signed in</string>
+  <string id="19011">Signed in</string>
+  <string id="19012">Error signing in</string>
+  
+  <string id="19020">Shared Content</string>
+  <string id="19021">Queue</string>
+
+  <string id="20009">Use PLEX</string>
+
+  <string id="20250">Recent Music Count</string>
+  
+  <string id="20341">this path from the PLEX library?</string>
+  
+  <string id="33075">PLEX revision of %s or greater to run.</string>
+  <string id="33076">Please update PLEX.</string>
+  
+  <string id="36007">Power on the TV when starting PLEX</string>
+  <string id="36008">Power off devices when stopping PLEX</string>
+  <string id="36013">Unsupported libcec interface version. %d is greater than the version PLEX supports (%d)</string>
+   
+  <string id="40000">Software Update</string>
+  <string id="40001">New Version Available</string>
+  <string id="40002">Install with Software Update</string>
+  <string id="40003">A new version of Plex is available.</string>
+  <string id="40004">Version: %@  (you have %@)</string>
+  <string id="40005">Would you like to download and install it now?</string>
+  <string id="40006">You currently have the latest version of Plex (%@)</string>
+  <string id="40007">Downloading Plex update</string>
+  <string id="40008">%@ of %@</string>
+  <string id="40009">%@ downloaded</string>
+  <string id="40010">Extracting Plex update</string>
+  <string id="40011">Installing Plex update</string>
+  <string id="40012">Update Failed</string>
+  <string id="40013">An error has occurred.</string>
+  <string id="40014">Please check the console for more details.</string>
+  <string id="40015">Checking for updates</string>
+  <string id="40016">Check For Update Now...</string>
+  <string id="40017">Automatically Check For Updates</string>
+  <string id="40018">Update</string>
+  <string id="40019">- If Updates Are Available</string>
+  <string id="40020">Ahow a Notification</string>
+  <string id="40021">Ask to Install</string>
+  <string id="40022">Check for Updates Automatically?</string>
+  <string id="40023">Would you like Plex to alert you when updates</string>
+  <string id="40024">are available?</string>
+  <string id="40025">- Check For Updates</string>
+  <string id="40026">Every Hour</string>
+  <string id="40027">Every Day</string>
+  <string id="40028">Every Week</string>
+
+  <string id="40100">Applications</string>
+  <string id="40101">Add Application</string>
+  <string id="40102">Remove Application</string>
+  <string id="40103">Browse for Application</string>
+  <string id="40104">RSS</string>
+  <string id="40105">Energy Saver</string>
+  <string id="40106">Remove Workflow</string>
+
+  <string id="40150">Now Playing</string>
+
+  <string id="40200">Unsupported path</string>
+  <string id="40201">Plex Media Server paths can't be added to multipath</string>
+  <string id="40202">sources.</string>
+  <string id="40203">Plex Media Server</string>
+  <string id="40204">Waiting for response...</string>
+
+  <string id="40205">Rate...</string>
+  <string id="40206">Change Rating...</string>
+  <string id="40207">Set Rating</string>
+  <string id="40208">Change Rating</string>
+  
+  <string id="40210">Media Server</string>
+  <string id="40211">Manually specify server</string>
+  <string id="40212">Address</string>
+  <string id="40213">Force transcoding on local network</string>
+  <string id="40214">Quality</string>
+
+  <string id="42000">Could not read from input stream</string>
+  <string id="42001">Could not determine input format</string>
+  <string id="42002">Could not read file header</string>
+  <string id="42003">Unknown format</string>
+  <string id="42004">Could not read data from file</string>
+  <string id="42005">Not enough memory to open file</string>
+  <string id="42006">File was not found</string>
+  <string id="42007">Unsupported network protocol</string>
+  <string id="42008">Error while opening file</string>
+
+  <string id="40300">Set Quit Timer</string>
+  <string id="40301">Set Sleep Timer</string>
+  <string id="40302">Set Shut Down Timer</string>
+  <string id="40323">Set Sleep Display Timer</string>
+  
+  <string id="40305">Change Quit Timer</string>
+  <string id="40306">Change Sleep Timer</string>
+  <string id="40307">Change Shut Down Timer</string>
+  <string id="40308">Change Sleep Display Timer</string>
+
+  <string id="40310">Plex will quit at</string>
+  <string id="40311">The system will sleep at</string>
+  <string id="40312">The system will shut down at</string>
+  <string id="40313">The system will sleep the display at</string>
+  
+  <string id="40315">You have already set a quit timer.</string>
+  <string id="40316">You have already set a sleep timer.</string>
+  <string id="40317">You have already set a shut down timer.</string>
+  <string id="40318">You have already set a sleep display timer.</string>
+  
+  <string id="40320">Would you like to set a quit timer instead?</string>
+  <string id="40321">Would you like to set a sleep timer instead?</string>
+  <string id="40322">Would you like to set a shut down timer instead?</string>
+  <string id="40323">Would you like to set a display sleep timer instead?</string>
+  
+  <string id="40325">Timer already set</string>
+
+  <string id="42999">Direct Play</string>
+  <string id="43000">320 kbps</string> <!-- 3 -->
+  <string id="43001">720 kbps</string>
+  <string id="43002">1.5 Mbps</string>
+  <string id="43003">2 Mbps</string>
+  <string id="43004">3 Mbps</string>
+  <string id="43005">4 Mbps</string>
+  <string id="43006">8 Mbps</string>
+  <string id="43007">10 Mbps</string>
+  <string id="43008">12 Mbps</string>
+  <string id="43009">20 Mbps</string>
+  
+  <!-- Legacy Strings -->
+  <string id="286">Postprocessing Filter</string>
+  
+  <string id="307">- Automatic Postprocessing</string>
+  <string id="308">- Vertical Deblocking Filter</string>
+  <string id="309">- Horizontal Deblocking Filter</string>
+  <string id="310">- Auto Brightness/Contrast</string>
+  <string id="311">- Dering</string>
+  
+  <string id="577">Normalise Film Volume</string>
+  <string id="578">Link System Output</string>
+  <string id="579">Link System Volume</string>
+  
+  <string id="13134">H.264 Speed Boost</string>
+  <string id="13135">Disabled</string>
+  <string id="13136">Medium</string>
+  <string id="13137">High</string>
+  
+  <string id="13622">Please see Remote Buddy FAQ to uninstall.</string>
+  <string id="13623">Sofa Control is running.</string>
+  <string id="13624">Please see Sofa Control documentation to uninstall.</string>  
 </strings>
