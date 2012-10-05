@@ -1,4 +1,0 @@
-Requires gperf to build:
-sudo apt-get install gperf
-
-Then just run 'make'.

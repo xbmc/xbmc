@@ -1,5 +1,4 @@
 SRCS=\
-     Id3Tag.cpp \
      MusicInfoTag.cpp \
      MusicInfoTagLoaderASAP.cpp \
      MusicInfoTagLoaderCDDA.cpp \

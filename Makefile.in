@@ -181,8 +181,6 @@ LIB_DIRS=\
 	lib/cximage-6.0 \
 	lib/libexif \
 	lib/libhdhomerun \
-	lib/libid3tag \
-	lib/libapetag \
 	lib/cpluff \
 	lib/xbmc-dll-symbols
 
@@ -307,8 +305,6 @@ $(NWAOBJSXBMC): force
 $(DIRECTORY_ARCHIVES): force
 	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
-lib/libapetag/.libs/libapetag.a: force
-	$(MAKE) -C lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
 system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a exports
@@ -363,8 +359,6 @@ cmyth: dllloader
 	$(MAKE) -C lib/cmyth
 libhdhomerun: dllloader
 	$(MAKE) -C lib/libhdhomerun
-libid3tag: dllloader
-	$(MAKE) -C lib/libid3tag
 papcodecs: dllloader dvdpcodecs
 	test -d system/players/paplayer || mkdir system/players/paplayer
 	$(MAKE) -C lib/xbadpcm
@@ -393,20 +387,18 @@ endif
 
 codecs: papcodecs dvdpcodecs
 
-libs: libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
+libs: libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
 externals: codecs libs visualizations screensavers libaddon pvraddons
 
 xcode_depends: \
 	codecs libs visualizations screensavers eventclients skins libaddon \
 	lib/libsquish/libsquish.a \
-	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
 	lib/libXDAAP/libxdaap.a \
 	lib/SlingboxLib/SlingboxLib.a
 
 OBJSXBMC =$(DIRECTORY_ARCHIVES)
-OBJSXBMC+=lib/libapetag/.libs/libapetag.a
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \
