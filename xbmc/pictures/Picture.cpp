@@ -129,7 +129,7 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
   }
 
   // Atomically rename.
-  if (CFile::Exists(tmpFile))
+  if (CFile::Exists(tmpFile) && destFile != "")
     CFile::Rename(tmpFile, destFile);
 
   return true;
