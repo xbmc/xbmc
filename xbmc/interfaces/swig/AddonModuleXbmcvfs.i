@@ -24,6 +24,7 @@
 %{
 #include "interfaces/legacy/ModuleXbmcvfs.h"
 #include "interfaces/legacy/File.h"
+#include "interfaces/legacy/Stat.h"
 #include "utils/log.h"
 
 using namespace XBMCAddon;
@@ -71,6 +72,11 @@ using namespace xbmcvfs;
 }
 
 %include "interfaces/legacy/File.h"
+
+%rename ("st_atime") XBMCAddon::xbmcvfs::Stat::atime;
+%rename ("st_mtime") XBMCAddon::xbmcvfs::Stat::mtime;
+%rename ("st_ctime") XBMCAddon::xbmcvfs::Stat::ctime;
+%include "interfaces/legacy/Stat.h"
 
 %rename ("delete") XBMCAddon::xbmcvfs::deleteFile;
 %include "interfaces/legacy/ModuleXbmcvfs.h"
