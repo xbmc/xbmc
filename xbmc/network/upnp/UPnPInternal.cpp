@@ -280,6 +280,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
+    object.m_Description.rating = tag.m_strMPAARating;
     object.m_MiscInfo.last_position = tag.m_resumePoint.timeInSeconds;
     object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsLocalizedDate();
     object.m_MiscInfo.play_count = tag.m_playCount;
@@ -650,6 +651,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       tag.m_writingCredits.push_back(object.m_People.authors.GetItem(index)->name.GetChars());
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
+    tag.m_strMPAARating = object.m_Description.rating;
     tag.m_strShowTitle = object.m_Recorded.series_title;
     tag.m_lastPlayed.SetFromDateString((const char*)object.m_MiscInfo.last_time);
     tag.m_playCount = object.m_MiscInfo.play_count;
