@@ -247,9 +247,6 @@ public:
   void StopShutdownTimer();
   void ResetShutdownTimers();
 
-  void SaveMusicScanSettings();
-  void RestoreMusicScanSettings();
-
   void StopVideoScan();
   void StopMusicScan();
   bool IsMusicScanning() const;

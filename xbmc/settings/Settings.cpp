@@ -115,9 +115,6 @@ void CSettings::Initialize()
     m_logFolder = "special://home/";              // log file location
   #endif
 
-  // defaults for scanning
-  m_bMyMusicIsScanning = false;
-
   iAdditionalSubtitleDirectoryChecked = 0;
   m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
   m_iVideoStartWindow = WINDOW_VIDEO_FILES;
@@ -670,12 +667,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       XMLUtils::GetBoolean(pChild, "repeat", m_bMyMusicPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", m_bMyMusicPlaylistShuffle);
     }
-    // if the user happened to reboot in the middle of the scan we save this state
-    pChild = pElement->FirstChildElement("scanning");
-    if (pChild)
-    {
-      XMLUtils::GetBoolean(pChild, "isscanning", m_bMyMusicIsScanning);
-    }
     GetInteger(pElement, "startwindow", m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", m_bMyMusicSongThumbInVis);
@@ -869,12 +860,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     if (!pChild) return false;
     XMLUtils::SetBoolean(pChild, "repeat", m_bMyMusicPlaylistRepeat);
     XMLUtils::SetBoolean(pChild, "shuffle", m_bMyMusicPlaylistShuffle);
-  }
-  {
-    TiXmlElement childNode("scanning");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    XMLUtils::SetBoolean(pChild, "isscanning", m_bMyMusicIsScanning);
   }
 
   XMLUtils::SetInt(pNode, "needsupdate", m_musicNeedsUpdate);

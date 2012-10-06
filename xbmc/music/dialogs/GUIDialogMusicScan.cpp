@@ -119,10 +119,6 @@ void CGUIDialogMusicScan::OnFinished()
   CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 
-  // be sure to restore the settings
-  CLog::Log(LOGINFO,"Music scan was stopped or finished ... restoring FindRemoteThumbs");
-  g_application.RestoreMusicScanSettings();
-
   if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
   {
     CApplicationMessenger::Get().Close(this, false, false);

@@ -1387,14 +1387,6 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  // if the user shutoff the system during music scan
-  // restore the settings
-  if (g_settings.m_bMyMusicIsScanning)
-  {
-    CLog::Log(LOGWARNING,"System rebooted during music scan! ... restoring UseTags and FindRemoteThumbs");
-    RestoreMusicScanSettings();
-  }
-
   if (!g_settings.UsingLoginScreen())
   {
     UpdateLibraries();
@@ -5817,21 +5809,6 @@ PLAYERCOREID CApplication::GetCurrentPlayer()
   return m_eCurrentPlayer;
 }
 
-// when a scan is initiated, save current settings
-// and enable tag reading and remote thums
-void CApplication::SaveMusicScanSettings()
-{
-  CLog::Log(LOGINFO,"Music scan has started... Enabling tag reading, and remote thumbs");
-  g_settings.m_bMyMusicIsScanning = true;
-  g_settings.Save();
-}
-
-void CApplication::RestoreMusicScanSettings()
-{
-  g_settings.m_bMyMusicIsScanning = false;
-  g_settings.Save();
-}
-
 void CApplication::UpdateLibraries()
 {
   if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
@@ -5916,7 +5893,6 @@ void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
       musicScan->ShowScan();
     }
   }
-  SaveMusicScanSettings();
   m_musicInfoScanner->Start(strDirectory, flags);
 }
 
@@ -5935,7 +5911,6 @@ void CApplication::StartMusicAlbumScan(const CStdString& strDirectory,
       musicScan->ShowScan();
     }
   }
-  SaveMusicScanSettings();
   m_musicInfoScanner->FetchAlbumInfo(strDirectory,refresh);
 }
 
@@ -5954,7 +5929,6 @@ void CApplication::StartMusicArtistScan(const CStdString& strDirectory,
       musicScan->ShowScan();
     }
   }
-  SaveMusicScanSettings();
   m_musicInfoScanner->FetchArtistInfo(strDirectory,refresh);
 
 }
