@@ -44,6 +44,7 @@
 #include "osx/CocoaInterface.h"
 #endif
 #include "powermanagement/PowerManager.h"
+#include "utils/StringUtils.h"
 
 CSysInfo g_sysinfo;
 
@@ -426,91 +427,76 @@ CStdString CSysInfo::GetKernelVersion()
   return "";
 #else
   OSVERSIONINFOEX osvi;
-  SYSTEM_INFO si;
-
-  ZeroMemory(&si, sizeof(SYSTEM_INFO));
   ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-
-  GetSystemInfo(&si);
-
   osvi.dwOSVersionInfoSize = sizeof(osvi);
-  CStdString strKernel = "Windows ";
 
+  std::string strKernel = "Windows";
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
-    if ( osvi.dwMajorVersion == 6 )
+    switch (GetWindowsVersion())
     {
-      if (osvi.dwMinorVersion == 0)
-      {
-        if( osvi.wProductType == VER_NT_WORKSTATION )
-          strKernel.append("Vista");
-        else
-          strKernel.append("Server 2008");
-      } else if (osvi.dwMinorVersion == 1)
-      {
-        if( osvi.wProductType == VER_NT_WORKSTATION )
-          strKernel.append("7");
-        else
-          strKernel.append("Server 2008 R2");
-      }
-
-      if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
-        strKernel.append(", 64-bit Native");
-      else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_INTEL )
-      {
-        BOOL bIsWow = FALSE;;
-        if(IsWow64Process(GetCurrentProcess(), &bIsWow))
-        {
-          if (bIsWow)
-          {
-            GetNativeSystemInfo(&si);
-            if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
-             strKernel.append(", 64-bit (WoW)");
-          }
-          else
-          {
-            strKernel.append(", 32-bit");
-          }
-        }
-        else
-          strKernel.append(", 32-bit");
-      }
-    }
-    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
-    {
-      if( GetSystemMetrics(SM_SERVERR2) )
-        strKernel.append("Windows Server 2003 R2");
-      else if ( osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER )
-        strKernel.append("Windows Storage Server 2003");
-      else if ( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
-        strKernel.append("Windows Home Server");
-      else if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-        strKernel.append("Windows XP Professional x64 Edition");
+    case WindowsVersionWinXP:
+      if (GetSystemMetrics(SM_SERVERR2))
+        strKernel.append(" Server 2003 R2");
+      else if (osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER)
+        strKernel.append(" Storage Server 2003");
+      else if (osvi.wSuiteMask & VER_SUITE_WH_SERVER)
+        strKernel.append(" Home Server");
+      else if (osvi.wProductType == VER_NT_WORKSTATION && IsOS64bit())
+        strKernel.append(" XP Professional");
+      else if (osvi.wProductType != VER_NT_WORKSTATION)
+        strKernel.append(" Server 2003");
+      else if (osvi.wSuiteMask & VER_SUITE_PERSONAL)
+        strKernel.append("XP Home Edition" );
       else
-        strKernel.append("Windows Server 2003");
-    }
-    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
-    {
-      strKernel.append("XP ");
-      if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
-        strKernel.append("Home Edition" );
+        strKernel.append("XP Professional" );
+      break;
+    case WindowsVersionVista:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        strKernel.append(" Vista");
       else
-        strKernel.append("Professional" );
-    }
-    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
-    {
-      strKernel.append("2000");
+        strKernel.append(" Server 2008");
+      break;
+    case WindowsVersionWin7:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        strKernel.append(" 7");
+      else
+        strKernel.append(" Server 2008 R2");
+      break;
+    case WindowsVersionFuture:
+      strKernel.append(" Unknown Future Version");
+      break;
+    default:
+      strKernel.append(" unknown version");
+      break;
     }
 
-    if( _tcslen(osvi.szCSDVersion) > 0 )
+    // Append Service Pack version if any
+    if (osvi.wServicePackMajor > 0)
     {
-      strKernel.append(" ");
-      strKernel.append(osvi.szCSDVersion);
+      strKernel.append(StringUtils::Format(" SP%d", osvi.wServicePackMajor));
+      if (osvi.wServicePackMinor > 0)
+      {
+        strKernel.append(StringUtils::Format(".%d", osvi.wServicePackMinor));
+      }
     }
-    CStdString strBuild;
-    strBuild.Format(" build %d",osvi.dwBuildNumber);
-    strKernel += strBuild;
+
+    if (IsOS64bit())
+      strKernel.append(" 64-bit");
+    else
+      strKernel.append(" 32-bit");
+
+    strKernel.append(StringUtils::Format(", build %d", osvi.dwBuildNumber));
   }
+  else
+  {
+    strKernel.append(" unknown");
+    if (IsOS64bit())
+      strKernel.append(" 64-bit");
+    else
+      strKernel.append(" 32-bit");
+  }
+
   return strKernel;
 #endif
 }
