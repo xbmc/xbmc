@@ -950,6 +950,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
           {
             shares[i].strName = newPath;
             shares[i].strPath = newPath;//setPath(newPath);
+            URIUtils::RemoveSlashAtEnd(shares[i].strName);
             break;
           }
         }
