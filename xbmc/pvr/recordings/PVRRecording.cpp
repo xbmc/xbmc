@@ -171,7 +171,7 @@ bool CPVRRecording::SetLastPlayedPosition(int lastplayedposition)
 
 int CPVRRecording::GetLastPlayedPosition() const
 {
-  int rc = 0;
+  int rc = -1;
   if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
   {
     rc = g_PVRClients->GetRecordingLastPlayedPosition(*this);
