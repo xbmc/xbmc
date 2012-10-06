@@ -46,5 +46,5 @@ install(TARGETS
   swscale-0-${ARCH} 
   postproc-51-${ARCH}
   
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system/players/dvdplayer
+  DESTINATION Plex.app/Contents/Resources/XBMC/system/players/dvdplayer
 )

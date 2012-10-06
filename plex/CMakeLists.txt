@@ -39,7 +39,6 @@ if(APPLE)
   set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.plexapp.plexmediacenter")
   set(MACOSX_BUNDLE_ICON_FILE Plex.icns)
   set(MACOSX_BUNDLE_COPYRIGHT "Plex inc")
-  set(resourcesdir ${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources)
 else()
   add_executable(Plex ${PLEX_ALL_SRCS})
 endif()
@@ -48,18 +47,17 @@ add_dependencies(Plex git_revision.h ffmpeg)
 
 target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
-install(TARGETS Plex BUNDLE DESTINATION .)
-install(FILES ${plexdir}/Plex.icns DESTINATION ${resourcesdir})
-
-set(plugins ${resourcesdir}/XBMC/system/ImageLib-x86-osx.so)
+install(TARGETS Plex BUNDLE DESTINATION . COMPONENT RUNTIME)
+install(FILES ${plexdir}/Plex.icns DESTINATION Plex.app/Contents/Resources COMPONENT RUNTIME)
 
 install(CODE "
 	include(BundleUtilities)
 	set(BU_CHMOD_BUNDLE_ITEMS ON)
-	fixup_bundle(${CMAKE_INSTALL_PREFIX}/Plex.app ${plugins} ${dependdir}/lib)"
-COMPONENT RUNTIME)
-install(CODE "
-	execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh Plex.app \"${root}\" \"${CMAKE_INSTALL_PREFIX}\")
-")
-install(CODE "file(REMOVE ${resourcesdir}/XBMC/media/Splash.png)")
-install(FILES ${plexdir}/Splash.png DESTINATION ${resourcesdir}/XBMC/media)
+  set(plugins \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system/ImageLib-x86-osx.so)
+  message(\${plugins})
+	fixup_bundle(\${CMAKE_INSTALL_PREFIX}/Plex.app \${plugins} ${dependdir}/lib)
+	execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh Plex.app \"${root}\" \"\${CMAKE_INSTALL_PREFIX}\")
+" COMPONENT RUNTIME)
+
+install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/media/Splash.png)")
+install(FILES ${plexdir}/Splash.png DESTINATION Plex.app/Contents/Resources/XBMC/media)
