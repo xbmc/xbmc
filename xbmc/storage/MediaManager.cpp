@@ -230,7 +230,7 @@ bool CMediaManager::HasLocation(const CStdString& path) const
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == path)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, path))
       return true;
   }
 
@@ -242,7 +242,7 @@ bool CMediaManager::RemoveLocation(const CStdString& path)
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == path)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, path))
     {
       // prompt for sources, remove, cancel,
       m_locations.erase(m_locations.begin()+i);
@@ -257,7 +257,7 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == oldPath)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, oldPath))
     {
       m_locations[i].path = newPath;
       return SaveSources();

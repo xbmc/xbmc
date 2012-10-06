@@ -897,6 +897,14 @@ void URIUtils::RemoveSlashAtEnd(CStdString& strFolder)
     strFolder.Delete(strFolder.size() - 1);
 }
 
+bool URIUtils::CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2)
+{
+  CStdString strc1 = strPath1, strc2 = strPath2;
+  RemoveSlashAtEnd(strc1);
+  RemoveSlashAtEnd(strc2);
+  return strc1.Equals(strc2);
+}
+
 void URIUtils::AddFileToFolder(const CStdString& strFolder, 
                                 const CStdString& strFile,
                                 CStdString& strResult)
