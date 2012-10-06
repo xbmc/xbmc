@@ -339,18 +339,77 @@ bool CSysInfo::IsAeroDisabled()
 
 bool CSysInfo::IsVistaOrHigher()
 {
-#ifdef _WIN32
-  OSVERSIONINFOEX osvi;
-  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-  osvi.dwOSVersionInfoSize = sizeof(osvi);
-
-  if (GetVersionEx((OSVERSIONINFO *)&osvi))
-  {
-    if (osvi.dwMajorVersion >= 6)
-      return true; 
-  }
-#endif
+#ifdef TARGET_WINDOWS
+  return IsWindowsVersionAtLeast(WindowsVersionVista);
+#else // TARGET_WINDOWS
   return false;
+#endif // TARGET_WINDOWS
+}
+
+CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
+
+bool CSysInfo::IsWindowsVersion(WindowsVersion ver)
+{
+  if (ver == WindowsVersionUnknown)
+    return false;
+  return GetWindowsVersion() == ver;
+}
+
+bool CSysInfo::IsWindowsVersionAtLeast(WindowsVersion ver)
+{
+  if (ver == WindowsVersionUnknown)
+    return false;
+  return GetWindowsVersion() >= ver;
+}
+
+CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
+{
+#ifdef TARGET_WINDOWS
+  if (m_WinVer == WindowsVersionUnknown)
+  {
+    OSVERSIONINFOEX osvi;
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+    if (GetVersionEx((OSVERSIONINFO *)&osvi))
+    {
+      if (osvi.dwMajorVersion == 5 && (osvi.dwMinorVersion == 1 || osvi.dwMinorVersion == 2 ))
+        m_WinVer = WindowsVersionWinXP;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
+        m_WinVer = WindowsVersionVista;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
+        m_WinVer = WindowsVersionWin7;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
+        m_WinVer = WindowsVersionWin8;
+      /* Insert checks for new Windows versions here */
+      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 2) || osvi.dwMajorVersion > 6)
+        m_WinVer = WindowsVersionFuture;
+    }
+  }
+#endif // TARGET_WINDOWS
+  return m_WinVer;
+}
+
+bool CSysInfo::IsOS64bit()
+{
+#ifdef TARGET_WINDOWS
+  SYSTEM_INFO si;
+  GetSystemInfo(&si);
+  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+    return true;
+  
+  BOOL (WINAPI *ptrIsWow64) (HANDLE, PBOOL);
+  HMODULE hKernel32 = GetModuleHandleA("kernel32");
+  if (hKernel32 == NULL)
+    return false; // Can't detect OS
+  ptrIsWow64 = (BOOL (WINAPI *) (HANDLE, PBOOL)) GetProcAddress(hKernel32, "IsWow64Process");
+  BOOL wow64proc = FALSE;
+  if (ptrIsWow64 == NULL || ptrIsWow64(GetCurrentProcess(), &wow64proc) == FALSE)
+    return false; // Can't detect OS
+  return wow64proc != FALSE;
+#else // TARGET_WINDOWS
+  // TODO: Implement Linux, FreeBSD, Android, OSX
+  return false;
+#endif // TARGET_WINDOWS
 }
 
 CStdString CSysInfo::GetKernelVersion()
