@@ -14,28 +14,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
-#include "IDirectory.h"
 #include "utils/XBMCTinyXML.h"
-#include "FileItem.h"
 
 namespace XFILE
 {
-  class CDAVDirectory : public IDirectory
+  class CDAVCommon
   {
     public:
-      CDAVDirectory(void);
-      virtual ~CDAVDirectory(void);
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-      virtual bool Create(const char* strPath);
-      virtual bool Exists(const char* strPath);
-      virtual bool Remove(const char* strPath);
-      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
-    private:
-      void ParseResponse(const TiXmlElement *pElement, CFileItem &item);
+      static bool ValueWithoutNamespace(const TiXmlNode *pNode, const CStdString& value);
+      static CStdString GetStatusTag(const TiXmlElement *pElement);
   };
 }

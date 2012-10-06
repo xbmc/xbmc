@@ -53,6 +53,7 @@ public:
   static bool IsSourcesPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
+  static bool IsDAV(const CStdString& strFile);
   static bool IsDOSPath(const CStdString &path);
   static bool IsDVD(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
