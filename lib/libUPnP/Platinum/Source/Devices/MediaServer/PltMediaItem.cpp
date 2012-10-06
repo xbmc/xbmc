@@ -317,6 +317,13 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         didl += "</upnp:icon>";
     }
 
+    // rating
+    if ((mask & PLT_FILTER_MASK_RATING) && !m_Description.rating.IsEmpty()) {
+        didl += "<upnp:rating>";
+        PLT_Didl::AppendXmlEscape(didl, m_Description.rating);
+        didl += "</upnp:rating>";
+    }
+
     // original track number
     if ((mask & PLT_FILTER_MASK_ORIGINALTRACK) && m_MiscInfo.original_track_number > 0) {
         didl += "<upnp:originalTrackNumber>";
@@ -528,6 +535,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "description", m_Description.description, didl_namespace_dc);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "icon", m_Description.icon_uri, didl_namespace_upnp);
+    PLT_XmlHelper::GetChildText(entry, "rating", m_Description.rating, didl_namespace_upnp);
 	PLT_XmlHelper::GetChildText(entry, "toc", m_MiscInfo.toc, didl_namespace_upnp);
     
     // album arts

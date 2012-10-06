@@ -80,10 +80,11 @@
 
 #define PLT_FILTER_MASK_LONGDESCRIPTION             0x04000000
 #define PLT_FILTER_MASK_ICON                        0x08000000
+#define PLT_FILTER_MASK_RATING                      0x10000000
 
-#define PLT_FILTER_MASK_TOC                         0x10000000
-#define PLT_FILTER_MASK_SEARCHCLASS                 0x20000000
-#define PLT_FILTER_MASK_REFID                       0x40000000
+#define PLT_FILTER_MASK_TOC                         0x20000000
+#define PLT_FILTER_MASK_SEARCHCLASS                 0x40000000
+#define PLT_FILTER_MASK_REFID                       0x80000000
 
 #define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
@@ -99,6 +100,7 @@
 #define PLT_FILTER_FIELD_DESCRIPTION                "dc:description"
 #define PLT_FILTER_FIELD_LONGDESCRIPTION            "upnp:longDescription"
 #define PLT_FILTER_FIELD_ICON                       "upnp:icon"
+#define PLT_FILTER_FIELD_RATING                     "upnp:rating"
 #define PLT_FILTER_FIELD_ORIGINALTRACK              "upnp:originalTrackNumber"
 #define PLT_FILTER_FIELD_PROGRAMTITLE               "upnp:programTitle"
 #define PLT_FILTER_FIELD_SERIESTITLE                "upnp:seriesTitle"
