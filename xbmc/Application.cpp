@@ -178,6 +178,7 @@
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "peripherals/devices/PeripheralImon.h"
+#include "music/infoscanner/MusicInfoScanner.h"
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
@@ -251,7 +252,6 @@
 #include "dialogs/GUIDialogFavourites.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "music/dialogs/GUIDialogMusicScan.h"
 #include "dialogs/GUIDialogPlayerControls.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -1262,7 +1262,6 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
     g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
     g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
-    g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
     g_windowManager.Add(new CGUIDialogMuteBug);            // window id = 113
     g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 114
 #ifdef HAS_KARAOKE
@@ -3449,7 +3448,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_SUB_MENU);
     g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
     g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
-    g_windowManager.Delete(WINDOW_DIALOG_MUSIC_SCAN);
     g_windowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);

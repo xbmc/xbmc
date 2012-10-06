@@ -360,11 +360,6 @@ void CMusicInfoScanner::Stop()
   StopThread();
 }
 
-void CMusicInfoScanner::SetObserver(IMusicInfoScannerObserver* pObserver)
-{
-  m_pObserver = pObserver;
-}
-
 static void OnDirectoryScanned(const CStdString& strDirectory)
 {
   CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);

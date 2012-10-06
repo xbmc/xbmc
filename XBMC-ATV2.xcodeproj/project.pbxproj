@@ -631,7 +631,6 @@
 		F56C7A80131EC155000AD0F6 /* GUIDialogMusicInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75C7131EC153000AD0F6 /* GUIDialogMusicInfo.cpp */; };
 		F56C7A81131EC155000AD0F6 /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75C9131EC153000AD0F6 /* GUIDialogMusicOSD.cpp */; };
 		F56C7A82131EC155000AD0F6 /* GUIDialogMusicOverlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75CB131EC153000AD0F6 /* GUIDialogMusicOverlay.cpp */; };
-		F56C7A83131EC155000AD0F6 /* GUIDialogMusicScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75CD131EC153000AD0F6 /* GUIDialogMusicScan.cpp */; };
 		F56C7A84131EC155000AD0F6 /* GUIDialogSongInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75CF131EC153000AD0F6 /* GUIDialogSongInfo.cpp */; };
 		F56C7A85131EC155000AD0F6 /* GUIDialogVisualisationPresetList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75D1131EC153000AD0F6 /* GUIDialogVisualisationPresetList.cpp */; };
 		F56C7A86131EC155000AD0F6 /* MusicAlbumInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75D4131EC153000AD0F6 /* MusicAlbumInfo.cpp */; };
@@ -2450,8 +2449,6 @@
 		F56C75CA131EC153000AD0F6 /* GUIDialogMusicOSD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMusicOSD.h; sourceTree = "<group>"; };
 		F56C75CB131EC153000AD0F6 /* GUIDialogMusicOverlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMusicOverlay.cpp; sourceTree = "<group>"; };
 		F56C75CC131EC153000AD0F6 /* GUIDialogMusicOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMusicOverlay.h; sourceTree = "<group>"; };
-		F56C75CD131EC153000AD0F6 /* GUIDialogMusicScan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMusicScan.cpp; sourceTree = "<group>"; };
-		F56C75CE131EC153000AD0F6 /* GUIDialogMusicScan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMusicScan.h; sourceTree = "<group>"; };
 		F56C75CF131EC153000AD0F6 /* GUIDialogSongInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSongInfo.cpp; sourceTree = "<group>"; };
 		F56C75D0131EC153000AD0F6 /* GUIDialogSongInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSongInfo.h; sourceTree = "<group>"; };
 		F56C75D1131EC153000AD0F6 /* GUIDialogVisualisationPresetList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVisualisationPresetList.cpp; sourceTree = "<group>"; };
@@ -5275,8 +5272,6 @@
 				F56C75CA131EC153000AD0F6 /* GUIDialogMusicOSD.h */,
 				F56C75CB131EC153000AD0F6 /* GUIDialogMusicOverlay.cpp */,
 				F56C75CC131EC153000AD0F6 /* GUIDialogMusicOverlay.h */,
-				F56C75CD131EC153000AD0F6 /* GUIDialogMusicScan.cpp */,
-				F56C75CE131EC153000AD0F6 /* GUIDialogMusicScan.h */,
 				F56C75CF131EC153000AD0F6 /* GUIDialogSongInfo.cpp */,
 				F56C75D0131EC153000AD0F6 /* GUIDialogSongInfo.h */,
 				F56C75D1131EC153000AD0F6 /* GUIDialogVisualisationPresetList.cpp */,
@@ -7068,7 +7063,6 @@
 				F56C7A80131EC155000AD0F6 /* GUIDialogMusicInfo.cpp in Sources */,
 				F56C7A81131EC155000AD0F6 /* GUIDialogMusicOSD.cpp in Sources */,
 				F56C7A82131EC155000AD0F6 /* GUIDialogMusicOverlay.cpp in Sources */,
-				F56C7A83131EC155000AD0F6 /* GUIDialogMusicScan.cpp in Sources */,
 				F56C7A84131EC155000AD0F6 /* GUIDialogSongInfo.cpp in Sources */,
 				F56C7A85131EC155000AD0F6 /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				F56C7A86131EC155000AD0F6 /* MusicAlbumInfo.cpp in Sources */,

@@ -28,19 +28,6 @@ class CGUIDialogProgressBarHandle;
 
 namespace MUSIC_INFO
 {
-enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, READING_MUSIC_INFO, DOWNLOADING_ALBUM_INFO, DOWNLOADING_ARTIST_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
-
-class IMusicInfoScannerObserver
-{
-public:
-  virtual ~IMusicInfoScannerObserver() {}
-  virtual void OnStateChanged(SCAN_STATE state) = 0;
-  virtual void OnDirectoryChanged(const CStdString& strDirectory) = 0;
-  virtual void OnDirectoryScanned(const CStdString& strDirectory) = 0;
-  virtual void OnSetProgress(int currentItem, int itemCount)=0;
-  virtual void OnFinished() = 0;
-};
-
 class CMusicInfoScanner : CThread, public IRunnable
 {
 public:
@@ -59,7 +46,6 @@ public:
   void FetchArtistInfo(const CStdString& strDirectory, bool refresh=false);
   bool IsScanning();
   void Stop();
-  void SetObserver(IMusicInfoScannerObserver* pObserver);
 
   //! \brief Set whether or not to show a progress dialog
   void ShowDialog(bool show) { m_showDialog = show; }
