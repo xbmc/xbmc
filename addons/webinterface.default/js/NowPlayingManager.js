@@ -44,7 +44,7 @@ NowPlayingManager.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?UpdateState',
+      url: xbmc.core.JSON_RPC + '?UpdateState',
       data: '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
       timeout: 3000,
       success: jQuery.proxy(function(data) {
@@ -93,7 +93,7 @@ NowPlayingManager.prototype = {
         setTimeout(jQuery.proxy(this.updateState, this), 1000);
       }, this),
       error: jQuery.proxy(function(data, error) {
-        displayCommunicationError();
+        xbmc.core.displayCommunicationError();
         setTimeout(jQuery.proxy(this.updateState, this), 2000);
       }, this),
       dataType: 'json'});
@@ -102,7 +102,7 @@ NowPlayingManager.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?UpdatePlayer',
+      url: xbmc.core.JSON_RPC + '?UpdatePlayer',
       data: '{"jsonrpc": "2.0", "method": "Player.GetProperties", "params": { "playerid": ' + this.activePlayerId + ', "properties": [ "playlistid", "speed", "position", "totaltime", "time" ] }, "id": 1}',
       success: jQuery.proxy(function(data) {
         if (data && data.result)
@@ -111,8 +111,8 @@ NowPlayingManager.prototype = {
           this.playing = data.result.speed != 0;
           this.paused = data.result.speed == 0;
           this.currentItem = data.result.position;
-          this.trackBaseTime = timeToDuration(data.result.time);
-          this.trackDurationTime = timeToDuration(data.result.totaltime);
+          this.trackBaseTime = xbmc.core.timeToDuration(data.result.time);
+          this.trackDurationTime = xbmc.core.timeToDuration(data.result.totaltime);
           if (!this.autoRefreshAudioData && !this.autoRefreshVideoData && this.playing) {
             if (this.activePlayer == 'audio') {
               this.autoRefreshAudioData = true;
@@ -160,7 +160,7 @@ NowPlayingManager.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?SkipNext',
+        url: xbmc.core.JSON_RPC + '?SkipNext',
         data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": "next" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result == 'OK') {
@@ -175,7 +175,7 @@ NowPlayingManager.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?SkipPrevious',
+        url: xbmc.core.JSON_RPC + '?SkipPrevious',
         data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": "previous" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result == 'OK') {
@@ -190,7 +190,7 @@ NowPlayingManager.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?Stop',
+        url: xbmc.core.JSON_RPC + '?Stop',
         data: '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result == 'OK') {
@@ -210,7 +210,7 @@ NowPlayingManager.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?PlayPause',
+        url: xbmc.core.JSON_RPC + '?PlayPause',
         data: '{"jsonrpc": "2.0", "method": "' + method + '", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result) {
@@ -252,7 +252,7 @@ NowPlayingManager.prototype = {
       jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?PlaylistItemPlay',
+      url: xbmc.core.JSON_RPC + '?PlaylistItemPlay',
       data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "to": ' + sequenceId + '}, "id": 1}',
       success: jQuery.proxy(function(data) {
       
@@ -282,7 +282,7 @@ NowPlayingManager.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?updateAudioPlaylist',
+      url: xbmc.core.JSON_RPC + '?updateAudioPlaylist',
       data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "properties": [ "title", "album", "artist", "duration", "thumbnail" ] }, "id": 1}',
       success: jQuery.proxy(function(data) {
         if (data && data.result && data.result.items && data.result.items.length > 0 && data.result.limits.total > 0) {
@@ -292,7 +292,7 @@ NowPlayingManager.prototype = {
             var activeItem;
             $.each($(data.result.items), jQuery.proxy(function(i, item) {
               var li = $('<li>');
-              var code = '<span class="duration">' + durationToString(item.duration) + '</span><div class="trackInfo" title="' + item.title + ' - ' + item.artist + '"><span class="trackTitle">' + item.title + '</span> - <span class="trackArtist">' + item.artist + '</span></div>';
+              var code = '<span class="duration">' + xbmc.core.durationToString(item.duration) + '</span><div class="trackInfo" title="' + item.title + ' - ' + item.artist + '"><span class="trackTitle">' + item.title + '</span> - <span class="trackArtist">' + item.artist + '</span></div>';
               if (i == this.currentItem) {
                 activeItem = item;
                 activeItem.seq = i;
@@ -339,7 +339,7 @@ NowPlayingManager.prototype = {
         }
       }, this),
       error: jQuery.proxy(function(data) {
-        displayCommunicationError();
+        xbmc.core.displayCommunicationError();
         if (this.autoRefreshAudioPlaylist) {
           setTimeout(jQuery.proxy(this.updateAudioPlaylist, this), 2000); /* Slow down request period */
         }
@@ -379,7 +379,7 @@ NowPlayingManager.prototype = {
     if (this.activePlaylistItem) {
       if (this.activePlaylistItem != this.lastPlaylistItem) {
         this.lastPlaylistItem = this.activePlaylistItem;
-        var imgPath = DEFAULT_ALBUM_COVER;
+        var imgPath = xbmc.core.DEFAULT_ALBUM_COVER;
         if (this.activePlaylistItem.thumbnail) {
           imgPath = 'image/' + encodeURI(this.activePlaylistItem.thumbnail);
         }
@@ -394,7 +394,7 @@ NowPlayingManager.prototype = {
         $('#audioArtistTitle').html(this.activePlaylistItem.artist);
         $('#progressBar').attr('style', '');
       }
-      $('#audioDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.trackDurationTime));
+      $('#audioDuration').html(xbmc.core.durationToString(this.trackBaseTime) + ' / ' + xbmc.core.durationToString(this.trackDurationTime));
       var buttonWidth = $('#progressBar .progressIndicator').width();
       var progressBarWidth = (this.trackBaseTime / this.trackDurationTime) * 100;
       var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
@@ -427,7 +427,7 @@ NowPlayingManager.prototype = {
     if (this.activePlaylistItem) {
       if (this.activePlaylistItem != this.lastPlaylistItem) {
         this.lastPlaylistItem = this.activePlaylistItem;
-        var imgPath = DEFAULT_VIDEO_COVER;
+        var imgPath = xbmc.core.DEFAULT_VIDEO_COVER;
         if (this.activePlaylistItem.thumbnail) {
           imgPath = 'image/' + encodeURI(this.activePlaylistItem.thumbnail);
         }
@@ -439,7 +439,7 @@ NowPlayingManager.prototype = {
         }
         $('#videoTitle').html(extra + this.activePlaylistItem.title);
       }
-      $('#videoDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.trackDurationTime));
+      $('#videoDuration').html(xbmc.core.durationToString(this.trackBaseTime) + ' / ' + xbmc.core.durationToString(this.trackDurationTime));
       var buttonWidth = $('#progressBar .progressIndicator').width();
       var progressBarWidth = (this.trackBaseTime / this.trackDurationTime) * 100;
       var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
@@ -490,7 +490,7 @@ NowPlayingManager.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?updateVideoPlaylist',
+      url: xbmc.core.JSON_RPC + '?updateVideoPlaylist',
       data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "properties": ["title", "season", "episode", "plot", "runtime", "showtitle","thumbnail"] }, "id": 1}',
       success: jQuery.proxy(function(data) {
         if (data && data.result && data.result.items && data.result.items.length > 0 && data.result.limits.total > 0) {
@@ -504,7 +504,7 @@ NowPlayingManager.prototype = {
               if (item.season >= 0 && item.episode >= 0) {
                 extra = item.season + 'x' + item.episode + ' ';
               }
-              var code = '<span class="duration">' + durationToString(item.runtime) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
+              var code = '<span class="duration">' + xbmc.core.durationToString(item.runtime) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
               if (i == this.currentItem) {
                 activeItem = item;
                 activeItem.seq = i;
@@ -545,7 +545,7 @@ NowPlayingManager.prototype = {
           jQuery.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: JSON_RPC + '?updateVideoPlayer',
+            url: xbmc.core.JSON_RPC + '?updateVideoPlayer',
             data: '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "playerid": ' + this.playlistid + ', "properties": ["title", "season", "episode", "plot", "runtime", "showtitle","thumbnail"] }, "id": 1}',
             success: jQuery.proxy(function(data) {
               if (data && data.result && data.result.item) {
@@ -570,7 +570,7 @@ NowPlayingManager.prototype = {
               }
             }, this),
             error: jQuery.proxy(function(data) {
-              displayCommunicationError();
+              xbmc.core.displayCommunicationError();
               if (this.autoRefreshVideoPlaylist) {
                 setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 2000); /* Slow down request period */
               }
@@ -583,7 +583,7 @@ NowPlayingManager.prototype = {
         }
       }, this),
       error: jQuery.proxy(function(data) {
-        displayCommunicationError();
+        xbmc.core.displayCommunicationError();
         if (this.autoRefreshVideoPlaylist) {
           setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 2000); /* Slow down request period */
         }

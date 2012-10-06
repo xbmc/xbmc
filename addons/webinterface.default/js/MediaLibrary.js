@@ -69,7 +69,7 @@ MediaLibrary.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?GetPlaylists',
+      url: xbmc.core.JSON_RPC + '?GetPlaylists',
       data: '{"jsonrpc": "2.0", "method": "Playlist.GetPlaylists", "id": 1}',
       timeout: 3000,
       success: jQuery.proxy(function(data) {
@@ -80,7 +80,7 @@ MediaLibrary.prototype = {
         }
       }, this),
       error: jQuery.proxy(function(data, error) {
-        displayCommunicationError();
+        xbmc.core.displayCommunicationError();
         setTimeout(jQuery.proxy(this.updateState, this), 2000);
       }, this),
       dataType: 'json'});
@@ -156,7 +156,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "AudioLibrary.Clean", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -167,7 +167,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "AudioLibrary.Scan", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -178,7 +178,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "VideoLibrary.Clean", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -189,7 +189,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -200,7 +200,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Input.Back", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -211,7 +211,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Input.Home", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -222,7 +222,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Application.SetMute", "params": { "mute": "toggle" }, "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -233,7 +233,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "System.Shutdown", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -244,14 +244,14 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}',
           success: jQuery.proxy(function(data) {
             var volume = data.result.volume + 1;
             jQuery.ajax({
               type: 'POST',
               contentType: 'application/json',
-              url: JSON_RPC + '?SendRemoteKey',
+              url: xbmc.core.JSON_RPC + '?SendRemoteKey',
               data: '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}',
               success: jQuery.proxy(function(data) {
                 $('#spinner').hide();
@@ -264,14 +264,14 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}',
           success: jQuery.proxy(function(data) {
             var volume = data.result.volume - 1;
             jQuery.ajax({
               type: 'POST',
               contentType: 'application/json',
-              url: JSON_RPC + '?SendRemoteKey',
+              url: xbmc.core.JSON_RPC + '?SendRemoteKey',
               data: '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}',
               success: jQuery.proxy(function(data) {
                 $('#spinner').hide();
@@ -287,7 +287,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Input.Up", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -298,7 +298,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Input.Down", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -309,7 +309,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Input.Left", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -320,7 +320,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Input.Right", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -331,7 +331,7 @@ MediaLibrary.prototype = {
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?SendRemoteKey',
+          url: xbmc.core.JSON_RPC + '?SendRemoteKey',
           data: '{"jsonrpc": "2.0", "method": "Input.Select", "id": 1}',
           success: jQuery.proxy(function(data) {
             $('#spinner').hide();
@@ -347,7 +347,7 @@ MediaLibrary.prototype = {
           jQuery.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: JSON_RPC + '?SendRemoteKey',
+            url: xbmc.core.JSON_RPC + '?SendRemoteKey',
             data: '{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": ' + player + ' }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
@@ -358,7 +358,7 @@ MediaLibrary.prototype = {
           jQuery.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: JSON_RPC + '?SendRemoteKey',
+            url: xbmc.core.JSON_RPC + '?SendRemoteKey',
             data: '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": ' + player + ' }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
@@ -369,7 +369,7 @@ MediaLibrary.prototype = {
           jQuery.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: JSON_RPC + '?SendRemoteKey',
+            url: xbmc.core.JSON_RPC + '?SendRemoteKey',
             data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + player + ', "to": "next" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
@@ -380,7 +380,7 @@ MediaLibrary.prototype = {
           jQuery.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: JSON_RPC + '?SendRemoteKey',
+            url: xbmc.core.JSON_RPC + '?SendRemoteKey',
             data: '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + player + ', "to": "previous" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
@@ -391,7 +391,7 @@ MediaLibrary.prototype = {
           jQuery.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: JSON_RPC + '?SendRemoteKey',
+            url: xbmc.core.JSON_RPC + '?SendRemoteKey',
             data: '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "increment" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
@@ -402,7 +402,7 @@ MediaLibrary.prototype = {
           jQuery.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: JSON_RPC + '?SendRemoteKey',
+            url: xbmc.core.JSON_RPC + '?SendRemoteKey',
             data: '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "decrement" }, "id": 1}',
             success: jQuery.proxy(function(data) {
               $('#spinner').hide();
@@ -427,7 +427,7 @@ MediaLibrary.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?GetAlbums',
+        url: xbmc.core.JSON_RPC + '?GetAlbums',
         data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "properties": ["description", "theme", "mood", "style", "type", "albumlabel", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result && data.result.albums) {
@@ -453,7 +453,7 @@ MediaLibrary.prototype = {
     }
   },
   getThumbnailPath: function(thumbnail) {
-    return thumbnail ? ('image/' + encodeURI(thumbnail)) : DEFAULT_ALBUM_COVER;
+    return thumbnail ? ('image/' + encodeURI(thumbnail)) : xbmc.core.DEFAULT_ALBUM_COVER;
   },
   generateThumb: function(type, thumbnail, title, artist) {
     var floatableAlbum = $('<div>');
@@ -538,7 +538,7 @@ MediaLibrary.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?GetSongs',
+        url: xbmc.core.JSON_RPC + '?GetSongs',
         data: '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "filter": { "albumid" : ' + event.data.album.albumid + ' } }, "id": 1}',
         success: jQuery.proxy(function(data) {
           albumDetailsContainer = $('<div>');
@@ -572,7 +572,7 @@ MediaLibrary.prototype = {
             trackRow.append(trackTitleTD);
             var trackDurationTD = $('<td>')
               .addClass('time')
-              .html(durationToString(item.duration));
+              .html(xbmc.core.durationToString(item.duration));
 
             trackRow.append(trackDurationTD);
             var trackArtistTD = $('<td>')
@@ -620,21 +620,21 @@ MediaLibrary.prototype = {
     $("#toggleLandscape").removeClass('activeMode');
     switch(view) {
       case 'poster':
-        setCookie('TVView','poster');
+        xbmc.core.setCookie('TVView','poster');
         wthumblist='135px';
         hthumblist='199px';
         hthumbdetails='559px';
         $("#togglePoster").addClass('activeMode');
         break;
       case 'landscape':
-        setCookie('TVView','landscape');
+        xbmc.core.setCookie('TVView','landscape');
         wthumblist='210px';
         hthumblist='118px';
         hthumbdetails='213px';
         $("#toggleLandscape").addClass('activeMode');
         break;
       default: //set banner view as default
-        setCookie('TVView','banner');
+        xbmc.core.setCookie('TVView','banner');
         wthumblist='379px';
         hthumblist='70px';
         hthumbdetails='70px';
@@ -654,7 +654,7 @@ MediaLibrary.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?GetTVShowSeasons',
+        url: xbmc.core.JSON_RPC + '?GetTVShowSeasons',
         data: '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "properties": [ "season", "showtitle", "playcount", "episode", "thumbnail","fanart" ], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}',
         success: jQuery.proxy(function(data) {
           tvshowDetailsContainer = $('<div>');
@@ -692,8 +692,8 @@ MediaLibrary.prototype = {
             tvshowDetailsContainer.append(showThumb);
             seasonSelectionSelect.trigger('change');
             $('#content').append(tvshowDetailsContainer);
-            if(getCookie('TVView')!=null && getCookie('TVView')!='banner'){
-            var view=getCookie('TVView');
+            if(xbmc.core.getCookie('TVView')!=null && xbmc.core.getCookie('TVView')!='banner'){
+            var view=xbmc.core.getCookie('TVView');
             switch(view) {
               case 'poster':
                 togglePoster.trigger('click');
@@ -727,7 +727,7 @@ MediaLibrary.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?GetTVSeasonEpisodes',
+      url: xbmc.core.JSON_RPC + '?GetTVSeasonEpisodes',
       data: '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "properties": [ "title", "thumbnail","episode","plot","season"], "season" : ' + seasons[selectedVal].season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}',
       success: jQuery.proxy(function(data) {
         var episodeListingsContainer = $('<div>').addClass('episodeListingsContainer');
@@ -789,7 +789,7 @@ MediaLibrary.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?AddTvShowToPlaylist',
+      url: xbmc.core.JSON_RPC + '?AddTvShowToPlaylist',
       data: '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "episodeid": ' + event.data.episode.episodeid + ' } }, "id": 1}',
       success: jQuery.proxy(function(data) {
         this.hideOverlay();
@@ -828,7 +828,7 @@ MediaLibrary.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?PlayMovie',
+      url: xbmc.core.JSON_RPC + '?PlayMovie',
       data: '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "movieid": ' + event.data.movie.movieid + ' } }, "id": 1}',
       success: jQuery.proxy(function(data) {
         this.hideOverlay();
@@ -868,21 +868,21 @@ MediaLibrary.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?ClearPlaylist',
+      url: xbmc.core.JSON_RPC + '?ClearPlaylist',
       data: '{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": { "playlistid": ' + this.playlists["audio"] + ' }, "id": 1}',
       success: jQuery.proxy(function(data) {
         //check that clear worked.
         jQuery.ajax({
           type: 'POST',
           contentType: 'application/json',
-          url: JSON_RPC + '?AddAlbumToPlaylist',
+          url: xbmc.core.JSON_RPC + '?AddAlbumToPlaylist',
           data: '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}',
           success: jQuery.proxy(function(data) {
             //play specific song in playlist
             jQuery.ajax({
               type: 'POST',
               contentType: 'application/json',
-              url: JSON_RPC + '?PlaylistItemPlay',
+              url: xbmc.core.JSON_RPC + '?PlaylistItemPlay',
               data: '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}',
               success: jQuery.proxy(function(data) {
               }, this),
@@ -902,7 +902,7 @@ MediaLibrary.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?GetMovies',
+        url: xbmc.core.JSON_RPC + '?GetMovies',
         data: '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start": 0 }, "properties": [ "genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "runtime", "year", "playcount", "rating", "thumbnail", "file" ], "sort": { "method": "sorttitle", "ignorearticle": true } }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result && data.result.movies) {
@@ -958,7 +958,7 @@ MediaLibrary.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?GetTVShows',
+        url: xbmc.core.JSON_RPC + '?GetTVShows',
         data: '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["genre", "plot", "title", "lastplayed", "episode", "year", "playcount", "rating", "thumbnail", "studio", "mpaa", "premiered"] }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result && data.result.tvshows) {
@@ -980,8 +980,8 @@ MediaLibrary.prototype = {
           libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
           libraryContainer.trigger('scroll');
           myScroll = new iScroll('tvshowLibraryContainer');
-          if(getCookie('TVView')!=null && getCookie('TVView')!='banner') {
-            var view=getCookie('TVView');
+          if(xbmc.core.getCookie('TVView')!=null && xbmc.core.getCookie('TVView')!='banner') {
+            var view=xbmc.core.getCookie('TVView');
             switch(view) {
               case 'poster':
                 togglePoster.trigger('click');
@@ -1010,7 +1010,7 @@ MediaLibrary.prototype = {
     jQuery.ajax({
       type: 'POST',
       contentType: 'application/json',
-      url: JSON_RPC + '?StartSlideshow',
+      url: xbmc.core.JSON_RPC + '?StartSlideshow',
       data: '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "recursive" : "true", "random": "true", "path" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}',
       success: jQuery.proxy(function(data) {
       }, this),
@@ -1028,7 +1028,7 @@ MediaLibrary.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?GetDirectory',
+        url: xbmc.core.JSON_RPC + '?GetDirectory',
         data: '{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "media" : "pictures", "directory": "' + jsonDirectory + '" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result && ( data.result.directories || data.result.files )) {
@@ -1093,7 +1093,7 @@ MediaLibrary.prototype = {
       jQuery.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: JSON_RPC + '?GetSources',
+        url: xbmc.core.JSON_RPC + '?GetSources',
         data: '{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media" : "pictures" }, "id": 1}',
         success: jQuery.proxy(function(data) {
           if (data && data.result && data.result.shares) {

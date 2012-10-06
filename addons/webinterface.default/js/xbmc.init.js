@@ -23,6 +23,6 @@
 
     var mediaLibrary = new MediaLibrary(),
         nowPlayingManager = new NowPlayingManager();
-    applyDeviceFixes();
+    xbmc.core.applyDeviceFixes();
 }());
 
