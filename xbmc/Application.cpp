@@ -5885,14 +5885,8 @@ void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
   }
 
   if (!(flags & CMusicInfoScanner::SCAN_BACKGROUND))
-  {
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan)
-    {
-      m_musicInfoScanner->SetObserver(musicScan);
-      musicScan->ShowScan();
-    }
-  }
+    m_musicInfoScanner->ShowDialog(true);
+
   m_musicInfoScanner->Start(strDirectory, flags);
 }
 
@@ -5902,15 +5896,8 @@ void CApplication::StartMusicAlbumScan(const CStdString& strDirectory,
   if (m_musicInfoScanner->IsScanning())
     return;
 
-  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
-  {
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan)
-    {
-      m_musicInfoScanner->SetObserver(musicScan);
-      musicScan->ShowScan();
-    }
-  }
+  m_musicInfoScanner->ShowDialog(true);
+
   m_musicInfoScanner->FetchAlbumInfo(strDirectory,refresh);
 }
 
@@ -5920,17 +5907,9 @@ void CApplication::StartMusicArtistScan(const CStdString& strDirectory,
   if (m_musicInfoScanner->IsScanning())
     return;
 
-  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
-  {
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan)
-    {
-      m_musicInfoScanner->SetObserver(musicScan);
-      musicScan->ShowScan();
-    }
-  }
-  m_musicInfoScanner->FetchArtistInfo(strDirectory,refresh);
+  m_musicInfoScanner->ShowDialog(true);
 
+  m_musicInfoScanner->FetchArtistInfo(strDirectory,refresh);
 }
 
 void CApplication::CheckPlayingProgress()

@@ -24,6 +24,7 @@
 
 class CAlbum;
 class CArtist;
+class CGUIDialogProgressBarHandle;
 
 namespace MUSIC_INFO
 {
@@ -59,6 +60,9 @@ public:
   bool IsScanning();
   void Stop();
   void SetObserver(IMusicInfoScannerObserver* pObserver);
+
+  //! \brief Set whether or not to show a progress dialog
+  void ShowDialog(bool show) { m_showDialog = show; }
 
   /*! \brief Categorise songs into albums
    Albums are defined uniquely by the album name and album artist.
@@ -117,7 +121,8 @@ protected:
   int CountFilesRecursively(const CStdString& strPath);
 
 protected:
-  IMusicInfoScannerObserver* m_pObserver;
+  bool m_showDialog;
+  CGUIDialogProgressBarHandle* m_handle;
   int m_currentItem;
   int m_itemCount;
   bool m_bRunning;
