@@ -281,8 +281,16 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_MiscInfo.last_position = tag.m_resumePoint.timeInSeconds;
     object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsLocalizedDate();
     object.m_MiscInfo.play_count = tag.m_playCount;
-    if (resource) resource->m_Duration = tag.m_streamDetails.GetVideoDuration();
-    if (resource) resource->m_Resolution = NPT_String::FromInteger(tag.m_streamDetails.GetVideoWidth()) + "x" + NPT_String::FromInteger(tag.m_streamDetails.GetVideoHeight());
+    if (resource) {
+        if (tag.HasStreamDetails()) {
+            const CStreamDetails details = tag.m_streamDetails;
+            resource->m_Duration = details.GetVideoDuration();
+            resource->m_Resolution = NPT_String::FromInteger(details.GetVideoWidth()) + "x" + NPT_String::FromInteger(details.GetVideoHeight());
+        }
+        else {
+            resource->m_Duration = 60*atoi(tag.m_strRuntime.c_str());
+        }
+    }
 
     return NPT_SUCCESS;
 }
@@ -376,6 +384,12 @@ BuildObject(CFileItem&                    item,
                 object->m_Resources.Add(resource);
             } else {
                 object->m_Resources.Insert(object->m_Resources.GetFirstItem(), resource);
+            }
+            // copy across the known metadata
+            for(unsigned i=0; i<object->m_Resources.GetItemCount(); i++) {
+                object->m_Resources[i].m_Size = resource.m_Size;
+                object->m_Resources[i].m_Duration = resource.m_Duration;
+                object->m_Resources[i].m_Resolution = resource.m_Resolution;
             }
         }
 
@@ -636,7 +650,8 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
 
     if(resource)
     {
-      tag.m_strRuntime.Format("%d",resource->m_Duration);
+      if (resource->m_Duration)
+        tag.m_strRuntime.Format("%d",resource->m_Duration/60);
       if (object.m_MiscInfo.last_position > 0 )
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;
