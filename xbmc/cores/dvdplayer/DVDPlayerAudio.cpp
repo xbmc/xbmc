@@ -675,9 +675,9 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   m_errorbuff += error;
   m_errorcount++;
 
-  //check if measured error for 1 second
+  //check if measured error for 2 seconds
   now = CurrentHostCounter();
-  if ((now - m_errortime) >= m_freq)
+  if ((now - m_errortime) >= m_freq * 2)
   {
     m_errortime = now;
     m_error = m_errorbuff / m_errorcount;
