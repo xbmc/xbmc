@@ -216,7 +216,7 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
     val = (Float32*)*mixMap + i*m_deviceChannels;
     for (UInt32 j = 0; j < fmt->mChannelsPerFrame; ++j)
     {
-      OSStatus ret = AudioUnitSetParameter(mixerUnit->GetUnit(),
+      AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
     }
   }
