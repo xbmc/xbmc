@@ -99,7 +99,7 @@ public:
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem &sortable);
   virtual bool IsFileItem() const { return true; };
 

@@ -416,7 +416,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
   }
 }
 
-void CVideoInfoTag::Serialize(CVariant& value)
+void CVideoInfoTag::Serialize(CVariant& value) const
 {
   value["director"] = m_director;
   value["writer"] = m_writingCredits;

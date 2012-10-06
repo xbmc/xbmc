@@ -689,7 +689,7 @@ void CFileItem::Archive(CArchive& ar)
   }
 }
 
-void CFileItem::Serialize(CVariant& value)
+void CFileItem::Serialize(CVariant& value) const
 {
   //CGUIListItem::Serialize(value["CGUIListItem"]);
 

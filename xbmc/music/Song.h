@@ -57,7 +57,7 @@ public:
   CSong(MUSIC_INFO::CMusicInfoTag& tag);
   virtual ~CSong(){};
   void Clear() ;
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
 
   bool operator<(const CSong &song) const
   {
