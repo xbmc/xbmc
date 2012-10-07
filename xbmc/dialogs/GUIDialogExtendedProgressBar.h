@@ -31,6 +31,7 @@ public:
   virtual ~CGUIDialogProgressBarHandle(void) {}
 
   const std::string &Title(void) { return m_strTitle; }
+  void SetTitle(const std::string &strTitle);
 
   std::string Text(void) const;
   void SetText(const std::string &strText);
