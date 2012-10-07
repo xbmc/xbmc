@@ -271,6 +271,9 @@
     <Filter Include="dbwrappers\test">
       <UniqueIdentifier>{efa81a0a-10b5-43d4-83b8-83794809edab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="filesystem\PictureDatabaseDirectory">
+      <UniqueIdentifier>{1d95445b-ec91-4af6-92b8-cec669049847}</UniqueIdentifier>
+    </Filter>
     <Filter Include="interfaces\swig">
       <UniqueIdentifier>{3447ad7c-23a6-4586-856a-62fc75c2f3aa}</UniqueIdentifier>
     </Filter>
@@ -2821,6 +2824,21 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dbwrappers\test\TestDynamicDatabase.cpp">
       <Filter>dbwrappers\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeOverview.cpp">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\QueryParams.cpp">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNode.cpp">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeYear.cpp">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pictures\PictureDatabase.cpp">
       <Filter>pictures</Filter>
@@ -5616,6 +5634,36 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\DynamicDatabase.h">
       <Filter>dbwrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeOverview.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeRoot.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\QueryParams.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNode.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodePictures.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeYear.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeCamera.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeTags.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeFolder.h">
+      <Filter>filesystem\PictureDatabaseDirectory</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pictures\PictureDatabase.h">
       <Filter>pictures</Filter>

@@ -177,6 +177,7 @@ void CURL::Parse(const CStdString& strURL1)
      m_strProtocol.Equals("image") ||
      m_strProtocol.Equals("videodb") ||
      m_strProtocol.Equals("musicdb") ||
+     m_strProtocol.Equals("picturedb") ||
      m_strProtocol.Equals("androidapp"))
     sep = "?";
   else
@@ -307,6 +308,7 @@ void CURL::Parse(const CStdString& strURL1)
   if (m_strProtocol.CompareNoCase("iso9660") == 0
     || m_strProtocol.CompareNoCase("musicdb") == 0
     || m_strProtocol.CompareNoCase("videodb") == 0
+    || m_strProtocol.CompareNoCase("picturedb") == 0
     || m_strProtocol.CompareNoCase("sources") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
     || m_strProtocol.CompareNoCase("pvr") == 0
