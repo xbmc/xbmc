@@ -271,7 +271,6 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haspvr",           SYSTEM_HAS_PVR }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
-                                  { "getbool",          SYSTEM_GET_BOOL },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
                                   { "setting",          SYSTEM_SETTING },
                                   { "hasaddon",         SYSTEM_HAS_ADDON },
@@ -712,7 +711,7 @@ void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector<Prope
 /// efficient retrieval of data.
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
-  // trim whitespace, and convert to lowercase
+  // trim whitespaces
   CStdString strTest = strCondition;
   strTest.TrimLeft(" \t\r\n");
   strTest.TrimRight(" \t\r\n");
@@ -846,6 +845,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (prop.num_params() == 1)
       {
         const CStdString &param = prop.param();
+        if (prop.name == "getbool")
+        {
+          std::string paramCopy = param;
+          StringUtils::ToLower(paramCopy);
+          return AddMultiInfo(GUIInfo(SYSTEM_GET_BOOL, ConditionalStringParameter(paramCopy, true)));
+        }
         for (size_t i = 0; i < sizeof(system_param) / sizeof(infomap); i++)
         {
           if (prop.name == system_param[i].str)
