@@ -2452,7 +2452,11 @@ msgctxt "#702"
 msgid "This path has been scanned before"
 msgstr ""
 
-#empty strings from id 703 to 704
+msgctxt "#703"
+msgid "Removing pictures from the library"
+msgstr ""
+
+#empty string with id 704
 
 msgctxt "#705"
 msgid "Network"

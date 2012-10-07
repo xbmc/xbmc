@@ -21,15 +21,28 @@
 #include "PictureInfoTag.h"
 #include "XBDateTime.h"
 #include "Util.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
+#include "filesystem/File.h"
 
 using namespace std;
+using namespace XFILE;
 
 void CPictureInfoTag::Reset()
 {
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
   memset(&m_iptcInfo, 0, sizeof(m_iptcInfo));
+  m_file.clear();
+  m_path.clear();
+  m_databaseID = -1;
+  m_size = 0;
+  m_folder.clear();
+  m_year = 0;
+  m_camera.clear();
+  m_tags.clear();
   m_isLoaded = false;
 }
 
@@ -38,8 +51,38 @@ const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
   if (this == &right) return * this;
   memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
   memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
+  m_file = right.m_file;
+  m_path = right.m_path;
+  m_databaseID = right.m_databaseID;
+  m_size = right.m_size;
+  m_folder = right.m_folder;
+  m_year = right.m_year;
+  m_camera = right.m_camera;
+  m_tags = right.m_tags;
   m_isLoaded = right.m_isLoaded;
   return *this;
+}
+
+bool CPictureInfoTag::GetDateTime(CDateTime &datetime) const
+{
+  // EXIF datetime looks like 2003:12:14 12:01:44
+  CStdString strDatetime(m_exifInfo.DateTime);
+  if (strDatetime.length() == 19)
+  {
+    int year = atoi(strDatetime.substr(0, 4).c_str());
+    int month = atoi(strDatetime.substr(5, 2).c_str());
+    int day = atoi(strDatetime.substr(8, 2).c_str());
+    int hour = atoi(strDatetime.substr(11, 2).c_str());
+    int minute = atoi(strDatetime.substr(14, 2).c_str());
+    int second = atoi(strDatetime.substr(17, 2).c_str());
+    // Enforce valid year, month and day
+    if (year != 0 && month != 0 && day != 0)
+    {
+      datetime = CDateTime(year, month, day, hour, minute, second);
+      return true;
+    }
+  }
+  return false;
 }
 
 bool CPictureInfoTag::Load(const CStdString &path)
@@ -50,10 +93,100 @@ bool CPictureInfoTag::Load(const CStdString &path)
   if (path.IsEmpty() || !exifDll.Load())
     return false;
 
+  URIUtils::Split(path, m_path, m_file);
+  m_databaseID = -1; // reset this
+
   if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
     m_isLoaded = true;
 
+  // Extract the year
+  CStdString datetime (m_exifInfo.DateTime);
+  if (datetime.length() >= 4)
+    m_year = atoi(datetime.substr(0, 4).c_str());
+
+  // Get the file size
+  CFile file;
+  file.Open(path);
+  m_size = file.GetLength();
+  file.Close();
+
+  CStdString pathCopy(m_path);
+  URIUtils::RemoveSlashAtEnd(pathCopy);
+  m_folder = URIUtils::GetFileName(pathCopy);
+
+  // Camera name
+  SetCamera(m_exifInfo.CameraMake, m_exifInfo.CameraModel);
+
+  // Parse tags
+  SetTags(m_iptcInfo.Keywords);
+
   return m_isLoaded;
+}
+
+void CPictureInfoTag::SetCamera(CStdString make, CStdString model)
+{
+  m_camera.clear();
+  make.Trim();
+  model.Trim();
+
+  // Casify the make (might look like KODAK PICTURE GROUP)
+  // This helps set the make apart from the model, and tests show that all caps
+  // dramatically reduces readability
+  CStdStringArray words;
+  StringUtils::SplitString(make, " ", words);
+  for (CStdStringArray::const_iterator it = words.begin(); it != words.end(); it++)
+  {
+    if (!it->length())
+      continue;
+    if (it->length() == 1)
+    {
+      m_camera += *it + " ";
+      continue;
+    }
+    // Skip some popular abbreviated names
+    if (*it == "HP" || *it == "JVC" || *it == "RIM" || it->Left(3) == "MSM" ||
+        *it == "LOMO" || *it == "DHW" || *it == "HTC")
+    {
+      m_camera += *it + " ";
+      continue;
+    }
+    CStdString thecap = it->substr(0, 1);
+    thecap.ToUpper();
+    CStdString therest = it->substr(1, string::npos);
+    therest.ToLower();
+    m_camera += thecap + therest + " ";
+  }
+
+  // Sometimes the Make shows up in the Model (Canon Canon PowerShot)
+  // Avoid duplication
+  if ((model.Left(m_camera.length() - 1).Equals(m_camera))) // ignore case
+    m_camera = model;
+  else
+    m_camera += model;
+}
+
+void CPictureInfoTag::SetTags(CStdString csvTags)
+{
+  m_tags.clear();
+
+  csvTags.Trim();
+  if (!csvTags.length())
+    return;
+
+  // Try exploding by semicolon first, comma second
+  CStdStringArray tags;
+  StringUtils::SplitString(csvTags, ";", tags);
+  if (tags.size() == 1)
+  {
+    tags.clear();
+    StringUtils::SplitString(csvTags, ",", tags);
+  }
+
+  for (CStdStringArray::iterator it = tags.begin(); it != tags.end(); it++)
+  {
+    it->Trim();
+    m_tags.push_back(it->c_str());
+  }
 }
 
 void CPictureInfoTag::Archive(CArchive& ar)
@@ -120,6 +253,15 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << CStdString(m_iptcInfo.State);
     ar << CStdString(m_iptcInfo.SupplementalCategories);
     ar << CStdString(m_iptcInfo.TransmissionReference);
+
+    ar << m_file;
+    ar << m_path;
+    ar << m_databaseID;
+    ar << m_size;
+    ar << m_folder;
+    ar << m_year;
+    ar << m_camera;
+    ar << m_tags;
   }
   else
   {
@@ -184,6 +326,15 @@ void CPictureInfoTag::Archive(CArchive& ar)
     GetStringFromArchive(ar, m_iptcInfo.State, sizeof(m_iptcInfo.State));
     GetStringFromArchive(ar, m_iptcInfo.SupplementalCategories, sizeof(m_iptcInfo.SupplementalCategories));
     GetStringFromArchive(ar, m_iptcInfo.TransmissionReference, sizeof(m_iptcInfo.TransmissionReference));
+
+    ar >> m_file;
+    ar >> m_path;
+    ar >> m_databaseID;
+    ar >> m_size;
+    ar >> m_folder;
+    ar >> m_year;
+    ar >> m_camera;
+    ar >> m_tags;
   }
 }
 
@@ -248,6 +399,88 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["state"] = CStdString(m_iptcInfo.State);
   value["supplementalcategories"] = CStdString(m_iptcInfo.SupplementalCategories);
   value["transmissionreference"] = CStdString(m_iptcInfo.TransmissionReference);
+
+  value["path"] = m_path;
+  value["file"] = m_file;
+  value["databaseid"] = m_databaseID;
+  value["size"] = m_size;
+  value["folder"] = m_folder;
+  value["year"] = m_year;
+  value["camera"] = m_camera;
+  value["tag"] = m_tags;
+}
+
+void CPictureInfoTag::Deserialize(const CVariant& value)
+{
+  m_exifInfo.ApertureFNumber =      value["aperturefnumber"].asFloat();
+  strncpy(m_exifInfo.CameraMake,    value["cameramake"].asString().c_str(), sizeof(m_exifInfo.CameraMake));
+  strncpy(m_exifInfo.CameraModel,   value["cameramodel"].asString().c_str(), sizeof(m_exifInfo.CameraModel));
+  m_exifInfo.CCDWidth =             value["ccdwidth"].asFloat();
+  strncpy(m_exifInfo.Comments,      value["comments"].asString().c_str(), sizeof(m_exifInfo.Comments));
+  strncpy(m_exifInfo.Description,   value["datetime"].asString().c_str(), sizeof(m_exifInfo.Description));
+  strncpy(m_exifInfo.DateTime,      value["datetime"].asString().c_str(), sizeof(m_exifInfo.DateTime));
+  for (int i = 0; i < 10; i++)
+    m_exifInfo.DateTimeOffsets[i] = (int)value["datetimeoffsets"][i].asInteger();
+  m_exifInfo.DigitalZoomRatio =     value["digitalzoomratio"].asFloat();
+  m_exifInfo.Distance =             value["distance"].asFloat();
+  m_exifInfo.ExposureBias =         value["exposurebias"].asFloat();
+  m_exifInfo.ExposureMode =         (int)value["exposuremode"].asInteger();
+  m_exifInfo.ExposureProgram =      (int)value["exposureprogram"].asInteger();
+  m_exifInfo.ExposureTime =         value["exposuretime"].asFloat();
+  m_exifInfo.FlashUsed =            (int)value["flashused"].asInteger();
+  m_exifInfo.FocalLength =          value["focallength"].asFloat();
+  m_exifInfo.FocalLength35mmEquiv = (int)value["focallength35mmequiv"].asInteger();
+  m_exifInfo.GpsInfoPresent =       (int)value["gpsinfopresent"].asInteger();
+  strncpy(m_exifInfo.GpsAlt,        value["gpsinfo"]["alt"].asString().c_str(), sizeof(m_exifInfo.GpsAlt));
+  strncpy(m_exifInfo.GpsLat,        value["gpsinfo"]["lat"].asString().c_str(), sizeof(m_exifInfo.GpsLat));
+  strncpy(m_exifInfo.GpsLong,       value["gpsinfo"]["long"].asString().c_str(), sizeof(m_exifInfo.GpsLong));
+  m_exifInfo.Height =               (int)value["height"].asInteger();
+  m_exifInfo.IsColor =              (int)value["iscolor"].asInteger();
+  m_exifInfo.ISOequivalent =        (int)value["isoequivalent"].asInteger();
+  m_exifInfo.LargestExifOffset =    (unsigned int)value["largestexifoffset"].asUnsignedInteger();
+  m_exifInfo.LightSource =          (int)value["lightsource"].asInteger();
+  m_exifInfo.MeteringMode =         (int)value["meteringmode"].asInteger();
+  m_exifInfo.numDateTimeTags =      (int)value["numdatetimetags"].asInteger();
+  m_exifInfo.Orientation =          (int)value["orientation"].asInteger();
+  m_exifInfo.Process =              (int)value["process"].asInteger();
+  m_exifInfo.ThumbnailAtEnd =       (char)value["thumbnailatend"].asInteger();
+  m_exifInfo.ThumbnailOffset =      (unsigned int)value["thumbnailoffset"].asUnsignedInteger();
+  m_exifInfo.ThumbnailSize =        (unsigned int)value["thumbnailsize"].asUnsignedInteger();
+  m_exifInfo.ThumbnailSizeOffset =  (int)value["thumbnailsizeoffset"].asInteger();
+  m_exifInfo.Whitebalance =         (int)value["whitebalance"].asInteger();
+  m_exifInfo.Width =                (int)value["width"].asInteger();
+
+  strncpy(m_iptcInfo.Author,                 value["author"].asString().c_str(), sizeof(m_iptcInfo.Author));
+  strncpy(m_iptcInfo.Byline,                 value["byline"].asString().c_str(), sizeof(m_iptcInfo.Byline));
+  strncpy(m_iptcInfo.BylineTitle,            value["bylinetitle"].asString().c_str(), sizeof(m_iptcInfo.BylineTitle));
+  strncpy(m_iptcInfo.Caption,                value["caption"].asString().c_str(), sizeof(m_iptcInfo.Caption));
+  strncpy(m_iptcInfo.Category,               value["category"].asString().c_str(), sizeof(m_iptcInfo.Category));
+  strncpy(m_iptcInfo.City,                   value["city"].asString().c_str(), sizeof(m_iptcInfo.City));
+  strncpy(m_iptcInfo.Copyright,              value["copyright"].asString().c_str(), sizeof(m_iptcInfo.Copyright));
+  strncpy(m_iptcInfo.CopyrightNotice,        value["copyrightnotice"].asString().c_str(), sizeof(m_iptcInfo.CopyrightNotice));
+  strncpy(m_iptcInfo.Country,                value["country"].asString().c_str(), sizeof(m_iptcInfo.Country));
+  strncpy(m_iptcInfo.CountryCode,            value["countrycode"].asString().c_str(), sizeof(m_iptcInfo.CountryCode));
+  strncpy(m_iptcInfo.Credit,                 value["credit"].asString().c_str(), sizeof(m_iptcInfo.Credit));
+  strncpy(m_iptcInfo.Date,                   value["date"].asString().c_str(), sizeof(m_iptcInfo.Date));
+  strncpy(m_iptcInfo.Headline,               value["headline"].asString().c_str(), sizeof(m_iptcInfo.Headline));
+  strncpy(m_iptcInfo.Keywords,               value["keywords"].asString().c_str(), sizeof(m_iptcInfo.Keywords));
+  strncpy(m_iptcInfo.ObjectName,             value["objectname"].asString().c_str(), sizeof(m_iptcInfo.ObjectName));
+  strncpy(m_iptcInfo.ReferenceService,       value["referenceservice"].asString().c_str(), sizeof(m_iptcInfo.ReferenceService));
+  strncpy(m_iptcInfo.Source,                 value["source"].asString().c_str(), sizeof(m_iptcInfo.Source));
+  strncpy(m_iptcInfo.SpecialInstructions,    value["specialinstructions"].asString().c_str(), sizeof(m_iptcInfo.SpecialInstructions));
+  strncpy(m_iptcInfo.State,                  value["supplementalcategories"].asString().c_str(), sizeof(m_iptcInfo.State));
+  strncpy(m_iptcInfo.SupplementalCategories, value["supplementalcategories"].asString().c_str(), sizeof(m_iptcInfo.SupplementalCategories));
+  strncpy(m_iptcInfo.TransmissionReference,  value["transmissionreference"].asString().c_str(), sizeof(m_iptcInfo.TransmissionReference));
+
+  m_path = value["path"].asString();
+  m_file = value["file"].asString();
+  m_databaseID = (int)value["databaseid"].asInteger();
+  m_size = value["size"].asInteger();
+  m_folder = value["folder"].asString();
+  m_year = (int)value["year"].asInteger();
+  m_camera = value["camera"].asString();
+  for (CVariant::const_iterator_array it = value["tag"].begin_array(); it != value["tag"].end_array(); it++)
+    m_tags.push_back(it->asString());
 }
 
 void CPictureInfoTag::ToSortable(SortItem& sortable)
