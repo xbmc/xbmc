@@ -6068,7 +6068,7 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr ""
 
 msgctxt "#19003"
-msgid "Find similar programme"
+msgid "Find similar programs"
 msgstr ""
 
 msgctxt "#19004"
