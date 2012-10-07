@@ -272,7 +272,9 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
 
-    object.m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);
+    for (unsigned int index = 0; index < tag.m_director.size(); index++)
+      object.m_People.directors.Add(tag.m_director[index].c_str());
+
     for (unsigned int index = 0; index < tag.m_writingCredits.size(); index++)
       object.m_People.authors.Add(tag.m_writingCredits[index].c_str());
 
@@ -486,7 +488,8 @@ BuildObject(CFileItem&                    item,
                       container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
                   }
 
-                  container->m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);;
+                  for (unsigned int index = 0; index < tag.m_director.size(); index++)
+                    container->m_People.directors.Add(tag.m_director[index].c_str());
                   for (unsigned int index = 0; index < tag.m_writingCredits.size(); index++)
                     container->m_People.authors.Add(tag.m_writingCredits[index].c_str());
 
@@ -641,7 +644,10 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     tag.m_iYear       = date.GetYear();
     for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
       tag.m_genre.push_back(object.m_Affiliation.genres.GetItem(index)->GetChars());
-    tag.m_director = StringUtils::Split((CStdString)object.m_People.director, g_advancedSettings.m_videoItemSeparator);
+    for (unsigned int index = 0; index < object.m_People.directors.GetItemCount(); index++)
+      tag.m_director.push_back(object.m_People.directors.GetItem(index)->name.GetChars());
+    for (unsigned int index = 0; index < object.m_People.authors.GetItemCount(); index++)
+      tag.m_writingCredits.push_back(object.m_People.authors.GetItem(index)->name.GetChars());
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strShowTitle = object.m_Recorded.series_title;
