@@ -453,7 +453,7 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
   if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || params.GetContentType() == 6) // recently added musicvideos
     return g_guiSettings.GetBool("musicplayer.autoplaynextitem");
 
-  return false;
+  return g_guiSettings.GetBool("videoplayer.autoplaynextitem");
 }
 
 CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
