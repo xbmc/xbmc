@@ -44,6 +44,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/dialogs/dialogs.a \
                    xbmc/epg/epg.a \
                    xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
+                   xbmc/filesystem/PictureDatabaseDirectory/picturedatabasedirectory.a \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
                    xbmc/guilib/guilib.a \

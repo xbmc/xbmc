@@ -9434,7 +9434,11 @@ msgctxt "#21808"
 msgid "JPEG process"
 msgstr ""
 
-#empty strings from id 21809 to 21819
+#empty strings from id 21809 to 21818
+
+msgctxt "#21819"
+msgid "Camera"
+msgstr ""
 
 msgctxt "#21820"
 msgid "Date/Time"

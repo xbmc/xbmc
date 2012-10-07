@@ -788,6 +788,11 @@ bool URIUtils::IsMusicDb(const CStdString& strFile)
   return strFile.Left(8).Equals("musicdb:");
 }
 
+bool URIUtils::IsPictureDb(const CStdString& strFile)
+{
+  return strFile.Left(10).Equals("picturedb:");
+}
+
 bool URIUtils::IsNfs(const CStdString& strFile)
 {
   CStdString strFile2(strFile);

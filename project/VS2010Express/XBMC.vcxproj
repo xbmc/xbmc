@@ -508,6 +508,35 @@
     <ClCompile Include="..\..\xbmc\filesystem\NptXbmcFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\NSFFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\OGGFileDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNode.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeOverview.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeYear.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\QueryParams.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\PipeFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PVRFile.cpp" />
@@ -1026,6 +1055,16 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNode.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeFolder.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeCamera.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeOverview.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodePictures.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeRoot.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeTags.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\DirectoryNodeYear.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory\QueryParams.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />

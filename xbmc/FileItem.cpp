@@ -1186,6 +1186,12 @@ bool CFileItem::IsVideoDb() const
   return url.GetProtocol().Equals("videodb");
 }
 
+bool CFileItem::IsPictureDb() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("picturedb");
+}
+
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.IsEmpty());
