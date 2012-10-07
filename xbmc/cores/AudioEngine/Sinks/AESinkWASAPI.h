@@ -45,11 +45,22 @@ public:
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames, bool hasAudio);
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
 private:
+    enum SearchStrategy { DefaultOnly = 0, TryHigherBits, TryHigherSampleRates, 
+                          TryHigherSampleRatesWODefault, TryHigherSampleRatesOnly};
     bool         InitializeExclusive(AEAudioFormat &format);
+    HRESULT      TryAndInitializeExclusive(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex_iec61937);
     void         AEChannelsFromSpeakerMask(DWORD speakers);
     static DWORD GetSpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
-    void         BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
-    void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
+    void         BuildWaveFormatExtensible(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
+    void         BuildWaveFormatExtensibleIEC61397(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
+    static AEAudioFormat SimplifyFormat(const AEAudioFormat &format);
+    bool         FindCompatibleFormatAlmostLossless(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified = false);
+    bool         FindCompatibleFormatHigherBits(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, bool tryDefault = true, bool formaitIsSimplified = false);
+    bool         FindCompatibleFormatHigherSampleRate(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified = false);
+    bool         FindCompatibleFormatWithLFE(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified = false);
+    bool         FindCompatibleFormatSideOrBack(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified = false);
+    bool         FindCompatibleFormatAnySampleRate(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, bool checkLowerRates = false, SearchStrategy strategy = TryHigherBits, bool formaitIsSimplified = false);
+    bool         FindCompatibleFormatAnyDataFormat(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, bool checkLowerRatesOnly, bool formaitIsSimplified = false);
 
     static const char  *WASAPIErrToStr(HRESULT err);
 
