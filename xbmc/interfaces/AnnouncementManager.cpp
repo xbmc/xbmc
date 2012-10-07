@@ -120,27 +120,27 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       // TODO: Can be removed once this is properly handled when starting playback of a file
       item->SetProperty(LOOKUP_PROPERTY, false);
 
-      object["title"] = item->GetVideoInfoTag()->m_strTitle;
+      object["item"]["title"] = item->GetVideoInfoTag()->m_strTitle;
 
       switch (item->GetVideoContentType())
       {
       case VIDEODB_CONTENT_MOVIES:
         if (item->GetVideoInfoTag()->m_iYear > 0)
-          object["year"] = item->GetVideoInfoTag()->m_iYear;
+          object["item"]["year"] = item->GetVideoInfoTag()->m_iYear;
         break;
       case VIDEODB_CONTENT_EPISODES:
         if (item->GetVideoInfoTag()->m_iEpisode >= 0)
-          object["episode"] = item->GetVideoInfoTag()->m_iEpisode;
+          object["item"]["episode"] = item->GetVideoInfoTag()->m_iEpisode;
         if (item->GetVideoInfoTag()->m_iSeason >= 0)
-          object["season"] = item->GetVideoInfoTag()->m_iSeason;
+          object["item"]["season"] = item->GetVideoInfoTag()->m_iSeason;
         if (!item->GetVideoInfoTag()->m_strShowTitle.empty())
-          object["showtitle"] = item->GetVideoInfoTag()->m_strShowTitle;
+          object["item"]["showtitle"] = item->GetVideoInfoTag()->m_strShowTitle;
         break;
       case VIDEODB_CONTENT_MUSICVIDEOS:
         if (!item->GetVideoInfoTag()->m_strAlbum.empty())
-          object["album"] = item->GetVideoInfoTag()->m_strAlbum;
+          object["item"]["album"] = item->GetVideoInfoTag()->m_strAlbum;
         if (!item->GetVideoInfoTag()->m_artist.empty())
-          object["artist"] = StringUtils::Join(item->GetVideoInfoTag()->m_artist, " / ");
+          object["item"]["artist"] = StringUtils::Join(item->GetVideoInfoTag()->m_artist, " / ");
         break;
       }
     }
@@ -173,20 +173,20 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       // TODO: Can be removed once this is properly handled when starting playback of a file
       item->SetProperty(LOOKUP_PROPERTY, false);
 
-      object["title"] = item->GetMusicInfoTag()->GetTitle();
+      object["item"]["title"] = item->GetMusicInfoTag()->GetTitle();
 
       if (item->GetMusicInfoTag()->GetTrackNumber() > 0)
-        object["track"] = item->GetMusicInfoTag()->GetTrackNumber();
+        object["item"]["track"] = item->GetMusicInfoTag()->GetTrackNumber();
       if (!item->GetMusicInfoTag()->GetAlbum().empty())
-        object["album"] = item->GetMusicInfoTag()->GetAlbum();
+        object["item"]["album"] = item->GetMusicInfoTag()->GetAlbum();
       if (!item->GetMusicInfoTag()->GetArtist().empty())
-        object["artist"] = item->GetMusicInfoTag()->GetArtist();
+        object["item"]["artist"] = item->GetMusicInfoTag()->GetArtist();
     }
   }
   else if (item->HasPictureInfoTag())
   {
     type = "picture";
-    object["file"] = item->GetPath();
+    object["item"]["file"] = item->GetPath();
   }
   else
     type = "unknown";
