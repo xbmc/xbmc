@@ -253,6 +253,11 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         m_People.authors.ToDidl(didl, "author");
     }
     
+    // director
+    if (mask & PLT_FILTER_MASK_DIRECTOR) {
+        m_People.directors.ToDidl(didl, "director");
+    }
+
     // album
     if ((mask & PLT_FILTER_MASK_ALBUM) && !m_Affiliation.album.IsEmpty()) {
         didl += "<upnp:album>";
@@ -488,14 +493,21 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     m_Title = m_Title.SubString(0, 256);    
     m_ObjectClass.type =  m_ObjectClass.type.SubString(0, 256);
 
+    children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "artist", didl_namespace_upnp);
     m_People.artists.FromDidl(children);
     
+    children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "author", didl_namespace_upnp);
     m_People.authors.FromDidl(children);
     
+    children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "actor", didl_namespace_upnp);
     m_People.actors.FromDidl(children);
+
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "director", didl_namespace_upnp);
+    m_People.directors.FromDidl(children);
 
     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp, 256);
     PLT_XmlHelper::GetChildText(entry, "programTitle", m_Recorded.program_title, didl_namespace_upnp);
