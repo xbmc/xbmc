@@ -55,7 +55,7 @@ public:
   int FindMovie(const CStdString& strMovie, MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
-  bool GetEpisodeList(const CScraperUrl& url, EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
+  bool GetEpisodeList(const CScraperUrl& url, VIDEO::EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
 
   static void ShowErrorDialog(const ADDON::CScraperError &sce);
 
@@ -66,15 +66,15 @@ protected:
                       GET_EPISODE_LIST = 3,
                       GET_EPISODE_DETAILS = 4 };
 
-  XFILE::CCurlFile* m_http;
-  CStdString        m_strMovie;
-  MOVIELIST         m_movieList;
-  CVideoInfoTag     m_movieDetails;
-  CScraperUrl       m_url;
-  EPISODELIST       m_episode;
-  LOOKUP_STATE      m_state;
-  int               m_found;
-  ADDON::ScraperPtr m_info;
+  XFILE::CCurlFile*   m_http;
+  CStdString          m_strMovie;
+  MOVIELIST           m_movieList;
+  CVideoInfoTag       m_movieDetails;
+  CScraperUrl         m_url;
+  VIDEO::EPISODELIST  m_episode;
+  LOOKUP_STATE        m_state;
+  int                 m_found;
+  ADDON::ScraperPtr   m_info;
 
   // threaded stuff
   void Process();
