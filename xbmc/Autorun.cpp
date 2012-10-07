@@ -222,7 +222,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             items.Sort(SORT_METHOD_LABEL, SortOrderDescending);
             phddvdItem = pItem; 
             hddvdname = URIUtils::GetFileName(items[0]->GetPath());
-            CLog::Log(LOGINFO,"HD DVD: " + items[0]->GetPath());
+            CLog::Log(LOGINFO,"HD DVD: %s", items[0]->GetPath().c_str());
           }
         }
 
@@ -242,7 +242,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
               items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
               phddvdItem = pItem; 
               hddvdname = URIUtils::GetFileName(items[0]->GetPath());
-              CLog::Log(LOGINFO,"HD DVD: " + items[0]->GetPath());
+              CLog::Log(LOGINFO,"HD DVD: %s",items[0]->GetPath().c_str());
             }
           }
           // Find and sort *.evo files for internal playback.
@@ -294,7 +294,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             // If no matching rule was found, DVDPlayer will be default player.
             if (hddvdplayer != "DVDPlayer")
             {
-              CLog::Log(LOGINFO,"HD DVD: External singlefile playback initiated: "+ hddvdname);
+              CLog::Log(LOGINFO,"HD DVD: External singlefile playback initiated: %s",hddvdname.c_str());
               g_application.PlayFile(item, false);
               bPlaying = true;
               return true;
