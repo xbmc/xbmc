@@ -5857,15 +5857,8 @@ void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
   if (m_videoInfoScanner->IsScanning())
     return;
 
-  if (!g_guiSettings.GetBool("videolibrary.backgroundupdate"))
-  {
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan)
-    {
-      m_videoInfoScanner->SetObserver(videoScan);
-      videoScan->ShowScan();
-    }
-  }
+  m_videoInfoScanner->ShowDialog(true);
+
   m_videoInfoScanner->Start(strDirectory,scanAll);
 }
 

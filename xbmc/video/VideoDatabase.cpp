@@ -35,6 +35,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
@@ -7473,7 +7474,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
   }
 }
 
-void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const set<int>* paths)
+void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const set<int>* paths)
 {
   CGUIDialogProgress *progress=NULL;
   try
@@ -7507,7 +7508,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;
 
-    if (!pObserver)
+    if (!handle)
     {
       progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (progress)
@@ -7523,10 +7524,8 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     }
     else
     {
-      pObserver->OnDirectoryChanged("");
-      pObserver->OnSetTitle("");
-      pObserver->OnSetCurrentProgress(0,1);
-      pObserver->OnStateChanged(CLEANING_UP_DATABASE);
+      handle->SetTitle(g_localizeStrings.Get(700));
+      handle->SetText("");
     }
 
     CStdString filesToDelete = "";
@@ -7569,7 +7568,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
           filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
       }
 
-      if (!pObserver)
+      if (!handle)
       {
         if (progress)
         {
@@ -7584,7 +7583,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
         }
       }
       else
-        pObserver->OnSetProgress(current,total);
+        handle->SetPercentage(current/(float)total*100);
 
       m_pDS->next();
       current++;
@@ -7845,8 +7844,8 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
     CommitTransaction();
 
-    if (pObserver)
-      pObserver->OnStateChanged(COMPRESSING_DATABASE);
+    if (handle)
+      handle->SetTitle(g_localizeStrings.Get(331));
 
     Compress(false);
 

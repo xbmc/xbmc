@@ -33,7 +33,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
 #include "windows/GUIWindowLoginScreen.h"
@@ -1242,14 +1241,7 @@ int CBuiltins::Execute(const CStdString& execString)
       g_application.StopMusicScan();
 
     if (g_application.IsVideoScanning())
-    {
       g_application.StopVideoScan();
-      CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (videoScan)
-      {
-        videoScan->Close(true);
-      }
-    }
 
     ADDON::CAddonMgr::Get().StopServices(true);
 
