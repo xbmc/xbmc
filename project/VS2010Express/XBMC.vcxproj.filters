@@ -2936,6 +2936,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.cpp">
+      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5485,9 +5488,6 @@
     <ClInclude Include="..\..\xbmc\NfoFile.h" />
     <ClInclude Include="..\..\xbmc\PartyModeManager.h" />
     <ClInclude Include="..\..\xbmc\PasswordManager.h" />
-    <ClCompile Include="..\..\xbmc\utils\Screenshot.h">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClInclude Include="..\..\xbmc\SortFileItem.h" />
     <ClInclude Include="..\..\xbmc\SectionLoader.h" />
     <ClInclude Include="..\..\xbmc\Temperature.h" />
@@ -5739,6 +5739,10 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.h">
       <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Screenshot.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.h">
+      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
