@@ -101,6 +101,7 @@
 		DF23462315FA675200A934F6 /* UPnPInternal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23461B15FA675200A934F6 /* UPnPInternal.cpp */; };
 		DF23462415FA675200A934F6 /* UPnPRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23461D15FA675200A934F6 /* UPnPRenderer.cpp */; };
 		DF23462515FA675200A934F6 /* UPnPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23461F15FA675200A934F6 /* UPnPServer.cpp */; };
+		DF24EADE1621E67200034265 /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24EADC1621E67200034265 /* DVDDemuxBXA.cpp */; };
 		DF2E329415509B2C000F5772 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2E329215509B2C000F5772 /* XbmcContext.cpp */; };
 		DF33C29415509BF50046CDCB /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C29115509BF50046CDCB /* ilog.cpp */; };
 		DF3488F813FD961A0026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF3488F613FD961A0026A711 /* GUIAction.cpp */; };
@@ -733,7 +734,6 @@
 		F56C8A7C131F42ED000AD0F6 /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85D0131F42EA000AD0F6 /* karaokelyricstextlrc.cpp */; };
 		F56C8A7D131F42ED000AD0F6 /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85D2131F42EA000AD0F6 /* karaokelyricstextustar.cpp */; };
 		F56C8A7E131F42ED000AD0F6 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85D4131F42EA000AD0F6 /* karaokewindowbackground.cpp */; };
-		F56C8A81131F42ED000AD0F6 /* Id3Tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85DD131F42EA000AD0F6 /* Id3Tag.cpp */; };
 		F56C8A82131F42ED000AD0F6 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E1131F42EA000AD0F6 /* MusicInfoTag.cpp */; };
 		F56C8A85131F42ED000AD0F6 /* MusicInfoTagLoaderASAP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E7131F42EA000AD0F6 /* MusicInfoTagLoaderASAP.cpp */; };
 		F56C8A86131F42ED000AD0F6 /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85E9131F42EA000AD0F6 /* MusicInfoTagLoaderCDDA.cpp */; };
@@ -1257,6 +1257,8 @@
 		DF23461E15FA675200A934F6 /* UPnPRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPRenderer.h; sourceTree = "<group>"; };
 		DF23461F15FA675200A934F6 /* UPnPServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPServer.cpp; sourceTree = "<group>"; };
 		DF23462015FA675200A934F6 /* UPnPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPServer.h; sourceTree = "<group>"; };
+		DF24EADC1621E67200034265 /* DVDDemuxBXA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxBXA.cpp; sourceTree = "<group>"; };
+		DF24EADD1621E67200034265 /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
 		DF2E329215509B2C000F5772 /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
 		DF2E329315509B2C000F5772 /* XbmcContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XbmcContext.h; sourceTree = "<group>"; };
 		DF33C29115509BF50046CDCB /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ilog.cpp; sourceTree = "<group>"; };
@@ -2669,10 +2671,6 @@
 		F56C85D3131F42EA000AD0F6 /* karaokelyricstextustar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricstextustar.h; sourceTree = "<group>"; };
 		F56C85D4131F42EA000AD0F6 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F56C85D5131F42EA000AD0F6 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
-		F56C85DA131F42EA000AD0F6 /* DllLibid3tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibid3tag.h; sourceTree = "<group>"; };
-		F56C85DD131F42EA000AD0F6 /* Id3Tag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Id3Tag.cpp; sourceTree = "<group>"; };
-		F56C85DE131F42EA000AD0F6 /* Id3Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Id3Tag.h; sourceTree = "<group>"; };
-		F56C85DF131F42EA000AD0F6 /* id3v1genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = id3v1genre.h; sourceTree = "<group>"; };
 		F56C85E0131F42EA000AD0F6 /* ImusicInfoTagLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImusicInfoTagLoader.h; sourceTree = "<group>"; };
 		F56C85E1131F42EA000AD0F6 /* MusicInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTag.cpp; sourceTree = "<group>"; };
 		F56C85E2131F42EA000AD0F6 /* MusicInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTag.h; sourceTree = "<group>"; };
@@ -4716,6 +4714,8 @@
 			children = (
 				F56C827E131F42E7000AD0F6 /* DVDDemux.cpp */,
 				F56C827F131F42E7000AD0F6 /* DVDDemux.h */,
+				DF24EADC1621E67200034265 /* DVDDemuxBXA.cpp */,
+				DF24EADD1621E67200034265 /* DVDDemuxBXA.h */,
 				F56C827A131F42E7000AD0F6 /* DVDDemuxFFmpeg.cpp */,
 				F56C827B131F42E7000AD0F6 /* DVDDemuxFFmpeg.h */,
 				F56C827C131F42E7000AD0F6 /* DVDDemuxHTSP.cpp */,
@@ -5678,10 +5678,6 @@
 		F56C85D6131F42EA000AD0F6 /* tags */ = {
 			isa = PBXGroup;
 			children = (
-				F56C85DA131F42EA000AD0F6 /* DllLibid3tag.h */,
-				F56C85DD131F42EA000AD0F6 /* Id3Tag.cpp */,
-				F56C85DE131F42EA000AD0F6 /* Id3Tag.h */,
-				F56C85DF131F42EA000AD0F6 /* id3v1genre.h */,
 				F56C85E0131F42EA000AD0F6 /* ImusicInfoTagLoader.h */,
 				F56C85E1131F42EA000AD0F6 /* MusicInfoTag.cpp */,
 				F56C85E2131F42EA000AD0F6 /* MusicInfoTag.h */,
@@ -7180,7 +7176,6 @@
 				F56C8A7C131F42ED000AD0F6 /* karaokelyricstextlrc.cpp in Sources */,
 				F56C8A7D131F42ED000AD0F6 /* karaokelyricstextustar.cpp in Sources */,
 				F56C8A7E131F42ED000AD0F6 /* karaokewindowbackground.cpp in Sources */,
-				F56C8A81131F42ED000AD0F6 /* Id3Tag.cpp in Sources */,
 				F56C8A82131F42ED000AD0F6 /* MusicInfoTag.cpp in Sources */,
 				F56C8A85131F42ED000AD0F6 /* MusicInfoTagLoaderASAP.cpp in Sources */,
 				F56C8A86131F42ED000AD0F6 /* MusicInfoTagLoaderCDDA.cpp in Sources */,
@@ -7619,6 +7614,7 @@
 				DF91D88A161B7581004E6637 /* AddonsOperations.cpp in Sources */,
 				7C4458C8161E206100A905F6 /* Screenshot.cpp in Sources */,
 				1D638120161E20F2003603ED /* PeripheralImon.cpp in Sources */,
+				DF24EADE1621E67200034265 /* DVDDemuxBXA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
