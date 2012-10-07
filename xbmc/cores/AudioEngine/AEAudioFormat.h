@@ -66,6 +66,8 @@ enum AEDataFormat
 
 #define AE_IS_RAW(x) ((x) >= AE_FMT_AAC && (x) < AE_FMT_MAX)
 #define AE_IS_RAW_HD(x) ((x) >= AE_FMT_EAC3 && (x) < AE_FMT_MAX)
+#define AE_IS_INT(x) ((x) > AE_FMT_INVALID && (x) < AE_FMT_DOUBLE)
+#define AE_IS_FLOAT(x) ((x) >= AE_FMT_DOUBLE && (x) <= AE_FMT_FLOAT)
 
 /**
  * The audio format structure that fully defines a stream's audio information
