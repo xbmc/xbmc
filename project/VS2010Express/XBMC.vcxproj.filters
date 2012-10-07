@@ -1258,9 +1258,6 @@
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.cpp">
       <Filter>music\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicScan.cpp">
-      <Filter>music\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.cpp">
       <Filter>music\dialogs</Filter>
     </ClCompile>
@@ -4111,9 +4108,6 @@
       <Filter>music\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.h">
-      <Filter>music\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicScan.h">
       <Filter>music\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.h">
