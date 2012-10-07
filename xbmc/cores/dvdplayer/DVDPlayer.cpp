@@ -913,11 +913,13 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
     if(stream->type != current.type)
       return false;
 
-    if(current.type == STREAM_SUBTITLE)
-      return false;
+    if(current.type == STREAM_SUBTITLE) {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_settings.m_currentVideoSettings.m_SubtitleStream);
+      return (stream->iId == s.id);
+    }
 
     if(current.type == STREAM_TELETEXT)
-      return false;
+      return true;
 
     if(current.id < 0)
       return true;
