@@ -11033,3 +11033,7 @@ msgctxt "#36038"
 msgid "Amplifier / AVR device"
 msgstr ""
 
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr ""
+

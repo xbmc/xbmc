@@ -119,6 +119,8 @@ namespace PERIPHERALS
     void SetConfigurationFromLibCEC(const CEC::libcec_configuration &config);
     void SetVersionInfo(const CEC::libcec_configuration &configuration);
     static void ReadLogicalAddresses(const CStdString &strString, CEC::cec_logical_addresses &addresses);
+    static void ReadLogicalAddresses(int iLocalisedId, CEC::cec_logical_addresses &addresses);
+    bool WriteLogicalAddresses(const CEC::cec_logical_addresses& addresses, const std::string& strSettingName, const std::string& strAdvancedSettingName);
     static int CecKeyPress(void *cbParam, const CEC::cec_keypress key);
     void PushCecKeypress(const CecButtonPress &key);
     static int CecLogMessage(void *cbParam, const CEC::cec_log_message message);

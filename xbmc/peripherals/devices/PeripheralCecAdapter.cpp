@@ -53,6 +53,8 @@ using namespace std;
 
 #define LOCALISED_ID_TV           36037
 #define LOCALISED_ID_AVR          36038
+#define LOCALISED_ID_TV_AVR       36039
+#define LOCALISED_ID_NONE         231
 
 class DllLibCECInterface
 {
@@ -186,6 +188,12 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 {
   if (feature == FEATURE_CEC && !m_bStarted && GetSettingBool("enabled"))
   {
+    // hide settings that have an override set
+    if (!GetSettingString("wake_devices_advanced").IsEmpty())
+      SetSettingVisible("wake_devices", false);
+    if (!GetSettingString("standby_devices_advanced").IsEmpty())
+      SetSettingVisible("standby_devices", false);
+
     SetConfigurationFromSettings();
     m_callbacks.Clear();
     m_callbacks.CBCecLogMessage           = &CecLogMessage;
@@ -1252,19 +1260,11 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   // set the devices to wake when starting
   m_configuration.wakeDevices = config.wakeDevices;
-  CStdString strWakeDevices;
-  for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
-    if (config.wakeDevices[iPtr])
-      strWakeDevices.AppendFormat(" %X", iPtr);
-  bChanged |= SetSetting("wake_devices", strWakeDevices.Trim());
+  bChanged |= WriteLogicalAddresses(config.wakeDevices, "wake_devices", "wake_devices_advanced");
 
   // set the devices to power off when stopping
   m_configuration.powerOffDevices = config.powerOffDevices;
-  CStdString strPowerOffDevices;
-  for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
-    if (config.powerOffDevices[iPtr])
-      strPowerOffDevices.AppendFormat(" %X", iPtr);
-  bChanged |= SetSetting("standby_devices", strPowerOffDevices.Trim());
+  bChanged |= WriteLogicalAddresses(config.powerOffDevices, "standby_devices", "standby_devices_advanced");
 
   // set the boolean settings
   m_configuration.bUseTVMenuLanguage = config.bUseTVMenuLanguage;
@@ -1349,14 +1349,20 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     m_configuration.tvVendor = iVendor;
 
   // read the devices to wake when starting
-  CStdString strWakeDevices = CStdString(GetSettingString("wake_devices")).Trim();
+  CStdString strWakeDevices = CStdString(GetSettingString("wake_devices_advanced")).Trim();
   m_configuration.wakeDevices.Clear();
-  ReadLogicalAddresses(strWakeDevices, m_configuration.wakeDevices);
+  if (!strWakeDevices.IsEmpty())
+    ReadLogicalAddresses(strWakeDevices, m_configuration.wakeDevices);
+  else
+    ReadLogicalAddresses(GetSettingInt("wake_devices"), m_configuration.wakeDevices);
 
   // read the devices to power off when stopping
-  CStdString strStandbyDevices = CStdString(GetSettingString("standby_devices")).Trim();
+  CStdString strStandbyDevices = CStdString(GetSettingString("standby_devices_advanced")).Trim();
   m_configuration.powerOffDevices.Clear();
-  ReadLogicalAddresses(strStandbyDevices, m_configuration.powerOffDevices);
+  if (!strStandbyDevices.IsEmpty())
+    ReadLogicalAddresses(strStandbyDevices, m_configuration.powerOffDevices);
+  else
+    ReadLogicalAddresses(GetSettingInt("standby_devices"), m_configuration.powerOffDevices);
 
   // read the boolean settings
   m_configuration.bUseTVMenuLanguage   = GetSettingBool("use_tv_menu_language") ? 1 : 0;
@@ -1382,6 +1388,51 @@ void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, ce
         addresses.Set((cec_logical_address)iDevice);
     }
   }
+}
+
+void CPeripheralCecAdapter::ReadLogicalAddresses(int iLocalisedId, cec_logical_addresses &addresses)
+{
+  addresses.Clear();
+  switch (iLocalisedId)
+  {
+  case LOCALISED_ID_TV:
+    addresses.Set(CECDEVICE_TV);
+    break;
+  case LOCALISED_ID_AVR:
+    addresses.Set(CECDEVICE_AUDIOSYSTEM);
+    break;
+  case LOCALISED_ID_TV_AVR:
+    addresses.Set(CECDEVICE_TV);
+    addresses.Set(CECDEVICE_AUDIOSYSTEM);
+    break;
+  case LOCALISED_ID_NONE:
+  default:
+    break;
+  }
+}
+
+bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& addresses, const string& strSettingName, const string& strAdvancedSettingName)
+{
+  bool bChanged(false);
+
+  // only update the advanced setting if it was set by the user
+  if (!GetSettingString(strAdvancedSettingName).IsEmpty())
+  {
+    CStdString strPowerOffDevices;
+    for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
+      if (addresses[iPtr])
+        strPowerOffDevices.AppendFormat(" %X", iPtr);
+    bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices.Trim());
+  }
+
+  int iSettingPowerOffDevices = LOCALISED_ID_NONE;
+  if (addresses[CECDEVICE_TV] && addresses[CECDEVICE_AUDIOSYSTEM])
+    iSettingPowerOffDevices = LOCALISED_ID_TV_AVR;
+  else if (addresses[CECDEVICE_TV])
+    iSettingPowerOffDevices = LOCALISED_ID_TV;
+  else if (addresses[CECDEVICE_AUDIOSYSTEM])
+    iSettingPowerOffDevices = LOCALISED_ID_AVR;
+  return SetSetting(strSettingName, iSettingPowerOffDevices) || bChanged;
 }
 
 CPeripheralCecAdapterUpdateThread::CPeripheralCecAdapterUpdateThread(CPeripheralCecAdapter *adapter, libcec_configuration *configuration) :
