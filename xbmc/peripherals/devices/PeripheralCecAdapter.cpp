@@ -81,27 +81,9 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   CPeripheralHID(type, busType, strLocation, strDeviceName, iVendorId, iProductId),
   CThread("CEC Adapter"),
   m_dll(NULL),
-  m_cecAdapter(NULL),
-  m_bStarted(false),
-  m_bHasButton(false),
-  m_bIsReady(false),
-  m_bHasConnectedAudioSystem(false),
-  m_strMenuLanguage("???"),
-  m_lastKeypress(0),
-  m_lastChange(VOLUME_CHANGE_NONE),
-  m_iExitCode(0),
-  m_bIsMuted(false), // TODO fetch the correct initial value when system audiostatus is implemented in libCEC
-  m_bGoingToStandby(false),
-  m_bIsRunning(false),
-  m_bDeviceRemoved(false),
-  m_bActiveSourcePending(false),
-  m_bStandbyPending(false)
+  m_cecAdapter(NULL)
 {
-  m_currentButton.iButton = 0;
-  m_currentButton.iDuration = 0;
-  m_screensaverLastActivated.SetValid(false);
-
-  m_configuration.Clear();
+  ResetMembers();
   m_features.push_back(FEATURE_CEC);
 }
 
@@ -122,6 +104,34 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
     delete m_dll;
     m_dll = NULL;
   }
+}
+
+void CPeripheralCecAdapter::ResetMembers(void)
+{
+  if (m_cecAdapter && m_dll)
+    m_dll->CECDestroy(m_cecAdapter);
+  m_cecAdapter               = NULL;
+  delete m_dll;
+  m_dll                      = NULL;
+  m_bStarted                 = false;
+  m_bHasButton               = false;
+  m_bIsReady                 = false;
+  m_bHasConnectedAudioSystem = false;
+  m_strMenuLanguage          = "???";
+  m_lastKeypress             = 0;
+  m_lastChange               = VOLUME_CHANGE_NONE;
+  m_iExitCode                = 0;
+  m_bIsMuted                 = false; // TODO fetch the correct initial value when system audiostatus is implemented in libCEC
+  m_bGoingToStandby          = false;
+  m_bIsRunning               = false;
+  m_bDeviceRemoved           = false;
+  m_bActiveSourcePending     = false;
+  m_bStandbyPending          = false;
+
+  m_currentButton.iButton    = 0;
+  m_currentButton.iDuration  = 0;
+  m_screensaverLastActivated.SetValid(false);
+  m_configuration.Clear();
 }
 
 void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
@@ -1653,15 +1663,20 @@ void CPeripheralCecAdapter::OnDeviceRemoved(void)
 
 void CPeripheralCecAdapter::ReopenConnection(void)
 {
+  // stop running thread
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = EXITCODE_RESTARTAPP;
     CAnnouncementManager::RemoveAnnouncer(this);
     StopThread(false);
   }
-
   StopThread();
-  Create();
+
+  // reset all members to their defaults
+  ResetMembers();
+
+  // reopen the connection
+  InitialiseFeature(FEATURE_CEC);
 }
 
 void CPeripheralCecAdapter::ActivateSource(void)

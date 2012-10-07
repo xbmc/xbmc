@@ -141,6 +141,8 @@ namespace PERIPHERALS
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
+    void ResetMembers(void);
+
     DllLibCEC*                        m_dll;
     CEC::ICECAdapter*                 m_cecAdapter;
     bool                              m_bStarted;
