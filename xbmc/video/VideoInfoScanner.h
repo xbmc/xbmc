@@ -22,7 +22,6 @@
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
 #include "NfoFile.h"
-#include "XBDateTime.h"
 
 class CRegExp;
 
@@ -37,19 +36,6 @@ namespace VIDEO
     bool noupdate;          /* exclude from update library function */
     bool exclude;           /* exclude this path from scraping */
   } SScanSettings;
-
-  typedef struct SEpisode
-  {
-    CStdString strPath;
-    CStdString strTitle;
-    int iSeason;
-    int iEpisode;
-    int iSubepisode;
-    bool isFolder;
-    CDateTime cDate;
-  } SEpisode;
-
-  typedef std::vector<SEpisode> EPISODES;
 
   enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, FETCHING_MOVIE_INFO, FETCHING_MUSICVIDEO_INFO, FETCHING_TVSHOW_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
 
@@ -177,14 +163,14 @@ namespace VIDEO
      \param defaultSeason Season to use if not found in reg.
      \return true on success (2 matches), false on failure (fewer than 2 matches)
      */
-    bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo, int defaultSeason);
+    bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, EPISODE &episodeInfo, int defaultSeason);
 
     /*! \brief Extract episode air-date from a processed regexp
      \param reg Regular expression object with at least 3 matches
      \param episodeInfo Episode information to fill in.
      \return true on success (3 matches), false on failure (fewer than 3 matches)
      */
-    bool GetAirDateFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
+    bool GetAirDateFromRegExp(CRegExp &reg, EPISODE &episodeInfo);
 
     /*! \brief Fetch thumbs for actors
      Updates each actor with their thumb (local or online)
@@ -225,11 +211,11 @@ namespace VIDEO
      \return INFO_ERROR on failure, INFO_CANCELLED on cancellation,
      INFO_NOT_FOUND if an episode isn't found, or INFO_ADDED if all episodes are added.
      */
-    INFO_RET OnProcessSeriesFolder(EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+    INFO_RET OnProcessSeriesFolder(EPISODELIST& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
 
-    void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
-    bool EnumerateEpisodeItem(const CFileItemPtr item, EPISODES& episodeList);
-    bool ProcessItemByVideoInfoTag(const CFileItemPtr item, EPISODES &episodeList);
+    void EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
+    bool EnumerateEpisodeItem(const CFileItemPtr item, EPISODELIST& episodeList);
+    bool ProcessItemByVideoInfoTag(const CFileItemPtr item, EPISODELIST &episodeList);
 
     CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
 
