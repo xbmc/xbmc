@@ -365,10 +365,9 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
     {
       string      mime =             pictures[i]->mimeType().toCString();
       TagLib::uint size =            pictures[i]->picture().size();
-      uint8_t*    data  = (uint8_t*) pictures[i]->picture().data();
       tag.SetCoverArtInfo(size, mime);
       if (art)
-        art->set(data, size, mime);
+        art->set((const uint8_t*)pictures[i]->picture().data(), size, mime);
       
       // Stop after we find the first picture for now.
       break;
