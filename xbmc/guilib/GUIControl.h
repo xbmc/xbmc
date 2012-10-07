@@ -160,6 +160,8 @@ public:
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
   bool SetColorDiffuse(const CGUIInfoColor &color);
+  void SetEnabledColorDiffuse(const CGUIInfoColor &color);
+  void SetDisabledColorDiffuse(const CGUIInfoColor &color);
   CPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
@@ -325,6 +327,8 @@ protected:
   float m_width;
   CRect m_hitRect;
   CGUIInfoColor m_diffuseColor;
+  CGUIInfoColor m_enabledDiffuseColor;
+  CGUIInfoColor m_disabledDiffuseColor;
   int m_controlID;
   int m_parentID;
   bool m_bHasFocus;

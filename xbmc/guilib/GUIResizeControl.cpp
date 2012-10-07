@@ -231,9 +231,10 @@ bool CGUIResizeControl::SetAlpha(unsigned char alpha)
 
 bool CGUIResizeControl::UpdateColors()
 {
+  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
   bool changed = CGUIControl::UpdateColors();
-  changed |= m_imgFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgFocus.SetDiffuseColor(color);
+  changed |= m_imgNoFocus.SetDiffuseColor(color);
 
   return changed;
 }
