@@ -258,6 +258,9 @@ void CGUISettings::Initialize()
 
   // Pictures settings
   AddGroup(SETTINGS_PICTURES, 1);
+  CSettingsCategory* pl = AddCategory(SETTINGS_PICTURES, "picturelibrary", 14022);
+  AddBool(pl, "picturelibrary.updateonstartup", 22000, false);
+  AddBool(pl, "picturelibrary.backgroundupdate", 22001, false);
   CSettingsCategory* pic = AddCategory(SETTINGS_PICTURES, "pictures", 14081);
   AddBool(pic, "pictures.usetags", 14082, true);
   AddBool(pic,"pictures.generatethumbs",13360,true);

@@ -30,12 +30,13 @@ namespace ANNOUNCEMENT
     System        = 0x08,
     VideoLibrary  = 0x10,
     AudioLibrary  = 0x20,
-    Application   = 0x40,
-    Input         = 0x80,
-    Other         = 0x100
+    PictureLibrary= 0x40,
+    Application   = 0x80,
+    Input         = 0x100,
+    Other         = 0x200
   };
 
-  #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | Other)
+  #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | PictureLibrary | Application | Input | Other)
 
   /*!
     \brief Returns a string representation for the 
@@ -59,6 +60,8 @@ namespace ANNOUNCEMENT
       return "VideoLibrary";
     case AudioLibrary:
       return "AudioLibrary";
+    case PictureLibrary:
+      return "PictureLibrary";
     case Application:
       return "Application";
     case Input:

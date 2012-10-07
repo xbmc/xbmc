@@ -2825,6 +2825,9 @@
     <ClCompile Include="..\..\xbmc\dbwrappers\test\TestDynamicDatabase.cpp">
       <Filter>dbwrappers\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pictures\PictureInfoScanner.cpp">
+      <Filter>pictures</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\PictureDatabaseDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5634,6 +5637,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\DynamicDatabase.h">
       <Filter>dbwrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pictures\PictureInfoScanner.h">
+      <Filter>pictures</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\PictureDatabaseDirectory.h">
       <Filter>filesystem</Filter>

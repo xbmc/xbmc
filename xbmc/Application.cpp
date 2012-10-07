@@ -106,6 +106,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
 
+#include "pictures/PictureInfoScanner.h"
 #include "input/KeyboardStat.h"
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
@@ -353,6 +354,7 @@ using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
+using namespace PICTURE_INFO;
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
 #endif
@@ -396,6 +398,7 @@ CApplication::CApplication(void)
   , m_progressTrackingItem(new CFileItem)
   , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
+  , m_pictureInfoScanner(new CPictureInfoScanner)
   , m_seekHandler(new CSeekHandler)
 {
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -5820,6 +5823,12 @@ void CApplication::UpdateLibraries()
     CLog::Log(LOGNOTICE, "%s - Starting music library startup scan", __FUNCTION__);
     StartMusicScan("");
   }
+
+  if (g_guiSettings.GetBool("picturelibrary.updateonstartup"))
+  {
+    CLog::Log(LOGNOTICE, "%s - Starting picture library startup scan", __FUNCTION__);
+    StartPictureScan("");
+  }
 }
 
 bool CApplication::IsVideoScanning() const
@@ -5832,6 +5841,11 @@ bool CApplication::IsMusicScanning() const
   return m_musicInfoScanner->IsScanning();
 }
 
+bool CApplication::IsPictureScanning() const
+{
+  return m_pictureInfoScanner->IsScanning();
+}
+
 void CApplication::StopVideoScan()
 {
   if (m_videoInfoScanner->IsScanning())
@@ -5842,6 +5856,12 @@ void CApplication::StopMusicScan()
 {
   if (m_musicInfoScanner->IsScanning())
     m_musicInfoScanner->Stop();
+}
+
+void CApplication::StopPictureScan()
+{
+  if (m_pictureInfoScanner->IsScanning())
+    m_pictureInfoScanner->Stop();
 }
 
 void CApplication::StartVideoCleanup()
@@ -5908,6 +5928,17 @@ void CApplication::StartMusicArtistScan(const CStdString& strDirectory,
   m_musicInfoScanner->ShowDialog(true);
 
   m_musicInfoScanner->FetchArtistInfo(strDirectory,refresh);
+}
+
+void CApplication::StartPictureScan(const CStdString &path)
+{
+  if (m_pictureInfoScanner->IsScanning())
+    return;
+
+  if (!g_guiSettings.GetBool("picturelibrary.backgroundupdate"))
+    m_pictureInfoScanner->ShowDialog(true);
+
+  m_pictureInfoScanner->Start(path);
 }
 
 void CApplication::CheckPlayingProgress()

@@ -34,6 +34,7 @@ public:
   virtual ~CGUIWindowPictures(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnInitWindow();
+  void DoScan(const CStdString &strPath);
 
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList& items);
@@ -44,6 +45,7 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  void OnRemoveSource(int iItem);
   virtual CStdString GetStartFolder(const CStdString &dir);
 
   void OnRegenerateThumbs();
@@ -56,6 +58,7 @@ protected:
   void OnSlideShowRecursive();
   virtual void OnItemLoaded(CFileItem* pItem);
   virtual void LoadPlayList(const CStdString& strPlayList);
+  virtual void OnScan(int iItem);
 
   CGUIDialogProgress* m_dlgProgress;
   DllImageLib m_ImageLib;

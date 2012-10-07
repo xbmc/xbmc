@@ -912,6 +912,7 @@
     <ClCompile Include="..\..\xbmc\pictures\Picture.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\PictureDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\PictureInfoLoader.cpp" />
+    <ClCompile Include="..\..\xbmc\pictures\PictureInfoScanner.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\PictureInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\PictureThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\SlideShowPicture.cpp" />
@@ -1240,6 +1241,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipManager.h" />
     <ClInclude Include="..\..\xbmc\network\windows\ZeroconfBrowserWIN.h" />
     <ClInclude Include="..\..\xbmc\pictures\PictureDatabase.h" />
+    <ClInclude Include="..\..\xbmc\pictures\PictureInfoScanner.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralImon.h" />
     <ClInclude Include="..\..\xbmc\system_gl.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>

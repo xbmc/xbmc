@@ -762,11 +762,12 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   int showLabel = 0;
   if (strDirectory.IsEmpty() && (iWindow == WINDOW_MUSIC_FILES ||
                                  iWindow == WINDOW_FILES ||
-                                 iWindow == WINDOW_PICTURES ||
                                  iWindow == WINDOW_PROGRAMS))
     showLabel = 1026;
   if (strDirectory.Equals("sources://video/"))
     showLabel = 999;
+  else if (strDirectory.Equals("sources://pictures/"))
+    showLabel = 997;
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
     CStdString strLabel = g_localizeStrings.Get(showLabel);
@@ -1441,7 +1442,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://") &&
-      !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://"))
+      !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->GetPath().Left(9).Equals("newtag://") &&
+      !(item->IsPictureDb() && item->IsVirtualDirectoryRoot()))
   {
     if (CFavourites::IsFavourite(item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
