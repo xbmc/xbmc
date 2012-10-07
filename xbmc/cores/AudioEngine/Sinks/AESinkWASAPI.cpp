@@ -1086,25 +1086,6 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else
     BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
 
-  /* Test for incomplete format and provide defaults */
-  if (format.m_sampleRate == 0 ||
-      format.m_channelLayout == NULL ||
-      format.m_dataFormat <= AE_FMT_INVALID ||
-      format.m_dataFormat >= AE_FMT_MAX ||
-      format.m_channelLayout.Count() == 0)
-  {
-    wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.Format.nChannels            = 2;
-    wfxex.Format.nSamplesPerSec       = 44100L;
-    wfxex.Format.wBitsPerSample       = 16;
-    wfxex.Format.nBlockAlign          = 4;
-    wfxex.Samples.wValidBitsPerSample = 16;
-    wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
-    wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nBlockAlign * wfxex.Format.nSamplesPerSec;
-    wfxex.dwChannelMask               = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-    wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
-  }
-
   HRESULT hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
 
   if (SUCCEEDED(hr))
