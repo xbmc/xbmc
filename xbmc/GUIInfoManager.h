@@ -404,6 +404,8 @@ namespace INFO
 #define LIBRARY_IS_SCANNING         726
 #define LIBRARY_IS_SCANNING_VIDEO   727
 #define LIBRARY_IS_SCANNING_MUSIC   728
+#define LIBRARY_HAS_PICTURES        729
+#define LIBRARY_IS_SCANNING_PICTURES 730
 
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
@@ -903,6 +905,7 @@ protected:
   int m_libraryHasTVShows;
   int m_libraryHasMusicVideos;
   int m_libraryHasMovieSets;
+  int m_libraryHasPictures;
 
   CCriticalSection m_critInfo;
 };

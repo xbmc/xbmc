@@ -21,6 +21,7 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "GUIWindowPictures.h"
+#include "PictureDatabase.h"
 #include "URL.h"
 #include "Util.h"
 #include "Application.h"
@@ -41,6 +42,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "GUIInfoManager.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -449,20 +451,42 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
   {
-    if ( m_vecItems->IsVirtualDirectoryRoot() && item)
+    bool isScanning = g_application.IsPictureScanning();
+    if (isScanning)
+      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop scanning
+
+    if (m_vecItems->IsVirtualDirectoryRoot())
+    {
+      if (!isScanning)
+        buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653); // Update library
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523); // Switch media
+    }
+    else if (m_vecItems->IsSourcesPath())
     {
       CGUIDialogContextMenu::GetContextButtons("pictures", item, buttons);
+      if (item->m_bIsFolder && !item->IsParentFolder() && !isScanning)
+      {
+        CPictureDatabase db;
+        if (db.Open())
+          buttons.Add(CONTEXT_BUTTON_SCAN, db.HasPath(item->GetPath()) ? 13349 : 13352);
+      }
     }
     else
     {
+      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+
       if (item)
       {
         if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
           buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
         if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
-        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
-        if (item->m_bIsFolder)
+
+        if (!(item->IsAddonsPath() || m_vecItems->IsAddonsPath()))
+          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+
+        if (item->m_bIsFolder && !(item->IsParentFolder() || item->IsAddonsPath() || m_vecItems->IsAddonsPath()))
           buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
 
         if (!m_thumbLoader.IsLoading())
@@ -472,13 +496,26 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
+
+        if (!isScanning && !(item->IsParentFolder() || item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin()))
+        {
+          if (item->IsPictureDb())
+            buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653); // Update library
+          else
+          {
+            CPictureDatabase db;
+            if (db.Open())
+            {
+              // Need to see if the path is in the database. If a folder, use the containing path
+              CStdString strPath = (item->m_bIsFolder ? item->GetPath() : m_vecItems->GetPath());
+              buttons.Add(CONTEXT_BUTTON_SCAN, db.HasPath(strPath) ? 13349 : 13352); // Scan for new content / Scan item to library
+            }
+          }
+        }
+
+        if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
+          buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
       }
-
-      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-
-      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -489,11 +526,14 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
-  if (m_vecItems->IsVirtualDirectoryRoot() && item)
+  if (m_vecItems->IsSourcesPath())
   {
     if (CGUIDialogContextMenu::OnContextButton("pictures", item, button))
     {
-      Update("");
+      if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
+        OnRemoveSource(itemNumber);
+
+      Update("sources://pictures/");
       return true;
     }
   }
@@ -530,10 +570,36 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SWITCH_MEDIA:
     CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems->GetPath());
     return true;
+  case CONTEXT_BUTTON_SCAN:
+    OnScan(itemNumber);
+    return true;
+  case CONTEXT_BUTTON_UPDATE_LIBRARY:
+    DoScan("");
+    return true;
+  case CONTEXT_BUTTON_STOP_SCANNING:
+    g_application.StopPictureScan();
+    return true;
   default:
     break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
+}
+
+void CGUIWindowPictures::OnRemoveSource(int iItem)
+{
+  bool bCanceled;
+  // Remove source: Do you want to remove all items within this path from the XBMC library?
+  if (CGUIDialogYesNo::ShowAndGetInput(522, 20340, 20341, 20022, bCanceled))
+  {
+    CPictureDatabase database;
+    if (database.Open())
+    {
+      // OK if pDialogProgress is NULL
+      CGUIDialogProgress* pDialogProgress = static_cast<CGUIDialogProgress*>(g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
+      database.DeletePicturesByPath(m_vecItems->Get(iItem)->GetPath(), true, pDialogProgress);
+      g_infoManager.ResetLibraryBools();
+    }
+  }
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
@@ -599,6 +665,38 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
     pictureInfo->SetPicture(item.get());
     pictureInfo->DoModal();
   }
+}
+
+void CGUIWindowPictures::OnScan(int iItem)
+{
+  CStdString strPath;
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    strPath = m_vecItems->GetPath();
+  else if (m_vecItems->Get(iItem)->m_bIsFolder)
+    strPath = m_vecItems->Get(iItem)->GetPath();
+  else
+  {
+    // Scan the path containing the item. TODO: Should we enable single-item scanning?
+    strPath = m_vecItems->GetPath();
+  }
+  DoScan(strPath);
+}
+
+void CGUIWindowPictures::DoScan(const CStdString &strPath)
+{
+  if (g_application.IsPictureScanning())
+  {
+    g_application.StopPictureScan();
+    return;
+  }
+
+  // Start background loader
+  int iControl = GetFocusedControlID();
+  g_application.StartPictureScan(strPath);
+  SET_CONTROL_FOCUS(iControl, 0);
+  UpdateButtons();
+
+  return;
 }
 
 CStdString CGUIWindowPictures::GetStartFolder(const CStdString &dir)

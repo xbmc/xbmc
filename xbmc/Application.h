@@ -92,6 +92,10 @@ namespace MUSIC_INFO
 {
   class CMusicInfoScanner;
 }
+namespace PICTURE_INFO
+{
+  class CPictureInfoScanner;
+}
 
 class CBackgroundPlayer : public CThread
 {
@@ -249,8 +253,10 @@ public:
 
   void StopVideoScan();
   void StopMusicScan();
+  void StopPictureScan();
   bool IsMusicScanning() const;
   bool IsVideoScanning() const;
+  bool IsPictureScanning() const;
 
   void StartVideoCleanup();
 
@@ -258,6 +264,7 @@ public:
   void StartMusicScan(const CStdString &path, int flags = 0);
   void StartMusicAlbumScan(const CStdString& strDirectory, bool refresh=false);
   void StartMusicArtistScan(const CStdString& strDirectory, bool refresh=false);
+  void StartPictureScan(const CStdString &path);
 
   void UpdateLibraries();
   void CheckMusicPlaylist();
@@ -437,6 +444,7 @@ protected:
 
   VIDEO::CVideoInfoScanner *m_videoInfoScanner;
   MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
+  PICTURE_INFO::CPictureInfoScanner *m_pictureInfoScanner;
 
   void Mute();
   void UnMute();

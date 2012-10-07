@@ -55,6 +55,7 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#include "pictures/PictureDatabase.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -911,8 +912,19 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (cat.name == "library")
     {
-      if (prop.name == "isscanning") return LIBRARY_IS_SCANNING;
-      else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; // TODO: change to IsScanning(Video)
+      if (prop.name == "isscanning")
+      {
+        if (!prop.num_params())
+          return LIBRARY_IS_SCANNING;
+        else
+        {
+          CStdString cat = prop.param(0); cat.ToLower();
+          if (cat == "music") return LIBRARY_IS_SCANNING_MUSIC;
+          else if (cat == "video") return LIBRARY_IS_SCANNING_VIDEO;
+          else if (cat == "pictures") return LIBRARY_IS_SCANNING_PICTURES;
+        }
+      }
+      else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; // Backwards compatibility
       else if (prop.name == "isscanningmusic") return LIBRARY_IS_SCANNING_MUSIC;
       else if (prop.name == "hascontent" && prop.num_params())
       {
@@ -923,6 +935,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         else if (cat == "tvshows") return LIBRARY_HAS_TVSHOWS;
         else if (cat == "musicvideos") return LIBRARY_HAS_MUSICVIDEOS;
         else if (cat == "moviesets") return LIBRARY_HAS_MOVIE_SETS;
+        else if (cat == "pictures") return LIBRARY_HAS_PICTURES;
       }
     }
     else if (cat.name == "musicplayer")
@@ -2035,7 +2048,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = GetLibraryBool(condition);
   else if (condition == LIBRARY_IS_SCANNING)
   {
-    if (g_application.IsMusicScanning() || g_application.IsVideoScanning())
+    if (g_application.IsMusicScanning() || g_application.IsVideoScanning() || g_application.IsPictureScanning())
       bReturn = true;
     else
       bReturn = false;
@@ -2047,6 +2060,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == LIBRARY_IS_SCANNING_MUSIC)
   {
     bReturn = g_application.IsMusicScanning();
+  }
+  else if (condition == LIBRARY_IS_SCANNING_PICTURES)
+  {
+    bReturn = g_application.IsPictureScanning();
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(TARGET_ANDROID)
@@ -5166,6 +5183,8 @@ void CGUIInfoManager::SetLibraryBool(int condition, bool value)
     case LIBRARY_HAS_MUSICVIDEOS:
       m_libraryHasMusicVideos = value ? 1 : 0;
       break;
+    case LIBRARY_HAS_PICTURES:
+      m_libraryHasPictures = value ? 1 : 0;
     default:
       break;
   }
@@ -5178,6 +5197,7 @@ void CGUIInfoManager::ResetLibraryBools()
   m_libraryHasTVShows = -1;
   m_libraryHasMusicVideos = -1;
   m_libraryHasMovieSets = -1;
+  m_libraryHasPictures = -1;
 }
 
 bool CGUIInfoManager::GetLibraryBool(int condition)
@@ -5246,6 +5266,19 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       }
     }
     return m_libraryHasMusicVideos > 0;
+  }
+  else if (condition == LIBRARY_HAS_PICTURES)
+  {
+    if (m_libraryHasPictures < 0)
+    {
+      CPictureDatabase db;
+      if (db.Open())
+      {
+        m_libraryHasPictures = db.HasPictures() ? 1 : 0;
+        db.Close();
+      }
+    }
+    return m_libraryHasPictures > 0;
   }
   else if (condition == LIBRARY_HAS_VIDEO)
   {

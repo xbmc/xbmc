@@ -1253,6 +1253,9 @@ int CBuiltins::Execute(const CStdString& execString)
       }
     }
 
+    if (g_application.IsPictureScanning())
+      g_application.StopPictureScan();
+
     ADDON::CAddonMgr::Get().StopServices(true);
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
@@ -1289,6 +1292,13 @@ int CBuiltins::Execute(const CStdString& execString)
         g_application.StopVideoScan();
       else
         g_application.StartVideoScan(params.size() > 1 ? params[1] : "");
+    }
+    if (params[0].Equals("pictures"))
+    {
+      if (g_application.IsPictureScanning())
+        g_application.StopPictureScan();
+      else
+        g_application.StartPictureScan(params.size() > 1 ? params[1] : "");
     }
   }
   else if (execute.Equals("cleanlibrary"))
