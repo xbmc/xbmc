@@ -196,6 +196,23 @@ void CAEChannelInfo::operator+=(const enum AEChannel rhs)
   m_channels[m_channelCount++] = rhs;
 }
 
+void CAEChannelInfo::operator-=(const enum AEChannel rhs)
+{
+  ASSERT(rhs > AE_CH_NULL && rhs < AE_CH_MAX);
+
+  unsigned int i = 0;
+  while(i < m_channelCount && m_channels[i] != rhs)
+    i++;
+  if (i >= m_channelCount)
+    return; // Channel not found
+
+  for(; i < m_channelCount-1; i++)
+    m_channels[i] = m_channels[i+1];
+
+  m_channels[i] = AE_CH_NULL;
+  m_channelCount--;
+}
+
 const enum AEChannel CAEChannelInfo::operator[](unsigned int i) const
 {
   ASSERT(i < m_channelCount);
