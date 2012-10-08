@@ -32,6 +32,7 @@ class CFileItem;
 class CFileItemList;
 class CVideoSettings;
 class CGUIDialogProgress;
+class CGUIDialogProgressBarHandle;
 
 namespace dbiplus
 {
@@ -602,7 +603,7 @@ public:
   bool HasContent(VIDEODB_CONTENT_TYPE type);
   bool HasSets() const;
 
-  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::set<int>* paths=NULL);
+  void CleanDatabase(CGUIDialogProgressBarHandle* handle=NULL, const std::set<int>* paths=NULL);
 
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.

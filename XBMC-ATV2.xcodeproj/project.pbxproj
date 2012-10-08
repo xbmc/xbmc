@@ -796,7 +796,6 @@
 		F56C7B4C131EC155000AD0F6 /* GUIDialogVideoInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7785131EC154000AD0F6 /* GUIDialogVideoInfo.cpp */; };
 		F56C7B4D131EC155000AD0F6 /* GUIDialogVideoOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7787131EC154000AD0F6 /* GUIDialogVideoOSD.cpp */; };
 		F56C7B4E131EC155000AD0F6 /* GUIDialogVideoOverlay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7789131EC154000AD0F6 /* GUIDialogVideoOverlay.cpp */; };
-		F56C7B4F131EC155000AD0F6 /* GUIDialogVideoScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C778B131EC154000AD0F6 /* GUIDialogVideoScan.cpp */; };
 		F56C7B50131EC155000AD0F6 /* GUIDialogVideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C778D131EC154000AD0F6 /* GUIDialogVideoSettings.cpp */; };
 		F56C7B51131EC155000AD0F6 /* GUIWindowFullScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7790131EC154000AD0F6 /* GUIWindowFullScreen.cpp */; };
 		F56C7B52131EC155000AD0F6 /* GUIWindowVideoBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7792131EC154000AD0F6 /* GUIWindowVideoBase.cpp */; };
@@ -2791,8 +2790,6 @@
 		F56C7788131EC154000AD0F6 /* GUIDialogVideoOSD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoOSD.h; sourceTree = "<group>"; };
 		F56C7789131EC154000AD0F6 /* GUIDialogVideoOverlay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoOverlay.cpp; sourceTree = "<group>"; };
 		F56C778A131EC154000AD0F6 /* GUIDialogVideoOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoOverlay.h; sourceTree = "<group>"; };
-		F56C778B131EC154000AD0F6 /* GUIDialogVideoScan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoScan.cpp; sourceTree = "<group>"; };
-		F56C778C131EC154000AD0F6 /* GUIDialogVideoScan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoScan.h; sourceTree = "<group>"; };
 		F56C778D131EC154000AD0F6 /* GUIDialogVideoSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoSettings.cpp; sourceTree = "<group>"; };
 		F56C778E131EC154000AD0F6 /* GUIDialogVideoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoSettings.h; sourceTree = "<group>"; };
 		F56C7790131EC154000AD0F6 /* GUIWindowFullScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowFullScreen.cpp; sourceTree = "<group>"; };
@@ -5849,8 +5846,6 @@
 				F56C7788131EC154000AD0F6 /* GUIDialogVideoOSD.h */,
 				F56C7789131EC154000AD0F6 /* GUIDialogVideoOverlay.cpp */,
 				F56C778A131EC154000AD0F6 /* GUIDialogVideoOverlay.h */,
-				F56C778B131EC154000AD0F6 /* GUIDialogVideoScan.cpp */,
-				F56C778C131EC154000AD0F6 /* GUIDialogVideoScan.h */,
 				F56C778D131EC154000AD0F6 /* GUIDialogVideoSettings.cpp */,
 				F56C778E131EC154000AD0F6 /* GUIDialogVideoSettings.h */,
 			);
@@ -7211,7 +7206,6 @@
 				F56C7B4C131EC155000AD0F6 /* GUIDialogVideoInfo.cpp in Sources */,
 				F56C7B4D131EC155000AD0F6 /* GUIDialogVideoOSD.cpp in Sources */,
 				F56C7B4E131EC155000AD0F6 /* GUIDialogVideoOverlay.cpp in Sources */,
-				F56C7B4F131EC155000AD0F6 /* GUIDialogVideoScan.cpp in Sources */,
 				F56C7B50131EC155000AD0F6 /* GUIDialogVideoSettings.cpp in Sources */,
 				F56C7B51131EC155000AD0F6 /* GUIWindowFullScreen.cpp in Sources */,
 				F56C7B52131EC155000AD0F6 /* GUIWindowVideoBase.cpp in Sources */,

@@ -298,7 +298,6 @@ static const ActionMapping windows[] =
         {"profilesettings"          , WINDOW_DIALOG_PROFILE_SETTINGS},
         {"locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS},
         {"contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS},
-        {"videoscan"                , WINDOW_DIALOG_VIDEO_SCAN},
         {"songinformation"          , WINDOW_DIALOG_SONG_INFO},
         {"smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR},
         {"smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE},
