@@ -69,6 +69,7 @@ class NetworkService
   
   boost::asio::ip::address address() { return m_address; }    
   void        freshen(map<string, string>& params) { m_parameters = params; m_timeSinceLastSeen.restart(); }
+  void        freshen() { m_timeSinceLastSeen.restart(); }
   int         interfaceIndex() const { return m_interfaceIndex; }
   double      timeSinceLastSeen() { return m_timeSinceLastSeen.elapsed(); }
   double      timeSinceCreation() { return m_timeSinceCreation.elapsed(); }

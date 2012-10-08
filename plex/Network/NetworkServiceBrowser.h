@@ -19,6 +19,8 @@
 #include "NetworkServiceBase.h"
 #include "NetworkService.h"
 
+#include "FileSystem/FileCurl.h"
+
 class NetworkServiceBrowser;
 typedef boost::shared_ptr<NetworkServiceBrowser> NetworkServiceBrowserPtr;
 typedef pair<boost::asio::ip::address, NetworkServicePtr> address_service_pair;
@@ -266,6 +268,22 @@ class NetworkServiceBrowser : public NetworkServiceBase
     else
       iprintf("Network Service: Abandoning browse socket, it was closed.");
   }
+
+  bool isReachable(const NetworkServicePtr &service)
+  {
+    XFILE::CFileCurl *file = new XFILE::CFileCurl();
+    std::string url("http://");
+    url+=service->address().to_string();
+    url+=":32400/";
+
+    struct __stat64 stat;
+    if (file->Stat(CURL(url), &stat))
+    {
+      CLog::Log(LOGDEBUG, "%s is still reachable", url.c_str());
+      return true;
+    }
+    return false;
+  }
   
   /// Handle the deletion timer.
   void handleDeletionTimeout()
@@ -279,7 +297,18 @@ class NetworkServiceBrowser : public NetworkServiceBase
       BOOST_FOREACH(address_service_pair pair, m_services)
       {
         if (pair.second->timeSinceLastSeen()*1000 > NS_DEAD_SERVER_TIME)
-          deleteMe.push_back(pair.second);
+        {
+          if (isReachable(pair.second))
+          {
+            pair.second->freshen();
+            CLog::Log(LOGDEBUG, "We couldn't get a response from %s but we can still reach it, freshing it.", pair.second->address().to_string().c_str());
+            continue;
+          }
+          else
+          {
+            deleteMe.push_back(pair.second);
+          }
+        }
       }
       
       // Whack em.
