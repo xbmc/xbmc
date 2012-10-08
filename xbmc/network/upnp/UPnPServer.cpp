@@ -151,6 +151,13 @@ CUPnPServer::Build(CFileItemPtr                  item,
                         db.GetTvShowInfo((const char*)path, *item->GetVideoInfoTag(), params.GetTvShowId());
                 }
 
+                if (item->GetVideoInfoTag()->m_type == "tvshow" || item->GetVideoInfoTag()->m_type == "season") {
+                    // for tvshows and seasons, iEpisode and playCount are
+                    // invalid
+                    item->GetVideoInfoTag()->m_iEpisode = item->GetProperty("totalepisodes").asInteger();
+                    item->GetVideoInfoTag()->m_playCount = item->GetProperty("watchedepisodes").asInteger();
+                }
+
                 // try to grab title from tag
                 if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty()) {
                     item->SetLabel(item->GetVideoInfoTag()->m_strTitle);

@@ -235,27 +235,28 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
       *file_path = tag.m_strFileNameAndPath;
 
     if (tag.m_iDbId != -1 ) {
-        if (!tag.m_artist.empty()) {
+        if (tag.m_type == "musicvideo") {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
           object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://3/2/%i", tag.m_iDbId);
-        } else if (!tag.m_strShowTitle.IsEmpty()) {
+        } else if (tag.m_type == "movie") {
+          object.m_ObjectClass.type = "object.item.videoItem.movie";
+          object.m_Title = tag.m_strTitle;
+          object.m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
+          object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
+        } else {
           object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
           object.m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
           object.m_Recorded.program_title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
           object.m_Recorded.program_title += " : " + tag.m_strTitle;
           object.m_Recorded.series_title = tag.m_strShowTitle;
-          object.m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
+          int season = tag.m_iSeason > 1 ? tag.m_iSeason : 1;
+          object.m_Recorded.episode_number = season * 100 + tag.m_iEpisode;
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
           object.m_Date = tag.m_firstAired.GetAsLocalizedDate();
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
-        } else {
-          object.m_ObjectClass.type = "object.item.videoItem.movie";
-          object.m_Title = tag.m_strTitle;
-          object.m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
-          object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
     }
 
@@ -468,14 +469,12 @@ BuildObject(CFileItem&                    item,
                   container->m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
                   container->m_Title   = tag.m_strTitle;
                   break;
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_SEASONS:
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS:
                   container->m_ObjectClass.type += ".album.videoAlbum";
-                  container->m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
-                  container->m_Recorded.program_title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
-                  container->m_Recorded.program_title += " : " + tag.m_strTitle;
                   container->m_Recorded.series_title = tag.m_strShowTitle;
-                  container->m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
-                  container->m_Title = container->m_Recorded.series_title + " - " + container->m_Recorded.program_title;
+                  container->m_Recorded.episode_number = tag.m_iEpisode;
+                  container->m_MiscInfo.play_count = tag.m_playCount;
                   container->m_Title = tag.m_strTitle;
                   if(!tag.m_firstAired.IsValid() && tag.m_iYear)
                     container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
@@ -623,6 +622,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
 
     if(!object.m_Recorded.program_title.IsEmpty())
     {
+        tag.m_type = "episode";
         int episode;
         int season;
         int title = object.m_Recorded.program_title.Find(" : ");
@@ -637,8 +637,19 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         }
         tag.m_firstAired = date;
     }
+    else if (!object.m_Recorded.series_title.IsEmpty()) {
+        tag.m_type= "season";
+        tag.m_strTitle = object.m_Title; // because could be TV show Title, or Season 1 etc
+        tag.m_iSeason  = object.m_Recorded.episode_number / 100;
+        tag.m_iEpisode = object.m_Recorded.episode_number % 100;
+        tag.m_premiered = date;
+    }
+    else if(object.m_ObjectClass.type == "object.item.videoItem.musicVideoClip") {
+        tag.m_type = "musicvideo";
+    }
     else
     {
+        tag.m_type         = "movie";
         tag.m_strTitle     = object.m_Title;
         tag.m_premiered    = date;
     }
