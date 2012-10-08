@@ -119,6 +119,13 @@ public:
    */
   static std::string GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder = false);
 
+  /*! \brief return the available art types for a given media type
+   \param type the type of media.
+   \return a vector of art types.
+   \sa GetLocalArt
+   */
+  static std::vector<std::string> GetArtTypes(const std::string &type);
+
   /*! \brief helper function to retrieve a thumb URL for embedded video thumbs
    \param item a video CFileItem.
    \return a URL for the embedded thumb.
