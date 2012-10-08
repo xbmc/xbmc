@@ -6032,6 +6032,8 @@ bool CApplication::IsPresentFrame()
 
 void CApplication::SetRenderGUI(bool renderGUI)
 {
+  if (renderGUI && ! m_renderGUI)
+    g_windowManager.MarkDirty();
   m_renderGUI = renderGUI;
 }
 
