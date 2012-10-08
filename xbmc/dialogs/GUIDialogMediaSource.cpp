@@ -22,7 +22,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIDialogFileBrowser.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "guilib/GUIWindowManager.h"
 #include "Util.h"
 #include "utils/URIUtils.h"

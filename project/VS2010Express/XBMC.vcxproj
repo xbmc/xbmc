@@ -1600,7 +1600,6 @@
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoInfo.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOSD.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.cpp" />
-    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoScan.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.cpp" />
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp" />
     <ClCompile Include="..\..\xbmc\video\Teletext.cpp" />
@@ -2446,7 +2445,6 @@
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoInfo.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoOSD.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.h" />
-    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoScan.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.h" />
     <ClInclude Include="..\..\xbmc\video\GUIViewStateVideo.h" />
     <ClInclude Include="..\..\xbmc\video\Teletext.h" />

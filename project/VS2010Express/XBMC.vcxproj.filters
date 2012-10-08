@@ -1693,9 +1693,6 @@
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.cpp">
       <Filter>video\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoScan.cpp">
-      <Filter>video\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.cpp">
       <Filter>video\dialogs</Filter>
     </ClCompile>
@@ -4585,9 +4582,6 @@
       <Filter>video\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.h">
-      <Filter>video\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoScan.h">
       <Filter>video\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.h">

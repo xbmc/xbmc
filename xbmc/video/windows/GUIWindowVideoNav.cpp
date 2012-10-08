@@ -29,7 +29,6 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "playlists/PlayListFactory.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "dialogs/GUIDialogOK.h"
 #include "addons/AddonManager.h"
 #include "PartyModeManager.h"
@@ -52,6 +51,7 @@
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "video/VideoInfoScanner.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
