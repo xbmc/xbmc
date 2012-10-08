@@ -43,6 +43,7 @@ public:
   CAMLSubTitleThread(DllLibAmplayer* dll);
   virtual ~CAMLSubTitleThread();
 
+  void         Flush();
   void         UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms);
 protected:
   virtual void Process(void);
@@ -102,6 +103,7 @@ public:
   virtual int   GetSubtitleCount();
   virtual int   GetSubtitle();
   virtual void  GetSubtitleName(int iStream, CStdString &strStreamName);
+  virtual void  GetSubtitleLanguage(int iStream, CStdString &strStreamLang);
   virtual void  SetSubtitle(int iStream);
   virtual bool  GetSubtitleVisible();
   virtual void  SetSubtitleVisible(bool bVisible);
@@ -123,9 +125,9 @@ public:
   virtual int   SeekChapter(int iChapter);
 
   virtual float GetActualFPS();
-  virtual void  SeekTime(__int64 iTime = 0);
-  virtual __int64 GetTime();
-  virtual __int64 GetTotalTime();
+  virtual void  SeekTime(int64_t iTime = 0);
+  virtual int64_t GetTime();
+  virtual int64_t GetTotalTime();
   virtual int   GetAudioBitrate();
   virtual int   GetVideoBitrate();
   virtual int   GetSourceBitrate();

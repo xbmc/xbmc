@@ -312,6 +312,20 @@ CAMLSubTitleThread::~CAMLSubTitleThread()
   StopThread();
 }
 
+void CAMLSubTitleThread::Flush()
+{
+  CSingleLock lock(m_subtitle_csection);
+  if (m_subtitle_strings.size())
+  {
+    // remove any expired subtitles
+    std::deque<AMLSubtitle*>::iterator it = m_subtitle_strings.begin();
+    while (it != m_subtitle_strings.end())
+    {
+      it = m_subtitle_strings.erase(it);
+    }
+  }
+}
+
 void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms)
 {
   CSingleLock lock(m_subtitle_csection);
@@ -958,9 +972,15 @@ void CAMLPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
       strStreamName = g_localizeStrings.Get(13205); // Unknown
   }
   if (m_log_level > 5)
-    CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d)", iStream);
+    CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d), strStreamName(%s)",
+      iStream, strStreamName.c_str());
 }
  
+void CAMLPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
+{
+  GetSubtitleName(iStream, strStreamLang);
+}
+
 void CAMLPlayer::SetSubtitle(int iStream)
 {
   CSingleLock lock(m_aml_csection);
@@ -977,7 +997,12 @@ void CAMLPlayer::SetSubtitle(int iStream)
     return;
 
   if (m_dll->check_pid_valid(m_pid) && m_subtitle_streams[m_subtitle_index]->source == STREAM_SOURCE_NONE)
+  {
     m_dll->player_sid(m_pid, m_subtitle_streams[m_subtitle_index]->id);
+    aml_set_sysfs_int("/sys/class/subtitle/curr", m_subtitle_index);
+    if (m_subtitle_thread)
+      m_subtitle_thread->Flush();
+  }
   else
   {
     m_dvdPlayerSubtitle->CloseStream(true);
@@ -997,12 +1022,19 @@ void CAMLPlayer::SetSubtitleVisible(bool bVisible)
 
   if (m_subtitle_show  && m_subtitle_count)
   {
+    if (g_settings.m_currentVideoSettings.m_SubtitleStream < m_subtitle_count)
+      m_subtitle_index = g_settings.m_currentVideoSettings.m_SubtitleStream;
     // on startup, if asked to show subs and SetSubtitle has not
     // been called, we are expected to switch/show the 1st subtitle
     if (m_subtitle_index < 0)
       m_subtitle_index = 0;
     if (m_dll->check_pid_valid(m_pid) && m_subtitle_streams[m_subtitle_index]->source == STREAM_SOURCE_NONE)
+    {
       m_dll->player_sid(m_pid, m_subtitle_streams[m_subtitle_index]->id);
+      aml_set_sysfs_int("/sys/class/subtitle/curr", m_subtitle_index);
+      if (m_subtitle_thread)
+        m_subtitle_thread->Flush();
+    }
     else
       OpenSubtitleStream(m_subtitle_index);
   }
@@ -1097,7 +1129,7 @@ float CAMLPlayer::GetActualFPS()
   return video_fps;
 }
 
-void CAMLPlayer::SeekTime(__int64 seek_ms)
+void CAMLPlayer::SeekTime(int64_t seek_ms)
 {
   CSingleLock lock(m_aml_csection);
 
@@ -1122,12 +1154,12 @@ void CAMLPlayer::SeekTime(__int64 seek_ms)
   }
 }
 
-__int64 CAMLPlayer::GetTime()
+int64_t CAMLPlayer::GetTime()
 {
   return m_elapsed_ms;
 }
 
-__int64 CAMLPlayer::GetTotalTime()
+int64_t CAMLPlayer::GetTotalTime()
 {
   return m_duration_ms;
 }
@@ -1917,11 +1949,10 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             "m_video_index(%d), m_audio_index(%d), m_subtitle_index(%d), m_chapter_count(%d)",
             media_info.stream_info.cur_video_index,
             media_info.stream_info.cur_audio_index,
-#if !defined(TARGET_ANDROID)
             media_info.stream_info.cur_sub_index,
+#if !defined(TARGET_ANDROID)
             media_info.stream_info.total_chapter_num);
 #else
-            media_info.stream_info.cur_sub_index,
             0);
 #endif
         }
