@@ -52,6 +52,12 @@ protected:
   virtual ~IAE() {}
 
   /**
+   * Returns true when it should be possible to initialize this engine, if it returns false
+   * CAEFactory can possibly fall back to a different one
+   */
+  virtual bool CanInit() { return true; }
+
+  /**
    * Initializes the AudioEngine, called by CFactory when it is time to initialize the audio engine.
    * Do not call this directly, CApplication will call this when it is ready
    */
