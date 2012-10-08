@@ -1124,6 +1124,11 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       case RENDER_FMT_CVBREF:
         formatstr = "BGRA";
         break;
+#ifdef ALLWINNERA10
+      case RENDER_FMT_A10BUF:
+        formatstr = "A10BUF";
+        break;
+#endif
       case RENDER_FMT_BYPASS:
         formatstr = "BYPASS";
         break;
