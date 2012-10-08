@@ -163,7 +163,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
 
   Demux_BXA_FmtHeader header;
   strncpy(header.fourcc, "BXA ", 4);
-  header.type = BXA_PACKET_TYPE_FMT;
+  header.type = BXA_PACKET_TYPE_FMT_DEMUX;
   header.bitsPerSample = bits;
   header.channels = channels;
   header.sampleRate = samplerate;
