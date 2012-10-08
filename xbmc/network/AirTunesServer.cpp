@@ -35,7 +35,8 @@
 #include "ApplicationMessenger.h"
 #include "filesystem/PipeFile.h"
 #include "Application.h"
-#include "cores/paplayer/BXAcodec.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxBXA.h"
+#include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -160,7 +161,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   pipe->OpenForWrite(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   pipe->SetOpenThreashold(300);
 
-  BXA_FmtHeader header;
+  Demux_BXA_FmtHeader header;
   strncpy(header.fourcc, "BXA ", 4);
   header.type = BXA_PACKET_TYPE_FMT;
   header.bitsPerSample = bits;
@@ -328,9 +329,9 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   device->pipe->OpenForWrite(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   device->pipe->SetOpenThreashold(300);
 
-  BXA_FmtHeader header;
+  Demux_BXA_FmtHeader header;
   strncpy(header.fourcc, "BXA ", 4);
-  header.type = BXA_PACKET_TYPE_FMT;
+  header.type = BXA_PACKET_TYPE_FMT_DEMUX;
   header.bitsPerSample = format->bits;
   header.channels = format->channels;
   header.sampleRate = format->rate;
