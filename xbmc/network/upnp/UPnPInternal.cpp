@@ -210,7 +210,7 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
     if (object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
-    object.m_MiscInfo.last_time = tag.GetLastPlayed().GetAsLocalizedDate();
+    object.m_MiscInfo.last_time = tag.GetLastPlayed().GetAsDBDate();
     object.m_MiscInfo.play_count = tag.GetPlayCount();
 
     if (resource) resource->m_Duration = tag.GetDuration();
@@ -254,7 +254,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
           int season = tag.m_iSeason > 1 ? tag.m_iSeason : 1;
           object.m_Recorded.episode_number = season * 100 + tag.m_iEpisode;
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
-          object.m_Date = tag.m_firstAired.GetAsLocalizedDate();
+          object.m_Date = tag.m_firstAired.GetAsDBDate();
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
         }
@@ -283,7 +283,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_Description.long_description = tag.m_strPlot;
     object.m_Description.rating = tag.m_strMPAARating;
     object.m_MiscInfo.last_position = tag.m_resumePoint.timeInSeconds;
-    object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsLocalizedDate();
+    object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsDBDate();
     object.m_MiscInfo.play_count = tag.m_playCount;
     if (resource) {
         if (tag.HasStreamDetails()) {
@@ -370,7 +370,7 @@ BuildObject(CFileItem&                    item,
 
         // set date
         if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid()) {
-            object->m_Date = item.m_dateTime.GetAsLocalizedDate();
+            object->m_Date = item.m_dateTime.GetAsDBDate();
         }
 
         if (upnp_server) {
@@ -479,7 +479,7 @@ BuildObject(CFileItem&                    item,
                   if(!tag.m_firstAired.IsValid() && tag.m_iYear)
                     container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
                   else
-                    container->m_Date = tag.m_firstAired.GetAsLocalizedDate();
+                    container->m_Date = tag.m_premiered.GetAsDBDate();
 
                   for (unsigned int index = 0; index < tag.m_genre.size(); index++)
                     container->m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
