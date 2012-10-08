@@ -21,7 +21,6 @@
 #include "CurlFile.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
-#include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
@@ -311,6 +310,7 @@ CCurlFile::CCurlFile()
   m_curlAliasList = NULL;
   m_curlHeaderList = NULL;
   m_opened = false;
+  m_openedforwrite = false;
   m_multisession  = true;
   m_seekable = true;
   m_useOldHttpVersion = false;
@@ -322,6 +322,7 @@ CCurlFile::CCurlFile()
   m_bufferSize = 32768;
   m_binary = true;
   m_postdata = "";
+  m_postdataset = false;
   m_username = "";
   m_password = "";
   m_httpauth = "";
@@ -352,6 +353,7 @@ void CCurlFile::Close()
   m_curlAliasList = NULL;
   m_curlHeaderList = NULL;
   m_opened = false;
+  m_openedforwrite = false;
 }
 
 void CCurlFile::SetCommonOptions(CReadState* state)
@@ -423,8 +425,8 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_URL, m_url.c_str());
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, FALSE);
 
-  // setup POST data if it exists
-  if (!m_postdata.IsEmpty())
+  // setup POST data if it is set (and it may be empty)
+  if (m_postdataset)
   {
     g_curlInterface.easy_setopt(h, CURLOPT_POST, 1 );
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDSIZE, m_postdata.length());
@@ -738,6 +740,7 @@ bool CCurlFile::Get(const CStdString& strURL, CStdString& strHTML)
 bool CCurlFile::Service(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
 {
   m_postdata = strPostData;
+  m_postdataset = true;
   if (Open(strURL))
   {
     if (ReadData(strHTML))
@@ -837,8 +840,8 @@ bool CCurlFile::Open(const CURL& url)
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
 
-  long response = m_state->Connect(m_bufferSize);
-  if( response < 0 || response >= 400)
+  m_httpresponse = m_state->Connect(m_bufferSize);
+  if( m_httpresponse < 0 || m_httpresponse >= 400)
     return false;
 
   SetCorrectHeaders(m_state);
@@ -892,6 +895,37 @@ bool CCurlFile::Open(const CURL& url)
     m_url = efurl;
 
   return true;
+}
+
+bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
+{
+  // real Open is delayed until we receive the POST data
+  m_urlforwrite = url;
+  m_openedforwrite = true;
+  return true;
+}
+
+int CCurlFile::Write(const void* lpBuf, int64_t uiBufSize)
+{
+  // Although we can not verify much, try to catch errors where we can
+  if (!m_openedforwrite || m_opened)
+    return -1;
+
+  CStdString myPostData((char*) lpBuf);
+  if (myPostData.length() != uiBufSize)
+    return -1;
+
+  // If we get here, we (most likely) satisfied the pre-conditions that we used OpenForWrite and passed a string as postdata
+  // we mimic 'post(..)' but do not read any data
+  m_postdata = myPostData;
+  m_postdataset = true;
+  m_openedforwrite = false;
+  SetMimeType("application/json");
+  if (!Open(m_urlforwrite))
+    return -1;
+
+  // Finally (and this is a clumsy hack) return the http response code
+  return (int) m_httpresponse;
 }
 
 bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)
