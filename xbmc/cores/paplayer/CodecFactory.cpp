@@ -139,6 +139,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return CreateOGGCodec(strFile,filecache);
   else if (strContent.Equals("audio/x-xbmc-pcm"))
   {
+    // audio/x-xbmc-pcm this is the used codec for AirTunes
+    // (apples audio only streaming)
     DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
     dvdcodec->SetContentType(strContent);
     return dvdcodec;
