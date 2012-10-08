@@ -40,7 +40,6 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
-#include "BXAcodec.h" 
 #include "PCMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
@@ -139,9 +138,15 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
   else if (strContent.Equals("audio/x-xbmc-pcm"))
-    return (ICodec*)new BXACodec();  
-   else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
-     return new FLACCodec();
+  {
+    // audio/x-xbmc-pcm this is the used codec for AirTunes
+    // (apples audio only streaming)
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType(strContent);
+    return dvdcodec;
+  }
+  else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
+    return new FLACCodec();
 
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {
