@@ -2762,7 +2762,7 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  if (IsPlaying() && !CurrentFileItem().IsLiveTV())
+  if (IsPlaying())
   {
     // pause : pauses current audio song
     if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
