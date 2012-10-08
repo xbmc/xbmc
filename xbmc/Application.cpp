@@ -220,6 +220,7 @@
 #include "video/dialogs/GUIDialogVideoOSD.h"
 #include "music/dialogs/GUIDialogMusicOverlay.h"
 #include "video/dialogs/GUIDialogVideoOverlay.h"
+#include "video/VideoInfoScanner.h"
 
 // Dialog includes
 #include "music/dialogs/GUIDialogMusicOSD.h"
@@ -233,7 +234,6 @@
 #include "settings/GUIDialogProfileSettings.h"
 #include "settings/GUIDialogLockSettings.h"
 #include "settings/GUIDialogContentSettings.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -1278,7 +1278,6 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
     g_windowManager.Add(new CGUIDialogMediaSource);   // window id = 129
     g_windowManager.Add(new CGUIDialogProfileSettings); // window id = 130
-    g_windowManager.Add(new CGUIDialogVideoScan);      // window id = 133
     g_windowManager.Add(new CGUIDialogFavourites);     // window id = 134
     g_windowManager.Add(new CGUIDialogSongInfo);       // window id = 135
     g_windowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
@@ -3465,7 +3464,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
-    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_SCAN);
     g_windowManager.Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_FAVOURITES);
     g_windowManager.Delete(WINDOW_DIALOG_SONG_INFO);

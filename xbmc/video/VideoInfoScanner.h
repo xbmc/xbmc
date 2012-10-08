@@ -37,21 +37,6 @@ namespace VIDEO
     bool exclude;           /* exclude this path from scraping */
   } SScanSettings;
 
-  enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, FETCHING_MOVIE_INFO, FETCHING_MUSICVIDEO_INFO, FETCHING_TVSHOW_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
-
-  class IVideoInfoScannerObserver
-  {
-  public:
-    virtual ~IVideoInfoScannerObserver() { }
-    virtual void OnStateChanged(SCAN_STATE state) = 0;
-    virtual void OnDirectoryChanged(const CStdString& strDirectory) = 0;
-    virtual void OnDirectoryScanned(const CStdString& strDirectory) = 0;
-    virtual void OnSetProgress(int currentItem, int itemCount)=0;
-    virtual void OnSetCurrentProgress(int currentItem, int itemCount)=0;
-    virtual void OnSetTitle(const CStdString& strTitle) = 0;
-    virtual void OnFinished() = 0;
-  };
-
   /*! \brief return values from the information lookup functions
    */
   enum INFO_RET { INFO_CANCELLED,
