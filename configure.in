@@ -334,7 +334,7 @@ AC_ARG_ENABLE([pulse],
 
 AC_ARG_ENABLE([ssh],
   [AS_HELP_STRING([--disable-ssh],
-  [enable SSH SFTP support (default is enabled)])],
+  [disable SSH SFTP support (default is enabled)])],
   [use_ssh=$enableval],
   [use_ssh=yes])
 
