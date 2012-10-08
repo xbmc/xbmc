@@ -49,8 +49,9 @@ private:
   PlexHelper(PlexHelper const& );
   PlexHelper& operator=(PlexHelper const&);
 
-  void Install();
-  void Uninstall();
+  bool InstallHelper();
+  void InstallLauncher();
+  void UninstallLauncher();
 
   bool IsRemoteBuddyInstalled();
   bool IsSofaControlRunning();
@@ -71,6 +72,7 @@ private:
   std::string m_launchAgentInstallFile;
   std::string m_homepath;
   std::string m_helperFile;
+  std::string m_helperInstalledPath;
 
   static PlexHelper* smp_instance;
 };

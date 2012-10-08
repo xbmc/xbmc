@@ -20,7 +20,11 @@ double g_universal_timeout = 0.500;
 bool g_verbose_mode = false;
 
 //
+#ifndef __PLEX__
 const char* PROGNAME="XBMCHelper";
+#else
+const char* PROGNAME="PlexHelper";
+#endif
 const char* PROGVERS="0.7";
 
 void ParseOptions(int argc, char** argv);

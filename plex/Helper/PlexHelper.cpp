@@ -35,6 +35,10 @@
 
 #include "Atomics.h"
 
+#include "xbmc/Util.h"
+#include "filesystem/File.h"
+#include "XFileUtils.h"
+
 static long sg_singleton_lock_variable = 0;
 PlexHelper* PlexHelper::smp_instance = 0;
 
@@ -69,11 +73,11 @@ PlexHelper::PlexHelper()
   m_homepath = homePath;
 
   // Compute the helper filename.
-  m_helperFile = m_homepath + "/tools/osx/";
+  m_helperFile = m_homepath + "/tools/darwin/runtime/";
   m_helperFile += PLEX_HELPER_PROGRAM;
 
   // Compute the local (pristine) launch agent filename.
-  m_launchAgentLocalFile = m_homepath + "/tools/osx/";
+  m_launchAgentLocalFile = m_homepath + "/tools/darwin/runtime/";
   m_launchAgentLocalFile += PLEX_LAUNCH_PLIST;
 
   // Compute the install path for the launch agent.
@@ -84,18 +88,29 @@ PlexHelper::PlexHelper()
 
   // Compute the configuration file name.
   m_configFile = getenv("HOME");
-  m_configFile += "/Library/Application Support/Plex/PlexHelper.conf";
+  m_configFile += "/Library/Application Support/";
+  m_configFile += PLEX_TARGET_NAME;
+  m_configFile += "/PlexHelper.conf";
+
+  m_helperInstalledPath = getenv("HOME");
+  m_helperInstalledPath += "/Library/Application Support/";
+  m_helperInstalledPath += PLEX_TARGET_NAME;
+  m_helperInstalledPath += "/";
+  m_helperInstalledPath += PLEX_HELPER_PROGRAM;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void PlexHelper::Start()
 {
   int pid = GetProcessPid(PLEX_HELPER_PROGRAM);
+
+  InstallHelper();
+
   if (pid == -1)
   {
     printf("Asking helper to start.\n");
     // use -x to have PlexHelper read its configure file
-    std::string cmd = "\"" + m_helperFile + "\" -x &";
+    std::string cmd = "\"" + m_helperInstalledPath + "\" -x &";
     system(cmd.c_str());
   }
 }
@@ -200,7 +215,7 @@ void PlexHelper::Configure()
   if (oldMode != APPLE_REMOTE_DISABLED && m_mode == APPLE_REMOTE_DISABLED)
   {
     Stop();
-    Uninstall();
+    UninstallLauncher();
   }
 
   // Turning on.
@@ -209,13 +224,30 @@ void PlexHelper::Configure()
 
   // Installation/uninstallation.
   if (oldAlwaysOn == false && m_alwaysOn == true)
-    Install();
+    InstallLauncher();
   if (oldAlwaysOn == true && m_alwaysOn == false)
-    Uninstall();
+    UninstallLauncher();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::Install()
+bool PlexHelper::InstallHelper()
+{
+  if(!CopyFile(m_helperFile.c_str(), m_helperInstalledPath.c_str(), FALSE))
+  {
+    CLog::Log(LOGWARNING, "Couldn't copy %s to %s", m_helperFile.c_str(), m_helperInstalledPath.c_str());
+    return false;
+  }
+
+  /* Change perms */
+  chmod(m_helperInstalledPath.c_str(), 0755);
+
+  CLog::Log(LOGDEBUG, "Copied helper");
+
+  return XFILE::CFile::Exists(m_helperInstalledPath);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void PlexHelper::InstallLauncher()
 {
   // Make sure directory exists.
   std::string strDir = getenv("HOME");
@@ -231,7 +263,7 @@ void PlexHelper::Install()
 
       // Replace PATH with path to app.
       int start = plistData.find("${PATH}");
-      plistData.replace(start, 7, m_helperFile.c_str(), m_helperFile.length());
+      plistData.replace(start, 7, m_helperInstalledPath.c_str(), m_helperInstalledPath.length());
 
       // Replace ARG1 with a single argument, additional args
       // will need ARG2, ARG3 added to plist.
@@ -254,7 +286,7 @@ void PlexHelper::Install()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::Uninstall()
+void PlexHelper::UninstallLauncher()
 {
   // Call the unloader.
   std::string cmd = "/bin/launchctl unload ";

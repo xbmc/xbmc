@@ -100,6 +100,7 @@ set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/git_revision.h PROPERTIE
 
 add_subdirectory(xbmc)
 add_subdirectory(plex)
+add_subdirectory(tools/EventClients/Clients/OSXRemote)
 
 if(DEFINED ENV{BUILD_NUMBER})
   set(PLEX_BUILDNR $ENV{BUILD_NUMBER})
