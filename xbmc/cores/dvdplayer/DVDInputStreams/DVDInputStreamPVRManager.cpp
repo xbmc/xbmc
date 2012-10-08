@@ -352,6 +352,21 @@ bool CDVDInputStreamPVRManager::Record(bool bOnOff)
   return false;
 }
 
+bool CDVDInputStreamPVRManager::CanPause()
+{
+  return g_PVRClients->CanPauseStream();
+}
+
+bool CDVDInputStreamPVRManager::CanSeek()
+{
+  return g_PVRClients->CanSeekStream();
+}
+
+void CDVDInputStreamPVRManager::Pause(bool bPaused)
+{
+  g_PVRClients->PauseStream(bPaused);
+}
+
 CStdString CDVDInputStreamPVRManager::GetInputFormat()
 {
   if (!m_pOtherStream && g_PVRManager.IsStarted())
