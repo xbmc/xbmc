@@ -18,7 +18,6 @@ CONFIGURE=./configure \
 SRC=../../../../
 
 all:
-	@[ -f $(SDKSTAGE)/usr/local/lib/libtag.a ] || (echo "taglib not found. see depends/taglib."; exit 1)
 	(cd $(SRC); ./bootstrap)
 	(cd $(SRC); $(CONFIGURE))
 	(cd $(SRC); make)
