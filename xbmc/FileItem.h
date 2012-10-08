@@ -146,6 +146,7 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
+  bool IsPictureDb() const;
   bool IsEPG() const;
   bool IsPVRChannel() const;
   bool IsPVRRecording() const;

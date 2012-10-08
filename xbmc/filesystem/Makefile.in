@@ -52,6 +52,7 @@ SRCS += MythFile.cpp
 SRCS += MythSession.cpp
 SRCS += NSFFileDirectory.cpp
 SRCS += OGGFileDirectory.cpp
+SRCS += PictureDatabaseDirectory.cpp
 SRCS += PlaylistDirectory.cpp
 SRCS += PlaylistFileDirectory.cpp
 SRCS += PipeFile.cpp

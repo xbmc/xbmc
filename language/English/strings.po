@@ -2452,7 +2452,11 @@ msgctxt "#702"
 msgid "This path has been scanned before"
 msgstr ""
 
-#empty strings from id 703 to 704
+msgctxt "#703"
+msgid "Removing pictures from the library"
+msgstr ""
+
+#empty string with id 704
 
 msgctxt "#705"
 msgid "Network"
@@ -2827,7 +2831,11 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr ""
 
-#empty strings from id 853 to 997
+#empty strings from id 853 to 996
+
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr ""
 
 msgctxt "#998"
 msgid "Add Music..."
@@ -9438,7 +9446,11 @@ msgctxt "#21808"
 msgid "JPEG process"
 msgstr ""
 
-#empty strings from id 21809 to 21819
+#empty strings from id 21809 to 21818
+
+msgctxt "#21819"
+msgid "Camera"
+msgstr ""
 
 msgctxt "#21820"
 msgid "Date/Time"

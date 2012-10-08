@@ -316,6 +316,7 @@ void CAdvancedSettings::Initialize()
 
   m_databaseMusic.Reset();
   m_databaseVideo.Reset();
+  m_databasePictures.Reset();
 
   m_logLevelHint = m_logLevel = LOG_LEVEL_NONE;
 }
@@ -1031,6 +1032,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "user", m_databaseEpg.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseEpg.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseEpg.name);
+  }
+
+  pDatabase = pRootElement->FirstChildElement("picturedatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databasePictures.type);
+    XMLUtils::GetString(pDatabase, "host", m_databasePictures.host);
+    XMLUtils::GetString(pDatabase, "port", m_databasePictures.port);
+    XMLUtils::GetString(pDatabase, "user", m_databasePictures.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databasePictures.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databasePictures.name);
   }
 
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
