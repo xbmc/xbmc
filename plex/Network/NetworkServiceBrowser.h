@@ -277,7 +277,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
     url+=":32400/";
 
     struct __stat64 stat;
-    if (file->Stat(CURL(url), &stat))
+    if (file->Stat(CURL(url), &stat) == 0)
     {
       CLog::Log(LOGDEBUG, "%s is still reachable", url.c_str());
       return true;
