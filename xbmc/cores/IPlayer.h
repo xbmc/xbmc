@@ -84,6 +84,7 @@ public:
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(){ return true;}
   virtual bool IsPlaying() const { return false;}
+  virtual bool CanPause() { return true; };
   virtual void Pause() = 0;
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() const = 0;

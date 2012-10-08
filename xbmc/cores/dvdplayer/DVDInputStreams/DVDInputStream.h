@@ -71,6 +71,8 @@ public:
     virtual bool CanRecord() = 0;
     virtual bool IsRecording() = 0;
     virtual bool Record(bool bOnOff) = 0;
+    virtual bool CanPause() = 0;
+    virtual bool CanSeek() = 0;
   };
 
   class IDisplayTime
