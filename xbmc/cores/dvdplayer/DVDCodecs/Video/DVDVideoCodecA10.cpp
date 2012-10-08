@@ -31,6 +31,7 @@ extern "C" {
 //#define A10ENABLE_MPEG4V2
 //#define A10ENABLE_MPEG4V3
 //#define A10ENABLE_XVID
+//#define A10ENABLE_DIVX4
 //#define A10ENABLE_DIVX5
 
 /*
@@ -233,24 +234,46 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
     switch(hints.codec_tag)
     {
-    //MPEG4
-    case _4CC('m','p','4','v'):
-      break;
-    //XVID
-#ifdef A10ENABLE_XVID
-    case _4CC('X','V','I','D'):
-      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_XVID;
+    //MP41(MSMPEG4V1)
+#ifdef A10ENABLE_MPEG4V1
+    case _4CC('m','p','4','1'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX1;
       break;
 #endif
     //MP42(MSMPEG4V2)
 #ifdef A10ENABLE_MPEG4V2
-    case _4CC('M','P','4','2'):
+    case _4CC('m','p','4','2'):
       m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX2;
       break;
 #endif
-    //DX50/DIVX5
+    //MP43(MSMPEG4V3), DIV3, DIV4
+#ifdef A10ENABLE_MPEG4V3
+    case _4CC('m','p','4','3'):
+    case _4CC('d','i','v','3'):
+    case _4CC('d','i','v','4'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX3;
+      break;
+#endif
+    //XVID
+#ifdef A10ENABLE_XVID
+    case _4CC('X','V','I','D'):
+    case _4CC('m','p','4','v'):
+    case _4CC('p','m','p','4'):
+    case _4CC('f','m','p','4'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_XVID;
+      break;
+#endif
+    //DX40/DIVX4, divx
+#ifdef A10ENABLE_DIVX4
+    case _4CC('D','X','4','0'):
+    case _4CC('D','I','V','X'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX4;
+      break;
+#endif
+    //DX50/DIVX5, div5
 #ifdef A10ENABLE_DIVX5
     case _4CC('D','X','5','0'):
+    case _4CC('d','i','v','5'):
       m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX5;
       break;
 #endif
