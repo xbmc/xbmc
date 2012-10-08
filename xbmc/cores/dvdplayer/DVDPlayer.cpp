@@ -2348,8 +2348,8 @@ void CDVDPlayer::HandleMessages()
         {
           if (m_extAudio && m_extDemuxer[m_extAudioId])
           {
-            if(!m_extDemuxer[m_extAudioId]->SeekChapter(msg.GetChapter(), &start))
-              CLog::Log(LOGDEBUG, "failed to seek chpters on external audio demuxer: %d, success", time);
+            if(!m_extDemuxer[m_extAudioId]->SeekTime(DVD_TIME_TO_MSEC(start)))
+              CLog::Log(LOGDEBUG, "failed to seek to chapter %d on external audio demuxer, time: %d", msg.GetChapter(), DVD_TIME_TO_MSEC(start));
           }
 
           FlushBuffers(false, start, true);
