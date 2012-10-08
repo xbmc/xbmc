@@ -49,7 +49,7 @@ public:
   {
     if (m_libXBMC_pvr)
     {
-      PVR_unregister_me();
+      PVR_unregister_me(m_Handle, m_Callbacks);
       dlclose(m_libXBMC_pvr);
     }
   }
@@ -69,99 +69,172 @@ public:
       return false;
     }
 
-    PVR_register_me         = (int (*)(void *HANDLE))
+    PVR_register_me = (void* (*)(void *HANDLE))
       dlsym(m_libXBMC_pvr, "PVR_register_me");
-    if (PVR_register_me == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_register_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    PVR_unregister_me       = (void (*)())
+    PVR_unregister_me = (void (*)(void* HANDLE, void* CB))
       dlsym(m_libXBMC_pvr, "PVR_unregister_me");
-    if (PVR_unregister_me == NULL)    { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_unregister_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TransferEpgEntry        = (void (*)(const ADDON_HANDLE handle, const EPG_TAG *epgentry))
+    PVR_transfer_epg_entry = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const EPG_TAG *epgentry))
       dlsym(m_libXBMC_pvr, "PVR_transfer_epg_entry");
-    if (TransferEpgEntry == NULL)       { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_transfer_epg_entry == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TransferChannelEntry    = (void (*)(const ADDON_HANDLE handle, const PVR_CHANNEL *chan))
+    PVR_transfer_channel_entry = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL *chan))
       dlsym(m_libXBMC_pvr, "PVR_transfer_channel_entry");
-    if (TransferChannelEntry == NULL)   { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_transfer_channel_entry == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TransferTimerEntry      = (void (*)(const ADDON_HANDLE handle, const PVR_TIMER *timer))
+    PVR_transfer_timer_entry = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_TIMER *timer))
       dlsym(m_libXBMC_pvr, "PVR_transfer_timer_entry");
-    if (TransferTimerEntry == NULL)     { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_transfer_timer_entry == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TransferRecordingEntry  = (void (*)(const ADDON_HANDLE handle, const PVR_RECORDING *recording))
+    PVR_transfer_recording_entry = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_RECORDING *recording))
       dlsym(m_libXBMC_pvr, "PVR_transfer_recording_entry");
-    if (TransferRecordingEntry == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_transfer_recording_entry == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    AddMenuHook             = (void (*)(PVR_MENUHOOK *hook))
+    PVR_add_menu_hook = (void (*)(void* HANDLE, void* CB, PVR_MENUHOOK *hook))
       dlsym(m_libXBMC_pvr, "PVR_add_menu_hook");
-    if (AddMenuHook == NULL)            { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_add_menu_hook == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Recording               = (void (*)(const char *Name, const char *FileName, bool On))
+    PVR_recording = (void (*)(void* HANDLE, void* CB, const char *Name, const char *FileName, bool On))
       dlsym(m_libXBMC_pvr, "PVR_recording");
-    if (Recording == NULL)              { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_recording == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TriggerTimerUpdate      = (void (*)())
+    PVR_trigger_timer_update = (void (*)(void* HANDLE, void* CB))
       dlsym(m_libXBMC_pvr, "PVR_trigger_timer_update");
-    if (TriggerTimerUpdate == NULL)     { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_trigger_timer_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TriggerRecordingUpdate  = (void (*)())
+    PVR_trigger_recording_update = (void (*)(void* HANDLE, void* CB))
       dlsym(m_libXBMC_pvr, "PVR_trigger_recording_update");
-    if (TriggerRecordingUpdate == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_trigger_recording_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TriggerChannelUpdate  = (void (*)())
+    PVR_trigger_channel_update = (void (*)(void* HANDLE, void* CB))
       dlsym(m_libXBMC_pvr, "PVR_trigger_channel_update");
-    if (TriggerChannelUpdate == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_trigger_channel_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TriggerChannelGroupsUpdate  = (void (*)())
+    PVR_trigger_channel_groups_update = (void (*)(void* HANDLE, void* CB))
       dlsym(m_libXBMC_pvr, "PVR_trigger_channel_groups_update");
-    if (TriggerChannelGroupsUpdate == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_trigger_channel_groups_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TransferChannelGroup  = (void (*)(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group))
+    PVR_transfer_channel_group  = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group))
       dlsym(m_libXBMC_pvr, "PVR_transfer_channel_group");
-    if (TransferChannelGroup == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_transfer_channel_group == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    TransferChannelGroupMember  = (void (*)(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member))
+    PVR_transfer_channel_group_member = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member))
       dlsym(m_libXBMC_pvr, "PVR_transfer_channel_group_member");
-    if (TransferChannelGroupMember == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_transfer_channel_group_member == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
 #ifdef USE_DEMUX
-    FreeDemuxPacket         = (void (*)(DemuxPacket* pPacket))
+    PVR_free_demux_packet = (void (*)(void* HANDLE, void* CB, DemuxPacket* pPacket))
       dlsym(m_libXBMC_pvr, "PVR_free_demux_packet");
-    if (FreeDemuxPacket == NULL)        { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_free_demux_packet == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    AllocateDemuxPacket     = (DemuxPacket* (*)(int iDataSize))
+    PVR_allocate_demux_packet = (DemuxPacket* (*)(void* HANDLE, void* CB, int iDataSize))
       dlsym(m_libXBMC_pvr, "PVR_allocate_demux_packet");
-    if (AllocateDemuxPacket == NULL)    { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    if (PVR_allocate_demux_packet == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 #endif
 
-    return PVR_register_me(m_Handle) > 0;
+    m_Callbacks = PVR_register_me(m_Handle);
+    return m_Callbacks != NULL;
   }
 
-  void (*TransferEpgEntry)(const ADDON_HANDLE handle, const EPG_TAG *epgentry);
-  void (*TransferChannelEntry)(const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
-  void (*TransferTimerEntry)(const ADDON_HANDLE handle, const PVR_TIMER *timer);
-  void (*TransferRecordingEntry)(const ADDON_HANDLE handle, const PVR_RECORDING *recording);
-  void (*AddMenuHook)(PVR_MENUHOOK *hook);
-  void (*Recording)(const char *Name, const char *FileName, bool On);
-  void (*TriggerTimerUpdate)();
-  void (*TriggerRecordingUpdate)();
-  void (*TriggerChannelUpdate)();
-  void (*TriggerChannelGroupsUpdate)();
-  void (*TransferChannelGroup)(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
-  void (*TransferChannelGroupMember)(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+  void TransferEpgEntry(const ADDON_HANDLE handle, const EPG_TAG *epgentry)
+  {
+    return PVR_transfer_epg_entry(m_Handle, m_Callbacks, handle, epgentry);
+  }
+
+  void TransferChannelEntry(const ADDON_HANDLE handle, const PVR_CHANNEL *chan)
+  {
+    return PVR_transfer_channel_entry(m_Handle, m_Callbacks, handle, chan);
+  }
+
+  void TransferTimerEntry(const ADDON_HANDLE handle, const PVR_TIMER *timer)
+  {
+    return PVR_transfer_timer_entry(m_Handle, m_Callbacks, handle, timer);
+  }
+
+  void TransferRecordingEntry(const ADDON_HANDLE handle, const PVR_RECORDING *recording)
+  {
+    return PVR_transfer_recording_entry(m_Handle, m_Callbacks, handle, recording);
+  }
+
+  void AddMenuHook(PVR_MENUHOOK *hook)
+  {
+    return PVR_add_menu_hook(m_Handle, m_Callbacks, hook);
+  }
+
+  void Recording(const char *Name, const char *FileName, bool On)
+  {
+    return PVR_recording(m_Handle, m_Callbacks, Name, FileName, On);
+  }
+
+  void TriggerTimerUpdate()
+  {
+    return PVR_trigger_timer_update(m_Handle, m_Callbacks);
+  }
+
+  void TriggerRecordingUpdate()
+  {
+    return PVR_trigger_recording_update(m_Handle, m_Callbacks);
+  }
+
+  void TriggerChannelUpdate()
+  {
+    return PVR_trigger_channel_update(m_Handle, m_Callbacks);
+  }
+
+  void TriggerChannelGroupsUpdate()
+  {
+    return PVR_trigger_channel_groups_update(m_Handle, m_Callbacks);
+  }
+
+  void TransferChannelGroup(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+  {
+    return PVR_transfer_channel_group(m_Handle, m_Callbacks, handle, group);
+  }
+
+  void TransferChannelGroupMember(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+  {
+    return PVR_transfer_channel_group_member(m_Handle, m_Callbacks, handle, member);
+  }
+
 #ifdef USE_DEMUX
-  void (*FreeDemuxPacket)(DemuxPacket* pPacket);
-  DemuxPacket* (*AllocateDemuxPacket)(int iDataSize);
+  void FreeDemuxPacket(DemuxPacket* pPacket)
+  {
+    return PVR_free_demux_packet(m_Handle, m_Callbacks, pPacket);
+  }
+
+  DemuxPacket* AllocateDemuxPacket(int iDataSize)
+  {
+    return PVR_allocate_demux_packet(m_Handle, m_Callbacks, iDataSize);
+  }
 #endif
 
 protected:
-  int (*PVR_register_me)(void *HANDLE);
-  void (*PVR_unregister_me)();
+  void* (*PVR_register_me)(void *HANDLE);
+  void (*PVR_unregister_me)(void* HANDLE, void* CB);
+  void (*PVR_transfer_epg_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
+  void (*PVR_transfer_channel_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
+  void (*PVR_transfer_timer_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_TIMER *timer);
+  void (*PVR_transfer_recording_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
+  void (*PVR_add_menu_hook)(void* HANDLE, void* CB, PVR_MENUHOOK *hook);
+  void (*PVR_recording)(void* HANDLE, void* CB, const char *Name, const char *FileName, bool On);
+  void (*PVR_trigger_channel_update)(void* HANDLE, void* CB);
+  void (*PVR_trigger_channel_groups_update)(void* HANDLE, void* CB);
+  void (*PVR_trigger_timer_update)(void* HANDLE, void* CB);
+  void (*PVR_trigger_recording_update)(void* HANDLE, void* CB);
+  void (*PVR_transfer_channel_group)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
+  void (*PVR_transfer_channel_group_member)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+#ifdef USE_DEMUX
+  void (*PVR_free_demux_packet)(void* HANDLE, void* CB, DemuxPacket* pPacket);
+  DemuxPacket* (*PVR_allocate_demux_packet)(void* HANDLE, void* CB, int iDataSize);
+#endif
 
 private:
   void *m_libXBMC_pvr;
   void *m_Handle;
+  void *m_Callbacks;
   struct cb_array
   {
     const char* libPath;

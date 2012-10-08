@@ -37,196 +37,229 @@
 using namespace std;
 using namespace ADDON;
 
-AddonCB *m_Handle = NULL;
-CB_AddOnLib *m_cb = NULL;
-
 extern "C"
 {
 
-DLLEXPORT int XBMC_register_me(void *hdl)
+DLLEXPORT void* XBMC_register_me(void *hdl)
 {
+  CB_AddOnLib *cb = NULL;
   if (!hdl)
     fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me is called with NULL handle !!!\n");
   else
   {
-    m_Handle = (AddonCB*) hdl;
-    m_cb     = m_Handle->AddOnLib_RegisterMe(m_Handle->addonData);
-    if (!m_cb)
+    cb = ((AddonCB*)hdl)->AddOnLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    if (!cb)
       fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me can't get callback table from XBMC !!!\n");
-    else
-      return 1;
   }
-  return 0;
+  return cb;
 }
 
-DLLEXPORT void XBMC_unregister_me()
+DLLEXPORT void XBMC_unregister_me(void *hdl, void* cb)
 {
-  if (m_Handle && m_cb)
-    m_Handle->AddOnLib_UnRegisterMe(m_Handle->addonData, m_cb);
+  if (hdl && cb)
+    ((AddonCB*)hdl)->AddOnLib_UnRegisterMe(((AddonCB*)hdl)->addonData, ((CB_AddOnLib*)cb));
 }
 
-DLLEXPORT void XBMC_log(const addon_log_t loglevel, const char *format, ... )
+DLLEXPORT void XBMC_log(void *hdl, void* cb, const addon_log_t loglevel, const char *msg)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  char buffer[16384];
-  va_list args;
-  va_start (args, format);
-  vsprintf (buffer, format, args);
-  va_end (args);
-  m_cb->Log(m_Handle->addonData, loglevel, buffer);
+  ((CB_AddOnLib*)cb)->Log(((AddonCB*)hdl)->addonData, loglevel, msg);
 }
 
-DLLEXPORT bool XBMC_get_setting(const char* settingName, void *settingValue)
+DLLEXPORT bool XBMC_get_setting(void *hdl, void* cb, const char* settingName, void *settingValue)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return false;
 
-  return m_cb->GetSetting(m_Handle->addonData, settingName, settingValue);
+  return ((CB_AddOnLib*)cb)->GetSetting(((AddonCB*)hdl)->addonData, settingName, settingValue);
 }
 
-DLLEXPORT void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
+DLLEXPORT void XBMC_queue_notification(void *hdl, void* cb, const queue_msg_t type, const char *msg)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  char buffer[16384];
-  va_list args;
-  va_start (args, format);
-  vsprintf (buffer, format, args);
-  va_end (args);
-  m_cb->QueueNotification(m_Handle->addonData, type, buffer);
+  ((CB_AddOnLib*)cb)->QueueNotification(((AddonCB*)hdl)->addonData, type, msg);
 }
 
-DLLEXPORT void XBMC_unknown_to_utf8(string &str)
+DLLEXPORT void XBMC_unknown_to_utf8(void *hdl, void* cb, string &str)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  string buffer = m_cb->UnknownToUTF8(str.c_str());
+  string buffer = ((CB_AddOnLib*)cb)->UnknownToUTF8(str.c_str());
   str = buffer;
 }
 
-DLLEXPORT const char* XBMC_get_localized_string(int dwCode)
+DLLEXPORT const char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return "";
 
-  return m_cb->GetLocalizedString(m_Handle->addonData, dwCode);
+  return ((CB_AddOnLib*)cb)->GetLocalizedString(((AddonCB*)hdl)->addonData, dwCode);
 }
 
-DLLEXPORT const char* XBMC_get_dvd_menu_language()
+DLLEXPORT const char* XBMC_get_dvd_menu_language(void *hdl, void* cb)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return "";
 
-  string buffer = m_cb->GetDVDMenuLanguage(m_Handle->addonData);
+  string buffer = ((CB_AddOnLib*)cb)->GetDVDMenuLanguage(((AddonCB*)hdl)->addonData);
   return strdup(buffer.c_str());
 }
 
-DLLEXPORT void* XBMC_open_file(const char* strFileName, unsigned int flags)
+DLLEXPORT void* XBMC_open_file(void *hdl, void* cb, const char* strFileName, unsigned int flags)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return NULL;
 
-  return m_cb->OpenFile(m_Handle->addonData, strFileName, flags);
+  return ((CB_AddOnLib*)cb)->OpenFile(((AddonCB*)hdl)->addonData, strFileName, flags);
 }
 
-DLLEXPORT void* XBMC_open_file_for_write(const char* strFileName, bool bOverWrite)
+DLLEXPORT void* XBMC_open_file_for_write(void *hdl, void* cb, const char* strFileName, bool bOverWrite)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return NULL;
 
-  return m_cb->OpenFileForWrite(m_Handle->addonData, strFileName, bOverWrite);
+  return ((CB_AddOnLib*)cb)->OpenFileForWrite(((AddonCB*)hdl)->addonData, strFileName, bOverWrite);
 }
 
-DLLEXPORT unsigned int XBMC_read_file(void* file, void* lpBuf, int64_t uiBufSize)
+DLLEXPORT unsigned int XBMC_read_file(void *hdl, void* cb, void* file, void* lpBuf, int64_t uiBufSize)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return 0;
 
-  return m_cb->ReadFile(m_Handle->addonData, file, lpBuf, uiBufSize);
+  return ((CB_AddOnLib*)cb)->ReadFile(((AddonCB*)hdl)->addonData, file, lpBuf, uiBufSize);
 }
 
-DLLEXPORT bool XBMC_read_file_string(void* file, char *szLine, int iLineLength)
+DLLEXPORT bool XBMC_read_file_string(void *hdl, void* cb, void* file, char *szLine, int iLineLength)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return false;
 
-  return m_cb->ReadFileString(m_Handle->addonData, file, szLine, iLineLength);
+  return ((CB_AddOnLib*)cb)->ReadFileString(((AddonCB*)hdl)->addonData, file, szLine, iLineLength);
 }
 
-DLLEXPORT int XBMC_write_file(void* file, const void* lpBuf, int64_t uiBufSize)
+DLLEXPORT int XBMC_write_file(void *hdl, void* cb, void* file, const void* lpBuf, int64_t uiBufSize)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return false;
 
-  return m_cb->WriteFile(m_Handle->addonData, file, lpBuf, uiBufSize);
+  return ((CB_AddOnLib*)cb)->WriteFile(((AddonCB*)hdl)->addonData, file, lpBuf, uiBufSize);
 }
 
-DLLEXPORT void XBMC_flush_file(void* file)
+DLLEXPORT void XBMC_flush_file(void *hdl, void* cb, void* file)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->FlushFile(m_Handle->addonData, file);
+  ((CB_AddOnLib*)cb)->FlushFile(((AddonCB*)hdl)->addonData, file);
 }
 
-DLLEXPORT int64_t XBMC_seek_file(void* file, int64_t iFilePosition, int iWhence)
+DLLEXPORT int64_t XBMC_seek_file(void *hdl, void* cb, void* file, int64_t iFilePosition, int iWhence)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return 0;
 
-  return m_cb->SeekFile(m_Handle->addonData, file, iFilePosition, iWhence);
+  return ((CB_AddOnLib*)cb)->SeekFile(((AddonCB*)hdl)->addonData, file, iFilePosition, iWhence);
 }
 
-DLLEXPORT int XBMC_truncate_file(void* file, int64_t iSize)
+DLLEXPORT int XBMC_truncate_file(void *hdl, void* cb, void* file, int64_t iSize)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return 0;
 
-  return m_cb->TruncateFile(m_Handle->addonData, file, iSize);
+  return ((CB_AddOnLib*)cb)->TruncateFile(((AddonCB*)hdl)->addonData, file, iSize);
 }
 
-DLLEXPORT int64_t XBMC_get_file_position(void* file)
+DLLEXPORT int64_t XBMC_get_file_position(void *hdl, void* cb, void* file)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return 0;
 
-  return m_cb->GetFilePosition(m_Handle->addonData, file);
+  return ((CB_AddOnLib*)cb)->GetFilePosition(((AddonCB*)hdl)->addonData, file);
 }
 
-DLLEXPORT int64_t XBMC_get_file_length(void* file)
+DLLEXPORT int64_t XBMC_get_file_length(void *hdl, void* cb, void* file)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return 0;
 
-  return m_cb->GetFileLength(m_Handle->addonData, file);
+  return ((CB_AddOnLib*)cb)->GetFileLength(((AddonCB*)hdl)->addonData, file);
 }
 
-DLLEXPORT void XBMC_close_file(void* file)
+DLLEXPORT void XBMC_close_file(void *hdl, void* cb, void* file)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return;
 
-  m_cb->CloseFile(m_Handle->addonData, file);
+  ((CB_AddOnLib*)cb)->CloseFile(((AddonCB*)hdl)->addonData, file);
 }
 
-DLLEXPORT int64_t XBMC_get_file_chunk_size(void* file)
+DLLEXPORT int XBMC_get_file_chunk_size(void *hdl, void* cb, void* file)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
     return 0;
 
-  return m_cb->GetFileChunkSize(m_Handle->addonData, file);
+  return ((CB_AddOnLib*)cb)->GetFileChunkSize(((AddonCB*)hdl)->addonData, file);
 }
 
-DLLEXPORT bool XBMC_can_open_directory(const char* strURL)
+DLLEXPORT bool XBMC_file_exists(void *hdl, void* cb, const char *strFileName, bool bUseCache)
 {
-  if (m_cb == NULL)
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->FileExists(((AddonCB*)hdl)->addonData, strFileName, bUseCache);
+}
+
+DLLEXPORT int XBMC_stat_file(void *hdl, void* cb, const char *strFileName, struct ::__stat64* buffer)
+{
+  if (cb == NULL)
+    return -1;
+
+  return ((CB_AddOnLib*)cb)->StatFile(((AddonCB*)hdl)->addonData, strFileName, buffer);
+}
+
+DLLEXPORT bool XBMC_delete_file(void *hdl, void* cb, const char *strFileName)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->DeleteFile(((AddonCB*)hdl)->addonData, strFileName);
+}
+
+DLLEXPORT bool XBMC_can_open_directory(void *hdl, void* cb, const char* strURL)
+{
+  if (cb == NULL)
     return 0;
 
-  return m_cb->CanOpenDirectory(m_Handle->addonData, strURL);
+  return ((CB_AddOnLib*)cb)->CanOpenDirectory(((AddonCB*)hdl)->addonData, strURL);
+}
+
+DLLEXPORT bool XBMC_create_directory(void *hdl, void* cb, const char *strPath)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->CreateDirectory(((AddonCB*)hdl)->addonData, strPath);
+}
+
+DLLEXPORT bool XBMC_directory_exists(void *hdl, void* cb, const char *strPath)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->DirectoryExists(((AddonCB*)hdl)->addonData, strPath);
+}
+
+DLLEXPORT bool XBMC_remove_directory(void *hdl, void* cb, const char *strPath)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->RemoveDirectory(((AddonCB*)hdl)->addonData, strPath);
 }
 
 };

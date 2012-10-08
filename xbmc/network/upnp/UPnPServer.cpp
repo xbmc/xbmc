@@ -1,13 +1,16 @@
 #include "UPnPServer.h"
 #include "UPnPInternal.h"
+#include "GUIViewState.h"
 #include "Platinum.h"
 #include "ThumbLoader.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "guilib/Key.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
 #include "utils/md5.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
@@ -31,6 +34,20 @@ CUPnPServer::ProcessGetSCPD(PLT_Service*                  service,
 {
   // needed because PLT_MediaConnect only allows Xbox360 & WMP to search
   return PLT_MediaServer::ProcessGetSCPD(service, request, context, response);
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::SetupServices
++---------------------------------------------------------------------*/
+NPT_Result
+CUPnPServer::SetupServices()
+{
+  PLT_MediaConnect::SetupServices();
+  PLT_Service* service = NULL;
+  NPT_Result result = FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service);
+  if (service)
+    service->SetStateVariable("SortCapabilities", "res@duration,res@size,res@bitrate,dc:date,dc:title,dc:size,upnp:album,upnp:artist,upnp:albumArtist,upnp:episodeNumber,upnp:genre,upnp:originalTrackNumber,upnp:rating");
+  return result;
 }
 
 /*----------------------------------------------------------------------
@@ -98,7 +115,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 item->SetLabel("Music Library");
                 item->SetLabelPreformated(true);
             } else {
-                if (!item->HasMusicInfoTag() || !item->GetMusicInfoTag()->Loaded() )
+                if (!item->HasMusicInfoTag())
                     item->LoadMusicTag();
 
                 if (!item->HasThumbnail() )
@@ -303,7 +320,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     items.SetPath(CStdString(parent_id));
     if (!items.Load()) {
         // cache anything that takes more than a second to retrieve
-      unsigned int time = XbmcThreads::SystemClockMillis();
+        unsigned int time = XbmcThreads::SystemClockMillis();
 
         if (parent_id.StartsWith("virtualpath://upnproot")) {
             CFileItemPtr item;
@@ -320,17 +337,23 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             item->SetLabelPreformated(true);
             items.Add(item);
 
+            items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
         } else {
             CDirectory::GetDirectory((const char*)parent_id, items);
+            if(!SortItems(items, sort_criteria))
+              DefaultSortItems(items);
         }
 
         if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && (XbmcThreads::SystemClockMillis() - time) > 1000 )) {
             items.Save();
         }
     }
-
-    // Always sort by label
-    items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+    else {
+      // the file list was cached, but this request may use a different
+      // sort_criteria
+      if (SortItems(items, sort_criteria))
+        items.Save();
+    }
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
@@ -659,6 +682,83 @@ CUPnPServer::ServeFile(const NPT_HttpRequest&              request,
                                        context,
                                        response,
                                        file_path);
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::SortItems
+|
+|   Only support upnp: & dc: namespaces for now.
+|   Other servers add their own vendor-specific sort methods. This could
+|   possibly be handled with 'quirks' in the long run.
+|
+|   return true if sort criteria was matched
++---------------------------------------------------------------------*/
+bool
+CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
+{
+  CStdString criteria(sort_criteria);
+  if (criteria.IsEmpty()) {
+    return false;
+  }
+
+  bool sorted = false;
+  CStdStringArray tokens = StringUtils::SplitString(criteria, ",");
+  for (vector<CStdString>::reverse_iterator itr = tokens.rbegin(); itr != tokens.rend(); itr++) {
+    /* Platinum guarantees 1st char is - or + */
+    SortOrder order = itr->Left(1).Equals("+") ? SortOrderAscending : SortOrderDescending;
+    CStdString method = itr->Mid(1);
+
+    SORT_METHOD scheme = SORT_METHOD_LABEL_IGNORE_THE;
+
+    /* resource specific */
+    if (method.Equals("res@duration"))
+      scheme = SORT_METHOD_DURATION;
+    else if (method.Equals("res@size"))
+      scheme = SORT_METHOD_SIZE;
+    else if (method.Equals("res@bitrate"))
+      scheme = SORT_METHOD_BITRATE;
+
+    /* dc: */
+    else if (method.Equals("dc:date"))
+      scheme = SORT_METHOD_DATE;
+    else if (method.Equals("dc:title"))
+      scheme = SORT_METHOD_TITLE_IGNORE_THE;
+
+    /* upnp: */
+    else if (method.Equals("upnp:album"))
+      scheme = SORT_METHOD_ALBUM;
+    else if (method.Equals("upnp:artist") || method.Equals("upnp:albumArtist"))
+      scheme = SORT_METHOD_ARTIST;
+    else if (method.Equals("upnp:episodeNumber"))
+      scheme = SORT_METHOD_EPISODE;
+    else if (method.Equals("upnp:genre"))
+      scheme = SORT_METHOD_GENRE;
+    else if (method.Equals("upnp:originalTrackNumber"))
+      scheme = SORT_METHOD_TRACKNUM;
+    else if(method.Equals("upnp:rating"))
+      scheme = SORT_METHOD_SONG_RATING;
+    else {
+      CLog::Log(LOGINFO, "UPnP: unsupported sort criteria '%s' passed", method.c_str());
+      continue; // needed so unidentified sort methods don't re-sort by label
+    }
+
+    CLog::Log(LOGINFO, "UPnP: Sorting by %d, %d", scheme, order);
+    items.Sort(scheme, order);
+    sorted = true;
+  }
+
+  return sorted;
+}
+
+void
+CUPnPServer::DefaultSortItems(CFileItemList& items)
+{
+  CGUIViewState* viewState = CGUIViewState::GetViewState(items.IsVideoDb() ? WINDOW_VIDEO_NAV : -1, items);
+  if (viewState)
+  {
+    items.Sort(viewState->GetSortMethod(), viewState->GetSortOrder());
+    delete viewState;
+  }
 }
 
 } /* namespace UPNP */

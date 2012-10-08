@@ -278,7 +278,6 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     CCoreAudioDevice device;
     device.Open((pDevices[dev]));
     deviceName = device.GetName();
-    UInt32 totalChannels = device.GetTotalOutputChannels();
     std::transform( deviceName.begin(), deviceName.end(), deviceName.begin(), ::tolower );
     if (searchNameLowerCase.compare(deviceName) == 0)
       deviceId = pDevices[dev];

@@ -196,6 +196,9 @@ public:
   void SetValid(bool yesNo);
   bool IsValid() const;
 
+  static void ResetTimezoneBias(void);
+  static CDateTimeSpan GetTimezoneBias(void);
+
 private:
   bool ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const;
   bool ToFileTime(const time_t& time, FILETIME& fileTime) const;

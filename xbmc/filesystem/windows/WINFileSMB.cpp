@@ -72,7 +72,7 @@ bool CWINFileSMB::Open(const CURL& url)
 
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
+  m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
 
   if (!m_hFile.isValid())
   {
@@ -81,10 +81,10 @@ bool CWINFileSMB::Open(const CURL& url)
 
     XFILE::CWINSMBDirectory smb;
     smb.ConnectToShare(url);
-    m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
+    m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!m_hFile.isValid())
     {
-      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
+      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file %s Error: %d", strFile.c_str(), GetLastError());
       return false;
     }
   }

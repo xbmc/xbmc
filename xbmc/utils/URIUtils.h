@@ -96,6 +96,7 @@ public:
   static void AddSlashAtEnd(CStdString& strFolder);
   static bool HasSlashAtEnd(const CStdString& strFile);
   static void RemoveSlashAtEnd(CStdString& strFolder);
+  static bool CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2);
 
   static void CreateArchivePath(CStdString& strUrlPath,
                                 const CStdString& strType,
@@ -116,5 +117,22 @@ public:
   static bool ProtocolHasParentInHostname(const CStdString& prot);
   static bool ProtocolHasEncodedHostname(const CStdString& prot);
   static bool ProtocolHasEncodedFilename(const CStdString& prot);
+
+  /*!
+   \brief Cleans up the given path by resolving "." and ".."
+   and returns it.
+
+   This methods goes through the given path and removes any "."
+   (as it states "this directory") and resolves any ".." by
+   removing the previous directory from the path. This is done
+   for file paths and host names (in case of VFS paths).
+
+   \param path Path to be cleaned up
+   \return Actual path without any "." or ".."
+   */
+  static std::string GetRealPath(const std::string &path);
+
+private:
+  static std::string resolvePath(const std::string &path);
 };
 

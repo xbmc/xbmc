@@ -27,6 +27,7 @@
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
 #include "devices/PeripheralCecAdapter.h"
+#include "devices/PeripheralImon.h"
 #include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
 
@@ -284,6 +285,10 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(36000), g_localizeStrings.Get(36017));
     }
 #endif
+    break;
+
+  case PERIPHERAL_IMON:
+    peripheral = new CPeripheralImon(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
     break;
 
   default:

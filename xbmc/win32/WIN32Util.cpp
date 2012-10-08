@@ -479,6 +479,17 @@ CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
   return strRetPath;
 }
 
+CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
+{
+  CStdString strRetPath(strPath);
+  if(strRetPath.Left(6).Equals("smb://"))
+  {
+    strRetPath.Replace("smb://","\\\\");
+    strRetPath.Replace("/","\\");
+  }
+  return strRetPath;
+}
+
 void CWIN32Util::ExtendDllPath()
 {
   CStdStringW strEnvW;

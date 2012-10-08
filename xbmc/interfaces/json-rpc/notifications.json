@@ -24,7 +24,7 @@
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
         "properties": {
-          "item": { "$ref": "Player.Notifications.Item" },
+          "item": { "$ref": "Notifications.Item" },
           "end": { "type": "boolean", "required": true, "description": "Whether the player has reached the end of the playable item(s) or not" }
         }
       }
@@ -47,8 +47,50 @@
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
         "properties": {
-          "item": { "$ref": "Player.Notifications.Item" },
+          "item": { "$ref": "Notifications.Item" },
           "player": { "$ref": "Player.Notifications.Player.Seek", "required": true }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Playlist.OnAdd": {
+    "type": "notification",
+    "description": "A playlist item has been added.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "playlistid": { "$ref": "Playlist.Id", "required": true },
+          "item": { "$ref": "Notifications.Item" },
+          "position": { "$ref": "Playlist.Position" }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Playlist.OnRemove": {
+    "type": "notification",
+    "description": "A playlist item has been removed.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "playlistid": { "$ref": "Playlist.Id", "required": true },
+          "position": { "$ref": "Playlist.Position" }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Playlist.OnClear": {
+    "type": "notification",
+    "description": "A playlist item has been cleared.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "playlistid": { "$ref": "Playlist.Id", "required": true }
         }
       }
     ],
@@ -79,6 +121,15 @@
           "type": { "$ref": "Notifications.Library.Audio.Type", "required": true }
         }
       }
+    ],
+    "returns": null
+  },
+  "AudioLibrary.OnScanStarted": {
+    "type": "notification",
+    "description": "An audio library scan has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
     ],
     "returns": null
   },
@@ -117,6 +168,15 @@
           "type": { "$ref": "Notifications.Library.Video.Type", "required": true }
         }
       }
+    ],
+    "returns": null
+  },
+  "VideoLibrary.OnScanStarted": {
+    "type": "notification",
+    "description": "A video library scan has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
     ],
     "returns": null
   },

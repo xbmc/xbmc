@@ -160,21 +160,21 @@ void CAdvancedSettings::Initialize()
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
   // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+(?:[a-i]|\\.[1-9](?![0-9]))?)([^\\\\/]*)$"));
   // foo.ep01, foo.EP_01
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\._ -]()[Ee][Pp]_?([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\._ -]()[Ee][Pp]_?([0-9]+(?:[a-i]|\\.[1-9](?![0-9]))?)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
   m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+(?:[a-i]|\\.[1-9](?![0-9]))?)([^\\\\/]*)$"));
   // foo.103*, 103 foo
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:[a-i]|\\.[1-9](?![0-9]))?)([\\._ -][^\\\\/]*)$"));
   // Part I, Pt.VI
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$"));
 
-  m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+)";
+  m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+(?:[a-i]|\\.[1-9](?![0-9]))?)";
 
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
@@ -298,6 +298,7 @@ void CAdvancedSettings::Initialize()
   m_measureRefreshrate = false;
 
   m_cacheMemBufferSize = 1024 * 1024 * 20;
+  m_addonPackageFolderSize = 200*1024*1024;
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
@@ -306,8 +307,8 @@ void CAdvancedSettings::Initialize()
 
   m_canWindowed = true;
   m_guiVisualizeDirtyRegions = false;
-  m_guiAlgorithmDirtyRegions = 0;
-  m_guiDirtyRegionNoFlipTimeout = -1;
+  m_guiAlgorithmDirtyRegions = 3;
+  m_guiDirtyRegionNoFlipTimeout = 0;
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
@@ -759,6 +760,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
+  XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

@@ -43,8 +43,8 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
   m_desktopRes.iScreen = 0;
   m_desktopRes.iWidth  = 1280;
   m_desktopRes.iHeight = 720;
-  //m_desktopRes.iScreenWidth  = 1280;
-  //m_desktopRes.iScreenHeight = 720;
+  m_desktopRes.iScreenWidth  = 1280;
+  m_desktopRes.iScreenHeight = 720;
   m_desktopRes.fRefreshRate = 60.0f;
   m_desktopRes.bFullScreen = true;
   m_desktopRes.iSubtitles = (int)(0.965 * 720);
@@ -101,12 +101,9 @@ bool CWinEGLPlatformGeneric::ProbeDisplayResolutions(std::vector<RESOLUTION_INFO
   res.fPixelRatio   = 1.0f;
   res.iWidth        = gui_width;
   res.iHeight       = gui_height;
-  //res.iScreenWidth  = gui_width;
-  //res.iScreenHeight = gui_height;
+  res.iScreenWidth  = gui_width;
+  res.iScreenHeight = gui_height;
   res.dwFlags       = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-  // temp until split gui/display res comes in
-  //res.iScreenWidth  = width;
-  //res.iScreenHeight = height;
   res.strMode.Format("%dx%d @ %.2f - Full Screen", gui_width, gui_height, gui_refresh);
 
   resolutions.push_back(res);

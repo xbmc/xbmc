@@ -37,7 +37,8 @@ unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
 
 CAEChannelInfo CAEUtil::GuessChLayout(const unsigned int channels)
 {
-  CLog::Log(LOGWARNING, "CAEUtil::GuessChLayout - This method should really never be used, please fix the code that called this");
+  CLog::Log(LOGWARNING, "CAEUtil::GuessChLayout - "
+    "This method should really never be used, please fix the code that called this");
 
   CAEChannelInfo result;
   if (channels < 1 || channels > 8)

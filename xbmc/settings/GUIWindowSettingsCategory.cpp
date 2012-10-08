@@ -84,6 +84,7 @@
 #include "network/Zeroconf.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
+#include "peripherals/devices/PeripheralImon.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -261,7 +262,11 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_UPDATE:
     if (HasID(message.GetSenderId()))
-      UpdateSettings();
+    {
+      int focusedControl = GetFocusedControlID();
+      CreateSettings();
+      SET_CONTROL_FOCUS(focusedControl, 0);
+    }
     break;
   case GUI_MSG_NOTIFY_ALL:
     {
@@ -1432,10 +1437,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
   }
-  else if (strSetting.Equals("input.enablejoystick"))
+  else if (strSetting.Equals("input.enablejoystick") || strSetting.Equals("input.disablejoystickwithimon"))
   {
 #if defined(HAS_SDL_JOYSTICK)
-    g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick"));
+    g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick")  
+        && (CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 || !g_guiSettings.GetBool("input.disablejoystickwithimon")) );
 #endif
   }
   else if (strSetting.Equals("videoscreen.screen"))
@@ -1874,6 +1880,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     CGUISpinControlEx *tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezone")->GetID());
     g_guiSettings.SetString("locale.timezone", tzControl->GetLabel().c_str());
+
+    CDateTime::ResetTimezoneBias();
   }
   else  if (strSetting.Equals("locale.timezone"))
   {
@@ -1883,6 +1891,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
      tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezonecountry")->GetID());
      g_guiSettings.SetString("locale.timezonecountry", tzControl->GetLabel().c_str());
+
+     CDateTime::ResetTimezoneBias();
   }
 #endif
   else if (strSetting.Equals("lookandfeel.skinzoom"))
@@ -1902,12 +1912,18 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()) &&
         CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
+    {
+      CDateTime::ResetTimezoneBias();
       g_PVRManager.ResetDatabase();
+    }
   }
   else if (strSetting.Equals("epg.resetepg"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
+    {
+      CDateTime::ResetTimezoneBias();
       g_PVRManager.ResetEPG();
+    }
   }
   else if (strSetting.Equals("pvrmanager.channelscan") && g_PVRManager.IsStarted())
   {
@@ -2392,8 +2408,8 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
       RESOLUTION_INFO res1 = g_settings.m_ResInfo[res];
       RESOLUTION_INFO res2 = g_settings.m_ResInfo[resolutions[idx].ResInfo_Index];
       if (   res1.iScreen == res2.iScreen
-          && res1.iWidth  == res2.iWidth
-          && res1.iHeight == res2.iHeight
+          && res1.iScreenWidth  == res2.iScreenWidth
+          && res1.iScreenHeight == res2.iScreenHeight
           && (res1.dwFlags & D3DPRESENTFLAG_INTERLACED) == (res2.dwFlags & D3DPRESENTFLAG_INTERLACED))
         spinres = (RESOLUTION) resolutions[idx].ResInfo_Index;
     }
@@ -2430,13 +2446,13 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
 
 void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange)
 {
-  // The only meaningful parts of res here are iScreen, iWidth, iHeight
+  // The only meaningful parts of res here are iScreen, iScreenWidth, iScreenHeight
 
   vector<REFRESHRATE> refreshrates;
   if (res > RES_WINDOW)
     refreshrates = g_Windowing.RefreshRates(g_settings.m_ResInfo[res].iScreen,
-      g_settings.m_ResInfo[res].iWidth,
-      g_settings.m_ResInfo[res].iHeight,
+      g_settings.m_ResInfo[res].iScreenWidth,
+      g_settings.m_ResInfo[res].iScreenHeight,
       g_settings.m_ResInfo[res].dwFlags);
 
   // The control setting doesn't exist when not in standalone mode, don't manipulate it

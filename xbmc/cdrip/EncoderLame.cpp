@@ -19,7 +19,6 @@
  */
 
 #include "EncoderLame.h"
-#include "music/tags/Id3Tag.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 
@@ -98,6 +97,18 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
     return false;
   }
 
+  // Setup the ID3 tagger
+  m_dll.id3tag_init(m_pGlobalFlags);
+  m_dll.id3tag_set_title(m_pGlobalFlags, m_strTitle.c_str());
+  m_dll.id3tag_set_artist(m_pGlobalFlags, m_strArtist.c_str());
+  m_dll.id3tag_set_textinfo_latin1(m_pGlobalFlags, "TPE2", m_strAlbumArtist.c_str());
+  m_dll.id3tag_set_album(m_pGlobalFlags, m_strAlbum.c_str());
+  m_dll.id3tag_set_year(m_pGlobalFlags, m_strYear.c_str());
+  m_dll.id3tag_set_track(m_pGlobalFlags, m_strTrack.c_str());
+  int test = m_dll.id3tag_set_genre(m_pGlobalFlags, m_strGenre.c_str());
+  if(test==-1)
+    m_dll.id3tag_set_genre(m_pGlobalFlags,"Other");
+
   return true;
 }
 
@@ -151,20 +162,7 @@ bool CEncoderLame::Close()
   // unload the lame dll
   m_dll.Unload();
 
-  // Store a id3 tag in the ripped file
-  CID3Tag id3tag;
-  CMusicInfoTag tag;
-  tag.SetAlbum(m_strAlbum);
-  tag.SetAlbumArtist(m_strAlbumArtist);
-  tag.SetArtist(m_strArtist);
-  tag.SetGenre(m_strGenre);
-  tag.SetTitle(m_strTitle);
-  tag.SetTrackNumber(atoi(m_strTrack.c_str()));
-  SYSTEMTIME time;
-  time.wYear=atoi(m_strYear.c_str());
-  tag.SetReleaseDate(time);
-  id3tag.SetMusicInfoTag(tag);
-  id3tag.Write(m_strFile);
+
 
   return true;
 }

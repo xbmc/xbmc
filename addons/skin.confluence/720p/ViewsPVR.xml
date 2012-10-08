@@ -678,6 +678,15 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<posx>730</posx>
+						<posy>14</posy>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>ListItem.IsResumable</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="760">
@@ -744,6 +753,15 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<posx>730</posx>
+						<posy>14</posy>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>ListItem.IsResumable</visible>
 					</control>
 				</focusedlayout>
 			</control>

@@ -28,6 +28,8 @@
 #include "utils/StdString.h"
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
+#elif defined(TARGET_WINDOWS)
+#include "win32/WIN32Util.h"
 #endif
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
@@ -143,6 +145,13 @@ bool CLog::Init(const char* path)
 
     strLogFile.Format("%sxbmc.log", path);
     strLogFileOld.Format("%sxbmc.old.log", path);
+
+#if defined(TARGET_WINDOWS)
+    // the appdata folder might be redirected to an unc share
+    // convert smb to unc path that stat and fopen can handle it
+    strLogFile = CWIN32Util::SmbToUnc(strLogFile);
+    strLogFileOld = CWIN32Util::SmbToUnc(strLogFileOld);
+#endif
 
     struct stat64 info;
     if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&

@@ -521,6 +521,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
+  m_iTimesPlayed = album.iTimesPlayed;
   m_iDbId = album.idAlbum;
   m_type = "album";
   m_bLoaded = true;
@@ -555,7 +556,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_iAlbumId = song.iAlbumId;
 }
 
-void CMusicInfoTag::Serialize(CVariant& value)
+void CMusicInfoTag::Serialize(CVariant& value) const
 {
   value["url"] = m_strURL;
   value["title"] = m_strTitle;

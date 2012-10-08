@@ -562,7 +562,11 @@ msgctxt "#166"
 msgid "Skin"
 msgstr ""
 
-#empty strings from id 167 to 168
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr ""
+
+#empty string with id 168
 
 msgctxt "#169"
 msgid "Resolution"
@@ -4827,7 +4831,15 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr ""
 
-#empty strings from id 13433 to 13499
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr ""
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr ""
+
+#empty strings from id 13435 to 13499
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5315,7 +5327,11 @@ msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr ""
 
-#empty strings from id 14100 to 15014
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr ""
+
+#empty strings from id 14101 to 15014
 
 msgctxt "#15015"
 msgid "Remove"
@@ -6060,7 +6076,7 @@ msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr ""
 
 msgctxt "#19003"
-msgid "Find similar programme"
+msgid "Find similar programs"
 msgstr ""
 
 msgctxt "#19004"
@@ -9896,6 +9912,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr ""
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr ""
+
 #strings 23100 thru 23150 reserved for external player
 #empty strings from id 23055 to 23099
 
@@ -10823,11 +10843,17 @@ msgstr ""
 
 #empty strings from id 35010 to 35099
 
+#: xbmc/settings/GUISettings.cpp
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr ""
 
-#empty strings from id 35101 to 35499
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
+msgstr ""
+
+#empty strings from id 35102 to 35499
 
 msgctxt "#35500"
 msgid "Location"

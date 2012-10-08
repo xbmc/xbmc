@@ -610,7 +610,7 @@ bool CGUIWindowPVRCommon::ShowTimerSettings(CFileItem *item)
 
 bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* = false */)
 {
-  if (item->GetPath().Left(17) != "pvr://recordings/")
+  if (!item->HasPVRRecordingInfoTag())
     return false;
 
   CStdString stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
@@ -670,6 +670,11 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
 
 bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = false */)
 {
+  if (item->m_bIsFolder)
+  {
+    return false;
+  }
+
   if (item->GetPath() == g_application.CurrentFile())
   {
     CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, m_parent->GetID());
@@ -679,7 +684,7 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
   g_settings.m_bStartVideoWindowed = bPlayMinimized;
 
-  if (item->GetPath().Left(17) == "pvr://recordings/")
+  if (item->HasPVRRecordingInfoTag())
   {
     return PlayRecording(item, bPlayMinimized);
   }

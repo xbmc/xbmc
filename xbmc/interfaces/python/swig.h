@@ -30,9 +30,9 @@
 
 namespace PythonBindings
 {
-  int PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
-                             const char* pos = "unknown", 
-                             const char* methodname = "unknown");
+  void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
+                              const char* pos = "unknown", 
+                              const char* methodname = "unknown") throw (XBMCAddon::WrongTypeException);
 
   // This is for casting from child class to base class
   struct TypeConverterBase
@@ -64,8 +64,6 @@ namespace PythonBindings
     void* pSelf;
   };
 
-  XBMCCOMMONS_STANDARD_EXCEPTION(WrongTypeException);
-
 #define XBMC_PYTHON_TYPE_MAGIC_NUMBER 0x58626D63
 
   void PyXBMCInitializeTypeObject(PyTypeObject* type_object, TypeInfo* typeInfo);
@@ -78,19 +76,19 @@ namespace PythonBindings
    */
   inline void* retrieveApiInstance(PyObject* pythonType, PyTypeObject* typeToCheck, 
                                    const char* methodNameForErrorString, 
-                                   const char* typenameForErrorString) throw (WrongTypeException)
+                                   const char* typenameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
     if (pythonType == NULL || ((PyHolder*)pythonType)->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
       return NULL;
     if (!PyObject_TypeCheck(pythonType, typeToCheck))
-      throw WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\".",methodNameForErrorString,typenameForErrorString);
+      throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\".",methodNameForErrorString,typenameForErrorString);
     return ((PyHolder*)pythonType)->pSelf;
   }
 
   bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix, bool tryReverse = true);
 
   void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* expectedType, 
-                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (WrongTypeException);
+                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException);
 
   /**
    * This method retrieves the pointer from the PyHolder. The return value should
@@ -99,7 +97,7 @@ namespace PythonBindings
    * Since the calls to this are generated there's no NULL pointer checks
    */
   inline void* retrieveApiInstance(const PyObject* pythonType, const char* expectedType, const char* methodNamespacePrefix,
-                                   const char* methodNameForErrorString) throw (WrongTypeException)
+                                   const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
     return doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
@@ -160,7 +158,7 @@ namespace PythonBindings
   template<class T> struct PythonCompare
   {
     static inline int compare(PyObject* obj1, PyObject* obj2, const char* swigType, const char* methodNamespacePrefix, const char* methodNameForErrorString)
-      throw(WrongTypeException)
+      throw(XBMCAddon::WrongTypeException)
     {
       TRACE;
       try
@@ -171,7 +169,7 @@ namespace PythonBindings
         return ((*o1) < (*o2) ? -1 : 
                 ((*o1) > (*o2) ? 1 : 0));
       }
-      catch (const WrongTypeException& e)
+      catch (const XBMCAddon::WrongTypeException& e)
       {
         CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
         PyErr_SetString(PyExc_RuntimeError, e.GetMessage());

@@ -39,6 +39,7 @@
 #include "utils/StringUtils.h"
 #include "threads/Atomics.h"
 #include "windows/GUIWindowPVRCommon.h"
+#include "utils/JobManager.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -124,8 +125,28 @@ void CPVRManager::ResetProperties(void)
   }
 }
 
-void CPVRManager::Start(void)
+class CPVRManagerStartJob : public CJob
 {
+public:
+  CPVRManagerStartJob(void) {}
+  ~CPVRManagerStartJob(void) {}
+
+  bool DoWork(void)
+  {
+    g_PVRManager.Start(false);
+    return true;
+  }
+};
+
+void CPVRManager::Start(bool bAsync /* = false */)
+{
+  if (bAsync)
+  {
+    CPVRManagerStartJob *job = new CPVRManagerStartJob;
+    CJobManager::GetInstance().AddJob(job, NULL);
+    return;
+  }
+
   CSingleLock lock(m_critSection);
 
   /* first stop and remove any clients */
@@ -709,7 +730,7 @@ void CPVRManager::LoadCurrentChannelSettings()
 
 void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
 {
-  if (m_channelGroups)
+  if (m_channelGroups && group)
     m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
 }
 
@@ -886,47 +907,6 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   return false;
-}
-
-
-bool CPVRManager::UpdateCurrentLastPlayedPosition(int lastplayedposition)
-{
-  // Only anything but recordings we fake success
-  if (!IsPlayingRecording())
-    return true;
-
-  bool rc = false;
-  CPVRRecording currentRecording;
-
-  if (m_addons)
-  {
-    PVR_ERROR error;
-    rc = m_addons->GetPlayingRecording(currentRecording) && m_addons->SetRecordingLastPlayedPosition(currentRecording, lastplayedposition, &error);
-  }
-  return rc;
-}
-
-bool CPVRManager::SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition)
-{
-  bool rc = false;
-
-  if (m_addons)
-  {
-    PVR_ERROR error;
-    rc = m_addons->SetRecordingLastPlayedPosition(recording, lastplayedposition, &error);
-  }
-  return rc;
-}
-
-int CPVRManager::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
-{
-  int rc = 0;
-
-  if (m_addons)
-  {
-    rc = m_addons->GetRecordingLastPlayedPosition(recording);
-  }
-  return rc;
 }
 
 bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)

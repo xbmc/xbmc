@@ -589,8 +589,8 @@ retry:
   if (m_pInputStream && ( m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
                        || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
   {
-    CLog::Log(LOGINFO, "COMXPlayer::OpenInputStream - DVD/BD not supported");
-    return false;
+    CLog::Log(LOGINFO, "COMXPlayer::OpenInputStream - DVD/BD not supported - Will try...");
+    // return false;
   }
 
   // find any available external subtitles for non dvd files
@@ -1993,11 +1993,6 @@ void COMXPlayer::OnExit()
       delete m_pSubtitleDemuxer;
     }
     m_pSubtitleDemuxer = NULL;
-
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && g_PVRManager.IsPlayingRecording())
-    {
-      g_PVRManager.UpdateCurrentLastPlayedPosition(m_State.time / 1000);
-    }
 
     // destroy the inputstream
     if (m_pInputStream)

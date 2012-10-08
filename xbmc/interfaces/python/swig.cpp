@@ -33,8 +33,18 @@ namespace PythonBindings
     memset(typeInfo, 0, sizeof(TypeInfo));
   }
 
-  int PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,
-                             const char* argumentName, const char* methodname)
+  class PyObjectDecrementor
+  {
+    PyObject* obj;
+  public:
+    inline PyObjectDecrementor(PyObject* pyobj) : obj(pyobj) {}
+    inline ~PyObjectDecrementor() { Py_XDECREF(obj); }
+
+    inline PyObject* get() { return obj; }
+  };
+
+  void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,
+                              const char* argumentName, const char* methodname) throw (XBMCAddon::WrongTypeException)
   {
     // TODO: UTF-8: Does python use UTF-16?
     //              Do we need to convert from the string charset to UTF-8
@@ -50,31 +60,30 @@ namespace PythonBindings
       {
         buf = PyString_AsString(utf8_pyString);
         Py_DECREF(utf8_pyString);
-        return 1;
+        return;
       }
     }
     if (PyString_Check(pObject))
     {
       buf = PyString_AsString(pObject);
-      return 1;
+      return;
     }
 
     // if we got here then we need to coerce the value to a string
     if (coerceToString)
     {
-      PyObject* pyStrCast = PyObject_Str(pObject);
+      PyObjectDecrementor dec(PyObject_Str(pObject));
+      PyObject* pyStrCast = dec.get();
       if (pyStrCast)
       {
-        int ret = PyXBMCGetUnicodeString(buf,pyStrCast,false,argumentName,methodname);
-        Py_DECREF(pyStrCast);
-        return ret;
+        PyXBMCGetUnicodeString(buf,pyStrCast,false,argumentName,methodname);
+        return;
       }
     }
 
     // Object is not a unicode or a normal string.
     buf = "";
-    PyErr_Format(PyExc_TypeError, "argument \"%s\" for method \"%s\" must be unicode or str", argumentName, methodname);
-    return 0;
+    throw XBMCAddon::WrongTypeException("argument \"%s\" for method \"%s\" must be unicode or str", argumentName, methodname);
   }
 
   // need to compare the typestring
@@ -185,10 +194,10 @@ namespace PythonBindings
   }
 
   void* doretrieveApiInstance(const PyHolder* pythonType, const TypeInfo* typeInfo, const char* expectedType, 
-                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (WrongTypeException)
+                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
     if (pythonType == NULL || pythonType->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
-      throw WrongTypeException("Non api type passed in place of the expected type \"%s.\"",expectedType);
+      throw XBMCAddon::WrongTypeException("Non api type passed in place of the expected type \"%s.\"",expectedType);
     if (!isParameterRightType(typeInfo->swigType,expectedType,methodNamespacePrefix))
     {
       // maybe it's a child class
@@ -196,7 +205,7 @@ namespace PythonBindings
         return doretrieveApiInstance(pythonType, typeInfo->parentType,expectedType, 
                                      methodNamespacePrefix, methodNameForErrorString);
       else
-        throw WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
+        throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
                                  methodNameForErrorString,expectedType,typeInfo->swigType);
     }
     return ((PyHolder*)pythonType)->pSelf;

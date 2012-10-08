@@ -440,5 +440,6 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
   m_port.Format("%i", url.GetPort());
   m_server = url.GetHostName();
   m_path = url.GetFileName();
+  URIUtils::RemoveSlashAtEnd(m_path);
 }
 

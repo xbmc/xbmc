@@ -1007,8 +1007,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
         st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
-        st->iLevel = pStream->codec->level;
-        st->iProfile = pStream->codec->profile;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
 
@@ -1111,6 +1109,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->codec_fourcc = pStream->codec->codec_tag;
     m_streams[iId]->profile = pStream->codec->profile;
+    m_streams[iId]->level   = pStream->codec->level;
+
     m_streams[iId]->iId = iId;
     m_streams[iId]->source = STREAM_SOURCE_DEMUX;
     m_streams[iId]->pPrivate = pStream;

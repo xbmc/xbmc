@@ -402,6 +402,9 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
@@ -1255,9 +1258,6 @@
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.cpp">
       <Filter>music\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicScan.cpp">
-      <Filter>music\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.cpp">
       <Filter>music\dialogs</Filter>
     </ClCompile>
@@ -1293,9 +1293,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowVisualisation.cpp">
       <Filter>music\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\tags\Id3Tag.cpp">
-      <Filter>music\tags</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTag.cpp">
       <Filter>music\tags</Filter>
@@ -2517,6 +2514,9 @@
     <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp">
       <Filter>video</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Screenshot.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\ViewDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\ApplicationMessenger.cpp" />
     <ClCompile Include="..\..\xbmc\Autorun.cpp" />
@@ -2604,6 +2604,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.cpp">
       <Filter>dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralImon.cpp">
+      <Filter>peripherals\devices</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\VideoDbUrl.cpp">
       <Filter>video</Filter>
@@ -2929,6 +2932,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\test\TestSwig.cpp">
       <Filter>interfaces\python\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.cpp">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.cpp">
+      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4104,9 +4113,6 @@
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.h">
       <Filter>music\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicScan.h">
-      <Filter>music\dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.h">
       <Filter>music\dialogs</Filter>
     </ClInclude>
@@ -4143,15 +4149,6 @@
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowVisualisation.h">
       <Filter>music\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\tags\DllLibid3tag.h">
-      <Filter>music\tags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\tags\Id3Tag.h">
-      <Filter>music\tags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\tags\id3v1genre.h">
-      <Filter>music\tags</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\music\tags\ImusicInfoTagLoader.h">
       <Filter>music\tags</Filter>
     </ClInclude>
@@ -4183,9 +4180,6 @@
       <Filter>music\tags</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderYM.h">
-      <Filter>music\tags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\tags\Tag.h">
       <Filter>music\tags</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\cddb.h">
@@ -5574,6 +5568,9 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h">
       <Filter>dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralImon.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\video\VideoDbUrl.h">
       <Filter>video</Filter>
     </ClInclude>
@@ -5739,6 +5736,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderWav.h">
       <Filter>music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.h">
+      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Screenshot.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -54,6 +54,7 @@
 #include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"

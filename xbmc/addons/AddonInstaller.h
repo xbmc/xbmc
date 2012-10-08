@@ -122,6 +122,9 @@ private:
    */
   bool DoInstall(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "", bool background = true);
 
+  void PrunePackageCache();
+  int64_t EnumeratePackageFolder(std::map<CStdString,CFileItemList*>& result);
+
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;
   CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter

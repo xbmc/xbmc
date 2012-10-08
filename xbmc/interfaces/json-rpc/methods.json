@@ -44,7 +44,9 @@
         "Navigate": { "type": "boolean", "required": true },
         "WriteFile": { "type": "boolean", "required": true },
         "ControlSystem": { "type": "boolean", "required": true },
-        "ControlGUI": { "type": "boolean", "required": true }
+        "ControlGUI": { "type": "boolean", "required": true },
+        "ManageAddon": { "type": "boolean", "required": true },
+        "ExecuteAddon": { "type": "boolean", "required": true }
       }
     }
   },
@@ -73,11 +75,13 @@
       { "name": "notifications", "type": "object",
         "properties": {
           "Player": { "$ref": "Optional.Boolean" },
+          "Playlist": { "$ref": "Optional.Boolean" },
           "GUI": { "$ref": "Optional.Boolean" },
           "System": { "$ref": "Optional.Boolean" },
           "AudioLibrary": { "$ref": "Optional.Boolean" },
           "VideoLibrary": { "$ref": "Optional.Boolean" },
           "Application": { "$ref": "Optional.Boolean" },
+          "Input": { "$ref": "Optional.Boolean" },
           "Other": { "$ref": "Optional.Boolean" }
         }
       }
@@ -116,6 +120,15 @@
               "path": { "type": "string", "required": true },
               "random": { "type": "boolean", "default": true, "description": "Deprecated, use the shuffled property of the options parameter instead" },
               "recursive": { "type": "boolean", "default": true }
+            }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "partymode": { "type": [
+                  { "type": "string", "required": true, "enum": [ "music", "video" ] },
+                  { "type": "string", "required": true, "minLength": 5, "description": "Path to a smartplaylist (*.xsp) file" }
+                ]
+              }
             }
           }
         ]
@@ -240,74 +253,29 @@
       }
     }
   },
-  "Player.MoveLeft": {
+  "Player.Move": {
     "type": "method",
-    "description": "If picture is zoomed move viewport left otherwise skip previous",
+    "description": "If picture is zoomed move viewport left/right/up/down otherwise skip previous/next",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.MoveRight": {
-    "type": "method",
-    "description": "If picture is zoomed move viewport right otherwise skip next",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.MoveDown": {
-    "type": "method",
-    "description": "If picture is zoomed move viewport down",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.MoveUp": {
-    "type": "method",
-    "description": "If picture is zoomed move viewport up",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.ZoomOut": {
-    "type": "method",
-    "description": "Zoom out once",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.ZoomIn": {
-    "type": "method",
-    "description": "Zoom in once",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "direction", "type": "string", "enum": [ "left", "right", "up", "down" ], "required": true }
     ],
     "returns": "string"
   },
   "Player.Zoom": {
     "type": "method",
-    "description": "Zooms current picture",
+    "description": "Zoom current picture",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "value", "type": "integer", "required": true, "minimum": 1, "maximum": 10, "description": "Zoom level" }
+      { "name": "zoom", "type": [
+          { "type": "string", "enum": [ "in", "out" ], "required": true },
+          { "type": "integer", "minimum": 1, "maximum": 10, "description": "zoom level", "required": true }
+        ],
+      "required": true }
     ],
     "returns": "string"
   },
@@ -322,65 +290,56 @@
     ],
     "returns": "string"
   },
-  "Player.GoPrevious": {
-    "type": "method",
-    "description": "Go to previous item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.GoNext": {
-    "type": "method",
-    "description": "Go to next item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
   "Player.GoTo": {
     "type": "method",
-    "description": "Go to item at the given position in the playlist",
+    "description": "Go to previous/next/specific item in the playlist",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "position", "$ref": "Playlist.Position", "required": true }
+      { "name": "to", "type": [
+          { "type": "string", "enum": [ "previous", "next" ], "required": true },
+          { "$ref": "Playlist.Position", "description": "position in playlist", "required": true }
+        ],
+      "required": true }
     ],
     "returns": "string"
   },
-  "Player.Shuffle": {
+  "Player.SetShuffle": {
     "type": "method",
-    "description": "Shuffle items in the player",
+    "description": "Shuffle/Unshuffle items in the player",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+  { "name": "shuffle", "$ref": "Global.Toggle", "required": true }
     ],
     "returns": "string"
   },
-  "Player.UnShuffle": {
-    "type": "method",
-    "description": "Unshuffle items in the player",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playerid", "$ref": "Player.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Player.Repeat": {
+  "Player.SetRepeat": {
     "type": "method",
     "description": "Set the repeat mode of the player",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "state", "$ref": "Player.Repeat", "required": true }
+      { "name": "repeat", "type": [
+          { "$ref": "Player.Repeat", "required": true },
+          { "type": "string", "enum": [ "cycle" ], "required": true }
+        ],
+        "required": true
+      }
+    ],
+    "returns": "string"
+  },
+  "Player.SetPartymode": {
+    "type": "method",
+    "description": "Turn partymode on or off",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "partymode", "$ref": "Global.Toggle", "required": true }
     ],
     "returns": "string"
   },
@@ -1466,6 +1425,17 @@
     "params": [ ],
     "returns": "string"
   },
+  "GUI.ActivateWindow": {
+    "type": "method",
+    "description": "Activates the given window",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      { "name": "window", "$ref": "GUI.Window", "required": true },
+      { "name": "parameters", "type": "array", "items": { "type": "string", "minLength": 1, "required": true }, "minItems": 1 }
+    ],
+    "returns": "string"
+  },
   "GUI.ShowNotification": {
     "type": "method",
     "description": "Shows a GUI notification",
@@ -1502,6 +1472,70 @@
       { "name": "fullscreen", "required": true, "$ref": "Global.Toggle" }
     ],
     "returns": { "type": "boolean", "description": "Fullscreen state" }
+  },
+  "Addons.GetAddons": {
+    "type": "method",
+    "description": "Gets all available addons",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "type", "$ref": "Addon.Types" },
+      { "name": "content", "$ref": "Addon.Content", "description": "Content provided by the addon. Only considered for plugins and scripts." },
+      { "name": "enabled", "type": [ { "type": "boolean" }, { "type": "string", "enum": [ "all" ] } ], "default": "all" },
+      { "name": "properties", "$ref": "Addon.Fields" },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "addons": { "type": "array",
+          "items": { "$ref": "Addon.Details" }
+        }
+      }
+    }
+  },
+  "Addons.GetAddonDetails": {
+    "type": "method",
+    "description": "Gets the details of a specific addon",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "addonid", "type": "string", "required": true },
+      { "name": "properties", "$ref": "Addon.Fields" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "addon": { "$ref": "Addon.Details", "required": true }
+      }
+    }
+  },
+  "Addons.SetAddonEnabled": {
+    "type": "method",
+    "description": "Enables/Disables a specific addon",
+    "transport": "Response",
+    "permission": "ManageAddon",
+    "params": [
+      { "name": "addonid", "type": "string", "required": true },
+      { "name": "enabled", "$ref": "Global.Toggle", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Addons.ExecuteAddon": {
+    "type": "method",
+    "description": "Executes the given addon with the given parameters (if possible)",
+    "transport": "Response",
+    "permission": "ExecuteAddon",
+    "params": [
+      { "name": "addonid", "type": "string", "required": true },
+      { "name": "params", "type": [
+          { "type": "object", "additionalProperties": { "type": "string" } },
+          { "type": "array", "items": { "type": "string" } }
+        ]
+      },
+      { "name": "wait", "type": "boolean", "default": false }
+    ],
+    "returns": "string"
   },
   "System.GetProperties": {
     "type": "method",

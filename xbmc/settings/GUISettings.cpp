@@ -546,6 +546,8 @@ void CGUISettings::Initialize()
 #endif
 #if defined(HAS_SDL_JOYSTICK)
   AddBool(in, "input.enablejoystick", 35100, true);
+  AddBool(in, "input.disablejoystickwithimon", 35101, true);
+  GetSetting("input.disablejoystickwithimon")->SetVisible(false);
 #endif
 
   CSettingsCategory* net = AddCategory(SETTINGS_SYSTEM, "network", 798);
@@ -661,6 +663,9 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* vp = AddCategory(SETTINGS_VIDEOS, "videoplayer", 14086);
 
+  AddBool(vp, "videoplayer.autoplaynextitem", 13433, false);
+  AddSeparator(vp, "videoplayer.sep1");
+
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
@@ -767,6 +772,7 @@ void CGUISettings::Initialize()
 #endif
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
+  AddBool(vp, "Videoplayer.teletextscale", 23055, true);
 
   CSettingsCategory* vid = AddCategory(SETTINGS_VIDEOS, "myvideos", 14081);
 
@@ -1067,15 +1073,13 @@ void CGUISettings::AddBool(CSettingsCategory* cat, const char *strSetting, int i
 bool CGUISettings::GetBool(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  CStdString lower(strSetting);
-  lower.ToLower();
-  constMapIter it = settingsMap.find(lower);
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   { // old category
     return ((CSettingBool*)(*it).second)->GetData();
   }
   // Backward compatibility (skins use this setting)
-  if (lower == "lookandfeel.enablemouse")
+  if (strncmp(strSetting, "lookandfeel.enablemouse", 23) == 0)
     return GetBool("input.enablemouse");
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
@@ -1085,7 +1089,7 @@ bool CGUISettings::GetBool(const char *strSetting) const
 void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(bSetting);
@@ -1125,7 +1129,7 @@ void CGUISettings::AddFloat(CSettingsCategory* cat, const char *strSetting, int 
 float CGUISettings::GetFloat(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     return ((CSettingFloat *)(*it).second)->GetData();
@@ -1139,7 +1143,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
 void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     ((CSettingFloat *)(*it).second)->SetData(fSetting);
@@ -1155,7 +1159,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.maxretries");
+  mapIter it = settingsMap.find("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
   it = settingsMap.find("masterlock.startuplock");
@@ -1199,7 +1203,7 @@ int CGUISettings::GetInt(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
 
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     return ((CSettingInt *)(*it).second)->GetData();
@@ -1213,7 +1217,7 @@ int CGUISettings::GetInt(const char *strSetting) const
 void CGUISettings::SetInt(const char *strSetting, int iSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
@@ -1253,7 +1257,7 @@ void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSettin
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt /* = true */) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     CSettingString* result = ((CSettingString *)(*it).second);
@@ -1287,7 +1291,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt /
 void CGUISettings::SetString(const char *strSetting, const char *strData)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     ((CSettingString *)(*it).second)->SetData(strData);
@@ -1304,7 +1308,7 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
 CSetting *CGUISettings::GetSetting(const char *strSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  mapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
     return (*it).second;
   else
@@ -1526,10 +1530,10 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
       if (info.iScreen != screen)
         continue;
-      float score = 10 * (square_error((float)info.iWidth, (float)width) +
-        square_error((float)info.iHeight, (float)height) +
+      float score = 10 * (square_error((float)info.iScreenWidth, (float)width) +
+        square_error((float)info.iScreenHeight, (float)height) +
         square_error(info.fRefreshRate, refresh) +
-        square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100:200), interlaced));
+        square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100:200), (float)interlaced));
       if (score < bestScore)
       {
         bestScore = score;
@@ -1552,7 +1556,7 @@ void CGUISettings::SetResolution(RESOLUTION res)
   {
     const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
     mode.Format("%1i%05i%05i%09.5f%s", info.iScreen,
-      info.iWidth, info.iHeight, info.fRefreshRate,
+      info.iScreenWidth, info.iScreenHeight, info.fRefreshRate,
       (info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i":"p");
   }
   else

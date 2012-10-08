@@ -22,6 +22,183 @@
 
 #include "gtest/gtest.h"
 
+TEST(TestStringUtils, Format)
+{
+  std::string refstr = "test 25 2.7 ff FF";
+
+  std::string varstr = StringUtils::Format("%s %d %.1f %x %02X", "test", 25, 2.743f, 0x00ff, 0x00ff);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  varstr = StringUtils::Format(NULL, "test", 25, 2.743f, 0x00ff, 0x00ff);
+  EXPECT_STREQ("", varstr.c_str());
+}
+
+TEST(TestStringUtils, ToUpper)
+{
+  std::string refstr = "TEST";
+
+  std::string varstr = "TeSt";
+  StringUtils::ToUpper(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, ToLower)
+{
+  std::string refstr = "test";
+  
+  std::string varstr = "TeSt";
+  StringUtils::ToLower(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, EqualsNoCase)
+{
+  std::string refstr = "TeSt";
+  
+  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "TeSt"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "tEsT"));
+}
+
+TEST(TestStringUtils, Left)
+{
+  std::string refstr, varstr;
+  std::string origstr = "test";
+  
+  refstr = "";
+  varstr = StringUtils::Left(origstr, 0);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "te";
+  varstr = StringUtils::Left(origstr, 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "test";
+  varstr = StringUtils::Left(origstr, 10);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, Mid)
+{
+  std::string refstr, varstr;
+  std::string origstr = "test";
+  
+  refstr = "";
+  varstr = StringUtils::Mid(origstr, 0, 0);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "te";
+  varstr = StringUtils::Mid(origstr, 0, 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "test";
+  varstr = StringUtils::Mid(origstr, 0, 10);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "st";
+  varstr = StringUtils::Mid(origstr, 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "st";
+  varstr = StringUtils::Mid(origstr, 2, 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "es";
+  varstr = StringUtils::Mid(origstr, 1, 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, Right)
+{
+  std::string refstr, varstr;
+  std::string origstr = "test";
+  
+  refstr = "";
+  varstr = StringUtils::Right(origstr, 0);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "st";
+  varstr = StringUtils::Right(origstr, 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  refstr = "test";
+  varstr = StringUtils::Right(origstr, 10);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, Trim)
+{
+  std::string refstr = "test test";
+  
+  std::string varstr = " test test   ";
+  StringUtils::Trim(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, TrimLeft)
+{
+  std::string refstr = "test test   ";
+  
+  std::string varstr = " test test   ";
+  StringUtils::TrimLeft(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, TrimRight)
+{
+  std::string refstr = " test test";
+  
+  std::string varstr = " test test   ";
+  StringUtils::TrimRight(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, Replace)
+{
+  std::string refstr = "text text";
+  
+  std::string varstr = "test test";
+  EXPECT_EQ(StringUtils::Replace(varstr, 's', 'x'), 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  EXPECT_EQ(StringUtils::Replace(varstr, 's', 'x'), 0);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  varstr = "test test";
+  EXPECT_EQ(StringUtils::Replace(varstr, "s", "x"), 2);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  
+  EXPECT_EQ(StringUtils::Replace(varstr, "s", "x"), 0);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+TEST(TestStringUtils, StartsWith)
+{
+  std::string refstr = "test";
+  
+  EXPECT_FALSE(StringUtils::StartsWith(refstr, "x"));
+  
+  EXPECT_TRUE(StringUtils::StartsWith(refstr, "te", true));
+  EXPECT_TRUE(StringUtils::StartsWith(refstr, "test", true));
+  EXPECT_FALSE(StringUtils::StartsWith(refstr, "Te", true));
+  
+  EXPECT_TRUE(StringUtils::StartsWith(refstr, "Te", false));
+  EXPECT_TRUE(StringUtils::StartsWith(refstr, "TesT", false));
+}
+
+TEST(TestStringUtils, EndsWith)
+{
+  std::string refstr = "test";
+  
+  EXPECT_FALSE(StringUtils::EndsWith(refstr, "x"));
+  
+  EXPECT_TRUE(StringUtils::EndsWith(refstr, "st", true));
+  EXPECT_TRUE(StringUtils::EndsWith(refstr, "test", true));
+  EXPECT_FALSE(StringUtils::EndsWith(refstr, "sT", true));
+  
+  EXPECT_TRUE(StringUtils::EndsWith(refstr, "sT", false));
+  EXPECT_TRUE(StringUtils::EndsWith(refstr, "TesT", false));
+}
+
 TEST(TestStringUtils, JoinString)
 {
   CStdString refstr, varstr;

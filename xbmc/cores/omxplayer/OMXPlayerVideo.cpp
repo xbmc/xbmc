@@ -121,7 +121,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   m_hints       = hints;
   m_Deinterlace = ( g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
   m_flush       = false;
-  m_hdmi_clock_sync = g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+  m_hdmi_clock_sync = (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
   m_started     = false;
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_autosync    = 1;
@@ -193,8 +193,8 @@ bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
-  m_omxVideo.Close();
   m_av_clock->HasVideo(false);
+  m_omxVideo.Close();
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
 
@@ -701,35 +701,37 @@ bool OMXPlayerVideo::OpenDecoder()
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
-  if(!m_omxVideo.Open(m_hints, m_av_clock, m_Deinterlace, m_hdmi_clock_sync))
+
+  bool bVideoDecoderOpen = m_omxVideo.Open(m_hints, m_av_clock, m_Deinterlace, m_hdmi_clock_sync);
+
+  if(!bVideoDecoderOpen)
   {
     CLog::Log(LOGERROR, "OMXPlayerAudio : Error open video output");
-    m_av_clock->HasVideo(false);
-    m_av_clock->OMXReset(false);
-    m_av_clock->UnLock();
-    return false;
+    m_omxVideo.Close();
   }
   else
+  {
     CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder : Video codec %s width %d height %d profile %d fps %f\n",
         m_omxVideo.GetDecoderName().c_str() , m_hints.width, m_hints.height, m_hints.profile, m_fFrameRate);
 
-  m_codecname = m_omxVideo.GetDecoderName();
+    m_codecname = m_omxVideo.GetDecoderName();
 
-  // if we are closer to ntsc version of framerate, let gpu know
-  int   iFrameRate  = (int)(m_fFrameRate + 0.5f);
-  bool  bNtscFreq  = fabs(m_fFrameRate * 1001.0f / 1000.0f - iFrameRate) < fabs(m_fFrameRate - iFrameRate);
-  char  response[80], command[80];
-  sprintf(command, "hdmi_ntsc_freqs %d", bNtscFreq);
-  CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder fps: %f %s\n", m_fFrameRate, command);
-  m_DllBcmHost.vc_gencmd(response, sizeof response, command);
+    // if we are closer to ntsc version of framerate, let gpu know
+    int   iFrameRate  = (int)(m_fFrameRate + 0.5f);
+    bool  bNtscFreq  = fabs(m_fFrameRate * 1001.0f / 1000.0f - iFrameRate) < fabs(m_fFrameRate - iFrameRate);
+    char  response[80], command[80];
+    sprintf(command, "hdmi_ntsc_freqs %d", bNtscFreq);
+    CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder fps: %f %s\n", m_fFrameRate, command);
+    m_DllBcmHost.vc_gencmd(response, sizeof response, command);
 
-  if(m_av_clock)
-    m_av_clock->SetRefreshRate(m_fFrameRate);
+    if(m_av_clock)
+      m_av_clock->SetRefreshRate(m_fFrameRate);
+  }
 
-  m_av_clock->HasVideo(true);
+  m_av_clock->HasVideo(bVideoDecoderOpen);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
-  return true;
+  return bVideoDecoderOpen;
 }
 
 int  OMXPlayerVideo::GetDecoderBufferSize()

@@ -352,12 +352,12 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   // set the label control correctly
   CStdString strText;
   if (g_Windowing.IsFullScreen())
-    strText.Format("%ix%i@%.2f - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth,
-      g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight, g_settings.m_ResInfo[m_Res[m_iCurRes]].fRefreshRate,
+    strText.Format("%ix%i@%.2f - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenWidth,
+      g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenHeight, g_settings.m_ResInfo[m_Res[m_iCurRes]].fRefreshRate,
       g_localizeStrings.Get(244).c_str(), strStatus.c_str());
   else
-    strText.Format("%ix%i - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth,
-      g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight,
+    strText.Format("%ix%i - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenWidth,
+      g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenHeight,
       g_localizeStrings.Get(242).c_str(), strStatus.c_str());
 
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);

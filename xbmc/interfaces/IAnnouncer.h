@@ -25,16 +25,17 @@ namespace ANNOUNCEMENT
   enum AnnouncementFlag
   {
     Player        = 0x01,
-    GUI           = 0x02,
-    System        = 0x04,
-    VideoLibrary  = 0x08,
-    AudioLibrary  = 0x10,
-    Application   = 0x20,
-    Input         = 0x40,
-    Other         = 0x80
+    Playlist      = 0x02,
+    GUI           = 0x04,
+    System        = 0x08,
+    VideoLibrary  = 0x10,
+    AudioLibrary  = 0x20,
+    Application   = 0x40,
+    Input         = 0x80,
+    Other         = 0x100
   };
 
-  #define ANNOUNCE_ALL (Player | GUI | System | VideoLibrary | AudioLibrary | Application | Input | Other)
+  #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | Other)
 
   /*!
     \brief Returns a string representation for the 
@@ -48,6 +49,8 @@ namespace ANNOUNCEMENT
     {
     case Player:
       return "Player";
+    case Playlist:
+      return "Playlist";
     case GUI:
       return "GUI";
     case System:

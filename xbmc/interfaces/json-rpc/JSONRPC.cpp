@@ -41,9 +41,13 @@ void CJSONRPC::Initialize()
     return;
 
   // Add some types/enums at runtime
-  vector<string> inputActions;
-  CButtonTranslator::GetActions(inputActions);
-  CJSONServiceDescription::AddEnum("Input.Action", inputActions);
+  vector<string> enumList;
+  CButtonTranslator::GetActions(enumList);
+  CJSONServiceDescription::AddEnum("Input.Action", enumList);
+
+  enumList.clear();
+  CButtonTranslator::GetWindows(enumList);
+  CJSONServiceDescription::AddEnum("GUI.Window", enumList);
 
   // filter-related enums
   vector<string> smartplaylistList;
@@ -149,6 +153,9 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const CStdString &method, ITransportLa
     if ((notifications["Player"].isNull() && (oldFlags & Player)) ||
         (notifications["Player"].isBoolean() && notifications["Player"].asBoolean()))
       flags |= Player;
+    if ((notifications["Playlist"].isNull() && (oldFlags & Playlist)) ||
+        (notifications["Playlist"].isBoolean() && notifications["Playlist"].asBoolean()))
+      flags |= Playlist;
     if ((notifications["GUI"].isNull() && (oldFlags & GUI)) ||
         (notifications["GUI"].isBoolean() && notifications["GUI"].asBoolean()))
       flags |= GUI;

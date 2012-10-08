@@ -336,6 +336,8 @@ PLT_MediaServer::ParseSort(const NPT_String& sort, NPT_List<NPT_String>& list)
     NPT_List<NPT_String>::Iterator property = list.GetFirstItem();
     while (property) {
         NPT_List<NPT_String> parsed_property = (*property).Split(":");
+        if (parsed_property.GetItemCount() != 2)
+          parsed_property = (*property).Split("@");
         if (parsed_property.GetItemCount() != 2 || 
             (!(*property).StartsWith("-") && !(*property).StartsWith("+"))) {
             NPT_LOG_WARNING_1("Invalid SortCriteria property %s", (*property).GetChars());

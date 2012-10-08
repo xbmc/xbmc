@@ -1,4 +1,5 @@
-SRCS=ApplicationOperations.cpp \
+SRCS=AddonsOperations.cpp \
+     ApplicationOperations.cpp \
      AudioLibrary.cpp \
      FileItemHandler.cpp \
      FileOperations.cpp \

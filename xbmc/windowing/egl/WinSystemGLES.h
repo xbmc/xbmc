@@ -56,6 +56,7 @@ public:
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();
   virtual bool  Support3D(int width, int height, uint32_t mode)     const;
+  virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
 protected:
   virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
@@ -63,6 +64,8 @@ protected:
   void                  *m_display;
   EGLNativeWindowType   m_window;
   CWinEGLPlatform       *m_eglplatform;
+  int                   m_nScreenWidth;
+  int                   m_nScreenHeight;
 };
 
 XBMC_GLOBAL_REF(CWinSystemGLES,g_Windowing);

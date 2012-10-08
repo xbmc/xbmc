@@ -805,7 +805,12 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
 
       if (m_pOverlayCodecCC)
       {
-        m_pOverlayCodecCC->Decode(data, size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+        DemuxPacket packet;
+        packet.pData = data;
+        packet.iSize = size;
+        packet.pts = DVD_NOPTS_VALUE;
+        packet.dts = DVD_NOPTS_VALUE;
+        m_pOverlayCodecCC->Decode(&packet);
 
         CDVDOverlay* overlay;
         while((overlay = m_pOverlayCodecCC->GetOverlay()) != NULL)

@@ -60,6 +60,7 @@ public:
   static CStdString CWIN32Util::GetSystemPath();
   static CStdString GetProfilePath();
   static CStdString UncToSmb(const CStdString &strPath);
+  static CStdString SmbToUnc(const CStdString &strPath);
   static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');

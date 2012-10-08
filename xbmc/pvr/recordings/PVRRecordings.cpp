@@ -108,6 +108,15 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
 
+    if (!current->m_strIconPath.IsEmpty())
+      pFileItem->SetIconImage(current->m_strIconPath);
+
+    if (!current->m_strThumbnailPath.IsEmpty())
+      pFileItem->SetThumbnailImage(current->m_strThumbnailPath);
+
+    if (!current->m_strFanartPath.IsEmpty())
+      pFileItem->SetProperty("Fanart_Image", current->m_strFanartPath);
+
     // Set the play count either directly from client (if supported) or from video db
     if (g_PVRClients->SupportsRecordingPlayCount(pFileItem->GetPVRRecordingInfoTag()->m_iClientId))
     {
@@ -120,6 +129,28 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
       pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
     }
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
+
+    // Set the resumePoint either directly from client (if supported) or from video db
+    int positionInSeconds = current->GetLastPlayedPosition();
+    if (positionInSeconds > 0)
+    {
+      // If the back-end does report a saved position then make sure there is a corresponding resume bookmark
+      CBookmark bookmark;
+      bookmark.timeInSeconds = positionInSeconds;
+      bookmark.totalTimeInSeconds = (double)current->GetDuration();
+      pFileItem->GetPVRRecordingInfoTag()->m_resumePoint = bookmark;
+    }
+    else if (positionInSeconds < 0)
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        CBookmark bookmark;
+        if (db.GetResumeBookMark(current->m_strFileNameAndPath, bookmark))
+          pFileItem->GetPVRRecordingInfoTag()->m_resumePoint = bookmark;
+        db.Close();
+      }
+    }
 
     results->Add(pFileItem);
   }
@@ -391,7 +422,10 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
 
       // Clear resume bookmark
       if (count > 0)
+      {
         database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+        pItem->GetPVRRecordingInfoTag()->SetLastPlayedPosition(0);
+      }
 
       database.SetPlayCount(*pItem, count);
     }

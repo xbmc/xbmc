@@ -89,7 +89,7 @@ public:
   CPictureInfoTag() { Reset(); };
   void Reset();
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable);
   const CPictureInfoTag& operator=(const CPictureInfoTag& item);
   const CStdString GetInfo(int info) const;

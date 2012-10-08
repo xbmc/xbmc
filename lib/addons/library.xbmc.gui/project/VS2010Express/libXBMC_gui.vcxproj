@@ -59,6 +59,7 @@
     </ClCompile>
     <Link>
       <OutputFile>..\..\..\..\..\addons\library.xbmc.gui\$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

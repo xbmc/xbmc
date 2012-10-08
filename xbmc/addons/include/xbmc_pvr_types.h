@@ -72,10 +72,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.2.0"
+#define XBMC_PVR_API_VERSION "1.4.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.2.0"
+#define XBMC_PVR_MIN_API_VERSION "1.4.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -251,20 +251,23 @@ extern "C" {
    * @brief Representation of a recording.
    */
   typedef struct PVR_RECORDING {
-    char   strRecordingId[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) unique id of the recording on the client. */
-    char   strTitle[PVR_ADDON_NAME_STRING_LENGTH];       /*!< @brief (required) the title of this recording */
-    char   strStreamURL[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (required) stream URL to access this recording */
-    char   strDirectory[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (optional) directory of this recording on the client */
-    char   strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH]; /*!< @brief (optional) plot outline */
-    char   strPlot[PVR_ADDON_DESC_STRING_LENGTH];        /*!< @brief (optional) plot */
-    char   strChannelName[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (optional) channel name */
-    time_t recordingTime;                                /*!< @brief (optional) start time of the recording */
-    int    iDuration;                                    /*!< @brief (optional) duration of the recording in seconds */
-    int    iPriority;                                    /*!< @brief (optional) priority of this recording (from 0 - 100) */
-    int    iLifetime;                                    /*!< @brief (optional) life time in days of this recording */
-    int    iGenreType;                                   /*!< @brief (optional) genre type */
-    int    iGenreSubType;                                /*!< @brief (optional) genre sub type */
-    int    iPlayCount;                                   /*!< @brief (optional) play count of this recording on the client */
+    char   strRecordingId[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (required) unique id of the recording on the client. */
+    char   strTitle[PVR_ADDON_NAME_STRING_LENGTH];        /*!< @brief (required) the title of this recording */
+    char   strStreamURL[PVR_ADDON_URL_STRING_LENGTH];     /*!< @brief (required) stream URL to access this recording */
+    char   strDirectory[PVR_ADDON_URL_STRING_LENGTH];     /*!< @brief (optional) directory of this recording on the client */
+    char   strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) plot outline */
+    char   strPlot[PVR_ADDON_DESC_STRING_LENGTH];         /*!< @brief (optional) plot */
+    char   strChannelName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (optional) channel name */
+    char   strIconPath[PVR_ADDON_URL_STRING_LENGTH];      /*!< @brief (optional) icon path */
+    char   strThumbnailPath[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) thumbnail path */
+    char   strFanartPath[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (optional) fanart path */
+    time_t recordingTime;                                 /*!< @brief (optional) start time of the recording */
+    int    iDuration;                                     /*!< @brief (optional) duration of the recording in seconds */
+    int    iPriority;                                     /*!< @brief (optional) priority of this recording (from 0 - 100) */
+    int    iLifetime;                                     /*!< @brief (optional) life time in days of this recording */
+    int    iGenreType;                                    /*!< @brief (optional) genre type */
+    int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
+    int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!

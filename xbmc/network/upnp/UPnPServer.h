@@ -72,6 +72,7 @@ public:
                                       const NPT_HttpRequestContext& context,
                                       NPT_HttpResponse&             response);
 
+    virtual NPT_Result SetupServices();
     NPT_String BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
                                     const char*        host,
                                     const char*        file_path);
@@ -102,6 +103,8 @@ private:
                                    const char*                   parent_id /* = NULL */);
 
     // class methods
+    static bool SortItems(CFileItemList& items, const char* sort_criteria);
+    static void DefaultSortItems(CFileItemList& items);
     static NPT_String GetParentFolder(NPT_String file_path) {
         int index = file_path.ReverseFind("\\");
         if (index == -1) return "";

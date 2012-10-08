@@ -282,7 +282,6 @@ static const ActionMapping windows[] =
         {"numericinput"             , WINDOW_DIALOG_NUMERIC},
         {"gamepadinput"             , WINDOW_DIALOG_GAMEPAD},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
-        {"musicscan"                , WINDOW_DIALOG_MUSIC_SCAN},
         {"mutebug"                  , WINDOW_DIALOG_MUTE_BUG},
         {"playercontrols"           , WINDOW_DIALOG_PLAYER_CONTROLS},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
@@ -300,7 +299,6 @@ static const ActionMapping windows[] =
         {"locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS},
         {"contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS},
         {"videoscan"                , WINDOW_DIALOG_VIDEO_SCAN},
-        {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"songinformation"          , WINDOW_DIALOG_SONG_INFO},
         {"smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR},
         {"smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE},
@@ -870,6 +868,15 @@ void CButtonTranslator::GetActions(std::vector<std::string> &actionList)
   actionList.reserve(size);
   for (unsigned int index = 0; index < size; index++)
     actionList.push_back(actions[index].name);
+}
+
+void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
+{
+  unsigned int size = sizeof(windows) / sizeof(ActionMapping);
+  windowList.clear();
+  windowList.reserve(size);
+  for (unsigned int index = 0; index < size; index++)
+    windowList.push_back(windows[index].name);
 }
 
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)

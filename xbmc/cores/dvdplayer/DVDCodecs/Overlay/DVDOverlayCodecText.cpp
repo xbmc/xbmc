@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "DVDClock.h"
 #include "DVDOverlayCodecText.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
@@ -52,15 +53,19 @@ void CDVDOverlayCodecText::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double duration)
+int CDVDOverlayCodecText::Decode(DemuxPacket *pPacket)
 {
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 
+  if(!pPacket)
+    return OC_ERROR;
+  
+  BYTE *data = pPacket->pData;
+  int size = pPacket->iSize;
+  
   m_pOverlay = new CDVDOverlayText();
-  m_pOverlay->iPTSStartTime = 0;
-  m_pOverlay->iPTSStopTime = 0;
-
+  CDVDOverlayCodec::GetAbsoluteTimes(m_pOverlay->iPTSStartTime, m_pOverlay->iPTSStopTime, pPacket, m_pOverlay->replace);
 
   char *start, *end, *p;
   start = (char*)data;

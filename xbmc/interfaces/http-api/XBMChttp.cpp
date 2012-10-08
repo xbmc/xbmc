@@ -19,6 +19,7 @@
 
 #include "playlists/PlayListFactory.h"
 #include "Util.h"
+#include "utils/Screenshot.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "filesystem/CurlFile.h" 
@@ -46,6 +47,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "filesystem/DirectoryFactory.h"
+#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -2530,6 +2532,7 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameters");
   else
   {
+    paras[1].MakeLower();
     CStdString tmp;
     if (numParas<3)
       switch (atoi(paras[0])) 
@@ -2628,8 +2631,6 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
         tmp = (g_settings.m_bMyVideoPlaylistShuffle==0) ? "False" : "True";
       else if (paras[i]=="myvideoplaylistrepeat")
         tmp = (g_settings.m_bMyVideoPlaylistRepeat==0) ? "False" : "True";
-      else if (paras[i]=="mymusicisscanning")
-        tmp = (g_settings.m_bMyMusicIsScanning==0) ? "False" : "True";
       else if (paras[i]=="mymusicplaylistshuffle")
         tmp = (g_settings.m_bMyMusicPlaylistShuffle==0) ? "False" : "True";
       else if (paras[i]=="mymusicplaylistrepeat")
@@ -2869,7 +2870,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
 //filename can be blank
 {
   if (numParas<1)
-    CUtil::TakeScreenshot();
+    CScreenShot::TakeScreenshot();
   else
     return SetResponse(openTag+"Error: xbmcTakeScreenshot with params depracated");
   return SetResponse(openTag+"OK");

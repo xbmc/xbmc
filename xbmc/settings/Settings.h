@@ -189,9 +189,6 @@ public:
   bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
 
-  // for scanning
-  bool m_bMyMusicIsScanning;
-
   CVideoSettings m_defaultVideoSettings;
   CVideoSettings m_currentVideoSettings;
 

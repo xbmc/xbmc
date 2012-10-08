@@ -946,10 +946,11 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
         g_mediaManager.SetLocationPath(strOldPath,newPath);
         for (unsigned int i=0;i<shares.size();++i)
         {
-          if (shares[i].strPath.Equals(strOldPath))//getPath().Equals(strOldPath))
+          if (URIUtils::CompareWithoutSlashAtEnd(shares[i].strPath, strOldPath))//getPath().Equals(strOldPath))
           {
             shares[i].strName = newPath;
             shares[i].strPath = newPath;//setPath(newPath);
+            URIUtils::RemoveSlashAtEnd(shares[i].strName);
             break;
           }
         }
@@ -976,7 +977,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 
       for (unsigned int i=0;i<m_shares.size();++i)
       {
-        if (m_shares[i].strPath.Equals(m_selectedPath) && !m_shares[i].m_ignore) // getPath().Equals(m_selectedPath))
+        if (URIUtils::CompareWithoutSlashAtEnd(m_shares[i].strPath, m_selectedPath) && !m_shares[i].m_ignore) // getPath().Equals(m_selectedPath))
         {
           m_shares.erase(m_shares.begin()+i);
           break;

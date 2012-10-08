@@ -1008,13 +1008,13 @@ void CGUIWindowFullScreen::FrameMove()
       CStdString strStatus;
       if (g_Windowing.IsFullScreen())
         strStatus.Format("%s %ix%i@%.2fHz - %s",
-          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
-          g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
+          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iScreenWidth,
+          g_settings.m_ResInfo[iResolution].iScreenHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
           g_localizeStrings.Get(244));
       else
         strStatus.Format("%s %ix%i - %s",
-          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
-          g_settings.m_ResInfo[iResolution].iHeight, g_localizeStrings.Get(242));
+          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iScreenWidth,
+          g_settings.m_ResInfo[iResolution].iScreenHeight, g_localizeStrings.Get(242));
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);

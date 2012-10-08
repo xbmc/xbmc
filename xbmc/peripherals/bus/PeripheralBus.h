@@ -92,9 +92,10 @@ namespace PERIPHERALS
     virtual bool HasPeripheral(const CStdString &strLocation) const;
 
     /*!
-     * @brief Get the first instance of a peripheral that has the given feature.
+     * @brief Get all peripheral instances that have the given feature.
+     * @param results The list of results.
      * @param feature The feature to search for.
-     * @return The peripheral or NULL if it wasn't found.
+     * @return The number of devices that have been found.
      */
     virtual int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const;
 

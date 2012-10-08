@@ -110,6 +110,9 @@ namespace PERIPHERALS
 
     void PushCecKeypress(const CEC::cec_keypress &key);
 
+    void ActivateSource(void);
+    void StandbyDevices(void);
+
   protected:
     bool OpenConnection(void);
     void SetConfigurationFromSettings(void);
@@ -125,6 +128,8 @@ namespace PERIPHERALS
     static void CecSourceActivated(void *param, const CEC::cec_logical_address address, const uint8_t activated);
     bool IsRunning(void) const;
     void ReopenConnection(void);
+    void ProcessActivateSource(void);
+    void ProcessStandbyDevices(void);
 
     void GetNextKey(void);
     bool InitialiseFeature(const PeripheralFeature feature);
@@ -156,6 +161,8 @@ namespace PERIPHERALS
     CEC::ICECCallbacks                m_callbacks;
     CCriticalSection                  m_critSection;
     CEC::libcec_configuration         m_configuration;
+    bool                              m_bActiveSourcePending;
+    bool                              m_bStandbyPending;
   };
 
   class CPeripheralCecAdapterUpdateThread : public CThread

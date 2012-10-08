@@ -78,7 +78,11 @@ bool CWinSystemGLES::DestroyWindowSystem()
 
 bool CWinSystemGLES::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  if (m_bWindowCreated && m_nWidth == res.iWidth && m_nHeight == res.iHeight && m_fRefreshRate == res.fRefreshRate && m_bFullScreen == fullScreen)
+  if (m_bWindowCreated &&
+    m_nWidth == res.iWidth && m_nHeight == res.iHeight &&
+    m_nScreenWidth == res.iScreenWidth && m_nScreenHeight == res.iScreenHeight &&
+    m_bFullScreen  == fullScreen &&
+    m_fRefreshRate == res.fRefreshRate)
   {
     CLog::Log(LOGDEBUG, "CWinSystemGLES::CreateNewWindow: No need to create a new window");
     return true;
@@ -86,8 +90,10 @@ bool CWinSystemGLES::CreateNewWindow(const CStdString& name, bool fullScreen, RE
 
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
-  m_bFullScreen = fullScreen;
-  m_fRefreshRate = res.fRefreshRate;
+  m_nScreenWidth  = res.iScreenWidth;
+  m_nScreenHeight = res.iScreenHeight;
+  m_bFullScreen   = fullScreen;
+  m_fRefreshRate  = res.fRefreshRate;
   
   // Destroy any existing window
   if (m_bWindowCreated)
@@ -138,7 +144,6 @@ void CWinSystemGLES::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
 
-  //std::vector<CStdString> resolutions;
   std::vector<RESOLUTION_INFO> resolutions;
 
   m_eglplatform->ProbeDisplayResolutions(resolutions);
@@ -147,9 +152,6 @@ void CWinSystemGLES::UpdateResolutions()
 
   RESOLUTION ResDesktop = RES_INVALID;
   RESOLUTION res_index  = RES_DESKTOP;
-
-  // Clear old resolutions
-  //g_settings.m_ResInfo.clear();
 
   for (size_t i = 0; i < resolutions.size(); i++)
   {
@@ -173,17 +175,23 @@ void CWinSystemGLES::UpdateResolutions()
     g_graphicsContext.ResetOverscan(resolutions[i]);
     g_settings.m_ResInfo[res_index] = resolutions[i];
 
-    CLog::Log(LOGNOTICE, "Found resolution for display %d with %d x %d @ %f Hz\n",
-      resolutions[i].iScreen,
+    CLog::Log(LOGNOTICE, "Found resolution %d x %d for display %d with %d x %d%s @ %f Hz\n",
       resolutions[i].iWidth,
       resolutions[i].iHeight,
+      resolutions[i].iScreen,
+      resolutions[i].iScreenWidth,
+      resolutions[i].iScreenHeight,
+      resolutions[i].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
       resolutions[i].fRefreshRate);
 
     if(m_eglplatform->FixedDesktop())
     {
       if(resDesktop.iWidth == resolutions[i].iWidth &&
          resDesktop.iHeight == resolutions[i].iHeight &&
-         resDesktop.fRefreshRate == resolutions[i].fRefreshRate)
+         resDesktop.iScreenWidth == resolutions[i].iScreenWidth &&
+         resDesktop.iScreenHeight == resolutions[i].iScreenHeight &&
+         resDesktop.fRefreshRate == resolutions[i].fRefreshRate &&
+         resDesktop.dwFlags == resolutions[i].dwFlags)
       {
         ResDesktop = res_index;
       }
@@ -195,8 +203,11 @@ void CWinSystemGLES::UpdateResolutions()
   // swap desktop index for desktop res if available
   if (ResDesktop != RES_INVALID)
   {
-    CLog::Log(LOGNOTICE, "Found (%dx%d@%f) at %d, setting to RES_DESKTOP at %d",
-              resDesktop.iWidth, resDesktop.iHeight, resDesktop.fRefreshRate, (int)ResDesktop, (int)RES_DESKTOP);
+    CLog::Log(LOGNOTICE, "Found (%dx%d%s@%f) at %d, setting to RES_DESKTOP at %d",
+      resDesktop.iWidth, resDesktop.iHeight,
+      resDesktop.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
+      resDesktop.fRefreshRate,
+      (int)ResDesktop, (int)RES_DESKTOP);
 
     RESOLUTION_INFO desktop = g_settings.m_ResInfo[RES_DESKTOP];
     g_settings.m_ResInfo[RES_DESKTOP] = g_settings.m_ResInfo[ResDesktop];
@@ -305,5 +316,11 @@ bool CWinSystemGLES::Support3D(int width, int height, uint32_t mode) const
 
   return bFound;
 }
+
+bool CWinSystemGLES::ClampToGUIDisplayLimits(int &width, int &height)
+{
+  return m_eglplatform->ClampToGUIDisplayLimits(width, height);
+}
+
 
 #endif

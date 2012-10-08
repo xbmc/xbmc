@@ -39,6 +39,8 @@
 #include "DllAvCodec.h"
 #include "DllAvUtil.h"
 
+#include "threads/CriticalSection.h"
+
 #define AUDIO_BUFFER_SECONDS 2
 #define VIS_PACKET_SIZE 512
 
@@ -75,7 +77,6 @@ public:
   bool SetCurrentVolume(float fVolume);
   void SetDynamicRangeCompression(long drc) { m_drc = drc; }
   int SetPlaySpeed(int iSpeed);
-  unsigned int GetAudioRenderingLatency();
   void WaitCompletion();
   void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
@@ -132,7 +133,7 @@ private:
   WAVEFORMATEXTENSIBLE        m_wave_header;
   AEAudioFormat m_format;
 protected:
-  COMXCoreComponent m_omx_render;
+  COMXCoreComponent *m_omx_render;
   COMXCoreComponent m_omx_mixer;
   COMXCoreComponent m_omx_decoder;
   COMXCoreTunel     m_omx_tunnel_clock;
@@ -148,6 +149,8 @@ protected:
   CAEChannelInfo    GetChannelLayout(AEAudioFormat format);
 
   void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
+  unsigned int GetAudioRenderingLatency();
+  CCriticalSection m_critSection;
 };
 #endif
 

@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "utils/AlarmClock.h"
+#include "utils/Screenshot.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "Autorun.h"
@@ -30,7 +31,6 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "music/dialogs/GUIDialogMusicScan.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "video/dialogs/GUIDialogVideoScan.h"
@@ -54,6 +54,7 @@
 #include "utils/URIUtils.h"
 #include "Util.h"
 #include "URL.h"
+#include "music/MusicDatabase.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -323,7 +324,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("takescreenshot"))
   {
-    CUtil::TakeScreenshot();
+    CScreenShot::TakeScreenshot();
   }
   else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {
@@ -529,7 +530,9 @@ int CBuiltins::Execute(const CStdString& execString)
             cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
         }
         if (addon->Type() == ADDON_SCRIPT)
-          cmd.Format("RunScript(%s)",params[0]);
+          // Pass the script name (params[0]) and all the parameters
+          // (params[1] ... params[x]) separated by a comma to RunScript
+          cmd.Format("RunScript(%s)", StringUtils::JoinString(params, ","));
 
         return Execute(cmd);
       }
@@ -1236,12 +1239,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     g_application.StopPlaying();
     if (g_application.IsMusicScanning())
-    {
       g_application.StopMusicScan();
-      CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (musicScan)
-        musicScan->Close(true);
-    }
 
     if (g_application.IsVideoScanning())
     {

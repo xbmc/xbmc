@@ -629,6 +629,11 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     ParseItem(item.get(), child, path);
 
     item->SetProperty("isrss", "1");
+    // Use channel image if item doesn't have one
+    if(item->GetThumbnailImage().IsEmpty() && !items.GetThumbnailImage().IsEmpty())
+    {
+      item->SetThumbnailImage(items.GetThumbnailImage());
+    }
 
     if (!item->GetPath().IsEmpty())
       items.Add(item);

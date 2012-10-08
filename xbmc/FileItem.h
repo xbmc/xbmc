@@ -99,7 +99,7 @@ public:
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem &sortable);
   virtual bool IsFileItem() const { return true; };
 
@@ -173,7 +173,6 @@ public:
   void FillInDefaultIcon();
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
-  virtual void SetLabel2(const CStdString &strLabel);
   CURL GetAsUrl() const;
   int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
@@ -448,6 +447,14 @@ public:
   bool Copy  (const CFileItemList& item);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SortOrder sortOrder);
+  /* \brief Sorts the items based on the given sorting options
+
+  In contrast to Sort (see above) this does not change the internal
+  state by storing the sorting method and order used and therefore
+  will always execute the sorting even if the list of items has
+  already been sorted with the same options before.
+  */
+  void Sort(SortDescription sortDescription);
   void Randomize();
   void FillInDefaultIcons();
   int GetFolderCount() const;
