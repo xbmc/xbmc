@@ -195,7 +195,9 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "chaptername",      PLAYER_CHAPTERNAME },
                                   { "starrating",       PLAYER_STAR_RATING },
                                   { "folderpath",       PLAYER_PATH },
-                                  { "filenameandpath",  PLAYER_FILEPATH }};
+                                  { "filenameandpath",  PLAYER_FILEPATH },
+                                  { "pauseenabled",     PLAYER_CAN_PAUSE },
+                                  { "seekenabled",      PLAYER_CAN_SEEK }};
 
 const infomap player_param[] =   {{ "property",         PLAYER_ITEM_PROPERTY }};
 
@@ -2317,6 +2319,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case PLAYER_CAN_RECORD:
       bReturn = g_application.m_pPlayer->CanRecord();
+      break;
+    case PLAYER_CAN_PAUSE:
+      bReturn = g_application.m_pPlayer->CanPause();
+      break;
+    case PLAYER_CAN_SEEK:
+      bReturn = g_application.m_pPlayer->CanSeek();
       break;
     case PLAYER_RECORDING:
       bReturn = g_application.m_pPlayer->IsRecording();
