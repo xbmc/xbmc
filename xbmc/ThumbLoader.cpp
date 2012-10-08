@@ -264,29 +264,29 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   // thumbnails are special-cased due to auto-generation
   if (!pItem->HasArt("thumb") && !pItem->m_bIsFolder && pItem->IsVideo())
   {
-      // create unique thumb for auto generated thumbs
-      CStdString thumbURL = GetEmbeddedThumbURL(*pItem);
-      if (CTextureCache::Get().HasCachedImage(thumbURL))
-      {
-        CTextureCache::Get().BackgroundCacheImage(thumbURL);
-        pItem->SetProperty("HasAutoThumb", true);
-        pItem->SetProperty("AutoThumbImage", thumbURL);
-        pItem->SetArt("thumb", thumbURL);
-      }
-      else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
-               g_guiSettings.GetBool("myvideos.extractflags"))
-      {
-        CFileItem item(*pItem);
-        CStdString path(item.GetPath());
-        if (URIUtils::IsInRAR(item.GetPath()))
-          SetupRarOptions(item,path);
+    // create unique thumb for auto generated thumbs
+    CStdString thumbURL = GetEmbeddedThumbURL(*pItem);
+    if (CTextureCache::Get().HasCachedImage(thumbURL))
+    {
+      CTextureCache::Get().BackgroundCacheImage(thumbURL);
+      pItem->SetProperty("HasAutoThumb", true);
+      pItem->SetProperty("AutoThumbImage", thumbURL);
+      pItem->SetArt("thumb", thumbURL);
+    }
+    else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
+             g_guiSettings.GetBool("myvideos.extractflags"))
+    {
+      CFileItem item(*pItem);
+      CStdString path(item.GetPath());
+      if (URIUtils::IsInRAR(item.GetPath()))
+        SetupRarOptions(item,path);
 
-        CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
-        AddJob(extract);
+      CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
+      AddJob(extract);
 
-        m_database->Close();
-        return true;
-      }
+      m_database->Close();
+      return true;
+    }
   }
 
   // flag extraction
