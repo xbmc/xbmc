@@ -211,7 +211,7 @@
 					<control type="button" id="6">
 						<description>Record</description>
 						<include>ButtonInfoDialogsCommonValues</include>
-						<label>-</label>
+						<label>264</label>
 					</control>
 					<control type="button" id="7">
 						<description>OK</description>
