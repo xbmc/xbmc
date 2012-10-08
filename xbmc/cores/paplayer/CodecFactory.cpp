@@ -40,7 +40,6 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
-#include "BXAcodec.h" 
 #include "PCMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)

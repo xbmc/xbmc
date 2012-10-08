@@ -1996,9 +1996,6 @@
     <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
@@ -4911,9 +4908,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\JpegIO.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\BXAcodec.h">
-      <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h">
       <Filter>interfaces\info</Filter>
