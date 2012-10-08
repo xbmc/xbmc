@@ -3642,6 +3642,7 @@ bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, string> &seasonArt)
 
     for (vector< pair<int,int> >::const_iterator i = seasons.begin(); i != seasons.end(); ++i)
       seasonArt.insert(make_pair(i->second,GetArtForItem(i->first, "season", "thumb")));
+    return true;
   }
   catch (...)
   {
