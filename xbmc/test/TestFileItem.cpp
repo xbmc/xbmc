@@ -46,17 +46,15 @@ TEST(TestFileItem, GetLocalArt)
                                   { "/home/user/TV Shows/Dexter/S1/1x01.avi", true, "/home/user/TV Shows/Dexter/S1/art.jpg" },
                                   { "rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi", false, "g:\\multimedia\\movies\\Sphere-art.jpg" },
                                   { "rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi", true, "g:\\multimedia\\movies\\art.jpg" },
-                                  { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", false, "/home/user/movies/movie_name/video_ts/VIDEO_TS-art.jpg" },
+                                  { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", false, "/home/user/movies/movie_name/art.jpg" },
                                   { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", true, "/home/user/movies/movie_name/art.jpg" },
-                                  { "/home/user/movies/movie_name/BDMV/index.bdmv", false, "/home/user/movies/movie_name/BDMV/index-art.jpg" },
+                                  { "/home/user/movies/movie_name/BDMV/index.bdmv", false, "/home/user/movies/movie_name/art.jpg" },
                                   { "/home/user/movies/movie_name/BDMV/index.bdmv", true, "/home/user/movies/movie_name/art.jpg" }};
 
   const testfiles test_file2[] = {{ "c:\\dir\\filename.avi", false, "c:\\dir\\filename.tbn" },
                                   { "/dir/filename.avi", false, "/dir/filename.tbn" },
                                   { "smb://somepath/file.avi", false, "smb://somepath/file.tbn" },
                                   { "/home/user/TV Shows/Dexter/S1/1x01.avi", false, "/home/user/TV Shows/Dexter/S1/1x01.tbn" },
-                                  { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", false, "/home/user/movies/movie_name/video_ts/VIDEO_TS.tbn" },
-                                  { "/home/user/movies/movie_name/BDMV/index.bdmv", false, "/home/user/movies/movie_name/BDMV/index.tbn" },
                                   { "rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi", false, "g:\\multimedia\\movies\\Sphere.tbn" }};
 
   g_advancedSettings.Initialize();

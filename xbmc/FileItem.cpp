@@ -2808,9 +2808,9 @@ CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) c
   }
   if ((useFolder || (m_bIsFolder && !IsFileFolder())) && !artFile.empty())
   {
-    thumb = GetLocalArt(artFile, true);
-    if (!thumb.empty() && CFile::Exists(thumb))
-      return thumb;
+    CStdString thumb2 = GetLocalArt(artFile, true);
+    if (!thumb2.empty() && thumb2 != thumb && CFile::Exists(thumb2))
+      return thumb2;
   }
   return "";
 }
@@ -2844,13 +2844,13 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
   if (IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  if (useFolder)
-  {
-    if (IsOpticalMediaFile())
-      strFile = GetLocalMetadataPath();
-    else
-      strFile = URIUtils::GetDirectory(strFile);
+  if (IsOpticalMediaFile())
+  { // optical media files should be treated like folders
+    useFolder = true;
+    strFile = GetLocalMetadataPath();
   }
+  else if (useFolder)
+    strFile = URIUtils::GetDirectory(strFile);
 
   if (strFile.empty()) // empty filepath -> nothing to find
     return "";
