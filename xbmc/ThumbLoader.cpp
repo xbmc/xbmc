@@ -414,6 +414,28 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
   return !thumb.IsEmpty();
 }
 
+std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder)
+{
+  std::string art;
+  if (!type.empty())
+  {
+    art = item.FindLocalArt(type + ".jpg", checkFolder);
+    if (art.empty())
+      art = item.FindLocalArt(type + ".png", checkFolder);
+  }
+  if (art.empty() && (type.empty() || type == "thumb"))
+  { // backward compatibility
+    art = item.FindLocalArt("", false);
+    if (art.empty() && (checkFolder || (item.m_bIsFolder && !item.IsFileFolder())))
+    { // try movie.tbn
+      art = item.FindLocalArt("movie.tbn", true);
+      if (art.empty()) // try folder.jpg
+        art = item.FindLocalArt("folder.jpg", true);
+    }
+  }
+  return art;
+}
+
 CStdString CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
   CStdString path(item.GetPath());
