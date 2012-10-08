@@ -1336,7 +1336,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     directory = musicUrl.ToString();
   }
 
-  items.SetThumbnailImage("");
+  items.SetArt("thumb", "");
   bool bResult = CGUIMediaWindow::GetDirectory(directory, items);
   if (bResult)
     CMusicThumbLoader::FillThumb(items);

@@ -112,7 +112,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
       pFileItem->SetIconImage(current->m_strIconPath);
 
     if (!current->m_strThumbnailPath.IsEmpty())
-      pFileItem->SetThumbnailImage(current->m_strThumbnailPath);
+      pFileItem->SetArt("thumb", current->m_strThumbnailPath);
 
     if (!current->m_strFanartPath.IsEmpty())
       pFileItem->SetArt("fanart", current->m_strFanartPath);
@@ -463,7 +463,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     {
       CFileItemPtr pFileItem = files.Get(i);
       CFileItemPtr pThumbItem = items.Get(pFileItem->GetPath());
-      if (!pThumbItem->HasThumbnail())
+      if (!pThumbItem->HasArt("thumb"))
         m_thumbLoader.LoadItem(pThumbItem.get());
     }
   }

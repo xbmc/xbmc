@@ -82,7 +82,7 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartPartNumber = 1;
   SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
-  SetThumbnailImage(song.strThumb);
+  SetArt("thumb", song.strThumb);
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -389,7 +389,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  SetThumbnailImage(share.m_strThumbnailImage);
+  SetArt("thumb", share.m_strThumbnailImage);
   SetLabelPreformated(true);
   if (IsDVD())
     GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
@@ -1463,8 +1463,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetLabel(item.GetLabel());
   if (replaceLabels && !item.GetLabel2().IsEmpty())
     SetLabel2(item.GetLabel2());
-  if (!item.GetThumbnailImage().IsEmpty())
-    SetThumbnailImage(item.GetThumbnailImage());
+  if (!item.GetArt("thumb").empty())
+    SetArt("thumb", item.GetArt("thumb"));
   if (!item.GetIconImage().IsEmpty())
     SetIconImage(item.GetIconImage());
   AppendProperties(item);
@@ -3066,7 +3066,7 @@ bool CFileItem::LoadMusicTag()
     if (musicDatabase.GetSongByFileName(m_strPath, song))
     {
       GetMusicInfoTag()->SetSong(song);
-      SetThumbnailImage(song.strThumb);
+      SetArt("thumb", song.strThumb);
       return true;
     }
     musicDatabase.Close();

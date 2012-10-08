@@ -73,10 +73,10 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMovie." + value + ".Trailer"     , item->GetVideoInfoTag()->m_strTrailer);
 
-      if (!item->HasThumbnail())
+      if (!item->HasArt("thumb"))
         m_thumbLoader.LoadItem(item.get());
 
-      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
+      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetArt("thumb"));
       home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetArt("fanart"));
     }
   } 
@@ -123,14 +123,14 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
 
-      if (!item->HasThumbnail())
+      if (!item->HasArt("thumb"))
         m_thumbLoader.LoadItem(item.get());
 
       std::string seasonThumb;
       if (item->GetVideoInfoTag()->m_iIdSeason > 0)
         seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, "season", "thumb");
 
-      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetThumbnailImage());
+      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
       home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetProperty("tvshowthumb"));
       home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
@@ -172,10 +172,10 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator));
 
-      if (!item->HasThumbnail())
+      if (!item->HasArt("thumb"))
         m_thumbLoader.LoadItem(item.get());
 
-      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetThumbnailImage());
+      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetArt("thumb"));
       home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetArt("fanart"));
     }
   }
@@ -236,7 +236,7 @@ bool CRecentlyAddedJob::UpdateMusic()
 
         if (loader.LoadItem(item.get()))
         {
-          strAlbumThumb = item->GetThumbnailImage();
+          strAlbumThumb = item->GetArt("thumb");
           strAlbumFanart = item->GetArt("fanart");
         }
       }

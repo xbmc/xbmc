@@ -8184,8 +8184,8 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       if (singleFiles && images && !bSkip)
       {
         CStdString savedThumb(saveItem.GetTBNFile());
-        if (saveItem.HasThumbnail() && (overwrite || !CFile::Exists(savedThumb, false)))
-          CTextureCache::Get().Export(saveItem.GetThumbnailImage(), savedThumb);
+        if (saveItem.HasArt("thumb") && (overwrite || !CFile::Exists(savedThumb, false)))
+          CTextureCache::Get().Export(saveItem.GetArt("thumb"), savedThumb);
 
         CStdString savedFanart(URIUtils::ReplaceExtension(savedThumb, "-fanart.jpg"));
         if (saveItem.HasArt("fanart") && (overwrite || !CFile::Exists(savedFanart, false)))
@@ -8277,8 +8277,8 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       if (singleFiles && images && !bSkip)
       {
         CStdString savedThumb(saveItem.GetTBNFile());
-        if (saveItem.HasThumbnail() && (overwrite || !CFile::Exists(savedThumb, false)))
-          CTextureCache::Get().Export(saveItem.GetThumbnailImage(), savedThumb);
+        if (saveItem.HasArt("thumb") && (overwrite || !CFile::Exists(savedThumb, false)))
+          CTextureCache::Get().Export(saveItem.GetArt("thumb"), savedThumb);
       }
       m_pDS->next();
       current++;
@@ -8375,8 +8375,8 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       if (singleFiles && images && !bSkip)
       {
         CStdString savedThumb(saveItem.GetFolderThumb());
-        if (saveItem.HasThumbnail() && (overwrite || !CFile::Exists(savedThumb, false)))
-          CTextureCache::Get().Export(saveItem.GetThumbnailImage(), savedThumb);
+        if (saveItem.HasArt("thumb") && (overwrite || !CFile::Exists(savedThumb, false)))
+          CTextureCache::Get().Export(saveItem.GetArt("thumb"), savedThumb);
 
         CStdString savedFanart(saveItem.GetFolderThumb("fanart.jpg"));
         if (saveItem.HasArt("fanart") && (overwrite || !CFile::Exists(savedFanart, false)))
@@ -8475,8 +8475,8 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         if (singleFiles && images && !bSkip)
         {
           CStdString savedThumb(saveItem.GetTBNFile());
-          if (saveItem.HasThumbnail() && (overwrite || !CFile::Exists(savedThumb, false)))
-            CTextureCache::Get().Export(saveItem.GetThumbnailImage(), savedThumb);
+          if (saveItem.HasArt("thumb") && (overwrite || !CFile::Exists(savedThumb, false)))
+            CTextureCache::Get().Export(saveItem.GetArt("thumb"), savedThumb);
 
           if (actorThumbs)
             ExportActorThumbs(actorsDir, episode, singleFiles, overwrite);

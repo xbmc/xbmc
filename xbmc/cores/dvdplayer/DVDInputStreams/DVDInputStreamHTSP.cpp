@@ -245,7 +245,7 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
   }
   CFileItem current(item);
   CHTSPSession::ParseItem(channel, m_tag, m_event, item);
-  item.SetThumbnailImage(channel.icon);
+  item.SetArt("thumb", channel.icon);
   return current.GetPath()  != item.GetPath()
       || current.m_strTitle != item.m_strTitle;
 }

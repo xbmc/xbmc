@@ -275,7 +275,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             CFileItemPtr pItem(new CFileItem((const char*)name));
             pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/"));
             pItem->m_bIsFolder = true;
-            pItem->SetThumbnailImage((const char*)(*device)->GetIconUrl("image/jpeg"));
+            pItem->SetArt("thumb", (const char*)(*device)->GetIconUrl("image/jpeg"));
 
             items.Add(pItem);
 
@@ -460,9 +460,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             // if there is a thumbnail available set it here
             if((*entry)->m_ExtraInfo.album_arts.GetItem(0))
                 // only considers first album art
-                pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_arts.GetItem(0)->uri);
+                pItem->SetArt("thumb", (const char*) (*entry)->m_ExtraInfo.album_arts.GetItem(0)->uri);
             else if((*entry)->m_Description.icon_uri.GetLength())
-                pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
+                pItem->SetArt("thumb", (const char*) (*entry)->m_Description.icon_uri);
 
             PLT_ProtocolInfo fanart_mask("xbmc.org", "*", "fanart", "*");
             for(unsigned i = 0; i < (*entry)->m_Resources.GetItemCount(); ++i) {

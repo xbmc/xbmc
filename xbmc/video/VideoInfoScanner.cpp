@@ -1169,10 +1169,8 @@ namespace VIDEO
     }
 
     // get and cache thumb image
-    CStdString thumb;
-    if (pItem->HasThumbnail())
-      thumb = pItem->GetThumbnailImage();
-    else if (useLocal)
+    CStdString thumb = pItem->GetArt("thumb");
+    if (thumb.empty() && useLocal)
     {
       thumb = pItem->GetUserVideoThumb();
       if (bApplyToDir && thumb.IsEmpty())
@@ -1204,7 +1202,7 @@ namespace VIDEO
     if (!thumb.IsEmpty())
     {
       CTextureCache::Get().BackgroundCacheImage(thumb);
-      pItem->SetThumbnailImage(thumb);
+      pItem->SetArt("thumb", thumb);
     }
 
     // parent folder to apply the thumb to and to search for local actor thumbs

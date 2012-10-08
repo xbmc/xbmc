@@ -511,14 +511,14 @@ BuildObject(const CFileItem&              item,
         }
     }
     // set a thumbnail if we have one
-    if (item.HasThumbnail() && upnp_server) {
+    if (item.HasArt("thumb") && upnp_server) {
 	PLT_AlbumArtInfo art;
         art.uri = upnp_server->BuildSafeResourceUri(
             rooturi,
             (*ips.GetFirstItem()).ToString(),
-            item.GetThumbnailImage());
+            item.GetArt("thumb").c_str());
         // Set DLNA profileID by extension, defaulting to JPEG.
-        NPT_String ext = URIUtils::GetExtension(item.GetThumbnailImage()).c_str();
+        NPT_String ext = URIUtils::GetExtension(item.GetArt("thumb")).c_str();
         if (strcmp(ext, ".png") == 0) {
             art.dlna_profile = "PNG_TN";
         } else {
