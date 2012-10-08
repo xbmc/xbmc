@@ -1384,6 +1384,9 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
   m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
   m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0;
+
+  // double tap prevention timeout in ms
+  m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms");
 }
 
 void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, cec_logical_addresses &addresses)
