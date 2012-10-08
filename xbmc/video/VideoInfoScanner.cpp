@@ -1151,13 +1151,13 @@ namespace VIDEO
     movieDetails.m_strPictureURL.Parse();
 
     CGUIListItem::ArtMap art;
-    // get & save fanart image
+    // get & save fanart image (treated separately due to it being stored in m_fanart)
     bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
     if (!isEpisode)
     {
       CStdString fanart = pItem->GetArt("fanart");
       if (fanart.empty() && useLocal)
-        fanart = pItem->GetLocalFanart();
+        fanart = pItem->FindLocalArt("fanart.jpg", true);
       if (fanart.IsEmpty())
         fanart = movieDetails.m_fanart.GetImageURL();
       if (!fanart.IsEmpty())
