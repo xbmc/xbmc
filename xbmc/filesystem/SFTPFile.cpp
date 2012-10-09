@@ -281,12 +281,14 @@ bool CSFTPSession::VerifyKnownHost(ssh_session session)
       CLog::Log(LOGINFO, "SFTPSession: Server file was not found, creating a new one");
     case SSH_SERVER_NOT_KNOWN:
       CLog::Log(LOGINFO, "SFTPSession: Server unkown, we trust it for now");
+#if !defined(TARGET_ANDROID)
+//TODO: use a writable path and remove this.
       if (ssh_write_knownhost(session) < 0)
       {
         CLog::Log(LOGERROR, "CSFTPSession: Failed to save host '%s'", strerror(errno));
         return false;
       }
-
+#endif
       return true;
     case SSH_SERVER_ERROR:
       CLog::Log(LOGERROR, "SFTPSession: Failed to verify host '%s'", ssh_get_error(session));
