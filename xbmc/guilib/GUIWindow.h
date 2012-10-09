@@ -125,6 +125,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   bool ControlGroupHasFocus(int groupID, int controlID);
+  virtual void SetID(int id);
   virtual bool HasID(int controlID) const;
   const std::vector<int>& GetIDRange() const { return m_idRange; };
   int GetPreviousWindow() { return m_previousWindow; };

@@ -1063,6 +1063,13 @@ void CGUIWindow::ClearBackground()
     g_graphicsContext.Clear(color);
 }
 
+void CGUIWindow::SetID(int id)
+{
+  CGUIControlGroup::SetID(id);
+  m_idRange.clear();
+  m_idRange.push_back(id);
+}
+
 bool CGUIWindow::HasID(int controlID) const
 {
   for (std::vector<int>::const_iterator it = m_idRange.begin(); it != m_idRange.end() ; it++)
