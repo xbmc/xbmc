@@ -480,6 +480,11 @@ void CGUISettings::Initialize()
   // video settings
   AddGroup(5, 3);
   // Videos > General
+  AddBool(NULL, "videolibrary.enabled", 418, true);
+  AddBool(NULL, "videolibrary.showunwatchedplots", 20369, true);
+  AddBool(NULL, "videolibrary.seasonthumbs", 20382, true);
+  AddBool(NULL, "videolibrary.actorthumbs", 20402, true);
+
   CSettingsCategory* vgen = AddCategory(5, "videogeneral", 128);
 
   //   -> Allow picking alternatemedia.
