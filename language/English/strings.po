@@ -7141,7 +7141,23 @@ msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
 msgstr ""
 
-#empty strings from id 19275 to 19498
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr ""
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr ""
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr ""
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr ""
+
+#empty strings from id 19279 to 19498
 
 msgctxt "#19499"
 msgid "Other/Unknown"
