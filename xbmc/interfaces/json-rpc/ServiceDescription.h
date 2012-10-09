@@ -612,6 +612,7 @@ namespace JSONRPC
     "\"Video.Details.MovieSet.Extended\": {"
       "\"extends\": \"Video.Details.MovieSet\","
       "\"properties\": {"
+        "\"limits\": { \"$ref\": \"List.LimitsReturned\", \"required\": true },"
         "\"movies\": { \"type\": \"array\","
           "\"items\": { \"$ref\": \"Video.Details.Movie\" }"
         "}"
