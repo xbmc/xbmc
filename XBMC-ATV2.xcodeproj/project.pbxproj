@@ -955,6 +955,8 @@
 		F589AE8212890BEF00D8079E /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7D12890BEF00D8079E /* libsquish.a */; };
 		F589AE8312890BEF00D8079E /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7E12890BEF00D8079E /* librtv.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		F589AE8512890BEF00D8079E /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE8012890BEF00D8079E /* libxdaap.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		F592D4BF162495B10023BCE7 /* NptPosixTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592D4BE162495B00023BCE7 /* NptPosixTime.cpp */; };
+		F592D4C2162496620023BCE7 /* NptHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592D4C0162496620023BCE7 /* NptHash.cpp */; };
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
 		F5AE40EA134175160004BD79 /* HttpApi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE40E6134175160004BD79 /* HttpApi.cpp */; };
@@ -3117,6 +3119,9 @@
 		F589AE7D12890BEF00D8079E /* libsquish.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsquish.a; path = lib/libsquish/libsquish.a; sourceTree = "<group>"; };
 		F589AE7E12890BEF00D8079E /* librtv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtv.a; path = lib/libRTV/librtv.a; sourceTree = "<group>"; };
 		F589AE8012890BEF00D8079E /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
+		F592D4BE162495B00023BCE7 /* NptPosixTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptPosixTime.cpp; path = lib/libUPnP/Neptune/Source/System/Posix/NptPosixTime.cpp; sourceTree = SOURCE_ROOT; };
+		F592D4C0162496620023BCE7 /* NptHash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptHash.cpp; path = lib/libUPnP/Neptune/Source/Core/NptHash.cpp; sourceTree = SOURCE_ROOT; };
+		F592D4C1162496620023BCE7 /* NptHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptHash.h; path = lib/libUPnP/Neptune/Source/Core/NptHash.h; sourceTree = SOURCE_ROOT; };
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		F5AE40E6134175160004BD79 /* HttpApi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpApi.cpp; sourceTree = "<group>"; };
@@ -6028,6 +6033,7 @@
 				F56C7CFD131EF8D9000AD0F6 /* NptPosixQueue.cpp */,
 				F56C7CFE131EF8D9000AD0F6 /* NptPosixSystem.cpp */,
 				F56C7CFF131EF8D9000AD0F6 /* NptPosixThreads.cpp */,
+				F592D4BE162495B00023BCE7 /* NptPosixTime.cpp */,
 				F56C7CCC131EF8D8000AD0F6 /* NptQueue.cpp */,
 				F56C7CCD131EF8D8000AD0F6 /* NptQueue.h */,
 				F56C7CCE131EF8D8000AD0F6 /* NptReferences.h */,
@@ -6105,6 +6111,8 @@
 				F56C7D0C131EF8D9000AD0F6 /* Neptune.cpp */,
 				F56C7D0D131EF8D9000AD0F6 /* Neptune.h */,
 				F56C7D13131EF8D9000AD0F6 /* PltAction.cpp */,
+				F592D4C0162496620023BCE7 /* NptHash.cpp */,
+				F592D4C1162496620023BCE7 /* NptHash.h */,
 				F56C7D14131EF8D9000AD0F6 /* PltAction.h */,
 				F56C7D15131EF8D9000AD0F6 /* PltArgument.cpp */,
 				F56C7D16131EF8D9000AD0F6 /* PltArgument.h */,
@@ -7574,6 +7582,8 @@
 				1D638118161E20AC003603ED /* PeripheralImon.cpp in Sources */,
 				DF24EAC71621E58D00034265 /* DVDDemuxBXA.cpp in Sources */,
 				36A95DB41624898700727135 /* GUIDialogMediaFilter.cpp in Sources */,
+				F592D4BF162495B10023BCE7 /* NptPosixTime.cpp in Sources */,
+				F592D4C2162496620023BCE7 /* NptHash.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
