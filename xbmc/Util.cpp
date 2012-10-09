@@ -2374,7 +2374,7 @@ void CUtil::GetExternalStreamNameAndLangFromFilename(const CStdString& strVideo,
         strLangTmp.Replace('-', ' ');
 
         // try to recognize language
-        g_LangCodeExpander.ConvertToTwoCharCode(strLangTmp, lang_current);
+        g_LangCodeExpander.ConvertToThreeCharCode(lang_current, strLangTmp);
       }
 
       // try to extract name from name "name" group in current regexp

@@ -2692,7 +2692,6 @@ bool CDVDPlayer::GetSubtitleIsForced(int iStream)
 
 void CDVDPlayer::SetSubtitle(int iStream)
 {
-  g_settings.m_currentVideoSettings.m_SubtitleStream = iStream;
   m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
 }
 
@@ -3800,34 +3799,6 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   }
 
   SelectionStream s;
-
-  //
-  // Determine language of external file
-  //
-  int n1 = filename.find_last_of('.');
-  if(n1 != string::npos)
-  {
-    int n2 = filename.find_last_of('.', n1-1);
-    if(n2 != string::npos)
-    {
-      CStdString three;
-      CStdString code = filename.substr(n2+1, n1-n2-1);
-      StringUtils::ToLower(code);
-      if(code.length()==2 && isalpha(code[0]) && isalpha(code[1]))
-      {
-        if(g_LangCodeExpander.ConvertTwoToThreeCharCode(three, code))
-          s.language = three;
-      }
-      else if(code.length()==3 && isalpha(code[0]) && isalpha(code[1]) && isalpha(code[2]))
-      {
-        CStdString desc;
-        if(g_LangCodeExpander.Lookup(desc, code))
-          s.language = code;
-      }
-    }
-  }
-
-
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
   s.type     = STREAM_SUBTITLE;
   s.id       = 0;
