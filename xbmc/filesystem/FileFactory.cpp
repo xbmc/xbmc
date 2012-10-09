@@ -82,6 +82,7 @@
 #include "PipesManager.h"
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
+#include "VideoDatabaseFile.h"
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
 #include "TuxBoxFile.h"
@@ -128,7 +129,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
   }
   else if (strProtocol == "musicdb") return new CMusicDatabaseFile();
-  else if (strProtocol == "videodb") return NULL;
+  else if (strProtocol == "videodb") return new CVideoDatabaseFile();
   else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "multipath") return new CMultiPathFile();
   else if (strProtocol == "image") return new CImageFile();
