@@ -51,6 +51,9 @@ using namespace std;
 #define VOLUME_CHANGE_TIMEOUT     250
 #define VOLUME_REFRESH_TIMEOUT    100
 
+#define LOCALISED_ID_TV           36037
+#define LOCALISED_ID_AVR          36038
+
 class DllLibCECInterface
 {
 public:
@@ -1226,7 +1229,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   // set the connected device
   m_configuration.baseDevice = config.baseDevice;
-  bChanged |= SetSetting("connected_device", (int)config.baseDevice);
+  bChanged |= SetSetting("connected_device", config.baseDevice == CECDEVICE_AUDIOSYSTEM ? LOCALISED_ID_AVR : LOCALISED_ID_TV);
 
   // set the HDMI port number
   m_configuration.iHDMIPort = config.iHDMIPort;
@@ -1328,9 +1331,10 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // set the connected device
   int iConnectedDevice = GetSettingInt("connected_device");
-  if (iConnectedDevice == CECDEVICE_TV ||
-      iConnectedDevice == CECDEVICE_AUDIOSYSTEM)
-    m_configuration.baseDevice = (cec_logical_address)iConnectedDevice;
+  if (iConnectedDevice == LOCALISED_ID_AVR)
+    m_configuration.baseDevice = CECDEVICE_AUDIOSYSTEM;
+  else if (iConnectedDevice == LOCALISED_ID_TV)
+    m_configuration.baseDevice = CECDEVICE_TV;
 
   // set the HDMI port number
   int iHDMIPort = GetSettingInt("cec_hdmi_port");

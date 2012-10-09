@@ -10876,7 +10876,7 @@ msgid "Product ID"
 msgstr ""
 
 #empty strings from id 35505 to 35999
-
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adapter"
 msgstr ""
@@ -11023,3 +11023,13 @@ msgstr ""
 msgctxt "#36036"
 msgid "On start/stop"
 msgstr ""
+
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+msgctxt "#36037"
+msgid "TV"
+msgstr ""
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr ""
+
