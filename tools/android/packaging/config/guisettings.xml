@@ -3,15 +3,18 @@
         <enablerssfeeds>false</enablerssfeeds>
     </lookandfeel>
     <audiooutput>
+        <guisoundmode>0</guisoundmode>
         <ac3passthrough>false</ac3passthrough>
         <dtspassthrough>false</dtspassthrough>
+        <multichannellpcm>false</multichannellpcm>
+        <truehdpassthrough>false></truehdpassthrough>
+        <dtshdpassthrough>false</dtshdpassthrough>
         <mode>2</mode>
     </audiooutput>
     <videoscreen>
         <vsync>2</vsync>
     </videoscreen>
     <input>
-        <enablemouse>false</enablemouse>
         <remoteaskeyboard>true</remoteaskeyboard>
     </input>
 </settings>
