@@ -28,6 +28,11 @@ using namespace std;
 CUrlOptions::CUrlOptions()
 { }
 
+CUrlOptions::CUrlOptions(const std::string &options)
+{
+  AddOptions(options);
+}
+
 CUrlOptions::~CUrlOptions()
 { }
 
@@ -43,6 +48,14 @@ std::string CUrlOptions::GetOptionsString() const
   }
 
   return options;
+}
+
+void CUrlOptions::AddOption(const std::string &key, const char *value)
+{
+  if (key.empty() || value == NULL)
+    return;
+
+  return AddOption(key, string(value));
 }
 
 void CUrlOptions::AddOption(const std::string &key, const std::string &value)
@@ -119,4 +132,30 @@ void CUrlOptions::AddOptions(const std::string &options)
     if (!key.empty())
       AddOption(key, value);
   }
+}
+
+void CUrlOptions::AddOptions(const CUrlOptions &options)
+{
+  m_options.insert(options.m_options.begin(), options.m_options.end());
+}
+
+bool CUrlOptions::HasOption(const std::string &key)
+{
+  if (key.empty())
+    return false;
+
+  return m_options.find(key) != m_options.end();
+}
+
+bool CUrlOptions::GetOption(const std::string &key, CVariant &value)
+{
+  if (key.empty())
+    return false;
+
+  UrlOptions::const_iterator option = m_options.find(key);
+  if (option == m_options.end())
+    return false;
+
+  value = option->second;
+  return true;
 }

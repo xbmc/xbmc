@@ -76,7 +76,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     return InvalidParams;
 
   CFileItemList items;
-  if (!musicdatabase.GetArtistsNav(musicUrl.ToString(), items, albumArtistsOnly, genreID, albumID, songID, sorting))
+  if (!musicdatabase.GetArtistsNav(musicUrl.ToString(), items, albumArtistsOnly, genreID, albumID, songID, CDatabase::Filter(), sorting))
     return InternalError;
 
   // Add "artist" to "properties" array by default
@@ -154,7 +154,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLaye
     return InvalidParams;
 
   CFileItemList items;
-  if (!musicdatabase.GetAlbumsNav(musicUrl.ToString(), items, genreID, artistID, sorting))
+  if (!musicdatabase.GetAlbumsNav(musicUrl.ToString(), items, genreID, artistID, CDatabase::Filter(), sorting))
     return InternalError;
 
   int size = items.Size();

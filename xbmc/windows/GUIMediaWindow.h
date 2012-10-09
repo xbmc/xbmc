@@ -25,6 +25,7 @@
 #include "filesystem/DirectoryHistory.h"
 #include "GUIViewControl.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "playlists/SmartPlayList.h"
 
 class CFileItemList;
 
@@ -46,6 +47,9 @@ public:
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CGUIViewState *GetViewState() const;
+
+  virtual bool CanFilterAdvanced() { return m_canFilterAdvanced; }
+  virtual bool IsFiltered();
 
 protected:
   virtual void LoadAdditionalTags(TiXmlElement *root);
@@ -73,6 +77,9 @@ protected:
   void ClearFileItems();
   virtual void SortItems(CFileItemList &items);
 
+  virtual bool CheckFilterAdvanced(CFileItemList &items) { return false; }
+  virtual bool Filter();
+
   /* \brief Called on response to a GUI_MSG_FILTER_ITEMS message
    Filters the current list with the given filter using FilterItems()
    \param filter the filter to use.
@@ -86,6 +93,14 @@ protected:
    \sa OnFilterItems
    */
   virtual bool GetFilteredItems(const CStdString &filter, CFileItemList &items);
+
+  /* \brief Retrieve the advance filtered item list
+  \param items CFileItemList to filter
+  \param hasNewItems Whether the filtered item list contains new items
+                     which were not present in the original list
+  \sa GetFilteredItems
+  */
+  virtual bool GetAdvanceFilteredItems(CFileItemList &items, bool &hasNewItems);
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection(const CStdString& strPath, int iDriveType);
@@ -121,4 +136,7 @@ protected:
   int m_iLastControl;
   int m_iSelectedItem;
   CStdString m_startDirectory;
+
+  CSmartPlaylist m_filter;
+  bool m_canFilterAdvanced;
 };

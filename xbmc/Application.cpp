@@ -286,6 +286,7 @@
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogPlayEject.h"
+#include "dialogs/GUIDialogMediaFilter.h"
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
 
@@ -1298,6 +1299,8 @@ bool CApplication::Initialize()
 
     g_windowManager.Add(new CGUIDialogPeripheralManager);
     g_windowManager.Add(new CGUIDialogPeripheralSettings);
+    
+    g_windowManager.Add(new CGUIDialogMediaFilter);   // window id = 151
 
     g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
     g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -3475,6 +3478,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_ADDON_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
+    g_windowManager.Delete(WINDOW_DIALOG_MEDIA_FILTER);
 
     /* Delete PVR related windows and dialogs */
     g_windowManager.Delete(WINDOW_PVR);

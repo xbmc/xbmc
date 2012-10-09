@@ -60,6 +60,7 @@ public:
                          OPERATOR_NOT_IN_THE_LAST,
                          OPERATOR_TRUE,
                          OPERATOR_FALSE,
+                         OPERATOR_BETWEEN,
                          OPERATOR_END
                        };
 
@@ -137,6 +138,7 @@ public:
 private:
   friend class CSmartPlaylist;
   friend class CGUIDialogSmartPlaylistEditor;
+  friend class CGUIDialogMediaFilter;
 
   Combination m_type;
   CSmartPlaylistRuleCombinations m_combinations;
@@ -158,6 +160,8 @@ public:
 
   TiXmlElement *OpenAndReadName(const CStdString &path);
   bool LoadFromXML(TiXmlElement *root, const CStdString &encoding = "UTF-8");
+
+  void Reset();
 
   void SetName(const CStdString &name);
   void SetType(const CStdString &type); // music, video, mixed
@@ -191,8 +195,10 @@ public:
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
   static void GetAvailableOperators(std::vector<std::string> &operatorList);
 
+  bool IsEmpty() const { return m_ruleCombination.m_rules.empty() && m_ruleCombination.m_combinations.empty(); }
 private:
   friend class CGUIDialogSmartPlaylistEditor;
+  friend class CGUIDialogMediaFilter;
 
   TiXmlElement* readName();
   TiXmlElement *readNameFromXml(const CStdString &xml);
