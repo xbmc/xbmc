@@ -97,6 +97,11 @@ namespace EPG
     float ProgressPercentage(void) const;
 
     /*!
+     * @return The current progress of this tag in seconds.
+     */
+    int Progress(void) const;
+
+    /*!
      * @brief Get a pointer to the next event. Set by CEpg in a call to Sort()
      * @return A pointer to the next event or NULL if it's not set.
      */

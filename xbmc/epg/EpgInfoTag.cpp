@@ -247,6 +247,21 @@ float CEpgInfoTag::ProgressPercentage(void) const
   return fReturn;
 }
 
+int CEpgInfoTag::Progress(void) const
+{
+  int iDuration;
+  time_t currentTime, startTime;
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+
+  CSingleLock lock(m_critSection);
+  m_startTime.GetAsTime(startTime);
+  iDuration = currentTime - startTime;
+  if (iDuration <= 0)
+    return 0;
+
+  return iDuration;
+}
+
 CEpgInfoTagPtr CEpgInfoTag::GetNextEvent(void) const
 {
   return GetTable()->GetNextEvent(*this);
