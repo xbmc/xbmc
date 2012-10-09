@@ -241,7 +241,7 @@ namespace JSONRPC
                 "\"totaltime\", \"playlistid\", \"position\", \"repeat\", \"shuffled\","
                 "\"canseek\", \"canchangespeed\", \"canmove\", \"canzoom\", \"canrotate\","
                 "\"canshuffle\", \"canrepeat\", \"currentaudiostream\", \"audiostreams\","
-                "\"subtitleenabled\", \"currentsubtitle\", \"subtitles\" ]"
+                "\"subtitleenabled\", \"currentsubtitle\", \"subtitles\", \"live\" ]"
     "}",
     "\"Player.Property.Value\": {"
       "\"type\": \"object\","
@@ -267,7 +267,8 @@ namespace JSONRPC
         "\"audiostreams\": { \"type\": \"array\", \"items\": { \"$ref\": \"Player.Audio.Stream\" } },"
         "\"subtitleenabled\": { \"type\": \"boolean\" },"
         "\"currentsubtitle\": { \"$ref\": \"Player.Subtitle\" },"
-        "\"subtitles\": { \"type\": \"array\", \"items\": { \"$ref\": \"Player.Subtitle\" } }"
+        "\"subtitles\": { \"type\": \"array\", \"items\": { \"$ref\": \"Player.Subtitle\" } },"
+        "\"live\": { \"type\": \"boolean\" }"
       "}"
     "}",
     "\"Notifications.Item.Type\": {"
@@ -955,7 +956,7 @@ namespace JSONRPC
                   "\"runtime\", \"set\", \"showlink\", \"streamdetails\", \"top250\", \"votes\","
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
                   "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
-                  "\"disc\", \"tag\", \"art\", \"channel\", \"channeltype\", \"hidden\", \"locked\", \"virtual\","
+                  "\"disc\", \"tag\", \"art\", \"channel\", \"channeltype\", \"hidden\", \"locked\","
                   "\"channelnumber\", \"starttime\", \"endtime\" ]"
       "}"
     "}",
@@ -1002,7 +1003,6 @@ namespace JSONRPC
         "\"channeltype\": { \"$ref\": \"PVR.Channel.Type\" },"
         "\"hidden\": { \"type\": \"boolean\" },"
         "\"locked\": { \"type\": \"boolean\" },"
-        "\"virtual\": { \"type\": \"boolean\" },"
         "\"channelnumber\": { \"type\": \"integer\" },"
         "\"starttime\": { \"type\": \"string\" },"
         "\"endtime\": { \"type\": \"string\" }"
