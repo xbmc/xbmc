@@ -515,7 +515,29 @@ void CGUIDialogMediaFilter::Reset()
 
   // delete all the setting's data
   for (map<uint32_t, Filter>::iterator filter = m_filters.begin(); filter != m_filters.end(); filter++)
-    delete filter->second.data;
+  {
+    switch (filter->second.type)
+    {
+      case SettingInfo::STRING:
+      case SettingInfo::EDIT:
+      case SettingInfo::BUTTON:
+        delete (CStdString *)filter->second.data;
+        break;
+
+      case SettingInfo::CHECK:
+        delete (int *)filter->second.data;
+        break;
+
+      case SettingInfo::RANGE:
+        delete ((float **)filter->second.data)[0];
+        delete ((float **)filter->second.data)[1];
+        delete (float *)filter->second.data;
+        break;
+
+      default:
+        continue;
+    }
+  }
 
   m_filters.clear();
 }
