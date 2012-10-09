@@ -219,6 +219,8 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_isDirty(false)
 {
   m_channelLayout.Reset();
+  sinkReqFormat.m_dataFormat = AE_FMT_INVALID;
+  sinkReqFormat.m_channelLayout.Reset();
 }
 
 CAESinkWASAPI::~CAESinkWASAPI()
@@ -235,7 +237,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
   /* Save requested format */
   /* Clear returned format */
-  sinkReqFormat = format.m_dataFormat;
+  sinkReqFormat = format;
   sinkRetFormat = AE_FMT_INVALID;
 
   IMMDeviceEnumerator* pEnumerator = NULL;
@@ -384,18 +386,20 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
     return false;
 
   u_int notCompatible         = 0;
+  u_int notCompatibleReq      = 0;
   const u_int numTests        = 5;
   std::string strDiffBecause ("");
-  static const char* compatibleParams[numTests] = {":Devices",
-                                                   ":Channels",
-                                                   ":Sample Rates",
-                                                   ":Data Formats",
-                                                   ":Passthrough Formats"};
+  std::string strDiffBecauseReq ("");
+  static const char* compatibleParams[numTests] = {"Devices, ",
+                                                   "Channels, ",
+                                                   "Sample Rates, ",
+                                                   "Data Formats, ",
+                                                   "Passthrough Formats, "};
 
-  notCompatible = (notCompatible  +!((AE_IS_RAW(format.m_dataFormat)  == AE_IS_RAW(m_encodedFormat))        ||
-                                     (!AE_IS_RAW(format.m_dataFormat) == !AE_IS_RAW(m_encodedFormat))))     << 1;
-  notCompatible = (notCompatible  +!((sinkReqFormat                   == format.m_dataFormat)               &&
-                                     (sinkRetFormat                   == m_format.m_dataFormat)))           << 1;
+  notCompatible = (notCompatible  + !(!AE_IS_RAW(format.m_dataFormat) ||
+                                        m_encodedFormat == format.m_dataFormat))                            << 1;
+  notCompatible = (notCompatible  + !(AE_IS_RAW(format.m_dataFormat) ||
+                                        sinkRetFormat == format.m_dataFormat))                              << 1;
   notCompatible = (notCompatible  + !(format.m_sampleRate             == m_format.m_sampleRate))            << 1;
   notCompatible = (notCompatible  + !(format.m_channelLayout.Count()  == m_format.m_channelLayout.Count())) << 1;
   notCompatible = (notCompatible  + !(m_device                        == device));
@@ -406,13 +410,36 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
     return true;
   }
 
-  for (int i = 0; i < numTests ; i++)
+  notCompatibleReq = (notCompatibleReq  + !(!AE_IS_RAW(format.m_dataFormat) ||
+                                        sinkReqFormat.m_dataFormat == format.m_dataFormat))                 << 1;
+  notCompatibleReq = (notCompatibleReq  + !(AE_IS_RAW(format.m_dataFormat) ||
+                                        sinkReqFormat.m_dataFormat == format.m_dataFormat))                 << 1;
+  notCompatibleReq = (notCompatibleReq  + !(format.m_sampleRate             == sinkReqFormat.m_sampleRate)) << 1;
+  notCompatibleReq = (notCompatibleReq  + !(format.m_channelLayout.Count() == sinkReqFormat.m_channelLayout.Count())) << 1;
+  notCompatibleReq = (notCompatibleReq  + !(m_device                        == device));
+
+  if (!notCompatibleReq)
   {
-    strDiffBecause += (notCompatible & 0x01) ? (std::string) compatibleParams[i] : "";
-    notCompatible    = notCompatible >> 1;
+    CLog::Log(LOGDEBUG, __FUNCTION__": Format compatible with last requested format - assuming same initialization and reusing existing sink");
+    return true;
   }
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Formats Incompatible due to different %s", strDiffBecause.c_str());
+  for (int i = 0; i < numTests ; i++)
+  {
+    if (notCompatible & 0x01)
+      strDiffBecause += std::string (compatibleParams[i]);
+    if (notCompatibleReq & 0x01)
+      strDiffBecauseReq += std::string (compatibleParams[i]);
+    notCompatible    >>= 1;
+    notCompatibleReq >>= 1;
+  }
+  strDiffBecause.pop_back();
+  strDiffBecause.pop_back();
+  strDiffBecauseReq.pop_back();
+  strDiffBecauseReq.pop_back();
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Format Incompatible with current format due to different: %s.", strDiffBecause.c_str());
+  CLog::Log(LOGDEBUG, __FUNCTION__": Format Incompatible with last requested format due to different: %s.", strDiffBecauseReq.c_str());
   return false;
 }
 
