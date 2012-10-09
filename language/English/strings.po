@@ -1005,7 +1005,7 @@ msgid "No results found"
 msgstr ""
 
 msgctxt "#285"
-msgid "Preferred audio language"
+msgid "Preferred audio language (primary)"
 msgstr ""
 
 msgctxt "#286"
@@ -1100,7 +1100,11 @@ msgctxt "#309"
 msgid "User Interface language"
 msgstr ""
 
-#empty strings from id 310 to 311
+msgctxt "#310"
+msgid "Preferred audio language (secondary)"
+msgstr ""
+
+#empty string id 311
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -4211,7 +4215,10 @@ msgctxt "#13206"
 msgid "Overwrite"
 msgstr ""
 
-#empty string with id 13207
+
+msgctxt "#13207"
+msgid "Forced"
+msgstr ""
 
 msgctxt "#13208"
 msgid "Alarm clock"

@@ -116,6 +116,7 @@ public:
   virtual int  GetSubtitle()          { return -1; }
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName){};
   virtual void GetSubtitleLanguage(int iStream, CStdString &strStreamLang){};
+  virtual bool GetSubtitleIsForced(int iStream) { return false; }
   virtual void SetSubtitle(int iStream){};
   virtual bool GetSubtitleVisible(){ return false;};
   virtual void SetSubtitleVisible(bool bVisible){};

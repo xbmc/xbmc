@@ -971,8 +971,8 @@ msgid "No results found"
 msgstr "Ingen resultater fundet"
 
 msgctxt "#285"
-msgid "Preferred audio language"
-msgstr "Foretrukken lydsprog"
+msgid "Preferred audio language (primary)"
+msgstr "Foretrukken lydsprog (primær)"
 
 msgctxt "#286"
 msgid "Preferred subtitle language"
@@ -1061,6 +1061,10 @@ msgstr "Original strømsprog"
 msgctxt "#309"
 msgid "User Interface language"
 msgstr "Brugergrænsefladesprog"
+
+msgctxt "#310"
+msgid "Preferred audio language (secondary)"
+msgstr "Foretrukken lydsprog (sekundær)"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -3993,6 +3997,10 @@ msgstr "Ukendt"
 msgctxt "#13206"
 msgid "Overwrite"
 msgstr "Overskriv"
+
+msgctxt "#13207"
+msgid "Forced"
+msgstr "Tvungen"
 
 msgctxt "#13208"
 msgid "Alarm clock"

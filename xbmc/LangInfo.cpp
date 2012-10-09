@@ -393,18 +393,18 @@ CStdString CLangInfo::GetSubtitleCharSet() const
 }
 
 // three char language code (not win32 specific)
-const CStdString& CLangInfo::GetAudioLanguage() const
+const CStdString& CLangInfo::GetAudioLanguage(int index) const
 {
-  if (!m_audioLanguage.empty())
-    return m_audioLanguage;
+  if (!m_audioLanguage[index].empty())
+    return m_audioLanguage[index];
 
   return m_languageCodeGeneral;
 }
 
-void CLangInfo::SetAudioLanguage(const CStdString &language)
+void CLangInfo::SetAudioLanguage(int index, const CStdString &language)
 {
-  if (language.empty() || !g_LangCodeExpander.ConvertToThreeCharCode(m_audioLanguage, language))
-    m_audioLanguage.clear();
+  if (language.empty() || !g_LangCodeExpander.ConvertToThreeCharCode(m_audioLanguage[index], language))
+    m_audioLanguage[index].clear();
 }
 
 // three char language code (not win32 specific)
@@ -530,3 +530,5 @@ const CStdString& CLangInfo::GetSpeedUnitString() const
 {
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
 }
+
+
