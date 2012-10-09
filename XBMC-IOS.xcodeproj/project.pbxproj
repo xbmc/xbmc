@@ -27,6 +27,7 @@
 		36A9467815CF20A500727135 /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9467615CF20A500727135 /* UrlOptions.cpp */; };
 		36A9467B15CF20BD00727135 /* VideoDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9467915CF20BD00727135 /* VideoDbUrl.cpp */; };
 		36A9467E15CF20E100727135 /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9467C15CF20E100727135 /* DbUrl.cpp */; };
+		36A95DAD1624896C00727135 /* GUIDialogMediaFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A95DAB1624896C00727135 /* GUIDialogMediaFilter.cpp */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C0A7EDE13A5DC2800AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */; };
 		7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7F9B13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp */; };
@@ -1035,6 +1036,8 @@
 		36A9467A15CF20BD00727135 /* VideoDbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDbUrl.h; sourceTree = "<group>"; };
 		36A9467C15CF20E100727135 /* DbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DbUrl.cpp; sourceTree = "<group>"; };
 		36A9467D15CF20E100727135 /* DbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbUrl.h; sourceTree = "<group>"; };
+		36A95DAB1624896C00727135 /* GUIDialogMediaFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMediaFilter.cpp; sourceTree = "<group>"; };
+		36A95DAC1624896C00727135 /* GUIDialogMediaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMediaFilter.h; sourceTree = "<group>"; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7EDD13A5DC2800AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -4962,6 +4965,8 @@
 				F56C8357131F42E8000AD0F6 /* GUIDialogKaiToast.h */,
 				DF830C9315BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp */,
 				DF830C9415BB20FC00602BE6 /* GUIDialogKeyboardGeneric.h */,
+				36A95DAB1624896C00727135 /* GUIDialogMediaFilter.cpp */,
+				36A95DAC1624896C00727135 /* GUIDialogMediaFilter.h */,
 				F56C835A131F42E8000AD0F6 /* GUIDialogMediaSource.cpp */,
 				F56C835B131F42E8000AD0F6 /* GUIDialogMediaSource.h */,
 				F56C835C131F42E8000AD0F6 /* GUIDialogMuteBug.cpp */,
@@ -7603,6 +7608,7 @@
 				7C4458C8161E206100A905F6 /* Screenshot.cpp in Sources */,
 				1D638120161E20F2003603ED /* PeripheralImon.cpp in Sources */,
 				DF24EADE1621E67200034265 /* DVDDemuxBXA.cpp in Sources */,
+				36A95DAD1624896C00727135 /* GUIDialogMediaFilter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

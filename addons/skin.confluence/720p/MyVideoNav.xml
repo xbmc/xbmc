@@ -98,10 +98,19 @@
 					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
 				<control type="edit" id="19">
+					<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
 					<description>Filter</description>
 					<textwidth>230</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>587</label>
+				</control>
+				<control type="radiobutton" id="20">
+					<visible>Container.CanFilterAdvanced</visible>
+					<description>Filter</description>
+					<include>ButtonCommonValues</include>
+					<label>587</label>
+					<selected>Container.Filtered</selected>
+					<onclick>Filter</onclick>
 				</control>
 				<control type="radiobutton" id="99">
 					<description>Show Info Toggle</description>

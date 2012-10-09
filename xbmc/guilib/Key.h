@@ -309,6 +309,8 @@
 #define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in DVDPlayer
 #define ACTION_SUBTITLE_ALIGN         232 // toggle vertical alignment of subtitles
 
+#define ACTION_FILTER                 233
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -388,6 +390,7 @@
 #define WINDOW_DIALOG_PERIPHERAL_MANAGER  10149
 #define WINDOW_DIALOG_PERIPHERAL_SETTINGS 10150
 #define WINDOW_DIALOG_EXT_PROGRESS        10151
+#define WINDOW_DIALOG_MEDIA_FILTER        10152
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

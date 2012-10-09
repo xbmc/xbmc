@@ -431,7 +431,10 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "currentpage",      CONTAINER_CURRENT_PAGE },
                                   { "scrolling",        CONTAINER_SCROLLING },
                                   { "hasnext",          CONTAINER_HAS_NEXT },
-                                  { "hasprevious",      CONTAINER_HAS_PREVIOUS }};
+                                  { "hasprevious",      CONTAINER_HAS_PREVIOUS },
+                                  { "canfilter",        CONTAINER_CAN_FILTER },
+                                  { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
+                                  { "filtered",         CONTAINER_FILTERED }};
 
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
@@ -2203,6 +2206,24 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       if (control)
         bReturn = control->GetCondition(condition, 0);
     }
+  }
+  else if (condition == CONTAINER_CAN_FILTER)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      bReturn = !((CGUIMediaWindow*)window)->CanFilterAdvanced();
+  }
+  else if (condition == CONTAINER_CAN_FILTERADVANCED)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      bReturn = ((CGUIMediaWindow*)window)->CanFilterAdvanced();
+  }
+  else if (condition == CONTAINER_FILTERED)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      bReturn = ((CGUIMediaWindow*)window)->IsFiltered();
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = ((m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty()) ||

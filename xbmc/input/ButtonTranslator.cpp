@@ -189,6 +189,7 @@ static const ActionMapping actions[] =
         {"jumpsms7"          , ACTION_JUMP_SMS7},
         {"jumpsms8"          , ACTION_JUMP_SMS8},
         {"jumpsms9"          , ACTION_JUMP_SMS9},
+        {"filter"            , ACTION_FILTER},
         {"filterclear"       , ACTION_FILTER_CLEAR},
         {"filtersms2"        , ACTION_FILTER_SMS2},
         {"filtersms3"        , ACTION_FILTER_SMS3},
@@ -335,7 +336,8 @@ static const ActionMapping windows[] =
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
         {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
-        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS}};
+        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS},
+        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER}};
 
 static const ActionMapping mousecommands[] =
 {

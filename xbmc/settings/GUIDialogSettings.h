@@ -29,14 +29,16 @@ class CGUIRadioButtonControl;
 class CGUISettingsSliderControl;
 class CGUIEditControl;
 class CGUIImage;
+class CGUIEditControl;
 
 typedef std::vector<CStdString> SETTINGSTRINGS;
 typedef CStdString (*FORMATFUNCTION) (float value, float min);
+typedef CStdString (*RANGEFORMATFUNCTION) (float valueLower, float valueUpper, float min);
 
 class SettingInfo
 {
 public:
-  enum SETTING_TYPE { NONE=0, EDIT, EDIT_NUM, BUTTON, BUTTON_DIALOG, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR, STRING };
+  enum SETTING_TYPE { NONE=0, EDIT, EDIT_NUM, BUTTON, BUTTON_DIALOG, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR, STRING, RANGE };
   SettingInfo()
   {
     id = 0;
@@ -46,7 +48,7 @@ public:
     min = 0;
     max = 0;
     interval = 0;
-    formatFunction = NULL;
+    formatFunction.standard = NULL;
   };
   SETTING_TYPE type;
   CStdString name;
@@ -55,7 +57,11 @@ public:
   float min;
   float max;
   float interval;
-  FORMATFUNCTION formatFunction;
+  union
+  {
+    FORMATFUNCTION standard;
+    RANGEFORMATFUNCTION range;
+  } formatFunction;
   std::vector<std::pair<int, CStdString> > entry;
   bool enabled;
 };
@@ -96,6 +102,7 @@ protected:
   void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, CStdString> > &values);
   void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, int> > &values);
   void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction, bool allowPopup = true);
+  void AddRangeSlider(unsigned int id, int label, float *currentLower, float* currentUpper, float min, float interval, float max, RANGEFORMATFUNCTION formatFunction);
   void AddSeparator(unsigned int id);
 
   CGUIEditControl *m_pOriginalEdit;

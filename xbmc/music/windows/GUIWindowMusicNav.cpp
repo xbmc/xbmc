@@ -272,7 +272,7 @@ bool CGUIWindowMusicNav::Update(const CStdString &strDirectory)
 
   if (CGUIWindowMusicBase::Update(strDirectory))
   {
-    m_thumbLoader.Load(*m_vecItems);
+    m_thumbLoader.Load(*m_unfilteredItems);
     return true;
   }
 
