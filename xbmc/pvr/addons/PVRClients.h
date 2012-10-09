@@ -212,6 +212,21 @@ namespace PVR
     void CloseStream(void);
 
     /*!
+     * @brief (Un)Pause a PVR stream (only called when timeshifting is supported)
+     */
+    void PauseStream(bool bPaused);
+
+    /*!
+     * @brief Check whether it is possible to pause the currently playing livetv or recording stream
+     */
+    bool CanPauseStream(void) const;
+
+    /*!
+     * @brief Check whether it is possible to seek the currently playing livetv or recording stream
+     */
+    bool CanSeekStream(void) const;
+
+    /*!
      * @brief Get the properties of the current playing stream content.
      * @return A pointer to the properties or NULL if no stream is playing.
      */

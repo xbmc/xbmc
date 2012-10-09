@@ -357,6 +357,11 @@ namespace PVR
     int64_t GetStreamLength(void);
 
     /*!
+     * @brief (Un)Pause a stream
+     */
+    void PauseStream(bool bPaused);
+
+    /*!
      * @return The channel number on the server of the live stream that's currently being read.
      */
     int GetCurrentClientChannel(void);
@@ -381,6 +386,16 @@ namespace PVR
      * @return The requested URL.
      */
     CStdString GetLiveStreamURL(const CPVRChannel &channel);
+
+    /*!
+     * @brief Check whether PVR backend supports pausing the currently playing stream
+     */
+    bool CanPauseStream(void) const;
+
+    /*!
+     * @brief Check whether PVR backend supports seeking for the currently playing stream
+     */
+    bool CanSeekStream(void) const;
 
     //@}
     /** @name PVR recording stream methods */
@@ -558,5 +573,7 @@ namespace PVR
     bool           m_bIsPlayingRecording;
     CPVRRecording  m_playingRecording;
     ADDON::AddonVersion m_apiVersion;
+    bool           m_bCanPauseStream;
+    bool           m_bCanSeekStream;
   };
 }
