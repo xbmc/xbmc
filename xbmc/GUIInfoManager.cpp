@@ -524,6 +524,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "banner",           LISTITEM_BANNER },
                                   { "firstgenre",       LISTITEM_FIRST_GENRE },
                                   { "stardiffuse",      LISTITEM_STAR_DIFFUSE },
+                                  { "grandparentthumb", LISTITEM_GRANDPARENT_THUMB },
                                   /* END PLEX */
                                   { "discnumber",       LISTITEM_DISC_NUMBER }};
 
