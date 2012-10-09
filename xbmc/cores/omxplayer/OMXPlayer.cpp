@@ -82,6 +82,8 @@
 #include "pvr/windows/GUIWindowPVR.h"
 #include "filesystem/PVRFile.h"
 
+#include "utils/StringUtils.h"
+
 using namespace XFILE;
 using namespace PVR;
 
