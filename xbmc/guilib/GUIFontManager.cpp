@@ -370,7 +370,9 @@ void GUIFontManager::Clear()
   for (int i = 0; i < (int)m_vecFonts.size(); ++i)
   {
     CGUIFont* pFont = m_vecFonts[i];
+#ifndef __PLEX__ // I just can't track down this crash :(
     delete pFont;
+#endif
   }
 
   m_vecFonts.clear();
