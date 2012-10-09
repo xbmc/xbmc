@@ -418,7 +418,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
-  if (item && (item->GetExtraInfo().Find("lastfm") < 0))
+  if (item && (item->GetExtraInfo().Find("lastfm") < 0)  && !item->GetPath().Left(14).Equals("addons://more/"))
   {
     // are we in the playlists location?
     bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
@@ -541,7 +541,10 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (g_application.IsMusicScanning())
     buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);     // Stop Scanning
   else
-    buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
+  {
+    if (!m_vecItems->IsPlugin())
+      buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
+  }
 
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 }

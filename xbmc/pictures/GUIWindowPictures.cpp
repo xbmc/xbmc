@@ -455,13 +455,15 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
-      if (item)
+      if (item && !item->GetPath().Left(14).Equals("addons://more/"))
       {
         if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
           buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
         if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
+        {
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
-        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+        }
         if (item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
 
@@ -476,9 +478,11 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-
-      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+      else
+      {
+        buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+        buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+      }
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
