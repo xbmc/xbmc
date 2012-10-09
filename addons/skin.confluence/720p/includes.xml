@@ -588,7 +588,7 @@
 		</control>
 		<control type="group" id="9006">
 			<width>250</width>
-			<height>45</height>
+			<height>90</height>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="button" id="600">
@@ -597,29 +597,38 @@
 				<width>39</width>
 				<height>39</height>
 				<label>-</label>
-				<texturefocus>OSDChannelUPFO.png</texturefocus>
-				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<texturefocus>OSDRewindFO.png</texturefocus>
+				<texturenofocus>OSDRewindNF.png</texturenofocus>
 				<onleft>50</onleft>
 				<onright>601</onright>
 				<onup>610</onup>
-				<ondown>611</ondown>
-				<onclick>XBMC.PlayerControl(Previous)</onclick>
+				<ondown>605</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Rewind)</onclick>
+				<enable>Player.SeekEnabled</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.SeekEnabled">Conditional</animation>
 			</control>
-			<control type="button" id="601">
+			<control type="togglebutton" id="601">
 				<posx>60</posx>
 				<posy>2</posy>
 				<width>39</width>
 				<height>39</height>
 				<label>-</label>
-				<texturefocus>OSDChannelDownFO.png</texturefocus>
-				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<texturefocus>OSDPauseFO.png</texturefocus>
+				<texturenofocus>OSDPauseNF.png</texturenofocus>
+				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
 				<onleft>600</onleft>
-				<onright>603</onright>
+				<onright>602</onright>
 				<onup>610</onup>
-				<ondown>611</ondown>
-				<onclick>XBMC.PlayerControl(Next)</onclick>
-			</control>
-			<control type="button" id="603">
+				<ondown>606</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Play)</onclick>
+				<enable>Player.PauseEnabled</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.PauseEnabled">Conditional</animation>
+			</control>			
+			<control type="button" id="602">
 				<posx>100</posx>
 				<posy>2</posy>
 				<width>39</width>
@@ -628,11 +637,29 @@
 				<texturefocus>OSDStopFO.png</texturefocus>
 				<texturenofocus>OSDStopNF.png</texturenofocus>
 				<onleft>601</onleft>
-				<onright>604</onright>
+				<onright>603</onright>
 				<onup>610</onup>
-				<ondown>611</ondown>
+				<ondown>606</ondown>
+				<onback>50</onback>
 				<onclick>down</onclick>
 				<onclick>XBMC.PlayerControl(Stop)</onclick>
+			</control>
+			<control type="button" id="603">
+				<posx>140</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDForwardFO.png</texturefocus>
+				<texturenofocus>OSDForwardNF.png</texturenofocus>
+				<onleft>602</onleft>
+				<onright>604</onright>
+				<onup>610</onup>
+				<ondown>606</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Forward)</onclick>
+				<enable>Player.SeekEnabled</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.SeekEnabled">Conditional</animation>
 			</control>
 			<control type="button" id="604">
 				<posx>180</posx>
@@ -643,12 +670,43 @@
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>603</onleft>
-				<onright>50</onright>
+				<onright>605</onright>
 				<onup>610</onup>
-				<ondown>611</ondown>
+				<ondown>606</ondown>
+				<onback>50</onback>
 				<onclick>XBMC.PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
+			</control>
+			<control type="button" id="605">
+				<posx>20</posx>
+				<posy>42</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onleft>604</onleft>
+				<onright>606</onright>
+				<onup>600</onup>
+				<ondown>611</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Previous)</onclick>
+			</control>
+			<control type="button" id="606">
+				<posx>60</posx>
+				<posy>42</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onleft>605</onleft>
+				<onright>50</onright>
+				<onup>601</onup>
+				<ondown>611</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Next)</onclick>
 			</control>
 		</control>
 		<control type="group" id="9005">
