@@ -85,7 +85,7 @@ class PlexContentWorker
 
   void run()
   {
-    printf("[%p] Processing content request in thread [%s]\n", this, m_url.c_str());
+    //printf("[%p] Processing content request in thread [%s]\n", this, m_url.c_str());
 
     if (m_cancelled == false)
     {

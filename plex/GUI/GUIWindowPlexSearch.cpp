@@ -188,7 +188,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
     PlexContentWorkerPtr worker = m_workerManager->find(message.GetParam1());
     if (worker)
     {
-      printf("Processing results from worker: %d.\n", worker->getID());
+      //printf("Processing results from worker: %d.\n", worker->getID());
       CFileItemListPtr results = worker->getResults();
 
       int lastFocusedList = -1;

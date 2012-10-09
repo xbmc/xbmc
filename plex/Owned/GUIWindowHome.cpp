@@ -673,7 +673,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       CFileItemListPtr results = worker->getResults();
       int controlID = message.GetParam2();
-      printf("Processing results from worker: %d (context: %d).\n", worker->getID(), controlID);
+      //printf("Processing results from worker: %d (context: %d).\n", worker->getID(), controlID);
 
       // Copy the items across.
       if (m_contentLists.find(controlID) != m_contentLists.end())
