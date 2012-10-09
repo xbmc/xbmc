@@ -318,7 +318,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
       if (item->GetProperty("pluginreplacecontextitems").asBoolean())
         return;
-      if (!item->IsPlayList())
+      if (!item->IsPlayList() && !item->IsPlugin() && !item->IsScript())
       {
         if (item->IsAudio() && !item->IsLastFM())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
@@ -368,6 +368,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
              !item->IsLastFM()                                         &&
              !item->GetPath().Equals("add") && !item->IsParentFolder() &&
              !item->IsPlugin()                                         &&
+             !item->GetPath().Left(9).Equals("addons://")              &&
             (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
@@ -375,7 +376,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
-  if (!m_vecItems->IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlugin())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 }
