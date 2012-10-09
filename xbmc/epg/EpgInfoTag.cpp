@@ -29,6 +29,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "addons/include/xbmc_pvr_types.h"
 
 using namespace std;
@@ -198,6 +199,20 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_pvrChannel         = other.m_pvrChannel;
 
   return *this;
+}
+
+void CEpgInfoTag::Serialize(CVariant &value) const
+{
+  value["rating"] = m_iStarRating;
+  value["title"] = m_strTitle;
+  value["plotoutline"] = m_strPlotOutline;
+  value["plot"] = m_strPlot;
+  value["genre"] = m_genre;
+  value["filenameandpath"] = m_strFileNameAndPath;
+  value["starttime"] = m_startTime.IsValid() ? m_startTime.GetAsDBDateTime() : StringUtils::EmptyString;
+  value["endtime"] = m_endTime.IsValid() ? m_endTime.GetAsDBDateTime() : StringUtils::EmptyString;
+  value["runtime"] = StringUtils::Format("%d", GetDuration() / 60);
+  value["firstaired"] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : StringUtils::EmptyString;
 }
 
 bool CEpgInfoTag::Changed(void) const
