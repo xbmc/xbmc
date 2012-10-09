@@ -65,7 +65,7 @@ namespace PVR
      * @brief Initialise the instance of this add-on.
      * @param iClientId The ID of this add-on.
      */
-    bool Create(int iClientId);
+    ADDON_STATUS Create(int iClientId);
 
     /*!
      * @return True when the dll for this add-on was loaded, false otherwise (e.g. unresolved symbols)
