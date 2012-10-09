@@ -240,7 +240,10 @@ int MysqlDatabase::copy(const char *backup_name) {
     // create the new database
     sprintf(sql, "CREATE DATABASE `%s`", backup_name);
     if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+    {
+      mysql_free_result(res);
       throw DbErrors("Can't create database for copy: '%s' (%d)", db.c_str(), ret);
+    }
 
     MYSQL_ROW row;
 
@@ -252,15 +255,22 @@ int MysqlDatabase::copy(const char *backup_name) {
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      {
+        mysql_free_result(res);
         throw DbErrors("Can't copy schema for table '%s'\nError: %s", db.c_str(), ret);
+      }
 
       // copy the table data
       sprintf(sql, "INSERT INTO %s.%s SELECT * FROM %s",
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      {
+        mysql_free_result(res);
         throw DbErrors("Can't copy data for table '%s'\nError: %s", row[0], ret);
+      }
     }
+    mysql_free_result(res);
 
     // after table are recreated and repopulated we can recreate views
     // grab a list of views and their definitions
@@ -279,7 +289,10 @@ int MysqlDatabase::copy(const char *backup_name) {
                 backup_name, row[0], row[1]);
 
         if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+        {
+          mysql_free_result(resViews);
           throw DbErrors("Can't create view '%s'\nError: %s", db.c_str(), ret);
+        }
       }
       mysql_free_result(resViews);
     }
@@ -336,6 +349,7 @@ long MysqlDatabase::nextid(const char* sname) {
     lengths = mysql_fetch_lengths(res);
     CLog::Log(LOGINFO,"Next id is [%.*s] ", (int) lengths[0], row[0]);
     sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",seq_table,id,sname);
+    mysql_free_result(res);
     if ((last_err = query_with_reconnect(sqlcmd) != 0)) return DB_UNEXPECTED_RESULT;
     return id;
   }
