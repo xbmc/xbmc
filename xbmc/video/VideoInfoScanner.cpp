@@ -1616,18 +1616,18 @@ namespace VIDEO
     if (useLocal)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(show.m_strPath, items, ".tbn");
+      CDirectory::GetDirectory(show.m_strPath, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
       // run through all these items and see which ones match
       CRegExp reg;
-      if (items.Size() && reg.RegComp("season[ ._-]?([0-9]+)\\.tbn"))
+      if (items.Size() && reg.RegComp("season[ ._-]?([0-9]+)\\.(tbn|jpg|png)"))
       {
         for (int i = 0; i < items.Size(); i++)
         {
           CStdString name = URIUtils::GetFileName(items[i]->GetPath());
-          name.ToLower();
-          if (name == "season-all.tbn")
+          URIUtils::RemoveExtension(name);
+          if (name == "season-all")
             art.insert(make_pair(-1, items[i]->GetPath()));
-          else if (name == "season-specials.tbn")
+          else if (name == "season-specials")
             art.insert(make_pair(0, items[i]->GetPath()));
           else if (reg.RegFind(name) > -1)
           {
@@ -1647,17 +1647,25 @@ namespace VIDEO
 
   void CVideoInfoScanner::FetchActorThumbs(vector<SActorInfo>& actors, const CStdString& strPath)
   {
+    CFileItemList items;
+    CDirectory::GetDirectory(URIUtils::AddFileToFolder(strPath, ".actors"), items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
     for (vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
     {
       if (i->thumb.IsEmpty())
       {
         CStdString thumbFile = i->strName;
         thumbFile.Replace(" ","_");
-        thumbFile += ".tbn";
-        CStdString strLocal = URIUtils::AddFileToFolder(URIUtils::AddFileToFolder(strPath, ".actors"), thumbFile);
-        if (CFile::Exists(strLocal))
-          i->thumb = strLocal;
-        else if (!i->thumbUrl.GetFirstThumb().m_url.IsEmpty())
+        for (int j = 0; j < items.Size(); j++)
+        {
+          CStdString compare = URIUtils::GetFileName(items[j]->GetPath());
+          URIUtils::RemoveExtension(compare);
+          if (!items[j]->m_bIsFolder && compare == thumbFile)
+          {
+            i->thumb = compare;
+            break;
+          }
+        }
+        if (i->thumb.IsEmpty() && !i->thumbUrl.GetFirstThumb().m_url.IsEmpty())
           i->thumb = CScraperUrl::GetThumbURL(i->thumbUrl.GetFirstThumb());
         if (!i->thumb.IsEmpty())
           CTextureCache::Get().BackgroundCacheImage(i->thumb);
