@@ -58,6 +58,7 @@
       "AudioLibrary": { "type": "boolean", "required": true },
       "Application": { "type": "boolean", "required": true },
       "Input": { "type": "boolean", "required": true },
+      "PVR": { "type": "boolean", "required": true },
       "Other": { "type": "boolean", "required": true }
     },
     "additionalProperties": false
@@ -246,7 +247,7 @@
   },
   "Notifications.Item.Type": {
     "type": "string",
-    "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture" ]
+    "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture", "channel" ]
   },
   "Notifications.Item": {
     "type": [
@@ -298,6 +299,14 @@
         "properties": {
           "type": { "$ref": "Notifications.Item.Type", "required": true },
           "file": { "type": "string", "required": true }
+        }
+      },
+      { "type": "object", "description": "A PVR channel is either a radio or tv channel and has a title.",
+        "properties": {
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
+          "id": { "$ref": "Library.Id", "required": true  },
+          "title": { "type": "string", "required": true },
+          "channeltype": { "$ref": "PVR.Channel.Type", "required": true }
         }
       }
     ]
