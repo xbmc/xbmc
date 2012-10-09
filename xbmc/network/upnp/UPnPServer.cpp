@@ -10,6 +10,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/Key.h"
 #include "music/tags/MusicInfoTag.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "utils/md5.h"
 #include "utils/StringUtils.h"
@@ -129,7 +130,7 @@ CUPnPServer::PropagateUpdates()
     string buffer;
     map<string,pair<bool, unsigned long> >::iterator itr;
 
-    if (m_scanning)
+    if (m_scanning || !g_guiSettings.GetBool("services.upnpannounce"))
         return;
 
     NPT_CHECK_LABEL(FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service), failed);
