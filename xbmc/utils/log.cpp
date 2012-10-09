@@ -92,7 +92,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     /* PLEX */
     // Take out tokens.
-    if (g_advancedSettings.m_bEnablePlexTokensInLogs == false)
+    if (g_advancedSettings.m_bEnablePlexTokensInLogs == false && strData.find("X-Plex-Token") != std::string::npos)
     {
       static sregex reToken = sregex::compile("X-Plex-Token=[0-9a-z]+", xpressive::regex_constants::icase);
       strData = regex_replace(strData, reToken, "X-Plex-Token=<secret>");
