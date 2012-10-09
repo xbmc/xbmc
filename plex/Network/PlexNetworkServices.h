@@ -66,6 +66,12 @@ public:
     
     PlexServerManager::Get().updateServer(service->getResourceIdentifier(), service->getParam("Name"), service->address().to_string(), service->port(), updatedAt);
   }
+
+  /// Check reachability
+  virtual bool handleServiceIsReachable(NetworkServicePtr &service)
+  {
+    return PlexServerManager::Get().checkServerReachability(service->getResourceIdentifier(), service->address().to_string(), service->port());
+  }
 };
 
 ///

@@ -55,6 +55,10 @@ class PlexServer
   bool reachable()
   {
     CFileCurl  http;
+
+    /* set short timeout */
+    http.SetTimeout(1);
+
     CStdString resp;
     live = http.Get(url(), resp);
     
@@ -234,6 +238,18 @@ public:
     }
   }
   
+  /// Return if server is reachable
+  bool checkServerReachability(const string& uuid, const string& addr, unsigned short port)
+  {
+    boost::recursive_mutex::scoped_lock lk(m_mutex);
+    PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, "", addr, port, ""));
+    if (m_servers.find(server->key()) != m_servers.end())
+    {
+      return m_servers[server->key()]->reachable();
+    }
+    return false;
+  }
+
   /// Set the shared servers.
   void setSharedServers(const vector<PlexServerPtr>& sharedServers)
   {

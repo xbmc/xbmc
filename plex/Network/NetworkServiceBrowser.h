@@ -63,6 +63,13 @@ class NetworkServiceBrowser : public NetworkServiceBase
   {
     dprintf("NetworkServiceBrowser: SERVICE updated: %s", service->address().to_string().c_str());
   }
+
+  /// See if server is still reachable
+  virtual bool handleServiceIsReachable(NetworkServicePtr& service)
+  {
+    dprintf("NetworkServiceBrowser: SERVICE reachability: %s (will always be false)", service->address().to_string().c_str());
+    return false;
+  }
   
   /// Copy out the current service list.
   map<boost::asio::ip::address, NetworkServicePtr> copyServices()
@@ -268,22 +275,6 @@ class NetworkServiceBrowser : public NetworkServiceBase
     else
       iprintf("Network Service: Abandoning browse socket, it was closed.");
   }
-
-  bool isReachable(const NetworkServicePtr &service)
-  {
-    XFILE::CFileCurl *file = new XFILE::CFileCurl();
-    std::string url("http://");
-    url+=service->address().to_string();
-    url+=":32400/";
-
-    struct __stat64 stat;
-    if (file->Stat(CURL(url), &stat) == 0)
-    {
-      CLog::Log(LOGDEBUG, "%s is still reachable", url.c_str());
-      return true;
-    }
-    return false;
-  }
   
   /// Handle the deletion timer.
   void handleDeletionTimeout()
@@ -298,7 +289,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
       {
         if (pair.second->timeSinceLastSeen()*1000 > NS_DEAD_SERVER_TIME)
         {
-          if (isReachable(pair.second))
+          if (handleServiceIsReachable(pair.second))
           {
             pair.second->freshen();
             CLog::Log(LOGDEBUG, "We couldn't get a response from %s but we can still reach it, freshing it.", pair.second->address().to_string().c_str());
