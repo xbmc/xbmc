@@ -79,5 +79,14 @@ using namespace xbmcvfs;
 %include "interfaces/legacy/Stat.h"
 
 %rename ("delete") XBMCAddon::xbmcvfs::deleteFile;
+
+namespace XBMCAddon
+{
+  namespace xbmcgui
+  {
+    typedef std::vector<ListItem*> ListItemList;
+  }
+}
+
 %include "interfaces/legacy/ModuleXbmcvfs.h"
 
