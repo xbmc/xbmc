@@ -54,8 +54,9 @@
       <backspace>Back</backspace>
       <key id='65446'>Back</key>
       <m>ActivateWindow(PlayerControls)</m>
-      <s>ActivateWindow(shutdownmenu)</s>
-      <escape>PreviousMenu</escape>
+      <!--<s>ActivateWindow(shutdownmenu)</s>-->
+      <!--<escape>PreviousMenu</escape>-->
+      <escape>ParentDir</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
       <c>ContextMenu</c>
@@ -141,6 +142,7 @@
       <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
+      <h>ActivateWindow(Home)</h>
     </keyboard>
   </global>
   <LoginScreen>
@@ -167,6 +169,11 @@
       <r>Rename</r>
     </keyboard>
   </MyFiles>
+  <MyPictures>
+    <keyboard>
+      <escape>ParentDir</escape>
+    </keyboard>
+  </MyPictures>
   <MyMusicPlaylist>
     <keyboard>
       <space>Back</space>
@@ -187,6 +194,7 @@
       <space>Playlist</space>
       <q>Queue</q>
       <delete>Delete</delete>
+      <escape>ParentDir</escape>
     </keyboard>
   </MyMusicFiles>
   <MyMusicLibrary>
@@ -201,28 +209,56 @@
       <r>Rewind</r>
       <period>StepForward</period>
       <comma>StepBack</comma>
-      <backspace>Fullscreen</backspace>
+      <!--<backspace>Fullscreen</backspace>-->
       <quote>SmallStepBack</quote>
-      <opensquarebracket>BigStepForward</opensquarebracket>
-      <closesquarebracket>BigStepBack</closesquarebracket>
+      <!--<opensquarebracket>BigStepForward</opensquarebracket>
+      <closesquarebracket>BigStepBack</closesquarebracket>-->
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
+      <!--
       <i>Info</i>
       <o>CodecInfo</o>
+      -->
       <z>AspectRatio</z>
+      <!--
       <t>ShowSubtitles</t>
       <t mod="ctrl">SubtitleAlign</t>
       <l>NextSubtitle</l>
+      -->
       <left>StepBack</left>
       <right>StepForward</right>
       <up>BigStepForward</up>
       <down>BigStepBack</down>
+      <!--
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <v>XBMC.ActivateWindow(Teletext)</v>
+      -->
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
+      
+      <!-- PLEX -->
+      <backspace>SmallStepBack</backspace>
+      <opensquarebracket>BigStepBack</opensquarebracket>
+      <closesquarebracket>BigStepForward</closesquarebracket>
+      <return>Pause</return>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <o>ShowTime</o>
+      <s>ShowSubtitles</s>
+      <s mod="ctrl">SubtitleAlign</s>
+      <l>NextSubtitle</l>
+      <a>AudioNextLanguage</a>
+      <f1>OSD</f1>
+      <f2>Rewind</f2>
+      <f3>FastForward</f3>
+      <f4>VolumeUp</f4>
+      <f5>VolumeDown</f5>
+      <f6>Info</f6>
+      <f7>Stop</f7>
+      <escape>Stop</escape> 
+      <!-- END PLEX -->
     </keyboard>
   </FullscreenVideo>
   <VideoTimeSeek>
@@ -240,6 +276,7 @@
       <i>Back</i>
       <d mod="ctrl">Back</d>
       <m>OSD</m>
+      <escape>Close</escape>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
@@ -340,6 +377,8 @@
       <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
       <r>NextResolution</r>
+      <backspace>PreviousMenu</backspace>
+      <escape>PreviousMenu</escape>
     </keyboard>
   </ScreenCalibration>
   <GUICalibration>
@@ -347,6 +386,8 @@
       <return>NextCalibration</return>
       <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
+      <backspace>PreviousMenu</backspace>
+      <escape>PreviousMenu</escape>
     </keyboard>
   </GUICalibration>
   <VideoOSD>
@@ -359,8 +400,14 @@
   </VideoOSD>
   <VideoMenu>
     <keyboard>
+      <!--
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
+      -->
+      
+      <opensquarebracket>BigStepBack</opensquarebracket>
+      <closesquarebracket>BigStepForward</closesquarebracket>
+      
       <m>OSD</m>
       <i>Info</i>
       <o>CodecInfo</o>
@@ -402,6 +449,7 @@
       <space>Playlist</space>
       <q>Queue</q>
       <w>ToggleWatched</w>
+      <escape>Playlist</escape>
     </keyboard>
   </MyVideoFiles>
   <MyVideoPlaylist>
@@ -410,6 +458,7 @@
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
+      <escape>Playlist</escape>
     </keyboard>
   </MyVideoPlaylist>
   <MyPictures>
@@ -421,6 +470,7 @@
     <keyboard>
       <c>Back</c>
       <menu>Back</menu>
+      <escape>Close</escape>
     </keyboard>
   </ContextMenu>
   <Scripts>
@@ -432,11 +482,13 @@
     <keyboard>
       <i>Back</i>
       <d mod="ctrl">Back</d>
+      <escape>Close</escape>
     </keyboard>
   </MusicInformation>
   <MovieInformation>
     <keyboard>
       <i>Back</i>
+      <escape>Close</escape>
     </keyboard>
   </MovieInformation>
   <PictureInfo>
@@ -467,11 +519,31 @@
   <AddonInformation>
     <keyboard>
       <i>Back</i>
+      <escape>Close</escape>
     </keyboard>
   </AddonInformation>
   <AddonSettings>
     <keyboard>
       <delete>Delete</delete>
+      <escape>Close</escape>
     </keyboard>
   </AddonSettings>
+  
+  <NowPlaying>
+		<keyboard>
+			<left>SkipPrevious</left>
+    	<right>SkipNext</right>
+	    <return>Pause</return>
+	    <f7>Stop</f7>
+      <f2>Rewind</f2>
+      <f3>FastForward</f3>
+	    <f4>VolumeUp</f4>
+      <f5>VolumeDown</f5>
+		</keyboard>
+	</NowPlaying>
+  <PlexSearch>
+    <keyboard>
+      <escape>PreviousMenu</escape>
+    </keyboard>
+  </PlexSearch>
 </keymap>
