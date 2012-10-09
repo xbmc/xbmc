@@ -39,6 +39,7 @@
 #include "epg/EpgInfoTag.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -473,6 +474,22 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
     if (g_partyModeManager.IsEnabled())
       g_partyModeManager.Disable();
     CApplicationMessenger::Get().ExecBuiltIn("playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
+    return ACK;
+  }
+  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("channelid"))
+  {
+    if (!g_PVRManager.IsStarted())
+      return FailedToExecute;
+
+    CPVRChannelGroupsContainer *channelGroupContainer = g_PVRChannelGroups;
+    if (channelGroupContainer == NULL)
+      return FailedToExecute;
+
+    CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["item"]["channelid"].asInteger());
+    if (channel == NULL)
+      return InvalidParams;
+
+    CApplicationMessenger::Get().PlayFile(CFileItem(*channel.get()));
     return ACK;
   }
   else
