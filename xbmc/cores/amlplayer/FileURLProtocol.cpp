@@ -56,6 +56,10 @@ int CFileURLProtocol::Open(AML_URLContext *h, const char *filename, int flags)
   {
     url = url.Right(url.size() - strlen("xb-"));
   }
+  else if (url.Left(strlen("xb-sftp://")).Equals("xb-sftp://"))
+  {
+    url = url.Right(url.size() - strlen("xb-"));
+  }
   else if (url.Left(strlen("xb-hdhomerun://")).Equals("xb-hdhomerun://"))
   {
     url = url.Right(url.size() - strlen("xb-"));

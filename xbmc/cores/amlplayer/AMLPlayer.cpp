@@ -1424,6 +1424,13 @@ void CAMLPlayer::Process()
       vfs_protocol.name = http_name;
       url = "xb-" + url;
     }
+    else if (url.Left(strlen("sftp://")).Equals("sftp://"))
+    {
+      // the name string needs to persist
+      static const char *http_name = "xb-sftp";
+      vfs_protocol.name = http_name;
+      url = "xb-" + url;
+    }
     CLog::Log(LOGDEBUG, "CAMLPlayer::Process: URL=%s", url.c_str());
 
     if (m_dll->player_init() != PLAYER_SUCCESS)
