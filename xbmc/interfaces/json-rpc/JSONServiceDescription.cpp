@@ -35,6 +35,7 @@
 #include "InputOperations.h"
 #include "XBMCOperations.h"
 #include "ApplicationOperations.h"
+#include "PVROperations.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -151,6 +152,15 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "GUI.ActivateWindow",                           CGUIOperations::ActivateWindow },
   { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
   { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
+
+// PVR operations
+  { "PVR.GetProperties",                            CPVROperations::GetProperties },
+  { "PVR.GetChannelGroups",                         CPVROperations::GetChannelGroups },
+  { "PVR.GetChannelGroupDetails",                   CPVROperations::GetChannelGroupDetails },
+  { "PVR.GetChannels",                              CPVROperations::GetChannels },
+  { "PVR.GetChannelDetails",                        CPVROperations::GetChannelDetails },
+  { "PVR.Record",                                   CPVROperations::Record },
+  { "PVR.Scan",                                     CPVROperations::Scan },
 
 // System operations
   { "System.GetProperties",                         CSystemOperations::GetProperties },
