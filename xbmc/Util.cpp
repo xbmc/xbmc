@@ -85,6 +85,7 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "URL.h"
+#include "utils/LangCodeExpander.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
@@ -2182,7 +2183,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     {
       CFileItemList items;
       
-      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",DIR_FLAG_NO_FILE_DIRS);
+      CDirectory::GetDirectory(strLookInPaths[step], items, g_settings.m_subtitlesExtensions, DIR_FLAG_NO_FILE_DIRS);
       int fnl = strMovieFileNameNoExt.size();
       
       for (int j = 0; j < items.Size(); j++)
@@ -2322,6 +2323,85 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   }
 
   return nSubtitlesAdded;
+}
+
+void CUtil::GetExternalStreamNameAndLangFromFilename(const CStdString& strVideo, const CStdString& strStream, std::string& name, std::string& lang)
+{
+  CStdString videoBaseName = URIUtils::GetFileName(strVideo);
+  URIUtils::RemoveExtension(videoBaseName);
+
+  CStdString toParse = URIUtils::GetFileName(strStream);
+  URIUtils::RemoveExtension(toParse);
+
+  // we check left part - if it's same as video base name - strip it
+  if (toParse.Left(videoBaseName.length()).Equals(videoBaseName))
+    toParse = toParse.Mid(videoBaseName.length());
+
+  // trim any non-alphanumeric char in the begining
+  unsigned int alnumPos = 0;
+  while(alnumPos < toParse.length() && !isalnum(toParse.at(alnumPos)))
+    alnumPos++;
+
+  if (alnumPos > 0)
+    toParse = toParse.Mid(alnumPos);
+
+  if (toParse.length() > 0) // if we have anything to parse
+  {
+
+    // iterate through defined regexps
+    for (CStdStringArray::iterator it = g_advancedSettings.m_externalStreamMatchRegExps.begin() ;
+      it != g_advancedSettings.m_externalStreamMatchRegExps.end(); it++)
+    {
+      CRegExp reg;
+      if (!reg.RegComp(*it))
+        continue;
+
+      int regexppos;
+      if ((regexppos = reg.RegFind(toParse)) < 0)
+        continue;
+
+      // to store results
+      std::string name_current;
+      CStdString lang_current;
+
+      // try to recognize language from named "lang" group in current regexp
+      std::string langTmp; // tmp var
+      if (reg.GetNamedSubPattern("lang", langTmp))
+      {
+        // replace '.', '-' with space
+        CStdString strLangTmp(langTmp);
+        strLangTmp.Replace('.', ' ');
+        strLangTmp.Replace('-', ' ');
+
+        // try to recognize language
+        g_LangCodeExpander.ConvertToTwoCharCode(strLangTmp, lang_current);
+      }
+
+      // try to extract name from name "name" group in current regexp
+      reg.GetNamedSubPattern("name", name_current);
+
+      // compare to previous matches and determine if it's better
+      // best match is one with language and longest name part
+      if ((!lang_current.empty() && lang.empty())                                        // prefer match with language
+        || lang_current.Equals(lang.c_str()) && name_current.length() > name.length())   // prefer one with longer name
+      {
+        lang = lang_current;
+        name = name_current;
+      }
+    }
+  
+    if (name.empty() && !lang.empty())
+    {
+      CStdString nameTmp;
+      if (g_LangCodeExpander.Lookup(nameTmp, lang))
+        name = nameTmp;
+    }
+  }
+
+  if (name.empty())
+    name = URIUtils::GetFileName(strStream);
+
+  CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' from %s", __FUNCTION__, lang.c_str(), name.c_str(), strStream.c_str());
 }
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file

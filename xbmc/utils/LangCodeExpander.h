@@ -33,6 +33,7 @@ public:
 
   bool Lookup(CStdString& desc, const CStdString& code);
   bool Lookup(CStdString& desc, const int code);
+  bool ConvertToTwoCharCode(const CStdString& lang, CStdString& code);
 #ifdef TARGET_WINDOWS
   bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack = false);
   bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack = false);
@@ -49,13 +50,14 @@ public:
   void LoadUserCodes(const TiXmlElement* pRootElement);
   void Clear();
 protected:
-
+  void CodeToString(long code, CStdString& ret);
 
   typedef std::map<CStdString, CStdString> STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapUser;
 
   bool LookupInDb(CStdString& desc, const CStdString& code);
   bool LookupInMap(CStdString& desc, const CStdString& code);
+  bool ReverseLookup(const CStdString& desc, CStdString& code);
 };
 
 extern CLangCodeExpander g_LangCodeExpander;

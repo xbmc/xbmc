@@ -203,6 +203,7 @@ class CAdvancedSettings
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_folderStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
+    CStdStringArray m_externalStreamMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     CStdString m_tvshowMultiPartEnumRegExp;
     typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
