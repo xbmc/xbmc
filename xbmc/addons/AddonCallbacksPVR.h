@@ -135,6 +135,13 @@ public:
   static void PVRTriggerChannelGroupsUpdate(void *addonData);
 
   /*!
+   * @brief Schedule an EPG update for the given channel channel
+   * @param addonData A pointer to the add-on
+   * @param iChannelUid The channel to update the EPG for
+   */
+  static void PVRTriggerEpgUpdate(void *addonData, unsigned int iChannelUid);
+
+  /*!
    * @brief Free an allocated demux packet.
    * @param addonData A pointer to the add-on.
    * @param pPacket The packet to free.

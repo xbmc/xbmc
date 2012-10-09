@@ -117,6 +117,10 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_trigger_channel_groups_update");
     if (PVR_trigger_channel_groups_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    PVR_trigger_epg_update = (void (*)(void* HANDLE, void* CB, unsigned int iChannelUid))
+      dlsym(m_libXBMC_pvr, "PVR_trigger_epg_update");
+    if (PVR_trigger_epg_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     PVR_transfer_channel_group  = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group))
       dlsym(m_libXBMC_pvr, "PVR_transfer_channel_group");
     if (PVR_transfer_channel_group == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -184,6 +188,11 @@ public:
     return PVR_trigger_channel_update(m_Handle, m_Callbacks);
   }
 
+  void TriggerEpgUpdate(unsigned int iChannelUid)
+  {
+    return PVR_trigger_epg_update(m_Handle, m_Callbacks, iChannelUid);
+  }
+
   void TriggerChannelGroupsUpdate()
   {
     return PVR_trigger_channel_groups_update(m_Handle, m_Callbacks);
@@ -224,6 +233,7 @@ protected:
   void (*PVR_trigger_channel_groups_update)(void* HANDLE, void* CB);
   void (*PVR_trigger_timer_update)(void* HANDLE, void* CB);
   void (*PVR_trigger_recording_update)(void* HANDLE, void* CB);
+  void (*PVR_trigger_epg_update)(void* HANDLE, void* CB, unsigned int iChannelUid);
   void (*PVR_transfer_channel_group)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
   void (*PVR_transfer_channel_group_member)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
 #ifdef USE_DEMUX
