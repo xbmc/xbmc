@@ -2136,10 +2136,8 @@ void CDVDPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM))
       {
         CDVDMsgPlayerSetSubtitleStream* pMsg2 = (CDVDMsgPlayerSetSubtitleStream*)pMsg;
-    if(pMsg2->GetStreamId()==-1)
-    {
-              CloseSubtitleStream(false);
-    }
+        if(pMsg2->GetStreamId()==-1)
+          CloseSubtitleStream(false);
 
         SelectionStream& st = m_SelectionStreams.Get(STREAM_SUBTITLE, pMsg2->GetStreamId());
         if(st.source != STREAM_SOURCE_NONE)
