@@ -51,6 +51,7 @@ private:
     HRESULT      TryAndInitializeExclusive(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex_iec61937);
     void         AEChannelsFromSpeakerMask(DWORD speakers);
     static DWORD GetSpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
+    void         CheckAndCorrectFormat(AEAudioFormat &format);
     void         BuildWaveFormatExtensible(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
     void         BuildWaveFormatExtensibleIEC61397(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
     static AEAudioFormat SimplifyFormat(const AEAudioFormat &format);
