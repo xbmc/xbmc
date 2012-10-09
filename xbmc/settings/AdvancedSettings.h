@@ -113,6 +113,8 @@ class CAdvancedSettings
     CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
+    int m_WASAPIExclusiveMaximumBits; // 64 = double, 33 = float, 32 = 32bit, 24 = 24bit, 16 = 16bit.
+    int m_WASAPIMaximumPCMSampleRate;
 
     bool  m_omxHWAudioDecode;
     bool  m_omxDecodeStartWithValidFrame;
