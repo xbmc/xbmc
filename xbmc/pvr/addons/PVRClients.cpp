@@ -874,7 +874,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
         else if (addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
-          CLog::Log(LOGWARNING, "%s - failed to create add-on %s", __FUNCTION__, clientAddon->Name().c_str());
+          CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, clientAddon->Name().c_str(), status);
           if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)
           {
             // failed to load the dll of this add-on, disable it

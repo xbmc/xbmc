@@ -105,8 +105,6 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   catch (exception &e) { LogException(e, __FUNCTION__); }
 
   m_bReadyToUse = bReadyToUse;
-  if (!bReadyToUse)
-    ResetProperties(iClientId);
 
   return status;
 }
