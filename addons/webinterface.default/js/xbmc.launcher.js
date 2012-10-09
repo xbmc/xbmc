@@ -26,10 +26,10 @@
         debug = false, /* Set to true to disable cached javascript */
         version = (debug ? Math.random() : '2.0.6'),
         scripts = [
-            "js/jquery-1.5.2.min.js",
-            "js/jquery.lazyload.js",
+            "js/jquery-1.8.2.min.js",
             "js/iscroll-min.js",
             "js/xbmc.core.js",
+            "js/xbmc.rpc.js",
             "js/MediaLibrary.js",
             "js/NowPlayingManager.js",
             "js/xbmc.init.js"
