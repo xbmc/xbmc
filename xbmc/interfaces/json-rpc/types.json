@@ -707,6 +707,10 @@
       "tag": { "$ref": "Array.String" }
     }
   },
+  "PVR.Channel.Type": {
+    "type": "string",
+    "enum": [ "tv", "radio" ]
+  },
   "Files.Media": {
     "type": "string",
     "enum": [ "video", "music", "pictures", "files", "programs" ]
@@ -924,14 +928,15 @@
                 "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
                 "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
-                "disc", "tag", "art" ]
+                "disc", "tag", "art", "channel", "channeltype", "hidden", "locked", "virtual",
+                "channelnumber", "starttime", "endtime" ]
     }
   },
   "List.Item.All": {
     "extends": [ "Video.Details.File", "Audio.Details.Media" ],
     "properties": {
       "id": { "$ref": "Library.Id" },
-      "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture" ] },
+      "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture", "channel" ] },
       "albumartist": { "$ref": "Array.String" },
       "album": { "type": "string" },
       "track": { "type": "integer" },
@@ -965,7 +970,15 @@
       "tvshowid": { "$ref": "Library.Id" },
       "watchedepisodes": { "type": "integer" },
       "disc": { "type": "integer" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "channel": { "type": "string" },
+      "channeltype": { "$ref": "PVR.Channel.Type" },
+      "hidden": { "type": "boolean" },
+      "locked": { "type": "boolean" },
+      "virtual": { "type": "boolean" },
+      "channelnumber": { "type": "integer" },
+      "starttime": { "type": "string" },
+      "endtime": { "type": "string" }
     }
   },
   "List.Fields.Files": {
