@@ -209,17 +209,17 @@ CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) co
   return Get(bRadio)->GetSelectedGroup();
 }
 
-CPVRChannelPtr CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber, int iClientID)
+CPVRChannelPtr CPVRChannelGroupsContainer::GetByUniqueID(int iUniqueChannelId, int iClientID)
 {
   CPVRChannelPtr channel;
   CPVRChannelGroupPtr channelgroup = GetGroupAllTV();
   if (channelgroup)
-    channel = channelgroup->GetByClient(iClientChannelNumber, iClientID);
+    channel = channelgroup->GetByClient(iUniqueChannelId, iClientID);
 
   if (!channelgroup || !channel)
     channelgroup = GetGroupAllRadio();
   if (channelgroup)
-    channel = channelgroup->GetByClient(iClientChannelNumber, iClientID);
+    channel = channelgroup->GetByClient(iUniqueChannelId, iClientID);
 
   return channel;
 }

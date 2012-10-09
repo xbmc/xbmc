@@ -241,6 +241,12 @@ CStdString CPVRTimerInfoTag::GetStatus() const
     strReturn = g_localizeStrings.Get(13106);
   else if (m_state == PVR_TIMER_STATE_RECORDING)
     strReturn = g_localizeStrings.Get(19162);
+  else if (m_state == PVR_TIMER_STATE_CONFLICT_OK)
+    strReturn = g_localizeStrings.Get(19275);
+  else if (m_state == PVR_TIMER_STATE_CONFLICT_NOK)	
+    strReturn = g_localizeStrings.Get(19276);	
+  else if (m_state == PVR_TIMER_STATE_ERROR)
+    strReturn = g_localizeStrings.Get(257);
 
   return strReturn;
 }
@@ -522,6 +528,13 @@ void CPVRTimerInfoTag::GetNotificationText(CStdString &strText) const
     break;
   case PVR_TIMER_STATE_COMPLETED:
     strText.Format("%s: '%s'", g_localizeStrings.Get(19227), m_strTitle.c_str());
+    break;
+  case PVR_TIMER_STATE_CONFLICT_OK:	
+  case PVR_TIMER_STATE_CONFLICT_NOK:	
+    strText.Format("%s: '%s'", g_localizeStrings.Get(19277), m_strTitle.c_str());
+    break;
+  case PVR_TIMER_STATE_ERROR:
+    strText.Format("%s: '%s'", g_localizeStrings.Get(19278), m_strTitle.c_str());
     break;
   default:
     break;

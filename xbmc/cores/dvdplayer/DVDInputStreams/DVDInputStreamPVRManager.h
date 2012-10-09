@@ -65,6 +65,9 @@ public:
   bool            CanRecord();
   bool            IsRecording();
   bool            Record(bool bOnOff);
+  bool            CanSeek();
+  bool            CanPause();
+  void            Pause(bool bPaused);
 
   bool            UpdateItem(CFileItem& item);
 

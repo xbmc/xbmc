@@ -104,6 +104,8 @@ namespace INFO
 #define PLAYER_SEEKOFFSET            47
 #define PLAYER_PROGRESS_CACHE        48
 #define PLAYER_ITEM_PROPERTY         49
+#define PLAYER_CAN_PAUSE             50
+#define PLAYER_CAN_SEEK              51
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101

@@ -513,6 +513,25 @@ extern "C"
   unsigned int GetChannelSwitchDelay(void);
 
   /*!
+   * Check if the backend support pausing the currently playing stream
+   * This will enable/disable the pause button in XBMC based on the return value
+   * @return false if the PVR addon/backend does not support pausing, true if possible
+   */
+  bool CanPauseStream();
+
+  /*!
+   * Check if the backend supports seeking for the currently playing stream
+   * This will enable/disable the rewind/forward buttons in XBMC based on the return value
+   * @return false if the PVR addon/backend does not support seeking, true if possible
+   */
+  bool CanSeekStream();
+
+  /*!
+   * @brief Notify the pvr addon that XBMC (un)paused the currently playing stream
+   */
+  void PauseStream(bool bPaused);
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -568,6 +587,9 @@ extern "C"
     pClient->SignalStatus                   = SignalStatus;
     pClient->GetLiveStreamURL               = GetLiveStreamURL;
     pClient->GetChannelSwitchDelay          = GetChannelSwitchDelay;
+    pClient->CanPauseStream                 = CanPauseStream;
+    pClient->PauseStream                    = PauseStream;
+    pClient->CanSeekStream                  = CanSeekStream;
 
     pClient->OpenRecordedStream             = OpenRecordedStream;
     pClient->CloseRecordedStream            = CloseRecordedStream;

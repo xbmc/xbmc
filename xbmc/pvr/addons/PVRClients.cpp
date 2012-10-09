@@ -535,6 +535,30 @@ bool CPVRClients::CanRecordInstantly(void)
       currentChannel->CanRecord();
 }
 
+bool CPVRClients::CanPauseStream(void) const
+{
+  PVR_CLIENT client;
+
+  if (GetPlayingClient(client))
+  {
+    return client->CanPauseStream();
+  }
+
+  return false;
+}
+
+bool CPVRClients::CanSeekStream(void) const
+{
+  PVR_CLIENT client;
+
+  if (GetPlayingClient(client))
+  {
+    return client->CanSeekStream();
+  }
+
+  return false;
+}
+
 PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, time_t start, time_t end)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
@@ -1258,6 +1282,13 @@ int64_t CPVRClients::GetStreamPosition(void)
   if (GetPlayingClient(client))
     return client->GetStreamPosition();
   return -EINVAL;
+}
+
+void CPVRClients::PauseStream(bool bPaused)
+{
+  PVR_CLIENT client;
+  if (GetPlayingClient(client))
+    client->PauseStream(bPaused);
 }
 
 CStdString CPVRClients::GetCurrentInputFormat(void) const

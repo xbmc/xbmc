@@ -39,13 +39,13 @@
 class CHelper_libXBMC_pvr
 {
 public:
-  CHelper_libXBMC_pvr()
+  CHelper_libXBMC_pvr(void)
   {
     m_libXBMC_pvr = NULL;
     m_Handle      = NULL;
   }
 
-  ~CHelper_libXBMC_pvr()
+  ~CHelper_libXBMC_pvr(void)
   {
     if (m_libXBMC_pvr)
     {
@@ -54,9 +54,14 @@ public:
     }
   }
 
-  bool RegisterMe(void *Handle)
+  /*!
+   * @brief Resolve all callback methods
+   * @param handle Pointer to the add-on
+   * @return True when all methods were resolved, false otherwise.
+   */
+  bool RegisterMe(void* handle)
   {
-    m_Handle = Handle;
+    m_Handle = handle;
 
     std::string libBasePath;
     libBasePath  = ((cb_array*)m_Handle)->libPath;
@@ -117,6 +122,10 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_trigger_channel_groups_update");
     if (PVR_trigger_channel_groups_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    PVR_trigger_epg_update = (void (*)(void* HANDLE, void* CB, unsigned int iChannelUid))
+      dlsym(m_libXBMC_pvr, "PVR_trigger_epg_update");
+    if (PVR_trigger_epg_update == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     PVR_transfer_channel_group  = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group))
       dlsym(m_libXBMC_pvr, "PVR_transfer_channel_group");
     if (PVR_transfer_channel_group == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -139,72 +148,142 @@ public:
     return m_Callbacks != NULL;
   }
 
-  void TransferEpgEntry(const ADDON_HANDLE handle, const EPG_TAG *epgentry)
+  /*!
+   * @brief Transfer an EPG tag from the add-on to XBMC
+   * @param handle The handle parameter that XBMC used when requesting the EPG data
+   * @param entry The entry to transfer to XBMC
+   */
+  void TransferEpgEntry(const ADDON_HANDLE handle, const EPG_TAG* entry)
   {
-    return PVR_transfer_epg_entry(m_Handle, m_Callbacks, handle, epgentry);
+    return PVR_transfer_epg_entry(m_Handle, m_Callbacks, handle, entry);
   }
 
-  void TransferChannelEntry(const ADDON_HANDLE handle, const PVR_CHANNEL *chan)
+  /*!
+   * @brief Transfer a channel entry from the add-on to XBMC
+   * @param handle The handle parameter that XBMC used when requesting the channel list
+   * @param entry The entry to transfer to XBMC
+   */
+  void TransferChannelEntry(const ADDON_HANDLE handle, const PVR_CHANNEL* entry)
   {
-    return PVR_transfer_channel_entry(m_Handle, m_Callbacks, handle, chan);
+    return PVR_transfer_channel_entry(m_Handle, m_Callbacks, handle, entry);
   }
 
-  void TransferTimerEntry(const ADDON_HANDLE handle, const PVR_TIMER *timer)
+  /*!
+   * @brief Transfer a timer entry from the add-on to XBMC
+   * @param handle The handle parameter that XBMC used when requesting the timers list
+   * @param entry The entry to transfer to XBMC
+   */
+  void TransferTimerEntry(const ADDON_HANDLE handle, const PVR_TIMER* entry)
   {
-    return PVR_transfer_timer_entry(m_Handle, m_Callbacks, handle, timer);
+    return PVR_transfer_timer_entry(m_Handle, m_Callbacks, handle, entry);
   }
 
-  void TransferRecordingEntry(const ADDON_HANDLE handle, const PVR_RECORDING *recording)
+  /*!
+   * @brief Transfer a recording entry from the add-on to XBMC
+   * @param handle The handle parameter that XBMC used when requesting the recordings list
+   * @param entry The entry to transfer to XBMC
+   */
+  void TransferRecordingEntry(const ADDON_HANDLE handle, const PVR_RECORDING* entry)
   {
-    return PVR_transfer_recording_entry(m_Handle, m_Callbacks, handle, recording);
+    return PVR_transfer_recording_entry(m_Handle, m_Callbacks, handle, entry);
   }
 
-  void AddMenuHook(PVR_MENUHOOK *hook)
+  /*!
+   * @brief Transfer a channel group from the add-on to XBMC. The group will be created if it doesn't exist.
+   * @param handle The handle parameter that XBMC used when requesting the channel groups list
+   * @param entry The entry to transfer to XBMC
+   */
+  void TransferChannelGroup(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP* entry)
+  {
+    return PVR_transfer_channel_group(m_Handle, m_Callbacks, handle, entry);
+  }
+
+  /*!
+   * @brief Transfer a channel group member entry from the add-on to XBMC. The channel will be added to the group if the group can be found.
+   * @param handle The handle parameter that XBMC used when requesting the channel group members list
+   * @param entry The entry to transfer to XBMC
+   */
+  void TransferChannelGroupMember(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER* entry)
+  {
+    return PVR_transfer_channel_group_member(m_Handle, m_Callbacks, handle, entry);
+  }
+
+  /*!
+   * @brief Add or replace a menu hook for the context menu for this add-on
+   * @param hook The hook to add
+   */
+  void AddMenuHook(PVR_MENUHOOK* hook)
   {
     return PVR_add_menu_hook(m_Handle, m_Callbacks, hook);
   }
 
-  void Recording(const char *Name, const char *FileName, bool On)
+  /*!
+   * @brief Display a notification in XBMC that a recording started or stopped on the server
+   * @param strRecordingName The name of the recording to display
+   * @param strFileName The filename of the recording
+   * @param bOn True when recording started, false when it stopped
+   */
+  void Recording(const char* strRecordingName, const char* strFileName, bool bOn)
   {
-    return PVR_recording(m_Handle, m_Callbacks, Name, FileName, On);
+    return PVR_recording(m_Handle, m_Callbacks, strRecordingName, strFileName, bOn);
   }
 
-  void TriggerTimerUpdate()
+  /*!
+   * @brief Request XBMC to update it's list of timers
+   */
+  void TriggerTimerUpdate(void)
   {
     return PVR_trigger_timer_update(m_Handle, m_Callbacks);
   }
 
-  void TriggerRecordingUpdate()
+  /*!
+   * @brief Request XBMC to update it's list of recordings
+   */
+  void TriggerRecordingUpdate(void)
   {
     return PVR_trigger_recording_update(m_Handle, m_Callbacks);
   }
 
-  void TriggerChannelUpdate()
+  /*!
+   * @brief Request XBMC to update it's list of channels
+   */
+  void TriggerChannelUpdate(void)
   {
     return PVR_trigger_channel_update(m_Handle, m_Callbacks);
   }
 
-  void TriggerChannelGroupsUpdate()
+  /*!
+   * @brief Schedule an EPG update for the given channel channel
+   * @param iChannelUid The unique id of the channel for this add-on
+   */
+  void TriggerEpgUpdate(unsigned int iChannelUid)
+  {
+    return PVR_trigger_epg_update(m_Handle, m_Callbacks, iChannelUid);
+  }
+
+  /*!
+   * @brief Request XBMC to update it's list of channel groups
+   */
+  void TriggerChannelGroupsUpdate(void)
   {
     return PVR_trigger_channel_groups_update(m_Handle, m_Callbacks);
   }
 
-  void TransferChannelGroup(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
-  {
-    return PVR_transfer_channel_group(m_Handle, m_Callbacks, handle, group);
-  }
-
-  void TransferChannelGroupMember(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
-  {
-    return PVR_transfer_channel_group_member(m_Handle, m_Callbacks, handle, member);
-  }
-
 #ifdef USE_DEMUX
+  /*!
+   * @brief Free a packet that was allocated with AllocateDemuxPacket
+   * @param pPacket The packet to free
+   */
   void FreeDemuxPacket(DemuxPacket* pPacket)
   {
     return PVR_free_demux_packet(m_Handle, m_Callbacks, pPacket);
   }
 
+  /*!
+   * @brief Allocate a demux packet. Free with FreeDemuxPacket
+   * @param iDataSize The size of the data that will go into the packet
+   * @return The allocated packet
+   */
   DemuxPacket* AllocateDemuxPacket(int iDataSize)
   {
     return PVR_allocate_demux_packet(m_Handle, m_Callbacks, iDataSize);
@@ -212,29 +291,30 @@ public:
 #endif
 
 protected:
-  void* (*PVR_register_me)(void *HANDLE);
-  void (*PVR_unregister_me)(void* HANDLE, void* CB);
-  void (*PVR_transfer_epg_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
-  void (*PVR_transfer_channel_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
-  void (*PVR_transfer_timer_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_TIMER *timer);
-  void (*PVR_transfer_recording_entry)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
-  void (*PVR_add_menu_hook)(void* HANDLE, void* CB, PVR_MENUHOOK *hook);
-  void (*PVR_recording)(void* HANDLE, void* CB, const char *Name, const char *FileName, bool On);
-  void (*PVR_trigger_channel_update)(void* HANDLE, void* CB);
-  void (*PVR_trigger_channel_groups_update)(void* HANDLE, void* CB);
-  void (*PVR_trigger_timer_update)(void* HANDLE, void* CB);
-  void (*PVR_trigger_recording_update)(void* HANDLE, void* CB);
-  void (*PVR_transfer_channel_group)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
-  void (*PVR_transfer_channel_group_member)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+  void* (*PVR_register_me)(void*);
+  void (*PVR_unregister_me)(void*, void*);
+  void (*PVR_transfer_epg_entry)(void*, void*, const ADDON_HANDLE, const EPG_TAG*);
+  void (*PVR_transfer_channel_entry)(void*, void*, const ADDON_HANDLE, const PVR_CHANNEL*);
+  void (*PVR_transfer_timer_entry)(void*, void*, const ADDON_HANDLE, const PVR_TIMER*);
+  void (*PVR_transfer_recording_entry)(void*, void*, const ADDON_HANDLE, const PVR_RECORDING*);
+  void (*PVR_add_menu_hook)(void*, void*, PVR_MENUHOOK*);
+  void (*PVR_recording)(void*, void*, const char*, const char*, bool);
+  void (*PVR_trigger_channel_update)(void*, void*);
+  void (*PVR_trigger_channel_groups_update)(void*, void*);
+  void (*PVR_trigger_timer_update)(void*, void*);
+  void (*PVR_trigger_recording_update)(void* , void*);
+  void (*PVR_trigger_epg_update)(void*, void*, unsigned int);
+  void (*PVR_transfer_channel_group)(void*, void*, const ADDON_HANDLE, const PVR_CHANNEL_GROUP*);
+  void (*PVR_transfer_channel_group_member)(void*, void*, const ADDON_HANDLE, const PVR_CHANNEL_GROUP_MEMBER*);
 #ifdef USE_DEMUX
-  void (*PVR_free_demux_packet)(void* HANDLE, void* CB, DemuxPacket* pPacket);
-  DemuxPacket* (*PVR_allocate_demux_packet)(void* HANDLE, void* CB, int iDataSize);
+  void (*PVR_free_demux_packet)(void*, void*, DemuxPacket*);
+  DemuxPacket* (*PVR_allocate_demux_packet)(void*, void*, int);
 #endif
 
 private:
-  void *m_libXBMC_pvr;
-  void *m_Handle;
-  void *m_Callbacks;
+  void* m_libXBMC_pvr;
+  void* m_Handle;
+  void* m_Callbacks;
   struct cb_array
   {
     const char* libPath;
