@@ -5451,6 +5451,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     if (!BuildSQL(strBaseDir, strSQL, filter, strSQL, videoUrl))
       return false;
 
+    items.SetPath(videoUrl.ToString());
+
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
@@ -5568,7 +5570,6 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       }
       m_pDS->close();
     }
-    items.SetPath(videoUrl.ToString());
 
     // now add any linked movies
     Filter movieFilter;
@@ -5725,6 +5726,8 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     if (!CDatabase::BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
+    items.SetPath(videoUrl.ToString());
+
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
         sortDescription.sortBy == SortByNone &&
@@ -5792,7 +5795,6 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
         items.Add(pItem);
       }
     }
-    items.SetPath(videoUrl.ToString());
 
     // cleanup
     m_pDS->close();
@@ -5847,6 +5849,8 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     Filter extFilter = filter;
     if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl))
       return false;
+
+    items.SetPath(videoUrl.ToString());
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
@@ -5908,7 +5912,6 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     }
 
     Stack(items, VIDEODB_CONTENT_TVSHOWS, !filter.order.empty() || sortDescription.sortBy != SortByNone);
-    items.SetPath(videoUrl.ToString());
 
     // cleanup
     m_pDS->close();
@@ -6159,6 +6162,8 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
     if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl))
       return false;
 
+    items.SetPath(videoUrl.ToString());
+
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
         sortDescription.sortBy == SortByNone &&
@@ -6219,7 +6224,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
         items.Add(pItem);
       }
     }
-    items.SetPath(videoUrl.ToString());
 
     // cleanup
     m_pDS->close();
@@ -7011,6 +7015,8 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
     if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl))
       return false;
 
+    items.SetPath(videoUrl.ToString());
+
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
         sortDescription.sortBy == SortByNone &&
@@ -7060,7 +7066,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
         items.Add(item);
       }
     }
-    items.SetPath(videoUrl.ToString());
 
     // cleanup
     m_pDS->close();
