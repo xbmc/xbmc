@@ -459,14 +459,14 @@ PLT_Service::IsSubscribable()
 |   PLT_Service::SetStateVariable
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Service::SetStateVariable(const char* name, const char* value)
+PLT_Service::SetStateVariable(const char* name, const char* value, const bool clearonsend /*=false*/)
 {
     PLT_StateVariable* stateVariable = NULL;
     NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);
     if (stateVariable == NULL)
         return NPT_FAILURE;
 
-    return stateVariable->SetValue(value);
+    return stateVariable->SetValue(value, clearonsend);
 }
 
 /*----------------------------------------------------------------------
@@ -835,6 +835,13 @@ PLT_Service::NotifyChanged()
         m_Subscribers.Erase(sub_iter++);
     }
 
+    // some state variables must be cleared immediatly after sending
+    iter = vars_ready.GetFirstItem();
+    while (iter) {
+      PLT_StateVariable* var = *iter;
+      var->OnSendCompleted();
+      ++iter;
+    }
     return NPT_SUCCESS;
 }
 
