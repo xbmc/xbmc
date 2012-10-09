@@ -46,9 +46,6 @@ const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
 const IID IID_IAudioClient = __uuidof(IAudioClient);
 const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
 
-static const unsigned int WASAPISampleRateCount = 10;
-static const unsigned int WASAPISampleRates[] = {384000, 192000, 176400, 96000, 88200, 48000, 44100, 32000, 22050, 11025};
-
 static const unsigned int WASAPITestSampleRates[] = {11025, 12000, 16000, 
                                                       22050, 24000, 32000,
                                                       44100, 48000, 64000,
@@ -792,13 +789,13 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-      for (int j = 0; j < WASAPISampleRateCount; j++)
+      for (int j = 0; j <= WASAPITestSampleRatesMaxIndex; j++)
       {
-        wfxex.Format.nSamplesPerSec     = WASAPISampleRates[j];
+        wfxex.Format.nSamplesPerSec     = WASAPITestSampleRates[j];
         wfxex.Format.nAvgBytesPerSec    = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
         hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
         if (SUCCEEDED(hr))
-          deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+          deviceInfo.m_sampleRates.push_back(WASAPITestSampleRates[j]);
       }
 
       /* Test format for channels iteration */
