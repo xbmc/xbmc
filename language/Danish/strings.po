@@ -3768,7 +3768,7 @@ msgstr "Slumre"
 
 msgctxt "#13012"
 msgid "Exit"
-msgstr "Udgang"
+msgstr "Afslut"
 
 msgctxt "#13013"
 msgid "Reboot"
