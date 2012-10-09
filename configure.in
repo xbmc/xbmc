@@ -589,13 +589,7 @@ case $host in
      use_dvdcss=no
      use_gles=yes
      use_cpu=cortex-a8
-     check_sdl_arch=[`file /opt/local/lib/libSDL_image.dylib | awk '{V=7; print $V}'`]
-     if test "x$check_sdl_arch" = "xi386"; then
-       use_texturepacker_native=yes
-       USE_TEXTUREPACKER_NATIVE_ROOT="/opt/local"
-     else
-       use_texturepacker=no
-     fi
+     use_texturepacker_native=yes
      ARCH="arm-osx"
      use_arch="arm"
      PYTHON_VERSION="2.6"
@@ -609,7 +603,6 @@ case $host in
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
-     USE_TEXTUREPACKER_NATIVE_ROOT="$prefix"
      ARCH="x86-osx"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
