@@ -40,18 +40,18 @@ CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, fl
   m_iType = iType;
   m_rangeSelection = false;
   m_currentSelector = RangeSelectorLower; // use lower selector by default
-  m_iPercent[0] = 0;
-  m_iPercent[1] = 100;
+  m_percentValues[0] = 0;
+  m_percentValues[1] = 100;
   m_iStart = 0;
   m_iEnd = 100;
   m_iInterval = 1;
   m_fStart = 0.0f;
   m_fEnd = 1.0f;
   m_fInterval = 0.1f;
-  m_iValue[0] = m_iStart;
-  m_iValue[1] = m_iEnd;
-  m_fValue[0] = m_fStart;
-  m_fValue[1] = m_fEnd;
+  m_intValues[0] = m_iStart;
+  m_intValues[1] = m_iEnd;
+  m_floatValues[0] = m_fStart;
+  m_floatValues[1] = m_fEnd;
   ControlType = GUICONTROL_SLIDER;
   m_iInfoCode = 0;
   m_dragging = false;
@@ -190,15 +190,15 @@ void CGUISliderControl::Move(int iNumSteps)
   {
   case SPIN_CONTROL_TYPE_FLOAT:
     {
-      float &value = m_fValue[m_currentSelector];
+      float &value = m_floatValues[m_currentSelector];
       value += m_fInterval * iNumSteps;
       if (value < m_fStart) value = m_fStart;
       if (value > m_fEnd) value = m_fEnd;
-      if (m_fValue[0] > m_fValue[1])
+      if (m_floatValues[0] > m_floatValues[1])
       {
-        float valueLower = m_fValue[0];
-        m_fValue[0] = m_fValue[1];
-        m_fValue[1] = valueLower;
+        float valueLower = m_floatValues[0];
+        m_floatValues[0] = m_floatValues[1];
+        m_floatValues[1] = valueLower;
         rangeSwap = true;
       }
       break;
@@ -206,15 +206,15 @@ void CGUISliderControl::Move(int iNumSteps)
 
   case SPIN_CONTROL_TYPE_INT:
     {
-      int &value = m_iValue[m_currentSelector];
+      int &value = m_intValues[m_currentSelector];
       value += m_iInterval * iNumSteps;
       if (value < m_iStart) value = m_iStart;
       if (value > m_iEnd) value = m_iEnd;
-      if (m_iValue[0] > m_iValue[1])
+      if (m_intValues[0] > m_intValues[1])
       {
-        int valueLower = m_iValue[0];
-        m_iValue[0] = m_iValue[1];
-        m_iValue[1] = valueLower;
+        int valueLower = m_intValues[0];
+        m_intValues[0] = m_intValues[1];
+        m_intValues[1] = valueLower;
         rangeSwap = true;
       }
       break;
@@ -222,15 +222,15 @@ void CGUISliderControl::Move(int iNumSteps)
 
   default:
     {
-      int &value = m_iPercent[m_currentSelector];
+      int &value = m_percentValues[m_currentSelector];
       value += m_iInterval * iNumSteps;
       if (value < 0) value = 0;
       if (value > 100) value = 100;
-      if (m_iPercent[0] > m_iPercent[1])
+      if (m_percentValues[0] > m_percentValues[1])
       {
-        int valueLower = m_iPercent[0];
-        m_iPercent[0] = m_iPercent[1];
-        m_iPercent[1] = valueLower;
+        int valueLower = m_percentValues[0];
+        m_percentValues[0] = m_percentValues[1];
+        m_percentValues[1] = valueLower;
         rangeSwap = true;
       }
       break;
@@ -289,24 +289,24 @@ void CGUISliderControl::SetPercentage(int iPercent, RangeSelector selector /* = 
   if (iPercent > 100) iPercent = 100;
   else if (iPercent < 0) iPercent = 0;
 
-  int iPercentLower = selector == RangeSelectorLower ? iPercent : m_iPercent[0];
-  int iPercentUpper = selector == RangeSelectorUpper ? iPercent : m_iPercent[1];
+  int iPercentLower = selector == RangeSelectorLower ? iPercent : m_percentValues[0];
+  int iPercentUpper = selector == RangeSelectorUpper ? iPercent : m_percentValues[1];
 
   if (!m_rangeSelection || iPercentLower <= iPercentUpper)
   {
-    m_iPercent[0] = iPercentLower;
-    m_iPercent[1] = iPercentUpper;
+    m_percentValues[0] = iPercentLower;
+    m_percentValues[1] = iPercentUpper;
   }
   else
   {
-    m_iPercent[0] = iPercentUpper;
-    m_iPercent[1] = iPercentLower;
+    m_percentValues[0] = iPercentUpper;
+    m_percentValues[1] = iPercentLower;
   }
 }
 
 int CGUISliderControl::GetPercentage(RangeSelector selector /* = RangeSelectorLower */) const
 {
-  return m_iPercent[selector];
+  return m_percentValues[selector];
 }
 
 void CGUISliderControl::SetIntValue(int iValue, RangeSelector selector /* = RangeSelectorLower */)
@@ -318,18 +318,18 @@ void CGUISliderControl::SetIntValue(int iValue, RangeSelector selector /* = Rang
     if (iValue > m_iEnd) iValue = m_iEnd;
     else if (iValue < m_iStart) iValue = m_iStart;
 
-    int iValueLower = selector == RangeSelectorLower ? iValue : m_iValue[0];
-    int iValueUpper = selector == RangeSelectorUpper ? iValue : m_iValue[1];
+    int iValueLower = selector == RangeSelectorLower ? iValue : m_intValues[0];
+    int iValueUpper = selector == RangeSelectorUpper ? iValue : m_intValues[1];
 
     if (!m_rangeSelection || iValueLower <= iValueUpper)
     {
-      m_iValue[0] = iValueLower;
-      m_iValue[1] = iValueUpper;
+      m_intValues[0] = iValueLower;
+      m_intValues[1] = iValueUpper;
     }
     else
     {
-      m_iValue[0] = iValueUpper;
-      m_iValue[1] = iValueLower;
+      m_intValues[0] = iValueUpper;
+      m_intValues[1] = iValueLower;
     }
   }
   else
@@ -339,11 +339,11 @@ void CGUISliderControl::SetIntValue(int iValue, RangeSelector selector /* = Rang
 int CGUISliderControl::GetIntValue(RangeSelector selector /* = RangeSelectorLower */) const
 {
   if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
-    return (int)m_fValue[selector];
+    return (int)m_floatValues[selector];
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
-    return m_iValue[selector];
+    return m_intValues[selector];
   else
-    return m_iPercent[selector];
+    return m_percentValues[selector];
 }
 
 void CGUISliderControl::SetFloatValue(float fValue, RangeSelector selector /* = RangeSelectorLower */)
@@ -353,18 +353,18 @@ void CGUISliderControl::SetFloatValue(float fValue, RangeSelector selector /* = 
     if (fValue > m_fEnd) fValue = m_fEnd;
     else if (fValue < m_fStart) fValue = m_fStart;
 
-    float fValueLower = selector == RangeSelectorLower ? fValue : m_fValue[0];
-    float fValueUpper = selector == RangeSelectorUpper ? fValue : m_fValue[1];
+    float fValueLower = selector == RangeSelectorLower ? fValue : m_floatValues[0];
+    float fValueUpper = selector == RangeSelectorUpper ? fValue : m_floatValues[1];
 
     if (!m_rangeSelection || fValueLower <= fValueUpper)
     {
-      m_fValue[0] = fValueLower;
-      m_fValue[1] = fValueUpper;
+      m_floatValues[0] = fValueLower;
+      m_floatValues[1] = fValueUpper;
     }
     else
     {
-      m_fValue[0] = fValueUpper;
-      m_fValue[1] = fValueLower;
+      m_floatValues[0] = fValueUpper;
+      m_floatValues[1] = fValueLower;
     }
   }
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
@@ -376,11 +376,11 @@ void CGUISliderControl::SetFloatValue(float fValue, RangeSelector selector /* = 
 float CGUISliderControl::GetFloatValue(RangeSelector selector /* = RangeSelectorLower */) const
 {
   if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
-    return m_fValue[selector];
+    return m_floatValues[selector];
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
-    return (float)m_iValue[selector];
+    return (float)m_intValues[selector];
   else
-    return (float)m_iPercent[selector];
+    return (float)m_percentValues[selector];
 }
 
 void CGUISliderControl::SetIntInterval(int iInterval)
@@ -405,8 +405,8 @@ void CGUISliderControl::SetRange(int iStart, int iEnd)
     SetFloatRange((float)iStart,(float)iEnd);
   else
   {
-    m_iValue[0] = m_iStart = iStart;
-    m_iValue[1] = m_iEnd = iEnd;
+    m_intValues[0] = m_iStart = iStart;
+    m_intValues[1] = m_iEnd = iEnd;
   }
 }
 
@@ -416,8 +416,8 @@ void CGUISliderControl::SetFloatRange(float fStart, float fEnd)
     SetRange((int)fStart, (int)fEnd);
   else
   {
-    m_fValue[0] = m_fStart = fStart;
-    m_fValue[1] = m_fEnd = fEnd;
+    m_floatValues[0] = m_fStart = fStart;
+    m_floatValues[1] = m_fEnd = fEnd;
   }
 }
 
@@ -481,7 +481,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
   case SPIN_CONTROL_TYPE_FLOAT:
     {
       float fValue = m_fStart + (m_fEnd - m_fStart) * fPercent;
-      if (m_rangeSelection && fValue >= m_fValue[1])
+      if (m_rangeSelection && fValue >= m_floatValues[1])
         selector = RangeSelectorUpper;
 
       SetFloatValue(fValue, selector);
@@ -491,7 +491,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
   case SPIN_CONTROL_TYPE_INT:
     {
       int iValue = (int)(m_iStart + (float)(m_iEnd - m_iStart) * fPercent + 0.49f);
-      if (m_rangeSelection && iValue >= m_iValue[1])
+      if (m_rangeSelection && iValue >= m_intValues[1])
         selector = RangeSelectorUpper;
 
       SetIntValue(iValue, selector);
@@ -501,7 +501,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
   default:
     {
       int iValue = (int)(fPercent * 100 + 0.49f);
-      if (m_rangeSelection && iValue >= m_iPercent[1])
+      if (m_rangeSelection && iValue >= m_percentValues[1])
         selector = RangeSelectorUpper;
 
       SetPercentage(iValue, selector);
@@ -583,23 +583,23 @@ CStdString CGUISliderControl::GetDescription() const
   if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {
     if (m_rangeSelection)
-      description.Format("[%2.2f, %2.2f]", m_fValue[0], m_fValue[1]);
+      description.Format("[%2.2f, %2.2f]", m_floatValues[0], m_floatValues[1]);
     else
-      description.Format("%2.2f", m_fValue[0]);
+      description.Format("%2.2f", m_floatValues[0]);
   }
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
   {
     if (m_rangeSelection)
-      description.Format("[%i, %i]", m_iValue[0], m_iValue[1]);
+      description.Format("[%i, %i]", m_intValues[0], m_intValues[1]);
     else
-      description.Format("%i", m_iValue[0]);
+      description.Format("%i", m_intValues[0]);
   }
   else
   {
     if (m_rangeSelection)
-      description.Format("[%i%%, %i%%]", m_iPercent[0], m_iPercent[1]);
+      description.Format("[%i%%, %i%%]", m_percentValues[0], m_percentValues[1]);
     else
-      description.Format("%i%%", m_iPercent[0]);
+      description.Format("%i%%", m_percentValues[0]);
   }
   return description;
 }
