@@ -1,5 +1,5 @@
-#ifndef WINDOW_SYSTEM_EGLGLES_H
-#define WINDOW_SYSTEM_EGLGLES_H
+#ifndef WINDOW_SYSTEM_EGL_H
+#define WINDOW_SYSTEM_EGL_H
 
 #pragma once
 
@@ -25,14 +25,16 @@
 
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
-#include "windowing/egl/WinEGLPlatform.h"
+#include <EGL/egl.h>
 #include "windowing/WinSystem.h"
 
-class CWinSystemGLES : public CWinSystemBase, public CRenderSystemGLES
+class CEGLWrapper;
+
+class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
 {
 public:
-  CWinSystemGLES();
-  virtual ~CWinSystemGLES();
+  CWinSystemEGL();
+  virtual ~CWinSystemEGL();
 
   virtual bool  InitWindowSystem();
   virtual bool  DestroyWindowSystem();
@@ -53,22 +55,31 @@ public:
   virtual bool  Hide();
   virtual bool  Show(bool raise = true);
 
-  EGLDisplay    GetEGLDisplay();
-  EGLContext    GetEGLContext();
   virtual bool  Support3D(int width, int height, uint32_t mode)     const;
   virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
 protected:
   virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
   virtual void  SetVSyncImpl(bool enable);
-  void                  *m_display;
-  EGLNativeWindowType   m_window;
-  CWinEGLPlatform       *m_eglplatform;
-  int                   m_nScreenWidth;
-  int                   m_nScreenHeight;
+
+  bool          CreateWindow(RESOLUTION_INFO &res);
+  EGLDisplay    GetEGLDisplay();
+  EGLContext    GetEGLContext();
+
+  int                   m_displayWidth;
+  int                   m_displayHeight;
+
+  EGLDisplay            m_display;
+  EGLSurface            m_surface;
+  EGLContext            m_context;
+  EGLConfig             m_config;
+
+  CEGLWrapper           *m_egl;
+  bool                  m_iVSyncMode;
+  std::string           m_extensions;
 };
 
-XBMC_GLOBAL_REF(CWinSystemGLES,g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemGLES)
+XBMC_GLOBAL_REF(CWinSystemEGL,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemEGL)
 
-#endif // WINDOW_SYSTEM_EGLGLES_H
+#endif // WINDOW_SYSTEM_EGL_H
