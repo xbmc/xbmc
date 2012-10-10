@@ -88,8 +88,6 @@ namespace MUSIC_INFO
 #define TMSG_RENDERER_FLUSH       312
 #define TMSG_INHIBITIDLESHUTDOWN  313
 
-#define TMSG_HTTPAPI              400
-
 #define TMSG_NETWORKMESSAGE         500
 
 #define TMSG_GUI_DO_MODAL             600
@@ -206,7 +204,6 @@ public:
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
-  void HttpApi(std::string cmd, bool wait = false);
   void ExecBuiltIn(const CStdString &command, bool wait = false);
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);

@@ -124,8 +124,6 @@ void CSettings::Initialize()
   m_watchMode["musicvideos"] = VIDEO_SHOW_ALL;
 
   m_iSystemTimeTotalUp = 0;
-  m_HttpApiBroadcastLevel = 0;
-  m_HttpApiBroadcastPort = 8278;
 
   m_userAgent = g_sysinfo.GetUserAgent();
 
@@ -723,8 +721,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-    GetInteger(pElement, "httpapibroadcastlevel", m_HttpApiBroadcastLevel, 0, 0, 255);
-    GetInteger(pElement, "httpapibroadcastport", m_HttpApiBroadcastPort, 8278, 1, 65535);
     XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
     XMLUtils::GetBoolean(pElement, "addonnotifications", m_bAddonNotifications);
     XMLUtils::GetBoolean(pElement, "addonforeignfilter", m_bAddonForeignFilter);
@@ -920,8 +916,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   pNode = pRoot->InsertEndChild(generalNode);
   if (!pNode) return false;
   XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
-  XMLUtils::SetInt(pNode, "httpapibroadcastport", m_HttpApiBroadcastPort);
-  XMLUtils::SetInt(pNode, "httpapibroadcastlevel", m_HttpApiBroadcastLevel);
   XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
   XMLUtils::SetBoolean(pNode, "addonnotifications", m_bAddonNotifications);
   XMLUtils::SetBoolean(pNode, "addonforeignfilter", m_bAddonForeignFilter);

@@ -58,10 +58,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 
-#ifdef HAS_HTTPAPI
-#include "interfaces/http-api/XBMChttp.h"
-#endif
-
 #include "playlists/PlayList.h"
 #include "FileItem.h"
 
@@ -539,39 +535,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
-    case TMSG_HTTPAPI:
-    {
-#ifdef HAS_HTTPAPI
-      if (!m_pXbmcHttp)
-      {
-        m_pXbmcHttp = new CXbmcHttp();
-      }
-      switch (m_pXbmcHttp->xbmcCommand(pMsg->strParam))
-      {
-        case 1:
-          Restart();
-          break;
-
-        case 2:
-          Shutdown();
-          break;
-
-        case 3:
-          Quit();
-          break;
-
-        case 4:
-          Reset();
-          break;
-
-        case 5:
-          RestartApp();
-          break;
-      }
-#endif
-    }
-    break;
-
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
       g_pythonParser.evalFile(pMsg->strParam.c_str(),ADDON::AddonPtr());
@@ -869,14 +832,6 @@ CStdString CApplicationMessenger::GetResponse()
   tmp=bufferResponse;
   lock.Leave();
   return tmp;
-}
-
-void CApplicationMessenger::HttpApi(string cmd, bool wait)
-{
-  SetResponse("");
-  ThreadMessage tMsg = {TMSG_HTTPAPI};
-  tMsg.strParam = cmd;
-  SendMessage(tMsg, wait);
 }
 
 void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
