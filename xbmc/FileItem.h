@@ -417,6 +417,7 @@ private:
   bool m_bIsAlbum;
 
   /* PLEX */
+protected:
   int m_defaultViewMode;
   CStdString m_disabledViewModes;
   CStdString m_firstTitle;
