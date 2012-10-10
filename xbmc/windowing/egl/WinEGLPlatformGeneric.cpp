@@ -67,6 +67,22 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
 
     g_fbwin.width  = ioctl(fd, DISP_CMD_SCN_GET_WIDTH , args);
     g_fbwin.height = ioctl(fd, DISP_CMD_SCN_GET_HEIGHT, args);
+
+    m_width  = g_fbwin.width;
+    m_height = g_fbwin.height;
+
+    m_desktopRes.iScreen = 0;
+    m_desktopRes.iWidth  = m_width;
+    m_desktopRes.iHeight = m_height;
+    m_desktopRes.iScreenWidth  = m_width;
+    m_desktopRes.iScreenHeight = m_height;
+    m_desktopRes.fRefreshRate = 50.0f;
+    m_desktopRes.bFullScreen = true;
+    m_desktopRes.iSubtitles = (int)(0.965 * m_height);
+    m_desktopRes.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
+    m_desktopRes.fPixelRatio = 1.0f;
+    m_desktopRes.strMode.Format("%dx%d @ %.2f - Full Screen", m_width, m_height, m_desktopRes.fRefreshRate);
+
     close(fd);
   }
   else {
