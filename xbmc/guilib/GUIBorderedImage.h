@@ -29,7 +29,11 @@
 class CGUIBorderedImage : public CGUIImage
 {
 public:
+#ifndef __PLEX__
   CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const CRect &borderSize);
+#else
+  CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const CRect &borderSize, float minWidth = 0.0f);
+#endif
   CGUIBorderedImage(const CGUIBorderedImage &right);
   virtual ~CGUIBorderedImage(void);
   virtual CGUIBorderedImage *Clone() const { return new CGUIBorderedImage(*this); };

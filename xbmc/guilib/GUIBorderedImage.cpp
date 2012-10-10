@@ -21,8 +21,13 @@
 
 #include "GUIBorderedImage.h"
 
+#ifndef __PLEX__
 CGUIBorderedImage::CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const CRect &borderSize)
    : CGUIImage(parentID, controlID, posX + borderSize.x1, posY + borderSize.y1, width - borderSize.x1 - borderSize.x2, height - borderSize.y1 - borderSize.y2, texture),
+#else
+CGUIBorderedImage::CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const CRect &borderSize, float minWidth)
+   : CGUIImage(parentID, controlID, posX + borderSize.x1, posY + borderSize.y1, width - borderSize.x1 - borderSize.x2, height - borderSize.y1 - borderSize.y2, texture, minWidth),
+#endif
      m_borderImage(posX, posY, width, height, borderTexture),
      m_borderSize(borderSize)
 {
