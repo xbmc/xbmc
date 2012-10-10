@@ -9255,7 +9255,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter)
         {
           condition = true;
           filter.AppendJoin(PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow = episodeview.idShow"));
-          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actorlinktvshow.idActor = %s", idShow, (int)option->second.asInteger()));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i and actorlinktvshow.idActor = %i", idShow, (int)option->second.asInteger()));
         }
 
         option = options.find("actor");
