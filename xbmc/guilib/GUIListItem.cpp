@@ -188,6 +188,14 @@ const map<string, string> &CGUIListItem::GetArt() const
 void CGUIListItem::SetArt(const map<string, string> &art)
 {
   m_art = art;
+  // ensure that the fallback "thumb" is available
+  if (m_art.find("thumb") == m_art.end())
+  {
+    if (HasArt("poster"))
+      m_art["thumb"] = m_art["poster"];
+    else if (HasArt("banner"))
+      m_art["thumb"] = m_art["banner"];      
+  }  
 }
 
 void CGUIListItem::Select(bool bOnOff)
