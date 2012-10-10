@@ -42,6 +42,9 @@ CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float po
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_directoryLoaded = false;
+  /* PLEX */
+  m_expireTimer = false;
+  /* END PLEX */
 }
 
 CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
@@ -58,6 +61,9 @@ CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
     m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   ControlType = GUICONTROL_MULTI_IMAGE;
+  /* PLEX */
+  m_expireTimer = false;
+  /* END PLEX */
 }
 
 CGUIMultiImage::~CGUIMultiImage(void)
@@ -121,7 +127,11 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       unsigned int timeToShow = m_timePerImage;
       if (0 == nextImage) // last image should be paused for a bit longer if that's what the skinner wishes.
         timeToShow += m_timeToPauseAtEnd;
-      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > timeToShow)
+#ifndef __PLEX__
+      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > timeToShow )
+#else
+      if (m_imageTimer.IsRunning() && (m_imageTimer.GetElapsedMilliseconds() > timeToShow || m_expireTimer))
+#endif
       {
         // grab a new image
         m_currentImage = nextImage;
@@ -129,6 +139,10 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
         MarkDirtyRegion();
 
         m_imageTimer.StartZero();
+
+        /* PLEX */
+        m_expireTimer = false;
+        /* END PLEX */
       }
     }
 
@@ -164,6 +178,37 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
       FreeResources();
     return true;
   }
+
+  /* PLEX */
+  else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
+  {
+    CFileItemList* list = (CFileItemList* )message.GetPointer();
+
+    // Copy over files.
+    m_files.clear();
+    for (int i=0; i<list->Size(); i++)
+      m_files.push_back(list->Get(i)->GetPath());
+
+    // Randomize or sort our images if necessary
+    if (m_randomized)
+      random_shuffle(m_files.begin(), m_files.end());
+    else
+      sort(m_files.begin(), m_files.end());
+
+    // Mark the directory as loaded, and make sure we fade to the next image right away.
+    m_directoryLoaded = true;
+    m_expireTimer = true;
+
+    if (m_image.GetFileName().IsEmpty())
+    {
+      m_image.SetLazyLoaded();
+      m_image.AllocResources();
+    }
+
+    return true;
+  }
+  /* END PLEX */
+
   return CGUIControl::OnMessage(message);
 }
 

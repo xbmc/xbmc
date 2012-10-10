@@ -78,5 +78,9 @@ protected:
   std::vector<CStdString> m_files;
 
   CGUIImage m_image;
+
+  /* PLEX */
+  bool m_expireTimer;
+  /* END PLEX */
 };
 #endif
