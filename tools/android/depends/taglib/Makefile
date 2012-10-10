@@ -24,6 +24,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	  -DCMAKE_LIBRARY_PATH=$(PREFIX)/lib                 \
 	  -DCMAKE_INSTALL_NAME_DIR=$(PREFIX)/lib             \
 	  -DCMAKE_INSTALL_PREFIX=$(PREFIX)                   \
+	  -DCMAKE_RANLIB=$(RANLIB)                           \
 	  -DCMAKE_FIND_ROOT_PATH="$(TOOLCHAIN)/sysroot/usr;$(PREFIX)" ..
 
 $(LIBDYLIB): $(PLATFORM)
