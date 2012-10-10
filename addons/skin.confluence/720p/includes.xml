@@ -588,7 +588,7 @@
 			<textcolor>blue</textcolor>
 			<align>center</align>
 			<aligny>center</aligny>
-			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<visible>Player.HasMedia</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="button" id="610">
@@ -681,7 +681,7 @@
 			</control>
 		</control>
 		<control type="group" id="9005">
-			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<visible>Player.HasMedia</visible>
 			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
 			<width>250</width>
