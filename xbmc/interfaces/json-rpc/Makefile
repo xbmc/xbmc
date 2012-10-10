@@ -12,6 +12,7 @@ SRCS=AddonsOperations.cpp \
      SystemOperations.cpp \
      VideoLibrary.cpp \
      XBMCOperations.cpp \
+     PVROperations.cpp \
 
 LIB=json-rpc.a
 
