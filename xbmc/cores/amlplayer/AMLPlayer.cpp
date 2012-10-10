@@ -52,6 +52,7 @@
 #include "xbmc/cores/dvdplayer/DVDClock.h"
 #include "xbmc/cores/dvdplayer/DVDPlayerSubtitle.h"
 #include "xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxVobsub.h"
+#include "settings/VideoSettings.h"
 
 // amlogic libplayer
 #include "AMLUtils.h"
@@ -2289,3 +2290,42 @@ void CAMLPlayer::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, con
   CAMLPlayer *player = (CAMLPlayer*)ctx;
   player->SetVideoRect(SrcRect, DestRect);
 }
+
+void CAMLPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
+{
+  renderFeatures.push_back(RENDERFEATURE_ZOOM);
+  renderFeatures.push_back(RENDERFEATURE_CONTRAST);
+  renderFeatures.push_back(RENDERFEATURE_BRIGHTNESS);
+  renderFeatures.push_back(RENDERFEATURE_STRETCH);
+}
+
+void CAMLPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
+{
+  deinterlaceMethods.push_back(VS_INTERLACEMETHOD_DEINTERLACE);
+}
+
+void CAMLPlayer::GetDeinterlaceModes(std::vector<int> &deinterlaceModes)
+{
+  deinterlaceModes.push_back(VS_DEINTERLACEMODE_AUTO);
+}
+
+void CAMLPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
+{
+}
+
+void CAMLPlayer::GetAudioCapabilities(std::vector<int> &audioCaps)
+{
+  audioCaps.push_back(IPC_AUD_SELECT_STREAM);
+  audioCaps.push_back(IPC_AUD_SELECT_OUTPUT);
+#if !defined(TARGET_ANDROID)
+  audioCaps.push_back(IPC_AUD_OFFSET);
+#endif
+}
+
+void CAMLPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
+{
+  subCaps.push_back(IPC_SUBS_EXTERNAL);
+  subCaps.push_back(IPC_SUBS_SELECT);
+  subCaps.push_back(IPC_SUBS_OFFSET);
+}
+

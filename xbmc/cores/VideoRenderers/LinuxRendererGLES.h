@@ -39,6 +39,7 @@ class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
+typedef std::vector<int>     Features;
 
 #define NUM_BUFFERS 3
 
@@ -265,6 +266,11 @@ protected:
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
+
+  Features m_renderFeatures;
+  Features m_deinterlaceMethods;
+  Features m_deinterlaceModes;
+  Features m_scalingMethods;
 
   // clear colour for "black" bars
   float m_clearColour;

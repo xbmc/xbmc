@@ -71,6 +71,24 @@ public:
 class CFileItem;
 class CRect;
 
+enum IPlayerAudioCapabilities
+{
+  IPC_AUD_ALL,
+  IPC_AUD_OFFSET,
+  IPC_AUD_AMP,
+  IPC_AUD_SELECT_STREAM,
+  IPC_AUD_OUTPUT_STEREO,
+  IPC_AUD_SELECT_OUTPUT
+};
+
+enum IPlayerSubtitleCapabilities
+{
+  IPC_SUBS_ALL,
+  IPC_SUBS_SELECT,
+  IPC_SUBS_EXTERNAL,
+  IPC_SUBS_OFFSET
+};
+
 class IPlayer
 {
 public:
@@ -182,6 +200,33 @@ public:
   virtual CStdString GetPlayingTitle() { return ""; };
 
   virtual bool SwitchChannel(const PVR::CPVRChannel &channel) { return false; }
+
+  /*!
+   \brief If the player uses bypass mode, define its rendering capabilities
+   */
+  virtual void GetRenderFeatures(std::vector<int> &renderFeatures) {};
+  /*!
+   \brief If the player uses bypass mode, define its deinterlace algorithms
+   */
+  virtual void GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods) {};
+  /*!
+   \brief If the player uses bypass mode, define how deinterlace is set
+   */
+  virtual void GetDeinterlaceModes(std::vector<int> &deinterlaceModes) {};
+  /*!
+   \brief If the player uses bypass mode, define its scaling capabilities
+   */
+  virtual void GetScalingMethods(std::vector<int> &scalingMethods) {};
+  /*!
+   \brief define the audio capabilities of the player (default=all)
+   */
+
+  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
+  /*!
+   \brief define the subtitle capabilities of the player
+   */
+  virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
+
 protected:
   IPlayerCallback& m_callback;
 };
