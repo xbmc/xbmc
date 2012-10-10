@@ -592,7 +592,7 @@ CStdString CGUISliderControl::GetDescription() const
     if (m_rangeSelection)
       description.Format("[%i, %i]", m_iValue[0], m_iValue[1]);
     else
-      description.Format("%i", m_iValue);
+      description.Format("%i", m_iValue[0]);
   }
   else
   {
