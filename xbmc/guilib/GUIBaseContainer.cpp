@@ -112,7 +112,7 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
     int itemNo = CorrectOffset(current, 0);
     if (itemNo >= (int)m_items.size())
       break;
-    bool focused = (current == GetOffset() + GetCursor());
+    bool focused = (current == GetOffset() + GetCursor()) && HasFocus();
     if (itemNo >= 0)
     {
       CGUIListItemPtr item = m_items[itemNo];
@@ -241,9 +241,9 @@ void CGUIBaseContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        RenderItem(origin.x, focusedPos, focusedItem.get(), m_bHasFocus); /* PLEX Changed to HasFocus */
+        RenderItem(origin.x, focusedPos, focusedItem.get(), HasFocus()); /* PLEX Changed to HasFocus */
       else
-        RenderItem(focusedPos, origin.y, focusedItem.get(), m_bHasFocus); /* PLEX Changed to HasFocus */
+        RenderItem(focusedPos, origin.y, focusedItem.get(), HasFocus()); /* PLEX Changed to HasFocus */
     }
 
     g_graphicsContext.RestoreClipRegion();
