@@ -718,7 +718,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("pvrmanager.channelscan"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled") && g_PVRClients->GetClientsSupportingChannelScan().size() > 0);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled") && g_PVRClients && g_PVRClients->GetClientsSupportingChannelScan().size() > 0);
     }
     else if (strSetting.Equals("pvrmanager.channelmanager") || strSetting.Equals("pvrmenu.searchicons"))
     {
