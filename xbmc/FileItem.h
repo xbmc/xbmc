@@ -307,7 +307,6 @@ public:
   CStdString GetBaseMoviePath(bool useFolderNames) const;
 
   // Gets the user thumb, if it exists
-  CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
 
   /*! \brief Get the path where we expect local metadata to reside.
