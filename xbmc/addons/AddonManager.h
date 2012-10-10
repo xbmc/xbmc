@@ -168,6 +168,13 @@ namespace ADDON
     */
     void StopServices(const bool onlylogin);
 
+    /*! \brief Disable an addon.
+     Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.
+     \param addonID id of the addon to disable
+     \param disable whether to enable or disable.  Defaults to true (disable)
+     \return true on success, false on failure */
+    bool DisableAddon(const CStdString &addonID, bool disable = true);
+
   private:
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);

@@ -197,9 +197,7 @@ void CGUIDialogAddonInfo::OnUninstall()
   }
 
   // ensure the addon isn't disabled in our database
-  CAddonDatabase database;
-  database.Open();
-  database.DisableAddon(m_localAddon->ID(), false);
+  CAddonMgr::Get().DisableAddon(m_localAddon->ID(), false);
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
                                     &CAddonInstaller::Get());
   CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
@@ -212,10 +210,7 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
     return;
 
   CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
-  CAddonDatabase database;
-  database.Open();
-  database.DisableAddon(m_localAddon->ID(), !enable);
-  database.Close();
+  CAddonMgr::Get().DisableAddon(m_localAddon->ID(), !enable);
 
   if (m_localAddon->Type() == ADDON_PVRDLL && enable)
     g_application.StartPVRManager();

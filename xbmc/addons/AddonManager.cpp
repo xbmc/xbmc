@@ -48,11 +48,13 @@
 #include "Skin.h"
 #include "Service.h"
 #include "pvr/PVRManager.h"
+#include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
 #include "Util.h"
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
 namespace ADDON
 {
@@ -849,6 +851,43 @@ void CAddonMgr::StopServices(const bool onlylogin)
         service->Stop();
     }
   }
+}
+
+bool CAddonMgr::DisableAddon(const CStdString &addonID, bool disable /* = true */)
+{
+  CAddonDatabase database;
+  database.Open();
+  bool bToggled = database.DisableAddon(addonID, disable);
+  database.Close();
+
+  if (bToggled)
+  {
+    AddonPtr addon;
+
+    // if the add-on is a service, start/stop it
+    if (GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
+    {
+      boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
+      if (service)
+      {
+        if (disable)
+          service->Stop();
+        else
+          service->Start();
+      }
+    }
+    // if the add-on is a pvr add-on, restart the pvr manager and epg updater if it was started
+    else if (GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
+    {
+      g_EpgContainer.Stop();
+      g_EpgContainer.Start();
+
+      if (g_PVRManager.IsStarted())
+        g_PVRManager.Start();
+    }
+  }
+
+  return bToggled;
 }
 
 int cp_to_clog(cp_log_severity_t lvl)

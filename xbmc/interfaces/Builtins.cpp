@@ -215,6 +215,7 @@ const BUILT_IN commands[] = {
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
   { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
   { "StopPVRManager",             false,  "Stops the PVR manager" },
+  { "ToggleAddonEnabled",         true,   "Enables/disables an add-on" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1619,6 +1620,21 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("stoppvrmanager"))
   {
     g_application.StopPVRManager();
+  }
+  else if (execute.Equals("toggleaddonenabled") && params.size() == 1)
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(params[0], addon))
+    {
+      bool enable = !addon->Enabled();
+      CLog::Log(LOGDEBUG, "%s - %s add-on '%s'", __FUNCTION__, enable ? "enabling" : "disabling", addon->Name().c_str());
+
+      CAddonMgr::Get().DisableAddon(addon->ID(), !enable);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s - add-on '%s' was not found", __FUNCTION__, params[0].c_str());
+    }
   }
   else
     return -1;
