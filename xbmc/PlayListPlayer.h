@@ -30,6 +30,8 @@
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 
+class CVariant;
+
 namespace PLAYLIST
 {
 /*!
@@ -177,6 +179,8 @@ protected:
   bool RepeatedOne(int playlist) const;
 
   void ReShuffle(int iPlaylist, int iPosition);
+
+  void AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value);
 
   bool m_bPlayedFirstFile;
   bool m_bPlaybackStarted;

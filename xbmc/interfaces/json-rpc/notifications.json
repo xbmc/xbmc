@@ -54,6 +54,20 @@
     ],
     "returns": null
   },
+  "Player.OnPropertyChanged": {
+    "type": "notification",
+    "description": "A property of the playing items has changed.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "property": { "$ref": "Player.Property.Value" },
+          "player": { "$ref": "Player.Notifications.Player", "required": true }
+        }
+      }
+    ],
+    "returns": null
+  },
   "Playlist.OnAdd": {
     "type": "notification",
     "description": "A playlist item has been added.",
