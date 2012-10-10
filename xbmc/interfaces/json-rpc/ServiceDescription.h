@@ -480,7 +480,7 @@ namespace JSONRPC
                   "\"firstaired\", \"playcount\", \"runtime\", \"director\","
                   "\"productioncode\", \"season\", \"episode\", \"originaltitle\","
                   "\"showtitle\", \"cast\", \"streamdetails\", \"lastplayed\", \"fanart\","
-                  "\"thumbnail\", \"file\", \"resume\", \"tvshowid\", \"dateadded\" ]"
+                  "\"thumbnail\", \"file\", \"resume\", \"tvshowid\", \"dateadded\", \"uniqueid\" ]"
       "}"
     "}",
     "\"Video.Fields.MusicVideo\": {"
@@ -661,6 +661,7 @@ namespace JSONRPC
         "\"productioncode\": { \"type\": \"string\" },"
         "\"season\": { \"type\": \"integer\" },"
         "\"episode\": { \"type\": \"integer\" },"
+        "\"uniqueid\": { \"type\": \"object\", \"additionalProperties\": { \"type\": \"string\", \"minLength\": 1 } },"
         "\"originaltitle\": { \"type\": \"string\" },"
         "\"showtitle\": { \"type\": \"string\" },"
         "\"cast\": { \"$ref\": \"Video.Cast\" },"
