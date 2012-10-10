@@ -1726,23 +1726,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
     return ret;
   }
-  case CONTAINER_FIRST_TITLE:
-    {
-      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-      if (window)
-      {
-        CStdString strValue = ((CGUIMediaWindow *)window)->CurrentDirectory().GetFirstTitle();
-        return strValue;
-      }
-    }
-    break;
-  case CONTAINER_SECOND_TITLE:
-    {
-      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-      if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetSecondTitle();
-    }
-    break;
   /* END PLEX */
 
   }
@@ -2982,6 +2965,20 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
       return addon->Icon();
   }
+  /* PLEX */
+  else if (info.m_info == CONTAINER_FIRST_TITLE)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetFirstTitle();
+  }
+  else if (info.m_info == CONTAINER_SECOND_TITLE)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetSecondTitle();
+  }
+  /* END PLEX */
 
   return StringUtils::EmptyString;
 }
