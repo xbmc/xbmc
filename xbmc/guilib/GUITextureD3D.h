@@ -36,7 +36,11 @@
 class CGUITextureD3D : public CGUITextureBase
 {
 public:
+#ifndef __PLEX__
   CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo& texture);
+#else
+  CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth=0.0f);
+#endif
   static void DrawQuad(const CRect &coords, color_t color, CBaseTexture *texture = NULL, const CRect *texCoords = NULL);
 protected:
   void Begin(color_t color);

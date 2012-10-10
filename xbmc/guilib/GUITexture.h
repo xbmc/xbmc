@@ -84,7 +84,11 @@ public:
 class CGUITextureBase
 {
 public:
+#ifndef __PLEX__
   CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture);
+#else
+  CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth=0.0f);
+#endif
   CGUITextureBase(const CGUITextureBase &left);
   virtual ~CGUITextureBase(void);
 
@@ -108,7 +112,9 @@ public:
   const CStdString& GetFileName() const { return m_info.filename; };
   float GetTextureWidth() const { return m_frameWidth; };
   float GetTextureHeight() const { return m_frameHeight; };
+#ifndef __PLEX__
   float GetWidth() const { return m_width; };
+#endif
   float GetHeight() const { return m_height; };
   float GetXPosition() const { return m_posX; };
   float GetYPosition() const { return m_posY; };
@@ -120,6 +126,13 @@ public:
   bool IsAllocated() const { return m_isAllocated != NO; };
   bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED; };
   bool ReadyToRender() const;
+
+  /* PLEX */
+  void SetLazyLoaded() { m_info.useLarge = true; }
+#ifdef __PLEX__
+  float GetWidth() const;
+#endif
+  /* END PLEX */
 protected:
   bool CalculateSize();
   void LoadDiffuseImage();
@@ -169,6 +182,10 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
+
+  /* PLEX */
+  float m_minWidth;
+  /* END PLEX */
 };
 
 

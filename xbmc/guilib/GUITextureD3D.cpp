@@ -25,8 +25,13 @@
 
 #ifdef HAS_DX
 
+#ifndef __PLEX__
 CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
+#else
+CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo &texture, float minWidth)
+: CGUITextureBase(posX, posY, width, height, texture, minWidth)
+#endif
 {
 }
 

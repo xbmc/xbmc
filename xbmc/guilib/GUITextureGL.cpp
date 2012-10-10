@@ -29,8 +29,13 @@
 
 #if defined(HAS_GL)
 
+#ifndef __PLEX__
 CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
+#else
+CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture, float minWidth)
+: CGUITextureBase(posX, posY, width, height, texture, minWidth)
+#endif
 {
 }
 
