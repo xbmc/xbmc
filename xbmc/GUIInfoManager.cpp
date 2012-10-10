@@ -1065,7 +1065,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       else if (info[1].name == "listitemposition")
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_POSITION));
       else if (info[1].name == "listitem")
-        return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_WRAP));
+      {
+        int ret = TranslateListItem(info[2]);
+
+        if (ret == LISTITEM_TYPE || ret == LISTITEM_STATUS)
+          return AddMultiInfo(GUIInfo(ret, id, offset, INFOFLAG_LISTITEM_WRAP, ConditionalStringParameter(info[2].param())));
+        else
+          return AddMultiInfo(GUIInfo(ret, id, offset, INFOFLAG_LISTITEM_WRAP));
+      }
     }
   }
 
