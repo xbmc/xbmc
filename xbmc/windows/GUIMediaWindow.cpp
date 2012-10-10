@@ -1651,6 +1651,14 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items, bool &hasNew
 {
   hasNewItems = false;
 
+  // don't run the advanced filter if the filter is empty
+  // and there hasn't been a filter applied before which
+  // would have to be removed
+  CURL url(m_vecItems->GetPath());
+  CUrlOptions urlOptions(url.GetOptions());
+  if (m_filter.IsEmpty() && !urlOptions.HasOption("filter"))
+    return true;
+
   CFileItemList resultItems;
   XFILE::CSmartPlaylistDirectory::GetDirectory(m_filter, resultItems, m_vecItems->GetPath(), true);
 
