@@ -92,6 +92,7 @@ typedef enum {
   FieldWriter,
   FieldAirDate,
   FieldEpisodeNumber,
+  FieldUniqueId,
   FieldSeason,
   FieldEpisodeNumberSpecialSort,
   FieldSeasonSpecialSort,
