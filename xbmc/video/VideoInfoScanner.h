@@ -106,6 +106,7 @@ namespace VIDEO
      \param useLocal whether to use local thumbs, defaults to true
      */
     static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::string> &art, bool useLocal = true);
+    static std::string GetImage(CFileItem *pItem, bool useLocal, bool bApplyToDir, const std::string &type = "");
 
   protected:
     virtual void Process();

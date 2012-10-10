@@ -137,10 +137,12 @@ public:
 
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image
-   \param destination url of the destination image
+   \param destination url of the destination image, excluding extension.
+   \param overwrite whether to overwrite the destination if it exists (TODO: Defaults to false)
    \return true if we successfully exported the file, false otherwise.
    */
-  bool Export(const CStdString &image, const CStdString &destination);
+  bool Export(const CStdString &image, const CStdString &destination, bool overwrite);
+  bool Export(const CStdString &image, const CStdString &destination); // TODO: BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 private:
   // private construction, and no assignements; use the provided singleton methods
   CTextureCache();

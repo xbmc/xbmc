@@ -199,10 +199,10 @@ void CGUIDialogFavourites::OnSetThumb(int item)
   CFileItemList items;
 
   // Current
-  if (pItem->HasThumbnail())
+  if (pItem->HasArt("thumb"))
   {
     CFileItemPtr current(new CFileItem("thumb://Current", false));
-    current->SetThumbnailImage(pItem->GetThumbnailImage());
+    current->SetArt("thumb", pItem->GetArt("thumb"));
     current->SetLabel(g_localizeStrings.Get(20016));
     items.Add(current);
   }
@@ -219,7 +219,7 @@ void CGUIDialogFavourites::OnSetThumb(int item)
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), thumb))
     return;
 
-  (*m_favourites)[item]->SetThumbnailImage(thumb);
+  (*m_favourites)[item]->SetArt("thumb", thumb);
   CFavourites::Save(*m_favourites);
   UpdateList();
 }

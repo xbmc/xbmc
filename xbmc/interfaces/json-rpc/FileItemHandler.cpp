@@ -86,17 +86,17 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
     
     if (field == "thumbnail")
     {
-      if (thumbLoader != NULL && !item->HasThumbnail() && !fetchedArt &&
+      if (thumbLoader != NULL && !item->HasArt("thumb") && !fetchedArt &&
         ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
         thumbLoader->FillLibraryArt(*item);
         fetchedArt = true;
       }
-      else if (item->HasPictureInfoTag() && !item->HasThumbnail())
-        item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
+      else if (item->HasPictureInfoTag() && !item->HasArt("thumb"))
+        item->SetArt("thumb", CTextureCache::GetWrappedThumbURL(item->GetPath()));
       
-      if (item->HasThumbnail())
-        result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
+      if (item->HasArt("thumb"))
+        result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetArt("thumb"));
       else
         result["thumbnail"] = "";
       
@@ -105,15 +105,15 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
     
     if (field == "fanart")
     {
-      if (thumbLoader != NULL && !item->HasProperty("fanart_image") && !fetchedArt &&
+      if (thumbLoader != NULL && !item->HasArt("fanart") && !fetchedArt &&
         ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
         thumbLoader->FillLibraryArt(*item);
         fetchedArt = true;
       }
       
-      if (item->HasProperty("fanart_image"))
-        result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
+      if (item->HasArt("fanart"))
+        result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetArt("fanart"));
       else
         result["fanart"] = "";
       

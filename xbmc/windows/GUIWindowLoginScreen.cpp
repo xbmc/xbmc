@@ -198,9 +198,9 @@ void CGUIWindowLoginScreen::Update()
     else
       strLabel.Format(g_localizeStrings.Get(20112), profile->getDate());
     item->SetLabel2(strLabel);
-    item->SetThumbnailImage(profile->getThumb());
+    item->SetArt("thumb", profile->getThumb());
     if (profile->getThumb().IsEmpty() || profile->getThumb().Equals("-"))
-      item->SetThumbnailImage("unknown-user.png");
+      item->SetArt("thumb", "unknown-user.png");
     item->SetLabelPreformated(true);
     m_vecItems->Add(item);
   }

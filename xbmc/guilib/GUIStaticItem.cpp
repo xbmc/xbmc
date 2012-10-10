@@ -49,7 +49,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     CGUIControlFactory::GetActions(item, "onclick", m_clickActions);
     SetLabel(label.GetLabel(parentID));
     SetLabel2(label2.GetLabel(parentID));
-    SetThumbnailImage(thumb.GetLabel(parentID, true));
+    SetArt("thumb", thumb.GetLabel(parentID, true));
     SetIconImage(icon.GetLabel(parentID, true));
     if (!label.IsConstant())  m_info.push_back(make_pair(label, "label"));
     if (!label2.IsConstant()) m_info.push_back(make_pair(label2, "label2"));
@@ -82,7 +82,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     SetLabel(CGUIInfoLabel::GetLabel(label, parentID));
     SetPath(item->FirstChild()->Value());
     SetLabel2(CGUIInfoLabel::GetLabel(label2, parentID));
-    SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, parentID, true));
+    SetArt("thumb", CGUIInfoLabel::GetLabel(thumb, parentID, true));
     SetIconImage(CGUIInfoLabel::GetLabel(icon, parentID, true));
     m_iprogramCount = id ? atoi(id) : 0;
   }
@@ -101,7 +101,7 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     else if (name.Equals("label2"))
       SetLabel2(value);
     else if (name.Equals("thumb"))
-      SetThumbnailImage(value);
+      SetArt("thumb", value);
     else if (name.Equals("icon"))
       SetIconImage(value);
     else

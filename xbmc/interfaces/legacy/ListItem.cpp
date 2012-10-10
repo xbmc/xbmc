@@ -56,7 +56,7 @@ namespace XBMCAddon
       if (!iconImage.empty())
         item->SetIconImage( iconImage );
       if (!thumbnailImage.empty())
-        item->SetThumbnailImage( thumbnailImage );
+        item->SetArt("thumb",  thumbnailImage );
       if (!path.empty())
         item->SetPath(path);
     }
@@ -126,7 +126,7 @@ namespace XBMCAddon
       if (!item) return;
       {
         LOCKGUI;
-        item->SetThumbnailImage(thumbFilename);
+        item->SetArt("thumb", thumbFilename);
       }
     }
 

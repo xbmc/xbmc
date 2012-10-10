@@ -272,6 +272,24 @@ public:
    */
   CStdString GetLocalFanart() const;
 
+  /*! \brief Assemble the filename of a particular piece of local artwork for an item.
+             No file existence check is typically performed.
+   \param artFile the art file to search for.
+   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \return the path to the local artwork.
+   \sa FindLocalArt
+   */
+  CStdString GetLocalArt(const std::string &artFile, bool useFolder = false) const;
+
+  /*! \brief Assemble the filename of a particular piece of local artwork for an item,
+             and check for file existence.
+   \param artFile the art file to search for.
+   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \return the path to the local artwork if it exists, empty otherwise.
+   \sa GetLocalArt
+   */
+  CStdString FindLocalArt(const std::string &artFile, bool useFolder) const;
+
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile() const;
   // Gets the folder image associated with this item (defaults to folder.jpg)
@@ -288,12 +306,7 @@ public:
    */
   CStdString GetBaseMoviePath(bool useFolderNames) const;
 
-#ifdef UNIT_TESTING
-  static bool testGetBaseMoviePath();
-#endif
-
   // Gets the user thumb, if it exists
-  CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
 
   /*! \brief Get the path where we expect local metadata to reside.

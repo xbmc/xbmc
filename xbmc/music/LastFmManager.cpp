@@ -382,7 +382,7 @@ bool CLastFmManager::RequestRadioTracks()
         CStdString coverUrl = child->Value();
         if ((coverUrl != "") && (coverUrl.Find("noimage") == -1) && (coverUrl.Right(1) != "/"))
         {
-          newItem->SetThumbnailImage(coverUrl);
+          newItem->SetArt("thumb", coverUrl);
         }
       }
     }
@@ -423,9 +423,9 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
     CFileItemPtr item = (*m_RadioTrackQueue)[i];
     if (!item->GetMusicInfoTag()->Loaded())
     {
-      if (!item->HasThumbnail())
+      if (!item->HasArt("thumb"))
       {
-        item->SetThumbnailImage("DefaultAlbumCover.png");
+        item->SetArt("thumb", "DefaultAlbumCover.png");
       }
       item->GetMusicInfoTag()->SetLoaded();
     }

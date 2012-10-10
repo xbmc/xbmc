@@ -118,8 +118,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 if (!item->HasMusicInfoTag())
                     item->LoadMusicTag();
 
-                if (!item->HasThumbnail() )
-                    item->SetThumbnailImage(CThumbLoader::GetCachedImage(*item, "thumb"));
+                if (!item->HasArt("thumb") )
+                    item->SetArt("thumb", CThumbLoader::GetCachedImage(*item, "thumb"));
 
                 if (item->GetLabel().IsEmpty()) {
                     /* if no label try to grab it from node type */
@@ -165,8 +165,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     }
                 }
 
-                if (!item->HasThumbnail() )
-                    item->SetThumbnailImage(CThumbLoader::GetCachedImage(*item, "thumb"));
+                if (!item->HasArt("thumb") )
+                    item->SetArt("thumb", CThumbLoader::GetCachedImage(*item, "thumb"));
             }
         }
 

@@ -235,7 +235,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
     if (!chanicon.IsEmpty())
     {
       url.SetFileName("files/channels/" + URIUtils::GetFileName(chanicon)); // e.g. files/channels/tv3.jpg
-      item.SetThumbnailImage(url.Get());
+      item.SetArt("thumb", url.Get());
     }
   }
   else
@@ -246,7 +246,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
     if (m_dll->proginfo_rec_status(program) == RS_RECORDED)
     {
       url.SetFileName("files/" + URIUtils::GetFileName(GetValue(m_dll->proginfo_pathname(program))) + ".png");
-      item.SetThumbnailImage(url.Get());
+      item.SetArt("thumb", url.Get());
     }
   }
 }

@@ -1013,7 +1013,7 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList &results)
     CFileItemPtr entry(new CFileItem(epgNow));
     entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
     entry->SetPath(channel->ChannelName());
-    entry->SetThumbnailImage(channel->IconPath());
+    entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);
   }
 
@@ -1039,7 +1039,7 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList &results)
     CFileItemPtr entry(new CFileItem(epgNow));
     entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
     entry->SetPath(channel->ChannelName());
-    entry->SetThumbnailImage(channel->IconPath());
+    entry->SetArt("thumb", channel->IconPath());
     results.Add(entry);
   }
 
