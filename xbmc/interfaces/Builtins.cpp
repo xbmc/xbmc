@@ -367,6 +367,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript" ||
         URIUtils::GetExtension(strParameterCaseIntact) == ".scpt")
     {
+#endif
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
     }
@@ -1578,7 +1579,7 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
   }
-#endif
+
   /* PLEX */
 #if defined(__APPLE__) || defined(_WIN32)
   else if (execute.Equals("toggledisplayblanking"))
