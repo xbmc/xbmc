@@ -26,7 +26,11 @@
 
 using namespace std;
 
+#ifndef __PLEX__
 CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture)
+#else
+CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth)
+#endif
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_texture(posX, posY, width, height, texture)
 {
@@ -35,6 +39,10 @@ CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float 
   m_lastRenderTime = 0;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
+
+  /* PLEX */
+  m_minWidth = minWidth;
+  /* END PLEX */
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -47,6 +55,10 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_lastRenderTime = 0;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
+
+  /* PLEX */
+  m_minWidth = left.m_minWidth;
+  /* END PLEX */
 }
 
 CGUIImage::~CGUIImage(void)
