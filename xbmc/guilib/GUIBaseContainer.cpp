@@ -112,15 +112,15 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
     int itemNo = CorrectOffset(current, 0);
     if (itemNo >= (int)m_items.size())
       break;
-    bool focused = (current == GetOffset() + GetCursor()) && HasFocus();
+    bool focused = (current == GetOffset() + GetCursor());
     if (itemNo >= 0)
     {
       CGUIListItemPtr item = m_items[itemNo];
       // render our item
       if (m_orientation == VERTICAL)
-        ProcessItem(origin.x, pos, item.get(), focused, currentTime, dirtyregions);
+        ProcessItem(origin.x, pos, item.get(), focused && HasFocus(), currentTime, dirtyregions);
       else
-        ProcessItem(pos, origin.y, item.get(), focused, currentTime, dirtyregions);
+        ProcessItem(pos, origin.y, item.get(), focused && HasFocus(), currentTime, dirtyregions);
     }
     // increment our position
     pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
