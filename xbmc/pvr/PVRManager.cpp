@@ -657,8 +657,15 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     }
     else if (!bOnOff && channel->IsRecording())
     {
-      /* delete active timers */
-      bReturn = m_timers->DeleteTimersOnChannel(*channel, false, true);
+      /* delete active timer on this channel */
+      vector<CFileItemPtr> activeTags = g_PVRTimers->GetActiveRecordings();
+
+      for (unsigned int pat = 0; pat < activeTags.size(); pat++)
+      {
+        CFileItemPtr timer = activeTags.at(pat);
+        if (timer->GetPVRTimerInfoTag()->m_iClientChannelUid == channel->UniqueID())
+          bReturn = m_timers->DeleteTimer(*timer);
+      }
     }
   }
 
