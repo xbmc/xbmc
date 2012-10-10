@@ -33,6 +33,10 @@
 #include "osx/DarwinUtils.h"
 #endif
 
+/* PLEX */
+#include "filesystem/File.h"
+/* END PLEX */
+
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
@@ -200,7 +204,19 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
   unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
 
+  /* PLEX */
+  // Make sure to check for the TBN version as well.
+  CStdString tbnVersion = texturePath.substr(0, texturePath.size()-4) + ".tbn";
+  CStdString finalPath = texturePath;
+  if (XFILE::CFile::Exists(texturePath) == false && XFILE::CFile::Exists(tbnVersion))
+    finalPath = tbnVersion;
+  /* END PLEX */
+
+#ifndef __PLEX__
   if(!dll.LoadImage(texturePath.c_str(), width, height, &image))
+#else
+  if(!dll.LoadImage(finalPath.c_str(), width, height, &image))
+#endif
   {
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
     return false;

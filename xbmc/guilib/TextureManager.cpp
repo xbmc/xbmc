@@ -35,6 +35,10 @@
 #include "filesystem/Directory.h"
 #include <assert.h>
 
+/* PLEX */
+#include "plex/PlexUtils.h"
+/* END PLEX */
+
 using namespace std;
 
 
@@ -248,6 +252,11 @@ bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
 
   if (!CURL::IsFullPath(texturePath))
     return true;  // assume we have it
+
+  /* PLEX */
+  if (PlexUtils::IsPlexMediaServer(texturePath))
+    return true;
+  /* END PLEX */
 
   // we can't (or shouldn't) be loading from remote paths, so check these
   return URIUtils::IsHD(texturePath);
