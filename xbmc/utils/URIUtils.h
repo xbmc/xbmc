@@ -34,6 +34,8 @@ public:
 
   static void GetDirectory(const CStdString& strFilePath,
                            CStdString& strDirectoryPath);
+  static CStdString GetDirectory(const CStdString &filePath);
+
   static const CStdString GetExtension(const CStdString& strFileName);
   static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);

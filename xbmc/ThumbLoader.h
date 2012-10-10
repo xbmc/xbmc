@@ -111,6 +111,21 @@ public:
    */
   static bool FillThumb(CFileItem &item);
 
+  /*! \brief Find a particular art type for a given item, optionally checking at the folder level
+   \param item the CFileItem to search.
+   \param type the type of art to look for.
+   \param checkFolder whether to also check the folder level for files. Defaults to false.
+   \return the art file (if found), else empty.
+   */
+  static std::string GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder = false);
+
+  /*! \brief return the available art types for a given media type
+   \param type the type of media.
+   \return a vector of art types.
+   \sa GetLocalArt
+   */
+  static std::vector<std::string> GetArtTypes(const std::string &type);
+
   /*! \brief helper function to retrieve a thumb URL for embedded video thumbs
    \param item a video CFileItem.
    \return a URL for the embedded thumb.

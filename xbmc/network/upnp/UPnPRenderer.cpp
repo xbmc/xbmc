@@ -476,7 +476,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         item.SetLabelPreformated(true);
         if (object->m_ExtraInfo.album_arts.GetItem(0)) {
             //FIXME only considers 1st image
-            item.SetThumbnailImage((const char*)object->m_ExtraInfo.album_arts.GetItem(0)->uri);
+            item.SetArt("thumb", (const char*)object->m_ExtraInfo.album_arts.GetItem(0)->uri);
         }
         if (object->m_ObjectClass.type.StartsWith("object.item.audioItem")) {
             if(NPT_SUCCEEDED(PopulateTagFromObject(*item.GetMusicInfoTag(), *object, res)))

@@ -280,7 +280,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       dir.GetQueryParams(items.GetPath(),params);
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
 
-      items.SetThumbnailImage("");
+      items.SetArt("thumb", "");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES ||
           node == NODE_TYPE_SEASONS                          ||
           node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
@@ -293,9 +293,9 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
         {
           if (art.find("thumb") != art.end())
-            items.SetProperty("tvshowthumb", art["thumb"]);
+            items.SetArt("tvshowthumb", art["thumb"]);
           if (art.find("fanart") != art.end())
-            items.SetProperty("fanart_image", art["fanart"]);
+            items.SetArt("fanart", art["fanart"]);
         }
         CFileItem showItem(details.m_strShowPath, true);
 
@@ -316,14 +316,14 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           string seasonThumb = m_database.GetArtForItem(seasonID, "season", "thumb");
           if (!seasonThumb.empty())
           {
-            items.SetProperty("seasonthumb",seasonThumb);
-            items.SetThumbnailImage(seasonThumb);
+            items.SetArt("seasonthumb",seasonThumb);
+            items.SetArt("thumb", seasonThumb);
           }
         }
         else
         {
           items.SetContent("seasons");
-          items.SetThumbnailImage(showItem.GetThumbnailImage());
+          items.SetArt("thumb", showItem.GetArt("thumb"));
         }
       }
       else if (node == NODE_TYPE_TITLE_MOVIES ||
@@ -1119,7 +1119,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!currentThumb.IsEmpty() && CFile::Exists(currentThumb))
       {
         CFileItemPtr item(new CFileItem("thumb://Current", false));
-        item->SetThumbnailImage(currentThumb);
+        item->SetArt("thumb", currentThumb);
         item->SetLabel(g_localizeStrings.Get(20016));
         items.Add(item);
       }
@@ -1135,7 +1135,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         else
           tag = *m_vecItems->Get(itemNumber)->GetVideoInfoTag();
         if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
-          tag.m_strPictureURL.GetThumbURLs(thumbs, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
+          tag.m_strPictureURL.GetThumbURLs(thumbs, "", m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
         else
           tag.m_strPictureURL.GetThumbURLs(thumbs);
 
@@ -1144,7 +1144,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           CStdString strItemPath;
           strItemPath.Format("thumb://Remote%i",i);
           CFileItemPtr item(new CFileItem(strItemPath, false));
-          item->SetThumbnailImage(thumbs[i]);
+          item->SetArt("thumb", thumbs[i]);
           item->SetIconImage("DefaultPicture.png");
           item->SetLabel(g_localizeStrings.Get(20015));
           items.Add(item);
@@ -1163,7 +1163,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         {
           CFileItemPtr pItem(new CFileItem(strThumb,false));
           pItem->SetLabel(g_localizeStrings.Get(20017));
-          pItem->SetThumbnailImage(strThumb);
+          pItem->SetArt("thumb", strThumb);
           items.Add(pItem);
           local = true;
         }
@@ -1180,7 +1180,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         {
           CFileItemPtr pItem(new CFileItem(strThumb,false));
           pItem->SetLabel(g_localizeStrings.Get(20017));
-          pItem->SetThumbnailImage(strThumb);
+          pItem->SetArt("thumb", strThumb);
           items.Add(pItem);
           local = true;
         }
@@ -1241,10 +1241,10 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CVideoThumbLoader loader;
       loader.LoadItem(item.get());
 
-      if (item->HasProperty("fanart_image"))
+      if (item->HasArt("fanart"))
       {
         CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-        itemCurrent->SetThumbnailImage(item->GetProperty("fanart_image").asString());
+        itemCurrent->SetArt("thumb", item->GetArt("fanart"));
         itemCurrent->SetLabel(g_localizeStrings.Get(20440));
         items.Add(itemCurrent);
       }

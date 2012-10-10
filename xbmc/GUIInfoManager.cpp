@@ -199,7 +199,7 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "pauseenabled",     PLAYER_CAN_PAUSE },
                                   { "seekenabled",      PLAYER_CAN_SEEK }};
 
-const infomap player_param[] =   {{ "property",         PLAYER_ITEM_PROPERTY }};
+const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 
 const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "seekoffset",       PLAYER_SEEKOFFSET },
@@ -943,7 +943,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
       }
       if (prop.name == "property")
+      {
+        if (prop.param().Equals("fanart_image"))
+          return AddMultiInfo(GUIInfo(PLAYER_ITEM_ART, ConditionalStringParameter("fanart")));
         return AddListItemProp(prop.param(), MUSICPLAYER_PROPERTY_OFFSET);
+      }
       return TranslateMusicPlayerString(prop.name);
     }
     else if (cat.name == "videoplayer")
@@ -1181,7 +1185,13 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
       return listitem_labels[i].val;
   }
   if (info.name == "property" && info.num_params() == 1)
+  {
+    if (info.param().Equals("fanart_image"))
+      return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
     return AddListItemProp(info.param());
+  }
+  if (info.name == "art" && info.num_params() == 1)
+    return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
   return 0;
 }
 
@@ -1844,7 +1854,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image").asString();
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("fanart");
     }
     break;
   case SYSTEM_RENDER_VENDOR:
@@ -2197,7 +2207,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
-      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
+      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasArt("thumb");
   }
   else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS || condition == CONTAINER_SCROLLING)
   {
@@ -2964,9 +2974,9 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     if (m_seekOffset > 0)
       return "+" + seekOffset;
   }
-  else if (info.m_info == PLAYER_ITEM_PROPERTY)
+  else if (info.m_info == PLAYER_ITEM_ART)
   {
-    return m_currentFile->GetProperty(m_stringParameters[info.GetData1()]).asString();
+    return m_currentFile->GetArt(m_stringParameters[info.GetData1()]);
   }
   else if (info.m_info == SYSTEM_TIME)
   {
@@ -3093,7 +3103,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
     if (!g_application.IsPlayingAudio()) return "";
     if (fallback)
       *fallback = "DefaultAlbumCover.png";
-    return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultAlbumCover.png";
+    return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultAlbumCover.png";
   }
   else if (info == MUSICPLAYER_RATING)
   {
@@ -3111,7 +3121,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
     if (fallback)
       *fallback = "DefaultVideoCover.png";
     if(m_currentMovieThumb.IsEmpty())
-      return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultVideoCover.png";
+      return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultVideoCover.png";
     else return m_currentMovieThumb;
   }
   else if (info == CONTAINER_FOLDERTHUMB)
@@ -3124,13 +3134,13 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb").asString();
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("tvshowthumb");
   }
   else if (info == CONTAINER_SEASONTHUMB)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("seasonthumb").asString();
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt("seasonthumb");
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
@@ -3348,12 +3358,12 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
     playlistItem->GetMusicInfoTag()->SetLoaded();
   }
   // try to set a thumbnail
-  if (!playlistItem->HasThumbnail())
+  if (!playlistItem->HasArt("thumb"))
   {
     CMusicThumbLoader::FillThumb(*playlistItem);
     // still no thumb? then just the set the default cover TODO: remove me?
-    if (!playlistItem->HasThumbnail())
-      playlistItem->SetThumbnailImage("DefaultAlbumCover.png");
+    if (!playlistItem->HasArt("thumb"))
+      playlistItem->SetArt("thumb", "DefaultAlbumCover.png");
   }
   if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
   {
@@ -3362,7 +3372,7 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
     return strPosition;
   }
   else if (info.m_info == MUSICPLAYER_COVER)
-    return playlistItem->GetThumbnailImage();
+    return playlistItem->GetArt("thumb");
   return GetMusicTagLabel(info.m_info, playlistItem.get());
 }
 
@@ -3870,10 +3880,10 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
 void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
 {
   if (CFile::Exists(thumbFileName))
-    m_currentFile->SetThumbnailImage(thumbFileName);
+    m_currentFile->SetArt("thumb", thumbFileName);
   else
   {
-    m_currentFile->SetThumbnailImage("");
+    m_currentFile->SetArt("thumb", "");
     m_currentFile->FillInDefaultIcon();
   }
 }
@@ -3899,8 +3909,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem streamingItem(g_application.m_strPlayListFile,false);
       CMusicThumbLoader::FillThumb(streamingItem);
-      if (streamingItem.HasThumbnail())
-        m_currentFile->SetThumbnailImage(streamingItem.GetThumbnailImage());
+      if (streamingItem.HasArt("thumb"))
+        m_currentFile->SetArt("thumb", streamingItem.GetArt("thumb"));
     }
   }
   else
@@ -3930,7 +3940,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
 
   // Find a thumb for this file.
-  if (!item.HasThumbnail())
+  if (!item.HasArt("thumb"))
   {
     CVideoThumbLoader loader;
     loader.LoadItem(m_currentFile);
@@ -3952,12 +3962,12 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem thumbItem(g_application.m_strPlayListFile,false);
       if (CVideoThumbLoader::FillThumb(thumbItem))
-        item.SetThumbnailImage(thumbItem.GetThumbnailImage());
+        item.SetArt("thumb", thumbItem.GetArt("thumb"));
     }
   }
 
   item.FillInDefaultIcon();
-  m_currentMovieThumb = item.GetThumbnailImage();
+  m_currentMovieThumb = item.GetArt("thumb");
 }
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
@@ -4207,6 +4217,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
 
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, false, item);
+
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET) < (int)m_listitemProperties.size())
+  { // grab the art
+    std::string art = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET)];
+    return item->GetArt(art);
+  }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
@@ -4519,7 +4535,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     return item->GetIconImage();
   case LISTITEM_ICON:
     {
-      CStdString strThumb = item->GetThumbnailImage();
+      CStdString strThumb = item->GetArt("thumb");
       if (strThumb.IsEmpty())
         strThumb = item->GetIconImage();
       if (fallback)
@@ -4529,7 +4545,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_OVERLAY:
     return item->GetOverlayImage();
   case LISTITEM_THUMB:
-    return item->GetThumbnailImage();
+    return item->GetArt("thumb");
   case LISTITEM_FOLDERPATH:
     return CURL(item->GetPath()).GetWithoutUserDetails();
   case LISTITEM_FOLDERNAME:

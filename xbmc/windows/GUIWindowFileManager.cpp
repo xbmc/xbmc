@@ -511,7 +511,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
     pItem->SetLabel(g_localizeStrings.Get(20070));
-    pItem->SetThumbnailImage("DefaultFolder.png");
+    pItem->SetArt("thumb", "DefaultFolder.png");
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
@@ -524,7 +524,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     URIUtils::GetExtension(pItem->GetPath(), strExtension);
     if (pItem->IsHD() && strExtension == ".tbn")
     {
-      pItem->SetThumbnailImage(pItem->GetPath());
+      pItem->SetArt("thumb", pItem->GetPath());
     }
   }
   m_vecItems[iList]->FillInDefaultIcons();
