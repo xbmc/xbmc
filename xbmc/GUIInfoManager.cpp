@@ -2630,7 +2630,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (insidePlugins == true && content == "files" && m_stringParameters[info.GetData1()].Equals("plugincontent"))
             bReturn = true;
           else
-            bReturn = m_stringParameters[info.GetData1()].Equals(content);
+            bReturn = m_stringParameters[info.GetData2()].Equals(content);
 #endif
         }
         break;
