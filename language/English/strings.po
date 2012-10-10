@@ -10914,7 +10914,7 @@ msgid "Product ID"
 msgstr ""
 
 #empty strings from id 35505 to 35999
-
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adapter"
 msgstr ""
@@ -10965,11 +10965,7 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr ""
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr ""
-
-#empty string with id 36014
+#empty strings from id 36013 to 36014
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -11061,3 +11057,21 @@ msgstr ""
 msgctxt "#36036"
 msgid "On start/stop"
 msgstr ""
+
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+msgctxt "#36037"
+msgid "TV"
+msgstr ""
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr ""
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr ""
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr ""
+
