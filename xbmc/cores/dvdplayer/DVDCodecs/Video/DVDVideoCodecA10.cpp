@@ -86,7 +86,7 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_hwrender = getenv("A10HWR") != NULL;
   }
 
-  CLog::Log(LOGNOTICE, "using %s rendering.\n", m_hwrender ? "hardware" : "software");
+  CLog::Log(LOGNOTICE, "A10: using %s rendering.\n", m_hwrender ? "hardware" : "software");
 
   m_aspect = hints.aspect;
 
@@ -345,7 +345,7 @@ void CDVDVideoCodecA10::Dispose()
     m_hcedarv->close(m_hcedarv);
     libcedarv_exit(m_hcedarv);
     m_hcedarv = NULL;
-    CLog::Log(LOGDEBUG, "cedar dispose.");
+    CLog::Log(LOGDEBUG, "A10: cedar dispose.");
   }
 }
 
@@ -363,7 +363,7 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
 
   ret = m_hcedarv->request_write(m_hcedarv, iSize, &buf0, &bufsize0, &buf1, &bufsize1);
   if(ret < 0) {
-    CLog::Log(LOGERROR, "request_write failed.\n");
+    CLog::Log(LOGERROR, "A10: request_write failed.\n");
     return VC_ERROR;
   }
   if (bufsize1) {
@@ -391,7 +391,7 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
   if (ret == 4) {
     pthread_mutex_lock(&m_dispq_mutex);
 
-    CLog::Log(LOGNOTICE, "Out of decoder frame buffers. Freeing the queue.\n");
+    CLog::Log(LOGNOTICE, "A10: Out of decoder frame buffers. Freeing the queue.\n");
 
     // DvdPlayer is dropping/queueing more frames then libcedarv has
     // frame buffers. Free the decoder frame queue.
@@ -406,6 +406,8 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
 
     pthread_mutex_unlock(&m_dispq_mutex);
+
+    return VC_ERROR;
   }
 
   ret = m_hcedarv->display_request(m_hcedarv, &picture);
@@ -647,6 +649,21 @@ void CDVDVideoCodecA10::disp_close()
   unsigned long args[4];
 
   if (m_hlayer) {
+    //stop video
+    args[0] = m_scrid;
+    args[1] = m_hlayer;
+    args[2] = 0;
+    args[3] = 0;
+    ioctl(m_hdisp, DISP_CMD_VIDEO_STOP, args);
+
+    //close layer
+    args[0] = m_scrid;
+    args[1] = m_hlayer;
+    args[2] = 0;
+    args[3] = 0;
+    ioctl(m_hdisp, DISP_CMD_LAYER_CLOSE, args);
+
+    //release layer
     args[0] = m_scrid;
     args[1] = m_hlayer;
     args[2] = 0;
@@ -752,8 +769,8 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     layera.scn_win.width  = lrint(dstRect.x2-dstRect.x1);
     layera.scn_win.height = lrint(dstRect.y2-dstRect.y1);
 
-    CLog::Log(LOGDEBUG, "srcRect=(%lf,%lf)-(%lf,%lf)\n", srcRect.x1, srcRect.y1, srcRect.x2, srcRect.y2);
-    CLog::Log(LOGDEBUG, "dstRect=(%lf,%lf)-(%lf,%lf)\n", srcRect.x1, srcRect.y1, srcRect.x2, srcRect.y2);
+    CLog::Log(LOGDEBUG, "A10: srcRect=(%lf,%lf)-(%lf,%lf)\n", srcRect.x1, srcRect.y1, srcRect.x2, srcRect.y2);
+    CLog::Log(LOGDEBUG, "A10: dstRect=(%lf,%lf)-(%lf,%lf)\n", srcRect.x1, srcRect.y1, srcRect.x2, srcRect.y2);
 
     if ((layera.scn_win.x < 0) || (layera.scn_win.y < 0)) {
       int screen_width, screen_height;
@@ -780,7 +797,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     args[2] = (unsigned long)&layera;
     args[3] = 0;
     if(ioctl(m_hdisp, DISP_CMD_LAYER_SET_PARA, args)) {
-      CLog::Log(LOGERROR, "DISP_CMD_LAYER_SET_PARA failed.\n");
+      CLog::Log(LOGERROR, "A10: DISP_CMD_LAYER_SET_PARA failed.\n");
     }
 
     //open layer
@@ -789,7 +806,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     args[2] = 0;
     args[3] = 0;
     if (ioctl(m_hdisp, DISP_CMD_LAYER_OPEN, args)) {
-      CLog::Log(LOGERROR, "DISP_CMD_LAYER_OPEN failed.\n");
+      CLog::Log(LOGERROR, "A10: DISP_CMD_LAYER_OPEN failed.\n");
     }
 
     //put behind system layer
@@ -798,7 +815,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     args[2] = 0;
     args[3] = 0;
     if (ioctl(m_hdisp, DISP_CMD_LAYER_BOTTOM, args)) {
-      CLog::Log(LOGERROR, "DISP_CMD_LAYER_BOTTOM failed.\n");
+      CLog::Log(LOGERROR, "A10: DISP_CMD_LAYER_BOTTOM failed.\n");
     }
 
     //set colorkey
@@ -819,7 +836,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     args[2] = 0;
     args[3] = 0;
     if (ioctl(m_hdisp, DISP_CMD_SET_COLORKEY, args)) {
-      CLog::Log(LOGERROR, "DISP_CMD_SET_COLORKEY failed.\n");
+      CLog::Log(LOGERROR, "A10: DISP_CMD_SET_COLORKEY failed.\n");
     }
 
     //turn off colorkey (system layer)
@@ -828,7 +845,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     args[2] = 0;
     args[3] = 0;
     if (ioctl(m_hdisp, DISP_CMD_LAYER_CK_OFF, args)) {
-      CLog::Log(LOGERROR, "DISP_CMD_LAYER_CK_OFF failed.\n");
+      CLog::Log(LOGERROR, "A10: DISP_CMD_LAYER_CK_OFF failed.\n");
     }
 
     //turn off global alpha (system layer)
@@ -837,7 +854,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     args[2] = 0;
     args[3] = 0;
     if (ioctl(m_hdisp, DISP_CMD_LAYER_ALPHA_OFF, args)) {
-      CLog::Log(LOGERROR, "DISP_CMD_LAYER_ALPHA_OFF failed.\n");
+      CLog::Log(LOGERROR, "A10: DISP_CMD_LAYER_ALPHA_OFF failed.\n");
     }
 
     //start video
@@ -846,7 +863,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
     args[2] = 0;
     args[3] = 0;
     if (ioctl(m_hdisp, DISP_CMD_VIDEO_START, args)) {
-      CLog::Log(LOGERROR, "DISP_CMD_VIDEO_START failed.\n");
+      CLog::Log(LOGERROR, "A10: DISP_CMD_VIDEO_START failed.\n");
     }
   }
 
@@ -855,7 +872,7 @@ void CDVDVideoCodecA10::RenderBuffer(A10VideoBuffer *buffer, CRect &srcRect, CRe
   args[2] = (unsigned long)&frmbuf;
   args[3] = 0;
   if (ioctl(m_hdisp, DISP_CMD_VIDEO_SET_FB, args)) {
-    CLog::Log(LOGERROR, "DISP_CMD_VIDEO_SET_FB failed.\n");
+    CLog::Log(LOGERROR, "A10: DISP_CMD_VIDEO_SET_FB failed.\n");
   }
 
   //CLog::Log(LOGDEBUG, "A10: render %d\n", buffer->picture.id);
