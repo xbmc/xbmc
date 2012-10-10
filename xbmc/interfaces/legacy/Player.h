@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "cores/playercorefactory/PlayerCoreFactory.h"
-
 #include "ListItem.h"
 #include "PlayList.h"
 #include "InfoTagVideo.h"
@@ -45,11 +43,7 @@ namespace XBMCAddon
      * 
      * Player([core]) -- Creates a new Player with as default the xbmc music playlist.
      * 
-     * core     : (optional) Use a specified playcore instead of letting xbmc decide the playercore to use.
-     *          - xbmc.PLAYER_CORE_AUTO
-     *          - xbmc.PLAYER_CORE_DVDPLAYER
-     *          - xbmc.PLAYER_CORE_MPLAYER
-     *          - xbmc.PLAYER_CORE_PAPLAYER
+     * core     : (ignored) Use a specified playcore instead of letting xbmc decide the playercore to use.
      *
      * This class is a merge of what was previously in xbmcmodule/player.h
      *  and xbmcmodule/PythonPlayer.h without the python references. The
@@ -60,7 +54,6 @@ namespace XBMCAddon
     {
     private:
       int iPlayList;
-      EPLAYERCORES playerCore;
 
     public:
       /**
@@ -68,7 +61,7 @@ namespace XBMCAddon
        *  construction of a Player needs to identify whether or not any 
        *  callbacks will be executed asynchronously or not.
        */
-      Player(int playerCore = EPC_NONE);
+      Player(int playerCore = 0);
       virtual ~Player(void);
 
       /**
@@ -87,7 +80,7 @@ namespace XBMCAddon
        * example:
        *   - listitem = xbmcgui.ListItem('Ironman')
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
-       *   - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem, windowed)\n
+       *   - xbmc.Player().play(url, listitem, windowed)\n
        */
       void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
 
@@ -113,7 +106,7 @@ namespace XBMCAddon
        * windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)
        * 
        * example:
-       *   - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play()
+       *   - xbmc.Player().play()
        */
       void playCurrent(bool windowed = false);
 

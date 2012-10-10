@@ -39,12 +39,8 @@ namespace XBMCAddon
     {
       iPlayList = PLAYLIST_MUSIC;
 
-      if (_playerCore == EPC_DVDPLAYER ||
-          _playerCore == EPC_MPLAYER ||
-          _playerCore == EPC_PAPLAYER)
-        playerCore = (EPLAYERCORES)_playerCore;
-      else
-        playerCore = EPC_NONE;
+    if (_playerCore != 0)
+      CLog::Log(LOGERROR, "xbmc.Player: Requested non-default player. This behavior is deprecated, plugins may no longer specify a player", _playerCore);
 
       // now that we're done, register hook me into the system
       if (languageHook)
@@ -71,9 +67,6 @@ namespace XBMCAddon
         // set fullscreen or windowed
         g_settings.m_bStartVideoWindowed = windowed;
 
-        // force a playercore before playing
-        g_application.m_eForcedNextPlayer = playerCore;
-
         const AddonClass::Ref<xbmcgui::ListItem> listitem(plistitem);
 
         if (listitem.isSet())
@@ -98,9 +91,6 @@ namespace XBMCAddon
       // set fullscreen or windowed
       g_settings.m_bStartVideoWindowed = windowed;
 
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
-
       // play current file in playlist
       if (g_playlistPlayer.GetCurrentPlaylist() != iPlayList)
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);
@@ -114,9 +104,6 @@ namespace XBMCAddon
       {
         // set fullscreen or windowed
         g_settings.m_bStartVideoWindowed = windowed;
-
-        // force a playercore before playing
-        g_application.m_eForcedNextPlayer = playerCore;
 
         // play a python playlist (a playlist from playlistplayer.cpp)
         iPlayList = playlist->getPlayListId();
@@ -142,27 +129,18 @@ namespace XBMCAddon
     void Player::playnext()
     {
       TRACE;
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
-
       CApplicationMessenger::Get().PlayListPlayerNext();
     }
 
     void Player::playprevious()
     {
       TRACE;
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
-
       CApplicationMessenger::Get().PlayListPlayerPrevious();
     }
 
     void Player::playselected(int selected)
     {
       TRACE;
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
-
       if (g_playlistPlayer.GetCurrentPlaylist() != iPlayList)
       {
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);

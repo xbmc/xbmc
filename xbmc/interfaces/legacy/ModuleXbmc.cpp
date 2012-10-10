@@ -491,10 +491,13 @@ namespace XBMCAddon
 
     int getPLAYLIST_MUSIC() { return PLAYLIST_MUSIC; }
     int getPLAYLIST_VIDEO() { return PLAYLIST_VIDEO; }
-    int getPLAYER_CORE_AUTO() { return EPC_NONE; }
-    int getPLAYER_CORE_DVDPLAYER() { return EPC_DVDPLAYER; }
-    int getPLAYER_CORE_MPLAYER() { return EPC_MPLAYER; }
-    int getPLAYER_CORE_PAPLAYER() { return EPC_PAPLAYER; }
+
+    // deprecated/ignored for Frodo. Remove for Frodo+1.
+    int getPLAYER_CORE_AUTO() { return 0; }
+    int getPLAYER_CORE_DVDPLAYER() { return -1; }
+    int getPLAYER_CORE_MPLAYER() { return -1; }
+    int getPLAYER_CORE_PAPLAYER() { return -1; }
+
     int getTRAY_OPEN() { return TRAY_OPEN; }
     int getDRIVE_NOT_READY() { return DRIVE_NOT_READY; }
     int getTRAY_CLOSED_NO_MEDIA() { return TRAY_CLOSED_NO_MEDIA; }
