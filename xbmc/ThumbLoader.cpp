@@ -255,6 +255,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("banner_image", pItem->GetCachedPlexMediaServerBanner());
     }
   }
+#endif
 
   if (!pItem->HasThumbnail())
   {
@@ -548,4 +549,3 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
 
   return pItem->HasThumbnail();
 }
-#endif
