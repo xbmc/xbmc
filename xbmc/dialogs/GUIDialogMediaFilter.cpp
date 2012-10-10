@@ -529,8 +529,11 @@ void CGUIDialogMediaFilter::Reset()
         break;
 
       case SettingInfo::RANGE:
-        delete ((float **)filter->second.data)[0];
-        delete ((float **)filter->second.data)[1];
+        if (filter->second.data != NULL)
+        {
+          delete ((float **)filter->second.data)[0];
+          delete ((float **)filter->second.data)[1];
+        }
         delete (float *)filter->second.data;
         break;
 
