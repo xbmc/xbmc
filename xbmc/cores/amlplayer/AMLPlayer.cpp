@@ -2034,7 +2034,7 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
         // subtitle info
         if (media_info.stream_info.has_sub && media_info.stream_info.total_sub_num > 0)
         {
-          for (int i = 0; i < media_info.stream_info.total_sub_num; i++)
+          for (int i = 0; i < media_info.stream_info.total_sub_num && i < MAX_SUB_STREAMS; i++)
           {
             AMLPlayerStreamInfo *info = new AMLPlayerStreamInfo;
             info->Clear();
