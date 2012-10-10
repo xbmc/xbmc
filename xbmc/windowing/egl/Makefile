@@ -1,10 +1,11 @@
 INCLUDES=-I.
 
-SRCS = WinSystemGLES.cpp
-SRCS+= WinEGLPlatformGeneric.cpp
-SRCS+= WinEGLPlatformAndroid.cpp
-SRCS+= WinEGLPlatformRaspberryPI.cpp
-     
+SRCS = WinSystemEGL.cpp
+SRCS+= EGLNativeTypeAmlogic.cpp
+SRCS+= EGLNativeTypeAndroid.cpp
+SRCS+= EGLNativeTypeRaspberryPI.cpp
+SRCS+= EGLWrapper.cpp
+
 LIB = windowing_egl.a
 
 include ../../../Makefile.include

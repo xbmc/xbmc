@@ -1,6 +1,7 @@
 #pragma once
+
 /*
- *      Copyright (C) 2012 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,24 +20,5 @@
  *
  */
 
-#ifdef HAS_EGL
-
-#include "system.h"
-
-#if   defined(TARGET_RASPBERRY_PI)
-  #include "xbmc/windowing/egl/WinEGLPlatformRaspberryPI.h"
-  class CWinEGLPlatformRaspberryPI;
-    #define CWinEGLPlatform CWinEGLPlatformRaspberryPI
-#elif   defined(TARGET_ANDROID)
-  #include "xbmc/windowing/egl/WinEGLPlatformAndroid.h"
-  class CWinEGLPlatformAndroid;
-  #define CWinEGLPlatform CWinEGLPlatformAndroid
-
-#else
-  #include "xbmc/windowing/egl/WinEGLPlatformGeneric.h"
-  class CWinEGLPlatformGeneric;
-  #define CWinEGLPlatform CWinEGLPlatformGeneric
-
-#endif
-
-#endif
+#define EGL_QUIRK_NONE 0
+#define EGL_QUIRK_NEED_WINDOW_FOR_RES 1
