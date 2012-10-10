@@ -211,8 +211,6 @@ public:
 
   int iAdditionalSubtitleDirectoryChecked;
 
-  int m_HttpApiBroadcastPort;
-  int m_HttpApiBroadcastLevel;
   float m_fVolumeLevel;        // float 0.0 - 1.0 range
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!

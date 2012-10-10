@@ -771,13 +771,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else if( parameter.Equals("record") )
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
-      {
-#ifdef HAS_WEB_SERVER_BROADCAST
-        if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
-          CApplicationMessenger::Get().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
-#endif
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
-      }
     }
     else if (parameter.Left(9).Equals("partymode"))
     {

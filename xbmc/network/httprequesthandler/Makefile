@@ -1,5 +1,4 @@
-SRCS=HTTPApiHandler.cpp \
-     HTTPImageHandler.cpp \
+SRCS=HTTPImageHandler.cpp \
      HTTPJsonRpcHandler.cpp \
      HTTPVfsHandler.cpp \
      HTTPWebinterfaceAddonsHandler.cpp \
