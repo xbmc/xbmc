@@ -37,7 +37,11 @@ class CGUIListLabel :
       public CGUIControl
 {
 public:
+#ifndef __PLEX__
   CGUIListLabel(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &label, bool alwaysScroll);
+#else
+  CGUIListLabel(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &label, bool alwaysScroll, bool wrapMultiline);
+#endif
   virtual ~CGUIListLabel(void);
   virtual CGUIListLabel *Clone() const { return new CGUIListLabel(*this); };
 
