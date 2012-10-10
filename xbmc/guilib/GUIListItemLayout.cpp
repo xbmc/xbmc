@@ -137,6 +137,10 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
                                                                 // different label control + defaults.
   if (control)
   {
+    /* PLEX */
+    control->SetInitialVisibility();
+    /* END PLEX */
+
     group->AddControl(control);
     if (control->IsGroup())
     {
@@ -193,10 +197,18 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   image->SetAspectRatio(CAspectRatio::AR_KEEP);
   m_group.AddControl(image);
   float x = iconWidth + labelInfo.offsetX + 10;
+#ifndef __PLEX__
   CGUIListLabel *label = new CGUIListLabel(0, 0, x, labelInfo.offsetY, width - x - 18, height, labelInfo, CGUIInfoLabel("$INFO[ListItem.Label]", "", m_group.GetParentID()), false);
+#else
+  CGUIListLabel *label = new CGUIListLabel(0, 0, x, labelInfo.offsetY, width - x - 18, height, labelInfo, CGUIInfoLabel("$INFO[ListItem.Label]", "", m_group.GetParentID()), false, false);
+#endif
   m_group.AddControl(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
+#ifndef __PLEX__
   label = new CGUIListLabel(0, 0, x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, CGUIInfoLabel("$INFO[ListItem.Label2]", "", m_group.GetParentID()), false);
+#else
+  label = new CGUIListLabel(0, 0, x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, CGUIInfoLabel("$INFO[ListItem.Label2]", "", m_group.GetParentID()), false, false);
+#endif
   m_group.AddControl(label);
 }
 //#endif
