@@ -144,14 +144,20 @@ std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
 
 static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStream& rh)
 {
+  /* NOTE : Disabled because it interfers with the new language audio election 
   PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_AudioStream
                  , rh.type_index == g_settings.m_currentVideoSettings.m_AudioStream);
+  */
 
   if(!g_guiSettings.GetString("locale.audiolanguage").Equals("original"))
   {
-    CStdString audio_language = g_langInfo.GetAudioLanguage();
-    PREDICATE_RETURN(audio_language.Equals(lh.language.c_str())
-                   , audio_language.Equals(rh.language.c_str()));
+    CStdString audio_language1 = g_langInfo.GetAudioLanguage(0);
+    CStdString audio_language2 = g_langInfo.GetAudioLanguage(1);
+
+    PREDICATE_RETURN(audio_language1.Equals(lh.language.c_str())
+                   , audio_language1.Equals(rh.language.c_str()));
+    PREDICATE_RETURN(audio_language2.Equals(lh.language.c_str())
+                   , audio_language2.Equals(rh.language.c_str()));
   }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
@@ -173,8 +179,10 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
                    , rh.flags & CDemuxStream::FLAG_FORCED);
   }
 
+  /* NOTE : Disabled because it interfers with the new language subtitle election 
   PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream
                  , rh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream);
+  */
 
   CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
   if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
@@ -191,12 +199,19 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
 
   if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
   {
+    if(lh.flags & CDemuxStream::FLAG_FORCED || rh.flags & CDemuxStream::FLAG_FORCED)
+    {
+      // Dont put the forced subs first now. Logic of selecting them runs later
+      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED == 0
+                     , rh.flags & CDemuxStream::FLAG_FORCED == 0);
+    }
+
     PREDICATE_RETURN(subtitle_language.Equals(lh.language.c_str())
                    , subtitle_language.Equals(rh.language.c_str()));
   }
 
-  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
-                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
+  //PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+  //               , rh.flags & CDemuxStream::FLAG_DEFAULT);
 
   return false;
 }
@@ -721,10 +736,14 @@ void CDVDPlayer::OpenDefaultStreams()
     streams = m_SelectionStreams.Get(STREAM_AUDIO, PredicateAudioPriority);
   valid   = false;
 
+  CStdString audioLang;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
     if(OpenAudioStream(it->id, it->source))
+    {
+      audioLang = it->language;
       valid = true;
+    }
   }
   if(!valid)
     CloseAudioStream(true);
@@ -733,10 +752,19 @@ void CDVDPlayer::OpenDefaultStreams()
   m_dvdPlayerVideo.EnableSubtitle(g_settings.m_currentVideoSettings.m_SubtitleOn);
 
   // open subtitle stream
+  m_CurrentSubtitle.Clear();
   streams = m_SelectionStreams.Get(STREAM_SUBTITLE, PredicateSubtitlePriority);
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
+    if(audioLang==it->language)
+    {
+      if(!(it->flags & CDemuxStream::FLAG_FORCED))
+        continue;
+    }
+    else if(it->language != g_langInfo.GetSubtitleLanguage())
+      break;
+
     if(OpenSubtitleStream(it->id, it->source))
     {
       valid = true;
@@ -746,7 +774,7 @@ void CDVDPlayer::OpenDefaultStreams()
   }
   if(!valid)
     CloseSubtitleStream(true);
-
+  
   // open teletext stream
   streams = m_SelectionStreams.Get(STREAM_TELETEXT);
   valid   = false;
@@ -2111,6 +2139,8 @@ void CDVDPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM))
       {
         CDVDMsgPlayerSetSubtitleStream* pMsg2 = (CDVDMsgPlayerSetSubtitleStream*)pMsg;
+        if(pMsg2->GetStreamId()==-1)
+          CloseSubtitleStream(false);
 
         SelectionStream& st = m_SelectionStreams.Get(STREAM_SUBTITLE, pMsg2->GetStreamId());
         if(st.source != STREAM_SOURCE_NONE)
@@ -2655,7 +2685,9 @@ int CDVDPlayer::GetSubtitleCount()
 
 int CDVDPlayer::GetSubtitle()
 {
-  return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
+  if(m_CurrentSubtitle.id==-1)
+    return -1;
+  return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_CurrentSubtitle.source, m_CurrentSubtitle.id);
 }
 
 void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
@@ -2676,6 +2708,12 @@ void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
   SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
   if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
     strStreamLang = g_localizeStrings.Get(13205); // Unknown
+}
+
+bool CDVDPlayer::GetSubtitleIsForced(int iStream)
+{
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  return (s.flags & CDemuxStream::FLAG_FORCED) != 0;
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
@@ -3785,13 +3823,14 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     if (XFILE::CFile::Exists(strReplace))
       return -1;
   }
+
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
   s.type     = STREAM_SUBTITLE;
   s.id       = 0;
   s.filename = filename;
-  s.name     = URIUtils::GetFileName(filename);
   s.flags    = flags;
+  CUtil::GetExternalStreamNameAndLangFromFilename(m_filename, filename, s.name, s.language);
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }

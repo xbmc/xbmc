@@ -159,6 +159,15 @@ void CAdvancedSettings::Initialize()
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
+  // <video_base_name>.en.directors.commentary.<ext>
+  m_externalStreamMatchRegExps.push_back("^(?<lang>.*?)[ .-](?<name>.*)$");
+  // <video_base_name>.directors.commentary.en.<ext>
+  m_externalStreamMatchRegExps.push_back("^(?<name>.*)[ .-](?<lang>.*?)$");
+  // <video_base_name>.en.<ext>
+  m_externalStreamMatchRegExps.push_back("^(?<lang>.*)$");
+  // <video_base_name>.directors.commentary.<ext>
+  m_externalStreamMatchRegExps.push_back("^(?<name>.*)$");
+
   // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // foo.ep01, foo.EP_01

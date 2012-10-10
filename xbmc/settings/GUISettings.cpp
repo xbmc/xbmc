@@ -914,6 +914,7 @@ void CGUISettings::Initialize()
 #endif
   AddSeparator(loc, "locale.sep3");
   AddString(loc, "locale.audiolanguage", 285, "original", SPIN_CONTROL_TEXT);
+  AddString(loc, "locale.audiolanguage2", 310, "original", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.subtitlelanguage", 286, "original", SPIN_CONTROL_TEXT);
 
   CSettingsCategory* fl = AddCategory(SETTINGS_APPEARANCE, "filelists", 14081);
@@ -1407,9 +1408,14 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
 
   CStdString streamLanguage = GetString("locale.audiolanguage");
   if (!streamLanguage.Equals("original") && !streamLanguage.Equals("default"))
-    g_langInfo.SetAudioLanguage(streamLanguage);
+    g_langInfo.SetAudioLanguage(0, streamLanguage);
   else
-    g_langInfo.SetAudioLanguage("");
+    g_langInfo.SetAudioLanguage(0, "");
+  streamLanguage = GetString("locale.audiolanguage2");
+  if (!streamLanguage.Equals("original") && !streamLanguage.Equals("default"))
+    g_langInfo.SetAudioLanguage(1, streamLanguage);
+  else
+    g_langInfo.SetAudioLanguage(1, "");
 
   streamLanguage = GetString("locale.subtitlelanguage");
   if (!streamLanguage.Equals("original") && !streamLanguage.Equals("default"))

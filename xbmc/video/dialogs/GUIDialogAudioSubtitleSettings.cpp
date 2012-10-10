@@ -190,13 +190,19 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
   setting.data = &m_subtitleStream;
   m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
 
-  if(m_subtitleStream < 0) m_subtitleStream = 0;
+//  if(m_subtitleStream < 0) m_subtitleStream = 0;
 
   // get the number of audio strams for the current movie
-  setting.max = (float)g_application.m_pPlayer->GetSubtitleCount() - 1;
+  setting.max = (float)g_application.m_pPlayer->GetSubtitleCount();
+
+  // Add a "None (# total avail subs)" entry
+  CStdString none;
+  none.Format("%s (0/%i)", g_localizeStrings.Get(231), g_application.m_pPlayer->GetSubtitleCount());
+  setting.entry.push_back(make_pair(-1, none));
+
 
   // cycle through each subtitle and add it to our entry list
-  for (int i = 0; i <= setting.max; ++i)
+  for (int i = 0; i < g_application.m_pPlayer->GetSubtitleCount(); ++i)
   {
     CStdString strItem;
     CStdString strName;
@@ -210,17 +216,16 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (strName != strLanguage)
       strName.Format("%s [%s]", strName.c_str(), strLanguage.c_str());
 
-    strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
+  if(g_application.m_pPlayer->GetSubtitleIsForced(i))
+  {
+    strName += " - ";
+    strName += g_localizeStrings.Get(13207);
+  }
+    strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max);
 
-    setting.entry.push_back(make_pair(setting.entry.size(), strItem));
+    setting.entry.push_back(make_pair(i, strItem));
   }
 
-  if (setting.max < 0)
-  { // no subtitle streams - just add a "None" entry
-    m_subtitleStream = 0;
-    setting.max = 0;
-    setting.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(231)));
-  }
   m_settings.push_back(setting);
 }
 
