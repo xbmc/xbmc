@@ -487,7 +487,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             max_count  = it->second;
           }
         }
-        items.SetContent(GetContentMapping(max_string));
+        std::string content = GetContentMapping(max_string);
+        items.SetContent(content);
+        if (content == "unknown")
+          items.AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%L", "%I", "%L", ""));
     }
 
 cleanup:
