@@ -676,8 +676,8 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
 void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
 {
   if (strProperty.empty() || value.isNull() ||
-     (iPlaylist == PLAYLIST_VIDEO && g_application.IsPlayingVideo()) ||
-     (iPlaylist == PLAYLIST_MUSIC && g_application.IsPlayingAudio()))
+     (iPlaylist == PLAYLIST_VIDEO && !g_application.IsPlayingVideo()) ||
+     (iPlaylist == PLAYLIST_MUSIC && !g_application.IsPlayingAudio()))
     return;
 
   CVariant data;
