@@ -492,7 +492,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     watched = (episodes && played == episodes);
                 }
                 else if (type == "episode" || type == "movie")
-                    watched = played;
+                    watched = (played > 0);
                 pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watched);
             }
             items.Add(pItem);
