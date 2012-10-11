@@ -768,32 +768,43 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &in
       if (m_mediaType == "movies")
       {
         table = "movieview";
-        year.Format("c%02d", VIDEODB_ID_YEAR);
+        year = DatabaseUtils::GetField(FieldYear, MediaTypeMovie, DatabaseQueryPartWhere);
       }
       else if (m_mediaType == "tvshows")
       {
         table = "tvshowview";
-        year.Format("strftime(\"%%Y\", c%02d)", VIDEODB_ID_TV_PREMIERED);
+        year.Format("strftime(\"%%Y\", %s)", DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPartWhere));
       }
       else if (m_mediaType == "musicvideos")
       {
         table = "musicvideoview";
-        year.Format("c%02d", VIDEODB_ID_MUSICVIDEO_YEAR);
+        year = DatabaseUtils::GetField(FieldYear, MediaTypeMusicVideo, DatabaseQueryPartWhere);
       }
-      
-      GetMinMax(table, year, min, max);
+
+      CDatabase::Filter filter;
+      filter.where = year + " > 0";
+      GetMinMax(table, year, min, max, filter);
     }
     else if (m_mediaType == "albums" || m_mediaType == "songs")
     {
       CStdString table;
+      MediaType mediaType;
       if (m_mediaType == "albums")
+      {
         table = "albumview";
+        mediaType = MediaTypeAlbum;
+      }
       else if (m_mediaType == "songs")
+      {
         table = "songview";
-      
+        mediaType = MediaTypeSong;
+      }
+      else
+        return;
+
       CDatabase::Filter filter;
-      filter.where = "iYear > 0";
-      GetMinMax(table, "iYear", min, max, filter);
+      filter.where = DatabaseUtils::GetField(FieldYear, mediaType, DatabaseQueryPartWhere) + " > 0";
+      GetMinMax(table, DatabaseUtils::GetField(FieldYear, mediaType, DatabaseQueryPartSelect), min, max, filter);
     }
   }
   else if (filter.field == FieldAirDate)
