@@ -130,6 +130,8 @@ void CGUIListItem::SetArt(const map<string, string> &art)
     else if (HasArt("banner"))
       m_art["thumb"] = m_art["banner"];
   }
+  
+  SetInvalid();
 }
 
 std::string CGUIListItem::GetArt(const std::string &type) const
