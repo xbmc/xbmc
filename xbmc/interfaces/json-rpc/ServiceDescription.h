@@ -2411,7 +2411,8 @@ namespace JSONRPC
         "{ \"name\": \"showlink\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null }"
+        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
@@ -2438,7 +2439,8 @@ namespace JSONRPC
         "{ \"name\": \"episodeguide\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null }"
+        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
@@ -2464,7 +2466,8 @@ namespace JSONRPC
         "{ \"name\": \"episode\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"originaltitle\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" }"
+        "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
@@ -2489,7 +2492,8 @@ namespace JSONRPC
         "{ \"name\": \"lastplayed\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null }"
+        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
