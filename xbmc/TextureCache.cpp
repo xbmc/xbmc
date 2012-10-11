@@ -317,7 +317,7 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
   CStdString cachedImage(GetCachedImage(image, cachedHash));
   if (!cachedImage.IsEmpty())
   {
-    CStdString dest = URIUtils::ReplaceExtension(destination, URIUtils::GetExtension(cachedImage));
+    CStdString dest = destination + URIUtils::GetExtension(cachedImage);
     if (overwrite || !CFile::Exists(dest))
     {
       if (CFile::Cache(cachedImage, dest))
