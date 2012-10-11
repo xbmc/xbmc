@@ -509,12 +509,12 @@ bool CTagLoaderTagLib::ParseGenericTag(Tag *generic, EmbeddedArt *art, CMusicInf
   for (PropertyMap::ConstIterator it = properties.begin(); it != properties.end(); ++it)
   {
     if (it->first == "ARTIST")                         tag.SetArtist(StringListToVectorString(it->second));
-    else if (it->first == "ALBUM")                     tag.SetArtist(it->second.front().to8Bit(true));
+    else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.front().to8Bit(true));
     else if (it->first == "TRACKNUMBER")               tag.SetTrackNumber(it->second.front().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.front().toInt());
     else if (it->first == "GENRE")                     tag.SetGenre(StringListToVectorString(it->second));
-    else if (it->first == "COMMENT")                   tag.SetGenre(it->second.front().to8Bit(true));
+    else if (it->first == "COMMENT")                   tag.SetComment(it->second.front().to8Bit(true));
   }
 
   return true;
