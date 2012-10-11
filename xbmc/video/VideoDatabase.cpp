@@ -8326,6 +8326,98 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
   }
 }
 
+void CVideoDatabase::ExportSingleVideoToXML(const CStdString &outPath, const CStdString& inPath, bool images /*=false*/, bool overwrite/*=false*/)
+{
+  CStdString strFileName=URIUtils::GetFileName(inPath);
+  if (strFileName.IsEmpty())
+	  return;
+
+  CStdString strPath;
+  URIUtils::GetDirectory(inPath, strPath);
+  if (strPath.IsEmpty())
+	  return;
+
+  CStdString strExtension;
+  URIUtils::GetExtension(strFileName, strExtension);
+  URIUtils::RemoveExtension(strFileName);
+
+  if (!StringUtils::IsNaturalNumber(strFileName))
+    return;
+  long idDb=atol(strFileName.c_str());
+
+  CStdStringArray pathElem;
+  StringUtils::SplitString(strPath, "/", pathElem);
+  if (pathElem.size() == 0)
+    return;
+  if (!StringUtils::IsNaturalNumber(pathElem.at(2)))
+    return;
+  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE) atol(pathElem.at(2).c_str());
+  switch (type) {
+  case 4:
+    type = VIDEODB_CONTENT_MOVIES;
+    break;
+  case 2:
+  case 5:
+    type = VIDEODB_CONTENT_EPISODES;
+    break;
+  case 6:
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
+    break;
+  }
+
+  CVideoInfoTag tag = GetDetailsByTypeAndId(type, idDb);
+
+  // create our xml document
+  CXBMCTinyXML xmlDoc;
+  TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+  xmlDoc.InsertEndChild(decl);
+
+  map<string, string> artwork;
+  GetArtForItem(tag.m_iDbId, tag.m_type, artwork);
+  switch (type)
+  {
+  case VIDEODB_CONTENT_MOVIES:
+    tag.Save(&xmlDoc, "movie", false);
+    break;
+  case VIDEODB_CONTENT_EPISODES:
+    tag.Save(&xmlDoc, "episodedetails", false);
+    break;
+  case VIDEODB_CONTENT_MUSICVIDEOS:
+    tag.Save(&xmlDoc, "musicvideo", false);
+    break;
+  }
+
+  CFileItem item(tag.m_strFileNameAndPath,false);
+  CFileItem saveItem(item);
+  saveItem.SetArt(artwork);
+
+  CStdString outDir = URIUtils::GetParentPath(outPath);
+  if (CUtil::SupportsWriteFileOperations(outDir))
+  {
+    CStdString nfoFile(URIUtils::AddFileToFolder(outDir, URIUtils::GetFileName(URIUtils::ReplaceExtension(outPath, ".nfo"))));
+    if (overwrite || !CFile::Exists(nfoFile, false))
+    {
+      if(!xmlDoc.SaveFile(nfoFile))
+      {
+        CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+        return;
+      }
+
+      xmlDoc.Clear();
+    }
+
+    if (images)
+    {
+      for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
+      {
+        CStdString savedThumb = item.GetLocalArt(i->first, false);
+        savedThumb = URIUtils::AddFileToFolder(outDir, URIUtils::GetFileName(savedThumb));
+        CTextureCache::Get().Export(i->second, savedThumb, overwrite);
+      }
+    }
+  }
+}
+
 void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = false */, bool images /* = false */, bool actorThumbs /* false */, bool overwrite /*=false*/)
 {
   CGUIDialogProgress *progress=NULL;

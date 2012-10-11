@@ -39,20 +39,22 @@ CVideoDatabaseFile::~CVideoDatabaseFile(void)
 
 CStdString CVideoDatabaseFile::TranslateUrl(const CURL& url)
 {
-  CVideoDatabase videoDatabase;
-  if (!videoDatabase.Open())
-    return "";
+  CStdString strFileName=URIUtils::GetFileName(url.Get());
+  if (strFileName.IsEmpty())
+	  return "";
 
   CStdString strPath;
   URIUtils::GetDirectory(url.Get(), strPath);
-  CStdString strFileName=URIUtils::GetFileName(url.Get());
+  if (strPath.IsEmpty())
+	  return "";
+
   CStdString strExtension;
   URIUtils::GetExtension(strFileName, strExtension);
   URIUtils::RemoveExtension(strFileName);
 
   if (!StringUtils::IsNaturalNumber(strFileName))
     return "";
-  long idFile=atol(strFileName.c_str());
+  long idDb=atol(strFileName.c_str());
 
   CStdStringArray pathElem;
   StringUtils::SplitString(strPath, "/", pathElem);
@@ -60,21 +62,26 @@ CStdString CVideoDatabaseFile::TranslateUrl(const CURL& url)
     return "";
   if (!StringUtils::IsNaturalNumber(pathElem.at(2)))
     return "";
-  long type=atol(pathElem.at(2).c_str());
+  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE) atol(pathElem.at(2).c_str());
   switch (type) {
   case 4:
-    type = 1;
+    type = VIDEODB_CONTENT_MOVIES;
     break;
+  case 2:
   case 5:
-    type = 4;
+    type = VIDEODB_CONTENT_EPISODES;
     break;
   case 6:
-    type = 3;
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
     break;
   }
 
+  CVideoDatabase videoDatabase;
+  if (!videoDatabase.Open())
+    return "";
+
   CStdString realFilename;
-  videoDatabase.GetFilePathById(idFile, realFilename, (VIDEODB_CONTENT_TYPE)type);
+  videoDatabase.GetFilePathById(idDb, realFilename, (VIDEODB_CONTENT_TYPE)type);
 
   return realFilename;
 }
