@@ -255,7 +255,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   if (base->m_handle)
   {
     base->m_handle->SetText(base->GetCurrentFile());
-    base->m_handle->SetPercentage(current);
+    base->m_handle->SetPercentage((float)current);
   }
 
   DataHolder data = {base, current, opWeight};
@@ -343,7 +343,7 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
     line.Format("%s (%s)", data->base->GetCurrentFile().c_str(),
                            data->base->GetAverageSpeed().c_str());
     data->base->m_handle->SetText(line);
-    data->base->m_handle->SetPercentage(current);
+    data->base->m_handle->SetPercentage((float)current);
   }
 
   return !data->base->ShouldCancel((unsigned)current, 100);
