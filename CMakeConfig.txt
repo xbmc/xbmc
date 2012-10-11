@@ -214,8 +214,11 @@ macro(plex_find_library lib framework systemlib)
   # get the actual value
 	get_property(l VARIABLE PROPERTY CONFIG_LIBRARY_${LIBN})
   
+  # resolve any symlinks
+  get_filename_component(REALNAME ${l} REALPATH)
+
   # split out the library name
-	get_filename_component(FNAME ${l} NAME)
+  get_filename_component(FNAME ${REALNAME} NAME)
   
   # set the SONAME variable, needed for DllPaths_generated.h
   set(${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
