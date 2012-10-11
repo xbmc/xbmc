@@ -64,6 +64,7 @@ public:
 
 private:
     NPT_Result SetupServices();
+    NPT_Result SetupIcons();
     NPT_Result GetMetadata(NPT_String& meta);
     NPT_Result PlayMedia(const char* uri,
                          const char* metadata = NULL,
