@@ -9,14 +9,36 @@
 #include "guilib/GUIWindowManager.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
+#include "interfaces/AnnouncementManager.h"
 #include "settings/Settings.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
+
+using namespace ANNOUNCEMENT;
 
 namespace UPNP
 {
+
+/*----------------------------------------------------------------------
+|   CUPnPRenderer::CUPnPRenderer
++---------------------------------------------------------------------*/
+CUPnPRenderer::CUPnPRenderer(const char* friendly_name, bool show_ip /*= false*/,
+                             const char* uuid /*= NULL*/, unsigned int port /*= 0*/)
+    : PLT_MediaRenderer(friendly_name, show_ip, uuid, port)
+{
+    CAnnouncementManager::AddAnnouncer(this);
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPRenderer::~CUPnPRenderer
++---------------------------------------------------------------------*/
+CUPnPRenderer::~CUPnPRenderer()
+{
+    CAnnouncementManager::RemoveAnnouncer(this);
+}
 
 /*----------------------------------------------------------------------
 |   CUPnPRenderer::SetupServices
@@ -172,6 +194,58 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
 }
 
 /*----------------------------------------------------------------------
+|   CUPnPRenderer::Announce
++---------------------------------------------------------------------*/
+void
+CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+    if (strcmp(sender, "xbmc") != 0)
+      return;
+
+    NPT_AutoLock lock(m_state);
+    PLT_Service *avt, *rct;
+
+    if (flag == Player) {
+        if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
+            return;
+        if (strcmp(message, "OnPlay") == 0) {
+            avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
+            avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
+
+            NPT_String meta;
+            if (NPT_SUCCEEDED(GetMetadata(meta))) {
+                avt->SetStateVariable("CurrentTrackMetadata", meta);
+                avt->SetStateVariable("AVTransportURIMetaData", meta);
+            }
+
+            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
+            avt->SetStateVariable("TransportState", "PLAYING");
+        }
+        else if (strcmp(message, "OnPause") == 0) {
+            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
+            avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
+        }
+        else if (strcmp(message, "OnSpeedChanged") == 0) {
+            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
+        }
+    }
+    else if (flag == Application && strcmp(message, "OnVolumeChanged") == 0) {
+        if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
+            return;
+
+        CStdString buffer;
+
+        buffer.Format("%ld", data["volume"].asInteger());
+        rct->SetStateVariable("Volume", buffer.c_str());
+
+        buffer.Format("%ld", 256 * (data["volume"].asInteger() * 60 - 60) / 100);
+        rct->SetStateVariable("VolumeDb", buffer.c_str());
+
+        rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
+    }
+}
+
+/*----------------------------------------------------------------------
 |   CUPnPRenderer::UpdateState
 +---------------------------------------------------------------------*/
 void
@@ -179,10 +253,9 @@ CUPnPRenderer::UpdateState()
 {
     NPT_AutoLock lock(m_state);
 
-    PLT_Service *avt, *rct;
+    PLT_Service *avt;
+
     if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
-        return;
-    if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
         return;
 
     /* don't update state while transitioning */
@@ -191,34 +264,13 @@ CUPnPRenderer::UpdateState()
     if(state == "TRANSITIONING")
         return;
 
-    CStdString buffer;
-    int volume;
-    if (g_settings.m_bMute) {
-        rct->SetStateVariable("Mute", "1");
-    } else {
-        rct->SetStateVariable("Mute", "0");
-    }
-    volume = g_application.GetVolume();
-
-    buffer.Format("%d", volume);
-    rct->SetStateVariable("Volume", buffer.c_str());
-
-    buffer.Format("%d", 256 * (volume * 60 - 60) / 100);
-    rct->SetStateVariable("VolumeDb", buffer.c_str());
+    avt->SetStateVariable("TransportStatus", "OK");
 
     if (g_application.IsPlaying() || g_application.IsPaused()) {
-        if (g_application.IsPaused()) {
-            avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
-        } else {
-            avt->SetStateVariable("TransportState", "PLAYING");
-        }
-
-        avt->SetStateVariable("TransportStatus", "OK");
-        avt->SetStateVariable("TransportPlaySpeed", (const char*)NPT_String::FromInteger(g_application.GetPlaySpeed()));
         avt->SetStateVariable("NumberOfTracks", "1");
         avt->SetStateVariable("CurrentTrack", "1");
 
-        buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
+        CStdString buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
         avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
 
@@ -231,17 +283,6 @@ CUPnPRenderer::UpdateState()
           avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
         }
 
-        avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
-        avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
-
-        NPT_String metadata;
-        avt->GetStateVariableValue("AVTransportURIMetaData", metadata);
-        // try to recreate the didl dynamically if not set
-        if (metadata.IsEmpty()) {
-            GetMetadata(metadata);
-        }
-        avt->SetStateVariable("CurrentTrackMetadata", metadata);
-        avt->SetStateVariable("AVTransportURIMetaData", metadata);
     } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
         avt->SetStateVariable("TransportState", "PLAYING");
 
