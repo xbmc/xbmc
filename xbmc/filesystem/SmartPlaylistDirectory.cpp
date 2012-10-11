@@ -107,6 +107,14 @@ namespace XFILE
         
         CDatabase::Filter dbfilter;
         success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter, true);
+
+        // if we retrieve a list of episodes and we didn't receive
+        // a pre-defined base path, we need to fix it
+        if (strBaseDir.empty() && mediaType == MediaTypeEpisode)
+        {
+          videoUrl.AppendPath("-1/-1/");
+          items.SetPath(videoUrl.ToString());
+        }
         db.Close();
       }
     }
