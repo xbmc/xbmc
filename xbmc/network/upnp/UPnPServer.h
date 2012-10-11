@@ -19,6 +19,7 @@
  *
  */
 #include "PltMediaConnect.h"
+#include "interfaces/IAnnouncer.h"
 #include "FileItem.h"
 
 class CThumbLoader;
@@ -29,13 +30,13 @@ namespace UPNP
 {
 
 class CUPnPServer : public PLT_MediaConnect,
-                    public PLT_FileMediaConnectDelegate
+                    public PLT_FileMediaConnectDelegate,
+                    public ANNOUNCEMENT::IAnnouncer
 {
 public:
-    CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0) :
-        PLT_MediaConnect(friendly_name, false, uuid, port),
-        PLT_FileMediaConnectDelegate("/", "/") {
-    }
+    CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0);
+    ~CUPnPServer();
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
     // PLT_MediaServer methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action,
@@ -90,6 +91,10 @@ public:
 
 
 private:
+    void OnScanCompleted(int type);
+    void UpdateContainer(const std::string& id);
+    void PropagateUpdates();
+
     PLT_MediaObject* Build(CFileItemPtr                  item,
                            bool                          with_count,
                            const PLT_HttpRequestContext& context,
@@ -117,6 +122,8 @@ private:
     NPT_Mutex                       m_FileMutex;
     NPT_Map<NPT_String, NPT_String> m_FileMap;
 
+    std::map<std::string, std::pair<bool, unsigned long> > m_UpdateIDs;
+    bool m_scanning;
 public:
     // class members
     static NPT_UInt32 m_MaxReturnedItems;
