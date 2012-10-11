@@ -1900,7 +1900,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
   }
   else if (strSetting.Equals("videolibrary.flattentvshows") ||
-           strSetting.Equals("videolibrary.removeduplicates"))
+           strSetting.Equals("videolibrary.removeduplicates") ||
+           strSetting.Equals("videolibrary.groupmoviesets"))
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
