@@ -652,7 +652,10 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if( strProtocol.Equals("http")
        ||  strProtocol.Equals("https"))
   {
-    if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
+    if (g_guiSettings.GetBool("network.usehttpproxy")
+        && !g_guiSettings.GetString("network.httpproxyserver").empty()
+        && !g_guiSettings.GetString("network.httpproxyport").empty()
+        && m_proxy.IsEmpty())
     {
       m_proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver");
       m_proxy += ":" + g_guiSettings.GetString("network.httpproxyport");
