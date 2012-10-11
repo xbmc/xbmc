@@ -119,6 +119,19 @@ void CGUIListItem::SetArt(const std::string &type, const std::string &url)
   }
 }
 
+void CGUIListItem::SetArt(const map<string, string> &art)
+{
+  m_art = art;
+  // ensure that the fallback "thumb" is available
+  if (m_art.find("thumb") == m_art.end())
+  {
+    if (HasArt("poster"))
+      m_art["thumb"] = m_art["poster"];
+    else if (HasArt("banner"))
+      m_art["thumb"] = m_art["banner"];
+  }
+}
+
 std::string CGUIListItem::GetArt(const std::string &type) const
 {
   ArtMap::const_iterator i = m_art.find(type);
@@ -183,19 +196,6 @@ CStdString CGUIListItem::GetOverlayImage() const
 const map<string, string> &CGUIListItem::GetArt() const
 {
   return m_art;
-}
-
-void CGUIListItem::SetArt(const map<string, string> &art)
-{
-  m_art = art;
-  // ensure that the fallback "thumb" is available
-  if (m_art.find("thumb") == m_art.end())
-  {
-    if (HasArt("poster"))
-      m_art["thumb"] = m_art["poster"];
-    else if (HasArt("banner"))
-      m_art["thumb"] = m_art["banner"];      
-  }  
 }
 
 void CGUIListItem::Select(bool bOnOff)
