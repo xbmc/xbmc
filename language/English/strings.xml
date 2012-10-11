@@ -1543,7 +1543,7 @@
 
   <string id="17500">Display sleep timeout</string>
 
-  <string id="19000">Switch to channel</string>
+  <!--<string id="19000">Switch to channel</string>-->
 
   <string id="20000">Saved music folder</string>
   <string id="20001">Use external DVD player</string>
