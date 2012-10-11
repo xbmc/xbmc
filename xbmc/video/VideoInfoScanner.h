@@ -96,8 +96,9 @@ namespace VIDEO
      \param content content type of the item.
      \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
      \param useLocal whether we should use local thumbs. Defaults to true.
+     \param actorArtPath the path to search for actor thumbs. Defaults to empty.
      */
-    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true);
+    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, const std::string &actorArtPath = "");
 
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.

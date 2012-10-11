@@ -1042,7 +1042,7 @@ namespace VIDEO
     if (!m_database.Open())
       return -1;
 
-    GetArtwork(pItem, content, videoFolder, useLocal);
+    GetArtwork(pItem, content, videoFolder, useLocal, showInfo ? showInfo->m_strPath : "");
     // ensure the art map isn't completely empty by specifying an empty thumb
     map<string, string> art = pItem->GetArt();
     if (art.empty())
@@ -1160,7 +1160,7 @@ namespace VIDEO
     }
   }
 
-  void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal)
+  void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, const std::string &actorArtPath)
   {
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     movieDetails.m_fanart.Unpack();
@@ -1200,7 +1200,7 @@ namespace VIDEO
     // parent folder to apply the thumb to and to search for local actor thumbs
     CStdString parentDir = GetParentDir(*pItem);
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast, parentDir);
+      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
