@@ -113,7 +113,10 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       }
     }
 
-    CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
+    if (!item->GetVideoInfoTag()->m_type.empty())
+      type = item->GetVideoInfoTag()->m_type;
+    else
+      CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
 
     if (id <= 0)
     {
