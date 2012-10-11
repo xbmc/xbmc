@@ -35,6 +35,7 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/StringUtils.h"
+#include "video/VideoDatabase.h"
 
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
@@ -324,6 +325,13 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
       CLog::Log(LOGDEBUG,"FileManager: copy %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
       bResult = CFile::Cache(m_strFileA, m_strFileB, this, &data);
+      if (bResult && URIUtils::IsVideoDb(m_strFileA))
+      {
+        // For VideoDb files, also export the metadata
+        CVideoDatabase videoDatabase;
+        if (videoDatabase.Open())
+          videoDatabase.ExportSingleVideoToXML(m_strFileB, m_strFileA, true, true);
+      }
     }
     break;
     case ActionMove:
