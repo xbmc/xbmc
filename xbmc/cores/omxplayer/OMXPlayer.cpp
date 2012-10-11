@@ -4060,7 +4060,6 @@ void COMXPlayer::GetAudioCapabilities(std::vector<int> &audioCaps)
   audioCaps.push_back(IPC_AUD_OFFSET);
   audioCaps.push_back(IPC_AUD_SELECT_STREAM);
   audioCaps.push_back(IPC_AUD_SELECT_OUTPUT);
-  audioCaps.push_back(IPC_AUD_OFFSET);
 }
 
 void COMXPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
