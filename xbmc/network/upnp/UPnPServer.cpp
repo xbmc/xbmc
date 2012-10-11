@@ -286,8 +286,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 if (item->GetVideoInfoTag()->m_type == "tvshow" || item->GetVideoInfoTag()->m_type == "season") {
                     // for tvshows and seasons, iEpisode and playCount are
                     // invalid
-                    item->GetVideoInfoTag()->m_iEpisode = item->GetProperty("totalepisodes").asInteger();
-                    item->GetVideoInfoTag()->m_playCount = item->GetProperty("watchedepisodes").asInteger();
+                    item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
+                    item->GetVideoInfoTag()->m_playCount = (int)item->GetProperty("watchedepisodes").asInteger();
                 }
 
                 // try to grab title from tag
@@ -361,11 +361,11 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
     else {
         // handle both updates & removals
         if (!data["item"].isNull()) {
-            item_id = data["item"]["id"].asInteger();
+            item_id = (int)data["item"]["id"].asInteger();
             item_type = data["item"]["type"].asString();
         }
         else {
-            item_id = data["id"].asInteger();
+            item_id = (int)data["id"].asInteger();
             item_type = data["type"].asString();
         }
 

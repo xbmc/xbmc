@@ -282,7 +282,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
     object.m_Description.rating = tag.m_strMPAARating;
-    object.m_MiscInfo.last_position = tag.m_resumePoint.timeInSeconds;
+    object.m_MiscInfo.last_position = (NPT_UInt32)tag.m_resumePoint.timeInSeconds;
     object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsDBDate();
     object.m_MiscInfo.play_count = tag.m_playCount;
     if (resource) {
