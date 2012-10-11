@@ -1626,16 +1626,16 @@ namespace VIDEO
           CStdString name = URIUtils::GetFileName(items[i]->GetPath());
           URIUtils::RemoveExtension(name);
           if (name == "season-all")
-            art.insert(make_pair(-1, items[i]->GetPath()));
+            art[-1] = items[i]->GetPath();
           else if (name == "season-specials")
-            art.insert(make_pair(0, items[i]->GetPath()));
+            art[0] = items[i]->GetPath();
           else if (reg.RegFind(name) > -1)
           {
             char* seasonStr = reg.GetReplaceString("\\1");
             int season = atoi(seasonStr);
             free(seasonStr);
 
-            art.insert(make_pair(season, items[i]->GetPath()));
+            art[season] = items[i]->GetPath();
           }
         }
       }
