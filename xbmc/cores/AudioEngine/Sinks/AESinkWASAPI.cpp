@@ -33,6 +33,9 @@
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "../Utils/AEDeviceInfo.h"
+#include "../AEFactory.h"
+#include "../Engines/SoftAE/SoftAE.h"
+#include "utils/SystemInfo.h"
 #include <Mmreg.h>
 #include <mmdeviceapi.h>
 
@@ -43,8 +46,15 @@ const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
 const IID IID_IAudioClient = __uuidof(IAudioClient);
 const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
 
-static const unsigned int WASAPISampleRateCount = 10;
-static const unsigned int WASAPISampleRates[] = {384000, 192000, 176400, 96000, 88200, 48000, 44100, 32000, 22050, 11025};
+static const unsigned int WASAPITestSampleRates[] = {11025, 12000, 16000, 
+                                                      22050, 24000, 32000,
+                                                      44100, 48000, 64000,
+                                                      88200, 96000, 128000,
+                                                      176400, 192000, 256000,
+                                                      352800, 384000};
+static const unsigned int WASAPITestSampleRatesMaxIndex = SIZEOF_ARRAY(WASAPITestSampleRates) - 1;      // 384000 Hz
+static const unsigned int WASAPITestSampleRatesMaxSafeIndex1 = SIZEOF_ARRAY(WASAPITestSampleRates) - 4; // 192000 Hz
+static const unsigned int WASAPITestSampleRatesMaxSafeIndex2 = SIZEOF_ARRAY(WASAPITestSampleRates) - 7; // 96000 Hz
 
 #define WASAPI_SPEAKER_COUNT 21
 static const unsigned int WASAPIChannelOrder[] = {AE_CH_RAW,
@@ -101,6 +111,15 @@ static const enum AEChannel layoutsList[][16] =
   {AE_CH_FL,  AE_CH_FR,  AE_CH_FC,  AE_CH_LFE, AE_CH_SL,  AE_CH_SR,  AE_CH_BL,  AE_CH_BR,  AE_CH_TFL, AE_CH_TFR, AE_CH_TFC, AE_CH_TBL, AE_CH_TBR, AE_CH_TBC, AE_CH_TC,  AE_CH_NULL} // Standard 7.1 + 3 front top + 3 back top + Top Center
 };
 
+static const unsigned int ac3bitrates[] = { 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000,
+                                            160000, 192000, 224000, 256000, 320000, 384000, 448000, 512000, 576000, 640000,
+                                            0 };
+
+static const unsigned int dtsbitrates[] = { 32000, 56000, 64000, 96000, 112000, 128000, 192000, 224000, 256000, 320000, 384000,
+                                            448000, 512000, 576000, 640000, 768000, 960000, 1024000, 1152000, 1280000, 1344000,
+                                            1408000, 1411200, 1472000, 1536000,
+                                            0 };
+
 struct sampleFormat
 {
   GUID subFormat;
@@ -115,6 +134,13 @@ static const sampleFormat testFormats[] = { {KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32
                                             {KSDATAFORMAT_SUBTYPE_PCM, 32, 24, AE_FMT_S24NE4},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 24, 24, AE_FMT_S24NE3},
                                             {KSDATAFORMAT_SUBTYPE_PCM, 16, 16, AE_FMT_S16NE} };
+
+static const AEDataFormat testFormatSequence[] = { AE_FMT_S8, AE_FMT_S16NE, AE_FMT_S24NE3, AE_FMT_S24NE4, AE_FMT_S32NE, AE_FMT_FLOAT, AE_FMT_DOUBLE };
+static const int testFormatSequenceIdxDouble  = SIZEOF_ARRAY (testFormatSequence) - 1;
+static const int testFormatSequenceIdxFloat   = SIZEOF_ARRAY (testFormatSequence) - 2;
+static const int testFormatSequenceIdx32Int   = SIZEOF_ARRAY (testFormatSequence) - 3;
+static const int testFormatSequenceIdx24Int   = SIZEOF_ARRAY (testFormatSequence) - 4;
+static const int testFormatSequenceIdx16Int   = SIZEOF_ARRAY (testFormatSequence) - 6;
 
 struct winEndpointsToAEDeviceType
 {
@@ -190,6 +216,8 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_isDirty(false)
 {
   m_channelLayout.Reset();
+  sinkReqFormat.m_dataFormat = AE_FMT_INVALID;
+  sinkReqFormat.m_channelLayout.Reset();
 }
 
 CAESinkWASAPI::~CAESinkWASAPI()
@@ -206,7 +234,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
   /* Save requested format */
   /* Clear returned format */
-  sinkReqFormat = format.m_dataFormat;
+  sinkReqFormat = format;
   sinkRetFormat = AE_FMT_INVALID;
 
   IMMDeviceEnumerator* pEnumerator = NULL;
@@ -355,18 +383,20 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
     return false;
 
   u_int notCompatible         = 0;
+  u_int notCompatibleReq      = 0;
   const u_int numTests        = 5;
   std::string strDiffBecause ("");
-  static const char* compatibleParams[numTests] = {":Devices",
-                                                   ":Channels",
-                                                   ":Sample Rates",
-                                                   ":Data Formats",
-                                                   ":Passthrough Formats"};
+  std::string strDiffBecauseReq ("");
+  static const char* compatibleParams[numTests] = {"Devices, ",
+                                                   "Channels, ",
+                                                   "Sample Rates, ",
+                                                   "Data Formats, ",
+                                                   "Passthrough Formats, "};
 
-  notCompatible = (notCompatible  +!((AE_IS_RAW(format.m_dataFormat)  == AE_IS_RAW(m_encodedFormat))        ||
-                                     (!AE_IS_RAW(format.m_dataFormat) == !AE_IS_RAW(m_encodedFormat))))     << 1;
-  notCompatible = (notCompatible  +!((sinkReqFormat                   == format.m_dataFormat)               &&
-                                     (sinkRetFormat                   == m_format.m_dataFormat)))           << 1;
+  notCompatible = (notCompatible  + !(!AE_IS_RAW(format.m_dataFormat) ||
+                                        m_encodedFormat == format.m_dataFormat))                            << 1;
+  notCompatible = (notCompatible  + !(AE_IS_RAW(format.m_dataFormat) ||
+                                        sinkRetFormat == format.m_dataFormat))                              << 1;
   notCompatible = (notCompatible  + !(format.m_sampleRate             == m_format.m_sampleRate))            << 1;
   notCompatible = (notCompatible  + !(format.m_channelLayout.Count()  == m_format.m_channelLayout.Count())) << 1;
   notCompatible = (notCompatible  + !(m_device                        == device));
@@ -377,13 +407,36 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
     return true;
   }
 
-  for (int i = 0; i < numTests ; i++)
+  notCompatibleReq = (notCompatibleReq  + !(!AE_IS_RAW(format.m_dataFormat) ||
+                                        sinkReqFormat.m_dataFormat == format.m_dataFormat))                 << 1;
+  notCompatibleReq = (notCompatibleReq  + !(AE_IS_RAW(format.m_dataFormat) ||
+                                        sinkReqFormat.m_dataFormat == format.m_dataFormat))                 << 1;
+  notCompatibleReq = (notCompatibleReq  + !(format.m_sampleRate             == sinkReqFormat.m_sampleRate)) << 1;
+  notCompatibleReq = (notCompatibleReq  + !(format.m_channelLayout.Count() == sinkReqFormat.m_channelLayout.Count())) << 1;
+  notCompatibleReq = (notCompatibleReq  + !(m_device                        == device));
+
+  if (!notCompatibleReq)
   {
-    strDiffBecause += (notCompatible & 0x01) ? (std::string) compatibleParams[i] : "";
-    notCompatible    = notCompatible >> 1;
+    CLog::Log(LOGDEBUG, __FUNCTION__": Format compatible with last requested format - assuming same initialization and reusing existing sink");
+    return true;
   }
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Formats Incompatible due to different %s", strDiffBecause.c_str());
+  for (int i = 0; i < numTests ; i++)
+  {
+    if (notCompatible & 0x01)
+      strDiffBecause += std::string (compatibleParams[i]);
+    if (notCompatibleReq & 0x01)
+      strDiffBecauseReq += std::string (compatibleParams[i]);
+    notCompatible    >>= 1;
+    notCompatibleReq >>= 1;
+  }
+  strDiffBecause.pop_back();
+  strDiffBecause.pop_back();
+  strDiffBecauseReq.pop_back();
+  strDiffBecauseReq.pop_back();
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Format Incompatible with current format due to different: %s.", strDiffBecause.c_str());
+  CLog::Log(LOGDEBUG, __FUNCTION__": Format Incompatible with last requested format due to different: %s.", strDiffBecauseReq.c_str());
   return false;
 }
 
@@ -678,7 +731,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
       /* Test format DTS */
       wfxex.Format.nSamplesPerSec       = 48000;
-      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_5POINT1;
+      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_5POINT1_SURROUND;
       wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEC61937_DTS;
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
@@ -736,13 +789,13 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-      for (int j = 0; j < WASAPISampleRateCount; j++)
+      for (int j = 0; j <= WASAPITestSampleRatesMaxIndex; j++)
       {
-        wfxex.Format.nSamplesPerSec     = WASAPISampleRates[j];
+        wfxex.Format.nSamplesPerSec     = WASAPITestSampleRates[j];
         wfxex.Format.nAvgBytesPerSec    = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
         hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
         if (SUCCEEDED(hr))
-          deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+          deviceInfo.m_sampleRates.push_back(WASAPITestSampleRates[j]);
       }
 
       /* Test format for channels iteration */
@@ -849,7 +902,7 @@ failed:
 
 //Private utility functions////////////////////////////////////////////////////
 
-void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
+void CAESinkWASAPI::BuildWaveFormatExtensible(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
 {
   wfxex.Format.wFormatTag        = WAVE_FORMAT_EXTENSIBLE;
   wfxex.Format.cbSize            = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
@@ -857,18 +910,18 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
 
   if (!AE_IS_RAW(format.m_dataFormat)) // PCM data
   {
-    wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
+    wfxex.dwChannelMask          = GetSpeakerMaskFromAEChannels(format.m_channelLayout);
     wfxex.Format.nChannels       = (WORD)format.m_channelLayout.Count();
     wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
     wfxex.Format.wBitsPerSample  = CAEUtil::DataFormatToBits((AEDataFormat) format.m_dataFormat);
-    wfxex.SubFormat              = format.m_dataFormat <= AE_FMT_FLOAT ? KSDATAFORMAT_SUBTYPE_PCM : KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+    wfxex.SubFormat              = format.m_dataFormat < AE_FMT_FLOAT ? KSDATAFORMAT_SUBTYPE_PCM : KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
   }
   else //Raw bitstream
   {
     wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
     if (format.m_dataFormat == AE_FMT_AC3 || format.m_dataFormat == AE_FMT_DTS)
     {
-      wfxex.dwChannelMask          = bool (format.m_channelLayout.Count() == 2) ? KSAUDIO_SPEAKER_STEREO : KSAUDIO_SPEAKER_5POINT1;
+      wfxex.dwChannelMask          = bool (format.m_channelLayout.Count() == 2) ? KSAUDIO_SPEAKER_STEREO : KSAUDIO_SPEAKER_5POINT1_SURROUND;
 
       if (format.m_dataFormat == AE_FMT_AC3)
       {
@@ -897,7 +950,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
         case AE_FMT_EAC3:
           wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS;
           wfxex.Format.nChannels      = 2; // One IEC 60958 Line.
-          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
+          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1_SURROUND;
           break;
         case AE_FMT_TRUEHD:
           wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
@@ -914,11 +967,11 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
       if (format.m_channelLayout.Count() == 8)
         wfxex.dwChannelMask         = KSAUDIO_SPEAKER_7POINT1_SURROUND;
       else
-        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
+        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1_SURROUND;
     }
   }
 
-  if (wfxex.Format.wBitsPerSample == 32 && wfxex.SubFormat != KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
+  if (format.m_dataFormat == AE_FMT_S24BE3 || format.m_dataFormat == AE_FMT_S24LE3 || format.m_dataFormat == AE_FMT_S24NE3)
     wfxex.Samples.wValidBitsPerSample = 24;
   else
     wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
@@ -927,116 +980,61 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
   wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 }
 
-void CAESinkWASAPI::BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex)
+void CAESinkWASAPI::BuildWaveFormatExtensibleIEC61397(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex)
 {
+  ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE_IEC61937));
   /* Fill the common structure */
   BuildWaveFormatExtensible(format, wfxex.FormatExt);
-
-  /* Code below kept for future use - preferred for later Windows versions */
-  /* but can cause problems on older Windows versions and drivers          */
-  /*
-  wfxex.FormatExt.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE_IEC61937)-sizeof(WAVEFORMATEX);
-  wfxex.dwEncodedChannelCount   = format.m_channelLayout.Count();
-  wfxex.dwEncodedSamplesPerSec  = bool(format.m_dataFormat == AE_FMT_TRUEHD ||
-                                       format.m_dataFormat == AE_FMT_DTSHD  ||
-                                       format.m_dataFormat == AE_FMT_EAC3) ? 96000L : 48000L;
-  wfxex.dwAverageBytesPerSec    = 0; //Ignored */
+  
+  if (AE_IS_RAW(format.m_dataFormat) && CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin7))
+  {
+    wfxex.FormatExt.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE_IEC61937)-sizeof(WAVEFORMATEX);
+    wfxex.dwEncodedChannelCount   = format.m_channelLayout.Count();
+    wfxex.dwEncodedSamplesPerSec  = format.m_encodedRate;
+    wfxex.dwAverageBytesPerSec    = 0; //Ignored 
+  }
 }
 
 bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
-{
+ {
+  CheckAndCorrectFormat(format);
+
   WAVEFORMATEXTENSIBLE_IEC61937 wfxex_iec61937;
   WAVEFORMATEXTENSIBLE &wfxex = wfxex_iec61937.FormatExt;
 
-  if (format.m_dataFormat <= AE_FMT_FLOAT)
-    BuildWaveFormatExtensible(format, wfxex);
-  else
-    BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
+  // Forward declaration to avoid compiler error
+  AEAudioFormat formatMod;
 
-  /* Test for incomplete format and provide defaults */
-  if (format.m_sampleRate == 0 ||
-      format.m_channelLayout == NULL ||
-      format.m_dataFormat <= AE_FMT_INVALID ||
-      format.m_dataFormat >= AE_FMT_MAX ||
-      format.m_channelLayout.Count() == 0)
-  {
-    wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.Format.nChannels            = 2;
-    wfxex.Format.nSamplesPerSec       = 44100L;
-    wfxex.Format.wBitsPerSample       = 16;
-    wfxex.Format.nBlockAlign          = 4;
-    wfxex.Samples.wValidBitsPerSample = 16;
-    wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
-    wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nBlockAlign * wfxex.Format.nSamplesPerSec;
-    wfxex.dwChannelMask               = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-    wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
-  }
-
-  HRESULT hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
-
+  HRESULT hr = TryAndInitializeExclusive(format, wfxex_iec61937);
   if (SUCCEEDED(hr))
-  {
-    CLog::Log(LOGINFO, __FUNCTION__": Format is Supported - will attempt to Initialize");
     goto initialize;
-  }
-  else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT) //It failed for a reason unrelated to an unsupported format.
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
-    return false;
-  }
   else if (AE_IS_RAW(format.m_dataFormat)) //No sense in trying other formats for passthrough.
     return false;
 
   CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
-  int closestMatch;
+  /* Simplify format */
+  formatMod = SimplifyFormat(format);
 
-  /* The requested format is not supported by the device.  Find something that works */
-  for (int j = 0; j < sizeof(testFormats)/sizeof(sampleFormat); j++)
-  {
-    closestMatch = -1;
+  /* Try best possible formats */
+  if (FindCompatibleFormatAlmostLossless(formatMod, wfxex_iec61937, TryHigherSampleRates, true))
+    goto initialize;
 
-    wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.SubFormat                   = testFormats[j].subFormat;
-    wfxex.Format.wBitsPerSample       = testFormats[j].bitsPerSample;
-    wfxex.Samples.wValidBitsPerSample = testFormats[j].validBitsPerSample;
-    wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+  /* Try all standard sample rates, higher than requested */
+  if (FindCompatibleFormatAnySampleRate(formatMod, wfxex_iec61937, false, TryHigherBits, true))
+    goto initialize;
 
-    for (int i = 0 ; i < WASAPISampleRateCount; i++)
-    {
-      wfxex.Format.nSamplesPerSec    = WASAPISampleRates[i];
-      wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+  /* Try all data formats */
+  if (FindCompatibleFormatAnyDataFormat(formatMod, wfxex_iec61937, false, true))
+    goto initialize;
 
-      /* Trace format match iteration loop via log */
-      #if 0
-      CLog::Log(LOGDEBUG, "WASAPI: Trying Format: %s, %d, %d, %d", CAEUtil::DataFormatToStr(testFormats[j].subFormatType),
-                                                                   wfxex.Format.nSamplesPerSec,
-                                                                   wfxex.Format.wBitsPerSample,
-                                                                   wfxex.Samples.wValidBitsPerSample);
-      #endif
+  /* Forced to try lower sample rates */
+  if (FindCompatibleFormatAnySampleRate(formatMod, wfxex_iec61937, true, TryHigherBits, true))
+    goto initialize;
 
-      hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
-
-      if (SUCCEEDED(hr))
-      {
-        /* If the current sample rate matches the source then stop looking and use it */
-        if ((WASAPISampleRates[i] == format.m_sampleRate) && (testFormats[j].subFormatType <= format.m_dataFormat))
-          goto initialize;
-        /* If this rate is closer to the source then the previous one, save it */
-        else if (closestMatch < 0 || abs((int)WASAPISampleRates[i] - (int)format.m_sampleRate) < abs((int)WASAPISampleRates[closestMatch] - (int)format.m_sampleRate))
-          closestMatch = i;
-      }
-      else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT)
-          CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
-    }
-
-    if (closestMatch >= 0)
-    {
-      wfxex.Format.nSamplesPerSec    = WASAPISampleRates[closestMatch];
-      wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-      goto initialize;
-    }
-  }
+  /* Worst case - lower sample rate and lower bit resolution */
+  if (FindCompatibleFormatAnyDataFormat(formatMod, wfxex_iec61937, true, true))
+    goto initialize;
 
   CLog::Log(LOGERROR, __FUNCTION__": Unable to locate a supported output format for the device.  Check the speaker settings in the control panel.");
 
@@ -1046,20 +1044,13 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
 initialize:
 
-  AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
-
-  /* When the stream is raw, the values in the format structure are set to the link    */
-  /* parameters, so store the encoded stream values here for the IsCompatible function */
-  m_encodedFormat     = format.m_dataFormat;
-  m_encodedChannels   = wfxex.Format.nChannels;
-  m_encodedSampleRate = format.m_encodedRate;
-  wfxex_iec61937.dwEncodedChannelCount = wfxex.Format.nChannels;
-  wfxex_iec61937.dwEncodedSamplesPerSec = m_encodedSampleRate;
-
   /* Set up returned sink format for engine */
+  format.m_channelLayout = m_channelLayout;
   if (!AE_IS_RAW(format.m_dataFormat))
   {
-    if (wfxex.Format.wBitsPerSample == 32)
+    if (wfxex.Format.wBitsPerSample == 64)
+      format.m_dataFormat = AE_FMT_DOUBLE;
+    else if (wfxex.Format.wBitsPerSample == 32)
     {
       if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
         format.m_dataFormat = AE_FMT_FLOAT;
@@ -1077,22 +1068,104 @@ initialize:
   format.m_sampleRate    = wfxex.Format.nSamplesPerSec; //PCM: Sample rate.  RAW: Link speed
   format.m_frameSize     = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
 
+  if (AE_IS_RAW(format.m_dataFormat))
+    format.m_dataFormat = AE_FMT_S16NE;
+
+  return true;
+}
+
+HRESULT CAESinkWASAPI::TryAndInitializeExclusive(const AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex_iec61937)
+{
+  if (!AE_IS_RAW(format.m_dataFormat))
+  {
+    if (format.m_sampleRate > (unsigned int) g_advancedSettings.m_WASAPIMaximumPCMSampleRate)
+      return AUDCLNT_E_UNSUPPORTED_FORMAT;
+    
+    switch (format.m_dataFormat)
+    {
+    case AE_FMT_U8:
+    case AE_FMT_S8: 
+    case AE_FMT_S16BE:
+    case AE_FMT_S16LE:
+    case AE_FMT_S16NE: break;
+
+    case AE_FMT_S32BE:
+    case AE_FMT_S32LE:
+    case AE_FMT_S32NE: 
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 32)
+        return AUDCLNT_E_UNSUPPORTED_FORMAT;
+      break;
+
+    case AE_FMT_S24BE4:
+    case AE_FMT_S24LE4:
+    case AE_FMT_S24NE4:
+    case AE_FMT_S24BE3:
+    case AE_FMT_S24LE3:
+    case AE_FMT_S24NE3:
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 24)
+        return AUDCLNT_E_UNSUPPORTED_FORMAT;
+      break;
+
+    case AE_FMT_DOUBLE:
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 64)
+        return AUDCLNT_E_UNSUPPORTED_FORMAT;
+      break;
+
+    case AE_FMT_FLOAT:
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 33)
+        return AUDCLNT_E_UNSUPPORTED_FORMAT;
+      break;
+    }
+  }
+  HRESULT hr;
+  BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
+#ifdef _DEBUG
+  CLog::Log(LOGDEBUG, "WASAPI: Trying Format: %s, %d Hz, %d bits, %d valid bits, %d channels, channel mask: %04X.", CAEUtil::DataFormatToStr(format.m_dataFormat),
+              wfxex_iec61937.FormatExt.Format.nSamplesPerSec, wfxex_iec61937.FormatExt.Format.wBitsPerSample, wfxex_iec61937.FormatExt.Samples.wValidBitsPerSample,
+              wfxex_iec61937.FormatExt.Format.nChannels, wfxex_iec61937.FormatExt.dwChannelMask);
+#endif
+  hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, (WAVEFORMATEX *)&wfxex_iec61937, NULL);
+  if (FAILED(hr))
+    return hr;
+
+  /* Sometimes IsFormatSupported returns OK, but device initialization will fail */
+  /* So try to initialize device and, if failed, try other formats if appropriate */
+
+  AEChannelsFromSpeakerMask(wfxex_iec61937.FormatExt.dwChannelMask);
+
   REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
   /* Get m_audioSinkBufferSizeMsec from advancedsettings.xml */
   audioSinkBufferDurationMsec = (REFERENCE_TIME)g_advancedSettings.m_audioSinkBufferDurationMsec * 10000;
 
   /* Use advancedsetting value for buffer size as long as it's over minimum set above */
+  unsigned int frameSize = (wfxex_iec61937.FormatExt.Format.wBitsPerSample >> 3) * wfxex_iec61937.FormatExt.Format.nChannels;
   audioSinkBufferDurationMsec = (REFERENCE_TIME)std::max(audioSinkBufferDurationMsec, (REFERENCE_TIME)500000);
-  audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / frameSize) * frameSize); //even number of frames
 
-  if (AE_IS_RAW(format.m_dataFormat))
-    format.m_dataFormat = AE_FMT_S16NE;
-
+  /* Open the stream and associate it with an audio session */
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                    audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
+                                    audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, (WAVEFORMATEX *)&wfxex_iec61937, NULL);
 
-  if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
+  if (hr == AUDCLNT_E_ALREADY_INITIALIZED)
+  {
+    /* Release the previous allocations */
+    SAFE_RELEASE(m_pAudioClient);
+
+    /* Create a new audio client */
+    hr = m_pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&m_pAudioClient);
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Device Activation Failed : %s", WASAPIErrToStr(hr));
+      return hr;
+    }
+
+    /* Try one more time */
+    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
+                                      audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, (WAVEFORMATEX *)&wfxex_iec61937, NULL);
+  }
+  
+  if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED || (FAILED (hr) && CSysInfo::IsWindowsVersion(CSysInfo::WindowsVersionVista)))
   {
     /* WASAPI requires aligned buffer */
     /* Get the next aligned frame     */
@@ -1100,10 +1173,10 @@ initialize:
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": GetBufferSize Failed : %s", WASAPIErrToStr(hr));
-      return false;
+      return hr;
     }
 
-    audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
+    audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex_iec61937.FormatExt.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
 
     /* Release the previous allocations */
     SAFE_RELEASE(m_pAudioClient);
@@ -1113,32 +1186,22 @@ initialize:
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Device Activation Failed : %s", WASAPIErrToStr(hr));
-      return false;
+      return hr;
     }
 
     /* Open the stream and associate it with an audio session */
     hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                      audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
+                                      audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, (WAVEFORMATEX *)&wfxex_iec61937, NULL);
   }
+  
   if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to initialize WASAPI in exclusive mode %d - (%s).", HRESULT(hr), WASAPIErrToStr(hr));
-    CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
-    CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
-    CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
-    CLog::Log(LOGDEBUG, "  Valid Bits/Samp : %d", wfxex.Samples.wValidBitsPerSample);
-    CLog::Log(LOGDEBUG, "  Channel Count   : %d", wfxex.Format.nChannels);
-    CLog::Log(LOGDEBUG, "  Block Align     : %d", wfxex.Format.nBlockAlign);
-    CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
-    CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
-    CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
-    CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
-    CLog::Log(LOGDEBUG, "  Enc. Channels   : %d", wfxex_iec61937.dwEncodedChannelCount);
-    CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: %d", wfxex_iec61937.dwEncodedSamplesPerSec);
-    CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
-    CLog::Log(LOGDEBUG, "  Periodicty      : %d", audioSinkBufferDurationMsec);
-    return false;
-  }
+    return hr;
+
+  /* When the stream is raw, the values in the format structure are set to the link    */
+  /* parameters, so store the encoded stream values here for the IsCompatible function */
+  m_encodedFormat     = format.m_dataFormat;
+  m_encodedChannels   = format.m_channelLayout.Count();
+  m_encodedSampleRate = format.m_encodedRate;
 
   /* Latency of WASAPI buffers in event-driven mode is equal to the returned value  */
   /* of GetStreamLatency converted from 100ns intervals to seconds then multiplied  */
@@ -1148,12 +1211,341 @@ initialize:
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
   m_sinkLatency = hnsLatency * 0.0000002;
 
-  CLog::Log(LOGINFO, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized using: %s, %d, %d",
-                                     CAEUtil::DataFormatToStr(format.m_dataFormat),
-                                     wfxex.Format.nSamplesPerSec,
-                                     wfxex.Format.nChannels);
-  return true;
+  CLog::Log(LOGINFO, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized using: %s, %d Hz, %d bits, %d valid bits, %d channels, channel mask: %04X.", CAEUtil::DataFormatToStr(format.m_dataFormat),
+              wfxex_iec61937.FormatExt.Format.nSamplesPerSec, wfxex_iec61937.FormatExt.Format.wBitsPerSample, wfxex_iec61937.FormatExt.Samples.wValidBitsPerSample,
+              wfxex_iec61937.FormatExt.Format.nChannels, wfxex_iec61937.FormatExt.dwChannelMask);
+
+  return hr;
 }
+
+AEAudioFormat CAESinkWASAPI::SimplifyFormat(const AEAudioFormat &format)
+{
+  AEAudioFormat newFormat = format;
+  switch (format.m_dataFormat)
+  {
+  case AE_FMT_U8:
+    newFormat.m_dataFormat = AE_FMT_S8;
+    break;
+  case AE_FMT_S16BE:
+  case AE_FMT_S16LE:
+    newFormat.m_dataFormat = AE_FMT_S16NE;
+    break;
+  case AE_FMT_S24BE3:
+  case AE_FMT_S24LE3:
+    newFormat.m_dataFormat = AE_FMT_S24NE3;
+    break;
+  case AE_FMT_S24BE4:
+  case AE_FMT_S24LE4:
+    newFormat.m_dataFormat = AE_FMT_S24NE4;
+    break;
+  case AE_FMT_S32BE:
+  case AE_FMT_S32LE:
+    newFormat.m_dataFormat = AE_FMT_S32NE;
+    break;
+  }
+
+  return newFormat;
+}
+
+bool CAESinkWASAPI::FindCompatibleFormatAlmostLossless(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified /*= false*/)
+{
+  CAEChannelInfo userSelectedLayout = ((CSoftAE*)CAEFactory::GetEngine())->GetStdChLayout();
+
+  if (!formaitIsSimplified)
+    format = SimplifyFormat(format);
+  if (strategy < TryHigherSampleRatesWODefault)
+  {
+    /* Try with higher bits resolution as lossless conversion */
+    if (strategy == DefaultOnly)
+    {
+     if (SUCCEEDED(TryAndInitializeExclusive(format, wfxex)))
+       return true;
+    }
+    else
+      if (FindCompatibleFormatHigherBits(format, wfxex, true, true))
+        return true;
+
+    /* Try to add LFE if not present */
+    if (FindCompatibleFormatWithLFE(format, wfxex, std::min(strategy, TryHigherBits), true))
+      return true;
+
+    /* Try to replace SL SR with BL BR or vice versa */
+    if (FindCompatibleFormatSideOrBack(format, wfxex, std::min(strategy, TryHigherBits), true))
+      return true;
+
+    /* Try with full user channels layout */
+    if (format.m_channelLayout != userSelectedLayout)
+    {
+      AEAudioFormat formatTest = format;
+      formatTest.m_channelLayout = userSelectedLayout;
+      if (strategy == DefaultOnly)
+      {
+        if (SUCCEEDED(TryAndInitializeExclusive(format, wfxex)))
+          return true;
+      }
+      else
+      {
+        if (FindCompatibleFormatHigherBits(formatTest, wfxex, true, true))
+          return true;
+      }
+    }
+  }
+
+  if (strategy >= TryHigherSampleRates)
+  {
+    /* Try this combinations more time, now with higher sample rates */
+    /* In each function skip sample rates, that already checked */
+    /* First try multiple of requested rate as less distortive */
+    if (FindCompatibleFormatHigherSampleRate(format, wfxex, std::max(strategy, TryHigherSampleRatesWODefault), true))
+      return true;
+
+    /* Try to add LFE if not present */
+    if (FindCompatibleFormatWithLFE(format, wfxex, std::max(strategy, TryHigherSampleRatesWODefault), true))
+      return true;
+
+    /* Try to replace SL SR with BL BR or vice versa */
+    if (FindCompatibleFormatSideOrBack(format, wfxex, std::max(strategy, TryHigherSampleRatesWODefault), true))
+      return true;
+
+    /* Try with full user channels layout */
+    if (format.m_channelLayout != userSelectedLayout)
+    {
+      AEAudioFormat formatTest = format;
+      formatTest.m_channelLayout = userSelectedLayout;
+      if (FindCompatibleFormatHigherSampleRate(formatTest, wfxex, std::max(strategy, TryHigherSampleRatesWODefault), true))
+        return true;
+    }
+  }
+  return false;
+}
+
+bool CAESinkWASAPI::FindCompatibleFormatHigherBits(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, bool tryDefault /*= true*/, bool formaitIsSimplified /*= false*/)
+{
+  if (!formaitIsSimplified)
+    format = SimplifyFormat(format);
+
+  int lastIndex;
+  switch (g_advancedSettings.m_WASAPIExclusiveMaximumBits)
+  {
+  case 64: lastIndex = testFormatSequenceIdxDouble; break;
+  case 33: lastIndex = testFormatSequenceIdxFloat; break;
+  case 32: lastIndex = testFormatSequenceIdx32Int; break;
+  case 24: lastIndex = testFormatSequenceIdx24Int; break;
+  case 16: lastIndex = testFormatSequenceIdx16Int; break;
+  default: lastIndex = testFormatSequenceIdx32Int; break;
+  }
+
+  if (AE_IS_INT(format.m_dataFormat))
+  {
+    /* Requested format is integer format*/
+    int i = 0;
+    /* Find format */
+    do
+    {
+      if (format.m_dataFormat == testFormatSequence[i])
+        break;
+    } while(++i <= lastIndex);
+    
+    if (!tryDefault)
+      i++;
+    /* Try better formats */
+    for(; i <= lastIndex; i++)
+    {
+      format.m_dataFormat = testFormatSequence[i];
+      if (SUCCEEDED(TryAndInitializeExclusive(format, wfxex)))
+        return true;
+    }
+  }
+  else if (format.m_dataFormat == AE_FMT_FLOAT)
+  {
+    if (tryDefault && SUCCEEDED(TryAndInitializeExclusive(format, wfxex)))
+      return true;
+
+    format.m_dataFormat = AE_FMT_DOUBLE;
+    if (SUCCEEDED(TryAndInitializeExclusive(format, wfxex)))
+      return true;
+  }
+
+  return false;
+}
+
+bool CAESinkWASAPI::FindCompatibleFormatHigherSampleRate(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified /*= false*/)
+{
+  if (strategy == DefaultOnly || strategy == TryHigherBits)
+    return false;
+  if (format.m_sampleRate < 4000)
+    return false; // Too low start sample rate
+
+  if (!formaitIsSimplified)
+    format = SimplifyFormat(format);
+
+  int maxIndex = WASAPITestSampleRatesMaxSafeIndex1;
+  switch(g_advancedSettings.m_WASAPIMaximumPCMSampleRate)
+  {
+  case 384000: maxIndex = WASAPITestSampleRatesMaxIndex; break;
+  case 192000: maxIndex = WASAPITestSampleRatesMaxSafeIndex1; break;
+  case 96000: maxIndex = WASAPITestSampleRatesMaxSafeIndex2; break;
+  }
+
+  unsigned int startRate = format.m_sampleRate, testRate;
+
+  for (int i = (strategy != TryHigherSampleRatesWODefault) ? 1 : 2; 
+    (testRate = i * startRate) <= WASAPITestSampleRates[maxIndex]; i++)
+  {
+    format.m_sampleRate = testRate;
+    if (strategy == TryHigherSampleRatesOnly)
+    {
+      if (SUCCEEDED(TryAndInitializeExclusive(format, wfxex)))
+        return true;
+    }
+    else
+    {
+      if (FindCompatibleFormatHigherBits(format, wfxex, true, true))
+        return true;
+    }
+  }
+  return false;
+}
+
+bool CAESinkWASAPI::FindCompatibleFormatWithLFE(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified /*= false*/)
+{
+  CAEChannelInfo userSelectedLayout = ((CSoftAE*)CAEFactory::GetEngine())->GetStdChLayout();
+
+  if (format.m_channelLayout.HasChannel(AE_CH_LFE) || !userSelectedLayout.HasChannel(AE_CH_LFE))
+    return false; // Already with LFE or user don't have LFE
+
+  if (!formaitIsSimplified)
+    format = SimplifyFormat(format);
+  
+  format.m_channelLayout += AE_CH_LFE;
+
+  switch (strategy)
+  {
+  case DefaultOnly: 
+    return SUCCEEDED(TryAndInitializeExclusive(format, wfxex));
+    break;
+  case TryHigherBits:
+    return FindCompatibleFormatHigherBits(format, wfxex, true, true);
+    break;
+  case TryHigherSampleRates:
+  case TryHigherSampleRatesWODefault:
+  case TryHigherSampleRatesOnly:
+    return FindCompatibleFormatHigherSampleRate(format, wfxex, strategy, true);
+    break;
+  }
+  /* Should be unreachable */
+  return false;
+}
+
+bool CAESinkWASAPI::FindCompatibleFormatSideOrBack(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, SearchStrategy strategy, bool formaitIsSimplified /*= false*/)
+{
+  if (!formaitIsSimplified)
+    format = SimplifyFormat(format);
+
+  if (format.m_channelLayout.HasChannel(AE_CH_SL) && format.m_channelLayout.HasChannel(AE_CH_SR) &&
+      !format.m_channelLayout.HasChannel(AE_CH_BL) && !format.m_channelLayout.HasChannel(AE_CH_BR))
+  {
+    format.m_channelLayout -= AE_CH_SL;
+    format.m_channelLayout -= AE_CH_SR;
+    format.m_channelLayout += AE_CH_BL;
+    format.m_channelLayout += AE_CH_BR;
+
+  } else if (format.m_channelLayout.HasChannel(AE_CH_BL) && format.m_channelLayout.HasChannel(AE_CH_BR) &&
+             !format.m_channelLayout.HasChannel(AE_CH_SL) && !format.m_channelLayout.HasChannel(AE_CH_SR))
+  {
+    format.m_channelLayout -= AE_CH_BL;
+    format.m_channelLayout -= AE_CH_BR;
+    format.m_channelLayout += AE_CH_SL;
+    format.m_channelLayout += AE_CH_SR;
+  }
+  else 
+    return false;
+
+  switch (strategy)
+  {
+  case DefaultOnly: 
+    return SUCCEEDED(TryAndInitializeExclusive(format, wfxex));
+    break;
+  case TryHigherBits:
+    return FindCompatibleFormatHigherBits(format, wfxex, true, true);
+    break;
+  case TryHigherSampleRates:
+  case TryHigherSampleRatesWODefault:
+  case TryHigherSampleRatesOnly:
+    return FindCompatibleFormatHigherSampleRate(format, wfxex, strategy, true);
+    break;
+  }
+  /* Should be unreachable */
+  return false;
+}
+
+bool CAESinkWASAPI::FindCompatibleFormatAnySampleRate(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, bool checkLowerRates /*= false*/,
+                                                      SearchStrategy strategy /*= TryHigherBits*/, bool formaitIsSimplified /*= false*/)
+{
+  if (strategy != DefaultOnly && strategy != TryHigherBits)
+    return false;
+  if (!formaitIsSimplified)
+    format = SimplifyFormat(format);
+
+  int maxIndex = WASAPITestSampleRatesMaxSafeIndex1;
+  switch(g_advancedSettings.m_WASAPIMaximumPCMSampleRate)
+  {
+  case 384000: maxIndex = WASAPITestSampleRatesMaxIndex; break;
+  case 192000: maxIndex = WASAPITestSampleRatesMaxSafeIndex1; break;
+  case 96000: maxIndex = WASAPITestSampleRatesMaxSafeIndex2; break;
+  }
+
+  if (!checkLowerRates)
+  {
+    int i = 0;
+    while(format.m_sampleRate >= WASAPITestSampleRates[i] && i <= maxIndex)
+      i++;
+    /* Try all standard sample rates that higher requested */
+    for(; i <= maxIndex; i++)
+    {
+      format.m_sampleRate = WASAPITestSampleRates[i];
+      if (FindCompatibleFormatAlmostLossless(format, wfxex, strategy, true))
+        return true;
+    }
+    return false;
+  }
+
+  int i = maxIndex;
+  while(format.m_sampleRate <= WASAPITestSampleRates[i] && i >= 0)
+    i--;
+  /* Try all standard sample rates that lower requested */
+  for(; i >= 0; i--)
+  {
+    format.m_sampleRate = WASAPITestSampleRates[i];
+    if (FindCompatibleFormatAlmostLossless(format, wfxex, strategy, true))
+      return true;
+  }
+  return false;
+}
+
+bool CAESinkWASAPI::FindCompatibleFormatAnyDataFormat(AEAudioFormat format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex, bool checkLowerRatesOnly, bool formaitIsSimplified /*= false*/)
+{
+  if (!formaitIsSimplified)
+    format = SimplifyFormat(format);
+
+  if (AE_IS_RAW(format.m_dataFormat))
+    return false;
+
+  int i = SIZEOF_ARRAY (testFormatSequence)-1;
+  while (i > 0 && testFormatSequence[i] != format.m_dataFormat)
+    i--;
+  i--;
+  for(; i > 0; i--)
+  {
+    format.m_dataFormat = testFormatSequence[i];
+    if (!checkLowerRatesOnly && FindCompatibleFormatAlmostLossless(format, wfxex, DefaultOnly, true))
+      return true;
+    if (FindCompatibleFormatAnySampleRate(format, wfxex, checkLowerRatesOnly, DefaultOnly, true))
+      return true;
+  }
+  return false;
+}
+
 
 void CAESinkWASAPI::AEChannelsFromSpeakerMask(DWORD speakers)
 {
@@ -1165,8 +1557,182 @@ void CAESinkWASAPI::AEChannelsFromSpeakerMask(DWORD speakers)
       m_channelLayout += AEChannelNames[i];
   }
 }
+void CAESinkWASAPI::CheckAndCorrectFormat(AEAudioFormat &format)
+{
+  if (!AE_IS_RAW(format.m_dataFormat))
+  {
+    AEDataFormat maxFormat = AE_FMT_S32NE;
+    switch (g_advancedSettings.m_WASAPIExclusiveMaximumBits)
+    {
+    case 64: maxFormat = AE_FMT_DOUBLE; break;
+    case 33: maxFormat = AE_FMT_FLOAT; break;
+    case 32: maxFormat = AE_FMT_S32NE; break;
+    case 24: maxFormat = AE_FMT_S24NE4; break;
+    case 16: maxFormat = AE_FMT_S16NE; break;
+    }
+    
+    switch (format.m_dataFormat)
+    {
+    case AE_FMT_U8:
+    case AE_FMT_S8: 
+    case AE_FMT_S16BE:
+    case AE_FMT_S16LE:
+    case AE_FMT_S16NE: break;
 
-DWORD CAESinkWASAPI::SpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
+    case AE_FMT_S32BE:
+    case AE_FMT_S32LE:
+    case AE_FMT_S32NE: 
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 32)
+        format.m_dataFormat = maxFormat;
+      break;
+
+    case AE_FMT_S24BE4:
+    case AE_FMT_S24LE4:
+    case AE_FMT_S24NE4:
+    case AE_FMT_S24BE3:
+    case AE_FMT_S24LE3:
+    case AE_FMT_S24NE3:
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 24)
+        format.m_dataFormat = maxFormat;
+      break;
+
+    case AE_FMT_DOUBLE:
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 64)
+        format.m_dataFormat = maxFormat;
+      break;
+
+    case AE_FMT_FLOAT:
+      if (g_advancedSettings.m_WASAPIExclusiveMaximumBits < 33)
+        format.m_dataFormat = maxFormat;
+      break;
+    }
+  }
+
+  if (format.m_dataFormat <= AE_FMT_INVALID || format.m_dataFormat >= AE_FMT_MAX)
+  {
+    const AEDataFormat defaultDataFormat = AE_FMT_S16NE;
+    CLog::Log(LOGWARNING, __FUNCTION__": Wrong input data format. Trying with default: %s.", CAEUtil::DataFormatToStr(defaultDataFormat));
+    format.m_dataFormat = defaultDataFormat;
+  } else if ( AE_IS_RAW(format.m_dataFormat) )
+  {
+    if (format.m_dataFormat == AE_FMT_AC3)
+    {
+      if (format.m_sampleRate != 44100 && format.m_sampleRate != 48000 && format.m_sampleRate != 32000)
+      {
+        const unsigned int defaultAC3SampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultAC3SampleRate);
+        format.m_sampleRate = defaultAC3SampleRate;
+      }
+
+      const unsigned int * bitrate = ac3bitrates;
+      while( *bitrate && *bitrate != format.m_encodedRate )
+        bitrate++;
+      if (bitrate == 0)
+      {
+        const unsigned int defaultAC3Bitrate = 448000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input bitrate for %s: %d kbps. Trying with default: %d kbps.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_encodedRate, defaultAC3Bitrate);
+        format.m_encodedRate = defaultAC3Bitrate;
+      }
+
+      static const CAEChannelInfo mono(AE_CH_LAYOUT_1_0), stereo(AE_CH_LAYOUT_2_0), front3(AE_CH_LAYOUT_3_0), 
+                    stereoPt1(AE_CH_LAYOUT_2_1), front3Pt1(AE_CH_LAYOUT_3_1), quard(AE_CH_LAYOUT_4_0), std5Pt1(AE_CH_LAYOUT_5_1);
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 6 ||
+          (format.m_channelLayout != mono && format.m_channelLayout != stereo && format.m_channelLayout != front3 &&
+            format.m_channelLayout != stereoPt1 && format.m_channelLayout != front3Pt1 && format.m_channelLayout != quard
+            && format.m_channelLayout != std5Pt1) )
+      {
+        const CAEChannelInfo & layout = (format.m_encodedRate <= 224)? stereo : std5Pt1;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout for %s. Trying with default: %s.", CAEUtil::DataFormatToStr(format.m_dataFormat), (format.m_encodedRate <= 224)?"stereo":"5.1");
+        format.m_channelLayout = layout;
+      }
+    }
+
+    if (format.m_dataFormat == AE_FMT_DTS)
+    {
+      /* DTS Standard for DTS Core audio specify one optional channel extension (up to 7.1 channels) OR one optional frequency extension for up to 5.1 channel */
+      if (!(format.m_sampleRate == 44100 || format.m_sampleRate == 48000 || format.m_sampleRate == 32000 ||
+            (format.m_channelLayout.Count() <=6 && 
+              (format.m_sampleRate == 96000 || format.m_sampleRate == 88200 || format.m_sampleRate == 64000) )) ) 
+      { 
+        const unsigned int defaultDTSSampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultDTSSampleRate);
+        format.m_sampleRate = defaultDTSSampleRate;
+      }
+
+      const unsigned int * bitrate = dtsbitrates;
+      while( *bitrate && *bitrate != format.m_encodedRate )
+        bitrate++;
+      if (bitrate == 0)
+      {
+        const unsigned int defaultDTSBitrate = 768000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input bitrate for %s: %d kbps. Trying with default: %d kbps.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_encodedRate, defaultDTSBitrate);
+        format.m_encodedRate = defaultDTSBitrate;
+      }
+
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 8)
+      {
+        const CAEChannelInfo defaultChannelLayout(AE_CH_LAYOUT_5_1);
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong channel layout for %s. Trying with default 5.1 layout.", CAEUtil::DataFormatToStr(format.m_dataFormat));
+        format.m_channelLayout = defaultChannelLayout;
+      }
+    }
+
+    if (format.m_dataFormat == AE_FMT_EAC3)
+    {
+      if (format.m_sampleRate != 44100 && format.m_sampleRate != 48000 && format.m_sampleRate != 32000 &&
+          format.m_sampleRate != 24000 && format.m_sampleRate != 22500 && format.m_sampleRate != 16000)
+      {
+        const unsigned int defaultAC3SampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultAC3SampleRate);
+        format.m_sampleRate = defaultAC3SampleRate;
+      }
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 14)
+      {
+        const CAEChannelInfo defaultEAC3layout(AE_CH_LAYOUT_5_1);
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout for %s. Trying with default: 5.1.", CAEUtil::DataFormatToStr(format.m_dataFormat));
+        format.m_channelLayout = defaultEAC3layout;
+      }
+    }
+
+    if (format.m_dataFormat == AE_FMT_DTSHD)
+    {
+      if (!(format.m_sampleRate == 44100 || format.m_sampleRate == 48000 || format.m_sampleRate == 32000 ||
+          format.m_sampleRate == 96000 || format.m_sampleRate == 88200 || format.m_sampleRate == 64000 ||
+          format.m_sampleRate == 192000 || format.m_sampleRate == 176400 || format.m_sampleRate == 128000 ||
+          format.m_sampleRate == 24000 || format.m_sampleRate == 22050 || format.m_sampleRate == 16000 ||
+          format.m_sampleRate == 12000 || format.m_sampleRate == 8000 || 
+          format.m_sampleRate == 352800 || format.m_sampleRate == 384000) )
+      {
+        const unsigned int defaultDTSSampleRate = 48000;
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate for %s: %d Hz. Trying with default: %d Hz.", CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_sampleRate, defaultDTSSampleRate);
+        format.m_sampleRate = defaultDTSSampleRate;
+      }
+
+      if (format.m_channelLayout.Count() == 0 || format.m_channelLayout.Count() > 32)
+      {
+        const CAEChannelInfo defaultEAC3layout(AE_CH_LAYOUT_5_1);
+        CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout for %s. Trying with default: 5.1.", CAEUtil::DataFormatToStr(format.m_dataFormat));
+        format.m_channelLayout = defaultEAC3layout;
+      }
+    }
+  }
+
+  if (format.m_sampleRate == 0 || format.m_sampleRate > WASAPITestSampleRates[WASAPITestSampleRatesMaxIndex])
+  {
+    const unsigned int defaultSampleRate = 44100;
+    CLog::Log(LOGWARNING, __FUNCTION__": Wrong input sample rate: %d Hz. Trying with default: %d Hz", format.m_sampleRate, defaultSampleRate);
+    format.m_sampleRate = defaultSampleRate;
+  }
+
+  if (format.m_channelLayout.Count() == 0)
+  {
+    const CAEChannelInfo defaultChannelLayout(AE_CH_LAYOUT_2_0);
+    CLog::Log(LOGWARNING, __FUNCTION__": Wrong input channels layout. Trying with default: stereo");
+    format.m_channelLayout = defaultChannelLayout;
+  }
+}
+
+DWORD CAESinkWASAPI::GetSpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
 {
   DWORD mask = 0;
 

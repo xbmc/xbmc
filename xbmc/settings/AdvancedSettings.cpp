@@ -61,6 +61,9 @@ void CAdvancedSettings::Initialize()
   m_limiterHold = 0.025f;
   m_limiterRelease = 0.1f;
 
+  m_WASAPIExclusiveMaximumBits = 32;
+  m_WASAPIMaximumPCMSampleRate = 96000;
+
   m_omxHWAudioDecode = false;
   m_omxDecodeStartWithValidFrame = false;
 
@@ -408,6 +411,33 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
+
+    TiXmlElement *pElementWASAPI = pElement->FirstChildElement("wasapi");
+    if (pElementWASAPI)
+    {
+      CStdString setting;
+      XMLUtils::GetString(pElementWASAPI, "maximumbitsinexclusive", setting);
+      if (setting.compare("double")==0)
+        m_WASAPIExclusiveMaximumBits = 64;
+      else if (setting.compare("float")==0)
+        m_WASAPIExclusiveMaximumBits = 33;
+      else if (setting.compare("32")==0)
+        m_WASAPIExclusiveMaximumBits = 32;
+      else if (setting.compare("24")==0)
+        m_WASAPIExclusiveMaximumBits = 24;
+      else if (setting.compare("16")==0)
+        m_WASAPIExclusiveMaximumBits = 16;
+
+      XMLUtils::GetInt(pElementWASAPI, "maximumpcmsamplerate", m_WASAPIMaximumPCMSampleRate, 96000, 384000);
+      if (m_WASAPIMaximumPCMSampleRate != 96000 && m_WASAPIMaximumPCMSampleRate != 192000 && m_WASAPIMaximumPCMSampleRate != 384000)
+      {
+        if (m_WASAPIMaximumPCMSampleRate > 384000)
+          m_WASAPIMaximumPCMSampleRate = 384000;
+        else if (m_WASAPIMaximumPCMSampleRate > 192000)
+          m_WASAPIMaximumPCMSampleRate = 192000;
+        else m_WASAPIMaximumPCMSampleRate = 96000;
+      }
+    }
   }
 
   pElement = pRootElement->FirstChildElement("omx");
