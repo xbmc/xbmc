@@ -4033,4 +4033,39 @@ void COMXPlayer::GetVideoAspectRatio(float &fAR)
   fAR = g_renderManager.GetAspectRatio();
 }
 
+void COMXPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
+{
+  renderFeatures.push_back(RENDERFEATURE_STRETCH);
+  renderFeatures.push_back(RENDERFEATURE_CROP);
+}
+
+void COMXPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
+{
+  deinterlaceMethods.push_back(VS_INTERLACEMETHOD_DEINTERLACE);
+}
+
+void COMXPlayer::GetDeinterlaceModes(std::vector<int> &deinterlaceModes)
+{
+  deinterlaceModes.push_back(VS_DEINTERLACEMODE_AUTO);
+  deinterlaceModes.push_back(VS_DEINTERLACEMODE_OFF);
+  deinterlaceModes.push_back(VS_DEINTERLACEMODE_FORCE);
+}
+
+void COMXPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
+{
+}
+
+void COMXPlayer::GetAudioCapabilities(std::vector<int> &audioCaps)
+{
+  audioCaps.push_back(IPC_AUD_OFFSET);
+  audioCaps.push_back(IPC_AUD_SELECT_STREAM);
+  audioCaps.push_back(IPC_AUD_SELECT_OUTPUT);
+  audioCaps.push_back(IPC_AUD_OFFSET);
+}
+
+void COMXPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
+{
+  subCaps.push_back(IPC_SUBS_ALL);
+}
+
 #endif

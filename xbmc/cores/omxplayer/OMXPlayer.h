@@ -319,6 +319,13 @@ public:
 
   virtual int  OnDVDNavResult(void* pData, int iMessage);
   virtual bool OnAction(const CAction &action);
+
+  virtual void  GetRenderFeatures(std::vector<int> &renderFeatures);
+  virtual void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
+  virtual void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
+  virtual void  GetScalingMethods(std::vector<int> &scalingMethods);
+  virtual void  GetAudioCapabilities(std::vector<int> &audioCaps);
+  virtual void  GetSubtitleCapabilities(std::vector<int> &subCaps);
 protected:
   friend class COMXSelectionStreams;
 
