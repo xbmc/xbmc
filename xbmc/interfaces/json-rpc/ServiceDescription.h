@@ -70,6 +70,10 @@ namespace JSONRPC
         "{ \"type\": \"string\", \"enum\": [ \"toggle\" ], \"required\": true }"
       "]"
     "}",
+    "\"Global.String.NotEmpty\": {"
+      "\"type\": \"string\","
+      "\"minLength\": 1"
+    "}",
     "\"Configuration.Notifications\": {"
       "\"type\": \"object\","
       "\"properties\": {"
@@ -327,6 +331,16 @@ namespace JSONRPC
         "\"thumbnail\": { \"type\": \"string\" }"
       "}"
     "}",
+    "\"Media.Artwork\": {"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"thumb\": { \"$ref\": \"Global.String.NotEmpty\" },"
+        "\"poster\": { \"$ref\": \"Global.String.NotEmpty\" },"
+        "\"banner\": { \"$ref\": \"Global.String.NotEmpty\" },"
+        "\"fanart\": { \"$ref\": \"Global.String.NotEmpty\" }"
+      "},"
+      "\"additionalProperties\": { \"$ref\": \"Global.String.NotEmpty\" }"
+    "}",
     "\"Library.Fields.Genre\": {"
       "\"extends\": \"Item.Fields.Base\","
       "\"items\": { \"type\": \"string\", \"enum\": [ \"title\", \"thumbnail\" ] }"
@@ -444,13 +458,13 @@ namespace JSONRPC
                   "\"playcount\", \"writer\", \"studio\", \"mpaa\", \"cast\", \"country\","
                   "\"imdbnumber\", \"runtime\", \"set\", \"showlink\", \"streamdetails\","
                   "\"top250\", \"votes\", \"fanart\", \"thumbnail\", \"file\", \"sorttitle\","
-                  "\"resume\", \"setid\", \"dateadded\", \"tag\" ]"
+                  "\"resume\", \"setid\", \"dateadded\", \"tag\", \"art\" ]"
       "}"
     "}",
     "\"Video.Fields.MovieSet\": {"
       "\"extends\": \"Item.Fields.Base\","
       "\"items\": { \"type\": \"string\","
-        "\"enum\": [ \"title\", \"playcount\", \"fanart\", \"thumbnail\" ]"
+        "\"enum\": [ \"title\", \"playcount\", \"fanart\", \"thumbnail\", \"art\" ]"
       "}"
     "}",
     "\"Video.Fields.TVShow\": {"
@@ -462,14 +476,14 @@ namespace JSONRPC
                   "\"imdbnumber\", \"premiered\", \"votes\", \"lastplayed\","
                   "\"fanart\", \"thumbnail\", \"file\", \"originaltitle\","
                   "\"sorttitle\", \"episodeguide\", \"season\", \"watchedepisodes\","
-                  "\"dateadded\", \"tag\", \"lastplayed\" ]"
+                  "\"dateadded\", \"tag\", \"lastplayed\", \"art\" ]"
       "}"
     "}",
     "\"Video.Fields.Season\": {"
       "\"extends\": \"Item.Fields.Base\","
       "\"items\": { \"type\": \"string\","
         "\"enum\": [ \"season\", \"showtitle\", \"playcount\", \"episode\", \"fanart\", \"thumbnail\", \"tvshowid\","
-                  "\"watchedepisodes\" ]"
+                  "\"watchedepisodes\", \"art\" ]"
       "}"
     "}",
     "\"Video.Fields.Episode\": {"
@@ -480,7 +494,8 @@ namespace JSONRPC
                   "\"firstaired\", \"playcount\", \"runtime\", \"director\","
                   "\"productioncode\", \"season\", \"episode\", \"originaltitle\","
                   "\"showtitle\", \"cast\", \"streamdetails\", \"lastplayed\", \"fanart\","
-                  "\"thumbnail\", \"file\", \"resume\", \"tvshowid\", \"dateadded\", \"uniqueid\" ]"
+                  "\"thumbnail\", \"file\", \"resume\", \"tvshowid\", \"dateadded\","
+                  "\"uniqueid\", \"art\" ]"
       "}"
     "}",
     "\"Video.Fields.MusicVideo\": {"
@@ -489,7 +504,8 @@ namespace JSONRPC
         "\"enum\": [ \"title\", \"playcount\", \"runtime\", \"director\","
                   "\"studio\", \"year\", \"plot\", \"album\", \"artist\","
                   "\"genre\", \"track\", \"streamdetails\", \"lastplayed\","
-                  "\"fanart\", \"thumbnail\", \"file\", \"resume\", \"dateadded\", \"tag\" ]"
+                  "\"fanart\", \"thumbnail\", \"file\", \"resume\", \"dateadded\","
+                  "\"tag\", \"art\" ]"
       "}"
     "}",
     "\"Video.Cast\": {"
@@ -550,7 +566,8 @@ namespace JSONRPC
     "\"Video.Details.Base\": {"
       "\"extends\": \"Media.Details.Base\","
       "\"properties\": {"
-        "\"playcount\": { \"type\": \"integer\" }"
+        "\"playcount\": { \"type\": \"integer\" },"
+        "\"art\": { \"$ref\": \"Media.Artwork\" }"
       "}"
     "}",
     "\"Video.Details.Media\": {"
@@ -934,7 +951,7 @@ namespace JSONRPC
                   "\"runtime\", \"set\", \"showlink\", \"streamdetails\", \"top250\", \"votes\","
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
                   "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
-                  "\"disc\", \"tag\" ]"
+                  "\"disc\", \"tag\", \"art\" ]"
       "}"
     "}",
     "\"List.Item.All\": {"
@@ -2394,7 +2411,8 @@ namespace JSONRPC
         "{ \"name\": \"showlink\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null }"
+        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
@@ -2421,7 +2439,8 @@ namespace JSONRPC
         "{ \"name\": \"episodeguide\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null }"
+        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
@@ -2447,7 +2466,8 @@ namespace JSONRPC
         "{ \"name\": \"episode\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"originaltitle\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" }"
+        "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
@@ -2472,7 +2492,8 @@ namespace JSONRPC
         "{ \"name\": \"lastplayed\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"thumbnail\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"fanart\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null }"
+        "{ \"name\": \"tag\", \"type\": [ \"null\", { \"$ref\": \"Array.String\", \"required\": true } ], \"default\": null },"
+        "{ \"name\": \"art\", \"type\": [ \"null\", { \"$ref\": \"Media.Artwork\", \"required\": true } ], \"default\": null }"
       "],"
       "\"returns\": \"string\""
     "}",
