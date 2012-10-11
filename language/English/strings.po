@@ -8257,7 +8257,9 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr ""
 
-#empty string with id 20188
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr ""
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
