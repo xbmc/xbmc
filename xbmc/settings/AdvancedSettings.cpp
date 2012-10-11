@@ -163,6 +163,8 @@ void CAdvancedSettings::Initialize()
   m_videoAutoScaleMaxFps = 30.0f;
   m_videoDisableBackgroundDeinterlace = false;
   m_videoCaptureUseOcclusionQuery = -1; //-1 is auto detect
+  m_videoVDPAUdeintHD = -1;
+  m_videoVDPAUdeintSD = -1;
   m_videoVDPAUtelecine = false;
   m_videoVDPAUdeintSkipChromaHD = false;
   m_DXVACheckCompatibility = false;
@@ -598,6 +600,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement,"disablehi10pmultithreading",m_videoDisableHi10pMultithreading);
     XMLUtils::GetBoolean(pElement, "disablebackgrounddeinterlace", m_videoDisableBackgroundDeinterlace);
     XMLUtils::GetInt(pElement, "useocclusionquery", m_videoCaptureUseOcclusionQuery, -1, 1);
+    XMLUtils::GetInt(pElement,"vdpauHDdeint",m_videoVDPAUdeintHD);
+    XMLUtils::GetInt(pElement,"vdpauSDdeint",m_videoVDPAUdeintSD);
     XMLUtils::GetBoolean(pElement,"vdpauInvTelecine",m_videoVDPAUtelecine);
     XMLUtils::GetBoolean(pElement,"vdpauHDdeintSkipChroma",m_videoVDPAUdeintSkipChromaHD);
 

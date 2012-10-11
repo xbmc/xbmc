@@ -1960,10 +1960,10 @@ EINTERLACEMETHOD CMixer::GetDeinterlacingMethod(bool log /* = false */)
   if (method == VS_INTERLACEMETHOD_AUTO)
   {
     int deint = -1;
-//    if (m_config.outHeight >= 720)
-//      deint = g_advancedSettings.m_videoVDPAUdeintHD;
-//    else
-//      deint = g_advancedSettings.m_videoVDPAUdeintSD;
+    if (m_config.outHeight >= 720)
+      deint = g_advancedSettings.m_videoVDPAUdeintHD;
+    else
+      deint = g_advancedSettings.m_videoVDPAUdeintSD;
 
     if (deint != -1)
     {
