@@ -18,7 +18,9 @@
  *
  */
 
+#include <map>
 #include <string.h>
+
 #include "FileItemHandler.h"
 #include "PlaylistOperations.h"
 #include "AudioLibrary.h"
@@ -81,6 +83,19 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
     if (item->HasProperty("artist_" + field))
     {
       result[field] = item->GetProperty("artist_" + field);
+      return true;
+    }
+
+    if (field == "art")
+    {
+      if (thumbLoader != NULL && item->GetArt().size() <= 0 && !fetchedArt &&
+        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
+      {
+        thumbLoader->FillLibraryArt(*item);
+        fetchedArt = true;
+      }
+
+      result["art"] = item->GetArt();
       return true;
     }
     
