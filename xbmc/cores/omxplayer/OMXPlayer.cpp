@@ -771,13 +771,13 @@ bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
     if(packet)
     {
+      // stream changed, update and open defaults
       if(packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
       {
-        // reset the caching state for pvr streams
-        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-          SetCaching(CACHESTATE_PVR);
-        CDVDDemuxUtils::FreeDemuxPacket(packet);
-        return true;
+          m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
+          m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+          OpenDefaultStreams();
+          return true;
       }
 
       UpdateCorrection(packet, m_offset_pts);
