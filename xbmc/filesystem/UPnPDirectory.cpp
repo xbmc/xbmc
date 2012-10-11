@@ -491,7 +491,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     pItem->SetProperty("unwatchedepisodes", episodes - played);
                     watched = (episodes && played == episodes);
                 }
-                else if (type == "episode")
+                else if (type == "episode" || type == "movie")
                     watched = played;
                 pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watched);
             }
