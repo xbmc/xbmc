@@ -2872,7 +2872,9 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source, bool reset)
       hint.aspect = aspect;
       hint.forced_aspect = true;
     }
+#if !defined(HAS_LIBAMCODEC)
     hint.software = true;
+#endif
   }
 
   boost::shared_ptr<CPVRClient> client;

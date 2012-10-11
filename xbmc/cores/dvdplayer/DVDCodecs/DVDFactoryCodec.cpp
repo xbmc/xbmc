@@ -36,6 +36,9 @@
 #if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
 #endif
+#if defined(HAS_LIBAMCODEC)
+#include "Video/DVDVideoCodecAmlogic.h"
+#endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLibMad.h"
 #include "Audio/DVDAudioCodecPcm.h"
@@ -149,6 +152,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #else
   hwSupport += "CrystalHD:no ";
 #endif
+#if defined(HAS_LIBAMCODEC)
+  hwSupport += "AMCodec:yes ";
+#else
+  hwSupport += "AMCodec:no ";
+#endif
 #if defined(HAVE_LIBOPENMAX) && defined(_LINUX)
   hwSupport += "OpenMax:yes ";
 #elif defined(_LINUX)
@@ -171,12 +179,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #endif
 
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
-
+#if !defined(HAS_LIBAMCODEC)
   // dvd's have weird still-frames in it, which is not fully supported in ffmpeg
   if(hint.stills && (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO))
   {
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
+#endif
+
 #if defined(HAVE_LIBVDADECODER)
   if (!hint.software && g_guiSettings.GetBool("videoplayer.usevda"))
   {
@@ -230,6 +240,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
         break;
       }
     }
+  }
+#endif
+
+#if defined(HAS_LIBAMCODEC)
+  if (!hint.software /* && g_guiSettings.GetBool("videoplayer.useamcodec")*/)
+  {
+    CLog::Log(LOGINFO, "Amlogic Video Decoder...");
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;
   }
 #endif
 
