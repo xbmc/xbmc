@@ -329,7 +329,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
     // we pass an empty CThumbLoader reference, as it can't be used
     // without CUPnPServer enabled
     NPT_Reference<CThumbLoader> thumb_loader;
-    PLT_MediaObject* object = BuildObject(item, file_path, false, thumb_loader, false);
+    PLT_MediaObject* object = BuildObject(item, file_path, false, thumb_loader);
     if (object) {
         // fetch the item's artwork
         CStdString thumb;
