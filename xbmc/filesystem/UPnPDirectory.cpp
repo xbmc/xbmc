@@ -275,7 +275,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             CFileItemPtr pItem(new CFileItem((const char*)name));
             pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/"));
             pItem->m_bIsFolder = true;
-            pItem->SetArt("thumb", (const char*)(*device)->GetIconUrl("image/jpeg"));
+            pItem->SetArt("thumb", (const char*)(*device)->GetIconUrl("image/png"));
 
             items.Add(pItem);
 
