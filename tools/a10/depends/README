@@ -11,14 +11,12 @@ KNOWN PROBLEMS WITH HARDWARE RENDERING:
   colors get rendered or you get pixel noise. After some video startups this
   disappears.
 
-- Using 1080p there is a horrible screen tearing. Seems like the 
-  initialization of display driver in the kernel is not correct.
-  (or gles layer?)
+- Using 1080p and alpha video blending there is a horrible screen tearing,
+  for this reason alpha blending is disabled at 1080p for video at the moment.
+  You can enable it (e.g. for tracking down the problem at kernel level) 
+  by setting the environment variable A10AB=1.
 
 - Not all xbmc video playback resolution settings are supported at the moment.
-
-This problems maybe related to the mk802 3.0.36 kernel, maybe 
-newer kernel versions have fixed this.
 
 PLEASE REMEMBER: This is poc.
 

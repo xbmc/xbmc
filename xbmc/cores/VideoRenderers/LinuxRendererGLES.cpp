@@ -442,8 +442,9 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(0, 0, 0, 0);
+    glClearColor(1.0/255, 2.0/255, 3.0/255, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0, 0, 0, 0);
 
     g_graphicsContext.EndPaint();
   }

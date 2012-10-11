@@ -63,10 +63,43 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
   int fd = open("/dev/disp", O_RDWR);
 
   if (fd >= 0) {
-    unsigned long args[4] = { 0, 0, 0, 0 };
+    unsigned long       args[4] = { 0, 0, 0, 0 };
+    __disp_layer_info_t layera;
 
     g_fbwin.width  = ioctl(fd, DISP_CMD_SCN_GET_WIDTH , args);
     g_fbwin.height = ioctl(fd, DISP_CMD_SCN_GET_HEIGHT, args);
+
+    if ((g_fbwin.height > 720) && (getenv("A10AB") == NULL))
+    {
+      //set workmode scaler (system layer)
+      args[0] = 0;
+      args[1] = 0x64;
+      args[2] = (unsigned long) (&layera);
+      args[3] = 0;
+      ioctl(fd, DISP_CMD_LAYER_GET_PARA, args);
+      layera.mode = DISP_LAYER_WORK_MODE_SCALER;
+      args[0] = 0;
+      args[1] = 0x64;
+      args[2] = (unsigned long) (&layera);
+      args[3] = 0;
+      ioctl(fd, DISP_CMD_LAYER_SET_PARA, args);
+    }
+    else
+    {
+      //set workmode normal (system layer)
+      args[0] = 0;
+      args[1] = 0x64;
+      args[2] = (unsigned long) (&layera);
+      args[3] = 0;
+      ioctl(fd, DISP_CMD_LAYER_GET_PARA, args);
+      layera.mode = DISP_LAYER_WORK_MODE_NORMAL;
+      args[0] = 0;
+      args[1] = 0x64;
+      args[2] = (unsigned long) (&layera);
+      args[3] = 0;
+      ioctl(fd, DISP_CMD_LAYER_SET_PARA, args);
+
+    }
 
     m_width  = g_fbwin.width;
     m_height = g_fbwin.height;
@@ -82,6 +115,8 @@ CWinEGLPlatformGeneric::CWinEGLPlatformGeneric()
     m_desktopRes.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
     m_desktopRes.fPixelRatio = 1.0f;
     m_desktopRes.strMode.Format("%dx%d @ %.2f - Full Screen", m_width, m_height, m_desktopRes.fRefreshRate);
+
+
 
     close(fd);
   }
