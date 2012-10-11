@@ -40,9 +40,9 @@ public:
     void UpdateState();
 
     // Http server handler
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request,
-                                          const NPT_HttpRequestContext& context,
-                                          NPT_HttpResponse&             response);
+    virtual NPT_Result ProcessHttpGetRequest(NPT_HttpRequest&              request,
+                                             const NPT_HttpRequestContext& context,
+                                             NPT_HttpResponse&             response);
 
     // AVTransport methods
     virtual NPT_Result OnNext(PLT_ActionReference& action);

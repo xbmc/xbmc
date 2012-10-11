@@ -75,6 +75,7 @@ PLT_MediaObject*
 CUPnPServer::Build(CFileItemPtr                  item,
                    bool                          with_count,
                    const PLT_HttpRequestContext& context,
+                   NPT_Reference<CThumbLoader>&  thumb_loader,
                    const char*                   parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
@@ -104,7 +105,10 @@ CUPnPServer::Build(CFileItemPtr                  item,
             goto failure;
         }
 
-    } else {
+    } else if (path.StartsWith("addons://"))
+        // don't serve addon listings for now
+        goto failure;
+      else {
         // db path handling
         NPT_String file_path, share_name;
         file_path = item->GetPath();
@@ -118,9 +122,6 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 if (!item->HasMusicInfoTag())
                     item->LoadMusicTag();
 
-                if (!item->HasArt("thumb") )
-                    item->SetArt("thumb", CThumbLoader::GetCachedImage(*item, "thumb"));
-
                 if (item->GetLabel().IsEmpty()) {
                     /* if no label try to grab it from node type */
                     CStdString label;
@@ -130,8 +131,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     }
                 }
             }
-        } else if (file_path.StartsWith("videodb://")) {
-            if (path == "videodb://" ) {
+        } else if (file_path.StartsWith("library://") || file_path.StartsWith("videodb://")) {
+            if (path == "library://video" ) {
                 item->SetLabel("Video Library");
                 item->SetLabelPreformated(true);
             } else {
@@ -150,6 +151,13 @@ CUPnPServer::Build(CFileItemPtr                  item,
                         db.GetTvShowInfo((const char*)path, *item->GetVideoInfoTag(), params.GetTvShowId());
                 }
 
+                if (item->GetVideoInfoTag()->m_type == "tvshow" || item->GetVideoInfoTag()->m_type == "season") {
+                    // for tvshows and seasons, iEpisode and playCount are
+                    // invalid
+                    item->GetVideoInfoTag()->m_iEpisode = item->GetProperty("totalepisodes").asInteger();
+                    item->GetVideoInfoTag()->m_playCount = item->GetProperty("watchedepisodes").asInteger();
+                }
+
                 // try to grab title from tag
                 if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty()) {
                     item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
@@ -164,14 +172,11 @@ CUPnPServer::Build(CFileItemPtr                  item,
                         item->SetLabelPreformated(true);
                     }
                 }
-
-                if (!item->HasArt("thumb") )
-                    item->SetArt("thumb", CThumbLoader::GetCachedImage(*item, "thumb"));
             }
         }
 
         // not a virtual path directory, new system
-        object = BuildObject(*item.get(), file_path, with_count, &context, this);
+        object = BuildObject(*item.get(), file_path, with_count, thumb_loader, &context, this);
 
         // set parent id if passed, otherwise it should have been determined
         if (object && parent_id) {
@@ -188,6 +193,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
         if (object->m_ParentID == "virtualpath://upnproot/")
             object->m_ParentID = "0";
     }
+
     return object;
 
 failure:
@@ -204,7 +210,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "videodb://";
+        id = "library://video";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
@@ -243,6 +249,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     NPT_String                     id = TranslateWMPObjectId(object_id);
     vector<CStdString>             paths;
     CFileItemPtr                   item;
+    NPT_Reference<CThumbLoader>    thumb_loader;
 
     CLog::Log(LOGINFO, "Received UPnP Browse Metadata request for object '%s'", (const char*)object_id);
 
@@ -253,7 +260,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Root");
             item->SetLabelPreformated(true);
-            object = Build(item, true, context);
+            object = Build(item, true, context, thumb_loader);
         } else {
             return NPT_FAILURE;
         }
@@ -272,7 +279,16 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
 //        }
 //#endif
 
-        object = Build(item, true, context, parent.empty()?NULL:parent.c_str());
+        if (item->IsVideoDb()) {
+            thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
+        }
+        else if (item->IsMusicDb()) {
+            thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
+        }
+        if (!thumb_loader.IsNull()) {
+            thumb_loader->Initialize();
+        }
+        object = Build(item, true, context, thumb_loader, parent.empty()?NULL:parent.c_str());
     }
 
     if (object.IsNull()) {
@@ -332,7 +348,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             items.Add(item);
 
             // video library
-            item.reset(new CFileItem("videodb://", true));
+            item.reset(new CFileItem("library://video", true));
             item->SetLabel("Video Library");
             item->SetLabelPreformated(true);
             items.Add(item);
@@ -390,6 +406,21 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
         starting_index,
         requested_count);
 
+    // we will reuse this ThumbLoader for all items
+    NPT_Reference<CThumbLoader> thumb_loader;
+
+    // this isn't ideal, just grabbing first item to identify the content type
+    // of this FileItemList, but there's no other option
+    if (!items.IsEmpty() && items.Get(0)->HasVideoInfoTag()) {
+        thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
+    }
+    else if (!items.IsEmpty() && items.Get(0)->HasMusicInfoTag()) {
+        thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
+    }
+    if (!thumb_loader.IsNull()) {
+        thumb_loader->Initialize();
+    }
+
     // won't return more than UPNP_MAX_RETURNED_ITEMS items at a time to keep things smooth
     // 0 requested means as many as possible
     NPT_UInt32 max_count  = (requested_count == 0)?m_MaxReturnedItems:min((unsigned long)requested_count, (unsigned long)m_MaxReturnedItems);
@@ -399,7 +430,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_String didl = didl_header;
     PLT_MediaObjectReference object;
     for (unsigned long i=starting_index; i<stop_index; ++i) {
-        object = Build(items[i], true, context, parent_id);
+        object = Build(items[i], true, context, thumb_loader, parent_id);
         if (object.IsNull()) {
             continue;
         }

@@ -355,10 +355,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
 #endif
 
+
+        // Browse and wait for result
+        PLT_MediaObjectListReference list;
+        NPT_Result res;
+        // we want all properties, so send empty filter
+        res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list, false, 0, 0, "");
+
         // if error, return now, the device could have gone away
         // this will make us go back to the sources list
-        PLT_MediaObjectListReference list;
-        NPT_Result res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list);
         if (NPT_FAILED(res)) goto failure;
 
         // empty list is ok
@@ -471,6 +476,24 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     pItem->SetArt("fanart", (const char*)res.m_Uri);
                     break;
                 }
+            }
+            // set the watched overlay, as this will not be set later due to
+            // content set on file item list
+            if (pItem->HasVideoInfoTag()) {
+                int episodes = pItem->GetVideoInfoTag()->m_iEpisode;
+                int played   = pItem->GetVideoInfoTag()->m_playCount;
+                const std::string& type = pItem->GetVideoInfoTag()->m_type;
+                bool watched(false);
+                if (type == "tvshow" || type == "season") {
+                    pItem->SetProperty("totalepisodes", episodes);
+                    pItem->SetProperty("numepisodes", episodes);
+                    pItem->SetProperty("watchedepisodes", played);
+                    pItem->SetProperty("unwatchedepisodes", episodes - played);
+                    watched = (episodes && played == episodes);
+                }
+                else if (type == "episode")
+                    watched = played;
+                pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watched);
             }
             items.Add(pItem);
 
