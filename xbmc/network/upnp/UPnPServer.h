@@ -75,6 +75,7 @@ public:
                                       NPT_HttpResponse&             response);
 
     virtual NPT_Result SetupServices();
+    virtual NPT_Result SetupIcons();
     NPT_String BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
                                     const char*        host,
                                     const char*        file_path);

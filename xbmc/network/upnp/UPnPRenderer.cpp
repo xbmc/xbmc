@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "FileItem.h"
+#include "filesystem/SpecialProtocol.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -314,6 +315,23 @@ CUPnPRenderer::UpdateState()
         avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
         avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
     }
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPRenderer::SetupIcons
++---------------------------------------------------------------------*/
+NPT_Result
+CUPnPRenderer::SetupIcons()
+{
+    NPT_String file_root = CSpecialProtocol::TranslatePath("special://xbmc/media/").c_str();
+    printf("%s\n", (const char*) file_root);
+    AddIcon(
+        PLT_DeviceIcon("image/png", 256, 256, 32, "/icon.png"),
+        file_root);
+    AddIcon(
+        PLT_DeviceIcon("image/png", 32, 32, 32, "/icon32x32.png"),
+        file_root);
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
