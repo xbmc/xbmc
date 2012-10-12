@@ -1,7 +1,7 @@
 include ../Makefile.include
 
-TARBALL=A10-MEDIA-SDK-2012-04.tar.bz2
-LOCATION=http://dl.dropbox.com/u/24940371/A10
+TARBALL=allwinner-a10-video.tar.gz
+URL=https://github.com/amery/allwinner-a10-video/tarball/master
 
 SRCS = \
 	libcedarv/vdecoder.c \
@@ -25,19 +25,17 @@ $(TARGET) : .extracted $(OBJS)
 	rm -rf tmp	
 	mkdir tmp
 	( cd tmp &&\
-	  tar xvfj $(TARBALLS_LOCATION)/$(TARBALL) --wildcards "./libvecoredemo_android_A10_yuv2rgb-2012.1.13*" &&\
-	  7z x *.rar &&\
-	  cd libvecoredemo_android_A10_yuv2rgb &&\
-	  mv cedardev_api.h ../.. &&\
-	  mv drv_display.h ../../drv_display_sun4i.h &&\
-	  mv vdecoder/* ../.. \
+	  tar xvfz $(TARBALLS_LOCATION)/$(TARBALL) &&\
+	  cd amery-allwinner-a10-video*/libcedarv/android &&\
+	  rm Makefile .gitignore cedardefs.mk &&\
+	  mv * ../../../../ \
 	)
 	rm -rf tmp $(OBJS)
 	touch $@
 	
 $(TARBALLS_LOCATION)/$(TARBALL):
 	install -d $(TARBALLS_LOCATION)
-	wget $(LOCATION)/$(TARBALL) -O $(TARBALLS_LOCATION)/$(TARBALL)
+	wget $(URL) -O $(TARBALLS)/$(TARBALL)
 
 clean:
 	rm -f $(TARGET) $(OBJS)

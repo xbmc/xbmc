@@ -1,7 +1,7 @@
 include ../depends.mk
 
-TARBALL=libve.tgz
-LOCATION=https://dl.dropbox.com/u/65312725
+TARBALL=allwinner-a10-video.tar.gz
+URL=https://github.com/amery/allwinner-a10-video/tarball/master
 
 SRCS = \
 	libcedarv/vdecoder.c \
@@ -26,24 +26,22 @@ all: .installed
 $(TARGET) : .extracted $(OBJS)
 	rm -f $(TARGET)
 	$(AR) cq $(TARGET) $(OBJS)
-
+	
 .extracted: $(TARBALLS)/$(TARBALL)
 	rm -rf tmp	
 	mkdir tmp
 	( cd tmp &&\
 	  tar xvfz $(TARBALLS)/$(TARBALL) &&\
-	  cd libve &&\
-	  mv cedardev_api.h ../.. &&\
-	  mv render/drv_display_sun4i.h ../.. &&\
-	  mv vdecoder/* ../.. \
+	  cd amery-allwinner-a10-video*/libcedarv/linux-armel &&\
+	  rm Makefile .gitignore cedardefs.mk &&\
+	  mv * ../../../../ \
 	)
 	rm -rf tmp $(OBJS)
-	(cd libcedarv; patch -p1 <../vdecoder.patch)
 	touch $@
 	
 $(TARBALLS)/$(TARBALL):
 	install -d $(TARBALLS)
-	wget $(LOCATION)/$(TARBALL) -O $(TARBALLS)/$(TARBALL)
+	wget $(URL) -O $(TARBALLS)/$(TARBALL)
 
 clean:
 	rm -f $(TARGET) $(OBJS)
