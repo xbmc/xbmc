@@ -701,6 +701,11 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   return SendControlMessage(message);
 }
 
+bool CGUIWindow::NeedXMLReload()
+{
+  return !m_windowLoaded || g_infoManager.ConditionsChangedValues(m_xmlIncludeConditions);
+}
+
 void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CSingleLock lock(g_graphicsContext);
@@ -710,19 +715,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   start = CurrentHostCounter();
 #endif
   // use forceLoad to determine if xml file needs loading
-  forceLoad |= (m_loadType == LOAD_EVERY_TIME);
-
-  // if window is loaded (not cleared before) and we aren't forced to load
-  // we will have to load it only if include conditions values were changed
-  if (m_windowLoaded && !forceLoad)
-    forceLoad = g_infoManager.ConditionsChangedValues(m_xmlIncludeConditions);
+  forceLoad |= NeedXMLReload() || (m_loadType == LOAD_EVERY_TIME);
 
   // if window is loaded and load is forced we have to free window resources first
   if (m_windowLoaded && forceLoad)
     FreeResources(true);
 
-  // load skin xml file only if we are forced to load or window isn't loaded yet
-  forceLoad |= !m_windowLoaded;
   if (forceLoad)
   {
     CStdString xmlFile = GetProperty("xmlfile").asString();
@@ -786,10 +784,13 @@ bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
-  if(m_windowLoaded)
+  if(!NeedXMLReload())
     return true;
   if(g_application.IsCurrentThread())
-    return Load(GetProperty("xmlfile").asString());
+  {
+    AllocResources();
+    return m_windowLoaded;
+  }
   else
   {
     CGUIMessage msg(GUI_MSG_WINDOW_LOAD, 0, 0);
