@@ -2120,7 +2120,7 @@ else
 fi
 
 if test "$use_asap" = "yes"; then
-  AC_CHECK_PROG(HAVE_GDC,gdc,"yes","no")
+  AC_CHECK_PROGS(HAVE_GDC,gdc-4.4 gdc-4.3 gdc,"no")
   if test "$HAVE_GDC" = "no"; then
     AC_MSG_ERROR($missing_program);
   fi

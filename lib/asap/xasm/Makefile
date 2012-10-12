@@ -5,14 +5,15 @@ ASCIIDOC_POSTPROCESS = perl -pi.bak -e "s/527bbd;/20a0a0;/;END{unlink '$@.bak'}"
 ASCIIDOC_VALIDATE = xmllint --valid --noout --nonet $@
 RM = rm -f
 ZIP = 7z a -mx=9 -tzip $@
+GDC ?= gdc
 
 all: xasm
 
 xasm.o: xasm.d
-	gdc -c -o xasm.o -O2 $<
+	$(GDC) -c -o xasm.o -O2 $<
 
 xasm: xasm.o
-	gdc -o xasm xasm.o
+	$(GDC) -o xasm xasm.o
 
 xasm.html: xasm.1.txt
 	$(ASCIIDOC) -d manpage $<
