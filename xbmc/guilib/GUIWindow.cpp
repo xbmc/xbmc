@@ -787,16 +787,15 @@ bool CGUIWindow::Initialize()
   if(!NeedXMLReload())
     return true;
   if(g_application.IsCurrentThread())
-  {
     AllocResources();
-    return m_windowLoaded;
-  }
   else
   {
+    // if not app thread, send gui msg via app messenger
+    // and wait for results, so windowLoaded flag would be updated
     CGUIMessage msg(GUI_MSG_WINDOW_LOAD, 0, 0);
-    g_windowManager.SendThreadMessage(msg, GetID());
+    CApplicationMessenger::Get().SendGUIMessage(msg, GetID(), true);
   }
-  return true;
+  return m_windowLoaded;
 }
 
 void CGUIWindow::SetInitialVisibility()
