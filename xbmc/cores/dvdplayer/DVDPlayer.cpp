@@ -2015,6 +2015,12 @@ void CDVDPlayer::HandleMessages()
       {
         CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
 
+        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && !m_State.canseek)
+        {
+          pMsg->Release();
+          continue;
+        }
+
         if(!msg.GetTrickPlay())
         {
           g_infoManager.SetDisplayAfterSeek(100000);
@@ -2023,9 +2029,6 @@ void CDVDPlayer::HandleMessages()
         }
 
         double start = DVD_NOPTS_VALUE;
-
-        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && !m_State.canseek)
-          break;
 
         int time = msg.GetRestore() ? (int)m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
         CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
