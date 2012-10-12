@@ -103,7 +103,7 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   return false;
 }
 
-bool CPVRDirectory::SupportsFileOperations(const CStdString& strPath)
+bool CPVRDirectory::SupportsWriteFileOperations(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString filename = url.GetFileName();

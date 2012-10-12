@@ -906,6 +906,8 @@ bool CGUIWindowFileManager::CanCopy(int iList)
   // can't copy if the destination is not writeable, or if the source is a share!
   // TODO: Perhaps if the source is removeable media (DVD/CD etc.) we could
   // put ripping/backup in here.
+  if (!CUtil::SupportsReadFileOperations(m_Directory[iList]->GetPath())) return false;
+  if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[1 - iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[1 -iList]->IsReadOnly()) return false;

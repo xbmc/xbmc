@@ -1595,7 +1595,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   }
 
   if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
-      CUtil::SupportsFileOperations(item->GetPath()))
+      CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
 }
 

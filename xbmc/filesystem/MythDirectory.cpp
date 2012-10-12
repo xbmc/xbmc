@@ -638,7 +638,7 @@ bool CMythDirectory::IsTvShow(const cmyth_proginfo_t program)
   return !IsMovie(program);
 }
 
-bool CMythDirectory::SupportsFileOperations(const CStdString& strPath)
+bool CMythDirectory::SupportsWriteFileOperations(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString filename = url.GetFileName();

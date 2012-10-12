@@ -8158,7 +8158,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       }
 
       CFileItem item(movie.m_strFileNameAndPath,false);
-      if (singleFiles && CUtil::SupportsFileOperations(movie.m_strFileNameAndPath))
+      if (singleFiles && CUtil::SupportsWriteFileOperations(movie.m_strFileNameAndPath))
       {
         if (!item.Exists(false))
         {
@@ -8252,7 +8252,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       }
 
       CFileItem item(movie.m_strFileNameAndPath,false);
-      if (CUtil::SupportsFileOperations(movie.m_strFileNameAndPath) && singleFiles)
+      if (CUtil::SupportsWriteFileOperations(movie.m_strFileNameAndPath) && singleFiles)
       {
         if (!item.Exists(false))
         {
@@ -8349,7 +8349,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
 
 
       CFileItem item(tvshow.m_strPath, true);
-      if (singleFiles && CUtil::SupportsFileOperations(tvshow.m_strPath))
+      if (singleFiles && CUtil::SupportsWriteFileOperations(tvshow.m_strPath))
       {
         if (!item.Exists(false))
         {
