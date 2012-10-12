@@ -114,6 +114,7 @@
 					<description>Filter</description>
 					<include>ButtonCommonValues</include>
 					<label>587</label>
+					<onclick>right</onclick>
 					<onclick>Filter</onclick>
 				</control>
 				<control type="label" id="201">
