@@ -11,7 +11,7 @@
 			<usecontrolcoords>true</usecontrolcoords>
 			<include>VisibleFadeEffect</include>
 			<control type="fixedlist" id="501">
-				<visible>Container.Content(Movies) | Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]</visible>
+				<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)</visible>
 				<visible>!Container.Content(LiveTV)</visible>
 				<posx>-183</posx>
 				<posy>0</posy>
@@ -37,6 +37,18 @@
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>4</bordersize>
 						<texture background="true">$INFO[ListItem.Icon]</texture>
+						<visible>IsEmpty(ListItem.Art(poster))</visible>
+					</control>
+					<control type="image">
+						<posx>2</posx>
+						<posy>40</posy>
+						<width>214</width>
+						<height>310</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>4</bordersize>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+						<visible>!IsEmpty(ListItem.Art(poster))</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="310" width="218">
@@ -51,6 +63,20 @@
 						<texture background="true">$INFO[ListItem.Icon]</texture>
 						<animation reversible="false" effect="zoom" start="-2,36,222,318" end="-28,0,284,390" time="200">focus</animation>
 						<animation reversible="false" effect="zoom" end="-2,36,222,318" start="-28,0,284,390" time="200">unfocus</animation>
+						<visible>!IsEmpty(ListItem.Art(poster))</visible>
+					</control>
+					<control type="image">
+						<posx>-2</posx>
+						<posy>36</posy>
+						<width>222</width>
+						<height>318</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="8">ThumbBorder.png</bordertexture>
+						<bordersize>8</bordersize>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+						<animation reversible="false" effect="zoom" start="-2,36,222,318" end="-28,0,284,390" time="200">focus</animation>
+						<animation reversible="false" effect="zoom" end="-2,36,222,318" start="-28,0,284,390" time="200">unfocus</animation>
+						<visible>IsEmpty(ListItem.Art(poster))</visible>
 					</control>
 					<control type="image">
 						<posx>6</posx>
@@ -307,7 +333,7 @@
 			<posx>0</posx>
 			<posy>460</posy>
 			<control type="fixedlist" id="508">
-				<visible>Container.Content(Movies) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]</visible>
+				<visible>Container.Content(Movies) | Container.Content(TVShows)</visible>
 				<hitrect x="0" y="-10" w="1280" h="190" />
 				<posx>-20</posx>
 				<posy>0</posy>
@@ -335,6 +361,19 @@
 						<bordersize>4</bordersize>
 						<fadetime>200</fadetime>
 						<texture background="true">$INFO[ListItem.Icon]</texture>
+						<visible>IsEmpty(ListItem.Art(poster))</visible>
+					</control>
+					<control type="image">
+						<posx>2</posx>
+						<posy>20</posy>
+						<width>120</width>
+						<height>160</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>4</bordersize>
+						<fadetime>200</fadetime>
+						<texture background="true">$INFO[ListItem.art(poster)]</texture>
+						<visible>!IsEmpty(ListItem.Art(poster))</visible>
 					</control>
 					<control type="image">
 						<posx>6</posx>
@@ -370,6 +409,21 @@
 						<texture background="true">$INFO[ListItem.Icon]</texture>
 						<animation reversible="false" effect="zoom" start="-2,16,128,168" end="-12,-10,148,198" time="200">focus</animation>
 						<animation reversible="false" effect="zoom" end="-2,16,128,168" start="-12,-10,148,198" time="200">unfocus</animation>
+						<visible>IsEmpty(ListItem.Art(poster))</visible>
+					</control>
+					<control type="image">
+						<posx>-2</posx>
+						<posy>16</posy>
+						<width>128</width>
+						<height>168</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="8">ThumbBorder.png</bordertexture>
+						<bordersize>8</bordersize>
+						<fadetime>200</fadetime>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+						<animation reversible="false" effect="zoom" start="-2,16,128,168" end="-12,-10,148,198" time="200">focus</animation>
+						<animation reversible="false" effect="zoom" end="-2,16,128,168" start="-12,-10,148,198" time="200">unfocus</animation>
+						<visible>!IsEmpty(ListItem.Art(poster))</visible>
 					</control>
 					<control type="image">
 						<posx>90</posx>
@@ -915,7 +969,7 @@
 			<control type="group">
 				<posx>710</posx>
 				<posy>245</posy>
-				<visible>Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)</visible>
+				<visible>Container.Content(TVShows)</visible>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -926,6 +980,19 @@
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
+					<visible>IsEmpty(ListItem.Art(banner))</visible>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>530</width>
+					<height>110</height>
+					<aspectratio>keep</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true">$INFO[ListItem.Art(banner)]</texture>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+					<visible>!IsEmpty(ListItem.Art(banner))</visible>
 				</control>
 				<control type="label">
 					<description>Episodes txt</description>
@@ -1086,7 +1153,7 @@
 			<control type="group">
 				<posx>710</posx>
 				<posy>245</posy>
-				<visible>Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]</visible>
+				<visible>Container.Content(Seasons)</visible>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -1110,19 +1177,6 @@
 					<label>$INFO[Container.ShowPlot]</label>
 					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>Container.Content(Seasons)</visible>
-				</control>
-				<control type="textbox">
-					<description>Description Value for TVShows</description>
-					<posx>270</posx>
-					<posy>0</posy>
-					<width>250</width>
-					<height>355</height>
-					<font>font12</font>
-					<align>justify</align>
-					<textcolor>white</textcolor>
-					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
-					<visible>Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)</visible>
 				</control>
 				<control type="label">
 					<description>Watched Count</description>
@@ -1364,7 +1418,7 @@
 					<height>286</height>
 					<aspectratio>scale</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Property(fanart_image)]</texture>
+					<texture background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Art(fanart)]</texture>
 					<visible>Container.Content(Movies)</visible>
 					<bordertexture background="true" border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
@@ -1376,7 +1430,7 @@
 					<height>325</height>
 					<aspectratio>scale</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Property(fanart_image)]</texture>
+					<texture background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Art(fanart)]</texture>
 					<visible>Container.Content(TVShows)</visible>
 					<bordertexture background="true" border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
@@ -1708,7 +1762,7 @@
 					<height>420</height>
 					<aspectratio scalediffuse="false">scale</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Property(fanart_image)]</texture>
+					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Art(fanart)]</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
@@ -1771,12 +1825,12 @@
 					<height>420</height>
 					<aspectratio scalediffuse="false">scale</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Property(fanart_image)]</texture>
+					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Art(fanart)]</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
 					<posy>395</posy>
-					<width>730</width>
+					<width>540</width>
 					<height>30</height>
 					<font>font24_title</font>
 					<textcolor>white</textcolor>
@@ -1789,13 +1843,24 @@
 					<description>Description Value for Video</description>
 					<posx>10</posx>
 					<posy>425</posy>
-					<width>730</width>
+					<width>540</width>
 					<height>145</height>
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
 					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="image">
+					<posx>560</posx>
+					<posy>140</posy>
+					<width>180</width>
+					<height>440</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
 				</control>
 			</control>
 			<control type="group">
@@ -1809,7 +1874,7 @@
 					<height>420</height>
 					<aspectratio scalediffuse="false">scale</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Property(fanart_image)]</texture>
+					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Art(fanart)]</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
@@ -1858,7 +1923,7 @@
 					<height>420</height>
 					<aspectratio scalediffuse="false">scale</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Property(fanart_image)]</texture>
+					<texture diffuse="Fanart_Diffuse.png" background="true" fallback="Fanart_Fallback_Small.jpg" >$INFO[ListItem.Art(fanart)]</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>

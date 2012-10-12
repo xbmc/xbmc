@@ -15,7 +15,6 @@
 				<viewtype label="535">list</viewtype>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<visible>![Window.IsVisible(VideoLibrary) + Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)]</visible>
 				<itemlayout height="40" width="580">
 					<control type="image">
 						<posx>0</posx>
@@ -240,7 +239,7 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>
-				<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + [!Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)]" height="186" width="216">
+				<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(TVShows)" height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -283,7 +282,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + [!Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)]" height="186" width="216">
+				<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(TVShows)" height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -326,7 +325,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</focusedlayout>
-				<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]" height="279" width="216">
+				<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="279" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -357,7 +356,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]" height="276" width="216">
+				<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="276" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -412,7 +411,7 @@
 			<visible>Control.IsVisible(505)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="panel" id="505">
-				<visible>!Container.Content(LiveTV) + !Container.Content(Movies) + !Container.Content(Episodes) + !Container.Content(Seasons) + !Container.Content(MusicVideos) + !Container.Content(Addons) + !Skin.HasSetting(TVShowsUsePosters)</visible>
+				<visible>!Container.Content(LiveTV) + !Container.Content(Movies) + !Container.Content(Episodes) + !Container.Content(Seasons) + !Container.Content(MusicVideos) + !Container.Content(Addons)</visible>
 				<posx>95</posx>
 				<posy>80</posy>
 				<width>1080</width>
@@ -434,6 +433,17 @@
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>IsEmpty(ListItem.Art(banner))</visible>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>538</width>
+						<height>105</height>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$INFO[Listitem.Art(banner)]</texture>
+						<visible>!IsEmpty(ListItem.Art(banner))</visible>
 					</control>
 					<control type="image">
 						<posx>500</posx>
@@ -453,6 +463,17 @@
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>IsEmpty(ListItem.Art(banner))</visible>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>538</width>
+						<height>105</height>
+						<bordertexture border="5">folder-focus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$INFO[Listitem.Art(banner)]</texture>
+						<visible>!IsEmpty(ListItem.Art(banner))</visible>
 					</control>
 					<control type="image">
 						<posx>500</posx>

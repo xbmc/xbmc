@@ -248,10 +248,6 @@ msgctxt "#31122"
 msgid "Weather Page"
 msgstr ""
 
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr ""
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr ""
