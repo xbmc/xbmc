@@ -28,7 +28,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
 			<include>backgroundfade</include>
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
@@ -66,6 +66,7 @@
 			<height>120</height>
 			<texture flipy="true">HomeNowPlayingBack.png</texture>
 			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] | [Player.HasAudio + ![Skin.HasSetting(ShowBackgroundVis) | SubString(Window(videolibrary).Property(TvTunesIsAlive),True)]] | [!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))]</visible>
+			<include>VisibleFadeEffect</include>
 		</control>
 	</include>
 	<include name="ContentPanelBackgrounds">

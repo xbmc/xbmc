@@ -294,18 +294,6 @@
 						<align>left</align>
 						<aligny>center</aligny>
 					</control>
-					<control type="radiobutton" id="105">
-						<width>750</width>
-						<height>40</height>
-						<font>font13</font>
-						<label>31123</label>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<texturefocus>MenuItemFO.png</texturefocus>
-						<texturenofocus>MenuItemNF.png</texturenofocus>
-						<onclick>Skin.ToggleSetting(TVShowsUsePosters)</onclick>
-						<selected>Skin.HasSetting(TVShowsUsePosters)</selected>
-					</control>
 					<control type="radiobutton" id="115">
 						<width>750</width>
 						<height>40</height>
