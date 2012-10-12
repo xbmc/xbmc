@@ -8732,7 +8732,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           info.Load(episode);
           CFileItem item(info);
           map<string, string> artwork;
-          if (ImportArtFromXML(movie->FirstChild("art"), artwork))
+          if (ImportArtFromXML(episode->FirstChild("art"), artwork))
             item.SetArt(artwork);
           scanner.AddVideo(&item,CONTENT_TVSHOWS, false, false, showItem.GetVideoInfoTag(), true);
           episode = episode->NextSiblingElement("episodedetails");
