@@ -40,7 +40,7 @@
 				<width>130</width>
 				<height>295</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<texture>$INFO[MusicPlayer.Cover]</texture>
+				<texture fallback="DefaultAlbumCover.png">$INFO[Player.Art(thumb)]</texture>
 				<bordertexture border="8">ThumbBorder.png</bordertexture>
 				<bordersize>5</bordersize>
 			</control>
@@ -244,7 +244,7 @@
 					<width>150</width>
 					<height>300</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
 				</control>
@@ -284,7 +284,7 @@
 					<width>120</width>
 					<height>300</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
 				</control>
@@ -337,7 +337,7 @@
 					<width>120</width>
 					<height>300</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
 				</control>
@@ -390,7 +390,7 @@
 					<width>180</width>
 					<height>120</height>
 					<aspectratio>scale</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
 				</control>
