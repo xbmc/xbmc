@@ -4730,20 +4730,21 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
     if (NULL == m_pDS.get()) return false;
 
     CVideoDbUrl videoUrl;
-    if (!videoUrl.FromString(strBaseDir))
+    Filter extFilter = filter;
+    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
       return false;
 
     CStdString strSQL = "SELECT movieview.*, sets.strSet FROM movieview"
                         " JOIN sets ON movieview.idSet = sets.idSet ";
-    if (!filter.join.empty())
-      strSQL += filter.join;
-    if (!filter.where.empty())
-      strSQL += " WHERE (" + filter.where + ")";
+    if (!extFilter.join.empty())
+      strSQL += extFilter.join;
+    if (!extFilter.where.empty())
+      strSQL += " WHERE (" + extFilter.where + ")";
     strSQL += " ORDER BY sets.idSet";
-    if (!filter.order.empty())
-      strSQL += "," + filter.order;
-    if (!filter.limit.empty())
-      strSQL += " LIMIT " + filter.limit;
+    if (!extFilter.order.empty())
+      strSQL += "," + extFilter.order;
+    if (!extFilter.limit.empty())
+      strSQL += " LIMIT " + extFilter.limit;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
@@ -6196,7 +6197,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
     }
 
-    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
+    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? filter.fields.c_str() : "*") + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
