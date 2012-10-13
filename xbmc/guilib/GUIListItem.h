@@ -89,6 +89,12 @@ public:
    */
   void SetArt(const ArtMap &art);
 
+  /*! \brief append artwork to an item
+   \param art a type:url map for artwork
+   \sa GetArt
+   */
+  void AppendArt(const ArtMap &art);
+
   /*! \brief Get a particular art type for an item
    \param type type of art to fetch.
    \return the art URL, if available, else empty.
