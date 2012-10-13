@@ -95,7 +95,12 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
         fetchedArt = true;
       }
 
-      result["art"] = item->GetArt();
+      CGUIListItem::ArtMap artMap = item->GetArt();
+      CVariant artObj(CVariant::VariantTypeObject);
+      for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); artIt++)
+        artObj[artIt->first] = CTextureCache::GetWrappedImageURL(artIt->second);
+
+      result["art"] = artObj;
       return true;
     }
     
