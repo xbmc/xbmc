@@ -286,6 +286,11 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
     else if (it->first == "TYER")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
     else if (it->first == "TCMP")   tag.SetCompilation((strtol(it->second.front()->toString().toCString(true), NULL, 10) == 0) ? false : true);
     else if (it->first == "TENC")   {} // EncodedBy
+    else if (it->first == "TCOP")   {} // Copyright message
+    else if (it->first == "TDRC")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
+    else if (it->first == "TDRL")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
+    else if (it->first == "TDTG")   {} // Tagging time
+    else if (it->first == "TLAN")   {} // Languages
     else if (it->first == "USLT")
       // Loop through any lyrics frames. Could there be multiple frames, how to choose?
       for (ID3v2::FrameList::ConstIterator lt = it->second.begin(); lt != it->second.end(); ++lt)
