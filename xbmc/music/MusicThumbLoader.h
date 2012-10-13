@@ -19,6 +19,7 @@
  *
  */
 
+#include <map>
 #include "ThumbLoader.h"
 
 class CFileItem;
@@ -59,4 +60,6 @@ protected:
   virtual void OnLoaderFinish();
   
   CMusicDatabase *m_database;
+  typedef std::map<int, std::map<std::string, std::string> > ArtCache;
+  ArtCache m_albumArt;
 };

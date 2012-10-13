@@ -19,6 +19,7 @@
  *
  */
 
+#include <map>
 #include "ThumbLoader.h"
 #include "utils/JobManager.h"
 #include "FileItem.h"
@@ -122,4 +123,6 @@ protected:
 
   IStreamDetailsObserver *m_pStreamDetailsObs;
   CVideoDatabase *m_database;
+  typedef std::map<int, std::map<std::string, std::string> > ArtCache;
+  ArtCache m_showArt;
 };

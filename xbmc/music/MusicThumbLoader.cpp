@@ -42,6 +42,7 @@ CMusicThumbLoader::~CMusicThumbLoader()
 void CMusicThumbLoader::Initialize()
 {
   m_database->Open();
+  m_albumArt.clear();
 }
 
 void CMusicThumbLoader::OnLoaderStart()
@@ -52,6 +53,7 @@ void CMusicThumbLoader::OnLoaderStart()
 void CMusicThumbLoader::OnLoaderFinish()
 {
   m_database->Close();
+  m_albumArt.clear();
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
@@ -116,8 +118,15 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       item.SetArt(artwork);
     else if (tag.GetType() == "song")
     { // no art for the song, try the album
-      if (m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork))
-        item.SetArt(artwork);
+      ArtCache::const_iterator i = m_albumArt.find(tag.GetAlbumId());
+      if (i != m_albumArt.end())
+        item.SetArt(i->second);
+      else
+      {
+        if (m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork))
+          item.SetArt(artwork);
+        m_albumArt.insert(make_pair(tag.GetAlbumId(), artwork));
+      }
     }
     if (tag.GetType() == "song" || tag.GetType() == "album")
     { // fanart from the artist

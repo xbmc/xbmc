@@ -127,6 +127,7 @@ CVideoThumbLoader::~CVideoThumbLoader()
 void CVideoThumbLoader::Initialize()
 {
   m_database->Open();
+  m_showArt.clear();
 }
 
 void CVideoThumbLoader::OnLoaderStart()
@@ -137,6 +138,7 @@ void CVideoThumbLoader::OnLoaderStart()
 void CVideoThumbLoader::OnLoaderFinish()
 {
   m_database->Close();
+  m_showArt.clear();
 }
 
 static void SetupRarOptions(CFileItem& item, const CStdString& path)
@@ -373,14 +375,22 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     // For episodes and seasons, we want to set fanart for that of the show
     if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
     {
-      map<string, string> showArt;
-      if (m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt))
+      ArtCache::const_iterator i = m_showArt.find(tag.m_iIdShow);
+      if (i != m_showArt.end())
+        item.AppendArt(i->second);
+      else
       {
-        map<string, string>::iterator i = showArt.find("fanart");
-        if (i != showArt.end())
-          item.SetArt("fanart", i->second);
-        if ((i = showArt.find("thumb")) != showArt.end())
-          item.SetArt("tvshowthumb", i->second);
+        map<string, string> showArt, cacheArt;
+        if (m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt))
+        {
+          map<string, string>::iterator i = showArt.find("fanart");
+          if (i != showArt.end())
+            cacheArt.insert(make_pair("fanart", i->second));
+          if ((i = showArt.find("thumb")) != showArt.end())
+            cacheArt.insert(make_pair("tvshowthumb", i->second));
+          item.AppendArt(cacheArt);
+        }
+        m_showArt.insert(make_pair(tag.m_iIdShow, cacheArt));
       }
     }
     m_database->Close();
