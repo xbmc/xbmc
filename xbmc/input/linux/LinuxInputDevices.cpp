@@ -967,7 +967,6 @@ bool CLinuxInputDevices::CheckDevice(const char *device)
 {
   int fd;
 
-  CLog::Log(LOGDEBUG, "Checking device: %s\n", device);
   /* Check if we are able to open the device */
   fd = open(device, O_RDWR);
   if (fd < 0)
