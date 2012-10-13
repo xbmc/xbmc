@@ -66,7 +66,7 @@ public:
   //the rendermanager needs to know about that because it can synchronize the videoreferenceclock to the video timestamps
   static void SetMasterClock(bool ismasterclock) { m_ismasterclock = ismasterclock; }
   static bool IsMasterClock()                    { return m_ismasterclock;          }
-
+  static CDVDClock* GetMasterClock();
 protected:
   static void   CheckSystemClock();
   static double SystemToAbsolute(int64_t system);
@@ -87,4 +87,5 @@ protected:
   bool             m_speedadjust;
   CCriticalSection m_speedsection;
   static bool      m_ismasterclock;
+  static CDVDClock *m_playerclock;
 };
