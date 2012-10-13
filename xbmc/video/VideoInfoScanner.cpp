@@ -1097,9 +1097,11 @@ namespace VIDEO
     {
       if (pItem->m_bIsFolder)
       {
-        // get season thumbs
+        // get and cache season thumbs
         map<int, string> seasonArt;
         GetSeasonThumbs(movieDetails, seasonArt);
+        for (map<int, string>::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+          CTextureCache::Get().BackgroundCacheImage(i->second);
         lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = "tvshow";
@@ -1640,9 +1642,6 @@ namespace VIDEO
         }
       }
     }
-    // cache them
-    for (map<int, string>::iterator i = art.begin(); i != art.end(); ++i)
-      CTextureCache::Get().BackgroundCacheImage(i->second);
   }
 
   void CVideoInfoScanner::FetchActorThumbs(vector<SActorInfo>& actors, const CStdString& strPath)
