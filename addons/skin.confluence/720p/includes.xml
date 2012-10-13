@@ -634,7 +634,27 @@
 				<onclick>down</onclick>
 				<onclick>XBMC.PlayerControl(Stop)</onclick>
 			</control>
-			<control type="button" id="604">
+			<control type="togglebutton" id="604">
+				<posx>140</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDPauseFO.png</texturefocus>
+				<texturenofocus>OSDPauseNF.png</texturenofocus>
+				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+				<onleft>603</onleft>
+				<onright>605</onright>
+				<onup>610</onup>
+				<ondown>606</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Play)</onclick>
+				<enable>Player.PauseEnabled</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.PauseEnabled">Conditional</animation>
+			</control>
+			<control type="button" id="605">
 				<posx>180</posx>
 				<posy>2</posy>
 				<width>39</width>
@@ -642,7 +662,7 @@
 				<label>-</label>
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
-				<onleft>603</onleft>
+				<onleft>604</onleft>
 				<onright>50</onright>
 				<onup>610</onup>
 				<ondown>611</ondown>
