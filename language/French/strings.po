@@ -8068,7 +8068,7 @@ msgstr "ce chemin de la médiathèque ?"
 
 msgctxt "#20342"
 msgid "Movies"
-msgstr "Retirer le clip musical de la Médiathèque"
+msgstr "Films"
 
 msgctxt "#20343"
 msgid "TV shows"
