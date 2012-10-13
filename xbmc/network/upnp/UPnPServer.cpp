@@ -172,7 +172,6 @@ NPT_Result
 CUPnPServer::SetupIcons()
 {
     NPT_String file_root = CSpecialProtocol::TranslatePath("special://xbmc/media/").c_str();
-    printf("%s\n", (const char*) file_root);
     AddIcon(
         PLT_DeviceIcon("image/png", 256, 256, 32, "/icon.png"),
         file_root);
