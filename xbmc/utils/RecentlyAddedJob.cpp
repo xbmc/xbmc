@@ -32,6 +32,7 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "music/MusicThumbLoader.h"
 
 #define NUM_ITEMS 10
 

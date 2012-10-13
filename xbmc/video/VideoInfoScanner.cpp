@@ -46,7 +46,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 #include "TextureCache.h"
 #include "GUIUserMessages.h"
 #include "URL.h"

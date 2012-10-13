@@ -75,7 +75,8 @@
 
 #include "addons/AddonManager.h"
 #include "interfaces/info/InfoBool.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
+#include "music/MusicThumbLoader.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define SYSHEATUPDATEINTERVAL 60000

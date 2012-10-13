@@ -21,7 +21,6 @@
  */
 
 #include "GUIWindowVideoBase.h"
-#include "ThumbLoader.h"
 
 class CFileItemList;
 

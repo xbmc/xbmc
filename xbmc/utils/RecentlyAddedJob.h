@@ -19,7 +19,7 @@
  *
  */
 
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 #include "Job.h"
 
 enum ERecentlyAddedFlag
