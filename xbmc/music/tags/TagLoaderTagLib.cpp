@@ -197,6 +197,10 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
   else if (xiph)
     ParseXiphComment(xiph, art, tag);
 
+  // art for flac files is outside the tag
+  if (flacFile)
+    SetFlacArt(flacFile, art, tag);
+
   // Add APE tags over the top of ID3 tags if we want to prioritize them
   if (ape && g_advancedSettings.m_prioritiseAPEv2tags)
     ParseAPETag(ape, art, tag);
@@ -518,6 +522,30 @@ bool CTagLoaderTagLib::ParseGenericTag(Tag *generic, EmbeddedArt *art, CMusicInf
   }
 
   return true;
+}
+
+void CTagLoaderTagLib::SetFlacArt(FLAC::File *flacFile, EmbeddedArt *art, CMusicInfoTag &tag)
+{
+  FLAC::Picture *cover[2] = {};
+  List<FLAC::Picture *> pictures = flacFile->pictureList();
+  for (List<FLAC::Picture *>::ConstIterator i = pictures.begin(); i != pictures.end(); ++i)
+  {
+    FLAC::Picture *picture = *i;
+    if (picture->type() == FLAC::Picture::FrontCover)
+      cover[0] = picture;
+    else // anything else is taken as second priority
+      cover[1] = picture;
+  }
+  for (unsigned int i = 0; i < 2; i++)
+  {
+    if (cover[i])
+    {
+      tag.SetCoverArtInfo(cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      if (art)
+        art->set((const uint8_t*)cover[i]->data().data(), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      return; // one is enough
+    }
+  }
 }
 
 const vector<string> CTagLoaderTagLib::GetASFStringList(const List<ASF::Attribute>& list)
