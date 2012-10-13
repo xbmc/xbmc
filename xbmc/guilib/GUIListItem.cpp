@@ -119,7 +119,7 @@ void CGUIListItem::SetArt(const std::string &type, const std::string &url)
   }
 }
 
-void CGUIListItem::SetArt(const map<string, string> &art)
+void CGUIListItem::SetArt(const ArtMap &art)
 {
   m_art = art;
   // ensure that the fallback "thumb" is available
@@ -140,6 +140,11 @@ std::string CGUIListItem::GetArt(const std::string &type) const
   if (i != m_art.end())
     return i->second;
   return "";
+}
+
+const CGUIListItem::ArtMap &CGUIListItem::GetArt() const
+{
+  return m_art;
 }
 
 bool CGUIListItem::HasArt(const std::string &type) const
@@ -193,11 +198,6 @@ CStdString CGUIListItem::GetOverlayImage() const
   default:
     return "";
   }
-}
-
-const map<string, string> &CGUIListItem::GetArt() const
-{
-  return m_art;
 }
 
 void CGUIListItem::Select(bool bOnOff)

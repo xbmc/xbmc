@@ -84,7 +84,7 @@ public:
   void SetArt(const std::string &type, const std::string &url);
 
   /*! \brief set artwork for an item
-   \param map a type:url map for artwork
+   \param art a type:url map for artwork
    \sa GetArt
    */
   void SetArt(const ArtMap &art);
