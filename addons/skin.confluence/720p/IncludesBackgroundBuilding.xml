@@ -33,7 +33,7 @@
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
 			<include>Window_OpenClose_Animation</include>
-			<visible>![Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] + ![Player.HasAudio + ![Skin.HasSetting(ShowBackgroundVis) | SubString(Window(videolibrary).Property(TvTunesIsAlive),True)]]</visible>
+			<visible>![Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)]</visible>
 		</control>
 		<control type="image">
 			<posx>0</posx>
