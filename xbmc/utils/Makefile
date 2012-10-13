@@ -14,6 +14,7 @@ SRCS=AlarmClock.cpp \
      DownloadQueue.cpp \
      DownloadQueueManager.cpp \
      EndianSwap.cpp \
+     EdenVideoArtUpdater.cpp \
      Fanart.cpp \
      fastmemcpy.c \
      fastmemcpy-arm.S \
