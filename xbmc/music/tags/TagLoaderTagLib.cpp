@@ -438,14 +438,17 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
   {
     if (it->first == "ARTIST")                         tag.SetArtist(StringListToVectorString(it->second));
     else if (it->first == "ALBUMARTIST")               tag.SetAlbumArtist(StringListToVectorString(it->second));
+    else if (it->first == "ALBUM ARTIST")              tag.SetAlbumArtist(StringListToVectorString(it->second));
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.front().to8Bit(true));
     else if (it->first == "TRACKNUMBER")               tag.SetTrackNumber(it->second.front().toInt());
     else if (it->first == "DISCNUMBER")                tag.SetPartOfSet(it->second.front().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.front().toInt());
+    else if (it->first == "DATE")                      tag.SetYear(it->second.front().toInt());
     else if (it->first == "GENRE")                     tag.SetGenre(StringListToVectorString(it->second));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.front().to8Bit(true));
     else if (it->first == "ENCODEDBY")                 {}
+    else if (it->first == "ENSEMBLE")                  {}
     else if (it->first == "COMPILATION")               tag.SetCompilation(it->second.front().toInt() == 1);
     else if (it->first == "LYRICS")                    tag.SetLyrics(it->second.front().to8Bit(true));
     else if (it->first == "REPLAYGAIN_TRACK_GAIN")     tag.SetReplayGainTrackGain((int)(atof(it->second.front().toCString(true)) * 100 + 0.5));
