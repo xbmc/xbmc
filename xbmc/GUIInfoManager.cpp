@@ -3360,8 +3360,9 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   // try to set a thumbnail
   if (!playlistItem->HasArt("thumb"))
   {
-    CMusicThumbLoader::FillThumb(*playlistItem);
-    // still no thumb? then just the set the default cover TODO: remove me?
+    CMusicThumbLoader loader;
+    loader.LoadItem(playlistItem.get());
+    // still no thumb? then just the set the default cover
     if (!playlistItem->HasArt("thumb"))
       playlistItem->SetArt("thumb", "DefaultAlbumCover.png");
   }
