@@ -493,7 +493,7 @@ void CMusicInfoTag::SetReplayGainTrackGain(int trackGain)
 
 void CMusicInfoTag::SetReplayGainAlbumGain(int albumGain)
 {
-  m_iTrackGain = albumGain;
+  m_iAlbumGain = albumGain;
   m_iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
 }
 
