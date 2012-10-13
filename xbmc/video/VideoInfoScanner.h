@@ -108,6 +108,7 @@ namespace VIDEO
      */
     static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::string> &art, bool useLocal = true);
     static std::string GetImage(CFileItem *pItem, bool useLocal, bool bApplyToDir, const std::string &type = "");
+    static std::string GetFanart(CFileItem *pItem, bool useLocal);
 
   protected:
     virtual void Process();
