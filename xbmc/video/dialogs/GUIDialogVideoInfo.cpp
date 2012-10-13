@@ -46,6 +46,7 @@
 #include "TextureCache.h"
 #include "music/MusicDatabase.h"
 #include "URL.h"
+#include "video/VideoThumbLoader.h"
 
 using namespace std;
 using namespace XFILE;
@@ -91,8 +92,6 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
       m_bRefresh = false;
       m_bRefreshAll = true;
       m_hasUpdatedThumb = false;
@@ -339,7 +338,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       }
     }
   }
-  m_loader.LoadItem(m_movieItem.get());
+  CVideoThumbLoader loader;
+  loader.LoadItem(m_movieItem.get());
 }
 
 void CGUIDialogVideoInfo::Update()
@@ -419,20 +419,21 @@ bool CGUIDialogVideoInfo::RefreshAll() const
 /// \brief Search the current directory for a string got from the virtual keyboard
 void CGUIDialogVideoInfo::OnSearch(CStdString& strSearch)
 {
-  if (m_dlgProgress)
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (progress)
   {
-    m_dlgProgress->SetHeading(194);
-    m_dlgProgress->SetLine(0, strSearch);
-    m_dlgProgress->SetLine(1, "");
-    m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal();
-    m_dlgProgress->Progress();
+    progress->SetHeading(194);
+    progress->SetLine(0, strSearch);
+    progress->SetLine(1, "");
+    progress->SetLine(2, "");
+    progress->StartModal();
+    progress->Progress();
   }
   CFileItemList items;
   DoSearch(strSearch, items);
 
-  if (m_dlgProgress)
-    m_dlgProgress->Close();
+  if (progress)
+    progress->Close();
 
   if (items.Size())
   {

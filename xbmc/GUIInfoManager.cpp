@@ -77,6 +77,7 @@
 #include "interfaces/info/InfoBool.h"
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
+#include "video/VideoDatabase.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
