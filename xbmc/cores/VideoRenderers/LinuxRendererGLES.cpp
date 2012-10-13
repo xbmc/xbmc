@@ -193,10 +193,22 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   m_RenderUpdateCallBackCtx = NULL;
   if ((m_format == RENDER_FMT_BYPASS) && g_application.GetCurrentPlayer())
   {
+    m_renderFeatures.clear();
+    m_scalingMethods.clear();
+    m_deinterlaceModes.clear();
+    m_deinterlaceMethods.clear();
+
+    if (m_RenderFeaturesCallBackFn)
+    {
+      (*m_RenderFeaturesCallBackFn)(m_RenderFeaturesCallBackCtx, m_renderFeatures);
+      // after setting up m_renderFeatures, we are done with the callback
+      m_RenderFeaturesCallBackFn = NULL;
+      m_RenderFeaturesCallBackCtx = NULL;
+    }
     g_application.m_pPlayer->GetRenderFeatures(m_renderFeatures);
-    g_application.m_pPlayer->GetDeinterlaceMethods(m_deinterlaceMethods);
-    g_application.m_pPlayer->GetDeinterlaceModes(m_deinterlaceModes);
     g_application.m_pPlayer->GetScalingMethods(m_scalingMethods);
+    g_application.m_pPlayer->GetDeinterlaceModes(m_deinterlaceModes);
+    g_application.m_pPlayer->GetDeinterlaceMethods(m_deinterlaceMethods);
   }
 
   return true;
@@ -749,6 +761,8 @@ void CLinuxRendererGLES::UnInit()
   m_bConfigured = false;
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
+  m_RenderFeaturesCallBackFn = NULL;
+  m_RenderFeaturesCallBackCtx = NULL;
 }
 
 inline void CLinuxRendererGLES::ReorderDrawPoints()

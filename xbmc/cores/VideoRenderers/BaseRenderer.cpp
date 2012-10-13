@@ -66,6 +66,12 @@ void CBaseRenderer::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCa
   m_RenderUpdateCallBackCtx = ctx;
 }
 
+void CBaseRenderer::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
+{
+  m_RenderFeaturesCallBackFn = fn;
+  m_RenderFeaturesCallBackCtx = ctx;
+}
+
 void CBaseRenderer::ChooseBestResolution(float fps)
 {
   if (fps == 0.0) return;

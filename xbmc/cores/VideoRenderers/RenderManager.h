@@ -133,6 +133,7 @@ public:
   CSharedSection& GetSection() { return m_sharedSection; };
 
   void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
+  void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
 protected:
   void Render(bool clear, DWORD flags, DWORD alpha);

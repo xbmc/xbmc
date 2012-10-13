@@ -661,6 +661,12 @@ void CXBMCRenderManager::RegisterRenderUpdateCallBack(const void *ctx, RenderUpd
     m_pRenderer->RegisterRenderUpdateCallBack(ctx, fn);
 }
 
+void CXBMCRenderManager::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
+{
+  if (m_pRenderer)
+    m_pRenderer->RegisterRenderFeaturesCallBack(ctx, fn);
+}
+
 void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
 {
   CSharedLock lock(m_sharedSection);

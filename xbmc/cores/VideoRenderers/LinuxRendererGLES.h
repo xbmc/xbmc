@@ -29,6 +29,7 @@
 #include "xbmc/guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
+#include "RenderFeatures.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -39,7 +40,6 @@ class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
-typedef std::vector<int>     Features;
 
 #define NUM_BUFFERS 3
 
