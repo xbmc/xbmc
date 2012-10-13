@@ -286,18 +286,6 @@
 				<onclick>ActivateWindow(PVROSDGuide)</onclick>
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
-			<control type="label" id="608">
-				<posx>440</posx>
-				<posy>0</posy>
-				<width>275</width>
-				<height>55</height>
-				<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>grey</textcolor>
-				<scroll>false</scroll>
-			</control>
 		</control>
 
 		<!-- !LiveTV -->
