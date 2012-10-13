@@ -55,6 +55,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   CFileItemList  items;
   CVideoDatabase videodatabase;
   CVideoThumbLoader loader;
+  loader.Initialize();
   
   videodatabase.Open();
 
@@ -213,6 +214,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   CFileItemList  musicItems;
   CMusicDatabase musicdatabase;
   CMusicThumbLoader loader;
+  loader.Initialize();
   
   musicdatabase.Open();
   
