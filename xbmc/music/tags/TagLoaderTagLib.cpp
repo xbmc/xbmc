@@ -223,12 +223,12 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
   const ASF::AttributeListMap& attributeListMap = asf->attributeListMap();
   for (ASF::AttributeListMap::ConstIterator it = attributeListMap.begin(); it != attributeListMap.end(); ++it)
   {
-    if (it->first == "Author")                           tag.SetArtist(GetASFStringList(it->second));
-    else if (it->first == "WM/AlbumArtist")              tag.SetAlbumArtist(GetASFStringList(it->second));
+    if (it->first == "Author")                           SetArtist(tag, GetASFStringList(it->second));
+    else if (it->first == "WM/AlbumArtist")              SetAlbumArtist(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumTitle")               tag.SetAlbum(it->second.front().toString().to8Bit(true));
     else if (it->first == "WM/TrackNumber")              tag.SetTrackNumber(it->second.front().toUInt());
     else if (it->first == "WM/PartOfSet")                tag.SetPartOfSet(it->second.front().toUInt());
-    else if (it->first == "WM/Genre")                    tag.SetGenre(GetASFStringList(it->second));
+    else if (it->first == "WM/Genre")                    SetGenre(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumArtistSortOrder")     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")          {} // Known unsupported, supress warnings
     else if (it->first == "WM/Script")                   {} // Known unsupported, supress warnings
@@ -276,11 +276,11 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
   for (ID3v2::FrameListMap::ConstIterator it = frameListMap.begin(); it != frameListMap.end(); ++it)
   {
-    if      (it->first == "TPE1")   tag.SetArtist(GetID3v2StringList(it->second));
+    if      (it->first == "TPE1")   SetArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TALB")   tag.SetAlbum(it->second.front()->toString().to8Bit(true));
-    else if (it->first == "TPE2")   tag.SetAlbumArtist(GetID3v2StringList(it->second));
+    else if (it->first == "TPE2")   SetAlbumArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TIT2")   tag.SetTitle(it->second.front()->toString().to8Bit(true));
-    else if (it->first == "TCON")   tag.SetGenre(it->second.front()->toString().to8Bit(true));
+    else if (it->first == "TCON")   SetGenre(tag, GetID3v2StringList(it->second));
     else if (it->first == "TRCK")   tag.SetTrackNumber(strtol(it->second.front()->toString().toCString(true), NULL, 10));
     else if (it->first == "TPOS")   tag.SetPartOfSet(strtol(it->second.front()->toString().toCString(true), NULL, 10));
     else if (it->first == "TYER")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
@@ -401,14 +401,14 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
   const APE::ItemListMap itemListMap = ape->itemListMap();
   for (APE::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
-    if (it->first == "ARTIST")                         tag.SetArtist(StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "ALBUM ARTIST")              tag.SetAlbumArtist(StringListToVectorString(it->second.toStringList()));
+    if (it->first == "ARTIST")                         SetArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ALBUM ARTIST")              SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.toString().to8Bit(true));
     else if (it->first == "TRACKNUMBER")               tag.SetTrackNumber(it->second.toString().toInt());
     else if (it->first == "DISCNUMBER")                tag.SetPartOfSet(it->second.toString().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.toString().toInt());
-    else if (it->first == "GENRE")                     tag.SetGenre(StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.toString().to8Bit(true));
     else if (it->first == "ENCODEDBY")                 {}
     else if (it->first == "COMPILATION")               tag.SetCompilation(it->second.toString().toInt() == 1);
@@ -436,16 +436,16 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
   const Ogg::FieldListMap& fieldListMap = xiph->fieldListMap();
   for (Ogg::FieldListMap::ConstIterator it = fieldListMap.begin(); it != fieldListMap.end(); ++it)
   {
-    if (it->first == "ARTIST")                         tag.SetArtist(StringListToVectorString(it->second));
-    else if (it->first == "ALBUMARTIST")               tag.SetAlbumArtist(StringListToVectorString(it->second));
-    else if (it->first == "ALBUM ARTIST")              tag.SetAlbumArtist(StringListToVectorString(it->second));
+    if (it->first == "ARTIST")                         SetArtist(tag, StringListToVectorString(it->second));
+    else if (it->first == "ALBUMARTIST")               SetAlbumArtist(tag, StringListToVectorString(it->second));
+    else if (it->first == "ALBUM ARTIST")              SetAlbumArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.front().to8Bit(true));
     else if (it->first == "TRACKNUMBER")               tag.SetTrackNumber(it->second.front().toInt());
     else if (it->first == "DISCNUMBER")                tag.SetPartOfSet(it->second.front().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.front().toInt());
     else if (it->first == "DATE")                      tag.SetYear(it->second.front().toInt());
-    else if (it->first == "GENRE")                     tag.SetGenre(StringListToVectorString(it->second));
+    else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.front().to8Bit(true));
     else if (it->first == "ENCODEDBY")                 {}
     else if (it->first == "ENSEMBLE")                  {}
@@ -486,10 +486,10 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
   for (MP4::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
     if (it->first == "\251nam")      tag.SetTitle(it->second.toStringList().front().to8Bit(true));
-    else if (it->first == "\251ART") tag.SetArtist(StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "\251ART") SetArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251alb") tag.SetAlbum(it->second.toStringList().front().to8Bit(true));
-    else if (it->first == "aART")    tag.SetAlbumArtist(StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "\251gen") tag.SetGenre(StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "aART")    SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "\251gen") SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251cmt") tag.SetComment(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "cpil")    tag.SetCompilation(it->second.toBool());
     else if (it->first == "trkn")    tag.SetTrackNumber(it->second.toIntPair().first);
@@ -529,12 +529,12 @@ bool CTagLoaderTagLib::ParseGenericTag(Tag *generic, EmbeddedArt *art, CMusicInf
   PropertyMap properties = generic->properties();
   for (PropertyMap::ConstIterator it = properties.begin(); it != properties.end(); ++it)
   {
-    if (it->first == "ARTIST")                         tag.SetArtist(StringListToVectorString(it->second));
+    if (it->first == "ARTIST")                         SetArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.front().to8Bit(true));
     else if (it->first == "TRACKNUMBER")               tag.SetTrackNumber(it->second.front().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.front().toInt());
-    else if (it->first == "GENRE")                     tag.SetGenre(StringListToVectorString(it->second));
+    else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.front().to8Bit(true));
   }
 
@@ -579,4 +579,28 @@ const vector<string> CTagLoaderTagLib::GetID3v2StringList(const ID3v2::FrameList
   if (frame)
     return StringListToVectorString(frame->fieldList());
   return vector<string>();
+}
+
+void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const vector<string> &values)
+{
+  if (values.size() == 1)
+    tag.SetArtist(values[0]);
+  else
+    tag.SetArtist(values);
+}
+
+void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const vector<string> &values)
+{
+  if (values.size() == 1)
+    tag.SetAlbumArtist(values[0]);
+  else
+    tag.SetAlbumArtist(values);
+}
+
+void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const vector<string> &values)
+{
+  if (values.size() == 1)
+    tag.SetGenre(values[0]);
+  else
+    tag.SetGenre(values);
 }
