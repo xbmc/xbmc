@@ -246,9 +246,8 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
   return true;
 }
 
-bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusicInfoTag& tag)
+char POPMtoXBMC(int popm)
 {
-  // Notes:
   // Ratings:
   // FROM: http://thiagoarrais.com/repos/banshee/src/Core/Banshee.Core/Banshee.Streaming/StreamRatingTagger.cs
   // The following schemes are used by the other POPM-compatible players:
@@ -260,7 +259,16 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   // Quod Libet: "quodlibet@lists.sacredchao.net" ratings
   //   (but that email can be changed):
   //   arbitrary scale from 0-255
+  if (popm == 0) return '0';
+  if (popm < 0x40) return '1';
+  if (popm < 0x80) return '2';
+  if (popm < 0xc0) return '3';
+  if (popm < 0xff) return '4';
+  return '5';
+}
 
+bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusicInfoTag& tag)
+{
   //  tag.SetURL(strFile);
   if (!id3v2) return false;
 
@@ -350,14 +358,15 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
         // @xbmc.org ratings trump others (of course)
         if      (popFrame->email() == "ratings@xbmc.org")
           tag.SetRating(popFrame->rating() / 51 + '0');
-        else if (popFrame->email() == "Windows Media Player 9 Series" && tag.GetRating() == '0')  
-          tag.SetRating(popFrame->rating() / 51 + '0');
-        else if (popFrame->email() == "no@email" && tag.GetRating() == '0')                       
-          tag.SetRating(popFrame->rating() / 51 + '0');
-        else if (popFrame->email() == "quodlibet@lists.sacredchao.net" && tag.GetRating() == '0') 
-          tag.SetRating(popFrame->rating() / 51 + '0');
-        else
-          CLog::Log(LOGDEBUG, "unrecognized ratings schema detected: %s", popFrame->email().toCString(true));
+        else if (tag.GetRating() == '0')
+        {
+          if (popFrame->email() != "Windows Media Player 9 Series" &&
+              popFrame->email() != "no@email" &&
+              popFrame->email() != "quodlibet@lists.sacredchao.net" &&
+              popFrame->email() != "rating@winamp.com")
+            CLog::Log(LOGDEBUG, "unrecognized ratings schema detected: %s", popFrame->email().toCString(true));
+          tag.SetRating(POPMtoXBMC(popFrame->rating()));
+        }
       }
     else
       CLog::Log(LOGDEBUG, "unrecognized ID3 frame detected: %c%c%c%c", it->first[0], it->first[1], it->first[2], it->first[3]);
