@@ -63,6 +63,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       g_PVRManager.SetPlayingGroup(m_group);
+      SetLastSelectedItem(m_group->GroupID());
       Clear();
     }
     break;
@@ -119,6 +120,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
         CPVRChannelGroupPtr group = GetPlayingGroup();
         CPVRChannelGroupPtr nextGroup = iAction == ACTION_MOVE_RIGHT ? group->GetNextGroup() : group->GetPreviousGroup();
         g_PVRManager.SetPlayingGroup(nextGroup);
+        SetLastSelectedItem(group->GroupID());
 
         Update();
 
@@ -151,7 +153,6 @@ void CGUIDialogPVRChannelsOSD::Update(bool selectPlayingChannel)
   if (!IsObserving(g_infoManager))
     g_infoManager.RegisterObserver(this);
 
-  int iSelectedItem = m_viewControl.GetSelectedItem();
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
 
   // empty the list ready for population
@@ -165,14 +166,7 @@ void CGUIDialogPVRChannelsOSD::Update(bool selectPlayingChannel)
   {
     group->GetMembers(*m_vecItems);
     m_viewControl.SetItems(*m_vecItems);
-
-    if (selectPlayingChannel)
-      iSelectedItem = group->GetIndex(*channel);
-    if (iSelectedItem < 0)
-      iSelectedItem = 0;
-    else if (iSelectedItem > m_vecItems->Size())
-      iSelectedItem = m_vecItems->Size() - 1;
-    m_viewControl.SetSelectedItem(iSelectedItem);
+    m_viewControl.SetSelectedItem(selectPlayingChannel ? group->GetIndex(*channel) : GetLastSelectedItem(group->GroupID()));
   }
 
   g_graphicsContext.Unlock();
@@ -284,4 +278,17 @@ void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMes
     m_viewControl.SetItems(*m_vecItems);
     g_graphicsContext.Unlock();
   }
+}
+
+void CGUIDialogPVRChannelsOSD::SetLastSelectedItem(int iGroupID)
+{
+  m_groupSelectedItems[iGroupID] = m_viewControl.GetSelectedItem();
+}
+
+int CGUIDialogPVRChannelsOSD::GetLastSelectedItem(int iGroupID) const
+{
+  map<int,int>::const_iterator it = m_groupSelectedItems.find(iGroupID);
+  if(it != m_groupSelectedItems.end())
+    return it->second;
+  return 0;
 }
