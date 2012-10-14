@@ -343,19 +343,7 @@
 						<aspectratio>stretch</aspectratio>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>4</bordersize>
-						<texture background="true">$INFO[ListItem.Icon]</texture>
-						<visible>IsEmpty(ListItem.Art(poster))</visible>
-					</control>
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>270</width>
-						<height>380</height>
-						<aspectratio>stretch</aspectratio>
-						<bordertexture border="5">button-nofocus.png</bordertexture>
-						<bordersize>4</bordersize>
-						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-						<visible>!IsEmpty(ListItem.Art(poster))</visible>
+						<texture background="true">$VAR[PosterThumb]</texture>
 					</control>
 					<control type="image">
 						<posx>4</posx>
