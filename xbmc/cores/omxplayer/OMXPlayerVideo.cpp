@@ -47,15 +47,15 @@
 
 #include "OMXPlayer.h"
 
-class COMXMsgAudioCodecChange : public CDVDMsg
+class COMXMsgVideoCodecChange : public CDVDMsg
 {
 public:
-  COMXMsgAudioCodecChange(const CDVDStreamInfo &hints, COMXVideo *codec)
+  COMXMsgVideoCodecChange(const CDVDStreamInfo &hints, COMXVideo *codec)
     : CDVDMsg(GENERAL_STREAMCHANGE)
     , m_codec(codec)
     , m_hints(hints)
   {}
- ~COMXMsgAudioCodecChange()
+ ~COMXMsgVideoCodecChange()
   {
     delete m_codec;
   }
@@ -138,7 +138,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   }
 
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put(new COMXMsgAudioCodecChange(hints, NULL), 0);
+    m_messageQueue.Put(new COMXMsgVideoCodecChange(hints, NULL), 0);
   else
   {
     if(!OpenStream(hints, NULL))
@@ -587,7 +587,7 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
-      COMXMsgAudioCodecChange* msg(static_cast<COMXMsgAudioCodecChange*>(pMsg));
+      COMXMsgVideoCodecChange* msg(static_cast<COMXMsgVideoCodecChange*>(pMsg));
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
     }
