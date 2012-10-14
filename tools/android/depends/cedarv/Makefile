@@ -1,7 +1,7 @@
 include ../Makefile.include
 
-TARBALL=allwinner-a10-video.tar.gz
-URL=https://github.com/amery/allwinner-a10-video/tarball/master
+TARBALL=cedarx-libs.tar.gz
+URL=https://github.com/linux-sunxi/cedarx-libs/tarball/master
 
 SRCS = \
 	libcedarv/vdecoder.c \
@@ -26,7 +26,7 @@ $(TARGET) : .extracted $(OBJS)
 	mkdir tmp
 	( cd tmp &&\
 	  tar xvfz $(TARBALLS_LOCATION)/$(TARBALL) &&\
-	  cd amery-allwinner-a10-video*/libcedarv/android &&\
+	  cd linux-sunxi-*/libcedarv/android &&\
 	  rm Makefile .gitignore cedardefs.mk &&\
 	  mv * ../../../../ \
 	)
