@@ -191,8 +191,11 @@ static void SetupRarOptions(CFileItem& item, const CStdString& path)
 vector<string> CVideoThumbLoader::GetArtTypes(const string &type)
 {
   vector<string> ret;
-  ret.push_back("fanart");
-  ret.push_back("poster");
+  if (type != "episode")
+  {
+    ret.push_back("fanart");
+    ret.push_back("poster");
+  }
   if (type == "tvshow" || type == "season" || type.empty())
     ret.push_back("banner");
   ret.push_back("thumb");
