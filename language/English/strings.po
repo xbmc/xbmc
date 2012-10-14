@@ -10098,7 +10098,9 @@ msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr ""
 
-#empty string with id 24029
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr ""
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
