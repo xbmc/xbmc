@@ -1396,7 +1396,7 @@ void CGUIWindowMusicBase::OnInitWindow()
     if (CGUIDialogYesNo::ShowAndGetInput(799, 800, 801, -1))
     {
       g_application.StartMusicScan("", CMusicInfoScanner::SCAN_RESCAN);
-      g_settings.m_musicNeedsUpdate = false; // once is enough (user may interrupt, but that's up to them)
+      g_settings.m_musicNeedsUpdate = 0; // once is enough (user may interrupt, but that's up to them)
       g_settings.Save();
     }
   }
