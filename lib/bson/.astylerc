@@ -1,0 +1,4 @@
+--style=java
+--pad-paren-in
+--pad-paren-in
+--align-pointer=name

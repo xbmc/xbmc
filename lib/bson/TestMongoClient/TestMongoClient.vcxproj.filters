@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Test Files">
+      <UniqueIdentifier>{06d9ff08-18b0-4a73-8a44-4b6aabdf734f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ZLib">
+      <UniqueIdentifier>{035fc6d4-ff37-4cb7-9c2b-3174f5ada721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ZLib">
+      <UniqueIdentifier>{8313d653-d0bf-49fc-bc23-7e8932dbf9e0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\crc32.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\deflate.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\gzguts.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\inffast.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\inffixed.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\inflate.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\inftrees.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\trees.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\zconf.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\zlib.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ZLib\zutil.h">
+      <Filter>Header Files\ZLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\prepostChunkProcessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMongoClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\bson.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\encoding.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\env_win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gridfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\md5.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mongo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\numbers.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\bson_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\bson_subobject_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\gridfs_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\write_concern_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\count_delete_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\auth_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\benchmark_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\commands_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\cursors_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\endian_swap_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\env_posix_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\env_win32_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\errors_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\examples_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\functions_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\helpers_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\json_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\oid_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\replica_set_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\resize_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\simple_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\sizes_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\unix_socket_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\update_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\validate_test.c">
+      <Filter>Source Files\Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\adler32.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\compress.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\crc32.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\deflate.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\infback.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\inffast.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\inflate.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\inftrees.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\trees.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\uncompr.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ZLib\zutil.c">
+      <Filter>Source Files\ZLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\prepostChunkProcessing.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -2752,6 +2752,14 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\bson\src\libbson-c.vcxproj">
+      <Project>{13f27323-c0b8-46a0-bc7f-5e154cd3eb36}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
     <ProjectReference Include="..\..\lib\gtest\msvc\gtest.vcxproj" Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">
       <Project>{c8f6c172-56f2-4e76-b5fa-c3b423b31be7}</Project>
     </ProjectReference>

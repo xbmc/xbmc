@@ -273,3 +273,17 @@
 #define GET_G(color)            ((color >>  8) & 0xFF)
 #define GET_B(color)            ((color >>  0) & 0xFF)
 
+// BSON library configuration
+#ifndef _CRT_SECURE_NO_WARNINGS
+  #define _CRT_SECURE_NO_WARNINGS
+#endif
+#ifdef __BIG_ENDIAN__
+  #define MONGO_BIG_ENDIAN
+#endif
+#ifdef TARGET_WINDOWS
+  #define MONGO_USE__INT64
+#else
+  #define MONGO_HAVE_STDINT
+#endif
+#define MONGO_STATIC_BUILD
+#define MONGO_HAVE_BOOL
