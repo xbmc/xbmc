@@ -22,11 +22,11 @@
 
 	<variable name="BannerThumb">
 		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
-		<value condition="IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="PosterThumb">
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
-		<value condition="IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Icon]</value>
 	</variable>
 
 	<include name="BehindDialogFadeOut">
