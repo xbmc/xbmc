@@ -68,6 +68,42 @@
       "notifications": { "$ref": "Configuration.Notifications", "required": true }
     }
   },
+  "List.Amount": {
+    "type": "integer",
+    "default": -1,
+    "minimum": 0
+  },
+  "List.Limits": {
+    "type": "object",
+    "properties": {
+      "start": { "type": "integer", "minimum": 0, "default": 0, "description": "Index of the first item to return" },
+      "end": { "$ref": "List.Amount", "description": "Index of the last item to return" }
+    },
+    "additionalProperties": false
+  },
+  "List.LimitsReturned": {
+    "type": "object",
+    "properties": {
+      "start": { "type": "integer", "minimum": 0, "default": 0 },
+      "end": { "$ref": "List.Amount" },
+      "total": { "type": "integer", "minimum": 0, "required": true }
+    },
+    "additionalProperties": false
+  },
+  "List.Sort": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "none", "label", "date", "size", "file", "path", "drivetype", "title", "track", "time", "artist",
+                  "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
+                  "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
+                  "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
+                  "bitrate", "random" ]
+      },
+      "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
+      "ignorearticle": { "type": "boolean", "default": false }
+    }
+  },
   "Library.Id": {
     "type": "integer",
     "default": -1,
@@ -674,42 +710,6 @@
   "Files.Media": {
     "type": "string",
     "enum": [ "video", "music", "pictures", "files", "programs" ]
-  },
-  "List.Amount": {
-    "type": "integer",
-    "default": -1,
-    "minimum": 0
-  },
-  "List.Limits": {
-    "type": "object",
-    "properties": {
-      "start": { "type": "integer", "minimum": 0, "default": 0, "description": "Index of the first item to return" },
-      "end": { "type": "integer", "minimum": 0, "default": -1, "description": "Index of the last item to return" }
-    },
-    "additionalProperties": false
-  },
-  "List.Sort": {
-    "type": "object",
-    "properties": {
-      "method": { "type": "string", "default": "none",
-        "enum": [ "none", "label", "date", "size", "file", "path", "drivetype", "title", "track", "time", "artist",
-                  "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
-                  "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
-                  "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
-                  "bitrate", "random" ]
-      },
-      "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
-      "ignorearticle": { "type": "boolean", "default": false }
-    }
-  },
-  "List.LimitsReturned": {
-    "type": "object",
-    "properties": {
-      "start": { "type": "integer", "minimum": 0, "default": 0 },
-      "end": { "type": "integer", "minimum": 0, "default": -1 },
-      "total": { "type": "integer", "minimum": 0, "required": true }
-    },
-    "additionalProperties": false
   },
   "List.Filter.Rule": {
     "type": "object",
