@@ -1244,6 +1244,18 @@ void COMXPlayer::Process()
           continue;
         }
 
+        // wait for omx components to fimish
+        if(HasVideo() && !m_player_video.IsEOS())
+        {
+          Sleep(100);
+          continue;
+        }
+        if(HasAudio() && !m_player_audio.IsEOS())
+        {
+          Sleep(100);
+          continue;
+        }
+
         if (!m_pInputStream->IsEOF())
           CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
 

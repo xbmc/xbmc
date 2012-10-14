@@ -949,12 +949,15 @@ void COMXVideo::WaitCompletion()
     return;
   }
 
-  unsigned int nTimeOut = 5000;
+  unsigned int nTimeOut = 30000;
 
   while(nTimeOut)
   {
     if(m_omx_render.IsEOS())
+    {
+      CLog::Log(LOGDEBUG, "%s::%s - got eos\n", CLASSNAME, __func__);
       break;
+    }
 
     if(nTimeOut == 0)
     {

@@ -78,6 +78,7 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock,
   m_nChannels     = 0;
   m_DecoderOpen   = false;
   m_freq          = CurrentHostFrequency();
+  m_send_eos      = false;
   m_hints_current.Clear();
 
   m_av_clock->SetMasterClock(false);
@@ -150,6 +151,7 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_use_passthrough = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI) ? true : false ;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
+  m_send_eos        = false;
 }
 
 bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
@@ -775,7 +777,9 @@ double OMXPlayerAudio::GetCacheTime()
 
 void OMXPlayerAudio::WaitCompletion()
 {
-  m_omxAudio.WaitCompletion();
+  if(!m_send_eos)
+    m_omxAudio.WaitCompletion();
+  m_send_eos = true;
 }
 
 void OMXPlayerAudio::RegisterAudioCallback(IAudioCallback *pCallback)
