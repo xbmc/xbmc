@@ -514,6 +514,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetArtist(album.artist);
   SetAlbumId(album.idAlbum);
   SetAlbum(album.strAlbum);
+  SetTitle(album.strAlbum);
   SetAlbumArtist(album.artist);
   SetGenre(album.genre);
   SetRating('0' + album.iRating);
