@@ -1234,6 +1234,11 @@ void CDVDPlayer::Process()
 
     // it's a valid data packet, reset error counter
     m_errorCount = 0;
+    CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
+    if (pDisplayTime && pDisplayTime->GetTotalTime() > 0)
+      pPacket->time = pDisplayTime->GetTime();
+    else
+      pPacket->time = -1;
 
     // check so that none of our streams has become invalid
     if (!IsValidStream(m_CurrentAudio)    && m_dvdPlayerAudio.IsStalled())    CloseAudioStream(true);
@@ -3803,10 +3808,16 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
   SPlayerState state(m_State);
 
+  if( m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE)
+    state.dts = m_dvdPlayerVideo.GetCurrentPts();
+  else if( m_dvdPlayerAudio.GetCurrentPts() != DVD_NOPTS_VALUE)
+    state.dts = m_dvdPlayerAudio.GetCurrentPts();
+/*
   if     (m_CurrentVideo.dts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentVideo.dts;
   else if(m_CurrentAudio.dts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentAudio.dts;
+*/
   else
     state.dts = m_clock.GetClock();
 
@@ -3833,7 +3844,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
     if (pDisplayTime && pDisplayTime->GetTotalTime() > 0)
     {
-      state.time       = pDisplayTime->GetTime();
+      if( m_dvdPlayerVideo.GetCurrentTime() > 0 )
+        state.time = m_dvdPlayerVideo.GetCurrentTime();
       state.time_total = pDisplayTime->GetTotalTime();
     }
 
