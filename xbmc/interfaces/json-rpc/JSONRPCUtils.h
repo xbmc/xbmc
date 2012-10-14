@@ -164,7 +164,8 @@ namespace JSONRPC
   public:
     static inline void NotifyItemUpdated()
     {
-      g_windowManager.SendThreadMessage(CGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow()));
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+      g_windowManager.SendThreadMessage(message);
     }
   };
 }
