@@ -3203,6 +3203,8 @@ msgstr ""
 
 #empty string id 1274
 
+#. Filter movies/tvshows/music/episodes/artists/musicvideos/albums/songs
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#1275"
 msgid "Filter %s"
 msgstr ""
@@ -9448,14 +9450,20 @@ msgctxt "#21466"
 msgid "between"
 msgstr ""
 
+#. Filter (media data) from float value to float value
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21467"
 msgid "%.1f to %.1f"
 msgstr ""
 
+#. Filter (media data) from int value to int value
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21468"
 msgid "%d to %d"
 msgstr ""
 
+#. Filter (media data) from string value to string value
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr ""
