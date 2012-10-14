@@ -42,10 +42,9 @@
 			<control type="progress" id="10">
 				<description>Progressbar</description>
 				<posx>20</posx>
-				<posy>65</posy>
+				<posy>53</posy>
 				<width>160</width>
 				<height>10</height>
-				<!-- <info>System.Progressbar</info> -->
 			</control>
 		</control>
 	</controls>
