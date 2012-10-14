@@ -390,6 +390,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const CStdString &method, ITransp
   if (musicdatabase.SetArtistInfo(id, artist) <= 0)
     return InternalError;
 
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 
@@ -432,6 +433,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
   if (musicdatabase.SetAlbumInfo(id, album, songs) <= 0)
     return InternalError;
 
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 
@@ -481,6 +483,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITranspor
   if (musicdatabase.UpdateSong(song, id) <= 0)
     return InternalError;
 
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 

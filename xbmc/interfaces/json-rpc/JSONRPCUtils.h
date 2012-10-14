@@ -21,6 +21,9 @@
 
 #include "IClient.h"
 #include "ITransportLayer.h"
+#include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "guilib/GUIWindowManager.h"
 #include "interfaces/IAnnouncer.h"
 #include "utils/StdString.h"
 #include "utils/Variant.h"
@@ -155,4 +158,13 @@ namespace JSONRPC
 
     return ReadData;
   }
+
+  class CJSONRPCUtils
+  {
+  public:
+    static inline void NotifyItemUpdated()
+    {
+      g_windowManager.SendThreadMessage(CGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow()));
+    }
+  };
 }
