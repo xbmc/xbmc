@@ -575,10 +575,6 @@ public:
   bool IsLinkedToTvshow(int idMovie);
   bool GetLinksToTvShow(int idMovie, std::vector<int>& ids);
 
-  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
-                         const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
-  bool ArbitraryExec(const CStdString& strExec);
-
   // general browsing
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
   bool GetCountriesNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
