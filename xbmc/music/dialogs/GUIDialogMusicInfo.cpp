@@ -39,6 +39,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
+#include "music/MusicThumbLoader.h"
 
 using namespace std;
 using namespace XFILE;

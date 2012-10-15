@@ -20,6 +20,7 @@
  */
 
 #include "utils/StdString.h"
+#include "utils/JobManager.h"
 #include "ThumbLoader.h"
 
 class CPictureThumbLoader : public CThumbLoader, public CJobQueue

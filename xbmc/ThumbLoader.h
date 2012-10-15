@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
@@ -18,51 +19,8 @@
  *
  */
 
-#ifndef THUMBLOADER_H
-#define THUMBLOADER_H
 #include "BackgroundInfoLoader.h"
-#include "utils/JobManager.h"
-#include "FileItem.h"
-
-#define kJobTypeMediaFlags "mediaflags"
-
-class CStreamDetails;
-class IStreamDetailsObserver;
-class CVideoDatabase;
-class CMusicDatabase;
-
-/*!
- \ingroup thumbs,jobs
- \brief Thumb extractor job class
-
- Used by the CVideoThumbLoader to perform asynchronous generation of thumbs
-
- \sa CVideoThumbLoader and CJob
- */
-class CThumbExtractor : public CJob
-{
-public:
-  CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& strTarget="");
-  virtual ~CThumbExtractor();
-
-  /*!
-   \brief Work function that extracts thumb.
-   */
-  virtual bool DoWork();
-
-  virtual const char* GetType() const
-  {
-    return kJobTypeMediaFlags;
-  }
-
-  virtual bool operator==(const CJob* job) const;
-
-  CStdString m_path; ///< path of video to extract thumb from
-  CStdString m_target; ///< thumbpath
-  CStdString m_listpath; ///< path used in fileitem list
-  CFileItem  m_item;
-  bool       m_thumb; ///< extract thumb?
-};
+#include "utils/StdString.h"
 
 class CThumbLoader : public CBackgroundInfoLoader
 {
@@ -93,68 +51,6 @@ public:
   static void SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image);
 };
 
-class CVideoThumbLoader : public CThumbLoader, public CJobQueue
-{
-public:
-  CVideoThumbLoader();
-  virtual ~CVideoThumbLoader();
-
-  virtual void Initialize();
-  virtual bool LoadItem(CFileItem* pItem);
-  void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
-
-  /*! \brief Fill the thumb of a video item
-   First uses a cached thumb from a previous run, then checks for a local thumb
-   and caches it for the next run
-   \param item the CFileItem object to fill
-   \return true if we fill the thumb, false otherwise
-   */
-  static bool FillThumb(CFileItem &item);
-
-  /*! \brief Find a particular art type for a given item, optionally checking at the folder level
-   \param item the CFileItem to search.
-   \param type the type of art to look for.
-   \param checkFolder whether to also check the folder level for files. Defaults to false.
-   \return the art file (if found), else empty.
-   */
-  static std::string GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder = false);
-
-  /*! \brief return the available art types for a given media type
-   \param type the type of media.
-   \return a vector of art types.
-   \sa GetLocalArt
-   */
-  static std::vector<std::string> GetArtTypes(const std::string &type);
-
-  /*! \brief helper function to retrieve a thumb URL for embedded video thumbs
-   \param item a video CFileItem.
-   \return a URL for the embedded thumb.
-   */
-  static CStdString GetEmbeddedThumbURL(const CFileItem &item);
-
-  /*! \brief helper function to fill the art for a video library item
-   \param item a video CFileItem
-   \return true if we fill art, false otherwise
-   */
- virtual bool FillLibraryArt(CFileItem &item);
-
-  /*!
-   \brief Callback from CThumbExtractor on completion of a generated image
-
-   Performs the callbacks and updates the GUI.
-
-   \sa CImageLoader, IJobCallback
-   */
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-
-protected:
-  virtual void OnLoaderStart();
-  virtual void OnLoaderFinish();
-
-  IStreamDetailsObserver *m_pStreamDetailsObs;
-  CVideoDatabase *m_database;
-};
-
 class CProgramThumbLoader : public CThumbLoader
 {
 public:
@@ -179,41 +75,3 @@ public:
    */
   static CStdString GetLocalThumb(const CFileItem &item);
 };
-
-namespace MUSIC_INFO
-{
-  class EmbeddedArt;
-};
-
-class CMusicThumbLoader : public CThumbLoader
-{
-public:
-  CMusicThumbLoader();
-  virtual ~CMusicThumbLoader();
-
-  virtual void Initialize();
-  virtual bool LoadItem(CFileItem* pItem);
-
-  /*! \brief helper function to fill the art for a video library item
-   \param item a video CFileItem
-   \return true if we fill art, false otherwise
-   */
-  virtual bool FillLibraryArt(CFileItem &item);
-
-  /*! \brief Fill the thumb of a music file/folder item
-   First uses a cached thumb from a previous run, then checks for a local thumb
-   and caches it for the next run
-   \param item the CFileItem object to fill
-   \return true if we fill the thumb, false otherwise
-   */
-  static bool FillThumb(CFileItem &item);
-
-  static bool GetEmbeddedThumb(const std::string &path, MUSIC_INFO::EmbeddedArt &art);
-
-protected:
-  virtual void OnLoaderStart();
-  virtual void OnLoaderFinish();
-
-  CMusicDatabase *m_database;
-};
-#endif

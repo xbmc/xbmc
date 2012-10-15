@@ -2529,6 +2529,12 @@
     <ClCompile Include="..\..\xbmc\pictures\PictureThumbLoader.cpp">
       <Filter>pictures</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\MusicThumbLoader.cpp">
+      <Filter>music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\VideoThumbLoader.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\dbwrappers\Database.cpp">
       <Filter>dbwrappers</Filter>
     </ClCompile>
@@ -5474,6 +5480,12 @@
     <ClInclude Include="..\..\xbmc\ThumbLoader.h" />
     <ClInclude Include="..\..\xbmc\pictures\PictureThumbLoader.h">
       <Filter>pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\MusicThumbLoader.h">
+      <Filter>music</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\VideoThumbLoader.h">
+      <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\Database.h">
       <Filter>dbwrappers</Filter>

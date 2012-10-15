@@ -84,10 +84,16 @@ public:
   void SetArt(const std::string &type, const std::string &url);
 
   /*! \brief set artwork for an item
-   \param map a type:url map for artwork
+   \param art a type:url map for artwork
    \sa GetArt
    */
   void SetArt(const ArtMap &art);
+
+  /*! \brief append artwork to an item
+   \param art a type:url map for artwork
+   \sa GetArt
+   */
+  void AppendArt(const ArtMap &art);
 
   /*! \brief Get a particular art type for an item
    \param type type of art to fetch.

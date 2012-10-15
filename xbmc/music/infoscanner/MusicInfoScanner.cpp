@@ -48,7 +48,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "TextureCache.h"
-#include "ThumbLoader.h"
+#include "music/MusicThumbLoader.h"
 #include "interfaces/AnnouncementManager.h"
 #include "GUIUserMessages.h"
 

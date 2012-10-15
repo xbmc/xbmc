@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "video/VideoThumbLoader.h"
 
 using namespace XFILE;
 using namespace std;

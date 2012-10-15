@@ -23,7 +23,7 @@
 #include "windows/GUIMediaWindow.h"
 #include "video/VideoDatabase.h"
 #include "PlayListPlayer.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver, public IStreamDetailsObserver
 {
