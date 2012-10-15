@@ -872,6 +872,7 @@ void CGUISettings::Initialize()
   AddGroup(SETTINGS_APPEARANCE, 480);
   CSettingsCategory* laf = AddCategory(SETTINGS_APPEARANCE,"lookandfeel", 166);
   AddDefaultAddon(laf, "lookandfeel.skin",166,DEFAULT_SKIN, ADDON_SKIN);
+  AddString(laf, "lookandfeel.skinsettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddString(laf, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
