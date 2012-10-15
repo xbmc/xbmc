@@ -363,11 +363,11 @@ bool CEventServer::ExecuteNextAction()
   return false;
 }
 
-unsigned short CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)
+unsigned int CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)
 {
   CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
-  unsigned short bcode = 0;
+  unsigned int bcode = 0;
 
   while (iter != m_clients.end())
   {

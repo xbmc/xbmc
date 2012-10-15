@@ -3163,7 +3163,7 @@ bool CApplication::ProcessEventServer(float frameTime)
   es = CEventServer::GetInstance();
   if (!es || !es->Running() || es->GetNumberOfClients()==0)
     return false;
-  WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
+  unsigned int wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
 
   if (wKeyID)
   {
@@ -3182,6 +3182,12 @@ bool CApplication::ProcessEventServer(float frameTime)
     else
     {
       CKey key;
+      if(wKeyID & ES_FLAG_UNICODE)
+      {
+        key = CKey((uint8_t)0, wKeyID & ~ES_FLAG_UNICODE, KEY_ASCII, 0, 0);
+        return OnKey(key);
+      }
+
       if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
         key = CKey(wKeyID, (BYTE)(255*fAmount), 0, 0.0, 0.0, 0.0, 0.0, frameTime);
       else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
