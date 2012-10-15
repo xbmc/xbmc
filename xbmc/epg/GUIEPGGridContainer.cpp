@@ -66,7 +66,6 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_item                  = NULL;
   m_lastItem              = NULL;
   m_lastChannel           = NULL;
-  m_channelWrapAround     = true; /// get from settings?
   m_orientation           = orientation;
   m_programmeLayout       = NULL;
   m_focusedProgrammeLayout= NULL;
@@ -914,7 +913,7 @@ void CGUIEPGGridContainer::ProgrammesScroll(int amount)
   ScrollToBlockOffset(offset);
 }
 
-bool CGUIEPGGridContainer::MoveChannel(bool direction)
+bool CGUIEPGGridContainer::MoveChannel(bool direction, bool wrapAround)
 {
   if (direction)
   {
@@ -927,7 +926,7 @@ bool CGUIEPGGridContainer::MoveChannel(bool direction)
       ScrollToChannelOffset(m_channelOffset - 1);
       SetChannel(0);
     }
-    else if (m_channelWrapAround)
+    else if (wrapAround)
     {
       int offset = m_channels - m_channelsPerPage;
 
@@ -954,7 +953,7 @@ bool CGUIEPGGridContainer::MoveChannel(bool direction)
         SetChannel(m_channelsPerPage - 1);
       }
     }
-    else if (m_channelWrapAround)
+    else if (wrapAround)
     {
       SetChannel(0);
       ScrollToChannelOffset(0);
@@ -1080,9 +1079,10 @@ bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
 
 void CGUIEPGGridContainer::OnUp()
 {
+  bool wrapAround = m_actionUp.GetNavigation() == GetID() || !m_actionUp.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL)
   {
-    if (!MoveChannel(true))
+    if (!MoveChannel(true, wrapAround))
       CGUIControl::OnUp();
   }
   else
@@ -1094,9 +1094,10 @@ void CGUIEPGGridContainer::OnUp()
 
 void CGUIEPGGridContainer::OnDown()
 {
+  bool wrapAround = m_actionDown.GetNavigation() == GetID() || !m_actionDown.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL)
   {
-    if (!MoveChannel(false))
+    if (!MoveChannel(false, wrapAround))
       CGUIControl::OnDown();
   }
   else
@@ -1108,6 +1109,7 @@ void CGUIEPGGridContainer::OnDown()
 
 void CGUIEPGGridContainer::OnLeft()
 {
+  bool wrapAround = m_actionLeft.GetNavigation() == GetID() || !m_actionLeft.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL)
   {
     if (!MoveProgrammes(true))
@@ -1115,13 +1117,14 @@ void CGUIEPGGridContainer::OnLeft()
   }
   else
   {
-    if (!MoveChannel(true))
+    if (!MoveChannel(true, wrapAround))
       CGUIControl::OnLeft();
   }
 }
 
 void CGUIEPGGridContainer::OnRight()
 {
+  bool wrapAround = m_actionRight.GetNavigation() == GetID() || !m_actionRight.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL)
   {
     if (!MoveProgrammes(false))
@@ -1129,7 +1132,7 @@ void CGUIEPGGridContainer::OnRight()
   }
   else
   {
-    if (!MoveChannel(false))
+    if (!MoveChannel(false, wrapAround))
       CGUIControl::OnRight();
   }
 }

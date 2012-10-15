@@ -120,7 +120,7 @@ namespace EPG
     int  GetBlock(const CGUIListItemPtr &item, const int &channel);
     int  GetRealBlock(const CGUIListItemPtr &item, const int &channel);
     void MoveToRow(int row);
-    bool MoveChannel(bool direction);
+    bool MoveChannel(bool direction, bool wrapAround);
     bool MoveProgrammes(bool direction);
 
     CGUIListItemLayout *GetFocusedLayout() const;
@@ -213,7 +213,6 @@ namespace EPG
     unsigned int m_renderTime;
 
     int   m_scrollTime;
-    bool  m_channelWrapAround;
     bool  m_gridWrapAround; //! only when no more data available should this be true
 
     int m_programmeScrollLastTime;
