@@ -674,14 +674,14 @@ void CGUIDialogSettings::OnSliderChange(void *data, CGUISliderControl *slider)
     return;
 
   SettingInfo *setting = (SettingInfo *)data;
-  if (setting->type == SettingInfo::SLIDER)
+  if (setting->type == SettingInfo::SLIDER || (setting->type == SettingInfo::BUTTON && m_usePopupSliders && !slider->GetRangeSelection()))
   {
     *(float *)setting->data = slider->GetFloatValue();
     OnSettingChanged(*setting);
     if (setting->formatFunction.standard)
       slider->SetTextValue(setting->formatFunction.standard(slider->GetFloatValue(), setting->interval));
   }
-  else if (setting->type == SettingInfo::RANGE)
+  else if (setting->type == SettingInfo::RANGE || (setting->type == SettingInfo::BUTTON && m_usePopupSliders && slider->GetRangeSelection()))
   {
     *((float **)setting->data)[0] = slider->GetFloatValue(CGUISliderControl::RangeSelectorLower);
     *((float **)setting->data)[1] = slider->GetFloatValue(CGUISliderControl::RangeSelectorUpper);

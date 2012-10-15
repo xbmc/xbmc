@@ -72,6 +72,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   bool ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScaleY, RangeSelector selector);
   void SetRangeSelection(bool rangeSelection);
+  bool GetRangeSelection() { return m_rangeSelection; }
   void SetRangeSelector(RangeSelector selector);
   void SwitchRangeSelector();
   void SetInfo(int iInfo);
