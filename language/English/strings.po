@@ -10915,6 +10915,11 @@ msgctxt "#35101"
 msgid "Disable joystick when iMON is present"
 msgstr ""
 
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#35102"
+msgid "Verbose CEC logging"
+msgstr ""
+
 #empty strings from id 35102 to 35499
 
 msgctxt "#35500"

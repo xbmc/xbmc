@@ -549,6 +549,9 @@ void CGUISettings::Initialize()
   AddBool(in, "input.disablejoystickwithimon", 35101, true);
   GetSetting("input.disablejoystickwithimon")->SetVisible(false);
 #endif
+#if defined(HAVE_LIBCEC)
+  AddBool(in, "input.verbosecec", 35102, false);
+#endif
 
   CSettingsCategory* net = AddCategory(SETTINGS_SYSTEM, "network", 798);
   if (g_application.IsStandAlone())
