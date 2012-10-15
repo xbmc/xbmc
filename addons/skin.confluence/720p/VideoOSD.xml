@@ -295,7 +295,7 @@
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<visible>!VideoPlayer.Content(LiveTV)</visible>
-			<control type="togglebutton" id="250">
+			<control type="button" id="250">
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>55</width>
@@ -304,18 +304,10 @@
 				<font>-</font>
 				<texturefocus>OSDSubtitlesFO.png</texturefocus>
 				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
-				<alttexturefocus>OSDSubtitlesFO.png</alttexturefocus>
-				<alttexturenofocus>OSDSubtitlesNF.png</alttexturenofocus>
 				<onleft>205</onleft>
 				<onright>251</onright>
-				<onup>1000</onup>
+				<onup>403</onup>
 				<ondown>1000</ondown>
-				<onclick>Close</onclick>
-				<onclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
-				<altclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</altclick>
-				<altclick condition="Window.IsVisible(VideoOSD)">Dialog.Close(VideoOSD)</altclick>
-				<altclick condition="!IsEmpty(Skin.String(SubtitleScript_Path))">XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</altclick>
-				<usealttexture>IsEmpty(Skin.String(SubtitleScript_Path))</usealttexture>
 			</control>
 			<control type="button" id="251">
 				<posx>55</posx>
@@ -453,6 +445,125 @@
 				<onclick>PlayerControl(Record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="!Player.CanRecord">Conditional</animation>
+			</control>
+		</control>
+		<control type="button" id="410">
+			<description>Fake button for mouse control</description>
+			<posx>400r</posx>
+			<posy>350r</posy>
+			<width>256</width>
+			<height>300</height>
+			<label>-</label>
+			<font>-</font>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<visible>Control.HasFocus(410) | Control.HasFocus(250) | ControlGroup(400).HasFocus</visible>
+		</control>
+		<control type="grouplist" id="400">
+			<posx>400r</posx>
+			<posy>350r</posy>
+			<width>256</width>
+			<height>300</height>
+			<align>bottom</align>
+			<itemgap>0</itemgap>
+			<onleft>400</onleft>
+			<onright>400</onright>
+			<onup>250</onup>
+			<ondown>250</ondown>
+			<orientation>vertical</orientation>
+			<visible>Control.HasFocus(410) | Control.HasFocus(250) | ControlGroup(400).HasFocus</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="group">
+				<description>Header</description>
+				<width>256</width>
+				<height>40</height>
+				<control type="image">
+					<description>Header</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>256</width>
+					<height>40</height>
+					<texture border="20,18,20,0">SubMenuBack-Header.png</texture>
+				</control>
+				<control type="label" id="">
+					<posx>30</posx>
+					<posy>20</posy>
+					<width>196</width>
+					<height>15</height>
+					<font>font12</font>
+					<label>24012</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+			</control>
+			<control type="togglebutton" id="401">
+				<description>Download with Subtitles script</description>
+				<height>40</height>
+				<width>256</width>
+				<font>font13</font>
+				<label>33003</label>
+				<font>-</font>
+				<textoffsetx>30</textoffsetx>
+				<aligny>center</aligny>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<alttexturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</alttexturefocus>
+				<alttexturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</alttexturenofocus>
+				<onclick>Close</onclick>
+				<onclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
+				<altclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</altclick>
+				<altclick>Close</altclick>
+				<altclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</altclick>
+				<usealttexture>IsEmpty(Skin.String(SubtitleScript_Path))</usealttexture>
+				<pulseonselect>false</pulseonselect>
+			</control>
+			<control type="button" id="402">
+				<height>40</height>
+				<width>256</width>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textoffsetx>30</textoffsetx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>22006</label>
+				<onclick>SubtitleDelay</onclick>
+				<visible>VideoPlayer.HasSubtitles</visible>
+			</control>
+			<control type="button" id="403">
+				<height>40</height>
+				<width>256</width>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textoffsetx>30</textoffsetx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>209</label>
+				<onclick>NextSubtitle</onclick>
+				<visible>VideoPlayer.HasSubtitles</visible>
+			</control>
+			<control type="radiobutton" id="404">
+				<height>40</height>
+				<width>256</width>
+				<textoffsetx>30</textoffsetx>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>449</label>
+				<radioposx>200</radioposx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<onclick>ShowSubtitles</onclick>
+				<selected>VideoPlayer.SubtitlesEnabled</selected>
+				<visible>VideoPlayer.HasSubtitles</visible>
+				<pulseonselect>false</pulseonselect>
+			</control>
+			<control type="image" id="440">
+				<description>Footer</description>
+				<width>256</width>
+				<height>52</height>
+				<texture border="20,0,20,50">SubMenuBack-Footer.png</texture>
 			</control>
 		</control>
 	</controls>
