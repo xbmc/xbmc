@@ -42,6 +42,7 @@ protected:
   virtual ~CPulseAE();
 
 public:
+  virtual bool  CanInit();
   virtual bool  Initialize      ();
   virtual void  OnSettingsChange(std::string setting);
 
