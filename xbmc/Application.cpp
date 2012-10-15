@@ -214,6 +214,7 @@
 #include "music/dialogs/GUIDialogMusicOverlay.h"
 #include "video/dialogs/GUIDialogVideoOverlay.h"
 #include "video/VideoInfoScanner.h"
+#include "video/PlayerController.h"
 
 // Dialog includes
 #include "music/dialogs/GUIDialogMusicOSD.h"
@@ -393,6 +394,7 @@ CApplication::CApplication(void)
   , m_videoInfoScanner(new CVideoInfoScanner)
   , m_musicInfoScanner(new CMusicInfoScanner)
   , m_seekHandler(new CSeekHandler)
+  , m_playerController(new CPlayerController)
 {
   m_network = NULL;
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -474,6 +476,7 @@ CApplication::~CApplication(void)
 
   delete m_dpms;
   delete m_seekHandler;
+  delete m_playerController;
   delete m_pInertialScrollingHandler;
 
 }
@@ -2878,6 +2881,9 @@ bool CApplication::OnAction(const CAction &action)
         return true;
       }
     }
+
+    if (m_playerController->OnAction(action))
+      return true;
   }
 
 

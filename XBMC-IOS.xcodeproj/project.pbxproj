@@ -45,6 +45,7 @@
 		7C6EB570155E3E680080368A /* ImageFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB56E155E3E680080368A /* ImageFile.cpp */; };
 		7C6EB71A155F3B330080368A /* HTTPImageHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB718155F3B330080368A /* HTTPImageHandler.cpp */; };
 		7C7CEB5F165629F90059C9EB /* AELimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7CEB5D165629F90059C9EB /* AELimiter.cpp */; };
+		7C87B2DA162CE3C300EF897D /* PlayerController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C87B2D8162CE3C300EF897D /* PlayerController.cpp */; };
 		7C89628013B7031E003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89627E13B7031E003631FE /* GUIWindowScreensaverDim.cpp */; };
 		7C99B7BE1340730000FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7BC1340730000FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CC30E04162925E6003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30E02162925E6003E7579 /* MusicThumbLoader.cpp */; };
@@ -1124,6 +1125,8 @@
 		7C6EB719155F3B330080368A /* HTTPImageHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageHandler.h; sourceTree = "<group>"; };
 		7C7CEB5D165629F90059C9EB /* AELimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AELimiter.cpp; sourceTree = "<group>"; };
 		7C7CEB5E165629F90059C9EB /* AELimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AELimiter.h; sourceTree = "<group>"; };
+		7C87B2D8162CE3C300EF897D /* PlayerController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerController.cpp; sourceTree = "<group>"; };
+		7C87B2D9162CE3C300EF897D /* PlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerController.h; sourceTree = "<group>"; };
 		7C89627E13B7031E003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
 		7C89627F13B7031E003631FE /* GUIWindowScreensaverDim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowScreensaverDim.h; sourceTree = "<group>"; };
 		7C99B7BC1340730000FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
@@ -6347,6 +6350,8 @@
 				DF0725431687352C008DCAAD /* FFmpegVideoDecoder.h */,
 				F56C878B131F42EC000AD0F6 /* GUIViewStateVideo.cpp */,
 				F56C878C131F42EC000AD0F6 /* GUIViewStateVideo.h */,
+				7C87B2D8162CE3C300EF897D /* PlayerController.cpp */,
+				7C87B2D9162CE3C300EF897D /* PlayerController.h */,
 				F56C878D131F42EC000AD0F6 /* Teletext.cpp */,
 				F56C878E131F42EC000AD0F6 /* Teletext.h */,
 				F56C878F131F42EC000AD0F6 /* TeletextDefines.h */,
@@ -7804,6 +7809,7 @@
 				DF28EDC8170E1A92005FA9D2 /* ProfilesManager.cpp in Sources */,
 				DF28EDC9170E1A92005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */,
 				DF28EE0C170E1E78005FA9D2 /* DisplaySettings.cpp in Sources */,
+				7C87B2DA162CE3C300EF897D /* PlayerController.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
