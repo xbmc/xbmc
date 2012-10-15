@@ -9461,9 +9461,7 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr ""
 
-msgctxt "#21466"
-msgid "between"
-msgstr ""
+#empty string with id 21466
 
 #. Filter (media data) from float value to float value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
