@@ -974,6 +974,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else if (strSetting.Equals("lookandfeel.skinsettings"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      pControl->SetEnabled(g_SkinInfo->HasSkinFile("SkinSettings.xml"));
+    }
     else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1437,6 +1442,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     g_audioManager.Enable(true);
     g_audioManager.Load();
+  }
+  else if (strSetting.Equals("lookandfeel.skinsettings"))
+  {
+    g_windowManager.ActivateWindow(WINDOW_SKIN_SETTINGS);
   }
   else if (strSetting.Equals("input.enablemouse"))
   {

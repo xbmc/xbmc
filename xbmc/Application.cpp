@@ -1229,6 +1229,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
     g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
     g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
+    g_windowManager.Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml")); // window id = 35
     g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
     g_windowManager.Add(new CGUIWindowScreensaverDim);            // window id = 97
     g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
