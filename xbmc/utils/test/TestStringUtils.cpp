@@ -428,7 +428,7 @@ TEST(TestStringUtils, WordToDigits)
 
 TEST(TestStringUtils, CreateUUID)
 {
-  std::cout << "CreateUUID(): " << StringUtils::CreateUUID() << "\n";
+  std::cout << "CreateUUID(): " << StringUtils::CreateUUID() << std::endl;
 }
 
 TEST(TestStringUtils, ValidateUUID)
