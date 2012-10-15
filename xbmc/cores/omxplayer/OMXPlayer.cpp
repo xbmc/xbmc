@@ -1244,7 +1244,7 @@ void COMXPlayer::Process()
           continue;
         }
 
-        // wait for omx components to fimish
+        // wait for omx components to finish
         if(HasVideo() && !m_player_video.IsEOS())
         {
           Sleep(100);
