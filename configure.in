@@ -717,8 +717,8 @@ if test "$use_optimizations" = "yes"; then
     CXXFLAGS="$CXXFLAGS"
     CFLAGS="$CFLAGS"
   else
-    CXXFLAGS="$CXXFLAGS -O2"
-    CFLAGS="$CFLAGS -O2"
+    CXXFLAGS="-O2 $CXXFLAGS"
+    CFLAGS="-O2 $CFLAGS"
   fi
 else
   final_message="$final_message\n  Optimization:\tNo"
