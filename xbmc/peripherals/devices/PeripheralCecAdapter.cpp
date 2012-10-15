@@ -1200,11 +1200,13 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
     iLevel = LOGWARNING;
     break;
   case CEC_LOG_NOTICE:
-    iLevel = LOGDEBUG;
+    if(g_guiSettings.GetBool("input.verbosecec"))
+      iLevel = LOGINFO;
     break;
   case CEC_LOG_TRAFFIC:
   case CEC_LOG_DEBUG:
-    iLevel = LOGDEBUG;
+    if(g_guiSettings.GetBool("input.verbosecec"))
+      iLevel = LOGINFO;
     break;
   default:
     break;
