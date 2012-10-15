@@ -69,6 +69,8 @@
 #include "storage/MediaManager.h"
 #include "Autorun.h"
 #include "URL.h"
+#include "utils/EdenVideoArtUpdater.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -2144,5 +2146,21 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
   if (bScan)
   {
     g_application.StartVideoScan(path, true);
+  }
+}
+
+void CGUIWindowVideoBase::OnInitWindow()
+{
+  CGUIMediaWindow::OnInitWindow();
+  if (g_settings.m_videoNeedsUpdate == 63 && !g_application.IsVideoScanning() &&
+      g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO))
+  {
+    // rescan of video library required
+    if (CGUIDialogYesNo::ShowAndGetInput(799, 12351, 12352, 12354))
+    {
+      CEdenVideoArtUpdater::Start();
+      g_settings.m_videoNeedsUpdate = 0; // once is enough
+      g_settings.Save();
+    }
   }
 }

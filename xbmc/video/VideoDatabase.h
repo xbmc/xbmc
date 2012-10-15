@@ -688,6 +688,7 @@ public:
   virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter);
 
 protected:
+  friend class CEdenVideoArtUpdater;
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
 

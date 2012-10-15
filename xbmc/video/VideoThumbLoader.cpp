@@ -308,68 +308,6 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       if (database.GetArtForItem(idAlbum, "album", artwork))
         item.SetArt(artwork);
     }
-    else
-    {
-      if (tag.m_type == "movie"  || tag.m_type == "episode" ||
-          tag.m_type == "tvshow" || tag.m_type == "musicvideo")
-      { // no art in the library, so find it locally and add
-        SScanSettings settings;
-        ADDON::ScraperPtr info = m_database->GetScraperForPath(tag.m_strPath, settings);
-        if (info)
-        {
-          CFileItem tmpItem(item);
-          tmpItem.SetPath(tag.GetPath());
-          CVideoInfoScanner scanner;
-          scanner.GetArtwork(&tmpItem, info->Content(), tag.m_type != "episode" && settings.parent_name_root, true);
-          item.SetArt(tmpItem.GetArt());
-        }
-      }
-      else if (tag.m_type == "set")
-      { // no art for a set -> use the first movie for this set for art
-        CFileItemList items;
-        if (m_database->GetMoviesNav("videodb://1/2/", items, -1, -1, -1, -1, -1, -1, tag.m_iDbId) && items.Size() > 0)
-        {
-          LoadItem(items[0].get());
-          if (!items[0]->GetArt().empty())
-            item.SetArt(items[0]->GetArt());
-        }
-      }
-      else if (tag.m_type == "actor"  ||
-               tag.m_type == "writer" || tag.m_type == "director")
-      {
-        // We can't realistically get the local thumbs (as we'd need to check every movie that contains this actor)
-        // and most users won't have local actor thumbs that are actually different than the scraped ones.
-        if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-        {
-          tag.m_strPictureURL.Parse();
-          CStdString thumb = CScraperUrl::GetThumbURL(tag.m_strPictureURL.GetFirstThumb());
-          if (!thumb.IsEmpty())
-            item.SetArt("thumb", thumb);
-        }
-      }
-      else if (tag.m_type == "season")
-      {
-        // season art is fetched on scan from the tvshow root path (m_strPath in the season info tag)
-        // or from the show m_strPictureURL member of the tvshow, so grab the tvshow to get this.
-        CVideoInfoTag show;
-        m_database->GetTvShowInfo(tag.m_strPath, show, tag.m_iIdShow);
-        map<int, string> seasons;
-        CVideoInfoScanner::GetSeasonThumbs(show, seasons, true);
-        map<int, string>::iterator season = seasons.find(tag.m_iSeason);
-        if (season != seasons.end())
-          item.SetArt("thumb", season->second);
-      }
-      // add to the database for next time around
-      map<string, string> artwork = item.GetArt();
-      if (!artwork.empty())
-      {
-        m_database->SetArtForItem(tag.m_iDbId, tag.m_type, artwork);
-        for (map<string, string>::iterator i = artwork.begin(); i != artwork.end(); ++i)
-          CTextureCache::Get().BackgroundCacheImage(i->second);
-      }
-      else // nothing found - set an empty thumb so that next time around we don't hit here again
-        m_database->SetArtForItem(tag.m_iDbId, tag.m_type, "thumb", "");
-    }
     // For episodes and seasons, we want to set fanart for that of the show
     if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
     {
