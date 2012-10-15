@@ -83,6 +83,7 @@ public:
 
 protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
+  virtual void OnInitWindow();
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);

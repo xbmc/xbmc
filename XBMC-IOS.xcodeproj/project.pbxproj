@@ -45,6 +45,7 @@
 		7C99B7BE1340730000FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7BC1340730000FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CC30E04162925E6003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30E02162925E6003E7579 /* MusicThumbLoader.cpp */; };
 		7CC30E0716292601003E7579 /* VideoThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30E0516292601003E7579 /* VideoThumbLoader.cpp */; };
+		7CC3106F162AAFE3003E7579 /* EdenVideoArtUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC3106D162AAFE3003E7579 /* EdenVideoArtUpdater.cpp */; };
 		7CCFD9991514950700211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD9971514950700211D82 /* PCMCodec.cpp */; };
 		7CEE2E7F13D6B7D4000ABF2A /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E7D13D6B7D4000ABF2A /* TimeSmoother.cpp */; };
 		C80711AD135DB85F002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80711AB135DB85F002F601B /* InputOperations.cpp */; };
@@ -1071,6 +1072,8 @@
 		7CC30E03162925E6003E7579 /* MusicThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicThumbLoader.h; sourceTree = "<group>"; };
 		7CC30E0516292601003E7579 /* VideoThumbLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoThumbLoader.cpp; sourceTree = "<group>"; };
 		7CC30E0616292601003E7579 /* VideoThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoThumbLoader.h; sourceTree = "<group>"; };
+		7CC3106D162AAFE3003E7579 /* EdenVideoArtUpdater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EdenVideoArtUpdater.cpp; sourceTree = "<group>"; };
+		7CC3106E162AAFE3003E7579 /* EdenVideoArtUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EdenVideoArtUpdater.h; sourceTree = "<group>"; };
 		7CCFD9971514950700211D82 /* PCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMCodec.cpp; sourceTree = "<group>"; };
 		7CCFD9981514950700211D82 /* PCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMCodec.h; sourceTree = "<group>"; };
 		7CEE2E7D13D6B7D4000ABF2A /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
@@ -6046,6 +6049,8 @@
 				F56C871D131F42EC000AD0F6 /* DownloadQueue.h */,
 				F56C871E131F42EC000AD0F6 /* DownloadQueueManager.cpp */,
 				F56C871F131F42EC000AD0F6 /* DownloadQueueManager.h */,
+				7CC3106D162AAFE3003E7579 /* EdenVideoArtUpdater.cpp */,
+				7CC3106E162AAFE3003E7579 /* EdenVideoArtUpdater.h */,
 				F56C8720131F42EC000AD0F6 /* EndianSwap.h */,
 				F56C8721131F42EC000AD0F6 /* Fanart.cpp */,
 				F56C8722131F42EC000AD0F6 /* Fanart.h */,
@@ -7589,6 +7594,7 @@
 				36A95DAD1624896C00727135 /* GUIDialogMediaFilter.cpp in Sources */,
 				7CC30E04162925E6003E7579 /* MusicThumbLoader.cpp in Sources */,
 				7CC30E0716292601003E7579 /* VideoThumbLoader.cpp in Sources */,
+				7CC3106F162AAFE3003E7579 /* EdenVideoArtUpdater.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

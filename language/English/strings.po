@@ -3796,13 +3796,36 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr ""
 
-#empty strings from id 12349 to 12352
+#: xbmc/utils/EdenVideoArtUpdater.cpp
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr ""
+
+#: xbmc/utils/EdenVideoArtUpdater.cpp
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr ""
+
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr ""
+
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr ""
 
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr ""
 
-#empty strings from id 12354 to 12355
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr ""
+
+#empty strings with id 12355
 
 msgctxt "#12356"
 msgid "Change lock"
