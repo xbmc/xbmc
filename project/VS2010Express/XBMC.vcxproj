@@ -645,7 +645,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUISliderControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISpinControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISpinControlEx.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUIStandardWindow.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIStaticItem.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUITextBox.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUITextLayout.cpp" />
@@ -2061,7 +2060,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUISliderControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISpinControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISpinControlEx.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIStandardWindow.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIStaticItem.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUITextBox.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUITextLayout.h" />

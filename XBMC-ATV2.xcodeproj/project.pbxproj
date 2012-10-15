@@ -584,7 +584,6 @@
 		F56C7A24131EC154000AD0F6 /* GUISliderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7532131EC152000AD0F6 /* GUISliderControl.cpp */; };
 		F56C7A26131EC154000AD0F6 /* GUISpinControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7534131EC152000AD0F6 /* GUISpinControl.cpp */; };
 		F56C7A27131EC154000AD0F6 /* GUISpinControlEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7535131EC152000AD0F6 /* GUISpinControlEx.cpp */; };
-		F56C7A28131EC154000AD0F6 /* GUIStandardWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7536131EC152000AD0F6 /* GUIStandardWindow.cpp */; };
 		F56C7A29131EC154000AD0F6 /* GUIStaticItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7537131EC152000AD0F6 /* GUIStaticItem.cpp */; };
 		F56C7A2A131EC154000AD0F6 /* GUITextBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7538131EC152000AD0F6 /* GUITextBox.cpp */; };
 		F56C7A2B131EC154000AD0F6 /* GUITextLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7539131EC152000AD0F6 /* GUITextLayout.cpp */; };
@@ -2284,7 +2283,6 @@
 		F56C74D8131EC152000AD0F6 /* GUISliderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISliderControl.h; sourceTree = "<group>"; };
 		F56C74DA131EC152000AD0F6 /* GUISpinControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISpinControl.h; sourceTree = "<group>"; };
 		F56C74DB131EC152000AD0F6 /* GUISpinControlEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISpinControlEx.h; sourceTree = "<group>"; };
-		F56C74DC131EC152000AD0F6 /* GUIStandardWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIStandardWindow.h; sourceTree = "<group>"; };
 		F56C74DD131EC152000AD0F6 /* GUIStaticItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIStaticItem.h; sourceTree = "<group>"; };
 		F56C74DE131EC152000AD0F6 /* GUITextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextBox.h; sourceTree = "<group>"; };
 		F56C74DF131EC152000AD0F6 /* GUITextLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextLayout.h; sourceTree = "<group>"; };
@@ -2371,7 +2369,6 @@
 		F56C7532131EC152000AD0F6 /* GUISliderControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISliderControl.cpp; sourceTree = "<group>"; };
 		F56C7534131EC152000AD0F6 /* GUISpinControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISpinControl.cpp; sourceTree = "<group>"; };
 		F56C7535131EC152000AD0F6 /* GUISpinControlEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISpinControlEx.cpp; sourceTree = "<group>"; };
-		F56C7536131EC152000AD0F6 /* GUIStandardWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIStandardWindow.cpp; sourceTree = "<group>"; };
 		F56C7537131EC152000AD0F6 /* GUIStaticItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIStaticItem.cpp; sourceTree = "<group>"; };
 		F56C7538131EC152000AD0F6 /* GUITextBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextBox.cpp; sourceTree = "<group>"; };
 		F56C7539131EC152000AD0F6 /* GUITextLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextLayout.cpp; sourceTree = "<group>"; };
@@ -5074,8 +5071,6 @@
 				F56C74DA131EC152000AD0F6 /* GUISpinControl.h */,
 				F56C7535131EC152000AD0F6 /* GUISpinControlEx.cpp */,
 				F56C74DB131EC152000AD0F6 /* GUISpinControlEx.h */,
-				F56C7536131EC152000AD0F6 /* GUIStandardWindow.cpp */,
-				F56C74DC131EC152000AD0F6 /* GUIStandardWindow.h */,
 				F56C7537131EC152000AD0F6 /* GUIStaticItem.cpp */,
 				F56C74DD131EC152000AD0F6 /* GUIStaticItem.h */,
 				F56C7538131EC152000AD0F6 /* GUITextBox.cpp */,
@@ -6980,7 +6975,6 @@
 				F56C7A24131EC154000AD0F6 /* GUISliderControl.cpp in Sources */,
 				F56C7A26131EC154000AD0F6 /* GUISpinControl.cpp in Sources */,
 				F56C7A27131EC154000AD0F6 /* GUISpinControlEx.cpp in Sources */,
-				F56C7A28131EC154000AD0F6 /* GUIStandardWindow.cpp in Sources */,
 				F56C7A29131EC154000AD0F6 /* GUIStaticItem.cpp in Sources */,
 				F56C7A2A131EC154000AD0F6 /* GUITextBox.cpp in Sources */,
 				F56C7A2B131EC154000AD0F6 /* GUITextLayout.cpp in Sources */,

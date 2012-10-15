@@ -1132,9 +1132,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUISpinControlEx.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIStandardWindow.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIStaticItem.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -3937,9 +3934,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUISpinControlEx.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIStandardWindow.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIStaticItem.h">

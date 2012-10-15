@@ -103,7 +103,6 @@
 		18B7C7DD1294222E009E7A26 /* GUISliderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7881294222E009E7A26 /* GUISliderControl.cpp */; };
 		18B7C7DF1294222E009E7A26 /* GUISpinControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C78A1294222E009E7A26 /* GUISpinControl.cpp */; };
 		18B7C7E01294222E009E7A26 /* GUISpinControlEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C78B1294222E009E7A26 /* GUISpinControlEx.cpp */; };
-		18B7C7E11294222E009E7A26 /* GUIStandardWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C78C1294222E009E7A26 /* GUIStandardWindow.cpp */; };
 		18B7C7E21294222E009E7A26 /* GUIStaticItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C78D1294222E009E7A26 /* GUIStaticItem.cpp */; };
 		18B7C7E31294222E009E7A26 /* GUITextBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C78E1294222E009E7A26 /* GUITextBox.cpp */; };
 		18B7C7E41294222E009E7A26 /* GUITextLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C78F1294222E009E7A26 /* GUITextLayout.cpp */; };
@@ -1136,7 +1135,6 @@
 		18B7C72E1294222D009E7A26 /* GUISliderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISliderControl.h; sourceTree = "<group>"; };
 		18B7C7301294222D009E7A26 /* GUISpinControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISpinControl.h; sourceTree = "<group>"; };
 		18B7C7311294222D009E7A26 /* GUISpinControlEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISpinControlEx.h; sourceTree = "<group>"; };
-		18B7C7321294222D009E7A26 /* GUIStandardWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIStandardWindow.h; sourceTree = "<group>"; };
 		18B7C7331294222D009E7A26 /* GUIStaticItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIStaticItem.h; sourceTree = "<group>"; };
 		18B7C7341294222D009E7A26 /* GUITextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextBox.h; sourceTree = "<group>"; };
 		18B7C7351294222D009E7A26 /* GUITextLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextLayout.h; sourceTree = "<group>"; };
@@ -1223,7 +1221,6 @@
 		18B7C7881294222E009E7A26 /* GUISliderControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISliderControl.cpp; sourceTree = "<group>"; };
 		18B7C78A1294222E009E7A26 /* GUISpinControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISpinControl.cpp; sourceTree = "<group>"; };
 		18B7C78B1294222E009E7A26 /* GUISpinControlEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISpinControlEx.cpp; sourceTree = "<group>"; };
-		18B7C78C1294222E009E7A26 /* GUIStandardWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIStandardWindow.cpp; sourceTree = "<group>"; };
 		18B7C78D1294222E009E7A26 /* GUIStaticItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIStaticItem.cpp; sourceTree = "<group>"; };
 		18B7C78E1294222E009E7A26 /* GUITextBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextBox.cpp; sourceTree = "<group>"; };
 		18B7C78F1294222E009E7A26 /* GUITextLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextLayout.cpp; sourceTree = "<group>"; };
@@ -3481,8 +3478,6 @@
 				18B7C7301294222D009E7A26 /* GUISpinControl.h */,
 				18B7C78B1294222E009E7A26 /* GUISpinControlEx.cpp */,
 				18B7C7311294222D009E7A26 /* GUISpinControlEx.h */,
-				18B7C78C1294222E009E7A26 /* GUIStandardWindow.cpp */,
-				18B7C7321294222D009E7A26 /* GUIStandardWindow.h */,
 				18B7C78D1294222E009E7A26 /* GUIStaticItem.cpp */,
 				18B7C7331294222D009E7A26 /* GUIStaticItem.h */,
 				18B7C78E1294222E009E7A26 /* GUITextBox.cpp */,
@@ -7315,7 +7310,6 @@
 				18B7C7DD1294222E009E7A26 /* GUISliderControl.cpp in Sources */,
 				18B7C7DF1294222E009E7A26 /* GUISpinControl.cpp in Sources */,
 				18B7C7E01294222E009E7A26 /* GUISpinControlEx.cpp in Sources */,
-				18B7C7E11294222E009E7A26 /* GUIStandardWindow.cpp in Sources */,
 				18B7C7E21294222E009E7A26 /* GUIStaticItem.cpp in Sources */,
 				18B7C7E31294222E009E7A26 /* GUITextBox.cpp in Sources */,
 				18B7C7E41294222E009E7A26 /* GUITextLayout.cpp in Sources */,
