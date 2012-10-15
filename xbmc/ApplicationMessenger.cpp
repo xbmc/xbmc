@@ -61,8 +61,6 @@
 #include "playlists/PlayList.h"
 #include "FileItem.h"
 
-#include "ThumbLoader.h"
-
 #include "pvr/PVRManager.h"
 
 using namespace PVR;
@@ -845,12 +843,6 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 void CApplicationMessenger::MediaPlay(string filename)
 {
   CFileItem item(filename, false);
-  if (item.IsAudio())
-    CMusicThumbLoader::FillThumb(item);
-  else
-    CVideoThumbLoader::FillThumb(item);
-  item.FillInDefaultIcon();
-
   MediaPlay(item);
 }
 

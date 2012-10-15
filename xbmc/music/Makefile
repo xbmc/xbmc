@@ -5,6 +5,7 @@ SRCS=Album.cpp \
      MusicDatabase.cpp \
      MusicDbUrl.cpp \
      MusicInfoLoader.cpp \
+     MusicThumbLoader.cpp \
      Song.cpp \
      
 LIB=music.a
