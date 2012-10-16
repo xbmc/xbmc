@@ -3388,6 +3388,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OVERLAY);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
     g_windowManager.Delete(WINDOW_ADDON_BROWSER);
+    g_windowManager.Delete(WINDOW_SKIN_SETTINGS);
 
     g_windowManager.Delete(WINDOW_HOME);
     g_windowManager.Delete(WINDOW_PROGRAMS);
