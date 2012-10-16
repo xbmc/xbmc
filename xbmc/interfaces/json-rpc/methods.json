@@ -46,7 +46,8 @@
         "ControlSystem": { "type": "boolean", "required": true },
         "ControlGUI": { "type": "boolean", "required": true },
         "ManageAddon": { "type": "boolean", "required": true },
-        "ExecuteAddon": { "type": "boolean", "required": true }
+        "ExecuteAddon": { "type": "boolean", "required": true },
+        "ControlPVR": { "type": "boolean", "required": true }
       }
     }
   },
@@ -129,6 +130,11 @@
                   { "type": "string", "required": true, "minLength": 5, "description": "Path to a smartplaylist (*.xsp) file" }
                 ]
               }
+            }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "channelid": { "$ref": "Library.Id", "required": true }
             }
           }
         ]
@@ -1540,6 +1546,112 @@
       { "name": "wait", "type": "boolean", "default": false }
     ],
     "returns": "string"
+  },
+  "PVR.GetProperties": {
+    "type": "method",
+    "description": "Retrieves the values of the given properties",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "PVR.Property.Name" } }
+    ],
+    "returns":  { "$ref": "PVR.Property.Value", "required": true }
+  },
+  "PVR.GetChannelGroups": {
+    "type": "method",
+    "description": "Retrieves the channel groups for the specified type",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "channeltype", "$ref": "PVR.Channel.Type", "required": true },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "channelgroups": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.ChannelGroup" }
+        }
+      }
+    }
+  },
+  "PVR.GetChannelGroupDetails": {
+    "type": "method",
+    "description": "Retrieves the details of a specific channel group",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "channelgroupid", "$ref": "PVR.ChannelGroup.Id", "required": true },
+      { "name": "channels", "type": "object",
+        "properties": {
+          "properties": { "$ref": "PVR.Fields.Channel" },
+          "limits": { "$ref": "List.Limits" }
+        }
+      }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "channelgroupdetails": { "$ref": "PVR.Details.ChannelGroup.Extended" }
+      }
+    }
+  },
+  "PVR.GetChannels": {
+    "type": "method",
+    "description": "Retrieves the channel list",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "channelgroupid", "$ref": "PVR.ChannelGroup.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Channel" },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "channels": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Channel" }
+        }
+      }
+    }
+  },
+  "PVR.GetChannelDetails": {
+    "type": "method",
+    "description": "Retrieves the details of a specific channel",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "channelid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Channel" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "channeldetails": { "$ref": "PVR.Details.Channel" }
+      }
+    }
+  },
+  "PVR.Record": {
+    "type": "method",
+    "description": "Toggle recording of a channel",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [
+      { "name": "record", "$ref": "Global.Toggle", "default": "toggle" },
+      { "name": "channel", "type": [
+          { "type": "string", "enum": [ "current" ], "required": true },
+          { "$ref": "Library.Id", "required": true }
+        ],
+        "default": "current"
+      }
+    ],
+    "returns":  "string"
+  },
+  "PVR.Scan": {
+    "type": "method",
+    "description": "Starts a channel scan",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [ ],
+    "returns":  "string"
   },
   "System.GetProperties": {
     "type": "method",
