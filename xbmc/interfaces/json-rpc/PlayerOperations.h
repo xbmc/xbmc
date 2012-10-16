@@ -23,6 +23,11 @@
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
 
+namespace EGP
+{
+  class CEpgInfoTag;
+}
+
 namespace JSONRPC
 {
   enum PlayerType
@@ -70,5 +75,7 @@ namespace JSONRPC
 
     static int ParseRepeatState(const CVariant &repeat);
     static double ParseTimeInSeconds(const CVariant &time);
+    static bool IsPVRChannel();
+    static bool GetCurrentEpg(EPG::CEpgInfoTag &epg);
   };
 }

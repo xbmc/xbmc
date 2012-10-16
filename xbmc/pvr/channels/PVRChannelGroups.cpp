@@ -317,6 +317,13 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetLastGroup(void) const
   return empty;
 }
 
+std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers() const
+{
+  CSingleLock lock(m_critSection);
+  std::vector<CPVRChannelGroupPtr> groups(m_groups.begin(), m_groups.end());
+  return groups;
+}
+
 int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
 {
   int iReturn(0);

@@ -146,6 +146,23 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   return *this;
 }
 
+void CPVRChannel::Serialize(CVariant& value) const
+{
+  value["channelid"] = m_iChannelId;
+  value["channeltype"] = m_bIsRadio ? "radio" : "tv";
+  value["hidden"] = m_bIsHidden;
+  value["locked"] = m_bIsLocked;
+  value["icon"] = m_strIconPath;
+  value["channel"]  = m_strChannelName;
+  CDateTime lastPlayed(m_iLastWatched);
+  value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : StringUtils::EmptyString;
+  value["channelnumber"] = m_iCachedChannelNumber;
+  
+  CEpgInfoTag epg;
+  if (GetEPGNow(epg))
+    epg.Serialize(value);
+}
+
 /********** XBMC related channel methods **********/
 
 bool CPVRChannel::Delete(void)

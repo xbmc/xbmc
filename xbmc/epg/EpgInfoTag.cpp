@@ -29,6 +29,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "addons/include/xbmc_pvr_types.h"
 
 using namespace std;
@@ -200,6 +201,20 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   return *this;
 }
 
+void CEpgInfoTag::Serialize(CVariant &value) const
+{
+  value["rating"] = m_iStarRating;
+  value["title"] = m_strTitle;
+  value["plotoutline"] = m_strPlotOutline;
+  value["plot"] = m_strPlot;
+  value["genre"] = m_genre;
+  value["filenameandpath"] = m_strFileNameAndPath;
+  value["starttime"] = m_startTime.IsValid() ? m_startTime.GetAsDBDateTime() : StringUtils::EmptyString;
+  value["endtime"] = m_endTime.IsValid() ? m_endTime.GetAsDBDateTime() : StringUtils::EmptyString;
+  value["runtime"] = StringUtils::Format("%d", GetDuration() / 60);
+  value["firstaired"] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : StringUtils::EmptyString;
+}
+
 bool CEpgInfoTag::Changed(void) const
 {
   CSingleLock lock(m_critSection);
@@ -245,6 +260,21 @@ float CEpgInfoTag::ProgressPercentage(void) const
     fReturn = 100;
 
   return fReturn;
+}
+
+int CEpgInfoTag::Progress(void) const
+{
+  int iDuration;
+  time_t currentTime, startTime;
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+
+  CSingleLock lock(m_critSection);
+  m_startTime.GetAsTime(startTime);
+  iDuration = currentTime - startTime;
+  if (iDuration <= 0)
+    return 0;
+
+  return iDuration;
 }
 
 CEpgInfoTagPtr CEpgInfoTag::GetNextEvent(void) const
