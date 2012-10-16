@@ -202,15 +202,6 @@ namespace VIDEO
     g_windowManager.SendThreadMessage(msg);
   }
 
-  static CStdString Prettify(const CStdString& strDirectory)
-  {
-    CURL url(strDirectory);
-    CStdString strStrippedPath = url.GetWithoutUserDetails();
-    CURL::Decode(strStrippedPath);
-
-    return strStrippedPath;
-  }
-
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
   {
     if (m_handle)
