@@ -6742,9 +6742,7 @@ msgctxt "#19160"
 msgid "to"
 msgstr ""
 
-msgctxt "#19161"
-msgid "On"
-msgstr ""
+#empty string with id 19161
 
 msgctxt "#19162"
 msgid "Recording active"
