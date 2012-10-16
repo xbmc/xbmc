@@ -650,7 +650,10 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    // regrab from manager to have the correct path set
+    AddonPtr addon; 
+    CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
     if (service)
       service->Start();
   }
