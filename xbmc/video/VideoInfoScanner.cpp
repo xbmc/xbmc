@@ -215,8 +215,7 @@ namespace VIDEO
   {
     if (m_handle)
     {
-      m_handle->SetTitle(g_localizeStrings.Get(20415));
-      m_handle->SetText(Prettify(strDirectory));
+      m_handle->SetText(g_localizeStrings.Get(20415));
     }
 
     /*
@@ -480,6 +479,9 @@ namespace VIDEO
     if (ProgressCancelled(pDlgProgress, pItem->m_bIsFolder ? 20353 : 20361, pItem->GetLabel()))
       return INFO_CANCELLED;
 
+    if (m_handle)
+      m_handle->SetText(pItem->GetMovieName(bDirNames));
+
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
@@ -546,6 +548,9 @@ namespace VIDEO
     if (m_database.HasMovieInfo(pItem->GetPath()))
       return INFO_HAVE_ALREADY;
 
+    if (m_handle)
+      m_handle->SetText(pItem->GetMovieName(bDirNames));
+
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
@@ -592,6 +597,9 @@ namespace VIDEO
     if (m_database.HasMusicVideoInfo(pItem->GetPath()))
       return INFO_HAVE_ALREADY;
 
+    if (m_handle)
+      m_handle->SetText(pItem->GetMovieName(bDirNames));
+
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
@@ -636,9 +644,6 @@ namespace VIDEO
 
     if (m_bStop || (progress && progress->IsCanceled()))
       return INFO_CANCELLED;
-
-    if (m_handle)
-      m_handle->SetText(Prettify(item->GetPath()));
 
     CVideoInfoTag showInfo;
     m_database.GetTvShowInfo("", showInfo, showID);
@@ -1065,9 +1070,6 @@ namespace VIDEO
       strTitle.Format("%s - %ix%i - %s", showInfo->m_strTitle.c_str(), movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle.c_str());
     }
 
-    if (m_handle)
-      m_handle->SetText(strTitle);
-
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to %s:%s", TranslateContent(content).c_str(), pItem->GetPath().c_str());
     long lResult = -1;
 
@@ -1272,7 +1274,7 @@ namespace VIDEO
       if (m_database.GetEpisodeId(file->strPath, file->iEpisode, file->iSeason) > -1)
       {
         if (m_handle)
-          m_handle->SetTitle(g_localizeStrings.Get(20415));
+          m_handle->SetText(g_localizeStrings.Get(20415));
         continue;
       }
 
@@ -1535,6 +1537,9 @@ namespace VIDEO
   bool CVideoInfoScanner::GetDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, CNfoFile *nfoFile, CGUIDialogProgress* pDialog /* = NULL */)
   {
     CVideoInfoTag movieDetails;
+
+    if (m_handle && !url.strTitle.IsEmpty())
+      m_handle->SetText(url.strTitle);
 
     CVideoInfoDownloader imdb(scraper);
     bool ret = imdb.GetDetails(url, movieDetails, pDialog);
