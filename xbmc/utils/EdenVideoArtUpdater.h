@@ -20,7 +20,7 @@
  */
 
 #include <string>
-#include "threads/thread.h"
+#include "threads/Thread.h"
 #include "TextureDatabase.h"
 
 class CFileItem;
