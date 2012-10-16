@@ -75,7 +75,7 @@
 #include "utils/JobManager.h"
 //#include "cores/AudioEngine/AEFactory.h"
 //#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "xbmc/ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
