@@ -128,6 +128,7 @@ public:
   int m_iTrack;
   float m_fRating;
   float m_fEpBookmark;
+  int m_iPlayTitle;          // title to play for optical media 100000 play menu, 0 play longest, n play title n (playlist nnnnn.mpls), -n only play title n then stop
   int m_iBookmarkId;
   int m_iIdShow;
   int m_iIdSeason;

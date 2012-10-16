@@ -136,7 +136,7 @@ bool CVideoDatabase::CreateTables()
       column.Format(",c%02d text", i);
       columns += column;
     }
-    columns += ", idSet integer)";
+    columns += ", idSet integer, start_Title )";
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_1 ON movie (idFile, idMovie)");
     m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_2 ON movie (idMovie, idFile)");
@@ -205,7 +205,7 @@ bool CVideoDatabase::CreateTables()
 
       columns += column;
     }
-    columns += ", idShow integer)";
+    columns += ", idShow integer, playTitle integer)";
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
     m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
@@ -2012,6 +2012,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
       sql += PrepareSQL(", idSet = %i", idSet);
     else
       sql += ", idSet = NULL";
+    sql += PrepareSQL(", playTitle = %i", details.m_iPlayTitle);
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
@@ -2170,6 +2171,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
 
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
+    sql += PrepareSQL(", playTitle = %i", details.m_iPlayTitle);
     sql += PrepareSQL(" where idEpisode=%i", idEpisode);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
@@ -3203,10 +3205,11 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_playCount = record->at(VIDEODB_DETAILS_MOVIE_PLAYCOUNT).get_asInt();
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MOVIE_LASTPLAYED).get_asString());
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_MOVIE_DATEADDED).get_asString());
+  details.m_iPlayTitle = record->at(VIDEODB_DETAILS_MOVIE_PLAY_TITLE).get_asInt();
+
   details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_RESUME_TIME).get_asInt();
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_TOTAL_TIME).get_asInt();
   details.m_resumePoint.type = CBookmark::RESUME;
-
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   if (needsCast)
@@ -3320,6 +3323,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_iIdShow = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
   details.m_strShowPath = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_PATH).get_asString();
   details.m_iIdSeason = record->at(VIDEODB_DETAILS_EPISODE_SEASON_ID).get_asInt();
+  details.m_iPlayTitle = record->at(VIDEODB_DETAILS_EPISODE_PLAY_TITLE).get_asInt();
 
   details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt();
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt();
@@ -4117,6 +4121,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     m_pDS->exec("DROP TABLE IF EXISTS setlinkmovie");
   }
+
   if (iVersion < 70)
   { // update old art URLs
     m_pDS->query("select art_id,url from art where url like 'image://%%'");
@@ -4129,6 +4134,26 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->close();
     for (vector< pair<int, string> >::iterator i = art.begin(); i != art.end(); ++i)
       m_pDS->exec(PrepareSQL("update art set url='%s' where art_id=%d", i->second.c_str(), i->first));
+  if (iVersion < 71)
+  { // add idSet to movie table
+    m_pDS->exec("ALTER TABLE movie ADD playTitle integer");
+    m_pDS->query("SELECT idMovie FROM movie");
+    while (!m_pDS->eof())
+    {
+      int idMovie = m_pDS->fv(0).get_asInt();
+      CStdString sql = PrepareSQL("UPDATE movie SET playTitle=100000 WHERE idMovie = %d", idMovie);
+      m_pDS2->exec(sql.c_str());
+      m_pDS->next();
+    }
+    m_pDS->exec("ALTER TABLE episode ADD playTitle integer");
+    m_pDS->query("SELECT idEpisode FROM episode");
+    while (!m_pDS->eof())
+    {
+      int idEpisode = m_pDS->fv(0).get_asInt();
+      CStdString update = PrepareSQL("UPDATE episode SET playTitle=100000 WHERE idEpisode=%d", idEpisode);
+      m_pDS2->exec(update.c_str());
+      m_pDS->next();
+    }
   }
   if (iVersion < 71)
   { // update URL encoded paths

@@ -581,6 +581,9 @@ retry:
   else
     m_pInputStream->SetFileItem(m_item);
 
+  if(title == 100000 && (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY)) && m_item.HasVideoInfoTag())
+    title = m_item.GetVideoInfoTag()->m_iPlayTitle;
+  CLog::Log(LOGDEBUG, "CDVDPlayer:mike: Database PlayTitle = %d", title);
   if( title >= 100000 )   // match filename.titnnn.iso
   {
     int t, n=-1, len;

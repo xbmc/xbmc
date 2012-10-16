@@ -1047,7 +1047,7 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
   if (item->m_lStartOffset)
     return true;
 
-  if (item->IsBDFile())
+  if (item->IsBDFile() && !(item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iPlayTitle != 100000))
   {
     CStdString root = URIUtils::GetParentPath(item->GetPath());
     URIUtils::RemoveSlashAtEnd(root);
