@@ -898,7 +898,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   return startoffset;
 #else
   if (item->HasProperty("viewOffset"))
-    return item->GetProperty("viewOffset").asInteger() * 75 / 1000;
+    return boost::lexical_cast<int>(item->GetProperty("viewOffset").asString()) * 75 / 1000;
   return 0;
 #endif
 }
@@ -1051,7 +1051,7 @@ CStdString CGUIWindowVideoBase::GetResumeString(CFileItem item)
   // See if we have a view offset.
   if (item.HasProperty("viewOffset"))
   {
-    float seconds = item.GetProperty("viewOffset").asInteger() / 1000.0f;
+    float seconds = boost::lexical_cast<float>(item.GetProperty("viewOffset").asString()) / 1000.0f;
     resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(seconds)).c_str());
   }
 #endif

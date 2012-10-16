@@ -3754,7 +3754,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   {
     // See if we have a view offset.
     if (item.HasProperty("viewOffset") && item.GetProperty("viewOffset").empty() == false)
-      seconds = item.GetProperty("viewOffset").asInteger()/1000.0;
+      seconds = boost::lexical_cast<float>(item.GetProperty("viewOffset").asString())/1000.0;
     else
       seconds = 0.0f;
   }
@@ -3958,7 +3958,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (item.m_lStartOffset == STARTOFFSET_RESUME)
     {
       if (item.HasProperty("viewOffset"))
-        options.starttime = item.GetProperty("viewOffset").asInteger()/1000.0;
+        options.starttime = boost::lexical_cast<float>(item.GetProperty("viewOffset").asString())/1000.0;
     }
 #endif
 

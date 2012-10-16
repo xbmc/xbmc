@@ -147,10 +147,10 @@ class PlexContentPlayerMixin
   {
     bool resumeItem = false;
     
-    if (!file->m_bIsFolder && file->HasProperty("viewOffset")) 
+    if (!file->m_bIsFolder && file->HasProperty("viewOffset") && !file->GetProperty("viewOffset").asString().empty())
     {
       // Oh my god. Copy and paste code. We need a superclass which manages media.
-      float seconds = file->GetProperty("viewOffset").asInteger() / 1000.0f;
+      float seconds = boost::lexical_cast<float>(file->GetProperty("viewOffset").asString()) / 1000.0f;
 
       CContextButtons choices;
       CStdString resumeString;
