@@ -124,6 +124,20 @@ protected:
   \sa GetFilteredItems
   */
   virtual bool GetAdvanceFilteredItems(CFileItemList &items, bool &hasNewItems);
+  /* \brief Check whether the given item should be part of the filtered list based
+            on the unfiltered list
+
+   This method is only called for items which are not part of the unfiltered list
+   and therefore need to go through an extra check to figure out if it should
+   really be part of the filtered list.
+   It is currently only needed for movie sets and can be removed once movie sets
+   are being grouped outside of CVideoDatabase.
+   
+   \param item The filtered item to check
+   \param items The unfiltered list of items
+   \return True if the filtered item should be part of the filtered list otherwise false
+   */
+  virtual bool CheckFilteredItem(const CFileItemPtr &item, const CFileItemList &items) const { return true; }
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection(const CStdString& strPath, int iDriveType);

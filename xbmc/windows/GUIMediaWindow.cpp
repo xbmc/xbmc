@@ -1815,10 +1815,24 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items, bool &hasNew
     }
   }
 
+  /* TODO: This code is only needed because movie sets
+   have to be handled differently than other media items.
+   During filtering a movie set can be reduced to a single
+   movie which then replaces the previously listed movie set
+   but hasn't been part of the original list. It can be
+   removed once movie sets are grouped dynamically after
+   applying any filter.
+   */
   if (resultItems.Size() > 0)
   {
-    filteredItems.Append(resultItems);
-    hasNewItems = true;
+    for (int i = 0; i < resultItems.Size(); i++)
+    {
+      if (CheckFilteredItem(resultItems[i], items))
+      {
+        filteredItems.Add(resultItems[i]);
+        hasNewItems = true;
+      }
+    }
   }
 
   items.ClearItems();
