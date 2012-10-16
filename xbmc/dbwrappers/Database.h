@@ -31,6 +31,7 @@ namespace dbiplus {
 
 class DatabaseSettings; // forward
 class CDbUrl;
+struct SortDescription;
 
 class CDatabase
 {
@@ -135,8 +136,9 @@ public:
    */
   bool CommitInsertQueries();
 
-  virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter) { return true; }
+  virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter, SortDescription &sorting) { return true; }
   virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl);
+  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
 
 protected:
   friend class CDatabaseManager;
