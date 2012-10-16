@@ -98,9 +98,9 @@ namespace XFILE
 
         // store the smartplaylist as JSON in the URL as well
         CStdString xsp;
-        if (!playlist.IsEmpty())
+        if (!playlist.IsEmpty(filter))
         {
-          if (!playlist.SaveAsJson(xsp, false))
+          if (!playlist.SaveAsJson(xsp, !filter))
             return false;
         }
         videoUrl.AddOption(option, xsp);
@@ -129,9 +129,9 @@ namespace XFILE
 
         // store the smartplaylist as JSON in the URL as well
         CStdString xsp;
-        if (!playlist.IsEmpty())
+        if (!playlist.IsEmpty(filter))
         {
-          if (!playlist.SaveAsJson(xsp, false))
+          if (!playlist.SaveAsJson(xsp, !filter))
             return false;
         }
         musicUrl.AddOption(option, xsp);
@@ -153,9 +153,9 @@ namespace XFILE
 
         // store the smartplaylist as JSON in the URL as well
         CStdString xsp;
-        if (!playlist.IsEmpty())
+        if (!playlist.IsEmpty(filter))
         {
-          if (!playlist.SaveAsJson(xsp, false))
+          if (!playlist.SaveAsJson(xsp, !filter))
             return false;
         }
         musicUrl.AddOption(option, xsp);
@@ -182,9 +182,9 @@ namespace XFILE
 
         // store the smartplaylist as JSON in the URL as well
         CStdString xsp;
-        if (!songPlaylist.IsEmpty())
+        if (!songPlaylist.IsEmpty(filter))
         {
-          if (!songPlaylist.SaveAsJson(xsp, false))
+          if (!songPlaylist.SaveAsJson(xsp, !filter))
             return false;
         }
         musicUrl.AddOption(option, xsp);
@@ -210,9 +210,9 @@ namespace XFILE
 
         // store the smartplaylist as JSON in the URL as well
         CStdString xsp;
-        if (!mvidPlaylist.IsEmpty())
+        if (!mvidPlaylist.IsEmpty(filter))
         {
-          if (!mvidPlaylist.SaveAsJson(xsp, false))
+          if (!mvidPlaylist.SaveAsJson(xsp, !filter))
             return false;
         }
         videoUrl.AddOption(option, xsp);

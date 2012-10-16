@@ -685,7 +685,7 @@ public:
   void AddTagToItem(int idItem, int idTag, const std::string &type);
   void RemoveTagFromItem(int idItem, int idTag, const std::string &type);
 
-  virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter);
+  virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting);
 
 protected:
   friend class CEdenVideoArtUpdater;
