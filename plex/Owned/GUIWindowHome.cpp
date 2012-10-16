@@ -122,6 +122,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
           
           // OK, let's load it after a delay.
           CFileItem* pFileItem = (CFileItem* )pItem.get();
+          m_workerManager->cancelPending();
           m_pendingSelectItemKey = pFileItem->GetPath();
           m_lastSelectedItemKey.clear();
           m_contentLoadTimer.StartZero();
@@ -146,12 +147,17 @@ bool CGUIWindowHome::SaveSelectedMenuItem()
     {
       CFileItem* fileItem = (CFileItem* )item.get();
       
+      CStdString path = fileItem->GetPath();
+      if (path.empty())
+        /* No path, means that this is a static item from the skin, store the label instead */
+        path = fileItem->GetLabel();
+
       // See if it's changed.
-      if (m_lastSelectedItemKey != fileItem->GetPath())
+      if (m_lastSelectedItemKey != path)
         changed = true;
       
       // Save the current selection.
-      m_lastSelectedItemKey = fileItem->GetPath();
+      m_lastSelectedItemKey = path;
     }
   }
   
