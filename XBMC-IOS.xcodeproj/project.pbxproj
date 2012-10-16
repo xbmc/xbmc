@@ -99,6 +99,7 @@
 		C8B92A6A157357C600284190 /* GUIDialogExtendedProgressBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B92A68157357C600284190 /* GUIDialogExtendedProgressBar.cpp */; };
 		C8B92A701573586300284190 /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B92A6E1573586300284190 /* TextSearch.cpp */; };
 		C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */; };
+		DF00493A162DB10400A971AD /* PVROperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF004938162DB10400A971AD /* PVROperations.cpp */; };
 		DF02A888153382A60084754E /* IOSKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF02A887153382A60084754E /* IOSKeyboard.mm */; };
 		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
 		DF23462215FA675200A934F6 /* UPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23461915FA675200A934F6 /* UPnP.cpp */; };
@@ -1182,6 +1183,8 @@
 		C8B92A6F1573586300284190 /* TextSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextSearch.h; sourceTree = "<group>"; };
 		C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D25136953E100CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
+		DF004938162DB10400A971AD /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
+		DF004939162DB10400A971AD /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
 		DF02A831153373EC0084754E /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
 		DF02A86D153381990084754E /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
 		DF02A881153382560084754E /* IOSKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboard.h; sourceTree = "<group>"; };
@@ -6383,6 +6386,8 @@
 				F5AE4152134175520004BD79 /* PlayerOperations.h */,
 				F5AE4153134175520004BD79 /* PlaylistOperations.cpp */,
 				F5AE4154134175520004BD79 /* PlaylistOperations.h */,
+				DF004938162DB10400A971AD /* PVROperations.cpp */,
+				DF004939162DB10400A971AD /* PVROperations.h */,
 				F5AE4155134175520004BD79 /* SystemOperations.cpp */,
 				F5AE4156134175520004BD79 /* SystemOperations.h */,
 				F5AE4157134175520004BD79 /* VideoLibrary.cpp */,
@@ -7595,6 +7600,7 @@
 				7CC30E04162925E6003E7579 /* MusicThumbLoader.cpp in Sources */,
 				7CC30E0716292601003E7579 /* VideoThumbLoader.cpp in Sources */,
 				7CC3106F162AAFE3003E7579 /* EdenVideoArtUpdater.cpp in Sources */,
+				DF00493A162DB10400A971AD /* PVROperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

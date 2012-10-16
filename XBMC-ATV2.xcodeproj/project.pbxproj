@@ -98,6 +98,7 @@
 		C8B92B2115735EBF00284190 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B92B1D15735EBF00284190 /* Observer.cpp */; };
 		C8B92B2215735EBF00284190 /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B92B1F15735EBF00284190 /* TextSearch.cpp */; };
 		C8EC5D51136954E400CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */; };
+		DF004948162DB12200A971AD /* PVROperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF004946162DB12200A971AD /* PVROperations.cpp */; };
 		DF08E84515829BA600058C77 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF08E84315829BA600058C77 /* Exception.cpp */; };
 		DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */; };
 		DF23461015FA671900A934F6 /* UPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23460715FA671900A934F6 /* UPnP.cpp */; };
@@ -1180,6 +1181,8 @@
 		C8B92B2015735EBF00284190 /* TextSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextSearch.h; sourceTree = "<group>"; };
 		C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D50136954E400CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
+		DF004946162DB12200A971AD /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
+		DF004947162DB12200A971AD /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
 		DF08E84315829BA600058C77 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Exception.cpp; sourceTree = "<group>"; };
 		DF08E84415829BA600058C77 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
 		DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
@@ -6374,6 +6377,8 @@
 				F5AE40FF1341751E0004BD79 /* PlayerOperations.h */,
 				F5AE41001341751E0004BD79 /* PlaylistOperations.cpp */,
 				F5AE41011341751E0004BD79 /* PlaylistOperations.h */,
+				DF004946162DB12200A971AD /* PVROperations.cpp */,
+				DF004947162DB12200A971AD /* PVROperations.h */,
 				F5AE41021341751E0004BD79 /* SystemOperations.cpp */,
 				F5AE41031341751E0004BD79 /* SystemOperations.h */,
 				F5AE41041341751E0004BD79 /* VideoLibrary.cpp */,
@@ -7570,6 +7575,7 @@
 				7CC30DF2162925BE003E7579 /* MusicThumbLoader.cpp in Sources */,
 				7CC30E1A16292627003E7579 /* VideoThumbLoader.cpp in Sources */,
 				7CC3105D162AAF9B003E7579 /* EdenVideoArtUpdater.cpp in Sources */,
+				DF004948162DB12200A971AD /* PVROperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
