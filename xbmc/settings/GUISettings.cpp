@@ -445,7 +445,7 @@ void CGUISettings::Initialize()
   AddInt(vs, "videoscreen.vsync", 13105, DEFAULT_VSYNC, vsync, SPIN_CONTROL_TEXT);
 
   AddString(vs, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-#ifndef HAS_DX
+#if defined(HAS_GL)
   // Todo: Implement test pattern for DX
   AddString(vs, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
 #endif
